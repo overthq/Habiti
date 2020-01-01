@@ -1,6 +1,7 @@
 import React from 'react';
-import { Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Icon } from '../components/icons';
 import { useAppSelector } from '../redux/store';
 import { useStoreQuery } from '../types/api';
 
@@ -14,10 +15,17 @@ const Store: React.FC = () => {
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<TouchableOpacity>
-				{/* Add store image here */}
-				<Text>{store?.name}</Text>
-				{/* <Text>@{store?.short_name}</Text> */}
+			<TouchableOpacity style={styles.storeSettingRow}>
+				<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+					<View style={styles.storeAvatar}>
+						<Text style={styles.storeAvatarText}>{store?.name[0]}</Text>
+					</View>
+					<View style={styles.storeMeta}>
+						<Text>{store?.name}</Text>
+						{/* <Text>@{store?.short_name}</Text> */}
+					</View>
+				</View>
+				<Icon name='chevronRight' size={16} color='#D3D3D3' />
 			</TouchableOpacity>
 		</SafeAreaView>
 	);
@@ -26,6 +34,32 @@ const Store: React.FC = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1
+	},
+	storeSettingRow: {
+		width: '100%',
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		padding: 8
+	},
+	storeAvatar: {
+		height: 40,
+		width: 40,
+		borderRadius: 30,
+		justifyContent: 'center',
+		alignItems: 'center',
+		backgroundColor: '#505050'
+	},
+	storeAvatarText: {
+		fontSize: 34,
+		fontWeight: '500',
+		color: '#D3D3D3'
+	},
+	storeMeta: {
+		marginLeft: 8
+	},
+	storeName: {
+		fontSize: 16,
+		fontWeight: 'bold'
 	}
 });
 
