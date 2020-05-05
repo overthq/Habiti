@@ -1,0 +1,16 @@
+query UserOrders($userId: ID!) {
+	userOrders(userId: $userId) {
+		_id
+		status
+		store {
+			name
+		}
+		cart {
+			item {
+				name
+				pricePerUnit
+			}
+			quantity
+		}
+	}
+}

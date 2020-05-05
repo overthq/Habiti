@@ -1,0 +1,15 @@
+mutation Register($name: String!, $phone: String!) {
+	register(name: $name, phone: $phone)
+}
+
+mutation Authenticate($phone: String!) {
+	authenticate(phone: $phone)
+}
+
+mutation VerifyAuthentication($phone: String!, $code: String!) {
+	verifyAuthentication(phone: $phone, code: $code) {
+		_id
+		name
+		phone
+	}
+}
