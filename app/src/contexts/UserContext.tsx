@@ -33,11 +33,14 @@ export const UserProvider: React.FC = ({ children }) => {
 	};
 
 	const fetchUser = async () => {
-		const savedUser = await AsyncStorage.getItem('user');
-		if (!savedUser) return;
-		const fetchedUser: User = JSON.parse(savedUser);
-		setUser(fetchedUser);
-		setLoading(false);
+		try {
+			const savedUser = await AsyncStorage.getItem('user');
+			if (!savedUser) return setUser(null);
+			const fetchedUser: User = JSON.parse(savedUser);
+			setUser(fetchedUser);
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	const logOut = async () => {
