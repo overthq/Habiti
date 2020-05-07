@@ -15,15 +15,11 @@ import styles from '../styles/auth';
 const Register = () => {
 	const [name, setName] = React.useState('');
 	const [phone, setPhone] = React.useState('');
-	const [{ data, fetching, error }, register] = useRegisterMutation();
+	const [{ data }, register] = useRegisterMutation();
 	const { navigate } = useNavigation();
 
 	const handleSubmit = async () => {
 		await register({ name, phone });
-	};
-
-	const goToAuth = () => {
-		navigate('Authenticate');
 	};
 
 	React.useEffect(() => {
@@ -65,7 +61,7 @@ const Register = () => {
 				</TouchableOpacity>
 				<TouchableOpacity
 					style={{ alignSelf: 'center', marginTop: 10 }}
-					onPress={goToAuth}
+					onPress={() => navigate('Authenticate')}
 				>
 					<Text
 						style={{ fontWeight: '500', fontSize: 15 }}

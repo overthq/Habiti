@@ -1,12 +1,20 @@
 import React from 'react';
 import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import RecentOrders from '../components/RecentOrders';
+import { Icon } from '../components/icons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const Home = () => {
+	const { navigate } = useNavigation();
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.header}>
 				<Text style={styles.title}>Home</Text>
+				<TouchableOpacity onPress={() => navigate('Carts')}>
+					<Icon name='shoppingBag' />
+				</TouchableOpacity>
 			</View>
 			<RecentOrders />
 		</SafeAreaView>
@@ -19,7 +27,9 @@ const styles = StyleSheet.create({
 	},
 	header: {
 		paddingVertical: 15,
-		paddingHorizontal: 20
+		paddingHorizontal: 20,
+		flexDirection: 'row',
+		justifyContent: 'space-between'
 	},
 	title: {
 		fontWeight: 'bold',
