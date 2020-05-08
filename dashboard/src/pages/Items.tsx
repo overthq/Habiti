@@ -1,0 +1,98 @@
+import React from 'react';
+import { Form, Field, Formik } from 'formik';
+import Select from 'react-select';
+import { useCreateItemMutation, useItemsQuery, ItemUnit } from '../types';
+import Page from '../components/Page';
+
+const options = Object.values(ItemUnit).map(unit => ({
+	label: unit,
+	value: unit
+}));
+
+const CreateItem = () => {
+	const [, createItem] = useCreateItemMutation();
+
+	return (
+		<Formik
+			initialValues={{
+				name: '',
+				price: 0,
+				image: '',
+				featured: false,
+				unit: 'Kilograms' as ItemUnit
+			}}
+			onSubmit={async values => {
+				createItem({ input: { ...values, price: Number(values.price) } });
+			}}
+		>
+			{({ handleChange, values, setFieldValue }) => (
+				<Form>
+					<label>
+						Name
+						<input
+							name='name'
+							type='text'
+							onChange={handleChange}
+							value={values.name}
+						/>
+					</label>
+					<label>
+						Price (per unit)
+						<input
+							name='price'
+							type='number'
+							onChange={handleChange}
+							value={values.price}
+						/>
+					</label>
+					<label>
+						Image URL
+						<input
+							name='image'
+							type='text'
+							onChange={handleChange}
+							value={values.image}
+						/>
+					</label>
+					<label>
+						<Field type='checkbox' name='featured' />
+						Featured
+					</label>
+					<Select
+						name='unit'
+						value={options.find(option => option.value === values.unit)}
+						onChange={(option: any) => setFieldValue('unit', option?.value)}
+						options={options}
+					/>
+					<button type='submit'>Create Item</button>
+				</Form>
+			)}
+		</Formik>
+	);
+};
+
+const Items = () => {
+	const [{ data, fetching, error }] = useItemsQuery();
+
+	return (
+		<Page>
+			<CreateItem />
+			<table>
+				<th>
+					<td>Name</td>
+					<td>Price</td>
+					<td>Featured</td>
+				</th>
+				{data?.items.map(({ name, price, featured }, index) => (
+					<tr key={index}>
+						<td>{name}</td>
+						<td>{price}</td>
+						<td>{featured.toString()}</td>
+					</tr>
+				))}
+			</table>
+		</Page>
+	);
+};
+
+export default Items;

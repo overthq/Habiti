@@ -29,20 +29,16 @@ export const authenticate = async (_, { phone }) => {
 
 export const verifyAuthentication = async (_, { phone, code }) => {
 	const verificationCode = await get(phone);
-	try {
-		if (!verificationCode) {
-			throw new Error(
-				`Verification code for ${phone} not found. Looks like it might have expired.`
-			);
-		}
-
-		if (verificationCode !== code) {
-			throw new Error('Invalid verification code entered');
-		}
-
-		const user = await User.findOne({ phone });
-		return user;
-	} catch (error) {
-		console.log(error);
+	if (!verificationCode) {
+		throw new Error(
+			`Verification code for ${phone} not found. Looks like it might have expired.`
+		);
 	}
+
+	if (verificationCode !== code) {
+		throw new Error('Invalid verification code entered');
+	}
+
+	const user = await User.findOne({ phone });
+	return user;
 };

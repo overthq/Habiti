@@ -24,23 +24,21 @@ export const UserProvider: React.FC = ({ children }) => {
 	const [user, setUser] = React.useState<User | null>(null);
 
 	React.useEffect(() => {
-		fetchUser();
+		(async () => {
+			try {
+				const savedUser = await AsyncStorage.getItem('user');
+				if (!savedUser) return setUser(null);
+				const fetchedUser: User = JSON.parse(savedUser);
+				setUser(fetchedUser);
+			} finally {
+				setLoading(false);
+			}
+		})();
 	}, []);
 
 	const saveUser = async (user: User) => {
 		await AsyncStorage.setItem('user', JSON.stringify(user));
 		setUser(user);
-	};
-
-	const fetchUser = async () => {
-		try {
-			const savedUser = await AsyncStorage.getItem('user');
-			if (!savedUser) return setUser(null);
-			const fetchedUser: User = JSON.parse(savedUser);
-			setUser(fetchedUser);
-		} finally {
-			setLoading(false);
-		}
 	};
 
 	const logOut = async () => {

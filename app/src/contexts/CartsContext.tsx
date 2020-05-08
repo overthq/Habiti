@@ -1,9 +1,12 @@
 import React from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 
-interface CartItem {
-	itemId: string;
-	quantity: number;
+interface Cart {
+	storeId: string;
+	items: {
+		itemId: string;
+		quantity: number;
+	}[];
 }
 
 type AddItemToCart = (item: {
@@ -13,13 +16,13 @@ type AddItemToCart = (item: {
 }) => void;
 
 interface CartsContextValue {
-	carts: Record<string, CartItem[]>;
+	carts: Cart[];
 	addItemToCart: AddItemToCart;
 	removeItemFromCart(storeId: string, itemId: string): void;
 }
 
 export const CartsContext = React.createContext<CartsContextValue>({
-	carts: {},
+	carts: [],
 	addItemToCart: () => {
 		/* noop */
 	},
@@ -29,18 +32,18 @@ export const CartsContext = React.createContext<CartsContextValue>({
 });
 
 export const CartsProvider: React.FC = ({ children }) => {
-	const [carts, setCarts] = React.useState<Record<string, CartItem[]>>({});
+	const [carts, setCarts] = React.useState<Cart[]>([]);
 
 	React.useEffect(() => {
 		// Load persisted carts.
 		(async () => {
 			try {
 				const stringifiedCarts = await AsyncStorage.getItem('carts');
-				if (!stringifiedCarts) return setCarts({});
+				if (!stringifiedCarts) return setCarts([]);
 				const loadedCarts = JSON.parse(stringifiedCarts);
 				setCarts(loadedCarts);
 			} catch (error) {
-				setCarts({});
+				setCarts([]);
 			}
 		})();
 	}, []);
@@ -50,20 +53,21 @@ export const CartsProvider: React.FC = ({ children }) => {
 		AsyncStorage.setItem('carts', JSON.stringify(carts));
 	}, [carts]);
 
-	const addItemToCart: AddItemToCart = ({ itemId, storeId, quantity }) => {
-		setCarts({
-			...carts,
-			[storeId]: [...carts[storeId], { itemId, quantity }]
-		});
+	const addItemToCart: AddItemToCart = ({ storeId, itemId, quantity }) => {
+		const cartsCopy = [...carts];
+		const cartToAddItemTo = cartsCopy.find(({ storeId: id }) => storeId === id);
+		cartToAddItemTo?.items.push({ itemId, quantity });
+		setCarts(cartsCopy);
 	};
 
 	const removeItemFromCart = (storeId: string, itemId: string) => {
-		const cartsCopy = { ...carts };
-		const indexOfItemToRemove = cartsCopy[storeId].findIndex(
+		const cartsCopy = [...carts];
+		const selectedCart = cartsCopy.find(({ storeId: id }) => storeId === id);
+		const indexOfItemToRemove = selectedCart?.items.findIndex(
 			({ itemId: id }) => itemId === id
 		);
-		if (indexOfItemToRemove > -1)
-			cartsCopy[storeId].splice(indexOfItemToRemove, 1);
+		if (indexOfItemToRemove && indexOfItemToRemove > -1)
+			selectedCart?.items.splice(indexOfItemToRemove, 1);
 		setCarts(cartsCopy);
 	};
 

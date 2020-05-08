@@ -13,7 +13,7 @@ import Register from './src/screens/Register';
 import VerifyAuthentication from './src/screens/VerifyAuthentication';
 import Home from './src/screens/Home';
 // import Settings from './src/screens/Settings';
-// import Cart from './src/screens/Cart';
+import Carts from './src/screens/Carts';
 // import { ItemSheetProvider } from './src/contexts/ItemSheetContext';
 import { CartsProvider } from './src/contexts/CartsContext';
 
@@ -68,12 +68,12 @@ const MainNavigator = () => (
 			component={Home}
 			options={{ headerShown: false }}
 		/>
+		<MainStack.Screen
+			name='Carts'
+			component={Carts}
+			options={{ headerShown: false }}
+		/>
 		{/*
-			<MainStack.Screen
-				name='Cart'
-				component={Cart}
-				options={{ headerShown: false }}
-			/>
 			<MainStack.Screen name='Settings' component={SettingsNavigator} />
 		*/}
 	</MainStack.Navigator>
