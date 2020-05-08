@@ -1,0 +1,17 @@
+mutation CreateManager($storeId: ID!, $input: ManagerInput) {
+	createManager(storeId: $storeId, input: $input) {
+		_id
+		name
+		email
+		role
+	}
+}
+
+query StoreManagers($storeId: ID!) {
+	storeManagers(storeId: $storeId) {
+		_id
+		name
+		email
+		role
+	}
+}

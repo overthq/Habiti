@@ -1,0 +1,29 @@
+mutation CreateItem($storeId: ID!, $input: ItemInput!) {
+	createItem(storeId: $storeId, input: $input) {
+		_id
+		name
+		pricePerUnit
+		featured
+		unit
+	}
+}
+
+query StoreItems($storeId: ID!) {
+	storeItems(storeId: $storeId) {
+		_id
+		name
+		pricePerUnit
+		featured
+		unit
+	}
+}
+
+query Items {
+	items {
+		_id
+		name
+		pricePerUnit
+		featured
+		unit
+	}
+}

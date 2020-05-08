@@ -16,10 +16,10 @@ const StoreSchema = new Schema(
 		websiteUrl: {
 			type: String
 		},
-		instagramUrl: {
+		instagramUsername: {
 			type: String
 		},
-		twitterUrl: {
+		twitterUsername: {
 			type: String
 		}
 	},

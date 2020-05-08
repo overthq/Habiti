@@ -5,16 +5,19 @@ import UserType from './types/User';
 import ItemType from './types/Item';
 import OrderType from './types/Order';
 import StoreType from './types/Store';
+import ManagerType from './types/Manager';
 
 import * as userMutations from './mutations/users';
 import * as itemMutations from './mutations/items';
 import * as orderMutations from './mutations/orders';
 import * as storeMutations from './mutations/stores';
+import * as managerMutations from './mutations/managers';
 
 import * as userQueries from './queries/users';
 import * as itemQueries from './queries/items';
 import * as orderQueries from './queries/orders';
 import * as storeQueries from './queries/stores';
+import * as managerQueries from './queries/managers';
 
 const RootType = `
 	type Mutation { default: String }
@@ -27,7 +30,8 @@ const typeDefs = [
 	UserType,
 	ItemType,
 	OrderType,
-	StoreType
+	StoreType,
+	ManagerType
 ];
 
 const resolvers = {
@@ -35,13 +39,15 @@ const resolvers = {
 		...userMutations,
 		...itemMutations,
 		...orderMutations,
-		...storeMutations
+		...storeMutations,
+		...managerMutations
 	},
 	Query: {
 		...userQueries,
 		...itemQueries,
 		...orderQueries,
-		...storeQueries
+		...storeQueries,
+		...managerQueries
 	}
 };
 

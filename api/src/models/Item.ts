@@ -1,11 +1,18 @@
 import { model, Schema, Document } from 'mongoose';
 import { StoreDocument } from './Store';
 
+enum ItemUnit {
+	Kilogram = 'Kilogram',
+	Litre = 'Litre'
+}
+
 export interface ItemDocument extends Document {
 	name: string;
 	storeId: string;
 	store: StoreDocument;
 	unit: string;
+	pricePerUnit: number;
+	featured: boolean;
 }
 
 const ItemSchema = new Schema(
@@ -21,11 +28,15 @@ const ItemSchema = new Schema(
 		},
 		unit: {
 			type: String,
-			enum: ['']
+			enum: Object.values(ItemUnit)
 		},
 		pricePerUnit: {
 			type: Number,
 			required: true
+		},
+		featured: {
+			type: Boolean,
+			default: false
 		}
 	},
 	{ timestamps: true }

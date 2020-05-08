@@ -1,10 +1,17 @@
 const StoreType = `
 	type Store @entity {
+		_id: ID! @id
 		name: String! @column
+		websiteUrl: String @column
+		instagramUsername: String @column
+		twitterUsername: String @column
 	}
 
 	input StoreInput {
 		name: String
+		websiteUrl: String
+		instagramUsername: String
+		twitterUsername: String
 	}
 
 	extend type Query {

@@ -6,17 +6,19 @@ const ItemType = `
 		store: Store! @embedded
 		unit: ItemUnit @column
 		pricePerUnit: Int! @column
+		featured: Boolean! @column
 	}
 
 	enum ItemUnit {
-		Kilograms
-		Litres
+		Kilogram
+		Litre
 	}
 
 	input ItemInput {
 		name: String!
 		pricePerUnit: Int!
 		unit: ItemUnit
+		featured: Boolean
 	}
 
 	extend type Mutation {
