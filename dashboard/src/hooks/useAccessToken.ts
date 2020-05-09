@@ -1,22 +1,6 @@
 import React from 'react';
 
-interface ManagerContextValue {
-	accessToken: string | null;
-	saveAccessToken(token: string): void;
-	logOut(): void;
-}
-
-export const ManagerContext = React.createContext<ManagerContextValue>({
-	accessToken: null,
-	saveAccessToken: () => {
-		// noop
-	},
-	logOut: () => {
-		// noop
-	}
-});
-
-export const ManagerProvider: React.FC = ({ children }) => {
+const useAccessToken = () => {
 	const [loading, setLoading] = React.useState(true);
 	const [accessToken, setAccessToken] = React.useState<string | null>(null);
 
@@ -43,9 +27,7 @@ export const ManagerProvider: React.FC = ({ children }) => {
 
 	const logOut = () => localStorage.removeItem('accessToken');
 
-	return (
-		<ManagerContext.Provider value={{ accessToken, saveAccessToken, logOut }}>
-			{loading ? <p>Loading...</p> : children}
-		</ManagerContext.Provider>
-	);
+	return { loading, accessToken, saveAccessToken, logOut };
 };
+
+export default useAccessToken;

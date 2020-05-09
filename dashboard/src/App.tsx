@@ -8,6 +8,7 @@ import Items from './pages/Items';
 
 import Sidebar from './components/Sidebar';
 import { Provider, createClient } from 'urql';
+import useAccessToken from './hooks/useAccessToken';
 
 const AppContainer = styled.div`
 	display: flex;
@@ -20,18 +21,22 @@ const MainContainer = styled.main`
 `;
 
 const App = () => {
+	const { loading, accessToken } = useAccessToken();
+
 	const client = createClient({
 		url: 'http://localhost:5000',
-		fetchOptions: () => {
-			return {
-				headers: {
-					authorization: `Bearer token`
-				}
-			};
-		}
+		fetchOptions: () => ({
+			headers: {
+				authorization: accessToken ? `Bearer ${accessToken}` : ''
+			}
+		})
 	});
 
-	return (
+	return loading ? (
+		<div>
+			<p>Loading</p>
+		</div>
+	) : (
 		<Provider value={client}>
 			<BrowserRouter>
 				<AppContainer>
