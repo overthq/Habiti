@@ -14,6 +14,7 @@ export type Scalars = {
 export type Query = {
 	__typename?: 'Query';
 	default?: Maybe<Scalars['String']>;
+	currentUser: User;
 	users: Array<User>;
 	storeItems: Array<Item>;
 	items: Array<Item>;
@@ -21,14 +22,6 @@ export type Query = {
 	storeOrders: Array<Order>;
 	stores: Array<Store>;
 	storeManagers: Array<Manager>;
-};
-
-export type QueryStoreItemsArgs = {
-	storeId: Scalars['ID'];
-};
-
-export type QueryUserOrdersArgs = {
-	userId: Scalars['ID'];
 };
 
 export type QueryStoreOrdersArgs = {
@@ -115,17 +108,17 @@ export type Mutation = {
 	default?: Maybe<Scalars['String']>;
 	register: Scalars['String'];
 	authenticate: Scalars['String'];
-	verifyAuthentication: User;
+	verifyAuthentication: Scalars['String'];
 	createItem: Item;
 	updateItem: Item;
-	deleteItem?: Maybe<Scalars['String']>;
+	deleteItem: Scalars['String'];
 	placeOrder?: Maybe<Order>;
 	createStore: Store;
 	updateStore: Store;
 	createManager: Manager;
 	updateManager: Manager;
 	authenticateManager: Scalars['String'];
-	verifyManagerAuthentication: Manager;
+	verifyManagerAuthentication: Scalars['String'];
 };
 
 export type MutationRegisterArgs = {
@@ -143,18 +136,15 @@ export type MutationVerifyAuthenticationArgs = {
 };
 
 export type MutationCreateItemArgs = {
-	storeId: Scalars['ID'];
 	input?: Maybe<ItemInput>;
 };
 
 export type MutationUpdateItemArgs = {
-	storeId: Scalars['ID'];
 	itemId: Scalars['ID'];
 	input?: Maybe<ItemInput>;
 };
 
 export type MutationDeleteItemArgs = {
-	storeId: Scalars['ID'];
 	itemId: Scalars['ID'];
 };
 
@@ -227,7 +217,6 @@ export type AdditionalEntityFields = {
 };
 
 export type CreateItemMutationVariables = {
-	storeId: Scalars['ID'];
 	input: ItemInput;
 };
 
@@ -238,9 +227,7 @@ export type CreateItemMutation = { __typename?: 'Mutation' } & {
 	>;
 };
 
-export type StoreItemsQueryVariables = {
-	storeId: Scalars['ID'];
-};
+export type StoreItemsQueryVariables = {};
 
 export type StoreItemsQuery = { __typename?: 'Query' } & {
 	storeItems: Array<
@@ -296,8 +283,8 @@ export type CreateStoreMutation = { __typename?: 'Mutation' } & {
 };
 
 export const CreateItemDocument = gql`
-	mutation CreateItem($storeId: ID!, $input: ItemInput!) {
-		createItem(storeId: $storeId, input: $input) {
+	mutation CreateItem($input: ItemInput!) {
+		createItem(input: $input) {
 			_id
 			name
 			pricePerUnit
@@ -313,8 +300,8 @@ export function useCreateItemMutation() {
 	);
 }
 export const StoreItemsDocument = gql`
-	query StoreItems($storeId: ID!) {
-		storeItems(storeId: $storeId) {
+	query StoreItems {
+		storeItems {
 			_id
 			name
 			pricePerUnit

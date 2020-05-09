@@ -2,7 +2,6 @@ import React from 'react';
 import { Form, Field, Formik } from 'formik';
 import Select from 'react-select';
 import { useCreateItemMutation, useItemsQuery, ItemUnit } from '../types';
-import { ManagerContext } from '../contexts/ManagerContext';
 import Page from '../components/Page';
 
 const options = Object.values(ItemUnit).map(unit => ({
@@ -12,7 +11,6 @@ const options = Object.values(ItemUnit).map(unit => ({
 
 const CreateItem = () => {
 	const [, createItem] = useCreateItemMutation();
-	const { manager } = React.useContext(ManagerContext);
 
 	return (
 		<Formik
@@ -24,12 +22,9 @@ const CreateItem = () => {
 				unit: 'Kilograms' as ItemUnit
 			}}
 			onSubmit={async values => {
-				if (manager?.storeId) {
-					createItem({
-						storeId: manager.storeId,
-						input: { ...values, pricePerUnit: Number(values.pricePerUnit) }
-					});
-				}
+				createItem({
+					input: { ...values, pricePerUnit: Number(values.pricePerUnit) }
+				});
 			}}
 		>
 			{({ handleChange, values, setFieldValue }) => (

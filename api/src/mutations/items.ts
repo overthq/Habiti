@@ -1,7 +1,16 @@
-import { Item } from '../models';
+import { Item, Manager } from '../models';
 
-export const createItem = async (_, { storeId, input }) => {
-	const item = await Item.create({ storeId, ...input });
+export const createItem = async (_, { input }, { user }) => {
+	if (!user) throw new Error('');
+	if (user.role !== 'manager') {
+		throw new Error('');
+	}
+
+	const manager = await Manager.findById(user.id);
+	if (!manager) {
+		throw new Error('');
+	}
+	const item = await Item.create({ storeId: manager.storeId, ...input });
 	return item;
 };
 

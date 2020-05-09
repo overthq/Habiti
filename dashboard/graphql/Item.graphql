@@ -1,5 +1,5 @@
-mutation CreateItem($storeId: ID!, $input: ItemInput!) {
-	createItem(storeId: $storeId, input: $input) {
+mutation CreateItem($input: ItemInput!) {
+	createItem(input: $input) {
 		_id
 		name
 		pricePerUnit
@@ -8,8 +8,8 @@ mutation CreateItem($storeId: ID!, $input: ItemInput!) {
 	}
 }
 
-query StoreItems($storeId: ID!) {
-	storeItems(storeId: $storeId) {
+query StoreItems {
+	storeItems {
 		_id
 		name
 		pricePerUnit

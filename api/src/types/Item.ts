@@ -22,13 +22,13 @@ const ItemType = `
 	}
 
 	extend type Mutation {
-		createItem(storeId: ID!, input: ItemInput): Item!
-		updateItem(storeId: ID!, itemId: ID!, input: ItemInput): Item!
-		deleteItem(storeId: ID!, itemId: ID!): String
+		createItem(input: ItemInput): Item!
+		updateItem(itemId: ID!, input: ItemInput): Item!
+		deleteItem(itemId: ID!): String!
 	}
 
 	extend type Query {
-		storeItems(storeId: ID!): [Item!]!
+		storeItems: [Item!]!
 		items: [Item!]!
 	}
 `;

@@ -12,7 +12,7 @@ export const PageBackground = styled.main`
 
 export const OnboardingContainer = styled.div`
 	border-radius: 6px;
-	box-shadow: 0 1px 3px hsla(0, 0%, 0.2);
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 	padding: 20px;
 `;
 
