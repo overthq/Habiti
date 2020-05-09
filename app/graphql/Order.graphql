@@ -1,5 +1,5 @@
-query UserOrders($userId: ID!) {
-	userOrders(userId: $userId) {
+query UserOrders {
+	userOrders {
 		_id
 		status
 		store {

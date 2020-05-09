@@ -1,0 +1,10 @@
+query Items {
+	items {
+		_id
+		name
+		storeId
+		featured
+		pricePerUnit
+		unit
+	}
+}

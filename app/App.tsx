@@ -1,11 +1,12 @@
 import React from 'react';
-import { Platform } from 'react-native';
+import { View, Platform, ActivityIndicator } from 'react-native';
 import { Provider, createClient } from 'urql';
 import { NavigationContainer } from '@react-navigation/native';
 import {
 	createStackNavigator,
 	TransitionPresets
 } from '@react-navigation/stack';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import Authenticate from './src/screens/Authenticate';
 import Register from './src/screens/Register';
@@ -15,7 +16,7 @@ import Home from './src/screens/Home';
 import Carts from './src/screens/Carts';
 // import { ItemSheetProvider } from './src/contexts/ItemSheetContext';
 import { CartsProvider } from './src/contexts/CartsContext';
-import useAccessToken from 'src/hooks/useAccessToken';
+import useAccessToken from './src/hooks/useAccessToken';
 
 // Navigation: List of app screens
 // 1: Home
@@ -78,7 +79,7 @@ const MainNavigator = () => (
 );
 
 const App = () => {
-	const { accessToken } = useAccessToken();
+	const { loading, accessToken } = useAccessToken();
 
 	const client = createClient({
 		url: 'http://localhost:5000',
@@ -89,18 +90,24 @@ const App = () => {
 		})
 	});
 
-	return (
+	return loading ? (
+		<View>
+			<ActivityIndicator />
+		</View>
+	) : (
 		<Provider value={client}>
 			<CartsProvider>
-				<NavigationContainer>
-					<AppStack.Navigator
-						initialRouteName={!!accessToken ? 'Main' : 'Auth'}
-						headerMode='none'
-					>
-						<AppStack.Screen name='Auth' component={AuthNavigator} />
-						<AppStack.Screen name='Main' component={MainNavigator} />
-					</AppStack.Navigator>
-				</NavigationContainer>
+				<SafeAreaProvider>
+					<NavigationContainer>
+						<AppStack.Navigator
+							initialRouteName={!!accessToken ? 'Main' : 'Auth'}
+							headerMode='none'
+						>
+							<AppStack.Screen name='Auth' component={AuthNavigator} />
+							<AppStack.Screen name='Main' component={MainNavigator} />
+						</AppStack.Navigator>
+					</NavigationContainer>
+				</SafeAreaProvider>
 			</CartsProvider>
 		</Provider>
 	);

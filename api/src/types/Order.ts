@@ -38,7 +38,7 @@ const OrderType = `
 	}
 
 	extend type Query {
-		userOrders(userId: ID!): [Order!]!
+		userOrders: [Order!]!
 		storeOrders(storeId: ID!): [Order!]!
 	}
 `;

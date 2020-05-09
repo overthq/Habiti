@@ -45,5 +45,6 @@ export const verifyAuthentication = async (_, { phone, code }) => {
 		{ id: user.id, phone: user.phone, role: 'user' },
 		process.env.JWT_SECRET
 	);
+
 	return accessToken;
 };

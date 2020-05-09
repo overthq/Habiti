@@ -1,6 +1,7 @@
 import util from 'util';
 import { Manager } from '../models';
 import client from '../config/redis';
+import { sign } from 'jsonwebtoken';
 
 const get = util.promisify(client.get).bind(client);
 
@@ -44,5 +45,10 @@ export const verifyManagerAuthentication = async (_, { email, code }) => {
 	}
 
 	const manager = await Manager.findOne({ email });
-	return manager;
+	const accessToken = sign(
+		{ id: manager.id, email: manager.email, role: 'manager ' },
+		process.env.JWT_SECRET
+	);
+
+	return accessToken;
 };

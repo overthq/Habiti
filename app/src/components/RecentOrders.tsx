@@ -7,7 +7,6 @@ import {
 	StyleSheet
 } from 'react-native';
 import { useUserOrdersQuery, OrderStatus } from '../types';
-import { UserContext } from '../contexts/UserContext';
 
 const getStatusColor = (status: OrderStatus) => {
 	switch (status) {
@@ -21,9 +20,8 @@ const getStatusColor = (status: OrderStatus) => {
 };
 
 const RecentOrders = () => {
-	const { user } = React.useContext(UserContext);
 	const [{ data }] = useUserOrdersQuery({
-		variables: { userId: user?._id as string }
+		variables: { userId: '' }
 	});
 
 	return (

@@ -7,14 +7,14 @@ import {
 	ActivityIndicator
 } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { UserContext } from '../contexts/UserContext';
 import { useVerifyAuthenticationMutation } from '../types';
 import styles from '../styles/auth';
+import useAccessToken from '../hooks/useAccessToken';
 
 const VerifyAuthentication = () => {
 	const { params } = useRoute();
 	const { navigate } = useNavigation();
-	const { saveAccessToken } = React.useContext(UserContext);
+	const { saveAccessToken } = useAccessToken();
 	const [code, setCode] = React.useState('');
 	const [
 		{ data, fetching },

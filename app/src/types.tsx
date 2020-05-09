@@ -192,10 +192,6 @@ export type QueryStoreItemsArgs = {
 	storeId: Scalars['ID'];
 };
 
-export type QueryUserOrdersArgs = {
-	userId: Scalars['ID'];
-};
-
 export type QueryStoreOrdersArgs = {
 	storeId: Scalars['ID'];
 };
@@ -227,9 +223,18 @@ export type User = {
 	phone: Scalars['String'];
 };
 
-export type UserOrdersQueryVariables = {
-	userId: Scalars['ID'];
+export type ItemsQueryVariables = {};
+
+export type ItemsQuery = { __typename?: 'Query' } & {
+	items: Array<
+		{ __typename?: 'Item' } & Pick<
+			Item,
+			'_id' | 'name' | 'storeId' | 'featured' | 'pricePerUnit' | 'unit'
+		>
+	>;
 };
+
+export type UserOrdersQueryVariables = {};
 
 export type UserOrdersQuery = { __typename?: 'Query' } & {
 	userOrders: Array<
@@ -282,9 +287,27 @@ export type CurrentUserQuery = { __typename?: 'Query' } & {
 	currentUser: { __typename?: 'User' } & Pick<User, '_id' | 'name' | 'phone'>;
 };
 
+export const ItemsDocument = gql`
+	query Items {
+		items {
+			_id
+			name
+			storeId
+			featured
+			pricePerUnit
+			unit
+		}
+	}
+`;
+
+export function useItemsQuery(
+	options: Omit<Urql.UseQueryArgs<ItemsQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<ItemsQuery>({ query: ItemsDocument, ...options });
+}
 export const UserOrdersDocument = gql`
-	query UserOrders($userId: ID!) {
-		userOrders(userId: $userId) {
+	query UserOrders {
+		userOrders {
 			_id
 			status
 			store {
