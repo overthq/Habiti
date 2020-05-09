@@ -37,17 +37,39 @@ export type Item = {
 	store: Store;
 	unit?: Maybe<ItemUnit>;
 	pricePerUnit: Scalars['Int'];
+	featured: Scalars['Boolean'];
 };
 
 export type ItemInput = {
 	name: Scalars['String'];
 	pricePerUnit: Scalars['Int'];
 	unit?: Maybe<ItemUnit>;
+	featured?: Maybe<Scalars['Boolean']>;
 };
 
 export enum ItemUnit {
-	Kilograms = 'Kilograms',
-	Litres = 'Litres'
+	Kilogram = 'Kilogram',
+	Litre = 'Litre'
+}
+
+export type Manager = {
+	__typename?: 'Manager';
+	_id: Scalars['ID'];
+	name: Scalars['String'];
+	email: Scalars['String'];
+	role: ManagerRole;
+	storeId: Scalars['ID'];
+};
+
+export type ManagerInput = {
+	name?: Maybe<Scalars['String']>;
+	email?: Maybe<Scalars['String']>;
+	role?: Maybe<ManagerRole>;
+};
+
+export enum ManagerRole {
+	Admin = 'Admin',
+	Editor = 'Editor'
 }
 
 export type Mutation = {
@@ -55,13 +77,17 @@ export type Mutation = {
 	default?: Maybe<Scalars['String']>;
 	register: Scalars['String'];
 	authenticate: Scalars['String'];
-	verifyAuthentication: User;
+	verifyAuthentication: Scalars['String'];
 	createItem: Item;
 	updateItem: Item;
 	deleteItem?: Maybe<Scalars['String']>;
 	placeOrder?: Maybe<Order>;
 	createStore: Store;
 	updateStore: Store;
+	createManager: Manager;
+	updateManager: Manager;
+	authenticateManager: Scalars['String'];
+	verifyManagerAuthentication: Manager;
 };
 
 export type MutationRegisterArgs = {
@@ -106,6 +132,26 @@ export type MutationUpdateStoreArgs = {
 	input?: Maybe<StoreInput>;
 };
 
+export type MutationCreateManagerArgs = {
+	storeId: Scalars['ID'];
+	input?: Maybe<ManagerInput>;
+};
+
+export type MutationUpdateManagerArgs = {
+	managerId: Scalars['ID'];
+	input?: Maybe<ManagerInput>;
+};
+
+export type MutationAuthenticateManagerArgs = {
+	storeId: Scalars['ID'];
+	email: Scalars['String'];
+};
+
+export type MutationVerifyManagerAuthenticationArgs = {
+	email: Scalars['String'];
+	code: Scalars['String'];
+};
+
 export type Order = {
 	__typename?: 'Order';
 	_id: Scalars['ID'];
@@ -132,12 +178,14 @@ export type PlaceOrderInput = {
 export type Query = {
 	__typename?: 'Query';
 	default?: Maybe<Scalars['String']>;
+	currentUser: User;
 	users: Array<User>;
 	storeItems: Array<Item>;
 	items: Array<Item>;
 	userOrders: Array<Order>;
 	storeOrders: Array<Order>;
 	stores: Array<Store>;
+	storeManagers: Array<Manager>;
 };
 
 export type QueryStoreItemsArgs = {
@@ -152,13 +200,24 @@ export type QueryStoreOrdersArgs = {
 	storeId: Scalars['ID'];
 };
 
+export type QueryStoreManagersArgs = {
+	storeId: Scalars['ID'];
+};
+
 export type Store = {
 	__typename?: 'Store';
+	_id: Scalars['ID'];
 	name: Scalars['String'];
+	websiteUrl?: Maybe<Scalars['String']>;
+	instagramUsername?: Maybe<Scalars['String']>;
+	twitterUsername?: Maybe<Scalars['String']>;
 };
 
 export type StoreInput = {
 	name?: Maybe<Scalars['String']>;
+	websiteUrl?: Maybe<Scalars['String']>;
+	instagramUsername?: Maybe<Scalars['String']>;
+	twitterUsername?: Maybe<Scalars['String']>;
 };
 
 export type User = {
@@ -212,11 +271,15 @@ export type VerifyAuthenticationMutationVariables = {
 	code: Scalars['String'];
 };
 
-export type VerifyAuthenticationMutation = { __typename?: 'Mutation' } & {
-	verifyAuthentication: { __typename?: 'User' } & Pick<
-		User,
-		'_id' | 'name' | 'phone'
-	>;
+export type VerifyAuthenticationMutation = { __typename?: 'Mutation' } & Pick<
+	Mutation,
+	'verifyAuthentication'
+>;
+
+export type CurrentUserQueryVariables = {};
+
+export type CurrentUserQuery = { __typename?: 'Query' } & {
+	currentUser: { __typename?: 'User' } & Pick<User, '_id' | 'name' | 'phone'>;
 };
 
 export const UserOrdersDocument = gql`
@@ -270,11 +333,7 @@ export function useAuthenticateMutation() {
 }
 export const VerifyAuthenticationDocument = gql`
 	mutation VerifyAuthentication($phone: String!, $code: String!) {
-		verifyAuthentication(phone: $phone, code: $code) {
-			_id
-			name
-			phone
-		}
+		verifyAuthentication(phone: $phone, code: $code)
 	}
 `;
 
@@ -283,4 +342,22 @@ export function useVerifyAuthenticationMutation() {
 		VerifyAuthenticationMutation,
 		VerifyAuthenticationMutationVariables
 	>(VerifyAuthenticationDocument);
+}
+export const CurrentUserDocument = gql`
+	query CurrentUser {
+		currentUser {
+			_id
+			name
+			phone
+		}
+	}
+`;
+
+export function useCurrentUserQuery(
+	options: Omit<Urql.UseQueryArgs<CurrentUserQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<CurrentUserQuery>({
+		query: CurrentUserDocument,
+		...options
+	});
 }

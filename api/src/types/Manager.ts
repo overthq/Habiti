@@ -4,10 +4,12 @@ const ManagerType = `
 		name: String! @column
 		email: String! @column
 		role: ManagerRole! @column
+		storeId: ID! @column
 	}
 
 	enum ManagerRole {
 		Admin
+		Editor
 	}
 
 	input ManagerInput {

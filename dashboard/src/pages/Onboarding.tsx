@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const PageBackground = styled.main`
+export const PageBackground = styled.main`
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -10,7 +10,7 @@ const PageBackground = styled.main`
 	background-color: #efefef;
 `;
 
-const OnboardingContainer = styled.div`
+export const OnboardingContainer = styled.div`
 	border-radius: 6px;
 	box-shadow: 0 1px 3px hsla(0, 0%, 0.2);
 	padding: 20px;

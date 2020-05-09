@@ -4,6 +4,7 @@ mutation CreateManager($storeId: ID!, $input: ManagerInput) {
 		name
 		email
 		role
+		storeId
 	}
 }
 
@@ -13,5 +14,6 @@ query StoreManagers($storeId: ID!) {
 		name
 		email
 		role
+		storeId
 	}
 }

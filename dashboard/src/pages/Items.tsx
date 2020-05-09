@@ -2,6 +2,7 @@ import React from 'react';
 import { Form, Field, Formik } from 'formik';
 import Select from 'react-select';
 import { useCreateItemMutation, useItemsQuery, ItemUnit } from '../types';
+import { ManagerContext } from '../contexts/ManagerContext';
 import Page from '../components/Page';
 
 const options = Object.values(ItemUnit).map(unit => ({
@@ -11,18 +12,24 @@ const options = Object.values(ItemUnit).map(unit => ({
 
 const CreateItem = () => {
 	const [, createItem] = useCreateItemMutation();
+	const { manager } = React.useContext(ManagerContext);
 
 	return (
 		<Formik
 			initialValues={{
 				name: '',
-				price: 0,
+				pricePerUnit: 0,
 				image: '',
 				featured: false,
 				unit: 'Kilograms' as ItemUnit
 			}}
 			onSubmit={async values => {
-				createItem({ input: { ...values, price: Number(values.price) } });
+				if (manager?.storeId) {
+					createItem({
+						storeId: manager.storeId,
+						input: { ...values, pricePerUnit: Number(values.pricePerUnit) }
+					});
+				}
 			}}
 		>
 			{({ handleChange, values, setFieldValue }) => (
@@ -42,7 +49,7 @@ const CreateItem = () => {
 							name='price'
 							type='number'
 							onChange={handleChange}
-							value={values.price}
+							value={values.pricePerUnit}
 						/>
 					</label>
 					<label>
@@ -83,10 +90,10 @@ const Items = () => {
 					<td>Price</td>
 					<td>Featured</td>
 				</th>
-				{data?.items.map(({ name, price, featured }, index) => (
+				{data?.items.map(({ name, pricePerUnit, featured }, index) => (
 					<tr key={index}>
 						<td>{name}</td>
-						<td>{price}</td>
+						<td>{pricePerUnit}</td>
 						<td>{featured.toString()}</td>
 					</tr>
 				))}

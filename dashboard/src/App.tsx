@@ -19,11 +19,18 @@ const MainContainer = styled.main`
 	flex-grow: 1;
 `;
 
-const client = createClient({
-	url: 'http://localhost:5000'
-});
-
 const App = () => {
+	const client = createClient({
+		url: 'http://localhost:5000',
+		fetchOptions: () => {
+			return {
+				headers: {
+					authorization: `Bearer token`
+				}
+			};
+		}
+	});
+
 	return (
 		<Provider value={client}>
 			<BrowserRouter>

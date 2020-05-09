@@ -14,7 +14,7 @@ import styles from '../styles/auth';
 const VerifyAuthentication = () => {
 	const { params } = useRoute();
 	const { navigate } = useNavigation();
-	const { saveUser } = React.useContext(UserContext);
+	const { saveAccessToken } = React.useContext(UserContext);
 	const [code, setCode] = React.useState('');
 	const [
 		{ data, fetching },
@@ -24,7 +24,7 @@ const VerifyAuthentication = () => {
 
 	React.useEffect(() => {
 		if (data?.verifyAuthentication) {
-			saveUser(data.verifyAuthentication);
+			saveAccessToken(data.verifyAuthentication);
 			navigate('Main');
 		}
 	}, [data]);

@@ -7,7 +7,6 @@ import {
 	TransitionPresets
 } from '@react-navigation/stack';
 
-import { UserProvider, UserContext } from './src/contexts/UserContext';
 import Authenticate from './src/screens/Authenticate';
 import Register from './src/screens/Register';
 import VerifyAuthentication from './src/screens/VerifyAuthentication';
@@ -16,8 +15,7 @@ import Home from './src/screens/Home';
 import Carts from './src/screens/Carts';
 // import { ItemSheetProvider } from './src/contexts/ItemSheetContext';
 import { CartsProvider } from './src/contexts/CartsContext';
-
-const client = createClient({ url: 'http://localhost:5000' });
+import useAccessToken from 'src/hooks/useAccessToken';
 
 // Navigation: List of app screens
 // 1: Home
@@ -79,30 +77,31 @@ const MainNavigator = () => (
 	</MainStack.Navigator>
 );
 
-const Root = () => {
-	const { user } = React.useContext(UserContext);
-
-	return (
-		<NavigationContainer>
-			<AppStack.Navigator
-				initialRouteName={!!user ? 'Main' : 'Auth'}
-				headerMode='none'
-			>
-				<AppStack.Screen name='Auth' component={AuthNavigator} />
-				<AppStack.Screen name='Main' component={MainNavigator} />
-			</AppStack.Navigator>
-		</NavigationContainer>
-	);
-};
-
 const App = () => {
+	const { accessToken } = useAccessToken();
+
+	const client = createClient({
+		url: 'http://localhost:5000',
+		fetchOptions: () => ({
+			headers: {
+				authorization: accessToken ? `Bearer ${accessToken}` : ''
+			}
+		})
+	});
+
 	return (
 		<Provider value={client}>
-			<UserProvider>
-				<CartsProvider>
-					<Root />
-				</CartsProvider>
-			</UserProvider>
+			<CartsProvider>
+				<NavigationContainer>
+					<AppStack.Navigator
+						initialRouteName={!!accessToken ? 'Main' : 'Auth'}
+						headerMode='none'
+					>
+						<AppStack.Screen name='Auth' component={AuthNavigator} />
+						<AppStack.Screen name='Main' component={MainNavigator} />
+					</AppStack.Navigator>
+				</NavigationContainer>
+			</CartsProvider>
 		</Provider>
 	);
 };

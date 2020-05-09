@@ -7,7 +7,11 @@ mutation Authenticate($phone: String!) {
 }
 
 mutation VerifyAuthentication($phone: String!, $code: String!) {
-	verifyAuthentication(phone: $phone, code: $code) {
+	verifyAuthentication(phone: $phone, code: $code)
+}
+
+query CurrentUser {
+	currentUser {
 		_id
 		name
 		phone

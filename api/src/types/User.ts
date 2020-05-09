@@ -8,10 +8,11 @@ const UserType = `
 	extend type Mutation {
 		register(name: String!, phone: String!): String!
 		authenticate(phone: String!): String!
-		verifyAuthentication(phone: String!, code: String!): User!
+		verifyAuthentication(phone: String!, code: String!): String!
 	}
 
 	extend type Query {
+		currentUser: User!
 		users: [User!]!
 	}
 `;

@@ -102,10 +102,12 @@ export type Manager = {
 	name: Scalars['String'];
 	email: Scalars['String'];
 	role: ManagerRole;
+	storeId: Scalars['ID'];
 };
 
 export enum ManagerRole {
-	Admin = 'Admin'
+	Admin = 'Admin',
+	Editor = 'Editor'
 }
 
 export type Mutation = {
@@ -268,7 +270,7 @@ export type CreateManagerMutationVariables = {
 export type CreateManagerMutation = { __typename?: 'Mutation' } & {
 	createManager: { __typename?: 'Manager' } & Pick<
 		Manager,
-		'_id' | 'name' | 'email' | 'role'
+		'_id' | 'name' | 'email' | 'role' | 'storeId'
 	>;
 };
 
@@ -280,7 +282,7 @@ export type StoreManagersQuery = { __typename?: 'Query' } & {
 	storeManagers: Array<
 		{ __typename?: 'Manager' } & Pick<
 			Manager,
-			'_id' | 'name' | 'email' | 'role'
+			'_id' | 'name' | 'email' | 'role' | 'storeId'
 		>
 	>;
 };
@@ -354,6 +356,7 @@ export const CreateManagerDocument = gql`
 			name
 			email
 			role
+			storeId
 		}
 	}
 `;
@@ -371,6 +374,7 @@ export const StoreManagersDocument = gql`
 			name
 			email
 			role
+			storeId
 		}
 	}
 `;

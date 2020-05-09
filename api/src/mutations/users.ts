@@ -1,3 +1,4 @@
+import { sign } from 'jsonwebtoken';
 import util from 'util';
 import { User } from '../models';
 import client from '../config/redis';
@@ -40,5 +41,9 @@ export const verifyAuthentication = async (_, { phone, code }) => {
 	}
 
 	const user = await User.findOne({ phone });
-	return user;
+	const accessToken = sign(
+		{ id: user.id, phone: user.phone, role: 'user' },
+		process.env.JWT_SECRET
+	);
+	return accessToken;
 };
