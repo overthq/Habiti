@@ -1,10 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 
 import Home from './pages/Home';
 import Orders from './pages/Orders';
 import Items from './pages/Items';
+import Onboarding from './pages/Onboarding';
+import Authenticate from './pages/Authenticate';
+import VerifyAuthentication from './pages/VerifyAuthentication';
 
 import Sidebar from './components/Sidebar';
 import { Provider, createClient } from 'urql';
@@ -40,14 +43,43 @@ const App = () => {
 		<Provider value={client}>
 			<BrowserRouter>
 				<AppContainer>
-					<Sidebar />
-					<MainContainer>
-						<Switch>
-							<Route exact path='/' component={Home} />
-							<Route exact path='/orders' component={Orders} />
-							<Route exact path='/items' component={Items} />
-						</Switch>
-					</MainContainer>
+					<Route path='/onboarding' component={Onboarding} />
+					<Route path='/store/:storeId/authenticate' component={Authenticate} />
+					<Route
+						path='/store/:storeId/verify-code'
+						component={VerifyAuthentication}
+					/>
+					<Route
+						path='/store/:storeId'
+						component={() =>
+							accessToken ? (
+								<Redirect to='/store/:storeId/dashboard' />
+							) : (
+								<Redirect to='/store/:storeId/authenticate' />
+							)
+						}
+					/>
+					<Route
+						path='/store/:storeId/dashboard'
+						render={({ match }) => (
+							<>
+								<Sidebar />
+								<MainContainer>
+									<Switch>
+										<Route path={match.url} component={Home} />
+										<Route path={`${match.url}/orders`} component={Orders} />
+										<Route path={`${match.url}/items`} component={Items} />
+									</Switch>
+								</MainContainer>
+							</>
+						)}
+					/>
+					<Route
+						exact
+						strict
+						path='/'
+						component={() => <Redirect to='/onboarding' />}
+					/>
 				</AppContainer>
 			</BrowserRouter>
 		</Provider>

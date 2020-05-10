@@ -17,7 +17,7 @@ export const register = async (_, { name, phone }) => {
 	await User.create({ name, phone });
 	sendVerificationCode(phone);
 
-	return 'Verification code sent to user.';
+	return `Verification code sent to ${phone}`;
 };
 
 export const authenticate = async (_, { phone }) => {
@@ -25,7 +25,7 @@ export const authenticate = async (_, { phone }) => {
 	if (!user) throw new Error('User does not exist');
 	sendVerificationCode(phone);
 
-	return 'Verification code sent to user';
+	return `Verification code sent to ${phone}`;
 };
 
 export const verifyAuthentication = async (_, { phone, code }) => {

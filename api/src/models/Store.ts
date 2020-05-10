@@ -4,8 +4,8 @@ export interface StoreDocument extends Document {
 	name: string;
 	shortName: string;
 	websiteUrl?: string;
-	instagramUrl?: string;
-	twitterUrl?: string;
+	instagramUsername?: string;
+	twitterUsername?: string;
 }
 
 const StoreSchema = new Schema(

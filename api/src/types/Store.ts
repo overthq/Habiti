@@ -1,6 +1,7 @@
 const StoreType = `
 	type Store @entity {
 		_id: ID! @id
+		shortName: String! @column
 		name: String! @column
 		websiteUrl: String @column
 		instagramUsername: String @column
@@ -9,6 +10,7 @@ const StoreType = `
 
 	input StoreInput {
 		name: String
+		shortName: String
 		websiteUrl: String
 		instagramUsername: String
 		twitterUsername: String

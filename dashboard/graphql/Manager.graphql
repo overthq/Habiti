@@ -1,11 +1,5 @@
 mutation CreateManager($storeId: ID!, $input: ManagerInput) {
-	createManager(storeId: $storeId, input: $input) {
-		_id
-		name
-		email
-		role
-		storeId
-	}
+	createManager(storeId: $storeId, input: $input)
 }
 
 query StoreManagers($storeId: ID!) {
@@ -16,4 +10,8 @@ query StoreManagers($storeId: ID!) {
 		role
 		storeId
 	}
+}
+
+mutation VerifyManagerAuthentication($email: String!, $code: String!) {
+	verifyManagerAuthentication(email: $email, code: $code)
 }

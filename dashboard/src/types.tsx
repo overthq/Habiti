@@ -53,6 +53,7 @@ export type Item = {
 export type Store = {
 	__typename?: 'Store';
 	_id: Scalars['ID'];
+	shortName: Scalars['String'];
 	name: Scalars['String'];
 	websiteUrl?: Maybe<Scalars['String']>;
 	instagramUsername?: Maybe<Scalars['String']>;
@@ -115,7 +116,7 @@ export type Mutation = {
 	placeOrder?: Maybe<Order>;
 	createStore: Store;
 	updateStore: Store;
-	createManager: Manager;
+	createManager: Scalars['String'];
 	updateManager: Manager;
 	authenticateManager: Scalars['String'];
 	verifyManagerAuthentication: Scalars['String'];
@@ -200,6 +201,7 @@ export type CartItemInput = {
 
 export type StoreInput = {
 	name?: Maybe<Scalars['String']>;
+	shortName?: Maybe<Scalars['String']>;
 	websiteUrl?: Maybe<Scalars['String']>;
 	instagramUsername?: Maybe<Scalars['String']>;
 	twitterUsername?: Maybe<Scalars['String']>;
@@ -254,12 +256,10 @@ export type CreateManagerMutationVariables = {
 	input?: Maybe<ManagerInput>;
 };
 
-export type CreateManagerMutation = { __typename?: 'Mutation' } & {
-	createManager: { __typename?: 'Manager' } & Pick<
-		Manager,
-		'_id' | 'name' | 'email' | 'role' | 'storeId'
-	>;
-};
+export type CreateManagerMutation = { __typename?: 'Mutation' } & Pick<
+	Mutation,
+	'createManager'
+>;
 
 export type StoreManagersQueryVariables = {
 	storeId: Scalars['ID'];
@@ -274,12 +274,24 @@ export type StoreManagersQuery = { __typename?: 'Query' } & {
 	>;
 };
 
+export type VerifyManagerAuthenticationMutationVariables = {
+	email: Scalars['String'];
+	code: Scalars['String'];
+};
+
+export type VerifyManagerAuthenticationMutation = {
+	__typename?: 'Mutation';
+} & Pick<Mutation, 'verifyManagerAuthentication'>;
+
 export type CreateStoreMutationVariables = {
 	input?: Maybe<StoreInput>;
 };
 
 export type CreateStoreMutation = { __typename?: 'Mutation' } & {
-	createStore: { __typename?: 'Store' } & Pick<Store, '_id' | 'name'>;
+	createStore: { __typename?: 'Store' } & Pick<
+		Store,
+		'_id' | 'name' | 'shortName'
+	>;
 };
 
 export const CreateItemDocument = gql`
@@ -338,13 +350,7 @@ export function useItemsQuery(
 }
 export const CreateManagerDocument = gql`
 	mutation CreateManager($storeId: ID!, $input: ManagerInput) {
-		createManager(storeId: $storeId, input: $input) {
-			_id
-			name
-			email
-			role
-			storeId
-		}
+		createManager(storeId: $storeId, input: $input)
 	}
 `;
 
@@ -374,11 +380,24 @@ export function useStoreManagersQuery(
 		...options
 	});
 }
+export const VerifyManagerAuthenticationDocument = gql`
+	mutation VerifyManagerAuthentication($email: String!, $code: String!) {
+		verifyManagerAuthentication(email: $email, code: $code)
+	}
+`;
+
+export function useVerifyManagerAuthenticationMutation() {
+	return Urql.useMutation<
+		VerifyManagerAuthenticationMutation,
+		VerifyManagerAuthenticationMutationVariables
+	>(VerifyManagerAuthenticationDocument);
+}
 export const CreateStoreDocument = gql`
 	mutation CreateStore($input: StoreInput) {
 		createStore(input: $input) {
 			_id
 			name
+			shortName
 		}
 	}
 `;
