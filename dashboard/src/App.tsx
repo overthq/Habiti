@@ -12,6 +12,7 @@ import VerifyAuthentication from './pages/VerifyAuthentication';
 import Sidebar from './components/Sidebar';
 import { Provider, createClient } from 'urql';
 import useAccessToken from './hooks/useAccessToken';
+import { useCurrentManagerQuery } from './types';
 
 const AppContainer = styled.div`
 	display: flex;
@@ -22,6 +23,60 @@ const AppContainer = styled.div`
 const MainContainer = styled.main`
 	flex-grow: 1;
 `;
+
+const Routes: React.FC = () => {
+	const [{ data }] = useCurrentManagerQuery();
+
+	return (
+		<>
+			<Route path='/onboarding' component={Onboarding} />
+			<Route path='/store/:storeId/authenticate' component={Authenticate} />
+			<Route
+				path='/store/:storeId/verify-code'
+				component={VerifyAuthentication}
+			/>
+			<Route
+				path='/store/:storeId'
+				render={({ match }) =>
+					data?.currentManager ? (
+						<Redirect to={`/store/${data.currentManager.storeId}/dashboard`} />
+					) : (
+						<Redirect to={`/store/${match.params.storeId}/authenticate`} />
+					)
+				}
+			/>
+			<Route
+				path='/store/:storeId/dashboard'
+				render={({ match }) => (
+					<>
+						<Sidebar />
+						<MainContainer>
+							<Switch>
+								<Route path={match.url} component={Home} />
+								<Route path={`${match.url}/orders`} component={Orders} />
+								<Route path={`${match.url}/items`} component={Items} />
+							</Switch>
+						</MainContainer>
+					</>
+				)}
+			/>
+			<Route
+				exact
+				strict
+				path='/'
+				component={() => (
+					<Redirect
+						to={
+							data?.currentManager
+								? `/store/${data.currentManager.storeId}`
+								: '/onboarding'
+						}
+					/>
+				)}
+			/>
+		</>
+	);
+};
 
 const App = () => {
 	const { loading, accessToken } = useAccessToken();
@@ -43,43 +98,7 @@ const App = () => {
 		<Provider value={client}>
 			<BrowserRouter>
 				<AppContainer>
-					<Route path='/onboarding' component={Onboarding} />
-					<Route path='/store/:storeId/authenticate' component={Authenticate} />
-					<Route
-						path='/store/:storeId/verify-code'
-						component={VerifyAuthentication}
-					/>
-					<Route
-						path='/store/:storeId'
-						component={() =>
-							accessToken ? (
-								<Redirect to='/store/:storeId/dashboard' />
-							) : (
-								<Redirect to='/store/:storeId/authenticate' />
-							)
-						}
-					/>
-					<Route
-						path='/store/:storeId/dashboard'
-						render={({ match }) => (
-							<>
-								<Sidebar />
-								<MainContainer>
-									<Switch>
-										<Route path={match.url} component={Home} />
-										<Route path={`${match.url}/orders`} component={Orders} />
-										<Route path={`${match.url}/items`} component={Items} />
-									</Switch>
-								</MainContainer>
-							</>
-						)}
-					/>
-					<Route
-						exact
-						strict
-						path='/'
-						component={() => <Redirect to='/onboarding' />}
-					/>
+					<Routes />
 				</AppContainer>
 			</BrowserRouter>
 		</Provider>

@@ -7,6 +7,7 @@ const VerifyAuthentication = () => {
 	const [code, setCode] = React.useState('');
 	const { saveAccessToken } = useAccessToken();
 	const email = localStorage.getItem('onboarding-email');
+	console.log(email);
 	const [
 		{ data },
 		verifyManagerAuthentication
@@ -23,6 +24,7 @@ const VerifyAuthentication = () => {
 
 	React.useEffect(() => {
 		if (data?.verifyManagerAuthentication) {
+			localStorage.removeItem('onboarding-email');
 			saveAccessToken(data.verifyManagerAuthentication);
 		}
 	}, [data]);

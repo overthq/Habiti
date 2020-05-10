@@ -15,3 +15,17 @@ query StoreManagers($storeId: ID!) {
 mutation VerifyManagerAuthentication($email: String!, $code: String!) {
 	verifyManagerAuthentication(email: $email, code: $code)
 }
+
+mutation AuthenticateManager($storeId: ID!, $email: String!) {
+	authenticateManager(storeId: $storeId, email: $email)
+}
+
+query CurrentManager {
+	currentManager {
+		_id
+		name
+		email
+		role
+		storeId
+	}
+}

@@ -1,20 +1,36 @@
 import React from 'react';
-import { PageBackground, OnboardingContainer } from './Onboarding';
+import { useHistory, useParams } from 'react-router-dom';
 import { Formik } from 'formik';
+import {
+	PageBackground,
+	OnboardingContainer,
+	OnboardingInput
+} from './Onboarding';
+import { useAuthenticateManagerMutation } from '../types';
 
 const Authenticate = () => {
+	const [, authenticateManager] = useAuthenticateManagerMutation();
+	const { push } = useHistory();
+	const { storeId } = useParams();
+
 	return (
 		<PageBackground>
 			<OnboardingContainer>
 				<Formik
 					initialValues={{ email: '' }}
 					onSubmit={async ({ email }) => {
-						console.log(email);
+						const { data } = await authenticateManager({
+							storeId,
+							email
+						});
+						console.log(data);
+						push(`/store/${storeId}/verify-code`);
 					}}
 				>
 					{({ handleChange, handleSubmit, isSubmitting }) => (
 						<form onSubmit={handleSubmit}>
-							<input
+							<h2>Log in to store</h2>
+							<OnboardingInput
 								name='email'
 								onChange={handleChange('email')}
 								placeholder='Your email address'

@@ -20,6 +20,7 @@ const ManagerType = `
 
 	extend type Query {
 		storeManagers(storeId: ID!): [Manager!]!
+		currentManager: Manager!
 	}
 
 	extend type Mutation {

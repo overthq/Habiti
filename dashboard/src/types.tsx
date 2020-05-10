@@ -22,6 +22,7 @@ export type Query = {
 	storeOrders: Array<Order>;
 	stores: Array<Store>;
 	storeManagers: Array<Manager>;
+	currentManager: Manager;
 };
 
 export type QueryStoreOrdersArgs = {
@@ -283,6 +284,25 @@ export type VerifyManagerAuthenticationMutation = {
 	__typename?: 'Mutation';
 } & Pick<Mutation, 'verifyManagerAuthentication'>;
 
+export type AuthenticateManagerMutationVariables = {
+	storeId: Scalars['ID'];
+	email: Scalars['String'];
+};
+
+export type AuthenticateManagerMutation = { __typename?: 'Mutation' } & Pick<
+	Mutation,
+	'authenticateManager'
+>;
+
+export type CurrentManagerQueryVariables = {};
+
+export type CurrentManagerQuery = { __typename?: 'Query' } & {
+	currentManager: { __typename?: 'Manager' } & Pick<
+		Manager,
+		'_id' | 'name' | 'email' | 'role' | 'storeId'
+	>;
+};
+
 export type CreateStoreMutationVariables = {
 	input?: Maybe<StoreInput>;
 };
@@ -391,6 +411,38 @@ export function useVerifyManagerAuthenticationMutation() {
 		VerifyManagerAuthenticationMutation,
 		VerifyManagerAuthenticationMutationVariables
 	>(VerifyManagerAuthenticationDocument);
+}
+export const AuthenticateManagerDocument = gql`
+	mutation AuthenticateManager($storeId: ID!, $email: String!) {
+		authenticateManager(storeId: $storeId, email: $email)
+	}
+`;
+
+export function useAuthenticateManagerMutation() {
+	return Urql.useMutation<
+		AuthenticateManagerMutation,
+		AuthenticateManagerMutationVariables
+	>(AuthenticateManagerDocument);
+}
+export const CurrentManagerDocument = gql`
+	query CurrentManager {
+		currentManager {
+			_id
+			name
+			email
+			role
+			storeId
+		}
+	}
+`;
+
+export function useCurrentManagerQuery(
+	options: Omit<Urql.UseQueryArgs<CurrentManagerQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<CurrentManagerQuery>({
+		query: CurrentManagerDocument,
+		...options
+	});
 }
 export const CreateStoreDocument = gql`
 	mutation CreateStore($input: StoreInput) {
