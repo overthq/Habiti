@@ -25,9 +25,13 @@ const MainContainer = styled.main`
 `;
 
 const Routes: React.FC = () => {
-	const [{ data }] = useCurrentManagerQuery();
+	const [{ data, fetching }] = useCurrentManagerQuery();
 
-	return (
+	return fetching ? (
+		<div>
+			<p>Loading</p>
+		</div>
+	) : (
 		<>
 			<Route path='/onboarding' component={Onboarding} />
 			<Route path='/store/:storeId/authenticate' component={Authenticate} />
