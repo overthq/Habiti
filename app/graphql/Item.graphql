@@ -8,3 +8,14 @@ query Items {
 		unit
 	}
 }
+
+query StoreItems {
+	storeItems {
+		_id
+		name
+		storeId
+		featured
+		pricePerUnit
+		unit
+	}
+}

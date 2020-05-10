@@ -80,14 +80,14 @@ export type Mutation = {
 	verifyAuthentication: Scalars['String'];
 	createItem: Item;
 	updateItem: Item;
-	deleteItem?: Maybe<Scalars['String']>;
+	deleteItem: Scalars['String'];
 	placeOrder?: Maybe<Order>;
 	createStore: Store;
 	updateStore: Store;
-	createManager: Manager;
+	createManager: Scalars['String'];
 	updateManager: Manager;
 	authenticateManager: Scalars['String'];
-	verifyManagerAuthentication: Manager;
+	verifyManagerAuthentication: Scalars['String'];
 };
 
 export type MutationRegisterArgs = {
@@ -105,18 +105,15 @@ export type MutationVerifyAuthenticationArgs = {
 };
 
 export type MutationCreateItemArgs = {
-	storeId: Scalars['ID'];
 	input?: Maybe<ItemInput>;
 };
 
 export type MutationUpdateItemArgs = {
-	storeId: Scalars['ID'];
 	itemId: Scalars['ID'];
 	input?: Maybe<ItemInput>;
 };
 
 export type MutationDeleteItemArgs = {
-	storeId: Scalars['ID'];
 	itemId: Scalars['ID'];
 };
 
@@ -186,10 +183,7 @@ export type Query = {
 	storeOrders: Array<Order>;
 	stores: Array<Store>;
 	storeManagers: Array<Manager>;
-};
-
-export type QueryStoreItemsArgs = {
-	storeId: Scalars['ID'];
+	currentManager: Manager;
 };
 
 export type QueryStoreOrdersArgs = {
@@ -203,6 +197,7 @@ export type QueryStoreManagersArgs = {
 export type Store = {
 	__typename?: 'Store';
 	_id: Scalars['ID'];
+	shortName: Scalars['String'];
 	name: Scalars['String'];
 	websiteUrl?: Maybe<Scalars['String']>;
 	instagramUsername?: Maybe<Scalars['String']>;
@@ -211,6 +206,7 @@ export type Store = {
 
 export type StoreInput = {
 	name?: Maybe<Scalars['String']>;
+	shortName?: Maybe<Scalars['String']>;
 	websiteUrl?: Maybe<Scalars['String']>;
 	instagramUsername?: Maybe<Scalars['String']>;
 	twitterUsername?: Maybe<Scalars['String']>;
@@ -234,6 +230,17 @@ export type ItemsQuery = { __typename?: 'Query' } & {
 	>;
 };
 
+export type StoreItemsQueryVariables = {};
+
+export type StoreItemsQuery = { __typename?: 'Query' } & {
+	storeItems: Array<
+		{ __typename?: 'Item' } & Pick<
+			Item,
+			'_id' | 'name' | 'storeId' | 'featured' | 'pricePerUnit' | 'unit'
+		>
+	>;
+};
+
 export type UserOrdersQueryVariables = {};
 
 export type UserOrdersQuery = { __typename?: 'Query' } & {
@@ -249,6 +256,17 @@ export type UserOrdersQuery = { __typename?: 'Query' } & {
 						}
 				>;
 			}
+	>;
+};
+
+export type StoresQueryVariables = {};
+
+export type StoresQuery = { __typename?: 'Query' } & {
+	stores: Array<
+		{ __typename?: 'Store' } & Pick<
+			Store,
+			'_id' | 'name' | 'websiteUrl' | 'instagramUsername' | 'twitterUsername'
+		>
 	>;
 };
 
@@ -305,6 +323,27 @@ export function useItemsQuery(
 ) {
 	return Urql.useQuery<ItemsQuery>({ query: ItemsDocument, ...options });
 }
+export const StoreItemsDocument = gql`
+	query StoreItems {
+		storeItems {
+			_id
+			name
+			storeId
+			featured
+			pricePerUnit
+			unit
+		}
+	}
+`;
+
+export function useStoreItemsQuery(
+	options: Omit<Urql.UseQueryArgs<StoreItemsQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<StoreItemsQuery>({
+		query: StoreItemsDocument,
+		...options
+	});
+}
 export const UserOrdersDocument = gql`
 	query UserOrders {
 		userOrders {
@@ -331,6 +370,23 @@ export function useUserOrdersQuery(
 		query: UserOrdersDocument,
 		...options
 	});
+}
+export const StoresDocument = gql`
+	query Stores {
+		stores {
+			_id
+			name
+			websiteUrl
+			instagramUsername
+			twitterUsername
+		}
+	}
+`;
+
+export function useStoresQuery(
+	options: Omit<Urql.UseQueryArgs<StoresQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<StoresQuery>({ query: StoresDocument, ...options });
 }
 export const RegisterDocument = gql`
 	mutation Register($name: String!, $phone: String!) {

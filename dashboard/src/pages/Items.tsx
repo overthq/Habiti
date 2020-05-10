@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Field, Formik } from 'formik';
 import Select from 'react-select';
-import { useCreateItemMutation, useItemsQuery, ItemUnit } from '../types';
+import { useCreateItemMutation, useStoreItemsQuery, ItemUnit } from '../types';
 import Page from '../components/Page';
 
 const options = Object.values(ItemUnit).map(unit => ({
@@ -74,7 +74,7 @@ const CreateItem = () => {
 };
 
 const Items = () => {
-	const [{ data, fetching, error }] = useItemsQuery();
+	const [{ data, fetching, error }] = useStoreItemsQuery();
 
 	return (
 		<Page>
@@ -86,7 +86,7 @@ const Items = () => {
 					<td>Price</td>
 					<td>Featured</td>
 				</th>
-				{data?.items.map(({ name, pricePerUnit, featured }, index) => (
+				{data?.storeItems.map(({ name, pricePerUnit, featured }, index) => (
 					<tr key={index}>
 						<td>{name}</td>
 						<td>{pricePerUnit}</td>

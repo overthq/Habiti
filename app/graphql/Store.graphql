@@ -1,0 +1,9 @@
+query Stores {
+	stores {
+		_id
+		name
+		websiteUrl
+		instagramUsername
+		twitterUsername
+	}
+}
