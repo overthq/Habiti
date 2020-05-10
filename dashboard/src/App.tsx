@@ -56,9 +56,9 @@ const Routes: React.FC = () => {
 						<Sidebar />
 						<MainContainer>
 							<Switch>
-								<Route path={match.url} component={Home} />
-								<Route path={`${match.url}/orders`} component={Orders} />
-								<Route path={`${match.url}/items`} component={Items} />
+								<Route exact path={match.url} component={Home} />
+								<Route exact path={`${match.url}/orders`} component={Orders} />
+								<Route exact path={`${match.url}/items`} component={Items} />
 							</Switch>
 						</MainContainer>
 					</>

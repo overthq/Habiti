@@ -78,6 +78,7 @@ const Items = () => {
 
 	return (
 		<Page>
+			<h1>Items</h1>
 			<CreateItem />
 			<table>
 				<th>

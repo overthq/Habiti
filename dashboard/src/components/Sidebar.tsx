@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useRouteMatch } from 'react-router-dom';
 
 const SidebarContainer = styled.div`
 	height: 100%;
@@ -31,18 +31,22 @@ const SidebarLink = styled(NavLink)`
 	}
 `;
 
-const Sidebar = () => (
-	<SidebarContainer>
-		<SidebarLink exact to='/'>
-			Home
-		</SidebarLink>
-		<SidebarLink exact to='/orders'>
-			Orders
-		</SidebarLink>
-		<SidebarLink exact to='/items'>
-			Items
-		</SidebarLink>
-	</SidebarContainer>
-);
+const Sidebar = () => {
+	const match = useRouteMatch();
+
+	return (
+		<SidebarContainer>
+			<SidebarLink exact to={match.url}>
+				Home
+			</SidebarLink>
+			<SidebarLink exact to={`${match.url}/orders`}>
+				Orders
+			</SidebarLink>
+			<SidebarLink exact to={`${match.url}/items`}>
+				Items
+			</SidebarLink>
+		</SidebarContainer>
+	);
+};
 
 export default Sidebar;
