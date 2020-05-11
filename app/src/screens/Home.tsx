@@ -12,7 +12,7 @@ const Home = () => {
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.header}>
-				<Text style={styles.title}>Home</Text>
+				<Text style={styles.title}>For You</Text>
 				<TouchableOpacity onPress={() => navigate('Carts')}>
 					<Icon name='shoppingBag' />
 				</TouchableOpacity>

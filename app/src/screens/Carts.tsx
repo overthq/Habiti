@@ -1,13 +1,16 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { CartsContext } from '../contexts/CartsContext';
 
 const Carts = () => {
 	const { carts } = React.useContext(CartsContext);
 
 	return (
-		<View style={styles.container}>
-			<Text style={styles.title}>Carts</Text>
+		<SafeAreaView style={styles.container}>
+			<View style={styles.header}>
+				<Text style={styles.title}>Carts</Text>
+			</View>
 			<FlatList
 				keyExtractor={cart => cart.storeId}
 				renderItem={({ item }) => (
@@ -22,22 +25,23 @@ const Carts = () => {
 					</View>
 				}
 			/>
-		</View>
+		</SafeAreaView>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		paddingTop: 15,
-		paddingHorizontal: 20,
+		// paddingTop: 15,
+		// paddingHorizontal: 20,
 		flex: 1
 	},
-	// header: {
-	// 	paddingVertical: 15,
-	// 	paddingHorizontal: 20,
-	// 	flexDirection: 'row',
-	// 	justifyContent: 'space-between'
-	// },
+	header: {
+		paddingVertical: 15,
+		paddingHorizontal: 20,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center'
+	},
 	title: {
 		fontWeight: 'bold',
 		fontSize: 32

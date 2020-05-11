@@ -1,11 +1,9 @@
 import React from 'react';
-import { View, Platform, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import { Provider, createClient } from 'urql';
 import { NavigationContainer } from '@react-navigation/native';
-import {
-	createStackNavigator,
-	TransitionPresets
-} from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import Authenticate from './src/screens/Authenticate';
@@ -17,6 +15,8 @@ import Carts from './src/screens/Carts';
 // import { ItemSheetProvider } from './src/contexts/ItemSheetContext';
 import { CartsProvider } from './src/contexts/CartsContext';
 import useAccessToken from './src/hooks/useAccessToken';
+import Explore from './src/screens/Explore';
+import { Icon, IconType } from './src/components/icons';
 
 // Navigation: List of app screens
 // 1: Home
@@ -24,11 +24,18 @@ import useAccessToken from './src/hooks/useAccessToken';
 // 3: Carts (multiple carts for each)
 // 4: Orders
 // 5: Store
+//
+// Navigation Hierarchy (main - Stack):
+// 1. Auth
+// 2. Main:
+//  - Home (For You)
+//  - Explore
+//  -
 
 const AppStack = createStackNavigator();
 const AuthStack = createStackNavigator();
+const MainTab = createBottomTabNavigator();
 // const SettingsStack = createStackNavigator();
-const MainStack = createStackNavigator();
 
 const AuthNavigator = () => (
 	<AuthStack.Navigator headerMode='none'>
@@ -51,32 +58,39 @@ const AuthNavigator = () => (
 // 	);
 // };
 
-const MainNavigator = () => (
-	<MainStack.Navigator
-		mode='modal'
-		screenOptions={{
-			gestureEnabled: true,
-			cardOverlayEnabled: true,
-			...(Platform.OS === 'ios'
-				? TransitionPresets.ModalPresentationIOS
-				: TransitionPresets.RevealFromBottomAndroid)
-		}}
-	>
-		<MainStack.Screen
-			name='Home'
-			component={Home}
-			options={{ headerShown: false }}
-		/>
-		<MainStack.Screen
-			name='Carts'
-			component={Carts}
-			options={{ headerShown: false }}
-		/>
-		{/*
-			<MainStack.Screen name='Settings' component={SettingsNavigator} />
-		*/}
-	</MainStack.Navigator>
-);
+// Convert this navigator to a bottom-tab one.
+const MainNavigator = () => {
+	return (
+		<MainTab.Navigator
+			screenOptions={({ route }) => ({
+				// eslint-disable-next-line
+				tabBarIcon: ({ color }) => {
+					const getIcon = (routeName: string): IconType => {
+						if (routeName === 'HomeMain') {
+							return 'home';
+						} else if (route.name === 'Explore') {
+							return 'search';
+						} else if (route.name === 'Carts') {
+							return 'shoppingBag';
+						}
+						throw new Error('route not exist');
+					};
+
+					return <Icon name={getIcon(route.name)} color={color} size={28} />;
+				}
+			})}
+			tabBarOptions={{
+				activeTintColor: 'black',
+				inactiveTintColor: 'gray',
+				showLabel: false
+			}}
+		>
+			<MainTab.Screen name='HomeMain' component={Home} />
+			<MainTab.Screen name='Explore' component={Explore} />
+			<MainTab.Screen name='Carts' component={Carts} />
+		</MainTab.Navigator>
+	);
+};
 
 const App = () => {
 	const { loading, accessToken } = useAccessToken();

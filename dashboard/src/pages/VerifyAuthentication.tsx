@@ -27,7 +27,7 @@ const VerifyAuthentication = () => {
 			localStorage.removeItem('onboarding-email');
 			saveAccessToken(data.verifyManagerAuthentication);
 		}
-	}, [data]);
+	}, [data, saveAccessToken]);
 
 	return (
 		<PageBackground>
