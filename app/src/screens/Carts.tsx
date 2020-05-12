@@ -8,11 +8,13 @@ const Carts = () => {
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<View style={styles.header}>
-				<Text style={styles.title}>Carts</Text>
-			</View>
 			<FlatList
 				keyExtractor={cart => cart.storeId}
+				ListHeaderComponent={
+					<View style={styles.header}>
+						<Text style={styles.title}>Carts</Text>
+					</View>
+				}
 				renderItem={({ item }) => (
 					<View key={item.storeId}>
 						<Text>{JSON.stringify(item)}</Text>

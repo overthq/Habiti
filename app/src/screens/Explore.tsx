@@ -1,17 +1,40 @@
 import React from 'react';
-import { View, StyleSheet, FlatList, Image, Text } from 'react-native';
+import {
+	View,
+	StyleSheet,
+	FlatList,
+	Image,
+	Text,
+	TouchableOpacity,
+	Dimensions
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import { useStoresQuery } from '../types';
+import { Icon } from '../components/icons';
+
+const { width } = Dimensions.get('window');
 
 const Explore = () => {
 	const [{ data }] = useStoresQuery();
+	const { navigate } = useNavigation();
 
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.header}>
 				<Text style={styles.title}>Explore</Text>
 			</View>
-			<View>
+			<TouchableOpacity
+				activeOpacity={0.8}
+				style={styles.searchBar}
+				onPress={() => navigate('Search')}
+			>
+				<Icon name='search' color='#505050' size={20} />
+				<Text style={{ fontSize: 16, paddingLeft: 5, color: '#777777' }}>
+					Search stores and items
+				</Text>
+			</TouchableOpacity>
+			<View style={{ marginTop: 10 }}>
 				<FlatList
 					horizontal
 					data={data?.stores}
@@ -35,7 +58,8 @@ const Explore = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1,
+		backgroundColor: '#FFFFFF'
 	},
 	header: {
 		paddingVertical: 15,
@@ -47,6 +71,14 @@ const styles = StyleSheet.create({
 	title: {
 		fontWeight: 'bold',
 		fontSize: 32
+	},
+	searchBar: {
+		alignSelf: 'center',
+		borderRadius: 10,
+		backgroundColor: '#D3D3D3',
+		flexDirection: 'row',
+		padding: 10,
+		width: width - 40
 	},
 	storeImageContainer: {
 		flexDirection: 'column',

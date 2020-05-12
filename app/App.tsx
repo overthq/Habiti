@@ -1,8 +1,11 @@
 import React from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, Platform } from 'react-native';
 import { Provider, createClient } from 'urql';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import {
+	createStackNavigator,
+	TransitionPresets
+} from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -15,6 +18,7 @@ import Carts from './src/screens/Carts';
 import { CartsProvider } from './src/contexts/CartsContext';
 import useAccessToken from './src/hooks/useAccessToken';
 import Explore from './src/screens/Explore';
+import Search from './src/screens/Search';
 import { Icon, IconType } from './src/components/icons';
 
 const AppStack = createStackNavigator();
@@ -94,6 +98,17 @@ const App = () => {
 						>
 							<AppStack.Screen name='Auth' component={AuthNavigator} />
 							<AppStack.Screen name='Main' component={MainNavigator} />
+							<AppStack.Screen
+								name='Search'
+								component={Search}
+								options={{
+									gestureEnabled: true,
+									cardOverlayEnabled: true,
+									...(Platform.OS === 'ios'
+										? TransitionPresets.ModalPresentationIOS
+										: TransitionPresets.RevealFromBottomAndroid)
+								}}
+							/>
 						</AppStack.Navigator>
 					</NavigationContainer>
 				</SafeAreaProvider>
