@@ -20,6 +20,7 @@ import useAccessToken from './src/hooks/useAccessToken';
 import Explore from './src/screens/Explore';
 import Search from './src/screens/Search';
 import { Icon, IconType } from './src/components/icons';
+import { useCurrentUserQuery } from './src/types';
 
 const AppStack = createStackNavigator();
 const AuthStack = createStackNavigator();
@@ -71,6 +72,42 @@ const MainNavigator = () => (
 	</MainTab.Navigator>
 );
 
+const Routes = () => {
+	const [{ data, fetching }] = useCurrentUserQuery();
+	const { logOut } = useAccessToken();
+
+	React.useEffect(() => {
+		if (!fetching && !data?.currentUser) logOut();
+	}, [fetching, data]);
+
+	return fetching ? (
+		<View>
+			<ActivityIndicator />
+		</View>
+	) : (
+		<NavigationContainer>
+			<AppStack.Navigator
+				initialRouteName={!!data?.currentUser ? 'Main' : 'Auth'}
+				headerMode='none'
+			>
+				<AppStack.Screen name='Auth' component={AuthNavigator} />
+				<AppStack.Screen name='Main' component={MainNavigator} />
+				<AppStack.Screen
+					name='Search'
+					component={Search}
+					options={{
+						gestureEnabled: true,
+						cardOverlayEnabled: true,
+						...(Platform.OS === 'ios'
+							? TransitionPresets.ModalPresentationIOS
+							: TransitionPresets.RevealFromBottomAndroid)
+					}}
+				/>
+			</AppStack.Navigator>
+		</NavigationContainer>
+	);
+};
+
 const App = () => {
 	const { loading, accessToken } = useAccessToken();
 
@@ -91,26 +128,7 @@ const App = () => {
 		<Provider value={client}>
 			<CartsProvider>
 				<SafeAreaProvider>
-					<NavigationContainer>
-						<AppStack.Navigator
-							initialRouteName={!!accessToken ? 'Main' : 'Auth'}
-							headerMode='none'
-						>
-							<AppStack.Screen name='Auth' component={AuthNavigator} />
-							<AppStack.Screen name='Main' component={MainNavigator} />
-							<AppStack.Screen
-								name='Search'
-								component={Search}
-								options={{
-									gestureEnabled: true,
-									cardOverlayEnabled: true,
-									...(Platform.OS === 'ios'
-										? TransitionPresets.ModalPresentationIOS
-										: TransitionPresets.RevealFromBottomAndroid)
-								}}
-							/>
-						</AppStack.Navigator>
-					</NavigationContainer>
+					<Routes />
 				</SafeAreaProvider>
 			</CartsProvider>
 		</Provider>
