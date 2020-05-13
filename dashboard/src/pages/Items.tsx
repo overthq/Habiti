@@ -1,100 +1,34 @@
 import React from 'react';
-import { Form, Field, Formik } from 'formik';
-import Select from 'react-select';
-import { useCreateItemMutation, useStoreItemsQuery, ItemUnit } from '../types';
+import { useStoreItemsQuery } from '../types';
 import Page from '../components/Page';
-
-const options = Object.values(ItemUnit).map(unit => ({
-	label: unit,
-	value: unit
-}));
-
-const CreateItem = () => {
-	const [, createItem] = useCreateItemMutation();
-
-	return (
-		<Formik
-			initialValues={{
-				name: '',
-				pricePerUnit: 0,
-				image: '',
-				featured: false,
-				unit: 'Kilograms' as ItemUnit
-			}}
-			onSubmit={async values => {
-				createItem({
-					input: { ...values, pricePerUnit: Number(values.pricePerUnit) }
-				});
-			}}
-		>
-			{({ handleChange, values, setFieldValue }) => (
-				<Form>
-					<label>
-						Name
-						<input
-							name='name'
-							type='text'
-							onChange={handleChange}
-							value={values.name}
-						/>
-					</label>
-					<label>
-						Price (per unit)
-						<input
-							name='price'
-							type='number'
-							onChange={handleChange}
-							value={values.pricePerUnit}
-						/>
-					</label>
-					<label>
-						Image URL
-						<input
-							name='image'
-							type='text'
-							onChange={handleChange}
-							value={values.image}
-						/>
-					</label>
-					<label>
-						<Field type='checkbox' name='featured' />
-						Featured
-					</label>
-					<Select
-						name='unit'
-						value={options.find(option => option.value === values.unit)}
-						onChange={(option: any) => setFieldValue('unit', option?.value)}
-						options={options}
-					/>
-					<button type='submit'>Create Item</button>
-				</Form>
-			)}
-		</Formik>
-	);
-};
+import CreateItemModal from '../components/modals/CreateItemModal';
 
 const Items = () => {
 	const [{ data, fetching, error }] = useStoreItemsQuery();
+	const [modalOpen, setModalOpen] = React.useState(false);
 
 	return (
-		<Page>
-			<h1>Items</h1>
-			<CreateItem />
-			<table>
-				<th>
-					<td>Name</td>
-					<td>Price</td>
-					<td>Featured</td>
-				</th>
-				{data?.storeItems.map(({ name, pricePerUnit, featured }, index) => (
-					<tr key={index}>
-						<td>{name}</td>
-						<td>{pricePerUnit}</td>
-						<td>{featured.toString()}</td>
-					</tr>
-				))}
-			</table>
-		</Page>
+		<>
+			<Page>
+				<h1>Items</h1>
+				<button onClick={() => setModalOpen(true)}>Create Item</button>
+				<table>
+					<th>
+						<td>Name</td>
+						<td>Price</td>
+						<td>Featured</td>
+					</th>
+					{data?.storeItems.map(({ name, pricePerUnit, featured }, index) => (
+						<tr key={index}>
+							<td>{name}</td>
+							<td>{pricePerUnit}</td>
+							<td>{featured.toString()}</td>
+						</tr>
+					))}
+				</table>
+			</Page>
+			<CreateItemModal isOpen={modalOpen} close={() => setModalOpen(false)} />
+		</>
 	);
 };
 
