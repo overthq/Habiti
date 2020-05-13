@@ -1,13 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import { NavLink, useRouteMatch } from 'react-router-dom';
+import { Icon } from './icons';
 
 const SidebarContainer = styled.div`
 	height: 100%;
-	background-color: #100100;
+	background-color: #000000;
 	width: 220px;
 	display: flex;
 	flex-direction: column;
+	padding: 20px;
 `;
 
 const SidebarLink = styled(NavLink)`
@@ -20,14 +22,22 @@ const SidebarLink = styled(NavLink)`
 	display: flex;
 	align-items: center;
 	padding-left: 15px;
+	border-radius: 6px;
+	align-self: center;
+	margin-bottom: 5px;
+	font-size: 15px;
 
 	&:hover {
-		background-color: #202020;
+		background-color: rgba(255, 255, 255, 0.1);
 	}
 
 	&.active {
+		background-color: rgba(255, 255, 255, 0.2);
 		font-weight: bold;
-		background-color: #505050;
+	}
+
+	p {
+		margin-left: 8px;
 	}
 `;
 
@@ -37,13 +47,16 @@ const Sidebar = () => {
 	return (
 		<SidebarContainer>
 			<SidebarLink exact to={match.url}>
-				Home
+				<Icon name='home' />
+				<p>Home</p>
 			</SidebarLink>
 			<SidebarLink exact to={`${match.url}/orders`}>
-				Orders
+				<Icon name='inbox' />
+				<p>Orders</p>
 			</SidebarLink>
 			<SidebarLink exact to={`${match.url}/items`}>
-				Items
+				<Icon name='tag' />
+				<p>Items</p>
 			</SidebarLink>
 		</SidebarContainer>
 	);

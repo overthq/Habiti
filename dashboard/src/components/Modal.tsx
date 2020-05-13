@@ -52,7 +52,7 @@ const Modal: React.FC<ModalProps> = ({ children, isOpen, close }) => {
 	if (!overlayElement || !isOpen) return null;
 
 	return createPortal(
-		<Overlay onClick={close}>
+		<Overlay>
 			<ModalContainer>{children}</ModalContainer>
 		</Overlay>,
 		overlayElement

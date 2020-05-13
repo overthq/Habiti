@@ -21,7 +21,10 @@ const icons = {
 	check: <path d='M5 13l4 4L19 7' />,
 	x: <path d='M6 18L18 6M6 6l12 12' />,
 	chevronLeft: <path d='M15 19l-7-7 7-7' />,
-	chevronRight: <path d='M9 5l7 7-7 7' />
+	chevronRight: <path d='M9 5l7 7-7 7' />,
+	inbox: (
+		<path d='M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4' />
+	)
 };
 
 interface IconProps {
@@ -32,7 +35,7 @@ interface IconProps {
 
 export const Icon: React.FC<IconProps> = ({
 	name,
-	color = '#000000',
+	color = 'currentColor',
 	size = 24
 }) => (
 	<svg

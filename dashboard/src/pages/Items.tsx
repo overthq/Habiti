@@ -2,6 +2,7 @@ import React from 'react';
 import { useStoreItemsQuery } from '../types';
 import Page from '../components/Page';
 import CreateItemModal from '../components/modals/CreateItemModal';
+import Button from '../components/Button';
 
 const Items = () => {
 	const [{ data, fetching, error }] = useStoreItemsQuery();
@@ -10,8 +11,16 @@ const Items = () => {
 	return (
 		<>
 			<Page>
-				<h1>Items</h1>
-				<button onClick={() => setModalOpen(true)}>Create Item</button>
+				<div style={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
+					<h1 style={{ margin: 0 }}>Items</h1>
+					<Button
+						color='#505050'
+						textColor='#D3D3D3'
+						onClick={() => setModalOpen(true)}
+					>
+						Create Item
+					</Button>
+				</div>
 				<table>
 					<th>
 						<td>Name</td>
