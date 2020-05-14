@@ -18,7 +18,6 @@ const CreateItemModal: React.FC<ModalProps> = ({ isOpen, close }) => {
 				initialValues={{
 					name: '',
 					pricePerUnit: 0,
-					image: '',
 					featured: false,
 					unit: 'Kilograms' as ItemUnit
 				}}
@@ -42,13 +41,13 @@ const CreateItemModal: React.FC<ModalProps> = ({ isOpen, close }) => {
 						<label>
 							Price (per unit)
 							<input
-								name='price'
+								name='pricePerUnit'
 								type='number'
 								onChange={handleChange}
 								value={values.pricePerUnit}
 							/>
 						</label>
-						<label>
+						{/* <label>
 							Image URL
 							<input
 								name='image'
@@ -56,7 +55,7 @@ const CreateItemModal: React.FC<ModalProps> = ({ isOpen, close }) => {
 								onChange={handleChange}
 								value={values.image}
 							/>
-						</label>
+								</label> */}
 						<label>
 							<Field type='checkbox' name='featured' />
 							Featured

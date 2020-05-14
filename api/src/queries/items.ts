@@ -2,7 +2,7 @@ import { Item, Manager } from '../models';
 
 export const storeItems = async (_, __, { user }) => {
 	if (!user) throw new Error('User is not authenticated');
-	if (user.role !== 'user') {
+	if (user.role !== 'manager') {
 		throw new Error('You are not authorized to view this resource.');
 	}
 
