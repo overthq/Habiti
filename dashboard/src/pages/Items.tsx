@@ -10,13 +10,19 @@ const Table = styled.table`
 	td {
 		padding: 10px 5px;
 		text-align: left;
-		/* font-size: 0.75rem; */
+	}
+
+	tr:nth-child(even) {
+		background-color: #f2f2f2;
+	}
+
+	td {
+		padding: 4px;
 	}
 
 	th {
-		text-transform: uppercase;
 		font-weight: 500;
-		font-size: 0.6875rem;
+		font-size: 16px;
 		white-space: nowrap;
 	}
 
@@ -24,6 +30,8 @@ const Table = styled.table`
 	border-collapse: collapse;
 	border-radius: 4px;
 	border-spacing: 0;
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+	background-color: #ffffff;
 `;
 
 const Items = () => {
@@ -43,7 +51,7 @@ const Items = () => {
 						Create Item
 					</Button>
 				</div>
-				<Table>
+				<Table style={{ marginTop: 20 }}>
 					<thead>
 						<tr>
 							<th>Name</th>
