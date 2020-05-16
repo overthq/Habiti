@@ -6,7 +6,7 @@ import { Icon } from './icons';
 const SidebarContainer = styled.div`
 	height: 100%;
 	background-color: #000000;
-	width: 220px;
+	width: 250px;
 	display: flex;
 	flex-direction: column;
 	padding: 20px;
