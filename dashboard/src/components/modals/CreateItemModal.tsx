@@ -1,7 +1,8 @@
 import React from 'react';
 import Select from 'react-select';
-import { Form, Field, Formik } from 'formik';
+import { Form, Formik, Field } from 'formik';
 import Modal, { ModalProps } from '../Modal';
+import Button from '../Button';
 import { useCreateItemMutation, ItemUnit } from '../../types';
 
 const options = Object.values(ItemUnit).map(unit => ({
@@ -17,9 +18,10 @@ const CreateItemModal: React.FC<ModalProps> = ({ isOpen, close }) => {
 			<Formik
 				initialValues={{
 					name: '',
+					description: '',
 					pricePerUnit: 0,
 					featured: false,
-					unit: 'Kilograms' as ItemUnit
+					unit: ItemUnit.Kilogram
 				}}
 				onSubmit={async values => {
 					createItem({
@@ -27,9 +29,9 @@ const CreateItemModal: React.FC<ModalProps> = ({ isOpen, close }) => {
 					});
 				}}
 			>
-				{({ handleChange, values, setFieldValue }) => (
-					<Form>
-						<label>
+				{({ values, handleChange, setFieldValue }) => (
+					<Form style={{ display: 'flex', flexDirection: 'column' }}>
+						<label style={{ marginBottom: 10 }}>
 							Name
 							<input
 								name='name'
@@ -38,7 +40,10 @@ const CreateItemModal: React.FC<ModalProps> = ({ isOpen, close }) => {
 								value={values.name}
 							/>
 						</label>
-						<label>
+						<label style={{ marginBottom: 10 }}>
+							<textarea name='description' onChange={handleChange} />
+						</label>
+						<label style={{ marginBottom: 10 }}>
 							Price (per unit)
 							<input
 								name='pricePerUnit'
@@ -47,26 +52,21 @@ const CreateItemModal: React.FC<ModalProps> = ({ isOpen, close }) => {
 								value={values.pricePerUnit}
 							/>
 						</label>
-						{/* <label>
-							Image URL
-							<input
-								name='image'
-								type='text'
-								onChange={handleChange}
-								value={values.image}
-							/>
-								</label> */}
-						<label>
+						<label style={{ marginBottom: 10 }}>
 							<Field type='checkbox' name='featured' />
 							Featured
 						</label>
-						<Select
-							name='unit'
-							value={options.find(option => option.value === values.unit)}
-							onChange={(option: any) => setFieldValue('unit', option?.value)}
-							options={options}
-						/>
-						<button type='submit'>Create Item</button>
+						<label style={{ marginBottom: 10 }}>
+							<Select
+								name='unit'
+								value={options.find(option => option.value === values.unit)}
+								onChange={(option: any) => setFieldValue('unit', option?.value)}
+								options={options}
+							/>
+						</label>
+						<Button color='#505050' textColor='#FFFFFF' type='submit'>
+							Create Item
+						</Button>
 					</Form>
 				)}
 			</Formik>

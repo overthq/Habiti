@@ -23,15 +23,44 @@ export const OnboardingContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	align-items: center;
+`;
+
+export const OnboardingHeader = styled.h1`
+	font-size: 32px;
+	margin-bottom: 12px;
+	text-align: center;
+`;
+
+export const OnboardingDescription = styled.p`
+	font-size: 16px;
+	text-align: center;
+	margin-bottom: 16px;
 `;
 
 export const OnboardingInput = styled.input`
-	height: 40px;
-	border-radius: 6px;
+	height: 50px;
+	width: 400px;
+	border-radius: 8px;
 	margin-bottom: 10px;
 	border: 2px solid #777777;
 	font-size: 16px;
 	padding-left: 10px;
+`;
+
+export const OnboardingButton = styled.button`
+	height: 50px;
+	width: 400px;
+	border: none;
+	border-radius: 8px;
+	background-color: #100100;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 16px;
+	font-weight: bold;
+	color: #ffffff;
+	cursor: pointer;
 `;
 
 export const BackButton = styled.button`

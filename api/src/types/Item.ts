@@ -2,6 +2,7 @@ const ItemType = `
 	type Item @entity {
 		_id: ID! @id
 		name: String! @column
+		description: String! @column
 		storeId: ID! @column
 		store: Store! @embedded
 		unit: ItemUnit @column
@@ -16,6 +17,7 @@ const ItemType = `
 
 	input ItemInput {
 		name: String!
+		description: String!
 		pricePerUnit: Int!
 		unit: ItemUnit
 		featured: Boolean

@@ -1,10 +1,13 @@
 import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { Formik } from 'formik';
+import { Formik, Form } from 'formik';
 import {
 	PageBackground,
 	OnboardingContainer,
-	OnboardingInput
+	OnboardingHeader,
+	OnboardingInput,
+	OnboardingButton,
+	OnboardingDescription
 } from './Onboarding';
 import { useAuthenticateManagerMutation } from '../types';
 
@@ -12,6 +15,8 @@ const Authenticate = () => {
 	const [, authenticateManager] = useAuthenticateManagerMutation();
 	const { push } = useHistory();
 	const { storeId } = useParams();
+	// Query the store, make sure it exists.
+	// If it doesn't, navigate back to the "landing" page.
 
 	return (
 		<PageBackground>
@@ -23,22 +28,27 @@ const Authenticate = () => {
 							storeId,
 							email
 						});
-						console.log(data);
-						push(`/store/${storeId}/verify-code`);
+						if (data?.authenticateManager) {
+							localStorage.setItem('onboarding-email', email);
+							push(`/store/${storeId}/verify-code`);
+						}
 					}}
 				>
-					{({ handleChange, handleSubmit, isSubmitting }) => (
-						<form onSubmit={handleSubmit}>
-							<h2>Log in to store</h2>
+					{({ handleChange, isSubmitting }) => (
+						<Form>
+							<OnboardingHeader>Sign in to store</OnboardingHeader>
+							<OnboardingDescription>
+								Enter your email address below.
+							</OnboardingDescription>
 							<OnboardingInput
 								name='email'
 								onChange={handleChange('email')}
 								placeholder='Your email address'
 							/>
-							<button type='submit' disabled={isSubmitting}>
-								Submit
-							</button>
-						</form>
+							<OnboardingButton type='submit' disabled={isSubmitting}>
+								Send verification code
+							</OnboardingButton>
+						</Form>
 					)}
 				</Formik>
 			</OnboardingContainer>

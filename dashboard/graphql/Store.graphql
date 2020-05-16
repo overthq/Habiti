@@ -5,3 +5,4 @@ mutation CreateStore($input: StoreInput) {
 		shortName
 	}
 }
+

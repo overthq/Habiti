@@ -8,6 +8,7 @@ enum ItemUnit {
 
 export interface ItemDocument extends Document {
 	name: string;
+	description: string;
 	storeId: string;
 	store: StoreDocument;
 	unit: string;
@@ -18,6 +19,10 @@ export interface ItemDocument extends Document {
 const ItemSchema = new Schema(
 	{
 		name: {
+			type: String,
+			required: true
+		},
+		description: {
 			type: String,
 			required: true
 		},

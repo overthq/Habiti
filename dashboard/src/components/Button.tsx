@@ -6,7 +6,7 @@ interface ButtonProps {
 }
 
 const Button = styled.button<ButtonProps>`
-	border-radius: 4px;
+	border-radius: 8px;
 	background-color: ${({ color }) => color};
 	color: ${({ textColor }) => textColor};
 	font-weight: 500;

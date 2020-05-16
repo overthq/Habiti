@@ -44,6 +44,7 @@ export type Item = {
 	__typename?: 'Item';
 	_id: Scalars['ID'];
 	name: Scalars['String'];
+	description: Scalars['String'];
 	storeId: Scalars['ID'];
 	store: Store;
 	unit?: Maybe<ItemUnit>;
@@ -184,6 +185,7 @@ export type MutationVerifyManagerAuthenticationArgs = {
 
 export type ItemInput = {
 	name: Scalars['String'];
+	description: Scalars['String'];
 	pricePerUnit: Scalars['Int'];
 	unit?: Maybe<ItemUnit>;
 	featured?: Maybe<Scalars['Boolean']>;
@@ -226,7 +228,7 @@ export type CreateItemMutationVariables = {
 export type CreateItemMutation = { __typename?: 'Mutation' } & {
 	createItem: { __typename?: 'Item' } & Pick<
 		Item,
-		'_id' | 'name' | 'pricePerUnit' | 'featured' | 'unit'
+		'_id' | 'name' | 'description' | 'pricePerUnit' | 'featured' | 'unit'
 	>;
 };
 
@@ -236,18 +238,7 @@ export type StoreItemsQuery = { __typename?: 'Query' } & {
 	storeItems: Array<
 		{ __typename?: 'Item' } & Pick<
 			Item,
-			'_id' | 'name' | 'pricePerUnit' | 'featured' | 'unit'
-		>
-	>;
-};
-
-export type ItemsQueryVariables = {};
-
-export type ItemsQuery = { __typename?: 'Query' } & {
-	items: Array<
-		{ __typename?: 'Item' } & Pick<
-			Item,
-			'_id' | 'name' | 'pricePerUnit' | 'featured' | 'unit'
+			'_id' | 'name' | 'description' | 'pricePerUnit' | 'featured' | 'unit'
 		>
 	>;
 };
@@ -319,6 +310,7 @@ export const CreateItemDocument = gql`
 		createItem(input: $input) {
 			_id
 			name
+			description
 			pricePerUnit
 			featured
 			unit
@@ -336,6 +328,7 @@ export const StoreItemsDocument = gql`
 		storeItems {
 			_id
 			name
+			description
 			pricePerUnit
 			featured
 			unit
@@ -350,23 +343,6 @@ export function useStoreItemsQuery(
 		query: StoreItemsDocument,
 		...options
 	});
-}
-export const ItemsDocument = gql`
-	query Items {
-		items {
-			_id
-			name
-			pricePerUnit
-			featured
-			unit
-		}
-	}
-`;
-
-export function useItemsQuery(
-	options: Omit<Urql.UseQueryArgs<ItemsQueryVariables>, 'query'> = {}
-) {
-	return Urql.useQuery<ItemsQuery>({ query: ItemsDocument, ...options });
 }
 export const CreateManagerDocument = gql`
 	mutation CreateManager($storeId: ID!, $input: ManagerInput) {

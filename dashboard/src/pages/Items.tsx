@@ -24,6 +24,7 @@ const Table = styled.table`
 		font-weight: 500;
 		font-size: 16px;
 		white-space: nowrap;
+		color: #505050;
 	}
 
 	width: 100%;
@@ -35,7 +36,7 @@ const Table = styled.table`
 `;
 
 const Items = () => {
-	const [{ data, fetching, error }] = useStoreItemsQuery();
+	const [{ data }] = useStoreItemsQuery();
 	const [modalOpen, setModalOpen] = React.useState(false);
 
 	return (
@@ -45,10 +46,11 @@ const Items = () => {
 					<h1 style={{ margin: 0 }}>Items</h1>
 					<Button
 						color='#505050'
-						textColor='#D3D3D3'
+						textColor='#FFFFFF'
 						onClick={() => setModalOpen(true)}
+						style={{ marginLeft: 20 }}
 					>
-						Create Item
+						Add New Item
 					</Button>
 				</div>
 				<Table style={{ marginTop: 20 }}>

@@ -2,6 +2,7 @@ mutation CreateItem($input: ItemInput!) {
 	createItem(input: $input) {
 		_id
 		name
+		description
 		pricePerUnit
 		featured
 		unit
@@ -12,18 +13,10 @@ query StoreItems {
 	storeItems {
 		_id
 		name
+		description
 		pricePerUnit
 		featured
 		unit
 	}
 }
 
-query Items {
-	items {
-		_id
-		name
-		pricePerUnit
-		featured
-		unit
-	}
-}
