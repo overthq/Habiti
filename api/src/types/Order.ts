@@ -27,14 +27,8 @@ const OrderType = `
 		quantity: Int!
 	}
 
-	input PlaceOrderInput {
-		userId: ID!
-		storeId: ID!
-		cart: [CartItemInput!]!
-	}
-
 	extend type Mutation {
-		placeOrder(input: PlaceOrderInput): Order
+		placeOrder(storeId: ID!, cart: [CartItemInput!]!): Order!
 	}
 
 	extend type Query {

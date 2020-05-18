@@ -6,7 +6,9 @@ export const userOrders = async (_, __, { user }) => {
 		throw new Error('You are not authorized to view this resource.');
 	}
 
-	const allUserOrders = await Order.find({ userId: user.id });
+	const allUserOrders = await Order.find({ userId: user.id }).populate(
+		'user store'
+	);
 	return allUserOrders;
 };
 

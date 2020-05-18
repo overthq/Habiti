@@ -14,3 +14,18 @@ query UserOrders {
 		}
 	}
 }
+
+mutation PlaceOrder($storeId: ID!, $input: OrderInput!) {
+	_id
+	status
+	store {
+		name
+	}
+	cart {
+		item {
+			name
+			pricePerUnit
+		}
+		quantity
+	}
+}

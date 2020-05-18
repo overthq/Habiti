@@ -7,12 +7,12 @@ import { useStoreQuery } from '../types';
 const Store = () => {
 	const { setOptions } = useNavigation();
 	const { params } = useRoute();
-	const [{ data }] = useStoreQuery({ variables: { storeId: params?.storeId } });
+	const [{ data }] = useStoreQuery({
+		variables: { storeId: params?.storeId as string }
+	});
 
 	React.useLayoutEffect(() => {
-		setOptions({
-			title: data?.store.name
-		});
+		setOptions({ title: data?.store.name });
 	}, [data]);
 
 	return (
