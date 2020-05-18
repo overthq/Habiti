@@ -19,6 +19,7 @@ import { CartsProvider } from './src/contexts/CartsContext';
 import useAccessToken from './src/hooks/useAccessToken';
 import Explore from './src/screens/Explore';
 import Search from './src/screens/Search';
+import Store from './src/screens/Store';
 import { Icon, IconType } from './src/components/icons';
 import { useCurrentUserQuery } from './src/types';
 
@@ -88,19 +89,39 @@ const Routes = () => {
 		<NavigationContainer>
 			<AppStack.Navigator
 				initialRouteName={!!data?.currentUser ? 'Main' : 'Auth'}
-				headerMode='none'
 			>
-				<AppStack.Screen name='Auth' component={AuthNavigator} />
-				<AppStack.Screen name='Main' component={MainNavigator} />
+				<AppStack.Screen
+					name='Auth'
+					component={AuthNavigator}
+					options={{ headerShown: false }}
+				/>
+				<AppStack.Screen
+					name='Main'
+					component={MainNavigator}
+					options={{ headerShown: false }}
+				/>
 				<AppStack.Screen
 					name='Search'
 					component={Search}
 					options={{
+						headerShown: false,
 						gestureEnabled: true,
 						cardOverlayEnabled: true,
 						...(Platform.OS === 'ios'
 							? TransitionPresets.ModalPresentationIOS
 							: TransitionPresets.RevealFromBottomAndroid)
+					}}
+				/>
+				<AppStack.Screen
+					name='Store'
+					component={Store}
+					options={{
+						headerBackTitleVisible: false,
+						// eslint-disable-next-line
+						headerBackImage: () => {
+							return <Icon name='chevronLeft' size={30} />;
+						},
+						headerLeftContainerStyle: { paddingLeft: 8 }
 					}}
 				/>
 			</AppStack.Navigator>

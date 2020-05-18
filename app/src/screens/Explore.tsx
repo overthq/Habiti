@@ -34,22 +34,28 @@ const Explore = () => {
 					Search stores and items
 				</Text>
 			</TouchableOpacity>
-			<View style={{ marginTop: 10 }}>
+			<View style={{ marginTop: 16 }}>
 				<FlatList
 					horizontal
 					data={data?.stores}
 					keyExtractor={({ _id }) => _id}
+					contentContainerStyle={{ paddingLeft: 20 }}
 					renderItem={({ item }) => (
-						<View key={item._id} style={styles.storeImageContainer}>
+						<TouchableOpacity
+							key={item._id}
+							style={styles.featuredStoreContainer}
+							onPress={() => navigate('Store', { storeId: item._id })}
+						>
 							<Image
 								source={{
 									uri: `https://twitter.com/${item.twitterUsername}/profile_image?size=normal`
 								}}
 								style={{ height: 80, width: 80 }}
 							/>
-							<Text style={styles.storeName}>{item.name}</Text>
-						</View>
+							{/* <Text style={styles.storeName}>{item.name}</Text> */}
+						</TouchableOpacity>
 					)}
+					ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
 				/>
 			</View>
 		</SafeAreaView>
@@ -78,7 +84,16 @@ const styles = StyleSheet.create({
 		backgroundColor: '#D3D3D3',
 		flexDirection: 'row',
 		padding: 10,
-		width: width - 40
+		width: width - 40,
+		height: 40
+	},
+	featuredStoreContainer: {
+		backgroundColor: '#D3D3D3',
+		width: 70,
+		height: 70,
+		borderRadius: 50,
+		justifyContent: 'center',
+		alignItems: 'center'
 	},
 	storeImageContainer: {
 		flexDirection: 'column',

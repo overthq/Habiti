@@ -7,3 +7,13 @@ query Stores {
 		twitterUsername
 	}
 }
+
+query Store($storeId: ID!) {
+	store(storeId: $storeId) {
+		_id
+		name
+		websiteUrl
+		instagramUsername
+		twitterUsername
+	}
+}

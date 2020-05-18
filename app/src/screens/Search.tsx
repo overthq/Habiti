@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, TextInput, StyleSheet, Dimensions } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon } from '../components/icons';
 
 const { width } = Dimensions.get('window');
@@ -14,7 +13,8 @@ const Search = () => {
 	}, [searchTerm]);
 
 	return (
-		<SafeAreaView style={styles.container}>
+		<View style={styles.container}>
+			<View style={styles.handle} />
 			<View style={styles.searchBar}>
 				<Icon name='search' color='#505050' size={20} />
 				<TextInput
@@ -24,13 +24,22 @@ const Search = () => {
 					style={{ fontSize: 16, paddingLeft: 5 }}
 				/>
 			</View>
-		</SafeAreaView>
+		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1
+	},
+	handle: {
+		width: 80,
+		height: 7.5,
+		borderRadius: 3.75,
+		backgroundColor: '#D3D3D3',
+		alignSelf: 'center',
+		marginTop: 10,
+		marginBottom: 10
 	},
 	searchBar: {
 		alignSelf: 'center',

@@ -2,6 +2,7 @@ import React from 'react';
 import { Svg, Circle, Path } from 'react-native-svg';
 
 const icons = {
+	chevronLeft: <Path d='M15 18l-6-6 6-6' />,
 	chevronRight: <Path d='M9 18l6-6-6-6' />,
 	settings: (
 		<>

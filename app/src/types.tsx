@@ -33,6 +33,7 @@ export type Item = {
 	__typename?: 'Item';
 	_id: Scalars['ID'];
 	name: Scalars['String'];
+	description: Scalars['String'];
 	storeId: Scalars['ID'];
 	store: Store;
 	unit?: Maybe<ItemUnit>;
@@ -42,6 +43,7 @@ export type Item = {
 
 export type ItemInput = {
 	name: Scalars['String'];
+	description: Scalars['String'];
 	pricePerUnit: Scalars['Int'];
 	unit?: Maybe<ItemUnit>;
 	featured?: Maybe<Scalars['Boolean']>;
@@ -181,12 +183,17 @@ export type Query = {
 	items: Array<Item>;
 	userOrders: Array<Order>;
 	storeOrders: Array<Order>;
+	store: Store;
 	stores: Array<Store>;
 	storeManagers: Array<Manager>;
 	currentManager: Manager;
 };
 
 export type QueryStoreOrdersArgs = {
+	storeId: Scalars['ID'];
+};
+
+export type QueryStoreArgs = {
 	storeId: Scalars['ID'];
 };
 
@@ -267,6 +274,17 @@ export type StoresQuery = { __typename?: 'Query' } & {
 			Store,
 			'_id' | 'name' | 'websiteUrl' | 'instagramUsername' | 'twitterUsername'
 		>
+	>;
+};
+
+export type StoreQueryVariables = {
+	storeId: Scalars['ID'];
+};
+
+export type StoreQuery = { __typename?: 'Query' } & {
+	store: { __typename?: 'Store' } & Pick<
+		Store,
+		'_id' | 'name' | 'websiteUrl' | 'instagramUsername' | 'twitterUsername'
 	>;
 };
 
@@ -387,6 +405,23 @@ export function useStoresQuery(
 	options: Omit<Urql.UseQueryArgs<StoresQueryVariables>, 'query'> = {}
 ) {
 	return Urql.useQuery<StoresQuery>({ query: StoresDocument, ...options });
+}
+export const StoreDocument = gql`
+	query Store($storeId: ID!) {
+		store(storeId: $storeId) {
+			_id
+			name
+			websiteUrl
+			instagramUsername
+			twitterUsername
+		}
+	}
+`;
+
+export function useStoreQuery(
+	options: Omit<Urql.UseQueryArgs<StoreQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<StoreQuery>({ query: StoreDocument, ...options });
 }
 export const RegisterDocument = gql`
 	mutation Register($name: String!, $phone: String!) {

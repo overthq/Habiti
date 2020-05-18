@@ -17,6 +17,7 @@ const StoreType = `
 	}
 
 	extend type Query {
+		store(storeId: ID!): Store!
 		stores: [Store!]!
 	}
 
