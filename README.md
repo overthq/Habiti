@@ -4,7 +4,7 @@ Market helps sellers set up an online store with ease, handling store management
 
 ## Motivation
 
-Setting up an online store is difficult and expensive, and getting potential customers to discover your store is very difficult. Likewise, buyers have to create multiple accounts for every stores they want to purchase from, and go back to get information on things like new arrivals and back in stock items.
+Setting up an online store is difficult and expensive, and getting potential customers to discover your store is very difficult. Likewise, buyers have to create multiple accounts for every store they purchase from, and keep going back to get information on things like new arrivals and back in stock items.
 
 Market aims to solve this by creating an app where buyers can discover and follow stores to get push notifications for store updates, while also having a single account to manage all their online purhases. Stores also get a simple, easy-to use, extendable dashboard to manage orders, products, analytics and all other information regarding their store.
 
