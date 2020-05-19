@@ -19,7 +19,7 @@ This section will help you get Market up and running in your development environ
 Before starting installing, the following are required:
 
 - [Node.js](https://nodejs.org) (version 8 or higher).
-- [Yarn](https://yarnpkg.com) (version 1.22 or lower)
+- [Yarn](https://yarnpkg.com) (version 1.22)
 - [MongoDB](https://mongodb.com) (database for local development)
 
 ### Commands
@@ -38,17 +38,7 @@ cd api && yarn
 cd app && yarn
 cd dashboard && yarn
 
-# SERVER-SIDE (Be sure to read the server docs)
-
-# Start MongoDB
-
-# Start the backend server (after including the necessary vars in the server's .env file)
-yarn dev:server
-
-# CLIENT-SIDE
-
-# Start the Expo app
-yarn dev:app
+# For more instructions on running the projects, visit the any of the project-specific READMEs.
 ```
 
 ## Contributing
@@ -67,8 +57,6 @@ Move is a TypeScript-based application. It is built with popular JS libraries/fr
 - Back-End
   - Framework(s): [Express](https://expressjs.com) and [GraphQL](https://graphql.org)
   - Database: [MongoDB](https://mongodb.com)
-  - Hosting: [Heroku](https://heroku.com)
-
 
 # License
 
