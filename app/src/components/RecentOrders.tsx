@@ -20,9 +20,7 @@ const getStatusColor = (status: OrderStatus) => {
 };
 
 const RecentOrders = () => {
-	const [{ data }] = useUserOrdersQuery({
-		variables: { userId: '' }
-	});
+	const [{ data }] = useUserOrdersQuery();
 
 	return (
 		<FlatList
@@ -34,8 +32,8 @@ const RecentOrders = () => {
 					<View style={styles.orderContainer}>
 						<View style={styles.storeAvatar}></View>
 						<View style={styles.orderInformation}>
+							<Text>{item.cart[0].item.name}</Text>
 							<Text>
-								{item.cart[0].item.name}
 								{item.cart.length > 1 && ` (and ${item.cart.length} others)`}
 							</Text>
 							<Text style={{ color: getStatusColor(item.status) }}>

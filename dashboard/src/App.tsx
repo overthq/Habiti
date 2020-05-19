@@ -58,7 +58,11 @@ const Routes: React.FC = () => {
 							<Switch>
 								<Route exact path={match.url} component={Home} />
 								<Route exact path={`${match.url}/orders`} component={Orders} />
-								<Route exact path={`${match.url}/items`} component={Items} />
+								<Route
+									exact
+									path={`${match.url}/items`}
+									render={() => <Items storeId={match.params.storeId} />}
+								/>
 							</Switch>
 						</MainContainer>
 					</>

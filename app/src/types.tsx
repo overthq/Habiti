@@ -83,7 +83,7 @@ export type Mutation = {
 	createItem: Item;
 	updateItem: Item;
 	deleteItem: Scalars['String'];
-	placeOrder?: Maybe<Order>;
+	placeOrder: Order;
 	createStore: Store;
 	updateStore: Store;
 	createManager: Scalars['String'];
@@ -120,7 +120,8 @@ export type MutationDeleteItemArgs = {
 };
 
 export type MutationPlaceOrderArgs = {
-	input?: Maybe<PlaceOrderInput>;
+	storeId: Scalars['ID'];
+	cart: Array<CartItemInput>;
 };
 
 export type MutationCreateStoreArgs = {
@@ -168,12 +169,6 @@ export enum OrderStatus {
 	Delivered = 'Delivered'
 }
 
-export type PlaceOrderInput = {
-	userId: Scalars['ID'];
-	storeId: Scalars['ID'];
-	cart: Array<CartItemInput>;
-};
-
 export type Query = {
 	__typename?: 'Query';
 	default?: Maybe<Scalars['String']>;
@@ -187,6 +182,10 @@ export type Query = {
 	stores: Array<Store>;
 	storeManagers: Array<Manager>;
 	currentManager: Manager;
+};
+
+export type QueryStoreItemsArgs = {
+	storeId: Scalars['ID'];
 };
 
 export type QueryStoreOrdersArgs = {
@@ -237,7 +236,9 @@ export type ItemsQuery = { __typename?: 'Query' } & {
 	>;
 };
 
-export type StoreItemsQueryVariables = {};
+export type StoreItemsQueryVariables = {
+	storeId: Scalars['ID'];
+};
 
 export type StoreItemsQuery = { __typename?: 'Query' } & {
 	storeItems: Array<
@@ -264,6 +265,22 @@ export type UserOrdersQuery = { __typename?: 'Query' } & {
 				>;
 			}
 	>;
+};
+
+export type PlaceOrderMutationVariables = {
+	storeId: Scalars['ID'];
+	cart: Array<CartItemInput>;
+};
+
+export type PlaceOrderMutation = { __typename?: 'Mutation' } & {
+	placeOrder: { __typename?: 'Order' } & Pick<Order, '_id' | 'status'> & {
+			store: { __typename?: 'Store' } & Pick<Store, 'name'>;
+			cart: Array<
+				{ __typename?: 'CartItem' } & Pick<CartItem, 'quantity'> & {
+						item: { __typename?: 'Item' } & Pick<Item, 'name' | 'pricePerUnit'>;
+					}
+			>;
+		};
 };
 
 export type StoresQueryVariables = {};
@@ -342,8 +359,8 @@ export function useItemsQuery(
 	return Urql.useQuery<ItemsQuery>({ query: ItemsDocument, ...options });
 }
 export const StoreItemsDocument = gql`
-	query StoreItems {
-		storeItems {
+	query StoreItems($storeId: ID!) {
+		storeItems(storeId: $storeId) {
 			_id
 			name
 			storeId
@@ -388,6 +405,30 @@ export function useUserOrdersQuery(
 		query: UserOrdersDocument,
 		...options
 	});
+}
+export const PlaceOrderDocument = gql`
+	mutation PlaceOrder($storeId: ID!, $cart: [CartItemInput!]!) {
+		placeOrder(storeId: $storeId, cart: $cart) {
+			_id
+			status
+			store {
+				name
+			}
+			cart {
+				item {
+					name
+					pricePerUnit
+				}
+				quantity
+			}
+		}
+	}
+`;
+
+export function usePlaceOrderMutation() {
+	return Urql.useMutation<PlaceOrderMutation, PlaceOrderMutationVariables>(
+		PlaceOrderDocument
+	);
 }
 export const StoresDocument = gql`
 	query Stores {

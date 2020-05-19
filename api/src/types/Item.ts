@@ -30,7 +30,7 @@ const ItemType = `
 	}
 
 	extend type Query {
-		storeItems: [Item!]!
+		storeItems(storeId: ID!): [Item!]!
 		items: [Item!]!
 	}
 `;

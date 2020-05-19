@@ -35,8 +35,8 @@ const Table = styled.table`
 	background-color: #ffffff;
 `;
 
-const Items = () => {
-	const [{ data }] = useStoreItemsQuery();
+const Items: React.FC<{ storeId: string }> = ({ storeId }) => {
+	const [{ data }] = useStoreItemsQuery({ variables: { storeId } });
 	const [modalOpen, setModalOpen] = React.useState(false);
 
 	return (

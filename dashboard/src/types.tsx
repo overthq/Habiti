@@ -11,100 +11,10 @@ export type Scalars = {
 	Float: number;
 };
 
-export type Query = {
-	__typename?: 'Query';
-	default?: Maybe<Scalars['String']>;
-	currentUser: User;
-	users: Array<User>;
-	storeItems: Array<Item>;
-	items: Array<Item>;
-	userOrders: Array<Order>;
-	storeOrders: Array<Order>;
-	stores: Array<Store>;
-	storeManagers: Array<Manager>;
-	currentManager: Manager;
+export type AdditionalEntityFields = {
+	path?: Maybe<Scalars['String']>;
+	type?: Maybe<Scalars['String']>;
 };
-
-export type QueryStoreOrdersArgs = {
-	storeId: Scalars['ID'];
-};
-
-export type QueryStoreManagersArgs = {
-	storeId: Scalars['ID'];
-};
-
-export type User = {
-	__typename?: 'User';
-	_id: Scalars['ID'];
-	name: Scalars['String'];
-	phone: Scalars['String'];
-};
-
-export type Item = {
-	__typename?: 'Item';
-	_id: Scalars['ID'];
-	name: Scalars['String'];
-	description: Scalars['String'];
-	storeId: Scalars['ID'];
-	store: Store;
-	unit?: Maybe<ItemUnit>;
-	pricePerUnit: Scalars['Int'];
-	featured: Scalars['Boolean'];
-};
-
-export type Store = {
-	__typename?: 'Store';
-	_id: Scalars['ID'];
-	shortName: Scalars['String'];
-	name: Scalars['String'];
-	websiteUrl?: Maybe<Scalars['String']>;
-	instagramUsername?: Maybe<Scalars['String']>;
-	twitterUsername?: Maybe<Scalars['String']>;
-};
-
-export enum ItemUnit {
-	Kilogram = 'Kilogram',
-	Litre = 'Litre'
-}
-
-export type Order = {
-	__typename?: 'Order';
-	_id: Scalars['ID'];
-	userId: Scalars['ID'];
-	user: User;
-	storeId: Scalars['ID'];
-	store: Store;
-	status: OrderStatus;
-	cart: Array<CartItem>;
-};
-
-export enum OrderStatus {
-	Pending = 'Pending',
-	Processing = 'Processing',
-	Delivered = 'Delivered'
-}
-
-export type CartItem = {
-	__typename?: 'CartItem';
-	_id: Scalars['ID'];
-	itemId: Scalars['ID'];
-	item: Item;
-	quantity: Scalars['Int'];
-};
-
-export type Manager = {
-	__typename?: 'Manager';
-	_id: Scalars['ID'];
-	name: Scalars['String'];
-	email: Scalars['String'];
-	role: ManagerRole;
-	storeId: Scalars['ID'];
-};
-
-export enum ManagerRole {
-	Admin = 'Admin',
-	Editor = 'Editor'
-}
 
 export type Mutation = {
 	__typename?: 'Mutation';
@@ -115,7 +25,7 @@ export type Mutation = {
 	createItem: Item;
 	updateItem: Item;
 	deleteItem: Scalars['String'];
-	placeOrder?: Maybe<Order>;
+	placeOrder: Order;
 	createStore: Store;
 	updateStore: Store;
 	createManager: Scalars['String'];
@@ -152,7 +62,8 @@ export type MutationDeleteItemArgs = {
 };
 
 export type MutationPlaceOrderArgs = {
-	input?: Maybe<PlaceOrderInput>;
+	storeId: Scalars['ID'];
+	cart: Array<CartItemInput>;
 };
 
 export type MutationCreateStoreArgs = {
@@ -183,6 +94,61 @@ export type MutationVerifyManagerAuthenticationArgs = {
 	code: Scalars['String'];
 };
 
+export type Query = {
+	__typename?: 'Query';
+	default?: Maybe<Scalars['String']>;
+	currentUser: User;
+	users: Array<User>;
+	storeItems: Array<Item>;
+	items: Array<Item>;
+	userOrders: Array<Order>;
+	storeOrders: Array<Order>;
+	store: Store;
+	stores: Array<Store>;
+	storeManagers: Array<Manager>;
+	currentManager: Manager;
+};
+
+export type QueryStoreItemsArgs = {
+	storeId: Scalars['ID'];
+};
+
+export type QueryStoreOrdersArgs = {
+	storeId: Scalars['ID'];
+};
+
+export type QueryStoreArgs = {
+	storeId: Scalars['ID'];
+};
+
+export type QueryStoreManagersArgs = {
+	storeId: Scalars['ID'];
+};
+
+export type User = {
+	__typename?: 'User';
+	_id: Scalars['ID'];
+	name: Scalars['String'];
+	phone: Scalars['String'];
+};
+
+export type Item = {
+	__typename?: 'Item';
+	_id: Scalars['ID'];
+	name: Scalars['String'];
+	description: Scalars['String'];
+	storeId: Scalars['ID'];
+	store: Store;
+	unit?: Maybe<ItemUnit>;
+	pricePerUnit: Scalars['Int'];
+	featured: Scalars['Boolean'];
+};
+
+export enum ItemUnit {
+	Kilogram = 'Kilogram',
+	Litre = 'Litre'
+}
+
 export type ItemInput = {
 	name: Scalars['String'];
 	description: Scalars['String'];
@@ -191,15 +157,44 @@ export type ItemInput = {
 	featured?: Maybe<Scalars['Boolean']>;
 };
 
-export type PlaceOrderInput = {
+export type Order = {
+	__typename?: 'Order';
+	_id: Scalars['ID'];
 	userId: Scalars['ID'];
+	user: User;
 	storeId: Scalars['ID'];
-	cart: Array<CartItemInput>;
+	store: Store;
+	status: OrderStatus;
+	cart: Array<CartItem>;
+};
+
+export enum OrderStatus {
+	Pending = 'Pending',
+	Processing = 'Processing',
+	Delivered = 'Delivered'
+}
+
+export type CartItem = {
+	__typename?: 'CartItem';
+	_id: Scalars['ID'];
+	itemId: Scalars['ID'];
+	item: Item;
+	quantity: Scalars['Int'];
 };
 
 export type CartItemInput = {
 	itemId: Scalars['ID'];
 	quantity: Scalars['Int'];
+};
+
+export type Store = {
+	__typename?: 'Store';
+	_id: Scalars['ID'];
+	shortName: Scalars['String'];
+	name: Scalars['String'];
+	websiteUrl?: Maybe<Scalars['String']>;
+	instagramUsername?: Maybe<Scalars['String']>;
+	twitterUsername?: Maybe<Scalars['String']>;
 };
 
 export type StoreInput = {
@@ -210,15 +205,24 @@ export type StoreInput = {
 	twitterUsername?: Maybe<Scalars['String']>;
 };
 
+export type Manager = {
+	__typename?: 'Manager';
+	_id: Scalars['ID'];
+	name: Scalars['String'];
+	email: Scalars['String'];
+	role: ManagerRole;
+	storeId: Scalars['ID'];
+};
+
+export enum ManagerRole {
+	Admin = 'Admin',
+	Editor = 'Editor'
+}
+
 export type ManagerInput = {
 	name?: Maybe<Scalars['String']>;
 	email?: Maybe<Scalars['String']>;
 	role?: Maybe<ManagerRole>;
-};
-
-export type AdditionalEntityFields = {
-	path?: Maybe<Scalars['String']>;
-	type?: Maybe<Scalars['String']>;
 };
 
 export type CreateItemMutationVariables = {
@@ -232,7 +236,9 @@ export type CreateItemMutation = { __typename?: 'Mutation' } & {
 	>;
 };
 
-export type StoreItemsQueryVariables = {};
+export type StoreItemsQueryVariables = {
+	storeId: Scalars['ID'];
+};
 
 export type StoreItemsQuery = { __typename?: 'Query' } & {
 	storeItems: Array<
@@ -324,8 +330,8 @@ export function useCreateItemMutation() {
 	);
 }
 export const StoreItemsDocument = gql`
-	query StoreItems {
-		storeItems {
+	query StoreItems($storeId: ID!) {
+		storeItems(storeId: $storeId) {
 			_id
 			name
 			description

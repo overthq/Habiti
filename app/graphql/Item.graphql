@@ -9,8 +9,8 @@ query Items {
 	}
 }
 
-query StoreItems {
-	storeItems {
+query StoreItems($storeId: ID!) {
+	storeItems(storeId: $storeId) {
 		_id
 		name
 		storeId
