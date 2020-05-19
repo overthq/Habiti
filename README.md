@@ -8,7 +8,7 @@ Online shopping is hard, both for buyers and sellers. Setting up a new online st
 
 ## Project Phase
 
-This project is currently in the _pre-launch_ phase, being developed by the [members of the Overt community](https://discord.gg/t6wVzUh) for [Overt](https://overt.dev), a concept that creates open-source software to solve many of the problems we face in the world. You can read more [here](https://medium.com/@koredefashokun/building-the-future-in-the-open-f3ac035fb412), or follow Overt on Twitter [here](https://twitter.com/overt_hq).
+This project is currently in the _pre-launch_ phase, being developed by the [members of the Overt community](https://discord.gg/t6wVzUh). [Overt](https://overt.dev) is a concept that creates open-source software to solve many of the problems we face in the world. You can read more [here](https://medium.com/@koredefashokun/building-the-future-in-the-open-f3ac035fb412), or follow Overt on Twitter [here](https://twitter.com/overt_hq).
 
 ## Getting Started
 
