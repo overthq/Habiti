@@ -47,7 +47,7 @@ All forms of (positive) contribution are welcome to Market. Be sure to check out
 
 ## Tech Stack
 
-Move is a TypeScript-based application. It is built with popular JS libraries/frameworks like React, React Native and Express. Here's what the stack looks like.
+Market is a TypeScript-based application. It is built with popular JS libraries/frameworks like React, React Native and Express. Here's what the stack looks like.
 
 - Front-End
   - Mobile App
