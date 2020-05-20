@@ -33,8 +33,6 @@ const Carts = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		// paddingTop: 15,
-		// paddingHorizontal: 20,
 		flex: 1
 	},
 	header: {

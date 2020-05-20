@@ -56,7 +56,11 @@ export const CartsProvider: React.FC = ({ children }) => {
 	const addItemToCart: AddItemToCart = ({ storeId, itemId, quantity }) => {
 		const cartsCopy = [...carts];
 		const cartToAddItemTo = cartsCopy.find(({ storeId: id }) => storeId === id);
-		cartToAddItemTo?.items.push({ itemId, quantity });
+		if (!cartToAddItemTo) {
+			cartsCopy.push({ storeId, items: [{ itemId, quantity }] });
+		} else {
+			cartToAddItemTo?.items.push({ itemId, quantity });
+		}
 		setCarts(cartsCopy);
 	};
 
