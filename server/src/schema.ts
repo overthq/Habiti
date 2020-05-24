@@ -56,7 +56,7 @@ const typeDefs = gql`
 		created_at: String!
 		updated_at: String!
 		store: Store! @relate(on: [{ from: "store_id", to: "id" }])
-		user: User! @relate(on: [{ from: "user_id", to: "id" }]})
+		user: User! @relate(on: [{ from: "user_id", to: "id" }])
 	}
 
 	enum ItemUnit {
@@ -102,8 +102,8 @@ const typeDefs = gql`
 		id: ID!
 		store_id: ID!
 		user_id: ID!
-		store: Store! @relate(on: [{ from "store_id", to: "id" }])
-		user: User! @relate(on: [{ from: "user_id", to: "id" }]})
+		store: Store! @relate(on: [{ from: "store_id", to: "id" }])
+		user: User! @relate(on: [{ from: "user_id", to: "id" }])
 	}
 `;
 
