@@ -22,13 +22,13 @@ const StoreItems: React.FC<{ storeId: string }> = ({ storeId }) => {
 	return (
 		<FlatList
 			data={data?.storeItems}
-			keyExtractor={({ _id }) => _id}
+			keyExtractor={({ id }) => id}
 			ListHeaderComponent={<View style={{ marginBottom: 20 }}></View>}
 			renderItem={({ item, index }) => {
 				return (
 					<View style={{ flex: 1, flexDirection: 'column' }}>
 						<TouchableOpacity
-							key={item._id}
+							key={item.id}
 							style={{
 								flex: 1,
 								...(index % 2 === 0
@@ -36,14 +36,14 @@ const StoreItems: React.FC<{ storeId: string }> = ({ storeId }) => {
 									: { paddingRight: 20, paddingLeft: 10 })
 							}}
 							onPress={() =>
-								addItemToCart({ storeId, itemId: item._id, quantity: 5 })
+								addItemToCart({ storeId, itemId: item.id, quantity: 5 })
 							}
 							activeOpacity={0.8}
 						>
 							<View style={styles.itemImage} />
 							<Text style={styles.itemName}>{item.name}</Text>
 							<Text style={{ color: '#505050', fontSize: 15 }}>
-								${item.pricePerUnit}
+								${item.price_per_unit}
 							</Text>
 						</TouchableOpacity>
 					</View>
@@ -67,7 +67,7 @@ const Store = () => {
 
 	return (
 		<View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
-			<StoreItems storeId={data?.store._id} />
+			<StoreItems storeId={data?.store.id} />
 		</View>
 	);
 };

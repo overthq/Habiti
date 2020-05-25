@@ -1,5 +1,6 @@
 import Knex from 'knex';
 import { createSqlmancerClient } from 'sqlmancer';
+import { SqlmancerClient } from './sqlmancer';
 
 const knex = Knex({
 	client: 'pg',
@@ -7,4 +8,7 @@ const knex = Knex({
 	debug: process.env.NODE_ENV === 'development'
 });
 
-export const client = createSqlmancerClient(`${__dirname}/schema.ts`, knex);
+export const client = createSqlmancerClient<SqlmancerClient>(
+	`${__dirname}/schema.ts`,
+	knex
+);

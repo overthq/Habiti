@@ -12,7 +12,7 @@ mutation VerifyAuthentication($phone: String!, $code: String!) {
 
 query CurrentUser {
 	currentUser {
-		_id
+		id
 		name
 		phone
 	}

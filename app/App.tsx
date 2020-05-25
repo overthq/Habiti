@@ -74,12 +74,12 @@ const MainNavigator = () => (
 );
 
 const Routes = () => {
-	const [{ data, fetching }] = useCurrentUserQuery();
+	const [{ data, fetching, error }] = useCurrentUserQuery();
 	const { logOut } = useAccessToken();
 
 	React.useEffect(() => {
 		if (!fetching && !data?.currentUser) logOut();
-	}, [fetching, data]);
+	}, [fetching, data, error]);
 
 	return fetching ? (
 		<View>

@@ -1,6 +1,6 @@
 query UserOrders {
 	userOrders {
-		_id
+		id
 		status
 		store {
 			name
@@ -8,16 +8,16 @@ query UserOrders {
 		cart {
 			item {
 				name
-				pricePerUnit
+				price_per_unit
 			}
 			quantity
 		}
 	}
 }
 
-mutation PlaceOrder($storeId: ID!, $cart: [CartItemInput!]!) {
-	placeOrder(storeId: $storeId, cart: $cart) {
-		_id
+mutation PlaceOrder($input: CreateOrderInput!) {
+	createOrder(input: $input) {
+		id
 		status
 		store {
 			name
@@ -25,7 +25,7 @@ mutation PlaceOrder($storeId: ID!, $cart: [CartItemInput!]!) {
 		cart {
 			item {
 				name
-				pricePerUnit
+				price_per_unit
 			}
 			quantity
 		}

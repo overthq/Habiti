@@ -1,7 +1,8 @@
 {
 	"name": "@market/server",
 	"scripts": {
-		"dev": "nodemon"
+		"dev": "nodemon",
+		"generate-types": "sqlmancer generate src/schema.ts src/sqlmancer.ts"
 	},
 	"dependencies": {
 		"cors": "^2.8.5",
@@ -11,6 +12,7 @@
 		"express-jwt": "^5.3.3",
 		"graphql": "^15.0.0",
 		"graphql-tag": "^2.10.3",
+		"graphql-tools": "^6.0.0",
 		"jsonwebtoken": "^8.5.1",
 		"knex": "^0.21.1",
 		"pg": "^8.2.1",

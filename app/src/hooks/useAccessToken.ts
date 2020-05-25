@@ -28,7 +28,7 @@ const useAccessToken = () => {
 	const saveAccessToken = (token: string) =>
 		AsyncStorage.setItem('accessToken', token);
 
-	const logOut = () => AsyncStorage.removeItem('accessToken');
+	const logOut = () => setAccessToken(null);
 
 	return { loading, accessToken, saveAccessToken, logOut };
 };

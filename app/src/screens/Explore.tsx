@@ -38,17 +38,17 @@ const Explore = () => {
 				<FlatList
 					horizontal
 					data={data?.stores}
-					keyExtractor={({ _id }) => _id}
+					keyExtractor={({ id }) => id}
 					contentContainerStyle={{ paddingLeft: 20 }}
 					renderItem={({ item }) => (
 						<TouchableOpacity
-							key={item._id}
+							key={item.id}
 							style={styles.featuredStoreContainer}
-							onPress={() => navigate('Store', { storeId: item._id })}
+							onPress={() => navigate('Store', { storeId: item.id })}
 						>
 							<Image
 								source={{
-									uri: `https://twitter.com/${item.twitterUsername}/profile_image?size=normal`
+									uri: `https://twitter.com/${item.profile.twitter_username}/profile_image?size=normal`
 								}}
 								style={{ height: 80, width: 80 }}
 							/>

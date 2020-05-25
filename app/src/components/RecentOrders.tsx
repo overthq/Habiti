@@ -14,7 +14,7 @@ const getStatusColor = (status: OrderStatus) => {
 			return '#F4CF0B';
 		case OrderStatus.Processing:
 			return '#C4C4C4';
-		case OrderStatus.Delivered:
+		case OrderStatus.Fulfilled:
 			return '#37DB0F';
 	}
 };
@@ -25,10 +25,10 @@ const RecentOrders = () => {
 	return (
 		<FlatList
 			data={data?.userOrders}
-			keyExtractor={({ _id }) => _id}
+			keyExtractor={({ id }) => id}
 			horizontal
 			renderItem={({ item }) => (
-				<TouchableOpacity activeOpacity={0.8} key={item._id}>
+				<TouchableOpacity activeOpacity={0.8} key={item.id}>
 					<View style={styles.orderContainer}>
 						<View style={styles.storeAvatar}></View>
 						<View style={styles.orderInformation}>

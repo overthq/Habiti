@@ -11,93 +11,233 @@ export type Scalars = {
 	Float: number;
 };
 
-export type AdditionalEntityFields = {
-	path?: Maybe<Scalars['String']>;
-	type?: Maybe<Scalars['String']>;
+export type BooleanOperators = {
+	equal?: Maybe<Scalars['Boolean']>;
+	notEqual?: Maybe<Scalars['Boolean']>;
+	in?: Maybe<Array<Scalars['Boolean']>>;
+	notIn?: Maybe<Array<Scalars['Boolean']>>;
 };
 
-export type CartItem = {
-	__typename?: 'CartItem';
-	_id: Scalars['ID'];
-	itemId: Scalars['ID'];
-	item: Item;
+export type CreateItemInput = {
+	id?: Maybe<Scalars['ID']>;
+	store_id: Scalars['ID'];
+	name: Scalars['String'];
+	description: Scalars['String'];
+	unit: ItemUnit;
+	price_per_unit: Scalars['Int'];
+	featured: Scalars['Boolean'];
+	created_at?: Maybe<Scalars['String']>;
+	updated_at?: Maybe<Scalars['String']>;
+};
+
+export type CreateManagerInput = {
+	id?: Maybe<Scalars['ID']>;
+	store_id: Scalars['ID'];
+	name: Scalars['String'];
+	email: Scalars['String'];
+	created_at?: Maybe<Scalars['String']>;
+	updated_at?: Maybe<Scalars['String']>;
+};
+
+export type CreateOrderInput = {
+	id?: Maybe<Scalars['ID']>;
+	user_id: Scalars['ID'];
+	store_id: Scalars['ID'];
+	status?: Maybe<OrderStatus>;
+	created_at?: Maybe<Scalars['String']>;
+	updated_at?: Maybe<Scalars['String']>;
+};
+
+export type CreateOrderItemInput = {
+	id?: Maybe<Scalars['ID']>;
+	order_id: Scalars['ID'];
+	item_id: Scalars['ID'];
 	quantity: Scalars['Int'];
 };
 
-export type CartItemInput = {
-	itemId: Scalars['ID'];
-	quantity: Scalars['Int'];
+export type CreateStoreInput = {
+	id?: Maybe<Scalars['ID']>;
+	name: Scalars['String'];
+	short_name: Scalars['String'];
+	created_at?: Maybe<Scalars['String']>;
+	updated_at?: Maybe<Scalars['String']>;
+};
+
+export type CreateStoreProfileInput = {
+	id?: Maybe<Scalars['ID']>;
+	store_id: Scalars['ID'];
+	website_url?: Maybe<Scalars['String']>;
+	instagram_username?: Maybe<Scalars['String']>;
+	twitter_username?: Maybe<Scalars['String']>;
+	created_at?: Maybe<Scalars['String']>;
+	updated_at?: Maybe<Scalars['String']>;
+};
+
+export type CreateUserInput = {
+	id?: Maybe<Scalars['ID']>;
+	name: Scalars['String'];
+	phone: Scalars['String'];
+	created_at?: Maybe<Scalars['String']>;
+	updated_at?: Maybe<Scalars['String']>;
+};
+
+export type IdOperators = {
+	equal?: Maybe<Scalars['ID']>;
+	notEqual?: Maybe<Scalars['ID']>;
+	in?: Maybe<Array<Scalars['ID']>>;
+	notIn?: Maybe<Array<Scalars['ID']>>;
+	greaterThan?: Maybe<Scalars['ID']>;
+	greaterThanOrEqual?: Maybe<Scalars['ID']>;
+	lessThan?: Maybe<Scalars['ID']>;
+	lessThanOrEqual?: Maybe<Scalars['ID']>;
+};
+
+export type IntOperators = {
+	equal?: Maybe<Scalars['Int']>;
+	notEqual?: Maybe<Scalars['Int']>;
+	in?: Maybe<Array<Scalars['Int']>>;
+	notIn?: Maybe<Array<Scalars['Int']>>;
+	greaterThan?: Maybe<Scalars['Int']>;
+	greaterThanOrEqual?: Maybe<Scalars['Int']>;
+	lessThan?: Maybe<Scalars['Int']>;
+	lessThanOrEqual?: Maybe<Scalars['Int']>;
 };
 
 export type Item = {
 	__typename?: 'Item';
-	_id: Scalars['ID'];
+	id: Scalars['ID'];
+	store_id: Scalars['ID'];
 	name: Scalars['String'];
 	description: Scalars['String'];
-	storeId: Scalars['ID'];
-	store: Store;
-	unit?: Maybe<ItemUnit>;
-	pricePerUnit: Scalars['Int'];
+	unit: ItemUnit;
+	price_per_unit: Scalars['Int'];
 	featured: Scalars['Boolean'];
+	created_at: Scalars['String'];
+	updated_at: Scalars['String'];
+	store: Store;
 };
 
-export type ItemInput = {
-	name: Scalars['String'];
-	description: Scalars['String'];
-	pricePerUnit: Scalars['Int'];
-	unit?: Maybe<ItemUnit>;
-	featured?: Maybe<Scalars['Boolean']>;
+export type ItemOrderBy = {
+	id?: Maybe<SortDirection>;
+	store_id?: Maybe<SortDirection>;
+	name?: Maybe<SortDirection>;
+	description?: Maybe<SortDirection>;
+	unit?: Maybe<SortDirection>;
+	price_per_unit?: Maybe<SortDirection>;
+	featured?: Maybe<SortDirection>;
+	created_at?: Maybe<SortDirection>;
+	updated_at?: Maybe<SortDirection>;
+	store?: Maybe<StoreOrderByNested>;
+};
+
+export type ItemOrderByNested = {
+	id?: Maybe<SortDirection>;
+	store_id?: Maybe<SortDirection>;
+	name?: Maybe<SortDirection>;
+	description?: Maybe<SortDirection>;
+	unit?: Maybe<SortDirection>;
+	price_per_unit?: Maybe<SortDirection>;
+	featured?: Maybe<SortDirection>;
+	created_at?: Maybe<SortDirection>;
+	updated_at?: Maybe<SortDirection>;
 };
 
 export enum ItemUnit {
 	Kilogram = 'Kilogram',
-	Litre = 'Litre'
+	Litre = 'Litre',
+	Cup = 'Cup'
 }
+
+export type ItemUnitOperators = {
+	equal?: Maybe<ItemUnit>;
+	notEqual?: Maybe<ItemUnit>;
+	in?: Maybe<Array<ItemUnit>>;
+	notIn?: Maybe<Array<ItemUnit>>;
+};
+
+export type ItemWhere = {
+	id?: Maybe<IdOperators>;
+	store_id?: Maybe<IdOperators>;
+	name?: Maybe<StringOperators>;
+	description?: Maybe<StringOperators>;
+	unit?: Maybe<ItemUnitOperators>;
+	price_per_unit?: Maybe<IntOperators>;
+	featured?: Maybe<BooleanOperators>;
+	created_at?: Maybe<StringOperators>;
+	updated_at?: Maybe<StringOperators>;
+	and?: Maybe<Array<ItemWhere>>;
+	or?: Maybe<Array<ItemWhere>>;
+	not?: Maybe<ItemWhere>;
+	store?: Maybe<StoreWhere>;
+};
 
 export type Manager = {
 	__typename?: 'Manager';
-	_id: Scalars['ID'];
+	id: Scalars['ID'];
+	store_id: Scalars['ID'];
 	name: Scalars['String'];
 	email: Scalars['String'];
-	role: ManagerRole;
-	storeId: Scalars['ID'];
+	created_at: Scalars['String'];
+	updated_at: Scalars['String'];
+	store: Store;
 };
 
-export type ManagerInput = {
-	name?: Maybe<Scalars['String']>;
-	email?: Maybe<Scalars['String']>;
-	role?: Maybe<ManagerRole>;
+export type ManagerOrderBy = {
+	id?: Maybe<SortDirection>;
+	store_id?: Maybe<SortDirection>;
+	name?: Maybe<SortDirection>;
+	email?: Maybe<SortDirection>;
+	created_at?: Maybe<SortDirection>;
+	updated_at?: Maybe<SortDirection>;
+	store?: Maybe<StoreOrderByNested>;
 };
 
-export enum ManagerRole {
-	Admin = 'Admin',
-	Editor = 'Editor'
-}
+export type ManagerWhere = {
+	id?: Maybe<IdOperators>;
+	store_id?: Maybe<IdOperators>;
+	name?: Maybe<StringOperators>;
+	email?: Maybe<StringOperators>;
+	created_at?: Maybe<StringOperators>;
+	updated_at?: Maybe<StringOperators>;
+	and?: Maybe<Array<ManagerWhere>>;
+	or?: Maybe<Array<ManagerWhere>>;
+	not?: Maybe<ManagerWhere>;
+	store?: Maybe<StoreWhere>;
+};
 
 export type Mutation = {
 	__typename?: 'Mutation';
-	default?: Maybe<Scalars['String']>;
-	register: Scalars['String'];
 	authenticate: Scalars['String'];
+	register: Scalars['String'];
 	verifyAuthentication: Scalars['String'];
-	createItem: Item;
-	updateItem: Item;
-	deleteItem: Scalars['String'];
-	placeOrder: Order;
+	createUser: User;
+	updateUser: User;
 	createStore: Store;
 	updateStore: Store;
-	createManager: Scalars['String'];
-	updateManager: Manager;
+	createStoreProfile: StoreProfile;
+	updateStoreProfile: StoreProfile;
 	authenticateManager: Scalars['String'];
 	verifyManagerAuthentication: Scalars['String'];
+	createManager: Manager;
+	updateManager: Manager;
+	createItem: Item;
+	updateItem: Item;
+	createOrders: Array<Order>;
+	createOrder: Order;
+	updateOrder: Order;
+	createOrderItems: Array<OrderItem>;
+	createOrderItem: OrderItem;
+	updateOrderItem: OrderItem;
+	createStoreFollower?: Maybe<StoreFollower>;
+	followStore: StoreFollower;
+};
+
+export type MutationAuthenticateArgs = {
+	phone: Scalars['String'];
 };
 
 export type MutationRegisterArgs = {
 	name: Scalars['String'];
-	phone: Scalars['String'];
-};
-
-export type MutationAuthenticateArgs = {
 	phone: Scalars['String'];
 };
 
@@ -106,44 +246,34 @@ export type MutationVerifyAuthenticationArgs = {
 	code: Scalars['String'];
 };
 
-export type MutationCreateItemArgs = {
-	input?: Maybe<ItemInput>;
+export type MutationCreateUserArgs = {
+	input: CreateUserInput;
 };
 
-export type MutationUpdateItemArgs = {
-	itemId: Scalars['ID'];
-	input?: Maybe<ItemInput>;
-};
-
-export type MutationDeleteItemArgs = {
-	itemId: Scalars['ID'];
-};
-
-export type MutationPlaceOrderArgs = {
-	storeId: Scalars['ID'];
-	cart: Array<CartItemInput>;
+export type MutationUpdateUserArgs = {
+	id: Scalars['ID'];
+	input: UpdateUserInput;
 };
 
 export type MutationCreateStoreArgs = {
-	input?: Maybe<StoreInput>;
+	input: CreateStoreInput;
 };
 
 export type MutationUpdateStoreArgs = {
-	input?: Maybe<StoreInput>;
+	id: Scalars['ID'];
+	input: UpdateStoreInput;
 };
 
-export type MutationCreateManagerArgs = {
-	storeId: Scalars['ID'];
-	input?: Maybe<ManagerInput>;
+export type MutationCreateStoreProfileArgs = {
+	input: CreateStoreProfileInput;
 };
 
-export type MutationUpdateManagerArgs = {
-	managerId: Scalars['ID'];
-	input?: Maybe<ManagerInput>;
+export type MutationUpdateStoreProfileArgs = {
+	where?: Maybe<StoreProfileWhere>;
+	input: UpdateStoreProfileInput;
 };
 
 export type MutationAuthenticateManagerArgs = {
-	storeId: Scalars['ID'];
 	email: Scalars['String'];
 };
 
@@ -152,77 +282,556 @@ export type MutationVerifyManagerAuthenticationArgs = {
 	code: Scalars['String'];
 };
 
+export type MutationCreateManagerArgs = {
+	input: CreateManagerInput;
+};
+
+export type MutationUpdateManagerArgs = {
+	id: Scalars['ID'];
+	input: UpdateManagerInput;
+};
+
+export type MutationCreateItemArgs = {
+	input: CreateItemInput;
+};
+
+export type MutationUpdateItemArgs = {
+	id: Scalars['ID'];
+	input: UpdateItemInput;
+};
+
+export type MutationCreateOrdersArgs = {
+	input: Array<CreateOrderInput>;
+};
+
+export type MutationCreateOrderArgs = {
+	input: CreateOrderInput;
+};
+
+export type MutationUpdateOrderArgs = {
+	id: Scalars['ID'];
+	input: UpdateOrderInput;
+};
+
+export type MutationCreateOrderItemsArgs = {
+	input: Array<CreateOrderItemInput>;
+};
+
+export type MutationCreateOrderItemArgs = {
+	input: CreateOrderItemInput;
+};
+
+export type MutationUpdateOrderItemArgs = {
+	id: Scalars['ID'];
+	input: UpdateOrderItemInput;
+};
+
+export type MutationFollowStoreArgs = {
+	storeId?: Maybe<Scalars['ID']>;
+};
+
 export type Order = {
 	__typename?: 'Order';
-	_id: Scalars['ID'];
-	userId: Scalars['ID'];
-	user: User;
-	storeId: Scalars['ID'];
-	store: Store;
+	id: Scalars['ID'];
+	user_id: Scalars['ID'];
+	store_id: Scalars['ID'];
 	status: OrderStatus;
-	cart: Array<CartItem>;
+	created_at: Scalars['String'];
+	updated_at: Scalars['String'];
+	store: Store;
+	user: User;
+	cart: Array<OrderItem>;
+};
+
+export type OrderCartArgs = {
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	orderBy?: Maybe<Array<OrderItemOrderBy>>;
+	where?: Maybe<OrderItemWhere>;
+};
+
+export type OrderItem = {
+	__typename?: 'OrderItem';
+	id: Scalars['ID'];
+	order_id: Scalars['ID'];
+	item_id: Scalars['ID'];
+	quantity: Scalars['Int'];
+	order: Order;
+	item: Item;
+};
+
+export type OrderItemOrderBy = {
+	id?: Maybe<SortDirection>;
+	order_id?: Maybe<SortDirection>;
+	item_id?: Maybe<SortDirection>;
+	quantity?: Maybe<SortDirection>;
+	order?: Maybe<OrderOrderByNested>;
+	item?: Maybe<ItemOrderByNested>;
+};
+
+export type OrderItemOrderByAggregateFieldsOnly = {
+	avg?: Maybe<OrderItemWhereVg>;
+	sum?: Maybe<OrderItemWhereUm>;
+	min?: Maybe<OrderItemWhereIn>;
+	max?: Maybe<OrderItemWhereAx>;
+	count?: Maybe<SortDirection>;
+};
+
+export type OrderItemWhere = {
+	id?: Maybe<IdOperators>;
+	order_id?: Maybe<IdOperators>;
+	item_id?: Maybe<IdOperators>;
+	quantity?: Maybe<IntOperators>;
+	and?: Maybe<Array<OrderItemWhere>>;
+	or?: Maybe<Array<OrderItemWhere>>;
+	not?: Maybe<OrderItemWhere>;
+	order?: Maybe<OrderWhere>;
+	item?: Maybe<ItemWhere>;
+};
+
+export type OrderItemWhereAx = {
+	quantity?: Maybe<IntOperators>;
+};
+
+export type OrderItemWhereIn = {
+	quantity?: Maybe<IntOperators>;
+};
+
+export type OrderItemWhereUm = {
+	quantity?: Maybe<IntOperators>;
+};
+
+export type OrderItemWhereVg = {
+	quantity?: Maybe<IntOperators>;
+};
+
+export type OrderItemWhereWithAggregateFields = {
+	id?: Maybe<IdOperators>;
+	order_id?: Maybe<IdOperators>;
+	item_id?: Maybe<IdOperators>;
+	quantity?: Maybe<IntOperators>;
+	and?: Maybe<Array<OrderItemWhere>>;
+	or?: Maybe<Array<OrderItemWhere>>;
+	not?: Maybe<OrderItemWhere>;
+	order?: Maybe<OrderWhere>;
+	item?: Maybe<ItemWhere>;
+	avg?: Maybe<OrderItemWhereVg>;
+	sum?: Maybe<OrderItemWhereUm>;
+	min?: Maybe<OrderItemWhereIn>;
+	max?: Maybe<OrderItemWhereAx>;
+	count?: Maybe<IntOperators>;
+};
+
+export type OrderOrderBy = {
+	id?: Maybe<SortDirection>;
+	user_id?: Maybe<SortDirection>;
+	store_id?: Maybe<SortDirection>;
+	status?: Maybe<SortDirection>;
+	created_at?: Maybe<SortDirection>;
+	updated_at?: Maybe<SortDirection>;
+	store?: Maybe<StoreOrderByNested>;
+	user?: Maybe<UserOrderByNested>;
+	cart?: Maybe<OrderItemOrderByAggregateFieldsOnly>;
+};
+
+export type OrderOrderByNested = {
+	id?: Maybe<SortDirection>;
+	user_id?: Maybe<SortDirection>;
+	store_id?: Maybe<SortDirection>;
+	status?: Maybe<SortDirection>;
+	created_at?: Maybe<SortDirection>;
+	updated_at?: Maybe<SortDirection>;
 };
 
 export enum OrderStatus {
 	Pending = 'Pending',
 	Processing = 'Processing',
-	Delivered = 'Delivered'
+	Fulfilled = 'Fulfilled'
 }
+
+export type OrderStatusOperators = {
+	equal?: Maybe<OrderStatus>;
+	notEqual?: Maybe<OrderStatus>;
+	in?: Maybe<Array<OrderStatus>>;
+	notIn?: Maybe<Array<OrderStatus>>;
+};
+
+export type OrderWhere = {
+	id?: Maybe<IdOperators>;
+	user_id?: Maybe<IdOperators>;
+	store_id?: Maybe<IdOperators>;
+	status?: Maybe<OrderStatusOperators>;
+	created_at?: Maybe<StringOperators>;
+	updated_at?: Maybe<StringOperators>;
+	and?: Maybe<Array<OrderWhere>>;
+	or?: Maybe<Array<OrderWhere>>;
+	not?: Maybe<OrderWhere>;
+	store?: Maybe<StoreWhere>;
+	user?: Maybe<UserWhere>;
+	cart?: Maybe<OrderItemWhereWithAggregateFields>;
+};
 
 export type Query = {
 	__typename?: 'Query';
-	default?: Maybe<Scalars['String']>;
-	currentUser: User;
 	users: Array<User>;
-	storeItems: Array<Item>;
-	items: Array<Item>;
+	user: User;
+	currentUser: User;
+	orders: Array<Order>;
 	userOrders: Array<Order>;
 	storeOrders: Array<Order>;
-	store: Store;
+	order: Order;
+	items: Array<Item>;
+	item: Item;
 	stores: Array<Store>;
-	storeManagers: Array<Manager>;
+	store: Store;
+	managers: Array<Manager>;
+	manager: Manager;
 	currentManager: Manager;
+	storeProfile: StoreProfile;
+	storeFollowers: Array<StoreFollower>;
+	followingStore: Scalars['Boolean'];
 };
 
-export type QueryStoreItemsArgs = {
-	storeId: Scalars['ID'];
+export type QueryUsersArgs = {
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	orderBy?: Maybe<Array<UserOrderBy>>;
+	where?: Maybe<UserWhere>;
+};
+
+export type QueryUserArgs = {
+	id: Scalars['ID'];
+};
+
+export type QueryOrdersArgs = {
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	orderBy?: Maybe<Array<OrderOrderBy>>;
+	where?: Maybe<OrderWhere>;
+};
+
+export type QueryUserOrdersArgs = {
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	orderBy?: Maybe<Array<OrderOrderBy>>;
+	where?: Maybe<OrderWhere>;
 };
 
 export type QueryStoreOrdersArgs = {
-	storeId: Scalars['ID'];
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	orderBy?: Maybe<Array<OrderOrderBy>>;
+	where?: Maybe<OrderWhere>;
+};
+
+export type QueryOrderArgs = {
+	id: Scalars['ID'];
+};
+
+export type QueryItemsArgs = {
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	orderBy?: Maybe<Array<ItemOrderBy>>;
+	where?: Maybe<ItemWhere>;
+};
+
+export type QueryItemArgs = {
+	id: Scalars['ID'];
+};
+
+export type QueryStoresArgs = {
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	orderBy?: Maybe<Array<StoreOrderBy>>;
+	where?: Maybe<StoreWhere>;
 };
 
 export type QueryStoreArgs = {
+	id: Scalars['ID'];
+};
+
+export type QueryManagersArgs = {
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	orderBy?: Maybe<Array<ManagerOrderBy>>;
+	where?: Maybe<ManagerWhere>;
+};
+
+export type QueryManagerArgs = {
+	id: Scalars['ID'];
+};
+
+export type QueryStoreProfileArgs = {
+	where?: Maybe<StoreProfileWhere>;
+};
+
+export type QueryStoreFollowersArgs = {
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	orderBy?: Maybe<Array<StoreFollowerOrderBy>>;
+	where?: Maybe<StoreFollowerWhere>;
+};
+
+export type QueryFollowingStoreArgs = {
 	storeId: Scalars['ID'];
 };
 
-export type QueryStoreManagersArgs = {
-	storeId: Scalars['ID'];
+export enum SortDirection {
+	Asc = 'ASC',
+	Desc = 'DESC'
+}
+
+export enum SqlmancerAggregateFunction {
+	Avg = 'avg',
+	Count = 'count',
+	Max = 'max',
+	Min = 'min',
+	Sum = 'sum'
+}
+
+export type SqlmancerCustomScalars = {
+	string?: Maybe<Array<Scalars['String']>>;
+	number?: Maybe<Array<Scalars['String']>>;
+	boolean?: Maybe<Array<Scalars['String']>>;
+	JSON?: Maybe<Array<Scalars['String']>>;
+	Date?: Maybe<Array<Scalars['String']>>;
 };
+
+export enum SqlmancerDialect {
+	Postgres = 'POSTGRES',
+	Mysql = 'MYSQL',
+	Mariadb = 'MARIADB',
+	Sqlite = 'SQLITE'
+}
+
+export enum SqlmancerFieldNameTransformation {
+	CamelCase = 'CAMEL_CASE',
+	PascalCase = 'PASCAL_CASE',
+	SnakeCase = 'SNAKE_CASE'
+}
+
+export enum SqlmancerInputAction {
+	Create = 'CREATE',
+	Update = 'UPDATE'
+}
+
+export type SqlmancerJoinOn = {
+	from: Scalars['String'];
+	to: Scalars['String'];
+};
+
+export enum SqlmancerPaginationKind {
+	Offset = 'OFFSET'
+}
 
 export type Store = {
 	__typename?: 'Store';
-	_id: Scalars['ID'];
-	shortName: Scalars['String'];
+	id: Scalars['ID'];
 	name: Scalars['String'];
-	websiteUrl?: Maybe<Scalars['String']>;
-	instagramUsername?: Maybe<Scalars['String']>;
-	twitterUsername?: Maybe<Scalars['String']>;
+	short_name: Scalars['String'];
+	created_at: Scalars['String'];
+	updated_at: Scalars['String'];
+	profile: StoreProfile;
 };
 
-export type StoreInput = {
+export type StoreFollower = {
+	__typename?: 'StoreFollower';
+	id: Scalars['ID'];
+	store_id: Scalars['ID'];
+	user_id: Scalars['ID'];
+	store: Store;
+	user: User;
+};
+
+export type StoreFollowerOrderBy = {
+	id?: Maybe<SortDirection>;
+	store_id?: Maybe<SortDirection>;
+	user_id?: Maybe<SortDirection>;
+	store?: Maybe<StoreOrderByNested>;
+	user?: Maybe<UserOrderByNested>;
+};
+
+export type StoreFollowerWhere = {
+	id?: Maybe<IdOperators>;
+	store_id?: Maybe<IdOperators>;
+	user_id?: Maybe<IdOperators>;
+	and?: Maybe<Array<StoreFollowerWhere>>;
+	or?: Maybe<Array<StoreFollowerWhere>>;
+	not?: Maybe<StoreFollowerWhere>;
+	store?: Maybe<StoreWhere>;
+	user?: Maybe<UserWhere>;
+};
+
+export type StoreOrderBy = {
+	id?: Maybe<SortDirection>;
+	name?: Maybe<SortDirection>;
+	short_name?: Maybe<SortDirection>;
+	created_at?: Maybe<SortDirection>;
+	updated_at?: Maybe<SortDirection>;
+	profile?: Maybe<StoreProfileOrderByNested>;
+};
+
+export type StoreOrderByNested = {
+	id?: Maybe<SortDirection>;
+	name?: Maybe<SortDirection>;
+	short_name?: Maybe<SortDirection>;
+	created_at?: Maybe<SortDirection>;
+	updated_at?: Maybe<SortDirection>;
+};
+
+export type StoreProfile = {
+	__typename?: 'StoreProfile';
+	id: Scalars['ID'];
+	store_id: Scalars['ID'];
+	website_url?: Maybe<Scalars['String']>;
+	instagram_username?: Maybe<Scalars['String']>;
+	twitter_username?: Maybe<Scalars['String']>;
+	created_at: Scalars['String'];
+	updated_at: Scalars['String'];
+	store: Store;
+};
+
+export type StoreProfileOrderByNested = {
+	id?: Maybe<SortDirection>;
+	store_id?: Maybe<SortDirection>;
+	website_url?: Maybe<SortDirection>;
+	instagram_username?: Maybe<SortDirection>;
+	twitter_username?: Maybe<SortDirection>;
+	created_at?: Maybe<SortDirection>;
+	updated_at?: Maybe<SortDirection>;
+};
+
+export type StoreProfileWhere = {
+	id?: Maybe<IdOperators>;
+	store_id?: Maybe<IdOperators>;
+	website_url?: Maybe<StringOperators>;
+	instagram_username?: Maybe<StringOperators>;
+	twitter_username?: Maybe<StringOperators>;
+	created_at?: Maybe<StringOperators>;
+	updated_at?: Maybe<StringOperators>;
+	and?: Maybe<Array<StoreProfileWhere>>;
+	or?: Maybe<Array<StoreProfileWhere>>;
+	not?: Maybe<StoreProfileWhere>;
+	store?: Maybe<StoreWhere>;
+};
+
+export type StoreWhere = {
+	id?: Maybe<IdOperators>;
+	name?: Maybe<StringOperators>;
+	short_name?: Maybe<StringOperators>;
+	created_at?: Maybe<StringOperators>;
+	updated_at?: Maybe<StringOperators>;
+	and?: Maybe<Array<StoreWhere>>;
+	or?: Maybe<Array<StoreWhere>>;
+	not?: Maybe<StoreWhere>;
+	profile?: Maybe<StoreProfileWhere>;
+};
+
+export type StringOperators = {
+	equal?: Maybe<Scalars['String']>;
+	notEqual?: Maybe<Scalars['String']>;
+	greaterThan?: Maybe<Scalars['String']>;
+	greaterThanOrEqual?: Maybe<Scalars['String']>;
+	lessThan?: Maybe<Scalars['String']>;
+	lessThanOrEqual?: Maybe<Scalars['String']>;
+	in?: Maybe<Array<Scalars['String']>>;
+	notIn?: Maybe<Array<Scalars['String']>>;
+	like?: Maybe<Scalars['String']>;
+	notLike?: Maybe<Scalars['String']>;
+	iLike?: Maybe<Scalars['String']>;
+	notILike?: Maybe<Scalars['String']>;
+};
+
+export type UpdateItemInput = {
+	store_id?: Maybe<Scalars['ID']>;
 	name?: Maybe<Scalars['String']>;
-	shortName?: Maybe<Scalars['String']>;
-	websiteUrl?: Maybe<Scalars['String']>;
-	instagramUsername?: Maybe<Scalars['String']>;
-	twitterUsername?: Maybe<Scalars['String']>;
+	description?: Maybe<Scalars['String']>;
+	unit?: Maybe<ItemUnit>;
+	price_per_unit?: Maybe<Scalars['Int']>;
+	featured?: Maybe<Scalars['Boolean']>;
+	created_at?: Maybe<Scalars['String']>;
+	updated_at?: Maybe<Scalars['String']>;
+};
+
+export type UpdateManagerInput = {
+	store_id?: Maybe<Scalars['ID']>;
+	name?: Maybe<Scalars['String']>;
+	email?: Maybe<Scalars['String']>;
+	created_at?: Maybe<Scalars['String']>;
+	updated_at?: Maybe<Scalars['String']>;
+};
+
+export type UpdateOrderInput = {
+	user_id?: Maybe<Scalars['ID']>;
+	store_id?: Maybe<Scalars['ID']>;
+	status?: Maybe<OrderStatus>;
+	created_at?: Maybe<Scalars['String']>;
+	updated_at?: Maybe<Scalars['String']>;
+};
+
+export type UpdateOrderItemInput = {
+	order_id?: Maybe<Scalars['ID']>;
+	item_id?: Maybe<Scalars['ID']>;
+	quantity?: Maybe<Scalars['Int']>;
+};
+
+export type UpdateStoreInput = {
+	name?: Maybe<Scalars['String']>;
+	short_name?: Maybe<Scalars['String']>;
+	created_at?: Maybe<Scalars['String']>;
+	updated_at?: Maybe<Scalars['String']>;
+};
+
+export type UpdateStoreProfileInput = {
+	store_id?: Maybe<Scalars['ID']>;
+	website_url?: Maybe<Scalars['String']>;
+	instagram_username?: Maybe<Scalars['String']>;
+	twitter_username?: Maybe<Scalars['String']>;
+	created_at?: Maybe<Scalars['String']>;
+	updated_at?: Maybe<Scalars['String']>;
+};
+
+export type UpdateUserInput = {
+	name?: Maybe<Scalars['String']>;
+	phone?: Maybe<Scalars['String']>;
+	created_at?: Maybe<Scalars['String']>;
+	updated_at?: Maybe<Scalars['String']>;
 };
 
 export type User = {
 	__typename?: 'User';
-	_id: Scalars['ID'];
+	id: Scalars['ID'];
 	name: Scalars['String'];
 	phone: Scalars['String'];
+	created_at: Scalars['String'];
+	updated_at: Scalars['String'];
+};
+
+export type UserOrderBy = {
+	id?: Maybe<SortDirection>;
+	name?: Maybe<SortDirection>;
+	phone?: Maybe<SortDirection>;
+	created_at?: Maybe<SortDirection>;
+	updated_at?: Maybe<SortDirection>;
+};
+
+export type UserOrderByNested = {
+	id?: Maybe<SortDirection>;
+	name?: Maybe<SortDirection>;
+	phone?: Maybe<SortDirection>;
+	created_at?: Maybe<SortDirection>;
+	updated_at?: Maybe<SortDirection>;
+};
+
+export type UserWhere = {
+	id?: Maybe<IdOperators>;
+	name?: Maybe<StringOperators>;
+	phone?: Maybe<StringOperators>;
+	created_at?: Maybe<StringOperators>;
+	updated_at?: Maybe<StringOperators>;
+	and?: Maybe<Array<UserWhere>>;
+	or?: Maybe<Array<UserWhere>>;
+	not?: Maybe<UserWhere>;
 };
 
 export type ItemsQueryVariables = {};
@@ -231,7 +840,7 @@ export type ItemsQuery = { __typename?: 'Query' } & {
 	items: Array<
 		{ __typename?: 'Item' } & Pick<
 			Item,
-			'_id' | 'name' | 'storeId' | 'featured' | 'pricePerUnit' | 'unit'
+			'id' | 'name' | 'store_id' | 'featured' | 'price_per_unit' | 'unit'
 		>
 	>;
 };
@@ -244,7 +853,7 @@ export type StoreItemsQuery = { __typename?: 'Query' } & {
 	storeItems: Array<
 		{ __typename?: 'Item' } & Pick<
 			Item,
-			'_id' | 'name' | 'storeId' | 'featured' | 'pricePerUnit' | 'unit'
+			'id' | 'name' | 'store_id' | 'featured' | 'price_per_unit' | 'unit'
 		>
 	>;
 };
@@ -253,13 +862,13 @@ export type UserOrdersQueryVariables = {};
 
 export type UserOrdersQuery = { __typename?: 'Query' } & {
 	userOrders: Array<
-		{ __typename?: 'Order' } & Pick<Order, '_id' | 'status'> & {
+		{ __typename?: 'Order' } & Pick<Order, 'id' | 'status'> & {
 				store: { __typename?: 'Store' } & Pick<Store, 'name'>;
 				cart: Array<
-					{ __typename?: 'CartItem' } & Pick<CartItem, 'quantity'> & {
+					{ __typename?: 'OrderItem' } & Pick<OrderItem, 'quantity'> & {
 							item: { __typename?: 'Item' } & Pick<
 								Item,
-								'name' | 'pricePerUnit'
+								'name' | 'price_per_unit'
 							>;
 						}
 				>;
@@ -268,16 +877,18 @@ export type UserOrdersQuery = { __typename?: 'Query' } & {
 };
 
 export type PlaceOrderMutationVariables = {
-	storeId: Scalars['ID'];
-	cart: Array<CartItemInput>;
+	input: CreateOrderInput;
 };
 
 export type PlaceOrderMutation = { __typename?: 'Mutation' } & {
-	placeOrder: { __typename?: 'Order' } & Pick<Order, '_id' | 'status'> & {
+	createOrder: { __typename?: 'Order' } & Pick<Order, 'id' | 'status'> & {
 			store: { __typename?: 'Store' } & Pick<Store, 'name'>;
 			cart: Array<
-				{ __typename?: 'CartItem' } & Pick<CartItem, 'quantity'> & {
-						item: { __typename?: 'Item' } & Pick<Item, 'name' | 'pricePerUnit'>;
+				{ __typename?: 'OrderItem' } & Pick<OrderItem, 'quantity'> & {
+						item: { __typename?: 'Item' } & Pick<
+							Item,
+							'name' | 'price_per_unit'
+						>;
 					}
 			>;
 		};
@@ -287,10 +898,12 @@ export type StoresQueryVariables = {};
 
 export type StoresQuery = { __typename?: 'Query' } & {
 	stores: Array<
-		{ __typename?: 'Store' } & Pick<
-			Store,
-			'_id' | 'name' | 'websiteUrl' | 'instagramUsername' | 'twitterUsername'
-		>
+		{ __typename?: 'Store' } & Pick<Store, 'id' | 'name' | 'short_name'> & {
+				profile: { __typename?: 'StoreProfile' } & Pick<
+					StoreProfile,
+					'website_url' | 'instagram_username' | 'twitter_username'
+				>;
+			}
 	>;
 };
 
@@ -301,8 +914,13 @@ export type StoreQueryVariables = {
 export type StoreQuery = { __typename?: 'Query' } & {
 	store: { __typename?: 'Store' } & Pick<
 		Store,
-		'_id' | 'name' | 'websiteUrl' | 'instagramUsername' | 'twitterUsername'
-	>;
+		'id' | 'name' | 'short_name'
+	> & {
+			profile: { __typename?: 'StoreProfile' } & Pick<
+				StoreProfile,
+				'website_url' | 'instagram_username' | 'twitter_username'
+			>;
+		};
 };
 
 export type RegisterMutationVariables = {
@@ -337,17 +955,17 @@ export type VerifyAuthenticationMutation = { __typename?: 'Mutation' } & Pick<
 export type CurrentUserQueryVariables = {};
 
 export type CurrentUserQuery = { __typename?: 'Query' } & {
-	currentUser: { __typename?: 'User' } & Pick<User, '_id' | 'name' | 'phone'>;
+	currentUser: { __typename?: 'User' } & Pick<User, 'id' | 'name' | 'phone'>;
 };
 
 export const ItemsDocument = gql`
 	query Items {
 		items {
-			_id
+			id
 			name
-			storeId
+			store_id
 			featured
-			pricePerUnit
+			price_per_unit
 			unit
 		}
 	}
@@ -360,12 +978,12 @@ export function useItemsQuery(
 }
 export const StoreItemsDocument = gql`
 	query StoreItems($storeId: ID!) {
-		storeItems(storeId: $storeId) {
-			_id
+		storeItems: items(where: { store_id: { equal: $storeId } }) {
+			id
 			name
-			storeId
+			store_id
 			featured
-			pricePerUnit
+			price_per_unit
 			unit
 		}
 	}
@@ -382,7 +1000,7 @@ export function useStoreItemsQuery(
 export const UserOrdersDocument = gql`
 	query UserOrders {
 		userOrders {
-			_id
+			id
 			status
 			store {
 				name
@@ -390,7 +1008,7 @@ export const UserOrdersDocument = gql`
 			cart {
 				item {
 					name
-					pricePerUnit
+					price_per_unit
 				}
 				quantity
 			}
@@ -407,9 +1025,9 @@ export function useUserOrdersQuery(
 	});
 }
 export const PlaceOrderDocument = gql`
-	mutation PlaceOrder($storeId: ID!, $cart: [CartItemInput!]!) {
-		placeOrder(storeId: $storeId, cart: $cart) {
-			_id
+	mutation PlaceOrder($input: CreateOrderInput!) {
+		createOrder(input: $input) {
+			id
 			status
 			store {
 				name
@@ -417,7 +1035,7 @@ export const PlaceOrderDocument = gql`
 			cart {
 				item {
 					name
-					pricePerUnit
+					price_per_unit
 				}
 				quantity
 			}
@@ -433,11 +1051,14 @@ export function usePlaceOrderMutation() {
 export const StoresDocument = gql`
 	query Stores {
 		stores {
-			_id
+			id
 			name
-			websiteUrl
-			instagramUsername
-			twitterUsername
+			short_name
+			profile {
+				website_url
+				instagram_username
+				twitter_username
+			}
 		}
 	}
 `;
@@ -449,12 +1070,15 @@ export function useStoresQuery(
 }
 export const StoreDocument = gql`
 	query Store($storeId: ID!) {
-		store(storeId: $storeId) {
-			_id
+		store(id: $storeId) {
+			id
 			name
-			websiteUrl
-			instagramUsername
-			twitterUsername
+			short_name
+			profile {
+				website_url
+				instagram_username
+				twitter_username
+			}
 		}
 	}
 `;
@@ -501,7 +1125,7 @@ export function useVerifyAuthenticationMutation() {
 export const CurrentUserDocument = gql`
 	query CurrentUser {
 		currentUser {
-			_id
+			id
 			name
 			phone
 		}

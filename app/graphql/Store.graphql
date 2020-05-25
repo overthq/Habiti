@@ -1,19 +1,25 @@
 query Stores {
 	stores {
-		_id
+		id
 		name
-		websiteUrl
-		instagramUsername
-		twitterUsername
+		short_name
+		profile {
+			website_url
+			instagram_username
+			twitter_username
+		}
 	}
 }
 
 query Store($storeId: ID!) {
-	store(storeId: $storeId) {
-		_id
+	store(id: $storeId) {
+		id
 		name
-		websiteUrl
-		instagramUsername
-		twitterUsername
+		short_name
+		profile {
+			website_url
+			instagram_username
+			twitter_username
+		}
 	}
 }

@@ -18,6 +18,7 @@ const Authenticate = () => {
 	const [{ data, fetching }, authenticate] = useAuthenticateMutation();
 
 	React.useEffect(() => {
+		console.log(data);
 		if (data?.authenticate) {
 			navigate('VerifyAuthentication', { phone });
 		}

@@ -1,21 +1,21 @@
 query Items {
 	items {
-		_id
+		id
 		name
-		storeId
+		store_id
 		featured
-		pricePerUnit
+		price_per_unit
 		unit
 	}
 }
 
 query StoreItems($storeId: ID!) {
-	storeItems(storeId: $storeId) {
-		_id
+	storeItems: items(where: { store_id: { equal: $storeId } }) {
+		id
 		name
-		storeId
+		store_id
 		featured
-		pricePerUnit
+		price_per_unit
 		unit
 	}
 }

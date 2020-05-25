@@ -9,9 +9,9 @@ const FeaturedItems = () => {
 		<FlatList
 			horizontal
 			data={data?.items}
-			keyExtractor={({ _id }) => _id}
+			keyExtractor={({ id }) => id}
 			renderItem={({ item }) => (
-				<View key={item._id} style={styles.itemContainer}></View>
+				<View key={item.id} style={styles.itemContainer}></View>
 			)}
 		/>
 	);
