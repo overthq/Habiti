@@ -20,6 +20,7 @@ import useAccessToken from './src/hooks/useAccessToken';
 import Explore from './src/screens/Explore';
 import Search from './src/screens/Search';
 import Store from './src/screens/Store';
+import Item from './src/screens/Item';
 import { Icon, IconType } from './src/components/icons';
 import { useCurrentUserQuery } from './src/types';
 
@@ -100,9 +101,22 @@ const Routes = () => {
 					component={MainNavigator}
 					options={{ headerShown: false }}
 				/>
+
 				<AppStack.Screen
 					name='Search'
 					component={Search}
+					options={{
+						headerShown: false,
+						gestureEnabled: true,
+						cardOverlayEnabled: true,
+						...(Platform.OS === 'ios'
+							? TransitionPresets.ModalPresentationIOS
+							: TransitionPresets.RevealFromBottomAndroid)
+					}}
+				/>
+				<AppStack.Screen
+					name='Item'
+					component={Item}
 					options={{
 						headerShown: false,
 						gestureEnabled: true,

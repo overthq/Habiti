@@ -19,3 +19,18 @@ query StoreItems($storeId: ID!) {
 		unit
 	}
 }
+
+query Item($itemId: ID!) {
+	item(id: $itemId) {
+		id
+		name
+		store_id
+		store {
+			id
+			name
+		}
+		description
+		price_per_unit
+		unit
+	}
+}

@@ -11,14 +11,15 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useStoreQuery, useStoreItemsQuery } from '../types';
 import { Icon } from '../components/icons';
-import { CartsContext } from '../contexts/CartsContext';
 
-const StoreItems: React.FC<{ storeId: string; header: React.ReactNode }> = ({
+const StoreItems: React.FC<{ storeId?: string; header: React.FC }> = ({
 	storeId,
 	header
 }) => {
-	const [{ data, fetching }] = useStoreItemsQuery({ variables: { storeId } });
-	const { addItemToCart } = React.useContext(CartsContext);
+	const [{ data, fetching }] = useStoreItemsQuery({
+		variables: { storeId: storeId as string }
+	});
+	const { navigate } = useNavigation();
 
 	if (fetching) {
 		return <ActivityIndicator />;
@@ -28,38 +29,25 @@ const StoreItems: React.FC<{ storeId: string; header: React.ReactNode }> = ({
 		<FlatList
 			data={data?.storeItems}
 			keyExtractor={({ id }) => id}
-			ListHeaderComponent={
-				<>
-					{header}
-					<View style={{ marginBottom: 20 }} />
-				</>
-			}
-			renderItem={({ item, index }) => {
-				return (
-					<View style={{ flex: 1, flexDirection: 'column' }}>
-						<TouchableOpacity
-							key={item.id}
-							style={{
-								flex: 1,
-								margin: 10
-								// ...(index % 2 === 0
-								// 	? { paddingLeft: 20, paddingRight: 10 }
-								// 	: { paddingRight: 20, paddingLeft: 10 })
-							}}
-							onPress={() =>
-								addItemToCart({ storeId, itemId: item.id, quantity: 5 })
-							}
-							activeOpacity={0.8}
-						>
-							<View style={styles.itemImage} />
-							<Text style={styles.itemName}>{item.name}</Text>
-							<Text style={{ color: '#505050', fontSize: 15 }}>
-								${item.price_per_unit}
-							</Text>
-						</TouchableOpacity>
-					</View>
-				);
-			}}
+			ListHeaderComponent={header}
+			renderItem={({ item }) => (
+				<View style={{ flex: 1, flexDirection: 'column' }}>
+					<TouchableOpacity
+						key={item.id}
+						style={{ flex: 1, margin: 10 }}
+						onPress={() => {
+							navigate('Item', { itemId: item.id });
+						}}
+						activeOpacity={0.8}
+					>
+						<View style={styles.itemImage} />
+						<Text style={styles.itemName}>{item.name}</Text>
+						<Text style={{ color: '#505050', fontSize: 15 }}>
+							${item.price_per_unit}
+						</Text>
+					</TouchableOpacity>
+				</View>
+			)}
 			numColumns={2}
 		/>
 	);
@@ -89,10 +77,10 @@ const Store = () => {
 		<View style={styles.container}>
 			<StoreItems
 				storeId={data?.store.id}
-				header={
+				header={() => (
 					<View
 						style={{
-							paddingTop: 25,
+							paddingVertical: 25,
 							paddingHorizontal: 10
 						}}
 					>
@@ -170,7 +158,7 @@ const Store = () => {
 							<Text style={{ fontSize: 16, fontWeight: '500' }}>Follow</Text>
 						</TouchableOpacity>
 					</View>
-				}
+				)}
 			/>
 		</View>
 	);

@@ -66,6 +66,7 @@ export type CreateStoreInput = {
 export type CreateStoreProfileInput = {
 	id?: Maybe<Scalars['ID']>;
 	store_id: Scalars['ID'];
+	bio?: Maybe<Scalars['String']>;
 	website_url?: Maybe<Scalars['String']>;
 	instagram_username?: Maybe<Scalars['String']>;
 	twitter_username?: Maybe<Scalars['String']>;
@@ -695,6 +696,7 @@ export type StoreProfile = {
 	__typename?: 'StoreProfile';
 	id: Scalars['ID'];
 	store_id: Scalars['ID'];
+	bio?: Maybe<Scalars['String']>;
 	website_url?: Maybe<Scalars['String']>;
 	instagram_username?: Maybe<Scalars['String']>;
 	twitter_username?: Maybe<Scalars['String']>;
@@ -707,6 +709,7 @@ export type StoreProfile = {
 export type StoreProfileOrderByNested = {
 	id?: Maybe<SortDirection>;
 	store_id?: Maybe<SortDirection>;
+	bio?: Maybe<SortDirection>;
 	website_url?: Maybe<SortDirection>;
 	instagram_username?: Maybe<SortDirection>;
 	twitter_username?: Maybe<SortDirection>;
@@ -717,6 +720,7 @@ export type StoreProfileOrderByNested = {
 export type StoreProfileWhere = {
 	id?: Maybe<IdOperators>;
 	store_id?: Maybe<IdOperators>;
+	bio?: Maybe<StringOperators>;
 	website_url?: Maybe<StringOperators>;
 	instagram_username?: Maybe<StringOperators>;
 	twitter_username?: Maybe<StringOperators>;
@@ -798,6 +802,7 @@ export type UpdateStoreInput = {
 
 export type UpdateStoreProfileInput = {
 	store_id?: Maybe<Scalars['ID']>;
+	bio?: Maybe<Scalars['String']>;
 	website_url?: Maybe<Scalars['String']>;
 	instagram_username?: Maybe<Scalars['String']>;
 	twitter_username?: Maybe<Scalars['String']>;
@@ -870,6 +875,17 @@ export type StoreItemsQuery = { __typename?: 'Query' } & {
 			'id' | 'name' | 'store_id' | 'featured' | 'price_per_unit' | 'unit'
 		>
 	>;
+};
+
+export type ItemQueryVariables = {
+	itemId: Scalars['ID'];
+};
+
+export type ItemQuery = { __typename?: 'Query' } & {
+	item: { __typename?: 'Item' } & Pick<
+		Item,
+		'id' | 'name' | 'store_id' | 'description' | 'price_per_unit' | 'unit'
+	> & { store: { __typename?: 'Store' } & Pick<Store, 'id' | 'name'> };
 };
 
 export type UserOrdersQueryVariables = {};
@@ -1019,6 +1035,28 @@ export function useStoreItemsQuery(
 		query: StoreItemsDocument,
 		...options
 	});
+}
+export const ItemDocument = gql`
+	query Item($itemId: ID!) {
+		item(id: $itemId) {
+			id
+			name
+			store_id
+			store {
+				id
+				name
+			}
+			description
+			price_per_unit
+			unit
+		}
+	}
+`;
+
+export function useItemQuery(
+	options: Omit<Urql.UseQueryArgs<ItemQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<ItemQuery>({ query: ItemDocument, ...options });
 }
 export const UserOrdersDocument = gql`
 	query UserOrders {
