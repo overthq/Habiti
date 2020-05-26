@@ -42,17 +42,18 @@ const Explore = () => {
 					contentContainerStyle={{ paddingLeft: 20 }}
 					renderItem={({ item }) => (
 						<TouchableOpacity
-							key={item.id}
-							style={styles.featuredStoreContainer}
+							style={{ justifyContent: 'center' }}
 							onPress={() => navigate('Store', { storeId: item.id })}
 						>
-							<Image
-								source={{
-									uri: `https://twitter.com/${item.profile.twitter_username}/profile_image?size=normal`
-								}}
-								style={{ height: 80, width: 80 }}
-							/>
-							{/* <Text style={styles.storeName}>{item.name}</Text> */}
+							<View key={item.id} style={styles.featuredStoreContainer}>
+								<Image
+									source={{
+										uri: `https://twitter.com/${item.profile.twitter_username}/profile_image?size=normal`
+									}}
+									style={{ height: 80, width: 80 }}
+								/>
+							</View>
+							<Text style={styles.storeName}>{item.name}</Text>
 						</TouchableOpacity>
 					)}
 					ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
@@ -102,7 +103,9 @@ const styles = StyleSheet.create({
 	},
 	storeName: {
 		fontWeight: '500',
-		fontSize: 15
+		fontSize: 15,
+		marginTop: 5,
+		textAlign: 'center'
 	}
 });
 

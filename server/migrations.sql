@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS stores (
 CREATE TABLE IF NOT EXISTS store_profiles (
 	id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
 	store_id UUID NOT NULL,
+	bio TEXT,
 	website_url VARCHAR(255),
 	instagram_username VARCHAR(30),
 	twitter_username VARCHAR(15),

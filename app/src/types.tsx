@@ -662,6 +662,18 @@ export type StoreFollowerWhere = {
 	user?: Maybe<UserWhere>;
 };
 
+export type StoreFollowerWhereWithAggregateFields = {
+	id?: Maybe<IdOperators>;
+	store_id?: Maybe<IdOperators>;
+	user_id?: Maybe<IdOperators>;
+	and?: Maybe<Array<StoreFollowerWhere>>;
+	or?: Maybe<Array<StoreFollowerWhere>>;
+	not?: Maybe<StoreFollowerWhere>;
+	store?: Maybe<StoreWhere>;
+	user?: Maybe<UserWhere>;
+	count?: Maybe<IntOperators>;
+};
+
 export type StoreOrderBy = {
 	id?: Maybe<SortDirection>;
 	name?: Maybe<SortDirection>;
@@ -689,6 +701,7 @@ export type StoreProfile = {
 	created_at: Scalars['String'];
 	updated_at: Scalars['String'];
 	store: Store;
+	followers: Array<StoreFollower>;
 };
 
 export type StoreProfileOrderByNested = {
@@ -713,6 +726,7 @@ export type StoreProfileWhere = {
 	or?: Maybe<Array<StoreProfileWhere>>;
 	not?: Maybe<StoreProfileWhere>;
 	store?: Maybe<StoreWhere>;
+	followers?: Maybe<StoreFollowerWhereWithAggregateFields>;
 };
 
 export type StoreWhere = {
@@ -894,6 +908,15 @@ export type PlaceOrderMutation = { __typename?: 'Mutation' } & {
 		};
 };
 
+export type SearchQueryVariables = {
+	searchTerm: Scalars['String'];
+};
+
+export type SearchQuery = { __typename?: 'Query' } & {
+	stores: Array<{ __typename?: 'Store' } & Pick<Store, 'name' | 'short_name'>>;
+	items: Array<{ __typename?: 'Item' } & Pick<Item, 'name'>>;
+};
+
 export type StoresQueryVariables = {};
 
 export type StoresQuery = { __typename?: 'Query' } & {
@@ -1047,6 +1070,23 @@ export function usePlaceOrderMutation() {
 	return Urql.useMutation<PlaceOrderMutation, PlaceOrderMutationVariables>(
 		PlaceOrderDocument
 	);
+}
+export const SearchDocument = gql`
+	query Search($searchTerm: String!) {
+		stores(where: { name: { iLike: $searchTerm } }, orderBy: [{ name: ASC }]) {
+			name
+			short_name
+		}
+		items(where: { name: { iLike: $searchTerm } }, orderBy: [{ name: ASC }]) {
+			name
+		}
+	}
+`;
+
+export function useSearchQuery(
+	options: Omit<Urql.UseQueryArgs<SearchQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<SearchQuery>({ query: SearchDocument, ...options });
 }
 export const StoresDocument = gql`
 	query Stores {

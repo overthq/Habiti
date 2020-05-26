@@ -178,6 +178,7 @@ const typeDefs = gql`
 	type StoreProfile @model(table: "store_profiles", pk: "id") {
 		id: ID! @hasDefault
 		store_id: ID!
+		bio: String
 		website_url: String
 		instagram_username: String
 		twitter_username: String
@@ -303,7 +304,7 @@ const resolvers: IResolvers = {
 
 			return accessToken;
 		},
-		register: async (_, { name, phone }, __) => {
+		register: async (_, { name, phone }) => {
 			await User.createOne({ name, phone }).execute();
 			sendVerificationCode(phone);
 

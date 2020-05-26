@@ -1,15 +1,24 @@
 import React from 'react';
-import { View, TextInput, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Dimensions } from 'react-native';
+import { useClient } from 'urql';
 import { Icon } from '../components/icons';
+import { SearchDocument } from '../types';
 
 const { width } = Dimensions.get('window');
 
 const Search = () => {
 	const [searchTerm, setSearchTerm] = React.useState('');
+	const [data, setData] = React.useState({});
+
+	const client = useClient();
 
 	React.useEffect(() => {
-		// Do we need to debounce this?
-		console.log(searchTerm);
+		(async () => {
+			const { data } = await client
+				.query(SearchDocument, { searchTerm: `%${searchTerm}%` })
+				.toPromise();
+			setData(data);
+		})();
 	}, [searchTerm]);
 
 	return (
@@ -24,6 +33,7 @@ const Search = () => {
 					style={{ fontSize: 16, paddingLeft: 5 }}
 				/>
 			</View>
+			<Text>{JSON.stringify(data)}</Text>
 		</View>
 	);
 };
