@@ -9,7 +9,13 @@ import {
 	Linking
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useStoreQuery, useStoreItemsQuery } from '../types';
+import {
+	useStoreQuery,
+	useStoreItemsQuery,
+	useFollowStoreMutation,
+	useUnfollowStoreMutation,
+	useFollowingStoreQuery
+} from '../types';
 import { Icon } from '../components/icons';
 
 const StoreItems: React.FC<{ storeId?: string; header: React.FC }> = ({
@@ -59,6 +65,11 @@ const Store = () => {
 	const [{ data }] = useStoreQuery({
 		variables: { storeId: params?.storeId }
 	});
+	const [followingStoreData, refetch] = useFollowingStoreQuery({
+		variables: { storeId: params?.storeId }
+	});
+	const [, followStore] = useFollowStoreMutation();
+	const [, unfollowStore] = useUnfollowStoreMutation();
 
 	React.useLayoutEffect(() => {
 		setOptions({ title: data?.store.name });
@@ -140,22 +151,30 @@ const Store = () => {
 							)}
 						</View>
 						<TouchableOpacity
-							style={{
-								marginTop: 10,
-								width: '100%',
-								height: 35,
-								borderWidth: 1,
-								borderColor: '#D3D3D3',
-								borderRadius: 4,
-								flexDirection: 'row',
-								justifyContent: 'center',
-								alignItems: 'center'
+							style={styles.followButton}
+							onPress={() => {
+								if (data?.store.id) {
+									if (followingStoreData.data?.followingStore) {
+										unfollowStore({ storeId: data.store.id });
+									}
+									followStore({ storeId: data.store.id });
+								}
+								refetch();
 							}}
 						>
 							<View style={{ marginRight: 5 }}>
-								<Icon size={20} name='plus' />
+								<Icon
+									size={20}
+									name={
+										followingStoreData.data?.followingStore ? 'check' : 'plus'
+									}
+								/>
 							</View>
-							<Text style={{ fontSize: 16, fontWeight: '500' }}>Follow</Text>
+							<Text style={{ fontSize: 16, fontWeight: '500' }}>
+								{followingStoreData.data?.followingStore
+									? 'Following'
+									: 'Follow'}
+							</Text>
 						</TouchableOpacity>
 					</View>
 				)}
@@ -180,6 +199,17 @@ const styles = StyleSheet.create({
 	itemName: {
 		fontSize: 16,
 		fontWeight: '500'
+	},
+	followButton: {
+		marginTop: 10,
+		width: '100%',
+		height: 35,
+		borderWidth: 1,
+		borderColor: '#D3D3D3',
+		borderRadius: 4,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center'
 	}
 });
 

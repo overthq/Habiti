@@ -42,6 +42,7 @@ const typeDefs = gql`
 		storeProfile: StoreProfile! @where
 
 		storeFollowers: [StoreFollower!]! @many @isAuthenticated
+		storesFollowed: [StoreFollower!]! @isAuthenticated @hasRole(role: "user")
 		followingStore(storeId: ID!): Boolean!
 	}
 
@@ -106,7 +107,10 @@ const typeDefs = gql`
 			@hasRole(role: "user")
 
 		createStoreFollower: StoreFollower
-		followStore(storeId: ID): StoreFollower!
+		followStore(storeId: ID!): StoreFollower!
+			@isAuthenticated
+			@hasRole(role: "user")
+		unfollowStore(storeId: ID!): Boolean!
 			@isAuthenticated
 			@hasRole(role: "user")
 	}
@@ -266,6 +270,18 @@ const resolvers: IResolvers = {
 		},
 		storeFollowers: (_, { where }, __, info) => {
 			return StoreFollower.findMany().where(where).resolveInfo(info).execute();
+		},
+		followingStore: async (_, { storeId }, { user }, info) => {
+			return !!(await StoreFollower.findOne()
+				.where({ store_id: { equal: storeId }, user_id: { equal: user.id } })
+				.resolveInfo(info)
+				.execute());
+		},
+		storesFollowed: (_, __, { user }, info) => {
+			return StoreFollower.findMany()
+				.where({ user_id: { equal: user.id } })
+				.resolveInfo(info)
+				.execute();
 		}
 	},
 	Mutation: {
@@ -349,6 +365,12 @@ const resolvers: IResolvers = {
 			}).execute();
 
 			return StoreFollower.findById(id).resolveInfo(info).execute();
+		},
+		unfollowStore: async (_, { storeId }, { user }, info) => {
+			const deleted = await StoreFollower.deleteMany()
+				.where({ store_id: { equal: storeId }, user_id: { equal: user.id } })
+				.execute();
+			return deleted > 0;
 		},
 		createOrderItems: async (_, { input }, info) => {
 			const ids = await OrderItem.createMany(input).execute();

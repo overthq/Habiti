@@ -2,6 +2,7 @@ import React from 'react';
 import { Svg, Circle, Rect, Path } from 'react-native-svg';
 
 const icons = {
+	check: <Path d='M20 6L9 17l-5-5' />,
 	chevronLeft: <Path d='M15 18l-6-6 6-6' />,
 	chevronRight: <Path d='M9 18l6-6-6-6' />,
 	instagram: (

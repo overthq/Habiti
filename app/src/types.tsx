@@ -231,6 +231,7 @@ export type Mutation = {
 	updateOrderItem: OrderItem;
 	createStoreFollower?: Maybe<StoreFollower>;
 	followStore: StoreFollower;
+	unfollowStore: Scalars['Boolean'];
 };
 
 export type MutationAuthenticateArgs = {
@@ -328,7 +329,11 @@ export type MutationUpdateOrderItemArgs = {
 };
 
 export type MutationFollowStoreArgs = {
-	storeId?: Maybe<Scalars['ID']>;
+	storeId: Scalars['ID'];
+};
+
+export type MutationUnfollowStoreArgs = {
+	storeId: Scalars['ID'];
 };
 
 export type Order = {
@@ -490,6 +495,7 @@ export type Query = {
 	currentManager: Manager;
 	storeProfile: StoreProfile;
 	storeFollowers: Array<StoreFollower>;
+	storesFollowed: Array<StoreFollower>;
 	followingStore: Scalars['Boolean'];
 };
 
@@ -962,6 +968,45 @@ export type StoreQuery = { __typename?: 'Query' } & {
 		};
 };
 
+export type FollowStoreMutationVariables = {
+	storeId: Scalars['ID'];
+};
+
+export type FollowStoreMutation = { __typename?: 'Mutation' } & {
+	followStore: { __typename?: 'StoreFollower' } & Pick<
+		StoreFollower,
+		'user_id' | 'store_id'
+	>;
+};
+
+export type UnfollowStoreMutationVariables = {
+	storeId: Scalars['ID'];
+};
+
+export type UnfollowStoreMutation = { __typename?: 'Mutation' } & Pick<
+	Mutation,
+	'unfollowStore'
+>;
+
+export type FollowingStoreQueryVariables = {
+	storeId: Scalars['ID'];
+};
+
+export type FollowingStoreQuery = { __typename?: 'Query' } & Pick<
+	Query,
+	'followingStore'
+>;
+
+export type StoresFollowedQueryVariables = {};
+
+export type StoresFollowedQuery = { __typename?: 'Query' } & {
+	storeFollowers: Array<
+		{ __typename?: 'StoreFollower' } & Pick<StoreFollower, 'store_id'> & {
+				store: { __typename?: 'Store' } & Pick<Store, 'name' | 'short_name'>;
+			}
+	>;
+};
+
 export type RegisterMutationVariables = {
 	name: Scalars['String'];
 	phone: Scalars['String'];
@@ -1165,6 +1210,66 @@ export function useStoreQuery(
 	options: Omit<Urql.UseQueryArgs<StoreQueryVariables>, 'query'> = {}
 ) {
 	return Urql.useQuery<StoreQuery>({ query: StoreDocument, ...options });
+}
+export const FollowStoreDocument = gql`
+	mutation FollowStore($storeId: ID!) {
+		followStore(storeId: $storeId) {
+			user_id
+			store_id
+		}
+	}
+`;
+
+export function useFollowStoreMutation() {
+	return Urql.useMutation<FollowStoreMutation, FollowStoreMutationVariables>(
+		FollowStoreDocument
+	);
+}
+export const UnfollowStoreDocument = gql`
+	mutation UnfollowStore($storeId: ID!) {
+		unfollowStore(storeId: $storeId)
+	}
+`;
+
+export function useUnfollowStoreMutation() {
+	return Urql.useMutation<
+		UnfollowStoreMutation,
+		UnfollowStoreMutationVariables
+	>(UnfollowStoreDocument);
+}
+export const FollowingStoreDocument = gql`
+	query FollowingStore($storeId: ID!) {
+		followingStore(storeId: $storeId)
+	}
+`;
+
+export function useFollowingStoreQuery(
+	options: Omit<Urql.UseQueryArgs<FollowingStoreQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<FollowingStoreQuery>({
+		query: FollowingStoreDocument,
+		...options
+	});
+}
+export const StoresFollowedDocument = gql`
+	query StoresFollowed {
+		storeFollowers {
+			store_id
+			store {
+				name
+				short_name
+			}
+		}
+	}
+`;
+
+export function useStoresFollowedQuery(
+	options: Omit<Urql.UseQueryArgs<StoresFollowedQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<StoresFollowedQuery>({
+		query: StoresFollowedDocument,
+		...options
+	});
 }
 export const RegisterDocument = gql`
 	mutation Register($name: String!, $phone: String!) {
