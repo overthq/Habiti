@@ -21,12 +21,14 @@ import Explore from './src/screens/Explore';
 import Search from './src/screens/Search';
 import Store from './src/screens/Store';
 import Item from './src/screens/Item';
+import Cart from './src/screens/Cart';
 import { Icon, IconType } from './src/components/icons';
 import { useCurrentUserQuery } from './src/types';
 
 const AppStack = createStackNavigator();
 const AuthStack = createStackNavigator();
-const MainTab = createBottomTabNavigator();
+const MainStack = createStackNavigator();
+const HomeTab = createBottomTabNavigator();
 
 const AuthNavigator = () => (
 	<AuthStack.Navigator headerMode='none'>
@@ -39,14 +41,14 @@ const AuthNavigator = () => (
 	</AuthStack.Navigator>
 );
 
-const MainNavigator = () => (
-	<MainTab.Navigator
+const HomeNavigator = () => (
+	<HomeTab.Navigator
 		screenOptions={({ route }) => ({
 			// eslint-disable-next-line
 			tabBarIcon: ({ color }) => {
 				const getIcon = (routeName: string): IconType => {
 					switch (routeName) {
-						case 'Home':
+						case 'For You':
 							return 'home';
 						case 'Explore':
 							return 'search';
@@ -67,12 +69,36 @@ const MainNavigator = () => (
 			showLabel: false
 		}}
 	>
-		<MainTab.Screen name='Home' component={Home} />
-		<MainTab.Screen name='Explore' component={Explore} />
-		<MainTab.Screen name='Carts' component={Carts} />
-		<MainTab.Screen name='Profile' component={Profile} />
-	</MainTab.Navigator>
+		<HomeTab.Screen name='For You' component={Home} />
+		<HomeTab.Screen name='Explore' component={Explore} />
+		<HomeTab.Screen name='Carts' component={Carts} />
+		<HomeTab.Screen name='Profile' component={Profile} />
+	</HomeTab.Navigator>
 );
+
+const MainNavigator = () => {
+	return (
+		<MainStack.Navigator>
+			<MainStack.Screen
+				name='Home'
+				component={HomeNavigator}
+				options={{ headerShown: false }}
+			/>
+			<MainStack.Screen
+				name='Store'
+				component={Store}
+				options={{
+					headerBackTitleVisible: false,
+					// eslint-disable-next-line
+					headerBackImage: () => {
+						return <Icon name='chevronLeft' size={30} />;
+					},
+					headerLeftContainerStyle: { paddingLeft: 8 }
+				}}
+			/>
+		</MainStack.Navigator>
+	);
+};
 
 const Routes = () => {
 	const [{ data, fetching, error }] = useCurrentUserQuery();
@@ -90,6 +116,15 @@ const Routes = () => {
 		<NavigationContainer>
 			<AppStack.Navigator
 				initialRouteName={!!data?.currentUser ? 'Main' : 'Auth'}
+				mode='modal'
+				screenOptions={{
+					headerShown: false,
+					gestureEnabled: true,
+					cardOverlayEnabled: true,
+					...(Platform.OS === 'ios'
+						? TransitionPresets.ModalPresentationIOS
+						: TransitionPresets.RevealFromBottomAndroid)
+				}}
 			>
 				<AppStack.Screen
 					name='Auth'
@@ -101,43 +136,9 @@ const Routes = () => {
 					component={MainNavigator}
 					options={{ headerShown: false }}
 				/>
-
-				<AppStack.Screen
-					name='Search'
-					component={Search}
-					options={{
-						headerShown: false,
-						gestureEnabled: true,
-						cardOverlayEnabled: true,
-						...(Platform.OS === 'ios'
-							? TransitionPresets.ModalPresentationIOS
-							: TransitionPresets.RevealFromBottomAndroid)
-					}}
-				/>
-				<AppStack.Screen
-					name='Item'
-					component={Item}
-					options={{
-						headerShown: false,
-						gestureEnabled: true,
-						cardOverlayEnabled: true,
-						...(Platform.OS === 'ios'
-							? TransitionPresets.ModalPresentationIOS
-							: TransitionPresets.RevealFromBottomAndroid)
-					}}
-				/>
-				<AppStack.Screen
-					name='Store'
-					component={Store}
-					options={{
-						headerBackTitleVisible: false,
-						// eslint-disable-next-line
-						headerBackImage: () => {
-							return <Icon name='chevronLeft' size={30} />;
-						},
-						headerLeftContainerStyle: { paddingLeft: 8 }
-					}}
-				/>
+				<AppStack.Screen name='Search' component={Search} />
+				<AppStack.Screen name='Item' component={Item} />
+				<AppStack.Screen name='Cart' component={Cart} />
 			</AppStack.Navigator>
 		</NavigationContainer>
 	);
