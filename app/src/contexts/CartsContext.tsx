@@ -1,7 +1,7 @@
 import React from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 
-interface Cart {
+export interface Cart {
 	storeId: string;
 	items: {
 		itemId: string;

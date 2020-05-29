@@ -25,6 +25,7 @@ import Cart from './src/screens/Cart';
 import { Icon, IconType } from './src/components/icons';
 import { useCurrentUserQuery } from './src/types';
 
+const RootStack = createStackNavigator();
 const AppStack = createStackNavigator();
 const AuthStack = createStackNavigator();
 const MainStack = createStackNavigator();
@@ -100,7 +101,7 @@ const MainNavigator = () => {
 	);
 };
 
-const Routes = () => {
+const RootNavigator = () => {
 	const [{ data, fetching, error }] = useCurrentUserQuery();
 	const { logOut } = useAccessToken();
 
@@ -113,9 +114,27 @@ const Routes = () => {
 			<ActivityIndicator />
 		</View>
 	) : (
+		<RootStack.Navigator
+			initialRouteName={!!data?.currentUser ? 'Main' : 'Auth'}
+		>
+			<RootStack.Screen
+				name='Auth'
+				component={AuthNavigator}
+				options={{ headerShown: false }}
+			/>
+			<RootStack.Screen
+				name='Main'
+				component={MainNavigator}
+				options={{ headerShown: false }}
+			/>
+		</RootStack.Navigator>
+	);
+};
+
+const Routes = () => {
+	return (
 		<NavigationContainer>
 			<AppStack.Navigator
-				initialRouteName={!!data?.currentUser ? 'Main' : 'Auth'}
 				mode='modal'
 				screenOptions={{
 					headerShown: false,
@@ -126,16 +145,7 @@ const Routes = () => {
 						: TransitionPresets.RevealFromBottomAndroid)
 				}}
 			>
-				<AppStack.Screen
-					name='Auth'
-					component={AuthNavigator}
-					options={{ headerShown: false }}
-				/>
-				<AppStack.Screen
-					name='Main'
-					component={MainNavigator}
-					options={{ headerShown: false }}
-				/>
+				<AppStack.Screen name='Root' component={RootNavigator} />
 				<AppStack.Screen name='Search' component={Search} />
 				<AppStack.Screen name='Item' component={Item} />
 				<AppStack.Screen name='Cart' component={Cart} />
