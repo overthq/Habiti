@@ -35,6 +35,17 @@ const Explore = () => {
 				</Text>
 			</TouchableOpacity>
 			<View style={{ marginTop: 16 }}>
+				<Text
+					style={{
+						marginVertical: 10,
+						fontSize: 16,
+						fontWeight: 'bold',
+						color: '#505050',
+						paddingLeft: 20
+					}}
+				>
+					Trending Stores
+				</Text>
 				<FlatList
 					horizontal
 					data={data?.stores}
@@ -58,6 +69,30 @@ const Explore = () => {
 					)}
 					ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
 				/>
+			</View>
+			<View
+				style={{
+					height: 250,
+					margin: 20,
+					borderRadius: 8,
+					backgroundColor: '#D3D3D3',
+					padding: 20
+				}}
+			>
+				<Text>Item of the day</Text>
+			</View>
+			<View style={{ marginTop: 16 }}>
+				<Text
+					style={{
+						marginVertical: 10,
+						fontSize: 16,
+						fontWeight: 'bold',
+						color: '#505050',
+						paddingLeft: 20
+					}}
+				>
+					Featured Items
+				</Text>
 			</View>
 		</SafeAreaView>
 	);

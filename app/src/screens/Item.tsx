@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+	View,
+	Text,
+	TouchableOpacity,
+	ScrollView,
+	StyleSheet
+} from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { useItemQuery } from '../types';
 import { Icon } from '../components/icons';
@@ -7,25 +13,17 @@ import { CartsContext } from '../contexts/CartsContext';
 
 const Item = () => {
 	const { params } = useRoute();
-	const [quantity, setQuantity] = React.useState(0);
-	const { addItemToCart } = React.useContext(CartsContext);
+	const { carts, addItemToCart } = React.useContext(CartsContext);
 	const [{ data, fetching }] = useItemQuery({
 		variables: { itemId: params.itemId }
 	});
+	const [quantity, setQuantity] = React.useState(0);
 
 	return (
-		<View style={styles.container}>
+		<ScrollView style={styles.container} bounces={false}>
 			<View style={styles.imagePlaceholder} />
 			<View style={{ paddingHorizontal: 20, paddingTop: 20 }}>
-				<Text
-					style={{
-						textTransform: 'uppercase',
-						color: '#777777',
-						fontWeight: 'bold'
-					}}
-				>
-					{data?.item.store.name}
-				</Text>
+				<Text style={{ fontWeight: '500' }}>{data?.item.store.name}</Text>
 				<View
 					style={{
 						flexDirection: 'row',
@@ -34,14 +32,11 @@ const Item = () => {
 						marginBottom: 5
 					}}
 				>
-					<Text style={{ fontWeight: 'bold', fontSize: 26 }}>
+					<Text style={{ fontWeight: 'bold', fontSize: 22 }}>
 						{data?.item.name}
 					</Text>
-					<Text style={{ fontSize: 20 }}>${data?.item.price_per_unit}</Text>
+					<Text style={{ fontSize: 18 }}>${data?.item.price_per_unit}</Text>
 				</View>
-				<Text style={{ fontSize: 16, color: '#777777' }}>
-					{data?.item.description}
-				</Text>
 				<View
 					style={{
 						width: '100%',
@@ -50,7 +45,13 @@ const Item = () => {
 						marginVertical: 10
 					}}
 				/>
-				<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+				<View
+					style={{
+						flexDirection: 'row',
+						justifyContent: 'space-between',
+						marginVertical: 10
+					}}
+				>
 					<Text style={{ fontSize: 16, fontWeight: '500' }}>Quantity</Text>
 					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 						<TouchableOpacity
@@ -61,7 +62,7 @@ const Item = () => {
 								}
 							}}
 						>
-							<Icon name='minus' color='#D3D3D3' />
+							<Icon name='minus' color='#828282' />
 						</TouchableOpacity>
 						<Text style={{ fontSize: 16, fontVariant: ['tabular-nums'] }}>
 							{quantity}
@@ -72,7 +73,7 @@ const Item = () => {
 								setQuantity(quantity + 1);
 							}}
 						>
-							<Icon name='plus' color='#D3D3D3' />
+							<Icon name='plus' color='#828282' />
 						</TouchableOpacity>
 					</View>
 				</View>
@@ -89,14 +90,25 @@ const Item = () => {
 					}}
 				>
 					<View style={{ marginRight: 5 }}>
-						<Icon size={22} color='#D3D3D3' name='plus' />
+						<Icon size={22} color='#FFFFFF' name='plus' />
 					</View>
-					<Text style={{ fontSize: 18, fontWeight: 'bold', color: '#D3D3D3' }}>
+					<Text style={{ fontSize: 16, fontWeight: '700', color: '#FFFFFF' }}>
 						Add to Cart
 					</Text>
 				</TouchableOpacity>
+				<Text
+					style={{
+						marginVertical: 10,
+						textTransform: 'uppercase',
+						color: '#505050',
+						fontWeight: '500'
+					}}
+				>
+					Description
+				</Text>
+				<Text style={{ fontSize: 16 }}>{data?.item.description}</Text>
 			</View>
-		</View>
+		</ScrollView>
 	);
 };
 
@@ -110,14 +122,14 @@ const styles = StyleSheet.create({
 		backgroundColor: '#D3D3D3'
 	},
 	cartButton: {
-		marginTop: 10,
+		marginVertical: 10,
 		width: '100%',
-		height: 45,
+		height: 40,
 		borderRadius: 8,
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor: '#505050'
+		backgroundColor: '#202020'
 	}
 });
 
