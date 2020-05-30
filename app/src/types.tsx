@@ -1000,7 +1000,7 @@ export type FollowingStoreQuery = { __typename?: 'Query' } & Pick<
 export type StoresFollowedQueryVariables = {};
 
 export type StoresFollowedQuery = { __typename?: 'Query' } & {
-	storeFollowers: Array<
+	storesFollowed: Array<
 		{ __typename?: 'StoreFollower' } & Pick<StoreFollower, 'store_id'> & {
 				store: { __typename?: 'Store' } & Pick<Store, 'name' | 'short_name'>;
 			}
@@ -1253,7 +1253,7 @@ export function useFollowingStoreQuery(
 }
 export const StoresFollowedDocument = gql`
 	query StoresFollowed {
-		storeFollowers {
+		storesFollowed {
 			store_id
 			store {
 				name

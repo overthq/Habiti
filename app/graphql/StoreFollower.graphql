@@ -14,7 +14,7 @@ query FollowingStore($storeId: ID!) {
 }
 
 query StoresFollowed {
-	storeFollowers {
+	storesFollowed {
 		store_id
 		store {
 			name

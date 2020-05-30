@@ -74,12 +74,21 @@ export const CartsProvider: React.FC = ({ children }) => {
 	const removeItemFromCart = (storeId: string, itemId: string) => {
 		const cartsCopy = [...carts];
 		const selectedCart = cartsCopy.find(({ storeId: id }) => storeId === id);
-		const indexOfItemToRemove = selectedCart?.items.findIndex(
-			({ itemId: id }) => itemId === id
-		);
-		if (indexOfItemToRemove && indexOfItemToRemove > -1)
-			selectedCart?.items.splice(indexOfItemToRemove, 1);
-		setCarts(cartsCopy);
+		if (selectedCart) {
+			const itemIndex = selectedCart.items.findIndex(
+				({ itemId: id }) => itemId === id
+			);
+			if (itemIndex > -1) {
+				selectedCart.items.splice(itemIndex, 1);
+			}
+			if (selectedCart.items.length === 0) {
+				const selectedCartIndex = cartsCopy.findIndex(
+					({ storeId: id }) => storeId === id
+				);
+				if (selectedCartIndex > -1) cartsCopy.splice(selectedCartIndex, 1);
+			}
+			setCarts(cartsCopy);
+		}
 	};
 
 	return (

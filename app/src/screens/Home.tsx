@@ -2,21 +2,27 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RecentOrders from '../components/RecentOrders';
+import FollowedStores from '../components/FollowedStores';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const Home = () => {
 	return (
 		<SafeAreaView style={styles.container}>
-			<View style={styles.header}>
-				<Text style={styles.title}>For You</Text>
-			</View>
-			<RecentOrders />
+			<ScrollView bounces={false}>
+				<View style={styles.header}>
+					<Text style={styles.title}>For You</Text>
+				</View>
+				<RecentOrders />
+				<FollowedStores />
+			</ScrollView>
 		</SafeAreaView>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1,
+		backgroundColor: '#FFFFFF'
 	},
 	header: {
 		paddingVertical: 15,

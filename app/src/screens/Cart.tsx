@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { CartsContext } from '../contexts/CartsContext';
+import CartItem from '../components/CartItem';
 
 const Cart = () => {
 	const { navigate } = useNavigation();
@@ -18,6 +19,20 @@ const Cart = () => {
 
 	return (
 		<View style={styles.container}>
+			<Text style={{ fontWeight: 'bold', fontSize: 32 }}>Checkout</Text>
+			<Text
+				style={{
+					fontSize: 18,
+					fontWeight: '500',
+					color: '#505050',
+					marginTop: 10
+				}}
+			>
+				Order Summary
+			</Text>
+			{activeCart?.items.map(({ itemId, quantity }) => (
+				<CartItem key={itemId} {...{ itemId, quantity }} />
+			))}
 			<TouchableOpacity activeOpacity={0.8} style={styles.orderButton}>
 				<Text style={styles.orderButtonText}>Place Order</Text>
 			</TouchableOpacity>
