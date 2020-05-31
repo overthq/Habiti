@@ -62,13 +62,15 @@ const Items: React.FC<{ storeId: string }> = ({ storeId }) => {
 						</tr>
 					</thead>
 					<tbody>
-						{data?.storeItems.map(({ name, pricePerUnit, featured }, index) => (
-							<tr key={index}>
-								<td>{name}</td>
-								<td>{pricePerUnit}</td>
-								<td>{featured.toString()}</td>
-							</tr>
-						))}
+						{data?.storeItems.map(
+							({ name, price_per_unit, featured }, index) => (
+								<tr key={index}>
+									<td>{name}</td>
+									<td>{price_per_unit}</td>
+									<td>{featured.toString()}</td>
+								</tr>
+							)
+						)}
 					</tbody>
 				</Table>
 			</Page>

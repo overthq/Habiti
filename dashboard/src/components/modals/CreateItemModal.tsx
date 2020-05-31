@@ -25,7 +25,12 @@ const CreateItemModal: React.FC<ModalProps> = ({ isOpen, close }) => {
 				}}
 				onSubmit={async values => {
 					createItem({
-						input: { ...values, pricePerUnit: Number(values.pricePerUnit) }
+						input: {
+							...values,
+							price_per_unit: Number(values.pricePerUnit),
+							// TODO(koredefashokun): Replace with actual store_id
+							store_id: ''
+						}
 					});
 				}}
 			>

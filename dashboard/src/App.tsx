@@ -43,7 +43,7 @@ const Routes: React.FC = () => {
 				path='/store/:storeId'
 				render={({ match }) =>
 					data?.currentManager ? (
-						<Redirect to={`/store/${data.currentManager.storeId}/dashboard`} />
+						<Redirect to={`/store/${data.currentManager.store_id}/dashboard`} />
 					) : (
 						<Redirect to={`/store/${match.params.storeId}/authenticate`} />
 					)
@@ -76,7 +76,7 @@ const Routes: React.FC = () => {
 					<Redirect
 						to={
 							data?.currentManager
-								? `/store/${data.currentManager.storeId}`
+								? `/store/${data.currentManager.store_id}`
 								: '/onboarding'
 						}
 					/>

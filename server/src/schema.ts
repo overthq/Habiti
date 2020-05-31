@@ -65,7 +65,7 @@ const typeDefs = gql`
 			@isAuthenticated
 			@hasRole(role: "manager")
 
-		authenticateManager(store_id: String!, email: String!): String!
+		authenticateManager(store_id: ID!, email: String!): String!
 		verifyManagerAuthentication(email: String!, code: String!): String!
 		createManager: Manager! @input(action: CREATE)
 		updateManager(id: ID!): Manager!

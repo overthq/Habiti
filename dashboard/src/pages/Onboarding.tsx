@@ -118,20 +118,24 @@ const Onboarding = () => {
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+
 		if (step !== steps.length - 1) {
 			return setStep(step + 1);
 		}
-		// Submit the information
+
 		const { data } = await createStore({
-			input: { name: state.storeName, shortName: state.shortName }
+			input: { name: state.storeName, short_name: state.shortName }
 		});
-		if (data?.createStore?._id) {
+		if (data?.createStore?.id) {
 			await createManager({
-				storeId: data.createStore._id,
-				input: { name: state.name, email: state.email }
+				input: {
+					store_id: data.createStore.id,
+					name: state.name,
+					email: state.email
+				}
 			});
 			localStorage.setItem('onboarding-email', state.email);
-			push(`/store/${data.createStore._id}/verify-code`);
+			push(`/store/${data.createStore.id}/verify-code`);
 		}
 	};
 
