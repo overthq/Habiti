@@ -23,27 +23,36 @@ const RecentOrders = () => {
 	const [{ data }] = useUserOrdersQuery();
 
 	return (
-		<FlatList
-			data={data?.userOrders}
-			keyExtractor={({ id }) => id}
-			horizontal
-			renderItem={({ item }) => (
-				<TouchableOpacity activeOpacity={0.8} key={item.id}>
-					<View style={styles.orderContainer}>
-						<View style={styles.storeAvatar}></View>
-						<View style={styles.orderInformation}>
-							<Text>{item.cart[0].item.name}</Text>
-							<Text>
-								{item.cart.length > 1 && ` (and ${item.cart.length} others)`}
-							</Text>
-							<Text style={{ color: getStatusColor(item.status) }}>
-								{item.status}
-							</Text>
+		<View>
+			<Text>RecentOrders</Text>
+			<FlatList
+				data={data?.userOrders}
+				keyExtractor={({ id }) => id}
+				horizontal
+				showsHorizontalScrollIndicator={false}
+				renderItem={({ item }) => (
+					<TouchableOpacity activeOpacity={0.8} key={item.id}>
+						<View style={styles.orderContainer}>
+							<View style={styles.storeAvatar}></View>
+							<View style={styles.orderInformation}>
+								<Text>{item.cart[0].item.name}</Text>
+								<Text>
+									{item.cart.length > 1 && ` (and ${item.cart.length} others)`}
+								</Text>
+								<Text style={{ color: getStatusColor(item.status) }}>
+									{item.status}
+								</Text>
+							</View>
 						</View>
-					</View>
-				</TouchableOpacity>
-			)}
-		/>
+					</TouchableOpacity>
+				)}
+				ListEmptyComponent={
+					<Text style={{ marginHorizontal: 20 }}>
+						No recent orders to view. Order some items to view them here
+					</Text>
+				}
+			/>
+		</View>
 	);
 };
 

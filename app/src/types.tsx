@@ -964,7 +964,14 @@ export type StoreQuery = { __typename?: 'Query' } & {
 			profile: { __typename?: 'StoreProfile' } & Pick<
 				StoreProfile,
 				'website_url' | 'instagram_username' | 'twitter_username'
-			>;
+			> & {
+					followers: Array<
+						{ __typename?: 'StoreFollower' } & Pick<
+							StoreFollower,
+							'store_id' | 'user_id'
+						>
+					>;
+				};
 		};
 };
 
@@ -1201,6 +1208,10 @@ export const StoreDocument = gql`
 				website_url
 				instagram_username
 				twitter_username
+				followers {
+					store_id
+					user_id
+				}
 			}
 		}
 	}

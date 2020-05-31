@@ -20,6 +20,10 @@ query Store($storeId: ID!) {
 			website_url
 			instagram_username
 			twitter_username
+			followers {
+				store_id
+				user_id
+			}
 		}
 	}
 }

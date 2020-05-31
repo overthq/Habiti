@@ -14,7 +14,7 @@ import {
 	useStoreItemsQuery,
 	useFollowStoreMutation,
 	useUnfollowStoreMutation,
-	useFollowingStoreQuery
+	useCurrentUserQuery
 } from '../types';
 import { Icon } from '../components/icons';
 
@@ -41,9 +41,7 @@ const StoreItems: React.FC<{ storeId?: string; header: React.FC }> = ({
 					<TouchableOpacity
 						key={item.id}
 						style={{ flex: 1, margin: 10 }}
-						onPress={() => {
-							navigate('Item', { itemId: item.id });
-						}}
+						onPress={() => navigate('Item', { itemId: item.id })}
 						activeOpacity={0.8}
 					>
 						<View style={styles.itemImage} />
@@ -62,10 +60,8 @@ const StoreItems: React.FC<{ storeId?: string; header: React.FC }> = ({
 const Store = () => {
 	const { setOptions } = useNavigation();
 	const { params } = useRoute();
-	const [{ data }] = useStoreQuery({
-		variables: { storeId: params?.storeId }
-	});
-	const [followingStoreData, refetch] = useFollowingStoreQuery({
+	const [{ data: currentUserData }] = useCurrentUserQuery();
+	const [{ data }, refetch] = useStoreQuery({
 		variables: { storeId: params?.storeId }
 	});
 	const [, followStore] = useFollowStoreMutation();
@@ -78,23 +74,22 @@ const Store = () => {
 	const handleLinkOpen = async (link?: string | null) => {
 		if (link) {
 			const supported = await Linking.canOpenURL(link);
-			if (supported) {
-				await Linking.openURL(link);
-			}
+			if (supported) await Linking.openURL(link);
 		}
 	};
+
+	const userInStoreFollowing = data?.store.profile.followers.findIndex(
+		({ user_id }) => user_id === currentUserData?.currentUser.id
+	);
+	const isFollowingStore =
+		userInStoreFollowing !== undefined && userInStoreFollowing > -1;
 
 	return (
 		<View style={styles.container}>
 			<StoreItems
 				storeId={data?.store.id}
 				header={() => (
-					<View
-						style={{
-							paddingVertical: 25,
-							paddingHorizontal: 10
-						}}
-					>
+					<View style={styles.headerContainer}>
 						<View
 							style={{
 								flexDirection: 'row',
@@ -152,28 +147,23 @@ const Store = () => {
 						</View>
 						<TouchableOpacity
 							style={styles.followButton}
+							activeOpacity={0.8}
 							onPress={() => {
 								if (data?.store.id) {
-									if (followingStoreData.data?.followingStore) {
+									if (isFollowingStore) {
 										unfollowStore({ storeId: data.store.id });
+									} else {
+										followStore({ storeId: data.store.id });
 									}
-									followStore({ storeId: data.store.id });
+									refetch();
 								}
-								refetch();
 							}}
 						>
 							<View style={{ marginRight: 5 }}>
-								<Icon
-									size={20}
-									name={
-										followingStoreData.data?.followingStore ? 'check' : 'plus'
-									}
-								/>
+								<Icon size={20} name={isFollowingStore ? 'check' : 'plus'} />
 							</View>
 							<Text style={{ fontSize: 16, fontWeight: '500' }}>
-								{followingStoreData.data?.followingStore
-									? 'Following'
-									: 'Follow'}
+								{isFollowingStore ? 'Following' : 'Follow'}
 							</Text>
 						</TouchableOpacity>
 					</View>
@@ -210,6 +200,10 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center'
+	},
+	headerContainer: {
+		paddingVertical: 25,
+		paddingHorizontal: 10
 	}
 });
 

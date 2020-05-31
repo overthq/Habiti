@@ -35,25 +35,15 @@ const Explore = () => {
 				</Text>
 			</TouchableOpacity>
 			<View style={{ marginTop: 16 }}>
-				<Text
-					style={{
-						marginVertical: 10,
-						fontSize: 16,
-						fontWeight: 'bold',
-						color: '#505050',
-						paddingLeft: 20
-					}}
-				>
-					Trending Stores
-				</Text>
+				<Text style={styles.sectionHeader}>Trending Stores</Text>
 				<FlatList
 					horizontal
 					data={data?.stores}
 					keyExtractor={({ id }) => id}
-					contentContainerStyle={{ paddingLeft: 20 }}
+					contentContainerStyle={{ paddingLeft: 20, height: 100 }}
 					renderItem={({ item }) => (
 						<TouchableOpacity
-							style={{ justifyContent: 'center' }}
+							style={{ justifyContent: 'center', height: '100%' }}
 							onPress={() => navigate('Store', { storeId: item.id })}
 						>
 							<View key={item.id} style={styles.featuredStoreContainer}>
@@ -82,17 +72,7 @@ const Explore = () => {
 				<Text>Item of the day</Text>
 			</View>
 			<View style={{ marginTop: 16 }}>
-				<Text
-					style={{
-						marginVertical: 10,
-						fontSize: 16,
-						fontWeight: 'bold',
-						color: '#505050',
-						paddingLeft: 20
-					}}
-				>
-					Featured Items
-				</Text>
+				<Text style={styles.sectionHeader}>Featured Items</Text>
 			</View>
 		</SafeAreaView>
 	);
@@ -113,6 +93,13 @@ const styles = StyleSheet.create({
 	title: {
 		fontWeight: 'bold',
 		fontSize: 32
+	},
+	sectionHeader: {
+		marginVertical: 10,
+		fontSize: 16,
+		fontWeight: 'bold',
+		color: '#505050',
+		paddingLeft: 20
 	},
 	searchBar: {
 		alignSelf: 'center',

@@ -43,7 +43,6 @@ const typeDefs = gql`
 
 		storeFollowers: [StoreFollower!]! @many @isAuthenticated
 		storesFollowed: [StoreFollower!]! @isAuthenticated @hasRole(role: "user")
-		followingStore(storeId: ID!): Boolean!
 	}
 
 	type Mutation {
@@ -271,12 +270,6 @@ const resolvers: IResolvers = {
 		storeFollowers: (_, { where }, __, info) => {
 			return StoreFollower.findMany().where(where).resolveInfo(info).execute();
 		},
-		followingStore: async (_, { storeId }, { user }, info) => {
-			return !!(await StoreFollower.findOne()
-				.where({ store_id: { equal: storeId }, user_id: { equal: user.id } })
-				.resolveInfo(info)
-				.execute());
-		},
 		storesFollowed: (_, __, { user }, info) => {
 			return StoreFollower.findMany()
 				.where({ user_id: { equal: user.id } })
@@ -366,7 +359,7 @@ const resolvers: IResolvers = {
 
 			return StoreFollower.findById(id).resolveInfo(info).execute();
 		},
-		unfollowStore: async (_, { storeId }, { user }, info) => {
+		unfollowStore: async (_, { storeId }, { user }) => {
 			const deleted = await StoreFollower.deleteMany()
 				.where({ store_id: { equal: storeId }, user_id: { equal: user.id } })
 				.execute();
