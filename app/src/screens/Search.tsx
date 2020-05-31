@@ -7,19 +7,16 @@ import { SearchDocument } from '../types';
 const { width } = Dimensions.get('window');
 
 const Search = () => {
-	const [searchTerm, setSearchTerm] = React.useState('');
 	const [data, setData] = React.useState({});
 
 	const client = useClient();
 
-	React.useEffect(() => {
-		(async () => {
-			const { data } = await client
-				.query(SearchDocument, { searchTerm: `%${searchTerm}%` })
-				.toPromise();
-			setData(data);
-		})();
-	}, [searchTerm]);
+	const handleTextChange = async (searchTerm: string) => {
+		const { data } = await client
+			.query(SearchDocument, { searchTerm: `%${searchTerm}%` })
+			.toPromise();
+		setData(data);
+	};
 
 	return (
 		<View style={styles.container}>
@@ -29,7 +26,7 @@ const Search = () => {
 				<TextInput
 					autoFocus
 					placeholder='Search stores and items'
-					onChangeText={setSearchTerm}
+					onChangeText={handleTextChange}
 					style={{ fontSize: 16, paddingLeft: 5 }}
 				/>
 			</View>

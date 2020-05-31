@@ -40,18 +40,22 @@ const Explore = () => {
 					horizontal
 					data={data?.stores}
 					keyExtractor={({ id }) => id}
-					contentContainerStyle={{ paddingLeft: 20, height: 100 }}
+					contentContainerStyle={{ paddingLeft: 20, height: 120 }}
 					renderItem={({ item }) => (
 						<TouchableOpacity
-							style={{ justifyContent: 'center', height: '100%' }}
+							activeOpacity={0.8}
+							style={{
+								justifyContent: 'center',
+								height: '100%'
+							}}
 							onPress={() => navigate('Store', { storeId: item.id })}
 						>
 							<View key={item.id} style={styles.featuredStoreContainer}>
 								<Image
 									source={{
-										uri: `https://twitter.com/${item.profile.twitter_username}/profile_image?size=normal`
+										uri: `https://twitter.com/${item.profile.twitter_username}/profile_image?size=original`
 									}}
-									style={{ height: 80, width: 80 }}
+									style={{ height: 80, width: 80, borderRadius: 40 }}
 								/>
 							</View>
 							<Text style={styles.storeName}>{item.name}</Text>
@@ -69,7 +73,9 @@ const Explore = () => {
 					padding: 20
 				}}
 			>
-				<Text>Item of the day</Text>
+				<Text style={{ color: '#505050', fontWeight: 'bold', fontSize: 24 }}>
+					Item of the day
+				</Text>
 			</View>
 			<View style={{ marginTop: 16 }}>
 				<Text style={styles.sectionHeader}>Featured Items</Text>
@@ -96,7 +102,7 @@ const styles = StyleSheet.create({
 	},
 	sectionHeader: {
 		marginVertical: 10,
-		fontSize: 16,
+		fontSize: 18,
 		fontWeight: 'bold',
 		color: '#505050',
 		paddingLeft: 20
@@ -112,9 +118,9 @@ const styles = StyleSheet.create({
 	},
 	featuredStoreContainer: {
 		backgroundColor: '#D3D3D3',
-		width: 70,
-		height: 70,
-		borderRadius: 50,
+		width: 80,
+		height: 80,
+		borderRadius: 40,
 		justifyContent: 'center',
 		alignItems: 'center'
 	},

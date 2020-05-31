@@ -3,10 +3,10 @@ import {
 	View,
 	Text,
 	FlatList,
-	ActivityIndicator,
 	StyleSheet,
 	TouchableOpacity,
-	Linking
+	Linking,
+	Image
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import {
@@ -22,14 +22,12 @@ const StoreItems: React.FC<{ storeId?: string; header: React.FC }> = ({
 	storeId,
 	header
 }) => {
-	const [{ data, fetching }] = useStoreItemsQuery({
+	const [{ data }] = useStoreItemsQuery({
 		variables: { storeId: storeId as string }
 	});
 	const { navigate } = useNavigation();
 
-	if (fetching) {
-		return <ActivityIndicator />;
-	}
+	// Loading state with react-native-skeleton-content.
 
 	return (
 		<FlatList
@@ -102,12 +100,22 @@ const Store = () => {
 									backgroundColor: '#D3D3D3',
 									width: 100,
 									height: 100,
-									borderRadius: 50
+									borderRadius: 50,
+									overflow: 'hidden'
 								}}
-							/>
-							<View>
+							>
+								<Image
+									source={{
+										uri: `https://twitter.com/${data?.store.profile.twitter_username}/profile_image?size=original`
+									}}
+									style={{ width: '100%', height: '100%' }}
+								/>
+							</View>
+							<View style={{ flexDirection: 'row' }}>
 								{data?.store.profile.twitter_username && (
 									<TouchableOpacity
+										style={{ marginRight: 20 }}
+										activeOpacity={0.8}
 										onPress={() =>
 											handleLinkOpen(
 												`https://twitter.com/${data.store.profile.twitter_username}`
@@ -119,6 +127,8 @@ const Store = () => {
 								)}
 								{data?.store.profile.instagram_username && (
 									<TouchableOpacity
+										style={{ marginRight: 20 }}
+										activeOpacity={0.8}
 										onPress={() =>
 											handleLinkOpen(
 												`https://instagram.com/${data.store.profile.instagram_username}`
