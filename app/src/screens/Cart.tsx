@@ -20,16 +20,7 @@ const Cart = () => {
 	return (
 		<View style={styles.container}>
 			<Text style={{ fontWeight: 'bold', fontSize: 32 }}>Checkout</Text>
-			<Text
-				style={{
-					fontSize: 18,
-					fontWeight: '500',
-					color: '#505050',
-					marginTop: 10
-				}}
-			>
-				Order Summary
-			</Text>
+			<Text style={styles.sectionHeader}>Order Summary</Text>
 			{activeCart?.items.map(({ itemId, quantity }) => (
 				<CartItem key={itemId} {...{ itemId, quantity }} />
 			))}
@@ -59,6 +50,12 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		fontWeight: '600',
 		color: '#FFFFFF'
+	},
+	sectionHeader: {
+		fontSize: 18,
+		fontWeight: '500',
+		color: '#505050',
+		marginTop: 10
 	}
 });
 

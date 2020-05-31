@@ -276,6 +276,7 @@ export type MutationUpdateStoreProfileArgs = {
 };
 
 export type MutationAuthenticateManagerArgs = {
+	store_id: Scalars['ID'];
 	email: Scalars['String'];
 };
 
@@ -496,7 +497,6 @@ export type Query = {
 	storeProfile: StoreProfile;
 	storeFollowers: Array<StoreFollower>;
 	storesFollowed: Array<StoreFollower>;
-	followingStore: Scalars['Boolean'];
 };
 
 export type QueryUsersArgs = {
@@ -577,10 +577,6 @@ export type QueryStoreFollowersArgs = {
 	offset?: Maybe<Scalars['Int']>;
 	orderBy?: Maybe<Array<StoreFollowerOrderBy>>;
 	where?: Maybe<StoreFollowerWhere>;
-};
-
-export type QueryFollowingStoreArgs = {
-	storeId: Scalars['ID'];
 };
 
 export enum SortDirection {
@@ -894,6 +890,17 @@ export type ItemQuery = { __typename?: 'Query' } & {
 	> & { store: { __typename?: 'Store' } & Pick<Store, 'id' | 'name'> };
 };
 
+export type FeaturedItemsQueryVariables = {};
+
+export type FeaturedItemsQuery = { __typename?: 'Query' } & {
+	featuredItems: Array<
+		{ __typename?: 'Item' } & Pick<
+			Item,
+			'id' | 'name' | 'store_id' | 'description' | 'price_per_unit' | 'unit'
+		> & { store: { __typename?: 'Store' } & Pick<Store, 'id' | 'name'> }
+	>;
+};
+
 export type UserOrdersQueryVariables = {};
 
 export type UserOrdersQuery = { __typename?: 'Query' } & {
@@ -928,6 +935,19 @@ export type PlaceOrderMutation = { __typename?: 'Mutation' } & {
 					}
 			>;
 		};
+};
+
+export type CreateOrderItemsMutationVariables = {
+	input: Array<CreateOrderItemInput>;
+};
+
+export type CreateOrderItemsMutation = { __typename?: 'Mutation' } & {
+	createOrderItems: Array<
+		{ __typename?: 'OrderItem' } & Pick<
+			OrderItem,
+			'id' | 'order_id' | 'quantity'
+		>
+	>;
 };
 
 export type SearchQueryVariables = {
@@ -993,15 +1013,6 @@ export type UnfollowStoreMutationVariables = {
 export type UnfollowStoreMutation = { __typename?: 'Mutation' } & Pick<
 	Mutation,
 	'unfollowStore'
->;
-
-export type FollowingStoreQueryVariables = {
-	storeId: Scalars['ID'];
-};
-
-export type FollowingStoreQuery = { __typename?: 'Query' } & Pick<
-	Query,
-	'followingStore'
 >;
 
 export type StoresFollowedQueryVariables = {};
@@ -1110,6 +1121,31 @@ export function useItemQuery(
 ) {
 	return Urql.useQuery<ItemQuery>({ query: ItemDocument, ...options });
 }
+export const FeaturedItemsDocument = gql`
+	query FeaturedItems {
+		featuredItems: items(where: { featured: { equal: true } }) {
+			id
+			name
+			store_id
+			store {
+				id
+				name
+			}
+			description
+			price_per_unit
+			unit
+		}
+	}
+`;
+
+export function useFeaturedItemsQuery(
+	options: Omit<Urql.UseQueryArgs<FeaturedItemsQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<FeaturedItemsQuery>({
+		query: FeaturedItemsDocument,
+		...options
+	});
+}
 export const UserOrdersDocument = gql`
 	query UserOrders {
 		userOrders {
@@ -1160,6 +1196,22 @@ export function usePlaceOrderMutation() {
 	return Urql.useMutation<PlaceOrderMutation, PlaceOrderMutationVariables>(
 		PlaceOrderDocument
 	);
+}
+export const CreateOrderItemsDocument = gql`
+	mutation CreateOrderItems($input: [CreateOrderItemInput!]!) {
+		createOrderItems(input: $input) {
+			id
+			order_id
+			quantity
+		}
+	}
+`;
+
+export function useCreateOrderItemsMutation() {
+	return Urql.useMutation<
+		CreateOrderItemsMutation,
+		CreateOrderItemsMutationVariables
+	>(CreateOrderItemsDocument);
 }
 export const SearchDocument = gql`
 	query Search($searchTerm: String!) {
@@ -1247,20 +1299,6 @@ export function useUnfollowStoreMutation() {
 		UnfollowStoreMutation,
 		UnfollowStoreMutationVariables
 	>(UnfollowStoreDocument);
-}
-export const FollowingStoreDocument = gql`
-	query FollowingStore($storeId: ID!) {
-		followingStore(storeId: $storeId)
-	}
-`;
-
-export function useFollowingStoreQuery(
-	options: Omit<Urql.UseQueryArgs<FollowingStoreQueryVariables>, 'query'> = {}
-) {
-	return Urql.useQuery<FollowingStoreQuery>({
-		query: FollowingStoreDocument,
-		...options
-	});
 }
 export const StoresFollowedDocument = gql`
 	query StoresFollowed {

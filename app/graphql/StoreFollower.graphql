@@ -9,10 +9,6 @@ mutation UnfollowStore($storeId: ID!) {
 	unfollowStore(storeId: $storeId)
 }
 
-query FollowingStore($storeId: ID!) {
-	followingStore(storeId: $storeId)
-}
-
 query StoresFollowed {
 	storesFollowed {
 		store_id

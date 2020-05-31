@@ -31,3 +31,11 @@ mutation PlaceOrder($input: CreateOrderInput!) {
 		}
 	}
 }
+
+mutation CreateOrderItems($input: [CreateOrderItemInput!]!) {
+	createOrderItems(input: $input) {
+		id
+		order_id
+		quantity
+	}
+}
