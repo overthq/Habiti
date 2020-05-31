@@ -54,11 +54,14 @@ CREATE TABLE IF NOT EXISTS orders (
 	FOREIGN KEY (store_id) REFERENCES stores (id) ON DELETE CASCADE
 );
 
+CREATE TYPE manager_role AS ENUM ('Admin', 'Editor');
+
 CREATE TABLE IF NOT EXISTS managers (
 	id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
 	store_id UUID NOT NULL,
 	name VARCHAR(255) NOT NULL,
 	email VARCHAR(255) UNIQUE NOT NULL,
+	role manager_role DEFAULT 'Editor',
 	FOREIGN KEY (store_id) REFERENCES stores (id) ON DELETE CASCADE
 );
 

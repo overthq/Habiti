@@ -65,7 +65,7 @@ const typeDefs = gql`
 			@isAuthenticated
 			@hasRole(role: "manager")
 
-		authenticateManager(email: String!): String!
+		authenticateManager(store_id: String!, email: String!): String!
 		verifyManagerAuthentication(email: String!, code: String!): String!
 		createManager: Manager! @input(action: CREATE)
 		updateManager(id: ID!): Manager!
@@ -319,8 +319,10 @@ const resolvers: IResolvers = {
 
 			return `Verification code sent to ${phone}`;
 		},
-		authenticateManager: async (_, { email }) => {
-			await Manager.findOne().where({ email }).execute();
+		authenticateManager: async (_, { store_id, email }) => {
+			await Manager.findOne()
+				.where({ store_id: { equal: store_id }, email: { equal: email } })
+				.execute();
 			sendVerificationCode(email);
 
 			return `Verification email sent to ${email}`;

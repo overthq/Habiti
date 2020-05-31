@@ -1,14 +1,18 @@
-mutation CreateManager($storeId: ID!, $input: ManagerInput) {
-	createManager(storeId: $storeId, input: $input)
+mutation CreateManager($input: CreateManagerInput!) {
+	createManager(input: $input) {
+		id
+		name
+		email
+		store_id
+	}
 }
 
 query StoreManagers($storeId: ID!) {
-	storeManagers(storeId: $storeId) {
-		_id
+	storeManagers: managers(where: { store_id: { equal: $storeId } }) {
+		id
 		name
 		email
-		role
-		storeId
+		store_id
 	}
 }
 
@@ -17,15 +21,14 @@ mutation VerifyManagerAuthentication($email: String!, $code: String!) {
 }
 
 mutation AuthenticateManager($storeId: ID!, $email: String!) {
-	authenticateManager(storeId: $storeId, email: $email)
+	authenticateManager(store_id: $storeId, email: $email)
 }
 
 query CurrentManager {
 	currentManager {
-		_id
+		id
 		name
 		email
-		role
-		storeId
+		store_id
 	}
 }

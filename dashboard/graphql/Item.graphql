@@ -1,22 +1,21 @@
-mutation CreateItem($input: ItemInput!) {
+mutation CreateItem($input: CreateItemInput!) {
 	createItem(input: $input) {
-		_id
+		id
 		name
 		description
-		pricePerUnit
+		price_per_unit
 		featured
 		unit
 	}
 }
 
 query StoreItems($storeId: ID!) {
-	storeItems(storeId: $storeId) {
-		_id
+	storeItems: items(where: { store_id: { equal: $storeId } }) {
+		id
 		name
 		description
-		pricePerUnit
+		price_per_unit
 		featured
 		unit
 	}
 }
-

@@ -1,8 +1,8 @@
-mutation CreateStore($input: StoreInput) {
+mutation CreateStore($input: CreateStoreInput!) {
 	createStore(input: $input) {
-		_id
+		id
 		name
-		shortName
+		short_name
 	}
 }
 
