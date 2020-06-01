@@ -7,21 +7,20 @@ import CartItem from '../components/CartItem';
 const Cart = () => {
 	const { navigate } = useNavigation();
 	const { params } = useRoute();
+	const { carts } = React.useContext(CartsContext);
 	const storeId = params?.storeId;
 
-	const { carts } = React.useContext(CartsContext);
-
-	const activeCart = carts.find(({ storeId: id }) => id === storeId);
+	const cart = carts.find(({ storeId: id }) => id === storeId);
 
 	React.useEffect(() => {
-		if (!activeCart) navigate('Carts');
-	}, [activeCart]);
+		if (!cart) navigate('Carts');
+	}, [cart]);
 
 	return (
 		<View style={styles.container}>
 			<Text style={{ fontWeight: 'bold', fontSize: 32 }}>Checkout</Text>
 			<Text style={styles.sectionHeader}>Order Summary</Text>
-			{activeCart?.items.map(({ itemId, quantity }) => (
+			{cart?.items.map(({ itemId, quantity }) => (
 				<CartItem key={itemId} {...{ itemId, quantity }} />
 			))}
 			<TouchableOpacity activeOpacity={0.8} style={styles.orderButton}>
