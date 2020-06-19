@@ -324,14 +324,14 @@ export type OrderEnums = OrderStatus;
 export type OrderAssociations = {
 	store: [StoreFindOneBuilder, StorePaginateBuilder];
 	user: [UserFindOneBuilder, UserPaginateBuilder];
-	items: [OrderItemFindManyBuilder, OrderItemPaginateBuilder];
+	cart: [OrderItemFindManyBuilder, OrderItemPaginateBuilder];
 };
 
 export type OrderCreateFields = {
-	id: ID;
+	id?: ID;
 	user_id: ID;
 	store_id: ID;
-	status: OrderStatus;
+	status?: OrderStatus;
 	created_at?: string;
 	updated_at?: string;
 };
@@ -520,6 +520,7 @@ export type ItemUpdateByIdBuilder = UpdateByIdBuilder<ItemUpdateFields>;
 export type StoreProfileFields = {
 	id: ID;
 	store_id: ID;
+	bio: string;
 	website_url: string;
 	instagram_username: string;
 	twitter_username: string;
@@ -533,11 +534,13 @@ export type StoreProfileEnums = unknown;
 
 export type StoreProfileAssociations = {
 	store: [StoreFindOneBuilder, StorePaginateBuilder];
+	followers: [StoreFollowerFindManyBuilder, StoreFollowerPaginateBuilder];
 };
 
 export type StoreProfileCreateFields = {
 	id?: ID;
 	store_id: ID;
+	bio?: string;
 	website_url?: string;
 	instagram_username?: string;
 	twitter_username?: string;
@@ -547,6 +550,7 @@ export type StoreProfileCreateFields = {
 
 export type StoreProfileUpdateFields = {
 	store_id?: ID;
+	bio?: string;
 	website_url?: string;
 	instagram_username?: string;
 	twitter_username?: string;

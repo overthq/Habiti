@@ -40,7 +40,7 @@ cd api && yarn
 cd app && yarn
 cd dashboard && yarn
 
-# For more instructions on running the projects, visit the any of the project-specific READMEs.
+# For more instructions on running the projects, visit any of the project-specific READMEs.
 ```
 
 ## Contributing

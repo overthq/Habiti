@@ -353,9 +353,7 @@ const resolvers: IResolvers = {
 		},
 		followStore: async (_, { storeId }, { user }, info) => {
 			const id = await StoreFollower.createOne({
-				// eslint-disable-next-line
 				store_id: storeId,
-				// eslint-disable-next-line
 				user_id: user.id
 			}).execute();
 
