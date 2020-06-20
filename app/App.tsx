@@ -26,9 +26,9 @@ import { Icon, IconType } from './src/components/icons';
 import { useCurrentUserQuery } from './src/types';
 
 const RootStack = createStackNavigator();
-const AppStack = createStackNavigator();
-const AuthStack = createStackNavigator();
-const MainStack = createStackNavigator();
+const AppStack = createStackNavigator<AppStackParamList>();
+const AuthStack = createStackNavigator<AuthStackParamList>();
+const MainStack = createStackNavigator<MainStackParamList>();
 const HomeTab = createBottomTabNavigator();
 
 const AuthNavigator = () => (
@@ -41,6 +41,12 @@ const AuthNavigator = () => (
 		/>
 	</AuthStack.Navigator>
 );
+
+export type AuthStackParamList = {
+	Register: undefined;
+	Authenticate: undefined;
+	VerifyAuthentication: { phone: string };
+};
 
 const HomeNavigator = () => (
 	<HomeTab.Navigator
@@ -76,6 +82,11 @@ const HomeNavigator = () => (
 		<HomeTab.Screen name='Profile' component={Profile} />
 	</HomeTab.Navigator>
 );
+
+export type MainStackParamList = {
+	Home: undefined;
+	Store: { storeId: string };
+};
 
 const MainNavigator = () => {
 	return (
@@ -129,6 +140,13 @@ const RootNavigator = () => {
 			/>
 		</RootStack.Navigator>
 	);
+};
+
+export type AppStackParamList = {
+	Root: undefined;
+	Search: undefined;
+	Item: { itemId: string };
+	Cart: { storeId: string };
 };
 
 const Routes = () => {

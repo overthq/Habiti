@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { CartsContext } from '../contexts/CartsContext';
 import CartItem from '../components/CartItem';
 import {
@@ -8,15 +8,16 @@ import {
 	useCurrentUserQuery,
 	useCreateOrderItemsMutation
 } from '../types';
+import { AppStackParamList } from 'App';
 
 const Cart = () => {
 	const { navigate } = useNavigation();
-	const { params } = useRoute();
+	const { params } = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
 	const { carts } = React.useContext(CartsContext);
 	const [{ data }] = useCurrentUserQuery();
 	const [, placeOrder] = usePlaceOrderMutation();
 	const [, createOrderItems] = useCreateOrderItemsMutation();
-	const storeId = params?.storeId;
+	const { storeId } = params;
 
 	const cart = carts.find(({ storeId: id }) => id === storeId);
 

@@ -6,15 +6,16 @@ import {
 	ScrollView,
 	StyleSheet
 } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, RouteProp } from '@react-navigation/native';
 import { useItemQuery } from '../types';
 import { Icon } from '../components/icons';
 import { CartsContext } from '../contexts/CartsContext';
+import { AppStackParamList } from 'App';
 
 const Item = () => {
-	const { params } = useRoute();
-	const { carts, addItemToCart } = React.useContext(CartsContext);
-	const [{ data, fetching }] = useItemQuery({
+	const { params } = useRoute<RouteProp<AppStackParamList, 'Item'>>();
+	const { addItemToCart } = React.useContext(CartsContext);
+	const [{ data }] = useItemQuery({
 		variables: { itemId: params.itemId }
 	});
 	const [quantity, setQuantity] = React.useState(0);

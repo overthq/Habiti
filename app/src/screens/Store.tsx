@@ -8,7 +8,7 @@ import {
 	Linking,
 	Image
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import {
 	useStoreQuery,
 	useStoreItemsQuery,
@@ -17,6 +17,7 @@ import {
 	useCurrentUserQuery
 } from '../types';
 import { Icon } from '../components/icons';
+import { MainStackParamList } from 'App';
 
 const StoreItems: React.FC<{ storeId?: string; header: React.FC }> = ({
 	storeId,
@@ -27,7 +28,7 @@ const StoreItems: React.FC<{ storeId?: string; header: React.FC }> = ({
 	});
 	const { navigate } = useNavigation();
 
-	// Loading state with react-native-skeleton-content.
+	// TODO(koredefashokun): Implement loading state with react-native-skeleton-content.
 
 	return (
 		<FlatList
@@ -57,10 +58,10 @@ const StoreItems: React.FC<{ storeId?: string; header: React.FC }> = ({
 
 const Store = () => {
 	const { setOptions } = useNavigation();
-	const { params } = useRoute();
+	const { params } = useRoute<RouteProp<MainStackParamList, 'Store'>>();
 	const [{ data: currentUserData }] = useCurrentUserQuery();
 	const [{ data }, refetch] = useStoreQuery({
-		variables: { storeId: params?.storeId }
+		variables: { storeId: params.storeId }
 	});
 	const [, followStore] = useFollowStoreMutation();
 	const [, unfollowStore] = useUnfollowStoreMutation();

@@ -6,13 +6,16 @@ import {
 	TextInput,
 	ActivityIndicator
 } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { useVerifyAuthenticationMutation } from '../types';
 import styles from '../styles/auth';
 import useAccessToken from '../hooks/useAccessToken';
+import { AuthStackParamList } from '../../App';
 
 const VerifyAuthentication = () => {
-	const { params } = useRoute();
+	const { params } = useRoute<
+		RouteProp<AuthStackParamList, 'VerifyAuthentication'>
+	>();
 	const { navigate } = useNavigation();
 	const { saveAccessToken } = useAccessToken();
 	const [code, setCode] = React.useState('');
@@ -20,7 +23,7 @@ const VerifyAuthentication = () => {
 		{ data, fetching },
 		verifyAuthentication
 	] = useVerifyAuthenticationMutation();
-	const { phone } = params as { phone: string };
+	const { phone } = params;
 
 	React.useEffect(() => {
 		if (data?.verifyAuthentication) {
