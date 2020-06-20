@@ -18,16 +18,13 @@ This section will help you get Market up and running in your development environ
 
 ### Prerequisites
 
-Before starting installing, the following are required:
+Before starting the installation process, the following are required:
 
 - [Node.js](https://nodejs.org) (version 8 or higher).
 - [Yarn](https://yarnpkg.com) (version 1.22)
-- [MongoDB](https://mongodb.com) (database for local development)
+- [PostgresQL](https://postgresql.com)
 
-### Commands
-
-Note that reading the project-specific docs are crucial to get Market up and running locally.
-You can find the READMEs for each of the projects in their respective folders.
+### Installation and Setup
 
 To get Market's source code on your machine, run these commands:
 
@@ -35,13 +32,14 @@ To get Market's source code on your machine, run these commands:
 # Clone the repository
 git clone https://github.com/overthq/Market.git && cd Market
 
-# Install dependencies
-cd api && yarn
-cd app && yarn
-cd dashboard && yarn
-
-# For more instructions on running the projects, visit any of the project-specific READMEs.
+# Install general dependencies
+yarn
 ```
+
+Next, proceed to the following links to get each project set up correctly.
+
+- [App](app/README.md#installation-and-setup)
+- [API](api/README.md#installation-and-setup)
 
 ## Contributing
 
@@ -58,11 +56,11 @@ Market is a TypeScript-based application. It is built with popular JS libraries/
     - Library: [React](https://facebook.github.io/react) based on [Create React App](https://facebook.github.io/create-react-app)
 - Back-End
   - Framework(s): [Express](https://expressjs.com) and [GraphQL](https://graphql.org)
-  - Database: [MongoDB](https://mongodb.com)
+  - Database: [PostgresQL](https://postgresql.com)
 
 # License
 
-GNU GPLv3 License
+[GNU GPLv3 License](LICENSE)
 
 # Author
 
