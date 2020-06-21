@@ -36,7 +36,7 @@ git clone https://github.com/overthq/Market.git && cd Market
 yarn
 ```
 
-Next, proceed to the following links to get each project set up correctly.
+Next, proceed to the following links for more information on how to set each project set up correctly.
 
 - [App](app/README.md#installation-and-setup)
 - [API](api/README.md#installation-and-setup)

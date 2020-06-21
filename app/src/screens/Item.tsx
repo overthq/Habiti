@@ -58,9 +58,7 @@ const Item = () => {
 						<TouchableOpacity
 							style={{ marginRight: 7.5 }}
 							onPress={() => {
-								if (quantity !== 0) {
-									setQuantity(quantity - 1);
-								}
+								if (quantity !== 0) setQuantity(quantity - 1);
 							}}
 						>
 							<Icon name='minus' color='#828282' />
