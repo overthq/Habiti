@@ -24,7 +24,16 @@ const RecentOrders = () => {
 
 	return (
 		<View>
-			<Text>RecentOrders</Text>
+			<Text
+				style={{
+					fontSize: 18,
+					fontWeight: '500',
+					color: '#505050',
+					marginLeft: 20
+				}}
+			>
+				Recent Orders
+			</Text>
 			<FlatList
 				data={data?.userOrders}
 				keyExtractor={({ id }) => id}

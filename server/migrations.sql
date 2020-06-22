@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS orders (
 	status order_status DEFAULT 'Pending',
 	created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 	updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-	FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+	FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
 	FOREIGN KEY (store_id) REFERENCES stores (id) ON DELETE CASCADE
 );
 
