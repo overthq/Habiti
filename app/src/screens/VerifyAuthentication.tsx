@@ -17,7 +17,7 @@ const VerifyAuthentication = () => {
 		RouteProp<AuthStackParamList, 'VerifyAuthentication'>
 	>();
 	const { navigate } = useNavigation();
-	const { saveAccessToken } = useAccessToken();
+	const { setAccessToken } = useAccessToken();
 	const [code, setCode] = React.useState('');
 	const [
 		{ data, fetching },
@@ -27,7 +27,7 @@ const VerifyAuthentication = () => {
 
 	React.useEffect(() => {
 		if (data?.verifyAuthentication) {
-			saveAccessToken(data.verifyAuthentication);
+			setAccessToken(data.verifyAuthentication);
 			navigate('Main');
 		}
 	}, [data]);

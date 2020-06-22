@@ -8,9 +8,10 @@ const useAccessToken = () => {
 	React.useEffect(() => {
 		(async () => {
 			try {
-				const savedAccessToken = await AsyncStorage.getItem('accessToken');
-				if (!savedAccessToken) return setAccessToken(null);
-				setAccessToken(savedAccessToken);
+				const savedToken = await AsyncStorage.getItem('accessToken');
+				setAccessToken(savedToken);
+			} catch (error) {
+				setAccessToken(null);
 			} finally {
 				setLoading(false);
 			}
@@ -25,12 +26,9 @@ const useAccessToken = () => {
 		AsyncStorage.setItem('accessToken', accessToken);
 	}, [accessToken]);
 
-	const saveAccessToken = (token: string) =>
-		AsyncStorage.setItem('accessToken', token);
-
 	const logOut = () => setAccessToken(null);
 
-	return { loading, accessToken, saveAccessToken, logOut };
+	return { loading, accessToken, setAccessToken, logOut };
 };
 
 export default useAccessToken;

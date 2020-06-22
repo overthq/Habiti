@@ -184,6 +184,7 @@ const App = () => {
 		})
 	});
 
+	// Keep the splash screen open until loading becomes true.
 	return loading ? (
 		<View>
 			<ActivityIndicator />
