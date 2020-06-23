@@ -1,5 +1,8 @@
 {
 	"name": "@market/server",
+	"version": "0.0.1",
+	"license": "GNU GPL V3",
+	"private": true,
 	"scripts": {
 		"dev": "nodemon",
 		"generate-types": "sqlmancer generate src/schema.ts src/sqlmancer.ts"

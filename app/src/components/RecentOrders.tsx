@@ -7,6 +7,7 @@ import {
 	StyleSheet
 } from 'react-native';
 import { useUserOrdersQuery, OrderStatus } from '../types';
+import textStyles from '../styles/text';
 
 const getStatusColor = (status: OrderStatus) => {
 	switch (status) {
@@ -24,14 +25,7 @@ const RecentOrders = () => {
 
 	return (
 		<View>
-			<Text
-				style={{
-					fontSize: 18,
-					fontWeight: '500',
-					color: '#505050',
-					marginLeft: 20
-				}}
-			>
+			<Text style={[textStyles.sectionHeader, { marginLeft: 20 }]}>
 				Recent Orders
 			</Text>
 			<FlatList
@@ -56,7 +50,14 @@ const RecentOrders = () => {
 					</TouchableOpacity>
 				)}
 				ListEmptyComponent={
-					<Text style={{ marginHorizontal: 20 }}>
+					<Text
+						style={{
+							color: '#C4C4C4',
+							fontSize: 16,
+							marginHorizontal: 20,
+							marginVertical: 5
+						}}
+					>
 						No recent orders to view. Order some items to view them here
 					</Text>
 				}

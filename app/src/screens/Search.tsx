@@ -2,18 +2,18 @@ import React from 'react';
 import { View, Text, TextInput, StyleSheet, Dimensions } from 'react-native';
 import { useClient } from 'urql';
 import { Icon } from '../components/icons';
-import { SearchDocument } from '../types';
+import { SearchDocument, SearchQuery } from '../types';
 
 const { width } = Dimensions.get('window');
 
 const Search = () => {
-	const [data, setData] = React.useState({});
+	const [data, setData] = React.useState<SearchQuery | undefined>();
 
 	const client = useClient();
 
 	const handleTextChange = async (searchTerm: string) => {
 		const { data } = await client
-			.query(SearchDocument, { searchTerm: `%${searchTerm}%` })
+			.query<SearchQuery>(SearchDocument, { searchTerm: `%${searchTerm}%` })
 			.toPromise();
 		setData(data);
 	};
@@ -28,6 +28,8 @@ const Search = () => {
 					placeholder='Search stores and items'
 					onChangeText={handleTextChange}
 					style={{ fontSize: 16, paddingLeft: 5 }}
+					autoCorrect={false}
+					autoCapitalize='none'
 				/>
 			</View>
 			<Text>{JSON.stringify(data)}</Text>
@@ -40,8 +42,8 @@ const styles = StyleSheet.create({
 		flex: 1
 	},
 	handle: {
-		width: 80,
-		height: 7.5,
+		width: 50,
+		height: 5,
 		borderRadius: 3.75,
 		backgroundColor: '#D3D3D3',
 		alignSelf: 'center',

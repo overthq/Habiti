@@ -21,7 +21,7 @@ const Item = () => {
 	const [quantity, setQuantity] = React.useState(0);
 
 	return (
-		<ScrollView style={styles.container} bounces={false}>
+		<ScrollView style={styles.container}>
 			<View style={styles.imagePlaceholder} />
 			<View style={{ paddingHorizontal: 20, paddingTop: 20 }}>
 				<Text style={{ fontWeight: '500' }}>{data?.item.store.name}</Text>
