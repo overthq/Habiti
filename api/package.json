@@ -20,7 +20,7 @@
 		"knex": "^0.21.1",
 		"pg": "^8.2.1",
 		"redis": "^3.0.2",
-		"sqlmancer": "^0.3.0"
+		"sqlmancer": "^0.3.3"
 	},
 	"devDependencies": {
 		"@types/cors": "^2.8.6",

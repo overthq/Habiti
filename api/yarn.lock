@@ -4355,10 +4355,10 @@ sprintf-js@~1.0.2:
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
   integrity sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw=
 
-sqlmancer@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/sqlmancer/-/sqlmancer-0.3.0.tgz#5d3a903b47aff4ec16a8cf835da338eaaabaeae1"
-  integrity sha512-hSYVeEuQLBRWb37KEYu2R/DVvc182eBiKlsxj5Kbj5tKeDvHUhBnJPn2x+N5Ak1TxuyZAzs03DGedWIbCORZ1g==
+sqlmancer@^0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/sqlmancer/-/sqlmancer-0.3.3.tgz#fdd2687c68d058c1aa4cc08dbe9a4f1af11e0f2f"
+  integrity sha512-QpokN2yFE1XlaMGeP93wazboo2PNdaq8500jFb6f84iNVT+qMa5QHRfJhrpJsJYMJ5zW3bpB3l4LIC39OkyCEw==
   dependencies:
     "@graphql-toolkit/code-file-loader" "^0.10.5"
     "@graphql-toolkit/core" "^0.10.5"
