@@ -3,7 +3,6 @@ import graphqlHTTP from 'express-graphql';
 import jwt from 'express-jwt';
 import cors from 'cors';
 import schema from './schema';
-import './config/database';
 
 const { PORT } = process.env;
 const app = express();
