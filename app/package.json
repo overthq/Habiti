@@ -34,7 +34,7 @@
     "@graphql-codegen/typescript-operations": "^1.13.1",
     "@graphql-codegen/typescript-urql": "^1.13.1",
     "@react-native-community/eslint-config": "^1.0.0",
-    "@types/jest": "^24.0.24",
+    "@types/jest": "^26.0.7",
     "@types/react-native": "^0.62.0",
     "@types/react-test-renderer": "16.9.2",
     "@typescript-eslint/eslint-plugin": "^2.27.0",
