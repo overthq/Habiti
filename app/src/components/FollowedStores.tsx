@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import {
+	View,
+	Text,
+	FlatList,
+	TouchableOpacity,
+	StyleSheet
+} from 'react-native';
 import { useStoresFollowedQuery } from '../types';
 
 const FollowedStores = () => {
@@ -7,16 +13,7 @@ const FollowedStores = () => {
 
 	return (
 		<View>
-			<Text
-				style={{
-					marginLeft: 20,
-					fontSize: 18,
-					fontWeight: '500',
-					color: '#505050'
-				}}
-			>
-				New Arrivals
-			</Text>
+			<Text style={styles.sectionHeader}>New Arrivals</Text>
 			<FlatList
 				horizontal
 				data={data?.storesFollowed}
@@ -25,35 +22,10 @@ const FollowedStores = () => {
 				contentContainerStyle={{ paddingLeft: 20 }}
 				renderItem={({ item }) => (
 					<TouchableOpacity activeOpacity={0.8}>
-						<View
-							style={{
-								width: 90,
-								height: 90,
-								borderColor: '#000000',
-								borderWidth: 2,
-								borderRadius: 45,
-								justifyContent: 'center',
-								alignItems: 'center'
-							}}
-						>
-							<View
-								style={{
-									backgroundColor: '#D3D3D3',
-									width: 80,
-									height: 80,
-									borderRadius: 40
-								}}
-							/>
+						<View style={styles.storyImageContainer}>
+							<View style={styles.storyImagePlaceholder} />
 						</View>
-						<Text
-							style={{
-								textAlign: 'center',
-								marginTop: 5,
-								fontSize: 16
-							}}
-						>
-							{item.store.name}
-						</Text>
+						<Text style={styles.storeName}>{item.store.name}</Text>
 					</TouchableOpacity>
 				)}
 				ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
@@ -61,5 +33,34 @@ const FollowedStores = () => {
 		</View>
 	);
 };
+
+const styles = StyleSheet.create({
+	sectionHeader: {
+		marginLeft: 20,
+		fontSize: 18,
+		fontWeight: '500',
+		color: '#505050'
+	},
+	storyImageContainer: {
+		width: 90,
+		height: 90,
+		borderColor: '#000000',
+		borderWidth: 2,
+		borderRadius: 45,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	storyImagePlaceholder: {
+		backgroundColor: '#D3D3D3',
+		width: 80,
+		height: 80,
+		borderRadius: 40
+	},
+	storeName: {
+		textAlign: 'center',
+		marginTop: 5,
+		fontSize: 16
+	}
+});
 
 export default FollowedStores;

@@ -88,29 +88,27 @@ export type MainStackParamList = {
 	Store: { storeId: string };
 };
 
-const MainNavigator = () => {
-	return (
-		<MainStack.Navigator>
-			<MainStack.Screen
-				name='Home'
-				component={HomeNavigator}
-				options={{ headerShown: false }}
-			/>
-			<MainStack.Screen
-				name='Store'
-				component={Store}
-				options={{
-					headerBackTitleVisible: false,
-					// eslint-disable-next-line
-					headerBackImage: () => {
-						return <Icon name='chevronLeft' size={30} />;
-					},
-					headerLeftContainerStyle: { paddingLeft: 8 }
-				}}
-			/>
-		</MainStack.Navigator>
-	);
-};
+const MainNavigator = () => (
+	<MainStack.Navigator>
+		<MainStack.Screen
+			name='Home'
+			component={HomeNavigator}
+			options={{ headerShown: false }}
+		/>
+		<MainStack.Screen
+			name='Store'
+			component={Store}
+			options={{
+				headerBackTitleVisible: false,
+				// eslint-disable-next-line
+				headerBackImage: () => {
+					return <Icon name='chevronLeft' size={30} />;
+				},
+				headerLeftContainerStyle: { paddingLeft: 8 }
+			}}
+		/>
+	</MainStack.Navigator>
+);
 
 const RootNavigator = () => {
 	const [{ data, fetching, error }] = useCurrentUserQuery();
@@ -149,28 +147,26 @@ export type AppStackParamList = {
 	Cart: { storeId: string };
 };
 
-const Routes = () => {
-	return (
-		<NavigationContainer>
-			<AppStack.Navigator
-				mode='modal'
-				screenOptions={{
-					headerShown: false,
-					gestureEnabled: true,
-					cardOverlayEnabled: true,
-					...(Platform.OS === 'ios'
-						? TransitionPresets.ModalPresentationIOS
-						: TransitionPresets.RevealFromBottomAndroid)
-				}}
-			>
-				<AppStack.Screen name='Root' component={RootNavigator} />
-				<AppStack.Screen name='Search' component={Search} />
-				<AppStack.Screen name='Item' component={Item} />
-				<AppStack.Screen name='Cart' component={Cart} />
-			</AppStack.Navigator>
-		</NavigationContainer>
-	);
-};
+const Routes = () => (
+	<NavigationContainer>
+		<AppStack.Navigator
+			mode='modal'
+			screenOptions={{
+				headerShown: false,
+				gestureEnabled: true,
+				cardOverlayEnabled: true,
+				...(Platform.OS === 'ios'
+					? TransitionPresets.ModalPresentationIOS
+					: TransitionPresets.RevealFromBottomAndroid)
+			}}
+		>
+			<AppStack.Screen name='Root' component={RootNavigator} />
+			<AppStack.Screen name='Search' component={Search} />
+			<AppStack.Screen name='Item' component={Item} />
+			<AppStack.Screen name='Cart' component={Cart} />
+		</AppStack.Navigator>
+	</NavigationContainer>
+);
 
 const App = () => {
 	const { loading, accessToken } = useAccessToken();

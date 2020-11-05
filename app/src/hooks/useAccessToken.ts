@@ -1,6 +1,7 @@
 import React from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 
+// Rename to useClient and move client definition into this function
 const useAccessToken = () => {
 	const [loading, setLoading] = React.useState(true);
 	const [accessToken, setAccessToken] = React.useState<string | null>(null);

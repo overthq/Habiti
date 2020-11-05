@@ -1,35 +1,22 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useItemQuery } from '../types';
 import { Icon } from '../components/icons';
 import { CartsContext } from '../contexts/CartsContext';
 
-const CartItem: React.FC<{ itemId: string; quantity: number }> = ({
-	itemId,
-	quantity
-}) => {
+interface CartItemProps {
+	itemId: string;
+	quantity: number;
+}
+
+const CartItem: React.FC<CartItemProps> = ({ itemId, quantity }) => {
 	const [{ data }] = useItemQuery({ variables: { itemId } });
 	const { addItemToCart, removeItemFromCart } = React.useContext(CartsContext);
 
 	return (
-		<View
-			style={{
-				flexDirection: 'row',
-				justifyContent: 'space-between',
-				alignItems: 'center',
-				marginVertical: 5
-			}}
-		>
+		<View style={styles.container}>
 			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-				<View
-					style={{
-						height: 50,
-						width: 50,
-						marginRight: 10,
-						borderRadius: 8,
-						backgroundColor: '#D3D3D3'
-					}}
-				/>
+				<View style={styles.imagePlaceholder} />
 				<Text style={{ fontSize: 16 }}>{data?.item.name}</Text>
 			</View>
 			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -80,5 +67,21 @@ const CartItem: React.FC<{ itemId: string; quantity: number }> = ({
 		</View>
 	);
 };
+
+const styles = StyleSheet.create({
+	container: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		marginVertical: 5
+	},
+	imagePlaceholder: {
+		height: 50,
+		width: 50,
+		marginRight: 10,
+		borderRadius: 8,
+		backgroundColor: '#D3D3D3'
+	}
+});
 
 export default CartItem;
