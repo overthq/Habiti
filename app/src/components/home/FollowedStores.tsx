@@ -6,7 +6,7 @@ import {
 	TouchableOpacity,
 	StyleSheet
 } from 'react-native';
-import { useStoresFollowedQuery } from '../types';
+import { useStoresFollowedQuery } from '../../types';
 
 const FollowedStores = () => {
 	const [{ data }] = useStoresFollowedQuery();

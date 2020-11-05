@@ -1,9 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import RecentOrders from '../components/RecentOrders';
-import FollowedStores from '../components/FollowedStores';
-import { ScrollView } from 'react-native-gesture-handler';
+import RecentOrders from '../components/home/RecentOrders';
+import FollowedStores from '../components/home/FollowedStores';
 
 const Home = () => {
 	return (
