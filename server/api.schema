@@ -1,0 +1,67 @@
+-- Types
+
+User {
+	id: uuid;
+	name: string;
+	phone: string;
+	created_at: timestamptz;
+	updated_at: timestamptz;
+}
+
+Store {
+	id: uuid;
+	name: string;
+	description: string;
+	created_at: timestamptz;
+	updated_at: timestamptz;
+}
+
+enum OrderStatus {
+	Pending
+	Processing
+	En-Route
+	Delivered
+}
+
+Order {
+	status: OrderStatus;
+	created_at: timestamptz;
+	updated_at: timestamptz;
+}
+
+OrderItem {
+	order_id: string;
+	item_id: string;
+	quantity: string;
+	created_at: string;
+}
+
+enum ItemUnit {
+	Units
+	Kilogram
+	Litre
+}
+
+Item {
+	name: string;
+	description: string;
+	available_quantity: number;
+	unit: ItemUnit;
+	created_at: timestamptz;
+	updated_at: timestamptz;
+}
+
+StoreFollowers {
+	user_id: uuid;
+	store_id: uuid;
+	created_at timestamptz;
+}
+
+-- Auth actions
+
+register(name, phone): code -- (Message sent to device for user to verify entered phone number)
+verifyCode(phone: code): jwt
+authenticate(phone): code -- (Same message sent to verify the user's authenticity)
+
+-- Since information concerning the verification codes are temporary, they should ideally be stored in a cache (Redis, in the case of this application.)
+
