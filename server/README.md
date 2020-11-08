@@ -1,0 +1,1 @@
+This is a folder that will contain server-side code. In the future, it should be noted that this directory will be split into its constituent projects (like `hasura`, `storage` and `auth`), so that each can be deployed as its own microservice or Kubernetes pods.
