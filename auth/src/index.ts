@@ -12,7 +12,18 @@ const redisClient = redis.createClient({ url: process.env.REDIS_URL });
 const graphqlClient = new GraphQLClient('http://localhost:8080/v1/graphql');
 const getAsync = promisify(redisClient.get).bind(redisClient);
 
+redisClient.on('error', error => {
+	throw new Error(error);
+});
+
 app.use(express.json());
+
+const sendVerificationCode = (phone: string) => {
+	const code = generateCode();
+	redisClient.set(phone, code);
+	redisClient.expire(phone, 600);
+	console.log(phone, code);
+};
 
 app.post('/authenticate', async (req, res) => {
 	const { phone } = req.body;
@@ -40,15 +51,7 @@ app.post('/authenticate', async (req, res) => {
 			});
 		}
 
-		const code = generateCode();
-
-		redisClient.set('phone', code);
-
-		// if (process.env.NODE_ENV === 'development') {
-		console.log(code);
-		// } else {
-		// Send code via Twilio.
-		// }
+		sendVerificationCode(phone);
 
 		return res.status(200).json({
 			success: true,
@@ -84,15 +87,7 @@ app.post('/register', async (req, res) => {
 		const [user] = data.insert_users.returning;
 
 		if (user.id) {
-			const code = generateCode();
-
-			redisClient.set('phone', code);
-
-			if (process.env.NODE_ENV === 'development') {
-				console.log(code);
-			} else {
-				// Send code via Twilio.
-			}
+			sendVerificationCode(phone);
 
 			return res.status(201).json({
 				success: true,
