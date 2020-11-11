@@ -3,7 +3,7 @@ import { gql } from 'graphql-request';
 import { promisify } from 'util';
 
 import generateToken from './utils/generateToken';
-import { sendVerificationCode } from './utils/generateCode';
+import { sendVerificationCode } from './utils/verificationCode';
 import { graphqlClient, redisClient } from './config';
 
 const app = express();
