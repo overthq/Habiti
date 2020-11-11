@@ -1,29 +1,16 @@
 import express from 'express';
-import redis from 'redis';
-import { GraphQLClient, gql } from 'graphql-request';
+import { gql } from 'graphql-request';
 import { promisify } from 'util';
 
 import generateToken from './utils/generateToken';
-import generateCode from './utils/generateCode';
+import { sendVerificationCode } from './utils/generateCode';
+import { graphqlClient, redisClient } from './config';
 
 const app = express();
 
-const redisClient = redis.createClient({ url: process.env.REDIS_URL });
-const graphqlClient = new GraphQLClient('http://localhost:8080/v1/graphql');
 const getAsync = promisify(redisClient.get).bind(redisClient);
 
-redisClient.on('error', error => {
-	throw new Error(error);
-});
-
 app.use(express.json());
-
-const sendVerificationCode = (phone: string) => {
-	const code = generateCode();
-	redisClient.set(phone, code);
-	redisClient.expire(phone, 600);
-	console.log(phone, code);
-};
 
 app.post('/authenticate', async (req, res) => {
 	const { phone } = req.body;
@@ -42,20 +29,18 @@ app.post('/authenticate', async (req, res) => {
 			{ phone }
 		);
 
-		console.log({ data });
+		if (data.users && data.users[0]) {
+			sendVerificationCode(phone);
 
-		if (!data.users || !data.users[0]) {
-			return res.status(404).json({
-				success: false,
-				message: 'The specified user does not exist'
+			return res.status(200).json({
+				success: true,
+				message: 'Verification code sent to associated phone number'
 			});
 		}
 
-		sendVerificationCode(phone);
-
-		return res.status(200).json({
-			success: true,
-			message: 'Verification code sent to associated phone number'
+		return res.status(404).json({
+			success: false,
+			message: 'The specified user does not exist'
 		});
 	} catch (error) {
 		return res.status(400).json({
@@ -133,8 +118,6 @@ app.post('/verify-code', async (req, res) => {
 		);
 
 		const [user] = data.users;
-
-		console.log({ data, user });
 
 		const { accessToken } = generateToken(user);
 
