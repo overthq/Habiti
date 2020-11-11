@@ -8,7 +8,7 @@ import generateCode from './utils/generateCode';
 
 const app = express();
 
-const redisClient = redis.createClient();
+const redisClient = redis.createClient({ url: process.env.REDIS_URL });
 const graphqlClient = new GraphQLClient('http://localhost:8080/v1/graphql');
 const getAsync = promisify(redisClient.get).bind(redisClient);
 
@@ -31,9 +31,11 @@ app.post('/authenticate', async (req, res) => {
 			{ phone }
 		);
 
+		console.log({ data });
+
 		if (!data.users || !data.users[0]) {
 			return res.status(404).json({
-				success: 'false',
+				success: false,
 				message: 'The specified user does not exist'
 			});
 		}
@@ -42,11 +44,16 @@ app.post('/authenticate', async (req, res) => {
 
 		redisClient.set('phone', code);
 
-		if (process.env.NODE_ENV === 'development') {
-			console.log(code);
-		} else {
-			// Send code via Twilio.
-		}
+		// if (process.env.NODE_ENV === 'development') {
+		console.log(code);
+		// } else {
+		// Send code via Twilio.
+		// }
+
+		return res.status(200).json({
+			success: true,
+			message: 'Verification code sent to associated phone number'
+		});
 	} catch (error) {
 		return res.status(400).json({
 			success: false,
@@ -58,28 +65,45 @@ app.post('/authenticate', async (req, res) => {
 app.post('/register', async (req, res) => {
 	const { name, phone } = req.body;
 
-	const data = await graphqlClient.request(
-		gql`
-			mutation Register($name: String!, $phone: String!) {
-				insert_users(objects: [{ name: $name, phone: $phone }]) {
-					returning {
-						id
-						name
-						phone
+	try {
+		const data = await graphqlClient.request(
+			gql`
+				mutation Register($name: String!, $phone: String!) {
+					insert_users(objects: [{ name: $name, phone: $phone }]) {
+						returning {
+							id
+							name
+							phone
+						}
 					}
 				}
+			`,
+			{ name, phone }
+		);
+
+		const [user] = data.insert_users.returning;
+
+		if (user.id) {
+			const code = generateCode();
+
+			redisClient.set('phone', code);
+
+			if (process.env.NODE_ENV === 'development') {
+				console.log(code);
+			} else {
+				// Send code via Twilio.
 			}
-		`,
-		{ name, phone }
-	);
 
-	console.log({ data });
-
-	if (data.returning.id) {
-		return res.status(201).json({
+			return res.status(201).json({
+				success: true,
+				message:
+					'Account created successfully. Please enter the verification code sent to the specified phone number.'
+			});
+		}
+	} catch (error) {
+		return res.status(400).json({
 			success: false,
-			message:
-				'Account created successfully. Please enter the verification code sent to the specified phone number.'
+			message: error.message
 		});
 	}
 });
