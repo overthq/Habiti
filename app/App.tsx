@@ -159,7 +159,7 @@ const App = () => {
 	const { loading, accessToken } = useAccessToken();
 
 	const client = createClient({
-		url: 'http://localhost:5000',
+		url: 'http://localhost:8080',
 		fetchOptions: () => ({
 			headers: {
 				authorization: accessToken ? `Bearer ${accessToken}` : ''
