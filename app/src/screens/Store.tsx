@@ -2,9 +2,9 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { useStoreQuery } from '../types';
-import { MainStackParamList } from 'App';
+import { MainStackParamList } from '../types/navigation';
 import StoreItems from '../components/store/StoreItem';
-import StoreHeader from 'src/components/store/StoreHeader';
+import StoreHeader from '../components/store/StoreHeader';
 
 const Store = () => {
 	const { setOptions } = useNavigation();

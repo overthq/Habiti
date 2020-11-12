@@ -10,7 +10,7 @@ import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { useVerifyAuthenticationMutation } from '../types';
 import styles from '../styles/auth';
 import useAccessToken from '../hooks/useAccessToken';
-import { AuthStackParamList } from '../../App';
+import { AuthStackParamList } from '../types/navigation';
 
 const VerifyAuthentication = () => {
 	const { params } = useRoute<

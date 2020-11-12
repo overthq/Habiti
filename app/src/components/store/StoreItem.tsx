@@ -1,5 +1,11 @@
 import React from 'react';
-import { FlatList, View, Text, TouchableOpacity } from 'react-native';
+import {
+	FlatList,
+	View,
+	Text,
+	TouchableOpacity,
+	StyleSheet
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useStoreItemsQuery } from '../../types';
 
@@ -41,5 +47,10 @@ const StoreItems: React.FC<StoreItemsProps> = ({ storeId, header }) => {
 		/>
 	);
 };
+
+const styles = StyleSheet.create({
+	itemName: {},
+	itemImage: {}
+});
 
 export default StoreItems;

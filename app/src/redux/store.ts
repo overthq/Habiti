@@ -10,6 +10,8 @@ const rootReducer = combineReducers({
 	auth: persistReducer({ key: 'auth', storage: AsyncStorage }, authReducer)
 });
 
+const middleware = applyMiddleware(thunk);
+
 export type RootState = ReturnType<typeof rootReducer>;
 export type AppThunk<ReturnType = void> = ThunkAction<
 	ReturnType,

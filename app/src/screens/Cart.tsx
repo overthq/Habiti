@@ -8,7 +8,7 @@ import {
 	useCurrentUserQuery,
 	useCreateOrderItemsMutation
 } from '../types';
-import { AppStackParamList } from 'App';
+import { AppStackParamList } from '../types/navigation';
 
 const Cart = () => {
 	const { navigate } = useNavigation();

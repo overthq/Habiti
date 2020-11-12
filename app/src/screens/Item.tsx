@@ -10,7 +10,7 @@ import { useRoute, RouteProp } from '@react-navigation/native';
 import { useItemQuery } from '../types';
 import { Icon } from '../components/icons';
 import { CartsContext } from '../contexts/CartsContext';
-import { AppStackParamList } from 'App';
+import { AppStackParamList } from '../types/navigation';
 
 const Item = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Item'>>();
