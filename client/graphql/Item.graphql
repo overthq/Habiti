@@ -1,0 +1,51 @@
+query Items {
+	items {
+		id
+		name
+		store_id
+		featured
+		price_per_unit
+		unit
+	}
+}
+
+query StoreItems($storeId: ID!) {
+	storeItems: items(where: { store_id: { equal: $storeId } }) {
+		id
+		name
+		store_id
+		featured
+		price_per_unit
+		unit
+	}
+}
+
+query Item($itemId: ID!) {
+	item(id: $itemId) {
+		id
+		name
+		store_id
+		store {
+			id
+			name
+		}
+		description
+		price_per_unit
+		unit
+	}
+}
+
+query FeaturedItems {
+	featuredItems: items(where: { featured: { equal: true } }) {
+		id
+		name
+		store_id
+		store {
+			id
+			name
+		}
+		description
+		price_per_unit
+		unit
+	}
+}

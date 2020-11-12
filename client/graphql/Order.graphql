@@ -1,0 +1,41 @@
+query UserOrders {
+	userOrders {
+		id
+		status
+		store {
+			name
+		}
+		cart {
+			item {
+				name
+				price_per_unit
+			}
+			quantity
+		}
+	}
+}
+
+mutation PlaceOrder($input: CreateOrderInput!) {
+	createOrder(input: $input) {
+		id
+		status
+		store {
+			name
+		}
+		cart {
+			item {
+				name
+				price_per_unit
+			}
+			quantity
+		}
+	}
+}
+
+mutation CreateOrderItems($input: [CreateOrderItemInput!]!) {
+	createOrderItems(input: $input) {
+		id
+		order_id
+		quantity
+	}
+}

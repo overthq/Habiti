@@ -1,0 +1,20 @@
+mutation FollowStore($storeId: ID!) {
+	followStore(storeId: $storeId) {
+		user_id
+		store_id
+	}
+}
+
+mutation UnfollowStore($storeId: ID!) {
+	unfollowStore(storeId: $storeId)
+}
+
+query StoresFollowed {
+	storesFollowed {
+		store_id
+		store {
+			name
+			short_name
+		}
+	}
+}
