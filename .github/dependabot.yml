@@ -10,7 +10,7 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "npm"
-    directory: "/api"
+    directory: "/auth"
     schedule:
       interval: "daily"
   - package-ecosystem: "npm"
