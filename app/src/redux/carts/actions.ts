@@ -7,7 +7,7 @@ interface UpsertItemActionPayload {
 	quantity: number;
 }
 
-export const addItemToCart = ({
+export const upsertItemToCart = ({
 	storeId,
 	itemId,
 	quantity

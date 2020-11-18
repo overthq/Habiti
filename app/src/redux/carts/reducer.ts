@@ -22,9 +22,14 @@ const cartsReducer = (state = initialState, action: CartsActionTypes) => {
 				}
 			};
 		case REMOVE_ITEM:
+			const { [action.payload.itemId]: _, ...updatedStoreCart } = state.carts[
+				action.payload.storeId
+			];
+
 			return {
 				carts: {
-					...state.carts
+					...state.carts,
+					[action.payload.storeId]: updatedStoreCart
 				}
 			};
 		default:
