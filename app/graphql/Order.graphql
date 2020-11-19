@@ -1,7 +1,7 @@
 query UserOrders {
 	userOrders {
 		id
-		status
+		# status
 		store {
 			name
 		}
@@ -15,8 +15,8 @@ query UserOrders {
 	}
 }
 
-mutation PlaceOrder($input: CreateOrderInput!) {
-	createOrder(input: $input) {
+mutation PlaceOrder($input: order_input!) {
+	insert_orders(input: objects:[$input]) {
 		id
 		status
 		store {
@@ -32,10 +32,11 @@ mutation PlaceOrder($input: CreateOrderInput!) {
 	}
 }
 
-mutation CreateOrderItems($input: [CreateOrderItemInput!]!) {
-	createOrderItems(input: $input) {
-		id
-		order_id
-		quantity
+mutation CreateOrderItems($items: [CreateOrderItemInput!]!) {
+	insert_order_items(objects: $items) {
+		affected_rows
+		returning {
+			id
+		}
 	}
 }

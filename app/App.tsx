@@ -15,7 +15,6 @@ import VerifyAuthentication from './src/screens/VerifyAuthentication';
 import Home from './src/screens/Home';
 import Profile from './src/screens/Profile';
 import Carts from './src/screens/Carts';
-import { CartsProvider } from './src/contexts/CartsContext';
 import useAccessToken from './src/hooks/useAccessToken';
 import Explore from './src/screens/Explore';
 import Search from './src/screens/Search';
@@ -29,6 +28,8 @@ import {
 	AuthStackParamList,
 	MainStackParamList
 } from './src/types/navigation';
+import { useAppSelector } from './src/redux/store';
+import env from './env';
 
 const RootStack = createStackNavigator();
 const AppStack = createStackNavigator<AppStackParamList>();
@@ -156,10 +157,10 @@ const Routes = () => (
 );
 
 const App = () => {
-	const { loading, accessToken } = useAccessToken();
+	const accessToken = useAppSelector(({ auth }) => auth.accessToken);
 
 	const client = createClient({
-		url: 'http://localhost:8080',
+		url: env.hasuraUrl,
 		fetchOptions: () => ({
 			headers: {
 				authorization: accessToken ? `Bearer ${accessToken}` : ''
@@ -167,18 +168,11 @@ const App = () => {
 		})
 	});
 
-	// Keep the splash screen open until loading becomes true.
-	return loading ? (
-		<View>
-			<ActivityIndicator />
-		</View>
-	) : (
+	return (
 		<Provider value={client}>
-			<CartsProvider>
-				<SafeAreaProvider>
-					<Routes />
-				</SafeAreaProvider>
-			</CartsProvider>
+			<SafeAreaProvider>
+				<Routes />
+			</SafeAreaProvider>
 		</Provider>
 	);
 };

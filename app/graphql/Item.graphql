@@ -9,8 +9,8 @@ query Items {
 	}
 }
 
-query StoreItems($storeId: ID!) {
-	storeItems: items(where: { store_id: { equal: $storeId } }) {
+query StoreItems($storeId: uuid!) {
+	storeItems: items(where: { store_id: { _eq: $storeId } }) {
 		id
 		name
 		store_id
@@ -20,8 +20,8 @@ query StoreItems($storeId: ID!) {
 	}
 }
 
-query Item($itemId: ID!) {
-	item(id: $itemId) {
+query Item($itemId: uuid!) {
+	items(where: { id: { _eq: $itemId } }) {
 		id
 		name
 		store_id
@@ -36,7 +36,7 @@ query Item($itemId: ID!) {
 }
 
 query FeaturedItems {
-	featuredItems: items(where: { featured: { equal: true } }) {
+	featuredItems: items(where: { featured: { _eq: true } }) {
 		id
 		name
 		store_id
