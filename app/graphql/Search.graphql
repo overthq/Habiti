@@ -1,10 +1,10 @@
 query Search($searchTerm: String!) {
-	stores(where: { name: { iLike: $searchTerm } }, orderBy: [{ name: ASC }]) {
+	stores(where: { name: { _ilike: $searchTerm } }, order_by: [{ name: asc }]) {
 		name
 		short_name
 	}
 
-	items(where: { name: { iLike: $searchTerm } }, orderBy: [{ name: ASC }]) {
+	items(where: { name: { _ilike: $searchTerm } }, order_by: [{ name: asc }]) {
 		name
 	}
 }

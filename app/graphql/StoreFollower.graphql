@@ -1,16 +1,25 @@
-mutation FollowStore($storeId: ID!) {
-	followStore(storeId: $storeId) {
-		user_id
-		store_id
+mutation FollowStore($storeId: uuid!, $userId: uuid!) {
+	insert_store_followers(objects: [{ store_id: $storeId, user_id: $userId }]) {
+		affected_rows
+		returning {
+			user_id
+			store_id
+		}
 	}
 }
 
-mutation UnfollowStore($storeId: ID!) {
-	unfollowStore(storeId: $storeId)
+mutation UnfollowStore($userId: uuid!, $storeId: uuid!) {
+	delete_store_followers(
+		where: {
+			_and: [{ store_id: { _eq: $storeId } }, { user_id: { _eq: $userId } }]
+		}
+	) {
+		affected_rows
+	}
 }
 
-query StoresFollowed {
-	storesFollowed {
+query StoresFollowed($userId: uuid!) {
+	store_followers(where: { user_id: { _eq: $userId } }) {
 		store_id
 		store {
 			name

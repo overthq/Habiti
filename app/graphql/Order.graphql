@@ -1,11 +1,11 @@
-query UserOrders {
-	userOrders {
+query UserOrders($userId: uuid!) {
+	orders(where: { user_id: { _eq: $userId } }) {
 		id
 		# status
 		store {
 			name
 		}
-		cart {
+		order_items {
 			item {
 				name
 				price_per_unit
@@ -15,24 +15,26 @@ query UserOrders {
 	}
 }
 
-mutation PlaceOrder($input: order_input!) {
-	insert_orders(input: objects:[$input]) {
-		id
-		status
-		store {
-			name
-		}
-		cart {
-			item {
+mutation PlaceOrder($input: orders_insert_input!) {
+	insert_orders(objects: [$input]) {
+		returning {
+			id
+			# status
+			store {
 				name
-				price_per_unit
 			}
-			quantity
+			order_items {
+				item {
+					name
+					price_per_unit
+				}
+				quantity
+			}
 		}
 	}
 }
 
-mutation CreateOrderItems($items: [CreateOrderItemInput!]!) {
+mutation CreateOrderItems($items: [order_items_insert_input!]!) {
 	insert_order_items(objects: $items) {
 		affected_rows
 		returning {

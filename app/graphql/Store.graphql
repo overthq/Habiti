@@ -3,27 +3,27 @@ query Stores {
 		id
 		name
 		short_name
-		profile {
-			website_url
-			instagram_username
-			twitter_username
-		}
+		# profile {
+		# 	website_url
+		# 	instagram_username
+		# 	twitter_username
+		# }
 	}
 }
 
-query Store($storeId: ID!) {
-	store(id: $storeId) {
+query Store($storeId: uuid!) {
+	stores(where: { id: { _eq: $storeId } }) {
 		id
 		name
 		short_name
-		profile {
-			website_url
-			instagram_username
-			twitter_username
-			followers {
-				store_id
-				user_id
-			}
-		}
+		# profile {
+		# 	website_url
+		# 	instagram_username
+		# 	twitter_username
+		# 	followers {
+		# 		store_id
+		# 		user_id
+		# 	}
+		# }
 	}
 }
