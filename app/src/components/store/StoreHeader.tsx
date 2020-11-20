@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { Icon } from '../icons';
 import { openLink } from '../../utils/links';
 import { useFollowStoreMutation, useUnfollowStoreMutation } from '../../types';
-import { CurrentUserContext } from '../../contexts/CurrentUserContext';
+// import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { Store } from '../../types';
 
 interface StoreHeaderProps {
@@ -13,13 +13,15 @@ interface StoreHeaderProps {
 const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 	const [, followStore] = useFollowStoreMutation();
 	const [, unfollowStore] = useUnfollowStoreMutation();
-	const currentUserData = React.useContext(CurrentUserContext);
+	// const currentUserData = React.useContext(CurrentUserContext);
 
-	const userInStoreFollowing = store?.profile.followers.findIndex(
-		({ user_id }) => user_id === currentUserData?.currentUser.id
-	);
-	const isFollowingStore =
-		userInStoreFollowing !== undefined && userInStoreFollowing > -1;
+	// const userInStoreFollowing = store?.profile.followers.findIndex(
+	// 	({ user_id }) => user_id === currentUserData?.currentUser.id
+	// );
+	// const userInStoreFollowing = false;
+	const isFollowingStore = false;
+	// const isFollowingStore =
+	// 	userInStoreFollowing !== undefined && userInStoreFollowing > -1;
 
 	return (
 		<View style={styles.headerContainer}>
