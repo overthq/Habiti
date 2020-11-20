@@ -20,13 +20,14 @@ import Search from './src/screens/Search';
 import Store from './src/screens/Store';
 import Item from './src/screens/Item';
 import Cart from './src/screens/Cart';
-import { Icon, IconType } from './src/components/icons';
+import { Icon } from './src/components/icons';
 import {
 	AppStackParamList,
 	AuthStackParamList,
 	MainStackParamList
 } from './src/types/navigation';
 import { useAppSelector } from './src/redux/store';
+import { getIcon } from './src/utils/navigation';
 import env from './env';
 
 const RootStack = createStackNavigator();
@@ -50,23 +51,9 @@ const HomeNavigator = () => (
 	<HomeTab.Navigator
 		screenOptions={({ route }) => ({
 			// eslint-disable-next-line
-			tabBarIcon: ({ color }) => {
-				const getIcon = (routeName: string): IconType => {
-					switch (routeName) {
-						case 'For You':
-							return 'home';
-						case 'Explore':
-							return 'search';
-						case 'Carts':
-							return 'shoppingBag';
-						case 'Profile':
-							return 'user';
-					}
-					throw new Error('Specified route does not exist.');
-				};
-
-				return <Icon name={getIcon(route.name)} color={color} size={28} />;
-			}
+			tabBarIcon: ({ color }) => (
+				<Icon name={getIcon(route.name)} color={color} size={28} />
+			)
 		})}
 		tabBarOptions={{
 			activeTintColor: 'black',
@@ -94,9 +81,7 @@ const MainNavigator = () => (
 			options={{
 				headerBackTitleVisible: false,
 				// eslint-disable-next-line
-				headerBackImage: () => {
-					return <Icon name='chevronLeft' size={30} />;
-				},
+				headerBackImage: () => <Icon name='chevronLeft' size={30} />,
 				headerLeftContainerStyle: { paddingLeft: 8 }
 			}}
 		/>
@@ -126,20 +111,8 @@ const modalOptions = {
 		: TransitionPresets.RevealFromBottomAndroid)
 };
 
-const Routes = () => (
-	<AppStack.Navigator mode='modal' screenOptions={modalOptions}>
-		<AppStack.Screen name='Root' component={RootNavigator} />
-		<AppStack.Screen name='Search' component={Search} />
-		<AppStack.Screen name='Item' component={Item} />
-		<AppStack.Screen name='Cart' component={Cart} />
-	</AppStack.Navigator>
-);
-
 const App = () => {
 	const accessToken = useAppSelector(({ auth }) => auth.accessToken);
-
-	// Find a way to restructure the navigation tree,
-	// so that this can be moved to the areas of the application that actually make use of the client.
 
 	const client = createClient({
 		url: env.hasuraUrl,
@@ -154,7 +127,12 @@ const App = () => {
 		<Provider value={client}>
 			<SafeAreaProvider>
 				<NavigationContainer>
-					<Routes />
+					<AppStack.Navigator mode='modal' screenOptions={modalOptions}>
+						<AppStack.Screen name='Root' component={RootNavigator} />
+						<AppStack.Screen name='Search' component={Search} />
+						<AppStack.Screen name='Item' component={Item} />
+						<AppStack.Screen name='Cart' component={Cart} />
+					</AppStack.Navigator>
 				</NavigationContainer>
 			</SafeAreaProvider>
 		</Provider>
