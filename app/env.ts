@@ -2,16 +2,19 @@ import Constants from 'expo-constants';
 
 const ENV = {
 	dev: {
-		authUrl: 'http://localhost:5000',
+		authUrl: `http://${Constants.manifest.debuggerHost
+			?.split(':')
+			.shift()
+			?.concat(':5000/v1/graphql')}`,
 		hasuraUrl: 'http://localhost:8080'
 	},
 	staging: {
-		authUrl: '',
-		hasuraUrl: ''
+		authUrl: 'https://',
+		hasuraUrl: 'https://'
 	},
 	prod: {
-		authUrl: '',
-		hasuraUrl: ''
+		authUrl: 'https://',
+		hasuraUrl: 'https://'
 	}
 };
 

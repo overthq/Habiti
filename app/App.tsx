@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ActivityIndicator, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import { Provider, createClient } from 'urql';
 import { NavigationContainer } from '@react-navigation/native';
 import {
@@ -15,14 +15,12 @@ import VerifyAuthentication from './src/screens/VerifyAuthentication';
 import Home from './src/screens/Home';
 import Profile from './src/screens/Profile';
 import Carts from './src/screens/Carts';
-import useAccessToken from './src/hooks/useAccessToken';
 import Explore from './src/screens/Explore';
 import Search from './src/screens/Search';
 import Store from './src/screens/Store';
 import Item from './src/screens/Item';
 import Cart from './src/screens/Cart';
 import { Icon, IconType } from './src/components/icons';
-import { useCurrentUserQuery } from './src/types';
 import {
 	AppStackParamList,
 	AuthStackParamList,
@@ -106,58 +104,42 @@ const MainNavigator = () => (
 );
 
 const RootNavigator = () => {
-	const [{ data, fetching, error }] = useCurrentUserQuery();
-	const { logOut } = useAccessToken();
+	const accessToken = useAppSelector(({ auth }) => auth.accessToken);
 
-	React.useEffect(() => {
-		if (!fetching && !data?.currentUser) logOut();
-	}, [fetching, data, error]);
-
-	return fetching ? (
-		<View>
-			<ActivityIndicator />
-		</View>
-	) : (
-		<RootStack.Navigator
-			initialRouteName={!!data?.currentUser ? 'Main' : 'Auth'}
-		>
-			<RootStack.Screen
-				name='Auth'
-				component={AuthNavigator}
-				options={{ headerShown: false }}
-			/>
-			<RootStack.Screen
-				name='Main'
-				component={MainNavigator}
-				options={{ headerShown: false }}
-			/>
+	return (
+		<RootStack.Navigator screenOptions={{ headerShown: false }}>
+			{accessToken ? (
+				<RootStack.Screen name='Main' component={MainNavigator} />
+			) : (
+				<RootStack.Screen name='Auth' component={AuthNavigator} />
+			)}
 		</RootStack.Navigator>
 	);
 };
 
+const modalOptions = {
+	headerShown: false,
+	gestureEnabled: true,
+	cardOverlayEnabled: true,
+	...(Platform.OS === 'ios'
+		? TransitionPresets.ModalPresentationIOS
+		: TransitionPresets.RevealFromBottomAndroid)
+};
+
 const Routes = () => (
-	<NavigationContainer>
-		<AppStack.Navigator
-			mode='modal'
-			screenOptions={{
-				headerShown: false,
-				gestureEnabled: true,
-				cardOverlayEnabled: true,
-				...(Platform.OS === 'ios'
-					? TransitionPresets.ModalPresentationIOS
-					: TransitionPresets.RevealFromBottomAndroid)
-			}}
-		>
-			<AppStack.Screen name='Root' component={RootNavigator} />
-			<AppStack.Screen name='Search' component={Search} />
-			<AppStack.Screen name='Item' component={Item} />
-			<AppStack.Screen name='Cart' component={Cart} />
-		</AppStack.Navigator>
-	</NavigationContainer>
+	<AppStack.Navigator mode='modal' screenOptions={modalOptions}>
+		<AppStack.Screen name='Root' component={RootNavigator} />
+		<AppStack.Screen name='Search' component={Search} />
+		<AppStack.Screen name='Item' component={Item} />
+		<AppStack.Screen name='Cart' component={Cart} />
+	</AppStack.Navigator>
 );
 
 const App = () => {
 	const accessToken = useAppSelector(({ auth }) => auth.accessToken);
+
+	// Find a way to restructure the navigation tree,
+	// so that this can be moved to the areas of the application that actually make use of the client.
 
 	const client = createClient({
 		url: env.hasuraUrl,
@@ -171,7 +153,9 @@ const App = () => {
 	return (
 		<Provider value={client}>
 			<SafeAreaProvider>
-				<Routes />
+				<NavigationContainer>
+					<Routes />
+				</NavigationContainer>
 			</SafeAreaProvider>
 		</Provider>
 	);
