@@ -8,23 +8,21 @@ import {
 	KeyboardAvoidingView
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useAuthenticateMutation } from '../types';
 import styles from '../styles/auth';
+import { authenticate } from '../utils/auth';
 
 const Authenticate = () => {
+	const [loading, setLoading] = React.useState(false);
 	const [phone, setPhone] = React.useState('');
 	const { navigate } = useNavigation();
 
-	const [{ data, fetching }, authenticate] = useAuthenticateMutation();
+	const handleSubmit = async () => {
+		setLoading(true);
+		await authenticate(phone);
+		setLoading(false);
+		navigate('VerifyAuthentication', { phone });
+	};
 
-	React.useEffect(() => {
-		console.log(data);
-		if (data?.authenticate) {
-			navigate('VerifyAuthentication', { phone });
-		}
-	}, [data]);
-
-	const handleSubmit = () => authenticate({ phone });
 	const goToRegister = () => navigate('Register');
 
 	return (
@@ -43,7 +41,7 @@ const Authenticate = () => {
 					/>
 				</View>
 				<TouchableOpacity style={styles.button} onPress={handleSubmit}>
-					{fetching ? (
+					{loading ? (
 						<ActivityIndicator />
 					) : (
 						<Text style={styles.buttonText}>Send verification code</Text>

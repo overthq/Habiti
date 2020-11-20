@@ -9,24 +9,18 @@ import {
 	Keyboard
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useRegisterMutation } from '../types';
 import styles from '../styles/auth';
+import { register } from '../utils/auth';
 
 const Register = () => {
 	const [name, setName] = React.useState('');
 	const [phone, setPhone] = React.useState('');
-	const [{ data }, register] = useRegisterMutation();
 	const { navigate } = useNavigation();
 
 	const handleSubmit = async () => {
 		await register({ name, phone });
+		navigate('VerifyAuthentication', { phone });
 	};
-
-	React.useEffect(() => {
-		if (data?.register) {
-			navigate('VerifyAuthentication', { phone });
-		}
-	}, [data]);
 
 	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
