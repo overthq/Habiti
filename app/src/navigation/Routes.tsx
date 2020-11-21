@@ -76,9 +76,8 @@ const Routes: React.FC<RoutesProps> = ({ accessToken }) => (
 					<AppStack.Screen name='Cart' component={Cart} />
 				</>
 			) : (
-				<AppStack.Screen
-					name='Auth'
-					component={() => (
+				<AppStack.Screen name='Auth'>
+					{() => (
 						<AuthStack.Navigator headerMode='none'>
 							<AuthStack.Screen name='Register' component={Register} />
 							<AuthStack.Screen name='Authenticate' component={Authenticate} />
@@ -88,7 +87,7 @@ const Routes: React.FC<RoutesProps> = ({ accessToken }) => (
 							/>
 						</AuthStack.Navigator>
 					)}
-				/>
+				</AppStack.Screen>
 			)}
 		</AppStack.Navigator>
 	</NavigationContainer>
