@@ -33,9 +33,8 @@ const HomeTab = createBottomTabNavigator();
 
 const MainNavigator = () => (
 	<MainStack.Navigator>
-		<MainStack.Screen
-			name='Home'
-			component={() => (
+		<MainStack.Screen name='Home' options={{ headerShown: false }}>
+			{() => (
 				<HomeTab.Navigator
 					screenOptions={tabScreenOptions}
 					tabBarOptions={tabBarOptions}
@@ -46,8 +45,7 @@ const MainNavigator = () => (
 					<HomeTab.Screen name='Profile' component={Profile} />
 				</HomeTab.Navigator>
 			)}
-			options={{ headerShown: false }}
-		/>
+		</MainStack.Screen>
 		<MainStack.Screen
 			name='Store'
 			component={Store}
