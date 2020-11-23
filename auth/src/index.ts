@@ -29,7 +29,7 @@ app.post('/authenticate', async (req, res) => {
 			{ phone }
 		);
 
-		if (data.users && data.users[0]) {
+		if (data?.users[0]) {
 			sendVerificationCode(phone);
 
 			return res.status(200).json({

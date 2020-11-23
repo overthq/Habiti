@@ -7,14 +7,17 @@ interface RegisterPayload {
 
 export const register = async ({ name, phone }: RegisterPayload) => {
 	try {
-		fetch(`${env.authUrl}/register`, {
+		const response = await fetch(`${env.authUrl}/register`, {
 			method: 'POST',
 			headers: {
 				Accept: 'application/json',
-				'Content-Type': 'application/json',
-				body: JSON.stringify({ name, phone })
-			}
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ name, phone })
 		});
+
+		const data = await response.json();
+		console.log({ data });
 	} catch (error) {
 		console.log(error);
 	}
@@ -22,14 +25,17 @@ export const register = async ({ name, phone }: RegisterPayload) => {
 
 export const authenticate = async (phone: string) => {
 	try {
-		fetch(`${env.authUrl}/authenticate`, {
+		const response = await fetch(`${env.authUrl}/authenticate`, {
 			method: 'POST',
 			headers: {
 				Accept: 'application/json',
-				'Content-Type': 'application/json',
-				body: JSON.stringify({ phone })
-			}
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ phone })
 		});
+
+		const data = await response.json();
+		console.log({ data });
 	} catch (error) {
 		console.log(error);
 	}
@@ -46,12 +52,12 @@ export const verifyCode = async ({ phone, code }: VerifyCodePayload) => {
 			method: 'POST',
 			headers: {
 				Accept: 'application/json',
-				'Content-Type': 'application/json',
-				body: JSON.stringify({
-					phone,
-					code
-				})
-			}
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				phone,
+				code
+			})
 		});
 
 		const { data } = await response.json();
