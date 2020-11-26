@@ -1,1 +1,26 @@
-[]
+- table:
+    schema: public
+    name: item_unit
+    is_enum: true
+- table:
+    schema: public
+    name: items
+- table:
+    schema: public
+    name: order_items
+- table:
+    schema: public
+    name: order_status
+    is_enum: true
+- table:
+    schema: public
+    name: orders
+- table:
+    schema: public
+    name: store_followers
+- table:
+    schema: public
+    name: stores
+- table:
+    schema: public
+    name: users
