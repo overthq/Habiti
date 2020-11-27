@@ -6,7 +6,7 @@ import {
 	FlatList,
 	StyleSheet
 } from 'react-native';
-import { useUserOrdersQuery, OrderStatus } from '../../types';
+import { useUserOrdersQuery, OrderStatus } from '../../types/api';
 import textStyles from '../../styles/text';
 
 const getStatusColor = (status: OrderStatus) => {
@@ -29,7 +29,7 @@ const RecentOrders = () => {
 				Recent Orders
 			</Text>
 			<FlatList
-				data={data?.userOrders}
+				data={data?.orders}
 				keyExtractor={({ id }) => id}
 				horizontal
 				showsHorizontalScrollIndicator={false}
@@ -38,9 +38,10 @@ const RecentOrders = () => {
 						<View style={styles.orderContainer}>
 							<View style={styles.storeAvatar}></View>
 							<View style={styles.orderInformation}>
-								<Text>{item.cart[0].item.name}</Text>
+								<Text>{item.order_items[0].item.name}</Text>
 								<Text>
-									{item.cart.length > 1 && ` (and ${item.cart.length} others)`}
+									{item.order_items.length > 1 &&
+										` (and ${item.order_items.length} others)`}
 								</Text>
 								<Text style={{ color: getStatusColor(item.status) }}>
 									{item.status}

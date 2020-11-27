@@ -7,7 +7,7 @@ import {
 	StyleSheet
 } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { useItemQuery } from '../types';
+import { useItemQuery } from '../types/api';
 import { Icon } from '../components/icons';
 import { CartsContext } from '../contexts/CartsContext';
 import { AppStackParamList } from '../types/navigation';
@@ -20,11 +20,13 @@ const Item = () => {
 	});
 	const [quantity, setQuantity] = React.useState(0);
 
+	const item = data?.items[0];
+
 	return (
 		<ScrollView style={styles.container}>
 			<View style={styles.imagePlaceholder} />
 			<View style={{ paddingHorizontal: 20, paddingTop: 20 }}>
-				<Text style={{ fontWeight: '500' }}>{data?.item.store.name}</Text>
+				<Text style={{ fontWeight: '500' }}>{item?.store.name}</Text>
 				<View
 					style={{
 						flexDirection: 'row',
@@ -33,10 +35,8 @@ const Item = () => {
 						marginBottom: 5
 					}}
 				>
-					<Text style={{ fontWeight: 'bold', fontSize: 22 }}>
-						{data?.item.name}
-					</Text>
-					<Text style={{ fontSize: 18 }}>${data?.item.price_per_unit}</Text>
+					<Text style={{ fontWeight: 'bold', fontSize: 22 }}>{item?.name}</Text>
+					<Text style={{ fontSize: 18 }}>${item?.price_per_unit}</Text>
 				</View>
 				<View
 					style={{
@@ -79,10 +79,10 @@ const Item = () => {
 				<TouchableOpacity
 					style={styles.cartButton}
 					onPress={() => {
-						if (data?.item.store_id) {
+						if (item?.store_id) {
 							addItemToCart({
-								storeId: data?.item.store_id,
-								itemId: data?.item.id,
+								storeId: item.store_id,
+								itemId: item.id,
 								quantity
 							});
 						}
@@ -105,7 +105,7 @@ const Item = () => {
 				>
 					Description
 				</Text>
-				<Text style={{ fontSize: 16 }}>{data?.item.description}</Text>
+				<Text style={{ fontSize: 16 }}>{item?.description}</Text>
 			</View>
 		</ScrollView>
 	);

@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { useStoresQuery } from '../types';
+import { useStoresQuery } from '../types/api';
 import { Icon } from '../components/icons';
 
 const { width } = Dimensions.get('window');
@@ -55,7 +55,7 @@ const Explore = () => {
 								<View key={item.id} style={styles.featuredStoreContainer}>
 									<Image
 										source={{
-											uri: `https://twitter.com/${item.profile.twitter_username}/profile_image?size=original`
+											uri: `https://twitter.com/{username}/profile_image?size=original`
 										}}
 										style={{ height: 80, width: 80, borderRadius: 40 }}
 									/>

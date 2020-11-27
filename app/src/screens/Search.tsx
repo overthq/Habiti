@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useClient } from 'urql';
 import { Icon } from '../components/icons';
-import { SearchDocument, SearchQuery } from '../types';
+import { SearchDocument, SearchQuery } from '../types/api';
 
 const { width } = Dimensions.get('window');
 

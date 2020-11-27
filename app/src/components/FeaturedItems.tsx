@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
-import { useItemsQuery } from '../types';
+import { useItemsQuery } from '../types/api';
 
 const FeaturedItems = () => {
 	const [{ data }] = useItemsQuery();

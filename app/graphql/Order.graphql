@@ -1,7 +1,7 @@
 query UserOrders($userId: uuid!) {
 	orders(where: { user_id: { _eq: $userId } }) {
 		id
-		# status
+		status
 		store {
 			name
 		}
@@ -19,7 +19,7 @@ mutation PlaceOrder($input: orders_insert_input!) {
 	insert_orders(objects: [$input]) {
 		returning {
 			id
-			# status
+			status
 			store {
 				name
 			}

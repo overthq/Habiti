@@ -5,16 +5,14 @@ import { CartsContext } from '../contexts/CartsContext';
 import CartItem from '../components/CartItem';
 import {
 	usePlaceOrderMutation,
-	useCurrentUserQuery,
 	useCreateOrderItemsMutation
-} from '../types';
+} from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 
 const Cart = () => {
 	const { navigate } = useNavigation();
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
 	const { carts } = React.useContext(CartsContext);
-	const [{ data }] = useCurrentUserQuery();
 	const [, placeOrder] = usePlaceOrderMutation();
 	const [, createOrderItems] = useCreateOrderItemsMutation();
 	const { storeId } = params;
@@ -32,14 +30,18 @@ const Cart = () => {
 		if (!cart) navigate('Carts');
 	}, [cart]);
 
+	const userExists = true;
+
 	const handleSubmit = async () => {
-		if (data?.currentUser.id && cart?.storeId) {
+		if (userExists) {
 			const { data: orderData } = await placeOrder({
-				input: { user_id: data.currentUser.id, store_id: cart.storeId }
+				input: { user_id: '', store_id: cart?.storeId }
 			});
 
-			if (orderData?.createOrder) {
-				createOrderItems({ input: prepareCart(orderData.createOrder.id) });
+			if (orderData?.insert_orders?.returning) {
+				createOrderItems({
+					items: prepareCart(orderData.insert_orders.returning[0].id)
+				});
 			}
 		}
 	};
