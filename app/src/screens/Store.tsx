@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import { useStoreQuery } from '../types';
+import { useStoreQuery } from '../types/api-types';
 import { MainStackParamList } from '../types/navigation';
 import StoreItems from '../components/store/StoreItem';
 import StoreHeader from '../components/store/StoreHeader';
@@ -9,19 +9,21 @@ import StoreHeader from '../components/store/StoreHeader';
 const Store = () => {
 	const { setOptions } = useNavigation();
 	const { params } = useRoute<RouteProp<MainStackParamList, 'Store'>>();
-	const [{ data }] = useStoreQuery({
+	const [{ data, error }] = useStoreQuery({
 		variables: { storeId: params.storeId }
 	});
 
+	if (error) Alert.alert(error.message);
+
 	React.useLayoutEffect(() => {
-		setOptions({ title: data?.store.name });
+		setOptions({ title: data?.stores[0].name });
 	}, [data]);
 
 	return (
 		<View style={styles.container}>
 			<StoreItems
-				storeId={data?.store.id}
-				header={() => <StoreHeader store={data?.store} />}
+				storeId={data?.stores[0].id}
+				header={() => <StoreHeader store={data?.stores[0]} />}
 			/>
 		</View>
 	);

@@ -1,9 +1,8 @@
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { persistReducer, persistStore } from 'redux-persist';
 import { createStore, applyMiddleware, combineReducers, Action } from 'redux';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import thunk, { ThunkAction } from 'redux-thunk';
-import logger from 'redux-logger';
 
 import authReducer from './auth/reducer';
 import cartsReducer from './carts/reducer';
@@ -13,7 +12,7 @@ const rootReducer = combineReducers({
 	carts: persistReducer({ key: 'carts', storage: AsyncStorage }, cartsReducer)
 });
 
-const middleware = applyMiddleware(thunk, logger);
+const middleware = applyMiddleware(thunk);
 
 export type RootState = ReturnType<typeof rootReducer>;
 export type AppThunk<ReturnType = void> = ThunkAction<

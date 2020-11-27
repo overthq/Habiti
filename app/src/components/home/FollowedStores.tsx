@@ -6,16 +6,14 @@ import {
 	TouchableOpacity,
 	StyleSheet
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useStoresFollowedQuery } from '../../types/api-types';
 
 const FollowedStores = () => {
 	const [{ data }] = useStoresFollowedQuery({
 		variables: { userId: 'b6cc8a11-7528-41eb-b082-77593797c978' }
 	});
-
-	React.useEffect(() => {
-		console.log({ data });
-	}, [data]);
+	const { navigate } = useNavigation();
 
 	return (
 		<View>
@@ -27,7 +25,10 @@ const FollowedStores = () => {
 				style={{ marginTop: 10 }}
 				contentContainerStyle={{ paddingLeft: 20 }}
 				renderItem={({ item }) => (
-					<TouchableOpacity activeOpacity={0.8}>
+					<TouchableOpacity
+						activeOpacity={0.8}
+						onPress={() => navigate('Store', { storeId: item.store_id })}
+					>
 						<View style={styles.storyImageContainer}>
 							<View style={styles.storyImagePlaceholder} />
 						</View>

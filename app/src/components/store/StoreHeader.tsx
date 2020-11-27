@@ -1,13 +1,12 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Icon } from '../icons';
 import { openLink } from '../../utils/links';
 import { useFollowStoreMutation, useUnfollowStoreMutation } from '../../types';
-// import { CurrentUserContext } from '../../contexts/CurrentUserContext';
-import { Store } from '../../types';
+import { Stores } from '../../types/api-types';
 
 interface StoreHeaderProps {
-	store?: Store;
+	store?: Stores;
 }
 
 const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
@@ -26,53 +25,41 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 	return (
 		<View style={styles.headerContainer}>
 			<View style={styles.headerImagePlaceholder}>
-				<Image
+				{/* <Image
 					source={{
 						uri: `https://twitter.com/${store?.profile.twitter_username}/profile_image?size=original`
 					}}
 					style={{ width: '100%', height: '100%' }}
-				/>
+				/>*/}
 			</View>
 			<View style={{ flexDirection: 'row' }}>
-				{store?.profile.twitter_username && (
-					<TouchableOpacity
-						style={{ marginRight: 20 }}
-						activeOpacity={0.8}
-						onPress={() =>
-							openLink(`https://twitter.com/${store?.profile.twitter_username}`)
-						}
-					>
-						<Icon name='twitter' />
-					</TouchableOpacity>
-				)}
-				{store?.profile.instagram_username && (
-					<TouchableOpacity
-						style={{ marginRight: 20 }}
-						activeOpacity={0.8}
-						onPress={() =>
-							openLink(
-								`https://instagram.com/${store?.profile.instagram_username}`
-							)
-						}
-					>
-						<Icon name='instagram' />
-					</TouchableOpacity>
-				)}
+				<TouchableOpacity
+					style={{ marginRight: 20 }}
+					activeOpacity={0.8}
+					onPress={() => openLink(`https://twitter.com/rand`)}
+				>
+					<Icon name='twitter' />
+				</TouchableOpacity>
+				<TouchableOpacity
+					style={{ marginRight: 20 }}
+					activeOpacity={0.8}
+					onPress={() => openLink(`https://instagram.com/rand`)}
+				>
+					<Icon name='instagram' />
+				</TouchableOpacity>
 			</View>
 			<View>
 				<Text style={{ fontSize: 20, fontWeight: 'bold', marginTop: 10 }}>
 					{store?.name}
 				</Text>
-				{store?.profile.website_url && (
-					<TouchableOpacity
-						style={{ marginTop: 5 }}
-						onPress={() => openLink(store.profile.website_url)}
-					>
-						<Text style={{ fontSize: 16, color: '#202020' }}>
-							{store.profile.website_url}
-						</Text>
-					</TouchableOpacity>
-				)}
+				<TouchableOpacity
+					style={{ marginTop: 5 }}
+					onPress={() => openLink('https://example.com')}
+				>
+					<Text style={{ fontSize: 16, color: '#202020' }}>
+						https://example.com
+					</Text>
+				</TouchableOpacity>
 			</View>
 			<TouchableOpacity
 				style={styles.followButton}

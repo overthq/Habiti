@@ -7,16 +7,16 @@ import {
 	StyleSheet
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useStoreItemsQuery } from '../../types';
+import { useStoreItemsQuery } from '../../types/api-types';
 
 interface StoreItemsProps {
-	storeId?: string;
+	storeId: string;
 	header: React.FC;
 }
 
 const StoreItems: React.FC<StoreItemsProps> = ({ storeId, header }) => {
 	const [{ data }] = useStoreItemsQuery({
-		variables: { storeId: storeId as string }
+		variables: { storeId }
 	});
 	const { navigate } = useNavigation();
 
