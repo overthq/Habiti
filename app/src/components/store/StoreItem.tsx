@@ -7,7 +7,7 @@ import {
 	StyleSheet
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useStoreItemsQuery } from '../../types/api-types';
+import { useStoreItemsQuery } from '../../types/api';
 
 interface StoreItemsProps {
 	storeId: string;
@@ -19,8 +19,6 @@ const StoreItems: React.FC<StoreItemsProps> = ({ storeId, header }) => {
 		variables: { storeId }
 	});
 	const { navigate } = useNavigation();
-
-	// TODO(koredefashokun): Implement loading state with react-native-skeleton-content.
 
 	return (
 		<FlatList

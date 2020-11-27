@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import { useStoreQuery } from '../types/api-types';
+import { useStoreQuery } from '../types/api';
 import { MainStackParamList } from '../types/navigation';
 import StoreItems from '../components/store/StoreItem';
 import StoreHeader from '../components/store/StoreHeader';

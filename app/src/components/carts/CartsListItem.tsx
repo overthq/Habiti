@@ -1,13 +1,15 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useStoreQuery } from '../../types';
+import { useStoreQuery } from '../../types/api';
 import { Cart } from '../../contexts/CartsContext';
 import { Icon } from '../icons';
 
 const CartsListItem: React.FC<{ cart: Cart }> = ({ cart }) => {
 	const [{ data }] = useStoreQuery({ variables: { storeId: cart.storeId } });
 	const { navigate } = useNavigation();
+
+	const store = data?.stores[0];
 
 	return (
 		<TouchableOpacity
@@ -18,7 +20,7 @@ const CartsListItem: React.FC<{ cart: Cart }> = ({ cart }) => {
 			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 				<View style={styles.storeImagePlaceholder} />
 				<View>
-					<Text style={styles.cartStoreName}>{data?.store.name}</Text>
+					<Text style={styles.cartStoreName}>{store?.name}</Text>
 					<Text style={styles.cartItemCount}>
 						{cart.items.length} {`item${cart.items.length > 1 ? 's' : ''}`}
 					</Text>

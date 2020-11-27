@@ -7,7 +7,7 @@ import {
 	StyleSheet
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useStoresFollowedQuery } from '../../types/api-types';
+import { useStoresFollowedQuery } from '../../types/api';
 
 const FollowedStores = () => {
 	const [{ data }] = useStoresFollowedQuery({

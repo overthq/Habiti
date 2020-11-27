@@ -2,8 +2,11 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Icon } from '../icons';
 import { openLink } from '../../utils/links';
-import { useFollowStoreMutation, useUnfollowStoreMutation } from '../../types';
-import { Stores } from '../../types/api-types';
+import {
+	useFollowStoreMutation,
+	useUnfollowStoreMutation,
+	Stores
+} from '../../types/api';
 
 interface StoreHeaderProps {
 	store?: Stores;
@@ -67,9 +70,9 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 				onPress={() => {
 					if (store?.id) {
 						if (isFollowingStore) {
-							unfollowStore({ storeId: store.id });
+							unfollowStore({ storeId: store.id, userId: '' });
 						} else {
-							followStore({ storeId: store?.id });
+							followStore({ storeId: store?.id, userId: '' });
 						}
 					}
 				}}
