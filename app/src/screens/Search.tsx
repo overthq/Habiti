@@ -1,21 +1,31 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, Dimensions } from 'react-native';
+import {
+	View,
+	Text,
+	TextInput,
+	StyleSheet,
+	Dimensions,
+	Alert
+} from 'react-native';
 import { useClient } from 'urql';
 import { Icon } from '../components/icons';
 import { SearchDocument, SearchQuery } from '../types';
 
 const { width } = Dimensions.get('window');
 
+// Move this to screen with modal "preset" or use reanimated-bottom-sheet.
 const Search = () => {
 	const [data, setData] = React.useState<SearchQuery | undefined>();
-
 	const client = useClient();
 
 	const handleTextChange = async (searchTerm: string) => {
-		const { data } = await client
+		const { data, error } = await client
 			.query<SearchQuery>(SearchDocument, { searchTerm: `%${searchTerm}%` })
 			.toPromise();
+
 		setData(data);
+
+		if (error) Alert.alert(error.message);
 	};
 
 	return (

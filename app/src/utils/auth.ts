@@ -54,10 +54,7 @@ export const verifyCode = async ({ phone, code }: VerifyCodePayload) => {
 				Accept: 'application/json',
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({
-				phone,
-				code
-			})
+			body: JSON.stringify({ phone, code })
 		});
 
 		const { data } = await response.json();

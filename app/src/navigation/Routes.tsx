@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Provider, createClient } from 'urql';
 
 import Authenticate from '../screens/Authenticate';
 import Register from '../screens/Register';
@@ -16,18 +17,20 @@ import Item from '../screens/Item';
 import Cart from '../screens/Cart';
 import { Icon } from '../components/icons';
 import {
-	modalOptions,
+	// modalOptions,
 	tabBarOptions,
 	tabScreenOptions
 } from '../utils/navigation';
 import {
 	AppStackParamList,
-	AuthStackParamList,
+	// AuthStackParamList,
 	MainStackParamList
 } from '../types/navigation';
+import { useAppSelector } from '../redux/store';
+import env from '../../env';
 
 const AppStack = createStackNavigator<AppStackParamList>();
-const AuthStack = createStackNavigator<AuthStackParamList>();
+// const AuthStack = createStackNavigator<AuthStackParamList>();
 const MainStack = createStackNavigator<MainStackParamList>();
 const HomeTab = createBottomTabNavigator();
 
@@ -59,36 +62,43 @@ const MainNavigator = () => (
 	</MainStack.Navigator>
 );
 
-interface RoutesProps {
-	accessToken: string | null;
-}
+const Routes: React.FC = () => {
+	const accessToken = useAppSelector(({ auth }) => auth.accessToken);
 
-const Routes: React.FC<RoutesProps> = ({ accessToken }) => (
-	<NavigationContainer>
-		<AppStack.Navigator mode='modal' screenOptions={modalOptions}>
-			{accessToken ? (
-				<>
-					<AppStack.Screen name='Main' component={MainNavigator} />
-					<AppStack.Screen name='Search' component={Search} />
-					<AppStack.Screen name='Item' component={Item} />
-					<AppStack.Screen name='Cart' component={Cart} />
-				</>
-			) : (
-				<AppStack.Screen name='Auth'>
-					{() => (
-						<AuthStack.Navigator headerMode='none'>
-							<AuthStack.Screen name='Register' component={Register} />
-							<AuthStack.Screen name='Authenticate' component={Authenticate} />
-							<AuthStack.Screen
+	const client = createClient({
+		url: env.hasuraUrl,
+		fetchOptions: () => ({
+			headers: {
+				authorization: accessToken ? `Bearer ${accessToken}` : ''
+			}
+		})
+	});
+
+	return (
+		<Provider value={client}>
+			<NavigationContainer>
+				<AppStack.Navigator headerMode='none'>
+					{accessToken ? (
+						<>
+							<AppStack.Screen name='Main' component={MainNavigator} />
+							<AppStack.Screen name='Search' component={Search} />
+							<AppStack.Screen name='Item' component={Item} />
+							<AppStack.Screen name='Cart' component={Cart} />
+						</>
+					) : (
+						<>
+							<AppStack.Screen name='Register' component={Register} />
+							<AppStack.Screen name='Authenticate' component={Authenticate} />
+							<AppStack.Screen
 								name='VerifyAuthentication'
 								component={VerifyAuthentication}
 							/>
-						</AuthStack.Navigator>
+						</>
 					)}
-				</AppStack.Screen>
-			)}
-		</AppStack.Navigator>
-	</NavigationContainer>
-);
+				</AppStack.Navigator>
+			</NavigationContainer>
+		</Provider>
+	);
+};
 
 export default Routes;

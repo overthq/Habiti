@@ -6,17 +6,23 @@ import {
 	TouchableOpacity,
 	StyleSheet
 } from 'react-native';
-import { useStoresFollowedQuery } from '../../types';
+import { useStoresFollowedQuery } from '../../types/api-types';
 
 const FollowedStores = () => {
-	const [{ data }] = useStoresFollowedQuery();
+	const [{ data }] = useStoresFollowedQuery({
+		variables: { userId: 'b6cc8a11-7528-41eb-b082-77593797c978' }
+	});
+
+	React.useEffect(() => {
+		console.log({ data });
+	}, [data]);
 
 	return (
 		<View>
 			<Text style={styles.sectionHeader}>New Arrivals</Text>
 			<FlatList
 				horizontal
-				data={data?.storesFollowed}
+				data={data?.store_followers}
 				keyExtractor={item => item.store_id}
 				style={{ marginTop: 10 }}
 				contentContainerStyle={{ paddingLeft: 20 }}
@@ -37,13 +43,13 @@ const FollowedStores = () => {
 const styles = StyleSheet.create({
 	sectionHeader: {
 		marginLeft: 20,
-		fontSize: 18,
+		fontSize: 16,
 		fontWeight: '500',
 		color: '#505050'
 	},
 	storyImageContainer: {
-		width: 90,
-		height: 90,
+		width: 70,
+		height: 70,
 		borderColor: '#000000',
 		borderWidth: 2,
 		borderRadius: 45,
@@ -52,8 +58,8 @@ const styles = StyleSheet.create({
 	},
 	storyImagePlaceholder: {
 		backgroundColor: '#D3D3D3',
-		width: 80,
-		height: 80,
+		width: 60,
+		height: 60,
 		borderRadius: 40
 	},
 	storeName: {
