@@ -21,7 +21,10 @@ const Explore = () => {
 	const { navigate } = useNavigation();
 
 	return (
-		<ScrollView style={{ backgroundColor: '#FFFFFF' }}>
+		<ScrollView
+			style={{ backgroundColor: '#FFFFFF' }}
+			showsVerticalScrollIndicator={false}
+		>
 			<SafeAreaView style={styles.container}>
 				<View style={styles.header}>
 					<Text style={styles.title}>Explore</Text>
