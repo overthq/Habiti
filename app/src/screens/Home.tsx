@@ -2,7 +2,7 @@ import React from 'react';
 import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RecentOrders from '../components/home/RecentOrders';
-import FollowedStores from '../components/home/FollowedStores';
+// import FollowedStores from '../components/home/FollowedStores';
 
 const Home = () => {
 	return (
@@ -12,7 +12,7 @@ const Home = () => {
 					<Text style={styles.title}>For You</Text>
 				</View>
 				<RecentOrders />
-				<FollowedStores />
+				{/* <FollowedStores /> */}
 			</ScrollView>
 		</SafeAreaView>
 	);
