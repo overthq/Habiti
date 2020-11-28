@@ -47,8 +47,16 @@ const StoreItems: React.FC<StoreItemsProps> = ({ storeId, header }) => {
 };
 
 const styles = StyleSheet.create({
-	itemName: {},
-	itemImage: {}
+	itemName: {
+		fontWeight: '500'
+	},
+	itemImage: {
+		borderRadius: 6,
+		backgroundColor: '#D3D3D3',
+		height: 200,
+		width: '100%',
+		marginBottom: 5
+	}
 });
 
 export default StoreItems;

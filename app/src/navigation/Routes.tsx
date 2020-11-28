@@ -23,7 +23,7 @@ import {
 } from '../utils/navigation';
 import {
 	AppStackParamList,
-	// AuthStackParamList,
+	// AuthStackParamListk
 	MainStackParamList
 } from '../types/navigation';
 import { useAppSelector } from '../redux/store';

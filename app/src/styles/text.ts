@@ -11,7 +11,7 @@ const textStyles = StyleSheet.create({
 		fontSize: 32
 	},
 	sectionHeader: {
-		fontSize: 18,
+		fontSize: 16,
 		fontWeight: '500',
 		color: '#505050'
 	},

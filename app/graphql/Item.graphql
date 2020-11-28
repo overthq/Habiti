@@ -49,3 +49,15 @@ query FeaturedItems {
 		# unit
 	}
 }
+
+query NewArrivals($storeIds: [uuid!]!, $oneDayAgo: timestamptz!) {
+	items(where: { created_at: { _gte: $oneDayAgo } }) {
+		id
+		name
+		store {
+			id
+			name
+		}
+		price_per_unit
+	}
+}
