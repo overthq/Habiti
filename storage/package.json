@@ -1,0 +1,16 @@
+{
+	"name": "@market/storage",
+	"version": "0.0.1",
+	"main": "index.js",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/express": "^4.17.9",
+		"@types/node": "^14.14.10",
+		"nodemon": "^2.0.6",
+		"ts-node": "^9.0.0"
+	},
+	"dependencies": {
+		"cloudinary": "^1.23.0",
+		"express": "^4.17.1"
+	}
+}
