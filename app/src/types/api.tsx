@@ -1016,6 +1016,7 @@ export type Orders = {
 	order_items: Array<Order_Items>;
 	/** An aggregated array relationship */
 	order_items_aggregate: Order_Items_Aggregate;
+	status?: Maybe<Scalars['String']>;
 	/** An object relationship */
 	store: Stores;
 	store_id: Scalars['uuid'];
@@ -1085,6 +1086,7 @@ export type Orders_Bool_Exp = {
 	created_at?: Maybe<Timestamptz_Comparison_Exp>;
 	id?: Maybe<Uuid_Comparison_Exp>;
 	order_items?: Maybe<Order_Items_Bool_Exp>;
+	status?: Maybe<String_Comparison_Exp>;
 	store?: Maybe<Stores_Bool_Exp>;
 	store_id?: Maybe<Uuid_Comparison_Exp>;
 	updated_at?: Maybe<Timestamptz_Comparison_Exp>;
@@ -1103,6 +1105,7 @@ export type Orders_Insert_Input = {
 	created_at?: Maybe<Scalars['timestamptz']>;
 	id?: Maybe<Scalars['uuid']>;
 	order_items?: Maybe<Order_Items_Arr_Rel_Insert_Input>;
+	status?: Maybe<Scalars['String']>;
 	store?: Maybe<Stores_Obj_Rel_Insert_Input>;
 	store_id?: Maybe<Scalars['uuid']>;
 	updated_at?: Maybe<Scalars['timestamptz']>;
@@ -1115,6 +1118,7 @@ export type Orders_Max_Fields = {
 	__typename?: 'orders_max_fields';
 	created_at?: Maybe<Scalars['timestamptz']>;
 	id?: Maybe<Scalars['uuid']>;
+	status?: Maybe<Scalars['String']>;
 	store_id?: Maybe<Scalars['uuid']>;
 	updated_at?: Maybe<Scalars['timestamptz']>;
 	user_id?: Maybe<Scalars['uuid']>;
@@ -1124,6 +1128,7 @@ export type Orders_Max_Fields = {
 export type Orders_Max_Order_By = {
 	created_at?: Maybe<Order_By>;
 	id?: Maybe<Order_By>;
+	status?: Maybe<Order_By>;
 	store_id?: Maybe<Order_By>;
 	updated_at?: Maybe<Order_By>;
 	user_id?: Maybe<Order_By>;
@@ -1134,6 +1139,7 @@ export type Orders_Min_Fields = {
 	__typename?: 'orders_min_fields';
 	created_at?: Maybe<Scalars['timestamptz']>;
 	id?: Maybe<Scalars['uuid']>;
+	status?: Maybe<Scalars['String']>;
 	store_id?: Maybe<Scalars['uuid']>;
 	updated_at?: Maybe<Scalars['timestamptz']>;
 	user_id?: Maybe<Scalars['uuid']>;
@@ -1143,6 +1149,7 @@ export type Orders_Min_Fields = {
 export type Orders_Min_Order_By = {
 	created_at?: Maybe<Order_By>;
 	id?: Maybe<Order_By>;
+	status?: Maybe<Order_By>;
 	store_id?: Maybe<Order_By>;
 	updated_at?: Maybe<Order_By>;
 	user_id?: Maybe<Order_By>;
@@ -1175,6 +1182,7 @@ export type Orders_Order_By = {
 	created_at?: Maybe<Order_By>;
 	id?: Maybe<Order_By>;
 	order_items_aggregate?: Maybe<Order_Items_Aggregate_Order_By>;
+	status?: Maybe<Order_By>;
 	store?: Maybe<Stores_Order_By>;
 	store_id?: Maybe<Order_By>;
 	updated_at?: Maybe<Order_By>;
@@ -1194,6 +1202,8 @@ export enum Orders_Select_Column {
 	/** column name */
 	Id = 'id',
 	/** column name */
+	Status = 'status',
+	/** column name */
 	StoreId = 'store_id',
 	/** column name */
 	UpdatedAt = 'updated_at',
@@ -1205,6 +1215,7 @@ export enum Orders_Select_Column {
 export type Orders_Set_Input = {
 	created_at?: Maybe<Scalars['timestamptz']>;
 	id?: Maybe<Scalars['uuid']>;
+	status?: Maybe<Scalars['String']>;
 	store_id?: Maybe<Scalars['uuid']>;
 	updated_at?: Maybe<Scalars['timestamptz']>;
 	user_id?: Maybe<Scalars['uuid']>;
@@ -1216,6 +1227,8 @@ export enum Orders_Update_Column {
 	CreatedAt = 'created_at',
 	/** column name */
 	Id = 'id',
+	/** column name */
+	Status = 'status',
 	/** column name */
 	StoreId = 'store_id',
 	/** column name */
@@ -2277,13 +2290,26 @@ export type FeaturedItemsQuery = { __typename?: 'query_root' } & {
 	>;
 };
 
+export type NewArrivalsQueryVariables = Exact<{
+	storeIds: Array<Scalars['uuid']>;
+	oneDayAgo: Scalars['timestamptz'];
+}>;
+
+export type NewArrivalsQuery = { __typename?: 'query_root' } & {
+	items: Array<
+		{ __typename?: 'items' } & Pick<Items, 'id' | 'name' | 'price_per_unit'> & {
+				store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'>;
+			}
+	>;
+};
+
 export type UserOrdersQueryVariables = Exact<{
 	userId: Scalars['uuid'];
 }>;
 
 export type UserOrdersQuery = { __typename?: 'query_root' } & {
 	orders: Array<
-		{ __typename?: 'orders' } & Pick<Orders, 'id'> & {
+		{ __typename?: 'orders' } & Pick<Orders, 'id' | 'status'> & {
 				store: { __typename?: 'stores' } & Pick<Stores, 'name'>;
 				order_items: Array<
 					{ __typename?: 'order_items' } & Pick<Order_Items, 'quantity'> & {
@@ -2305,7 +2331,7 @@ export type PlaceOrderMutation = { __typename?: 'mutation_root' } & {
 	insert_orders?: Maybe<
 		{ __typename?: 'orders_mutation_response' } & {
 			returning: Array<
-				{ __typename?: 'orders' } & Pick<Orders, 'id'> & {
+				{ __typename?: 'orders' } & Pick<Orders, 'id' | 'status'> & {
 						store: { __typename?: 'stores' } & Pick<Stores, 'name'>;
 						order_items: Array<
 							{ __typename?: 'order_items' } & Pick<Order_Items, 'quantity'> & {
@@ -2344,9 +2370,9 @@ export type SearchQueryVariables = Exact<{
 
 export type SearchQuery = { __typename?: 'query_root' } & {
 	stores: Array<
-		{ __typename?: 'stores' } & Pick<Stores, 'name' | 'short_name'>
+		{ __typename?: 'stores' } & Pick<Stores, 'id' | 'name' | 'short_name'>
 	>;
-	items: Array<{ __typename?: 'items' } & Pick<Items, 'name'>>;
+	items: Array<{ __typename?: 'items' } & Pick<Items, 'id' | 'name'>>;
 };
 
 export type StoresQueryVariables = Exact<{ [key: string]: never }>;
@@ -2496,10 +2522,33 @@ export function useFeaturedItemsQuery(
 		...options
 	});
 }
+export const NewArrivalsDocument = gql`
+	query NewArrivals($storeIds: [uuid!]!, $oneDayAgo: timestamptz!) {
+		items(where: { created_at: { _gte: $oneDayAgo } }) {
+			id
+			name
+			store {
+				id
+				name
+			}
+			price_per_unit
+		}
+	}
+`;
+
+export function useNewArrivalsQuery(
+	options: Omit<Urql.UseQueryArgs<NewArrivalsQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<NewArrivalsQuery>({
+		query: NewArrivalsDocument,
+		...options
+	});
+}
 export const UserOrdersDocument = gql`
 	query UserOrders($userId: uuid!) {
 		orders(where: { user_id: { _eq: $userId } }) {
 			id
+			status
 			store {
 				name
 			}
@@ -2527,6 +2576,7 @@ export const PlaceOrderDocument = gql`
 		insert_orders(objects: [$input]) {
 			returning {
 				id
+				status
 				store {
 					name
 				}
@@ -2570,10 +2620,12 @@ export const SearchDocument = gql`
 			where: { name: { _ilike: $searchTerm } }
 			order_by: [{ name: asc }]
 		) {
+			id
 			name
 			short_name
 		}
 		items(where: { name: { _ilike: $searchTerm } }, order_by: [{ name: asc }]) {
+			id
 			name
 		}
 	}
