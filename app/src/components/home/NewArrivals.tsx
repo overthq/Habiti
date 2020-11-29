@@ -3,7 +3,14 @@ import { View, Text, FlatList } from 'react-native';
 import { useNewArrivalsQuery } from '../../types/api';
 
 const NewArrivals = () => {
-	const [{ data }] = useNewArrivalsQuery();
+	const oneDayAgo = React.useMemo(
+		() => (new Date().getDate() - 2).toString(),
+		[]
+	);
+
+	const [{ data }] = useNewArrivalsQuery({
+		variables: { oneDayAgo, storeIds: [] }
+	});
 
 	return (
 		<FlatList

@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Profile = () => {
 	return (
-		<View style={{ flex: 1 }}>
+		<SafeAreaView style={{ flex: 1 }}>
 			<Text>This screen is not currently under development.</Text>
-		</View>
+		</SafeAreaView>
 	);
 };
 

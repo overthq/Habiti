@@ -6,16 +6,14 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { store, persistor } from './src/redux/store';
 import Routes from './src/navigation/Routes';
 
-const App = () => {
-	return (
-		<StateProvider store={store}>
-			<PersistGate persistor={persistor}>
-				<SafeAreaProvider>
-					<Routes />
-				</SafeAreaProvider>
-			</PersistGate>
-		</StateProvider>
-	);
-};
+const App = () => (
+	<StateProvider store={store}>
+		<PersistGate persistor={persistor}>
+			<SafeAreaProvider>
+				<Routes />
+			</SafeAreaProvider>
+		</PersistGate>
+	</StateProvider>
+);
 
 export default App;
