@@ -1,4 +1,4 @@
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
 	id uuid primary key not null default gen_random_uuid(),
 	name varchar(255) not null,
 	phone varchar(255) unique not null,
@@ -6,7 +6,7 @@ CREATE TABLE users (
 	updated_at timestamptz default now()
 );
 
-CREATE TABLE stores (
+CREATE TABLE IF NOT EXISTS stores (
 	id uuid primary key not null default gen_random_uuid(),
 	name varchar(255) not null,
 	short_name varchar(255) not null,
@@ -15,13 +15,13 @@ CREATE TABLE stores (
 	updated_at timestamptz default now()
 );
 
-CREATE TABLE order_status (
+CREATE TABLE IF NOT EXISTS order_status (
 	value text primary key not null
 );
 
 INSERT INTO order_status (value) VALUES ('pending'), ('processing'), ('delivered');
 
-CREATE TABLE orders (
+CREATE TABLE IF NOT EXISTS orders (
 	id uuid primary key not null default gen_random_uuid(),
 	user_id uuid not null,
 	store_id uuid not null,
@@ -31,13 +31,13 @@ CREATE TABLE orders (
 	foreign key (store_id) references stores (id) on delete cascade
 );
 
-CREATE TABLE item_unit (
+CREATE TABLE IF NOT EXISTS item_unit (
 	value text primary key not null
 );
 
 INSERT INTO item_unit (value) VALUES ('units');
 
-CREATE TABLE items (
+CREATE TABLE IF NOT EXISTS items (
 	id uuid primary key not null default gen_random_uuid(),
 	store_id uuid not null,
 	price_per_unit int not null,
@@ -48,7 +48,7 @@ CREATE TABLE items (
 	foreign key (unit) references item_unit
 );
 
-CREATE TABLE store_followers (
+CREATE TABLE IF NOT EXISTS store_followers (
 	store_id uuid not null,
 	follower_id uuid not null,
 	primary key (store_id, follower_id),
@@ -56,7 +56,7 @@ CREATE TABLE store_followers (
 	foreign key (follower_id) references users (id) on delete cascade
 );
 
-CREATE TABLE order_items (
+CREATE TABLE IF NOT EXISTS order_items (
 	id uuid primary key not null default gen_random_uuid(),
 	item_id uuid not null,
 	quantity int not null,
