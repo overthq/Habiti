@@ -17,7 +17,11 @@ const ListEmpty: React.FC<ListEmptyProps> = ({
 	<View style={styles.container}>
 		<Text style={styles.title}>{title}</Text>
 		<Text style={styles.description}>{description}</Text>
-		<TouchableOpacity style={styles.button} onPress={ctaAction}>
+		<TouchableOpacity
+			activeOpacity={0.8}
+			style={styles.button}
+			onPress={ctaAction}
+		>
 			<Text style={styles.buttonText}>{ctaText}</Text>
 		</TouchableOpacity>
 	</View>
@@ -25,28 +29,32 @@ const ListEmpty: React.FC<ListEmptyProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		width: '100%'
+		width: '95%',
+		alignItems: 'center',
+		alignSelf: 'center'
 	},
 	title: {
-		fontSize: 20,
-		fontWeight: '500',
-		color: '#505050'
+		fontSize: 22,
+		color: '#100100',
+		fontWeight: '500'
 	},
 	description: {
-		fontSize: 14,
-		color: '#D3D3D3'
+		fontSize: 16,
+		color: '#505050',
+		textAlign: 'center',
+		marginVertical: 8
 	},
 	button: {
-		padding: 15,
+		padding: 10,
 		backgroundColor: '#505050',
 		borderRadius: 4,
 		justifyContent: 'center',
 		alignItems: 'center'
 	},
 	buttonText: {
-		color: '#D3D3D3',
+		color: '#FFFFFF',
 		fontWeight: '500',
-		fontSize: 14
+		fontSize: 16
 	}
 });
 

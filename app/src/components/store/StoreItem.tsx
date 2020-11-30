@@ -25,6 +25,7 @@ const StoreItems: React.FC<StoreItemsProps> = ({ storeId, header }) => {
 			data={data?.storeItems}
 			keyExtractor={({ id }) => id}
 			ListHeaderComponent={header}
+			showsVerticalScrollIndicator={false}
 			renderItem={({ item }) => (
 				<View style={{ flex: 1, flexDirection: 'column' }}>
 					<TouchableOpacity

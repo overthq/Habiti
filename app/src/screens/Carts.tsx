@@ -24,7 +24,7 @@ const Carts = () => {
 				ListEmptyComponent={
 					<ListEmpty
 						title='Empty cart'
-						description={`Looks like you don't have any item in your cart. Let's change that.'`}
+						description={`Looks like your cart is empty. Let's change that.`}
 						ctaText='Discover new stores'
 						ctaAction={() => navigate('Explore')}
 					/>
