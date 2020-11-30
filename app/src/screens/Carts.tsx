@@ -3,9 +3,12 @@ import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CartsContext } from '../contexts/CartsContext';
 import CartsListItem from '../components/carts/CartsListItem';
+import ListEmpty from '../components/global/ListEmpty';
+import { useNavigation } from '@react-navigation/native';
 
 const Carts = () => {
 	const { carts } = React.useContext(CartsContext);
+	const { navigate } = useNavigation();
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -19,9 +22,12 @@ const Carts = () => {
 				renderItem={({ item }) => <CartsListItem cart={item} />}
 				data={carts}
 				ListEmptyComponent={
-					<View>
-						<Text>You do not have any active carts.</Text>
-					</View>
+					<ListEmpty
+						title='Empty cart'
+						description={`Looks like you don't have any item in your cart. Let's change that.'`}
+						ctaText='Discover new stores'
+						ctaAction={() => navigate('Explore')}
+					/>
 				}
 				ItemSeparatorComponent={() => <View style={styles.separator} />}
 			/>

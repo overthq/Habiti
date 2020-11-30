@@ -74,7 +74,7 @@ const Explore = () => {
 								horizontal
 								data={data?.stores}
 								keyExtractor={({ id }) => id}
-								contentContainerStyle={{ paddingLeft: 20, height: 120 }}
+								contentContainerStyle={{ paddingLeft: 20, height: 95 }}
 								renderItem={({ item }) => (
 									<TouchableOpacity
 										activeOpacity={0.8}
@@ -84,7 +84,7 @@ const Explore = () => {
 										<View key={item.id} style={styles.featuredStoreContainer}>
 											<Image
 												source={{
-													uri: `https://twitter.com/{username}/profile_image?size=original`
+													uri: `https://twitter.com/allbirds/profile_image?size=original`
 												}}
 												style={{ height: 70, width: 70, borderRadius: 35 }}
 											/>
