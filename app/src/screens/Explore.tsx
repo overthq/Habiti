@@ -6,19 +6,40 @@ import {
 	ScrollView,
 	Image,
 	Text,
+	TextInput,
 	TouchableOpacity,
-	Dimensions
+	Dimensions,
+	Alert,
+	LayoutAnimation
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { useStoresQuery } from '../types/api';
+import { useStoresQuery, SearchQuery, SearchDocument } from '../types/api';
 import { Icon } from '../components/icons';
+import { useClient } from 'urql';
 
 const { width } = Dimensions.get('window');
 
 const Explore = () => {
+	const [searchData, setSearchData] = React.useState<SearchQuery | undefined>();
+	const [searchBarFocused, setSearchBarFocused] = React.useState(false);
 	const [{ data }] = useStoresQuery();
 	const { navigate } = useNavigation();
+	const client = useClient();
+
+	React.useEffect(() => {
+		LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+	}, [searchBarFocused]);
+
+	const handleSearch = async (searchTerm: string) => {
+		const { data, error } = await client
+			.query<SearchQuery>(SearchDocument, { searchTerm: `%${searchTerm}%` })
+			.toPromise();
+
+		setSearchData(data);
+
+		if (error) Alert.alert(error.message);
+	};
 
 	return (
 		<ScrollView
@@ -29,75 +50,69 @@ const Explore = () => {
 				<View style={styles.header}>
 					<Text style={styles.title}>Explore</Text>
 				</View>
-				<TouchableOpacity
-					activeOpacity={0.8}
-					style={styles.searchBar}
-					onPress={() => navigate('Search')}
-				>
+				<View style={styles.searchBar}>
 					<Icon name='search' color='#505050' size={20} />
-					<Text style={{ fontSize: 16, paddingLeft: 5, color: '#777777' }}>
-						Search stores and items
-					</Text>
-				</TouchableOpacity>
-				<View style={{ marginTop: 16 }}>
-					<Text style={styles.sectionHeader}>Trending Stores</Text>
-					<FlatList
-						horizontal
-						data={data?.stores}
-						keyExtractor={({ id }) => id}
-						contentContainerStyle={{ paddingLeft: 20, height: 120 }}
-						renderItem={({ item }) => (
-							<TouchableOpacity
-								activeOpacity={0.8}
-								style={{
-									justifyContent: 'center',
-									height: '100%'
-								}}
-								onPress={() => navigate('Store', { storeId: item.id })}
-							>
-								<View key={item.id} style={styles.featuredStoreContainer}>
-									<Image
-										source={{
-											uri: `https://twitter.com/{username}/profile_image?size=original`
-										}}
-										style={{ height: 80, width: 80, borderRadius: 40 }}
-									/>
-								</View>
-								<Text style={styles.storeName}>{item.name}</Text>
-							</TouchableOpacity>
-						)}
-						ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
-						ListEmptyComponent={
-							<View style={{ height: '100%', width: '100%' }}>
-								<Text
-									style={{
-										alignSelf: 'center',
-										marginHorizontal: 'auto',
-										fontSize: 16
-									}}
-								>
-									There are no stores trending currently.
-								</Text>
-							</View>
-						}
+					<TextInput
+						placeholder='Search stores and items'
+						onChangeText={handleSearch}
+						onFocus={() => setSearchBarFocused(true)}
+						onBlur={() => setSearchBarFocused(false)}
+						style={{ fontSize: 16, paddingLeft: 5 }}
+						autoCorrect={false}
+						autoCapitalize='none'
 					/>
 				</View>
-				<View
-					style={{
-						height: 250,
-						margin: 20,
-						borderRadius: 8,
-						backgroundColor: '#D3D3D3',
-						padding: 20
-					}}
-				>
-					<Text style={{ color: '#505050', fontWeight: 'bold', fontSize: 24 }}>
-						Item of the day
-					</Text>
-				</View>
-				<View style={{ marginTop: 16 }}>
-					<Text style={styles.sectionHeader}>Featured Items</Text>
-				</View>
+				{searchBarFocused ? (
+					<View>
+						<Text>{JSON.stringify(searchData)}</Text>
+					</View>
+				) : (
+					<>
+						<View style={{ marginTop: 8 }}>
+							<Text style={styles.sectionHeader}>Trending Stores</Text>
+							<FlatList
+								horizontal
+								data={data?.stores}
+								keyExtractor={({ id }) => id}
+								contentContainerStyle={{ paddingLeft: 20, height: 120 }}
+								renderItem={({ item }) => (
+									<TouchableOpacity
+										activeOpacity={0.8}
+										style={{ justifyContent: 'center', height: '100%' }}
+										onPress={() => navigate('Store', { storeId: item.id })}
+									>
+										<View key={item.id} style={styles.featuredStoreContainer}>
+											<Image
+												source={{
+													uri: `https://twitter.com/{username}/profile_image?size=original`
+												}}
+												style={{ height: 70, width: 70, borderRadius: 35 }}
+											/>
+										</View>
+										<Text style={styles.storeName}>{item.name}</Text>
+									</TouchableOpacity>
+								)}
+								ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
+								ListEmptyComponent={
+									<View style={{ height: '100%', width: '100%' }}>
+										<Text
+											style={{
+												alignSelf: 'center',
+												marginHorizontal: 'auto',
+												fontSize: 16
+											}}
+										>
+											There are no stores trending currently.
+										</Text>
+									</View>
+								}
+							/>
+						</View>
+						<View style={{ marginTop: 16 }}>
+							<Text style={styles.sectionHeader}>Featured Items</Text>
+						</View>
+					</>
+				)}
 			</SafeAreaView>
 		</ScrollView>
 	);
@@ -120,9 +135,9 @@ const styles = StyleSheet.create({
 		fontSize: 32
 	},
 	sectionHeader: {
-		marginVertical: 10,
-		fontSize: 18,
-		fontWeight: 'bold',
+		marginVertical: 5,
+		fontSize: 16,
+		fontWeight: '500',
 		color: '#505050',
 		paddingLeft: 20
 	},
@@ -137,9 +152,9 @@ const styles = StyleSheet.create({
 	},
 	featuredStoreContainer: {
 		backgroundColor: '#D3D3D3',
-		width: 80,
-		height: 80,
-		borderRadius: 40,
+		width: 70,
+		height: 70,
+		borderRadius: 35,
 		justifyContent: 'center',
 		alignItems: 'center'
 	},

@@ -9,14 +9,12 @@ import {
 import { useDispatch } from 'react-redux';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import styles from '../styles/auth';
-import { AuthStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../types/navigation';
 import { verifyCode } from '../utils/auth';
 import { login } from '../redux/auth/actions';
 
 const VerifyAuthentication = () => {
-	const { params } = useRoute<
-		RouteProp<AuthStackParamList, 'VerifyAuthentication'>
-	>();
+	const { params } = useRoute<RouteProp<AppStackParamList, 'Verify'>>();
 	const { navigate } = useNavigation();
 	const dispatch = useDispatch();
 	const [loading, setLoading] = React.useState(false);

@@ -6,31 +6,21 @@ import { Provider, createClient } from 'urql';
 
 import Authenticate from '../screens/Authenticate';
 import Register from '../screens/Register';
-import VerifyAuthentication from '../screens/VerifyAuthentication';
+import Verify from '../screens/Verify';
 import Home from '../screens/Home';
 import Profile from '../screens/Profile';
 import Carts from '../screens/Carts';
 import Explore from '../screens/Explore';
-import Search from '../screens/Search';
 import Store from '../screens/Store';
 import Item from '../screens/Item';
 import Cart from '../screens/Cart';
 import { Icon } from '../components/icons';
-import {
-	// modalOptions,
-	tabBarOptions,
-	tabScreenOptions
-} from '../utils/navigation';
-import {
-	AppStackParamList,
-	// AuthStackParamListk
-	MainStackParamList
-} from '../types/navigation';
+import { tabBarOptions, tabScreenOptions } from '../utils/navigation';
+import { AppStackParamList, MainStackParamList } from '../types/navigation';
 import { useAppSelector } from '../redux/store';
 import env from '../../env';
 
 const AppStack = createStackNavigator<AppStackParamList>();
-// const AuthStack = createStackNavigator<AuthStackParamList>();
 const MainStack = createStackNavigator<MainStackParamList>();
 const HomeTab = createBottomTabNavigator();
 
@@ -81,7 +71,6 @@ const Routes: React.FC = () => {
 					{accessToken ? (
 						<>
 							<AppStack.Screen name='Main' component={MainNavigator} />
-							<AppStack.Screen name='Search' component={Search} />
 							<AppStack.Screen name='Item' component={Item} />
 							<AppStack.Screen name='Cart' component={Cart} />
 						</>
@@ -89,10 +78,7 @@ const Routes: React.FC = () => {
 						<>
 							<AppStack.Screen name='Register' component={Register} />
 							<AppStack.Screen name='Authenticate' component={Authenticate} />
-							<AppStack.Screen
-								name='VerifyAuthentication'
-								component={VerifyAuthentication}
-							/>
+							<AppStack.Screen name='Verify' component={Verify} />
 						</>
 					)}
 				</AppStack.Navigator>
