@@ -24,8 +24,18 @@ const Explore = () => {
 	const [searchData, setSearchData] = React.useState<SearchQuery | undefined>();
 	const [searchBarFocused, setSearchBarFocused] = React.useState(false);
 	const [{ data }] = useStoresQuery();
-	const { navigate } = useNavigation();
+	const { navigate, setOptions } = useNavigation();
 	const client = useClient();
+
+	React.useLayoutEffect(() => {
+		setOptions({
+			header: (
+				<View style={styles.header}>
+					<Text style={styles.title}>Explore</Text>
+				</View>
+			)
+		});
+	}, []);
 
 	React.useEffect(() => {
 		LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -47,9 +57,6 @@ const Explore = () => {
 			showsVerticalScrollIndicator={false}
 		>
 			<SafeAreaView style={styles.container}>
-				<View style={styles.header}>
-					<Text style={styles.title}>Explore</Text>
-				</View>
 				<View style={styles.searchBar}>
 					<Icon name='search' color='#505050' size={20} />
 					<TextInput
