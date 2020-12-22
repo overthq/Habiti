@@ -1,26 +1,29 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CartsContext } from '../contexts/CartsContext';
 import CartsListItem from '../components/carts/CartsListItem';
 import ListEmpty from '../components/global/ListEmpty';
 import { useNavigation } from '@react-navigation/native';
+import { useAppSelector } from '../redux/store';
 
 const Carts = () => {
-	const { carts } = React.useContext(CartsContext);
+	const carts = useAppSelector(({ carts }) => carts.carts);
+	// const { carts } = React.useContext(CartsContext);
 	const { navigate } = useNavigation();
+
+	const cartsArray = React.useMemo(() => Object.entries(carts), [carts]);
 
 	return (
 		<SafeAreaView style={styles.container}>
 			<FlatList
-				keyExtractor={cart => cart.storeId}
+				keyExtractor={c => c[0]}
 				ListHeaderComponent={
 					<View style={styles.header}>
 						<Text style={styles.title}>Carts</Text>
 					</View>
 				}
 				renderItem={({ item }) => <CartsListItem cart={item} />}
-				data={carts}
+				data={cartsArray}
 				ListEmptyComponent={
 					<ListEmpty
 						title='Empty cart'

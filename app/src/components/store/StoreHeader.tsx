@@ -1,12 +1,10 @@
 import React from 'react';
 import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Icon } from '../icons';
 import { openLink } from '../../utils/links';
-import // useFollowStoreMutation,
-// useUnfollowStoreMutation,
-// Stores
-'../../types/api';
+// import { useFollowStoreMutation, useUnfollowStoreMutation, Stores } from '../../types/api';
 import { stores } from '../../api';
+import FollowButton from './FollowButton';
+import SocialLinks from './SocialLinks';
 
 interface StoreHeaderProps {
 	store: typeof stores[-1];
@@ -26,95 +24,57 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 	// 	userInStoreFollowing !== undefined && userInStoreFollowing > -1;
 
 	return (
-		<View style={styles.headerContainer}>
-			<View
-				style={{
-					flexDirection: 'row',
-					alignItems: 'center',
-					justifyContent: 'space-between'
-				}}
-			>
-				<View style={styles.headerImagePlaceholder}>
-					<Image
-						source={{ uri: store.avatarUrl }}
-						style={{ width: '100%', height: '100%' }}
-					/>
+		<View style={styles.container}>
+			<View style={styles.row}>
+				<View style={styles.imagePlaceholder}>
+					<Image source={{ uri: store.avatarUrl }} style={styles.image} />
 				</View>
-				<View style={{ flexDirection: 'row' }}>
-					<TouchableOpacity
-						style={{ marginRight: 20 }}
-						activeOpacity={0.8}
-						onPress={() =>
-							openLink(`https://twitter.com/${store.links.twitter}`)
+				<SocialLinks
+					links={[
+						{
+							iconName: 'twitter',
+							url: `https://twitter.com/${store.links.twitter}`
+						},
+						{
+							iconName: 'instagram',
+							url: `https://instagram.com/${store.links.instagram}`
 						}
-					>
-						<Icon name='twitter' />
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={{ marginRight: 20 }}
-						activeOpacity={0.8}
-						onPress={() =>
-							openLink(`https://instagram.com/${store.links.instagram}`)
-						}
-					>
-						<Icon name='instagram' />
-					</TouchableOpacity>
-				</View>
+					]}
+				/>
 			</View>
 			<View>
-				<Text style={{ fontSize: 20, fontWeight: 'bold', marginTop: 10 }}>
-					{store?.name}
-				</Text>
+				<Text style={styles.storeName}>{store?.name}</Text>
 				<TouchableOpacity
 					style={{ marginTop: 5 }}
 					onPress={() => openLink(store.links.website)}
 				>
-					<Text style={{ fontSize: 16, color: '#202020' }}>
-						{store.links.website}
-					</Text>
+					<Text style={styles.websiteLinkText}>{store.links.website}</Text>
 				</TouchableOpacity>
 			</View>
-			<TouchableOpacity
-				style={styles.followButton}
-				activeOpacity={0.8}
-				onPress={() => {
-					if (store?.id) {
-						if (isFollowingStore) {
-							// unfollowStore({ storeId: store.id, userId: '' });
-						} else {
-							// followStore({ storeId: store?.id, userId: '' });
-						}
-					}
+			<FollowButton
+				isFollowing={isFollowingStore}
+				follow={() => {
+					// followStore({ storeId: store?.id, userId: '' });
 				}}
-			>
-				<View style={{ marginRight: 5 }}>
-					<Icon size={20} name={isFollowingStore ? 'check' : 'plus'} />
-				</View>
-				<Text style={{ fontSize: 16, fontWeight: '500' }}>
-					{isFollowingStore ? 'Following' : 'Follow'}
-				</Text>
-			</TouchableOpacity>
+				unfollow={() => {
+					// unfollowStore({ storeId: store.id, userId: '' });
+				}}
+			/>
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
-	followButton: {
-		marginTop: 10,
-		width: '100%',
-		height: 35,
-		borderWidth: 1,
-		borderColor: '#D3D3D3',
-		borderRadius: 4,
-		flexDirection: 'row',
-		justifyContent: 'center',
-		alignItems: 'center'
-	},
-	headerContainer: {
+	container: {
 		paddingVertical: 25,
 		paddingHorizontal: 10
 	},
-	headerImagePlaceholder: {
+	row: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between'
+	},
+	imagePlaceholder: {
 		backgroundColor: '#D3D3D3',
 		width: 100,
 		height: 100,
@@ -123,6 +83,19 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center'
+	},
+	image: {
+		width: '100%',
+		height: '100%'
+	},
+	storeName: {
+		fontSize: 20,
+		fontWeight: 'bold',
+		marginTop: 10
+	},
+	websiteLinkText: {
+		fontSize: 16,
+		color: '#202020'
 	}
 });
 
