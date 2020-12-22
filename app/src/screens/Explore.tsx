@@ -47,28 +47,17 @@ const Explore = () => {
 				style={{ backgroundColor: '#FFFFFF' }}
 				showsVerticalScrollIndicator={false}
 				bounces={false}
+				keyboardShouldPersistTaps='handled'
 			>
 				<View style={styles.header}>
 					<Text style={styles.title}>Explore</Text>
 				</View>
-				<View
-					style={{
-						flexDirection: 'row',
-						alignItems: 'center',
-						paddingHorizontal: 16
-					}}
-				>
-					<SearchBar
-						onSearchTermChange={handleSearch}
-						onFocus={() => setSearchBarFocused(true)}
-						onBlur={() => setSearchBarFocused(false)}
-					/>
-					{searchBarFocused && (
-						<TouchableOpacity>
-							<Text style={{ fontSize: 16, marginLeft: 8 }}>Cancel</Text>
-						</TouchableOpacity>
-					)}
-				</View>
+				<SearchBar
+					onSearchTermChange={handleSearch}
+					isFocused={searchBarFocused}
+					onFocus={() => setSearchBarFocused(true)}
+					cancel={() => setSearchBarFocused(false)}
+				/>
 				{searchBarFocused ? (
 					<View>
 						<Text>{JSON.stringify(searchData)}</Text>

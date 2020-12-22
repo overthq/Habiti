@@ -1,43 +1,67 @@
 import React from 'react';
-import { View, TextInput, StyleSheet, Dimensions } from 'react-native';
+import {
+	View,
+	Text,
+	TextInput,
+	TouchableOpacity,
+	StyleSheet
+} from 'react-native';
 import { Icon } from '../icons';
-
-const { width } = Dimensions.get('window');
 
 interface SearchBarProps {
 	onSearchTermChange(term: string): void;
+	isFocused: boolean;
 	onFocus(): void;
-	onBlur(): void;
+	cancel(): void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
 	onSearchTermChange,
+	isFocused,
 	onFocus,
-	onBlur
-}) => (
-	<View style={styles.container}>
-		<Icon name='search' color='#505050' size={20} />
-		<TextInput
-			style={styles.input}
-			placeholder='Search stores and items'
-			onChangeText={onSearchTermChange}
-			onFocus={onFocus}
-			onBlur={onBlur}
-			autoCorrect={false}
-			autoCapitalize='none'
-		/>
-	</View>
-);
+	cancel
+}) => {
+	const inputRef = React.useRef<TextInput>();
+
+	return (
+		<View style={styles.container}>
+			<View style={styles.bar}>
+				<Icon name='search' color='#505050' size={20} />
+				<TextInput
+					style={styles.input}
+					placeholder='Search stores and items'
+					onChangeText={onSearchTermChange}
+					onFocus={onFocus}
+					autoCorrect={false}
+					autoCapitalize='none'
+				/>
+			</View>
+			{isFocused && (
+				<TouchableOpacity
+					onPress={() => {
+						cancel();
+						inputRef.current?.blur();
+					}}
+				>
+					<Text style={{ fontSize: 16, marginLeft: 8 }}>Cancel</Text>
+				</TouchableOpacity>
+			)}
+		</View>
+	);
+};
 
 const styles = StyleSheet.create({
 	container: {
-		// alignSelf: 'center',
+		flexDirection: 'row',
+		alignItems: 'center',
+		paddingHorizontal: 16
+	},
+	bar: {
 		borderRadius: 10,
 		backgroundColor: '#D3D3D3',
 		flexDirection: 'row',
 		alignItems: 'center',
 		padding: 10,
-		// width: width - 40,
 		flexGrow: 1,
 		height: 40
 	},
