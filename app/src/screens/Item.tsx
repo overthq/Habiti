@@ -1,32 +1,41 @@
 import React from 'react';
 import {
 	View,
+	Image,
 	Text,
 	TouchableOpacity,
 	ScrollView,
 	StyleSheet
 } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { useItemQuery } from '../types/api';
+// import { useItemQuery } from '../types/api';
 import { Icon } from '../components/icons';
 import { CartsContext } from '../contexts/CartsContext';
 import { AppStackParamList } from '../types/navigation';
+import { items } from '../api';
 
 const Item = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Item'>>();
 	const { addItemToCart } = React.useContext(CartsContext);
-	const [{ data }] = useItemQuery({
-		variables: { itemId: params.itemId }
-	});
+	// const [{ data }] = useItemQuery({
+	// 	variables: { itemId: params.itemId }
+	// });
 	const [quantity, setQuantity] = React.useState(0);
 
-	const item = data?.items[0];
+	const item = items.find(item => item.id === params.itemId);
+
+	if (!item) throw new Error('Item does  not exist');
 
 	return (
 		<ScrollView style={styles.container}>
-			<View style={styles.imagePlaceholder} />
+			<View style={styles.imagePlaceholder}>
+				<Image
+					source={{ uri: item.imageUrl }}
+					style={{ width: '100%', height: '100%' }}
+				/>
+			</View>
 			<View style={{ paddingHorizontal: 20, paddingTop: 20 }}>
-				<Text style={{ fontWeight: '500' }}>{item?.store.name}</Text>
+				<Text style={{ fontWeight: '500' }}>{item.name}</Text>
 				<View
 					style={{
 						flexDirection: 'row',
@@ -35,8 +44,8 @@ const Item = () => {
 						marginBottom: 5
 					}}
 				>
-					<Text style={{ fontWeight: 'bold', fontSize: 22 }}>{item?.name}</Text>
-					<Text style={{ fontSize: 18 }}>${item?.price_per_unit}</Text>
+					<Text style={{ fontWeight: 'bold', fontSize: 22 }}>{item.name}</Text>
+					<Text style={{ fontSize: 18 }}>${item.price}</Text>
 				</View>
 				<View
 					style={{
@@ -68,9 +77,7 @@ const Item = () => {
 						</Text>
 						<TouchableOpacity
 							style={{ marginLeft: 7.5 }}
-							onPress={() => {
-								setQuantity(quantity + 1);
-							}}
+							onPress={() => setQuantity(quantity + 1)}
 						>
 							<Icon name='plus' color='#828282' />
 						</TouchableOpacity>
@@ -79,9 +86,9 @@ const Item = () => {
 				<TouchableOpacity
 					style={styles.cartButton}
 					onPress={() => {
-						if (item?.store_id) {
+						if (item.storeId) {
 							addItemToCart({
-								storeId: item.store_id,
+								storeId: item.storeId,
 								itemId: item.id,
 								quantity
 							});

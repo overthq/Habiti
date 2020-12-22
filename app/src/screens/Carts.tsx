@@ -25,8 +25,10 @@ const Carts = () => {
 					<ListEmpty
 						title='Empty cart'
 						description={`Looks like your cart is empty. Let's change that.`}
-						ctaText='Discover new stores'
-						ctaAction={() => navigate('Explore')}
+						cta={{
+							text: 'Discover new stores',
+							action: () => navigate('Explore')
+						}}
 					/>
 				}
 				ItemSeparatorComponent={() => <View style={styles.separator} />}

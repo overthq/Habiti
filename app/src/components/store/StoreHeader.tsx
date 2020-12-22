@@ -1,20 +1,20 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Icon } from '../icons';
 import { openLink } from '../../utils/links';
-import {
-	useFollowStoreMutation,
-	useUnfollowStoreMutation,
-	Stores
-} from '../../types/api';
+import // useFollowStoreMutation,
+// useUnfollowStoreMutation,
+// Stores
+'../../types/api';
+import { stores } from '../../api';
 
 interface StoreHeaderProps {
-	store?: Stores;
+	store: typeof stores[-1];
 }
 
 const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
-	const [, followStore] = useFollowStoreMutation();
-	const [, unfollowStore] = useUnfollowStoreMutation();
+	// const [, followStore] = useFollowStoreMutation();
+	// const [, unfollowStore] = useUnfollowStoreMutation();
 	// const currentUserData = React.useContext(CurrentUserContext);
 
 	// const userInStoreFollowing = store?.profile.followers.findIndex(
@@ -27,29 +27,39 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 
 	return (
 		<View style={styles.headerContainer}>
-			<View style={styles.headerImagePlaceholder}>
-				{/* <Image
-					source={{
-						uri: `https://twitter.com/${store?.profile.twitter_username}/profile_image?size=original`
-					}}
-					style={{ width: '100%', height: '100%' }}
-				/>*/}
-			</View>
-			<View style={{ flexDirection: 'row' }}>
-				<TouchableOpacity
-					style={{ marginRight: 20 }}
-					activeOpacity={0.8}
-					onPress={() => openLink(`https://twitter.com/rand`)}
-				>
-					<Icon name='twitter' />
-				</TouchableOpacity>
-				<TouchableOpacity
-					style={{ marginRight: 20 }}
-					activeOpacity={0.8}
-					onPress={() => openLink(`https://instagram.com/rand`)}
-				>
-					<Icon name='instagram' />
-				</TouchableOpacity>
+			<View
+				style={{
+					flexDirection: 'row',
+					alignItems: 'center',
+					justifyContent: 'space-between'
+				}}
+			>
+				<View style={styles.headerImagePlaceholder}>
+					<Image
+						source={{ uri: store.avatarUrl }}
+						style={{ width: '100%', height: '100%' }}
+					/>
+				</View>
+				<View style={{ flexDirection: 'row' }}>
+					<TouchableOpacity
+						style={{ marginRight: 20 }}
+						activeOpacity={0.8}
+						onPress={() =>
+							openLink(`https://twitter.com/${store.links.twitter}`)
+						}
+					>
+						<Icon name='twitter' />
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={{ marginRight: 20 }}
+						activeOpacity={0.8}
+						onPress={() =>
+							openLink(`https://instagram.com/${store.links.instagram}`)
+						}
+					>
+						<Icon name='instagram' />
+					</TouchableOpacity>
+				</View>
 			</View>
 			<View>
 				<Text style={{ fontSize: 20, fontWeight: 'bold', marginTop: 10 }}>
@@ -57,10 +67,10 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 				</Text>
 				<TouchableOpacity
 					style={{ marginTop: 5 }}
-					onPress={() => openLink('https://example.com')}
+					onPress={() => openLink(store.links.website)}
 				>
 					<Text style={{ fontSize: 16, color: '#202020' }}>
-						https://example.com
+						{store.links.website}
 					</Text>
 				</TouchableOpacity>
 			</View>
@@ -70,9 +80,9 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 				onPress={() => {
 					if (store?.id) {
 						if (isFollowingStore) {
-							unfollowStore({ storeId: store.id, userId: '' });
+							// unfollowStore({ storeId: store.id, userId: '' });
 						} else {
-							followStore({ storeId: store?.id, userId: '' });
+							// followStore({ storeId: store?.id, userId: '' });
 						}
 					}
 				}}

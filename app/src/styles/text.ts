@@ -12,8 +12,9 @@ const textStyles = StyleSheet.create({
 	},
 	sectionHeader: {
 		fontSize: 16,
-		fontWeight: '500',
-		color: '#505050'
+		fontWeight: 'bold',
+		color: '#505050',
+		marginVertical: 8
 	},
 	regular: {
 		fontSize: 16

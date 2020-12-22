@@ -7,7 +7,8 @@ import {
 	StyleSheet
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useStoreItemsQuery } from '../../types/api';
+// import { useStoreItemsQuery } from '../../types/api';
+import { items } from '../../api';
 
 interface StoreItemsProps {
 	storeId: string;
@@ -15,14 +16,17 @@ interface StoreItemsProps {
 }
 
 const StoreItems: React.FC<StoreItemsProps> = ({ storeId, header }) => {
-	const [{ data }] = useStoreItemsQuery({
-		variables: { storeId }
-	});
+	// const [{ data }] = useStoreItemsQuery({
+	// 	variables: { storeId }
+	// });
 	const { navigate } = useNavigation();
+	const storeItems = items.filter(item => item.storeId === storeId);
+
+	if (!storeItems) throw new Error('No store items');
 
 	return (
 		<FlatList
-			data={data?.storeItems}
+			data={storeItems}
 			keyExtractor={({ id }) => id}
 			ListHeaderComponent={header}
 			showsVerticalScrollIndicator={false}
@@ -37,7 +41,7 @@ const StoreItems: React.FC<StoreItemsProps> = ({ storeId, header }) => {
 						<View style={styles.itemImage} />
 						<Text style={styles.itemName}>{item.name}</Text>
 						<Text style={{ color: '#505050', fontSize: 15 }}>
-							${item.price_per_unit}
+							${item.price}
 						</Text>
 					</TouchableOpacity>
 				</View>
@@ -49,6 +53,8 @@ const StoreItems: React.FC<StoreItemsProps> = ({ storeId, header }) => {
 
 const styles = StyleSheet.create({
 	itemName: {
+		fontSize: 16,
+		marginBottom: 2,
 		fontWeight: '500'
 	},
 	itemImage: {

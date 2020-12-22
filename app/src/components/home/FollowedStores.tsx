@@ -7,12 +7,13 @@ import {
 	StyleSheet
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useStoresFollowedQuery } from '../../types/api';
+// import { useStoresFollowedQuery } from '../../types/api';
+import { stores } from '../../api';
 
 const FollowedStores = () => {
-	const [{ data }] = useStoresFollowedQuery({
-		variables: { userId: 'b6cc8a11-7528-41eb-b082-77593797c978' }
-	});
+	// const [{ data }] = useStoresFollowedQuery({
+	// 	variables: { userId: 'b6cc8a11-7528-41eb-b082-77593797c978' }
+	// });
 	const { navigate } = useNavigation();
 
 	return (
@@ -20,19 +21,19 @@ const FollowedStores = () => {
 			<Text style={styles.sectionHeader}>New Arrivals</Text>
 			<FlatList
 				horizontal
-				data={data?.store_followers}
-				keyExtractor={item => item.store_id}
+				data={stores}
+				keyExtractor={item => item.id}
 				style={{ marginTop: 10 }}
 				contentContainerStyle={{ paddingLeft: 20 }}
 				renderItem={({ item }) => (
 					<TouchableOpacity
 						activeOpacity={0.8}
-						onPress={() => navigate('Store', { storeId: item.store_id })}
+						onPress={() => navigate('Store', { storeId: item.id })}
 					>
 						<View style={styles.storyImageContainer}>
 							<View style={styles.storyImagePlaceholder} />
 						</View>
-						<Text style={styles.storeName}>{item.store.name}</Text>
+						<Text style={styles.storeName}>{item.name}</Text>
 					</TouchableOpacity>
 				)}
 				ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
