@@ -8,22 +8,20 @@ import { useAppSelector } from '../redux/store';
 
 const Carts = () => {
 	const carts = useAppSelector(({ carts }) => carts.carts);
-	// const { carts } = React.useContext(CartsContext);
 	const { navigate } = useNavigation();
-
-	const cartsArray = React.useMemo(() => Object.entries(carts), [carts]);
 
 	return (
 		<SafeAreaView style={styles.container}>
 			<FlatList
-				keyExtractor={c => c[0]}
+				bounces={false}
+				keyExtractor={c => c.storeId}
 				ListHeaderComponent={
 					<View style={styles.header}>
 						<Text style={styles.title}>Carts</Text>
 					</View>
 				}
 				renderItem={({ item }) => <CartsListItem cart={item} />}
-				data={cartsArray}
+				data={carts}
 				ListEmptyComponent={
 					<ListEmpty
 						title='Empty cart'

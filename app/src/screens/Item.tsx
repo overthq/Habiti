@@ -35,31 +35,17 @@ const Item = () => {
 				/>
 			</View>
 			<View style={{ paddingHorizontal: 20, paddingTop: 20 }}>
-				<Text style={{ fontWeight: '500' }}>{item.name}</Text>
-				<View
-					style={{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						alignItems: 'center',
-						marginBottom: 5
-					}}
-				>
-					<Text style={{ fontWeight: 'bold', fontSize: 22 }}>{item.name}</Text>
+				{/* <Text style={{ fontWeight: '500' }}>{item.name}</Text> */}
+				<View style={styles.metaContainer}>
+					<Text style={{ fontWeight: 'bold', fontSize: 20 }}>{item.name}</Text>
 					<Text style={{ fontSize: 18 }}>${item.price}</Text>
 				</View>
-				<View
-					style={{
-						width: '100%',
-						height: 1,
-						backgroundColor: '#D3D3D3',
-						marginVertical: 10
-					}}
-				/>
+				<View style={styles.separator} />
 				<View
 					style={{
 						flexDirection: 'row',
 						justifyContent: 'space-between',
-						marginVertical: 10
+						marginVertical: 4
 					}}
 				>
 					<Text style={{ fontSize: 16, fontWeight: '500' }}>Quantity</Text>
@@ -95,23 +81,15 @@ const Item = () => {
 						}
 					}}
 				>
-					<View style={{ marginRight: 5 }}>
-						<Icon size={22} color='#FFFFFF' name='plus' />
-					</View>
-					<Text style={{ fontSize: 16, fontWeight: '700', color: '#FFFFFF' }}>
-						Add to Cart
-					</Text>
+					<Icon
+						size={22}
+						color='#FFFFFF'
+						name='plus'
+						style={{ marginRight: 5 }}
+					/>
+					<Text style={styles.buttonText}>Add to Cart</Text>
 				</TouchableOpacity>
-				<Text
-					style={{
-						marginVertical: 10,
-						textTransform: 'uppercase',
-						color: '#505050',
-						fontWeight: '500'
-					}}
-				>
-					Description
-				</Text>
+				<Text style={styles.descriptionHeader}>Description</Text>
 				<Text style={{ fontSize: 16 }}>{item?.description}</Text>
 			</View>
 		</ScrollView>
@@ -136,6 +114,29 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		backgroundColor: '#202020'
+	},
+	metaContainer: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		marginBottom: 5
+	},
+	descriptionHeader: {
+		marginVertical: 10,
+		textTransform: 'uppercase',
+		color: '#505050',
+		fontWeight: '500'
+	},
+	separator: {
+		width: '100%',
+		height: 1,
+		backgroundColor: '#D3D3D3',
+		marginVertical: 10
+	},
+	buttonText: {
+		fontSize: 16,
+		fontWeight: '700',
+		color: '#FFFFFF'
 	}
 });
 
