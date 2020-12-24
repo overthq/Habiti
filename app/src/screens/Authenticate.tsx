@@ -20,7 +20,7 @@ const Authenticate = () => {
 		setLoading(true);
 		await authenticate(phone);
 		setLoading(false);
-		navigate('VerifyAuthentication', { phone });
+		navigate('Verify', { phone });
 	};
 
 	const goToRegister = () => navigate('Register');

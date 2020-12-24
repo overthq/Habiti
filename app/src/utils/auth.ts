@@ -16,8 +16,7 @@ export const register = async ({ name, phone }: RegisterPayload) => {
 			body: JSON.stringify({ name, phone })
 		});
 
-		const data = await response.json();
-		console.log({ data });
+		await response.json();
 	} catch (error) {
 		console.log(error);
 	}
@@ -34,8 +33,7 @@ export const authenticate = async (phone: string) => {
 			body: JSON.stringify({ phone })
 		});
 
-		const data = await response.json();
-		console.log({ data });
+		await response.json();
 	} catch (error) {
 		console.log(error);
 	}

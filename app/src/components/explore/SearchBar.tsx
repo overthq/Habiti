@@ -21,13 +21,14 @@ const SearchBar: React.FC<SearchBarProps> = ({
 	onFocus,
 	cancel
 }) => {
-	const inputRef = React.useRef<TextInput>();
+	const inputRef = React.useRef<TextInput>(null);
 
 	return (
 		<View style={styles.container}>
 			<View style={styles.bar}>
 				<Icon name='search' color='#505050' size={20} />
 				<TextInput
+					ref={inputRef}
 					style={styles.input}
 					placeholder='Search stores and items'
 					onChangeText={onSearchTermChange}
@@ -38,12 +39,13 @@ const SearchBar: React.FC<SearchBarProps> = ({
 			</View>
 			{isFocused && (
 				<TouchableOpacity
+					style={styles.cancelButton}
 					onPress={() => {
 						cancel();
 						inputRef.current?.blur();
 					}}
 				>
-					<Text style={{ fontSize: 16, marginLeft: 8 }}>Cancel</Text>
+					<Text style={styles.cancelText}>Cancel</Text>
 				</TouchableOpacity>
 			)}
 		</View>
@@ -70,6 +72,12 @@ const styles = StyleSheet.create({
 		paddingLeft: 4,
 		height: '100%',
 		flexGrow: 1
+	},
+	cancelButton: {
+		marginLeft: 8
+	},
+	cancelText: {
+		fontSize: 16
 	}
 });
 
