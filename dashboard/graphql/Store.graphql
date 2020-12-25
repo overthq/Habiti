@@ -1,8 +1,0 @@
-mutation CreateStore($input: CreateStoreInput!) {
-	createStore(input: $input) {
-		id
-		name
-		short_name
-	}
-}
-
