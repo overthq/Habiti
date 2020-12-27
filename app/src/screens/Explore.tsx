@@ -17,6 +17,7 @@ import { useNavigation } from '@react-navigation/native';
 import { stores, items } from '../api';
 import SearchBar from '../components/explore/SearchBar';
 import ListEmpty from '../components/global/ListEmpty';
+import SearchResults from '../components/explore/SearchResults';
 
 const Explore = () => {
 	// const [searchData, setSearchData] = React.useState<SearchQuery | undefined>();
@@ -59,9 +60,7 @@ const Explore = () => {
 					cancel={() => setSearchBarFocused(false)}
 				/>
 				{searchBarFocused ? (
-					<View>
-						<Text>{JSON.stringify(searchData)}</Text>
-					</View>
+					<SearchResults searchData={searchData} />
 				) : (
 					<>
 						<View style={{ marginTop: 8 }}>
