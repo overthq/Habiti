@@ -10,13 +10,15 @@ import {
 import { useRoute, RouteProp } from '@react-navigation/native';
 // import { useItemQuery } from '../types/api';
 import { Icon } from '../components/icons';
-import { CartsContext } from '../contexts/CartsContext';
+// import { CartsContext } from '../contexts/CartsContext';
 import { AppStackParamList } from '../types/navigation';
 import { items } from '../api';
+import { upsertItemToCart, removeItemFromCart } from '../redux/carts/actions';
+import { useDispatch } from 'react-redux';
 
 const Item = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Item'>>();
-	const { addItemToCart } = React.useContext(CartsContext);
+	const dispatch = useDispatch();
 	// const [{ data }] = useItemQuery({
 	// 	variables: { itemId: params.itemId }
 	// });
@@ -73,11 +75,13 @@ const Item = () => {
 					style={styles.cartButton}
 					onPress={() => {
 						if (item.storeId) {
-							addItemToCart({
-								storeId: item.storeId,
-								itemId: item.id,
-								quantity
-							});
+							dispatch(
+								upsertItemToCart({
+									storeId: item.storeId,
+									itemId: item.id,
+									quantity
+								})
+							);
 						}
 					}}
 				>
