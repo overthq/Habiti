@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
-const Orders = () => {
+const Register = () => {
 	return <View style={styles.container} />;
 };
 
@@ -11,4 +11,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default Orders;
+export default Register;

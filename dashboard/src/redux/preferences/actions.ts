@@ -1,5 +1,5 @@
 import { AppThunk } from '../store';
-import { UPDATE_PREFERENCE } from './types';
+import { PreferencesState, UPDATE_PREFERENCE } from './types';
 
 export const updatePreference = (
 	preference: Partial<PreferencesState>

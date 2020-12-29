@@ -1,4 +1,8 @@
-import { PreferencesState, PreferencesActionTypes } from './types';
+import {
+	PreferencesState,
+	PreferencesActionTypes,
+	UPDATE_PREFERENCE
+} from './types';
 
 const initialState: PreferencesState = {
 	activeStore: null,
