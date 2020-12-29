@@ -1,11 +1,28 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 const Orders = () => {
-	return <View style={styles.container} />;
+	return (
+		<View style={styles.container}>
+			<View style={styles.header}>
+				<Text style={styles.title}>Orders</Text>
+			</View>
+		</View>
+	);
 };
 
 const styles = StyleSheet.create({
+	header: {
+		paddingVertical: 15,
+		paddingHorizontal: 20,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center'
+	},
+	title: {
+		fontWeight: 'bold',
+		fontSize: 32
+	},
 	container: {
 		flex: 1
 	}
