@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
+import {
+	Text,
+	FlatList,
+	Image,
+	TouchableOpacity,
+	StyleSheet
+} from 'react-native';
 import { TabBar, TabView, SceneMap } from 'react-native-tab-view';
 import { useNavigation } from '@react-navigation/native';
 import { stores, items } from '../../api';
@@ -7,69 +13,44 @@ import { stores, items } from '../../api';
 const StoresView: React.FC<{ data: typeof stores }> = ({ data }) => {
 	const { navigate } = useNavigation();
 	return (
-		<View>
-			<FlatList
-				keyExtractor={s => s.id}
-				data={data}
-				renderItem={({ item }) => (
-					<TouchableOpacity
-						onPress={() => navigate('Store', { storeId: item.id })}
-						style={{
-							width: '100%',
-							flexDirection: 'row',
-							padding: 8,
-							alignItems: 'center'
-						}}
-					>
-						<Image
-							source={{ uri: item.avatarUrl }}
-							style={{
-								width: 35,
-								height: 35,
-								marginRight: 8,
-								borderRadius: 4
-							}}
-						/>
-						<Text style={{ fontSize: 16 }}>{item.name}</Text>
-					</TouchableOpacity>
-				)}
-			/>
-		</View>
+		<FlatList
+			keyExtractor={s => s.id}
+			data={data}
+			renderItem={({ item }) => (
+				<TouchableOpacity
+					onPress={() => navigate('Store', { storeId: item.id })}
+					style={styles.resultRow}
+				>
+					<Image
+						source={{ uri: item.avatarUrl }}
+						style={styles.resultRowThumbnail}
+					/>
+					<Text style={{ fontSize: 16 }}>{item.name}</Text>
+				</TouchableOpacity>
+			)}
+		/>
 	);
 };
 
 const ItemsView: React.FC<{ data: typeof items }> = ({ data }) => {
 	const { navigate } = useNavigation();
 	return (
-		<View>
-			<FlatList
-				keyExtractor={i => i.id}
-				data={data}
-				renderItem={({ item }) => (
-					<TouchableOpacity
-						onPress={() => navigate('Item', { itemId: item.id })}
-						style={{
-							width: '100%',
-							flexDirection: 'row',
-							padding: 8,
-							alignItems: 'center'
-						}}
-					>
-						<Image
-							source={{ uri: item.imageUrl }}
-							style={{
-								width: 35,
-								height: 35,
-								marginRight: 8,
-								borderRadius: 4
-							}}
-						/>
-						<Text style={{ fontSize: 16 }}>{item.name}</Text>
-					</TouchableOpacity>
-				)}
-			/>
-			<Text>{JSON.stringify(data)}</Text>
-		</View>
+		<FlatList
+			keyExtractor={i => i.id}
+			data={data}
+			renderItem={({ item }) => (
+				<TouchableOpacity
+					onPress={() => navigate('Item', { itemId: item.id })}
+					style={styles.resultRow}
+				>
+					<Image
+						source={{ uri: item.imageUrl }}
+						style={styles.resultRowThumbnail}
+					/>
+					<Text style={{ fontSize: 16 }}>{item.name}</Text>
+				</TouchableOpacity>
+			)}
+		/>
 	);
 };
 
@@ -91,28 +72,41 @@ const SearchResults: React.FC<SearchResultsProps> = ({ searchData }) => {
 		items: () => <ItemsView data={searchData.items} />
 	});
 
-	const renderTabBar = props => (
-		<TabBar
-			{...props}
-			activeColor='black'
-			inactiveColor='#505050'
-			indicatorStyle={{ backgroundColor: 'black' }}
-			getLabelText={({ route }) =>
-				(route.title?.charAt(0).toUpperCase() as string) +
-				(route.title?.slice(1) as string)
-			}
-			style={{ backgroundColor: 'white' }}
-		/>
-	);
-
 	return (
 		<TabView
 			navigationState={{ index, routes }}
-			renderTabBar={renderTabBar}
+			renderTabBar={props => (
+				<TabBar
+					{...props}
+					activeColor='black'
+					inactiveColor='#505050'
+					indicatorStyle={{ backgroundColor: 'black' }}
+					getLabelText={({ route }) =>
+						(route.title?.charAt(0).toUpperCase() as string) +
+						(route.title?.slice(1) as string)
+					}
+					style={{ backgroundColor: 'white' }}
+				/>
+			)}
 			renderScene={renderScene}
 			onIndexChange={setIndex}
 		/>
 	);
 };
+
+const styles = StyleSheet.create({
+	resultRow: {
+		width: '100%',
+		flexDirection: 'row',
+		padding: 8,
+		alignItems: 'center'
+	},
+	resultRowThumbnail: {
+		width: 35,
+		height: 35,
+		marginRight: 8,
+		borderRadius: 4
+	}
+});
 
 export default SearchResults;
