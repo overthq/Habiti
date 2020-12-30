@@ -1,14 +1,19 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { NavigationContainer } from '@react-navigation/native';
-import { store } from './src/redux/store';
+import { PersistGate } from 'redux-persist/integration/react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-const App = () => {
-	return (
-		<NavigationContainer>
-			<Provider store={store}></Provider>
-		</NavigationContainer>
-	);
-};
+import { store, persistor } from './src/redux/store';
+import Routes from './src/navigation/Routes';
+
+const App = () => (
+	<Provider store={store}>
+		<PersistGate persistor={persistor}>
+			<SafeAreaProvider>
+				<Routes />
+			</SafeAreaProvider>
+		</PersistGate>
+	</Provider>
+);
 
 export default App;
