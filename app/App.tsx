@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import React from 'react';
 import { Provider as StateProvider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
