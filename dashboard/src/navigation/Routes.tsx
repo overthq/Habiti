@@ -7,7 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Overview from '../screens/Overview';
 import Orders from '../screens/Orders';
 import Items from '../screens/Items';
-import Settings from '../screens/Settings';
+// import Settings from '../screens/Settings';
 import Register from '../screens/Register';
 import { useAppSelector } from '../redux/store';
 
@@ -18,9 +18,10 @@ import { useAppSelector } from '../redux/store';
 //  - Verify
 // - Main (Drawer/Tab Navigator)
 //  - Overview
+//  	- Settings (user and app-level settings, also includes a button to switch the currently active store)
 //  - Orders
 //  - Items
-//  - Settings (also includes a button to switch the currently active store)
+//  - Store (store metadata and store-related settings)
 
 const AppStack = createStackNavigator();
 // const MainDrawer = createDrawerNavigator();
@@ -39,7 +40,7 @@ const Routes = () => {
 								<MainTab.Screen name='Overview' component={Overview} />
 								<MainTab.Screen name='Orders' component={Orders} />
 								<MainTab.Screen name='Items' component={Items} />
-								<MainTab.Screen name='Settings' component={Settings} />
+								{/* <MainTab.Screen name='Settings' component={Settings} /> */}
 							</MainTab.Navigator>
 						)}
 					</AppStack.Screen>
