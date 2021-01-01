@@ -1,7 +1,6 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-// import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Overview from '../screens/Overview';
@@ -24,7 +23,6 @@ import { useAppSelector } from '../redux/store';
 //  - Store (store metadata and store-related settings)
 
 const AppStack = createStackNavigator();
-// const MainDrawer = createDrawerNavigator();
 const MainTab = createBottomTabNavigator();
 
 const Routes = () => {
