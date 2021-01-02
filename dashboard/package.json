@@ -1,6 +1,7 @@
 {
 	"main": "node_modules/expo/AppEntry.js",
 	"scripts": {
+		"generate-types": "graphql-codegen --config codegen.yml",
 		"start": "expo start",
 		"android": "expo start --android",
 		"ios": "expo start --ios",
@@ -29,10 +30,14 @@
 		"redux": "^4.0.5",
 		"redux-persist": "^6.0.0",
 		"redux-thunk": "^2.3.0",
+		"urql": "^1.11.4",
 		"yup": "^0.32.8"
 	},
 	"devDependencies": {
 		"@babel/core": "~7.9.0",
+		"@graphql-codegen/cli": "^1.20.0",
+		"@graphql-codegen/typescript-operations": "^1.17.13",
+		"@graphql-codegen/typescript-urql": "^2.0.3",
 		"@types/react": "~16.9.35",
 		"@types/react-dom": "~16.9.8",
 		"@types/react-native": "~0.63.2",
