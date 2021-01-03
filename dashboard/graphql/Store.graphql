@@ -1,0 +1,8 @@
+mutation CreateStore($name: String!, $storeName: String!) {
+	insert_stores(objects: [{ name: $name, store_name: $storeName }]) {
+		affected_rows
+		returning {
+			id
+		}
+	}
+}
