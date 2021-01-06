@@ -1,0 +1,9 @@
+# Since this is restricted by the store_id thing, then it means that we don't have to do any more filtering here.
+query Orders {
+	orders {
+		id
+		status
+		created_at
+		updated_at
+	}
+}
