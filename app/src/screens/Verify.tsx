@@ -13,7 +13,7 @@ import { AppStackParamList } from '../types/navigation';
 import { verifyCode } from '../utils/auth';
 import { login } from '../redux/auth/actions';
 
-const VerifyAuthentication = () => {
+const VerifyAuthentication: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Verify'>>();
 	const { navigate } = useNavigation();
 	const dispatch = useDispatch();

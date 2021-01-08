@@ -21,10 +21,7 @@ const CartsListItem: React.FC<{ cart: Cart }> = ({ cart }) => {
 		>
 			<View style={styles.main}>
 				<View style={styles.storeImagePlaceholder}>
-					<Image
-						style={{ height: '100%', width: '100%' }}
-						source={{ uri: store.avatarUrl }}
-					/>
+					<Image style={styles.storeImage} source={{ uri: store.avatarUrl }} />
 				</View>
 				<View>
 					<Text style={styles.cartStoreName}>{store?.name}</Text>
@@ -58,6 +55,10 @@ const styles = StyleSheet.create({
 		marginRight: 10,
 		backgroundColor: '#D3D3D3',
 		borderRadius: 30
+	},
+	storeImage: {
+		height: '100%',
+		width: '100%'
 	},
 	cartStoreName: {
 		fontSize: 18,

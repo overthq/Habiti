@@ -19,7 +19,7 @@ import SearchBar from '../components/explore/SearchBar';
 import ListEmpty from '../components/global/ListEmpty';
 import SearchResults from '../components/explore/SearchResults';
 
-const Explore = () => {
+const Explore: React.FC = () => {
 	// const [searchData, setSearchData] = React.useState<SearchQuery | undefined>();
 	const searchData = { stores, items };
 	const [searchBarFocused, setSearchBarFocused] = React.useState(false);
