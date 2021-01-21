@@ -1,5 +1,5 @@
 query ManagedStores($userId: uuid!) {
-	store_managers(where: { user_id: { _eq: $userId } }) {
+	store_managers(where: { manager_id: { _eq: $userId } }) {
 		store {
 			id
 			name
@@ -9,15 +9,17 @@ query ManagedStores($userId: uuid!) {
 }
 
 mutation AddManager($userId: uuid!, $storeId: uuid!) {
-	insert_store_managers(objects: [{ user_id: $userId, store_id: $storeId }]) {
+	insert_store_managers(
+		objects: [{ manager_id: $userId, store_id: $storeId }]
+	) {
 		affected_rows
 	}
 }
 
 mutation RemoveManager($userId: uuid!, $storeId: uuid!) {
-	remove_store_managers(
+	delete_store_managers(
 		where: {
-			and: [{ store_id: { _eq: $storeId } }, { user_id: { _eq: $userId } }]
+			_and: [{ store_id: { _eq: $storeId } }, { manager_id: { _eq: $userId } }]
 		}
 	) {
 		affected_rows
