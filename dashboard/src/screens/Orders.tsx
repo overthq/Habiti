@@ -1,12 +1,21 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
+import OrdersListItem from '../components/orders/OrdersListItem';
+import { useItemsQuery } from '../types/api';
 
-const Orders = () => {
+const Orders: React.FC = () => {
+	const [{ data }] = useItemsQuery();
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
 				<Text style={styles.title}>Orders</Text>
 			</View>
+			<FlatList
+				keyExtractor={i => i.id}
+				renderItem={({ item }) => <OrdersListItem order={item} />}
+				data={data?.orders}
+			/>
 		</View>
 	);
 };

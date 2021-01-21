@@ -1,0 +1,15 @@
+query Items {
+	items {
+		id
+		name
+		description
+	}
+}
+
+query Item($itemId: uuid!) {
+	item(where: { id: { _eq: $itemId } }) {
+		id
+		name
+		description
+	}
+}

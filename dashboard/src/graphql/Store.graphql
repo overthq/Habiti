@@ -1,0 +1,7 @@
+query Store {
+	stores {
+		id
+		name
+		short_name
+	}
+}
