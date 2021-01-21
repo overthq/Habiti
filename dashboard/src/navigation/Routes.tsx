@@ -25,6 +25,7 @@ import { useAppSelector } from '../redux/store';
 const AppStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
 
+// When urql Provider is set up, remember to pass in active storeId, to be used in Hasura, when querying stuff like items and orders.
 const Routes: React.FC = () => {
 	const accessToken = useAppSelector(({ auth }) => auth.accessToken);
 
