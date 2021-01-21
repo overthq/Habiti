@@ -62,7 +62,7 @@ const renderFormStep = (step: typeof steps[-1]) => {
 	);
 };
 
-const CreateStore = () => {
+const CreateStore: React.FC = () => {
 	const handleSubmit = () => {
 		console.log('Doing something');
 	};
@@ -95,8 +95,16 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1
 	},
-	title: {},
-	description: {}
+	title: {
+		fontSize: 36,
+		fontWeight: 'bold'
+	},
+	description: {
+		fontSize: 16
+	},
+	input: {
+		fontSize: 16
+	}
 });
 
 export default CreateStore;
