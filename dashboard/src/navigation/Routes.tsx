@@ -15,7 +15,7 @@ import { useAppSelector } from '../redux/store';
 //  - Authenticate
 //  - Register
 //  - Verify
-// - Main (Drawer/Tab Navigator)
+// - Main (Tab Navigator)
 //  - Overview
 //  	- Settings (user and app-level settings, also includes a button to switch the currently active store)
 //  - Orders
@@ -25,7 +25,7 @@ import { useAppSelector } from '../redux/store';
 const AppStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
 
-const Routes = () => {
+const Routes: React.FC = () => {
 	const accessToken = useAppSelector(({ auth }) => auth.accessToken);
 
 	return (
