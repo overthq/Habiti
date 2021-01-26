@@ -9,7 +9,10 @@ const initialState: CartsState = {
 	carts: []
 };
 
-const cartsReducer = (state = initialState, action: CartsActionTypes) => {
+const cartsReducer = (
+	state = initialState,
+	action: CartsActionTypes
+): CartsState => {
 	switch (action.type) {
 		case UPSERT_ITEM:
 			const cartsCopy = [...state.carts];
