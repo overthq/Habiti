@@ -10,7 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 // import { useStoresFollowedQuery } from '../../types/api';
 import { stores } from '../../api';
 
-const FollowedStores = () => {
+const FollowedStores: React.FC = () => {
 	// const [{ data }] = useStoresFollowedQuery({
 	// 	variables: { userId: 'b6cc8a11-7528-41eb-b082-77593797c978' }
 	// });

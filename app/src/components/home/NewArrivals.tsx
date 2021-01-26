@@ -3,7 +3,7 @@ import { View, Text, FlatList } from 'react-native';
 // import { useNewArrivalsQuery } from '../../types/api';
 import { items } from '../../api';
 
-const NewArrivals = () => {
+const NewArrivals: React.FC = () => {
 	// const oneDayAgo = React.useMemo(
 	// 	() => (new Date().getDate() - 2).toString(),
 	// 	[]

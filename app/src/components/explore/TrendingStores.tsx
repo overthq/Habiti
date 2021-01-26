@@ -1,43 +1,20 @@
 import React from 'react';
-import {
-	View,
-	Text,
-	Image,
-	TouchableOpacity,
-	FlatList,
-	StyleSheet
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
 import ListEmpty from '../global/ListEmpty';
 import { stores } from '../../api';
+import TrendingStoresItem from './TrendingStoresItem';
 
 const TrendingStores: React.FC = () => {
-	const { navigate } = useNavigation();
-
 	return (
-		<View style={{ marginTop: 8 }}>
+		<View style={styles.container}>
 			<Text style={styles.sectionHeader}>Trending Stores</Text>
 			<FlatList
 				horizontal
 				data={stores}
 				keyExtractor={({ id }) => id}
-				contentContainerStyle={{ paddingLeft: 20, height: 95 }}
-				renderItem={({ item }) => (
-					<TouchableOpacity
-						activeOpacity={0.8}
-						style={{ justifyContent: 'center', height: '100%' }}
-						onPress={() => navigate('Store', { storeId: item.id })}
-					>
-						<View key={item.id} style={styles.featuredStoreContainer}>
-							<Image
-								source={{ uri: item.avatarUrl }}
-								style={{ height: 70, width: 70, borderRadius: 35 }}
-							/>
-						</View>
-						<Text style={styles.storeName}>{item.name}</Text>
-					</TouchableOpacity>
-				)}
-				ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
+				contentContainerStyle={styles.list}
+				renderItem={({ item }) => <TrendingStoresItem store={item} />}
+				// ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
 				ListEmptyComponent={
 					<ListEmpty
 						title='No trending stores'
@@ -50,19 +27,12 @@ const TrendingStores: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-	featuredStoreContainer: {
-		backgroundColor: '#D3D3D3',
-		width: 70,
-		height: 70,
-		borderRadius: 35,
-		justifyContent: 'center',
-		alignItems: 'center'
+	container: {
+		marginTop: 8
 	},
-	storeName: {
-		fontWeight: '500',
-		fontSize: 15,
-		marginTop: 5,
-		textAlign: 'center'
+	list: {
+		paddingLeft: 20,
+		height: 95
 	},
 	sectionHeader: {
 		marginVertical: 5,
