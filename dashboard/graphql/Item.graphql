@@ -5,3 +5,12 @@ query Items {
 		description
 	}
 }
+
+mutation AddItem($itemObject: insert_items_objects_input!) {
+	insert_items(objects: [$itemObject]) {
+		affected_rows
+		returning {
+			id
+		}
+	}
+}

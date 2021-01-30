@@ -7,3 +7,12 @@ query Orders {
 		updated_at
 	}
 }
+
+mutation UpdateOrder($orderId: uuid!, $input: update_order_input!) {
+	update_order(where: { id: { _eq: $orderId } }, set: $input) {
+		affected_rows
+		returning {
+			id
+		}
+	}
+}

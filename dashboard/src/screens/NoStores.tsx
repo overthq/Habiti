@@ -7,7 +7,7 @@ const NoStores: React.FC = () => {
 
 	return (
 		<View style={styles.container}>
-			<Text>{`Looks like you don't have any stores. Create one?`}</Text>
+			<Text>{`Looks like you don't have access to any stores. Create one?`}</Text>
 			<TouchableOpacity onPress={() => navigate('CreateStore')}>
 				<Text>Create Store</Text>
 			</TouchableOpacity>
