@@ -1,8 +1,46 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import {
+	View,
+	Text,
+	TextInput,
+	TouchableOpacity,
+	StyleSheet
+} from 'react-native';
+import { Formik } from 'formik';
 
 const AddItem: React.FC = () => {
-	return <View style={styles.container}></View>;
+	const addItem = (values: Record<string, unknown>) => {
+		console.log(values);
+	};
+
+	return (
+		<View style={styles.container}>
+			<Formik
+				initialValues={{
+					name: '',
+					pricePerUnit: '',
+					unit: ''
+				}}
+				onSubmit={addItem}
+			>
+				{({ handleChange, handleBlur, handleSubmit }) => (
+					<View>
+						<TextInput
+							onChangeText={handleChange('name')}
+							onBlur={handleBlur('name')}
+						/>
+						<TextInput
+							onChangeText={handleChange('pricePerUnit')}
+							onBlur={handleBlur('pricePerUnit')}
+						/>
+						<TouchableOpacity onPress={() => handleSubmit()}>
+							<Text></Text>
+						</TouchableOpacity>
+					</View>
+				)}
+			</Formik>
+		</View>
+	);
 };
 
 const styles = StyleSheet.create({

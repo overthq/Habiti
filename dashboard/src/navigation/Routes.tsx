@@ -23,6 +23,7 @@ import { useAppSelector } from '../redux/store';
 //  - Store (store metadata and store-related settings)
 
 const AppStack = createStackNavigator();
+const ItemStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
 
 // When urql Provider is set up, remember to pass in active storeId, to be used in Hasura, when querying stuff like items and orders.
