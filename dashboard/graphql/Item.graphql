@@ -6,6 +6,14 @@ query Items {
 	}
 }
 
+query Item($itemId: uuid!) {
+	items(where: { id: { _eq: $itemId } }) {
+		id
+		name
+		description
+	}
+}
+
 mutation AddItem($itemObject: insert_items_objects_input!) {
 	insert_items(objects: [$itemObject]) {
 		affected_rows

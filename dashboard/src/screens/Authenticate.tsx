@@ -1,8 +1,32 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import {
+	View,
+	Text,
+	TextInput,
+	TouchableOpacity,
+	StyleSheet
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { authenticate } from '../utils/auth';
 
 const Authenticate: React.FC = () => {
-	return <View style={styles.container}></View>;
+	const [phone, setPhone] = React.useState('');
+	const { navigate } = useNavigation();
+
+	const handleSubmit = async () => {
+		await authenticate(phone);
+		navigate('Verify');
+	};
+
+	return (
+		<View style={styles.container}>
+			<Text>Authenticate</Text>
+			<TextInput value={phone} onChangeText={setPhone} />
+			<TouchableOpacity onPress={handleSubmit}>
+				<Text>Next</Text>
+			</TouchableOpacity>
+		</View>
+	);
 };
 
 const styles = StyleSheet.create({

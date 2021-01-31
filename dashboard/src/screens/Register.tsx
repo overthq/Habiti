@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
-const Register = () => {
+const Register: React.FC = () => {
 	return <View style={styles.container} />;
 };
 

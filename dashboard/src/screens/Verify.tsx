@@ -7,13 +7,26 @@ import {
 	StyleSheet
 } from 'react-native';
 
-const Verify = () => {
+// In the future: use a third party solution with SMS support
+const Verify: React.FC = () => {
 	const [code, setCode] = React.useState(new Array(5).fill(undefined));
 
+	const codeRef = React.useRef<(TextInput | null)[]>();
+
 	const handleFieldChange = (value: string, index: number) => {
-		const newCode = [...code];
-		newCode[index] = Number(value);
-		setCode(newCode);
+		if (codeRef.current) {
+			if (index < 5 && value) {
+				codeRef.current[index + 1]?.focus();
+			}
+
+			if (index === codeRef.current.length - 1) {
+				codeRef.current[index]?.blur();
+			}
+
+			const newCode = [...code];
+			newCode[index] = Number(value);
+			setCode(newCode);
+		}
 	};
 
 	const handleSubmit = () => {
@@ -22,10 +35,12 @@ const Verify = () => {
 
 	return (
 		<View style={styles.container}>
+			<Text>Your verification code</Text>
 			<View style={styles.inputs}>
 				{code.map((value, index) => (
 					<TextInput
 						key={index}
+						ref={el => codeRef.current?.push(el)}
 						style={styles.input}
 						value={value}
 						onChangeText={val => handleFieldChange(val, index)}
@@ -33,7 +48,7 @@ const Verify = () => {
 				))}
 			</View>
 			<TouchableOpacity onPress={handleSubmit}>
-				<Text></Text>
+				<Text>Verify</Text>
 			</TouchableOpacity>
 		</View>
 	);

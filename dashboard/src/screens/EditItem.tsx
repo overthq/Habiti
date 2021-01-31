@@ -6,7 +6,7 @@ const EditItem: React.FC = () => {
 	const { params } = useRoute<any>();
 
 	const { itemId } = params;
-	// On load, fetchthe item from the database, and use the returned data to pre-fill fields.
+	// On load, fetch the item from the database, and use the returned data to pre-fill fields.
 
 	const editItem = () => {
 		console.log(itemId);

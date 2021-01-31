@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet, FlatList } from 'react-native';
 import { Formik, useFormikContext } from 'formik';
+import { useCreateStoreMutation } from '../types/api';
 
 const steps = [
 	{
@@ -63,9 +64,10 @@ const renderFormStep = (step: typeof steps[-1]) => {
 };
 
 const CreateStore: React.FC = () => {
-	const handleSubmit = () => {
-		console.log('Doing something');
-	};
+	const [, createStore] = useCreateStoreMutation();
+
+	// const handleSubmit = (values) => {
+	// };
 
 	return (
 		<View style={styles.container}>
@@ -77,7 +79,10 @@ const CreateStore: React.FC = () => {
 					instagram: '',
 					website: ''
 				}}
-				onSubmit={handleSubmit}
+				onSubmit={values => {
+					createStore({ name: values.name, shortName: values.shortName });
+					console.log('Doing something');
+				}}
 			>
 				{() => (
 					<FlatList
