@@ -13,6 +13,12 @@ const Verify: React.FC = () => {
 
 	const codeRef = React.useRef<(TextInput | null)[]>();
 
+	const handleKeyPress = (key: string, index: number) => {
+		if (key === 'Backspace' && index !== 0) {
+			codeRef.current && codeRef.current[index - 1]?.focus();
+		}
+	};
+
 	const handleFieldChange = (value: string, index: number) => {
 		if (codeRef.current) {
 			if (index < 5 && value) {
@@ -44,6 +50,7 @@ const Verify: React.FC = () => {
 						style={styles.input}
 						value={value}
 						onChangeText={val => handleFieldChange(val, index)}
+						onKeyPress={e => handleKeyPress(e.nativeEvent.key, index)}
 					/>
 				))}
 			</View>
