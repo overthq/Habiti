@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const Settings = () => {
+const Settings: React.FC = () => {
 	// Settings for:
 	// - Theme
 	// - Active store

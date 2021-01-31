@@ -22,6 +22,10 @@ import { useAppSelector } from '../redux/store';
 //  - Items
 //  - Store (store metadata and store-related settings)
 
+// List of all screens that will be "modals"
+// - Settings
+// - Add/Edit Item (and most other form-based views)
+
 const AppStack = createStackNavigator();
 const ItemStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
