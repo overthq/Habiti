@@ -5,9 +5,14 @@ import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import thunk, { ThunkAction } from 'redux-thunk';
 
 import authReducer from './auth/reducer';
+import preferencesReducer from './preferences/reducer';
 
 const rootReducer = combineReducers({
-	auth: persistReducer({ key: 'auth', storage: AsyncStorage }, authReducer)
+	auth: persistReducer({ key: 'auth', storage: AsyncStorage }, authReducer),
+	preferences: persistReducer(
+		{ key: 'preferences', storage: AsyncStorage },
+		preferencesReducer
+	)
 });
 
 const middleware = applyMiddleware(thunk);
