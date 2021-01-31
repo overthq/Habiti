@@ -8,8 +8,8 @@ query Orders {
 	}
 }
 
-mutation UpdateOrder($orderId: uuid!, $input: update_order_input!) {
-	update_order(where: { id: { _eq: $orderId } }, set: $input) {
+mutation UpdateOrder($orderId: uuid!, $input: orders_set_input!) {
+	update_orders(where: { id: { _eq: $orderId } }, _set: $input) {
 		affected_rows
 		returning {
 			id

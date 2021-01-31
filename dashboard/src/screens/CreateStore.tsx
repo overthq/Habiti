@@ -80,7 +80,9 @@ const CreateStore: React.FC = () => {
 					website: ''
 				}}
 				onSubmit={values => {
-					createStore({ name: values.name, shortName: values.shortName });
+					createStore({
+						input: { name: values.name, short_name: values.shortName }
+					});
 					console.log('Doing something');
 				}}
 			>

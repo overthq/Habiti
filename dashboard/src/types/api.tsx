@@ -3081,6 +3081,37 @@ export type Uuid_Comparison_Exp = {
 	_nin?: Maybe<Array<Scalars['uuid']>>;
 };
 
+export type ItemsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ItemsQuery = { __typename?: 'query_root' } & {
+	items: Array<
+		{ __typename?: 'items' } & Pick<Items, 'id' | 'name' | 'description'>
+	>;
+};
+
+export type ItemQueryVariables = Exact<{
+	itemId: Scalars['uuid'];
+}>;
+
+export type ItemQuery = { __typename?: 'query_root' } & {
+	items: Array<
+		{ __typename?: 'items' } & Pick<Items, 'id' | 'name' | 'description'>
+	>;
+};
+
+export type AddItemMutationVariables = Exact<{
+	itemObject: Items_Insert_Input;
+}>;
+
+export type AddItemMutation = { __typename?: 'mutation_root' } & {
+	insert_items?: Maybe<
+		{ __typename?: 'items_mutation_response' } & Pick<
+			Items_Mutation_Response,
+			'affected_rows'
+		> & { returning: Array<{ __typename?: 'items' } & Pick<Items, 'id'>> }
+	>;
+};
+
 export type ManagedStoresQueryVariables = Exact<{
 	userId: Scalars['uuid'];
 }>;
@@ -3135,9 +3166,22 @@ export type OrdersQuery = { __typename?: 'query_root' } & {
 	>;
 };
 
+export type UpdateOrderMutationVariables = Exact<{
+	orderId: Scalars['uuid'];
+	input: Orders_Set_Input;
+}>;
+
+export type UpdateOrderMutation = { __typename?: 'mutation_root' } & {
+	update_orders?: Maybe<
+		{ __typename?: 'orders_mutation_response' } & Pick<
+			Orders_Mutation_Response,
+			'affected_rows'
+		> & { returning: Array<{ __typename?: 'orders' } & Pick<Orders, 'id'>> }
+	>;
+};
+
 export type CreateStoreMutationVariables = Exact<{
-	name: Scalars['String'];
-	shortName: Scalars['String'];
+	input: Stores_Insert_Input;
 }>;
 
 export type CreateStoreMutation = { __typename?: 'mutation_root' } & {
@@ -3149,6 +3193,52 @@ export type CreateStoreMutation = { __typename?: 'mutation_root' } & {
 	>;
 };
 
+export const ItemsDocument = gql`
+	query Items {
+		items {
+			id
+			name
+			description
+		}
+	}
+`;
+
+export function useItemsQuery(
+	options: Omit<Urql.UseQueryArgs<ItemsQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<ItemsQuery>({ query: ItemsDocument, ...options });
+}
+export const ItemDocument = gql`
+	query Item($itemId: uuid!) {
+		items(where: { id: { _eq: $itemId } }) {
+			id
+			name
+			description
+		}
+	}
+`;
+
+export function useItemQuery(
+	options: Omit<Urql.UseQueryArgs<ItemQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<ItemQuery>({ query: ItemDocument, ...options });
+}
+export const AddItemDocument = gql`
+	mutation AddItem($itemObject: items_insert_input!) {
+		insert_items(objects: [$itemObject]) {
+			affected_rows
+			returning {
+				id
+			}
+		}
+	}
+`;
+
+export function useAddItemMutation() {
+	return Urql.useMutation<AddItemMutation, AddItemMutationVariables>(
+		AddItemDocument
+	);
+}
 export const ManagedStoresDocument = gql`
 	query ManagedStores($userId: uuid!) {
 		store_managers(where: { manager_id: { _eq: $userId } }) {
@@ -3221,9 +3311,25 @@ export function useOrdersQuery(
 ) {
 	return Urql.useQuery<OrdersQuery>({ query: OrdersDocument, ...options });
 }
+export const UpdateOrderDocument = gql`
+	mutation UpdateOrder($orderId: uuid!, $input: orders_set_input!) {
+		update_orders(where: { id: { _eq: $orderId } }, _set: $input) {
+			affected_rows
+			returning {
+				id
+			}
+		}
+	}
+`;
+
+export function useUpdateOrderMutation() {
+	return Urql.useMutation<UpdateOrderMutation, UpdateOrderMutationVariables>(
+		UpdateOrderDocument
+	);
+}
 export const CreateStoreDocument = gql`
-	mutation CreateStore($name: String!, $shortName: String!) {
-		insert_stores(objects: [{ name: $name, short_name: $shortName }]) {
+	mutation CreateStore($input: stores_insert_input!) {
+		insert_stores(objects: [$input]) {
 			affected_rows
 			returning {
 				id

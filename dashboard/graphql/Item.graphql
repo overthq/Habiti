@@ -14,7 +14,7 @@ query Item($itemId: uuid!) {
 	}
 }
 
-mutation AddItem($itemObject: insert_items_objects_input!) {
+mutation AddItem($itemObject: items_insert_input!) {
 	insert_items(objects: [$itemObject]) {
 		affected_rows
 		returning {
