@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 
 const EditItem: React.FC = () => {
@@ -12,7 +12,13 @@ const EditItem: React.FC = () => {
 		console.log(itemId);
 	};
 
-	return <View style={styles.container}></View>;
+	return (
+		<View style={styles.container}>
+			<TouchableOpacity onPress={editItem}>
+				<Text>Update Item</Text>
+			</TouchableOpacity>
+		</View>
+	);
 };
 
 const styles = StyleSheet.create({
