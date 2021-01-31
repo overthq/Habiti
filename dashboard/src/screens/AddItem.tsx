@@ -34,7 +34,7 @@ const AddItem: React.FC = () => {
 							onBlur={handleBlur('pricePerUnit')}
 						/>
 						<TouchableOpacity onPress={() => handleSubmit()}>
-							<Text></Text>
+							<Text>Add Item</Text>
 						</TouchableOpacity>
 					</View>
 				)}

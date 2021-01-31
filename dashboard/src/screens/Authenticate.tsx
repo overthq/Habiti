@@ -15,7 +15,7 @@ const Authenticate: React.FC = () => {
 
 	const handleSubmit = async () => {
 		await authenticate(phone);
-		navigate('Verify');
+		navigate('Verify', { phone });
 	};
 
 	return (

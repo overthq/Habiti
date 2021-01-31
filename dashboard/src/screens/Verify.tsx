@@ -6,10 +6,18 @@ import {
 	TouchableOpacity,
 	StyleSheet
 } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { useRoute } from '@react-navigation/native';
+import { verifyCode } from '../utils/auth';
+import { login } from '../redux/auth/actions';
 
 // In the future: use a third party solution with SMS support
 const Verify: React.FC = () => {
 	const [code, setCode] = React.useState(new Array(5).fill(undefined));
+	const { params } = useRoute<any>();
+	const dispatch = useDispatch();
+
+	const { phone } = params;
 
 	const codeRef = React.useRef<(TextInput | null)[]>();
 
@@ -35,8 +43,14 @@ const Verify: React.FC = () => {
 		}
 	};
 
-	const handleSubmit = () => {
-		console.log(code.join('').toString());
+	const handleSubmit = async () => {
+		try {
+			const accessToken = await verifyCode({ phone, code: code.join('') });
+			dispatch(login(accessToken));
+			// navigate('Main'); (This should work automatically, because of the way the navigator is built).
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	return (
