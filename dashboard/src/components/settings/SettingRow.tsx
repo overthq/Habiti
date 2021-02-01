@@ -1,15 +1,27 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 interface SettingRowProps {
 	name: string;
-	screenTo?: string;
+	screenTo: string;
+	displayValue?: string;
 }
 
-const SettingRow: React.FC<SettingRowProps> = ({ name }) => {
+const SettingRow: React.FC<SettingRowProps> = ({
+	name,
+	screenTo,
+	displayValue
+}) => {
+	const { navigate } = useNavigation();
+
 	return (
-		<TouchableOpacity style={styles.container}>
+		<TouchableOpacity
+			style={styles.container}
+			onPress={() => navigate(screenTo)}
+		>
 			<Text>{name}</Text>
+			<View>{displayValue && <Text>{displayValue}</Text>}</View>
 		</TouchableOpacity>
 	);
 };

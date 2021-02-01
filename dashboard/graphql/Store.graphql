@@ -6,3 +6,10 @@ mutation CreateStore($input: stores_insert_input!) {
 		}
 	}
 }
+
+query Store($storeId: uuid!) {
+	stores(where: { id: { _eq: $storeId } }) {
+		id
+		name
+	}
+}
