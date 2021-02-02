@@ -5,10 +5,6 @@ import { useAppSelector } from '../redux/store';
 import { useStoreQuery } from '../types/api';
 
 const Settings: React.FC = () => {
-	// Settings for:
-	// - Theme
-	// - Active store
-
 	const preferences = useAppSelector(({ preferences }) => preferences);
 
 	const [{ data }] = useStoreQuery({
@@ -22,6 +18,11 @@ const Settings: React.FC = () => {
 			name: 'Active Store',
 			screenTo: 'SettingsActiveStore',
 			displayValue: store.name
+		},
+		{
+			name: 'Theme',
+			screenTo: 'SettingsTheme',
+			displayValue: preferences.theme === 'light' ? 'Light' : 'dark' // Or just capitalize the string
 		}
 	];
 
