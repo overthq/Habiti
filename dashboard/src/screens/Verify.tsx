@@ -22,8 +22,8 @@ const Verify: React.FC = () => {
 	const codeRef = React.useRef<(TextInput | null)[]>();
 
 	const handleKeyPress = (key: string, index: number) => {
-		if (key === 'Backspace' && index !== 0) {
-			codeRef.current && codeRef.current[index - 1]?.focus();
+		if (key === 'Backspace' && index !== 0 && codeRef.current) {
+			codeRef.current[index - 1]?.focus();
 		}
 	};
 
@@ -47,6 +47,9 @@ const Verify: React.FC = () => {
 		try {
 			const accessToken = await verifyCode({ phone, code: code.join('') });
 			dispatch(login(accessToken));
+			// Also fetch managed stores, and dispatch an action to set them BEFORE navigating to the main screen.
+			// It would be wise to use a loading indicator while this is happening, however, awaits do not work on the dispatch function for some reason.
+
 			// navigate('Main'); (This should work automatically, because of the way the navigator is built).
 		} catch (error) {
 			console.log(error);

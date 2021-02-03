@@ -43,6 +43,8 @@ const ItemsStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
 
 // When urql Provider is set up, remember to pass in active storeId, to be used in Hasura, when querying stuff like items and orders.
+// TODO: After confirming that this structure works, decouple it to make it more understandable.
+// It should be noted that the nesting of some navigators is intended to make sure that modals work as intended.
 const Routes: React.FC = () => {
 	const accessToken = useAppSelector(({ auth }) => auth.accessToken);
 

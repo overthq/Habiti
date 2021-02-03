@@ -7,7 +7,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { store, persistor } from './src/redux/store';
 import Routes from './src/navigation/Routes';
 
-const App = () => (
+const App: React.FC = () => (
 	<Provider store={store}>
 		<PersistGate persistor={persistor}>
 			<SafeAreaProvider>
