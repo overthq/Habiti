@@ -31,7 +31,7 @@ const StoreItems: React.FC<StoreItemsProps> = ({ storeId, header }) => {
 			ListHeaderComponent={header}
 			showsVerticalScrollIndicator={false}
 			renderItem={({ item }) => (
-				<View style={{ flex: 1, flexDirection: 'column' }}>
+				<View style={{ flex: 1 }}>
 					<TouchableOpacity
 						key={item.id}
 						style={{ flex: 1, margin: 10 }}
