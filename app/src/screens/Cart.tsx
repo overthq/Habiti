@@ -9,7 +9,7 @@ import {
 } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 
-const Cart = () => {
+const Cart: React.FC = () => {
 	const { navigate } = useNavigation();
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
 	const { carts } = React.useContext(CartsContext);

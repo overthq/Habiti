@@ -6,50 +6,68 @@ import {
 	FlatList,
 	StyleSheet
 } from 'react-native';
-import { useUserOrdersQuery, OrderStatus } from '../../types/api';
+// import { useUserOrdersQuery } from '../../types/api';
 import textStyles from '../../styles/text';
+import { orders, OrderStatus, items } from '../../api';
 
 const getStatusColor = (status: OrderStatus) => {
 	switch (status) {
 		case OrderStatus.Pending:
-			return '#F4CF0B';
+			return '#ba9b03';
 		case OrderStatus.Processing:
 			return '#C4C4C4';
 		case OrderStatus.Fulfilled:
-			return '#37DB0F';
+			return '#7dba03';
 	}
 };
 
 const RecentOrders = () => {
-	const [{ data }] = useUserOrdersQuery();
+	// const [{ data }] = useUserOrdersQuery();
 
 	return (
 		<View>
-			<Text style={[textStyles.sectionHeader, { marginLeft: 20 }]}>
+			<Text style={[textStyles.sectionHeader, { marginLeft: 16 }]}>
 				Recent Orders
 			</Text>
 			<FlatList
-				data={data?.orders}
+				data={orders}
 				keyExtractor={({ id }) => id}
 				horizontal
 				showsHorizontalScrollIndicator={false}
-				renderItem={({ item }) => (
-					<TouchableOpacity activeOpacity={0.8} key={item.id}>
-						<View style={styles.orderContainer}>
-							<View style={styles.storeAvatar}></View>
-							<View style={styles.orderInformation}>
-								<Text>{item.order_items[0].item.name}</Text>
-								<Text>
-									{item.order_items.length > 1 &&
-										` (and ${item.order_items.length} others)`}
-								</Text>
-								<Text style={{ color: getStatusColor(item.status) }}>
-									{item.status}
-								</Text>
+				renderItem={({ item }) => {
+					const nameText = items.find(i => item.orderItems[0].itemId === i.id)
+						?.name;
+					return (
+						<TouchableOpacity
+							activeOpacity={0.8}
+							key={item.id}
+							style={{ marginLeft: 16 }}
+						>
+							<View style={styles.orderContainer}>
+								<View style={styles.storeAvatar} />
+								<View style={styles.orderInformation}>
+									<Text style={{ fontSize: 16 }}>
+										{nameText}
+										{item.orderItems.length > 1 &&
+											` and ${item.orderItems.length - 1} ${
+												item.orderItems.length - 1 > 1 ? 'others' : 'other'
+											}`}
+									</Text>
+									<Text
+										style={{
+											fontSize: 14,
+											fontWeight: '500',
+											color: getStatusColor(item.status)
+										}}
+									>
+										{item.status}
+									</Text>
+								</View>
 							</View>
-						</View>
-					</TouchableOpacity>
-				)}
+						</TouchableOpacity>
+					);
+				}}
+				ListFooterComponent={<View style={{ width: 16 }} />}
 				ListEmptyComponent={
 					<Text style={styles.emptyText}>
 						No recent orders to view. Order some items to view them here
@@ -62,7 +80,8 @@ const RecentOrders = () => {
 
 const styles = StyleSheet.create({
 	orderContainer: {
-		flexDirection: 'row'
+		flexDirection: 'row',
+		alignItems: 'center'
 	},
 	storeAvatar: {
 		height: 50,

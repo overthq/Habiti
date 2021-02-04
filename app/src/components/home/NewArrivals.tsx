@@ -1,20 +1,21 @@
 import React from 'react';
 import { View, Text, FlatList } from 'react-native';
-import { useNewArrivalsQuery } from '../../types/api';
+// import { useNewArrivalsQuery } from '../../types/api';
+import { items } from '../../api';
 
-const NewArrivals = () => {
-	const oneDayAgo = React.useMemo(
-		() => (new Date().getDate() - 2).toString(),
-		[]
-	);
+const NewArrivals: React.FC = () => {
+	// const oneDayAgo = React.useMemo(
+	// 	() => (new Date().getDate() - 2).toString(),
+	// 	[]
+	// );
 
-	const [{ data }] = useNewArrivalsQuery({
-		variables: { oneDayAgo, storeIds: [] }
-	});
+	// const [{ data }] = useNewArrivalsQuery({
+	// 	variables: { oneDayAgo, storeIds: [] }
+	// });
 
 	return (
 		<FlatList
-			data={data?.items}
+			data={items}
 			renderItem={({ item }) => (
 				<View>
 					<View />

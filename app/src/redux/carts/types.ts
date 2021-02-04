@@ -1,17 +1,16 @@
 export const UPSERT_ITEM = 'UPSERT_ITEM';
 export const REMOVE_ITEM = 'REMOVE_ITEM';
 
-// storeId: {
-// 	itemId: quantity,
-// 	anotherItemId: anotherItemQuantity
-// }
+interface Cart {
+	storeId: string;
+	items: {
+		itemId: string;
+		quantity: number;
+	}[];
+}
 
 export interface CartsState {
-	carts: {
-		[key: string]: {
-			[key: string]: number;
-		};
-	};
+	carts: Cart[];
 }
 
 interface UpsertItemAction {

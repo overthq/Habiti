@@ -2,126 +2,69 @@ import React from 'react';
 import {
 	View,
 	StyleSheet,
-	FlatList,
 	ScrollView,
-	Image,
 	Text,
-	TextInput,
-	TouchableOpacity,
-	Dimensions,
-	Alert,
 	LayoutAnimation
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import { useStoresQuery, SearchQuery, SearchDocument } from '../types/api';
-import { Icon } from '../components/icons';
-import { useClient } from 'urql';
+// import { useStoresQuery, SearchQuery, SearchDocument } from '../types/api';
+// import { useClient } from 'urql';
+import { stores, items } from '../api';
+import SearchBar from '../components/explore/SearchBar';
+import SearchResults from '../components/explore/SearchResults';
+import TrendingStores from '../components/explore/TrendingStores';
 
-const { width } = Dimensions.get('window');
-
-const Explore = () => {
-	const [searchData, setSearchData] = React.useState<SearchQuery | undefined>();
+const Explore: React.FC = () => {
+	// const [searchData, setSearchData] = React.useState<SearchQuery | undefined>();
+	const searchData = { stores, items };
 	const [searchBarFocused, setSearchBarFocused] = React.useState(false);
-	const [{ data }] = useStoresQuery();
-	const { navigate, setOptions } = useNavigation();
-	const client = useClient();
-
-	React.useLayoutEffect(() => {
-		setOptions({
-			header: (
-				<View style={styles.header}>
-					<Text style={styles.title}>Explore</Text>
-				</View>
-			)
-		});
-	}, []);
+	// const [{ data }] = useStoresQuery();
+	// const client = useClient();
 
 	React.useEffect(() => {
 		LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
 	}, [searchBarFocused]);
 
 	const handleSearch = async (searchTerm: string) => {
-		const { data, error } = await client
-			.query<SearchQuery>(SearchDocument, { searchTerm: `%${searchTerm}%` })
-			.toPromise();
+		console.log(searchTerm);
+		// const { data, error } = await client
+		// 	.query<SearchQuery>(SearchDocument, { searchTerm: `%${searchTerm}%` })
+		// 	.toPromise();
 
-		setSearchData(data);
+		// setSearchData(data);
 
-		if (error) Alert.alert(error.message);
+		// if (error) Alert.alert(error.message);
 	};
 
 	return (
-		<ScrollView
-			style={{ backgroundColor: '#FFFFFF' }}
-			showsVerticalScrollIndicator={false}
-		>
-			<SafeAreaView style={styles.container}>
-				<View style={styles.searchBar}>
-					<Icon name='search' color='#505050' size={20} />
-					<TextInput
-						placeholder='Search stores and items'
-						onChangeText={handleSearch}
-						onFocus={() => setSearchBarFocused(true)}
-						onBlur={() => setSearchBarFocused(false)}
-						style={{ fontSize: 16, paddingLeft: 5 }}
-						autoCorrect={false}
-						autoCapitalize='none'
-					/>
+		<SafeAreaView style={styles.container}>
+			<ScrollView
+				style={{ backgroundColor: '#FFFFFF' }}
+				showsVerticalScrollIndicator={false}
+				bounces={false}
+				keyboardShouldPersistTaps='handled'
+			>
+				<View style={styles.header}>
+					<Text style={styles.title}>Explore</Text>
 				</View>
+				<SearchBar
+					onSearchTermChange={handleSearch}
+					isFocused={searchBarFocused}
+					onFocus={() => setSearchBarFocused(true)}
+					cancel={() => setSearchBarFocused(false)}
+				/>
 				{searchBarFocused ? (
-					<View>
-						<Text>{JSON.stringify(searchData)}</Text>
-					</View>
+					<SearchResults searchData={searchData} />
 				) : (
 					<>
-						<View style={{ marginTop: 8 }}>
-							<Text style={styles.sectionHeader}>Trending Stores</Text>
-							<FlatList
-								horizontal
-								data={data?.stores}
-								keyExtractor={({ id }) => id}
-								contentContainerStyle={{ paddingLeft: 20, height: 95 }}
-								renderItem={({ item }) => (
-									<TouchableOpacity
-										activeOpacity={0.8}
-										style={{ justifyContent: 'center', height: '100%' }}
-										onPress={() => navigate('Store', { storeId: item.id })}
-									>
-										<View key={item.id} style={styles.featuredStoreContainer}>
-											<Image
-												source={{
-													uri: `https://twitter.com/allbirds/profile_image?size=original`
-												}}
-												style={{ height: 70, width: 70, borderRadius: 35 }}
-											/>
-										</View>
-										<Text style={styles.storeName}>{item.name}</Text>
-									</TouchableOpacity>
-								)}
-								ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
-								ListEmptyComponent={
-									<View style={{ height: '100%', width: '100%' }}>
-										<Text
-											style={{
-												alignSelf: 'center',
-												marginHorizontal: 'auto',
-												fontSize: 16
-											}}
-										>
-											There are no stores trending currently.
-										</Text>
-									</View>
-								}
-							/>
-						</View>
+						<TrendingStores />
 						<View style={{ marginTop: 16 }}>
 							<Text style={styles.sectionHeader}>Featured Items</Text>
 						</View>
 					</>
 				)}
-			</SafeAreaView>
-		</ScrollView>
+			</ScrollView>
+		</SafeAreaView>
 	);
 };
 
@@ -148,33 +91,10 @@ const styles = StyleSheet.create({
 		color: '#505050',
 		paddingLeft: 20
 	},
-	searchBar: {
-		alignSelf: 'center',
-		borderRadius: 10,
-		backgroundColor: '#D3D3D3',
-		flexDirection: 'row',
-		padding: 10,
-		width: width - 40,
-		height: 40
-	},
-	featuredStoreContainer: {
-		backgroundColor: '#D3D3D3',
-		width: 70,
-		height: 70,
-		borderRadius: 35,
-		justifyContent: 'center',
-		alignItems: 'center'
-	},
 	storeImageContainer: {
 		flexDirection: 'column',
 		alignItems: 'center',
 		marginLeft: 20
-	},
-	storeName: {
-		fontWeight: '500',
-		fontSize: 15,
-		marginTop: 5,
-		textAlign: 'center'
 	}
 });
 

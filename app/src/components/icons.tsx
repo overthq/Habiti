@@ -1,4 +1,5 @@
 import React from 'react';
+import { StyleProp, ViewStyle } from 'react-native';
 import { Svg, Circle, Rect, Path } from 'react-native-svg';
 
 const icons = {
@@ -48,6 +49,7 @@ interface IconProps {
 	size?: number;
 	color?: string;
 	name: keyof typeof icons;
+	style?: StyleProp<ViewStyle>;
 }
 
 export type IconType = keyof typeof icons;
@@ -55,7 +57,8 @@ export type IconType = keyof typeof icons;
 export const Icon: React.FC<IconProps> = ({
 	size = 24,
 	color = '#000000',
-	name
+	name,
+	style
 }) => (
 	<Svg
 		width={size}
@@ -66,6 +69,7 @@ export const Icon: React.FC<IconProps> = ({
 		strokeWidth={2}
 		strokeLinecap='round'
 		strokeLinejoin='round'
+		style={style}
 	>
 		{icons[name]}
 	</Svg>

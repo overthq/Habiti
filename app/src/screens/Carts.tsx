@@ -1,19 +1,20 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CartsContext } from '../contexts/CartsContext';
 import CartsListItem from '../components/carts/CartsListItem';
 import ListEmpty from '../components/global/ListEmpty';
 import { useNavigation } from '@react-navigation/native';
+import { useAppSelector } from '../redux/store';
 
 const Carts = () => {
-	const { carts } = React.useContext(CartsContext);
+	const carts = useAppSelector(({ carts }) => carts.carts);
 	const { navigate } = useNavigation();
 
 	return (
 		<SafeAreaView style={styles.container}>
 			<FlatList
-				keyExtractor={cart => cart.storeId}
+				bounces={false}
+				keyExtractor={c => c.storeId}
 				ListHeaderComponent={
 					<View style={styles.header}>
 						<Text style={styles.title}>Carts</Text>
@@ -25,8 +26,10 @@ const Carts = () => {
 					<ListEmpty
 						title='Empty cart'
 						description={`Looks like your cart is empty. Let's change that.`}
-						ctaText='Discover new stores'
-						ctaAction={() => navigate('Explore')}
+						cta={{
+							text: 'Discover new stores',
+							action: () => navigate('Explore')
+						}}
 					/>
 				}
 				ItemSeparatorComponent={() => <View style={styles.separator} />}

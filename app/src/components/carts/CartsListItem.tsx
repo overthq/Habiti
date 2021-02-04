@@ -1,15 +1,17 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useStoreQuery } from '../../types/api';
+// import { useStoreQuery } from '../../types/api';
 import { Cart } from '../../contexts/CartsContext';
 import { Icon } from '../icons';
+import { stores } from '../../api';
 
 const CartsListItem: React.FC<{ cart: Cart }> = ({ cart }) => {
-	const [{ data }] = useStoreQuery({ variables: { storeId: cart.storeId } });
+	// const [{ data }] = useStoreQuery({ variables: { storeId: cart.storeId } });
 	const { navigate } = useNavigation();
 
-	const store = data?.stores[0];
+	const store = stores.find(({ id }) => cart.storeId === id);
+	if (!store) throw new Error('Not specified');
 
 	return (
 		<TouchableOpacity
@@ -17,8 +19,10 @@ const CartsListItem: React.FC<{ cart: Cart }> = ({ cart }) => {
 			activeOpacity={0.8}
 			style={styles.container}
 		>
-			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-				<View style={styles.storeImagePlaceholder} />
+			<View style={styles.main}>
+				<View style={styles.storeImagePlaceholder}>
+					<Image style={styles.storeImage} source={{ uri: store.avatarUrl }} />
+				</View>
 				<View>
 					<Text style={styles.cartStoreName}>{store?.name}</Text>
 					<Text style={styles.cartItemCount}>
@@ -40,12 +44,21 @@ const styles = StyleSheet.create({
 		paddingVertical: 10,
 		paddingHorizontal: 20
 	},
+	main: {
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
 	storeImagePlaceholder: {
 		width: 60,
 		height: 60,
+		overflow: 'hidden',
 		marginRight: 10,
 		backgroundColor: '#D3D3D3',
 		borderRadius: 30
+	},
+	storeImage: {
+		height: '100%',
+		width: '100%'
 	},
 	cartStoreName: {
 		fontSize: 18,

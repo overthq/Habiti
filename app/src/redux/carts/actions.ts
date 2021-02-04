@@ -36,16 +36,19 @@ export const removeItemFromCart = ({
 
 	const { carts } = getState();
 
+	const associatedCart = carts.carts.find(cart => cart.storeId === storeId);
+	const associatedItem = associatedCart?.items.find(
+		item => item.itemId === itemId
+	);
+
 	// Remove this tautology.
-	if (carts.carts[storeId]) {
-		if (carts.carts[storeId][itemId]) {
-			dispatch({
-				type: REMOVE_ITEM,
-				payload: {
-					storeId,
-					itemId
-				}
-			});
-		}
+	if (associatedCart && associatedItem) {
+		dispatch({
+			type: REMOVE_ITEM,
+			payload: {
+				storeId,
+				itemId
+			}
+		});
 	}
 };

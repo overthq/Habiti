@@ -4,26 +4,25 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 interface ListEmptyProps {
 	title: string;
 	description: string;
-	ctaText: string;
-	ctaAction(): void;
+	cta?: {
+		text: string;
+		action(): void;
+	};
 }
 
-const ListEmpty: React.FC<ListEmptyProps> = ({
-	title,
-	description,
-	ctaText,
-	ctaAction
-}) => (
+const ListEmpty: React.FC<ListEmptyProps> = ({ title, description, cta }) => (
 	<View style={styles.container}>
 		<Text style={styles.title}>{title}</Text>
 		<Text style={styles.description}>{description}</Text>
-		<TouchableOpacity
-			activeOpacity={0.8}
-			style={styles.button}
-			onPress={ctaAction}
-		>
-			<Text style={styles.buttonText}>{ctaText}</Text>
-		</TouchableOpacity>
+		{cta && (
+			<TouchableOpacity
+				activeOpacity={0.8}
+				style={styles.button}
+				onPress={cta.action}
+			>
+				<Text style={styles.buttonText}>{cta.text}</Text>
+			</TouchableOpacity>
+		)}
 	</View>
 );
 

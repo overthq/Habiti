@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useDispatch } from 'react-redux';
 import { useItemQuery } from '../types/api';
 import { Icon } from '../components/icons';
-import { CartsContext } from '../contexts/CartsContext';
+import { upsertItemToCart, removeItemFromCart } from '../redux/carts/actions';
 
 interface CartItemProps {
 	itemId: string;
@@ -10,8 +11,8 @@ interface CartItemProps {
 }
 
 const CartItem: React.FC<CartItemProps> = ({ itemId, quantity }) => {
+	const dispatch = useDispatch();
 	const [{ data }] = useItemQuery({ variables: { itemId } });
-	const { addItemToCart, removeItemFromCart } = React.useContext(CartsContext);
 
 	const item = data?.items[0];
 
@@ -25,14 +26,14 @@ const CartItem: React.FC<CartItemProps> = ({ itemId, quantity }) => {
 				<TouchableOpacity
 					style={{ marginRight: 7.5 }}
 					onPress={() => {
-						if (quantity !== 0) {
-							if (item?.store_id) {
-								addItemToCart({
+						if (quantity !== 0 && item?.store_id) {
+							dispatch(
+								upsertItemToCart({
 									storeId: item.store_id,
 									itemId,
 									quantity: quantity - 1
-								});
-							}
+								})
+							);
 						}
 					}}
 				>
@@ -45,11 +46,13 @@ const CartItem: React.FC<CartItemProps> = ({ itemId, quantity }) => {
 					style={{ marginLeft: 7.5 }}
 					onPress={() => {
 						if (item?.store_id) {
-							addItemToCart({
-								storeId: item.store_id,
-								itemId,
-								quantity: quantity + 1
-							});
+							dispatch(
+								upsertItemToCart({
+									storeId: item.store_id,
+									itemId,
+									quantity: quantity + 1
+								})
+							);
 						}
 					}}
 				>
@@ -59,7 +62,7 @@ const CartItem: React.FC<CartItemProps> = ({ itemId, quantity }) => {
 					style={{ marginLeft: 7.5 }}
 					onPress={() => {
 						if (item?.store_id) {
-							removeItemFromCart(item.store_id, itemId);
+							dispatch(removeItemFromCart({ storeId: item.store_id, itemId }));
 						}
 					}}
 				>
