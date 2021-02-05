@@ -23,6 +23,7 @@ Before starting the installation process, the following are required:
 - [Node.js](https://nodejs.org) (version 8 or higher).
 - [Yarn](https://yarnpkg.com) (version 1.22)
 - [PostgresQL](https://postgresql.com)
+- [Docker](https://docker.com)
 
 ### Installation and Setup
 
@@ -50,13 +51,10 @@ All forms of (positive) contribution are welcome to Market. Be sure to check out
 Market is a TypeScript-based application. It is built with popular JS libraries/frameworks like React, React Native and Express. Here's what the stack looks like.
 
 - Front-End
-  - Mobile App
-    - Framework: [React Native](https://facebook.github.io/react-native)
-  - Dashboard
-    - Library: [React](https://facebook.github.io/react) based on [Create React App](https://facebook.github.io/create-react-app)
+	- Framework: [React Native](https://facebook.github.io/react-native)
 - Back-End
-  - Framework(s): [Express](https://expressjs.com) and [GraphQL](https://graphql.org)
   - Database: [PostgresQL](https://postgresql.com)
+  - Server: [Hasura](https://hasura.io)
 
 # License
 
