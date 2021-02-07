@@ -10,10 +10,13 @@ import { useDispatch } from 'react-redux';
 import { useRoute } from '@react-navigation/native';
 import { verifyCode } from '../utils/auth';
 import { login } from '../redux/auth/actions';
+import Button from '../components/global/Button';
+import authStyles from '../styles/auth';
 
 // In the future: use a third party solution with SMS support
 const Verify: React.FC = () => {
 	const [code, setCode] = React.useState(new Array(5).fill(undefined));
+	const [loading, setLoading] = React.useState(false);
 	const { params } = useRoute<any>();
 	const dispatch = useDispatch();
 
@@ -45,8 +48,10 @@ const Verify: React.FC = () => {
 
 	const handleSubmit = async () => {
 		try {
+			setLoading(true);
 			const accessToken = await verifyCode({ phone, code: code.join('') });
 			dispatch(login(accessToken));
+			setLoading(false);
 			// Also fetch managed stores, and dispatch an action to set them BEFORE navigating to the main screen.
 			// It would be wise to use a loading indicator while this is happening, however, awaits do not work on the dispatch function for some reason.
 
@@ -57,8 +62,8 @@ const Verify: React.FC = () => {
 	};
 
 	return (
-		<View style={styles.container}>
-			<Text>Your verification code</Text>
+		<View style={authStyles.container}>
+			<Text style={authStyles.title}>Your verification code</Text>
 			<View style={styles.inputs}>
 				{code.map((value, index) => (
 					<TextInput
@@ -71,9 +76,10 @@ const Verify: React.FC = () => {
 					/>
 				))}
 			</View>
-			<TouchableOpacity onPress={handleSubmit}>
-				<Text>Verify</Text>
+			<TouchableOpacity onPress={handleSubmit} style={authStyles.button}>
+				<Text style={authStyles.buttonText}>Verify</Text>
 			</TouchableOpacity>
+			<Button onPress={handleSubmit} text='Verify' loading={loading} />
 		</View>
 	);
 };
@@ -92,7 +98,8 @@ const styles = StyleSheet.create({
 		height: 50,
 		width: 50,
 		borderRadius: 8,
-		backgroundColor: '#505050'
+		borderWidth: 2,
+		borderColor: '#D3D3D3'
 	}
 });
 

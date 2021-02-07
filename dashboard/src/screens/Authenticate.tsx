@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { authenticate } from '../utils/auth';
+import authStyles from '../styles/auth';
 
 const Authenticate: React.FC = () => {
 	const [phone, setPhone] = React.useState('');
@@ -19,11 +20,19 @@ const Authenticate: React.FC = () => {
 	};
 
 	return (
-		<View style={styles.container}>
+		<View style={authStyles.container}>
 			<Text>Authenticate</Text>
-			<TextInput value={phone} onChangeText={setPhone} />
-			<TouchableOpacity onPress={handleSubmit}>
-				<Text>Next</Text>
+			<View>
+				<Text style={authStyles.title}>Phone number</Text>
+				<TextInput
+					style={authStyles.input}
+					placeholder='08012345678'
+					value={phone}
+					onChangeText={setPhone}
+				/>
+			</View>
+			<TouchableOpacity style={authStyles.button} onPress={handleSubmit}>
+				<Text style={authStyles.buttonText}>Next</Text>
 			</TouchableOpacity>
 		</View>
 	);

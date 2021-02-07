@@ -14,6 +14,9 @@ import Authenticate from '../screens/Authenticate';
 import Verify from '../screens/Verify';
 import { useAppSelector } from '../redux/store';
 
+// TODO: Complete refactoring of this component, after confirmation that it even works as is.
+// Experimentation with screen presets for making modals work on a per-screen basis, instead of a per-navigator basis.
+
 // Navigation Structure
 // - Auth (Stack Navigator)
 //  - Authenticate
@@ -50,7 +53,7 @@ const Routes: React.FC = () => {
 
 	return (
 		<NavigationContainer>
-			<AppStack.Navigator>
+			<AppStack.Navigator headerMode='none'>
 				{accessToken ? (
 					<AppStack.Screen name='Main'>
 						{() => (
@@ -90,9 +93,9 @@ const Routes: React.FC = () => {
 					</AppStack.Screen>
 				) : (
 					<>
-						<AppStack.Screen name='Verify' component={Verify} />
-						<AppStack.Screen name='Authenticate' component={Authenticate} />
 						<AppStack.Screen name='Register' component={Register} />
+						<AppStack.Screen name='Authenticate' component={Authenticate} />
+						<AppStack.Screen name='Verify' component={Verify} />
 					</>
 				)}
 			</AppStack.Navigator>

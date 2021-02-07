@@ -46,7 +46,8 @@ const AddItem: React.FC = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1
-	}
+	},
+	input: {}
 });
 
 export default AddItem;
