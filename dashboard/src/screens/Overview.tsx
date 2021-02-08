@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 // What should be on the Overview screen for stores?
 // Charts (items sold per day for x past number of days etc).
@@ -13,12 +14,13 @@ import { View, Text, StyleSheet } from 'react-native';
 // Focus on simple "in the past day" aggregates for now.
 
 const Overview: React.FC = () => {
+	const { navigate } = useNavigation();
+
 	return (
 		<View style={styles.container}>
-			<Text>Overview</Text>
-			<Text>
-				This screen will contain general information for store managers
-			</Text>
+			<TouchableOpacity onPress={() => navigate('Settings')}>
+				<Text>Open Settings</Text>
+			</TouchableOpacity>
 		</View>
 	);
 };

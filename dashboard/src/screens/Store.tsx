@@ -16,8 +16,8 @@ const Store = () => {
 		<View style={styles.container}>
 			<TouchableOpacity>
 				{/* Add store image here */}
-				<Text>{store.name}</Text>
-				<Text>@{store.short_name}</Text>
+				<Text>{store?.name}</Text>
+				{/* <Text>@{store?.short_name}</Text> */}
 			</TouchableOpacity>
 		</View>
 	);

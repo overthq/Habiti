@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet } from 'react-native';
 import OrdersListItem from '../components/orders/OrdersListItem';
 import { useOrdersQuery } from '../types/api';
 
@@ -8,9 +8,9 @@ const Orders: React.FC = () => {
 
 	return (
 		<View style={styles.container}>
-			<View style={styles.header}>
+			{/*<View style={styles.header}>
 				<Text style={styles.title}>Orders</Text>
-			</View>
+			</View> */}
 			<FlatList
 				keyExtractor={i => i.id}
 				renderItem={({ item }) => <OrdersListItem order={item} />}

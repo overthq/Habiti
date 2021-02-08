@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet } from 'react-native';
 import SettingRow from '../components/settings/SettingRow';
 import { useAppSelector } from '../redux/store';
 import { useStoreQuery } from '../types/api';
@@ -17,7 +17,7 @@ const Settings: React.FC = () => {
 		{
 			name: 'Active Store',
 			screenTo: 'SettingsActiveStore',
-			displayValue: store.name
+			displayValue: store?.name
 		},
 		{
 			name: 'Theme',
@@ -28,9 +28,6 @@ const Settings: React.FC = () => {
 
 	return (
 		<View style={styles.container}>
-			<View>
-				<Text>Settings</Text>
-			</View>
 			<FlatList
 				data={settings}
 				keyExtractor={s => s.name}

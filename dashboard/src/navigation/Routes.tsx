@@ -67,7 +67,20 @@ const RootNavigator: React.FC = () => {
 						<MainTab.Navigator>
 							<MainTab.Screen name='Overview'>
 								{() => (
-									<OverviewStack.Navigator mode='modal'>
+									<OverviewStack.Navigator
+										mode='modal'
+										screenOptions={({ navigation, route }) => ({
+											gestureEnabled: true,
+											cardOverlayEnabled: true,
+											// cardStyle: { backgroundColor: 'transparent' },
+											headerStatusBarHeight:
+												navigation.dangerouslyGetState().routes.indexOf(route) >
+												0
+													? 0
+													: undefined,
+											...TransitionPresets.ModalPresentationIOS
+										})}
+									>
 										<OverviewStack.Screen name='Home' component={Overview} />
 										<OverviewStack.Screen
 											name='Settings'
@@ -79,7 +92,13 @@ const RootNavigator: React.FC = () => {
 							<MainTab.Screen name='Orders'>
 								{() => (
 									<OrdersStack.Navigator>
-										<OrdersStack.Screen name='OrdersList' component={Orders} />
+										<OrdersStack.Screen
+											name='OrdersList'
+											component={Orders}
+											options={{
+												title: 'Orders'
+											}}
+										/>
 										<OrdersStack.Screen name='Order' component={Order} />
 									</OrdersStack.Navigator>
 								)}
