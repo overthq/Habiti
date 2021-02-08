@@ -26,10 +26,12 @@ const AddItem: React.FC = () => {
 				{({ handleChange, handleBlur, handleSubmit }) => (
 					<View>
 						<TextInput
+							placeholder='Item name'
 							onChangeText={handleChange('name')}
 							onBlur={handleBlur('name')}
 						/>
 						<TextInput
+							placeholder='Price per unit (NGN)'
 							onChangeText={handleChange('pricePerUnit')}
 							onBlur={handleBlur('pricePerUnit')}
 						/>

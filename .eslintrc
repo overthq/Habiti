@@ -22,6 +22,7 @@
 		"no-tabs": 0,
 		"no-unused-vars": ["off"],
 		"no-use-before-define": 0,
+		"react/display-name": 0,
 		"react/jsx-filename-extension": [2, { "extensions": [".tsx"] }],
 		"react/no-array-index-key": 0,
 		"react/prop-types": 0,
