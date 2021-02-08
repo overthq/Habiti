@@ -53,7 +53,7 @@ const Register: React.FC = () => {
 			<TouchableOpacity onPress={handleSubmit} style={authStyles.button}>
 				<Text style={authStyles.buttonText}>Register</Text>
 			</TouchableOpacity>
-			<Button text='Register' onPress={handleSubmit} loading={loading} />
+			{/* <Button text='Register' onPress={handleSubmit} loading={loading} /> */}
 			<TouchableOpacity onPress={goToAuth}>
 				<Text>Already have an account? Log in.</Text>
 			</TouchableOpacity>

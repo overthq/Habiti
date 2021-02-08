@@ -3,7 +3,7 @@ import {
 	View,
 	Text,
 	TextInput,
-	TouchableOpacity,
+	// TouchableOpacity,
 	StyleSheet
 } from 'react-native';
 import { useDispatch } from 'react-redux';
@@ -15,14 +15,15 @@ import authStyles from '../styles/auth';
 
 // In the future: use a third party solution with SMS support
 const Verify: React.FC = () => {
-	const [code, setCode] = React.useState(new Array(5).fill(undefined));
+	const [code, setCode] = React.useState<string[]>([]);
 	const [loading, setLoading] = React.useState(false);
 	const { params } = useRoute<any>();
 	const dispatch = useDispatch();
 
 	const { phone } = params;
 
-	const codeRef = React.useRef<(TextInput | null)[]>();
+	const codeRef = React.useRef<(TextInput | null)[]>([]);
+	const codeThing = new Array(6).fill(0);
 
 	const handleKeyPress = (key: string, index: number) => {
 		if (key === 'Backspace' && index !== 0 && codeRef.current) {
@@ -41,7 +42,7 @@ const Verify: React.FC = () => {
 			}
 
 			const newCode = [...code];
-			newCode[index] = Number(value);
+			newCode[index] = value;
 			setCode(newCode);
 		}
 	};
@@ -64,21 +65,24 @@ const Verify: React.FC = () => {
 	return (
 		<View style={authStyles.container}>
 			<Text style={authStyles.title}>Your verification code</Text>
+			<Text style={authStyles.description}>
+				A verification code was sent to your phone via SMS.
+			</Text>
 			<View style={styles.inputs}>
-				{code.map((value, index) => (
+				{codeThing.map((_, index) => (
 					<TextInput
 						key={index}
 						ref={el => codeRef.current?.push(el)}
 						style={styles.input}
-						value={value}
+						keyboardType='numeric'
 						onChangeText={val => handleFieldChange(val, index)}
 						onKeyPress={e => handleKeyPress(e.nativeEvent.key, index)}
 					/>
 				))}
 			</View>
-			<TouchableOpacity onPress={handleSubmit} style={authStyles.button}>
+			{/* <TouchableOpacity onPress={handleSubmit} style={authStyles.button}>
 				<Text style={authStyles.buttonText}>Verify</Text>
-			</TouchableOpacity>
+			</TouchableOpacity> */}
 			<Button onPress={handleSubmit} text='Verify' loading={loading} />
 		</View>
 	);
@@ -92,13 +96,16 @@ const styles = StyleSheet.create({
 	inputs: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		justifyContent: 'space-between'
+		justifyContent: 'space-between',
+		marginBottom: 10
 	},
 	input: {
 		height: 50,
 		width: 50,
 		borderRadius: 8,
 		borderWidth: 2,
+		fontSize: 17,
+		textAlign: 'center',
 		borderColor: '#D3D3D3'
 	}
 });

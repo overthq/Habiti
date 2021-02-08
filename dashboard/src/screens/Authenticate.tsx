@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-	View,
-	Text,
-	TextInput,
-	TouchableOpacity,
-	StyleSheet
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { authenticate } from '../utils/auth';
 import authStyles from '../styles/auth';
@@ -21,14 +15,18 @@ const Authenticate: React.FC = () => {
 
 	return (
 		<View style={authStyles.container}>
-			<Text>Authenticate</Text>
+			<Text style={authStyles.title}>Enter your phone number.</Text>
+			<Text
+				style={authStyles.description}
+			>{`We'll send your verification code here.`}</Text>
 			<View>
-				<Text style={authStyles.title}>Phone number</Text>
+				<Text style={authStyles.inputLabel}>Phone number</Text>
 				<TextInput
 					style={authStyles.input}
 					placeholder='08012345678'
 					value={phone}
 					onChangeText={setPhone}
+					keyboardType='number-pad'
 				/>
 			</View>
 			<TouchableOpacity style={authStyles.button} onPress={handleSubmit}>
@@ -38,10 +36,10 @@ const Authenticate: React.FC = () => {
 	);
 };
 
-const styles = StyleSheet.create({
-	container: {
-		flex: 1
-	}
-});
+// const styles = StyleSheet.create({
+// 	container: {
+// 		flex: 1
+// 	}
+// });
 
 export default Authenticate;
