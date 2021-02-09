@@ -89,7 +89,7 @@ app.post('/register', async (req, res) => {
 });
 
 app.post('/verify-code', async (req, res) => {
-	const { phone, code } = req.body;
+	const { phone, code, userType } = req.body;
 
 	try {
 		const verificationCode = await getAsync(phone);
@@ -119,7 +119,7 @@ app.post('/verify-code', async (req, res) => {
 
 		const [user] = data.users;
 
-		const { accessToken } = generateToken(user);
+		const { accessToken } = generateToken({ ...user, userType });
 
 		return res.status(200).json({
 			success: true,

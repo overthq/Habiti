@@ -47,9 +47,13 @@ const AddItem: React.FC = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1,
+		paddingHorizontal: 8
 	},
-	input: {}
+	input: {
+		fontSize: 17,
+		marginBottom: 10
+	}
 });
 
 export default AddItem;

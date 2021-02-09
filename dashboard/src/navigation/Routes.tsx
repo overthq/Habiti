@@ -6,6 +6,7 @@ import {
 	TransitionPresets
 } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Provider, createClient } from 'urql';
 
 import Overview from '../screens/Overview';
 import Orders from '../screens/Orders';
@@ -17,13 +18,14 @@ import Register from '../screens/Register';
 import Authenticate from '../screens/Authenticate';
 import Verify from '../screens/Verify';
 import Store from '../screens/Store';
-import { useAppSelector } from '../redux/store';
 import { Icon } from '../components/icons';
 import AddItem from '../screens/AddItem';
 import EditItem from '../screens/EditItem';
 
+import { useAppSelector } from '../redux/store';
+import env from '../../env';
+
 // TODO: Complete refactoring of this component, after confirmation that it even works as is.
-// Experimentation with screen presets for making modals work on a per-screen basis, instead of a per-navigator basis.
 
 // Navigation Structure
 // - Auth (Stack Navigator)
@@ -72,7 +74,6 @@ const RootNavigator: React.FC = () => {
 										screenOptions={({ navigation, route }) => ({
 											gestureEnabled: true,
 											cardOverlayEnabled: true,
-											// cardStyle: { backgroundColor: 'transparent' },
 											headerStatusBarHeight:
 												navigation.dangerouslyGetState().routes.indexOf(route) >
 												0
@@ -142,29 +143,48 @@ const RootNavigator: React.FC = () => {
 
 const ModalsStack = createStackNavigator();
 
-const Routes = () => {
+const Routes: React.FC = () => {
+	// TODO: Do not duplicate the usage of this selector in the same file.
+	const { accessToken, activeStore } = useAppSelector(
+		({ auth, preferences }) => ({
+			accessToken: auth.accessToken,
+			activeStore: preferences.activeStore
+		})
+	);
+
+	const client = createClient({
+		url: env.hasuraUrl,
+		fetchOptions: () => ({
+			headers: {
+				authorization: accessToken ? `Bearer ${accessToken}` : '',
+				'x-hasura-store-id': activeStore || ''
+			}
+		})
+	});
+
 	return (
-		<NavigationContainer>
-			<ModalsStack.Navigator
-				mode='modal'
-				screenOptions={({ route, navigation }) => ({
-					gestureEnabled: true,
-					cardOverlayEnabled: true,
-					// cardStyle: { backgroundColor: 'transparent' },
-					headerStatusBarHeight:
-						navigation.dangerouslyGetState().routes.indexOf(route) > 0
-							? 0
-							: undefined,
-					...TransitionPresets.ModalPresentationIOS
-				})}
-			>
-				<ModalsStack.Screen name='Root' options={{ headerShown: false }}>
-					{() => <RootNavigator />}
-				</ModalsStack.Screen>
-				<ModalsStack.Screen name='Add Item' component={AddItem} />
-				<ModalsStack.Screen name='Edit Item' component={EditItem} />
-			</ModalsStack.Navigator>
-		</NavigationContainer>
+		<Provider value={client}>
+			<NavigationContainer>
+				<ModalsStack.Navigator
+					mode='modal'
+					screenOptions={({ route, navigation }) => ({
+						gestureEnabled: true,
+						cardOverlayEnabled: true,
+						headerStatusBarHeight:
+							navigation.dangerouslyGetState().routes.indexOf(route) > 0
+								? 0
+								: undefined,
+						...TransitionPresets.ModalPresentationIOS
+					})}
+				>
+					<ModalsStack.Screen name='Root' options={{ headerShown: false }}>
+						{() => <RootNavigator />}
+					</ModalsStack.Screen>
+					<ModalsStack.Screen name='Add Item' component={AddItem} />
+					<ModalsStack.Screen name='Edit Item' component={EditItem} />
+				</ModalsStack.Navigator>
+			</NavigationContainer>
+		</Provider>
 	);
 };
 

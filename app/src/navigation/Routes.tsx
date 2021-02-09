@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-// import { Provider, createClient } from 'urql';
+import { Provider, createClient } from 'urql';
 
 import Authenticate from '../screens/Authenticate';
 import Register from '../screens/Register';
@@ -18,7 +18,7 @@ import { Icon } from '../components/icons';
 import { tabBarOptions, tabScreenOptions } from '../utils/navigation';
 import { AppStackParamList, MainStackParamList } from '../types/navigation';
 import { useAppSelector } from '../redux/store';
-// import env from '../../env';
+import env from '../../env';
 
 const AppStack = createStackNavigator<AppStackParamList>();
 const MainStack = createStackNavigator<MainStackParamList>();
@@ -55,35 +55,35 @@ const MainNavigator = () => (
 const Routes: React.FC = () => {
 	const accessToken = useAppSelector(({ auth }) => auth.accessToken);
 
-	// const client = createClient({
-	// 	url: env.hasuraUrl,
-	// 	fetchOptions: () => ({
-	// 		headers: {
-	// 			authorization: accessToken ? `Bearer ${accessToken}` : ''
-	// 		}
-	// 	})
-	// });
+	const client = createClient({
+		url: env.hasuraUrl,
+		fetchOptions: () => ({
+			headers: {
+				authorization: accessToken ? `Bearer ${accessToken}` : ''
+			}
+		})
+	});
 
 	return (
-		//<Provider value={client}>
-		<NavigationContainer>
-			<AppStack.Navigator headerMode='none'>
-				{accessToken ? (
-					<>
-						<AppStack.Screen name='Main' component={MainNavigator} />
-						<AppStack.Screen name='Item' component={Item} />
-						<AppStack.Screen name='Cart' component={Cart} />
-					</>
-				) : (
-					<>
-						<AppStack.Screen name='Register' component={Register} />
-						<AppStack.Screen name='Authenticate' component={Authenticate} />
-						<AppStack.Screen name='Verify' component={Verify} />
-					</>
-				)}
-			</AppStack.Navigator>
-		</NavigationContainer>
-		//</Provider>
+		<Provider value={client}>
+			<NavigationContainer>
+				<AppStack.Navigator headerMode='none'>
+					{accessToken ? (
+						<>
+							<AppStack.Screen name='Main' component={MainNavigator} />
+							<AppStack.Screen name='Item' component={Item} />
+							<AppStack.Screen name='Cart' component={Cart} />
+						</>
+					) : (
+						<>
+							<AppStack.Screen name='Register' component={Register} />
+							<AppStack.Screen name='Authenticate' component={Authenticate} />
+							<AppStack.Screen name='Verify' component={Verify} />
+						</>
+					)}
+				</AppStack.Navigator>
+			</NavigationContainer>
+		</Provider>
 	);
 };
 
