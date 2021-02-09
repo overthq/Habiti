@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { authenticate } from '../utils/auth';
-import authStyles from '../styles/auth';
+import styles from '../styles/auth';
 
 const Authenticate: React.FC = () => {
 	const [phone, setPhone] = React.useState('');
@@ -14,32 +14,26 @@ const Authenticate: React.FC = () => {
 	};
 
 	return (
-		<View style={authStyles.container}>
-			<Text style={authStyles.title}>Enter your phone number.</Text>
-			<Text
-				style={authStyles.description}
-			>{`We'll send your verification code here.`}</Text>
+		<View style={styles.container}>
+			<Text style={styles.title}>Enter your phone number.</Text>
+			<Text style={styles.description}>
+				{`We'll send your verification code here.`}
+			</Text>
 			<View>
-				<Text style={authStyles.inputLabel}>Phone number</Text>
+				<Text style={styles.inputLabel}>Phone number</Text>
 				<TextInput
-					style={authStyles.input}
+					style={styles.input}
 					placeholder='08012345678'
 					value={phone}
 					onChangeText={setPhone}
 					keyboardType='number-pad'
 				/>
 			</View>
-			<TouchableOpacity style={authStyles.button} onPress={handleSubmit}>
-				<Text style={authStyles.buttonText}>Next</Text>
+			<TouchableOpacity style={styles.button} onPress={handleSubmit}>
+				<Text style={styles.buttonText}>Next</Text>
 			</TouchableOpacity>
 		</View>
 	);
 };
-
-// const styles = StyleSheet.create({
-// 	container: {
-// 		flex: 1
-// 	}
-// });
 
 export default Authenticate;

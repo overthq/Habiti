@@ -21,11 +21,13 @@ import Store from '../screens/Store';
 import { Icon } from '../components/icons';
 import AddItem from '../screens/AddItem';
 import EditItem from '../screens/EditItem';
+import StoreSelect from '../screens/StoreSelect';
 
 import { useAppSelector } from '../redux/store';
 import env from '../../env';
+import CreateStore from '../screens/CreateStore';
 
-// TODO: Complete refactoring of this component, after confirmation that it even works as is.
+// TODO: Complete refactoring of this component.
 
 // Navigation Structure
 // - Auth (Stack Navigator)
@@ -55,81 +57,96 @@ const OrdersStack = createStackNavigator();
 const ItemsStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
 
-// When urql Provider is set up, remember to pass in active storeId, to be used in Hasura, when querying stuff like items and orders.
-// TODO: After confirming that this structure works, decouple it to make it more understandable.
-// It should be noted that the nesting of some navigators is intended to make sure that modals work as intended.
 const RootNavigator: React.FC = () => {
-	const accessToken = useAppSelector(({ auth }) => auth.accessToken);
+	const { accessToken, activeStore } = useAppSelector(
+		({ auth, preferences }) => ({
+			accessToken: auth.accessToken,
+			activeStore: preferences.activeStore
+		})
+	);
 
 	return (
 		<AppStack.Navigator headerMode='none'>
 			{accessToken ? (
-				<AppStack.Screen name='Main'>
-					{() => (
-						<MainTab.Navigator>
-							<MainTab.Screen name='Overview'>
-								{() => (
-									<OverviewStack.Navigator
-										mode='modal'
-										screenOptions={({ navigation, route }) => ({
-											gestureEnabled: true,
-											cardOverlayEnabled: true,
-											headerStatusBarHeight:
-												navigation.dangerouslyGetState().routes.indexOf(route) >
-												0
-													? 0
-													: undefined,
-											...TransitionPresets.ModalPresentationIOS
-										})}
-									>
-										<OverviewStack.Screen name='Home' component={Overview} />
-										<OverviewStack.Screen
-											name='Settings'
-											component={Settings}
-										/>
-									</OverviewStack.Navigator>
-								)}
-							</MainTab.Screen>
-							<MainTab.Screen name='Orders'>
-								{() => (
-									<OrdersStack.Navigator>
-										<OrdersStack.Screen
-											name='OrdersList'
-											component={Orders}
-											options={{
-												title: 'Orders'
-											}}
-										/>
-										<OrdersStack.Screen name='Order' component={Order} />
-									</OrdersStack.Navigator>
-								)}
-							</MainTab.Screen>
-							<MainTab.Screen name='Items'>
-								{() => (
-									<ItemsStack.Navigator>
-										<ItemsStack.Screen
-											name='ItemsList'
-											component={Items}
-											options={({ navigation }) => ({
-												title: 'Items',
-												headerRight: () => (
-													<TouchableOpacity
-														onPress={() => navigation.navigate('Add Item')}
-														style={{ marginRight: 16 }}
-													>
-														<Icon name='plus' />
-													</TouchableOpacity>
-												)
-											})}
-										/>
-										<ItemsStack.Screen name='Item' component={Item} />
-									</ItemsStack.Navigator>
-								)}
-							</MainTab.Screen>
-							<MainTab.Screen name='Store' component={Store} />
-						</MainTab.Navigator>
+				<>
+					{!activeStore ? (
+						<>
+							<AppStack.Screen name='StoreSelect' component={StoreSelect} />
+							<AppStack.Screen name='CreateStore' component={CreateStore} />
+						</>
+					) : (
+						<AppStack.Screen name='Main'>
+							{() => (
+								<MainTab.Navigator>
+									<MainTab.Screen name='Overview'>
+										{() => (
+											<OverviewStack.Navigator
+												mode='modal'
+												screenOptions={({ navigation, route }) => ({
+													gestureEnabled: true,
+													cardOverlayEnabled: true,
+													headerStatusBarHeight:
+														navigation
+															.dangerouslyGetState()
+															.routes.indexOf(route) > 0
+															? 0
+															: undefined,
+													...TransitionPresets.ModalPresentationIOS
+												})}
+											>
+												<OverviewStack.Screen
+													name='Home'
+													component={Overview}
+												/>
+												<OverviewStack.Screen
+													name='Settings'
+													component={Settings}
+												/>
+											</OverviewStack.Navigator>
+										)}
+									</MainTab.Screen>
+									<MainTab.Screen name='Orders'>
+										{() => (
+											<OrdersStack.Navigator>
+												<OrdersStack.Screen
+													name='OrdersList'
+													component={Orders}
+													options={{
+														title: 'Orders'
+													}}
+												/>
+												<OrdersStack.Screen name='Order' component={Order} />
+											</OrdersStack.Navigator>
+										)}
+									</MainTab.Screen>
+									<MainTab.Screen name='Items'>
+										{() => (
+											<ItemsStack.Navigator>
+												<ItemsStack.Screen
+													name='ItemsList'
+													component={Items}
+													options={({ navigation }) => ({
+														title: 'Items',
+														headerRight: () => (
+															<TouchableOpacity
+																onPress={() => navigation.navigate('Add Item')}
+																style={{ marginRight: 16 }}
+															>
+																<Icon name='plus' />
+															</TouchableOpacity>
+														)
+													})}
+												/>
+												<ItemsStack.Screen name='Item' component={Item} />
+											</ItemsStack.Navigator>
+										)}
+									</MainTab.Screen>
+									<MainTab.Screen name='Store' component={Store} />
+								</MainTab.Navigator>
+							)}
+						</AppStack.Screen>
 					)}
-				</AppStack.Screen>
+				</>
 			) : (
 				<>
 					<AppStack.Screen name='Register' component={Register} />
