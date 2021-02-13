@@ -5,11 +5,13 @@ import {
 	TextInput,
 	StyleSheet,
 	FlatList,
-	Dimensions
+	Dimensions,
+	Animated
 } from 'react-native';
 import { Formik, useFormikContext } from 'formik';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useCreateStoreMutation } from '../types/api';
+import Button from '../components/global/Button';
 import authStyles from '../styles/auth';
 
 const { width } = Dimensions.get('window');
@@ -81,10 +83,22 @@ const FormStep: React.FC<FormStepProps> = ({ step }) => {
 
 const CreateStore: React.FC = () => {
 	const [, createStore] = useCreateStoreMutation();
-	// const [activeStepIndex, setActiveStepIndex] = React.useState(0);
+	const [activeStepIndex, setActiveStepIndex] = React.useState(0);
+	const listRef = React.useRef<FlatList>(null);
+	const scrollX = new Animated.Value(0);
 
-	// const handleSubmit = (values) => {
-	// };
+	const toNext = () => {
+		listRef.current?.scrollToIndex({
+			animated: true,
+			index: activeStepIndex + 1
+		});
+	};
+
+	const handleScroll = Animated.event([
+		{ nativeEvent: { contentOffset: { x: scrollX } } }
+	]);
+
+	const isLastStep = activeStepIndex === steps.length - 1;
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -100,19 +114,34 @@ const CreateStore: React.FC = () => {
 					createStore({
 						input: { name: values.name, short_name: values.shortName }
 					});
-					console.log('Doing something');
 				}}
 			>
-				{() => (
-					<FlatList
-						horizontal
-						decelerationRate='fast'
-						snapToInterval={width}
-						showsHorizontalScrollIndicator={false}
-						data={steps}
-						keyExtractor={s => s.title}
-						renderItem={({ item }) => <FormStep step={item} />}
-					/>
+				{({ handleSubmit }) => (
+					<View style={{ flex: 1 }}>
+						<FlatList
+							ref={listRef}
+							horizontal
+							decelerationRate='fast'
+							snapToInterval={width}
+							showsHorizontalScrollIndicator={false}
+							data={steps}
+							keyExtractor={s => s.title}
+							renderItem={({ item }) => <FormStep step={item} />}
+							onMomentumScrollEnd={({
+								nativeEvent: {
+									contentOffset: { x }
+								}
+							}) => {
+								const sliderIndex = x ? x / width : 0;
+								setActiveStepIndex(sliderIndex);
+							}}
+							onScroll={handleScroll}
+						/>
+						<Button
+							text={isLastStep ? 'Submit' : 'Next'}
+							onPress={isLastStep ? handleSubmit : toNext}
+						/>
+					</View>
 				)}
 			</Formik>
 		</SafeAreaView>

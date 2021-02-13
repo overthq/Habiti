@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Icon } from '../icons';
 
 interface SettingRowProps {
 	name: string;
@@ -22,6 +23,7 @@ const SettingRow: React.FC<SettingRowProps> = ({
 		>
 			<Text>{name}</Text>
 			<View>{displayValue && <Text>{displayValue}</Text>}</View>
+			<Icon name='chevronRight' />
 		</TouchableOpacity>
 	);
 };
