@@ -9,11 +9,6 @@ export type MainTabParamList = {
 	Store: undefined;
 };
 
-export type OverviewStackParamList = {
-	Home: undefined;
-	Settings: undefined;
-};
-
 export type ItemStackParamList = {
 	ItemDetail: { itemId: string };
 	AddItem: undefined;

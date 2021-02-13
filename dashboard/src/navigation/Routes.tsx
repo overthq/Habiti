@@ -52,7 +52,6 @@ import CreateStore from '../screens/CreateStore';
 // - Add/Edit Item (and most other form-based views)
 
 const AppStack = createStackNavigator();
-const OverviewStack = createStackNavigator();
 const OrdersStack = createStackNavigator();
 const ItemsStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
