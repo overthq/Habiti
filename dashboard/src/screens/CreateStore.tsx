@@ -1,7 +1,18 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, FlatList } from 'react-native';
+import {
+	View,
+	Text,
+	TextInput,
+	StyleSheet,
+	FlatList,
+	Dimensions
+} from 'react-native';
 import { Formik, useFormikContext } from 'formik';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useCreateStoreMutation } from '../types/api';
+import authStyles from '../styles/auth';
+
+const { width } = Dimensions.get('window');
 
 const steps = [
 	{
@@ -10,13 +21,13 @@ const steps = [
 		fields: [
 			{
 				name: 'name',
-				placeholder: '',
-				label: ''
+				placeholder: 'Market',
+				label: 'Store name'
 			},
 			{
 				name: 'shortName',
-				placeholder: '',
-				label: ''
+				placeholder: 'market',
+				label: 'Store short name'
 			}
 		]
 	},
@@ -27,32 +38,37 @@ const steps = [
 			{
 				name: 'twitter',
 				placeholder: '@storename',
-				label: ''
+				label: 'Twitter username'
 			},
 			{
 				name: 'instagram',
 				placeholder: '@storename',
-				label: ''
+				label: 'Instagram username'
 			},
 			{
 				name: 'website',
 				placeholder: 'https://storename.com',
-				label: ''
+				label: 'Website URL'
 			}
 		]
 	}
 ];
 
-const renderFormStep = (step: typeof steps[-1]) => {
+interface FormStepProps {
+	step: typeof steps[-1];
+}
+
+const FormStep: React.FC<FormStepProps> = ({ step }) => {
 	const { handleChange, handleBlur } = useFormikContext();
 
 	return (
-		<View>
-			<Text>{step.title}</Text>
+		<View style={styles.formStep}>
+			<Text style={styles.title}>{step.title}</Text>
 			{step.fields.map(({ name, placeholder, label }) => (
 				<View key={name}>
-					<Text>{label}</Text>
+					<Text style={authStyles.inputLabel}>{label}</Text>
 					<TextInput
+						style={authStyles.input}
 						placeholder={placeholder}
 						onChangeText={handleChange(name)}
 						onBlur={handleBlur('name')}
@@ -65,12 +81,13 @@ const renderFormStep = (step: typeof steps[-1]) => {
 
 const CreateStore: React.FC = () => {
 	const [, createStore] = useCreateStoreMutation();
+	// const [activeStepIndex, setActiveStepIndex] = React.useState(0);
 
 	// const handleSubmit = (values) => {
 	// };
 
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={styles.container}>
 			<Formik
 				initialValues={{
 					name: '',
@@ -88,13 +105,17 @@ const CreateStore: React.FC = () => {
 			>
 				{() => (
 					<FlatList
+						horizontal
+						decelerationRate='fast'
+						snapToInterval={width}
+						showsHorizontalScrollIndicator={false}
 						data={steps}
 						keyExtractor={s => s.title}
-						renderItem={({ item }) => renderFormStep(item)}
+						renderItem={({ item }) => <FormStep step={item} />}
 					/>
 				)}
 			</Formik>
-		</View>
+		</SafeAreaView>
 	);
 };
 
@@ -104,13 +125,23 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		fontSize: 36,
-		fontWeight: 'bold'
+		fontWeight: 'bold',
+		marginBottom: 16
 	},
 	description: {
 		fontSize: 16
 	},
 	input: {
-		fontSize: 16
+		fontSize: 16,
+		borderRadius: 4,
+		borderWidth: 2,
+		borderColor: '#D3D3D3',
+		paddingLeft: 8,
+		height: 40
+	},
+	formStep: {
+		width,
+		paddingHorizontal: 16
 	}
 });
 

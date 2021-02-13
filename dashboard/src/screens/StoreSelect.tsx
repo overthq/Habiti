@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { updatePreference } from '../redux/preferences/actions';
 import { useManagedStoresQuery } from '../types/api';
 
@@ -24,9 +25,11 @@ const StoreSelect: React.FC = () => {
 	};
 
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={styles.container}>
 			<Text style={styles.header}>Select store</Text>
-			<Text>Kindly select a store you manage, or create a new one:</Text>
+			<Text style={{ fontSize: 17 }}>
+				Kindly select a store you manage, or create a new one:
+			</Text>
 			<FlatList
 				horizontal
 				data={stores}
@@ -36,21 +39,26 @@ const StoreSelect: React.FC = () => {
 					</TouchableOpacity>
 				)}
 			/>
-			<TouchableOpacity onPress={() => navigate('CreateStore')}>
+			<TouchableOpacity
+				onPress={() => navigate('CreateStore')}
+				style={{ alignSelf: 'center', marginBottom: 16 }}
+			>
 				<Text>Create a store</Text>
 			</TouchableOpacity>
-		</View>
+		</SafeAreaView>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		paddingHorizontal: 16
+		paddingHorizontal: 16,
+		color: '#FFFFFF'
 	},
 	header: {
 		fontWeight: 'bold',
-		fontSize: 34
+		fontSize: 34,
+		marginBottom: 8
 	}
 });
 

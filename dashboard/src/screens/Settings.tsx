@@ -1,11 +1,15 @@
 import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
+import { useDispatch } from 'react-redux';
+import Button from '../components/global/Button';
 import SettingRow from '../components/settings/SettingRow';
 import { useAppSelector } from '../redux/store';
 import { useStoreQuery } from '../types/api';
+import { logOut } from '../redux/auth/actions';
 
 const Settings: React.FC = () => {
 	const preferences = useAppSelector(({ preferences }) => preferences);
+	const dispatch = useDispatch();
 
 	const [{ data }] = useStoreQuery({
 		variables: { storeId: preferences.activeStore }
@@ -39,6 +43,7 @@ const Settings: React.FC = () => {
 					/>
 				)}
 			/>
+			<Button text='Log Out' onPress={() => dispatch(logOut())} />
 		</View>
 	);
 };

@@ -33,7 +33,6 @@ export const tabBarOptions = {
 };
 
 export const tabScreenOptions = ({ route }: any): any => ({
-	// eslint-disable-next-line
 	tabBarIcon: ({ color }: any) => (
 		<Icon name={getIcon(route.name)} color={color} size={28} />
 	)

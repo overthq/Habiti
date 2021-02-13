@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Icon } from '../components/icons';
 
 // What should be on the Overview screen for stores?
 // Charts (items sold per day for x past number of days etc).
@@ -19,7 +20,7 @@ const Overview: React.FC = () => {
 	return (
 		<View style={styles.container}>
 			<TouchableOpacity onPress={() => navigate('Settings')}>
-				<Text>Open Settings</Text>
+				<Icon name='settings' />
 			</TouchableOpacity>
 		</View>
 	);

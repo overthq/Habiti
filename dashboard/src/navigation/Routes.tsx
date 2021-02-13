@@ -23,6 +23,7 @@ import AddItem from '../screens/AddItem';
 import EditItem from '../screens/EditItem';
 import StoreSelect from '../screens/StoreSelect';
 
+import { IconType } from '../components/icons';
 import { useAppSelector } from '../redux/store';
 import env from '../../env';
 import CreateStore from '../screens/CreateStore';
@@ -57,6 +58,32 @@ const OrdersStack = createStackNavigator();
 const ItemsStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
 
+const tabScreenOptions = ({ route }: any): any => ({
+	tabBarIcon: ({ color }: any) => (
+		<Icon name={getIcon(route.name)} color={color} size={28} />
+	)
+});
+
+const tabBarOptions = {
+	activeTintColor: 'black',
+	inactiveTintColor: 'gray',
+	showLabel: false
+};
+
+const getIcon = (routeName: string): IconType => {
+	switch (routeName) {
+		case 'Home':
+			return 'home';
+		case 'Items':
+			return 'tag';
+		case 'Orders':
+			return 'inbox';
+		case 'Store':
+			return 'shoppingBag';
+	}
+	throw new Error('Specified route does not exist.');
+};
+
 const RootNavigator: React.FC = () => {
 	const { accessToken, activeStore } = useAppSelector(
 		({ auth, preferences }) => ({
@@ -77,7 +104,10 @@ const RootNavigator: React.FC = () => {
 					) : (
 						<AppStack.Screen name='Main'>
 							{() => (
-								<MainTab.Navigator>
+								<MainTab.Navigator
+									screenOptions={tabScreenOptions}
+									tabBarOptions={tabBarOptions}
+								>
 									<MainTab.Screen name='Overview'>
 										{() => (
 											<OverviewStack.Navigator
@@ -97,6 +127,7 @@ const RootNavigator: React.FC = () => {
 												<OverviewStack.Screen
 													name='Home'
 													component={Overview}
+													options={{ headerShown: false }}
 												/>
 												<OverviewStack.Screen
 													name='Settings'

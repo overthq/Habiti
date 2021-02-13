@@ -6,6 +6,12 @@ const icons = {
 	check: <Path d='M20 6L9 17l-5-5' />,
 	chevronLeft: <Path d='M15 18l-6-6 6-6' />,
 	chevronRight: <Path d='M9 18l6-6-6-6' />,
+	inbox: (
+		<>
+			<Path d='M22 12h-6l-2 3h-4l-2-3H2' />
+			<Path d='M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z' />
+		</>
+	),
 	instagram: (
 		<>
 			<Rect x={2} y={2} width={20} height={20} rx={5} ry={5} />
@@ -27,6 +33,9 @@ const icons = {
 			<Circle cx={20} cy={21} r={1} />
 			<Path d='M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6' />
 		</>
+	),
+	tag: (
+		<Path d='M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82zM7 7h.01' />
 	),
 	trash: (
 		<Path d='M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2' />
