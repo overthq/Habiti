@@ -10,9 +10,10 @@ import {
 } from 'react-native';
 import { Formik, useFormikContext } from 'formik';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useCreateStoreMutation } from '../types/api';
+import { useAddManagerMutation, useCreateStoreMutation } from '../types/api';
 import Button from '../components/global/Button';
 import authStyles from '../styles/auth';
+import { useAppSelector } from '../redux/store';
 
 const { width } = Dimensions.get('window');
 
@@ -83,6 +84,8 @@ const FormStep: React.FC<FormStepProps> = ({ step }) => {
 
 const CreateStore: React.FC = () => {
 	const [, createStore] = useCreateStoreMutation();
+	const [, addManager] = useAddManagerMutation();
+	const accessToken = useAppSelector(({ auth }) => auth.accessToken);
 	const [activeStepIndex, setActiveStepIndex] = React.useState(0);
 	const listRef = React.useRef<FlatList>(null);
 	const scrollX = new Animated.Value(0);
@@ -100,6 +103,14 @@ const CreateStore: React.FC = () => {
 
 	const isLastStep = activeStepIndex === steps.length - 1;
 
+	const userId = React.useMemo(() => {
+		if (accessToken) {
+			const claims = JSON.parse(atob(accessToken.split('.')[1]));
+			return claims.market['x-hasura-user-id'];
+		}
+		throw new Error('User id not found');
+	}, []);
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<Formik
@@ -110,10 +121,21 @@ const CreateStore: React.FC = () => {
 					instagram: '',
 					website: ''
 				}}
-				onSubmit={values => {
-					createStore({
-						input: { name: values.name, short_name: values.shortName }
-					});
+				onSubmit={async values => {
+					try {
+						const { data } = await createStore({
+							input: { name: values.name, short_name: values.shortName }
+						});
+
+						if (data?.insert_stores?.returning[0].id) {
+							addManager({
+								userId,
+								storeId: data.insert_stores?.returning[0].id
+							});
+						}
+					} catch (error) {
+						console.log(error);
+					}
 				}}
 			>
 				{({ handleSubmit }) => (
