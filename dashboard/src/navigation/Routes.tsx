@@ -37,7 +37,6 @@ import CreateStore from '../screens/CreateStore';
 //  - Verify
 // - Main (Tab Navigator)
 //  - Overview
-//  	- Settings (user and app-level settings, also includes a button to switch the currently active store)
 //  - Orders (Stack Navigator)
 //   - OrdersList
 //   - Order
@@ -108,43 +107,14 @@ const RootNavigator: React.FC = () => {
 									screenOptions={tabScreenOptions}
 									tabBarOptions={tabBarOptions}
 								>
-									<MainTab.Screen name='Overview'>
-										{() => (
-											<OverviewStack.Navigator
-												mode='modal'
-												screenOptions={({ navigation, route }) => ({
-													gestureEnabled: true,
-													cardOverlayEnabled: true,
-													headerStatusBarHeight:
-														navigation
-															.dangerouslyGetState()
-															.routes.indexOf(route) > 0
-															? 0
-															: undefined,
-													...TransitionPresets.ModalPresentationIOS
-												})}
-											>
-												<OverviewStack.Screen
-													name='Home'
-													component={Overview}
-													options={{ headerShown: false }}
-												/>
-												<OverviewStack.Screen
-													name='Settings'
-													component={Settings}
-												/>
-											</OverviewStack.Navigator>
-										)}
-									</MainTab.Screen>
+									<MainTab.Screen name='Overview' component={Overview} />
 									<MainTab.Screen name='Orders'>
 										{() => (
 											<OrdersStack.Navigator>
 												<OrdersStack.Screen
 													name='OrdersList'
 													component={Orders}
-													options={{
-														title: 'Orders'
-													}}
+													options={{ title: 'Orders' }}
 												/>
 												<OrdersStack.Screen name='Order' component={Order} />
 											</OrdersStack.Navigator>
@@ -230,6 +200,7 @@ const Routes: React.FC = () => {
 					</ModalsStack.Screen>
 					<ModalsStack.Screen name='Add Item' component={AddItem} />
 					<ModalsStack.Screen name='Edit Item' component={EditItem} />
+					<ModalsStack.Screen name='Settings' component={Settings} />
 				</ModalsStack.Navigator>
 			</NavigationContainer>
 		</Provider>
