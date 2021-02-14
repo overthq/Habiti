@@ -15,6 +15,23 @@ query UserOrders($userId: uuid!) {
 	}
 }
 
+query Order($orderId: uuid!) {
+	orders(where: { id: { _eq: $orderId } }) {
+		id
+		status
+		store {
+			name
+		}
+		order_items {
+			item {
+				name
+				price_per_unit
+			}
+			quantity
+		}
+	}
+}
+
 mutation PlaceOrder($input: orders_insert_input!) {
 	insert_orders(objects: [$input]) {
 		returning {

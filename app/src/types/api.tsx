@@ -4,6 +4,10 @@ export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = {
 	[K in keyof T]: T[K];
 };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
+	{ [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
+	{ [SubKey in K]: Maybe<T[SubKey]> };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -60,6 +64,136 @@ export type String_Comparison_Exp = {
 	_nsimilar?: Maybe<Scalars['String']>;
 	_similar?: Maybe<Scalars['String']>;
 };
+
+/** columns and relationships of "item_unit" */
+export type Item_Unit = {
+	__typename?: 'item_unit';
+	value: Scalars['String'];
+};
+
+/** aggregated selection of "item_unit" */
+export type Item_Unit_Aggregate = {
+	__typename?: 'item_unit_aggregate';
+	aggregate?: Maybe<Item_Unit_Aggregate_Fields>;
+	nodes: Array<Item_Unit>;
+};
+
+/** aggregate fields of "item_unit" */
+export type Item_Unit_Aggregate_Fields = {
+	__typename?: 'item_unit_aggregate_fields';
+	count?: Maybe<Scalars['Int']>;
+	max?: Maybe<Item_Unit_Max_Fields>;
+	min?: Maybe<Item_Unit_Min_Fields>;
+};
+
+/** aggregate fields of "item_unit" */
+export type Item_Unit_Aggregate_FieldsCountArgs = {
+	columns?: Maybe<Array<Item_Unit_Select_Column>>;
+	distinct?: Maybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "item_unit" */
+export type Item_Unit_Aggregate_Order_By = {
+	count?: Maybe<Order_By>;
+	max?: Maybe<Item_Unit_Max_Order_By>;
+	min?: Maybe<Item_Unit_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "item_unit" */
+export type Item_Unit_Arr_Rel_Insert_Input = {
+	data: Array<Item_Unit_Insert_Input>;
+	on_conflict?: Maybe<Item_Unit_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "item_unit". All fields are combined with a logical 'AND'. */
+export type Item_Unit_Bool_Exp = {
+	_and?: Maybe<Array<Maybe<Item_Unit_Bool_Exp>>>;
+	_not?: Maybe<Item_Unit_Bool_Exp>;
+	_or?: Maybe<Array<Maybe<Item_Unit_Bool_Exp>>>;
+	value?: Maybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "item_unit" */
+export enum Item_Unit_Constraint {
+	/** unique or primary key constraint */
+	ItemUnitPkey = 'item_unit_pkey'
+}
+
+/** input type for inserting data into table "item_unit" */
+export type Item_Unit_Insert_Input = {
+	value?: Maybe<Scalars['String']>;
+};
+
+/** aggregate max on columns */
+export type Item_Unit_Max_Fields = {
+	__typename?: 'item_unit_max_fields';
+	value?: Maybe<Scalars['String']>;
+};
+
+/** order by max() on columns of table "item_unit" */
+export type Item_Unit_Max_Order_By = {
+	value?: Maybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Item_Unit_Min_Fields = {
+	__typename?: 'item_unit_min_fields';
+	value?: Maybe<Scalars['String']>;
+};
+
+/** order by min() on columns of table "item_unit" */
+export type Item_Unit_Min_Order_By = {
+	value?: Maybe<Order_By>;
+};
+
+/** response of any mutation on the table "item_unit" */
+export type Item_Unit_Mutation_Response = {
+	__typename?: 'item_unit_mutation_response';
+	/** number of affected rows by the mutation */
+	affected_rows: Scalars['Int'];
+	/** data of the affected rows by the mutation */
+	returning: Array<Item_Unit>;
+};
+
+/** input type for inserting object relation for remote table "item_unit" */
+export type Item_Unit_Obj_Rel_Insert_Input = {
+	data: Item_Unit_Insert_Input;
+	on_conflict?: Maybe<Item_Unit_On_Conflict>;
+};
+
+/** on conflict condition type for table "item_unit" */
+export type Item_Unit_On_Conflict = {
+	constraint: Item_Unit_Constraint;
+	update_columns: Array<Item_Unit_Update_Column>;
+	where?: Maybe<Item_Unit_Bool_Exp>;
+};
+
+/** ordering options when selecting data from "item_unit" */
+export type Item_Unit_Order_By = {
+	value?: Maybe<Order_By>;
+};
+
+/** primary key columns input for table: "item_unit" */
+export type Item_Unit_Pk_Columns_Input = {
+	value: Scalars['String'];
+};
+
+/** select columns of table "item_unit" */
+export enum Item_Unit_Select_Column {
+	/** column name */
+	Value = 'value'
+}
+
+/** input type for updating data in table "item_unit" */
+export type Item_Unit_Set_Input = {
+	value?: Maybe<Scalars['String']>;
+};
+
+/** update columns of table "item_unit" */
+export enum Item_Unit_Update_Column {
+	/** column name */
+	Value = 'value'
+}
 
 /** columns and relationships of "items" */
 export type Items = {
@@ -420,6 +554,10 @@ export type Items_Variance_Order_By = {
 /** mutation root */
 export type Mutation_Root = {
 	__typename?: 'mutation_root';
+	/** delete data from the table: "item_unit" */
+	delete_item_unit?: Maybe<Item_Unit_Mutation_Response>;
+	/** delete single row from the table: "item_unit" */
+	delete_item_unit_by_pk?: Maybe<Item_Unit>;
 	/** delete data from the table: "items" */
 	delete_items?: Maybe<Items_Mutation_Response>;
 	/** delete single row from the table: "items" */
@@ -428,6 +566,10 @@ export type Mutation_Root = {
 	delete_order_items?: Maybe<Order_Items_Mutation_Response>;
 	/** delete single row from the table: "order_items" */
 	delete_order_items_by_pk?: Maybe<Order_Items>;
+	/** delete data from the table: "order_status" */
+	delete_order_status?: Maybe<Order_Status_Mutation_Response>;
+	/** delete single row from the table: "order_status" */
+	delete_order_status_by_pk?: Maybe<Order_Status>;
 	/** delete data from the table: "orders" */
 	delete_orders?: Maybe<Orders_Mutation_Response>;
 	/** delete single row from the table: "orders" */
@@ -436,6 +578,10 @@ export type Mutation_Root = {
 	delete_store_followers?: Maybe<Store_Followers_Mutation_Response>;
 	/** delete single row from the table: "store_followers" */
 	delete_store_followers_by_pk?: Maybe<Store_Followers>;
+	/** delete data from the table: "store_managers" */
+	delete_store_managers?: Maybe<Store_Managers_Mutation_Response>;
+	/** delete single row from the table: "store_managers" */
+	delete_store_managers_by_pk?: Maybe<Store_Managers>;
 	/** delete data from the table: "stores" */
 	delete_stores?: Maybe<Stores_Mutation_Response>;
 	/** delete single row from the table: "stores" */
@@ -444,6 +590,10 @@ export type Mutation_Root = {
 	delete_users?: Maybe<Users_Mutation_Response>;
 	/** delete single row from the table: "users" */
 	delete_users_by_pk?: Maybe<Users>;
+	/** insert data into the table: "item_unit" */
+	insert_item_unit?: Maybe<Item_Unit_Mutation_Response>;
+	/** insert a single row into the table: "item_unit" */
+	insert_item_unit_one?: Maybe<Item_Unit>;
 	/** insert data into the table: "items" */
 	insert_items?: Maybe<Items_Mutation_Response>;
 	/** insert a single row into the table: "items" */
@@ -452,6 +602,10 @@ export type Mutation_Root = {
 	insert_order_items?: Maybe<Order_Items_Mutation_Response>;
 	/** insert a single row into the table: "order_items" */
 	insert_order_items_one?: Maybe<Order_Items>;
+	/** insert data into the table: "order_status" */
+	insert_order_status?: Maybe<Order_Status_Mutation_Response>;
+	/** insert a single row into the table: "order_status" */
+	insert_order_status_one?: Maybe<Order_Status>;
 	/** insert data into the table: "orders" */
 	insert_orders?: Maybe<Orders_Mutation_Response>;
 	/** insert a single row into the table: "orders" */
@@ -460,6 +614,10 @@ export type Mutation_Root = {
 	insert_store_followers?: Maybe<Store_Followers_Mutation_Response>;
 	/** insert a single row into the table: "store_followers" */
 	insert_store_followers_one?: Maybe<Store_Followers>;
+	/** insert data into the table: "store_managers" */
+	insert_store_managers?: Maybe<Store_Managers_Mutation_Response>;
+	/** insert a single row into the table: "store_managers" */
+	insert_store_managers_one?: Maybe<Store_Managers>;
 	/** insert data into the table: "stores" */
 	insert_stores?: Maybe<Stores_Mutation_Response>;
 	/** insert a single row into the table: "stores" */
@@ -468,6 +626,10 @@ export type Mutation_Root = {
 	insert_users?: Maybe<Users_Mutation_Response>;
 	/** insert a single row into the table: "users" */
 	insert_users_one?: Maybe<Users>;
+	/** update data of the table: "item_unit" */
+	update_item_unit?: Maybe<Item_Unit_Mutation_Response>;
+	/** update single row of the table: "item_unit" */
+	update_item_unit_by_pk?: Maybe<Item_Unit>;
 	/** update data of the table: "items" */
 	update_items?: Maybe<Items_Mutation_Response>;
 	/** update single row of the table: "items" */
@@ -476,6 +638,10 @@ export type Mutation_Root = {
 	update_order_items?: Maybe<Order_Items_Mutation_Response>;
 	/** update single row of the table: "order_items" */
 	update_order_items_by_pk?: Maybe<Order_Items>;
+	/** update data of the table: "order_status" */
+	update_order_status?: Maybe<Order_Status_Mutation_Response>;
+	/** update single row of the table: "order_status" */
+	update_order_status_by_pk?: Maybe<Order_Status>;
 	/** update data of the table: "orders" */
 	update_orders?: Maybe<Orders_Mutation_Response>;
 	/** update single row of the table: "orders" */
@@ -484,6 +650,10 @@ export type Mutation_Root = {
 	update_store_followers?: Maybe<Store_Followers_Mutation_Response>;
 	/** update single row of the table: "store_followers" */
 	update_store_followers_by_pk?: Maybe<Store_Followers>;
+	/** update data of the table: "store_managers" */
+	update_store_managers?: Maybe<Store_Managers_Mutation_Response>;
+	/** update single row of the table: "store_managers" */
+	update_store_managers_by_pk?: Maybe<Store_Managers>;
 	/** update data of the table: "stores" */
 	update_stores?: Maybe<Stores_Mutation_Response>;
 	/** update single row of the table: "stores" */
@@ -492,6 +662,16 @@ export type Mutation_Root = {
 	update_users?: Maybe<Users_Mutation_Response>;
 	/** update single row of the table: "users" */
 	update_users_by_pk?: Maybe<Users>;
+};
+
+/** mutation root */
+export type Mutation_RootDelete_Item_UnitArgs = {
+	where: Item_Unit_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootDelete_Item_Unit_By_PkArgs = {
+	value: Scalars['String'];
 };
 
 /** mutation root */
@@ -512,6 +692,16 @@ export type Mutation_RootDelete_Order_ItemsArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Order_Items_By_PkArgs = {
 	id: Scalars['uuid'];
+};
+
+/** mutation root */
+export type Mutation_RootDelete_Order_StatusArgs = {
+	where: Order_Status_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootDelete_Order_Status_By_PkArgs = {
+	value: Scalars['String'];
 };
 
 /** mutation root */
@@ -536,6 +726,17 @@ export type Mutation_RootDelete_Store_Followers_By_PkArgs = {
 };
 
 /** mutation root */
+export type Mutation_RootDelete_Store_ManagersArgs = {
+	where: Store_Managers_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootDelete_Store_Managers_By_PkArgs = {
+	manager_id: Scalars['uuid'];
+	store_id: Scalars['uuid'];
+};
+
+/** mutation root */
 export type Mutation_RootDelete_StoresArgs = {
 	where: Stores_Bool_Exp;
 };
@@ -553,6 +754,18 @@ export type Mutation_RootDelete_UsersArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Users_By_PkArgs = {
 	id: Scalars['uuid'];
+};
+
+/** mutation root */
+export type Mutation_RootInsert_Item_UnitArgs = {
+	objects: Array<Item_Unit_Insert_Input>;
+	on_conflict?: Maybe<Item_Unit_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_Item_Unit_OneArgs = {
+	object: Item_Unit_Insert_Input;
+	on_conflict?: Maybe<Item_Unit_On_Conflict>;
 };
 
 /** mutation root */
@@ -580,6 +793,18 @@ export type Mutation_RootInsert_Order_Items_OneArgs = {
 };
 
 /** mutation root */
+export type Mutation_RootInsert_Order_StatusArgs = {
+	objects: Array<Order_Status_Insert_Input>;
+	on_conflict?: Maybe<Order_Status_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_Order_Status_OneArgs = {
+	object: Order_Status_Insert_Input;
+	on_conflict?: Maybe<Order_Status_On_Conflict>;
+};
+
+/** mutation root */
 export type Mutation_RootInsert_OrdersArgs = {
 	objects: Array<Orders_Insert_Input>;
 	on_conflict?: Maybe<Orders_On_Conflict>;
@@ -604,6 +829,18 @@ export type Mutation_RootInsert_Store_Followers_OneArgs = {
 };
 
 /** mutation root */
+export type Mutation_RootInsert_Store_ManagersArgs = {
+	objects: Array<Store_Managers_Insert_Input>;
+	on_conflict?: Maybe<Store_Managers_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_Store_Managers_OneArgs = {
+	object: Store_Managers_Insert_Input;
+	on_conflict?: Maybe<Store_Managers_On_Conflict>;
+};
+
+/** mutation root */
 export type Mutation_RootInsert_StoresArgs = {
 	objects: Array<Stores_Insert_Input>;
 	on_conflict?: Maybe<Stores_On_Conflict>;
@@ -625,6 +862,18 @@ export type Mutation_RootInsert_UsersArgs = {
 export type Mutation_RootInsert_Users_OneArgs = {
 	object: Users_Insert_Input;
 	on_conflict?: Maybe<Users_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Item_UnitArgs = {
+	_set?: Maybe<Item_Unit_Set_Input>;
+	where: Item_Unit_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Item_Unit_By_PkArgs = {
+	_set?: Maybe<Item_Unit_Set_Input>;
+	pk_columns: Item_Unit_Pk_Columns_Input;
 };
 
 /** mutation root */
@@ -656,6 +905,18 @@ export type Mutation_RootUpdate_Order_Items_By_PkArgs = {
 };
 
 /** mutation root */
+export type Mutation_RootUpdate_Order_StatusArgs = {
+	_set?: Maybe<Order_Status_Set_Input>;
+	where: Order_Status_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Order_Status_By_PkArgs = {
+	_set?: Maybe<Order_Status_Set_Input>;
+	pk_columns: Order_Status_Pk_Columns_Input;
+};
+
+/** mutation root */
 export type Mutation_RootUpdate_OrdersArgs = {
 	_set?: Maybe<Orders_Set_Input>;
 	where: Orders_Bool_Exp;
@@ -677,6 +938,18 @@ export type Mutation_RootUpdate_Store_FollowersArgs = {
 export type Mutation_RootUpdate_Store_Followers_By_PkArgs = {
 	_set?: Maybe<Store_Followers_Set_Input>;
 	pk_columns: Store_Followers_Pk_Columns_Input;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Store_ManagersArgs = {
+	_set?: Maybe<Store_Managers_Set_Input>;
+	where: Store_Managers_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Store_Managers_By_PkArgs = {
+	_set?: Maybe<Store_Managers_Set_Input>;
+	pk_columns: Store_Managers_Pk_Columns_Input;
 };
 
 /** mutation root */
@@ -1007,6 +1280,161 @@ export type Order_Items_Variance_Order_By = {
 	quantity?: Maybe<Order_By>;
 };
 
+/** columns and relationships of "order_status" */
+export type Order_Status = {
+	__typename?: 'order_status';
+	/** An array relationship */
+	orders: Array<Orders>;
+	/** An aggregated array relationship */
+	orders_aggregate: Orders_Aggregate;
+	value: Scalars['String'];
+};
+
+/** columns and relationships of "order_status" */
+export type Order_StatusOrdersArgs = {
+	distinct_on?: Maybe<Array<Orders_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Orders_Order_By>>;
+	where?: Maybe<Orders_Bool_Exp>;
+};
+
+/** columns and relationships of "order_status" */
+export type Order_StatusOrders_AggregateArgs = {
+	distinct_on?: Maybe<Array<Orders_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Orders_Order_By>>;
+	where?: Maybe<Orders_Bool_Exp>;
+};
+
+/** aggregated selection of "order_status" */
+export type Order_Status_Aggregate = {
+	__typename?: 'order_status_aggregate';
+	aggregate?: Maybe<Order_Status_Aggregate_Fields>;
+	nodes: Array<Order_Status>;
+};
+
+/** aggregate fields of "order_status" */
+export type Order_Status_Aggregate_Fields = {
+	__typename?: 'order_status_aggregate_fields';
+	count?: Maybe<Scalars['Int']>;
+	max?: Maybe<Order_Status_Max_Fields>;
+	min?: Maybe<Order_Status_Min_Fields>;
+};
+
+/** aggregate fields of "order_status" */
+export type Order_Status_Aggregate_FieldsCountArgs = {
+	columns?: Maybe<Array<Order_Status_Select_Column>>;
+	distinct?: Maybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "order_status" */
+export type Order_Status_Aggregate_Order_By = {
+	count?: Maybe<Order_By>;
+	max?: Maybe<Order_Status_Max_Order_By>;
+	min?: Maybe<Order_Status_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "order_status" */
+export type Order_Status_Arr_Rel_Insert_Input = {
+	data: Array<Order_Status_Insert_Input>;
+	on_conflict?: Maybe<Order_Status_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "order_status". All fields are combined with a logical 'AND'. */
+export type Order_Status_Bool_Exp = {
+	_and?: Maybe<Array<Maybe<Order_Status_Bool_Exp>>>;
+	_not?: Maybe<Order_Status_Bool_Exp>;
+	_or?: Maybe<Array<Maybe<Order_Status_Bool_Exp>>>;
+	orders?: Maybe<Orders_Bool_Exp>;
+	value?: Maybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "order_status" */
+export enum Order_Status_Constraint {
+	/** unique or primary key constraint */
+	OrderStatusPkey = 'order_status_pkey'
+}
+
+/** input type for inserting data into table "order_status" */
+export type Order_Status_Insert_Input = {
+	orders?: Maybe<Orders_Arr_Rel_Insert_Input>;
+	value?: Maybe<Scalars['String']>;
+};
+
+/** aggregate max on columns */
+export type Order_Status_Max_Fields = {
+	__typename?: 'order_status_max_fields';
+	value?: Maybe<Scalars['String']>;
+};
+
+/** order by max() on columns of table "order_status" */
+export type Order_Status_Max_Order_By = {
+	value?: Maybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Order_Status_Min_Fields = {
+	__typename?: 'order_status_min_fields';
+	value?: Maybe<Scalars['String']>;
+};
+
+/** order by min() on columns of table "order_status" */
+export type Order_Status_Min_Order_By = {
+	value?: Maybe<Order_By>;
+};
+
+/** response of any mutation on the table "order_status" */
+export type Order_Status_Mutation_Response = {
+	__typename?: 'order_status_mutation_response';
+	/** number of affected rows by the mutation */
+	affected_rows: Scalars['Int'];
+	/** data of the affected rows by the mutation */
+	returning: Array<Order_Status>;
+};
+
+/** input type for inserting object relation for remote table "order_status" */
+export type Order_Status_Obj_Rel_Insert_Input = {
+	data: Order_Status_Insert_Input;
+	on_conflict?: Maybe<Order_Status_On_Conflict>;
+};
+
+/** on conflict condition type for table "order_status" */
+export type Order_Status_On_Conflict = {
+	constraint: Order_Status_Constraint;
+	update_columns: Array<Order_Status_Update_Column>;
+	where?: Maybe<Order_Status_Bool_Exp>;
+};
+
+/** ordering options when selecting data from "order_status" */
+export type Order_Status_Order_By = {
+	orders_aggregate?: Maybe<Orders_Aggregate_Order_By>;
+	value?: Maybe<Order_By>;
+};
+
+/** primary key columns input for table: "order_status" */
+export type Order_Status_Pk_Columns_Input = {
+	value: Scalars['String'];
+};
+
+/** select columns of table "order_status" */
+export enum Order_Status_Select_Column {
+	/** column name */
+	Value = 'value'
+}
+
+/** input type for updating data in table "order_status" */
+export type Order_Status_Set_Input = {
+	value?: Maybe<Scalars['String']>;
+};
+
+/** update columns of table "order_status" */
+export enum Order_Status_Update_Column {
+	/** column name */
+	Value = 'value'
+}
+
 /** columns and relationships of "orders" */
 export type Orders = {
 	__typename?: 'orders';
@@ -1016,6 +1444,8 @@ export type Orders = {
 	order_items: Array<Order_Items>;
 	/** An aggregated array relationship */
 	order_items_aggregate: Order_Items_Aggregate;
+	/** An object relationship */
+	order_status?: Maybe<Order_Status>;
 	status?: Maybe<Scalars['String']>;
 	/** An object relationship */
 	store: Stores;
@@ -1086,6 +1516,7 @@ export type Orders_Bool_Exp = {
 	created_at?: Maybe<Timestamptz_Comparison_Exp>;
 	id?: Maybe<Uuid_Comparison_Exp>;
 	order_items?: Maybe<Order_Items_Bool_Exp>;
+	order_status?: Maybe<Order_Status_Bool_Exp>;
 	status?: Maybe<String_Comparison_Exp>;
 	store?: Maybe<Stores_Bool_Exp>;
 	store_id?: Maybe<Uuid_Comparison_Exp>;
@@ -1105,6 +1536,7 @@ export type Orders_Insert_Input = {
 	created_at?: Maybe<Scalars['timestamptz']>;
 	id?: Maybe<Scalars['uuid']>;
 	order_items?: Maybe<Order_Items_Arr_Rel_Insert_Input>;
+	order_status?: Maybe<Order_Status_Obj_Rel_Insert_Input>;
 	status?: Maybe<Scalars['String']>;
 	store?: Maybe<Stores_Obj_Rel_Insert_Input>;
 	store_id?: Maybe<Scalars['uuid']>;
@@ -1182,6 +1614,7 @@ export type Orders_Order_By = {
 	created_at?: Maybe<Order_By>;
 	id?: Maybe<Order_By>;
 	order_items_aggregate?: Maybe<Order_Items_Aggregate_Order_By>;
+	order_status?: Maybe<Order_Status_Order_By>;
 	status?: Maybe<Order_By>;
 	store?: Maybe<Stores_Order_By>;
 	store_id?: Maybe<Order_By>;
@@ -1240,6 +1673,12 @@ export enum Orders_Update_Column {
 /** query root */
 export type Query_Root = {
 	__typename?: 'query_root';
+	/** fetch data from the table: "item_unit" */
+	item_unit: Array<Item_Unit>;
+	/** fetch aggregated fields from the table: "item_unit" */
+	item_unit_aggregate: Item_Unit_Aggregate;
+	/** fetch data from the table: "item_unit" using primary key columns */
+	item_unit_by_pk?: Maybe<Item_Unit>;
 	/** fetch data from the table: "items" */
 	items: Array<Items>;
 	/** fetch aggregated fields from the table: "items" */
@@ -1252,6 +1691,12 @@ export type Query_Root = {
 	order_items_aggregate: Order_Items_Aggregate;
 	/** fetch data from the table: "order_items" using primary key columns */
 	order_items_by_pk?: Maybe<Order_Items>;
+	/** fetch data from the table: "order_status" */
+	order_status: Array<Order_Status>;
+	/** fetch aggregated fields from the table: "order_status" */
+	order_status_aggregate: Order_Status_Aggregate;
+	/** fetch data from the table: "order_status" using primary key columns */
+	order_status_by_pk?: Maybe<Order_Status>;
 	/** fetch data from the table: "orders" */
 	orders: Array<Orders>;
 	/** fetch aggregated fields from the table: "orders" */
@@ -1264,6 +1709,12 @@ export type Query_Root = {
 	store_followers_aggregate: Store_Followers_Aggregate;
 	/** fetch data from the table: "store_followers" using primary key columns */
 	store_followers_by_pk?: Maybe<Store_Followers>;
+	/** fetch data from the table: "store_managers" */
+	store_managers: Array<Store_Managers>;
+	/** fetch aggregated fields from the table: "store_managers" */
+	store_managers_aggregate: Store_Managers_Aggregate;
+	/** fetch data from the table: "store_managers" using primary key columns */
+	store_managers_by_pk?: Maybe<Store_Managers>;
 	/** fetch data from the table: "stores" */
 	stores: Array<Stores>;
 	/** fetch aggregated fields from the table: "stores" */
@@ -1276,6 +1727,29 @@ export type Query_Root = {
 	users_aggregate: Users_Aggregate;
 	/** fetch data from the table: "users" using primary key columns */
 	users_by_pk?: Maybe<Users>;
+};
+
+/** query root */
+export type Query_RootItem_UnitArgs = {
+	distinct_on?: Maybe<Array<Item_Unit_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Item_Unit_Order_By>>;
+	where?: Maybe<Item_Unit_Bool_Exp>;
+};
+
+/** query root */
+export type Query_RootItem_Unit_AggregateArgs = {
+	distinct_on?: Maybe<Array<Item_Unit_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Item_Unit_Order_By>>;
+	where?: Maybe<Item_Unit_Bool_Exp>;
+};
+
+/** query root */
+export type Query_RootItem_Unit_By_PkArgs = {
+	value: Scalars['String'];
 };
 
 /** query root */
@@ -1325,6 +1799,29 @@ export type Query_RootOrder_Items_By_PkArgs = {
 };
 
 /** query root */
+export type Query_RootOrder_StatusArgs = {
+	distinct_on?: Maybe<Array<Order_Status_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Order_Status_Order_By>>;
+	where?: Maybe<Order_Status_Bool_Exp>;
+};
+
+/** query root */
+export type Query_RootOrder_Status_AggregateArgs = {
+	distinct_on?: Maybe<Array<Order_Status_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Order_Status_Order_By>>;
+	where?: Maybe<Order_Status_Bool_Exp>;
+};
+
+/** query root */
+export type Query_RootOrder_Status_By_PkArgs = {
+	value: Scalars['String'];
+};
+
+/** query root */
 export type Query_RootOrdersArgs = {
 	distinct_on?: Maybe<Array<Orders_Select_Column>>;
 	limit?: Maybe<Scalars['Int']>;
@@ -1369,6 +1866,30 @@ export type Query_RootStore_Followers_AggregateArgs = {
 export type Query_RootStore_Followers_By_PkArgs = {
 	store_id: Scalars['uuid'];
 	user_id: Scalars['uuid'];
+};
+
+/** query root */
+export type Query_RootStore_ManagersArgs = {
+	distinct_on?: Maybe<Array<Store_Managers_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Store_Managers_Order_By>>;
+	where?: Maybe<Store_Managers_Bool_Exp>;
+};
+
+/** query root */
+export type Query_RootStore_Managers_AggregateArgs = {
+	distinct_on?: Maybe<Array<Store_Managers_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Store_Managers_Order_By>>;
+	where?: Maybe<Store_Managers_Bool_Exp>;
+};
+
+/** query root */
+export type Query_RootStore_Managers_By_PkArgs = {
+	manager_id: Scalars['uuid'];
+	store_id: Scalars['uuid'];
 };
 
 /** query root */
@@ -1571,6 +2092,160 @@ export enum Store_Followers_Update_Column {
 	UserId = 'user_id'
 }
 
+/** columns and relationships of "store_managers" */
+export type Store_Managers = {
+	__typename?: 'store_managers';
+	manager_id: Scalars['uuid'];
+	/** An object relationship */
+	store: Stores;
+	store_id: Scalars['uuid'];
+	/** An object relationship */
+	user: Users;
+};
+
+/** aggregated selection of "store_managers" */
+export type Store_Managers_Aggregate = {
+	__typename?: 'store_managers_aggregate';
+	aggregate?: Maybe<Store_Managers_Aggregate_Fields>;
+	nodes: Array<Store_Managers>;
+};
+
+/** aggregate fields of "store_managers" */
+export type Store_Managers_Aggregate_Fields = {
+	__typename?: 'store_managers_aggregate_fields';
+	count?: Maybe<Scalars['Int']>;
+	max?: Maybe<Store_Managers_Max_Fields>;
+	min?: Maybe<Store_Managers_Min_Fields>;
+};
+
+/** aggregate fields of "store_managers" */
+export type Store_Managers_Aggregate_FieldsCountArgs = {
+	columns?: Maybe<Array<Store_Managers_Select_Column>>;
+	distinct?: Maybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "store_managers" */
+export type Store_Managers_Aggregate_Order_By = {
+	count?: Maybe<Order_By>;
+	max?: Maybe<Store_Managers_Max_Order_By>;
+	min?: Maybe<Store_Managers_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "store_managers" */
+export type Store_Managers_Arr_Rel_Insert_Input = {
+	data: Array<Store_Managers_Insert_Input>;
+	on_conflict?: Maybe<Store_Managers_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "store_managers". All fields are combined with a logical 'AND'. */
+export type Store_Managers_Bool_Exp = {
+	_and?: Maybe<Array<Maybe<Store_Managers_Bool_Exp>>>;
+	_not?: Maybe<Store_Managers_Bool_Exp>;
+	_or?: Maybe<Array<Maybe<Store_Managers_Bool_Exp>>>;
+	manager_id?: Maybe<Uuid_Comparison_Exp>;
+	store?: Maybe<Stores_Bool_Exp>;
+	store_id?: Maybe<Uuid_Comparison_Exp>;
+	user?: Maybe<Users_Bool_Exp>;
+};
+
+/** unique or primary key constraints on table "store_managers" */
+export enum Store_Managers_Constraint {
+	/** unique or primary key constraint */
+	StoreManagersPkey = 'store_managers_pkey'
+}
+
+/** input type for inserting data into table "store_managers" */
+export type Store_Managers_Insert_Input = {
+	manager_id?: Maybe<Scalars['uuid']>;
+	store?: Maybe<Stores_Obj_Rel_Insert_Input>;
+	store_id?: Maybe<Scalars['uuid']>;
+	user?: Maybe<Users_Obj_Rel_Insert_Input>;
+};
+
+/** aggregate max on columns */
+export type Store_Managers_Max_Fields = {
+	__typename?: 'store_managers_max_fields';
+	manager_id?: Maybe<Scalars['uuid']>;
+	store_id?: Maybe<Scalars['uuid']>;
+};
+
+/** order by max() on columns of table "store_managers" */
+export type Store_Managers_Max_Order_By = {
+	manager_id?: Maybe<Order_By>;
+	store_id?: Maybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Store_Managers_Min_Fields = {
+	__typename?: 'store_managers_min_fields';
+	manager_id?: Maybe<Scalars['uuid']>;
+	store_id?: Maybe<Scalars['uuid']>;
+};
+
+/** order by min() on columns of table "store_managers" */
+export type Store_Managers_Min_Order_By = {
+	manager_id?: Maybe<Order_By>;
+	store_id?: Maybe<Order_By>;
+};
+
+/** response of any mutation on the table "store_managers" */
+export type Store_Managers_Mutation_Response = {
+	__typename?: 'store_managers_mutation_response';
+	/** number of affected rows by the mutation */
+	affected_rows: Scalars['Int'];
+	/** data of the affected rows by the mutation */
+	returning: Array<Store_Managers>;
+};
+
+/** input type for inserting object relation for remote table "store_managers" */
+export type Store_Managers_Obj_Rel_Insert_Input = {
+	data: Store_Managers_Insert_Input;
+	on_conflict?: Maybe<Store_Managers_On_Conflict>;
+};
+
+/** on conflict condition type for table "store_managers" */
+export type Store_Managers_On_Conflict = {
+	constraint: Store_Managers_Constraint;
+	update_columns: Array<Store_Managers_Update_Column>;
+	where?: Maybe<Store_Managers_Bool_Exp>;
+};
+
+/** ordering options when selecting data from "store_managers" */
+export type Store_Managers_Order_By = {
+	manager_id?: Maybe<Order_By>;
+	store?: Maybe<Stores_Order_By>;
+	store_id?: Maybe<Order_By>;
+	user?: Maybe<Users_Order_By>;
+};
+
+/** primary key columns input for table: "store_managers" */
+export type Store_Managers_Pk_Columns_Input = {
+	manager_id: Scalars['uuid'];
+	store_id: Scalars['uuid'];
+};
+
+/** select columns of table "store_managers" */
+export enum Store_Managers_Select_Column {
+	/** column name */
+	ManagerId = 'manager_id',
+	/** column name */
+	StoreId = 'store_id'
+}
+
+/** input type for updating data in table "store_managers" */
+export type Store_Managers_Set_Input = {
+	manager_id?: Maybe<Scalars['uuid']>;
+	store_id?: Maybe<Scalars['uuid']>;
+};
+
+/** update columns of table "store_managers" */
+export enum Store_Managers_Update_Column {
+	/** column name */
+	ManagerId = 'manager_id',
+	/** column name */
+	StoreId = 'store_id'
+}
+
 /** columns and relationships of "stores" */
 export type Stores = {
 	__typename?: 'stores';
@@ -1590,6 +2265,10 @@ export type Stores = {
 	store_followers: Array<Store_Followers>;
 	/** An aggregated array relationship */
 	store_followers_aggregate: Store_Followers_Aggregate;
+	/** An array relationship */
+	store_managers: Array<Store_Managers>;
+	/** An aggregated array relationship */
+	store_managers_aggregate: Store_Managers_Aggregate;
 	updated_at: Scalars['timestamptz'];
 };
 
@@ -1647,6 +2326,24 @@ export type StoresStore_Followers_AggregateArgs = {
 	where?: Maybe<Store_Followers_Bool_Exp>;
 };
 
+/** columns and relationships of "stores" */
+export type StoresStore_ManagersArgs = {
+	distinct_on?: Maybe<Array<Store_Managers_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Store_Managers_Order_By>>;
+	where?: Maybe<Store_Managers_Bool_Exp>;
+};
+
+/** columns and relationships of "stores" */
+export type StoresStore_Managers_AggregateArgs = {
+	distinct_on?: Maybe<Array<Store_Managers_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Store_Managers_Order_By>>;
+	where?: Maybe<Store_Managers_Bool_Exp>;
+};
+
 /** aggregated selection of "stores" */
 export type Stores_Aggregate = {
 	__typename?: 'stores_aggregate';
@@ -1693,6 +2390,7 @@ export type Stores_Bool_Exp = {
 	orders?: Maybe<Orders_Bool_Exp>;
 	short_name?: Maybe<String_Comparison_Exp>;
 	store_followers?: Maybe<Store_Followers_Bool_Exp>;
+	store_managers?: Maybe<Store_Managers_Bool_Exp>;
 	updated_at?: Maybe<Timestamptz_Comparison_Exp>;
 };
 
@@ -1713,6 +2411,7 @@ export type Stores_Insert_Input = {
 	orders?: Maybe<Orders_Arr_Rel_Insert_Input>;
 	short_name?: Maybe<Scalars['String']>;
 	store_followers?: Maybe<Store_Followers_Arr_Rel_Insert_Input>;
+	store_managers?: Maybe<Store_Managers_Arr_Rel_Insert_Input>;
 	updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -1785,6 +2484,7 @@ export type Stores_Order_By = {
 	orders_aggregate?: Maybe<Orders_Aggregate_Order_By>;
 	short_name?: Maybe<Order_By>;
 	store_followers_aggregate?: Maybe<Store_Followers_Aggregate_Order_By>;
+	store_managers_aggregate?: Maybe<Store_Managers_Aggregate_Order_By>;
 	updated_at?: Maybe<Order_By>;
 };
 
@@ -1833,6 +2533,12 @@ export enum Stores_Update_Column {
 /** subscription root */
 export type Subscription_Root = {
 	__typename?: 'subscription_root';
+	/** fetch data from the table: "item_unit" */
+	item_unit: Array<Item_Unit>;
+	/** fetch aggregated fields from the table: "item_unit" */
+	item_unit_aggregate: Item_Unit_Aggregate;
+	/** fetch data from the table: "item_unit" using primary key columns */
+	item_unit_by_pk?: Maybe<Item_Unit>;
 	/** fetch data from the table: "items" */
 	items: Array<Items>;
 	/** fetch aggregated fields from the table: "items" */
@@ -1845,6 +2551,12 @@ export type Subscription_Root = {
 	order_items_aggregate: Order_Items_Aggregate;
 	/** fetch data from the table: "order_items" using primary key columns */
 	order_items_by_pk?: Maybe<Order_Items>;
+	/** fetch data from the table: "order_status" */
+	order_status: Array<Order_Status>;
+	/** fetch aggregated fields from the table: "order_status" */
+	order_status_aggregate: Order_Status_Aggregate;
+	/** fetch data from the table: "order_status" using primary key columns */
+	order_status_by_pk?: Maybe<Order_Status>;
 	/** fetch data from the table: "orders" */
 	orders: Array<Orders>;
 	/** fetch aggregated fields from the table: "orders" */
@@ -1857,6 +2569,12 @@ export type Subscription_Root = {
 	store_followers_aggregate: Store_Followers_Aggregate;
 	/** fetch data from the table: "store_followers" using primary key columns */
 	store_followers_by_pk?: Maybe<Store_Followers>;
+	/** fetch data from the table: "store_managers" */
+	store_managers: Array<Store_Managers>;
+	/** fetch aggregated fields from the table: "store_managers" */
+	store_managers_aggregate: Store_Managers_Aggregate;
+	/** fetch data from the table: "store_managers" using primary key columns */
+	store_managers_by_pk?: Maybe<Store_Managers>;
 	/** fetch data from the table: "stores" */
 	stores: Array<Stores>;
 	/** fetch aggregated fields from the table: "stores" */
@@ -1869,6 +2587,29 @@ export type Subscription_Root = {
 	users_aggregate: Users_Aggregate;
 	/** fetch data from the table: "users" using primary key columns */
 	users_by_pk?: Maybe<Users>;
+};
+
+/** subscription root */
+export type Subscription_RootItem_UnitArgs = {
+	distinct_on?: Maybe<Array<Item_Unit_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Item_Unit_Order_By>>;
+	where?: Maybe<Item_Unit_Bool_Exp>;
+};
+
+/** subscription root */
+export type Subscription_RootItem_Unit_AggregateArgs = {
+	distinct_on?: Maybe<Array<Item_Unit_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Item_Unit_Order_By>>;
+	where?: Maybe<Item_Unit_Bool_Exp>;
+};
+
+/** subscription root */
+export type Subscription_RootItem_Unit_By_PkArgs = {
+	value: Scalars['String'];
 };
 
 /** subscription root */
@@ -1918,6 +2659,29 @@ export type Subscription_RootOrder_Items_By_PkArgs = {
 };
 
 /** subscription root */
+export type Subscription_RootOrder_StatusArgs = {
+	distinct_on?: Maybe<Array<Order_Status_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Order_Status_Order_By>>;
+	where?: Maybe<Order_Status_Bool_Exp>;
+};
+
+/** subscription root */
+export type Subscription_RootOrder_Status_AggregateArgs = {
+	distinct_on?: Maybe<Array<Order_Status_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Order_Status_Order_By>>;
+	where?: Maybe<Order_Status_Bool_Exp>;
+};
+
+/** subscription root */
+export type Subscription_RootOrder_Status_By_PkArgs = {
+	value: Scalars['String'];
+};
+
+/** subscription root */
 export type Subscription_RootOrdersArgs = {
 	distinct_on?: Maybe<Array<Orders_Select_Column>>;
 	limit?: Maybe<Scalars['Int']>;
@@ -1962,6 +2726,30 @@ export type Subscription_RootStore_Followers_AggregateArgs = {
 export type Subscription_RootStore_Followers_By_PkArgs = {
 	store_id: Scalars['uuid'];
 	user_id: Scalars['uuid'];
+};
+
+/** subscription root */
+export type Subscription_RootStore_ManagersArgs = {
+	distinct_on?: Maybe<Array<Store_Managers_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Store_Managers_Order_By>>;
+	where?: Maybe<Store_Managers_Bool_Exp>;
+};
+
+/** subscription root */
+export type Subscription_RootStore_Managers_AggregateArgs = {
+	distinct_on?: Maybe<Array<Store_Managers_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Store_Managers_Order_By>>;
+	where?: Maybe<Store_Managers_Bool_Exp>;
+};
+
+/** subscription root */
+export type Subscription_RootStore_Managers_By_PkArgs = {
+	manager_id: Scalars['uuid'];
+	store_id: Scalars['uuid'];
 };
 
 /** subscription root */
@@ -2037,6 +2825,10 @@ export type Users = {
 	store_followers: Array<Store_Followers>;
 	/** An aggregated array relationship */
 	store_followers_aggregate: Store_Followers_Aggregate;
+	/** An array relationship */
+	store_managers: Array<Store_Managers>;
+	/** An aggregated array relationship */
+	store_managers_aggregate: Store_Managers_Aggregate;
 };
 
 /** columns and relationships of "users" */
@@ -2073,6 +2865,24 @@ export type UsersStore_Followers_AggregateArgs = {
 	offset?: Maybe<Scalars['Int']>;
 	order_by?: Maybe<Array<Store_Followers_Order_By>>;
 	where?: Maybe<Store_Followers_Bool_Exp>;
+};
+
+/** columns and relationships of "users" */
+export type UsersStore_ManagersArgs = {
+	distinct_on?: Maybe<Array<Store_Managers_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Store_Managers_Order_By>>;
+	where?: Maybe<Store_Managers_Bool_Exp>;
+};
+
+/** columns and relationships of "users" */
+export type UsersStore_Managers_AggregateArgs = {
+	distinct_on?: Maybe<Array<Store_Managers_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Store_Managers_Order_By>>;
+	where?: Maybe<Store_Managers_Bool_Exp>;
 };
 
 /** aggregated selection of "users" */
@@ -2119,6 +2929,7 @@ export type Users_Bool_Exp = {
 	orders?: Maybe<Orders_Bool_Exp>;
 	phone?: Maybe<String_Comparison_Exp>;
 	store_followers?: Maybe<Store_Followers_Bool_Exp>;
+	store_managers?: Maybe<Store_Managers_Bool_Exp>;
 };
 
 /** unique or primary key constraints on table "users" */
@@ -2134,6 +2945,7 @@ export type Users_Insert_Input = {
 	orders?: Maybe<Orders_Arr_Rel_Insert_Input>;
 	phone?: Maybe<Scalars['String']>;
 	store_followers?: Maybe<Store_Followers_Arr_Rel_Insert_Input>;
+	store_managers?: Maybe<Store_Managers_Arr_Rel_Insert_Input>;
 };
 
 /** aggregate max on columns */
@@ -2195,6 +3007,7 @@ export type Users_Order_By = {
 	orders_aggregate?: Maybe<Orders_Aggregate_Order_By>;
 	phone?: Maybe<Order_By>;
 	store_followers_aggregate?: Maybe<Store_Followers_Aggregate_Order_By>;
+	store_managers_aggregate?: Maybe<Store_Managers_Aggregate_Order_By>;
 };
 
 /** primary key columns input for table: "users" */
@@ -2291,7 +3104,7 @@ export type FeaturedItemsQuery = { __typename?: 'query_root' } & {
 };
 
 export type NewArrivalsQueryVariables = Exact<{
-	storeIds: Array<Scalars['uuid']>;
+	storeIds: Array<Scalars['uuid']> | Scalars['uuid'];
 	oneDayAgo: Scalars['timestamptz'];
 }>;
 
@@ -2308,6 +3121,26 @@ export type UserOrdersQueryVariables = Exact<{
 }>;
 
 export type UserOrdersQuery = { __typename?: 'query_root' } & {
+	orders: Array<
+		{ __typename?: 'orders' } & Pick<Orders, 'id' | 'status'> & {
+				store: { __typename?: 'stores' } & Pick<Stores, 'name'>;
+				order_items: Array<
+					{ __typename?: 'order_items' } & Pick<Order_Items, 'quantity'> & {
+							item: { __typename?: 'items' } & Pick<
+								Items,
+								'name' | 'price_per_unit'
+							>;
+						}
+				>;
+			}
+	>;
+};
+
+export type OrderQueryVariables = Exact<{
+	orderId: Scalars['uuid'];
+}>;
+
+export type OrderQuery = { __typename?: 'query_root' } & {
 	orders: Array<
 		{ __typename?: 'orders' } & Pick<Orders, 'id' | 'status'> & {
 				store: { __typename?: 'stores' } & Pick<Stores, 'name'>;
@@ -2348,7 +3181,7 @@ export type PlaceOrderMutation = { __typename?: 'mutation_root' } & {
 };
 
 export type CreateOrderItemsMutationVariables = Exact<{
-	items: Array<Order_Items_Insert_Input>;
+	items: Array<Order_Items_Insert_Input> | Order_Items_Insert_Input;
 }>;
 
 export type CreateOrderItemsMutation = { __typename?: 'mutation_root' } & {
@@ -2570,6 +3403,30 @@ export function useUserOrdersQuery(
 		query: UserOrdersDocument,
 		...options
 	});
+}
+export const OrderDocument = gql`
+	query Order($orderId: uuid!) {
+		orders(where: { id: { _eq: $orderId } }) {
+			id
+			status
+			store {
+				name
+			}
+			order_items {
+				item {
+					name
+					price_per_unit
+				}
+				quantity
+			}
+		}
+	}
+`;
+
+export function useOrderQuery(
+	options: Omit<Urql.UseQueryArgs<OrderQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<OrderQuery>({ query: OrderDocument, ...options });
 }
 export const PlaceOrderDocument = gql`
 	mutation PlaceOrder($input: orders_insert_input!) {

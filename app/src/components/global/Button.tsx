@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, Pressable, StyleSheet } from 'react-native';
-import { useAppSelector } from '../../redux/store';
+// import { useAppSelector } from '../../redux/store';
 
 // All components have to respond to global theme changes.
 
@@ -11,7 +11,7 @@ interface ButtonProps {
 }
 
 const Button: React.FC<ButtonProps> = ({ onPress, text }) => {
-	const theme = useAppSelector(({ theme }) => theme);
+	// const theme = useAppSelector(({ preferences }) => theme);
 	return (
 		<Pressable style={styles.container} onPress={onPress}>
 			<Text style={styles.text}>{text}</Text>
