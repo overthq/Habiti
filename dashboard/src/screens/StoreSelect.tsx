@@ -11,11 +11,13 @@ import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { updatePreference } from '../redux/preferences/actions';
 import { useManagedStoresQuery } from '../types/api';
+import { useAppSelector } from '../redux/store';
 
 const StoreSelect: React.FC = () => {
 	const dispatch = useDispatch();
 	const { navigate } = useNavigation();
-	const [{ data }] = useManagedStoresQuery();
+	const userId = useAppSelector(({ auth }) => auth.userId);
+	const [{ data }] = useManagedStoresQuery({ variables: { userId } });
 
 	const managers = data?.store_managers;
 	const stores = managers?.map(({ store }) => store);
