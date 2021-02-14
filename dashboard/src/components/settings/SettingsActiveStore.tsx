@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import { useManagedStoresQuery } from '../../types/api';
 import { updatePreference } from '../../redux/preferences/actions';
 import { useAppSelector } from '../../redux/store';
+import { Icon } from '../icons';
 
 interface RowProps {
 	name: string;
@@ -17,11 +18,10 @@ interface RowProps {
 	onSelectRow(): void;
 }
 
-// TODO: Set up icons with react-native-svg and replace v with check
 const Row: React.FC<RowProps> = ({ name, isSelected, onSelectRow }) => (
 	<TouchableOpacity style={styles.row} onPress={onSelectRow}>
 		<Text>{name}</Text>
-		<View>{isSelected && <Text>v</Text>}</View>
+		<View>{isSelected && <Icon name='check' />}</View>
 	</TouchableOpacity>
 );
 

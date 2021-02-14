@@ -18,15 +18,15 @@ import Register from '../screens/Register';
 import Authenticate from '../screens/Authenticate';
 import Verify from '../screens/Verify';
 import Store from '../screens/Store';
-import { Icon } from '../components/icons';
 import AddItem from '../screens/AddItem';
 import EditItem from '../screens/EditItem';
 import StoreSelect from '../screens/StoreSelect';
+import CreateStore from '../screens/CreateStore';
 
-import { IconType } from '../components/icons';
+import SettingsActiveStore from '../components/settings/SettingsActiveStore';
+import { Icon, IconType } from '../components/icons';
 import { useAppSelector } from '../redux/store';
 import env from '../../env';
-import CreateStore from '../screens/CreateStore';
 
 // TODO: Complete refactoring of this component.
 
@@ -45,7 +45,7 @@ import CreateStore from '../screens/CreateStore';
 //   - AddItem
 //   - Item
 //    - EditItem
-//  - Store (store metadata and store-related settings)
+//  - Store
 
 // List of all screens that will be "modals"
 // - Settings
@@ -159,6 +159,7 @@ const RootNavigator: React.FC = () => {
 };
 
 const ModalsStack = createStackNavigator();
+const SettingsStack = createStackNavigator();
 
 const Routes: React.FC = () => {
 	// TODO: Do not duplicate the usage of this selector in the same file.
@@ -196,7 +197,21 @@ const Routes: React.FC = () => {
 					</ModalsStack.Screen>
 					<ModalsStack.Screen name='Add Item' component={AddItem} />
 					<ModalsStack.Screen name='Edit Item' component={EditItem} />
-					<ModalsStack.Screen name='Settings' component={Settings} />
+					<ModalsStack.Screen
+						name='SettingsStack'
+						options={{ headerShown: false }}
+					>
+						{() => (
+							<SettingsStack.Navigator>
+								<SettingsStack.Screen name='Settings' component={Settings} />
+								<SettingsStack.Screen
+									name='SettingsActiveStore'
+									component={SettingsActiveStore}
+									options={{ title: 'Active Store' }}
+								/>
+							</SettingsStack.Navigator>
+						)}
+					</ModalsStack.Screen>
 				</ModalsStack.Navigator>
 			</NavigationContainer>
 		</Provider>

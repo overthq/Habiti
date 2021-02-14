@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useAppSelector } from '../redux/store';
 import { useStoreQuery } from '../types/api';
 
 /*
@@ -7,8 +8,11 @@ import { useStoreQuery } from '../types/api';
  * such as payout frequencies, subscription tiers and even store name, short name and avatar.
  */
 
-const Store = () => {
-	const [{ data }] = useStoreQuery();
+const Store: React.FC = () => {
+	const activeStore = useAppSelector(
+		({ preferences }) => preferences.activeStore
+	);
+	const [{ data }] = useStoreQuery({ variables: { storeId: activeStore } });
 
 	const store = data?.stores[0];
 
