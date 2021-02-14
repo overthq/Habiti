@@ -56,7 +56,7 @@ export const verifyCode = async ({ phone, code }: VerifyCodePayload) => {
 		});
 
 		const { data } = await response.json();
-		return data.accessToken;
+		return data;
 	} catch (error) {
 		console.log(error);
 	}

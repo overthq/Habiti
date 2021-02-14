@@ -24,9 +24,9 @@ const VerifyAuthentication: React.FC = () => {
 	const handleSubmit = async () => {
 		if (phone && code) {
 			setLoading(true);
-			const accessToken = await verifyCode({ phone, code });
+			const { accessToken, userId } = await verifyCode({ phone, code });
 			setLoading(false);
-			dispatch(login(accessToken));
+			dispatch(login(accessToken, userId));
 			navigate('Home');
 		}
 		// Show some validation error.

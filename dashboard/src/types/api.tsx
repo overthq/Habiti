@@ -3140,6 +3140,19 @@ export type OrdersQuery = { __typename?: 'query_root' } & {
 	>;
 };
 
+export type OrderQueryVariables = Exact<{
+	orderId: Scalars['uuid'];
+}>;
+
+export type OrderQuery = { __typename?: 'query_root' } & {
+	orders: Array<
+		{ __typename?: 'orders' } & Pick<
+			Orders,
+			'id' | 'status' | 'created_at' | 'updated_at'
+		>
+	>;
+};
+
 export type UpdateOrderMutationVariables = Exact<{
 	orderId: Scalars['uuid'];
 	input: Orders_Set_Input;
@@ -3292,6 +3305,22 @@ export function useOrdersQuery(
 	options: Omit<Urql.UseQueryArgs<OrdersQueryVariables>, 'query'> = {}
 ) {
 	return Urql.useQuery<OrdersQuery>({ query: OrdersDocument, ...options });
+}
+export const OrderDocument = gql`
+	query Order($orderId: uuid!) {
+		orders(where: { id: { _eq: $orderId } }) {
+			id
+			status
+			created_at
+			updated_at
+		}
+	}
+`;
+
+export function useOrderQuery(
+	options: Omit<Urql.UseQueryArgs<OrderQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<OrderQuery>({ query: OrderDocument, ...options });
 }
 export const UpdateOrderDocument = gql`
 	mutation UpdateOrder($orderId: uuid!, $input: orders_set_input!) {

@@ -5,6 +5,7 @@ interface AuthLoginAction {
 	type: typeof AUTH_LOGIN;
 	payload: {
 		accessToken: string;
+		userId: string;
 	};
 }
 

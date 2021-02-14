@@ -8,6 +8,15 @@ query Orders {
 	}
 }
 
+query Order($orderId: uuid!) {
+	orders(where: { id: { _eq: $orderId } }) {
+		id
+		status
+		created_at
+		updated_at
+	}
+}
+
 mutation UpdateOrder($orderId: uuid!, $input: orders_set_input!) {
 	update_orders(where: { id: { _eq: $orderId } }, _set: $input) {
 		affected_rows

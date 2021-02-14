@@ -8,12 +8,14 @@ import {
 	Dimensions,
 	Animated
 } from 'react-native';
+import { useDispatch } from 'react-redux';
 import { Formik, useFormikContext } from 'formik';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAddManagerMutation, useCreateStoreMutation } from '../types/api';
 import Button from '../components/global/Button';
 import authStyles from '../styles/auth';
 import { useAppSelector } from '../redux/store';
+import { updatePreference } from '../redux/preferences/actions';
 
 const { width } = Dimensions.get('window');
 
@@ -85,9 +87,10 @@ const FormStep: React.FC<FormStepProps> = ({ step }) => {
 const CreateStore: React.FC = () => {
 	const [, createStore] = useCreateStoreMutation();
 	const [, addManager] = useAddManagerMutation();
-	const accessToken = useAppSelector(({ auth }) => auth.accessToken);
+	const userId = useAppSelector(({ auth }) => auth.userId);
 	const [activeStepIndex, setActiveStepIndex] = React.useState(0);
 	const listRef = React.useRef<FlatList>(null);
+	const dispatch = useDispatch();
 	const scrollX = new Animated.Value(0);
 
 	const toNext = () => {
@@ -97,19 +100,12 @@ const CreateStore: React.FC = () => {
 		});
 	};
 
-	const handleScroll = Animated.event([
-		{ nativeEvent: { contentOffset: { x: scrollX } } }
-	]);
+	const handleScroll = Animated.event(
+		[{ nativeEvent: { contentOffset: { x: scrollX } } }],
+		{ useNativeDriver: true }
+	);
 
 	const isLastStep = activeStepIndex === steps.length - 1;
-
-	const userId = React.useMemo(() => {
-		if (accessToken) {
-			const claims = JSON.parse(atob(accessToken.split('.')[1]));
-			return claims.market['x-hasura-user-id'];
-		}
-		throw new Error('User id not found');
-	}, []);
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -128,10 +124,16 @@ const CreateStore: React.FC = () => {
 						});
 
 						if (data?.insert_stores?.returning[0].id) {
-							addManager({
+							await addManager({
 								userId,
 								storeId: data.insert_stores?.returning[0].id
 							});
+
+							dispatch(
+								updatePreference({
+									activeStore: data.insert_stores?.returning[0].id
+								})
+							);
 						}
 					} catch (error) {
 						console.log(error);

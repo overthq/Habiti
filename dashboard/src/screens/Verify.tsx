@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-	View,
-	Text,
-	TextInput,
-	// TouchableOpacity,
-	StyleSheet
-} from 'react-native';
+import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { useRoute } from '@react-navigation/native';
 import { verifyCode } from '../utils/auth';
@@ -50,8 +44,11 @@ const Verify: React.FC = () => {
 	const handleSubmit = async () => {
 		try {
 			setLoading(true);
-			const accessToken = await verifyCode({ phone, code: code.join('') });
-			dispatch(login(accessToken));
+			const { accessToken, userId } = await verifyCode({
+				phone,
+				code: code.join('')
+			});
+			dispatch(login(accessToken, userId));
 			setLoading(false);
 			// Also fetch managed stores, and dispatch an action to set them BEFORE navigating to the main screen.
 			// It would be wise to use a loading indicator while this is happening, however, awaits do not work on the dispatch function for some reason.

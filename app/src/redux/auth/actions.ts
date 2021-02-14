@@ -1,10 +1,13 @@
 import { AppThunk } from '../store';
 import { AUTH_LOGIN, AUTH_LOGOUT } from './types';
 
-export const login = (accessToken: string): AppThunk => dispatch => {
+export const login = (
+	accessToken: string,
+	userId: string
+): AppThunk => dispatch => {
 	dispatch({
 		type: AUTH_LOGIN,
-		payload: { accessToken }
+		payload: { accessToken, userId }
 	});
 };
 

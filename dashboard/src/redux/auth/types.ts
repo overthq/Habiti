@@ -3,7 +3,7 @@ export const AUTH_LOGOUT = 'AUTH_LOGOUT';
 
 interface AuthLoginAction {
 	type: typeof AUTH_LOGIN;
-	payload: { accessToken: string };
+	payload: { accessToken: string; userId: string };
 }
 
 interface AuthLogoutAction {

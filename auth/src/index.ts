@@ -124,7 +124,7 @@ app.post('/verify-code', async (req, res) => {
 		return res.status(200).json({
 			success: true,
 			message: 'Verification complete.',
-			data: { accessToken }
+			data: { accessToken, userId: user.id }
 		});
 	} catch (error) {
 		return res.status(400).json({
