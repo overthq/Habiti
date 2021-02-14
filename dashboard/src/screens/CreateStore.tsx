@@ -142,7 +142,7 @@ const CreateStore: React.FC = () => {
 			>
 				{({ handleSubmit }) => (
 					<View style={{ flex: 1 }}>
-						<FlatList
+						<Animated.FlatList
 							ref={listRef}
 							horizontal
 							decelerationRate='fast'

@@ -21,9 +21,16 @@ const SettingRow: React.FC<SettingRowProps> = ({
 			style={styles.container}
 			onPress={() => navigate(screenTo)}
 		>
-			<Text>{name}</Text>
-			<View>{displayValue && <Text>{displayValue}</Text>}</View>
-			<Icon name='chevronRight' />
+			<Text style={styles.settingName}>{name}</Text>
+			<View>
+				<View>{displayValue && <Text>{displayValue}</Text>}</View>
+				<Icon
+					name='chevronRight'
+					color='#505050'
+					size={14}
+					style={{ marginLeft: 8 }}
+				/>
+			</View>
 		</TouchableOpacity>
 	);
 };
@@ -33,9 +40,15 @@ const styles = StyleSheet.create({
 		width: '100%',
 		height: 40,
 		paddingHorizontal: 8,
+		backgroundColor: '#FFFFFF',
+		borderTopWidth: 1,
+		borderTopColor: '#D3D3D3',
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center'
+	},
+	settingName: {
+		fontSize: 16
 	}
 });
 

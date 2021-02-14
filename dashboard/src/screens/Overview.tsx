@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon } from '../components/icons';
 
 // What should be on the Overview screen for stores?
@@ -18,11 +19,11 @@ const Overview: React.FC = () => {
 	const { navigate } = useNavigation();
 
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={styles.container}>
 			<TouchableOpacity onPress={() => navigate('Settings')}>
 				<Icon name='settings' />
 			</TouchableOpacity>
-		</View>
+		</SafeAreaView>
 	);
 };
 

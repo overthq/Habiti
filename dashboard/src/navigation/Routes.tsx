@@ -70,7 +70,7 @@ const tabBarOptions = {
 
 const getIcon = (routeName: string): IconType => {
 	switch (routeName) {
-		case 'Home':
+		case 'Overview':
 			return 'home';
 		case 'Items':
 			return 'tag';
@@ -184,15 +184,12 @@ const Routes: React.FC = () => {
 			<NavigationContainer>
 				<ModalsStack.Navigator
 					mode='modal'
-					screenOptions={({ route, navigation }) => ({
+					screenOptions={{
+						...TransitionPresets.ModalPresentationIOS,
 						gestureEnabled: true,
 						cardOverlayEnabled: true,
-						headerStatusBarHeight:
-							navigation.dangerouslyGetState().routes.indexOf(route) > 0
-								? 0
-								: undefined,
-						...TransitionPresets.ModalPresentationIOS
-					})}
+						headerStatusBarHeight: 0
+					}}
 				>
 					<ModalsStack.Screen name='Root' options={{ headerShown: false }}>
 						{() => <RootNavigator />}
