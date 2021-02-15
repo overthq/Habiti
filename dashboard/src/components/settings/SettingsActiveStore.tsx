@@ -20,13 +20,14 @@ interface RowProps {
 
 const Row: React.FC<RowProps> = ({ name, isSelected, onSelectRow }) => (
 	<TouchableOpacity style={styles.row} onPress={onSelectRow}>
-		<Text>{name}</Text>
-		<View>{isSelected && <Icon name='check' />}</View>
+		<Text style={{ fontSize: 16 }}>{name}</Text>
+		<View>{isSelected && <Icon name='check' size={16} />}</View>
 	</TouchableOpacity>
 );
 
 const SettingsActiveStore: React.FC = () => {
-	const [{ data }] = useManagedStoresQuery();
+	const userId = useAppSelector(({ auth }) => auth.userId);
+	const [{ data }] = useManagedStoresQuery({ variables: { userId } });
 	const dispatch = useDispatch();
 	const activeStore = useAppSelector(
 		({ preferences }) => preferences.activeStore
@@ -64,7 +65,8 @@ const styles = StyleSheet.create({
 	row: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems: 'center'
+		alignItems: 'center',
+		padding: 8
 	}
 });
 

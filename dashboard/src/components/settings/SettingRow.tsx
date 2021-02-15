@@ -22,12 +22,16 @@ const SettingRow: React.FC<SettingRowProps> = ({
 			onPress={() => navigate(screenTo)}
 		>
 			<Text style={styles.settingName}>{name}</Text>
-			<View>
-				<View>{displayValue && <Text>{displayValue}</Text>}</View>
+			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+				<View>
+					{displayValue && (
+						<Text style={styles.settingDisplay}>{displayValue}</Text>
+					)}
+				</View>
 				<Icon
 					name='chevronRight'
 					color='#505050'
-					size={14}
+					size={16}
 					style={{ marginLeft: 8 }}
 				/>
 			</View>
@@ -49,6 +53,10 @@ const styles = StyleSheet.create({
 	},
 	settingName: {
 		fontSize: 16
+	},
+	settingDisplay: {
+		fontSize: 16,
+		color: '#505050'
 	}
 });
 

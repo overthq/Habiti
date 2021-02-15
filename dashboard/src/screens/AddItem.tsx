@@ -36,16 +36,20 @@ const AddItem: React.FC = () => {
 							placeholder='Item name'
 							onChangeText={handleChange('name')}
 							onBlur={handleBlur('name')}
+							style={styles.input}
 						/>
 						<TextInput
 							placeholder='Item description'
 							onChangeText={handleChange('description')}
 							onBlur={handleBlur('description')}
+							style={[styles.input, styles.textarea]}
+							multiline
 						/>
 						<TextInput
 							placeholder='Price per unit (NGN)'
 							onChangeText={handleChange('pricePerUnit')}
 							onBlur={handleBlur('pricePerUnit')}
+							style={styles.input}
 						/>
 						<Button text='Add Item' onPress={() => handleSubmit()} />
 					</View>
@@ -57,6 +61,7 @@ const AddItem: React.FC = () => {
 
 const styles = StyleSheet.create({
 	container: {
+		paddingTop: 8,
 		flex: 1,
 		paddingHorizontal: 8
 	},
@@ -66,7 +71,11 @@ const styles = StyleSheet.create({
 		borderRadius: 4,
 		borderWidth: 2,
 		borderColor: '#D3D3D3',
-		marginBottom: 10
+		marginBottom: 10,
+		height: 40
+	},
+	textarea: {
+		height: 80
 	}
 });
 

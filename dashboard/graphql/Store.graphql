@@ -11,5 +11,6 @@ query Store($storeId: uuid!) {
 	stores(where: { id: { _eq: $storeId } }) {
 		id
 		name
+		short_name
 	}
 }

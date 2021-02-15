@@ -20,7 +20,7 @@ const Overview: React.FC = () => {
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<TouchableOpacity onPress={() => navigate('Settings')}>
+			<TouchableOpacity onPress={() => navigate('SettingsStack')}>
 				<Icon name='settings' />
 			</TouchableOpacity>
 		</SafeAreaView>
