@@ -1,10 +1,14 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet } from 'react-native';
 import { Formik } from 'formik';
 import { useAddItemMutation } from '../types/api';
 import Button from '../components/global/Button';
+import { useAppSelector } from '../redux/store';
 
 const AddItem: React.FC = () => {
+	const activeStore = useAppSelector(
+		({ preferences }) => preferences.activeStore
+	);
 	const [, addItem] = useAddItemMutation();
 
 	const submit = (values: Record<string, any>) => {
@@ -12,8 +16,9 @@ const AddItem: React.FC = () => {
 		addItem({
 			itemObject: {
 				name: values.name,
-				// description: values.description
-				price_per_unit: values.price_per_unit
+				description: values.description,
+				store_id: activeStore,
+				price_per_unit: values.pricePerUnit
 				// unit: values.unit
 			}
 		});
