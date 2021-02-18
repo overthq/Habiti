@@ -207,10 +207,10 @@ export type Items = {
 	order_items: Array<Order_Items>;
 	/** An aggregated array relationship */
 	order_items_aggregate: Order_Items_Aggregate;
-	price_per_unit: Scalars['Int'];
 	/** An object relationship */
 	store: Stores;
 	store_id: Scalars['uuid'];
+	unit_price: Scalars['Int'];
 	updated_at: Scalars['timestamptz'];
 };
 
@@ -285,12 +285,12 @@ export type Items_Arr_Rel_Insert_Input = {
 /** aggregate avg on columns */
 export type Items_Avg_Fields = {
 	__typename?: 'items_avg_fields';
-	price_per_unit?: Maybe<Scalars['Float']>;
+	unit_price?: Maybe<Scalars['Float']>;
 };
 
 /** order by avg() on columns of table "items" */
 export type Items_Avg_Order_By = {
-	price_per_unit?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "items". All fields are combined with a logical 'AND'. */
@@ -304,9 +304,9 @@ export type Items_Bool_Exp = {
 	id?: Maybe<Uuid_Comparison_Exp>;
 	name?: Maybe<String_Comparison_Exp>;
 	order_items?: Maybe<Order_Items_Bool_Exp>;
-	price_per_unit?: Maybe<Int_Comparison_Exp>;
 	store?: Maybe<Stores_Bool_Exp>;
 	store_id?: Maybe<Uuid_Comparison_Exp>;
+	unit_price?: Maybe<Int_Comparison_Exp>;
 	updated_at?: Maybe<Timestamptz_Comparison_Exp>;
 };
 
@@ -318,7 +318,7 @@ export enum Items_Constraint {
 
 /** input type for incrementing integer column in table "items" */
 export type Items_Inc_Input = {
-	price_per_unit?: Maybe<Scalars['Int']>;
+	unit_price?: Maybe<Scalars['Int']>;
 };
 
 /** input type for inserting data into table "items" */
@@ -329,9 +329,9 @@ export type Items_Insert_Input = {
 	id?: Maybe<Scalars['uuid']>;
 	name?: Maybe<Scalars['String']>;
 	order_items?: Maybe<Order_Items_Arr_Rel_Insert_Input>;
-	price_per_unit?: Maybe<Scalars['Int']>;
 	store?: Maybe<Stores_Obj_Rel_Insert_Input>;
 	store_id?: Maybe<Scalars['uuid']>;
+	unit_price?: Maybe<Scalars['Int']>;
 	updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -342,8 +342,8 @@ export type Items_Max_Fields = {
 	description?: Maybe<Scalars['String']>;
 	id?: Maybe<Scalars['uuid']>;
 	name?: Maybe<Scalars['String']>;
-	price_per_unit?: Maybe<Scalars['Int']>;
 	store_id?: Maybe<Scalars['uuid']>;
+	unit_price?: Maybe<Scalars['Int']>;
 	updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -353,8 +353,8 @@ export type Items_Max_Order_By = {
 	description?: Maybe<Order_By>;
 	id?: Maybe<Order_By>;
 	name?: Maybe<Order_By>;
-	price_per_unit?: Maybe<Order_By>;
 	store_id?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 	updated_at?: Maybe<Order_By>;
 };
 
@@ -365,8 +365,8 @@ export type Items_Min_Fields = {
 	description?: Maybe<Scalars['String']>;
 	id?: Maybe<Scalars['uuid']>;
 	name?: Maybe<Scalars['String']>;
-	price_per_unit?: Maybe<Scalars['Int']>;
 	store_id?: Maybe<Scalars['uuid']>;
+	unit_price?: Maybe<Scalars['Int']>;
 	updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
@@ -376,8 +376,8 @@ export type Items_Min_Order_By = {
 	description?: Maybe<Order_By>;
 	id?: Maybe<Order_By>;
 	name?: Maybe<Order_By>;
-	price_per_unit?: Maybe<Order_By>;
 	store_id?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 	updated_at?: Maybe<Order_By>;
 };
 
@@ -411,9 +411,9 @@ export type Items_Order_By = {
 	id?: Maybe<Order_By>;
 	name?: Maybe<Order_By>;
 	order_items_aggregate?: Maybe<Order_Items_Aggregate_Order_By>;
-	price_per_unit?: Maybe<Order_By>;
 	store?: Maybe<Stores_Order_By>;
 	store_id?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 	updated_at?: Maybe<Order_By>;
 };
 
@@ -435,9 +435,9 @@ export enum Items_Select_Column {
 	/** column name */
 	Name = 'name',
 	/** column name */
-	PricePerUnit = 'price_per_unit',
-	/** column name */
 	StoreId = 'store_id',
+	/** column name */
+	UnitPrice = 'unit_price',
 	/** column name */
 	UpdatedAt = 'updated_at'
 }
@@ -449,53 +449,53 @@ export type Items_Set_Input = {
 	featured?: Maybe<Scalars['Boolean']>;
 	id?: Maybe<Scalars['uuid']>;
 	name?: Maybe<Scalars['String']>;
-	price_per_unit?: Maybe<Scalars['Int']>;
 	store_id?: Maybe<Scalars['uuid']>;
+	unit_price?: Maybe<Scalars['Int']>;
 	updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
 /** aggregate stddev on columns */
 export type Items_Stddev_Fields = {
 	__typename?: 'items_stddev_fields';
-	price_per_unit?: Maybe<Scalars['Float']>;
+	unit_price?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev() on columns of table "items" */
 export type Items_Stddev_Order_By = {
-	price_per_unit?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
 export type Items_Stddev_Pop_Fields = {
 	__typename?: 'items_stddev_pop_fields';
-	price_per_unit?: Maybe<Scalars['Float']>;
+	unit_price?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_pop() on columns of table "items" */
 export type Items_Stddev_Pop_Order_By = {
-	price_per_unit?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
 export type Items_Stddev_Samp_Fields = {
 	__typename?: 'items_stddev_samp_fields';
-	price_per_unit?: Maybe<Scalars['Float']>;
+	unit_price?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_samp() on columns of table "items" */
 export type Items_Stddev_Samp_Order_By = {
-	price_per_unit?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 };
 
 /** aggregate sum on columns */
 export type Items_Sum_Fields = {
 	__typename?: 'items_sum_fields';
-	price_per_unit?: Maybe<Scalars['Int']>;
+	unit_price?: Maybe<Scalars['Int']>;
 };
 
 /** order by sum() on columns of table "items" */
 export type Items_Sum_Order_By = {
-	price_per_unit?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 };
 
 /** update columns of table "items" */
@@ -511,9 +511,9 @@ export enum Items_Update_Column {
 	/** column name */
 	Name = 'name',
 	/** column name */
-	PricePerUnit = 'price_per_unit',
-	/** column name */
 	StoreId = 'store_id',
+	/** column name */
+	UnitPrice = 'unit_price',
 	/** column name */
 	UpdatedAt = 'updated_at'
 }
@@ -521,34 +521,34 @@ export enum Items_Update_Column {
 /** aggregate var_pop on columns */
 export type Items_Var_Pop_Fields = {
 	__typename?: 'items_var_pop_fields';
-	price_per_unit?: Maybe<Scalars['Float']>;
+	unit_price?: Maybe<Scalars['Float']>;
 };
 
 /** order by var_pop() on columns of table "items" */
 export type Items_Var_Pop_Order_By = {
-	price_per_unit?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 };
 
 /** aggregate var_samp on columns */
 export type Items_Var_Samp_Fields = {
 	__typename?: 'items_var_samp_fields';
-	price_per_unit?: Maybe<Scalars['Float']>;
+	unit_price?: Maybe<Scalars['Float']>;
 };
 
 /** order by var_samp() on columns of table "items" */
 export type Items_Var_Samp_Order_By = {
-	price_per_unit?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 };
 
 /** aggregate variance on columns */
 export type Items_Variance_Fields = {
 	__typename?: 'items_variance_fields';
-	price_per_unit?: Maybe<Scalars['Float']>;
+	unit_price?: Maybe<Scalars['Float']>;
 };
 
 /** order by variance() on columns of table "items" */
 export type Items_Variance_Order_By = {
-	price_per_unit?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 };
 
 /** mutation root */
@@ -918,12 +918,14 @@ export type Mutation_RootUpdate_Order_Status_By_PkArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_OrdersArgs = {
+	_inc?: Maybe<Orders_Inc_Input>;
 	_set?: Maybe<Orders_Set_Input>;
 	where: Orders_Bool_Exp;
 };
 
 /** mutation root */
 export type Mutation_RootUpdate_Orders_By_PkArgs = {
+	_inc?: Maybe<Orders_Inc_Input>;
 	_set?: Maybe<Orders_Set_Input>;
 	pk_columns: Orders_Pk_Columns_Input;
 };
@@ -1003,6 +1005,7 @@ export type Order_Items = {
 	order: Orders;
 	order_id: Scalars['uuid'];
 	quantity: Scalars['Int'];
+	unit_price?: Maybe<Scalars['Int']>;
 };
 
 /** aggregated selection of "order_items" */
@@ -1059,11 +1062,13 @@ export type Order_Items_Arr_Rel_Insert_Input = {
 export type Order_Items_Avg_Fields = {
 	__typename?: 'order_items_avg_fields';
 	quantity?: Maybe<Scalars['Float']>;
+	unit_price?: Maybe<Scalars['Float']>;
 };
 
 /** order by avg() on columns of table "order_items" */
 export type Order_Items_Avg_Order_By = {
 	quantity?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "order_items". All fields are combined with a logical 'AND'. */
@@ -1077,6 +1082,7 @@ export type Order_Items_Bool_Exp = {
 	order?: Maybe<Orders_Bool_Exp>;
 	order_id?: Maybe<Uuid_Comparison_Exp>;
 	quantity?: Maybe<Int_Comparison_Exp>;
+	unit_price?: Maybe<Int_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "order_items" */
@@ -1088,6 +1094,7 @@ export enum Order_Items_Constraint {
 /** input type for incrementing integer column in table "order_items" */
 export type Order_Items_Inc_Input = {
 	quantity?: Maybe<Scalars['Int']>;
+	unit_price?: Maybe<Scalars['Int']>;
 };
 
 /** input type for inserting data into table "order_items" */
@@ -1098,6 +1105,7 @@ export type Order_Items_Insert_Input = {
 	order?: Maybe<Orders_Obj_Rel_Insert_Input>;
 	order_id?: Maybe<Scalars['uuid']>;
 	quantity?: Maybe<Scalars['Int']>;
+	unit_price?: Maybe<Scalars['Int']>;
 };
 
 /** aggregate max on columns */
@@ -1107,6 +1115,7 @@ export type Order_Items_Max_Fields = {
 	item_id?: Maybe<Scalars['uuid']>;
 	order_id?: Maybe<Scalars['uuid']>;
 	quantity?: Maybe<Scalars['Int']>;
+	unit_price?: Maybe<Scalars['Int']>;
 };
 
 /** order by max() on columns of table "order_items" */
@@ -1115,6 +1124,7 @@ export type Order_Items_Max_Order_By = {
 	item_id?: Maybe<Order_By>;
 	order_id?: Maybe<Order_By>;
 	quantity?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 };
 
 /** aggregate min on columns */
@@ -1124,6 +1134,7 @@ export type Order_Items_Min_Fields = {
 	item_id?: Maybe<Scalars['uuid']>;
 	order_id?: Maybe<Scalars['uuid']>;
 	quantity?: Maybe<Scalars['Int']>;
+	unit_price?: Maybe<Scalars['Int']>;
 };
 
 /** order by min() on columns of table "order_items" */
@@ -1132,6 +1143,7 @@ export type Order_Items_Min_Order_By = {
 	item_id?: Maybe<Order_By>;
 	order_id?: Maybe<Order_By>;
 	quantity?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 };
 
 /** response of any mutation on the table "order_items" */
@@ -1164,6 +1176,7 @@ export type Order_Items_Order_By = {
 	order?: Maybe<Orders_Order_By>;
 	order_id?: Maybe<Order_By>;
 	quantity?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 };
 
 /** primary key columns input for table: "order_items" */
@@ -1180,7 +1193,9 @@ export enum Order_Items_Select_Column {
 	/** column name */
 	OrderId = 'order_id',
 	/** column name */
-	Quantity = 'quantity'
+	Quantity = 'quantity',
+	/** column name */
+	UnitPrice = 'unit_price'
 }
 
 /** input type for updating data in table "order_items" */
@@ -1189,50 +1204,59 @@ export type Order_Items_Set_Input = {
 	item_id?: Maybe<Scalars['uuid']>;
 	order_id?: Maybe<Scalars['uuid']>;
 	quantity?: Maybe<Scalars['Int']>;
+	unit_price?: Maybe<Scalars['Int']>;
 };
 
 /** aggregate stddev on columns */
 export type Order_Items_Stddev_Fields = {
 	__typename?: 'order_items_stddev_fields';
 	quantity?: Maybe<Scalars['Float']>;
+	unit_price?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev() on columns of table "order_items" */
 export type Order_Items_Stddev_Order_By = {
 	quantity?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
 export type Order_Items_Stddev_Pop_Fields = {
 	__typename?: 'order_items_stddev_pop_fields';
 	quantity?: Maybe<Scalars['Float']>;
+	unit_price?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_pop() on columns of table "order_items" */
 export type Order_Items_Stddev_Pop_Order_By = {
 	quantity?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
 export type Order_Items_Stddev_Samp_Fields = {
 	__typename?: 'order_items_stddev_samp_fields';
 	quantity?: Maybe<Scalars['Float']>;
+	unit_price?: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_samp() on columns of table "order_items" */
 export type Order_Items_Stddev_Samp_Order_By = {
 	quantity?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 };
 
 /** aggregate sum on columns */
 export type Order_Items_Sum_Fields = {
 	__typename?: 'order_items_sum_fields';
 	quantity?: Maybe<Scalars['Int']>;
+	unit_price?: Maybe<Scalars['Int']>;
 };
 
 /** order by sum() on columns of table "order_items" */
 export type Order_Items_Sum_Order_By = {
 	quantity?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 };
 
 /** update columns of table "order_items" */
@@ -1244,40 +1268,48 @@ export enum Order_Items_Update_Column {
 	/** column name */
 	OrderId = 'order_id',
 	/** column name */
-	Quantity = 'quantity'
+	Quantity = 'quantity',
+	/** column name */
+	UnitPrice = 'unit_price'
 }
 
 /** aggregate var_pop on columns */
 export type Order_Items_Var_Pop_Fields = {
 	__typename?: 'order_items_var_pop_fields';
 	quantity?: Maybe<Scalars['Float']>;
+	unit_price?: Maybe<Scalars['Float']>;
 };
 
 /** order by var_pop() on columns of table "order_items" */
 export type Order_Items_Var_Pop_Order_By = {
 	quantity?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 };
 
 /** aggregate var_samp on columns */
 export type Order_Items_Var_Samp_Fields = {
 	__typename?: 'order_items_var_samp_fields';
 	quantity?: Maybe<Scalars['Float']>;
+	unit_price?: Maybe<Scalars['Float']>;
 };
 
 /** order by var_samp() on columns of table "order_items" */
 export type Order_Items_Var_Samp_Order_By = {
 	quantity?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 };
 
 /** aggregate variance on columns */
 export type Order_Items_Variance_Fields = {
 	__typename?: 'order_items_variance_fields';
 	quantity?: Maybe<Scalars['Float']>;
+	unit_price?: Maybe<Scalars['Float']>;
 };
 
 /** order by variance() on columns of table "order_items" */
 export type Order_Items_Variance_Order_By = {
 	quantity?: Maybe<Order_By>;
+	unit_price?: Maybe<Order_By>;
 };
 
 /** columns and relationships of "order_status" */
@@ -1438,6 +1470,7 @@ export enum Order_Status_Update_Column {
 /** columns and relationships of "orders" */
 export type Orders = {
 	__typename?: 'orders';
+	amount?: Maybe<Scalars['Int']>;
 	created_at: Scalars['timestamptz'];
 	id: Scalars['uuid'];
 	/** An array relationship */
@@ -1484,9 +1517,17 @@ export type Orders_Aggregate = {
 /** aggregate fields of "orders" */
 export type Orders_Aggregate_Fields = {
 	__typename?: 'orders_aggregate_fields';
+	avg?: Maybe<Orders_Avg_Fields>;
 	count?: Maybe<Scalars['Int']>;
 	max?: Maybe<Orders_Max_Fields>;
 	min?: Maybe<Orders_Min_Fields>;
+	stddev?: Maybe<Orders_Stddev_Fields>;
+	stddev_pop?: Maybe<Orders_Stddev_Pop_Fields>;
+	stddev_samp?: Maybe<Orders_Stddev_Samp_Fields>;
+	sum?: Maybe<Orders_Sum_Fields>;
+	var_pop?: Maybe<Orders_Var_Pop_Fields>;
+	var_samp?: Maybe<Orders_Var_Samp_Fields>;
+	variance?: Maybe<Orders_Variance_Fields>;
 };
 
 /** aggregate fields of "orders" */
@@ -1497,9 +1538,17 @@ export type Orders_Aggregate_FieldsCountArgs = {
 
 /** order by aggregate values of table "orders" */
 export type Orders_Aggregate_Order_By = {
+	avg?: Maybe<Orders_Avg_Order_By>;
 	count?: Maybe<Order_By>;
 	max?: Maybe<Orders_Max_Order_By>;
 	min?: Maybe<Orders_Min_Order_By>;
+	stddev?: Maybe<Orders_Stddev_Order_By>;
+	stddev_pop?: Maybe<Orders_Stddev_Pop_Order_By>;
+	stddev_samp?: Maybe<Orders_Stddev_Samp_Order_By>;
+	sum?: Maybe<Orders_Sum_Order_By>;
+	var_pop?: Maybe<Orders_Var_Pop_Order_By>;
+	var_samp?: Maybe<Orders_Var_Samp_Order_By>;
+	variance?: Maybe<Orders_Variance_Order_By>;
 };
 
 /** input type for inserting array relation for remote table "orders" */
@@ -1508,11 +1557,23 @@ export type Orders_Arr_Rel_Insert_Input = {
 	on_conflict?: Maybe<Orders_On_Conflict>;
 };
 
+/** aggregate avg on columns */
+export type Orders_Avg_Fields = {
+	__typename?: 'orders_avg_fields';
+	amount?: Maybe<Scalars['Float']>;
+};
+
+/** order by avg() on columns of table "orders" */
+export type Orders_Avg_Order_By = {
+	amount?: Maybe<Order_By>;
+};
+
 /** Boolean expression to filter rows from the table "orders". All fields are combined with a logical 'AND'. */
 export type Orders_Bool_Exp = {
 	_and?: Maybe<Array<Maybe<Orders_Bool_Exp>>>;
 	_not?: Maybe<Orders_Bool_Exp>;
 	_or?: Maybe<Array<Maybe<Orders_Bool_Exp>>>;
+	amount?: Maybe<Int_Comparison_Exp>;
 	created_at?: Maybe<Timestamptz_Comparison_Exp>;
 	id?: Maybe<Uuid_Comparison_Exp>;
 	order_items?: Maybe<Order_Items_Bool_Exp>;
@@ -1531,8 +1592,14 @@ export enum Orders_Constraint {
 	OrdersPkey = 'orders_pkey'
 }
 
+/** input type for incrementing integer column in table "orders" */
+export type Orders_Inc_Input = {
+	amount?: Maybe<Scalars['Int']>;
+};
+
 /** input type for inserting data into table "orders" */
 export type Orders_Insert_Input = {
+	amount?: Maybe<Scalars['Int']>;
 	created_at?: Maybe<Scalars['timestamptz']>;
 	id?: Maybe<Scalars['uuid']>;
 	order_items?: Maybe<Order_Items_Arr_Rel_Insert_Input>;
@@ -1548,6 +1615,7 @@ export type Orders_Insert_Input = {
 /** aggregate max on columns */
 export type Orders_Max_Fields = {
 	__typename?: 'orders_max_fields';
+	amount?: Maybe<Scalars['Int']>;
 	created_at?: Maybe<Scalars['timestamptz']>;
 	id?: Maybe<Scalars['uuid']>;
 	status?: Maybe<Scalars['String']>;
@@ -1558,6 +1626,7 @@ export type Orders_Max_Fields = {
 
 /** order by max() on columns of table "orders" */
 export type Orders_Max_Order_By = {
+	amount?: Maybe<Order_By>;
 	created_at?: Maybe<Order_By>;
 	id?: Maybe<Order_By>;
 	status?: Maybe<Order_By>;
@@ -1569,6 +1638,7 @@ export type Orders_Max_Order_By = {
 /** aggregate min on columns */
 export type Orders_Min_Fields = {
 	__typename?: 'orders_min_fields';
+	amount?: Maybe<Scalars['Int']>;
 	created_at?: Maybe<Scalars['timestamptz']>;
 	id?: Maybe<Scalars['uuid']>;
 	status?: Maybe<Scalars['String']>;
@@ -1579,6 +1649,7 @@ export type Orders_Min_Fields = {
 
 /** order by min() on columns of table "orders" */
 export type Orders_Min_Order_By = {
+	amount?: Maybe<Order_By>;
 	created_at?: Maybe<Order_By>;
 	id?: Maybe<Order_By>;
 	status?: Maybe<Order_By>;
@@ -1611,6 +1682,7 @@ export type Orders_On_Conflict = {
 
 /** ordering options when selecting data from "orders" */
 export type Orders_Order_By = {
+	amount?: Maybe<Order_By>;
 	created_at?: Maybe<Order_By>;
 	id?: Maybe<Order_By>;
 	order_items_aggregate?: Maybe<Order_Items_Aggregate_Order_By>;
@@ -1631,6 +1703,8 @@ export type Orders_Pk_Columns_Input = {
 /** select columns of table "orders" */
 export enum Orders_Select_Column {
 	/** column name */
+	Amount = 'amount',
+	/** column name */
 	CreatedAt = 'created_at',
 	/** column name */
 	Id = 'id',
@@ -1646,6 +1720,7 @@ export enum Orders_Select_Column {
 
 /** input type for updating data in table "orders" */
 export type Orders_Set_Input = {
+	amount?: Maybe<Scalars['Int']>;
 	created_at?: Maybe<Scalars['timestamptz']>;
 	id?: Maybe<Scalars['uuid']>;
 	status?: Maybe<Scalars['String']>;
@@ -1654,8 +1729,54 @@ export type Orders_Set_Input = {
 	user_id?: Maybe<Scalars['uuid']>;
 };
 
+/** aggregate stddev on columns */
+export type Orders_Stddev_Fields = {
+	__typename?: 'orders_stddev_fields';
+	amount?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev() on columns of table "orders" */
+export type Orders_Stddev_Order_By = {
+	amount?: Maybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Orders_Stddev_Pop_Fields = {
+	__typename?: 'orders_stddev_pop_fields';
+	amount?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_pop() on columns of table "orders" */
+export type Orders_Stddev_Pop_Order_By = {
+	amount?: Maybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Orders_Stddev_Samp_Fields = {
+	__typename?: 'orders_stddev_samp_fields';
+	amount?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_samp() on columns of table "orders" */
+export type Orders_Stddev_Samp_Order_By = {
+	amount?: Maybe<Order_By>;
+};
+
+/** aggregate sum on columns */
+export type Orders_Sum_Fields = {
+	__typename?: 'orders_sum_fields';
+	amount?: Maybe<Scalars['Int']>;
+};
+
+/** order by sum() on columns of table "orders" */
+export type Orders_Sum_Order_By = {
+	amount?: Maybe<Order_By>;
+};
+
 /** update columns of table "orders" */
 export enum Orders_Update_Column {
+	/** column name */
+	Amount = 'amount',
 	/** column name */
 	CreatedAt = 'created_at',
 	/** column name */
@@ -1669,6 +1790,39 @@ export enum Orders_Update_Column {
 	/** column name */
 	UserId = 'user_id'
 }
+
+/** aggregate var_pop on columns */
+export type Orders_Var_Pop_Fields = {
+	__typename?: 'orders_var_pop_fields';
+	amount?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_pop() on columns of table "orders" */
+export type Orders_Var_Pop_Order_By = {
+	amount?: Maybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Orders_Var_Samp_Fields = {
+	__typename?: 'orders_var_samp_fields';
+	amount?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_samp() on columns of table "orders" */
+export type Orders_Var_Samp_Order_By = {
+	amount?: Maybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Orders_Variance_Fields = {
+	__typename?: 'orders_variance_fields';
+	amount?: Maybe<Scalars['Float']>;
+};
+
+/** order by variance() on columns of table "orders" */
+export type Orders_Variance_Order_By = {
+	amount?: Maybe<Order_By>;
+};
 
 /** query root */
 export type Query_Root = {
@@ -2251,6 +2405,7 @@ export type Stores = {
 	__typename?: 'stores';
 	created_at: Scalars['timestamptz'];
 	id: Scalars['uuid'];
+	instagram_username?: Maybe<Scalars['String']>;
 	/** An array relationship */
 	items: Array<Items>;
 	/** An aggregated array relationship */
@@ -2269,7 +2424,9 @@ export type Stores = {
 	store_managers: Array<Store_Managers>;
 	/** An aggregated array relationship */
 	store_managers_aggregate: Store_Managers_Aggregate;
+	twitter_username?: Maybe<Scalars['String']>;
 	updated_at: Scalars['timestamptz'];
+	website_url?: Maybe<Scalars['String']>;
 };
 
 /** columns and relationships of "stores" */
@@ -2385,13 +2542,16 @@ export type Stores_Bool_Exp = {
 	_or?: Maybe<Array<Maybe<Stores_Bool_Exp>>>;
 	created_at?: Maybe<Timestamptz_Comparison_Exp>;
 	id?: Maybe<Uuid_Comparison_Exp>;
+	instagram_username?: Maybe<String_Comparison_Exp>;
 	items?: Maybe<Items_Bool_Exp>;
 	name?: Maybe<String_Comparison_Exp>;
 	orders?: Maybe<Orders_Bool_Exp>;
 	short_name?: Maybe<String_Comparison_Exp>;
 	store_followers?: Maybe<Store_Followers_Bool_Exp>;
 	store_managers?: Maybe<Store_Managers_Bool_Exp>;
+	twitter_username?: Maybe<String_Comparison_Exp>;
 	updated_at?: Maybe<Timestamptz_Comparison_Exp>;
+	website_url?: Maybe<String_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "stores" */
@@ -2406,13 +2566,16 @@ export enum Stores_Constraint {
 export type Stores_Insert_Input = {
 	created_at?: Maybe<Scalars['timestamptz']>;
 	id?: Maybe<Scalars['uuid']>;
+	instagram_username?: Maybe<Scalars['String']>;
 	items?: Maybe<Items_Arr_Rel_Insert_Input>;
 	name?: Maybe<Scalars['String']>;
 	orders?: Maybe<Orders_Arr_Rel_Insert_Input>;
 	short_name?: Maybe<Scalars['String']>;
 	store_followers?: Maybe<Store_Followers_Arr_Rel_Insert_Input>;
 	store_managers?: Maybe<Store_Managers_Arr_Rel_Insert_Input>;
+	twitter_username?: Maybe<Scalars['String']>;
 	updated_at?: Maybe<Scalars['timestamptz']>;
+	website_url?: Maybe<Scalars['String']>;
 };
 
 /** aggregate max on columns */
@@ -2420,18 +2583,24 @@ export type Stores_Max_Fields = {
 	__typename?: 'stores_max_fields';
 	created_at?: Maybe<Scalars['timestamptz']>;
 	id?: Maybe<Scalars['uuid']>;
+	instagram_username?: Maybe<Scalars['String']>;
 	name?: Maybe<Scalars['String']>;
 	short_name?: Maybe<Scalars['String']>;
+	twitter_username?: Maybe<Scalars['String']>;
 	updated_at?: Maybe<Scalars['timestamptz']>;
+	website_url?: Maybe<Scalars['String']>;
 };
 
 /** order by max() on columns of table "stores" */
 export type Stores_Max_Order_By = {
 	created_at?: Maybe<Order_By>;
 	id?: Maybe<Order_By>;
+	instagram_username?: Maybe<Order_By>;
 	name?: Maybe<Order_By>;
 	short_name?: Maybe<Order_By>;
+	twitter_username?: Maybe<Order_By>;
 	updated_at?: Maybe<Order_By>;
+	website_url?: Maybe<Order_By>;
 };
 
 /** aggregate min on columns */
@@ -2439,18 +2608,24 @@ export type Stores_Min_Fields = {
 	__typename?: 'stores_min_fields';
 	created_at?: Maybe<Scalars['timestamptz']>;
 	id?: Maybe<Scalars['uuid']>;
+	instagram_username?: Maybe<Scalars['String']>;
 	name?: Maybe<Scalars['String']>;
 	short_name?: Maybe<Scalars['String']>;
+	twitter_username?: Maybe<Scalars['String']>;
 	updated_at?: Maybe<Scalars['timestamptz']>;
+	website_url?: Maybe<Scalars['String']>;
 };
 
 /** order by min() on columns of table "stores" */
 export type Stores_Min_Order_By = {
 	created_at?: Maybe<Order_By>;
 	id?: Maybe<Order_By>;
+	instagram_username?: Maybe<Order_By>;
 	name?: Maybe<Order_By>;
 	short_name?: Maybe<Order_By>;
+	twitter_username?: Maybe<Order_By>;
 	updated_at?: Maybe<Order_By>;
+	website_url?: Maybe<Order_By>;
 };
 
 /** response of any mutation on the table "stores" */
@@ -2479,13 +2654,16 @@ export type Stores_On_Conflict = {
 export type Stores_Order_By = {
 	created_at?: Maybe<Order_By>;
 	id?: Maybe<Order_By>;
+	instagram_username?: Maybe<Order_By>;
 	items_aggregate?: Maybe<Items_Aggregate_Order_By>;
 	name?: Maybe<Order_By>;
 	orders_aggregate?: Maybe<Orders_Aggregate_Order_By>;
 	short_name?: Maybe<Order_By>;
 	store_followers_aggregate?: Maybe<Store_Followers_Aggregate_Order_By>;
 	store_managers_aggregate?: Maybe<Store_Managers_Aggregate_Order_By>;
+	twitter_username?: Maybe<Order_By>;
 	updated_at?: Maybe<Order_By>;
+	website_url?: Maybe<Order_By>;
 };
 
 /** primary key columns input for table: "stores" */
@@ -2500,20 +2678,29 @@ export enum Stores_Select_Column {
 	/** column name */
 	Id = 'id',
 	/** column name */
+	InstagramUsername = 'instagram_username',
+	/** column name */
 	Name = 'name',
 	/** column name */
 	ShortName = 'short_name',
 	/** column name */
-	UpdatedAt = 'updated_at'
+	TwitterUsername = 'twitter_username',
+	/** column name */
+	UpdatedAt = 'updated_at',
+	/** column name */
+	WebsiteUrl = 'website_url'
 }
 
 /** input type for updating data in table "stores" */
 export type Stores_Set_Input = {
 	created_at?: Maybe<Scalars['timestamptz']>;
 	id?: Maybe<Scalars['uuid']>;
+	instagram_username?: Maybe<Scalars['String']>;
 	name?: Maybe<Scalars['String']>;
 	short_name?: Maybe<Scalars['String']>;
+	twitter_username?: Maybe<Scalars['String']>;
 	updated_at?: Maybe<Scalars['timestamptz']>;
+	website_url?: Maybe<Scalars['String']>;
 };
 
 /** update columns of table "stores" */
@@ -2523,11 +2710,17 @@ export enum Stores_Update_Column {
 	/** column name */
 	Id = 'id',
 	/** column name */
+	InstagramUsername = 'instagram_username',
+	/** column name */
 	Name = 'name',
 	/** column name */
 	ShortName = 'short_name',
 	/** column name */
-	UpdatedAt = 'updated_at'
+	TwitterUsername = 'twitter_username',
+	/** column name */
+	UpdatedAt = 'updated_at',
+	/** column name */
+	WebsiteUrl = 'website_url'
 }
 
 /** subscription root */
@@ -3061,7 +3254,7 @@ export type ItemsQuery = { __typename?: 'query_root' } & {
 	items: Array<
 		{ __typename?: 'items' } & Pick<
 			Items,
-			'id' | 'name' | 'store_id' | 'featured' | 'price_per_unit'
+			'id' | 'name' | 'store_id' | 'featured' | 'unit_price'
 		>
 	>;
 };
@@ -3074,7 +3267,7 @@ export type StoreItemsQuery = { __typename?: 'query_root' } & {
 	storeItems: Array<
 		{ __typename?: 'items' } & Pick<
 			Items,
-			'id' | 'name' | 'store_id' | 'featured' | 'price_per_unit'
+			'id' | 'name' | 'store_id' | 'featured' | 'unit_price'
 		>
 	>;
 };
@@ -3087,7 +3280,7 @@ export type ItemQuery = { __typename?: 'query_root' } & {
 	items: Array<
 		{ __typename?: 'items' } & Pick<
 			Items,
-			'id' | 'name' | 'store_id' | 'description' | 'price_per_unit'
+			'id' | 'name' | 'store_id' | 'description' | 'unit_price'
 		> & { store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'> }
 	>;
 };
@@ -3098,7 +3291,7 @@ export type FeaturedItemsQuery = { __typename?: 'query_root' } & {
 	featuredItems: Array<
 		{ __typename?: 'items' } & Pick<
 			Items,
-			'id' | 'name' | 'store_id' | 'description' | 'price_per_unit'
+			'id' | 'name' | 'store_id' | 'description' | 'unit_price'
 		> & { store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'> }
 	>;
 };
@@ -3110,7 +3303,7 @@ export type NewArrivalsQueryVariables = Exact<{
 
 export type NewArrivalsQuery = { __typename?: 'query_root' } & {
 	items: Array<
-		{ __typename?: 'items' } & Pick<Items, 'id' | 'name' | 'price_per_unit'> & {
+		{ __typename?: 'items' } & Pick<Items, 'id' | 'name' | 'unit_price'> & {
 				store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'>;
 			}
 	>;
@@ -3128,7 +3321,7 @@ export type UserOrdersQuery = { __typename?: 'query_root' } & {
 					{ __typename?: 'order_items' } & Pick<Order_Items, 'quantity'> & {
 							item: { __typename?: 'items' } & Pick<
 								Items,
-								'name' | 'price_per_unit'
+								'name' | 'unit_price'
 							>;
 						}
 				>;
@@ -3148,7 +3341,7 @@ export type OrderQuery = { __typename?: 'query_root' } & {
 					{ __typename?: 'order_items' } & Pick<Order_Items, 'quantity'> & {
 							item: { __typename?: 'items' } & Pick<
 								Items,
-								'name' | 'price_per_unit'
+								'name' | 'unit_price'
 							>;
 						}
 				>;
@@ -3170,7 +3363,7 @@ export type PlaceOrderMutation = { __typename?: 'mutation_root' } & {
 							{ __typename?: 'order_items' } & Pick<Order_Items, 'quantity'> & {
 									item: { __typename?: 'items' } & Pick<
 										Items,
-										'name' | 'price_per_unit'
+										'name' | 'unit_price'
 									>;
 								}
 						>;
@@ -3212,7 +3405,15 @@ export type StoresQueryVariables = Exact<{ [key: string]: never }>;
 
 export type StoresQuery = { __typename?: 'query_root' } & {
 	stores: Array<
-		{ __typename?: 'stores' } & Pick<Stores, 'id' | 'name' | 'short_name'>
+		{ __typename?: 'stores' } & Pick<
+			Stores,
+			| 'id'
+			| 'name'
+			| 'short_name'
+			| 'website_url'
+			| 'instagram_username'
+			| 'twitter_username'
+		>
 	>;
 };
 
@@ -3222,7 +3423,22 @@ export type StoreQueryVariables = Exact<{
 
 export type StoreQuery = { __typename?: 'query_root' } & {
 	stores: Array<
-		{ __typename?: 'stores' } & Pick<Stores, 'id' | 'name' | 'short_name'>
+		{ __typename?: 'stores' } & Pick<
+			Stores,
+			| 'id'
+			| 'name'
+			| 'short_name'
+			| 'website_url'
+			| 'instagram_username'
+			| 'twitter_username'
+		> & {
+				store_followers: Array<
+					{ __typename?: 'store_followers' } & Pick<
+						Store_Followers,
+						'store_id' | 'user_id'
+					>
+				>;
+			}
 	>;
 };
 
@@ -3280,7 +3496,7 @@ export const ItemsDocument = gql`
 			name
 			store_id
 			featured
-			price_per_unit
+			unit_price
 		}
 	}
 `;
@@ -3297,7 +3513,7 @@ export const StoreItemsDocument = gql`
 			name
 			store_id
 			featured
-			price_per_unit
+			unit_price
 		}
 	}
 `;
@@ -3321,7 +3537,7 @@ export const ItemDocument = gql`
 				name
 			}
 			description
-			price_per_unit
+			unit_price
 		}
 	}
 `;
@@ -3342,7 +3558,7 @@ export const FeaturedItemsDocument = gql`
 				name
 			}
 			description
-			price_per_unit
+			unit_price
 		}
 	}
 `;
@@ -3364,7 +3580,7 @@ export const NewArrivalsDocument = gql`
 				id
 				name
 			}
-			price_per_unit
+			unit_price
 		}
 	}
 `;
@@ -3388,7 +3604,7 @@ export const UserOrdersDocument = gql`
 			order_items {
 				item {
 					name
-					price_per_unit
+					unit_price
 				}
 				quantity
 			}
@@ -3415,7 +3631,7 @@ export const OrderDocument = gql`
 			order_items {
 				item {
 					name
-					price_per_unit
+					unit_price
 				}
 				quantity
 			}
@@ -3440,7 +3656,7 @@ export const PlaceOrderDocument = gql`
 				order_items {
 					item {
 						name
-						price_per_unit
+						unit_price
 					}
 					quantity
 				}
@@ -3499,6 +3715,9 @@ export const StoresDocument = gql`
 			id
 			name
 			short_name
+			website_url
+			instagram_username
+			twitter_username
 		}
 	}
 `;
@@ -3514,6 +3733,13 @@ export const StoreDocument = gql`
 			id
 			name
 			short_name
+			website_url
+			instagram_username
+			twitter_username
+			store_followers {
+				store_id
+				user_id
+			}
 		}
 	}
 `;

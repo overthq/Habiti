@@ -40,7 +40,7 @@ const StoreItems: React.FC<StoreItemsProps> = ({ storeId, header }) => {
 						<View style={styles.itemImage} />
 						<Text style={styles.itemName}>{item.name}</Text>
 						<Text style={{ color: '#505050', fontSize: 15 }}>
-							${item.price_per_unit}
+							${item.unit_price}
 						</Text>
 					</TouchableOpacity>
 				</View>

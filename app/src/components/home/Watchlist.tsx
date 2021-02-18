@@ -32,7 +32,7 @@ const WatchlistItem: React.FC<WatchlistItemProps> = ({ item }) => {
 			<Text style={{ fontSize: 16, fontWeight: '500' }} numberOfLines={1}>
 				{item.name}
 			</Text>
-			<Text style={styles.itemPrice}>N{item.price_per_unit}</Text>
+			<Text style={styles.itemPrice}>N{item.unit_price}</Text>
 			<Text style={{ fontSize: 14, color: '#7dba03', fontWeight: '500' }}>
 				In Stock
 			</Text>

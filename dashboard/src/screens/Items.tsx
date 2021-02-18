@@ -13,7 +13,7 @@ import { useItemsQuery } from '../types/api';
 // Item:
 // name
 // description
-// price_per_unit
+// unit_price
 // unit
 // created_at
 // updated_at

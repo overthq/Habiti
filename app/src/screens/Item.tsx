@@ -38,7 +38,7 @@ const Item = () => {
 				{/* <Text style={{ fontWeight: '500' }}>{item.name}</Text> */}
 				<View style={styles.metaContainer}>
 					<Text style={{ fontWeight: 'bold', fontSize: 20 }}>{item.name}</Text>
-					<Text style={{ fontSize: 18 }}>${item.price_per_unit}</Text>
+					<Text style={{ fontSize: 18 }}>${item.unit_price}</Text>
 				</View>
 				<View style={styles.separator} />
 				<View

@@ -18,7 +18,7 @@ const AddItem: React.FC = () => {
 				name: values.name,
 				description: values.description,
 				store_id: activeStore,
-				price_per_unit: values.pricePerUnit
+				price_per_unit: values.unitPrice
 				// unit: values.unit
 			}
 		});
@@ -30,7 +30,7 @@ const AddItem: React.FC = () => {
 				initialValues={{
 					name: '',
 					description: '',
-					pricePerUnit: '',
+					unitPrice: '',
 					unit: ''
 				}}
 				onSubmit={submit}
@@ -52,8 +52,8 @@ const AddItem: React.FC = () => {
 						/>
 						<TextInput
 							placeholder='Price per unit (NGN)'
-							onChangeText={handleChange('pricePerUnit')}
-							onBlur={handleBlur('pricePerUnit')}
+							onChangeText={handleChange('unitPrice')}
+							onBlur={handleBlur('unitPrice')}
 							style={styles.input}
 						/>
 						<Button text='Add Item' onPress={() => handleSubmit()} />
