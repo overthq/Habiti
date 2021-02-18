@@ -7,8 +7,7 @@ import {
 	StyleSheet
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-// import { useStoreItemsQuery } from '../../types/api';
-import { items } from '../../api';
+import { useStoreItemsQuery } from '../../types/api';
 
 interface StoreItemsProps {
 	storeId: string;
@@ -16,11 +15,11 @@ interface StoreItemsProps {
 }
 
 const StoreItems: React.FC<StoreItemsProps> = ({ storeId, header }) => {
-	// const [{ data }] = useStoreItemsQuery({
-	// 	variables: { storeId }
-	// });
+	const [{ data }] = useStoreItemsQuery({
+		variables: { storeId }
+	});
 	const { navigate } = useNavigation();
-	const storeItems = items.filter(item => item.storeId === storeId);
+	const storeItems = data?.storeItems.filter(item => item.store_id === storeId);
 
 	if (!storeItems) throw new Error('No store items');
 
@@ -41,7 +40,7 @@ const StoreItems: React.FC<StoreItemsProps> = ({ storeId, header }) => {
 						<View style={styles.itemImage} />
 						<Text style={styles.itemName}>{item.name}</Text>
 						<Text style={{ color: '#505050', fontSize: 15 }}>
-							${item.price}
+							${item.price_per_unit}
 						</Text>
 					</TouchableOpacity>
 				</View>

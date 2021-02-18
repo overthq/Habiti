@@ -6,9 +6,8 @@ import {
 	FlatList,
 	StyleSheet
 } from 'react-native';
-// import { useUserOrdersQuery } from '../../types/api';
+import { useUserOrdersQuery } from '../../types/api';
 import textStyles from '../../styles/text';
-import { orders, OrderStatus, items } from '../../api';
 
 const getStatusColor = (status: OrderStatus) => {
 	switch (status) {
@@ -22,7 +21,7 @@ const getStatusColor = (status: OrderStatus) => {
 };
 
 const RecentOrders = () => {
-	// const [{ data }] = useUserOrdersQuery();
+	const [{ data }] = useUserOrdersQuery();
 
 	return (
 		<View>
@@ -30,11 +29,12 @@ const RecentOrders = () => {
 				Recent Orders
 			</Text>
 			<FlatList
-				data={orders}
+				data={data?.orders}
 				keyExtractor={({ id }) => id}
 				horizontal
 				showsHorizontalScrollIndicator={false}
 				renderItem={({ item }) => {
+					// Fix this broken logic
 					const nameText = items.find(i => item.orderItems[0].itemId === i.id)
 						?.name;
 					return (

@@ -1,7 +1,7 @@
 export const UPSERT_ITEM = 'UPSERT_ITEM';
 export const REMOVE_ITEM = 'REMOVE_ITEM';
 
-interface Cart {
+export interface Cart {
 	storeId: string;
 	items: {
 		itemId: string;

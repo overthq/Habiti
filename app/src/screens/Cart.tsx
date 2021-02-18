@@ -1,18 +1,17 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
-import { CartsContext } from '../contexts/CartsContext';
+import { useRoute, RouteProp } from '@react-navigation/native';
 import CartItem from '../components/CartItem';
 import {
 	usePlaceOrderMutation,
 	useCreateOrderItemsMutation
 } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
+import { useAppSelector } from '../redux/store';
 
 const Cart: React.FC = () => {
-	const { navigate } = useNavigation();
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
-	const { carts } = React.useContext(CartsContext);
+	const carts = useAppSelector(({ carts }) => carts.carts);
 	const [, placeOrder] = usePlaceOrderMutation();
 	const [, createOrderItems] = useCreateOrderItemsMutation();
 	const { storeId } = params;
@@ -25,10 +24,6 @@ const Cart: React.FC = () => {
 			item_id: itemId,
 			quantity
 		})) ?? [];
-
-	React.useEffect(() => {
-		if (!cart) navigate('Carts');
-	}, [cart]);
 
 	const userExists = true;
 

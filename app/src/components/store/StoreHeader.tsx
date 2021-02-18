@@ -1,43 +1,49 @@
 import React from 'react';
 import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { openLink } from '../../utils/links';
-// import { useFollowStoreMutation, useUnfollowStoreMutation, Stores } from '../../types/api';
-import { stores } from '../../api';
+import {
+	useFollowStoreMutation,
+	useUnfollowStoreMutation,
+	Stores
+} from '../../types/api';
 import FollowButton from './FollowButton';
 import SocialLinks from './SocialLinks';
+import { useAppSelector } from '../../redux/store';
 
 interface StoreHeaderProps {
-	store: typeof stores[-1];
+	store: Stores;
 }
 
 const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
-	// const [, followStore] = useFollowStoreMutation();
-	// const [, unfollowStore] = useUnfollowStoreMutation();
-	// const currentUserData = React.useContext(CurrentUserContext);
+	const [, followStore] = useFollowStoreMutation();
+	const [, unfollowStore] = useUnfollowStoreMutation();
+	const userId = useAppSelector(({ auth }) => auth.userId);
 
-	// const userInStoreFollowing = store?.profile.followers.findIndex(
-	// 	({ user_id }) => user_id === currentUserData?.currentUser.id
-	// );
-	// const userInStoreFollowing = false;
-	const isFollowingStore = false;
-	// const isFollowingStore =
-	// 	userInStoreFollowing !== undefined && userInStoreFollowing > -1;
+	const isFollowingStore = React.useMemo(() => {
+		const userInStoreFollowing = store?.store_followers.findIndex(
+			({ user_id }) => user_id === userId
+		);
+		return userInStoreFollowing > -1;
+	}, [store]);
 
 	return (
 		<View style={styles.container}>
 			<View style={styles.row}>
 				<View style={styles.imagePlaceholder}>
-					<Image source={{ uri: store.avatarUrl }} style={styles.image} />
+					<Image
+						source={{ uri: '' /* Do something here */ }}
+						style={styles.image}
+					/>
 				</View>
 				<SocialLinks
 					links={[
 						{
 							iconName: 'twitter',
-							url: `https://twitter.com/${store.links.twitter}`
+							url: `https://twitter.com/${store.twitter_username}`
 						},
 						{
 							iconName: 'instagram',
-							url: `https://instagram.com/${store.links.instagram}`
+							url: `https://instagram.com/${store.instagram_username}`
 						}
 					]}
 				/>
@@ -46,18 +52,18 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 				<Text style={styles.storeName}>{store?.name}</Text>
 				<TouchableOpacity
 					style={{ marginTop: 5 }}
-					onPress={() => openLink(store.links.website)}
+					onPress={() => openLink(store.website_url)}
 				>
-					<Text style={styles.websiteLinkText}>{store.links.website}</Text>
+					<Text style={styles.websiteLinkText}>{store.website_url}</Text>
 				</TouchableOpacity>
 			</View>
 			<FollowButton
 				isFollowing={isFollowingStore}
 				follow={() => {
-					// followStore({ storeId: store?.id, userId: '' });
+					followStore({ storeId: store?.id, userId: '' });
 				}}
 				unfollow={() => {
-					// unfollowStore({ storeId: store.id, userId: '' });
+					unfollowStore({ storeId: store.id, userId: '' });
 				}}
 			/>
 		</View>

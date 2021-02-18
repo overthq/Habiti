@@ -8,9 +8,13 @@ import {
 } from 'react-native';
 import { TabBar, TabView, SceneMap } from 'react-native-tab-view';
 import { useNavigation } from '@react-navigation/native';
-import { stores, items } from '../../api';
+import { Items, Stores } from '../../types/api';
 
-const StoresView: React.FC<{ data: typeof stores }> = ({ data }) => {
+interface StoresViewProps {
+	data: Stores[];
+}
+
+const StoresView: React.FC<StoresViewProps> = ({ data }) => {
 	const { navigate } = useNavigation();
 	return (
 		<FlatList
@@ -22,7 +26,7 @@ const StoresView: React.FC<{ data: typeof stores }> = ({ data }) => {
 					style={styles.resultRow}
 				>
 					<Image
-						source={{ uri: item.avatarUrl }}
+						source={{ uri: '' /* Do something here */ }}
 						style={styles.resultRowThumbnail}
 					/>
 					<Text style={{ fontSize: 16 }}>{item.name}</Text>
@@ -32,7 +36,11 @@ const StoresView: React.FC<{ data: typeof stores }> = ({ data }) => {
 	);
 };
 
-const ItemsView: React.FC<{ data: typeof items }> = ({ data }) => {
+interface ItemsViewProps {
+	data: Items[];
+}
+
+const ItemsView: React.FC<ItemsViewProps> = ({ data }) => {
 	const { navigate } = useNavigation();
 	return (
 		<FlatList
@@ -44,7 +52,7 @@ const ItemsView: React.FC<{ data: typeof items }> = ({ data }) => {
 					style={styles.resultRow}
 				>
 					<Image
-						source={{ uri: item.imageUrl }}
+						source={{ uri: '' /* Do something here */ }}
 						style={styles.resultRowThumbnail}
 					/>
 					<Text style={{ fontSize: 16 }}>{item.name}</Text>
