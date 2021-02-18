@@ -1,16 +1,18 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { useStoresQuery } from '../../types/api';
 import ListEmpty from '../global/ListEmpty';
-import { stores } from '../../api';
 import TrendingStoresItem from './TrendingStoresItem';
 
 const TrendingStores: React.FC = () => {
+	const [{ data }] = useStoresQuery();
+
 	return (
 		<View style={styles.container}>
 			<Text style={styles.sectionHeader}>Trending Stores</Text>
 			<FlatList
 				horizontal
-				data={stores}
+				data={data?.stores}
 				keyExtractor={({ id }) => id}
 				contentContainerStyle={styles.list}
 				renderItem={({ item }) => <TrendingStoresItem store={item} />}

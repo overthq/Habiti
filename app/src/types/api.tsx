@@ -3484,7 +3484,10 @@ export type StoresFollowedQueryVariables = Exact<{
 export type StoresFollowedQuery = { __typename?: 'query_root' } & {
 	store_followers: Array<
 		{ __typename?: 'store_followers' } & Pick<Store_Followers, 'store_id'> & {
-				store: { __typename?: 'stores' } & Pick<Stores, 'name' | 'short_name'>;
+				store: { __typename?: 'stores' } & Pick<
+					Stores,
+					'id' | 'name' | 'short_name'
+				>;
 			}
 	>;
 };
@@ -3791,6 +3794,7 @@ export const StoresFollowedDocument = gql`
 		store_followers(where: { user_id: { _eq: $userId } }) {
 			store_id
 			store {
+				id
 				name
 				short_name
 			}

@@ -9,14 +9,17 @@ import {
 import { useUserOrdersQuery } from '../../types/api';
 import textStyles from '../../styles/text';
 
-const getStatusColor = (status: OrderStatus) => {
-	switch (status) {
-		case OrderStatus.Pending:
-			return '#ba9b03';
-		case OrderStatus.Processing:
-			return '#C4C4C4';
-		case OrderStatus.Fulfilled:
-			return '#7dba03';
+const getStatusColor = (status?: string | null) => {
+	// switch (status) {
+	// 	case OrderStatus.Pending:
+	// 		return '#ba9b03';
+	// 	case OrderStatus.Processing:
+	// 		return '#C4C4C4';
+	// 	case OrderStatus.Fulfilled:
+	// 		return '#7dba03';
+	// }
+	if (status) {
+		return 'gray';
 	}
 };
 
@@ -34,9 +37,7 @@ const RecentOrders = () => {
 				horizontal
 				showsHorizontalScrollIndicator={false}
 				renderItem={({ item }) => {
-					// Fix this broken logic
-					const nameText = items.find(i => item.orderItems[0].itemId === i.id)
-						?.name;
+					const nameText = item.order_items[0]?.item.name;
 					return (
 						<TouchableOpacity
 							activeOpacity={0.8}
@@ -48,9 +49,9 @@ const RecentOrders = () => {
 								<View style={styles.orderInformation}>
 									<Text style={{ fontSize: 16 }}>
 										{nameText}
-										{item.orderItems.length > 1 &&
-											` and ${item.orderItems.length - 1} ${
-												item.orderItems.length - 1 > 1 ? 'others' : 'other'
+										{item.order_items.length > 1 &&
+											` and ${item.order_items.length - 1} ${
+												item.order_items.length - 1 > 1 ? 'others' : 'other'
 											}`}
 									</Text>
 									<Text

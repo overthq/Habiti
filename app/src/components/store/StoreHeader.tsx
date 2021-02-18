@@ -4,14 +4,14 @@ import { openLink } from '../../utils/links';
 import {
 	useFollowStoreMutation,
 	useUnfollowStoreMutation,
-	Stores
+	StoreQuery
 } from '../../types/api';
 import FollowButton from './FollowButton';
 import SocialLinks from './SocialLinks';
 import { useAppSelector } from '../../redux/store';
 
 interface StoreHeaderProps {
-	store: Stores;
+	store: StoreQuery['stores'][-1];
 }
 
 const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
@@ -20,7 +20,7 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 	const userId = useAppSelector(({ auth }) => auth.userId);
 
 	const isFollowingStore = React.useMemo(() => {
-		const userInStoreFollowing = store?.store_followers.findIndex(
+		const userInStoreFollowing = store?.store_followers?.findIndex(
 			({ user_id }) => user_id === userId
 		);
 		return userInStoreFollowing > -1;
