@@ -11,7 +11,10 @@ import { useAppSelector } from '../redux/store';
 
 const Cart: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
-	const carts = useAppSelector(({ carts }) => carts.carts);
+	const { userId, carts } = useAppSelector(({ auth, carts }) => ({
+		userId: auth.userId,
+		carts: carts.carts
+	}));
 	const [, placeOrder] = usePlaceOrderMutation();
 	const [, createOrderItems] = useCreateOrderItemsMutation();
 	const { storeId } = params;
@@ -23,14 +26,13 @@ const Cart: React.FC = () => {
 			order_id,
 			item_id: itemId,
 			quantity
+			// unit_price?
 		})) ?? [];
 
-	const userExists = true;
-
 	const handleSubmit = async () => {
-		if (userExists) {
+		if (userId) {
 			const { data: orderData } = await placeOrder({
-				input: { user_id: '', store_id: cart?.storeId }
+				input: { user_id: userId, store_id: cart?.storeId }
 			});
 
 			if (orderData?.insert_orders?.returning) {
