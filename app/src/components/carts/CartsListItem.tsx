@@ -13,7 +13,7 @@ const CartsListItem: React.FC<CartListItemProps> = ({ cart }) => {
 	const [{ data }] = useStoreQuery({ variables: { storeId: cart.storeId } });
 	const { navigate } = useNavigation();
 
-	const store = data?.stores.find(({ id }) => cart.storeId === id);
+	const store = data?.stores[0];
 	if (!store) throw new Error('Not specified');
 
 	return (
