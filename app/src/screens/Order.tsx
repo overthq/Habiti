@@ -14,7 +14,7 @@ const Order = () => {
 	return (
 		<View style={styles.container}>
 			<Text>Order Details:</Text>
-			<Text>{order.id}</Text>
+			<Text>{order?.id}</Text>
 		</View>
 	);
 };

@@ -4,36 +4,33 @@ import {
 	StyleSheet,
 	ScrollView,
 	Text,
-	LayoutAnimation
+	LayoutAnimation,
+	Alert
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-// import { useStoresQuery, SearchQuery, SearchDocument } from '../types/api';
-// import { useClient } from 'urql';
-import { stores, items } from '../api';
+import { SearchQuery, SearchDocument } from '../types/api';
+import { useClient } from 'urql';
 import SearchBar from '../components/explore/SearchBar';
 import SearchResults from '../components/explore/SearchResults';
 import TrendingStores from '../components/explore/TrendingStores';
 
 const Explore: React.FC = () => {
-	// const [searchData, setSearchData] = React.useState<SearchQuery | undefined>();
-	const searchData = { stores, items };
+	const [searchData, setSearchData] = React.useState<SearchQuery | undefined>();
 	const [searchBarFocused, setSearchBarFocused] = React.useState(false);
-	// const [{ data }] = useStoresQuery();
-	// const client = useClient();
+	const client = useClient();
 
 	React.useEffect(() => {
 		LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
 	}, [searchBarFocused]);
 
 	const handleSearch = async (searchTerm: string) => {
-		console.log(searchTerm);
-		// const { data, error } = await client
-		// 	.query<SearchQuery>(SearchDocument, { searchTerm: `%${searchTerm}%` })
-		// 	.toPromise();
+		const { data, error } = await client
+			.query<SearchQuery>(SearchDocument, { searchTerm: `%${searchTerm}%` })
+			.toPromise();
 
-		// setSearchData(data);
+		setSearchData(data);
 
-		// if (error) Alert.alert(error.message);
+		if (error) Alert.alert(error.message);
 	};
 
 	return (

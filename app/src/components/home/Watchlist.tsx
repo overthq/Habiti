@@ -8,10 +8,10 @@ import {
 	StyleSheet
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { items } from '../../api';
+import { useItemsQuery, Items } from '../../types/api';
 
 interface WatchlistItemProps {
-	item: typeof items[-1];
+	item: Partial<Items>;
 }
 
 const WatchlistItem: React.FC<WatchlistItemProps> = ({ item }) => {
@@ -25,14 +25,14 @@ const WatchlistItem: React.FC<WatchlistItemProps> = ({ item }) => {
 		>
 			<View style={styles.imagePlaceholder}>
 				<Image
-					source={{ uri: item.imageUrl }}
+					source={{ uri: '' /* Do something here */ }}
 					style={{ width: '100%', height: '100%' }}
 				/>
 			</View>
 			<Text style={{ fontSize: 16, fontWeight: '500' }} numberOfLines={1}>
 				{item.name}
 			</Text>
-			<Text style={styles.itemPrice}>N{item.price}</Text>
+			<Text style={styles.itemPrice}>N{item.unit_price}</Text>
 			<Text style={{ fontSize: 14, color: '#7dba03', fontWeight: '500' }}>
 				In Stock
 			</Text>
@@ -40,18 +40,22 @@ const WatchlistItem: React.FC<WatchlistItemProps> = ({ item }) => {
 	);
 };
 
-const Watchlist = () => (
-	<View>
-		<Text style={styles.sectionHeader}>Wishlist</Text>
-		<FlatList
-			horizontal
-			showsHorizontalScrollIndicator={false}
-			data={items}
-			renderItem={({ item }) => <WatchlistItem item={item} />}
-			ListFooterComponent={<View style={{ width: 16 }} />}
-		/>
-	</View>
-);
+const Watchlist = () => {
+	const [{ data }] = useItemsQuery();
+
+	return (
+		<View>
+			<Text style={styles.sectionHeader}>Wishlist</Text>
+			<FlatList
+				horizontal
+				showsHorizontalScrollIndicator={false}
+				data={data?.items}
+				renderItem={({ item }) => <WatchlistItem item={item} />}
+				ListFooterComponent={<View style={{ width: 16 }} />}
+			/>
+		</View>
+	);
+};
 
 const styles = StyleSheet.create({
 	sectionHeader: {

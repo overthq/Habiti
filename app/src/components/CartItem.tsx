@@ -20,21 +20,22 @@ const CartItem: React.FC<CartItemProps> = ({ itemId, quantity }) => {
 		<View style={styles.container}>
 			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 				<View style={styles.imagePlaceholder} />
-				<Text style={{ fontSize: 16 }}>{item?.name}</Text>
+				<View>
+					<Text style={{ fontSize: 16 }}>{item?.name}</Text>
+					<Text style={{ fontSize: 14, marginTop: 8 }}>{item?.unit_price}</Text>
+				</View>
 			</View>
 			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 				<TouchableOpacity
 					style={{ marginRight: 7.5 }}
 					onPress={() => {
-						if (quantity !== 0 && item?.store_id) {
-							dispatch(
-								upsertItemToCart({
-									storeId: item.store_id,
-									itemId,
-									quantity: quantity - 1
-								})
-							);
-						}
+						dispatch(
+							upsertItemToCart({
+								storeId: item?.store_id,
+								itemId,
+								quantity: quantity - 1
+							})
+						);
 					}}
 				>
 					<Icon name='minus' color='#828282' />
@@ -45,15 +46,13 @@ const CartItem: React.FC<CartItemProps> = ({ itemId, quantity }) => {
 				<TouchableOpacity
 					style={{ marginLeft: 7.5 }}
 					onPress={() => {
-						if (item?.store_id) {
-							dispatch(
-								upsertItemToCart({
-									storeId: item.store_id,
-									itemId,
-									quantity: quantity + 1
-								})
-							);
-						}
+						dispatch(
+							upsertItemToCart({
+								storeId: item?.store_id,
+								itemId,
+								quantity: quantity + 1
+							})
+						);
 					}}
 				>
 					<Icon name='plus' color='#828282' />
@@ -61,9 +60,7 @@ const CartItem: React.FC<CartItemProps> = ({ itemId, quantity }) => {
 				<TouchableOpacity
 					style={{ marginLeft: 7.5 }}
 					onPress={() => {
-						if (item?.store_id) {
-							dispatch(removeItemFromCart({ storeId: item.store_id, itemId }));
-						}
+						dispatch(removeItemFromCart({ storeId: item?.store_id, itemId }));
 					}}
 				>
 					<Icon name='trash' color='#828282' />

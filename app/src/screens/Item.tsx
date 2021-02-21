@@ -7,24 +7,22 @@ import {
 	ScrollView,
 	StyleSheet
 } from 'react-native';
-import { useRoute, RouteProp } from '@react-navigation/native';
-// import { useItemQuery } from '../types/api';
-import { Icon } from '../components/icons';
-// import { CartsContext } from '../contexts/CartsContext';
-import { AppStackParamList } from '../types/navigation';
-import { items } from '../api';
-import { upsertItemToCart, removeItemFromCart } from '../redux/carts/actions';
 import { useDispatch } from 'react-redux';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { useItemQuery } from '../types/api';
+import { Icon } from '../components/icons';
+import { AppStackParamList } from '../types/navigation';
+import { upsertItemToCart } from '../redux/carts/actions';
 
 const Item = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Item'>>();
 	const dispatch = useDispatch();
-	// const [{ data }] = useItemQuery({
-	// 	variables: { itemId: params.itemId }
-	// });
+	const [{ data }] = useItemQuery({
+		variables: { itemId: params.itemId }
+	});
 	const [quantity, setQuantity] = React.useState(0);
 
-	const item = items.find(item => item.id === params.itemId);
+	const item = data?.items.find(item => item.id === params.itemId);
 
 	if (!item) throw new Error('Item does  not exist');
 
@@ -32,7 +30,7 @@ const Item = () => {
 		<ScrollView style={styles.container}>
 			<View style={styles.imagePlaceholder}>
 				<Image
-					source={{ uri: item.imageUrl }}
+					source={{ uri: '' /* Do something here*/ }}
 					style={{ width: '100%', height: '100%' }}
 				/>
 			</View>
@@ -40,7 +38,7 @@ const Item = () => {
 				{/* <Text style={{ fontWeight: '500' }}>{item.name}</Text> */}
 				<View style={styles.metaContainer}>
 					<Text style={{ fontWeight: 'bold', fontSize: 20 }}>{item.name}</Text>
-					<Text style={{ fontSize: 18 }}>${item.price}</Text>
+					<Text style={{ fontSize: 18 }}>${item.unit_price}</Text>
 				</View>
 				<View style={styles.separator} />
 				<View
@@ -74,15 +72,13 @@ const Item = () => {
 				<TouchableOpacity
 					style={styles.cartButton}
 					onPress={() => {
-						if (item.storeId) {
-							dispatch(
-								upsertItemToCart({
-									storeId: item.storeId,
-									itemId: item.id,
-									quantity
-								})
-							);
-						}
+						dispatch(
+							upsertItemToCart({
+								storeId: item.store.id,
+								itemId: item.id,
+								quantity
+							})
+						);
 					}}
 				>
 					<Icon

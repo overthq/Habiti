@@ -12,13 +12,12 @@ const AddItem: React.FC = () => {
 	const [, addItem] = useAddItemMutation();
 
 	const submit = (values: Record<string, any>) => {
-		console.log(values);
 		addItem({
 			itemObject: {
 				name: values.name,
 				description: values.description,
 				store_id: activeStore,
-				price_per_unit: values.pricePerUnit
+				unit_price: values.unitPrice
 				// unit: values.unit
 			}
 		});
@@ -30,7 +29,7 @@ const AddItem: React.FC = () => {
 				initialValues={{
 					name: '',
 					description: '',
-					pricePerUnit: '',
+					unitPrice: '',
 					unit: ''
 				}}
 				onSubmit={submit}
@@ -52,9 +51,10 @@ const AddItem: React.FC = () => {
 						/>
 						<TextInput
 							placeholder='Price per unit (NGN)'
-							onChangeText={handleChange('pricePerUnit')}
-							onBlur={handleBlur('pricePerUnit')}
+							onChangeText={handleChange('unitPrice')}
+							onBlur={handleBlur('unitPrice')}
 							style={styles.input}
+							keyboardType='numeric'
 						/>
 						<Button text='Add Item' onPress={() => handleSubmit()} />
 					</View>

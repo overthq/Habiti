@@ -3,11 +3,9 @@ query Stores {
 		id
 		name
 		short_name
-		# profile {
-		# 	website_url
-		# 	instagram_username
-		# 	twitter_username
-		# }
+		website_url
+		instagram_username
+		twitter_username
 	}
 }
 
@@ -16,14 +14,12 @@ query Store($storeId: uuid!) {
 		id
 		name
 		short_name
-		# profile {
-		# 	website_url
-		# 	instagram_username
-		# 	twitter_username
-		# 	followers {
-		# 		store_id
-		# 		user_id
-		# 	}
-		# }
+		website_url
+		instagram_username
+		twitter_username
+		store_followers {
+			store_id
+			user_id
+		}
 	}
 }

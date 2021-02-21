@@ -4,7 +4,7 @@ query Items {
 		name
 		store_id
 		featured
-		price_per_unit
+		unit_price
 		# unit
 	}
 }
@@ -15,7 +15,7 @@ query StoreItems($storeId: uuid!) {
 		name
 		store_id
 		featured
-		price_per_unit
+		unit_price
 		# unit
 	}
 }
@@ -30,7 +30,7 @@ query Item($itemId: uuid!) {
 			name
 		}
 		description
-		price_per_unit
+		unit_price
 		# unit
 	}
 }
@@ -45,7 +45,7 @@ query FeaturedItems {
 			name
 		}
 		description
-		price_per_unit
+		unit_price
 		# unit
 	}
 }
@@ -58,6 +58,6 @@ query NewArrivals($storeIds: [uuid!]!, $oneDayAgo: timestamptz!) {
 			id
 			name
 		}
-		price_per_unit
+		unit_price
 	}
 }

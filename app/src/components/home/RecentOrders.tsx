@@ -6,23 +6,25 @@ import {
 	FlatList,
 	StyleSheet
 } from 'react-native';
-// import { useUserOrdersQuery } from '../../types/api';
+import { useUserOrdersQuery } from '../../types/api';
 import textStyles from '../../styles/text';
-import { orders, OrderStatus, items } from '../../api';
 
-const getStatusColor = (status: OrderStatus) => {
-	switch (status) {
-		case OrderStatus.Pending:
-			return '#ba9b03';
-		case OrderStatus.Processing:
-			return '#C4C4C4';
-		case OrderStatus.Fulfilled:
-			return '#7dba03';
+const getStatusColor = (status?: string | null) => {
+	// switch (status) {
+	// 	case OrderStatus.Pending:
+	// 		return '#ba9b03';
+	// 	case OrderStatus.Processing:
+	// 		return '#C4C4C4';
+	// 	case OrderStatus.Fulfilled:
+	// 		return '#7dba03';
+	// }
+	if (status) {
+		return 'gray';
 	}
 };
 
 const RecentOrders = () => {
-	// const [{ data }] = useUserOrdersQuery();
+	const [{ data }] = useUserOrdersQuery();
 
 	return (
 		<View>
@@ -30,13 +32,12 @@ const RecentOrders = () => {
 				Recent Orders
 			</Text>
 			<FlatList
-				data={orders}
+				data={data?.orders}
 				keyExtractor={({ id }) => id}
 				horizontal
 				showsHorizontalScrollIndicator={false}
 				renderItem={({ item }) => {
-					const nameText = items.find(i => item.orderItems[0].itemId === i.id)
-						?.name;
+					const nameText = item.order_items[0]?.item.name;
 					return (
 						<TouchableOpacity
 							activeOpacity={0.8}
@@ -48,9 +49,9 @@ const RecentOrders = () => {
 								<View style={styles.orderInformation}>
 									<Text style={{ fontSize: 16 }}>
 										{nameText}
-										{item.orderItems.length > 1 &&
-											` and ${item.orderItems.length - 1} ${
-												item.orderItems.length - 1 > 1 ? 'others' : 'other'
+										{item.order_items.length > 1 &&
+											` and ${item.order_items.length - 1} ${
+												item.order_items.length - 1 > 1 ? 'others' : 'other'
 											}`}
 									</Text>
 									<Text

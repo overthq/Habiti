@@ -22,6 +22,7 @@ query StoresFollowed($userId: uuid!) {
 	store_followers(where: { user_id: { _eq: $userId } }) {
 		store_id
 		store {
+			id
 			name
 			short_name
 		}

@@ -13,13 +13,12 @@ const cartsReducer = (
 	state = initialState,
 	action: CartsActionTypes
 ): CartsState => {
+	const cartsCopy = [...state.carts];
+	const existingCart = cartsCopy.find(
+		cart => cart.storeId === action.payload.storeId
+	);
 	switch (action.type) {
 		case UPSERT_ITEM:
-			const cartsCopy = [...state.carts];
-			const existingCart = cartsCopy.find(
-				cart => cart.storeId === action.payload.storeId
-			);
-
 			if (existingCart) {
 				const existingItem = existingCart.items.find(
 					item => item.itemId === action.payload.itemId
@@ -47,24 +46,19 @@ const cartsReducer = (
 			return { carts: cartsCopy };
 
 		case REMOVE_ITEM:
-			const cartsCopyThing = [...state.carts];
-			const existingCartCopy = cartsCopyThing.find(
-				cart => cart.storeId === action.payload.storeId
-			);
-
-			if (existingCartCopy) {
-				const existingItem = existingCartCopy.items.find(
+			if (existingCart) {
+				const existingItem = existingCart.items.find(
 					item => item.itemId === action.payload.itemId
 				);
 				if (existingItem) {
-					const index = existingCartCopy.items.indexOf(existingItem);
+					const index = existingCart.items.indexOf(existingItem);
 					if (index > -1) {
-						existingCartCopy.items.splice(index, 1);
+						existingCart.items.splice(index, 1);
 					}
 				}
 			}
 
-			return { carts: cartsCopyThing };
+			return { carts: cartsCopy };
 		default:
 			return state;
 	}

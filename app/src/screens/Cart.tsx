@@ -1,18 +1,20 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
-import { CartsContext } from '../contexts/CartsContext';
+import { useRoute, RouteProp } from '@react-navigation/native';
 import CartItem from '../components/CartItem';
 import {
 	usePlaceOrderMutation,
 	useCreateOrderItemsMutation
 } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
+import { useAppSelector } from '../redux/store';
 
 const Cart: React.FC = () => {
-	const { navigate } = useNavigation();
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
-	const { carts } = React.useContext(CartsContext);
+	const { userId, carts } = useAppSelector(({ auth, carts }) => ({
+		userId: auth.userId,
+		carts: carts.carts
+	}));
 	const [, placeOrder] = usePlaceOrderMutation();
 	const [, createOrderItems] = useCreateOrderItemsMutation();
 	const { storeId } = params;
@@ -24,18 +26,13 @@ const Cart: React.FC = () => {
 			order_id,
 			item_id: itemId,
 			quantity
+			// unit_price?
 		})) ?? [];
 
-	React.useEffect(() => {
-		if (!cart) navigate('Carts');
-	}, [cart]);
-
-	const userExists = true;
-
 	const handleSubmit = async () => {
-		if (userExists) {
+		if (userId) {
 			const { data: orderData } = await placeOrder({
-				input: { user_id: '', store_id: cart?.storeId }
+				input: { user_id: userId, store_id: cart?.storeId }
 			});
 
 			if (orderData?.insert_orders?.returning) {

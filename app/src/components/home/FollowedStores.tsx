@@ -7,14 +7,15 @@ import {
 	StyleSheet
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-// import { useStoresFollowedQuery } from '../../types/api';
-import { stores } from '../../api';
+import { useStoresFollowedQuery } from '../../types/api';
+import { useAppSelector } from '../../redux/store';
 
 const FollowedStores: React.FC = () => {
-	// const [{ data }] = useStoresFollowedQuery({
-	// 	variables: { userId: 'b6cc8a11-7528-41eb-b082-77593797c978' }
-	// });
+	const userId = useAppSelector(({ auth }) => auth.userId);
+	const [{ data }] = useStoresFollowedQuery({ variables: { userId } });
 	const { navigate } = useNavigation();
+
+	const stores = data?.store_followers.map(({ store }) => store);
 
 	return (
 		<View>
