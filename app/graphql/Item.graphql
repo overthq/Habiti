@@ -1,63 +1,51 @@
-query Items {
-	items {
+# We have to migrate queries, to move them closer to components.
+
+fragment ItemDetails on items {
+	id
+	name
+	store_id
+	store {
 		id
 		name
-		store_id
-		featured
-		unit_price
-		# unit
+	}
+	description
+	unit_price
+	# unit
+}
+
+query Items {
+	items {
+		...ItemDetails
 	}
 }
 
 query StoreItems($storeId: uuid!) {
-	storeItems: items(where: { store_id: { _eq: $storeId } }) {
-		id
-		name
-		store_id
-		featured
-		unit_price
-		# unit
+	items(where: { store_id: { _eq: $storeId } }) {
+		...ItemDetails
 	}
 }
 
 query Item($itemId: uuid!) {
-	items(where: { id: { _eq: $itemId } }) {
-		id
-		name
-		store_id
-		store {
-			id
-			name
-		}
-		description
-		unit_price
-		# unit
+	items_by_pk(id: $itemId) {
+		...ItemDetails
 	}
 }
 
 query FeaturedItems {
-	featuredItems: items(where: { featured: { _eq: true } }) {
-		id
-		name
-		store_id
-		store {
-			id
-			name
-		}
-		description
-		unit_price
-		# unit
+	items(where: { featured: { _eq: true } }) {
+		...ItemDetails
 	}
 }
 
 query NewArrivals($storeIds: [uuid!]!, $oneDayAgo: timestamptz!) {
 	items(where: { created_at: { _gte: $oneDayAgo } }) {
+		...ItemDetails
+	}
+}
+
+query ItemsMoreDetails($itemIds: [uuid!]!) {
+	items(where: { id: { _in: $itemIds } }) {
 		id
-		name
-		store {
-			id
-			name
-		}
 		unit_price
 	}
 }

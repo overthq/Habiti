@@ -1,34 +1,27 @@
+fragment OrderDetails on orders {
+	id
+	status
+	store {
+		name
+	}
+	order_items {
+		item {
+			name
+			unit_price
+		}
+		quantity
+	}
+}
+
 query UserOrders($userId: uuid!) {
 	orders(where: { user_id: { _eq: $userId } }) {
-		id
-		status
-		store {
-			name
-		}
-		order_items {
-			item {
-				name
-				unit_price
-			}
-			quantity
-		}
+		...OrderDetails
 	}
 }
 
 query Order($orderId: uuid!) {
-	orders(where: { id: { _eq: $orderId } }) {
-		id
-		status
-		store {
-			name
-		}
-		order_items {
-			item {
-				name
-				unit_price
-			}
-			quantity
-		}
+	orders_by_pk(id: $orderId) {
+		...OrderDetails
 	}
 }
 
@@ -36,17 +29,6 @@ mutation PlaceOrder($input: orders_insert_input!) {
 	insert_orders(objects: [$input]) {
 		returning {
 			id
-			status
-			store {
-				name
-			}
-			order_items {
-				item {
-					name
-					unit_price
-				}
-				quantity
-			}
 		}
 	}
 }

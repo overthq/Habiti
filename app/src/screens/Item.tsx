@@ -13,6 +13,7 @@ import { useItemQuery } from '../types/api';
 import { Icon } from '../components/icons';
 import { AppStackParamList } from '../types/navigation';
 import { upsertItemToCart } from '../redux/carts/actions';
+import QuantityControl from '../components/item/QuantityControl';
 
 const Item = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Item'>>();
@@ -22,9 +23,9 @@ const Item = () => {
 	});
 	const [quantity, setQuantity] = React.useState(0);
 
-	const item = data?.items.find(item => item.id === params.itemId);
+	const item = data?.items_by_pk;
 
-	if (!item) throw new Error('Item does  not exist');
+	if (!item) throw new Error('How can this be?');
 
 	return (
 		<ScrollView style={styles.container}>
@@ -35,40 +36,12 @@ const Item = () => {
 				/>
 			</View>
 			<View style={{ paddingHorizontal: 20, paddingTop: 20 }}>
-				{/* <Text style={{ fontWeight: '500' }}>{item.name}</Text> */}
 				<View style={styles.metaContainer}>
 					<Text style={{ fontWeight: 'bold', fontSize: 20 }}>{item.name}</Text>
 					<Text style={{ fontSize: 18 }}>${item.unit_price}</Text>
 				</View>
 				<View style={styles.separator} />
-				<View
-					style={{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						marginVertical: 4
-					}}
-				>
-					<Text style={{ fontSize: 16, fontWeight: '500' }}>Quantity</Text>
-					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-						<TouchableOpacity
-							style={{ marginRight: 7.5 }}
-							onPress={() => {
-								if (quantity !== 0) setQuantity(quantity - 1);
-							}}
-						>
-							<Icon name='minus' color='#828282' />
-						</TouchableOpacity>
-						<Text style={{ fontSize: 16, fontVariant: ['tabular-nums'] }}>
-							{quantity}
-						</Text>
-						<TouchableOpacity
-							style={{ marginLeft: 7.5 }}
-							onPress={() => setQuantity(quantity + 1)}
-						>
-							<Icon name='plus' color='#828282' />
-						</TouchableOpacity>
-					</View>
-				</View>
+				<QuantityControl itemId={params.itemId} />
 				<TouchableOpacity
 					style={styles.cartButton}
 					onPress={() => {

@@ -9,7 +9,7 @@ const Order = () => {
 
 	const [{ data }] = useOrderQuery({ variables: { orderId } });
 
-	const order = data?.orders[0];
+	const order = data?.orders_by_pk;
 
 	return (
 		<View style={styles.container}>

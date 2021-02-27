@@ -19,7 +19,7 @@ const StoreItems: React.FC<StoreItemsProps> = ({ storeId, header }) => {
 		variables: { storeId }
 	});
 	const { navigate } = useNavigation();
-	const storeItems = data?.storeItems.filter(item => item.store_id === storeId);
+	const storeItems = data?.items.filter(item => item.store_id === storeId);
 
 	if (!storeItems) throw new Error('No store items');
 

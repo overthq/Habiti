@@ -1,25 +1,24 @@
+fragment StoreDetails on stores {
+	id
+	name
+	short_name
+	website_url
+	instagram_username
+	twitter_username
+	store_followers {
+		store_id
+		user_id
+	}
+}
+
 query Stores {
 	stores {
-		id
-		name
-		short_name
-		website_url
-		instagram_username
-		twitter_username
+		...StoreDetails
 	}
 }
 
 query Store($storeId: uuid!) {
-	stores(where: { id: { _eq: $storeId } }) {
-		id
-		name
-		short_name
-		website_url
-		instagram_username
-		twitter_username
-		store_followers {
-			store_id
-			user_id
-		}
+	stores_by_pk(id: $storeId) {
+		...StoreDetails
 	}
 }

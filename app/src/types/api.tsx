@@ -3248,15 +3248,15 @@ export type Uuid_Comparison_Exp = {
 	_nin?: Maybe<Array<Scalars['uuid']>>;
 };
 
+export type ItemDetailsFragment = { __typename?: 'items' } & Pick<
+	Items,
+	'id' | 'name' | 'store_id' | 'description' | 'unit_price'
+> & { store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'> };
+
 export type ItemsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ItemsQuery = { __typename?: 'query_root' } & {
-	items: Array<
-		{ __typename?: 'items' } & Pick<
-			Items,
-			'id' | 'name' | 'store_id' | 'featured' | 'unit_price'
-		>
-	>;
+	items: Array<{ __typename?: 'items' } & ItemDetailsFragment>;
 };
 
 export type StoreItemsQueryVariables = Exact<{
@@ -3264,12 +3264,7 @@ export type StoreItemsQueryVariables = Exact<{
 }>;
 
 export type StoreItemsQuery = { __typename?: 'query_root' } & {
-	storeItems: Array<
-		{ __typename?: 'items' } & Pick<
-			Items,
-			'id' | 'name' | 'store_id' | 'featured' | 'unit_price'
-		>
-	>;
+	items: Array<{ __typename?: 'items' } & ItemDetailsFragment>;
 };
 
 export type ItemQueryVariables = Exact<{
@@ -3277,23 +3272,13 @@ export type ItemQueryVariables = Exact<{
 }>;
 
 export type ItemQuery = { __typename?: 'query_root' } & {
-	items: Array<
-		{ __typename?: 'items' } & Pick<
-			Items,
-			'id' | 'name' | 'store_id' | 'description' | 'unit_price'
-		> & { store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'> }
-	>;
+	items_by_pk?: Maybe<{ __typename?: 'items' } & ItemDetailsFragment>;
 };
 
 export type FeaturedItemsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type FeaturedItemsQuery = { __typename?: 'query_root' } & {
-	featuredItems: Array<
-		{ __typename?: 'items' } & Pick<
-			Items,
-			'id' | 'name' | 'store_id' | 'description' | 'unit_price'
-		> & { store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'> }
-	>;
+	items: Array<{ __typename?: 'items' } & ItemDetailsFragment>;
 };
 
 export type NewArrivalsQueryVariables = Exact<{
@@ -3302,31 +3287,35 @@ export type NewArrivalsQueryVariables = Exact<{
 }>;
 
 export type NewArrivalsQuery = { __typename?: 'query_root' } & {
-	items: Array<
-		{ __typename?: 'items' } & Pick<Items, 'id' | 'name' | 'unit_price'> & {
-				store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'>;
-			}
-	>;
+	items: Array<{ __typename?: 'items' } & ItemDetailsFragment>;
 };
+
+export type ItemsMoreDetailsQueryVariables = Exact<{
+	itemIds: Array<Scalars['uuid']> | Scalars['uuid'];
+}>;
+
+export type ItemsMoreDetailsQuery = { __typename?: 'query_root' } & {
+	items: Array<{ __typename?: 'items' } & Pick<Items, 'id' | 'unit_price'>>;
+};
+
+export type OrderDetailsFragment = { __typename?: 'orders' } & Pick<
+	Orders,
+	'id' | 'status'
+> & {
+		store: { __typename?: 'stores' } & Pick<Stores, 'name'>;
+		order_items: Array<
+			{ __typename?: 'order_items' } & Pick<Order_Items, 'quantity'> & {
+					item: { __typename?: 'items' } & Pick<Items, 'name' | 'unit_price'>;
+				}
+		>;
+	};
 
 export type UserOrdersQueryVariables = Exact<{
 	userId: Scalars['uuid'];
 }>;
 
 export type UserOrdersQuery = { __typename?: 'query_root' } & {
-	orders: Array<
-		{ __typename?: 'orders' } & Pick<Orders, 'id' | 'status'> & {
-				store: { __typename?: 'stores' } & Pick<Stores, 'name'>;
-				order_items: Array<
-					{ __typename?: 'order_items' } & Pick<Order_Items, 'quantity'> & {
-							item: { __typename?: 'items' } & Pick<
-								Items,
-								'name' | 'unit_price'
-							>;
-						}
-				>;
-			}
-	>;
+	orders: Array<{ __typename?: 'orders' } & OrderDetailsFragment>;
 };
 
 export type OrderQueryVariables = Exact<{
@@ -3334,19 +3323,7 @@ export type OrderQueryVariables = Exact<{
 }>;
 
 export type OrderQuery = { __typename?: 'query_root' } & {
-	orders: Array<
-		{ __typename?: 'orders' } & Pick<Orders, 'id' | 'status'> & {
-				store: { __typename?: 'stores' } & Pick<Stores, 'name'>;
-				order_items: Array<
-					{ __typename?: 'order_items' } & Pick<Order_Items, 'quantity'> & {
-							item: { __typename?: 'items' } & Pick<
-								Items,
-								'name' | 'unit_price'
-							>;
-						}
-				>;
-			}
-	>;
+	orders_by_pk?: Maybe<{ __typename?: 'orders' } & OrderDetailsFragment>;
 };
 
 export type PlaceOrderMutationVariables = Exact<{
@@ -3356,19 +3333,7 @@ export type PlaceOrderMutationVariables = Exact<{
 export type PlaceOrderMutation = { __typename?: 'mutation_root' } & {
 	insert_orders?: Maybe<
 		{ __typename?: 'orders_mutation_response' } & {
-			returning: Array<
-				{ __typename?: 'orders' } & Pick<Orders, 'id' | 'status'> & {
-						store: { __typename?: 'stores' } & Pick<Stores, 'name'>;
-						order_items: Array<
-							{ __typename?: 'order_items' } & Pick<Order_Items, 'quantity'> & {
-									item: { __typename?: 'items' } & Pick<
-										Items,
-										'name' | 'unit_price'
-									>;
-								}
-						>;
-					}
-			>;
+			returning: Array<{ __typename?: 'orders' } & Pick<Orders, 'id'>>;
 		}
 	>;
 };
@@ -3401,20 +3366,27 @@ export type SearchQuery = { __typename?: 'query_root' } & {
 	items: Array<{ __typename?: 'items' } & Pick<Items, 'id' | 'name'>>;
 };
 
+export type StoreDetailsFragment = { __typename?: 'stores' } & Pick<
+	Stores,
+	| 'id'
+	| 'name'
+	| 'short_name'
+	| 'website_url'
+	| 'instagram_username'
+	| 'twitter_username'
+> & {
+		store_followers: Array<
+			{ __typename?: 'store_followers' } & Pick<
+				Store_Followers,
+				'store_id' | 'user_id'
+			>
+		>;
+	};
+
 export type StoresQueryVariables = Exact<{ [key: string]: never }>;
 
 export type StoresQuery = { __typename?: 'query_root' } & {
-	stores: Array<
-		{ __typename?: 'stores' } & Pick<
-			Stores,
-			| 'id'
-			| 'name'
-			| 'short_name'
-			| 'website_url'
-			| 'instagram_username'
-			| 'twitter_username'
-		>
-	>;
+	stores: Array<{ __typename?: 'stores' } & StoreDetailsFragment>;
 };
 
 export type StoreQueryVariables = Exact<{
@@ -3422,24 +3394,7 @@ export type StoreQueryVariables = Exact<{
 }>;
 
 export type StoreQuery = { __typename?: 'query_root' } & {
-	stores: Array<
-		{ __typename?: 'stores' } & Pick<
-			Stores,
-			| 'id'
-			| 'name'
-			| 'short_name'
-			| 'website_url'
-			| 'instagram_username'
-			| 'twitter_username'
-		> & {
-				store_followers: Array<
-					{ __typename?: 'store_followers' } & Pick<
-						Store_Followers,
-						'store_id' | 'user_id'
-					>
-				>;
-			}
-	>;
+	stores_by_pk?: Maybe<{ __typename?: 'stores' } & StoreDetailsFragment>;
 };
 
 export type FollowStoreMutationVariables = Exact<{
@@ -3492,16 +3447,56 @@ export type StoresFollowedQuery = { __typename?: 'query_root' } & {
 	>;
 };
 
+export const ItemDetailsFragmentDoc = gql`
+	fragment ItemDetails on items {
+		id
+		name
+		store_id
+		store {
+			id
+			name
+		}
+		description
+		unit_price
+	}
+`;
+export const OrderDetailsFragmentDoc = gql`
+	fragment OrderDetails on orders {
+		id
+		status
+		store {
+			name
+		}
+		order_items {
+			item {
+				name
+				unit_price
+			}
+			quantity
+		}
+	}
+`;
+export const StoreDetailsFragmentDoc = gql`
+	fragment StoreDetails on stores {
+		id
+		name
+		short_name
+		website_url
+		instagram_username
+		twitter_username
+		store_followers {
+			store_id
+			user_id
+		}
+	}
+`;
 export const ItemsDocument = gql`
 	query Items {
 		items {
-			id
-			name
-			store_id
-			featured
-			unit_price
+			...ItemDetails
 		}
 	}
+	${ItemDetailsFragmentDoc}
 `;
 
 export function useItemsQuery(
@@ -3511,14 +3506,11 @@ export function useItemsQuery(
 }
 export const StoreItemsDocument = gql`
 	query StoreItems($storeId: uuid!) {
-		storeItems: items(where: { store_id: { _eq: $storeId } }) {
-			id
-			name
-			store_id
-			featured
-			unit_price
+		items(where: { store_id: { _eq: $storeId } }) {
+			...ItemDetails
 		}
 	}
+	${ItemDetailsFragmentDoc}
 `;
 
 export function useStoreItemsQuery(
@@ -3531,18 +3523,11 @@ export function useStoreItemsQuery(
 }
 export const ItemDocument = gql`
 	query Item($itemId: uuid!) {
-		items(where: { id: { _eq: $itemId } }) {
-			id
-			name
-			store_id
-			store {
-				id
-				name
-			}
-			description
-			unit_price
+		items_by_pk(id: $itemId) {
+			...ItemDetails
 		}
 	}
+	${ItemDetailsFragmentDoc}
 `;
 
 export function useItemQuery(
@@ -3552,18 +3537,11 @@ export function useItemQuery(
 }
 export const FeaturedItemsDocument = gql`
 	query FeaturedItems {
-		featuredItems: items(where: { featured: { _eq: true } }) {
-			id
-			name
-			store_id
-			store {
-				id
-				name
-			}
-			description
-			unit_price
+		items(where: { featured: { _eq: true } }) {
+			...ItemDetails
 		}
 	}
+	${ItemDetailsFragmentDoc}
 `;
 
 export function useFeaturedItemsQuery(
@@ -3577,15 +3555,10 @@ export function useFeaturedItemsQuery(
 export const NewArrivalsDocument = gql`
 	query NewArrivals($storeIds: [uuid!]!, $oneDayAgo: timestamptz!) {
 		items(where: { created_at: { _gte: $oneDayAgo } }) {
-			id
-			name
-			store {
-				id
-				name
-			}
-			unit_price
+			...ItemDetails
 		}
 	}
+	${ItemDetailsFragmentDoc}
 `;
 
 export function useNewArrivalsQuery(
@@ -3596,23 +3569,30 @@ export function useNewArrivalsQuery(
 		...options
 	});
 }
+export const ItemsMoreDetailsDocument = gql`
+	query ItemsMoreDetails($itemIds: [uuid!]!) {
+		items(where: { id: { _in: $itemIds } }) {
+			id
+			unit_price
+		}
+	}
+`;
+
+export function useItemsMoreDetailsQuery(
+	options: Omit<Urql.UseQueryArgs<ItemsMoreDetailsQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<ItemsMoreDetailsQuery>({
+		query: ItemsMoreDetailsDocument,
+		...options
+	});
+}
 export const UserOrdersDocument = gql`
 	query UserOrders($userId: uuid!) {
 		orders(where: { user_id: { _eq: $userId } }) {
-			id
-			status
-			store {
-				name
-			}
-			order_items {
-				item {
-					name
-					unit_price
-				}
-				quantity
-			}
+			...OrderDetails
 		}
 	}
+	${OrderDetailsFragmentDoc}
 `;
 
 export function useUserOrdersQuery(
@@ -3625,21 +3605,11 @@ export function useUserOrdersQuery(
 }
 export const OrderDocument = gql`
 	query Order($orderId: uuid!) {
-		orders(where: { id: { _eq: $orderId } }) {
-			id
-			status
-			store {
-				name
-			}
-			order_items {
-				item {
-					name
-					unit_price
-				}
-				quantity
-			}
+		orders_by_pk(id: $orderId) {
+			...OrderDetails
 		}
 	}
+	${OrderDetailsFragmentDoc}
 `;
 
 export function useOrderQuery(
@@ -3652,17 +3622,6 @@ export const PlaceOrderDocument = gql`
 		insert_orders(objects: [$input]) {
 			returning {
 				id
-				status
-				store {
-					name
-				}
-				order_items {
-					item {
-						name
-						unit_price
-					}
-					quantity
-				}
 			}
 		}
 	}
@@ -3715,14 +3674,10 @@ export function useSearchQuery(
 export const StoresDocument = gql`
 	query Stores {
 		stores {
-			id
-			name
-			short_name
-			website_url
-			instagram_username
-			twitter_username
+			...StoreDetails
 		}
 	}
+	${StoreDetailsFragmentDoc}
 `;
 
 export function useStoresQuery(
@@ -3732,19 +3687,11 @@ export function useStoresQuery(
 }
 export const StoreDocument = gql`
 	query Store($storeId: uuid!) {
-		stores(where: { id: { _eq: $storeId } }) {
-			id
-			name
-			short_name
-			website_url
-			instagram_username
-			twitter_username
-			store_followers {
-				store_id
-				user_id
-			}
+		stores_by_pk(id: $storeId) {
+			...StoreDetails
 		}
 	}
+	${StoreDetailsFragmentDoc}
 `;
 
 export function useStoreQuery(

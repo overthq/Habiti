@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { useStoreQuery } from '../types/api';
 import { MainStackParamList } from '../types/navigation';
-import StoreItems from '../components/store/StoreItem';
+import StoreItems from '../components/store/StoreItems';
 import StoreHeader from '../components/store/StoreHeader';
 
 const Store = () => {
@@ -12,9 +12,9 @@ const Store = () => {
 	const [{ data }] = useStoreQuery({
 		variables: { storeId: params.storeId }
 	});
-	const store = data?.stores.find(store => store.id === params.storeId);
+	const store = data?.stores_by_pk;
 
-	if (!store) throw new Error('');
+	if (!store) throw new Error('How does the store not exist?');
 
 	React.useLayoutEffect(() => {
 		setOptions({ title: store.name });

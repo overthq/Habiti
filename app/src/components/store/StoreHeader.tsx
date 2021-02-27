@@ -11,7 +11,7 @@ import SocialLinks from './SocialLinks';
 import { useAppSelector } from '../../redux/store';
 
 interface StoreHeaderProps {
-	store: StoreQuery['stores'][-1];
+	store: StoreQuery['stores_by_pk'];
 }
 
 const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
@@ -23,7 +23,9 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 		const userInStoreFollowing = store?.store_followers?.findIndex(
 			({ user_id }) => user_id === userId
 		);
-		return userInStoreFollowing > -1;
+
+		if (userInStoreFollowing) return userInStoreFollowing > -1;
+		return false;
 	}, [store]);
 
 	return (
@@ -39,11 +41,11 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 					links={[
 						{
 							iconName: 'twitter',
-							url: `https://twitter.com/${store.twitter_username}`
+							url: `https://twitter.com/${store?.twitter_username}`
 						},
 						{
 							iconName: 'instagram',
-							url: `https://instagram.com/${store.instagram_username}`
+							url: `https://instagram.com/${store?.instagram_username}`
 						}
 					]}
 				/>
@@ -52,18 +54,18 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 				<Text style={styles.storeName}>{store?.name}</Text>
 				<TouchableOpacity
 					style={{ marginTop: 5 }}
-					onPress={() => openLink(store.website_url)}
+					onPress={() => openLink(store?.website_url)}
 				>
-					<Text style={styles.websiteLinkText}>{store.website_url}</Text>
+					<Text style={styles.websiteLinkText}>{store?.website_url}</Text>
 				</TouchableOpacity>
 			</View>
 			<FollowButton
 				isFollowing={isFollowingStore}
 				follow={() => {
-					followStore({ storeId: store?.id, userId: '' });
+					followStore({ storeId: store?.id, userId });
 				}}
 				unfollow={() => {
-					unfollowStore({ storeId: store.id, userId: '' });
+					unfollowStore({ storeId: store?.id, userId });
 				}}
 			/>
 		</View>

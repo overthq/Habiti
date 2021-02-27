@@ -8,10 +8,10 @@ import {
 	StyleSheet
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useItemsQuery, Items } from '../../types/api';
+import { useItemsQuery, ItemsQuery } from '../../types/api';
 
 interface WatchlistItemProps {
-	item: Partial<Items>;
+	item: ItemsQuery['items'][-1];
 }
 
 const WatchlistItem: React.FC<WatchlistItemProps> = ({ item }) => {

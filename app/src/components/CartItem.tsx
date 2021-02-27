@@ -14,7 +14,7 @@ const CartItem: React.FC<CartItemProps> = ({ itemId, quantity }) => {
 	const dispatch = useDispatch();
 	const [{ data }] = useItemQuery({ variables: { itemId } });
 
-	const item = data?.items[0];
+	const item = data?.items_by_pk;
 
 	return (
 		<View style={styles.container}>
