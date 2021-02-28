@@ -1,44 +1,7 @@
 import React from 'react';
-import {
-	View,
-	Image,
-	TouchableOpacity,
-	Text,
-	FlatList,
-	StyleSheet
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useItemsQuery, ItemsQuery } from '../../types/api';
-
-interface WatchlistItemProps {
-	item: ItemsQuery['items'][-1];
-}
-
-const WatchlistItem: React.FC<WatchlistItemProps> = ({ item }) => {
-	const { navigate } = useNavigation();
-
-	return (
-		<TouchableOpacity
-			style={styles.itemContainer}
-			onPress={() => navigate('Item', { itemId: item.id })}
-			activeOpacity={0.8}
-		>
-			<View style={styles.imagePlaceholder}>
-				<Image
-					source={{ uri: '' /* Do something here */ }}
-					style={{ width: '100%', height: '100%' }}
-				/>
-			</View>
-			<Text style={{ fontSize: 16, fontWeight: '500' }} numberOfLines={1}>
-				{item.name}
-			</Text>
-			<Text style={styles.itemPrice}>N{item.unit_price}</Text>
-			<Text style={{ fontSize: 14, color: '#7dba03', fontWeight: '500' }}>
-				In Stock
-			</Text>
-		</TouchableOpacity>
-	);
-};
+import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { useItemsQuery } from '../../types/api';
+import WatchlistItem from './WatchlistItem';
 
 const Watchlist = () => {
 	const [{ data }] = useItemsQuery();
@@ -64,22 +27,6 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		marginVertical: 8,
 		marginLeft: 16
-	},
-	itemContainer: {
-		marginLeft: 16,
-		width: 160
-	},
-	imagePlaceholder: {
-		borderRadius: 6,
-		backgroundColor: '#D3D3D3',
-		width: 160,
-		height: 160,
-		marginBottom: 8,
-		overflow: 'hidden'
-	},
-	itemPrice: {
-		fontSize: 16,
-		color: '#505050'
 	}
 });
 

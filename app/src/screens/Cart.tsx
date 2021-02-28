@@ -37,8 +37,8 @@ const Cart: React.FC = () => {
 	// This system design issue is beyond my front-end pay grade.
 	//
 	// Steps to fix this problem (and solidify the order-creation process on this app):
-	// - Clearly mark the order creation point.
-	//
+	// - Clearly mark the order creation point:
+	// When is the cart created? This should be when the user clicks on the "Add to Cart" button, but what happens when the user tries to update the quantity? How do we batch the updates? Debounce?
 
 	const prepareCart = async (order_id: string) => {
 		const { data } = await client
