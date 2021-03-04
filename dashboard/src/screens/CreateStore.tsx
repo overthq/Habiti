@@ -5,12 +5,15 @@ import {
 	TextInput,
 	StyleSheet,
 	FlatList,
-	Dimensions,
-	Animated
+	Dimensions
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { Formik, useFormikContext } from 'formik';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Animated, {
+	useSharedValue,
+	useAnimatedScrollHandler
+} from 'react-native-reanimated';
 import { useAddManagerMutation, useCreateStoreMutation } from '../types/api';
 import Button from '../components/global/Button';
 import authStyles from '../styles/auth';
@@ -91,7 +94,7 @@ const CreateStore: React.FC = () => {
 	const [activeStepIndex, setActiveStepIndex] = React.useState(0);
 	const listRef = React.useRef<FlatList>(null);
 	const dispatch = useDispatch();
-	const scrollX = new Animated.Value(0);
+	const scrollX = useSharedValue(0);
 
 	const toNext = () => {
 		listRef.current?.scrollToIndex({
@@ -100,10 +103,11 @@ const CreateStore: React.FC = () => {
 		});
 	};
 
-	const handleScroll = Animated.event(
-		[{ nativeEvent: { contentOffset: { x: scrollX } } }],
-		{ useNativeDriver: true }
-	);
+	const handleScroll = useAnimatedScrollEvent({
+		onScroll: ({ contentOffset: { x } }) => {
+			scrollX.value = x;
+		}
+	});
 
 	const isLastStep = activeStepIndex === steps.length - 1;
 
@@ -123,16 +127,14 @@ const CreateStore: React.FC = () => {
 							input: { name: values.name, short_name: values.shortName }
 						});
 
-						if (data?.insert_stores?.returning[0].id) {
+						if (data?.insert_stores_one?.id) {
 							await addManager({
 								userId,
-								storeId: data.insert_stores?.returning[0].id
+								storeId: data.insert_stores_one.id
 							});
 
 							dispatch(
-								updatePreference({
-									activeStore: data.insert_stores?.returning[0].id
-								})
+								updatePreference({ activeStore: data.insert_stores_one.id })
 							);
 						}
 					} catch (error) {

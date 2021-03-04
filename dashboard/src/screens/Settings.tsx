@@ -15,7 +15,7 @@ const Settings: React.FC = () => {
 		variables: { storeId: preferences.activeStore }
 	});
 
-	const store = data?.stores[0];
+	const store = data?.stores_by_pk;
 
 	const settings = [
 		{
@@ -26,7 +26,7 @@ const Settings: React.FC = () => {
 		{
 			name: 'Theme',
 			screenTo: 'SettingsTheme',
-			displayValue: preferences.theme === 'light' ? 'Light' : 'dark' // Or just capitalize the string
+			displayValue: preferences.theme === 'light' ? 'Light' : 'Dark'
 		}
 	];
 

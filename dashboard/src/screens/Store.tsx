@@ -11,7 +11,7 @@ const Store: React.FC = () => {
 	);
 	const [{ data }] = useStoreQuery({ variables: { storeId: activeStore } });
 
-	const store = data?.stores[0];
+	const store = data?.stores_by_pk;
 
 	return (
 		<SafeAreaView style={styles.container}>
