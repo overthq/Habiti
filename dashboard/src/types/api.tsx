@@ -68,29 +68,7 @@ export type String_Comparison_Exp = {
 /** columns and relationships of "item_unit" */
 export type Item_Unit = {
 	__typename?: 'item_unit';
-	/** An array relationship */
-	items: Array<Items>;
-	/** An aggregated array relationship */
-	items_aggregate: Items_Aggregate;
 	value: Scalars['String'];
-};
-
-/** columns and relationships of "item_unit" */
-export type Item_UnitItemsArgs = {
-	distinct_on?: Maybe<Array<Items_Select_Column>>;
-	limit?: Maybe<Scalars['Int']>;
-	offset?: Maybe<Scalars['Int']>;
-	order_by?: Maybe<Array<Items_Order_By>>;
-	where?: Maybe<Items_Bool_Exp>;
-};
-
-/** columns and relationships of "item_unit" */
-export type Item_UnitItems_AggregateArgs = {
-	distinct_on?: Maybe<Array<Items_Select_Column>>;
-	limit?: Maybe<Scalars['Int']>;
-	offset?: Maybe<Scalars['Int']>;
-	order_by?: Maybe<Array<Items_Order_By>>;
-	where?: Maybe<Items_Bool_Exp>;
 };
 
 /** aggregated selection of "item_unit" */
@@ -132,7 +110,6 @@ export type Item_Unit_Bool_Exp = {
 	_and?: Maybe<Array<Maybe<Item_Unit_Bool_Exp>>>;
 	_not?: Maybe<Item_Unit_Bool_Exp>;
 	_or?: Maybe<Array<Maybe<Item_Unit_Bool_Exp>>>;
-	items?: Maybe<Items_Bool_Exp>;
 	value?: Maybe<String_Comparison_Exp>;
 };
 
@@ -144,7 +121,6 @@ export enum Item_Unit_Constraint {
 
 /** input type for inserting data into table "item_unit" */
 export type Item_Unit_Insert_Input = {
-	items?: Maybe<Items_Arr_Rel_Insert_Input>;
 	value?: Maybe<Scalars['String']>;
 };
 
@@ -194,7 +170,6 @@ export type Item_Unit_On_Conflict = {
 
 /** ordering options when selecting data from "item_unit" */
 export type Item_Unit_Order_By = {
-	items_aggregate?: Maybe<Items_Aggregate_Order_By>;
 	value?: Maybe<Order_By>;
 };
 
@@ -223,11 +198,10 @@ export enum Item_Unit_Update_Column {
 /** columns and relationships of "items" */
 export type Items = {
 	__typename?: 'items';
-	created_at?: Maybe<Scalars['timestamptz']>;
+	created_at: Scalars['timestamptz'];
 	description: Scalars['String'];
+	featured: Scalars['Boolean'];
 	id: Scalars['uuid'];
-	/** An object relationship */
-	item_unit: Item_Unit;
 	name: Scalars['String'];
 	/** An array relationship */
 	order_items: Array<Order_Items>;
@@ -236,9 +210,8 @@ export type Items = {
 	/** An object relationship */
 	store: Stores;
 	store_id: Scalars['uuid'];
-	unit: Scalars['String'];
 	unit_price: Scalars['Int'];
-	updated_at?: Maybe<Scalars['timestamptz']>;
+	updated_at: Scalars['timestamptz'];
 };
 
 /** columns and relationships of "items" */
@@ -327,13 +300,12 @@ export type Items_Bool_Exp = {
 	_or?: Maybe<Array<Maybe<Items_Bool_Exp>>>;
 	created_at?: Maybe<Timestamptz_Comparison_Exp>;
 	description?: Maybe<String_Comparison_Exp>;
+	featured?: Maybe<Boolean_Comparison_Exp>;
 	id?: Maybe<Uuid_Comparison_Exp>;
-	item_unit?: Maybe<Item_Unit_Bool_Exp>;
 	name?: Maybe<String_Comparison_Exp>;
 	order_items?: Maybe<Order_Items_Bool_Exp>;
 	store?: Maybe<Stores_Bool_Exp>;
 	store_id?: Maybe<Uuid_Comparison_Exp>;
-	unit?: Maybe<String_Comparison_Exp>;
 	unit_price?: Maybe<Int_Comparison_Exp>;
 	updated_at?: Maybe<Timestamptz_Comparison_Exp>;
 };
@@ -353,13 +325,12 @@ export type Items_Inc_Input = {
 export type Items_Insert_Input = {
 	created_at?: Maybe<Scalars['timestamptz']>;
 	description?: Maybe<Scalars['String']>;
+	featured?: Maybe<Scalars['Boolean']>;
 	id?: Maybe<Scalars['uuid']>;
-	item_unit?: Maybe<Item_Unit_Obj_Rel_Insert_Input>;
 	name?: Maybe<Scalars['String']>;
 	order_items?: Maybe<Order_Items_Arr_Rel_Insert_Input>;
 	store?: Maybe<Stores_Obj_Rel_Insert_Input>;
 	store_id?: Maybe<Scalars['uuid']>;
-	unit?: Maybe<Scalars['String']>;
 	unit_price?: Maybe<Scalars['Int']>;
 	updated_at?: Maybe<Scalars['timestamptz']>;
 };
@@ -372,7 +343,6 @@ export type Items_Max_Fields = {
 	id?: Maybe<Scalars['uuid']>;
 	name?: Maybe<Scalars['String']>;
 	store_id?: Maybe<Scalars['uuid']>;
-	unit?: Maybe<Scalars['String']>;
 	unit_price?: Maybe<Scalars['Int']>;
 	updated_at?: Maybe<Scalars['timestamptz']>;
 };
@@ -384,7 +354,6 @@ export type Items_Max_Order_By = {
 	id?: Maybe<Order_By>;
 	name?: Maybe<Order_By>;
 	store_id?: Maybe<Order_By>;
-	unit?: Maybe<Order_By>;
 	unit_price?: Maybe<Order_By>;
 	updated_at?: Maybe<Order_By>;
 };
@@ -397,7 +366,6 @@ export type Items_Min_Fields = {
 	id?: Maybe<Scalars['uuid']>;
 	name?: Maybe<Scalars['String']>;
 	store_id?: Maybe<Scalars['uuid']>;
-	unit?: Maybe<Scalars['String']>;
 	unit_price?: Maybe<Scalars['Int']>;
 	updated_at?: Maybe<Scalars['timestamptz']>;
 };
@@ -409,7 +377,6 @@ export type Items_Min_Order_By = {
 	id?: Maybe<Order_By>;
 	name?: Maybe<Order_By>;
 	store_id?: Maybe<Order_By>;
-	unit?: Maybe<Order_By>;
 	unit_price?: Maybe<Order_By>;
 	updated_at?: Maybe<Order_By>;
 };
@@ -440,13 +407,12 @@ export type Items_On_Conflict = {
 export type Items_Order_By = {
 	created_at?: Maybe<Order_By>;
 	description?: Maybe<Order_By>;
+	featured?: Maybe<Order_By>;
 	id?: Maybe<Order_By>;
-	item_unit?: Maybe<Item_Unit_Order_By>;
 	name?: Maybe<Order_By>;
 	order_items_aggregate?: Maybe<Order_Items_Aggregate_Order_By>;
 	store?: Maybe<Stores_Order_By>;
 	store_id?: Maybe<Order_By>;
-	unit?: Maybe<Order_By>;
 	unit_price?: Maybe<Order_By>;
 	updated_at?: Maybe<Order_By>;
 };
@@ -463,13 +429,13 @@ export enum Items_Select_Column {
 	/** column name */
 	Description = 'description',
 	/** column name */
+	Featured = 'featured',
+	/** column name */
 	Id = 'id',
 	/** column name */
 	Name = 'name',
 	/** column name */
 	StoreId = 'store_id',
-	/** column name */
-	Unit = 'unit',
 	/** column name */
 	UnitPrice = 'unit_price',
 	/** column name */
@@ -480,10 +446,10 @@ export enum Items_Select_Column {
 export type Items_Set_Input = {
 	created_at?: Maybe<Scalars['timestamptz']>;
 	description?: Maybe<Scalars['String']>;
+	featured?: Maybe<Scalars['Boolean']>;
 	id?: Maybe<Scalars['uuid']>;
 	name?: Maybe<Scalars['String']>;
 	store_id?: Maybe<Scalars['uuid']>;
-	unit?: Maybe<Scalars['String']>;
 	unit_price?: Maybe<Scalars['Int']>;
 	updated_at?: Maybe<Scalars['timestamptz']>;
 };
@@ -539,13 +505,13 @@ export enum Items_Update_Column {
 	/** column name */
 	Description = 'description',
 	/** column name */
+	Featured = 'featured',
+	/** column name */
 	Id = 'id',
 	/** column name */
 	Name = 'name',
 	/** column name */
 	StoreId = 'store_id',
-	/** column name */
-	Unit = 'unit',
 	/** column name */
 	UnitPrice = 'unit_price',
 	/** column name */
@@ -755,8 +721,8 @@ export type Mutation_RootDelete_Store_FollowersArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Store_Followers_By_PkArgs = {
-	follower_id: Scalars['uuid'];
 	store_id: Scalars['uuid'];
+	user_id: Scalars['uuid'];
 };
 
 /** mutation root */
@@ -1035,6 +1001,9 @@ export type Order_Items = {
 	/** An object relationship */
 	item: Items;
 	item_id: Scalars['uuid'];
+	/** An object relationship */
+	order: Orders;
+	order_id: Scalars['uuid'];
 	quantity: Scalars['Int'];
 	unit_price?: Maybe<Scalars['Int']>;
 };
@@ -1110,6 +1079,8 @@ export type Order_Items_Bool_Exp = {
 	id?: Maybe<Uuid_Comparison_Exp>;
 	item?: Maybe<Items_Bool_Exp>;
 	item_id?: Maybe<Uuid_Comparison_Exp>;
+	order?: Maybe<Orders_Bool_Exp>;
+	order_id?: Maybe<Uuid_Comparison_Exp>;
 	quantity?: Maybe<Int_Comparison_Exp>;
 	unit_price?: Maybe<Int_Comparison_Exp>;
 };
@@ -1131,6 +1102,8 @@ export type Order_Items_Insert_Input = {
 	id?: Maybe<Scalars['uuid']>;
 	item?: Maybe<Items_Obj_Rel_Insert_Input>;
 	item_id?: Maybe<Scalars['uuid']>;
+	order?: Maybe<Orders_Obj_Rel_Insert_Input>;
+	order_id?: Maybe<Scalars['uuid']>;
 	quantity?: Maybe<Scalars['Int']>;
 	unit_price?: Maybe<Scalars['Int']>;
 };
@@ -1140,6 +1113,7 @@ export type Order_Items_Max_Fields = {
 	__typename?: 'order_items_max_fields';
 	id?: Maybe<Scalars['uuid']>;
 	item_id?: Maybe<Scalars['uuid']>;
+	order_id?: Maybe<Scalars['uuid']>;
 	quantity?: Maybe<Scalars['Int']>;
 	unit_price?: Maybe<Scalars['Int']>;
 };
@@ -1148,6 +1122,7 @@ export type Order_Items_Max_Fields = {
 export type Order_Items_Max_Order_By = {
 	id?: Maybe<Order_By>;
 	item_id?: Maybe<Order_By>;
+	order_id?: Maybe<Order_By>;
 	quantity?: Maybe<Order_By>;
 	unit_price?: Maybe<Order_By>;
 };
@@ -1157,6 +1132,7 @@ export type Order_Items_Min_Fields = {
 	__typename?: 'order_items_min_fields';
 	id?: Maybe<Scalars['uuid']>;
 	item_id?: Maybe<Scalars['uuid']>;
+	order_id?: Maybe<Scalars['uuid']>;
 	quantity?: Maybe<Scalars['Int']>;
 	unit_price?: Maybe<Scalars['Int']>;
 };
@@ -1165,6 +1141,7 @@ export type Order_Items_Min_Fields = {
 export type Order_Items_Min_Order_By = {
 	id?: Maybe<Order_By>;
 	item_id?: Maybe<Order_By>;
+	order_id?: Maybe<Order_By>;
 	quantity?: Maybe<Order_By>;
 	unit_price?: Maybe<Order_By>;
 };
@@ -1196,6 +1173,8 @@ export type Order_Items_Order_By = {
 	id?: Maybe<Order_By>;
 	item?: Maybe<Items_Order_By>;
 	item_id?: Maybe<Order_By>;
+	order?: Maybe<Orders_Order_By>;
+	order_id?: Maybe<Order_By>;
 	quantity?: Maybe<Order_By>;
 	unit_price?: Maybe<Order_By>;
 };
@@ -1212,6 +1191,8 @@ export enum Order_Items_Select_Column {
 	/** column name */
 	ItemId = 'item_id',
 	/** column name */
+	OrderId = 'order_id',
+	/** column name */
 	Quantity = 'quantity',
 	/** column name */
 	UnitPrice = 'unit_price'
@@ -1221,6 +1202,7 @@ export enum Order_Items_Select_Column {
 export type Order_Items_Set_Input = {
 	id?: Maybe<Scalars['uuid']>;
 	item_id?: Maybe<Scalars['uuid']>;
+	order_id?: Maybe<Scalars['uuid']>;
 	quantity?: Maybe<Scalars['Int']>;
 	unit_price?: Maybe<Scalars['Int']>;
 };
@@ -1283,6 +1265,8 @@ export enum Order_Items_Update_Column {
 	Id = 'id',
 	/** column name */
 	ItemId = 'item_id',
+	/** column name */
+	OrderId = 'order_id',
 	/** column name */
 	Quantity = 'quantity',
 	/** column name */
@@ -1487,18 +1471,40 @@ export enum Order_Status_Update_Column {
 export type Orders = {
 	__typename?: 'orders';
 	amount?: Maybe<Scalars['Int']>;
-	created_at?: Maybe<Scalars['timestamptz']>;
+	created_at: Scalars['timestamptz'];
 	id: Scalars['uuid'];
+	/** An array relationship */
+	order_items: Array<Order_Items>;
+	/** An aggregated array relationship */
+	order_items_aggregate: Order_Items_Aggregate;
 	/** An object relationship */
 	order_status?: Maybe<Order_Status>;
 	status?: Maybe<Scalars['String']>;
 	/** An object relationship */
 	store: Stores;
 	store_id: Scalars['uuid'];
-	updated_at?: Maybe<Scalars['timestamptz']>;
+	updated_at: Scalars['timestamptz'];
 	/** An object relationship */
 	user: Users;
 	user_id: Scalars['uuid'];
+};
+
+/** columns and relationships of "orders" */
+export type OrdersOrder_ItemsArgs = {
+	distinct_on?: Maybe<Array<Order_Items_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Order_Items_Order_By>>;
+	where?: Maybe<Order_Items_Bool_Exp>;
+};
+
+/** columns and relationships of "orders" */
+export type OrdersOrder_Items_AggregateArgs = {
+	distinct_on?: Maybe<Array<Order_Items_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Order_Items_Order_By>>;
+	where?: Maybe<Order_Items_Bool_Exp>;
 };
 
 /** aggregated selection of "orders" */
@@ -1570,6 +1576,7 @@ export type Orders_Bool_Exp = {
 	amount?: Maybe<Int_Comparison_Exp>;
 	created_at?: Maybe<Timestamptz_Comparison_Exp>;
 	id?: Maybe<Uuid_Comparison_Exp>;
+	order_items?: Maybe<Order_Items_Bool_Exp>;
 	order_status?: Maybe<Order_Status_Bool_Exp>;
 	status?: Maybe<String_Comparison_Exp>;
 	store?: Maybe<Stores_Bool_Exp>;
@@ -1595,6 +1602,7 @@ export type Orders_Insert_Input = {
 	amount?: Maybe<Scalars['Int']>;
 	created_at?: Maybe<Scalars['timestamptz']>;
 	id?: Maybe<Scalars['uuid']>;
+	order_items?: Maybe<Order_Items_Arr_Rel_Insert_Input>;
 	order_status?: Maybe<Order_Status_Obj_Rel_Insert_Input>;
 	status?: Maybe<Scalars['String']>;
 	store?: Maybe<Stores_Obj_Rel_Insert_Input>;
@@ -1677,6 +1685,7 @@ export type Orders_Order_By = {
 	amount?: Maybe<Order_By>;
 	created_at?: Maybe<Order_By>;
 	id?: Maybe<Order_By>;
+	order_items_aggregate?: Maybe<Order_Items_Aggregate_Order_By>;
 	order_status?: Maybe<Order_Status_Order_By>;
 	status?: Maybe<Order_By>;
 	store?: Maybe<Stores_Order_By>;
@@ -2009,8 +2018,8 @@ export type Query_RootStore_Followers_AggregateArgs = {
 
 /** query root */
 export type Query_RootStore_Followers_By_PkArgs = {
-	follower_id: Scalars['uuid'];
 	store_id: Scalars['uuid'];
+	user_id: Scalars['uuid'];
 };
 
 /** query root */
@@ -2086,12 +2095,12 @@ export type Query_RootUsers_By_PkArgs = {
 /** columns and relationships of "store_followers" */
 export type Store_Followers = {
 	__typename?: 'store_followers';
-	follower_id: Scalars['uuid'];
 	/** An object relationship */
 	store: Stores;
 	store_id: Scalars['uuid'];
 	/** An object relationship */
 	user: Users;
+	user_id: Scalars['uuid'];
 };
 
 /** aggregated selection of "store_followers" */
@@ -2133,10 +2142,10 @@ export type Store_Followers_Bool_Exp = {
 	_and?: Maybe<Array<Maybe<Store_Followers_Bool_Exp>>>;
 	_not?: Maybe<Store_Followers_Bool_Exp>;
 	_or?: Maybe<Array<Maybe<Store_Followers_Bool_Exp>>>;
-	follower_id?: Maybe<Uuid_Comparison_Exp>;
 	store?: Maybe<Stores_Bool_Exp>;
 	store_id?: Maybe<Uuid_Comparison_Exp>;
 	user?: Maybe<Users_Bool_Exp>;
+	user_id?: Maybe<Uuid_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "store_followers" */
@@ -2147,36 +2156,36 @@ export enum Store_Followers_Constraint {
 
 /** input type for inserting data into table "store_followers" */
 export type Store_Followers_Insert_Input = {
-	follower_id?: Maybe<Scalars['uuid']>;
 	store?: Maybe<Stores_Obj_Rel_Insert_Input>;
 	store_id?: Maybe<Scalars['uuid']>;
 	user?: Maybe<Users_Obj_Rel_Insert_Input>;
+	user_id?: Maybe<Scalars['uuid']>;
 };
 
 /** aggregate max on columns */
 export type Store_Followers_Max_Fields = {
 	__typename?: 'store_followers_max_fields';
-	follower_id?: Maybe<Scalars['uuid']>;
 	store_id?: Maybe<Scalars['uuid']>;
+	user_id?: Maybe<Scalars['uuid']>;
 };
 
 /** order by max() on columns of table "store_followers" */
 export type Store_Followers_Max_Order_By = {
-	follower_id?: Maybe<Order_By>;
 	store_id?: Maybe<Order_By>;
+	user_id?: Maybe<Order_By>;
 };
 
 /** aggregate min on columns */
 export type Store_Followers_Min_Fields = {
 	__typename?: 'store_followers_min_fields';
-	follower_id?: Maybe<Scalars['uuid']>;
 	store_id?: Maybe<Scalars['uuid']>;
+	user_id?: Maybe<Scalars['uuid']>;
 };
 
 /** order by min() on columns of table "store_followers" */
 export type Store_Followers_Min_Order_By = {
-	follower_id?: Maybe<Order_By>;
 	store_id?: Maybe<Order_By>;
+	user_id?: Maybe<Order_By>;
 };
 
 /** response of any mutation on the table "store_followers" */
@@ -2203,38 +2212,38 @@ export type Store_Followers_On_Conflict = {
 
 /** ordering options when selecting data from "store_followers" */
 export type Store_Followers_Order_By = {
-	follower_id?: Maybe<Order_By>;
 	store?: Maybe<Stores_Order_By>;
 	store_id?: Maybe<Order_By>;
 	user?: Maybe<Users_Order_By>;
+	user_id?: Maybe<Order_By>;
 };
 
 /** primary key columns input for table: "store_followers" */
 export type Store_Followers_Pk_Columns_Input = {
-	follower_id: Scalars['uuid'];
 	store_id: Scalars['uuid'];
+	user_id: Scalars['uuid'];
 };
 
 /** select columns of table "store_followers" */
 export enum Store_Followers_Select_Column {
 	/** column name */
-	FollowerId = 'follower_id',
+	StoreId = 'store_id',
 	/** column name */
-	StoreId = 'store_id'
+	UserId = 'user_id'
 }
 
 /** input type for updating data in table "store_followers" */
 export type Store_Followers_Set_Input = {
-	follower_id?: Maybe<Scalars['uuid']>;
 	store_id?: Maybe<Scalars['uuid']>;
+	user_id?: Maybe<Scalars['uuid']>;
 };
 
 /** update columns of table "store_followers" */
 export enum Store_Followers_Update_Column {
 	/** column name */
-	FollowerId = 'follower_id',
+	StoreId = 'store_id',
 	/** column name */
-	StoreId = 'store_id'
+	UserId = 'user_id'
 }
 
 /** columns and relationships of "store_managers" */
@@ -2394,7 +2403,7 @@ export enum Store_Managers_Update_Column {
 /** columns and relationships of "stores" */
 export type Stores = {
 	__typename?: 'stores';
-	created_at?: Maybe<Scalars['timestamptz']>;
+	created_at: Scalars['timestamptz'];
 	id: Scalars['uuid'];
 	instagram_username?: Maybe<Scalars['String']>;
 	/** An array relationship */
@@ -2416,8 +2425,7 @@ export type Stores = {
 	/** An aggregated array relationship */
 	store_managers_aggregate: Store_Managers_Aggregate;
 	twitter_username?: Maybe<Scalars['String']>;
-	updated_at?: Maybe<Scalars['timestamptz']>;
-	verified: Scalars['Boolean'];
+	updated_at: Scalars['timestamptz'];
 	website_url?: Maybe<Scalars['String']>;
 };
 
@@ -2543,14 +2551,15 @@ export type Stores_Bool_Exp = {
 	store_managers?: Maybe<Store_Managers_Bool_Exp>;
 	twitter_username?: Maybe<String_Comparison_Exp>;
 	updated_at?: Maybe<Timestamptz_Comparison_Exp>;
-	verified?: Maybe<Boolean_Comparison_Exp>;
 	website_url?: Maybe<String_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "stores" */
 export enum Stores_Constraint {
 	/** unique or primary key constraint */
-	StoresPkey = 'stores_pkey'
+	StoresPkey = 'stores_pkey',
+	/** unique or primary key constraint */
+	StoresShortNameKey = 'stores_short_name_key'
 }
 
 /** input type for inserting data into table "stores" */
@@ -2566,7 +2575,6 @@ export type Stores_Insert_Input = {
 	store_managers?: Maybe<Store_Managers_Arr_Rel_Insert_Input>;
 	twitter_username?: Maybe<Scalars['String']>;
 	updated_at?: Maybe<Scalars['timestamptz']>;
-	verified?: Maybe<Scalars['Boolean']>;
 	website_url?: Maybe<Scalars['String']>;
 };
 
@@ -2655,7 +2663,6 @@ export type Stores_Order_By = {
 	store_managers_aggregate?: Maybe<Store_Managers_Aggregate_Order_By>;
 	twitter_username?: Maybe<Order_By>;
 	updated_at?: Maybe<Order_By>;
-	verified?: Maybe<Order_By>;
 	website_url?: Maybe<Order_By>;
 };
 
@@ -2681,8 +2688,6 @@ export enum Stores_Select_Column {
 	/** column name */
 	UpdatedAt = 'updated_at',
 	/** column name */
-	Verified = 'verified',
-	/** column name */
 	WebsiteUrl = 'website_url'
 }
 
@@ -2695,7 +2700,6 @@ export type Stores_Set_Input = {
 	short_name?: Maybe<Scalars['String']>;
 	twitter_username?: Maybe<Scalars['String']>;
 	updated_at?: Maybe<Scalars['timestamptz']>;
-	verified?: Maybe<Scalars['Boolean']>;
 	website_url?: Maybe<Scalars['String']>;
 };
 
@@ -2715,8 +2719,6 @@ export enum Stores_Update_Column {
 	TwitterUsername = 'twitter_username',
 	/** column name */
 	UpdatedAt = 'updated_at',
-	/** column name */
-	Verified = 'verified',
 	/** column name */
 	WebsiteUrl = 'website_url'
 }
@@ -2915,8 +2917,8 @@ export type Subscription_RootStore_Followers_AggregateArgs = {
 
 /** subscription root */
 export type Subscription_RootStore_Followers_By_PkArgs = {
-	follower_id: Scalars['uuid'];
 	store_id: Scalars['uuid'];
+	user_id: Scalars['uuid'];
 };
 
 /** subscription root */
@@ -3005,7 +3007,6 @@ export type Timestamptz_Comparison_Exp = {
 /** columns and relationships of "users" */
 export type Users = {
 	__typename?: 'users';
-	created_at?: Maybe<Scalars['timestamptz']>;
 	id: Scalars['uuid'];
 	name: Scalars['String'];
 	/** An array relationship */
@@ -3021,7 +3022,6 @@ export type Users = {
 	store_managers: Array<Store_Managers>;
 	/** An aggregated array relationship */
 	store_managers_aggregate: Store_Managers_Aggregate;
-	updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
 /** columns and relationships of "users" */
@@ -3117,72 +3117,58 @@ export type Users_Bool_Exp = {
 	_and?: Maybe<Array<Maybe<Users_Bool_Exp>>>;
 	_not?: Maybe<Users_Bool_Exp>;
 	_or?: Maybe<Array<Maybe<Users_Bool_Exp>>>;
-	created_at?: Maybe<Timestamptz_Comparison_Exp>;
 	id?: Maybe<Uuid_Comparison_Exp>;
 	name?: Maybe<String_Comparison_Exp>;
 	orders?: Maybe<Orders_Bool_Exp>;
 	phone?: Maybe<String_Comparison_Exp>;
 	store_followers?: Maybe<Store_Followers_Bool_Exp>;
 	store_managers?: Maybe<Store_Managers_Bool_Exp>;
-	updated_at?: Maybe<Timestamptz_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "users" */
 export enum Users_Constraint {
-	/** unique or primary key constraint */
-	UsersPhoneKey = 'users_phone_key',
 	/** unique or primary key constraint */
 	UsersPkey = 'users_pkey'
 }
 
 /** input type for inserting data into table "users" */
 export type Users_Insert_Input = {
-	created_at?: Maybe<Scalars['timestamptz']>;
 	id?: Maybe<Scalars['uuid']>;
 	name?: Maybe<Scalars['String']>;
 	orders?: Maybe<Orders_Arr_Rel_Insert_Input>;
 	phone?: Maybe<Scalars['String']>;
 	store_followers?: Maybe<Store_Followers_Arr_Rel_Insert_Input>;
 	store_managers?: Maybe<Store_Managers_Arr_Rel_Insert_Input>;
-	updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
 /** aggregate max on columns */
 export type Users_Max_Fields = {
 	__typename?: 'users_max_fields';
-	created_at?: Maybe<Scalars['timestamptz']>;
 	id?: Maybe<Scalars['uuid']>;
 	name?: Maybe<Scalars['String']>;
 	phone?: Maybe<Scalars['String']>;
-	updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
 /** order by max() on columns of table "users" */
 export type Users_Max_Order_By = {
-	created_at?: Maybe<Order_By>;
 	id?: Maybe<Order_By>;
 	name?: Maybe<Order_By>;
 	phone?: Maybe<Order_By>;
-	updated_at?: Maybe<Order_By>;
 };
 
 /** aggregate min on columns */
 export type Users_Min_Fields = {
 	__typename?: 'users_min_fields';
-	created_at?: Maybe<Scalars['timestamptz']>;
 	id?: Maybe<Scalars['uuid']>;
 	name?: Maybe<Scalars['String']>;
 	phone?: Maybe<Scalars['String']>;
-	updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
 /** order by min() on columns of table "users" */
 export type Users_Min_Order_By = {
-	created_at?: Maybe<Order_By>;
 	id?: Maybe<Order_By>;
 	name?: Maybe<Order_By>;
 	phone?: Maybe<Order_By>;
-	updated_at?: Maybe<Order_By>;
 };
 
 /** response of any mutation on the table "users" */
@@ -3209,14 +3195,12 @@ export type Users_On_Conflict = {
 
 /** ordering options when selecting data from "users" */
 export type Users_Order_By = {
-	created_at?: Maybe<Order_By>;
 	id?: Maybe<Order_By>;
 	name?: Maybe<Order_By>;
 	orders_aggregate?: Maybe<Orders_Aggregate_Order_By>;
 	phone?: Maybe<Order_By>;
 	store_followers_aggregate?: Maybe<Store_Followers_Aggregate_Order_By>;
 	store_managers_aggregate?: Maybe<Store_Managers_Aggregate_Order_By>;
-	updated_at?: Maybe<Order_By>;
 };
 
 /** primary key columns input for table: "users" */
@@ -3227,38 +3211,28 @@ export type Users_Pk_Columns_Input = {
 /** select columns of table "users" */
 export enum Users_Select_Column {
 	/** column name */
-	CreatedAt = 'created_at',
-	/** column name */
 	Id = 'id',
 	/** column name */
 	Name = 'name',
 	/** column name */
-	Phone = 'phone',
-	/** column name */
-	UpdatedAt = 'updated_at'
+	Phone = 'phone'
 }
 
 /** input type for updating data in table "users" */
 export type Users_Set_Input = {
-	created_at?: Maybe<Scalars['timestamptz']>;
 	id?: Maybe<Scalars['uuid']>;
 	name?: Maybe<Scalars['String']>;
 	phone?: Maybe<Scalars['String']>;
-	updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
 /** update columns of table "users" */
 export enum Users_Update_Column {
 	/** column name */
-	CreatedAt = 'created_at',
-	/** column name */
 	Id = 'id',
 	/** column name */
 	Name = 'name',
 	/** column name */
-	Phone = 'phone',
-	/** column name */
-	UpdatedAt = 'updated_at'
+	Phone = 'phone'
 }
 
 /** expression to compare columns of type uuid. All fields are combined with logical 'AND'. */
@@ -3274,12 +3248,15 @@ export type Uuid_Comparison_Exp = {
 	_nin?: Maybe<Array<Scalars['uuid']>>;
 };
 
+export type ItemDetailsFragment = { __typename?: 'items' } & Pick<
+	Items,
+	'id' | 'name' | 'description'
+>;
+
 export type ItemsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ItemsQuery = { __typename?: 'query_root' } & {
-	items: Array<
-		{ __typename?: 'items' } & Pick<Items, 'id' | 'name' | 'description'>
-	>;
+	items: Array<{ __typename?: 'items' } & ItemDetailsFragment>;
 };
 
 export type ItemQueryVariables = Exact<{
@@ -3287,9 +3264,7 @@ export type ItemQueryVariables = Exact<{
 }>;
 
 export type ItemQuery = { __typename?: 'query_root' } & {
-	items: Array<
-		{ __typename?: 'items' } & Pick<Items, 'id' | 'name' | 'description'>
-	>;
+	items: Array<{ __typename?: 'items' } & ItemDetailsFragment>;
 };
 
 export type AddItemMutationVariables = Exact<{
@@ -3297,12 +3272,7 @@ export type AddItemMutationVariables = Exact<{
 }>;
 
 export type AddItemMutation = { __typename?: 'mutation_root' } & {
-	insert_items?: Maybe<
-		{ __typename?: 'items_mutation_response' } & Pick<
-			Items_Mutation_Response,
-			'affected_rows'
-		> & { returning: Array<{ __typename?: 'items' } & Pick<Items, 'id'>> }
-	>;
+	insert_items_one?: Maybe<{ __typename?: 'items' } & Pick<Items, 'id'>>;
 };
 
 export type ManagedStoresQueryVariables = Exact<{
@@ -3326,10 +3296,10 @@ export type AddManagerMutationVariables = Exact<{
 }>;
 
 export type AddManagerMutation = { __typename?: 'mutation_root' } & {
-	insert_store_managers?: Maybe<
-		{ __typename?: 'store_managers_mutation_response' } & Pick<
-			Store_Managers_Mutation_Response,
-			'affected_rows'
+	insert_store_managers_one?: Maybe<
+		{ __typename?: 'store_managers' } & Pick<
+			Store_Managers,
+			'manager_id' | 'store_id'
 		>
 	>;
 };
@@ -3340,23 +3310,23 @@ export type RemoveManagerMutationVariables = Exact<{
 }>;
 
 export type RemoveManagerMutation = { __typename?: 'mutation_root' } & {
-	delete_store_managers?: Maybe<
-		{ __typename?: 'store_managers_mutation_response' } & Pick<
-			Store_Managers_Mutation_Response,
-			'affected_rows'
+	delete_store_managers_by_pk?: Maybe<
+		{ __typename?: 'store_managers' } & Pick<
+			Store_Managers,
+			'manager_id' | 'store_id'
 		>
 	>;
 };
 
+export type OrderDetailsFragment = { __typename?: 'orders' } & Pick<
+	Orders,
+	'id' | 'status' | 'created_at' | 'updated_at'
+>;
+
 export type OrdersQueryVariables = Exact<{ [key: string]: never }>;
 
 export type OrdersQuery = { __typename?: 'query_root' } & {
-	orders: Array<
-		{ __typename?: 'orders' } & Pick<
-			Orders,
-			'id' | 'status' | 'created_at' | 'updated_at'
-		>
-	>;
+	orders: Array<{ __typename?: 'orders' } & OrderDetailsFragment>;
 };
 
 export type OrderQueryVariables = Exact<{
@@ -3364,12 +3334,7 @@ export type OrderQueryVariables = Exact<{
 }>;
 
 export type OrderQuery = { __typename?: 'query_root' } & {
-	orders: Array<
-		{ __typename?: 'orders' } & Pick<
-			Orders,
-			'id' | 'status' | 'created_at' | 'updated_at'
-		>
-	>;
+	orders: Array<{ __typename?: 'orders' } & OrderDetailsFragment>;
 };
 
 export type UpdateOrderMutationVariables = Exact<{
@@ -3378,12 +3343,7 @@ export type UpdateOrderMutationVariables = Exact<{
 }>;
 
 export type UpdateOrderMutation = { __typename?: 'mutation_root' } & {
-	update_orders?: Maybe<
-		{ __typename?: 'orders_mutation_response' } & Pick<
-			Orders_Mutation_Response,
-			'affected_rows'
-		> & { returning: Array<{ __typename?: 'orders' } & Pick<Orders, 'id'>> }
-	>;
+	update_orders_by_pk?: Maybe<{ __typename?: 'orders' } & Pick<Orders, 'id'>>;
 };
 
 export type CreateStoreMutationVariables = Exact<{
@@ -3391,12 +3351,7 @@ export type CreateStoreMutationVariables = Exact<{
 }>;
 
 export type CreateStoreMutation = { __typename?: 'mutation_root' } & {
-	insert_stores?: Maybe<
-		{ __typename?: 'stores_mutation_response' } & Pick<
-			Stores_Mutation_Response,
-			'affected_rows'
-		> & { returning: Array<{ __typename?: 'stores' } & Pick<Stores, 'id'>> }
-	>;
+	insert_stores_one?: Maybe<{ __typename?: 'stores' } & Pick<Stores, 'id'>>;
 };
 
 export type StoreQueryVariables = Exact<{
@@ -3404,19 +3359,33 @@ export type StoreQueryVariables = Exact<{
 }>;
 
 export type StoreQuery = { __typename?: 'query_root' } & {
-	stores: Array<
+	stores_by_pk?: Maybe<
 		{ __typename?: 'stores' } & Pick<Stores, 'id' | 'name' | 'short_name'>
 	>;
 };
 
+export const ItemDetailsFragmentDoc = gql`
+	fragment ItemDetails on items {
+		id
+		name
+		description
+	}
+`;
+export const OrderDetailsFragmentDoc = gql`
+	fragment OrderDetails on orders {
+		id
+		status
+		created_at
+		updated_at
+	}
+`;
 export const ItemsDocument = gql`
 	query Items {
 		items {
-			id
-			name
-			description
+			...ItemDetails
 		}
 	}
+	${ItemDetailsFragmentDoc}
 `;
 
 export function useItemsQuery(
@@ -3427,11 +3396,10 @@ export function useItemsQuery(
 export const ItemDocument = gql`
 	query Item($itemId: uuid!) {
 		items(where: { id: { _eq: $itemId } }) {
-			id
-			name
-			description
+			...ItemDetails
 		}
 	}
+	${ItemDetailsFragmentDoc}
 `;
 
 export function useItemQuery(
@@ -3441,11 +3409,8 @@ export function useItemQuery(
 }
 export const AddItemDocument = gql`
 	mutation AddItem($itemObject: items_insert_input!) {
-		insert_items(objects: [$itemObject]) {
-			affected_rows
-			returning {
-				id
-			}
+		insert_items_one(object: $itemObject) {
+			id
 		}
 	}
 `;
@@ -3477,10 +3442,11 @@ export function useManagedStoresQuery(
 }
 export const AddManagerDocument = gql`
 	mutation AddManager($userId: uuid!, $storeId: uuid!) {
-		insert_store_managers(
-			objects: [{ manager_id: $userId, store_id: $storeId }]
+		insert_store_managers_one(
+			object: { manager_id: $userId, store_id: $storeId }
 		) {
-			affected_rows
+			manager_id
+			store_id
 		}
 	}
 `;
@@ -3492,15 +3458,9 @@ export function useAddManagerMutation() {
 }
 export const RemoveManagerDocument = gql`
 	mutation RemoveManager($userId: uuid!, $storeId: uuid!) {
-		delete_store_managers(
-			where: {
-				_and: [
-					{ store_id: { _eq: $storeId } }
-					{ manager_id: { _eq: $userId } }
-				]
-			}
-		) {
-			affected_rows
+		delete_store_managers_by_pk(store_id: $storeId, manager_id: $userId) {
+			manager_id
+			store_id
 		}
 	}
 `;
@@ -3514,12 +3474,10 @@ export function useRemoveManagerMutation() {
 export const OrdersDocument = gql`
 	query Orders {
 		orders {
-			id
-			status
-			created_at
-			updated_at
+			...OrderDetails
 		}
 	}
+	${OrderDetailsFragmentDoc}
 `;
 
 export function useOrdersQuery(
@@ -3530,12 +3488,10 @@ export function useOrdersQuery(
 export const OrderDocument = gql`
 	query Order($orderId: uuid!) {
 		orders(where: { id: { _eq: $orderId } }) {
-			id
-			status
-			created_at
-			updated_at
+			...OrderDetails
 		}
 	}
+	${OrderDetailsFragmentDoc}
 `;
 
 export function useOrderQuery(
@@ -3545,11 +3501,8 @@ export function useOrderQuery(
 }
 export const UpdateOrderDocument = gql`
 	mutation UpdateOrder($orderId: uuid!, $input: orders_set_input!) {
-		update_orders(where: { id: { _eq: $orderId } }, _set: $input) {
-			affected_rows
-			returning {
-				id
-			}
+		update_orders_by_pk(pk_columns: { id: $orderId }, _set: $input) {
+			id
 		}
 	}
 `;
@@ -3561,11 +3514,8 @@ export function useUpdateOrderMutation() {
 }
 export const CreateStoreDocument = gql`
 	mutation CreateStore($input: stores_insert_input!) {
-		insert_stores(objects: [$input]) {
-			affected_rows
-			returning {
-				id
-			}
+		insert_stores_one(object: $input) {
+			id
 		}
 	}
 `;
@@ -3577,7 +3527,7 @@ export function useCreateStoreMutation() {
 }
 export const StoreDocument = gql`
 	query Store($storeId: uuid!) {
-		stores(where: { id: { _eq: $storeId } }) {
+		stores_by_pk(id: $storeId) {
 			id
 			name
 			short_name

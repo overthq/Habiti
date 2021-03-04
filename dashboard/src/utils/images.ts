@@ -5,7 +5,6 @@ interface UploadImagePayload {
 	fileObject: FileSystem.FileInfo;
 }
 
-// Sucks that expo-file-system only allows uploading one image at a time.
 export const uploadImage = async ({ fileObject }: UploadImagePayload) => {
 	try {
 		const data = await FileSystem.uploadAsync(
@@ -27,4 +26,15 @@ export const uploadImage = async ({ fileObject }: UploadImagePayload) => {
 	} catch (error) {
 		console.log(error);
 	}
+};
+
+interface UploadMultipleImagesPayload {
+	fileObjects: FileSystem.FileInfo[];
+}
+
+// Sucks that expo-file-system only allows uploading one image at a time.
+export const uploadMultipleImages = async ({
+	fileObjects
+}: UploadMultipleImagesPayload) => {
+	await Promise.all(fileObjects.map(f => uploadImage({ fileObject: f })));
 };

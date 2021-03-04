@@ -1,14 +1,11 @@
 mutation CreateStore($input: stores_insert_input!) {
-	insert_stores(objects: [$input]) {
-		affected_rows
-		returning {
-			id
-		}
+	insert_stores_one(object: $input) {
+		id
 	}
 }
 
 query Store($storeId: uuid!) {
-	stores(where: { id: { _eq: $storeId } }) {
+	stores_by_pk(id: $storeId) {
 		id
 		name
 		short_name

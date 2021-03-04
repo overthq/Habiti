@@ -1,27 +1,24 @@
-# Since this is restricted by the store_id thing, then it means that we don't have to do any more filtering here.
+fragment OrderDetails on orders {
+	id
+	status
+	created_at
+	updated_at
+}
+
 query Orders {
 	orders {
-		id
-		status
-		created_at
-		updated_at
+		...OrderDetails
 	}
 }
 
 query Order($orderId: uuid!) {
 	orders(where: { id: { _eq: $orderId } }) {
-		id
-		status
-		created_at
-		updated_at
+		...OrderDetails
 	}
 }
 
 mutation UpdateOrder($orderId: uuid!, $input: orders_set_input!) {
-	update_orders(where: { id: { _eq: $orderId } }, _set: $input) {
-		affected_rows
-		returning {
-			id
-		}
+	update_orders_by_pk(pk_columns: { id: $orderId }, _set: $input) {
+		id
 	}
 }

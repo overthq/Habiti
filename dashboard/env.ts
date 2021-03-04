@@ -1,23 +1,26 @@
 import Constants from 'expo-constants';
 
+const localHostString = (extension: string) =>
+	`http://${Constants.manifest.debuggerHost
+		?.split(':')
+		.shift()
+		?.concat(`:${extension}`)}`;
+
 const ENV = {
 	dev: {
-		authUrl: `http://${Constants.manifest.debuggerHost
-			?.split(':')
-			.shift()
-			?.concat(':5000')}`,
-		hasuraUrl: `http://${Constants.manifest.debuggerHost
-			?.split(':')
-			.shift()
-			?.concat(':8080/v1/graphql')}`
+		authUrl: localHostString('5000'),
+		hasuraUrl: localHostString('8080/v1/graphql'),
+		storageUrl: localHostString('4000')
 	},
 	staging: {
 		authUrl: 'https://',
-		hasuraUrl: 'https://'
+		hasuraUrl: 'https://',
+		storageUrl: 'https://'
 	},
 	prod: {
 		authUrl: 'https://',
-		hasuraUrl: 'https://'
+		hasuraUrl: 'https://',
+		storageUrl: 'https://'
 	}
 };
 

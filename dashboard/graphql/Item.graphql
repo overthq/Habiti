@@ -1,24 +1,23 @@
+fragment ItemDetails on items {
+	id
+	name
+	description
+}
+
 query Items {
 	items {
-		id
-		name
-		description
+		...ItemDetails
 	}
 }
 
 query Item($itemId: uuid!) {
 	items(where: { id: { _eq: $itemId } }) {
-		id
-		name
-		description
+		...ItemDetails
 	}
 }
 
 mutation AddItem($itemObject: items_insert_input!) {
-	insert_items(objects: [$itemObject]) {
-		affected_rows
-		returning {
-			id
-		}
+	insert_items_one(object: $itemObject) {
+		id
 	}
 }
