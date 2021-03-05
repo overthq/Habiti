@@ -1,7 +1,6 @@
 import React from 'react';
 import {
 	View,
-	Image,
 	Text,
 	TouchableOpacity,
 	ScrollView,
@@ -14,6 +13,7 @@ import { Icon } from '../components/icons';
 import { AppStackParamList } from '../types/navigation';
 import { upsertItemToCart } from '../redux/carts/actions';
 import QuantityControl from '../components/item/QuantityControl';
+import ImageCarousel from '../components/item/ImageCarousel';
 
 const Item = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Item'>>();
@@ -30,14 +30,11 @@ const Item = () => {
 	return (
 		<ScrollView style={styles.container}>
 			<View style={styles.imagePlaceholder}>
-				<Image
-					source={{ uri: '' /* Do something here*/ }}
-					style={{ width: '100%', height: '100%' }}
-				/>
+				<ImageCarousel images={item.item_images} />
 			</View>
-			<View style={{ paddingHorizontal: 20, paddingTop: 20 }}>
+			<View style={styles.detailsContainer}>
 				<View style={styles.metaContainer}>
-					<Text style={{ fontWeight: 'bold', fontSize: 20 }}>{item.name}</Text>
+					<Text style={styles.itemName}>{item.name}</Text>
 					<Text style={{ fontSize: 18 }}>${item.unit_price}</Text>
 				</View>
 				<View style={styles.separator} />
@@ -77,6 +74,14 @@ const styles = StyleSheet.create({
 		height: 300,
 		width: '100%',
 		backgroundColor: '#D3D3D3'
+	},
+	detailsContainer: {
+		paddingHorizontal: 20,
+		paddingTop: 20
+	},
+	itemName: {
+		fontWeight: 'bold',
+		fontSize: 20
 	},
 	cartButton: {
 		marginVertical: 10,

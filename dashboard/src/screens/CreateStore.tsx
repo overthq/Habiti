@@ -87,6 +87,8 @@ const FormStep: React.FC<FormStepProps> = ({ step }) => {
 	);
 };
 
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+
 const CreateStore: React.FC = () => {
 	const [, createStore] = useCreateStoreMutation();
 	const [, addManager] = useAddManagerMutation();
@@ -103,7 +105,7 @@ const CreateStore: React.FC = () => {
 		});
 	};
 
-	const handleScroll = useAnimatedScrollEvent({
+	const handleScroll = useAnimatedScrollHandler({
 		onScroll: ({ contentOffset: { x } }) => {
 			scrollX.value = x;
 		}
@@ -144,7 +146,7 @@ const CreateStore: React.FC = () => {
 			>
 				{({ handleSubmit }) => (
 					<View style={{ flex: 1 }}>
-						<Animated.FlatList
+						<AnimatedFlatList
 							ref={listRef}
 							horizontal
 							decelerationRate='fast'

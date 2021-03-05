@@ -11,6 +11,13 @@ fragment ItemDetails on items {
 	description
 	unit_price
 	# unit
+
+	item_images {
+		image {
+			id
+			path_url
+		}
+	}
 }
 
 query Items {

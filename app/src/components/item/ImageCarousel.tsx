@@ -29,9 +29,12 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 		<View>
 			<FlatList
 				data={images}
-				keyExtractor={i => i.place_order}
+				keyExtractor={i => i.image.id}
 				renderItem={({ item }) => (
-					<Image source={{ uri: item.image.path_url }} />
+					<Image
+						source={{ uri: item.image.path_url }}
+						style={{ width: '100%', height: '100%' }}
+					/>
 				)}
 				horizontal
 				decelerationRate='fast'

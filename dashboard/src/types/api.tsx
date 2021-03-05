@@ -3264,7 +3264,7 @@ export type ItemQueryVariables = Exact<{
 }>;
 
 export type ItemQuery = { __typename?: 'query_root' } & {
-	items: Array<{ __typename?: 'items' } & ItemDetailsFragment>;
+	items_by_pk?: Maybe<{ __typename?: 'items' } & ItemDetailsFragment>;
 };
 
 export type AddItemMutationVariables = Exact<{
@@ -3395,7 +3395,7 @@ export function useItemsQuery(
 }
 export const ItemDocument = gql`
 	query Item($itemId: uuid!) {
-		items(where: { id: { _eq: $itemId } }) {
+		items_by_pk(id: $itemId) {
 			...ItemDetails
 		}
 	}

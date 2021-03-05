@@ -65,6 +65,502 @@ export type String_Comparison_Exp = {
 	_similar?: Maybe<Scalars['String']>;
 };
 
+/** columns and relationships of "images" */
+export type Images = {
+	__typename?: 'images';
+	created_at?: Maybe<Scalars['timestamptz']>;
+	id: Scalars['uuid'];
+	/** An array relationship */
+	item_images: Array<Item_Images>;
+	/** An aggregated array relationship */
+	item_images_aggregate: Item_Images_Aggregate;
+	path_url: Scalars['String'];
+	/** An array relationship */
+	store_avatar_images: Array<Store_Avatar_Images>;
+	/** An aggregated array relationship */
+	store_avatar_images_aggregate: Store_Avatar_Images_Aggregate;
+	updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** columns and relationships of "images" */
+export type ImagesItem_ImagesArgs = {
+	distinct_on?: Maybe<Array<Item_Images_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Item_Images_Order_By>>;
+	where?: Maybe<Item_Images_Bool_Exp>;
+};
+
+/** columns and relationships of "images" */
+export type ImagesItem_Images_AggregateArgs = {
+	distinct_on?: Maybe<Array<Item_Images_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Item_Images_Order_By>>;
+	where?: Maybe<Item_Images_Bool_Exp>;
+};
+
+/** columns and relationships of "images" */
+export type ImagesStore_Avatar_ImagesArgs = {
+	distinct_on?: Maybe<Array<Store_Avatar_Images_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Store_Avatar_Images_Order_By>>;
+	where?: Maybe<Store_Avatar_Images_Bool_Exp>;
+};
+
+/** columns and relationships of "images" */
+export type ImagesStore_Avatar_Images_AggregateArgs = {
+	distinct_on?: Maybe<Array<Store_Avatar_Images_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Store_Avatar_Images_Order_By>>;
+	where?: Maybe<Store_Avatar_Images_Bool_Exp>;
+};
+
+/** aggregated selection of "images" */
+export type Images_Aggregate = {
+	__typename?: 'images_aggregate';
+	aggregate?: Maybe<Images_Aggregate_Fields>;
+	nodes: Array<Images>;
+};
+
+/** aggregate fields of "images" */
+export type Images_Aggregate_Fields = {
+	__typename?: 'images_aggregate_fields';
+	count?: Maybe<Scalars['Int']>;
+	max?: Maybe<Images_Max_Fields>;
+	min?: Maybe<Images_Min_Fields>;
+};
+
+/** aggregate fields of "images" */
+export type Images_Aggregate_FieldsCountArgs = {
+	columns?: Maybe<Array<Images_Select_Column>>;
+	distinct?: Maybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "images" */
+export type Images_Aggregate_Order_By = {
+	count?: Maybe<Order_By>;
+	max?: Maybe<Images_Max_Order_By>;
+	min?: Maybe<Images_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "images" */
+export type Images_Arr_Rel_Insert_Input = {
+	data: Array<Images_Insert_Input>;
+	on_conflict?: Maybe<Images_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "images". All fields are combined with a logical 'AND'. */
+export type Images_Bool_Exp = {
+	_and?: Maybe<Array<Maybe<Images_Bool_Exp>>>;
+	_not?: Maybe<Images_Bool_Exp>;
+	_or?: Maybe<Array<Maybe<Images_Bool_Exp>>>;
+	created_at?: Maybe<Timestamptz_Comparison_Exp>;
+	id?: Maybe<Uuid_Comparison_Exp>;
+	item_images?: Maybe<Item_Images_Bool_Exp>;
+	path_url?: Maybe<String_Comparison_Exp>;
+	store_avatar_images?: Maybe<Store_Avatar_Images_Bool_Exp>;
+	updated_at?: Maybe<Timestamptz_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "images" */
+export enum Images_Constraint {
+	/** unique or primary key constraint */
+	ImagesPkey = 'images_pkey'
+}
+
+/** input type for inserting data into table "images" */
+export type Images_Insert_Input = {
+	created_at?: Maybe<Scalars['timestamptz']>;
+	id?: Maybe<Scalars['uuid']>;
+	item_images?: Maybe<Item_Images_Arr_Rel_Insert_Input>;
+	path_url?: Maybe<Scalars['String']>;
+	store_avatar_images?: Maybe<Store_Avatar_Images_Arr_Rel_Insert_Input>;
+	updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate max on columns */
+export type Images_Max_Fields = {
+	__typename?: 'images_max_fields';
+	created_at?: Maybe<Scalars['timestamptz']>;
+	id?: Maybe<Scalars['uuid']>;
+	path_url?: Maybe<Scalars['String']>;
+	updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** order by max() on columns of table "images" */
+export type Images_Max_Order_By = {
+	created_at?: Maybe<Order_By>;
+	id?: Maybe<Order_By>;
+	path_url?: Maybe<Order_By>;
+	updated_at?: Maybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Images_Min_Fields = {
+	__typename?: 'images_min_fields';
+	created_at?: Maybe<Scalars['timestamptz']>;
+	id?: Maybe<Scalars['uuid']>;
+	path_url?: Maybe<Scalars['String']>;
+	updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** order by min() on columns of table "images" */
+export type Images_Min_Order_By = {
+	created_at?: Maybe<Order_By>;
+	id?: Maybe<Order_By>;
+	path_url?: Maybe<Order_By>;
+	updated_at?: Maybe<Order_By>;
+};
+
+/** response of any mutation on the table "images" */
+export type Images_Mutation_Response = {
+	__typename?: 'images_mutation_response';
+	/** number of affected rows by the mutation */
+	affected_rows: Scalars['Int'];
+	/** data of the affected rows by the mutation */
+	returning: Array<Images>;
+};
+
+/** input type for inserting object relation for remote table "images" */
+export type Images_Obj_Rel_Insert_Input = {
+	data: Images_Insert_Input;
+	on_conflict?: Maybe<Images_On_Conflict>;
+};
+
+/** on conflict condition type for table "images" */
+export type Images_On_Conflict = {
+	constraint: Images_Constraint;
+	update_columns: Array<Images_Update_Column>;
+	where?: Maybe<Images_Bool_Exp>;
+};
+
+/** ordering options when selecting data from "images" */
+export type Images_Order_By = {
+	created_at?: Maybe<Order_By>;
+	id?: Maybe<Order_By>;
+	item_images_aggregate?: Maybe<Item_Images_Aggregate_Order_By>;
+	path_url?: Maybe<Order_By>;
+	store_avatar_images_aggregate?: Maybe<Store_Avatar_Images_Aggregate_Order_By>;
+	updated_at?: Maybe<Order_By>;
+};
+
+/** primary key columns input for table: "images" */
+export type Images_Pk_Columns_Input = {
+	id: Scalars['uuid'];
+};
+
+/** select columns of table "images" */
+export enum Images_Select_Column {
+	/** column name */
+	CreatedAt = 'created_at',
+	/** column name */
+	Id = 'id',
+	/** column name */
+	PathUrl = 'path_url',
+	/** column name */
+	UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "images" */
+export type Images_Set_Input = {
+	created_at?: Maybe<Scalars['timestamptz']>;
+	id?: Maybe<Scalars['uuid']>;
+	path_url?: Maybe<Scalars['String']>;
+	updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** update columns of table "images" */
+export enum Images_Update_Column {
+	/** column name */
+	CreatedAt = 'created_at',
+	/** column name */
+	Id = 'id',
+	/** column name */
+	PathUrl = 'path_url',
+	/** column name */
+	UpdatedAt = 'updated_at'
+}
+
+/** columns and relationships of "item_images" */
+export type Item_Images = {
+	__typename?: 'item_images';
+	/** An object relationship */
+	image: Images;
+	image_id: Scalars['uuid'];
+	/** An object relationship */
+	item: Items;
+	item_id: Scalars['uuid'];
+	order_place: Scalars['Int'];
+};
+
+/** aggregated selection of "item_images" */
+export type Item_Images_Aggregate = {
+	__typename?: 'item_images_aggregate';
+	aggregate?: Maybe<Item_Images_Aggregate_Fields>;
+	nodes: Array<Item_Images>;
+};
+
+/** aggregate fields of "item_images" */
+export type Item_Images_Aggregate_Fields = {
+	__typename?: 'item_images_aggregate_fields';
+	avg?: Maybe<Item_Images_Avg_Fields>;
+	count?: Maybe<Scalars['Int']>;
+	max?: Maybe<Item_Images_Max_Fields>;
+	min?: Maybe<Item_Images_Min_Fields>;
+	stddev?: Maybe<Item_Images_Stddev_Fields>;
+	stddev_pop?: Maybe<Item_Images_Stddev_Pop_Fields>;
+	stddev_samp?: Maybe<Item_Images_Stddev_Samp_Fields>;
+	sum?: Maybe<Item_Images_Sum_Fields>;
+	var_pop?: Maybe<Item_Images_Var_Pop_Fields>;
+	var_samp?: Maybe<Item_Images_Var_Samp_Fields>;
+	variance?: Maybe<Item_Images_Variance_Fields>;
+};
+
+/** aggregate fields of "item_images" */
+export type Item_Images_Aggregate_FieldsCountArgs = {
+	columns?: Maybe<Array<Item_Images_Select_Column>>;
+	distinct?: Maybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "item_images" */
+export type Item_Images_Aggregate_Order_By = {
+	avg?: Maybe<Item_Images_Avg_Order_By>;
+	count?: Maybe<Order_By>;
+	max?: Maybe<Item_Images_Max_Order_By>;
+	min?: Maybe<Item_Images_Min_Order_By>;
+	stddev?: Maybe<Item_Images_Stddev_Order_By>;
+	stddev_pop?: Maybe<Item_Images_Stddev_Pop_Order_By>;
+	stddev_samp?: Maybe<Item_Images_Stddev_Samp_Order_By>;
+	sum?: Maybe<Item_Images_Sum_Order_By>;
+	var_pop?: Maybe<Item_Images_Var_Pop_Order_By>;
+	var_samp?: Maybe<Item_Images_Var_Samp_Order_By>;
+	variance?: Maybe<Item_Images_Variance_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "item_images" */
+export type Item_Images_Arr_Rel_Insert_Input = {
+	data: Array<Item_Images_Insert_Input>;
+	on_conflict?: Maybe<Item_Images_On_Conflict>;
+};
+
+/** aggregate avg on columns */
+export type Item_Images_Avg_Fields = {
+	__typename?: 'item_images_avg_fields';
+	order_place?: Maybe<Scalars['Float']>;
+};
+
+/** order by avg() on columns of table "item_images" */
+export type Item_Images_Avg_Order_By = {
+	order_place?: Maybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "item_images". All fields are combined with a logical 'AND'. */
+export type Item_Images_Bool_Exp = {
+	_and?: Maybe<Array<Maybe<Item_Images_Bool_Exp>>>;
+	_not?: Maybe<Item_Images_Bool_Exp>;
+	_or?: Maybe<Array<Maybe<Item_Images_Bool_Exp>>>;
+	image?: Maybe<Images_Bool_Exp>;
+	image_id?: Maybe<Uuid_Comparison_Exp>;
+	item?: Maybe<Items_Bool_Exp>;
+	item_id?: Maybe<Uuid_Comparison_Exp>;
+	order_place?: Maybe<Int_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "item_images" */
+export enum Item_Images_Constraint {
+	/** unique or primary key constraint */
+	ItemImagesPkey = 'item_images_pkey'
+}
+
+/** input type for incrementing integer column in table "item_images" */
+export type Item_Images_Inc_Input = {
+	order_place?: Maybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "item_images" */
+export type Item_Images_Insert_Input = {
+	image?: Maybe<Images_Obj_Rel_Insert_Input>;
+	image_id?: Maybe<Scalars['uuid']>;
+	item?: Maybe<Items_Obj_Rel_Insert_Input>;
+	item_id?: Maybe<Scalars['uuid']>;
+	order_place?: Maybe<Scalars['Int']>;
+};
+
+/** aggregate max on columns */
+export type Item_Images_Max_Fields = {
+	__typename?: 'item_images_max_fields';
+	image_id?: Maybe<Scalars['uuid']>;
+	item_id?: Maybe<Scalars['uuid']>;
+	order_place?: Maybe<Scalars['Int']>;
+};
+
+/** order by max() on columns of table "item_images" */
+export type Item_Images_Max_Order_By = {
+	image_id?: Maybe<Order_By>;
+	item_id?: Maybe<Order_By>;
+	order_place?: Maybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Item_Images_Min_Fields = {
+	__typename?: 'item_images_min_fields';
+	image_id?: Maybe<Scalars['uuid']>;
+	item_id?: Maybe<Scalars['uuid']>;
+	order_place?: Maybe<Scalars['Int']>;
+};
+
+/** order by min() on columns of table "item_images" */
+export type Item_Images_Min_Order_By = {
+	image_id?: Maybe<Order_By>;
+	item_id?: Maybe<Order_By>;
+	order_place?: Maybe<Order_By>;
+};
+
+/** response of any mutation on the table "item_images" */
+export type Item_Images_Mutation_Response = {
+	__typename?: 'item_images_mutation_response';
+	/** number of affected rows by the mutation */
+	affected_rows: Scalars['Int'];
+	/** data of the affected rows by the mutation */
+	returning: Array<Item_Images>;
+};
+
+/** input type for inserting object relation for remote table "item_images" */
+export type Item_Images_Obj_Rel_Insert_Input = {
+	data: Item_Images_Insert_Input;
+	on_conflict?: Maybe<Item_Images_On_Conflict>;
+};
+
+/** on conflict condition type for table "item_images" */
+export type Item_Images_On_Conflict = {
+	constraint: Item_Images_Constraint;
+	update_columns: Array<Item_Images_Update_Column>;
+	where?: Maybe<Item_Images_Bool_Exp>;
+};
+
+/** ordering options when selecting data from "item_images" */
+export type Item_Images_Order_By = {
+	image?: Maybe<Images_Order_By>;
+	image_id?: Maybe<Order_By>;
+	item?: Maybe<Items_Order_By>;
+	item_id?: Maybe<Order_By>;
+	order_place?: Maybe<Order_By>;
+};
+
+/** primary key columns input for table: "item_images" */
+export type Item_Images_Pk_Columns_Input = {
+	image_id: Scalars['uuid'];
+	item_id: Scalars['uuid'];
+	order_place: Scalars['Int'];
+};
+
+/** select columns of table "item_images" */
+export enum Item_Images_Select_Column {
+	/** column name */
+	ImageId = 'image_id',
+	/** column name */
+	ItemId = 'item_id',
+	/** column name */
+	OrderPlace = 'order_place'
+}
+
+/** input type for updating data in table "item_images" */
+export type Item_Images_Set_Input = {
+	image_id?: Maybe<Scalars['uuid']>;
+	item_id?: Maybe<Scalars['uuid']>;
+	order_place?: Maybe<Scalars['Int']>;
+};
+
+/** aggregate stddev on columns */
+export type Item_Images_Stddev_Fields = {
+	__typename?: 'item_images_stddev_fields';
+	order_place?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev() on columns of table "item_images" */
+export type Item_Images_Stddev_Order_By = {
+	order_place?: Maybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Item_Images_Stddev_Pop_Fields = {
+	__typename?: 'item_images_stddev_pop_fields';
+	order_place?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_pop() on columns of table "item_images" */
+export type Item_Images_Stddev_Pop_Order_By = {
+	order_place?: Maybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Item_Images_Stddev_Samp_Fields = {
+	__typename?: 'item_images_stddev_samp_fields';
+	order_place?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_samp() on columns of table "item_images" */
+export type Item_Images_Stddev_Samp_Order_By = {
+	order_place?: Maybe<Order_By>;
+};
+
+/** aggregate sum on columns */
+export type Item_Images_Sum_Fields = {
+	__typename?: 'item_images_sum_fields';
+	order_place?: Maybe<Scalars['Int']>;
+};
+
+/** order by sum() on columns of table "item_images" */
+export type Item_Images_Sum_Order_By = {
+	order_place?: Maybe<Order_By>;
+};
+
+/** update columns of table "item_images" */
+export enum Item_Images_Update_Column {
+	/** column name */
+	ImageId = 'image_id',
+	/** column name */
+	ItemId = 'item_id',
+	/** column name */
+	OrderPlace = 'order_place'
+}
+
+/** aggregate var_pop on columns */
+export type Item_Images_Var_Pop_Fields = {
+	__typename?: 'item_images_var_pop_fields';
+	order_place?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_pop() on columns of table "item_images" */
+export type Item_Images_Var_Pop_Order_By = {
+	order_place?: Maybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Item_Images_Var_Samp_Fields = {
+	__typename?: 'item_images_var_samp_fields';
+	order_place?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_samp() on columns of table "item_images" */
+export type Item_Images_Var_Samp_Order_By = {
+	order_place?: Maybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Item_Images_Variance_Fields = {
+	__typename?: 'item_images_variance_fields';
+	order_place?: Maybe<Scalars['Float']>;
+};
+
+/** order by variance() on columns of table "item_images" */
+export type Item_Images_Variance_Order_By = {
+	order_place?: Maybe<Order_By>;
+};
+
 /** columns and relationships of "item_unit" */
 export type Item_Unit = {
 	__typename?: 'item_unit';
@@ -202,6 +698,10 @@ export type Items = {
 	description: Scalars['String'];
 	featured: Scalars['Boolean'];
 	id: Scalars['uuid'];
+	/** An array relationship */
+	item_images: Array<Item_Images>;
+	/** An aggregated array relationship */
+	item_images_aggregate: Item_Images_Aggregate;
 	name: Scalars['String'];
 	/** An array relationship */
 	order_items: Array<Order_Items>;
@@ -212,6 +712,24 @@ export type Items = {
 	store_id: Scalars['uuid'];
 	unit_price: Scalars['Int'];
 	updated_at: Scalars['timestamptz'];
+};
+
+/** columns and relationships of "items" */
+export type ItemsItem_ImagesArgs = {
+	distinct_on?: Maybe<Array<Item_Images_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Item_Images_Order_By>>;
+	where?: Maybe<Item_Images_Bool_Exp>;
+};
+
+/** columns and relationships of "items" */
+export type ItemsItem_Images_AggregateArgs = {
+	distinct_on?: Maybe<Array<Item_Images_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Item_Images_Order_By>>;
+	where?: Maybe<Item_Images_Bool_Exp>;
 };
 
 /** columns and relationships of "items" */
@@ -302,6 +820,7 @@ export type Items_Bool_Exp = {
 	description?: Maybe<String_Comparison_Exp>;
 	featured?: Maybe<Boolean_Comparison_Exp>;
 	id?: Maybe<Uuid_Comparison_Exp>;
+	item_images?: Maybe<Item_Images_Bool_Exp>;
 	name?: Maybe<String_Comparison_Exp>;
 	order_items?: Maybe<Order_Items_Bool_Exp>;
 	store?: Maybe<Stores_Bool_Exp>;
@@ -327,6 +846,7 @@ export type Items_Insert_Input = {
 	description?: Maybe<Scalars['String']>;
 	featured?: Maybe<Scalars['Boolean']>;
 	id?: Maybe<Scalars['uuid']>;
+	item_images?: Maybe<Item_Images_Arr_Rel_Insert_Input>;
 	name?: Maybe<Scalars['String']>;
 	order_items?: Maybe<Order_Items_Arr_Rel_Insert_Input>;
 	store?: Maybe<Stores_Obj_Rel_Insert_Input>;
@@ -409,6 +929,7 @@ export type Items_Order_By = {
 	description?: Maybe<Order_By>;
 	featured?: Maybe<Order_By>;
 	id?: Maybe<Order_By>;
+	item_images_aggregate?: Maybe<Item_Images_Aggregate_Order_By>;
 	name?: Maybe<Order_By>;
 	order_items_aggregate?: Maybe<Order_Items_Aggregate_Order_By>;
 	store?: Maybe<Stores_Order_By>;
@@ -554,6 +1075,14 @@ export type Items_Variance_Order_By = {
 /** mutation root */
 export type Mutation_Root = {
 	__typename?: 'mutation_root';
+	/** delete data from the table: "images" */
+	delete_images?: Maybe<Images_Mutation_Response>;
+	/** delete single row from the table: "images" */
+	delete_images_by_pk?: Maybe<Images>;
+	/** delete data from the table: "item_images" */
+	delete_item_images?: Maybe<Item_Images_Mutation_Response>;
+	/** delete single row from the table: "item_images" */
+	delete_item_images_by_pk?: Maybe<Item_Images>;
 	/** delete data from the table: "item_unit" */
 	delete_item_unit?: Maybe<Item_Unit_Mutation_Response>;
 	/** delete single row from the table: "item_unit" */
@@ -574,6 +1103,10 @@ export type Mutation_Root = {
 	delete_orders?: Maybe<Orders_Mutation_Response>;
 	/** delete single row from the table: "orders" */
 	delete_orders_by_pk?: Maybe<Orders>;
+	/** delete data from the table: "store_avatar_images" */
+	delete_store_avatar_images?: Maybe<Store_Avatar_Images_Mutation_Response>;
+	/** delete single row from the table: "store_avatar_images" */
+	delete_store_avatar_images_by_pk?: Maybe<Store_Avatar_Images>;
 	/** delete data from the table: "store_followers" */
 	delete_store_followers?: Maybe<Store_Followers_Mutation_Response>;
 	/** delete single row from the table: "store_followers" */
@@ -590,6 +1123,14 @@ export type Mutation_Root = {
 	delete_users?: Maybe<Users_Mutation_Response>;
 	/** delete single row from the table: "users" */
 	delete_users_by_pk?: Maybe<Users>;
+	/** insert data into the table: "images" */
+	insert_images?: Maybe<Images_Mutation_Response>;
+	/** insert a single row into the table: "images" */
+	insert_images_one?: Maybe<Images>;
+	/** insert data into the table: "item_images" */
+	insert_item_images?: Maybe<Item_Images_Mutation_Response>;
+	/** insert a single row into the table: "item_images" */
+	insert_item_images_one?: Maybe<Item_Images>;
 	/** insert data into the table: "item_unit" */
 	insert_item_unit?: Maybe<Item_Unit_Mutation_Response>;
 	/** insert a single row into the table: "item_unit" */
@@ -610,6 +1151,10 @@ export type Mutation_Root = {
 	insert_orders?: Maybe<Orders_Mutation_Response>;
 	/** insert a single row into the table: "orders" */
 	insert_orders_one?: Maybe<Orders>;
+	/** insert data into the table: "store_avatar_images" */
+	insert_store_avatar_images?: Maybe<Store_Avatar_Images_Mutation_Response>;
+	/** insert a single row into the table: "store_avatar_images" */
+	insert_store_avatar_images_one?: Maybe<Store_Avatar_Images>;
 	/** insert data into the table: "store_followers" */
 	insert_store_followers?: Maybe<Store_Followers_Mutation_Response>;
 	/** insert a single row into the table: "store_followers" */
@@ -626,6 +1171,14 @@ export type Mutation_Root = {
 	insert_users?: Maybe<Users_Mutation_Response>;
 	/** insert a single row into the table: "users" */
 	insert_users_one?: Maybe<Users>;
+	/** update data of the table: "images" */
+	update_images?: Maybe<Images_Mutation_Response>;
+	/** update single row of the table: "images" */
+	update_images_by_pk?: Maybe<Images>;
+	/** update data of the table: "item_images" */
+	update_item_images?: Maybe<Item_Images_Mutation_Response>;
+	/** update single row of the table: "item_images" */
+	update_item_images_by_pk?: Maybe<Item_Images>;
 	/** update data of the table: "item_unit" */
 	update_item_unit?: Maybe<Item_Unit_Mutation_Response>;
 	/** update single row of the table: "item_unit" */
@@ -646,6 +1199,10 @@ export type Mutation_Root = {
 	update_orders?: Maybe<Orders_Mutation_Response>;
 	/** update single row of the table: "orders" */
 	update_orders_by_pk?: Maybe<Orders>;
+	/** update data of the table: "store_avatar_images" */
+	update_store_avatar_images?: Maybe<Store_Avatar_Images_Mutation_Response>;
+	/** update single row of the table: "store_avatar_images" */
+	update_store_avatar_images_by_pk?: Maybe<Store_Avatar_Images>;
 	/** update data of the table: "store_followers" */
 	update_store_followers?: Maybe<Store_Followers_Mutation_Response>;
 	/** update single row of the table: "store_followers" */
@@ -662,6 +1219,28 @@ export type Mutation_Root = {
 	update_users?: Maybe<Users_Mutation_Response>;
 	/** update single row of the table: "users" */
 	update_users_by_pk?: Maybe<Users>;
+};
+
+/** mutation root */
+export type Mutation_RootDelete_ImagesArgs = {
+	where: Images_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootDelete_Images_By_PkArgs = {
+	id: Scalars['uuid'];
+};
+
+/** mutation root */
+export type Mutation_RootDelete_Item_ImagesArgs = {
+	where: Item_Images_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootDelete_Item_Images_By_PkArgs = {
+	image_id: Scalars['uuid'];
+	item_id: Scalars['uuid'];
+	order_place: Scalars['Int'];
 };
 
 /** mutation root */
@@ -715,6 +1294,16 @@ export type Mutation_RootDelete_Orders_By_PkArgs = {
 };
 
 /** mutation root */
+export type Mutation_RootDelete_Store_Avatar_ImagesArgs = {
+	where: Store_Avatar_Images_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootDelete_Store_Avatar_Images_By_PkArgs = {
+	store_id: Scalars['uuid'];
+};
+
+/** mutation root */
 export type Mutation_RootDelete_Store_FollowersArgs = {
 	where: Store_Followers_Bool_Exp;
 };
@@ -754,6 +1343,30 @@ export type Mutation_RootDelete_UsersArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Users_By_PkArgs = {
 	id: Scalars['uuid'];
+};
+
+/** mutation root */
+export type Mutation_RootInsert_ImagesArgs = {
+	objects: Array<Images_Insert_Input>;
+	on_conflict?: Maybe<Images_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_Images_OneArgs = {
+	object: Images_Insert_Input;
+	on_conflict?: Maybe<Images_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_Item_ImagesArgs = {
+	objects: Array<Item_Images_Insert_Input>;
+	on_conflict?: Maybe<Item_Images_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_Item_Images_OneArgs = {
+	object: Item_Images_Insert_Input;
+	on_conflict?: Maybe<Item_Images_On_Conflict>;
 };
 
 /** mutation root */
@@ -817,6 +1430,18 @@ export type Mutation_RootInsert_Orders_OneArgs = {
 };
 
 /** mutation root */
+export type Mutation_RootInsert_Store_Avatar_ImagesArgs = {
+	objects: Array<Store_Avatar_Images_Insert_Input>;
+	on_conflict?: Maybe<Store_Avatar_Images_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_Store_Avatar_Images_OneArgs = {
+	object: Store_Avatar_Images_Insert_Input;
+	on_conflict?: Maybe<Store_Avatar_Images_On_Conflict>;
+};
+
+/** mutation root */
 export type Mutation_RootInsert_Store_FollowersArgs = {
 	objects: Array<Store_Followers_Insert_Input>;
 	on_conflict?: Maybe<Store_Followers_On_Conflict>;
@@ -862,6 +1487,32 @@ export type Mutation_RootInsert_UsersArgs = {
 export type Mutation_RootInsert_Users_OneArgs = {
 	object: Users_Insert_Input;
 	on_conflict?: Maybe<Users_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_ImagesArgs = {
+	_set?: Maybe<Images_Set_Input>;
+	where: Images_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Images_By_PkArgs = {
+	_set?: Maybe<Images_Set_Input>;
+	pk_columns: Images_Pk_Columns_Input;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Item_ImagesArgs = {
+	_inc?: Maybe<Item_Images_Inc_Input>;
+	_set?: Maybe<Item_Images_Set_Input>;
+	where: Item_Images_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Item_Images_By_PkArgs = {
+	_inc?: Maybe<Item_Images_Inc_Input>;
+	_set?: Maybe<Item_Images_Set_Input>;
+	pk_columns: Item_Images_Pk_Columns_Input;
 };
 
 /** mutation root */
@@ -928,6 +1579,18 @@ export type Mutation_RootUpdate_Orders_By_PkArgs = {
 	_inc?: Maybe<Orders_Inc_Input>;
 	_set?: Maybe<Orders_Set_Input>;
 	pk_columns: Orders_Pk_Columns_Input;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Store_Avatar_ImagesArgs = {
+	_set?: Maybe<Store_Avatar_Images_Set_Input>;
+	where: Store_Avatar_Images_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Store_Avatar_Images_By_PkArgs = {
+	_set?: Maybe<Store_Avatar_Images_Set_Input>;
+	pk_columns: Store_Avatar_Images_Pk_Columns_Input;
 };
 
 /** mutation root */
@@ -1827,6 +2490,18 @@ export type Orders_Variance_Order_By = {
 /** query root */
 export type Query_Root = {
 	__typename?: 'query_root';
+	/** fetch data from the table: "images" */
+	images: Array<Images>;
+	/** fetch aggregated fields from the table: "images" */
+	images_aggregate: Images_Aggregate;
+	/** fetch data from the table: "images" using primary key columns */
+	images_by_pk?: Maybe<Images>;
+	/** fetch data from the table: "item_images" */
+	item_images: Array<Item_Images>;
+	/** fetch aggregated fields from the table: "item_images" */
+	item_images_aggregate: Item_Images_Aggregate;
+	/** fetch data from the table: "item_images" using primary key columns */
+	item_images_by_pk?: Maybe<Item_Images>;
 	/** fetch data from the table: "item_unit" */
 	item_unit: Array<Item_Unit>;
 	/** fetch aggregated fields from the table: "item_unit" */
@@ -1857,6 +2532,12 @@ export type Query_Root = {
 	orders_aggregate: Orders_Aggregate;
 	/** fetch data from the table: "orders" using primary key columns */
 	orders_by_pk?: Maybe<Orders>;
+	/** fetch data from the table: "store_avatar_images" */
+	store_avatar_images: Array<Store_Avatar_Images>;
+	/** fetch aggregated fields from the table: "store_avatar_images" */
+	store_avatar_images_aggregate: Store_Avatar_Images_Aggregate;
+	/** fetch data from the table: "store_avatar_images" using primary key columns */
+	store_avatar_images_by_pk?: Maybe<Store_Avatar_Images>;
 	/** fetch data from the table: "store_followers" */
 	store_followers: Array<Store_Followers>;
 	/** fetch aggregated fields from the table: "store_followers" */
@@ -1881,6 +2562,54 @@ export type Query_Root = {
 	users_aggregate: Users_Aggregate;
 	/** fetch data from the table: "users" using primary key columns */
 	users_by_pk?: Maybe<Users>;
+};
+
+/** query root */
+export type Query_RootImagesArgs = {
+	distinct_on?: Maybe<Array<Images_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Images_Order_By>>;
+	where?: Maybe<Images_Bool_Exp>;
+};
+
+/** query root */
+export type Query_RootImages_AggregateArgs = {
+	distinct_on?: Maybe<Array<Images_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Images_Order_By>>;
+	where?: Maybe<Images_Bool_Exp>;
+};
+
+/** query root */
+export type Query_RootImages_By_PkArgs = {
+	id: Scalars['uuid'];
+};
+
+/** query root */
+export type Query_RootItem_ImagesArgs = {
+	distinct_on?: Maybe<Array<Item_Images_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Item_Images_Order_By>>;
+	where?: Maybe<Item_Images_Bool_Exp>;
+};
+
+/** query root */
+export type Query_RootItem_Images_AggregateArgs = {
+	distinct_on?: Maybe<Array<Item_Images_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Item_Images_Order_By>>;
+	where?: Maybe<Item_Images_Bool_Exp>;
+};
+
+/** query root */
+export type Query_RootItem_Images_By_PkArgs = {
+	image_id: Scalars['uuid'];
+	item_id: Scalars['uuid'];
+	order_place: Scalars['Int'];
 };
 
 /** query root */
@@ -1999,6 +2728,29 @@ export type Query_RootOrders_By_PkArgs = {
 };
 
 /** query root */
+export type Query_RootStore_Avatar_ImagesArgs = {
+	distinct_on?: Maybe<Array<Store_Avatar_Images_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Store_Avatar_Images_Order_By>>;
+	where?: Maybe<Store_Avatar_Images_Bool_Exp>;
+};
+
+/** query root */
+export type Query_RootStore_Avatar_Images_AggregateArgs = {
+	distinct_on?: Maybe<Array<Store_Avatar_Images_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Store_Avatar_Images_Order_By>>;
+	where?: Maybe<Store_Avatar_Images_Bool_Exp>;
+};
+
+/** query root */
+export type Query_RootStore_Avatar_Images_By_PkArgs = {
+	store_id: Scalars['uuid'];
+};
+
+/** query root */
 export type Query_RootStore_FollowersArgs = {
 	distinct_on?: Maybe<Array<Store_Followers_Select_Column>>;
 	limit?: Maybe<Scalars['Int']>;
@@ -2091,6 +2843,159 @@ export type Query_RootUsers_AggregateArgs = {
 export type Query_RootUsers_By_PkArgs = {
 	id: Scalars['uuid'];
 };
+
+/** columns and relationships of "store_avatar_images" */
+export type Store_Avatar_Images = {
+	__typename?: 'store_avatar_images';
+	/** An object relationship */
+	image: Images;
+	image_id: Scalars['uuid'];
+	/** An object relationship */
+	store: Stores;
+	store_id: Scalars['uuid'];
+};
+
+/** aggregated selection of "store_avatar_images" */
+export type Store_Avatar_Images_Aggregate = {
+	__typename?: 'store_avatar_images_aggregate';
+	aggregate?: Maybe<Store_Avatar_Images_Aggregate_Fields>;
+	nodes: Array<Store_Avatar_Images>;
+};
+
+/** aggregate fields of "store_avatar_images" */
+export type Store_Avatar_Images_Aggregate_Fields = {
+	__typename?: 'store_avatar_images_aggregate_fields';
+	count?: Maybe<Scalars['Int']>;
+	max?: Maybe<Store_Avatar_Images_Max_Fields>;
+	min?: Maybe<Store_Avatar_Images_Min_Fields>;
+};
+
+/** aggregate fields of "store_avatar_images" */
+export type Store_Avatar_Images_Aggregate_FieldsCountArgs = {
+	columns?: Maybe<Array<Store_Avatar_Images_Select_Column>>;
+	distinct?: Maybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "store_avatar_images" */
+export type Store_Avatar_Images_Aggregate_Order_By = {
+	count?: Maybe<Order_By>;
+	max?: Maybe<Store_Avatar_Images_Max_Order_By>;
+	min?: Maybe<Store_Avatar_Images_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "store_avatar_images" */
+export type Store_Avatar_Images_Arr_Rel_Insert_Input = {
+	data: Array<Store_Avatar_Images_Insert_Input>;
+	on_conflict?: Maybe<Store_Avatar_Images_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "store_avatar_images". All fields are combined with a logical 'AND'. */
+export type Store_Avatar_Images_Bool_Exp = {
+	_and?: Maybe<Array<Maybe<Store_Avatar_Images_Bool_Exp>>>;
+	_not?: Maybe<Store_Avatar_Images_Bool_Exp>;
+	_or?: Maybe<Array<Maybe<Store_Avatar_Images_Bool_Exp>>>;
+	image?: Maybe<Images_Bool_Exp>;
+	image_id?: Maybe<Uuid_Comparison_Exp>;
+	store?: Maybe<Stores_Bool_Exp>;
+	store_id?: Maybe<Uuid_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "store_avatar_images" */
+export enum Store_Avatar_Images_Constraint {
+	/** unique or primary key constraint */
+	StoreAvatarImagesPkey = 'store_avatar_images_pkey'
+}
+
+/** input type for inserting data into table "store_avatar_images" */
+export type Store_Avatar_Images_Insert_Input = {
+	image?: Maybe<Images_Obj_Rel_Insert_Input>;
+	image_id?: Maybe<Scalars['uuid']>;
+	store?: Maybe<Stores_Obj_Rel_Insert_Input>;
+	store_id?: Maybe<Scalars['uuid']>;
+};
+
+/** aggregate max on columns */
+export type Store_Avatar_Images_Max_Fields = {
+	__typename?: 'store_avatar_images_max_fields';
+	image_id?: Maybe<Scalars['uuid']>;
+	store_id?: Maybe<Scalars['uuid']>;
+};
+
+/** order by max() on columns of table "store_avatar_images" */
+export type Store_Avatar_Images_Max_Order_By = {
+	image_id?: Maybe<Order_By>;
+	store_id?: Maybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Store_Avatar_Images_Min_Fields = {
+	__typename?: 'store_avatar_images_min_fields';
+	image_id?: Maybe<Scalars['uuid']>;
+	store_id?: Maybe<Scalars['uuid']>;
+};
+
+/** order by min() on columns of table "store_avatar_images" */
+export type Store_Avatar_Images_Min_Order_By = {
+	image_id?: Maybe<Order_By>;
+	store_id?: Maybe<Order_By>;
+};
+
+/** response of any mutation on the table "store_avatar_images" */
+export type Store_Avatar_Images_Mutation_Response = {
+	__typename?: 'store_avatar_images_mutation_response';
+	/** number of affected rows by the mutation */
+	affected_rows: Scalars['Int'];
+	/** data of the affected rows by the mutation */
+	returning: Array<Store_Avatar_Images>;
+};
+
+/** input type for inserting object relation for remote table "store_avatar_images" */
+export type Store_Avatar_Images_Obj_Rel_Insert_Input = {
+	data: Store_Avatar_Images_Insert_Input;
+	on_conflict?: Maybe<Store_Avatar_Images_On_Conflict>;
+};
+
+/** on conflict condition type for table "store_avatar_images" */
+export type Store_Avatar_Images_On_Conflict = {
+	constraint: Store_Avatar_Images_Constraint;
+	update_columns: Array<Store_Avatar_Images_Update_Column>;
+	where?: Maybe<Store_Avatar_Images_Bool_Exp>;
+};
+
+/** ordering options when selecting data from "store_avatar_images" */
+export type Store_Avatar_Images_Order_By = {
+	image?: Maybe<Images_Order_By>;
+	image_id?: Maybe<Order_By>;
+	store?: Maybe<Stores_Order_By>;
+	store_id?: Maybe<Order_By>;
+};
+
+/** primary key columns input for table: "store_avatar_images" */
+export type Store_Avatar_Images_Pk_Columns_Input = {
+	store_id: Scalars['uuid'];
+};
+
+/** select columns of table "store_avatar_images" */
+export enum Store_Avatar_Images_Select_Column {
+	/** column name */
+	ImageId = 'image_id',
+	/** column name */
+	StoreId = 'store_id'
+}
+
+/** input type for updating data in table "store_avatar_images" */
+export type Store_Avatar_Images_Set_Input = {
+	image_id?: Maybe<Scalars['uuid']>;
+	store_id?: Maybe<Scalars['uuid']>;
+};
+
+/** update columns of table "store_avatar_images" */
+export enum Store_Avatar_Images_Update_Column {
+	/** column name */
+	ImageId = 'image_id',
+	/** column name */
+	StoreId = 'store_id'
+}
 
 /** columns and relationships of "store_followers" */
 export type Store_Followers = {
@@ -2417,6 +3322,10 @@ export type Stores = {
 	orders_aggregate: Orders_Aggregate;
 	short_name: Scalars['String'];
 	/** An array relationship */
+	store_avatar_images: Array<Store_Avatar_Images>;
+	/** An aggregated array relationship */
+	store_avatar_images_aggregate: Store_Avatar_Images_Aggregate;
+	/** An array relationship */
 	store_followers: Array<Store_Followers>;
 	/** An aggregated array relationship */
 	store_followers_aggregate: Store_Followers_Aggregate;
@@ -2463,6 +3372,24 @@ export type StoresOrders_AggregateArgs = {
 	offset?: Maybe<Scalars['Int']>;
 	order_by?: Maybe<Array<Orders_Order_By>>;
 	where?: Maybe<Orders_Bool_Exp>;
+};
+
+/** columns and relationships of "stores" */
+export type StoresStore_Avatar_ImagesArgs = {
+	distinct_on?: Maybe<Array<Store_Avatar_Images_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Store_Avatar_Images_Order_By>>;
+	where?: Maybe<Store_Avatar_Images_Bool_Exp>;
+};
+
+/** columns and relationships of "stores" */
+export type StoresStore_Avatar_Images_AggregateArgs = {
+	distinct_on?: Maybe<Array<Store_Avatar_Images_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Store_Avatar_Images_Order_By>>;
+	where?: Maybe<Store_Avatar_Images_Bool_Exp>;
 };
 
 /** columns and relationships of "stores" */
@@ -2547,6 +3474,7 @@ export type Stores_Bool_Exp = {
 	name?: Maybe<String_Comparison_Exp>;
 	orders?: Maybe<Orders_Bool_Exp>;
 	short_name?: Maybe<String_Comparison_Exp>;
+	store_avatar_images?: Maybe<Store_Avatar_Images_Bool_Exp>;
 	store_followers?: Maybe<Store_Followers_Bool_Exp>;
 	store_managers?: Maybe<Store_Managers_Bool_Exp>;
 	twitter_username?: Maybe<String_Comparison_Exp>;
@@ -2571,6 +3499,7 @@ export type Stores_Insert_Input = {
 	name?: Maybe<Scalars['String']>;
 	orders?: Maybe<Orders_Arr_Rel_Insert_Input>;
 	short_name?: Maybe<Scalars['String']>;
+	store_avatar_images?: Maybe<Store_Avatar_Images_Arr_Rel_Insert_Input>;
 	store_followers?: Maybe<Store_Followers_Arr_Rel_Insert_Input>;
 	store_managers?: Maybe<Store_Managers_Arr_Rel_Insert_Input>;
 	twitter_username?: Maybe<Scalars['String']>;
@@ -2659,6 +3588,7 @@ export type Stores_Order_By = {
 	name?: Maybe<Order_By>;
 	orders_aggregate?: Maybe<Orders_Aggregate_Order_By>;
 	short_name?: Maybe<Order_By>;
+	store_avatar_images_aggregate?: Maybe<Store_Avatar_Images_Aggregate_Order_By>;
 	store_followers_aggregate?: Maybe<Store_Followers_Aggregate_Order_By>;
 	store_managers_aggregate?: Maybe<Store_Managers_Aggregate_Order_By>;
 	twitter_username?: Maybe<Order_By>;
@@ -2726,6 +3656,18 @@ export enum Stores_Update_Column {
 /** subscription root */
 export type Subscription_Root = {
 	__typename?: 'subscription_root';
+	/** fetch data from the table: "images" */
+	images: Array<Images>;
+	/** fetch aggregated fields from the table: "images" */
+	images_aggregate: Images_Aggregate;
+	/** fetch data from the table: "images" using primary key columns */
+	images_by_pk?: Maybe<Images>;
+	/** fetch data from the table: "item_images" */
+	item_images: Array<Item_Images>;
+	/** fetch aggregated fields from the table: "item_images" */
+	item_images_aggregate: Item_Images_Aggregate;
+	/** fetch data from the table: "item_images" using primary key columns */
+	item_images_by_pk?: Maybe<Item_Images>;
 	/** fetch data from the table: "item_unit" */
 	item_unit: Array<Item_Unit>;
 	/** fetch aggregated fields from the table: "item_unit" */
@@ -2756,6 +3698,12 @@ export type Subscription_Root = {
 	orders_aggregate: Orders_Aggregate;
 	/** fetch data from the table: "orders" using primary key columns */
 	orders_by_pk?: Maybe<Orders>;
+	/** fetch data from the table: "store_avatar_images" */
+	store_avatar_images: Array<Store_Avatar_Images>;
+	/** fetch aggregated fields from the table: "store_avatar_images" */
+	store_avatar_images_aggregate: Store_Avatar_Images_Aggregate;
+	/** fetch data from the table: "store_avatar_images" using primary key columns */
+	store_avatar_images_by_pk?: Maybe<Store_Avatar_Images>;
 	/** fetch data from the table: "store_followers" */
 	store_followers: Array<Store_Followers>;
 	/** fetch aggregated fields from the table: "store_followers" */
@@ -2780,6 +3728,54 @@ export type Subscription_Root = {
 	users_aggregate: Users_Aggregate;
 	/** fetch data from the table: "users" using primary key columns */
 	users_by_pk?: Maybe<Users>;
+};
+
+/** subscription root */
+export type Subscription_RootImagesArgs = {
+	distinct_on?: Maybe<Array<Images_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Images_Order_By>>;
+	where?: Maybe<Images_Bool_Exp>;
+};
+
+/** subscription root */
+export type Subscription_RootImages_AggregateArgs = {
+	distinct_on?: Maybe<Array<Images_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Images_Order_By>>;
+	where?: Maybe<Images_Bool_Exp>;
+};
+
+/** subscription root */
+export type Subscription_RootImages_By_PkArgs = {
+	id: Scalars['uuid'];
+};
+
+/** subscription root */
+export type Subscription_RootItem_ImagesArgs = {
+	distinct_on?: Maybe<Array<Item_Images_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Item_Images_Order_By>>;
+	where?: Maybe<Item_Images_Bool_Exp>;
+};
+
+/** subscription root */
+export type Subscription_RootItem_Images_AggregateArgs = {
+	distinct_on?: Maybe<Array<Item_Images_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Item_Images_Order_By>>;
+	where?: Maybe<Item_Images_Bool_Exp>;
+};
+
+/** subscription root */
+export type Subscription_RootItem_Images_By_PkArgs = {
+	image_id: Scalars['uuid'];
+	item_id: Scalars['uuid'];
+	order_place: Scalars['Int'];
 };
 
 /** subscription root */
@@ -2895,6 +3891,29 @@ export type Subscription_RootOrders_AggregateArgs = {
 /** subscription root */
 export type Subscription_RootOrders_By_PkArgs = {
 	id: Scalars['uuid'];
+};
+
+/** subscription root */
+export type Subscription_RootStore_Avatar_ImagesArgs = {
+	distinct_on?: Maybe<Array<Store_Avatar_Images_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Store_Avatar_Images_Order_By>>;
+	where?: Maybe<Store_Avatar_Images_Bool_Exp>;
+};
+
+/** subscription root */
+export type Subscription_RootStore_Avatar_Images_AggregateArgs = {
+	distinct_on?: Maybe<Array<Store_Avatar_Images_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Store_Avatar_Images_Order_By>>;
+	where?: Maybe<Store_Avatar_Images_Bool_Exp>;
+};
+
+/** subscription root */
+export type Subscription_RootStore_Avatar_Images_By_PkArgs = {
+	store_id: Scalars['uuid'];
 };
 
 /** subscription root */
@@ -3251,7 +4270,14 @@ export type Uuid_Comparison_Exp = {
 export type ItemDetailsFragment = { __typename?: 'items' } & Pick<
 	Items,
 	'id' | 'name' | 'store_id' | 'description' | 'unit_price'
-> & { store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'> };
+> & {
+		store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'>;
+		item_images: Array<
+			{ __typename?: 'item_images' } & {
+				image: { __typename?: 'images' } & Pick<Images, 'id' | 'path_url'>;
+			}
+		>;
+	};
 
 export type ItemsQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -3458,6 +4484,12 @@ export const ItemDetailsFragmentDoc = gql`
 		}
 		description
 		unit_price
+		item_images {
+			image {
+				id
+				path_url
+			}
+		}
 	}
 `;
 export const OrderDetailsFragmentDoc = gql`

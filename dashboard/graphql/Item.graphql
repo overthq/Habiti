@@ -11,7 +11,7 @@ query Items {
 }
 
 query Item($itemId: uuid!) {
-	items(where: { id: { _eq: $itemId } }) {
+	items_by_pk(id: $itemId) {
 		...ItemDetails
 	}
 }
