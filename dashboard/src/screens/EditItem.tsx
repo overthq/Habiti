@@ -1,22 +1,55 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { View, TextInput, StyleSheet } from 'react-native';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { Formik } from 'formik';
+import { useItemQuery, useUpdateItemMutation } from '../types/api';
+import Button from '../components/global/Button';
 
 const EditItem: React.FC = () => {
-	const { params } = useRoute<any>();
+	const { params } = useRoute < RouteProp<ModalStackParamList, 'EditItem'>();
 
 	const { itemId } = params;
-	// On load, fetch the item from the database, and use the returned data to pre-fill fields.
+	const [{ data }] = useItemQuery({ variables: { itemId } });
+	const [, updateItem] = useUpdateItemMutation();
 
-	const editItem = () => {
-		console.log(itemId);
-	};
+	if (!data?.items_by_pk) throw new Error('This item does not exist');
+
+	const item = data.items_by_pk;
 
 	return (
 		<View style={styles.container}>
-			<TouchableOpacity onPress={editItem}>
-				<Text>Update Item</Text>
-			</TouchableOpacity>
+			<Formik
+				initialValues={{
+					name: item.name,
+					description: item.description,
+					pricePerUnit: item.price_per_unit
+				}}
+				onSubmit={async values => {
+					await updateItem({
+						item: {
+							name: values.name,
+							description: values.description,
+							price_per_unit: values.pricePerUnit
+						}
+					});
+				}}
+			>
+				{({ values, handleChange, handleBlur, handleSubmit }) => (
+					<>
+						<TextInput
+							value={values.name}
+							onChangeText={handleChange('name')}
+							onBlur={handleBlur('name')}
+						/>
+						<TextInput
+							value={values.description}
+							onChangeText={handleChange('description')}
+							onBlur={handleBlur('description')}
+						/>
+						<Button onPress={handleSubmit} text='Update Item' />
+					</>
+				)}
+			</Formik>
 		</View>
 	);
 };

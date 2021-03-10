@@ -9,7 +9,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import authStyles from '../styles/auth';
 import { register } from '../utils/auth';
-import Button from '../components/global/Button';
+// import Button from '../components/global/Button';
 
 const Register: React.FC = () => {
 	const [name, setName] = React.useState('');

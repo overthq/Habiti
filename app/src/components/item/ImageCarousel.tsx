@@ -4,9 +4,10 @@ import {
 	useSharedValue,
 	useAnimatedScrollHandler
 } from 'react-native-reanimated';
+import { ItemQuery } from '../../types/api';
 
 interface ImageCarouselProps {
-	images: any[];
+	images: ItemQuery['item_images'];
 }
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {

@@ -24,3 +24,8 @@ export type ItemsStackParamList = {
 	ItemsList: undefined;
 	Item: { itemId: string }; // This is also a navigator in itself, how does that work?
 };
+
+export type ModalStackParamList = {
+	'Add Item': undefined;
+	'Edit Item': { itemId: string };
+};
