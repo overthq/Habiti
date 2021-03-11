@@ -1,9 +1,6 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { View, Text, StyleSheet } from 'react-native';
 import { useItemQuery } from '../types/api';
-import { Icon } from '../components/icons';
-import { upsertItemToCart, removeItemFromCart } from '../redux/carts/actions';
 
 interface CartItemProps {
 	itemId: string;
@@ -11,60 +8,19 @@ interface CartItemProps {
 }
 
 const CartItem: React.FC<CartItemProps> = ({ itemId, quantity }) => {
-	const dispatch = useDispatch();
 	const [{ data }] = useItemQuery({ variables: { itemId } });
-
 	const item = data?.items_by_pk;
+
+	if (!item) throw new Error('This item does not exist');
 
 	return (
 		<View style={styles.container}>
-			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-				<View style={styles.imagePlaceholder} />
-				<View>
-					<Text style={{ fontSize: 16 }}>{item?.name}</Text>
-					<Text style={{ fontSize: 14, marginTop: 8 }}>{item?.unit_price}</Text>
-				</View>
-			</View>
-			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-				<TouchableOpacity
-					style={{ marginRight: 7.5 }}
-					onPress={() => {
-						dispatch(
-							upsertItemToCart({
-								storeId: item?.store_id,
-								itemId,
-								quantity: quantity - 1
-							})
-						);
-					}}
-				>
-					<Icon name='minus' color='#828282' />
-				</TouchableOpacity>
-				<Text style={{ fontSize: 16, fontVariant: ['tabular-nums'] }}>
-					{quantity}
+			<View style={styles.imagePlaceholder} />
+			<View>
+				<Text style={styles.name}>{item.name}</Text>
+				<Text style={styles.price}>
+					{quantity} {item.unit_price}
 				</Text>
-				<TouchableOpacity
-					style={{ marginLeft: 7.5 }}
-					onPress={() => {
-						dispatch(
-							upsertItemToCart({
-								storeId: item?.store_id,
-								itemId,
-								quantity: quantity + 1
-							})
-						);
-					}}
-				>
-					<Icon name='plus' color='#828282' />
-				</TouchableOpacity>
-				<TouchableOpacity
-					style={{ marginLeft: 7.5 }}
-					onPress={() => {
-						dispatch(removeItemFromCart({ storeId: item?.store_id, itemId }));
-					}}
-				>
-					<Icon name='trash' color='#828282' />
-				</TouchableOpacity>
 			</View>
 		</View>
 	);
@@ -83,6 +39,13 @@ const styles = StyleSheet.create({
 		marginRight: 10,
 		borderRadius: 8,
 		backgroundColor: '#D3D3D3'
+	},
+	name: {
+		fontSize: 16
+	},
+	price: {
+		fontSize: 14,
+		marginTop: 8
 	}
 });
 

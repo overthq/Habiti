@@ -11,7 +11,7 @@ export type AppStackParamList = {
 export type AuthStackParamList = {
 	Register: undefined;
 	Authenticate: undefined;
-	VerifyAuthentication: { phone: string };
+	Verify: { phone: string };
 };
 
 export type MainStackParamList = {

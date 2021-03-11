@@ -4,8 +4,9 @@ import { useRoute } from '@react-navigation/native';
 import { useOrderQuery } from '../types/api';
 
 const Order = () => {
-	const { params } = useRoute<any>();
-	const { orderId } = params;
+	const {
+		params: { orderId }
+	} = useRoute<any>();
 
 	const [{ data }] = useOrderQuery({ variables: { orderId } });
 
