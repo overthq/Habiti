@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useItemQuery } from '../types/api';
@@ -12,11 +12,22 @@ const Item: React.FC = () => {
 
 	const item = data?.items_by_pk;
 
+	if (!item) throw new Error('This item does not exist');
+
 	return (
 		<SafeAreaView style={styles.container}>
-			<Text>{item?.name}</Text>
-			<Text>Description</Text>
-			<Text>{item?.description}</Text>
+			<View>
+				<Text>Name</Text>
+				<Text>{item.name}</Text>
+			</View>
+			<View>
+				<Text>Description</Text>
+				<Text>{item.description}</Text>
+			</View>
+			<View>
+				<Text>Price per unit</Text>
+				<Text>{item.price_per_unit}</Text>
+			</View>
 		</SafeAreaView>
 	);
 };
