@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { OrdersQuery } from '../../types/api';
+import { Icon } from '../icons';
 
 interface OrdersListItemProps {
 	order: OrdersQuery['orders'][-1];
@@ -9,9 +10,10 @@ interface OrdersListItemProps {
 const OrdersListItem: React.FC<OrdersListItemProps> = ({ order }) => {
 	return (
 		<View style={styles.container}>
-			<Text>2 items</Text>
 			<Text>{order.status}</Text>
 			<Text>{order.created_at}</Text>
+			<Text>50.00 NGN</Text>
+			<Icon name='chevronRight' />
 		</View>
 	);
 };

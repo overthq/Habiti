@@ -2,33 +2,9 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { OrderQuery, useOrderQuery } from '../types/api';
+import { useOrderQuery } from '../types/api';
 import { OrdersStackParamsList } from '../types/navigation';
-
-interface OrderItemProps {
-	orderItem: OrderQuery['orders'][-1]['order_items'];
-}
-
-const OrderItem: React.FC<OrderItemProps> = ({ orderItem }) => {
-	const { id, item, quantity, unit_price } = orderItem;
-
-	return (
-		<View key={id}>
-			<View
-				style={{
-					height: 50,
-					width: 50,
-					backgroundColor: '#D3D3D3',
-					borderRadius: 4
-				}}
-			/>
-			<Text>{item.name}</Text>
-			<Text>
-				{quantity} - N{quantity * unit_price}
-			</Text>
-		</View>
-	);
-};
+import OrderItem from '../components/order/OrderItem';
 
 const Order: React.FC = () => {
 	const {
@@ -43,9 +19,9 @@ const Order: React.FC = () => {
 		<SafeAreaView style={styles.container}>
 			<Text>{order.status}</Text>
 			<View>
-				<Text>Order items</Text>
+				<Text style={styles.sectionHeader}>Order items</Text>
 				{order.order_items.map(orderItem => (
-					<OrderItem key={id} orderItem={orderItem} />
+					<OrderItem key={orderItem.id} orderItem={orderItem} />
 				))}
 			</View>
 		</SafeAreaView>
@@ -55,6 +31,10 @@ const Order: React.FC = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1
+	},
+	sectionHeader: {
+		fontSize: 16,
+		fontWeight: '500'
 	}
 });
 

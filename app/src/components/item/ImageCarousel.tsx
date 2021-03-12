@@ -1,24 +1,27 @@
 import React from 'react';
-import { View, Image, FlatList, useWindowDimensions } from 'react-native';
 import {
+	View,
+	Image,
+	FlatList,
+	StyleSheet,
+	useWindowDimensions
+} from 'react-native';
+import Animated, {
 	useSharedValue,
 	useAnimatedScrollHandler
 } from 'react-native-reanimated';
-import { ItemQuery } from '../../types/api';
+import ImageCarouselDots from '../ImageCarouselDots';
+import { Item_Images } from '../../types/api';
 
 interface ImageCarouselProps {
-	images: ItemQuery['item_images'];
+	images: Item_Images[];
 }
+
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 	const { width } = useWindowDimensions();
 	const scrollX = useSharedValue(0);
-	const [slideIndex, setSlideIndex] = React.useState(0);
-
-	const handleViewableItemsChanged = React.useCallback(({ viewableItems }) => {
-		if (!viewableItems[0]) return;
-		setSlideIndex(viewableItems[0].index);
-	}, []);
 
 	const handleScroll = useAnimatedScrollHandler({
 		onScroll: ({ contentOffset: { x } }) => {
@@ -27,9 +30,10 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 	});
 
 	return (
-		<View>
-			<FlatList
+		<View style={styles.container}>
+			<AnimatedFlatList
 				data={images}
+				style={{ height: '100%', width: '100%' }}
 				keyExtractor={i => i.image.id}
 				renderItem={({ item }) => (
 					<Image
@@ -39,15 +43,22 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 				)}
 				horizontal
 				decelerationRate='fast'
-				onViewableItemsChanged={handleViewableItemsChanged}
 				onScroll={handleScroll}
 				scrollEventThrottle={16}
 				snapToInterval={width}
 				snapToAlignment='center'
 				showsHorizontalScrollIndicator={false}
 			/>
+			<ImageCarouselDots scrollX={scrollX} length={images.length} />
 		</View>
 	);
 };
+
+const styles = StyleSheet.create({
+	container: {
+		height: 400,
+		width: '100%'
+	}
+});
 
 export default ImageCarousel;

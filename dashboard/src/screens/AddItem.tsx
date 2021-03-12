@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
 import { Formik } from 'formik';
+import { useNavigation } from '@react-navigation/native';
 import { useAddItemMutation } from '../types/api';
 import Button from '../components/global/Button';
 import { useAppSelector } from '../redux/store';
@@ -10,18 +11,7 @@ const AddItem: React.FC = () => {
 		({ preferences }) => preferences.activeStore
 	);
 	const [, addItem] = useAddItemMutation();
-
-	const submit = (values: Record<string, any>) => {
-		addItem({
-			itemObject: {
-				name: values.name,
-				description: values.description,
-				store_id: activeStore,
-				unit_price: values.unitPrice
-				// unit: values.unit
-			}
-		});
-	};
+	const { goBack } = useNavigation();
 
 	return (
 		<View style={styles.container}>
@@ -29,34 +19,56 @@ const AddItem: React.FC = () => {
 				initialValues={{
 					name: '',
 					description: '',
-					unitPrice: '',
-					unit: ''
+					unitPrice: ''
 				}}
-				onSubmit={submit}
+				onSubmit={async values => {
+					try {
+						await addItem({
+							itemObject: {
+								name: values.name,
+								description: values.description,
+								store_id: activeStore,
+								unit_price: Number(values.unitPrice)
+							}
+						});
+						goBack();
+					} catch (error) {
+						Alert.alert(error.message);
+					}
+				}}
 			>
 				{({ handleChange, handleBlur, handleSubmit }) => (
 					<View>
-						<TextInput
-							placeholder='Item name'
-							onChangeText={handleChange('name')}
-							onBlur={handleBlur('name')}
-							style={styles.input}
-						/>
-						<TextInput
-							placeholder='Item description'
-							onChangeText={handleChange('description')}
-							onBlur={handleBlur('description')}
-							style={[styles.input, styles.textarea]}
-							multiline
-						/>
-						<TextInput
-							placeholder='Price per unit (NGN)'
-							onChangeText={handleChange('unitPrice')}
-							onBlur={handleBlur('unitPrice')}
-							style={styles.input}
-							keyboardType='numeric'
-						/>
-						<Button text='Add Item' onPress={() => handleSubmit()} />
+						<View>
+							<Text>Item Name</Text>
+							<TextInput
+								placeholder='Item name'
+								onChangeText={handleChange('name')}
+								onBlur={handleBlur('name')}
+								style={styles.input}
+							/>
+						</View>
+						<View>
+							<Text>Item description</Text>
+							<TextInput
+								placeholder='Item description'
+								onChangeText={handleChange('description')}
+								onBlur={handleBlur('description')}
+								style={[styles.input, styles.textarea]}
+								multiline
+							/>
+						</View>
+						<View>
+							<Text>Unit Price</Text>
+							<TextInput
+								placeholder='Price per unit (NGN)'
+								onChangeText={handleChange('unitPrice')}
+								onBlur={handleBlur('unitPrice')}
+								style={styles.input}
+								keyboardType='numeric'
+							/>
+						</View>
+						<Button text='Add Item' onPress={handleSubmit} />
 					</View>
 				)}
 			</Formik>
