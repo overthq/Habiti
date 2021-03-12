@@ -2,7 +2,7 @@ fragment ItemDetails on items {
 	id
 	name
 	description
-	price_per_unit
+	unit_price
 }
 
 query Items {

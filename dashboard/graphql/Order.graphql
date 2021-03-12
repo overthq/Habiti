@@ -1,13 +1,25 @@
-fragment OrderDetails on orders {
+fragment OrderMetaDetails on orders {
 	id
 	status
 	created_at
 	updated_at
 }
 
+fragment OrderDetails on orders {
+	...OrderMetaDetails
+	order_items {
+		id
+		item {
+			name
+		}
+		unit_price
+		quantity
+	}
+}
+
 query Orders {
 	orders {
-		...OrderDetails
+		...OrderMetaDetails
 	}
 }
 
