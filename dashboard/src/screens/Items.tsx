@@ -9,8 +9,14 @@ const Items: React.FC = () => {
 	return (
 		<View style={styles.container}>
 			<FlatList
+				keyExtractor={i => i.id}
 				data={data?.items}
 				renderItem={({ item }) => <ItemsListItem item={item} />}
+				ItemSeparatorComponent={() => (
+					<View
+						style={{ width: '100%', height: 1, backgroundColor: '#D3D3D3' }}
+					/>
+				)}
 			/>
 		</View>
 	);
@@ -18,7 +24,8 @@ const Items: React.FC = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1,
+		backgroundColor: '#FFFFFF'
 	}
 });
 

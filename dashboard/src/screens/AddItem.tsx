@@ -40,7 +40,7 @@ const AddItem: React.FC = () => {
 				{({ handleChange, handleBlur, handleSubmit }) => (
 					<View>
 						<View>
-							<Text>Item Name</Text>
+							<Text style={styles.label}>Name</Text>
 							<TextInput
 								placeholder='Item name'
 								onChangeText={handleChange('name')}
@@ -49,7 +49,7 @@ const AddItem: React.FC = () => {
 							/>
 						</View>
 						<View>
-							<Text>Item description</Text>
+							<Text style={styles.label}>Description</Text>
 							<TextInput
 								placeholder='Item description'
 								onChangeText={handleChange('description')}
@@ -59,7 +59,7 @@ const AddItem: React.FC = () => {
 							/>
 						</View>
 						<View>
-							<Text>Unit Price</Text>
+							<Text style={styles.label}>Unit Price</Text>
 							<TextInput
 								placeholder='Price per unit (NGN)'
 								onChangeText={handleChange('unitPrice')}
@@ -80,10 +80,17 @@ const styles = StyleSheet.create({
 	container: {
 		paddingTop: 8,
 		flex: 1,
-		paddingHorizontal: 8
+		paddingHorizontal: 8,
+		backgroundColor: '#FFFFFF'
+	},
+	label: {
+		marginBottom: 4,
+		fontSize: 16,
+		color: '#505050',
+		fontWeight: '500'
 	},
 	input: {
-		fontSize: 17,
+		fontSize: 16,
 		paddingLeft: 8,
 		borderRadius: 4,
 		borderWidth: 2,
