@@ -14,7 +14,7 @@ const Items: React.FC = () => {
 				renderItem={({ item }) => <ItemsListItem item={item} />}
 				ItemSeparatorComponent={() => (
 					<View
-						style={{ width: '100%', height: 1, backgroundColor: '#D3D3D3' }}
+						style={{ width: '100%', height: 0.5, backgroundColor: '#D3D3D3' }}
 					/>
 				)}
 			/>

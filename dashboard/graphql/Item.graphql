@@ -1,13 +1,23 @@
-fragment ItemDetails on items {
+fragment ItemMetaDetails on items {
 	id
 	name
 	description
 	unit_price
 }
 
+fragment ItemDetails on items {
+	...ItemMetaDetails
+	item_images {
+		image {
+			id
+			path_url
+		}
+	}
+}
+
 query Items {
 	items {
-		...ItemDetails
+		...ItemMetaDetails
 	}
 }
 

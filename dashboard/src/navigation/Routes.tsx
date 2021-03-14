@@ -137,7 +137,21 @@ const RootNavigator: React.FC = () => {
 														)
 													})}
 												/>
-												<ItemsStack.Screen name='Item' component={Item} />
+												<ItemsStack.Screen
+													name='Item'
+													component={Item}
+													options={() => ({
+														title: '',
+														headerBackTitleVisible: false,
+														headerBackImage: () => (
+															<Icon
+																size={28}
+																name='chevronLeft'
+																// style={{ marginLeft: 8 }}
+															/>
+														)
+													})}
+												/>
 											</ItemsStack.Navigator>
 										)}
 									</MainTab.Screen>

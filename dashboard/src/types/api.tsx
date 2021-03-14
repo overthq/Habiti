@@ -4267,15 +4267,23 @@ export type Uuid_Comparison_Exp = {
 	_nin?: Maybe<Array<Scalars['uuid']>>;
 };
 
-export type ItemDetailsFragment = { __typename?: 'items' } & Pick<
+export type ItemMetaDetailsFragment = { __typename?: 'items' } & Pick<
 	Items,
 	'id' | 'name' | 'description' | 'unit_price'
 >;
 
+export type ItemDetailsFragment = { __typename?: 'items' } & {
+	item_images: Array<
+		{ __typename?: 'item_images' } & {
+			image: { __typename?: 'images' } & Pick<Images, 'id' | 'path_url'>;
+		}
+	>;
+} & ItemMetaDetailsFragment;
+
 export type ItemsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ItemsQuery = { __typename?: 'query_root' } & {
-	items: Array<{ __typename?: 'items' } & ItemDetailsFragment>;
+	items: Array<{ __typename?: 'items' } & ItemMetaDetailsFragment>;
 };
 
 export type ItemQueryVariables = Exact<{
@@ -4392,13 +4400,25 @@ export type StoreQuery = { __typename?: 'query_root' } & {
 	>;
 };
 
-export const ItemDetailsFragmentDoc = gql`
-	fragment ItemDetails on items {
+export const ItemMetaDetailsFragmentDoc = gql`
+	fragment ItemMetaDetails on items {
 		id
 		name
 		description
 		unit_price
 	}
+`;
+export const ItemDetailsFragmentDoc = gql`
+	fragment ItemDetails on items {
+		...ItemMetaDetails
+		item_images {
+			image {
+				id
+				path_url
+			}
+		}
+	}
+	${ItemMetaDetailsFragmentDoc}
 `;
 export const OrderMetaDetailsFragmentDoc = gql`
 	fragment OrderMetaDetails on orders {
@@ -4425,10 +4445,10 @@ export const OrderDetailsFragmentDoc = gql`
 export const ItemsDocument = gql`
 	query Items {
 		items {
-			...ItemDetails
+			...ItemMetaDetails
 		}
 	}
-	${ItemDetailsFragmentDoc}
+	${ItemMetaDetailsFragmentDoc}
 `;
 
 export function useItemsQuery(
