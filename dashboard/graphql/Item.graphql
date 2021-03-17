@@ -32,3 +32,9 @@ mutation AddItem($itemObject: items_insert_input!) {
 		id
 	}
 }
+
+mutation UpdateItem($itemId: uuid!, $itemObject: items_update_input!) {
+	update_items_one(id: $itemId, _set: $itemObject) {
+		id
+	}
+}

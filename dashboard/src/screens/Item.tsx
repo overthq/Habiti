@@ -13,8 +13,9 @@ import { ItemsStackParamList } from '../types/navigation';
 import { Icon } from '../components/icons';
 
 const Item: React.FC = () => {
-	const { params } = useRoute<RouteProp<ItemsStackParamList, 'Item'>>();
-	const { itemId } = params;
+	const {
+		params: { itemId }
+	} = useRoute<RouteProp<ItemsStackParamList, 'Item'>>();
 	const [{ data, fetching }] = useItemQuery({ variables: { itemId } });
 
 	const item = data?.items_by_pk;
@@ -32,17 +33,7 @@ const Item: React.FC = () => {
 				{item?.item_images.map(({ image }) => (
 					<Image key={image.id} source={{ uri: image.path_url }} />
 				))}
-				<TouchableOpacity
-					style={{
-						width: 80,
-						height: 80,
-						borderRadius: 6,
-						borderColor: '#D3D3D3',
-						borderWidth: 2,
-						justifyContent: 'center',
-						alignItems: 'center'
-					}}
-				>
+				<TouchableOpacity style={styles.addImageButton}>
 					<Icon name='plus' size={24} />
 				</TouchableOpacity>
 			</View>
@@ -83,6 +74,15 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		color: '#505050',
 		fontWeight: '500'
+	},
+	addImageButton: {
+		width: 80,
+		height: 80,
+		borderRadius: 6,
+		borderColor: '#D3D3D3',
+		borderWidth: 2,
+		justifyContent: 'center',
+		alignItems: 'center'
 	},
 	text: {
 		fontSize: 16

@@ -144,11 +144,7 @@ const RootNavigator: React.FC = () => {
 														title: '',
 														headerBackTitleVisible: false,
 														headerBackImage: () => (
-															<Icon
-																size={28}
-																name='chevronLeft'
-																// style={{ marginLeft: 8 }}
-															/>
+															<Icon size={28} name='chevronLeft' />
 														)
 													})}
 												/>
