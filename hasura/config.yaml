@@ -1,5 +1,6 @@
 version: 2
 endpoint: http://localhost:8080
+admin_secret: market-admin-secret
 metadata_directory: metadata
 actions:
   kind: synchronous
