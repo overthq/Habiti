@@ -8,7 +8,7 @@ services:
     environment:
       POSTGRES_PASSWORD: postgrespassword
   graphql-engine:
-    image: hasura/graphql-engine:v1.3.2
+    image: hasura/graphql-engine:v1.3.3
     ports:
     - "8080:8080"
     depends_on:
@@ -21,9 +21,9 @@ services:
       ## enable debugging mode. It is recommended to disable this in production
       HASURA_GRAPHQL_DEV_MODE: "true"
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
-      HASURA_GRAPHQL_JWT_SECRET: '{"type": "HS256", "key": "thisisasecretforthesecretthings", "claims_namespace": "market", "claims_format": "json" }'
+      HASURA_GRAPHQL_JWT_SECRET: '{"type": "HS256", "key": "thisisasecretforallthesecretthings", "claims_namespace": "market", "claims_format": "json" }'
       ## uncomment next line to set an admin secret
-      # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
+      HASURA_GRAPHQL_ADMIN_SECRET: market-admin-secret
 volumes:
   db_data:
 
