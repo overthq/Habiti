@@ -3,6 +3,9 @@
   "dependencies": {
     "express": "^4.17.1"
   },
+  "scripts": {
+		"dev": "nodemon"
+	},
   "devDependencies": {
     "@types/express": "^4.17.11",
     "@types/node": "^14.14.22"
