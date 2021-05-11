@@ -44,7 +44,6 @@ const MainNavigator = () => (
 			component={Store}
 			options={{
 				headerBackTitleVisible: false,
-				// eslint-disable-next-line
 				headerBackImage: () => <Icon name='chevronLeft' size={30} />,
 				headerLeftContainerStyle: { paddingLeft: 8 }
 			}}
