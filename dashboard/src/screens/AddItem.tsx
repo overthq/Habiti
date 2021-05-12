@@ -42,7 +42,8 @@ const AddItem: React.FC = () => {
 						<View>
 							<Text style={styles.label}>Name</Text>
 							<TextInput
-								placeholder='Item name'
+								placeholder='Name'
+								placeholderTextColor='#696969'
 								onChangeText={handleChange('name')}
 								onBlur={handleBlur('name')}
 								style={styles.input}
@@ -51,7 +52,8 @@ const AddItem: React.FC = () => {
 						<View>
 							<Text style={styles.label}>Description</Text>
 							<TextInput
-								placeholder='Item description'
+								placeholder='Description'
+								placeholderTextColor='#696969'
 								onChangeText={handleChange('description')}
 								onBlur={handleBlur('description')}
 								style={[styles.input, styles.textarea]}
@@ -61,7 +63,8 @@ const AddItem: React.FC = () => {
 						<View>
 							<Text style={styles.label}>Unit Price</Text>
 							<TextInput
-								placeholder='Price per unit (NGN)'
+								placeholder='Unit price(NGN)'
+								placeholderTextColor='#696969'
 								onChangeText={handleChange('unitPrice')}
 								onBlur={handleBlur('unitPrice')}
 								style={styles.input}
@@ -92,11 +95,10 @@ const styles = StyleSheet.create({
 	input: {
 		fontSize: 16,
 		paddingLeft: 8,
-		borderRadius: 4,
-		borderWidth: 2,
-		borderColor: '#D3D3D3',
 		marginBottom: 10,
-		height: 40
+		height: 40,
+		backgroundColor: '#DFDFDF',
+		color: '#505050'
 	},
 	textarea: {
 		height: 80

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { OrderQuery } from '../../types/api';
 
 interface OrderItemProps {
@@ -8,25 +8,26 @@ interface OrderItemProps {
 
 const OrderItem: React.FC<OrderItemProps> = ({ orderItem }) => {
 	const { item, quantity, unit_price } = orderItem;
-
 	const totalPrice = unit_price ? quantity * unit_price : 0;
 
 	return (
 		<View>
-			<View
-				style={{
-					height: 50,
-					width: 50,
-					backgroundColor: '#D3D3D3',
-					borderRadius: 4
-				}}
-			/>
+			<View style={styles.image} />
 			<Text>{item.name}</Text>
 			<Text>
-				{quantity} - N{totalPrice}
+				{quantity} - {totalPrice} NGN
 			</Text>
 		</View>
 	);
 };
+
+const styles = StyleSheet.create({
+	image: {
+		height: 50,
+		width: 50,
+		backgroundColor: '#D3D3D3',
+		borderRadius: 4
+	}
+});
 
 export default OrderItem;

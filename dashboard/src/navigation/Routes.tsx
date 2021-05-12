@@ -2,8 +2,8 @@ import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import {
-	createStackNavigator,
-	TransitionPresets
+	createStackNavigator
+	// TransitionPresets
 } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Provider, createClient } from 'urql';
@@ -29,6 +29,7 @@ import { useAppSelector } from '../redux/store';
 import env from '../../env';
 
 // TODO: Complete refactoring of this component.
+// Reminder: This is a very nasty file. A disaster waiting to happen, really.
 
 // Navigation Structure
 // - Auth (Stack Navigator)
@@ -195,12 +196,12 @@ const Routes: React.FC = () => {
 			<NavigationContainer>
 				<ModalsStack.Navigator
 					mode='modal'
-					screenOptions={{
-						...TransitionPresets.ModalPresentationIOS,
-						gestureEnabled: true,
-						cardOverlayEnabled: true,
-						headerStatusBarHeight: 0
-					}}
+					// screenOptions={{
+					// 	...TransitionPresets.ModalPresentationIOS,
+					// 	gestureEnabled: true,
+					// 	cardOverlayEnabled: true,
+					// 	headerStatusBarHeight: 0
+					// }}
 				>
 					<ModalsStack.Screen name='Root' options={{ headerShown: false }}>
 						{() => <RootNavigator />}

@@ -10,7 +10,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { Formik, useFormikContext } from 'formik';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Animated, {
+import {
 	useSharedValue,
 	useAnimatedScrollHandler
 } from 'react-native-reanimated';
@@ -87,8 +87,6 @@ const FormStep: React.FC<FormStepProps> = ({ step }) => {
 	);
 };
 
-const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-
 const CreateStore: React.FC = () => {
 	const [, createStore] = useCreateStoreMutation();
 	const [, addManager] = useAddManagerMutation();
@@ -104,6 +102,10 @@ const CreateStore: React.FC = () => {
 			index: activeStepIndex + 1
 		});
 	};
+
+	const handleViewableItemsChanged = React.useCallback(({ viewableItems }) => {
+		viewableItems[0] && setActiveStepIndex(viewableItems[0].index);
+	}, []);
 
 	const handleScroll = useAnimatedScrollHandler({
 		onScroll: ({ contentOffset: { x } }) => {
@@ -146,7 +148,7 @@ const CreateStore: React.FC = () => {
 			>
 				{({ handleSubmit }) => (
 					<View style={{ flex: 1 }}>
-						<AnimatedFlatList
+						<FlatList
 							ref={listRef}
 							horizontal
 							decelerationRate='fast'
@@ -155,14 +157,7 @@ const CreateStore: React.FC = () => {
 							data={steps}
 							keyExtractor={s => s.title}
 							renderItem={({ item }) => <FormStep step={item} />}
-							onMomentumScrollEnd={({
-								nativeEvent: {
-									contentOffset: { x }
-								}
-							}) => {
-								const sliderIndex = x ? x / width : 0;
-								setActiveStepIndex(sliderIndex);
-							}}
+							onViewableItemsChanged={handleViewableItemsChanged}
 							onScroll={handleScroll}
 						/>
 						<Button
