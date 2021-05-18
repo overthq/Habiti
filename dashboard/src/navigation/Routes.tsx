@@ -186,6 +186,7 @@ const Routes: React.FC = () => {
 		fetchOptions: () => ({
 			headers: {
 				authorization: accessToken ? `Bearer ${accessToken}` : '',
+				'x-hasura-admin-secret': 'market-admin-secret',
 				'x-hasura-store-id': activeStore || ''
 			}
 		})

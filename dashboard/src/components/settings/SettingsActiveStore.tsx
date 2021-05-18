@@ -21,7 +21,7 @@ interface RowProps {
 const Row: React.FC<RowProps> = ({ name, isSelected, onSelectRow }) => (
 	<TouchableOpacity style={styles.row} onPress={onSelectRow}>
 		<Text style={{ fontSize: 16 }}>{name}</Text>
-		<View>{isSelected && <Icon name='check' size={16} />}</View>
+		<View>{isSelected && <Icon name='check' size={24} />}</View>
 	</TouchableOpacity>
 );
 
@@ -66,7 +66,8 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		padding: 8
+		paddingVertical: 8,
+		paddingHorizontal: 16
 	}
 });
 

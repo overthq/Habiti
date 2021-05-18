@@ -1,5 +1,11 @@
 import React from 'react';
-import { Text, Pressable, ActivityIndicator, StyleSheet } from 'react-native';
+import {
+	Text,
+	Pressable,
+	ActivityIndicator,
+	StyleSheet,
+	ViewStyle
+} from 'react-native';
 
 // All components have to respond to global theme changes.
 // and most have to be duplicated for use across the "app" and "dashboard" projects.
@@ -8,10 +14,11 @@ interface ButtonProps {
 	onPress(): void;
 	text: string;
 	loading?: boolean;
+	style?: ViewStyle;
 }
 
-const Button: React.FC<ButtonProps> = ({ onPress, text, loading }) => (
-	<Pressable style={styles.container} onPress={onPress}>
+const Button: React.FC<ButtonProps> = ({ onPress, text, loading, style }) => (
+	<Pressable style={[styles.container, style]} onPress={onPress}>
 		{loading ? <ActivityIndicator /> : <Text style={styles.text}>{text}</Text>}
 	</Pressable>
 );

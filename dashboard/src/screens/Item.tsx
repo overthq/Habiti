@@ -59,14 +59,15 @@ const styles = StyleSheet.create({
 	},
 	heading: {
 		marginVertical: 8,
-		paddingLeft: 8
+		paddingLeft: 16
 	},
 	title: {
-		fontSize: 20,
+		fontSize: 24,
 		fontWeight: 'bold'
 	},
 	section: {
-		padding: 8,
+		paddingVertical: 8,
+		paddingHorizontal: 16,
 		backgroundColor: '#FFFFFF'
 	},
 	sectionTitle: {

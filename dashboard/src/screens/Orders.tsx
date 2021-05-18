@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
 import OrdersListItem from '../components/orders/OrdersListItem';
 import { useOrdersQuery } from '../types/api';
 
@@ -8,19 +8,41 @@ const Orders: React.FC = () => {
 
 	return (
 		<View style={styles.container}>
-			{/*<View style={styles.header}>
-				<Text style={styles.title}>Orders</Text>
-			</View> */}
 			<FlatList
 				keyExtractor={i => i.id}
 				renderItem={({ item }) => <OrdersListItem order={item} />}
 				data={data?.orders}
+				ListEmptyComponent={
+					<View
+						style={{
+							height: '100%',
+							flex: 1,
+							justifyContent: 'center',
+							alignItems: 'center'
+						}}
+					>
+						<Text
+							style={{
+								paddingHorizontal: 16,
+								textAlign: 'center',
+								color: '#505050',
+								fontSize: 16
+							}}
+						>
+							There are currently no orders. While you wait, you can customize
+							your store.
+						</Text>
+					</View>
+				}
 			/>
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
+	container: {
+		flex: 1
+	},
 	header: {
 		paddingVertical: 15,
 		paddingHorizontal: 20,
@@ -31,9 +53,6 @@ const styles = StyleSheet.create({
 	title: {
 		fontWeight: 'bold',
 		fontSize: 32
-	},
-	container: {
-		flex: 1
 	}
 });
 

@@ -58,12 +58,13 @@ const AddItem: React.FC = () => {
 								onBlur={handleBlur('description')}
 								style={[styles.input, styles.textarea]}
 								multiline
+								textAlignVertical='top'
 							/>
 						</View>
 						<View>
 							<Text style={styles.label}>Unit Price</Text>
 							<TextInput
-								placeholder='Unit price(NGN)'
+								placeholder='Unit price (NGN)'
 								placeholderTextColor='#696969'
 								onChangeText={handleChange('unitPrice')}
 								onBlur={handleBlur('unitPrice')}
@@ -83,24 +84,26 @@ const styles = StyleSheet.create({
 	container: {
 		paddingTop: 8,
 		flex: 1,
-		paddingHorizontal: 8,
+		paddingHorizontal: 16,
 		backgroundColor: '#FFFFFF'
 	},
 	label: {
 		marginBottom: 4,
 		fontSize: 16,
 		color: '#505050',
-		fontWeight: '500'
+		fontWeight: 'bold'
 	},
 	input: {
 		fontSize: 16,
 		paddingLeft: 8,
 		marginBottom: 10,
 		height: 40,
-		backgroundColor: '#DFDFDF',
+		borderRadius: 4,
+		backgroundColor: '#EDEDED',
 		color: '#505050'
 	},
 	textarea: {
+		paddingTop: 8,
 		height: 80
 	}
 });

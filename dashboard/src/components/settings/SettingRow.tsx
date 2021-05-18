@@ -18,6 +18,7 @@ const SettingRow: React.FC<SettingRowProps> = ({
 
 	return (
 		<TouchableOpacity
+			activeOpacity={0.8}
 			style={styles.container}
 			onPress={() => navigate(screenTo)}
 		>
@@ -31,7 +32,7 @@ const SettingRow: React.FC<SettingRowProps> = ({
 				<Icon
 					name='chevronRight'
 					color='#505050'
-					size={16}
+					size={24}
 					style={{ marginLeft: 8 }}
 				/>
 			</View>
@@ -42,11 +43,11 @@ const SettingRow: React.FC<SettingRowProps> = ({
 const styles = StyleSheet.create({
 	container: {
 		width: '100%',
-		height: 40,
-		paddingHorizontal: 8,
+		height: 45,
+		paddingHorizontal: 16,
 		backgroundColor: '#FFFFFF',
 		borderTopWidth: 1,
-		borderTopColor: '#D3D3D3',
+		borderTopColor: '#EDEDED',
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center'

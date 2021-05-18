@@ -14,6 +14,7 @@ const ItemsListItem: React.FC<ItemsListItemProps> = ({ item }) => {
 	return (
 		<TouchableOpacity
 			onPress={() => navigate('Item', { itemId: item.id })}
+			activeOpacity={0.8}
 			style={styles.container}
 		>
 			<View>
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingHorizontal: 8,
+		paddingHorizontal: 16,
 		paddingVertical: 4
 	},
 	name: {
