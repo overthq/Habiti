@@ -9,11 +9,13 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useStoresFollowedQuery } from '../../types/api';
 import { useAppSelector } from '../../redux/store';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { MainStackParamList } from '../../types/navigation';
 
 const FollowedStores: React.FC = () => {
 	const userId = useAppSelector(({ auth }) => auth.userId);
 	const [{ data }] = useStoresFollowedQuery({ variables: { userId } });
-	const { navigate } = useNavigation();
+	const { navigate } = useNavigation<StackNavigationProp<MainStackParamList>>();
 
 	const stores = data?.store_followers.map(({ store }) => store);
 

@@ -195,35 +195,29 @@ const Routes: React.FC = () => {
 	return (
 		<Provider value={client}>
 			<NavigationContainer>
-				<ModalsStack.Navigator
-					mode='modal'
-					// screenOptions={{
-					// 	...TransitionPresets.ModalPresentationIOS,
-					// 	gestureEnabled: true,
-					// 	cardOverlayEnabled: true,
-					// 	headerStatusBarHeight: 0
-					// }}
-				>
+				<ModalsStack.Navigator>
 					<ModalsStack.Screen name='Root' options={{ headerShown: false }}>
 						{() => <RootNavigator />}
 					</ModalsStack.Screen>
-					<ModalsStack.Screen name='Add Item' component={AddItem} />
-					<ModalsStack.Screen name='Edit Item' component={EditItem} />
-					<ModalsStack.Screen
-						name='SettingsStack'
-						options={{ headerShown: false }}
-					>
-						{() => (
-							<SettingsStack.Navigator>
-								<SettingsStack.Screen name='Settings' component={Settings} />
-								<SettingsStack.Screen
-									name='SettingsActiveStore'
-									component={SettingsActiveStore}
-									options={{ title: 'Active Store' }}
-								/>
-							</SettingsStack.Navigator>
-						)}
-					</ModalsStack.Screen>
+					<ModalsStack.Group screenOptions={{ presentation: 'modal' }}>
+						<ModalsStack.Screen name='Add Item' component={AddItem} />
+						<ModalsStack.Screen name='Edit Item' component={EditItem} />
+						<ModalsStack.Screen
+							name='SettingsStack'
+							options={{ headerShown: false }}
+						>
+							{() => (
+								<SettingsStack.Navigator>
+									<SettingsStack.Screen name='Settings' component={Settings} />
+									<SettingsStack.Screen
+										name='SettingsActiveStore'
+										component={SettingsActiveStore}
+										options={{ title: 'Active Store' }}
+									/>
+								</SettingsStack.Navigator>
+							)}
+						</ModalsStack.Screen>
+					</ModalsStack.Group>
 				</ModalsStack.Navigator>
 			</NavigationContainer>
 		</Provider>
