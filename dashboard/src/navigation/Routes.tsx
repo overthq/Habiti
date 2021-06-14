@@ -1,10 +1,7 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import {
-	createStackNavigator
-	// TransitionPresets
-} from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Provider, createClient } from 'urql';
 
@@ -27,9 +24,6 @@ import SettingsActiveStore from '../components/settings/SettingsActiveStore';
 import { Icon, IconType } from '../components/icons';
 import { useAppSelector } from '../redux/store';
 import env from '../../env';
-
-// TODO: Complete refactoring of this component.
-// Reminder: This is a very nasty file. A disaster waiting to happen, really.
 
 // Navigation Structure
 // - Auth (Stack Navigator)
@@ -57,18 +51,6 @@ const OrdersStack = createStackNavigator();
 const ItemsStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
 
-const tabScreenOptions = ({ route }: any): any => ({
-	tabBarIcon: ({ color }: any) => (
-		<Icon name={getIcon(route.name)} color={color} size={28} />
-	)
-});
-
-const tabBarOptions = {
-	activeTintColor: 'black',
-	inactiveTintColor: 'gray',
-	showLabel: false
-};
-
 const getIcon = (routeName: string): IconType => {
 	switch (routeName) {
 		case 'Overview':
@@ -92,7 +74,7 @@ const RootNavigator: React.FC = () => {
 	);
 
 	return (
-		<AppStack.Navigator headerMode='none'>
+		<AppStack.Navigator screenOptions={{ headerShown: false }}>
 			{accessToken ? (
 				<>
 					{!activeStore ? (
@@ -104,8 +86,18 @@ const RootNavigator: React.FC = () => {
 						<AppStack.Screen name='Main'>
 							{() => (
 								<MainTab.Navigator
-									screenOptions={tabScreenOptions}
-									tabBarOptions={tabBarOptions}
+									screenOptions={({ route }) => ({
+										tabBarIcon: ({ color }) => (
+											<Icon
+												name={getIcon(route.name)}
+												color={color}
+												size={28}
+											/>
+										),
+										tabBarActiveTintColor: 'black',
+										tabBarInactiveTintColor: 'gray',
+										tabBarShowLabel: false
+									})}
 								>
 									<MainTab.Screen name='Overview' component={Overview} />
 									<MainTab.Screen name='Orders'>
@@ -173,7 +165,6 @@ const ModalsStack = createStackNavigator();
 const SettingsStack = createStackNavigator();
 
 const Routes: React.FC = () => {
-	// TODO: Do not duplicate the usage of this selector in the same file.
 	const { accessToken, activeStore } = useAppSelector(
 		({ auth, preferences }) => ({
 			accessToken: auth.accessToken,
