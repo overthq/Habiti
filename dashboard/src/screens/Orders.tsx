@@ -13,22 +13,8 @@ const Orders: React.FC = () => {
 				renderItem={({ item }) => <OrdersListItem order={item} />}
 				data={data?.orders}
 				ListEmptyComponent={
-					<View
-						style={{
-							height: '100%',
-							flex: 1,
-							justifyContent: 'center',
-							alignItems: 'center'
-						}}
-					>
-						<Text
-							style={{
-								paddingHorizontal: 16,
-								textAlign: 'center',
-								color: '#505050',
-								fontSize: 16
-							}}
-						>
+					<View style={styles.empty}>
+						<Text style={styles.emptyText}>
 							There are currently no orders. While you wait, you can customize
 							your store.
 						</Text>
@@ -53,6 +39,18 @@ const styles = StyleSheet.create({
 	title: {
 		fontWeight: 'bold',
 		fontSize: 32
+	},
+	empty: {
+		height: '100%',
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	emptyText: {
+		paddingHorizontal: 16,
+		textAlign: 'center',
+		color: '#505050',
+		fontSize: 16
 	}
 });
 

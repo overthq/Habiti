@@ -4302,6 +4302,15 @@ export type AddItemMutation = { __typename?: 'mutation_root' } & {
 	insert_items_one?: Maybe<{ __typename?: 'items' } & Pick<Items, 'id'>>;
 };
 
+export type UpdateItemMutationVariables = Exact<{
+	itemId: Scalars['uuid'];
+	itemObject: Items_Set_Input;
+}>;
+
+export type UpdateItemMutation = { __typename?: 'mutation_root' } & {
+	update_items_by_pk?: Maybe<{ __typename?: 'items' } & Pick<Items, 'id'>>;
+};
+
 export type ManagedStoresQueryVariables = Exact<{
 	userId: Scalars['uuid'];
 }>;
@@ -4348,16 +4357,28 @@ export type RemoveManagerMutation = { __typename?: 'mutation_root' } & {
 export type OrderMetaDetailsFragment = { __typename?: 'orders' } & Pick<
 	Orders,
 	'id' | 'status' | 'created_at' | 'updated_at'
->;
+> & {
+		user: { __typename?: 'users' } & Pick<Users, 'id' | 'name'>;
+		order_items: Array<
+			{ __typename?: 'order_items' } & Pick<
+				Order_Items,
+				'id' | 'unit_price' | 'quantity'
+			>
+		>;
+	};
 
-export type OrderDetailsFragment = { __typename?: 'orders' } & {
-	order_items: Array<
-		{ __typename?: 'order_items' } & Pick<
-			Order_Items,
-			'id' | 'unit_price' | 'quantity'
-		> & { item: { __typename?: 'items' } & Pick<Items, 'name'> }
-	>;
-} & OrderMetaDetailsFragment;
+export type OrderDetailsFragment = { __typename?: 'orders' } & Pick<
+	Orders,
+	'id' | 'status'
+> & {
+		user: { __typename?: 'users' } & Pick<Users, 'id' | 'name'>;
+		order_items: Array<
+			{ __typename?: 'order_items' } & Pick<
+				Order_Items,
+				'id' | 'unit_price' | 'quantity'
+			> & { item: { __typename?: 'items' } & Pick<Items, 'name'> }
+		>;
+	};
 
 export type OrdersQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -4423,14 +4444,28 @@ export const ItemDetailsFragmentDoc = gql`
 export const OrderMetaDetailsFragmentDoc = gql`
 	fragment OrderMetaDetails on orders {
 		id
+		user {
+			id
+			name
+		}
 		status
+		order_items {
+			id
+			unit_price
+			quantity
+		}
 		created_at
 		updated_at
 	}
 `;
 export const OrderDetailsFragmentDoc = gql`
 	fragment OrderDetails on orders {
-		...OrderMetaDetails
+		id
+		user {
+			id
+			name
+		}
+		status
 		order_items {
 			id
 			item {
@@ -4440,7 +4475,6 @@ export const OrderDetailsFragmentDoc = gql`
 			quantity
 		}
 	}
-	${OrderMetaDetailsFragmentDoc}
 `;
 export const ItemsDocument = gql`
 	query Items {
@@ -4481,6 +4515,19 @@ export const AddItemDocument = gql`
 export function useAddItemMutation() {
 	return Urql.useMutation<AddItemMutation, AddItemMutationVariables>(
 		AddItemDocument
+	);
+}
+export const UpdateItemDocument = gql`
+	mutation UpdateItem($itemId: uuid!, $itemObject: items_set_input!) {
+		update_items_by_pk(pk_columns: { id: $itemId }, _set: $itemObject) {
+			id
+		}
+	}
+`;
+
+export function useUpdateItemMutation() {
+	return Urql.useMutation<UpdateItemMutation, UpdateItemMutationVariables>(
+		UpdateItemDocument
 	);
 }
 export const ManagedStoresDocument = gql`

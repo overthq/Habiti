@@ -1,12 +1,26 @@
 fragment OrderMetaDetails on orders {
 	id
+	user {
+		id
+		name
+	}
 	status
+	order_items {
+		id
+		unit_price
+		quantity
+	}
 	created_at
 	updated_at
 }
 
 fragment OrderDetails on orders {
-	...OrderMetaDetails
+	id
+	user {
+		id
+		name
+	}
+	status
 	order_items {
 		id
 		item {

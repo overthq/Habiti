@@ -33,8 +33,8 @@ mutation AddItem($itemObject: items_insert_input!) {
 	}
 }
 
-mutation UpdateItem($itemId: uuid!, $itemObject: items_update_input!) {
-	update_items_one(id: $itemId, _set: $itemObject) {
+mutation UpdateItem($itemId: uuid!, $itemObject: items_set_input!) {
+	update_items_by_pk(pk_columns: { id: $itemId }, _set: $itemObject) {
 		id
 	}
 }
