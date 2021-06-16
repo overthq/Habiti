@@ -14,6 +14,15 @@ fragment OrderMetaDetails on orders {
 	updated_at
 }
 
+fragment OrderDetailsItem on order_items {
+	id
+	item {
+		name
+	}
+	unit_price
+	quantity
+}
+
 fragment OrderDetails on orders {
 	id
 	user {
@@ -22,23 +31,18 @@ fragment OrderDetails on orders {
 	}
 	status
 	order_items {
-		id
-		item {
-			name
-		}
-		unit_price
-		quantity
+		...OrderDetailsItem
 	}
 }
 
 query Orders {
-	orders {
+	orders(order_by: { created_at: desc }) {
 		...OrderMetaDetails
 	}
 }
 
 query Order($orderId: uuid!) {
-	orders(where: { id: { _eq: $orderId } }) {
+	orders_by_pk(id: $orderId) {
 		...OrderDetails
 	}
 }

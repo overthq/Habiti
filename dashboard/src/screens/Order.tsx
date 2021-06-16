@@ -11,12 +11,13 @@ const Order: React.FC = () => {
 		params: { orderId }
 	} = useRoute<RouteProp<OrdersStackParamsList, 'Order'>>();
 	const [{ data }] = useOrderQuery({ variables: { orderId } });
-	const order = data?.orders[0];
+	const order = data?.orders_by_pk;
 
 	if (!order) throw new Error('This order does not exist');
 
 	return (
 		<SafeAreaView style={styles.container}>
+			<Text>{order.user.name}</Text>
 			<Text>{order.status}</Text>
 			<View>
 				<Text style={styles.sectionHeader}>Order items</Text>

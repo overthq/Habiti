@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { OrderQuery } from '../../types/api';
+import { OrderDetailsItemFragment } from '../../types/api';
 
 interface OrderItemProps {
-	orderItem: OrderQuery['orders'][-1]['order_items'][-1];
+	orderItem: OrderDetailsItemFragment;
 }
 
 const OrderItem: React.FC<OrderItemProps> = ({ orderItem }) => {
@@ -13,8 +13,8 @@ const OrderItem: React.FC<OrderItemProps> = ({ orderItem }) => {
 	return (
 		<View>
 			<View style={styles.image} />
-			<Text>{item.name}</Text>
-			<Text>
+			<Text style={styles.text}>{item.name}</Text>
+			<Text style={styles.text}>
 				{quantity} - {totalPrice} NGN
 			</Text>
 		</View>
@@ -27,6 +27,9 @@ const styles = StyleSheet.create({
 		width: 50,
 		backgroundColor: '#D3D3D3',
 		borderRadius: 4
+	},
+	text: {
+		fontSize: 16
 	}
 });
 

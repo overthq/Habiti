@@ -4367,16 +4367,18 @@ export type OrderMetaDetailsFragment = { __typename?: 'orders' } & Pick<
 		>;
 	};
 
+export type OrderDetailsItemFragment = { __typename?: 'order_items' } & Pick<
+	Order_Items,
+	'id' | 'unit_price' | 'quantity'
+> & { item: { __typename?: 'items' } & Pick<Items, 'name'> };
+
 export type OrderDetailsFragment = { __typename?: 'orders' } & Pick<
 	Orders,
 	'id' | 'status'
 > & {
 		user: { __typename?: 'users' } & Pick<Users, 'id' | 'name'>;
 		order_items: Array<
-			{ __typename?: 'order_items' } & Pick<
-				Order_Items,
-				'id' | 'unit_price' | 'quantity'
-			> & { item: { __typename?: 'items' } & Pick<Items, 'name'> }
+			{ __typename?: 'order_items' } & OrderDetailsItemFragment
 		>;
 	};
 
@@ -4391,7 +4393,7 @@ export type OrderQueryVariables = Exact<{
 }>;
 
 export type OrderQuery = { __typename?: 'query_root' } & {
-	orders: Array<{ __typename?: 'orders' } & OrderDetailsFragment>;
+	orders_by_pk?: Maybe<{ __typename?: 'orders' } & OrderDetailsFragment>;
 };
 
 export type UpdateOrderMutationVariables = Exact<{
@@ -4458,6 +4460,16 @@ export const OrderMetaDetailsFragmentDoc = gql`
 		updated_at
 	}
 `;
+export const OrderDetailsItemFragmentDoc = gql`
+	fragment OrderDetailsItem on order_items {
+		id
+		item {
+			name
+		}
+		unit_price
+		quantity
+	}
+`;
 export const OrderDetailsFragmentDoc = gql`
 	fragment OrderDetails on orders {
 		id
@@ -4467,14 +4479,10 @@ export const OrderDetailsFragmentDoc = gql`
 		}
 		status
 		order_items {
-			id
-			item {
-				name
-			}
-			unit_price
-			quantity
+			...OrderDetailsItem
 		}
 	}
+	${OrderDetailsItemFragmentDoc}
 `;
 export const ItemsDocument = gql`
 	query Items {
@@ -4583,7 +4591,7 @@ export function useRemoveManagerMutation() {
 }
 export const OrdersDocument = gql`
 	query Orders {
-		orders {
+		orders(order_by: { created_at: desc }) {
 			...OrderMetaDetails
 		}
 	}
@@ -4597,7 +4605,7 @@ export function useOrdersQuery(
 }
 export const OrderDocument = gql`
 	query Order($orderId: uuid!) {
-		orders(where: { id: { _eq: $orderId } }) {
+		orders_by_pk(id: $orderId) {
 			...OrderDetails
 		}
 	}

@@ -13,7 +13,6 @@
 		"@react-native-community/masked-view": "0.1.10",
 		"@react-native-masked-view/masked-view": "^0.2.4",
 		"@react-navigation/bottom-tabs": "^6.0.0-next.18",
-		"@react-navigation/drawer": "^5.11.4",
 		"@react-navigation/native": "^6.0.0-next.13",
 		"@react-navigation/stack": "^6.0.0-next.25",
 		"expo": "^41.0.0",

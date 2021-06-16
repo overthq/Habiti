@@ -15,10 +15,12 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order }) => {
 
 	return (
 		<View style={styles.container}>
-			<Text>{order.user.name}</Text>
-			<Text>{order.status}</Text>
-			<Text>{order.created_at}</Text>
-			<Text>{amount} NGN</Text>
+			<View>
+				<Text>{order.user.name}</Text>
+				<Text>{order.status}</Text>
+				<Text>{order.created_at}</Text>
+				<Text>{amount} NGN</Text>
+			</View>
 			<Icon name='chevronRight' />
 		</View>
 	);
@@ -28,7 +30,13 @@ const styles = StyleSheet.create({
 	container: {
 		width: '100%',
 		paddingVertical: 4,
-		paddingHorizontal: 8
+		paddingHorizontal: 8,
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
+	name: {
+		fontSize: 18,
+		fontWeight: '500'
 	}
 });
 
