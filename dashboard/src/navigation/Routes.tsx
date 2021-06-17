@@ -100,7 +100,10 @@ const RootNavigator: React.FC = () => {
 									})}
 								>
 									<MainTab.Screen name='Overview' component={Overview} />
-									<MainTab.Screen name='Orders'>
+									<MainTab.Screen
+										name='Orders'
+										options={{ headerShown: false }}
+									>
 										{() => (
 											<OrdersStack.Navigator>
 												<OrdersStack.Screen
@@ -112,7 +115,7 @@ const RootNavigator: React.FC = () => {
 											</OrdersStack.Navigator>
 										)}
 									</MainTab.Screen>
-									<MainTab.Screen name='Items'>
+									<MainTab.Screen name='Items' options={{ headerShown: false }}>
 										{() => (
 											<ItemsStack.Navigator>
 												<ItemsStack.Screen

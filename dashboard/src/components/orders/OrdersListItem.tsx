@@ -8,19 +8,21 @@ interface OrdersListItemProps {
 }
 
 const OrdersListItem: React.FC<OrdersListItemProps> = ({ order }) => {
-	const amount = order.order_items.reduce(
-		(acc, { unit_price, quantity }) => acc + (unit_price || 0) * quantity,
-		0
-	);
+	const amount = order.order_items
+		.reduce(
+			(acc, { unit_price, quantity }) => acc + (unit_price || 0) * quantity,
+			0
+		)
+		.toFixed(2);
 
 	return (
 		<View style={styles.container}>
 			<View>
-				<Text>{order.user.name}</Text>
+				<Text style={styles.name}>{order.user.name}</Text>
 				<Text>{order.status}</Text>
 				<Text>{order.created_at}</Text>
-				<Text>{amount} NGN</Text>
 			</View>
+			<Text>{amount} NGN</Text>
 			<Icon name='chevronRight' />
 		</View>
 	);

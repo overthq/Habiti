@@ -38,11 +38,12 @@ const styles = StyleSheet.create({
 	name: {
 		fontSize: 18,
 		fontWeight: '500',
-		color: '#505050',
+		color: '#000000',
 		marginBottom: 4
 	},
 	price: {
-		fontSize: 16
+		fontSize: 16,
+		color: '#505050'
 	}
 });
 
