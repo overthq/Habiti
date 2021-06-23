@@ -6,18 +6,16 @@ import {
 	StyleSheet,
 	useWindowDimensions
 } from 'react-native';
-import Animated, {
+import {
 	useSharedValue,
 	useAnimatedScrollHandler
 } from 'react-native-reanimated';
 import ImageCarouselDots from '../ImageCarouselDots';
-import { Item_Images } from '../../types/api';
+import { ItemDetailsFragment } from '../../types/api';
 
 interface ImageCarouselProps {
-	images: Item_Images[];
+	images: ItemDetailsFragment['item_images'];
 }
-
-const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 	const { width } = useWindowDimensions();
@@ -31,7 +29,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 
 	return (
 		<View style={styles.container}>
-			<AnimatedFlatList
+			<FlatList
 				data={images}
 				style={{ height: '100%', width: '100%' }}
 				keyExtractor={i => i.image.id}

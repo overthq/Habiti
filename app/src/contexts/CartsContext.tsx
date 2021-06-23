@@ -1,5 +1,5 @@
 import React from 'react';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface Cart {
 	storeId: string;
@@ -35,7 +35,6 @@ export const CartsProvider: React.FC = ({ children }) => {
 	const [carts, setCarts] = React.useState<Cart[]>([]);
 
 	React.useEffect(() => {
-		// Load persisted carts.
 		(async () => {
 			try {
 				const stringifiedCarts = await AsyncStorage.getItem('carts');
@@ -49,7 +48,6 @@ export const CartsProvider: React.FC = ({ children }) => {
 	}, []);
 
 	React.useEffect(() => {
-		// Persist carts state to Async Storage.
 		AsyncStorage.setItem('carts', JSON.stringify(carts));
 	}, [carts]);
 
