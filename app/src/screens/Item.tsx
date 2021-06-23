@@ -26,7 +26,6 @@ const Item = () => {
 					<Text style={styles.itemName}>{item.name}</Text>
 					<Text style={{ fontSize: 18 }}>${item.unit_price}</Text>
 				</View>
-				<View style={styles.separator} />
 				<AddToCart storeId={item.store.id} itemId={item.id} />
 				<Text style={styles.descriptionHeader}>Description</Text>
 				<Text style={{ fontSize: 16 }}>{item?.description}</Text>
@@ -57,19 +56,16 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		marginBottom: 5
+		paddingBottom: 4,
+		borderBottomWidth: 1,
+		borderBottomColor: '#D3D3D3',
+		marginBottom: 4
 	},
 	descriptionHeader: {
 		marginVertical: 10,
 		textTransform: 'uppercase',
 		color: '#505050',
 		fontWeight: '500'
-	},
-	separator: {
-		width: '100%',
-		height: 1,
-		backgroundColor: '#D3D3D3',
-		marginVertical: 10
 	}
 });
 

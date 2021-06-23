@@ -9,6 +9,9 @@ const initialState: CartsState = {
 	carts: []
 };
 
+// TODO: Completely move carts to the database,
+// It is not feasible to store carts on the frontend, for multiple reasons.
+
 const cartsReducer = (
 	state = initialState,
 	action: CartsActionTypes
