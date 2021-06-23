@@ -23,10 +23,6 @@ const streamUpload = (req: express.Request) =>
 		streamifier.createReadStream(req.file.buffer).pipe(stream);
 	});
 
-// This endpoint only supports uploading single images, until I can figure out how to upload multiple images at once using Expo's APIs.
-// Also, it's interesting to try to get the number of images in the request and put it into the fileUpload.multiple? middleware.
-// TODO: Run this service, and test the upload server.
-
 app.use('/upload', fileUpload.single('image'), async (req, res) => {
 	const data = await streamUpload(req);
 

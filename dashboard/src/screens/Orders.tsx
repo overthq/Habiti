@@ -3,9 +3,6 @@ import { View, Text, FlatList, StyleSheet } from 'react-native';
 import OrdersListItem from '../components/orders/OrdersListItem';
 import { useOrdersQuery } from '../types/api';
 
-// An important consideration is whether or not to have separate tabs for different "statuses"
-// e.g. "New" "Pending" "Fulfilled" or something.
-
 const Orders: React.FC = () => {
 	const [{ data }] = useOrdersQuery();
 
