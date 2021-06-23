@@ -4,13 +4,13 @@ import { UPSERT_ITEM, REMOVE_ITEM } from './types';
 interface UpsertItemActionPayload {
 	storeId: string;
 	itemId: string;
-	quantity: number;
+	quantity?: number;
 }
 
 export const upsertItemToCart = ({
 	storeId,
 	itemId,
-	quantity
+	quantity = 1
 }: UpsertItemActionPayload): AppThunk => dispatch => {
 	dispatch({
 		type: UPSERT_ITEM,
