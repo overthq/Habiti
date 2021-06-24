@@ -10,11 +10,15 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import styles from '../styles/auth';
 import { authenticate } from '../utils/auth';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { AuthStackParamList } from '../types/navigation';
 
 const Authenticate = () => {
 	const [loading, setLoading] = React.useState(false);
 	const [phone, setPhone] = React.useState('');
-	const { navigate } = useNavigation();
+	const { navigate } = useNavigation<
+		StackNavigationProp<AuthStackParamList, 'Authenticate'>
+	>();
 
 	const handleSubmit = async () => {
 		setLoading(true);

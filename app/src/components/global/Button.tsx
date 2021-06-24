@@ -16,7 +16,11 @@ interface ButtonProps {
 
 const Button: React.FC<ButtonProps> = ({ onPress, text, loading, style }) => (
 	<Pressable style={[styles.container, style]} onPress={onPress}>
-		{loading ? <ActivityIndicator /> : <Text style={styles.text}>{text}</Text>}
+		{loading ? (
+			<ActivityIndicator color='#FFFFFF' />
+		) : (
+			<Text style={styles.text}>{text}</Text>
+		)}
 	</Pressable>
 );
 

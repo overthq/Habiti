@@ -66,7 +66,7 @@ const Routes: React.FC = () => {
 	return (
 		<Provider value={client}>
 			<NavigationContainer>
-				<AppStack.Navigator headerMode='none'>
+				<AppStack.Navigator screenOptions={{ headerShown: false }}>
 					{accessToken ? (
 						<>
 							<AppStack.Screen name='Main' component={MainNavigator} />
