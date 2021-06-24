@@ -22,12 +22,12 @@ const Settings: React.FC = () => {
 	const settings = [
 		{
 			name: 'Active Store',
-			screenTo: 'SettingsActiveStore',
+			screen: 'SettingsActiveStore',
 			displayValue: store?.name
 		},
 		{
 			name: 'Theme',
-			screenTo: 'SettingsTheme',
+			screen: 'SettingsTheme',
 			displayValue: preferences.theme === 'light' ? 'Light' : 'Dark'
 		}
 	];
@@ -40,7 +40,7 @@ const Settings: React.FC = () => {
 				renderItem={({ item }) => (
 					<SettingRow
 						name={item.name}
-						screenTo={item.screenTo}
+						screen={item.screen}
 						displayValue={item.displayValue}
 					/>
 				)}
