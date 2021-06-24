@@ -7,9 +7,6 @@ import {
 	ViewStyle
 } from 'react-native';
 
-// All components have to respond to global theme changes.
-// and most have to be duplicated for use across the "app" and "dashboard" projects.
-
 interface ButtonProps {
 	onPress(): void;
 	text: string;

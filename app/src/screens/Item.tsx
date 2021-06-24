@@ -6,6 +6,8 @@ import { AppStackParamList } from '../types/navigation';
 import ImageCarousel from '../components/item/ImageCarousel';
 import AddToCart from '../components/item/AddToCart';
 
+// TODO: Break this down into more components (lower priority).
+
 const Item = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Item'>>();
 	const [{ data }] = useItemQuery({

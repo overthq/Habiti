@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-
-// What are the app settings?
-// Dark mode
+import { useAppSelector } from '../redux/store';
 
 const Settings: React.FC = () => {
+	const preferences = useAppSelector(({ preferences }) => preferences);
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
