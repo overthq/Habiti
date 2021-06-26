@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import { ItemDetailsFragment } from '../../types/api';
 import { Icon } from '../icons';
 
@@ -8,6 +9,20 @@ interface ImagesProps {
 }
 
 const Images: React.FC<ImagesProps> = ({ images }) => {
+	const handlePickImage = async () => {
+		const result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Image,
+			allowsEditing: true,
+			aspect: [1, 1],
+			quality: 1
+		});
+
+		if (!result.cancelled) {
+			console.log(result);
+			// Upload the image
+		}
+	};
+
 	return (
 		<View>
 			<View style={styles.section}>
@@ -15,7 +30,7 @@ const Images: React.FC<ImagesProps> = ({ images }) => {
 				{images.map(({ image }) => (
 					<Image key={image.id} source={{ uri: image.path_url }} />
 				))}
-				<TouchableOpacity style={styles.add}>
+				<TouchableOpacity onPress={handlePickImage} style={styles.add}>
 					<Icon name='plus' size={24} />
 				</TouchableOpacity>
 			</View>
