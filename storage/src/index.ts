@@ -2,7 +2,9 @@ import express from 'express';
 import cloudinary from 'cloudinary';
 import streamifier from 'streamifier';
 import multer from 'multer';
+import client from './client';
 import './config';
+import { STORE_IMAGE } from './queries';
 
 const app = express();
 
@@ -24,13 +26,27 @@ const streamUpload = (req: express.Request) =>
 	});
 
 app.use('/upload', fileUpload.single('image'), async (req, res) => {
-	const data = await streamUpload(req);
+	try {
+		const data = await streamUpload(req);
 
-	return res.status(201).json({
-		success: true,
-		message: 'Image successfully uploaded',
-		data
-	});
+		await client.request(STORE_IMAGE, {
+			input: {
+				path_url: ''
+			}
+		});
+
+		return res.status(201).json({
+			success: true,
+			message: 'Image successfully uploaded',
+			data
+		});
+	} catch (error) {
+		return res.status(500).json({
+			success: false,
+			message: 'An error occured while uploading/storing this image',
+			error
+		});
+	}
 });
 
 app.listen(Number(process.env.PORT));

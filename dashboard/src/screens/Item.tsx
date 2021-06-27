@@ -22,7 +22,7 @@ const Item: React.FC = () => {
 			<View style={styles.heading}>
 				<Text style={styles.title}>{item.name}</Text>
 			</View>
-			<Images images={item.item_images} />
+			<Images itemId={itemId} images={item.item_images} />
 			<Section title='Name' content={item.name} />
 			<Section title='Description' content={item.description} />
 			<Section title='Unit Price' content={String(item.unit_price)} />

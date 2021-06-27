@@ -3,23 +3,25 @@ import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ItemDetailsFragment } from '../../types/api';
 import { Icon } from '../icons';
+import { uploadImage } from '../../utils/images';
 
 interface ImagesProps {
+	itemId: string;
 	images: ItemDetailsFragment['item_images'];
 }
 
-const Images: React.FC<ImagesProps> = ({ images }) => {
+const Images: React.FC<ImagesProps> = ({ itemId, images }) => {
 	const handlePickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Image,
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
 			allowsEditing: true,
 			aspect: [1, 1],
 			quality: 1
 		});
 
 		if (!result.cancelled) {
-			console.log(result);
-			// Upload the image
+			const data = await uploadImage(result.uri);
+			console.log({ data, itemId });
 		}
 	};
 
@@ -51,11 +53,11 @@ const styles = StyleSheet.create({
 		fontWeight: '500'
 	},
 	add: {
-		width: 80,
-		height: 80,
-		borderRadius: 6,
+		width: 60,
+		height: 60,
+		borderRadius: 4,
 		borderColor: '#D3D3D3',
-		borderWidth: 2,
+		borderWidth: 1,
 		justifyContent: 'center',
 		alignItems: 'center'
 	}
