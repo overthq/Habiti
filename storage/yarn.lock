@@ -102,6 +102,13 @@
     "@types/mime" "*"
     "@types/node" "*"
 
+"@types/streamifier@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@types/streamifier/-/streamifier-0.1.0.tgz#ff2fad6dccd1df65ba69c851999e35990fc8508b"
+  integrity sha512-pAGnUJg5pMAKv5ctJudPaGJHEuU/tkgN/F3tC5kQ5YHKS5gpfRZVVmLHE8t3h8H4Nn2JMJxf6T7h4QvSL3H/ug==
+  dependencies:
+    "@types/node" "*"
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
