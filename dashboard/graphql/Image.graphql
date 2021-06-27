@@ -1,5 +1,0 @@
-mutation StoreImage($input: images_insert_input!) {
-	insert_images_one(input: $input) {
-		id
-	}
-}
