@@ -7,9 +7,9 @@ import {
 	StyleSheet
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import { useStoresFollowedQuery } from '../../types/api';
 import { useAppSelector } from '../../redux/store';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { MainStackParamList } from '../../types/navigation';
 
 const FollowedStores: React.FC = () => {
