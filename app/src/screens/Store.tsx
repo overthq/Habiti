@@ -16,6 +16,7 @@ const Store = () => {
 
 	if (!store) throw new Error('How does the store not exist?');
 
+	// Consider using a custom header instead of a "native" one.
 	React.useLayoutEffect(() => {
 		setOptions({ title: store.name });
 	}, []);
