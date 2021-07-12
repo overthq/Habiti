@@ -44,11 +44,11 @@ query FeaturedItems {
 	}
 }
 
-query NewArrivals($storeIds: [uuid!]!, $oneDayAgo: timestamptz!) {
-	items(where: { created_at: { _gte: $oneDayAgo } }) {
-		...ItemDetails
-	}
-}
+# query NewArrivals($storeIds: [uuid!]!, $oneDayAgo: timestamptz!) {
+# 	items(where: { created_at: { _gte: $oneDayAgo } }) {
+# 		...ItemDetails
+# 	}
+# }
 
 query ItemsMoreDetails($itemIds: [uuid!]!) {
 	items(where: { id: { _in: $itemIds } }) {

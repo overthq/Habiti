@@ -4307,15 +4307,6 @@ export type FeaturedItemsQuery = { __typename?: 'query_root' } & {
 	items: Array<{ __typename?: 'items' } & ItemDetailsFragment>;
 };
 
-export type NewArrivalsQueryVariables = Exact<{
-	storeIds: Array<Scalars['uuid']> | Scalars['uuid'];
-	oneDayAgo: Scalars['timestamptz'];
-}>;
-
-export type NewArrivalsQuery = { __typename?: 'query_root' } & {
-	items: Array<{ __typename?: 'items' } & ItemDetailsFragment>;
-};
-
 export type ItemsMoreDetailsQueryVariables = Exact<{
 	itemIds: Array<Scalars['uuid']> | Scalars['uuid'];
 }>;
@@ -4473,6 +4464,21 @@ export type StoresFollowedQuery = { __typename?: 'query_root' } & {
 	>;
 };
 
+export type NewArrivalsQueryVariables = Exact<{
+	userId: Scalars['uuid'];
+	oneDayAgo: Scalars['timestamptz'];
+}>;
+
+export type NewArrivalsQuery = { __typename?: 'query_root' } & {
+	store_followers: Array<
+		{ __typename?: 'store_followers' } & {
+			store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'> & {
+					items: Array<{ __typename?: 'items' } & ItemDetailsFragment>;
+				};
+		}
+	>;
+};
+
 export const ItemDetailsFragmentDoc = gql`
 	fragment ItemDetails on items {
 		id
@@ -4581,23 +4587,6 @@ export function useFeaturedItemsQuery(
 ) {
 	return Urql.useQuery<FeaturedItemsQuery>({
 		query: FeaturedItemsDocument,
-		...options
-	});
-}
-export const NewArrivalsDocument = gql`
-	query NewArrivals($storeIds: [uuid!]!, $oneDayAgo: timestamptz!) {
-		items(where: { created_at: { _gte: $oneDayAgo } }) {
-			...ItemDetails
-		}
-	}
-	${ItemDetailsFragmentDoc}
-`;
-
-export function useNewArrivalsQuery(
-	options: Omit<Urql.UseQueryArgs<NewArrivalsQueryVariables>, 'query'> = {}
-) {
-	return Urql.useQuery<NewArrivalsQuery>({
-		query: NewArrivalsDocument,
 		...options
 	});
 }
@@ -4786,6 +4775,29 @@ export function useStoresFollowedQuery(
 ) {
 	return Urql.useQuery<StoresFollowedQuery>({
 		query: StoresFollowedDocument,
+		...options
+	});
+}
+export const NewArrivalsDocument = gql`
+	query NewArrivals($userId: uuid!, $oneDayAgo: timestamptz!) {
+		store_followers(where: { user_id: { _eq: $userId } }) {
+			store {
+				id
+				name
+				items(where: { created_at: { _gte: $oneDayAgo } }) {
+					...ItemDetails
+				}
+			}
+		}
+	}
+	${ItemDetailsFragmentDoc}
+`;
+
+export function useNewArrivalsQuery(
+	options: Omit<Urql.UseQueryArgs<NewArrivalsQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<NewArrivalsQuery>({
+		query: NewArrivalsDocument,
 		...options
 	});
 }
