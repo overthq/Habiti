@@ -13,14 +13,9 @@ const NewArrivals: React.FC = () => {
 		}
 	});
 
-	// Poor man's Array.flat. Should just install a shim and be done with it.
-	let items: any[] = [];
-
-	React.useEffect(() => {
-		data?.store_followers.forEach(({ store }) => {
-			items = [...items, ...store.items];
-		});
-	}, [data]);
+	const items = data?.store_followers
+		.map(({ store }) => store.items)
+		.reduce((acc, next) => [...acc, ...next], []);
 
 	if (!userId) throw new Error('User is not authenticated');
 
