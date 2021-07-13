@@ -1,0 +1,8 @@
+mutation CreateCart() {
+  insert_carts_one(object: {
+
+  }) {
+    id
+    user_id
+  }
+}
