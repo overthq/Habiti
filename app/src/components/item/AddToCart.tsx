@@ -19,7 +19,7 @@ const AddToCart: React.FC<AddToCartProps> = ({ storeId, itemId }) => {
 				dispatch(upsertItemToCart({ storeId, itemId }));
 			}}
 		>
-			<Icon size={22} color='#FFFFFF' name='plus' style={{ marginRight: 5 }} />
+			<Icon size={22} color='#FFFFFF' name='plus' style={{ marginRight: 4 }} />
 			<Text style={styles.buttonText}>Add to Cart</Text>
 		</TouchableOpacity>
 	);

@@ -1,12 +1,11 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useItemQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 import ImageCarousel from '../components/item/ImageCarousel';
 import AddToCart from '../components/item/AddToCart';
-
-// TODO: Break this down into more components (lower priority).
+import ItemDetails from '../components/item/ItemDetails';
 
 const Item = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Item'>>();
@@ -20,19 +19,9 @@ const Item = () => {
 
 	return (
 		<ScrollView style={styles.container}>
-			<View style={styles.imagePlaceholder}>
-				<ImageCarousel images={item.item_images} />
-			</View>
-			<View style={styles.detailsContainer}>
-				<View style={styles.metaContainer}>
-					<Text style={styles.itemName}>{item.name}</Text>
-					<Text style={{ fontSize: 18 }}>${item.unit_price}</Text>
-				</View>
-				<AddToCart storeId={item.store.id} itemId={item.id} />
-				<Text style={styles.descriptionHeader}>Description</Text>
-				<Text style={{ fontSize: 16 }}>{item?.description}</Text>
-				{/* Related Items */}
-			</View>
+			<ImageCarousel images={item.item_images} />
+			<ItemDetails item={item} />
+			<AddToCart storeId={item.store.id} itemId={item.id} />
 		</ScrollView>
 	);
 };
@@ -40,34 +29,6 @@ const Item = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1
-	},
-	imagePlaceholder: {
-		height: 300,
-		width: '100%',
-		backgroundColor: '#D3D3D3'
-	},
-	detailsContainer: {
-		paddingHorizontal: 20,
-		paddingTop: 20
-	},
-	itemName: {
-		fontWeight: 'bold',
-		fontSize: 20
-	},
-	metaContainer: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		paddingBottom: 4,
-		borderBottomWidth: 1,
-		borderBottomColor: '#D3D3D3',
-		marginBottom: 4
-	},
-	descriptionHeader: {
-		marginVertical: 10,
-		textTransform: 'uppercase',
-		color: '#505050',
-		fontWeight: '500'
 	}
 });
 

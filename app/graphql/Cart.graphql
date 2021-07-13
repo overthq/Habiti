@@ -48,6 +48,17 @@ mutation UpsertItemToCart($object: cart_items_insert_input!) {
 	}
 }
 
+mutation AddItemToCart($object: cart_items_insert_input!) {
+	insert_cart_items_one(object: $object) {
+		id
+		cart_id
+	}
+}
+
+mutation UpdateCartItem($quantity: Int!) {
+	update_cart_items_by_pk(_where: { _and: [{}] }, _set: { quantity: $quantity })
+}
+
 mutation RemoveItemFromCart($itemId: uuid!) {
 	delete_cart_items_by_pk(id: $itemId) {
 		id

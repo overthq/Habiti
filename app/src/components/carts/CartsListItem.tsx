@@ -3,7 +3,6 @@ import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useStoreQuery, CartDetailsFragment } from '../../types/api';
 import { Icon } from '../icons';
-// import { Cart } from '../../redux/carts/types';
 
 interface CartListItemProps {
 	cart: CartDetailsFragment;
@@ -32,7 +31,8 @@ const CartsListItem: React.FC<CartListItemProps> = ({ cart }) => {
 				<View>
 					<Text style={styles.cartStoreName}>{store?.name}</Text>
 					<Text style={styles.cartItemCount}>
-						{cart.items.length} {`item${cart.items.length > 1 ? 's' : ''}`}
+						{cart.cart_items.length}{' '}
+						{`item${cart.cart_items.length > 1 ? 's' : ''}`}
 					</Text>
 				</View>
 			</View>

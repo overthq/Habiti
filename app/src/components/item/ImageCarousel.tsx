@@ -55,7 +55,8 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 const styles = StyleSheet.create({
 	container: {
 		height: 400,
-		width: '100%'
+		width: '100%',
+		backgroundColor: '#D3D3D3'
 	}
 });
 
