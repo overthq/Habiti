@@ -10,7 +10,7 @@ interface CartListItemProps {
 }
 
 const CartsListItem: React.FC<CartListItemProps> = ({ cart }) => {
-	const [{ data }] = useStoreQuery({ variables: { storeId: cart.storeId } });
+	const [{ data }] = useStoreQuery({ variables: { storeId: cart.store_id } });
 	const { navigate } = useNavigation();
 
 	const store = data?.stores_by_pk;
@@ -18,7 +18,7 @@ const CartsListItem: React.FC<CartListItemProps> = ({ cart }) => {
 
 	return (
 		<TouchableOpacity
-			onPress={() => navigate('Cart', { storeId: cart.storeId })}
+			onPress={() => navigate('Cart', { storeId: cart.store_id })}
 			activeOpacity={0.8}
 			style={styles.container}
 		>
