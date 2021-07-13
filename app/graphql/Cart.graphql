@@ -1,8 +1,16 @@
-mutation CreateCart() {
-  insert_carts_one(object: {
+mutation CreateCart($object: carts_insert_input!) {
+	insert_carts_one(object: $object) {
+		id
+		user_id
+	}
+}
 
-  }) {
-    id
-    user_id
-  }
+mutation UpsertItemToCart($object: cart_items_insert_input!) {
+	insert_cart_items_one(
+		object: $object
+		on_conflict: { constraint: cart_items_pkey, update_columns: [quantity] }
+	) {
+		id
+		cart_id
+	}
 }
