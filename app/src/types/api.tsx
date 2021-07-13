@@ -5087,16 +5087,17 @@ export type Uuid_Comparison_Exp = {
 	_nin?: Maybe<Array<Scalars['uuid']>>;
 };
 
+export type CartDetailsFragment = { __typename?: 'carts' } & Pick<
+	Carts,
+	'id' | 'user_id' | 'store_id'
+> & { store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'> };
+
 export type CartsQueryVariables = Exact<{
 	userId: Scalars['uuid'];
 }>;
 
 export type CartsQuery = { __typename?: 'query_root' } & {
-	carts: Array<
-		{ __typename?: 'carts' } & Pick<Carts, 'id' | 'user_id'> & {
-				store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'>;
-			}
-	>;
+	carts: Array<{ __typename?: 'carts' } & CartDetailsFragment>;
 };
 
 export type CreateCartMutationVariables = Exact<{
@@ -5341,6 +5342,17 @@ export type NewArrivalsQuery = { __typename?: 'query_root' } & {
 	>;
 };
 
+export const CartDetailsFragmentDoc = gql`
+	fragment CartDetails on carts {
+		id
+		user_id
+		store_id
+		store {
+			id
+			name
+		}
+	}
+`;
 export const ItemDetailsFragmentDoc = gql`
 	fragment ItemDetails on items {
 		id
@@ -5393,14 +5405,10 @@ export const StoreDetailsFragmentDoc = gql`
 export const CartsDocument = gql`
 	query Carts($userId: uuid!) {
 		carts(where: { user_id: { _eq: $userId } }) {
-			id
-			user_id
-			store {
-				id
-				name
-			}
+			...CartDetails
 		}
 	}
+	${CartDetailsFragmentDoc}
 `;
 
 export function useCartsQuery(

@@ -1,12 +1,17 @@
+fragment CartDetails on carts {
+	id
+	user_id
+	store_id
+	store {
+		id
+		name
+	}
+	# Aggregate of cart items in store
+}
+
 query Carts($userId: uuid!) {
 	carts(where: { user_id: { _eq: $userId } }) {
-		id
-		user_id
-		store {
-			id
-			name
-		}
-		# Aggregate of cart items in store
+		...CartDetails
 	}
 }
 

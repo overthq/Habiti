@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useStoreQuery } from '../../types/api';
+import { useStoreQuery, CartDetailsFragment } from '../../types/api';
 import { Icon } from '../icons';
-import { Cart } from '../../redux/carts/types';
+// import { Cart } from '../../redux/carts/types';
 
 interface CartListItemProps {
-	cart: Cart;
+	cart: CartDetailsFragment;
 }
 
 const CartsListItem: React.FC<CartListItemProps> = ({ cart }) => {
