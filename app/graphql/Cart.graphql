@@ -1,3 +1,15 @@
+query Carts($userId: uuid!) {
+	carts(where: { user_id: { _eq: $userId } }) {
+		id
+		user_id
+		store {
+			id
+			name
+		}
+		# Aggregate of cart items in store
+	}
+}
+
 mutation CreateCart($object: carts_insert_input!) {
 	insert_carts_one(object: $object) {
 		id
@@ -12,5 +24,11 @@ mutation UpsertItemToCart($object: cart_items_insert_input!) {
 	) {
 		id
 		cart_id
+	}
+}
+
+mutation RemoveItemFromCart($itemId: uuid!) {
+	delete_cart_items_by_pk(id: $itemId) {
+		id
 	}
 }

@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useAppSelector } from '../redux/store';
 
 const Carts = () => {
+	const userId = useAppSelector(({ auth }) => auth.userId);
+	const [{ data }] = useCartsQuery();
 	const carts = useAppSelector(({ carts }) => carts.carts);
 	const { navigate } = useNavigation();
 

@@ -5087,6 +5087,18 @@ export type Uuid_Comparison_Exp = {
 	_nin?: Maybe<Array<Scalars['uuid']>>;
 };
 
+export type CartsQueryVariables = Exact<{
+	userId: Scalars['uuid'];
+}>;
+
+export type CartsQuery = { __typename?: 'query_root' } & {
+	carts: Array<
+		{ __typename?: 'carts' } & Pick<Carts, 'id' | 'user_id'> & {
+				store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'>;
+			}
+	>;
+};
+
 export type CreateCartMutationVariables = Exact<{
 	object: Carts_Insert_Input;
 }>;
@@ -5104,6 +5116,16 @@ export type UpsertItemToCartMutationVariables = Exact<{
 export type UpsertItemToCartMutation = { __typename?: 'mutation_root' } & {
 	insert_cart_items_one?: Maybe<
 		{ __typename?: 'cart_items' } & Pick<Cart_Items, 'id' | 'cart_id'>
+	>;
+};
+
+export type RemoveItemFromCartMutationVariables = Exact<{
+	itemId: Scalars['uuid'];
+}>;
+
+export type RemoveItemFromCartMutation = { __typename?: 'mutation_root' } & {
+	delete_cart_items_by_pk?: Maybe<
+		{ __typename?: 'cart_items' } & Pick<Cart_Items, 'id'>
 	>;
 };
 
@@ -5368,6 +5390,24 @@ export const StoreDetailsFragmentDoc = gql`
 		}
 	}
 `;
+export const CartsDocument = gql`
+	query Carts($userId: uuid!) {
+		carts(where: { user_id: { _eq: $userId } }) {
+			id
+			user_id
+			store {
+				id
+				name
+			}
+		}
+	}
+`;
+
+export function useCartsQuery(
+	options: Omit<Urql.UseQueryArgs<CartsQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<CartsQuery>({ query: CartsDocument, ...options });
+}
 export const CreateCartDocument = gql`
 	mutation CreateCart($object: carts_insert_input!) {
 		insert_carts_one(object: $object) {
@@ -5399,6 +5439,20 @@ export function useUpsertItemToCartMutation() {
 		UpsertItemToCartMutation,
 		UpsertItemToCartMutationVariables
 	>(UpsertItemToCartDocument);
+}
+export const RemoveItemFromCartDocument = gql`
+	mutation RemoveItemFromCart($itemId: uuid!) {
+		delete_cart_items_by_pk(id: $itemId) {
+			id
+		}
+	}
+`;
+
+export function useRemoveItemFromCartMutation() {
+	return Urql.useMutation<
+		RemoveItemFromCartMutation,
+		RemoveItemFromCartMutationVariables
+	>(RemoveItemFromCartDocument);
 }
 export const ItemsDocument = gql`
 	query Items {
