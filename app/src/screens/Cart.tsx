@@ -5,53 +5,48 @@ import { useClient } from 'urql';
 import CartItem from '../components/CartItem';
 import {
 	usePlaceOrderMutation,
-	useCreateOrderItemsMutation
+	useCreateOrderItemsMutation,
+	useCartQuery
 } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 import { useAppSelector } from '../redux/store';
 import { ItemsMoreDetailsDocument, ItemsMoreDetailsQuery } from '../types/api';
 
-// TODO: Switch to server-based carts system.
-// Not sure if its the best, but we can always build a better solution if need be.
-// Might also come in handy if we decide to build a web-based client.
-
 const Cart: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
-	const { userId, carts } = useAppSelector(({ auth, carts }) => ({
-		userId: auth.userId,
-		carts: carts.carts
-	}));
+	const userId = useAppSelector(({ auth }) => auth.userId);
 	const [, placeOrder] = usePlaceOrderMutation();
 	const [, createOrderItems] = useCreateOrderItemsMutation();
 	const client = useClient();
-	const { storeId } = params;
+	const { cartId } = params;
 
-	const cart = carts.find(({ storeId: id }) => id === storeId);
+	const [{ data }] = useCartQuery({ variables: { cartId } });
+	const cart = data?.carts_by_pk;
 
 	if (!cart) throw new Error('This cart does not exist');
 
 	const prepareCart = async (order_id: string) => {
 		const { data, error } = await client
 			.query<ItemsMoreDetailsQuery>(ItemsMoreDetailsDocument, {
-				itemIds: cart?.items.map(({ itemId }) => itemId)
+				itemIds: cart.cart_items.map(({ item_id }) => item_id)
 			})
 			.toPromise();
 
 		if (error) console.log(error);
 		if (!data) throw new Error('Something went horribly wrong.');
 
-		return cart.items.map(({ itemId, quantity }) => ({
+		return cart.cart_items.map(({ item_id, item, quantity }) => ({
 			order_id,
-			item_id: itemId,
+			item_id,
 			quantity,
-			unit_price: data.items.find(({ id }) => id === itemId)?.unit_price
+			unit_price: item.unit_price
 		}));
 	};
 
 	const handleSubmit = async () => {
 		if (userId) {
 			const { data } = await placeOrder({
-				input: { user_id: userId, store_id: cart?.storeId }
+				input: { user_id: userId, store_id: cart.store_id }
 			});
 
 			if (data?.insert_orders?.returning) {
@@ -66,8 +61,8 @@ const Cart: React.FC = () => {
 		<View style={styles.container}>
 			<Text style={styles.heading}>Checkout</Text>
 			<Text style={styles.sectionHeader}>Order Summary</Text>
-			{cart?.items.map(({ itemId, quantity }) => (
-				<CartItem key={itemId} {...{ itemId, quantity }} />
+			{cart.cart_items.map(({ id, item, quantity }) => (
+				<CartItem key={id} {...{ item, quantity }} />
 			))}
 			<TouchableOpacity
 				activeOpacity={0.8}

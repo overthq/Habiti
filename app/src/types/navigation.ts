@@ -5,7 +5,7 @@ export type AppStackParamList = {
 	Verify: { phone: string };
 	Search: undefined;
 	Item: { itemId: string };
-	Cart: { storeId: string };
+	Cart: { cartId: string };
 };
 
 export type AuthStackParamList = {

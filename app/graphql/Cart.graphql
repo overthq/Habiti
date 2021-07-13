@@ -7,10 +7,26 @@ fragment CartDetails on carts {
 		name
 	}
 	# Aggregate of cart items in store
+	cart_items {
+		id
+		item_id
+		item {
+			id
+			name
+			unit_price
+		}
+		quantity
+	}
 }
 
 query Carts($userId: uuid!) {
 	carts(where: { user_id: { _eq: $userId } }) {
+		...CartDetails
+	}
+}
+
+query Cart($cartId: uuid!) {
+	carts_by_pk(id: $cartId) {
 		...CartDetails
 	}
 }

@@ -1,30 +1,25 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useItemQuery } from '../types/api';
 
 interface CartItemProps {
-	itemId: string;
+	item: {
+		name: string;
+		unit_price: number;
+	};
 	quantity: number;
 }
 
-const CartItem: React.FC<CartItemProps> = ({ itemId, quantity }) => {
-	const [{ data }] = useItemQuery({ variables: { itemId } });
-	const item = data?.items_by_pk;
-
-	if (!item) throw new Error('This item does not exist');
-
-	return (
-		<View style={styles.container}>
-			<View style={styles.imagePlaceholder} />
-			<View>
-				<Text style={styles.name}>{item.name}</Text>
-				<Text style={styles.price}>
-					{quantity} {item.unit_price}
-				</Text>
-			</View>
+const CartItem: React.FC<CartItemProps> = ({ item, quantity }) => (
+	<View style={styles.container}>
+		<View style={styles.imagePlaceholder} />
+		<View>
+			<Text style={styles.name}>{item.name}</Text>
+			<Text style={styles.price}>
+				{quantity} {item.unit_price}
+			</Text>
 		</View>
-	);
-};
+	</View>
+);
 
 const styles = StyleSheet.create({
 	container: {

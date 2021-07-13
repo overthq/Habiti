@@ -5090,7 +5090,20 @@ export type Uuid_Comparison_Exp = {
 export type CartDetailsFragment = { __typename?: 'carts' } & Pick<
 	Carts,
 	'id' | 'user_id' | 'store_id'
-> & { store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'> };
+> & {
+		store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'>;
+		cart_items: Array<
+			{ __typename?: 'cart_items' } & Pick<
+				Cart_Items,
+				'id' | 'item_id' | 'quantity'
+			> & {
+					item: { __typename?: 'items' } & Pick<
+						Items,
+						'id' | 'name' | 'unit_price'
+					>;
+				}
+		>;
+	};
 
 export type CartsQueryVariables = Exact<{
 	userId: Scalars['uuid'];
@@ -5098,6 +5111,14 @@ export type CartsQueryVariables = Exact<{
 
 export type CartsQuery = { __typename?: 'query_root' } & {
 	carts: Array<{ __typename?: 'carts' } & CartDetailsFragment>;
+};
+
+export type CartQueryVariables = Exact<{
+	cartId: Scalars['uuid'];
+}>;
+
+export type CartQuery = { __typename?: 'query_root' } & {
+	carts_by_pk?: Maybe<{ __typename?: 'carts' } & CartDetailsFragment>;
 };
 
 export type CreateCartMutationVariables = Exact<{
@@ -5351,6 +5372,16 @@ export const CartDetailsFragmentDoc = gql`
 			id
 			name
 		}
+		cart_items {
+			id
+			item_id
+			item {
+				id
+				name
+				unit_price
+			}
+			quantity
+		}
 	}
 `;
 export const ItemDetailsFragmentDoc = gql`
@@ -5415,6 +5446,20 @@ export function useCartsQuery(
 	options: Omit<Urql.UseQueryArgs<CartsQueryVariables>, 'query'> = {}
 ) {
 	return Urql.useQuery<CartsQuery>({ query: CartsDocument, ...options });
+}
+export const CartDocument = gql`
+	query Cart($cartId: uuid!) {
+		carts_by_pk(id: $cartId) {
+			...CartDetails
+		}
+	}
+	${CartDetailsFragmentDoc}
+`;
+
+export function useCartQuery(
+	options: Omit<Urql.UseQueryArgs<CartQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<CartQuery>({ query: CartDocument, ...options });
 }
 export const CreateCartDocument = gql`
 	mutation CreateCart($object: carts_insert_input!) {
