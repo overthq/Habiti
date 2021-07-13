@@ -1,16 +1,16 @@
 import React from 'react';
 import { FlatList } from 'react-native';
 import { useStoreItemsQuery } from '../../types/api';
+import StoreHeader from './StoreHeader';
 import StoreListItem from './StoreListItem';
 
 interface StoreItemsProps {
-	storeId: string;
-	header: React.FC;
+	store: any; // FIXME
 }
 
-const StoreItems: React.FC<StoreItemsProps> = ({ storeId, header }) => {
+const StoreItems: React.FC<StoreItemsProps> = ({ store }) => {
 	const [{ data }] = useStoreItemsQuery({
-		variables: { storeId }
+		variables: { storeId: store.id }
 	});
 
 	if (!data?.items) throw new Error('No store items');
@@ -19,7 +19,7 @@ const StoreItems: React.FC<StoreItemsProps> = ({ storeId, header }) => {
 		<FlatList
 			data={data.items}
 			keyExtractor={({ id }) => id}
-			ListHeaderComponent={header}
+			ListHeaderComponent={() => <StoreHeader store={store} />}
 			showsVerticalScrollIndicator={false}
 			renderItem={({ item }) => <StoreListItem item={item} />}
 			numColumns={2}
