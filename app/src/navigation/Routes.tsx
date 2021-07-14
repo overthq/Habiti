@@ -28,8 +28,8 @@ const MainStack = createStackNavigator<MainStackParamList>();
 const HomeTab = createBottomTabNavigator<HomeTabParamList>();
 
 const Main = () => (
-	<MainStack.Navigator>
-		<MainStack.Screen name='Home' options={{ headerShown: false }}>
+	<MainStack.Navigator screenOptions={{ headerShown: false }}>
+		<MainStack.Screen name='Home'>
 			{() => (
 				<HomeTab.Navigator
 					screenOptions={tabScreenOptions}
@@ -42,11 +42,7 @@ const Main = () => (
 				</HomeTab.Navigator>
 			)}
 		</MainStack.Screen>
-		<MainStack.Screen
-			name='Store'
-			component={Store}
-			options={{ headerShown: false }}
-		/>
+		<MainStack.Screen name='Store' component={Store} />
 	</MainStack.Navigator>
 );
 
