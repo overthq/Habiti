@@ -27,7 +27,7 @@ const AppStack = createStackNavigator<AppStackParamList>();
 const MainStack = createStackNavigator<MainStackParamList>();
 const HomeTab = createBottomTabNavigator<HomeTabParamList>();
 
-const MainNavigator = () => (
+const Main = () => (
 	<MainStack.Navigator>
 		<MainStack.Screen name='Home' options={{ headerShown: false }}>
 			{() => (
@@ -60,7 +60,7 @@ const Routes: React.FC = () => {
 				<AppStack.Navigator screenOptions={{ headerShown: false }}>
 					{accessToken ? (
 						<>
-							<AppStack.Screen name='Main' component={MainNavigator} />
+							<AppStack.Screen name='Main' component={Main} />
 							<AppStack.Screen name='Item' component={Item} />
 							<AppStack.Screen name='Cart' component={Cart} />
 						</>
