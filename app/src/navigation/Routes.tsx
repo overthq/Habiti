@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Provider, createClient } from 'urql';
+import { Provider } from 'urql';
 
 import Authenticate from '../screens/Authenticate';
 import Register from '../screens/Register';
@@ -21,7 +21,7 @@ import {
 	MainStackParamList
 } from '../types/navigation';
 import { useAppSelector } from '../redux/store';
-import env from '../../env';
+import { create } from '../utils/client';
 
 const AppStack = createStackNavigator<AppStackParamList>();
 const MainStack = createStackNavigator<MainStackParamList>();
@@ -52,17 +52,7 @@ const MainNavigator = () => (
 
 const Routes: React.FC = () => {
 	const accessToken = useAppSelector(({ auth }) => auth.accessToken);
-
-	const client = React.useMemo(
-		() =>
-			createClient({
-				url: env.hasuraUrl,
-				fetchOptions: {
-					headers: { authorization: `Bearer ${accessToken}` }
-				}
-			}),
-		[accessToken]
-	);
+	const client = React.useMemo(() => create(accessToken), [accessToken]);
 
 	return (
 		<Provider value={client}>
