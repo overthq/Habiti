@@ -14,15 +14,18 @@ import Explore from '../screens/Explore';
 import Store from '../screens/Store';
 import Item from '../screens/Item';
 import Cart from '../screens/Cart';
-import { Icon } from '../components/icons';
 import { tabBarOptions, tabScreenOptions } from '../utils/navigation';
-import { AppStackParamList, MainStackParamList } from '../types/navigation';
+import {
+	AppStackParamList,
+	HomeTabParamList,
+	MainStackParamList
+} from '../types/navigation';
 import { useAppSelector } from '../redux/store';
 import env from '../../env';
 
 const AppStack = createStackNavigator<AppStackParamList>();
 const MainStack = createStackNavigator<MainStackParamList>();
-const HomeTab = createBottomTabNavigator();
+const HomeTab = createBottomTabNavigator<HomeTabParamList>();
 
 const MainNavigator = () => (
 	<MainStack.Navigator>
@@ -42,11 +45,7 @@ const MainNavigator = () => (
 		<MainStack.Screen
 			name='Store'
 			component={Store}
-			options={{
-				headerBackTitleVisible: false,
-				headerBackImage: () => <Icon name='chevronLeft' size={30} />,
-				headerLeftContainerStyle: { paddingLeft: 8 }
-			}}
+			options={{ headerShown: false }}
 		/>
 	</MainStack.Navigator>
 );
@@ -54,14 +53,16 @@ const MainNavigator = () => (
 const Routes: React.FC = () => {
 	const accessToken = useAppSelector(({ auth }) => auth.accessToken);
 
-	const client = createClient({
-		url: env.hasuraUrl,
-		fetchOptions: () => ({
-			headers: {
-				authorization: accessToken ? `Bearer ${accessToken}` : ''
-			}
-		})
-	});
+	const client = React.useMemo(
+		() =>
+			createClient({
+				url: env.hasuraUrl,
+				fetchOptions: {
+					headers: { authorization: `Bearer ${accessToken}` }
+				}
+			}),
+		[accessToken]
+	);
 
 	return (
 		<Provider value={client}>

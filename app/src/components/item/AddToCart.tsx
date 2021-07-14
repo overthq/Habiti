@@ -1,8 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { useDispatch } from 'react-redux';
 import { Icon } from '../icons';
-import { upsertItemToCart } from '../../redux/carts/actions';
 
 interface AddToCartProps {
 	storeId: string;
@@ -10,13 +8,15 @@ interface AddToCartProps {
 }
 
 const AddToCart: React.FC<AddToCartProps> = ({ storeId, itemId }) => {
-	const dispatch = useDispatch();
+	// We want to add the currently selected item to the cart, and do nothing else.
+	// The user always has a cart with
 
 	return (
 		<TouchableOpacity
 			style={styles.button}
 			onPress={() => {
-				dispatch(upsertItemToCart({ storeId, itemId }));
+				// Add item to cart.
+				// dispatch(upsertItemToCart({ storeId, itemId }));
 			}}
 		>
 			<Icon size={22} color='#FFFFFF' name='plus' style={{ marginRight: 4 }} />

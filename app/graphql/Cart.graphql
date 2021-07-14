@@ -6,7 +6,6 @@ fragment CartDetails on carts {
 		id
 		name
 	}
-	# Aggregate of cart items in store
 	cart_items {
 		id
 		item_id
@@ -16,6 +15,19 @@ fragment CartDetails on carts {
 			unit_price
 		}
 		quantity
+	}
+}
+
+# Temporary query - at least until I figure out the right way to go about this.
+query CartByStoreId($userId: uuid!, $storeId: uuid!) {
+	carts(
+		where: {
+			_and: [{ user_id: { _eq: $userId } }, { store_id: { _eq: $storeId } }]
+		}
+	) {
+		returning {
+			id
+		}
 	}
 }
 
