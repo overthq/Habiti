@@ -5,12 +5,10 @@ import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import thunk, { ThunkAction } from 'redux-thunk';
 
 import authReducer from './auth/reducer';
-// import cartsReducer from './carts/reducer';
 import preferencesReducer from './preferences/reducer';
 
 const rootReducer = combineReducers({
 	auth: persistReducer({ key: 'auth', storage: AsyncStorage }, authReducer),
-	// carts: persistReducer({ key: 'carts', storage: AsyncStorage }, cartsReducer),
 	preferences: persistReducer(
 		{ key: 'preferences', storage: AsyncStorage },
 		preferencesReducer
