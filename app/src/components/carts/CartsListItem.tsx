@@ -1,35 +1,30 @@
 import React from 'react';
 import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useStoreQuery, CartDetailsFragment } from '../../types/api';
+import { CartDetailsFragment } from '../../types/api';
 import { Icon } from '../icons';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { AppStackParamList } from '../../types/navigation';
 
 interface CartListItemProps {
 	cart: CartDetailsFragment;
 }
 
 const CartsListItem: React.FC<CartListItemProps> = ({ cart }) => {
-	const [{ data }] = useStoreQuery({ variables: { storeId: cart.store_id } });
-	const { navigate } = useNavigation();
-
-	const store = data?.stores_by_pk;
-	if (!store) throw new Error('Not specified');
+	const { navigate } = useNavigation<StackNavigationProp<AppStackParamList>>();
 
 	return (
 		<TouchableOpacity
-			onPress={() => navigate('Cart', { storeId: cart.store_id })}
+			onPress={() => navigate('Cart', { cartId: cart.id })}
 			activeOpacity={0.8}
 			style={styles.container}
 		>
 			<View style={styles.main}>
 				<View style={styles.storeImagePlaceholder}>
-					<Image
-						style={styles.storeImage}
-						source={{ uri: '' /* Do something here */ }}
-					/>
+					<Image style={styles.storeImage} source={{ uri: '' }} />
 				</View>
 				<View>
-					<Text style={styles.cartStoreName}>{store?.name}</Text>
+					<Text style={styles.cartStoreName}>{cart.store.name}</Text>
 					<Text style={styles.cartItemCount}>
 						{cart.cart_items.length}{' '}
 						{`item${cart.cart_items.length > 1 ? 's' : ''}`}
