@@ -1,11 +1,11 @@
 export const light = {
-	primaryText: '',
-	secondaryText: '',
-	tertiaryText: ''
+	text: {},
+	views: {},
+	buttons: {}
 };
 
 export const dark = {
-	primaryText: '',
-	secondaryText: '',
-	tertiaryText: ''
+	text: {},
+	views: {},
+	buttons: {}
 };

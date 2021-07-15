@@ -1,16 +1,10 @@
 import React from 'react';
-import {
-	View,
-	Image,
-	Text,
-	TouchableOpacity,
-	StyleSheet,
-	ActivityIndicator
-} from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useItemQuery } from '../types/api';
 import { ItemsStackParamList } from '../types/navigation';
-import { Icon } from '../components/icons';
+import Section from '../components/item/Section';
+import Images from '../components/item/Images';
 
 const Item: React.FC = () => {
 	const {
@@ -28,27 +22,10 @@ const Item: React.FC = () => {
 			<View style={styles.heading}>
 				<Text style={styles.title}>{item.name}</Text>
 			</View>
-			<View style={styles.section}>
-				<Text style={styles.sectionTitle}>Images</Text>
-				{item?.item_images.map(({ image }) => (
-					<Image key={image.id} source={{ uri: image.path_url }} />
-				))}
-				<TouchableOpacity style={styles.addImageButton}>
-					<Icon name='plus' size={24} />
-				</TouchableOpacity>
-			</View>
-			<View style={styles.section}>
-				<Text style={styles.sectionTitle}>Name</Text>
-				<Text style={styles.text}>{item.name}</Text>
-			</View>
-			<View style={styles.section}>
-				<Text style={styles.sectionTitle}>Description</Text>
-				<Text style={styles.text}>{item.description}</Text>
-			</View>
-			<View style={styles.section}>
-				<Text style={styles.sectionTitle}>Unit Price</Text>
-				<Text style={styles.text}>{item.unit_price} NGN</Text>
-			</View>
+			<Images itemId={itemId} images={item.item_images} />
+			<Section title='Name' content={item.name} />
+			<Section title='Description' content={item.description} />
+			<Section title='Unit Price' content={String(item.unit_price)} />
 		</View>
 	);
 };
@@ -64,29 +41,6 @@ const styles = StyleSheet.create({
 	title: {
 		fontSize: 24,
 		fontWeight: 'bold'
-	},
-	section: {
-		paddingVertical: 8,
-		paddingHorizontal: 16,
-		backgroundColor: '#FFFFFF'
-	},
-	sectionTitle: {
-		marginBottom: 4,
-		fontSize: 16,
-		color: '#505050',
-		fontWeight: '500'
-	},
-	addImageButton: {
-		width: 80,
-		height: 80,
-		borderRadius: 6,
-		borderColor: '#D3D3D3',
-		borderWidth: 2,
-		justifyContent: 'center',
-		alignItems: 'center'
-	},
-	text: {
-		fontSize: 16
 	}
 });
 

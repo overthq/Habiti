@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
 		alignSelf: 'center'
 	},
 	title: {
-		fontSize: 22,
+		fontSize: 18,
 		color: '#100100',
 		fontWeight: '500'
 	},

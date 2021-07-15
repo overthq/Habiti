@@ -87,11 +87,6 @@ const styles = StyleSheet.create({
 		fontWeight: '500',
 		color: '#505050',
 		paddingLeft: 20
-	},
-	storeImageContainer: {
-		flexDirection: 'column',
-		alignItems: 'center',
-		marginLeft: 20
 	}
 });
 

@@ -1,7 +1,7 @@
+import { RouteProp } from '@react-navigation/native';
 import React from 'react';
-import { Platform } from 'react-native';
-import { TransitionPresets } from '@react-navigation/stack';
 import { Icon, IconType } from '../components/icons';
+import { HomeTabParamList } from '../types/navigation';
 
 export const getIcon = (routeName: string): IconType => {
 	switch (routeName) {
@@ -17,23 +17,18 @@ export const getIcon = (routeName: string): IconType => {
 	throw new Error('Specified route does not exist.');
 };
 
-export const modalOptions = {
-	headerShown: false,
-	gestureEnabled: true,
-	cardOverlayEnabled: true,
-	...(Platform.OS === 'ios'
-		? TransitionPresets.ModalPresentationIOS
-		: TransitionPresets.RevealFromBottomAndroid)
-};
-
 export const tabBarOptions = {
 	activeTintColor: 'black',
 	inactiveTintColor: 'gray',
 	showLabel: false
 };
 
-export const tabScreenOptions = ({ route }: any): any => ({
-	tabBarIcon: ({ color }: any) => (
+export const tabScreenOptions = ({
+	route
+}: {
+	route: RouteProp<HomeTabParamList>;
+}) => ({
+	tabBarIcon: ({ color }: { color: string }) => (
 		<Icon name={getIcon(route.name)} color={color} size={28} />
 	)
 });

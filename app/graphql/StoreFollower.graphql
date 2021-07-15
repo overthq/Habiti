@@ -28,3 +28,15 @@ query StoresFollowed($userId: uuid!) {
 		}
 	}
 }
+
+query NewArrivals($userId: uuid!, $oneDayAgo: timestamptz!) {
+	store_followers(where: { user_id: { _eq: $userId } }) {
+		store {
+			id
+			name
+			items(where: { created_at: { _gte: $oneDayAgo } }) {
+				...ItemDetails
+			}
+		}
+	}
+}

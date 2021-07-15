@@ -5,16 +5,22 @@ import CartsListItem from '../components/carts/CartsListItem';
 import ListEmpty from '../components/global/ListEmpty';
 import { useNavigation } from '@react-navigation/native';
 import { useAppSelector } from '../redux/store';
+import { useCartsQuery } from '../types/api';
 
 const Carts = () => {
-	const carts = useAppSelector(({ carts }) => carts.carts);
+	const userId = useAppSelector(({ auth }) => auth.userId);
+	const [{ data }] = useCartsQuery({ variables: { userId } });
 	const { navigate } = useNavigation();
+
+	const carts = data?.carts;
+
+	if (!carts) throw new Error('Something is up here.');
 
 	return (
 		<SafeAreaView style={styles.container}>
 			<FlatList
 				bounces={false}
-				keyExtractor={c => c.storeId}
+				keyExtractor={c => c.store_id}
 				ListHeaderComponent={
 					<View style={styles.header}>
 						<Text style={styles.title}>Carts</Text>

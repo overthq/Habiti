@@ -175,16 +175,20 @@ const Routes: React.FC = () => {
 		})
 	);
 
-	const client = createClient({
-		url: env.hasuraUrl,
-		fetchOptions: () => ({
-			headers: {
-				authorization: accessToken ? `Bearer ${accessToken}` : '',
-				'x-hasura-admin-secret': 'market-admin-secret',
-				'x-hasura-store-id': activeStore || ''
-			}
-		})
-	});
+	const client = React.useMemo(
+		() =>
+			createClient({
+				url: env.hasuraUrl,
+				fetchOptions: () => ({
+					headers: {
+						authorization: accessToken ? `Bearer ${accessToken}` : '',
+						'x-hasura-admin-secret': 'market-admin-secret',
+						'x-hasura-store-id': activeStore || ''
+					}
+				})
+			}),
+		[accessToken, activeStore]
+	);
 
 	return (
 		<Provider value={client}>

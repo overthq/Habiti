@@ -16,13 +16,7 @@ const Store: React.FC = () => {
 	return (
 		<SafeAreaView style={styles.container}>
 			<TouchableOpacity style={styles.storeSettingRow}>
-				<View
-					style={{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						alignItems: 'center'
-					}}
-				>
+				<View style={styles.rowMainContainer}>
 					<View style={styles.storeAvatar}>
 						<Text style={styles.storeAvatarText}>{store?.name[0]}</Text>
 					</View>
@@ -47,6 +41,11 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		padding: 8
 	},
+	rowMainContainer: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center'
+	},
 	storeAvatar: {
 		height: 40,
 		width: 40,
@@ -56,7 +55,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#505050'
 	},
 	storeAvatarText: {
-		fontSize: 26,
+		fontSize: 22,
 		fontWeight: '500',
 		color: '#D3D3D3'
 	},

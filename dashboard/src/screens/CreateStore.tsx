@@ -1,14 +1,7 @@
 import React from 'react';
-import {
-	View,
-	Text,
-	TextInput,
-	StyleSheet,
-	FlatList,
-	Dimensions
-} from 'react-native';
+import { View, StyleSheet, FlatList, Dimensions } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { Formik, useFormikContext } from 'formik';
+import { Formik } from 'formik';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
 	useSharedValue,
@@ -16,76 +9,19 @@ import {
 } from 'react-native-reanimated';
 import { useAddManagerMutation, useCreateStoreMutation } from '../types/api';
 import Button from '../components/global/Button';
-import authStyles from '../styles/auth';
 import { useAppSelector } from '../redux/store';
 import { updatePreference } from '../redux/preferences/actions';
+import Brand from '../components/create-store/Brand';
+import Social from '../components/create-store/Social';
+import StoreImage from '../components/create-store/StoreImage';
 
 const { width } = Dimensions.get('window');
 
 const steps = [
-	{
-		title: 'Your brand',
-		description: '',
-		fields: [
-			{
-				name: 'name',
-				placeholder: 'Market',
-				label: 'Store name'
-			},
-			{
-				name: 'shortName',
-				placeholder: 'market',
-				label: 'Store short name'
-			}
-		]
-	},
-	{
-		title: 'Your online presence',
-		description: '',
-		fields: [
-			{
-				name: 'twitter',
-				placeholder: '@storename',
-				label: 'Twitter username'
-			},
-			{
-				name: 'instagram',
-				placeholder: '@storename',
-				label: 'Instagram username'
-			},
-			{
-				name: 'website',
-				placeholder: 'https://storename.com',
-				label: 'Website URL'
-			}
-		]
-	}
+	{ title: 'Brand', component: <Brand /> },
+	{ title: 'Social', component: <Social /> },
+	{ title: 'StoreImage', component: <StoreImage /> }
 ];
-
-interface FormStepProps {
-	step: typeof steps[-1];
-}
-
-const FormStep: React.FC<FormStepProps> = ({ step }) => {
-	const { handleChange, handleBlur } = useFormikContext();
-
-	return (
-		<View style={styles.formStep}>
-			<Text style={styles.title}>{step.title}</Text>
-			{step.fields.map(({ name, placeholder, label }) => (
-				<View key={name}>
-					<Text style={authStyles.inputLabel}>{label}</Text>
-					<TextInput
-						style={authStyles.input}
-						placeholder={placeholder}
-						onChangeText={handleChange(name)}
-						onBlur={handleBlur('name')}
-					/>
-				</View>
-			))}
-		</View>
-	);
-};
 
 const CreateStore: React.FC = () => {
 	const [, createStore] = useCreateStoreMutation();
@@ -156,7 +92,7 @@ const CreateStore: React.FC = () => {
 							showsHorizontalScrollIndicator={false}
 							data={steps}
 							keyExtractor={s => s.title}
-							renderItem={({ item }) => <FormStep step={item} />}
+							renderItem={({ item }) => item.component}
 							onViewableItemsChanged={handleViewableItemsChanged}
 							onScroll={handleScroll}
 						/>

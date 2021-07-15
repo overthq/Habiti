@@ -1,38 +1,33 @@
 import React from 'react';
 import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useStoreQuery } from '../../types/api';
+import { CartDetailsFragment } from '../../types/api';
 import { Icon } from '../icons';
-import { Cart } from '../../redux/carts/types';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { AppStackParamList } from '../../types/navigation';
 
 interface CartListItemProps {
-	cart: Cart;
+	cart: CartDetailsFragment;
 }
 
 const CartsListItem: React.FC<CartListItemProps> = ({ cart }) => {
-	const [{ data }] = useStoreQuery({ variables: { storeId: cart.storeId } });
-	const { navigate } = useNavigation();
-
-	const store = data?.stores_by_pk;
-	if (!store) throw new Error('Not specified');
+	const { navigate } = useNavigation<StackNavigationProp<AppStackParamList>>();
 
 	return (
 		<TouchableOpacity
-			onPress={() => navigate('Cart', { storeId: cart.storeId })}
+			onPress={() => navigate('Cart', { cartId: cart.id })}
 			activeOpacity={0.8}
 			style={styles.container}
 		>
 			<View style={styles.main}>
-				<View style={styles.storeImagePlaceholder}>
-					<Image
-						style={styles.storeImage}
-						source={{ uri: '' /* Do something here */ }}
-					/>
+				<View style={styles.placeholder}>
+					<Image style={styles.image} source={{ uri: '' }} />
 				</View>
 				<View>
-					<Text style={styles.cartStoreName}>{store?.name}</Text>
-					<Text style={styles.cartItemCount}>
-						{cart.items.length} {`item${cart.items.length > 1 ? 's' : ''}`}
+					<Text style={styles.name}>{cart.store.name}</Text>
+					<Text style={styles.count}>
+						{cart.cart_items.length}{' '}
+						{`item${cart.cart_items.length > 1 ? 's' : ''}`}
 					</Text>
 				</View>
 			</View>
@@ -54,7 +49,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center'
 	},
-	storeImagePlaceholder: {
+	placeholder: {
 		width: 60,
 		height: 60,
 		overflow: 'hidden',
@@ -62,15 +57,15 @@ const styles = StyleSheet.create({
 		backgroundColor: '#D3D3D3',
 		borderRadius: 30
 	},
-	storeImage: {
+	image: {
 		height: '100%',
 		width: '100%'
 	},
-	cartStoreName: {
+	name: {
 		fontSize: 18,
 		fontWeight: '500'
 	},
-	cartItemCount: {
+	count: {
 		fontSize: 16,
 		color: '#505050'
 	}

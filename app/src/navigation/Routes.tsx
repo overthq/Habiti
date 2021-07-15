@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Provider, createClient } from 'urql';
+import { Provider } from 'urql';
 
 import Authenticate from '../screens/Authenticate';
 import Register from '../screens/Register';
@@ -14,19 +14,22 @@ import Explore from '../screens/Explore';
 import Store from '../screens/Store';
 import Item from '../screens/Item';
 import Cart from '../screens/Cart';
-import { Icon } from '../components/icons';
 import { tabBarOptions, tabScreenOptions } from '../utils/navigation';
-import { AppStackParamList, MainStackParamList } from '../types/navigation';
+import {
+	AppStackParamList,
+	HomeTabParamList,
+	MainStackParamList
+} from '../types/navigation';
 import { useAppSelector } from '../redux/store';
-import env from '../../env';
+import { create } from '../utils/client';
 
 const AppStack = createStackNavigator<AppStackParamList>();
 const MainStack = createStackNavigator<MainStackParamList>();
-const HomeTab = createBottomTabNavigator();
+const HomeTab = createBottomTabNavigator<HomeTabParamList>();
 
-const MainNavigator = () => (
-	<MainStack.Navigator>
-		<MainStack.Screen name='Home' options={{ headerShown: false }}>
+const Main = () => (
+	<MainStack.Navigator screenOptions={{ headerShown: false }}>
+		<MainStack.Screen name='Home'>
 			{() => (
 				<HomeTab.Navigator
 					screenOptions={tabScreenOptions}
@@ -39,37 +42,21 @@ const MainNavigator = () => (
 				</HomeTab.Navigator>
 			)}
 		</MainStack.Screen>
-		<MainStack.Screen
-			name='Store'
-			component={Store}
-			options={{
-				headerBackTitleVisible: false,
-				headerBackImage: () => <Icon name='chevronLeft' size={30} />,
-				headerLeftContainerStyle: { paddingLeft: 8 }
-			}}
-		/>
+		<MainStack.Screen name='Store' component={Store} />
 	</MainStack.Navigator>
 );
 
 const Routes: React.FC = () => {
 	const accessToken = useAppSelector(({ auth }) => auth.accessToken);
-
-	const client = createClient({
-		url: env.hasuraUrl,
-		fetchOptions: () => ({
-			headers: {
-				authorization: accessToken ? `Bearer ${accessToken}` : ''
-			}
-		})
-	});
+	const client = React.useMemo(() => create(accessToken), [accessToken]);
 
 	return (
 		<Provider value={client}>
 			<NavigationContainer>
-				<AppStack.Navigator headerMode='none'>
+				<AppStack.Navigator screenOptions={{ headerShown: false }}>
 					{accessToken ? (
 						<>
-							<AppStack.Screen name='Main' component={MainNavigator} />
+							<AppStack.Screen name='Main' component={Main} />
 							<AppStack.Screen name='Item' component={Item} />
 							<AppStack.Screen name='Cart' component={Cart} />
 						</>

@@ -5,16 +5,17 @@ export type AppStackParamList = {
 	Verify: { phone: string };
 	Search: undefined;
 	Item: { itemId: string };
-	Cart: { storeId: string };
-};
-
-export type AuthStackParamList = {
-	Register: undefined;
-	Authenticate: undefined;
-	Verify: { phone: string };
+	Cart: { cartId: string };
 };
 
 export type MainStackParamList = {
 	Home: undefined;
 	Store: { storeId: string };
+};
+
+export type HomeTabParamList = {
+	'For You': undefined;
+	Explore: undefined;
+	Carts: undefined;
+	Profile: undefined;
 };

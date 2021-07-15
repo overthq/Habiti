@@ -1,5 +1,8 @@
 # We have to migrate queries, to move them closer to components.
 
+# We also have to redesign the entire schema for optimal queries,
+# and easier access and mental models around data.
+
 fragment ItemDetails on items {
 	id
 	name
@@ -7,6 +10,16 @@ fragment ItemDetails on items {
 	store {
 		id
 		name
+
+		# FIXME:
+		# This is *extremely* hacky, but
+		# we can afford to do it, because the current user
+		# should only be able to access information from their carts.
+		# i.e. where user_id = current_user.id
+
+		carts {
+			id
+		}
 	}
 	description
 	unit_price
@@ -40,12 +53,6 @@ query Item($itemId: uuid!) {
 
 query FeaturedItems {
 	items(where: { featured: { _eq: true } }) {
-		...ItemDetails
-	}
-}
-
-query NewArrivals($storeIds: [uuid!]!, $oneDayAgo: timestamptz!) {
-	items(where: { created_at: { _gte: $oneDayAgo } }) {
 		...ItemDetails
 	}
 }

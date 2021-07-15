@@ -16,7 +16,6 @@ const TrendingStores: React.FC = () => {
 				keyExtractor={({ id }) => id}
 				contentContainerStyle={styles.list}
 				renderItem={({ item }) => <TrendingStoresItem store={item} />}
-				// ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
 				ListEmptyComponent={
 					<ListEmpty
 						title='No trending stores'

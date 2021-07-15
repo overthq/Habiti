@@ -65,6 +65,541 @@ export type String_Comparison_Exp = {
 	_similar?: Maybe<Scalars['String']>;
 };
 
+/** columns and relationships of "cart_items" */
+export type Cart_Items = {
+	__typename?: 'cart_items';
+	/** An object relationship */
+	cart: Carts;
+	cart_id: Scalars['uuid'];
+	created_at: Scalars['timestamptz'];
+	id: Scalars['uuid'];
+	/** An object relationship */
+	item: Items;
+	item_id: Scalars['uuid'];
+	quantity: Scalars['Int'];
+	updated_at: Scalars['timestamptz'];
+};
+
+/** aggregated selection of "cart_items" */
+export type Cart_Items_Aggregate = {
+	__typename?: 'cart_items_aggregate';
+	aggregate?: Maybe<Cart_Items_Aggregate_Fields>;
+	nodes: Array<Cart_Items>;
+};
+
+/** aggregate fields of "cart_items" */
+export type Cart_Items_Aggregate_Fields = {
+	__typename?: 'cart_items_aggregate_fields';
+	avg?: Maybe<Cart_Items_Avg_Fields>;
+	count?: Maybe<Scalars['Int']>;
+	max?: Maybe<Cart_Items_Max_Fields>;
+	min?: Maybe<Cart_Items_Min_Fields>;
+	stddev?: Maybe<Cart_Items_Stddev_Fields>;
+	stddev_pop?: Maybe<Cart_Items_Stddev_Pop_Fields>;
+	stddev_samp?: Maybe<Cart_Items_Stddev_Samp_Fields>;
+	sum?: Maybe<Cart_Items_Sum_Fields>;
+	var_pop?: Maybe<Cart_Items_Var_Pop_Fields>;
+	var_samp?: Maybe<Cart_Items_Var_Samp_Fields>;
+	variance?: Maybe<Cart_Items_Variance_Fields>;
+};
+
+/** aggregate fields of "cart_items" */
+export type Cart_Items_Aggregate_FieldsCountArgs = {
+	columns?: Maybe<Array<Cart_Items_Select_Column>>;
+	distinct?: Maybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "cart_items" */
+export type Cart_Items_Aggregate_Order_By = {
+	avg?: Maybe<Cart_Items_Avg_Order_By>;
+	count?: Maybe<Order_By>;
+	max?: Maybe<Cart_Items_Max_Order_By>;
+	min?: Maybe<Cart_Items_Min_Order_By>;
+	stddev?: Maybe<Cart_Items_Stddev_Order_By>;
+	stddev_pop?: Maybe<Cart_Items_Stddev_Pop_Order_By>;
+	stddev_samp?: Maybe<Cart_Items_Stddev_Samp_Order_By>;
+	sum?: Maybe<Cart_Items_Sum_Order_By>;
+	var_pop?: Maybe<Cart_Items_Var_Pop_Order_By>;
+	var_samp?: Maybe<Cart_Items_Var_Samp_Order_By>;
+	variance?: Maybe<Cart_Items_Variance_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "cart_items" */
+export type Cart_Items_Arr_Rel_Insert_Input = {
+	data: Array<Cart_Items_Insert_Input>;
+	on_conflict?: Maybe<Cart_Items_On_Conflict>;
+};
+
+/** aggregate avg on columns */
+export type Cart_Items_Avg_Fields = {
+	__typename?: 'cart_items_avg_fields';
+	quantity?: Maybe<Scalars['Float']>;
+};
+
+/** order by avg() on columns of table "cart_items" */
+export type Cart_Items_Avg_Order_By = {
+	quantity?: Maybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "cart_items". All fields are combined with a logical 'AND'. */
+export type Cart_Items_Bool_Exp = {
+	_and?: Maybe<Array<Maybe<Cart_Items_Bool_Exp>>>;
+	_not?: Maybe<Cart_Items_Bool_Exp>;
+	_or?: Maybe<Array<Maybe<Cart_Items_Bool_Exp>>>;
+	cart?: Maybe<Carts_Bool_Exp>;
+	cart_id?: Maybe<Uuid_Comparison_Exp>;
+	created_at?: Maybe<Timestamptz_Comparison_Exp>;
+	id?: Maybe<Uuid_Comparison_Exp>;
+	item?: Maybe<Items_Bool_Exp>;
+	item_id?: Maybe<Uuid_Comparison_Exp>;
+	quantity?: Maybe<Int_Comparison_Exp>;
+	updated_at?: Maybe<Timestamptz_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "cart_items" */
+export enum Cart_Items_Constraint {
+	/** unique or primary key constraint */
+	CartIdItemIdUnique = 'cart_id_item_id_unique',
+	/** unique or primary key constraint */
+	CartItemsPkey = 'cart_items_pkey'
+}
+
+/** input type for incrementing integer column in table "cart_items" */
+export type Cart_Items_Inc_Input = {
+	quantity?: Maybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "cart_items" */
+export type Cart_Items_Insert_Input = {
+	cart?: Maybe<Carts_Obj_Rel_Insert_Input>;
+	cart_id?: Maybe<Scalars['uuid']>;
+	created_at?: Maybe<Scalars['timestamptz']>;
+	id?: Maybe<Scalars['uuid']>;
+	item?: Maybe<Items_Obj_Rel_Insert_Input>;
+	item_id?: Maybe<Scalars['uuid']>;
+	quantity?: Maybe<Scalars['Int']>;
+	updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate max on columns */
+export type Cart_Items_Max_Fields = {
+	__typename?: 'cart_items_max_fields';
+	cart_id?: Maybe<Scalars['uuid']>;
+	created_at?: Maybe<Scalars['timestamptz']>;
+	id?: Maybe<Scalars['uuid']>;
+	item_id?: Maybe<Scalars['uuid']>;
+	quantity?: Maybe<Scalars['Int']>;
+	updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** order by max() on columns of table "cart_items" */
+export type Cart_Items_Max_Order_By = {
+	cart_id?: Maybe<Order_By>;
+	created_at?: Maybe<Order_By>;
+	id?: Maybe<Order_By>;
+	item_id?: Maybe<Order_By>;
+	quantity?: Maybe<Order_By>;
+	updated_at?: Maybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Cart_Items_Min_Fields = {
+	__typename?: 'cart_items_min_fields';
+	cart_id?: Maybe<Scalars['uuid']>;
+	created_at?: Maybe<Scalars['timestamptz']>;
+	id?: Maybe<Scalars['uuid']>;
+	item_id?: Maybe<Scalars['uuid']>;
+	quantity?: Maybe<Scalars['Int']>;
+	updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** order by min() on columns of table "cart_items" */
+export type Cart_Items_Min_Order_By = {
+	cart_id?: Maybe<Order_By>;
+	created_at?: Maybe<Order_By>;
+	id?: Maybe<Order_By>;
+	item_id?: Maybe<Order_By>;
+	quantity?: Maybe<Order_By>;
+	updated_at?: Maybe<Order_By>;
+};
+
+/** response of any mutation on the table "cart_items" */
+export type Cart_Items_Mutation_Response = {
+	__typename?: 'cart_items_mutation_response';
+	/** number of affected rows by the mutation */
+	affected_rows: Scalars['Int'];
+	/** data of the affected rows by the mutation */
+	returning: Array<Cart_Items>;
+};
+
+/** input type for inserting object relation for remote table "cart_items" */
+export type Cart_Items_Obj_Rel_Insert_Input = {
+	data: Cart_Items_Insert_Input;
+	on_conflict?: Maybe<Cart_Items_On_Conflict>;
+};
+
+/** on conflict condition type for table "cart_items" */
+export type Cart_Items_On_Conflict = {
+	constraint: Cart_Items_Constraint;
+	update_columns: Array<Cart_Items_Update_Column>;
+	where?: Maybe<Cart_Items_Bool_Exp>;
+};
+
+/** ordering options when selecting data from "cart_items" */
+export type Cart_Items_Order_By = {
+	cart?: Maybe<Carts_Order_By>;
+	cart_id?: Maybe<Order_By>;
+	created_at?: Maybe<Order_By>;
+	id?: Maybe<Order_By>;
+	item?: Maybe<Items_Order_By>;
+	item_id?: Maybe<Order_By>;
+	quantity?: Maybe<Order_By>;
+	updated_at?: Maybe<Order_By>;
+};
+
+/** primary key columns input for table: "cart_items" */
+export type Cart_Items_Pk_Columns_Input = {
+	id: Scalars['uuid'];
+};
+
+/** select columns of table "cart_items" */
+export enum Cart_Items_Select_Column {
+	/** column name */
+	CartId = 'cart_id',
+	/** column name */
+	CreatedAt = 'created_at',
+	/** column name */
+	Id = 'id',
+	/** column name */
+	ItemId = 'item_id',
+	/** column name */
+	Quantity = 'quantity',
+	/** column name */
+	UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "cart_items" */
+export type Cart_Items_Set_Input = {
+	cart_id?: Maybe<Scalars['uuid']>;
+	created_at?: Maybe<Scalars['timestamptz']>;
+	id?: Maybe<Scalars['uuid']>;
+	item_id?: Maybe<Scalars['uuid']>;
+	quantity?: Maybe<Scalars['Int']>;
+	updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate stddev on columns */
+export type Cart_Items_Stddev_Fields = {
+	__typename?: 'cart_items_stddev_fields';
+	quantity?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev() on columns of table "cart_items" */
+export type Cart_Items_Stddev_Order_By = {
+	quantity?: Maybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Cart_Items_Stddev_Pop_Fields = {
+	__typename?: 'cart_items_stddev_pop_fields';
+	quantity?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_pop() on columns of table "cart_items" */
+export type Cart_Items_Stddev_Pop_Order_By = {
+	quantity?: Maybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Cart_Items_Stddev_Samp_Fields = {
+	__typename?: 'cart_items_stddev_samp_fields';
+	quantity?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_samp() on columns of table "cart_items" */
+export type Cart_Items_Stddev_Samp_Order_By = {
+	quantity?: Maybe<Order_By>;
+};
+
+/** aggregate sum on columns */
+export type Cart_Items_Sum_Fields = {
+	__typename?: 'cart_items_sum_fields';
+	quantity?: Maybe<Scalars['Int']>;
+};
+
+/** order by sum() on columns of table "cart_items" */
+export type Cart_Items_Sum_Order_By = {
+	quantity?: Maybe<Order_By>;
+};
+
+/** update columns of table "cart_items" */
+export enum Cart_Items_Update_Column {
+	/** column name */
+	CartId = 'cart_id',
+	/** column name */
+	CreatedAt = 'created_at',
+	/** column name */
+	Id = 'id',
+	/** column name */
+	ItemId = 'item_id',
+	/** column name */
+	Quantity = 'quantity',
+	/** column name */
+	UpdatedAt = 'updated_at'
+}
+
+/** aggregate var_pop on columns */
+export type Cart_Items_Var_Pop_Fields = {
+	__typename?: 'cart_items_var_pop_fields';
+	quantity?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_pop() on columns of table "cart_items" */
+export type Cart_Items_Var_Pop_Order_By = {
+	quantity?: Maybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Cart_Items_Var_Samp_Fields = {
+	__typename?: 'cart_items_var_samp_fields';
+	quantity?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_samp() on columns of table "cart_items" */
+export type Cart_Items_Var_Samp_Order_By = {
+	quantity?: Maybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Cart_Items_Variance_Fields = {
+	__typename?: 'cart_items_variance_fields';
+	quantity?: Maybe<Scalars['Float']>;
+};
+
+/** order by variance() on columns of table "cart_items" */
+export type Cart_Items_Variance_Order_By = {
+	quantity?: Maybe<Order_By>;
+};
+
+/** columns and relationships of "carts" */
+export type Carts = {
+	__typename?: 'carts';
+	/** An array relationship */
+	cart_items: Array<Cart_Items>;
+	/** An aggregated array relationship */
+	cart_items_aggregate: Cart_Items_Aggregate;
+	created_at: Scalars['timestamptz'];
+	id: Scalars['uuid'];
+	/** An object relationship */
+	store: Stores;
+	store_id: Scalars['uuid'];
+	updated_at: Scalars['timestamptz'];
+	/** An object relationship */
+	user: Users;
+	user_id: Scalars['uuid'];
+};
+
+/** columns and relationships of "carts" */
+export type CartsCart_ItemsArgs = {
+	distinct_on?: Maybe<Array<Cart_Items_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Cart_Items_Order_By>>;
+	where?: Maybe<Cart_Items_Bool_Exp>;
+};
+
+/** columns and relationships of "carts" */
+export type CartsCart_Items_AggregateArgs = {
+	distinct_on?: Maybe<Array<Cart_Items_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Cart_Items_Order_By>>;
+	where?: Maybe<Cart_Items_Bool_Exp>;
+};
+
+/** aggregated selection of "carts" */
+export type Carts_Aggregate = {
+	__typename?: 'carts_aggregate';
+	aggregate?: Maybe<Carts_Aggregate_Fields>;
+	nodes: Array<Carts>;
+};
+
+/** aggregate fields of "carts" */
+export type Carts_Aggregate_Fields = {
+	__typename?: 'carts_aggregate_fields';
+	count?: Maybe<Scalars['Int']>;
+	max?: Maybe<Carts_Max_Fields>;
+	min?: Maybe<Carts_Min_Fields>;
+};
+
+/** aggregate fields of "carts" */
+export type Carts_Aggregate_FieldsCountArgs = {
+	columns?: Maybe<Array<Carts_Select_Column>>;
+	distinct?: Maybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "carts" */
+export type Carts_Aggregate_Order_By = {
+	count?: Maybe<Order_By>;
+	max?: Maybe<Carts_Max_Order_By>;
+	min?: Maybe<Carts_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "carts" */
+export type Carts_Arr_Rel_Insert_Input = {
+	data: Array<Carts_Insert_Input>;
+	on_conflict?: Maybe<Carts_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "carts". All fields are combined with a logical 'AND'. */
+export type Carts_Bool_Exp = {
+	_and?: Maybe<Array<Maybe<Carts_Bool_Exp>>>;
+	_not?: Maybe<Carts_Bool_Exp>;
+	_or?: Maybe<Array<Maybe<Carts_Bool_Exp>>>;
+	cart_items?: Maybe<Cart_Items_Bool_Exp>;
+	created_at?: Maybe<Timestamptz_Comparison_Exp>;
+	id?: Maybe<Uuid_Comparison_Exp>;
+	store?: Maybe<Stores_Bool_Exp>;
+	store_id?: Maybe<Uuid_Comparison_Exp>;
+	updated_at?: Maybe<Timestamptz_Comparison_Exp>;
+	user?: Maybe<Users_Bool_Exp>;
+	user_id?: Maybe<Uuid_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "carts" */
+export enum Carts_Constraint {
+	/** unique or primary key constraint */
+	CartsPkey = 'carts_pkey',
+	/** unique or primary key constraint */
+	UserIdStoreIdUnique = 'user_id_store_id_unique'
+}
+
+/** input type for inserting data into table "carts" */
+export type Carts_Insert_Input = {
+	cart_items?: Maybe<Cart_Items_Arr_Rel_Insert_Input>;
+	created_at?: Maybe<Scalars['timestamptz']>;
+	id?: Maybe<Scalars['uuid']>;
+	store?: Maybe<Stores_Obj_Rel_Insert_Input>;
+	store_id?: Maybe<Scalars['uuid']>;
+	updated_at?: Maybe<Scalars['timestamptz']>;
+	user?: Maybe<Users_Obj_Rel_Insert_Input>;
+	user_id?: Maybe<Scalars['uuid']>;
+};
+
+/** aggregate max on columns */
+export type Carts_Max_Fields = {
+	__typename?: 'carts_max_fields';
+	created_at?: Maybe<Scalars['timestamptz']>;
+	id?: Maybe<Scalars['uuid']>;
+	store_id?: Maybe<Scalars['uuid']>;
+	updated_at?: Maybe<Scalars['timestamptz']>;
+	user_id?: Maybe<Scalars['uuid']>;
+};
+
+/** order by max() on columns of table "carts" */
+export type Carts_Max_Order_By = {
+	created_at?: Maybe<Order_By>;
+	id?: Maybe<Order_By>;
+	store_id?: Maybe<Order_By>;
+	updated_at?: Maybe<Order_By>;
+	user_id?: Maybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Carts_Min_Fields = {
+	__typename?: 'carts_min_fields';
+	created_at?: Maybe<Scalars['timestamptz']>;
+	id?: Maybe<Scalars['uuid']>;
+	store_id?: Maybe<Scalars['uuid']>;
+	updated_at?: Maybe<Scalars['timestamptz']>;
+	user_id?: Maybe<Scalars['uuid']>;
+};
+
+/** order by min() on columns of table "carts" */
+export type Carts_Min_Order_By = {
+	created_at?: Maybe<Order_By>;
+	id?: Maybe<Order_By>;
+	store_id?: Maybe<Order_By>;
+	updated_at?: Maybe<Order_By>;
+	user_id?: Maybe<Order_By>;
+};
+
+/** response of any mutation on the table "carts" */
+export type Carts_Mutation_Response = {
+	__typename?: 'carts_mutation_response';
+	/** number of affected rows by the mutation */
+	affected_rows: Scalars['Int'];
+	/** data of the affected rows by the mutation */
+	returning: Array<Carts>;
+};
+
+/** input type for inserting object relation for remote table "carts" */
+export type Carts_Obj_Rel_Insert_Input = {
+	data: Carts_Insert_Input;
+	on_conflict?: Maybe<Carts_On_Conflict>;
+};
+
+/** on conflict condition type for table "carts" */
+export type Carts_On_Conflict = {
+	constraint: Carts_Constraint;
+	update_columns: Array<Carts_Update_Column>;
+	where?: Maybe<Carts_Bool_Exp>;
+};
+
+/** ordering options when selecting data from "carts" */
+export type Carts_Order_By = {
+	cart_items_aggregate?: Maybe<Cart_Items_Aggregate_Order_By>;
+	created_at?: Maybe<Order_By>;
+	id?: Maybe<Order_By>;
+	store?: Maybe<Stores_Order_By>;
+	store_id?: Maybe<Order_By>;
+	updated_at?: Maybe<Order_By>;
+	user?: Maybe<Users_Order_By>;
+	user_id?: Maybe<Order_By>;
+};
+
+/** primary key columns input for table: "carts" */
+export type Carts_Pk_Columns_Input = {
+	id: Scalars['uuid'];
+};
+
+/** select columns of table "carts" */
+export enum Carts_Select_Column {
+	/** column name */
+	CreatedAt = 'created_at',
+	/** column name */
+	Id = 'id',
+	/** column name */
+	StoreId = 'store_id',
+	/** column name */
+	UpdatedAt = 'updated_at',
+	/** column name */
+	UserId = 'user_id'
+}
+
+/** input type for updating data in table "carts" */
+export type Carts_Set_Input = {
+	created_at?: Maybe<Scalars['timestamptz']>;
+	id?: Maybe<Scalars['uuid']>;
+	store_id?: Maybe<Scalars['uuid']>;
+	updated_at?: Maybe<Scalars['timestamptz']>;
+	user_id?: Maybe<Scalars['uuid']>;
+};
+
+/** update columns of table "carts" */
+export enum Carts_Update_Column {
+	/** column name */
+	CreatedAt = 'created_at',
+	/** column name */
+	Id = 'id',
+	/** column name */
+	StoreId = 'store_id',
+	/** column name */
+	UpdatedAt = 'updated_at',
+	/** column name */
+	UserId = 'user_id'
+}
+
 /** columns and relationships of "images" */
 export type Images = {
 	__typename?: 'images';
@@ -694,6 +1229,10 @@ export enum Item_Unit_Update_Column {
 /** columns and relationships of "items" */
 export type Items = {
 	__typename?: 'items';
+	/** An array relationship */
+	cart_items: Array<Cart_Items>;
+	/** An aggregated array relationship */
+	cart_items_aggregate: Cart_Items_Aggregate;
 	created_at: Scalars['timestamptz'];
 	description: Scalars['String'];
 	featured: Scalars['Boolean'];
@@ -712,6 +1251,24 @@ export type Items = {
 	store_id: Scalars['uuid'];
 	unit_price: Scalars['Int'];
 	updated_at: Scalars['timestamptz'];
+};
+
+/** columns and relationships of "items" */
+export type ItemsCart_ItemsArgs = {
+	distinct_on?: Maybe<Array<Cart_Items_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Cart_Items_Order_By>>;
+	where?: Maybe<Cart_Items_Bool_Exp>;
+};
+
+/** columns and relationships of "items" */
+export type ItemsCart_Items_AggregateArgs = {
+	distinct_on?: Maybe<Array<Cart_Items_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Cart_Items_Order_By>>;
+	where?: Maybe<Cart_Items_Bool_Exp>;
 };
 
 /** columns and relationships of "items" */
@@ -816,6 +1373,7 @@ export type Items_Bool_Exp = {
 	_and?: Maybe<Array<Maybe<Items_Bool_Exp>>>;
 	_not?: Maybe<Items_Bool_Exp>;
 	_or?: Maybe<Array<Maybe<Items_Bool_Exp>>>;
+	cart_items?: Maybe<Cart_Items_Bool_Exp>;
 	created_at?: Maybe<Timestamptz_Comparison_Exp>;
 	description?: Maybe<String_Comparison_Exp>;
 	featured?: Maybe<Boolean_Comparison_Exp>;
@@ -842,6 +1400,7 @@ export type Items_Inc_Input = {
 
 /** input type for inserting data into table "items" */
 export type Items_Insert_Input = {
+	cart_items?: Maybe<Cart_Items_Arr_Rel_Insert_Input>;
 	created_at?: Maybe<Scalars['timestamptz']>;
 	description?: Maybe<Scalars['String']>;
 	featured?: Maybe<Scalars['Boolean']>;
@@ -925,6 +1484,7 @@ export type Items_On_Conflict = {
 
 /** ordering options when selecting data from "items" */
 export type Items_Order_By = {
+	cart_items_aggregate?: Maybe<Cart_Items_Aggregate_Order_By>;
 	created_at?: Maybe<Order_By>;
 	description?: Maybe<Order_By>;
 	featured?: Maybe<Order_By>;
@@ -1075,6 +1635,14 @@ export type Items_Variance_Order_By = {
 /** mutation root */
 export type Mutation_Root = {
 	__typename?: 'mutation_root';
+	/** delete data from the table: "cart_items" */
+	delete_cart_items?: Maybe<Cart_Items_Mutation_Response>;
+	/** delete single row from the table: "cart_items" */
+	delete_cart_items_by_pk?: Maybe<Cart_Items>;
+	/** delete data from the table: "carts" */
+	delete_carts?: Maybe<Carts_Mutation_Response>;
+	/** delete single row from the table: "carts" */
+	delete_carts_by_pk?: Maybe<Carts>;
 	/** delete data from the table: "images" */
 	delete_images?: Maybe<Images_Mutation_Response>;
 	/** delete single row from the table: "images" */
@@ -1123,6 +1691,14 @@ export type Mutation_Root = {
 	delete_users?: Maybe<Users_Mutation_Response>;
 	/** delete single row from the table: "users" */
 	delete_users_by_pk?: Maybe<Users>;
+	/** insert data into the table: "cart_items" */
+	insert_cart_items?: Maybe<Cart_Items_Mutation_Response>;
+	/** insert a single row into the table: "cart_items" */
+	insert_cart_items_one?: Maybe<Cart_Items>;
+	/** insert data into the table: "carts" */
+	insert_carts?: Maybe<Carts_Mutation_Response>;
+	/** insert a single row into the table: "carts" */
+	insert_carts_one?: Maybe<Carts>;
 	/** insert data into the table: "images" */
 	insert_images?: Maybe<Images_Mutation_Response>;
 	/** insert a single row into the table: "images" */
@@ -1171,6 +1747,14 @@ export type Mutation_Root = {
 	insert_users?: Maybe<Users_Mutation_Response>;
 	/** insert a single row into the table: "users" */
 	insert_users_one?: Maybe<Users>;
+	/** update data of the table: "cart_items" */
+	update_cart_items?: Maybe<Cart_Items_Mutation_Response>;
+	/** update single row of the table: "cart_items" */
+	update_cart_items_by_pk?: Maybe<Cart_Items>;
+	/** update data of the table: "carts" */
+	update_carts?: Maybe<Carts_Mutation_Response>;
+	/** update single row of the table: "carts" */
+	update_carts_by_pk?: Maybe<Carts>;
 	/** update data of the table: "images" */
 	update_images?: Maybe<Images_Mutation_Response>;
 	/** update single row of the table: "images" */
@@ -1219,6 +1803,26 @@ export type Mutation_Root = {
 	update_users?: Maybe<Users_Mutation_Response>;
 	/** update single row of the table: "users" */
 	update_users_by_pk?: Maybe<Users>;
+};
+
+/** mutation root */
+export type Mutation_RootDelete_Cart_ItemsArgs = {
+	where: Cart_Items_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootDelete_Cart_Items_By_PkArgs = {
+	id: Scalars['uuid'];
+};
+
+/** mutation root */
+export type Mutation_RootDelete_CartsArgs = {
+	where: Carts_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootDelete_Carts_By_PkArgs = {
+	id: Scalars['uuid'];
 };
 
 /** mutation root */
@@ -1343,6 +1947,30 @@ export type Mutation_RootDelete_UsersArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Users_By_PkArgs = {
 	id: Scalars['uuid'];
+};
+
+/** mutation root */
+export type Mutation_RootInsert_Cart_ItemsArgs = {
+	objects: Array<Cart_Items_Insert_Input>;
+	on_conflict?: Maybe<Cart_Items_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_Cart_Items_OneArgs = {
+	object: Cart_Items_Insert_Input;
+	on_conflict?: Maybe<Cart_Items_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_CartsArgs = {
+	objects: Array<Carts_Insert_Input>;
+	on_conflict?: Maybe<Carts_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootInsert_Carts_OneArgs = {
+	object: Carts_Insert_Input;
+	on_conflict?: Maybe<Carts_On_Conflict>;
 };
 
 /** mutation root */
@@ -1487,6 +2115,32 @@ export type Mutation_RootInsert_UsersArgs = {
 export type Mutation_RootInsert_Users_OneArgs = {
 	object: Users_Insert_Input;
 	on_conflict?: Maybe<Users_On_Conflict>;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Cart_ItemsArgs = {
+	_inc?: Maybe<Cart_Items_Inc_Input>;
+	_set?: Maybe<Cart_Items_Set_Input>;
+	where: Cart_Items_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Cart_Items_By_PkArgs = {
+	_inc?: Maybe<Cart_Items_Inc_Input>;
+	_set?: Maybe<Cart_Items_Set_Input>;
+	pk_columns: Cart_Items_Pk_Columns_Input;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_CartsArgs = {
+	_set?: Maybe<Carts_Set_Input>;
+	where: Carts_Bool_Exp;
+};
+
+/** mutation root */
+export type Mutation_RootUpdate_Carts_By_PkArgs = {
+	_set?: Maybe<Carts_Set_Input>;
+	pk_columns: Carts_Pk_Columns_Input;
 };
 
 /** mutation root */
@@ -2490,6 +3144,18 @@ export type Orders_Variance_Order_By = {
 /** query root */
 export type Query_Root = {
 	__typename?: 'query_root';
+	/** fetch data from the table: "cart_items" */
+	cart_items: Array<Cart_Items>;
+	/** fetch aggregated fields from the table: "cart_items" */
+	cart_items_aggregate: Cart_Items_Aggregate;
+	/** fetch data from the table: "cart_items" using primary key columns */
+	cart_items_by_pk?: Maybe<Cart_Items>;
+	/** fetch data from the table: "carts" */
+	carts: Array<Carts>;
+	/** fetch aggregated fields from the table: "carts" */
+	carts_aggregate: Carts_Aggregate;
+	/** fetch data from the table: "carts" using primary key columns */
+	carts_by_pk?: Maybe<Carts>;
 	/** fetch data from the table: "images" */
 	images: Array<Images>;
 	/** fetch aggregated fields from the table: "images" */
@@ -2562,6 +3228,52 @@ export type Query_Root = {
 	users_aggregate: Users_Aggregate;
 	/** fetch data from the table: "users" using primary key columns */
 	users_by_pk?: Maybe<Users>;
+};
+
+/** query root */
+export type Query_RootCart_ItemsArgs = {
+	distinct_on?: Maybe<Array<Cart_Items_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Cart_Items_Order_By>>;
+	where?: Maybe<Cart_Items_Bool_Exp>;
+};
+
+/** query root */
+export type Query_RootCart_Items_AggregateArgs = {
+	distinct_on?: Maybe<Array<Cart_Items_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Cart_Items_Order_By>>;
+	where?: Maybe<Cart_Items_Bool_Exp>;
+};
+
+/** query root */
+export type Query_RootCart_Items_By_PkArgs = {
+	id: Scalars['uuid'];
+};
+
+/** query root */
+export type Query_RootCartsArgs = {
+	distinct_on?: Maybe<Array<Carts_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Carts_Order_By>>;
+	where?: Maybe<Carts_Bool_Exp>;
+};
+
+/** query root */
+export type Query_RootCarts_AggregateArgs = {
+	distinct_on?: Maybe<Array<Carts_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Carts_Order_By>>;
+	where?: Maybe<Carts_Bool_Exp>;
+};
+
+/** query root */
+export type Query_RootCarts_By_PkArgs = {
+	id: Scalars['uuid'];
 };
 
 /** query root */
@@ -3308,6 +4020,10 @@ export enum Store_Managers_Update_Column {
 /** columns and relationships of "stores" */
 export type Stores = {
 	__typename?: 'stores';
+	/** An array relationship */
+	carts: Array<Carts>;
+	/** An aggregated array relationship */
+	carts_aggregate: Carts_Aggregate;
 	created_at: Scalars['timestamptz'];
 	id: Scalars['uuid'];
 	instagram_username?: Maybe<Scalars['String']>;
@@ -3336,6 +4052,24 @@ export type Stores = {
 	twitter_username?: Maybe<Scalars['String']>;
 	updated_at: Scalars['timestamptz'];
 	website_url?: Maybe<Scalars['String']>;
+};
+
+/** columns and relationships of "stores" */
+export type StoresCartsArgs = {
+	distinct_on?: Maybe<Array<Carts_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Carts_Order_By>>;
+	where?: Maybe<Carts_Bool_Exp>;
+};
+
+/** columns and relationships of "stores" */
+export type StoresCarts_AggregateArgs = {
+	distinct_on?: Maybe<Array<Carts_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Carts_Order_By>>;
+	where?: Maybe<Carts_Bool_Exp>;
 };
 
 /** columns and relationships of "stores" */
@@ -3467,6 +4201,7 @@ export type Stores_Bool_Exp = {
 	_and?: Maybe<Array<Maybe<Stores_Bool_Exp>>>;
 	_not?: Maybe<Stores_Bool_Exp>;
 	_or?: Maybe<Array<Maybe<Stores_Bool_Exp>>>;
+	carts?: Maybe<Carts_Bool_Exp>;
 	created_at?: Maybe<Timestamptz_Comparison_Exp>;
 	id?: Maybe<Uuid_Comparison_Exp>;
 	instagram_username?: Maybe<String_Comparison_Exp>;
@@ -3492,6 +4227,7 @@ export enum Stores_Constraint {
 
 /** input type for inserting data into table "stores" */
 export type Stores_Insert_Input = {
+	carts?: Maybe<Carts_Arr_Rel_Insert_Input>;
 	created_at?: Maybe<Scalars['timestamptz']>;
 	id?: Maybe<Scalars['uuid']>;
 	instagram_username?: Maybe<Scalars['String']>;
@@ -3581,6 +4317,7 @@ export type Stores_On_Conflict = {
 
 /** ordering options when selecting data from "stores" */
 export type Stores_Order_By = {
+	carts_aggregate?: Maybe<Carts_Aggregate_Order_By>;
 	created_at?: Maybe<Order_By>;
 	id?: Maybe<Order_By>;
 	instagram_username?: Maybe<Order_By>;
@@ -3656,6 +4393,18 @@ export enum Stores_Update_Column {
 /** subscription root */
 export type Subscription_Root = {
 	__typename?: 'subscription_root';
+	/** fetch data from the table: "cart_items" */
+	cart_items: Array<Cart_Items>;
+	/** fetch aggregated fields from the table: "cart_items" */
+	cart_items_aggregate: Cart_Items_Aggregate;
+	/** fetch data from the table: "cart_items" using primary key columns */
+	cart_items_by_pk?: Maybe<Cart_Items>;
+	/** fetch data from the table: "carts" */
+	carts: Array<Carts>;
+	/** fetch aggregated fields from the table: "carts" */
+	carts_aggregate: Carts_Aggregate;
+	/** fetch data from the table: "carts" using primary key columns */
+	carts_by_pk?: Maybe<Carts>;
 	/** fetch data from the table: "images" */
 	images: Array<Images>;
 	/** fetch aggregated fields from the table: "images" */
@@ -3728,6 +4477,52 @@ export type Subscription_Root = {
 	users_aggregate: Users_Aggregate;
 	/** fetch data from the table: "users" using primary key columns */
 	users_by_pk?: Maybe<Users>;
+};
+
+/** subscription root */
+export type Subscription_RootCart_ItemsArgs = {
+	distinct_on?: Maybe<Array<Cart_Items_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Cart_Items_Order_By>>;
+	where?: Maybe<Cart_Items_Bool_Exp>;
+};
+
+/** subscription root */
+export type Subscription_RootCart_Items_AggregateArgs = {
+	distinct_on?: Maybe<Array<Cart_Items_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Cart_Items_Order_By>>;
+	where?: Maybe<Cart_Items_Bool_Exp>;
+};
+
+/** subscription root */
+export type Subscription_RootCart_Items_By_PkArgs = {
+	id: Scalars['uuid'];
+};
+
+/** subscription root */
+export type Subscription_RootCartsArgs = {
+	distinct_on?: Maybe<Array<Carts_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Carts_Order_By>>;
+	where?: Maybe<Carts_Bool_Exp>;
+};
+
+/** subscription root */
+export type Subscription_RootCarts_AggregateArgs = {
+	distinct_on?: Maybe<Array<Carts_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Carts_Order_By>>;
+	where?: Maybe<Carts_Bool_Exp>;
+};
+
+/** subscription root */
+export type Subscription_RootCarts_By_PkArgs = {
+	id: Scalars['uuid'];
 };
 
 /** subscription root */
@@ -4026,6 +4821,10 @@ export type Timestamptz_Comparison_Exp = {
 /** columns and relationships of "users" */
 export type Users = {
 	__typename?: 'users';
+	/** An array relationship */
+	carts: Array<Carts>;
+	/** An aggregated array relationship */
+	carts_aggregate: Carts_Aggregate;
 	id: Scalars['uuid'];
 	name: Scalars['String'];
 	/** An array relationship */
@@ -4041,6 +4840,24 @@ export type Users = {
 	store_managers: Array<Store_Managers>;
 	/** An aggregated array relationship */
 	store_managers_aggregate: Store_Managers_Aggregate;
+};
+
+/** columns and relationships of "users" */
+export type UsersCartsArgs = {
+	distinct_on?: Maybe<Array<Carts_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Carts_Order_By>>;
+	where?: Maybe<Carts_Bool_Exp>;
+};
+
+/** columns and relationships of "users" */
+export type UsersCarts_AggregateArgs = {
+	distinct_on?: Maybe<Array<Carts_Select_Column>>;
+	limit?: Maybe<Scalars['Int']>;
+	offset?: Maybe<Scalars['Int']>;
+	order_by?: Maybe<Array<Carts_Order_By>>;
+	where?: Maybe<Carts_Bool_Exp>;
 };
 
 /** columns and relationships of "users" */
@@ -4136,6 +4953,7 @@ export type Users_Bool_Exp = {
 	_and?: Maybe<Array<Maybe<Users_Bool_Exp>>>;
 	_not?: Maybe<Users_Bool_Exp>;
 	_or?: Maybe<Array<Maybe<Users_Bool_Exp>>>;
+	carts?: Maybe<Carts_Bool_Exp>;
 	id?: Maybe<Uuid_Comparison_Exp>;
 	name?: Maybe<String_Comparison_Exp>;
 	orders?: Maybe<Orders_Bool_Exp>;
@@ -4152,6 +4970,7 @@ export enum Users_Constraint {
 
 /** input type for inserting data into table "users" */
 export type Users_Insert_Input = {
+	carts?: Maybe<Carts_Arr_Rel_Insert_Input>;
 	id?: Maybe<Scalars['uuid']>;
 	name?: Maybe<Scalars['String']>;
 	orders?: Maybe<Orders_Arr_Rel_Insert_Input>;
@@ -4214,6 +5033,7 @@ export type Users_On_Conflict = {
 
 /** ordering options when selecting data from "users" */
 export type Users_Order_By = {
+	carts_aggregate?: Maybe<Carts_Aggregate_Order_By>;
 	id?: Maybe<Order_By>;
 	name?: Maybe<Order_By>;
 	orders_aggregate?: Maybe<Orders_Aggregate_Order_By>;
@@ -4267,11 +5087,109 @@ export type Uuid_Comparison_Exp = {
 	_nin?: Maybe<Array<Scalars['uuid']>>;
 };
 
+export type CartDetailsFragment = { __typename?: 'carts' } & Pick<
+	Carts,
+	'id' | 'user_id' | 'store_id'
+> & {
+		store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'>;
+		cart_items: Array<
+			{ __typename?: 'cart_items' } & Pick<
+				Cart_Items,
+				'id' | 'item_id' | 'quantity'
+			> & {
+					item: { __typename?: 'items' } & Pick<
+						Items,
+						'id' | 'name' | 'unit_price'
+					>;
+				}
+		>;
+	};
+
+export type CartByStoreIdQueryVariables = Exact<{
+	userId: Scalars['uuid'];
+	storeId: Scalars['uuid'];
+}>;
+
+export type CartByStoreIdQuery = { __typename?: 'query_root' } & {
+	carts: Array<{ __typename?: 'carts' } & Pick<Carts, 'id'>>;
+};
+
+export type CartsQueryVariables = Exact<{
+	userId: Scalars['uuid'];
+}>;
+
+export type CartsQuery = { __typename?: 'query_root' } & {
+	carts: Array<{ __typename?: 'carts' } & CartDetailsFragment>;
+};
+
+export type CartQueryVariables = Exact<{
+	cartId: Scalars['uuid'];
+}>;
+
+export type CartQuery = { __typename?: 'query_root' } & {
+	carts_by_pk?: Maybe<{ __typename?: 'carts' } & CartDetailsFragment>;
+};
+
+export type CreateCartMutationVariables = Exact<{
+	object: Carts_Insert_Input;
+}>;
+
+export type CreateCartMutation = { __typename?: 'mutation_root' } & {
+	insert_carts_one?: Maybe<
+		{ __typename?: 'carts' } & Pick<Carts, 'id' | 'user_id'>
+	>;
+};
+
+export type UpsertItemToCartMutationVariables = Exact<{
+	object: Cart_Items_Insert_Input;
+}>;
+
+export type UpsertItemToCartMutation = { __typename?: 'mutation_root' } & {
+	insert_cart_items_one?: Maybe<
+		{ __typename?: 'cart_items' } & Pick<Cart_Items, 'id' | 'cart_id'>
+	>;
+};
+
+export type AddItemToCartMutationVariables = Exact<{
+	object: Cart_Items_Insert_Input;
+}>;
+
+export type AddItemToCartMutation = { __typename?: 'mutation_root' } & {
+	insert_cart_items_one?: Maybe<
+		{ __typename?: 'cart_items' } & Pick<Cart_Items, 'id' | 'cart_id'>
+	>;
+};
+
+export type UpdateCartItemMutationVariables = Exact<{
+	cartId: Scalars['uuid'];
+	quantity: Scalars['Int'];
+}>;
+
+export type UpdateCartItemMutation = { __typename?: 'mutation_root' } & {
+	update_cart_items?: Maybe<
+		{ __typename?: 'cart_items_mutation_response' } & {
+			returning: Array<{ __typename?: 'cart_items' } & Pick<Cart_Items, 'id'>>;
+		}
+	>;
+};
+
+export type RemoveItemFromCartMutationVariables = Exact<{
+	itemId: Scalars['uuid'];
+}>;
+
+export type RemoveItemFromCartMutation = { __typename?: 'mutation_root' } & {
+	delete_cart_items_by_pk?: Maybe<
+		{ __typename?: 'cart_items' } & Pick<Cart_Items, 'id'>
+	>;
+};
+
 export type ItemDetailsFragment = { __typename?: 'items' } & Pick<
 	Items,
 	'id' | 'name' | 'store_id' | 'description' | 'unit_price'
 > & {
-		store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'>;
+		store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'> & {
+				carts: Array<{ __typename?: 'carts' } & Pick<Carts, 'id'>>;
+			};
 		item_images: Array<
 			{ __typename?: 'item_images' } & {
 				image: { __typename?: 'images' } & Pick<Images, 'id' | 'path_url'>;
@@ -4304,15 +5222,6 @@ export type ItemQuery = { __typename?: 'query_root' } & {
 export type FeaturedItemsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type FeaturedItemsQuery = { __typename?: 'query_root' } & {
-	items: Array<{ __typename?: 'items' } & ItemDetailsFragment>;
-};
-
-export type NewArrivalsQueryVariables = Exact<{
-	storeIds: Array<Scalars['uuid']> | Scalars['uuid'];
-	oneDayAgo: Scalars['timestamptz'];
-}>;
-
-export type NewArrivalsQuery = { __typename?: 'query_root' } & {
 	items: Array<{ __typename?: 'items' } & ItemDetailsFragment>;
 };
 
@@ -4473,6 +5382,42 @@ export type StoresFollowedQuery = { __typename?: 'query_root' } & {
 	>;
 };
 
+export type NewArrivalsQueryVariables = Exact<{
+	userId: Scalars['uuid'];
+	oneDayAgo: Scalars['timestamptz'];
+}>;
+
+export type NewArrivalsQuery = { __typename?: 'query_root' } & {
+	store_followers: Array<
+		{ __typename?: 'store_followers' } & {
+			store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'> & {
+					items: Array<{ __typename?: 'items' } & ItemDetailsFragment>;
+				};
+		}
+	>;
+};
+
+export const CartDetailsFragmentDoc = gql`
+	fragment CartDetails on carts {
+		id
+		user_id
+		store_id
+		store {
+			id
+			name
+		}
+		cart_items {
+			id
+			item_id
+			item {
+				id
+				name
+				unit_price
+			}
+			quantity
+		}
+	}
+`;
 export const ItemDetailsFragmentDoc = gql`
 	fragment ItemDetails on items {
 		id
@@ -4481,6 +5426,9 @@ export const ItemDetailsFragmentDoc = gql`
 		store {
 			id
 			name
+			carts {
+				id
+			}
 		}
 		description
 		unit_price
@@ -4522,6 +5470,134 @@ export const StoreDetailsFragmentDoc = gql`
 		}
 	}
 `;
+export const CartByStoreIdDocument = gql`
+	query CartByStoreId($userId: uuid!, $storeId: uuid!) {
+		carts(
+			where: {
+				_and: [{ user_id: { _eq: $userId } }, { store_id: { _eq: $storeId } }]
+			}
+		) {
+			id
+		}
+	}
+`;
+
+export function useCartByStoreIdQuery(
+	options: Omit<Urql.UseQueryArgs<CartByStoreIdQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<CartByStoreIdQuery>({
+		query: CartByStoreIdDocument,
+		...options
+	});
+}
+export const CartsDocument = gql`
+	query Carts($userId: uuid!) {
+		carts(where: { user_id: { _eq: $userId } }) {
+			...CartDetails
+		}
+	}
+	${CartDetailsFragmentDoc}
+`;
+
+export function useCartsQuery(
+	options: Omit<Urql.UseQueryArgs<CartsQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<CartsQuery>({ query: CartsDocument, ...options });
+}
+export const CartDocument = gql`
+	query Cart($cartId: uuid!) {
+		carts_by_pk(id: $cartId) {
+			...CartDetails
+		}
+	}
+	${CartDetailsFragmentDoc}
+`;
+
+export function useCartQuery(
+	options: Omit<Urql.UseQueryArgs<CartQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<CartQuery>({ query: CartDocument, ...options });
+}
+export const CreateCartDocument = gql`
+	mutation CreateCart($object: carts_insert_input!) {
+		insert_carts_one(object: $object) {
+			id
+			user_id
+		}
+	}
+`;
+
+export function useCreateCartMutation() {
+	return Urql.useMutation<CreateCartMutation, CreateCartMutationVariables>(
+		CreateCartDocument
+	);
+}
+export const UpsertItemToCartDocument = gql`
+	mutation UpsertItemToCart($object: cart_items_insert_input!) {
+		insert_cart_items_one(
+			object: $object
+			on_conflict: { constraint: cart_items_pkey, update_columns: [quantity] }
+		) {
+			id
+			cart_id
+		}
+	}
+`;
+
+export function useUpsertItemToCartMutation() {
+	return Urql.useMutation<
+		UpsertItemToCartMutation,
+		UpsertItemToCartMutationVariables
+	>(UpsertItemToCartDocument);
+}
+export const AddItemToCartDocument = gql`
+	mutation AddItemToCart($object: cart_items_insert_input!) {
+		insert_cart_items_one(object: $object) {
+			id
+			cart_id
+		}
+	}
+`;
+
+export function useAddItemToCartMutation() {
+	return Urql.useMutation<
+		AddItemToCartMutation,
+		AddItemToCartMutationVariables
+	>(AddItemToCartDocument);
+}
+export const UpdateCartItemDocument = gql`
+	mutation UpdateCartItem($cartId: uuid!, $quantity: Int!) {
+		update_cart_items(
+			where: { cart_id: { _eq: $cartId } }
+			_set: { quantity: $quantity }
+		) {
+			returning {
+				id
+			}
+		}
+	}
+`;
+
+export function useUpdateCartItemMutation() {
+	return Urql.useMutation<
+		UpdateCartItemMutation,
+		UpdateCartItemMutationVariables
+	>(UpdateCartItemDocument);
+}
+export const RemoveItemFromCartDocument = gql`
+	mutation RemoveItemFromCart($itemId: uuid!) {
+		delete_cart_items_by_pk(id: $itemId) {
+			id
+		}
+	}
+`;
+
+export function useRemoveItemFromCartMutation() {
+	return Urql.useMutation<
+		RemoveItemFromCartMutation,
+		RemoveItemFromCartMutationVariables
+	>(RemoveItemFromCartDocument);
+}
 export const ItemsDocument = gql`
 	query Items {
 		items {
@@ -4581,23 +5657,6 @@ export function useFeaturedItemsQuery(
 ) {
 	return Urql.useQuery<FeaturedItemsQuery>({
 		query: FeaturedItemsDocument,
-		...options
-	});
-}
-export const NewArrivalsDocument = gql`
-	query NewArrivals($storeIds: [uuid!]!, $oneDayAgo: timestamptz!) {
-		items(where: { created_at: { _gte: $oneDayAgo } }) {
-			...ItemDetails
-		}
-	}
-	${ItemDetailsFragmentDoc}
-`;
-
-export function useNewArrivalsQuery(
-	options: Omit<Urql.UseQueryArgs<NewArrivalsQueryVariables>, 'query'> = {}
-) {
-	return Urql.useQuery<NewArrivalsQuery>({
-		query: NewArrivalsDocument,
 		...options
 	});
 }
@@ -4786,6 +5845,29 @@ export function useStoresFollowedQuery(
 ) {
 	return Urql.useQuery<StoresFollowedQuery>({
 		query: StoresFollowedDocument,
+		...options
+	});
+}
+export const NewArrivalsDocument = gql`
+	query NewArrivals($userId: uuid!, $oneDayAgo: timestamptz!) {
+		store_followers(where: { user_id: { _eq: $userId } }) {
+			store {
+				id
+				name
+				items(where: { created_at: { _gte: $oneDayAgo } }) {
+					...ItemDetails
+				}
+			}
+		}
+	}
+	${ItemDetailsFragmentDoc}
+`;
+
+export function useNewArrivalsQuery(
+	options: Omit<Urql.UseQueryArgs<NewArrivalsQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<NewArrivalsQuery>({
+		query: NewArrivalsDocument,
 		...options
 	});
 }

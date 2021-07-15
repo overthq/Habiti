@@ -27,10 +27,11 @@ const EditItem: React.FC = () => {
 				}}
 				onSubmit={async values => {
 					await updateItem({
-						item: {
+						itemId,
+						itemObject: {
 							name: values.name,
 							description: values.description,
-							unitPrice: values.unitPrice
+							unit_price: values.unitPrice
 						}
 					});
 				}}
@@ -62,7 +63,8 @@ const EditItem: React.FC = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1,
+		paddingHorizontal: 16
 	}
 });
 

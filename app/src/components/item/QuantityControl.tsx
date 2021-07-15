@@ -8,6 +8,7 @@ interface QuantityControlProps {
 
 const QuantityControl: React.FC<QuantityControlProps> = ({ itemId }) => {
 	const [quantity, setQuantity] = React.useState(0);
+	// useAppSelector();
 	// const dispatch = useDispatch();
 	// TODO: Iron out logic around whether or not the item is in the cart.
 

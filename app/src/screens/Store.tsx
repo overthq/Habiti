@@ -1,13 +1,11 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useRoute, RouteProp } from '@react-navigation/native';
 import { useStoreQuery } from '../types/api';
 import { MainStackParamList } from '../types/navigation';
 import StoreItems from '../components/store/StoreItems';
-import StoreHeader from '../components/store/StoreHeader';
 
 const Store = () => {
-	const { setOptions } = useNavigation();
 	const { params } = useRoute<RouteProp<MainStackParamList, 'Store'>>();
 	const [{ data }] = useStoreQuery({
 		variables: { storeId: params.storeId }
@@ -16,16 +14,9 @@ const Store = () => {
 
 	if (!store) throw new Error('How does the store not exist?');
 
-	React.useLayoutEffect(() => {
-		setOptions({ title: store.name });
-	}, []);
-
 	return (
 		<View style={styles.container}>
-			<StoreItems
-				storeId={store.id}
-				header={() => <StoreHeader store={store} />}
-			/>
+			<StoreItems store={store} />
 		</View>
 	);
 };
