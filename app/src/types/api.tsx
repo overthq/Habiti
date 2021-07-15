@@ -5187,10 +5187,9 @@ export type ItemDetailsFragment = { __typename?: 'items' } & Pick<
 	Items,
 	'id' | 'name' | 'store_id' | 'description' | 'unit_price'
 > & {
-		store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'>;
-		cart_items: Array<
-			{ __typename?: 'cart_items' } & Pick<Cart_Items, 'cart_id'>
-		>;
+		store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'> & {
+				carts: Array<{ __typename?: 'carts' } & Pick<Carts, 'id'>>;
+			};
 		item_images: Array<
 			{ __typename?: 'item_images' } & {
 				image: { __typename?: 'images' } & Pick<Images, 'id' | 'path_url'>;
@@ -5427,12 +5426,12 @@ export const ItemDetailsFragmentDoc = gql`
 		store {
 			id
 			name
+			carts {
+				id
+			}
 		}
 		description
 		unit_price
-		cart_items {
-			cart_id
-		}
 		item_images {
 			image {
 				id

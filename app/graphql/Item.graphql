@@ -10,20 +10,20 @@ fragment ItemDetails on items {
 	store {
 		id
 		name
+
+		# FIXME:
+		# This is *extremely* hacky, but
+		# we can afford to do it, because the current user
+		# should only be able to access information from their carts.
+		# i.e. where user_id = current_user.id
+
+		carts {
+			id
+		}
 	}
 	description
 	unit_price
 	# unit
-
-	# FIXME:
-	# This is *extremely* hacky, but
-	# we can afford to do it, because the current user
-	# should only be able to access information from their carts.
-	# i.e. where user_id = current_user.id
-
-	cart_items {
-		cart_id
-	}
 
 	item_images {
 		image {

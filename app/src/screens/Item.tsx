@@ -24,7 +24,7 @@ const Item = () => {
 			<AddToCart
 				storeId={item.store.id}
 				itemId={item.id}
-				cartId={item.cart_items[0]?.cart_id}
+				cartId={item.store.carts[0]?.id}
 			/>
 		</ScrollView>
 	);
