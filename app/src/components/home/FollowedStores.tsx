@@ -26,8 +26,8 @@ const FollowedStores: React.FC = () => {
 				horizontal
 				data={stores}
 				keyExtractor={item => item.id}
-				style={{ marginTop: 10 }}
-				contentContainerStyle={{ paddingLeft: 20 }}
+				style={{ marginTop: 8 }}
+				contentContainerStyle={{ paddingLeft: 16 }}
 				renderItem={({ item }) => (
 					<TouchableOpacity
 						activeOpacity={0.8}
@@ -39,7 +39,7 @@ const FollowedStores: React.FC = () => {
 						<Text style={styles.storeName}>{item.name}</Text>
 					</TouchableOpacity>
 				)}
-				ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
+				ItemSeparatorComponent={() => <View style={{ width: 8 }} />}
 			/>
 		</View>
 	);
@@ -47,7 +47,7 @@ const FollowedStores: React.FC = () => {
 
 const styles = StyleSheet.create({
 	sectionHeader: {
-		marginLeft: 20,
+		marginLeft: 16,
 		fontSize: 16,
 		fontWeight: '500',
 		color: '#505050'
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
 	},
 	storeName: {
 		textAlign: 'center',
-		marginTop: 5,
+		marginTop: 4,
 		fontSize: 16
 	}
 });
