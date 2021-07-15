@@ -25,9 +25,7 @@ query CartByStoreId($userId: uuid!, $storeId: uuid!) {
 			_and: [{ user_id: { _eq: $userId } }, { store_id: { _eq: $storeId } }]
 		}
 	) {
-		returning {
-			id
-		}
+		id
 	}
 }
 
@@ -67,8 +65,15 @@ mutation AddItemToCart($object: cart_items_insert_input!) {
 	}
 }
 
-mutation UpdateCartItem($quantity: Int!) {
-	update_cart_items_by_pk(_where: { _and: [{}] }, _set: { quantity: $quantity })
+mutation UpdateCartItem($cartId: uuid!, $quantity: Int!) {
+	update_cart_items(
+		where: { cart_id: { _eq: $cartId } }
+		_set: { quantity: $quantity }
+	) {
+		returning {
+			id
+		}
+	}
 }
 
 mutation RemoveItemFromCart($itemId: uuid!) {

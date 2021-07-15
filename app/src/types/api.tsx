@@ -5105,6 +5105,15 @@ export type CartDetailsFragment = { __typename?: 'carts' } & Pick<
 		>;
 	};
 
+export type CartByStoreIdQueryVariables = Exact<{
+	userId: Scalars['uuid'];
+	storeId: Scalars['uuid'];
+}>;
+
+export type CartByStoreIdQuery = { __typename?: 'query_root' } & {
+	carts: Array<{ __typename?: 'carts' } & Pick<Carts, 'id'>>;
+};
+
 export type CartsQueryVariables = Exact<{
 	userId: Scalars['uuid'];
 }>;
@@ -5141,6 +5150,29 @@ export type UpsertItemToCartMutation = { __typename?: 'mutation_root' } & {
 	>;
 };
 
+export type AddItemToCartMutationVariables = Exact<{
+	object: Cart_Items_Insert_Input;
+}>;
+
+export type AddItemToCartMutation = { __typename?: 'mutation_root' } & {
+	insert_cart_items_one?: Maybe<
+		{ __typename?: 'cart_items' } & Pick<Cart_Items, 'id' | 'cart_id'>
+	>;
+};
+
+export type UpdateCartItemMutationVariables = Exact<{
+	cartId: Scalars['uuid'];
+	quantity: Scalars['Int'];
+}>;
+
+export type UpdateCartItemMutation = { __typename?: 'mutation_root' } & {
+	update_cart_items?: Maybe<
+		{ __typename?: 'cart_items_mutation_response' } & {
+			returning: Array<{ __typename?: 'cart_items' } & Pick<Cart_Items, 'id'>>;
+		}
+	>;
+};
+
 export type RemoveItemFromCartMutationVariables = Exact<{
 	itemId: Scalars['uuid'];
 }>;
@@ -5156,6 +5188,9 @@ export type ItemDetailsFragment = { __typename?: 'items' } & Pick<
 	'id' | 'name' | 'store_id' | 'description' | 'unit_price'
 > & {
 		store: { __typename?: 'stores' } & Pick<Stores, 'id' | 'name'>;
+		cart_items: Array<
+			{ __typename?: 'cart_items' } & Pick<Cart_Items, 'cart_id'>
+		>;
 		item_images: Array<
 			{ __typename?: 'item_images' } & {
 				image: { __typename?: 'images' } & Pick<Images, 'id' | 'path_url'>;
@@ -5395,6 +5430,9 @@ export const ItemDetailsFragmentDoc = gql`
 		}
 		description
 		unit_price
+		cart_items {
+			cart_id
+		}
 		item_images {
 			image {
 				id
@@ -5433,6 +5471,26 @@ export const StoreDetailsFragmentDoc = gql`
 		}
 	}
 `;
+export const CartByStoreIdDocument = gql`
+	query CartByStoreId($userId: uuid!, $storeId: uuid!) {
+		carts(
+			where: {
+				_and: [{ user_id: { _eq: $userId } }, { store_id: { _eq: $storeId } }]
+			}
+		) {
+			id
+		}
+	}
+`;
+
+export function useCartByStoreIdQuery(
+	options: Omit<Urql.UseQueryArgs<CartByStoreIdQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<CartByStoreIdQuery>({
+		query: CartByStoreIdDocument,
+		...options
+	});
+}
 export const CartsDocument = gql`
 	query Carts($userId: uuid!) {
 		carts(where: { user_id: { _eq: $userId } }) {
@@ -5492,6 +5550,40 @@ export function useUpsertItemToCartMutation() {
 		UpsertItemToCartMutation,
 		UpsertItemToCartMutationVariables
 	>(UpsertItemToCartDocument);
+}
+export const AddItemToCartDocument = gql`
+	mutation AddItemToCart($object: cart_items_insert_input!) {
+		insert_cart_items_one(object: $object) {
+			id
+			cart_id
+		}
+	}
+`;
+
+export function useAddItemToCartMutation() {
+	return Urql.useMutation<
+		AddItemToCartMutation,
+		AddItemToCartMutationVariables
+	>(AddItemToCartDocument);
+}
+export const UpdateCartItemDocument = gql`
+	mutation UpdateCartItem($cartId: uuid!, $quantity: Int!) {
+		update_cart_items(
+			where: { cart_id: { _eq: $cartId } }
+			_set: { quantity: $quantity }
+		) {
+			returning {
+				id
+			}
+		}
+	}
+`;
+
+export function useUpdateCartItemMutation() {
+	return Urql.useMutation<
+		UpdateCartItemMutation,
+		UpdateCartItemMutationVariables
+	>(UpdateCartItemDocument);
 }
 export const RemoveItemFromCartDocument = gql`
 	mutation RemoveItemFromCart($itemId: uuid!) {

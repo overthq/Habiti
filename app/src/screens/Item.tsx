@@ -21,7 +21,11 @@ const Item = () => {
 		<ScrollView style={styles.container}>
 			<ImageCarousel images={item.item_images} />
 			<ItemDetails item={item} />
-			<AddToCart storeId={item.store.id} itemId={item.id} />
+			<AddToCart
+				storeId={item.store.id}
+				itemId={item.id}
+				cartId={item.cart_items[0]?.cart_id}
+			/>
 		</ScrollView>
 	);
 };
