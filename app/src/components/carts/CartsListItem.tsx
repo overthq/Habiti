@@ -20,12 +20,12 @@ const CartsListItem: React.FC<CartListItemProps> = ({ cart }) => {
 			style={styles.container}
 		>
 			<View style={styles.main}>
-				<View style={styles.storeImagePlaceholder}>
-					<Image style={styles.storeImage} source={{ uri: '' }} />
+				<View style={styles.placeholder}>
+					<Image style={styles.image} source={{ uri: '' }} />
 				</View>
 				<View>
-					<Text style={styles.cartStoreName}>{cart.store.name}</Text>
-					<Text style={styles.cartItemCount}>
+					<Text style={styles.name}>{cart.store.name}</Text>
+					<Text style={styles.count}>
 						{cart.cart_items.length}{' '}
 						{`item${cart.cart_items.length > 1 ? 's' : ''}`}
 					</Text>
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center'
 	},
-	storeImagePlaceholder: {
+	placeholder: {
 		width: 60,
 		height: 60,
 		overflow: 'hidden',
@@ -57,15 +57,15 @@ const styles = StyleSheet.create({
 		backgroundColor: '#D3D3D3',
 		borderRadius: 30
 	},
-	storeImage: {
+	image: {
 		height: '100%',
 		width: '100%'
 	},
-	cartStoreName: {
+	name: {
 		fontSize: 18,
 		fontWeight: '500'
 	},
-	cartItemCount: {
+	count: {
 		fontSize: 16,
 		color: '#505050'
 	}
