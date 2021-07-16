@@ -2600,12 +2600,12 @@
   resolved "https://registry.yarnpkg.com/@react-native-masked-view/masked-view/-/masked-view-0.2.4.tgz#305a548abd47dee494a38f90016432d3a6e4164c"
   integrity sha512-2Y9OXWHRutYmdyW+bNMaFTW8uTBpaaK20xdIFoVtqahEOO9++B+ut3CAWKPZcdRtb9ikG0LUKChGqMeocg0PGA==
 
-"@react-navigation/bottom-tabs@^6.0.0-next.20":
-  version "6.0.0-next.20"
-  resolved "https://registry.yarnpkg.com/@react-navigation/bottom-tabs/-/bottom-tabs-6.0.0-next.20.tgz#2e7d01de667b47d62ad36b3058c3d06772dd72d3"
-  integrity sha512-f8vptgo/jyka0SBrLvaoAO1g45sFSsN7ur8H3CHYmQ7r+Cmmkt32Ms2+FZblQBI0GFPW0KDn7A4PrE4515AHTg==
+"@react-navigation/bottom-tabs@^6.0.0-next.22":
+  version "6.0.0-next.22"
+  resolved "https://registry.yarnpkg.com/@react-navigation/bottom-tabs/-/bottom-tabs-6.0.0-next.22.tgz#b03a0a2d448f51a6ccc966793717fdb1fafd48f9"
+  integrity sha512-5Af0OazpYbbWpIIXU2OX6rgVQqtv87o53CLvfZIdAgYnxE90V0FAcT3WNXx0EwaLgr7f0oGPErHxBeUvkH1tdA==
   dependencies:
-    "@react-navigation/elements" "^1.0.0-next.19"
+    "@react-navigation/elements" "^1.0.0-next.21"
     color "^3.1.3"
     warn-once "^0.1.0"
 
@@ -2620,10 +2620,10 @@
     query-string "^7.0.0"
     react-is "^16.13.0"
 
-"@react-navigation/elements@^1.0.0-next.19":
-  version "1.0.0-next.19"
-  resolved "https://registry.yarnpkg.com/@react-navigation/elements/-/elements-1.0.0-next.19.tgz#8c0ebe211883af44cccf30c9ddaed06247904c55"
-  integrity sha512-g3ie/FxRBR6sJKok+OR7ULXbi63H4t6j4KCi612/1+FurjByrDkw3v+zuv069XQmEDQo+TvMr7dxqBxtu0xPPg==
+"@react-navigation/elements@^1.0.0-next.19", "@react-navigation/elements@^1.0.0-next.21":
+  version "1.0.0-next.21"
+  resolved "https://registry.yarnpkg.com/@react-navigation/elements/-/elements-1.0.0-next.21.tgz#37a8df488588b305edc69230e842b2c40a1c4940"
+  integrity sha512-p9E2TowxQCwW60yRA7iamkpCOIBM8YkYw2tMW3AENlGUYlr9Usysa7238seT3jH+oqqhdHMx56mcoNSl8Zxt6A==
 
 "@react-navigation/native@^6.0.0-next.15":
   version "6.0.0-next.15"
