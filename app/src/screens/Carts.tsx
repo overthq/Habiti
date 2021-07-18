@@ -9,12 +9,18 @@ import { useCartsQuery } from '../types/api';
 
 const Carts = () => {
 	const userId = useAppSelector(({ auth }) => auth.userId);
-	const [{ data }] = useCartsQuery({ variables: { userId } });
+	const [{ data, error }] = useCartsQuery({ variables: { userId } });
 	const { navigate } = useNavigation();
+
+	React.useEffect(() => {
+		console.log({ data, error });
+	}, [data, error]);
 
 	const carts = data?.carts;
 
-	if (!carts) throw new Error('Something is up here.');
+	if (error) console.log(error);
+
+	if (!carts) return <View />;
 
 	return (
 		<SafeAreaView style={styles.container}>

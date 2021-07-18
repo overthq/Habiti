@@ -9,17 +9,24 @@ import {
 	Keyboard
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import styles from '../styles/auth';
 import { register } from '../utils/auth';
+import Button from '../components/global/Button';
+import { AppStackParamList } from '../types/navigation';
 
 const Register = () => {
 	const [name, setName] = React.useState('');
 	const [phone, setPhone] = React.useState('');
-	const { navigate } = useNavigation();
+	const [loading, setLoading] = React.useState(false);
+	const { navigate } =
+		useNavigation<StackNavigationProp<AppStackParamList, 'Authenticate'>>();
 
 	const handleSubmit = async () => {
+		setLoading(true);
 		await register({ name, phone });
-		navigate('VerifyAuthentication', { phone });
+		setLoading(false);
+		navigate('Verify', { phone });
 	};
 
 	return (
@@ -50,11 +57,9 @@ const Register = () => {
 						keyboardType='phone-pad'
 					/>
 				</View>
-				<TouchableOpacity style={styles.button} onPress={handleSubmit}>
-					<Text style={styles.buttonText}>Next</Text>
-				</TouchableOpacity>
+				<Button text='Next' onPress={handleSubmit} loading={loading} />
 				<TouchableOpacity
-					style={{ alignSelf: 'center', marginTop: 10 }}
+					style={{ alignSelf: 'center', marginTop: 8 }}
 					onPress={() => navigate('Authenticate')}
 				>
 					<Text

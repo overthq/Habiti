@@ -14,7 +14,7 @@ import Explore from '../screens/Explore';
 import Store from '../screens/Store';
 import Item from '../screens/Item';
 import Cart from '../screens/Cart';
-import { tabBarOptions, tabScreenOptions } from '../utils/navigation';
+import { tabScreenOptions } from '../utils/navigation';
 import {
 	AppStackParamList,
 	HomeTabParamList,
@@ -31,10 +31,7 @@ const Main = () => (
 	<MainStack.Navigator screenOptions={{ headerShown: false }}>
 		<MainStack.Screen name='Home'>
 			{() => (
-				<HomeTab.Navigator
-					screenOptions={tabScreenOptions}
-					tabBarOptions={tabBarOptions}
-				>
+				<HomeTab.Navigator screenOptions={tabScreenOptions}>
 					<HomeTab.Screen name='For You' component={Home} />
 					<HomeTab.Screen name='Explore' component={Explore} />
 					<HomeTab.Screen name='Carts' component={Carts} />

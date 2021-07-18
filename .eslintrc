@@ -11,11 +11,9 @@
 		"mocha": true
 	},
 	"extends": [
-		"prettier",
 		"plugin:@typescript-eslint/recommended",
 		"plugin:react/recommended",
-		"prettier/@typescript-eslint",
-		"prettier/react"
+		"prettier"
 	],
 	"rules": {
 		"indent": 0,

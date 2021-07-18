@@ -15,7 +15,10 @@ import SearchResults from '../components/explore/SearchResults';
 import TrendingStores from '../components/explore/TrendingStores';
 
 const Explore: React.FC = () => {
-	const [searchData, setSearchData] = React.useState<SearchQuery | undefined>();
+	const [searchData, setSearchData] = React.useState<SearchQuery>({
+		stores: [],
+		items: []
+	});
 	const [searchBarFocused, setSearchBarFocused] = React.useState(false);
 	const client = useClient();
 
@@ -28,7 +31,7 @@ const Explore: React.FC = () => {
 			.query<SearchQuery>(SearchDocument, { searchTerm: `%${searchTerm}%` })
 			.toPromise();
 
-		setSearchData(data);
+		if (data) setSearchData(data);
 
 		if (error) Alert.alert(error.message);
 	};

@@ -4,21 +4,20 @@ import {
 	Text,
 	TextInput,
 	TouchableOpacity,
-	ActivityIndicator,
 	KeyboardAvoidingView
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styles from '../styles/auth';
 import { authenticate } from '../utils/auth';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { AuthStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../types/navigation';
+import Button from '../components/global/Button';
 
 const Authenticate = () => {
 	const [loading, setLoading] = React.useState(false);
 	const [phone, setPhone] = React.useState('');
-	const { navigate } = useNavigation<
-		StackNavigationProp<AuthStackParamList, 'Authenticate'>
-	>();
+	const { navigate } =
+		useNavigation<StackNavigationProp<AppStackParamList, 'Authenticate'>>();
 
 	const handleSubmit = async () => {
 		setLoading(true);
@@ -46,15 +45,13 @@ const Authenticate = () => {
 						onChangeText={setPhone}
 					/>
 				</View>
-				<TouchableOpacity style={styles.button} onPress={handleSubmit}>
-					{loading ? (
-						<ActivityIndicator />
-					) : (
-						<Text style={styles.buttonText}>Send verification code</Text>
-					)}
-				</TouchableOpacity>
+				<Button
+					text='Send verification code'
+					onPress={handleSubmit}
+					loading={loading}
+				/>
 				<TouchableOpacity
-					style={{ alignSelf: 'center', marginTop: 10 }}
+					style={{ alignSelf: 'center', marginTop: 8 }}
 					onPress={goToRegister}
 				>
 					<Text
