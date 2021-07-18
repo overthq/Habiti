@@ -7,12 +7,16 @@ import StoreItems from '../components/store/StoreItems';
 
 const Store = () => {
 	const { params } = useRoute<RouteProp<MainStackParamList, 'Store'>>();
-	const [{ data }] = useStoreQuery({
+	const [{ data, error }] = useStoreQuery({
 		variables: { storeId: params.storeId }
 	});
 	const store = data?.stores_by_pk;
 
-	if (!store) throw new Error('How does the store not exist?');
+	React.useEffect(() => {
+		console.log({ data, error });
+	}, [data, error]);
+
+	if (!store) return <View />;
 
 	return (
 		<View style={styles.container}>

@@ -6,20 +6,18 @@ import ListEmpty from '../components/global/ListEmpty';
 import { useNavigation } from '@react-navigation/native';
 import { useAppSelector } from '../redux/store';
 import { useCartsQuery } from '../types/api';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { HomeTabParamList } from '../types/navigation';
 
 const Carts = () => {
 	const userId = useAppSelector(({ auth }) => auth.userId);
 	const [{ data, error }] = useCartsQuery({ variables: { userId } });
-	const { navigate } = useNavigation();
-
-	React.useEffect(() => {
-		console.log({ data, error });
-	}, [data, error]);
+	const { navigate } =
+		useNavigation<BottomTabNavigationProp<HomeTabParamList, 'Carts'>>();
 
 	const carts = data?.carts;
 
 	if (error) console.log(error);
-
 	if (!carts) return <View />;
 
 	return (
@@ -53,11 +51,11 @@ const Carts = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		paddingHorizontal: 16,
 		backgroundColor: '#FFFFFF'
 	},
 	header: {
-		paddingVertical: 15,
-		paddingHorizontal: 20,
+		paddingVertical: 16,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center'

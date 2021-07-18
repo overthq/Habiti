@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useItemQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
@@ -9,13 +9,17 @@ import ItemDetails from '../components/item/ItemDetails';
 
 const Item = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Item'>>();
-	const [{ data }] = useItemQuery({
+	const [{ data, error }] = useItemQuery({
 		variables: { itemId: params.itemId }
 	});
 
+	React.useEffect(() => {
+		console.log({ data, error });
+	}, [data, error]);
+
 	const item = data?.items_by_pk;
 
-	if (!item) throw new Error('How can this be?');
+	if (!item) return <View />;
 
 	return (
 		<ScrollView style={styles.container}>

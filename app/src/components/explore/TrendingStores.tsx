@@ -22,6 +22,7 @@ const TrendingStores: React.FC = () => {
 						description='There are no stores trending currently.'
 					/>
 				}
+				showsHorizontalScrollIndicator={false}
 			/>
 		</View>
 	);

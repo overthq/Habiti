@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList } from 'react-native';
+import { View, FlatList } from 'react-native';
 import { useStoreItemsQuery } from '../../types/api';
 import StoreHeader from './StoreHeader';
 import StoreListItem from './StoreListItem';
@@ -9,11 +9,15 @@ interface StoreItemsProps {
 }
 
 const StoreItems: React.FC<StoreItemsProps> = ({ store }) => {
-	const [{ data }] = useStoreItemsQuery({
+	const [{ data, error }] = useStoreItemsQuery({
 		variables: { storeId: store.id }
 	});
 
-	if (!data?.items) throw new Error('No store items');
+	React.useEffect(() => {
+		console.log({ data, error });
+	}, [data, error]);
+
+	if (!data?.items) return <View />;
 
 	return (
 		<FlatList
