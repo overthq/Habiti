@@ -4,7 +4,15 @@ import { useItemsQuery } from '../../types/api';
 import WatchlistItem from './WatchlistItem';
 
 const Watchlist = () => {
-	const [{ data }] = useItemsQuery();
+	const [{ data, fetching }] = useItemsQuery();
+
+	if (fetching) {
+		return (
+			<View>
+				<Text>Loading...</Text>
+			</View>
+		);
+	}
 
 	return (
 		<View>

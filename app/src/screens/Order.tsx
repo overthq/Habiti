@@ -1,22 +1,32 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import { useOrderQuery } from '../types/api';
+import { AppStackParamList } from '../types/navigation';
 
 const Order = () => {
 	const {
 		params: { orderId }
-	} = useRoute<any>();
+	} = useRoute<RouteProp<AppStackParamList, 'Order'>>();
 
-	const [{ data }] = useOrderQuery({ variables: { orderId } });
+	const [{ data, fetching }] = useOrderQuery({ variables: { orderId } });
+
+	if (fetching) {
+		return (
+			<View>
+				<Text>Loading</Text>
+			</View>
+		);
+	}
 
 	const order = data?.orders_by_pk;
 
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={styles.container}>
 			<Text>Order Details:</Text>
 			<Text>{order?.id}</Text>
-		</View>
+		</SafeAreaView>
 	);
 };
 

@@ -10,12 +10,24 @@ import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { useStoresFollowedQuery } from '../../types/api';
 import { useAppSelector } from '../../redux/store';
-import { MainStackParamList } from '../../types/navigation';
+import { HomeTabParamList, MainStackParamList } from '../../types/navigation';
+import ListEmpty from '../global/ListEmpty';
 
 const FollowedStores: React.FC = () => {
 	const userId = useAppSelector(({ auth }) => auth.userId);
-	const [{ data }] = useStoresFollowedQuery({ variables: { userId } });
-	const { navigate } = useNavigation<StackNavigationProp<MainStackParamList>>();
+	const [{ data, fetching }] = useStoresFollowedQuery({
+		variables: { userId }
+	});
+	const { navigate } =
+		useNavigation<StackNavigationProp<MainStackParamList & HomeTabParamList>>();
+
+	if (fetching) {
+		return (
+			<View>
+				<Text>Loading followed stores...</Text>
+			</View>
+		);
+	}
 
 	const stores = data?.store_followers.map(({ store }) => store);
 
@@ -30,6 +42,7 @@ const FollowedStores: React.FC = () => {
 				contentContainerStyle={{ paddingLeft: 16 }}
 				renderItem={({ item }) => (
 					<TouchableOpacity
+						style={styles.storyContainer}
 						activeOpacity={0.8}
 						onPress={() => navigate('Store', { storeId: item.id })}
 					>
@@ -39,7 +52,16 @@ const FollowedStores: React.FC = () => {
 						<Text style={styles.storeName}>{item.name}</Text>
 					</TouchableOpacity>
 				)}
-				ItemSeparatorComponent={() => <View style={{ width: 8 }} />}
+				ListEmptyComponent={
+					<ListEmpty
+						title='No followed stores'
+						description='You have not followed any stores yet. Follow some to view them here.'
+						cta={{
+							text: 'Discover new stores',
+							action: () => navigate('Explore')
+						}}
+					/>
+				}
 			/>
 		</View>
 	);
@@ -51,6 +73,9 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		fontWeight: '500',
 		color: '#505050'
+	},
+	storyContainer: {
+		marginHorizontal: 8
 	},
 	storyImageContainer: {
 		width: 70,

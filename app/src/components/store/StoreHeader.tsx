@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+	View,
+	Image,
+	Text,
+	TouchableOpacity,
+	StyleSheet,
+	Pressable
+} from 'react-native';
 import { openLink } from '../../utils/links';
 import {
 	useFollowStoreMutation,
@@ -9,6 +16,7 @@ import {
 import FollowButton from './FollowButton';
 import SocialLinks from './SocialLinks';
 import { useAppSelector } from '../../redux/store';
+import { Icon } from '../icons';
 
 interface StoreHeaderProps {
 	store: StoreQuery['stores_by_pk'];
@@ -30,30 +38,26 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 
 	return (
 		<View style={styles.container}>
+			<View>
+				<Pressable>
+					<Icon name='chevronLeft' />
+				</Pressable>
+			</View>
 			<View style={styles.row}>
 				<View style={styles.imagePlaceholder}>
-					<Image
-						source={{ uri: '' /* Do something here */ }}
-						style={styles.image}
-					/>
+					<Image source={{ uri: '' }} style={styles.image} />
 				</View>
 				<SocialLinks
 					links={[
-						{
-							iconName: 'twitter',
-							url: `https://twitter.com/${store?.twitter_username}`
-						},
-						{
-							iconName: 'instagram',
-							url: `https://instagram.com/${store?.instagram_username}`
-						}
+						{ type: 'twitter', value: store?.twitter_username },
+						{ type: 'instagram', value: store?.instagram_username }
 					]}
 				/>
 			</View>
 			<View>
 				<Text style={styles.storeName}>{store?.name}</Text>
 				<TouchableOpacity
-					style={{ marginTop: 5 }}
+					style={{ marginTop: 4 }}
 					onPress={() => openLink(store?.website_url)}
 				>
 					<Text style={styles.websiteLinkText}>{store?.website_url}</Text>

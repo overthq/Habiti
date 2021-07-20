@@ -36,11 +36,7 @@ const Settings: React.FC = () => {
 					<Button
 						text='Log Out'
 						onPress={() => dispatch(logOut())}
-						style={{
-							alignSelf: 'center',
-							width: width - 16,
-							marginVertical: 8
-						}}
+						style={styles.logOut}
 					/>
 				}
 			/>
@@ -51,6 +47,11 @@ const Settings: React.FC = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1
+	},
+	logOut: {
+		alignSelf: 'center',
+		width: width - 16,
+		marginVertical: 8
 	}
 });
 

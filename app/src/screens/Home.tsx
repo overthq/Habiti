@@ -3,7 +3,7 @@ import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RecentOrders from '../components/home/RecentOrders';
 import Watchlist from '../components/home/Watchlist';
-// import FollowedStores from '../components/home/FollowedStores';
+import FollowedStores from '../components/home/FollowedStores';
 
 const Home = () => (
 	<SafeAreaView style={styles.container}>
@@ -12,7 +12,7 @@ const Home = () => (
 				<Text style={styles.title}>For You</Text>
 			</View>
 			<RecentOrders />
-			{/* <FollowedStores /> */}
+			<FollowedStores />
 			<Watchlist />
 		</ScrollView>
 	</SafeAreaView>
