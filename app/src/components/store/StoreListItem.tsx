@@ -29,7 +29,7 @@ const StoreListItem: React.FC<StoreListItemProps> = ({ item }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1 / 2
 	},
 	pressable: {
 		flex: 1,
