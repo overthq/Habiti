@@ -17,6 +17,7 @@ import FollowButton from './FollowButton';
 import SocialLinks from './SocialLinks';
 import { useAppSelector } from '../../redux/store';
 import { Icon } from '../icons';
+import { useNavigation } from '@react-navigation/native';
 
 interface StoreHeaderProps {
 	store: StoreQuery['stores_by_pk'];
@@ -25,6 +26,7 @@ interface StoreHeaderProps {
 const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 	const [, followStore] = useFollowStoreMutation();
 	const [, unfollowStore] = useUnfollowStoreMutation();
+	const { goBack } = useNavigation();
 	const userId = useAppSelector(({ auth }) => auth.userId);
 
 	const isFollowingStore = React.useMemo(() => {
@@ -38,48 +40,56 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 
 	return (
 		<View style={styles.container}>
-			<View>
-				<Pressable>
-					<Icon name='chevronLeft' />
+			<View style={styles.bar}>
+				<Pressable onPress={goBack}>
+					<Icon name='chevronLeft' size={28} />
 				</Pressable>
 			</View>
 			<View style={styles.row}>
 				<View style={styles.imagePlaceholder}>
 					<Image source={{ uri: '' }} style={styles.image} />
 				</View>
-				<SocialLinks
-					links={[
-						{ type: 'twitter', value: store?.twitter_username },
-						{ type: 'instagram', value: store?.instagram_username }
-					]}
-				/>
+				<View>
+					<View style={{ flexDirection: 'row' }}>
+						<Text style={styles.storeName}>{store?.name}</Text>
+						<SocialLinks
+							links={[
+								{ type: 'twitter', value: store?.twitter_username },
+								{ type: 'instagram', value: store?.instagram_username }
+							]}
+						/>
+					</View>
+					<TouchableOpacity
+						style={{ marginTop: 4 }}
+						onPress={() => openLink(store?.website_url)}
+					>
+						<Text style={styles.websiteLinkText}>{store?.website_url}</Text>
+					</TouchableOpacity>
+					<FollowButton
+						isFollowing={isFollowingStore}
+						follow={() => {
+							followStore({ storeId: store?.id, userId });
+						}}
+						unfollow={() => {
+							unfollowStore({ storeId: store?.id, userId });
+						}}
+					/>
+				</View>
 			</View>
-			<View>
-				<Text style={styles.storeName}>{store?.name}</Text>
-				<TouchableOpacity
-					style={{ marginTop: 4 }}
-					onPress={() => openLink(store?.website_url)}
-				>
-					<Text style={styles.websiteLinkText}>{store?.website_url}</Text>
-				</TouchableOpacity>
-			</View>
-			<FollowButton
-				isFollowing={isFollowingStore}
-				follow={() => {
-					followStore({ storeId: store?.id, userId });
-				}}
-				unfollow={() => {
-					unfollowStore({ storeId: store?.id, userId });
-				}}
-			/>
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		paddingVertical: 25,
-		paddingHorizontal: 10
+		paddingHorizontal: 8,
+		paddingBottom: 8
+	},
+	bar: {
+		width: '100%',
+		flexDirection: 'row',
+		marginVertical: 8,
+		marginHorizontal: -8
 	},
 	row: {
 		flexDirection: 'row',
@@ -102,8 +112,7 @@ const styles = StyleSheet.create({
 	},
 	storeName: {
 		fontSize: 20,
-		fontWeight: 'bold',
-		marginTop: 10
+		fontWeight: 'bold'
 	},
 	websiteLinkText: {
 		fontSize: 16,

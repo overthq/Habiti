@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { View, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useItemQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
@@ -9,15 +9,19 @@ import ItemDetails from '../components/item/ItemDetails';
 
 const Item = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Item'>>();
-	const [{ data, error }] = useItemQuery({
+	const [{ data, fetching }] = useItemQuery({
 		variables: { itemId: params.itemId }
 	});
 
-	React.useEffect(() => {
-		console.log({ data, error });
-	}, [data, error]);
-
 	const item = data?.items_by_pk;
+
+	if (fetching) {
+		return (
+			<View>
+				<ActivityIndicator />
+			</View>
+		);
+	}
 
 	if (!item) return <View />;
 
@@ -25,11 +29,15 @@ const Item = () => {
 		<ScrollView style={styles.container}>
 			<ImageCarousel images={item.item_images} />
 			<ItemDetails item={item} />
-			<AddToCart
-				storeId={item.store.id}
-				itemId={item.id}
-				cartId={item.store.carts[0]?.id}
-			/>
+			{/* Hack, create separate view for this. */}
+			<View style={{ width: '100%', paddingHorizontal: 16 }}>
+				<AddToCart
+					storeId={item.store.id}
+					itemId={item.id}
+					cartId={item.store.carts[0]?.id}
+				/>
+			</View>
+			{/* Related Items */}
 		</ScrollView>
 	);
 };

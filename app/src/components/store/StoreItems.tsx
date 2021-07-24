@@ -9,14 +9,11 @@ interface StoreItemsProps {
 }
 
 const StoreItems: React.FC<StoreItemsProps> = ({ store }) => {
-	const [{ data, error }] = useStoreItemsQuery({
+	const [{ data, fetching }] = useStoreItemsQuery({
 		variables: { storeId: store.id }
 	});
 
-	React.useEffect(() => {
-		console.log({ data, error });
-	}, [data, error]);
-
+	if (fetching) return <View />;
 	if (!data?.items) return <View />;
 
 	return (

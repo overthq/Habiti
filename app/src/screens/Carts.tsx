@@ -28,17 +28,21 @@ const Carts = () => {
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<FlatList
-				bounces={false}
-				keyExtractor={c => c.store_id}
-				ListHeaderComponent={
-					<View style={styles.header}>
+			{/* Very bad: find good way to fix weird extra scroll space in FlatList */}
+			{carts?.length === 0 ? (
+				<View
+					style={{
+						flex: 1,
+						paddingHorizontal: 16,
+						alignItems: 'center',
+						justifyContent: 'center'
+					}}
+				>
+					<View
+						style={[styles.header, { position: 'absolute', top: 0, left: 16 }]}
+					>
 						<Text style={styles.title}>Carts</Text>
 					</View>
-				}
-				renderItem={({ item }) => <CartsListItem cart={item} />}
-				data={carts}
-				ListEmptyComponent={
 					<ListEmpty
 						title='Empty cart'
 						description={`Looks like your cart is empty. Let's change that.`}
@@ -47,9 +51,32 @@ const Carts = () => {
 							action: () => navigate('Explore')
 						}}
 					/>
-				}
-				ItemSeparatorComponent={() => <View style={styles.separator} />}
-			/>
+				</View>
+			) : (
+				<FlatList
+					style={styles.list}
+					bounces={false}
+					keyExtractor={c => c.store_id}
+					ListHeaderComponent={
+						<View style={styles.header}>
+							<Text style={styles.title}>Carts</Text>
+						</View>
+					}
+					renderItem={({ item }) => <CartsListItem cart={item} />}
+					data={carts}
+					ListEmptyComponent={
+						<ListEmpty
+							title='Empty cart'
+							description={`Looks like your cart is empty. Let's change that.`}
+							cta={{
+								text: 'Discover new stores',
+								action: () => navigate('Explore')
+							}}
+						/>
+					}
+					ItemSeparatorComponent={() => <View style={styles.separator} />}
+				/>
+			)}
 		</SafeAreaView>
 	);
 };
@@ -57,7 +84,6 @@ const Carts = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		paddingHorizontal: 16,
 		backgroundColor: '#FFFFFF'
 	},
 	header: {
@@ -69,6 +95,9 @@ const styles = StyleSheet.create({
 	title: {
 		fontWeight: 'bold',
 		fontSize: 32
+	},
+	list: {
+		paddingHorizontal: 16
 	},
 	separator: {
 		width: '100%',

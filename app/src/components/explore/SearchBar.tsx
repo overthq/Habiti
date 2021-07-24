@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
 	},
 	bar: {
 		borderRadius: 10,
-		backgroundColor: '#D3D3D3',
+		backgroundColor: 'rgb(229, 229, 234)',
 		flexDirection: 'row',
 		alignItems: 'center',
 		padding: 10,
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
 	},
 	input: {
 		fontSize: 16,
-		paddingLeft: 4,
+		paddingLeft: 8,
 		height: '100%',
 		flexGrow: 1
 	},

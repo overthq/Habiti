@@ -7,41 +7,45 @@ interface ItemDetailsProps {
 
 const ItemDetails: React.FC<ItemDetailsProps> = ({ item }) => {
 	return (
-		<View style={styles.detailsContainer}>
-			<View style={styles.metaContainer}>
-				<Text style={styles.itemName}>{item.name}</Text>
-				<Text style={{ fontSize: 18 }}>${item.unit_price}</Text>
+		<View style={styles.container}>
+			<View style={styles.meta}>
+				<Text style={styles.name}>{item.name}</Text>
+				<Text style={styles.price}>${item.unit_price}</Text>
 			</View>
-			<Text style={styles.descriptionHeader}>Description</Text>
-			<Text style={{ fontSize: 16 }}>{item?.description}</Text>
-			{/* Related Items */}
+			<Text style={styles.header}>Description</Text>
+			<Text style={styles.description}>{item?.description}</Text>
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
-	detailsContainer: {
-		paddingHorizontal: 20,
-		paddingTop: 20
+	container: {
+		paddingHorizontal: 16,
+		paddingTop: 16
 	},
-	itemName: {
+	name: {
 		fontWeight: 'bold',
 		fontSize: 20
 	},
-	metaContainer: {
+	price: {
+		fontSize: 18
+	},
+	meta: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		paddingBottom: 4,
 		borderBottomWidth: 1,
-		borderBottomColor: '#D3D3D3',
-		marginBottom: 4
+		borderBottomColor: '#D3D3D3'
 	},
-	descriptionHeader: {
-		marginVertical: 10,
+	header: {
+		marginVertical: 8,
 		textTransform: 'uppercase',
 		color: '#505050',
 		fontWeight: '500'
+	},
+	description: {
+		fontSize: 16
 	}
 });
 

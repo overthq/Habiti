@@ -19,8 +19,8 @@ const FollowButton: React.FC<FollowButtonProps> = ({
 		onPress={isFollowing ? unfollow : follow}
 	>
 		<Icon
-			size={20}
-			style={{ marginRight: 5 }}
+			size={18}
+			style={{ marginRight: 4 }}
 			name={isFollowing ? 'check' : 'plus'}
 		/>
 		<Text style={{ fontSize: 16, fontWeight: '500' }}>
@@ -31,9 +31,9 @@ const FollowButton: React.FC<FollowButtonProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		marginTop: 10,
+		marginTop: 8,
 		width: '100%',
-		height: 35,
+		paddingVertical: 4,
 		borderWidth: 1,
 		borderColor: '#D3D3D3',
 		borderRadius: 4,

@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useStoreQuery } from '../types/api';
 import { MainStackParamList } from '../types/navigation';
@@ -17,9 +18,9 @@ const Store = () => {
 	if (!store) return <View />;
 
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={styles.container}>
 			<StoreItems store={store} />
-		</View>
+		</SafeAreaView>
 	);
 };
 

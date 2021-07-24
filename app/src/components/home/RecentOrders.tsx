@@ -18,11 +18,12 @@ const RecentOrders = () => {
 				horizontal
 				showsHorizontalScrollIndicator={false}
 				renderItem={({ item }) => <RecentOrder order={item} />}
-				ListFooterComponent={<View style={{ width: 16 }} />}
 				ListEmptyComponent={
-					<Text style={styles.empty}>
-						No recent orders to view. Order some items to view them here
-					</Text>
+					<View style={{ width: '100%' }}>
+						<Text style={styles.empty}>
+							No recent orders to view. Order some items to view them here
+						</Text>
+					</View>
 				}
 			/>
 		</View>
