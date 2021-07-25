@@ -20,8 +20,7 @@ const Images: React.FC<ImagesProps> = ({ itemId, images }) => {
 		});
 
 		if (!result.cancelled) {
-			const data = await uploadImage(result.uri);
-			console.log({ data, itemId });
+			await uploadImage(result.uri, { itemId });
 		}
 	};
 

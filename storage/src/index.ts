@@ -1,44 +1,77 @@
-import express from 'express';
+import express, { Request, RequestHandler } from 'express';
 import cloudinary from 'cloudinary';
-import streamifier from 'streamifier';
-import multer from 'multer';
+import Busboy from 'busboy';
 import client from './client';
 import './config';
-import { STORE_IMAGE } from './queries';
+import { STORE_IMAGE, STORE_ITEM_IMAGE } from './queries';
 
 const app = express();
 
-app.use(express.json());
+app.use(express.json() as RequestHandler);
+app.use(express.urlencoded({ extended: true }) as RequestHandler);
 
-const fileUpload = multer();
+// Mostly copied from this gist:
+// https://gist.github.com/sinnrrr/58901f7cdf77e299dc00ed23f362fcb8
+const parseForm = (
+	req: Request
+): Promise<{
+	body: Record<string, string>;
+	uploads: cloudinary.UploadApiResponse[];
+}> => {
+	return new Promise((resolve, reject) => {
+		const form = new Busboy({ headers: req.headers });
 
-const streamUpload = (req: express.Request) =>
-	new Promise((resolve, reject) => {
-		const stream = cloudinary.v2.uploader.upload_stream((error, result) => {
-			if (result) {
-				resolve(result);
-			} else {
-				reject(error);
-			}
+		let filesCount = 0;
+		const body = {};
+		const uploads: cloudinary.UploadApiResponse[] = [];
+
+		const createUploader = () => {
+			return cloudinary.v2.uploader.upload_stream((err, image) => {
+				if (err) reject(err);
+				else if (image) {
+					uploads.push(image);
+
+					if (filesCount === uploads.length) resolve({ body, uploads });
+				}
+			});
+		};
+
+		form.on('field', (fieldname, value) => {
+			body[fieldname] = value;
 		});
 
-		streamifier.createReadStream(req.file.buffer).pipe(stream);
+		form.on('file', (_fieldname, file) => {
+			file.pipe(createUploader());
+			file.on('end', () => {
+				filesCount++;
+			});
+		});
+
+		req.pipe(form);
 	});
+};
 
-app.use('/upload', fileUpload.single('image'), async (req, res) => {
+app.use('/upload', async (req, res) => {
 	try {
-		const data = await streamUpload(req);
-
-		await client.request(STORE_IMAGE, {
-			input: {
-				path_url: ''
-			}
+		const { body, uploads } = await parseForm(req);
+		const { insert_images_one } = await client.request(STORE_IMAGE, {
+			input: { path_url: uploads[0].url }
 		});
+
+		if (body.itemId) {
+			await client.request(STORE_ITEM_IMAGE, {
+				input: {
+					item_id: body.itemId,
+					image_id: insert_images_one.id,
+					order_place: 1
+				}
+			});
+		}
 
 		return res.status(201).json({
 			success: true,
 			message: 'Image successfully uploaded',
-			data
+			uploads
 		});
 	} catch (error) {
 		return res.status(500).json({
@@ -49,4 +82,6 @@ app.use('/upload', fileUpload.single('image'), async (req, res) => {
 	}
 });
 
-app.listen(Number(process.env.PORT));
+app.listen(Number(process.env.PORT), () => {
+	console.log(`Storage server running on port ${process.env.PORT}`);
+});

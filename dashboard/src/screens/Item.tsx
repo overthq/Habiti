@@ -25,7 +25,7 @@ const Item: React.FC = () => {
 			<Images itemId={itemId} images={item.item_images} />
 			<Section title='Name' content={item.name} />
 			<Section title='Description' content={item.description} />
-			<Section title='Unit Price' content={String(item.unit_price)} />
+			<Section title='Unit Price' content={`${item.unit_price} NGN`} />
 		</View>
 	);
 };

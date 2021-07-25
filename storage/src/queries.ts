@@ -5,3 +5,13 @@ export const STORE_IMAGE = `
 		}
 	}
 `;
+
+export const STORE_ITEM_IMAGE = `
+	mutation StoreItemImage($input: item_images_insert_input!) {
+		insert_item_images_one(object: $input) {
+			item_id
+			image_id
+			order_place
+		}
+	}
+`;

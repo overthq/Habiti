@@ -10,7 +10,7 @@ const ENV = {
 	dev: {
 		authUrl: localHostString('5000'),
 		hasuraUrl: localHostString('8080/v1/graphql'),
-		storageUrl: localHostString('4000')
+		storageUrl: localHostString('5100')
 	},
 	staging: {
 		authUrl: 'https://',

@@ -10,7 +10,7 @@ const Section: React.FC<SectionProps> = ({ title, content }) => {
 	return (
 		<View style={styles.section}>
 			<Text style={styles.title}>{title}</Text>
-			<Text style={styles.content}>{content} NGN</Text>
+			<Text style={styles.content}>{content}</Text>
 		</View>
 	);
 };
