@@ -10,6 +10,8 @@ interface ImagesProps {
 	images: ItemDetailsFragment['item_images'];
 }
 
+// TODO: Hacky, but maybe pass a refetch function?
+// (Only until I figure the cache stuff out).
 const Images: React.FC<ImagesProps> = ({ itemId, images }) => {
 	const handlePickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
@@ -29,7 +31,11 @@ const Images: React.FC<ImagesProps> = ({ itemId, images }) => {
 			<View style={styles.section}>
 				<Text style={styles.sectionTitle}>Images</Text>
 				{images.map(({ image }) => (
-					<Image key={image.id} source={{ uri: image.path_url }} />
+					<Image
+						key={image.id}
+						source={{ uri: image.path_url }}
+						style={styles.image}
+					/>
 				))}
 				<TouchableOpacity onPress={handlePickImage} style={styles.add}>
 					<Icon name='plus' size={24} />
@@ -50,6 +56,12 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		color: '#505050',
 		fontWeight: '500'
+	},
+	image: {
+		height: 60,
+		width: 60,
+		borderRadius: 4,
+		marginRight: 8
 	},
 	add: {
 		width: 60,
