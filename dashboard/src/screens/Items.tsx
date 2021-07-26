@@ -12,11 +12,6 @@ const Items: React.FC = () => {
 				keyExtractor={i => i.id}
 				data={data?.items}
 				renderItem={({ item }) => <ItemsListItem item={item} />}
-				ItemSeparatorComponent={() => (
-					<View
-						style={{ width: '100%', height: 0.5, backgroundColor: '#EDEDED' }}
-					/>
-				)}
 			/>
 		</View>
 	);

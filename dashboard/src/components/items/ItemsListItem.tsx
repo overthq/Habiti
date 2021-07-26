@@ -1,15 +1,19 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { ItemsQuery } from '../../types/api';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { ItemsStackParamList } from '../../types/navigation';
 import { Icon } from '../icons';
+import { ItemsQuery } from '../../types/api';
 
 interface ItemsListItemProps {
 	item: ItemsQuery['items'][-1];
 }
 
+// TODO: Convert this to a grid-item, displaying the item image.
 const ItemsListItem: React.FC<ItemsListItemProps> = ({ item }) => {
-	const { navigate } = useNavigation();
+	const { navigate } =
+		useNavigation<StackNavigationProp<ItemsStackParamList>>();
 
 	return (
 		<TouchableOpacity
@@ -33,12 +37,12 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		paddingHorizontal: 16,
-		paddingVertical: 4
+		paddingVertical: 4,
+		borderBottomWidth: 0.5,
+		borderBottomColor: '#EDEDED'
 	},
 	name: {
-		fontSize: 18,
-		fontWeight: '500',
-		color: '#000000',
+		fontSize: 17,
 		marginBottom: 4
 	},
 	price: {
