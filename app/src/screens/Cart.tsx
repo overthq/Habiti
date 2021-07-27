@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useClient } from 'urql';
 import CartItem from '../components/CartItem';
@@ -11,6 +12,7 @@ import {
 import { AppStackParamList } from '../types/navigation';
 import { useAppSelector } from '../redux/store';
 import { ItemsMoreDetailsDocument, ItemsMoreDetailsQuery } from '../types/api';
+import Button from '../components/global/Button';
 
 const Cart: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
@@ -20,10 +22,11 @@ const Cart: React.FC = () => {
 	const client = useClient();
 	const { cartId } = params;
 
-	const [{ data }] = useCartQuery({ variables: { cartId } });
+	const [{ data, fetching }] = useCartQuery({ variables: { cartId } });
 	const cart = data?.carts_by_pk;
 
-	if (!cart) throw new Error('This cart does not exist');
+	if (fetching) return <View />;
+	if (!cart) return <View />;
 
 	const prepareCart = async (order_id: string) => {
 		const { data, error } = await client
@@ -58,52 +61,32 @@ const Cart: React.FC = () => {
 	};
 
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={styles.container}>
 			<Text style={styles.heading}>Checkout</Text>
 			<Text style={styles.sectionHeader}>Order Summary</Text>
 			{cart.cart_items.map(({ id, item, quantity }) => (
 				<CartItem key={id} {...{ item, quantity }} />
 			))}
-			<TouchableOpacity
-				activeOpacity={0.8}
-				style={styles.orderButton}
-				onPress={handleSubmit}
-			>
-				<Text style={styles.orderButtonText}>Place Order</Text>
-			</TouchableOpacity>
-		</View>
+			<Button text='Place Order' onPress={handleSubmit} />
+		</SafeAreaView>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		paddingTop: 20,
-		paddingHorizontal: 20
+		paddingTop: 16,
+		paddingHorizontal: 16
 	},
 	heading: {
 		fontWeight: 'bold',
 		fontSize: 32
 	},
-	orderButton: {
-		width: '100%',
-		height: 45,
-		borderRadius: 8,
-		flexDirection: 'row',
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: '#000000'
-	},
-	orderButtonText: {
-		fontSize: 18,
-		fontWeight: '600',
-		color: '#FFFFFF'
-	},
 	sectionHeader: {
-		fontSize: 18,
+		fontSize: 17,
 		fontWeight: '500',
 		color: '#505050',
-		marginTop: 10
+		marginVertical: 4
 	}
 });
 
