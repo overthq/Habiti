@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, FlatList, Dimensions } from 'react-native';
+import { FlatList, StyleSheet, Dimensions } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { Formik } from 'formik';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,6 +14,7 @@ import { updatePreference } from '../redux/preferences/actions';
 import Brand from '../components/create-store/Brand';
 import Social from '../components/create-store/Social';
 import StoreImage from '../components/create-store/StoreImage';
+import { uploadImage } from '../utils/images';
 
 const { width } = Dimensions.get('window');
 
@@ -59,7 +60,8 @@ const CreateStore: React.FC = () => {
 					shortName: '',
 					twitter: '',
 					instagram: '',
-					website: ''
+					website: '',
+					storeImage: ''
 				}}
 				onSubmit={async values => {
 					try {
@@ -72,6 +74,11 @@ const CreateStore: React.FC = () => {
 								userId,
 								storeId: data.insert_stores_one.id
 							});
+							if (values.storeImage) {
+								await uploadImage(values.storeImage, {
+									storeId: data.insert_stores_one.id
+								});
+							}
 
 							dispatch(
 								updatePreference({ activeStore: data.insert_stores_one.id })
@@ -83,7 +90,7 @@ const CreateStore: React.FC = () => {
 				}}
 			>
 				{({ handleSubmit }) => (
-					<View style={{ flex: 1 }}>
+					<>
 						<FlatList
 							ref={listRef}
 							horizontal
@@ -100,7 +107,7 @@ const CreateStore: React.FC = () => {
 							text={isLastStep ? 'Submit' : 'Next'}
 							onPress={isLastStep ? handleSubmit : toNext}
 						/>
-					</View>
+					</>
 				)}
 			</Formik>
 		</SafeAreaView>

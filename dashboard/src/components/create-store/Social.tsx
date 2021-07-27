@@ -11,12 +11,12 @@ const Social = () => {
 
 	return (
 		<View style={styles.container}>
-			<Text>Your online presence</Text>
+			<Text style={styles.title}>Social media</Text>
 			<Text>
 				Link your social accounts, so shoppers can follow you elsewhere.
 			</Text>
 			<View>
-				<Text>Store name</Text>
+				<Text>Twitter username</Text>
 				<TextInput
 					style={styles.input}
 					placeholder='@nike'
@@ -25,7 +25,7 @@ const Social = () => {
 				/>
 			</View>
 			<View>
-				<Text>Instagram</Text>
+				<Text>Instagram username</Text>
 				<TextInput
 					style={styles.input}
 					placeholder='@nike'
@@ -50,6 +50,10 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		padding: 16
+	},
+	title: {
+		fontSize: 32,
+		fontWeight: 'bold'
 	},
 	input: {
 		paddingLeft: 8,

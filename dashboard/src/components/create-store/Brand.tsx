@@ -10,8 +10,8 @@ const Brand = () => {
 
 	return (
 		<View style={styles.container}>
-			<Text>Your brand</Text>
-			<Text></Text>
+			<Text style={styles.title}>Your brand</Text>
+			<Text>Please enter the name of your store.</Text>
 			<View>
 				<Text>Store name</Text>
 				<TextInput
@@ -38,6 +38,10 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		padding: 16
+	},
+	title: {
+		fontWeight: 'bold',
+		fontSize: 32
 	},
 	input: {
 		paddingLeft: 8,
