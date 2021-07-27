@@ -6,23 +6,21 @@ interface SectionProps {
 	content: string;
 }
 
-const Section: React.FC<SectionProps> = ({ title, content }) => {
-	return (
-		<View style={styles.section}>
-			<Text style={styles.title}>{title}</Text>
-			<Text style={styles.content}>{content}</Text>
-		</View>
-	);
-};
+const Section: React.FC<SectionProps> = ({ title, content }) => (
+	<View style={styles.section}>
+		<Text style={styles.title}>{title}</Text>
+		<Text style={styles.content}>{content}</Text>
+	</View>
+);
 
 const styles = StyleSheet.create({
 	section: {
-		paddingVertical: 8,
+		paddingVertical: 4,
 		paddingHorizontal: 16,
 		backgroundColor: '#FFFFFF'
 	},
 	title: {
-		marginBottom: 4,
+		marginBottom: 2,
 		fontSize: 16,
 		color: '#505050',
 		fontWeight: '500'

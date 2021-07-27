@@ -27,9 +27,9 @@ const Images: React.FC<ImagesProps> = ({ itemId, images }) => {
 	};
 
 	return (
-		<View>
-			<View style={styles.section}>
-				<Text style={styles.sectionTitle}>Images</Text>
+		<View style={styles.section}>
+			<Text style={styles.title}>Images</Text>
+			<View style={styles.images}>
 				{images.map(({ image }) => (
 					<Image
 						key={image.id}
@@ -51,11 +51,15 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 16,
 		backgroundColor: '#FFFFFF'
 	},
-	sectionTitle: {
+	title: {
 		marginBottom: 4,
 		fontSize: 16,
 		color: '#505050',
 		fontWeight: '500'
+	},
+	images: {
+		width: '100%',
+		flexDirection: 'row'
 	},
 	image: {
 		height: 60,
