@@ -3,7 +3,7 @@ import cloudinary from 'cloudinary';
 import Busboy from 'busboy';
 import client from './client';
 import './config';
-import { STORE_IMAGE, STORE_ITEM_IMAGE } from './queries';
+import { STORE_IMAGE, STORE_ITEM_IMAGE, STORE_STORE_IMAGE } from './queries';
 
 const app = express();
 
@@ -64,6 +64,13 @@ app.use('/upload', async (req, res) => {
 					item_id: body.itemId,
 					image_id: insert_images_one.id,
 					order_place: 1
+				}
+			});
+		} else if (body.storeId) {
+			await client.request(STORE_STORE_IMAGE, {
+				input: {
+					store_id: body.storeId,
+					image_id: insert_images_one.id
 				}
 			});
 		}

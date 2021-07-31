@@ -15,3 +15,12 @@ export const STORE_ITEM_IMAGE = `
 		}
 	}
 `;
+
+export const STORE_STORE_IMAGE = `
+	mutation StoreStoreImage($input: store_avatar_images_insert_input!) {
+		insert_store_avatar_images_one(object: $input) {
+			store_id
+			image_id
+		}
+	}
+`;

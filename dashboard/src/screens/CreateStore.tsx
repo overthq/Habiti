@@ -21,7 +21,7 @@ const { width } = Dimensions.get('window');
 const steps = [
 	{ title: 'Brand', component: <Brand /> },
 	{ title: 'Social', component: <Social /> },
-	{ title: 'StoreImage', component: <StoreImage /> }
+	{ title: 'Store Image', component: <StoreImage /> }
 ];
 
 const CreateStore: React.FC = () => {
