@@ -25,6 +25,11 @@ query StoresFollowed($userId: uuid!) {
 			id
 			name
 			short_name
+			store_avatar_images {
+				image {
+					path_url
+				}
+			}
 		}
 	}
 }

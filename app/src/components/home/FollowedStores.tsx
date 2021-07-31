@@ -4,6 +4,7 @@ import {
 	Text,
 	FlatList,
 	TouchableOpacity,
+	Image,
 	StyleSheet
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -38,8 +39,8 @@ const FollowedStores: React.FC = () => {
 				horizontal
 				data={stores}
 				keyExtractor={item => item.id}
-				style={{ marginTop: 8 }}
-				contentContainerStyle={{ paddingLeft: 16 }}
+				style={styles.list}
+				contentContainerStyle={styles.listContentContainer}
 				renderItem={({ item }) => (
 					<TouchableOpacity
 						style={styles.storyContainer}
@@ -47,7 +48,12 @@ const FollowedStores: React.FC = () => {
 						onPress={() => navigate('Store', { storeId: item.id })}
 					>
 						<View style={styles.storyImageContainer}>
-							<View style={styles.storyImagePlaceholder} />
+							<View style={styles.storyImagePlaceholder}>
+								<Image
+									source={{ uri: item.store_avatar_images[0].image.path_url }}
+									style={styles.storyImage}
+								/>
+							</View>
 						</View>
 						<Text style={styles.storeName}>{item.name}</Text>
 					</TouchableOpacity>
@@ -74,6 +80,10 @@ const styles = StyleSheet.create({
 		fontWeight: '500',
 		color: '#505050'
 	},
+	list: { marginTop: 8 },
+	listContentContainer: {
+		marginRight: 8
+	},
 	storyContainer: {
 		marginHorizontal: 8
 	},
@@ -86,6 +96,10 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center'
 	},
+	storyImage: {
+		width: '100%',
+		height: '100%'
+	},
 	storyImagePlaceholder: {
 		backgroundColor: '#D3D3D3',
 		width: 60,
@@ -95,7 +109,7 @@ const styles = StyleSheet.create({
 	storeName: {
 		textAlign: 'center',
 		marginTop: 4,
-		fontSize: 16
+		fontSize: 14
 	}
 });
 

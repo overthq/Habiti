@@ -5377,7 +5377,13 @@ export type StoresFollowedQuery = { __typename?: 'query_root' } & {
 				store: { __typename?: 'stores' } & Pick<
 					Stores,
 					'id' | 'name' | 'short_name'
-				>;
+				> & {
+						store_avatar_images: Array<
+							{ __typename?: 'store_avatar_images' } & {
+								image: { __typename?: 'images' } & Pick<Images, 'path_url'>;
+							}
+						>;
+					};
 			}
 	>;
 };
@@ -5835,6 +5841,11 @@ export const StoresFollowedDocument = gql`
 				id
 				name
 				short_name
+				store_avatar_images {
+					image {
+						path_url
+					}
+				}
 			}
 		}
 	}
