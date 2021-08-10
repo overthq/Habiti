@@ -10,10 +10,6 @@ The average online shopper usually has to create multiple accounts for every sto
 ### For store owners
 Setting up an online store is difficult and expensive, and getting potential customers to discover your store is very difficult. Market solves this by providing an affordable, simple and easy-to-use dashboard to manage orders, inventory, analytics and all other information regarding store.
 
-## Project Phase
-
-This project is currently in the _pre-launch_ phase, being developed by the [members of the Overt community](https://discord.gg/t6wVzUh). [Overt](https://overt.dev) is a concept that creates open-source software to solve many of the problems we face in the world. You can read more [here](https://overt.dev), or follow Overt on Twitter [here](https://twitter.com/overt_hq).
-
 It is important to not that on release, Market will be available in Nigeria only, but will potentially be launched in other countries based on demand.
 
 ## Getting Started
