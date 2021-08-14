@@ -16,7 +16,7 @@ const textStyles = StyleSheet.create({
 		color: '#505050',
 		marginVertical: 8
 	},
-	regular: {
+	body: {
 		fontSize: 16
 	}
 });
