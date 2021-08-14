@@ -50,7 +50,7 @@ const FollowedStores: React.FC = () => {
 						<View style={styles.storyImageContainer}>
 							<View style={styles.storyImagePlaceholder}>
 								<Image
-									source={{ uri: item.store_avatar_images[0].image.path_url }}
+									source={{ uri: item.store_avatar_images[0]?.image.path_url }}
 									style={styles.storyImage}
 								/>
 							</View>
@@ -74,6 +74,10 @@ const FollowedStores: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+	container: {
+		// Fixed height: make sure that the container has the same height
+		// in all states, i.e. when the list loading, when it's empty and when it's not.
+	},
 	sectionHeader: {
 		marginLeft: 16,
 		fontSize: 16,

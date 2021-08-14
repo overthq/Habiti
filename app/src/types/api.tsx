@@ -5403,6 +5403,16 @@ export type NewArrivalsQuery = { __typename?: 'query_root' } & {
 	>;
 };
 
+export type CurrentUserQueryVariables = Exact<{
+	userId: Scalars['uuid'];
+}>;
+
+export type CurrentUserQuery = { __typename?: 'query_root' } & {
+	users_by_pk?: Maybe<
+		{ __typename?: 'users' } & Pick<Users, 'id' | 'name' | 'phone'>
+	>;
+};
+
 export const CartDetailsFragmentDoc = gql`
 	fragment CartDetails on carts {
 		id
@@ -5879,6 +5889,24 @@ export function useNewArrivalsQuery(
 ) {
 	return Urql.useQuery<NewArrivalsQuery>({
 		query: NewArrivalsDocument,
+		...options
+	});
+}
+export const CurrentUserDocument = gql`
+	query CurrentUser($userId: uuid!) {
+		users_by_pk(id: $userId) {
+			id
+			name
+			phone
+		}
+	}
+`;
+
+export function useCurrentUserQuery(
+	options: Omit<Urql.UseQueryArgs<CurrentUserQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<CurrentUserQuery>({
+		query: CurrentUserDocument,
 		...options
 	});
 }
