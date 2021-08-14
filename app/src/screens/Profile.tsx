@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch } from 'react-redux';
 import Button from '../components/global/Button';
@@ -15,9 +15,9 @@ const Profile = () => {
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<View>
+			{/* <View>
 				<Text style={styles.heading}>Profile</Text>
-			</View>
+			</View> */}
 			{fetching ? (
 				<Text>Fetching...</Text>
 			) : (

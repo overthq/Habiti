@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, Text, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RecentOrders from '../components/home/RecentOrders';
 import Watchlist from '../components/home/Watchlist';
@@ -8,9 +8,9 @@ import FollowedStores from '../components/home/FollowedStores';
 const Home = () => (
 	<SafeAreaView style={styles.container}>
 		<ScrollView bounces={false}>
-			<View style={styles.header}>
+			{/* <View style={styles.header}>
 				<Text style={styles.title}>For You</Text>
-			</View>
+			</View> */}
 			<RecentOrders />
 			<FollowedStores />
 			<Watchlist />

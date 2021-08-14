@@ -57,11 +57,11 @@ const Carts = () => {
 					style={styles.list}
 					bounces={false}
 					keyExtractor={c => c.store_id}
-					ListHeaderComponent={
-						<View style={styles.header}>
-							<Text style={styles.title}>Carts</Text>
-						</View>
-					}
+					// ListHeaderComponent={
+					// 	<View style={styles.header}>
+					// 		<Text style={styles.title}>Carts</Text>
+					// 	</View>
+					// }
 					renderItem={({ item }) => <CartsListItem cart={item} />}
 					data={carts}
 					ListEmptyComponent={

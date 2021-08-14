@@ -44,9 +44,9 @@ const Explore: React.FC = () => {
 				bounces={false}
 				keyboardShouldPersistTaps='handled'
 			>
-				<View style={styles.header}>
+				{/* <View style={styles.header}>
 					<Text style={styles.title}>Explore</Text>
-				</View>
+				</View> */}
 				<SearchBar
 					onSearchTermChange={handleSearch}
 					isFocused={searchBarFocused}
