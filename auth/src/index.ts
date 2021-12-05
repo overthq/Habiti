@@ -1,14 +1,10 @@
 import express from 'express';
 import { gql } from 'graphql-request';
-import { promisify } from 'util';
-
 import generateToken from './utils/generateToken';
 import { sendVerificationCode } from './utils/verificationCode';
 import { graphqlClient, redisClient } from './config';
 
 const app = express();
-
-const getAsync = promisify(redisClient.get).bind(redisClient);
 
 app.use(express.json());
 
@@ -30,7 +26,7 @@ app.post('/authenticate', async (req, res) => {
 		);
 
 		if (data?.users[0]) {
-			sendVerificationCode(phone);
+			await sendVerificationCode(phone);
 
 			return res.status(200).json({
 				success: true,
@@ -92,7 +88,7 @@ app.post('/verify-code', async (req, res) => {
 	const { phone, code, userType } = req.body;
 
 	try {
-		const verificationCode = await getAsync(phone);
+		const verificationCode = await redisClient.get(phone);
 
 		if (!verificationCode) {
 			throw new Error(
