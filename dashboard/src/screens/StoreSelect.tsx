@@ -1,11 +1,12 @@
 import React from 'react';
 import { Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StoresList from '../components/store-select/StoresList';
+import { AppStackParamList } from '../types/navigation';
 
 const StoreSelect: React.FC = () => {
-	const { navigate } = useNavigation();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	return (
 		<SafeAreaView style={styles.container}>

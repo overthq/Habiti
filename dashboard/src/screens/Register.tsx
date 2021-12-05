@@ -6,16 +6,17 @@ import {
 	KeyboardAvoidingView,
 	TouchableOpacity
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import authStyles from '../styles/auth';
 import { register } from '../utils/auth';
-// import Button from '../components/global/Button';
+import Button from '../components/global/Button';
+import { AppStackParamList } from '../types/navigation';
 
 const Register: React.FC = () => {
 	const [name, setName] = React.useState('');
 	const [phone, setPhone] = React.useState('');
 	const [loading, setLoading] = React.useState(false);
-	const { navigate } = useNavigation();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	const goToAuth = () => {
 		navigate('Authenticate');
@@ -25,7 +26,7 @@ const Register: React.FC = () => {
 		setLoading(true);
 		await register({ name, phone });
 		setLoading(false);
-		navigate('Verify');
+		navigate('Verify', { phone });
 	};
 
 	return (
@@ -50,12 +51,9 @@ const Register: React.FC = () => {
 					style={authStyles.input}
 				/>
 			</View>
-			<TouchableOpacity onPress={handleSubmit} style={authStyles.button}>
-				<Text style={authStyles.buttonText}>Register</Text>
-			</TouchableOpacity>
-			{/* <Button text='Register' onPress={handleSubmit} loading={loading} /> */}
-			<TouchableOpacity onPress={goToAuth}>
-				<Text>Already have an account? Log in.</Text>
+			<Button text='Register' onPress={handleSubmit} loading={loading} />
+			<TouchableOpacity onPress={goToAuth} style={{ marginTop: 8 }}>
+				<Text style={{ fontSize: 16 }}>Already have an account? Log in.</Text>
 			</TouchableOpacity>
 		</KeyboardAvoidingView>
 	);

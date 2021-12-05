@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Icon } from '../icons';
+import { SettingsStackParamList } from '../../types/navigation';
 
 interface SettingRowProps {
 	name: string;
-	screen: string;
+	screen: keyof SettingsStackParamList;
 	displayValue?: string;
 }
 
@@ -14,7 +15,7 @@ const SettingRow: React.FC<SettingRowProps> = ({
 	screen,
 	displayValue
 }) => {
-	const { navigate } = useNavigation();
+	const { navigate } = useNavigation<NavigationProp<SettingsStackParamList>>();
 
 	return (
 		<TouchableOpacity

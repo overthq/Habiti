@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { TouchableOpacity, StyleSheet } from 'react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon } from '../components/icons';
+import { ModalStackParamList } from '../types/navigation';
 
 // What should be on the Overview screen for stores?
 // Charts (items sold per day for x past number of days etc).
@@ -16,7 +17,7 @@ import { Icon } from '../components/icons';
 // Focus on simple "in the past day" aggregates for now.
 
 const Overview: React.FC = () => {
-	const { navigate } = useNavigation();
+	const { navigate } = useNavigation<NavigationProp<ModalStackParamList>>();
 
 	return (
 		<SafeAreaView style={styles.container}>

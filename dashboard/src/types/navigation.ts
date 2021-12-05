@@ -1,5 +1,10 @@
 export type AppStackParamList = {
 	Main: undefined;
+	Authenticate: undefined;
+	Register: undefined;
+	Verify: { phone: string };
+	StoreSelect: undefined;
+	CreateStore: undefined;
 };
 
 export type MainTabParamList = {
@@ -22,10 +27,15 @@ export type OrdersStackParamsList = {
 
 export type ItemsStackParamList = {
 	ItemsList: undefined;
-	Item: { itemId: string }; // This is also a navigator in itself, how does that work?
+	Item: { itemId: string };
 };
 
 export type ModalStackParamList = {
 	'Add Item': undefined;
 	'Edit Item': { itemId: string };
+	SettingsStack: undefined;
+};
+
+export type SettingsStackParamList = {
+	[key: string]: undefined;
 };

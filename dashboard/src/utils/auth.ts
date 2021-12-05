@@ -16,7 +16,8 @@ export const register = async ({ name, phone }: RegisterPayload) => {
 			body: JSON.stringify({ name, phone })
 		});
 
-		await response.json();
+		const data = await response.json();
+		console.log(data);
 	} catch (error) {
 		console.log(error);
 	}

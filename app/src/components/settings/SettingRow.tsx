@@ -7,7 +7,7 @@ import { SettingsStackParamList } from '../../types/navigation';
 
 interface SettingRowProps {
 	name: string;
-	screen: string;
+	screen: keyof SettingsStackParamList;
 	displayValue?: string;
 }
 

@@ -24,6 +24,7 @@ import SettingsActiveStore from '../components/settings/SettingsActiveStore';
 import { Icon, IconType } from '../components/icons';
 import { useAppSelector } from '../redux/store';
 import env from '../../env';
+import { AppStackParamList } from '../types/navigation';
 
 // Navigation Structure
 // - Auth (Stack Navigator)
@@ -46,7 +47,7 @@ import env from '../../env';
 // - Settings
 // - Add/Edit Item (and most other form-based views)
 
-const AppStack = createStackNavigator();
+const AppStack = createStackNavigator<AppStackParamList>();
 const OrdersStack = createStackNavigator();
 const ItemsStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();

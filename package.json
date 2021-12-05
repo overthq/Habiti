@@ -8,6 +8,7 @@
 	"license": "GNU GPL V3",
 	"private": true,
 	"scripts": {
+		"start-redis": "redis-server --daemonize yes",
 		"postinstall": "husky install"
 	},
 	"lint-staged": {

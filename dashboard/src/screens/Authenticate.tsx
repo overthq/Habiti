@@ -1,12 +1,13 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { authenticate } from '../utils/auth';
 import styles from '../styles/auth';
+import { AppStackParamList } from '../types/navigation';
 
 const Authenticate: React.FC = () => {
 	const [phone, setPhone] = React.useState('');
-	const { navigate } = useNavigation();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	const handleSubmit = async () => {
 		await authenticate(phone);
