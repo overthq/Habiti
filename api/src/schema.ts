@@ -1,4 +1,4 @@
-import { makeExecutableSchema } from 'graphql-tools';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 import merge from 'lodash/merge';
 
 import * as userQueries from './collections/user/queries';
