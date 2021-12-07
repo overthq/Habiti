@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+	id          String @id @default(uuid())
+	phone       String @unique
+	createdAt   DateTime @default(now())
+	updatedAt   DateTime @updatedAt
+
+	orders      Order[]
+	managed     StoreManager[]
+}
+
+model Store {
+	id          String @id @default(uuid())
+	name        String
+	createdAt   DateTime @default(now())
+	updatedAt   DateTime @updatedAt
+
+	image       Image
+	products    Product[]
+	orders      Order[]
+	managers    StoreManager[]
+}
+
+model Product {
+	id          String @id @default(uuid())
+	name        String
+	storeId     String
+	createdAt   DateTime @default(now())
+	updatedAt   DateTime @updatedAt
+
+	images      Image[]
+	store       Store @relation(fields: [storeId], references: [id])
+}
+
+model Order {
+	id          String @id @default(uuid())
+	userId      String
+	storeId     String
+	createdAt   DateTime @default(now())
+	updatedAt   DateTime @updatedAt
+
+	user        User @relation(fields: [userId], references: [id])
+	store       Store @relation(fields: [storeId], references: [id])
+}
+
+model Cart {
+	userId      String
+	storeId     String
+	createdAt   DateTime @default(now())
+	updatedAt   DateTime @updatedAt
+
+	@@unique([userId, storeId])
+}
+
+model Image {
+	id          String @id @default(uuid())
+	storeId     String?
+	productId   String?
+	path        String @db.VarChar(2083)
+	createdAt   DateTime @default(now())
+	updatedAt   DateTime @updatedAt
+
+	store       Store? @relation(fields: [storeId], references: [id])
+	product     Product? @relation(fields: [productId], references: [id])
+}
+
+model StoreManager {
+	storeId     String
+	managerId   String
+
+	store       Store @relation(fields: [storeId], references: [id])
+	manager     User @relation(fields: [managerId], references: [id])
+
+	@@unique([storeId, managerId])
+}
