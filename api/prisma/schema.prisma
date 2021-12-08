@@ -25,7 +25,7 @@ model Store {
 	createdAt   DateTime @default(now())
 	updatedAt   DateTime @updatedAt
 
-	image       Image
+	image       Image?
 	products    Product[]
 	orders      Order[]
 	managers    StoreManager[]
