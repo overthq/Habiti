@@ -1,3 +1,10 @@
-export const userOrders = () => {};
+const userOrders = () => {};
 
-export const storeOrders = () => {};
+const storeOrders = () => {};
+
+export default {
+	Query: {
+		userOrders,
+		storeOrders
+	}
+};

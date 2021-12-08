@@ -9,6 +9,10 @@ const UserTypes = `
 		user(id: ID!): User!
 		users: [User!]!
 	}
+
+	extend type Mutation {
+		deleteUser(userId: ID!): ID!
+	}
 `;
 
 export default UserTypes;

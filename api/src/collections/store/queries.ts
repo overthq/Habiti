@@ -1,5 +1,13 @@
-export const store = () => {};
+const store = () => {};
 
-export const stores = () => {};
+const stores = () => {};
 
-export const followedStores = () => {};
+const followedStores = () => {};
+
+export default {
+	Query: {
+		store,
+		stores,
+		followedStores
+	}
+};

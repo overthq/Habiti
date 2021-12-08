@@ -1,1 +1,7 @@
-export const deleteUser = async () => {};
+const deleteUser = async () => {};
+
+export default {
+	Mutation: {
+		deleteUser
+	}
+};

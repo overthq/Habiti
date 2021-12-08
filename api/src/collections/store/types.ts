@@ -10,6 +10,13 @@ const StoreTypes = `
 	extend type Query {
 		store: Store!
 		stores: [Store!]!
+		followedStores(userId: ID!): [Store!]!
+	}
+
+	extend type Mutation {
+		createStore(input: CreateStoreInput!): Store!
+		followStore(userId: ID!, storeId: ID!): Boolean!
+		deleteStore(id: ID!): ID!
 	}
 `;
 

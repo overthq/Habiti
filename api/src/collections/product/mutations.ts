@@ -1,3 +1,10 @@
-export const createProduct = () => {};
+const createProduct = () => {};
 
-export const editProduct = () => {};
+const editProduct = () => {};
+
+export default {
+	Mutation: {
+		createProduct,
+		editProduct
+	}
+};

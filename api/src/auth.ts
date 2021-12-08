@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { Router } from 'express';
 import redisClient from './config/redis';
-import { sendVerificationCode } from './utils/auth';
+import { generateAccessToken, sendVerificationCode } from './utils/auth';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -55,10 +55,11 @@ router.post('/verify', async (req, res) => {
 			where: { phone }
 		});
 
-		// TODO: Sign user data to generate JWT.
+		const token = await generateAccessToken(user);
+
 		res.status(200).json({
 			success: true,
-			data: { user }
+			data: { token }
 		});
 	} else {
 		res.status(400).json({
