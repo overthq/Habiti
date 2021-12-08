@@ -16,6 +16,7 @@ model User {
 
 	orders      Order[]
 	managed     StoreManager[]
+	followed    StoreFollower[]
 }
 
 model Store {
@@ -28,6 +29,7 @@ model Store {
 	products    Product[]
 	orders      Order[]
 	managers    StoreManager[]
+	followers   StoreFollower[]
 }
 
 model Product {
@@ -38,6 +40,8 @@ model Product {
 	updatedAt   DateTime @updatedAt
 
 	images      Image[]
+	orders      OrderProduct[]
+
 	store       Store @relation(fields: [storeId], references: [id])
 }
 
@@ -48,8 +52,19 @@ model Order {
 	createdAt   DateTime @default(now())
 	updatedAt   DateTime @updatedAt
 
+	products    OrderProduct[]
+
 	user        User @relation(fields: [userId], references: [id])
 	store       Store @relation(fields: [storeId], references: [id])
+}
+
+model OrderProduct {
+	orderId     String
+	productId   String
+	order       Order @relation(fields: [orderId], references: [id])
+	product     Product @relation(fields: [productId], references: [id])
+
+	@@unique([orderId, productId])
 }
 
 model Cart {
@@ -81,4 +96,14 @@ model StoreManager {
 	manager     User @relation(fields: [managerId], references: [id])
 
 	@@unique([storeId, managerId])
+}
+
+model StoreFollower {
+	storeId     String
+	followerId  String
+
+	store       Store @relation(fields: [storeId], references: [id])
+	follower    User @relation(fields: [followerId], references: [id])
+
+	@@unique([storeId, followerId])
 }

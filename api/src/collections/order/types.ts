@@ -21,8 +21,8 @@ const OrderTypes = `
 	}
 
 	extend type Query {
-		userOrders(id: ID!): [Order!]!
-		storeOrders(id: ID!): [Order!]!
+		userOrders(userId: ID!): [Order!]!
+		storeOrders(storeId: ID!): [Order!]!
 	}
 
 	extend type Mutation {

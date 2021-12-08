@@ -1,13 +1,25 @@
 const StoreTypes = `
 	type Store {
+		id: ID!
 		name: String!
+		products: [Product!]!
+		orders: [Order!]!
+		managers: [StoreManager!]!
+		followers: [StoreFollower!]!
+	}
+
+	type StoreManager {
+		storeId: ID!
+		managerId: ID!
+		store: Store!
+		manager: User!
 	}
 
 	type StoreFollower {
-		userId: ID!
 		storeId: ID!
-		user: User!
+		followerId: ID!
 		store: Store!
+		follower: User!
 	}
 
 	input CreateStoreInput {
@@ -22,7 +34,7 @@ const StoreTypes = `
 
 	extend type Mutation {
 		createStore(input: CreateStoreInput!): Store!
-		followStore(userId: ID!, storeId: ID!): Boolean!
+		followStore(userId: ID!, storeId: ID!): StoreFollower!
 		deleteStore(id: ID!): ID!
 	}
 `;
