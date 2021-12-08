@@ -1,9 +1,15 @@
 import { ResolverContext } from '../../types/resolvers';
 
 export const createStore = async (_, { input }, ctx: ResolverContext) => {
+	// Get managerId from req.user (passed via ctx)
 	const store = await ctx.prisma.store.create({
 		data: {
-			name: input.name
+			name: input.name,
+			managers: {
+				create: {
+					managerId: ''
+				}
+			}
 		}
 	});
 
