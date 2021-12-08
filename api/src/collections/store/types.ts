@@ -3,6 +3,13 @@ const StoreTypes = `
 		name: String!
 	}
 
+	type StoreFollower {
+		userId: ID!
+		storeId: ID!
+		user: User!
+		store: Store!
+	}
+
 	input CreateStoreInput {
 		name: String!
 	}

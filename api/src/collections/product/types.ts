@@ -1,10 +1,16 @@
 const ProductTypes = `
 	type Product {
 		name: String!
+		description: String!
+		unitPrice: Int!
+		storeId: ID!
+		store: Store!
 	}
 
 	input CreateProductInput {
 		name: String!
+		description: String!
+		unitPrice: Int!
 	}
 
 	extend type Query {

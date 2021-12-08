@@ -3,6 +3,16 @@ const OrderTypes = `
 		id: ID!
 		userId: ID!
 		storeId: ID!
+		user: User!
+		store: Store!
+	}
+
+	type OrderProduct {
+		orderId: ID!
+		productId: ID!
+		quantity: Int!
+		order: Order!
+		product: Product!
 	}
 
 	input CreateOrderInput {
