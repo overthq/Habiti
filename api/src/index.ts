@@ -6,6 +6,7 @@ import { PrismaClient } from '@prisma/client';
 import auth from './auth';
 import schema from './schema';
 import redisClient from './config/redis';
+import expressJwt from 'express-jwt';
 
 const main = async () => {
 	const app = express();
@@ -13,11 +14,18 @@ const main = async () => {
 
 	app.use(express.json());
 	app.use(compression());
+	app.use(
+		expressJwt({
+			secret: process.env.JWT_SECRET,
+			algorithms: ['HS256'],
+			credentialsRequired: false
+		})
+	);
 
 	const httpServer = createServer(app);
 	const apolloServer = new ApolloServer({
 		schema,
-		context: { prisma }
+		context: ({ req }) => ({ user: req.user || null, prisma })
 	});
 
 	await apolloServer.start();
