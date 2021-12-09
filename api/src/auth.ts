@@ -9,13 +9,23 @@ const prisma = new PrismaClient();
 router.post('/authenticate', async (req, res) => {
 	const { phone } = req.body;
 
-	// Verify that user exists.
+	const user = await prisma.user.findUnique({ where: { phone } });
+
+	if (!user) {
+		return res.status(404).json({
+			success: false,
+			data: {
+				message: 'The specified user does not exist.'
+			}
+		});
+	}
+
 	await sendVerificationCode(phone);
 
 	return res.status(200).json({
 		success: true,
 		data: {
-			message: 'Account successfully created'
+			message: 'Authentication successful.'
 		}
 	});
 });

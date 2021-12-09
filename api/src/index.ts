@@ -5,6 +5,7 @@ import { ApolloServer } from 'apollo-server-express';
 import { PrismaClient } from '@prisma/client';
 import auth from './auth';
 import schema from './schema';
+import redisClient from './config/redis';
 
 const main = async () => {
 	const app = express();
@@ -28,6 +29,7 @@ const main = async () => {
 	httpServer.listen({ port: PORT });
 
 	console.log(`Server running on port ${PORT}`);
+	await redisClient.connect();
 };
 
 main();

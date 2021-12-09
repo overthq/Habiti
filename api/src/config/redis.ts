@@ -6,7 +6,6 @@ const prod = {
 };
 
 const dev = { url: process.env.REDIS_URL };
-
 const client = createClient(process.env.NODE_ENV === 'production' ? prod : dev);
 
 client.on('connect', () => {

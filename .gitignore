@@ -1,3 +1,5 @@
 node_modules
 app/ios/Pods
 .env
+dump.rdb
+*.rdb
