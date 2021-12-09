@@ -1,4 +1,6 @@
-const UserTypes = `
+import { gql } from 'apollo-server-express';
+
+const UserTypes = gql`
 	type User {
 		id: ID!
 		name: String!

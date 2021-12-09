@@ -1,12 +1,20 @@
-import { ResolverContext } from '../../types/resolvers';
+import { Resolver } from '../../types/resolvers';
 
-const userOrders = async (_, { userId }, ctx: ResolverContext) => {
+interface UserOrdersArgs {
+	userId: string;
+}
+
+const userOrders: Resolver<UserOrdersArgs> = async (_, { userId }, ctx) => {
 	const orders = await ctx.prisma.order.findMany({ where: { userId } });
 
 	return orders;
 };
 
-const storeOrders = async (_, { storeId }, ctx: ResolverContext) => {
+interface StoreOrdersArgs {
+	storeId: string;
+}
+
+const storeOrders: Resolver<StoreOrdersArgs> = async (_, { storeId }, ctx) => {
 	const orders = await ctx.prisma.order.findMany({ where: { storeId } });
 
 	return orders;

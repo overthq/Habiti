@@ -1,4 +1,6 @@
-const ProductTypes = `
+import { gql } from 'apollo-server-express';
+
+const ProductTypes = gql`
 	type Product {
 		name: String!
 		description: String!

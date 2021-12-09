@@ -1,4 +1,6 @@
-const StoreTypes = `
+import { gql } from 'apollo-server-express';
+
+const StoreTypes = gql`
 	type Store {
 		id: ID!
 		name: String!

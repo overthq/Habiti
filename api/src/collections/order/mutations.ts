@@ -1,6 +1,6 @@
-import { ResolverContext } from '../../types/resolvers';
+import { Resolver } from '../../types/resolvers';
 
-export const createOrder = async (_, { input }, ctx: ResolverContext) => {
+export const createOrder: Resolver<any> = async (_, { input }, ctx) => {
 	const order = await ctx.prisma.order.create({
 		data: { ...input }
 	});
