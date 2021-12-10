@@ -5,6 +5,7 @@ const UserTypes = gql`
 		id: ID!
 		name: String!
 		phone: String!
+		carts: [Cart!]!
 		orders: [Order!]!
 		managed: [StoreManager!]!
 		followed: [StoreFollower!]!
