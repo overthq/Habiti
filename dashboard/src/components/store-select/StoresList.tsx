@@ -12,6 +12,7 @@ const StoresList = () => {
 	const [{ data }] = useManagedStoresQuery({
 		variables: { userId: userId as string }
 	});
+
 	const stores = data?.user.managed.map(({ store }) => store);
 
 	const handleStoreSelect = (storeId: string) => {
