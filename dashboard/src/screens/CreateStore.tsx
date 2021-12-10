@@ -26,7 +26,6 @@ const steps = [
 
 const CreateStore: React.FC = () => {
 	const [, createStore] = useCreateStoreMutation();
-	// const [, addManager] = useAddManagerMutation();
 	// const userId = useAppSelector(({ auth }) => auth.userId);
 	const [activeStepIndex, setActiveStepIndex] = React.useState(0);
 	const listRef = React.useRef<FlatList>(null);

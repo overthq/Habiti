@@ -52,8 +52,6 @@ const Verify: React.FC = () => {
 			setLoading(false);
 			// Also fetch managed stores, and dispatch an action to set them BEFORE navigating to the main screen.
 			// It would be wise to use a loading indicator while this is happening, however, awaits do not work on the dispatch function for some reason.
-
-			// navigate('Main'); (This should work automatically, because of the way the navigator is built).
 		} catch (error) {
 			console.log(error);
 		}
