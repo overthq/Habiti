@@ -47,7 +47,7 @@ interface VerifyCodePayload {
 
 export const verifyCode = async ({ phone, code }: VerifyCodePayload) => {
 	try {
-		const response = await fetch(`${env.authUrl}/verify-code`, {
+		const response = await fetch(`${env.authUrl}/verify`, {
 			method: 'POST',
 			headers: {
 				Accept: 'application/json',

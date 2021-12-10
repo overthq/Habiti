@@ -1,25 +1,17 @@
 query ManagedStores($userId: uuid!) {
-	store_managers(where: { manager_id: { _eq: $userId } }) {
-		store {
-			id
-			name
-			short_name
+	user(id: $userId) {
+		managed {
+			store {
+				id
+				name
+			}
 		}
 	}
 }
 
-mutation AddManager($userId: uuid!, $storeId: uuid!) {
-	insert_store_managers_one(
-		object: { manager_id: $userId, store_id: $storeId }
-	) {
-		manager_id
-		store_id
-	}
-}
-
-mutation RemoveManager($userId: uuid!, $storeId: uuid!) {
-	delete_store_managers_by_pk(store_id: $storeId, manager_id: $userId) {
-		manager_id
-		store_id
-	}
-}
+# mutation RemoveManager($userId: uuid!, $storeId: uuid!) {
+# 	delete_store_managers_by_pk(store_id: $storeId, manager_id: $userId) {
+# 		manager_id
+# 		store_id
+# 	}
+# }

@@ -8,8 +8,8 @@ const localHostString = (extension: string) =>
 
 const ENV = {
 	dev: {
-		authUrl: localHostString('5000'),
-		hasuraUrl: localHostString('8080/v1/graphql'),
+		authUrl: localHostString('5000/auth'),
+		hasuraUrl: localHostString('5000/graphql'),
 		storageUrl: localHostString('5100')
 	},
 	staging: {

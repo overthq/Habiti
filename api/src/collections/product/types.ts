@@ -19,6 +19,12 @@ const ProductTypes = gql`
 		unitPrice: Int!
 	}
 
+	input EditProductInput {
+		name: String
+		description: String
+		unitPrice: Int
+	}
+
 	extend type Query {
 		product(id: ID!): Product!
 		storeProducts(id: ID!): [Product!]!
@@ -26,7 +32,7 @@ const ProductTypes = gql`
 
 	extend type Mutation {
 		createProduct(input: CreateProductInput!): Product!
-		editProduct(id: ID!): Product!
+		editProduct(id: ID!, input: EditProductInput!): Product!
 	}
 `;
 
