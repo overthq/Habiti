@@ -24,9 +24,22 @@ const CartTypes = gql`
 		storeId: ID!
 	}
 
+	input AddProductToCartInput {
+		cartId: ID
+		storeId: ID!
+		productId: ID!
+		quantity: Int
+	}
+
 	extend type Query {
 		cart(id: ID!): Cart!
 		userCarts(userId: ID!): [Cart!]!
+	}
+
+	extend type Mutation {
+		addProductToCart(input: AddProductToCartInput!): Cart!
+		removeProductFromCart(cartId: ID!, productId: ID!): ID!
+		deleteCart(cartId: ID!): ID!
 	}
 `;
 

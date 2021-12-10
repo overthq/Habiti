@@ -17,6 +17,10 @@ import orderQueries from './collections/order/queries';
 import orderMutations from './collections/order/mutations';
 import OrderTypes from './collections/order/types';
 
+import cartQueries from './collections/cart/queries';
+import cartMutations from './collections/cart/mutations';
+import CartTypes from './collections/cart/types';
+
 const Root = `
 	type Query { _: Boolean }
 	type Mutation { _: Boolean }
@@ -31,11 +35,13 @@ const resolvers = merge(
 	productQueries,
 	productMutations,
 	storeQueries,
-	storeMutations
+	storeMutations,
+	cartQueries,
+	cartMutations
 );
 
 const schema = makeExecutableSchema({
-	typeDefs: [Root, UserTypes, StoreTypes, ProductTypes, OrderTypes],
+	typeDefs: [Root, UserTypes, StoreTypes, ProductTypes, OrderTypes, CartTypes],
 	resolvers
 });
 
