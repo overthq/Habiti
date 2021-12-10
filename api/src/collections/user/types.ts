@@ -5,6 +5,9 @@ const UserTypes = gql`
 		id: ID!
 		name: String!
 		phone: String!
+		orders: [Order!]!
+		managed: [StoreManager!]!
+		followed: [StoreFollower!]!
 		createdAt: String!
 		updatedAt: String!
 	}

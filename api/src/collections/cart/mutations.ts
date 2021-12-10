@@ -30,10 +30,13 @@ const addProductToCart: Resolver<AddProductArgs> = async (
 		},
 		create: {
 			userId: ctx.user.id,
-			storeId
-		},
-		include: {
-			products: true
+			storeId,
+			products: {
+				create: {
+					productId,
+					quantity
+				}
+			}
 		}
 	});
 };

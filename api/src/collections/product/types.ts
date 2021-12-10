@@ -7,6 +7,8 @@ const ProductTypes = gql`
 		unitPrice: Int!
 		storeId: ID!
 		store: Store!
+		orders: [Order!]!
+		carts: [CartProduct!]!
 		createdAt: String!
 		updatedAt: String!
 	}

@@ -27,10 +27,59 @@ const followedStores: Resolver = async (_, __, ctx) => {
 	return followed;
 };
 
+const products: Resolver = async (parent, _, ctx) => {
+	const fetchedProducts = await ctx.prisma.store
+		.findUnique({ where: { id: parent.id } })
+		.products();
+
+	return fetchedProducts;
+};
+
+const orders: Resolver = async (parent, _, ctx) => {
+	const fetchedOrders = await ctx.prisma.store
+		.findUnique({ where: { id: parent.id } })
+		.orders();
+
+	return fetchedOrders;
+};
+
+const managers: Resolver = async (parent, _, ctx) => {
+	const fetchedManagers = await ctx.prisma.store
+		.findUnique({ where: { id: parent.id } })
+		.managers();
+
+	return fetchedManagers;
+};
+
+const followers: Resolver = async (parent, _, ctx) => {
+	const fetchedFollowers = await ctx.prisma.store
+		.findUnique({
+			where: { id: parent.id }
+		})
+		.followers();
+
+	return fetchedFollowers;
+};
+
+const carts: Resolver = async (parent, _, ctx) => {
+	const fetchedCarts = await ctx.prisma.store
+		.findUnique({ where: { id: parent.id } })
+		.carts();
+
+	return fetchedCarts;
+};
+
 export default {
 	Query: {
 		store,
 		stores,
 		followedStores
+	},
+	Store: {
+		products,
+		orders,
+		managers,
+		followers,
+		carts
 	}
 };

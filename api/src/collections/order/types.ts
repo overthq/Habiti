@@ -7,6 +7,7 @@ const OrderTypes = gql`
 		storeId: ID!
 		user: User!
 		store: Store!
+		products: [OrderProduct!]!
 		createdAt: String!
 		updatedAt: String!
 	}

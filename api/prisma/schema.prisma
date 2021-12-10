@@ -17,6 +17,7 @@ model User {
 	orders      Order[]
 	managed     StoreManager[]
 	followed    StoreFollower[]
+	carts       Cart[]
 }
 
 model Store {
@@ -30,13 +31,15 @@ model Store {
 	orders      Order[]
 	managers    StoreManager[]
 	followers   StoreFollower[]
+	carts       Cart[]
 }
 
 model Product {
 	id          String @id @default(uuid())
 	name        String
-	storeId     String
+	description String
 	unitPrice   Int
+	storeId     String
 	createdAt   DateTime @default(now())
 	updatedAt   DateTime @updatedAt
 
@@ -77,6 +80,9 @@ model Cart {
 	storeId     String
 	createdAt   DateTime @default(now())
 	updatedAt   DateTime @updatedAt
+
+	user        User @relation(fields: [userId], references: [id])
+	store       Store @relation(fields: [storeId], references: [id])
 
 	products    CartProduct[]
 
