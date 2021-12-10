@@ -5,6 +5,8 @@ const UserTypes = gql`
 		id: ID!
 		name: String!
 		phone: String!
+		createdAt: String!
+		updatedAt: String!
 	}
 
 	extend type Query {

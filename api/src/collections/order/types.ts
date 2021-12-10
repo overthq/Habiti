@@ -7,6 +7,8 @@ const OrderTypes = gql`
 		storeId: ID!
 		user: User!
 		store: Store!
+		createdAt: String!
+		updatedAt: String!
 	}
 
 	type OrderProduct {

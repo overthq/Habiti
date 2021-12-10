@@ -1,13 +1,12 @@
 import { Resolver } from '../../types/resolvers';
 
 interface CartArgs {
-	userId: string;
-	storeId: string;
+	id: string;
 }
 
-export const cart: Resolver<CartArgs> = async (_, { userId, storeId }, ctx) => {
+export const cart: Resolver<CartArgs> = async (_, { id }, ctx) => {
 	const fetchedCart = await ctx.prisma.cart.findUnique({
-		where: { userId_storeId: { userId, storeId } }
+		where: { id }
 	});
 
 	return fetchedCart;
@@ -27,4 +26,11 @@ export const userCarts: Resolver<UserCartsArgs> = async (
 	});
 
 	return carts;
+};
+
+export default {
+	Query: {
+		cart,
+		userCarts
+	}
 };

@@ -1,18 +1,31 @@
-import { ResolverContext } from '../../types/resolvers';
+import { Resolver } from '../../types/resolvers';
 
-const store = async (_, { id }, ctx: ResolverContext) => {
+interface StoreArgs {
+	id: string;
+}
+
+const store: Resolver<StoreArgs> = async (_, { id }, ctx) => {
 	const fetchedStore = await ctx.prisma.store.findUnique({ where: { id } });
 
 	return fetchedStore;
 };
 
-const stores = async (_, __, ctx: ResolverContext) => {
+const stores: Resolver = async (_, __, ctx) => {
 	const fetchedStores = await ctx.prisma.store.findMany();
 
 	return fetchedStores;
 };
 
-const followedStores = () => {};
+const followedStores: Resolver = async (_, __, ctx) => {
+	const { followed } = await ctx.prisma.user.findUnique({
+		where: { id: ctx.user.id },
+		include: {
+			followed: true
+		}
+	});
+
+	return followed;
+};
 
 export default {
 	Query: {

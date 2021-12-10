@@ -8,6 +8,8 @@ const StoreTypes = gql`
 		orders: [Order!]!
 		managers: [StoreManager!]!
 		followers: [StoreFollower!]!
+		createdAt: String!
+		updatedAt: String!
 	}
 
 	type StoreManager {

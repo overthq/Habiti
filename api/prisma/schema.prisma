@@ -36,11 +36,13 @@ model Product {
 	id          String @id @default(uuid())
 	name        String
 	storeId     String
+	unitPrice   Int
 	createdAt   DateTime @default(now())
 	updatedAt   DateTime @updatedAt
 
 	images      Image[]
 	orders      OrderProduct[]
+	carts       CartProduct[]
 
 	store       Store @relation(fields: [storeId], references: [id])
 }
@@ -61,6 +63,8 @@ model Order {
 model OrderProduct {
 	orderId     String
 	productId   String
+	unitPrice   Int
+
 	order       Order @relation(fields: [orderId], references: [id])
 	product     Product @relation(fields: [productId], references: [id])
 
@@ -68,12 +72,26 @@ model OrderProduct {
 }
 
 model Cart {
+	id          String @id @default(uuid())
 	userId      String
 	storeId     String
 	createdAt   DateTime @default(now())
 	updatedAt   DateTime @updatedAt
 
+	products    CartProduct[]
+
 	@@unique([userId, storeId])
+}
+
+model CartProduct {
+	cartId      String
+	productId   String
+	quantity    Int
+
+	cart        Cart @relation(fields: [cartId], references: [id])
+	product     Product @relation(fields: [productId], references: [id])
+
+	@@unique([cartId, productId])
 }
 
 model Image {
