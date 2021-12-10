@@ -7,7 +7,7 @@ const { width } = Dimensions.get('window');
 const Brand: React.FC = () => {
 	const { handleChange, handleBlur } = useFormikContext<{
 		name: string;
-		shortName: string;
+		// shortName: string;
 	}>();
 
 	return (
@@ -25,7 +25,7 @@ const Brand: React.FC = () => {
 					onBlur={handleBlur('name')}
 				/>
 			</View>
-			<View>
+			{/* <View>
 				<Text style={styles.label}>Short name (used in URL)</Text>
 				<TextInput
 					style={styles.input}
@@ -33,7 +33,7 @@ const Brand: React.FC = () => {
 					onChangeText={handleChange('shortName')}
 					onBlur={handleBlur('shortName')}
 				/>
-			</View>
+			</View> */}
 		</View>
 	);
 };

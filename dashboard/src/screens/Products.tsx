@@ -1,10 +1,17 @@
 import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import ProductsListItem from '../components/products/ProductsListItem';
+import { useAppSelector } from '../redux/store';
 import { useProductsQuery } from '../types/api';
 
-const Items: React.FC = () => {
-	const [{ data }] = useProductsQuery();
+const Products: React.FC = () => {
+	const activeStore = useAppSelector(
+		({ preferences }) => preferences.activeStore
+	);
+
+	const [{ data }] = useProductsQuery({
+		variables: { storeId: activeStore as string }
+	});
 
 	return (
 		<View style={styles.container}>
@@ -24,4 +31,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default Items;
+export default Products;

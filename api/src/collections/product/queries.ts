@@ -7,8 +7,6 @@ const product: Resolver = async (_, { id }, ctx) => {
 };
 
 const storeProducts: Resolver = async (_, { storeId }, ctx) => {
-	// TODO: Use cursors for pagination.
-	// Try to extract the pagination logic for use in other resolvers.
 	const products = await ctx.prisma.product.findMany({ where: { storeId } });
 
 	return products;
@@ -39,26 +37,6 @@ const store: Resolver = async (parent, _, ctx) => {
 
 	return fetchedStore;
 };
-
-// Maybe create a codemod (like this) to generate field resolvers.
-// Doing this at runtime is terrible,
-// since we have to create the resolver every time, before we can use it.
-// Maybe even create an NPM package for it.
-
-// const collections = {
-// 	user: ['orders', 'managed', 'followed', 'carts'],
-// 	stores: ['products', 'orders', 'managers', 'followers', 'carts']
-// };
-
-// const buildFieldResolver = (field: keyof typeof collections) => {
-// 	const resolver: Resolver = async (p, _, c) => {
-// 		const fetched = await c.prisma[field]
-// 			.findUnique({ where: { id: p.id } })
-// 			[collections[field]]();
-// 		return fetched;
-// 	};
-// 	return resolver;
-// };
 
 export default {
 	Query: {

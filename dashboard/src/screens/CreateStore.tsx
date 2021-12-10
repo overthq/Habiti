@@ -58,7 +58,7 @@ const CreateStore: React.FC = () => {
 			<Formik
 				initialValues={{
 					name: '',
-					shortName: '',
+					// shortName: '',
 					twitter: '',
 					instagram: '',
 					website: '',

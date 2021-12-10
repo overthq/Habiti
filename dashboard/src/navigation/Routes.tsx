@@ -56,7 +56,7 @@ const getIcon = (routeName: string): IconType => {
 	switch (routeName) {
 		case 'Overview':
 			return 'home';
-		case 'Items':
+		case 'Products':
 			return 'tag';
 		case 'Orders':
 			return 'inbox';
@@ -140,7 +140,7 @@ const RootNavigator: React.FC = () => {
 													})}
 												/>
 												<ProductsStack.Screen
-													name='Item'
+													name='Product'
 													component={Product}
 													options={() => ({
 														title: '',

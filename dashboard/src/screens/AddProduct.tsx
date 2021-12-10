@@ -74,7 +74,7 @@ const AddProduct: React.FC = () => {
 								keyboardType='numeric'
 							/>
 						</View>
-						<Button text='Add Item' onPress={handleSubmit} />
+						<Button text='Add Product' onPress={handleSubmit} />
 					</View>
 				)}
 			</Formik>
