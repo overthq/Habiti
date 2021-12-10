@@ -1,16 +1,16 @@
 import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import ItemsListItem from '../components/items/ItemsListItem';
-import { useItemsQuery } from '../types/api';
+import { useProductsQuery } from '../types/api';
 
 const Items: React.FC = () => {
-	const [{ data }] = useItemsQuery();
+	const [{ data }] = useProductsQuery();
 
 	return (
 		<View style={styles.container}>
 			<FlatList
 				keyExtractor={i => i.id}
-				data={data?.items}
+				data={data?.store.products}
 				renderItem={({ item }) => <ItemsListItem item={item} />}
 			/>
 		</View>

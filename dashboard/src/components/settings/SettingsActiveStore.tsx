@@ -27,13 +27,15 @@ const Row: React.FC<RowProps> = ({ name, isSelected, onSelectRow }) => (
 
 const SettingsActiveStore: React.FC = () => {
 	const userId = useAppSelector(({ auth }) => auth.userId);
-	const [{ data }] = useManagedStoresQuery({ variables: { userId } });
+	const [{ data }] = useManagedStoresQuery({
+		variables: { userId: userId as string }
+	});
 	const dispatch = useDispatch();
 	const activeStore = useAppSelector(
 		({ preferences }) => preferences.activeStore
 	);
 
-	const managers = data?.store_managers;
+	const managers = data?.user.managed;
 
 	const stores = managers?.map(({ store }) => store);
 

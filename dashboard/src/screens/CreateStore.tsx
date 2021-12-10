@@ -7,9 +7,9 @@ import {
 	useSharedValue,
 	useAnimatedScrollHandler
 } from 'react-native-reanimated';
-import { useAddManagerMutation, useCreateStoreMutation } from '../types/api';
+import { useCreateStoreMutation } from '../types/api';
 import Button from '../components/global/Button';
-import { useAppSelector } from '../redux/store';
+// import { useAppSelector } from '../redux/store';
 import { updatePreference } from '../redux/preferences/actions';
 import Brand from '../components/create-store/Brand';
 import Social from '../components/create-store/Social';
@@ -26,8 +26,8 @@ const steps = [
 
 const CreateStore: React.FC = () => {
 	const [, createStore] = useCreateStoreMutation();
-	const [, addManager] = useAddManagerMutation();
-	const userId = useAppSelector(({ auth }) => auth.userId);
+	// const [, addManager] = useAddManagerMutation();
+	// const userId = useAppSelector(({ auth }) => auth.userId);
 	const [activeStepIndex, setActiveStepIndex] = React.useState(0);
 	const listRef = React.useRef<FlatList>(null);
 	const dispatch = useDispatch();
@@ -66,23 +66,17 @@ const CreateStore: React.FC = () => {
 				onSubmit={async values => {
 					try {
 						const { data } = await createStore({
-							input: { name: values.name, short_name: values.shortName }
+							input: { name: values.name }
 						});
 
-						if (data?.insert_stores_one?.id) {
-							await addManager({
-								userId,
-								storeId: data.insert_stores_one.id
-							});
+						if (data?.createStore?.id) {
 							if (values.storeImage) {
 								await uploadImage(values.storeImage, {
-									storeId: data.insert_stores_one.id
+									storeId: data.createStore.id
 								});
 							}
 
-							dispatch(
-								updatePreference({ activeStore: data.insert_stores_one.id })
-							);
+							dispatch(updatePreference({ activeStore: data.createStore.id }));
 						}
 					} catch (error) {
 						console.log(error);

@@ -2,28 +2,28 @@ import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { ItemsStackParamList } from '../../types/navigation';
+import { ProductsStackParamList } from '../../types/navigation';
 import { Icon } from '../icons';
-import { ItemsQuery } from '../../types/api';
+import { ProductsQuery } from '../../types/api';
 
 interface ItemsListItemProps {
-	item: ItemsQuery['items'][-1];
+	product: ProductsQuery['store']['products'][-1];
 }
 
 // TODO: Convert this to a grid-item, displaying the item image.
-const ItemsListItem: React.FC<ItemsListItemProps> = ({ item }) => {
+const ItemsListItem: React.FC<ItemsListItemProps> = ({ product }) => {
 	const { navigate } =
-		useNavigation<StackNavigationProp<ItemsStackParamList>>();
+		useNavigation<StackNavigationProp<ProductsStackParamList>>();
 
 	return (
 		<TouchableOpacity
-			onPress={() => navigate('Item', { itemId: item.id })}
+			onPress={() => navigate('Product', { productId: product.id })}
 			activeOpacity={0.8}
 			style={styles.container}
 		>
 			<View>
-				<Text style={styles.name}>{item.name}</Text>
-				<Text style={styles.price}>{item.unit_price} NGN</Text>
+				<Text style={styles.name}>{product.name}</Text>
+				<Text style={styles.price}>{product.unitPrice} NGN</Text>
 			</View>
 			<Icon name='chevronRight' />
 		</TouchableOpacity>

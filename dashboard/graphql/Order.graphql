@@ -11,6 +11,8 @@ query Orders($storeId: ID!) {
 				unitPrice
 				quantity
 			}
+			createdAt
+			updatedAt
 		}
 	}
 }
@@ -27,6 +29,8 @@ query Order($id: ID!) {
 			unitPrice
 			quantity
 		}
+		createdAt
+		updatedAt
 	}
 }
 

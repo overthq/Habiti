@@ -14,10 +14,10 @@ export type MainTabParamList = {
 	Store: undefined;
 };
 
-export type ItemStackParamList = {
-	ItemDetail: { itemId: string };
-	AddItem: undefined;
-	EditItem: { itemId: string };
+export type ProductStackParamList = {
+	ProductDetail: { itemId: string };
+	AddProduct: undefined;
+	EditProduct: { itemId: string };
 };
 
 export type OrdersStackParamsList = {
@@ -25,9 +25,9 @@ export type OrdersStackParamsList = {
 	Order: { orderId: string };
 };
 
-export type ItemsStackParamList = {
-	ItemsList: undefined;
-	Item: { itemId: string };
+export type ProductsStackParamList = {
+	ProductsList: undefined;
+	Product: { productId: string };
 };
 
 export type ModalStackParamList = {

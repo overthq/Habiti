@@ -4,13 +4,13 @@ import { OrdersQuery } from '../../types/api';
 import { Icon } from '../icons';
 
 interface OrdersListItemProps {
-	order: OrdersQuery['orders'][-1];
+	order: OrdersQuery['store']['orders'][-1];
 }
 
 const OrdersListItem: React.FC<OrdersListItemProps> = ({ order }) => {
-	const amount = order.order_items
+	const amount = order.products
 		.reduce(
-			(acc, { unit_price, quantity }) => acc + (unit_price || 0) * quantity,
+			(acc, { unitPrice, quantity }) => acc + (unitPrice || 0) * quantity,
 			0
 		)
 		.toFixed(2);
@@ -19,8 +19,8 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order }) => {
 		<View style={styles.container}>
 			<View>
 				<Text style={styles.name}>{order.user.name}</Text>
-				<Text>{order.status}</Text>
-				<Text>{order.created_at}</Text>
+				{/*<Text>{order.status}</Text> */}
+				<Text>{order.createdAt}</Text>
 			</View>
 			<Text>{amount} NGN</Text>
 			<Icon name='chevronRight' />

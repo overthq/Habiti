@@ -287,7 +287,10 @@ export type OrdersQueryVariables = Exact<{
 export type OrdersQuery = { __typename?: 'Query' } & {
 	store: { __typename?: 'Store' } & {
 		orders: Array<
-			{ __typename?: 'Order' } & Pick<Order, 'id'> & {
+			{ __typename?: 'Order' } & Pick<
+				Order,
+				'id' | 'createdAt' | 'updatedAt'
+			> & {
 					user: { __typename?: 'User' } & Pick<User, 'id' | 'name'>;
 					products: Array<
 						{ __typename?: 'OrderProduct' } & Pick<
@@ -305,7 +308,10 @@ export type OrderQueryVariables = Exact<{
 }>;
 
 export type OrderQuery = { __typename?: 'Query' } & {
-	order: { __typename?: 'Order' } & Pick<Order, 'id'> & {
+	order: { __typename?: 'Order' } & Pick<
+		Order,
+		'id' | 'createdAt' | 'updatedAt'
+	> & {
 			user: { __typename?: 'User' } & Pick<User, 'id' | 'name'>;
 			products: Array<
 				{ __typename?: 'OrderProduct' } & Pick<
@@ -416,6 +422,8 @@ export const OrdersDocument = gql`
 					unitPrice
 					quantity
 				}
+				createdAt
+				updatedAt
 			}
 		}
 	}
@@ -439,6 +447,8 @@ export const OrderDocument = gql`
 				unitPrice
 				quantity
 			}
+			createdAt
+			updatedAt
 		}
 	}
 `;
