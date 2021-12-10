@@ -44,7 +44,7 @@ Next, proceed to the following links for more information on how to set each pro
 
 ## Contributing
 
-All forms of (positive) contribution are welcome to Market. Be sure to check out the [contribution guidelines](.github/CONTRIBUTING.md) before contributing.
+Contributions are welcome. Be sure to check out the [contribution guidelines](.github/CONTRIBUTING.md) before contributing.
 
 ## Tech Stack
 
