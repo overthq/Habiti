@@ -40,6 +40,7 @@ Next, proceed to the following links for more information on how to set each pro
 
 - [App](app/README.md#installation-and-setup)
 - [Dashboard](dashboard/README.md#installation-and-setup)
+- [API](api/README.md#installation-and-setup)
 - [Storage](storage/README.md#isntallation-and-setup)
 
 ## Contributing
@@ -51,10 +52,10 @@ Contributions are welcome. Be sure to check out the [contribution guidelines](.g
 Market is a TypeScript-based application. It is built with popular JS libraries/frameworks like React, React Native and Express. Here's what the stack looks like.
 
 - Front-End
-	- Framework: [React Native](https://facebook.github.io/react-native) and [Expo](https://expo.io)
+	- Framework: [React Native](https://reactnative.dev) and [Expo](https://expo.io)
 - Back-End
   - Database: [PostgresQL](https://postgresql.com)
-  - Server: [GraphQL](https://graphql.org) and [Prisma](https://prisma.io)
+  - Server: [Express](https://expressjs.com), [GraphQL](https://graphql.org) and [Prisma](https://prisma.io)
   - Caching: [Redis](https://redis.io)
   - Storage: [Cloudinary](https://cloudinary.com)
 
