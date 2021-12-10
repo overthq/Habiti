@@ -1,13 +1,18 @@
-import { ResolverContext } from '../../types/resolvers';
+import { Resolver } from '../../types/resolvers';
 
-export const createStore = async (_, { input }, ctx: ResolverContext) => {
-	// Get managerId from req.user (passed via ctx)
+interface CreateStoreArgs {
+	input: {
+		name: string;
+	};
+}
+
+const createStore: Resolver<CreateStoreArgs> = async (_, { input }, ctx) => {
 	const store = await ctx.prisma.store.create({
 		data: {
 			name: input.name,
 			managers: {
 				create: {
-					managerId: ''
+					managerId: ctx.user.id
 				}
 			}
 		}
@@ -16,9 +21,26 @@ export const createStore = async (_, { input }, ctx: ResolverContext) => {
 	return store;
 };
 
-export const followStore = () => {};
+interface FollowStoreArgs {
+	storeId: string;
+}
 
-export const deleteStore = async (_, { id }, ctx: ResolverContext) => {
+const followStore: Resolver<FollowStoreArgs> = async (_, { storeId }, ctx) => {
+	const follower = await ctx.prisma.storeFollower.create({
+		data: {
+			followerId: ctx.user.id,
+			storeId
+		}
+	});
+
+	return follower;
+};
+
+interface DeleteStoreArgs {
+	id: string;
+}
+
+const deleteStore: Resolver<DeleteStoreArgs> = async (_, { id }, ctx) => {
 	await ctx.prisma.store.delete({ where: { id } });
 
 	return id;
