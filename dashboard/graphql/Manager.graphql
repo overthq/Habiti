@@ -1,4 +1,4 @@
-query ManagedStores($userId: uuid!) {
+query ManagedStores($userId: ID!) {
 	user(id: $userId) {
 		managed {
 			store {

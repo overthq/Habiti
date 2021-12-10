@@ -7,7 +7,7 @@ query Orders($storeId: ID!) {
 				name
 			}
 			products {
-				id
+				productId
 				unitPrice
 				quantity
 			}
@@ -15,15 +15,15 @@ query Orders($storeId: ID!) {
 	}
 }
 
-query Order($orderId: uuid!) {
-	order(id: $orderId) {
+query Order($id: ID!) {
+	order(id: $id) {
 		id
 		user {
 			id
 			name
 		}
 		products {
-			id
+			productId
 			unitPrice
 			quantity
 		}

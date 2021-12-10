@@ -32,7 +32,7 @@ const StoreTypes = gql`
 	}
 
 	extend type Query {
-		store: Store!
+		store(id: ID!): Store!
 		stores: [Store!]!
 		followedStores(userId: ID!): [Store!]!
 	}

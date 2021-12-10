@@ -15,6 +15,7 @@ const OrderTypes = gql`
 	type OrderProduct {
 		orderId: ID!
 		productId: ID!
+		unitPrice: Int!
 		quantity: Int!
 		order: Order!
 		product: Product!
@@ -26,6 +27,7 @@ const OrderTypes = gql`
 	}
 
 	extend type Query {
+		order(id: ID!): Order!
 		userOrders(userId: ID!): [Order!]!
 		storeOrders(storeId: ID!): [Order!]!
 	}
