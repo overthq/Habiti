@@ -2,37 +2,33 @@ import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { Formik } from 'formik';
-import { useItemQuery, useUpdateItemMutation } from '../types/api';
+import { useProductQuery, useEditProductMutation } from '../types/api';
 import { ModalStackParamList } from '../types/navigation';
 import Button from '../components/global/Button';
 
-const EditItem: React.FC = () => {
+const EditProduct: React.FC = () => {
 	const {
-		params: { itemId }
-	} = useRoute<RouteProp<ModalStackParamList, 'Edit Item'>>();
-	const [{ data }] = useItemQuery({ variables: { itemId } });
-	const [, updateItem] = useUpdateItemMutation();
+		params: { productId }
+	} = useRoute<RouteProp<ModalStackParamList, 'Edit Product'>>();
+	const [{ data }] = useProductQuery({ variables: { id: productId } });
+	const [, editProduct] = useEditProductMutation();
 
-	if (!data?.items_by_pk) throw new Error('This item does not exist');
+	if (!data?.product) throw new Error('This item does not exist');
 
-	const item = data.items_by_pk;
+	const product = data.product;
 
 	return (
 		<View style={styles.container}>
 			<Formik
 				initialValues={{
-					name: item.name,
-					description: item.description,
-					unitPrice: item.unit_price
+					name: product.name,
+					description: product.description,
+					unitPrice: product.unitPrice
 				}}
 				onSubmit={async values => {
-					await updateItem({
-						itemId,
-						itemObject: {
-							name: values.name,
-							description: values.description,
-							unit_price: values.unitPrice
-						}
+					await editProduct({
+						id: productId,
+						input: values
 					});
 				}}
 			>
@@ -68,4 +64,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default EditItem;
+export default EditProduct;

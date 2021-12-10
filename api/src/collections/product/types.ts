@@ -18,6 +18,7 @@ const ProductTypes = gql`
 		name: String!
 		description: String!
 		unitPrice: Int!
+		storeId: ID!
 	}
 
 	input EditProductInput {

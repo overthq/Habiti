@@ -8,6 +8,10 @@ query Orders($storeId: ID!) {
 			}
 			products {
 				productId
+				product {
+					id
+					name
+				}
 				unitPrice
 				quantity
 			}
@@ -26,6 +30,10 @@ query Order($id: ID!) {
 		}
 		products {
 			productId
+			product {
+				id
+				name
+			}
 			unitPrice
 			quantity
 		}

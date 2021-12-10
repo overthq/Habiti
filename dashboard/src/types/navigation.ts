@@ -31,8 +31,8 @@ export type ProductsStackParamList = {
 };
 
 export type ModalStackParamList = {
-	'Add Item': undefined;
-	'Edit Item': { itemId: string };
+	'Add Product': undefined;
+	'Edit Product': { productId: string };
 	SettingsStack: undefined;
 };
 

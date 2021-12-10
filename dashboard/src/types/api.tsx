@@ -61,6 +61,7 @@ export type CreateProductInput = {
 	name: Scalars['String'];
 	description: Scalars['String'];
 	unitPrice: Scalars['Int'];
+	storeId: Scalars['ID'];
 };
 
 export type CreateStoreInput = {
@@ -296,7 +297,12 @@ export type OrdersQuery = { __typename?: 'Query' } & {
 						{ __typename?: 'OrderProduct' } & Pick<
 							OrderProduct,
 							'productId' | 'unitPrice' | 'quantity'
-						>
+						> & {
+								product: { __typename?: 'Product' } & Pick<
+									Product,
+									'id' | 'name'
+								>;
+							}
 					>;
 				}
 		>;
@@ -317,7 +323,9 @@ export type OrderQuery = { __typename?: 'Query' } & {
 				{ __typename?: 'OrderProduct' } & Pick<
 					OrderProduct,
 					'productId' | 'unitPrice' | 'quantity'
-				>
+				> & {
+						product: { __typename?: 'Product' } & Pick<Product, 'id' | 'name'>;
+					}
 			>;
 		};
 };
@@ -419,6 +427,10 @@ export const OrdersDocument = gql`
 				}
 				products {
 					productId
+					product {
+						id
+						name
+					}
 					unitPrice
 					quantity
 				}
@@ -444,6 +456,10 @@ export const OrderDocument = gql`
 			}
 			products {
 				productId
+				product {
+					id
+					name
+				}
 				unitPrice
 				quantity
 			}

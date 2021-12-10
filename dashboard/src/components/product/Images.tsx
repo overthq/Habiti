@@ -6,13 +6,11 @@ import { Icon } from '../icons';
 import { uploadImage } from '../../utils/images';
 
 interface ImagesProps {
-	itemId: string;
+	productId: string;
 	images: ItemDetailsFragment['item_images'];
 }
 
-// TODO: Hacky, but maybe pass a refetch function?
-// (Only until I figure the cache stuff out).
-const Images: React.FC<ImagesProps> = ({ itemId, images }) => {
+const Images: React.FC<ImagesProps> = ({ productId, images }) => {
 	const handlePickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -22,7 +20,7 @@ const Images: React.FC<ImagesProps> = ({ itemId, images }) => {
 		});
 
 		if (!result.cancelled) {
-			await uploadImage(result.uri, { itemId });
+			await uploadImage(result.uri, { productId });
 		}
 	};
 

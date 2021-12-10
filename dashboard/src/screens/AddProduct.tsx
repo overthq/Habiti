@@ -1,16 +1,16 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { Formik } from 'formik';
 import { useNavigation } from '@react-navigation/native';
-import { useAddItemMutation } from '../types/api';
+import { useCreateProductMutation } from '../types/api';
 import Button from '../components/global/Button';
 import { useAppSelector } from '../redux/store';
 
-const AddItem: React.FC = () => {
+const AddProduct: React.FC = () => {
 	const activeStore = useAppSelector(
 		({ preferences }) => preferences.activeStore
 	);
-	const [, addItem] = useAddItemMutation();
+	const [, createProduct] = useCreateProductMutation();
 	const { goBack } = useNavigation();
 
 	return (
@@ -23,17 +23,19 @@ const AddItem: React.FC = () => {
 				}}
 				onSubmit={async values => {
 					try {
-						await addItem({
-							itemObject: {
-								name: values.name,
-								description: values.description,
-								store_id: activeStore,
-								unit_price: Number(values.unitPrice)
-							}
-						});
+						if (activeStore) {
+							await createProduct({
+								input: {
+									name: values.name,
+									description: values.description,
+									storeId: activeStore,
+									unitPrice: Number(values.unitPrice)
+								}
+							});
+						}
 						goBack();
 					} catch (error) {
-						Alert.alert(error.message);
+						console.log(error);
 					}
 				}}
 			>
@@ -108,4 +110,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default AddItem;
+export default AddProduct;

@@ -6,12 +6,12 @@ import { ProductsStackParamList } from '../../types/navigation';
 import { Icon } from '../icons';
 import { ProductsQuery } from '../../types/api';
 
-interface ItemsListItemProps {
+interface ProductsListItemProps {
 	product: ProductsQuery['store']['products'][-1];
 }
 
 // TODO: Convert this to a grid-item, displaying the item image.
-const ItemsListItem: React.FC<ItemsListItemProps> = ({ product }) => {
+const ProductsListItem: React.FC<ProductsListItemProps> = ({ product }) => {
 	const { navigate } =
 		useNavigation<StackNavigationProp<ProductsStackParamList>>();
 
@@ -51,4 +51,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default ItemsListItem;
+export default ProductsListItem;

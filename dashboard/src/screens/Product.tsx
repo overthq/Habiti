@@ -3,13 +3,13 @@ import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useProductQuery } from '../types/api';
 import { ProductsStackParamList } from '../types/navigation';
-import Section from '../components/item/Section';
+import Section from '../components/product/Section';
 // import Images from '../components/item/Images';
 
 const Item: React.FC = () => {
 	const {
 		params: { productId }
-	} = useRoute<RouteProp<ProductsStackParamList, 'Item'>>();
+	} = useRoute<RouteProp<ProductsStackParamList, 'Product'>>();
 	const [{ data, fetching }] = useProductQuery({
 		variables: { id: productId }
 	});

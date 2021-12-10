@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
-import ItemsListItem from '../components/items/ItemsListItem';
+import ProductsListItem from '../components/products/ProductsListItem';
 import { useProductsQuery } from '../types/api';
 
 const Items: React.FC = () => {
@@ -11,7 +11,7 @@ const Items: React.FC = () => {
 			<FlatList
 				keyExtractor={i => i.id}
 				data={data?.store.products}
-				renderItem={({ item }) => <ItemsListItem item={item} />}
+				renderItem={({ item }) => <ProductsListItem product={item} />}
 			/>
 		</View>
 	);

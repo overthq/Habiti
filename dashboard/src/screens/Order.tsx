@@ -4,7 +4,7 @@ import { useRoute, RouteProp } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useOrderQuery } from '../types/api';
 import { OrdersStackParamsList } from '../types/navigation';
-import OrderItem from '../components/order/OrderItem';
+import OrderProduct from '../components/order/OrderProduct';
 
 const Order: React.FC = () => {
 	const {
@@ -22,7 +22,7 @@ const Order: React.FC = () => {
 			<View>
 				<Text style={styles.sectionHeader}>Order items</Text>
 				{order.products.map(product => (
-					<OrderItem key={product.productId} orderItem={product} />
+					<OrderProduct key={product.productId} orderProduct={product} />
 				))}
 			</View>
 		</SafeAreaView>
