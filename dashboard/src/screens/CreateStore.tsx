@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, Dimensions } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { Formik } from 'formik';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
+import Animated, {
 	useSharedValue,
 	useAnimatedScrollHandler
 } from 'react-native-reanimated';
@@ -15,6 +15,8 @@ import Brand from '../components/create-store/Brand';
 import Social from '../components/create-store/Social';
 import StoreImage from '../components/create-store/StoreImage';
 import { uploadImage } from '../utils/images';
+
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 const { width } = Dimensions.get('window');
 
@@ -84,7 +86,7 @@ const CreateStore: React.FC = () => {
 			>
 				{({ handleSubmit }) => (
 					<>
-						<FlatList
+						<AnimatedFlatList
 							ref={listRef}
 							horizontal
 							decelerationRate='fast'
@@ -99,6 +101,7 @@ const CreateStore: React.FC = () => {
 						<Button
 							text={isLastStep ? 'Submit' : 'Next'}
 							onPress={isLastStep ? handleSubmit : toNext}
+							style={{ alignSelf: 'center', width: width - 32 }}
 						/>
 					</>
 				)}

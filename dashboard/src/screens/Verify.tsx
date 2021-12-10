@@ -7,7 +7,6 @@ import { login } from '../redux/auth/actions';
 import Button from '../components/global/Button';
 import authStyles from '../styles/auth';
 
-// In the future: use a third party solution with SMS support
 const Verify: React.FC = () => {
 	const [code, setCode] = React.useState<string[]>([]);
 	const [loading, setLoading] = React.useState(false);
@@ -50,8 +49,6 @@ const Verify: React.FC = () => {
 			});
 			dispatch(login(accessToken, userId));
 			setLoading(false);
-			// Also fetch managed stores, and dispatch an action to set them BEFORE navigating to the main screen.
-			// It would be wise to use a loading indicator while this is happening, however, awaits do not work on the dispatch function for some reason.
 		} catch (error) {
 			console.log(error);
 		}

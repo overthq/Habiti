@@ -1,9 +1,12 @@
 import React from 'react';
-import { View, Pressable, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useFormikContext } from 'formik';
+import Button from '../global/Button';
 
-const StoreImage = () => {
+const { width } = Dimensions.get('window');
+
+const StoreImage: React.FC = () => {
 	const { values, setFieldValue } = useFormikContext<{ storeImage: string }>();
 
 	const handlePickImage = async () => {
@@ -19,15 +22,13 @@ const StoreImage = () => {
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}></Text>
+			<Text style={styles.title}>Store Image</Text>
 			<View style={styles.preview}>
-				{values.storeImage && (
+				{values.storeImage ? (
 					<Image source={{ uri: values.storeImage }} style={styles.image} />
-				)}
+				) : null}
 			</View>
-			<Pressable onPress={handlePickImage}>
-				<Text>Upload</Text>
-			</Pressable>
+			<Button onPress={handlePickImage} text='Upload' />
 		</View>
 	);
 };
@@ -35,6 +36,7 @@ const StoreImage = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		width,
 		padding: 16
 	},
 	title: {

@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Dimensions } from 'react-native';
 import { useFormikContext } from 'formik';
 
-const Brand = () => {
+const { width } = Dimensions.get('window');
+
+const Brand: React.FC = () => {
 	const { handleChange, handleBlur } = useFormikContext<{
 		name: string;
 		shortName: string;
@@ -11,9 +13,11 @@ const Brand = () => {
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>Your brand</Text>
-			<Text>Please enter the name of your store.</Text>
+			<Text style={styles.description}>
+				Please enter the name of your store.
+			</Text>
 			<View>
-				<Text>Store name</Text>
+				<Text style={styles.label}>Store name</Text>
 				<TextInput
 					style={styles.input}
 					placeholder='Nike'
@@ -22,7 +26,7 @@ const Brand = () => {
 				/>
 			</View>
 			<View>
-				<Text>Short name (used in URL)</Text>
+				<Text style={styles.label}>Short name (used in URL)</Text>
 				<TextInput
 					style={styles.input}
 					placeholder='nike'
@@ -37,13 +41,26 @@ const Brand = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		width,
 		padding: 16
 	},
 	title: {
 		fontWeight: 'bold',
 		fontSize: 32
 	},
+	description: {
+		fontSize: 16
+	},
+	label: {
+		fontSize: 16,
+		fontWeight: '500',
+		marginTop: 8,
+		marginBottom: 4
+	},
 	input: {
+		borderRadius: 4,
+		height: 40,
+		fontSize: 16,
 		paddingLeft: 8,
 		backgroundColor: '#DFDFDF'
 	}
