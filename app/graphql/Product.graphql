@@ -11,6 +11,9 @@ query StoreProducts($storeId: ID!) {
 
 query Product($productId: ID!) {
 	product(id: $productId) {
-		...ItemDetails
+		id
+		name
+		description
+		unitPrice
 	}
 }

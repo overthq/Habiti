@@ -21,11 +21,6 @@ const OrderTypes = gql`
 		product: Product!
 	}
 
-	input CreateOrderInput {
-		userId: ID!
-		storeId: ID!
-	}
-
 	extend type Query {
 		order(id: ID!): Order!
 		userOrders(userId: ID!): [Order!]!
@@ -33,7 +28,7 @@ const OrderTypes = gql`
 	}
 
 	extend type Mutation {
-		createOrder(input: CreateOrderInput!): Order!
+		createOrder(cartId: ID!): Order!
 	}
 `;
 
