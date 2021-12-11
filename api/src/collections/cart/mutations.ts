@@ -1,15 +1,17 @@
 import { Resolver } from '../../types/resolvers';
 
 interface AddProductArgs {
-	cartId?: string;
-	storeId: string;
-	productId: string;
-	quantity: number;
+	input: {
+		cartId?: string;
+		storeId: string;
+		productId: string;
+		quantity: number;
+	};
 }
 
 const addProductToCart: Resolver<AddProductArgs> = async (
 	_,
-	{ cartId, storeId, productId, quantity },
+	{ input: { cartId, storeId, productId, quantity } },
 	ctx
 ) => {
 	await ctx.prisma.cart.upsert({

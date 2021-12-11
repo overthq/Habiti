@@ -1,0 +1,16 @@
+query StoreProducts($storeId: ID!) {
+	store(id: $storeId) {
+		products {
+			id
+			name
+			description
+			unitPrice
+		}
+	}
+}
+
+query Product($productId: ID!) {
+	product(id: $productId) {
+		...ItemDetails
+	}
+}
