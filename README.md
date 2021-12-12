@@ -41,7 +41,6 @@ Next, proceed to the following links for more information on how to set each pro
 - [App](app/README.md#installation-and-setup)
 - [Dashboard](dashboard/README.md#installation-and-setup)
 - [API](api/README.md#installation-and-setup)
-- [Storage](storage/README.md#isntallation-and-setup)
 
 ## Contributing
 
