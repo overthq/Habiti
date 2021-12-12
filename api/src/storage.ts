@@ -1,14 +1,11 @@
-import express, { Request, RequestHandler } from 'express';
+import { Request, Router } from 'express';
+import { PrismaClient } from '@prisma/client';
 import cloudinary from 'cloudinary';
 import Busboy from 'busboy';
-import client from './client';
-import './config';
-import { STORE_IMAGE, STORE_ITEM_IMAGE, STORE_STORE_IMAGE } from './queries';
+import './config/cloudinary';
 
-const app = express();
-
-app.use(express.json() as RequestHandler);
-app.use(express.urlencoded({ extended: true }) as RequestHandler);
+const router = Router();
+const prisma = new PrismaClient();
 
 // Mostly copied from this gist:
 // https://gist.github.com/sinnrrr/58901f7cdf77e299dc00ed23f362fcb8
@@ -19,7 +16,7 @@ const parseForm = (
 	uploads: cloudinary.UploadApiResponse[];
 }> => {
 	return new Promise((resolve, reject) => {
-		const form = new Busboy({ headers: req.headers });
+		const form = new Busboy({ headers: req.headers as any });
 
 		let filesCount = 0;
 		const body = {};
@@ -51,29 +48,35 @@ const parseForm = (
 	});
 };
 
-app.use('/upload', async (req, res) => {
+router.post('/upload', async (req, res) => {
 	try {
-		const { body, uploads } = await parseForm(req);
-		const { insert_images_one } = await client.request(STORE_IMAGE, {
-			input: { path_url: uploads[0].url }
+		const {
+			// body,
+			uploads
+		} = await parseForm(req);
+
+		await prisma.image.create({
+			data: {
+				path: uploads[0].url
+			}
 		});
 
-		if (body.itemId) {
-			await client.request(STORE_ITEM_IMAGE, {
-				input: {
-					item_id: body.itemId,
-					image_id: insert_images_one.id,
-					order_place: 1
-				}
-			});
-		} else if (body.storeId) {
-			await client.request(STORE_STORE_IMAGE, {
-				input: {
-					store_id: body.storeId,
-					image_id: insert_images_one.id
-				}
-			});
-		}
+		// if (body.itemId) {
+		// 	await client.request(STORE_ITEM_IMAGE, {
+		// 		input: {
+		// 			item_id: body.itemId,
+		// 			image_id: insert_images_one.id,
+		// 			order_place: 1
+		// 		}
+		// 	});
+		// } else if (body.storeId) {
+		// 	await client.request(STORE_STORE_IMAGE, {
+		// 		input: {
+		// 			store_id: body.storeId,
+		// 			image_id: insert_images_one.id
+		// 		}
+		// 	});
+		// }
 
 		return res.status(201).json({
 			success: true,
@@ -87,8 +90,4 @@ app.use('/upload', async (req, res) => {
 			error
 		});
 	}
-});
-
-app.listen(Number(process.env.PORT), () => {
-	console.log(`Storage server running on port ${process.env.PORT}`);
 });
