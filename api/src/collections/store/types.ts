@@ -39,7 +39,8 @@ const StoreTypes = gql`
 
 	extend type Mutation {
 		createStore(input: CreateStoreInput!): Store!
-		followStore(userId: ID!, storeId: ID!): StoreFollower!
+		followStore(storeId: ID!): StoreFollower!
+		unfollowStore(storeId: ID!): ID!
 		deleteStore(id: ID!): ID!
 	}
 `;

@@ -36,6 +36,22 @@ const followStore: Resolver<FollowStoreArgs> = async (_, { storeId }, ctx) => {
 	return follower;
 };
 
+interface UnfollowStoreArgs {
+	storeId: string;
+}
+
+const unfollowStore: Resolver<UnfollowStoreArgs> = async (
+	_,
+	{ storeId },
+	ctx
+) => {
+	await ctx.prisma.storeFollower.delete({
+		where: {
+			storeId_followerId: { storeId, followerId: ctx.user.id }
+		}
+	});
+};
+
 interface DeleteStoreArgs {
 	id: string;
 }
@@ -50,6 +66,7 @@ export default {
 	Mutation: {
 		createStore,
 		followStore,
+		unfollowStore,
 		deleteStore
 	}
 };
