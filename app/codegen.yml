@@ -1,8 +1,5 @@
 overwrite: true
-schema:
-  - http://localhost:8080/v1/graphql:
-      headers:
-        x-hasura-admin-secret: market-admin-secret
+schema: http://localhost:5000/graphql
 documents: graphql/*.graphql
 generates:
   src/types/api.tsx:

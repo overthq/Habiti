@@ -184,12 +184,11 @@ const Routes: React.FC = () => {
 	const client = React.useMemo(
 		() =>
 			createClient({
-				url: env.hasuraUrl,
+				url: `${env.apiUrl}/graphql`,
 				fetchOptions: () => ({
 					headers: {
 						authorization: accessToken ? `Bearer ${accessToken}` : '',
-						'x-hasura-admin-secret': 'market-admin-secret',
-						'x-hasura-store-id': activeStore || ''
+						'x-market-store-id': activeStore || ''
 					}
 				})
 			}),

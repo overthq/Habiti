@@ -1,16 +1,19 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { ItemDetailsFragment } from '../../types/api';
+// import { ItemDetailsFragment } from '../../types/api';
 import { Icon } from '../icons';
 import { uploadImage } from '../../utils/images';
 
 interface ImagesProps {
 	productId: string;
-	images: ItemDetailsFragment['item_images'];
+	// images: ItemDetailsFragment['item_images'];
 }
 
-const Images: React.FC<ImagesProps> = ({ productId, images }) => {
+const Images: React.FC<ImagesProps> = ({
+	productId
+	// images
+}) => {
 	const handlePickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -28,13 +31,13 @@ const Images: React.FC<ImagesProps> = ({ productId, images }) => {
 		<View style={styles.section}>
 			<Text style={styles.title}>Images</Text>
 			<View style={styles.images}>
-				{images.map(({ image }) => (
+				{/* images.map(({ image }) => (
 					<Image
 						key={image.id}
 						source={{ uri: image.path_url }}
 						style={styles.image}
 					/>
-				))}
+				)) */}
 				<TouchableOpacity onPress={handlePickImage} style={styles.add}>
 					<Icon name='plus' size={24} />
 				</TouchableOpacity>

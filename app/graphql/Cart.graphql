@@ -8,7 +8,7 @@ query Carts($userId: ID!) {
 			name
 		}
 		products {
-			id
+			# id
 			productId
 			product {
 				id
@@ -29,7 +29,7 @@ query Cart($cartId: ID!) {
 			name
 		}
 		products {
-			id
+			# id
 			productId
 			product {
 				id
@@ -39,23 +39,6 @@ query Cart($cartId: ID!) {
 		}
 	}
 }
-
-# mutation CreateCart($object: carts_insert_input!) {
-# 	insert_carts_one(object: $object) {
-# 		id
-# 		user_id
-# 	}
-# }
-
-# mutation UpsertItemToCart($object: cart_items_insert_input!) {
-# 	insert_cart_items_one(
-# 		object: $object
-# 		on_conflict: { constraint: cart_items_pkey, update_columns: [quantity] }
-# 	) {
-# 		id
-# 		cart_id
-# 	}
-# }
 
 mutation AddProductToCart($input: AddProductToCartInput!) {
 	addProductToCart(input: $input) {
@@ -67,7 +50,7 @@ mutation AddProductToCart($input: AddProductToCartInput!) {
 			name
 		}
 		products {
-			id
+			# id
 			productId
 			product {
 				id
@@ -78,21 +61,10 @@ mutation AddProductToCart($input: AddProductToCartInput!) {
 	}
 }
 
-# mutation UpdateCartItem($cartId: uuid!, $quantity: Int!) {
-# 	update_cart_items(
-# 		where: { cart_id: { _eq: $cartId } }
-# 		_set: { quantity: $quantity }
-# 	) {
-# 		returning {
-# 			id
-# 		}
-# 	}
-# }
-
-mutation RemoveProductFromCart($productId!, $cartId!) {
-  removeProductFromCart(productId: $productId, cartId: $cartId)
+mutation RemoveProductFromCart($productId: ID!, $cartId: ID!) {
+	removeProductFromCart(productId: $productId, cartId: $cartId)
 }
 
 mutation DeleteCart($cartId: ID!) {
-	deleteCart(id: $cartId)
+	deleteCart(cartId: $cartId)
 }

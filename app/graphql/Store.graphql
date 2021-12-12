@@ -5,12 +5,12 @@ query Stores {
 	}
 }
 
-query Store($storeId: uuid!) {
+query Store($storeId: ID!) {
 	store(id: $storeId) {
 		id
 		name
 		followers {
-			user {
+			follower {
 				id
 				name
 			}

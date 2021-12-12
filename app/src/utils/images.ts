@@ -13,7 +13,7 @@ export const uploadImage = async ({
 }: UploadImagePayload) => {
 	try {
 		const data = await FileSystem.uploadAsync(
-			`${env.storageUrl}/upload`,
+			`${env.apiUrl}/storage/upload`,
 			fileObject.uri,
 			{
 				httpMethod: 'POST',

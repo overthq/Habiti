@@ -93,8 +93,8 @@ const CreateStore: React.FC = () => {
 							snapToInterval={width}
 							showsHorizontalScrollIndicator={false}
 							data={steps}
-							keyExtractor={s => s.title}
-							renderItem={({ item }) => item.component}
+							keyExtractor={(s: any) => s.title}
+							renderItem={({ item }: any) => item.component}
 							onViewableItemsChanged={handleViewableItemsChanged}
 							onScroll={handleScroll}
 						/>
