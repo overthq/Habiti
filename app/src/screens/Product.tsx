@@ -1,19 +1,19 @@
 import React from 'react';
 import { View, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { useItemQuery } from '../types/api';
+import { useProductQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
-import ImageCarousel from '../components/item/ImageCarousel';
-import AddToCart from '../components/item/AddToCart';
-import ItemDetails from '../components/item/ItemDetails';
+import ImageCarousel from '../components/product/ImageCarousel';
+import AddToCart from '../components/product/AddToCart';
+import ProductDetails from '../components/product/ProductDetails';
 
 const Item = () => {
-	const { params } = useRoute<RouteProp<AppStackParamList, 'Item'>>();
-	const [{ data, fetching }] = useItemQuery({
-		variables: { itemId: params.itemId }
+	const { params } = useRoute<RouteProp<AppStackParamList, 'Product'>>();
+	const [{ data, fetching }] = useProductQuery({
+		variables: { productId: params.productId }
 	});
 
-	const item = data?.items_by_pk;
+	const item = data?.product;
 
 	if (fetching) {
 		return (
@@ -27,8 +27,8 @@ const Item = () => {
 
 	return (
 		<ScrollView style={styles.container}>
-			<ImageCarousel images={item.item_images} />
-			<ItemDetails item={item} />
+			{/* <ImageCarousel images={item.item_images} /> */}
+			<ProductDetails item={item} />
 			{/* Hack, create separate view for this. */}
 			<View style={{ width: '100%', paddingHorizontal: 16 }}>
 				<AddToCart

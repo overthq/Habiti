@@ -1,19 +1,22 @@
 query Carts($userId: ID!) {
-	userCarts(userId: $userId) {
-		id
-		userId
-		storeId
-		store {
+	user(id: $userId) {
+		carts {
 			id
-			name
-		}
-		products {
-			# id
-			productId
-			product {
+			userId
+			storeId
+			store {
 				id
 				name
-				unitPrice
+			}
+			products {
+				# id
+				productId
+				product {
+					id
+					name
+					unitPrice
+				}
+				quantity
 			}
 		}
 	}
@@ -36,6 +39,7 @@ query Cart($cartId: ID!) {
 				name
 				unitPrice
 			}
+			quantity
 		}
 	}
 }

@@ -3,7 +3,7 @@ export type AppStackParamList = {
 	Register: undefined;
 	Authenticate: undefined;
 	Verify: { phone: string };
-	Item: { itemId: string };
+	Product: { productId: string };
 	Cart: { cartId: string };
 	Order: { orderId: string };
 };

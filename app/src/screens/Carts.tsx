@@ -11,7 +11,9 @@ import { HomeTabParamList } from '../types/navigation';
 
 const Carts = () => {
 	const userId = useAppSelector(({ auth }) => auth.userId);
-	const [{ data, fetching, error }] = useCartsQuery({ variables: { userId } });
+	const [{ data, fetching, error }] = useCartsQuery({
+		variables: { userId: userId as string }
+	});
 	const { navigate } =
 		useNavigation<BottomTabNavigationProp<HomeTabParamList, 'Carts'>>();
 
@@ -24,7 +26,7 @@ const Carts = () => {
 	}
 	if (error) console.log(error);
 
-	const carts = data?.carts;
+	const carts = data?.user.carts;
 
 	return (
 		<SafeAreaView style={styles.container}>

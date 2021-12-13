@@ -14,7 +14,7 @@ const Store = () => {
 
 	if (fetching) return <ActivityIndicator />;
 
-	const store = data?.stores_by_pk;
+	const store = data?.store;
 	if (!store) return <View />;
 
 	return (

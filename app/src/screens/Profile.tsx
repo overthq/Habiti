@@ -11,18 +11,16 @@ const Profile = () => {
 	const userId = useAppSelector(({ auth }) => auth.userId);
 	const dispatch = useDispatch();
 
-	const [{ data, fetching }] = useCurrentUserQuery({ variables: { userId } });
+	const [{ data, fetching }] = useCurrentUserQuery({
+		variables: { userId: userId as string }
+	});
 
 	return (
 		<SafeAreaView style={styles.container}>
 			{/* <View>
 				<Text style={styles.heading}>Profile</Text>
 			</View> */}
-			{fetching ? (
-				<Text>Fetching...</Text>
-			) : (
-				<Text>{data?.users_by_pk?.name}</Text>
-			)}
+			{fetching ? <Text>Fetching...</Text> : <Text>{data?.user?.name}</Text>}
 			<Button text='Log Out' onPress={() => dispatch(logOut())} />
 		</SafeAreaView>
 	);

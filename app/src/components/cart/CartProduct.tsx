@@ -1,23 +1,23 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Icon } from './icons';
+import { Icon } from '../icons';
 
-interface CartItemProps {
-	item: {
+interface CartProductProps {
+	product: {
 		name: string;
-		unit_price: number;
+		unitPrice: number;
 	};
 	quantity: number;
 }
 
-const CartItem: React.FC<CartItemProps> = ({ item, quantity }) => (
+const CartProduct: React.FC<CartProductProps> = ({ product, quantity }) => (
 	<View style={styles.container}>
 		<View style={{ flexDirection: 'row' }}>
 			<View style={styles.imagePlaceholder} />
 			<View>
-				<Text style={styles.name}>{item.name}</Text>
+				<Text style={styles.name}>{product.name}</Text>
 				<Text style={styles.price}>
-					{quantity} {item.unit_price} NGN
+					{quantity} {product.unitPrice} NGN
 				</Text>
 			</View>
 		</View>
@@ -49,4 +49,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default CartItem;
+export default CartProduct;

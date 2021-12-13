@@ -43,6 +43,7 @@ export type CartProduct = {
 	__typename?: 'CartProduct';
 	cartId: Scalars['ID'];
 	productId: Scalars['ID'];
+	quantity: Scalars['Int'];
 	cart: Cart;
 	product: Product;
 };
@@ -271,19 +272,24 @@ export type CartsQueryVariables = Exact<{
 }>;
 
 export type CartsQuery = { __typename?: 'Query' } & {
-	userCarts: Array<
-		{ __typename?: 'Cart' } & Pick<Cart, 'id' | 'userId' | 'storeId'> & {
-				store: { __typename?: 'Store' } & Pick<Store, 'id' | 'name'>;
-				products: Array<
-					{ __typename?: 'CartProduct' } & Pick<CartProduct, 'productId'> & {
-							product: { __typename?: 'Product' } & Pick<
-								Product,
-								'id' | 'name' | 'unitPrice'
-							>;
-						}
-				>;
-			}
-	>;
+	user: { __typename?: 'User' } & {
+		carts: Array<
+			{ __typename?: 'Cart' } & Pick<Cart, 'id' | 'userId' | 'storeId'> & {
+					store: { __typename?: 'Store' } & Pick<Store, 'id' | 'name'>;
+					products: Array<
+						{ __typename?: 'CartProduct' } & Pick<
+							CartProduct,
+							'productId' | 'quantity'
+						> & {
+								product: { __typename?: 'Product' } & Pick<
+									Product,
+									'id' | 'name' | 'unitPrice'
+								>;
+							}
+					>;
+				}
+		>;
+	};
 };
 
 export type CartQueryVariables = Exact<{
@@ -294,7 +300,10 @@ export type CartQuery = { __typename?: 'Query' } & {
 	cart: { __typename?: 'Cart' } & Pick<Cart, 'id' | 'userId' | 'storeId'> & {
 			store: { __typename?: 'Store' } & Pick<Store, 'id' | 'name'>;
 			products: Array<
-				{ __typename?: 'CartProduct' } & Pick<CartProduct, 'productId'> & {
+				{ __typename?: 'CartProduct' } & Pick<
+					CartProduct,
+					'productId' | 'quantity'
+				> & {
 						product: { __typename?: 'Product' } & Pick<
 							Product,
 							'id' | 'name' | 'unitPrice'
@@ -492,20 +501,23 @@ export type CurrentUserQuery = { __typename?: 'Query' } & {
 
 export const CartsDocument = gql`
 	query Carts($userId: ID!) {
-		userCarts(userId: $userId) {
-			id
-			userId
-			storeId
-			store {
+		user(id: $userId) {
+			carts {
 				id
-				name
-			}
-			products {
-				productId
-				product {
+				userId
+				storeId
+				store {
 					id
 					name
-					unitPrice
+				}
+				products {
+					productId
+					product {
+						id
+						name
+						unitPrice
+					}
+					quantity
 				}
 			}
 		}
@@ -534,6 +546,7 @@ export const CartDocument = gql`
 					name
 					unitPrice
 				}
+				quantity
 			}
 		}
 	}
