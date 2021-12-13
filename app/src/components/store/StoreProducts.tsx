@@ -8,7 +8,7 @@ interface StoreItemsProps {
 	store: any; // FIXME
 }
 
-const StoreItems: React.FC<StoreItemsProps> = ({ store }) => {
+const StoreProducts: React.FC<StoreItemsProps> = ({ store }) => {
 	const [{ data, fetching }] = useStoreProductsQuery({
 		variables: { storeId: store.id }
 	});
@@ -27,4 +27,4 @@ const StoreItems: React.FC<StoreItemsProps> = ({ store }) => {
 	);
 };
 
-export default StoreItems;
+export default StoreProducts;

@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useStoreQuery } from '../types/api';
 import { MainStackParamList } from '../types/navigation';
-import StoreItems from '../components/store/StoreItems';
+import StoreProducts from '../components/store/StoreProducts';
 
 const Store = () => {
 	const { params } = useRoute<RouteProp<MainStackParamList, 'Store'>>();
@@ -19,7 +19,7 @@ const Store = () => {
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<StoreItems store={store} />
+			<StoreProducts store={store} />
 		</SafeAreaView>
 	);
 };

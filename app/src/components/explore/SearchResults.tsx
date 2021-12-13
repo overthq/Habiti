@@ -38,11 +38,11 @@ const StoresView: React.FC<StoresViewProps> = ({ data }) => {
 	);
 };
 
-interface ItemsViewProps {
+interface ProductsViewProps {
 	data: Product[];
 }
 
-const ItemsView: React.FC<ItemsViewProps> = ({ data }) => {
+const ProductsView: React.FC<ProductsViewProps> = ({ data }) => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	return (
@@ -73,14 +73,12 @@ const SearchResults: React.FC<SearchResultsProps> = ({ searchData }) => {
 	const [index, setIndex] = React.useState(0);
 	const [routes] = React.useState([
 		{ key: 'stores', title: 'Stores' },
-		{ key: 'items', title: 'Items' }
+		{ key: 'products', title: 'Products' }
 	]);
 
 	const renderScene = SceneMap({
-		// eslint-disable-next-line
 		stores: () => <StoresView data={searchData.stores} />,
-		// eslint-disable-next-line
-		items: () => <ItemsView data={searchData.items} />
+		items: () => <ProductsView data={searchData.products} />
 	});
 
 	return (

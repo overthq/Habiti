@@ -2,7 +2,7 @@ import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 // import { useItemsQuery } from '../types/api';
 
-const FeaturedItems = () => {
+const FeaturedProducts = () => {
 	// const [{ data }] = useItemsQuery();
 	const data = { items: [] as any[] };
 
@@ -12,14 +12,14 @@ const FeaturedItems = () => {
 			data={data?.items}
 			keyExtractor={({ id }) => id}
 			renderItem={({ item }) => (
-				<View key={item.id} style={styles.itemContainer}></View>
+				<View key={item.id} style={styles.product}></View>
 			)}
 		/>
 	);
 };
 
 const styles = StyleSheet.create({
-	itemContainer: {}
+	product: {}
 });
 
-export default FeaturedItems;
+export default FeaturedProducts;
