@@ -13,7 +13,7 @@ const RecentOrders = () => {
 				Recent Orders
 			</Text>
 			<FlatList
-				data={data?.orders}
+				data={data?.user.orders}
 				keyExtractor={({ id }) => id}
 				horizontal
 				showsHorizontalScrollIndicator={false}
