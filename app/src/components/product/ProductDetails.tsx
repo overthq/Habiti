@@ -1,22 +1,21 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { ProductQuery } from '../../types/api';
 
-interface ItemDetailsProps {
-	item: any;
+interface ProductDetailsProps {
+	product: ProductQuery['product'];
 }
 
-const ItemDetails: React.FC<ItemDetailsProps> = ({ item }) => {
-	return (
-		<View style={styles.container}>
-			<View style={styles.meta}>
-				<Text style={styles.name}>{item.name}</Text>
-				<Text style={styles.price}>${item.unit_price}</Text>
-			</View>
-			<Text style={styles.header}>Description</Text>
-			<Text style={styles.description}>{item?.description}</Text>
+const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => (
+	<View style={styles.container}>
+		<View style={styles.meta}>
+			<Text style={styles.name}>{product.name}</Text>
+			<Text style={styles.price}>${product.unitPrice}</Text>
 		</View>
-	);
-};
+		<Text style={styles.header}>Description</Text>
+		<Text style={styles.description}>{product?.description}</Text>
+	</View>
+);
 
 const styles = StyleSheet.create({
 	container: {
@@ -49,4 +48,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default ItemDetails;
+export default ProductDetails;

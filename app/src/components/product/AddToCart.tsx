@@ -33,6 +33,7 @@ const AddToCart: React.FC<AddToCartProps> = ({
 const styles = StyleSheet.create({
 	button: {
 		marginVertical: 10,
+		marginHorizontal: 16,
 		width: '100%',
 		height: 40,
 		borderRadius: 4,

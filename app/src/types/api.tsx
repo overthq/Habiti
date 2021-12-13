@@ -433,7 +433,7 @@ export type ProductQueryVariables = Exact<{
 export type ProductQuery = { __typename?: 'Query' } & {
 	product: { __typename?: 'Product' } & Pick<
 		Product,
-		'id' | 'name' | 'description' | 'unitPrice'
+		'id' | 'name' | 'description' | 'unitPrice' | 'storeId'
 	>;
 };
 
@@ -716,6 +716,7 @@ export const ProductDocument = gql`
 			name
 			description
 			unitPrice
+			storeId
 		}
 	}
 `;

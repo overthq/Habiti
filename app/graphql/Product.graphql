@@ -15,5 +15,6 @@ query Product($productId: ID!) {
 		name
 		description
 		unitPrice
+		storeId
 	}
 }
