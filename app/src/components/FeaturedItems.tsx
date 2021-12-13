@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
-import { useItemsQuery } from '../types/api';
+// import { useItemsQuery } from '../types/api';
 
 const FeaturedItems = () => {
-	const [{ data }] = useItemsQuery();
+	// const [{ data }] = useItemsQuery();
+	const data = { items: [] as any[] };
 
 	return (
 		<FlatList

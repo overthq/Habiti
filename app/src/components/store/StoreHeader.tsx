@@ -20,7 +20,7 @@ import { Icon } from '../icons';
 import { useNavigation } from '@react-navigation/native';
 
 interface StoreHeaderProps {
-	store: StoreQuery['stores_by_pk'];
+	store: StoreQuery['store'];
 }
 
 const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
@@ -30,8 +30,8 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 	const userId = useAppSelector(({ auth }) => auth.userId);
 
 	const isFollowingStore = React.useMemo(() => {
-		const userInStoreFollowing = store?.store_followers?.findIndex(
-			({ user_id }) => user_id === userId
+		const userInStoreFollowing = store?.followers?.findIndex(
+			({ follower }) => follower.id === userId
 		);
 
 		if (userInStoreFollowing) return userInStoreFollowing > -1;
@@ -68,10 +68,10 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 					<FollowButton
 						isFollowing={isFollowingStore}
 						follow={() => {
-							followStore({ storeId: store?.id, userId });
+							followStore({ storeId: store?.id });
 						}}
 						unfollow={() => {
-							unfollowStore({ storeId: store?.id, userId });
+							unfollowStore({ storeId: store?.id });
 						}}
 					/>
 				</View>

@@ -58,7 +58,7 @@ const Carts = () => {
 				<FlatList
 					style={styles.list}
 					bounces={false}
-					keyExtractor={c => c.store_id}
+					keyExtractor={c => c.storeId}
 					// ListHeaderComponent={
 					// 	<View style={styles.header}>
 					// 		<Text style={styles.title}>Carts</Text>

@@ -11,10 +11,10 @@ import {
 	useAnimatedScrollHandler
 } from 'react-native-reanimated';
 import ImageCarouselDots from '../ImageCarouselDots';
-import { ItemDetailsFragment } from '../../types/api';
+// import { ItemDetailsFragment } from '../../types/api';
 
 interface ImageCarouselProps {
-	images: ItemDetailsFragment['item_images'];
+	images: any;
 }
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
@@ -35,7 +35,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 				keyExtractor={i => i.image.id}
 				renderItem={({ item }) => (
 					<Image
-						source={{ uri: item.image.path_url }}
+						source={{ uri: item.image.path }}
 						style={{ width: '100%', height: '100%' }}
 					/>
 				)}

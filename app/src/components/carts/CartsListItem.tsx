@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { CartDetailsFragment } from '../../types/api';
+import { CartsQuery } from '../../types/api';
 import { Icon } from '../icons';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { AppStackParamList } from '../../types/navigation';
 
 interface CartListItemProps {
-	cart: CartDetailsFragment;
+	cart: CartsQuery['user']['carts'][-1];
 }
 
 const CartsListItem: React.FC<CartListItemProps> = ({ cart }) => {
@@ -26,8 +26,8 @@ const CartsListItem: React.FC<CartListItemProps> = ({ cart }) => {
 				<View>
 					<Text style={styles.name}>{cart.store.name}</Text>
 					<Text style={styles.count}>
-						{cart.cart_items.length}{' '}
-						{`item${cart.cart_items.length > 1 ? 's' : ''}`}
+						{cart.products.length}{' '}
+						{`item${cart.products.length > 1 ? 's' : ''}`}
 					</Text>
 				</View>
 			</View>

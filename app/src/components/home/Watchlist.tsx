@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { useItemsQuery } from '../../types/api';
+// import { useProductsQuery } from '../../types/api';
 import WatchlistItem from './WatchlistItem';
 
 const Watchlist = () => {
-	const [{ data, fetching }] = useItemsQuery();
+	// const [{ data, fetching }] = useItemsQuery();
+	// TODO: Add a WatchlistProducts table to db.
+	const [data, fetching] = [{ items: [] }, true];
 
 	if (fetching) {
 		return (

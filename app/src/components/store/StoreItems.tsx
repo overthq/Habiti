@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, FlatList } from 'react-native';
-import { useStoreItemsQuery } from '../../types/api';
+import { useStoreProductsQuery } from '../../types/api';
 import StoreHeader from './StoreHeader';
 import StoreListItem from './StoreListItem';
 
@@ -9,16 +9,15 @@ interface StoreItemsProps {
 }
 
 const StoreItems: React.FC<StoreItemsProps> = ({ store }) => {
-	const [{ data, fetching }] = useStoreItemsQuery({
+	const [{ data, fetching }] = useStoreProductsQuery({
 		variables: { storeId: store.id }
 	});
 
-	if (fetching) return <View />;
-	if (!data?.items) return <View />;
+	if (fetching || !data?.store.products) return <View />;
 
 	return (
 		<FlatList
-			data={data.items}
+			data={data.store.products}
 			keyExtractor={({ id }) => id}
 			ListHeaderComponent={() => <StoreHeader store={store} />}
 			showsVerticalScrollIndicator={false}

@@ -11,7 +11,7 @@ import FollowedStoresItem from './FollowedStoresItem';
 const FollowedStores: React.FC = () => {
 	const userId = useAppSelector(({ auth }) => auth.userId);
 	const [{ data, fetching }] = useStoresFollowedQuery({
-		variables: { userId }
+		variables: { userId: userId as string }
 	});
 	const { navigate } = useNavigation<StackNavigationProp<HomeTabParamList>>();
 
@@ -23,7 +23,7 @@ const FollowedStores: React.FC = () => {
 		);
 	}
 
-	const stores = data?.store_followers.map(({ store }) => store);
+	const stores = data?.user.followed.map(({ store }) => store);
 
 	return (
 		<View style={styles.container}>
