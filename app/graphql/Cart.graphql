@@ -1,83 +1,74 @@
-fragment CartDetails on carts {
-	id
-	user_id
-	store_id
-	store {
-		id
-		name
+query Carts($userId: ID!) {
+	user(id: $userId) {
+		carts {
+			id
+			userId
+			storeId
+			store {
+				id
+				name
+			}
+			products {
+				# id
+				productId
+				product {
+					id
+					name
+					unitPrice
+				}
+				quantity
+			}
+		}
 	}
-	cart_items {
+}
+
+query Cart($cartId: ID!) {
+	cart(id: $cartId) {
 		id
-		item_id
-		item {
+		userId
+		storeId
+		store {
 			id
 			name
-			unit_price
 		}
-		quantity
-	}
-}
-
-# Temporary query - at least until I figure out the right way to go about this.
-query CartByStoreId($userId: uuid!, $storeId: uuid!) {
-	carts(
-		where: {
-			_and: [{ user_id: { _eq: $userId } }, { store_id: { _eq: $storeId } }]
+		products {
+			# id
+			productId
+			product {
+				id
+				name
+				unitPrice
+			}
+			quantity
 		}
-	) {
+	}
+}
+
+mutation AddProductToCart($input: AddProductToCartInput!) {
+	addProductToCart(input: $input) {
 		id
-	}
-}
-
-query Carts($userId: uuid!) {
-	carts(where: { user_id: { _eq: $userId } }) {
-		...CartDetails
-	}
-}
-
-query Cart($cartId: uuid!) {
-	carts_by_pk(id: $cartId) {
-		...CartDetails
-	}
-}
-
-mutation CreateCart($object: carts_insert_input!) {
-	insert_carts_one(object: $object) {
-		id
-		user_id
-	}
-}
-
-mutation UpsertItemToCart($object: cart_items_insert_input!) {
-	insert_cart_items_one(
-		object: $object
-		on_conflict: { constraint: cart_items_pkey, update_columns: [quantity] }
-	) {
-		id
-		cart_id
-	}
-}
-
-mutation AddItemToCart($object: cart_items_insert_input!) {
-	insert_cart_items_one(object: $object) {
-		id
-		cart_id
-	}
-}
-
-mutation UpdateCartItem($cartId: uuid!, $quantity: Int!) {
-	update_cart_items(
-		where: { cart_id: { _eq: $cartId } }
-		_set: { quantity: $quantity }
-	) {
-		returning {
+		userId
+		storeId
+		store {
 			id
+			name
+		}
+		products {
+			# id
+			productId
+			product {
+				id
+				name
+				unitPrice
+			}
 		}
 	}
 }
 
-mutation RemoveItemFromCart($itemId: uuid!) {
-	delete_cart_items_by_pk(id: $itemId) {
-		id
-	}
+mutation RemoveProductFromCart($productId: ID!, $cartId: ID!) {
+	removeProductFromCart(productId: $productId, cartId: $cartId)
+}
+
+mutation DeleteCart($cartId: ID!) {
+	deleteCart(cartId: $cartId)
 }

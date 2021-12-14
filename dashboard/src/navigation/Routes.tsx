@@ -8,15 +8,15 @@ import { Provider, createClient } from 'urql';
 import Overview from '../screens/Overview';
 import Orders from '../screens/Orders';
 import Order from '../screens/Order';
-import Items from '../screens/Items';
-import Item from '../screens/Item';
+import Products from '../screens/Products';
+import Product from '../screens/Product';
 import Settings from '../screens/Settings';
 import Register from '../screens/Register';
 import Authenticate from '../screens/Authenticate';
 import Verify from '../screens/Verify';
 import Store from '../screens/Store';
-import AddItem from '../screens/AddItem';
-import EditItem from '../screens/EditItem';
+import AddProduct from '../screens/AddProduct';
+import EditProduct from '../screens/EditProduct';
 import StoreSelect from '../screens/StoreSelect';
 import CreateStore from '../screens/CreateStore';
 
@@ -36,27 +36,27 @@ import { AppStackParamList } from '../types/navigation';
 //  - Orders (Stack Navigator)
 //   - OrdersList
 //   - Order
-//  - Items (Stack Navigator)
-//   - ItemsList
-//   - AddItem
-//   - Item
-//    - EditItem
+//  - Products (Stack Navigator)
+//   - ProductsList
+//   - AddProduct
+//   - Product
+//   - EditProduct
 //  - Store
 
 // List of all screens that will be "modals"
 // - Settings
-// - Add/Edit Item (and most other form-based views)
+// - Add/Edit Product (and most other form-based views)
 
 const AppStack = createStackNavigator<AppStackParamList>();
 const OrdersStack = createStackNavigator();
-const ItemsStack = createStackNavigator();
+const ProductsStack = createStackNavigator();
 const MainTab = createBottomTabNavigator();
 
 const getIcon = (routeName: string): IconType => {
 	switch (routeName) {
 		case 'Overview':
 			return 'home';
-		case 'Items':
+		case 'Products':
 			return 'tag';
 		case 'Orders':
 			return 'inbox';
@@ -116,17 +116,22 @@ const RootNavigator: React.FC = () => {
 											</OrdersStack.Navigator>
 										)}
 									</MainTab.Screen>
-									<MainTab.Screen name='Items' options={{ headerShown: false }}>
+									<MainTab.Screen
+										name='Products'
+										options={{ headerShown: false }}
+									>
 										{() => (
-											<ItemsStack.Navigator>
-												<ItemsStack.Screen
-													name='ItemsList'
-													component={Items}
+											<ProductsStack.Navigator>
+												<ProductsStack.Screen
+													name='ProductsList'
+													component={Products}
 													options={({ navigation }) => ({
-														title: 'Items',
+														title: 'Products',
 														headerRight: () => (
 															<TouchableOpacity
-																onPress={() => navigation.navigate('Add Item')}
+																onPress={() =>
+																	navigation.navigate('Add Product')
+																}
 																style={{ marginRight: 16 }}
 															>
 																<Icon name='plus' />
@@ -134,9 +139,9 @@ const RootNavigator: React.FC = () => {
 														)
 													})}
 												/>
-												<ItemsStack.Screen
-													name='Item'
-													component={Item}
+												<ProductsStack.Screen
+													name='Product'
+													component={Product}
 													options={() => ({
 														title: '',
 														headerBackTitleVisible: false,
@@ -145,7 +150,7 @@ const RootNavigator: React.FC = () => {
 														)
 													})}
 												/>
-											</ItemsStack.Navigator>
+											</ProductsStack.Navigator>
 										)}
 									</MainTab.Screen>
 									<MainTab.Screen name='Store' component={Store} />
@@ -179,12 +184,11 @@ const Routes: React.FC = () => {
 	const client = React.useMemo(
 		() =>
 			createClient({
-				url: env.hasuraUrl,
+				url: `${env.apiUrl}/graphql`,
 				fetchOptions: () => ({
 					headers: {
 						authorization: accessToken ? `Bearer ${accessToken}` : '',
-						'x-hasura-admin-secret': 'market-admin-secret',
-						'x-hasura-store-id': activeStore || ''
+						'x-market-store-id': activeStore || ''
 					}
 				})
 			}),
@@ -199,8 +203,8 @@ const Routes: React.FC = () => {
 						{() => <RootNavigator />}
 					</ModalsStack.Screen>
 					<ModalsStack.Group screenOptions={{ presentation: 'modal' }}>
-						<ModalsStack.Screen name='Add Item' component={AddItem} />
-						<ModalsStack.Screen name='Edit Item' component={EditItem} />
+						<ModalsStack.Screen name='Add Product' component={AddProduct} />
+						<ModalsStack.Screen name='Edit Product' component={EditProduct} />
 						<ModalsStack.Screen
 							name='SettingsStack'
 							options={{ headerShown: false }}

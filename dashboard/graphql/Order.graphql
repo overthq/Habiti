@@ -1,54 +1,49 @@
-fragment OrderMetaDetails on orders {
-	id
-	user {
+query Orders($storeId: ID!) {
+	store(id: $storeId) {
+		orders {
+			id
+			user {
+				id
+				name
+			}
+			products {
+				productId
+				product {
+					id
+					name
+				}
+				unitPrice
+				quantity
+			}
+			createdAt
+			updatedAt
+		}
+	}
+}
+
+query Order($id: ID!) {
+	order(id: $id) {
 		id
-		name
-	}
-	status
-	order_items {
-		id
-		unit_price
-		quantity
-	}
-	created_at
-	updated_at
-}
-
-fragment OrderDetailsItem on order_items {
-	id
-	item {
-		name
-	}
-	unit_price
-	quantity
-}
-
-fragment OrderDetails on orders {
-	id
-	user {
-		id
-		name
-	}
-	status
-	order_items {
-		...OrderDetailsItem
+		user {
+			id
+			name
+		}
+		products {
+			productId
+			product {
+				id
+				name
+			}
+			unitPrice
+			quantity
+		}
+		createdAt
+		updatedAt
 	}
 }
 
-query Orders {
-	orders(order_by: { created_at: desc }) {
-		...OrderMetaDetails
-	}
-}
-
-query Order($orderId: uuid!) {
-	orders_by_pk(id: $orderId) {
-		...OrderDetails
-	}
-}
-
-mutation UpdateOrder($orderId: uuid!, $input: orders_set_input!) {
-	update_orders_by_pk(pk_columns: { id: $orderId }, _set: $input) {
-		id
-	}
-}
+# mutation UpdateOrder($orderId: uuid!, $input: orders_set_input!) {
+# 	update_orders_by_pk(pk_columns: { id: $orderId }, _set: $input) {
+# 		id
+# 	}
+# }

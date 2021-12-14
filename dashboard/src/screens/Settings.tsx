@@ -14,10 +14,10 @@ const Settings: React.FC = () => {
 	const dispatch = useDispatch();
 
 	const [{ data }] = useStoreQuery({
-		variables: { storeId: preferences.activeStore }
+		variables: { storeId: preferences.activeStore as string }
 	});
 
-	const store = data?.stores_by_pk;
+	const store = data?.store;
 
 	const settings = [
 		{

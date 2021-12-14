@@ -3,18 +3,20 @@ import { FlatList, StyleSheet, Dimensions } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { Formik } from 'formik';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
+import Animated, {
 	useSharedValue,
 	useAnimatedScrollHandler
 } from 'react-native-reanimated';
-import { useAddManagerMutation, useCreateStoreMutation } from '../types/api';
+import { useCreateStoreMutation } from '../types/api';
 import Button from '../components/global/Button';
-import { useAppSelector } from '../redux/store';
+// import { useAppSelector } from '../redux/store';
 import { updatePreference } from '../redux/preferences/actions';
 import Brand from '../components/create-store/Brand';
 import Social from '../components/create-store/Social';
 import StoreImage from '../components/create-store/StoreImage';
 import { uploadImage } from '../utils/images';
+
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 const { width } = Dimensions.get('window');
 
@@ -26,8 +28,7 @@ const steps = [
 
 const CreateStore: React.FC = () => {
 	const [, createStore] = useCreateStoreMutation();
-	const [, addManager] = useAddManagerMutation();
-	const userId = useAppSelector(({ auth }) => auth.userId);
+	// const userId = useAppSelector(({ auth }) => auth.userId);
 	const [activeStepIndex, setActiveStepIndex] = React.useState(0);
 	const listRef = React.useRef<FlatList>(null);
 	const dispatch = useDispatch();
@@ -57,7 +58,7 @@ const CreateStore: React.FC = () => {
 			<Formik
 				initialValues={{
 					name: '',
-					shortName: '',
+					// shortName: '',
 					twitter: '',
 					instagram: '',
 					website: '',
@@ -66,23 +67,17 @@ const CreateStore: React.FC = () => {
 				onSubmit={async values => {
 					try {
 						const { data } = await createStore({
-							input: { name: values.name, short_name: values.shortName }
+							input: { name: values.name }
 						});
 
-						if (data?.insert_stores_one?.id) {
-							await addManager({
-								userId,
-								storeId: data.insert_stores_one.id
-							});
+						if (data?.createStore?.id) {
 							if (values.storeImage) {
 								await uploadImage(values.storeImage, {
-									storeId: data.insert_stores_one.id
+									storeId: data.createStore.id
 								});
 							}
 
-							dispatch(
-								updatePreference({ activeStore: data.insert_stores_one.id })
-							);
+							dispatch(updatePreference({ activeStore: data.createStore.id }));
 						}
 					} catch (error) {
 						console.log(error);
@@ -91,21 +86,22 @@ const CreateStore: React.FC = () => {
 			>
 				{({ handleSubmit }) => (
 					<>
-						<FlatList
+						<AnimatedFlatList
 							ref={listRef}
 							horizontal
 							decelerationRate='fast'
 							snapToInterval={width}
 							showsHorizontalScrollIndicator={false}
 							data={steps}
-							keyExtractor={s => s.title}
-							renderItem={({ item }) => item.component}
+							keyExtractor={(s: any) => s.title}
+							renderItem={({ item }: any) => item.component}
 							onViewableItemsChanged={handleViewableItemsChanged}
 							onScroll={handleScroll}
 						/>
 						<Button
 							text={isLastStep ? 'Submit' : 'Next'}
 							onPress={isLastStep ? handleSubmit : toNext}
+							style={{ alignSelf: 'center', width: width - 32 }}
 						/>
 					</>
 				)}

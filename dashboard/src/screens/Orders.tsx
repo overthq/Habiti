@@ -11,7 +11,7 @@ const Orders: React.FC = () => {
 			<FlatList
 				keyExtractor={i => i.id}
 				renderItem={({ item }) => <OrdersListItem order={item} />}
-				data={data?.orders}
+				data={data?.store.orders}
 				ListEmptyComponent={
 					<View style={styles.empty}>
 						<Text style={styles.emptyText}>

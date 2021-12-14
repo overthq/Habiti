@@ -2,6 +2,7 @@ import { gql } from 'apollo-server-express';
 
 const ProductTypes = gql`
 	type Product {
+		id: ID!
 		name: String!
 		description: String!
 		unitPrice: Int!
@@ -17,6 +18,13 @@ const ProductTypes = gql`
 		name: String!
 		description: String!
 		unitPrice: Int!
+		storeId: ID!
+	}
+
+	input EditProductInput {
+		name: String
+		description: String
+		unitPrice: Int
 	}
 
 	extend type Query {
@@ -26,7 +34,7 @@ const ProductTypes = gql`
 
 	extend type Mutation {
 		createProduct(input: CreateProductInput!): Product!
-		editProduct(id: ID!): Product!
+		editProduct(id: ID!, input: EditProductInput!): Product!
 	}
 `;
 

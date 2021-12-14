@@ -1,0 +1,40 @@
+# This is temporary. In the future, queries will no longer be domain-scoped.
+# They will be created on the component level.
+
+query Products($storeId: ID!) {
+	store(id: $storeId) {
+		products {
+			id
+			name
+			description
+			unitPrice
+		}
+	}
+}
+
+query Product($id: ID!) {
+	product(id: $id) {
+		id
+		name
+		description
+		unitPrice
+	}
+}
+
+mutation CreateProduct($input: CreateProductInput!) {
+	createProduct(input: $input) {
+		id
+		name
+		description
+		unitPrice
+	}
+}
+
+mutation EditProduct($id: ID!, $input: EditProductInput!) {
+	editProduct(id: $id, input: $input) {
+		id
+		name
+		description
+		unitPrice
+	}
+}

@@ -1,13 +1,14 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { MainStackParamList } from '../../types/navigation';
 
 interface TrendingStoresItemProps {
 	store: any;
 }
 
 const TrendingStoresItem: React.FC<TrendingStoresItemProps> = ({ store }) => {
-	const { navigate } = useNavigation();
+	const { navigate } = useNavigation<NavigationProp<MainStackParamList>>();
 
 	return (
 		<TouchableOpacity
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
 	storeWrapper: {
 		justifyContent: 'center',
 		height: '100%',
-		marginRight: 16 // Line 17 (in TrendingStores.tsx)?
+		marginRight: 16
 	},
 	storeContainer: {
 		backgroundColor: '#D3D3D3',

@@ -65,11 +65,11 @@ router.post('/verify', async (req, res) => {
 			where: { phone }
 		});
 
-		const token = await generateAccessToken(user);
+		const accessToken = await generateAccessToken(user);
 
 		res.status(200).json({
 			success: true,
-			data: { token }
+			data: { accessToken, userId: user.id }
 		});
 	} else {
 		res.status(400).json({

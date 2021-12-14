@@ -3,10 +3,12 @@ import compression from 'compression';
 import { createServer } from 'http';
 import { ApolloServer } from 'apollo-server-express';
 import { PrismaClient } from '@prisma/client';
+import expressJwt from 'express-jwt';
+
 import auth from './auth';
+import storage from './storage';
 import schema from './schema';
 import redisClient from './config/redis';
-import expressJwt from 'express-jwt';
 
 const main = async () => {
 	const app = express();
@@ -32,6 +34,7 @@ const main = async () => {
 	apolloServer.applyMiddleware({ app });
 
 	app.use('/auth', auth);
+	app.use('/storage', storage);
 
 	const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
 	httpServer.listen({ port: PORT });

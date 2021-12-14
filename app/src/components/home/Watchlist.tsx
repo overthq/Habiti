@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { useItemsQuery } from '../../types/api';
-import WatchlistItem from './WatchlistItem';
+// import { useProductsQuery } from '../../types/api';
+import WatchlistProduct from './WatchlistProduct';
 
 const Watchlist = () => {
-	const [{ data, fetching }] = useItemsQuery();
+	// const [{ data, fetching }] = useItemsQuery();
+	// TODO: Add a WatchlistProducts table to db.
+	const [data, fetching] = [{ products: [] }, true];
 
 	if (fetching) {
 		return (
@@ -20,8 +22,8 @@ const Watchlist = () => {
 			<FlatList
 				horizontal
 				showsHorizontalScrollIndicator={false}
-				data={data?.items}
-				renderItem={({ item }) => <WatchlistItem item={item} />}
+				data={data?.products}
+				renderItem={({ item }) => <WatchlistProduct product={item} />}
 				ListFooterComponent={<View style={{ width: 16 }} />}
 			/>
 		</View>

@@ -23,8 +23,6 @@ Before starting the installation process, the following are required:
 - [Node.js](https://nodejs.org) (LTS or higher).
 - [Yarn v1](https://yarnpkg.com)
 - [PostgresQL](https://postgresql.com)
-- [Docker](https://docker.com)
-- [Hasura CLI](https://hasura.io/docs/latest/graphql/core/hasura-cli)
 
 ### Installation and Setup
 
@@ -42,23 +40,21 @@ Next, proceed to the following links for more information on how to set each pro
 
 - [App](app/README.md#installation-and-setup)
 - [Dashboard](dashboard/README.md#installation-and-setup)
-- [Hasura](hasura/README.md#installation-and-setup)
-- [Auth](auth/README.md#isntallation-and-setup)
-- [Storage](storage/README.md#isntallation-and-setup)
+- [API](api/README.md#installation-and-setup)
 
 ## Contributing
 
-All forms of (positive) contribution are welcome to Market. Be sure to check out the [contribution guidelines](.github/CONTRIBUTING.md) before contributing.
+Contributions are welcome. Be sure to check out the [contribution guidelines](.github/CONTRIBUTING.md) before contributing.
 
 ## Tech Stack
 
 Market is a TypeScript-based application. It is built with popular JS libraries/frameworks like React, React Native and Express. Here's what the stack looks like.
 
 - Front-End
-	- Framework: [React Native](https://facebook.github.io/react-native) and [Expo](https://expo.io)
+	- Framework: [React Native](https://reactnative.dev) and [Expo](https://expo.io)
 - Back-End
   - Database: [PostgresQL](https://postgresql.com)
-  - Server: [Hasura](https://hasura.io)
+  - Server: [Express](https://expressjs.com), [GraphQL](https://graphql.org) and [Prisma](https://prisma.io)
   - Caching: [Redis](https://redis.io)
   - Storage: [Cloudinary](https://cloudinary.com)
 

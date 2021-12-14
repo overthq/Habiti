@@ -7,15 +7,17 @@ import {
 	StyleSheet
 } from 'react-native';
 import { TabBar, TabView, SceneMap } from 'react-native-tab-view';
-import { useNavigation } from '@react-navigation/native';
-import { Items, Stores } from '../../types/api';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { Product, Store } from '../../types/api';
+import { AppStackParamList, MainStackParamList } from '../../types/navigation';
 
 interface StoresViewProps {
-	data: Stores[];
+	data: Store[];
 }
 
 const StoresView: React.FC<StoresViewProps> = ({ data }) => {
-	const { navigate } = useNavigation();
+	const { navigate } = useNavigation<NavigationProp<MainStackParamList>>();
+
 	return (
 		<FlatList
 			keyExtractor={s => s.id}
@@ -36,19 +38,20 @@ const StoresView: React.FC<StoresViewProps> = ({ data }) => {
 	);
 };
 
-interface ItemsViewProps {
-	data: Items[];
+interface ProductsViewProps {
+	data: Product[];
 }
 
-const ItemsView: React.FC<ItemsViewProps> = ({ data }) => {
-	const { navigate } = useNavigation();
+const ProductsView: React.FC<ProductsViewProps> = ({ data }) => {
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+
 	return (
 		<FlatList
 			keyExtractor={i => i.id}
 			data={data}
 			renderItem={({ item }) => (
 				<TouchableOpacity
-					onPress={() => navigate('Item', { itemId: item.id })}
+					onPress={() => navigate('Product', { productId: item.id })}
 					style={styles.resultRow}
 				>
 					<Image
@@ -70,14 +73,12 @@ const SearchResults: React.FC<SearchResultsProps> = ({ searchData }) => {
 	const [index, setIndex] = React.useState(0);
 	const [routes] = React.useState([
 		{ key: 'stores', title: 'Stores' },
-		{ key: 'items', title: 'Items' }
+		{ key: 'products', title: 'Products' }
 	]);
 
 	const renderScene = SceneMap({
-		// eslint-disable-next-line
 		stores: () => <StoresView data={searchData.stores} />,
-		// eslint-disable-next-line
-		items: () => <ItemsView data={searchData.items} />
+		items: () => <ProductsView data={searchData.products} />
 	});
 
 	return (

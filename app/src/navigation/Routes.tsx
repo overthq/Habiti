@@ -12,7 +12,7 @@ import Profile from '../screens/Profile';
 import Carts from '../screens/Carts';
 import Explore from '../screens/Explore';
 import Store from '../screens/Store';
-import Item from '../screens/Item';
+import Product from '../screens/Product';
 import Cart from '../screens/Cart';
 import Order from '../screens/Order';
 import { tabScreenOptions } from '../utils/navigation';
@@ -55,7 +55,7 @@ const Routes: React.FC = () => {
 					{accessToken ? (
 						<>
 							<AppStack.Screen name='Main' component={Main} />
-							<AppStack.Screen name='Item' component={Item} />
+							<AppStack.Screen name='Product' component={Product} />
 							<AppStack.Screen name='Cart' component={Cart} />
 							<AppStack.Screen name='Order' component={Order} />
 						</>

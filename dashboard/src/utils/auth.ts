@@ -7,7 +7,7 @@ interface RegisterPayload {
 
 export const register = async ({ name, phone }: RegisterPayload) => {
 	try {
-		const response = await fetch(`${env.authUrl}/register`, {
+		const response = await fetch(`${env.apiUrl}/auth/register`, {
 			method: 'POST',
 			headers: {
 				Accept: 'application/json',
@@ -25,7 +25,7 @@ export const register = async ({ name, phone }: RegisterPayload) => {
 
 export const authenticate = async (phone: string) => {
 	try {
-		const response = await fetch(`${env.authUrl}/authenticate`, {
+		const response = await fetch(`${env.apiUrl}/auth/authenticate`, {
 			method: 'POST',
 			headers: {
 				Accept: 'application/json',
@@ -47,7 +47,7 @@ interface VerifyCodePayload {
 
 export const verifyCode = async ({ phone, code }: VerifyCodePayload) => {
 	try {
-		const response = await fetch(`${env.authUrl}/verify-code`, {
+		const response = await fetch(`${env.apiUrl}/auth/verify`, {
 			method: 'POST',
 			headers: {
 				Accept: 'application/json',

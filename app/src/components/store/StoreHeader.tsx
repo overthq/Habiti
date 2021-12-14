@@ -20,7 +20,7 @@ import { Icon } from '../icons';
 import { useNavigation } from '@react-navigation/native';
 
 interface StoreHeaderProps {
-	store: StoreQuery['stores_by_pk'];
+	store: StoreQuery['store'];
 }
 
 const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
@@ -30,8 +30,8 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 	const userId = useAppSelector(({ auth }) => auth.userId);
 
 	const isFollowingStore = React.useMemo(() => {
-		const userInStoreFollowing = store?.store_followers?.findIndex(
-			({ user_id }) => user_id === userId
+		const userInStoreFollowing = store?.followers?.findIndex(
+			({ follower }) => follower.id === userId
 		);
 
 		if (userInStoreFollowing) return userInStoreFollowing > -1;
@@ -54,24 +54,24 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 						<Text style={styles.storeName}>{store?.name}</Text>
 						<SocialLinks
 							links={[
-								{ type: 'twitter', value: store?.twitter_username },
-								{ type: 'instagram', value: store?.instagram_username }
+								{ type: 'twitter', value: store?.twitter },
+								{ type: 'instagram', value: store?.instagram }
 							]}
 						/>
 					</View>
 					<TouchableOpacity
 						style={{ marginTop: 4 }}
-						onPress={() => openLink(store?.website_url)}
+						onPress={() => openLink(store?.website)}
 					>
-						<Text style={styles.websiteLinkText}>{store?.website_url}</Text>
+						<Text style={styles.websiteLinkText}>{store?.website}</Text>
 					</TouchableOpacity>
 					<FollowButton
 						isFollowing={isFollowingStore}
 						follow={() => {
-							followStore({ storeId: store?.id, userId });
+							followStore({ storeId: store?.id });
 						}}
 						unfollow={() => {
-							unfollowStore({ storeId: store?.id, userId });
+							unfollowStore({ storeId: store?.id });
 						}}
 					/>
 				</View>

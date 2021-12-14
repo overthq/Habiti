@@ -1,47 +1,34 @@
-mutation FollowStore($storeId: uuid!, $userId: uuid!) {
-	insert_store_followers(objects: [{ store_id: $storeId, user_id: $userId }]) {
-		affected_rows
-		returning {
-			user_id
-			store_id
-		}
+mutation FollowStore($storeId: ID!) {
+	followStore(storeId: $storeId) {
+		followerId
+		storeId
 	}
 }
 
-mutation UnfollowStore($userId: uuid!, $storeId: uuid!) {
-	delete_store_followers(
-		where: {
-			_and: [{ store_id: { _eq: $storeId } }, { user_id: { _eq: $userId } }]
-		}
-	) {
-		affected_rows
-	}
+mutation UnfollowStore($storeId: ID!) {
+	unfollowStore(storeId: $storeId)
 }
 
-query StoresFollowed($userId: uuid!) {
-	store_followers(where: { user_id: { _eq: $userId } }) {
-		store_id
-		store {
-			id
-			name
-			short_name
-			store_avatar_images {
-				image {
-					path_url
-				}
+query StoresFollowed($userId: ID!) {
+	user(id: $userId) {
+		id
+		followed {
+			store {
+				id
+				name
 			}
 		}
 	}
 }
 
-query NewArrivals($userId: uuid!, $oneDayAgo: timestamptz!) {
-	store_followers(where: { user_id: { _eq: $userId } }) {
-		store {
-			id
-			name
-			items(where: { created_at: { _gte: $oneDayAgo } }) {
-				...ItemDetails
-			}
-		}
-	}
-}
+# query NewArrivals($userId: ID!, $oneDayAgo: timestamptz!) {
+# 	store_followers(where: { user_id: { _eq: $userId } }) {
+# 		store {
+# 			id
+# 			name
+# 			items(where: { created_at: { _gte: $oneDayAgo } }) {
+# 				...ItemDetails
+# 			}
+# 		}
+# 	}
+# }

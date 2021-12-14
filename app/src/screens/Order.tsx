@@ -20,7 +20,7 @@ const Order = () => {
 		);
 	}
 
-	const order = data?.orders_by_pk;
+	const order = data?.order;
 
 	return (
 		<SafeAreaView style={styles.container}>

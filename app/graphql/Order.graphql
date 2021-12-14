@@ -1,43 +1,55 @@
-fragment OrderDetails on orders {
-	id
-	status
-	store {
-		name
+query UserOrders($userId: ID!) {
+	user(id: $userId) {
+		orders {
+			id
+			store {
+				id
+				name
+			}
+			products {
+				product {
+					id
+					name
+					unitPrice
+				}
+				quantity
+			}
+		}
 	}
-	order_items {
-		item {
+}
+
+query Order($orderId: ID!) {
+	order(id: $orderId) {
+		id
+		store {
+			id
 			name
-			unit_price
 		}
-		quantity
-	}
-}
-
-query UserOrders($userId: uuid!) {
-	orders(where: { user_id: { _eq: $userId } }) {
-		...OrderDetails
-	}
-}
-
-query Order($orderId: uuid!) {
-	orders_by_pk(id: $orderId) {
-		...OrderDetails
-	}
-}
-
-mutation PlaceOrder($input: orders_insert_input!) {
-	insert_orders(objects: [$input]) {
-		returning {
-			id
+		products {
+			product {
+				id
+				name
+				unitPrice
+			}
+			quantity
 		}
 	}
 }
 
-mutation CreateOrderItems($items: [order_items_insert_input!]!) {
-	insert_order_items(objects: $items) {
-		affected_rows
-		returning {
+mutation CreateOrder($cartId: ID!) {
+	createOrder(cartId: $cartId) {
+		id
+		store {
 			id
+			name
+		}
+		products {
+			product {
+				id
+				name
+				unitPrice
+			}
+			quantity
 		}
 	}
 }

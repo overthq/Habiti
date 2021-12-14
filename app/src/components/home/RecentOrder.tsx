@@ -3,12 +3,12 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { UserOrdersQuery } from '../../types/api';
 
 interface RecentOrderProps {
-	order: UserOrdersQuery['orders'][-1];
+	order: UserOrdersQuery['user']['orders'][-1];
 }
 
 const RecentOrder: React.FC<RecentOrderProps> = ({ order }) => {
-	const name = order.order_items[0]?.item.name;
-	const itemsLength = order.order_items.length;
+	const name = order.products[0]?.product.name;
+	const itemsLength = order.products.length;
 
 	return (
 		<TouchableOpacity
@@ -23,7 +23,7 @@ const RecentOrder: React.FC<RecentOrderProps> = ({ order }) => {
 					{itemsLength > 1 &&
 						` and ${itemsLength - 1} ${itemsLength > 2 ? 'others' : 'other'}`}
 				</Text>
-				<Text style={styles.status}>{order.status}</Text>
+				{/* <Text style={styles.status}>{order.status}</Text> */}
 			</View>
 		</TouchableOpacity>
 	);

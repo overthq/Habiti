@@ -9,9 +9,11 @@ const Store: React.FC = () => {
 	const activeStore = useAppSelector(
 		({ preferences }) => preferences.activeStore
 	);
-	const [{ data }] = useStoreQuery({ variables: { storeId: activeStore } });
+	const [{ data }] = useStoreQuery({
+		variables: { storeId: activeStore as string }
+	});
 
-	const store = data?.stores_by_pk;
+	const store = data?.store;
 
 	return (
 		<SafeAreaView style={styles.container}>

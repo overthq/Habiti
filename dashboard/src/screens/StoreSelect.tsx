@@ -1,9 +1,10 @@
 import React from 'react';
-import { Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StoresList from '../components/store-select/StoresList';
 import { AppStackParamList } from '../types/navigation';
+import Button from '../components/global/Button';
 
 const StoreSelect: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
@@ -15,12 +16,11 @@ const StoreSelect: React.FC = () => {
 				Kindly select a store you manage, or create a new one:
 			</Text>
 			<StoresList />
-			<TouchableOpacity
+			<Button
 				onPress={() => navigate('CreateStore')}
-				style={{ alignSelf: 'center', marginBottom: 16 }}
-			>
-				<Text>Create a store</Text>
-			</TouchableOpacity>
+				style={{ marginBottom: 16 }}
+				text='Create a store'
+			/>
 		</SafeAreaView>
 	);
 };

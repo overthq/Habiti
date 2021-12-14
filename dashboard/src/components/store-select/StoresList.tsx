@@ -9,8 +9,11 @@ const StoresList = () => {
 	const dispatch = useDispatch();
 
 	const userId = useAppSelector(({ auth }) => auth.userId);
-	const [{ data }] = useManagedStoresQuery({ variables: { userId } });
-	const stores = data?.store_managers.map(({ store }) => store);
+	const [{ data }] = useManagedStoresQuery({
+		variables: { userId: userId as string }
+	});
+
+	const stores = data?.user.managed.map(({ store }) => store);
 
 	const handleStoreSelect = (storeId: string) => {
 		dispatch(updatePreference({ activeStore: storeId }));

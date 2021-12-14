@@ -4,7 +4,7 @@ import env from '../../env';
 
 export const create = (accessToken: string | null) =>
 	createClient({
-		url: env.hasuraUrl,
+		url: `${env.apiUrl}/graphql`,
 		fetchOptions: {
 			headers: { authorization: `Bearer ${accessToken}` }
 		},

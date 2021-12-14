@@ -1,13 +1,12 @@
-mutation CreateStore($input: stores_insert_input!) {
-	insert_stores_one(object: $input) {
+mutation CreateStore($input: CreateStoreInput!) {
+	createStore(input: $input) {
 		id
 	}
 }
 
-query Store($storeId: uuid!) {
-	stores_by_pk(id: $storeId) {
+query Store($storeId: ID!) {
+	store(id: $storeId) {
 		id
 		name
-		short_name
 	}
 }

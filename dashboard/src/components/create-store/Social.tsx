@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Dimensions } from 'react-native';
 import { useFormikContext } from 'formik';
+
+const { width } = Dimensions.get('window');
 
 const Social = () => {
 	const { handleChange, handleBlur } = useFormikContext<{
@@ -12,11 +14,11 @@ const Social = () => {
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>Social media</Text>
-			<Text>
+			<Text style={styles.description}>
 				Link your social accounts, so shoppers can follow you elsewhere.
 			</Text>
 			<View>
-				<Text>Twitter username</Text>
+				<Text style={styles.label}>Twitter username</Text>
 				<TextInput
 					style={styles.input}
 					placeholder='@nike'
@@ -25,7 +27,7 @@ const Social = () => {
 				/>
 			</View>
 			<View>
-				<Text>Instagram username</Text>
+				<Text style={styles.label}>Instagram username</Text>
 				<TextInput
 					style={styles.input}
 					placeholder='@nike'
@@ -34,7 +36,7 @@ const Social = () => {
 				/>
 			</View>
 			<View>
-				<Text>Website</Text>
+				<Text style={styles.label}>Website</Text>
 				<TextInput
 					style={styles.input}
 					placeholder='https://nike.com'
@@ -49,14 +51,27 @@ const Social = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		width,
 		padding: 16
 	},
 	title: {
 		fontSize: 32,
 		fontWeight: 'bold'
 	},
+	description: {
+		fontSize: 16
+	},
+	label: {
+		fontSize: 16,
+		fontWeight: '500',
+		marginTop: 8,
+		marginBottom: 4
+	},
 	input: {
+		height: 40,
+		borderRadius: 4,
 		paddingLeft: 8,
+		fontSize: 16,
 		backgroundColor: '#DFDFDF'
 	}
 });

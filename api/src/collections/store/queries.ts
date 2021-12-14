@@ -69,6 +69,38 @@ const carts: Resolver = async (parent, _, ctx) => {
 	return fetchedCarts;
 };
 
+// TODO: Move these to a new collections group.
+
+const storeManagerStore: Resolver = async (parent, _, ctx) => {
+	const fetchedStores = await ctx.prisma.storeManager
+		.findUnique({
+			where: {
+				storeId_managerId: {
+					storeId: parent.storeId,
+					managerId: parent.managerId
+				}
+			}
+		})
+		.store();
+
+	return fetchedStores;
+};
+
+const storeManagerManager: Resolver = async (parent, _, ctx) => {
+	const fetchedStores = await ctx.prisma.storeManager
+		.findUnique({
+			where: {
+				storeId_managerId: {
+					storeId: parent.storeId,
+					managerId: parent.managerId
+				}
+			}
+		})
+		.manager();
+
+	return fetchedStores;
+};
+
 export default {
 	Query: {
 		store,
@@ -81,5 +113,9 @@ export default {
 		managers,
 		followers,
 		carts
+	},
+	StoreManager: {
+		store: storeManagerStore,
+		manager: storeManagerManager
 	}
 };

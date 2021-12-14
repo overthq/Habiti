@@ -4,6 +4,10 @@ const StoreTypes = gql`
 	type Store {
 		id: ID!
 		name: String!
+		description: String
+		website: String
+		twitter: String
+		instagram: String
 		products: [Product!]!
 		orders: [Order!]!
 		managers: [StoreManager!]!
@@ -29,17 +33,22 @@ const StoreTypes = gql`
 
 	input CreateStoreInput {
 		name: String!
+		description: String
+		website: String
+		twitter: String
+		instagram: String
 	}
 
 	extend type Query {
-		store: Store!
+		store(id: ID!): Store!
 		stores: [Store!]!
 		followedStores(userId: ID!): [Store!]!
 	}
 
 	extend type Mutation {
 		createStore(input: CreateStoreInput!): Store!
-		followStore(userId: ID!, storeId: ID!): StoreFollower!
+		followStore(storeId: ID!): StoreFollower!
+		unfollowStore(storeId: ID!): ID!
 		deleteStore(id: ID!): ID!
 	}
 `;

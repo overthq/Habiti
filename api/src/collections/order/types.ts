@@ -15,23 +15,20 @@ const OrderTypes = gql`
 	type OrderProduct {
 		orderId: ID!
 		productId: ID!
+		unitPrice: Int!
 		quantity: Int!
 		order: Order!
 		product: Product!
 	}
 
-	input CreateOrderInput {
-		userId: ID!
-		storeId: ID!
-	}
-
 	extend type Query {
+		order(id: ID!): Order!
 		userOrders(userId: ID!): [Order!]!
 		storeOrders(storeId: ID!): [Order!]!
 	}
 
 	extend type Mutation {
-		createOrder(input: CreateOrderInput!): Order!
+		createOrder(cartId: ID!): Order!
 	}
 `;
 
