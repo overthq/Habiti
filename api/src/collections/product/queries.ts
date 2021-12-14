@@ -38,6 +38,14 @@ const store: Resolver = async (parent, _, ctx) => {
 	return fetchedStore;
 };
 
+const images: Resolver = async (parent, _, ctx) => {
+	const fetchedImages = await ctx.prisma.product
+		.findUnique({ where: { id: parent.id } })
+		.images();
+
+	return fetchedImages;
+};
+
 export default {
 	Query: {
 		product,
@@ -46,6 +54,7 @@ export default {
 	Product: {
 		orders,
 		carts,
-		store
+		store,
+		images
 	}
 };

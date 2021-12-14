@@ -69,6 +69,14 @@ const carts: Resolver = async (parent, _, ctx) => {
 	return fetchedCarts;
 };
 
+const image: Resolver = async (parent, _, ctx) => {
+	const fetchedImage = await ctx.prisma.store
+		.findUnique({ where: { id: parent.id } })
+		.image();
+
+	return fetchedImage;
+};
+
 // TODO: Move these to a new collections group.
 
 const storeManagerStore: Resolver = async (parent, _, ctx) => {
@@ -112,7 +120,8 @@ export default {
 		orders,
 		managers,
 		followers,
-		carts
+		carts,
+		image
 	},
 	StoreManager: {
 		store: storeManagerStore,

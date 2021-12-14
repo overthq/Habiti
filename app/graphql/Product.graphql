@@ -16,5 +16,9 @@ query Product($productId: ID!) {
 		description
 		unitPrice
 		storeId
+		images {
+			id
+			path
+		}
 	}
 }

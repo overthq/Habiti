@@ -8,13 +8,15 @@ const StoreTypes = gql`
 		website: String
 		twitter: String
 		instagram: String
+		createdAt: String!
+		updatedAt: String!
+
 		products: [Product!]!
 		orders: [Order!]!
 		managers: [StoreManager!]!
 		followers: [StoreFollower!]!
 		carts: [Cart!]!
-		createdAt: String!
-		updatedAt: String!
+		image: Image
 	}
 
 	type StoreManager {

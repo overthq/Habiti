@@ -7,11 +7,20 @@ const ProductTypes = gql`
 		description: String!
 		unitPrice: Int!
 		storeId: ID!
+		createdAt: String!
+		updatedAt: String!
+
 		store: Store!
 		orders: [Order!]!
 		carts: [CartProduct!]!
-		createdAt: String!
-		updatedAt: String!
+		images: [Image]!
+	}
+
+	type Image {
+		id
+		path
+		createdAt
+		updatedAt
 	}
 
 	input CreateProductInput {

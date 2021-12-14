@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch } from 'react-redux';
 import Button from '../components/global/Button';
@@ -7,7 +7,7 @@ import { logOut } from '../redux/auth/actions';
 import { useAppSelector } from '../redux/store';
 import { useCurrentUserQuery } from '../types/api';
 
-const Profile = () => {
+const Profile: React.FC = () => {
 	const userId = useAppSelector(({ auth }) => auth.userId);
 	const dispatch = useDispatch();
 
@@ -17,10 +17,13 @@ const Profile = () => {
 
 	return (
 		<SafeAreaView style={styles.container}>
-			{/* <View>
-				<Text style={styles.heading}>Profile</Text>
-			</View> */}
-			{fetching ? <Text>Fetching...</Text> : <Text>{data?.user?.name}</Text>}
+			{fetching ? (
+				<ActivityIndicator />
+			) : (
+				<View>
+					<Text style={styles.name}>{data?.user?.name}</Text>
+				</View>
+			)}
 			<Button text='Log Out' onPress={() => dispatch(logOut())} />
 		</SafeAreaView>
 	);
@@ -29,12 +32,12 @@ const Profile = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		paddingTop: 16,
 		paddingHorizontal: 16
 	},
-	heading: {
+	name: {
 		fontWeight: 'bold',
-		fontSize: 32
+		fontSize: 28,
+		marginBottom: 16
 	}
 });
 
