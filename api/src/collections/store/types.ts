@@ -4,6 +4,10 @@ const StoreTypes = gql`
 	type Store {
 		id: ID!
 		name: String!
+		description: String
+		website: String
+		twitter: String
+		instagram: String
 		products: [Product!]!
 		orders: [Order!]!
 		managers: [StoreManager!]!
@@ -29,6 +33,10 @@ const StoreTypes = gql`
 
 	input CreateStoreInput {
 		name: String!
+		description: String
+		website: String
+		twitter: String
+		instagram: String
 	}
 
 	extend type Query {

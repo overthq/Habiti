@@ -54,16 +54,16 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 						<Text style={styles.storeName}>{store?.name}</Text>
 						<SocialLinks
 							links={[
-								{ type: 'twitter', value: store?.twitter_username },
-								{ type: 'instagram', value: store?.instagram_username }
+								{ type: 'twitter', value: store?.twitter },
+								{ type: 'instagram', value: store?.instagram }
 							]}
 						/>
 					</View>
 					<TouchableOpacity
 						style={{ marginTop: 4 }}
-						onPress={() => openLink(store?.website_url)}
+						onPress={() => openLink(store?.website)}
 					>
-						<Text style={styles.websiteLinkText}>{store?.website_url}</Text>
+						<Text style={styles.websiteLinkText}>{store?.website}</Text>
 					</TouchableOpacity>
 					<FollowButton
 						isFollowing={isFollowingStore}

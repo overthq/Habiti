@@ -62,6 +62,10 @@ export type CreateProductInput = {
 
 export type CreateStoreInput = {
 	name: Scalars['String'];
+	description?: Maybe<Scalars['String']>;
+	website?: Maybe<Scalars['String']>;
+	twitter?: Maybe<Scalars['String']>;
+	instagram?: Maybe<Scalars['String']>;
 };
 
 export type EditProductInput = {
@@ -229,6 +233,10 @@ export type Store = {
 	__typename?: 'Store';
 	id: Scalars['ID'];
 	name: Scalars['String'];
+	description?: Maybe<Scalars['String']>;
+	website?: Maybe<Scalars['String']>;
+	twitter?: Maybe<Scalars['String']>;
+	instagram?: Maybe<Scalars['String']>;
 	products: Array<Product>;
 	orders: Array<Order>;
 	managers: Array<StoreManager>;
@@ -448,7 +456,10 @@ export type StoreQueryVariables = Exact<{
 }>;
 
 export type StoreQuery = { __typename?: 'Query' } & {
-	store: { __typename?: 'Store' } & Pick<Store, 'id' | 'name'> & {
+	store: { __typename?: 'Store' } & Pick<
+		Store,
+		'id' | 'name' | 'description' | 'website' | 'twitter' | 'instagram'
+	> & {
 			followers: Array<
 				{ __typename?: 'StoreFollower' } & {
 					follower: { __typename?: 'User' } & Pick<User, 'id' | 'name'>;
@@ -745,6 +756,10 @@ export const StoreDocument = gql`
 		store(id: $storeId) {
 			id
 			name
+			description
+			website
+			twitter
+			instagram
 			followers {
 				follower {
 					id

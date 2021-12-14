@@ -9,6 +9,10 @@ query Store($storeId: ID!) {
 	store(id: $storeId) {
 		id
 		name
+		description
+		website
+		twitter
+		instagram
 		followers {
 			follower {
 				id
