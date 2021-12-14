@@ -493,13 +493,13 @@ export type StoresFollowedQueryVariables = Exact<{
 }>;
 
 export type StoresFollowedQuery = { __typename?: 'Query' } & {
-	user: { __typename?: 'User' } & {
-		followed: Array<
-			{ __typename?: 'StoreFollower' } & {
-				store: { __typename?: 'Store' } & Pick<Store, 'id' | 'name'>;
-			}
-		>;
-	};
+	user: { __typename?: 'User' } & Pick<User, 'id'> & {
+			followed: Array<
+				{ __typename?: 'StoreFollower' } & {
+					store: { __typename?: 'Store' } & Pick<Store, 'id' | 'name'>;
+				}
+			>;
+		};
 };
 
 export type CurrentUserQueryVariables = Exact<{
@@ -804,6 +804,7 @@ export function useUnfollowStoreMutation() {
 export const StoresFollowedDocument = gql`
 	query StoresFollowed($userId: ID!) {
 		user(id: $userId) {
+			id
 			followed {
 				store {
 					id
