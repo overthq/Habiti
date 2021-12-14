@@ -3,9 +3,10 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { AppStackParamList } from '../../types/navigation';
+import { StoreProductsQuery } from '../../types/api';
 
 interface StoreListItemProps {
-	item: any;
+	item: StoreProductsQuery['store']['products'][-1];
 }
 
 const StoreListItem: React.FC<StoreListItemProps> = ({ item }) => {
@@ -21,7 +22,7 @@ const StoreListItem: React.FC<StoreListItemProps> = ({ item }) => {
 			>
 				<View style={styles.image} />
 				<Text style={styles.name}>{item.name}</Text>
-				<Text style={styles.price}>${item.unit_price}</Text>
+				<Text style={styles.price}>${item.unitPrice}</Text>
 			</TouchableOpacity>
 		</View>
 	);
