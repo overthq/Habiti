@@ -11,6 +11,7 @@ mutation UnfollowStore($storeId: ID!) {
 
 query StoresFollowed($userId: ID!) {
 	user(id: $userId) {
+		id
 		followed {
 			store {
 				id
