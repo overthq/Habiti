@@ -17,10 +17,10 @@ const ProductTypes = gql`
 	}
 
 	type Image {
-		id
-		path
-		createdAt
-		updatedAt
+		id: ID!
+		path: String!
+		createdAt: String!
+		updatedAt: String!
 	}
 
 	input CreateProductInput {
