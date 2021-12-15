@@ -17,7 +17,7 @@ const TrendingStoresItem: React.FC<TrendingStoresItemProps> = ({ store }) => {
 			onPress={() => navigate('Store', { storeId: store.id })}
 		>
 			<View style={styles.storeContainer}>
-				<Image source={{ uri: store.avatarUrl }} style={styles.storeImage} />
+				{/* <Image source={{ uri: store.avatarUrl }} style={styles.storeImage} /> */}
 			</View>
 			<Text style={styles.storeName}>{store.name}</Text>
 		</TouchableOpacity>

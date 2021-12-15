@@ -3,11 +3,11 @@ import { View, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useProductQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
-// import ImageCarousel from '../components/product/ImageCarousel';
+import ImageCarousel from '../components/product/ImageCarousel';
 import AddToCart from '../components/product/AddToCart';
 import ProductDetails from '../components/product/ProductDetails';
 
-const Product = () => {
+const Product: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Product'>>();
 	const [{ data, fetching }] = useProductQuery({
 		variables: { productId: params.productId }
@@ -27,7 +27,7 @@ const Product = () => {
 
 	return (
 		<ScrollView style={styles.container}>
-			{/* <ImageCarousel images={product.images} /> */}
+			<ImageCarousel images={product.images} />
 			<ProductDetails product={product} />
 			<AddToCart
 				storeId={product.storeId}

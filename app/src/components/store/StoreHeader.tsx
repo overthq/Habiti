@@ -1,7 +1,7 @@
 import React from 'react';
 import {
 	View,
-	Image,
+	// Image,
 	Text,
 	TouchableOpacity,
 	StyleSheet,
@@ -47,7 +47,7 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 			</View>
 			<View style={styles.row}>
 				<View style={styles.imagePlaceholder}>
-					<Image source={{ uri: '' }} style={styles.image} />
+					{/* <Image source={{ uri: '' }} style={styles.image} /> */}
 				</View>
 				<View>
 					<View style={{ flexDirection: 'row' }}>

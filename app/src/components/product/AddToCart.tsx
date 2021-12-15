@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
+		alignSelf: 'center',
 		backgroundColor: '#202020'
 	},
 	buttonText: {

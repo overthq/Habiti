@@ -5,6 +5,10 @@ query StoreProducts($storeId: ID!) {
 			name
 			description
 			unitPrice
+			images {
+				id
+				path
+			}
 		}
 	}
 }

@@ -19,10 +19,10 @@ const FollowedStoresItem: React.FC<FollowedStoresItemProps> = ({ store }) => {
 		>
 			<View style={styles.imageContainer}>
 				<View style={styles.placeholder}>
-					<Image
+					{/* <Image
 						source={{ uri: store.store_avatar_images[0]?.image.path_url }}
 						style={styles.image}
-					/>
+					/> */}
 				</View>
 			</View>
 			<Text style={styles.name}>{store.name}</Text>

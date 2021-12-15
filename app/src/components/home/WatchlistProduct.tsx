@@ -19,10 +19,11 @@ const WatchlistProduct: React.FC<WatchlistProductProps> = ({ product }) => {
 			activeOpacity={0.8}
 		>
 			<View style={styles.imagePlaceholder}>
+				{/*
 				<Image
-					source={{ uri: '' /* Do something here */ }}
+					source={{ uri: '' }}
 					style={{ width: '100%', height: '100%' }}
-				/>
+				/>*/}
 			</View>
 			<Text style={styles.itemName} numberOfLines={1}>
 				{product.name}

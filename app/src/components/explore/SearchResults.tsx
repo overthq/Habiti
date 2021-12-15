@@ -27,10 +27,10 @@ const StoresView: React.FC<StoresViewProps> = ({ data }) => {
 					onPress={() => navigate('Store', { storeId: item.id })}
 					style={styles.resultRow}
 				>
-					<Image
-						source={{ uri: '' /* Do something here */ }}
+					{/* <Image
+						source={{ uri: '' }}
 						style={styles.resultRowThumbnail}
-					/>
+					/>*/}
 					<Text style={{ fontSize: 16 }}>{item.name}</Text>
 				</TouchableOpacity>
 			)}
@@ -54,10 +54,10 @@ const ProductsView: React.FC<ProductsViewProps> = ({ data }) => {
 					onPress={() => navigate('Product', { productId: item.id })}
 					style={styles.resultRow}
 				>
-					<Image
-						source={{ uri: '' /* Do something here */ }}
+					{/*<Image
+						source={{ uri: '' }}
 						style={styles.resultRowThumbnail}
-					/>
+					/>*/}
 					<Text style={{ fontSize: 16 }}>{item.name}</Text>
 				</TouchableOpacity>
 			)}

@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, FlatList } from 'react-native';
-import { useStoreProductsQuery } from '../../types/api';
+import { StoreQuery, useStoreProductsQuery } from '../../types/api';
 import StoreHeader from './StoreHeader';
 import StoreListItem from './StoreListItem';
 
 interface StoreItemsProps {
-	store: any; // FIXME
+	store: StoreQuery['store'];
 }
 
 const StoreProducts: React.FC<StoreItemsProps> = ({ store }) => {

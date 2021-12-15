@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { AppStackParamList } from '../../types/navigation';
@@ -20,7 +20,14 @@ const StoreListItem: React.FC<StoreListItemProps> = ({ item }) => {
 				onPress={() => navigate('Product', { productId: item.id })}
 				activeOpacity={0.8}
 			>
-				<View style={styles.image} />
+				<View style={styles.image}>
+					{item.images[0] && (
+						<Image
+							style={{ height: '100%', width: '100%' }}
+							source={{ uri: item.images[0].path }}
+						/>
+					)}
+				</View>
 				<Text style={styles.name}>{item.name}</Text>
 				<Text style={styles.price}>${item.unitPrice}</Text>
 			</TouchableOpacity>
@@ -41,7 +48,8 @@ const styles = StyleSheet.create({
 		backgroundColor: '#D3D3D3',
 		height: 200,
 		width: '100%',
-		marginBottom: 5
+		marginBottom: 5,
+		overflow: 'hidden'
 	},
 	name: {
 		fontSize: 16,

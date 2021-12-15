@@ -6,7 +6,7 @@ import { useStoreQuery } from '../types/api';
 import { MainStackParamList } from '../types/navigation';
 import StoreProducts from '../components/store/StoreProducts';
 
-const Store = () => {
+const Store: React.FC = () => {
 	const { params } = useRoute<RouteProp<MainStackParamList, 'Store'>>();
 	const [{ data, fetching }] = useStoreQuery({
 		variables: { storeId: params.storeId }
