@@ -4,7 +4,7 @@ import { useRoute, RouteProp } from '@react-navigation/native';
 import { useProductQuery } from '../types/api';
 import { ProductsStackParamList } from '../types/navigation';
 import Section from '../components/product/Section';
-// import Images from '../components/item/Images';
+import Images from '../components/product/Images';
 
 const Item: React.FC = () => {
 	const {
@@ -24,7 +24,7 @@ const Item: React.FC = () => {
 			<View style={styles.heading}>
 				<Text style={styles.title}>{product.name}</Text>
 			</View>
-			{/* <Images itemId={productId} images={product.item_images} /> */}
+			<Images productId={productId} images={product.images} />
 			<Section title='Name' content={product.name} />
 			<Section title='Description' content={product.description} />
 			<Section title='Unit Price' content={`${product.unitPrice} NGN`} />

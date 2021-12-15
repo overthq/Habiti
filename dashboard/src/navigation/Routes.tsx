@@ -3,7 +3,7 @@ import { TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Provider, createClient } from 'urql';
+import { Provider, createClient, dedupExchange, cacheExchange } from 'urql';
 
 import Overview from '../screens/Overview';
 import Orders from '../screens/Orders';
@@ -25,6 +25,7 @@ import { Icon, IconType } from '../components/icons';
 import { useAppSelector } from '../redux/store';
 import env from '../../env';
 import { AppStackParamList } from '../types/navigation';
+import { multipartFetchExchange } from '@urql/exchange-multipart-fetch';
 
 // Navigation Structure
 // - Auth (Stack Navigator)
@@ -190,7 +191,8 @@ const Routes: React.FC = () => {
 						authorization: accessToken ? `Bearer ${accessToken}` : '',
 						'x-market-store-id': activeStore || ''
 					}
-				})
+				}),
+				exchanges: [dedupExchange, cacheExchange, multipartFetchExchange]
 			}),
 		[accessToken, activeStore]
 	);

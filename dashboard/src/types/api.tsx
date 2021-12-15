@@ -19,6 +19,8 @@ export type Scalars = {
 	Boolean: boolean;
 	Int: number;
 	Float: number;
+	/** The `Upload` scalar type represents a file upload. */
+	Upload: any;
 };
 
 export type AddProductToCartInput = {
@@ -63,6 +65,7 @@ export type CreateProductInput = {
 
 export type CreateStoreInput = {
 	description?: InputMaybe<Scalars['String']>;
+	imageFile?: InputMaybe<Scalars['Upload']>;
 	instagram?: InputMaybe<Scalars['String']>;
 	name: Scalars['String'];
 	twitter?: InputMaybe<Scalars['String']>;
@@ -71,8 +74,17 @@ export type CreateStoreInput = {
 
 export type EditProductInput = {
 	description?: InputMaybe<Scalars['String']>;
+	imageFile?: InputMaybe<Scalars['Upload']>;
 	name?: InputMaybe<Scalars['String']>;
 	unitPrice?: InputMaybe<Scalars['Int']>;
+};
+
+export type Image = {
+	__typename?: 'Image';
+	createdAt: Scalars['String'];
+	id: Scalars['ID'];
+	path: Scalars['String'];
+	updatedAt: Scalars['String'];
 };
 
 export type Mutation = {
@@ -165,6 +177,7 @@ export type Product = {
 	createdAt: Scalars['String'];
 	description: Scalars['String'];
 	id: Scalars['ID'];
+	images: Array<Image>;
 	name: Scalars['String'];
 	orders: Array<Order>;
 	store: Store;
@@ -237,6 +250,7 @@ export type Store = {
 	description?: Maybe<Scalars['String']>;
 	followers: Array<StoreFollower>;
 	id: Scalars['ID'];
+	image?: Maybe<Image>;
 	instagram?: Maybe<Scalars['String']>;
 	managers: Array<StoreManager>;
 	name: Scalars['String'];
@@ -352,6 +366,7 @@ export type ProductsQuery = {
 			name: string;
 			description: string;
 			unitPrice: number;
+			images: Array<{ __typename?: 'Image'; id: string; path: string }>;
 		}>;
 	};
 };
@@ -368,6 +383,7 @@ export type ProductQuery = {
 		name: string;
 		description: string;
 		unitPrice: number;
+		images: Array<{ __typename?: 'Image'; id: string; path: string }>;
 	};
 };
 
@@ -417,7 +433,15 @@ export type StoreQueryVariables = Exact<{
 
 export type StoreQuery = {
 	__typename?: 'Query';
-	store: { __typename?: 'Store'; id: string; name: string };
+	store: {
+		__typename?: 'Store';
+		id: string;
+		name: string;
+		image?:
+			| { __typename?: 'Image'; id: string; path: string }
+			| null
+			| undefined;
+	};
 };
 
 export const ManagedStoresDocument = gql`
@@ -507,6 +531,10 @@ export const ProductsDocument = gql`
 				name
 				description
 				unitPrice
+				images {
+					id
+					path
+				}
 			}
 		}
 	}
@@ -524,6 +552,10 @@ export const ProductDocument = gql`
 			name
 			description
 			unitPrice
+			images {
+				id
+				path
+			}
 		}
 	}
 `;
@@ -584,6 +616,10 @@ export const StoreDocument = gql`
 		store(id: $storeId) {
 			id
 			name
+			image {
+				id
+				path
+			}
 		}
 	}
 `;

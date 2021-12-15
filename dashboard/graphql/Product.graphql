@@ -8,6 +8,10 @@ query Products($storeId: ID!) {
 			name
 			description
 			unitPrice
+			images {
+				id
+				path
+			}
 		}
 	}
 }
@@ -18,6 +22,10 @@ query Product($id: ID!) {
 		name
 		description
 		unitPrice
+		images {
+			id
+			path
+		}
 	}
 }
 

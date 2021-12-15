@@ -13,7 +13,7 @@ const ProductTypes = gql`
 		store: Store!
 		orders: [Order!]!
 		carts: [CartProduct!]!
-		images: [Image]!
+		images: [Image!]!
 	}
 
 	type Image {
@@ -34,6 +34,7 @@ const ProductTypes = gql`
 		name: String
 		description: String
 		unitPrice: Int
+		imageFile: Upload
 	}
 
 	extend type Query {

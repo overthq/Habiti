@@ -1,5 +1,14 @@
 import env from '../../env';
 import * as FileSystem from 'expo-file-system';
+import { ReactNativeFile } from 'extract-files';
+
+export const generateUploadFile = (uri: string) => {
+	return new ReactNativeFile({
+		uri,
+		type: 'image/jpeg',
+		name: 'upload.jpg'
+	});
+};
 
 export const uploadImage = async (
 	uri: string,

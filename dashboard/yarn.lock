@@ -2484,6 +2484,11 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-2.0.0.tgz#f544a148d3ab35801c1f633a7441fd87c2e484bf"
   integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
 
+"@types/extract-files@^8.1.1":
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/@types/extract-files/-/extract-files-8.1.1.tgz#11b67e795ad2c8b483431e8d4f190db2fd22944b"
+  integrity sha512-dMJJqBqyhsfJKuK7p7HyyNmki7qj1AlwhUKWx6KrU7i1K2T2SPsUsSUTWFmr/sEM1q8rfR8j5IyUmYrDbrhfjQ==
+
 "@types/graceful-fs@^4.1.2":
   version "4.1.5"
   resolved "https://registry.yarnpkg.com/@types/graceful-fs/-/graceful-fs-4.1.5.tgz#21ffba0d98da4350db64891f92a9e5db3cdb4e15"
@@ -2642,12 +2647,21 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@urql/core@^2.3.6":
+"@urql/core@>=2.3.6", "@urql/core@^2.3.6":
   version "2.3.6"
   resolved "https://registry.yarnpkg.com/@urql/core/-/core-2.3.6.tgz#ee0a6f8fde02251e9560c5f17dce5cd90f948552"
   integrity sha512-PUxhtBh7/8167HJK6WqBv6Z0piuiaZHQGYbhwpNL9aIQmLROPEdaUYkY4wh45wPQXcTpnd11l0q3Pw+TI11pdw==
   dependencies:
     "@graphql-typed-document-node/core" "^3.1.0"
+    wonka "^4.0.14"
+
+"@urql/exchange-multipart-fetch@^0.1.14":
+  version "0.1.14"
+  resolved "https://registry.yarnpkg.com/@urql/exchange-multipart-fetch/-/exchange-multipart-fetch-0.1.14.tgz#c34294895be03ed9f0677d587c54c0a6d0f3af26"
+  integrity sha512-JdffZtfsJHQ4v0IevimPWbteXT1C5OH3PPbNJrbLigC9aCZB9dp2ZOjMXTvpP+3SIjJRFRguuRaL7hAGB04vgw==
+  dependencies:
+    "@urql/core" ">=2.3.6"
+    extract-files "^11.0.0"
     wonka "^4.0.14"
 
 "@xmldom/xmldom@~0.7.0":

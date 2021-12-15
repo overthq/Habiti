@@ -1,14 +1,15 @@
 import express from 'express';
+import { PrismaClient } from '@prisma/client';
+import { ApolloServer } from 'apollo-server-express';
+import { graphqlUploadExpress } from 'graphql-upload';
+import expressJwt from 'express-jwt';
 import compression from 'compression';
 import { createServer } from 'http';
-import { ApolloServer } from 'apollo-server-express';
-import { PrismaClient } from '@prisma/client';
-import expressJwt from 'express-jwt';
 
 import auth from './auth';
-import storage from './storage';
 import schema from './schema';
 import redisClient from './config/redis';
+import './config/cloudinary';
 
 const main = async () => {
 	const app = express();
@@ -23,6 +24,12 @@ const main = async () => {
 			credentialsRequired: false
 		})
 	);
+	app.use(
+		graphqlUploadExpress({
+			maxFileSize: 10485760,
+			maxFiles: 10
+		})
+	);
 
 	const httpServer = createServer(app);
 	const apolloServer = new ApolloServer({
@@ -34,7 +41,6 @@ const main = async () => {
 	apolloServer.applyMiddleware({ app });
 
 	app.use('/auth', auth);
-	app.use('/storage', storage);
 
 	const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
 	httpServer.listen({ port: PORT });

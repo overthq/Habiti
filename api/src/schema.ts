@@ -1,4 +1,5 @@
 import { makeExecutableSchema } from '@graphql-tools/schema';
+import { GraphQLUpload } from 'graphql-upload';
 import merge from 'lodash/merge';
 
 import userQueries from './collections/user/queries';
@@ -22,12 +23,16 @@ import cartMutations from './collections/cart/mutations';
 import CartTypes from './collections/cart/types';
 
 const Root = `
+	scalar Upload
+
 	type Query { _: Boolean }
 	type Mutation { _: Boolean }
 `;
 
 const resolvers = merge(
-	{},
+	{
+		Upload: GraphQLUpload
+	},
 	userQueries,
 	userMutations,
 	orderQueries,
