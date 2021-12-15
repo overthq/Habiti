@@ -1,20 +1,47 @@
 import { Resolver } from '../../types/resolvers';
+import { FileUpload } from 'graphql-upload';
+import { uploadStream } from '../../utils/upload';
 
 interface CreateStoreArgs {
 	input: {
 		name: string;
+		description?: string;
+		website?: string;
+		twitter?: string;
+		instagram?: string;
+		imageFile?: Promise<FileUpload>;
 	};
 }
 
 const createStore: Resolver<CreateStoreArgs> = async (_, { input }, ctx) => {
+	const { imageFile, ...rest } = input;
+	let uploadedUrl = '';
+
+	if (imageFile) {
+		const { createReadStream } = await imageFile;
+		const stream = createReadStream();
+
+		const { url } = await uploadStream(stream);
+		uploadedUrl = url;
+	}
+
 	const store = await ctx.prisma.store.create({
 		data: {
-			name: input.name,
+			...rest,
 			managers: {
 				create: {
 					managerId: ctx.user.id
 				}
-			}
+			},
+			...(uploadedUrl !== ''
+				? {
+						image: {
+							create: {
+								path: uploadedUrl
+							}
+						}
+				  }
+				: {})
 		}
 	});
 

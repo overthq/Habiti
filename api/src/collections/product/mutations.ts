@@ -1,4 +1,6 @@
+import { FileUpload } from 'graphql-upload';
 import { Resolver } from '../../types/resolvers';
+import { uploadStream } from '../../utils/upload';
 
 const createProduct: Resolver = async (_, { input }, ctx) => {
 	const product = await ctx.prisma.product.create({
@@ -8,11 +10,49 @@ const createProduct: Resolver = async (_, { input }, ctx) => {
 	return product;
 };
 
-const editProduct: Resolver = async (_, { id, input }, ctx) => {
+interface EditProductArgs {
+	id: string;
+	input: {
+		name?: string;
+		description?: string;
+		unitPrice?: number;
+		imageFile?: Promise<FileUpload>;
+	};
+}
+
+const editProduct: Resolver<EditProductArgs> = async (
+	_,
+	{ id, input },
+	ctx
+) => {
+	const { imageFile, ...rest } = input;
+	let uploadedUrl = '';
+
+	if (imageFile) {
+		const { createReadStream } = await imageFile;
+		const stream = createReadStream();
+
+		const { url } = await uploadStream(stream);
+		uploadedUrl = url;
+	}
+
 	const product = await ctx.prisma.product.update({
 		where: { id },
-		data: input
+		data: {
+			...rest,
+			...(uploadedUrl !== ''
+				? {
+						images: {
+							create: {
+								path: uploadedUrl
+							}
+						}
+				  }
+				: {})
+		}
 	});
+
+	console.log(product);
 
 	return product;
 };
