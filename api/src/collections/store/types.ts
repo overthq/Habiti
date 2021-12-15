@@ -35,6 +35,15 @@ const StoreTypes = gql`
 
 	input CreateStoreInput {
 		name: String!
+		description: String!
+		website: String
+		twitter: String
+		instagram: String
+		imageFile: Upload
+	}
+
+	input EditStoreInput {
+		name: String
 		description: String
 		website: String
 		twitter: String
@@ -50,6 +59,7 @@ const StoreTypes = gql`
 
 	extend type Mutation {
 		createStore(input: CreateStoreInput!): Store!
+		editStore(id: ID!, input: EditStoreInput!): Store!
 		followStore(storeId: ID!): StoreFollower!
 		unfollowStore(storeId: ID!): ID!
 		deleteStore(id: ID!): ID!

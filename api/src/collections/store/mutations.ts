@@ -48,6 +48,49 @@ const createStore: Resolver<CreateStoreArgs> = async (_, { input }, ctx) => {
 	return store;
 };
 
+interface EditStoreArgs {
+	id: string;
+	input: {
+		name?: string;
+		description?: string;
+		website?: string;
+		twitter?: string;
+		instagram?: string;
+		imageFile?: Promise<FileUpload>;
+	};
+}
+
+const editStore: Resolver<EditStoreArgs> = async (_, { id, input }, ctx) => {
+	const { imageFile, ...rest } = input;
+	let uploadedUrl = '';
+
+	if (imageFile) {
+		const { createReadStream } = await imageFile;
+		const stream = createReadStream();
+
+		const { url } = await uploadStream(stream);
+		uploadedUrl = url;
+	}
+
+	const store = await ctx.prisma.store.update({
+		where: { id },
+		data: {
+			...rest,
+			...(uploadedUrl !== ''
+				? {
+						image: {
+							update: {
+								path: uploadedUrl
+							}
+						}
+				  }
+				: {})
+		}
+	});
+
+	return store;
+};
+
 interface FollowStoreArgs {
 	storeId: string;
 }
@@ -92,6 +135,7 @@ const deleteStore: Resolver<DeleteStoreArgs> = async (_, { id }, ctx) => {
 export default {
 	Mutation: {
 		createStore,
+		editStore,
 		followStore,
 		unfollowStore,
 		deleteStore

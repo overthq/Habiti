@@ -10,6 +10,10 @@ const createProduct: Resolver = async (_, { input }, ctx) => {
 	return product;
 };
 
+// TODO: Allow multiple file uploads. Shouldn't be too hard.
+// Maybe create separate mutation for adding files
+// And another for removing them.
+
 interface EditProductArgs {
 	id: string;
 	input: {
