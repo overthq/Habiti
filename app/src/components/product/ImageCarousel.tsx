@@ -34,13 +34,13 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 			<AnimatedFlatList
 				data={images}
 				style={{ height: '100%', width: '100%' }}
-				keyExtractor={i => i.id as string}
-				renderItem={({ item }) => (
+				keyExtractor={(i: any) => i.id}
+				renderItem={({ item }: any) => (
 					<View style={{ width: '100%', height: '100%' }}>
-						<Image
+						{/*<Image
 							source={{ uri: item.path }}
 							style={{ width: '100%', height: '100%' }}
-						/>
+						/>*/}
 					</View>
 				)}
 				horizontal

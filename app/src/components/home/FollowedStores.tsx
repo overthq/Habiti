@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import {
+	View,
+	Text,
+	FlatList,
+	StyleSheet,
+	ActivityIndicator
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { useStoresFollowedQuery } from '../../types/api';
@@ -17,34 +23,37 @@ const FollowedStores: React.FC = () => {
 
 	if (fetching) {
 		return (
-			<View>
-				<Text>Loading followed stores...</Text>
+			<View style={styles.container}>
+				<ActivityIndicator />
 			</View>
 		);
 	}
 
 	const stores = data?.user.followed.map(({ store }) => store);
 
+	if (!stores || stores?.length === 0) {
+		return (
+			<ListEmpty
+				title='No followed stores'
+				description={`When you follow stores, you'll see updates from them here.`}
+				cta={{
+					text: 'Discover new stores',
+					action: () => navigate('Explore')
+				}}
+			/>
+		);
+	}
+
 	return (
 		<View style={styles.container}>
 			<Text style={styles.sectionHeader}>Stores you follow</Text>
 			<FlatList
+				style={styles.list}
 				horizontal
 				data={stores}
 				keyExtractor={item => item.id}
-				style={styles.list}
 				contentContainerStyle={styles.listContentContainer}
 				renderItem={({ item }) => <FollowedStoresItem store={item} />}
-				ListEmptyComponent={
-					<ListEmpty
-						title='No followed stores'
-						description='You have not followed any stores yet. Follow some to view them here.'
-						cta={{
-							text: 'Discover new stores',
-							action: () => navigate('Explore')
-						}}
-					/>
-				}
 			/>
 		</View>
 	);
@@ -52,8 +61,11 @@ const FollowedStores: React.FC = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		// Fixed height: make sure that the container has the same height
-		// in all states, i.e. when the list loading, when it's empty and when it's not.
+		height: 500
+	},
+	list: {
+		marginTop: 8,
+		height: '100%'
 	},
 	sectionHeader: {
 		marginLeft: 16,
@@ -61,7 +73,6 @@ const styles = StyleSheet.create({
 		fontWeight: '500',
 		color: '#505050'
 	},
-	list: { marginTop: 8 },
 	listContentContainer: {
 		marginRight: 8
 	}

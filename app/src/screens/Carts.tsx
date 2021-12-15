@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CartsListItem from '../components/carts/CartsListItem';
 import ListEmpty from '../components/global/ListEmpty';
@@ -9,7 +9,7 @@ import { useCartsQuery } from '../types/api';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { HomeTabParamList } from '../types/navigation';
 
-const Carts = () => {
+const Carts: React.FC = () => {
 	const userId = useAppSelector(({ auth }) => auth.userId);
 	const [{ data, fetching, error }] = useCartsQuery({
 		variables: { userId: userId as string }
@@ -20,31 +20,24 @@ const Carts = () => {
 	if (fetching) {
 		return (
 			<View>
-				<Text>Loading carts...</Text>
+				<ActivityIndicator />
 			</View>
 		);
 	}
+
 	if (error) console.log(error);
 
 	const carts = data?.user.carts;
 
 	return (
 		<SafeAreaView style={styles.container}>
-			{/* Very bad: find good way to fix weird extra scroll space in FlatList */}
-			{carts?.length === 0 ? (
-				<View
-					style={{
-						flex: 1,
-						paddingHorizontal: 16,
-						alignItems: 'center',
-						justifyContent: 'center'
-					}}
-				>
-					<View
-						style={[styles.header, { position: 'absolute', top: 0, left: 16 }]}
-					>
-						<Text style={styles.title}>Carts</Text>
-					</View>
+			<FlatList
+				style={styles.list}
+				bounces={false}
+				keyExtractor={c => c.storeId}
+				renderItem={({ item }) => <CartsListItem cart={item} />}
+				data={carts}
+				ListEmptyComponent={
 					<ListEmpty
 						title='Empty cart'
 						description={`Looks like your cart is empty. Let's change that.`}
@@ -53,32 +46,8 @@ const Carts = () => {
 							action: () => navigate('Explore')
 						}}
 					/>
-				</View>
-			) : (
-				<FlatList
-					style={styles.list}
-					bounces={false}
-					keyExtractor={c => c.storeId}
-					// ListHeaderComponent={
-					// 	<View style={styles.header}>
-					// 		<Text style={styles.title}>Carts</Text>
-					// 	</View>
-					// }
-					renderItem={({ item }) => <CartsListItem cart={item} />}
-					data={carts}
-					ListEmptyComponent={
-						<ListEmpty
-							title='Empty cart'
-							description={`Looks like your cart is empty. Let's change that.`}
-							cta={{
-								text: 'Discover new stores',
-								action: () => navigate('Explore')
-							}}
-						/>
-					}
-					ItemSeparatorComponent={() => <View style={styles.separator} />}
-				/>
-			)}
+				}
+			/>
 		</SafeAreaView>
 	);
 };

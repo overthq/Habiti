@@ -43,7 +43,9 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		paddingVertical: 8
+		paddingVertical: 8,
+		borderBottomWidth: 1,
+		borderBottomColor: '#D3D3D3'
 	},
 	main: {
 		flexDirection: 'row',

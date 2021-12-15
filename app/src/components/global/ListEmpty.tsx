@@ -15,7 +15,9 @@ const ListEmpty: React.FC<ListEmptyProps> = ({ title, description, cta }) => (
 	<View style={styles.container}>
 		<Text style={styles.title}>{title}</Text>
 		<Text style={styles.description}>{description}</Text>
-		{cta && <Button text={cta.text} onPress={cta.action} />}
+		{cta && (
+			<Button style={styles.button} text={cta.text} onPress={cta.action} />
+		)}
 	</View>
 );
 
@@ -23,6 +25,7 @@ const styles = StyleSheet.create({
 	container: {
 		height: 500,
 		width: '100%',
+		paddingHorizontal: 16,
 		justifyContent: 'center',
 		alignItems: 'center',
 		alignSelf: 'center'
@@ -37,6 +40,9 @@ const styles = StyleSheet.create({
 		color: '#505050',
 		textAlign: 'center',
 		marginVertical: 8
+	},
+	button: {
+		marginHorizontal: 16
 	}
 });
 
