@@ -14,6 +14,7 @@ const UserTypes = gql`
 	}
 
 	extend type Query {
+		currentUser: User!
 		user(id: ID!): User!
 		users: [User!]!
 	}

@@ -1,5 +1,13 @@
 import { Resolver } from '../../types/resolvers';
 
+const currentUser: Resolver = async (_, __, ctx) => {
+	const fetchedCurrentUser = await ctx.prisma.user.findUnique({
+		where: { id: ctx.user.id }
+	});
+
+	return fetchedCurrentUser;
+};
+
 const user: Resolver = async (_, { id }, ctx) => {
 	const fetchedUser = await ctx.prisma.user.findUnique({ where: { id } });
 
@@ -48,6 +56,7 @@ const carts: Resolver = async (parent, _, ctx) => {
 
 export default {
 	Query: {
+		currentUser,
 		user,
 		users
 	},
