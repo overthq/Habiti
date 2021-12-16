@@ -10,7 +10,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => (
 	<View style={styles.container}>
 		<View style={styles.meta}>
 			<Text style={styles.name}>{product.name}</Text>
-			<Text style={styles.price}>${product.unitPrice}</Text>
+			<Text style={styles.price}>{product.unitPrice} NGN</Text>
 		</View>
 		<Text style={styles.header}>Description</Text>
 		<Text style={styles.description}>{product?.description}</Text>
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
 	},
 	name: {
 		fontWeight: 'bold',
-		fontSize: 20
+		fontSize: 24
 	},
 	price: {
 		fontSize: 18

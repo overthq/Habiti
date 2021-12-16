@@ -13,6 +13,7 @@ interface FollowButtonProps {
 }
 
 const FollowButton: React.FC<FollowButtonProps> = ({ store }) => {
+	const [disabled, setDisabled] = React.useState(false);
 	const [, followStore] = useFollowStoreMutation();
 	const [, unfollowStore] = useUnfollowStoreMutation();
 	const userId = useAppSelector(({ auth }) => auth.userId);
@@ -25,12 +26,16 @@ const FollowButton: React.FC<FollowButtonProps> = ({ store }) => {
 		return !!follow;
 	}, [store]);
 
-	const handlePress = React.useCallback(() => {
+	const handlePress = React.useCallback(async () => {
+		setDisabled(true);
+
 		if (isFollowing) {
-			unfollowStore({ storeId: store.id });
+			await unfollowStore({ storeId: store.id });
 		} else {
-			followStore({ storeId: store.id });
+			await followStore({ storeId: store.id });
 		}
+
+		setDisabled(false);
 	}, [isFollowing]);
 
 	return (
@@ -38,6 +43,7 @@ const FollowButton: React.FC<FollowButtonProps> = ({ store }) => {
 			style={styles.container}
 			activeOpacity={0.8}
 			onPress={handlePress}
+			disabled={disabled}
 		>
 			<Icon
 				size={18}
