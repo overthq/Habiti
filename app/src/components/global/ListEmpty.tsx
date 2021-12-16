@@ -23,12 +23,10 @@ const ListEmpty: React.FC<ListEmptyProps> = ({ title, description, cta }) => (
 
 const styles = StyleSheet.create({
 	container: {
-		height: '100%',
-		width: '100%',
+		flex: 1,
 		paddingHorizontal: 16,
 		justifyContent: 'center',
-		alignItems: 'center',
-		alignSelf: 'center'
+		alignItems: 'center'
 	},
 	title: {
 		fontSize: 18,
