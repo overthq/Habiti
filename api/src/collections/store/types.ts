@@ -54,7 +54,6 @@ const StoreTypes = gql`
 	extend type Query {
 		store(id: ID!): Store!
 		stores: [Store!]!
-		followedStores(userId: ID!): [Store!]!
 	}
 
 	extend type Mutation {

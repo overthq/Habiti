@@ -8,14 +8,9 @@ import {
 	Pressable
 } from 'react-native';
 import { openLink } from '../../utils/links';
-import {
-	useFollowStoreMutation,
-	useUnfollowStoreMutation,
-	StoreQuery
-} from '../../types/api';
+import { StoreQuery } from '../../types/api';
 import FollowButton from './FollowButton';
 import SocialLinks from './SocialLinks';
-import { useAppSelector } from '../../redux/store';
 import { Icon } from '../icons';
 import { useNavigation } from '@react-navigation/native';
 
@@ -24,19 +19,7 @@ interface StoreHeaderProps {
 }
 
 const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
-	const [, followStore] = useFollowStoreMutation();
-	const [, unfollowStore] = useUnfollowStoreMutation();
 	const { goBack } = useNavigation();
-	const userId = useAppSelector(({ auth }) => auth.userId);
-
-	const isFollowingStore = React.useMemo(() => {
-		const userInStoreFollowing = store?.followers?.findIndex(
-			({ follower }) => follower.id === userId
-		);
-
-		if (userInStoreFollowing) return userInStoreFollowing > -1;
-		return false;
-	}, [store]);
 
 	return (
 		<View style={styles.container}>
@@ -65,15 +48,7 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 					>
 						<Text style={styles.websiteLinkText}>{store?.website}</Text>
 					</TouchableOpacity>
-					<FollowButton
-						isFollowing={isFollowingStore}
-						follow={() => {
-							followStore({ storeId: store?.id });
-						}}
-						unfollow={() => {
-							unfollowStore({ storeId: store?.id });
-						}}
-					/>
+					<FollowButton store={store} />
 				</View>
 			</View>
 		</View>

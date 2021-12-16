@@ -16,17 +16,6 @@ const stores: Resolver = async (_, __, ctx) => {
 	return fetchedStores;
 };
 
-const followedStores: Resolver = async (_, __, ctx) => {
-	const { followed } = await ctx.prisma.user.findUnique({
-		where: { id: ctx.user.id },
-		include: {
-			followed: true
-		}
-	});
-
-	return followed;
-};
-
 const products: Resolver = async (parent, _, ctx) => {
 	const fetchedProducts = await ctx.prisma.store
 		.findUnique({ where: { id: parent.id } })
@@ -80,7 +69,7 @@ const image: Resolver = async (parent, _, ctx) => {
 // TODO: Move these to a new collections group.
 
 const storeManagerStore: Resolver = async (parent, _, ctx) => {
-	const fetchedStores = await ctx.prisma.storeManager
+	const fetchedStoreManagerStore = await ctx.prisma.storeManager
 		.findUnique({
 			where: {
 				storeId_managerId: {
@@ -91,11 +80,11 @@ const storeManagerStore: Resolver = async (parent, _, ctx) => {
 		})
 		.store();
 
-	return fetchedStores;
+	return fetchedStoreManagerStore;
 };
 
 const storeManagerManager: Resolver = async (parent, _, ctx) => {
-	const fetchedStores = await ctx.prisma.storeManager
+	const fetchedStoreManagerManager = await ctx.prisma.storeManager
 		.findUnique({
 			where: {
 				storeId_managerId: {
@@ -106,14 +95,43 @@ const storeManagerManager: Resolver = async (parent, _, ctx) => {
 		})
 		.manager();
 
-	return fetchedStores;
+	return fetchedStoreManagerManager;
+};
+
+const storeFollowerStore: Resolver = async (parent, _, ctx) => {
+	const fetchedStoreFollowerStore = await ctx.prisma.storeFollower
+		.findUnique({
+			where: {
+				storeId_followerId: {
+					storeId: parent.storeId,
+					followerId: parent.followerId
+				}
+			}
+		})
+		.store();
+
+	return fetchedStoreFollowerStore;
+};
+
+const storeFollowerFollower: Resolver = async (parent, _, ctx) => {
+	const fetchedStoreFollowerFollower = await ctx.prisma.storeFollower
+		.findUnique({
+			where: {
+				storeId_followerId: {
+					storeId: parent.storeId,
+					followerId: parent.followerId
+				}
+			}
+		})
+		.follower();
+
+	return fetchedStoreFollowerFollower;
 };
 
 export default {
 	Query: {
 		store,
-		stores,
-		followedStores
+		stores
 	},
 	Store: {
 		products,
@@ -126,5 +144,9 @@ export default {
 	StoreManager: {
 		store: storeManagerStore,
 		manager: storeManagerManager
+	},
+	StoreFollower: {
+		store: storeFollowerStore,
+		follower: storeFollowerFollower
 	}
 };
