@@ -1,5 +1,6 @@
 query StoreProducts($storeId: ID!) {
 	store(id: $storeId) {
+		id
 		products {
 			id
 			name

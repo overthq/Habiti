@@ -2,6 +2,10 @@ query Stores {
 	stores {
 		id
 		name
+		image {
+			id
+			path
+		}
 	}
 }
 

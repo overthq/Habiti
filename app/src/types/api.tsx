@@ -312,6 +312,7 @@ export type CartsQuery = {
 	__typename?: 'Query';
 	currentUser: {
 		__typename?: 'User';
+		id: string;
 		carts: Array<{
 			__typename?: 'Cart';
 			id: string;
@@ -409,6 +410,7 @@ export type UserOrdersQuery = {
 	__typename?: 'Query';
 	currentUser: {
 		__typename?: 'User';
+		id: string;
 		orders: Array<{
 			__typename?: 'Order';
 			id: string;
@@ -481,6 +483,7 @@ export type StoreProductsQuery = {
 	__typename?: 'Query';
 	store: {
 		__typename?: 'Store';
+		id: string;
 		products: Array<{
 			__typename?: 'Product';
 			id: string;
@@ -513,7 +516,15 @@ export type StoresQueryVariables = Exact<{ [key: string]: never }>;
 
 export type StoresQuery = {
 	__typename?: 'Query';
-	stores: Array<{ __typename?: 'Store'; id: string; name: string }>;
+	stores: Array<{
+		__typename?: 'Store';
+		id: string;
+		name: string;
+		image?:
+			| { __typename?: 'Image'; id: string; path: string }
+			| null
+			| undefined;
+	}>;
 };
 
 export type StoreQueryVariables = Exact<{
@@ -583,6 +594,7 @@ export type CurrentUserQuery = {
 export const CartsDocument = gql`
 	query Carts {
 		currentUser {
+			id
 			carts {
 				id
 				userId
@@ -692,6 +704,7 @@ export function useDeleteCartMutation() {
 export const UserOrdersDocument = gql`
 	query UserOrders {
 		currentUser {
+			id
 			orders {
 				id
 				store {
@@ -772,6 +785,7 @@ export function useCreateOrderMutation() {
 export const StoreProductsDocument = gql`
 	query StoreProducts($storeId: ID!) {
 		store(id: $storeId) {
+			id
 			products {
 				id
 				name
@@ -820,6 +834,10 @@ export const StoresDocument = gql`
 		stores {
 			id
 			name
+			image {
+				id
+				path
+			}
 		}
 	}
 `;

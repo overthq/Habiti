@@ -1,5 +1,6 @@
 query UserOrders {
 	currentUser {
+		id
 		orders {
 			id
 			store {

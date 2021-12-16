@@ -1,5 +1,6 @@
 query Carts {
 	currentUser {
+		id
 		carts {
 			id
 			userId
@@ -9,7 +10,6 @@ query Carts {
 				name
 			}
 			products {
-				# id
 				productId
 				product {
 					id
@@ -32,7 +32,6 @@ query Cart($cartId: ID!) {
 			name
 		}
 		products {
-			# id
 			productId
 			product {
 				id
@@ -54,7 +53,6 @@ mutation AddProductToCart($input: AddProductToCartInput!) {
 			name
 		}
 		products {
-			# id
 			productId
 			product {
 				id

@@ -21,13 +21,12 @@ const StoreListItem: React.FC<StoreListItemProps> = ({ item }) => {
 				activeOpacity={0.8}
 			>
 				<View style={styles.image}>
-					{item.images[0] &&
-						{
-							/*<Image
+					{item.images[0] && (
+						<Image
 							style={{ height: '100%', width: '100%' }}
 							source={{ uri: item.images[0].path }}
-						/>*/
-						}}
+						/>
+					)}
 				</View>
 				<Text style={styles.name}>{item.name}</Text>
 				<Text style={styles.price}>${item.unitPrice}</Text>
