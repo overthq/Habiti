@@ -4,11 +4,11 @@ import { StoreQuery, useStoreProductsQuery } from '../../types/api';
 import StoreHeader from './StoreHeader';
 import StoreListItem from './StoreListItem';
 
-interface StoreItemsProps {
+interface StoreProductsProps {
 	store: StoreQuery['store'];
 }
 
-const StoreProducts: React.FC<StoreItemsProps> = ({ store }) => {
+const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 	const [{ data, fetching }] = useStoreProductsQuery({
 		variables: { storeId: store.id }
 	});

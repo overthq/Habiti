@@ -1,42 +1,38 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator } from 'react-native';
 import { useUserOrdersQuery } from '../../types/api';
 import textStyles from '../../styles/text';
 import RecentOrder from './RecentOrder';
+import ListEmpty from '../global/ListEmpty';
 
 const RecentOrders = () => {
-	const [{ data }] = useUserOrdersQuery();
+	const [{ data, fetching }] = useUserOrdersQuery();
 
 	return (
 		<View>
 			<Text style={[textStyles.sectionHeader, { marginLeft: 16 }]}>
 				Recent Orders
 			</Text>
-			<FlatList
-				data={data?.currentUser.orders}
-				keyExtractor={({ id }) => id}
-				horizontal
-				showsHorizontalScrollIndicator={false}
-				renderItem={({ item }) => <RecentOrder order={item} />}
-				ListEmptyComponent={
-					<View style={{ width: '100%' }}>
-						<Text style={styles.empty}>
-							No recent orders to view. Order some items to view them here
-						</Text>
-					</View>
-				}
-			/>
+			{fetching ? (
+				<View>
+					<ActivityIndicator />
+				</View>
+			) : data?.currentUser.orders.length === 0 ? (
+				<ListEmpty
+					title='No recent orders to view'
+					description='When you have pending orders, they will be displayed here.'
+				/>
+			) : (
+				<FlatList
+					data={data?.currentUser.orders}
+					keyExtractor={({ id }) => id}
+					horizontal
+					showsHorizontalScrollIndicator={false}
+					renderItem={({ item }) => <RecentOrder order={item} />}
+				/>
+			)}
 		</View>
 	);
 };
-
-const styles = StyleSheet.create({
-	empty: {
-		color: '#C4C4C4',
-		fontSize: 16,
-		marginHorizontal: 20,
-		marginVertical: 5
-	}
-});
 
 export default RecentOrders;

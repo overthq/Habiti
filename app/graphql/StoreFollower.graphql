@@ -2,6 +2,9 @@ mutation FollowStore($storeId: ID!) {
 	followStore(storeId: $storeId) {
 		followerId
 		storeId
+		store {
+			id
+		}
 	}
 }
 
