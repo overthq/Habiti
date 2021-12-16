@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, Text, StyleSheet } from 'react-native';
+import { View, Pressable, Text, StyleSheet } from 'react-native';
 import { Icon } from '../icons';
 import { useAddProductToCartMutation } from '../../types/api';
 
@@ -23,10 +23,17 @@ const AddToCart: React.FC<AddToCartProps> = ({
 	};
 
 	return (
-		<Pressable style={styles.button} onPress={handlePress}>
-			<Icon size={22} color='#FFFFFF' name='plus' style={{ marginRight: 4 }} />
-			<Text style={styles.buttonText}>Add to Cart</Text>
-		</Pressable>
+		<View style={{ width: '100%', paddingHorizontal: 16 }}>
+			<Pressable style={styles.button} onPress={handlePress}>
+				<Icon
+					size={22}
+					color='#FFFFFF'
+					name='plus'
+					style={{ marginRight: 4 }}
+				/>
+				<Text style={styles.buttonText}>Add to Cart</Text>
+			</Pressable>
+		</View>
 	);
 };
 
@@ -44,8 +51,8 @@ const styles = StyleSheet.create({
 		backgroundColor: '#202020'
 	},
 	buttonText: {
-		fontSize: 16,
-		fontWeight: '700',
+		fontSize: 17,
+		fontWeight: '500',
 		color: '#FFFFFF'
 	}
 });

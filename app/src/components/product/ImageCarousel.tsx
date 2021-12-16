@@ -33,14 +33,11 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 		<View style={styles.container}>
 			<AnimatedFlatList
 				data={images}
-				style={{ height: '100%', width: '100%' }}
+				contentContainerStyle={{ flex: 1 }}
 				keyExtractor={(i: any) => i.id}
 				renderItem={({ item }: any) => (
-					<View style={{ width: '100%', height: '100%' }}>
-						{/*<Image
-							source={{ uri: item.path }}
-							style={{ width: '100%', height: '100%' }}
-						/>*/}
+					<View style={styles.imageContainer}>
+						<Image source={{ uri: item.path }} style={styles.image} />
 					</View>
 				)}
 				horizontal
@@ -61,6 +58,14 @@ const styles = StyleSheet.create({
 		height: 400,
 		width: '100%',
 		backgroundColor: '#D3D3D3'
+	},
+	imageContainer: {
+		width: '100%',
+		height: '100%'
+	},
+	image: {
+		width: '100%',
+		height: '100%'
 	}
 });
 
