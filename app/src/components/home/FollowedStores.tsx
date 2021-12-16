@@ -12,6 +12,7 @@ import { useStoresFollowedQuery } from '../../types/api';
 import { HomeTabParamList } from '../../types/navigation';
 import ListEmpty from '../global/ListEmpty';
 import FollowedStoresItem from './FollowedStoresItem';
+import textStyles from '../../styles/text';
 
 const FollowedStores: React.FC = () => {
 	const [{ data, fetching }] = useStoresFollowedQuery();
@@ -42,7 +43,9 @@ const FollowedStores: React.FC = () => {
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.sectionHeader}>Stores you follow</Text>
+			<Text style={[textStyles.sectionHeader, { marginLeft: 16 }]}>
+				Followed Stores
+			</Text>
 			<FlatList
 				style={styles.list}
 				horizontal

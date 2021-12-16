@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { useDispatch } from 'react-redux';
 import Button from '../components/global/Button';
+import UserCard from '../components/profile/UserCard';
 import { logOut } from '../redux/auth/actions';
 import { useCurrentUserQuery } from '../types/api';
 
@@ -11,17 +11,19 @@ const Profile: React.FC = () => {
 
 	const [{ data, fetching }] = useCurrentUserQuery();
 
-	return (
-		<SafeAreaView style={styles.container}>
-			{fetching ? (
+	if (fetching || !data) {
+		return (
+			<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 				<ActivityIndicator />
-			) : (
-				<View>
-					<Text style={styles.name}>{data?.currentUser?.name}</Text>
-				</View>
-			)}
+			</View>
+		);
+	}
+
+	return (
+		<View style={styles.container}>
+			<UserCard user={data?.currentUser} />
 			<Button text='Log Out' onPress={() => dispatch(logOut())} />
-		</SafeAreaView>
+		</View>
 	);
 };
 
@@ -29,11 +31,6 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		paddingHorizontal: 16
-	},
-	name: {
-		fontWeight: 'bold',
-		fontSize: 28,
-		marginBottom: 16
 	}
 });
 

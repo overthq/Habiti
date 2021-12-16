@@ -9,7 +9,7 @@ const RecentOrders = () => {
 	const [{ data, fetching }] = useUserOrdersQuery();
 
 	return (
-		<View>
+		<View style={{ height: 300 }}>
 			<Text style={[textStyles.sectionHeader, { marginLeft: 16 }]}>
 				Recent Orders
 			</Text>

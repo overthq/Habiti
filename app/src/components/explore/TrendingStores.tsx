@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
+import textStyles from '../../styles/text';
 import { useStoresQuery } from '../../types/api';
 import ListEmpty from '../global/ListEmpty';
 import TrendingStoresItem from './TrendingStoresItem';
@@ -9,7 +10,9 @@ const TrendingStores: React.FC = () => {
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.sectionHeader}>Trending Stores</Text>
+			<Text style={[textStyles.sectionHeader, { marginLeft: 16 }]}>
+				Trending Stores
+			</Text>
 			<FlatList
 				horizontal
 				data={data?.stores}
@@ -29,9 +32,7 @@ const TrendingStores: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		marginTop: 8
-	},
+	container: {},
 	list: {
 		paddingLeft: 20,
 		height: 95
