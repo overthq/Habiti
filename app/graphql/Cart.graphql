@@ -1,5 +1,5 @@
-query Carts($userId: ID!) {
-	user(id: $userId) {
+query Carts {
+	currentUser {
 		carts {
 			id
 			userId

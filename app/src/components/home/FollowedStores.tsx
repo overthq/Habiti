@@ -9,16 +9,12 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { useStoresFollowedQuery } from '../../types/api';
-import { useAppSelector } from '../../redux/store';
 import { HomeTabParamList } from '../../types/navigation';
 import ListEmpty from '../global/ListEmpty';
 import FollowedStoresItem from './FollowedStoresItem';
 
 const FollowedStores: React.FC = () => {
-	const userId = useAppSelector(({ auth }) => auth.userId);
-	const [{ data, fetching }] = useStoresFollowedQuery({
-		variables: { userId: userId as string }
-	});
+	const [{ data, fetching }] = useStoresFollowedQuery();
 	const { navigate } = useNavigation<StackNavigationProp<HomeTabParamList>>();
 
 	if (fetching) {
@@ -29,7 +25,7 @@ const FollowedStores: React.FC = () => {
 		);
 	}
 
-	const stores = data?.user.followed.map(({ store }) => store);
+	const stores = data?.currentUser.followed.map(({ store }) => store);
 
 	if (!stores || stores?.length === 0) {
 		return (

@@ -1,5 +1,5 @@
-query UserOrders($userId: ID!) {
-	user(id: $userId) {
+query UserOrders {
+	currentUser {
 		orders {
 			id
 			store {

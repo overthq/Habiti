@@ -4,16 +4,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import CartsListItem from '../components/carts/CartsListItem';
 import ListEmpty from '../components/global/ListEmpty';
 import { useNavigation } from '@react-navigation/native';
-import { useAppSelector } from '../redux/store';
 import { useCartsQuery } from '../types/api';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { HomeTabParamList } from '../types/navigation';
 
 const Carts: React.FC = () => {
-	const userId = useAppSelector(({ auth }) => auth.userId);
-	const [{ data, fetching, error }] = useCartsQuery({
-		variables: { userId: userId as string }
-	});
+	const [{ data, fetching, error }] = useCartsQuery();
 	const { navigate } =
 		useNavigation<BottomTabNavigationProp<HomeTabParamList, 'Carts'>>();
 
@@ -27,7 +23,7 @@ const Carts: React.FC = () => {
 
 	if (error) console.log(error);
 
-	const carts = data?.user.carts;
+	const carts = data?.currentUser.carts;
 
 	return (
 		<SafeAreaView style={styles.container}>

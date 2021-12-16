@@ -7,7 +7,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { AppStackParamList } from '../../types/navigation';
 
 interface CartListItemProps {
-	cart: CartsQuery['user']['carts'][-1];
+	cart: CartsQuery['currentUser']['carts'][-1];
 }
 
 const CartsListItem: React.FC<CartListItemProps> = ({ cart }) => {

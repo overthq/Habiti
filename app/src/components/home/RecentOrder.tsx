@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { UserOrdersQuery } from '../../types/api';
 
 interface RecentOrderProps {
-	order: UserOrdersQuery['user']['orders'][-1];
+	order: UserOrdersQuery['currentUser']['orders'][-1];
 }
 
 const RecentOrder: React.FC<RecentOrderProps> = ({ order }) => {

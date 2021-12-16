@@ -64,7 +64,7 @@ export type CreateProductInput = {
 };
 
 export type CreateStoreInput = {
-	description?: InputMaybe<Scalars['String']>;
+	description: Scalars['String'];
 	imageFile?: InputMaybe<Scalars['Upload']>;
 	instagram?: InputMaybe<Scalars['String']>;
 	name: Scalars['String'];
@@ -77,6 +77,15 @@ export type EditProductInput = {
 	imageFile?: InputMaybe<Scalars['Upload']>;
 	name?: InputMaybe<Scalars['String']>;
 	unitPrice?: InputMaybe<Scalars['Int']>;
+};
+
+export type EditStoreInput = {
+	description?: InputMaybe<Scalars['String']>;
+	imageFile?: InputMaybe<Scalars['Upload']>;
+	instagram?: InputMaybe<Scalars['String']>;
+	name?: InputMaybe<Scalars['String']>;
+	twitter?: InputMaybe<Scalars['String']>;
+	website?: InputMaybe<Scalars['String']>;
 };
 
 export type Image = {
@@ -98,6 +107,7 @@ export type Mutation = {
 	deleteStore: Scalars['ID'];
 	deleteUser: Scalars['ID'];
 	editProduct: Product;
+	editStore: Store;
 	followStore: StoreFollower;
 	removeProductFromCart: Scalars['ID'];
 	unfollowStore: Scalars['ID'];
@@ -134,6 +144,11 @@ export type MutationDeleteUserArgs = {
 export type MutationEditProductArgs = {
 	id: Scalars['ID'];
 	input: EditProductInput;
+};
+
+export type MutationEditStoreArgs = {
+	id: Scalars['ID'];
+	input: EditStoreInput;
 };
 
 export type MutationFollowStoreArgs = {
@@ -190,6 +205,7 @@ export type Query = {
 	__typename?: 'Query';
 	_?: Maybe<Scalars['Boolean']>;
 	cart: Cart;
+	currentUser: User;
 	followedStores: Array<Store>;
 	order: Order;
 	product: Product;
@@ -290,13 +306,11 @@ export type User = {
 	updatedAt: Scalars['String'];
 };
 
-export type CartsQueryVariables = Exact<{
-	userId: Scalars['ID'];
-}>;
+export type CartsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type CartsQuery = {
 	__typename?: 'Query';
-	user: {
+	currentUser: {
 		__typename?: 'User';
 		carts: Array<{
 			__typename?: 'Cart';
@@ -389,13 +403,11 @@ export type DeleteCartMutation = {
 	deleteCart: string;
 };
 
-export type UserOrdersQueryVariables = Exact<{
-	userId: Scalars['ID'];
-}>;
+export type UserOrdersQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserOrdersQuery = {
 	__typename?: 'Query';
-	user: {
+	currentUser: {
 		__typename?: 'User';
 		orders: Array<{
 			__typename?: 'Order';
@@ -547,13 +559,11 @@ export type UnfollowStoreMutation = {
 	unfollowStore: string;
 };
 
-export type StoresFollowedQueryVariables = Exact<{
-	userId: Scalars['ID'];
-}>;
+export type StoresFollowedQueryVariables = Exact<{ [key: string]: never }>;
 
 export type StoresFollowedQuery = {
 	__typename?: 'Query';
-	user: {
+	currentUser: {
 		__typename?: 'User';
 		id: string;
 		followed: Array<{
@@ -563,18 +573,16 @@ export type StoresFollowedQuery = {
 	};
 };
 
-export type CurrentUserQueryVariables = Exact<{
-	userId: Scalars['ID'];
-}>;
+export type CurrentUserQueryVariables = Exact<{ [key: string]: never }>;
 
 export type CurrentUserQuery = {
 	__typename?: 'Query';
-	user: { __typename?: 'User'; id: string; name: string; phone: string };
+	currentUser: { __typename?: 'User'; id: string; name: string; phone: string };
 };
 
 export const CartsDocument = gql`
-	query Carts($userId: ID!) {
-		user(id: $userId) {
+	query Carts {
+		currentUser {
 			carts {
 				id
 				userId
@@ -682,8 +690,8 @@ export function useDeleteCartMutation() {
 	);
 }
 export const UserOrdersDocument = gql`
-	query UserOrders($userId: ID!) {
-		user(id: $userId) {
+	query UserOrders {
+		currentUser {
 			orders {
 				id
 				store {
@@ -872,8 +880,8 @@ export function useUnfollowStoreMutation() {
 	>(UnfollowStoreDocument);
 }
 export const StoresFollowedDocument = gql`
-	query StoresFollowed($userId: ID!) {
-		user(id: $userId) {
+	query StoresFollowed {
+		currentUser {
 			id
 			followed {
 				store {
@@ -894,8 +902,8 @@ export function useStoresFollowedQuery(
 	});
 }
 export const CurrentUserDocument = gql`
-	query CurrentUser($userId: ID!) {
-		user(id: $userId) {
+	query CurrentUser {
+		currentUser {
 			id
 			name
 			phone

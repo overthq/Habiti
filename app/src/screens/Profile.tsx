@@ -4,16 +4,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch } from 'react-redux';
 import Button from '../components/global/Button';
 import { logOut } from '../redux/auth/actions';
-import { useAppSelector } from '../redux/store';
 import { useCurrentUserQuery } from '../types/api';
 
 const Profile: React.FC = () => {
-	const userId = useAppSelector(({ auth }) => auth.userId);
 	const dispatch = useDispatch();
 
-	const [{ data, fetching }] = useCurrentUserQuery({
-		variables: { userId: userId as string }
-	});
+	const [{ data, fetching }] = useCurrentUserQuery();
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -21,7 +17,7 @@ const Profile: React.FC = () => {
 				<ActivityIndicator />
 			) : (
 				<View>
-					<Text style={styles.name}>{data?.user?.name}</Text>
+					<Text style={styles.name}>{data?.currentUser?.name}</Text>
 				</View>
 			)}
 			<Button text='Log Out' onPress={() => dispatch(logOut())} />
