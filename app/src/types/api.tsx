@@ -108,9 +108,9 @@ export type Mutation = {
 	deleteUser: Scalars['ID'];
 	editProduct: Product;
 	editStore: Store;
-	followStore: StoreFollower;
+	followStore: Store;
 	removeProductFromCart: Scalars['ID'];
-	unfollowStore: Scalars['ID'];
+	unfollowStore: Store;
 };
 
 export type MutationAddProductToCartArgs = {
@@ -206,7 +206,6 @@ export type Query = {
 	_?: Maybe<Scalars['Boolean']>;
 	cart: Cart;
 	currentUser: User;
-	followedStores: Array<Store>;
 	order: Order;
 	product: Product;
 	store: Store;
@@ -221,10 +220,6 @@ export type Query = {
 
 export type QueryCartArgs = {
 	id: Scalars['ID'];
-};
-
-export type QueryFollowedStoresArgs = {
-	userId: Scalars['ID'];
 };
 
 export type QueryOrderArgs = {
@@ -555,9 +550,12 @@ export type FollowStoreMutationVariables = Exact<{
 export type FollowStoreMutation = {
 	__typename?: 'Mutation';
 	followStore: {
-		__typename?: 'StoreFollower';
-		followerId: string;
-		storeId: string;
+		__typename?: 'Store';
+		id: string;
+		followers: Array<{
+			__typename?: 'StoreFollower';
+			follower: { __typename?: 'User'; id: string; name: string };
+		}>;
 	};
 };
 
@@ -567,7 +565,14 @@ export type UnfollowStoreMutationVariables = Exact<{
 
 export type UnfollowStoreMutation = {
 	__typename?: 'Mutation';
-	unfollowStore: string;
+	unfollowStore: {
+		__typename?: 'Store';
+		id: string;
+		followers: Array<{
+			__typename?: 'StoreFollower';
+			follower: { __typename?: 'User'; id: string; name: string };
+		}>;
+	};
 };
 
 export type StoresFollowedQueryVariables = Exact<{ [key: string]: never }>;
@@ -874,8 +879,13 @@ export function useStoreQuery(
 export const FollowStoreDocument = gql`
 	mutation FollowStore($storeId: ID!) {
 		followStore(storeId: $storeId) {
-			followerId
-			storeId
+			id
+			followers {
+				follower {
+					id
+					name
+				}
+			}
 		}
 	}
 `;
@@ -887,7 +897,15 @@ export function useFollowStoreMutation() {
 }
 export const UnfollowStoreDocument = gql`
 	mutation UnfollowStore($storeId: ID!) {
-		unfollowStore(storeId: $storeId)
+		unfollowStore(storeId: $storeId) {
+			id
+			followers {
+				follower {
+					id
+					name
+				}
+			}
+		}
 	}
 `;
 

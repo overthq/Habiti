@@ -96,14 +96,16 @@ interface FollowStoreArgs {
 }
 
 const followStore: Resolver<FollowStoreArgs> = async (_, { storeId }, ctx) => {
-	const follower = await ctx.prisma.storeFollower.create({
-		data: {
-			followerId: ctx.user.id,
-			storeId
-		}
-	});
+	const fetchedStore = await ctx.prisma.storeFollower
+		.create({
+			data: {
+				followerId: ctx.user.id,
+				storeId
+			}
+		})
+		.store();
 
-	return follower;
+	return fetchedStore;
 };
 
 interface UnfollowStoreArgs {
@@ -115,11 +117,15 @@ const unfollowStore: Resolver<UnfollowStoreArgs> = async (
 	{ storeId },
 	ctx
 ) => {
-	await ctx.prisma.storeFollower.delete({
-		where: {
-			storeId_followerId: { storeId, followerId: ctx.user.id }
-		}
-	});
+	const fetchedStore = await ctx.prisma.storeFollower
+		.delete({
+			where: {
+				storeId_followerId: { storeId, followerId: ctx.user.id }
+			}
+		})
+		.store();
+
+	return fetchedStore;
 };
 
 interface DeleteStoreArgs {

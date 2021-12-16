@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { StyleSheet, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useStoreQuery } from '../types/api';
@@ -12,14 +12,11 @@ const Store: React.FC = () => {
 		variables: { storeId: params.storeId }
 	});
 
-	if (fetching) return <ActivityIndicator />;
-
-	const store = data?.store;
-	if (!store) return <View />;
+	if (fetching || !data?.store) return <ActivityIndicator />;
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<StoreProducts store={store} />
+			<StoreProducts store={data.store} />
 		</SafeAreaView>
 	);
 };
