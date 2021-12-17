@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ViewStyle } from 'react-native';
 import Button from './Button';
 
 interface ListEmptyProps {
@@ -9,10 +9,16 @@ interface ListEmptyProps {
 		text: string;
 		action(): void;
 	};
+	viewStyle?: ViewStyle;
 }
 
-const ListEmpty: React.FC<ListEmptyProps> = ({ title, description, cta }) => (
-	<View style={styles.container}>
+const ListEmpty: React.FC<ListEmptyProps> = ({
+	title,
+	description,
+	cta,
+	viewStyle
+}) => (
+	<View style={[styles.container, viewStyle]}>
 		<Text style={styles.title}>{title}</Text>
 		<Text style={styles.description}>{description}</Text>
 		{cta && (

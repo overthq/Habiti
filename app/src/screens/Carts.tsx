@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import CartsListItem from '../components/carts/CartsListItem';
 import ListEmpty from '../components/global/ListEmpty';
 import { useNavigation } from '@react-navigation/native';
@@ -26,10 +25,9 @@ const Carts: React.FC = () => {
 	const carts = data?.currentUser.carts;
 
 	return (
-		<SafeAreaView style={styles.container}>
+		<View style={styles.container}>
 			<FlatList
 				style={styles.list}
-				bounces={false}
 				keyExtractor={c => c.storeId}
 				renderItem={({ item }) => <CartsListItem cart={item} />}
 				data={carts}
@@ -41,10 +39,11 @@ const Carts: React.FC = () => {
 							text: 'Discover new stores',
 							action: () => navigate('Explore')
 						}}
+						viewStyle={{ marginTop: 32 }}
 					/>
 				}
 			/>
-		</SafeAreaView>
+		</View>
 	);
 };
 

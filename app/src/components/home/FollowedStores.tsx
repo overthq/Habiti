@@ -30,14 +30,19 @@ const FollowedStores: React.FC = () => {
 
 	if (!stores || stores?.length === 0) {
 		return (
-			<ListEmpty
-				title='No followed stores'
-				description={`When you follow stores, you'll see updates from them here.`}
-				cta={{
-					text: 'Discover new stores',
-					action: () => navigate('Explore')
-				}}
-			/>
+			<View style={styles.container}>
+				<Text style={[textStyles.sectionHeader, { marginLeft: 16 }]}>
+					Followed Stores
+				</Text>
+				<ListEmpty
+					title='No followed stores'
+					description={`When you follow stores, you'll see updates from them here.`}
+					cta={{
+						text: 'Discover new stores',
+						action: () => navigate('Explore')
+					}}
+				/>
+			</View>
 		);
 	}
 
