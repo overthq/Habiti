@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
-import Button from './Button';
+import ListEmptyButton from '../../components/global/ListEmptyButton';
 
 interface ListEmptyProps {
 	title: string;
@@ -21,9 +21,7 @@ const ListEmpty: React.FC<ListEmptyProps> = ({
 	<View style={[styles.container, viewStyle]}>
 		<Text style={styles.title}>{title}</Text>
 		<Text style={styles.description}>{description}</Text>
-		{cta && (
-			<Button style={styles.button} text={cta.text} onPress={cta.action} />
-		)}
+		{cta && <ListEmptyButton text={cta.text} onPress={cta.action} />}
 	</View>
 );
 
@@ -44,9 +42,6 @@ const styles = StyleSheet.create({
 		color: '#505050',
 		textAlign: 'center',
 		marginVertical: 8
-	},
-	button: {
-		marginHorizontal: 16
 	}
 });
 
