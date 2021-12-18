@@ -5,12 +5,14 @@ const UserTypes = gql`
 		id: ID!
 		name: String!
 		phone: String!
+		createdAt: String!
+		updatedAt: String!
+
 		carts: [Cart!]!
 		orders: [Order!]!
 		managed: [StoreManager!]!
 		followed: [StoreFollower!]!
-		createdAt: String!
-		updatedAt: String!
+		watchlist: [WatchlistProduct!]!
 	}
 
 	extend type Query {

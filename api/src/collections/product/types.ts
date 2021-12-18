@@ -14,6 +14,7 @@ const ProductTypes = gql`
 		orders: [Order!]!
 		carts: [CartProduct!]!
 		images: [Image!]!
+		watchlists: [WatchlistProduct!]!
 	}
 
 	type Image {
@@ -21,6 +22,13 @@ const ProductTypes = gql`
 		path: String!
 		createdAt: String!
 		updatedAt: String!
+	}
+
+	type WatchlistProduct {
+		userId: ID!
+		productId: ID!
+		user: User!
+		product: Product!
 	}
 
 	input CreateProductInput {

@@ -54,6 +54,14 @@ const carts: Resolver = async (parent, _, ctx) => {
 	return fetchedCarts;
 };
 
+const watchlist: Resolver = async (parent, _, ctx) => {
+	const fetchedWatchlist = await ctx.prisma.user
+		.findUnique({ where: { id: parent.id } })
+		.watchlist();
+
+	return fetchedWatchlist;
+};
+
 export default {
 	Query: {
 		currentUser,
@@ -64,6 +72,7 @@ export default {
 		orders,
 		managed,
 		followed,
-		carts
+		carts,
+		watchlist
 	}
 };
