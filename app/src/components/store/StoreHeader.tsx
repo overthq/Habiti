@@ -32,9 +32,12 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 				<View style={styles.imagePlaceholder}>
 					{/* <Image source={{ uri: '' }} style={styles.image} /> */}
 				</View>
-				<View>
+				<View style={{ flex: 1, marginLeft: 32 }}>
 					<View style={{ flexDirection: 'row' }}>
-						<Text style={styles.storeName}>{store?.name}</Text>
+						<Text style={styles.name}>{store?.name}</Text>
+						{store?.description && (
+							<Text style={styles.description}>{store?.description}</Text>
+						)}
 						<SocialLinks
 							links={[
 								{ type: 'twitter', value: store?.twitter },
@@ -85,9 +88,12 @@ const styles = StyleSheet.create({
 		width: '100%',
 		height: '100%'
 	},
-	storeName: {
-		fontSize: 20,
+	name: {
+		fontSize: 24,
 		fontWeight: 'bold'
+	},
+	description: {
+		fontSize: 16
 	},
 	websiteLinkText: {
 		fontSize: 16,
