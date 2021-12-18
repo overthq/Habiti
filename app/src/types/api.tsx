@@ -199,6 +199,7 @@ export type Product = {
 	storeId: Scalars['ID'];
 	unitPrice: Scalars['Int'];
 	updatedAt: Scalars['String'];
+	watchlists: Array<WatchlistProduct>;
 };
 
 export type Query = {
@@ -299,6 +300,15 @@ export type User = {
 	orders: Array<Order>;
 	phone: Scalars['String'];
 	updatedAt: Scalars['String'];
+	watchlist: Array<WatchlistProduct>;
+};
+
+export type WatchlistProduct = {
+	__typename?: 'WatchlistProduct';
+	product: Product;
+	productId: Scalars['ID'];
+	user: User;
+	userId: Scalars['ID'];
 };
 
 export type CartsQueryVariables = Exact<{ [key: string]: never }>;
@@ -504,6 +514,27 @@ export type ProductQuery = {
 		unitPrice: number;
 		storeId: string;
 		images: Array<{ __typename?: 'Image'; id: string; path: string }>;
+	};
+};
+
+export type WatchlistQueryVariables = Exact<{ [key: string]: never }>;
+
+export type WatchlistQuery = {
+	__typename?: 'Query';
+	currentUser: {
+		__typename?: 'User';
+		id: string;
+		watchlist: Array<{
+			__typename?: 'WatchlistProduct';
+			product: {
+				__typename?: 'Product';
+				id: string;
+				name: string;
+				unitPrice: number;
+				store: { __typename?: 'Store'; id: string; name: string };
+				images: Array<{ __typename?: 'Image'; id: string; path: string }>;
+			};
+		}>;
 	};
 };
 
@@ -833,6 +864,37 @@ export function useProductQuery(
 	options: Omit<Urql.UseQueryArgs<ProductQueryVariables>, 'query'> = {}
 ) {
 	return Urql.useQuery<ProductQuery>({ query: ProductDocument, ...options });
+}
+export const WatchlistDocument = gql`
+	query Watchlist {
+		currentUser {
+			id
+			watchlist {
+				product {
+					id
+					name
+					unitPrice
+					store {
+						id
+						name
+					}
+					images {
+						id
+						path
+					}
+				}
+			}
+		}
+	}
+`;
+
+export function useWatchlistQuery(
+	options: Omit<Urql.UseQueryArgs<WatchlistQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<WatchlistQuery>({
+		query: WatchlistDocument,
+		...options
+	});
 }
 export const StoresDocument = gql`
 	query Stores {

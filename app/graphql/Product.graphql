@@ -27,3 +27,24 @@ query Product($productId: ID!) {
 		}
 	}
 }
+
+query Watchlist {
+	currentUser {
+		id
+		watchlist {
+			product {
+				id
+				name
+				unitPrice
+				store {
+					id
+					name
+				}
+				images {
+					id
+					path
+				}
+			}
+		}
+	}
+}

@@ -6,8 +6,7 @@ import {
 	StyleSheet,
 	ActivityIndicator
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import type { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { useStoresFollowedQuery } from '../../types/api';
 import { HomeTabParamList } from '../../types/navigation';
 import ListEmpty from '../global/ListEmpty';
@@ -16,7 +15,7 @@ import textStyles from '../../styles/text';
 
 const FollowedStores: React.FC = () => {
 	const [{ data, fetching }] = useStoresFollowedQuery();
-	const { navigate } = useNavigation<StackNavigationProp<HomeTabParamList>>();
+	const { navigate } = useNavigation<NavigationProp<HomeTabParamList>>();
 
 	if (fetching) {
 		return (
