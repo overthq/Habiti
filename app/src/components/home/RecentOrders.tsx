@@ -24,7 +24,6 @@ const RecentOrders = () => {
 				</View>
 			) : data?.currentUser.orders.length === 0 ? (
 				<ListEmpty
-					title='No recent orders'
 					description='When you have pending orders, they will be displayed here.'
 					cta={{
 						text: 'View your carts',

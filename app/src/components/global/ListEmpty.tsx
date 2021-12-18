@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ViewStyle } from 'react-native';
 import ListEmptyButton from '../../components/global/ListEmptyButton';
 
 interface ListEmptyProps {
-	title: string;
+	title?: string;
 	description: string;
 	cta?: {
 		text: string;
@@ -19,7 +19,7 @@ const ListEmpty: React.FC<ListEmptyProps> = ({
 	viewStyle
 }) => (
 	<View style={[styles.container, viewStyle]}>
-		<Text style={styles.title}>{title}</Text>
+		{title && <Text style={styles.title}>{title}</Text>}
 		<Text style={styles.description}>{description}</Text>
 		{cta && <ListEmptyButton text={cta.text} onPress={cta.action} />}
 	</View>

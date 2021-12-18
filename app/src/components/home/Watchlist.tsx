@@ -34,7 +34,6 @@ const Watchlist = () => {
 					Watchlist
 				</Text>
 				<ListEmpty
-					title='Watchlist empty'
 					description={`When you add items to your watchlist, you'll see them here.`}
 					cta={{
 						text: 'View trending',

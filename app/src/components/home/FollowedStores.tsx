@@ -34,7 +34,6 @@ const FollowedStores: React.FC = () => {
 					Followed Stores
 				</Text>
 				<ListEmpty
-					title='No followed stores'
 					description={`When you follow stores, you'll see updates from them here.`}
 					cta={{
 						text: 'Discover new stores',

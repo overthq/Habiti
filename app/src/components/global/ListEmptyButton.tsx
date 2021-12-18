@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
 		paddingVertical: 8,
 		paddingHorizontal: 16,
 		marginVertical: 4,
-		backgroundColor: '#2B2B2B',
+		backgroundColor: '#D3D3D3',
 		borderRadius: 4,
 		justifyContent: 'center',
 		alignItems: 'center'
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
 	text: {
 		fontSize: 16,
 		fontWeight: '500',
-		color: '#FFFFFF'
+		color: '#2B2B2B'
 	}
 });
 
