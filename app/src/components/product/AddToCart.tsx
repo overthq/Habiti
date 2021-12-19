@@ -58,7 +58,7 @@ const AddToCart: React.FC<AddToCartProps> = ({
 				/>
 			);
 		}
-	}, [inCart]);
+	}, [cartId, inCart]);
 
 	return <View style={styles.container}>{renderButton}</View>;
 };
