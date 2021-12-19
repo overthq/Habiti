@@ -25,8 +25,8 @@ const Cart: React.FC = () => {
 		<SafeAreaView style={styles.container}>
 			<Text style={styles.heading}>Checkout</Text>
 			<Text style={styles.sectionHeader}>Order Summary</Text>
-			{cart.products.map(({ productId, product, quantity }) => (
-				<CartProduct key={productId} {...{ product, quantity }} />
+			{cart.products.map(cartProduct => (
+				<CartProduct key={cartProduct.productId} cartProduct={cartProduct} />
 			))}
 			<Button text='Place Order' onPress={handleSubmit} />
 		</SafeAreaView>

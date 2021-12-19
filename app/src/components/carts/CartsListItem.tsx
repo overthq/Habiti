@@ -28,7 +28,7 @@ const CartsListItem: React.FC<CartListItemProps> = ({ cart }) => {
 					<Text style={styles.name}>{cart.store.name}</Text>
 					<Text style={styles.count}>
 						{cart.products.length}{' '}
-						{`item${cart.products.length > 1 ? 's' : ''}`}
+						{`product${cart.products.length > 1 ? 's' : ''}`}
 					</Text>
 				</View>
 			</View>

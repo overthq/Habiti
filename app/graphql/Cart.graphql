@@ -37,6 +37,10 @@ query Cart($cartId: ID!) {
 				id
 				name
 				unitPrice
+				images {
+					id
+					path
+				}
 			}
 			quantity
 		}
@@ -67,6 +71,38 @@ mutation RemoveProductFromCart($productId: ID!, $cartId: ID!) {
 	removeProductFromCart(productId: $productId, cartId: $cartId)
 }
 
+mutation CreateCart($input: CreateCartInput!) {
+	createCart(input: $input) {
+		id
+		userId
+		storeId
+		store {
+			id
+			name
+		}
+		products {
+			productId
+			product {
+				id
+			}
+		}
+	}
+}
+
 mutation DeleteCart($cartId: ID!) {
 	deleteCart(cartId: $cartId)
+}
+
+mutation UpdateCartProduct($input: UpdateCartProductInput!) {
+	updateCartProduct(input: $input) {
+		cartId
+		productId
+		quantity
+		cart {
+			id
+		}
+		product {
+			id
+		}
+	}
 }
