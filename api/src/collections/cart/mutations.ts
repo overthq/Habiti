@@ -14,33 +14,41 @@ const addProductToCart: Resolver<AddProductArgs> = async (
 	{ input: { cartId, storeId, productId, quantity } },
 	ctx
 ) => {
-	await ctx.prisma.cart.upsert({
-		where: { id: cartId },
-		update: {
-			products: {
-				upsert: {
-					where: { cartId_productId: { cartId, productId } },
+	if (cartId) {
+		const cart = await ctx.prisma.cart.update({
+			where: { id: cartId },
+			data: {
+				products: {
+					upsert: {
+						where: { cartId_productId: { cartId, productId } },
+						update: {
+							quantity
+						},
+						create: {
+							productId,
+							quantity
+						}
+					}
+				}
+			}
+		});
+		return cart;
+	} else if (storeId) {
+		const cart = await ctx.prisma.cart.create({
+			data: {
+				userId: ctx.user.id,
+				storeId,
+				products: {
 					create: {
 						productId,
-						quantity
-					},
-					update: {
 						quantity
 					}
 				}
 			}
-		},
-		create: {
-			userId: ctx.user.id,
-			storeId,
-			products: {
-				create: {
-					productId,
-					quantity
-				}
-			}
-		}
-	});
+		});
+
+		return cart;
+	}
 };
 
 interface RemoveProductArgs {
