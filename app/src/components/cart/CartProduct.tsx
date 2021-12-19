@@ -9,31 +9,27 @@ interface CartProductProps {
 
 const CartProduct: React.FC<CartProductProps> = ({
 	cartProduct: { product, quantity }
-}) => {
-	console.log({ product, quantity });
-
-	return (
-		<View style={styles.container}>
-			<View style={{ flexDirection: 'row' }}>
-				<View style={styles.imagePlaceholder}>
-					{product.images[0] && (
-						<Image
-							source={{ uri: product.images[0].path }}
-							style={{ width: '100%', height: '100%' }}
-						/>
-					)}
-				</View>
-				<View>
-					<Text style={styles.name}>{product.name}</Text>
-					<Text style={styles.price}>
-						{quantity} {product.unitPrice} NGN
-					</Text>
-				</View>
+}) => (
+	<View style={styles.container}>
+		<View style={{ flexDirection: 'row' }}>
+			<View style={styles.imagePlaceholder}>
+				{product.images[0] && (
+					<Image
+						source={{ uri: product.images[0].path }}
+						style={{ width: '100%', height: '100%' }}
+					/>
+				)}
 			</View>
-			<Icon name='chevronRight' color='#D3D3D3' />
+			<View>
+				<Text style={styles.name}>{product.name}</Text>
+				<Text style={styles.price}>
+					{quantity} {product.unitPrice} NGN
+				</Text>
+			</View>
 		</View>
-	);
-};
+		<Icon name='chevronRight' color='#D3D3D3' />
+	</View>
+);
 
 const styles = StyleSheet.create({
 	container: {
