@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import CartProduct from '../components/cart/CartProduct';
@@ -15,7 +15,13 @@ const Cart: React.FC = () => {
 	const [{ data, fetching }] = useCartQuery({ variables: { cartId } });
 	const cart = data?.cart;
 
-	if (fetching || !cart) return <View />;
+	if (fetching || !cart) {
+		return (
+			<View>
+				<ActivityIndicator />
+			</View>
+		);
+	}
 
 	const handleSubmit = async () => {
 		await createOrder({ cartId });
