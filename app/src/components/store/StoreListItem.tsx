@@ -17,7 +17,9 @@ const StoreListItem: React.FC<StoreListItemProps> = ({ item }) => {
 			<TouchableOpacity
 				key={item.id}
 				style={styles.pressable}
-				onPress={() => navigate('Product', { productId: item.id })}
+				onPress={() =>
+					navigate('Product', { productId: item.id, storeId: item.storeId })
+				}
 				activeOpacity={0.8}
 			>
 				<View style={styles.image}>

@@ -6,6 +6,7 @@ query StoreProducts($storeId: ID!) {
 			name
 			description
 			unitPrice
+			storeId
 			images {
 				id
 				path
@@ -14,7 +15,7 @@ query StoreProducts($storeId: ID!) {
 	}
 }
 
-query Product($productId: ID!) {
+query Product($productId: ID!, $storeId: ID!) {
 	product(id: $productId) {
 		id
 		name
@@ -24,6 +25,15 @@ query Product($productId: ID!) {
 		images {
 			id
 			path
+		}
+	}
+
+	userCart(storeId: $storeId) {
+		id
+		storeId
+		product(id: $productId) {
+			cartId
+			productId
 		}
 	}
 }

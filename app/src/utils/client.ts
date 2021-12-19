@@ -13,7 +13,8 @@ export const create = (accessToken: string | null) =>
 			cacheExchange({
 				keys: {
 					StoreFollower: data => `${data.storeId}-${data.followerId}`,
-					OrderProduct: data => `${data.orderId}-${data.productId}`
+					OrderProduct: data => `${data.orderId}-${data.productId}`,
+					CartProduct: data => `${data.cartId}-${data.productId}`
 				}
 			}),
 			fetchExchange

@@ -1,46 +1,75 @@
 import React from 'react';
 import { View, Pressable, Text, StyleSheet } from 'react-native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { Icon } from '../icons';
-import { useAddProductToCartMutation } from '../../types/api';
+import {
+	useCreateCartMutation,
+	useAddProductToCartMutation
+} from '../../types/api';
+import { AppStackParamList } from '../../types/navigation';
+import Button from '../global/Button';
 
 interface AddToCartProps {
 	storeId: string;
 	productId: string;
 	cartId?: string | null;
+	inCart: boolean;
 }
 
 const AddToCart: React.FC<AddToCartProps> = ({
 	storeId,
 	productId,
-	cartId
+	cartId,
+	inCart
 }) => {
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const [, createCart] = useCreateCartMutation();
 	const [, addProductToCart] = useAddProductToCartMutation();
 
 	const handlePress = async () => {
-		await addProductToCart({
-			input: { storeId, cartId, productId, quantity: 1 }
-		});
+		if (!cartId) {
+			await createCart({ input: { storeId, productId, quantity: 1 } });
+		} else {
+			await addProductToCart({
+				input: { cartId, productId, quantity: 1 }
+			});
+		}
 	};
 
-	return (
-		<View style={{ width: '100%', paddingHorizontal: 16 }}>
-			<Pressable style={styles.button} onPress={handlePress}>
-				<Icon
-					size={22}
-					color='#FFFFFF'
-					name='plus'
-					style={{ marginRight: 4 }}
+	const renderButton = React.useMemo(() => {
+		if (!cartId || (cartId && !inCart)) {
+			return (
+				<Pressable style={styles.button} onPress={handlePress}>
+					<Icon
+						size={22}
+						color='#FFFFFF'
+						name='plus'
+						style={{ marginRight: 4 }}
+					/>
+					<Text style={styles.buttonText}>Add to Cart</Text>
+				</Pressable>
+			);
+		} else {
+			return (
+				<Button
+					text='View in cart'
+					onPress={() => navigate('Cart', { cartId })}
+					style={{ marginVertical: 16 }}
 				/>
-				<Text style={styles.buttonText}>Add to Cart</Text>
-			</Pressable>
-		</View>
-	);
+			);
+		}
+	}, [inCart]);
+
+	return <View style={styles.container}>{renderButton}</View>;
 };
 
 const styles = StyleSheet.create({
+	container: {
+		width: '100%',
+		paddingHorizontal: 16
+	},
 	button: {
-		marginVertical: 10,
-		marginHorizontal: 16,
+		marginVertical: 8,
 		width: '100%',
 		height: 40,
 		borderRadius: 4,

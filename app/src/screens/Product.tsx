@@ -10,20 +10,20 @@ import ProductDetails from '../components/product/ProductDetails';
 const Product: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Product'>>();
 	const [{ data, fetching }] = useProductQuery({
-		variables: { productId: params.productId }
+		variables: { productId: params.productId, storeId: params.storeId }
 	});
 
 	const product = data?.product;
+	const cart = data?.userCart;
+	const inCart = !!cart?.product?.productId;
 
-	if (fetching) {
+	if (fetching || !product) {
 		return (
 			<View>
 				<ActivityIndicator />
 			</View>
 		);
 	}
-
-	if (!product) return <View />;
 
 	return (
 		<ScrollView style={styles.container}>
@@ -32,9 +32,10 @@ const Product: React.FC = () => {
 			<AddToCart
 				storeId={product.storeId}
 				productId={product.id}
-				cartId={'' /*product.store.carts[0]?.id*/}
+				cartId={cart?.id}
+				inCart={inCart}
 			/>
-			{/* Related Items */}
+			{/* Related Products */}
 		</ScrollView>
 	);
 };
@@ -42,6 +43,15 @@ const Product: React.FC = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1
+	},
+	buttonContainer: {
+		width: '100%',
+		marginVertical: 16,
+		paddingHorizontal: 16
+	},
+
+	button: {
+		width: '100%'
 	}
 });
 

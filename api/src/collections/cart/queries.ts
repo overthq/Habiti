@@ -12,16 +12,24 @@ const cart: Resolver<CartArgs> = async (_, { id }, ctx) => {
 	return fetchedCart;
 };
 
-interface UserCartsArgs {
-	userId: string;
-}
-
-const userCarts: Resolver<UserCartsArgs> = async (_, { userId }, ctx) => {
+const userCarts: Resolver = async (_, __, ctx) => {
 	const carts = await ctx.prisma.cart.findMany({
-		where: { userId }
+		where: { userId: ctx.user.id }
 	});
 
 	return carts;
+};
+
+interface UserCartArgs {
+	storeId: string;
+}
+
+const userCart: Resolver<UserCartArgs> = async (_, { storeId }, ctx) => {
+	const fetchedCart = await ctx.prisma.cart.findUnique({
+		where: { userId_storeId: { userId: ctx.user.id, storeId } }
+	});
+
+	return fetchedCart;
 };
 
 const user: Resolver = async (parent, _, ctx) => {
@@ -46,6 +54,25 @@ const store: Resolver = async (parent, _, ctx) => {
 		.store();
 
 	return fetchedStore;
+};
+
+interface ProductArgs {
+	id: string;
+}
+
+// Extremely hacky and bad
+const product: Resolver<ProductArgs> = async (parent, { id }, ctx) => {
+	const fetchedProducts = await ctx.prisma.cart
+		.findUnique({ where: { id: parent.id } })
+		.products({
+			where: {
+				productId: id
+			}
+		});
+
+	const fetchedProduct = fetchedProducts[0];
+
+	return fetchedProduct;
 };
 
 // TODO: Move these to separate collections query file.
@@ -83,11 +110,13 @@ const cartProductCart: Resolver = async (parent, _, ctx) => {
 export default {
 	Query: {
 		cart,
-		userCarts
+		userCarts,
+		userCart
 	},
 	Cart: {
 		user,
 		products,
+		product,
 		store
 	},
 	CartProduct: {

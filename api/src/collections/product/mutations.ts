@@ -56,8 +56,6 @@ const editProduct: Resolver<EditProductArgs> = async (
 		}
 	});
 
-	console.log(product);
-
 	return product;
 };
 

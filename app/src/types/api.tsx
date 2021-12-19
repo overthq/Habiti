@@ -33,12 +33,17 @@ export type Cart = {
 	__typename?: 'Cart';
 	createdAt: Scalars['String'];
 	id: Scalars['ID'];
+	product?: Maybe<CartProduct>;
 	products: Array<CartProduct>;
 	store: Store;
 	storeId: Scalars['ID'];
 	updatedAt: Scalars['String'];
 	user: User;
 	userId: Scalars['ID'];
+};
+
+export type CartProductArgs = {
+	id: Scalars['ID'];
 };
 
 export type CartProduct = {
@@ -224,6 +229,7 @@ export type Query = {
 	storeProducts: Array<Product>;
 	stores: Array<Store>;
 	user: User;
+	userCart?: Maybe<Cart>;
 	userCarts: Array<Cart>;
 	userOrders: Array<Order>;
 	users: Array<User>;
@@ -255,6 +261,10 @@ export type QueryStoreProductsArgs = {
 
 export type QueryUserArgs = {
 	id: Scalars['ID'];
+};
+
+export type QueryUserCartArgs = {
+	storeId: Scalars['ID'];
 };
 
 export type QueryUserCartsArgs = {
@@ -342,6 +352,7 @@ export type CartsQuery = {
 			store: { __typename?: 'Store'; id: string; name: string };
 			products: Array<{
 				__typename?: 'CartProduct';
+				cartId: string;
 				productId: string;
 				quantity: number;
 				product: {
@@ -369,6 +380,7 @@ export type CartQuery = {
 		store: { __typename?: 'Store'; id: string; name: string };
 		products: Array<{
 			__typename?: 'CartProduct';
+			cartId: string;
 			productId: string;
 			quantity: number;
 			product: {
@@ -396,6 +408,7 @@ export type AddProductToCartMutation = {
 		store: { __typename?: 'Store'; id: string; name: string };
 		products: Array<{
 			__typename?: 'CartProduct';
+			cartId: string;
 			productId: string;
 			product: {
 				__typename?: 'Product';
@@ -431,6 +444,7 @@ export type CreateCartMutation = {
 		store: { __typename?: 'Store'; id: string; name: string };
 		products: Array<{
 			__typename?: 'CartProduct';
+			cartId: string;
 			productId: string;
 			product: { __typename?: 'Product'; id: string };
 		}>;
@@ -548,6 +562,7 @@ export type StoreProductsQuery = {
 			name: string;
 			description: string;
 			unitPrice: number;
+			storeId: string;
 			images: Array<{ __typename?: 'Image'; id: string; path: string }>;
 		}>;
 	};
@@ -555,6 +570,7 @@ export type StoreProductsQuery = {
 
 export type ProductQueryVariables = Exact<{
 	productId: Scalars['ID'];
+	storeId: Scalars['ID'];
 }>;
 
 export type ProductQuery = {
@@ -568,18 +584,18 @@ export type ProductQuery = {
 		storeId: string;
 		images: Array<{ __typename?: 'Image'; id: string; path: string }>;
 	};
-	currentUser: {
-		__typename?: 'User';
-		carts: Array<{
-			__typename?: 'Cart';
-			id: string;
-			storeId: string;
-			products: Array<{
-				__typename?: 'CartProduct';
-				product: { __typename?: 'Product'; id: string; storeId: string };
-			}>;
-		}>;
-	};
+	userCart?:
+		| {
+				__typename?: 'Cart';
+				id: string;
+				storeId: string;
+				product?:
+					| { __typename?: 'CartProduct'; cartId: string; productId: string }
+					| null
+					| undefined;
+		  }
+		| null
+		| undefined;
 };
 
 export type WatchlistQueryVariables = Exact<{ [key: string]: never }>;
@@ -705,6 +721,7 @@ export const CartsDocument = gql`
 					name
 				}
 				products {
+					cartId
 					productId
 					product {
 						id
@@ -734,6 +751,7 @@ export const CartDocument = gql`
 				name
 			}
 			products {
+				cartId
 				productId
 				product {
 					id
@@ -766,6 +784,7 @@ export const AddProductToCartDocument = gql`
 				name
 			}
 			products {
+				cartId
 				productId
 				product {
 					id
@@ -806,6 +825,7 @@ export const CreateCartDocument = gql`
 				name
 			}
 			products {
+				cartId
 				productId
 				product {
 					id
@@ -943,6 +963,7 @@ export const StoreProductsDocument = gql`
 				name
 				description
 				unitPrice
+				storeId
 				images {
 					id
 					path
@@ -961,7 +982,7 @@ export function useStoreProductsQuery(
 	});
 }
 export const ProductDocument = gql`
-	query Product($productId: ID!) {
+	query Product($productId: ID!, $storeId: ID!) {
 		product(id: $productId) {
 			id
 			name
@@ -973,16 +994,12 @@ export const ProductDocument = gql`
 				path
 			}
 		}
-		currentUser {
-			carts {
-				id
-				storeId
-				products {
-					product {
-						id
-						storeId
-					}
-				}
+		userCart(storeId: $storeId) {
+			id
+			storeId
+			product(id: $productId) {
+				cartId
+				productId
 			}
 		}
 	}

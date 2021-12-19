@@ -5,11 +5,13 @@ const CartTypes = gql`
 		id: ID!
 		userId: ID!
 		storeId: ID!
+		createdAt: String!
+		updatedAt: String!
+
 		user: User!
 		store: Store!
 		products: [CartProduct!]!
-		createdAt: String!
-		updatedAt: String!
+		product(id: ID!): CartProduct
 	}
 
 	type CartProduct {
@@ -41,6 +43,7 @@ const CartTypes = gql`
 	extend type Query {
 		cart(id: ID!): Cart!
 		userCarts(userId: ID!): [Cart!]!
+		userCart(storeId: ID!): Cart
 	}
 
 	extend type Mutation {
