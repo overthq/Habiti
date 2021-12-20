@@ -9,6 +9,7 @@
 		"eject": "expo eject"
 	},
 	"dependencies": {
+		"@mono.co/connect-react-native": "^0.2.0",
 		"@react-native-async-storage/async-storage": "~1.15.0",
 		"@react-native-community/masked-view": "0.1.11",
 		"@react-native-masked-view/masked-view": "0.2.5",
