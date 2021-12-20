@@ -686,6 +686,8 @@ export type FollowStoreMutation = {
 		id: string;
 		followers: Array<{
 			__typename?: 'StoreFollower';
+			storeId: string;
+			followerId: string;
 			follower: { __typename?: 'User'; id: string; name: string };
 		}>;
 	};
@@ -702,6 +704,8 @@ export type UnfollowStoreMutation = {
 		id: string;
 		followers: Array<{
 			__typename?: 'StoreFollower';
+			storeId: string;
+			followerId: string;
 			follower: { __typename?: 'User'; id: string; name: string };
 		}>;
 	};
@@ -716,6 +720,8 @@ export type StoresFollowedQuery = {
 		id: string;
 		followed: Array<{
 			__typename?: 'StoreFollower';
+			storeId: string;
+			followerId: string;
 			store: {
 				__typename?: 'Store';
 				id: string;
@@ -1137,6 +1143,8 @@ export const FollowStoreDocument = gql`
 		followStore(storeId: $storeId) {
 			id
 			followers {
+				storeId
+				followerId
 				follower {
 					id
 					name
@@ -1156,6 +1164,8 @@ export const UnfollowStoreDocument = gql`
 		unfollowStore(storeId: $storeId) {
 			id
 			followers {
+				storeId
+				followerId
 				follower {
 					id
 					name
@@ -1176,6 +1186,8 @@ export const StoresFollowedDocument = gql`
 		currentUser {
 			id
 			followed {
+				storeId
+				followerId
 				store {
 					id
 					name

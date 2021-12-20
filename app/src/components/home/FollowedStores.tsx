@@ -17,6 +17,11 @@ const FollowedStores: React.FC = () => {
 	const [{ data, fetching }] = useStoresFollowedQuery();
 	const { navigate } = useNavigation<NavigationProp<HomeTabParamList>>();
 
+	const stores = React.useMemo(
+		() => data?.currentUser.followed.map(({ store }) => store),
+		[data?.currentUser]
+	);
+
 	if (fetching) {
 		return (
 			<View style={styles.container}>
@@ -24,8 +29,6 @@ const FollowedStores: React.FC = () => {
 			</View>
 		);
 	}
-
-	const stores = data?.currentUser.followed.map(({ store }) => store);
 
 	if (!stores || stores?.length === 0) {
 		return (
