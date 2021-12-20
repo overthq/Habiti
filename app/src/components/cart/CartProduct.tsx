@@ -27,7 +27,7 @@ const CartProduct: React.FC<CartProductProps> = ({
 				</Text>
 			</View>
 		</View>
-		<Icon name='chevronRight' color='#D3D3D3' />
+		<Icon name='chevronRight' color='#505050' />
 	</View>
 );
 

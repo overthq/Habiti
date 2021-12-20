@@ -8,9 +8,10 @@ import { AppStackParamList } from '../types/navigation';
 import Button from '../components/global/Button';
 
 const Cart: React.FC = () => {
-	const { params } = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
+	const {
+		params: { cartId }
+	} = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
 	const [, createOrder] = useCreateOrderMutation();
-	const { cartId } = params;
 
 	const [{ data, fetching }] = useCartQuery({ variables: { cartId } });
 	const cart = data?.cart;
@@ -23,6 +24,10 @@ const Cart: React.FC = () => {
 		);
 	}, [cart?.products]);
 
+	const handleSubmit = React.useCallback(async () => {
+		await createOrder({ cartId });
+	}, [cartId]);
+
 	if (fetching || !cart) {
 		return (
 			<View>
@@ -31,10 +36,6 @@ const Cart: React.FC = () => {
 		);
 	}
 
-	const handleSubmit = React.useCallback(async () => {
-		await createOrder({ cartId });
-	}, [cartId]);
-
 	return (
 		<SafeAreaView style={styles.container}>
 			<Text style={styles.heading}>Checkout</Text>
@@ -42,23 +43,25 @@ const Cart: React.FC = () => {
 			{cart.products.map(cartProduct => (
 				<CartProduct key={cartProduct.productId} cartProduct={cartProduct} />
 			))}
-			<View
-				style={{
-					flexDirection: 'row',
-					justifyContent: 'space-between',
-					alignItems: 'center'
-				}}
-			>
-				<Text style={{ fontSize: 18, fontWeight: '500' }}>Total</Text>
-				<Text style={{ fontSize: 18, fontWeight: '500' }}>
-					{totalPrice} NGN
-				</Text>
+			<View style={{ flex: 1, justifyContent: 'flex-end' }}>
+				<View
+					style={{
+						flexDirection: 'row',
+						justifyContent: 'space-between',
+						alignItems: 'center'
+					}}
+				>
+					<Text style={{ fontSize: 18, fontWeight: '500' }}>Total</Text>
+					<Text style={{ fontSize: 18, fontWeight: '500' }}>
+						{totalPrice} NGN
+					</Text>
+				</View>
+				<Button
+					text='Place Order'
+					onPress={handleSubmit}
+					style={styles.button}
+				/>
 			</View>
-			<Button
-				text='Place Order'
-				onPress={handleSubmit}
-				style={{ marginVertical: 16 }}
-			/>
 		</SafeAreaView>
 	);
 };
@@ -72,13 +75,17 @@ const styles = StyleSheet.create({
 	},
 	heading: {
 		fontWeight: 'bold',
-		fontSize: 32
+		fontSize: 32,
+		marginBottom: 16
 	},
 	sectionHeader: {
 		fontSize: 17,
 		fontWeight: '500',
 		color: '#505050',
 		marginVertical: 4
+	},
+	button: {
+		marginTop: 16
 	}
 });
 
