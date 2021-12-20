@@ -29,6 +29,10 @@ query StoresFollowed {
 			store {
 				id
 				name
+				image {
+					id
+					path
+				}
 			}
 		}
 	}

@@ -19,10 +19,9 @@ const FollowedStoresItem: React.FC<FollowedStoresItemProps> = ({ store }) => {
 		>
 			<View style={styles.imageContainer}>
 				<View style={styles.placeholder}>
-					{/* <Image
-						source={{ uri: store.store_avatar_images[0]?.image.path_url }}
-						style={styles.image}
-					/> */}
+					{store.image && (
+						<Image source={{ uri: store.image.path }} style={styles.image} />
+					)}
 				</View>
 			</View>
 			<Text style={styles.name}>{store.name}</Text>
@@ -56,7 +55,7 @@ const styles = StyleSheet.create({
 	name: {
 		textAlign: 'center',
 		marginTop: 4,
-		fontSize: 14
+		fontSize: 16
 	}
 });
 

@@ -716,7 +716,15 @@ export type StoresFollowedQuery = {
 		id: string;
 		followed: Array<{
 			__typename?: 'StoreFollower';
-			store: { __typename?: 'Store'; id: string; name: string };
+			store: {
+				__typename?: 'Store';
+				id: string;
+				name: string;
+				image?:
+					| { __typename?: 'Image'; id: string; path: string }
+					| null
+					| undefined;
+			};
 		}>;
 	};
 };
@@ -1171,6 +1179,10 @@ export const StoresFollowedDocument = gql`
 				store {
 					id
 					name
+					image {
+						id
+						path
+					}
 				}
 			}
 		}
