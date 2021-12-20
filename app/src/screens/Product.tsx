@@ -13,9 +13,14 @@ const Product: React.FC = () => {
 		variables: { productId: params.productId, storeId: params.storeId }
 	});
 
-	const product = data?.product;
-	const cart = data?.userCart;
-	const inCart = !!cart?.product?.productId;
+	const { product, cart, inCart } = React.useMemo(
+		() => ({
+			product: data?.product,
+			cart: data?.userCart,
+			inCart: !!data?.userCart?.product?.productId
+		}),
+		[data]
+	);
 
 	if (fetching || !product) {
 		return (

@@ -15,6 +15,14 @@ const Cart: React.FC = () => {
 	const [{ data, fetching }] = useCartQuery({ variables: { cartId } });
 	const cart = data?.cart;
 
+	const totalPrice = React.useMemo(() => {
+		return (
+			cart?.products.reduce((acc, next) => {
+				return acc + next.product.unitPrice * next.quantity;
+			}, 0) || 0
+		);
+	}, [cart?.products]);
+
 	if (fetching || !cart) {
 		return (
 			<View>
@@ -23,9 +31,9 @@ const Cart: React.FC = () => {
 		);
 	}
 
-	const handleSubmit = async () => {
+	const handleSubmit = React.useCallback(async () => {
 		await createOrder({ cartId });
-	};
+	}, [cartId]);
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -34,7 +42,23 @@ const Cart: React.FC = () => {
 			{cart.products.map(cartProduct => (
 				<CartProduct key={cartProduct.productId} cartProduct={cartProduct} />
 			))}
-			<Button text='Place Order' onPress={handleSubmit} />
+			<View
+				style={{
+					flexDirection: 'row',
+					justifyContent: 'space-between',
+					alignItems: 'center'
+				}}
+			>
+				<Text style={{ fontSize: 18, fontWeight: '500' }}>Total</Text>
+				<Text style={{ fontSize: 18, fontWeight: '500' }}>
+					{totalPrice} NGN
+				</Text>
+			</View>
+			<Button
+				text='Place Order'
+				onPress={handleSubmit}
+				style={{ marginVertical: 16 }}
+			/>
 		</SafeAreaView>
 	);
 };
@@ -43,7 +67,8 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		paddingTop: 16,
-		paddingHorizontal: 16
+		paddingHorizontal: 16,
+		backgroundColor: '#FFFFFF'
 	},
 	heading: {
 		fontWeight: 'bold',

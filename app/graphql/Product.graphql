@@ -30,10 +30,23 @@ query Product($productId: ID!, $storeId: ID!) {
 
 	userCart(storeId: $storeId) {
 		id
+		userId
 		storeId
+		store {
+			id
+			name
+		}
 		product(id: $productId) {
 			cartId
 			productId
+			cart {
+				id
+			}
+			product {
+				id
+				name
+				unitPrice
+			}
 		}
 	}
 }

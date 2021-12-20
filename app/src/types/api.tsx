@@ -410,6 +410,7 @@ export type AddProductToCartMutation = {
 			__typename?: 'CartProduct';
 			cartId: string;
 			productId: string;
+			cart: { __typename?: 'Cart'; id: string };
 			product: {
 				__typename?: 'Product';
 				id: string;
@@ -446,7 +447,13 @@ export type CreateCartMutation = {
 			__typename?: 'CartProduct';
 			cartId: string;
 			productId: string;
-			product: { __typename?: 'Product'; id: string };
+			cart: { __typename?: 'Cart'; id: string };
+			product: {
+				__typename?: 'Product';
+				id: string;
+				name: string;
+				unitPrice: number;
+			};
 		}>;
 	};
 };
@@ -588,9 +595,22 @@ export type ProductQuery = {
 		| {
 				__typename?: 'Cart';
 				id: string;
+				userId: string;
 				storeId: string;
+				store: { __typename?: 'Store'; id: string; name: string };
 				product?:
-					| { __typename?: 'CartProduct'; cartId: string; productId: string }
+					| {
+							__typename?: 'CartProduct';
+							cartId: string;
+							productId: string;
+							cart: { __typename?: 'Cart'; id: string };
+							product: {
+								__typename?: 'Product';
+								id: string;
+								name: string;
+								unitPrice: number;
+							};
+					  }
 					| null
 					| undefined;
 		  }
@@ -786,6 +806,9 @@ export const AddProductToCartDocument = gql`
 			products {
 				cartId
 				productId
+				cart {
+					id
+				}
 				product {
 					id
 					name
@@ -827,8 +850,13 @@ export const CreateCartDocument = gql`
 			products {
 				cartId
 				productId
+				cart {
+					id
+				}
 				product {
 					id
+					name
+					unitPrice
 				}
 			}
 		}
@@ -996,10 +1024,23 @@ export const ProductDocument = gql`
 		}
 		userCart(storeId: $storeId) {
 			id
+			userId
 			storeId
+			store {
+				id
+				name
+			}
 			product(id: $productId) {
 				cartId
 				productId
+				cart {
+					id
+				}
+				product {
+					id
+					name
+					unitPrice
+				}
 			}
 		}
 	}

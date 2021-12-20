@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 16
 	},
 	button: {
-		marginVertical: 8,
+		marginVertical: 16,
 		width: '100%',
 		height: 40,
 		borderRadius: 4,

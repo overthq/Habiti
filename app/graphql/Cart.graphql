@@ -61,6 +61,9 @@ mutation AddProductToCart($input: AddProductToCartInput!) {
 		products {
 			cartId
 			productId
+			cart {
+				id
+			}
 			product {
 				id
 				name
@@ -86,8 +89,13 @@ mutation CreateCart($input: CreateCartInput!) {
 		products {
 			cartId
 			productId
+			cart {
+				id
+			}
 			product {
 				id
+				name
+				unitPrice
 			}
 		}
 	}

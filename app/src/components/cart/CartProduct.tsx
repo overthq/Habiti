@@ -16,14 +16,14 @@ const CartProduct: React.FC<CartProductProps> = ({
 				{product.images[0] && (
 					<Image
 						source={{ uri: product.images[0].path }}
-						style={{ width: '100%', height: '100%' }}
+						style={styles.image}
 					/>
 				)}
 			</View>
 			<View>
 				<Text style={styles.name}>{product.name}</Text>
 				<Text style={styles.price}>
-					{quantity} {product.unitPrice} NGN
+					{quantity} units · {product.unitPrice * quantity}.00 NGN
 				</Text>
 			</View>
 		</View>
@@ -36,14 +36,19 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		marginVertical: 4
+		marginVertical: 8
 	},
 	imagePlaceholder: {
 		height: 50,
 		width: 50,
 		marginRight: 8,
 		borderRadius: 4,
-		backgroundColor: '#D3D3D3'
+		backgroundColor: '#D3D3D3',
+		overflow: 'hidden'
+	},
+	image: {
+		width: '100%',
+		height: '100%'
 	},
 	name: {
 		fontSize: 16
