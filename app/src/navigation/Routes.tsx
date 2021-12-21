@@ -55,9 +55,11 @@ const Routes: React.FC = () => {
 					{accessToken ? (
 						<>
 							<AppStack.Screen name='Main' component={Main} />
-							<AppStack.Screen name='Product' component={Product} />
-							<AppStack.Screen name='Cart' component={Cart} />
-							<AppStack.Screen name='Order' component={Order} />
+							<AppStack.Group screenOptions={{ presentation: 'modal' }}>
+								<AppStack.Screen name='Product' component={Product} />
+								<AppStack.Screen name='Cart' component={Cart} />
+								<AppStack.Screen name='Order' component={Order} />
+							</AppStack.Group>
 						</>
 					) : (
 						<>
