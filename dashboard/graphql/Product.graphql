@@ -8,6 +8,7 @@ query Products($storeId: ID!) {
 			name
 			description
 			unitPrice
+			quantity
 			images {
 				id
 				path
@@ -22,6 +23,7 @@ query Product($id: ID!) {
 		name
 		description
 		unitPrice
+		quantity
 		images {
 			id
 			path
@@ -35,6 +37,7 @@ mutation CreateProduct($input: CreateProductInput!) {
 		name
 		description
 		unitPrice
+		quantity
 	}
 }
 
@@ -44,5 +47,10 @@ mutation EditProduct($id: ID!, $input: EditProductInput!) {
 		name
 		description
 		unitPrice
+		quantity
+		images {
+			id
+			path
+		}
 	}
 }

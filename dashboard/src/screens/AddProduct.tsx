@@ -19,7 +19,8 @@ const AddProduct: React.FC = () => {
 				initialValues={{
 					name: '',
 					description: '',
-					unitPrice: ''
+					unitPrice: '',
+					quantity: ''
 				}}
 				onSubmit={async values => {
 					try {
@@ -29,7 +30,8 @@ const AddProduct: React.FC = () => {
 									name: values.name,
 									description: values.description,
 									storeId: activeStore,
-									unitPrice: Number(values.unitPrice)
+									unitPrice: Number(values.unitPrice),
+									quantity: Number(values.quantity)
 								}
 							});
 						}
@@ -74,6 +76,17 @@ const AddProduct: React.FC = () => {
 								keyboardType='numeric'
 							/>
 						</View>
+						<View>
+							<Text style={styles.label}>Quantity</Text>
+							<TextInput
+								placeholder='Quantity in stock'
+								placeholderTextColor='#696969'
+								onChangeText={handleChange('quantity')}
+								onBlur={handleBlur('quantity')}
+								style={styles.input}
+								keyboardType='numeric'
+							/>
+						</View>
 						<Button text='Add Product' onPress={handleSubmit} />
 					</View>
 				)}
@@ -93,7 +106,7 @@ const styles = StyleSheet.create({
 		marginBottom: 4,
 		fontSize: 16,
 		color: '#505050',
-		fontWeight: 'bold'
+		fontWeight: '500'
 	},
 	input: {
 		fontSize: 16,

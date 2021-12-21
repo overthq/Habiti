@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+// import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon } from '../components/icons';
 import { useAppSelector } from '../redux/store';
 import { useStoreQuery } from '../types/api';
@@ -16,7 +16,7 @@ const Store: React.FC = () => {
 	const store = data?.store;
 
 	return (
-		<SafeAreaView style={styles.container}>
+		<View style={styles.container}>
 			<TouchableOpacity style={styles.storeSettingRow}>
 				<View style={styles.rowMainContainer}>
 					<View style={styles.storeAvatar}>
@@ -29,7 +29,7 @@ const Store: React.FC = () => {
 				</View>
 				<Icon name='chevronRight' size={16} color='#D3D3D3' />
 			</TouchableOpacity>
-		</SafeAreaView>
+		</View>
 	);
 };
 

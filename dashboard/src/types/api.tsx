@@ -24,22 +24,26 @@ export type Scalars = {
 };
 
 export type AddProductToCartInput = {
-	cartId?: InputMaybe<Scalars['ID']>;
+	cartId: Scalars['ID'];
 	productId: Scalars['ID'];
 	quantity?: InputMaybe<Scalars['Int']>;
-	storeId: Scalars['ID'];
 };
 
 export type Cart = {
 	__typename?: 'Cart';
 	createdAt: Scalars['String'];
 	id: Scalars['ID'];
+	product?: Maybe<CartProduct>;
 	products: Array<CartProduct>;
 	store: Store;
 	storeId: Scalars['ID'];
 	updatedAt: Scalars['String'];
 	user: User;
 	userId: Scalars['ID'];
+};
+
+export type CartProductArgs = {
+	id: Scalars['ID'];
 };
 
 export type CartProduct = {
@@ -52,19 +56,21 @@ export type CartProduct = {
 };
 
 export type CreateCartInput = {
+	productId: Scalars['ID'];
+	quantity: Scalars['Int'];
 	storeId: Scalars['ID'];
-	userId: Scalars['ID'];
 };
 
 export type CreateProductInput = {
 	description: Scalars['String'];
 	name: Scalars['String'];
+	quantity: Scalars['Int'];
 	storeId: Scalars['ID'];
 	unitPrice: Scalars['Int'];
 };
 
 export type CreateStoreInput = {
-	description?: InputMaybe<Scalars['String']>;
+	description: Scalars['String'];
 	imageFile?: InputMaybe<Scalars['Upload']>;
 	instagram?: InputMaybe<Scalars['String']>;
 	name: Scalars['String'];
@@ -76,7 +82,22 @@ export type EditProductInput = {
 	description?: InputMaybe<Scalars['String']>;
 	imageFile?: InputMaybe<Scalars['Upload']>;
 	name?: InputMaybe<Scalars['String']>;
+	quantity?: InputMaybe<Scalars['Int']>;
 	unitPrice?: InputMaybe<Scalars['Int']>;
+};
+
+export type EditProfileInput = {
+	name?: InputMaybe<Scalars['String']>;
+	phone?: InputMaybe<Scalars['String']>;
+};
+
+export type EditStoreInput = {
+	description?: InputMaybe<Scalars['String']>;
+	imageFile?: InputMaybe<Scalars['Upload']>;
+	instagram?: InputMaybe<Scalars['String']>;
+	name?: InputMaybe<Scalars['String']>;
+	twitter?: InputMaybe<Scalars['String']>;
+	website?: InputMaybe<Scalars['String']>;
 };
 
 export type Image = {
@@ -91,6 +112,7 @@ export type Mutation = {
 	__typename?: 'Mutation';
 	_?: Maybe<Scalars['Boolean']>;
 	addProductToCart: Cart;
+	createCart: Cart;
 	createOrder: Order;
 	createProduct: Product;
 	createStore: Store;
@@ -98,13 +120,20 @@ export type Mutation = {
 	deleteStore: Scalars['ID'];
 	deleteUser: Scalars['ID'];
 	editProduct: Product;
-	followStore: StoreFollower;
+	editProfile: User;
+	editStore: Store;
+	followStore: Store;
 	removeProductFromCart: Scalars['ID'];
-	unfollowStore: Scalars['ID'];
+	unfollowStore: Store;
+	updateCartProduct: CartProduct;
 };
 
 export type MutationAddProductToCartArgs = {
 	input: AddProductToCartInput;
+};
+
+export type MutationCreateCartArgs = {
+	input: CreateCartInput;
 };
 
 export type MutationCreateOrderArgs = {
@@ -136,6 +165,15 @@ export type MutationEditProductArgs = {
 	input: EditProductInput;
 };
 
+export type MutationEditProfileArgs = {
+	input: EditProfileInput;
+};
+
+export type MutationEditStoreArgs = {
+	id: Scalars['ID'];
+	input: EditStoreInput;
+};
+
 export type MutationFollowStoreArgs = {
 	storeId: Scalars['ID'];
 };
@@ -147,6 +185,10 @@ export type MutationRemoveProductFromCartArgs = {
 
 export type MutationUnfollowStoreArgs = {
 	storeId: Scalars['ID'];
+};
+
+export type MutationUpdateCartProductArgs = {
+	input: UpdateCartProductInput;
 };
 
 export type Order = {
@@ -180,17 +222,19 @@ export type Product = {
 	images: Array<Image>;
 	name: Scalars['String'];
 	orders: Array<Order>;
+	quantity: Scalars['Int'];
 	store: Store;
 	storeId: Scalars['ID'];
 	unitPrice: Scalars['Int'];
 	updatedAt: Scalars['String'];
+	watchlists: Array<WatchlistProduct>;
 };
 
 export type Query = {
 	__typename?: 'Query';
 	_?: Maybe<Scalars['Boolean']>;
 	cart: Cart;
-	followedStores: Array<Store>;
+	currentUser: User;
 	order: Order;
 	product: Product;
 	store: Store;
@@ -198,6 +242,7 @@ export type Query = {
 	storeProducts: Array<Product>;
 	stores: Array<Store>;
 	user: User;
+	userCart?: Maybe<Cart>;
 	userCarts: Array<Cart>;
 	userOrders: Array<Order>;
 	users: Array<User>;
@@ -205,10 +250,6 @@ export type Query = {
 
 export type QueryCartArgs = {
 	id: Scalars['ID'];
-};
-
-export type QueryFollowedStoresArgs = {
-	userId: Scalars['ID'];
 };
 
 export type QueryOrderArgs = {
@@ -233,6 +274,10 @@ export type QueryStoreProductsArgs = {
 
 export type QueryUserArgs = {
 	id: Scalars['ID'];
+};
+
+export type QueryUserCartArgs = {
+	storeId: Scalars['ID'];
 };
 
 export type QueryUserCartsArgs = {
@@ -277,6 +322,12 @@ export type StoreManager = {
 	storeId: Scalars['ID'];
 };
 
+export type UpdateCartProductInput = {
+	cartId: Scalars['ID'];
+	productId: Scalars['ID'];
+	quantity: Scalars['Int'];
+};
+
 export type User = {
 	__typename?: 'User';
 	carts: Array<Cart>;
@@ -288,6 +339,15 @@ export type User = {
 	orders: Array<Order>;
 	phone: Scalars['String'];
 	updatedAt: Scalars['String'];
+	watchlist: Array<WatchlistProduct>;
+};
+
+export type WatchlistProduct = {
+	__typename?: 'WatchlistProduct';
+	product: Product;
+	productId: Scalars['ID'];
+	user: User;
+	userId: Scalars['ID'];
 };
 
 export type ManagedStoresQueryVariables = Exact<{
@@ -366,6 +426,7 @@ export type ProductsQuery = {
 			name: string;
 			description: string;
 			unitPrice: number;
+			quantity: number;
 			images: Array<{ __typename?: 'Image'; id: string; path: string }>;
 		}>;
 	};
@@ -383,6 +444,7 @@ export type ProductQuery = {
 		name: string;
 		description: string;
 		unitPrice: number;
+		quantity: number;
 		images: Array<{ __typename?: 'Image'; id: string; path: string }>;
 	};
 };
@@ -399,6 +461,7 @@ export type CreateProductMutation = {
 		name: string;
 		description: string;
 		unitPrice: number;
+		quantity: number;
 	};
 };
 
@@ -415,6 +478,8 @@ export type EditProductMutation = {
 		name: string;
 		description: string;
 		unitPrice: number;
+		quantity: number;
+		images: Array<{ __typename?: 'Image'; id: string; path: string }>;
 	};
 };
 
@@ -531,6 +596,7 @@ export const ProductsDocument = gql`
 				name
 				description
 				unitPrice
+				quantity
 				images {
 					id
 					path
@@ -552,6 +618,7 @@ export const ProductDocument = gql`
 			name
 			description
 			unitPrice
+			quantity
 			images {
 				id
 				path
@@ -572,6 +639,7 @@ export const CreateProductDocument = gql`
 			name
 			description
 			unitPrice
+			quantity
 		}
 	}
 `;
@@ -589,6 +657,11 @@ export const EditProductDocument = gql`
 			name
 			description
 			unitPrice
+			quantity
+			images {
+				id
+				path
+			}
 		}
 	}
 `;
