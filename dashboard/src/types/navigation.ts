@@ -1,20 +1,3 @@
-// Navigation Structure
-// - Auth (Stack Navigator)
-//  - Authenticate
-//  - Register
-//  - Verify
-// - Main (Tab Navigator)
-//  - Overview
-//  - Orders (Stack Navigator)
-//   - OrdersList
-//   - Order
-//  - Products (Stack Navigator)
-//   - ProductsList
-//   - AddProduct
-//   - Product
-//   - EditProduct
-//  - Store
-
 export type AppStackParamList = {
 	Main: undefined;
 	Authenticate: undefined;
@@ -22,11 +5,10 @@ export type AppStackParamList = {
 	Verify: { phone: string };
 	StoreSelect: undefined;
 	CreateStore: undefined;
-
 	Root: undefined;
 	'Add Product': undefined;
 	'Edit Product': { productId: string };
-	SettingsStack: undefined;
+	Settings: undefined;
 };
 
 export type MainTabParamList = {
@@ -50,13 +32,6 @@ export type OrdersStackParamsList = {
 export type ProductsStackParamList = {
 	ProductsList: undefined;
 	Product: { productId: string };
-};
-
-export type ModalStackParamList = {
-	Root: undefined;
-	'Add Product': undefined;
-	'Edit Product': { productId: string };
-	SettingsStack: undefined;
 };
 
 export type SettingsStackParamList = {

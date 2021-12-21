@@ -19,7 +19,8 @@ import SettingsStackNavigator from './SettingsStack';
 
 const AppStack = createStackNavigator<AppStackParamList>();
 
-const RootNavigator: React.FC = () => {
+const Routes: React.FC = () => {
+	const client = useClient();
 	const { accessToken, activeStore } = useAppSelector(
 		({ auth, preferences }) => ({
 			accessToken: auth.accessToken,
@@ -28,50 +29,48 @@ const RootNavigator: React.FC = () => {
 	);
 
 	return (
-		<AppStack.Navigator screenOptions={{ headerShown: false }}>
-			{accessToken ? (
-				<>
-					{!activeStore ? (
-						<AppStack.Group>
-							<AppStack.Screen name='StoreSelect' component={StoreSelect} />
-							<AppStack.Screen name='CreateStore' component={CreateStore} />
-						</AppStack.Group>
-					) : (
-						<>
-							<AppStack.Screen name='Main'>
-								{() => <MainTabNavigator />}
-							</AppStack.Screen>
-							<AppStack.Group screenOptions={{ presentation: 'modal' }}>
-								<AppStack.Screen name='Add Product' component={AddProduct} />
-								<AppStack.Screen name='Edit Product' component={EditProduct} />
-								<AppStack.Screen
-									name='SettingsStack'
-									options={{ headerShown: false }}
-								>
-									{() => <SettingsStackNavigator />}
-								</AppStack.Screen>
-							</AppStack.Group>
-						</>
-					)}
-				</>
-			) : (
-				<AppStack.Group>
-					<AppStack.Screen name='Register' component={Register} />
-					<AppStack.Screen name='Authenticate' component={Authenticate} />
-					<AppStack.Screen name='Verify' component={Verify} />
-				</AppStack.Group>
-			)}
-		</AppStack.Navigator>
-	);
-};
-
-const Routes: React.FC = () => {
-	const client = useClient();
-
-	return (
 		<Provider value={client}>
 			<NavigationContainer>
-				<RootNavigator />
+				<AppStack.Navigator screenOptions={{ headerShown: false }}>
+					{accessToken ? (
+						<>
+							{!activeStore ? (
+								<AppStack.Group>
+									<AppStack.Screen name='StoreSelect' component={StoreSelect} />
+									<AppStack.Screen name='CreateStore' component={CreateStore} />
+								</AppStack.Group>
+							) : (
+								<>
+									<AppStack.Screen name='Main'>
+										{() => <MainTabNavigator />}
+									</AppStack.Screen>
+									<AppStack.Group screenOptions={{ presentation: 'modal' }}>
+										<AppStack.Screen
+											name='Add Product'
+											component={AddProduct}
+										/>
+										<AppStack.Screen
+											name='Edit Product'
+											component={EditProduct}
+										/>
+										<AppStack.Screen
+											name='Settings'
+											options={{ headerShown: false }}
+										>
+											{() => <SettingsStackNavigator />}
+										</AppStack.Screen>
+									</AppStack.Group>
+								</>
+							)}
+						</>
+					) : (
+						<AppStack.Group>
+							<AppStack.Screen name='Register' component={Register} />
+							<AppStack.Screen name='Authenticate' component={Authenticate} />
+							<AppStack.Screen name='Verify' component={Verify} />
+						</AppStack.Group>
+					)}
+				</AppStack.Navigator>
 			</NavigationContainer>
 		</Provider>
 	);
