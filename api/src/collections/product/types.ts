@@ -6,6 +6,7 @@ const ProductTypes = gql`
 		name: String!
 		description: String!
 		unitPrice: Int!
+		quantity: Int!
 		storeId: ID!
 		createdAt: String!
 		updatedAt: String!
@@ -35,6 +36,7 @@ const ProductTypes = gql`
 		name: String!
 		description: String!
 		unitPrice: Int!
+		quantity: Int!
 		storeId: ID!
 	}
 
@@ -42,6 +44,7 @@ const ProductTypes = gql`
 		name: String
 		description: String
 		unitPrice: Int
+		quantity: Int
 		imageFile: Upload
 	}
 
