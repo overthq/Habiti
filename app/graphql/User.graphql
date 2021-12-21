@@ -5,3 +5,11 @@ query CurrentUser {
 		phone
 	}
 }
+
+mutation EditProfile($input: EditProfileInput!) {
+	editProfile(input: $input) {
+		id
+		name
+		phone
+	}
+}

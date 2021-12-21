@@ -64,6 +64,7 @@ export type CreateCartInput = {
 export type CreateProductInput = {
 	description: Scalars['String'];
 	name: Scalars['String'];
+	quantity: Scalars['Int'];
 	storeId: Scalars['ID'];
 	unitPrice: Scalars['Int'];
 };
@@ -81,7 +82,13 @@ export type EditProductInput = {
 	description?: InputMaybe<Scalars['String']>;
 	imageFile?: InputMaybe<Scalars['Upload']>;
 	name?: InputMaybe<Scalars['String']>;
+	quantity?: InputMaybe<Scalars['Int']>;
 	unitPrice?: InputMaybe<Scalars['Int']>;
+};
+
+export type EditProfileInput = {
+	name?: InputMaybe<Scalars['String']>;
+	phone?: InputMaybe<Scalars['String']>;
 };
 
 export type EditStoreInput = {
@@ -113,6 +120,7 @@ export type Mutation = {
 	deleteStore: Scalars['ID'];
 	deleteUser: Scalars['ID'];
 	editProduct: Product;
+	editProfile: User;
 	editStore: Store;
 	followStore: Store;
 	removeProductFromCart: Scalars['ID'];
@@ -155,6 +163,10 @@ export type MutationDeleteUserArgs = {
 export type MutationEditProductArgs = {
 	id: Scalars['ID'];
 	input: EditProductInput;
+};
+
+export type MutationEditProfileArgs = {
+	input: EditProfileInput;
 };
 
 export type MutationEditStoreArgs = {
@@ -210,6 +222,7 @@ export type Product = {
 	images: Array<Image>;
 	name: Scalars['String'];
 	orders: Array<Order>;
+	quantity: Scalars['Int'];
 	store: Store;
 	storeId: Scalars['ID'];
 	unitPrice: Scalars['Int'];
@@ -742,6 +755,15 @@ export type CurrentUserQuery = {
 	currentUser: { __typename?: 'User'; id: string; name: string; phone: string };
 };
 
+export type EditProfileMutationVariables = Exact<{
+	input: EditProfileInput;
+}>;
+
+export type EditProfileMutation = {
+	__typename?: 'Mutation';
+	editProfile: { __typename?: 'User'; id: string; name: string; phone: string };
+};
+
 export const CartsDocument = gql`
 	query Carts {
 		currentUser {
@@ -1226,4 +1248,19 @@ export function useCurrentUserQuery(
 		query: CurrentUserDocument,
 		...options
 	});
+}
+export const EditProfileDocument = gql`
+	mutation EditProfile($input: EditProfileInput!) {
+		editProfile(input: $input) {
+			id
+			name
+			phone
+		}
+	}
+`;
+
+export function useEditProfileMutation() {
+	return Urql.useMutation<EditProfileMutation, EditProfileMutationVariables>(
+		EditProfileDocument
+	);
 }
