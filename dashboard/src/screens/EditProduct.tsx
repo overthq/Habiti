@@ -3,13 +3,13 @@ import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { Formik } from 'formik';
 import { useProductQuery, useEditProductMutation } from '../types/api';
-import { ModalStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../types/navigation';
 import Button from '../components/global/Button';
 
 const EditProduct: React.FC = () => {
 	const {
 		params: { productId }
-	} = useRoute<RouteProp<ModalStackParamList, 'Edit Product'>>();
+	} = useRoute<RouteProp<AppStackParamList, 'Edit Product'>>();
 	const [{ data }] = useProductQuery({ variables: { id: productId } });
 	const [, editProduct] = useEditProductMutation();
 
