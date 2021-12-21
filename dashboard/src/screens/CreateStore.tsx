@@ -9,12 +9,10 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useCreateStoreMutation } from '../types/api';
 import Button from '../components/global/Button';
-// import { useAppSelector } from '../redux/store';
 import { updatePreference } from '../redux/preferences/actions';
 import Brand from '../components/create-store/Brand';
 import Social from '../components/create-store/Social';
 import StoreImage from '../components/create-store/StoreImage';
-import { uploadImage } from '../utils/images';
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -28,7 +26,6 @@ const steps = [
 
 const CreateStore: React.FC = () => {
 	const [, createStore] = useCreateStoreMutation();
-	// const userId = useAppSelector(({ auth }) => auth.userId);
 	const [activeStepIndex, setActiveStepIndex] = React.useState(0);
 	const listRef = React.useRef<FlatList>(null);
 	const dispatch = useDispatch();
@@ -58,25 +55,19 @@ const CreateStore: React.FC = () => {
 			<Formik
 				initialValues={{
 					name: '',
-					// shortName: '',
+					description: '',
 					twitter: '',
 					instagram: '',
 					website: '',
-					storeImage: ''
+					storeImage: null
 				}}
 				onSubmit={async values => {
 					try {
 						const { data } = await createStore({
-							input: { name: values.name }
+							input: { ...values }
 						});
 
 						if (data?.createStore?.id) {
-							if (values.storeImage) {
-								await uploadImage(values.storeImage, {
-									storeId: data.createStore.id
-								});
-							}
-
 							dispatch(updatePreference({ activeStore: data.createStore.id }));
 						}
 					} catch (error) {

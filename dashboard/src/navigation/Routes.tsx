@@ -3,7 +3,7 @@ import { TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Provider, createClient, dedupExchange, cacheExchange } from 'urql';
+import { Provider } from 'urql';
 
 import Overview from '../screens/Overview';
 import Orders from '../screens/Orders';
@@ -21,11 +21,16 @@ import StoreSelect from '../screens/StoreSelect';
 import CreateStore from '../screens/CreateStore';
 
 import SettingsActiveStore from '../components/settings/SettingsActiveStore';
-import { Icon, IconType } from '../components/icons';
+import { Icon } from '../components/icons';
 import { useAppSelector } from '../redux/store';
-import env from '../../env';
-import { AppStackParamList } from '../types/navigation';
-import { multipartFetchExchange } from '@urql/exchange-multipart-fetch';
+import {
+	AppStackParamList,
+	MainTabParamList,
+	OrdersStackParamsList,
+	ProductsStackParamList
+} from '../types/navigation';
+import { getIcon } from '../utils/navigation';
+import useClient from '../hooks/useClient';
 
 // Navigation Structure
 // - Auth (Stack Navigator)
@@ -49,23 +54,9 @@ import { multipartFetchExchange } from '@urql/exchange-multipart-fetch';
 // - Add/Edit Product (and most other form-based views)
 
 const AppStack = createStackNavigator<AppStackParamList>();
-const OrdersStack = createStackNavigator();
-const ProductsStack = createStackNavigator();
-const MainTab = createBottomTabNavigator();
-
-const getIcon = (routeName: string): IconType => {
-	switch (routeName) {
-		case 'Overview':
-			return 'home';
-		case 'Products':
-			return 'tag';
-		case 'Orders':
-			return 'inbox';
-		case 'Store':
-			return 'shoppingBag';
-	}
-	throw new Error('Specified route does not exist.');
-};
+const OrdersStack = createStackNavigator<OrdersStackParamsList>();
+const ProductsStack = createStackNavigator<ProductsStackParamList>();
+const MainTab = createBottomTabNavigator<MainTabParamList>();
 
 const RootNavigator: React.FC = () => {
 	const { accessToken, activeStore } = useAppSelector(
@@ -175,27 +166,7 @@ const ModalsStack = createStackNavigator();
 const SettingsStack = createStackNavigator();
 
 const Routes: React.FC = () => {
-	const { accessToken, activeStore } = useAppSelector(
-		({ auth, preferences }) => ({
-			accessToken: auth.accessToken,
-			activeStore: preferences.activeStore
-		})
-	);
-
-	const client = React.useMemo(
-		() =>
-			createClient({
-				url: `${env.apiUrl}/graphql`,
-				fetchOptions: () => ({
-					headers: {
-						authorization: accessToken ? `Bearer ${accessToken}` : '',
-						'x-market-store-id': activeStore || ''
-					}
-				}),
-				exchanges: [dedupExchange, cacheExchange, multipartFetchExchange]
-			}),
-		[accessToken, activeStore]
-	);
+	const client = useClient();
 
 	return (
 		<Provider value={client}>
@@ -212,7 +183,9 @@ const Routes: React.FC = () => {
 							options={{ headerShown: false }}
 						>
 							{() => (
-								<SettingsStack.Navigator>
+								<SettingsStack.Navigator
+									screenOptions={{ headerStatusBarHeight: 0 }}
+								>
 									<SettingsStack.Screen name='Settings' component={Settings} />
 									<SettingsStack.Screen
 										name='SettingsActiveStore'

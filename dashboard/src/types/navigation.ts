@@ -10,7 +10,7 @@ export type AppStackParamList = {
 export type MainTabParamList = {
 	Overview: undefined;
 	Orders: undefined;
-	Items: undefined;
+	Products: undefined;
 	Store: undefined;
 };
 
