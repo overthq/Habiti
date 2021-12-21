@@ -1,7 +1,7 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+// import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon } from '../components/icons';
 import { ModalStackParamList } from '../types/navigation';
 
@@ -20,11 +20,11 @@ const Overview: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<ModalStackParamList>>();
 
 	return (
-		<SafeAreaView style={styles.container}>
+		<View style={styles.container}>
 			<TouchableOpacity onPress={() => navigate('SettingsStack')}>
 				<Icon name='settings' />
 			</TouchableOpacity>
-		</SafeAreaView>
+		</View>
 	);
 };
 
