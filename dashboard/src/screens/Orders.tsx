@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
 		fontSize: 32
 	},
 	empty: {
-		height: '100%',
+		paddingTop: 32,
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center'
