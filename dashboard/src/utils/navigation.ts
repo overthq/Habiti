@@ -1,15 +1,11 @@
 import { IconType } from '../components/icons';
+import { MainTabParamList } from '../types/navigation';
 
-export const getIcon = (routeName: string): IconType => {
-	switch (routeName) {
-		case 'Overview':
-			return 'home';
-		case 'Products':
-			return 'tag';
-		case 'Orders':
-			return 'inbox';
-		case 'Store':
-			return 'shoppingBag';
-	}
-	throw new Error('Specified route does not exist.');
+const icons: Record<keyof MainTabParamList, IconType> = {
+	Overview: 'home',
+	Products: 'tag',
+	Orders: 'inbox',
+	Store: 'shoppingBag'
 };
+
+export const getIcon = (route: keyof MainTabParamList) => icons[route];
