@@ -28,6 +28,9 @@ import ImageTypes from './collections/image/types';
 import storeFollowerQueries from './collections/store-follower/queries';
 import StoreFollowerTypes from './collections/store-follower/types';
 
+import storeManagerQueries from './collections/store-manager/queries';
+import StoreManagerTypes from './collections/store-manager/types';
+
 import cartProductQueries from './collections/cart-product/queries';
 import CartProductTypes from './collections/cart-product/types';
 
@@ -54,6 +57,7 @@ const resolvers = merge(
 	cartMutations,
 	imageMutations,
 	storeFollowerQueries,
+	storeManagerQueries,
 	cartProductQueries
 );
 
@@ -67,6 +71,7 @@ const schema = makeExecutableSchema({
 		CartTypes,
 		ImageTypes,
 		StoreFollowerTypes,
+		StoreManagerTypes,
 		CartProductTypes
 	],
 	resolvers

@@ -12,6 +12,10 @@ const ImageTypes = gql`
 		store: Store
 		product: Product
 	}
+
+	extend type Mutation {
+		deleteImage(id: ID!): Image!
+	}
 `;
 
 export default ImageTypes;
