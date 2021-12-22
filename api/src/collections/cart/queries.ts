@@ -75,38 +75,6 @@ const product: Resolver<ProductArgs> = async (parent, { id }, ctx) => {
 	return fetchedProduct;
 };
 
-// TODO: Move these to separate collections query file.
-
-const cartProductProduct: Resolver = async (parent, _, ctx) => {
-	const fetchedCartProductProduct = await ctx.prisma.cartProduct
-		.findUnique({
-			where: {
-				cartId_productId: {
-					cartId: parent.cartId,
-					productId: parent.productId
-				}
-			}
-		})
-		.product();
-
-	return fetchedCartProductProduct;
-};
-
-const cartProductCart: Resolver = async (parent, _, ctx) => {
-	const fetchedCartProductCart = await ctx.prisma.cartProduct
-		.findUnique({
-			where: {
-				cartId_productId: {
-					cartId: parent.cartId,
-					productId: parent.productId
-				}
-			}
-		})
-		.cart();
-
-	return fetchedCartProductCart;
-};
-
 export default {
 	Query: {
 		cart,
@@ -118,9 +86,5 @@ export default {
 		products,
 		product,
 		store
-	},
-	CartProduct: {
-		product: cartProductProduct,
-		cart: cartProductCart
 	}
 };

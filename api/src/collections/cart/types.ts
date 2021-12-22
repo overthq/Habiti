@@ -14,14 +14,6 @@ const CartTypes = gql`
 		product(id: ID!): CartProduct
 	}
 
-	type CartProduct {
-		cartId: ID!
-		productId: ID!
-		quantity: Int!
-		cart: Cart!
-		product: Product!
-	}
-
 	input CreateCartInput {
 		storeId: ID!
 		productId: ID!

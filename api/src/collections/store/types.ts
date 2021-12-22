@@ -19,20 +19,6 @@ const StoreTypes = gql`
 		image: Image
 	}
 
-	type StoreManager {
-		storeId: ID!
-		managerId: ID!
-		store: Store!
-		manager: User!
-	}
-
-	type StoreFollower {
-		storeId: ID!
-		followerId: ID!
-		store: Store!
-		follower: User!
-	}
-
 	input CreateStoreInput {
 		name: String!
 		description: String!

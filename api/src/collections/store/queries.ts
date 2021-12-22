@@ -66,68 +66,6 @@ const image: Resolver = async (parent, _, ctx) => {
 	return fetchedImage;
 };
 
-// TODO: Move these to a new collections group.
-
-const storeManagerStore: Resolver = async (parent, _, ctx) => {
-	const fetchedStoreManagerStore = await ctx.prisma.storeManager
-		.findUnique({
-			where: {
-				storeId_managerId: {
-					storeId: parent.storeId,
-					managerId: parent.managerId
-				}
-			}
-		})
-		.store();
-
-	return fetchedStoreManagerStore;
-};
-
-const storeManagerManager: Resolver = async (parent, _, ctx) => {
-	const fetchedStoreManagerManager = await ctx.prisma.storeManager
-		.findUnique({
-			where: {
-				storeId_managerId: {
-					storeId: parent.storeId,
-					managerId: parent.managerId
-				}
-			}
-		})
-		.manager();
-
-	return fetchedStoreManagerManager;
-};
-
-const storeFollowerStore: Resolver = async (parent, _, ctx) => {
-	const fetchedStoreFollowerStore = await ctx.prisma.storeFollower
-		.findUnique({
-			where: {
-				storeId_followerId: {
-					storeId: parent.storeId,
-					followerId: parent.followerId
-				}
-			}
-		})
-		.store();
-
-	return fetchedStoreFollowerStore;
-};
-
-const storeFollowerFollower: Resolver = async (parent, _, ctx) => {
-	const fetchedStoreFollowerFollower = await ctx.prisma.storeFollower
-		.findUnique({
-			where: {
-				storeId_followerId: {
-					storeId: parent.storeId,
-					followerId: parent.followerId
-				}
-			}
-		})
-		.follower();
-
-	return fetchedStoreFollowerFollower;
-};
-
 export default {
 	Query: {
 		store,
@@ -140,13 +78,5 @@ export default {
 		followers,
 		carts,
 		image
-	},
-	StoreManager: {
-		store: storeManagerStore,
-		manager: storeManagerManager
-	},
-	StoreFollower: {
-		store: storeFollowerStore,
-		follower: storeFollowerFollower
 	}
 };

@@ -18,13 +18,6 @@ const ProductTypes = gql`
 		watchlists: [WatchlistProduct!]!
 	}
 
-	type Image {
-		id: ID!
-		path: String!
-		createdAt: String!
-		updatedAt: String!
-	}
-
 	type WatchlistProduct {
 		userId: ID!
 		productId: ID!

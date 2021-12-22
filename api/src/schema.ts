@@ -22,6 +22,15 @@ import cartQueries from './collections/cart/queries';
 import cartMutations from './collections/cart/mutations';
 import CartTypes from './collections/cart/types';
 
+import imageMutations from './collections/image/mutations';
+import ImageTypes from './collections/image/types';
+
+import storeFollowerQueries from './collections/store-follower/queries';
+import StoreFollowerTypes from './collections/store-follower/types';
+
+import cartProductQueries from './collections/cart-product/queries';
+import CartProductTypes from './collections/cart-product/types';
+
 const Root = `
 	scalar Upload
 
@@ -42,11 +51,24 @@ const resolvers = merge(
 	storeQueries,
 	storeMutations,
 	cartQueries,
-	cartMutations
+	cartMutations,
+	imageMutations,
+	storeFollowerQueries,
+	cartProductQueries
 );
 
 const schema = makeExecutableSchema({
-	typeDefs: [Root, UserTypes, StoreTypes, ProductTypes, OrderTypes, CartTypes],
+	typeDefs: [
+		Root,
+		UserTypes,
+		StoreTypes,
+		ProductTypes,
+		OrderTypes,
+		CartTypes,
+		ImageTypes,
+		StoreFollowerTypes,
+		CartProductTypes
+	],
 	resolvers
 });
 
