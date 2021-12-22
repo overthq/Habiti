@@ -23,6 +23,7 @@ import {
 } from '../types/navigation';
 import { useAppSelector } from '../redux/store';
 import { create } from '../utils/client';
+import ConnectAccount from '../screens/ConnectAccount';
 
 const AppStack = createStackNavigator<AppStackParamList>();
 const MainStack = createStackNavigator<MainStackParamList>();
@@ -59,6 +60,11 @@ const Routes: React.FC = () => {
 								<AppStack.Screen name='Product' component={Product} />
 								<AppStack.Screen name='Cart' component={Cart} />
 								<AppStack.Screen name='Order' component={Order} />
+								<AppStack.Screen
+									name='Connect Account'
+									component={ConnectAccount}
+									options={{ headerShown: true }}
+								/>
 							</AppStack.Group>
 						</>
 					) : (

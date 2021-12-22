@@ -9,7 +9,6 @@
 		"eject": "expo eject"
 	},
 	"dependencies": {
-		"@mono.co/connect-react-native": "^0.2.0",
 		"@react-native-async-storage/async-storage": "~1.15.0",
 		"@react-native-community/masked-view": "0.1.11",
 		"@react-native-masked-view/masked-view": "0.2.5",
@@ -34,6 +33,7 @@
 		"react-native-svg": "12.1.1",
 		"react-native-tab-view": "^3.0.1",
 		"react-native-web": "0.17.1",
+		"react-native-webview": "11.13.0",
 		"react-redux": "^7.2.4",
 		"redux": "^4.1.0",
 		"redux-persist": "^6.0.0",
