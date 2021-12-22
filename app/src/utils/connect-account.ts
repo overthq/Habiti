@@ -1,30 +1,26 @@
-export const SENDCASH_PAY_PUBLIC_KEY = '';
+export const SENDCASH_PAY_PUBLIC_KEY = 'this is a public key?';
 
-export const initSendcashPay = `
-	SendcashPay.init({
-    siteName: "Market",
-		siteUrl: "https://github.com/overthq/Market",
-    siteLogo: "<url to your logo>",
-    publicKey: "<your Sendcash Pay public key>"
-	});
-	true;
-`;
-
-// FIXME: Make sure this cannot be used in some kind of attack.
-export const connectAccount = (userId: string) => `
-  const result = await SendcashPay.connect({
-    userId: "${userId}"
-	});
-	window.ReactNativeWebView.postMessage(JSON.stringify(result));
-	true;
-`;
-
-// This is probably a very bad idea, but I'm doing it for now anyway.
-
-export const CONNECT_ACCOUNT_HTML = `
+// Passing the user id and public key like this is probably a very bad idea,
+// but I'm doing it for now anyway.
+export const connectAccountHtml = (userId: string) => `
 <html>
   <head>
     <script src="https://checkout.sendcashpay.com/lib/lib.bundle.js"></script>
+    <script>
+			SendcashPay.init({
+				siteName: "Market",
+				siteUrl: "https://github.com/overthq/Market",
+				siteLogo: "https://example.com/example.png",
+				publicKey: "${SENDCASH_PAY_PUBLIC_KEY}"
+			});
+
+			setTimeout(async () => {
+			  const result = await SendcashPay.connect({
+				  userId: "${userId}"
+			  });
+			  window.ReactNativeWebView.postMessage(JSON.stringify(result));
+			}, 1000);
+    </script>
   </head>
   <body>
   </body>

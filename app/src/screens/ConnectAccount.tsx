@@ -2,35 +2,23 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { useAppSelector } from '../redux/store';
-import {
-	CONNECT_ACCOUNT_HTML,
-	initSendcashPay,
-	connectAccount
-} from '../utils/connect-account';
+import { connectAccountHtml } from '../utils/connect-account';
 
 const ConnectAccount: React.FC = () => {
 	const webviewRef = React.useRef<WebView>(null);
 	const userId = useAppSelector(({ auth }) => auth.userId);
 
-	React.useEffect(() => {
-		const timeout = setTimeout(() => {
-			if (userId) {
-				webviewRef.current?.injectJavaScript(connectAccount(userId));
-			}
-		}, 2000);
-
-		return () => {
-			clearTimeout(timeout);
-		};
-	}, []);
+	const html = React.useMemo(() => {
+		return connectAccountHtml(userId as string);
+	}, [userId]);
 
 	return (
 		<WebView
 			style={styles.container}
 			ref={webviewRef}
 			originWhitelist={['*']}
-			source={{ html: CONNECT_ACCOUNT_HTML }}
-			injectedJavaScript={initSendcashPay}
+			source={{ html }}
+			onMessage={event => console.log({ event })}
 		/>
 	);
 };
