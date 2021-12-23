@@ -6,7 +6,7 @@ import { ProductsStackParamList } from '../types/navigation';
 import Section from '../components/product/Section';
 import Images from '../components/product/Images';
 
-const Item: React.FC = () => {
+const Product: React.FC = () => {
 	const {
 		params: { productId }
 	} = useRoute<RouteProp<ProductsStackParamList, 'Product'>>();
@@ -16,8 +16,7 @@ const Item: React.FC = () => {
 
 	const product = data?.product;
 
-	if (fetching) return <ActivityIndicator />;
-	if (!product) throw new Error('This item does not exist');
+	if (fetching || !product) return <ActivityIndicator />;
 
 	return (
 		<View style={styles.container}>
@@ -28,6 +27,7 @@ const Item: React.FC = () => {
 			<Section title='Name' content={product.name} />
 			<Section title='Description' content={product.description} />
 			<Section title='Unit Price' content={`${product.unitPrice} NGN`} />
+			<Section title='Quantity in stock' content={`${product.quantity}`} />
 		</View>
 	);
 };
@@ -46,4 +46,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default Item;
+export default Product;

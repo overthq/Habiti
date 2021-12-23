@@ -8,7 +8,11 @@ const SettingsStack = createStackNavigator<SettingsStackParamList>();
 
 const SettingsStackNavigator = () => (
 	<SettingsStack.Navigator screenOptions={{ headerStatusBarHeight: 0 }}>
-		<SettingsStack.Screen name='SettingsList' component={Settings} />
+		<SettingsStack.Screen
+			name='SettingsList'
+			component={Settings}
+			options={{ title: 'Settings' }}
+		/>
 		<SettingsStack.Screen
 			name='SettingsActiveStore'
 			component={SettingsActiveStore}
