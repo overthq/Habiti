@@ -1,16 +1,16 @@
 # Market
 
-Market is an open-source e-commerce platform that aims to improve the online shopping and store management experience.
+Market is an open-source mobile e-commerce platform that aims to improve the online shopping and store management experience.
 
 ## Motivation
 
 ### For shoppers
-The average online shopper usually has to create multiple accounts for every store they purchase from, and keep going back to get information on new arrivals, discounts and back-in-stock items. Market solves this by providing an app where shoppers can purchase items, discover and follow stores, get push notifications for updates and more, all from a single account.
+The average online shopper usually has to create multiple accounts for each store, and keep going back to get information on new arrivals, product discounts and availability. Market solves this by providing an app where shoppers can purchase products, discover and follow stores, get updates and more, all from a single account.
 
 ### For store owners
-Setting up an online store is difficult and expensive, and getting potential customers to discover your store is very difficult. Market solves this by providing an affordable, simple and easy-to-use dashboard to manage orders, inventory, analytics and all other information regarding store.
+For small to medium-scale retailers, setting up an online store is difficult and expensive, and attracting potential customers is even more so. Market solves this by providing an affordable and simple dashboard to manage orders, inventory, analytics and other store-related information.
 
-It is important to not that on release, Market will be available in Nigeria only, but will potentially be launched in other countries based on demand.
+It is important to note that on release, Market will be available in Nigeria only, with a view to expanding to other countries.
 
 ## Getting Started
 
@@ -20,13 +20,13 @@ This section will help you get Market up and running in your development environ
 
 Before starting the installation process, the following are required:
 
-- [Node.js](https://nodejs.org) (LTS or higher).
+- [Node.js](https://nodejs.org) (LTS recommended).
 - [Yarn v1](https://yarnpkg.com)
 - [PostgresQL](https://postgresql.com)
 
 ### Installation and Setup
 
-To get Market's source code on your machine, run these commands:
+To clone this repo and install the base dependencies:
 
 ```sh
 # Clone the repository
@@ -48,7 +48,7 @@ Contributions are welcome. Be sure to check out the [contribution guidelines](.g
 
 ## Tech Stack
 
-Market is a TypeScript-based application. It is built with popular JS libraries/frameworks like React, React Native and Express. Here's what the stack looks like.
+Market is a TypeScript-based application. It is built with popular JS libraries/frameworks like React, React Native and Express. Here's what the stack looks like:
 
 - Front-End
 	- Framework: [React Native](https://reactnative.dev) and [Expo](https://expo.io)
