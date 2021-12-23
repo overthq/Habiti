@@ -15,15 +15,17 @@ import Store from '../screens/Store';
 import Product from '../screens/Product';
 import Cart from '../screens/Cart';
 import Order from '../screens/Order';
+import ConnectAccount from '../screens/ConnectAccount';
+import EditProfile from '../screens/EditProfile';
+
+import { useAppSelector } from '../redux/store';
 import { tabScreenOptions } from '../utils/navigation';
 import {
 	AppStackParamList,
 	HomeTabParamList,
 	MainStackParamList
 } from '../types/navigation';
-import { useAppSelector } from '../redux/store';
 import { create } from '../utils/client';
-import ConnectAccount from '../screens/ConnectAccount';
 
 const AppStack = createStackNavigator<AppStackParamList>();
 const MainStack = createStackNavigator<MainStackParamList>();
@@ -63,6 +65,11 @@ const Routes: React.FC = () => {
 								<AppStack.Screen
 									name='Connect Account'
 									component={ConnectAccount}
+									options={{ headerShown: true }}
+								/>
+								<AppStack.Screen
+									name='Edit Profile'
+									component={EditProfile}
 									options={{ headerShown: true }}
 								/>
 							</AppStack.Group>

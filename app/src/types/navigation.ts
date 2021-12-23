@@ -7,6 +7,7 @@ export type AppStackParamList = {
 	Cart: { cartId: string };
 	Order: { orderId: string };
 	'Connect Account': undefined;
+	'Edit Profile': undefined;
 };
 
 export type MainStackParamList = {

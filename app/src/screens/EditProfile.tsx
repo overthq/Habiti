@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, ActivityIndicator, TextInput, StyleSheet } from 'react-native';
+import {
+	View,
+	Text,
+	TextInput,
+	ActivityIndicator,
+	StyleSheet
+} from 'react-native';
 import { Formik } from 'formik';
 import { useCurrentUserQuery, useEditProfileMutation } from '../types/api';
 import Button from '../components/global/Button';
@@ -29,18 +35,24 @@ const EditProfile: React.FC = () => {
 			>
 				{({ values, handleChange, handleBlur, handleSubmit }) => (
 					<>
-						<TextInput
-							style={styles.input}
-							value={values.name}
-							onChangeText={handleChange('name')}
-							onBlur={handleBlur('name')}
-						/>
-						<TextInput
-							style={styles.input}
-							value={values.phone}
-							onChangeText={handleChange('name')}
-							onBlur={handleBlur('phone')}
-						/>
+						<View style={styles.field}>
+							<Text style={styles.label}>Name</Text>
+							<TextInput
+								style={styles.input}
+								value={values.name}
+								onChangeText={handleChange('name')}
+								onBlur={handleBlur('name')}
+							/>
+						</View>
+						<View style={styles.field}>
+							<Text style={styles.label}>Phone</Text>
+							<TextInput
+								style={styles.input}
+								value={values.phone}
+								onChangeText={handleChange('name')}
+								onBlur={handleBlur('phone')}
+							/>
+						</View>
 						<Button
 							style={styles.button}
 							text='Edit Profile'
@@ -58,13 +70,23 @@ const styles = StyleSheet.create({
 		flex: 1,
 		paddingHorizontal: 16
 	},
+	field: {
+		marginTop: 8
+	},
+	label: {
+		fontSize: 16,
+		fontWeight: '500',
+		color: '#505050',
+		marginBottom: 4
+	},
 	input: {
 		width: '100%',
 		height: 40,
 		borderRadius: 4,
 		borderWidth: 1,
-		borderColor: '#505050',
-		paddingLeft: 8
+		borderColor: '#D3D3D3',
+		paddingLeft: 8,
+		fontSize: 16
 	},
 	button: {
 		marginVertical: 16

@@ -1,14 +1,18 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Pressable, Text, StyleSheet } from 'react-native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { CurrentUserQuery } from '../../types/api';
+import { AppStackParamList } from '../../types/navigation';
 
 interface UserCardProps {
 	user: CurrentUserQuery['currentUser'];
 }
 
 const UserCard: React.FC<UserCardProps> = ({ user }) => {
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+
 	return (
-		<View style={styles.card}>
+		<Pressable onPress={() => navigate('Edit Profile')} style={styles.card}>
 			<View style={styles.imagePlaceholder}>
 				<Text style={styles.avatarText}>{user.name[0]}</Text>
 			</View>
@@ -16,7 +20,7 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
 				<Text style={styles.name}>{user.name}</Text>
 				<Text style={styles.phone}>{user.phone}</Text>
 			</View>
-		</View>
+		</Pressable>
 	);
 };
 
