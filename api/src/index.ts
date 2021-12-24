@@ -7,6 +7,7 @@ import compression from 'compression';
 import { createServer } from 'http';
 
 import auth from './auth';
+import webhooks from './webhooks';
 import schema from './schema';
 import redisClient from './config/redis';
 import './config/cloudinary';
@@ -41,6 +42,7 @@ const main = async () => {
 	apolloServer.applyMiddleware({ app });
 
 	app.use('/auth', auth);
+	app.use('/webhooks', webhooks);
 
 	const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
 	httpServer.listen({ port: PORT });
