@@ -34,6 +34,9 @@ import StoreManagerTypes from './collections/store-manager/types';
 import cartProductQueries from './collections/cart-product/queries';
 import CartProductTypes from './collections/cart-product/types';
 
+import cardQueries from './collections/card/queries';
+import CardTypes from './collections/card/types';
+
 const Root = `
 	scalar Upload
 
@@ -58,7 +61,8 @@ const resolvers = merge(
 	imageMutations,
 	storeFollowerQueries,
 	storeManagerQueries,
-	cartProductQueries
+	cartProductQueries,
+	cardQueries
 );
 
 const schema = makeExecutableSchema({
@@ -72,7 +76,8 @@ const schema = makeExecutableSchema({
 		ImageTypes,
 		StoreFollowerTypes,
 		StoreManagerTypes,
-		CartProductTypes
+		CartProductTypes,
+		CardTypes
 	],
 	resolvers
 });

@@ -15,6 +15,10 @@ const CardTypes = gql`
 		countryCode: String!
 		user: User!
 	}
+
+	extend type Mutation {
+		deleteCard(id: ID!): Card!
+	}
 `;
 
 export default CardTypes;
