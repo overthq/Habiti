@@ -8,143 +8,148 @@ datasource db {
 }
 
 model User {
-	id          String @id @default(uuid())
-	name        String
-	phone       String @unique
-	createdAt   DateTime @default(now())
-	updatedAt   DateTime @updatedAt
-
-	orders      Order[]
-	managed     StoreManager[]
-	followed    StoreFollower[]
-	carts       Cart[]
-	watchlist   WatchlistProduct[]
+  id        String             @id @default(uuid())
+  name      String
+  phone     String             @unique
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  orders    Order[]
+  managed   StoreManager[]
+  followed  StoreFollower[]
+  carts     Cart[]
+  watchlist WatchlistProduct[]
+  cards     Card[]
 }
 
 model Store {
-	id          String @id @default(uuid())
-	name        String
-	description String?
-	website     String?
-	twitter     String? @db.VarChar(15)
-	instagram   String? @db.VarChar(30)
-	createdAt   DateTime @default(now())
-	updatedAt   DateTime @updatedAt
-
-	image       Image?
-	products    Product[]
-	orders      Order[]
-	managers    StoreManager[]
-	followers   StoreFollower[]
-	carts       Cart[]
+  id          String          @id @default(uuid())
+  name        String
+  description String?
+  website     String?
+  twitter     String?         @db.VarChar(15)
+  instagram   String?         @db.VarChar(30)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  image       Image?
+  products    Product[]
+  orders      Order[]
+  managers    StoreManager[]
+  followers   StoreFollower[]
+  carts       Cart[]
 }
 
 model Product {
-	id          String @id @default(uuid())
-	name        String
-	description String
-	unitPrice   Int
-	quantity    Int @default(0)
-	storeId     String
-	createdAt   DateTime @default(now())
-	updatedAt   DateTime @updatedAt
+  id          String             @id @default(uuid())
+  name        String
+  description String
+  unitPrice   Int
+  quantity    Int                @default(0)
+  storeId     String
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  images      Image[]
+  orders      OrderProduct[]
+  carts       CartProduct[]
+  watchlists  WatchlistProduct[]
 
-	images      Image[]
-	orders      OrderProduct[]
-	carts       CartProduct[]
-	watchlists  WatchlistProduct[]
-
-	store       Store @relation(fields: [storeId], references: [id])
+  store Store @relation(fields: [storeId], references: [id])
 }
 
 model Order {
-	id          String @id @default(uuid())
-	userId      String
-	storeId     String
-	createdAt   DateTime @default(now())
-	updatedAt   DateTime @updatedAt
+  id        String         @id @default(uuid())
+  userId    String
+  storeId   String
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  products  OrderProduct[]
 
-	products    OrderProduct[]
-
-	user        User @relation(fields: [userId], references: [id])
-	store       Store @relation(fields: [storeId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+  store Store @relation(fields: [storeId], references: [id])
 }
 
 model OrderProduct {
-	orderId     String
-	productId   String
-	unitPrice   Int
+  orderId   String
+  productId String
+  unitPrice Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 
-	order       Order @relation(fields: [orderId], references: [id])
-	product     Product @relation(fields: [productId], references: [id])
-
-	@@unique([orderId, productId])
+  @@unique([orderId, productId])
 }
 
 model Cart {
-	id          String @id @default(uuid())
-	userId      String
-	storeId     String
-	createdAt   DateTime @default(now())
-	updatedAt   DateTime @updatedAt
+  id        String        @id @default(uuid())
+  userId    String
+  storeId   String
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  user      User          @relation(fields: [userId], references: [id])
+  store     Store         @relation(fields: [storeId], references: [id])
+  products  CartProduct[]
 
-	user        User @relation(fields: [userId], references: [id])
-	store       Store @relation(fields: [storeId], references: [id])
-
-	products    CartProduct[]
-
-	@@unique([userId, storeId])
+  @@unique([userId, storeId])
 }
 
 model CartProduct {
-	cartId      String
-	productId   String
-	quantity    Int
+  cartId    String
+  productId String
+  quantity  Int
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 
-	cart        Cart @relation(fields: [cartId], references: [id])
-	product     Product @relation(fields: [productId], references: [id])
-
-	@@unique([cartId, productId])
+  @@unique([cartId, productId])
 }
 
 model WatchlistProduct {
-	userId      String
-	productId   String
+  userId    String
+  productId String
+  user      User    @relation(fields: [userId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 
-	user        User @relation(fields: [userId], references: [id])
-	product     Product @relation(fields: [productId], references: [id])
-
-	@@unique([userId, productId])
+  @@unique([userId, productId])
 }
 
 model Image {
-	id          String @id @default(uuid())
-	storeId     String?
-	productId   String?
-	path        String @db.VarChar(2083)
-	createdAt   DateTime @default(now())
-	updatedAt   DateTime @updatedAt
-
-	store       Store? @relation(fields: [storeId], references: [id])
-	product     Product? @relation(fields: [productId], references: [id])
+  id        String   @id @default(uuid())
+  storeId   String?  @unique
+  productId String?
+  path      String   @db.VarChar(2083)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  store     Store?   @relation(fields: [storeId], references: [id])
+  product   Product? @relation(fields: [productId], references: [id])
 }
 
 model StoreManager {
-	storeId     String
-	managerId   String
+  storeId   String
+  managerId String
+  store     Store  @relation(fields: [storeId], references: [id])
+  manager   User   @relation(fields: [managerId], references: [id])
 
-	store       Store @relation(fields: [storeId], references: [id])
-	manager     User @relation(fields: [managerId], references: [id])
-
-	@@unique([storeId, managerId])
+  @@unique([storeId, managerId])
 }
 
 model StoreFollower {
-	storeId     String
-	followerId  String
+  storeId    String
+  followerId String
+  store      Store  @relation(fields: [storeId], references: [id])
+  follower   User   @relation(fields: [followerId], references: [id])
 
-	store       Store @relation(fields: [storeId], references: [id])
-	follower    User @relation(fields: [followerId], references: [id])
+  @@unique([storeId, followerId])
+}
 
-	@@unique([storeId, followerId])
+model Card {
+  id                String @id @default(uuid())
+  userId            String
+  email             String
+  authorizationCode String
+  cardType          String
+  last4             String
+  expMonth          String
+  expYear           String
+  bin               String
+  bank              String
+  signature         String @unique
+  countryCode       String
+  user              User   @relation(fields: [userId], references: [id])
 }
