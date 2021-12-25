@@ -67,12 +67,12 @@ router.post('/verify', async (req, res) => {
 
 		const accessToken = await generateAccessToken(user);
 
-		res.status(200).json({
+		return res.status(200).json({
 			success: true,
 			data: { accessToken, userId: user.id }
 		});
 	} else {
-		res.status(400).json({
+		return res.status(400).json({
 			success: false,
 			data: {
 				message: 'Invalid code'

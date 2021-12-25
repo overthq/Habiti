@@ -3,3 +3,4 @@ app/ios/Pods
 .env
 dump.rdb
 *.rdb
+*.tsbuildinfo

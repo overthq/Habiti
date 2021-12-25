@@ -10,7 +10,7 @@ router.post('/paystack', async (req, res) => {
 		.update(JSON.stringify(req.body))
 		.digest('hex');
 
-	if (hash == req.headers['x-paystack-signature']) {
+	if (hash === req.headers['x-paystack-signature']) {
 		const { event, data } = req.body;
 
 		if (event === 'charge.success') {

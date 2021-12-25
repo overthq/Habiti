@@ -5,9 +5,11 @@ interface DeleteImageArgs {
 }
 
 const deleteImage: Resolver<DeleteImageArgs> = async (_, { id }, ctx) => {
-	await ctx.prisma.image.delete({
+	const image = await ctx.prisma.image.delete({
 		where: { id }
 	});
+
+	return image;
 };
 
 export default {

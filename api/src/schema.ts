@@ -35,6 +35,7 @@ import cartProductQueries from './collections/cart-product/queries';
 import CartProductTypes from './collections/cart-product/types';
 
 import cardQueries from './collections/card/queries';
+import cardMutations from './collections/card/mutations';
 import CardTypes from './collections/card/types';
 
 const Root = `
@@ -62,7 +63,8 @@ const resolvers = merge(
 	storeFollowerQueries,
 	storeManagerQueries,
 	cartProductQueries,
-	cardQueries
+	cardQueries,
+	cardMutations
 );
 
 const schema = makeExecutableSchema({

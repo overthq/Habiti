@@ -47,8 +47,8 @@ const main = async () => {
 	const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
 	httpServer.listen({ port: PORT });
 
-	console.log(`Server running on port ${PORT}`);
 	await redisClient.connect();
+	console.log(`Server running on port ${PORT}`);
 };
 
 main();
