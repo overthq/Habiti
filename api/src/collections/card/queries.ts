@@ -9,7 +9,7 @@ const user: Resolver = async (parent, _, ctx) => {
 };
 
 export default {
-	Cart: {
+	Card: {
 		user
 	}
 };

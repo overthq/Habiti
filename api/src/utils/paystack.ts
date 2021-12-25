@@ -1,6 +1,7 @@
+import fetch from 'node-fetch';
 import { PrismaClient, User } from '@prisma/client';
-const API_URL = 'https://api.paystack.co';
 
+const API_URL = 'https://api.paystack.co';
 const prisma = new PrismaClient();
 
 interface ChargeAuthorizationOptions {
@@ -15,7 +16,7 @@ export const chargeAuthorization = async (
 	const response = await fetch(`${API_URL}/transaction/charge_authorization`, {
 		method: 'POST',
 		headers: {
-			Authorization: `Bearer ${process.env.PAYSTACK_API_TOKEN}`,
+			Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
 			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify({

@@ -1,23 +1,18 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { WebView } from 'react-native-webview';
-import { useAppSelector } from '../redux/store';
-import { connectAccountHtml } from '../utils/connect-account';
+// import { useAppSelector } from '../redux/store';
 
-const ConnectAccount: React.FC = () => {
+const ConnectCard: React.FC = () => {
 	const webviewRef = React.useRef<WebView>(null);
-	const userId = useAppSelector(({ auth }) => auth.userId);
-
-	const html = React.useMemo(() => {
-		return connectAccountHtml(userId as string);
-	}, [userId]);
+	// const userId = useAppSelector(({ auth }) => auth.userId);
 
 	return (
 		<WebView
 			style={styles.container}
 			ref={webviewRef}
 			originWhitelist={['*']}
-			source={{ html }}
+			// source={{ html }}
 			onMessage={event => console.log({ event })}
 		/>
 	);
@@ -29,4 +24,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default ConnectAccount;
+export default ConnectCard;
