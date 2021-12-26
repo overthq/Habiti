@@ -8,6 +8,7 @@ export type AppStackParamList = {
 	Order: { orderId: string };
 	'Connect Account': undefined;
 	'Edit Profile': undefined;
+	'Add Card': undefined;
 };
 
 export type MainStackParamList = {

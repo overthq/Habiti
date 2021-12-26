@@ -53,3 +53,17 @@ export const storeCard = async (user: User, data: any) => {
 		});
 	}
 };
+
+export const initialCharge = async (email: string) => {
+	const response = await fetch(`${API_URL}/transaction/initialize`, {
+		method: 'POST',
+		headers: {
+			Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({ email, amount: 5000 })
+	});
+
+	const data = await response.json();
+	return data;
+};

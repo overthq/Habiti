@@ -26,6 +26,7 @@ import {
 	MainStackParamList
 } from '../types/navigation';
 import useClient from '../hooks/useClient';
+import AddCardWebview from '../screens/AddCardWebview';
 
 const AppStack = createStackNavigator<AppStackParamList>();
 const MainStack = createStackNavigator<MainStackParamList>();
@@ -71,6 +72,11 @@ const Routes: React.FC = () => {
 									name='Edit Profile'
 									component={EditProfile}
 									options={{ headerShown: true }}
+								/>
+								<AppStack.Screen
+									name='Add Card'
+									options={{ headerShown: true }}
+									component={AddCardWebview}
 								/>
 							</AppStack.Group>
 						</>

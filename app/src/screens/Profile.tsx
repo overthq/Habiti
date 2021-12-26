@@ -26,8 +26,8 @@ const Profile: React.FC = () => {
 		<View style={styles.container}>
 			<UserCard user={data?.currentUser} />
 			<Button
-				text='Connect account'
-				onPress={() => navigate('Connect Account')}
+				text='Add card'
+				onPress={() => navigate('Add Card')}
 				style={{ marginVertical: 8 }}
 			/>
 			<Button text='Log Out' onPress={() => dispatch(logOut())} />
