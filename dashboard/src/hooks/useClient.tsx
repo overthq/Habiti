@@ -1,5 +1,6 @@
 import React from 'react';
-import { createClient, dedupExchange, cacheExchange } from 'urql';
+import { createClient, dedupExchange, fetchExchange } from 'urql';
+import { cacheExchange } from '@urql/exchange-graphcache';
 import { multipartFetchExchange } from '@urql/exchange-multipart-fetch';
 import { useAppSelector } from '../redux/store';
 import env from '../../env';
@@ -22,7 +23,12 @@ const useClient = () => {
 						'x-market-store-id': activeStore || ''
 					}
 				}),
-				exchanges: [dedupExchange, cacheExchange, multipartFetchExchange]
+				exchanges: [
+					dedupExchange,
+					cacheExchange({}),
+					fetchExchange,
+					multipartFetchExchange
+				]
 			}),
 		[accessToken, activeStore]
 	);

@@ -3,10 +3,10 @@ import { View, Image, TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { AppStackParamList } from '../../types/navigation';
-// import { ItemsQuery } from '../../types/api';
+import { WatchlistQuery } from '../../types/api';
 
 interface WatchlistProductProps {
-	product: any; // ItemsQuery['items'][-1];
+	product: WatchlistQuery['currentUser']['watchlist'][-1]['product'];
 }
 
 const WatchlistProduct: React.FC<WatchlistProductProps> = ({ product }) => {
@@ -14,28 +14,34 @@ const WatchlistProduct: React.FC<WatchlistProductProps> = ({ product }) => {
 
 	return (
 		<TouchableOpacity
-			style={styles.itemContainer}
-			onPress={() => navigate('Product', { productId: product.id })}
+			style={styles.container}
+			onPress={() =>
+				navigate('Product', {
+					productId: product.id,
+					storeId: product.store.id
+				})
+			}
 			activeOpacity={0.8}
 		>
 			<View style={styles.imagePlaceholder}>
-				{/*
-				<Image
-					source={{ uri: '' }}
-					style={{ width: '100%', height: '100%' }}
-				/>*/}
+				{product.images[0] && (
+					<Image
+						source={{ uri: product.images[0].path }}
+						style={{ width: '100%', height: '100%' }}
+					/>
+				)}
 			</View>
-			<Text style={styles.itemName} numberOfLines={1}>
+			<Text style={styles.name} numberOfLines={1}>
 				{product.name}
 			</Text>
-			<Text style={styles.itemPrice}>N{product.unitPrice}</Text>
-			<Text style={styles.itemStatus}>In Stock</Text>
+			<Text style={styles.price}>N{product.unitPrice}</Text>
+			<Text style={styles.status}>In Stock</Text>
 		</TouchableOpacity>
 	);
 };
 
 const styles = StyleSheet.create({
-	itemContainer: {
+	container: {
 		marginLeft: 16,
 		width: 160
 	},
@@ -47,15 +53,15 @@ const styles = StyleSheet.create({
 		marginBottom: 8,
 		overflow: 'hidden'
 	},
-	itemName: {
+	name: {
 		fontSize: 16,
 		fontWeight: '500'
 	},
-	itemPrice: {
+	price: {
 		fontSize: 16,
 		color: '#505050'
 	},
-	itemStatus: {
+	status: {
 		fontSize: 14,
 		color: '#7dba03',
 		fontWeight: '500'

@@ -27,10 +27,12 @@ const StoresView: React.FC<StoresViewProps> = ({ data }) => {
 					onPress={() => navigate('Store', { storeId: item.id })}
 					style={styles.resultRow}
 				>
-					{/* <Image
-						source={{ uri: '' }}
-						style={styles.resultRowThumbnail}
-					/>*/}
+					{item.image && (
+						<Image
+							source={{ uri: item.image.path }}
+							style={styles.resultRowThumbnail}
+						/>
+					)}
 					<Text style={{ fontSize: 16 }}>{item.name}</Text>
 				</TouchableOpacity>
 			)}
@@ -51,13 +53,18 @@ const ProductsView: React.FC<ProductsViewProps> = ({ data }) => {
 			data={data}
 			renderItem={({ item }) => (
 				<TouchableOpacity
-					onPress={() => navigate('Product', { productId: item.id })}
+					onPress={() =>
+						navigate('Product', { productId: item.id, storeId: item.storeId })
+					}
 					style={styles.resultRow}
 				>
-					{/*<Image
-						source={{ uri: '' }}
-						style={styles.resultRowThumbnail}
-					/>*/}
+					{item.images[0] && (
+						<Image
+							source={{ uri: item.images[0].path }}
+							style={styles.resultRowThumbnail}
+						/>
+					)}
+
 					<Text style={{ fontSize: 16 }}>{item.name}</Text>
 				</TouchableOpacity>
 			)}

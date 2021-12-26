@@ -25,7 +25,7 @@ import {
 	HomeTabParamList,
 	MainStackParamList
 } from '../types/navigation';
-import { create } from '../utils/client';
+import useClient from '../hooks/useClient';
 
 const AppStack = createStackNavigator<AppStackParamList>();
 const MainStack = createStackNavigator<MainStackParamList>();
@@ -49,7 +49,7 @@ const Main = () => (
 
 const Routes: React.FC = () => {
 	const accessToken = useAppSelector(({ auth }) => auth.accessToken);
-	const client = React.useMemo(() => create(accessToken), [accessToken]);
+	const client = useClient(accessToken);
 
 	return (
 		<Provider value={client}>
