@@ -26,7 +26,6 @@ const AddCardWebview: React.FC = () => {
 				<WebView
 					style={styles.container}
 					source={{ uri: data.authorization_url }}
-					onNavigationStateChange={({ url }) => console.log(url)}
 				/>
 			) : (
 				<ActivityIndicator />
