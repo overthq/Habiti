@@ -1,5 +1,6 @@
 export type AppStackParamList = {
-	Main: undefined;
+	Home: undefined;
+	Store: undefined;
 	Register: undefined;
 	Authenticate: undefined;
 	Verify: { phone: string };

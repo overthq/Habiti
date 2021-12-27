@@ -41,9 +41,7 @@ const Routes: React.FC = () => {
 								</AppStack.Group>
 							) : (
 								<>
-									<AppStack.Screen name='Main'>
-										{() => <MainTabNavigator />}
-									</AppStack.Screen>
+									<AppStack.Screen name='Main' component={MainTabNavigator} />
 									<AppStack.Group
 										screenOptions={{ presentation: 'modal', headerShown: true }}
 									>
@@ -58,9 +56,8 @@ const Routes: React.FC = () => {
 										<AppStack.Screen
 											name='Settings'
 											options={{ headerShown: false }}
-										>
-											{() => <SettingsStackNavigator />}
-										</AppStack.Screen>
+											component={SettingsStackNavigator}
+										/>
 									</AppStack.Group>
 								</>
 							)}
