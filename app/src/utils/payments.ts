@@ -18,7 +18,9 @@ export const attemptInitialCharge = async (email?: string) => {
 		body: JSON.stringify({ email: emailToUse })
 	});
 
-	const data: InitialChargeResponse = await response.json();
+	const {
+		data: { data }
+	} = await response.json();
 
-	return data;
+	return data as InitialChargeResponse;
 };

@@ -20,19 +20,17 @@ const AddCardWebview: React.FC = () => {
 		getData();
 	}, []);
 
-	return data ? (
-		<WebView
-			style={styles.container}
-			source={{ uri: data.authorization_url }}
-		/>
-	) : (
-		<View
-			style={[
-				styles.container,
-				{ justifyContent: 'center', alignItems: 'center' }
-			]}
-		>
-			<ActivityIndicator />
+	return (
+		<View style={{ flex: 1 }}>
+			{data ? (
+				<WebView
+					style={styles.container}
+					source={{ uri: data.authorization_url }}
+					onNavigationStateChange={({ url }) => console.log(url)}
+				/>
+			) : (
+				<ActivityIndicator />
+			)}
 		</View>
 	);
 };
