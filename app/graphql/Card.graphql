@@ -1,0 +1,15 @@
+query Cards {
+	currentUser {
+		id
+		cards {
+			id
+			email
+			cardType
+			last4
+			expMonth
+			expYear
+			bank
+			countryCode
+		}
+	}
+}

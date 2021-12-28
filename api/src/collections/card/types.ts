@@ -2,6 +2,7 @@ import { gql } from 'apollo-server-express';
 
 const CardTypes = gql`
 	type Card {
+		id: ID!
 		userId: ID!
 		email: String!
 		authorizationCode: String!

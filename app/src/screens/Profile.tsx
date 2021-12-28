@@ -7,6 +7,7 @@ import UserCard from '../components/profile/UserCard';
 import { logOut } from '../redux/auth/actions';
 import { useCurrentUserQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
+import ProfileRow from '../components/profile/ProfileRow';
 
 const Profile: React.FC = () => {
 	const dispatch = useDispatch();
@@ -25,6 +26,10 @@ const Profile: React.FC = () => {
 	return (
 		<View style={styles.container}>
 			<UserCard user={data?.currentUser} />
+			<ProfileRow
+				title='Payment methods'
+				onPress={() => navigate('Payment Methods')}
+			/>
 			<Button
 				text='Add card'
 				onPress={() => navigate('Add Card')}

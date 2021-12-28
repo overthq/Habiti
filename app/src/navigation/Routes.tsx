@@ -18,6 +18,7 @@ import HomeTabNavigator from './HomeTab';
 import { useAppSelector } from '../redux/store';
 import { AppStackParamList } from '../types/navigation';
 import useClient from '../hooks/useClient';
+import PaymentMethods from '../screens/PaymentMethods';
 
 const AppStack = createStackNavigator<AppStackParamList>();
 
@@ -47,6 +48,10 @@ const Routes: React.FC = () => {
 										component={EditProfile}
 									/>
 									<AppStack.Screen name='Add Card' component={AddCardWebview} />
+									<AppStack.Screen
+										name='Payment Methods'
+										component={PaymentMethods}
+									/>
 								</AppStack.Group>
 							</AppStack.Group>
 						</>

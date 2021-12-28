@@ -29,6 +29,23 @@ export type AddProductToCartInput = {
 	quantity?: InputMaybe<Scalars['Int']>;
 };
 
+export type Card = {
+	__typename?: 'Card';
+	authorizationCode: Scalars['String'];
+	bank: Scalars['String'];
+	bin: Scalars['String'];
+	cardType: Scalars['String'];
+	countryCode: Scalars['String'];
+	email: Scalars['String'];
+	expMonth: Scalars['String'];
+	expYear: Scalars['String'];
+	id: Scalars['ID'];
+	last4: Scalars['String'];
+	signature: Scalars['String'];
+	user: User;
+	userId: Scalars['ID'];
+};
+
 export type Cart = {
 	__typename?: 'Cart';
 	createdAt: Scalars['String'];
@@ -105,6 +122,10 @@ export type Image = {
 	createdAt: Scalars['String'];
 	id: Scalars['ID'];
 	path: Scalars['String'];
+	product?: Maybe<Product>;
+	productId?: Maybe<Scalars['ID']>;
+	store?: Maybe<Store>;
+	storeId?: Maybe<Scalars['ID']>;
 	updatedAt: Scalars['String'];
 };
 
@@ -116,7 +137,9 @@ export type Mutation = {
 	createOrder: Order;
 	createProduct: Product;
 	createStore: Store;
+	deleteCard: Card;
 	deleteCart: Scalars['ID'];
+	deleteImage: Image;
 	deleteStore: Scalars['ID'];
 	deleteUser: Scalars['ID'];
 	editProduct: Product;
@@ -148,8 +171,16 @@ export type MutationCreateStoreArgs = {
 	input: CreateStoreInput;
 };
 
+export type MutationDeleteCardArgs = {
+	id: Scalars['ID'];
+};
+
 export type MutationDeleteCartArgs = {
 	cartId: Scalars['ID'];
+};
+
+export type MutationDeleteImageArgs = {
+	id: Scalars['ID'];
 };
 
 export type MutationDeleteStoreArgs = {
@@ -330,6 +361,7 @@ export type UpdateCartProductInput = {
 
 export type User = {
 	__typename?: 'User';
+	cards: Array<Card>;
 	carts: Array<Cart>;
 	createdAt: Scalars['String'];
 	followed: Array<StoreFollower>;
@@ -348,6 +380,26 @@ export type WatchlistProduct = {
 	productId: Scalars['ID'];
 	user: User;
 	userId: Scalars['ID'];
+};
+
+export type CardsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type CardsQuery = {
+	__typename?: 'Query';
+	currentUser: {
+		__typename?: 'User';
+		cards: Array<{
+			__typename?: 'Card';
+			id: string;
+			email: string;
+			cardType: string;
+			last4: string;
+			expMonth: string;
+			expYear: string;
+			bank: string;
+			countryCode: string;
+		}>;
+	};
 };
 
 export type CartsQueryVariables = Exact<{ [key: string]: never }>;
@@ -764,6 +816,28 @@ export type EditProfileMutation = {
 	editProfile: { __typename?: 'User'; id: string; name: string; phone: string };
 };
 
+export const CardsDocument = gql`
+	query Cards {
+		currentUser {
+			cards {
+				id
+				email
+				cardType
+				last4
+				expMonth
+				expYear
+				bank
+				countryCode
+			}
+		}
+	}
+`;
+
+export function useCardsQuery(
+	options: Omit<Urql.UseQueryArgs<CardsQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<CardsQuery>({ query: CardsDocument, ...options });
+}
 export const CartsDocument = gql`
 	query Carts {
 		currentUser {
