@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet, Alert } from 'react-native';
 import { Formik } from 'formik';
 import Button from '../components/global/Button';
 
@@ -14,7 +14,7 @@ const AddCard = () => {
 					expiryYear: ''
 				}}
 				onSubmit={values => {
-					console.log(values);
+					Alert.alert(JSON.stringify(values));
 				}}
 			>
 				{({ values, handleChange, handleBlur, handleSubmit }) => (

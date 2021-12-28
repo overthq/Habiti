@@ -8,7 +8,7 @@ import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { HomeTabParamList } from '../types/navigation';
 
 const Carts: React.FC = () => {
-	const [{ data, fetching, error }] = useCartsQuery();
+	const [{ data, fetching }] = useCartsQuery();
 	const { navigate } =
 		useNavigation<BottomTabNavigationProp<HomeTabParamList, 'Carts'>>();
 
@@ -19,8 +19,6 @@ const Carts: React.FC = () => {
 			</View>
 		);
 	}
-
-	if (error) console.log(error);
 
 	const carts = data?.currentUser.carts;
 
