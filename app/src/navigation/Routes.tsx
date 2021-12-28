@@ -10,7 +10,6 @@ import Store from '../screens/Store';
 import Product from '../screens/Product';
 import Cart from '../screens/Cart';
 import Order from '../screens/Order';
-import ConnectAccount from '../screens/ConnectAccount';
 import EditProfile from '../screens/EditProfile';
 import AddCardWebview from '../screens/AddCardWebview';
 
@@ -39,10 +38,6 @@ const Routes: React.FC = () => {
 								<AppStack.Screen name='Cart' component={Cart} />
 								<AppStack.Screen name='Order' component={Order} />
 								<AppStack.Group screenOptions={{ headerShown: true }}>
-									<AppStack.Screen
-										name='Connect Account'
-										component={ConnectAccount}
-									/>
 									<AppStack.Screen
 										name='Edit Profile'
 										component={EditProfile}
