@@ -5,7 +5,8 @@ import {
 } from './types';
 
 const initialState: PreferencesState = {
-	theme: 'light'
+	theme: 'light',
+	defaultCardId: undefined
 };
 
 const preferencesReducer = (

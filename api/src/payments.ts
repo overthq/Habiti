@@ -6,6 +6,7 @@ const router = Router();
 router.post('/initial-charge', async (req, res) => {
 	// TODO: Take userId and return email instead of this.
 	const { email } = req.body;
+
 	try {
 		const data = await initialCharge(email);
 

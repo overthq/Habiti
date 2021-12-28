@@ -51,6 +51,8 @@ export const storeCard = async (user: User, data: any) => {
 				userId: user.id
 			}
 		});
+
+		// TODO: Trigger a transaction to send the money back to said user.
 	}
 };
 
