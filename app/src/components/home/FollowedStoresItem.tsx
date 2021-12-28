@@ -2,14 +2,15 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { MainStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../types/navigation';
+import { StoresFollowedQuery } from '../../types/api';
 
 interface FollowedStoresItemProps {
-	store: any;
+	store: StoresFollowedQuery['currentUser']['followed'][-1]['store'];
 }
 
 const FollowedStoresItem: React.FC<FollowedStoresItemProps> = ({ store }) => {
-	const { navigate } = useNavigation<StackNavigationProp<MainStackParamList>>();
+	const { navigate } = useNavigation<StackNavigationProp<AppStackParamList>>();
 
 	return (
 		<TouchableOpacity

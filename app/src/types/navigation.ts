@@ -1,6 +1,6 @@
 export type AppStackParamList = {
 	Home: undefined;
-	Store: undefined;
+	Store: { storeId: string };
 	Register: undefined;
 	Authenticate: undefined;
 	Verify: { phone: string };
@@ -10,11 +10,7 @@ export type AppStackParamList = {
 	'Connect Account': undefined;
 	'Edit Profile': undefined;
 	'Add Card': undefined;
-};
-
-export type MainStackParamList = {
-	Home: undefined;
-	Store: { storeId: string };
+	'Payment Methods': undefined;
 };
 
 export type HomeTabParamList = {
@@ -22,9 +18,4 @@ export type HomeTabParamList = {
 	Explore: undefined;
 	Carts: undefined;
 	Profile: undefined;
-};
-
-// FIXME: Change this when actual route names are known.
-export type SettingsStackParamList = {
-	[key: string]: undefined;
 };

@@ -9,14 +9,14 @@ import {
 import { TabBar, TabView, SceneMap } from 'react-native-tab-view';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Product, Store } from '../../types/api';
-import { AppStackParamList, MainStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../types/navigation';
 
 interface StoresViewProps {
 	data: Store[];
 }
 
 const StoresView: React.FC<StoresViewProps> = ({ data }) => {
-	const { navigate } = useNavigation<NavigationProp<MainStackParamList>>();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	return (
 		<FlatList

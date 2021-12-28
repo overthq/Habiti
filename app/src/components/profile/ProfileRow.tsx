@@ -7,14 +7,12 @@ interface ProfileRowProps {
 	onPress(): void;
 }
 
-const ProfileRow: React.FC<ProfileRowProps> = ({ title, onPress }) => {
-	return (
-		<Pressable style={styles.container} onPress={onPress}>
-			<Text style={styles.title}>{title}</Text>
-			<Icon name='chevronRight' />
-		</Pressable>
-	);
-};
+const ProfileRow: React.FC<ProfileRowProps> = ({ title, onPress }) => (
+	<Pressable style={styles.container} onPress={onPress}>
+		<Text style={styles.title}>{title}</Text>
+		<Icon name='chevronRight' />
+	</Pressable>
+);
 
 const styles = StyleSheet.create({
 	container: {
@@ -22,8 +20,8 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingVertical: 12,
-		paddingHorizontal: 12,
+		padding: 12,
+		marginBottom: 8,
 		borderRadius: 4,
 		backgroundColor: '#FFFFFF'
 	},

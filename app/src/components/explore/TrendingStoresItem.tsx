@@ -1,14 +1,15 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { MainStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../types/navigation';
+import { StoresQuery } from '../../types/api';
 
 interface TrendingStoresItemProps {
-	store: any;
+	store: StoresQuery['stores'][-1];
 }
 
 const TrendingStoresItem: React.FC<TrendingStoresItemProps> = ({ store }) => {
-	const { navigate } = useNavigation<NavigationProp<MainStackParamList>>();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	return (
 		<TouchableOpacity
@@ -17,7 +18,9 @@ const TrendingStoresItem: React.FC<TrendingStoresItemProps> = ({ store }) => {
 			onPress={() => navigate('Store', { storeId: store.id })}
 		>
 			<View style={styles.storeContainer}>
-				{/* <Image source={{ uri: store.avatarUrl }} style={styles.storeImage} /> */}
+				{store.image && (
+					<Image source={{ uri: store.image.path }} style={styles.storeImage} />
+				)}
 			</View>
 			<Text style={styles.storeName}>{store.name}</Text>
 		</TouchableOpacity>

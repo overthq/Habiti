@@ -30,11 +30,6 @@ const Profile: React.FC = () => {
 				title='Payment methods'
 				onPress={() => navigate('Payment Methods')}
 			/>
-			<Button
-				text='Add card'
-				onPress={() => navigate('Add Card')}
-				style={{ marginVertical: 8 }}
-			/>
 			<Button text='Log Out' onPress={() => dispatch(logOut())} />
 		</View>
 	);
