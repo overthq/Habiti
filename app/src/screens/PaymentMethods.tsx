@@ -4,12 +4,15 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import Button from '../components/global/Button';
 import { useCardsQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
+import ListEmpty from '../components/global/ListEmpty';
 
 const PaymentMethods: React.FC = () => {
 	const [{ data, fetching }] = useCardsQuery();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
-	if (fetching) {
+	const cards = data?.currentUser.cards;
+
+	if (fetching || !cards) {
 		return (
 			<View style={styles.loading}>
 				<ActivityIndicator />
@@ -17,20 +20,31 @@ const PaymentMethods: React.FC = () => {
 		);
 	}
 
-	const cards = data?.currentUser.cards;
-
 	return (
 		<View style={styles.container}>
-			<Button
-				text='Add card'
-				onPress={() => navigate('Add Card')}
-				style={{ marginVertical: 8 }}
-			/>
-			{cards?.map(card => (
-				<View key={card.id}>
-					<Text>Ending in {card.last4}</Text>
+			{cards?.length === 0 ? (
+				<ListEmpty
+					title='No cards added'
+					description='When you add your cards, they will be displayed here.'
+					cta={{
+						text: 'Add card',
+						action: () => navigate('Add Card')
+					}}
+				/>
+			) : (
+				<View>
+					{cards?.map(card => (
+						<View key={card.id}>
+							<Text>Ending in {card.last4}</Text>
+						</View>
+					))}
+					<Button
+						text='Add card'
+						onPress={() => navigate('Add Card')}
+						style={{ marginVertical: 8 }}
+					/>
 				</View>
-			))}
+			)}
 		</View>
 	);
 };
