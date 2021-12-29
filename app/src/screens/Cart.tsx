@@ -1,7 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRoute, RouteProp } from '@react-navigation/native';
+import {
+	useRoute,
+	RouteProp,
+	useNavigation,
+	NavigationProp
+} from '@react-navigation/native';
 import CartProduct from '../components/cart/CartProduct';
 import { useCreateOrderMutation, useCartQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
@@ -11,6 +16,7 @@ const Cart: React.FC = () => {
 	const {
 		params: { cartId }
 	} = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
+	const { goBack } = useNavigation<NavigationProp<AppStackParamList>>();
 	const [, createOrder] = useCreateOrderMutation();
 
 	const [{ data, fetching }] = useCartQuery({ variables: { cartId } });
@@ -26,6 +32,7 @@ const Cart: React.FC = () => {
 
 	const handleSubmit = React.useCallback(async () => {
 		await createOrder({ cartId });
+		goBack();
 	}, [cartId]);
 
 	if (fetching || !cart) {
