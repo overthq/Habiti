@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import { PrismaClient, User } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const API_URL = 'https://api.paystack.co';
 const prisma = new PrismaClient();
@@ -30,13 +30,13 @@ export const chargeAuthorization = async (
 	return data;
 };
 
-export const storeCard = async (user: User, data: any) => {
+export const storeCard = async (userId: string, data: any) => {
 	const card = await prisma.card.findUnique({
 		where: { signature: data.authorization.signature }
 	});
 
 	if (!card) {
-		await prisma.card.create({
+		const card = await prisma.card.create({
 			data: {
 				email: data.customer.email,
 				authorizationCode: data.authorization.authorization_code,
@@ -48,12 +48,15 @@ export const storeCard = async (user: User, data: any) => {
 				signature: data.authorization.signature,
 				cardType: data.authorization.card_type,
 				countryCode: data.authorization.country_code,
-				userId: user.id
+				userId
 			}
 		});
 
 		// TODO: Trigger a transaction to send the money back to said user.
+		return card;
 	}
+
+	return card;
 };
 
 export const initialCharge = async (email: string) => {
@@ -68,4 +71,25 @@ export const initialCharge = async (email: string) => {
 
 	const data = await response.json();
 	return data;
+};
+
+// Hack to verify transaction in dev.
+// (On prod, the webhook should do this).
+
+export const verifyTransaction = async (userId: string, reference: string) => {
+	const response = await fetch(`${API_URL}/transaction/verify/${reference}`, {
+		method: 'GET',
+		headers: {
+			Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+		}
+	});
+
+	const { status, data } = await response.json();
+
+	if (status === true && data.status === 'success') {
+		const card = await storeCard(userId, data);
+		return card;
+	} else {
+		throw new Error('Verification failed!');
+	}
 };
