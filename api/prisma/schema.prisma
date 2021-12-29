@@ -83,8 +83,8 @@ model Cart {
   storeId   String
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
-  user      User          @relation(fields: [userId], references: [id])
-  store     Store         @relation(fields: [storeId], references: [id])
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  store     Store         @relation(fields: [storeId], references: [id], onDelete: Cascade)
   products  CartProduct[]
 
   @@unique([userId, storeId])
@@ -94,8 +94,8 @@ model CartProduct {
   cartId    String
   productId String
   quantity  Int
-  cart      Cart    @relation(fields: [cartId], references: [id])
-  product   Product @relation(fields: [productId], references: [id])
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([cartId, productId])
 }
