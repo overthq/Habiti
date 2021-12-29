@@ -388,6 +388,7 @@ export type CardsQuery = {
 	__typename?: 'Query';
 	currentUser: {
 		__typename?: 'User';
+		id: string;
 		cards: Array<{
 			__typename?: 'Card';
 			id: string;
@@ -819,6 +820,7 @@ export type EditProfileMutation = {
 export const CardsDocument = gql`
 	query Cards {
 		currentUser {
+			id
 			cards {
 				id
 				email
