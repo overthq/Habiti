@@ -11,6 +11,7 @@ import CartProduct from '../components/cart/CartProduct';
 import { useCreateOrderMutation, useCartQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 import Button from '../components/global/Button';
+import SelectCard from '../components/cart/SelectCard';
 
 const Cart: React.FC = () => {
 	const {
@@ -31,8 +32,12 @@ const Cart: React.FC = () => {
 	}, [cart?.products]);
 
 	const handleSubmit = React.useCallback(async () => {
-		await createOrder({ cartId });
-		goBack();
+		try {
+			await createOrder({ cartId });
+			goBack();
+		} catch (error) {
+			console.log(error);
+		}
 	}, [cartId]);
 
 	if (fetching || !cart) {
@@ -63,6 +68,11 @@ const Cart: React.FC = () => {
 						{totalPrice} NGN
 					</Text>
 				</View>
+				<SelectCard
+					handleCardSelect={cardId => {
+						console.log(cardId);
+					}}
+				/>
 				<Button
 					text='Place Order'
 					onPress={handleSubmit}
