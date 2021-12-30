@@ -8,7 +8,7 @@ import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { HomeTabParamList } from '../types/navigation';
 
 const Carts: React.FC = () => {
-	const [{ data, fetching }] = useCartsQuery();
+	const [{ data, fetching }, refetch] = useCartsQuery();
 	const { navigate } =
 		useNavigation<BottomTabNavigationProp<HomeTabParamList, 'Carts'>>();
 
@@ -40,6 +40,8 @@ const Carts: React.FC = () => {
 						viewStyle={{ marginTop: 32 }}
 					/>
 				}
+				refreshing={fetching}
+				onRefresh={refetch}
 			/>
 		</View>
 	);

@@ -8,7 +8,7 @@ interface RecentOrderProps {
 
 const RecentOrder: React.FC<RecentOrderProps> = ({ order }) => {
 	const name = order.products[0]?.product.name;
-	const itemsLength = order.products.length;
+	const count = order.products.length;
 
 	return (
 		<TouchableOpacity
@@ -20,8 +20,7 @@ const RecentOrder: React.FC<RecentOrderProps> = ({ order }) => {
 			<View style={styles.info}>
 				<Text style={styles.text}>
 					{name}
-					{itemsLength > 1 &&
-						` and ${itemsLength - 1} ${itemsLength > 2 ? 'others' : 'other'}`}
+					{count > 1 && ` and ${count - 1} ${count > 2 ? 'others' : 'other'}`}
 				</Text>
 				{/* <Text style={styles.status}>{order.status}</Text> */}
 			</View>
@@ -33,7 +32,8 @@ const styles = StyleSheet.create({
 	container: {
 		marginLeft: 16,
 		flexDirection: 'row',
-		alignItems: 'center'
+		alignItems: 'center',
+		borderColor: 'red'
 	},
 	avatar: {
 		height: 50,

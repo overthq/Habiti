@@ -47,7 +47,8 @@ export const createOrder: Resolver<CreateOrderArgs> = async (
 					createMany: {
 						data: cart.products.map(p => ({
 							productId: p.productId,
-							unitPrice: p.product.unitPrice
+							unitPrice: p.product.unitPrice,
+							quantity: p.quantity
 						}))
 					}
 				}

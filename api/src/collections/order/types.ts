@@ -12,15 +12,6 @@ const OrderTypes = gql`
 		updatedAt: String!
 	}
 
-	type OrderProduct {
-		orderId: ID!
-		productId: ID!
-		unitPrice: Int!
-		quantity: Int!
-		order: Order!
-		product: Product!
-	}
-
 	extend type Query {
 		order(id: ID!): Order!
 		userOrders(userId: ID!): [Order!]!

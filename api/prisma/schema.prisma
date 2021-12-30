@@ -71,6 +71,7 @@ model OrderProduct {
   orderId   String
   productId String
   unitPrice Int
+  quantity  Int
   order     Order   @relation(fields: [orderId], references: [id])
   product   Product @relation(fields: [productId], references: [id])
 
