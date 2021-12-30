@@ -8,6 +8,10 @@ query Carts {
 			store {
 				id
 				name
+				image {
+					id
+					path
+				}
 			}
 			products {
 				cartId
@@ -39,6 +43,7 @@ query Cart($cartId: ID!) {
 				id
 				name
 				unitPrice
+				storeId
 				images {
 					id
 					path

@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { CartQuery } from '../../types/api';
 import { Icon } from '../icons';
+import { AppStackParamList } from '../../types/navigation';
 
 interface CartProductProps {
 	cartProduct: CartQuery['cart']['products'][-1];
@@ -9,27 +11,36 @@ interface CartProductProps {
 
 const CartProduct: React.FC<CartProductProps> = ({
 	cartProduct: { product, quantity }
-}) => (
-	<View style={styles.container}>
-		<View style={{ flexDirection: 'row' }}>
-			<View style={styles.imagePlaceholder}>
-				{product.images[0] && (
-					<Image
-						source={{ uri: product.images[0].path }}
-						style={styles.image}
-					/>
-				)}
+}) => {
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+
+	return (
+		<Pressable
+			style={styles.container}
+			onPress={() =>
+				navigate('Product', { productId: product.id, storeId: product.storeId })
+			}
+		>
+			<View style={{ flexDirection: 'row' }}>
+				<View style={styles.imagePlaceholder}>
+					{product.images[0] && (
+						<Image
+							source={{ uri: product.images[0].path }}
+							style={styles.image}
+						/>
+					)}
+				</View>
+				<View>
+					<Text style={styles.name}>{product.name}</Text>
+					<Text style={styles.price}>
+						{quantity} units · {product.unitPrice * quantity}.00 NGN
+					</Text>
+				</View>
 			</View>
-			<View>
-				<Text style={styles.name}>{product.name}</Text>
-				<Text style={styles.price}>
-					{quantity} units · {product.unitPrice * quantity}.00 NGN
-				</Text>
-			</View>
-		</View>
-		<Icon name='chevronRight' color='#505050' />
-	</View>
-);
+			<Icon name='chevronRight' color='#505050' />
+		</Pressable>
+	);
+};
 
 const styles = StyleSheet.create({
 	container: {

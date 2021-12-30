@@ -21,8 +21,12 @@ const CartsListItem: React.FC<CartListItemProps> = ({ cart }) => {
 		>
 			<View style={styles.main}>
 				<View style={styles.placeholder}>
-					{/* <Image style={styles.image} source={{ uri: '' }} />
-					 */}
+					{cart.store.image && (
+						<Image
+							style={styles.image}
+							source={{ uri: cart.store.image.path }}
+						/>
+					)}
 				</View>
 				<View>
 					<Text style={styles.name}>{cart.store.name}</Text>

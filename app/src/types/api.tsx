@@ -415,7 +415,15 @@ export type CartsQuery = {
 			id: string;
 			userId: string;
 			storeId: string;
-			store: { __typename?: 'Store'; id: string; name: string };
+			store: {
+				__typename?: 'Store';
+				id: string;
+				name: string;
+				image?:
+					| { __typename?: 'Image'; id: string; path: string }
+					| null
+					| undefined;
+			};
 			products: Array<{
 				__typename?: 'CartProduct';
 				cartId: string;
@@ -454,6 +462,7 @@ export type CartQuery = {
 				id: string;
 				name: string;
 				unitPrice: number;
+				storeId: string;
 				images: Array<{ __typename?: 'Image'; id: string; path: string }>;
 			};
 		}>;
@@ -851,6 +860,10 @@ export const CartsDocument = gql`
 				store {
 					id
 					name
+					image {
+						id
+						path
+					}
 				}
 				products {
 					cartId
@@ -889,6 +902,7 @@ export const CartDocument = gql`
 					id
 					name
 					unitPrice
+					storeId
 					images {
 						id
 						path
