@@ -7,7 +7,6 @@ interface RecentOrderProps {
 }
 
 const RecentOrder: React.FC<RecentOrderProps> = ({ order }) => {
-	const name = order.products[0]?.product.name;
 	const count = order.products.length;
 
 	return (
@@ -18,10 +17,8 @@ const RecentOrder: React.FC<RecentOrderProps> = ({ order }) => {
 		>
 			<View style={styles.avatar} />
 			<View style={styles.info}>
-				<Text style={styles.text}>
-					{name}
-					{count > 1 && ` and ${count - 1} ${count > 2 ? 'others' : 'other'}`}
-				</Text>
+				<Text>{order.store.name}</Text>
+				<Text style={styles.text}>{count} products</Text>
 				{/* <Text style={styles.status}>{order.status}</Text> */}
 			</View>
 		</TouchableOpacity>
