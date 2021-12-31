@@ -38,9 +38,13 @@ const styles = StyleSheet.create({
 	container: {
 		width: '100%',
 		paddingVertical: 4,
-		paddingHorizontal: 8,
+		paddingHorizontal: 16,
 		flexDirection: 'row',
-		alignItems: 'center'
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		backgroundColor: '#FFFFFF',
+		borderBottomWidth: 0.5,
+		borderBottomColor: '#EDEDED'
 	},
 	name: {
 		fontSize: 18,
