@@ -41,7 +41,11 @@ const Carts: React.FC = () => {
 					/>
 				}
 				refreshing={fetching}
-				onRefresh={refetch}
+				onRefresh={() =>
+					refetch({
+						requestPolicy: 'network-only'
+					})
+				}
 			/>
 		</View>
 	);
