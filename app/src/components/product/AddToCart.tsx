@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Pressable, Text, StyleSheet } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { Icon } from '../icons';
+import { Icon } from '../Icon';
 import {
 	useCreateCartMutation,
 	useAddProductToCartMutation

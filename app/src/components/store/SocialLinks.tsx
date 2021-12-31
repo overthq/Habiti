@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
-import { Icon } from '../icons';
+import { Icon } from '../Icon';
 import { LinkType, openLink, getLink } from '../../utils/links';
 
 interface SocialLinksProps {

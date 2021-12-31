@@ -1,7 +1,7 @@
 import React from 'react';
 import {
 	View,
-	// Image,
+	Image,
 	Text,
 	TouchableOpacity,
 	StyleSheet,
@@ -11,7 +11,7 @@ import { openLink } from '../../utils/links';
 import { StoreQuery } from '../../types/api';
 import FollowButton from './FollowButton';
 import SocialLinks from './SocialLinks';
-import { Icon } from '../icons';
+import { Icon } from '../Icon';
 import { useNavigation } from '@react-navigation/native';
 
 interface StoreHeaderProps {
@@ -30,7 +30,9 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 			</View>
 			<View style={styles.row}>
 				<View style={styles.imagePlaceholder}>
-					{/* <Image source={{ uri: '' }} style={styles.image} /> */}
+					{store.image && (
+						<Image source={{ uri: store.image.path }} style={styles.image} />
+					)}
 				</View>
 				<View style={{ flex: 1, marginLeft: 32 }}>
 					<View style={{ flexDirection: 'row' }}>

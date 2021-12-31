@@ -743,6 +743,10 @@ export type StoreQuery = {
 		website?: string | null | undefined;
 		twitter?: string | null | undefined;
 		instagram?: string | null | undefined;
+		image?:
+			| { __typename?: 'Image'; id: string; path: string }
+			| null
+			| undefined;
 		followers: Array<{
 			__typename?: 'StoreFollower';
 			follower: { __typename?: 'User'; id: string; name: string };
@@ -1235,6 +1239,10 @@ export const StoreDocument = gql`
 			website
 			twitter
 			instagram
+			image {
+				id
+				path
+			}
 			followers {
 				follower {
 					id

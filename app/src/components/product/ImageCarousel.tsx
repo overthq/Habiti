@@ -10,7 +10,7 @@ import Animated, {
 	useSharedValue,
 	useAnimatedScrollHandler
 } from 'react-native-reanimated';
-import ImageCarouselDots from '../ImageCarouselDots';
+import ImageCarouselDots from '../profile/ImageCarouselDots';
 import { ProductQuery } from '../../types/api';
 import CloseButton from './CloseButton';
 

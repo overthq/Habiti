@@ -17,6 +17,10 @@ query Store($storeId: ID!) {
 		website
 		twitter
 		instagram
+		image {
+			id
+			path
+		}
 		followers {
 			follower {
 				id

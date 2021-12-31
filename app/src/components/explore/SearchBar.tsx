@@ -6,7 +6,7 @@ import {
 	TouchableOpacity,
 	StyleSheet
 } from 'react-native';
-import { Icon } from '../icons';
+import { Icon } from '../Icon';
 
 interface SearchBarProps {
 	onSearchTermChange(term: string): void;

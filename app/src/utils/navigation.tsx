@@ -1,6 +1,6 @@
 import { RouteProp } from '@react-navigation/native';
 import React from 'react';
-import { Icon, IconType } from '../components/icons';
+import { Icon, IconType } from '../components/Icon';
 import { HomeTabParamList } from '../types/navigation';
 
 export const getIcon = (routeName: string): IconType => {

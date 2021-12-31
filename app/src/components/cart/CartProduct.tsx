@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { CartQuery } from '../../types/api';
-import { Icon } from '../icons';
+import { Icon } from '../Icon';
 import { AppStackParamList } from '../../types/navigation';
 
 interface CartProductProps {
