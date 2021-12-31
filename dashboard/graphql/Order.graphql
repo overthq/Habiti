@@ -36,6 +36,10 @@ query Order($id: ID!) {
 			product {
 				id
 				name
+				images {
+					id
+					path
+				}
 			}
 			unitPrice
 			quantity

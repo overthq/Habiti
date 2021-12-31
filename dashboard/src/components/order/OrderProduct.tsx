@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 import { OrderQuery } from '../../types/api';
 
 interface OrderProductProps {
@@ -12,7 +12,14 @@ const OrderProduct: React.FC<OrderProductProps> = ({ orderProduct }) => {
 
 	return (
 		<View>
-			<View style={styles.image} />
+			<View style={styles.placeholder}>
+				{product.images[0] && (
+					<Image
+						source={{ uri: product.images[0].path }}
+						style={styles.image}
+					/>
+				)}
+			</View>
 			<Text style={styles.text}>{product.name}</Text>
 			<Text style={styles.text}>
 				{quantity} - {totalPrice} NGN
@@ -22,11 +29,16 @@ const OrderProduct: React.FC<OrderProductProps> = ({ orderProduct }) => {
 };
 
 const styles = StyleSheet.create({
-	image: {
+	placeholder: {
 		height: 50,
 		width: 50,
 		backgroundColor: '#D3D3D3',
-		borderRadius: 4
+		borderRadius: 4,
+		overflow: 'hidden'
+	},
+	image: {
+		width: '100%',
+		height: '100%'
 	},
 	text: {
 		fontSize: 16

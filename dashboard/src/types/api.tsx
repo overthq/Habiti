@@ -432,7 +432,12 @@ export type OrderQuery = {
 			productId: string;
 			unitPrice: number;
 			quantity: number;
-			product: { __typename?: 'Product'; id: string; name: string };
+			product: {
+				__typename?: 'Product';
+				id: string;
+				name: string;
+				images: Array<{ __typename?: 'Image'; id: string; path: string }>;
+			};
 		}>;
 	};
 };
@@ -601,6 +606,10 @@ export const OrderDocument = gql`
 				product {
 					id
 					name
+					images {
+						id
+						path
+					}
 				}
 				unitPrice
 				quantity
