@@ -18,12 +18,6 @@ export type MainTabParamList = {
 	Store: undefined;
 };
 
-export type ProductStackParamList = {
-	ProductDetail: { itemId: string };
-	AddProduct: undefined;
-	EditProduct: { itemId: string };
-};
-
 export type OrdersStackParamsList = {
 	OrdersList: undefined;
 	Order: { orderId: string };
