@@ -18,13 +18,6 @@ const ProductTypes = gql`
 		watchlists: [WatchlistProduct!]!
 	}
 
-	type WatchlistProduct {
-		userId: ID!
-		productId: ID!
-		user: User!
-		product: Product!
-	}
-
 	input CreateProductInput {
 		name: String!
 		description: String!

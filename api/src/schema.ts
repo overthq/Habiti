@@ -41,6 +41,9 @@ import CardTypes from './collections/card/types';
 import orderProductQueries from './collections/order-product/queries';
 import OrderProductTypes from './collections/order-product/types';
 
+import watchlistProductQueries from './collections/watchlist-product/queries';
+import WatchlistProductTypes from './collections/watchlist-product/types';
+
 const Root = `
 	scalar Upload
 
@@ -68,7 +71,8 @@ const resolvers = merge(
 	cartProductQueries,
 	cardQueries,
 	cardMutations,
-	orderProductQueries
+	orderProductQueries,
+	watchlistProductQueries
 );
 
 const schema = makeExecutableSchema({
@@ -84,7 +88,8 @@ const schema = makeExecutableSchema({
 		StoreManagerTypes,
 		CartProductTypes,
 		CardTypes,
-		OrderProductTypes
+		OrderProductTypes,
+		WatchlistProductTypes
 	],
 	resolvers
 });

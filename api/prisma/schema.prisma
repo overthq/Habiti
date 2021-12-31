@@ -104,8 +104,8 @@ model CartProduct {
 model WatchlistProduct {
   userId    String
   productId String
-  user      User    @relation(fields: [userId], references: [id])
-  product   Product @relation(fields: [productId], references: [id])
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
 }
@@ -117,15 +117,15 @@ model Image {
   path      String   @db.VarChar(2083)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  store     Store?   @relation(fields: [storeId], references: [id])
-  product   Product? @relation(fields: [productId], references: [id])
+  store     Store?   @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model StoreManager {
   storeId   String
   managerId String
-  store     Store  @relation(fields: [storeId], references: [id])
-  manager   User   @relation(fields: [managerId], references: [id])
+  store     Store  @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  manager   User   @relation(fields: [managerId], references: [id], onDelete: Cascade)
 
   @@unique([storeId, managerId])
 }
@@ -133,8 +133,8 @@ model StoreManager {
 model StoreFollower {
   storeId    String
   followerId String
-  store      Store  @relation(fields: [storeId], references: [id])
-  follower   User   @relation(fields: [followerId], references: [id])
+  store      Store  @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  follower   User   @relation(fields: [followerId], references: [id], onDelete: Cascade)
 
   @@unique([storeId, followerId])
 }
@@ -152,5 +152,5 @@ model Card {
   bank              String
   signature         String @unique
   countryCode       String
-  user              User   @relation(fields: [userId], references: [id])
+  user              User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
