@@ -12,6 +12,8 @@ import { useCreateOrderMutation, useCartQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 import Button from '../components/global/Button';
 import SelectCard from '../components/cart/SelectCard';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { useAppSelector } from '../redux/store';
 
 const Cart: React.FC = () => {
 	const {
@@ -21,6 +23,12 @@ const Cart: React.FC = () => {
 	const [, createOrder] = useCreateOrderMutation();
 
 	const [{ data, fetching }] = useCartQuery({ variables: { cartId } });
+
+	const defaultCardId = useAppSelector(
+		({ preferences }) => preferences.defaultCardId
+	);
+
+	const [selectedCard, setSelectedCard] = React.useState(defaultCardId);
 	const cart = data?.cart;
 
 	const totalPrice = React.useMemo(() => {
@@ -49,37 +57,38 @@ const Cart: React.FC = () => {
 	}
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<Text style={styles.heading}>Checkout</Text>
-			<Text style={styles.sectionHeader}>Order Summary</Text>
-			{cart.products.map(cartProduct => (
-				<CartProduct key={cartProduct.productId} cartProduct={cartProduct} />
-			))}
-			<View style={{ flex: 1, justifyContent: 'flex-end' }}>
-				<View
-					style={{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						alignItems: 'center'
-					}}
-				>
-					<Text style={{ fontSize: 18, fontWeight: '500' }}>Total</Text>
-					<Text style={{ fontSize: 18, fontWeight: '500' }}>
-						{totalPrice} NGN
-					</Text>
+		<BottomSheetModalProvider>
+			<SafeAreaView style={styles.container}>
+				<Text style={styles.heading}>Checkout</Text>
+				<Text style={styles.sectionHeader}>Order Summary</Text>
+				{cart.products.map(cartProduct => (
+					<CartProduct key={cartProduct.productId} cartProduct={cartProduct} />
+				))}
+				<View style={{ flex: 1, justifyContent: 'flex-end' }}>
+					<View
+						style={{
+							flexDirection: 'row',
+							justifyContent: 'space-between',
+							alignItems: 'center'
+						}}
+					>
+						<Text style={{ fontSize: 18, fontWeight: '500' }}>Total</Text>
+						<Text style={{ fontSize: 18, fontWeight: '500' }}>
+							{totalPrice} NGN
+						</Text>
+					</View>
+					<SelectCard
+						selectedCard={selectedCard}
+						handleCardSelect={setSelectedCard}
+					/>
+					<Button
+						text='Place Order'
+						onPress={handleSubmit}
+						style={styles.button}
+					/>
 				</View>
-				<SelectCard
-					handleCardSelect={cardId => {
-						console.log(cardId);
-					}}
-				/>
-				<Button
-					text='Place Order'
-					onPress={handleSubmit}
-					style={styles.button}
-				/>
-			</View>
-		</SafeAreaView>
+			</SafeAreaView>
+		</BottomSheetModalProvider>
 	);
 };
 
