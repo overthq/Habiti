@@ -29,6 +29,23 @@ export type AddProductToCartInput = {
 	quantity?: InputMaybe<Scalars['Int']>;
 };
 
+export type Card = {
+	__typename?: 'Card';
+	authorizationCode: Scalars['String'];
+	bank: Scalars['String'];
+	bin: Scalars['String'];
+	cardType: Scalars['String'];
+	countryCode: Scalars['String'];
+	email: Scalars['String'];
+	expMonth: Scalars['String'];
+	expYear: Scalars['String'];
+	id: Scalars['ID'];
+	last4: Scalars['String'];
+	signature: Scalars['String'];
+	user: User;
+	userId: Scalars['ID'];
+};
+
 export type Cart = {
 	__typename?: 'Cart';
 	createdAt: Scalars['String'];
@@ -105,6 +122,10 @@ export type Image = {
 	createdAt: Scalars['String'];
 	id: Scalars['ID'];
 	path: Scalars['String'];
+	product?: Maybe<Product>;
+	productId?: Maybe<Scalars['ID']>;
+	store?: Maybe<Store>;
+	storeId?: Maybe<Scalars['ID']>;
 	updatedAt: Scalars['String'];
 };
 
@@ -116,7 +137,9 @@ export type Mutation = {
 	createOrder: Order;
 	createProduct: Product;
 	createStore: Store;
+	deleteCard: Card;
 	deleteCart: Scalars['ID'];
+	deleteImage: Image;
 	deleteStore: Scalars['ID'];
 	deleteUser: Scalars['ID'];
 	editProduct: Product;
@@ -148,8 +171,16 @@ export type MutationCreateStoreArgs = {
 	input: CreateStoreInput;
 };
 
+export type MutationDeleteCardArgs = {
+	id: Scalars['ID'];
+};
+
 export type MutationDeleteCartArgs = {
 	cartId: Scalars['ID'];
+};
+
+export type MutationDeleteImageArgs = {
+	id: Scalars['ID'];
 };
 
 export type MutationDeleteStoreArgs = {
@@ -238,13 +269,11 @@ export type Query = {
 	order: Order;
 	product: Product;
 	store: Store;
-	storeOrders: Array<Order>;
 	storeProducts: Array<Product>;
 	stores: Array<Store>;
 	user: User;
 	userCart?: Maybe<Cart>;
 	userCarts: Array<Cart>;
-	userOrders: Array<Order>;
 	users: Array<User>;
 };
 
@@ -264,10 +293,6 @@ export type QueryStoreArgs = {
 	id: Scalars['ID'];
 };
 
-export type QueryStoreOrdersArgs = {
-	storeId: Scalars['ID'];
-};
-
 export type QueryStoreProductsArgs = {
 	id: Scalars['ID'];
 };
@@ -281,10 +306,6 @@ export type QueryUserCartArgs = {
 };
 
 export type QueryUserCartsArgs = {
-	userId: Scalars['ID'];
-};
-
-export type QueryUserOrdersArgs = {
 	userId: Scalars['ID'];
 };
 
@@ -330,6 +351,7 @@ export type UpdateCartProductInput = {
 
 export type User = {
 	__typename?: 'User';
+	cards: Array<Card>;
 	carts: Array<Cart>;
 	createdAt: Scalars['String'];
 	followed: Array<StoreFollower>;
@@ -373,6 +395,7 @@ export type OrdersQuery = {
 	__typename?: 'Query';
 	store: {
 		__typename?: 'Store';
+		id: string;
 		orders: Array<{
 			__typename?: 'Order';
 			id: string;
@@ -381,6 +404,7 @@ export type OrdersQuery = {
 			user: { __typename?: 'User'; id: string; name: string };
 			products: Array<{
 				__typename?: 'OrderProduct';
+				orderId: string;
 				productId: string;
 				unitPrice: number;
 				quantity: number;
@@ -404,6 +428,7 @@ export type OrderQuery = {
 		user: { __typename?: 'User'; id: string; name: string };
 		products: Array<{
 			__typename?: 'OrderProduct';
+			orderId: string;
 			productId: string;
 			unitPrice: number;
 			quantity: number;
@@ -533,6 +558,7 @@ export function useManagedStoresQuery(
 export const OrdersDocument = gql`
 	query Orders($storeId: ID!) {
 		store(id: $storeId) {
+			id
 			orders {
 				id
 				user {
@@ -540,6 +566,7 @@ export const OrdersDocument = gql`
 					name
 				}
 				products {
+					orderId
 					productId
 					product {
 						id
@@ -569,6 +596,7 @@ export const OrderDocument = gql`
 				name
 			}
 			products {
+				orderId
 				productId
 				product {
 					id

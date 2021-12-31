@@ -14,8 +14,6 @@ const OrderTypes = gql`
 
 	extend type Query {
 		order(id: ID!): Order!
-		userOrders(userId: ID!): [Order!]!
-		storeOrders(storeId: ID!): [Order!]!
 	}
 
 	extend type Mutation {

@@ -25,7 +25,11 @@ const useClient = () => {
 				}),
 				exchanges: [
 					dedupExchange,
-					cacheExchange({}),
+					cacheExchange({
+						keys: {
+							OrderProduct: data => `${data.orderId}-${data.productId}`
+						}
+					}),
 					fetchExchange,
 					multipartFetchExchange
 				]

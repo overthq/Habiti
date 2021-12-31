@@ -26,12 +26,8 @@ const MainTabNavigator = () => (
 	>
 		<MainTab.Screen name='Overview' component={Overview} />
 		<MainTab.Group screenOptions={{ headerShown: false }}>
-			<MainTab.Screen name='Orders'>
-				{() => <OrdersStackNavigator />}
-			</MainTab.Screen>
-			<MainTab.Screen name='Products'>
-				{() => <ProductsStackNavigator />}
-			</MainTab.Screen>
+			<MainTab.Screen name='Orders' component={OrdersStackNavigator} />
+			<MainTab.Screen name='Products' component={ProductsStackNavigator} />
 		</MainTab.Group>
 		<MainTab.Screen name='Store' component={Store} />
 	</MainTab.Navigator>

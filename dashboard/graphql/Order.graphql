@@ -1,5 +1,6 @@
 query Orders($storeId: ID!) {
 	store(id: $storeId) {
+		id
 		orders {
 			id
 			user {
@@ -7,6 +8,7 @@ query Orders($storeId: ID!) {
 				name
 			}
 			products {
+				orderId
 				productId
 				product {
 					id
@@ -29,6 +31,7 @@ query Order($id: ID!) {
 			name
 		}
 		products {
+			orderId
 			productId
 			product {
 				id

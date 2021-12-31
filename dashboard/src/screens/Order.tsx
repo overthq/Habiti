@@ -13,15 +13,13 @@ const Order: React.FC = () => {
 	const [{ data }] = useOrderQuery({ variables: { id: orderId } });
 	const order = data?.order;
 
-	if (!order) throw new Error('This order does not exist');
-
 	return (
 		<SafeAreaView style={styles.container}>
-			<Text>{order.user.name}</Text>
+			<Text>{order?.user.name}</Text>
 			{/* <Text>{order.status}</Text> */}
 			<View>
-				<Text style={styles.sectionHeader}>Order items</Text>
-				{order.products.map(product => (
+				<Text style={styles.sectionHeader}>Products</Text>
+				{order?.products.map(product => (
 					<OrderProduct key={product.productId} orderProduct={product} />
 				))}
 			</View>

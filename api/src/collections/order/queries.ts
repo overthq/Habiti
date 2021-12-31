@@ -1,23 +1,13 @@
 import { Resolver } from '../../types/resolvers';
 
-interface UserOrdersArgs {
-	userId: string;
+interface OrderArgs {
+	id: string;
 }
 
-const userOrders: Resolver<UserOrdersArgs> = async (_, { userId }, ctx) => {
-	const orders = await ctx.prisma.order.findMany({ where: { userId } });
+const order: Resolver<OrderArgs> = async (_, { id }, ctx) => {
+	const fetchedOrder = await ctx.prisma.order.findUnique({ where: { id } });
 
-	return orders;
-};
-
-interface StoreOrdersArgs {
-	storeId: string;
-}
-
-const storeOrders: Resolver<StoreOrdersArgs> = async (_, { storeId }, ctx) => {
-	const orders = await ctx.prisma.order.findMany({ where: { storeId } });
-
-	return orders;
+	return fetchedOrder;
 };
 
 const user: Resolver = async (parent, _, ctx) => {
@@ -46,8 +36,7 @@ const products: Resolver = async (parent, _, ctx) => {
 
 export default {
 	Query: {
-		userOrders,
-		storeOrders
+		order
 	},
 	Order: {
 		user,

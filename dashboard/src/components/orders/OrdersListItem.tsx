@@ -1,13 +1,16 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { OrdersQuery } from '../../types/api';
 import { Icon } from '../icons';
+import { OrdersStackParamsList } from '../../types/navigation';
 
 interface OrdersListItemProps {
 	order: OrdersQuery['store']['orders'][-1];
 }
 
 const OrdersListItem: React.FC<OrdersListItemProps> = ({ order }) => {
+	const { navigate } = useNavigation<NavigationProp<OrdersStackParamsList>>();
 	const amount = order.products
 		.reduce(
 			(acc, { unitPrice, quantity }) => acc + (unitPrice || 0) * quantity,
@@ -16,7 +19,10 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order }) => {
 		.toFixed(2);
 
 	return (
-		<View style={styles.container}>
+		<Pressable
+			onPress={() => navigate('Order', { orderId: order.id })}
+			style={styles.container}
+		>
 			<View>
 				<Text style={styles.name}>{order.user.name}</Text>
 				{/*<Text>{order.status}</Text> */}
@@ -24,7 +30,7 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order }) => {
 			</View>
 			<Text>{amount} NGN</Text>
 			<Icon name='chevronRight' />
-		</View>
+		</Pressable>
 	);
 };
 
