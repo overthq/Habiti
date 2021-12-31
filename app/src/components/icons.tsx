@@ -42,7 +42,8 @@ const icons = {
 	search: <Path d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' />,
 	user: (
 		<Path d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' />
-	)
+	),
+	x: <Path d='M18 6 6 18M6 6l12 12' />
 };
 
 interface IconProps {

@@ -12,6 +12,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import ImageCarouselDots from '../ImageCarouselDots';
 import { ProductQuery } from '../../types/api';
+import CloseButton from './CloseButton';
 
 interface ImageCarouselProps {
 	images: ProductQuery['product']['images'];
@@ -49,6 +50,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 				showsHorizontalScrollIndicator={false}
 			/>
 			<ImageCarouselDots scrollX={scrollX} length={images.length} />
+			<CloseButton />
 		</View>
 	);
 };
