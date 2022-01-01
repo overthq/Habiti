@@ -25,7 +25,7 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 			</View>
 			<View>
 				<Text style={styles.name}>{product.name}</Text>
-				<Text style={styles.text}>
+				<Text style={styles.price}>
 					{quantity} - {total} NGN
 				</Text>
 			</View>
@@ -35,8 +35,12 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
+		backgroundColor: '#FFFFFF',
+		borderBottomWidth: 1,
+		borderBottomColor: '#EDEDED',
 		flexDirection: 'row',
-		marginBottom: 8
+		alignItems: 'center',
+		paddingVertical: 4
 	},
 	placeholder: {
 		height: 50,
@@ -51,11 +55,12 @@ const styles = StyleSheet.create({
 		height: '100%'
 	},
 	name: {
-		fontSize: 18,
+		fontSize: 16,
 		fontWeight: '500'
 	},
-	text: {
-		fontSize: 16
+	price: {
+		fontSize: 14,
+		color: '#505050'
 	}
 });
 

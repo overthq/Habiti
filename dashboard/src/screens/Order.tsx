@@ -27,7 +27,7 @@ const Order: React.FC = () => {
 
 	return (
 		<View style={styles.container}>
-			<Text>{order?.user.name}</Text>
+			<Text style={styles.name}>{order?.user.name}</Text>
 			{/* <Text>{order.status}</Text> */}
 			<View>
 				<Text style={styles.sectionHeader}>Products</Text>
@@ -46,7 +46,12 @@ const Order: React.FC = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		paddingHorizontal: 16
+		paddingHorizontal: 16,
+		backgroundColor: '#FFFFFF'
+	},
+	name: {
+		fontSize: 16,
+		marginVertical: 8
 	},
 	sectionHeader: {
 		fontSize: 16,
