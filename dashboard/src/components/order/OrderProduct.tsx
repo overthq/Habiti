@@ -1,24 +1,20 @@
 import React from 'react';
 import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { OrderQuery } from '../../types/api';
-import { ProductsStackParamList } from '../../types/navigation';
 
 interface OrderProductProps {
 	orderProduct: OrderQuery['order']['products'][-1];
+	onPress(): void;
 }
 
 const OrderProduct: React.FC<OrderProductProps> = ({
-	orderProduct: { product, quantity, unitPrice }
+	orderProduct: { product, quantity, unitPrice },
+	onPress
 }) => {
-	const { navigate } = useNavigation<NavigationProp<ProductsStackParamList>>();
 	const total = quantity * unitPrice;
 
 	return (
-		<Pressable
-			style={styles.container}
-			onPress={() => navigate('Product', { productId: product.id })}
-		>
+		<Pressable style={styles.container} onPress={onPress}>
 			<View style={styles.placeholder}>
 				{product.images[0] && (
 					<Image

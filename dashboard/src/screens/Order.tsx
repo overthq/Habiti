@@ -1,16 +1,29 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useRoute, RouteProp } from '@react-navigation/native';
+import {
+	useRoute,
+	useNavigation,
+	RouteProp,
+	NavigationProp
+} from '@react-navigation/native';
 import { useOrderQuery } from '../types/api';
-import { OrdersStackParamsList } from '../types/navigation';
+import {
+	ProductsStackParamList,
+	OrdersStackParamsList
+} from '../types/navigation';
 import OrderProduct from '../components/order/OrderProduct';
 
 const Order: React.FC = () => {
 	const {
 		params: { orderId }
 	} = useRoute<RouteProp<OrdersStackParamsList, 'Order'>>();
+	const { navigate } = useNavigation<NavigationProp<ProductsStackParamList>>();
 	const [{ data }] = useOrderQuery({ variables: { id: orderId } });
 	const order = data?.order;
+
+	const handleOrderProductPress = React.useCallback((productId: string) => {
+		navigate('Product', { productId });
+	}, []);
 
 	return (
 		<View style={styles.container}>
@@ -19,7 +32,11 @@ const Order: React.FC = () => {
 			<View>
 				<Text style={styles.sectionHeader}>Products</Text>
 				{order?.products.map(product => (
-					<OrderProduct key={product.productId} orderProduct={product} />
+					<OrderProduct
+						key={product.productId}
+						orderProduct={product}
+						onPress={() => handleOrderProductPress(product.productId)}
+					/>
 				))}
 			</View>
 		</View>
