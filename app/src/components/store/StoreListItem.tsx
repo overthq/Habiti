@@ -1,25 +1,19 @@
 import React from 'react';
 import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { AppStackParamList } from '../../types/navigation';
 import { StoreProductsQuery } from '../../types/api';
 
 interface StoreListItemProps {
 	item: StoreProductsQuery['store']['products'][-1];
+	onPress(): void;
 }
 
-const StoreListItem: React.FC<StoreListItemProps> = ({ item }) => {
-	const { navigate } = useNavigation<StackNavigationProp<AppStackParamList>>();
-
+const StoreListItem: React.FC<StoreListItemProps> = ({ item, onPress }) => {
 	return (
 		<View style={styles.container}>
 			<TouchableOpacity
 				key={item.id}
 				style={styles.pressable}
-				onPress={() =>
-					navigate('Product', { productId: item.id, storeId: item.storeId })
-				}
+				onPress={onPress}
 				activeOpacity={0.8}
 			>
 				<View style={styles.image}>
