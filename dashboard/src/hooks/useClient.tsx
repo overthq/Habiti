@@ -27,7 +27,8 @@ const useClient = () => {
 					dedupExchange,
 					cacheExchange({
 						keys: {
-							OrderProduct: data => `${data.orderId}-${data.productId}`
+							OrderProduct: data => `${data.orderId}-${data.productId}`,
+							StoreManager: data => `${data.storeId}-${data.managerId}`
 						}
 					}),
 					fetchExchange,
