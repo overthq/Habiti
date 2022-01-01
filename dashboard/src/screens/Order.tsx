@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import {
 	useRoute,
 	useNavigation,
@@ -26,7 +26,7 @@ const Order: React.FC = () => {
 	}, []);
 
 	return (
-		<View style={styles.container}>
+		<ScrollView style={styles.container}>
 			<Text style={styles.name}>{order?.user.name}</Text>
 			{/* <Text>{order.status}</Text> */}
 			<View>
@@ -39,7 +39,7 @@ const Order: React.FC = () => {
 					/>
 				))}
 			</View>
-		</View>
+		</ScrollView>
 	);
 };
 

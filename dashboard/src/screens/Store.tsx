@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-// import { SafeAreaView } from 'react-native-safe-area-context';
 import { Icon } from '../components/icons';
 import { useAppSelector } from '../redux/store';
 import { useStoreQuery } from '../types/api';
@@ -24,7 +23,6 @@ const Store: React.FC = () => {
 					</View>
 					<View style={styles.storeMeta}>
 						<Text style={styles.storeName}>{store?.name}</Text>
-						{/* <Text>@{store?.short_name}</Text> */}
 					</View>
 				</View>
 				<Icon name='chevronRight' size={16} color='#D3D3D3' />
