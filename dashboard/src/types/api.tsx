@@ -450,6 +450,7 @@ export type ProductsQuery = {
 	__typename?: 'Query';
 	store: {
 		__typename?: 'Store';
+		id: string;
 		products: Array<{
 			__typename?: 'Product';
 			id: string;
@@ -628,6 +629,7 @@ export function useOrderQuery(
 export const ProductsDocument = gql`
 	query Products($storeId: ID!) {
 		store(id: $storeId) {
+			id
 			products {
 				id
 				name

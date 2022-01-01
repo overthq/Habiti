@@ -39,7 +39,8 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		flexDirection: 'row'
+		flexDirection: 'row',
+		marginBottom: 8
 	},
 	placeholder: {
 		height: 50,

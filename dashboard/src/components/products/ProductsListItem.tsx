@@ -10,7 +10,7 @@ interface ProductsListItemProps {
 	product: ProductsQuery['store']['products'][-1];
 }
 
-// TODO: Convert this to a grid-item, displaying the item image.
+// TODO: Convert this to a grid-item, displaying the product image.
 const ProductsListItem: React.FC<ProductsListItemProps> = ({ product }) => {
 	const { navigate } =
 		useNavigation<StackNavigationProp<ProductsStackParamList>>();
