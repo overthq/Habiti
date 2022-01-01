@@ -380,6 +380,7 @@ export type ManagedStoresQuery = {
 	__typename?: 'Query';
 	user: {
 		__typename?: 'User';
+		id: string;
 		managed: Array<{
 			__typename?: 'StoreManager';
 			storeId: string;
@@ -545,6 +546,7 @@ export type StoreQuery = {
 export const ManagedStoresDocument = gql`
 	query ManagedStores($userId: ID!) {
 		user(id: $userId) {
+			id
 			managed {
 				storeId
 				managerId
