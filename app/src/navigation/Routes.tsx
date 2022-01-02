@@ -36,8 +36,8 @@ const Routes: React.FC = () => {
 							<AppStack.Group screenOptions={{ presentation: 'modal' }}>
 								<AppStack.Screen name='Product' component={Product} />
 								<AppStack.Screen name='Cart' component={Cart} />
-								<AppStack.Screen name='Order' component={Order} />
 								<AppStack.Group screenOptions={{ headerShown: true }}>
+									<AppStack.Screen name='Order' component={Order} />
 									<AppStack.Screen
 										name='Edit Profile'
 										component={EditProfile}

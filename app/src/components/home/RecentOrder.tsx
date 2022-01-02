@@ -1,19 +1,27 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { UserOrdersQuery } from '../../types/api';
+import { AppStackParamList } from '../../types/navigation';
 
 interface RecentOrderProps {
 	order: UserOrdersQuery['currentUser']['orders'][-1];
 }
 
 const RecentOrder: React.FC<RecentOrderProps> = ({ order }) => {
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const count = order.products.length;
+
+	const handleOrderPress = React.useCallback((orderId: string) => {
+		navigate('Order', { orderId });
+	}, []);
 
 	return (
 		<TouchableOpacity
 			activeOpacity={0.8}
 			key={order.id}
 			style={styles.container}
+			onPress={() => handleOrderPress(order.id)}
 		>
 			<View style={styles.avatar} />
 			<View style={styles.info}>
