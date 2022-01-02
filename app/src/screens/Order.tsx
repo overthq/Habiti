@@ -1,38 +1,37 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { useOrderQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 
-const Order = () => {
+const Order: React.FC = () => {
 	const {
 		params: { orderId }
 	} = useRoute<RouteProp<AppStackParamList, 'Order'>>();
-
 	const [{ data, fetching }] = useOrderQuery({ variables: { orderId } });
+	const order = data?.order;
 
-	if (fetching) {
+	if (fetching || !order) {
 		return (
 			<View>
-				<Text>Loading</Text>
+				<ActivityIndicator />
 			</View>
 		);
 	}
 
-	const order = data?.order;
-
 	return (
-		<SafeAreaView style={styles.container}>
+		<View style={styles.container}>
 			<Text>Order Details:</Text>
-			<Text>{order?.id}</Text>
-		</SafeAreaView>
+			<Text>{order.id}</Text>
+			<Text>{order.createdAt}</Text>
+		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1,
+		paddingHorizontal: 16
 	}
 });
 

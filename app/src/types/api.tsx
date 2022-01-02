@@ -269,13 +269,11 @@ export type Query = {
 	order: Order;
 	product: Product;
 	store: Store;
-	storeOrders: Array<Order>;
 	storeProducts: Array<Product>;
 	stores: Array<Store>;
 	user: User;
 	userCart?: Maybe<Cart>;
 	userCarts: Array<Cart>;
-	userOrders: Array<Order>;
 	users: Array<User>;
 };
 
@@ -295,10 +293,6 @@ export type QueryStoreArgs = {
 	id: Scalars['ID'];
 };
 
-export type QueryStoreOrdersArgs = {
-	storeId: Scalars['ID'];
-};
-
 export type QueryStoreProductsArgs = {
 	id: Scalars['ID'];
 };
@@ -312,10 +306,6 @@ export type QueryUserCartArgs = {
 };
 
 export type QueryUserCartsArgs = {
-	userId: Scalars['ID'];
-};
-
-export type QueryUserOrdersArgs = {
 	userId: Scalars['ID'];
 };
 
@@ -568,6 +558,7 @@ export type UserOrdersQuery = {
 		orders: Array<{
 			__typename?: 'Order';
 			id: string;
+			createdAt: string;
 			store: { __typename?: 'Store'; id: string; name: string };
 			products: Array<{
 				__typename?: 'OrderProduct';
@@ -592,6 +583,7 @@ export type OrderQuery = {
 	order: {
 		__typename?: 'Order';
 		id: string;
+		createdAt: string;
 		store: { __typename?: 'Store'; id: string; name: string };
 		products: Array<{
 			__typename?: 'OrderProduct';
@@ -1049,6 +1041,7 @@ export const UserOrdersDocument = gql`
 					}
 					quantity
 				}
+				createdAt
 			}
 		}
 	}
@@ -1078,6 +1071,7 @@ export const OrderDocument = gql`
 				}
 				quantity
 			}
+			createdAt
 		}
 	}
 `;

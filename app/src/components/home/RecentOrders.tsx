@@ -13,7 +13,7 @@ import RecentOrder from './RecentOrder';
 import ListEmpty from '../global/ListEmpty';
 import { HomeTabParamList } from '../../types/navigation';
 
-const RecentOrders = () => {
+const RecentOrders: React.FC = () => {
 	const [{ data, fetching }] = useUserOrdersQuery();
 	const { navigate } = useNavigation<NavigationProp<HomeTabParamList>>();
 	const orders = data?.currentUser.orders;

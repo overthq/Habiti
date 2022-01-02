@@ -19,6 +19,7 @@ const RecentOrder: React.FC<RecentOrderProps> = ({ order }) => {
 			<View style={styles.info}>
 				<Text>{order.store.name}</Text>
 				<Text style={styles.text}>{count} products</Text>
+				<Text style={styles.text}>{order.createdAt}</Text>
 				{/* <Text style={styles.status}>{order.status}</Text> */}
 			</View>
 		</TouchableOpacity>
