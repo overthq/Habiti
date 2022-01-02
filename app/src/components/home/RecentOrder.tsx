@@ -13,7 +13,7 @@ const RecentOrder: React.FC<RecentOrderProps> = ({ order }) => {
 	const count = order.products.length;
 
 	const handleOrderPress = React.useCallback((orderId: string) => {
-		navigate('Order', { orderId });
+		navigate('Order', { orderId, storeId: order.store.id });
 	}, []);
 
 	return (

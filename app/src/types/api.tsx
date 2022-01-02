@@ -562,13 +562,9 @@ export type UserOrdersQuery = {
 			store: { __typename?: 'Store'; id: string; name: string };
 			products: Array<{
 				__typename?: 'OrderProduct';
+				unitPrice: number;
 				quantity: number;
-				product: {
-					__typename?: 'Product';
-					id: string;
-					name: string;
-					unitPrice: number;
-				};
+				product: { __typename?: 'Product'; id: string; name: string };
 			}>;
 		}>;
 	};
@@ -587,12 +583,15 @@ export type OrderQuery = {
 		store: { __typename?: 'Store'; id: string; name: string };
 		products: Array<{
 			__typename?: 'OrderProduct';
+			orderId: string;
+			productId: string;
+			unitPrice: number;
 			quantity: number;
 			product: {
 				__typename?: 'Product';
 				id: string;
 				name: string;
-				unitPrice: number;
+				images: Array<{ __typename?: 'Image'; id: string; path: string }>;
 			};
 		}>;
 	};
@@ -610,13 +609,9 @@ export type CreateOrderMutation = {
 		store: { __typename?: 'Store'; id: string; name: string };
 		products: Array<{
 			__typename?: 'OrderProduct';
+			unitPrice: number;
 			quantity: number;
-			product: {
-				__typename?: 'Product';
-				id: string;
-				name: string;
-				unitPrice: number;
-			};
+			product: { __typename?: 'Product'; id: string; name: string };
 		}>;
 	};
 };
@@ -1037,8 +1032,8 @@ export const UserOrdersDocument = gql`
 					product {
 						id
 						name
-						unitPrice
 					}
+					unitPrice
 					quantity
 				}
 				createdAt
@@ -1064,11 +1059,17 @@ export const OrderDocument = gql`
 				name
 			}
 			products {
+				orderId
+				productId
 				product {
 					id
 					name
-					unitPrice
+					images {
+						id
+						path
+					}
 				}
+				unitPrice
 				quantity
 			}
 			createdAt
@@ -1093,8 +1094,8 @@ export const CreateOrderDocument = gql`
 				product {
 					id
 					name
-					unitPrice
 				}
+				unitPrice
 				quantity
 			}
 		}

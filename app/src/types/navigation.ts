@@ -6,7 +6,7 @@ export type AppStackParamList = {
 	Verify: { phone: string };
 	Product: { productId: string; storeId: string };
 	Cart: { cartId: string };
-	Order: { orderId: string };
+	Order: { orderId: string; storeId: string };
 	'Edit Profile': undefined;
 	'Add Card': undefined;
 	'Payment Methods': undefined;

@@ -11,8 +11,8 @@ query UserOrders {
 				product {
 					id
 					name
-					unitPrice
 				}
+				unitPrice
 				quantity
 			}
 			createdAt
@@ -28,11 +28,17 @@ query Order($orderId: ID!) {
 			name
 		}
 		products {
+			orderId
+			productId
 			product {
 				id
 				name
-				unitPrice
+				images {
+					id
+					path
+				}
 			}
+			unitPrice
 			quantity
 		}
 		createdAt
@@ -50,8 +56,8 @@ mutation CreateOrder($cartId: ID!) {
 			product {
 				id
 				name
-				unitPrice
 			}
+			unitPrice
 			quantity
 		}
 	}
