@@ -56,7 +56,7 @@ const SelectCard: React.FC<SelectCardProps> = ({
 			<BottomSheetModal
 				index={0}
 				ref={bottomSheetModalRef}
-				snapPoints={['25%']}
+				snapPoints={['50%']}
 				style={styles.modal}
 				backgroundStyle={styles.modalBackground}
 			>
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
 		elevation: 8
 	},
 	modalBackground: {
-		backgroundColor: '#DBDBDB'
+		backgroundColor: '#FFFFFF'
 	}
 });
 
