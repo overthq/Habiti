@@ -32,10 +32,11 @@ const Order: React.FC = () => {
 
 	return (
 		<View style={styles.container}>
-			<Text>Order Details:</Text>
-			<Text>{order.id}</Text>
-			<Text>{order.createdAt}</Text>
-			<View>
+			<View style={{ paddingTop: 16, paddingHorizontal: 16 }}>
+				<Text>Order Details:</Text>
+				<Text>{order.createdAt}</Text>
+			</View>
+			<View style={{ marginVertical: 16 }}>
 				{order.products.map(orderProduct => (
 					<OrderProduct
 						key={orderProduct.productId}

@@ -14,19 +14,21 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 }) => {
 	return (
 		<Pressable style={styles.container} onPress={onPress}>
-			<View style={styles.placeholder}>
-				{product.images[0] && (
-					<Image
-						source={{ uri: product.images[0].path }}
-						style={{ height: '100%', width: '100%' }}
-					/>
-				)}
-			</View>
-			<View>
-				<Text>{product.name}</Text>
-				<Text>
-					{quantity} x {unitPrice} NGN
-				</Text>
+			<View style={styles.left}>
+				<View style={styles.placeholder}>
+					{product.images[0] && (
+						<Image
+							source={{ uri: product.images[0].path }}
+							style={{ height: '100%', width: '100%' }}
+						/>
+					)}
+				</View>
+				<View>
+					<Text style={styles.name}>{product.name}</Text>
+					<Text>
+						{quantity} x {unitPrice} NGN
+					</Text>
+				</View>
 			</View>
 			<Icon name='chevronRight' />
 		</Pressable>
@@ -36,12 +38,17 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 const styles = StyleSheet.create({
 	container: {
 		flexDirection: 'row',
+		justifyContent: 'space-between',
 		alignItems: 'center',
 		backgroundColor: '#FFFFFF',
 		paddingVertical: 4,
 		paddingHorizontal: 16,
 		borderBottomWidth: 0.5,
 		borderBottomColor: '#EDEDED'
+	},
+	left: {
+		flexDirection: 'row',
+		alignItems: 'center'
 	},
 	placeholder: {
 		borderRadius: 4,
@@ -50,6 +57,10 @@ const styles = StyleSheet.create({
 		width: 40,
 		marginRight: 8,
 		overflow: 'hidden'
+	},
+	name: {
+		fontSize: 16,
+		fontWeight: '500'
 	}
 });
 
