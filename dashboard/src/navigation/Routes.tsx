@@ -16,6 +16,7 @@ import { AppStackParamList } from '../types/navigation';
 import useClient from '../hooks/useClient';
 import MainTabNavigator from './MainTab';
 import SettingsStackNavigator from './SettingsStack';
+import EditStore from '../screens/EditStore';
 
 const AppStack = createStackNavigator<AppStackParamList>();
 
@@ -58,6 +59,7 @@ const Routes: React.FC = () => {
 											options={{ headerShown: false }}
 											component={SettingsStackNavigator}
 										/>
+										<AppStack.Screen name='Edit Store' component={EditStore} />
 									</AppStack.Group>
 								</>
 							)}

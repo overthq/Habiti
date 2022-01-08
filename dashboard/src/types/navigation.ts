@@ -8,6 +8,7 @@ export type AppStackParamList = {
 	Root: undefined;
 	'Add Product': undefined;
 	'Edit Product': { productId: string };
+	'Edit Store': { storeId: string };
 	Settings: undefined;
 };
 

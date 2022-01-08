@@ -1,70 +1,35 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Icon } from '../components/icons';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { useAppSelector } from '../redux/store';
 import { useStoreQuery } from '../types/api';
+import StoreProfile from '../components/store/StoreProfile';
 
 const Store: React.FC = () => {
 	const activeStore = useAppSelector(
 		({ preferences }) => preferences.activeStore
 	);
-	const [{ data }] = useStoreQuery({
+
+	const [{ data, fetching }] = useStoreQuery({
 		variables: { storeId: activeStore as string }
 	});
 
 	const store = data?.store;
 
+	if (fetching || !store) {
+		return <ActivityIndicator />;
+	}
+
 	return (
 		<View style={styles.container}>
-			<TouchableOpacity style={styles.storeSettingRow}>
-				<View style={styles.rowMainContainer}>
-					<View style={styles.storeAvatar}>
-						<Text style={styles.storeAvatarText}>{store?.name[0]}</Text>
-					</View>
-					<View style={styles.storeMeta}>
-						<Text style={styles.storeName}>{store?.name}</Text>
-					</View>
-				</View>
-				<Icon name='chevronRight' size={16} color='#D3D3D3' />
-			</TouchableOpacity>
+			<StoreProfile store={store} />
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
-	},
-	storeSettingRow: {
-		width: '100%',
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		padding: 8
-	},
-	rowMainContainer: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center'
-	},
-	storeAvatar: {
-		height: 40,
-		width: 40,
-		borderRadius: 30,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: '#505050'
-	},
-	storeAvatarText: {
-		fontSize: 22,
-		fontWeight: '500',
-		color: '#D3D3D3'
-	},
-	storeMeta: {
-		marginLeft: 8
-	},
-	storeName: {
-		fontSize: 17,
-		fontWeight: '500'
+		flex: 1,
+		paddingHorizontal: 16
 	}
 });
 
