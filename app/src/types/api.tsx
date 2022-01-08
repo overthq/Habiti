@@ -559,7 +559,15 @@ export type UserOrdersQuery = {
 			__typename?: 'Order';
 			id: string;
 			createdAt: string;
-			store: { __typename?: 'Store'; id: string; name: string };
+			store: {
+				__typename?: 'Store';
+				id: string;
+				name: string;
+				image?:
+					| { __typename?: 'Image'; id: string; path: string }
+					| null
+					| undefined;
+			};
 			products: Array<{
 				__typename?: 'OrderProduct';
 				unitPrice: number;
@@ -1027,6 +1035,10 @@ export const UserOrdersDocument = gql`
 				store {
 					id
 					name
+					image {
+						id
+						path
+					}
 				}
 				products {
 					product {

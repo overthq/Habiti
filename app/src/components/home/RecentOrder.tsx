@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { UserOrdersQuery } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
@@ -23,11 +23,20 @@ const RecentOrder: React.FC<RecentOrderProps> = ({ order }) => {
 			style={styles.container}
 			onPress={() => handleOrderPress(order.id)}
 		>
-			<View style={styles.avatar} />
+			<View style={styles.avatar}>
+				{order.store.image && (
+					<Image
+						style={styles.image}
+						source={{
+							uri: order.store.image.path
+						}}
+					/>
+				)}
+			</View>
 			<View style={styles.info}>
-				<Text>{order.store.name}</Text>
-				<Text style={styles.text}>{count} products</Text>
-				<Text style={styles.text}>{order.createdAt}</Text>
+				<Text style={styles.name}>{order.store.name}</Text>
+				<Text style={styles.count}>{count} products</Text>
+				<Text style={styles.date}>{order.createdAt}</Text>
 				{/* <Text style={styles.status}>{order.status}</Text> */}
 			</View>
 		</TouchableOpacity>
@@ -45,10 +54,23 @@ const styles = StyleSheet.create({
 		height: 50,
 		width: 50,
 		borderRadius: 25,
-		backgroundColor: '#D3D3D3'
+		backgroundColor: '#D3D3D3',
+		overflow: 'hidden'
 	},
-	text: {
-		fontSize: 16
+	image: {
+		width: '100%',
+		height: '100%'
+	},
+	name: {
+		fontSize: 16,
+		fontWeight: '500'
+	},
+	count: {
+		fontSize: 14
+	},
+	date: {
+		fontSize: 14,
+		color: '#505050'
 	},
 	info: {
 		marginLeft: 10

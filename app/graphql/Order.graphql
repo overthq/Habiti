@@ -6,6 +6,10 @@ query UserOrders {
 			store {
 				id
 				name
+				image {
+					id
+					path
+				}
 			}
 			products {
 				product {
