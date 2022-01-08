@@ -17,12 +17,30 @@ const EditStore: React.FC = () => {
 			>
 				{({ values, handleChange, handleBlur, handleSubmit }) => (
 					<>
-						<TextInput
-							value={values.name}
-							onChangeText={handleChange('name')}
-							onBlur={handleBlur('name')}
+						<View style={styles.field}>
+							<TextInput
+								style={styles.input}
+								value={values.name}
+								onChangeText={handleChange('name')}
+								onBlur={handleBlur('name')}
+							/>
+						</View>
+						<View style={styles.field}>
+							<TextInput
+								style={styles.input}
+								placeholder='Description'
+								value={values.description}
+								onChangeText={handleChange('description')}
+								onBlur={handleBlur('description')}
+								multiline
+								textAlignVertical='top'
+							/>
+						</View>
+						<Button
+							style={styles.button}
+							text='Edit store'
+							onPress={handleSubmit}
 						/>
-						<Button text='Edit store' onPress={handleSubmit} />
 					</>
 				)}
 			</Formik>
@@ -32,7 +50,30 @@ const EditStore: React.FC = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1,
+		paddingHorizontal: 16,
+		backgroundColor: '#FFFFFF'
+	},
+	field: {
+		marginTop: 8
+	},
+	label: {
+		fontSize: 16,
+		fontWeight: '500',
+		color: '#505050',
+		marginBottom: 4
+	},
+	input: {
+		width: '100%',
+		height: 40,
+		borderRadius: 4,
+		borderWidth: 1,
+		borderColor: '#D3D3D3',
+		paddingLeft: 8,
+		fontSize: 16
+	},
+	button: {
+		marginVertical: 16
 	}
 });
 
