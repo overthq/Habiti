@@ -8,6 +8,10 @@ mutation EditStore($storeId: ID!, $input: EditStoreInput!) {
 	editStore(id: $storeId, input: $input) {
 		id
 		name
+		description
+		website
+		twitter
+		instagram
 		image {
 			id
 			path

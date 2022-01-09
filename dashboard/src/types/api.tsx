@@ -537,6 +537,10 @@ export type EditStoreMutation = {
 		__typename?: 'Store';
 		id: string;
 		name: string;
+		description?: string | null | undefined;
+		website?: string | null | undefined;
+		twitter?: string | null | undefined;
+		instagram?: string | null | undefined;
 		image?:
 			| { __typename?: 'Image'; id: string; path: string }
 			| null
@@ -756,6 +760,10 @@ export const EditStoreDocument = gql`
 		editStore(id: $storeId, input: $input) {
 			id
 			name
+			description
+			website
+			twitter
+			instagram
 			image {
 				id
 				path

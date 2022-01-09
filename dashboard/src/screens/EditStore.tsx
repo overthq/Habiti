@@ -73,6 +73,9 @@ const EditStore: React.FC = () => {
 								value={values.website}
 								onChangeText={handleChange('website')}
 								onBlur={handleBlur('website')}
+								autoCorrect={false}
+								autoCapitalize='none'
+								keyboardType='url'
 							/>
 						</View>
 						<View style={styles.field}>
@@ -95,6 +98,8 @@ const EditStore: React.FC = () => {
 								value={values.twitter}
 								onChangeText={handleChange('twitter')}
 								onBlur={handleBlur('twitter')}
+								autoCorrect={false}
+								autoCapitalize='none'
 							/>
 						</View>
 						<View style={styles.field}>
@@ -105,6 +110,8 @@ const EditStore: React.FC = () => {
 								value={values.instagram}
 								onChangeText={handleChange('instagram')}
 								onBlur={handleBlur('instagram')}
+								autoCorrect={false}
+								autoCapitalize='none'
 							/>
 						</View>
 						<Button
