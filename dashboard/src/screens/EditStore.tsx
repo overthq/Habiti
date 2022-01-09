@@ -1,21 +1,56 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import {
+	View,
+	Text,
+	TextInput,
+	ActivityIndicator,
+	StyleSheet
+} from 'react-native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { Formik } from 'formik';
 import Button from '../components/global/Button';
+import { useEditStoreMutation, useStoreQuery } from '../types/api';
+import { AppStackParamList } from '../types/navigation';
 
 const EditStore: React.FC = () => {
+	const { goBack } = useNavigation();
+	const { params } = useRoute<RouteProp<AppStackParamList, 'Edit Store'>>();
+	const [{ data, fetching }] = useStoreQuery({
+		variables: { storeId: params.storeId }
+	});
+	const [, editStore] = useEditStoreMutation();
+
+	const store = data?.store;
+
+	if (fetching || !store) {
+		return (
+			<View style={styles.loading}>
+				<ActivityIndicator />
+			</View>
+		);
+	}
+
 	return (
 		<View style={styles.container}>
 			<Formik
 				initialValues={{
-					name: '',
-					description: '',
-					website: '',
-					twitter: '',
-					instagram: ''
+					name: store.name,
+					description: store.description ?? '',
+					website: store.website ?? '',
+					twitter: store.twitter ?? '',
+					instagram: store.instagram ?? ''
 				}}
-				onSubmit={values => {
-					console.log(values);
+				onSubmit={async values => {
+					try {
+						const data = await editStore({
+							storeId: params.storeId,
+							input: values
+						});
+						console.log({ data });
+						goBack();
+					} catch (error) {
+						console.log(error);
+					}
 				}}
 			>
 				{({ values, handleChange, handleBlur, handleSubmit }) => (
@@ -89,6 +124,11 @@ const styles = StyleSheet.create({
 		flex: 1,
 		paddingHorizontal: 16,
 		backgroundColor: '#FFFFFF'
+	},
+	loading: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center'
 	},
 	field: {
 		marginTop: 8

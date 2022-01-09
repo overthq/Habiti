@@ -4,10 +4,25 @@ mutation CreateStore($input: CreateStoreInput!) {
 	}
 }
 
+mutation EditStore($storeId: ID!, $input: EditStoreInput!) {
+	editStore(id: $storeId, input: $input) {
+		id
+		name
+		image {
+			id
+			path
+		}
+	}
+}
+
 query Store($storeId: ID!) {
 	store(id: $storeId) {
 		id
 		name
+		description
+		website
+		twitter
+		instagram
 		image {
 			id
 			path

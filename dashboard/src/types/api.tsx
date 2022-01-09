@@ -526,6 +526,24 @@ export type CreateStoreMutation = {
 	createStore: { __typename?: 'Store'; id: string };
 };
 
+export type EditStoreMutationVariables = Exact<{
+	storeId: Scalars['ID'];
+	input: EditStoreInput;
+}>;
+
+export type EditStoreMutation = {
+	__typename?: 'Mutation';
+	editStore: {
+		__typename?: 'Store';
+		id: string;
+		name: string;
+		image?:
+			| { __typename?: 'Image'; id: string; path: string }
+			| null
+			| undefined;
+	};
+};
+
 export type StoreQueryVariables = Exact<{
 	storeId: Scalars['ID'];
 }>;
@@ -536,6 +554,10 @@ export type StoreQuery = {
 		__typename?: 'Store';
 		id: string;
 		name: string;
+		description?: string | null | undefined;
+		website?: string | null | undefined;
+		twitter?: string | null | undefined;
+		instagram?: string | null | undefined;
 		image?:
 			| { __typename?: 'Image'; id: string; path: string }
 			| null
@@ -729,11 +751,33 @@ export function useCreateStoreMutation() {
 		CreateStoreDocument
 	);
 }
+export const EditStoreDocument = gql`
+	mutation EditStore($storeId: ID!, $input: EditStoreInput!) {
+		editStore(id: $storeId, input: $input) {
+			id
+			name
+			image {
+				id
+				path
+			}
+		}
+	}
+`;
+
+export function useEditStoreMutation() {
+	return Urql.useMutation<EditStoreMutation, EditStoreMutationVariables>(
+		EditStoreDocument
+	);
+}
 export const StoreDocument = gql`
 	query Store($storeId: ID!) {
 		store(id: $storeId) {
 			id
 			name
+			description
+			website
+			twitter
+			instagram
 			image {
 				id
 				path
