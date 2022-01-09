@@ -19,7 +19,7 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 					{product.images[0] && (
 						<Image
 							source={{ uri: product.images[0].path }}
-							style={{ height: '100%', width: '100%' }}
+							style={styles.image}
 						/>
 					)}
 				</View>
@@ -57,6 +57,10 @@ const styles = StyleSheet.create({
 		width: 40,
 		marginRight: 8,
 		overflow: 'hidden'
+	},
+	image: {
+		width: '100%',
+		height: '100%'
 	},
 	name: {
 		fontSize: 16,
