@@ -29,32 +29,32 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 				</Pressable>
 			</View>
 			<View style={styles.row}>
-				<View style={styles.imagePlaceholder}>
+				<View style={styles.placeholder}>
 					{store.image && (
 						<Image source={{ uri: store.image.path }} style={styles.image} />
 					)}
 				</View>
-				<View style={{ flex: 1, marginLeft: 32 }}>
-					<View style={{ flexDirection: 'row' }}>
-						<Text style={styles.name}>{store?.name}</Text>
-						{store?.description && (
-							<Text style={styles.description}>{store?.description}</Text>
-						)}
-						<SocialLinks
-							links={[
-								{ type: 'twitter', value: store?.twitter },
-								{ type: 'instagram', value: store?.instagram }
-							]}
-						/>
-					</View>
-					<TouchableOpacity
-						style={{ marginTop: 4 }}
-						onPress={() => openLink(store?.website)}
-					>
-						<Text style={styles.websiteLinkText}>{store?.website}</Text>
-					</TouchableOpacity>
+				<View style={styles.actions}>
+					<SocialLinks
+						links={[
+							{ type: 'twitter', value: store?.twitter },
+							{ type: 'instagram', value: store?.instagram }
+						]}
+					/>
 					<FollowButton store={store} />
 				</View>
+			</View>
+			<View>
+				<Text style={styles.name}>{store.name}</Text>
+				<TouchableOpacity
+					style={styles.website}
+					onPress={() => openLink(store?.website)}
+				>
+					<Text style={styles.websiteLinkText}>{store?.website}</Text>
+				</TouchableOpacity>
+				{store?.description && (
+					<Text style={styles.description}>{store.description}</Text>
+				)}
 			</View>
 		</View>
 	);
@@ -76,30 +76,39 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'space-between'
 	},
-	imagePlaceholder: {
+	placeholder: {
 		backgroundColor: '#D3D3D3',
 		width: 100,
 		height: 100,
 		borderRadius: 50,
-		overflow: 'hidden',
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center'
+		overflow: 'hidden'
 	},
 	image: {
 		width: '100%',
 		height: '100%'
 	},
+	actions: {
+		flex: 1,
+		flexDirection: 'row',
+		alignItems: 'center',
+		marginLeft: 16
+	},
 	name: {
 		fontSize: 24,
-		fontWeight: 'bold'
+		fontWeight: 'bold',
+		marginTop: 8,
+		marginBottom: 4
 	},
 	description: {
-		fontSize: 16
+		fontSize: 16,
+		marginBottom: 4
+	},
+	website: {
+		marginBottom: 4
 	},
 	websiteLinkText: {
 		fontSize: 16,
-		color: '#202020'
+		color: '#455e96'
 	}
 });
 

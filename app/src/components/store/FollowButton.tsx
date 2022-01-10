@@ -53,8 +53,7 @@ const FollowButton: React.FC<FollowButtonProps> = ({ store }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		marginTop: 8,
-		width: '100%',
+		flex: 1,
 		paddingVertical: 4,
 		borderWidth: 1,
 		borderColor: '#D3D3D3',

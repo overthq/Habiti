@@ -11,13 +11,18 @@ interface SocialLinksProps {
 }
 
 const SocialLinks: React.FC<SocialLinksProps> = ({ links }) => (
-	<View style={{ flexDirection: 'row' }}>
+	<View
+		style={{
+			flexDirection: 'row',
+			alignItems: 'center'
+		}}
+	>
 		{links.map(
 			({ type, value }) =>
 				value && (
 					<TouchableOpacity
 						key={type}
-						style={{ marginRight: 20 }}
+						style={{ marginRight: 8 }}
 						activeOpacity={0.8}
 						onPress={() => openLink(getLink(type, value))}
 					>
