@@ -17,6 +17,11 @@ const FollowButton: React.FC<FollowButtonProps> = ({ store }) => {
 	const [, unfollowStore] = useUnfollowStoreMutation();
 	const userId = useAppSelector(({ auth }) => auth.userId);
 
+	// TODO: We should fetch this information using the userId.
+	// Fetching the entire list of followers is not efficient.
+	// Actually, we can simply fetch the list of stores the user follows.
+	// The only thing is that we have to update the cache manually.
+
 	const isFollowing = React.useMemo(() => {
 		const follow = store?.followers?.find(
 			({ follower }) => follower.id === userId
