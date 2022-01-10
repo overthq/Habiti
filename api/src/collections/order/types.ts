@@ -5,11 +5,18 @@ const OrderTypes = gql`
 		id: ID!
 		userId: ID!
 		storeId: ID!
+		status: OrderStatus!
 		user: User!
 		store: Store!
 		products: [OrderProduct!]!
 		createdAt: String!
 		updatedAt: String!
+	}
+
+	enum OrderStatus {
+		Pending
+		Cancelled
+		Delivered
 	}
 
 	extend type Query {

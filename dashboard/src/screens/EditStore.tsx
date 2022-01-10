@@ -42,11 +42,10 @@ const EditStore: React.FC = () => {
 				}}
 				onSubmit={async values => {
 					try {
-						const data = await editStore({
+						await editStore({
 							storeId: params.storeId,
 							input: values
 						});
-						console.log({ data });
 						goBack();
 					} catch (error) {
 						console.log(error);

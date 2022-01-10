@@ -59,6 +59,7 @@ model Order {
   id        String         @id @default(uuid())
   userId    String
   storeId   String
+  status    OrderStatus    @default(Pending)
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
   products  OrderProduct[]
@@ -153,4 +154,10 @@ model Card {
   signature         String @unique
   countryCode       String
   user              User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum OrderStatus {
+  Pending
+  Cancelled
+  Delivered
 }
