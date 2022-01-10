@@ -18,6 +18,14 @@ const Order: React.FC = () => {
 	const [{ data, fetching }] = useOrderQuery({ variables: { orderId } });
 	const order = data?.order;
 
+	const total = React.useMemo(
+		() =>
+			order?.products.reduce((acc, product) => {
+				return acc + product.unitPrice * product.quantity;
+			}, 0),
+		[order]
+	);
+
 	const handleOrderProductPress = React.useCallback((productId: string) => {
 		navigate('Product', { productId, storeId });
 	}, []);
@@ -44,6 +52,9 @@ const Order: React.FC = () => {
 						onPress={() => handleOrderProductPress(orderProduct.productId)}
 					/>
 				))}
+			</View>
+			<View>
+				<Text>Total: {total}.00 NGN</Text>
 			</View>
 		</View>
 	);
