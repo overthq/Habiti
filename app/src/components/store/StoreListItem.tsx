@@ -9,43 +9,39 @@ interface StoreListItemProps {
 
 const StoreListItem: React.FC<StoreListItemProps> = ({ item, onPress }) => {
 	return (
-		<View style={styles.container}>
-			<TouchableOpacity
-				key={item.id}
-				style={styles.pressable}
-				onPress={onPress}
-				activeOpacity={0.8}
-			>
-				<View style={styles.image}>
-					{item.images[0] && (
-						<Image
-							style={{ height: '100%', width: '100%' }}
-							source={{ uri: item.images[0].path }}
-						/>
-					)}
-				</View>
-				<Text style={styles.name}>{item.name}</Text>
-				<Text style={styles.price}>${item.unitPrice}</Text>
-			</TouchableOpacity>
-		</View>
+		<TouchableOpacity
+			key={item.id}
+			style={styles.pressable}
+			onPress={onPress}
+			activeOpacity={0.8}
+		>
+			<View style={styles.placeholder}>
+				{item.images[0] && (
+					<Image style={styles.image} source={{ uri: item.images[0].path }} />
+				)}
+			</View>
+			<Text style={styles.name}>{item.name}</Text>
+			<Text style={styles.price}>{item.unitPrice}.00 NGN</Text>
+		</TouchableOpacity>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1 / 2
-	},
 	pressable: {
-		flex: 1,
+		flex: 1 / 2,
 		margin: 8
 	},
-	image: {
+	placeholder: {
 		borderRadius: 4,
 		backgroundColor: '#D3D3D3',
 		height: 200,
 		width: '100%',
-		marginBottom: 5,
+		marginBottom: 4,
 		overflow: 'hidden'
+	},
+	image: {
+		width: '100%',
+		height: '100%'
 	},
 	name: {
 		fontSize: 16,
