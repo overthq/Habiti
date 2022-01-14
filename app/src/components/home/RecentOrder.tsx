@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { UserOrdersQuery } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
+import { relativeTimestamp } from '../../utils/date';
 
 interface RecentOrderProps {
 	order: UserOrdersQuery['currentUser']['orders'][-1];
@@ -35,8 +36,10 @@ const RecentOrder: React.FC<RecentOrderProps> = ({ order }) => {
 			</View>
 			<View style={styles.info}>
 				<Text style={styles.name}>{order.store.name}</Text>
-				<Text style={styles.count}>{count} products</Text>
-				<Text style={styles.date}>{order.createdAt}</Text>
+				<Text style={styles.count}>
+					{count} product{count > 1 ? 's' : ''}
+				</Text>
+				<Text style={styles.date}>{relativeTimestamp(order.createdAt)}</Text>
 				{/* <Text style={styles.status}>{order.status}</Text> */}
 			</View>
 		</TouchableOpacity>
