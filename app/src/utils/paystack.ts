@@ -22,99 +22,116 @@ enum PaystackChargeStage {
 	AVS
 }
 
-export class Paystack {
-	serverTransaction: any;
+export const makeChargeRequest = async (
+	data: any,
+	stage: PaystackChargeStage,
+	meta?: any
+) => {
+	let endpoint: string;
+	let httpMethod: 'POST' | 'GET';
 
-	// validUrl = (candidate: string) => {}
+	switch (stage) {
+		case PaystackChargeStage.NoHandle:
+		case PaystackChargeStage.PlusHandle:
+			endpoint = chargeEndpoint;
+			httpMethod = 'POST';
+			break;
+		case PaystackChargeStage.ValidateToken:
+			endpoint = validateEndpoint;
+			httpMethod = 'POST';
+			break;
+		case PaystackChargeStage.Requery:
+		case PaystackChargeStage.Authorize:
+			endpoint = `${requeryEndpoint}${meta.serverTransaction.id}`;
+			httpMethod = 'GET';
+			break;
+		case PaystackChargeStage.AVS:
+			endpoint = avsEndpoint;
+			httpMethod = 'POST';
+			break;
+	}
 
-	makeChargeRequest = async (data: any, stage: PaystackChargeStage) => {
-		let endpoint: string;
-		let httpMethod: 'POST' | 'GET';
+	const response = await fetch(`${BASE_URL}/${endpoint}`, {
+		method: httpMethod,
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+			'Paystack-Version': paystackAPIVersion
+		},
+		body: JSON.stringify(data)
+	});
 
-		switch (stage) {
-			case PaystackChargeStage.NoHandle:
-			case PaystackChargeStage.PlusHandle:
-				endpoint = chargeEndpoint;
-				httpMethod = 'POST';
-				break;
-			case PaystackChargeStage.ValidateToken:
-				endpoint = validateEndpoint;
-				httpMethod = 'POST';
-				break;
-			case PaystackChargeStage.Requery:
-			case PaystackChargeStage.Authorize:
-				endpoint = `${requeryEndpoint}${this.serverTransaction.id}`;
-				httpMethod = 'GET';
-				break;
-			case PaystackChargeStage.AVS:
-				endpoint = avsEndpoint;
-				httpMethod = 'POST';
-				break;
-		}
+	const responseObj = await response.json();
 
-		const response = await fetch(`${BASE_URL}/${endpoint}`, {
-			method: httpMethod,
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-				'Paystack-Version': paystackAPIVersion
-			},
-			body: JSON.stringify(data)
-		});
+	if (responseObj !== null && responseObj.trans !== null) {
+		console.log(responseObj.trans);
+	}
 
-		const responseObj = await response.json();
+	if (responseObj !== null && responseObj.reference !== null) {
+		console.log(responseObj.reference);
+	}
 
-		if (responseObj !== null && responseObj.trans !== null) {
-			console.log(responseObj.trans);
-		}
+	if (responseObj.message.toLowerCase() === 'invalid data sent') {
+		console.log(data);
+	}
 
-		if (responseObj !== null && responseObj.reference !== null) {
-			console.log(responseObj.reference);
-		}
+	if (
+		responseObj.message.toLowerCase() === 'access code has expired' &&
+		responseObj.status === '0'
+	) {
+		console.log(responseObj);
+	}
 
-		if (responseObj.message.toLowerCase() === 'invalid data sent') {
-			console.log(data);
-		}
+	handleResponse(responseObj);
+};
 
+const handleResponse = (responseObj: any, meta?: any) => {
+	if (responseObj.errors != null) {
+		console.log('Error: ', responseObj.message);
+	}
+	if (responseObj.status === '1' || responseObj.status === 'success') {
+		console.log('Success');
+	} else if (
+		responseObj.status === '2' &&
+		responseObj.auth.toLowerCase() === 'avs'
+	) {
+		requestAvs();
+	} else if (
+		responseObj.status === '2' ||
+		responseObj.auth.toLowerCase() === 'pin'
+	) {
+		requestPin();
+	} else if (meta.serverTransaction.id != null) {
 		if (
-			responseObj.message.toLowerCase() === 'access code has expired' &&
-			responseObj.status === '0'
+			responseObj.auth.toLowerCase() === '3ds' &&
+			validUrl(responseObj.otpmessage)
 		) {
-			console.log(responseObj);
+			requestAuth(responseObj.otpmessage);
+		} else if (responseObj.status === '3') {
+		} else if (responseObj.status.toLowerCase() === 'requery') {
+			setTimeout(() => {
+				makeChargeRequest(null, PaystackChargeStage.Requery);
+			}, 3000);
 		}
+	}
+};
 
-		this.handleResponse(responseObj);
-	};
+const validUrl = (candidate: string) => {
+	return !!candidate;
+};
 
-	// requestPin = () => {};
-	// requestAvs = () => {};
-	// requestAuth = () => {};
-	// requestOtp = () => {};
+export const requestPin = () => {
+	// Do something
+};
 
-	handleResponse = (responseObj: any) => {
-		if (responseObj.errors != null) {
-			console.log('Error: ', responseObj.message);
-		}
-		if (responseObj.status === '1' || responseObj.status === 'success') {
-			console.log('Success');
-		} else if (
-			responseObj.status === '2' &&
-			responseObj.auth.toLowerCase() === 'avs'
-		) {
-			// requestAvs();
-		} else if (
-			responseObj.status === '2' ||
-			responseObj.auth.toLowerCase() === 'pin'
-		) {
-			// requestPin();
-		} else if (this.serverTransaction.id != null) {
-			if (responseObj.auth.toLowerCase() === '3ds') {
-			} else if (responseObj.status === '3') {
-			} else if (responseObj.status.toLowerCase() === 'requery') {
-				setTimeout(() => {
-					this.makeChargeRequest(null, PaystackChargeStage.Requery);
-				}, 3000);
-			}
-		}
-	};
-}
+export const requestAvs = () => {
+	// Do something
+};
+
+export const requestAuth = (otp: any) => {
+	// Do something
+};
+
+export const requestOtp = () => {
+	// Do something
+};
