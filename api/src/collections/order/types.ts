@@ -6,6 +6,7 @@ const OrderTypes = gql`
 		userId: ID!
 		storeId: ID!
 		status: OrderStatus!
+		total: Int!
 		user: User!
 		store: Store!
 		products: [OrderProduct!]!

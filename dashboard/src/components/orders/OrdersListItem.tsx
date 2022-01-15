@@ -11,12 +11,6 @@ interface OrdersListItemProps {
 
 const OrdersListItem: React.FC<OrdersListItemProps> = ({ order }) => {
 	const { navigate } = useNavigation<NavigationProp<OrdersStackParamsList>>();
-	const amount = order.products
-		.reduce(
-			(acc, { unitPrice, quantity }) => acc + (unitPrice || 0) * quantity,
-			0
-		)
-		.toFixed(2);
 
 	return (
 		<Pressable
@@ -28,7 +22,7 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order }) => {
 				{/*<Text>{order.status}</Text> */}
 				<Text>{order.createdAt}</Text>
 			</View>
-			<Text>{amount} NGN</Text>
+			<Text>{order.total} NGN</Text>
 			<Icon name='chevronRight' />
 		</Pressable>
 	);

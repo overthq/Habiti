@@ -227,8 +227,10 @@ export type Order = {
 	createdAt: Scalars['String'];
 	id: Scalars['ID'];
 	products: Array<OrderProduct>;
+	status: OrderStatus;
 	store: Store;
 	storeId: Scalars['ID'];
+	total: Scalars['Int'];
 	updatedAt: Scalars['String'];
 	user: User;
 	userId: Scalars['ID'];
@@ -243,6 +245,12 @@ export type OrderProduct = {
 	quantity: Scalars['Int'];
 	unitPrice: Scalars['Int'];
 };
+
+export enum OrderStatus {
+	Cancelled = 'Cancelled',
+	Delivered = 'Delivered',
+	Pending = 'Pending'
+}
 
 export type Product = {
 	__typename?: 'Product';
@@ -402,6 +410,7 @@ export type OrdersQuery = {
 		orders: Array<{
 			__typename?: 'Order';
 			id: string;
+			total: number;
 			createdAt: string;
 			updatedAt: string;
 			user: { __typename?: 'User'; id: string; name: string };
@@ -426,6 +435,7 @@ export type OrderQuery = {
 	order: {
 		__typename?: 'Order';
 		id: string;
+		total: number;
 		createdAt: string;
 		updatedAt: string;
 		user: { __typename?: 'User'; id: string; name: string };
@@ -613,6 +623,7 @@ export const OrdersDocument = gql`
 					unitPrice
 					quantity
 				}
+				total
 				createdAt
 				updatedAt
 			}
@@ -647,6 +658,7 @@ export const OrderDocument = gql`
 				unitPrice
 				quantity
 			}
+			total
 			createdAt
 			updatedAt
 		}

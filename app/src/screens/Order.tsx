@@ -9,6 +9,7 @@ import {
 import { useOrderQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 import OrderProduct from '../components/order/OrderProduct';
+import { relativeTimestamp } from '../utils/date';
 
 const Order: React.FC = () => {
 	const {
@@ -17,14 +18,6 @@ const Order: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const [{ data, fetching }] = useOrderQuery({ variables: { orderId } });
 	const order = data?.order;
-
-	const total = React.useMemo(
-		() =>
-			order?.products.reduce((acc, product) => {
-				return acc + product.unitPrice * product.quantity;
-			}, 0),
-		[order]
-	);
 
 	const handleOrderProductPress = React.useCallback((productId: string) => {
 		navigate('Product', { productId, storeId });
@@ -42,7 +35,7 @@ const Order: React.FC = () => {
 		<View style={styles.container}>
 			<View style={{ paddingTop: 16, paddingHorizontal: 16 }}>
 				<Text>Order Details:</Text>
-				<Text>{order.createdAt}</Text>
+				<Text>{relativeTimestamp(order.createdAt)}</Text>
 			</View>
 			<View style={{ marginVertical: 16 }}>
 				{order.products.map(orderProduct => (
@@ -54,7 +47,7 @@ const Order: React.FC = () => {
 				))}
 			</View>
 			<View>
-				<Text>Total: {total}.00 NGN</Text>
+				<Text>Total: {order.total}.00 NGN</Text>
 			</View>
 		</View>
 	);

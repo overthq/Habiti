@@ -19,6 +19,7 @@ query UserOrders {
 				unitPrice
 				quantity
 			}
+			total
 			createdAt
 		}
 	}
@@ -45,6 +46,7 @@ query Order($orderId: ID!) {
 			unitPrice
 			quantity
 		}
+		total
 		createdAt
 	}
 }
@@ -64,5 +66,6 @@ mutation CreateOrder($cartId: ID!) {
 			unitPrice
 			quantity
 		}
+		total
 	}
 }

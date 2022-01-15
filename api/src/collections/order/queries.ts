@@ -34,6 +34,18 @@ const products: Resolver = async (parent, _, ctx) => {
 	return fetchedProducts;
 };
 
+const total: Resolver = async (parent, _, ctx) => {
+	const fetchedProducts = await ctx.prisma.order
+		.findUnique({ where: { id: parent.id } })
+		.products();
+
+	const computedTotal = fetchedProducts.reduce((acc, product) => {
+		return acc + product.unitPrice * product.quantity;
+	}, 0);
+
+	return computedTotal;
+};
+
 export default {
 	Query: {
 		order
@@ -41,6 +53,7 @@ export default {
 	Order: {
 		user,
 		store,
-		products
+		products,
+		total
 	}
 };
