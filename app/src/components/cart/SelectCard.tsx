@@ -46,12 +46,11 @@ const SelectCard: React.FC<SelectCardProps> = ({
 	return (
 		<>
 			<View style={styles.container}></View>
-			<Pressable onPress={handleOpenModal}>
-				{displayCard ? (
-					<Text>**** {displayCard.last4}</Text>
-				) : (
-					<Text>Add card</Text>
-				)}
+			<Pressable style={[styles.row, { height: 48 }]} onPress={handleOpenModal}>
+				<Text style={styles.text}>Payment method</Text>
+				<Text style={{ fontSize: 16 }}>
+					{displayCard ? `**** ${displayCard.last4}` : ` Add card`}
+				</Text>
 			</Pressable>
 			<BottomSheetModal
 				index={0}
@@ -86,6 +85,10 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center'
+	},
+	text: {
+		fontSize: 16,
+		fontWeight: '500'
 	},
 	modal: {
 		paddingHorizontal: 16,
