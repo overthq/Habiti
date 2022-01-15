@@ -20,9 +20,9 @@ const Cart: React.FC = () => {
 		params: { cartId }
 	} = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
 	const { goBack } = useNavigation<NavigationProp<AppStackParamList>>();
-	const [, createOrder] = useCreateOrderMutation();
 
 	const [{ data, fetching }] = useCartQuery({ variables: { cartId } });
+	const [, createOrder] = useCreateOrderMutation();
 
 	const defaultCardId = useAppSelector(
 		({ preferences }) => preferences.defaultCardId
@@ -30,14 +30,6 @@ const Cart: React.FC = () => {
 
 	const [selectedCard, setSelectedCard] = React.useState(defaultCardId);
 	const cart = data?.cart;
-
-	const totalPrice = React.useMemo(() => {
-		return (
-			cart?.products.reduce((acc, next) => {
-				return acc + next.product.unitPrice * next.quantity;
-			}, 0) || 0
-		);
-	}, [cart?.products]);
 
 	const handleSubmit = React.useCallback(async () => {
 		try {
@@ -64,18 +56,10 @@ const Cart: React.FC = () => {
 				{cart.products.map(cartProduct => (
 					<CartProduct key={cartProduct.productId} cartProduct={cartProduct} />
 				))}
-				<View style={{ flex: 1, justifyContent: 'flex-end' }}>
-					<View
-						style={{
-							flexDirection: 'row',
-							justifyContent: 'space-between',
-							alignItems: 'center'
-						}}
-					>
-						<Text style={{ fontSize: 18, fontWeight: '500' }}>Total</Text>
-						<Text style={{ fontSize: 18, fontWeight: '500' }}>
-							{totalPrice} NGN
-						</Text>
+				<View style={styles.bottom}>
+					<View style={styles.row}>
+						<Text style={styles.total}>Total</Text>
+						<Text style={styles.total}>{cart.total} NGN</Text>
 					</View>
 					<SelectCard
 						selectedCard={selectedCard}
@@ -109,6 +93,19 @@ const styles = StyleSheet.create({
 		fontWeight: '500',
 		color: '#505050',
 		marginVertical: 4
+	},
+	bottom: {
+		flex: 1,
+		justifyContent: 'flex-end'
+	},
+	row: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center'
+	},
+	total: {
+		fontSize: 18,
+		fontWeight: '500'
 	},
 	button: {
 		marginTop: 16

@@ -56,6 +56,18 @@ const store: Resolver = async (parent, _, ctx) => {
 	return fetchedStore;
 };
 
+const total: Resolver = async (parent, _, ctx) => {
+	const fetchedProducts = await ctx.prisma.cart
+		.findUnique({ where: { id: parent.id } })
+		.products({ include: { product: true } });
+
+	const computedTotal = fetchedProducts.reduce((acc, p) => {
+		return acc + p.product.unitPrice * p.quantity;
+	}, 0);
+
+	return computedTotal;
+};
+
 interface ProductArgs {
 	id: string;
 }
@@ -85,6 +97,7 @@ export default {
 		user,
 		products,
 		product,
-		store
+		store,
+		total
 	}
 };

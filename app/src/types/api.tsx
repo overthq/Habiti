@@ -54,6 +54,7 @@ export type Cart = {
 	products: Array<CartProduct>;
 	store: Store;
 	storeId: Scalars['ID'];
+	total: Scalars['Int'];
 	updatedAt: Scalars['String'];
 	user: User;
 	userId: Scalars['ID'];
@@ -413,6 +414,7 @@ export type CartsQuery = {
 			id: string;
 			userId: string;
 			storeId: string;
+			total: number;
 			store: {
 				__typename?: 'Store';
 				id: string;
@@ -449,6 +451,7 @@ export type CartQuery = {
 		id: string;
 		userId: string;
 		storeId: string;
+		total: number;
 		store: { __typename?: 'Store'; id: string; name: string };
 		products: Array<{
 			__typename?: 'CartProduct';
@@ -478,6 +481,7 @@ export type AddProductToCartMutation = {
 		id: string;
 		userId: string;
 		storeId: string;
+		total: number;
 		store: { __typename?: 'Store'; id: string; name: string };
 		products: Array<{
 			__typename?: 'CartProduct';
@@ -515,6 +519,7 @@ export type CreateCartMutation = {
 		id: string;
 		userId: string;
 		storeId: string;
+		total: number;
 		store: { __typename?: 'Store'; id: string; name: string };
 		products: Array<{
 			__typename?: 'CartProduct';
@@ -885,6 +890,7 @@ export const CartsDocument = gql`
 					}
 					quantity
 				}
+				total
 			}
 		}
 	}
@@ -920,6 +926,7 @@ export const CartDocument = gql`
 				}
 				quantity
 			}
+			total
 		}
 	}
 `;
@@ -951,6 +958,7 @@ export const AddProductToCartDocument = gql`
 					unitPrice
 				}
 			}
+			total
 		}
 	}
 `;
@@ -995,6 +1003,7 @@ export const CreateCartDocument = gql`
 					unitPrice
 				}
 			}
+			total
 		}
 	}
 `;

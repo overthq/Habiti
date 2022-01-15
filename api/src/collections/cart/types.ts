@@ -8,6 +8,7 @@ const CartTypes = gql`
 		createdAt: String!
 		updatedAt: String!
 
+		total: Int!
 		user: User!
 		store: Store!
 		products: [CartProduct!]!

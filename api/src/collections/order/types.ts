@@ -6,12 +6,13 @@ const OrderTypes = gql`
 		userId: ID!
 		storeId: ID!
 		status: OrderStatus!
+		createdAt: String!
+		updatedAt: String!
+
 		total: Int!
 		user: User!
 		store: Store!
 		products: [OrderProduct!]!
-		createdAt: String!
-		updatedAt: String!
 	}
 
 	enum OrderStatus {
