@@ -11,6 +11,7 @@ const StoreTypes = gql`
 		createdAt: String!
 		updatedAt: String!
 
+		followedByUser: Boolean!
 		products: [Product!]!
 		orders: [Order!]!
 		managers: [StoreManager!]!

@@ -66,6 +66,16 @@ const image: Resolver = async (parent, _, ctx) => {
 	return fetchedImage;
 };
 
+const followedByUser: Resolver = async (parent, _, ctx) => {
+	const fetchedFollower = await ctx.prisma.storeFollower.findUnique({
+		where: {
+			storeId_followerId: { storeId: parent.id, followerId: ctx.user.id }
+		}
+	});
+
+	return !!fetchedFollower;
+};
+
 export default {
 	Query: {
 		store,
@@ -77,6 +87,7 @@ export default {
 		managers,
 		followers,
 		carts,
-		image
+		image,
+		followedByUser
 	}
 };

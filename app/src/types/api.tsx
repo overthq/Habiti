@@ -323,6 +323,7 @@ export type Store = {
 	carts: Array<Cart>;
 	createdAt: Scalars['String'];
 	description?: Maybe<Scalars['String']>;
+	followedByUser: Scalars['Boolean'];
 	followers: Array<StoreFollower>;
 	id: Scalars['ID'];
 	image?: Maybe<Image>;
@@ -754,14 +755,11 @@ export type StoreQuery = {
 		website?: string | null | undefined;
 		twitter?: string | null | undefined;
 		instagram?: string | null | undefined;
+		followedByUser: boolean;
 		image?:
 			| { __typename?: 'Image'; id: string; path: string }
 			| null
 			| undefined;
-		followers: Array<{
-			__typename?: 'StoreFollower';
-			follower: { __typename?: 'User'; id: string; name: string };
-		}>;
 	};
 };
 
@@ -771,16 +769,7 @@ export type FollowStoreMutationVariables = Exact<{
 
 export type FollowStoreMutation = {
 	__typename?: 'Mutation';
-	followStore: {
-		__typename?: 'Store';
-		id: string;
-		followers: Array<{
-			__typename?: 'StoreFollower';
-			storeId: string;
-			followerId: string;
-			follower: { __typename?: 'User'; id: string; name: string };
-		}>;
-	};
+	followStore: { __typename?: 'Store'; id: string; followedByUser: boolean };
 };
 
 export type UnfollowStoreMutationVariables = Exact<{
@@ -789,16 +778,7 @@ export type UnfollowStoreMutationVariables = Exact<{
 
 export type UnfollowStoreMutation = {
 	__typename?: 'Mutation';
-	unfollowStore: {
-		__typename?: 'Store';
-		id: string;
-		followers: Array<{
-			__typename?: 'StoreFollower';
-			storeId: string;
-			followerId: string;
-			follower: { __typename?: 'User'; id: string; name: string };
-		}>;
-	};
+	unfollowStore: { __typename?: 'Store'; id: string; followedByUser: boolean };
 };
 
 export type StoresFollowedQueryVariables = Exact<{ [key: string]: never }>;
@@ -1273,12 +1253,7 @@ export const StoreDocument = gql`
 				id
 				path
 			}
-			followers {
-				follower {
-					id
-					name
-				}
-			}
+			followedByUser
 		}
 	}
 `;
@@ -1292,14 +1267,7 @@ export const FollowStoreDocument = gql`
 	mutation FollowStore($storeId: ID!) {
 		followStore(storeId: $storeId) {
 			id
-			followers {
-				storeId
-				followerId
-				follower {
-					id
-					name
-				}
-			}
+			followedByUser
 		}
 	}
 `;
@@ -1313,14 +1281,7 @@ export const UnfollowStoreDocument = gql`
 	mutation UnfollowStore($storeId: ID!) {
 		unfollowStore(storeId: $storeId) {
 			id
-			followers {
-				storeId
-				followerId
-				follower {
-					id
-					name
-				}
-			}
+			followedByUser
 		}
 	}
 `;

@@ -6,7 +6,6 @@ import {
 	useUnfollowStoreMutation,
 	StoreQuery
 } from '../../types/api';
-import { useAppSelector } from '../../redux/store';
 
 interface FollowButtonProps {
 	store: StoreQuery['store'];
@@ -15,28 +14,14 @@ interface FollowButtonProps {
 const FollowButton: React.FC<FollowButtonProps> = ({ store }) => {
 	const [, followStore] = useFollowStoreMutation();
 	const [, unfollowStore] = useUnfollowStoreMutation();
-	const userId = useAppSelector(({ auth }) => auth.userId);
-
-	// TODO: We should fetch this information using the userId.
-	// Fetching the entire list of followers is not efficient.
-	// Actually, we can simply fetch the list of stores the user follows.
-	// The only thing is that we have to update the cache manually.
-
-	const isFollowing = React.useMemo(() => {
-		const follow = store?.followers?.find(
-			({ follower }) => follower.id === userId
-		);
-
-		return !!follow;
-	}, [store]);
 
 	const handlePress = React.useCallback(async () => {
-		if (isFollowing) {
+		if (store.followedByUser) {
 			await unfollowStore({ storeId: store.id });
 		} else {
 			await followStore({ storeId: store.id });
 		}
-	}, [isFollowing]);
+	}, [store.followedByUser]);
 
 	return (
 		<TouchableOpacity
@@ -47,10 +32,10 @@ const FollowButton: React.FC<FollowButtonProps> = ({ store }) => {
 			<Icon
 				size={18}
 				style={{ marginRight: 4 }}
-				name={isFollowing ? 'check' : 'plus'}
+				name={store.followedByUser ? 'check' : 'plus'}
 			/>
 			<Text style={{ fontSize: 16, fontWeight: '500' }}>
-				{isFollowing ? 'Following' : 'Follow'}
+				{store.followedByUser ? 'Following' : 'Follow'}
 			</Text>
 		</TouchableOpacity>
 	);

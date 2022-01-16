@@ -21,11 +21,6 @@ query Store($storeId: ID!) {
 			id
 			path
 		}
-		followers {
-			follower {
-				id
-				name
-			}
-		}
+		followedByUser
 	}
 }
