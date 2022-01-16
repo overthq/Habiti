@@ -50,7 +50,7 @@ const RecentOrders: React.FC = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		height: 250
+		paddingVertical: 8
 	},
 	loading: {
 		flex: 1,
