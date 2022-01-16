@@ -41,8 +41,8 @@ const CartTypes = gql`
 
 	extend type Mutation {
 		createCart(input: CreateCartInput!): Cart!
-		addProductToCart(input: AddProductToCartInput!): Product!
-		removeProductFromCart(cartId: ID!, productId: ID!): Cart!
+		addToCart(input: AddProductToCartInput!): Product!
+		removeFromCart(cartId: ID!, productId: ID!): Product!
 		deleteCart(cartId: ID!): ID!
 		updateCartProduct(input: UpdateCartProductInput!): CartProduct!
 	}

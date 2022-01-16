@@ -56,29 +56,19 @@ query Cart($cartId: ID!) {
 	}
 }
 
-mutation AddProductToCart($input: AddProductToCartInput!) {
-	addProductToCart(input: $input) {
+mutation AddToCart($input: AddProductToCartInput!) {
+	addToCart(input: $input) {
 		id
 		storeId
 		inCart
 	}
 }
 
-mutation RemoveProductFromCart($productId: ID!, $cartId: ID!) {
-	removeProductFromCart(productId: $productId, cartId: $cartId) {
+mutation RemoveFromCart($productId: ID!, $cartId: ID!) {
+	removeFromCart(productId: $productId, cartId: $cartId) {
 		id
-		products {
-			cartId
-			productId
-			cart {
-				id
-			}
-			product {
-				id
-				name
-				unitPrice
-			}
-		}
+		storeId
+		inCart
 	}
 }
 

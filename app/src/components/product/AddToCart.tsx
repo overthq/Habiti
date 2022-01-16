@@ -2,10 +2,7 @@ import React from 'react';
 import { View, Pressable, Text, StyleSheet } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { Icon } from '../Icon';
-import {
-	useCreateCartMutation,
-	useAddProductToCartMutation
-} from '../../types/api';
+import { useCreateCartMutation, useAddToCartMutation } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
 import Button from '../global/Button';
 
@@ -24,13 +21,13 @@ const AddToCart: React.FC<AddToCartProps> = ({
 }) => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const [, createCart] = useCreateCartMutation();
-	const [, addProductToCart] = useAddProductToCartMutation();
+	const [, addToCart] = useAddToCartMutation();
 
 	const handlePress = async () => {
 		if (!cartId) {
 			await createCart({ input: { storeId, productId, quantity: 1 } });
 		} else {
-			await addProductToCart({
+			await addToCart({
 				input: { cartId, productId, quantity: 1 }
 			});
 		}
@@ -71,7 +68,7 @@ const styles = StyleSheet.create({
 	button: {
 		marginVertical: 16,
 		width: '100%',
-		height: 40,
+		height: 45,
 		borderRadius: 4,
 		flexDirection: 'row',
 		justifyContent: 'center',

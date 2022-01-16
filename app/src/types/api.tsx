@@ -133,7 +133,7 @@ export type Image = {
 export type Mutation = {
 	__typename?: 'Mutation';
 	_?: Maybe<Scalars['Boolean']>;
-	addProductToCart: Product;
+	addToCart: Product;
 	createCart: Cart;
 	createOrder: Order;
 	createProduct: Product;
@@ -147,12 +147,12 @@ export type Mutation = {
 	editProfile: User;
 	editStore: Store;
 	followStore: Store;
-	removeProductFromCart: Cart;
+	removeFromCart: Product;
 	unfollowStore: Store;
 	updateCartProduct: CartProduct;
 };
 
-export type MutationAddProductToCartArgs = {
+export type MutationAddToCartArgs = {
 	input: AddProductToCartInput;
 };
 
@@ -210,7 +210,7 @@ export type MutationFollowStoreArgs = {
 	storeId: Scalars['ID'];
 };
 
-export type MutationRemoveProductFromCartArgs = {
+export type MutationRemoveFromCartArgs = {
 	cartId: Scalars['ID'];
 	productId: Scalars['ID'];
 };
@@ -473,13 +473,13 @@ export type CartQuery = {
 	};
 };
 
-export type AddProductToCartMutationVariables = Exact<{
+export type AddToCartMutationVariables = Exact<{
 	input: AddProductToCartInput;
 }>;
 
-export type AddProductToCartMutation = {
+export type AddToCartMutation = {
 	__typename?: 'Mutation';
-	addProductToCart: {
+	addToCart: {
 		__typename?: 'Product';
 		id: string;
 		storeId: string;
@@ -487,28 +487,18 @@ export type AddProductToCartMutation = {
 	};
 };
 
-export type RemoveProductFromCartMutationVariables = Exact<{
+export type RemoveFromCartMutationVariables = Exact<{
 	productId: Scalars['ID'];
 	cartId: Scalars['ID'];
 }>;
 
-export type RemoveProductFromCartMutation = {
+export type RemoveFromCartMutation = {
 	__typename?: 'Mutation';
-	removeProductFromCart: {
-		__typename?: 'Cart';
+	removeFromCart: {
+		__typename?: 'Product';
 		id: string;
-		products: Array<{
-			__typename?: 'CartProduct';
-			cartId: string;
-			productId: string;
-			cart: { __typename?: 'Cart'; id: string };
-			product: {
-				__typename?: 'Product';
-				id: string;
-				name: string;
-				unitPrice: number;
-			};
-		}>;
+		storeId: string;
+		inCart: boolean;
 	};
 };
 
@@ -916,9 +906,9 @@ export function useCartQuery(
 ) {
 	return Urql.useQuery<CartQuery>({ query: CartDocument, ...options });
 }
-export const AddProductToCartDocument = gql`
-	mutation AddProductToCart($input: AddProductToCartInput!) {
-		addProductToCart(input: $input) {
+export const AddToCartDocument = gql`
+	mutation AddToCart($input: AddProductToCartInput!) {
+		addToCart(input: $input) {
 			id
 			storeId
 			inCart
@@ -926,37 +916,26 @@ export const AddProductToCartDocument = gql`
 	}
 `;
 
-export function useAddProductToCartMutation() {
-	return Urql.useMutation<
-		AddProductToCartMutation,
-		AddProductToCartMutationVariables
-	>(AddProductToCartDocument);
+export function useAddToCartMutation() {
+	return Urql.useMutation<AddToCartMutation, AddToCartMutationVariables>(
+		AddToCartDocument
+	);
 }
-export const RemoveProductFromCartDocument = gql`
-	mutation RemoveProductFromCart($productId: ID!, $cartId: ID!) {
-		removeProductFromCart(productId: $productId, cartId: $cartId) {
+export const RemoveFromCartDocument = gql`
+	mutation RemoveFromCart($productId: ID!, $cartId: ID!) {
+		removeFromCart(productId: $productId, cartId: $cartId) {
 			id
-			products {
-				cartId
-				productId
-				cart {
-					id
-				}
-				product {
-					id
-					name
-					unitPrice
-				}
-			}
+			storeId
+			inCart
 		}
 	}
 `;
 
-export function useRemoveProductFromCartMutation() {
+export function useRemoveFromCartMutation() {
 	return Urql.useMutation<
-		RemoveProductFromCartMutation,
-		RemoveProductFromCartMutationVariables
-	>(RemoveProductFromCartDocument);
+		RemoveFromCartMutation,
+		RemoveFromCartMutationVariables
+	>(RemoveFromCartDocument);
 }
 export const CreateCartDocument = gql`
 	mutation CreateCart($input: CreateCartInput!) {

@@ -8,10 +8,6 @@ interface CreateCartArgs {
 	};
 }
 
-// Technically, storeId should be the only required field,
-// but we never call this mutation without the productId and quantity fields,
-// so it should be fine.
-
 const createCart: Resolver<CreateCartArgs> = async (_, { input }, ctx) => {
 	const { storeId, productId, quantity } = input;
 	const cart = await ctx.prisma.cart.create({
@@ -30,7 +26,7 @@ const createCart: Resolver<CreateCartArgs> = async (_, { input }, ctx) => {
 	return cart;
 };
 
-interface AddProductArgs {
+interface AddToCartArgs {
 	input: {
 		cartId?: string;
 		storeId: string;
@@ -39,7 +35,7 @@ interface AddProductArgs {
 	};
 }
 
-const addProductToCart: Resolver<AddProductArgs> = async (
+const addToCart: Resolver<AddToCartArgs> = async (
 	_,
 	{ input: { cartId, productId, quantity } },
 	ctx
@@ -66,7 +62,7 @@ interface RemoveProductArgs {
 	productId: string;
 }
 
-const removeProductFromCart: Resolver<RemoveProductArgs> = async (
+const removeFromCart: Resolver<RemoveProductArgs> = async (
 	_,
 	{ cartId, productId },
 	ctx
@@ -78,13 +74,13 @@ const removeProductFromCart: Resolver<RemoveProductArgs> = async (
 	});
 
 	if (userId === ctx.user.id) {
-		const cart = await ctx.prisma.cartProduct
+		const product = await ctx.prisma.cartProduct
 			.delete({
 				where: { cartId_productId: { cartId, productId } }
 			})
-			.cart();
+			.product();
 
-		return cart;
+		return product;
 	}
 };
 
@@ -130,8 +126,8 @@ const updateCartProduct: Resolver<UpdateCartProductArgs> = async (
 export default {
 	Mutation: {
 		createCart,
-		addProductToCart,
-		removeProductFromCart,
+		addToCart,
+		removeFromCart,
 		deleteCart,
 		updateCartProduct
 	}
