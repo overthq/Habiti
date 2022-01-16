@@ -30,7 +30,7 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 					</Text>
 				</View>
 			</View>
-			<Icon name='chevronRight' />
+			<Icon name='chevron-right' />
 		</Pressable>
 	);
 };

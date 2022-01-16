@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { Icon } from '../components/icons';
+import { Icon } from '../components/Icon';
 import { AppStackParamList } from '../types/navigation';
 
 const Overview: React.FC = () => {

@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux';
 import { useManagedStoresQuery } from '../../types/api';
 import { updatePreference } from '../../redux/preferences/actions';
 import { useAppSelector } from '../../redux/store';
-import { Icon } from '../icons';
+import { Icon } from '../Icon';
 
 interface RowProps {
 	name: string;

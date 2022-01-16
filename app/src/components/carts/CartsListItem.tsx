@@ -36,7 +36,7 @@ const CartsListItem: React.FC<CartListItemProps> = ({ cart }) => {
 					</Text>
 				</View>
 			</View>
-			<Icon name='chevronRight' size={24} color='#777777' />
+			<Icon name='chevron-right' size={24} color='#777777' />
 		</TouchableOpacity>
 	);
 };

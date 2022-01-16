@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ProductQuery, useEditProductMutation } from '../../types/api';
-import { Icon } from '../icons';
+import { Icon } from '../Icon';
 import { generateUploadFile } from '../../utils/images';
 
 interface ImagesProps {

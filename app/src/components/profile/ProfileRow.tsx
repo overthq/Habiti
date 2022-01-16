@@ -10,7 +10,7 @@ interface ProfileRowProps {
 const ProfileRow: React.FC<ProfileRowProps> = ({ title, onPress }) => (
 	<Pressable style={styles.container} onPress={onPress}>
 		<Text style={styles.title}>{title}</Text>
-		<Icon name='chevronRight' />
+		<Icon name='chevron-right' />
 	</Pressable>
 );
 

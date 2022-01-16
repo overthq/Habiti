@@ -37,7 +37,7 @@ const CartProduct: React.FC<CartProductProps> = ({
 					</Text>
 				</View>
 			</View>
-			<Icon name='chevronRight' color='#505050' />
+			<Icon name='chevron-right' color='#505050' />
 		</Pressable>
 	);
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { OrdersQuery } from '../../types/api';
-import { Icon } from '../icons';
+import { Icon } from '../Icon';
 import { OrdersStackParamsList } from '../../types/navigation';
 
 interface OrdersListItemProps {
@@ -23,7 +23,7 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order }) => {
 				<Text>{order.createdAt}</Text>
 			</View>
 			<Text>{order.total} NGN</Text>
-			<Icon name='chevronRight' />
+			<Icon name='chevron-right' />
 		</Pressable>
 	);
 };

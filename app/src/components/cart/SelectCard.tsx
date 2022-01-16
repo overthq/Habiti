@@ -9,6 +9,7 @@ import {
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useCardsQuery } from '../../types/api';
 import { Icon } from '../Icon';
+import { MastercardIcon } from './CardIcons';
 
 interface SelectCardProps {
 	selectedCard?: string;
@@ -48,9 +49,13 @@ const SelectCard: React.FC<SelectCardProps> = ({
 			<View style={styles.container}></View>
 			<Pressable style={[styles.row, { height: 48 }]} onPress={handleOpenModal}>
 				<Text style={styles.text}>Payment method</Text>
-				<Text style={{ fontSize: 16 }}>
-					{displayCard ? `**** ${displayCard.last4}` : ` Add card`}
-				</Text>
+				<View style={styles.cardInfo}>
+					<MastercardIcon />
+					<Text style={styles.cardText}>
+						{displayCard ? `···· ${displayCard.last4}` : ` Add card`}
+					</Text>
+					<Icon name='chevron-right' style={{ marginRight: -8 }} />
+				</View>
 			</Pressable>
 			<BottomSheetModal
 				index={0}
@@ -85,6 +90,15 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center'
+	},
+	cardInfo: {
+		height: '100%',
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
+	cardText: {
+		fontSize: 16,
+		marginHorizontal: 8
 	},
 	text: {
 		fontSize: 16,

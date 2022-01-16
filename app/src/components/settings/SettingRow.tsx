@@ -31,7 +31,7 @@ const SettingRow: React.FC<SettingRowProps> = ({
 					)}
 				</View>
 				<Icon
-					name='chevronRight'
+					name='chevron-right'
 					color='#505050'
 					size={24}
 					style={{ marginLeft: 8 }}

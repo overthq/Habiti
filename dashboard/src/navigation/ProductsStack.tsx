@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Products from '../screens/Products';
 import Product from '../screens/Product';
 
-import { Icon } from '../components/icons';
+import { Icon } from '../components/Icon';
 import { ProductsStackParamList } from '../types/navigation';
 
 const ProductsStack = createStackNavigator<ProductsStackParamList>();
@@ -33,7 +33,7 @@ const ProductsStackNavigator = () => (
 			options={() => ({
 				title: '',
 				headerBackTitleVisible: false,
-				headerBackImage: () => <Icon size={28} name='chevronLeft' />
+				headerBackImage: () => <Icon size={28} name='chevron-left' />
 			})}
 		/>
 	</ProductsStack.Navigator>

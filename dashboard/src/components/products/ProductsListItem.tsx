@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ProductsStackParamList } from '../../types/navigation';
-import { Icon } from '../icons';
+import { Icon } from '../Icon';
 import { ProductsQuery } from '../../types/api';
 
 interface ProductsListItemProps {
@@ -25,7 +25,7 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({ product }) => {
 				<Text style={styles.name}>{product.name}</Text>
 				<Text style={styles.price}>{product.unitPrice} NGN</Text>
 			</View>
-			<Icon name='chevronRight' />
+			<Icon name='chevron-right' />
 		</TouchableOpacity>
 	);
 };

@@ -7,7 +7,7 @@ import Store from '../screens/Store';
 import OrdersStackNavigator from './OrdersStack';
 import ProductsStackNavigator from './ProductsStack';
 
-import { Icon } from '../components/icons';
+import { Icon } from '../components/Icon';
 import { getIcon } from '../utils/navigation';
 import { MainTabParamList } from '../types/navigation';
 

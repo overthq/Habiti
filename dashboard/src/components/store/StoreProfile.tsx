@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { Icon } from '../icons';
+import { Icon } from '../Icon';
 import { StoreQuery } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
 
@@ -26,7 +26,7 @@ const StoreProfile: React.FC<StoreProfileProps> = ({ store }) => {
 					<Text style={styles.edit}>Edit store profile</Text>
 				</View>
 			</View>
-			<Icon name='chevronRight' />
+			<Icon name='chevron-right' />
 		</Pressable>
 	);
 };

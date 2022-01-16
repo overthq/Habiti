@@ -10,7 +10,7 @@ export const getIcon = (routeName: string): IconType => {
 		case 'Explore':
 			return 'search';
 		case 'Carts':
-			return 'shoppingBag';
+			return 'shopping-bag';
 		case 'Profile':
 			return 'user';
 	}

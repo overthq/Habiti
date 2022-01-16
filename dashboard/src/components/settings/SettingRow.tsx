@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { Icon } from '../icons';
+import { Icon } from '../Icon';
 import { SettingsStackParamList } from '../../types/navigation';
 
 interface SettingRowProps {
@@ -31,7 +31,7 @@ const SettingRow: React.FC<SettingRowProps> = ({
 					)}
 				</View>
 				<Icon
-					name='chevronRight'
+					name='chevron-right'
 					color='#505050'
 					size={24}
 					style={{ marginLeft: 8 }}

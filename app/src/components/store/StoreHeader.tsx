@@ -25,7 +25,7 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 		<View style={styles.container}>
 			<View style={styles.bar}>
 				<Pressable onPress={goBack}>
-					<Icon name='chevronLeft' size={32} />
+					<Icon name='chevron-left' size={32} />
 				</Pressable>
 			</View>
 			<View style={styles.row}>
