@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { StoreProductsQuery } from '../../types/api';
+import { formatNaira } from '../../utils/currency';
 
 interface StoreListItemProps {
 	item: StoreProductsQuery['store']['products'][-1];
@@ -21,7 +22,7 @@ const StoreListItem: React.FC<StoreListItemProps> = ({ item, onPress }) => {
 				)}
 			</View>
 			<Text style={styles.name}>{item.name}</Text>
-			<Text style={styles.price}>{item.unitPrice}.00 NGN</Text>
+			<Text style={styles.price}>{formatNaira(item.unitPrice)}</Text>
 		</TouchableOpacity>
 	);
 };

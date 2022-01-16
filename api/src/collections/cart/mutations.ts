@@ -82,11 +82,13 @@ const removeProductFromCart: Resolver<RemoveProductArgs> = async (
 	});
 
 	if (userId === ctx.user.id) {
-		await ctx.prisma.cartProduct.delete({
-			where: { cartId_productId: { cartId, productId } }
-		});
+		const cart = await ctx.prisma.cartProduct
+			.delete({
+				where: { cartId_productId: { cartId, productId } }
+			})
+			.cart();
 
-		return cartId;
+		return cart;
 	}
 };
 
