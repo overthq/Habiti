@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, FlatList, StyleSheet } from 'react-native';
 import CartsListItem from '../components/carts/CartsListItem';
 import ListEmpty from '../components/global/ListEmpty';
 import { useNavigation } from '@react-navigation/native';
@@ -11,14 +11,6 @@ const Carts: React.FC = () => {
 	const [{ data, fetching }, refetch] = useCartsQuery();
 	const { navigate } =
 		useNavigation<BottomTabNavigationProp<HomeTabParamList, 'Carts'>>();
-
-	if (fetching) {
-		return (
-			<View>
-				<ActivityIndicator />
-			</View>
-		);
-	}
 
 	const carts = data?.currentUser.carts;
 
@@ -41,11 +33,11 @@ const Carts: React.FC = () => {
 					/>
 				}
 				refreshing={fetching}
-				onRefresh={() =>
+				onRefresh={() => {
 					refetch({
 						requestPolicy: 'network-only'
-					})
-				}
+					});
+				}}
 			/>
 		</View>
 	);

@@ -147,7 +147,7 @@ export type Mutation = {
 	editProfile: User;
 	editStore: Store;
 	followStore: Store;
-	removeProductFromCart: Scalars['ID'];
+	removeProductFromCart: Cart;
 	unfollowStore: Store;
 	updateCartProduct: CartProduct;
 };
@@ -320,6 +320,7 @@ export type QueryUserCartsArgs = {
 
 export type Store = {
 	__typename?: 'Store';
+	cartForUser?: Maybe<Cart>;
 	carts: Array<Cart>;
 	createdAt: Scalars['String'];
 	description?: Maybe<Scalars['String']>;
@@ -482,8 +483,25 @@ export type AddProductToCartMutation = {
 		id: string;
 		userId: string;
 		storeId: string;
-		total: number;
-		store: { __typename?: 'Store'; id: string; name: string };
+		store: {
+			__typename?: 'Store';
+			id: string;
+			name: string;
+			cartForUser?: { __typename?: 'Cart'; id: string } | null | undefined;
+		};
+	};
+};
+
+export type RemoveProductFromCartMutationVariables = Exact<{
+	productId: Scalars['ID'];
+	cartId: Scalars['ID'];
+}>;
+
+export type RemoveProductFromCartMutation = {
+	__typename?: 'Mutation';
+	removeProductFromCart: {
+		__typename?: 'Cart';
+		id: string;
 		products: Array<{
 			__typename?: 'CartProduct';
 			cartId: string;
@@ -497,16 +515,6 @@ export type AddProductToCartMutation = {
 			};
 		}>;
 	};
-};
-
-export type RemoveProductFromCartMutationVariables = Exact<{
-	productId: Scalars['ID'];
-	cartId: Scalars['ID'];
-}>;
-
-export type RemoveProductFromCartMutation = {
-	__typename?: 'Mutation';
-	removeProductFromCart: string;
 };
 
 export type CreateCartMutationVariables = Exact<{
@@ -672,7 +680,6 @@ export type StoreProductsQuery = {
 
 export type ProductQueryVariables = Exact<{
 	productId: Scalars['ID'];
-	storeId: Scalars['ID'];
 }>;
 
 export type ProductQuery = {
@@ -684,33 +691,37 @@ export type ProductQuery = {
 		description: string;
 		unitPrice: number;
 		storeId: string;
+		store: {
+			__typename?: 'Store';
+			id: string;
+			cartForUser?:
+				| {
+						__typename?: 'Cart';
+						id: string;
+						userId: string;
+						storeId: string;
+						store: { __typename?: 'Store'; id: string; name: string };
+						product?:
+							| {
+									__typename?: 'CartProduct';
+									cartId: string;
+									productId: string;
+									cart: { __typename?: 'Cart'; id: string };
+									product: {
+										__typename?: 'Product';
+										id: string;
+										name: string;
+										unitPrice: number;
+									};
+							  }
+							| null
+							| undefined;
+				  }
+				| null
+				| undefined;
+		};
 		images: Array<{ __typename?: 'Image'; id: string; path: string }>;
 	};
-	userCart?:
-		| {
-				__typename?: 'Cart';
-				id: string;
-				userId: string;
-				storeId: string;
-				store: { __typename?: 'Store'; id: string; name: string };
-				product?:
-					| {
-							__typename?: 'CartProduct';
-							cartId: string;
-							productId: string;
-							cart: { __typename?: 'Cart'; id: string };
-							product: {
-								__typename?: 'Product';
-								id: string;
-								name: string;
-								unitPrice: number;
-							};
-					  }
-					| null
-					| undefined;
-		  }
-		| null
-		| undefined;
 };
 
 export type WatchlistQueryVariables = Exact<{ [key: string]: never }>;
@@ -933,20 +944,10 @@ export const AddProductToCartDocument = gql`
 			store {
 				id
 				name
-			}
-			products {
-				cartId
-				productId
-				cart {
+				cartForUser {
 					id
 				}
-				product {
-					id
-					name
-					unitPrice
-				}
 			}
-			total
 		}
 	}
 `;
@@ -959,7 +960,21 @@ export function useAddProductToCartMutation() {
 }
 export const RemoveProductFromCartDocument = gql`
 	mutation RemoveProductFromCart($productId: ID!, $cartId: ID!) {
-		removeProductFromCart(productId: $productId, cartId: $cartId)
+		removeProductFromCart(productId: $productId, cartId: $cartId) {
+			id
+			products {
+				cartId
+				productId
+				cart {
+					id
+				}
+				product {
+					id
+					name
+					unitPrice
+				}
+			}
+		}
 	}
 `;
 
@@ -1162,37 +1177,40 @@ export function useStoreProductsQuery(
 	});
 }
 export const ProductDocument = gql`
-	query Product($productId: ID!, $storeId: ID!) {
+	query Product($productId: ID!) {
 		product(id: $productId) {
 			id
 			name
 			description
 			unitPrice
 			storeId
+			store {
+				id
+				cartForUser {
+					id
+					userId
+					storeId
+					store {
+						id
+						name
+					}
+					product(id: $productId) {
+						cartId
+						productId
+						cart {
+							id
+						}
+						product {
+							id
+							name
+							unitPrice
+						}
+					}
+				}
+			}
 			images {
 				id
 				path
-			}
-		}
-		userCart(storeId: $storeId) {
-			id
-			userId
-			storeId
-			store {
-				id
-				name
-			}
-			product(id: $productId) {
-				cartId
-				productId
-				cart {
-					id
-				}
-				product {
-					id
-					name
-					unitPrice
-				}
 			}
 		}
 	}

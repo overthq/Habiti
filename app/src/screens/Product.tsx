@@ -9,15 +9,19 @@ import ProductDetails from '../components/product/ProductDetails';
 
 const Product: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Product'>>();
-	const [{ data, fetching }] = useProductQuery({
-		variables: { productId: params.productId, storeId: params.storeId }
+	const [{ data, fetching, error }] = useProductQuery({
+		variables: { productId: params.productId }
 	});
+
+	React.useEffect(() => {
+		console.log(error);
+	}, [error]);
 
 	const { product, cart, inCart } = React.useMemo(
 		() => ({
 			product: data?.product,
-			cart: data?.userCart,
-			inCart: !!data?.userCart?.product?.productId
+			cart: data?.product.store.cartForUser,
+			inCart: !!data?.product.store.cartForUser?.product?.productId
 		}),
 		[data]
 	);

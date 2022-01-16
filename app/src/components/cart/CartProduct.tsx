@@ -4,6 +4,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { CartQuery } from '../../types/api';
 import { Icon } from '../Icon';
 import { AppStackParamList } from '../../types/navigation';
+import { formatNaira } from '../../utils/currency';
 
 interface CartProductProps {
 	cartProduct: CartQuery['cart']['products'][-1];
@@ -33,7 +34,7 @@ const CartProduct: React.FC<CartProductProps> = ({
 				<View>
 					<Text style={styles.name}>{product.name}</Text>
 					<Text style={styles.price}>
-						{quantity} units · {product.unitPrice * quantity}.00 NGN
+						{quantity} units · {formatNaira(product.unitPrice * quantity)}
 					</Text>
 				</View>
 			</View>

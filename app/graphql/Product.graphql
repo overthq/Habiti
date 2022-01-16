@@ -15,38 +15,40 @@ query StoreProducts($storeId: ID!) {
 	}
 }
 
-query Product($productId: ID!, $storeId: ID!) {
+query Product($productId: ID!) {
 	product(id: $productId) {
 		id
 		name
 		description
 		unitPrice
 		storeId
+		store {
+			id
+			cartForUser {
+				id
+				userId
+				storeId
+				store {
+					id
+					name
+				}
+				product(id: $productId) {
+					cartId
+					productId
+					cart {
+						id
+					}
+					product {
+						id
+						name
+						unitPrice
+					}
+				}
+			}
+		}
 		images {
 			id
 			path
-		}
-	}
-
-	userCart(storeId: $storeId) {
-		id
-		userId
-		storeId
-		store {
-			id
-			name
-		}
-		product(id: $productId) {
-			cartId
-			productId
-			cart {
-				id
-			}
-			product {
-				id
-				name
-				unitPrice
-			}
 		}
 	}
 }

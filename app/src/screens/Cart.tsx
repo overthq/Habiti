@@ -14,6 +14,7 @@ import Button from '../components/global/Button';
 import SelectCard from '../components/cart/SelectCard';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useAppSelector } from '../redux/store';
+import { formatNaira } from '../utils/currency';
 
 const Cart: React.FC = () => {
 	const {
@@ -59,7 +60,7 @@ const Cart: React.FC = () => {
 				<View style={styles.bottom}>
 					<View style={styles.row}>
 						<Text style={styles.total}>Total</Text>
-						<Text style={styles.total}>{cart.total} NGN</Text>
+						<Text style={styles.total}>{formatNaira(cart.total)}</Text>
 					</View>
 					<SelectCard
 						selectedCard={selectedCard}
