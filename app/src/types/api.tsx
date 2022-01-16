@@ -604,7 +604,15 @@ export type OrderQuery = {
 		id: string;
 		total: number;
 		createdAt: string;
-		store: { __typename?: 'Store'; id: string; name: string };
+		store: {
+			__typename?: 'Store';
+			id: string;
+			name: string;
+			image?:
+				| { __typename?: 'Image'; id: string; path: string }
+				| null
+				| undefined;
+		};
 		products: Array<{
 			__typename?: 'OrderProduct';
 			orderId: string;
@@ -1070,6 +1078,10 @@ export const OrderDocument = gql`
 			store {
 				id
 				name
+				image {
+					id
+					path
+				}
 			}
 			products {
 				orderId

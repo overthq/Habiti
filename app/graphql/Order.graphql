@@ -31,6 +31,10 @@ query Order($orderId: ID!) {
 		store {
 			id
 			name
+			image {
+				id
+				path
+			}
 		}
 		products {
 			orderId

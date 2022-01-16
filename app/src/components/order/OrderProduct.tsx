@@ -41,8 +41,8 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		backgroundColor: '#FFFFFF',
-		paddingVertical: 4,
-		paddingHorizontal: 16,
+		paddingVertical: 8,
+		paddingHorizontal: 8,
 		borderBottomWidth: 0.5,
 		borderBottomColor: '#EDEDED'
 	},
@@ -53,8 +53,8 @@ const styles = StyleSheet.create({
 	placeholder: {
 		borderRadius: 4,
 		backgroundColor: '#D3D3D3',
-		height: 40,
-		width: 40,
+		height: 50,
+		width: 50,
 		marginRight: 8,
 		overflow: 'hidden'
 	},

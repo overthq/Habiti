@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import {
+	View,
+	Text,
+	Image,
+	StyleSheet,
+	ActivityIndicator,
+	Pressable
+} from 'react-native';
 import {
 	NavigationProp,
 	RouteProp,
@@ -19,9 +26,16 @@ const Order: React.FC = () => {
 	const [{ data, fetching }] = useOrderQuery({ variables: { orderId } });
 	const order = data?.order;
 
-	const handleOrderProductPress = React.useCallback((productId: string) => {
-		navigate('Product', { productId, storeId });
-	}, []);
+	const handleStorePress = React.useCallback(() => {
+		navigate('Store', { storeId });
+	}, [storeId]);
+
+	const handleOrderProductPress = React.useCallback(
+		(productId: string) => {
+			navigate('Product', { productId, storeId });
+		},
+		[storeId]
+	);
 
 	if (fetching || !order) {
 		return (
@@ -33,11 +47,23 @@ const Order: React.FC = () => {
 
 	return (
 		<View style={styles.container}>
-			<View style={{ paddingTop: 16, paddingHorizontal: 16 }}>
-				<Text>Order Details:</Text>
+			<View style={styles.meta}>
+				<Pressable style={styles.store} onPress={handleStorePress}>
+					<View style={styles.placeholder}>
+						{order.store.image ? (
+							<Image
+								style={styles.image}
+								source={{ uri: order.store.image.path }}
+							/>
+						) : (
+							<Text style={styles.avatarText}>{order.store.name[0]}</Text>
+						)}
+					</View>
+					<Text style={styles.storeName}>{order.store.name}</Text>
+				</Pressable>
 				<Text>{relativeTimestamp(order.createdAt)}</Text>
 			</View>
-			<View style={{ marginVertical: 16 }}>
+			<View style={styles.products}>
 				{order.products.map(orderProduct => (
 					<OrderProduct
 						key={orderProduct.productId}
@@ -56,6 +82,39 @@ const Order: React.FC = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1
+	},
+	meta: {
+		paddingTop: 16,
+		paddingHorizontal: 16
+	},
+	store: {
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
+	storeName: {
+		fontSize: 18,
+		fontWeight: '500'
+	},
+	placeholder: {
+		height: 40,
+		width: 40,
+		borderRadius: 20,
+		backgroundColor: '#D3D3D3',
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginRight: 8
+	},
+	image: {
+		width: '100%',
+		height: '100%'
+	},
+	avatarText: {
+		fontSize: 24,
+		fontWeight: '500',
+		color: '#505050'
+	},
+	products: {
+		marginVertical: 16
 	}
 });
 
