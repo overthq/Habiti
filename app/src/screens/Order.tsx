@@ -17,6 +17,7 @@ import { useOrderQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 import OrderProduct from '../components/order/OrderProduct';
 import { relativeTimestamp } from '../utils/date';
+import { formatNaira } from '../utils/currency';
 
 const Order: React.FC = () => {
 	const {
@@ -72,8 +73,11 @@ const Order: React.FC = () => {
 					/>
 				))}
 			</View>
-			<View>
-				<Text>Total: {order.total}.00 NGN</Text>
+			<View style={styles.figures}>
+				<View style={styles.figureRow}>
+					<Text style={styles.figureKey}>Total</Text>
+					<Text style={styles.figureKey}>{formatNaira(order.total)}</Text>
+				</View>
 			</View>
 		</View>
 	);
@@ -115,6 +119,18 @@ const styles = StyleSheet.create({
 	},
 	products: {
 		marginVertical: 16
+	},
+	figures: {
+		paddingHorizontal: 16
+	},
+	figureRow: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center'
+	},
+	figureKey: {
+		fontSize: 16,
+		fontWeight: '500'
 	}
 });
 
