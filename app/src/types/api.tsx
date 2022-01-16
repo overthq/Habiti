@@ -133,7 +133,7 @@ export type Image = {
 export type Mutation = {
 	__typename?: 'Mutation';
 	_?: Maybe<Scalars['Boolean']>;
-	addProductToCart: Cart;
+	addProductToCart: Product;
 	createCart: Cart;
 	createOrder: Order;
 	createProduct: Product;
@@ -260,6 +260,7 @@ export type Product = {
 	description: Scalars['String'];
 	id: Scalars['ID'];
 	images: Array<Image>;
+	inCart: Scalars['Boolean'];
 	name: Scalars['String'];
 	orders: Array<Order>;
 	quantity: Scalars['Int'];
@@ -479,16 +480,10 @@ export type AddProductToCartMutationVariables = Exact<{
 export type AddProductToCartMutation = {
 	__typename?: 'Mutation';
 	addProductToCart: {
-		__typename?: 'Cart';
+		__typename?: 'Product';
 		id: string;
-		userId: string;
 		storeId: string;
-		store: {
-			__typename?: 'Store';
-			id: string;
-			name: string;
-			cartForUser?: { __typename?: 'Cart'; id: string } | null | undefined;
-		};
+		inCart: boolean;
 	};
 };
 
@@ -691,6 +686,7 @@ export type ProductQuery = {
 		description: string;
 		unitPrice: number;
 		storeId: string;
+		inCart: boolean;
 		store: {
 			__typename?: 'Store';
 			id: string;
@@ -701,21 +697,6 @@ export type ProductQuery = {
 						userId: string;
 						storeId: string;
 						store: { __typename?: 'Store'; id: string; name: string };
-						product?:
-							| {
-									__typename?: 'CartProduct';
-									cartId: string;
-									productId: string;
-									cart: { __typename?: 'Cart'; id: string };
-									product: {
-										__typename?: 'Product';
-										id: string;
-										name: string;
-										unitPrice: number;
-									};
-							  }
-							| null
-							| undefined;
 				  }
 				| null
 				| undefined;
@@ -939,15 +920,8 @@ export const AddProductToCartDocument = gql`
 	mutation AddProductToCart($input: AddProductToCartInput!) {
 		addProductToCart(input: $input) {
 			id
-			userId
 			storeId
-			store {
-				id
-				name
-				cartForUser {
-					id
-				}
-			}
+			inCart
 		}
 	}
 `;
@@ -1194,24 +1168,13 @@ export const ProductDocument = gql`
 						id
 						name
 					}
-					product(id: $productId) {
-						cartId
-						productId
-						cart {
-							id
-						}
-						product {
-							id
-							name
-							unitPrice
-						}
-					}
 				}
 			}
 			images {
 				id
 				path
 			}
+			inCart
 		}
 	}
 `;

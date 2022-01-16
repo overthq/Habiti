@@ -59,15 +59,8 @@ query Cart($cartId: ID!) {
 mutation AddProductToCart($input: AddProductToCartInput!) {
 	addProductToCart(input: $input) {
 		id
-		userId
 		storeId
-		store {
-			id
-			name
-			cartForUser {
-				id
-			}
-		}
+		inCart
 	}
 }
 

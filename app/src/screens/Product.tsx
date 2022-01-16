@@ -17,11 +17,10 @@ const Product: React.FC = () => {
 		console.log(error);
 	}, [error]);
 
-	const { product, cart, inCart } = React.useMemo(
+	const { product, cart } = React.useMemo(
 		() => ({
 			product: data?.product,
-			cart: data?.product.store.cartForUser,
-			inCart: !!data?.product.store.cartForUser?.product?.productId
+			cart: data?.product.store.cartForUser
 		}),
 		[data]
 	);
@@ -42,7 +41,7 @@ const Product: React.FC = () => {
 				storeId={product.storeId}
 				productId={product.id}
 				cartId={cart?.id}
-				inCart={inCart}
+				inCart={product.inCart}
 			/>
 			{/* Related Products */}
 		</ScrollView>

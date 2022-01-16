@@ -44,25 +44,21 @@ const addProductToCart: Resolver<AddProductArgs> = async (
 	{ input: { cartId, productId, quantity } },
 	ctx
 ) => {
-	const cart = await ctx.prisma.cart.update({
-		where: { id: cartId },
-		data: {
-			products: {
-				upsert: {
-					where: { cartId_productId: { cartId, productId } },
-					update: {
-						quantity
-					},
-					create: {
-						productId,
-						quantity
-					}
-				}
+	const product = await ctx.prisma.cartProduct
+		.upsert({
+			where: { cartId_productId: { cartId, productId } },
+			update: {
+				quantity
+			},
+			create: {
+				cartId,
+				productId,
+				quantity
 			}
-		}
-	});
+		})
+		.product();
 
-	return cart;
+	return product;
 };
 
 interface RemoveProductArgs {

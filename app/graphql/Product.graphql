@@ -32,24 +32,13 @@ query Product($productId: ID!) {
 					id
 					name
 				}
-				product(id: $productId) {
-					cartId
-					productId
-					cart {
-						id
-					}
-					product {
-						id
-						name
-						unitPrice
-					}
-				}
 			}
 		}
 		images {
 			id
 			path
 		}
+		inCart
 	}
 }
 

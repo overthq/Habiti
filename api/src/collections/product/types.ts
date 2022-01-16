@@ -11,6 +11,7 @@ const ProductTypes = gql`
 		createdAt: String!
 		updatedAt: String!
 
+		inCart: Boolean!
 		store: Store!
 		orders: [Order!]!
 		carts: [CartProduct!]!

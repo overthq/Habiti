@@ -46,6 +46,27 @@ const images: Resolver = async (parent, _, ctx) => {
 	return fetchedImages;
 };
 
+// TODO: Very hacky and bad.
+const inCart: Resolver = async (parent, _, ctx) => {
+	const fetchedCart = await ctx.prisma.cart.findUnique({
+		where: { userId_storeId: { userId: ctx.user.id, storeId: parent.storeId } }
+	});
+
+	if (fetchedCart) {
+		const fetchedCartProduct = await ctx.prisma.cartProduct.findUnique({
+			where: {
+				cartId_productId: {
+					cartId: fetchedCart.id,
+					productId: parent.id
+				}
+			}
+		});
+		return !!fetchedCartProduct;
+	} else {
+		return false;
+	}
+};
+
 export default {
 	Query: {
 		product,
@@ -55,6 +76,7 @@ export default {
 		orders,
 		carts,
 		store,
-		images
+		images,
+		inCart
 	}
 };
