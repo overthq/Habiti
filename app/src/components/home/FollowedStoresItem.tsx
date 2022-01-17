@@ -18,12 +18,10 @@ const FollowedStoresItem: React.FC<FollowedStoresItemProps> = ({ store }) => {
 			activeOpacity={0.8}
 			onPress={() => navigate('Store', { storeId: store.id })}
 		>
-			<View style={styles.imageContainer}>
-				<View style={styles.placeholder}>
-					{store.image && (
-						<Image source={{ uri: store.image.path }} style={styles.image} />
-					)}
-				</View>
+			<View style={styles.placeholder}>
+				{store.image && (
+					<Image source={{ uri: store.image.path }} style={styles.image} />
+				)}
 			</View>
 			<Text style={styles.name}>{store.name}</Text>
 		</TouchableOpacity>
@@ -34,24 +32,15 @@ const styles = StyleSheet.create({
 	container: {
 		marginHorizontal: 8
 	},
-	imageContainer: {
-		width: 70,
-		height: 70,
-		borderColor: '#000000',
-		borderWidth: 2,
-		borderRadius: 45,
-		justifyContent: 'center',
-		alignItems: 'center'
-	},
 	image: {
 		width: '100%',
 		height: '100%'
 	},
 	placeholder: {
 		backgroundColor: '#D3D3D3',
-		width: 60,
-		height: 60,
-		borderRadius: 40
+		width: 70,
+		height: 70,
+		borderRadius: 35
 	},
 	name: {
 		textAlign: 'center',

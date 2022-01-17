@@ -9,13 +9,9 @@ import ProductDetails from '../components/product/ProductDetails';
 
 const Product: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Product'>>();
-	const [{ data, fetching, error }] = useProductQuery({
+	const [{ data, fetching }] = useProductQuery({
 		variables: { productId: params.productId }
 	});
-
-	React.useEffect(() => {
-		console.log(error);
-	}, [error]);
 
 	const { product, cart } = React.useMemo(
 		() => ({

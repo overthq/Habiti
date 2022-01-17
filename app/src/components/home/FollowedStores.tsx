@@ -66,12 +66,9 @@ const FollowedStores: React.FC = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		height: 200
+		paddingVertical: 8
 	},
-	list: {
-		marginTop: 8,
-		height: '100%'
-	},
+	list: {},
 	sectionHeader: {
 		marginLeft: 16,
 		fontSize: 16,
