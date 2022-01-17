@@ -62,3 +62,31 @@ query Watchlist {
 		}
 	}
 }
+
+# TODO: Fix this, it sucks.
+# We basically, have to refetch the entire watchlist,
+# every time the user adds one product.
+
+mutation AddToWatchlist($productId: ID!) {
+	addToWatchlist(productId: $productId) {
+		userId
+		productId
+		user {
+			watchlist {
+				product {
+					id
+					name
+					unitPrice
+					store {
+						id
+						name
+					}
+					images {
+						id
+						path
+					}
+				}
+			}
+		}
+	}
+}

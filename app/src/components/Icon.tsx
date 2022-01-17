@@ -43,7 +43,8 @@ const icons = {
 	user: (
 		<Path d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' />
 	),
-	x: <Path d='M18 6 6 18M6 6l12 12' />
+	x: <Path d='M18 6 6 18M6 6l12 12' />,
+	bookmark: <Path d='m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z' />
 };
 
 interface IconProps {

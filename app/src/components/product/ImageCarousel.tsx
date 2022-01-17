@@ -13,14 +13,16 @@ import Animated, {
 import ImageCarouselDots from '../profile/ImageCarouselDots';
 import { ProductQuery } from '../../types/api';
 import CloseButton from './CloseButton';
+import WatchlistButton from './WatchlistButton';
 
 interface ImageCarouselProps {
+	productId: string;
 	images: ProductQuery['product']['images'];
 }
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
-const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
+const ImageCarousel: React.FC<ImageCarouselProps> = ({ productId, images }) => {
 	const { width } = useWindowDimensions();
 	const scrollX = useSharedValue(0);
 
@@ -51,6 +53,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 			/>
 			<ImageCarouselDots scrollX={scrollX} length={images.length} />
 			<CloseButton />
+			<WatchlistButton productId={productId} />
 		</View>
 	);
 };

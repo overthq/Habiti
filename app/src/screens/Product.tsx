@@ -31,7 +31,7 @@ const Product: React.FC = () => {
 
 	return (
 		<ScrollView style={styles.container}>
-			<ImageCarousel images={product.images} />
+			<ImageCarousel productId={product.id} images={product.images} />
 			<ProductDetails product={product} />
 			<AddToCart
 				storeId={product.storeId}

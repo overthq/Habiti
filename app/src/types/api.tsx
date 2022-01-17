@@ -134,6 +134,7 @@ export type Mutation = {
 	__typename?: 'Mutation';
 	_?: Maybe<Scalars['Boolean']>;
 	addToCart: Product;
+	addToWatchlist: WatchlistProduct;
 	createCart: Cart;
 	createOrder: Order;
 	createProduct: Product;
@@ -154,6 +155,10 @@ export type Mutation = {
 
 export type MutationAddToCartArgs = {
 	input: AddProductToCartInput;
+};
+
+export type MutationAddToWatchlistArgs = {
+	productId: Scalars['ID'];
 };
 
 export type MutationCreateCartArgs = {
@@ -716,6 +721,33 @@ export type WatchlistQuery = {
 	};
 };
 
+export type AddToWatchlistMutationVariables = Exact<{
+	productId: Scalars['ID'];
+}>;
+
+export type AddToWatchlistMutation = {
+	__typename?: 'Mutation';
+	addToWatchlist: {
+		__typename?: 'WatchlistProduct';
+		userId: string;
+		productId: string;
+		user: {
+			__typename?: 'User';
+			watchlist: Array<{
+				__typename?: 'WatchlistProduct';
+				product: {
+					__typename?: 'Product';
+					id: string;
+					name: string;
+					unitPrice: number;
+					store: { __typename?: 'Store'; id: string; name: string };
+					images: Array<{ __typename?: 'Image'; id: string; path: string }>;
+				};
+			}>;
+		};
+	};
+};
+
 export type StoresQueryVariables = Exact<{ [key: string]: never }>;
 
 export type StoresQuery = {
@@ -1193,6 +1225,38 @@ export function useWatchlistQuery(
 		query: WatchlistDocument,
 		...options
 	});
+}
+export const AddToWatchlistDocument = gql`
+	mutation AddToWatchlist($productId: ID!) {
+		addToWatchlist(productId: $productId) {
+			userId
+			productId
+			user {
+				watchlist {
+					product {
+						id
+						name
+						unitPrice
+						store {
+							id
+							name
+						}
+						images {
+							id
+							path
+						}
+					}
+				}
+			}
+		}
+	}
+`;
+
+export function useAddToWatchlistMutation() {
+	return Urql.useMutation<
+		AddToWatchlistMutation,
+		AddToWatchlistMutationVariables
+	>(AddToWatchlistDocument);
 }
 export const StoresDocument = gql`
 	query Stores {
