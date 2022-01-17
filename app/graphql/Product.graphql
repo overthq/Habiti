@@ -46,6 +46,8 @@ query Watchlist {
 	currentUser {
 		id
 		watchlist {
+			userId
+			productId
 			product {
 				id
 				name
@@ -73,6 +75,8 @@ mutation AddToWatchlist($productId: ID!) {
 		productId
 		user {
 			watchlist {
+				userId
+				productId
 				product {
 					id
 					name

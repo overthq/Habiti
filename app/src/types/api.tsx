@@ -709,6 +709,8 @@ export type WatchlistQuery = {
 		id: string;
 		watchlist: Array<{
 			__typename?: 'WatchlistProduct';
+			userId: string;
+			productId: string;
 			product: {
 				__typename?: 'Product';
 				id: string;
@@ -735,6 +737,8 @@ export type AddToWatchlistMutation = {
 			__typename?: 'User';
 			watchlist: Array<{
 				__typename?: 'WatchlistProduct';
+				userId: string;
+				productId: string;
 				product: {
 					__typename?: 'Product';
 					id: string;
@@ -1200,6 +1204,8 @@ export const WatchlistDocument = gql`
 		currentUser {
 			id
 			watchlist {
+				userId
+				productId
 				product {
 					id
 					name
@@ -1233,6 +1239,8 @@ export const AddToWatchlistDocument = gql`
 			productId
 			user {
 				watchlist {
+					userId
+					productId
 					product {
 						id
 						name

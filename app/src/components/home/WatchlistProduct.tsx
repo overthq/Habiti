@@ -4,6 +4,7 @@ import { View, Image, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { AppStackParamList } from '../../types/navigation';
 import { WatchlistQuery } from '../../types/api';
+import { formatNaira } from '../../utils/currency';
 
 interface WatchlistProductProps {
 	product: WatchlistQuery['currentUser']['watchlist'][-1]['product'];
@@ -23,18 +24,18 @@ const WatchlistProduct: React.FC<WatchlistProductProps> = ({ product }) => {
 			}
 			activeOpacity={0.8}
 		>
-			<View style={styles.imagePlaceholder}>
+			<View style={styles.placeholder}>
 				{product.images[0] && (
 					<Image
 						source={{ uri: product.images[0].path }}
-						style={{ width: '100%', height: '100%' }}
+						style={styles.image}
 					/>
 				)}
 			</View>
 			<Text style={styles.name} numberOfLines={1}>
 				{product.name}
 			</Text>
-			<Text style={styles.price}>N{product.unitPrice}</Text>
+			<Text style={styles.price}>{formatNaira(product.unitPrice)}</Text>
 			<Text style={styles.status}>In Stock</Text>
 		</TouchableOpacity>
 	);
@@ -45,13 +46,17 @@ const styles = StyleSheet.create({
 		marginLeft: 16,
 		width: 160
 	},
-	imagePlaceholder: {
+	placeholder: {
 		borderRadius: 6,
 		backgroundColor: '#D3D3D3',
 		width: 160,
 		height: 160,
 		marginBottom: 8,
 		overflow: 'hidden'
+	},
+	image: {
+		height: '100%',
+		width: '100%'
 	},
 	name: {
 		fontSize: 16,

@@ -17,7 +17,8 @@ const useClient = (accessToken: string | null) => {
 						keys: {
 							StoreFollower: data => `${data.storeId}-${data.followerId}`,
 							OrderProduct: data => `${data.orderId}-${data.productId}`,
-							CartProduct: data => `${data.cartId}-${data.productId}`
+							CartProduct: data => `${data.cartId}-${data.productId}`,
+							WatchlistProduct: data => `${data.userId}-${data.productId}`
 						}
 					}),
 					fetchExchange
