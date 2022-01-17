@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, Image, Pressable, Text, StyleSheet } from 'react-native';
 
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { AppStackParamList } from '../../types/navigation';
@@ -14,7 +14,7 @@ const WatchlistProduct: React.FC<WatchlistProductProps> = ({ product }) => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	return (
-		<TouchableOpacity
+		<Pressable
 			style={styles.container}
 			onPress={() =>
 				navigate('Product', {
@@ -22,7 +22,6 @@ const WatchlistProduct: React.FC<WatchlistProductProps> = ({ product }) => {
 					storeId: product.store.id
 				})
 			}
-			activeOpacity={0.8}
 		>
 			<View style={styles.placeholder}>
 				{product.images[0] && (
@@ -37,7 +36,7 @@ const WatchlistProduct: React.FC<WatchlistProductProps> = ({ product }) => {
 			</Text>
 			<Text style={styles.price}>{formatNaira(product.unitPrice)}</Text>
 			<Text style={styles.status}>In Stock</Text>
-		</TouchableOpacity>
+		</Pressable>
 	);
 };
 
