@@ -1,31 +1,20 @@
 import React from 'react';
-import {
-	View,
-	Text,
-	FlatList,
-	StyleSheet,
-	ActivityIndicator
-} from 'react-native';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import WatchlistProduct from './WatchlistProduct';
 import ListEmpty from '../global/ListEmpty';
-import { useWatchlistQuery } from '../../types/api';
+import { HomeQuery } from '../../types/api';
 import { HomeTabParamList } from '../../types/navigation';
 import textStyles from '../../styles/text';
 
-const Watchlist = () => {
-	const [{ data, fetching }] = useWatchlistQuery();
+interface WatchlistProps {
+	watchlist: HomeQuery['currentUser']['watchlist'];
+}
+
+const Watchlist: React.FC<WatchlistProps> = ({ watchlist }) => {
 	const { navigate } = useNavigation<NavigationProp<HomeTabParamList>>();
 
-	if (fetching) {
-		return (
-			<View>
-				<ActivityIndicator />
-			</View>
-		);
-	}
-
-	const products = data?.currentUser.watchlist.map(({ product }) => product);
+	const products = watchlist.map(({ product }) => product);
 
 	if (!products || products?.length === 0) {
 		return (

@@ -560,6 +560,64 @@ export type UpdateCartProductMutation = {
 	};
 };
 
+export type HomeQueryVariables = Exact<{ [key: string]: never }>;
+
+export type HomeQuery = {
+	__typename?: 'Query';
+	currentUser: {
+		__typename?: 'User';
+		id: string;
+		orders: Array<{
+			__typename?: 'Order';
+			id: string;
+			total: number;
+			createdAt: string;
+			store: {
+				__typename?: 'Store';
+				id: string;
+				name: string;
+				image?:
+					| { __typename?: 'Image'; id: string; path: string }
+					| null
+					| undefined;
+			};
+			products: Array<{
+				__typename?: 'OrderProduct';
+				unitPrice: number;
+				quantity: number;
+				product: { __typename?: 'Product'; id: string; name: string };
+			}>;
+		}>;
+		followed: Array<{
+			__typename?: 'StoreFollower';
+			storeId: string;
+			followerId: string;
+			store: {
+				__typename?: 'Store';
+				id: string;
+				name: string;
+				image?:
+					| { __typename?: 'Image'; id: string; path: string }
+					| null
+					| undefined;
+			};
+		}>;
+		watchlist: Array<{
+			__typename?: 'WatchlistProduct';
+			userId: string;
+			productId: string;
+			product: {
+				__typename?: 'Product';
+				id: string;
+				name: string;
+				unitPrice: number;
+				store: { __typename?: 'Store'; id: string; name: string };
+				images: Array<{ __typename?: 'Image'; id: string; path: string }>;
+			};
+		}>;
+	};
+};
+
 export type UserOrdersQueryVariables = Exact<{ [key: string]: never }>;
 
 export type UserOrdersQuery = {
@@ -1037,6 +1095,69 @@ export function useUpdateCartProductMutation() {
 		UpdateCartProductMutation,
 		UpdateCartProductMutationVariables
 	>(UpdateCartProductDocument);
+}
+export const HomeDocument = gql`
+	query Home {
+		currentUser {
+			id
+			orders {
+				id
+				store {
+					id
+					name
+					image {
+						id
+						path
+					}
+				}
+				products {
+					product {
+						id
+						name
+					}
+					unitPrice
+					quantity
+				}
+				total
+				createdAt
+			}
+			followed {
+				storeId
+				followerId
+				store {
+					id
+					name
+					image {
+						id
+						path
+					}
+				}
+			}
+			watchlist {
+				userId
+				productId
+				product {
+					id
+					name
+					unitPrice
+					store {
+						id
+						name
+					}
+					images {
+						id
+						path
+					}
+				}
+			}
+		}
+	}
+`;
+
+export function useHomeQuery(
+	options: Omit<Urql.UseQueryArgs<HomeQueryVariables>, 'query'> = {}
+) {
+	return Urql.useQuery<HomeQuery>({ query: HomeDocument, ...options });
 }
 export const UserOrdersDocument = gql`
 	query UserOrders {

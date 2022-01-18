@@ -1,34 +1,23 @@
 import React from 'react';
-import {
-	View,
-	Text,
-	FlatList,
-	StyleSheet,
-	ActivityIndicator
-} from 'react-native';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { useStoresFollowedQuery } from '../../types/api';
+import { HomeQuery } from '../../types/api';
 import { HomeTabParamList } from '../../types/navigation';
 import ListEmpty from '../global/ListEmpty';
 import FollowedStoresItem from './FollowedStoresItem';
 import textStyles from '../../styles/text';
 
-const FollowedStores: React.FC = () => {
-	const [{ data, fetching }] = useStoresFollowedQuery();
+interface FollowedStoresProps {
+	followed: HomeQuery['currentUser']['followed'];
+}
+
+const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 	const { navigate } = useNavigation<NavigationProp<HomeTabParamList>>();
 
 	const stores = React.useMemo(
-		() => data?.currentUser.followed.map(({ store }) => store),
-		[data?.currentUser]
+		() => followed.map(({ store }) => store),
+		[followed]
 	);
-
-	if (fetching) {
-		return (
-			<View style={styles.container}>
-				<ActivityIndicator />
-			</View>
-		);
-	}
 
 	if (!stores || stores?.length === 0) {
 		return (

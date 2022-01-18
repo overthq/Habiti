@@ -1,33 +1,25 @@
 import React from 'react';
-import {
-	View,
-	Text,
-	FlatList,
-	ActivityIndicator,
-	StyleSheet
-} from 'react-native';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { useUserOrdersQuery } from '../../types/api';
+import { HomeQuery } from '../../types/api';
 import textStyles from '../../styles/text';
 import RecentOrder from './RecentOrder';
 import ListEmpty from '../global/ListEmpty';
 import { HomeTabParamList } from '../../types/navigation';
 
-const RecentOrders: React.FC = () => {
-	const [{ data, fetching }] = useUserOrdersQuery();
+interface RecentOrdersProps {
+	orders: HomeQuery['currentUser']['orders'];
+}
+
+const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 	const { navigate } = useNavigation<NavigationProp<HomeTabParamList>>();
-	const orders = data?.currentUser.orders;
 
 	return (
 		<View style={styles.container}>
 			<Text style={[textStyles.sectionHeader, { marginLeft: 16 }]}>
 				Recent Orders
 			</Text>
-			{fetching ? (
-				<View style={styles.loading}>
-					<ActivityIndicator />
-				</View>
-			) : !orders || orders?.length === 0 ? (
+			{!orders || orders?.length === 0 ? (
 				<ListEmpty
 					description='When you have pending orders, they will be displayed here.'
 					cta={{

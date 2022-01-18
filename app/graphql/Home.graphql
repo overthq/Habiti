@@ -1,0 +1,58 @@
+query Home {
+	currentUser {
+		id
+
+		orders {
+			id
+			store {
+				id
+				name
+				image {
+					id
+					path
+				}
+			}
+			products {
+				product {
+					id
+					name
+				}
+				unitPrice
+				quantity
+			}
+			total
+			createdAt
+		}
+
+		followed {
+			storeId
+			followerId
+			store {
+				id
+				name
+				image {
+					id
+					path
+				}
+			}
+		}
+
+		watchlist {
+			userId
+			productId
+			product {
+				id
+				name
+				unitPrice
+				store {
+					id
+					name
+				}
+				images {
+					id
+					path
+				}
+			}
+		}
+	}
+}
