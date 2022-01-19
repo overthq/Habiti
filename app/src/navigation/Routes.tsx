@@ -1,4 +1,5 @@
 import React from 'react';
+import { Pressable } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider } from 'urql';
@@ -18,6 +19,7 @@ import { useAppSelector } from '../redux/store';
 import { AppStackParamList } from '../types/navigation';
 import useClient from '../hooks/useClient';
 import PaymentMethods from '../screens/PaymentMethods';
+import { Icon } from '../components/Icon';
 
 const AppStack = createStackNavigator<AppStackParamList>();
 
@@ -32,7 +34,13 @@ const Routes: React.FC = () => {
 					{accessToken ? (
 						<>
 							<AppStack.Screen name='Home' component={HomeTabNavigator} />
-							<AppStack.Screen name='Store' component={Store} />
+							<AppStack.Screen
+								name='Store'
+								component={Store}
+								options={{
+									headerShown: true
+								}}
+							/>
 							<AppStack.Group screenOptions={{ presentation: 'modal' }}>
 								<AppStack.Screen name='Product' component={Product} />
 								<AppStack.Screen name='Cart' component={Cart} />

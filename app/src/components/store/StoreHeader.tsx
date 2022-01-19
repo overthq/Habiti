@@ -1,33 +1,17 @@
 import React from 'react';
-import {
-	View,
-	Image,
-	Text,
-	TouchableOpacity,
-	StyleSheet,
-	Pressable
-} from 'react-native';
+import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { openLink } from '../../utils/links';
 import { StoreQuery } from '../../types/api';
 import FollowButton from './FollowButton';
 import SocialLinks from './SocialLinks';
-import { Icon } from '../Icon';
-import { useNavigation } from '@react-navigation/native';
 
 interface StoreHeaderProps {
 	store: StoreQuery['store'];
 }
 
 const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
-	const { goBack } = useNavigation();
-
 	return (
 		<View style={styles.container}>
-			<View style={styles.bar}>
-				<Pressable onPress={goBack}>
-					<Icon name='chevron-left' size={32} />
-				</Pressable>
-			</View>
 			<View style={styles.row}>
 				<View style={styles.placeholder}>
 					{store.image && (
@@ -74,7 +58,8 @@ const styles = StyleSheet.create({
 	row: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		justifyContent: 'space-between'
+		justifyContent: 'space-between',
+		paddingTop: 16
 	},
 	placeholder: {
 		backgroundColor: '#D3D3D3',

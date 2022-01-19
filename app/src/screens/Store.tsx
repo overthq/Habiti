@@ -1,23 +1,24 @@
 import React from 'react';
-import { StyleSheet, ActivityIndicator } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useStoreQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 import StoreProducts from '../components/store/StoreProducts';
+import useGoBack from '../hooks/useGoBack';
 
 const Store: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Store'>>();
 	const [{ data, fetching }] = useStoreQuery({
 		variables: { storeId: params.storeId }
 	});
+	useGoBack();
 
 	if (fetching || !data?.store) return <ActivityIndicator />;
 
 	return (
-		<SafeAreaView style={styles.container}>
+		<View style={styles.container}>
 			<StoreProducts store={data.store} />
-		</SafeAreaView>
+		</View>
 	);
 };
 
@@ -26,6 +27,9 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: '#FFFFFF',
 		paddingHorizontal: 10
+	},
+	back: {
+		paddingLeft: 8
 	}
 });
 
