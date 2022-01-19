@@ -5,10 +5,12 @@ import Button from '../components/global/Button';
 import { useCardsQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 import ListEmpty from '../components/global/ListEmpty';
+import useGoBack from '../hooks/useGoBack';
 
 const PaymentMethods: React.FC = () => {
 	const [{ data, fetching }] = useCardsQuery();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	useGoBack();
 
 	const cards = data?.currentUser.cards;
 
