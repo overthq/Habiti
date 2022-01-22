@@ -36,8 +36,8 @@ const PaymentMethods: React.FC = () => {
 			) : (
 				<View>
 					{cards?.map(card => (
-						<View key={card.id}>
-							<Text>Ending in {card.last4}</Text>
+						<View key={card.id} style={styles.card}>
+							<Text style={styles.number}>···· {card.last4}</Text>
 						</View>
 					))}
 					<Button
@@ -60,6 +60,12 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center'
+	},
+	card: {
+		paddingVertical: 4
+	},
+	number: {
+		fontSize: 16
 	}
 });
 
