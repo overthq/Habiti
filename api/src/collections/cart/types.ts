@@ -12,7 +12,6 @@ const CartTypes = gql`
 		user: User!
 		store: Store!
 		products: [CartProduct!]!
-		product(id: ID!): CartProduct
 	}
 
 	input CreateCartInput {
