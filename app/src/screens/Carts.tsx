@@ -35,7 +35,7 @@ const Carts: React.FC = () => {
 				refreshing={fetching}
 				onRefresh={() => {
 					refetch({
-						requestPolicy: 'network-only'
+						requestPolicy: 'cache-and-network'
 					});
 				}}
 			/>

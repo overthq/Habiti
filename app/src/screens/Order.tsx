@@ -18,6 +18,7 @@ import { AppStackParamList } from '../types/navigation';
 import OrderProduct from '../components/order/OrderProduct';
 import { relativeTimestamp } from '../utils/date';
 import { formatNaira } from '../utils/currency';
+import useGoBack from '../hooks/useGoBack';
 
 const Order: React.FC = () => {
 	const {
@@ -25,6 +26,7 @@ const Order: React.FC = () => {
 	} = useRoute<RouteProp<AppStackParamList, 'Order'>>();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const [{ data, fetching }] = useOrderQuery({ variables: { orderId } });
+	useGoBack();
 	const order = data?.order;
 
 	const handleStorePress = React.useCallback(() => {
