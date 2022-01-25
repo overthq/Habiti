@@ -11,6 +11,7 @@ import { useManagedStoresQuery } from '../../types/api';
 import { updatePreference } from '../../redux/preferences/actions';
 import { useAppSelector } from '../../redux/store';
 import { Icon } from '../Icon';
+import useGoBack from '../../hooks/useGoBack';
 
 interface RowProps {
 	name: string;
@@ -34,10 +35,9 @@ const SettingsActiveStore: React.FC = () => {
 	const activeStore = useAppSelector(
 		({ preferences }) => preferences.activeStore
 	);
+	useGoBack();
 
-	const managers = data?.user.managed;
-
-	const stores = managers?.map(({ store }) => store);
+	const stores = data?.user.managed.map(({ store }) => store);
 
 	const handleRowSelect = (id: string) => {
 		dispatch(updatePreference({ activeStore: id }));

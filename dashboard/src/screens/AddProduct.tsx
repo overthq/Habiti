@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useCreateProductMutation } from '../types/api';
 import Button from '../components/global/Button';
 import { useAppSelector } from '../redux/store';
+import useGoBack from '../hooks/useGoBack';
 
 const AddProduct: React.FC = () => {
 	const activeStore = useAppSelector(
@@ -12,6 +13,7 @@ const AddProduct: React.FC = () => {
 	);
 	const [, createProduct] = useCreateProductMutation();
 	const { goBack } = useNavigation();
+	useGoBack();
 
 	return (
 		<View style={styles.container}>

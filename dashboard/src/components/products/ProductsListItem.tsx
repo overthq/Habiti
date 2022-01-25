@@ -5,6 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { ProductsStackParamList } from '../../types/navigation';
 import { Icon } from '../Icon';
 import { ProductsQuery } from '../../types/api';
+import { formatNaira } from '../../utils/currency';
 
 interface ProductsListItemProps {
 	product: ProductsQuery['store']['products'][-1];
@@ -23,7 +24,7 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({ product }) => {
 		>
 			<View>
 				<Text style={styles.name}>{product.name}</Text>
-				<Text style={styles.price}>{product.unitPrice} NGN</Text>
+				<Text style={styles.price}>{formatNaira(product.unitPrice)}</Text>
 			</View>
 			<Icon name='chevron-right' />
 		</TouchableOpacity>

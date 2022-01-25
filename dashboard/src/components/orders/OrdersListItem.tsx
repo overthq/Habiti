@@ -4,6 +4,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { OrdersQuery } from '../../types/api';
 import { Icon } from '../Icon';
 import { OrdersStackParamsList } from '../../types/navigation';
+import { formatNaira } from '../../utils/currency';
 
 interface OrdersListItemProps {
 	order: OrdersQuery['store']['orders'][-1];
@@ -22,8 +23,10 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order }) => {
 				{/*<Text>{order.status}</Text> */}
 				<Text>{order.createdAt}</Text>
 			</View>
-			<Text>{order.total} NGN</Text>
-			<Icon name='chevron-right' />
+			<View style={styles.right}>
+				<Text style={styles.total}>{formatNaira(order.total)}</Text>
+				<Icon name='chevron-right' />
+			</View>
 		</Pressable>
 	);
 };
@@ -31,8 +34,9 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order }) => {
 const styles = StyleSheet.create({
 	container: {
 		width: '100%',
-		paddingVertical: 4,
-		paddingHorizontal: 16,
+		paddingVertical: 8,
+		paddingLeft: 16,
+		paddingRight: 8,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
@@ -40,7 +44,14 @@ const styles = StyleSheet.create({
 		borderBottomWidth: 0.5,
 		borderBottomColor: '#EDEDED'
 	},
+	right: {
+		flexDirection: 'row'
+	},
 	name: {
+		fontSize: 18,
+		fontWeight: '500'
+	},
+	total: {
 		fontSize: 18,
 		fontWeight: '500'
 	}

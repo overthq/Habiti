@@ -12,6 +12,7 @@ import {
 	OrdersStackParamsList
 } from '../types/navigation';
 import OrderProduct from '../components/order/OrderProduct';
+import useGoBack from '../hooks/useGoBack';
 
 const Order: React.FC = () => {
 	const {
@@ -19,6 +20,7 @@ const Order: React.FC = () => {
 	} = useRoute<RouteProp<OrdersStackParamsList, 'Order'>>();
 	const { navigate } = useNavigation<NavigationProp<ProductsStackParamList>>();
 	const [{ data }] = useOrderQuery({ variables: { id: orderId } });
+	useGoBack();
 	const order = data?.order;
 
 	const handleOrderProductPress = React.useCallback((productId: string) => {

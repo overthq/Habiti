@@ -15,7 +15,7 @@ const Section: React.FC<SectionProps> = ({ title, content }) => (
 
 const styles = StyleSheet.create({
 	section: {
-		paddingVertical: 4,
+		paddingVertical: 8,
 		paddingHorizontal: 16,
 		backgroundColor: '#FFFFFF'
 	},

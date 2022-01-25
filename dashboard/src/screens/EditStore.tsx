@@ -11,6 +11,7 @@ import { Formik } from 'formik';
 import Button from '../components/global/Button';
 import { useEditStoreMutation, useStoreQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
+import useGoBack from '../hooks/useGoBack';
 
 const EditStore: React.FC = () => {
 	const { goBack } = useNavigation();
@@ -19,6 +20,7 @@ const EditStore: React.FC = () => {
 		variables: { storeId: params.storeId }
 	});
 	const [, editStore] = useEditStoreMutation();
+	useGoBack();
 
 	const store = data?.store;
 
