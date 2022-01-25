@@ -32,7 +32,7 @@ const AddProduct: React.FC = () => {
 									name: values.name,
 									description: values.description,
 									storeId: activeStore,
-									unitPrice: Number(values.unitPrice),
+									unitPrice: Number(values.unitPrice) * 100,
 									quantity: Number(values.quantity)
 								}
 							});

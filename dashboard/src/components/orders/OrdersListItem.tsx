@@ -5,6 +5,7 @@ import { OrdersQuery } from '../../types/api';
 import { Icon } from '../Icon';
 import { OrdersStackParamsList } from '../../types/navigation';
 import { formatNaira } from '../../utils/currency';
+import { parseTimestamp } from '../../utils/date';
 
 interface OrdersListItemProps {
 	order: OrdersQuery['store']['orders'][-1];
@@ -21,7 +22,7 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order }) => {
 			<View>
 				<Text style={styles.name}>{order.user.name}</Text>
 				{/*<Text>{order.status}</Text> */}
-				<Text>{order.createdAt}</Text>
+				<Text>{parseTimestamp(order.createdAt)}</Text>
 			</View>
 			<View style={styles.right}>
 				<Text style={styles.total}>{formatNaira(order.total)}</Text>
