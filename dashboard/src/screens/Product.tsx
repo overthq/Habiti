@@ -6,6 +6,7 @@ import { ProductsStackParamList } from '../types/navigation';
 import Section from '../components/product/Section';
 import Images from '../components/product/Images';
 import { formatNaira } from '../utils/currency';
+import useGoBack from '../hooks/useGoBack';
 
 const Product: React.FC = () => {
 	const {
@@ -14,6 +15,7 @@ const Product: React.FC = () => {
 	const [{ data, fetching }] = useProductQuery({
 		variables: { id: productId }
 	});
+	useGoBack();
 
 	const product = data?.product;
 

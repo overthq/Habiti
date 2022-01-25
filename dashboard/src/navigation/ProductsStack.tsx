@@ -30,11 +30,7 @@ const ProductsStackNavigator = () => (
 		<ProductsStack.Screen
 			name='Product'
 			component={Product}
-			options={() => ({
-				title: '',
-				headerBackTitleVisible: false,
-				headerBackImage: () => <Icon size={28} name='chevron-left' />
-			})}
+			options={{ title: '' }}
 		/>
 	</ProductsStack.Navigator>
 );

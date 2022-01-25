@@ -5,15 +5,22 @@ import { Icon } from '../components/Icon';
 import { AppStackParamList } from '../types/navigation';
 
 const Overview: React.FC = () => {
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
-	return (
-		<ScrollView style={styles.container}>
-			<TouchableOpacity onPress={() => navigate('Settings')}>
-				<Icon name='settings' />
-			</TouchableOpacity>
-		</ScrollView>
-	);
+	React.useLayoutEffect(() => {
+		navigation.setOptions({
+			headerRight: () => (
+				<TouchableOpacity
+					style={styles.settings}
+					onPress={() => navigation.navigate('Settings')}
+				>
+					<Icon name='settings' />
+				</TouchableOpacity>
+			)
+		});
+	}, [navigation]);
+
+	return <ScrollView style={styles.container}></ScrollView>;
 };
 
 const styles = StyleSheet.create({
@@ -21,6 +28,9 @@ const styles = StyleSheet.create({
 		flex: 1,
 		paddingTop: 16,
 		paddingHorizontal: 16
+	},
+	settings: {
+		marginRight: 16
 	}
 });
 
