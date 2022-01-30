@@ -9,10 +9,12 @@ import {
 import { Formik } from 'formik';
 import { useCurrentUserQuery, useEditProfileMutation } from '../types/api';
 import Button from '../components/global/Button';
+import useGoBack from '../hooks/useGoBack';
 
 const EditProfile: React.FC = () => {
 	const [{ data, fetching }] = useCurrentUserQuery();
 	const [, editProfile] = useEditProfileMutation();
+	useGoBack();
 
 	if (fetching || !data) {
 		return (

@@ -1,16 +1,33 @@
 import React from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import {
+	View,
+	Text,
+	StyleSheet,
+	ActivityIndicator,
+	Pressable
+} from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import Button from '../components/global/Button';
 import { useCardsQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 import ListEmpty from '../components/global/ListEmpty';
 import useGoBack from '../hooks/useGoBack';
+import { Icon } from '../components/Icon';
 
 const PaymentMethods: React.FC = () => {
 	const [{ data, fetching }] = useCardsQuery();
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { navigate, setOptions } =
+		useNavigation<NavigationProp<AppStackParamList>>();
 	useGoBack();
+
+	React.useLayoutEffect(() => {
+		setOptions({
+			headerRight: () => (
+				<Pressable style={styles.add} onPress={() => navigate('Add Card')}>
+					<Icon name='plus' />
+				</Pressable>
+			)
+		});
+	});
 
 	const cards = data?.currentUser.cards;
 
@@ -40,11 +57,6 @@ const PaymentMethods: React.FC = () => {
 							<Text style={styles.number}>···· {card.last4}</Text>
 						</View>
 					))}
-					<Button
-						text='Add card'
-						onPress={() => navigate('Add Card')}
-						style={{ marginVertical: 8 }}
-					/>
 				</View>
 			)}
 		</View>
@@ -55,6 +67,9 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		paddingHorizontal: 16
+	},
+	add: {
+		paddingRight: 8
 	},
 	loading: {
 		flex: 1,
