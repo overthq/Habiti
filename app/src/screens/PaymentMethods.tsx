@@ -12,6 +12,7 @@ import { AppStackParamList } from '../types/navigation';
 import ListEmpty from '../components/global/ListEmpty';
 import useGoBack from '../hooks/useGoBack';
 import { Icon } from '../components/Icon';
+import { MastercardIcon } from '../components/cart/CardIcons';
 
 const PaymentMethods: React.FC = () => {
 	const [{ data, fetching }] = useCardsQuery();
@@ -52,8 +53,10 @@ const PaymentMethods: React.FC = () => {
 				/>
 			) : (
 				<View>
+					<Text style={styles.sectionHeader}>Cards</Text>
 					{cards?.map(card => (
 						<View key={card.id} style={styles.card}>
+							<MastercardIcon />
 							<Text style={styles.number}>···· {card.last4}</Text>
 						</View>
 					))}
@@ -68,6 +71,12 @@ const styles = StyleSheet.create({
 		flex: 1,
 		paddingHorizontal: 16
 	},
+	sectionHeader: {
+		fontSize: 16,
+		marginTop: 8,
+		fontWeight: '500',
+		color: '#505050'
+	},
 	add: {
 		paddingRight: 8
 	},
@@ -77,6 +86,8 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	card: {
+		flexDirection: 'row',
+		alignItems: 'center',
 		paddingVertical: 4
 	},
 	number: {

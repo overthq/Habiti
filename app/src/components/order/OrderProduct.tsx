@@ -9,6 +9,9 @@ interface OrderProductProps {
 	onPress(): void;
 }
 
+// The similarities between this file and CartProduct.tsx
+// are astounding. TODO: Refactor and reuse.
+
 const OrderProduct: React.FC<OrderProductProps> = ({
 	orderProduct: { product, quantity, unitPrice },
 	onPress
@@ -26,8 +29,8 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 				</View>
 				<View>
 					<Text style={styles.name}>{product.name}</Text>
-					<Text>
-						{quantity} · {formatNaira(quantity * unitPrice)}
+					<Text style={styles.price}>
+						{quantity} units · {formatNaira(quantity * unitPrice)}
 					</Text>
 				</View>
 			</View>
@@ -64,8 +67,12 @@ const styles = StyleSheet.create({
 		height: '100%'
 	},
 	name: {
+		fontSize: 16
+	},
+	price: {
 		fontSize: 16,
-		fontWeight: '500'
+		marginTop: 4,
+		color: '#777777'
 	}
 });
 
