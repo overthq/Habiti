@@ -4,6 +4,7 @@ const ImageTypes = gql`
 	type Image {
 		id: ID!
 		path: String!
+		publicId: String!
 		storeId: ID
 		productId: ID
 		createdAt: String!

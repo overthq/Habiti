@@ -1,5 +1,6 @@
-import { Resolver } from '../../types/resolvers';
 import { FileUpload } from 'graphql-upload';
+import { UploadApiResponse } from 'cloudinary';
+import { Resolver } from '../../types/resolvers';
 import { uploadStream } from '../../utils/upload';
 
 interface CreateStoreArgs {
@@ -15,14 +16,13 @@ interface CreateStoreArgs {
 
 const createStore: Resolver<CreateStoreArgs> = async (_, { input }, ctx) => {
 	const { imageFile, ...rest } = input;
-	let uploadedUrl = '';
+	let uploadedImage: UploadApiResponse;
 
 	if (imageFile) {
 		const { createReadStream } = await imageFile;
 		const stream = createReadStream();
 
-		const { url } = await uploadStream(stream);
-		uploadedUrl = url;
+		uploadedImage = await uploadStream(stream);
 	}
 
 	const store = await ctx.prisma.store.create({
@@ -33,11 +33,12 @@ const createStore: Resolver<CreateStoreArgs> = async (_, { input }, ctx) => {
 					managerId: ctx.user.id
 				}
 			},
-			...(uploadedUrl !== ''
+			...(!!uploadedImage
 				? {
 						image: {
 							create: {
-								path: uploadedUrl
+								path: uploadedImage.url,
+								publicId: uploadedImage.public_id
 							}
 						}
 				  }

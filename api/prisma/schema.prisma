@@ -116,6 +116,7 @@ model Image {
   storeId   String?  @unique
   productId String?
   path      String   @db.VarChar(2083)
+  publicId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   store     Store?   @relation(fields: [storeId], references: [id], onDelete: Cascade)

@@ -1,4 +1,5 @@
 import { FileUpload } from 'graphql-upload';
+import { UploadApiResponse } from 'cloudinary';
 import { Resolver } from '../../types/resolvers';
 import { uploadStream } from '../../utils/upload';
 
@@ -9,10 +10,6 @@ const createProduct: Resolver = async (_, { input }, ctx) => {
 
 	return product;
 };
-
-// TODO: Allow multiple file uploads. Shouldn't be too hard.
-// Maybe create separate mutation for adding files
-// And another for removing them.
 
 interface EditProductArgs {
 	id: string;
@@ -30,25 +27,25 @@ const editProduct: Resolver<EditProductArgs> = async (
 	ctx
 ) => {
 	const { imageFile, ...rest } = input;
-	let uploadedUrl = '';
+	let uploadedImage: UploadApiResponse;
 
 	if (imageFile) {
 		const { createReadStream } = await imageFile;
 		const stream = createReadStream();
 
-		const { url } = await uploadStream(stream);
-		uploadedUrl = url;
+		uploadedImage = await uploadStream(stream);
 	}
 
 	const product = await ctx.prisma.product.update({
 		where: { id },
 		data: {
 			...rest,
-			...(uploadedUrl !== ''
+			...(!!uploadedImage
 				? {
 						images: {
 							create: {
-								path: uploadedUrl
+								path: uploadedImage.url,
+								publicId: uploadedImage.public_id
 							}
 						}
 				  }
