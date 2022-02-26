@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import {
 	NavigationProp,
 	RouteProp,
@@ -9,7 +9,6 @@ import {
 import { useOrderQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 import OrderProduct from '../components/order/OrderProduct';
-import { formatNaira } from '../utils/currency';
 import useGoBack from '../hooks/useGoBack';
 import OrderMeta from '../components/order/OrderMeta';
 
@@ -49,12 +48,6 @@ const Order: React.FC = () => {
 					/>
 				))}
 			</View>
-			<View style={styles.figures}>
-				<View style={styles.figureRow}>
-					<Text style={styles.figureKey}>Total</Text>
-					<Text style={styles.figureKey}>{formatNaira(order.total)}</Text>
-				</View>
-			</View>
 		</View>
 	);
 };
@@ -65,18 +58,6 @@ const styles = StyleSheet.create({
 	},
 	products: {
 		marginVertical: 16
-	},
-	figures: {
-		paddingHorizontal: 16
-	},
-	figureRow: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center'
-	},
-	figureKey: {
-		fontSize: 16,
-		fontWeight: '500'
 	}
 });
 

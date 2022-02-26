@@ -4,8 +4,6 @@ import { View, Text, FlatList } from 'react-native';
 // import { useNewArrivalsQuery } from '../../types/api';
 
 const NewArrivals: React.FC = () => {
-	// const userId = useAppSelector(({ auth }) => auth.userId);
-
 	// const [{ data, fetching }] = useNewArrivalsQuery({
 	// 	variables: {
 	// 		oneDayAgo: (new Date().getDate() - 2).toString(),

@@ -9,9 +9,6 @@ interface OrderProductProps {
 	onPress(): void;
 }
 
-// The similarities between this file and CartProduct.tsx
-// are astounding. TODO: Refactor and reuse.
-
 const OrderProduct: React.FC<OrderProductProps> = ({
 	orderProduct: { product, quantity, unitPrice },
 	onPress
@@ -30,7 +27,8 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 				<View>
 					<Text style={styles.name}>{product.name}</Text>
 					<Text style={styles.price}>
-						{quantity} units · {formatNaira(quantity * unitPrice)}
+						{quantity} unit{quantity > 1 ? 's' : ''} ·{' '}
+						{formatNaira(quantity * unitPrice)}
 					</Text>
 				</View>
 			</View>
