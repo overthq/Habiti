@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import { OrderQuery } from '../../types/api';
+import { formatNaira } from '../../utils/currency';
 
 interface OrderProductProps {
 	orderProduct: OrderQuery['order']['products'][-1];
@@ -26,7 +27,7 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 			<View>
 				<Text style={styles.name}>{product.name}</Text>
 				<Text style={styles.price}>
-					{quantity} - {total} NGN
+					{quantity} - {formatNaira(total)}
 				</Text>
 			</View>
 		</Pressable>
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
 		fontWeight: '500'
 	},
 	price: {
-		fontSize: 14,
+		fontSize: 16,
 		color: '#505050'
 	}
 });

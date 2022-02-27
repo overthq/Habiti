@@ -22,7 +22,7 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order }) => {
 			<View>
 				<Text style={styles.name}>{order.user.name}</Text>
 				{/*<Text>{order.status}</Text> */}
-				<Text>{parseTimestamp(order.createdAt)}</Text>
+				<Text style={styles.date}>{parseTimestamp(order.createdAt)}</Text>
 			</View>
 			<View style={styles.right}>
 				<Text style={styles.total}>{formatNaira(order.total)}</Text>
@@ -51,6 +51,11 @@ const styles = StyleSheet.create({
 	name: {
 		fontSize: 18,
 		fontWeight: '500'
+	},
+	date: {
+		fontSize: 16,
+		marginTop: 4,
+		color: '#505050'
 	},
 	total: {
 		fontSize: 18,

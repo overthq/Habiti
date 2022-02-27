@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
 		flex: 1
 	},
 	heading: {
-		marginVertical: 8,
+		marginVertical: 16,
 		paddingLeft: 16
 	},
 	title: {

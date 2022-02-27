@@ -68,8 +68,11 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingVertical: 8,
-		paddingHorizontal: 16
+		paddingVertical: 12,
+		paddingHorizontal: 16,
+		backgroundColor: '#FFFFFF',
+		borderBottomWidth: 1,
+		borderBottomColor: '#D3D3D3'
 	}
 });
 
