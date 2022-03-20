@@ -19,6 +19,20 @@ const StoreTypes = gql`
 		followers: [StoreFollower!]!
 		carts: [Cart!]!
 		image: Image
+		stats(period: StoreStatPeriod!): StoreStats!
+	}
+
+	type StoreStats {
+		revenue: Int!
+		orderCount: Int!
+		orderVolume: Int!
+	}
+
+	enum StoreStatPeriod {
+		Day
+		Week
+		Month
+		Year
 	}
 
 	input CreateStoreInput {
