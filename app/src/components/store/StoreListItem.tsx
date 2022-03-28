@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
 		margin: 8
 	},
 	placeholder: {
-		borderRadius: 4,
+		borderRadius: 6,
 		backgroundColor: '#D3D3D3',
 		height: 200,
 		width: '100%',
