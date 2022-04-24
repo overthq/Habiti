@@ -1,8 +1,10 @@
 export const UPDATE_PREFERENCE = 'preferences/UPDATE_PREFERENCE';
 
+export type Theme = 'light' | 'dark';
+
 export interface PreferencesState {
 	activeStore: string | null;
-	theme: 'light' | 'dark';
+	theme: Theme;
 }
 
 interface UpdatePreferenceAction {

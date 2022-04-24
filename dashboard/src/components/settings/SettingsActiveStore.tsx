@@ -1,30 +1,11 @@
 import React from 'react';
-import {
-	View,
-	Text,
-	FlatList,
-	TouchableOpacity,
-	StyleSheet
-} from 'react-native';
+import { View, FlatList, StyleSheet } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { useManagedStoresQuery } from '../../types/api';
 import { updatePreference } from '../../redux/preferences/actions';
 import { useAppSelector } from '../../redux/store';
-import { Icon } from '../Icon';
 import useGoBack from '../../hooks/useGoBack';
-
-interface RowProps {
-	name: string;
-	isSelected: boolean;
-	onSelectRow(): void;
-}
-
-const Row: React.FC<RowProps> = ({ name, isSelected, onSelectRow }) => (
-	<TouchableOpacity style={styles.row} onPress={onSelectRow}>
-		<Text style={{ fontSize: 16 }}>{name}</Text>
-		<View>{isSelected && <Icon name='check' size={24} />}</View>
-	</TouchableOpacity>
-);
+import SettingSelectRow from './SettingSelectRow';
 
 const SettingsActiveStore: React.FC = () => {
 	const userId = useAppSelector(({ auth }) => auth.userId);
@@ -49,7 +30,7 @@ const SettingsActiveStore: React.FC = () => {
 				data={stores}
 				keyExtractor={s => s.id}
 				renderItem={({ item }) => (
-					<Row
+					<SettingSelectRow
 						name={item.name}
 						isSelected={activeStore === item.id}
 						onSelectRow={() => handleRowSelect(item.id)}

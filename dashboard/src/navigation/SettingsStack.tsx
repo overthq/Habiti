@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { SettingsStackParamList } from '../types/navigation';
 import Settings from '../screens/Settings';
 import SettingsActiveStore from '../components/settings/SettingsActiveStore';
+import SettingsTheme from '../components/settings/SettingsTheme';
 
 const SettingsStack = createStackNavigator<SettingsStackParamList>();
 
@@ -17,6 +18,11 @@ const SettingsStackNavigator = () => (
 			name='SettingsActiveStore'
 			component={SettingsActiveStore}
 			options={{ title: 'Active Store' }}
+		/>
+		<SettingsStack.Screen
+			name='SettingsTheme'
+			component={SettingsTheme}
+			options={{ title: 'Theme' }}
 		/>
 	</SettingsStack.Navigator>
 );
