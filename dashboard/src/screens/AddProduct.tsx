@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Formik } from 'formik';
 import { useNavigation } from '@react-navigation/native';
 import { useCreateProductMutation } from '../types/api';
 import Button from '../components/global/Button';
 import { useAppSelector } from '../redux/store';
 import useGoBack from '../hooks/useGoBack';
+import Input from '../components/global/Input';
 
 const AddProduct: React.FC = () => {
 	const activeStore = useAppSelector(
@@ -36,8 +37,8 @@ const AddProduct: React.FC = () => {
 									quantity: Number(values.quantity)
 								}
 							});
+							goBack();
 						}
-						goBack();
 					} catch (error) {
 						console.log(error);
 					}
@@ -45,50 +46,37 @@ const AddProduct: React.FC = () => {
 			>
 				{({ handleChange, handleBlur, handleSubmit }) => (
 					<View>
-						<View>
-							<Text style={styles.label}>Name</Text>
-							<TextInput
-								placeholder='Name'
-								placeholderTextColor='#696969'
-								onChangeText={handleChange('name')}
-								onBlur={handleBlur('name')}
-								style={styles.input}
-							/>
-						</View>
-						<View>
-							<Text style={styles.label}>Description</Text>
-							<TextInput
-								placeholder='Description'
-								placeholderTextColor='#696969'
-								onChangeText={handleChange('description')}
-								onBlur={handleBlur('description')}
-								style={[styles.input, styles.textarea]}
-								multiline
-								textAlignVertical='top'
-							/>
-						</View>
-						<View>
-							<Text style={styles.label}>Unit Price</Text>
-							<TextInput
-								placeholder='Unit price (NGN)'
-								placeholderTextColor='#696969'
-								onChangeText={handleChange('unitPrice')}
-								onBlur={handleBlur('unitPrice')}
-								style={styles.input}
-								keyboardType='numeric'
-							/>
-						</View>
-						<View>
-							<Text style={styles.label}>Quantity</Text>
-							<TextInput
-								placeholder='Quantity in stock'
-								placeholderTextColor='#696969'
-								onChangeText={handleChange('quantity')}
-								onBlur={handleBlur('quantity')}
-								style={styles.input}
-								keyboardType='numeric'
-							/>
-						</View>
+						<Input
+							label='Name'
+							placeholder='Name'
+							onChangeText={handleChange('name')}
+							onBlur={handleBlur('name')}
+							style={styles.input}
+						/>
+						<Input
+							label='Description'
+							placeholder='Description'
+							onChangeText={handleChange('description')}
+							onBlur={handleBlur('description')}
+							style={styles.input}
+							textArea
+						/>
+						<Input
+							label='Unit Price'
+							placeholder='Unit price (NGN)'
+							onChangeText={handleChange('unitPrice')}
+							onBlur={handleBlur('unitPrice')}
+							style={styles.input}
+							keyboardType='numeric'
+						/>
+						<Input
+							label='Quantity'
+							placeholder='Quantity in stock'
+							onChangeText={handleChange('quantity')}
+							onBlur={handleBlur('quantity')}
+							style={styles.input}
+							keyboardType='numeric'
+						/>
 						<Button text='Add Product' onPress={handleSubmit} />
 					</View>
 				)}
@@ -104,24 +92,8 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 16,
 		backgroundColor: '#FFFFFF'
 	},
-	label: {
-		marginBottom: 4,
-		fontSize: 16,
-		color: '#505050',
-		fontWeight: '500'
-	},
 	input: {
-		fontSize: 16,
-		paddingLeft: 8,
-		marginBottom: 10,
-		height: 40,
-		borderRadius: 4,
-		backgroundColor: '#EDEDED',
-		color: '#505050'
-	},
-	textarea: {
-		paddingTop: 8,
-		height: 80
+		marginBottom: 10
 	}
 });
 
