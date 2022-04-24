@@ -14,7 +14,7 @@ const EditStore: React.FC = () => {
 	const [{ data, fetching }] = useStoreQuery({
 		variables: { storeId: params.storeId }
 	});
-	const [, editStore] = useEditStoreMutation();
+	const [{ fetching: loading }, editStore] = useEditStoreMutation();
 	useGoBack();
 
 	const store = data?.store;
@@ -102,6 +102,7 @@ const EditStore: React.FC = () => {
 						<Button
 							style={styles.button}
 							text='Edit store'
+							loading={loading}
 							onPress={handleSubmit}
 						/>
 					</>
