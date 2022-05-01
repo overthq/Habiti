@@ -27,7 +27,8 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 			<View>
 				<Text style={styles.name}>{product.name}</Text>
 				<Text style={styles.price}>
-					{quantity} - {formatNaira(total)}
+					{quantity} {'unit' + (quantity === 1 ? '' : 's')} ·{' '}
+					{formatNaira(total)}
 				</Text>
 			</View>
 		</Pressable>
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#D3D3D3',
 		borderRadius: 4,
 		overflow: 'hidden',
-		marginRight: 16
+		marginRight: 8
 	},
 	image: {
 		width: '100%',

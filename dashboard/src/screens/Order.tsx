@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
 	},
 	name: {
 		fontSize: 16,
-		marginVertical: 8
+		marginVertical: 16
 	},
 	sectionHeader: {
 		fontSize: 16,
