@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row'
 	},
 	name: {
-		fontSize: 18,
+		fontSize: 17,
 		fontWeight: '500'
 	},
 	date: {
