@@ -2,7 +2,7 @@ import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import { ApolloServer } from 'apollo-server-express';
 import { graphqlUploadExpress } from 'graphql-upload';
-import expressJwt from 'express-jwt';
+import { expressjwt } from 'express-jwt';
 import compression from 'compression';
 import { createServer } from 'http';
 
@@ -20,7 +20,7 @@ const main = async () => {
 	app.use(express.json());
 	app.use(compression());
 	app.use(
-		expressJwt({
+		expressjwt({
 			secret: process.env.JWT_SECRET,
 			algorithms: ['HS256'],
 			credentialsRequired: false
