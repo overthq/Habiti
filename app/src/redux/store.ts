@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { persistReducer, persistStore } from 'redux-persist';
 import { createStore, applyMiddleware, combineReducers, Action } from 'redux';
-import { TypedUseSelectorHook, useSelector } from 'react-redux';
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import thunk, { ThunkAction } from 'redux-thunk';
 
 import authReducer from './auth/reducer';
@@ -24,7 +24,9 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 	null,
 	Action<string>
 >;
+export type AppDispatch = typeof store.dispatch;
 
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const store = createStore(rootReducer, middleware);
 export const persistor = persistStore(store);

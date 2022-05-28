@@ -1,7 +1,7 @@
 import React from 'react';
-import { Pressable } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { StatusBar } from 'expo-status-bar';
 import { Provider } from 'urql';
 
 import Authenticate from '../screens/Authenticate';
@@ -19,16 +19,21 @@ import { useAppSelector } from '../redux/store';
 import { AppStackParamList } from '../types/navigation';
 import useClient from '../hooks/useClient';
 import PaymentMethods from '../screens/PaymentMethods';
-import { Icon } from '../components/Icon';
+import { getStatusBarStyle } from '../utils/theme';
 
 const AppStack = createStackNavigator<AppStackParamList>();
 
 const Routes: React.FC = () => {
-	const accessToken = useAppSelector(({ auth }) => auth.accessToken);
+	const { accessToken, theme } = useAppSelector(({ auth, preferences }) => ({
+		accessToken: auth.accessToken,
+		theme: preferences.theme
+	}));
+
 	const client = useClient(accessToken);
 
 	return (
 		<Provider value={client}>
+			<StatusBar style={getStatusBarStyle(theme)} />
 			<NavigationContainer>
 				<AppStack.Navigator screenOptions={{ headerShown: false }}>
 					{accessToken ? (
@@ -37,9 +42,7 @@ const Routes: React.FC = () => {
 							<AppStack.Screen
 								name='Store'
 								component={Store}
-								options={{
-									headerShown: true
-								}}
+								options={{ headerShown: true }}
 							/>
 							<AppStack.Group screenOptions={{ presentation: 'modal' }}>
 								<AppStack.Screen name='Product' component={Product} />
