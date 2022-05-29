@@ -4,13 +4,12 @@ import { useRoute, RouteProp } from '@react-navigation/native';
 import styles from '../styles/auth';
 import { AppStackParamList } from '../types/navigation';
 import { verifyCode } from '../utils/auth';
-import { login } from '../redux/auth/actions';
 import Button from '../components/global/Button';
-import { useAppDispatch } from '../redux/store';
+import useStore from '../state';
 
 const VerifyAuthentication: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Verify'>>();
-	const dispatch = useAppDispatch();
+	const logIn = useStore(state => state.logIn);
 	const [loading, setLoading] = React.useState(false);
 	const [code, setCode] = React.useState('');
 	const { phone } = params;
@@ -20,7 +19,7 @@ const VerifyAuthentication: React.FC = () => {
 			setLoading(true);
 			const { accessToken, userId } = await verifyCode({ phone, code });
 			setLoading(false);
-			dispatch(login(accessToken, userId));
+			logIn(userId, accessToken);
 		}
 		// Show some validation error.
 	};

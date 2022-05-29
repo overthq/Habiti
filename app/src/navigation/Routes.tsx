@@ -15,18 +15,18 @@ import EditProfile from '../screens/EditProfile';
 import AddCardWebview from '../screens/AddCardWebview';
 
 import HomeTabNavigator from './HomeTab';
-import { useAppSelector } from '../redux/store';
 import { AppStackParamList } from '../types/navigation';
 import useClient from '../hooks/useClient';
 import PaymentMethods from '../screens/PaymentMethods';
 import { getStatusBarStyle } from '../utils/theme';
+import useStore from '../state';
 
 const AppStack = createStackNavigator<AppStackParamList>();
 
 const Routes: React.FC = () => {
-	const { accessToken, theme } = useAppSelector(({ auth, preferences }) => ({
-		accessToken: auth.accessToken,
-		theme: preferences.theme
+	const { accessToken, theme } = useStore(state => ({
+		accessToken: state.accessToken,
+		theme: state.theme
 	}));
 
 	const client = useClient(accessToken);

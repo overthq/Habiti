@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, FlatList } from 'react-native';
-// import { useAppSelector } from '../../redux/store';
 // import { useNewArrivalsQuery } from '../../types/api';
 
 const NewArrivals: React.FC = () => {

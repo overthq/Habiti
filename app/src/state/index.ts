@@ -6,7 +6,7 @@ import { createAuthSlice } from './auth';
 import { createPreferencesSlice } from './preferences';
 import { AppState } from './types';
 
-export const useStore = create(
+const useStore = create(
 	persist<AppState>(
 		(set, get) => ({
 			...createAuthSlice(set, get),
@@ -18,3 +18,5 @@ export const useStore = create(
 		}
 	)
 );
+
+export default useStore;

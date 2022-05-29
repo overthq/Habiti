@@ -1,10 +1,10 @@
 import { StatusBarStyle } from 'expo-status-bar';
-import { PreferencesState } from '../redux/preferences/types';
+import { PreferencesSlice } from '../state/types';
 
-export const getStatusBarStyle = (theme: PreferencesState['theme']) => {
+export const getStatusBarStyle = (theme: PreferencesSlice['theme']) => {
 	return (
 		{ light: 'dark', dark: 'light' } as Record<
-			PreferencesState['theme'],
+			PreferencesSlice['theme'],
 			StatusBarStyle
 		>
 	)[theme];
