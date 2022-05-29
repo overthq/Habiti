@@ -1,24 +1,9 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import create from 'zustand';
-import { persist } from 'zustand/middleware';
+import { PreferencesSlice, StoreSlice } from './types';
 
-interface PreferencesState {
-	theme: 'light' | 'dark' | 'auto';
-	defaultCard: string | null;
-}
-
-export const usePreferencesStore = create(
-	persist<PreferencesState>(
-		set => ({
-			theme: 'light',
-			defaultCard: null,
-			setPreference: (payload: Partial<PreferencesState>) => {
-				set(payload);
-			}
-		}),
-		{
-			name: 'preferences',
-			getStorage: () => AsyncStorage
-		}
-	)
-);
+export const createPreferencesSlice: StoreSlice<PreferencesSlice> = set => ({
+	theme: 'light',
+	defaultCard: null,
+	setPreference: (payload: Partial<PreferencesSlice>) => {
+		set(payload);
+	}
+});
