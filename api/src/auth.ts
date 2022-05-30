@@ -3,7 +3,7 @@ import { Router } from 'express';
 import redisClient from './config/redis';
 import { generateAccessToken, sendVerificationCode } from './utils/auth';
 
-const router = Router();
+const router: Router = Router();
 const prisma = new PrismaClient();
 
 router.post('/authenticate', async (req, res) => {
