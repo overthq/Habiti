@@ -11,23 +11,21 @@ import EditProduct from '../screens/EditProduct';
 import StoreSelect from '../screens/StoreSelect';
 import CreateStore from '../screens/CreateStore';
 
-import { useAppSelector } from '../redux/store';
 import { AppStackParamList } from '../types/navigation';
 import useClient from '../hooks/useClient';
 import MainTabNavigator from './MainTab';
 import SettingsStackNavigator from './SettingsStack';
 import EditStore from '../screens/EditStore';
+import useStore from '../state';
 
 const AppStack = createStackNavigator<AppStackParamList>();
 
 const Routes: React.FC = () => {
 	const client = useClient();
-	const { accessToken, activeStore } = useAppSelector(
-		({ auth, preferences }) => ({
-			accessToken: auth.accessToken,
-			activeStore: preferences.activeStore
-		})
-	);
+	const { accessToken, activeStore } = useStore(state => ({
+		accessToken: state.accessToken,
+		activeStore: state.activeStore
+	}));
 
 	return (
 		<Provider value={client}>

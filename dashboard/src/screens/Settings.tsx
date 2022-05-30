@@ -1,20 +1,21 @@
 import React from 'react';
 import { View, FlatList, StyleSheet, Dimensions } from 'react-native';
-import { useDispatch } from 'react-redux';
 import Button from '../components/global/Button';
 import SettingRow from '../components/settings/SettingRow';
-import { useAppSelector } from '../redux/store';
+import useStore from '../state';
 import { useStoreQuery } from '../types/api';
-import { logOut } from '../redux/auth/actions';
 
 const { width } = Dimensions.get('window');
 
 const Settings: React.FC = () => {
-	const preferences = useAppSelector(({ preferences }) => preferences);
-	const dispatch = useDispatch();
+	const { theme, activeStore, logOut } = useStore(state => ({
+		theme: state.theme,
+		activeStore: state.activeStore,
+		logOut: state.logOut
+	}));
 
 	const [{ data }] = useStoreQuery({
-		variables: { storeId: preferences.activeStore as string }
+		variables: { storeId: activeStore as string }
 	});
 
 	const store = data?.store;
@@ -28,7 +29,7 @@ const Settings: React.FC = () => {
 		{
 			name: 'Theme',
 			screen: 'SettingsTheme',
-			displayValue: preferences.theme === 'light' ? 'Light' : 'Dark'
+			displayValue: theme === 'light' ? 'Light' : 'Dark'
 		}
 	];
 
@@ -47,7 +48,7 @@ const Settings: React.FC = () => {
 				ListFooterComponent={
 					<Button
 						text='Log Out'
-						onPress={() => dispatch(logOut())}
+						onPress={logOut}
 						style={{
 							alignSelf: 'center',
 							width: width - 16,

@@ -1,19 +1,20 @@
 import React from 'react';
 import { View } from 'react-native';
-import { useDispatch } from 'react-redux';
-import { updatePreference } from '../../redux/preferences/actions';
-import { useAppSelector } from '../../redux/store';
 import SettingSelectRow from './SettingSelectRow';
-import type { Theme } from '../../redux/preferences/types';
+import useStore from '../../state';
+
+type Theme = 'light' | 'dark' | 'auto';
 
 const themes: Theme[] = ['light', 'dark'];
 
 const SettingsTheme = () => {
-	const theme = useAppSelector(({ preferences }) => preferences.theme);
-	const dispatch = useDispatch();
+	const { theme, setPreference } = useStore(state => ({
+		theme: state.theme,
+		setPreference: state.setPreference
+	}));
 
 	const handleThemeSelect = (theme: Theme) => {
-		dispatch(updatePreference({ theme }));
+		setPreference({ theme });
 	};
 
 	return (

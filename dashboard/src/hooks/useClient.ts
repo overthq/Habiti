@@ -2,16 +2,14 @@ import React from 'react';
 import { createClient, dedupExchange, fetchExchange } from 'urql';
 import { cacheExchange } from '@urql/exchange-graphcache';
 import { multipartFetchExchange } from '@urql/exchange-multipart-fetch';
-import { useAppSelector } from '../redux/store';
 import env from '../../env';
+import useStore from '../state';
 
 const useClient = () => {
-	const { accessToken, activeStore } = useAppSelector(
-		({ auth, preferences }) => ({
-			accessToken: auth.accessToken,
-			activeStore: preferences.activeStore
-		})
-	);
+	const { accessToken, activeStore } = useStore(state => ({
+		accessToken: state.accessToken,
+		activeStore: state.activeStore
+	}));
 
 	const client = React.useMemo(
 		() =>

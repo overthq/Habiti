@@ -1,13 +1,11 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import OrdersListItem from '../components/orders/OrdersListItem';
-import { useAppSelector } from '../redux/store';
+import useStore from '../state';
 import { useOrdersQuery } from '../types/api';
 
 const Orders: React.FC = () => {
-	const activeStore = useAppSelector(
-		({ preferences }) => preferences.activeStore
-	);
+	const activeStore = useStore(state => state.activeStore);
 
 	const [{ data }] = useOrdersQuery({
 		variables: { storeId: activeStore as string }

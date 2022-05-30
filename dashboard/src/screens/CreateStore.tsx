@@ -1,6 +1,5 @@
 import React from 'react';
 import { FlatList, StyleSheet, Dimensions } from 'react-native';
-import { useDispatch } from 'react-redux';
 import { Formik } from 'formik';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, {
@@ -9,10 +8,10 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useCreateStoreMutation } from '../types/api';
 import Button from '../components/global/Button';
-import { updatePreference } from '../redux/preferences/actions';
 import Brand from '../components/create-store/Brand';
 import Social from '../components/create-store/Social';
 import StoreImage from '../components/create-store/StoreImage';
+import useStore from '../state';
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -28,8 +27,8 @@ const CreateStore: React.FC = () => {
 	const [, createStore] = useCreateStoreMutation();
 	const [activeStepIndex, setActiveStepIndex] = React.useState(0);
 	const listRef = React.useRef<FlatList>(null);
-	const dispatch = useDispatch();
 	const scrollX = useSharedValue(0);
+	const setPreference = useStore(state => state.setPreference);
 
 	const toNext = () => {
 		listRef.current?.scrollToIndex({
@@ -68,7 +67,7 @@ const CreateStore: React.FC = () => {
 						});
 
 						if (data?.createStore?.id) {
-							dispatch(updatePreference({ activeStore: data.createStore.id }));
+							setPreference({ activeStore: data.createStore.id });
 						}
 					} catch (error) {
 						console.log(error);

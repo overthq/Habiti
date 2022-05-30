@@ -1,13 +1,11 @@
 import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import ProductsListItem from '../components/products/ProductsListItem';
-import { useAppSelector } from '../redux/store';
+import useStore from '../state';
 import { useProductsQuery } from '../types/api';
 
 const Products: React.FC = () => {
-	const activeStore = useAppSelector(
-		({ preferences }) => preferences.activeStore
-	);
+	const activeStore = useStore(state => state.activeStore);
 
 	const [{ data }] = useProductsQuery({
 		variables: { storeId: activeStore as string }

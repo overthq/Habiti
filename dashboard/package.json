@@ -38,7 +38,8 @@
 		"redux-persist": "^6.0.0",
 		"redux-thunk": "^2.4.1",
 		"urql": "^2.2.0",
-		"yup": "^0.32.11"
+		"yup": "^0.32.11",
+		"zustand": "^4.0.0-rc.1"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.12.9",

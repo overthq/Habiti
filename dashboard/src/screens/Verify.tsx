@@ -1,17 +1,16 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
-import { useDispatch } from 'react-redux';
 import { useRoute } from '@react-navigation/native';
 import { verifyCode } from '../utils/auth';
-import { login } from '../redux/auth/actions';
 import Button from '../components/global/Button';
 import authStyles from '../styles/auth';
+import useStore from '../state';
 
 const Verify: React.FC = () => {
 	const [code, setCode] = React.useState<string[]>([]);
 	const [loading, setLoading] = React.useState(false);
 	const { params } = useRoute<any>();
-	const dispatch = useDispatch();
+	const logIn = useStore(state => state.logIn);
 
 	const { phone } = params;
 
@@ -47,7 +46,7 @@ const Verify: React.FC = () => {
 				phone,
 				code: code.join('')
 			});
-			dispatch(login(accessToken, userId));
+			logIn(userId, accessToken);
 			setLoading(false);
 		} catch (error) {
 			console.log(error);

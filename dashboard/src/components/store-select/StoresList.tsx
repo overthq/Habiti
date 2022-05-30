@@ -1,14 +1,14 @@
 import React from 'react';
 import { Text, FlatList, TouchableOpacity } from 'react-native';
-import { useDispatch } from 'react-redux';
-import { updatePreference } from '../../redux/preferences/actions';
 import { useManagedStoresQuery } from '../../types/api';
-import { useAppSelector } from '../../redux/store';
+import useStore from '../../state';
 
 const StoresList = () => {
-	const dispatch = useDispatch();
+	const { userId, setPreference } = useStore(state => ({
+		userId: state.userId,
+		setPreference: state.setPreference
+	}));
 
-	const userId = useAppSelector(({ auth }) => auth.userId);
 	const [{ data }] = useManagedStoresQuery({
 		variables: { userId: userId as string }
 	});
@@ -16,7 +16,7 @@ const StoresList = () => {
 	const stores = data?.user.managed.map(({ store }) => store);
 
 	const handleStoreSelect = (storeId: string) => {
-		dispatch(updatePreference({ activeStore: storeId }));
+		setPreference({ activeStore: storeId });
 	};
 
 	return (

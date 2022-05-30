@@ -4,14 +4,12 @@ import { Formik } from 'formik';
 import { useNavigation } from '@react-navigation/native';
 import { useCreateProductMutation } from '../types/api';
 import Button from '../components/global/Button';
-import { useAppSelector } from '../redux/store';
 import useGoBack from '../hooks/useGoBack';
 import Input from '../components/global/Input';
+import useStore from '../state';
 
 const AddProduct: React.FC = () => {
-	const activeStore = useAppSelector(
-		({ preferences }) => preferences.activeStore
-	);
+	const activeStore = useStore(state => state.activeStore);
 	const [, createProduct] = useCreateProductMutation();
 	const { goBack } = useNavigation();
 	useGoBack();

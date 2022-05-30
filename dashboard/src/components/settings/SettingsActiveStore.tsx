@@ -1,27 +1,26 @@
 import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
-import { useDispatch } from 'react-redux';
 import { useManagedStoresQuery } from '../../types/api';
-import { updatePreference } from '../../redux/preferences/actions';
-import { useAppSelector } from '../../redux/store';
 import useGoBack from '../../hooks/useGoBack';
 import SettingSelectRow from './SettingSelectRow';
+import useStore from '../../state';
 
 const SettingsActiveStore: React.FC = () => {
-	const userId = useAppSelector(({ auth }) => auth.userId);
+	const { userId, activeStore, setPreference } = useStore(state => ({
+		userId: state.userId,
+		activeStore: state.activeStore,
+		setPreference: state.setPreference
+	}));
+
 	const [{ data }] = useManagedStoresQuery({
 		variables: { userId: userId as string }
 	});
-	const dispatch = useDispatch();
-	const activeStore = useAppSelector(
-		({ preferences }) => preferences.activeStore
-	);
 	useGoBack();
 
 	const stores = data?.user.managed.map(({ store }) => store);
 
 	const handleRowSelect = (id: string) => {
-		dispatch(updatePreference({ activeStore: id }));
+		setPreference({ activeStore: id });
 	};
 
 	return (
