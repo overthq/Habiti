@@ -3,7 +3,7 @@ import { createHmac } from 'crypto';
 import { User } from '@prisma/client';
 import { storeCard } from './utils/paystack';
 
-const router = Router();
+const router: Router = Router();
 
 router.post('/paystack', async (req, res) => {
 	const hash = createHmac('sha512', process.env.PAYSTACK_SECRET_KEY)

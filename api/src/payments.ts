@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { User } from '@prisma/client';
 import { initialCharge, verifyTransaction } from './utils/paystack';
 
-const router = Router();
+const router: Router = Router();
 
 router.post('/initial-charge', async (req, res) => {
 	// TODO: Take userId and return email instead of this.
