@@ -12,7 +12,7 @@ import { Icon } from '../Icon';
 import { MastercardIcon } from './CardIcons';
 
 interface SelectCardProps {
-	selectedCard?: string;
+	selectedCard: string | null;
 	handleCardSelect(cardId: string): void;
 }
 

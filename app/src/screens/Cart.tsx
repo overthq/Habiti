@@ -13,8 +13,8 @@ import { AppStackParamList } from '../types/navigation';
 import Button from '../components/global/Button';
 import SelectCard from '../components/cart/SelectCard';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { useAppSelector } from '../redux/store';
 import { formatNaira } from '../utils/currency';
+import useStore from '../state';
 
 const Cart: React.FC = () => {
 	const {
@@ -25,9 +25,7 @@ const Cart: React.FC = () => {
 	const [{ data, fetching }] = useCartQuery({ variables: { cartId } });
 	const [, createOrder] = useCreateOrderMutation();
 
-	const defaultCardId = useAppSelector(
-		({ preferences }) => preferences.defaultCardId
-	);
+	const defaultCardId = useStore(state => state.defaultCard);
 
 	const [selectedCard, setSelectedCard] = React.useState(defaultCardId);
 	const cart = data?.cart;
