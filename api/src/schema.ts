@@ -26,6 +26,7 @@ import imageMutations from './collections/image/mutations';
 import ImageTypes from './collections/image/types';
 
 import storeFollowerQueries from './collections/store-follower/queries';
+import storeFollowerMutations from './collections/store-follower/mutations';
 import StoreFollowerTypes from './collections/store-follower/types';
 
 import storeManagerQueries from './collections/store-manager/queries';
@@ -67,6 +68,7 @@ const resolvers = merge(
 	cartMutations,
 	imageMutations,
 	storeFollowerQueries,
+	storeFollowerMutations,
 	storeManagerQueries,
 	cartProductQueries,
 	cardQueries,

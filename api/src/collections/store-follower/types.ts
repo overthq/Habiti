@@ -7,6 +7,11 @@ const StoreFollowerTypes = gql`
 		store: Store!
 		follower: User!
 	}
+
+	extend type Mutation {
+		followStore(storeId: ID!): Store!
+		unfollowStore(storeId: ID!): Store!
+	}
 `;
 
 export default StoreFollowerTypes;
