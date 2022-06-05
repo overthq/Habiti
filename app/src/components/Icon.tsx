@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
-import { Svg, Circle, Rect, Path } from 'react-native-svg';
+import Svg, { Circle, Rect, Path } from 'react-native-svg';
 
 const icons = {
 	check: <Path d='M20 6L9 17l-5-5' />,
