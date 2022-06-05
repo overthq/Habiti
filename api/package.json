@@ -24,7 +24,7 @@
 		"graphql-upload": "^13.0.0",
 		"jsonwebtoken": "^8.5.1",
 		"lodash": "^4.17.21",
-		"node-fetch": "2",
+		"node-fetch": "2.6.7",
 		"redis": "^4.1.0",
 		"subscriptions-transport-ws": "^0.11.0"
 	},

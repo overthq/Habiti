@@ -84,7 +84,7 @@ export const verifyTransaction = async (userId: string, reference: string) => {
 		}
 	});
 
-	const { status, data } = await response.json();
+	const { data, status } = await response.json();
 
 	if (status === true && data.status === 'success') {
 		const card = await storeCard(userId, data);
