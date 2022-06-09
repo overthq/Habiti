@@ -8541,7 +8541,7 @@ url-parse@^1.5.9:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
 
-urql@^2.2.0:
+urql@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/urql/-/urql-2.2.1.tgz#34b0e4abe38ee310e794bfd873517b3d78b9e863"
   integrity sha512-KoGxe8FBUkX0Ava5qOlnK2bRup2JTKF577MfQ8mpdt/kqq+b2RHJiAYdCLcMEE0Xh6kGQoY99pteFp/F47Buzg==

@@ -10,6 +10,8 @@ const deleteCard: Resolver<DeleteCardArgs> = async (_, { id }, ctx) => {
 	if (card.userId === ctx.user.id) {
 		const card = await ctx.prisma.card.delete({ where: { id } });
 		return card;
+	} else {
+		throw new Error('You are not authorized to delete this card');
 	}
 };
 

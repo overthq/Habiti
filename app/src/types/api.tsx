@@ -50,7 +50,6 @@ export type Cart = {
 	__typename?: 'Cart';
 	createdAt: Scalars['String'];
 	id: Scalars['ID'];
-	product?: Maybe<CartProduct>;
 	products: Array<CartProduct>;
 	store: Store;
 	storeId: Scalars['ID'];
@@ -58,10 +57,6 @@ export type Cart = {
 	updatedAt: Scalars['String'];
 	user: User;
 	userId: Scalars['ID'];
-};
-
-export type CartProductArgs = {
-	id: Scalars['ID'];
 };
 
 export type CartProduct = {
@@ -125,6 +120,7 @@ export type Image = {
 	path: Scalars['String'];
 	product?: Maybe<Product>;
 	productId?: Maybe<Scalars['ID']>;
+	publicId: Scalars['String'];
 	store?: Maybe<Store>;
 	storeId?: Maybe<Scalars['ID']>;
 	updatedAt: Scalars['String'];
@@ -339,9 +335,14 @@ export type Store = {
 	name: Scalars['String'];
 	orders: Array<Order>;
 	products: Array<Product>;
+	stats: StoreStats;
 	twitter?: Maybe<Scalars['String']>;
 	updatedAt: Scalars['String'];
 	website?: Maybe<Scalars['String']>;
+};
+
+export type StoreStatsArgs = {
+	period: StoreStatPeriod;
 };
 
 export type StoreFollower = {
@@ -358,6 +359,20 @@ export type StoreManager = {
 	managerId: Scalars['ID'];
 	store: Store;
 	storeId: Scalars['ID'];
+};
+
+export enum StoreStatPeriod {
+	Day = 'Day',
+	Month = 'Month',
+	Week = 'Week',
+	Year = 'Year'
+}
+
+export type StoreStats = {
+	__typename?: 'StoreStats';
+	orderCount: Scalars['Int'];
+	orderVolume: Scalars['Int'];
+	revenue: Scalars['Int'];
 };
 
 export type UpdateCartProductInput = {
@@ -427,10 +442,7 @@ export type CartsQuery = {
 				__typename?: 'Store';
 				id: string;
 				name: string;
-				image?:
-					| { __typename?: 'Image'; id: string; path: string }
-					| null
-					| undefined;
+				image?: { __typename?: 'Image'; id: string; path: string } | null;
 			};
 			products: Array<{
 				__typename?: 'CartProduct';
@@ -576,10 +588,7 @@ export type HomeQuery = {
 				__typename?: 'Store';
 				id: string;
 				name: string;
-				image?:
-					| { __typename?: 'Image'; id: string; path: string }
-					| null
-					| undefined;
+				image?: { __typename?: 'Image'; id: string; path: string } | null;
 			};
 			products: Array<{
 				__typename?: 'OrderProduct';
@@ -596,10 +605,7 @@ export type HomeQuery = {
 				__typename?: 'Store';
 				id: string;
 				name: string;
-				image?:
-					| { __typename?: 'Image'; id: string; path: string }
-					| null
-					| undefined;
+				image?: { __typename?: 'Image'; id: string; path: string } | null;
 			};
 		}>;
 		watchlist: Array<{
@@ -634,10 +640,7 @@ export type UserOrdersQuery = {
 				__typename?: 'Store';
 				id: string;
 				name: string;
-				image?:
-					| { __typename?: 'Image'; id: string; path: string }
-					| null
-					| undefined;
+				image?: { __typename?: 'Image'; id: string; path: string } | null;
 			};
 			products: Array<{
 				__typename?: 'OrderProduct';
@@ -664,10 +667,7 @@ export type OrderQuery = {
 			__typename?: 'Store';
 			id: string;
 			name: string;
-			image?:
-				| { __typename?: 'Image'; id: string; path: string }
-				| null
-				| undefined;
+			image?: { __typename?: 'Image'; id: string; path: string } | null;
 		};
 		products: Array<{
 			__typename?: 'OrderProduct';
@@ -743,16 +743,13 @@ export type ProductQuery = {
 		store: {
 			__typename?: 'Store';
 			id: string;
-			cartForUser?:
-				| {
-						__typename?: 'Cart';
-						id: string;
-						userId: string;
-						storeId: string;
-						store: { __typename?: 'Store'; id: string; name: string };
-				  }
-				| null
-				| undefined;
+			cartForUser?: {
+				__typename?: 'Cart';
+				id: string;
+				userId: string;
+				storeId: string;
+				store: { __typename?: 'Store'; id: string; name: string };
+			} | null;
 		};
 		images: Array<{ __typename?: 'Image'; id: string; path: string }>;
 	};
@@ -818,10 +815,7 @@ export type StoresQuery = {
 		__typename?: 'Store';
 		id: string;
 		name: string;
-		image?:
-			| { __typename?: 'Image'; id: string; path: string }
-			| null
-			| undefined;
+		image?: { __typename?: 'Image'; id: string; path: string } | null;
 	}>;
 };
 
@@ -835,15 +829,12 @@ export type StoreQuery = {
 		__typename?: 'Store';
 		id: string;
 		name: string;
-		description?: string | null | undefined;
-		website?: string | null | undefined;
-		twitter?: string | null | undefined;
-		instagram?: string | null | undefined;
+		description?: string | null;
+		website?: string | null;
+		twitter?: string | null;
+		instagram?: string | null;
 		followedByUser: boolean;
-		image?:
-			| { __typename?: 'Image'; id: string; path: string }
-			| null
-			| undefined;
+		image?: { __typename?: 'Image'; id: string; path: string } | null;
 	};
 };
 
@@ -880,10 +871,7 @@ export type StoresFollowedQuery = {
 				__typename?: 'Store';
 				id: string;
 				name: string;
-				image?:
-					| { __typename?: 'Image'; id: string; path: string }
-					| null
-					| undefined;
+				image?: { __typename?: 'Image'; id: string; path: string } | null;
 			};
 		}>;
 	};
@@ -924,7 +912,7 @@ export const CardsDocument = gql`
 `;
 
 export function useCardsQuery(
-	options: Omit<Urql.UseQueryArgs<CardsQueryVariables>, 'query'> = {}
+	options?: Omit<Urql.UseQueryArgs<CardsQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<CardsQuery>({ query: CardsDocument, ...options });
 }
@@ -961,7 +949,7 @@ export const CartsDocument = gql`
 `;
 
 export function useCartsQuery(
-	options: Omit<Urql.UseQueryArgs<CartsQueryVariables>, 'query'> = {}
+	options?: Omit<Urql.UseQueryArgs<CartsQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<CartsQuery>({ query: CartsDocument, ...options });
 }
@@ -996,7 +984,7 @@ export const CartDocument = gql`
 `;
 
 export function useCartQuery(
-	options: Omit<Urql.UseQueryArgs<CartQueryVariables>, 'query'> = {}
+	options: Omit<Urql.UseQueryArgs<CartQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<CartQuery>({ query: CartDocument, ...options });
 }
@@ -1155,7 +1143,7 @@ export const HomeDocument = gql`
 `;
 
 export function useHomeQuery(
-	options: Omit<Urql.UseQueryArgs<HomeQueryVariables>, 'query'> = {}
+	options?: Omit<Urql.UseQueryArgs<HomeQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<HomeQuery>({ query: HomeDocument, ...options });
 }
@@ -1189,7 +1177,7 @@ export const UserOrdersDocument = gql`
 `;
 
 export function useUserOrdersQuery(
-	options: Omit<Urql.UseQueryArgs<UserOrdersQueryVariables>, 'query'> = {}
+	options?: Omit<Urql.UseQueryArgs<UserOrdersQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<UserOrdersQuery>({
 		query: UserOrdersDocument,
@@ -1229,7 +1217,7 @@ export const OrderDocument = gql`
 `;
 
 export function useOrderQuery(
-	options: Omit<Urql.UseQueryArgs<OrderQueryVariables>, 'query'> = {}
+	options: Omit<Urql.UseQueryArgs<OrderQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<OrderQuery>({ query: OrderDocument, ...options });
 }
@@ -1279,7 +1267,7 @@ export const StoreProductsDocument = gql`
 `;
 
 export function useStoreProductsQuery(
-	options: Omit<Urql.UseQueryArgs<StoreProductsQueryVariables>, 'query'> = {}
+	options: Omit<Urql.UseQueryArgs<StoreProductsQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<StoreProductsQuery>({
 		query: StoreProductsDocument,
@@ -1316,7 +1304,7 @@ export const ProductDocument = gql`
 `;
 
 export function useProductQuery(
-	options: Omit<Urql.UseQueryArgs<ProductQueryVariables>, 'query'> = {}
+	options: Omit<Urql.UseQueryArgs<ProductQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<ProductQuery>({ query: ProductDocument, ...options });
 }
@@ -1346,7 +1334,7 @@ export const WatchlistDocument = gql`
 `;
 
 export function useWatchlistQuery(
-	options: Omit<Urql.UseQueryArgs<WatchlistQueryVariables>, 'query'> = {}
+	options?: Omit<Urql.UseQueryArgs<WatchlistQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<WatchlistQuery>({
 		query: WatchlistDocument,
@@ -1401,7 +1389,7 @@ export const StoresDocument = gql`
 `;
 
 export function useStoresQuery(
-	options: Omit<Urql.UseQueryArgs<StoresQueryVariables>, 'query'> = {}
+	options?: Omit<Urql.UseQueryArgs<StoresQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<StoresQuery>({ query: StoresDocument, ...options });
 }
@@ -1424,7 +1412,7 @@ export const StoreDocument = gql`
 `;
 
 export function useStoreQuery(
-	options: Omit<Urql.UseQueryArgs<StoreQueryVariables>, 'query'> = {}
+	options: Omit<Urql.UseQueryArgs<StoreQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<StoreQuery>({ query: StoreDocument, ...options });
 }
@@ -1478,7 +1466,7 @@ export const StoresFollowedDocument = gql`
 `;
 
 export function useStoresFollowedQuery(
-	options: Omit<Urql.UseQueryArgs<StoresFollowedQueryVariables>, 'query'> = {}
+	options?: Omit<Urql.UseQueryArgs<StoresFollowedQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<StoresFollowedQuery>({
 		query: StoresFollowedDocument,
@@ -1496,7 +1484,7 @@ export const CurrentUserDocument = gql`
 `;
 
 export function useCurrentUserQuery(
-	options: Omit<Urql.UseQueryArgs<CurrentUserQueryVariables>, 'query'> = {}
+	options?: Omit<Urql.UseQueryArgs<CurrentUserQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<CurrentUserQuery>({
 		query: CurrentUserDocument,
