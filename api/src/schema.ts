@@ -48,6 +48,17 @@ import WatchlistProductTypes from './collections/watchlist-product/types';
 const Root = `
 	scalar Upload
 
+	interface Node {
+		id: ID!
+	}
+
+	type PageInfo {
+		hasNextPage: Boolean!
+		hasPreviousPage: Boolean!
+		startCursor: String
+		endCursor: String
+	}
+
 	type Query { _: Boolean }
 	type Mutation { _: Boolean }
 `;
