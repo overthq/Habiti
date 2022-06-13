@@ -11,18 +11,7 @@ const useClient = (accessToken: string | null) => {
 				fetchOptions: {
 					headers: { authorization: `Bearer ${accessToken}` }
 				},
-				exchanges: [
-					dedupExchange,
-					cacheExchange({
-						keys: {
-							StoreFollower: data => `${data.storeId}-${data.followerId}`,
-							OrderProduct: data => `${data.orderId}-${data.productId}`,
-							CartProduct: data => `${data.cartId}-${data.productId}`,
-							WatchlistProduct: data => `${data.userId}-${data.productId}`
-						}
-					}),
-					fetchExchange
-				]
+				exchanges: [dedupExchange, cacheExchange({}), fetchExchange]
 			}),
 		[accessToken]
 	);

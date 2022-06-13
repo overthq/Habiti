@@ -2,6 +2,7 @@ import { gql } from 'apollo-server-express';
 
 const OrderProductTypes = gql`
 	type OrderProduct {
+		id: ID!
 		orderId: ID!
 		productId: ID!
 		unitPrice: Int!

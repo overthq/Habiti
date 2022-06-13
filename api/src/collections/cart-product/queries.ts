@@ -1,5 +1,9 @@
 import { Resolver } from '../../types/resolvers';
 
+const id: Resolver = async parent => {
+	return `${parent.cartId}-${parent.productId}`;
+};
+
 const product: Resolver = async (parent, _, ctx) => {
 	const fetchedProduct = await ctx.prisma.cartProduct
 		.findUnique({
@@ -32,6 +36,7 @@ const cart: Resolver = async (parent, _, ctx) => {
 
 export default {
 	CartProduct: {
+		id,
 		product,
 		cart
 	}

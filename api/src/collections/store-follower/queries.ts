@@ -1,5 +1,9 @@
 import { Resolver } from '../../types/resolvers';
 
+const id: Resolver = async parent => {
+	return `${parent.storeId}-${parent.followerId}`;
+};
+
 const store: Resolver = async (parent, _, ctx) => {
 	const fetchedStore = await ctx.prisma.storeFollower
 		.findUnique({
@@ -32,6 +36,7 @@ const follower: Resolver = async (parent, _, ctx) => {
 
 export default {
 	StoreFollower: {
+		id,
 		store,
 		follower
 	}

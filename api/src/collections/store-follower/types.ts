@@ -2,6 +2,7 @@ import { gql } from 'apollo-server-express';
 
 const StoreFollowerTypes = gql`
 	type StoreFollower {
+		id: ID!
 		storeId: ID!
 		followerId: ID!
 		store: Store!
