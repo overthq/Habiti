@@ -1,0 +1,96 @@
+# This file implements a new Relay-compatible schema for Market.
+# This will probably not be implemented for a while, as I'm still figuring out how to
+# implement the Relay pagination spec with Prisma.
+
+scalar Upload
+
+interface Node {
+	id: ID!
+}
+
+type PageInfo {
+	hasNextPage: Boolean!
+	hasPreviousPage: Boolean!
+	startCursor: String
+	endCursor: String
+}
+
+type User implements Node {
+	name: String!
+	phone: String!
+	email: String!
+}
+
+type Store implements Node {
+	name: String!
+	orders: OrderConnection!
+}
+
+type Order implements Node {
+	userId: ID!
+	storeId: ID!
+	status: OrderStatus!
+}
+
+type Product implements Node {
+	storeId: ID!
+	name: String!
+	description: String!
+	createdAt: String!
+	updatedAt: String!
+}
+
+type OrderProduct implements Node {
+	orderId: ID!
+	productId: ID!
+}
+
+type OrderEdge {
+	node: Order!
+	cursor: String!
+}
+
+type OrderConnection {
+	edges: [OrderEdge!]!
+	pageInfo: PageInfo!
+}
+
+input CreateOrderInput {
+	userId: ID!
+	storeId: ID!
+}
+
+input EditOrderInput {
+	status: OrderStatus
+}
+
+type CreateOrderResponse {
+	order: Order
+}
+
+type EditOrderResponse {
+	order: Order
+}
+
+enum OrderStatus {
+	Pending
+	Delivered
+	Completed
+	Cancelled
+}
+
+type Query {
+	users: [User!]!
+	user(id: ID!): User!
+	stores: [Store!]!
+	store(id: ID!): Store!
+	order(id: ID!): Order!
+	product(id: ID!): Product!
+	products: [Product!]!
+	node(id: ID!): Node!
+}
+
+type Mutation {
+	createOrder(input: CreateOrderInput!): CreateOrderResponse!
+	editOrder(input: EditOrderInput!): EditOrderResponse!
+}
