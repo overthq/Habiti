@@ -26,7 +26,7 @@ const OrderTypes = gql`
 	}
 
 	extend type Mutation {
-		createOrder(cartId: ID!): Order!
+		createOrder(cartId: ID!, cardId: ID): Order!
 	}
 `;
 

@@ -43,6 +43,7 @@ import orderProductQueries from './collections/order-product/queries';
 import OrderProductTypes from './collections/order-product/types';
 
 import watchlistProductQueries from './collections/watchlist-product/queries';
+import watchlistProductMutations from './collections/watchlist-product/mutations';
 import WatchlistProductTypes from './collections/watchlist-product/types';
 
 const Root = `
@@ -74,7 +75,8 @@ const resolvers = merge(
 	cardQueries,
 	cardMutations,
 	orderProductQueries,
-	watchlistProductQueries
+	watchlistProductQueries,
+	watchlistProductMutations
 );
 
 const schema = makeExecutableSchema({

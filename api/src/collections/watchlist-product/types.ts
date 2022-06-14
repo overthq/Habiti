@@ -8,6 +8,10 @@ const WatchlistProductTypes = gql`
 		user: User!
 		product: Product!
 	}
+
+	extend type Mutation {
+		addToWatchlist(productId: ID!): WatchlistProduct!
+	}
 `;
 
 export default WatchlistProductTypes;

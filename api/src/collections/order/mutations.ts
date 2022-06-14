@@ -1,15 +1,14 @@
 import { Resolver } from '../../types/resolvers';
 import { chargeAuthorization } from '../../utils/paystack';
 
-// TODO: Pass cardId here (and verify that the user owns the card).
 interface CreateOrderArgs {
 	cartId: string;
-	// cardId: string;
+	cardId?: string;
 }
 
 export const createOrder: Resolver<CreateOrderArgs> = async (
 	_,
-	{ cartId },
+	{ cartId, cardId },
 	ctx
 ) => {
 	const cart = await ctx.prisma.cart.findUnique({
@@ -32,10 +31,27 @@ export const createOrder: Resolver<CreateOrderArgs> = async (
 		return acc + next.product.unitPrice * next.quantity;
 	}, 0);
 
+	// TODO:
+	// 1. Move all this logic into a `resolveCard` function.
+	//    It might be useful in other cases.
+	// 2. Move chargeAuthorization to after the order object has been created?
+	// 3. Retrieve (or listen to) the status from the chargeAuthorization call,
+	//    so we can update the order status (esp. in the case that the payment fails).
+
+	if (!cart.user.cards[0]) {
+		throw new Error('You do not have a card linked to this account!');
+	}
+
+	let card = cart.user.cards[0];
+
+	if (cardId) {
+		card = await ctx.prisma.card.findUnique({ where: { id: cardId } });
+	}
+
 	await chargeAuthorization({
-		email: 'test@test.co',
-		amount: String(total * 100),
-		authorizationCode: cart.user.cards[0].authorizationCode
+		email: card.email,
+		amount: String(total),
+		authorizationCode: card.authorizationCode
 	});
 
 	if (cart.userId === ctx.user.id) {

@@ -43,7 +43,6 @@ const ProductTypes = gql`
 	extend type Mutation {
 		createProduct(input: CreateProductInput!): Product!
 		editProduct(id: ID!, input: EditProductInput!): Product!
-		addToWatchlist(productId: ID!): WatchlistProduct!
 	}
 `;
 

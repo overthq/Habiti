@@ -56,32 +56,9 @@ const editProduct: Resolver<EditProductArgs> = async (
 	return product;
 };
 
-// TODO: This should not be here.
-// Need a complete rethink of this data model, really.
-
-interface AddToWatchlistArgs {
-	productId: string;
-}
-
-const addToWatchlist: Resolver<AddToWatchlistArgs> = async (
-	_,
-	{ productId },
-	ctx
-) => {
-	const watchlistProduct = await ctx.prisma.watchlistProduct.create({
-		data: {
-			productId,
-			userId: ctx.user.id
-		}
-	});
-
-	return watchlistProduct;
-};
-
 export default {
 	Mutation: {
 		createProduct,
-		editProduct,
-		addToWatchlist
+		editProduct
 	}
 };
