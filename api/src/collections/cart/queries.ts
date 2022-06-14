@@ -12,14 +12,6 @@ const cart: Resolver<CartArgs> = async (_, { id }, ctx) => {
 	return fetchedCart;
 };
 
-const userCarts: Resolver = async (_, __, ctx) => {
-	const carts = await ctx.prisma.cart.findMany({
-		where: { userId: ctx.user.id }
-	});
-
-	return carts;
-};
-
 interface UserCartArgs {
 	storeId: string;
 }
@@ -71,7 +63,6 @@ const total: Resolver = async (parent, _, ctx) => {
 export default {
 	Query: {
 		cart,
-		userCarts,
 		userCart
 	},
 	Cart: {
