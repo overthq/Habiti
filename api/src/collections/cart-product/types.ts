@@ -11,12 +11,8 @@ const CartProductTypes = gql`
 	}
 
 	# Small refactor:
-	# cartId should probably be optional,
-	# so this becomes an upsert mutation
-	# and we can delete "createCart"
-	# In that case though, we might need to
-	# accept a storeId instead of a cartId.
-	# Interesting.
+	# We should add a cart product input as part of the
+	# createCart mutation.
 
 	input AddToCartInput {
 		cartId: ID!
@@ -33,6 +29,7 @@ const CartProductTypes = gql`
 	extend type Mutation {
 		addToCart(input: AddToCartInput!): CartProduct!
 		updateCartProduct(input: UpdateCartProductInput!): CartProduct!
+		removeFromCart(cartId: ID!, productId: ID!): ID!
 	}
 `;
 

@@ -12,6 +12,7 @@ const CartTypes = gql`
 		user: User!
 		store: Store!
 		products: [CartProduct!]!
+		productsAggregate: Aggregate!
 	}
 
 	input CreateCartInput {
@@ -21,14 +22,20 @@ const CartTypes = gql`
 	}
 
 	extend type Query {
+		carts: [Cart!]!
 		cart(id: ID!): Cart!
-		userCart(storeId: ID!): Cart
 	}
 
 	extend type Mutation {
 		createCart(input: CreateCartInput!): Cart!
-		removeFromCart(cartId: ID!, productId: ID!): Product!
 		deleteCart(cartId: ID!): ID!
+	}
+
+	# Spitballing:
+	# We should have an aggregate type that we use for all
+	# array connections (mostly for count though).
+	type Aggregate {
+		count: Int!
 	}
 `;
 

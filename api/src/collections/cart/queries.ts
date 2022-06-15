@@ -1,5 +1,11 @@
 import { Resolver } from '../../types/resolvers';
 
+const carts: Resolver = async (_parent, _args, ctx) => {
+	const fetchedCarts = await ctx.prisma.cart.findMany();
+
+	return fetchedCarts;
+};
+
 interface CartArgs {
 	id: string;
 }
@@ -7,18 +13,6 @@ interface CartArgs {
 const cart: Resolver<CartArgs> = async (_, { id }, ctx) => {
 	const fetchedCart = await ctx.prisma.cart.findUnique({
 		where: { id }
-	});
-
-	return fetchedCart;
-};
-
-interface UserCartArgs {
-	storeId: string;
-}
-
-const userCart: Resolver<UserCartArgs> = async (_, { storeId }, ctx) => {
-	const fetchedCart = await ctx.prisma.cart.findUnique({
-		where: { userId_storeId: { userId: ctx.user.id, storeId } }
 	});
 
 	return fetchedCart;
@@ -60,14 +54,22 @@ const total: Resolver = async (parent, _, ctx) => {
 	return computedTotal;
 };
 
+// Aggregates?
+// A bad experiment that might not work, but is worth a shot.
+
+const productsAggregate: Resolver = parent => {
+	return { count: parent.products.length };
+};
+
 export default {
 	Query: {
-		cart,
-		userCart
+		carts,
+		cart
 	},
 	Cart: {
 		user,
 		products,
+		productsAggregate,
 		store,
 		total
 	}

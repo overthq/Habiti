@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from 'urql';
 import * as Urql from 'urql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -23,10 +23,15 @@ export type Scalars = {
 	Upload: any;
 };
 
-export type AddProductToCartInput = {
+export type AddToCartInput = {
 	cartId: Scalars['ID'];
 	productId: Scalars['ID'];
 	quantity?: InputMaybe<Scalars['Int']>;
+};
+
+export type Aggregate = {
+	__typename?: 'Aggregate';
+	count: Scalars['Int'];
 };
 
 export type Card = {
@@ -50,23 +55,21 @@ export type Cart = {
 	__typename?: 'Cart';
 	createdAt: Scalars['String'];
 	id: Scalars['ID'];
-	product?: Maybe<CartProduct>;
 	products: Array<CartProduct>;
+	productsAggregate: Aggregate;
 	store: Store;
 	storeId: Scalars['ID'];
+	total: Scalars['Int'];
 	updatedAt: Scalars['String'];
 	user: User;
 	userId: Scalars['ID'];
-};
-
-export type CartProductArgs = {
-	id: Scalars['ID'];
 };
 
 export type CartProduct = {
 	__typename?: 'CartProduct';
 	cart: Cart;
 	cartId: Scalars['ID'];
+	id: Scalars['ID'];
 	product: Product;
 	productId: Scalars['ID'];
 	quantity: Scalars['Int'];
@@ -124,6 +127,7 @@ export type Image = {
 	path: Scalars['String'];
 	product?: Maybe<Product>;
 	productId?: Maybe<Scalars['ID']>;
+	publicId: Scalars['String'];
 	store?: Maybe<Store>;
 	storeId?: Maybe<Scalars['ID']>;
 	updatedAt: Scalars['String'];
@@ -132,7 +136,8 @@ export type Image = {
 export type Mutation = {
 	__typename?: 'Mutation';
 	_?: Maybe<Scalars['Boolean']>;
-	addProductToCart: Cart;
+	addToCart: CartProduct;
+	addToWatchlist: WatchlistProduct;
 	createCart: Cart;
 	createOrder: Order;
 	createProduct: Product;
@@ -146,13 +151,17 @@ export type Mutation = {
 	editProfile: User;
 	editStore: Store;
 	followStore: Store;
-	removeProductFromCart: Scalars['ID'];
+	removeFromCart: Scalars['ID'];
 	unfollowStore: Store;
 	updateCartProduct: CartProduct;
 };
 
-export type MutationAddProductToCartArgs = {
-	input: AddProductToCartInput;
+export type MutationAddToCartArgs = {
+	input: AddToCartInput;
+};
+
+export type MutationAddToWatchlistArgs = {
+	productId: Scalars['ID'];
 };
 
 export type MutationCreateCartArgs = {
@@ -160,6 +169,7 @@ export type MutationCreateCartArgs = {
 };
 
 export type MutationCreateOrderArgs = {
+	cardId?: InputMaybe<Scalars['ID']>;
 	cartId: Scalars['ID'];
 };
 
@@ -209,7 +219,7 @@ export type MutationFollowStoreArgs = {
 	storeId: Scalars['ID'];
 };
 
-export type MutationRemoveProductFromCartArgs = {
+export type MutationRemoveFromCartArgs = {
 	cartId: Scalars['ID'];
 	productId: Scalars['ID'];
 };
@@ -238,6 +248,7 @@ export type Order = {
 
 export type OrderProduct = {
 	__typename?: 'OrderProduct';
+	id: Scalars['ID'];
 	order: Order;
 	orderId: Scalars['ID'];
 	product: Product;
@@ -259,6 +270,7 @@ export type Product = {
 	description: Scalars['String'];
 	id: Scalars['ID'];
 	images: Array<Image>;
+	inCart: Scalars['Boolean'];
 	name: Scalars['String'];
 	orders: Array<Order>;
 	quantity: Scalars['Int'];
@@ -273,6 +285,7 @@ export type Query = {
 	__typename?: 'Query';
 	_?: Maybe<Scalars['Boolean']>;
 	cart: Cart;
+	carts: Array<Cart>;
 	currentUser: User;
 	order: Order;
 	product: Product;
@@ -280,8 +293,6 @@ export type Query = {
 	storeProducts: Array<Product>;
 	stores: Array<Store>;
 	user: User;
-	userCart?: Maybe<Cart>;
-	userCarts: Array<Cart>;
 	users: Array<User>;
 };
 
@@ -309,19 +320,13 @@ export type QueryUserArgs = {
 	id: Scalars['ID'];
 };
 
-export type QueryUserCartArgs = {
-	storeId: Scalars['ID'];
-};
-
-export type QueryUserCartsArgs = {
-	userId: Scalars['ID'];
-};
-
 export type Store = {
 	__typename?: 'Store';
+	cartForUser?: Maybe<Cart>;
 	carts: Array<Cart>;
 	createdAt: Scalars['String'];
 	description?: Maybe<Scalars['String']>;
+	followedByUser: Scalars['Boolean'];
 	followers: Array<StoreFollower>;
 	id: Scalars['ID'];
 	image?: Maybe<Image>;
@@ -330,15 +335,21 @@ export type Store = {
 	name: Scalars['String'];
 	orders: Array<Order>;
 	products: Array<Product>;
+	stats: StoreStats;
 	twitter?: Maybe<Scalars['String']>;
 	updatedAt: Scalars['String'];
 	website?: Maybe<Scalars['String']>;
+};
+
+export type StoreStatsArgs = {
+	period: StoreStatPeriod;
 };
 
 export type StoreFollower = {
 	__typename?: 'StoreFollower';
 	follower: User;
 	followerId: Scalars['ID'];
+	id: Scalars['ID'];
 	store: Store;
 	storeId: Scalars['ID'];
 };
@@ -349,6 +360,20 @@ export type StoreManager = {
 	managerId: Scalars['ID'];
 	store: Store;
 	storeId: Scalars['ID'];
+};
+
+export enum StoreStatPeriod {
+	Day = 'Day',
+	Month = 'Month',
+	Week = 'Week',
+	Year = 'Year'
+}
+
+export type StoreStats = {
+	__typename?: 'StoreStats';
+	orderCount: Scalars['Int'];
+	orderVolume: Scalars['Int'];
+	revenue: Scalars['Int'];
 };
 
 export type UpdateCartProductInput = {
@@ -374,6 +399,7 @@ export type User = {
 
 export type WatchlistProduct = {
 	__typename?: 'WatchlistProduct';
+	id: Scalars['ID'];
 	product: Product;
 	productId: Scalars['ID'];
 	user: User;
@@ -506,6 +532,7 @@ export type CreateProductMutation = {
 		description: string;
 		unitPrice: number;
 		quantity: number;
+		images: Array<{ __typename?: 'Image'; id: string; path: string }>;
 	};
 };
 
@@ -547,14 +574,11 @@ export type EditStoreMutation = {
 		__typename?: 'Store';
 		id: string;
 		name: string;
-		description?: string | null | undefined;
-		website?: string | null | undefined;
-		twitter?: string | null | undefined;
-		instagram?: string | null | undefined;
-		image?:
-			| { __typename?: 'Image'; id: string; path: string }
-			| null
-			| undefined;
+		description?: string | null;
+		website?: string | null;
+		twitter?: string | null;
+		instagram?: string | null;
+		image?: { __typename?: 'Image'; id: string; path: string } | null;
 	};
 };
 
@@ -568,14 +592,11 @@ export type StoreQuery = {
 		__typename?: 'Store';
 		id: string;
 		name: string;
-		description?: string | null | undefined;
-		website?: string | null | undefined;
-		twitter?: string | null | undefined;
-		instagram?: string | null | undefined;
-		image?:
-			| { __typename?: 'Image'; id: string; path: string }
-			| null
-			| undefined;
+		description?: string | null;
+		website?: string | null;
+		twitter?: string | null;
+		instagram?: string | null;
+		image?: { __typename?: 'Image'; id: string; path: string } | null;
 	};
 };
 
@@ -596,7 +617,7 @@ export const ManagedStoresDocument = gql`
 `;
 
 export function useManagedStoresQuery(
-	options: Omit<Urql.UseQueryArgs<ManagedStoresQueryVariables>, 'query'> = {}
+	options: Omit<Urql.UseQueryArgs<ManagedStoresQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<ManagedStoresQuery>({
 		query: ManagedStoresDocument,
@@ -632,7 +653,7 @@ export const OrdersDocument = gql`
 `;
 
 export function useOrdersQuery(
-	options: Omit<Urql.UseQueryArgs<OrdersQueryVariables>, 'query'> = {}
+	options: Omit<Urql.UseQueryArgs<OrdersQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<OrdersQuery>({ query: OrdersDocument, ...options });
 }
@@ -666,7 +687,7 @@ export const OrderDocument = gql`
 `;
 
 export function useOrderQuery(
-	options: Omit<Urql.UseQueryArgs<OrderQueryVariables>, 'query'> = {}
+	options: Omit<Urql.UseQueryArgs<OrderQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<OrderQuery>({ query: OrderDocument, ...options });
 }
@@ -690,7 +711,7 @@ export const ProductsDocument = gql`
 `;
 
 export function useProductsQuery(
-	options: Omit<Urql.UseQueryArgs<ProductsQueryVariables>, 'query'> = {}
+	options: Omit<Urql.UseQueryArgs<ProductsQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<ProductsQuery>({ query: ProductsDocument, ...options });
 }
@@ -711,7 +732,7 @@ export const ProductDocument = gql`
 `;
 
 export function useProductQuery(
-	options: Omit<Urql.UseQueryArgs<ProductQueryVariables>, 'query'> = {}
+	options: Omit<Urql.UseQueryArgs<ProductQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<ProductQuery>({ query: ProductDocument, ...options });
 }
@@ -723,6 +744,10 @@ export const CreateProductDocument = gql`
 			description
 			unitPrice
 			quantity
+			images {
+				id
+				path
+			}
 		}
 	}
 `;
@@ -807,7 +832,7 @@ export const StoreDocument = gql`
 `;
 
 export function useStoreQuery(
-	options: Omit<Urql.UseQueryArgs<StoreQueryVariables>, 'query'> = {}
+	options: Omit<Urql.UseQueryArgs<StoreQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<StoreQuery>({ query: StoreDocument, ...options });
 }

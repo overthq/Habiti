@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from 'urql';
 import * as Urql from 'urql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -23,10 +23,15 @@ export type Scalars = {
 	Upload: any;
 };
 
-export type AddProductToCartInput = {
+export type AddToCartInput = {
 	cartId: Scalars['ID'];
 	productId: Scalars['ID'];
 	quantity?: InputMaybe<Scalars['Int']>;
+};
+
+export type Aggregate = {
+	__typename?: 'Aggregate';
+	count: Scalars['Int'];
 };
 
 export type Card = {
@@ -51,6 +56,7 @@ export type Cart = {
 	createdAt: Scalars['String'];
 	id: Scalars['ID'];
 	products: Array<CartProduct>;
+	productsAggregate: Aggregate;
 	store: Store;
 	storeId: Scalars['ID'];
 	total: Scalars['Int'];
@@ -63,6 +69,7 @@ export type CartProduct = {
 	__typename?: 'CartProduct';
 	cart: Cart;
 	cartId: Scalars['ID'];
+	id: Scalars['ID'];
 	product: Product;
 	productId: Scalars['ID'];
 	quantity: Scalars['Int'];
@@ -129,7 +136,7 @@ export type Image = {
 export type Mutation = {
 	__typename?: 'Mutation';
 	_?: Maybe<Scalars['Boolean']>;
-	addToCart: Product;
+	addToCart: CartProduct;
 	addToWatchlist: WatchlistProduct;
 	createCart: Cart;
 	createOrder: Order;
@@ -144,13 +151,13 @@ export type Mutation = {
 	editProfile: User;
 	editStore: Store;
 	followStore: Store;
-	removeFromCart: Product;
+	removeFromCart: Scalars['ID'];
 	unfollowStore: Store;
 	updateCartProduct: CartProduct;
 };
 
 export type MutationAddToCartArgs = {
-	input: AddProductToCartInput;
+	input: AddToCartInput;
 };
 
 export type MutationAddToWatchlistArgs = {
@@ -162,6 +169,7 @@ export type MutationCreateCartArgs = {
 };
 
 export type MutationCreateOrderArgs = {
+	cardId?: InputMaybe<Scalars['ID']>;
 	cartId: Scalars['ID'];
 };
 
@@ -240,6 +248,7 @@ export type Order = {
 
 export type OrderProduct = {
 	__typename?: 'OrderProduct';
+	id: Scalars['ID'];
 	order: Order;
 	orderId: Scalars['ID'];
 	product: Product;
@@ -276,6 +285,7 @@ export type Query = {
 	__typename?: 'Query';
 	_?: Maybe<Scalars['Boolean']>;
 	cart: Cart;
+	carts: Array<Cart>;
 	currentUser: User;
 	order: Order;
 	product: Product;
@@ -283,8 +293,6 @@ export type Query = {
 	storeProducts: Array<Product>;
 	stores: Array<Store>;
 	user: User;
-	userCart?: Maybe<Cart>;
-	userCarts: Array<Cart>;
 	users: Array<User>;
 };
 
@@ -310,14 +318,6 @@ export type QueryStoreProductsArgs = {
 
 export type QueryUserArgs = {
 	id: Scalars['ID'];
-};
-
-export type QueryUserCartArgs = {
-	storeId: Scalars['ID'];
-};
-
-export type QueryUserCartsArgs = {
-	userId: Scalars['ID'];
 };
 
 export type Store = {
@@ -349,6 +349,7 @@ export type StoreFollower = {
 	__typename?: 'StoreFollower';
 	follower: User;
 	followerId: Scalars['ID'];
+	id: Scalars['ID'];
 	store: Store;
 	storeId: Scalars['ID'];
 };
@@ -398,6 +399,7 @@ export type User = {
 
 export type WatchlistProduct = {
 	__typename?: 'WatchlistProduct';
+	id: Scalars['ID'];
 	product: Product;
 	productId: Scalars['ID'];
 	user: User;
@@ -444,17 +446,11 @@ export type CartsQuery = {
 				name: string;
 				image?: { __typename?: 'Image'; id: string; path: string } | null;
 			};
+			productsAggregate: { __typename?: 'Aggregate'; count: number };
 			products: Array<{
 				__typename?: 'CartProduct';
-				cartId: string;
-				productId: string;
+				id: string;
 				quantity: number;
-				product: {
-					__typename?: 'Product';
-					id: string;
-					name: string;
-					unitPrice: number;
-				};
 			}>;
 		}>;
 	};
@@ -475,6 +471,7 @@ export type CartQuery = {
 		store: { __typename?: 'Store'; id: string; name: string };
 		products: Array<{
 			__typename?: 'CartProduct';
+			id: string;
 			cartId: string;
 			productId: string;
 			quantity: number;
@@ -491,16 +488,17 @@ export type CartQuery = {
 };
 
 export type AddToCartMutationVariables = Exact<{
-	input: AddProductToCartInput;
+	input: AddToCartInput;
 }>;
 
 export type AddToCartMutation = {
 	__typename?: 'Mutation';
 	addToCart: {
-		__typename?: 'Product';
+		__typename?: 'CartProduct';
 		id: string;
-		storeId: string;
-		inCart: boolean;
+		cartId: string;
+		productId: string;
+		quantity: number;
 	};
 };
 
@@ -511,12 +509,7 @@ export type RemoveFromCartMutationVariables = Exact<{
 
 export type RemoveFromCartMutation = {
 	__typename?: 'Mutation';
-	removeFromCart: {
-		__typename?: 'Product';
-		id: string;
-		storeId: string;
-		inCart: boolean;
-	};
+	removeFromCart: string;
 };
 
 export type CreateCartMutationVariables = Exact<{
@@ -932,14 +925,11 @@ export const CartsDocument = gql`
 						path
 					}
 				}
+				productsAggregate {
+					count
+				}
 				products {
-					cartId
-					productId
-					product {
-						id
-						name
-						unitPrice
-					}
+					id
 					quantity
 				}
 				total
@@ -964,6 +954,7 @@ export const CartDocument = gql`
 				name
 			}
 			products {
+				id
 				cartId
 				productId
 				product {
@@ -989,11 +980,12 @@ export function useCartQuery(
 	return Urql.useQuery<CartQuery>({ query: CartDocument, ...options });
 }
 export const AddToCartDocument = gql`
-	mutation AddToCart($input: AddProductToCartInput!) {
+	mutation AddToCart($input: AddToCartInput!) {
 		addToCart(input: $input) {
 			id
-			storeId
-			inCart
+			cartId
+			productId
+			quantity
 		}
 	}
 `;
@@ -1005,11 +997,7 @@ export function useAddToCartMutation() {
 }
 export const RemoveFromCartDocument = gql`
 	mutation RemoveFromCart($productId: ID!, $cartId: ID!) {
-		removeFromCart(productId: $productId, cartId: $cartId) {
-			id
-			storeId
-			inCart
-		}
+		removeFromCart(productId: $productId, cartId: $cartId)
 	}
 `;
 

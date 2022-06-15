@@ -13,16 +13,16 @@ query Carts {
 					path
 				}
 			}
+
+			productsAggregate {
+				count
+			}
+
 			products {
-				cartId
-				productId
-				product {
-					id
-					name
-					unitPrice
-				}
+				id
 				quantity
 			}
+
 			total
 		}
 	}
@@ -38,6 +38,7 @@ query Cart($cartId: ID!) {
 			name
 		}
 		products {
+			id
 			cartId
 			productId
 			product {
@@ -56,20 +57,17 @@ query Cart($cartId: ID!) {
 	}
 }
 
-mutation AddToCart($input: AddProductToCartInput!) {
+mutation AddToCart($input: AddToCartInput!) {
 	addToCart(input: $input) {
 		id
-		storeId
-		inCart
+		cartId
+		productId
+		quantity
 	}
 }
 
 mutation RemoveFromCart($productId: ID!, $cartId: ID!) {
-	removeFromCart(productId: $productId, cartId: $cartId) {
-		id
-		storeId
-		inCart
-	}
+	removeFromCart(productId: $productId, cartId: $cartId)
 }
 
 mutation CreateCart($input: CreateCartInput!) {
