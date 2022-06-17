@@ -4,7 +4,8 @@ import {
 	MutationDeleteCartArgs,
 	MutationFollowStoreArgs,
 	MutationRemoveFromCartArgs,
-	MutationUnfollowStoreArgs
+	MutationUnfollowStoreArgs,
+	MutationUpdateCartProductArgs
 } from '../types/api';
 
 // Because I'm a bit lazy, I have decided to just go ahead
@@ -53,7 +54,22 @@ const customCache = cacheExchange({
 				});
 			},
 			deleteCart(_result, args: MutationDeleteCartArgs, cache) {
-				// Set up cache deletion.
+				// TODO: Invalidate the product as well.
+
+				cache.invalidate({
+					__typename: 'Cart',
+					id: args.cartId
+				});
+			},
+			updateCartProduct(_result, args: MutationUpdateCartProductArgs, cache) {
+				cache.invalidate({
+					__typename: 'Product',
+					id: args.input.productId
+				});
+				cache.invalidate({
+					__typename: 'Cart',
+					id: args.input.cartId
+				});
 			}
 		}
 	}
