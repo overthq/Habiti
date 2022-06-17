@@ -97,7 +97,17 @@ interface DeleteStoreArgs {
 }
 
 const deleteStore: Resolver<DeleteStoreArgs> = async (_, { id }, ctx) => {
-	await ctx.prisma.store.delete({ where: { id } });
+	const storeManagers = await ctx.prisma.storeManager.findMany({
+		where: { storeId: id }
+	});
+
+	const storeManagerIds = storeManagers.map(manager => manager.managerId);
+
+	if (storeManagerIds.includes(ctx.user.id)) {
+		await ctx.prisma.store.delete({ where: { id } });
+	} else {
+		throw new Error('You are not authorized to delete this store');
+	}
 
 	return id;
 };

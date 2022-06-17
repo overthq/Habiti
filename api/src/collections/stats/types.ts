@@ -2,6 +2,7 @@ import { gql } from 'apollo-server-express';
 
 const StatsTypes = gql`
 	type Stats {
+		id: ID!
 		storeId: ID!
 		store: Store!
 		revenue: ID!

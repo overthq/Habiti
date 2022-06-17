@@ -1,5 +1,5 @@
 import { cacheExchange } from '@urql/exchange-graphcache';
-import { ProductDocument } from '../types/api';
+import { CartsDocument, ProductDocument } from '../types/api';
 
 // TODO: This file will handle the cacheExchange and all the
 // necessary updates for the queries.
@@ -19,18 +19,19 @@ const customCache = cacheExchange({
 			addCart(result, _args, cache) {
 				cache.updateQuery(
 					{
-						query: ProductDocument as any,
+						query: ProductDocument,
 						variables: {
 							id: result.productId
 						}
 					},
-					(data: any) => {
+					data => {
 						if (data?.product) {
 							data.product.inCart = true;
 							return data;
 						}
 					}
 				);
+				cache.readQuery({ query: CartsDocument });
 			}
 		}
 	}

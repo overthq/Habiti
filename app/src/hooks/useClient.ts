@@ -1,7 +1,7 @@
 import React from 'react';
 import { createClient, dedupExchange, fetchExchange } from 'urql';
-import { cacheExchange } from '@urql/exchange-graphcache';
 import env from '../../env';
+import customCache from '../utils/cache';
 
 const useClient = (accessToken: string | null) => {
 	const client = React.useMemo(
@@ -11,7 +11,7 @@ const useClient = (accessToken: string | null) => {
 				fetchOptions: {
 					headers: { authorization: `Bearer ${accessToken}` }
 				},
-				exchanges: [dedupExchange, cacheExchange({}), fetchExchange]
+				exchanges: [dedupExchange, customCache, fetchExchange]
 			}),
 		[accessToken]
 	);

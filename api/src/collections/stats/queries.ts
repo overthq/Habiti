@@ -14,18 +14,18 @@ enum StatPeriod {
 	Year = 'Year'
 }
 
-const getDateFromPeriod = (period: StatPeriod): Date => {
-	const currentDate = new Date();
+// const getDateFromPeriod = (period: StatPeriod): Date => {
+// 	const currentDate = new Date();
 
-	const dateMap = {
-		[StatPeriod.Day]: 1,
-		[StatPeriod.Week]: 7,
-		[StatPeriod.Month]: 30,
-		[StatPeriod.Year]: 365
-	};
+// 	const dateMap = {
+// 		[StatPeriod.Day]: 1,
+// 		[StatPeriod.Week]: 7,
+// 		[StatPeriod.Month]: 30,
+// 		[StatPeriod.Year]: 365
+// 	};
 
-	return new Date(currentDate - dateMap[period] * 24 * 60 * 60 * 1000);
-};
+// 	return new Date(currentDate - dateMap[period] * 24 * 60 * 60 * 1000);
+// };
 
 interface StatsArgs {
 	storeId: string;
@@ -33,21 +33,35 @@ interface StatsArgs {
 }
 
 const stats: Resolver<StatsArgs> = async (_, { storeId, period }, ctx) => {
-	console.log(storeId, period);
-	const products = await ctx.prisma.product.findMany({
-		where: {
-			storeId,
-			createdAt: {
-				gte: getDateFromPeriod(period)
-			}
-		}
-	});
+	// const products = await ctx.prisma.product.findMany({
+	// 	where: {
+	// 		storeId,
+	// 		createdAt: {
+	// 			gte: new Date()
+	// 		}
+	// 	}
+	// });
 
 	return null;
 };
 
+// const pendingOrders : Resolver = async () => {
+// }
+
+// const newOrders: Resolver = async () => {
+// }
+
+// const revenue: Resolver = async () => {
+// };
+
+const id: Resolver = parent => {
+	return parent.storeId;
+};
+
 export default {
-	Stats: {},
+	Stats: {
+		id
+	},
 	Query: {
 		stats
 	}

@@ -10,8 +10,8 @@ const StoreFollowerTypes = gql`
 	}
 
 	extend type Mutation {
-		followStore(storeId: ID!): Store!
-		unfollowStore(storeId: ID!): Store!
+		followStore(storeId: ID!): StoreFollower!
+		unfollowStore(storeId: ID!): StoreFollower!
 	}
 `;
 
