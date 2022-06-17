@@ -1,14 +1,12 @@
 mutation FollowStore($storeId: ID!) {
 	followStore(storeId: $storeId) {
 		id
-		followedByUser
 	}
 }
 
 mutation UnfollowStore($storeId: ID!) {
 	unfollowStore(storeId: $storeId) {
 		id
-		followedByUser
 	}
 }
 
@@ -16,6 +14,7 @@ query StoresFollowed {
 	currentUser {
 		id
 		followed {
+			id
 			storeId
 			followerId
 			store {
@@ -29,15 +28,3 @@ query StoresFollowed {
 		}
 	}
 }
-
-# query NewArrivals {
-# 	store_followers(where: { user_id: { _eq: $userId } }) {
-# 		store {
-# 			id
-# 			name
-# 			items(where: { created_at: { _gte: $oneDayAgo } }) {
-# 				...ItemDetails
-# 			}
-# 		}
-# 	}
-# }
