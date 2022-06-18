@@ -47,6 +47,10 @@ const total: Resolver = async (parent, _, ctx) => {
 		.findUnique({ where: { id: parent.id } })
 		.products({ include: { product: true } });
 
+	// For some reason, the Prisma API does not support a sum aggregation on
+	// more than one field (in this case, product.unitPrice and quantity).
+	// It would even be trickier to handle given that "product" is based on a join.
+
 	const computedTotal = fetchedProducts.reduce((acc, p) => {
 		return acc + p.product.unitPrice * p.quantity;
 	}, 0);
@@ -54,11 +58,12 @@ const total: Resolver = async (parent, _, ctx) => {
 	return computedTotal;
 };
 
-// Aggregates?
-// A bad experiment that might not work, but is worth a shot.
+const productsAggregate: Resolver = async (parent, _args, ctx) => {
+	const count = await ctx.prisma.cartProduct.count({
+		where: { cartId: parent.id }
+	});
 
-const productsAggregate: Resolver = parent => {
-	return { count: parent.products.length };
+	return { count };
 };
 
 export default {

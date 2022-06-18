@@ -585,6 +585,7 @@ export type HomeQuery = {
 			};
 			products: Array<{
 				__typename?: 'OrderProduct';
+				id: string;
 				unitPrice: number;
 				quantity: number;
 				product: { __typename?: 'Product'; id: string; name: string };
@@ -592,6 +593,7 @@ export type HomeQuery = {
 		}>;
 		followed: Array<{
 			__typename?: 'StoreFollower';
+			id: string;
 			storeId: string;
 			followerId: string;
 			store: {
@@ -1092,6 +1094,7 @@ export const HomeDocument = gql`
 					}
 				}
 				products {
+					id
 					product {
 						id
 						name
@@ -1103,6 +1106,7 @@ export const HomeDocument = gql`
 				createdAt
 			}
 			followed {
+				id
 				storeId
 				followerId
 				store {
