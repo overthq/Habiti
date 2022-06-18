@@ -2,6 +2,7 @@ query ManagedStores($userId: ID!) {
 	user(id: $userId) {
 		id
 		managed {
+			id
 			storeId
 			managerId
 			store {

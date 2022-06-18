@@ -1,9 +1,9 @@
 import React from 'react';
 import { createClient, dedupExchange, fetchExchange } from 'urql';
-import { cacheExchange } from '@urql/exchange-graphcache';
 import { multipartFetchExchange } from '@urql/exchange-multipart-fetch';
 import env from '../../env';
 import useStore from '../state';
+import customCache from '../utils/cache';
 
 const useClient = () => {
 	const { accessToken, activeStore } = useStore(state => ({
@@ -23,12 +23,7 @@ const useClient = () => {
 				}),
 				exchanges: [
 					dedupExchange,
-					cacheExchange({
-						keys: {
-							OrderProduct: data => `${data.orderId}-${data.productId}`,
-							StoreManager: data => `${data.storeId}-${data.managerId}`
-						}
-					}),
+					customCache,
 					fetchExchange,
 					multipartFetchExchange
 				]

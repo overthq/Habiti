@@ -30,6 +30,7 @@ import storeFollowerMutations from './collections/store-follower/mutations';
 import StoreFollowerTypes from './collections/store-follower/types';
 
 import storeManagerQueries from './collections/store-manager/queries';
+import storeManagerMutations from './collections/store-manager/mutations';
 import StoreManagerTypes from './collections/store-manager/types';
 
 import cartProductQueries from './collections/cart-product/queries';
@@ -72,6 +73,7 @@ const resolvers = merge(
 	storeFollowerQueries,
 	storeFollowerMutations,
 	storeManagerQueries,
+	storeManagerMutations,
 	cartProductQueries,
 	cartProductMutations,
 	cardQueries,
