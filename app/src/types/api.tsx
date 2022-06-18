@@ -603,6 +603,7 @@ export type HomeQuery = {
 		}>;
 		watchlist: Array<{
 			__typename?: 'WatchlistProduct';
+			id: string;
 			userId: string;
 			productId: string;
 			product: {
@@ -1114,6 +1115,7 @@ export const HomeDocument = gql`
 				}
 			}
 			watchlist {
+				id
 				userId
 				productId
 				product {

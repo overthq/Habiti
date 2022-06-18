@@ -38,6 +38,7 @@ query Home {
 		}
 
 		watchlist {
+			id
 			userId
 			productId
 			product {
