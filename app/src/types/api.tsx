@@ -29,11 +29,6 @@ export type AddToCartInput = {
 	quantity?: InputMaybe<Scalars['Int']>;
 };
 
-export type Aggregate = {
-	__typename?: 'Aggregate';
-	count: Scalars['Int'];
-};
-
 export type Card = {
 	__typename?: 'Card';
 	authorizationCode: Scalars['String'];
@@ -56,7 +51,6 @@ export type Cart = {
 	createdAt: Scalars['String'];
 	id: Scalars['ID'];
 	products: Array<CartProduct>;
-	productsAggregate: Aggregate;
 	store: Store;
 	storeId: Scalars['ID'];
 	total: Scalars['Int'];
@@ -446,7 +440,6 @@ export type CartsQuery = {
 				name: string;
 				image?: { __typename?: 'Image'; id: string; path: string } | null;
 			};
-			productsAggregate: { __typename?: 'Aggregate'; count: number };
 			products: Array<{
 				__typename?: 'CartProduct';
 				id: string;
@@ -931,9 +924,6 @@ export const CartsDocument = gql`
 						id
 						path
 					}
-				}
-				productsAggregate {
-					count
 				}
 				products {
 					id

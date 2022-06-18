@@ -58,13 +58,13 @@ const total: Resolver = async (parent, _, ctx) => {
 	return computedTotal;
 };
 
-const productsAggregate: Resolver = async (parent, _args, ctx) => {
-	const count = await ctx.prisma.cartProduct.count({
-		where: { cartId: parent.id }
-	});
+// const productsAggregate: Resolver = async (parent, _args, ctx) => {
+// 	const count = await ctx.prisma.cartProduct.count({
+// 		where: { cartId: parent.id }
+// 	});
 
-	return { count };
-};
+// 	return { count };
+// };
 
 export default {
 	Query: {
@@ -74,7 +74,7 @@ export default {
 	Cart: {
 		user,
 		products,
-		productsAggregate,
+		// productsAggregate,
 		store,
 		total
 	}

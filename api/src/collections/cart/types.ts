@@ -12,7 +12,7 @@ const CartTypes = gql`
 		user: User!
 		store: Store!
 		products: [CartProduct!]!
-		productsAggregate: Aggregate!
+		# productsAggregate: Aggregate!
 	}
 
 	input CreateCartInput {
@@ -31,12 +31,13 @@ const CartTypes = gql`
 		deleteCart(cartId: ID!): ID!
 	}
 
-	# Spitballing:
-	# We should have an aggregate type that we use for all
-	# array connections (mostly for count though).
-	type Aggregate {
-		count: Int!
-	}
+	# We can't use type here, since it's not an entity (entities require IDs).
+	# I don't have the time to start creating a scalar right now.
+	# However, if you do, feel free to implement this.
+
+	# type Aggregate {
+	# 	count: Int!
+	# }
 `;
 
 export default CartTypes;
