@@ -12,6 +12,7 @@ query UserOrders {
 				}
 			}
 			products {
+				id
 				product {
 					id
 					name
@@ -37,6 +38,7 @@ query Order($orderId: ID!) {
 			}
 		}
 		products {
+			id
 			orderId
 			productId
 			product {
@@ -63,6 +65,7 @@ mutation CreateOrder($cartId: ID!) {
 			name
 		}
 		products {
+			id
 			product {
 				id
 				name

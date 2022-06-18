@@ -50,7 +50,9 @@ const removeFromCart: Resolver<RemoveProductArgs> = async (
 			where: { cartId_productId: { cartId, productId } }
 		});
 
-		return product;
+		return `${product.cartId}-${product.productId}`;
+	} else {
+		throw new Error('You are not authorized to access this product');
 	}
 };
 
