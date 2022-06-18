@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { UserOrdersQuery } from '../../types/api';
+import { HomeQuery } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
 import { relativeTimestamp } from '../../utils/date';
 
 interface RecentOrderProps {
-	order: UserOrdersQuery['currentUser']['orders'][-1];
+	order: HomeQuery['currentUser']['orders'][-1];
 }
 
 const RecentOrder: React.FC<RecentOrderProps> = ({ order }) => {
