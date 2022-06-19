@@ -1,12 +1,13 @@
 import { Resolver } from '../../types/resolvers';
 import { chargeAuthorization } from '../../utils/paystack';
+import { OrderStatus } from 'prisma';
 
 interface CreateOrderArgs {
 	cartId: string;
 	cardId?: string;
 }
 
-export const createOrder: Resolver<CreateOrderArgs> = async (
+const createOrder: Resolver<CreateOrderArgs> = async (
 	_,
 	{ cartId, cardId },
 	ctx
@@ -78,6 +79,22 @@ export const createOrder: Resolver<CreateOrderArgs> = async (
 
 		return order;
 	}
+};
+
+interface UpdateOrderArgs {
+	orderId: string;
+	input: {
+		status: OrderStatus;
+	};
+}
+
+export const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
+	await ctx.prisma.order.update({
+		where: {
+			id: args.orderId
+		},
+		data: args.input
+	});
 };
 
 export default {

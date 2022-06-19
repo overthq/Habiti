@@ -15,10 +15,18 @@ const OrderTypes = gql`
 		products: [OrderProduct!]!
 	}
 
+	# TODO: Should we distinguish between orders cancelled by users/stores?
+
 	enum OrderStatus {
 		Pending
+		Processing
 		Cancelled
+		Completed
 		Delivered
+	}
+
+	input UpdateOrderInput {
+		status: OrderStatus
 	}
 
 	extend type Query {
@@ -27,6 +35,7 @@ const OrderTypes = gql`
 
 	extend type Mutation {
 		createOrder(cartId: ID!, cardId: ID): Order!
+		updateOrder(orderId: ID!, input: UpdateOrderInput!): Order!
 	}
 `;
 

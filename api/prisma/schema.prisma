@@ -11,6 +11,7 @@ model User {
   id        String             @id @default(uuid())
   name      String
   phone     String             @unique
+  email     String             @unique
   createdAt DateTime           @default(now())
   updatedAt DateTime           @updatedAt
   orders    Order[]
@@ -159,6 +160,8 @@ model Card {
 
 enum OrderStatus {
   Pending
+  Processing
   Cancelled
+  Completed
   Delivered
 }
