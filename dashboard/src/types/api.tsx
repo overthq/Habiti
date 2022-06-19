@@ -23,15 +23,15 @@ export type Scalars = {
 	Upload: any;
 };
 
+export type AddStoreManagerInput = {
+	managerId: Scalars['ID'];
+	storeId: Scalars['ID'];
+};
+
 export type AddToCartInput = {
 	cartId: Scalars['ID'];
 	productId: Scalars['ID'];
 	quantity?: InputMaybe<Scalars['Int']>;
-};
-
-export type Aggregate = {
-	__typename?: 'Aggregate';
-	count: Scalars['Int'];
 };
 
 export type Card = {
@@ -56,7 +56,6 @@ export type Cart = {
 	createdAt: Scalars['String'];
 	id: Scalars['ID'];
 	products: Array<CartProduct>;
-	productsAggregate: Aggregate;
 	store: Store;
 	storeId: Scalars['ID'];
 	total: Scalars['Int'];
@@ -136,6 +135,7 @@ export type Image = {
 export type Mutation = {
 	__typename?: 'Mutation';
 	_?: Maybe<Scalars['Boolean']>;
+	addStoreManager: StoreManager;
 	addToCart: CartProduct;
 	addToWatchlist: WatchlistProduct;
 	createCart: Cart;
@@ -150,10 +150,15 @@ export type Mutation = {
 	editProduct: Product;
 	editProfile: User;
 	editStore: Store;
-	followStore: Store;
+	followStore: StoreFollower;
 	removeFromCart: Scalars['ID'];
-	unfollowStore: Store;
+	removeStoreManager: StoreManager;
+	unfollowStore: StoreFollower;
 	updateCartProduct: CartProduct;
+};
+
+export type MutationAddStoreManagerArgs = {
+	input?: InputMaybe<AddStoreManagerInput>;
 };
 
 export type MutationAddToCartArgs = {
@@ -222,6 +227,11 @@ export type MutationFollowStoreArgs = {
 export type MutationRemoveFromCartArgs = {
 	cartId: Scalars['ID'];
 	productId: Scalars['ID'];
+};
+
+export type MutationRemoveStoreManagerArgs = {
+	managerId: Scalars['ID'];
+	storeId: Scalars['ID'];
 };
 
 export type MutationUnfollowStoreArgs = {
@@ -356,6 +366,7 @@ export type StoreFollower = {
 
 export type StoreManager = {
 	__typename?: 'StoreManager';
+	id: Scalars['ID'];
 	manager: User;
 	managerId: Scalars['ID'];
 	store: Store;
@@ -417,6 +428,7 @@ export type ManagedStoresQuery = {
 		id: string;
 		managed: Array<{
 			__typename?: 'StoreManager';
+			id: string;
 			storeId: string;
 			managerId: string;
 			store: { __typename?: 'Store'; id: string; name: string };
@@ -442,6 +454,7 @@ export type OrdersQuery = {
 			user: { __typename?: 'User'; id: string; name: string };
 			products: Array<{
 				__typename?: 'OrderProduct';
+				id: string;
 				orderId: string;
 				productId: string;
 				unitPrice: number;
@@ -467,6 +480,7 @@ export type OrderQuery = {
 		user: { __typename?: 'User'; id: string; name: string };
 		products: Array<{
 			__typename?: 'OrderProduct';
+			id: string;
 			orderId: string;
 			productId: string;
 			unitPrice: number;
@@ -605,6 +619,7 @@ export const ManagedStoresDocument = gql`
 		user(id: $userId) {
 			id
 			managed {
+				id
 				storeId
 				managerId
 				store {
@@ -635,6 +650,7 @@ export const OrdersDocument = gql`
 					name
 				}
 				products {
+					id
 					orderId
 					productId
 					product {
@@ -666,6 +682,7 @@ export const OrderDocument = gql`
 				name
 			}
 			products {
+				id
 				orderId
 				productId
 				product {
