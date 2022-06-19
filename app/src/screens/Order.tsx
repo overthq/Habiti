@@ -14,19 +14,16 @@ import OrderMeta from '../components/order/OrderMeta';
 
 const Order: React.FC = () => {
 	const {
-		params: { orderId, storeId }
+		params: { orderId }
 	} = useRoute<RouteProp<AppStackParamList, 'Order'>>();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const [{ data, fetching }] = useOrderQuery({ variables: { orderId } });
 	useGoBack();
 	const order = data?.order;
 
-	const handleOrderProductPress = React.useCallback(
-		(productId: string) => {
-			navigate('Product', { productId, storeId });
-		},
-		[storeId]
-	);
+	const handleOrderProductPress = React.useCallback((productId: string) => {
+		navigate('Product', { productId });
+	}, []);
 
 	if (fetching || !order) {
 		return (

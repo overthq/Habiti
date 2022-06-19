@@ -53,7 +53,7 @@ const Cart: React.FC = () => {
 				<Text style={styles.heading}>Checkout</Text>
 				<Text style={styles.sectionHeader}>Order Summary</Text>
 				{cart.products.map(cartProduct => (
-					<CartProduct key={cartProduct.productId} cartProduct={cartProduct} />
+					<CartProduct key={cartProduct.id} cartProduct={cartProduct} />
 				))}
 				<View style={styles.bottom}>
 					<View style={styles.row}>

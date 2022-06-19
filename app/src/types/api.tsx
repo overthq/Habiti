@@ -23,6 +23,11 @@ export type Scalars = {
 	Upload: any;
 };
 
+export type AddStoreManagerInput = {
+	managerId: Scalars['ID'];
+	storeId: Scalars['ID'];
+};
+
 export type AddToCartInput = {
 	cartId: Scalars['ID'];
 	productId: Scalars['ID'];
@@ -130,6 +135,7 @@ export type Image = {
 export type Mutation = {
 	__typename?: 'Mutation';
 	_?: Maybe<Scalars['Boolean']>;
+	addStoreManager: StoreManager;
 	addToCart: CartProduct;
 	addToWatchlist: WatchlistProduct;
 	createCart: Cart;
@@ -146,8 +152,14 @@ export type Mutation = {
 	editStore: Store;
 	followStore: StoreFollower;
 	removeFromCart: Scalars['ID'];
+	removeStoreManager: StoreManager;
 	unfollowStore: StoreFollower;
 	updateCartProduct: CartProduct;
+	updateOrder: Order;
+};
+
+export type MutationAddStoreManagerArgs = {
+	input?: InputMaybe<AddStoreManagerInput>;
 };
 
 export type MutationAddToCartArgs = {
@@ -218,12 +230,22 @@ export type MutationRemoveFromCartArgs = {
 	productId: Scalars['ID'];
 };
 
+export type MutationRemoveStoreManagerArgs = {
+	managerId: Scalars['ID'];
+	storeId: Scalars['ID'];
+};
+
 export type MutationUnfollowStoreArgs = {
 	storeId: Scalars['ID'];
 };
 
 export type MutationUpdateCartProductArgs = {
 	input: UpdateCartProductInput;
+};
+
+export type MutationUpdateOrderArgs = {
+	input: UpdateOrderInput;
+	orderId: Scalars['ID'];
 };
 
 export type Order = {
@@ -253,8 +275,10 @@ export type OrderProduct = {
 
 export enum OrderStatus {
 	Cancelled = 'Cancelled',
+	Completed = 'Completed',
 	Delivered = 'Delivered',
-	Pending = 'Pending'
+	Pending = 'Pending',
+	Processing = 'Processing'
 }
 
 export type Product = {
@@ -350,6 +374,7 @@ export type StoreFollower = {
 
 export type StoreManager = {
 	__typename?: 'StoreManager';
+	id: Scalars['ID'];
 	manager: User;
 	managerId: Scalars['ID'];
 	store: Store;
@@ -374,6 +399,10 @@ export type UpdateCartProductInput = {
 	cartId: Scalars['ID'];
 	productId: Scalars['ID'];
 	quantity: Scalars['Int'];
+};
+
+export type UpdateOrderInput = {
+	status?: InputMaybe<OrderStatus>;
 };
 
 export type User = {
@@ -569,6 +598,7 @@ export type HomeQuery = {
 			__typename?: 'Order';
 			id: string;
 			total: number;
+			status: OrderStatus;
 			createdAt: string;
 			store: {
 				__typename?: 'Store';
@@ -623,6 +653,7 @@ export type UserOrdersQuery = {
 		orders: Array<{
 			__typename?: 'Order';
 			id: string;
+			status: OrderStatus;
 			total: number;
 			createdAt: string;
 			store: {
@@ -652,6 +683,7 @@ export type OrderQuery = {
 		__typename?: 'Order';
 		id: string;
 		total: number;
+		status: OrderStatus;
 		createdAt: string;
 		store: {
 			__typename?: 'Store';
@@ -1093,6 +1125,7 @@ export const HomeDocument = gql`
 					quantity
 				}
 				total
+				status
 				createdAt
 			}
 			followed {
@@ -1158,6 +1191,7 @@ export const UserOrdersDocument = gql`
 					unitPrice
 					quantity
 				}
+				status
 				total
 				createdAt
 			}
@@ -1201,6 +1235,7 @@ export const OrderDocument = gql`
 				quantity
 			}
 			total
+			status
 			createdAt
 		}
 	}

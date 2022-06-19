@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { HomeQuery } from '../../types/api';
 import textStyles from '../../styles/text';
 import RecentOrder from './RecentOrder';
 import ListEmpty from '../global/ListEmpty';
-import { HomeTabParamList } from '../../types/navigation';
+import { AppStackParamList, HomeTabParamList } from '../../types/navigation';
 
 interface RecentOrdersProps {
 	orders: HomeQuery['currentUser']['orders'];
@@ -13,6 +13,15 @@ interface RecentOrdersProps {
 
 const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 	const { navigate } = useNavigation<NavigationProp<HomeTabParamList>>();
+
+	const appNavigation = useNavigation<NavigationProp<AppStackParamList>>();
+
+	const handleOrderPress = React.useCallback(
+		(orderId: string) => () => {
+			appNavigation.navigate('Order', { orderId });
+		},
+		[]
+	);
 
 	return (
 		<View style={styles.container}>
@@ -28,13 +37,13 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 					}}
 				/>
 			) : (
-				<FlatList
-					data={orders}
-					keyExtractor={({ id }) => id}
-					horizontal
-					showsHorizontalScrollIndicator={false}
-					renderItem={({ item }) => <RecentOrder order={item} />}
-				/>
+				orders.map(order => (
+					<RecentOrder
+						key={order.id}
+						order={order}
+						onPress={handleOrderPress(order.id)}
+					/>
+				))
 			)}
 		</View>
 	);

@@ -20,6 +20,7 @@ query UserOrders {
 				unitPrice
 				quantity
 			}
+			status
 			total
 			createdAt
 		}
@@ -53,6 +54,7 @@ query Order($orderId: ID!) {
 			quantity
 		}
 		total
+		status
 		createdAt
 	}
 }

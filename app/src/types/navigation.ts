@@ -4,9 +4,9 @@ export type AppStackParamList = {
 	Register: undefined;
 	Authenticate: undefined;
 	Verify: { phone: string };
-	Product: { productId: string; storeId: string };
+	Product: { productId: string };
 	Cart: { cartId: string };
-	Order: { orderId: string; storeId: string };
+	Order: { orderId: string };
 	'Edit Profile': undefined;
 	'Add Card': undefined;
 	'Payment Methods': undefined;

@@ -1,46 +1,32 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { HomeQuery } from '../../types/api';
-import { AppStackParamList } from '../../types/navigation';
 import { relativeTimestamp } from '../../utils/date';
+import { plural } from '../../utils/strings';
 
 interface RecentOrderProps {
 	order: HomeQuery['currentUser']['orders'][-1];
+	onPress(): void;
 }
 
-const RecentOrder: React.FC<RecentOrderProps> = ({ order }) => {
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const count = order.products.length;
-
-	const handleOrderPress = React.useCallback((orderId: string) => {
-		navigate('Order', { orderId, storeId: order.store.id });
-	}, []);
-
+const RecentOrder: React.FC<RecentOrderProps> = ({ order, onPress }) => {
 	return (
 		<TouchableOpacity
 			activeOpacity={0.8}
 			key={order.id}
 			style={styles.container}
-			onPress={() => handleOrderPress(order.id)}
+			onPress={onPress}
 		>
 			<View style={styles.avatar}>
-				{order.store.image && (
-					<Image
-						style={styles.image}
-						source={{
-							uri: order.store.image.path
-						}}
-					/>
-				)}
+				<Image style={styles.image} source={{ uri: order.store.image?.path }} />
 			</View>
 			<View style={styles.info}>
 				<Text style={styles.name}>{order.store.name}</Text>
 				<Text style={styles.count}>
-					{count} product{count > 1 ? 's' : ''}
+					{plural('product', order.products.length)} .{' '}
+					{relativeTimestamp(order.createdAt)}
 				</Text>
-				<Text style={styles.date}>{relativeTimestamp(order.createdAt)}</Text>
-				{/* <Text style={styles.status}>{order.status}</Text> */}
+				<Text style={styles.status}>{order.status}</Text>
 			</View>
 		</TouchableOpacity>
 	);
@@ -48,10 +34,12 @@ const RecentOrder: React.FC<RecentOrderProps> = ({ order }) => {
 
 const styles = StyleSheet.create({
 	container: {
+		width: '100%',
 		marginLeft: 16,
 		flexDirection: 'row',
 		alignItems: 'center',
-		borderColor: 'red'
+		borderColor: 'red',
+		marginBottom: 8
 	},
 	avatar: {
 		height: 50,

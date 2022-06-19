@@ -16,6 +16,8 @@ interface SelectCardProps {
 	handleCardSelect(cardId: string): void;
 }
 
+// Overhaul this component.
+
 const SelectCard: React.FC<SelectCardProps> = ({
 	selectedCard,
 	handleCardSelect
