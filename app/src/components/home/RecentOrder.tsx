@@ -9,6 +9,12 @@ interface RecentOrderProps {
 	onPress(): void;
 }
 
+// TODO: Remove the store name from its prominent spot.
+// Replace it with the name of the first item in the order
+// Something like: "Nike Air Force 1s + 2 others" (ellipsis necessary).
+// (Or maybe the most expensive one?)
+// Make the date relative. (e.g. "2 days ago")
+
 const RecentOrder: React.FC<RecentOrderProps> = ({ order, onPress }) => {
 	return (
 		<TouchableOpacity
@@ -23,7 +29,7 @@ const RecentOrder: React.FC<RecentOrderProps> = ({ order, onPress }) => {
 			<View style={styles.info}>
 				<Text style={styles.name}>{order.store.name}</Text>
 				<Text style={styles.count}>
-					{plural('product', order.products.length)} .{' '}
+					{plural('product', order.products.length)} ·{' '}
 					{relativeTimestamp(order.createdAt)}
 				</Text>
 				<Text style={styles.status}>{order.status}</Text>

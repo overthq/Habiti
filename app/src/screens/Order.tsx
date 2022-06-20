@@ -21,9 +21,12 @@ const Order: React.FC = () => {
 	useGoBack();
 	const order = data?.order;
 
-	const handleOrderProductPress = React.useCallback((productId: string) => {
-		navigate('Product', { productId });
-	}, []);
+	const handleOrderProductPress = React.useCallback(
+		(productId: string) => () => {
+			navigate('Product', { productId });
+		},
+		[]
+	);
 
 	if (fetching || !order) {
 		return (
@@ -41,7 +44,7 @@ const Order: React.FC = () => {
 					<OrderProduct
 						key={orderProduct.productId}
 						orderProduct={orderProduct}
-						onPress={() => handleOrderProductPress(orderProduct.productId)}
+						onPress={handleOrderProductPress(orderProduct.productId)}
 					/>
 				))}
 			</View>

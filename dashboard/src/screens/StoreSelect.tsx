@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import StoresList from '../components/store-select/StoresList';
+import StoreSelectList from '../components/store-select/StoreSelectList';
 import { AppStackParamList } from '../types/navigation';
 import Button from '../components/global/Button';
 
@@ -15,7 +15,7 @@ const StoreSelect: React.FC = () => {
 			<Text style={{ fontSize: 17 }}>
 				Kindly select a store you manage, or create a new one:
 			</Text>
-			<StoresList />
+			<StoreSelectList />
 			<Button
 				onPress={() => navigate('CreateStore')}
 				style={{ marginBottom: 16 }}

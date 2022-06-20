@@ -56,9 +56,7 @@ const Root = `
 `;
 
 const resolvers = merge(
-	{
-		Upload: GraphQLUpload
-	},
+	{ Upload: GraphQLUpload },
 	userQueries,
 	userMutations,
 	orderQueries,
