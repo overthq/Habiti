@@ -1,11 +1,10 @@
 import React from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View, FlatList, ActivityIndicator } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import StoreHeader from './StoreHeader';
 import StoreListItem from './StoreListItem';
 import { StoreQuery, useStoreProductsQuery } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
-import { FlashList } from '@shopify/flash-list';
 
 interface StoreProductsProps {
 	store: StoreQuery['store'];
@@ -19,9 +18,12 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 
 	const products = data?.store.products;
 
-	const handleProductPress = React.useCallback((productId: string) => {
-		navigate('Product', { productId });
-	}, []);
+	const handleProductPress = React.useCallback(
+		(productId: string) => () => {
+			navigate('Product', { productId });
+		},
+		[]
+	);
 
 	if (fetching || !products)
 		return (
@@ -31,19 +33,15 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 		);
 
 	return (
-		<FlashList
+		<FlatList
 			data={products}
 			keyExtractor={({ id }) => id}
 			ListHeaderComponent={() => <StoreHeader store={store} />}
 			showsVerticalScrollIndicator={false}
 			renderItem={({ item }) => (
-				<StoreListItem
-					item={item}
-					onPress={() => handleProductPress(item.id)}
-				/>
+				<StoreListItem item={item} onPress={handleProductPress(item.id)} />
 			)}
 			numColumns={2}
-			estimatedItemSize={240}
 		/>
 	);
 };
