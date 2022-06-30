@@ -16,12 +16,7 @@ const WatchlistProduct: React.FC<WatchlistProductProps> = ({ product }) => {
 	return (
 		<Pressable
 			style={styles.container}
-			onPress={() =>
-				navigate('Product', {
-					productId: product.id,
-					storeId: product.store.id
-				})
-			}
+			onPress={() => navigate('Product', { productId: product.id })}
 		>
 			<View style={styles.placeholder}>
 				{product.images[0] && (

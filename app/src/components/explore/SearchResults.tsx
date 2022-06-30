@@ -47,15 +47,20 @@ interface ProductsViewProps {
 const ProductsView: React.FC<ProductsViewProps> = ({ data }) => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
+	const handleProductPress = React.useCallback(
+		(productId: string) => () => {
+			navigate('Product', { productId });
+		},
+		[]
+	);
+
 	return (
 		<FlatList
 			keyExtractor={i => i.id}
 			data={data}
 			renderItem={({ item }) => (
 				<TouchableOpacity
-					onPress={() =>
-						navigate('Product', { productId: item.id, storeId: item.storeId })
-					}
+					onPress={handleProductPress(item.id)}
 					style={styles.resultRow}
 				>
 					{item.images[0] && (

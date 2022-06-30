@@ -18,9 +18,7 @@ const CartProduct: React.FC<CartProductProps> = ({
 	return (
 		<Pressable
 			style={styles.container}
-			onPress={() =>
-				navigate('Product', { productId: product.id, storeId: product.storeId })
-			}
+			onPress={() => navigate('Product', { productId: product.id })}
 		>
 			<View style={{ flexDirection: 'row' }}>
 				<View style={styles.imagePlaceholder}>
