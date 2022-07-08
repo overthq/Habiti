@@ -1,12 +1,22 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import textStyles from '../../styles/text';
 import { useStoresQuery } from '../../types/api';
+import { AppStackParamList } from '../../types/navigation';
 import ListEmpty from '../global/ListEmpty';
 import TrendingStoresItem from './TrendingStoresItem';
 
 const TrendingStores: React.FC = () => {
 	const [{ data }] = useStoresQuery();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+
+	const handleStorePress = React.useCallback(
+		(storeId: string) => () => {
+			navigate('Store', { storeId });
+		},
+		[]
+	);
 
 	return (
 		<View style={styles.container}>
@@ -18,7 +28,12 @@ const TrendingStores: React.FC = () => {
 				data={data?.stores}
 				keyExtractor={({ id }) => id}
 				contentContainerStyle={styles.list}
-				renderItem={({ item }) => <TrendingStoresItem store={item} />}
+				renderItem={({ item }) => (
+					<TrendingStoresItem
+						store={item}
+						onPress={handleStorePress(item.id)}
+					/>
+				)}
 				ListEmptyComponent={
 					<ListEmpty
 						title='No trending stores'

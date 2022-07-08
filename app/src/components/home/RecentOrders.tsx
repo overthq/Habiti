@@ -52,11 +52,6 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 const styles = StyleSheet.create({
 	container: {
 		marginBottom: 8
-	},
-	loading: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center'
 	}
 });
 

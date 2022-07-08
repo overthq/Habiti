@@ -29,17 +29,6 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#FFFFFF'
-	},
-	header: {
-		paddingVertical: 15,
-		paddingHorizontal: 20,
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center'
-	},
-	title: {
-		fontWeight: 'bold',
-		fontSize: 32
 	}
 });
 

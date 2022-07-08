@@ -14,9 +14,7 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 		<View style={styles.container}>
 			<View style={styles.row}>
 				<View style={styles.placeholder}>
-					{store.image && (
-						<Image source={{ uri: store.image.path }} style={styles.image} />
-					)}
+					<Image source={{ uri: store.image?.path }} style={styles.image} />
 				</View>
 				<View style={styles.actions}>
 					<SocialLinks
@@ -48,12 +46,6 @@ const styles = StyleSheet.create({
 	container: {
 		paddingHorizontal: 8,
 		paddingBottom: 8
-	},
-	bar: {
-		width: '100%',
-		flexDirection: 'row',
-		marginVertical: 8,
-		marginHorizontal: -8
 	},
 	row: {
 		flexDirection: 'row',

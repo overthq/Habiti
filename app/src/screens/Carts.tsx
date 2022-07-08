@@ -2,23 +2,33 @@ import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import CartsListItem from '../components/carts/CartsListItem';
 import ListEmpty from '../components/global/ListEmpty';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useCartsQuery } from '../types/api';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { HomeTabParamList } from '../types/navigation';
+import { AppStackParamList, HomeTabParamList } from '../types/navigation';
 
 const Carts: React.FC = () => {
 	const [{ data, fetching }, refetch] = useCartsQuery();
 	const { navigate } =
 		useNavigation<BottomTabNavigationProp<HomeTabParamList, 'Carts'>>();
+	const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
 	const carts = data?.currentUser.carts;
+
+	const handleCartPress = React.useCallback(
+		(cartId: string) => () => {
+			navigation.navigate('Cart', { cartId });
+		},
+		[]
+	);
 
 	return (
 		<View style={styles.container}>
 			<FlatList
-				keyExtractor={c => c.storeId}
-				renderItem={({ item }) => <CartsListItem cart={item} />}
+				keyExtractor={c => c.id}
+				renderItem={({ item }) => (
+					<CartsListItem cart={item} onPress={handleCartPress(item.id)} />
+				)}
 				data={carts}
 				ListEmptyComponent={
 					<ListEmpty
