@@ -17,7 +17,6 @@ const Carts: React.FC = () => {
 	return (
 		<View style={styles.container}>
 			<FlatList
-				style={styles.list}
 				keyExtractor={c => c.storeId}
 				renderItem={({ item }) => <CartsListItem cart={item} />}
 				data={carts}
@@ -46,6 +45,7 @@ const Carts: React.FC = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		paddingTop: 4,
 		backgroundColor: '#FFFFFF'
 	},
 	header: {
@@ -57,9 +57,6 @@ const styles = StyleSheet.create({
 	title: {
 		fontWeight: 'bold',
 		fontSize: 32
-	},
-	list: {
-		paddingHorizontal: 16
 	},
 	separator: {
 		width: '100%',

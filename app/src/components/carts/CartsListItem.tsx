@@ -47,17 +47,18 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		paddingVertical: 8,
-		borderBottomWidth: 1,
-		borderBottomColor: '#D3D3D3'
+		paddingVertical: 4,
+		paddingHorizontal: 16
+		// borderBottomWidth: 1,
+		// borderBottomColor: '#dedcdc'
 	},
 	main: {
 		flexDirection: 'row',
 		alignItems: 'center'
 	},
 	placeholder: {
-		width: 60,
-		height: 60,
+		width: 50,
+		height: 50,
 		overflow: 'hidden',
 		marginRight: 10,
 		backgroundColor: '#D3D3D3',
@@ -68,11 +69,11 @@ const styles = StyleSheet.create({
 		width: '100%'
 	},
 	name: {
-		fontSize: 18,
+		fontSize: 16,
 		fontWeight: '500'
 	},
 	count: {
-		fontSize: 16,
+		fontSize: 14,
 		color: '#505050'
 	}
 });

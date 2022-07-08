@@ -51,7 +51,7 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		paddingVertical: 8
+		marginBottom: 8
 	},
 	loading: {
 		flex: 1,
