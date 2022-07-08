@@ -15,7 +15,6 @@
 		"@react-navigation/bottom-tabs": "^6.3.1",
 		"@react-navigation/native": "^6.0.10",
 		"@react-navigation/stack": "^6.2.1",
-		"@shopify/flash-list": "^1.0.2",
 		"@urql/exchange-graphcache": "^4.4.3",
 		"date-fns": "^2.28.0",
 		"expo": "^45.0.0",
