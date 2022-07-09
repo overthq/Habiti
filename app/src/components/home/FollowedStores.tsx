@@ -42,7 +42,6 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 				Followed Stores
 			</Text>
 			<FlatList
-				style={styles.list}
 				horizontal
 				data={stores}
 				keyExtractor={item => item.id}
@@ -54,16 +53,7 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		paddingVertical: 8
-	},
-	list: {},
-	sectionHeader: {
-		marginLeft: 16,
-		fontSize: 16,
-		fontWeight: '500',
-		color: '#505050'
-	},
+	container: {},
 	listContentContainer: {
 		marginRight: 8
 	}

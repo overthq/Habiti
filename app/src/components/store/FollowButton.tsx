@@ -17,9 +17,9 @@ const FollowButton: React.FC<FollowButtonProps> = ({ storeId, followed }) => {
 
 	const handlePress = React.useCallback(async () => {
 		if (followed) {
-			await unfollowStore({ storeId: storeId });
+			await unfollowStore({ storeId });
 		} else {
-			await followStore({ storeId: storeId });
+			await followStore({ storeId });
 		}
 	}, [followed]);
 
@@ -29,14 +29,8 @@ const FollowButton: React.FC<FollowButtonProps> = ({ storeId, followed }) => {
 			activeOpacity={0.8}
 			onPress={handlePress}
 		>
-			<Icon
-				size={18}
-				style={{ marginRight: 4 }}
-				name={followed ? 'check' : 'plus'}
-			/>
-			<Text style={{ fontSize: 16, fontWeight: '500' }}>
-				{followed ? 'Following' : 'Follow'}
-			</Text>
+			<Icon size={18} style={styles.icon} name={followed ? 'check' : 'plus'} />
+			<Text style={styles.text}>{followed ? 'Following' : 'Follow'}</Text>
 		</TouchableOpacity>
 	);
 };
@@ -52,6 +46,13 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center'
+	},
+	icon: {
+		marginRight: 4
+	},
+	text: {
+		fontSize: 16,
+		fontWeight: '500'
 	}
 });
 

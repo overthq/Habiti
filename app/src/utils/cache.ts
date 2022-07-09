@@ -18,6 +18,10 @@ import {
 // in the near future, and we can implement schema-awareness
 // to help us out till the schema is concrete.
 
+// Important caveat: invalidating entities incurs the cost of
+// a network request (I think). I should remember to add loading
+// indicators or block the UI while this is happening.
+
 const customCache = cacheExchange({
 	updates: {
 		Mutation: {
@@ -54,7 +58,7 @@ const customCache = cacheExchange({
 				});
 			},
 			deleteCart(_result, args: MutationDeleteCartArgs, cache) {
-				// TODO: Invalidate the product as well.
+				// TODO: Invalidate the products as well.
 
 				cache.invalidate({
 					__typename: 'Cart',

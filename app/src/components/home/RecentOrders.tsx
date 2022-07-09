@@ -54,9 +54,7 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		marginBottom: 8
-	}
+	container: {}
 });
 
 export default RecentOrders;
