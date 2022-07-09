@@ -3,25 +3,25 @@ import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Icon } from '../Icon';
 import {
 	useFollowStoreMutation,
-	useUnfollowStoreMutation,
-	StoreQuery
+	useUnfollowStoreMutation
 } from '../../types/api';
 
 interface FollowButtonProps {
-	store: StoreQuery['store'];
+	storeId: string;
+	followed: boolean;
 }
 
-const FollowButton: React.FC<FollowButtonProps> = ({ store }) => {
+const FollowButton: React.FC<FollowButtonProps> = ({ storeId, followed }) => {
 	const [, followStore] = useFollowStoreMutation();
 	const [, unfollowStore] = useUnfollowStoreMutation();
 
 	const handlePress = React.useCallback(async () => {
-		if (store.followedByUser) {
-			await unfollowStore({ storeId: store.id });
+		if (followed) {
+			await unfollowStore({ storeId: storeId });
 		} else {
-			await followStore({ storeId: store.id });
+			await followStore({ storeId: storeId });
 		}
-	}, [store.followedByUser]);
+	}, [followed]);
 
 	return (
 		<TouchableOpacity
@@ -32,10 +32,10 @@ const FollowButton: React.FC<FollowButtonProps> = ({ store }) => {
 			<Icon
 				size={18}
 				style={{ marginRight: 4 }}
-				name={store.followedByUser ? 'check' : 'plus'}
+				name={followed ? 'check' : 'plus'}
 			/>
 			<Text style={{ fontSize: 16, fontWeight: '500' }}>
-				{store.followedByUser ? 'Following' : 'Follow'}
+				{followed ? 'Following' : 'Follow'}
 			</Text>
 		</TouchableOpacity>
 	);
@@ -43,8 +43,9 @@ const FollowButton: React.FC<FollowButtonProps> = ({ store }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
+		flexGrow: 1,
 		paddingVertical: 4,
+		marginLeft: 8,
 		borderWidth: 1,
 		borderColor: '#D3D3D3',
 		borderRadius: 4,

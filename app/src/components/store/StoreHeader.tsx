@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Image, Text, Pressable, StyleSheet } from 'react-native';
 import { openLink } from '../../utils/links';
 import { StoreQuery } from '../../types/api';
 import FollowButton from './FollowButton';
@@ -12,31 +12,30 @@ interface StoreHeaderProps {
 const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 	return (
 		<View style={styles.container}>
-			<View style={styles.row}>
+			<View style={styles.main}>
 				<View style={styles.placeholder}>
 					<Image source={{ uri: store.image?.path }} style={styles.image} />
 				</View>
-				<View style={styles.actions}>
-					<SocialLinks
-						links={[
-							{ type: 'twitter', value: store?.twitter },
-							{ type: 'instagram', value: store?.instagram }
-						]}
-					/>
-					<FollowButton store={store} />
+				<View style={{ marginLeft: 16, flex: 1 }}>
+					<Text style={styles.name}>{store.name}</Text>
+					{store.website && (
+						<Pressable
+							style={styles.website}
+							onPress={() => openLink(store?.website)}
+						>
+							<Text style={styles.websiteLinkText}>{store.website}</Text>
+						</Pressable>
+					)}
+					<View style={{ marginTop: 4, flexDirection: 'row' }}>
+						<SocialLinks
+							links={[
+								{ type: 'twitter', value: store.twitter },
+								{ type: 'instagram', value: store.instagram }
+							]}
+						/>
+						<FollowButton storeId={store.id} followed={store.followedByUser} />
+					</View>
 				</View>
-			</View>
-			<View>
-				<Text style={styles.name}>{store.name}</Text>
-				<TouchableOpacity
-					style={styles.website}
-					onPress={() => openLink(store?.website)}
-				>
-					<Text style={styles.websiteLinkText}>{store?.website}</Text>
-				</TouchableOpacity>
-				{store?.description && (
-					<Text style={styles.description}>{store.description}</Text>
-				)}
 			</View>
 		</View>
 	);
@@ -45,19 +44,18 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 const styles = StyleSheet.create({
 	container: {
 		paddingHorizontal: 8,
+		paddingTop: 16,
 		paddingBottom: 8
 	},
-	row: {
+	main: {
 		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'space-between',
-		paddingTop: 16
+		marginBottom: 8
 	},
 	placeholder: {
 		backgroundColor: '#D3D3D3',
-		width: 100,
-		height: 100,
-		borderRadius: 50,
+		width: 80,
+		height: 80,
+		borderRadius: 40,
 		overflow: 'hidden'
 	},
 	image: {
@@ -65,23 +63,19 @@ const styles = StyleSheet.create({
 		height: '100%'
 	},
 	actions: {
-		flex: 1,
 		flexDirection: 'row',
-		alignItems: 'center',
-		marginLeft: 16
+		alignItems: 'center'
 	},
 	name: {
-		fontSize: 24,
-		fontWeight: 'bold',
-		marginTop: 8,
-		marginBottom: 4
+		fontSize: 20,
+		fontWeight: '500'
 	},
 	description: {
-		fontSize: 16,
+		fontSize: 14,
 		marginBottom: 4
 	},
 	website: {
-		marginBottom: 4
+		marginTop: 2
 	},
 	websiteLinkText: {
 		fontSize: 16,

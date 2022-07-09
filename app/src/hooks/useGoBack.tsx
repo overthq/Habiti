@@ -8,7 +8,13 @@ const useGoBack = (icon?: IconType) => {
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
 			headerBackTitleVisible: false,
-			headerBackImage: () => <Icon name={icon ?? 'chevron-left'} size={32} />
+			headerBackImage: () => (
+				<Icon
+					name={icon ?? 'chevron-left'}
+					size={32}
+					style={{ marginLeft: 8 }}
+				/>
+			)
 		});
 	}, [navigation, icon]);
 };

@@ -16,7 +16,7 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
 			<View style={styles.imagePlaceholder}>
 				<Text style={styles.avatarText}>{user.name[0]}</Text>
 			</View>
-			<View style={{ marginLeft: 16 }}>
+			<View style={{ marginLeft: 12 }}>
 				<Text style={styles.name}>{user.name}</Text>
 				<Text style={styles.phone}>{user.phone}</Text>
 			</View>
@@ -34,10 +34,10 @@ const styles = StyleSheet.create({
 		flexDirection: 'row'
 	},
 	imagePlaceholder: {
-		height: 50,
-		width: 50,
+		height: 40,
+		width: 40,
 		backgroundColor: '#D3D3D3',
-		borderRadius: 25,
+		borderRadius: 20,
 		justifyContent: 'center',
 		alignItems: 'center'
 	},
@@ -46,10 +46,9 @@ const styles = StyleSheet.create({
 		fontWeight: '500',
 		fontSize: 24
 	},
-
 	name: {
 		fontWeight: '500',
-		fontSize: 18
+		fontSize: 16
 	},
 	phone: {
 		fontSize: 16,

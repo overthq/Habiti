@@ -11,6 +11,10 @@ interface RecentOrdersProps {
 	orders: HomeQuery['currentUser']['orders'];
 }
 
+// This should only query the last three orders.
+// We should have a "view all" button that navigates to a more in-depth view
+// (infinite scrolling and filters) of all previous orders.
+
 const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 	const { navigate } = useNavigation<NavigationProp<HomeTabParamList>>();
 

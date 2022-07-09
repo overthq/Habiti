@@ -42,7 +42,7 @@ const Routes: React.FC = () => {
 							<AppStack.Screen
 								name='Store'
 								component={Store}
-								options={{ headerShown: true }}
+								options={{ headerShown: true, headerTitle: '' }}
 							/>
 							<AppStack.Group screenOptions={{ presentation: 'modal' }}>
 								<AppStack.Screen name='Product' component={Product} />
