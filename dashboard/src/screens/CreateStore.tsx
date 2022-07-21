@@ -1,5 +1,11 @@
 import React from 'react';
-import { FlatList, StyleSheet, Dimensions } from 'react-native';
+import {
+	FlatList,
+	StyleSheet,
+	Dimensions,
+	ViewToken,
+	FlatListProps
+} from 'react-native';
 import { Formik } from 'formik';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, {
@@ -13,8 +19,6 @@ import Social from '../components/create-store/Social';
 import StoreImage from '../components/create-store/StoreImage';
 import useStore from '../state';
 
-const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-
 const { width } = Dimensions.get('window');
 
 const steps = [
@@ -22,6 +26,11 @@ const steps = [
 	{ title: 'Social', component: <Social /> },
 	{ title: 'Store Image', component: <StoreImage /> }
 ];
+
+const AnimatedFlatList =
+	Animated.createAnimatedComponent<FlatListProps<typeof steps[number]>>(
+		FlatList
+	);
 
 const CreateStore: React.FC = () => {
 	const [, createStore] = useCreateStoreMutation();
@@ -37,9 +46,14 @@ const CreateStore: React.FC = () => {
 		});
 	};
 
-	const handleViewableItemsChanged = React.useCallback(({ viewableItems }) => {
-		viewableItems[0] && setActiveStepIndex(viewableItems[0].index);
-	}, []);
+	const handleViewableItemsChanged = React.useCallback(
+		({ viewableItems }: { viewableItems: ViewToken[] }) => {
+			if (viewableItems[0] && viewableItems[0].index) {
+				setActiveStepIndex(viewableItems[0].index);
+			}
+		},
+		[]
+	);
 
 	const handleScroll = useAnimatedScrollHandler({
 		onScroll: ({ contentOffset: { x } }) => {
@@ -83,8 +97,8 @@ const CreateStore: React.FC = () => {
 							snapToInterval={width}
 							showsHorizontalScrollIndicator={false}
 							data={steps}
-							keyExtractor={(s: any) => s.title}
-							renderItem={({ item }: any) => item.component}
+							keyExtractor={s => s.title}
+							renderItem={({ item }) => item.component}
 							onViewableItemsChanged={handleViewableItemsChanged}
 							onScroll={handleScroll}
 						/>
