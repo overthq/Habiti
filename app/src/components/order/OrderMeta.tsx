@@ -77,8 +77,8 @@ const styles = StyleSheet.create({
 		fontWeight: '500'
 	},
 	placeholder: {
-		height: 40,
-		width: 40,
+		height: 36,
+		width: 36,
 		borderRadius: 20,
 		backgroundColor: '#D3D3D3',
 		justifyContent: 'center',
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
 		height: '100%'
 	},
 	avatarText: {
-		fontSize: 24,
+		fontSize: 20,
 		fontWeight: '500',
 		color: '#505050'
 	},

@@ -19,18 +19,12 @@ const WatchlistProduct: React.FC<WatchlistProductProps> = ({ product }) => {
 			onPress={() => navigate('Product', { productId: product.id })}
 		>
 			<View style={styles.placeholder}>
-				{product.images[0] && (
-					<Image
-						source={{ uri: product.images[0].path }}
-						style={styles.image}
-					/>
-				)}
+				<Image source={{ uri: product.images[0]?.path }} style={styles.image} />
 			</View>
 			<Text style={styles.name} numberOfLines={1}>
 				{product.name}
 			</Text>
 			<Text style={styles.price}>{formatNaira(product.unitPrice)}</Text>
-			<Text style={styles.status}>In Stock</Text>
 		</Pressable>
 	);
 };
