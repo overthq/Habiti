@@ -26,6 +26,12 @@ export const editProfile: Resolver<EditProfileArgs> = async (
 	return user;
 };
 
+const deleteAccount: Resolver = async (_, __, ctx) => {
+	const user = await ctx.prisma.user.delete({ where: { id: ctx.user.id } });
+
+	return user;
+};
+
 const deleteUser: Resolver = async (_, { id }, ctx) => {
 	await ctx.prisma.user.delete({ where: { id } });
 
@@ -35,6 +41,7 @@ const deleteUser: Resolver = async (_, { id }, ctx) => {
 export default {
 	Mutation: {
 		editProfile,
-		deleteUser
+		deleteUser,
+		deleteAccount
 	}
 };

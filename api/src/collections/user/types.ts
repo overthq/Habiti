@@ -30,6 +30,7 @@ const UserTypes = gql`
 	extend type Mutation {
 		editProfile(input: EditProfileInput!): User!
 		deleteUser(userId: ID!): ID!
+		deleteAccount: User!
 	}
 `;
 
