@@ -1,25 +1,12 @@
 import React from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
-// import { useItemsQuery } from '../types/api';
+import { View, StyleSheet } from 'react-native';
 
 const FeaturedProducts = () => {
-	// const [{ data }] = useItemsQuery();
-	const data = { items: [] as any[] };
-
-	return (
-		<FlatList
-			horizontal
-			data={data?.items}
-			keyExtractor={({ id }) => id}
-			renderItem={({ item }) => (
-				<View key={item.id} style={styles.product}></View>
-			)}
-		/>
-	);
+	return <View style={styles.container} />;
 };
 
 const styles = StyleSheet.create({
-	product: {}
+	container: {}
 });
 
 export default FeaturedProducts;

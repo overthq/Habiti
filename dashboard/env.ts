@@ -1,14 +1,14 @@
 import Constants from 'expo-constants';
 
-const localHostString = (extension: string) =>
+const localhostString = (port: string) =>
 	`http://${Constants.manifest?.debuggerHost
 		?.split(':')
 		.shift()
-		?.concat(`:${extension}`)}`;
+		?.concat(`:${port}`)}`;
 
 const ENV = {
 	dev: {
-		apiUrl: localHostString('5000')
+		apiUrl: localhostString('4000')
 	},
 	staging: {
 		apiUrl: 'https://'
