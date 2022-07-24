@@ -13,3 +13,9 @@ mutation EditProfile($input: EditProfileInput!) {
 		phone
 	}
 }
+
+mutation DeleteAccount {
+	deleteAccount {
+		id
+	}
+}

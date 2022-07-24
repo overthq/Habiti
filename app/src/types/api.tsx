@@ -19,7 +19,6 @@ export type Scalars = {
 	Boolean: boolean;
 	Int: number;
 	Float: number;
-	/** The `Upload` scalar type represents a file upload. */
 	Upload: any;
 };
 
@@ -142,6 +141,7 @@ export type Mutation = {
 	createOrder: Order;
 	createProduct: Product;
 	createStore: Store;
+	deleteAccount: User;
 	deleteCard: Card;
 	deleteCart: Scalars['ID'];
 	deleteImage: Image;
@@ -918,6 +918,13 @@ export type EditProfileMutation = {
 	editProfile: { __typename?: 'User'; id: string; name: string; phone: string };
 };
 
+export type DeleteAccountMutationVariables = Exact<{ [key: string]: never }>;
+
+export type DeleteAccountMutation = {
+	__typename?: 'Mutation';
+	deleteAccount: { __typename?: 'User'; id: string };
+};
+
 export const CardsDocument = gql`
 	query Cards {
 		currentUser {
@@ -1530,4 +1537,18 @@ export function useEditProfileMutation() {
 	return Urql.useMutation<EditProfileMutation, EditProfileMutationVariables>(
 		EditProfileDocument
 	);
+}
+export const DeleteAccountDocument = gql`
+	mutation DeleteAccount {
+		deleteAccount {
+			id
+		}
+	}
+`;
+
+export function useDeleteAccountMutation() {
+	return Urql.useMutation<
+		DeleteAccountMutation,
+		DeleteAccountMutationVariables
+	>(DeleteAccountDocument);
 }

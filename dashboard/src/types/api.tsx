@@ -19,7 +19,6 @@ export type Scalars = {
 	Boolean: boolean;
 	Int: number;
 	Float: number;
-	/** The `Upload` scalar type represents a file upload. */
 	Upload: any;
 };
 
@@ -142,6 +141,7 @@ export type Mutation = {
 	createOrder: Order;
 	createProduct: Product;
 	createStore: Store;
+	deleteAccount: User;
 	deleteCard: Card;
 	deleteCart: Scalars['ID'];
 	deleteImage: Image;
@@ -155,6 +155,7 @@ export type Mutation = {
 	removeStoreManager: StoreManager;
 	unfollowStore: StoreFollower;
 	updateCartProduct: CartProduct;
+	updateOrder: Order;
 };
 
 export type MutationAddStoreManagerArgs = {
@@ -242,6 +243,11 @@ export type MutationUpdateCartProductArgs = {
 	input: UpdateCartProductInput;
 };
 
+export type MutationUpdateOrderArgs = {
+	input: UpdateOrderInput;
+	orderId: Scalars['ID'];
+};
+
 export type Order = {
 	__typename?: 'Order';
 	createdAt: Scalars['String'];
@@ -269,8 +275,10 @@ export type OrderProduct = {
 
 export enum OrderStatus {
 	Cancelled = 'Cancelled',
+	Completed = 'Completed',
 	Delivered = 'Delivered',
-	Pending = 'Pending'
+	Pending = 'Pending',
+	Processing = 'Processing'
 }
 
 export type Product = {
@@ -391,6 +399,10 @@ export type UpdateCartProductInput = {
 	cartId: Scalars['ID'];
 	productId: Scalars['ID'];
 	quantity: Scalars['Int'];
+};
+
+export type UpdateOrderInput = {
+	status?: InputMaybe<OrderStatus>;
 };
 
 export type User = {
