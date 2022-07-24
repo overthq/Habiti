@@ -8,7 +8,7 @@ const localHostString = (extension: string) =>
 
 const ENV = {
 	dev: {
-		apiUrl: localHostString('6000')
+		apiUrl: localHostString('4000')
 	},
 	staging: {
 		apiUrl: 'https://'
