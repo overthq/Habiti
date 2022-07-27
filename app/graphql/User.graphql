@@ -6,6 +6,25 @@ query CurrentUser {
 	}
 }
 
+mutation Register($input: RegisterInput!) {
+	register(input: $input) {
+		id
+	}
+}
+
+mutation Authenticate($input: AuthenticateInput!) {
+	authenticate(input: $input) {
+		message
+	}
+}
+
+mutation Verify($input: VerifyInput!) {
+	verify(input: $input) {
+		accessToken
+		userId
+	}
+}
+
 mutation EditProfile($input: EditProfileInput!) {
 	editProfile(input: $input) {
 		id

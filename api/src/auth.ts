@@ -31,19 +31,26 @@ router.post('/authenticate', async (req, res) => {
 });
 
 router.post('/register', async (req, res) => {
-	const { name, phone } = req.body;
+	const { name, phone, email } = req.body;
 
-	const user = await prisma.user.create({
-		data: {
-			name,
-			phone
-		}
-	});
+	try {
+		const user = await prisma.user.create({
+			data: { name, phone, email }
+		});
 
-	return res.status(201).json({
-		success: true,
-		data: { user }
-	});
+		return res.status(201).json({
+			success: true,
+			data: { user }
+		});
+	} catch (error) {
+		return res.status(400).json({
+			success: false,
+			data: {
+				message: 'An error occurred while registering user.',
+				error
+			}
+		});
+	}
 });
 
 router.post('/verify', async (req, res) => {

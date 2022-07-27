@@ -33,6 +33,15 @@ export type AddToCartInput = {
 	quantity?: InputMaybe<Scalars['Int']>;
 };
 
+export type AuthenticateInput = {
+	phone: Scalars['String'];
+};
+
+export type AuthenticateResponse = {
+	__typename?: 'AuthenticateResponse';
+	message?: Maybe<Scalars['String']>;
+};
+
 export type Card = {
 	__typename?: 'Card';
 	authorizationCode: Scalars['String'];
@@ -105,6 +114,7 @@ export type EditProductInput = {
 };
 
 export type EditProfileInput = {
+	email?: InputMaybe<Scalars['String']>;
 	name?: InputMaybe<Scalars['String']>;
 	phone?: InputMaybe<Scalars['String']>;
 };
@@ -137,6 +147,7 @@ export type Mutation = {
 	addStoreManager: StoreManager;
 	addToCart: CartProduct;
 	addToWatchlist: WatchlistProduct;
+	authenticate: AuthenticateResponse;
 	createCart: Cart;
 	createOrder: Order;
 	createProduct: Product;
@@ -151,11 +162,13 @@ export type Mutation = {
 	editProfile: User;
 	editStore: Store;
 	followStore: StoreFollower;
+	register: User;
 	removeFromCart: Scalars['ID'];
 	removeStoreManager: StoreManager;
 	unfollowStore: StoreFollower;
 	updateCartProduct: CartProduct;
 	updateOrder: Order;
+	verify: VerifyResponse;
 };
 
 export type MutationAddStoreManagerArgs = {
@@ -168,6 +181,10 @@ export type MutationAddToCartArgs = {
 
 export type MutationAddToWatchlistArgs = {
 	productId: Scalars['ID'];
+};
+
+export type MutationAuthenticateArgs = {
+	input: AuthenticateInput;
 };
 
 export type MutationCreateCartArgs = {
@@ -225,6 +242,10 @@ export type MutationFollowStoreArgs = {
 	storeId: Scalars['ID'];
 };
 
+export type MutationRegisterArgs = {
+	input: RegisterInput;
+};
+
 export type MutationRemoveFromCartArgs = {
 	cartId: Scalars['ID'];
 	productId: Scalars['ID'];
@@ -246,6 +267,10 @@ export type MutationUpdateCartProductArgs = {
 export type MutationUpdateOrderArgs = {
 	input: UpdateOrderInput;
 	orderId: Scalars['ID'];
+};
+
+export type MutationVerifyArgs = {
+	input: VerifyInput;
 };
 
 export type Order = {
@@ -338,6 +363,12 @@ export type QueryUserArgs = {
 	id: Scalars['ID'];
 };
 
+export type RegisterInput = {
+	email: Scalars['String'];
+	name: Scalars['String'];
+	phone: Scalars['String'];
+};
+
 export type Store = {
 	__typename?: 'Store';
 	cartForUser?: Maybe<Cart>;
@@ -410,6 +441,7 @@ export type User = {
 	cards: Array<Card>;
 	carts: Array<Cart>;
 	createdAt: Scalars['String'];
+	email: Scalars['String'];
 	followed: Array<StoreFollower>;
 	id: Scalars['ID'];
 	managed: Array<StoreManager>;
@@ -418,6 +450,17 @@ export type User = {
 	phone: Scalars['String'];
 	updatedAt: Scalars['String'];
 	watchlist: Array<WatchlistProduct>;
+};
+
+export type VerifyInput = {
+	code: Scalars['String'];
+	phone: Scalars['String'];
+};
+
+export type VerifyResponse = {
+	__typename?: 'VerifyResponse';
+	accessToken: Scalars['String'];
+	userId: Scalars['ID'];
 };
 
 export type WatchlistProduct = {
@@ -907,6 +950,40 @@ export type CurrentUserQueryVariables = Exact<{ [key: string]: never }>;
 export type CurrentUserQuery = {
 	__typename?: 'Query';
 	currentUser: { __typename?: 'User'; id: string; name: string; phone: string };
+};
+
+export type RegisterMutationVariables = Exact<{
+	input: RegisterInput;
+}>;
+
+export type RegisterMutation = {
+	__typename?: 'Mutation';
+	register: { __typename?: 'User'; id: string };
+};
+
+export type AuthenticateMutationVariables = Exact<{
+	input: AuthenticateInput;
+}>;
+
+export type AuthenticateMutation = {
+	__typename?: 'Mutation';
+	authenticate: {
+		__typename?: 'AuthenticateResponse';
+		message?: string | null;
+	};
+};
+
+export type VerifyMutationVariables = Exact<{
+	input: VerifyInput;
+}>;
+
+export type VerifyMutation = {
+	__typename?: 'Mutation';
+	verify: {
+		__typename?: 'VerifyResponse';
+		accessToken: string;
+		userId: string;
+	};
 };
 
 export type EditProfileMutationVariables = Exact<{
@@ -1522,6 +1599,46 @@ export function useCurrentUserQuery(
 		query: CurrentUserDocument,
 		...options
 	});
+}
+export const RegisterDocument = gql`
+	mutation Register($input: RegisterInput!) {
+		register(input: $input) {
+			id
+		}
+	}
+`;
+
+export function useRegisterMutation() {
+	return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(
+		RegisterDocument
+	);
+}
+export const AuthenticateDocument = gql`
+	mutation Authenticate($input: AuthenticateInput!) {
+		authenticate(input: $input) {
+			message
+		}
+	}
+`;
+
+export function useAuthenticateMutation() {
+	return Urql.useMutation<AuthenticateMutation, AuthenticateMutationVariables>(
+		AuthenticateDocument
+	);
+}
+export const VerifyDocument = gql`
+	mutation Verify($input: VerifyInput!) {
+		verify(input: $input) {
+			accessToken
+			userId
+		}
+	}
+`;
+
+export function useVerifyMutation() {
+	return Urql.useMutation<VerifyMutation, VerifyMutationVariables>(
+		VerifyDocument
+	);
 }
 export const EditProfileDocument = gql`
 	mutation EditProfile($input: EditProfileInput!) {

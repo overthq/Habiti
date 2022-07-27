@@ -8,22 +8,24 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styles from '../styles/auth';
-import { authenticate } from '../utils/auth';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { AppStackParamList } from '../types/navigation';
 import Button from '../components/global/Button';
+import { useAuthenticateMutation } from '../types/api';
 
 const Authenticate = () => {
-	const [loading, setLoading] = React.useState(false);
 	const [phone, setPhone] = React.useState('');
 	const { navigate } =
 		useNavigation<StackNavigationProp<AppStackParamList, 'Authenticate'>>();
+	const [{ fetching }, authenticate] = useAuthenticateMutation();
 
 	const handleSubmit = async () => {
-		setLoading(true);
-		await authenticate(phone);
-		setLoading(false);
-		navigate('Verify', { phone });
+		try {
+			await authenticate({ input: { phone } });
+			navigate('Verify', { phone });
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	const goToRegister = () => navigate('Register');
@@ -48,7 +50,7 @@ const Authenticate = () => {
 				<Button
 					text='Send verification code'
 					onPress={handleSubmit}
-					loading={loading}
+					loading={fetching}
 				/>
 				<TouchableOpacity
 					style={{ alignSelf: 'center', marginTop: 8 }}

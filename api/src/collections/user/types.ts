@@ -4,6 +4,7 @@ const UserTypes = gql`
 	type User {
 		id: ID!
 		name: String!
+		email: String!
 		phone: String!
 		createdAt: String!
 		updatedAt: String!
@@ -24,10 +25,38 @@ const UserTypes = gql`
 
 	input EditProfileInput {
 		name: String
+		email: String
 		phone: String
 	}
 
+	input RegisterInput {
+		name: String!
+		email: String!
+		phone: String!
+	}
+
+	input AuthenticateInput {
+		phone: String!
+	}
+
+	input VerifyInput {
+		phone: String!
+		code: String!
+	}
+
+	type AuthenticateResponse {
+		message: String
+	}
+
+	type VerifyResponse {
+		accessToken: String!
+		userId: ID!
+	}
+
 	extend type Mutation {
+		authenticate(input: AuthenticateInput!): AuthenticateResponse!
+		register(input: RegisterInput!): User!
+		verify(input: VerifyInput!): VerifyResponse!
 		editProfile(input: EditProfileInput!): User!
 		deleteUser(userId: ID!): ID!
 		deleteAccount: User!

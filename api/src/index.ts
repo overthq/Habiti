@@ -36,7 +36,11 @@ const main = async () => {
 	const httpServer = createServer(app);
 	const apolloServer = new ApolloServer({
 		schema,
-		context: ({ req }) => ({ user: (req as any).auth || null, prisma })
+		context: ({ req }) => ({
+			user: (req as any).auth || null,
+			prisma,
+			redisClient
+		})
 	});
 
 	await apolloServer.start();

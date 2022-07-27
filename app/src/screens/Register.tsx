@@ -11,22 +11,26 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import styles from '../styles/auth';
-import { register } from '../utils/auth';
 import Button from '../components/global/Button';
 import { AppStackParamList } from '../types/navigation';
+import { useRegisterMutation } from '../types/api';
 
 const Register = () => {
 	const [name, setName] = React.useState('');
+	const [email, setEmail] = React.useState('');
 	const [phone, setPhone] = React.useState('');
-	const [loading, setLoading] = React.useState(false);
+
 	const { navigate } =
 		useNavigation<StackNavigationProp<AppStackParamList, 'Authenticate'>>();
+	const [{ fetching }, register] = useRegisterMutation();
 
 	const handleSubmit = async () => {
-		setLoading(true);
-		await register({ name, phone });
-		setLoading(false);
-		navigate('Verify', { phone });
+		try {
+			await register({ input: { name, phone, email } });
+			navigate('Verify', { phone });
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	return (
@@ -47,6 +51,17 @@ const Register = () => {
 					/>
 				</View>
 				<View>
+					<Text style={styles.inputLabel}>Email</Text>
+					<TextInput
+						style={styles.input}
+						onChangeText={setEmail}
+						placeholder='john@johndoe.io'
+						autoCorrect={false}
+						autoCapitalize='none'
+						keyboardType='email-address'
+					/>
+				</View>
+				<View>
 					<Text style={styles.inputLabel}>Phone</Text>
 					<TextInput
 						style={styles.input}
@@ -57,7 +72,7 @@ const Register = () => {
 						keyboardType='phone-pad'
 					/>
 				</View>
-				<Button text='Next' onPress={handleSubmit} loading={loading} />
+				<Button text='Next' onPress={handleSubmit} loading={fetching} />
 				<TouchableOpacity
 					style={{ alignSelf: 'center', marginTop: 8 }}
 					onPress={() => navigate('Authenticate')}

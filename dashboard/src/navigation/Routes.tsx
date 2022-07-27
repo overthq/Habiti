@@ -1,24 +1,18 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import { Provider } from 'urql';
 
 import Register from '../screens/Register';
 import Authenticate from '../screens/Authenticate';
 import Verify from '../screens/Verify';
-import AddProduct from '../screens/AddProduct';
-import EditProduct from '../screens/EditProduct';
 import StoreSelect from '../screens/StoreSelect';
 import CreateStore from '../screens/CreateStore';
 
-import { AppStackParamList } from '../types/navigation';
 import useClient from '../hooks/useClient';
 import MainTabNavigator from './MainTab';
-import SettingsStackNavigator from './SettingsStack';
-import EditStore from '../screens/EditStore';
 import useStore from '../state';
-
-const AppStack = createStackNavigator<AppStackParamList>();
+import { AppStack } from './AppStack';
+import ModalGroup from './ModalGroup';
 
 const Routes: React.FC = () => {
 	const client = useClient();
@@ -32,36 +26,17 @@ const Routes: React.FC = () => {
 			<NavigationContainer>
 				<AppStack.Navigator screenOptions={{ headerShown: false }}>
 					{accessToken ? (
-						<>
-							{!activeStore ? (
-								<AppStack.Group>
-									<AppStack.Screen name='StoreSelect' component={StoreSelect} />
-									<AppStack.Screen name='CreateStore' component={CreateStore} />
-								</AppStack.Group>
-							) : (
-								<>
-									<AppStack.Screen name='Main' component={MainTabNavigator} />
-									<AppStack.Group
-										screenOptions={{ presentation: 'modal', headerShown: true }}
-									>
-										<AppStack.Screen
-											name='Add Product'
-											component={AddProduct}
-										/>
-										<AppStack.Screen
-											name='Edit Product'
-											component={EditProduct}
-										/>
-										<AppStack.Screen
-											name='Settings'
-											options={{ headerShown: false }}
-											component={SettingsStackNavigator}
-										/>
-										<AppStack.Screen name='Edit Store' component={EditStore} />
-									</AppStack.Group>
-								</>
-							)}
-						</>
+						!activeStore ? (
+							<AppStack.Group>
+								<AppStack.Screen name='StoreSelect' component={StoreSelect} />
+								<AppStack.Screen name='CreateStore' component={CreateStore} />
+							</AppStack.Group>
+						) : (
+							<>
+								<AppStack.Screen name='Main' component={MainTabNavigator} />
+								<ModalGroup />
+							</>
+						)
 					) : (
 						<AppStack.Group>
 							<AppStack.Screen name='Register' component={Register} />

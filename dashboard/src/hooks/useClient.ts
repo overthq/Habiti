@@ -18,7 +18,7 @@ const useClient = () => {
 				fetchOptions: () => ({
 					headers: {
 						authorization: accessToken ? `Bearer ${accessToken}` : '',
-						'x-market-store-id': activeStore || ''
+						'x-market-store-id': activeStore ?? ''
 					}
 				}),
 				exchanges: [
