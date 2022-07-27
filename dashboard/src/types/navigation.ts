@@ -30,5 +30,7 @@ export type ProductsStackParamList = {
 };
 
 export type SettingsStackParamList = {
-	[key: string]: undefined;
+	SettingsList: undefined;
+	SettingsActiveStore: undefined;
+	SettingsTheme: undefined;
 };

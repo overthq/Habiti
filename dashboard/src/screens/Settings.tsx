@@ -4,6 +4,7 @@ import Button from '../components/global/Button';
 import SettingRow from '../components/settings/SettingRow';
 import useStore from '../state';
 import { useStoreQuery } from '../types/api';
+import { SettingsStackParamList } from '../types/navigation';
 
 const { width } = Dimensions.get('window');
 
@@ -41,7 +42,7 @@ const Settings: React.FC = () => {
 				renderItem={({ item }) => (
 					<SettingRow
 						name={item.name}
-						screen={item.screen}
+						screen={item.screen as keyof SettingsStackParamList}
 						displayValue={item.displayValue}
 					/>
 				)}
