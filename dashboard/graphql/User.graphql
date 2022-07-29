@@ -1,0 +1,18 @@
+mutation Authenticate($input: AuthenticateInput!) {
+	authenticate(input: $input) {
+		message
+	}
+}
+
+mutation Register($input: RegisterInput!) {
+	register(input: $input) {
+		id
+	}
+}
+
+mutation Verify($input: VerifyInput!) {
+	verify(input: $input) {
+		accessToken
+		userId
+	}
+}

@@ -1,17 +1,23 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { authenticate } from '../utils/auth';
 import styles from '../styles/auth';
 import { AppStackParamList } from '../types/navigation';
+import { useAuthenticateMutation } from '../types/api';
+import Button from '../components/global/Button';
 
 const Authenticate: React.FC = () => {
 	const [phone, setPhone] = React.useState('');
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const [{ fetching }, authenticate] = useAuthenticateMutation();
 
 	const handleSubmit = async () => {
-		await authenticate(phone);
-		navigate('Verify', { phone });
+		try {
+			await authenticate({ input: { phone } });
+			navigate('Verify', { phone });
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	return (
@@ -30,9 +36,7 @@ const Authenticate: React.FC = () => {
 					keyboardType='number-pad'
 				/>
 			</View>
-			<TouchableOpacity style={styles.button} onPress={handleSubmit}>
-				<Text style={styles.buttonText}>Next</Text>
-			</TouchableOpacity>
+			<Button loading={fetching} text='Next' onPress={handleSubmit} />
 		</View>
 	);
 };

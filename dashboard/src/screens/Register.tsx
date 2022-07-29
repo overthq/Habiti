@@ -8,24 +8,23 @@ import {
 } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import authStyles from '../styles/auth';
-import { register } from '../utils/auth';
 import Button from '../components/global/Button';
 import { AppStackParamList } from '../types/navigation';
+import { useRegisterMutation } from '../types/api';
 
 const Register: React.FC = () => {
 	const [name, setName] = React.useState('');
 	const [phone, setPhone] = React.useState('');
-	const [loading, setLoading] = React.useState(false);
+	const [email, setEmail] = React.useState('');
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const [{ fetching }, register] = useRegisterMutation();
 
 	const goToAuth = () => {
 		navigate('Authenticate');
 	};
 
 	const handleSubmit = async () => {
-		setLoading(true);
-		await register({ name, phone });
-		setLoading(false);
+		await register({ input: { name, email, phone } });
 		navigate('Verify', { phone });
 	};
 
@@ -44,6 +43,14 @@ const Register: React.FC = () => {
 				/>
 			</View>
 			<View>
+				<Text style={authStyles.inputLabel}>Email</Text>
+				<TextInput
+					value={email}
+					onChangeText={setEmail}
+					style={authStyles.input}
+				/>
+			</View>
+			<View>
 				<Text style={authStyles.inputLabel}>Phone</Text>
 				<TextInput
 					value={phone}
@@ -51,7 +58,7 @@ const Register: React.FC = () => {
 					style={authStyles.input}
 				/>
 			</View>
-			<Button text='Register' onPress={handleSubmit} loading={loading} />
+			<Button text='Register' onPress={handleSubmit} loading={fetching} />
 			<TouchableOpacity onPress={goToAuth} style={{ marginTop: 8 }}>
 				<Text style={{ fontSize: 16 }}>Already have an account? Log in.</Text>
 			</TouchableOpacity>

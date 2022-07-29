@@ -1,16 +1,16 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { useRoute } from '@react-navigation/native';
-import { verifyCode } from '../utils/auth';
 import Button from '../components/global/Button';
 import authStyles from '../styles/auth';
 import useStore from '../state';
+import { useVerifyMutation } from '../types/api';
 
 const Verify: React.FC = () => {
 	const [code, setCode] = React.useState<string[]>([]);
-	const [loading, setLoading] = React.useState(false);
 	const { params } = useRoute<any>();
 	const logIn = useStore(state => state.logIn);
+	const [{ fetching }, verify] = useVerifyMutation();
 
 	const { phone } = params;
 
@@ -41,13 +41,14 @@ const Verify: React.FC = () => {
 
 	const handleSubmit = async () => {
 		try {
-			setLoading(true);
-			const { accessToken, userId } = await verifyCode({
-				phone,
-				code: code.join('')
+			const { data } = await verify({
+				input: { phone, code: code.join('') }
 			});
-			logIn(userId, accessToken);
-			setLoading(false);
+
+			if (data?.verify) {
+				const { userId, accessToken } = data.verify;
+				logIn(userId, accessToken);
+			}
 		} catch (error) {
 			console.log(error);
 		}
@@ -74,7 +75,7 @@ const Verify: React.FC = () => {
 			{/* <TouchableOpacity onPress={handleSubmit} style={authStyles.button}>
 				<Text style={authStyles.buttonText}>Verify</Text>
 			</TouchableOpacity> */}
-			<Button onPress={handleSubmit} text='Verify' loading={loading} />
+			<Button onPress={handleSubmit} text='Verify' loading={fetching} />
 		</View>
 	);
 };
