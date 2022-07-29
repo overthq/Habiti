@@ -36,7 +36,7 @@ const main = async () => {
 	const apolloServer = new ApolloServer({
 		schema,
 		context: ({ req }) => ({
-			user: (req as any).auth || null,
+			user: req.auth || null,
 			prisma,
 			redisClient
 		})
