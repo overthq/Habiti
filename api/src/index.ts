@@ -6,7 +6,6 @@ import { expressjwt } from 'express-jwt';
 import compression from 'compression';
 import { createServer } from 'http';
 
-import auth from './auth';
 import webhooks from './webhooks';
 import payments from './payments';
 import schema from './schema';
@@ -46,7 +45,6 @@ const main = async () => {
 	await apolloServer.start();
 	apolloServer.applyMiddleware({ app });
 
-	app.use('/auth', auth);
 	app.use('/webhooks', webhooks);
 	app.use('/payments', payments);
 
