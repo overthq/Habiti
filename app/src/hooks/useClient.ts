@@ -9,7 +9,9 @@ const useClient = (accessToken: string | null) => {
 			createClient({
 				url: `${env.apiUrl}/graphql`,
 				fetchOptions: {
-					headers: { authorization: `Bearer ${accessToken}` }
+					headers: {
+						...(accessToken ? { authorization: `Bearer ${accessToken}` } : {})
+					}
 				},
 				exchanges: [dedupExchange, customCache, fetchExchange]
 			}),
