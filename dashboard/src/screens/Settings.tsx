@@ -1,10 +1,9 @@
 import React from 'react';
-import { View, FlatList, StyleSheet, Dimensions } from 'react-native';
+import { ScrollView, StyleSheet, Dimensions } from 'react-native';
 import Button from '../components/global/Button';
 import SettingRow from '../components/settings/SettingRow';
 import useStore from '../state';
 import { useStoreQuery } from '../types/api';
-import { SettingsStackParamList } from '../types/navigation';
 
 const { width } = Dimensions.get('window');
 
@@ -21,44 +20,28 @@ const Settings: React.FC = () => {
 
 	const store = data?.store;
 
-	const settings = [
-		{
-			name: 'Active Store',
-			screen: 'SettingsActiveStore',
-			displayValue: store?.name
-		},
-		{
-			name: 'Theme',
-			screen: 'SettingsTheme',
-			displayValue: theme === 'light' ? 'Light' : 'Dark'
-		}
-	];
-
 	return (
-		<View style={styles.container}>
-			<FlatList
-				data={settings}
-				keyExtractor={s => s.name}
-				renderItem={({ item }) => (
-					<SettingRow
-						name={item.name}
-						screen={item.screen as keyof SettingsStackParamList}
-						displayValue={item.displayValue}
-					/>
-				)}
-				ListFooterComponent={
-					<Button
-						text='Log Out'
-						onPress={logOut}
-						style={{
-							alignSelf: 'center',
-							width: width - 16,
-							marginVertical: 8
-						}}
-					/>
-				}
+		<ScrollView style={styles.container}>
+			<SettingRow
+				name='Active Store'
+				screen='SettingsActiveStore'
+				displayValue={store?.name}
 			/>
-		</View>
+			<SettingRow
+				name='Theme'
+				screen='SettingsTheme'
+				displayValue={theme === 'light' ? 'Light' : 'Dark'}
+			/>
+			<Button
+				text='Log Out'
+				onPress={logOut}
+				style={{
+					alignSelf: 'center',
+					width: width - 16,
+					marginVertical: 8
+				}}
+			/>
+		</ScrollView>
 	);
 };
 

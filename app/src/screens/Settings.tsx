@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
+import { ScrollView, StyleSheet, Dimensions } from 'react-native';
 import Button from '../components/global/Button';
 import SettingRow from '../components/settings/SettingRow';
 import useStore from '../state';
+import { ThemeMap } from '../utils/theme';
 
 const { width } = Dimensions.get('screen');
 
@@ -13,31 +13,16 @@ const Settings: React.FC = () => {
 		logOut: state.logOut
 	}));
 
-	const settings = [
-		{
-			name: 'Theme',
-			screen: 'SettingsTheme',
-			display: theme === 'light' ? 'Light' : 'Dark'
-		}
-	];
-
 	return (
-		<View style={styles.container}>
-			<FlashList
-				data={settings}
-				keyExtractor={s => s.name}
-				renderItem={({ item }) => (
-					<SettingRow
-						name={item.name}
-						screen={item.screen}
-						displayValue={item.display}
-					/>
-				)}
-				ListFooterComponent={
-					<Button text='Log Out' onPress={logOut} style={styles.logOut} />
-				}
+		<ScrollView style={styles.container}>
+			<SettingRow
+				name='Theme'
+				screen='SettingsTheme'
+				displayValue={ThemeMap[theme]}
 			/>
-		</View>
+
+			<Button text='Log Out' onPress={logOut} style={styles.logOut} />
+		</ScrollView>
 	);
 };
 
