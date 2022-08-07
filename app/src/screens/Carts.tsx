@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
 import CartsListItem from '../components/carts/CartsListItem';
 import ListEmpty from '../components/global/ListEmpty';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
@@ -24,7 +25,7 @@ const Carts: React.FC = () => {
 
 	return (
 		<View style={styles.container}>
-			<FlatList
+			<FlashList
 				keyExtractor={c => c.id}
 				renderItem={({ item }) => (
 					<CartsListItem cart={item} onPress={handleCartPress(item.id)} />

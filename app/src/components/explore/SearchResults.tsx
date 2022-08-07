@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-	Text,
-	FlatList,
-	Image,
-	TouchableOpacity,
-	StyleSheet
-} from 'react-native';
+import { Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
 import { TabBar, TabView, SceneMap } from 'react-native-tab-view';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Product, Store } from '../../types/api';
@@ -19,7 +14,7 @@ const StoresView: React.FC<StoresViewProps> = ({ data }) => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	return (
-		<FlatList
+		<FlashList
 			keyExtractor={s => s.id}
 			data={data}
 			renderItem={({ item }) => (
@@ -55,7 +50,7 @@ const ProductsView: React.FC<ProductsViewProps> = ({ data }) => {
 	);
 
 	return (
-		<FlatList
+		<FlashList
 			keyExtractor={i => i.id}
 			data={data}
 			renderItem={({ item }) => (

@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import WatchlistProduct from './WatchlistProduct';
 import ListEmpty from '../global/ListEmpty';
 import { HomeQuery } from '../../types/api';
 import { HomeTabParamList } from '../../types/navigation';
 import textStyles from '../../styles/text';
+import { FlashList } from '@shopify/flash-list';
 
 interface WatchlistProps {
 	watchlist: HomeQuery['currentUser']['watchlist'];
@@ -38,7 +39,7 @@ const Watchlist: React.FC<WatchlistProps> = ({ watchlist }) => {
 			<Text style={[textStyles.sectionHeader, { marginLeft: 16 }]}>
 				Watchlist
 			</Text>
-			<FlatList
+			<FlashList
 				horizontal
 				showsHorizontalScrollIndicator={false}
 				data={products}

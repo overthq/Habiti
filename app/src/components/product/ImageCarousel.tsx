@@ -1,15 +1,10 @@
 import React from 'react';
-import {
-	View,
-	Image,
-	FlatList,
-	StyleSheet,
-	useWindowDimensions
-} from 'react-native';
+import { View, Image, StyleSheet, useWindowDimensions } from 'react-native';
 import Animated, {
 	useSharedValue,
 	useAnimatedScrollHandler
 } from 'react-native-reanimated';
+import { FlashList, FlashListProps } from '@shopify/flash-list';
 import ImageCarouselDots from '../profile/ImageCarouselDots';
 import { ProductQuery } from '../../types/api';
 import CloseButton from './CloseButton';
@@ -20,7 +15,10 @@ interface ImageCarouselProps {
 	images: ProductQuery['product']['images'];
 }
 
-const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+const AnimatedFlashList =
+	Animated.createAnimatedComponent<
+		FlashListProps<ImageCarouselProps['images'][number]>
+	>(FlashList);
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({ productId, images }) => {
 	const { width } = useWindowDimensions();
@@ -34,11 +32,10 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ productId, images }) => {
 
 	return (
 		<View style={styles.container}>
-			<AnimatedFlatList
+			<AnimatedFlashList
 				data={images}
-				contentContainerStyle={{ flex: 1 }}
-				keyExtractor={(i: any) => i.id}
-				renderItem={({ item }: any) => (
+				keyExtractor={i => i.id}
+				renderItem={({ item }) => (
 					<View style={styles.imageContainer}>
 						<Image source={{ uri: item.path }} style={styles.image} />
 					</View>

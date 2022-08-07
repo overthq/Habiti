@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, FlatList, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { FlashList } from '@shopify/flash-list';
 import StoreHeader from './StoreHeader';
 import StoreListItem from './StoreListItem';
 import { StoreQuery, useStoreProductsQuery } from '../../types/api';
@@ -33,7 +34,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 		);
 
 	return (
-		<FlatList
+		<FlashList
 			data={products}
 			keyExtractor={({ id }) => id}
 			ListHeaderComponent={() => <StoreHeader store={store} />}

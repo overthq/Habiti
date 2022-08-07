@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import textStyles from '../../styles/text';
 import { useStoresQuery } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
 import ListEmpty from '../global/ListEmpty';
 import TrendingStoresItem from './TrendingStoresItem';
+import { FlashList } from '@shopify/flash-list';
 
 const TrendingStores: React.FC = () => {
 	const [{ data }] = useStoresQuery();
@@ -23,7 +24,7 @@ const TrendingStores: React.FC = () => {
 			<Text style={[textStyles.sectionHeader, { marginLeft: 16 }]}>
 				Trending Stores
 			</Text>
-			<FlatList
+			<FlashList
 				horizontal
 				data={data?.stores}
 				keyExtractor={({ id }) => id}

@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, FlatList, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
 import Button from '../components/global/Button';
 import SettingRow from '../components/settings/SettingRow';
 import useStore from '../state';
@@ -22,7 +23,7 @@ const Settings: React.FC = () => {
 
 	return (
 		<View style={styles.container}>
-			<FlatList
+			<FlashList
 				data={settings}
 				keyExtractor={s => s.name}
 				renderItem={({ item }) => (
