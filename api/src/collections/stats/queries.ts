@@ -14,18 +14,20 @@ enum StatPeriod {
 	Year = 'Year'
 }
 
-// const getDateFromPeriod = (period: StatPeriod): Date => {
-// 	const currentDate = new Date();
+const dateMap = {
+	[StatPeriod.Day]: 1,
+	[StatPeriod.Week]: 7,
+	[StatPeriod.Month]: 30,
+	[StatPeriod.Year]: 365
+};
 
-// 	const dateMap = {
-// 		[StatPeriod.Day]: 1,
-// 		[StatPeriod.Week]: 7,
-// 		[StatPeriod.Month]: 30,
-// 		[StatPeriod.Year]: 365
-// 	};
+const getDateFromPeriod = (period: StatPeriod): Date => {
+	const currentDate = new Date();
 
-// 	return new Date(currentDate - dateMap[period] * 24 * 60 * 60 * 1000);
-// };
+	return new Date(
+		currentDate.getTime() - dateMap[period] * 24 * 60 * 60 * 1000
+	);
+};
 
 interface StatsArgs {
 	storeId: string;
@@ -33,16 +35,51 @@ interface StatsArgs {
 }
 
 const stats: Resolver<StatsArgs> = async (_, { storeId, period }, ctx) => {
-	// const products = await ctx.prisma.product.findMany({
-	// 	where: {
-	// 		storeId,
-	// 		createdAt: {
-	// 			gte: new Date()
-	// 		}
-	// 	}
-	// });
+	const marker = getDateFromPeriod(period);
 
-	return null;
+	const products = await ctx.prisma.product.findMany({
+		where: {
+			storeId,
+			createdAt: { gte: marker }
+		}
+	});
+
+	const orders = await ctx.prisma.order.findMany({
+		where: {
+			storeId,
+			createdAt: { gte: marker }
+		}
+	});
+
+	// This does not work, because we need to add the order "total"
+	// to the orders table, instead of relying on computing it from the
+	// order products every time.
+	// However, if we do this, it means that that column has to be updated
+	// every time an order product is deleted/updated.
+
+	const projectedRevenue = await ctx.prisma.order.aggregate({
+		where: {
+			storeId,
+			createdAt: { gte: marker }
+		},
+		_count: {
+			_all: true
+		}
+	});
+
+	await ctx.prisma.orderProduct.aggregate({
+		where: {
+			order: {
+				storeId,
+				createdAt: { gte: marker }
+			}
+		},
+		_count: {
+			unitPrice: true
+		}
+	});
+
+	return { products, orders, projectedRevenue };
 };
 
 // const pendingOrders : Resolver = async () => {

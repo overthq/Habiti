@@ -4,13 +4,8 @@ import { WebView } from 'react-native-webview';
 import useGoBack from '../hooks/useGoBack';
 import { attemptInitialCharge, InitialChargeResponse } from '../utils/payments';
 
-// This component uses a webview for card tokenization
-// using Paystack.
-// It will be replaced by a completely native solution,
-// when utils/paystack.ts is completed.
-
 const AddCardWebview: React.FC = () => {
-	const [data, setData] = React.useState<InitialChargeResponse | undefined>();
+	const [data, setData] = React.useState<InitialChargeResponse>();
 	useGoBack();
 
 	const getData = React.useCallback(async () => {
@@ -23,7 +18,7 @@ const AddCardWebview: React.FC = () => {
 	}, []);
 
 	return (
-		<View style={{ flex: 1 }}>
+		<View style={styles.container}>
 			{data ? (
 				<WebView
 					style={styles.container}
