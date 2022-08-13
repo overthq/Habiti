@@ -14,12 +14,8 @@ const dateMap = {
 	[StatPeriod.Year]: 365
 };
 
-const getDateFromPeriod = (period: StatPeriod): Date => {
-	const currentDate = new Date();
-
-	return new Date(
-		currentDate.getTime() - dateMap[period] * 24 * 60 * 60 * 1000
-	);
+const getDateFromPeriod = (period: StatPeriod) => {
+	return new Date(new Date().getTime() - dateMap[period] * 24 * 60 * 60 * 1000);
 };
 
 interface StatsArgs {
@@ -30,7 +26,7 @@ interface StatsArgs {
 const stats: Resolver<StatsArgs> = async (_, { storeId, period }, ctx) => {
 	const marker = getDateFromPeriod(period);
 
-	const [products, orders, projectedRevenue] = await ctx.prisma.$transaction([
+	const [products, orders, revenue] = await ctx.prisma.$transaction([
 		ctx.prisma.product.findMany({
 			where: {
 				storeId,
@@ -57,7 +53,7 @@ const stats: Resolver<StatsArgs> = async (_, { storeId, period }, ctx) => {
 		})
 	]);
 
-	return { products, orders, projectedRevenue };
+	return { products, orders, revenue };
 };
 
 const id: Resolver = parent => {

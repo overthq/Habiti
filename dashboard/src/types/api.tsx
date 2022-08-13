@@ -332,6 +332,7 @@ export type Query = {
 	currentUser: User;
 	order: Order;
 	product: Product;
+	stats: Stats;
 	store: Store;
 	storeProducts: Array<Product>;
 	stores: Array<Store>;
@@ -351,6 +352,11 @@ export type QueryProductArgs = {
 	id: Scalars['ID'];
 };
 
+export type QueryStatsArgs = {
+	period?: InputMaybe<StatPeriod>;
+	storeId: Scalars['ID'];
+};
+
 export type QueryStoreArgs = {
 	id: Scalars['ID'];
 };
@@ -367,6 +373,22 @@ export type RegisterInput = {
 	email: Scalars['String'];
 	name: Scalars['String'];
 	phone: Scalars['String'];
+};
+
+export enum StatPeriod {
+	Day = 'Day',
+	Month = 'Month',
+	Week = 'Week',
+	Year = 'Year'
+}
+
+export type Stats = {
+	__typename?: 'Stats';
+	id: Scalars['ID'];
+	orders: Array<Order>;
+	revenue: Scalars['ID'];
+	store: Store;
+	storeId: Scalars['ID'];
 };
 
 export type Store = {
@@ -620,6 +642,28 @@ export type EditProductMutation = {
 		unitPrice: number;
 		quantity: number;
 		images: Array<{ __typename?: 'Image'; id: string; path: string }>;
+	};
+};
+
+export type StatsQueryVariables = Exact<{
+	storeId: Scalars['ID'];
+	period: StatPeriod;
+}>;
+
+export type StatsQuery = {
+	__typename?: 'Query';
+	stats: {
+		__typename?: 'Stats';
+		id: string;
+		revenue: string;
+		orders: Array<{
+			__typename?: 'Order';
+			id: string;
+			status: OrderStatus;
+			total: number;
+			createdAt: string;
+			updatedAt: string;
+		}>;
 	};
 };
 
@@ -884,6 +928,27 @@ export function useEditProductMutation() {
 	return Urql.useMutation<EditProductMutation, EditProductMutationVariables>(
 		EditProductDocument
 	);
+}
+export const StatsDocument = gql`
+	query Stats($storeId: ID!, $period: StatPeriod!) {
+		stats(storeId: $storeId, period: $period) {
+			id
+			orders {
+				id
+				status
+				total
+				createdAt
+				updatedAt
+			}
+			revenue
+		}
+	}
+`;
+
+export function useStatsQuery(
+	options: Omit<Urql.UseQueryArgs<StatsQueryVariables>, 'query'>
+) {
+	return Urql.useQuery<StatsQuery>({ query: StatsDocument, ...options });
 }
 export const CreateStoreDocument = gql`
 	mutation CreateStore($input: CreateStoreInput!) {

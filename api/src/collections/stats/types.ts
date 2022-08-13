@@ -6,8 +6,7 @@ const StatsTypes = gql`
 		storeId: ID!
 		store: Store!
 		revenue: ID!
-		pendingOrders: Int!
-		newOrders: Int!
+		orders: [Order!]!
 	}
 
 	enum StatPeriod {

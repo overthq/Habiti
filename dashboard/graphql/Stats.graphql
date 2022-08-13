@@ -1,0 +1,13 @@
+query Stats($storeId: ID!, $period: StatPeriod!) {
+	stats(storeId: $storeId, period: $period) {
+		id
+		orders {
+			id
+			status
+			total
+			createdAt
+			updatedAt
+		}
+		revenue
+	}
+}
