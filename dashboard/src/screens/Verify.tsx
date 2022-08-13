@@ -1,14 +1,15 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import Button from '../components/global/Button';
 import authStyles from '../styles/auth';
 import useStore from '../state';
 import { useVerifyMutation } from '../types/api';
+import { AppStackParamList } from '../types/navigation';
 
 const Verify: React.FC = () => {
 	const [code, setCode] = React.useState<string[]>([]);
-	const { params } = useRoute<any>();
+	const { params } = useRoute<RouteProp<AppStackParamList, 'Verify'>>();
 	const logIn = useStore(state => state.logIn);
 	const [{ fetching }, verify] = useVerifyMutation();
 

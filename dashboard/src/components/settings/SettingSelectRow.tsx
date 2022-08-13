@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { Icon } from '../Icon';
 
 interface SettingSelectRowProps {
@@ -14,10 +14,10 @@ const SettingSelectRow: React.FC<SettingSelectRowProps> = ({
 	onSelectRow
 }) => {
 	return (
-		<TouchableOpacity style={styles.row} onPress={onSelectRow}>
+		<Pressable style={styles.row} onPress={onSelectRow}>
 			<Text style={{ fontSize: 16 }}>{name}</Text>
 			<View>{isSelected && <Icon name='check' size={24} />}</View>
-		</TouchableOpacity>
+		</Pressable>
 	);
 };
 
