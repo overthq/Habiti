@@ -41,7 +41,7 @@ const StoreTypes = gql`
 		website: String
 		twitter: String
 		instagram: String
-		imageFile: Upload
+		storeImage: Upload
 	}
 
 	input EditStoreInput {

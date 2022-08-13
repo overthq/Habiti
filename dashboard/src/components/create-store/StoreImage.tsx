@@ -1,8 +1,15 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
+import {
+	View,
+	Text,
+	Image,
+	StyleSheet,
+	Dimensions,
+	Pressable
+} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useFormikContext } from 'formik';
-import Button from '../global/Button';
+import { Icon } from '../Icon';
 
 const { width } = Dimensions.get('window');
 
@@ -23,12 +30,21 @@ const StoreImage: React.FC = () => {
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>Store Image</Text>
-			<View style={styles.preview}>
-				{values.storeImage ? (
+			{values.storeImage ? (
+				<View style={styles.preview}>
 					<Image source={{ uri: values.storeImage }} style={styles.image} />
-				) : null}
-			</View>
-			<Button onPress={handlePickImage} text='Upload' />
+					<Pressable
+						onPress={() => setFieldValue('storeImage', null)}
+						style={styles.close}
+					>
+						<Icon name='x' size={20} color='#FFFFFF' />
+					</Pressable>
+				</View>
+			) : (
+				<Pressable style={styles.upload} onPress={handlePickImage}>
+					<Icon name='upload' size={32} color='#505050' />
+				</Pressable>
+			)}
 		</View>
 	);
 };
@@ -45,13 +61,36 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		width: '100%',
-		height: '100%'
+		height: '100%',
+		borderRadius: 75
 	},
 	preview: {
 		height: 150,
 		width: 150,
+		alignSelf: 'center',
+		marginVertical: 16
+	},
+	upload: {
+		height: 150,
+		width: 150,
+		backgroundColor: '#D3D3D3',
 		borderRadius: 75,
-		backgroundColor: '#D3D3D3'
+		justifyContent: 'center',
+		alignItems: 'center',
+		alignSelf: 'center',
+		marginVertical: 16
+	},
+	close: {
+		height: 28,
+		width: 28,
+		borderRadius: 14,
+		backgroundColor: '#000000',
+		justifyContent: 'center',
+		alignItems: 'center',
+		position: 'absolute',
+		top: 6,
+		right: 6,
+		zIndex: 100
 	}
 });
 

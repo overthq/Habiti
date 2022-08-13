@@ -10,16 +10,16 @@ interface CreateStoreArgs {
 		website?: string;
 		twitter?: string;
 		instagram?: string;
-		imageFile?: Promise<FileUpload>;
+		storeImage?: Promise<FileUpload>;
 	};
 }
 
 const createStore: Resolver<CreateStoreArgs> = async (_, { input }, ctx) => {
-	const { imageFile, ...rest } = input;
+	const { storeImage, ...rest } = input;
 	let uploadedImage: UploadApiResponse;
 
-	if (imageFile) {
-		const { createReadStream } = await imageFile;
+	if (storeImage) {
+		const { createReadStream } = await storeImage;
 		const stream = createReadStream();
 
 		uploadedImage = await uploadStream(stream);

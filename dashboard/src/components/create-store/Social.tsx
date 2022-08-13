@@ -24,6 +24,8 @@ const Social = () => {
 					placeholder='@nike'
 					onChangeText={handleChange('twitter')}
 					onBlur={handleBlur('twitter')}
+					autoCapitalize='none'
+					autoCorrect={false}
 				/>
 			</View>
 			<View>
@@ -33,6 +35,8 @@ const Social = () => {
 					placeholder='@nike'
 					onChangeText={handleChange('instagram')}
 					onBlur={handleBlur('instagram')}
+					autoCapitalize='none'
+					autoCorrect={false}
 				/>
 			</View>
 			<View>
@@ -42,6 +46,7 @@ const Social = () => {
 					placeholder='https://nike.com'
 					onChangeText={handleChange('website')}
 					onBlur={handleBlur('website')}
+					keyboardType='url'
 				/>
 			</View>
 		</View>

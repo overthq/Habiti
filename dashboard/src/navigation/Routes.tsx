@@ -34,7 +34,7 @@ const Routes: React.FC = () => {
 						) : (
 							<>
 								<AppStack.Screen name='Main' component={MainTabNavigator} />
-								<ModalGroup />
+								{ModalGroup}
 							</>
 						)
 					) : (

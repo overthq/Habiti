@@ -76,9 +76,13 @@ const CreateStore: React.FC = () => {
 				}}
 				onSubmit={async values => {
 					try {
-						const { data } = await createStore({
+						console.log('pressed');
+						const { data, error } = await createStore({
 							input: { ...values }
 						});
+
+						console.log(data);
+						console.log({ error });
 
 						if (data?.createStore?.id) {
 							setPreference({ activeStore: data.createStore.id });

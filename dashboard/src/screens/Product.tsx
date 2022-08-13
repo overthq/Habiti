@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import {
+	View,
+	Text,
+	StyleSheet,
+	ActivityIndicator,
+	ScrollView
+} from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useProductQuery } from '../types/api';
 import { ProductsStackParamList } from '../types/navigation';
@@ -22,7 +28,7 @@ const Product: React.FC = () => {
 	if (fetching || !product) return <ActivityIndicator />;
 
 	return (
-		<View style={styles.container}>
+		<ScrollView style={styles.container}>
 			<View style={styles.heading}>
 				<Text style={styles.title}>{product.name}</Text>
 			</View>
@@ -31,7 +37,7 @@ const Product: React.FC = () => {
 			<Section title='Description' content={product.description} />
 			<Section title='Unit Price' content={formatNaira(product.unitPrice)} />
 			<Section title='Quantity in stock' content={`${product.quantity}`} />
-		</View>
+		</ScrollView>
 	);
 };
 

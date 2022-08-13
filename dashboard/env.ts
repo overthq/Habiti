@@ -11,10 +11,10 @@ const ENV = {
 		apiUrl: localhostString('4000')
 	},
 	staging: {
-		apiUrl: 'https://'
+		apiUrl: ''
 	},
 	prod: {
-		apiUrl: 'https://'
+		apiUrl: ''
 	}
 };
 
