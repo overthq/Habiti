@@ -12,12 +12,9 @@ const TrendingStores: React.FC = () => {
 	const [{ data }] = useStoresQuery();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
-	const handleStorePress = React.useCallback(
-		(storeId: string) => () => {
-			navigate('Store', { storeId });
-		},
-		[]
-	);
+	const handleStorePress = (storeId: string) => () => {
+		navigate('Store', { storeId });
+	};
 
 	return (
 		<View style={styles.container}>
@@ -29,6 +26,7 @@ const TrendingStores: React.FC = () => {
 				data={data?.stores}
 				keyExtractor={({ id }) => id}
 				contentContainerStyle={styles.list}
+				estimatedItemSize={100}
 				renderItem={({ item }) => (
 					<TrendingStoresItem
 						store={item}
@@ -50,8 +48,7 @@ const TrendingStores: React.FC = () => {
 const styles = StyleSheet.create({
 	container: {},
 	list: {
-		paddingLeft: 20,
-		height: 95
+		paddingLeft: 20
 	},
 	sectionHeader: {
 		marginVertical: 5,

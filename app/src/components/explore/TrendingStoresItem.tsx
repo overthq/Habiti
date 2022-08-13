@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
 import { StoresQuery } from '../../types/api';
 
 interface TrendingStoresItemProps {
-	store: StoresQuery['stores'][-1];
+	store: StoresQuery['stores'][number];
 	onPress(): void;
 }
 
@@ -11,22 +11,16 @@ const TrendingStoresItem: React.FC<TrendingStoresItemProps> = ({
 	store,
 	onPress
 }) => (
-	<TouchableOpacity
-		activeOpacity={0.8}
-		style={styles.container}
-		onPress={onPress}
-	>
+	<Pressable style={styles.container} onPress={onPress}>
 		<View style={styles.placeholder}>
 			<Image source={{ uri: store.image?.path }} style={styles.image} />
 		</View>
 		<Text style={styles.name}>{store.name}</Text>
-	</TouchableOpacity>
+	</Pressable>
 );
 
 const styles = StyleSheet.create({
 	container: {
-		justifyContent: 'center',
-		height: '100%',
 		marginRight: 16
 	},
 	placeholder: {

@@ -1,35 +1,26 @@
 import React from 'react';
-import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Image, Text, StyleSheet, Pressable } from 'react-native';
 import { StoreProductsQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
 
 interface StoreListItemProps {
-	item: StoreProductsQuery['store']['products'][-1];
+	item: StoreProductsQuery['store']['products'][number];
 	onPress(): void;
 }
 
-const StoreListItem: React.FC<StoreListItemProps> = ({ item, onPress }) => {
-	return (
-		<TouchableOpacity
-			key={item.id}
-			style={styles.pressable}
-			onPress={onPress}
-			activeOpacity={0.8}
-		>
-			<View style={styles.placeholder}>
-				{item.images[0] && (
-					<Image style={styles.image} source={{ uri: item.images[0].path }} />
-				)}
-			</View>
-			<Text style={styles.name}>{item.name}</Text>
-			<Text style={styles.price}>{formatNaira(item.unitPrice)}</Text>
-		</TouchableOpacity>
-	);
-};
+const StoreListItem: React.FC<StoreListItemProps> = ({ item, onPress }) => (
+	<Pressable key={item.id} style={styles.pressable} onPress={onPress}>
+		<View style={styles.placeholder}>
+			<Image style={styles.image} source={{ uri: item.images[0]?.path }} />
+		</View>
+		<Text style={styles.name}>{item.name}</Text>
+		<Text style={styles.price}>{formatNaira(item.unitPrice)}</Text>
+	</Pressable>
+);
 
 const styles = StyleSheet.create({
 	pressable: {
-		flex: 1 / 2,
+		flex: 1,
 		margin: 8
 	},
 	placeholder: {

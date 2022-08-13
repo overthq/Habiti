@@ -19,12 +19,9 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 
 	const products = data?.store.products;
 
-	const handleProductPress = React.useCallback(
-		(productId: string) => () => {
-			navigate('Product', { productId });
-		},
-		[]
-	);
+	const handleProductPress = (productId: string) => () => {
+		navigate('Product', { productId });
+	};
 
 	if (fetching || !products)
 		return (
@@ -39,6 +36,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 			keyExtractor={({ id }) => id}
 			ListHeaderComponent={() => <StoreHeader store={store} />}
 			showsVerticalScrollIndicator={false}
+			estimatedItemSize={240}
 			renderItem={({ item }) => (
 				<StoreListItem item={item} onPress={handleProductPress(item.id)} />
 			)}
