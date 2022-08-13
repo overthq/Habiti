@@ -13,16 +13,20 @@ import MainTabNavigator from './MainTab';
 import useStore from '../state';
 import { AppStack } from './AppStack';
 import ModalGroup from './ModalGroup';
+import { StatusBar } from 'expo-status-bar';
+import { getStatusBarStyle } from '../utils/theme';
 
 const Routes: React.FC = () => {
 	const client = useClient();
-	const { accessToken, activeStore } = useStore(state => ({
+	const { accessToken, activeStore, theme } = useStore(state => ({
 		accessToken: state.accessToken,
-		activeStore: state.activeStore
+		activeStore: state.activeStore,
+		theme: state.theme
 	}));
 
 	return (
 		<Provider value={client}>
+			<StatusBar style={getStatusBarStyle(theme)} />
 			<NavigationContainer>
 				<AppStack.Navigator screenOptions={{ headerShown: false }}>
 					{accessToken ? (
