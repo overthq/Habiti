@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+	View,
 	ScrollView,
 	TouchableOpacity,
 	StyleSheet,
@@ -34,15 +35,19 @@ const Overview: React.FC = () => {
 		});
 	}, [navigation]);
 
-	if (fetching) return <ActivityIndicator />;
-
 	return (
 		<ScrollView style={styles.container}>
 			<PeriodSelector
 				selectedPeriod={selectedPeriod}
 				setSelectedPeriod={setSelectedPeriod}
 			/>
-			<Text>Orders: {data?.stats.orders.length ?? 0}</Text>
+			{fetching ? (
+				<ActivityIndicator />
+			) : (
+				<View>
+					<Text>Orders: {data?.stats.orders.length ?? 0}</Text>
+				</View>
+			)}
 		</ScrollView>
 	);
 };

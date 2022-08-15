@@ -42,7 +42,10 @@ const styles = StyleSheet.create({
 	container: {
 		width: '100%',
 		height: 40,
-		flexDirection: 'row'
+		flexDirection: 'row',
+		backgroundColor: '#FFFFFF',
+		borderRadius: 4,
+		marginBottom: 8
 	},
 	tab: {
 		flex: 1,
