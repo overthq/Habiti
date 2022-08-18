@@ -6,11 +6,11 @@ import { createAuthSlice } from './auth';
 import { createPreferencesSlice } from './preferences';
 import { AppState } from './types';
 
-const useStore = create(
-	persist<AppState>(
-		(set, get) => ({
-			...createAuthSlice(set, get),
-			...createPreferencesSlice(set, get)
+const useStore = create<AppState>()(
+	persist(
+		(...a) => ({
+			...createAuthSlice(...a),
+			...createPreferencesSlice(...a)
 		}),
 		{
 			name: 'root-store',
