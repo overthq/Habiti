@@ -28,9 +28,9 @@ export type AddStoreManagerInput = {
 };
 
 export type AddToCartInput = {
-	cartId: Scalars['ID'];
 	productId: Scalars['ID'];
 	quantity?: InputMaybe<Scalars['Int']>;
+	storeId: Scalars['ID'];
 };
 
 export type AuthenticateInput = {
@@ -98,9 +98,9 @@ export type CreateProductInput = {
 
 export type CreateStoreInput = {
 	description: Scalars['String'];
-	imageFile?: InputMaybe<Scalars['Upload']>;
 	instagram?: InputMaybe<Scalars['String']>;
 	name: Scalars['String'];
+	storeImage?: InputMaybe<Scalars['Upload']>;
 	twitter?: InputMaybe<Scalars['String']>;
 	website?: InputMaybe<Scalars['String']>;
 };
@@ -332,6 +332,7 @@ export type Query = {
 	currentUser: User;
 	order: Order;
 	product: Product;
+	stats: Stats;
 	store: Store;
 	storeProducts: Array<Product>;
 	stores: Array<Store>;
@@ -349,6 +350,11 @@ export type QueryOrderArgs = {
 
 export type QueryProductArgs = {
 	id: Scalars['ID'];
+};
+
+export type QueryStatsArgs = {
+	period?: InputMaybe<StatPeriod>;
+	storeId: Scalars['ID'];
 };
 
 export type QueryStoreArgs = {
@@ -369,9 +375,25 @@ export type RegisterInput = {
 	phone: Scalars['String'];
 };
 
+export enum StatPeriod {
+	Day = 'Day',
+	Month = 'Month',
+	Week = 'Week',
+	Year = 'Year'
+}
+
+export type Stats = {
+	__typename?: 'Stats';
+	id: Scalars['ID'];
+	orders: Array<Order>;
+	revenue: Scalars['ID'];
+	store: Store;
+	storeId: Scalars['ID'];
+};
+
 export type Store = {
 	__typename?: 'Store';
-	cartForUser?: Maybe<Cart>;
+	cartId?: Maybe<Scalars['ID']>;
 	carts: Array<Cart>;
 	createdAt: Scalars['String'];
 	description?: Maybe<Scalars['String']>;
@@ -807,17 +829,7 @@ export type ProductQuery = {
 		unitPrice: number;
 		storeId: string;
 		inCart: boolean;
-		store: {
-			__typename?: 'Store';
-			id: string;
-			cartForUser?: {
-				__typename?: 'Cart';
-				id: string;
-				userId: string;
-				storeId: string;
-				store: { __typename?: 'Store'; id: string; name: string };
-			} | null;
-		};
+		store: { __typename?: 'Store'; id: string; cartId?: string | null };
 		images: Array<{ __typename?: 'Image'; id: string; path: string }>;
 	};
 };
@@ -1394,15 +1406,7 @@ export const ProductDocument = gql`
 			storeId
 			store {
 				id
-				cartForUser {
-					id
-					userId
-					storeId
-					store {
-						id
-						name
-					}
-				}
+				cartId
 			}
 			images {
 				id

@@ -13,15 +13,7 @@ const Product: React.FC = () => {
 		variables: { productId: params.productId }
 	});
 
-	const { product, cart } = React.useMemo(
-		() => ({
-			product: data?.product,
-			cart: data?.product.store.cartForUser
-		}),
-		[data]
-	);
-
-	if (fetching || !product) {
+	if (fetching || !data?.product) {
 		return (
 			<View>
 				<ActivityIndicator />
@@ -31,13 +23,13 @@ const Product: React.FC = () => {
 
 	return (
 		<ScrollView style={styles.container}>
-			<ImageCarousel productId={product.id} images={product.images} />
-			<ProductDetails product={product} />
+			<ImageCarousel productId={data.product.id} images={data.product.images} />
+			<ProductDetails product={data.product} />
 			<AddToCart
-				storeId={product.storeId}
-				productId={product.id}
-				cartId={cart?.id}
-				inCart={product.inCart}
+				storeId={data.product.storeId}
+				productId={data.product.id}
+				cartId={data.product.store.cartId}
+				inCart={data.product.inCart}
 			/>
 			{/* Related Products */}
 		</ScrollView>

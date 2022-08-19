@@ -76,17 +76,13 @@ const followedByUser: Resolver = async (parent, _, ctx) => {
 	return !!fetchedFollower;
 };
 
-const cartForUser: Resolver = async (parent, _, ctx) => {
-	const fetchedCart = await ctx.prisma.cart.findUnique({
-		where: {
-			userId_storeId: {
-				userId: ctx.user.id,
-				storeId: parent.id
-			}
-		}
+const cartId: Resolver = async (parent, _, ctx) => {
+	const { id } = await ctx.prisma.cart.findUnique({
+		where: { userId_storeId: { userId: ctx.user.id, storeId: parent.id } },
+		select: { id: true }
 	});
 
-	return fetchedCart;
+	return id;
 };
 
 export default {
@@ -102,6 +98,6 @@ export default {
 		carts,
 		image,
 		followedByUser,
-		cartForUser
+		cartId
 	}
 };

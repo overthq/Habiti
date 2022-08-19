@@ -10,12 +10,8 @@ const CartProductTypes = gql`
 		product: Product!
 	}
 
-	# Small refactor:
-	# We should add a cart product input as part of the
-	# createCart mutation.
-
 	input AddToCartInput {
-		cartId: ID!
+		storeId: ID!
 		productId: ID!
 		quantity: Int
 	}

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Pressable, Text, StyleSheet } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { Icon } from '../Icon';
-import { useCreateCartMutation, useAddToCartMutation } from '../../types/api';
+import { useAddToCartMutation } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
 import Button from '../global/Button';
 
@@ -20,17 +20,12 @@ const AddToCart: React.FC<AddToCartProps> = ({
 	inCart
 }) => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const [, createCart] = useCreateCartMutation();
 	const [, addToCart] = useAddToCartMutation();
 
 	const handlePress = async () => {
-		if (!cartId) {
-			await createCart({ input: { storeId, productId, quantity: 1 } });
-		} else {
-			await addToCart({
-				input: { cartId, productId, quantity: 1 }
-			});
-		}
+		await addToCart({
+			input: { storeId, productId, quantity: 1 }
+		});
 	};
 
 	const renderButton = React.useMemo(() => {

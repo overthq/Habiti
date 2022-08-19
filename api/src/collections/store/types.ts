@@ -12,7 +12,7 @@ const StoreTypes = gql`
 		updatedAt: String!
 
 		followedByUser: Boolean!
-		cartForUser: Cart
+		cartId: ID
 		products: [Product!]!
 		orders: [Order!]!
 		managers: [StoreManager!]!

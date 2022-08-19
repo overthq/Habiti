@@ -24,15 +24,7 @@ query Product($productId: ID!) {
 		storeId
 		store {
 			id
-			cartForUser {
-				id
-				userId
-				storeId
-				store {
-					id
-					name
-				}
-			}
+			cartId
 		}
 		images {
 			id
