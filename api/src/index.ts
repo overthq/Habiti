@@ -25,12 +25,7 @@ const main = async () => {
 			credentialsRequired: false
 		})
 	);
-	app.use(
-		graphqlUploadExpress({
-			maxFileSize: 10485760,
-			maxFiles: 10
-		})
-	);
+	app.use(graphqlUploadExpress({ maxFileSize: 10485760, maxFiles: 10 }));
 
 	const httpServer = createServer(app);
 	const apolloServer = new ApolloServer({
@@ -48,7 +43,7 @@ const main = async () => {
 	app.use('/webhooks', webhooks);
 	app.use('/payments', payments);
 
-	const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
+	const PORT = Number(process.env.PORT || 3000);
 	httpServer.listen({ port: PORT });
 
 	await redisClient.connect();

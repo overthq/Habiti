@@ -4,8 +4,8 @@ const StatsTypes = gql`
 	type Stats {
 		id: ID!
 		storeId: ID!
-		store: Store!
-		revenue: ID!
+		products: [Product!]!
+		revenue: Int!
 		orders: [Order!]!
 	}
 

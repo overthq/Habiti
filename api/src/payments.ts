@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { User } from '@prisma/client';
 import { initialCharge, verifyTransaction } from './utils/paystack';
 
 const router: Router = Router();
@@ -11,10 +10,7 @@ router.post('/initial-charge', async (req, res) => {
 	try {
 		const data = await initialCharge(email);
 
-		return res.status(200).json({
-			success: true,
-			data
-		});
+		return res.status(200).json({ success: true, data });
 	} catch (error) {
 		return res.status(400).json({
 			success: false,
@@ -30,17 +26,11 @@ router.post('/verify-transaction', async (req, res) => {
 	const { reference } = req.body;
 
 	try {
-		const data = await verifyTransaction((req.user as User).id, reference);
+		const data = await verifyTransaction((req as any).auth.id, reference);
 
-		return res.status(200).json({
-			success: true,
-			data
-		});
+		return res.status(200).json({ success: true, data });
 	} catch (error) {
-		return res.status(400).json({
-			success: false,
-			error
-		});
+		return res.status(400).json({ success: false, error });
 	}
 });
 

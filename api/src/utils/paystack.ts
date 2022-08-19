@@ -77,6 +77,8 @@ export const initialCharge = async (email: string) => {
 // (On prod, the webhook should do this).
 
 export const verifyTransaction = async (userId: string, reference: string) => {
+	console.log('here too');
+	console.log(`${API_URL}/transaction/verify/${reference}`);
 	const response = await fetch(`${API_URL}/transaction/verify/${reference}`, {
 		method: 'GET',
 		headers: {
@@ -84,7 +86,11 @@ export const verifyTransaction = async (userId: string, reference: string) => {
 		}
 	});
 
-	const { data, status } = await response.json();
+	const v = await response.json();
+
+	console.log(v);
+
+	const { data, status } = v;
 
 	if (status === true && data.status === 'success') {
 		const card = await storeCard(userId, data);

@@ -53,12 +53,15 @@ const stats: Resolver<StatsArgs> = async (_, { storeId, period }, ctx) => {
 		})
 	]);
 
-	return { products, orders, revenue };
+	return {
+		storeId,
+		products,
+		orders,
+		revenue: revenue._count.unitPrice
+	};
 };
 
-const id: Resolver = parent => {
-	return parent.storeId;
-};
+const id: Resolver = parent => parent.storeId;
 
 export default {
 	Stats: {
