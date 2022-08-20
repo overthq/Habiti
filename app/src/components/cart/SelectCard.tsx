@@ -46,7 +46,6 @@ const SelectCard: React.FC<SelectCardProps> = ({
 
 	return (
 		<>
-			<View style={styles.container}></View>
 			<Pressable style={[styles.row, { height: 48 }]} onPress={handleOpenModal}>
 				<Text style={styles.text}>Payment method</Text>
 				<View style={styles.cardInfo}>

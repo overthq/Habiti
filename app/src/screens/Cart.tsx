@@ -39,6 +39,10 @@ const Cart: React.FC = () => {
 		}
 	}, [cartId]);
 
+	const handleCardSelect = (cardId: string) => () => {
+		setSelectedCard(cardId);
+	};
+
 	if (fetching || !cart) {
 		return (
 			<View>
@@ -62,7 +66,7 @@ const Cart: React.FC = () => {
 					</View>
 					<SelectCard
 						selectedCard={selectedCard}
-						handleCardSelect={setSelectedCard}
+						onCardSelect={handleCardSelect}
 					/>
 					<Button
 						text='Place Order'

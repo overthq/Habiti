@@ -7,15 +7,15 @@ enum StatPeriod {
 	Year = 'Year'
 }
 
-const dateMap = {
-	[StatPeriod.Day]: 1,
-	[StatPeriod.Week]: 7,
-	[StatPeriod.Month]: 30,
-	[StatPeriod.Year]: 365
+const dateMap: Record<StatPeriod, number> = {
+	Day: 1,
+	Week: 7,
+	Month: 30,
+	Year: 365
 };
 
 const getDateFromPeriod = (period: StatPeriod) => {
-	return new Date(new Date().getTime() - dateMap[period] * 24 * 60 * 60 * 1000);
+	return new Date(new Date().getTime() - dateMap[period] * 86400000);
 };
 
 interface StatsArgs {
@@ -28,46 +28,23 @@ const stats: Resolver<StatsArgs> = async (_, { storeId, period }, ctx) => {
 
 	const [products, orders, revenue] = await ctx.prisma.$transaction([
 		ctx.prisma.product.findMany({
-			where: {
-				storeId,
-				createdAt: { gte: marker }
-			}
+			where: { storeId, createdAt: { gte: marker } }
 		}),
-
 		ctx.prisma.order.findMany({
-			where: {
-				storeId,
-				createdAt: { gte: marker }
-			}
+			where: { storeId, createdAt: { gte: marker } }
 		}),
 		ctx.prisma.orderProduct.aggregate({
-			where: {
-				order: {
-					storeId,
-					createdAt: { gte: marker }
-				}
-			},
-			_count: {
-				unitPrice: true
-			}
+			where: { order: { storeId, createdAt: { gte: marker } } },
+			_count: { unitPrice: true }
 		})
 	]);
 
-	return {
-		storeId,
-		products,
-		orders,
-		revenue: revenue._count.unitPrice
-	};
+	return { storeId, products, orders, revenue: revenue._count.unitPrice };
 };
 
 const id: Resolver = parent => parent.storeId;
 
 export default {
-	Stats: {
-		id
-	},
-	Query: {
-		stats
-	}
+	Stats: { id },
+	Query: { stats }
 };
