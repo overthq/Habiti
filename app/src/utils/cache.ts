@@ -26,54 +26,26 @@ const customCache = cacheExchange({
 	updates: {
 		Mutation: {
 			followStore(_result, args: MutationFollowStoreArgs, cache) {
-				cache.invalidate({
-					__typename: 'Store',
-					id: args.storeId
-				});
+				cache.invalidate({ __typename: 'Store', id: args.storeId });
 			},
 			unfollowStore(_result, args: MutationUnfollowStoreArgs, cache) {
-				cache.invalidate({
-					__typename: 'Store',
-					id: args.storeId
-				});
+				cache.invalidate({ __typename: 'Store', id: args.storeId });
 			},
 			addToCart(_result, args: MutationAddToCartArgs, cache) {
-				cache.invalidate({
-					__typename: 'Product',
-					id: args.input.productId
-				});
-				cache.invalidate({
-					__typename: 'Cart',
-					id: args.input.cartId
-				});
+				cache.invalidate({ __typename: 'Product', id: args.input.productId });
+				cache.invalidate({ __typename: 'Store', id: args.input.storeId });
 			},
 			removeFromCart(_result, args: MutationRemoveFromCartArgs, cache) {
-				cache.invalidate({
-					__typename: 'Product',
-					id: args.productId
-				});
-				cache.invalidate({
-					__typename: 'Cart',
-					id: args.cartId
-				});
+				cache.invalidate({ __typename: 'Product', id: args.productId });
+				cache.invalidate({ __typename: 'Cart', id: args.cartId });
 			},
 			deleteCart(_result, args: MutationDeleteCartArgs, cache) {
 				// TODO: Invalidate the products as well.
-
-				cache.invalidate({
-					__typename: 'Cart',
-					id: args.cartId
-				});
+				cache.invalidate({ __typename: 'Cart', id: args.cartId });
 			},
 			updateCartProduct(_result, args: MutationUpdateCartProductArgs, cache) {
-				cache.invalidate({
-					__typename: 'Product',
-					id: args.input.productId
-				});
-				cache.invalidate({
-					__typename: 'Cart',
-					id: args.input.cartId
-				});
+				cache.invalidate({ __typename: 'Product', id: args.input.productId });
+				cache.invalidate({ __typename: 'Cart', id: args.input.cartId });
 			}
 		}
 	}
