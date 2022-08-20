@@ -22,7 +22,7 @@
 		"expo": "^46.0.0",
 		"expo-image-picker": "~13.3.1",
 		"expo-status-bar": "~1.4.0",
-		"extract-files": "11",
+		"extract-files": "12",
 		"formik": "^2.2.9",
 		"graphql": "^16.5.0",
 		"react": "18.0.0",
