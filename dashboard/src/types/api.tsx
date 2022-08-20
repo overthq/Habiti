@@ -28,9 +28,9 @@ export type AddStoreManagerInput = {
 };
 
 export type AddToCartInput = {
-	cartId: Scalars['ID'];
 	productId: Scalars['ID'];
 	quantity?: InputMaybe<Scalars['Int']>;
+	storeId: Scalars['ID'];
 };
 
 export type AuthenticateInput = {
@@ -98,9 +98,9 @@ export type CreateProductInput = {
 
 export type CreateStoreInput = {
 	description: Scalars['String'];
-	imageFile?: InputMaybe<Scalars['Upload']>;
 	instagram?: InputMaybe<Scalars['String']>;
 	name: Scalars['String'];
+	storeImage?: InputMaybe<Scalars['Upload']>;
 	twitter?: InputMaybe<Scalars['String']>;
 	website?: InputMaybe<Scalars['String']>;
 };
@@ -393,7 +393,7 @@ export type Stats = {
 
 export type Store = {
 	__typename?: 'Store';
-	cartForUser?: Maybe<Cart>;
+	cartId?: Maybe<Scalars['ID']>;
 	carts: Array<Cart>;
 	createdAt: Scalars['String'];
 	description?: Maybe<Scalars['String']>;
