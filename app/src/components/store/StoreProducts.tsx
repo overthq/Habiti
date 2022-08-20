@@ -19,9 +19,12 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 
 	const products = data?.store.products;
 
-	const handleProductPress = (productId: string) => () => {
-		navigate('Product', { productId });
-	};
+	const handleProductPress = React.useCallback(
+		(productId: string) => () => {
+			navigate('Product', { productId });
+		},
+		[navigate]
+	);
 
 	if (fetching || !products)
 		return (

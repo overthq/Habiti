@@ -58,13 +58,10 @@ const ProductsView: React.FC<ProductsViewProps> = ({ data }) => {
 					onPress={handleProductPress(item.id)}
 					style={styles.resultRow}
 				>
-					{item.images[0] && (
-						<Image
-							source={{ uri: item.images[0].path }}
-							style={styles.resultRowThumbnail}
-						/>
-					)}
-
+					<Image
+						source={{ uri: item.images[0]?.path }}
+						style={styles.resultRowThumbnail}
+					/>
 					<Text style={{ fontSize: 16 }}>{item.name}</Text>
 				</TouchableOpacity>
 			)}

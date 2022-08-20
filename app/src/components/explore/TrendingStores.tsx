@@ -46,7 +46,9 @@ const TrendingStores: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-	container: {},
+	container: {
+		height: 100
+	},
 	list: {
 		paddingLeft: 20
 	},
