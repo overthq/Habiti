@@ -13,14 +13,12 @@ import { MastercardIcon } from './CardIcons';
 
 interface SelectCardProps {
 	selectedCard: string | null;
-	handleCardSelect(cardId: string): void;
+	onCardSelect(cardId: string): () => void;
 }
-
-// Overhaul this component.
 
 const SelectCard: React.FC<SelectCardProps> = ({
 	selectedCard,
-	handleCardSelect
+	onCardSelect
 }) => {
 	const [{ data, fetching }] = useCardsQuery();
 	const cards = data?.currentUser.cards;
@@ -33,10 +31,10 @@ const SelectCard: React.FC<SelectCardProps> = ({
 	const displayCard = React.useMemo(() => {
 		if (selectedCard) {
 			return cards?.find(c => c.id === selectedCard);
-		} else if (cards && cards[0]) {
+		} else if (cards?.[0]) {
 			return cards[0];
 		}
-	}, [selectedCard]);
+	}, [selectedCard, cards]);
 
 	if (fetching) {
 		return (
@@ -54,7 +52,7 @@ const SelectCard: React.FC<SelectCardProps> = ({
 				<View style={styles.cardInfo}>
 					<MastercardIcon />
 					<Text style={styles.cardText}>
-						{displayCard ? `···· ${displayCard.last4}` : ` Add card`}
+						{displayCard ? `···· ${displayCard.last4}` : ' Add card'}
 					</Text>
 					<Icon name='chevron-right' style={{ marginRight: -8 }} />
 				</View>
@@ -70,7 +68,7 @@ const SelectCard: React.FC<SelectCardProps> = ({
 				{cards?.map(card => (
 					<Pressable
 						key={card.id}
-						onPress={() => handleCardSelect(card.id)}
+						onPress={onCardSelect(card.id)}
 						style={styles.row}
 					>
 						<Text>**** {card.last4}</Text>
