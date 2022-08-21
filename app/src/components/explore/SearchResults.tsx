@@ -20,14 +20,9 @@ const StoresView: React.FC<StoresViewProps> = ({ data }) => {
 			renderItem={({ item }) => (
 				<TouchableOpacity
 					onPress={() => navigate('Store', { storeId: item.id })}
-					style={styles.resultRow}
+					style={styles.row}
 				>
-					{item.image && (
-						<Image
-							source={{ uri: item.image.path }}
-							style={styles.resultRowThumbnail}
-						/>
-					)}
+					<Image source={{ uri: item.image?.path }} style={styles.thumbnail} />
 					<Text style={{ fontSize: 16 }}>{item.name}</Text>
 				</TouchableOpacity>
 			)}
@@ -56,11 +51,11 @@ const ProductsView: React.FC<ProductsViewProps> = ({ data }) => {
 			renderItem={({ item }) => (
 				<TouchableOpacity
 					onPress={handleProductPress(item.id)}
-					style={styles.resultRow}
+					style={styles.row}
 				>
 					<Image
 						source={{ uri: item.images[0]?.path }}
-						style={styles.resultRowThumbnail}
+						style={styles.thumbnail}
 					/>
 					<Text style={{ fontSize: 16 }}>{item.name}</Text>
 				</TouchableOpacity>
@@ -94,10 +89,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({ searchData }) => {
 					activeColor='black'
 					inactiveColor='#505050'
 					indicatorStyle={{ backgroundColor: 'black' }}
-					getLabelText={({ route }) =>
-						(route.title?.charAt(0).toUpperCase() as string) +
-						(route.title?.slice(1) as string)
-					}
+					getLabelText={({ route }) => route.title[0] + route.title.slice(1)}
 					style={{ backgroundColor: 'white' }}
 				/>
 			)}
@@ -108,13 +100,13 @@ const SearchResults: React.FC<SearchResultsProps> = ({ searchData }) => {
 };
 
 const styles = StyleSheet.create({
-	resultRow: {
+	row: {
 		width: '100%',
 		flexDirection: 'row',
 		padding: 8,
 		alignItems: 'center'
 	},
-	resultRowThumbnail: {
+	thumbnail: {
 		width: 35,
 		height: 35,
 		marginRight: 8,
