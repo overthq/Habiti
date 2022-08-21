@@ -12,9 +12,12 @@ const TrendingStores: React.FC = () => {
 	const [{ data }] = useStoresQuery();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
-	const handleStorePress = (storeId: string) => () => {
-		navigate('Store', { storeId });
-	};
+	const handleStorePress = React.useCallback(
+		(storeId: string) => () => {
+			navigate('Store', { storeId });
+		},
+		[]
+	);
 
 	return (
 		<View style={styles.container}>
