@@ -85,10 +85,7 @@ export const editProfile: Resolver<EditProfileArgs> = async (
 
 	const user = await ctx.prisma.user.update({
 		where: { id },
-		data: {
-			name,
-			phone
-		}
+		data: { name, phone }
 	});
 
 	return user;

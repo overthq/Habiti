@@ -386,8 +386,8 @@ export type Stats = {
 	__typename?: 'Stats';
 	id: Scalars['ID'];
 	orders: Array<Order>;
-	revenue: Scalars['ID'];
-	store: Store;
+	products: Array<Product>;
+	revenue: Scalars['Int'];
 	storeId: Scalars['ID'];
 };
 
@@ -406,14 +406,9 @@ export type Store = {
 	name: Scalars['String'];
 	orders: Array<Order>;
 	products: Array<Product>;
-	stats: StoreStats;
 	twitter?: Maybe<Scalars['String']>;
 	updatedAt: Scalars['String'];
 	website?: Maybe<Scalars['String']>;
-};
-
-export type StoreStatsArgs = {
-	period: StoreStatPeriod;
 };
 
 export type StoreFollower = {
@@ -440,13 +435,6 @@ export enum StoreStatPeriod {
 	Week = 'Week',
 	Year = 'Year'
 }
-
-export type StoreStats = {
-	__typename?: 'StoreStats';
-	orderCount: Scalars['Int'];
-	orderVolume: Scalars['Int'];
-	revenue: Scalars['Int'];
-};
 
 export type UpdateCartProductInput = {
 	cartId: Scalars['ID'];
@@ -1035,7 +1023,10 @@ export const CardsDocument = gql`
 export function useCardsQuery(
 	options?: Omit<Urql.UseQueryArgs<CardsQueryVariables>, 'query'>
 ) {
-	return Urql.useQuery<CardsQuery>({ query: CardsDocument, ...options });
+	return Urql.useQuery<CardsQuery, CardsQueryVariables>({
+		query: CardsDocument,
+		...options
+	});
 }
 export const CartsDocument = gql`
 	query Carts {
@@ -1066,7 +1057,10 @@ export const CartsDocument = gql`
 export function useCartsQuery(
 	options?: Omit<Urql.UseQueryArgs<CartsQueryVariables>, 'query'>
 ) {
-	return Urql.useQuery<CartsQuery>({ query: CartsDocument, ...options });
+	return Urql.useQuery<CartsQuery, CartsQueryVariables>({
+		query: CartsDocument,
+		...options
+	});
 }
 export const CartDocument = gql`
 	query Cart($cartId: ID!) {
@@ -1102,7 +1096,10 @@ export const CartDocument = gql`
 export function useCartQuery(
 	options: Omit<Urql.UseQueryArgs<CartQueryVariables>, 'query'>
 ) {
-	return Urql.useQuery<CartQuery>({ query: CartDocument, ...options });
+	return Urql.useQuery<CartQuery, CartQueryVariables>({
+		query: CartDocument,
+		...options
+	});
 }
 export const AddToCartDocument = gql`
 	mutation AddToCart($input: AddToCartInput!) {
@@ -1262,7 +1259,10 @@ export const HomeDocument = gql`
 export function useHomeQuery(
 	options?: Omit<Urql.UseQueryArgs<HomeQueryVariables>, 'query'>
 ) {
-	return Urql.useQuery<HomeQuery>({ query: HomeDocument, ...options });
+	return Urql.useQuery<HomeQuery, HomeQueryVariables>({
+		query: HomeDocument,
+		...options
+	});
 }
 export const UserOrdersDocument = gql`
 	query UserOrders {
@@ -1298,7 +1298,7 @@ export const UserOrdersDocument = gql`
 export function useUserOrdersQuery(
 	options?: Omit<Urql.UseQueryArgs<UserOrdersQueryVariables>, 'query'>
 ) {
-	return Urql.useQuery<UserOrdersQuery>({
+	return Urql.useQuery<UserOrdersQuery, UserOrdersQueryVariables>({
 		query: UserOrdersDocument,
 		...options
 	});
@@ -1340,7 +1340,10 @@ export const OrderDocument = gql`
 export function useOrderQuery(
 	options: Omit<Urql.UseQueryArgs<OrderQueryVariables>, 'query'>
 ) {
-	return Urql.useQuery<OrderQuery>({ query: OrderDocument, ...options });
+	return Urql.useQuery<OrderQuery, OrderQueryVariables>({
+		query: OrderDocument,
+		...options
+	});
 }
 export const CreateOrderDocument = gql`
 	mutation CreateOrder($cartId: ID!) {
@@ -1391,7 +1394,7 @@ export const StoreProductsDocument = gql`
 export function useStoreProductsQuery(
 	options: Omit<Urql.UseQueryArgs<StoreProductsQueryVariables>, 'query'>
 ) {
-	return Urql.useQuery<StoreProductsQuery>({
+	return Urql.useQuery<StoreProductsQuery, StoreProductsQueryVariables>({
 		query: StoreProductsDocument,
 		...options
 	});
@@ -1420,7 +1423,10 @@ export const ProductDocument = gql`
 export function useProductQuery(
 	options: Omit<Urql.UseQueryArgs<ProductQueryVariables>, 'query'>
 ) {
-	return Urql.useQuery<ProductQuery>({ query: ProductDocument, ...options });
+	return Urql.useQuery<ProductQuery, ProductQueryVariables>({
+		query: ProductDocument,
+		...options
+	});
 }
 export const WatchlistDocument = gql`
 	query Watchlist {
@@ -1450,7 +1456,7 @@ export const WatchlistDocument = gql`
 export function useWatchlistQuery(
 	options?: Omit<Urql.UseQueryArgs<WatchlistQueryVariables>, 'query'>
 ) {
-	return Urql.useQuery<WatchlistQuery>({
+	return Urql.useQuery<WatchlistQuery, WatchlistQueryVariables>({
 		query: WatchlistDocument,
 		...options
 	});
@@ -1505,7 +1511,10 @@ export const StoresDocument = gql`
 export function useStoresQuery(
 	options?: Omit<Urql.UseQueryArgs<StoresQueryVariables>, 'query'>
 ) {
-	return Urql.useQuery<StoresQuery>({ query: StoresDocument, ...options });
+	return Urql.useQuery<StoresQuery, StoresQueryVariables>({
+		query: StoresDocument,
+		...options
+	});
 }
 export const StoreDocument = gql`
 	query Store($storeId: ID!) {
@@ -1528,7 +1537,10 @@ export const StoreDocument = gql`
 export function useStoreQuery(
 	options: Omit<Urql.UseQueryArgs<StoreQueryVariables>, 'query'>
 ) {
-	return Urql.useQuery<StoreQuery>({ query: StoreDocument, ...options });
+	return Urql.useQuery<StoreQuery, StoreQueryVariables>({
+		query: StoreDocument,
+		...options
+	});
 }
 export const FollowStoreDocument = gql`
 	mutation FollowStore($storeId: ID!) {
@@ -1581,7 +1593,7 @@ export const StoresFollowedDocument = gql`
 export function useStoresFollowedQuery(
 	options?: Omit<Urql.UseQueryArgs<StoresFollowedQueryVariables>, 'query'>
 ) {
-	return Urql.useQuery<StoresFollowedQuery>({
+	return Urql.useQuery<StoresFollowedQuery, StoresFollowedQueryVariables>({
 		query: StoresFollowedDocument,
 		...options
 	});
@@ -1599,7 +1611,7 @@ export const CurrentUserDocument = gql`
 export function useCurrentUserQuery(
 	options?: Omit<Urql.UseQueryArgs<CurrentUserQueryVariables>, 'query'>
 ) {
-	return Urql.useQuery<CurrentUserQuery>({
+	return Urql.useQuery<CurrentUserQuery, CurrentUserQueryVariables>({
 		query: CurrentUserDocument,
 		...options
 	});

@@ -386,8 +386,8 @@ export type Stats = {
 	__typename?: 'Stats';
 	id: Scalars['ID'];
 	orders: Array<Order>;
-	revenue: Scalars['ID'];
-	store: Store;
+	products: Array<Product>;
+	revenue: Scalars['Int'];
 	storeId: Scalars['ID'];
 };
 
@@ -406,14 +406,9 @@ export type Store = {
 	name: Scalars['String'];
 	orders: Array<Order>;
 	products: Array<Product>;
-	stats: StoreStats;
 	twitter?: Maybe<Scalars['String']>;
 	updatedAt: Scalars['String'];
 	website?: Maybe<Scalars['String']>;
-};
-
-export type StoreStatsArgs = {
-	period: StoreStatPeriod;
 };
 
 export type StoreFollower = {
@@ -440,13 +435,6 @@ export enum StoreStatPeriod {
 	Week = 'Week',
 	Year = 'Year'
 }
-
-export type StoreStats = {
-	__typename?: 'StoreStats';
-	orderCount: Scalars['Int'];
-	orderVolume: Scalars['Int'];
-	revenue: Scalars['Int'];
-};
 
 export type UpdateCartProductInput = {
 	cartId: Scalars['ID'];
@@ -655,7 +643,7 @@ export type StatsQuery = {
 	stats: {
 		__typename?: 'Stats';
 		id: string;
-		revenue: string;
+		revenue: number;
 		orders: Array<{
 			__typename?: 'Order';
 			id: string;

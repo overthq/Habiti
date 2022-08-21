@@ -4,8 +4,7 @@ import {
 	ScrollView,
 	TouchableOpacity,
 	StyleSheet,
-	ActivityIndicator,
-	Text
+	ActivityIndicator
 } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Icon } from '../components/Icon';
@@ -13,6 +12,7 @@ import { AppStackParamList } from '../types/navigation';
 import { StatPeriod, useStatsQuery } from '../types/api';
 import useStore from '../state';
 import PeriodSelector from '../components/overview/PeriodSelector';
+import NumberStat from '../components/overview/NumberStat';
 
 const Overview: React.FC = () => {
 	const navigation = useNavigation<NavigationProp<AppStackParamList>>();
@@ -45,7 +45,8 @@ const Overview: React.FC = () => {
 				<ActivityIndicator />
 			) : (
 				<View>
-					<Text>Orders: {data?.stats.orders.length ?? 0}</Text>
+					<NumberStat title='Orders' value={data?.stats.orders.length ?? 0} />
+					<NumberStat title='Revenue' value={data?.stats.revenue ?? 0} />
 				</View>
 			)}
 		</ScrollView>
