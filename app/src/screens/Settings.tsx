@@ -1,23 +1,31 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Dimensions } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import Button from '../components/global/Button';
 import SettingRow from '../components/settings/SettingRow';
 import useStore from '../state';
 import { ThemeMap } from '../utils/theme';
-
-const { width } = Dimensions.get('screen');
 
 const Settings: React.FC = () => {
 	const { theme, logOut } = useStore(state => ({
 		theme: state.theme,
 		logOut: state.logOut
 	}));
+	const { navigate } = useNavigation<StackNavigationProp<any>>();
+
+	const handleRowNavigate = React.useCallback(
+		(screen: string) => () => {
+			navigate(screen);
+		},
+		[]
+	);
 
 	return (
 		<ScrollView style={styles.container}>
 			<SettingRow
 				name='Theme'
-				screen='SettingsTheme'
+				onPress={handleRowNavigate('SettingsTheme')}
 				displayValue={ThemeMap[theme]}
 			/>
 
@@ -31,9 +39,7 @@ const styles = StyleSheet.create({
 		flex: 1
 	},
 	logOut: {
-		alignSelf: 'center',
-		width: width - 16,
-		marginVertical: 8
+		margin: 8
 	}
 });
 

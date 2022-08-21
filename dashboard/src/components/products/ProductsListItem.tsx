@@ -23,12 +23,10 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({ product }) => {
 		>
 			<View style={styles.left}>
 				<View style={styles.placeholder}>
-					{product.images[0] && (
-						<Image
-							style={styles.image}
-							source={{ uri: product.images[0].path }}
-						/>
-					)}
+					<Image
+						style={styles.image}
+						source={{ uri: product.images[0]?.path }}
+					/>
 				</View>
 				<View>
 					<Text style={styles.name}>{product.name}</Text>

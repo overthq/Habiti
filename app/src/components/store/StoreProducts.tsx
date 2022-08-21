@@ -23,7 +23,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 		(productId: string) => () => {
 			navigate('Product', { productId });
 		},
-		[navigate]
+		[]
 	);
 
 	if (fetching || !products)

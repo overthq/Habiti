@@ -25,11 +25,10 @@ const TrendingStores: React.FC = () => {
 				Trending Stores
 			</Text>
 			<FlashList
-				horizontal
 				data={data?.stores}
 				keyExtractor={({ id }) => id}
 				contentContainerStyle={styles.list}
-				estimatedItemSize={100}
+				estimatedItemSize={70}
 				renderItem={({ item }) => (
 					<TrendingStoresItem
 						store={item}
@@ -42,6 +41,7 @@ const TrendingStores: React.FC = () => {
 						description='There are no stores trending currently.'
 					/>
 				}
+				horizontal
 				showsHorizontalScrollIndicator={false}
 			/>
 		</View>
@@ -50,17 +50,10 @@ const TrendingStores: React.FC = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		height: 100
+		height: 500
 	},
 	list: {
-		paddingLeft: 20
-	},
-	sectionHeader: {
-		marginVertical: 5,
-		fontSize: 16,
-		fontWeight: '500',
-		color: '#505050',
-		paddingLeft: 20
+		paddingLeft: 16
 	}
 });
 

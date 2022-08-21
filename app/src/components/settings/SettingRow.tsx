@@ -1,45 +1,39 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { Icon } from '../Icon';
-import { StackNavigationProp } from '@react-navigation/stack';
 
 interface SettingRowProps {
 	name: string;
-	screen: any;
+	onPress(): void;
 	displayValue?: string;
 }
 
 const SettingRow: React.FC<SettingRowProps> = ({
 	name,
-	screen,
+	onPress,
 	displayValue
-}) => {
-	const { navigate } = useNavigation<StackNavigationProp<any>>();
-
-	return (
-		<TouchableOpacity
-			activeOpacity={0.8}
-			style={styles.container}
-			onPress={() => navigate(screen)}
-		>
-			<Text style={styles.settingName}>{name}</Text>
-			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+}) => (
+	<TouchableOpacity
+		activeOpacity={0.8}
+		style={styles.container}
+		onPress={onPress}
+	>
+		<Text style={styles.name}>{name}</Text>
+		<View style={styles.right}>
+			{displayValue && (
 				<View>
-					{displayValue && (
-						<Text style={styles.settingDisplay}>{displayValue}</Text>
-					)}
+					<Text style={styles.display}>{displayValue}</Text>
 				</View>
-				<Icon
-					name='chevron-right'
-					color='#505050'
-					size={24}
-					style={{ marginLeft: 8 }}
-				/>
-			</View>
-		</TouchableOpacity>
-	);
-};
+			)}
+			<Icon
+				name='chevron-right'
+				color='#505050'
+				size={24}
+				style={styles.icon}
+			/>
+		</View>
+	</TouchableOpacity>
+);
 
 const styles = StyleSheet.create({
 	container: {
@@ -53,12 +47,19 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center'
 	},
-	settingName: {
+	name: {
 		fontSize: 16
 	},
-	settingDisplay: {
+	display: {
 		fontSize: 16,
 		color: '#505050'
+	},
+	right: {
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
+	icon: {
+		marginLeft: 8
 	}
 });
 

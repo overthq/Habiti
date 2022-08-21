@@ -63,7 +63,7 @@ const SelectCard: React.FC<SelectCardProps> = ({
 				style={styles.modal}
 				backgroundStyle={styles.modalBackground}
 			>
-				<Text style={{ fontSize: 18, fontWeight: '500' }}>Select card</Text>
+				<Text style={styles.title}>Select card</Text>
 				{cards?.map(card => (
 					<Pressable
 						key={card.id}
@@ -71,7 +71,7 @@ const SelectCard: React.FC<SelectCardProps> = ({
 						style={styles.row}
 					>
 						<Text>**** {card.last4}</Text>
-						{selectedCard && selectedCard === card.id && <Icon name='check' />}
+						{selectedCard === card.id && <Icon name='check' />}
 					</Pressable>
 				))}
 			</BottomSheetModal>
@@ -80,7 +80,6 @@ const SelectCard: React.FC<SelectCardProps> = ({
 };
 
 const styles = StyleSheet.create({
-	container: {},
 	loading: {
 		justifyContent: 'center',
 		alignItems: 'center'
@@ -118,6 +117,10 @@ const styles = StyleSheet.create({
 	},
 	modalBackground: {
 		backgroundColor: '#FFFFFF'
+	},
+	title: {
+		fontSize: 18,
+		fontWeight: '500'
 	}
 });
 

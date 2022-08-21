@@ -48,7 +48,7 @@ const CreateStore: React.FC = () => {
 
 	const handleViewableItemsChanged = React.useCallback(
 		({ viewableItems }: { viewableItems: ViewToken[] }) => {
-			if (viewableItems[0] && viewableItems[0].index) {
+			if (viewableItems[0]?.index) {
 				setActiveStepIndex(viewableItems[0].index);
 			}
 		},
@@ -76,13 +76,9 @@ const CreateStore: React.FC = () => {
 				}}
 				onSubmit={async values => {
 					try {
-						console.log('pressed');
-						const { data, error } = await createStore({
-							input: { ...values }
+						const { data } = await createStore({
+							input: values
 						});
-
-						console.log(data);
-						console.log({ error });
 
 						if (data?.createStore?.id) {
 							setPreference({ activeStore: data.createStore.id });

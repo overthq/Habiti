@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { CartsQuery } from '../../types/api';
+import { plural } from '../../utils/strings';
 import { Icon } from '../Icon';
 
 interface CartListItemProps {
-	cart: CartsQuery['currentUser']['carts'][-1];
+	cart: CartsQuery['currentUser']['carts'][number];
 	onPress(): void;
 }
 
@@ -21,8 +22,7 @@ const CartsListItem: React.FC<CartListItemProps> = ({ cart, onPress }) => (
 			<View>
 				<Text style={styles.name}>{cart.store.name}</Text>
 				<Text style={styles.count}>
-					{cart.products.length}{' '}
-					{`product${cart.products.length > 1 ? 's' : ''}`}
+					{plural('product', cart.products.length)}
 				</Text>
 			</View>
 		</View>
@@ -36,10 +36,8 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		paddingVertical: 4,
+		paddingVertical: 8,
 		paddingHorizontal: 16
-		// borderBottomWidth: 1,
-		// borderBottomColor: '#dedcdc'
 	},
 	main: {
 		flexDirection: 'row',

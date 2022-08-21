@@ -19,9 +19,7 @@ const FollowedStoresItem: React.FC<FollowedStoresItemProps> = ({ store }) => {
 			onPress={() => navigate('Store', { storeId: store.id })}
 		>
 			<View style={styles.placeholder}>
-				{store.image && (
-					<Image source={{ uri: store.image.path }} style={styles.image} />
-				)}
+				<Image source={{ uri: store.image?.path }} style={styles.image} />
 			</View>
 			<Text style={styles.name}>{store.name}</Text>
 		</TouchableOpacity>

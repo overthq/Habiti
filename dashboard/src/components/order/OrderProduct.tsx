@@ -17,12 +17,7 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 	return (
 		<Pressable style={styles.container} onPress={onPress}>
 			<View style={styles.placeholder}>
-				{product.images[0] && (
-					<Image
-						source={{ uri: product.images[0].path }}
-						style={styles.image}
-					/>
-				)}
+				<Image source={{ uri: product.images[0]?.path }} style={styles.image} />
 			</View>
 			<View>
 				<Text style={styles.name}>{product.name}</Text>
