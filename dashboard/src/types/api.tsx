@@ -540,6 +540,7 @@ export type OrderQuery = {
 		__typename?: 'Order';
 		id: string;
 		total: number;
+		status: OrderStatus;
 		createdAt: string;
 		updatedAt: string;
 		user: { __typename?: 'User'; id: string; name: string };
@@ -818,6 +819,7 @@ export const OrderDocument = gql`
 				quantity
 			}
 			total
+			status
 			createdAt
 			updatedAt
 		}

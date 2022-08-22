@@ -15,10 +15,12 @@ const NumberStat: React.FC<NumberStatProps> = ({ title, value }) => (
 
 const styles = StyleSheet.create({
 	container: {
-		paddingVertical: 8
+		paddingVertical: 8,
+		width: '50%'
 	},
 	title: {
 		fontSize: 14,
+		color: '#505050',
 		marginBottom: 4,
 		textTransform: 'uppercase'
 	},

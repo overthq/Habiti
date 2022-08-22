@@ -44,7 +44,7 @@ const Overview: React.FC = () => {
 			{fetching ? (
 				<ActivityIndicator />
 			) : (
-				<View>
+				<View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
 					<NumberStat title='Orders' value={data?.stats.orders.length ?? 0} />
 					<NumberStat title='Revenue' value={data?.stats.revenue ?? 0} />
 				</View>

@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import {
+	View,
+	Text,
+	ScrollView,
+	StyleSheet,
+	ActivityIndicator
+} from 'react-native';
 import {
 	useRoute,
 	useNavigation,
@@ -19,21 +25,28 @@ const Order: React.FC = () => {
 		params: { orderId }
 	} = useRoute<RouteProp<OrdersStackParamsList, 'Order'>>();
 	const { navigate } = useNavigation<NavigationProp<ProductsStackParamList>>();
-	const [{ data }] = useOrderQuery({ variables: { id: orderId } });
+	const [{ data, fetching }] = useOrderQuery({ variables: { id: orderId } });
 	useGoBack();
-	const order = data?.order;
 
 	const handleOrderProductPress = React.useCallback((productId: string) => {
 		navigate('Product', { productId });
 	}, []);
 
+	if (fetching) {
+		return (
+			<View>
+				<ActivityIndicator />
+			</View>
+		);
+	}
+
 	return (
 		<ScrollView style={styles.container}>
-			<Text style={styles.name}>{order?.user.name}</Text>
-			{/* <Text>{order.status}</Text> */}
+			<Text style={styles.name}>{data?.order?.user.name}</Text>
+			<Text>{data?.order?.status}</Text>
 			<View>
 				<Text style={styles.sectionHeader}>Products</Text>
-				{order?.products.map(product => (
+				{data?.order?.products.map(product => (
 					<OrderProduct
 						key={product.productId}
 						orderProduct={product}

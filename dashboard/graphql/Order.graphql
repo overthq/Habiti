@@ -48,6 +48,7 @@ query Order($id: ID!) {
 			quantity
 		}
 		total
+		status
 		createdAt
 		updatedAt
 	}
