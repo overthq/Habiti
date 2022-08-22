@@ -38,7 +38,7 @@ const Input: React.FC<InputProps> = ({ label, textArea, ...props }) => {
 const styles = StyleSheet.create({
 	label: {
 		marginBottom: 4,
-		fontSize: 16,
+		fontSize: 14,
 		color: '#505050',
 		fontWeight: '500'
 	},

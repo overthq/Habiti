@@ -46,7 +46,6 @@ const AddProduct: React.FC = () => {
 					<View>
 						<Input
 							label='Name'
-							placeholder='Name'
 							onChangeText={handleChange('name')}
 							onBlur={handleBlur('name')}
 							style={styles.input}
@@ -54,7 +53,6 @@ const AddProduct: React.FC = () => {
 						/>
 						<Input
 							label='Description'
-							placeholder='Description'
 							onChangeText={handleChange('description')}
 							onBlur={handleBlur('description')}
 							style={styles.input}
@@ -63,7 +61,6 @@ const AddProduct: React.FC = () => {
 						/>
 						<Input
 							label='Unit Price'
-							placeholder='Unit price (NGN)'
 							onChangeText={handleChange('unitPrice')}
 							onBlur={handleBlur('unitPrice')}
 							style={styles.input}
@@ -71,7 +68,6 @@ const AddProduct: React.FC = () => {
 						/>
 						<Input
 							label='Quantity'
-							placeholder='Quantity in stock'
 							onChangeText={handleChange('quantity')}
 							onBlur={handleBlur('quantity')}
 							style={styles.input}

@@ -44,15 +44,12 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingHorizontal: 12,
-		paddingVertical: 12,
-		borderBottomWidth: 0.5,
-		borderBottomColor: '#EDEDED'
+		paddingHorizontal: 16,
+		marginBottom: 12
 	},
 	name: {
-		fontSize: 17,
-		fontWeight: '500',
-		marginBottom: 4
+		fontSize: 16,
+		marginBottom: 2
 	},
 	price: {
 		fontSize: 16,
@@ -65,9 +62,9 @@ const styles = StyleSheet.create({
 	},
 	placeholder: {
 		overflow: 'hidden',
-		height: 50,
-		width: 50,
-		borderRadius: 6,
+		height: 40,
+		width: 40,
+		borderRadius: 4,
 		backgroundColor: '#D3D3D3',
 		marginRight: 8
 	},
