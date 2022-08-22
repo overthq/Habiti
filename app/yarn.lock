@@ -8547,10 +8547,10 @@ url-parse@^1.5.9:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
 
-urql@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/urql/-/urql-3.0.0.tgz#0af07f4eb677b58939b0da9564f8598196a475b0"
-  integrity sha512-M80hPO/xdKEqHh9V3ZgljyayNvT/bw7QBMbWIAovcQPbLukFJCKKHVAnFWUhXPIO6pMjKKZjjjHflHmwo1eunQ==
+urql@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/urql/-/urql-3.0.1.tgz#e937e2c4e08c0e6f2af6a2277d8cad2b156a4a0e"
+  integrity sha512-mAV3qKMp84i8U/bq5DIXjfyeRVyOfF6+iNT2DlLUNsd3w5UKfJHmvYfEPUuV5MJxekT911yoIc4za+/Qq2TPHA==
   dependencies:
     "@urql/core" "^3.0.0"
     wonka "^6.0.0"
