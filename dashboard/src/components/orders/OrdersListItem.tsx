@@ -8,7 +8,7 @@ import { formatNaira } from '../../utils/currency';
 import { parseTimestamp } from '../../utils/date';
 
 interface OrdersListItemProps {
-	order: OrdersQuery['store']['orders'][-1];
+	order: OrdersQuery['store']['orders'][number];
 }
 
 const OrdersListItem: React.FC<OrdersListItemProps> = ({ order }) => {
@@ -49,17 +49,15 @@ const styles = StyleSheet.create({
 		flexDirection: 'row'
 	},
 	name: {
-		fontSize: 17,
-		fontWeight: '500'
+		fontSize: 16
 	},
 	date: {
 		fontSize: 16,
-		marginTop: 4,
+		marginTop: 2,
 		color: '#505050'
 	},
 	total: {
-		fontSize: 18,
-		fontWeight: '500'
+		fontSize: 16
 	}
 });
 
