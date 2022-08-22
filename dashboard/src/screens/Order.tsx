@@ -46,6 +46,7 @@ const Order: React.FC = () => {
 			<Text>{data?.order?.status}</Text>
 			<View>
 				<Text style={styles.sectionHeader}>Products</Text>
+				{/* TODO: This should become a horizontal slider of the products included in the order. */}
 				{data?.order?.products.map(product => (
 					<OrderProduct
 						key={product.productId}
@@ -71,7 +72,7 @@ const styles = StyleSheet.create({
 	sectionHeader: {
 		fontSize: 16,
 		fontWeight: '500',
-		marginVertical: 8
+		marginVertical: 4
 	}
 });
 

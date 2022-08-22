@@ -50,6 +50,7 @@ const AddProduct: React.FC = () => {
 							onChangeText={handleChange('name')}
 							onBlur={handleBlur('name')}
 							style={styles.input}
+							autoCorrect={false}
 						/>
 						<Input
 							label='Description'
@@ -58,6 +59,7 @@ const AddProduct: React.FC = () => {
 							onBlur={handleBlur('description')}
 							style={styles.input}
 							textArea
+							autoCorrect={false}
 						/>
 						<Input
 							label='Unit Price'
