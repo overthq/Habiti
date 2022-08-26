@@ -46,7 +46,8 @@ const styles = StyleSheet.create({
 		borderBottomColor: '#EDEDED'
 	},
 	right: {
-		flexDirection: 'row'
+		flexDirection: 'row',
+		alignItems: 'center'
 	},
 	name: {
 		fontSize: 16
@@ -57,7 +58,8 @@ const styles = StyleSheet.create({
 		color: '#505050'
 	},
 	total: {
-		fontSize: 16
+		fontSize: 16,
+		marginRight: 4
 	}
 });
 

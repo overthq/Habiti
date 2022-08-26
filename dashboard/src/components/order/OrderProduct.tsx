@@ -29,13 +29,11 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: '#FFFFFF',
-		flexDirection: 'row',
-		alignItems: 'center',
-		paddingVertical: 4
+		marginRight: 16
 	},
 	placeholder: {
-		height: 40,
-		width: 40,
+		height: 200,
+		width: 150,
 		backgroundColor: '#D3D3D3',
 		borderRadius: 4,
 		overflow: 'hidden',
@@ -46,7 +44,8 @@ const styles = StyleSheet.create({
 		height: '100%'
 	},
 	name: {
-		fontSize: 16
+		fontSize: 16,
+		marginTop: 4
 	},
 	price: {
 		fontSize: 14,

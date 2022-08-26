@@ -1,42 +1,35 @@
 import React from 'react';
 import { View, Image, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { ProductsStackParamList } from '../../types/navigation';
 import { Icon } from '../Icon';
 import { ProductsQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
 
 interface ProductsListItemProps {
-	product: ProductsQuery['store']['products'][-1];
+	product: ProductsQuery['store']['products'][number];
+	onPress(): void;
 }
 
-const ProductsListItem: React.FC<ProductsListItemProps> = ({ product }) => {
-	const { navigate } =
-		useNavigation<StackNavigationProp<ProductsStackParamList>>();
-
-	return (
-		<TouchableOpacity
-			onPress={() => navigate('Product', { productId: product.id })}
-			activeOpacity={0.8}
-			style={styles.container}
-		>
-			<View style={styles.left}>
-				<View style={styles.placeholder}>
-					<Image
-						style={styles.image}
-						source={{ uri: product.images[0]?.path }}
-					/>
-				</View>
-				<View>
-					<Text style={styles.name}>{product.name}</Text>
-					<Text style={styles.price}>{formatNaira(product.unitPrice)}</Text>
-				</View>
+const ProductsListItem: React.FC<ProductsListItemProps> = ({
+	product,
+	onPress
+}) => (
+	<TouchableOpacity
+		onPress={onPress}
+		activeOpacity={0.8}
+		style={styles.container}
+	>
+		<View style={styles.left}>
+			<View style={styles.placeholder}>
+				<Image style={styles.image} source={{ uri: product.images[0]?.path }} />
 			</View>
-			<Icon name='chevron-right' />
-		</TouchableOpacity>
-	);
-};
+			<View>
+				<Text style={styles.name}>{product.name}</Text>
+				<Text style={styles.price}>{formatNaira(product.unitPrice)}</Text>
+			</View>
+		</View>
+		<Icon name='chevron-right' />
+	</TouchableOpacity>
+);
 
 const styles = StyleSheet.create({
 	container: {

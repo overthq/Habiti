@@ -26,6 +26,9 @@ interface StatsArgs {
 const stats: Resolver<StatsArgs> = async (_, { storeId, period }, ctx) => {
 	const marker = getDateFromPeriod(period);
 
+	// TODO: Add query for number of new customers.
+	// Add query for number of pending orders.
+
 	const [products, orders, revenue] = await ctx.prisma.$transaction([
 		ctx.prisma.product.findMany({
 			where: { storeId, createdAt: { gte: marker } }
@@ -37,6 +40,9 @@ const stats: Resolver<StatsArgs> = async (_, { storeId, period }, ctx) => {
 			where: { order: { storeId, createdAt: { gte: marker } } },
 			_count: { unitPrice: true }
 		})
+		// ctx.prisma.order.count({
+		// 	where: { storeId, createdAt: { gte: marker }, status: 'Pending' }
+		// })
 	]);
 
 	return { storeId, products, orders, revenue: revenue._count.unitPrice };
