@@ -1,5 +1,4 @@
 import React from 'react';
-import { FlatList } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import ProductsListItem from './ProductsListItem';
@@ -12,6 +11,9 @@ interface ProductListProps {
 	mode: 'list' | 'grid';
 }
 
+// TODO: Investigate performance around using two separate componenents for
+// each mode versus one.
+
 const ProductList: React.FC<ProductListProps> = ({ mode }) => {
 	const activeStore = useStore(state => state.activeStore);
 	const [{ data }] = useProductsQuery({
@@ -19,21 +21,19 @@ const ProductList: React.FC<ProductListProps> = ({ mode }) => {
 	});
 	const { navigate } = useNavigation<NavigationProp<ProductsStackParamList>>();
 
-	// Not sure if I should be rendering a new list when
-	// we change the "mode", but we'll see.
-
 	const handlePress = React.useCallback(
 		(productId: string) => () => navigate('Product', { productId }),
 		[]
 	);
 
 	return mode === 'list' ? (
-		<FlatList
+		<FlashList
 			keyExtractor={i => i.id}
 			data={data?.store.products}
 			renderItem={({ item }) => (
 				<ProductsListItem product={item} onPress={handlePress(item.id)} />
 			)}
+			estimatedItemSize={60}
 		/>
 	) : (
 		<FlashList
@@ -42,6 +42,7 @@ const ProductList: React.FC<ProductListProps> = ({ mode }) => {
 			renderItem={({ item }) => (
 				<ProductGridItem product={item} onPress={handlePress(item.id)} />
 			)}
+			estimatedItemSize={240}
 		/>
 	);
 };
