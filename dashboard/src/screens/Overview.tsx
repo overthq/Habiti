@@ -14,6 +14,13 @@ import useStore from '../state';
 import PeriodSelector from '../components/overview/PeriodSelector';
 import NumberStat from '../components/overview/NumberStat';
 
+// TODO (lessons from Shopify):
+// - Actionable sections, button that has number of unfulfilled orders,
+//   and navigates to the "Unfulfilled" section of the orders screen.
+//   In the future, a button that shows a list of fulfilled orders that have
+//   not been batched for delivery (and an easy way to do so).
+// - Metrics on new customers, how many
+
 const Overview: React.FC = () => {
 	const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 	const [selectedPeriod, setSelectedPeriod] = React.useState(StatPeriod.Week);

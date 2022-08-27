@@ -5,7 +5,7 @@ import ProductList from '../components/products/ProductList';
 const Products: React.FC = () => {
 	return (
 		<View style={styles.container}>
-			<ProductList mode='grid' />
+			<ProductList mode='list' />
 		</View>
 	);
 };
