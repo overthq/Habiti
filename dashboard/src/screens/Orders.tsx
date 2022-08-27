@@ -4,6 +4,11 @@ import OrdersListItem from '../components/orders/OrdersListItem';
 import useStore from '../state';
 import { useOrdersQuery } from '../types/api';
 
+// Ultimately, we should consider making this a SectionList
+// or advanced FlatList, that can separate records based on dates.
+// We also should have a fiiltering system based on order statuses.
+// A searchbar is also important.
+
 const Orders: React.FC = () => {
 	const activeStore = useStore(state => state.activeStore);
 

@@ -4,8 +4,6 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { AppStackParamList } from '../../types/navigation';
 import { OrderQuery } from '../../types/api';
 
-// Just a simple button that navigates to the CustomerInfo screen
-
 interface CustomerDetailProps {
 	user: OrderQuery['order']['user'];
 }

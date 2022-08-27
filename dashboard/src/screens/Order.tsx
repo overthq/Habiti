@@ -32,9 +32,7 @@ const Order: React.FC = () => {
 				<ActivityIndicator />
 			</View>
 		);
-	}
-
-	if (!data?.order) {
+	} else if (!data?.order) {
 		return (
 			<View>
 				<Text>An error has occured.</Text>
