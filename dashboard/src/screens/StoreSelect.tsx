@@ -12,8 +12,8 @@ const StoreSelect: React.FC = () => {
 	return (
 		<SafeAreaView style={styles.container}>
 			<Text style={styles.header}>Select store</Text>
-			<Text style={{ fontSize: 17 }}>
-				Kindly select a store you manage, or create a new one:
+			<Text style={styles.description}>
+				You can choose an existing store you manage, or create a new one:
 			</Text>
 			<StoreSelectList />
 			<Button
@@ -35,6 +35,9 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		fontSize: 34,
 		marginBottom: 8
+	},
+	description: {
+		fontSize: 16
 	}
 });
 

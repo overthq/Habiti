@@ -10,6 +10,7 @@ export type AppStackParamList = {
 	'Edit Product': { productId: string };
 	'Edit Store': { storeId: string };
 	Settings: undefined;
+	CustomerInfo: { userId: string };
 };
 
 export type MainTabParamList = {
