@@ -22,7 +22,7 @@ const Button: React.FC<ButtonProps> = ({ onPress, text, loading, style }) => (
 
 const styles = StyleSheet.create({
 	container: {
-		width: '100%',
+		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
 		backgroundColor: '#000000',

@@ -1,21 +1,30 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import Button from '../global/Button';
 
-// If order is "Pending", have buttons to either cancel or fulfil.
-// If it is fulfilled, have button to mark as ready for delivery.
-// We should create a batch, and then have a way to approve the batch for
-// pickup (secondary for the initial version).
+// Buttons:
+// - If pending, mark as fulfilled | cancelled
+// - If fulfilled, move back to pending | cancelled
+// - If cancelled, set as pending?
 
 const OrderActions: React.FC = () => {
 	return (
 		<View style={styles.container}>
-			<Pressable style={{ marginRight: 16 }}>
-				<Text>Mark as fulfilled</Text>
-			</Pressable>
-
-			<Pressable>
-				<Text>Cancel order</Text>
-			</Pressable>
+			<Button
+				text='Mark as fulfilled'
+				onPress={() => {
+					console.log('Something');
+				}}
+				style={{ marginRight: 16, height: 40, backgroundColor: '#505050' }}
+			/>
+			<Button
+				text='Cancel'
+				onPress={() => {
+					// fdf
+					console.log('Something');
+				}}
+				style={{ height: 40 }}
+			/>
 		</View>
 	);
 };
