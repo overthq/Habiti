@@ -20,13 +20,13 @@ const OrderProducts: React.FC<OrderProductsProps> = ({ products }) => {
 	);
 
 	return (
-		<View>
+		<View style={styles.container}>
 			<Text style={styles.sectionHeader}>Products</Text>
 			<FlatList
 				horizontal
 				data={products}
 				keyExtractor={item => item.id}
-				contentContainerStyle={styles.container}
+				contentContainerStyle={styles.content}
 				renderItem={({ item }) => (
 					<OrderProduct
 						onPress={handlePress(item.productId)}
@@ -41,13 +41,17 @@ const OrderProducts: React.FC<OrderProductsProps> = ({ products }) => {
 
 const styles = StyleSheet.create({
 	container: {
+		backgroundColor: '#FFFFFF',
+		paddingVertical: 12
+	},
+	content: {
 		paddingLeft: 16
 	},
 	sectionHeader: {
 		fontSize: 16,
 		fontWeight: '500',
 		marginLeft: 16,
-		marginVertical: 4
+		marginBottom: 8
 	}
 });
 

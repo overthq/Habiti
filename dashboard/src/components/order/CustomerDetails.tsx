@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { AppStackParamList } from '../../types/navigation';
 import { OrderQuery } from '../../types/api';
@@ -16,7 +16,7 @@ const CustomerDetails: React.FC<CustomerDetailProps> = ({ user }) => {
 	}, []);
 
 	return (
-		<View>
+		<View style={styles.container}>
 			<Text>Customer</Text>
 			<Pressable onPress={handlePress}>
 				<Text>{user.name}</Text>
@@ -24,5 +24,12 @@ const CustomerDetails: React.FC<CustomerDetailProps> = ({ user }) => {
 		</View>
 	);
 };
+
+const styles = StyleSheet.create({
+	container: {
+		paddingHorizontal: 16,
+		paddingBottom: 16
+	}
+});
 
 export default CustomerDetails;

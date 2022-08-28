@@ -28,14 +28,13 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: '#FFFFFF',
 		marginRight: 16
 	},
 	placeholder: {
 		height: 200,
 		width: 150,
 		backgroundColor: '#D3D3D3',
-		borderRadius: 4,
+		borderRadius: 6,
 		overflow: 'hidden',
 		marginRight: 8
 	},
@@ -48,7 +47,7 @@ const styles = StyleSheet.create({
 		marginTop: 4
 	},
 	price: {
-		fontSize: 14,
+		fontSize: 16,
 		color: '#505050'
 	}
 });

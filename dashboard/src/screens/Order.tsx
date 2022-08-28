@@ -53,8 +53,7 @@ const Order: React.FC = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		backgroundColor: '#FFFFFF'
+		flex: 1
 	}
 });
 

@@ -17,8 +17,8 @@ interface PaymentInfoProps {
 const PaymentInfo: React.FC<PaymentInfoProps> = ({ order }) => {
 	return (
 		<View style={styles.container}>
-			<Text>Payment information</Text>
-			<View style={{ marginTop: 8, paddingLeft: 16 }}>
+			<Text style={styles.sectionHeader}>Payment</Text>
+			<View style={{ marginTop: 8 }}>
 				<Text style={{ fontSize: 16 }}>Total: {formatNaira(order.total)}</Text>
 			</View>
 		</View>
@@ -29,6 +29,10 @@ const styles = StyleSheet.create({
 	container: {
 		paddingHorizontal: 16,
 		paddingVertical: 8
+	},
+	sectionHeader: {
+		fontSize: 16,
+		fontWeight: '500'
 	}
 });
 
