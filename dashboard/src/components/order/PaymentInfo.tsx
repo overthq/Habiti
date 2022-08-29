@@ -8,11 +8,12 @@ interface PaymentInfoProps {
 }
 
 // This should show the payment details for the order.
-// - Base cost (including sales or offer discounts)
-// - Other discounts or coupons, if any
-// - Sub total
+// - Sub total (plain cost of products)
+// - Discounts or coupons, if any
 // - Fee breakdown (payment provider and ours).
+// - Tax (VAT and otherwise)
 // - Total
+// - Refund button (should this be different from order cancellation?)
 
 const PaymentInfo: React.FC<PaymentInfoProps> = ({ order }) => {
 	return (
@@ -33,6 +34,11 @@ const styles = StyleSheet.create({
 	sectionHeader: {
 		fontSize: 16,
 		fontWeight: '500'
+	},
+	row: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center'
 	}
 });
 

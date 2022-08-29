@@ -1,16 +1,22 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Formik } from 'formik';
 import { useNavigation } from '@react-navigation/native';
-import { useCreateProductMutation } from '../types/api';
+import { Formik } from 'formik';
+
 import Button from '../components/global/Button';
-import useGoBack from '../hooks/useGoBack';
 import Input from '../components/global/Input';
+
 import useStore from '../state';
+import useGoBack from '../hooks/useGoBack';
+import { useCreateProductMutation } from '../types/api';
+
+// Without handling validation, using Formik here is kind of useless.
+// Also should probably look to replace it, since it's not being
+// actively developed anymore.
 
 const AddProduct: React.FC = () => {
 	const activeStore = useStore(state => state.activeStore);
-	const [, createProduct] = useCreateProductMutation();
+	const [{ fetching }, createProduct] = useCreateProductMutation();
 	const { goBack } = useNavigation();
 	useGoBack();
 
@@ -73,7 +79,11 @@ const AddProduct: React.FC = () => {
 							style={styles.input}
 							keyboardType='numeric'
 						/>
-						<Button text='Add Product' onPress={handleSubmit} />
+						<Button
+							text='Add Product'
+							onPress={handleSubmit}
+							loading={fetching}
+						/>
 					</View>
 				)}
 			</Formik>

@@ -7,12 +7,21 @@ import {
 	ScrollView
 } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { useProductQuery } from '../types/api';
-import { ProductsStackParamList } from '../types/navigation';
+
 import Section from '../components/product/Section';
 import Images from '../components/product/Images';
-import { formatNaira } from '../utils/currency';
+
 import useGoBack from '../hooks/useGoBack';
+import { formatNaira } from '../utils/currency';
+
+import { useProductQuery } from '../types/api';
+import { ProductsStackParamList } from '../types/navigation';
+
+// TODO:
+// - Allow editing of inventory
+// - Set up "collections/groups" for products
+// - We can display this somehow on the store screen for shoppers.
+// - Blur the line between the "Product" and "Edit Product" screens.
 
 const Product: React.FC = () => {
 	const {
@@ -37,6 +46,7 @@ const Product: React.FC = () => {
 			<Section title='Description' content={product.description} />
 			<Section title='Unit Price' content={formatNaira(product.unitPrice)} />
 			<Section title='Quantity in stock' content={`${product.quantity}`} />
+			{/* TODO: Inventory */}
 		</ScrollView>
 	);
 };
