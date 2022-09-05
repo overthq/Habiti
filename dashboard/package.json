@@ -43,7 +43,7 @@
 		"@graphql-codegen/cli": "^2.9.1",
 		"@graphql-codegen/typescript": "^2.7.2",
 		"@graphql-codegen/typescript-operations": "^2.5.2",
-		"@graphql-codegen/typescript-urql": "^3.6.2",
+		"@graphql-codegen/typescript-urql": "^3.7.0",
 		"@types/extract-files": "^8.1.1",
 		"@types/react": "~18.0.0",
 		"@types/react-dom": "~18.0.0",
