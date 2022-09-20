@@ -16,7 +16,11 @@ const ModalGroup = (
 			component={SettingsStackNavigator}
 		/>
 		<AppStack.Screen name='Edit Store' component={EditStore} />
-		<AppStack.Screen name='CustomerInfo' component={CustomerInfo} />
+		<AppStack.Screen
+			name='CustomerInfo'
+			component={CustomerInfo}
+			options={{ headerTitle: 'Customer Information' }}
+		/>
 	</AppStack.Group>
 );
 
