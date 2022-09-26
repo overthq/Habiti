@@ -561,6 +561,16 @@ export type OrderQuery = {
 	};
 };
 
+export type UpdateOrderMutationVariables = Exact<{
+	orderId: Scalars['ID'];
+	input: UpdateOrderInput;
+}>;
+
+export type UpdateOrderMutation = {
+	__typename?: 'Mutation';
+	updateOrder: { __typename?: 'Order'; id: string };
+};
+
 export type ProductsQueryVariables = Exact<{
 	storeId: Scalars['ID'];
 }>;
@@ -830,6 +840,19 @@ export function useOrderQuery(
 	options: Omit<Urql.UseQueryArgs<OrderQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<OrderQuery>({ query: OrderDocument, ...options });
+}
+export const UpdateOrderDocument = gql`
+	mutation UpdateOrder($orderId: ID!, $input: UpdateOrderInput!) {
+		updateOrder(orderId: $orderId, input: $input) {
+			id
+		}
+	}
+`;
+
+export function useUpdateOrderMutation() {
+	return Urql.useMutation<UpdateOrderMutation, UpdateOrderMutationVariables>(
+		UpdateOrderDocument
+	);
 }
 export const ProductsDocument = gql`
 	query Products($storeId: ID!) {

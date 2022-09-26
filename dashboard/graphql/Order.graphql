@@ -54,8 +54,8 @@ query Order($id: ID!) {
 	}
 }
 
-# mutation UpdateOrder($orderId: uuid!, $input: orders_set_input!) {
-# 	update_orders_by_pk(pk_columns: { id: $orderId }, _set: $input) {
-# 		id
-# 	}
-# }
+mutation UpdateOrder($orderId: ID!, $input: UpdateOrderInput!) {
+	updateOrder(orderId: $orderId, input: $input) {
+		id
+	}
+}

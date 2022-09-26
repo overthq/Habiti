@@ -5,7 +5,7 @@ import { useFormikContext } from 'formik';
 const { width } = Dimensions.get('window');
 
 const Brand: React.FC = () => {
-	const { handleChange, handleBlur } = useFormikContext<{
+	const { handleChange, handleBlur, values } = useFormikContext<{
 		name: string;
 		// shortName: string;
 	}>();
@@ -19,6 +19,7 @@ const Brand: React.FC = () => {
 			<View>
 				<Text style={styles.label}>Store name</Text>
 				<TextInput
+					value={values.name}
 					style={styles.input}
 					placeholder='Nike'
 					onChangeText={handleChange('name')}

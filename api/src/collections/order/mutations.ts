@@ -72,10 +72,7 @@ const createOrder: Resolver<CreateOrderArgs> = async (
 			}
 		});
 
-		// Delete the cart.
-		await ctx.prisma.cart.delete({
-			where: { id: cartId }
-		});
+		await ctx.prisma.cart.delete({ where: { id: cartId } });
 
 		return order;
 	}
@@ -84,15 +81,13 @@ const createOrder: Resolver<CreateOrderArgs> = async (
 interface UpdateOrderArgs {
 	orderId: string;
 	input: {
-		status: OrderStatus;
+		status?: OrderStatus;
 	};
 }
 
 export const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
 	await ctx.prisma.order.update({
-		where: {
-			id: args.orderId
-		},
+		where: { id: args.orderId },
 		data: args.input
 	});
 };
