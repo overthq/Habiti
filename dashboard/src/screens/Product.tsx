@@ -1,22 +1,13 @@
 import React from 'react';
-import {
-	ActivityIndicator,
-	Platform,
-	ScrollView,
-	StyleSheet
-} from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { Formik } from 'formik';
 
-import Section from '../components/product/Section';
-import Images from '../components/product/Images';
-
 import useGoBack from '../hooks/useGoBack';
-import { formatNaira } from '../utils/currency';
 
-import { useProductQuery } from '../types/api';
+import { useEditProductMutation, useProductQuery } from '../types/api';
 import { ProductsStackParamList } from '../types/navigation';
-import InventoryInput from '../components/product/InventoryInput';
+import ProductForm from '../components/product/ProductForm';
 
 // TODO:
 // - Allow editing of inventory.
@@ -39,11 +30,13 @@ const Product: React.FC = () => {
 		params: { productId }
 	} = useRoute<RouteProp<ProductsStackParamList, 'Product'>>();
 
+	useGoBack();
+
 	const [{ data, fetching }] = useProductQuery({
 		variables: { id: productId }
 	});
 
-	useGoBack();
+	const [, editProduct] = useEditProductMutation();
 
 	const product = data?.product;
 
@@ -58,54 +51,19 @@ const Product: React.FC = () => {
 				quantity: String(product.quantity)
 			}}
 			onSubmit={values => {
-				console.log(values);
+				editProduct({
+					id: productId,
+					input: {
+						...values,
+						unitPrice: Number(values.unitPrice),
+						quantity: Number(values.quantity)
+					}
+				});
 			}}
 		>
-			<ScrollView
-				style={styles.container}
-				keyboardDismissMode={Platform.select({
-					ios: 'interactive',
-					android: 'on-drag'
-				})}
-			>
-				<Section
-					title='Name'
-					placeholder='Product name'
-					content={product.name}
-					field='name'
-				/>
-				<Section
-					title='Description'
-					placeholder='Brief product description'
-					content={product.description}
-					field='description'
-					multiline
-				/>
-				<Section
-					title='Unit Price'
-					placeholder={formatNaira(0.0)}
-					content={formatNaira(product.unitPrice)}
-					field='unitPrice'
-				/>
-				<Images productId={productId} images={product.images} />
-				<InventoryInput />
-			</ScrollView>
+			<ProductForm />
 		</Formik>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1
-	},
-	heading: {
-		marginVertical: 16,
-		paddingLeft: 16
-	},
-	title: {
-		fontSize: 24,
-		fontWeight: 'bold'
-	}
-});
 
 export default Product;

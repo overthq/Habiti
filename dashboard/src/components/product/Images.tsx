@@ -6,12 +6,26 @@ import { Icon } from '../Icon';
 import { generateUploadFile } from '../../utils/images';
 
 interface ImagesProps {
-	productId: string;
-	images: ProductQuery['product']['images'];
+	productId?: string;
+	images?: ProductQuery['product']['images'];
 }
+
+// TODO: Refactor:
+// - When there is no productId, we should store the picked images somewhere
+//   in state. We may also choose to store optimistic products (drafts) in the database.
+//   However, that will get increasingly complicated.
+// - This potential "imageFiles" array will/should be populated for edit/add products,
+//   and the images will be batch sent once the "Save" button is pressed.
+// - Should be relatively easy to implement.
+// - Other good thing about this is that it technically means we will be doing batch uploads
+//   (but sadly not batch image picks).
+// - Somewhat funny that I will probably start using Zustand a lot more for things like this.
+// - Should also consider moving form state out of formik and into Zustand as well
+//   (maybe not, because of Yup/Zod validation).
 
 const Images: React.FC<ImagesProps> = ({ productId, images }) => {
 	const [, editProduct] = useEditProductMutation();
+
 	const handlePickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -20,7 +34,7 @@ const Images: React.FC<ImagesProps> = ({ productId, images }) => {
 			quality: 1
 		});
 
-		if (!result.cancelled) {
+		if (productId && !result.cancelled) {
 			const imageFile = generateUploadFile(result.uri);
 
 			await editProduct({ id: productId, input: { imageFile } });
@@ -31,7 +45,7 @@ const Images: React.FC<ImagesProps> = ({ productId, images }) => {
 		<View style={styles.section}>
 			<Text style={styles.title}>Images</Text>
 			<View style={styles.images}>
-				{images.map(({ id, path }) => (
+				{images?.map(({ id, path }) => (
 					<Image key={id} source={{ uri: path }} style={styles.image} />
 				))}
 				<TouchableOpacity onPress={handlePickImage} style={styles.add}>

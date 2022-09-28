@@ -5,7 +5,6 @@ import { useFormikContext } from 'formik';
 interface SectionProps {
 	title: string;
 	placeholder: string;
-	content: string;
 	field: string;
 	multiline?: boolean;
 }

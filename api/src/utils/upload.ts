@@ -1,5 +1,6 @@
 import cloudinary from 'cloudinary';
 import { ReadStream } from 'fs';
+import { FileUpload } from 'graphql-upload';
 
 // Thank you KeystoneJS and Sourcegraph!
 export const uploadStream = (
@@ -18,4 +19,10 @@ export const uploadStream = (
 	});
 };
 
-// TODO: Create helper for multiple file uploads.
+export const uploadImages = async (imageFiles: Promise<FileUpload>[]) => {
+	return await Promise.all(imageFiles.map(uploadImage));
+};
+
+export const uploadImage = async (imageFile: Promise<FileUpload>) => {
+	return uploadStream((await imageFile).createReadStream());
+};

@@ -1,7 +1,7 @@
 import { FileUpload } from 'graphql-upload';
 import { UploadApiResponse } from 'cloudinary';
 import { Resolver } from '../../types/resolvers';
-import { uploadStream } from '../../utils/upload';
+import { uploadImages, uploadStream } from '../../utils/upload';
 
 const createProduct: Resolver = async (_, { input }, ctx) => {
 	const product = await ctx.prisma.product.create({
@@ -55,6 +55,49 @@ const editProduct: Resolver<EditProductArgs> = async (
 
 	return product;
 };
+
+// This (potentially) supports uploading multiple images at once.
+// Currently not supported on the frontend, but we should be able to
+// activate that functionality once it becomes possible with expo-image-picker
+// without having to make any server-side changes.
+//
+// Also, should this be a mutation on "Product" or "ProductImage"?
+
+interface AddImageArgs {
+	id: string;
+	input: {
+		imageFiles: Promise<FileUpload>[];
+	};
+}
+
+const addImage: Resolver<AddImageArgs> = async (_, { id, input }, ctx) => {
+	const { imageFiles } = input;
+
+	if (imageFiles.length <= 0) {
+		throw new Error('Attempting to upload 0 images');
+	}
+
+	const uploadedImages = await uploadImages(imageFiles);
+
+	const product = await ctx.prisma.product.update({
+		where: { id },
+		data: {
+			images: {
+				createMany: {
+					data: uploadedImages.map(({ url, public_id }) => ({
+						path: url,
+						publicId: public_id
+					}))
+				}
+			}
+		}
+	});
+
+	return product;
+};
+
+// TODO: Remove this.
+console.log(addImage);
 
 export default {
 	Mutation: {
