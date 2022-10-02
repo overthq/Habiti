@@ -1,14 +1,11 @@
 import React from 'react';
-import { Pressable, Text, ActivityIndicator } from 'react-native';
-import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
+import { ActivityIndicator } from 'react-native';
+import { useRoute, RouteProp } from '@react-navigation/native';
 
-import { useEditProductMutation, useProductQuery } from '../types/api';
+import { useProductQuery } from '../types/api';
 import { ProductsStackParamList } from '../types/navigation';
-import ProductForm from '../components/product/ProductForm';
-import { ReactNativeFile } from 'extract-files';
-import { FormProvider, useForm } from 'react-hook-form';
-import { ProductFormData } from './AddProduct';
 import useGoBack from '../hooks/useGoBack';
+import ProductMain from '../components/product/ProductMain';
 
 // TODO:
 // - Set up "collections/groups" for products.
@@ -19,8 +16,14 @@ import useGoBack from '../hooks/useGoBack';
 // This might be very wasteful w.r.t. render computations, since we'd ideally
 // have to check this on every re-render that relates to value changes.
 
+// Create a pattern where we have a wrapper for every screen that depends
+// on pre-existing data.
+// Basically, the screen displays a loading indicator or error boundary
+// if any of the dependencies are not correctly loaded.
+// And the actual screen is completely typesafe. (Win-win).
+// Also, this is what HOCs were good for.
+
 const Product: React.FC = () => {
-	const navigation = useNavigation();
 	const {
 		params: { productId }
 	} = useRoute<RouteProp<ProductsStackParamList, 'Product'>>();
@@ -29,63 +32,13 @@ const Product: React.FC = () => {
 		variables: { id: productId }
 	});
 
-	const [, editProduct] = useEditProductMutation();
-
 	// Remember to replace this with a better-looking back button.
 	// (Preferably the native default, but black).
 	useGoBack();
 
-	// Remember to ensure that some weird view caching does not allow this
-	// to be shared between separate product screens.
-
-	const [toUpload, setToUpload] = React.useState<ReactNativeFile[]>([]);
-
-	const formMethods = useForm<ProductFormData>({
-		defaultValues: {
-			name: data?.product?.name ?? '',
-			description: data?.product.description ?? '',
-			unitPrice: String(data?.product.unitPrice ?? ''),
-			quantity: String(data?.product.quantity ?? '')
-		}
-	});
-
-	const onSubmit = async (values: ProductFormData) => {
-		editProduct({
-			id: productId,
-			input: {
-				...values,
-				unitPrice: Number(values.unitPrice),
-				quantity: Number(values.quantity)
-			}
-		});
-	};
-
-	React.useLayoutEffect(() => {
-		navigation.setOptions({
-			headerRight: () => {
-				return (
-					<Pressable
-						style={{ marginRight: 16 }}
-						onPress={formMethods.handleSubmit(onSubmit)}
-					>
-						<Text style={{ fontSize: 17 }}>Save</Text>
-					</Pressable>
-				);
-			}
-		});
-	}, []);
-
 	if (fetching || !data?.product) return <ActivityIndicator />;
 
-	return (
-		<FormProvider {...formMethods}>
-			<ProductForm
-				images={data.product.images}
-				imagesToUpload={toUpload}
-				setImagesToUpload={setToUpload}
-			/>
-		</FormProvider>
-	);
+	return <ProductMain product={data.product} />;
 };
 
 export default Product;
