@@ -12,17 +12,13 @@ import ProductForm from '../components/product/ProductForm';
 import { ReactNativeFile } from 'extract-files';
 import { useForm } from 'react-hook-form';
 
-// Without handling validation, using Formik here is kind of useless.
-// Also should probably look to replace it, since it's not being
-// actively developed anymore.
-
 // DISCLAIMER:
 // This image uploading logic below is very hacky.
 // I'm not the best RN developer out there, but even I know that this is
 // a travesty.
 // Please, bear with me.
 
-interface ProductFormData {
+export interface ProductFormData {
 	name: string;
 	description: string;
 	unitPrice: string; // ???
@@ -31,14 +27,11 @@ interface ProductFormData {
 
 const AddProduct: React.FC = () => {
 	const activeStore = useStore(state => state.activeStore);
-	const [, createProduct] = useCreateProductMutation();
-	const [, addProductImages] = useAddProductImagesMutation();
+	const [toUpload, setToUpload] = React.useState<ReactNativeFile[]>([]);
 	const { goBack, setOptions } = useNavigation();
 
-	// Remember to ensure that some weird view caching does not allow this
-	// to be shared between separate product screens.
-
-	const [toUpload, setToUpload] = React.useState<ReactNativeFile[]>([]);
+	const [, createProduct] = useCreateProductMutation();
+	const [, addProductImages] = useAddProductImagesMutation();
 
 	const formMethods = useForm<ProductFormData>({
 		defaultValues: {

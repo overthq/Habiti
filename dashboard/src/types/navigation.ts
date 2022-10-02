@@ -7,7 +7,6 @@ export type AppStackParamList = {
 	CreateStore: undefined;
 	Root: undefined;
 	'Add Product': undefined;
-	'Edit Product': { productId: string };
 	'Edit Store': { storeId: string };
 	Settings: undefined;
 	CustomerInfo: { userId: string };
