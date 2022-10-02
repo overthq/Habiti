@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
-import { useFormikContext } from 'formik';
+import { Controller, useFormContext } from 'react-hook-form';
 
 interface SectionProps {
 	title: string;
@@ -9,18 +9,32 @@ interface SectionProps {
 	multiline?: boolean;
 }
 
-const Section: React.FC<SectionProps> = ({ title, field, multiline }) => {
-	const { values, handleChange, handleBlur } = useFormikContext<any>();
+const Section: React.FC<SectionProps> = ({
+	title,
+	field,
+	multiline,
+	placeholder
+}) => {
+	const { control } = useFormContext();
 
 	return (
 		<View style={styles.section}>
 			<Text style={styles.title}>{title}</Text>
-			<TextInput
-				value={values[field]}
-				onChangeText={handleChange(field)}
-				onBlur={handleBlur(field)}
-				style={styles.input}
-				multiline={multiline}
+			<Controller
+				name={field}
+				control={control}
+				render={({ field: { onChange, onBlur, value } }) => (
+					<TextInput
+						value={value}
+						onChangeText={onChange}
+						onBlur={onBlur}
+						style={styles.input}
+						multiline={multiline}
+						placeholder={placeholder}
+						placeholderTextColor='#D3D3D3'
+						{...(multiline ? { textAlignVertical: 'top' } : {})}
+					/>
+				)}
 			/>
 		</View>
 	);

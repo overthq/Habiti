@@ -52,7 +52,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1,
+		paddingTop: 8,
+		backgroundColor: '#FFFFFF'
 	},
 	heading: {
 		marginVertical: 16,

@@ -8,6 +8,7 @@ import useGoBack from '../hooks/useGoBack';
 import { useEditProductMutation, useProductQuery } from '../types/api';
 import { ProductsStackParamList } from '../types/navigation';
 import ProductForm from '../components/product/ProductForm';
+import { ReactNativeFile } from 'extract-files';
 
 // TODO:
 // - Allow editing of inventory.
@@ -37,6 +38,7 @@ const Product: React.FC = () => {
 	});
 
 	const [, editProduct] = useEditProductMutation();
+	const [toUpload, setToUpload] = React.useState<ReactNativeFile[]>([]);
 
 	const product = data?.product;
 
@@ -61,7 +63,11 @@ const Product: React.FC = () => {
 				});
 			}}
 		>
-			<ProductForm images={product.images} />
+			<ProductForm
+				images={product.images}
+				imagesToUpload={toUpload}
+				setImagesToUpload={setToUpload}
+			/>
 		</Formik>
 	);
 };
