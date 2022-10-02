@@ -4,7 +4,6 @@ import { FormProvider } from 'react-hook-form';
 
 import { Pressable, Text } from 'react-native';
 import useStore from '../state';
-// import useGoBack from '../hooks/useGoBack';
 import {
 	useCreateProductMutation,
 	useAddProductImagesMutation
@@ -35,7 +34,6 @@ const AddProduct: React.FC = () => {
 	const [, createProduct] = useCreateProductMutation();
 	const [, addProductImages] = useAddProductImagesMutation();
 	const { goBack, setOptions } = useNavigation();
-	// useGoBack();
 
 	// Remember to ensure that some weird view caching does not allow this
 	// to be shared between separate product screens.
@@ -80,6 +78,13 @@ const AddProduct: React.FC = () => {
 
 	React.useLayoutEffect(() => {
 		setOptions({
+			headerLeft: () => {
+				return (
+					<Pressable style={{ marginLeft: 16 }} onPress={goBack}>
+						<Text style={{ fontSize: 17 }}>Cancel</Text>
+					</Pressable>
+				);
+			},
 			headerRight: () => {
 				return (
 					<Pressable
