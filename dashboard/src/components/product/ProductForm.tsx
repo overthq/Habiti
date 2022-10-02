@@ -6,12 +6,20 @@ import Images from './Images';
 import InventoryInput from './InventoryInput';
 
 import { formatNaira } from '../../utils/currency';
+import { ProductQuery } from '../../types/api';
+import { ReactNativeFile } from 'extract-files';
 
 interface ProductFormProps {
-	productId?: string;
+	images?: ProductQuery['product']['images'];
+	imagesToUpload: ReactNativeFile[];
+	setImagesToUpload: React.Dispatch<React.SetStateAction<ReactNativeFile[]>>;
 }
 
-const ProductForm: React.FC<ProductFormProps> = ({ productId }) => {
+const ProductForm: React.FC<ProductFormProps> = ({
+	images,
+	imagesToUpload,
+	setImagesToUpload
+}) => {
 	return (
 		<ScrollView
 			style={styles.container}
@@ -32,7 +40,11 @@ const ProductForm: React.FC<ProductFormProps> = ({ productId }) => {
 				placeholder={formatNaira(0.0)}
 				field='unitPrice'
 			/>
-			<Images productId={productId} images={product.images} />
+			<Images
+				images={images}
+				imagesToUpload={imagesToUpload}
+				setImagesToUpload={setImagesToUpload}
+			/>
 			<InventoryInput />
 		</ScrollView>
 	);

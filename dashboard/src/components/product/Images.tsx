@@ -1,13 +1,15 @@
 import React from 'react';
 import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { ProductQuery, useEditProductMutation } from '../../types/api';
+import { ProductQuery } from '../../types/api';
 import { Icon } from '../Icon';
 import { generateUploadFile } from '../../utils/images';
+import { ReactNativeFile } from 'extract-files';
 
 interface ImagesProps {
-	productId?: string;
 	images?: ProductQuery['product']['images'];
+	imagesToUpload?: ReactNativeFile[];
+	setImagesToUpload: React.Dispatch<React.SetStateAction<ReactNativeFile[]>>;
 }
 
 // TODO: Refactor:
@@ -17,15 +19,17 @@ interface ImagesProps {
 // - This potential "imageFiles" array will/should be populated for edit/add products,
 //   and the images will be batch sent once the "Save" button is pressed.
 // - Should be relatively easy to implement.
-// - Other good thing about this is that it technically means we will be doing batch uploads
-//   (but sadly not batch image picks).
+// - Other good thing about this is that it technically means we will be doing batch uploads.
 // - Somewhat funny that I will probably start using Zustand a lot more for things like this.
 // - Should also consider moving form state out of formik and into Zustand as well
 //   (maybe not, because of Yup/Zod validation).
+// Ideally, we should not upload images immediately after they are picked.
 
-const Images: React.FC<ImagesProps> = ({ productId, images }) => {
-	const [, editProduct] = useEditProductMutation();
-
+const Images: React.FC<ImagesProps> = ({
+	images,
+	imagesToUpload,
+	setImagesToUpload
+}) => {
 	const handlePickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -34,10 +38,9 @@ const Images: React.FC<ImagesProps> = ({ productId, images }) => {
 			quality: 1
 		});
 
-		if (productId && !result.cancelled) {
+		if (!result.cancelled) {
 			const imageFile = generateUploadFile(result.uri);
-
-			await editProduct({ id: productId, input: { imageFile } });
+			setImagesToUpload?.(ex => [...ex, imageFile]);
 		}
 	};
 
@@ -47,6 +50,9 @@ const Images: React.FC<ImagesProps> = ({ productId, images }) => {
 			<View style={styles.images}>
 				{images?.map(({ id, path }) => (
 					<Image key={id} source={{ uri: path }} style={styles.image} />
+				))}
+				{imagesToUpload?.map(({ uri }) => (
+					<Image key={uri} source={{ uri }} style={styles.image} />
 				))}
 				<TouchableOpacity onPress={handlePickImage} style={styles.add}>
 					<Icon name='plus' size={24} />

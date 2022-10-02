@@ -56,13 +56,6 @@ const editProduct: Resolver<EditProductArgs> = async (
 	return product;
 };
 
-// This (potentially) supports uploading multiple images at once.
-// Currently not supported on the frontend, but we should be able to
-// activate that functionality once it becomes possible with expo-image-picker
-// without having to make any server-side changes.
-//
-// Also, should this be a mutation on "Product" or "ProductImage"?
-
 interface AddImageArgs {
 	id: string;
 	input: {
@@ -70,7 +63,11 @@ interface AddImageArgs {
 	};
 }
 
-const addImage: Resolver<AddImageArgs> = async (_, { id, input }, ctx) => {
+const addProductImages: Resolver<AddImageArgs> = async (
+	_,
+	{ id, input },
+	ctx
+) => {
 	const { imageFiles } = input;
 
 	if (imageFiles.length <= 0) {
@@ -96,12 +93,10 @@ const addImage: Resolver<AddImageArgs> = async (_, { id, input }, ctx) => {
 	return product;
 };
 
-// TODO: Remove this.
-console.log(addImage);
-
 export default {
 	Mutation: {
 		createProduct,
-		editProduct
+		editProduct,
+		addProductImages
 	}
 };

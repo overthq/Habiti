@@ -3,22 +3,36 @@ import { View, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Formik } from 'formik';
 
-import Button from '../components/global/Button';
-import Input from '../components/global/Input';
-
 import useStore from '../state';
 import useGoBack from '../hooks/useGoBack';
-import { useCreateProductMutation } from '../types/api';
+import {
+	useCreateProductMutation,
+	useAddProductImagesMutation
+} from '../types/api';
+import ProductForm from '../components/product/ProductForm';
+import { ReactNativeFile } from 'extract-files';
 
 // Without handling validation, using Formik here is kind of useless.
 // Also should probably look to replace it, since it's not being
 // actively developed anymore.
 
+// DISCLAIMER:
+// This image uploading logic below is very hacky.
+// I'm not the best RN developer out there, but even I know that this is
+// a travesty.
+// Please, bear with me.
+
 const AddProduct: React.FC = () => {
 	const activeStore = useStore(state => state.activeStore);
-	const [{ fetching }, createProduct] = useCreateProductMutation();
+	const [, createProduct] = useCreateProductMutation();
+	const [, addProductImages] = useAddProductImagesMutation();
 	const { goBack } = useNavigation();
 	useGoBack();
+
+	// Remember to ensure that some weird view caching does not allow this
+	// to be shared between separate product screens.
+
+	const [toUpload, setToUpload] = React.useState<ReactNativeFile[]>([]);
 
 	return (
 		<View style={styles.container}>
@@ -32,7 +46,7 @@ const AddProduct: React.FC = () => {
 				onSubmit={async values => {
 					try {
 						if (activeStore) {
-							await createProduct({
+							const { data } = await createProduct({
 								input: {
 									name: values.name,
 									description: values.description,
@@ -41,6 +55,18 @@ const AddProduct: React.FC = () => {
 									quantity: Number(values.quantity)
 								}
 							});
+
+							if (toUpload.length > 0 && data?.createProduct.id) {
+								await addProductImages({
+									id: data.createProduct.id,
+									input: { imageFiles: toUpload }
+								});
+							}
+
+							// TODO: Instead of navigating to the previous screen, we should either:
+							// - Switch this screen to a "View Product" context.
+							// - Navigate to the "Product" screen, using the productId.
+
 							goBack();
 						}
 					} catch (error) {
@@ -48,44 +74,10 @@ const AddProduct: React.FC = () => {
 					}
 				}}
 			>
-				{({ handleChange, handleBlur, handleSubmit }) => (
-					<View>
-						<Input
-							label='Name'
-							onChangeText={handleChange('name')}
-							onBlur={handleBlur('name')}
-							style={styles.input}
-							autoCorrect={false}
-						/>
-						<Input
-							label='Description'
-							onChangeText={handleChange('description')}
-							onBlur={handleBlur('description')}
-							style={styles.input}
-							textArea
-							autoCorrect={false}
-						/>
-						<Input
-							label='Unit Price'
-							onChangeText={handleChange('unitPrice')}
-							onBlur={handleBlur('unitPrice')}
-							style={styles.input}
-							keyboardType='numeric'
-						/>
-						<Input
-							label='Quantity'
-							onChangeText={handleChange('quantity')}
-							onBlur={handleBlur('quantity')}
-							style={styles.input}
-							keyboardType='numeric'
-						/>
-						<Button
-							text='Add Product'
-							onPress={handleSubmit}
-							loading={fetching}
-						/>
-					</View>
-				)}
+				<ProductForm
+					imagesToUpload={toUpload}
+					setImagesToUpload={setToUpload}
+				/>
 			</Formik>
 		</View>
 	);

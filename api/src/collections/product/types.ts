@@ -35,6 +35,10 @@ const ProductTypes = gql`
 		imageFile: Upload
 	}
 
+	input AddProductImagesInput {
+		imageFiles: [Upload!]!
+	}
+
 	extend type Query {
 		product(id: ID!): Product!
 		storeProducts(id: ID!): [Product!]!
@@ -43,6 +47,7 @@ const ProductTypes = gql`
 	extend type Mutation {
 		createProduct(input: CreateProductInput!): Product!
 		editProduct(id: ID!, input: EditProductInput!): Product!
+		addProductImages(id: ID!, input: AddProductImagesInput!): Product!
 	}
 `;
 

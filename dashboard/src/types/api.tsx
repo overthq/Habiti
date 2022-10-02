@@ -22,6 +22,10 @@ export type Scalars = {
 	Upload: any;
 };
 
+export type AddProductImagesInput = {
+	imageFiles: Array<Scalars['Upload']>;
+};
+
 export type AddStoreManagerInput = {
 	managerId: Scalars['ID'];
 	storeId: Scalars['ID'];
@@ -144,6 +148,7 @@ export type Image = {
 export type Mutation = {
 	__typename?: 'Mutation';
 	_?: Maybe<Scalars['Boolean']>;
+	addProductImages: Product;
 	addStoreManager: StoreManager;
 	addToCart: CartProduct;
 	addToWatchlist: WatchlistProduct;
@@ -169,6 +174,11 @@ export type Mutation = {
 	updateCartProduct: CartProduct;
 	updateOrder: Order;
 	verify: VerifyResponse;
+};
+
+export type MutationAddProductImagesArgs = {
+	id: Scalars['ID'];
+	input: AddProductImagesInput;
 };
 
 export type MutationAddStoreManagerArgs = {
@@ -644,6 +654,20 @@ export type EditProductMutation = {
 	};
 };
 
+export type AddProductImagesMutationVariables = Exact<{
+	id: Scalars['ID'];
+	input: AddProductImagesInput;
+}>;
+
+export type AddProductImagesMutation = {
+	__typename?: 'Mutation';
+	addProductImages: {
+		__typename?: 'Product';
+		id: string;
+		images: Array<{ __typename?: 'Image'; id: string; path: string }>;
+	};
+};
+
 export type StatsQueryVariables = Exact<{
 	storeId: Scalars['ID'];
 	period: StatPeriod;
@@ -941,6 +965,24 @@ export function useEditProductMutation() {
 	return Urql.useMutation<EditProductMutation, EditProductMutationVariables>(
 		EditProductDocument
 	);
+}
+export const AddProductImagesDocument = gql`
+	mutation AddProductImages($id: ID!, $input: AddProductImagesInput!) {
+		addProductImages(id: $id, input: $input) {
+			id
+			images {
+				id
+				path
+			}
+		}
+	}
+`;
+
+export function useAddProductImagesMutation() {
+	return Urql.useMutation<
+		AddProductImagesMutation,
+		AddProductImagesMutationVariables
+	>(AddProductImagesDocument);
 }
 export const StatsDocument = gql`
 	query Stats($storeId: ID!, $period: StatPeriod!) {

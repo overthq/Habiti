@@ -61,7 +61,7 @@ const Product: React.FC = () => {
 				});
 			}}
 		>
-			<ProductForm />
+			<ProductForm images={product.images} />
 		</Formik>
 	);
 };
