@@ -7,12 +7,11 @@ import InventoryInput from './InventoryInput';
 
 import { formatNaira } from '../../utils/currency';
 import { ProductQuery } from '../../types/api';
-import { ReactNativeFile } from 'extract-files';
 
 interface ProductFormProps {
 	images?: ProductQuery['product']['images'];
-	imagesToUpload: ReactNativeFile[];
-	setImagesToUpload: React.Dispatch<React.SetStateAction<ReactNativeFile[]>>;
+	imagesToUpload: string[];
+	setImagesToUpload: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({

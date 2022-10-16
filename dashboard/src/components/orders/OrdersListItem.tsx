@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
 	date: {
 		fontSize: 16,
 		marginTop: 2,
-		color: '#505050'
+		color: '#777777'
 	},
 	total: {
 		fontSize: 16,

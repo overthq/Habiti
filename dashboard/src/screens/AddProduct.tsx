@@ -6,26 +6,28 @@ import { Pressable, Text } from 'react-native';
 import useStore from '../state';
 import { useCreateProductMutation } from '../types/api';
 import ProductForm from '../components/product/ProductForm';
-import { ReactNativeFile } from 'extract-files';
 import { useForm } from 'react-hook-form';
-import { testImages } from '../components/product/Images';
+import { generateUploadFile } from '../utils/images';
+import Button from '../components/global/Button';
 
 // DISCLAIMER:
 // This image uploading logic below is very hacky.
 // I'm not the best RN developer out there, but even I know that this is
 // a travesty.
 // Please, bear with me.
+// We should probably merge the product and add product screens.
 
 export interface ProductFormData {
 	name: string;
 	description: string;
 	unitPrice: string; // ???
 	quantity: string; // ???
+	imageFiles: string[];
 }
 
 const AddProduct: React.FC = () => {
 	const activeStore = useStore(state => state.activeStore);
-	const [toUpload, setToUpload] = React.useState<ReactNativeFile[]>([]);
+	const [toUpload, setToUpload] = React.useState<string[]>([]);
 	const { goBack, setOptions } = useNavigation();
 	const [, createProduct] = useCreateProductMutation();
 
@@ -34,33 +36,30 @@ const AddProduct: React.FC = () => {
 			name: '',
 			description: '',
 			unitPrice: '',
-			quantity: ''
+			quantity: '',
+			imageFiles: []
 		}
 	});
 
-	const onSubmit = async (values: ProductFormData) => {
-		if (activeStore) {
-			const { data, error } = await createProduct({
-				input: {
-					name: values.name,
-					description: values.description,
-					storeId: activeStore,
-					unitPrice: Number(values.unitPrice) * 100,
-					quantity: Number(values.quantity),
-					imageFiles: testImages
-				}
-			});
+	const onSubmit = React.useCallback(
+		async (values: ProductFormData) => {
+			if (activeStore && toUpload.length > 0) {
+				await createProduct({
+					input: {
+						name: values.name,
+						description: values.description,
+						storeId: activeStore,
+						unitPrice: Number(values.unitPrice) * 100,
+						quantity: Number(values.quantity),
+						imageFiles: toUpload.map(generateUploadFile)
+					}
+				});
 
-			console.log('error', error);
-			console.log('data', data);
-
-			// TODO: Instead of navigating to the previous screen, we should either:
-			// - Switch this screen to a "View Product" context.
-			// - Navigate to the "Product" screen, using the productId.
-
-			goBack();
-		}
-	};
+				goBack();
+			}
+		},
+		[toUpload]
+	);
 
 	React.useLayoutEffect(() => {
 		setOptions({
@@ -87,6 +86,7 @@ const AddProduct: React.FC = () => {
 	return (
 		<FormProvider {...formMethods}>
 			<ProductForm imagesToUpload={toUpload} setImagesToUpload={setToUpload} />
+			<Button text='Submit' onPress={formMethods.handleSubmit(onSubmit)} />
 		</FormProvider>
 	);
 };

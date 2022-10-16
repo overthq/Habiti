@@ -1,7 +1,6 @@
 import React from 'react';
 import { Pressable, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { ReactNativeFile } from 'extract-files';
 import { FormProvider, useForm } from 'react-hook-form';
 import { ProductQuery, useEditProductMutation } from '../../types/api';
 import ProductForm from './ProductForm';
@@ -15,7 +14,7 @@ const ProductMain: React.FC<ProductMainProps> = ({ product }) => {
 	const navigation = useNavigation();
 	// Remember to ensure that some weird view caching does not allow this
 	// to be shared between separate product screens.
-	const [toUpload, setToUpload] = React.useState<ReactNativeFile[]>([]);
+	const [toUpload, setToUpload] = React.useState<string[]>([]);
 	const [, editProduct] = useEditProductMutation();
 
 	const formMethods = useForm<ProductFormData>({

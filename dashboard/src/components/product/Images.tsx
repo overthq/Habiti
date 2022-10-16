@@ -3,13 +3,11 @@ import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ProductQuery } from '../../types/api';
 import { Icon } from '../Icon';
-import { generateUploadFile } from '../../utils/images';
-import { ReactNativeFile } from 'extract-files';
 
 interface ImagesProps {
 	images?: ProductQuery['product']['images'];
-	imagesToUpload?: ReactNativeFile[];
-	setImagesToUpload: React.Dispatch<React.SetStateAction<ReactNativeFile[]>>;
+	imagesToUpload: string[];
+	setImagesToUpload: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 // TODO: Refactor:
@@ -25,8 +23,6 @@ interface ImagesProps {
 //   (maybe not, because of Yup/Zod validation).
 // Ideally, we should not upload images immediately after they are picked.
 
-export const testImages: ReactNativeFile[] = [];
-
 const Images: React.FC<ImagesProps> = ({
 	images,
 	imagesToUpload,
@@ -41,11 +37,8 @@ const Images: React.FC<ImagesProps> = ({
 		});
 
 		if (!result.cancelled) {
-			const imageFile = generateUploadFile(result.uri);
-			setImagesToUpload?.(ex => {
-				return [...ex, imageFile];
-			});
-			testImages.push(imageFile);
+			console.log('[populated]');
+			setImagesToUpload(x => [...x, result.uri]);
 		}
 	};
 
@@ -56,7 +49,7 @@ const Images: React.FC<ImagesProps> = ({
 				{images?.map(({ id, path }) => (
 					<Image key={id} source={{ uri: path }} style={styles.image} />
 				))}
-				{imagesToUpload?.map(({ uri }) => (
+				{imagesToUpload.map(uri => (
 					<Image key={uri} source={{ uri }} style={styles.image} />
 				))}
 				<TouchableOpacity onPress={handlePickImage} style={styles.add}>

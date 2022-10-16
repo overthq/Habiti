@@ -16,14 +16,16 @@ const ProductGridItem: React.FC<ProductGridItemProps> = ({
 		<View style={styles.placeholder}>
 			<Image style={styles.image} source={{ uri: product.images[0]?.path }} />
 		</View>
-		<Text>{product.name}</Text>
-		<Text>{formatNaira(product.unitPrice)}</Text>
+		<Text style={styles.name}>{product.name}</Text>
+		<Text style={styles.price}>{formatNaira(product.unitPrice)}</Text>
 	</Pressable>
 );
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1,
+		margin: 8,
+		paddingTop: 8
 	},
 	placeholder: {
 		backgroundColor: '#D3D3D3',
@@ -34,6 +36,14 @@ const styles = StyleSheet.create({
 	image: {
 		width: '100%',
 		height: '100%'
+	},
+	name: {
+		fontSize: 16,
+		marginTop: 4
+	},
+	price: {
+		fontSize: 16,
+		color: '#777777'
 	}
 });
 

@@ -37,8 +37,8 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingHorizontal: 16,
-		marginBottom: 12
+		paddingVertical: 4,
+		paddingHorizontal: 8
 	},
 	name: {
 		fontSize: 16,
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
 	},
 	price: {
 		fontSize: 16,
-		color: '#505050'
+		color: '#777777'
 	},
 	left: {
 		flexDirection: 'row',
@@ -55,11 +55,11 @@ const styles = StyleSheet.create({
 	},
 	placeholder: {
 		overflow: 'hidden',
-		height: 40,
-		width: 40,
+		height: 48,
+		width: 48,
 		borderRadius: 4,
 		backgroundColor: '#D3D3D3',
-		marginRight: 8
+		marginRight: 12
 	},
 	image: {
 		height: '100%',

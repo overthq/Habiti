@@ -6,6 +6,7 @@ import ProductGridItem from './ProductGridItem';
 import { useProductsQuery } from '../../types/api';
 import useStore from '../../state';
 import { ProductsStackParamList } from '../../types/navigation';
+import { View } from 'react-native';
 
 interface ProductListProps {
 	mode: 'list' | 'grid';
@@ -33,6 +34,7 @@ const ProductList: React.FC<ProductListProps> = ({ mode }) => {
 			renderItem={({ item }) => (
 				<ProductsListItem product={item} onPress={handlePress(item.id)} />
 			)}
+			ListHeaderComponent={<View style={{ height: 4 }} />}
 			estimatedItemSize={60}
 		/>
 	) : (
