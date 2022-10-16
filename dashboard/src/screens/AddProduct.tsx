@@ -4,13 +4,11 @@ import { FormProvider } from 'react-hook-form';
 
 import { Pressable, Text } from 'react-native';
 import useStore from '../state';
-import {
-	useCreateProductMutation,
-	useAddProductImagesMutation
-} from '../types/api';
+import { useCreateProductMutation } from '../types/api';
 import ProductForm from '../components/product/ProductForm';
 import { ReactNativeFile } from 'extract-files';
 import { useForm } from 'react-hook-form';
+import { testImages } from '../components/product/Images';
 
 // DISCLAIMER:
 // This image uploading logic below is very hacky.
@@ -29,9 +27,7 @@ const AddProduct: React.FC = () => {
 	const activeStore = useStore(state => state.activeStore);
 	const [toUpload, setToUpload] = React.useState<ReactNativeFile[]>([]);
 	const { goBack, setOptions } = useNavigation();
-
 	const [, createProduct] = useCreateProductMutation();
-	const [, addProductImages] = useAddProductImagesMutation();
 
 	const formMethods = useForm<ProductFormData>({
 		defaultValues: {
@@ -44,22 +40,19 @@ const AddProduct: React.FC = () => {
 
 	const onSubmit = async (values: ProductFormData) => {
 		if (activeStore) {
-			const { data } = await createProduct({
+			const { data, error } = await createProduct({
 				input: {
 					name: values.name,
 					description: values.description,
 					storeId: activeStore,
 					unitPrice: Number(values.unitPrice) * 100,
-					quantity: Number(values.quantity)
+					quantity: Number(values.quantity),
+					imageFiles: testImages
 				}
 			});
 
-			if (toUpload.length > 0 && data?.createProduct.id) {
-				await addProductImages({
-					id: data.createProduct.id,
-					input: { imageFiles: toUpload }
-				});
-			}
+			console.log('error', error);
+			console.log('data', data);
 
 			// TODO: Instead of navigating to the previous screen, we should either:
 			// - Switch this screen to a "View Product" context.

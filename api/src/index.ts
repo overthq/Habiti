@@ -25,7 +25,7 @@ const main = async () => {
 			credentialsRequired: false
 		})
 	);
-	app.use(graphqlUploadExpress({ maxFileSize: 10485760, maxFiles: 10 }));
+	app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 
 	const httpServer = createServer(app);
 	const apolloServer = new ApolloServer({

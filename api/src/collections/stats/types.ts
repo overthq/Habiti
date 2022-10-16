@@ -9,6 +9,13 @@ const StatsTypes = gql`
 		orders: [Order!]!
 	}
 
+	type NewStats {
+		daily: Stats!
+		weekly: Stats!
+		monthly: Stats!
+		yearly: Stats!
+	}
+
 	enum StatPeriod {
 		Day
 		Week

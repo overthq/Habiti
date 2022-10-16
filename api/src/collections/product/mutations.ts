@@ -3,9 +3,43 @@ import { UploadApiResponse } from 'cloudinary';
 import { Resolver } from '../../types/resolvers';
 import { uploadImages, uploadStream } from '../../utils/upload';
 
-const createProduct: Resolver = async (_, { input }, ctx) => {
+interface CreateProductArgs {
+	input: {
+		name: string;
+		description: string;
+		storeId: string;
+		unitPrice: number;
+		quantity: number;
+		imageFiles: Promise<FileUpload>[];
+	};
+}
+
+const createProduct: Resolver<CreateProductArgs> = async (
+	_,
+	{ input },
+	ctx
+) => {
+	console.log({ input });
+	const { imageFiles, ...rest } = input;
+
+	const uploadedImages = await uploadImages(imageFiles);
+
 	const product = await ctx.prisma.product.create({
-		data: input
+		data: {
+			...rest,
+			images: {
+				...(uploadedImages.length > 0
+					? {
+							createMany: {
+								data: uploadedImages.map(({ url, public_id }) => ({
+									path: url,
+									publicId: public_id
+								}))
+							}
+					  }
+					: {})
+			}
+		}
 	});
 
 	return product;

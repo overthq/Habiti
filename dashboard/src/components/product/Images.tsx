@@ -25,6 +25,8 @@ interface ImagesProps {
 //   (maybe not, because of Yup/Zod validation).
 // Ideally, we should not upload images immediately after they are picked.
 
+export const testImages: ReactNativeFile[] = [];
+
 const Images: React.FC<ImagesProps> = ({
 	images,
 	imagesToUpload,
@@ -40,7 +42,10 @@ const Images: React.FC<ImagesProps> = ({
 
 		if (!result.cancelled) {
 			const imageFile = generateUploadFile(result.uri);
-			setImagesToUpload?.(ex => [...ex, imageFile]);
+			setImagesToUpload?.(ex => {
+				return [...ex, imageFile];
+			});
+			testImages.push(imageFile);
 		}
 	};
 
