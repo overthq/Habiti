@@ -7,7 +7,7 @@ import {
 	StyleSheet
 } from 'react-native';
 
-interface InputProps extends TextInputProps {
+export interface InputProps extends TextInputProps {
 	label?: string;
 	textArea?: boolean;
 }

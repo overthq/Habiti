@@ -32,7 +32,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 				title='Description'
 				placeholder='Brief product description'
 				field='description'
-				multiline
+				inputProps={{ multiline: true, textAlignVertical: 'top' }}
 			/>
 			<Section
 				title='Unit Price'
