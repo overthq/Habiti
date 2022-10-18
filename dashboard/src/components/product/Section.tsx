@@ -1,19 +1,20 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
+import type { TextInputProps } from 'react-native';
 import { Controller, useFormContext } from 'react-hook-form';
 
 interface SectionProps {
 	title: string;
 	placeholder: string;
 	field: string;
-	multiline?: boolean;
+	inputProps?: TextInputProps;
 }
 
 const Section: React.FC<SectionProps> = ({
 	title,
 	field,
-	multiline,
-	placeholder
+	placeholder,
+	inputProps
 }) => {
 	const { control } = useFormContext();
 
@@ -29,10 +30,9 @@ const Section: React.FC<SectionProps> = ({
 						onChangeText={onChange}
 						onBlur={onBlur}
 						style={styles.input}
-						multiline={multiline}
 						placeholder={placeholder}
 						placeholderTextColor='#D3D3D3'
-						{...(multiline ? { textAlignVertical: 'top' } : {})}
+						{...inputProps}
 					/>
 				)}
 			/>

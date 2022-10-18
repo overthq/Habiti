@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator } from 'react-native';
+import { View } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 
 import { useProductQuery } from '../types/api';
@@ -32,11 +32,11 @@ const Product: React.FC = () => {
 		variables: { id: productId }
 	});
 
-	// Remember to replace this with a better-looking back button.
-	// (Preferably the native default, but black).
 	useGoBack();
 
-	if (fetching || !data?.product) return <ActivityIndicator />;
+	if (fetching || !data?.product) {
+		return <View style={{ flex: 1, backgroundColor: '#FFFFFF' }} />;
+	}
 
 	return <ProductMain product={data.product} />;
 };

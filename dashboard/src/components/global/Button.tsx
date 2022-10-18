@@ -4,18 +4,24 @@ import {
 	Pressable,
 	ActivityIndicator,
 	StyleSheet,
-	ViewStyle
+	ViewStyle,
+	PressableProps
 } from 'react-native';
 
-interface ButtonProps {
-	onPress(): void;
+interface ButtonProps extends PressableProps {
 	text: string;
 	loading?: boolean;
 	style?: ViewStyle;
 }
 
-const Button: React.FC<ButtonProps> = ({ onPress, text, loading, style }) => (
-	<Pressable style={[styles.container, style]} onPress={onPress}>
+const Button: React.FC<ButtonProps> = ({
+	onPress,
+	text,
+	loading,
+	style,
+	...props
+}) => (
+	<Pressable style={[styles.container, style]} onPress={onPress} {...props}>
 		{loading ? <ActivityIndicator /> : <Text style={styles.text}>{text}</Text>}
 	</Pressable>
 );
