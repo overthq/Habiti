@@ -1,15 +1,11 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet, Dimensions } from 'react-native';
-import { useFormikContext } from 'formik';
+import { Controller, useFormContext } from 'react-hook-form';
 
 const { width } = Dimensions.get('window');
 
 const Social = () => {
-	const { handleChange, handleBlur } = useFormikContext<{
-		twitter: string;
-		instagram: string;
-		website: string;
-	}>();
+	const { control } = useFormContext();
 
 	return (
 		<View style={styles.container}>
@@ -19,34 +15,55 @@ const Social = () => {
 			</Text>
 			<View>
 				<Text style={styles.label}>Twitter username</Text>
-				<TextInput
-					style={styles.input}
-					placeholder='@nike'
-					onChangeText={handleChange('twitter')}
-					onBlur={handleBlur('twitter')}
-					autoCapitalize='none'
-					autoCorrect={false}
+				<Controller
+					name='twitter'
+					control={control}
+					render={({ field: { onChange, onBlur, value } }) => (
+						<TextInput
+							value={value}
+							style={styles.input}
+							placeholder='@nike'
+							onChangeText={onChange}
+							onBlur={onBlur}
+							autoCapitalize='none'
+							autoCorrect={false}
+						/>
+					)}
 				/>
 			</View>
 			<View>
 				<Text style={styles.label}>Instagram username</Text>
-				<TextInput
-					style={styles.input}
-					placeholder='@nike'
-					onChangeText={handleChange('instagram')}
-					onBlur={handleBlur('instagram')}
-					autoCapitalize='none'
-					autoCorrect={false}
+				<Controller
+					name='instagram'
+					control={control}
+					render={({ field: { onChange, onBlur, value } }) => (
+						<TextInput
+							value={value}
+							style={styles.input}
+							placeholder='@nike'
+							onChangeText={onChange}
+							onBlur={onBlur}
+							autoCapitalize='none'
+							autoCorrect={false}
+						/>
+					)}
 				/>
 			</View>
 			<View>
 				<Text style={styles.label}>Website</Text>
-				<TextInput
-					style={styles.input}
-					placeholder='https://nike.com'
-					onChangeText={handleChange('website')}
-					onBlur={handleBlur('website')}
-					keyboardType='url'
+				<Controller
+					name='website'
+					control={control}
+					render={({ field: { onChange, onBlur, value } }) => (
+						<TextInput
+							value={value}
+							style={styles.input}
+							placeholder='https://nike.com'
+							onChangeText={onChange}
+							onBlur={onBlur}
+							keyboardType='url'
+						/>
+					)}
 				/>
 			</View>
 		</View>

@@ -8,13 +8,14 @@ import {
 	Pressable
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { useFormikContext } from 'formik';
 import { Icon } from '../Icon';
+import { Controller, useFormContext } from 'react-hook-form';
+import { CreateStoreFormValues } from '../../screens/CreateStore';
 
 const { width } = Dimensions.get('window');
 
 const StoreImage: React.FC = () => {
-	const { values, setFieldValue } = useFormikContext<{ storeImage: string }>();
+	const { setValue, control } = useFormContext<CreateStoreFormValues>();
 
 	const handlePickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
@@ -24,27 +25,34 @@ const StoreImage: React.FC = () => {
 			quality: 1
 		});
 
-		if (!result.cancelled) setFieldValue('storeImage', result.uri);
+		if (!result.cancelled) setValue('storeImage', result.uri);
 	};
+
+	const removeImage = React.useCallback(() => {
+		setValue('storeImage', undefined);
+	}, []);
 
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>Store Image</Text>
-			{values.storeImage ? (
-				<View style={styles.preview}>
-					<Image source={{ uri: values.storeImage }} style={styles.image} />
-					<Pressable
-						onPress={() => setFieldValue('storeImage', null)}
-						style={styles.close}
-					>
-						<Icon name='x' size={20} color='#FFFFFF' />
-					</Pressable>
-				</View>
-			) : (
-				<Pressable style={styles.upload} onPress={handlePickImage}>
-					<Icon name='upload' size={32} color='#505050' />
-				</Pressable>
-			)}
+			<Controller
+				name='storeImage'
+				control={control}
+				render={({ field: { value } }) =>
+					value ? (
+						<View style={styles.preview}>
+							<Image source={{ uri: value }} style={styles.image} />
+							<Pressable onPress={removeImage} style={styles.close}>
+								<Icon name='x' size={20} color='#FFFFFF' />
+							</Pressable>
+						</View>
+					) : (
+						<Pressable style={styles.upload} onPress={handlePickImage}>
+							<Icon name='upload' size={32} color='#505050' />
+						</Pressable>
+					)
+				}
+			/>
 		</View>
 	);
 };

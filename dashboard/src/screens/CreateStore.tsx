@@ -6,7 +6,6 @@ import {
 	ViewToken,
 	FlatListProps
 } from 'react-native';
-import { Formik } from 'formik';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, {
 	useSharedValue,
@@ -18,6 +17,7 @@ import Brand from '../components/create-store/Brand';
 import Social from '../components/create-store/Social';
 import StoreImage from '../components/create-store/StoreImage';
 import useStore from '../state';
+import { useForm, FormProvider } from 'react-hook-form';
 
 const { width } = Dimensions.get('window');
 
@@ -32,12 +32,22 @@ const AnimatedFlatList =
 		FlatList
 	);
 
+export interface CreateStoreFormValues {
+	name: string;
+	description: string;
+	twitter: string;
+	instagram: string;
+	website: string;
+	storeImage?: string;
+}
+
 const CreateStore: React.FC = () => {
 	const [, createStore] = useCreateStoreMutation();
 	const [activeStepIndex, setActiveStepIndex] = React.useState(0);
 	const listRef = React.useRef<FlatList>(null);
 	const scrollX = useSharedValue(0);
 	const setPreference = useStore(state => state.setPreference);
+	const formMethods = useForm<CreateStoreFormValues>();
 
 	const toNext = () => {
 		listRef.current?.scrollToIndex({
@@ -61,55 +71,43 @@ const CreateStore: React.FC = () => {
 		}
 	});
 
+	const onSubmit = async (values: CreateStoreFormValues) => {
+		try {
+			const { data } = await createStore({
+				input: values
+			});
+
+			if (data?.createStore?.id) {
+				setPreference({ activeStore: data.createStore.id });
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	const isLastStep = activeStepIndex === steps.length - 1;
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<Formik
-				initialValues={{
-					name: '',
-					description: '',
-					twitter: '',
-					instagram: '',
-					website: '',
-					storeImage: null
-				}}
-				onSubmit={async values => {
-					try {
-						const { data } = await createStore({
-							input: values
-						});
-
-						if (data?.createStore?.id) {
-							setPreference({ activeStore: data.createStore.id });
-						}
-					} catch (error) {
-						console.log(error);
-					}
-				}}
-			>
-				{({ handleSubmit }) => (
-					<>
-						<AnimatedFlatList
-							ref={listRef}
-							horizontal
-							decelerationRate='fast'
-							snapToInterval={width}
-							showsHorizontalScrollIndicator={false}
-							data={steps}
-							keyExtractor={s => s.title}
-							renderItem={({ item }) => item.component}
-							onViewableItemsChanged={handleViewableItemsChanged}
-							onScroll={handleScroll}
-						/>
-						<Button
-							text={isLastStep ? 'Submit' : 'Next'}
-							onPress={isLastStep ? handleSubmit : toNext}
-							style={{ alignSelf: 'center', width: width - 32 }}
-						/>
-					</>
-				)}
-			</Formik>
+			<FormProvider {...formMethods}>
+				<AnimatedFlatList
+					ref={listRef}
+					horizontal
+					decelerationRate='fast'
+					snapToInterval={width}
+					showsHorizontalScrollIndicator={false}
+					data={steps}
+					keyExtractor={s => s.title}
+					renderItem={({ item }) => item.component}
+					onViewableItemsChanged={handleViewableItemsChanged}
+					onScroll={handleScroll}
+				/>
+			</FormProvider>
+			<Button
+				text={isLastStep ? 'Submit' : 'Next'}
+				onPress={isLastStep ? formMethods.handleSubmit(onSubmit) : toNext}
+				style={{ alignSelf: 'center', width: width - 32 }}
+			/>
 		</SafeAreaView>
 	);
 };

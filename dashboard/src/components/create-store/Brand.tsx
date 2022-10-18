@@ -1,14 +1,11 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet, Dimensions } from 'react-native';
-import { useFormikContext } from 'formik';
+import { useFormContext, Controller } from 'react-hook-form';
 
 const { width } = Dimensions.get('window');
 
 const Brand: React.FC = () => {
-	const { handleChange, handleBlur, values } = useFormikContext<{
-		name: string;
-		// shortName: string;
-	}>();
+	const { control } = useFormContext();
 
 	return (
 		<View style={styles.container}>
@@ -18,23 +15,20 @@ const Brand: React.FC = () => {
 			</Text>
 			<View>
 				<Text style={styles.label}>Store name</Text>
-				<TextInput
-					value={values.name}
-					style={styles.input}
-					placeholder='Nike'
-					onChangeText={handleChange('name')}
-					onBlur={handleBlur('name')}
+				<Controller
+					name='name'
+					control={control}
+					render={({ field: { onChange, onBlur, value } }) => (
+						<TextInput
+							value={value}
+							style={styles.input}
+							placeholder='Nike'
+							onChangeText={onChange}
+							onBlur={onBlur}
+						/>
+					)}
 				/>
 			</View>
-			{/* <View>
-				<Text style={styles.label}>Short name (used in URL)</Text>
-				<TextInput
-					style={styles.input}
-					placeholder='nike'
-					onChangeText={handleChange('shortName')}
-					onBlur={handleBlur('shortName')}
-				/>
-			</View> */}
 		</View>
 	);
 };
