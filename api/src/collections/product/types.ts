@@ -25,6 +25,7 @@ const ProductTypes = gql`
 		unitPrice: Int!
 		quantity: Int!
 		storeId: ID!
+		imageFiles: [Upload!]!
 	}
 
 	input EditProductInput {

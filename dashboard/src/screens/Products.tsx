@@ -13,8 +13,8 @@ const Products: React.FC = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#FFFFFF',
-		paddingTop: 16
+		paddingHorizontal: 8,
+		backgroundColor: '#FFFFFF'
 	}
 });
 

@@ -94,6 +94,7 @@ export type CreateCartInput = {
 
 export type CreateProductInput = {
 	description: Scalars['String'];
+	imageFiles: Array<Scalars['Upload']>;
 	name: Scalars['String'];
 	quantity: Scalars['Int'];
 	storeId: Scalars['ID'];
@@ -281,6 +282,14 @@ export type MutationUpdateOrderArgs = {
 
 export type MutationVerifyArgs = {
 	input: VerifyInput;
+};
+
+export type NewStats = {
+	__typename?: 'NewStats';
+	daily: Stats;
+	monthly: Stats;
+	weekly: Stats;
+	yearly: Stats;
 };
 
 export type Order = {

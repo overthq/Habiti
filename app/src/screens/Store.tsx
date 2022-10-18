@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#FFFFFF',
-		paddingHorizontal: 10
+		paddingHorizontal: 8
 	},
 	back: {
 		paddingLeft: 8
