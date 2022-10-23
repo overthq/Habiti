@@ -1,48 +1,38 @@
 import React from 'react';
-import { View, TextInput, StyleSheet, Alert } from 'react-native';
-import { Formik } from 'formik';
-import Button from '../components/global/Button';
+import { View, StyleSheet } from 'react-native';
+import { useForm } from 'react-hook-form';
 
-const AddCard = () => {
+import Button from '../components/global/Button';
+import FormInput from '../components/global/FormInput';
+
+interface AddCardFormValues {
+	cardNumber: string;
+	cvv: string;
+	expiryMonth: string;
+	expiryYear: string;
+}
+
+const AddCard: React.FC = () => {
+	const { control, handleSubmit } = useForm<AddCardFormValues>({
+		defaultValues: {
+			cardNumber: '',
+			cvv: '',
+			expiryMonth: '',
+			expiryYear: ''
+		}
+	});
+
+	const onSubmit = (values: AddCardFormValues) => {
+		console.log({ values });
+	};
+
 	return (
 		<View style={styles.container}>
-			<Formik
-				initialValues={{
-					cardNumber: '',
-					cvv: '',
-					expiryMonth: '',
-					expiryYear: ''
-				}}
-				onSubmit={values => {
-					Alert.alert(JSON.stringify(values));
-				}}
-			>
-				{({ values, handleChange, handleBlur, handleSubmit }) => (
-					<>
-						<TextInput
-							value={values.cardNumber}
-							onChangeText={handleChange('cardNumber')}
-							onBlur={handleBlur('cardNumber')}
-						/>
-						<TextInput
-							value={values.expiryMonth}
-							onChangeText={handleChange('expiryMonth')}
-							onBlur={handleBlur('expiryMonth')}
-						/>
-						<TextInput
-							value={values.expiryYear}
-							onChangeText={handleChange('expiryYear')}
-							onBlur={handleBlur('expiryYear')}
-						/>
-						<TextInput
-							value={values.cvv}
-							onChangeText={handleChange('cvv')}
-							onBlur={handleBlur('cvv')}
-						/>
-						<Button text='Add Card' onPress={handleSubmit} />
-					</>
-				)}
-			</Formik>
+			<FormInput label='Card Number' name='cardNumber' control={control} />
+			<FormInput label='Expiry Month' name='expiryMonth' control={control} />
+			<FormInput label='Expiry Year' name='expiryYear' control={control} />
+			<FormInput label='CVV' name='cvv' control={control} />
+			<Button text='Add Card' onPress={handleSubmit(onSubmit)} />
 		</View>
 	);
 };

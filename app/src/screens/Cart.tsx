@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
 	useRoute,
@@ -39,16 +39,15 @@ const Cart: React.FC = () => {
 		}
 	}, [cartId]);
 
-	const handleCardSelect = (cardId: string) => () => {
-		setSelectedCard(cardId);
-	};
+	const handleCardSelect = React.useCallback(
+		(cardId: string) => () => {
+			setSelectedCard(cardId);
+		},
+		[]
+	);
 
 	if (fetching || !cart) {
-		return (
-			<View>
-				<ActivityIndicator />
-			</View>
-		);
+		return <View style={{ flex: 1, backgroundColor: '#FFFFFF' }} />;
 	}
 
 	return (
