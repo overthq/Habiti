@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useUpdateOrderMutation, OrderStatus } from '../../types/api';
+
 import Button from '../global/Button';
+import { useUpdateOrderMutation, OrderStatus } from '../../types/api';
 
 // Important:
 // - Both button loading states should not be attached to "fetching".
@@ -21,13 +22,14 @@ interface OrderActionsProps {
 const OrderActions: React.FC<OrderActionsProps> = ({ orderId }) => {
 	const [{ fetching }, updateOrder] = useUpdateOrderMutation();
 
-	const updateOrderStatus = (status: OrderStatus) => () => {
-		try {
-			updateOrder({ orderId, input: { status } });
-		} catch (error) {
-			console.log(error);
-		}
-	};
+	const updateOrderStatus = (status: OrderStatus) =>
+		React.useCallback(() => {
+			try {
+				updateOrder({ orderId, input: { status } });
+			} catch (error) {
+				console.log(error);
+			}
+		}, []);
 
 	return (
 		<View style={styles.container}>

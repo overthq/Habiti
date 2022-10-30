@@ -19,8 +19,6 @@ interface ImagesProps {
 // - Should be relatively easy to implement.
 // - Other good thing about this is that it technically means we will be doing batch uploads.
 // - Somewhat funny that I will probably start using Zustand a lot more for things like this.
-// - Should also consider moving form state out of formik and into Zustand as well
-//   (maybe not, because of Yup/Zod validation).
 // Ideally, we should not upload images immediately after they are picked.
 
 const Images: React.FC<ImagesProps> = ({

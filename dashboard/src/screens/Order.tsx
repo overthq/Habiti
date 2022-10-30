@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-	View,
-	Text,
-	ScrollView,
-	StyleSheet,
-	ActivityIndicator
-} from 'react-native';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 
 import OrderProducts from '../components/order/OrderProducts';
@@ -27,11 +21,7 @@ const Order: React.FC = () => {
 	useGoBack();
 
 	if (fetching) {
-		return (
-			<View>
-				<ActivityIndicator />
-			</View>
-		);
+		return <View style={styles.container} />;
 	} else if (!data?.order) {
 		return (
 			<View>
@@ -53,7 +43,8 @@ const Order: React.FC = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1,
+		backgroundColor: '#FFFFFF'
 	}
 });
 

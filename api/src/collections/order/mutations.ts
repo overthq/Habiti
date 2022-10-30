@@ -35,28 +35,24 @@ const createOrder: Resolver<CreateOrderArgs> = async (
 	// TODO:
 	// 1. Move all this logic into a `resolveCard` function.
 	//    It might be useful in other cases.
-	// 2. Move chargeAuthorization to after the order object has been created?
-	// 3. Retrieve (or listen to) the status from the chargeAuthorization call,
+	// 2. Retrieve (or listen to) the status from the chargeAuthorization call,
 	//    so we can update the order status (esp. in the case that the payment fails).
+	// 3. It probably makes more sense to always pass the cardId.
 
-	if (!cart.user.cards[0]) {
-		throw new Error('You do not have a card linked to this account!');
+	const card = cardId
+		? await ctx.prisma.card.findUnique({ where: { id: cardId } })
+		: cart.user.cards[0];
+
+	if (!card) {
+		throw new Error('Please add a card to authorize this transaction');
 	}
 
-	let card = cart.user.cards[0];
-
-	if (cardId) {
-		card = await ctx.prisma.card.findUnique({ where: { id: cardId } });
+	if (cart.userId !== ctx.user.id) {
+		throw new Error('You are not authorized to access this cart.');
 	}
 
-	await chargeAuthorization({
-		email: card.email,
-		amount: String(total),
-		authorizationCode: card.authorizationCode
-	});
-
-	if (cart.userId === ctx.user.id) {
-		const order = await ctx.prisma.order.create({
+	const [order] = await ctx.prisma.$transaction([
+		ctx.prisma.order.create({
 			data: {
 				userId: ctx.user.id,
 				storeId: cart.storeId,
@@ -70,12 +66,17 @@ const createOrder: Resolver<CreateOrderArgs> = async (
 					}
 				}
 			}
-		});
+		}),
+		ctx.prisma.cart.delete({ where: { id: cartId } })
+	]);
 
-		await ctx.prisma.cart.delete({ where: { id: cartId } });
+	await chargeAuthorization({
+		email: card.email,
+		amount: String(total),
+		authorizationCode: card.authorizationCode
+	});
 
-		return order;
-	}
+	return order;
 };
 
 interface UpdateOrderArgs {
