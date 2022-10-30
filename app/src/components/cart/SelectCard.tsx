@@ -6,7 +6,6 @@ import {
 	ActivityIndicator,
 	StyleSheet
 } from 'react-native';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useCardsQuery } from '../../types/api';
 import { Icon } from '../Icon';
 import { MastercardIcon } from './CardIcons';
@@ -22,11 +21,6 @@ const SelectCard: React.FC<SelectCardProps> = ({
 }) => {
 	const [{ data, fetching }] = useCardsQuery();
 	const cards = data?.currentUser.cards;
-	const bottomSheetModalRef = React.useRef<BottomSheetModal>(null);
-
-	const handleOpenModal = React.useCallback(() => {
-		bottomSheetModalRef.current?.present();
-	}, []);
 
 	const displayCard = React.useMemo(() => {
 		if (selectedCard) {
@@ -45,9 +39,8 @@ const SelectCard: React.FC<SelectCardProps> = ({
 	}
 
 	return (
-		<>
-			<Pressable style={[styles.row, { height: 48 }]} onPress={handleOpenModal}>
-				<Text style={styles.text}>Payment method</Text>
+		<View>
+			<Pressable style={styles.row}>
 				<View style={styles.cardInfo}>
 					<MastercardIcon />
 					<Text style={styles.cardText}>
@@ -56,13 +49,7 @@ const SelectCard: React.FC<SelectCardProps> = ({
 					<Icon name='chevron-right' style={{ marginRight: -8 }} />
 				</View>
 			</Pressable>
-			<BottomSheetModal
-				index={0}
-				ref={bottomSheetModalRef}
-				snapPoints={['50%']}
-				style={styles.modal}
-				backgroundStyle={styles.modalBackground}
-			>
+			<View>
 				<Text style={styles.title}>Select card</Text>
 				{cards?.map(card => (
 					<Pressable
@@ -70,12 +57,12 @@ const SelectCard: React.FC<SelectCardProps> = ({
 						onPress={onCardSelect(card.id)}
 						style={styles.row}
 					>
-						<Text>**** {card.last4}</Text>
+						<Text>Ending in {card.last4}</Text>
 						{selectedCard === card.id && <Icon name='check' />}
 					</Pressable>
 				))}
-			</BottomSheetModal>
-		</>
+			</View>
+		</View>
 	);
 };
 
@@ -97,10 +84,6 @@ const styles = StyleSheet.create({
 	cardText: {
 		fontSize: 16,
 		marginHorizontal: 8
-	},
-	text: {
-		fontSize: 16,
-		fontWeight: '500'
 	},
 	modal: {
 		paddingHorizontal: 16,

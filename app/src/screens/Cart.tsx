@@ -12,7 +12,6 @@ import { useCreateOrderMutation, useCartQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 import Button from '../components/global/Button';
 import SelectCard from '../components/cart/SelectCard';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { formatNaira } from '../utils/currency';
 import useStore from '../state';
 
@@ -46,39 +45,39 @@ const Cart: React.FC = () => {
 		[]
 	);
 
-	if (fetching || !cart) {
-		return <View style={{ flex: 1, backgroundColor: '#FFFFFF' }} />;
-	}
+	if (fetching || !cart) return <View style={styles.loading} />;
 
 	return (
-		<BottomSheetModalProvider>
-			<SafeAreaView style={styles.container}>
-				<Text style={styles.heading}>Checkout</Text>
-				<Text style={styles.sectionHeader}>Order Summary</Text>
-				{cart.products.map(cartProduct => (
-					<CartProduct key={cartProduct.id} cartProduct={cartProduct} />
-				))}
-				<View style={styles.bottom}>
-					<View style={styles.row}>
-						<Text style={styles.total}>Total</Text>
-						<Text style={styles.total}>{formatNaira(cart.total)}</Text>
-					</View>
-					<SelectCard
-						selectedCard={selectedCard}
-						onCardSelect={handleCardSelect}
-					/>
-					<Button
-						text='Place Order'
-						onPress={handleSubmit}
-						style={styles.button}
-					/>
+		<SafeAreaView style={styles.container}>
+			<Text style={styles.heading}>Checkout</Text>
+			<Text style={styles.sectionHeader}>Order Summary</Text>
+			{cart.products.map(cartProduct => (
+				<CartProduct key={cartProduct.id} cartProduct={cartProduct} />
+			))}
+			<View style={styles.bottom}>
+				<View style={styles.row}>
+					<Text style={styles.total}>Total</Text>
+					<Text style={styles.total}>{formatNaira(cart.total)}</Text>
 				</View>
-			</SafeAreaView>
-		</BottomSheetModalProvider>
+				<SelectCard
+					selectedCard={selectedCard}
+					onCardSelect={handleCardSelect}
+				/>
+				<Button
+					text='Place Order'
+					onPress={handleSubmit}
+					style={styles.button}
+				/>
+			</View>
+		</SafeAreaView>
 	);
 };
 
 const styles = StyleSheet.create({
+	loading: {
+		flex: 1,
+		backgroundColor: '#FFFFFF'
+	},
 	container: {
 		flex: 1,
 		paddingTop: 16,
