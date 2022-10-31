@@ -54,15 +54,35 @@ const Cart: React.FC = () => {
 			{cart.products.map(cartProduct => (
 				<CartProduct key={cartProduct.id} cartProduct={cartProduct} />
 			))}
-			<View style={styles.bottom}>
-				<View style={styles.row}>
-					<Text style={styles.total}>Total</Text>
-					<Text style={styles.total}>{formatNaira(cart.total)}</Text>
-				</View>
+
+			<View>
+				<Text style={styles.sectionHeader}>Delivery Address</Text>
+			</View>
+
+			<View>
+				<Text style={styles.sectionHeader}>Payment Method</Text>
 				<SelectCard
 					selectedCard={selectedCard}
 					onCardSelect={handleCardSelect}
 				/>
+			</View>
+
+			<View style={styles.row}>
+				<Text style={styles.total}>Subtotal</Text>
+				<Text style={styles.total}>{formatNaira(cart.total)}</Text>
+			</View>
+
+			<View style={styles.row}>
+				<Text style={styles.total}>Service Fee</Text>
+				<Text style={styles.total}>{formatNaira(cart.total)}</Text>
+			</View>
+
+			<View style={styles.row}>
+				<Text style={styles.total}>Taxes</Text>
+				<Text style={styles.total}>{formatNaira(cart.total)}</Text>
+			</View>
+
+			<View style={styles.bottom}>
 				<Button
 					text='Place Order'
 					onPress={handleSubmit}
@@ -105,8 +125,8 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	total: {
-		fontSize: 16,
-		fontWeight: '500'
+		marginTop: 2,
+		fontSize: 16
 	},
 	button: {
 		marginTop: 16

@@ -20,14 +20,16 @@ const SelectCard: React.FC<SelectCardProps> = ({
 	onCardSelect
 }) => {
 	const [{ data, fetching }] = useCardsQuery();
+	const [expanded, setExpanded] = React.useState(false);
+
 	const cards = data?.currentUser.cards;
 
+	const toggleExpanded = React.useCallback(() => {
+		setExpanded(e => !e);
+	}, []);
+
 	const displayCard = React.useMemo(() => {
-		if (selectedCard) {
-			return cards?.find(c => c.id === selectedCard);
-		} else if (cards?.[0]) {
-			return cards[0];
-		}
+		return cards?.find(c => c.id === selectedCard) ?? cards?.[0];
 	}, [selectedCard, cards]);
 
 	if (fetching) {
@@ -40,7 +42,7 @@ const SelectCard: React.FC<SelectCardProps> = ({
 
 	return (
 		<View>
-			<Pressable style={styles.row}>
+			<Pressable style={styles.row} onPress={toggleExpanded}>
 				<View style={styles.cardInfo}>
 					<MastercardIcon />
 					<Text style={styles.cardText}>
@@ -49,19 +51,21 @@ const SelectCard: React.FC<SelectCardProps> = ({
 					<Icon name='chevron-right' style={{ marginRight: -8 }} />
 				</View>
 			</Pressable>
-			<View>
-				<Text style={styles.title}>Select card</Text>
-				{cards?.map(card => (
-					<Pressable
-						key={card.id}
-						onPress={onCardSelect(card.id)}
-						style={styles.row}
-					>
-						<Text>Ending in {card.last4}</Text>
-						{selectedCard === card.id && <Icon name='check' />}
-					</Pressable>
-				))}
-			</View>
+
+			{expanded && (
+				<View>
+					{cards?.map(card => (
+						<Pressable
+							key={card.id}
+							onPress={onCardSelect(card.id)}
+							style={styles.row}
+						>
+							<Text>Ending in {card.last4}</Text>
+							{selectedCard === card.id && <Icon name='check' />}
+						</Pressable>
+					))}
+				</View>
+			)}
 		</View>
 	);
 };
@@ -77,9 +81,9 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	cardInfo: {
-		height: '100%',
 		flexDirection: 'row',
-		alignItems: 'center'
+		alignItems: 'center',
+		justifyContent: 'space-between'
 	},
 	cardText: {
 		fontSize: 16,
