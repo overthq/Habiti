@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { HomeQuery } from '../../types/api';
-import { HomeTabParamList } from '../../types/navigation';
+import { AppStackParamList, HomeTabParamList } from '../../types/navigation';
 import ListEmpty from '../global/ListEmpty';
 import FollowedStoresItem from './FollowedStoresItem';
 import textStyles from '../../styles/text';
@@ -13,16 +13,24 @@ interface FollowedStoresProps {
 }
 
 const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
-	const { navigate } = useNavigation<NavigationProp<HomeTabParamList>>();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const navigation = useNavigation<NavigationProp<HomeTabParamList>>();
 
 	const stores = React.useMemo(
 		() => followed.map(({ store }) => store),
 		[followed]
 	);
 
+	const handleStorePress = React.useCallback(
+		(storeId: string) => () => {
+			navigate('Store', { storeId });
+		},
+		[]
+	);
+
 	if (!stores || stores?.length === 0) {
 		return (
-			<View style={styles.container}>
+			<View>
 				<Text style={[textStyles.sectionHeader, { marginLeft: 16 }]}>
 					Followed Stores
 				</Text>
@@ -30,7 +38,7 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 					description={`When you follow stores, you'll see updates from them here.`}
 					cta={{
 						text: 'Discover new stores',
-						action: () => navigate('Explore')
+						action: () => navigation.navigate('Explore')
 					}}
 				/>
 			</View>
@@ -38,7 +46,7 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 	}
 
 	return (
-		<View style={styles.container}>
+		<View>
 			<Text style={[textStyles.sectionHeader, { marginLeft: 16 }]}>
 				Followed Stores
 			</Text>
@@ -46,14 +54,16 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 				horizontal
 				data={stores}
 				keyExtractor={item => item.id}
-				renderItem={({ item }) => <FollowedStoresItem store={item} />}
+				renderItem={({ item }) => (
+					<FollowedStoresItem
+						store={item}
+						onPress={handleStorePress(item.id)}
+					/>
+				)}
+				estimatedItemSize={100}
 			/>
 		</View>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {}
-});
 
 export default FollowedStores;

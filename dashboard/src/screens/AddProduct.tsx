@@ -22,7 +22,6 @@ export interface ProductFormData {
 	description: string;
 	unitPrice: string; // ???
 	quantity: string; // ???
-	imageFiles: string[];
 }
 
 const AddProduct: React.FC = () => {
@@ -36,8 +35,7 @@ const AddProduct: React.FC = () => {
 			name: '',
 			description: '',
 			unitPrice: '',
-			quantity: '',
-			imageFiles: []
+			quantity: ''
 		}
 	});
 
