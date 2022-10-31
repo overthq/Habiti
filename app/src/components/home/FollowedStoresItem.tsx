@@ -1,22 +1,21 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { AppStackParamList } from '../../types/navigation';
 import { StoresFollowedQuery } from '../../types/api';
 
 interface FollowedStoresItemProps {
 	store: StoresFollowedQuery['currentUser']['followed'][-1]['store'];
+	onPress(): void;
 }
 
-const FollowedStoresItem: React.FC<FollowedStoresItemProps> = ({ store }) => {
-	const { navigate } = useNavigation<StackNavigationProp<AppStackParamList>>();
-
+const FollowedStoresItem: React.FC<FollowedStoresItemProps> = ({
+	store,
+	onPress
+}) => {
 	return (
 		<TouchableOpacity
 			style={styles.container}
 			activeOpacity={0.8}
-			onPress={() => navigate('Store', { storeId: store.id })}
+			onPress={onPress}
 		>
 			<View style={styles.placeholder}>
 				<Image source={{ uri: store.image?.path }} style={styles.image} />

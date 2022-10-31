@@ -21,25 +21,22 @@ const TrendingStoresItem: React.FC<TrendingStoresItemProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
+		marginLeft: 8,
 		marginRight: 16
 	},
 	placeholder: {
 		backgroundColor: '#D3D3D3',
 		width: 70,
 		height: 70,
-		borderRadius: 35,
-		justifyContent: 'center',
-		alignItems: 'center',
-		overflow: 'hidden'
+		borderRadius: 35
 	},
 	image: {
 		height: '100%',
 		width: '100%'
 	},
 	name: {
-		fontWeight: '500',
 		fontSize: 15,
-		marginTop: 5,
+		marginTop: 4,
 		textAlign: 'center'
 	}
 });

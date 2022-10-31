@@ -10,17 +10,6 @@ interface ImagesProps {
 	setImagesToUpload: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-// TODO: Refactor:
-// - When there is no productId, we should store the picked images somewhere
-//   in state. We may also choose to store optimistic products (drafts) in the database.
-//   However, that will get increasingly complicated.
-// - This potential "imageFiles" array will/should be populated for edit/add products,
-//   and the images will be batch sent once the "Save" button is pressed.
-// - Should be relatively easy to implement.
-// - Other good thing about this is that it technically means we will be doing batch uploads.
-// - Somewhat funny that I will probably start using Zustand a lot more for things like this.
-// Ideally, we should not upload images immediately after they are picked.
-
 const Images: React.FC<ImagesProps> = ({
 	images,
 	imagesToUpload,
@@ -35,7 +24,6 @@ const Images: React.FC<ImagesProps> = ({
 		});
 
 		if (!result.cancelled) {
-			console.log('[populated]');
 			setImagesToUpload(x => [...x, result.uri]);
 		}
 	};
