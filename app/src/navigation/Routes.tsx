@@ -1,4 +1,5 @@
 import React from 'react';
+import { Dimensions } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
@@ -45,7 +46,15 @@ const Routes: React.FC = () => {
 								options={{ headerShown: true, headerTitle: '' }}
 							/>
 							<AppStack.Group screenOptions={{ presentation: 'modal' }}>
-								<AppStack.Screen name='Product' component={Product} />
+								<AppStack.Screen
+									name='Product'
+									component={Product}
+									options={{
+										headerShown: true,
+										gestureDirection: 'vertical',
+										gestureResponseDistance: Dimensions.get('window').height
+									}}
+								/>
 								<AppStack.Screen name='Cart' component={Cart} />
 								<AppStack.Group screenOptions={{ headerShown: true }}>
 									<AppStack.Screen name='Order' component={Order} />

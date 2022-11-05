@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
 		marginBottom: 16
 	},
 	sectionHeader: {
-		fontSize: 17,
+		fontSize: 16,
 		fontWeight: '500',
 		color: '#505050',
 		marginVertical: 4
@@ -122,10 +122,10 @@ const styles = StyleSheet.create({
 	row: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems: 'center'
+		alignItems: 'center',
+		marginBottom: 4
 	},
 	total: {
-		marginTop: 2,
 		fontSize: 16
 	},
 	button: {

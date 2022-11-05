@@ -7,11 +7,8 @@ import Animated, {
 import { FlashList, FlashListProps } from '@shopify/flash-list';
 import ImageCarouselDots from '../profile/ImageCarouselDots';
 import { ProductQuery } from '../../types/api';
-import CloseButton from './CloseButton';
-import WatchlistButton from './WatchlistButton';
 
 interface ImageCarouselProps {
-	productId: string;
 	images: ProductQuery['product']['images'];
 }
 
@@ -20,7 +17,7 @@ const AnimatedFlashList =
 		FlashListProps<ImageCarouselProps['images'][number]>
 	>(FlashList);
 
-const ImageCarousel: React.FC<ImageCarouselProps> = ({ productId, images }) => {
+const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 	const { width } = useWindowDimensions();
 	const scrollX = useSharedValue(0);
 
@@ -49,15 +46,13 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ productId, images }) => {
 				showsHorizontalScrollIndicator={false}
 			/>
 			<ImageCarouselDots scrollX={scrollX} length={images.length} />
-			<CloseButton />
-			<WatchlistButton productId={productId} />
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		height: 400,
+		height: 300,
 		width: '100%',
 		backgroundColor: '#D3D3D3'
 	},

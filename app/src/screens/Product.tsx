@@ -1,17 +1,26 @@
 import React from 'react';
-import { View, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, Text } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { useProductQuery } from '../types/api';
-import { AppStackParamList } from '../types/navigation';
+import { GestureHandlerRefContext } from '@react-navigation/stack';
+import { ScrollView } from 'react-native-gesture-handler';
+
 import ImageCarousel from '../components/product/ImageCarousel';
 import AddToCart from '../components/product/AddToCart';
 import ProductDetails from '../components/product/ProductDetails';
+
+import { useProductQuery } from '../types/api';
+import { AppStackParamList } from '../types/navigation';
 
 const Product: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Product'>>();
 	const [{ data, fetching }] = useProductQuery({
 		variables: { productId: params.productId }
 	});
+	const [scrolledTop, setScrolledTop] = React.useState(true);
+
+	const handleScroll = React.useCallback(({ nativeEvent }: any) => {
+		setScrolledTop(nativeEvent.contentOffset.y <= 0);
+	}, []);
 
 	if (fetching || !data?.product) {
 		return (
@@ -22,33 +31,33 @@ const Product: React.FC = () => {
 	}
 
 	return (
-		<ScrollView style={styles.container}>
-			<ImageCarousel productId={data.product.id} images={data.product.images} />
-			<ProductDetails product={data.product} />
-			<AddToCart
-				storeId={data.product.storeId}
-				productId={data.product.id}
-				cartId={data.product.store.cartId}
-				inCart={data.product.inCart}
-			/>
-			{/* Related Products */}
-		</ScrollView>
+		<GestureHandlerRefContext.Consumer>
+			{ref => (
+				<ScrollView
+					// style={styles.container}
+					waitFor={scrolledTop ? ref : undefined}
+					onScroll={handleScroll}
+					scrollEventThrottle={16}
+				>
+					<ImageCarousel images={data.product.images} />
+					<ProductDetails product={data.product} />
+					<AddToCart
+						storeId={data.product.storeId}
+						productId={data.product.id}
+						cartId={data.product.store.cartId}
+						inCart={data.product.inCart}
+					/>
+					{/* Related Products */}
+				</ScrollView>
+			)}
+		</GestureHandlerRefContext.Consumer>
 	);
 };
 
-const styles = StyleSheet.create({
-	container: {
-		flex: 1
-	},
-	buttonContainer: {
-		width: '100%',
-		marginVertical: 16,
-		paddingHorizontal: 16
-	},
-
-	button: {
-		width: '100%'
-	}
-});
+// const styles = StyleSheet.create({
+// 	container: {
+// 		flex: 1
+// 	}
+// });
 
 export default Product;

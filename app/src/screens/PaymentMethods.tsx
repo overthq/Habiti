@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
 		color: '#505050'
 	},
 	add: {
-		paddingRight: 8
+		marginRight: 16
 	},
 	loading: {
 		flex: 1,

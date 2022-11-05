@@ -1,9 +1,10 @@
 import React from 'react';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
-import { View, StyleSheet } from 'react-native';
-import { CurrentUserQuery, useEditProfileMutation } from '../../types/api';
-import Button from '../global/Button';
+
 import FormInput from '../global/FormInput';
+import { CurrentUserQuery, useEditProfileMutation } from '../../types/api';
 
 interface EditProfileMainProps {
 	currentUser: CurrentUserQuery['currentUser'];
@@ -15,9 +16,10 @@ interface EditProfileFormValues {
 }
 
 const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
+	const navigation = useNavigation();
 	const [, editProfile] = useEditProfileMutation();
 
-	const { control, handleSubmit } = useForm<EditProfileFormValues>({
+	const { control, handleSubmit, formState } = useForm<EditProfileFormValues>({
 		defaultValues: {
 			name: currentUser.name,
 			phone: currentUser.phone
@@ -28,15 +30,31 @@ const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
 		editProfile({ input: values });
 	};
 
+	React.useLayoutEffect(() => {
+		navigation.setOptions({
+			headerRight: () => (
+				<Pressable
+					style={{ marginRight: 16 }}
+					onPress={handleSubmit(onSubmit)}
+					disabled={!formState.isDirty}
+				>
+					<Text
+						style={[
+							{ fontSize: 16, fontWeight: '400' },
+							!formState.isDirty ? { color: '#777777' } : {}
+						]}
+					>
+						Save
+					</Text>
+				</Pressable>
+			)
+		});
+	}, [formState.isDirty]);
+
 	return (
 		<View style={styles.container}>
 			<FormInput name='name' label='Name' control={control} />
 			<FormInput name='phone' label='Phone' control={control} />
-			<Button
-				style={styles.button}
-				text='Edit Profile'
-				onPress={handleSubmit(onSubmit)}
-			/>
 		</View>
 	);
 };
@@ -44,6 +62,7 @@ const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		backgroundColor: '#FFFFFF',
 		paddingHorizontal: 16
 	},
 	button: {
