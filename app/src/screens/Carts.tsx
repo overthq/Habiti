@@ -44,9 +44,7 @@ const Carts: React.FC = () => {
 				}
 				refreshing={fetching}
 				onRefresh={() => {
-					refetch({
-						requestPolicy: 'cache-and-network'
-					});
+					refetch({ requestPolicy: 'cache-and-network' });
 				}}
 			/>
 		</View>

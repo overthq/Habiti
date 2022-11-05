@@ -7,12 +7,13 @@ import {
 	Pressable
 } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { useCardsQuery } from '../types/api';
-import { AppStackParamList } from '../types/navigation';
+
 import ListEmpty from '../components/global/ListEmpty';
-import useGoBack from '../hooks/useGoBack';
 import { Icon } from '../components/Icon';
 import { MastercardIcon } from '../components/cart/CardIcons';
+import useGoBack from '../hooks/useGoBack';
+import { AppStackParamList } from '../types/navigation';
+import { useCardsQuery } from '../types/api';
 
 const PaymentMethods: React.FC = () => {
 	const [{ data, fetching }] = useCardsQuery();
@@ -42,7 +43,7 @@ const PaymentMethods: React.FC = () => {
 
 	return (
 		<View style={styles.container}>
-			{cards?.length === 0 ? (
+			{cards.length === 0 ? (
 				<ListEmpty
 					title='No cards added'
 					description='When you add your cards, they will be displayed here.'
@@ -54,10 +55,10 @@ const PaymentMethods: React.FC = () => {
 			) : (
 				<View>
 					<Text style={styles.sectionHeader}>Cards</Text>
-					{cards?.map(card => (
+					{cards.map(card => (
 						<View key={card.id} style={styles.card}>
 							<MastercardIcon />
-							<Text style={styles.number}>···· {card.last4}</Text>
+							<Text style={styles.number}>Ending with {card.last4}</Text>
 						</View>
 					))}
 				</View>

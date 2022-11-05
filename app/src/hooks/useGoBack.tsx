@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Icon, IconType } from '../components/Icon';
 
-const useGoBack = (icon?: IconType) => {
+const useGoBack = (icon?: IconType, margin?: number) => {
 	const navigation = useNavigation();
 
 	React.useLayoutEffect(() => {
@@ -11,8 +11,8 @@ const useGoBack = (icon?: IconType) => {
 			headerBackImage: () => (
 				<Icon
 					name={icon ?? 'chevron-left'}
-					size={32}
-					style={{ marginLeft: 8 }}
+					size={28}
+					style={{ marginLeft: margin ?? 8 }}
 				/>
 			)
 		});

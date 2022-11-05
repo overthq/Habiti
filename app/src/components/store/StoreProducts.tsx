@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import StoreHeader from './StoreHeader';
@@ -26,12 +26,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 		[]
 	);
 
-	if (fetching || !products)
-		return (
-			<View>
-				<ActivityIndicator />
-			</View>
-		);
+	if (fetching || !products) return <View />;
 
 	return (
 		<FlashList

@@ -51,6 +51,7 @@ const Routes: React.FC = () => {
 									component={Product}
 									options={{
 										headerShown: true,
+										headerTitle: '',
 										gestureDirection: 'vertical',
 										gestureResponseDistance: Dimensions.get('window').height
 									}}

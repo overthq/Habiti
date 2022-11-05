@@ -34,13 +34,13 @@ const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
 		navigation.setOptions({
 			headerRight: () => (
 				<Pressable
-					style={{ marginRight: 16 }}
+					style={styles.saveButton}
 					onPress={handleSubmit(onSubmit)}
 					disabled={!formState.isDirty}
 				>
 					<Text
 						style={[
-							{ fontSize: 16, fontWeight: '400' },
+							styles.saveButtonText,
 							!formState.isDirty ? { color: '#777777' } : {}
 						]}
 					>
@@ -53,7 +53,12 @@ const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
 
 	return (
 		<View style={styles.container}>
-			<FormInput name='name' label='Name' control={control} />
+			<FormInput
+				name='name'
+				label='Name'
+				control={control}
+				style={styles.input}
+			/>
 			<FormInput name='phone' label='Phone' control={control} />
 		</View>
 	);
@@ -63,10 +68,18 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#FFFFFF',
+		paddingTop: 8,
 		paddingHorizontal: 16
 	},
-	button: {
-		marginVertical: 16
+	input: {
+		marginBottom: 8
+	},
+	saveButton: {
+		marginRight: 16
+	},
+	saveButtonText: {
+		fontSize: 16,
+		fontWeight: '400'
 	}
 });
 

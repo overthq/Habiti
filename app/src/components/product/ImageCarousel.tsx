@@ -4,18 +4,12 @@ import Animated, {
 	useSharedValue,
 	useAnimatedScrollHandler
 } from 'react-native-reanimated';
-import { FlashList, FlashListProps } from '@shopify/flash-list';
 import ImageCarouselDots from '../profile/ImageCarouselDots';
 import { ProductQuery } from '../../types/api';
 
 interface ImageCarouselProps {
 	images: ProductQuery['product']['images'];
 }
-
-const AnimatedFlashList =
-	Animated.createAnimatedComponent<
-		FlashListProps<ImageCarouselProps['images'][number]>
-	>(FlashList);
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 	const { width } = useWindowDimensions();
@@ -29,22 +23,21 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 
 	return (
 		<View style={styles.container}>
-			<AnimatedFlashList
-				data={images}
-				keyExtractor={i => i.id}
-				renderItem={({ item }) => (
-					<View style={styles.imageContainer}>
-						<Image source={{ uri: item.path }} style={styles.image} />
-					</View>
-				)}
+			<Animated.ScrollView
 				horizontal
-				decelerationRate='fast'
 				onScroll={handleScroll}
+				decelerationRate='fast'
 				scrollEventThrottle={16}
 				snapToInterval={width}
 				snapToAlignment='center'
 				showsHorizontalScrollIndicator={false}
-			/>
+			>
+				{images.map(image => (
+					<View key={image.id} style={styles.imageContainer}>
+						<Image source={{ uri: image.path }} style={styles.image} />
+					</View>
+				))}
+			</Animated.ScrollView>
 			<ImageCarouselDots scrollX={scrollX} length={images.length} />
 		</View>
 	);
@@ -54,7 +47,7 @@ const styles = StyleSheet.create({
 	container: {
 		height: 300,
 		width: '100%',
-		backgroundColor: '#D3D3D3'
+		backgroundColor: '#FFFFFF'
 	},
 	imageContainer: {
 		width: '100%',
