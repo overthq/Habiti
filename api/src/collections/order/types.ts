@@ -25,6 +25,11 @@ const OrderTypes = gql`
 		Delivered
 	}
 
+	input CreateOrderInput {
+		cartId: ID!
+		cardId: ID
+	}
+
 	input UpdateOrderInput {
 		status: OrderStatus
 	}
@@ -34,7 +39,7 @@ const OrderTypes = gql`
 	}
 
 	extend type Mutation {
-		createOrder(cartId: ID!, cardId: ID): Order!
+		createOrder(input: CreateOrderInput!): Order!
 		updateOrder(orderId: ID!, input: UpdateOrderInput!): Order!
 	}
 `;

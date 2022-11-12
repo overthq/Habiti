@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 
 import OrderProducts from '../components/order/OrderProducts';
@@ -20,14 +20,8 @@ const Order: React.FC = () => {
 	const [{ data, fetching }] = useOrderQuery({ variables: { id: orderId } });
 	useGoBack();
 
-	if (fetching) {
+	if (fetching || !data?.order) {
 		return <View style={styles.container} />;
-	} else if (!data?.order) {
-		return (
-			<View>
-				<Text>An error has occured.</Text>
-			</View>
-		);
 	}
 
 	return (

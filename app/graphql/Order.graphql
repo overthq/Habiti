@@ -59,8 +59,8 @@ query Order($orderId: ID!) {
 	}
 }
 
-mutation CreateOrder($cartId: ID!) {
-	createOrder(cartId: $cartId) {
+mutation CreateOrder($input: CreateOrderInput!) {
+	createOrder(input: $input) {
 		id
 		store {
 			id

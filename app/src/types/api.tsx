@@ -22,6 +22,10 @@ export type Scalars = {
 	Upload: any;
 };
 
+export type AddProductImagesInput = {
+	imageFiles: Array<Scalars['Upload']>;
+};
+
 export type AddStoreManagerInput = {
 	managerId: Scalars['ID'];
 	storeId: Scalars['ID'];
@@ -88,8 +92,14 @@ export type CreateCartInput = {
 	storeId: Scalars['ID'];
 };
 
+export type CreateOrderInput = {
+	cardId?: InputMaybe<Scalars['ID']>;
+	cartId: Scalars['ID'];
+};
+
 export type CreateProductInput = {
 	description: Scalars['String'];
+	imageFiles: Array<Scalars['Upload']>;
 	name: Scalars['String'];
 	quantity: Scalars['Int'];
 	storeId: Scalars['ID'];
@@ -144,6 +154,7 @@ export type Image = {
 export type Mutation = {
 	__typename?: 'Mutation';
 	_?: Maybe<Scalars['Boolean']>;
+	addProductImages: Product;
 	addStoreManager: StoreManager;
 	addToCart: CartProduct;
 	addToWatchlist: WatchlistProduct;
@@ -171,6 +182,11 @@ export type Mutation = {
 	verify: VerifyResponse;
 };
 
+export type MutationAddProductImagesArgs = {
+	id: Scalars['ID'];
+	input: AddProductImagesInput;
+};
+
 export type MutationAddStoreManagerArgs = {
 	input?: InputMaybe<AddStoreManagerInput>;
 };
@@ -192,8 +208,7 @@ export type MutationCreateCartArgs = {
 };
 
 export type MutationCreateOrderArgs = {
-	cardId?: InputMaybe<Scalars['ID']>;
-	cartId: Scalars['ID'];
+	input: CreateOrderInput;
 };
 
 export type MutationCreateProductArgs = {
@@ -271,6 +286,14 @@ export type MutationUpdateOrderArgs = {
 
 export type MutationVerifyArgs = {
 	input: VerifyInput;
+};
+
+export type NewStats = {
+	__typename?: 'NewStats';
+	daily: Stats;
+	monthly: Stats;
+	weekly: Stats;
+	yearly: Stats;
 };
 
 export type Order = {
@@ -762,7 +785,7 @@ export type OrderQuery = {
 };
 
 export type CreateOrderMutationVariables = Exact<{
-	cartId: Scalars['ID'];
+	input: CreateOrderInput;
 }>;
 
 export type CreateOrderMutation = {
@@ -1346,8 +1369,8 @@ export function useOrderQuery(
 	});
 }
 export const CreateOrderDocument = gql`
-	mutation CreateOrder($cartId: ID!) {
-		createOrder(cartId: $cartId) {
+	mutation CreateOrder($input: CreateOrderInput!) {
+		createOrder(input: $input) {
 			id
 			store {
 				id

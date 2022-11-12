@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet, Pressable, ScrollViewProps } from 'react-native';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { GestureHandlerRefContext } from '@react-navigation/stack';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -21,7 +21,9 @@ const Product: React.FC = () => {
 	});
 	const [scrolledTop, setScrolledTop] = React.useState(true);
 
-	const handleScroll = React.useCallback(({ nativeEvent }: any) => {
+	const handleScroll = React.useCallback<
+		NonNullable<ScrollViewProps['onScroll']>
+	>(({ nativeEvent }) => {
 		setScrolledTop(nativeEvent.contentOffset.y <= 0);
 	}, []);
 

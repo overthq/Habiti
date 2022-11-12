@@ -31,7 +31,7 @@ const Cart: React.FC = () => {
 
 	const handleSubmit = React.useCallback(async () => {
 		try {
-			await createOrder({ cartId });
+			await createOrder({ input: { cartId, cardId: selectedCard } });
 			goBack();
 		} catch (error) {
 			console.log(error);

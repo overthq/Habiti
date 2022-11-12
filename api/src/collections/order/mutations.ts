@@ -3,28 +3,22 @@ import { chargeAuthorization } from '../../utils/paystack';
 import { OrderStatus } from 'prisma';
 
 interface CreateOrderArgs {
-	cartId: string;
-	cardId?: string;
+	input: {
+		cartId: string;
+		cardId?: string;
+	};
 }
 
 const createOrder: Resolver<CreateOrderArgs> = async (
 	_,
-	{ cartId, cardId },
+	{ input: { cartId, cardId } },
 	ctx
 ) => {
 	const cart = await ctx.prisma.cart.findUnique({
 		where: { id: cartId },
 		include: {
-			user: {
-				include: {
-					cards: true
-				}
-			},
-			products: {
-				include: {
-					product: true
-				}
-			}
+			user: { include: { cards: true } },
+			products: { include: { product: true } }
 		}
 	});
 
@@ -33,22 +27,20 @@ const createOrder: Resolver<CreateOrderArgs> = async (
 	}, 0);
 
 	// TODO:
-	// 1. Move all this logic into a `resolveCard` function.
-	//    It might be useful in other cases.
-	// 2. Retrieve (or listen to) the status from the chargeAuthorization call,
+	// 1. Retrieve (or listen to) the status from the chargeAuthorization call,
 	//    so we can update the order status (esp. in the case that the payment fails).
-	// 3. It probably makes more sense to always pass the cardId.
+	// 2. It probably makes more sense to always pass the cardId.
+
+	if (cart.userId !== ctx.user.id) {
+		throw new Error('You are not authorized to access this cart.');
+	}
 
 	const card = cardId
-		? await ctx.prisma.card.findUnique({ where: { id: cardId } })
+		? cart.user.cards.find(c => c.id === cardId)
 		: cart.user.cards[0];
 
 	if (!card) {
 		throw new Error('Please add a card to authorize this transaction');
-	}
-
-	if (cart.userId !== ctx.user.id) {
-		throw new Error('You are not authorized to access this cart.');
 	}
 
 	const [order] = await ctx.prisma.$transaction([

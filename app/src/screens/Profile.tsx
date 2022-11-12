@@ -29,6 +29,22 @@ const Profile: React.FC = () => {
 				title='Payment methods'
 				onPress={() => navigate('Payment Methods')}
 			/>
+			{/*
+				* Account Settings:
+				  - Account Info
+				  - Addresses
+				  - Loyalty Cards (list followed stores that support loyalty cards.)
+				  - Notifications
+			    - Country*
+				* About this app
+				  - Legal
+					- TOS
+					- Privacy Policy
+					- OSS Packages*
+					- Version Number*
+				* Support
+				* Set up your own store
+			*/}
 			<Button text='Log Out' onPress={logOut} />
 		</View>
 	);
