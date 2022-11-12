@@ -22,10 +22,6 @@ export type Scalars = {
 	Upload: any;
 };
 
-export type AddProductImagesInput = {
-	imageFiles: Array<Scalars['Upload']>;
-};
-
 export type AddStoreManagerInput = {
 	managerId: Scalars['ID'];
 	storeId: Scalars['ID'];
@@ -92,6 +88,11 @@ export type CreateCartInput = {
 	storeId: Scalars['ID'];
 };
 
+export type CreateOrderInput = {
+	cardId?: InputMaybe<Scalars['ID']>;
+	cartId: Scalars['ID'];
+};
+
 export type CreateProductInput = {
 	description: Scalars['String'];
 	imageFiles: Array<Scalars['Upload']>;
@@ -112,7 +113,7 @@ export type CreateStoreInput = {
 
 export type EditProductInput = {
 	description?: InputMaybe<Scalars['String']>;
-	imageFile?: InputMaybe<Scalars['Upload']>;
+	imageFiles: Array<Scalars['Upload']>;
 	name?: InputMaybe<Scalars['String']>;
 	quantity?: InputMaybe<Scalars['Int']>;
 	unitPrice?: InputMaybe<Scalars['Int']>;
@@ -149,7 +150,6 @@ export type Image = {
 export type Mutation = {
 	__typename?: 'Mutation';
 	_?: Maybe<Scalars['Boolean']>;
-	addProductImages: Product;
 	addStoreManager: StoreManager;
 	addToCart: CartProduct;
 	addToWatchlist: WatchlistProduct;
@@ -162,6 +162,7 @@ export type Mutation = {
 	deleteCard: Card;
 	deleteCart: Scalars['ID'];
 	deleteImage: Image;
+	deleteProduct: Product;
 	deleteStore: Scalars['ID'];
 	deleteUser: Scalars['ID'];
 	editProduct: Product;
@@ -175,11 +176,6 @@ export type Mutation = {
 	updateCartProduct: CartProduct;
 	updateOrder: Order;
 	verify: VerifyResponse;
-};
-
-export type MutationAddProductImagesArgs = {
-	id: Scalars['ID'];
-	input: AddProductImagesInput;
 };
 
 export type MutationAddStoreManagerArgs = {
@@ -203,8 +199,7 @@ export type MutationCreateCartArgs = {
 };
 
 export type MutationCreateOrderArgs = {
-	cardId?: InputMaybe<Scalars['ID']>;
-	cartId: Scalars['ID'];
+	input: CreateOrderInput;
 };
 
 export type MutationCreateProductArgs = {
@@ -224,6 +219,10 @@ export type MutationDeleteCartArgs = {
 };
 
 export type MutationDeleteImageArgs = {
+	id: Scalars['ID'];
+};
+
+export type MutationDeleteProductArgs = {
 	id: Scalars['ID'];
 };
 
@@ -663,20 +662,6 @@ export type EditProductMutation = {
 	};
 };
 
-export type AddProductImagesMutationVariables = Exact<{
-	id: Scalars['ID'];
-	input: AddProductImagesInput;
-}>;
-
-export type AddProductImagesMutation = {
-	__typename?: 'Mutation';
-	addProductImages: {
-		__typename?: 'Product';
-		id: string;
-		images: Array<{ __typename?: 'Image'; id: string; path: string }>;
-	};
-};
-
 export type StatsQueryVariables = Exact<{
 	storeId: Scalars['ID'];
 	period: StatPeriod;
@@ -799,7 +784,7 @@ export const ManagedStoresDocument = gql`
 export function useManagedStoresQuery(
 	options: Omit<Urql.UseQueryArgs<ManagedStoresQueryVariables>, 'query'>
 ) {
-	return Urql.useQuery<ManagedStoresQuery>({
+	return Urql.useQuery<ManagedStoresQuery, ManagedStoresQueryVariables>({
 		query: ManagedStoresDocument,
 		...options
 	});
@@ -836,7 +821,10 @@ export const OrdersDocument = gql`
 export function useOrdersQuery(
 	options: Omit<Urql.UseQueryArgs<OrdersQueryVariables>, 'query'>
 ) {
-	return Urql.useQuery<OrdersQuery>({ query: OrdersDocument, ...options });
+	return Urql.useQuery<OrdersQuery, OrdersQueryVariables>({
+		query: OrdersDocument,
+		...options
+	});
 }
 export const OrderDocument = gql`
 	query Order($id: ID!) {
@@ -872,7 +860,10 @@ export const OrderDocument = gql`
 export function useOrderQuery(
 	options: Omit<Urql.UseQueryArgs<OrderQueryVariables>, 'query'>
 ) {
-	return Urql.useQuery<OrderQuery>({ query: OrderDocument, ...options });
+	return Urql.useQuery<OrderQuery, OrderQueryVariables>({
+		query: OrderDocument,
+		...options
+	});
 }
 export const UpdateOrderDocument = gql`
 	mutation UpdateOrder($orderId: ID!, $input: UpdateOrderInput!) {
@@ -909,7 +900,10 @@ export const ProductsDocument = gql`
 export function useProductsQuery(
 	options: Omit<Urql.UseQueryArgs<ProductsQueryVariables>, 'query'>
 ) {
-	return Urql.useQuery<ProductsQuery>({ query: ProductsDocument, ...options });
+	return Urql.useQuery<ProductsQuery, ProductsQueryVariables>({
+		query: ProductsDocument,
+		...options
+	});
 }
 export const ProductDocument = gql`
 	query Product($id: ID!) {
@@ -930,7 +924,10 @@ export const ProductDocument = gql`
 export function useProductQuery(
 	options: Omit<Urql.UseQueryArgs<ProductQueryVariables>, 'query'>
 ) {
-	return Urql.useQuery<ProductQuery>({ query: ProductDocument, ...options });
+	return Urql.useQuery<ProductQuery, ProductQueryVariables>({
+		query: ProductDocument,
+		...options
+	});
 }
 export const CreateProductDocument = gql`
 	mutation CreateProduct($input: CreateProductInput!) {
@@ -975,24 +972,6 @@ export function useEditProductMutation() {
 		EditProductDocument
 	);
 }
-export const AddProductImagesDocument = gql`
-	mutation AddProductImages($id: ID!, $input: AddProductImagesInput!) {
-		addProductImages(id: $id, input: $input) {
-			id
-			images {
-				id
-				path
-			}
-		}
-	}
-`;
-
-export function useAddProductImagesMutation() {
-	return Urql.useMutation<
-		AddProductImagesMutation,
-		AddProductImagesMutationVariables
-	>(AddProductImagesDocument);
-}
 export const StatsDocument = gql`
 	query Stats($storeId: ID!, $period: StatPeriod!) {
 		stats(storeId: $storeId, period: $period) {
@@ -1012,7 +991,10 @@ export const StatsDocument = gql`
 export function useStatsQuery(
 	options: Omit<Urql.UseQueryArgs<StatsQueryVariables>, 'query'>
 ) {
-	return Urql.useQuery<StatsQuery>({ query: StatsDocument, ...options });
+	return Urql.useQuery<StatsQuery, StatsQueryVariables>({
+		query: StatsDocument,
+		...options
+	});
 }
 export const CreateStoreDocument = gql`
 	mutation CreateStore($input: CreateStoreInput!) {
@@ -1069,7 +1051,10 @@ export const StoreDocument = gql`
 export function useStoreQuery(
 	options: Omit<Urql.UseQueryArgs<StoreQueryVariables>, 'query'>
 ) {
-	return Urql.useQuery<StoreQuery>({ query: StoreDocument, ...options });
+	return Urql.useQuery<StoreQuery, StoreQueryVariables>({
+		query: StoreDocument,
+		...options
+	});
 }
 export const AuthenticateDocument = gql`
 	mutation Authenticate($input: AuthenticateInput!) {

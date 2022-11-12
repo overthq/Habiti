@@ -59,13 +59,3 @@ mutation EditProduct($id: ID!, $input: EditProductInput!) {
 		}
 	}
 }
-
-mutation AddProductImages($id: ID!, $input: AddProductImagesInput!) {
-	addProductImages(id: $id, input: $input) {
-		id
-		images {
-			id
-			path
-		}
-	}
-}

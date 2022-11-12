@@ -15,7 +15,10 @@ import Button from '../components/global/Button';
 // I'm not the best RN developer out there, but even I know that this is
 // a travesty.
 // Please, bear with me.
-// We should probably merge the product and add product screens.
+
+// TODO:
+// - We should probably merge the product and add product screens.
+//   (Conditional: !!productId)
 
 export interface ProductFormData {
 	name: string;
@@ -41,7 +44,7 @@ const AddProduct: React.FC = () => {
 
 	const onSubmit = React.useCallback(
 		async (values: ProductFormData) => {
-			if (activeStore && toUpload.length > 0) {
+			if (activeStore) {
 				await createProduct({
 					input: {
 						name: values.name,
@@ -79,7 +82,7 @@ const AddProduct: React.FC = () => {
 				);
 			}
 		});
-	}, []);
+	}, [toUpload]);
 
 	return (
 		<FormProvider {...formMethods}>

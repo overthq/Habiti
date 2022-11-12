@@ -12,8 +12,6 @@ interface ProductMainProps {
 
 const ProductMain: React.FC<ProductMainProps> = ({ product }) => {
 	const navigation = useNavigation();
-	// Remember to ensure that some weird view caching does not allow this
-	// to be shared between separate product screens.
 	const [toUpload, setToUpload] = React.useState<string[]>([]);
 	const [, editProduct] = useEditProductMutation();
 
@@ -27,30 +25,38 @@ const ProductMain: React.FC<ProductMainProps> = ({ product }) => {
 	});
 
 	const onSubmit = async (values: ProductFormData) => {
-		editProduct({
+		await editProduct({
 			id: product.id,
 			input: {
 				...values,
 				unitPrice: Number(values.unitPrice),
-				quantity: Number(values.quantity)
+				quantity: Number(values.quantity),
+				imageFiles: toUpload
 			}
 		});
 	};
 
 	React.useLayoutEffect(() => {
+		const disabled = toUpload.length === 0 && !formMethods.formState.isDirty;
+
 		navigation.setOptions({
 			headerRight: () => {
 				return (
 					<Pressable
 						style={{ marginRight: 16 }}
 						onPress={formMethods.handleSubmit(onSubmit)}
+						disabled={disabled}
 					>
-						<Text style={{ fontSize: 17 }}>Save</Text>
+						<Text
+							style={[{ fontSize: 17 }, disabled ? { color: '#777777' } : {}]}
+						>
+							Save
+						</Text>
 					</Pressable>
 				);
 			}
 		});
-	}, []);
+	}, [toUpload]);
 
 	return (
 		<FormProvider {...formMethods}>

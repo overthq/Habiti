@@ -33,10 +33,6 @@ const ProductTypes = gql`
 		description: String
 		unitPrice: Int
 		quantity: Int
-		imageFile: Upload
-	}
-
-	input AddProductImagesInput {
 		imageFiles: [Upload!]!
 	}
 
@@ -48,7 +44,7 @@ const ProductTypes = gql`
 	extend type Mutation {
 		createProduct(input: CreateProductInput!): Product!
 		editProduct(id: ID!, input: EditProductInput!): Product!
-		addProductImages(id: ID!, input: AddProductImagesInput!): Product!
+		deleteProduct(id: ID!): Product!
 	}
 `;
 
