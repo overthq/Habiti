@@ -5,6 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { ProductQuery, useEditProductMutation } from '../../types/api';
 import ProductForm from './ProductForm';
 import type { ProductFormData } from '../../screens/AddProduct';
+import { generateUploadFile } from '../../utils/images';
 
 interface ProductMainProps {
 	product: ProductQuery['product'];
@@ -31,7 +32,7 @@ const ProductMain: React.FC<ProductMainProps> = ({ product }) => {
 				...values,
 				unitPrice: Number(values.unitPrice),
 				quantity: Number(values.quantity),
-				imageFiles: toUpload
+				imageFiles: toUpload.map(generateUploadFile)
 			}
 		});
 	};
