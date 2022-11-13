@@ -7,6 +7,7 @@ I'm not creating issues for these TODOs yet, because I'm currently the only deve
 ### General UI/UX improvements
 
 - [ ] Figure out better card tokenization UX.
+- [ ] Design a better "store header" component.
 
 ### Features
 
@@ -16,7 +17,7 @@ I'm not creating issues for these TODOs yet, because I'm currently the only deve
 
 ### Bugs
 
-- [ ]
+- [ ] Fix issues with adding products to carts.
 
 ## Dashboard
 
@@ -26,9 +27,11 @@ I'm not creating issues for these TODOs yet, because I'm currently the only deve
 
 ### Features
 
+- [ ] Add general metrics to the overview page.
+
 ### Bugs
 
-- [ ]
+- [ ] Fix issues with switching stat periods on overview screen.
 
 ## API
 
@@ -38,8 +41,8 @@ I'm not creating issues for these TODOs yet, because I'm currently the only deve
 
 ### Bugs
 
-- [ ]
+- [ ] Fix registration/authentication issues.
 
 ### Data
 
-- [ ]
+- [ ] Rethink schema.
