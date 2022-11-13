@@ -10,16 +10,6 @@ import { useForm } from 'react-hook-form';
 import { generateUploadFile } from '../utils/images';
 import Button from '../components/global/Button';
 
-// DISCLAIMER:
-// This image uploading logic below is very hacky.
-// I'm not the best RN developer out there, but even I know that this is
-// a travesty.
-// Please, bear with me.
-
-// TODO:
-// - We should probably merge the product and add product screens.
-//   (Conditional: !!productId)
-
 export interface ProductFormData {
 	name: string;
 	description: string;
@@ -55,6 +45,8 @@ const AddProduct: React.FC = () => {
 						imageFiles: toUpload.map(generateUploadFile)
 					}
 				});
+
+				setToUpload([]);
 
 				goBack();
 			}

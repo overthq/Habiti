@@ -40,7 +40,7 @@ const Overview: React.FC = () => {
 				</TouchableOpacity>
 			)
 		});
-	}, [navigation]);
+	}, []);
 
 	return (
 		<ScrollView style={styles.container}>

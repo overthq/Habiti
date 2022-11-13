@@ -35,6 +35,8 @@ const ProductMain: React.FC<ProductMainProps> = ({ product }) => {
 				imageFiles: toUpload.map(generateUploadFile)
 			}
 		});
+
+		setToUpload([]);
 	};
 
 	React.useLayoutEffect(() => {

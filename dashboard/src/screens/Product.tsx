@@ -11,11 +11,6 @@ import ProductMain from '../components/product/ProductMain';
 // - Set up "collections/groups" for products.
 // - We can display this somehow on the store screen for shoppers.
 
-// We need to have a detailed way of knowing if the values have changed from the default,
-// for any of the many items on the list here.
-// This might be very wasteful w.r.t. render computations, since we'd ideally
-// have to check this on every re-render that relates to value changes.
-
 // Create a pattern where we have a wrapper for every screen that depends
 // on pre-existing data.
 // Basically, the screen displays a loading indicator or error boundary
