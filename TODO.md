@@ -11,6 +11,8 @@ I'm not creating issues for these TODOs yet, because I'm currently the only deve
 ### Features
 
 - [ ] Add "Related Products" section to Product screen.
+- [ ] Add "Add all items to cart" button to Order screen.
+- [ ] Add button that leads directly to store cart to the Store screen.
 
 ### Bugs
 

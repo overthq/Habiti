@@ -53,7 +53,9 @@ const styles = StyleSheet.create({
 		flex: 1
 	},
 	products: {
-		marginVertical: 16
+		paddingHorizontal: 16,
+		borderRadius: 4,
+		overflow: 'hidden'
 	}
 });
 

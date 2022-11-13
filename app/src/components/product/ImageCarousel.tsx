@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, StyleSheet, useWindowDimensions } from 'react-native';
+import { View, Image, StyleSheet, Dimensions } from 'react-native';
 import Animated, {
 	useSharedValue,
 	useAnimatedScrollHandler
@@ -7,12 +7,13 @@ import Animated, {
 import ImageCarouselDots from '../profile/ImageCarouselDots';
 import { ProductQuery } from '../../types/api';
 
+const { width } = Dimensions.get('window');
+
 interface ImageCarouselProps {
 	images: ProductQuery['product']['images'];
 }
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
-	const { width } = useWindowDimensions();
 	const scrollX = useSharedValue(0);
 
 	const handleScroll = useAnimatedScrollHandler({
@@ -31,11 +32,15 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 				snapToInterval={width}
 				snapToAlignment='center'
 				showsHorizontalScrollIndicator={false}
+				contentContainerStyle={{ flexGrow: 1 }}
 			>
 				{images.map(image => (
-					<View key={image.id} style={styles.imageContainer}>
-						<Image source={{ uri: image.path }} style={styles.image} />
-					</View>
+					<Image
+						key={image.id}
+						source={{ uri: image.path }}
+						style={styles.image}
+						resizeMode='cover'
+					/>
 				))}
 			</Animated.ScrollView>
 			<ImageCarouselDots scrollX={scrollX} length={images.length} />
@@ -45,17 +50,12 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		height: 300,
+		height: width,
 		width: '100%',
 		backgroundColor: '#FFFFFF'
 	},
-	imageContainer: {
-		width: '100%',
-		height: '100%'
-	},
 	image: {
-		width: '100%',
-		height: '100%'
+		flex: 1
 	}
 });
 

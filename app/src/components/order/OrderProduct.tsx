@@ -55,8 +55,8 @@ const styles = StyleSheet.create({
 	placeholder: {
 		borderRadius: 4,
 		backgroundColor: '#D3D3D3',
-		height: 50,
-		width: 50,
+		height: 40,
+		width: 40,
 		marginRight: 8,
 		overflow: 'hidden'
 	},
