@@ -44,11 +44,11 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		marginVertical: 8
+		marginVertical: 4
 	},
 	imagePlaceholder: {
-		height: 50,
-		width: 50,
+		height: 40,
+		width: 40,
 		marginRight: 8,
 		borderRadius: 4,
 		backgroundColor: '#D3D3D3',

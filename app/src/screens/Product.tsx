@@ -66,7 +66,6 @@ const Product: React.FC = () => {
 						cartId={data.product.store.cartId}
 						inCart={data.product.inCart}
 					/>
-					{/* Related Products */}
 				</ScrollView>
 			)}
 		</GestureHandlerRefContext.Consumer>

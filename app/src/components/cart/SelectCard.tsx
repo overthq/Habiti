@@ -48,8 +48,8 @@ const SelectCard: React.FC<SelectCardProps> = ({
 					<Text style={styles.cardText}>
 						{displayCard ? `···· ${displayCard.last4}` : ' Add card'}
 					</Text>
-					<Icon name='chevron-right' style={{ marginRight: -8 }} />
 				</View>
+				<Icon name='chevron-right' style={{ marginRight: -8 }} />
 			</Pressable>
 
 			{expanded && (
@@ -76,14 +76,14 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	row: {
+		width: '100%',
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center'
 	},
 	cardInfo: {
 		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'space-between'
+		alignItems: 'center'
 	},
 	cardText: {
 		fontSize: 16,

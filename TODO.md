@@ -10,7 +10,7 @@ I'm not creating issues for these TODOs yet, because I'm currently the only deve
 
 ### Features
 
-- [ ]
+- [ ] Add "Related Products" section to Product screen.
 
 ### Bugs
 

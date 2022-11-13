@@ -30,6 +30,7 @@ const Carts: React.FC = () => {
 				renderItem={({ item }) => (
 					<CartsListItem cart={item} onPress={handleCartPress(item.id)} />
 				)}
+				estimatedItemSize={66}
 				data={carts}
 				ListEmptyComponent={
 					<ListEmpty

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import {
 	NavigationProp,
 	RouteProp,
@@ -29,11 +29,7 @@ const Order: React.FC = () => {
 	);
 
 	if (fetching || !order) {
-		return (
-			<View>
-				<ActivityIndicator />
-			</View>
-		);
+		return <View style={styles.container} />;
 	}
 
 	return (
