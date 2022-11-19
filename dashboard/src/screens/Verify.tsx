@@ -73,9 +73,6 @@ const Verify: React.FC = () => {
 					/>
 				))}
 			</View>
-			{/* <TouchableOpacity onPress={handleSubmit} style={authStyles.button}>
-				<Text style={authStyles.buttonText}>Verify</Text>
-			</TouchableOpacity> */}
 			<Button onPress={handleSubmit} text='Verify' loading={fetching} />
 		</View>
 	);

@@ -31,7 +31,11 @@ const VerifyAuthentication: React.FC = () => {
 			<Text style={styles.description}>
 				A verification code was sent to your phone via SMS.
 			</Text>
-			<TextInput style={styles.input} onChangeText={setCode} />
+			<TextInput
+				style={styles.input}
+				onChangeText={setCode}
+				keyboardType='number-pad'
+			/>
 			<Button text='Verify Code' onPress={handleSubmit} loading={fetching} />
 		</View>
 	);
