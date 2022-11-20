@@ -41,9 +41,9 @@ const Routes: React.FC = () => {
 						<>
 							<AppStack.Screen name='Home' component={HomeTabNavigator} />
 							<AppStack.Screen
-								name='Store'
-								component={Store}
-								options={{ headerShown: true, headerTitle: '' }}
+								name='Cart'
+								component={Cart}
+								options={{ headerShown: true }}
 							/>
 							<AppStack.Group screenOptions={{ presentation: 'modal' }}>
 								<AppStack.Screen
@@ -56,18 +56,9 @@ const Routes: React.FC = () => {
 										gestureResponseDistance: Dimensions.get('window').height
 									}}
 								/>
-								<AppStack.Screen name='Cart' component={Cart} />
 								<AppStack.Group screenOptions={{ headerShown: true }}>
 									<AppStack.Screen name='Order' component={Order} />
-									<AppStack.Screen
-										name='Edit Profile'
-										component={EditProfile}
-									/>
 									<AppStack.Screen name='Add Card' component={AddCardWebview} />
-									<AppStack.Screen
-										name='Payment Methods'
-										component={PaymentMethods}
-									/>
 								</AppStack.Group>
 							</AppStack.Group>
 						</>

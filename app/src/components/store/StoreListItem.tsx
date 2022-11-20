@@ -37,8 +37,7 @@ const styles = StyleSheet.create({
 	},
 	name: {
 		fontSize: 16,
-		marginBottom: 2,
-		fontWeight: '500'
+		marginBottom: 2
 	},
 	price: {
 		color: '#505050',

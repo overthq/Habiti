@@ -24,6 +24,7 @@ export const tabScreenOptions = ({
 }: {
 	route: RouteProp<HomeTabParamList>;
 }) => ({
+	headerShown: false,
 	tabBarActiveTintColor: 'black',
 	tabBarInactiveTintColor: 'gray',
 	tabBarShowLabel: false,

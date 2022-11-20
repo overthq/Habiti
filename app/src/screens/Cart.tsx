@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import {
 	useRoute,
 	RouteProp,
@@ -14,17 +13,21 @@ import Button from '../components/global/Button';
 import SelectCard from '../components/cart/SelectCard';
 import { formatNaira } from '../utils/currency';
 import useStore from '../state';
+import useGoBack from '../hooks/useGoBack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Cart: React.FC = () => {
 	const {
 		params: { cartId }
 	} = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
 	const { goBack } = useNavigation<NavigationProp<AppStackParamList>>();
+	useGoBack();
 
 	const [{ data, fetching }] = useCartQuery({ variables: { cartId } });
 	const [, createOrder] = useCreateOrderMutation();
 
 	const defaultCardId = useStore(state => state.defaultCard);
+	const { bottom } = useSafeAreaInsets();
 
 	const [selectedCard, setSelectedCard] = React.useState(defaultCardId);
 	const cart = data?.cart;
@@ -48,8 +51,8 @@ const Cart: React.FC = () => {
 	if (fetching || !cart) return <View style={styles.loading} />;
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<Text style={styles.heading}>Checkout</Text>
+		<ScrollView style={[styles.container, { paddingBottom: bottom }]}>
+			{/* <Text style={styles.heading}>Checkout</Text> */}
 			<Text style={styles.sectionHeader}>Order Summary</Text>
 			{cart.products.map(cartProduct => (
 				<CartProduct key={cartProduct.id} cartProduct={cartProduct} />
@@ -67,7 +70,7 @@ const Cart: React.FC = () => {
 				/>
 			</View>
 
-			<View style={styles.row}>
+			<View style={[styles.row, { marginTop: 40 }]}>
 				<Text style={styles.total}>Subtotal</Text>
 				<Text style={styles.total}>{formatNaira(cart.total)}</Text>
 			</View>
@@ -89,7 +92,7 @@ const Cart: React.FC = () => {
 					style={styles.button}
 				/>
 			</View>
-		</SafeAreaView>
+		</ScrollView>
 	);
 };
 
@@ -100,7 +103,7 @@ const styles = StyleSheet.create({
 	},
 	container: {
 		flex: 1,
-		paddingTop: 16,
+		paddingTop: 8,
 		paddingHorizontal: 16,
 		backgroundColor: '#FFFFFF'
 	},

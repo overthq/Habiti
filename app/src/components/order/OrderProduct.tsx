@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Pressable, Text, Image, StyleSheet } from 'react-native';
 import { OrderQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
+import { plural } from '../../utils/strings';
 import { Icon } from '../Icon';
 
 interface OrderProductProps {
@@ -17,17 +18,15 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 		<Pressable style={styles.container} onPress={onPress}>
 			<View style={styles.left}>
 				<View style={styles.placeholder}>
-					{product.images[0] && (
-						<Image
-							source={{ uri: product.images[0].path }}
-							style={styles.image}
-						/>
-					)}
+					<Image
+						source={{ uri: product.images[0]?.path }}
+						style={styles.image}
+					/>
 				</View>
 				<View>
 					<Text style={styles.name}>{product.name}</Text>
 					<Text style={styles.price}>
-						{quantity} unit{quantity > 1 ? 's' : ''} ·{' '}
+						{`${plural('unit', quantity)} · `}
 						{formatNaira(quantity * unitPrice)}
 					</Text>
 				</View>
@@ -43,10 +42,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		backgroundColor: '#FFFFFF',
-		paddingVertical: 8,
-		paddingHorizontal: 8,
-		borderBottomWidth: 0.5,
-		borderBottomColor: '#EDEDED'
+		marginBottom: 8
 	},
 	left: {
 		flexDirection: 'row',

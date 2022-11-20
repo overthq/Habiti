@@ -1,26 +1,23 @@
 import React from 'react';
-import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet } from 'react-native';
 import { OrderQuery } from '../../types/api';
-import { AppStackParamList } from '../../types/navigation';
 import { relativeTimestamp } from '../../utils/date';
 import { formatNaira } from '../../utils/currency';
-import { Icon } from '../Icon';
 
 interface OrderMetaProps {
 	order: OrderQuery['order'];
 }
 
 const OrderMeta: React.FC<OrderMetaProps> = ({ order }) => {
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	// const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
-	const handleStorePress = React.useCallback(() => {
-		navigate('Store', { storeId: order.store.id });
-	}, [order]);
+	// const handleStorePress = React.useCallback(() => {
+	// 	navigate('Store', { storeId: order.store.id });
+	// }, [order]);
 
 	return (
 		<View style={styles.container}>
-			<Pressable style={styles.store} onPress={handleStorePress}>
+			{/* <Pressable style={styles.store} onPress={handleStorePress}>
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 					<View style={styles.placeholder}>
 						{order.store.image ? (
@@ -35,21 +32,14 @@ const OrderMeta: React.FC<OrderMetaProps> = ({ order }) => {
 					<Text style={styles.storeName}>{order.store.name}</Text>
 				</View>
 				<Icon name='chevron-right' />
-			</Pressable>
-			<View
-				style={{
-					marginTop: 8,
-					flexDirection: 'row'
-				}}
-			>
-				<View style={{ flexGrow: 1 }}>
-					<Text style={styles.label}>Order Date</Text>
-					<Text style={styles.date}>{relativeTimestamp(order.createdAt)}</Text>
-				</View>
-				<View style={{ flexGrow: 1 }}>
-					<Text style={styles.label}>Order Total</Text>
-					<Text style={styles.date}>{formatNaira(order.total)}</Text>
-				</View>
+			</Pressable> */}
+			<View style={styles.row}>
+				<Text style={styles.label}>Date</Text>
+				<Text style={styles.date}>{relativeTimestamp(order.createdAt)}</Text>
+			</View>
+			<View style={styles.row}>
+				<Text style={styles.label}>Total</Text>
+				<Text style={styles.date}>{formatNaira(order.total)}</Text>
 			</View>
 		</View>
 	);
@@ -58,10 +48,17 @@ const OrderMeta: React.FC<OrderMetaProps> = ({ order }) => {
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: '#FFFFFF',
-		padding: 16,
+		paddingTop: 8,
+		paddingBottom: 4,
+		paddingHorizontal: 16,
 		borderRadius: 4,
 		marginVertical: 16,
 		marginHorizontal: 16
+	},
+	row: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		marginBottom: 4
 	},
 	store: {
 		width: '100%',
@@ -95,8 +92,7 @@ const styles = StyleSheet.create({
 		color: '#505050'
 	},
 	label: {
-		fontSize: 16,
-		fontWeight: '500'
+		fontSize: 16
 	},
 	date: {
 		fontSize: 16,

@@ -16,7 +16,8 @@ const Order: React.FC = () => {
 	const {
 		params: { orderId }
 	} = useRoute<RouteProp<AppStackParamList, 'Order'>>();
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { navigate, setOptions } =
+		useNavigation<NavigationProp<AppStackParamList>>();
 	const [{ data, fetching }] = useOrderQuery({ variables: { orderId } });
 	useGoBack();
 	const order = data?.order;
@@ -28,13 +29,18 @@ const Order: React.FC = () => {
 		[]
 	);
 
+	React.useLayoutEffect(() => {
+		if (!fetching) {
+			setOptions({ headerTitle: `${data?.order.store.name} Order` });
+		}
+	}, [fetching, data?.order.store.name]);
+
 	if (fetching || !order) {
 		return <View style={styles.container} />;
 	}
 
 	return (
 		<View style={styles.container}>
-			<OrderMeta order={order} />
 			<View style={styles.products}>
 				{order.products.map(orderProduct => (
 					<OrderProduct
@@ -44,16 +50,22 @@ const Order: React.FC = () => {
 					/>
 				))}
 			</View>
+			<OrderMeta order={order} />
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1,
+		paddingTop: 16
 	},
 	products: {
+		backgroundColor: '#FFFFFF',
+		marginHorizontal: 16,
 		paddingHorizontal: 16,
+		paddingTop: 8,
+		// paddingBottom: 8,
 		borderRadius: 4,
 		overflow: 'hidden'
 	}
