@@ -24,7 +24,6 @@ const styles = StyleSheet.create({
 		paddingTop: 16
 	},
 	name: {
-		fontWeight: 'bold',
 		fontSize: 24
 	},
 	price: {
@@ -34,9 +33,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingBottom: 4,
-		borderBottomWidth: 1,
-		borderBottomColor: '#D3D3D3'
+		paddingBottom: 4
 	},
 	header: {
 		marginVertical: 8,

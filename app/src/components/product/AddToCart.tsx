@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Pressable, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { Icon } from '../Icon';
 import { useAddToCartMutation } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
 import Button from '../global/Button';
+import QuantityControl from './QuantityControl';
 
 interface AddToCartProps {
 	storeId: string;
@@ -31,50 +31,42 @@ const AddToCart: React.FC<AddToCartProps> = ({
 	const renderButton = React.useMemo(() => {
 		if (!cartId || (cartId && !inCart)) {
 			return (
-				<Pressable style={styles.button} onPress={handlePress}>
-					<Icon
-						size={22}
-						color='#FFFFFF'
-						name='plus'
-						style={{ marginRight: 4 }}
-					/>
-					<Text style={styles.buttonText}>Add to Cart</Text>
-				</Pressable>
+				<Button
+					onPress={handlePress}
+					text='Add to cart'
+					disabled={inCart}
+					style={styles.button}
+				/>
 			);
 		} else {
 			return (
 				<Button
 					text='View in cart'
 					onPress={() => navigate('Cart', { cartId })}
-					style={{ marginVertical: 16 }}
+					style={styles.button}
 				/>
 			);
 		}
 	}, [cartId, inCart]);
 
-	return <View style={styles.container}>{renderButton}</View>;
+	return (
+		<View style={styles.container}>
+			<QuantityControl productId={productId} />
+			{renderButton}
+		</View>
+	);
 };
 
 const styles = StyleSheet.create({
 	container: {
+		flexDirection: 'row',
 		width: '100%',
-		paddingHorizontal: 16
+		paddingHorizontal: 16,
+		marginVertical: 16
 	},
 	button: {
-		marginVertical: 16,
-		width: '100%',
-		height: 45,
-		borderRadius: 4,
-		flexDirection: 'row',
-		justifyContent: 'center',
-		alignItems: 'center',
-		alignSelf: 'center',
-		backgroundColor: '#202020'
-	},
-	buttonText: {
-		fontSize: 17,
-		fontWeight: '500',
-		color: '#FFFFFF'
+		flexGrow: 1,
+		width: undefined
 	}
 });
 

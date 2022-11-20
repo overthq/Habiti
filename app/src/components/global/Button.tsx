@@ -11,11 +11,22 @@ interface ButtonProps {
 	onPress(): void;
 	text: string;
 	loading?: boolean;
+	disabled?: boolean;
 	style?: ViewStyle;
 }
 
-const Button: React.FC<ButtonProps> = ({ onPress, text, loading, style }) => (
-	<Pressable style={[styles.container, style]} onPress={onPress}>
+const Button: React.FC<ButtonProps> = ({
+	onPress,
+	text,
+	loading,
+	style,
+	disabled
+}) => (
+	<Pressable
+		style={[styles.container, style]}
+		disabled={disabled}
+		onPress={onPress}
+	>
 		{loading ? (
 			<ActivityIndicator color='#FFFFFF' />
 		) : (

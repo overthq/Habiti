@@ -1,51 +1,51 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Icon } from '../Icon';
 
 interface QuantityControlProps {
-	itemId: string;
+	productId: string;
 }
 
-const QuantityControl: React.FC<QuantityControlProps> = ({ itemId }) => {
+const QuantityControl: React.FC<QuantityControlProps> = ({ productId }) => {
 	const [quantity, setQuantity] = React.useState(0);
 	// TODO: Iron out logic around whether or not the item is in the cart.
 
+	const increment = React.useCallback(() => {
+		if (quantity !== 0) {
+			setQuantity(quantity - 1);
+		}
+	}, [quantity]);
+
+	const decrement = React.useCallback(() => {
+		setQuantity(quantity + 1);
+	}, [quantity]);
+
 	return (
-		<View style={styles.container}>
-			<Text style={styles.title}>Quantity</Text>
-			<View style={styles.controls}>
-				<TouchableOpacity
-					style={{ marginRight: 7.5 }}
-					onPress={() => {
-						if (quantity !== 0) setQuantity(quantity - 1);
-					}}
-				>
-					<Icon name='minus' color='#828282' />
-				</TouchableOpacity>
-				<Text style={styles.quantity}>{quantity}</Text>
-				<TouchableOpacity
-					style={{ marginLeft: 7.5 }}
-					onPress={() => setQuantity(quantity + 1)}
-				>
-					<Icon name='plus' color='#828282' />
-				</TouchableOpacity>
-			</View>
+		<View style={styles.controls}>
+			<Pressable onPress={increment}>
+				<Icon name='minus' color='#505050' />
+			</Pressable>
+			<Text style={styles.quantity}>{quantity}</Text>
+			<Pressable onPress={decrement}>
+				<Icon name='plus' color='#505050' />
+			</Pressable>
 		</View>
 	);
 };
 const styles = StyleSheet.create({
-	container: {
+	controls: {
+		flexGrow: 1,
 		flexDirection: 'row',
+		alignItems: 'center',
 		justifyContent: 'space-between',
-		marginVertical: 4
+		backgroundColor: '#D3D3D3',
+		borderRadius: 4,
+		paddingHorizontal: 16,
+		marginRight: 16
 	},
 	title: {
 		fontSize: 16,
 		fontWeight: '500'
-	},
-	controls: {
-		flexDirection: 'row',
-		alignItems: 'center'
 	},
 	quantity: {
 		fontSize: 16,
