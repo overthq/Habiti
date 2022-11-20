@@ -25,10 +25,26 @@ const Profile: React.FC = () => {
 	return (
 		<View style={styles.container}>
 			<UserCard user={data?.currentUser} />
-			<ProfileRow
-				title='Payment methods'
-				onPress={() => navigate('Payment Methods')}
-			/>
+			<View style={{ borderRadius: 4, overflow: 'hidden', marginBottom: 16 }}>
+				<ProfileRow
+					title='Payment methods'
+					onPress={() => navigate('Payment Methods')}
+				/>
+				<View
+					style={{
+						width: '100%',
+						height: 1,
+						backgroundColor: '#D3D3D3',
+						marginHorizontal: 12
+					}}
+				/>
+				<ProfileRow
+					title='Delivery address'
+					onPress={() => {
+						// Something something
+					}}
+				/>
+			</View>
 			{/*
 				* Account Settings:
 				  - Account Info

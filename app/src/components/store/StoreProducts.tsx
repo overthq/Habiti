@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { ScrollViewProps, View } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import StoreHeader from './StoreHeader';
@@ -15,7 +15,9 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 	const [{ data, fetching }] = useStoreProductsQuery({
 		variables: { storeId: store.id }
 	});
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { navigate, setOptions } =
+		useNavigation<NavigationProp<AppStackParamList>>();
+	const [headerVisible, setHeaderVisible] = React.useState(false);
 
 	const products = data?.store.products;
 
@@ -25,6 +27,24 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 		},
 		[]
 	);
+
+	const handleScroll = React.useCallback<
+		NonNullable<ScrollViewProps['onScroll']>
+	>(({ nativeEvent }) => {
+		if (nativeEvent.contentOffset.y >= 100) {
+			setHeaderVisible(true);
+		} else if (nativeEvent.contentOffset.y < 100 && headerVisible) {
+			setHeaderVisible(false);
+		}
+	}, []);
+
+	React.useLayoutEffect(() => {
+		if (headerVisible && data?.store) {
+			setOptions({ headerTitle: data.store.name });
+		} else {
+			setOptions({ headerTitle: '' });
+		}
+	}, [headerVisible, data?.store]);
 
 	if (fetching || !products) return <View />;
 
@@ -39,6 +59,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 				<StoreListItem item={item} onPress={handleProductPress(item.id)} />
 			)}
 			numColumns={2}
+			onScroll={handleScroll}
 		/>
 	);
 };

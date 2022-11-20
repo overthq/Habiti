@@ -22,10 +22,6 @@ export type Scalars = {
 	Upload: any;
 };
 
-export type AddProductImagesInput = {
-	imageFiles: Array<Scalars['Upload']>;
-};
-
 export type AddStoreManagerInput = {
 	managerId: Scalars['ID'];
 	storeId: Scalars['ID'];
@@ -117,7 +113,7 @@ export type CreateStoreInput = {
 
 export type EditProductInput = {
 	description?: InputMaybe<Scalars['String']>;
-	imageFile?: InputMaybe<Scalars['Upload']>;
+	imageFiles: Array<Scalars['Upload']>;
 	name?: InputMaybe<Scalars['String']>;
 	quantity?: InputMaybe<Scalars['Int']>;
 	unitPrice?: InputMaybe<Scalars['Int']>;
@@ -154,7 +150,6 @@ export type Image = {
 export type Mutation = {
 	__typename?: 'Mutation';
 	_?: Maybe<Scalars['Boolean']>;
-	addProductImages: Product;
 	addStoreManager: StoreManager;
 	addToCart: CartProduct;
 	addToWatchlist: WatchlistProduct;
@@ -167,6 +162,7 @@ export type Mutation = {
 	deleteCard: Card;
 	deleteCart: Scalars['ID'];
 	deleteImage: Image;
+	deleteProduct: Product;
 	deleteStore: Scalars['ID'];
 	deleteUser: Scalars['ID'];
 	editProduct: Product;
@@ -180,11 +176,6 @@ export type Mutation = {
 	updateCartProduct: CartProduct;
 	updateOrder: Order;
 	verify: VerifyResponse;
-};
-
-export type MutationAddProductImagesArgs = {
-	id: Scalars['ID'];
-	input: AddProductImagesInput;
 };
 
 export type MutationAddStoreManagerArgs = {
@@ -228,6 +219,10 @@ export type MutationDeleteCartArgs = {
 };
 
 export type MutationDeleteImageArgs = {
+	id: Scalars['ID'];
+};
+
+export type MutationDeleteProductArgs = {
 	id: Scalars['ID'];
 };
 
@@ -814,6 +809,7 @@ export type StoreProductsQuery = {
 	store: {
 		__typename?: 'Store';
 		id: string;
+		name: string;
 		products: Array<{
 			__typename?: 'Product';
 			id: string;
@@ -878,22 +874,6 @@ export type AddToWatchlistMutation = {
 		__typename?: 'WatchlistProduct';
 		userId: string;
 		productId: string;
-		user: {
-			__typename?: 'User';
-			watchlist: Array<{
-				__typename?: 'WatchlistProduct';
-				userId: string;
-				productId: string;
-				product: {
-					__typename?: 'Product';
-					id: string;
-					name: string;
-					unitPrice: number;
-					store: { __typename?: 'Store'; id: string; name: string };
-					images: Array<{ __typename?: 'Image'; id: string; path: string }>;
-				};
-			}>;
-		};
 	};
 };
 
@@ -1399,6 +1379,7 @@ export const StoreProductsDocument = gql`
 	query StoreProducts($storeId: ID!) {
 		store(id: $storeId) {
 			id
+			name
 			products {
 				id
 				name
@@ -1489,25 +1470,6 @@ export const AddToWatchlistDocument = gql`
 		addToWatchlist(productId: $productId) {
 			userId
 			productId
-			user {
-				watchlist {
-					userId
-					productId
-					product {
-						id
-						name
-						unitPrice
-						store {
-							id
-							name
-						}
-						images {
-							id
-							path
-						}
-					}
-				}
-			}
 		}
 	}
 `;
