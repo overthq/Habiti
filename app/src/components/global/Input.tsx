@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
 		height: 40,
 		borderRadius: 4,
 		backgroundColor: '#EDEDED',
-		color: '#505050'
+		color: '#000000'
 	},
 	textArea: {
 		paddingTop: 8,

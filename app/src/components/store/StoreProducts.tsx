@@ -30,21 +30,20 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 
 	const handleScroll = React.useCallback<
 		NonNullable<ScrollViewProps['onScroll']>
-	>(({ nativeEvent }) => {
-		if (nativeEvent.contentOffset.y >= 100) {
-			setHeaderVisible(true);
-		} else if (nativeEvent.contentOffset.y < 100 && headerVisible) {
-			setHeaderVisible(false);
-		}
-	}, []);
-
-	React.useLayoutEffect(() => {
-		if (headerVisible && data?.store) {
-			setOptions({ headerTitle: data.store.name });
-		} else {
-			setOptions({ headerTitle: '' });
-		}
-	}, [headerVisible, data?.store]);
+	>(
+		({ nativeEvent }) => {
+			if (data?.store.name) {
+				if (nativeEvent.contentOffset.y >= 100 && !headerVisible) {
+					setHeaderVisible(true);
+					setOptions({ headerTitle: data.store.name });
+				} else if (nativeEvent.contentOffset.y < 100 && headerVisible) {
+					setHeaderVisible(false);
+					setOptions({ headerTitle: '' });
+				}
+			}
+		},
+		[data?.store.name, headerVisible]
+	);
 
 	if (fetching || !products) return <View />;
 

@@ -52,15 +52,12 @@ const Cart: React.FC = () => {
 
 	return (
 		<ScrollView style={[styles.container, { paddingBottom: bottom }]}>
-			{/* <Text style={styles.heading}>Checkout</Text> */}
 			<Text style={styles.sectionHeader}>Order Summary</Text>
 			{cart.products.map(cartProduct => (
 				<CartProduct key={cartProduct.id} cartProduct={cartProduct} />
 			))}
 
-			<View>
-				<Text style={styles.sectionHeader}>Delivery Address</Text>
-			</View>
+			<Text style={styles.sectionHeader}>Delivery Address</Text>
 
 			<View>
 				<Text style={styles.sectionHeader}>Payment Method</Text>
@@ -77,12 +74,12 @@ const Cart: React.FC = () => {
 
 			<View style={styles.row}>
 				<Text style={styles.total}>Service Fee</Text>
-				<Text style={styles.total}>{formatNaira(cart.total)}</Text>
+				<Text style={styles.total}>-</Text>
 			</View>
 
 			<View style={styles.row}>
 				<Text style={styles.total}>Taxes</Text>
-				<Text style={styles.total}>{formatNaira(cart.total)}</Text>
+				<Text style={styles.total}>-</Text>
 			</View>
 
 			<View style={styles.bottom}>
