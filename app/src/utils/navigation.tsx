@@ -1,9 +1,9 @@
-import { RouteProp } from '@react-navigation/native';
 import React from 'react';
+import { RouteProp } from '@react-navigation/native';
 import { Icon, IconType } from '../components/Icon';
 import { HomeTabParamList } from '../types/navigation';
 
-export const getIcon = (routeName: string): IconType => {
+export const getIcon = (routeName: keyof HomeTabParamList): IconType => {
 	switch (routeName) {
 		case 'For You':
 			return 'home';
@@ -14,10 +14,7 @@ export const getIcon = (routeName: string): IconType => {
 		case 'Profile':
 			return 'user';
 	}
-	throw new Error('Specified route does not exist.');
 };
-
-export const tabBarOptions = {};
 
 export const tabScreenOptions = ({
 	route

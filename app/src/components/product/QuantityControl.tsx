@@ -10,13 +10,13 @@ const QuantityControl: React.FC<QuantityControlProps> = ({ productId }) => {
 	const [quantity, setQuantity] = React.useState(0);
 	// TODO: Iron out logic around whether or not the item is in the cart.
 
-	const increment = React.useCallback(() => {
+	const decrement = React.useCallback(() => {
 		if (quantity !== 0) {
 			setQuantity(quantity - 1);
 		}
 	}, [quantity]);
 
-	const decrement = React.useCallback(() => {
+	const increment = React.useCallback(() => {
 		setQuantity(quantity + 1);
 	}, [quantity]);
 
@@ -32,6 +32,7 @@ const QuantityControl: React.FC<QuantityControlProps> = ({ productId }) => {
 		</View>
 	);
 };
+
 const styles = StyleSheet.create({
 	controls: {
 		flexGrow: 1,

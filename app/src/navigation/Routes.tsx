@@ -8,17 +8,14 @@ import { Provider } from 'urql';
 import Authenticate from '../screens/Authenticate';
 import Register from '../screens/Register';
 import Verify from '../screens/Verify';
-import Store from '../screens/Store';
 import Product from '../screens/Product';
 import Cart from '../screens/Cart';
 import Order from '../screens/Order';
-import EditProfile from '../screens/EditProfile';
 import AddCardWebview from '../screens/AddCardWebview';
 
 import HomeTabNavigator from './HomeTab';
 import { AppStackParamList } from '../types/navigation';
 import useClient from '../hooks/useClient';
-import PaymentMethods from '../screens/PaymentMethods';
 import { getStatusBarStyle } from '../utils/theme';
 import useStore from '../state';
 
@@ -40,23 +37,18 @@ const Routes: React.FC = () => {
 					{accessToken ? (
 						<>
 							<AppStack.Screen name='Home' component={HomeTabNavigator} />
-							<AppStack.Screen
-								name='Cart'
-								component={Cart}
-								options={{ headerShown: true }}
-							/>
-							<AppStack.Group screenOptions={{ presentation: 'modal' }}>
-								<AppStack.Screen
-									name='Product'
-									component={Product}
-									options={{
-										headerShown: true,
-										headerTitle: '',
-										gestureDirection: 'vertical',
-										gestureResponseDistance: Dimensions.get('window').height
-									}}
-								/>
-								<AppStack.Group screenOptions={{ headerShown: true }}>
+							<AppStack.Group screenOptions={{ headerShown: true }}>
+								<AppStack.Screen name='Cart' component={Cart} />
+								<AppStack.Group screenOptions={{ presentation: 'modal' }}>
+									<AppStack.Screen
+										name='Product'
+										component={Product}
+										options={{
+											headerTitle: '',
+											gestureDirection: 'vertical',
+											gestureResponseDistance: Dimensions.get('window').height
+										}}
+									/>
 									<AppStack.Screen name='Order' component={Order} />
 									<AppStack.Screen name='Add Card' component={AddCardWebview} />
 								</AppStack.Group>
