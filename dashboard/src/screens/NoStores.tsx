@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { AppStackParamList } from '../types/navigation';
+import Button from '../components/global/Button';
 
 const NoStores: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
@@ -9,9 +10,7 @@ const NoStores: React.FC = () => {
 	return (
 		<View style={styles.container}>
 			<Text>{`Looks like you don't have access to any stores. Create one?`}</Text>
-			<TouchableOpacity onPress={() => navigate('CreateStore')}>
-				<Text>Create Store</Text>
-			</TouchableOpacity>
+			<Button onPress={() => navigate('CreateStore')} text='Create Store' />
 		</View>
 	);
 };

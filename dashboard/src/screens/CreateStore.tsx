@@ -49,12 +49,12 @@ const CreateStore: React.FC = () => {
 	const setPreference = useStore(state => state.setPreference);
 	const formMethods = useForm<CreateStoreFormValues>();
 
-	const toNext = () => {
+	const toNext = React.useCallback(() => {
 		listRef.current?.scrollToIndex({
 			animated: true,
 			index: activeStepIndex + 1
 		});
-	};
+	}, [listRef.current]);
 
 	const handleViewableItemsChanged = React.useCallback(
 		({ viewableItems }: { viewableItems: ViewToken[] }) => {
@@ -71,19 +71,22 @@ const CreateStore: React.FC = () => {
 		}
 	});
 
-	const onSubmit = async (values: CreateStoreFormValues) => {
-		try {
-			const { data } = await createStore({
-				input: values
-			});
+	const onSubmit = React.useCallback(
+		async (values: CreateStoreFormValues) => {
+			try {
+				const { data } = await createStore({
+					input: values
+				});
 
-			if (data?.createStore?.id) {
-				setPreference({ activeStore: data.createStore.id });
+				if (data?.createStore?.id) {
+					setPreference({ activeStore: data.createStore.id });
+				}
+			} catch (error) {
+				console.log(error);
 			}
-		} catch (error) {
-			console.log(error);
-		}
-	};
+		},
+		[setPreference]
+	);
 
 	const isLastStep = activeStepIndex === steps.length - 1;
 
@@ -106,7 +109,7 @@ const CreateStore: React.FC = () => {
 			<Button
 				text={isLastStep ? 'Submit' : 'Next'}
 				onPress={isLastStep ? formMethods.handleSubmit(onSubmit) : toNext}
-				style={{ alignSelf: 'center', width: width - 32 }}
+				style={styles.button}
 			/>
 		</SafeAreaView>
 	);
@@ -135,6 +138,10 @@ const styles = StyleSheet.create({
 	formStep: {
 		width,
 		paddingHorizontal: 16
+	},
+	button: {
+		alignSelf: 'center',
+		width: width - 32
 	}
 });
 

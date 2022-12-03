@@ -22,6 +22,7 @@ export type MainTabParamList = {
 export type OrdersStackParamsList = {
 	OrdersList: undefined;
 	Order: { orderId: string };
+	Product: { productId: string };
 };
 
 export type ProductsStackParamList = {
