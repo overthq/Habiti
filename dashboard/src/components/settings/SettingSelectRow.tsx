@@ -22,9 +22,6 @@ const SettingSelectRow: React.FC<SettingSelectRowProps> = ({
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1
-	},
 	row: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',

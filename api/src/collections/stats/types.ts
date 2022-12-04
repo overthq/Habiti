@@ -7,6 +7,7 @@ const StatsTypes = gql`
 		products: [Product!]!
 		revenue: Int!
 		orders: [Order!]!
+		pendingOrderCount: Int!
 	}
 
 	type NewStats {

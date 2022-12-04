@@ -24,24 +24,11 @@ const EditStore: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		paddingTop: 16,
-		paddingHorizontal: 16,
-		backgroundColor: '#FFFFFF'
-	},
 	loading: {
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
 		backgroundColor: '#FFFFFF'
-	},
-	input: {
-		borderRadius: 4,
-		marginBottom: 8
-	},
-	button: {
-		marginTop: 8
 	}
 });
 

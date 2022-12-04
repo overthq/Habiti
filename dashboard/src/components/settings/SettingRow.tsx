@@ -1,45 +1,33 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Icon } from '../Icon';
-import { SettingsStackParamList } from '../../types/navigation';
 
 interface SettingRowProps {
 	name: string;
-	screen: keyof SettingsStackParamList;
+	onPress(): void;
 	displayValue?: string;
 }
 
 const SettingRow: React.FC<SettingRowProps> = ({
 	name,
-	screen,
+	onPress,
 	displayValue
-}) => {
-	const { navigate } = useNavigation<NavigationProp<SettingsStackParamList>>();
-
-	return (
-		<TouchableOpacity
-			activeOpacity={0.8}
-			style={styles.container}
-			onPress={() => navigate(screen)}
-		>
-			<Text style={styles.settingName}>{name}</Text>
-			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-				<View>
-					{displayValue && (
-						<Text style={styles.settingDisplay}>{displayValue}</Text>
-					)}
-				</View>
-				<Icon
-					name='chevron-right'
-					color='#505050'
-					size={24}
-					style={{ marginLeft: 8 }}
-				/>
-			</View>
-		</TouchableOpacity>
-	);
-};
+}) => (
+	<Pressable style={styles.container} onPress={onPress}>
+		<Text style={styles.settingName}>{name}</Text>
+		<View style={styles.right}>
+			{displayValue ? (
+				<Text style={styles.settingDisplay}>{displayValue}</Text>
+			) : null}
+			<Icon
+				name='chevron-right'
+				color='#505050'
+				size={24}
+				style={styles.icon}
+			/>
+		</View>
+	</Pressable>
+);
 
 const styles = StyleSheet.create({
 	container: {
@@ -56,9 +44,16 @@ const styles = StyleSheet.create({
 	settingName: {
 		fontSize: 16
 	},
+	right: {
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
 	settingDisplay: {
 		fontSize: 16,
 		color: '#505050'
+	},
+	icon: {
+		marginLeft: 8
 	}
 });
 

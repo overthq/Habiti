@@ -1,11 +1,12 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Dimensions } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+
 import Button from '../components/global/Button';
 import SettingRow from '../components/settings/SettingRow';
 import useStore from '../state';
 import { useStoreQuery } from '../types/api';
-
-const { width } = Dimensions.get('window');
+import type { SettingsStackParamList } from '../types/navigation';
 
 const Settings: React.FC = () => {
 	const { theme, activeStore, logOut } = useStore(state => ({
@@ -18,29 +19,32 @@ const Settings: React.FC = () => {
 		variables: { storeId: activeStore as string }
 	});
 
+	const { navigate } = useNavigation<NavigationProp<SettingsStackParamList>>();
+
+	const handleSettingsNavigate = React.useCallback(
+		(screen: keyof SettingsStackParamList) => () => {
+			navigate(screen);
+		},
+		[navigate]
+	);
+
 	const store = data?.store;
 
 	return (
 		<ScrollView style={styles.container}>
 			<SettingRow
 				name='Active Store'
-				screen='SettingsActiveStore'
+				onPress={handleSettingsNavigate('SettingsActiveStore')}
 				displayValue={store?.name}
 			/>
 			<SettingRow
 				name='Theme'
-				screen='SettingsTheme'
+				onPress={handleSettingsNavigate('SettingsTheme')}
 				displayValue={theme === 'light' ? 'Light' : 'Dark'}
 			/>
-			<Button
-				text='Log Out'
-				onPress={logOut}
-				style={{
-					alignSelf: 'center',
-					width: width - 16,
-					marginVertical: 8
-				}}
-			/>
+			<View style={styles.buttonContainer}>
+				<Button text='Log Out' onPress={logOut} />
+			</View>
 		</ScrollView>
 	);
 };
@@ -48,6 +52,10 @@ const Settings: React.FC = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1
+	},
+	buttonContainer: {
+		marginVertical: 8,
+		paddingHorizontal: 8
 	}
 });
 

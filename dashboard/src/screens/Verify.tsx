@@ -70,6 +70,7 @@ const Verify: React.FC = () => {
 						keyboardType='numeric'
 						onChangeText={val => handleFieldChange(val, index)}
 						onKeyPress={e => handleKeyPress(e.nativeEvent.key, index)}
+						caretHidden
 					/>
 				))}
 			</View>

@@ -19,7 +19,7 @@ const SettingsActiveStore: React.FC = () => {
 
 	const stores = data?.user.managed.map(({ store }) => store);
 
-	const handleRowSelect = (id: string) => {
+	const handleRowSelect = (id: string) => () => {
 		setPreference({ activeStore: id });
 	};
 
@@ -32,7 +32,7 @@ const SettingsActiveStore: React.FC = () => {
 					<SettingSelectRow
 						name={item.name}
 						isSelected={activeStore === item.id}
-						onSelectRow={() => handleRowSelect(item.id)}
+						onSelectRow={handleRowSelect(item.id)}
 					/>
 				)}
 			/>
@@ -43,16 +43,6 @@ const SettingsActiveStore: React.FC = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1
-	},
-	row: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		paddingVertical: 12,
-		paddingHorizontal: 16,
-		backgroundColor: '#FFFFFF',
-		borderBottomWidth: 1,
-		borderBottomColor: '#D3D3D3'
 	}
 });
 

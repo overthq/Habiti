@@ -1,15 +1,17 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { formatNaira } from '../../utils/currency';
 
 interface NumberStatProps {
 	title: string;
 	value: number;
+	currency?: boolean;
 }
 
-const NumberStat: React.FC<NumberStatProps> = ({ title, value }) => (
+const NumberStat: React.FC<NumberStatProps> = ({ title, value, currency }) => (
 	<View style={styles.container}>
 		<Text style={styles.title}>{title}</Text>
-		<Text style={styles.value}>{value}</Text>
+		<Text style={styles.value}>{currency ? formatNaira(value) : value}</Text>
 	</View>
 );
 

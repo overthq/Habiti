@@ -21,6 +21,15 @@ import NumberStat from '../components/overview/NumberStat';
 //   not been batched for delivery (and an easy way to do so).
 // - Metrics on new customers, how many
 
+// - Revenue
+// - Orders (Total)
+// - New customers
+// - Pending orders
+// - Low inventory items
+// - (Maybe) unique store visits.
+
+// - Payouts-related section (current available amount to payout).
+
 const Overview: React.FC = () => {
 	const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 	const [selectedPeriod, setSelectedPeriod] = React.useState(StatPeriod.Week);
@@ -53,7 +62,11 @@ const Overview: React.FC = () => {
 			) : (
 				<View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
 					<NumberStat title='Orders' value={data?.stats.orders.length ?? 0} />
-					<NumberStat title='Revenue' value={data?.stats.revenue ?? 0} />
+					<NumberStat
+						title='Revenue'
+						value={data?.stats.revenue ?? 0}
+						currency
+					/>
 				</View>
 			)}
 		</ScrollView>

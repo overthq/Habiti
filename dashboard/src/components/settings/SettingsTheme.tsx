@@ -13,7 +13,7 @@ const SettingsTheme = () => {
 		setPreference: state.setPreference
 	}));
 
-	const handleThemeSelect = (theme: Theme) => {
+	const handleThemeSelect = (theme: Theme) => () => {
 		setPreference({ theme });
 	};
 
@@ -24,7 +24,7 @@ const SettingsTheme = () => {
 					key={t}
 					name={t[0].toUpperCase() + t.substring(1)}
 					isSelected={theme === t}
-					onSelectRow={() => handleThemeSelect(t)}
+					onSelectRow={handleThemeSelect(t)}
 				/>
 			))}
 		</View>

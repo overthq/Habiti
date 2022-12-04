@@ -8,7 +8,6 @@ import { useCreateProductMutation } from '../types/api';
 import ProductForm from '../components/product/ProductForm';
 import { useForm } from 'react-hook-form';
 import { generateUploadFile } from '../utils/images';
-import Button from '../components/global/Button';
 
 export interface ProductFormData {
 	name: string;
@@ -79,7 +78,6 @@ const AddProduct: React.FC = () => {
 	return (
 		<FormProvider {...formMethods}>
 			<ProductForm imagesToUpload={toUpload} setImagesToUpload={setToUpload} />
-			<Button text='Submit' onPress={formMethods.handleSubmit(onSubmit)} />
 		</FormProvider>
 	);
 };
