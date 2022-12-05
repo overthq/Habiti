@@ -23,20 +23,23 @@ model User {
 }
 
 model Store {
-  id          String          @id @default(uuid())
-  name        String
-  description String?
-  website     String?
-  twitter     String?         @db.VarChar(15)
-  instagram   String?         @db.VarChar(30)
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-  image       Image?
-  products    Product[]
-  orders      Order[]
-  managers    StoreManager[]
-  followers   StoreFollower[]
-  carts       Cart[]
+  id            String          @id @default(uuid())
+  name          String
+  description   String?
+  website       String?
+  twitter       String?         @db.VarChar(15)
+  instagram     String?         @db.VarChar(30)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  image         Image?
+  products      Product[]
+  orders        Order[]
+  managers      StoreManager[]
+  followers     StoreFollower[]
+  carts         Cart[]
+  Payout        Payout[]
+  StoreMetadata StoreMetadata[]
+  PayoutMethod  PayoutMethod[]
 }
 
 model Product {
@@ -158,10 +161,43 @@ model Card {
   user              User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model StoreMetadata {
+  storeId  String
+  revenue  Int
+  payedOut Int
+  store    Store  @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@unique([storeId])
+}
+
+model PayoutMethod {
+  id       String         @id @default(uuid())
+  storeId  String
+  provider PayoutProvider
+
+  store  Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  Payout Payout[]
+}
+
+model Payout {
+  id        String       @id @default(uuid())
+  storeId   String
+  methodId  String
+  amount    Int
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  store     Store        @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  method    PayoutMethod @relation(fields: [methodId], references: [id])
+}
+
 enum OrderStatus {
   Pending
   Processing
   Cancelled
   Completed
   Delivered
+}
+
+enum PayoutProvider {
+  BankAccount
 }
