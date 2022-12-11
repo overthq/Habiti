@@ -1,8 +1,8 @@
 import React from 'react';
+import { Pressable, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FormProvider } from 'react-hook-form';
 
-import { Pressable, Text } from 'react-native';
 import useStore from '../state';
 import { useCreateProductMutation } from '../types/api';
 import ProductForm from '../components/product/ProductForm';
@@ -58,7 +58,7 @@ const AddProduct: React.FC = () => {
 			headerLeft: () => {
 				return (
 					<Pressable style={{ marginLeft: 16 }} onPress={goBack}>
-						<Text style={{ fontSize: 17 }}>Cancel</Text>
+						<Text style={{ fontSize: 16 }}>Cancel</Text>
 					</Pressable>
 				);
 			},
@@ -68,7 +68,7 @@ const AddProduct: React.FC = () => {
 						style={{ marginRight: 16 }}
 						onPress={formMethods.handleSubmit(onSubmit)}
 					>
-						<Text style={{ fontSize: 17 }}>Save</Text>
+						<Text style={{ fontSize: 16 }}>Save</Text>
 					</Pressable>
 				);
 			}

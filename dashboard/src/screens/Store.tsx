@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useStoreQuery } from '../types/api';
 import StoreProfile from '../components/store/StoreProfile';
 import useStore from '../state';
@@ -14,7 +14,7 @@ const Store: React.FC = () => {
 	const store = data?.store;
 
 	if (fetching || !store) {
-		return <ActivityIndicator />;
+		return <View />;
 	}
 
 	return (

@@ -22,14 +22,16 @@ interface OrderActionsProps {
 const OrderActions: React.FC<OrderActionsProps> = ({ orderId }) => {
 	const [{ fetching }, updateOrder] = useUpdateOrderMutation();
 
-	const updateOrderStatus = (status: OrderStatus) =>
-		React.useCallback(() => {
+	const updateOrderStatus = React.useCallback(
+		(status: OrderStatus) => () => {
 			try {
 				updateOrder({ orderId, input: { status } });
 			} catch (error) {
 				console.log(error);
 			}
-		}, []);
+		},
+		[]
+	);
 
 	return (
 		<View style={styles.container}>
@@ -37,12 +39,12 @@ const OrderActions: React.FC<OrderActionsProps> = ({ orderId }) => {
 				text='Mark as fulfilled'
 				loading={fetching}
 				onPress={updateOrderStatus(OrderStatus.Completed)}
-				style={{ marginRight: 16, height: 40, backgroundColor: '#505050' }}
+				style={styles.leftButton}
 			/>
 			<Button
 				text='Cancel'
 				onPress={updateOrderStatus(OrderStatus.Cancelled)}
-				style={{ height: 40 }}
+				style={styles.button}
 			/>
 		</View>
 	);
@@ -52,6 +54,14 @@ const styles = StyleSheet.create({
 	container: {
 		padding: 16,
 		flexDirection: 'row'
+	},
+	leftButton: {
+		marginRight: 16,
+		height: 40,
+		backgroundColor: '#505050'
+	},
+	button: {
+		height: 40
 	}
 });
 

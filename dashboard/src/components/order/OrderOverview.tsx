@@ -1,7 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { OrderQuery } from '../../types/api';
+
+import StatusPill from './StatusPill';
 import { parseTimestamp } from '../../utils/date';
+import { OrderQuery } from '../../types/api';
 
 interface OrderOverviewProps {
 	order: OrderQuery['order'];
@@ -14,8 +16,8 @@ interface OrderOverviewProps {
 const OrderOverview: React.FC<OrderOverviewProps> = ({ order }) => {
 	return (
 		<View style={styles.container}>
-			<Text>{order.status}</Text>
-			<Text>{parseTimestamp(order.createdAt)}</Text>
+			<StatusPill status={order.status} />
+			<Text style={styles.date}>{parseTimestamp(order.createdAt)}</Text>
 		</View>
 	);
 };
@@ -23,6 +25,9 @@ const OrderOverview: React.FC<OrderOverviewProps> = ({ order }) => {
 const styles = StyleSheet.create({
 	container: {
 		padding: 16
+	},
+	date: {
+		fontSize: 16
 	}
 });
 
