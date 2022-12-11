@@ -1,15 +1,14 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { useRoute, RouteProp } from '@react-navigation/native';
 import { useStoreQuery } from '../types/api';
-import { AppStackParamList } from '../types/navigation';
 import useGoBack from '../hooks/useGoBack';
 import EditStoreMain from '../components/edit-store/EditStoreMain';
+import useStore from '../state';
 
 const EditStore: React.FC = () => {
-	const { params } = useRoute<RouteProp<AppStackParamList, 'Edit Store'>>();
+	const activeStore = useStore(({ activeStore }) => activeStore);
 	const [{ data, fetching }] = useStoreQuery({
-		variables: { storeId: params.storeId }
+		variables: { storeId: activeStore as string }
 	});
 
 	useGoBack();

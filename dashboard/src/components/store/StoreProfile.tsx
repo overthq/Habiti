@@ -13,10 +13,7 @@ const StoreProfile: React.FC<StoreProfileProps> = ({ store }) => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	return (
-		<Pressable
-			style={styles.container}
-			onPress={() => navigate('Edit Store', { storeId: store.id })}
-		>
+		<Pressable style={styles.container} onPress={() => navigate('Edit Store')}>
 			<View style={styles.left}>
 				<View style={styles.avatar}>
 					<Text style={styles.avatarText}>{store.name[0]}</Text>
