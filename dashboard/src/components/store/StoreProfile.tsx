@@ -12,8 +12,12 @@ interface StoreProfileProps {
 const StoreProfile: React.FC<StoreProfileProps> = ({ store }) => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
+	const navigateToEdit = React.useCallback(() => {
+		navigate('Edit Store');
+	}, []);
+
 	return (
-		<Pressable style={styles.container} onPress={() => navigate('Edit Store')}>
+		<Pressable style={styles.container} onPress={navigateToEdit}>
 			<View style={styles.left}>
 				<View style={styles.avatar}>
 					<Text style={styles.avatarText}>{store.name[0]}</Text>

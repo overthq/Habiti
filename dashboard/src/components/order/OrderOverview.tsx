@@ -27,7 +27,8 @@ const styles = StyleSheet.create({
 		padding: 16
 	},
 	date: {
-		fontSize: 16
+		fontSize: 16,
+		marginTop: 4
 	}
 });
 

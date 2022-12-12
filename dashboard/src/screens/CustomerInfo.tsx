@@ -1,13 +1,13 @@
 import React from 'react';
 import { ScrollView, Text, StyleSheet } from 'react-native';
-import { RouteProp, useRoute } from '@react-navigation/native';
-import { AppStackParamList } from '../types/navigation';
+// import { RouteProp, useRoute } from '@react-navigation/native';
+// import { AppStackParamList } from '../types/navigation';
 import useGoBack from '../hooks/useGoBack';
 
 const CustomerInfo: React.FC = () => {
-	const { params } = useRoute<RouteProp<AppStackParamList, 'CustomerInfo'>>();
-	useGoBack();
-	console.log(params.userId);
+	// const { params } = useRoute<RouteProp<AppStackParamList, 'CustomerInfo'>>();
+	useGoBack('x');
+	// console.log(params.userId);
 
 	return (
 		<ScrollView style={styles.container}>

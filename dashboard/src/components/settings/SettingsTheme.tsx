@@ -2,6 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import SettingSelectRow from './SettingSelectRow';
 import useStore from '../../state';
+import useGoBack from '../../hooks/useGoBack';
 
 type Theme = 'light' | 'dark' | 'auto';
 
@@ -13,9 +14,14 @@ const SettingsTheme = () => {
 		setPreference: state.setPreference
 	}));
 
-	const handleThemeSelect = (theme: Theme) => () => {
-		setPreference({ theme });
-	};
+	const handleThemeSelect = React.useCallback(
+		(theme: Theme) => () => {
+			setPreference({ theme });
+		},
+		[]
+	);
+
+	useGoBack();
 
 	return (
 		<View>

@@ -1,26 +1,25 @@
 import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Icon, IconType } from '../components/Icon';
 
-const useGoBack = (icon?: IconType) => {
+const useGoBack = (icon?: IconType, margin?: number) => {
 	const navigation = useNavigation();
 
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
-			headerLeft: () => (
-				<Pressable onPress={navigation.goBack} style={styles.back}>
-					<Icon name={icon ?? 'chevron-left'} size={32} />
+			headerBackTitleVisible: false,
+			headerBackImage: () => (
+				<Pressable onPress={navigation.goBack}>
+					<Icon
+						name={icon ?? 'chevron-left'}
+						size={28}
+						style={{ marginLeft: margin ?? 8 }}
+					/>
 				</Pressable>
 			)
 		});
 	}, [navigation, icon]);
 };
-
-const styles = StyleSheet.create({
-	back: {
-		paddingLeft: 8
-	}
-});
 
 export default useGoBack;

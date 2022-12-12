@@ -45,8 +45,10 @@ const StatusPill: React.FC<StatusPillProps> = ({ status }) => (
 
 const styles = StyleSheet.create({
 	pill: {
-		padding: 4,
-		borderRadius: 4
+		paddingVertical: 4,
+		paddingHorizontal: 6,
+		borderRadius: 4,
+		alignSelf: 'flex-start'
 	},
 	text: {
 		fontWeight: '500'
