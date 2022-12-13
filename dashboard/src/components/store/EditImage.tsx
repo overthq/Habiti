@@ -1,10 +1,14 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Image } from 'react-native';
 
 // Allow both image removal and replacement.
 
 const EditImage: React.FC = () => {
-	return <View></View>;
+	return (
+		<View>
+			<Image source={{ uri: '' }} />
+		</View>
+	);
 };
 
 export default EditImage;

@@ -1,33 +1,23 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { OrdersQuery } from '../../types/api';
-import { Icon } from '../Icon';
-import { OrdersStackParamsList } from '../../types/navigation';
 import { formatNaira } from '../../utils/currency';
 import { parseTimestamp } from '../../utils/date';
 
 interface OrdersListItemProps {
 	order: OrdersQuery['store']['orders'][number];
+	onPress(): void;
 }
 
-const OrdersListItem: React.FC<OrdersListItemProps> = ({ order }) => {
-	const { navigate } = useNavigation<NavigationProp<OrdersStackParamsList>>();
-
+const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
 	return (
-		<Pressable
-			onPress={() => navigate('Order', { orderId: order.id })}
-			style={styles.container}
-		>
+		<Pressable onPress={onPress} style={styles.container}>
 			<View>
 				<Text style={styles.name}>{order.user.name}</Text>
 				{/*<Text>{order.status}</Text> */}
 				<Text style={styles.date}>{parseTimestamp(order.createdAt)}</Text>
 			</View>
-			<View style={styles.right}>
-				<Text style={styles.total}>{formatNaira(order.total)}</Text>
-				<Icon name='chevron-right' />
-			</View>
+			<Text style={styles.total}>{formatNaira(order.total)}</Text>
 		</Pressable>
 	);
 };
@@ -45,15 +35,11 @@ const styles = StyleSheet.create({
 		borderBottomWidth: 0.5,
 		borderBottomColor: '#EDEDED'
 	},
-	right: {
-		flexDirection: 'row',
-		alignItems: 'center'
-	},
 	name: {
 		fontSize: 16
 	},
 	date: {
-		fontSize: 16,
+		fontSize: 14,
 		marginTop: 2,
 		color: '#777777'
 	},

@@ -16,8 +16,8 @@ interface OrderOverviewProps {
 const OrderOverview: React.FC<OrderOverviewProps> = ({ order }) => {
 	return (
 		<View style={styles.container}>
-			<StatusPill status={order.status} />
 			<Text style={styles.date}>{parseTimestamp(order.createdAt)}</Text>
+			<StatusPill status={order.status} />
 		</View>
 	);
 };

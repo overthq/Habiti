@@ -1,12 +1,11 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 
+import FormInput from '../global/FormInput';
 import useStore from '../../state';
 import { StoreQuery, useEditStoreMutation } from '../../types/api';
-import Button from '../global/Button';
-import FormInput from '../global/FormInput';
 
 interface EditStoreFormData {
 	name: string;
@@ -21,11 +20,11 @@ interface EditStoreMainProps {
 }
 
 const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
-	const { goBack } = useNavigation();
-	const [{ fetching }, editStore] = useEditStoreMutation();
+	const { goBack, setOptions } = useNavigation();
+	const [, editStore] = useEditStoreMutation();
 	const activeStore = useStore(state => state.activeStore);
 
-	const { control, handleSubmit } = useForm<EditStoreFormData>({
+	const formMethods = useForm<EditStoreFormData>({
 		defaultValues: {
 			name: store.name,
 			description: store.description ?? '',
@@ -35,16 +34,33 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 		}
 	});
 
-	const onSubmit = async (values: EditStoreFormData) => {
-		try {
-			if (activeStore) {
-				await editStore({ storeId: activeStore, input: values });
-				goBack();
+	React.useLayoutEffect(() => {
+		setOptions({
+			headerRight: () => (
+				<Pressable
+					style={styles.headerButton}
+					onPress={formMethods.handleSubmit(onSubmit)}
+					disabled={!formMethods.formState.isDirty}
+				>
+					<Text style={styles.headerButtonText}>Save</Text>
+				</Pressable>
+			)
+		});
+	}, []);
+
+	const onSubmit = React.useCallback(
+		async (values: EditStoreFormData) => {
+			try {
+				if (activeStore) {
+					await editStore({ storeId: activeStore, input: values });
+					goBack();
+				}
+			} catch (error) {
+				console.log(error);
 			}
-		} catch (error) {
-			console.log(error);
-		}
-	};
+		},
+		[activeStore]
+	);
 
 	return (
 		<View style={styles.container}>
@@ -53,7 +69,7 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 				label='Name'
 				style={styles.input}
 				placeholder='Name'
-				control={control}
+				control={formMethods.control}
 			/>
 			<FormInput
 				name='website'
@@ -63,7 +79,7 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 				autoCorrect={false}
 				autoCapitalize='none'
 				keyboardType='url'
-				control={control}
+				control={formMethods.control}
 			/>
 			<FormInput
 				name='description'
@@ -71,7 +87,7 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 				style={[styles.input, { height: 80 }]}
 				placeholder='Description'
 				textArea
-				control={control}
+				control={formMethods.control}
 			/>
 			<FormInput
 				name='twitter'
@@ -80,7 +96,7 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 				placeholder='@acme_inc'
 				autoCorrect={false}
 				autoCapitalize='none'
-				control={control}
+				control={formMethods.control}
 			/>
 			<FormInput
 				name='instagram'
@@ -89,13 +105,7 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 				placeholder='@acme'
 				autoCorrect={false}
 				autoCapitalize='none'
-				control={control}
-			/>
-			<Button
-				style={styles.button}
-				text='Edit store'
-				loading={fetching}
-				onPress={handleSubmit(onSubmit)}
+				control={formMethods.control}
 			/>
 		</View>
 	);
@@ -116,6 +126,12 @@ const styles = StyleSheet.create({
 	input: {
 		borderRadius: 4,
 		marginBottom: 8
+	},
+	headerButton: {
+		marginRight: 16
+	},
+	headerButtonText: {
+		fontSize: 16
 	},
 	button: {
 		marginTop: 8

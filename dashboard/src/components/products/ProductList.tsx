@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import ProductsListItem from './ProductsListItem';
@@ -6,7 +7,6 @@ import ProductGridItem from './ProductGridItem';
 import { useProductsQuery } from '../../types/api';
 import useStore from '../../state';
 import { ProductsStackParamList } from '../../types/navigation';
-import { View } from 'react-native';
 
 interface ProductListProps {
 	mode: 'list' | 'grid';

@@ -1,8 +1,10 @@
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ListRenderItem } from 'react-native';
 import OrdersListItem from '../components/orders/OrdersListItem';
 import useStore from '../state';
-import { useOrdersQuery } from '../types/api';
+import { OrdersQuery, useOrdersQuery } from '../types/api';
+import { OrdersStackParamsList } from '../types/navigation';
 
 // Ultimately, we should consider making this a SectionList
 // or advanced FlatList, that can separate records based on dates.
@@ -11,17 +13,32 @@ import { useOrdersQuery } from '../types/api';
 
 const Orders: React.FC = () => {
 	const activeStore = useStore(state => state.activeStore);
+	const { navigate } = useNavigation<NavigationProp<OrdersStackParamsList>>();
 
 	const [{ data }] = useOrdersQuery({
 		variables: { storeId: activeStore as string }
 	});
 
+	const handleOrderPress = React.useCallback(
+		(orderId: string) => () => {
+			navigate('Order', { orderId });
+		},
+		[]
+	);
+
+	const renderOrder: ListRenderItem<OrdersQuery['store']['orders'][number]> =
+		React.useCallback(({ item }) => {
+			return (
+				<OrdersListItem onPress={handleOrderPress(item.id)} order={item} />
+			);
+		}, []);
+
 	return (
 		<View style={styles.container}>
 			<FlatList
 				keyExtractor={i => i.id}
-				renderItem={({ item }) => <OrdersListItem order={item} />}
 				data={data?.store.orders}
+				renderItem={renderOrder}
 				ListEmptyComponent={
 					<View style={styles.empty}>
 						<Text style={styles.emptyText}>
