@@ -404,6 +404,7 @@ export type Stats = {
 	__typename?: 'Stats';
 	id: Scalars['ID'];
 	orders: Array<Order>;
+	pendingOrderCount: Scalars['Int'];
 	products: Array<Product>;
 	revenue: Scalars['Int'];
 	storeId: Scalars['ID'];
