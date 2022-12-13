@@ -28,6 +28,7 @@ export type OrdersStackParamsList = {
 export type ProductsStackParamList = {
 	ProductsList: undefined;
 	Product: { productId: string };
+	// SearchProducts: undefined;
 };
 
 export type SettingsStackParamList = {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, Image, Text, Pressable, StyleSheet } from 'react-native';
 import { Icon } from '../Icon';
 import { ProductsQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
@@ -13,11 +13,7 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
 	product,
 	onPress
 }) => (
-	<TouchableOpacity
-		onPress={onPress}
-		activeOpacity={0.8}
-		style={styles.container}
-	>
+	<Pressable onPress={onPress} style={styles.container}>
 		<View style={styles.left}>
 			<View style={styles.placeholder}>
 				<Image style={styles.image} source={{ uri: product.images[0]?.path }} />
@@ -28,7 +24,7 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
 			</View>
 		</View>
 		<Icon name='chevron-right' />
-	</TouchableOpacity>
+	</Pressable>
 );
 
 const styles = StyleSheet.create({
@@ -38,7 +34,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		paddingVertical: 4,
-		paddingHorizontal: 8
+		paddingHorizontal: 12
 	},
 	name: {
 		fontSize: 16,

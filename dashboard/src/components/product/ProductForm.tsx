@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Platform } from 'react-native';
+import { ScrollView, Platform, StyleSheet } from 'react-native';
 
 import Section from './Section';
 import Images from './Images';

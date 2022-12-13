@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#FFFFFF'
 	},
 	title: {
-		marginBottom: 4,
+		marginBottom: 8,
 		fontSize: 16,
 		color: '#505050',
 		fontWeight: '500'
@@ -71,9 +71,9 @@ const styles = StyleSheet.create({
 	add: {
 		width: 60,
 		height: 60,
-		borderRadius: 4,
-		borderColor: '#D3D3D3',
-		borderWidth: 1,
+		borderRadius: 6,
+		borderColor: '#E3E3E3',
+		borderWidth: 2,
 		justifyContent: 'center',
 		alignItems: 'center'
 	}
