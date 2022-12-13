@@ -78,7 +78,7 @@ interface UpdateOrderArgs {
 	};
 }
 
-export const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
+const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
 	await ctx.prisma.order.update({
 		where: { id: args.orderId },
 		data: args.input
@@ -87,6 +87,7 @@ export const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
 
 export default {
 	Mutation: {
-		createOrder
+		createOrder,
+		updateOrder
 	}
 };
