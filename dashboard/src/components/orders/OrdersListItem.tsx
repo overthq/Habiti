@@ -14,8 +14,9 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
 		<Pressable onPress={onPress} style={styles.container}>
 			<View>
 				<Text style={styles.name}>{order.user.name}</Text>
-				{/*<Text>{order.status}</Text> */}
-				<Text style={styles.date}>{parseTimestamp(order.createdAt)}</Text>
+				<Text style={styles.date}>
+					{order.status} · {parseTimestamp(order.createdAt)}
+				</Text>
 			</View>
 			<Text style={styles.total}>{formatNaira(order.total)}</Text>
 		</Pressable>
@@ -38,6 +39,7 @@ const styles = StyleSheet.create({
 	name: {
 		fontSize: 16
 	},
+	row: {},
 	date: {
 		fontSize: 14,
 		marginTop: 2,

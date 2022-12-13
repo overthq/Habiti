@@ -19,6 +19,7 @@ query Orders($storeId: ID!) {
 				quantity
 			}
 			total
+			status
 			createdAt
 			updatedAt
 		}
