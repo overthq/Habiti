@@ -1,23 +1,15 @@
 import { Resolver } from '../../types/resolvers';
 
-const currentUser: Resolver = async (_, __, ctx) => {
-	const fetchedCurrentUser = await ctx.prisma.user.findUnique({
-		where: { id: ctx.user.id }
-	});
-
-	return fetchedCurrentUser;
+const currentUser: Resolver = (_, __, ctx) => {
+	return ctx.prisma.user.findUnique({ where: { id: ctx.user.id } });
 };
 
-const user: Resolver = async (_, { id }, ctx) => {
-	const fetchedUser = await ctx.prisma.user.findUnique({ where: { id } });
-
-	return fetchedUser;
+const user: Resolver = (_, { id }, ctx) => {
+	return ctx.prisma.user.findUnique({ where: { id } });
 };
 
-const users: Resolver = async (_, __, ctx) => {
-	const fetchedUsers = await ctx.prisma.user.findMany();
-
-	return fetchedUsers;
+const users: Resolver = (_, __, ctx) => {
+	return ctx.prisma.user.findMany();
 };
 
 // Ideally, we should be able to pass a "first" arg to the orders query,
@@ -25,54 +17,28 @@ const users: Resolver = async (_, __, ctx) => {
 // By combining that with a desc date order, we should be able to get the three
 // most recent orders.
 
-const orders: Resolver = async (parent, _, ctx) => {
-	const fetchedOrders = await ctx.prisma.user
-		.findUnique({
-			where: { id: parent.id }
-		})
-		.orders();
-
-	return fetchedOrders;
+const orders: Resolver = (parent, _, ctx) => {
+	return ctx.prisma.user.findUnique({ where: { id: parent.id } }).orders();
 };
 
-const managed: Resolver = async (parent, _, ctx) => {
-	const fetchedManaged = await ctx.prisma.user
-		.findUnique({ where: { id: parent.id } })
-		.managed();
-
-	return fetchedManaged;
+const managed: Resolver = (parent, _, ctx) => {
+	return ctx.prisma.user.findUnique({ where: { id: parent.id } }).managed();
 };
 
-const followed: Resolver = async (parent, _, ctx) => {
-	const fetchedFollowed = await ctx.prisma.user
-		.findUnique({ where: { id: parent.id } })
-		.followed();
-
-	return fetchedFollowed;
+const followed: Resolver = (parent, _, ctx) => {
+	return ctx.prisma.user.findUnique({ where: { id: parent.id } }).followed();
 };
 
-const carts: Resolver = async (parent, _, ctx) => {
-	const fetchedCarts = await ctx.prisma.user
-		.findUnique({ where: { id: parent.id } })
-		.carts();
-
-	return fetchedCarts;
+const carts: Resolver = (parent, _, ctx) => {
+	return ctx.prisma.user.findUnique({ where: { id: parent.id } }).carts();
 };
 
-const watchlist: Resolver = async (parent, _, ctx) => {
-	const fetchedWatchlist = await ctx.prisma.user
-		.findUnique({ where: { id: parent.id } })
-		.watchlist();
-
-	return fetchedWatchlist;
+const watchlist: Resolver = (parent, _, ctx) => {
+	return ctx.prisma.user.findUnique({ where: { id: parent.id } }).watchlist();
 };
 
-const cards: Resolver = async (parent, _, ctx) => {
-	const fetchedCards = await ctx.prisma.user
-		.findUnique({ where: { id: parent.id } })
-		.cards();
-
-	return fetchedCards;
+const cards: Resolver = (parent, _, ctx) => {
+	return ctx.prisma.user.findUnique({ where: { id: parent.id } }).cards();
 };
 
 export default {

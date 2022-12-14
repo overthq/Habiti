@@ -16,3 +16,15 @@ mutation Verify($input: VerifyInput!) {
 		userId
 	}
 }
+
+query CustomerInfo($userId: ID!) {
+	user(id: $userId) {
+		id
+		name
+		phone
+		orders {
+			id
+			total
+		}
+	}
+}

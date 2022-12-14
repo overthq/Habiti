@@ -766,6 +766,21 @@ export type VerifyMutation = {
 	};
 };
 
+export type CustomerInfoQueryVariables = Exact<{
+	userId: Scalars['ID'];
+}>;
+
+export type CustomerInfoQuery = {
+	__typename?: 'Query';
+	user: {
+		__typename?: 'User';
+		id: string;
+		name: string;
+		phone: string;
+		orders: Array<{ __typename?: 'Order'; id: string; total: number }>;
+	};
+};
+
 export const ManagedStoresDocument = gql`
 	query ManagedStores($userId: ID!) {
 		user(id: $userId) {
@@ -1098,4 +1113,26 @@ export function useVerifyMutation() {
 	return Urql.useMutation<VerifyMutation, VerifyMutationVariables>(
 		VerifyDocument
 	);
+}
+export const CustomerInfoDocument = gql`
+	query CustomerInfo($userId: ID!) {
+		user(id: $userId) {
+			id
+			name
+			phone
+			orders {
+				id
+				total
+			}
+		}
+	}
+`;
+
+export function useCustomerInfoQuery(
+	options: Omit<Urql.UseQueryArgs<CustomerInfoQueryVariables>, 'query'>
+) {
+	return Urql.useQuery<CustomerInfoQuery, CustomerInfoQueryVariables>({
+		query: CustomerInfoDocument,
+		...options
+	});
 }

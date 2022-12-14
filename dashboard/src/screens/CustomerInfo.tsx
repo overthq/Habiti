@@ -1,18 +1,29 @@
 import React from 'react';
-import { ScrollView, Text, StyleSheet } from 'react-native';
-// import { RouteProp, useRoute } from '@react-navigation/native';
-// import { AppStackParamList } from '../types/navigation';
+import { View, ScrollView, Text, StyleSheet } from 'react-native';
+import { RouteProp, useRoute } from '@react-navigation/native';
+
 import useGoBack from '../hooks/useGoBack';
+import { useCustomerInfoQuery } from '../types/api';
+import type { AppStackParamList } from '../types/navigation';
 
 const CustomerInfo: React.FC = () => {
-	// const { params } = useRoute<RouteProp<AppStackParamList, 'CustomerInfo'>>();
+	const { params } = useRoute<RouteProp<AppStackParamList, 'CustomerInfo'>>();
+	const [{ data, fetching }] = useCustomerInfoQuery({
+		variables: { userId: params.userId }
+	});
+
 	useGoBack('x');
-	// console.log(params.userId);
+
+	if (fetching || !data) {
+		return <View />;
+	}
 
 	return (
 		<ScrollView style={styles.container}>
 			<Text style={styles.header}>Customer Information</Text>
-			<Text style={styles.name}></Text>
+			<Text style={styles.name}>{data.user.name}</Text>
+			<Text style={styles.phone}>{data.user.phone}</Text>
+			<Text>Previous Orders</Text>
 		</ScrollView>
 	);
 };
@@ -24,6 +35,9 @@ const styles = StyleSheet.create({
 	},
 	header: {},
 	name: {
+		fontSize: 16
+	},
+	phone: {
 		fontSize: 16
 	}
 });
