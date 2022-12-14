@@ -4,66 +4,36 @@ interface StoreArgs {
 	id: string;
 }
 
-const store: Resolver<StoreArgs> = async (_, { id }, ctx) => {
-	const fetchedStore = await ctx.prisma.store.findUnique({ where: { id } });
-
-	return fetchedStore;
+const store: Resolver<StoreArgs> = (_, { id }, ctx) => {
+	return ctx.prisma.store.findUnique({ where: { id } });
 };
 
-const stores: Resolver = async (_, __, ctx) => {
-	const fetchedStores = await ctx.prisma.store.findMany();
-
-	return fetchedStores;
+const stores: Resolver = (_, __, ctx) => {
+	return ctx.prisma.store.findMany();
 };
 
-const products: Resolver = async (parent, _, ctx) => {
-	const fetchedProducts = await ctx.prisma.store
-		.findUnique({ where: { id: parent.id } })
-		.products();
-
-	return fetchedProducts;
+const products: Resolver = (parent, _, ctx) => {
+	return ctx.prisma.store.findUnique({ where: { id: parent.id } }).products();
 };
 
-const orders: Resolver = async (parent, _, ctx) => {
-	const fetchedOrders = await ctx.prisma.store
-		.findUnique({ where: { id: parent.id } })
-		.orders();
-
-	return fetchedOrders;
+const orders: Resolver = (parent, _, ctx) => {
+	return ctx.prisma.store.findUnique({ where: { id: parent.id } }).orders();
 };
 
-const managers: Resolver = async (parent, _, ctx) => {
-	const fetchedManagers = await ctx.prisma.store
-		.findUnique({ where: { id: parent.id } })
-		.managers();
-
-	return fetchedManagers;
+const managers: Resolver = (parent, _, ctx) => {
+	return ctx.prisma.store.findUnique({ where: { id: parent.id } }).managers();
 };
 
-const followers: Resolver = async (parent, _, ctx) => {
-	const fetchedFollowers = await ctx.prisma.store
-		.findUnique({
-			where: { id: parent.id }
-		})
-		.followers();
-
-	return fetchedFollowers;
+const followers: Resolver = (parent, _, ctx) => {
+	return ctx.prisma.store.findUnique({ where: { id: parent.id } }).followers();
 };
 
-const carts: Resolver = async (parent, _, ctx) => {
-	const fetchedCarts = await ctx.prisma.store
-		.findUnique({ where: { id: parent.id } })
-		.carts();
-
-	return fetchedCarts;
+const carts: Resolver = (parent, _, ctx) => {
+	return ctx.prisma.store.findUnique({ where: { id: parent.id } }).carts();
 };
 
-const image: Resolver = async (parent, _, ctx) => {
-	const fetchedImage = await ctx.prisma.store
-		.findUnique({ where: { id: parent.id } })
-		.image();
-
-	return fetchedImage;
+const image: Resolver = (parent, _, ctx) => {
+	return ctx.prisma.store.findUnique({ where: { id: parent.id } }).image();
 };
 
 const followedByUser: Resolver = async (parent, _, ctx) => {
