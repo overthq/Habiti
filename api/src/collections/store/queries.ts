@@ -8,6 +8,12 @@ const store: Resolver<StoreArgs> = (_, { id }, ctx) => {
 	return ctx.prisma.store.findUnique({ where: { id } });
 };
 
+const currentStore: Resolver = (_, __, ctx) => {
+	if (!ctx.storeId) throw new Error('Invalid storeId');
+
+	return ctx.prisma.store.findUnique({ where: { id: ctx.storeId } });
+};
+
 const stores: Resolver = (_, __, ctx) => {
 	return ctx.prisma.store.findMany();
 };
@@ -57,6 +63,7 @@ const cartId: Resolver = async (parent, _, ctx) => {
 
 export default {
 	Query: {
+		currentStore,
 		store,
 		stores
 	},

@@ -32,6 +32,7 @@ const main = async () => {
 		schema,
 		context: ({ req }) => ({
 			user: (req as any).auth ?? null,
+			storeId: req.headers['x-market-store-id'] || undefined,
 			prisma,
 			redisClient
 		})

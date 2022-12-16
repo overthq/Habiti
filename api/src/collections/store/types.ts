@@ -47,6 +47,7 @@ const StoreTypes = gql`
 	}
 
 	extend type Query {
+		currentStore: Store!
 		store(id: ID!): Store!
 		stores: [Store!]!
 	}

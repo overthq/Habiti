@@ -1,8 +1,8 @@
 # This is temporary. In the future, queries will no longer be domain-scoped.
 # They will be created on the component level.
 
-query Products($storeId: ID!) {
-	store(id: $storeId) {
+query Products {
+	currentStore {
 		id
 		products {
 			id

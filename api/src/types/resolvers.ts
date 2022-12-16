@@ -5,6 +5,7 @@ export interface ResolverContext {
 	prisma: PrismaClient;
 	user: User | null;
 	redisClient: RedisClient;
+	storeId?: string;
 }
 
 export type Resolver<K = any, R = any> = (

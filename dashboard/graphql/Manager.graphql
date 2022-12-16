@@ -13,8 +13,8 @@ query ManagedStores($userId: ID!) {
 	}
 }
 
-query Managers($storeId: ID!) {
-	store(id: $storeId) {
+query Managers {
+	currentStore {
 		id
 		managers {
 			id

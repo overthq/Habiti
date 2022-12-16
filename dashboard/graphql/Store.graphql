@@ -19,8 +19,8 @@ mutation EditStore($storeId: ID!, $input: EditStoreInput!) {
 	}
 }
 
-query Store($storeId: ID!) {
-	store(id: $storeId) {
+query Store {
+	currentStore {
 		id
 		name
 		description
