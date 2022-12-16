@@ -5,7 +5,6 @@ import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import ProductsListItem from './ProductsListItem';
 import ProductGridItem from './ProductGridItem';
 import { ProductsQuery, useProductsQuery } from '../../types/api';
-import useStore from '../../state';
 import { ProductsStackParamList } from '../../types/navigation';
 
 interface ProductListProps {
@@ -18,10 +17,7 @@ interface ProductListProps {
 const ProductListHeader = <View style={{ height: 4 }} />;
 
 const ProductList: React.FC<ProductListProps> = ({ mode }) => {
-	const activeStore = useStore(state => state.activeStore);
-	const [{ data }] = useProductsQuery({
-		variables: { storeId: activeStore as string }
-	});
+	const [{ data }] = useProductsQuery();
 	const { navigate } = useNavigation<NavigationProp<ProductsStackParamList>>();
 
 	const handlePress = React.useCallback(
@@ -30,7 +26,7 @@ const ProductList: React.FC<ProductListProps> = ({ mode }) => {
 	);
 
 	const renderProduct: ListRenderItem<
-		ProductsQuery['store']['products'][number]
+		ProductsQuery['currentStore']['products'][number]
 	> = React.useCallback(({ item }) => {
 		return <ProductsListItem product={item} onPress={handlePress(item.id)} />;
 	}, []);
@@ -38,7 +34,7 @@ const ProductList: React.FC<ProductListProps> = ({ mode }) => {
 	return mode === 'list' ? (
 		<FlashList
 			keyExtractor={i => i.id}
-			data={data?.store.products}
+			data={data?.currentStore.products}
 			renderItem={renderProduct}
 			ListHeaderComponent={ProductListHeader}
 			estimatedItemSize={60}
@@ -46,7 +42,7 @@ const ProductList: React.FC<ProductListProps> = ({ mode }) => {
 	) : (
 		<FlashList
 			numColumns={2}
-			data={data?.store.products}
+			data={data?.currentStore.products}
 			renderItem={({ item }) => (
 				<ProductGridItem product={item} onPress={handlePress(item.id)} />
 			)}

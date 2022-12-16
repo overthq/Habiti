@@ -2,7 +2,6 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, FlatList, StyleSheet, ListRenderItem } from 'react-native';
 import OrdersListItem from '../components/orders/OrdersListItem';
-import useStore from '../state';
 import { OrdersQuery, useOrdersQuery } from '../types/api';
 import { OrdersStackParamsList } from '../types/navigation';
 
@@ -12,12 +11,8 @@ import { OrdersStackParamsList } from '../types/navigation';
 // A searchbar is also important.
 
 const Orders: React.FC = () => {
-	const activeStore = useStore(state => state.activeStore);
 	const { navigate } = useNavigation<NavigationProp<OrdersStackParamsList>>();
-
-	const [{ data }] = useOrdersQuery({
-		variables: { storeId: activeStore as string }
-	});
+	const [{ data }] = useOrdersQuery();
 
 	const handleOrderPress = React.useCallback(
 		(orderId: string) => () => {
@@ -26,18 +21,17 @@ const Orders: React.FC = () => {
 		[]
 	);
 
-	const renderOrder: ListRenderItem<OrdersQuery['store']['orders'][number]> =
-		React.useCallback(({ item }) => {
-			return (
-				<OrdersListItem onPress={handleOrderPress(item.id)} order={item} />
-			);
-		}, []);
+	const renderOrder: ListRenderItem<
+		OrdersQuery['currentStore']['orders'][number]
+	> = React.useCallback(({ item }) => {
+		return <OrdersListItem onPress={handleOrderPress(item.id)} order={item} />;
+	}, []);
 
 	return (
 		<View style={styles.container}>
 			<FlatList
 				keyExtractor={i => i.id}
-				data={data?.store.orders}
+				data={data?.currentStore.orders}
 				renderItem={renderOrder}
 				ListEmptyComponent={
 					<View style={styles.empty}>

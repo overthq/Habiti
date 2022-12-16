@@ -10,15 +10,12 @@ import type { SettingsStackParamList } from '../types/navigation';
 import useGoBack from '../hooks/useGoBack';
 
 const Settings: React.FC = () => {
-	const { theme, activeStore, logOut } = useStore(state => ({
+	const { theme, logOut } = useStore(state => ({
 		theme: state.theme,
-		activeStore: state.activeStore,
 		logOut: state.logOut
 	}));
 
-	const [{ data }] = useStoreQuery({
-		variables: { storeId: activeStore as string }
-	});
+	const [{ data }] = useStoreQuery();
 
 	const { navigate } = useNavigation<NavigationProp<SettingsStackParamList>>();
 	useGoBack('x');
@@ -30,7 +27,7 @@ const Settings: React.FC = () => {
 		[navigate]
 	);
 
-	const store = data?.store;
+	const store = data?.currentStore;
 
 	return (
 		<ScrollView style={styles.container}>

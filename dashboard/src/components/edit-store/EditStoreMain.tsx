@@ -16,7 +16,7 @@ interface EditStoreFormData {
 }
 
 interface EditStoreMainProps {
-	store: StoreQuery['store'];
+	store: StoreQuery['currentStore'];
 }
 
 const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {

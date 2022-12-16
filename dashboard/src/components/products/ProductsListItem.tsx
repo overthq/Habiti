@@ -5,7 +5,7 @@ import { ProductsQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
 
 interface ProductsListItemProps {
-	product: ProductsQuery['store']['products'][number];
+	product: ProductsQuery['currentStore']['products'][number];
 	onPress(): void;
 }
 

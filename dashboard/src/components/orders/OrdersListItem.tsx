@@ -5,7 +5,7 @@ import { formatNaira } from '../../utils/currency';
 import { parseTimestamp } from '../../utils/date';
 
 interface OrdersListItemProps {
-	order: OrdersQuery['store']['orders'][number];
+	order: OrdersQuery['currentStore']['orders'][number];
 	onPress(): void;
 }
 

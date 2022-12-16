@@ -347,6 +347,7 @@ export type Query = {
 	_?: Maybe<Scalars['Boolean']>;
 	cart: Cart;
 	carts: Array<Cart>;
+	currentStore: Store;
 	currentUser: User;
 	order: Order;
 	product: Product;
@@ -520,13 +521,11 @@ export type ManagedStoresQuery = {
 	};
 };
 
-export type ManagersQueryVariables = Exact<{
-	storeId: Scalars['ID'];
-}>;
+export type ManagersQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ManagersQuery = {
 	__typename?: 'Query';
-	store: {
+	currentStore: {
 		__typename?: 'Store';
 		id: string;
 		managers: Array<{
@@ -537,13 +536,11 @@ export type ManagersQuery = {
 	};
 };
 
-export type OrdersQueryVariables = Exact<{
-	storeId: Scalars['ID'];
-}>;
+export type OrdersQueryVariables = Exact<{ [key: string]: never }>;
 
 export type OrdersQuery = {
 	__typename?: 'Query';
-	store: {
+	currentStore: {
 		__typename?: 'Store';
 		id: string;
 		orders: Array<{
@@ -608,13 +605,11 @@ export type UpdateOrderMutation = {
 	updateOrder: { __typename?: 'Order'; id: string };
 };
 
-export type ProductsQueryVariables = Exact<{
-	storeId: Scalars['ID'];
-}>;
+export type ProductsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ProductsQuery = {
 	__typename?: 'Query';
-	store: {
+	currentStore: {
 		__typename?: 'Store';
 		id: string;
 		products: Array<{
@@ -731,13 +726,11 @@ export type EditStoreMutation = {
 	};
 };
 
-export type StoreQueryVariables = Exact<{
-	storeId: Scalars['ID'];
-}>;
+export type StoreQueryVariables = Exact<{ [key: string]: never }>;
 
 export type StoreQuery = {
 	__typename?: 'Query';
-	store: {
+	currentStore: {
 		__typename?: 'Store';
 		id: string;
 		name: string;
@@ -834,8 +827,8 @@ export function useManagedStoresQuery(
 	});
 }
 export const ManagersDocument = gql`
-	query Managers($storeId: ID!) {
-		store(id: $storeId) {
+	query Managers {
+		currentStore {
 			id
 			managers {
 				id
@@ -849,7 +842,7 @@ export const ManagersDocument = gql`
 `;
 
 export function useManagersQuery(
-	options: Omit<Urql.UseQueryArgs<ManagersQueryVariables>, 'query'>
+	options?: Omit<Urql.UseQueryArgs<ManagersQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<ManagersQuery, ManagersQueryVariables>({
 		query: ManagersDocument,
@@ -857,8 +850,8 @@ export function useManagersQuery(
 	});
 }
 export const OrdersDocument = gql`
-	query Orders($storeId: ID!) {
-		store(id: $storeId) {
+	query Orders {
+		currentStore {
 			id
 			orders {
 				id
@@ -887,7 +880,7 @@ export const OrdersDocument = gql`
 `;
 
 export function useOrdersQuery(
-	options: Omit<Urql.UseQueryArgs<OrdersQueryVariables>, 'query'>
+	options?: Omit<Urql.UseQueryArgs<OrdersQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<OrdersQuery, OrdersQueryVariables>({
 		query: OrdersDocument,
@@ -947,8 +940,8 @@ export function useUpdateOrderMutation() {
 	);
 }
 export const ProductsDocument = gql`
-	query Products($storeId: ID!) {
-		store(id: $storeId) {
+	query Products {
+		currentStore {
 			id
 			products {
 				id
@@ -966,7 +959,7 @@ export const ProductsDocument = gql`
 `;
 
 export function useProductsQuery(
-	options: Omit<Urql.UseQueryArgs<ProductsQueryVariables>, 'query'>
+	options?: Omit<Urql.UseQueryArgs<ProductsQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<ProductsQuery, ProductsQueryVariables>({
 		query: ProductsDocument,
@@ -1100,8 +1093,8 @@ export function useEditStoreMutation() {
 	);
 }
 export const StoreDocument = gql`
-	query Store($storeId: ID!) {
-		store(id: $storeId) {
+	query Store {
+		currentStore {
 			id
 			name
 			description
@@ -1117,7 +1110,7 @@ export const StoreDocument = gql`
 `;
 
 export function useStoreQuery(
-	options: Omit<Urql.UseQueryArgs<StoreQueryVariables>, 'query'>
+	options?: Omit<Urql.UseQueryArgs<StoreQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<StoreQuery, StoreQueryVariables>({
 		query: StoreDocument,

@@ -6,7 +6,7 @@ import { StoreQuery } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
 
 interface StoreProfileProps {
-	store: StoreQuery['store'];
+	store: StoreQuery['currentStore'];
 }
 
 const StoreProfile: React.FC<StoreProfileProps> = ({ store }) => {
