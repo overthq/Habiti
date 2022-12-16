@@ -98,7 +98,6 @@ export type CreateProductInput = {
 	imageFiles: Array<Scalars['Upload']>;
 	name: Scalars['String'];
 	quantity: Scalars['Int'];
-	storeId: Scalars['ID'];
 	unitPrice: Scalars['Int'];
 };
 
@@ -244,7 +243,6 @@ export type MutationEditProfileArgs = {
 };
 
 export type MutationEditStoreArgs = {
-	id: Scalars['ID'];
 	input: EditStoreInput;
 };
 
@@ -708,7 +706,6 @@ export type CreateStoreMutation = {
 };
 
 export type EditStoreMutationVariables = Exact<{
-	storeId: Scalars['ID'];
 	input: EditStoreInput;
 }>;
 
@@ -1071,8 +1068,8 @@ export function useCreateStoreMutation() {
 	);
 }
 export const EditStoreDocument = gql`
-	mutation EditStore($storeId: ID!, $input: EditStoreInput!) {
-		editStore(id: $storeId, input: $input) {
+	mutation EditStore($input: EditStoreInput!) {
+		editStore(input: $input) {
 			id
 			name
 			description

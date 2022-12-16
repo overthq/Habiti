@@ -3,7 +3,6 @@ import { Pressable, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FormProvider } from 'react-hook-form';
 
-import useStore from '../state';
 import { useCreateProductMutation } from '../types/api';
 import ProductForm from '../components/product/ProductForm';
 import { useForm } from 'react-hook-form';
@@ -17,7 +16,6 @@ export interface ProductFormData {
 }
 
 const AddProduct: React.FC = () => {
-	const activeStore = useStore(state => state.activeStore);
 	const [toUpload, setToUpload] = React.useState<string[]>([]);
 	const { goBack, setOptions } = useNavigation();
 	const [, createProduct] = useCreateProductMutation();
@@ -33,22 +31,19 @@ const AddProduct: React.FC = () => {
 
 	const onSubmit = React.useCallback(
 		async (values: ProductFormData) => {
-			if (activeStore) {
-				await createProduct({
-					input: {
-						name: values.name,
-						description: values.description,
-						storeId: activeStore,
-						unitPrice: Number(values.unitPrice) * 100,
-						quantity: Number(values.quantity),
-						imageFiles: toUpload.map(generateUploadFile)
-					}
-				});
+			await createProduct({
+				input: {
+					name: values.name,
+					description: values.description,
+					unitPrice: Number(values.unitPrice) * 100,
+					quantity: Number(values.quantity),
+					imageFiles: toUpload.map(generateUploadFile)
+				}
+			});
 
-				setToUpload([]);
+			setToUpload([]);
 
-				goBack();
-			}
+			goBack();
 		},
 		[toUpload]
 	);

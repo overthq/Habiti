@@ -4,8 +4,8 @@ mutation CreateStore($input: CreateStoreInput!) {
 	}
 }
 
-mutation EditStore($storeId: ID!, $input: EditStoreInput!) {
-	editStore(id: $storeId, input: $input) {
+mutation EditStore($input: EditStoreInput!) {
+	editStore(input: $input) {
 		id
 		name
 		description

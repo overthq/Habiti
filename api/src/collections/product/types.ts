@@ -24,7 +24,6 @@ const ProductTypes = gql`
 		description: String!
 		unitPrice: Int!
 		quantity: Int!
-		storeId: ID!
 		imageFiles: [Upload!]!
 	}
 

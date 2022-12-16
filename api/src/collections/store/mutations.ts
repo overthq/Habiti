@@ -50,7 +50,6 @@ const createStore: Resolver<CreateStoreArgs> = async (_, { input }, ctx) => {
 };
 
 interface EditStoreArgs {
-	id: string;
 	input: {
 		name?: string;
 		description?: string;
@@ -61,7 +60,11 @@ interface EditStoreArgs {
 	};
 }
 
-const editStore: Resolver<EditStoreArgs> = async (_, { id, input }, ctx) => {
+const editStore: Resolver<EditStoreArgs> = async (_, { input }, ctx) => {
+	if (!ctx.storeId) {
+		throw new Error('No storeId specified');
+	}
+
 	const { imageFile, ...rest } = input;
 	let uploadedUrl = '';
 
@@ -74,7 +77,7 @@ const editStore: Resolver<EditStoreArgs> = async (_, { id, input }, ctx) => {
 	}
 
 	const store = await ctx.prisma.store.update({
-		where: { id },
+		where: { id: ctx.storeId },
 		data: {
 			...rest,
 			...(uploadedUrl !== ''

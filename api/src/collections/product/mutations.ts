@@ -6,7 +6,6 @@ interface CreateProductArgs {
 	input: {
 		name: string;
 		description: string;
-		storeId: string;
 		unitPrice: number;
 		quantity: number;
 		imageFiles: Promise<FileUpload>[];
@@ -18,6 +17,10 @@ const createProduct: Resolver<CreateProductArgs> = async (
 	{ input },
 	ctx
 ) => {
+	if (!ctx.storeId) {
+		throw new Error('No storeId provided');
+	}
+
 	const { imageFiles, ...rest } = input;
 
 	const uploadedImages = await uploadImages(imageFiles);
@@ -25,6 +28,7 @@ const createProduct: Resolver<CreateProductArgs> = async (
 	const product = await ctx.prisma.product.create({
 		data: {
 			...rest,
+			storeId: ctx.storeId,
 			images: {
 				createMany: {
 					data: uploadedImages.map(({ url, public_id }) => ({

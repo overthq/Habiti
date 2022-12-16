@@ -1,10 +1,15 @@
 import React from 'react';
-import { Pressable, StyleSheet, View, Text } from 'react-native';
+import {
+	Pressable,
+	StyleSheet,
+	View,
+	Text,
+	ActivityIndicator
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 
 import FormInput from '../global/FormInput';
-import useStore from '../../state';
 import { StoreQuery, useEditStoreMutation } from '../../types/api';
 
 interface EditStoreFormData {
@@ -21,8 +26,7 @@ interface EditStoreMainProps {
 
 const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 	const { goBack, setOptions } = useNavigation();
-	const [, editStore] = useEditStoreMutation();
-	const activeStore = useStore(state => state.activeStore);
+	const [{ fetching }, editStore] = useEditStoreMutation();
 
 	const formMethods = useForm<EditStoreFormData>({
 		defaultValues: {
@@ -37,30 +41,30 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<Pressable
-					style={styles.headerButton}
-					onPress={formMethods.handleSubmit(onSubmit)}
-					disabled={!formMethods.formState.isDirty}
-				>
-					<Text style={styles.headerButtonText}>Save</Text>
-				</Pressable>
+				<View style={styles.headerAction}>
+					{fetching ? (
+						<ActivityIndicator />
+					) : (
+						<Pressable
+							onPress={formMethods.handleSubmit(onSubmit)}
+							disabled={!formMethods.formState.isDirty}
+						>
+							<Text style={styles.headerButtonText}>Save</Text>
+						</Pressable>
+					)}
+				</View>
 			)
 		});
-	}, []);
+	}, [fetching, formMethods.formState.isDirty]);
 
-	const onSubmit = React.useCallback(
-		async (values: EditStoreFormData) => {
-			try {
-				if (activeStore) {
-					await editStore({ storeId: activeStore, input: values });
-					goBack();
-				}
-			} catch (error) {
-				console.log(error);
-			}
-		},
-		[activeStore]
-	);
+	const onSubmit = React.useCallback(async (values: EditStoreFormData) => {
+		try {
+			await editStore({ input: values });
+			goBack();
+		} catch (error) {
+			console.log(error);
+		}
+	}, []);
 
 	return (
 		<View style={styles.container}>
@@ -127,7 +131,7 @@ const styles = StyleSheet.create({
 		borderRadius: 4,
 		marginBottom: 8
 	},
-	headerButton: {
+	headerAction: {
 		marginRight: 16
 	},
 	headerButtonText: {
