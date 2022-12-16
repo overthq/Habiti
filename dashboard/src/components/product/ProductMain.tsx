@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, Text } from 'react-native';
+import { View, Pressable, Text, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FormProvider, useForm } from 'react-hook-form';
 import { ProductQuery, useEditProductMutation } from '../../types/api';
@@ -14,7 +14,7 @@ interface ProductMainProps {
 const ProductMain: React.FC<ProductMainProps> = ({ product }) => {
 	const navigation = useNavigation();
 	const [toUpload, setToUpload] = React.useState<string[]>([]);
-	const [, editProduct] = useEditProductMutation();
+	const [{ fetching }, editProduct] = useEditProductMutation();
 
 	const formMethods = useForm<ProductFormData>({
 		defaultValues: {
@@ -45,21 +45,29 @@ const ProductMain: React.FC<ProductMainProps> = ({ product }) => {
 		navigation.setOptions({
 			headerRight: () => {
 				return (
-					<Pressable
-						style={{ marginRight: 16 }}
-						onPress={formMethods.handleSubmit(onSubmit)}
-						disabled={disabled}
-					>
-						<Text
-							style={[{ fontSize: 17 }, disabled ? { color: '#777777' } : {}]}
-						>
-							Save
-						</Text>
-					</Pressable>
+					<View style={{ marginRight: 16 }}>
+						{fetching ? (
+							<ActivityIndicator />
+						) : (
+							<Pressable
+								onPress={formMethods.handleSubmit(onSubmit)}
+								disabled={disabled}
+							>
+								<Text
+									style={[
+										{ fontSize: 16 },
+										disabled ? { color: '#777777' } : {}
+									]}
+								>
+									Save
+								</Text>
+							</Pressable>
+						)}
+					</View>
 				);
 			}
 		});
-	}, [toUpload]);
+	}, [toUpload, formMethods.formState.isDirty, fetching]);
 
 	return (
 		<FormProvider {...formMethods}>

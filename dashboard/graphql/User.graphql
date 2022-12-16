@@ -24,7 +24,15 @@ query CustomerInfo($userId: ID!) {
 		phone
 		orders {
 			id
+			products {
+				id
+				product {
+					id
+					name
+				}
+			}
 			total
+			createdAt
 		}
 	}
 }

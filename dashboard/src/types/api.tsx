@@ -520,6 +520,23 @@ export type ManagedStoresQuery = {
 	};
 };
 
+export type ManagersQueryVariables = Exact<{
+	storeId: Scalars['ID'];
+}>;
+
+export type ManagersQuery = {
+	__typename?: 'Query';
+	store: {
+		__typename?: 'Store';
+		id: string;
+		managers: Array<{
+			__typename?: 'StoreManager';
+			id: string;
+			manager: { __typename?: 'User'; id: string; name: string };
+		}>;
+	};
+};
+
 export type OrdersQueryVariables = Exact<{
 	storeId: Scalars['ID'];
 }>;
@@ -777,7 +794,17 @@ export type CustomerInfoQuery = {
 		id: string;
 		name: string;
 		phone: string;
-		orders: Array<{ __typename?: 'Order'; id: string; total: number }>;
+		orders: Array<{
+			__typename?: 'Order';
+			id: string;
+			total: number;
+			createdAt: string;
+			products: Array<{
+				__typename?: 'OrderProduct';
+				id: string;
+				product: { __typename?: 'Product'; id: string; name: string };
+			}>;
+		}>;
 	};
 };
 
@@ -803,6 +830,29 @@ export function useManagedStoresQuery(
 ) {
 	return Urql.useQuery<ManagedStoresQuery, ManagedStoresQueryVariables>({
 		query: ManagedStoresDocument,
+		...options
+	});
+}
+export const ManagersDocument = gql`
+	query Managers($storeId: ID!) {
+		store(id: $storeId) {
+			id
+			managers {
+				id
+				manager {
+					id
+					name
+				}
+			}
+		}
+	}
+`;
+
+export function useManagersQuery(
+	options: Omit<Urql.UseQueryArgs<ManagersQueryVariables>, 'query'>
+) {
+	return Urql.useQuery<ManagersQuery, ManagersQueryVariables>({
+		query: ManagersDocument,
 		...options
 	});
 }
@@ -1122,7 +1172,15 @@ export const CustomerInfoDocument = gql`
 			phone
 			orders {
 				id
+				products {
+					id
+					product {
+						id
+						name
+					}
+				}
 				total
+				createdAt
 			}
 		}
 	}

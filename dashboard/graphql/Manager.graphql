@@ -13,6 +13,19 @@ query ManagedStores($userId: ID!) {
 	}
 }
 
+query Managers($storeId: ID!) {
+	store(id: $storeId) {
+		id
+		managers {
+			id
+			manager {
+				id
+				name
+			}
+		}
+	}
+}
+
 # mutation RemoveManager($userId: uuid!, $storeId: uuid!) {
 # 	delete_store_managers_by_pk(store_id: $storeId, manager_id: $userId) {
 # 		manager_id

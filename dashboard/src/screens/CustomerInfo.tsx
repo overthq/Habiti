@@ -20,10 +20,14 @@ const CustomerInfo: React.FC = () => {
 
 	return (
 		<ScrollView style={styles.container}>
-			<Text style={styles.header}>Customer Information</Text>
 			<Text style={styles.name}>{data.user.name}</Text>
 			<Text style={styles.phone}>{data.user.phone}</Text>
-			<Text>Previous Orders</Text>
+			<Text>Previous Orders:</Text>
+			{data.user.orders.map(order => (
+				<View key={order.id}>
+					<Text>{order.total}</Text>
+				</View>
+			))}
 		</ScrollView>
 	);
 };
@@ -33,7 +37,6 @@ const styles = StyleSheet.create({
 		paddingTop: 16,
 		paddingHorizontal: 16
 	},
-	header: {},
 	name: {
 		fontSize: 16
 	},

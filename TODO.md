@@ -19,6 +19,10 @@ I'm not creating issues for these TODOs yet, because I'm currently the only deve
 
 - [ ] Fix issues with adding products to carts.
 
+### Chores
+
+- [ ] Create a pattern where we have a wrapper for every screen that depends on pre-existing data. The screen should display a generic loading indicator or error boundary if any of its "dependencies" are not correctly loaded and the actual screen is completely typesafe.
+
 ## Dashboard
 
 ### General UI/UX improvements
@@ -38,6 +42,7 @@ I'm not creating issues for these TODOs yet, because I'm currently the only deve
 ### Features
 
 - [ ] Figure out statistics, and other dashboard overview details.
+- [ ] Set up "collections/groups" for products.
 
 ### Bugs
 
