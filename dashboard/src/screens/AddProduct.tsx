@@ -1,5 +1,4 @@
 import React from 'react';
-import { Pressable, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FormProvider } from 'react-hook-form';
 
@@ -7,6 +6,7 @@ import { useCreateProductMutation } from '../types/api';
 import ProductForm from '../components/product/ProductForm';
 import { useForm } from 'react-hook-form';
 import { generateUploadFile } from '../utils/images';
+import TextButton from '../components/global/TextButton';
 
 export interface ProductFormData {
 	name: string;
@@ -50,23 +50,19 @@ const AddProduct: React.FC = () => {
 
 	React.useLayoutEffect(() => {
 		setOptions({
-			headerLeft: () => {
-				return (
-					<Pressable style={{ marginLeft: 16 }} onPress={goBack}>
-						<Text style={{ fontSize: 16 }}>Cancel</Text>
-					</Pressable>
-				);
-			},
-			headerRight: () => {
-				return (
-					<Pressable
-						style={{ marginRight: 16 }}
-						onPress={formMethods.handleSubmit(onSubmit)}
-					>
-						<Text style={{ fontSize: 16 }}>Save</Text>
-					</Pressable>
-				);
-			}
+			headerLeft: () => (
+				<TextButton style={{ marginLeft: 16 }} onPress={goBack}>
+					Cancel
+				</TextButton>
+			),
+			headerRight: () => (
+				<TextButton
+					style={{ marginRight: 16 }}
+					onPress={formMethods.handleSubmit(onSubmit)}
+				>
+					Save
+				</TextButton>
+			)
 		});
 	}, [toUpload]);
 

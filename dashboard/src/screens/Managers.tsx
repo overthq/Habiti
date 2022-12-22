@@ -1,11 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import useGoBack from '../hooks/useGoBack';
 import { useManagersQuery } from '../types/api';
 
 // TODO: Display "you" if current row is currently active user.
 
 const Managers = () => {
 	const [{ data, fetching }] = useManagersQuery();
+	useGoBack();
 
 	if (fetching || !data) {
 		return <View />;
@@ -24,7 +26,9 @@ const Managers = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1,
+		paddingTop: 16,
+		paddingHorizontal: 16
 	}
 });
 

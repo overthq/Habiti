@@ -35,10 +35,12 @@ const CustomerInfo: React.FC = () => {
 const styles = StyleSheet.create({
 	container: {
 		paddingTop: 16,
-		paddingHorizontal: 16
+		paddingHorizontal: 16,
+		backgroundColor: '#FFFFFF'
 	},
 	name: {
-		fontSize: 16
+		fontSize: 24,
+		fontWeight: '500'
 	},
 	phone: {
 		fontSize: 16

@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Pressable, Text, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FormProvider, useForm } from 'react-hook-form';
 import { ProductQuery, useEditProductMutation } from '../../types/api';
 import ProductForm from './ProductForm';
 import type { ProductFormData } from '../../screens/AddProduct';
 import { generateUploadFile } from '../../utils/images';
+import TextButton from '../global/TextButton';
 
 interface ProductMainProps {
 	product: ProductQuery['product'];
@@ -18,7 +19,7 @@ const ProductMain: React.FC<ProductMainProps> = ({ product }) => {
 
 	const formMethods = useForm<ProductFormData>({
 		defaultValues: {
-			name: product?.name,
+			name: product.name,
 			description: product.description,
 			unitPrice: String(product.unitPrice),
 			quantity: String(product.quantity)
@@ -49,19 +50,12 @@ const ProductMain: React.FC<ProductMainProps> = ({ product }) => {
 						{fetching ? (
 							<ActivityIndicator />
 						) : (
-							<Pressable
+							<TextButton
 								onPress={formMethods.handleSubmit(onSubmit)}
 								disabled={disabled}
 							>
-								<Text
-									style={[
-										{ fontSize: 16 },
-										disabled ? { color: '#777777' } : {}
-									]}
-								>
-									Save
-								</Text>
-							</Pressable>
+								Save
+							</TextButton>
 						)}
 					</View>
 				);

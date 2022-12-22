@@ -3,8 +3,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Store from '../screens/Store';
 import EditStore from '../screens/EditStore';
 import Managers from '../screens/Managers';
+import { StoreStackParamList } from '../types/navigation';
 
-const StoreStack = createStackNavigator();
+const StoreStack = createStackNavigator<StoreStackParamList>();
 
 const StoreStackNavigator = () => {
 	return (

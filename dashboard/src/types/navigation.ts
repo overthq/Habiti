@@ -38,5 +38,5 @@ export type SettingsStackParamList = {
 export type StoreStackParamList = {
 	StoreHome: undefined;
 	'Edit Store': undefined;
-	Manager: undefined;
+	Managers: undefined;
 };

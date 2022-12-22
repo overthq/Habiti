@@ -17,7 +17,7 @@ const Store: React.FC = () => {
 	return (
 		<View style={styles.container}>
 			<StoreProfile store={store} />
-			<Pressable onPress={() => navigate('Manager')}>
+			<Pressable onPress={() => navigate('Managers')}>
 				<Text>Managers</Text>
 			</Pressable>
 		</View>

@@ -1,16 +1,11 @@
 import React from 'react';
-import {
-	Pressable,
-	StyleSheet,
-	View,
-	Text,
-	ActivityIndicator
-} from 'react-native';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 
 import FormInput from '../global/FormInput';
 import { StoreQuery, useEditStoreMutation } from '../../types/api';
+import TextButton from '../global/TextButton';
 
 interface EditStoreFormData {
 	name: string;
@@ -45,12 +40,12 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 					{fetching ? (
 						<ActivityIndicator />
 					) : (
-						<Pressable
+						<TextButton
 							onPress={formMethods.handleSubmit(onSubmit)}
 							disabled={!formMethods.formState.isDirty}
 						>
-							<Text style={styles.headerButtonText}>Save</Text>
-						</Pressable>
+							Save
+						</TextButton>
 					)}
 				</View>
 			)
