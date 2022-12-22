@@ -11,6 +11,6 @@ export interface PreferencesSlice {
 	setPreference: (payload: Partial<PreferencesSlice>) => void;
 }
 
-export type Mutators = [['zustand/persist'], unknown];
+export type Mutators = [['zustand/persist', unknown]];
 
 export type AppState = AuthSlice & PreferencesSlice;
