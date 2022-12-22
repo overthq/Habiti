@@ -7,7 +7,6 @@ export type AppStackParamList = {
 	CreateStore: undefined;
 	Root: undefined;
 	'Add Product': undefined;
-	'Edit Store': undefined;
 	Settings: undefined;
 	CustomerInfo: { userId: string };
 };
@@ -28,11 +27,16 @@ export type OrdersStackParamsList = {
 export type ProductsStackParamList = {
 	ProductsList: undefined;
 	Product: { productId: string };
-	// SearchProducts: undefined;
 };
 
 export type SettingsStackParamList = {
 	SettingsList: undefined;
 	SettingsActiveStore: undefined;
 	SettingsTheme: undefined;
+};
+
+export type StoreStackParamList = {
+	StoreHome: undefined;
+	'Edit Store': undefined;
+	Manager: undefined;
 };
