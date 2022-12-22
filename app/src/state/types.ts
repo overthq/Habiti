@@ -8,7 +8,9 @@ export interface AuthSlice {
 export interface PreferencesSlice {
 	theme: 'light' | 'dark' | 'auto';
 	defaultCard: string | null;
-	setPreference: (payload: Partial<PreferencesSlice>) => void;
+	setPreference: (
+		payload: Partial<Omit<PreferencesSlice, 'setPreference'>>
+	) => void;
 }
 
 export type Mutators = [['zustand/persist', unknown]];
