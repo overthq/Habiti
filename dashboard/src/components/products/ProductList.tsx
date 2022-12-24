@@ -41,6 +41,7 @@ const ProductList: React.FC<ProductListProps> = ({ mode }) => {
 		/>
 	) : (
 		<FlashList
+			keyExtractor={i => i.id}
 			numColumns={2}
 			data={data?.currentStore.products}
 			renderItem={({ item }) => (

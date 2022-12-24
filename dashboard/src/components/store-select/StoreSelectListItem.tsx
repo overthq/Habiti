@@ -25,8 +25,8 @@ const StoreSelectListItem: React.FC<StoresListItemProps> = ({
 const styles = StyleSheet.create({
 	container: {
 		width: '100%',
-		borderWidth: 1,
-		borderColor: '#505050',
+		borderWidth: 2,
+		borderColor: '#D3D3D3',
 		padding: 16,
 		borderRadius: 4,
 		marginBottom: 8

@@ -1,5 +1,5 @@
-query ManagedStores($userId: ID!) {
-	user(id: $userId) {
+query ManagedStores {
+	currentUser {
 		id
 		managed {
 			id

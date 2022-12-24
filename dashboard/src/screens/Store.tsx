@@ -1,14 +1,12 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { View, StyleSheet } from 'react-native';
 import { useStoreQuery } from '../types/api';
 import StoreProfile from '../components/store/StoreProfile';
-import { StoreStackParamList } from '../types/navigation';
+import StoreMenu from '../components/store/StoreMenu';
 
 const Store: React.FC = () => {
 	const [{ data, fetching }] = useStoreQuery();
 	const store = data?.currentStore;
-	const { navigate } = useNavigation<NavigationProp<StoreStackParamList>>();
 
 	if (fetching || !store) {
 		return <View />;
@@ -17,9 +15,7 @@ const Store: React.FC = () => {
 	return (
 		<View style={styles.container}>
 			<StoreProfile store={store} />
-			<Pressable onPress={() => navigate('Managers')}>
-				<Text>Managers</Text>
-			</Pressable>
+			<StoreMenu />
 		</View>
 	);
 };

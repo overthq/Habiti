@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import ManagerRow from '../components/managers/ManagerRow';
 import useGoBack from '../hooks/useGoBack';
 import { useManagersQuery } from '../types/api';
 
@@ -15,11 +16,11 @@ const Managers = () => {
 
 	return (
 		<View style={styles.container}>
-			{data.currentStore.managers.map(({ id, manager }) => (
-				<View key={id}>
-					<Text>{manager.name}</Text>
-				</View>
-			))}
+			<View style={styles.managers}>
+				{data.currentStore.managers.map(({ id, manager }) => (
+					<ManagerRow key={id} manager={manager} />
+				))}
+			</View>
 		</View>
 	);
 };
@@ -29,6 +30,10 @@ const styles = StyleSheet.create({
 		flex: 1,
 		paddingTop: 16,
 		paddingHorizontal: 16
+	},
+	managers: {
+		backgroundColor: '#FFFFFF',
+		borderRadius: 4
 	}
 });
 

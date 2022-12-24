@@ -500,13 +500,11 @@ export type WatchlistProduct = {
 	userId: Scalars['ID'];
 };
 
-export type ManagedStoresQueryVariables = Exact<{
-	userId: Scalars['ID'];
-}>;
+export type ManagedStoresQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ManagedStoresQuery = {
 	__typename?: 'Query';
-	user: {
+	currentUser: {
 		__typename?: 'User';
 		id: string;
 		managed: Array<{
@@ -799,8 +797,8 @@ export type CustomerInfoQuery = {
 };
 
 export const ManagedStoresDocument = gql`
-	query ManagedStores($userId: ID!) {
-		user(id: $userId) {
+	query ManagedStores {
+		currentUser {
 			id
 			managed {
 				id
@@ -816,7 +814,7 @@ export const ManagedStoresDocument = gql`
 `;
 
 export function useManagedStoresQuery(
-	options: Omit<Urql.UseQueryArgs<ManagedStoresQueryVariables>, 'query'>
+	options?: Omit<Urql.UseQueryArgs<ManagedStoresQueryVariables>, 'query'>
 ) {
 	return Urql.useQuery<ManagedStoresQuery, ManagedStoresQueryVariables>({
 		query: ManagedStoresDocument,

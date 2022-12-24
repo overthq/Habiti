@@ -28,7 +28,7 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		marginRight: 16
+		marginRight: 8
 	},
 	placeholder: {
 		height: 200,

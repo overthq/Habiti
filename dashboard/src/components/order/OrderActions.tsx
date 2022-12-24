@@ -4,34 +4,33 @@ import { StyleSheet, View } from 'react-native';
 import Button from '../global/Button';
 import { useUpdateOrderMutation, OrderStatus } from '../../types/api';
 
-// Important:
-// - Both button loading states should not be attached to "fetching".
-// - Breakdown what buttons to display and when:
-//   - When the order is pending, display "Mark as fulfilled" and "Cancel".
-//   - When the order is cancelled, display a lone "undo cancel"?
-//   - When the order is pending delivery, display nothing?
-//   - When the order is delivered, display a delivered notice.
-// - What do we display when the order is returned.
-// - ^ (that should also be an order status)
-
 interface OrderActionsProps {
 	orderId: string;
 	status: OrderStatus;
 }
 
-const OrderActions: React.FC<OrderActionsProps> = ({ orderId }) => {
+const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 	const [{ fetching }, updateOrder] = useUpdateOrderMutation();
 
 	const updateOrderStatus = React.useCallback(
-		(status: OrderStatus) => () => {
+		(status: OrderStatus) => async () => {
 			try {
-				updateOrder({ orderId, input: { status } });
+				const { data, error } = await updateOrder({
+					orderId,
+					input: { status }
+				});
+
+				console.log({ data, error });
 			} catch (error) {
 				console.log(error);
 			}
 		},
 		[]
 	);
+
+	if (status !== OrderStatus.Pending) {
+		return null;
+	}
 
 	return (
 		<View style={styles.container}>

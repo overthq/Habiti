@@ -37,7 +37,8 @@ const styles = StyleSheet.create({
 		marginBottom: 8
 	},
 	description: {
-		fontSize: 16
+		fontSize: 16,
+		marginBottom: 16
 	}
 });
 
