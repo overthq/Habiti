@@ -8,7 +8,19 @@ import {
 	PressableProps
 } from 'react-native';
 
+const variants = {
+	primary: {
+		background: '#000000',
+		text: '#FFFFFF'
+	},
+	secondary: {
+		background: '#D3D3D3',
+		text: '#505050'
+	}
+} as const;
+
 interface ButtonProps extends PressableProps {
+	variant?: keyof typeof variants;
 	text: string;
 	loading?: boolean;
 	style?: ViewStyle;
@@ -19,27 +31,40 @@ const Button: React.FC<ButtonProps> = ({
 	text,
 	loading,
 	style,
+	variant = 'primary',
 	...props
 }) => (
-	<Pressable style={[styles.container, style]} onPress={onPress} {...props}>
-		{loading ? <ActivityIndicator /> : <Text style={styles.text}>{text}</Text>}
+	<Pressable
+		style={[
+			styles.container,
+			style,
+			{ backgroundColor: variants[variant].background }
+		]}
+		onPress={onPress}
+		disabled={loading || props.disabled}
+		{...props}
+	>
+		{loading ? (
+			<ActivityIndicator />
+		) : (
+			<Text style={[styles.text, { color: variants[variant].text }]}>
+				{text}
+			</Text>
+		)}
 	</Pressable>
 );
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		maxHeight: 40,
 		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor: '#000000',
 		height: 45,
 		borderRadius: 4
 	},
 	text: {
 		fontSize: 17,
-		fontWeight: '500',
-		color: '#FFFFFF'
+		fontWeight: '500'
 	}
 });
 

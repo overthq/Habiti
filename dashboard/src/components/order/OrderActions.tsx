@@ -13,14 +13,9 @@ const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 	const [{ fetching }, updateOrder] = useUpdateOrderMutation();
 
 	const updateOrderStatus = React.useCallback(
-		(status: OrderStatus) => async () => {
+		(status: OrderStatus) => () => {
 			try {
-				const { data, error } = await updateOrder({
-					orderId,
-					input: { status }
-				});
-
-				console.log({ data, error });
+				updateOrder({ orderId, input: { status } });
 			} catch (error) {
 				console.log(error);
 			}

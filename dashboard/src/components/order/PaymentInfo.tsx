@@ -24,6 +24,7 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({ order }) => {
 	const [, updateOrder] = useUpdateOrderMutation();
 
 	const handleRefund = React.useCallback(() => {
+		// For now, this is equivalent to order cancellation.
 		updateOrder({
 			orderId: order.id,
 			input: { status: OrderStatus.Cancelled }
@@ -37,7 +38,7 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({ order }) => {
 				<Text style={styles.text}>Total</Text>
 				<Text style={styles.text}>{formatNaira(order.total)}</Text>
 			</View>
-			<Button onPress={handleRefund} text='Refund' />
+			<Button variant='secondary' onPress={handleRefund} text='Refund' />
 		</View>
 	);
 };
