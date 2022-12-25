@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { OrderQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
+import Button from '../global/Button';
 
 interface PaymentInfoProps {
 	order: OrderQuery['order'];
@@ -16,12 +17,18 @@ interface PaymentInfoProps {
 // - Refund button (should this be different from order cancellation?)
 
 const PaymentInfo: React.FC<PaymentInfoProps> = ({ order }) => {
+	const handleRefund = () => {
+		// Handle refund
+	};
+
 	return (
 		<View style={styles.container}>
 			<Text style={styles.sectionHeader}>Payment</Text>
-			<View style={{ marginTop: 8 }}>
-				<Text style={{ fontSize: 16 }}>Total: {formatNaira(order.total)}</Text>
+			<View style={styles.row}>
+				<Text style={styles.text}>Total</Text>
+				<Text style={styles.text}>{formatNaira(order.total)}</Text>
 			</View>
+			<Button onPress={handleRefund} text='Refund' />
 		</View>
 	);
 };
@@ -38,7 +45,11 @@ const styles = StyleSheet.create({
 	row: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems: 'center'
+		alignItems: 'center',
+		marginBottom: 4
+	},
+	text: {
+		fontSize: 16
 	}
 });
 

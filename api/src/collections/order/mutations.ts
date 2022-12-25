@@ -78,8 +78,11 @@ interface UpdateOrderArgs {
 	};
 }
 
-const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
-	await ctx.prisma.order.update({
+const updateOrder: Resolver<UpdateOrderArgs> = (_, args, ctx) => {
+	// TODO:
+	// If args.input contains "status", we might want to do some special things.
+
+	return ctx.prisma.order.update({
 		where: { id: args.orderId },
 		data: args.input
 	});

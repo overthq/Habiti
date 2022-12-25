@@ -6,18 +6,15 @@ import SettingSelectRow from './SettingSelectRow';
 import useStore from '../../state';
 
 const SettingsActiveStore: React.FC = () => {
-	const { userId, activeStore, setPreference } = useStore(state => ({
-		userId: state.userId,
+	const { activeStore, setPreference } = useStore(state => ({
 		activeStore: state.activeStore,
 		setPreference: state.setPreference
 	}));
 
-	const [{ data }] = useManagedStoresQuery({
-		variables: { userId: userId as string }
-	});
+	const [{ data }] = useManagedStoresQuery();
 	useGoBack();
 
-	const stores = data?.user.managed.map(({ store }) => store);
+	const stores = data?.currentUser.managed.map(({ store }) => store);
 
 	const handleRowSelect = (id: string) => () => {
 		setPreference({ activeStore: id });

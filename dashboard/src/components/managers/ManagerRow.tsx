@@ -16,7 +16,8 @@ const ManagerRow: React.FC<ManagerRowProps> = ({ manager }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		padding: 16
+		paddingHorizontal: 16,
+		paddingVertical: 12
 	},
 	name: {
 		fontSize: 16

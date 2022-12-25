@@ -18,7 +18,7 @@ const Settings: React.FC = () => {
 	const [{ data }] = useStoreQuery();
 
 	const { navigate } = useNavigation<NavigationProp<SettingsStackParamList>>();
-	useGoBack('x');
+	useGoBack('x', 12);
 
 	const handleSettingsNavigate = React.useCallback(
 		(screen: keyof SettingsStackParamList) => () => {
@@ -53,8 +53,8 @@ const styles = StyleSheet.create({
 		flex: 1
 	},
 	buttonContainer: {
-		marginVertical: 8,
-		paddingHorizontal: 8
+		marginVertical: 16,
+		paddingHorizontal: 16
 	}
 });
 
