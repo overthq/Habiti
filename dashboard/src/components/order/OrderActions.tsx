@@ -38,11 +38,6 @@ const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 				text='Mark as fulfilled'
 				loading={fetching}
 				onPress={updateOrderStatus(OrderStatus.Completed)}
-				style={styles.leftButton}
-			/>
-			<Button
-				text='Cancel'
-				onPress={updateOrderStatus(OrderStatus.Cancelled)}
 				style={styles.button}
 			/>
 		</View>
@@ -53,11 +48,6 @@ const styles = StyleSheet.create({
 	container: {
 		padding: 16,
 		flexDirection: 'row'
-	},
-	leftButton: {
-		marginRight: 16,
-		height: 40,
-		backgroundColor: '#505050'
 	},
 	button: {
 		height: 40

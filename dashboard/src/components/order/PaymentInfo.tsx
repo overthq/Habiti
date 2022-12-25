@@ -1,6 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { OrderQuery } from '../../types/api';
+import {
+	OrderQuery,
+	OrderStatus,
+	useUpdateOrderMutation
+} from '../../types/api';
 import { formatNaira } from '../../utils/currency';
 import Button from '../global/Button';
 
@@ -17,9 +21,14 @@ interface PaymentInfoProps {
 // - Refund button (should this be different from order cancellation?)
 
 const PaymentInfo: React.FC<PaymentInfoProps> = ({ order }) => {
-	const handleRefund = () => {
-		// Handle refund
-	};
+	const [, updateOrder] = useUpdateOrderMutation();
+
+	const handleRefund = React.useCallback(() => {
+		updateOrder({
+			orderId: order.id,
+			input: { status: OrderStatus.Cancelled }
+		});
+	}, [order.id]);
 
 	return (
 		<View style={styles.container}>

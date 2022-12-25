@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ListRenderItem } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import OrderProduct from './OrderProduct';
 import { OrderQuery } from '../../types/api';
@@ -19,6 +19,14 @@ const OrderProducts: React.FC<OrderProductsProps> = ({ products }) => {
 		[]
 	);
 
+	const renderOrderProduct: ListRenderItem<
+		OrderQuery['order']['products'][number]
+	> = React.useCallback(({ item }) => {
+		return (
+			<OrderProduct onPress={handlePress(item.productId)} orderProduct={item} />
+		);
+	}, []);
+
 	return (
 		<View style={styles.container}>
 			<Text style={styles.sectionHeader}>Products</Text>
@@ -27,12 +35,7 @@ const OrderProducts: React.FC<OrderProductsProps> = ({ products }) => {
 				data={products}
 				keyExtractor={item => item.id}
 				contentContainerStyle={styles.content}
-				renderItem={({ item }) => (
-					<OrderProduct
-						onPress={handlePress(item.productId)}
-						orderProduct={item}
-					/>
-				)}
+				renderItem={renderOrderProduct}
 				showsHorizontalScrollIndicator={false}
 			/>
 		</View>
