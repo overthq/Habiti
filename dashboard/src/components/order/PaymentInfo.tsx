@@ -21,7 +21,7 @@ interface PaymentInfoProps {
 // - Refund button (should this be different from order cancellation?)
 
 const PaymentInfo: React.FC<PaymentInfoProps> = ({ order }) => {
-	const [, updateOrder] = useUpdateOrderMutation();
+	const [{ fetching }, updateOrder] = useUpdateOrderMutation();
 
 	const handleRefund = React.useCallback(() => {
 		// For now, this is equivalent to order cancellation.
@@ -38,7 +38,13 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({ order }) => {
 				<Text style={styles.text}>Total</Text>
 				<Text style={styles.text}>{formatNaira(order.total)}</Text>
 			</View>
-			<Button variant='secondary' onPress={handleRefund} text='Refund' />
+			<Button
+				style={styles.button}
+				loading={fetching}
+				variant='secondary'
+				onPress={handleRefund}
+				text='Refund'
+			/>
 		</View>
 	);
 };
@@ -50,7 +56,8 @@ const styles = StyleSheet.create({
 	},
 	sectionHeader: {
 		fontSize: 16,
-		fontWeight: '500'
+		fontWeight: '500',
+		marginBottom: 8
 	},
 	row: {
 		flexDirection: 'row',
@@ -60,6 +67,9 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		fontSize: 16
+	},
+	button: {
+		marginTop: 4
 	}
 });
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import ManagerRow from '../components/managers/ManagerRow';
 import useGoBack from '../hooks/useGoBack';
+import useStore from '../state';
 import { useManagersQuery } from '../types/api';
 
 // TODO: Display "you" if current row is currently active user.
@@ -9,6 +10,7 @@ import { useManagersQuery } from '../types/api';
 const Managers = () => {
 	const [{ data, fetching }] = useManagersQuery();
 	useGoBack();
+	const userId = useStore(({ userId }) => userId);
 
 	if (fetching || !data) {
 		return <View />;
@@ -18,7 +20,7 @@ const Managers = () => {
 		<View style={styles.container}>
 			<View style={styles.managers}>
 				{data.currentStore.managers.map(({ id, manager }) => (
-					<ManagerRow key={id} manager={manager} />
+					<ManagerRow key={id} manager={manager} you={userId === manager.id} />
 				))}
 			</View>
 		</View>
