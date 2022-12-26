@@ -80,7 +80,8 @@ interface UpdateOrderArgs {
 
 const updateOrder: Resolver<UpdateOrderArgs> = (_, args, ctx) => {
 	// TODO:
-	// If args.input contains "status", we might want to do some special things.
+	// - If args.input contains "status", we might want to do some special things.
+	// - If status is updated to "Fulfilled", add order total to store revenue.
 
 	return ctx.prisma.order.update({
 		where: { id: args.orderId },

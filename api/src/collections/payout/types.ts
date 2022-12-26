@@ -8,26 +8,10 @@ const PayoutTypes = gql`
 		createdAt: String!
 		updatedAt: String!
 		store: Store!
-		method: PayoutMethod
-	}
-
-	type PayoutMethod {
-		id: ID!
-		storeId: ID!
-		store: Store!
-		provider: PayoutProvider!
-	}
-
-	enum PayoutProvider {
-		BankAccount
 	}
 
 	input CreatePayoutInput {
 		amount: Int!
-	}
-
-	extend type Query {
-		payouts: [Payout!]!
 	}
 
 	extend type Mutation {
