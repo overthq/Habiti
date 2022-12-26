@@ -1,0 +1,18 @@
+query StorePayouts {
+	currentStore {
+		id
+		payouts {
+			id
+			amount
+			createdAt
+		}
+	}
+}
+
+mutation CreatePayout($input: CreatePayoutInput!) {
+	createPayout(input: $input) {
+		id
+		amount
+		createdAt
+	}
+}

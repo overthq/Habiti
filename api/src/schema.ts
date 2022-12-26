@@ -51,6 +51,9 @@ import WatchlistProductTypes from './collections/watchlist-product/types';
 import statsQueries from './collections/stats/queries';
 import StatsTypes from './collections/stats/types';
 
+import payoutMutations from './collections/payout/mutations';
+import PayoutTypes from './collections/payout/types';
+
 const Root = `
 	scalar Upload
 
@@ -82,7 +85,8 @@ const resolvers = merge(
 	orderProductQueries,
 	watchlistProductQueries,
 	watchlistProductMutations,
-	statsQueries
+	statsQueries,
+	payoutMutations
 );
 
 const schema = makeExecutableSchema({
@@ -100,7 +104,8 @@ const schema = makeExecutableSchema({
 		CardTypes,
 		OrderProductTypes,
 		WatchlistProductTypes,
-		StatsTypes
+		StatsTypes,
+		PayoutTypes
 	],
 	resolvers
 });

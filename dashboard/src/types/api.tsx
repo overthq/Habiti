@@ -93,6 +93,10 @@ export type CreateOrderInput = {
 	cartId: Scalars['ID'];
 };
 
+export type CreatePayoutInput = {
+	amount: Scalars['Int'];
+};
+
 export type CreateProductInput = {
 	description: Scalars['String'];
 	imageFiles: Array<Scalars['Upload']>;
@@ -155,6 +159,7 @@ export type Mutation = {
 	authenticate: AuthenticateResponse;
 	createCart: Cart;
 	createOrder: Order;
+	createPayout: Payout;
 	createProduct: Product;
 	createStore: Store;
 	deleteAccount: User;
@@ -199,6 +204,10 @@ export type MutationCreateCartArgs = {
 
 export type MutationCreateOrderArgs = {
 	input: CreateOrderInput;
+};
+
+export type MutationCreatePayoutArgs = {
+	input: CreatePayoutInput;
 };
 
 export type MutationCreateProductArgs = {
@@ -322,6 +331,16 @@ export enum OrderStatus {
 	Processing = 'Processing'
 }
 
+export type Payout = {
+	__typename?: 'Payout';
+	amount: Scalars['Int'];
+	createdAt: Scalars['String'];
+	id: Scalars['ID'];
+	store: Store;
+	storeId: Scalars['ID'];
+	updatedAt: Scalars['String'];
+};
+
 export type Product = {
 	__typename?: 'Product';
 	carts: Array<CartProduct>;
@@ -423,6 +442,7 @@ export type Store = {
 	managers: Array<StoreManager>;
 	name: Scalars['String'];
 	orders: Array<Order>;
+	payouts: Array<Payout>;
 	products: Array<Product>;
 	twitter?: Maybe<Scalars['String']>;
 	updatedAt: Scalars['String'];
@@ -599,6 +619,36 @@ export type UpdateOrderMutationVariables = Exact<{
 export type UpdateOrderMutation = {
 	__typename?: 'Mutation';
 	updateOrder: { __typename?: 'Order'; id: string };
+};
+
+export type StorePayoutsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type StorePayoutsQuery = {
+	__typename?: 'Query';
+	currentStore: {
+		__typename?: 'Store';
+		id: string;
+		payouts: Array<{
+			__typename?: 'Payout';
+			id: string;
+			amount: number;
+			createdAt: string;
+		}>;
+	};
+};
+
+export type CreatePayoutMutationVariables = Exact<{
+	input: CreatePayoutInput;
+}>;
+
+export type CreatePayoutMutation = {
+	__typename?: 'Mutation';
+	createPayout: {
+		__typename?: 'Payout';
+		id: string;
+		amount: number;
+		createdAt: string;
+	};
 };
 
 export type ProductsQueryVariables = Exact<{ [key: string]: never }>;
@@ -932,6 +982,42 @@ export const UpdateOrderDocument = gql`
 export function useUpdateOrderMutation() {
 	return Urql.useMutation<UpdateOrderMutation, UpdateOrderMutationVariables>(
 		UpdateOrderDocument
+	);
+}
+export const StorePayoutsDocument = gql`
+	query StorePayouts {
+		currentStore {
+			id
+			payouts {
+				id
+				amount
+				createdAt
+			}
+		}
+	}
+`;
+
+export function useStorePayoutsQuery(
+	options?: Omit<Urql.UseQueryArgs<StorePayoutsQueryVariables>, 'query'>
+) {
+	return Urql.useQuery<StorePayoutsQuery, StorePayoutsQueryVariables>({
+		query: StorePayoutsDocument,
+		...options
+	});
+}
+export const CreatePayoutDocument = gql`
+	mutation CreatePayout($input: CreatePayoutInput!) {
+		createPayout(input: $input) {
+			id
+			amount
+			createdAt
+		}
+	}
+`;
+
+export function useCreatePayoutMutation() {
+	return Urql.useMutation<CreatePayoutMutation, CreatePayoutMutationVariables>(
+		CreatePayoutDocument
 	);
 }
 export const ProductsDocument = gql`
