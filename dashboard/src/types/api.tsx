@@ -390,7 +390,6 @@ export type QueryProductArgs = {
 
 export type QueryStatsArgs = {
 	period?: InputMaybe<StatPeriod>;
-	storeId: Scalars['ID'];
 };
 
 export type QueryStoreArgs = {
@@ -723,7 +722,6 @@ export type EditProductMutation = {
 };
 
 export type StatsQueryVariables = Exact<{
-	storeId: Scalars['ID'];
 	period: StatPeriod;
 }>;
 
@@ -1115,8 +1113,8 @@ export function useEditProductMutation() {
 	);
 }
 export const StatsDocument = gql`
-	query Stats($storeId: ID!, $period: StatPeriod!) {
-		stats(storeId: $storeId, period: $period) {
+	query Stats($period: StatPeriod!) {
+		stats(period: $period) {
 			id
 			orders {
 				id

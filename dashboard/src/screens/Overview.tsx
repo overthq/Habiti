@@ -10,7 +10,6 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Icon } from '../components/Icon';
 import { AppStackParamList } from '../types/navigation';
 import { StatPeriod, useStatsQuery } from '../types/api';
-import useStore from '../state';
 import PeriodSelector from '../components/overview/PeriodSelector';
 import NumberStat from '../components/overview/NumberStat';
 
@@ -33,9 +32,8 @@ import NumberStat from '../components/overview/NumberStat';
 const Overview: React.FC = () => {
 	const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 	const [selectedPeriod, setSelectedPeriod] = React.useState(StatPeriod.Week);
-	const activeStore = useStore(({ activeStore }) => activeStore);
 	const [{ fetching, data }] = useStatsQuery({
-		variables: { storeId: activeStore as string, period: selectedPeriod }
+		variables: { period: selectedPeriod }
 	});
 
 	React.useLayoutEffect(() => {

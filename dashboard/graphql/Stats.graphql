@@ -1,5 +1,5 @@
-query Stats($storeId: ID!, $period: StatPeriod!) {
-	stats(storeId: $storeId, period: $period) {
+query Stats($period: StatPeriod!) {
+	stats(period: $period) {
 		id
 		orders {
 			id

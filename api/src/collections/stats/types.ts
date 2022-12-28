@@ -25,7 +25,7 @@ const StatsTypes = gql`
 	}
 
 	extend type Query {
-		stats(storeId: ID!, period: StatPeriod): Stats!
+		stats(period: StatPeriod): Stats!
 	}
 `;
 

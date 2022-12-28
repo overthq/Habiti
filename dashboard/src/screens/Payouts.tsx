@@ -4,12 +4,16 @@ import { useStorePayoutsQuery } from '../types/api';
 import { formatNaira } from '../utils/currency';
 
 const Payouts = () => {
-	const [{ data }] = useStorePayoutsQuery();
+	const [{ data, fetching }] = useStorePayoutsQuery();
+
+	if (fetching || !data?.currentStore) {
+		return <View />;
+	}
 
 	return (
 		<View>
 			<Text>Payout History:</Text>
-			{data?.currentStore.payouts.map(payout => (
+			{data.currentStore.payouts.map(payout => (
 				<View key={payout.id}>
 					<Text>{formatNaira(payout.amount)}</Text>
 					<Text>{payout.createdAt}</Text>

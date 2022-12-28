@@ -14,7 +14,6 @@ const getDateFromPeriod = (period: StatPeriod) => {
 };
 
 interface StatsArgs {
-	storeId: string;
 	period: StatPeriod;
 }
 
@@ -60,7 +59,11 @@ interface StatsArgs {
 // 	orderCount: number;
 // };
 
-const stats: Resolver<StatsArgs> = async (_, { storeId, period }, ctx) => {
+const stats: Resolver<StatsArgs> = async (_, { period }, ctx) => {
+	if (!ctx.storeId) {
+		throw new Error('No storeId specified');
+	}
+
 	const marker = getDateFromPeriod(period);
 
 	// TODO: Add query for number of new customers.
@@ -89,21 +92,25 @@ const stats: Resolver<StatsArgs> = async (_, { storeId, period }, ctx) => {
 	const [products, orders, orderProducts, pendingOrderCount] =
 		await ctx.prisma.$transaction([
 			ctx.prisma.product.findMany({
-				where: { storeId, createdAt: { gte: marker } }
+				where: { storeId: ctx.storeId, createdAt: { gte: marker } }
 			}),
 			ctx.prisma.order.findMany({
-				where: { storeId, createdAt: { gte: marker } }
+				where: { storeId: ctx.storeId, createdAt: { gte: marker } }
 			}),
 			ctx.prisma.orderProduct.findMany({
-				where: { order: { storeId, createdAt: { gte: marker } } }
+				where: { order: { storeId: ctx.storeId, createdAt: { gte: marker } } }
 			}),
 			ctx.prisma.order.count({
-				where: { storeId, createdAt: { gte: marker }, status: 'Pending' }
+				where: {
+					storeId: ctx.storeId,
+					createdAt: { gte: marker },
+					status: 'Pending'
+				}
 			})
 		]);
 
 	return {
-		storeId,
+		storeId: ctx.storeId,
 		products,
 		orders,
 		revenue: orderProducts.reduce(
