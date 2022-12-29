@@ -11,12 +11,12 @@ import OrderOverview from '../components/order/OrderOverview';
 import useGoBack from '../hooks/useGoBack';
 
 import { useOrderQuery } from '../types/api';
-import { OrdersStackParamsList } from '../types/navigation';
+import { OrdersStackParamList } from '../types/navigation';
 
 const Order: React.FC = () => {
 	const {
 		params: { orderId }
-	} = useRoute<RouteProp<OrdersStackParamsList, 'Order'>>();
+	} = useRoute<RouteProp<OrdersStackParamList, 'Order'>>();
 	const [{ data, fetching }] = useOrderQuery({ variables: { id: orderId } });
 	useGoBack();
 

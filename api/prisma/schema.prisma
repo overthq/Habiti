@@ -29,6 +29,8 @@ model Store {
   website     String?
   twitter     String?         @db.VarChar(15)
   instagram   String?         @db.VarChar(30)
+  revenue     Int             @default(0)
+  payedOut    Int             @default(0)
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
   image       Image?
@@ -38,8 +40,6 @@ model Store {
   followers   StoreFollower[]
   carts       Cart[]
   payouts     Payout[]
-  revenue     Int             @default(0)
-  payedOut    Int             @default(0)
 }
 
 model Product {

@@ -1,8 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import Overview from '../screens/Overview';
-
+import HomeStackNavigator from './HomeStack';
 import OrdersStackNavigator from './OrdersStack';
 import ProductsStackNavigator from './ProductsStack';
 import StoreStackNavigator from './StoreStack';
@@ -21,15 +20,14 @@ const MainTabNavigator = () => (
 			),
 			tabBarActiveTintColor: 'black',
 			tabBarInactiveTintColor: 'gray',
-			tabBarShowLabel: false
+			tabBarShowLabel: false,
+			headerShown: false
 		})}
 	>
-		<MainTab.Screen name='Overview' component={Overview} />
-		<MainTab.Group screenOptions={{ headerShown: false }}>
-			<MainTab.Screen name='Orders' component={OrdersStackNavigator} />
-			<MainTab.Screen name='Products' component={ProductsStackNavigator} />
-			<MainTab.Screen name='Store' component={StoreStackNavigator} />
-		</MainTab.Group>
+		<MainTab.Screen name='Home' component={HomeStackNavigator} />
+		<MainTab.Screen name='Orders' component={OrdersStackNavigator} />
+		<MainTab.Screen name='Products' component={ProductsStackNavigator} />
+		<MainTab.Screen name='Store' component={StoreStackNavigator} />
 	</MainTab.Navigator>
 );
 

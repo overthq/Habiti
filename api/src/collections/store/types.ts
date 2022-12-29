@@ -8,6 +8,8 @@ const StoreTypes = gql`
 		website: String
 		twitter: String
 		instagram: String
+		revenue: Int!
+		payedOut: Int!
 		createdAt: String!
 		updatedAt: String!
 

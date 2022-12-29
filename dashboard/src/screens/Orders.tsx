@@ -3,7 +3,7 @@ import React from 'react';
 import { View, Text, FlatList, StyleSheet, ListRenderItem } from 'react-native';
 import OrdersListItem from '../components/orders/OrdersListItem';
 import { OrdersQuery, useOrdersQuery } from '../types/api';
-import { OrdersStackParamsList } from '../types/navigation';
+import { OrdersStackParamList } from '../types/navigation';
 
 // Ultimately, we should consider making this a SectionList
 // or advanced FlatList, that can separate records based on dates.
@@ -11,7 +11,7 @@ import { OrdersStackParamsList } from '../types/navigation';
 // A searchbar is also important.
 
 const Orders: React.FC = () => {
-	const { navigate } = useNavigation<NavigationProp<OrdersStackParamsList>>();
+	const { navigate } = useNavigation<NavigationProp<OrdersStackParamList>>();
 	const [{ data }] = useOrdersQuery();
 
 	const handleOrderPress = React.useCallback(

@@ -27,6 +27,8 @@ query Store {
 		website
 		twitter
 		instagram
+		revenue
+		payedOut
 		image {
 			id
 			path

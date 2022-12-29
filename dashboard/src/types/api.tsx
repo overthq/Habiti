@@ -441,8 +441,10 @@ export type Store = {
 	managers: Array<StoreManager>;
 	name: Scalars['String'];
 	orders: Array<Order>;
+	payedOut: Scalars['Int'];
 	payouts: Array<Payout>;
 	products: Array<Product>;
+	revenue: Scalars['Int'];
 	twitter?: Maybe<Scalars['String']>;
 	updatedAt: Scalars['String'];
 	website?: Maybe<Scalars['String']>;
@@ -781,6 +783,8 @@ export type StoreQuery = {
 		website?: string | null;
 		twitter?: string | null;
 		instagram?: string | null;
+		revenue: number;
+		payedOut: number;
 		image?: { __typename?: 'Image'; id: string; path: string } | null;
 	};
 };
@@ -1180,6 +1184,8 @@ export const StoreDocument = gql`
 			website
 			twitter
 			instagram
+			revenue
+			payedOut
 			image {
 				id
 				path

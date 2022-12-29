@@ -3,9 +3,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Orders from '../screens/Orders';
 import Order from '../screens/Order';
 import Product from '../screens/Product';
-import { OrdersStackParamsList } from '../types/navigation';
+import { OrdersStackParamList } from '../types/navigation';
 
-const OrdersStack = createStackNavigator<OrdersStackParamsList>();
+const OrdersStack = createStackNavigator<OrdersStackParamList>();
 
 const OrdersStackNavigator = () => (
 	<OrdersStack.Navigator>

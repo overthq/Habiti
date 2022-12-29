@@ -2,7 +2,7 @@ import { IconType } from '../components/Icon';
 import { MainTabParamList } from '../types/navigation';
 
 const icons: Record<keyof MainTabParamList, IconType> = {
-	Overview: 'home',
+	Home: 'home',
 	Products: 'tag',
 	Orders: 'inbox',
 	Store: 'shopping-bag'

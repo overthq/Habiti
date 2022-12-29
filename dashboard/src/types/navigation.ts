@@ -12,13 +12,20 @@ export type AppStackParamList = {
 };
 
 export type MainTabParamList = {
-	Overview: undefined;
+	Home: undefined;
 	Orders: undefined;
 	Products: undefined;
 	Store: undefined;
 };
 
-export type OrdersStackParamsList = {
+export type HomeStackParamList = {
+	Overview: undefined;
+	Payouts: undefined;
+	Order: { orderId: string };
+	Product: { productId: string };
+};
+
+export type OrdersStackParamList = {
 	OrdersList: undefined;
 	Order: { orderId: string };
 	Product: { productId: string };
