@@ -5,8 +5,6 @@ import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useManagersQuery } from '../types/api';
 
-// TODO: Display "you" if current row is currently active user.
-
 const Managers = () => {
 	const [{ data, fetching }] = useManagersQuery();
 	useGoBack();
