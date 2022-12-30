@@ -16,6 +16,10 @@ const variants = {
 	secondary: {
 		background: '#D3D3D3',
 		text: '#505050'
+	},
+	tertiary: {
+		background: '#505050',
+		text: '#D3D3D3'
 	}
 } as const;
 
@@ -24,6 +28,7 @@ interface ButtonProps extends PressableProps {
 	text: string;
 	loading?: boolean;
 	style?: ViewStyle;
+	size?: 'regular' | 'medium' | 'large';
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -37,8 +42,8 @@ const Button: React.FC<ButtonProps> = ({
 	<Pressable
 		style={[
 			styles.container,
-			style,
-			{ backgroundColor: variants[variant].background }
+			{ backgroundColor: variants[variant].background },
+			style
 		]}
 		onPress={onPress}
 		disabled={loading || props.disabled}

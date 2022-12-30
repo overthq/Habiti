@@ -19,10 +19,13 @@ const PendingOrders = () => {
 				style={{
 					flexDirection: 'row',
 					alignItems: 'center',
-					justifyContent: 'space-between'
+					justifyContent: 'space-between',
+					marginBottom: 4
 				}}
 			>
-				<Text>Pending Orders</Text>
+				<Text style={{ fontSize: 16, fontWeight: '500', color: '#505050' }}>
+					Pending Orders
+				</Text>
 				<TextButton>View all</TextButton>
 			</View>
 			{data?.currentStore.orders.map(order => (

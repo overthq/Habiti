@@ -28,6 +28,7 @@ I'm not creating issues for these TODOs yet, because I'm currently the only deve
 ### General UI/UX improvements
 
 - [ ] Merge code for "Add Product" and "Product" screens, for maximum code reuse and simplicity. We will have a conditional `productId` param, so we can add page-specific features by checking this param.
+- [ ] Consolidate the queries for all the data on each screen.
 
 ### Features
 
