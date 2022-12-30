@@ -32,6 +32,12 @@ I'm not creating issues for these TODOs yet, because I'm currently the only deve
 ### Features
 
 - [ ] Add general metrics to the overview page.
+  - [ ] New customers
+  - [ ] Pending orders
+  - [ ] Low stock products
+  - [ ] Unique store visits\*
+  - [ ] Payouts
+- [ ] Add section for "completed" orders awaiting pickup.
 
 ### Bugs
 
