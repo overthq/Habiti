@@ -9,9 +9,12 @@ const PendingOrders = () => {
 	const [{ data }] = useOrdersQuery();
 	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();
 
-	const navigateToOrder = (orderId: string) => () => {
-		navigate('Order', { orderId });
-	};
+	const navigateToOrder = React.useCallback(
+		(orderId: string) => () => {
+			navigate('Order', { orderId });
+		},
+		[]
+	);
 
 	return (
 		<View style={{ marginTop: 16 }}>

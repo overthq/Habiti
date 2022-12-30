@@ -18,10 +18,8 @@ import LowStockProducts from '../components/overview/LowStockProducts';
 
 const Overview: React.FC = () => {
 	const navigation = useNavigation<NavigationProp<AppStackParamList>>();
-	const [selectedPeriod, setSelectedPeriod] = React.useState(StatPeriod.Week);
-	const [{ fetching, data }] = useStatsQuery({
-		variables: { period: selectedPeriod }
-	});
+	const [period, setPeriod] = React.useState(StatPeriod.Week);
+	const [{ fetching, data }] = useStatsQuery({ variables: { period } });
 
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
@@ -38,14 +36,11 @@ const Overview: React.FC = () => {
 
 	return (
 		<ScrollView style={styles.container}>
-			<PeriodSelector
-				selectedPeriod={selectedPeriod}
-				setSelectedPeriod={setSelectedPeriod}
-			/>
+			<PeriodSelector selectedPeriod={period} setSelectedPeriod={setPeriod} />
 			{fetching ? (
 				<ActivityIndicator />
 			) : (
-				<View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+				<View style={styles.stats}>
 					<NumberStat title='Orders' value={data?.stats.orders.length ?? 0} />
 					<NumberStat
 						title='Revenue'
@@ -69,6 +64,10 @@ const styles = StyleSheet.create({
 	},
 	settings: {
 		marginRight: 16
+	},
+	stats: {
+		flexDirection: 'row',
+		flexWrap: 'wrap'
 	}
 });
 
