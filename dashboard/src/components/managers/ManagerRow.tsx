@@ -25,17 +25,18 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 16,
 		paddingVertical: 12,
 		flexDirection: 'row',
-		alignItems: 'center'
+		alignItems: 'center',
+		justifyContent: 'space-between'
 	},
 	name: {
 		fontSize: 16
 	},
 	you: {
 		marginLeft: 8,
-		height: 18,
+		paddingVertical: 4,
 		backgroundColor: '#D3D3D3',
-		borderRadius: 9,
-		paddingHorizontal: 4
+		borderRadius: 16,
+		paddingHorizontal: 8
 	},
 	youText: {
 		fontSize: 14,

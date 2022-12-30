@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, Text } from 'react-native';
+import useGoBack from '../hooks/useGoBack';
 import { useStorePayoutsQuery } from '../types/api';
 import { formatNaira } from '../utils/currency';
 
 const Payouts = () => {
 	const [{ data, fetching }] = useStorePayoutsQuery();
+	useGoBack();
 
 	if (fetching || !data?.currentStore) {
 		return <View />;

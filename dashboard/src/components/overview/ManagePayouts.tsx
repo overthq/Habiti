@@ -16,9 +16,13 @@ const ManagePayouts = () => {
 
 	return (
 		<View>
-			<Text>Payouts</Text>
-			<Text>{formatNaira(data?.currentStore.revenue ?? 0)}</Text>
-			<Button text='' onPress={navigateToPayouts} />
+			<Text style={{ fontSize: 16, fontWeight: '500', color: '#505050' }}>
+				Payouts
+			</Text>
+			<Text style={{ fontSize: 24, fontWeight: '500', marginBottom: 8 }}>
+				{formatNaira(data?.currentStore.revenue ?? 0)}
+			</Text>
+			<Button text='Manage payouts' onPress={navigateToPayouts} />
 		</View>
 	);
 };
