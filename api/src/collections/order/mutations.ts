@@ -78,15 +78,31 @@ interface UpdateOrderArgs {
 	};
 }
 
-const updateOrder: Resolver<UpdateOrderArgs> = (_, args, ctx) => {
-	// TODO:
-	// - If args.input contains "status", we might want to do some special things.
-	// - If status is updated to "Fulfilled", add order total to store revenue.
-
-	return ctx.prisma.order.update({
+const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
+	const order = await ctx.prisma.order.update({
 		where: { id: args.orderId },
-		data: args.input
+		data: args.input,
+		include: {
+			products: {
+				include: {
+					product: true
+				}
+			}
+		}
 	});
+
+	if (args.input.status === OrderStatus.Fulfilled) {
+		const total = order.products.reduce((acc, next) => {
+			return acc + next.product.unitPrice * next.quantity;
+		}, 0);
+
+		await ctx.prisma.store.update({
+			where: { id: order.storeId },
+			data: { revenue: { increment: total } }
+		});
+	}
+
+	return order;
 };
 
 export default {

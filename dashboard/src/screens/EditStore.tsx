@@ -6,16 +6,13 @@ import EditStoreMain from '../components/edit-store/EditStoreMain';
 
 const EditStore: React.FC = () => {
 	const [{ data, fetching }] = useStoreQuery();
-
 	useGoBack();
 
-	const store = data?.currentStore;
-
-	if (fetching || !store) {
+	if (fetching || !data?.currentStore) {
 		return <View style={styles.loading} />;
 	}
 
-	return <EditStoreMain store={store} />;
+	return <EditStoreMain store={data.currentStore} />;
 };
 
 const styles = StyleSheet.create({

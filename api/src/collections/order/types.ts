@@ -15,14 +15,28 @@ const OrderTypes = gql`
 		products: [OrderProduct!]!
 	}
 
-	# TODO: Should we distinguish between orders cancelled by users/stores?
-
 	enum OrderStatus {
 		Pending
 		Processing
 		Cancelled
 		Completed
 		Delivered
+	}
+
+	type Filter {
+		first: Int
+		last: Int
+	}
+
+	type IntWhere {
+		gt: Int
+		lt: Int
+		lte: Int
+		gte: Int
+	}
+
+	type StringWhere {
+		contains: String
 	}
 
 	input CreateOrderInput {

@@ -58,6 +58,7 @@ I'm not creating issues for these TODOs yet, because I'm currently the only deve
 ### Data
 
 - [ ] Rethink schema.
+- [ ] Consider distinguishing between orders cancelled by users and stores
 
 Temporary order-related notes (very rough):
 
