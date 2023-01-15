@@ -5,7 +5,7 @@ const id: Resolver = parent => {
 };
 
 const store: Resolver = async (parent, _, ctx) => {
-	const fetchedStore = await ctx.prisma.storeManager
+	return ctx.prisma.storeManager
 		.findUnique({
 			where: {
 				storeId_managerId: {
@@ -15,12 +15,10 @@ const store: Resolver = async (parent, _, ctx) => {
 			}
 		})
 		.store();
-
-	return fetchedStore;
 };
 
 const manager: Resolver = async (parent, _, ctx) => {
-	const fetchedManager = await ctx.prisma.storeManager
+	return ctx.prisma.storeManager
 		.findUnique({
 			where: {
 				storeId_managerId: {
@@ -30,8 +28,6 @@ const manager: Resolver = async (parent, _, ctx) => {
 			}
 		})
 		.manager();
-
-	return fetchedManager;
 };
 
 export default {

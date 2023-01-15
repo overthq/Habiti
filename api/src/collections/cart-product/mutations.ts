@@ -69,12 +69,12 @@ interface UpdateCartProductArgs {
 	};
 }
 
-const updateCartProduct: Resolver<UpdateCartProductArgs> = async (
+const updateCartProduct: Resolver<UpdateCartProductArgs> = (
 	_,
 	{ input: { cartId, productId, quantity } },
 	ctx
 ) => {
-	const updatedCartProduct = await ctx.prisma.cartProduct.update({
+	return ctx.prisma.cartProduct.update({
 		where: {
 			cartId_productId: { cartId, productId }
 		},
@@ -82,8 +82,6 @@ const updateCartProduct: Resolver<UpdateCartProductArgs> = async (
 			quantity
 		}
 	});
-
-	return updatedCartProduct;
 };
 
 export default {

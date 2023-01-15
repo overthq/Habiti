@@ -8,9 +8,10 @@ interface CreateCartArgs {
 	};
 }
 
-const createCart: Resolver<CreateCartArgs> = async (_, { input }, ctx) => {
+const createCart: Resolver<CreateCartArgs> = (_, { input }, ctx) => {
 	const { storeId, productId, quantity } = input;
-	const cart = await ctx.prisma.cart.create({
+
+	return ctx.prisma.cart.create({
 		data: {
 			userId: ctx.user.id,
 			storeId,
@@ -22,20 +23,14 @@ const createCart: Resolver<CreateCartArgs> = async (_, { input }, ctx) => {
 			}
 		}
 	});
-
-	return cart;
 };
 
 interface DeleteCartArgs {
 	id: string;
 }
 
-const deleteCart: Resolver<DeleteCartArgs> = async (_, { id }, ctx) => {
-	await ctx.prisma.cart.delete({
-		where: { id }
-	});
-
-	return id;
+const deleteCart: Resolver<DeleteCartArgs> = (_, { id }, ctx) => {
+	return ctx.prisma.cart.delete({ where: { id } });
 };
 
 export default {

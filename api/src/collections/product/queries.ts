@@ -13,37 +13,19 @@ const storeProducts: Resolver = async (_, { storeId }, ctx) => {
 };
 
 const orders: Resolver = async (parent, _, ctx) => {
-	const fetchedOrders = await ctx.prisma.product
-		.findUnique({ where: { id: parent.id } })
-		.orders();
-
-	return fetchedOrders;
+	return ctx.prisma.product.findUnique({ where: { id: parent.id } }).orders();
 };
 
 const carts: Resolver = async (parent, _, ctx) => {
-	const fetchedCarts = await ctx.prisma.product
-		.findUnique({ where: { id: parent.id } })
-		.orders();
-
-	return fetchedCarts;
+	return ctx.prisma.product.findUnique({ where: { id: parent.id } }).orders();
 };
 
 const store: Resolver = async (parent, _, ctx) => {
-	const fetchedStore = await ctx.prisma.product
-		.findUnique({
-			where: { id: parent.id }
-		})
-		.store();
-
-	return fetchedStore;
+	return ctx.prisma.product.findUnique({ where: { id: parent.id } }).store();
 };
 
 const images: Resolver = async (parent, _, ctx) => {
-	const fetchedImages = await ctx.prisma.product
-		.findUnique({ where: { id: parent.id } })
-		.images();
-
-	return fetchedImages;
+	return ctx.prisma.product.findUnique({ where: { id: parent.id } }).images();
 };
 
 // TODO: Very hacky and bad.

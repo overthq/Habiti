@@ -12,14 +12,12 @@ const addStoreManager: Resolver<AddStoreManagerArgs> = async (
 	args,
 	ctx
 ) => {
-	const manager = await ctx.prisma.storeManager.create({
+	return ctx.prisma.storeManager.create({
 		data: {
 			storeId: args.input.storeId,
 			managerId: args.input.managerId
 		}
 	});
-
-	return manager;
 };
 
 interface RemoveStoreManagerArgs {
@@ -32,7 +30,7 @@ const removeStoreManager: Resolver<RemoveStoreManagerArgs> = async (
 	args,
 	ctx
 ) => {
-	const manager = await ctx.prisma.storeManager.delete({
+	return ctx.prisma.storeManager.delete({
 		where: {
 			storeId_managerId: {
 				storeId: args.storeId,
@@ -40,8 +38,6 @@ const removeStoreManager: Resolver<RemoveStoreManagerArgs> = async (
 			}
 		}
 	});
-
-	return manager;
 };
 
 export default {

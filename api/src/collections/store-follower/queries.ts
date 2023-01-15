@@ -5,7 +5,7 @@ const id: Resolver = async parent => {
 };
 
 const store: Resolver = async (parent, _, ctx) => {
-	const fetchedStore = await ctx.prisma.storeFollower
+	return ctx.prisma.storeFollower
 		.findUnique({
 			where: {
 				storeId_followerId: {
@@ -15,12 +15,10 @@ const store: Resolver = async (parent, _, ctx) => {
 			}
 		})
 		.store();
-
-	return fetchedStore;
 };
 
 const follower: Resolver = async (parent, _, ctx) => {
-	const fetchedFollower = await ctx.prisma.storeFollower
+	return ctx.prisma.storeFollower
 		.findUnique({
 			where: {
 				storeId_followerId: {
@@ -30,8 +28,6 @@ const follower: Resolver = async (parent, _, ctx) => {
 			}
 		})
 		.follower();
-
-	return fetchedFollower;
 };
 
 export default {

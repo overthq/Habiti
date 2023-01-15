@@ -4,19 +4,17 @@ interface AddToWatchlistArgs {
 	productId: string;
 }
 
-const addToWatchlist: Resolver<AddToWatchlistArgs> = async (
+const addToWatchlist: Resolver<AddToWatchlistArgs> = (
 	_,
 	{ productId },
 	ctx
 ) => {
-	const watchlistProduct = await ctx.prisma.watchlistProduct.create({
+	return ctx.prisma.watchlistProduct.create({
 		data: {
 			productId,
 			userId: ctx.user.id
 		}
 	});
-
-	return watchlistProduct;
 };
 
 export default {

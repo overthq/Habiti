@@ -30,33 +30,24 @@ export const chargeAuthorization = async (
 	return data;
 };
 
-export const storeCard = async (userId: string, data: any) => {
-	const card = await prisma.card.findUnique({
-		where: { signature: data.authorization.signature }
+export const storeCard = (userId: string, data: any) => {
+	return prisma.card.upsert({
+		where: { signature: data.authorization.signature },
+		update: {},
+		create: {
+			email: data.customer.email,
+			authorizationCode: data.authorization.authorization_code,
+			bin: data.authorization.bin,
+			last4: data.authorization.last4,
+			expMonth: data.authorization.exp_month,
+			expYear: data.authorization.exp_year,
+			bank: data.authorization.bank,
+			signature: data.authorization.signature,
+			cardType: data.authorization.card_type,
+			countryCode: data.authorization.country_code,
+			userId
+		}
 	});
-
-	if (!card) {
-		const card = await prisma.card.create({
-			data: {
-				email: data.customer.email,
-				authorizationCode: data.authorization.authorization_code,
-				bin: data.authorization.bin,
-				last4: data.authorization.last4,
-				expMonth: data.authorization.exp_month,
-				expYear: data.authorization.exp_year,
-				bank: data.authorization.bank,
-				signature: data.authorization.signature,
-				cardType: data.authorization.card_type,
-				countryCode: data.authorization.country_code,
-				userId
-			}
-		});
-
-		// TODO: Trigger a transaction to send the money back to said user.
-		return card;
-	}
-
-	return card;
 };
 
 export const initialCharge = async (email: string) => {
@@ -87,8 +78,7 @@ export const verifyTransaction = async (userId: string, reference: string) => {
 	const { data, status } = await response.json();
 
 	if (status === true && data.status === 'success') {
-		const card = await storeCard(userId, data);
-		return card;
+		return storeCard(userId, data);
 	} else {
 		throw new Error('Verification failed!');
 	}

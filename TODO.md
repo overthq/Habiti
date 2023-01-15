@@ -50,6 +50,7 @@ I'm not creating issues for these TODOs yet, because I'm currently the only deve
 
 - [ ] Figure out statistics, and other dashboard overview details.
 - [ ] Set up "collections/groups" for products.
+- [ ] Add generic filtering, sorting and pagination capabilities to resolvers.
 
 ### Bugs
 

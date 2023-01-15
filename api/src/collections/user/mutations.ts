@@ -9,14 +9,12 @@ interface RegisterArgs {
 	};
 }
 
-export const register: Resolver<RegisterArgs> = async (
+export const register: Resolver<RegisterArgs> = (
 	_,
 	{ input: { name, email, phone } },
 	ctx
 ) => {
-	const user = await ctx.prisma.user.create({ data: { name, email, phone } });
-
-	return user;
+	return ctx.prisma.user.create({ data: { name, email, phone } });
 };
 
 interface AuthenticateArgs {
@@ -76,31 +74,25 @@ interface EditProfileArgs {
 	};
 }
 
-export const editProfile: Resolver<EditProfileArgs> = async (
+export const editProfile: Resolver<EditProfileArgs> = (
 	_,
 	{ id, input },
 	ctx
 ) => {
 	const { name, phone } = input;
 
-	const user = await ctx.prisma.user.update({
+	return ctx.prisma.user.update({
 		where: { id },
 		data: { name, phone }
 	});
-
-	return user;
 };
 
-const deleteAccount: Resolver = async (_, __, ctx) => {
-	const user = await ctx.prisma.user.delete({ where: { id: ctx.user.id } });
-
-	return user;
+const deleteAccount: Resolver = (_, __, ctx) => {
+	return ctx.prisma.user.delete({ where: { id: ctx.user.id } });
 };
 
-const deleteUser: Resolver = async (_, { id }, ctx) => {
-	await ctx.prisma.user.delete({ where: { id } });
-
-	return id;
+const deleteUser: Resolver = (_, { id }, ctx) => {
+	return ctx.prisma.user.delete({ where: { id } });
 };
 
 export default {

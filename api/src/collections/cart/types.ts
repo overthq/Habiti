@@ -28,7 +28,7 @@ const CartTypes = gql`
 
 	extend type Mutation {
 		createCart(input: CreateCartInput!): Cart!
-		deleteCart(cartId: ID!): ID!
+		deleteCart(cartId: ID!): Cart!
 	}
 
 	# We can't use type here, since it's not an entity (entities require IDs).

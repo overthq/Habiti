@@ -5,7 +5,7 @@ const id: Resolver = async parent => {
 };
 
 const order: Resolver = async (parent, _, ctx) => {
-	const fetchedOrder = await ctx.prisma.orderProduct
+	return ctx.prisma.orderProduct
 		.findUnique({
 			where: {
 				orderId_productId: {
@@ -15,11 +15,10 @@ const order: Resolver = async (parent, _, ctx) => {
 			}
 		})
 		.order();
-	return fetchedOrder;
 };
 
 const product: Resolver = async (parent, _, ctx) => {
-	const fetchedProduct = await ctx.prisma.orderProduct
+	return ctx.prisma.orderProduct
 		.findUnique({
 			where: {
 				orderId_productId: {
@@ -29,8 +28,6 @@ const product: Resolver = async (parent, _, ctx) => {
 			}
 		})
 		.product();
-
-	return fetchedProduct;
 };
 
 export default {

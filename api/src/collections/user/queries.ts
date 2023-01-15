@@ -12,11 +12,6 @@ const users: Resolver = (_, __, ctx) => {
 	return ctx.prisma.user.findMany();
 };
 
-// Ideally, we should be able to pass a "first" arg to the orders query,
-// and get the first x orders.
-// By combining that with a desc date order, we should be able to get the three
-// most recent orders.
-
 const orders: Resolver = (parent, _, ctx) => {
 	return ctx.prisma.user.findUnique({ where: { id: parent.id } }).orders();
 };

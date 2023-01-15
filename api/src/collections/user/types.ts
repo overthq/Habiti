@@ -58,7 +58,7 @@ const UserTypes = gql`
 		register(input: RegisterInput!): User!
 		verify(input: VerifyInput!): VerifyResponse!
 		editProfile(input: EditProfileInput!): User!
-		deleteUser(userId: ID!): ID!
+		deleteUser(userId: ID!): User!
 		deleteAccount: User!
 	}
 `;
