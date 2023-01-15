@@ -8,8 +8,7 @@ const deleteCard: Resolver<DeleteCardArgs> = async (_, { id }, ctx) => {
 	const card = await ctx.prisma.card.findUnique({ where: { id } });
 
 	if (card.userId === ctx.user.id) {
-		const card = await ctx.prisma.card.delete({ where: { id } });
-		return card;
+		return ctx.prisma.card.delete({ where: { id } });
 	} else {
 		throw new Error('You are not authorized to delete this card');
 	}

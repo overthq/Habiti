@@ -22,7 +22,7 @@ router.post('/paystack', async (req, res) => {
 			// reasonable time it takes Paystack to complete the charge.
 			// Still an option though.
 
-			await storeCard((req.user as User).id, data);
+			await storeCard((req.auth as User).id, data);
 		}
 
 		return res.status(200).json({

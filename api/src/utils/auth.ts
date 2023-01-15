@@ -1,3 +1,4 @@
+import { User } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import redisClient from '../config/redis';
 
@@ -11,6 +12,6 @@ export const sendVerificationCode = async (phone: string) => {
 	console.log(phone, code);
 };
 
-export const generateAccessToken = async (user: any) => {
+export const generateAccessToken = async (user: User) => {
 	return jwt.sign(user, process.env.JWT_SECRET);
 };

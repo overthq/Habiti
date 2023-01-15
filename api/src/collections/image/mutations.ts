@@ -6,9 +6,7 @@ interface DeleteImageArgs {
 }
 
 const deleteImage: Resolver<DeleteImageArgs> = async (_, { id }, ctx) => {
-	const image = await ctx.prisma.image.delete({
-		where: { id }
-	});
+	const image = await ctx.prisma.image.delete({ where: { id } });
 
 	cloudinary.v2.uploader.destroy(
 		image.publicId,
