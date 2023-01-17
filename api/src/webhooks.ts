@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { createHmac } from 'crypto';
-import { User } from '@prisma/client';
 import { storeCard } from './utils/paystack';
 
 const router: Router = Router();
@@ -22,7 +21,7 @@ router.post('/paystack', async (req, res) => {
 			// reasonable time it takes Paystack to complete the charge.
 			// Still an option though.
 
-			await storeCard((req.auth as User).id, data);
+			await storeCard((req as any).auth.id, data);
 		}
 
 		return res.status(200).json({
