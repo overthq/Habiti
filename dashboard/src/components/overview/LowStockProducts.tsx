@@ -1,26 +1,16 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
-
-import { useProductsQuery } from '../../types/api';
-
 import TextButton from '../global/TextButton';
+import { useProductsQuery } from '../../types/api';
 
 const LowStockProducts = () => {
 	const [{ data }] = useProductsQuery();
 
 	return (
 		<View style={styles.container}>
-			<View
-				style={{
-					flexDirection: 'row',
-					justifyContent: 'space-between',
-					alignItems: 'center'
-				}}
-			>
-				<Text style={{ fontSize: 16, fontWeight: '500', color: '#505050' }}>
-					Low Stock
-				</Text>
+			<View style={styles.heading}>
+				<Text style={styles.title}>Low Stock</Text>
 				<TextButton>View all</TextButton>
 			</View>
 			<FlashList
@@ -46,8 +36,18 @@ const LowStockProducts = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		marginTop: 16,
+		marginTop: 16
+	},
+	heading: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
 		paddingHorizontal: 16
+	},
+	title: {
+		fontSize: 16,
+		fontWeight: '500',
+		color: '#505050'
 	},
 	placeholder: {
 		borderRadius: 4,
