@@ -24,7 +24,7 @@ const PendingOrders = () => {
 			</View>
 			{data?.currentStore.orders.map(order => (
 				<Pressable key={order.id} onPress={navigateToOrder(order.id)}>
-					<Text>{order.user.name}</Text>
+					<Text style={styles.name}>{order.user.name}</Text>
 				</Pressable>
 			))}
 		</View>
@@ -45,6 +45,9 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		fontWeight: '500',
 		color: '#505050'
+	},
+	name: {
+		fontSize: 16
 	}
 });
 

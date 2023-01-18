@@ -4,7 +4,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import WatchlistProduct from './WatchlistProduct';
 import ListEmpty from '../global/ListEmpty';
 import { HomeQuery } from '../../types/api';
-import { HomeTabParamList } from '../../types/navigation';
+import { HomeTabParamList, AppStackParamList } from '../../types/navigation';
 import textStyles from '../../styles/text';
 import { FlashList } from '@shopify/flash-list';
 
@@ -14,8 +14,13 @@ interface WatchlistProps {
 
 const Watchlist: React.FC<WatchlistProps> = ({ watchlist }) => {
 	const { navigate } = useNavigation<NavigationProp<HomeTabParamList>>();
+	const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
 	const products = watchlist.map(({ product }) => product);
+
+	const handleProductPress = (productId: string) => () => {
+		navigation.navigate('Product', { productId });
+	};
 
 	if (!products || products?.length === 0) {
 		return (
@@ -43,7 +48,12 @@ const Watchlist: React.FC<WatchlistProps> = ({ watchlist }) => {
 				horizontal
 				showsHorizontalScrollIndicator={false}
 				data={products}
-				renderItem={({ item }) => <WatchlistProduct product={item} />}
+				renderItem={({ item }) => (
+					<WatchlistProduct
+						product={item}
+						onPress={handleProductPress(item.id)}
+					/>
+				)}
 				ListFooterComponent={<View style={{ width: 16 }} />}
 			/>
 		</View>

@@ -13,23 +13,29 @@ const LowStockProducts = () => {
 				<Text style={styles.title}>Low Stock</Text>
 				<TextButton>View all</TextButton>
 			</View>
-			<FlashList
-				keyExtractor={i => i.id}
-				data={data?.currentStore.products}
-				renderItem={({ item }) => (
-					<View>
-						<View style={styles.placeholder}>
-							<Image
-								source={{ uri: item.images[0]?.path }}
-								style={styles.image}
-							/>
+			<View style={{ height: 200 }}>
+				<FlashList
+					keyExtractor={i => i.id}
+					data={data?.currentStore.products}
+					estimatedItemSize={160}
+					ListHeaderComponent={<View style={{ width: 8 }} />}
+					renderItem={({ item }) => (
+						<View style={{ marginRight: 8, width: 160 }}>
+							<View style={styles.placeholder}>
+								<Image
+									source={{ uri: item.images[0]?.path }}
+									style={styles.image}
+								/>
+							</View>
+							<Text style={styles.name} numberOfLines={1}>
+								{item.name}
+							</Text>
 						</View>
-						<Text>{item.name}</Text>
-					</View>
-				)}
-				horizontal
-				showsHorizontalScrollIndicator={false}
-			/>
+					)}
+					horizontal
+					showsHorizontalScrollIndicator={false}
+				/>
+			</View>
 		</View>
 	);
 };
@@ -42,7 +48,8 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingHorizontal: 16
+		paddingHorizontal: 16,
+		marginBottom: 4
 	},
 	title: {
 		fontSize: 16,
@@ -51,12 +58,17 @@ const styles = StyleSheet.create({
 	},
 	placeholder: {
 		borderRadius: 4,
-		height: 100,
-		width: 100
+		height: 160,
+		width: 160,
+		backgroundColor: '#D3D3D3',
+		overflow: 'hidden'
 	},
 	image: {
 		width: '100%',
 		height: '100%'
+	},
+	name: {
+		fontSize: 16
 	}
 });
 

@@ -13,7 +13,6 @@ import { StatPeriod, useStatsQuery } from '../types/api';
 import PeriodSelector from '../components/overview/PeriodSelector';
 import NumberStat from '../components/overview/NumberStat';
 import ManagePayouts from '../components/overview/ManagePayouts';
-import PendingOrders from '../components/overview/PendingOrders';
 import LowStockProducts from '../components/overview/LowStockProducts';
 import OverviewActions from '../components/overview/OverviewActions';
 
@@ -55,7 +54,6 @@ const Overview: React.FC = () => {
 				lowStockCount={0}
 				pendingOrderCount={data?.stats?.pendingOrderCount ?? 0}
 			/>
-			<PendingOrders />
 			<LowStockProducts />
 		</ScrollView>
 	);
