@@ -43,8 +43,7 @@ const styles = StyleSheet.create({
 		width: '100%',
 		height: 40,
 		flexDirection: 'row',
-		backgroundColor: '#FFFFFF',
-		borderRadius: 4,
+		backgroundColor: '#D3D3D3',
 		marginBottom: 8
 	},
 	tab: {

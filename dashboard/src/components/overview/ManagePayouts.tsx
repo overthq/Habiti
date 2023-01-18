@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { Text, View } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useStoreQuery } from '../../types/api';
 import { HomeStackParamList } from '../../types/navigation';
 import { formatNaira } from '../../utils/currency';
@@ -15,7 +15,7 @@ const ManagePayouts = () => {
 	}, []);
 
 	return (
-		<View>
+		<View style={styles.container}>
 			<Text style={{ fontSize: 16, fontWeight: '500', color: '#505050' }}>
 				Payouts
 			</Text>
@@ -26,5 +26,11 @@ const ManagePayouts = () => {
 		</View>
 	);
 };
+
+const styles = StyleSheet.create({
+	container: {
+		paddingHorizontal: 16
+	}
+});
 
 export default ManagePayouts;

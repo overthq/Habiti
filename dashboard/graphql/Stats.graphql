@@ -9,5 +9,6 @@ query Stats($period: StatPeriod!) {
 			updatedAt
 		}
 		revenue
+		pendingOrderCount
 	}
 }

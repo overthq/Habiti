@@ -46,7 +46,8 @@ const LowStockProducts = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		marginTop: 16
+		marginTop: 16,
+		paddingHorizontal: 16
 	},
 	placeholder: {
 		borderRadius: 4,

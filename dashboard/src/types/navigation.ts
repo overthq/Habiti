@@ -9,6 +9,7 @@ export type AppStackParamList = {
 	'Add Product': undefined;
 	Settings: undefined;
 	CustomerInfo: { userId: string };
+	AddPayout: undefined;
 };
 
 export type MainTabParamList = {

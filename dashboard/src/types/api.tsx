@@ -137,6 +137,12 @@ export type EditStoreInput = {
 	website?: InputMaybe<Scalars['String']>;
 };
 
+export type Filter = {
+	__typename?: 'Filter';
+	first?: Maybe<Scalars['Int']>;
+	last?: Maybe<Scalars['Int']>;
+};
+
 export type Image = {
 	__typename?: 'Image';
 	createdAt: Scalars['String'];
@@ -148,6 +154,14 @@ export type Image = {
 	store?: Maybe<Store>;
 	storeId?: Maybe<Scalars['ID']>;
 	updatedAt: Scalars['String'];
+};
+
+export type IntWhere = {
+	__typename?: 'IntWhere';
+	gt?: Maybe<Scalars['Int']>;
+	gte?: Maybe<Scalars['Int']>;
+	lt?: Maybe<Scalars['Int']>;
+	lte?: Maybe<Scalars['Int']>;
 };
 
 export type Mutation = {
@@ -164,11 +178,11 @@ export type Mutation = {
 	createStore: Store;
 	deleteAccount: User;
 	deleteCard: Card;
-	deleteCart: Scalars['ID'];
+	deleteCart: Cart;
 	deleteImage: Image;
 	deleteProduct: Product;
 	deleteStore: Scalars['ID'];
-	deleteUser: Scalars['ID'];
+	deleteUser: User;
 	editProduct: Product;
 	editProfile: User;
 	editStore: Store;
@@ -475,6 +489,11 @@ export enum StoreStatPeriod {
 	Year = 'Year'
 }
 
+export type StringWhere = {
+	__typename?: 'StringWhere';
+	contains?: Maybe<Scalars['String']>;
+};
+
 export type UpdateCartProductInput = {
 	cartId: Scalars['ID'];
 	productId: Scalars['ID'];
@@ -733,6 +752,7 @@ export type StatsQuery = {
 		__typename?: 'Stats';
 		id: string;
 		revenue: number;
+		pendingOrderCount: number;
 		orders: Array<{
 			__typename?: 'Order';
 			id: string;
@@ -1128,6 +1148,7 @@ export const StatsDocument = gql`
 				updatedAt
 			}
 			revenue
+			pendingOrderCount
 		}
 	}
 `;

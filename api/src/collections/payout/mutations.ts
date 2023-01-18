@@ -1,6 +1,5 @@
 import { Resolver } from '../../types/resolvers';
 
-// TODO: Remove placeholder
 interface CreatePayoutArgs {
 	input: {
 		amount: number;
@@ -23,6 +22,10 @@ const createPayout: Resolver<CreatePayoutArgs> = async (
 			data: { payedOut: { increment: amount } }
 		})
 	]);
+
+	// Run actual payout function.
+	// - Create a transaction reference.
+	// - Use transaction reference to create payout.
 
 	return payout;
 };

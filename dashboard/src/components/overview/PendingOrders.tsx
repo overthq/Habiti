@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useOrdersQuery } from '../../types/api';
 import { HomeStackParamList } from '../../types/navigation';
@@ -17,18 +17,9 @@ const PendingOrders = () => {
 	);
 
 	return (
-		<View style={{ marginTop: 16 }}>
-			<View
-				style={{
-					flexDirection: 'row',
-					alignItems: 'center',
-					justifyContent: 'space-between',
-					marginBottom: 4
-				}}
-			>
-				<Text style={{ fontSize: 16, fontWeight: '500', color: '#505050' }}>
-					Pending Orders
-				</Text>
+		<View style={styles.container}>
+			<View style={styles.heading}>
+				<Text style={styles.title}>Pending Orders</Text>
 				<TextButton>View all</TextButton>
 			</View>
 			{data?.currentStore.orders.map(order => (
@@ -39,5 +30,22 @@ const PendingOrders = () => {
 		</View>
 	);
 };
+
+const styles = StyleSheet.create({
+	container: {
+		paddingHorizontal: 16
+	},
+	heading: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		marginBottom: 4
+	},
+	title: {
+		fontSize: 16,
+		fontWeight: '500',
+		color: '#505050'
+	}
+});
 
 export default PendingOrders;

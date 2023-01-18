@@ -42,6 +42,10 @@ const image: Resolver = (parent, _, ctx) => {
 	return ctx.prisma.store.findUnique({ where: { id: parent.id } }).image();
 };
 
+const payouts: Resolver = (parent, _, ctx) => {
+	return ctx.prisma.store.findUnique({ where: { id: parent.id } }).payouts();
+};
+
 const followedByUser: Resolver = async (parent, _, ctx) => {
 	const fetchedFollower = await ctx.prisma.storeFollower.findUnique({
 		where: {
@@ -74,6 +78,7 @@ export default {
 		followers,
 		carts,
 		image,
+		payouts,
 		followedByUser,
 		cartId
 	}

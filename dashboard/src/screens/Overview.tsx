@@ -15,6 +15,7 @@ import NumberStat from '../components/overview/NumberStat';
 import ManagePayouts from '../components/overview/ManagePayouts';
 import PendingOrders from '../components/overview/PendingOrders';
 import LowStockProducts from '../components/overview/LowStockProducts';
+import OverviewActions from '../components/overview/OverviewActions';
 
 const Overview: React.FC = () => {
 	const navigation = useNavigation<NavigationProp<AppStackParamList>>();
@@ -50,6 +51,10 @@ const Overview: React.FC = () => {
 				</View>
 			)}
 			<ManagePayouts />
+			<OverviewActions
+				lowStockCount={0}
+				pendingOrderCount={data?.stats?.pendingOrderCount ?? 0}
+			/>
 			<PendingOrders />
 			<LowStockProducts />
 		</ScrollView>
@@ -59,13 +64,13 @@ const Overview: React.FC = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		paddingTop: 16,
-		paddingHorizontal: 16
+		backgroundColor: '#FFFFFF'
 	},
 	settings: {
 		marginRight: 16
 	},
 	stats: {
+		paddingHorizontal: 16,
 		flexDirection: 'row',
 		flexWrap: 'wrap'
 	}
