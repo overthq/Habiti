@@ -2,7 +2,24 @@ import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import TextButton from '../global/TextButton';
-import { useProductsQuery } from '../../types/api';
+import { ProductsQuery, useProductsQuery } from '../../types/api';
+
+interface LowStockProductProps {
+	product: ProductsQuery['currentStore']['products'][number];
+}
+
+const LowStockProduct: React.FC<LowStockProductProps> = ({ product }) => {
+	return (
+		<View style={{ marginRight: 8, width: 160 }}>
+			<View style={styles.placeholder}>
+				<Image source={{ uri: product.images[0]?.path }} style={styles.image} />
+			</View>
+			<Text style={styles.name} numberOfLines={1}>
+				{product.name}
+			</Text>
+		</View>
+	);
+};
 
 const LowStockProducts = () => {
 	const [{ data }] = useProductsQuery();
@@ -13,25 +30,13 @@ const LowStockProducts = () => {
 				<Text style={styles.title}>Low Stock</Text>
 				<TextButton>View all</TextButton>
 			</View>
-			<View style={{ height: 200 }}>
+			<View style={{ height: 200, width: '100%' }}>
 				<FlashList
 					keyExtractor={i => i.id}
 					data={data?.currentStore.products}
-					estimatedItemSize={160}
+					estimatedItemSize={200}
 					ListHeaderComponent={<View style={{ width: 8 }} />}
-					renderItem={({ item }) => (
-						<View style={{ marginRight: 8, width: 160 }}>
-							<View style={styles.placeholder}>
-								<Image
-									source={{ uri: item.images[0]?.path }}
-									style={styles.image}
-								/>
-							</View>
-							<Text style={styles.name} numberOfLines={1}>
-								{item.name}
-							</Text>
-						</View>
-					)}
+					renderItem={({ item }) => <LowStockProduct product={item} />}
 					horizontal
 					showsHorizontalScrollIndicator={false}
 				/>
