@@ -31,7 +31,7 @@ const Section: React.FC<SectionProps> = ({
 						onBlur={onBlur}
 						style={styles.input}
 						placeholder={placeholder}
-						placeholderTextColor='#D3D3D3'
+						placeholderTextColor='#777777'
 						{...inputProps}
 					/>
 				)}

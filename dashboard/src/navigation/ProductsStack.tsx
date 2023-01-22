@@ -33,7 +33,7 @@ const ProductsStackNavigator = () => (
 							<Icon name='search' />
 						</Pressable> */}
 						<Pressable onPress={() => navigation.navigate('Add Product')}>
-							<Icon name='plus' size={28} />
+							<Icon name='plus' />
 						</Pressable>
 					</View>
 				)

@@ -1,28 +1,28 @@
 import React from 'react';
-import { Pressable, PressableProps, StyleSheet, Text } from 'react-native';
+import { Pressable, PressableProps, Text } from 'react-native';
 
 interface TextButtonProps extends PressableProps {
 	children: React.ReactNode;
+	size?: number;
 }
 
 const TextButton: React.FC<TextButtonProps> = ({
 	children,
 	disabled,
+	size,
 	...props
 }) => {
 	return (
 		<Pressable disabled={disabled} {...props}>
-			<Text style={[styles.text, { color: disabled ? '#777777' : '#000000' }]}>
+			<Text
+				style={[
+					{ color: disabled ? '#777777' : '#000000', fontSize: size ?? 17 }
+				]}
+			>
 				{children}
 			</Text>
 		</Pressable>
 	);
 };
-
-const styles = StyleSheet.create({
-	text: {
-		fontSize: 16
-	}
-});
 
 export default TextButton;

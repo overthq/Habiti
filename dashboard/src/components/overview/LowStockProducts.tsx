@@ -1,44 +1,76 @@
 import React from 'react';
-import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
+import {
+	View,
+	Text,
+	Image,
+	FlatList,
+	StyleSheet,
+	Pressable
+} from 'react-native';
 import TextButton from '../global/TextButton';
 import { ProductsQuery, useProductsQuery } from '../../types/api';
+import { formatNaira } from '../../utils/currency';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { HomeStackParamList, MainTabParamList } from '../../types/navigation';
 
 interface LowStockProductProps {
+	onPress(): void;
 	product: ProductsQuery['currentStore']['products'][number];
 }
 
-const LowStockProduct: React.FC<LowStockProductProps> = ({ product }) => {
+const LowStockProduct: React.FC<LowStockProductProps> = ({
+	onPress,
+	product
+}) => {
 	return (
-		<View style={{ marginRight: 8 }}>
+		<Pressable onPress={onPress} style={{ marginRight: 8, width: 160 }}>
 			<View style={styles.placeholder}>
 				<Image source={{ uri: product.images[0]?.path }} style={styles.image} />
 			</View>
 			<Text style={styles.name} numberOfLines={1}>
 				{product.name}
 			</Text>
-		</View>
+			<Text style={styles.price} numberOfLines={1}>
+				{formatNaira(product.unitPrice)}
+			</Text>
+		</Pressable>
 	);
 };
 
 const LowStockProducts = () => {
 	const [{ data }] = useProductsQuery();
+	const { navigate } = useNavigation<NavigationProp<MainTabParamList>>();
+	const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
+
+	const navigateToProduct = (productId: string) => () => {
+		navigation.navigate('Product', { productId });
+	};
+
+	const navigateToProducts = () => {
+		navigate('Products');
+	};
 
 	return (
 		<View style={styles.container}>
 			<View style={styles.heading}>
 				<Text style={styles.title}>Low Stock</Text>
-				<TextButton>View all</TextButton>
+				<TextButton size={16} onPress={navigateToProducts}>
+					View all
+				</TextButton>
 			</View>
-			<View>
-				<FlatList
-					keyExtractor={i => i.id}
-					data={data?.currentStore.products}
-					renderItem={({ item }) => <LowStockProduct product={item} />}
-					horizontal
-					showsHorizontalScrollIndicator={false}
-					ListHeaderComponent={<View style={{ width: 8 }} />}
-				/>
-			</View>
+			<FlatList
+				keyExtractor={i => i.id}
+				data={data?.currentStore.products}
+				renderItem={({ item }) => (
+					<LowStockProduct
+						onPress={navigateToProduct(item.id)}
+						product={item}
+					/>
+				)}
+				horizontal
+				showsHorizontalScrollIndicator={false}
+				ListHeaderComponent={<View style={{ width: 8 }} />}
+			/>
 		</View>
 	);
 };
@@ -71,7 +103,15 @@ const styles = StyleSheet.create({
 		height: '100%'
 	},
 	name: {
-		fontSize: 16
+		marginTop: 2,
+		fontSize: 16,
+		fontWeight: '500',
+		color: '#505050'
+	},
+	price: {
+		marginTop: 2,
+		fontSize: 16,
+		color: '#505050'
 	}
 });
 

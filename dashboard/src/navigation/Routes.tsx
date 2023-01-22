@@ -28,16 +28,20 @@ const Routes: React.FC = () => {
 		<Provider value={client}>
 			<StatusBar style={getStatusBarStyle(theme)} />
 			<NavigationContainer>
-				<AppStack.Navigator screenOptions={{ headerShown: false }}>
+				<AppStack.Navigator>
 					{accessToken ? (
 						!activeStore ? (
-							<AppStack.Group>
+							<AppStack.Group screenOptions={{ headerShown: false }}>
 								<AppStack.Screen name='StoreSelect' component={StoreSelect} />
 								<AppStack.Screen name='CreateStore' component={CreateStore} />
 							</AppStack.Group>
 						) : (
 							<>
-								<AppStack.Screen name='Main' component={MainTabNavigator} />
+								<AppStack.Screen
+									name='Main'
+									component={MainTabNavigator}
+									options={{ headerShown: false }}
+								/>
 								{ModalGroup}
 							</>
 						)
