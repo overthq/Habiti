@@ -53,7 +53,7 @@ const LowStockProducts = () => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.heading}>
-				<Text style={styles.title}>Low Stock</Text>
+				<Text style={styles.title}>Low stock products</Text>
 				<TextButton size={16} onPress={navigateToProducts}>
 					View all
 				</TextButton>

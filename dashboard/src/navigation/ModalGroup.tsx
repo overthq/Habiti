@@ -8,16 +8,20 @@ import AddPayout from '../screens/AddPayout';
 const ModalGroup = (
 	<AppStack.Group screenOptions={{ presentation: 'modal' }}>
 		<AppStack.Screen name='Add Product' component={AddProduct} />
-		<AppStack.Screen name='Settings' component={SettingsStackNavigator} />
+		<AppStack.Screen
+			name='Settings'
+			component={SettingsStackNavigator}
+			options={{ headerShown: false }}
+		/>
 		<AppStack.Screen
 			name='CustomerInfo'
 			component={CustomerInfo}
-			options={{ headerTitle: 'Customer Information', headerShown: true }}
+			options={{ headerTitle: 'Customer Information' }}
 		/>
 		<AppStack.Screen
 			name='AddPayout'
 			component={AddPayout}
-			options={{ headerTitle: 'Add Payout', headerShown: true }}
+			options={{ headerTitle: 'Add Payout' }}
 		/>
 	</AppStack.Group>
 );
