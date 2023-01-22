@@ -1,19 +1,33 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import useGoBack from '../hooks/useGoBack';
 import { useStorePayoutsQuery } from '../types/api';
 import { formatNaira } from '../utils/currency';
-import Button from '../components/global/Button';
+import { Icon } from '../components/Icon';
+import { AppStackParamList } from '../types/navigation';
 
 const Payouts = () => {
 	const [{ data, fetching }] = useStorePayoutsQuery();
-	const { navigate } = useNavigation<any>();
+	const { navigate, setOptions } =
+		useNavigation<NavigationProp<AppStackParamList>>();
 	useGoBack();
 
 	const handleNewPayout = () => {
-		navigate('New Payout');
+		navigate('AddPayout');
 	};
+
+	React.useLayoutEffect(() => {
+		setOptions({
+			headerRight: () => {
+				return (
+					<Pressable style={{ marginRight: 16 }} onPress={handleNewPayout}>
+						<Icon name='plus' />
+					</Pressable>
+				);
+			}
+		});
+	}, []);
 
 	if (fetching || !data?.currentStore) {
 		return <View />;
@@ -22,11 +36,6 @@ const Payouts = () => {
 	return (
 		<View style={styles.container}>
 			<Text>Manage previous payouts</Text>
-			<Button
-				style={styles.button}
-				text='New payout'
-				onPress={handleNewPayout}
-			/>
 			<View style={styles.bar}>
 				<View style={[styles.track, { width: '50%' }]} />
 			</View>
