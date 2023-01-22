@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
+import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
 import TextButton from '../global/TextButton';
 import { ProductsQuery, useProductsQuery } from '../../types/api';
 
@@ -10,7 +9,7 @@ interface LowStockProductProps {
 
 const LowStockProduct: React.FC<LowStockProductProps> = ({ product }) => {
 	return (
-		<View style={{ marginRight: 8, width: 160 }}>
+		<View style={{ marginRight: 8 }}>
 			<View style={styles.placeholder}>
 				<Image source={{ uri: product.images[0]?.path }} style={styles.image} />
 			</View>
@@ -30,15 +29,14 @@ const LowStockProducts = () => {
 				<Text style={styles.title}>Low Stock</Text>
 				<TextButton>View all</TextButton>
 			</View>
-			<View style={{ height: 200, width: '100%' }}>
-				<FlashList
+			<View>
+				<FlatList
 					keyExtractor={i => i.id}
 					data={data?.currentStore.products}
-					estimatedItemSize={200}
-					ListHeaderComponent={<View style={{ width: 8 }} />}
 					renderItem={({ item }) => <LowStockProduct product={item} />}
 					horizontal
 					showsHorizontalScrollIndicator={false}
+					ListHeaderComponent={<View style={{ width: 8 }} />}
 				/>
 			</View>
 		</View>
