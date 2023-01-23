@@ -37,6 +37,10 @@ const Settings: React.FC = () => {
 				displayValue={store?.name}
 			/>
 			<SettingRow
+				name='Payouts'
+				onPress={handleSettingsNavigate('SettingsPayout')}
+			/>
+			<SettingRow
 				name='Theme'
 				onPress={handleSettingsNavigate('SettingsTheme')}
 				displayValue={theme === 'light' ? 'Light' : 'Dark'}

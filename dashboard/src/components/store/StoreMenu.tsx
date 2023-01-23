@@ -4,6 +4,20 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Icon } from '../Icon';
 import type { StoreStackParamList } from '../../types/navigation';
 
+interface StoreMenuRowProps {
+	title: string;
+	onPress(): void;
+}
+
+const StoreMenuRow: React.FC<StoreMenuRowProps> = ({ title, onPress }) => {
+	return (
+		<Pressable onPress={onPress}>
+			<Text style={styles.menuButtonText}>{title}</Text>
+			<Icon name='chevron-right' color='#505050' />
+		</Pressable>
+	);
+};
+
 const StoreMenu = () => {
 	const { navigate } = useNavigation<NavigationProp<StoreStackParamList>>();
 
@@ -16,17 +30,12 @@ const StoreMenu = () => {
 
 	return (
 		<View style={styles.container}>
-			<Pressable
-				style={styles.menuButton}
+			<StoreMenuRow
+				title='Edit profile'
 				onPress={handleNavigate('Edit Store')}
-			>
-				<Text style={styles.menuButtonText}>Edit store profile</Text>
-				<Icon name='chevron-right' color='#505050' />
-			</Pressable>
-			<Pressable style={styles.menuButton} onPress={handleNavigate('Managers')}>
-				<Text style={styles.menuButtonText}>Managers</Text>
-				<Icon name='chevron-right' color='#505050' />
-			</Pressable>
+			/>
+			<StoreMenuRow title='Payouts' onPress={handleNavigate('Payouts')} />
+			<StoreMenuRow title='Managers' onPress={handleNavigate('Managers')} />
 		</View>
 	);
 };

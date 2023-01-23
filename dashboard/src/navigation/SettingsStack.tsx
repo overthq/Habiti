@@ -4,6 +4,7 @@ import { SettingsStackParamList } from '../types/navigation';
 import Settings from '../screens/Settings';
 import SettingsActiveStore from '../components/settings/SettingsActiveStore';
 import SettingsTheme from '../components/settings/SettingsTheme';
+import SettingsPayouts from '../components/settings/SettingsPayouts';
 
 const SettingsStack = createStackNavigator<SettingsStackParamList>();
 
@@ -18,6 +19,11 @@ const SettingsStackNavigator = () => (
 			name='SettingsActiveStore'
 			component={SettingsActiveStore}
 			options={{ title: 'Active Store' }}
+		/>
+		<SettingsStack.Screen
+			name='SettingsPayout'
+			component={SettingsPayouts}
+			options={{ title: 'Payouts' }}
 		/>
 		<SettingsStack.Screen
 			name='SettingsTheme'
