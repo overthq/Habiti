@@ -1,6 +1,7 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, FlatList, StyleSheet, ListRenderItem } from 'react-native';
+import OrdersFilter from '../components/orders/OrdersFilter';
 import OrdersListItem from '../components/orders/OrdersListItem';
 import { OrdersQuery, useOrdersQuery } from '../types/api';
 import { OrdersStackParamList } from '../types/navigation';
@@ -29,19 +30,22 @@ const Orders: React.FC = () => {
 
 	return (
 		<View style={styles.container}>
-			<FlatList
-				keyExtractor={i => i.id}
-				data={data?.currentStore.orders}
-				renderItem={renderOrder}
-				ListEmptyComponent={
-					<View style={styles.empty}>
-						<Text style={styles.emptyText}>
-							There are currently no orders. While you wait, you can customize
-							your store.
-						</Text>
-					</View>
-				}
-			/>
+			<OrdersFilter />
+			<View style={{ flex: 1 }}>
+				<FlatList
+					keyExtractor={i => i.id}
+					data={data?.currentStore.orders}
+					renderItem={renderOrder}
+					ListEmptyComponent={
+						<View style={styles.empty}>
+							<Text style={styles.emptyText}>
+								There are currently no orders. While you wait, you can customize
+								your store.
+							</Text>
+						</View>
+					}
+				/>
+			</View>
 		</View>
 	);
 };

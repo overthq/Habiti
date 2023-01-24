@@ -11,7 +11,7 @@ interface StoreMenuRowProps {
 
 const StoreMenuRow: React.FC<StoreMenuRowProps> = ({ title, onPress }) => {
 	return (
-		<Pressable onPress={onPress}>
+		<Pressable style={styles.menuButton} onPress={onPress}>
 			<Text style={styles.menuButtonText}>{title}</Text>
 			<Icon name='chevron-right' color='#505050' />
 		</Pressable>

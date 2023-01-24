@@ -40,7 +40,6 @@ export type ProductsStackParamList = {
 export type SettingsStackParamList = {
 	SettingsList: undefined;
 	SettingsActiveStore: undefined;
-	SettingsPayout: undefined;
 	SettingsTheme: undefined;
 };
 
