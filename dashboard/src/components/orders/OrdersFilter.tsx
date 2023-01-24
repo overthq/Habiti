@@ -3,13 +3,13 @@ import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { OrderStatus } from '../../types/api';
 import { Icon } from '../Icon';
 
-interface OrdersFilterButtonProps {
+interface FilterButtonProps {
 	text: string;
 	onPress(): void;
 	active: boolean;
 }
 
-const OrdersFilterButton: React.FC<OrdersFilterButtonProps> = ({
+export const FilterButton: React.FC<FilterButtonProps> = ({
 	text,
 	onPress,
 	active
@@ -37,29 +37,29 @@ const OrdersFilter: React.FC = () => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.left}>
-				<OrdersFilterButton
+				<FilterButton
 					text='All'
 					onPress={handleChangeStatus(undefined)}
 					active={!status}
 				/>
-				<OrdersFilterButton
+				<FilterButton
 					text='Pending'
 					onPress={handleChangeStatus(OrderStatus.Pending)}
 					active={status === OrderStatus.Pending}
 				/>
-				<OrdersFilterButton
+				<FilterButton
 					text='Fulfilled'
 					onPress={handleChangeStatus(OrderStatus.Completed)}
 					active={status === OrderStatus.Completed}
 				/>
-				<OrdersFilterButton
+				<FilterButton
 					text='Cancelled'
 					onPress={handleChangeStatus(OrderStatus.Cancelled)}
 					active={status === OrderStatus.Cancelled}
 				/>
 			</View>
 			<Pressable onPress={openFilterSheet}>
-				<Icon name='filter' size={22} />
+				<Icon name='filter' size={20} />
 			</Pressable>
 		</View>
 	);

@@ -6,10 +6,10 @@ import ProductsFilter from '../components/products/ProductsFilter';
 const Products: React.FC = () => {
 	return (
 		<View style={styles.container}>
+			<ProductsFilter />
 			<View style={{ flex: 1 }}>
-				<ProductsFilter />
+				<ProductList mode='list' />
 			</View>
-			<ProductList mode='list' />
 		</View>
 	);
 };
