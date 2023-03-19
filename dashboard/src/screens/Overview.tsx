@@ -1,25 +1,23 @@
 import React from 'react';
-import {
-	View,
-	ScrollView,
-	TouchableOpacity,
-	StyleSheet,
-	ActivityIndicator
-} from 'react-native';
+import { ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Icon } from '../components/Icon';
 import { AppStackParamList } from '../types/navigation';
-import { StatPeriod, useStatsQuery } from '../types/api';
-import PeriodSelector from '../components/overview/PeriodSelector';
-import NumberStat from '../components/overview/NumberStat';
 import ManagePayouts from '../components/overview/ManagePayouts';
 import LowStockProducts from '../components/overview/LowStockProducts';
-import OverviewActions from '../components/overview/OverviewActions';
+
+// Overview
+// - Available (unpaid) revenue
+// - Keep stats on hold.
+// - Information on next payout.
+
+// General things to do
+// - Add onboarding section to app.
 
 const Overview: React.FC = () => {
 	const navigation = useNavigation<NavigationProp<AppStackParamList>>();
-	const [period, setPeriod] = React.useState(StatPeriod.Week);
-	const [{ fetching, data }] = useStatsQuery({ variables: { period } });
+	// const [period, setPeriod] = React.useState(StatPeriod.Week);
+	// const [{ fetching, data }] = useStatsQuery({ variables: { period } });
 
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
@@ -36,8 +34,8 @@ const Overview: React.FC = () => {
 
 	return (
 		<ScrollView style={styles.container}>
-			<PeriodSelector selectedPeriod={period} setSelectedPeriod={setPeriod} />
-			{fetching ? (
+			{/* <PeriodSelector selectedPeriod={period} setSelectedPeriod={setPeriod} /> */}
+			{/* {fetching ? (
 				<ActivityIndicator />
 			) : (
 				<View style={styles.stats}>
@@ -48,12 +46,12 @@ const Overview: React.FC = () => {
 						currency
 					/>
 				</View>
-			)}
+			)} */}
 			<ManagePayouts />
-			<OverviewActions
+			{/* <OverviewActions
 				lowStockCount={0}
 				pendingOrderCount={data?.stats?.pendingOrderCount ?? 0}
-			/>
+			/> */}
 			<LowStockProducts />
 		</ScrollView>
 	);
