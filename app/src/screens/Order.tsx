@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import {
 	NavigationProp,
 	RouteProp,
@@ -41,6 +41,7 @@ const Order: React.FC = () => {
 
 	return (
 		<View style={styles.container}>
+			<Text>{order.status}</Text>
 			<View style={styles.products}>
 				{order.products.map(orderProduct => (
 					<OrderProduct

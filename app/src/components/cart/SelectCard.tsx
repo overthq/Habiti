@@ -44,9 +44,12 @@ const SelectCard: React.FC<SelectCardProps> = ({
 		<View>
 			<Pressable style={styles.row} onPress={toggleExpanded}>
 				<View style={styles.cardInfo}>
-					<MastercardIcon />
 					<Text style={styles.cardText}>
-						{displayCard ? `···· ${displayCard.last4}` : ' Add card'}
+						{!expanded
+							? displayCard
+								? `${displayCard.cardType} *${displayCard.last4}`
+								: 'Add card'
+							: ''}
 					</Text>
 				</View>
 				<Icon name='chevron-right' style={{ marginRight: -8 }} />
@@ -60,7 +63,10 @@ const SelectCard: React.FC<SelectCardProps> = ({
 							onPress={onCardSelect(card.id)}
 							style={styles.row}
 						>
-							<Text>Ending in {card.last4}</Text>
+							<MastercardIcon />
+							<Text style={{ textTransform: 'capitalize' }}>
+								{card.cardType} *{card.last4}
+							</Text>
 							{selectedCard === card.id && <Icon name='check' />}
 						</Pressable>
 					))}
@@ -87,7 +93,8 @@ const styles = StyleSheet.create({
 	},
 	cardText: {
 		fontSize: 16,
-		marginHorizontal: 8
+		marginHorizontal: 8,
+		textTransform: 'capitalize'
 	},
 	modal: {
 		paddingHorizontal: 16,

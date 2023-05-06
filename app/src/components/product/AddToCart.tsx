@@ -1,10 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { useAddToCartMutation } from '../../types/api';
-import { AppStackParamList } from '../../types/navigation';
-import Button from '../global/Button';
 import QuantityControl from './QuantityControl';
+import CartButton from './CartButton';
 
 interface AddToCartProps {
 	storeId: string;
@@ -19,40 +16,15 @@ const AddToCart: React.FC<AddToCartProps> = ({
 	cartId,
 	inCart
 }) => {
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const [, addToCart] = useAddToCartMutation();
-
-	const handlePress = async () => {
-		await addToCart({
-			input: { storeId, productId, quantity: 1 }
-		});
-	};
-
-	const renderButton = React.useMemo(() => {
-		if (!cartId || (cartId && !inCart)) {
-			return (
-				<Button
-					onPress={handlePress}
-					text='Add to cart'
-					disabled={inCart}
-					style={styles.button}
-				/>
-			);
-		} else {
-			return (
-				<Button
-					text='View in cart'
-					onPress={() => navigate('Cart', { cartId })}
-					style={styles.button}
-				/>
-			);
-		}
-	}, [cartId, inCart]);
-
 	return (
 		<View style={styles.container}>
-			<QuantityControl productId={productId} />
-			{renderButton}
+			<QuantityControl cartId={cartId} productId={productId} />
+			<CartButton
+				storeId={storeId}
+				productId={productId}
+				cartId={cartId}
+				inCart={inCart}
+			/>
 		</View>
 	);
 };
@@ -63,10 +35,6 @@ const styles = StyleSheet.create({
 		width: '100%',
 		paddingHorizontal: 16,
 		marginVertical: 16
-	},
-	button: {
-		flexGrow: 1,
-		width: undefined
 	}
 });
 

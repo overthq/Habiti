@@ -12,6 +12,7 @@ import { useProductQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 import useGoBack from '../hooks/useGoBack';
 import { Icon } from '../components/Icon';
+import RelatedProducts from '../components/product/RelatedProducts';
 
 const Product: React.FC = () => {
 	const { setOptions } = useNavigation();
@@ -60,6 +61,7 @@ const Product: React.FC = () => {
 				>
 					<ImageCarousel images={data.product.images} />
 					<ProductDetails product={data.product} />
+					<RelatedProducts />
 					<AddToCart
 						storeId={data.product.storeId}
 						productId={data.product.id}

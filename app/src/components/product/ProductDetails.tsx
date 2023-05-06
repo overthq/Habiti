@@ -24,7 +24,8 @@ const styles = StyleSheet.create({
 		paddingTop: 16
 	},
 	name: {
-		fontSize: 24
+		fontSize: 24,
+		fontWeight: '500'
 	},
 	price: {
 		fontSize: 18

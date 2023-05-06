@@ -1,17 +1,26 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Icon } from '../Icon';
+import { useUpdateCartProductMutation } from '../../types/api';
 
 interface QuantityControlProps {
+	cartId?: string | null | undefined;
 	productId: string;
 }
 
-const QuantityControl: React.FC<QuantityControlProps> = ({ productId }) => {
+const QuantityControl: React.FC<QuantityControlProps> = ({
+	cartId,
+	productId
+}) => {
+	const [{ fetching }, updateCartProduct] = useUpdateCartProductMutation();
 	const [quantity, setQuantity] = React.useState(0);
 	// TODO: Iron out logic around whether or not the item is in the cart.
 
-	const decrement = React.useCallback(() => {
-		if (quantity !== 0) {
+	const decrement = React.useCallback(async () => {
+		if (quantity !== 0 && cartId) {
+			await updateCartProduct({
+				input: { cartId, productId, quantity: quantity - 1 }
+			});
 			setQuantity(quantity - 1);
 		}
 	}, [quantity]);
@@ -22,11 +31,11 @@ const QuantityControl: React.FC<QuantityControlProps> = ({ productId }) => {
 
 	return (
 		<View style={styles.controls}>
-			<Pressable onPress={increment}>
+			<Pressable onPress={increment} disabled={fetching}>
 				<Icon name='minus' color='#505050' />
 			</Pressable>
 			<Text style={styles.quantity}>{quantity}</Text>
-			<Pressable onPress={decrement}>
+			<Pressable onPress={decrement} disabled={fetching}>
 				<Icon name='plus' color='#505050' />
 			</Pressable>
 		</View>
