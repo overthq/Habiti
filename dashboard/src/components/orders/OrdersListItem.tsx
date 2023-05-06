@@ -9,6 +9,12 @@ interface OrdersListItemProps {
 	onPress(): void;
 }
 
+// TODO: Reflect order quantity
+// - Probably disregard compactness.
+// - Use StatusPill
+// - (top-to-bottom): Date, Name, Status, Quantity
+// - Add group actions to this list.
+
 const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
 	return (
 		<Pressable onPress={onPress} style={styles.container}>

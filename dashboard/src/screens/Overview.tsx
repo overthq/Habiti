@@ -14,10 +14,10 @@ import LowStockProducts from '../components/overview/LowStockProducts';
 // General things to do
 // - Add onboarding section to app.
 
+// Probably add a greeting (to take space): "Good afternoon, {name}".
+
 const Overview: React.FC = () => {
 	const navigation = useNavigation<NavigationProp<AppStackParamList>>();
-	// const [period, setPeriod] = React.useState(StatPeriod.Week);
-	// const [{ fetching, data }] = useStatsQuery({ variables: { period } });
 
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
@@ -34,24 +34,7 @@ const Overview: React.FC = () => {
 
 	return (
 		<ScrollView style={styles.container}>
-			{/* <PeriodSelector selectedPeriod={period} setSelectedPeriod={setPeriod} /> */}
-			{/* {fetching ? (
-				<ActivityIndicator />
-			) : (
-				<View style={styles.stats}>
-					<NumberStat title='Orders' value={data?.stats.orders.length ?? 0} />
-					<NumberStat
-						title='Revenue'
-						value={data?.stats.revenue ?? 0}
-						currency
-					/>
-				</View>
-			)} */}
 			<ManagePayouts />
-			{/* <OverviewActions
-				lowStockCount={0}
-				pendingOrderCount={data?.stats?.pendingOrderCount ?? 0}
-			/> */}
 			<LowStockProducts />
 		</ScrollView>
 	);
