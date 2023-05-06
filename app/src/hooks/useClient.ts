@@ -1,5 +1,5 @@
 import React from 'react';
-import { createClient, dedupExchange, fetchExchange } from 'urql';
+import { createClient, fetchExchange } from 'urql';
 import env from '../../env';
 import customCache from '../utils/cache';
 
@@ -13,7 +13,7 @@ const useClient = (accessToken: string | null) => {
 						...(accessToken ? { authorization: `Bearer ${accessToken}` } : {})
 					}
 				},
-				exchanges: [dedupExchange, customCache, fetchExchange]
+				exchanges: [customCache, fetchExchange]
 			}),
 		[accessToken]
 	);

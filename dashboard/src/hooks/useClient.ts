@@ -1,6 +1,5 @@
 import React from 'react';
-import { createClient, dedupExchange } from 'urql';
-import { multipartFetchExchange } from '@urql/exchange-multipart-fetch';
+import { createClient, fetchExchange } from 'urql';
 import env from '../../env';
 import useStore from '../state';
 import customCache from '../utils/cache';
@@ -21,7 +20,7 @@ const useClient = () => {
 						'x-market-store-id': activeStore ?? ''
 					}
 				}),
-				exchanges: [dedupExchange, customCache, multipartFetchExchange]
+				exchanges: [customCache, fetchExchange]
 			}),
 		[accessToken, activeStore]
 	);
