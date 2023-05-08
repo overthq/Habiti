@@ -12,6 +12,8 @@ import OrderProduct from '../components/order/OrderProduct';
 import useGoBack from '../hooks/useGoBack';
 import OrderMeta from '../components/order/OrderMeta';
 
+// What actions should users be able to carry out on their orders on this screen?
+
 const Order: React.FC = () => {
 	const {
 		params: { orderId }
