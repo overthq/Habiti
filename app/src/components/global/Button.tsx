@@ -15,6 +15,18 @@ interface ButtonProps {
 	style?: ViewStyle;
 }
 
+const variants = {
+	primary: {},
+	secondary: {},
+	tertiary: {}
+};
+
+const sizes = {
+	sm: {},
+	md: {},
+	xl: {}
+};
+
 const Button: React.FC<ButtonProps> = ({
 	onPress,
 	text,

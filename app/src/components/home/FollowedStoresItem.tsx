@@ -27,7 +27,7 @@ const FollowedStoresItem: React.FC<FollowedStoresItemProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		marginLeft: 8,
+		marginLeft: 16,
 		marginRight: 16
 	},
 	image: {

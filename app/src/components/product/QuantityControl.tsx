@@ -21,25 +21,25 @@ const QuantityControl: React.FC<QuantityControlProps> = ({
 }) => {
 	const [quantity, setQuantity] = React.useState(0);
 
-	const decrement = React.useCallback(async () => {
-		if (quantity !== 0 && cartId) {
-			setQuantity(quantity - 1);
-		}
-	}, [quantity]);
+	const disabled = React.useMemo(() => !!cartId, []);
+
+	const decrementDisabled = React.useMemo(() => quantity === 0, [quantity]);
+
+	const decrement = React.useCallback(() => {
+		setQuantity(q => q - 1);
+	}, []);
 
 	const increment = React.useCallback(() => {
-		if (cartId) {
-			setQuantity(quantity + 1);
-		}
-	}, [quantity]);
+		setQuantity(q => q + 1);
+	}, []);
 
 	return (
 		<View style={styles.controls}>
-			<Pressable onPress={decrement}>
+			<Pressable disabled={disabled || decrementDisabled} onPress={decrement}>
 				<Icon name='minus' color='#505050' />
 			</Pressable>
 			<Text style={styles.quantity}>{quantity}</Text>
-			<Pressable onPress={increment}>
+			<Pressable disabled={disabled} onPress={increment}>
 				<Icon name='plus' color='#505050' />
 			</Pressable>
 		</View>
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
 		fontWeight: '500'
 	},
 	quantity: {
-		fontSize: 16,
+		fontSize: 18,
 		fontVariant: ['tabular-nums']
 	}
 });

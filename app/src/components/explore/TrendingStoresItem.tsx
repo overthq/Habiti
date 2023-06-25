@@ -21,7 +21,7 @@ const TrendingStoresItem: React.FC<TrendingStoresItemProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		marginLeft: 8,
+		marginLeft: 16,
 		marginRight: 16
 	},
 	placeholder: {

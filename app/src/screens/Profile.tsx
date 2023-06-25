@@ -29,6 +29,10 @@ const Profile: React.FC = () => {
 
 	const [{ data, fetching }] = useCurrentUserQuery();
 
+	const noop = React.useCallback(() => {
+		// Something
+	}, []);
+
 	if (fetching || !data) {
 		return (
 			<View style={styles.loading}>
@@ -37,28 +41,25 @@ const Profile: React.FC = () => {
 		);
 	}
 
-	const noop = React.useCallback(() => {
-		// Something
-	}, []);
-
 	return (
 		<View style={styles.container}>
-			<UserCard user={data?.currentUser} />
+			<View style={{ paddingHorizontal: 16, marginBottom: 8 }}>
+				<UserCard user={data?.currentUser} />
+			</View>
+			<View style={styles.separator} />
 			<View style={styles.section}>
 				<ProfileRow
 					title='Payment methods'
 					onPress={() => navigate('Payment Methods')}
 				/>
-				<View style={styles.separator} />
 				<ProfileRow title='Delivery address' onPress={noop} />
-				<View style={styles.separator} />
 				<ProfileRow title='Notifications' onPress={noop} />
-				<View style={styles.separator} />
 				<ProfileRow title='About this app' onPress={noop} />
-				<View style={styles.separator} />
 				<ProfileRow title='Support' onPress={noop} />
 			</View>
-			<Button text='Log Out' onPress={logOut} />
+			<View style={{ paddingHorizontal: 16, marginTop: 8 }}>
+				<Button text='Log Out' onPress={logOut} />
+			</View>
 		</View>
 	);
 };
@@ -71,18 +72,17 @@ const styles = StyleSheet.create({
 	},
 	container: {
 		flex: 1,
-		paddingHorizontal: 16
+		backgroundColor: '#FFFFFF'
 	},
 	section: {
 		borderRadius: 4,
-		overflow: 'hidden',
-		marginBottom: 16,
-		backgroundColor: 'red'
+		marginBottom: 16
 	},
 	separator: {
 		width: '100%',
 		height: 1,
-		backgroundColor: '#D3D3D3'
+		backgroundColor: '#D3D3D3',
+		marginBottom: 8
 	}
 });
 
