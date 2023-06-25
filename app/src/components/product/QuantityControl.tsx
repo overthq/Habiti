@@ -28,16 +28,18 @@ const QuantityControl: React.FC<QuantityControlProps> = ({
 	}, [quantity]);
 
 	const increment = React.useCallback(() => {
-		setQuantity(quantity + 1);
+		if (cartId) {
+			setQuantity(quantity + 1);
+		}
 	}, [quantity]);
 
 	return (
 		<View style={styles.controls}>
-			<Pressable onPress={increment}>
+			<Pressable onPress={decrement}>
 				<Icon name='minus' color='#505050' />
 			</Pressable>
 			<Text style={styles.quantity}>{quantity}</Text>
-			<Pressable onPress={decrement}>
+			<Pressable onPress={increment}>
 				<Icon name='plus' color='#505050' />
 			</Pressable>
 		</View>

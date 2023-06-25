@@ -43,7 +43,9 @@ const Order: React.FC = () => {
 
 	return (
 		<View style={styles.container}>
-			<Text>{order.status}</Text>
+			<View style={{ marginLeft: 16, marginBottom: 16 }}>
+				<Text>{order.status}</Text>
+			</View>
 			<View style={styles.products}>
 				{order.products.map(orderProduct => (
 					<OrderProduct
@@ -68,7 +70,6 @@ const styles = StyleSheet.create({
 		marginHorizontal: 16,
 		paddingHorizontal: 16,
 		paddingTop: 8,
-		// paddingBottom: 8,
 		borderRadius: 4,
 		overflow: 'hidden'
 	}
