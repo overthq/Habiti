@@ -5,6 +5,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import useGoBack from '../hooks/useGoBack';
 import { useCustomerInfoQuery } from '../types/api';
 import type { AppStackParamList } from '../types/navigation';
+import { formatNaira } from '../utils/currency';
 
 const CustomerInfo: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'CustomerInfo'>>();
@@ -24,8 +25,8 @@ const CustomerInfo: React.FC = () => {
 			<Text style={styles.phone}>{data.user.phone}</Text>
 			<Text>Previous Orders:</Text>
 			{data.user.orders.map(order => (
-				<View key={order.id}>
-					<Text>{order.total}</Text>
+				<View key={order.id} style={styles.order}>
+					<Text>{formatNaira(order.total)}</Text>
 				</View>
 			))}
 		</ScrollView>
@@ -44,6 +45,10 @@ const styles = StyleSheet.create({
 	},
 	phone: {
 		fontSize: 16
+	},
+	order: {
+		padding: 16,
+		backgroundColor: '#FFFFFF'
 	}
 });
 

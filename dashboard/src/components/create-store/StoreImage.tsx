@@ -25,7 +25,7 @@ const StoreImage: React.FC = () => {
 			quality: 1
 		});
 
-		if (!result.cancelled) setValue('storeImage', result.uri);
+		if (!result.canceled) setValue('storeImage', result.assets?.[0].uri);
 	};
 
 	const removeImage = React.useCallback(() => {
