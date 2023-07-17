@@ -8,8 +8,8 @@ import {
 	Pressable
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { Icon } from '../Icon';
 import { Controller, useFormContext } from 'react-hook-form';
+import { Icon } from '../Icon';
 import { CreateStoreFormValues } from '../../screens/CreateStore';
 
 const { width } = Dimensions.get('window');

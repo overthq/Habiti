@@ -82,24 +82,31 @@ const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
 	const order = await ctx.prisma.order.update({
 		where: { id: args.orderId },
 		data: args.input,
-		include: {
-			products: {
-				include: {
-					product: true
-				}
-			}
-		}
+		include: { products: { include: { product: true } } }
 	});
 
-	if (args.input.status === OrderStatus.Fulfilled) {
-		const total = order.products.reduce((acc, next) => {
-			return acc + next.product.unitPrice * next.quantity;
-		}, 0);
+	// Workflow:
+	// - If the order is fulfilled, update the store's revenue.
+	// - If the order is canceled, push a notification.
 
-		await ctx.prisma.store.update({
-			where: { id: order.storeId },
-			data: { revenue: { increment: total } }
-		});
+	if (args.input.status) {
+		switch (args.input.status) {
+			case OrderStatus.Canceled:
+				break;
+			case OrderStatus.Fulfilled:
+				const total = order.products.reduce((acc, next) => {
+					return acc + next.product.unitPrice * next.quantity;
+				}, 0);
+
+				await ctx.prisma.store.update({
+					where: { id: order.storeId },
+					data: { revenue: { increment: total } }
+				});
+
+				break;
+			default:
+				break;
+		}
 	}
 
 	return order;

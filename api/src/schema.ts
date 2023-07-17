@@ -57,6 +57,10 @@ import PayoutTypes from './collections/payout/types';
 const Root = `
 	scalar Upload
 
+	interface Node {
+		id: ID!
+	}
+
 	type Query { _: Boolean }
 	type Mutation { _: Boolean }
 `;

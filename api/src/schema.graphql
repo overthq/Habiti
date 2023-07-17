@@ -17,33 +17,145 @@ type PageInfo {
 }
 
 type User implements Node {
+	id: ID!
 	name: String!
-	phone: String!
 	email: String!
+	phone: String!
+	createdAt: String!
+	updatedAt: String!
+
+	carts: CartConnection!
+	orders: OrderConnection!
+	managed: StoreManagerConnection!
+	followed: StoreFollowerConnection!
+	watchlist: WatchlistProductConnection!
 }
 
 type Store implements Node {
+	id: ID!
 	name: String!
+	description: String
+	website: String
+	twitter: String
+	instagram: String
+	revenue: Int!
+	payedOut: Int!
+	createdAt: String!
+	updatedAt: String!
+
+	followedByUser: Boolean!
+	image: Image
+
 	orders: OrderConnection!
+	products: ProductConnection!
+	followers: StoreFollowerConnection!
+	carts: CartConnection!
+	payouts: PayoutConnection!
 }
 
 type Order implements Node {
+	id: ID!
 	userId: ID!
 	storeId: ID!
 	status: OrderStatus!
+	createdAt: String!
+	updatedAt: String!
+
+	total: Int!
+	user: User!
+	store: Store!
+
+	products: OrderProductConnection!
 }
 
 type Product implements Node {
-	storeId: ID!
+	id: ID!
 	name: String!
 	description: String!
+	unitPrice: Int!
+	quantity: Int!
+	storeId: ID!
 	createdAt: String!
 	updatedAt: String!
+
+	inCart: Boolean!
+	store: Store!
+
+	orders: OrderConnection!
+	carts: CartProductConnection!
+	images: ImageConnection!
+	watchlists: WatchlistProductConnection!
 }
 
 type OrderProduct implements Node {
+	id: ID!
 	orderId: ID!
 	productId: ID!
+	unitPrice: Int!
+	quantity: Int!
+
+	order: Order!
+	product: Product!
+}
+
+type WatchlistProduct implements Node {
+	id: ID!
+	userId: ID!
+	productId: ID!
+
+	user: User!
+	product: Product!
+}
+
+type Payout implements Node {
+	id: ID!
+	storeId: ID!
+	amount: Int!
+	createdAt: String!
+	updatedAt: String!
+
+	store: Store!
+}
+
+type StoreFollower implements Node {
+	id: ID!
+	followerId: ID!
+	storeId: ID!
+
+	follower: User!
+	store: Store!
+}
+
+type Card implements Node {
+	id: ID!
+	userId: ID!
+	email: String!
+	authorizationCode: String!
+	cardType: String!
+	last4: String!
+	expMonth: Int!
+	expYear: Int!
+	bin: String!
+	bank: String!
+	signature: String!
+	countryCode: String!
+	createdAt: String!
+	updatedAt: String!
+
+	user: User!
+}
+
+type Cart implements Node {
+	id: ID!
+	userId: ID!
+	storeId: ID!
+	createdAt: String!
+	updatedAt: String!
+
+	total: Int!
+	user: User!
+	store: Store!
+	products: CartProductConnection!
 }
 
 type OrderEdge {
@@ -73,6 +185,46 @@ type EditOrderResponse {
 	order: Order
 }
 
+type ProductConnection {
+	edges: [ProductEdge!]!
+	pageInfo: PageInfo!
+}
+
+type ProductEdge {
+	cursor: String!
+	node: Product
+}
+
+type OrderConnection {
+	edges: [OrderEdge!]!
+	pageInfo: PageInfo!
+}
+
+type OrderEdge {
+	cursor: String!
+	node: Order
+}
+
+type UserConnection {
+	edges: [UserEdge!]!
+	pageInfo: PageInfo!
+}
+
+type UserEdge {
+	cursor: String!
+	node: User
+}
+
+type StoreConnection {
+	edges: [StoreEdge!]!
+	pageInfo: PageInfo!
+}
+
+type StoreEdge {
+	cursor: String!
+	node: Store
+}
+
 enum OrderStatus {
 	Pending
 	Delivered
@@ -82,6 +234,7 @@ enum OrderStatus {
 
 type Query {
 	users: [User!]!
+	currentUser: User!
 	user(id: ID!): User!
 	stores: [Store!]!
 	store(id: ID!): Store!
