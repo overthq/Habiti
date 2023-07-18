@@ -233,14 +233,22 @@ enum OrderStatus {
 }
 
 type Query {
-	users: [User!]!
-	currentUser: User!
 	user(id: ID!): User!
-	stores: [Store!]!
+	users: UserConnection!
+	currentUser: User!
+
 	store(id: ID!): Store!
+	stores: StoreConnection!
+
 	order(id: ID!): Order!
+	orders: OrderConnection!
+
 	product(id: ID!): Product!
-	products: [Product!]!
+	products: ProductConnection!
+
+	cart(id: ID!): Cart!
+	carts: CartConnection!
+
 	node(id: ID!): Node!
 }
 
