@@ -249,6 +249,9 @@ type Query {
 	cart(id: ID!): Cart!
 	carts: CartConnection!
 
+	card(id: ID!): Card!
+	cards: CardConnection!
+
 	node(id: ID!): Node!
 }
 
