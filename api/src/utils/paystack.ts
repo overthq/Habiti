@@ -30,7 +30,24 @@ export const chargeAuthorization = async (
 	return data;
 };
 
-export const storeCard = (userId: string, data: any) => {
+interface StoreCardData {
+	customer: {
+		email: string;
+	};
+	authorization: {
+		signature: string;
+		authorization_code: string;
+		bin: string;
+		last4: string;
+		exp_month: string;
+		exp_year: string;
+		bank: string;
+		card_type: string;
+		country_code: string;
+	};
+}
+
+export const storeCard = (userId: string, data: StoreCardData) => {
 	return prisma.card.upsert({
 		where: { signature: data.authorization.signature },
 		update: {},
@@ -140,3 +157,60 @@ export const verifyTransfer = async (transferId: string) => {
 
 	return data;
 };
+
+export const resolveAccountNumber = async (
+	accountNumber: string,
+	bankCode: string
+) => {
+	const response = await fetch(
+		`${API_URL}/bank/resolve?account_number=${accountNumber}&bank_code=${bankCode}`,
+		{
+			headers: {
+				Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+			}
+		}
+	);
+
+	const data = await response.json();
+
+	return data;
+};
+
+export const listBanks = async () => {
+	const response = await fetch(`${API_URL}/bank?currency=NGN`, {
+		headers: {
+			Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+		}
+	});
+
+	const data = await response.json();
+
+	return data;
+};
+
+export const createTransferReceipient = async (
+	name: string,
+	accountNumber: string,
+	bankCode: string
+) => {
+	const response = await fetch(`${API_URL}/transferrecipient`, {
+		method: 'POST',
+		headers: {
+			Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({
+			type: 'nuban',
+			name,
+			account_number: accountNumber,
+			bank_code: bankCode,
+			currency: 'NGN'
+		})
+	});
+
+	const data = await response.json();
+
+	return data;
+};
+
+// TODO: Use authorization code to return the tokenization fee to user programmatically.
