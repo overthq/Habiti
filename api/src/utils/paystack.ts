@@ -4,6 +4,32 @@ import { PrismaClient } from '@prisma/client';
 const API_URL = 'https://api.paystack.co';
 const prisma = new PrismaClient();
 
+const post = async (path: string, body: object) => {
+	const response = await fetch(`${API_URL}${path}`, {
+		method: 'POST',
+		headers: {
+			Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(body)
+	});
+
+	const data = await response.json();
+	return data;
+};
+
+const get = async (path: string) => {
+	const response = await fetch(`${API_URL}${path}`, {
+		method: 'GET',
+		headers: {
+			Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+		}
+	});
+
+	const data = await response.json();
+	return data;
+};
+
 interface ChargeAuthorizationOptions {
 	authorizationCode: string;
 	email: string;
@@ -13,20 +39,12 @@ interface ChargeAuthorizationOptions {
 export const chargeAuthorization = async (
 	options: ChargeAuthorizationOptions
 ) => {
-	const response = await fetch(`${API_URL}/transaction/charge_authorization`, {
-		method: 'POST',
-		headers: {
-			Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({
-			authorization_code: options.authorizationCode,
-			amount: options.amount,
-			email: options.email
-		})
+	const data = await post('/transaction/charge_authorization', {
+		authorization_code: options.authorizationCode,
+		email: options.email,
+		amount: options.amount
 	});
 
-	const data = await response.json();
 	return data;
 };
 
@@ -68,16 +86,11 @@ export const storeCard = (userId: string, data: StoreCardData) => {
 };
 
 export const initialCharge = async (email: string) => {
-	const response = await fetch(`${API_URL}/transaction/initialize`, {
-		method: 'POST',
-		headers: {
-			Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({ email, amount: 5000 })
+	const data = await post('/transaction/initialize', {
+		email,
+		amount: 5000
 	});
 
-	const data = await response.json();
 	return data;
 };
 
@@ -85,14 +98,7 @@ export const initialCharge = async (email: string) => {
 // (On prod, the webhook should do this).
 
 export const verifyTransaction = async (userId: string, reference: string) => {
-	const response = await fetch(`${API_URL}/transaction/verify/${reference}`, {
-		method: 'GET',
-		headers: {
-			Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
-		}
-	});
-
-	const { data, status } = await response.json();
+	const { data, status } = await get(`/transaction/verify/${reference}`);
 
 	if (status === true && data.status === 'success') {
 		return storeCard(userId, data);
@@ -107,23 +113,13 @@ export const createRecepient = async (
 	bankCode: string
 ) => {
 	// Consider also doing this with the authorization code.
-
-	const response = await fetch(`${API_URL}/transferrecepient`, {
-		method: 'POST',
-		headers: {
-			Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({
-			type: 'nuban',
-			name,
-			account_number: accountNumber,
-			bank_code: bankCode,
-			currency: 'NGN'
-		})
+	const { data } = await post('/transferrecipient', {
+		type: 'nuban',
+		name,
+		account_number: accountNumber,
+		bank_code: bankCode,
+		currency: 'NGN'
 	});
-
-	const { data } = await response.json();
 
 	return data;
 };
@@ -132,28 +128,15 @@ export const createTransferReference = () => {
 	// Do something.
 };
 
+// Pay account.
 export const payAccount = async (amount: string, reference: string) => {
-	// Pay account.
-	const response = await fetch(`${API_URL}`, {
-		headers: {
-			Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
-		},
-		body: JSON.stringify({ amount, reference })
-	});
-
-	const data = await response.json();
+	const data = await post('/transfer', { amount, reference });
 
 	return data;
 };
 
 export const verifyTransfer = async (transferId: string) => {
-	const response = await fetch(`${API_URL}/transfer/${transferId}`, {
-		headers: {
-			Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
-		}
-	});
-
-	const data = await response.json();
+	const data = await get(`/transfer/verify/${transferId}`);
 
 	return data;
 };
@@ -162,28 +145,15 @@ export const resolveAccountNumber = async (
 	accountNumber: string,
 	bankCode: string
 ) => {
-	const response = await fetch(
-		`${API_URL}/bank/resolve?account_number=${accountNumber}&bank_code=${bankCode}`,
-		{
-			headers: {
-				Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
-			}
-		}
+	const data = await get(
+		`/bank/resolve?account_number=${accountNumber}&bank_code=${bankCode}`
 	);
-
-	const data = await response.json();
 
 	return data;
 };
 
 export const listBanks = async () => {
-	const response = await fetch(`${API_URL}/bank?currency=NGN`, {
-		headers: {
-			Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
-		}
-	});
-
-	const data = await response.json();
+	const data = await get('/bank?currency=NGN');
 
 	return data;
 };
@@ -193,22 +163,13 @@ export const createTransferReceipient = async (
 	accountNumber: string,
 	bankCode: string
 ) => {
-	const response = await fetch(`${API_URL}/transferrecipient`, {
-		method: 'POST',
-		headers: {
-			Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({
-			type: 'nuban',
-			name,
-			account_number: accountNumber,
-			bank_code: bankCode,
-			currency: 'NGN'
-		})
+	const data = await post('/transferrecipient', {
+		type: 'nuban',
+		name,
+		account_number: accountNumber,
+		bank_code: bankCode,
+		currency: 'NGN'
 	});
-
-	const data = await response.json();
 
 	return data;
 };
