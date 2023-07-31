@@ -1,5 +1,4 @@
-import { createClient, dedupExchange, Client } from 'urql';
-import { multipartFetchExchange } from '@urql/exchange-multipart-fetch';
+import { createClient, Client } from 'urql';
 
 import env from '../../env';
 import customCache from '../utils/cache';
@@ -18,6 +17,6 @@ export const setClient = () => {
 				'x-market-store-id': activeStore ?? ''
 			}
 		},
-		exchanges: [dedupExchange, customCache, multipartFetchExchange]
+		exchanges: [customCache]
 	});
 };
