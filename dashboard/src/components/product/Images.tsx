@@ -23,8 +23,8 @@ const Images: React.FC<ImagesProps> = ({
 			quality: 1
 		});
 
-		if (!result.cancelled) {
-			setImagesToUpload(x => [...x, result.uri]);
+		if (!result.canceled) {
+			setImagesToUpload(x => [...x, ...result.assets.map(x => x.uri)]);
 		}
 	};
 
