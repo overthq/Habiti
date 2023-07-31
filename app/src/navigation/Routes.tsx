@@ -18,14 +18,18 @@ import { AppStackParamList } from '../types/navigation';
 import useClient from '../hooks/useClient';
 import { getStatusBarStyle } from '../utils/theme';
 import useStore from '../state';
+import { shallow } from 'zustand/shallow';
 
 const AppStack = createStackNavigator<AppStackParamList>();
 
 const Routes: React.FC = () => {
-	const { accessToken, theme } = useStore(state => ({
-		accessToken: state.accessToken,
-		theme: state.theme
-	}));
+	const { accessToken, theme } = useStore(
+		state => ({
+			accessToken: state.accessToken,
+			theme: state.theme
+		}),
+		shallow
+	);
 
 	const client = useClient(accessToken);
 
