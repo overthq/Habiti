@@ -21,9 +21,7 @@ const post = async (path: string, body: object) => {
 const get = async (path: string) => {
 	const response = await fetch(`${API_URL}${path}`, {
 		method: 'GET',
-		headers: {
-			Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
-		}
+		headers: { Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` }
 	});
 
 	const data = await response.json();
@@ -49,9 +47,7 @@ export const chargeAuthorization = async (
 };
 
 interface StoreCardData {
-	customer: {
-		email: string;
-	};
+	customer: { email: string };
 	authorization: {
 		signature: string;
 		authorization_code: string;
