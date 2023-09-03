@@ -4,3 +4,4 @@ app/ios/Pods
 dump.rdb
 *.rdb
 *.tsbuildinfo
+remix/

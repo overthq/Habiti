@@ -148,6 +148,10 @@ export const resolveAccountNumber = async (
 	return data;
 };
 
+// This should probably be run on the frontend in a script.
+// We should generate the list and store it with the code as a JSON file,
+// We can update it OTA.
+
 export const listBanks = async () => {
 	const data = await get('/bank?currency=NGN');
 

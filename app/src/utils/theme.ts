@@ -15,3 +15,29 @@ export const getStatusBarStyle = (theme: PreferencesSlice['theme']) => {
 		>
 	)[theme];
 };
+
+const palette = {
+	neutral: {
+		n1: '#FFFFFF',
+		n100: '#000000'
+	},
+	green: {
+		g1: ''
+	}
+};
+
+export const dark = {
+	text: {
+		primary: palette.neutral.n1,
+		secondary: '',
+		tertiary: ''
+	}
+};
+
+export const light = {
+	text: {
+		primary: palette.neutral.n100,
+		secondary: '',
+		tertiary: ''
+	}
+};
