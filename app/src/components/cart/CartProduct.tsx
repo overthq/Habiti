@@ -8,7 +8,7 @@ import { formatNaira } from '../../utils/currency';
 import { plural } from '../../utils/strings';
 
 interface CartProductProps {
-	cartProduct: CartQuery['cart']['products'][-1];
+	cartProduct: CartQuery['cart']['products'][number];
 }
 
 const CartProduct: React.FC<CartProductProps> = ({
@@ -31,8 +31,9 @@ const CartProduct: React.FC<CartProductProps> = ({
 				<View>
 					<Text style={styles.name}>{product.name}</Text>
 					<Text style={styles.price}>
-						{plural('unit', quantity)} ·{' '}
-						{formatNaira(product.unitPrice * quantity)}
+						{`${plural('unit', quantity)} · ${formatNaira(
+							product.unitPrice * quantity
+						)}`}
 					</Text>
 				</View>
 			</View>

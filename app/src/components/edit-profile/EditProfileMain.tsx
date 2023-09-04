@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 
 import FormInput from '../global/FormInput';
 import { CurrentUserQuery, useEditProfileMutation } from '../../types/api';
+import TextButton from '../global/TextButton';
 
 interface EditProfileMainProps {
 	currentUser: CurrentUserQuery['currentUser'];
@@ -33,20 +34,12 @@ const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
 			headerRight: () => (
-				<Pressable
-					style={styles.saveButton}
+				<TextButton
 					onPress={handleSubmit(onSubmit)}
 					disabled={!formState.isDirty}
 				>
-					<Text
-						style={[
-							styles.saveButtonText,
-							!formState.isDirty ? { color: '#777777' } : {}
-						]}
-					>
-						Save
-					</Text>
-				</Pressable>
+					Save
+				</TextButton>
 			)
 		});
 	}, [formState.isDirty]);

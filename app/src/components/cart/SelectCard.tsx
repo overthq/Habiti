@@ -20,13 +20,9 @@ const SelectCard: React.FC<SelectCardProps> = ({
 	onCardSelect
 }) => {
 	const [{ data, fetching }] = useCardsQuery();
-	const [expanded, setExpanded] = React.useState(false);
+	const [expanded, toggleExpanded] = React.useReducer(e => !e, false);
 
 	const cards = data?.currentUser.cards;
-
-	const toggleExpanded = React.useCallback(() => {
-		setExpanded(e => !e);
-	}, []);
 
 	const displayCard = React.useMemo(() => {
 		return cards?.find(c => c.id === selectedCard) ?? cards?.[0];
