@@ -7,8 +7,6 @@ interface CustomImageProps {
 	style?: ViewStyle;
 }
 
-// Simple implementation of image with placeholder background.
-
 const CustomImage: React.FC<CustomImageProps> = ({ path, style }) => {
 	return (
 		<View style={[styles.container, style]}>
