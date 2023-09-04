@@ -31,7 +31,8 @@ export const dark = {
 		primary: palette.neutral.n1,
 		secondary: '',
 		tertiary: ''
-	}
+	},
+	button: {}
 };
 
 export const light = {
@@ -39,5 +40,6 @@ export const light = {
 		primary: palette.neutral.n100,
 		secondary: '',
 		tertiary: ''
-	}
+	},
+	button: {}
 };
