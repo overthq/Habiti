@@ -22,10 +22,10 @@ const SelectCard: React.FC<SelectCardProps> = ({
 	const [{ data, fetching }] = useCardsQuery();
 	const [expanded, toggleExpanded] = React.useReducer(e => !e, false);
 
-	const cards = data?.currentUser.cards;
+	const cards = data?.currentUser.cards ?? [];
 
 	const displayCard = React.useMemo(() => {
-		return cards?.find(c => c.id === selectedCard) ?? cards?.[0];
+		return cards.find(c => c.id === selectedCard) ?? cards[0];
 	}, [selectedCard, cards]);
 
 	if (fetching) {
@@ -53,7 +53,7 @@ const SelectCard: React.FC<SelectCardProps> = ({
 
 			{expanded && (
 				<View>
-					{cards?.map(card => (
+					{cards.map(card => (
 						<Pressable
 							key={card.id}
 							onPress={onCardSelect(card.id)}

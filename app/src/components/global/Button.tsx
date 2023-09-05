@@ -13,12 +13,34 @@ interface ButtonProps {
 	loading?: boolean;
 	disabled?: boolean;
 	style?: ViewStyle;
+	variant?: 'primary' | 'secondary' | 'tertiary';
 }
 
 const variants = {
-	primary: {},
-	secondary: {},
-	tertiary: {}
+	primary: {
+		background: {
+			backgroundColor: '#000000'
+		},
+		text: {
+			color: '#FFFFFF'
+		}
+	},
+	secondary: {
+		background: {
+			backgroundColor: '#FFFFFF'
+		},
+		text: {
+			color: '#000000'
+		}
+	},
+	tertiary: {
+		background: {
+			backgroundColor: '#505050'
+		},
+		text: {
+			color: '#D3D3D3'
+		}
+	}
 };
 
 const sizes = {
@@ -32,17 +54,18 @@ const Button: React.FC<ButtonProps> = ({
 	text,
 	loading,
 	style,
-	disabled
+	disabled,
+	variant = 'primary'
 }) => (
 	<Pressable
-		style={[styles.container, style]}
+		style={[variants[variant].background, styles.container, style]}
 		disabled={disabled}
 		onPress={onPress}
 	>
 		{loading ? (
 			<ActivityIndicator color='#FFFFFF' />
 		) : (
-			<Text style={styles.text}>{text}</Text>
+			<Text style={[variants[variant].text, styles.text]}>{text}</Text>
 		)}
 	</Pressable>
 );

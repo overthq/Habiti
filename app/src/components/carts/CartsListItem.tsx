@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Image, Text, StyleSheet, Pressable } from 'react-native';
 import { CartsQuery } from '../../types/api';
 import { plural } from '../../utils/strings';
 import { Icon } from '../Icon';
@@ -10,11 +10,7 @@ interface CartListItemProps {
 }
 
 const CartsListItem: React.FC<CartListItemProps> = ({ cart, onPress }) => (
-	<TouchableOpacity
-		onPress={onPress}
-		activeOpacity={0.8}
-		style={styles.container}
-	>
+	<Pressable onPress={onPress} style={styles.container}>
 		<View style={styles.main}>
 			<View style={styles.placeholder}>
 				<Image style={styles.image} source={{ uri: cart.store.image?.path }} />
@@ -27,7 +23,7 @@ const CartsListItem: React.FC<CartListItemProps> = ({ cart, onPress }) => (
 			</View>
 		</View>
 		<Icon name='chevron-right' size={24} color='#777777' />
-	</TouchableOpacity>
+	</Pressable>
 );
 
 const styles = StyleSheet.create({
