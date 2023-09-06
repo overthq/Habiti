@@ -4,8 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 
 import FormInput from '../global/FormInput';
-import { CurrentUserQuery, useEditProfileMutation } from '../../types/api';
 import TextButton from '../global/TextButton';
+import { CurrentUserQuery, useEditProfileMutation } from '../../types/api';
 
 interface EditProfileMainProps {
 	currentUser: CurrentUserQuery['currentUser'];
@@ -66,13 +66,6 @@ const styles = StyleSheet.create({
 	},
 	input: {
 		marginBottom: 8
-	},
-	saveButton: {
-		marginRight: 16
-	},
-	saveButtonText: {
-		fontSize: 16,
-		fontWeight: '400'
 	}
 });
 
