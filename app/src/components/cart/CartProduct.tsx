@@ -1,26 +1,21 @@
 import React from 'react';
 import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { CartQuery } from '../../types/api';
 import { Icon } from '../Icon';
-import { AppStackParamList } from '../../types/navigation';
 import { formatNaira } from '../../utils/currency';
 import { plural } from '../../utils/strings';
 
 interface CartProductProps {
 	cartProduct: CartQuery['cart']['products'][number];
+	onPress(): void;
 }
 
 const CartProduct: React.FC<CartProductProps> = ({
-	cartProduct: { product, quantity }
+	cartProduct: { product, quantity },
+	onPress
 }) => {
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-
 	return (
-		<Pressable
-			style={styles.container}
-			onPress={() => navigate('Product', { productId: product.id })}
-		>
+		<Pressable style={styles.container} onPress={onPress}>
 			<View style={{ flexDirection: 'row' }}>
 				<View style={styles.imagePlaceholder}>
 					<Image

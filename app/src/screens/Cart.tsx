@@ -21,6 +21,7 @@ const Cart: React.FC = () => {
 		params: { cartId }
 	} = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
 	const { goBack } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	useGoBack();
 
 	const [{ data, fetching }] = useCartQuery({ variables: { cartId } });
@@ -48,13 +49,25 @@ const Cart: React.FC = () => {
 		[]
 	);
 
+	const handleCartProductPress = React.useCallback(
+		(productId: string) => () => {
+			navigate('Product', { productId });
+		},
+		[]
+	);
+
 	if (fetching || !cart) return <View style={styles.loading} />;
 
 	return (
 		<ScrollView style={[styles.container, { paddingBottom: bottom }]}>
 			<Text style={styles.sectionHeader}>Order Summary</Text>
+
 			{cart.products.map(cartProduct => (
-				<CartProduct key={cartProduct.id} cartProduct={cartProduct} />
+				<CartProduct
+					key={cartProduct.id}
+					cartProduct={cartProduct}
+					onPress={handleCartProductPress(cartProduct.id)}
+				/>
 			))}
 
 			<Text style={styles.sectionHeader}>Delivery Address</Text>
