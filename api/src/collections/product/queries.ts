@@ -28,6 +28,12 @@ const images: Resolver = async (parent, _, ctx) => {
 	return ctx.prisma.product.findUnique({ where: { id: parent.id } }).images();
 };
 
+const categories: Resolver = async (parent, _, ctx) => {
+	return ctx.prisma.product
+		.findUnique({ where: { id: parent.id } })
+		.categories();
+};
+
 // TODO: Very hacky and bad.
 const inCart: Resolver = async (parent, _, ctx) => {
 	const fetchedCart = await ctx.prisma.cart.findUnique({
@@ -37,10 +43,7 @@ const inCart: Resolver = async (parent, _, ctx) => {
 	if (fetchedCart) {
 		const fetchedCartProduct = await ctx.prisma.cartProduct.findUnique({
 			where: {
-				cartId_productId: {
-					cartId: fetchedCart.id,
-					productId: parent.id
-				}
+				cartId_productId: { cartId: fetchedCart.id, productId: parent.id }
 			}
 		});
 		return !!fetchedCartProduct;
@@ -59,6 +62,7 @@ export default {
 		carts,
 		store,
 		images,
+		categories,
 		inCart
 	}
 };

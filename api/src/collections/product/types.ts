@@ -17,6 +17,7 @@ const ProductTypes = gql`
 		carts: [CartProduct!]!
 		images: [Image!]!
 		watchlists: [WatchlistProduct!]!
+		categories: [ProductCategory!]!
 	}
 
 	input CreateProductInput {

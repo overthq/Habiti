@@ -22,6 +22,7 @@ const StoreTypes = gql`
 		carts: [Cart!]!
 		payouts: [Payout!]!
 		image: Image
+		categories: [StoreProductCategory!]!
 	}
 
 	enum StoreStatPeriod {

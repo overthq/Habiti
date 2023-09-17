@@ -23,23 +23,25 @@ model User {
 }
 
 model Store {
-  id          String          @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
   description String?
   website     String?
-  twitter     String?         @db.VarChar(15)
-  instagram   String?         @db.VarChar(30)
-  revenue     Int             @default(0)
-  payedOut    Int             @default(0)
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-  image       Image?
-  products    Product[]
-  orders      Order[]
-  managers    StoreManager[]
-  followers   StoreFollower[]
-  carts       Cart[]
-  payouts     Payout[]
+  twitter     String?  @db.VarChar(15)
+  instagram   String?  @db.VarChar(30)
+  revenue     Int      @default(0)
+  payedOut    Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  image      Image?
+  products   Product[]
+  orders     Order[]
+  managers   StoreManager[]
+  followers  StoreFollower[]
+  carts      Cart[]
+  payouts    Payout[]
+  categories StoreProductCategory[]
 }
 
 model Product {
@@ -55,6 +57,7 @@ model Product {
   orders      OrderProduct[]
   carts       CartProduct[]
   watchlists  WatchlistProduct[]
+  categories  ProductCategory[]
 
   store Store @relation(fields: [storeId], references: [id])
 }
@@ -168,6 +171,26 @@ model Payout {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+}
+
+model ProductCategory {
+  productId  String
+  categoryId String
+
+  product  Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category StoreProductCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([categoryId, productId])
+}
+
+model StoreProductCategory {
+  id      String @id @default(uuid())
+  name    String
+  storeId String
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  products ProductCategory[]
 }
 
 enum OrderStatus {
