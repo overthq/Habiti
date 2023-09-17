@@ -1,5 +1,9 @@
 import { Resolver } from '../../types/resolvers';
 
+const id: Resolver = parent => {
+	return `${parent.categoryId}-${parent.productId}`;
+};
+
 const store: Resolver = async (_, { id }, ctx) => {
 	return ctx.prisma.storeProductCategory.findUnique({ where: { id } }).store();
 };
@@ -37,6 +41,6 @@ const category: Resolver = async (parent, _, ctx) => {
 };
 
 export default {
-	ProductCategory: { product, category },
+	ProductCategory: { id, product, category },
 	StoreProductCategory: { store, products }
 };

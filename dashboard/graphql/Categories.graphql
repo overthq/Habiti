@@ -1,0 +1,23 @@
+mutation CreateProductCategory($input: CreateCategoryInput!) {
+	createProductCategory(input: $input) {
+		id
+	}
+}
+
+mutation DeleteProductCategory($input: DeleteCategoryInput!) {
+	deleteProductCategory(input: $input) {
+		id
+	}
+}
+
+mutation AddProductToCategory($input: AddProductToCategoryInput!) {
+	addProductToCategory(input: $input) {
+		id
+	}
+}
+
+mutation RemoveProductFromCategory($input: RemoveProductFromCategoryInput!) {
+	removeProductFromCategory(input: $input) {
+		id
+	}
+}

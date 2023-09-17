@@ -48,4 +48,5 @@ export type StoreStackParamList = {
 	'Edit Store': undefined;
 	Payouts: undefined;
 	Managers: undefined;
+	Categories: undefined;
 };
