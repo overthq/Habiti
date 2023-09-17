@@ -1,3 +1,18 @@
+query Categories {
+	currentStore {
+		id
+		categories {
+			id
+			productId
+			categoryId
+			category {
+				id
+				name
+			}
+		}
+	}
+}
+
 mutation CreateProductCategory($input: CreateCategoryInput!) {
 	createProductCategory(input: $input) {
 		id
