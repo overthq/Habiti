@@ -54,6 +54,10 @@ import StatsTypes from './collections/stats/types';
 import payoutMutations from './collections/payout/mutations';
 import PayoutTypes from './collections/payout/types';
 
+import productCategoryQueries from './collections/product-category/queries';
+import productCategoryMutations from './collections/product-category/mutations';
+import ProductCategoryTypes from './collections/product-category/types';
+
 const Root = `
 	scalar Upload
 
@@ -90,7 +94,9 @@ const resolvers = merge(
 	watchlistProductQueries,
 	watchlistProductMutations,
 	statsQueries,
-	payoutMutations
+	payoutMutations,
+	productCategoryQueries,
+	productCategoryMutations
 );
 
 const schema = makeExecutableSchema({
@@ -109,7 +115,8 @@ const schema = makeExecutableSchema({
 		OrderProductTypes,
 		WatchlistProductTypes,
 		StatsTypes,
-		PayoutTypes
+		PayoutTypes,
+		ProductCategoryTypes
 	],
 	resolvers
 });
