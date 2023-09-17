@@ -185,8 +185,8 @@ model ProductCategory {
 
 model StoreProductCategory {
   id      String @id @default(uuid())
-  name    String
   storeId String
+  name    String
 
   store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
 

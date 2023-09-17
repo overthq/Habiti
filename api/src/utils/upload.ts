@@ -1,5 +1,5 @@
 import cloudinary from 'cloudinary';
-import { ReadStream } from 'fs';
+import { ReadStream } from 'fs-capacitor';
 import { FileUpload } from 'graphql-upload';
 
 // Thank you KeystoneJS and Sourcegraph!
