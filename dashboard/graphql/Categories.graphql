@@ -3,12 +3,7 @@ query Categories {
 		id
 		categories {
 			id
-			productId
-			categoryId
-			category {
-				id
-				name
-			}
+			name
 		}
 	}
 }
@@ -19,8 +14,8 @@ mutation CreateProductCategory($input: CreateCategoryInput!) {
 	}
 }
 
-mutation DeleteProductCategory($input: DeleteCategoryInput!) {
-	deleteProductCategory(input: $input) {
+mutation DeleteProductCategory($categoryId: ID!) {
+	deleteProductCategory(categoryId: $categoryId) {
 		id
 	}
 }

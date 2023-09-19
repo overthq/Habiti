@@ -1,8 +1,33 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { useCategoriesQuery } from '../types/api';
 
 const Categories = () => {
-	return <View style={styles.container}></View>;
+	const [{ data, fetching }] = useCategoriesQuery();
+
+	if (fetching) {
+		return (
+			<View>
+				<ActivityIndicator />
+			</View>
+		);
+	}
+
+	if (!data?.currentStore.categories) {
+		return (
+			<View>
+				<Text>No categories</Text>
+			</View>
+		);
+	}
+
+	return (
+		<View style={styles.container}>
+			{data.currentStore.categories.map(category => (
+				<Text key={category.id}>{category.name}</Text>
+			))}
+		</View>
+	);
 };
 
 const styles = StyleSheet.create({
