@@ -4,6 +4,8 @@ import SettingsStackNavigator from './SettingsStack';
 import AddProduct from '../screens/AddProduct';
 import CustomerInfo from '../screens/CustomerInfo';
 import AddPayout from '../screens/AddPayout';
+import AddCategory from '../screens/AddCategory';
+import AddManager from '../screens/AddManager';
 
 const ModalGroup = (
 	<AppStack.Group screenOptions={{ presentation: 'modal' }}>
@@ -22,6 +24,16 @@ const ModalGroup = (
 			name='AddPayout'
 			component={AddPayout}
 			options={{ headerTitle: 'Add Payout' }}
+		/>
+		<AppStack.Screen
+			name='AddCategory'
+			component={AddCategory}
+			options={{ headerTitle: 'Add Category' }}
+		/>
+		<AppStack.Screen
+			name='AddManager'
+			component={AddManager}
+			options={{ headerTitle: 'Add Manager' }}
 		/>
 	</AppStack.Group>
 );

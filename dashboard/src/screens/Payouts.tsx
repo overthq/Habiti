@@ -35,10 +35,11 @@ const Payouts = () => {
 
 	return (
 		<View style={styles.container}>
-			<Text>Manage previous payouts</Text>
-			<View style={styles.bar}>
+			<Text style={styles.sectionHeader}>Available:</Text>
+			<Text style={styles.available}>{formatNaira(50000)}</Text>
+			{/* <View style={styles.bar}>
 				<View style={[styles.track, { width: '50%' }]} />
-			</View>
+			</View> */}
 			{data.currentStore.payouts.map(payout => (
 				<View key={payout.id}>
 					<Text>{formatNaira(payout.amount)}</Text>
@@ -55,6 +56,15 @@ const styles = StyleSheet.create({
 		backgroundColor: '#FFFFFF',
 		paddingTop: 8,
 		paddingHorizontal: 16
+	},
+	sectionHeader: {
+		fontSize: 16,
+		fontWeight: '500',
+		color: '#505050'
+	},
+	available: {
+		fontSize: 24,
+		fontWeight: 'bold'
 	},
 	button: {
 		marginVertical: 8

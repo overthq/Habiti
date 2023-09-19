@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { useCategoriesQuery } from '../types/api';
+import useGoBack from '../hooks/useGoBack';
 
 const Categories = () => {
 	const [{ data, fetching }] = useCategoriesQuery();
+	useGoBack();
 
 	if (fetching) {
 		return (

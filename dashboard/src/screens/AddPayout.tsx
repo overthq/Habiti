@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import useGoBack from '../hooks/useGoBack';
 import Button from '../components/global/Button';
 import Input from '../components/global/Input';
@@ -14,7 +14,6 @@ const AddPayout: React.FC = () => {
 
 	return (
 		<View style={styles.container}>
-			<Text>Add Payout</Text>
 			<Input
 				value={amount}
 				onChangeText={setAmount}

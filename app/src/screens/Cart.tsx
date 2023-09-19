@@ -16,6 +16,9 @@ import useStore from '../state';
 import useGoBack from '../hooks/useGoBack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+// Maintain a list of recently viewed stores and items.
+// So that we can use them in the empty state for this screen.
+
 const Cart: React.FC = () => {
 	const {
 		params: { cartId }

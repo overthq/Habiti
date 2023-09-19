@@ -10,6 +10,8 @@ export type AppStackParamList = {
 	Settings: undefined;
 	CustomerInfo: { userId: string };
 	AddPayout: undefined;
+	AddCategory: undefined;
+	AddManager: undefined;
 };
 
 export type MainTabParamList = {
