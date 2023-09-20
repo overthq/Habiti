@@ -1,11 +1,41 @@
 import React from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import {
+	View,
+	Text,
+	StyleSheet,
+	ActivityIndicator,
+	Pressable
+} from 'react-native';
 import { useCategoriesQuery } from '../types/api';
 import useGoBack from '../hooks/useGoBack';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { Icon } from '../components/Icon';
+import { AppStackParamList } from '../types/navigation';
 
 const Categories = () => {
 	const [{ data, fetching }] = useCategoriesQuery();
-	useGoBack();
+	const { navigate, setOptions } =
+		useNavigation<NavigationProp<AppStackParamList>>();
+
+	// useGoBack();
+
+	React.useLayoutEffect(() => {
+		setOptions({
+			headerRight: () => {
+				<View
+					style={{
+						flexDirection: 'row',
+						alignItems: 'center',
+						marginRight: 16
+					}}
+				>
+					<Pressable onPress={() => navigate('AddCategory')}>
+						<Icon name='plus' />
+					</Pressable>
+				</View>;
+			}
+		});
+	}, []);
 
 	if (fetching) {
 		return (
