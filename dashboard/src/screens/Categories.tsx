@@ -17,7 +17,7 @@ const Categories = () => {
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 
-	// useGoBack();
+	useGoBack();
 
 	React.useLayoutEffect(() => {
 		setOptions({
