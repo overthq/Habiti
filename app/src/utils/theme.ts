@@ -7,7 +7,7 @@ export enum ThemeMap {
 }
 
 export const getStatusBarStyle = (theme: PreferencesSlice['theme']) => {
-	return { light: 'dark', dark: 'light', auto: 'light' }[theme];
+	return ({ light: 'dark', dark: 'light', auto: 'light' } as const)[theme];
 };
 
 export const spacing = {
@@ -59,5 +59,18 @@ export const light = {
 		secondary: '',
 		tertiary: ''
 	},
-	button: {}
+	button: {
+		primary: {
+			background: '',
+			text: ''
+		},
+		secondary: {
+			background: '',
+			text: ''
+		},
+		tertiary: {
+			background: '',
+			text: ''
+		}
+	}
 };
