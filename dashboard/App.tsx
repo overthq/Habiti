@@ -4,10 +4,13 @@ import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import Routes from './src/navigation/Routes';
+import { ThemeProvider } from './src/contexts/ThemeContext';
 
 const App: React.FC = () => (
 	<SafeAreaProvider>
-		<Routes />
+		<ThemeProvider>
+			<Routes />
+		</ThemeProvider>
 	</SafeAreaProvider>
 );
 

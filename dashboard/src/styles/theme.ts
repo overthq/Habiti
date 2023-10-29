@@ -55,8 +55,8 @@ const dark = {
 	},
 	button: {
 		primary: {
-			background: '#FFFFFF',
-			text: '#000000'
+			background: palette.neutral.n1,
+			text: palette.neutral.n100
 		},
 		secondary: {
 			background: '',
@@ -81,8 +81,8 @@ const light = {
 	},
 	button: {
 		primary: {
-			background: '#000000',
-			text: '#FFFFFF'
+			background: palette.neutral.n100,
+			text: palette.neutral.n1
 		},
 		secondary: {
 			background: '',
@@ -98,5 +98,7 @@ const light = {
 	},
 	input: {}
 } as const;
+
+export type ThemeObject = typeof light;
 
 export const themes = { light, dark };
