@@ -44,7 +44,10 @@ const palette = {
 	}
 };
 
-export const dark = {
+// TODO: Move palette, typography, spacing to separate files
+// Set up a file for individual theme items like buttons, text etc.
+
+const dark = {
 	text: {
 		primary: palette.neutral.n1,
 		secondary: '',
@@ -52,8 +55,8 @@ export const dark = {
 	},
 	button: {
 		primary: {
-			background: '',
-			text: ''
+			background: '#FFFFFF',
+			text: '#000000'
 		},
 		secondary: {
 			background: '',
@@ -63,10 +66,14 @@ export const dark = {
 			background: '',
 			text: ''
 		}
-	}
-};
+	},
+	screen: {
+		background: palette.neutral.n100
+	},
+	input: {}
+} as const;
 
-export const light = {
+const light = {
 	text: {
 		primary: palette.neutral.n100,
 		secondary: '',
@@ -74,8 +81,8 @@ export const light = {
 	},
 	button: {
 		primary: {
-			background: '',
-			text: ''
+			background: '#000000',
+			text: '#FFFFFF'
 		},
 		secondary: {
 			background: '',
@@ -85,5 +92,11 @@ export const light = {
 			background: '',
 			text: ''
 		}
-	}
-};
+	},
+	screen: {
+		background: palette.neutral.n1
+	},
+	input: {}
+} as const;
+
+export const themes = { light, dark };

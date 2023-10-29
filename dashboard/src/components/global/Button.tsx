@@ -7,24 +7,10 @@ import {
 	ViewStyle,
 	PressableProps
 } from 'react-native';
-
-const variants = {
-	primary: {
-		background: '#000000',
-		text: '#FFFFFF'
-	},
-	secondary: {
-		background: '#D3D3D3',
-		text: '#505050'
-	},
-	tertiary: {
-		background: '#505050',
-		text: '#D3D3D3'
-	}
-} as const;
+import useTheme from '../../hooks/useTheme';
 
 interface ButtonProps extends PressableProps {
-	variant?: keyof typeof variants;
+	variant?: 'primary' | 'secondary' | 'tertiary';
 	text: string;
 	loading?: boolean;
 	style?: ViewStyle;
@@ -38,26 +24,30 @@ const Button: React.FC<ButtonProps> = ({
 	style,
 	variant = 'primary',
 	...props
-}) => (
-	<Pressable
-		style={[
-			styles.container,
-			{ backgroundColor: variants[variant].background },
-			style
-		]}
-		onPress={onPress}
-		disabled={loading || props.disabled}
-		{...props}
-	>
-		{loading ? (
-			<ActivityIndicator />
-		) : (
-			<Text style={[styles.text, { color: variants[variant].text }]}>
-				{text}
-			</Text>
-		)}
-	</Pressable>
-);
+}) => {
+	const theme = useTheme();
+
+	return (
+		<Pressable
+			style={[
+				styles.container,
+				{ backgroundColor: theme.button[variant].background },
+				style
+			]}
+			onPress={onPress}
+			disabled={loading || props.disabled}
+			{...props}
+		>
+			{loading ? (
+				<ActivityIndicator />
+			) : (
+				<Text style={[styles.text, { color: theme.button[variant].text }]}>
+					{text}
+				</Text>
+			)}
+		</Pressable>
+	);
+};
 
 const styles = StyleSheet.create({
 	container: {

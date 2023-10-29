@@ -8,6 +8,7 @@ import useStore from '../state';
 import { useStoreQuery } from '../types/api';
 import type { SettingsStackParamList } from '../types/navigation';
 import useGoBack from '../hooks/useGoBack';
+import { capitalize } from '../utils/strings';
 
 const Settings: React.FC = () => {
 	const { theme, logOut } = useStore(state => ({
@@ -39,7 +40,7 @@ const Settings: React.FC = () => {
 			<SettingRow
 				name='Theme'
 				onPress={handleSettingsNavigate('SettingsTheme')}
-				displayValue={theme === 'light' ? 'Light' : 'Dark'}
+				displayValue={capitalize(theme)}
 			/>
 			<View style={styles.buttonContainer}>
 				<Button text='Log Out' onPress={logOut} />

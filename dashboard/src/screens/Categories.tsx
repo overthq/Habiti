@@ -21,7 +21,7 @@ const Categories = () => {
 
 	React.useLayoutEffect(() => {
 		setOptions({
-			headerRight: () => {
+			headerRight: () => (
 				<View
 					style={{
 						flexDirection: 'row',
@@ -32,8 +32,8 @@ const Categories = () => {
 					<Pressable onPress={() => navigate('AddCategory')}>
 						<Icon name='plus' />
 					</Pressable>
-				</View>;
-			}
+				</View>
+			)
 		});
 	}, []);
 

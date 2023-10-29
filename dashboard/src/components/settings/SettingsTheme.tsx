@@ -6,7 +6,7 @@ import useGoBack from '../../hooks/useGoBack';
 
 type Theme = 'light' | 'dark' | 'auto';
 
-const themes: Theme[] = ['light', 'dark'];
+const themes: Theme[] = ['light', 'dark', 'auto'];
 
 const SettingsTheme = () => {
 	const { theme, setPreference } = useStore(state => ({
