@@ -25,7 +25,7 @@ const Button: React.FC<ButtonProps> = ({
 	variant = 'primary',
 	...props
 }) => {
-	const theme = useTheme();
+	const { theme } = useTheme();
 
 	return (
 		<Pressable

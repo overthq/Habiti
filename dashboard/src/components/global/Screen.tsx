@@ -8,7 +8,7 @@ interface ScreenProps extends ViewProps {
 }
 
 const Screen: React.FC<ScreenProps> = props => {
-	const theme = useTheme();
+	const { theme } = useTheme();
 
 	return (
 		<View

@@ -8,7 +8,7 @@ interface ScrollableScreenProps extends ScrollViewProps {
 }
 
 const ScrollableScreen: React.FC<ScrollableScreenProps> = props => {
-	const theme = useTheme();
+	const { theme } = useTheme();
 
 	return (
 		<ScrollView

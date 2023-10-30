@@ -3,7 +3,12 @@ import { useColorScheme } from 'react-native';
 import useStore from '../state';
 import { ThemeObject, themes } from '../styles/theme';
 
-export const ThemeContext = React.createContext<ThemeObject | null>(null);
+interface ThemeContextValue {
+	name: 'light' | 'dark';
+	theme: ThemeObject;
+}
+
+export const ThemeContext = React.createContext<ThemeContextValue | null>(null);
 
 interface ThemeProviderProps {
 	children: React.ReactNode;
@@ -17,13 +22,12 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 		return theme === 'auto' ? autoTheme ?? 'light' : theme;
 	}, [theme, autoTheme]);
 
-	const themeObject = React.useMemo(() => {
-		return themes[parsed];
-	}, [parsed]);
+	const context = React.useMemo(
+		() => ({ name: parsed, theme: themes[parsed] }),
+		[parsed]
+	);
 
 	return (
-		<ThemeContext.Provider value={themeObject}>
-			{children}
-		</ThemeContext.Provider>
+		<ThemeContext.Provider value={context}>{children}</ThemeContext.Provider>
 	);
 };

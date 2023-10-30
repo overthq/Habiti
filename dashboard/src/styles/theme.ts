@@ -70,7 +70,10 @@ const dark = {
 	screen: {
 		background: palette.neutral.n100
 	},
-	input: {}
+	input: {},
+	icon: {
+		default: { color: palette.neutral.n1 }
+	}
 } as const;
 
 const light = {
@@ -96,7 +99,10 @@ const light = {
 	screen: {
 		background: palette.neutral.n1
 	},
-	input: {}
+	input: {},
+	icon: {
+		default: { color: palette.neutral.n100 }
+	}
 } as const;
 
 export type ThemeObject = typeof light;
