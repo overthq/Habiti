@@ -1,10 +1,11 @@
 import React from 'react';
-import { ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { TouchableOpacity, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Icon } from '../components/Icon';
 import { AppStackParamList } from '../types/navigation';
 import ManagePayouts from '../components/overview/ManagePayouts';
 import LowStockProducts from '../components/overview/LowStockProducts';
+import ScrollableScreen from '../components/global/ScrollableScreen';
 
 // Overview
 // - Available (unpaid) revenue
@@ -33,18 +34,14 @@ const Overview: React.FC = () => {
 	}, []);
 
 	return (
-		<ScrollView style={styles.container}>
+		<ScrollableScreen>
 			<ManagePayouts />
 			<LowStockProducts />
-		</ScrollView>
+		</ScrollableScreen>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#FFFFFF'
-	},
 	settings: {
 		marginRight: 16
 	},
