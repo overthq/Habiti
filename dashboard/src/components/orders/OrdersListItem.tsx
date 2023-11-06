@@ -3,6 +3,7 @@ import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { OrdersQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
 import { parseTimestamp } from '../../utils/date';
+import Typography from '../global/Typography';
 
 interface OrdersListItemProps {
 	order: OrdersQuery['currentStore']['orders'][number];
@@ -19,7 +20,7 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
 	return (
 		<Pressable onPress={onPress} style={styles.container}>
 			<View>
-				<Text style={styles.name}>{order.user.name}</Text>
+				<Typography style={styles.name}>{order.user.name}</Typography>
 				<Text style={styles.date}>
 					{order.status} · {parseTimestamp(order.createdAt)}
 				</Text>
@@ -38,7 +39,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		backgroundColor: '#FFFFFF',
 		borderBottomWidth: 0.5,
 		borderBottomColor: '#EDEDED'
 	},

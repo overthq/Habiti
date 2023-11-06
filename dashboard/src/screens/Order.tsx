@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 
 import OrderProducts from '../components/order/OrderProducts';
@@ -12,6 +12,7 @@ import useGoBack from '../hooks/useGoBack';
 
 import { useOrderQuery } from '../types/api';
 import { OrdersStackParamList } from '../types/navigation';
+import ScrollableScreen from '../components/global/ScrollableScreen';
 
 const Order: React.FC = () => {
 	const {
@@ -21,25 +22,18 @@ const Order: React.FC = () => {
 	useGoBack();
 
 	if (fetching || !data?.order) {
-		return <View style={styles.container} />;
+		return <View />;
 	}
 
 	return (
-		<ScrollView style={styles.container}>
+		<ScrollableScreen>
 			<OrderOverview order={data.order} />
 			<CustomerDetails user={data.order.user} />
 			<OrderProducts products={data.order.products} />
 			<OrderActions orderId={data.order.id} status={data.order.status} />
 			<PaymentInfo order={data.order} />
-		</ScrollView>
+		</ScrollableScreen>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#FFFFFF'
-	}
-});
 
 export default Order;

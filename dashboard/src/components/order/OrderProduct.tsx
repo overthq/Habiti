@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
+import { View, Image, Pressable, StyleSheet } from 'react-native';
 import { OrderQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
 import { plural } from '../../utils/strings';
+import Typography from '../global/Typography';
 
 interface OrderProductProps {
 	orderProduct: OrderQuery['order']['products'][number];
@@ -18,10 +19,10 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 			<Image source={{ uri: product.images[0]?.path }} style={styles.image} />
 		</View>
 		<View>
-			<Text style={styles.name}>{product.name}</Text>
-			<Text style={styles.price}>
+			<Typography style={styles.name}>{product.name}</Typography>
+			<Typography style={styles.price}>
 				{plural('unit', quantity)} · {formatNaira(quantity * unitPrice)}
-			</Text>
+			</Typography>
 		</View>
 	</Pressable>
 );

@@ -44,7 +44,6 @@ const OrderProducts: React.FC<OrderProductsProps> = ({ products }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: '#FFFFFF',
 		paddingVertical: 12
 	},
 	content: {
