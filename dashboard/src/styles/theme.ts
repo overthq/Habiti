@@ -37,6 +37,8 @@ export const typography = {
 const palette = {
 	neutral: {
 		n1: '#FFFFFF',
+		n5: '#EDEDED',
+		n50: '#505050',
 		n100: '#000000'
 	},
 	green: {
@@ -73,6 +75,9 @@ const dark = {
 	input: {},
 	icon: {
 		default: { color: palette.neutral.n1 }
+	},
+	border: {
+		color: palette.neutral.n50
 	}
 } as const;
 
@@ -102,6 +107,9 @@ const light = {
 	input: {},
 	icon: {
 		default: { color: palette.neutral.n100 }
+	},
+	border: {
+		color: palette.neutral.n5
 	}
 } as const;
 
