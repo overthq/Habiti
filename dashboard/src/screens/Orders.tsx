@@ -5,6 +5,7 @@ import OrdersFilter from '../components/orders/OrdersFilter';
 import OrdersListItem from '../components/orders/OrdersListItem';
 import { OrdersQuery, useOrdersQuery } from '../types/api';
 import { OrdersStackParamList } from '../types/navigation';
+import Screen from '../components/global/Screen';
 
 // Ultimately, we should consider making this a SectionList
 // or advanced FlatList, that can separate records based on dates.
@@ -29,7 +30,7 @@ const Orders: React.FC = () => {
 	}, []);
 
 	return (
-		<View style={styles.container}>
+		<Screen>
 			<OrdersFilter />
 			<View style={{ flex: 1 }}>
 				<FlatList
@@ -46,15 +47,11 @@ const Orders: React.FC = () => {
 					}
 				/>
 			</View>
-		</View>
+		</Screen>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#FFFFFF'
-	},
 	empty: {
 		paddingTop: 32,
 		flex: 1,

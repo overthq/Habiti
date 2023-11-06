@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Image, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Image, Pressable, StyleSheet } from 'react-native';
 import { Icon } from '../Icon';
 import { ProductsQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
+import Typography from '../global/Typography';
 
 interface ProductsListItemProps {
 	product: ProductsQuery['currentStore']['products'][number];
@@ -19,8 +20,10 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
 				<Image style={styles.image} source={{ uri: product.images[0]?.path }} />
 			</View>
 			<View>
-				<Text style={styles.name}>{product.name}</Text>
-				<Text style={styles.price}>{formatNaira(product.unitPrice)}</Text>
+				<Typography style={styles.name}>{product.name}</Typography>
+				<Typography style={styles.price}>
+					{formatNaira(product.unitPrice)}
+				</Typography>
 			</View>
 		</View>
 		<Icon name='chevron-right' />

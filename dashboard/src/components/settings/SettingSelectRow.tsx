@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Pressable, StyleSheet } from 'react-native';
 import { Icon } from '../Icon';
+import useTheme from '../../hooks/useTheme';
+import Typography from '../global/Typography';
 
 interface SettingSelectRowProps {
 	name: string;
@@ -13,9 +15,14 @@ const SettingSelectRow: React.FC<SettingSelectRowProps> = ({
 	isSelected,
 	onSelectRow
 }) => {
+	const { theme } = useTheme();
+
 	return (
-		<Pressable style={styles.row} onPress={onSelectRow}>
-			<Text style={{ fontSize: 16 }}>{name}</Text>
+		<Pressable
+			style={[styles.row, { borderBottomColor: theme.border.color }]}
+			onPress={onSelectRow}
+		>
+			<Typography style={{ fontSize: 16 }}>{name}</Typography>
 			<View>{isSelected && <Icon name='check' size={22} />}</View>
 		</Pressable>
 	);
@@ -28,9 +35,8 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		paddingVertical: 12,
 		paddingHorizontal: 16,
-		backgroundColor: '#FFFFFF',
+		backgroundColor: 'transparent',
 		borderBottomWidth: 1,
-		borderBottomColor: '#E5E5E5',
 		height: 44
 	}
 });

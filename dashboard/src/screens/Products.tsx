@@ -5,6 +5,7 @@ import ProductsFilter from '../components/products/ProductsFilter';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Icon } from '../components/Icon';
 import { AppStackParamList } from '../types/navigation';
+import Screen from '../components/global/Screen';
 
 const Products: React.FC = () => {
 	const { navigate, setOptions } =
@@ -30,12 +31,12 @@ const Products: React.FC = () => {
 	}, []);
 
 	return (
-		<View style={styles.container}>
+		<Screen>
 			<ProductsFilter />
 			<View style={{ flex: 1 }}>
 				<ProductList mode='list' />
 			</View>
-		</View>
+		</Screen>
 	);
 };
 

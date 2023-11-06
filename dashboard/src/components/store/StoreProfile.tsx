@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { StoreQuery } from '../../types/api';
+import Typography from '../global/Typography';
 
 interface StoreProfileProps {
 	store: StoreQuery['currentStore'];
@@ -10,9 +11,9 @@ const StoreProfile: React.FC<StoreProfileProps> = ({ store }) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.avatar}>
-				<Text style={styles.avatarText}>{store.name[0]}</Text>
+				<Typography style={styles.avatarText}>{store.name[0]}</Typography>
 			</View>
-			<Text style={styles.name}>{store.name}</Text>
+			<Typography style={styles.name}>{store.name}</Typography>
 		</View>
 	);
 };
