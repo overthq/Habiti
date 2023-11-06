@@ -72,12 +72,17 @@ const dark = {
 	screen: {
 		background: palette.neutral.n100
 	},
-	input: {},
+	input: {
+		placeholder: ''
+	},
 	icon: {
 		default: { color: palette.neutral.n1 }
 	},
 	border: {
 		color: palette.neutral.n50
+	},
+	image: {
+		placeholder: ''
 	}
 } as const;
 
@@ -104,12 +109,17 @@ const light = {
 	screen: {
 		background: palette.neutral.n1
 	},
-	input: {},
+	input: {
+		placeholder: ''
+	},
 	icon: {
 		default: { color: palette.neutral.n100 }
 	},
 	border: {
 		color: palette.neutral.n5
+	},
+	image: {
+		placeholder: ''
 	}
 } as const;
 
