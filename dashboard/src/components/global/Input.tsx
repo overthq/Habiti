@@ -6,6 +6,7 @@ import {
 	TextInputProps,
 	StyleSheet
 } from 'react-native';
+import useTheme from '../../hooks/useTheme';
 
 export interface InputProps extends TextInputProps {
 	label?: string;
@@ -13,6 +14,8 @@ export interface InputProps extends TextInputProps {
 }
 
 const Input: React.FC<InputProps> = ({ label, textArea, ...props }) => {
+	const { theme } = useTheme();
+
 	const style = React.useMemo(() => {
 		if (textArea) {
 			return [styles.input, styles.textArea, props.style];
