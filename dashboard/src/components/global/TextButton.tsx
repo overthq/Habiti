@@ -1,5 +1,6 @@
 import React from 'react';
 import { Pressable, PressableProps, Text } from 'react-native';
+import useTheme from '../../hooks/useTheme';
 
 interface TextButtonProps extends PressableProps {
 	children: React.ReactNode;
@@ -12,11 +13,16 @@ const TextButton: React.FC<TextButtonProps> = ({
 	size,
 	...props
 }) => {
+	const { theme } = useTheme();
+
 	return (
 		<Pressable disabled={disabled} {...props}>
 			<Text
 				style={[
-					{ color: disabled ? '#777777' : '#000000', fontSize: size ?? 17 }
+					{
+						color: disabled ? '#777777' : theme.text.primary,
+						fontSize: size ?? 17
+					}
 				]}
 			>
 				{children}

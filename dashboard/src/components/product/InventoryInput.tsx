@@ -49,8 +49,7 @@ const styles = StyleSheet.create({
 	container: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		padding: 16,
-		backgroundColor: '#FFFFFF'
+		padding: 16
 	},
 	title: {
 		fontSize: 16,

@@ -43,8 +43,7 @@ const Section: React.FC<SectionProps> = ({
 const styles = StyleSheet.create({
 	section: {
 		paddingVertical: 8,
-		paddingHorizontal: 16,
-		backgroundColor: '#FFFFFF'
+		paddingHorizontal: 16
 	},
 	title: {
 		marginBottom: 2,

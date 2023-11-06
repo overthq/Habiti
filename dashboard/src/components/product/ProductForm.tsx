@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 import Section from './Section';
 import Images from './Images';
@@ -7,6 +7,7 @@ import InventoryInput from './InventoryInput';
 
 import { formatNaira } from '../../utils/currency';
 import { ProductQuery } from '../../types/api';
+import ScrollableScreen from '../global/ScrollableScreen';
 
 interface ProductFormProps {
 	images?: ProductQuery['product']['images'];
@@ -20,7 +21,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 	setImagesToUpload
 }) => {
 	return (
-		<ScrollView
+		<ScrollableScreen
 			style={styles.container}
 			keyboardDismissMode={Platform.select({
 				ios: 'interactive',
@@ -45,15 +46,13 @@ const ProductForm: React.FC<ProductFormProps> = ({
 				setImagesToUpload={setImagesToUpload}
 			/>
 			<InventoryInput />
-		</ScrollView>
+		</ScrollableScreen>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		paddingTop: 8,
-		backgroundColor: '#FFFFFF'
+		paddingTop: 8
 	},
 	heading: {
 		marginVertical: 16,

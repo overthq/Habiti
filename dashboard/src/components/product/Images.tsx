@@ -49,8 +49,7 @@ const Images: React.FC<ImagesProps> = ({
 const styles = StyleSheet.create({
 	section: {
 		paddingVertical: 8,
-		paddingHorizontal: 16,
-		backgroundColor: '#FFFFFF'
+		paddingHorizontal: 16
 	},
 	title: {
 		marginBottom: 8,
