@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import FormInput from '../global/FormInput';
 import { StoreQuery, useEditStoreMutation } from '../../types/api';
 import TextButton from '../global/TextButton';
+import Screen from '../global/Screen';
 
 interface EditStoreFormData {
 	name: string;
@@ -62,7 +63,7 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 	}, []);
 
 	return (
-		<View style={styles.container}>
+		<Screen style={styles.container}>
 			<FormInput
 				name='name'
 				label='Name'
@@ -106,16 +107,14 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 				autoCapitalize='none'
 				control={formMethods.control}
 			/>
-		</View>
+		</Screen>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
 		paddingTop: 16,
-		paddingHorizontal: 16,
-		backgroundColor: '#FFFFFF'
+		paddingHorizontal: 16
 	},
 	loading: {
 		flex: 1,

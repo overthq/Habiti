@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { ManagersQuery } from '../../types/api';
+import Typography from '../global/Typography';
 
 interface ManagerRowProps {
 	manager: ManagersQuery['currentStore']['managers'][number]['manager'];
@@ -10,7 +11,7 @@ interface ManagerRowProps {
 const ManagerRow: React.FC<ManagerRowProps> = ({ manager, you }) => {
 	return (
 		<View style={styles.container}>
-			<Text style={styles.name}>{manager.name}</Text>
+			<Typography style={styles.name}>{manager.name}</Typography>
 			{you && (
 				<View style={styles.you}>
 					<Text style={styles.youText}>You</Text>

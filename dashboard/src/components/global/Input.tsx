@@ -16,11 +16,19 @@ export interface InputProps extends TextInputProps {
 const Input: React.FC<InputProps> = ({ label, textArea, ...props }) => {
 	const { theme } = useTheme();
 
+	const inputColors = React.useMemo(
+		() => ({
+			backgroundColor: theme.input.background,
+			color: theme.input.text
+		}),
+		[theme.input.background, theme.input.text]
+	);
+
 	const style = React.useMemo(() => {
 		if (textArea) {
-			return [styles.input, styles.textArea, props.style];
+			return [inputColors, styles.input, styles.textArea, props.style];
 		} else {
-			return [styles.input, props.style];
+			return [inputColors, styles.input, props.style];
 		}
 	}, [textArea, props.style]);
 
@@ -49,9 +57,7 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		paddingLeft: 8,
 		height: 40,
-		borderRadius: 4,
-		backgroundColor: '#EDEDED',
-		color: '#505050'
+		borderRadius: 4
 	},
 	textArea: {
 		paddingTop: 8,

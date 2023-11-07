@@ -1,7 +1,7 @@
 import Constants from 'expo-constants';
 
 const localhostString = (port: string) =>
-	`http://${Constants.manifest?.debuggerHost
+	`http://${Constants.manifest?.extra?.expoGo?.debuggerHost
 		?.split(':')
 		.shift()
 		?.concat(`:${port}`)}`;

@@ -38,6 +38,7 @@ const palette = {
 	neutral: {
 		n1: '#FFFFFF',
 		n5: '#EDEDED',
+		n10: '#D3D3D3',
 		n50: '#505050',
 		n100: '#000000'
 	},
@@ -73,7 +74,10 @@ const dark = {
 		background: palette.neutral.n100
 	},
 	input: {
-		placeholder: ''
+		placeholder: '',
+		label: '',
+		background: palette.neutral.n50,
+		text: palette.neutral.n1
 	},
 	icon: {
 		default: { color: palette.neutral.n1 }
@@ -82,7 +86,7 @@ const dark = {
 		color: palette.neutral.n50
 	},
 	image: {
-		placeholder: ''
+		placeholder: palette.neutral.n50
 	}
 } as const;
 
@@ -110,7 +114,10 @@ const light = {
 		background: palette.neutral.n1
 	},
 	input: {
-		placeholder: ''
+		placeholder: '',
+		label: '',
+		background: palette.neutral.n5,
+		text: palette.neutral.n50
 	},
 	icon: {
 		default: { color: palette.neutral.n100 }
@@ -119,7 +126,7 @@ const light = {
 		color: palette.neutral.n5
 	},
 	image: {
-		placeholder: ''
+		placeholder: palette.neutral.n10
 	}
 } as const;
 

@@ -6,6 +6,8 @@ import { useStorePayoutsQuery } from '../types/api';
 import { formatNaira } from '../utils/currency';
 import { Icon } from '../components/Icon';
 import { AppStackParamList } from '../types/navigation';
+import Screen from '../components/global/Screen';
+import Typography from '../components/global/Typography';
 
 const Payouts = () => {
 	const [{ data, fetching }] = useStorePayoutsQuery();
@@ -13,9 +15,9 @@ const Payouts = () => {
 		useNavigation<NavigationProp<AppStackParamList>>();
 	useGoBack();
 
-	const handleNewPayout = () => {
+	const handleNewPayout = React.useCallback(() => {
 		navigate('AddPayout');
-	};
+	}, []);
 
 	React.useLayoutEffect(() => {
 		setOptions({
@@ -34,9 +36,9 @@ const Payouts = () => {
 	}
 
 	return (
-		<View style={styles.container}>
+		<Screen style={styles.container}>
 			<Text style={styles.sectionHeader}>Available:</Text>
-			<Text style={styles.available}>{formatNaira(50000)}</Text>
+			<Typography style={styles.available}>{formatNaira(50000)}</Typography>
 			{/* <View style={styles.bar}>
 				<View style={[styles.track, { width: '50%' }]} />
 			</View> */}
@@ -46,14 +48,12 @@ const Payouts = () => {
 					<Text>{payout.createdAt}</Text>
 				</View>
 			))}
-		</View>
+		</Screen>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		backgroundColor: '#FFFFFF',
 		paddingTop: 8,
 		paddingHorizontal: 16
 	},

@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Image, Pressable, StyleSheet } from 'react-native';
+import { View, Pressable, StyleSheet } from 'react-native';
 import { Icon } from '../Icon';
 import { ProductsQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
 import Typography from '../global/Typography';
+import CustomImage from '../global/CustomImage';
 
 interface ProductsListItemProps {
 	product: ProductsQuery['currentStore']['products'][number];
@@ -16,9 +17,11 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
 }) => (
 	<Pressable onPress={onPress} style={styles.container}>
 		<View style={styles.left}>
-			<View style={styles.placeholder}>
-				<Image style={styles.image} source={{ uri: product.images[0]?.path }} />
-			</View>
+			<CustomImage
+				uri={product.images[0]?.path}
+				style={styles.image}
+				size={48}
+			/>
 			<View>
 				<Typography style={styles.name}>{product.name}</Typography>
 				<Typography style={styles.price}>
@@ -52,17 +55,8 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center'
 	},
-	placeholder: {
-		overflow: 'hidden',
-		height: 48,
-		width: 48,
-		borderRadius: 4,
-		backgroundColor: '#D3D3D3',
-		marginRight: 12
-	},
 	image: {
-		height: '100%',
-		width: '100%'
+		marginRight: 12
 	}
 });
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { OrderStatus } from '../../types/api';
 import { Icon } from '../Icon';
+import useTheme from '../../hooks/useTheme';
 
 interface FilterButtonProps {
 	text: string;
@@ -14,9 +15,16 @@ export const FilterButton: React.FC<FilterButtonProps> = ({
 	onPress,
 	active
 }) => {
+	const { theme } = useTheme();
+
 	return (
 		<Pressable style={styles.button} onPress={onPress}>
-			<Text style={[styles.text, { color: active ? '#000000' : '#777777' }]}>
+			<Text
+				style={[
+					styles.text,
+					{ color: active ? theme.text.primary : '#777777' }
+				]}
+			>
 				{text}
 			</Text>
 		</Pressable>

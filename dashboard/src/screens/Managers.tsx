@@ -4,6 +4,7 @@ import ManagerRow from '../components/managers/ManagerRow';
 import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useManagersQuery } from '../types/api';
+import Screen from '../components/global/Screen';
 
 const Managers = () => {
 	const [{ data, fetching }] = useManagersQuery();
@@ -15,24 +16,22 @@ const Managers = () => {
 	}
 
 	return (
-		<View style={styles.container}>
+		<Screen style={styles.container}>
 			<View style={styles.managers}>
 				{data.currentStore.managers.map(({ id, manager }) => (
 					<ManagerRow key={id} manager={manager} you={userId === manager.id} />
 				))}
 			</View>
-		</View>
+		</Screen>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
 		paddingTop: 16,
 		paddingHorizontal: 16
 	},
 	managers: {
-		backgroundColor: '#FFFFFF',
 		borderRadius: 4
 	}
 });

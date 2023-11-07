@@ -1,17 +1,11 @@
 import React from 'react';
-import {
-	View,
-	Text,
-	Image,
-	FlatList,
-	StyleSheet,
-	Pressable
-} from 'react-native';
+import { View, Text, FlatList, StyleSheet, Pressable } from 'react-native';
 import TextButton from '../global/TextButton';
 import { ProductsQuery, useProductsQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { HomeStackParamList, MainTabParamList } from '../../types/navigation';
+import CustomImage from '../global/CustomImage';
 
 interface LowStockProductProps {
 	onPress(): void;
@@ -24,9 +18,7 @@ const LowStockProduct: React.FC<LowStockProductProps> = ({
 }) => {
 	return (
 		<Pressable onPress={onPress} style={{ marginRight: 8, width: 160 }}>
-			<View style={styles.placeholder}>
-				<Image source={{ uri: product.images[0]?.path }} style={styles.image} />
-			</View>
+			<CustomImage uri={product.images[0]?.path} size={160} />
 			<Text style={styles.name} numberOfLines={1}>
 				{product.name}
 			</Text>

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import type { TextInputProps } from 'react-native';
 import { Controller, useFormContext } from 'react-hook-form';
+import useTheme from '../../hooks/useTheme';
 
 interface SectionProps {
 	title: string;
@@ -17,6 +18,7 @@ const Section: React.FC<SectionProps> = ({
 	inputProps
 }) => {
 	const { control } = useFormContext();
+	const { theme } = useTheme();
 
 	return (
 		<View style={styles.section}>
@@ -29,7 +31,7 @@ const Section: React.FC<SectionProps> = ({
 						value={value}
 						onChangeText={onChange}
 						onBlur={onBlur}
-						style={styles.input}
+						style={[styles.input, { color: theme.text.primary }]}
 						placeholder={placeholder}
 						placeholderTextColor='#777777'
 						{...inputProps}
