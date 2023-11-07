@@ -1,16 +1,11 @@
 import React from 'react';
-import {
-	View,
-	Text,
-	StyleSheet,
-	ActivityIndicator,
-	Pressable
-} from 'react-native';
+import { View, Text, ActivityIndicator, Pressable } from 'react-native';
 import { useCategoriesQuery } from '../types/api';
 import useGoBack from '../hooks/useGoBack';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Icon } from '../components/Icon';
 import { AppStackParamList } from '../types/navigation';
+import Screen from '../components/global/Screen';
 
 const Categories = () => {
 	const [{ data, fetching }] = useCategoriesQuery();
@@ -54,19 +49,12 @@ const Categories = () => {
 	}
 
 	return (
-		<View style={styles.container}>
+		<Screen>
 			{data.currentStore.categories.map(category => (
 				<Text key={category.id}>{category.name}</Text>
 			))}
-		</View>
+		</Screen>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#FFFFFF'
-	}
-});
 
 export default Categories;
