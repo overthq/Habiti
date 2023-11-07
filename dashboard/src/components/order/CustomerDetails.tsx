@@ -17,7 +17,7 @@ const CustomerDetails: React.FC<CustomerDetailProps> = ({ user }) => {
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}>Customer</Text>
+			<Text style={styles.title}>Customer Details</Text>
 			<Pressable onPress={handlePress}>
 				<Text style={styles.name}>{user.name}</Text>
 			</Pressable>

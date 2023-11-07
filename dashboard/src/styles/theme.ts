@@ -22,7 +22,8 @@ export const typography = {
 		small: 12,
 		regular: 14,
 		medium: 16,
-		large: 18
+		large: 18,
+		xlarge: 20
 	},
 	weight: {
 		regular: {},
@@ -54,7 +55,9 @@ const dark = {
 	text: {
 		primary: palette.neutral.n1,
 		secondary: '',
-		tertiary: ''
+		tertiary: '',
+		disabled: '',
+		error: ''
 	},
 	button: {
 		primary: {
@@ -94,7 +97,9 @@ const light = {
 	text: {
 		primary: palette.neutral.n100,
 		secondary: '',
-		tertiary: ''
+		tertiary: '',
+		disabled: '',
+		error: ''
 	},
 	button: {
 		primary: {
