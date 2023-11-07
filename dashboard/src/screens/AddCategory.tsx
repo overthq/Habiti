@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import Button from '../components/global/Button';
 import { useCreateProductCategoryMutation } from '../types/api';
 import useGoBack from '../hooks/useGoBack';
 import Input from '../components/global/Input';
+import Screen from '../components/global/Screen';
 
 const AddCategory = () => {
 	const [, addCategory] = useCreateProductCategoryMutation();
@@ -15,7 +16,7 @@ const AddCategory = () => {
 	}, []);
 
 	return (
-		<View style={styles.container}>
+		<Screen style={styles.container}>
 			<Input label='Category name' style={styles.input} />
 			<Input label='Category description' textArea style={styles.input} />
 			<Button
@@ -23,14 +24,12 @@ const AddCategory = () => {
 				onPress={handleSubmit}
 				style={styles.button}
 			/>
-		</View>
+		</Screen>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		backgroundColor: '#FFFFFF',
 		paddingTop: 16,
 		paddingHorizontal: 16
 	},
