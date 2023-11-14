@@ -4,6 +4,10 @@ import Screen from '../components/global/Screen';
 import Input from '../components/global/Input';
 import useGoBack from '../hooks/useGoBack';
 
+// What settings should store owners be able to control from here?
+// Account settings (account number, bank)
+// Generate account name from these details
+
 const StorePayouts = () => {
 	useGoBack();
 
