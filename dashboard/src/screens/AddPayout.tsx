@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import useGoBack from '../hooks/useGoBack';
 import Button from '../components/global/Button';
 import Input from '../components/global/Input';
+import Screen from '../components/global/Screen';
 
 const AddPayout: React.FC = () => {
 	const [amount, setAmount] = React.useState('');
@@ -13,7 +14,7 @@ const AddPayout: React.FC = () => {
 	}, []);
 
 	return (
-		<View style={styles.container}>
+		<Screen style={styles.container}>
 			<Input
 				value={amount}
 				onChangeText={setAmount}
@@ -21,15 +22,13 @@ const AddPayout: React.FC = () => {
 				style={styles.input}
 			/>
 			<Button text='Add payout' onPress={handleAddPayout} />
-		</View>
+		</Screen>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		padding: 16,
-		backgroundColor: '#FFFFFF'
+		padding: 16
 	},
 	input: {
 		marginVertical: 8
