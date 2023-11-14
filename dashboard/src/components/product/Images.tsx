@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ProductQuery } from '../../types/api';
+import Typography from '../global/Typography';
 import { Icon } from '../Icon';
+import useTheme from '../../hooks/useTheme';
 
 interface ImagesProps {
 	images?: ProductQuery['product']['images'];
@@ -15,6 +17,8 @@ const Images: React.FC<ImagesProps> = ({
 	imagesToUpload,
 	setImagesToUpload
 }) => {
+	const { theme } = useTheme();
+
 	const handlePickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -30,7 +34,9 @@ const Images: React.FC<ImagesProps> = ({
 
 	return (
 		<View style={styles.section}>
-			<Text style={styles.title}>Images</Text>
+			<Typography style={[styles.title, { color: theme.input.label }]}>
+				Images
+			</Typography>
 			<View style={styles.images}>
 				{images?.map(({ id, path }) => (
 					<Image key={id} source={{ uri: path }} style={styles.image} />
@@ -53,8 +59,6 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		marginBottom: 8,
-		fontSize: 16,
-		color: '#505050',
 		fontWeight: '500'
 	},
 	images: {

@@ -20,8 +20,7 @@ export const spacing = {
 export const typography = {
 	size: {
 		small: 12,
-		regular: 14,
-		medium: 16,
+		regular: 16,
 		large: 18,
 		xlarge: 20
 	},
@@ -78,7 +77,7 @@ const dark = {
 	},
 	input: {
 		placeholder: '',
-		label: '',
+		label: palette.neutral.n10,
 		background: palette.neutral.n50,
 		text: palette.neutral.n1
 	},
@@ -120,7 +119,7 @@ const light = {
 	},
 	input: {
 		placeholder: '',
-		label: '',
+		label: palette.neutral.n50,
 		background: palette.neutral.n5,
 		text: palette.neutral.n50
 	},

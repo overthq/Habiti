@@ -34,7 +34,11 @@ const Input: React.FC<InputProps> = ({ label, textArea, ...props }) => {
 
 	return (
 		<View>
-			{label && <Text style={styles.label}>{label}</Text>}
+			{label && (
+				<Text style={[styles.label, { color: theme.input.label }]}>
+					{label}
+				</Text>
+			)}
 			<TextInput
 				placeholderTextColor='#696969'
 				multiline={textArea}
@@ -50,7 +54,6 @@ const styles = StyleSheet.create({
 	label: {
 		marginBottom: 4,
 		fontSize: 14,
-		color: '#505050',
 		fontWeight: '500'
 	},
 	input: {

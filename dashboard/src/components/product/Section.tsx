@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet } from 'react-native';
 import type { TextInputProps } from 'react-native';
 import { Controller, useFormContext } from 'react-hook-form';
 import useTheme from '../../hooks/useTheme';
+import Typography from '../global/Typography';
 
 interface SectionProps {
 	title: string;
@@ -22,7 +23,9 @@ const Section: React.FC<SectionProps> = ({
 
 	return (
 		<View style={styles.section}>
-			<Text style={styles.title}>{title}</Text>
+			<Typography style={[styles.title, { color: theme.input.label }]}>
+				{title}
+			</Typography>
 			<Controller
 				name={field}
 				control={control}
@@ -49,8 +52,6 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		marginBottom: 2,
-		fontSize: 16,
-		color: '#505050',
 		fontWeight: '500'
 	},
 	input: {

@@ -34,7 +34,7 @@ const Overview: React.FC = () => {
 	}, []);
 
 	return (
-		<ScrollableScreen>
+		<ScrollableScreen style={styles.container}>
 			<ManagePayouts />
 			<LowStockProducts />
 		</ScrollableScreen>
@@ -42,6 +42,9 @@ const Overview: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+	container: {
+		paddingTop: 16
+	},
 	settings: {
 		marginRight: 16
 	},

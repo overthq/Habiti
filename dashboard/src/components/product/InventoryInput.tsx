@@ -1,10 +1,14 @@
 import React from 'react';
-import { View, Text, Pressable, TextInput, StyleSheet } from 'react-native';
+import { View, Pressable, TextInput, StyleSheet } from 'react-native';
 
 import { Icon } from '../Icon';
 import { Controller } from 'react-hook-form';
+import Typography from '../global/Typography';
+import useTheme from '../../hooks/useTheme';
 
 const InventoryInput = () => {
+	const { theme } = useTheme();
+
 	const handleCounterPress = React.useCallback(
 		(action: 'add' | 'sub') => () => {
 			// const inventory = Number(values.quantity);
@@ -24,7 +28,9 @@ const InventoryInput = () => {
 			name='quantity'
 			render={({ field: { onBlur, onChange, value } }) => (
 				<View style={styles.container}>
-					<Text style={styles.title}>Inventory</Text>
+					<Typography style={[styles.title, { color: theme.input.label }]}>
+						Inventory
+					</Typography>
 					<View style={styles.right}>
 						<Pressable onPress={handleCounterPress('add')}>
 							<Icon name='plus' size={18} color='#505050' />
@@ -52,9 +58,7 @@ const styles = StyleSheet.create({
 		padding: 16
 	},
 	title: {
-		fontSize: 16,
-		fontWeight: '500',
-		color: '#505050'
+		fontWeight: '500'
 	},
 	right: {
 		flexDirection: 'row',
