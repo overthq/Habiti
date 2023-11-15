@@ -1,14 +1,15 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
-import Button from '../components/global/Button';
+import ScrollableScreen from '../components/global/ScrollableScreen';
 import SettingRow from '../components/settings/SettingRow';
+import Button from '../components/global/Button';
 import useStore from '../state';
 import { useStoreQuery } from '../types/api';
-import type { SettingsStackParamList } from '../types/navigation';
 import useGoBack from '../hooks/useGoBack';
 import { capitalize } from '../utils/strings';
+import type { SettingsStackParamList } from '../types/navigation';
 
 const Settings: React.FC = () => {
 	const { theme, logOut } = useStore(state => ({
@@ -31,7 +32,7 @@ const Settings: React.FC = () => {
 	const store = data?.currentStore;
 
 	return (
-		<ScrollView style={styles.container}>
+		<ScrollableScreen>
 			<SettingRow
 				name='Active Store'
 				onPress={handleSettingsNavigate('SettingsActiveStore')}
@@ -45,14 +46,11 @@ const Settings: React.FC = () => {
 			<View style={styles.buttonContainer}>
 				<Button text='Log Out' onPress={logOut} />
 			</View>
-		</ScrollView>
+		</ScrollableScreen>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1
-	},
 	buttonContainer: {
 		marginVertical: 16,
 		paddingHorizontal: 16

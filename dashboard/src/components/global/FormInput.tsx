@@ -1,23 +1,20 @@
 import React from 'react';
-import { Control, useController } from 'react-hook-form';
+import { Control, FieldValues, Path, useController } from 'react-hook-form';
 
 import Input from './Input';
 import type { InputProps } from './Input';
 
-// TODO: Find a way to infer the type of the Control based on the
-// 'name' property (might need to finally REALLY learn generics).
-
-interface FormInputProps extends InputProps {
-	name: string; // keyof T
-	control: Control<any>;
+interface FormInputProps<T extends FieldValues> extends InputProps {
+	name: Path<T>;
+	control: Control<T>;
 }
 
-const FormInput: React.FC<FormInputProps> = ({
+const FormInput = <T extends FieldValues>({
 	name,
 	control,
 	style,
 	...props
-}) => {
+}: FormInputProps<T>) => {
 	const { field } = useController({ control, name });
 
 	return (
