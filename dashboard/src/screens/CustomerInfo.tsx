@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, ScrollView, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
 
+import ScrollableScreen from '../components/global/ScrollableScreen';
+import Typography from '../components/global/Typography';
 import useGoBack from '../hooks/useGoBack';
 import { useCustomerInfoQuery } from '../types/api';
 import type { AppStackParamList } from '../types/navigation';
@@ -20,24 +22,23 @@ const CustomerInfo: React.FC = () => {
 	}
 
 	return (
-		<ScrollView style={styles.container}>
-			<Text style={styles.name}>{data.user.name}</Text>
-			<Text style={styles.phone}>{data.user.phone}</Text>
-			<Text>Previous Orders:</Text>
+		<ScrollableScreen style={styles.container}>
+			<Typography style={styles.name}>{data.user.name}</Typography>
+			<Typography>{data.user.phone}</Typography>
+			<Typography>Previous Orders:</Typography>
 			{data.user.orders.map(order => (
 				<View key={order.id} style={styles.order}>
-					<Text>{formatNaira(order.total)}</Text>
+					<Typography>{formatNaira(order.total)}</Typography>
 				</View>
 			))}
-		</ScrollView>
+		</ScrollableScreen>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
 		paddingTop: 16,
-		paddingHorizontal: 16,
-		backgroundColor: '#FFFFFF'
+		paddingHorizontal: 16
 	},
 	name: {
 		fontSize: 24,
@@ -47,8 +48,7 @@ const styles = StyleSheet.create({
 		fontSize: 16
 	},
 	order: {
-		padding: 16,
-		backgroundColor: '#FFFFFF'
+		padding: 16
 	}
 });
 
