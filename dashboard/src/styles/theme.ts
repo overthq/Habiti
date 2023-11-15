@@ -19,7 +19,8 @@ export const spacing = {
 
 export const typography = {
 	size: {
-		small: 12,
+		xsmall: 12,
+		small: 14,
 		regular: 16,
 		large: 18,
 		xlarge: 20

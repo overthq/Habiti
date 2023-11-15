@@ -2,14 +2,16 @@ import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
 import { Icon } from '../Icon';
 import { FilterButton } from '../orders/OrdersFilter';
+import useTheme from '../../hooks/useTheme';
 
 const ProductsFilter = () => {
+	const { theme } = useTheme();
 	const handleChangeStatus = () => () => {
 		// Do something
 	};
 
 	return (
-		<View style={styles.container}>
+		<View style={[styles.container, { borderBottomColor: theme.border.color }]}>
 			<View style={{ flexDirection: 'row' }}>
 				<FilterButton text='All' onPress={handleChangeStatus()} active />
 				<FilterButton
@@ -37,8 +39,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		paddingVertical: 12,
 		paddingHorizontal: 16,
-		borderBottomWidth: 1,
-		borderBottomColor: '#E3E3E3'
+		borderBottomWidth: 0.5
 	},
 	button: {
 		marginRight: 16

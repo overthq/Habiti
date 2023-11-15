@@ -13,7 +13,7 @@ interface TypographyProps extends TextProps {
 		| 'disabled'
 		| 'error'
 		| 'label';
-	size?: 'small' | 'regular' | 'large' | 'xlarge';
+	size?: 'xsmall' | 'small' | 'regular' | 'large' | 'xlarge';
 	weight?: 'regular' | 'medium' | 'bold';
 }
 

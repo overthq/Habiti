@@ -26,12 +26,12 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
 			style={[styles.container, { borderBottomColor: theme.border.color }]}
 		>
 			<View>
-				<Typography style={styles.name}>{order.user.name}</Typography>
-				<Text style={styles.date}>
+				<Typography style={{ fontWeight: '500' }}>{order.user.name}</Typography>
+				<Typography size='small' variant='label' style={styles.date}>
 					{order.status} · {parseTimestamp(order.createdAt)}
-				</Text>
+				</Typography>
 			</View>
-			<Text style={styles.total}>{formatNaira(order.total)}</Text>
+			<Typography style={styles.total}>{formatNaira(order.total)}</Typography>
 		</Pressable>
 	);
 };
@@ -47,17 +47,11 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		borderBottomWidth: 0.5
 	},
-	name: {
-		fontSize: 16
-	},
 	row: {},
 	date: {
-		fontSize: 14,
-		marginTop: 2,
-		color: '#777777'
+		marginTop: 2
 	},
 	total: {
-		fontSize: 16,
 		marginRight: 4
 	}
 });
