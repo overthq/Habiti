@@ -33,6 +33,7 @@ export const FilterButton: React.FC<FilterButtonProps> = ({
 
 const OrdersFilter: React.FC = () => {
 	const [status, setStatus] = React.useState<OrderStatus>();
+	const { theme } = useTheme();
 
 	const handleChangeStatus = (status?: OrderStatus) => () => {
 		setStatus(status);
@@ -43,7 +44,7 @@ const OrdersFilter: React.FC = () => {
 	};
 
 	return (
-		<View style={styles.container}>
+		<View style={[styles.container, { borderBottomColor: theme.border.color }]}>
 			<View style={styles.left}>
 				<FilterButton
 					text='All'
@@ -78,8 +79,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		borderBottomWidth: 1,
-		borderBottomColor: '#E3E3E3',
+		borderBottomWidth: 0.5,
 		paddingVertical: 12,
 		paddingHorizontal: 16
 	},

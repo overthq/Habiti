@@ -4,6 +4,7 @@ import { OrdersQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
 import { parseTimestamp } from '../../utils/date';
 import Typography from '../global/Typography';
+import useTheme from '../../hooks/useTheme';
 
 interface OrdersListItemProps {
 	order: OrdersQuery['currentStore']['orders'][number];
@@ -17,8 +18,13 @@ interface OrdersListItemProps {
 // - Add group actions to this list.
 
 const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
+	const { theme } = useTheme();
+
 	return (
-		<Pressable onPress={onPress} style={styles.container}>
+		<Pressable
+			onPress={onPress}
+			style={[styles.container, { borderBottomColor: theme.border.color }]}
+		>
 			<View>
 				<Typography style={styles.name}>{order.user.name}</Typography>
 				<Text style={styles.date}>
@@ -39,8 +45,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		borderBottomWidth: 0.5,
-		borderBottomColor: '#EDEDED'
+		borderBottomWidth: 0.5
 	},
 	name: {
 		fontSize: 16

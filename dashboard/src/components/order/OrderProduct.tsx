@@ -20,7 +20,7 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 		</View>
 		<View>
 			<Typography style={styles.name}>{product.name}</Typography>
-			<Typography style={styles.price}>
+			<Typography variant='label'>
 				{plural('unit', quantity)} · {formatNaira(quantity * unitPrice)}
 			</Typography>
 		</View>
@@ -44,12 +44,7 @@ const styles = StyleSheet.create({
 		height: '100%'
 	},
 	name: {
-		fontSize: 16,
 		marginTop: 4
-	},
-	price: {
-		fontSize: 16,
-		color: '#505050'
 	}
 });
 

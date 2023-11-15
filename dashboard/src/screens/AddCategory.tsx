@@ -1,11 +1,11 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
+import { useForm } from 'react-hook-form';
 
 import Button from '../components/global/Button';
 import { useCreateProductCategoryMutation } from '../types/api';
 import useGoBack from '../hooks/useGoBack';
 import Screen from '../components/global/Screen';
-import { useForm } from 'react-hook-form';
 import FormInput from '../components/global/FormInput';
 
 interface AddCategoryValues {

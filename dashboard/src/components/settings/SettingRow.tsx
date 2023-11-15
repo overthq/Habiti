@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet, Pressable } from 'react-native';
 import { Icon } from '../Icon';
 import useTheme from '../../hooks/useTheme';
 import Typography from '../global/Typography';
@@ -25,7 +25,7 @@ const SettingRow: React.FC<SettingRowProps> = ({
 			<Typography style={styles.settingName}>{name}</Typography>
 			<View style={styles.right}>
 				{displayValue ? (
-					<Text style={styles.settingDisplay}>{displayValue}</Text>
+					<Typography variant='label'>{displayValue}</Typography>
 				) : null}
 				<Icon
 					name='chevron-right'
@@ -55,10 +55,6 @@ const styles = StyleSheet.create({
 	right: {
 		flexDirection: 'row',
 		alignItems: 'center'
-	},
-	settingDisplay: {
-		fontSize: 16,
-		color: '#505050'
 	},
 	icon: {
 		marginLeft: 8

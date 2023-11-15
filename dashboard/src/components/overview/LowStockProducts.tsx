@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, Pressable } from 'react-native';
+import { View, FlatList, StyleSheet, Pressable } from 'react-native';
 import TextButton from '../global/TextButton';
 import { ProductsQuery, useProductsQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
@@ -20,12 +20,12 @@ const LowStockProduct: React.FC<LowStockProductProps> = ({
 	return (
 		<Pressable onPress={onPress} style={{ marginRight: 8, width: 160 }}>
 			<CustomImage uri={product.images[0]?.path} size={160} />
-			<Text style={styles.name} numberOfLines={1}>
+			<Typography style={styles.name} numberOfLines={1}>
 				{product.name}
-			</Text>
-			<Text style={styles.price} numberOfLines={1}>
+			</Typography>
+			<Typography variant='label' style={styles.price} numberOfLines={1}>
 				{formatNaira(product.unitPrice)}
-			</Text>
+			</Typography>
 		</Pressable>
 	);
 };
@@ -98,14 +98,10 @@ const styles = StyleSheet.create({
 	},
 	name: {
 		marginTop: 2,
-		fontSize: 16,
-		fontWeight: '500',
-		color: '#505050'
+		fontWeight: '500'
 	},
 	price: {
-		marginTop: 2,
-		fontSize: 16,
-		color: '#505050'
+		marginTop: 2
 	}
 });
 
