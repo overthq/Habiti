@@ -6,7 +6,13 @@ import { typography } from '../../styles/theme';
 interface TypographyProps extends TextProps {
 	children: React.ReactNode;
 	style?: StyleProp<TextStyle>;
-	variant?: 'primary' | 'secondary' | 'tertiary' | 'disabled' | 'error';
+	variant?:
+		| 'primary'
+		| 'secondary'
+		| 'tertiary'
+		| 'disabled'
+		| 'error'
+		| 'label';
 	size?: 'small' | 'regular' | 'large' | 'xlarge';
 	weight?: 'regular' | 'medium' | 'bold';
 }

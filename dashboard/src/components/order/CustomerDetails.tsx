@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Pressable, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { AppStackParamList } from '../../types/navigation';
 import { OrderQuery } from '../../types/api';
+import Typography from '../global/Typography';
 
 interface CustomerDetailProps {
 	user: OrderQuery['order']['user'];
@@ -17,9 +18,9 @@ const CustomerDetails: React.FC<CustomerDetailProps> = ({ user }) => {
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}>Customer Details</Text>
+			<Typography style={styles.title}>Customer Details</Typography>
 			<Pressable onPress={handlePress}>
-				<Text style={styles.name}>{user.name}</Text>
+				<Typography>{user.name}</Typography>
 			</Pressable>
 		</View>
 	);
@@ -31,11 +32,7 @@ const styles = StyleSheet.create({
 		paddingBottom: 16
 	},
 	title: {
-		fontSize: 16,
 		fontWeight: '500'
-	},
-	name: {
-		fontSize: 16
 	}
 });
 

@@ -6,6 +6,7 @@ import { formatNaira } from '../../utils/currency';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { HomeStackParamList, MainTabParamList } from '../../types/navigation';
 import CustomImage from '../global/CustomImage';
+import Typography from '../global/Typography';
 
 interface LowStockProductProps {
 	onPress(): void;
@@ -45,7 +46,9 @@ const LowStockProducts = () => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.heading}>
-				<Text style={styles.title}>Low stock products</Text>
+				<Typography variant='label' style={styles.title}>
+					Low stock products
+				</Typography>
 				<TextButton size={16} onPress={navigateToProducts}>
 					View all
 				</TextButton>
@@ -80,8 +83,7 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		fontSize: 16,
-		fontWeight: '500',
-		color: '#505050'
+		fontWeight: '500'
 	},
 	placeholder: {
 		borderRadius: 4,

@@ -5,6 +5,7 @@ import { useStoreQuery } from '../../types/api';
 import { HomeStackParamList } from '../../types/navigation';
 import { formatNaira } from '../../utils/currency';
 import Button from '../global/Button';
+import Typography from '../global/Typography';
 
 const ManagePayouts = () => {
 	const [{ data }] = useStoreQuery();
@@ -16,9 +17,9 @@ const ManagePayouts = () => {
 
 	return (
 		<View style={styles.container}>
-			<Text style={{ fontSize: 16, fontWeight: '500', color: '#505050' }}>
+			<Typography variant='label' style={{ fontWeight: '500' }}>
 				Payouts
-			</Text>
+			</Typography>
 			<Text style={{ fontSize: 24, fontWeight: '500', marginBottom: 8 }}>
 				{formatNaira(data?.currentStore.revenue ?? 0)}
 			</Text>
