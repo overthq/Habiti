@@ -1,7 +1,10 @@
 import React from 'react';
 import Screen from '../components/global/Screen';
+import useGoBack from '../hooks/useGoBack';
 
 const AddManager = () => {
+	useGoBack('x');
+
 	return <Screen></Screen>;
 };
 

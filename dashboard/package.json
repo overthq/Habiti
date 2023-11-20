@@ -2,6 +2,7 @@
 	"main": "node_modules/expo/AppEntry.js",
 	"scripts": {
 		"generate-types": "graphql-codegen --config codegen.yml",
+		"load-bank-list": "ts-node scripts/load-banks",
 		"start": "expo start",
 		"android": "expo start --android",
 		"ios": "expo start --ios",

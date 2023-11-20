@@ -8,6 +8,7 @@ import { Icon } from '../components/Icon';
 import { AppStackParamList } from '../types/navigation';
 import Screen from '../components/global/Screen';
 import Typography from '../components/global/Typography';
+import SectionHeader from '../components/global/SectionHeader';
 
 const Payouts = () => {
 	const [{ data, fetching }] = useStorePayoutsQuery();
@@ -37,7 +38,7 @@ const Payouts = () => {
 
 	return (
 		<Screen style={styles.container}>
-			<Text style={styles.sectionHeader}>Available:</Text>
+			<SectionHeader title='Available:' />
 			<Typography style={styles.available}>{formatNaira(50000)}</Typography>
 			{/* <View style={styles.bar}>
 				<View style={[styles.track, { width: '50%' }]} />
@@ -56,11 +57,6 @@ const styles = StyleSheet.create({
 	container: {
 		paddingTop: 8,
 		paddingHorizontal: 16
-	},
-	sectionHeader: {
-		fontSize: 16,
-		fontWeight: '500',
-		color: '#505050'
 	},
 	available: {
 		fontSize: 24,

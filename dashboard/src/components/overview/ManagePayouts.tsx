@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useStoreQuery } from '../../types/api';
 import { HomeStackParamList } from '../../types/navigation';
 import { formatNaira } from '../../utils/currency';
@@ -20,9 +20,9 @@ const ManagePayouts = () => {
 			<Typography variant='label' style={{ fontWeight: '500' }}>
 				Payouts
 			</Typography>
-			<Text style={{ fontSize: 24, fontWeight: '500', marginBottom: 8 }}>
+			<Typography style={{ fontSize: 24, fontWeight: '500', marginBottom: 8 }}>
 				{formatNaira(data?.currentStore.revenue ?? 0)}
-			</Text>
+			</Typography>
 			<Button text='Manage payouts' onPress={navigateToPayouts} />
 		</View>
 	);
