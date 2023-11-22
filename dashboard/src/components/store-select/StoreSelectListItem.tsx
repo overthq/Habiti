@@ -1,5 +1,6 @@
 import React from 'react';
-import { Pressable, Text, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
+import Typography from '../global/Typography';
 
 interface StoresListItemProps {
 	text: string;
@@ -16,9 +17,9 @@ const StoreSelectListItem: React.FC<StoresListItemProps> = ({
 		onPress={onPress}
 		style={[styles.container, selected ? styles.selected : undefined]}
 	>
-		<Text style={[styles.text, selected ? styles.selectedText : undefined]}>
+		<Typography style={[selected ? styles.selectedText : undefined]}>
 			{text}
-		</Text>
+		</Typography>
 	</Pressable>
 );
 
@@ -33,9 +34,6 @@ const styles = StyleSheet.create({
 	},
 	selected: {
 		backgroundColor: '#D3D3D3'
-	},
-	text: {
-		fontSize: 16
 	},
 	selectedText: {
 		fontWeight: '500'
