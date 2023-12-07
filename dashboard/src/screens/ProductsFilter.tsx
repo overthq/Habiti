@@ -32,8 +32,12 @@ const ProductsFilter = () => {
 			<Typography>Rating</Typography>
 			<Typography>Category</Typography>
 			<Typography>In Stock</Typography>
-			<Button text='Clear filters' onPress={handleClearFilters} />
-			<Button text='Apply' onPress={handleApply} />
+			<Button
+				style={styles.button}
+				text='Clear filters'
+				onPress={handleClearFilters}
+			/>
+			<Button style={styles.button} text='Apply' onPress={handleApply} />
 		</Screen>
 	);
 };
@@ -41,6 +45,9 @@ const ProductsFilter = () => {
 const styles = StyleSheet.create({
 	container: {
 		padding: 16
+	},
+	button: {
+		marginTop: 4
 	}
 });
 
