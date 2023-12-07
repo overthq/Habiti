@@ -23,16 +23,17 @@ model User {
 }
 
 model Store {
-  id          String   @id @default(uuid())
-  name        String
-  description String?
-  website     String?
-  twitter     String?  @db.VarChar(15)
-  instagram   String?  @db.VarChar(30)
-  revenue     Int      @default(0)
-  payedOut    Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                String   @id @default(uuid())
+  name              String
+  description       String?
+  website           String?
+  twitter           String?  @db.VarChar(15)
+  instagram         String?  @db.VarChar(30)
+  revenue           Int      @default(0)
+  payedOut          Int      @default(0)
+  bankAccountNumber String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   image      Image?
   products   Product[]

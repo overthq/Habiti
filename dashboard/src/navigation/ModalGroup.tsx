@@ -6,7 +6,7 @@ import CustomerInfo from '../screens/CustomerInfo';
 import AddPayout from '../screens/AddPayout';
 import AddCategory from '../screens/AddCategory';
 import AddManager from '../screens/AddManager';
-import ProductsFilter from '../screens/ProductsFilter';
+import FilterProducts from '../screens/FilterProducts';
 
 const ModalGroup = (
 	<AppStack.Group screenOptions={{ presentation: 'modal' }}>
@@ -37,8 +37,8 @@ const ModalGroup = (
 			options={{ headerTitle: 'Add Manager' }}
 		/>
 		<AppStack.Screen
-			name='ProductsFilter'
-			component={ProductsFilter}
+			name='FilterProducts'
+			component={FilterProducts}
 			options={{ headerTitle: 'Filter Products' }}
 		/>
 	</AppStack.Group>

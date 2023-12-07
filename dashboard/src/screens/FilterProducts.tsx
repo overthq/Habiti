@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 
 // Rename to "FilterProducts"
 
-const ProductsFilter = () => {
+const FilterProducts = () => {
 	// TODO: Persist state to Zustand
 	const { goBack } = useNavigation();
 	useGoBack('x');
@@ -47,8 +47,8 @@ const styles = StyleSheet.create({
 		padding: 16
 	},
 	button: {
-		marginTop: 4
+		marginTop: 8
 	}
 });
 
-export default ProductsFilter;
+export default FilterProducts;

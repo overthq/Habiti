@@ -15,7 +15,7 @@ const ProductsFilter = () => {
 	};
 
 	const handleOpenFilterSheet = () => {
-		navigate('ProductsFilter');
+		navigate('FilterProducts');
 	};
 
 	return (
