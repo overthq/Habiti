@@ -11,13 +11,16 @@ import FormInput from '../components/global/FormInput';
 // Account settings (account number, bank)
 // Generate account name from these details
 
+// Do we want to store the reference information from Paystack alone,
+// or the reference data and actual bank account information
+// i.e. account number and bank code.
+
 interface EditPayoutInfoValues {
 	accountNumber: string;
 	bank: string;
 }
 
 const StorePayouts = () => {
-	const [mode, setMode] = React.useState<'fetch' | 'submit'>('fetch');
 	const { control, handleSubmit } = useForm<EditPayoutInfoValues>();
 	useGoBack();
 

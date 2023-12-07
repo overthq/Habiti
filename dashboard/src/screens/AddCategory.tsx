@@ -7,6 +7,7 @@ import { useCreateProductCategoryMutation } from '../types/api';
 import useGoBack from '../hooks/useGoBack';
 import Screen from '../components/global/Screen';
 import FormInput from '../components/global/FormInput';
+import { useNavigation } from '@react-navigation/native';
 
 interface AddCategoryValues {
 	name: string;
@@ -14,7 +15,8 @@ interface AddCategoryValues {
 }
 
 const AddCategory = () => {
-	const [, addCategory] = useCreateProductCategoryMutation();
+	const [{ fetching }, addCategory] = useCreateProductCategoryMutation();
+	const { goBack } = useNavigation();
 	useGoBack('x');
 
 	const { control, handleSubmit } = useForm<AddCategoryValues>({
@@ -24,8 +26,13 @@ const AddCategory = () => {
 		}
 	});
 
-	const onSubmit = React.useCallback((values: AddCategoryValues) => {
-		addCategory({ input: values });
+	const onSubmit = React.useCallback(async (values: AddCategoryValues) => {
+		try {
+			await addCategory({ input: values });
+			goBack();
+		} catch (error) {
+			console.log(error);
+		}
 	}, []);
 
 	return (
@@ -47,6 +54,7 @@ const AddCategory = () => {
 				text='Add Category'
 				onPress={handleSubmit(onSubmit)}
 				style={styles.button}
+				loading={fetching}
 			/>
 		</Screen>
 	);

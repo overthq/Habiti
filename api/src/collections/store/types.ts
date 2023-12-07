@@ -48,6 +48,7 @@ const StoreTypes = gql`
 		twitter: String
 		instagram: String
 		imageFile: Upload
+		bankAccountNumber: String
 	}
 
 	extend type Query {

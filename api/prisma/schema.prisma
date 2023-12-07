@@ -185,9 +185,10 @@ model ProductCategory {
 }
 
 model StoreProductCategory {
-  id      String @id @default(uuid())
-  storeId String
-  name    String
+  id          String  @id @default(uuid())
+  storeId     String
+  name        String
+  description String?
 
   store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
 
