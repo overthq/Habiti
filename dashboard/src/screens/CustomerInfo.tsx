@@ -7,7 +7,7 @@ import Typography from '../components/global/Typography';
 import useGoBack from '../hooks/useGoBack';
 import { useCustomerInfoQuery } from '../types/api';
 import type { AppStackParamList } from '../types/navigation';
-import { formatNaira } from '../utils/currency';
+import OrderDetail from '../components/customer-info/OrderDetail';
 
 const CustomerInfo: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'CustomerInfo'>>();
@@ -27,9 +27,7 @@ const CustomerInfo: React.FC = () => {
 			<Typography>{data.user.phone}</Typography>
 			<Typography>Previous Orders:</Typography>
 			{data.user.orders.map(order => (
-				<View key={order.id} style={styles.order}>
-					<Typography>{formatNaira(order.total)}</Typography>
-				</View>
+				<OrderDetail key={order.id} order={order} />
 			))}
 		</ScrollableScreen>
 	);
@@ -46,9 +44,6 @@ const styles = StyleSheet.create({
 	},
 	phone: {
 		fontSize: 16
-	},
-	order: {
-		padding: 16
 	}
 });
 

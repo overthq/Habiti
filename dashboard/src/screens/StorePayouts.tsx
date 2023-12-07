@@ -17,6 +17,7 @@ interface EditPayoutInfoValues {
 }
 
 const StorePayouts = () => {
+	const [mode, setMode] = React.useState<'fetch' | 'submit'>('fetch');
 	const { control, handleSubmit } = useForm<EditPayoutInfoValues>();
 	useGoBack();
 
