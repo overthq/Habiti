@@ -13,9 +13,7 @@ const SearchProducts = () => {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1
-	}
+	container: {}
 });
 
 export default SearchProducts;

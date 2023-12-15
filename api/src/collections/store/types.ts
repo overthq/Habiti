@@ -39,6 +39,9 @@ const StoreTypes = gql`
 		twitter: String
 		instagram: String
 		storeImage: Upload
+		bankAccountNumber: String
+		bankCode: String
+		bankAccountReference: String
 	}
 
 	input EditStoreInput {
@@ -49,6 +52,8 @@ const StoreTypes = gql`
 		instagram: String
 		imageFile: Upload
 		bankAccountNumber: String
+		bankCode: String
+		bankAccountReference: String
 	}
 
 	extend type Query {
