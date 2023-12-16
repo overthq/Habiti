@@ -163,7 +163,7 @@ export const createTransferReceipient = async (
 	accountNumber: string,
 	bankCode: string
 ) => {
-	const data = await post('/transferrecipient', {
+	const { data } = await post('/transferrecipient', {
 		type: 'nuban',
 		name,
 		account_number: accountNumber,
@@ -171,7 +171,7 @@ export const createTransferReceipient = async (
 		currency: 'NGN'
 	});
 
-	return data;
+	return data.recepient_code;
 };
 
 // TODO: Use authorization code to return the tokenization fee to user programmatically.

@@ -124,6 +124,9 @@ export type CreateProductInput = {
 };
 
 export type CreateStoreInput = {
+	bankAccountNumber?: InputMaybe<Scalars['String']['input']>;
+	bankAccountReference?: InputMaybe<Scalars['String']['input']>;
+	bankCode?: InputMaybe<Scalars['String']['input']>;
 	description: Scalars['String']['input'];
 	instagram?: InputMaybe<Scalars['String']['input']>;
 	name: Scalars['String']['input'];
@@ -147,6 +150,9 @@ export type EditProfileInput = {
 };
 
 export type EditStoreInput = {
+	bankAccountNumber?: InputMaybe<Scalars['String']['input']>;
+	bankAccountReference?: InputMaybe<Scalars['String']['input']>;
+	bankCode?: InputMaybe<Scalars['String']['input']>;
 	description?: InputMaybe<Scalars['String']['input']>;
 	imageFile?: InputMaybe<Scalars['Upload']['input']>;
 	instagram?: InputMaybe<Scalars['String']['input']>;
@@ -440,6 +446,7 @@ export type Query = {
 	stores: Array<Store>;
 	user: User;
 	users: Array<User>;
+	verifyBankAccount: VerifyBankAccountResponse;
 };
 
 export type QueryCartArgs = {
@@ -468,6 +475,11 @@ export type QueryStoreProductsArgs = {
 
 export type QueryUserArgs = {
 	id: Scalars['ID']['input'];
+};
+
+export type QueryVerifyBankAccountArgs = {
+	bankAccountNumber: Scalars['String']['input'];
+	bankCode: Scalars['String']['input'];
 };
 
 export type RegisterInput = {
@@ -585,6 +597,12 @@ export type User = {
 	phone: Scalars['String']['output'];
 	updatedAt: Scalars['String']['output'];
 	watchlist: Array<WatchlistProduct>;
+};
+
+export type VerifyBankAccountResponse = {
+	__typename?: 'VerifyBankAccountResponse';
+	accountName: Scalars['String']['output'];
+	accountNumber: Scalars['String']['output'];
 };
 
 export type VerifyInput = {

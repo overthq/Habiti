@@ -21,6 +21,7 @@ const ProductCategoryTypes = gql`
 
 	input CreateCategoryInput {
 		name: String!
+		description: String
 	}
 
 	input AddProductToCategoryInput {

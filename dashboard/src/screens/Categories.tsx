@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, Text, ActivityIndicator, Pressable } from 'react-native';
+import { View, ActivityIndicator, Pressable } from 'react-native';
 import { useCategoriesQuery } from '../types/api';
 import useGoBack from '../hooks/useGoBack';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Icon } from '../components/Icon';
 import { AppStackParamList } from '../types/navigation';
 import Screen from '../components/global/Screen';
+import Typography from '../components/global/Typography';
 
 const Categories = () => {
 	const [{ data, fetching }] = useCategoriesQuery();
@@ -43,7 +44,7 @@ const Categories = () => {
 	if (!data?.currentStore.categories) {
 		return (
 			<View>
-				<Text>No categories</Text>
+				<Typography>No categories</Typography>
 			</View>
 		);
 	}
@@ -51,7 +52,7 @@ const Categories = () => {
 	return (
 		<Screen>
 			{data.currentStore.categories.map(category => (
-				<Text key={category.id}>{category.name}</Text>
+				<Typography key={category.id}>{category.name}</Typography>
 			))}
 		</Screen>
 	);

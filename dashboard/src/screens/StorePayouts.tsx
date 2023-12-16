@@ -6,6 +6,7 @@ import Button from '../components/global/Button';
 import useGoBack from '../hooks/useGoBack';
 import { useForm } from 'react-hook-form';
 import FormInput from '../components/global/FormInput';
+import { useEditStoreMutation } from '../types/api';
 
 // What settings should store owners be able to control from here?
 // Account settings (account number, bank)
@@ -22,10 +23,13 @@ interface EditPayoutInfoValues {
 
 const StorePayouts = () => {
 	const { control, handleSubmit } = useForm<EditPayoutInfoValues>();
+	const [, editStore] = useEditStoreMutation();
 	useGoBack();
 
 	const onSubmit = React.useCallback((values: EditPayoutInfoValues) => {
-		// TODO: Handle editing of details
+		editStore({
+			input: { bankAccountNumber: values.accountNumber, bankCode: values.bank }
+		});
 	}, []);
 
 	return (
