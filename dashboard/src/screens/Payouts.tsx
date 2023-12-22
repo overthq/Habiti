@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet, Pressable } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import useGoBack from '../hooks/useGoBack';
 import { useStorePayoutsQuery } from '../types/api';
@@ -9,6 +9,8 @@ import { AppStackParamList } from '../types/navigation';
 import Screen from '../components/global/Screen';
 import Typography from '../components/global/Typography';
 import SectionHeader from '../components/global/SectionHeader';
+import PayoutRow from '../components/payouts/PayoutRow';
+import RevenueBar from '../components/payouts/RevenueBar';
 
 const Payouts = () => {
 	const [{ data, fetching }] = useStorePayoutsQuery();
@@ -40,14 +42,9 @@ const Payouts = () => {
 		<Screen style={styles.container}>
 			<SectionHeader title='Available:' />
 			<Typography style={styles.available}>{formatNaira(50000)}</Typography>
-			{/* <View style={styles.bar}>
-				<View style={[styles.track, { width: '50%' }]} />
-			</View> */}
+			<RevenueBar />
 			{data.currentStore.payouts.map(payout => (
-				<View key={payout.id}>
-					<Text>{formatNaira(payout.amount)}</Text>
-					<Text>{payout.createdAt}</Text>
-				</View>
+				<PayoutRow key={payout.id} payout={payout} />
 			))}
 		</Screen>
 	);

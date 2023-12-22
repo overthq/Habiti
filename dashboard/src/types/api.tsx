@@ -103,6 +103,7 @@ export type CreateCartInput = {
 };
 
 export type CreateCategoryInput = {
+	description?: InputMaybe<Scalars['String']['input']>;
 	name: Scalars['String']['input'];
 };
 
@@ -125,7 +126,6 @@ export type CreateProductInput = {
 
 export type CreateStoreInput = {
 	bankAccountNumber?: InputMaybe<Scalars['String']['input']>;
-	bankAccountReference?: InputMaybe<Scalars['String']['input']>;
 	bankCode?: InputMaybe<Scalars['String']['input']>;
 	description: Scalars['String']['input'];
 	instagram?: InputMaybe<Scalars['String']['input']>;
@@ -151,7 +151,6 @@ export type EditProfileInput = {
 
 export type EditStoreInput = {
 	bankAccountNumber?: InputMaybe<Scalars['String']['input']>;
-	bankAccountReference?: InputMaybe<Scalars['String']['input']>;
 	bankCode?: InputMaybe<Scalars['String']['input']>;
 	description?: InputMaybe<Scalars['String']['input']>;
 	imageFile?: InputMaybe<Scalars['Upload']['input']>;
@@ -512,6 +511,9 @@ export type Stats = {
 
 export type Store = {
 	__typename?: 'Store';
+	bankAccountNumber?: Maybe<Scalars['String']['output']>;
+	bankAccountReference?: Maybe<Scalars['String']['output']>;
+	bankCode?: Maybe<Scalars['String']['output']>;
 	cartId?: Maybe<Scalars['ID']['output']>;
 	carts: Array<Cart>;
 	categories: Array<StoreProductCategory>;
@@ -941,6 +943,9 @@ export type StoreQuery = {
 		instagram?: string | null;
 		revenue: number;
 		payedOut: number;
+		bankAccountNumber?: string | null;
+		bankCode?: string | null;
+		bankAccountReference?: string | null;
 		image?: { __typename?: 'Image'; id: string; path: string } | null;
 	};
 };
@@ -1419,6 +1424,9 @@ export const StoreDocument = gql`
 			instagram
 			revenue
 			payedOut
+			bankAccountNumber
+			bankCode
+			bankAccountReference
 			image {
 				id
 				path

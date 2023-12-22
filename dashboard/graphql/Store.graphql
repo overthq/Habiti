@@ -29,6 +29,9 @@ query Store {
 		instagram
 		revenue
 		payedOut
+		bankAccountNumber
+		bankCode
+		bankAccountReference
 		image {
 			id
 			path

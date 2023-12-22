@@ -1,12 +1,8 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import Screen from '../components/global/Screen';
-import Input from '../components/global/Input';
-import Button from '../components/global/Button';
+import { View } from 'react-native';
 import useGoBack from '../hooks/useGoBack';
-import { useForm } from 'react-hook-form';
-import FormInput from '../components/global/FormInput';
-import { useEditStoreMutation } from '../types/api';
+import { useStoreQuery } from '../types/api';
+import StorePayoutsMain from '../components/store-payouts/StorePayoutsMain';
 
 // What settings should store owners be able to control from here?
 // Account settings (account number, bank)
@@ -16,44 +12,18 @@ import { useEditStoreMutation } from '../types/api';
 // or the reference data and actual bank account information
 // i.e. account number and bank code.
 
-interface EditPayoutInfoValues {
-	accountNumber: string;
-	bank: string;
-}
-
 const StorePayouts = () => {
-	const { control, handleSubmit } = useForm<EditPayoutInfoValues>();
-	const [, editStore] = useEditStoreMutation();
+	const [{ data, fetching }] = useStoreQuery();
 	useGoBack();
 
-	const onSubmit = React.useCallback((values: EditPayoutInfoValues) => {
-		editStore({
-			input: { bankAccountNumber: values.accountNumber, bankCode: values.bank }
-		});
-	}, []);
+	if (fetching) return <View />;
 
 	return (
-		<Screen style={styles.container}>
-			<FormInput
-				name='accountNumber'
-				label='Account Number'
-				control={control}
-				style={styles.input}
-			/>
-			<Input style={styles.input} label='Bank' />
-			<Button text='Update information' onPress={handleSubmit(onSubmit)} />
-		</Screen>
+		<StorePayoutsMain
+			bankAccountNumber={data?.currentStore.bankAccountNumber}
+			bankCode={data?.currentStore.bankCode}
+		/>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		paddingTop: 16,
-		paddingHorizontal: 16
-	},
-	input: {
-		marginBottom: 8
-	}
-});
 
 export default StorePayouts;
