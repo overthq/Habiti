@@ -1,5 +1,4 @@
 import express from 'express';
-import { PrismaClient } from '@prisma/client';
 import { ApolloServer } from 'apollo-server-express';
 import { graphqlUploadExpress } from 'graphql-upload';
 import { expressjwt } from 'express-jwt';
@@ -10,11 +9,11 @@ import webhooks from './webhooks';
 import payments from './payments';
 import schema from './schema';
 import redisClient from './config/redis';
+import prismaClient from './config/prisma';
 import './config/cloudinary';
 
 const main = async () => {
 	const app = express();
-	const prisma = new PrismaClient();
 
 	app.use(express.json());
 	app.use(compression());
@@ -33,7 +32,7 @@ const main = async () => {
 		context: ({ req }) => ({
 			user: (req as any).auth ?? null,
 			storeId: req.headers['x-market-store-id'] || undefined,
-			prisma,
+			prisma: prismaClient,
 			redisClient
 		})
 	});

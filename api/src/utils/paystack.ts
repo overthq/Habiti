@@ -120,13 +120,18 @@ export const createRecepient = async (
 	return data;
 };
 
-export const createTransferReference = () => {
-	// Do something.
-};
-
-// Pay account.
-export const payAccount = async (amount: string, reference: string) => {
-	const data = await post('/transfer', { amount, reference });
+export const payAccount = async (
+	amount: string,
+	reference: string,
+	recepient: string
+) => {
+	const data = await post('/transfer', {
+		source: 'balance',
+		amount,
+		reference,
+		recepient,
+		reason: 'Payout'
+	});
 
 	return data;
 };

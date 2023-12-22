@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { createHmac } from 'crypto';
 import { storeCard } from './utils/paystack';
+import { handleTransferSuccess } from './utils/webhooks';
 
 const router: Router = Router();
 
@@ -13,15 +14,9 @@ router.post('/paystack', async (req, res) => {
 		const { event, data } = req.body;
 
 		if (event === 'charge.success') {
-			// It's sad that we have to do this every time,
-			// since we only this for the initial (tokenization) charge.
-			// Maybe we can switch to using the Verify Transaction API
-			// using a setTimeout?
-			// Seems hacky, especially since we'd be estimating the
-			// reasonable time it takes Paystack to complete the charge.
-			// Still an option though.
-
 			await storeCard((req as any).auth.id, data);
+		} else if (event === 'transfer.success') {
+			handleTransferSuccess(data);
 		}
 
 		return res.status(200).json({

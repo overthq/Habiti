@@ -168,12 +168,13 @@ model Card {
 }
 
 model Payout {
-  id        String   @id @default(uuid())
+  id        String       @id @default(uuid())
   storeId   String
   amount    Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  status    PayoutStatus @default(Pending)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  store     Store        @relation(fields: [storeId], references: [id], onDelete: Cascade)
 }
 
 model ProductCategory {
@@ -203,4 +204,10 @@ enum OrderStatus {
   Cancelled
   Completed
   Delivered
+}
+
+enum PayoutStatus {
+  Pending
+  Success
+  Failure
 }
