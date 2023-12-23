@@ -46,7 +46,8 @@ const styles = StyleSheet.create({
 		borderRadius: 8,
 		flexDirection: 'row',
 		overflow: 'hidden',
-		backgroundColor: 'grey'
+		backgroundColor: 'grey',
+		marginBottom: 8
 	}
 });
 
