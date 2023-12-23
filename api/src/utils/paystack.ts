@@ -1,8 +1,7 @@
 import fetch from 'node-fetch';
-import { PrismaClient } from '@prisma/client';
+import prismaClient from '../config/prisma';
 
 const API_URL = 'https://api.paystack.co';
-const prisma = new PrismaClient();
 
 const post = async (path: string, body: object) => {
 	const response = await fetch(`${API_URL}${path}`, {
@@ -62,7 +61,7 @@ interface StoreCardData {
 }
 
 export const storeCard = (userId: string, data: StoreCardData) => {
-	return prisma.card.upsert({
+	return prismaClient.card.upsert({
 		where: { signature: data.authorization.signature },
 		update: {},
 		create: {
