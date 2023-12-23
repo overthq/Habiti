@@ -58,21 +58,6 @@ const styles = StyleSheet.create({
 	available: {
 		fontSize: 24,
 		fontWeight: 'bold'
-	},
-	button: {
-		marginVertical: 8
-	},
-	bar: {
-		width: '100%',
-		height: 16,
-		marginVertical: 8,
-		borderRadius: 10,
-		backgroundColor: '#D3D3D3',
-		overflow: 'hidden'
-	},
-	track: {
-		backgroundColor: '#505050',
-		height: '100%'
 	}
 });
 

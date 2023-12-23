@@ -42,8 +42,8 @@ const RevenueBar: React.FC<RevenueBarProps> = ({
 const styles = StyleSheet.create({
 	bar: {
 		width: '100%',
-		height: 30,
-		borderRadius: 15,
+		height: 16,
+		borderRadius: 8,
 		flexDirection: 'row',
 		overflow: 'hidden'
 	}
