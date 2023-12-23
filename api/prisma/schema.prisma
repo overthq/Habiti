@@ -29,7 +29,8 @@ model Store {
   website              String?
   twitter              String?  @db.VarChar(15)
   instagram            String?  @db.VarChar(30)
-  revenue              Int      @default(0)
+  unrealizedRevenue    Int      @default(0)
+  realizedRevenue      Int      @default(0)
   payedOut             Int      @default(0)
   bankAccountNumber    String?
   bankCode             String?

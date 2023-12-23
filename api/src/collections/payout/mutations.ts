@@ -19,7 +19,7 @@ const createPayout: Resolver<CreatePayoutArgs> = async (
 	});
 
 	// Extra validation (the frontend should cover this).
-	if (store.revenue < store.payedOut + amount) {
+	if (store.realizedRevenue < store.payedOut + amount) {
 		throw new Error('Insufficient funds');
 	} else if (!store.bankAccountReference) {
 		throw new Error('No account reference');

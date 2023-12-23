@@ -38,7 +38,8 @@ type Store implements Node {
 	website: String
 	twitter: String
 	instagram: String
-	revenue: Int!
+	realizedRevenue: Int!
+	unrealizedRevenue: Int!
 	payedOut: Int!
 	createdAt: String!
 	updatedAt: String!

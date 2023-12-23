@@ -100,7 +100,10 @@ const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
 
 				await ctx.prisma.store.update({
 					where: { id: order.storeId },
-					data: { revenue: { increment: total } }
+					data: {
+						realizedRevenue: { increment: total },
+						unrealizedRevenue: { decrement: total }
+					}
 				});
 
 				break;
