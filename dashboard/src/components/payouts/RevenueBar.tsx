@@ -20,6 +20,16 @@ const RevenueBar: React.FC<RevenueBarProps> = ({
 	unrealizedRevenue,
 	payedOut
 }) => {
+	const totalRevenue = React.useMemo(
+		() => realizedRevenue + unrealizedRevenue,
+		[realizedRevenue, unrealizedRevenue]
+	);
+
+	const available = React.useMemo(
+		() => realizedRevenue - payedOut,
+		[realizedRevenue, payedOut]
+	);
+
 	return (
 		<View style={styles.bar}>
 			<View />

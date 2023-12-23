@@ -530,8 +530,9 @@ export type Store = {
 	payedOut: Scalars['Int']['output'];
 	payouts: Array<Payout>;
 	products: Array<Product>;
-	revenue: Scalars['Int']['output'];
+	realizedRevenue: Scalars['Int']['output'];
 	twitter?: Maybe<Scalars['String']['output']>;
+	unrealizedRevenue: Scalars['Int']['output'];
 	updatedAt: Scalars['String']['output'];
 	website?: Maybe<Scalars['String']['output']>;
 };
@@ -941,7 +942,8 @@ export type StoreQuery = {
 		website?: string | null;
 		twitter?: string | null;
 		instagram?: string | null;
-		revenue: number;
+		realizedRevenue: number;
+		unrealizedRevenue: number;
 		payedOut: number;
 		bankAccountNumber?: string | null;
 		bankCode?: string | null;
@@ -1422,7 +1424,8 @@ export const StoreDocument = gql`
 			website
 			twitter
 			instagram
-			revenue
+			realizedRevenue
+			unrealizedRevenue
 			payedOut
 			bankAccountNumber
 			bankCode

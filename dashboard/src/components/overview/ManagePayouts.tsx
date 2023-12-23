@@ -21,7 +21,7 @@ const ManagePayouts = () => {
 				Payouts
 			</Typography>
 			<Typography style={{ fontSize: 24, fontWeight: '500', marginBottom: 8 }}>
-				{formatNaira(data?.currentStore.revenue ?? 0)}
+				{formatNaira(data?.currentStore.realizedRevenue ?? 0)}
 			</Typography>
 			<Button text='Manage payouts' onPress={navigateToPayouts} />
 		</View>
