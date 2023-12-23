@@ -27,6 +27,13 @@ router.post('/paystack', async (req, res) => {
 			success: true,
 			data: { message: 'Done.' }
 		});
+	} else {
+		return res.status(400).json({
+			success: false,
+			data: {
+				message: 'This message did not originate from Paystack'
+			}
+		});
 	}
 });
 
