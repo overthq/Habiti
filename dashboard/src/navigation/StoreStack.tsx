@@ -11,7 +11,7 @@ const StoreStack = createStackNavigator<StoreStackParamList>();
 
 const StoreStackNavigator = () => {
 	return (
-		<StoreStack.Navigator>
+		<StoreStack.Navigator initialRouteName='StoreHome'>
 			<StoreStack.Screen
 				name='StoreHome'
 				component={Store}
