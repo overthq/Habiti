@@ -45,7 +45,8 @@ const styles = StyleSheet.create({
 		height: 16,
 		borderRadius: 8,
 		flexDirection: 'row',
-		overflow: 'hidden'
+		overflow: 'hidden',
+		backgroundColor: 'grey'
 	}
 });
 

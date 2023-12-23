@@ -12,20 +12,29 @@ interface OrderDetailProps {
 const OrderDetail: React.FC<OrderDetailProps> = ({ order }) => {
 	return (
 		<View style={styles.container}>
-			{order.products.map(product => (
-				<View key={product.id}>
-					<CustomImage size={200} />
-					<Typography>{product.product.name}</Typography>
-				</View>
-			))}
-			<Typography>{formatNaira(order.total)}</Typography>
+			<View style={styles.row}>
+				{order.products.slice(0, 3).map(product => (
+					<View key={product.id} style={styles.item}>
+						<CustomImage size={80} />
+						{/* <Typography>{product.product.name}</Typography> */}
+					</View>
+				))}
+			</View>
+			<Typography weight='bold'>{formatNaira(order.total)}</Typography>
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		padding: 16
+		marginBottom: 8
+	},
+	row: {
+		flexDirection: 'row',
+		marginBottom: 4
+	},
+	item: {
+		marginRight: 8
 	}
 });
 

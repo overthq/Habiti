@@ -41,9 +41,6 @@ const styles = StyleSheet.create({
 	name: {
 		fontSize: 24,
 		fontWeight: '500'
-	},
-	phone: {
-		fontSize: 16
 	}
 });
 

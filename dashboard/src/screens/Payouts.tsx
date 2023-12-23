@@ -52,12 +52,13 @@ const Payouts = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		paddingTop: 8,
+		paddingTop: 16,
 		paddingHorizontal: 16
 	},
 	available: {
 		fontSize: 24,
-		fontWeight: 'bold'
+		fontWeight: 'bold',
+		marginBottom: 8
 	}
 });
 
