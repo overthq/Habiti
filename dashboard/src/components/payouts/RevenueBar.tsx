@@ -30,11 +30,24 @@ const RevenueBar: React.FC<RevenueBarProps> = ({
 		[realizedRevenue, payedOut]
 	);
 
+	const realizedPercent = React.useMemo(() => {
+		return `${Math.floor((realizedRevenue / totalRevenue) * 100)}%` as const;
+	}, [realizedRevenue, totalRevenue]);
+
+	const availablePercent = React.useMemo(() => {
+		return `${Math.floor((available / realizedRevenue) * 100)}%` as const;
+	}, [available, realizedRevenue]);
+
+	React.useEffect(() => {
+		console.log('realizedPercent: ', realizedPercent);
+		console.log('availablePercent: ', availablePercent);
+	}, [realizedPercent, availablePercent]);
+
 	return (
 		<View style={styles.bar}>
-			<View />
-			<View />
-			<View />
+			<View style={[styles.realized, { width: realizedPercent }]}>
+				<View style={[styles.available, { width: availablePercent }]} />
+			</View>
 		</View>
 	);
 };
@@ -48,6 +61,14 @@ const styles = StyleSheet.create({
 		overflow: 'hidden',
 		backgroundColor: 'grey',
 		marginBottom: 8
+	},
+	realized: {
+		backgroundColor: 'yellow',
+		flexDirection: 'row'
+	},
+	available: {
+		backgroundColor: 'green',
+		height: '100%'
 	}
 });
 
