@@ -18,7 +18,7 @@ const writeBanksToDisk = (banks: any) => {
 };
 
 const main = async () => {
-	const banks = loadBanks();
+	const banks = await loadBanks();
 
 	writeBanksToDisk(banks);
 };

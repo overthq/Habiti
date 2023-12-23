@@ -42,7 +42,7 @@ const Payouts = () => {
 		<Screen style={styles.container}>
 			<SectionHeader title='Available:' />
 			<Typography style={styles.available}>{formatNaira(50000)}</Typography>
-			<RevenueBar />
+			<RevenueBar realizedRevenue={0} unrealizedRevenue={0} payedOut={0} />
 			{data.currentStore.payouts.map(payout => (
 				<PayoutRow key={payout.id} payout={payout} />
 			))}
