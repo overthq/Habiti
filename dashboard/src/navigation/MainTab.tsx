@@ -27,6 +27,7 @@ const MainTabNavigator = () => {
 				tabBarShowLabel: false,
 				headerShown: false
 			})}
+			initialRouteName='Home'
 		>
 			<MainTab.Screen name='Home' component={HomeStackNavigator} />
 			<MainTab.Screen name='Orders' component={OrdersStackNavigator} />
