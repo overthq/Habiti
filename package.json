@@ -10,7 +10,8 @@
 	"scripts": {
 		"lint": "eslint --ext .ts,.tsx api/src app dashboard",
 		"start-redis": "redis-server --daemonize yes",
-		"postinstall": "husky install"
+		"postinstall": "husky install",
+		"load-bank-list": "node scripts/load-banks"
 	},
 	"lint-staged": {
 		"*.{ts,tsx}": [
@@ -28,6 +29,7 @@
 		"eslint-plugin-react": "^7.31.11",
 		"husky": "^8.0.2",
 		"lint-staged": "^13.0.3",
+		"node-fetch": "2",
 		"prettier": "^2.7.1",
 		"typescript": "^4.9.3"
 	}
