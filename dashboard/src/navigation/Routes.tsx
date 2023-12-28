@@ -20,6 +20,7 @@ import { AppStack } from './AppStack';
 import ModalGroup from './ModalGroup';
 import { getStatusBarStyle } from '../utils/theme';
 import useTheme from '../hooks/useTheme';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 const Routes: React.FC = () => {
 	const client = useClient();
@@ -34,31 +35,33 @@ const Routes: React.FC = () => {
 		<Provider value={client}>
 			<StatusBar style={getStatusBarStyle(name)} />
 			<NavigationContainer theme={name === 'dark' ? DarkTheme : DefaultTheme}>
-				<AppStack.Navigator>
-					{accessToken ? (
-						!activeStore ? (
-							<AppStack.Group screenOptions={{ headerShown: false }}>
-								<AppStack.Screen name='StoreSelect' component={StoreSelect} />
-								<AppStack.Screen name='CreateStore' component={CreateStore} />
-							</AppStack.Group>
+				<BottomSheetModalProvider>
+					<AppStack.Navigator>
+						{accessToken ? (
+							!activeStore ? (
+								<AppStack.Group screenOptions={{ headerShown: false }}>
+									<AppStack.Screen name='StoreSelect' component={StoreSelect} />
+									<AppStack.Screen name='CreateStore' component={CreateStore} />
+								</AppStack.Group>
+							) : (
+								<>
+									<AppStack.Screen
+										name='Main'
+										component={MainTabNavigator}
+										options={{ headerShown: false }}
+									/>
+									{ModalGroup}
+								</>
+							)
 						) : (
-							<>
-								<AppStack.Screen
-									name='Main'
-									component={MainTabNavigator}
-									options={{ headerShown: false }}
-								/>
-								{ModalGroup}
-							</>
-						)
-					) : (
-						<AppStack.Group>
-							<AppStack.Screen name='Register' component={Register} />
-							<AppStack.Screen name='Authenticate' component={Authenticate} />
-							<AppStack.Screen name='Verify' component={Verify} />
-						</AppStack.Group>
-					)}
-				</AppStack.Navigator>
+							<AppStack.Group>
+								<AppStack.Screen name='Register' component={Register} />
+								<AppStack.Screen name='Authenticate' component={Authenticate} />
+								<AppStack.Screen name='Verify' component={Verify} />
+							</AppStack.Group>
+						)}
+					</AppStack.Navigator>
+				</BottomSheetModalProvider>
 			</NavigationContainer>
 		</Provider>
 	);
