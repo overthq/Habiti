@@ -7,6 +7,7 @@ const icons = {
 	check: <Path d='M20 6L9 17l-5-5' />,
 	'chevron-left': <Path d='M15 18l-6-6 6-6' />,
 	'chevron-right': <Path d='M9 18l6-6-6-6' />,
+	'chevron-down': <Path d='M6 9 6 6 6-6' />,
 	filter: <Path d='M22 3H2l8 9.46V19l4 2v-8.54L22 3z' />,
 	inbox: (
 		<>

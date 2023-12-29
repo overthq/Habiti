@@ -1,13 +1,14 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import Screen from '../global/Screen';
 import FormInput from '../global/FormInput';
 import Input from '../global/Input';
 import Button from '../global/Button';
 import { useEditStoreMutation } from '../../types/api';
 import BankSelect from './BankSelect';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import BankSelectButton from './BankSelectButton';
 
 interface EditPayoutInfoValues {
 	accountNumber: string;
@@ -24,17 +25,20 @@ const StorePayoutsMain: React.FC<StorePayoutsMainProps> = ({
 	bankCode
 }) => {
 	const [, editStore] = useEditStoreMutation();
-	// const [selectOpen, toggleSelect] = React.useReducer(s => !s, false);
-	const { control, handleSubmit } = useForm<EditPayoutInfoValues>({
+	const selectModalRef = React.useRef<BottomSheetModal>(null);
+
+	const methods = useForm<EditPayoutInfoValues>({
 		defaultValues: {
 			accountNumber: bankAccountNumber ?? '',
 			bank: bankCode ?? ''
 		}
 	});
 
-	// TODO: Switch this
-	const [code, setBankCode] = React.useState<string>();
-	const selectModalRef = React.useRef<BottomSheetModal>(null);
+	const { control, setValue, handleSubmit } = methods;
+
+	const handleSetBank = React.useCallback((code: string) => {
+		setValue('bank', code);
+	}, []);
 
 	const onSubmit = React.useCallback((values: EditPayoutInfoValues) => {
 		editStore({
@@ -48,17 +52,19 @@ const StorePayoutsMain: React.FC<StorePayoutsMainProps> = ({
 
 	return (
 		<Screen style={styles.container}>
-			<FormInput
-				name='accountNumber'
-				label='Account Number'
-				control={control}
-				style={styles.input}
-				keyboardType='number-pad'
-			/>
-			<Input style={styles.input} label='Bank' />
-			<Button onPress={toggleSelect} text='Open toggle' />
-			<Button text='Update information' onPress={handleSubmit(onSubmit)} />
-			<BankSelect modalRef={selectModalRef} setBank={setBankCode} />
+			<FormProvider {...methods}>
+				<FormInput
+					name='accountNumber'
+					label='Account Number'
+					control={control}
+					style={styles.input}
+					keyboardType='number-pad'
+				/>
+				<Input style={styles.input} label='Bank' />
+				<BankSelectButton control={control} onPress={toggleSelect} />
+				<Button text='Update information' onPress={handleSubmit(onSubmit)} />
+				<BankSelect modalRef={selectModalRef} setBank={handleSetBank} />
+			</FormProvider>
 		</Screen>
 	);
 };
