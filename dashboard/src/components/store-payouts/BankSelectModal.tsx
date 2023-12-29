@@ -5,13 +5,16 @@ import { BANKS } from '../../utils/banks';
 import Typography from '../global/Typography';
 import useTheme from '../../hooks/useTheme';
 
-interface BankSelectProps {
+interface BankSelectModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
 	currentBank?: string;
 	setBank(bankCode: string): void;
 }
 
-const BankSelect: React.FC<BankSelectProps> = ({ modalRef, setBank }) => {
+const BankSelectModal: React.FC<BankSelectModalProps> = ({
+	modalRef,
+	setBank
+}) => {
 	const { theme } = useTheme();
 
 	const handleBankSelect = React.useCallback(
@@ -54,4 +57,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default BankSelect;
+export default BankSelectModal;

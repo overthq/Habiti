@@ -4,10 +4,9 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import Screen from '../global/Screen';
 import FormInput from '../global/FormInput';
-import Input from '../global/Input';
 import Button from '../global/Button';
 import { useEditStoreMutation } from '../../types/api';
-import BankSelect from './BankSelect';
+import BankSelectModal from './BankSelectModal';
 import BankSelectButton from './BankSelectButton';
 
 interface EditPayoutInfoValues {
@@ -60,10 +59,9 @@ const StorePayoutsMain: React.FC<StorePayoutsMainProps> = ({
 					style={styles.input}
 					keyboardType='number-pad'
 				/>
-				<Input style={styles.input} label='Bank' />
 				<BankSelectButton control={control} onPress={toggleSelect} />
 				<Button text='Update information' onPress={handleSubmit(onSubmit)} />
-				<BankSelect modalRef={selectModalRef} setBank={handleSetBank} />
+				<BankSelectModal modalRef={selectModalRef} setBank={handleSetBank} />
 			</FormProvider>
 		</Screen>
 	);

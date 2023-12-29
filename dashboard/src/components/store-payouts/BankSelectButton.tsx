@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, View, Text, StyleSheet } from 'react-native';
 import { Control, FieldValues, Path, useController } from 'react-hook-form';
 import { Icon } from '../Icon';
 import { BANKS_BY_CODE } from '../../utils/transform';
@@ -25,21 +25,26 @@ const BankSelectButton = <T extends FieldValues>({
 	const { theme } = useTheme();
 
 	return (
-		<Pressable
-			style={[styles.container, { backgroundColor: theme.input.background }]}
-			onPress={onPress}
-		>
-			<Typography style={{ color: theme.input.text }}>
-				{field.value ? BANKS_BY_CODE[field.value].name : 'Select Bank'}
-			</Typography>
-			<Icon name='chevron-down' />
-		</Pressable>
+		<View>
+			<Text style={[styles.label, { color: theme.input.label }]}>Bank</Text>
+			<Pressable
+				style={[styles.button, { backgroundColor: theme.input.background }]}
+				onPress={onPress}
+			>
+				<Typography style={{ color: theme.input.text }}>
+					{field.value ? BANKS_BY_CODE[field.value].name : 'Select Bank'}
+				</Typography>
+				<Icon name='chevron-down' />
+			</Pressable>
+		</View>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		height: 40
+	label: {
+		marginBottom: 4,
+		fontSize: 14,
+		fontWeight: '500'
 	},
 	button: {
 		paddingHorizontal: 8,
@@ -47,7 +52,8 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		borderRadius: 4
+		borderRadius: 4,
+		marginBottom: 8
 	}
 });
 
