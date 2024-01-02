@@ -145,7 +145,7 @@ export const resolveAccountNumber = async (
 	accountNumber: string,
 	bankCode: string
 ) => {
-	const data = await get(
+	const { data } = await get(
 		`/bank/resolve?account_number=${accountNumber}&bank_code=${bankCode}`
 	);
 

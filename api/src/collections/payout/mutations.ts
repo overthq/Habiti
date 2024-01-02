@@ -1,5 +1,5 @@
 import { Resolver } from '../../types/resolvers';
-import { payAccount } from '../../utils/paystack';
+import { payAccount, resolveAccountNumber } from '../../utils/paystack';
 
 interface CreatePayoutArgs {
 	input: { amount: number };
@@ -34,8 +34,32 @@ const createPayout: Resolver<CreatePayoutArgs> = async (
 	return payout;
 };
 
+interface VerifyBankAccountArgs {
+	input: {
+		bankAccountNumber: string;
+		bankCode: string;
+	};
+}
+
+const verifyBankAccount: Resolver<VerifyBankAccountArgs> = async (
+	_,
+	{ input: { bankAccountNumber, bankCode } }
+) => {
+	try {
+		const data = await resolveAccountNumber(bankAccountNumber, bankCode);
+
+		return {
+			accountNumber: data.account_number,
+			accountName: data.account_name
+		};
+	} catch (error) {
+		// Should probably just throw this anyway. (Maybe prettify?)
+	}
+};
+
 export default {
 	Mutation: {
-		createPayout
+		createPayout,
+		verifyBankAccount
 	}
 };

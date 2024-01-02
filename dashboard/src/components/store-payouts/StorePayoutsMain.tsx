@@ -5,9 +5,10 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import Screen from '../global/Screen';
 import FormInput from '../global/FormInput';
 import Button from '../global/Button';
-import { useEditStoreMutation } from '../../types/api';
+import { useVerifyBankAccountMutation } from '../../types/api';
 import BankSelectModal from './BankSelectModal';
 import BankSelectButton from './BankSelectButton';
+import ConfirmationModal from './ConfirmationModal';
 
 interface EditPayoutInfoValues {
 	accountNumber: string;
@@ -23,8 +24,11 @@ const StorePayoutsMain: React.FC<StorePayoutsMainProps> = ({
 	bankAccountNumber,
 	bankCode
 }) => {
-	const [, editStore] = useEditStoreMutation();
+	const [{ fetching, data }, verifyBankAccount] =
+		useVerifyBankAccountMutation();
+
 	const selectModalRef = React.useRef<BottomSheetModal>(null);
+	const confirmationModalRef = React.useRef<BottomSheetModal>(null);
 
 	const methods = useForm<EditPayoutInfoValues>({
 		defaultValues: {
@@ -39,11 +43,18 @@ const StorePayoutsMain: React.FC<StorePayoutsMainProps> = ({
 		setValue('bank', code);
 	}, []);
 
-	const onSubmit = React.useCallback((values: EditPayoutInfoValues) => {
-		editStore({
-			input: { bankAccountNumber: values.accountNumber, bankCode: values.bank }
-		});
-	}, []);
+	const onSubmit = React.useCallback(
+		async (values: EditPayoutInfoValues) => {
+			verifyBankAccount({
+				input: {
+					bankAccountNumber: values.accountNumber,
+					bankCode: values.bank
+				}
+			});
+			confirmationModalRef.current?.present();
+		},
+		[confirmationModalRef.current]
+	);
 
 	const toggleSelect = React.useCallback(() => {
 		selectModalRef.current?.present();
@@ -62,6 +73,11 @@ const StorePayoutsMain: React.FC<StorePayoutsMainProps> = ({
 				<BankSelectButton control={control} onPress={toggleSelect} />
 				<Button text='Update information' onPress={handleSubmit(onSubmit)} />
 				<BankSelectModal modalRef={selectModalRef} setBank={handleSetBank} />
+				<ConfirmationModal
+					modalRef={confirmationModalRef}
+					fetching={fetching}
+					accountName={data?.verifyBankAccount?.accountName}
+				/>
 			</FormProvider>
 		</Screen>
 	);

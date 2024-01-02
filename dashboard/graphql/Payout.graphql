@@ -16,3 +16,9 @@ mutation CreatePayout($input: CreatePayoutInput!) {
 		createdAt
 	}
 }
+
+mutation VerifyBankAccount($input: VerifyBankAccountInput!) {
+	verifyBankAccount(input: $input) {
+		accountName
+	}
+}

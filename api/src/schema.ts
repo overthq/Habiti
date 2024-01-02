@@ -51,7 +51,6 @@ import WatchlistProductTypes from './collections/watchlist-product/types';
 import statsQueries from './collections/stats/queries';
 import StatsTypes from './collections/stats/types';
 
-import payoutQueries from './collections/payout/queries';
 import payoutMutations from './collections/payout/mutations';
 import PayoutTypes from './collections/payout/types';
 
@@ -95,7 +94,6 @@ const resolvers = merge(
 	watchlistProductQueries,
 	watchlistProductMutations,
 	statsQueries,
-	payoutQueries,
 	payoutMutations,
 	productCategoryQueries,
 	productCategoryMutations

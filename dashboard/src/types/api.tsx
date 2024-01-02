@@ -221,6 +221,7 @@ export type Mutation = {
 	updateCartProduct: CartProduct;
 	updateOrder: Order;
 	verify: VerifyResponse;
+	verifyBankAccount: VerifyBankAccountResponse;
 };
 
 export type MutationAddProductToCategoryArgs = {
@@ -347,6 +348,10 @@ export type MutationVerifyArgs = {
 	input: VerifyInput;
 };
 
+export type MutationVerifyBankAccountArgs = {
+	input: VerifyBankAccountInput;
+};
+
 export type NewStats = {
 	__typename?: 'NewStats';
 	daily: Stats;
@@ -445,7 +450,6 @@ export type Query = {
 	stores: Array<Store>;
 	user: User;
 	users: Array<User>;
-	verifyBankAccount: VerifyBankAccountResponse;
 };
 
 export type QueryCartArgs = {
@@ -474,11 +478,6 @@ export type QueryStoreProductsArgs = {
 
 export type QueryUserArgs = {
 	id: Scalars['ID']['input'];
-};
-
-export type QueryVerifyBankAccountArgs = {
-	bankAccountNumber: Scalars['String']['input'];
-	bankCode: Scalars['String']['input'];
 };
 
 export type RegisterInput = {
@@ -600,6 +599,11 @@ export type User = {
 	phone: Scalars['String']['output'];
 	updatedAt: Scalars['String']['output'];
 	watchlist: Array<WatchlistProduct>;
+};
+
+export type VerifyBankAccountInput = {
+	bankAccountNumber: Scalars['String']['input'];
+	bankCode: Scalars['String']['input'];
 };
 
 export type VerifyBankAccountResponse = {
@@ -807,6 +811,18 @@ export type CreatePayoutMutation = {
 		id: string;
 		amount: number;
 		createdAt: string;
+	};
+};
+
+export type VerifyBankAccountMutationVariables = Exact<{
+	input: VerifyBankAccountInput;
+}>;
+
+export type VerifyBankAccountMutation = {
+	__typename?: 'Mutation';
+	verifyBankAccount: {
+		__typename?: 'VerifyBankAccountResponse';
+		accountName: string;
 	};
 };
 
@@ -1260,6 +1276,20 @@ export function useCreatePayoutMutation() {
 	return Urql.useMutation<CreatePayoutMutation, CreatePayoutMutationVariables>(
 		CreatePayoutDocument
 	);
+}
+export const VerifyBankAccountDocument = gql`
+	mutation VerifyBankAccount($input: VerifyBankAccountInput!) {
+		verifyBankAccount(input: $input) {
+			accountName
+		}
+	}
+`;
+
+export function useVerifyBankAccountMutation() {
+	return Urql.useMutation<
+		VerifyBankAccountMutation,
+		VerifyBankAccountMutationVariables
+	>(VerifyBankAccountDocument);
 }
 export const ProductsDocument = gql`
 	query Products {
