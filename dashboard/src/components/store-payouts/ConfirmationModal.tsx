@@ -1,6 +1,9 @@
 import React from 'react';
 import { Text, View } from 'react-native';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import {
+	BottomSheetBackdropProps,
+	BottomSheetModal
+} from '@gorhom/bottom-sheet';
 import Typography from '../global/Typography';
 import { useEditStoreMutation } from '../../types/api';
 import { useFormContext } from 'react-hook-form';
@@ -9,6 +12,7 @@ import { TouchableOpacity } from '@gorhom/bottom-sheet';
 
 interface ConfirmationModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
+	backdropComponent: React.FC<BottomSheetBackdropProps>;
 	fetching: boolean;
 	accountName?: string;
 }
@@ -20,6 +24,7 @@ interface EditPayoutInfoValues {
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 	modalRef,
+	backdropComponent,
 	fetching,
 	accountName
 }) => {
@@ -40,10 +45,12 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
 	return (
 		<BottomSheetModal
+			index={0}
 			ref={modalRef}
 			snapPoints={snapPoints}
 			backgroundStyle={{ backgroundColor: '#505050' }}
 			handleIndicatorStyle={{ backgroundColor: theme.text.primary }}
+			backdropComponent={backdropComponent}
 			enablePanDownToClose
 		>
 			{fetching ? (

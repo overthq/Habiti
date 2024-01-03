@@ -1,7 +1,11 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { FormProvider, useForm } from 'react-hook-form';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import {
+	BottomSheetBackdrop,
+	BottomSheetBackdropProps,
+	BottomSheetModal
+} from '@gorhom/bottom-sheet';
 import Screen from '../global/Screen';
 import FormInput from '../global/FormInput';
 import Button from '../global/Button';
@@ -60,6 +64,18 @@ const StorePayoutsMain: React.FC<StorePayoutsMainProps> = ({
 		selectModalRef.current?.present();
 	}, []);
 
+	const renderBackdrop = React.useCallback(
+		(props: BottomSheetBackdropProps) => (
+			<BottomSheetBackdrop
+				{...props}
+				pressBehavior='close'
+				disappearsOnIndex={-1}
+				appearsOnIndex={0}
+			/>
+		),
+		[]
+	);
+
 	return (
 		<Screen style={styles.container}>
 			<FormProvider {...methods}>
@@ -72,8 +88,13 @@ const StorePayoutsMain: React.FC<StorePayoutsMainProps> = ({
 				/>
 				<BankSelectButton control={control} onPress={toggleSelect} />
 				<Button text='Update information' onPress={handleSubmit(onSubmit)} />
-				<BankSelectModal modalRef={selectModalRef} setBank={handleSetBank} />
+				<BankSelectModal
+					backdropComponent={renderBackdrop}
+					modalRef={selectModalRef}
+					setBank={handleSetBank}
+				/>
 				<ConfirmationModal
+					backdropComponent={renderBackdrop}
 					modalRef={confirmationModalRef}
 					fetching={fetching}
 					accountName={data?.verifyBankAccount?.accountName}

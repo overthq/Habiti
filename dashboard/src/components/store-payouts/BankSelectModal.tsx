@@ -1,18 +1,24 @@
 import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
-import { BottomSheetFlatList, BottomSheetModal } from '@gorhom/bottom-sheet';
+import {
+	BottomSheetBackdropProps,
+	BottomSheetFlatList,
+	BottomSheetModal
+} from '@gorhom/bottom-sheet';
 import { BANKS } from '../../utils/banks';
 import Typography from '../global/Typography';
 import useTheme from '../../hooks/useTheme';
 
 interface BankSelectModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
+	backdropComponent: React.FC<BottomSheetBackdropProps>;
 	currentBank?: string;
 	setBank(bankCode: string): void;
 }
 
 const BankSelectModal: React.FC<BankSelectModalProps> = ({
 	modalRef,
+	backdropComponent,
 	setBank
 }) => {
 	const { theme } = useTheme();
@@ -30,11 +36,13 @@ const BankSelectModal: React.FC<BankSelectModalProps> = ({
 
 	return (
 		<BottomSheetModal
+			index={0}
 			ref={modalRef}
 			snapPoints={snapPoints}
 			backgroundStyle={{ backgroundColor: '#505050' }}
 			handleIndicatorStyle={{ backgroundColor: theme.text.primary }}
 			enablePanDownToClose
+			backdropComponent={backdropComponent}
 		>
 			<BottomSheetFlatList
 				data={BANKS}
