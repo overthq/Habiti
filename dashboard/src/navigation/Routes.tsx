@@ -36,7 +36,11 @@ const Routes: React.FC = () => {
 			<StatusBar style={getStatusBarStyle(name)} />
 			<NavigationContainer theme={name === 'dark' ? DarkTheme : DefaultTheme}>
 				<BottomSheetModalProvider>
-					<AppStack.Navigator>
+					<AppStack.Navigator
+						initialRouteName={
+							accessToken ? (!activeStore ? 'StoreSelect' : 'Main') : 'Register'
+						}
+					>
 						{accessToken ? (
 							!activeStore ? (
 								<AppStack.Group screenOptions={{ headerShown: false }}>
