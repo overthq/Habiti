@@ -10,7 +10,7 @@ import { ProductsStackParamList } from '../types/navigation';
 const ProductsStack = createStackNavigator<ProductsStackParamList>();
 
 const ProductsStackNavigator = () => (
-	<ProductsStack.Navigator>
+	<ProductsStack.Navigator initialRouteName='ProductsList'>
 		<ProductsStack.Screen name='ProductsList' component={Products} />
 		<ProductsStack.Screen
 			name='Product'

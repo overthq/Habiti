@@ -19,7 +19,7 @@ const Product: React.FC = () => {
 	useGoBack();
 
 	if (fetching || !data?.product) {
-		return <View style={{ flex: 1, backgroundColor: '#FFFFFF' }} />;
+		return <View />;
 	}
 
 	return <ProductMain product={data.product} />;

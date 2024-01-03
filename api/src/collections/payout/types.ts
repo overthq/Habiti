@@ -14,8 +14,21 @@ const PayoutTypes = gql`
 		amount: Int!
 	}
 
+	input VerifyBankAccountInput {
+		bankAccountNumber: String!
+		bankCode: String!
+	}
+
+	type VerifyBankAccountResponse {
+		accountNumber: String!
+		accountName: String!
+	}
+
 	extend type Mutation {
 		createPayout(input: CreatePayoutInput!): Payout!
+		verifyBankAccount(
+			input: VerifyBankAccountInput!
+		): VerifyBankAccountResponse!
 	}
 `;
 

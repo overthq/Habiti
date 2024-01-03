@@ -15,6 +15,7 @@ const AddPayout: React.FC = () => {
 
 	return (
 		<Screen style={styles.container}>
+			{/* Switch to keypad-style input */}
 			<Input
 				value={amount}
 				onChangeText={setAmount}

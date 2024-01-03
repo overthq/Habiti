@@ -3,11 +3,19 @@ import { View, StyleSheet, Pressable } from 'react-native';
 import { Icon } from '../Icon';
 import { FilterButton } from '../orders/OrdersFilter';
 import useTheme from '../../hooks/useTheme';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { AppStackParamList } from '../../types/navigation';
 
 const ProductsFilter = () => {
 	const { theme } = useTheme();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+
 	const handleChangeStatus = () => () => {
 		// Do something
+	};
+
+	const handleOpenFilterSheet = () => {
+		navigate('FilterProducts');
 	};
 
 	return (
@@ -25,7 +33,7 @@ const ProductsFilter = () => {
 					active={false}
 				/>
 			</View>
-			<Pressable>
+			<Pressable onPress={handleOpenFilterSheet}>
 				<Icon name='filter' size={20} />
 			</Pressable>
 		</View>

@@ -27,8 +27,12 @@ query Store {
 		website
 		twitter
 		instagram
-		revenue
+		realizedRevenue
+		unrealizedRevenue
 		payedOut
+		bankAccountNumber
+		bankCode
+		bankAccountReference
 		image {
 			id
 			path

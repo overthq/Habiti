@@ -1,35 +1,34 @@
 import React from 'react';
 import { Text, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import StoreSelectList from '../components/store-select/StoreSelectList';
 import { AppStackParamList } from '../types/navigation';
 import Button from '../components/global/Button';
+import Screen from '../components/global/Screen';
+import Typography from '../components/global/Typography';
 
 const StoreSelect: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<Text style={styles.header}>Select store</Text>
-			<Text style={styles.description}>
+		<Screen style={styles.container}>
+			<Typography style={styles.header}>Select store</Typography>
+			<Typography style={styles.description}>
 				You can choose an existing store you manage, or create a new one:
-			</Text>
+			</Typography>
 			<StoreSelectList />
 			<Button
 				onPress={() => navigate('CreateStore')}
 				style={{ marginBottom: 16 }}
 				text='Create a store'
 			/>
-		</SafeAreaView>
+		</Screen>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		paddingHorizontal: 16,
-		backgroundColor: '#FFFFFF'
+		paddingHorizontal: 16
 	},
 	header: {
 		fontWeight: 'bold',
@@ -37,7 +36,6 @@ const styles = StyleSheet.create({
 		marginBottom: 8
 	},
 	description: {
-		fontSize: 16,
 		marginBottom: 16
 	}
 });

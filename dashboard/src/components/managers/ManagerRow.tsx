@@ -11,7 +11,7 @@ interface ManagerRowProps {
 const ManagerRow: React.FC<ManagerRowProps> = ({ manager, you }) => {
 	return (
 		<View style={styles.container}>
-			<Typography style={styles.name}>{manager.name}</Typography>
+			<Typography>{manager.name}</Typography>
 			{you && (
 				<View style={styles.you}>
 					<Text style={styles.youText}>You</Text>
@@ -23,14 +23,8 @@ const ManagerRow: React.FC<ManagerRowProps> = ({ manager, you }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		paddingHorizontal: 16,
-		paddingVertical: 12,
 		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'space-between'
-	},
-	name: {
-		fontSize: 16
+		alignItems: 'center'
 	},
 	you: {
 		marginLeft: 8,

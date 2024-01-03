@@ -6,7 +6,6 @@ import {
 	ViewToken,
 	FlatListProps
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, {
 	useSharedValue,
 	useAnimatedScrollHandler
@@ -18,6 +17,7 @@ import Social from '../components/create-store/Social';
 import StoreImage from '../components/create-store/StoreImage';
 import useStore from '../state';
 import { useForm, FormProvider } from 'react-hook-form';
+import Screen from '../components/global/Screen';
 
 const { width } = Dimensions.get('window');
 
@@ -91,7 +91,7 @@ const CreateStore: React.FC = () => {
 	const isLastStep = activeStepIndex === steps.length - 1;
 
 	return (
-		<SafeAreaView style={styles.container}>
+		<Screen>
 			<FormProvider {...formMethods}>
 				<AnimatedFlatList
 					ref={listRef}
@@ -111,21 +111,15 @@ const CreateStore: React.FC = () => {
 				onPress={isLastStep ? formMethods.handleSubmit(onSubmit) : toNext}
 				style={styles.button}
 			/>
-		</SafeAreaView>
+		</Screen>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1
-	},
 	title: {
 		fontSize: 36,
 		fontWeight: 'bold',
 		marginBottom: 16
-	},
-	description: {
-		fontSize: 16
 	},
 	input: {
 		fontSize: 16,

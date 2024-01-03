@@ -8,7 +8,7 @@ import { OrdersStackParamList } from '../types/navigation';
 const OrdersStack = createStackNavigator<OrdersStackParamList>();
 
 const OrdersStackNavigator = () => (
-	<OrdersStack.Navigator>
+	<OrdersStack.Navigator initialRouteName='OrdersList'>
 		<OrdersStack.Screen
 			name='OrdersList'
 			component={Orders}

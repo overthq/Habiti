@@ -12,6 +12,7 @@ export type AppStackParamList = {
 	AddPayout: undefined;
 	AddCategory: undefined;
 	AddManager: undefined;
+	FilterProducts: undefined;
 };
 
 export type MainTabParamList = {

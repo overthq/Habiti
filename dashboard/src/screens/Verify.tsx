@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
+import Screen from '../components/global/Screen';
+import Typography from '../components/global/Typography';
 import Button from '../components/global/Button';
 import authStyles from '../styles/auth';
 import useStore from '../state';
@@ -18,29 +20,35 @@ const Verify: React.FC = () => {
 	const codeRef = React.useRef<(TextInput | null)[]>([]);
 	const codeThing = new Array(6).fill(0);
 
-	const handleKeyPress = (key: string, index: number) => {
-		if (key === 'Backspace' && index !== 0 && codeRef.current) {
-			codeRef.current[index - 1]?.focus();
-		}
-	};
-
-	const handleFieldChange = (value: string, index: number) => {
-		if (codeRef.current) {
-			if (index < 5 && value) {
-				codeRef.current[index + 1]?.focus();
+	const handleKeyPress = React.useCallback(
+		(key: string, index: number) => {
+			if (key === 'Backspace' && index !== 0 && codeRef.current) {
+				codeRef.current[index - 1]?.focus();
 			}
+		},
+		[codeRef.current]
+	);
 
-			if (index === codeRef.current.length - 1) {
-				codeRef.current[index]?.blur();
+	const handleFieldChange = React.useCallback(
+		(value: string, index: number) => {
+			if (codeRef.current) {
+				if (index < 5 && value) {
+					codeRef.current[index + 1]?.focus();
+				}
+
+				if (index === codeRef.current.length - 1) {
+					codeRef.current[index]?.blur();
+				}
+
+				const newCode = [...code];
+				newCode[index] = value;
+				setCode(newCode);
 			}
+		},
+		[codeRef.current]
+	);
 
-			const newCode = [...code];
-			newCode[index] = value;
-			setCode(newCode);
-		}
-	};
-
-	const handleSubmit = async () => {
+	const handleSubmit = React.useCallback(async () => {
 		try {
 			const { data } = await verify({
 				input: { phone, code: code.join('') }
@@ -53,14 +61,14 @@ const Verify: React.FC = () => {
 		} catch (error) {
 			console.log(error);
 		}
-	};
+	}, []);
 
 	return (
-		<View style={authStyles.container}>
-			<Text style={authStyles.title}>Your verification code</Text>
-			<Text style={authStyles.description}>
+		<Screen style={authStyles.container}>
+			<Typography style={authStyles.title}>Your verification code</Typography>
+			<Typography style={authStyles.description}>
 				A verification code was sent to your phone via SMS.
-			</Text>
+			</Typography>
 			<View style={styles.inputs}>
 				{codeThing.map((_, index) => (
 					<TextInput
@@ -75,20 +83,19 @@ const Verify: React.FC = () => {
 				))}
 			</View>
 			<Button onPress={handleSubmit} text='Verify' loading={fetching} />
-		</View>
+		</Screen>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		paddingHorizontal: 20
+		paddingHorizontal: 16
 	},
 	inputs: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		marginBottom: 10
+		marginBottom: 8
 	},
 	input: {
 		height: 50,

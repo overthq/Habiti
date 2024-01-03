@@ -1,13 +1,9 @@
 import { Resolver } from '../../types/resolvers';
+import { payAccount, resolveAccountNumber } from '../../utils/paystack';
 
 interface CreatePayoutArgs {
-	input: {
-		amount: number;
-	};
+	input: { amount: number };
 }
-
-// TODO: We should probably move all the logic into individual functions,
-// to make it easier to test, debug and enhance.
 
 const createPayout: Resolver<CreatePayoutArgs> = async (
 	_,
@@ -18,36 +14,52 @@ const createPayout: Resolver<CreatePayoutArgs> = async (
 		throw new Error('No storeId provided');
 	}
 
-	// Pre-payout.
-	// - Check if there all preconditions are met. e.g. existing disputes.
-
 	const store = await ctx.prisma.store.findUnique({
 		where: { id: ctx.storeId }
 	});
 
 	// Extra validation (the frontend should cover this).
-	if (store.revenue < store.payedOut + amount) {
+	if (store.realizedRevenue < store.payedOut + amount) {
 		throw new Error('Insufficient funds');
+	} else if (!store.bankAccountReference) {
+		throw new Error('No account reference');
 	}
 
-	// Run actual payout function.
-	// - Create a transaction reference.
-	// - Use transaction reference to create payout.
-	// - Make this easy to revert if the third party fails.
+	const payout = await ctx.prisma.payout.create({
+		data: { storeId: ctx.storeId, amount }
+	});
 
-	const [payout] = await ctx.prisma.$transaction([
-		ctx.prisma.payout.create({ data: { storeId: ctx.storeId, amount } }),
-		ctx.prisma.store.update({
-			where: { id: ctx.storeId },
-			data: { payedOut: { increment: amount } }
-		})
-	]);
+	await payAccount(amount.toString(), payout.id, store.bankAccountReference);
 
 	return payout;
 };
 
+interface VerifyBankAccountArgs {
+	input: {
+		bankAccountNumber: string;
+		bankCode: string;
+	};
+}
+
+const verifyBankAccount: Resolver<VerifyBankAccountArgs> = async (
+	_,
+	{ input: { bankAccountNumber, bankCode } }
+) => {
+	try {
+		const data = await resolveAccountNumber(bankAccountNumber, bankCode);
+
+		return {
+			accountNumber: data.account_number,
+			accountName: data.account_name
+		};
+	} catch (error) {
+		// Should probably just throw this anyway. (Maybe prettify?)
+	}
+};
+
 export default {
 	Mutation: {
-		createPayout
+		createPayout,
+		verifyBankAccount
 	}
 };

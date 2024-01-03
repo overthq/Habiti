@@ -2,6 +2,7 @@ import { FileUpload } from 'graphql-upload';
 import { UploadApiResponse } from 'cloudinary';
 import { Resolver } from '../../types/resolvers';
 import { uploadStream } from '../../utils/upload';
+import { createTransferReceipient } from '../../utils/paystack';
 
 interface CreateStoreArgs {
 	input: {
@@ -57,6 +58,8 @@ interface EditStoreArgs {
 		twitter?: string;
 		instagram?: string;
 		imageFile?: Promise<FileUpload>;
+		bankAccountNumber?: string;
+		bankCode?: string;
 	};
 }
 
@@ -76,19 +79,24 @@ const editStore: Resolver<EditStoreArgs> = async (_, { input }, ctx) => {
 		uploadedUrl = url;
 	}
 
+	let bankAccountReference: string = undefined;
+
+	if (rest.bankAccountNumber && rest.bankCode) {
+		bankAccountReference = await createTransferReceipient(
+			ctx.user.name,
+			rest.bankAccountNumber,
+			rest.bankCode
+		);
+	}
+
 	const store = await ctx.prisma.store.update({
 		where: { id: ctx.storeId },
 		data: {
 			...rest,
 			...(uploadedUrl !== ''
-				? {
-						image: {
-							update: {
-								path: uploadedUrl
-							}
-						}
-				  }
-				: {})
+				? { image: { update: { path: uploadedUrl } } }
+				: {}),
+			...(bankAccountReference ? { bankAccountReference } : {})
 		}
 	});
 

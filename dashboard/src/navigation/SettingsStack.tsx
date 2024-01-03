@@ -8,7 +8,10 @@ import SettingsTheme from '../components/settings/SettingsTheme';
 const SettingsStack = createStackNavigator<SettingsStackParamList>();
 
 const SettingsStackNavigator = () => (
-	<SettingsStack.Navigator screenOptions={{ headerStatusBarHeight: 0 }}>
+	<SettingsStack.Navigator
+		screenOptions={{ headerStatusBarHeight: 0 }}
+		initialRouteName='SettingsList'
+	>
 		<SettingsStack.Screen
 			name='SettingsList'
 			component={Settings}

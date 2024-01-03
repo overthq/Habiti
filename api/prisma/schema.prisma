@@ -23,16 +23,20 @@ model User {
 }
 
 model Store {
-  id          String   @id @default(uuid())
-  name        String
-  description String?
-  website     String?
-  twitter     String?  @db.VarChar(15)
-  instagram   String?  @db.VarChar(30)
-  revenue     Int      @default(0)
-  payedOut    Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                   String   @id @default(uuid())
+  name                 String
+  description          String?
+  website              String?
+  twitter              String?  @db.VarChar(15)
+  instagram            String?  @db.VarChar(30)
+  unrealizedRevenue    Int      @default(0)
+  realizedRevenue      Int      @default(0)
+  payedOut             Int      @default(0)
+  bankAccountNumber    String?
+  bankCode             String?
+  bankAccountReference String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 
   image      Image?
   products   Product[]
@@ -165,12 +169,13 @@ model Card {
 }
 
 model Payout {
-  id        String   @id @default(uuid())
+  id        String       @id @default(uuid())
   storeId   String
   amount    Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  status    PayoutStatus @default(Pending)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  store     Store        @relation(fields: [storeId], references: [id], onDelete: Cascade)
 }
 
 model ProductCategory {
@@ -184,9 +189,10 @@ model ProductCategory {
 }
 
 model StoreProductCategory {
-  id      String @id @default(uuid())
-  storeId String
-  name    String
+  id          String  @id @default(uuid())
+  storeId     String
+  name        String
+  description String?
 
   store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
 
@@ -199,4 +205,10 @@ enum OrderStatus {
   Cancelled
   Completed
   Delivered
+}
+
+enum PayoutStatus {
+  Pending
+  Success
+  Failure
 }

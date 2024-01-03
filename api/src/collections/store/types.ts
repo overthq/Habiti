@@ -8,8 +8,12 @@ const StoreTypes = gql`
 		website: String
 		twitter: String
 		instagram: String
-		revenue: Int!
+		realizedRevenue: Int!
+		unrealizedRevenue: Int!
 		payedOut: Int!
+		bankAccountNumber: String
+		bankCode: String
+		bankAccountReference: String
 		createdAt: String!
 		updatedAt: String!
 
@@ -39,6 +43,8 @@ const StoreTypes = gql`
 		twitter: String
 		instagram: String
 		storeImage: Upload
+		bankAccountNumber: String
+		bankCode: String
 	}
 
 	input EditStoreInput {
@@ -48,6 +54,8 @@ const StoreTypes = gql`
 		twitter: String
 		instagram: String
 		imageFile: Upload
+		bankAccountNumber: String
+		bankCode: String
 	}
 
 	extend type Query {

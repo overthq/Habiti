@@ -2,49 +2,31 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
 		justifyContent: 'center',
-		padding: 20,
-		backgroundColor: '#FFFFFF'
+		padding: 16
 	},
 	title: {
 		fontSize: 30,
-		marginBottom: 5,
-		color: '#000000',
+		marginBottom: 4,
 		fontWeight: 'bold'
 	},
 	description: {
-		fontSize: 16,
-		marginBottom: 25,
-		color: '#777777'
+		marginBottom: 24
 	},
 	inputLabel: {
 		textTransform: 'uppercase',
 		fontSize: 12,
-		marginBottom: 5,
-		fontWeight: '500',
-		color: '#777777'
+		marginBottom: 4,
+		fontWeight: '500'
 	},
 	input: {
 		height: 45,
-		padding: 10,
+		padding: 8,
 		fontSize: 16,
 		borderRadius: 4,
 		borderWidth: 2,
-		marginBottom: 10,
+		marginBottom: 8,
 		borderColor: '#777777'
-	},
-	button: {
-		height: 45,
-		backgroundColor: '#200200',
-		borderRadius: 4,
-		justifyContent: 'center',
-		alignItems: 'center'
-	},
-	buttonText: {
-		fontWeight: 'bold',
-		fontSize: 16,
-		color: '#FFFFFF'
 	}
 });
 

@@ -4,6 +4,8 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import styles from '../styles/auth';
 import { AppStackParamList } from '../types/navigation';
 import { useAuthenticateMutation } from '../types/api';
+import Screen from '../components/global/Screen';
+import Typography from '../components/global/Typography';
 import Button from '../components/global/Button';
 
 const Authenticate: React.FC = () => {
@@ -21,11 +23,11 @@ const Authenticate: React.FC = () => {
 	};
 
 	return (
-		<View style={styles.container}>
-			<Text style={styles.title}>Enter your phone number.</Text>
-			<Text style={styles.description}>
+		<Screen style={styles.container}>
+			<Typography style={styles.title}>Enter your phone number.</Typography>
+			<Typography style={styles.description}>
 				{`We'll send your verification code here.`}
-			</Text>
+			</Typography>
 			<View>
 				<Text style={styles.inputLabel}>Phone number</Text>
 				<TextInput
@@ -37,7 +39,7 @@ const Authenticate: React.FC = () => {
 				/>
 			</View>
 			<Button loading={fetching} text='Next' onPress={handleSubmit} />
-		</View>
+		</Screen>
 	);
 };
 

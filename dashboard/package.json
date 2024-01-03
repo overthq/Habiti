@@ -9,6 +9,7 @@
 		"eject": "expo eject"
 	},
 	"dependencies": {
+		"@gorhom/bottom-sheet": "^4",
 		"@react-native-async-storage/async-storage": "1.18.2",
 		"@react-native-community/masked-view": "0.1.11",
 		"@react-native-masked-view/masked-view": "0.2.9",

@@ -1,8 +1,7 @@
 import fetch from 'node-fetch';
-import { PrismaClient } from '@prisma/client';
+import prismaClient from '../config/prisma';
 
 const API_URL = 'https://api.paystack.co';
-const prisma = new PrismaClient();
 
 const post = async (path: string, body: object) => {
 	const response = await fetch(`${API_URL}${path}`, {
@@ -62,7 +61,7 @@ interface StoreCardData {
 }
 
 export const storeCard = (userId: string, data: StoreCardData) => {
-	return prisma.card.upsert({
+	return prismaClient.card.upsert({
 		where: { signature: data.authorization.signature },
 		update: {},
 		create: {
@@ -120,13 +119,18 @@ export const createRecepient = async (
 	return data;
 };
 
-export const createTransferReference = () => {
-	// Do something.
-};
-
-// Pay account.
-export const payAccount = async (amount: string, reference: string) => {
-	const data = await post('/transfer', { amount, reference });
+export const payAccount = async (
+	amount: string,
+	reference: string,
+	recepient: string
+) => {
+	const data = await post('/transfer', {
+		source: 'balance',
+		amount,
+		reference,
+		recepient,
+		reason: 'Payout'
+	});
 
 	return data;
 };
@@ -141,7 +145,7 @@ export const resolveAccountNumber = async (
 	accountNumber: string,
 	bankCode: string
 ) => {
-	const data = await get(
+	const { data } = await get(
 		`/bank/resolve?account_number=${accountNumber}&bank_code=${bankCode}`
 	);
 
@@ -163,7 +167,7 @@ export const createTransferReceipient = async (
 	accountNumber: string,
 	bankCode: string
 ) => {
-	const data = await post('/transferrecipient', {
+	const { data } = await post('/transferrecipient', {
 		type: 'nuban',
 		name,
 		account_number: accountNumber,
@@ -171,7 +175,7 @@ export const createTransferReceipient = async (
 		currency: 'NGN'
 	});
 
-	return data;
+	return data.recipient_code;
 };
 
 // TODO: Use authorization code to return the tokenization fee to user programmatically.

@@ -1,21 +1,19 @@
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import Screen from '../global/Screen';
 
 const SearchProducts = () => {
 	return (
-		<SafeAreaView style={styles.container}>
+		<Screen>
 			<View>
 				<TextInput />
 			</View>
-		</SafeAreaView>
+		</Screen>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1
-	}
+	container: {}
 });
 
 export default SearchProducts;

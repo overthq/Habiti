@@ -1,7 +1,5 @@
 import Constants from 'expo-constants';
 
-console.log(Constants.expoConfig);
-
 const localhostString = (port: string) =>
 	`http://${Constants.expoGoConfig?.debuggerHost
 		?.split(':')

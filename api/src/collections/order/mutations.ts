@@ -22,9 +22,17 @@ const createOrder: Resolver<CreateOrderArgs> = async (
 		}
 	});
 
-	const total = cart.products.reduce((acc, next) => {
-		return acc + next.product.unitPrice * next.quantity;
-	}, 0);
+	let total = 0;
+
+	const orderData = cart.products.map(p => {
+		total += p.product.unitPrice * p.quantity;
+
+		return {
+			productId: p.productId,
+			unitPrice: p.product.unitPrice,
+			quantity: p.quantity
+		};
+	});
 
 	// TODO:
 	// 1. Retrieve (or listen to) the status from the chargeAuthorization call,
@@ -48,16 +56,12 @@ const createOrder: Resolver<CreateOrderArgs> = async (
 			data: {
 				userId: ctx.user.id,
 				storeId: cart.storeId,
-				products: {
-					createMany: {
-						data: cart.products.map(p => ({
-							productId: p.productId,
-							unitPrice: p.product.unitPrice,
-							quantity: p.quantity
-						}))
-					}
-				}
+				products: { createMany: { data: orderData } }
 			}
+		}),
+		ctx.prisma.store.update({
+			where: { id: cart.storeId },
+			data: { unrealizedRevenue: { increment: total } }
 		}),
 		ctx.prisma.cart.delete({ where: { id: cartId } })
 	]);
@@ -100,7 +104,10 @@ const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
 
 				await ctx.prisma.store.update({
 					where: { id: order.storeId },
-					data: { revenue: { increment: total } }
+					data: {
+						realizedRevenue: { increment: total },
+						unrealizedRevenue: { decrement: total }
+					}
 				});
 
 				break;

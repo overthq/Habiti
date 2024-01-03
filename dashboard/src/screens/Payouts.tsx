@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet, Pressable } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import useGoBack from '../hooks/useGoBack';
 import { useStorePayoutsQuery } from '../types/api';
@@ -8,6 +8,9 @@ import { Icon } from '../components/Icon';
 import { AppStackParamList } from '../types/navigation';
 import Screen from '../components/global/Screen';
 import Typography from '../components/global/Typography';
+import SectionHeader from '../components/global/SectionHeader';
+import PayoutRow from '../components/payouts/PayoutRow';
+import RevenueBar from '../components/payouts/RevenueBar';
 
 const Payouts = () => {
 	const [{ data, fetching }] = useStorePayoutsQuery();
@@ -37,16 +40,12 @@ const Payouts = () => {
 
 	return (
 		<Screen style={styles.container}>
-			<Text style={styles.sectionHeader}>Available:</Text>
+			<SectionHeader title='Available:' />
 			<Typography style={styles.available}>{formatNaira(50000)}</Typography>
-			{/* <View style={styles.bar}>
-				<View style={[styles.track, { width: '50%' }]} />
-			</View> */}
+			<RevenueBar realizedRevenue={75} unrealizedRevenue={50} payedOut={25} />
+			<Typography>Payout History</Typography>
 			{data.currentStore.payouts.map(payout => (
-				<View key={payout.id}>
-					<Text>{formatNaira(payout.amount)}</Text>
-					<Text>{payout.createdAt}</Text>
-				</View>
+				<PayoutRow key={payout.id} payout={payout} />
 			))}
 		</Screen>
 	);
@@ -54,32 +53,13 @@ const Payouts = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		paddingTop: 8,
+		paddingTop: 16,
 		paddingHorizontal: 16
-	},
-	sectionHeader: {
-		fontSize: 16,
-		fontWeight: '500',
-		color: '#505050'
 	},
 	available: {
 		fontSize: 24,
-		fontWeight: 'bold'
-	},
-	button: {
-		marginVertical: 8
-	},
-	bar: {
-		width: '100%',
-		height: 16,
-		marginVertical: 8,
-		borderRadius: 10,
-		backgroundColor: '#D3D3D3',
-		overflow: 'hidden'
-	},
-	track: {
-		backgroundColor: '#505050',
-		height: '100%'
+		fontWeight: 'bold',
+		marginBottom: 8
 	}
 });
 

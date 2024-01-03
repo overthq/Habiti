@@ -103,6 +103,7 @@ export type CreateCartInput = {
 };
 
 export type CreateCategoryInput = {
+	description?: InputMaybe<Scalars['String']['input']>;
 	name: Scalars['String']['input'];
 };
 
@@ -124,6 +125,8 @@ export type CreateProductInput = {
 };
 
 export type CreateStoreInput = {
+	bankAccountNumber?: InputMaybe<Scalars['String']['input']>;
+	bankCode?: InputMaybe<Scalars['String']['input']>;
 	description: Scalars['String']['input'];
 	instagram?: InputMaybe<Scalars['String']['input']>;
 	name: Scalars['String']['input'];
@@ -147,6 +150,8 @@ export type EditProfileInput = {
 };
 
 export type EditStoreInput = {
+	bankAccountNumber?: InputMaybe<Scalars['String']['input']>;
+	bankCode?: InputMaybe<Scalars['String']['input']>;
 	description?: InputMaybe<Scalars['String']['input']>;
 	imageFile?: InputMaybe<Scalars['Upload']['input']>;
 	instagram?: InputMaybe<Scalars['String']['input']>;
@@ -216,6 +221,7 @@ export type Mutation = {
 	updateCartProduct: CartProduct;
 	updateOrder: Order;
 	verify: VerifyResponse;
+	verifyBankAccount: VerifyBankAccountResponse;
 };
 
 export type MutationAddProductToCategoryArgs = {
@@ -340,6 +346,10 @@ export type MutationUpdateOrderArgs = {
 
 export type MutationVerifyArgs = {
 	input: VerifyInput;
+};
+
+export type MutationVerifyBankAccountArgs = {
+	input: VerifyBankAccountInput;
 };
 
 export type NewStats = {
@@ -500,6 +510,9 @@ export type Stats = {
 
 export type Store = {
 	__typename?: 'Store';
+	bankAccountNumber?: Maybe<Scalars['String']['output']>;
+	bankAccountReference?: Maybe<Scalars['String']['output']>;
+	bankCode?: Maybe<Scalars['String']['output']>;
 	cartId?: Maybe<Scalars['ID']['output']>;
 	carts: Array<Cart>;
 	categories: Array<StoreProductCategory>;
@@ -516,8 +529,9 @@ export type Store = {
 	payedOut: Scalars['Int']['output'];
 	payouts: Array<Payout>;
 	products: Array<Product>;
-	revenue: Scalars['Int']['output'];
+	realizedRevenue: Scalars['Int']['output'];
 	twitter?: Maybe<Scalars['String']['output']>;
+	unrealizedRevenue: Scalars['Int']['output'];
 	updatedAt: Scalars['String']['output'];
 	website?: Maybe<Scalars['String']['output']>;
 };
@@ -585,6 +599,17 @@ export type User = {
 	phone: Scalars['String']['output'];
 	updatedAt: Scalars['String']['output'];
 	watchlist: Array<WatchlistProduct>;
+};
+
+export type VerifyBankAccountInput = {
+	bankAccountNumber: Scalars['String']['input'];
+	bankCode: Scalars['String']['input'];
+};
+
+export type VerifyBankAccountResponse = {
+	__typename?: 'VerifyBankAccountResponse';
+	accountName: Scalars['String']['output'];
+	accountNumber: Scalars['String']['output'];
 };
 
 export type VerifyInput = {
@@ -789,6 +814,18 @@ export type CreatePayoutMutation = {
 	};
 };
 
+export type VerifyBankAccountMutationVariables = Exact<{
+	input: VerifyBankAccountInput;
+}>;
+
+export type VerifyBankAccountMutation = {
+	__typename?: 'Mutation';
+	verifyBankAccount: {
+		__typename?: 'VerifyBankAccountResponse';
+		accountName: string;
+	};
+};
+
 export type ProductsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ProductsQuery = {
@@ -921,8 +958,12 @@ export type StoreQuery = {
 		website?: string | null;
 		twitter?: string | null;
 		instagram?: string | null;
-		revenue: number;
+		realizedRevenue: number;
+		unrealizedRevenue: number;
 		payedOut: number;
+		bankAccountNumber?: string | null;
+		bankCode?: string | null;
+		bankAccountReference?: string | null;
 		image?: { __typename?: 'Image'; id: string; path: string } | null;
 	};
 };
@@ -1236,6 +1277,20 @@ export function useCreatePayoutMutation() {
 		CreatePayoutDocument
 	);
 }
+export const VerifyBankAccountDocument = gql`
+	mutation VerifyBankAccount($input: VerifyBankAccountInput!) {
+		verifyBankAccount(input: $input) {
+			accountName
+		}
+	}
+`;
+
+export function useVerifyBankAccountMutation() {
+	return Urql.useMutation<
+		VerifyBankAccountMutation,
+		VerifyBankAccountMutationVariables
+	>(VerifyBankAccountDocument);
+}
 export const ProductsDocument = gql`
 	query Products {
 		currentStore {
@@ -1399,8 +1454,12 @@ export const StoreDocument = gql`
 			website
 			twitter
 			instagram
-			revenue
+			realizedRevenue
+			unrealizedRevenue
 			payedOut
+			bankAccountNumber
+			bankCode
+			bankAccountReference
 			image {
 				id
 				path

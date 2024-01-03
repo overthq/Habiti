@@ -24,8 +24,12 @@ const Register: React.FC = () => {
 	};
 
 	const handleSubmit = async () => {
-		await register({ input: { name, email, phone } });
-		navigate('Verify', { phone });
+		try {
+			await register({ input: { name, email, phone } });
+			navigate('Verify', { phone });
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	return (
