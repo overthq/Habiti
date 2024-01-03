@@ -175,7 +175,7 @@ export const createTransferReceipient = async (
 		currency: 'NGN'
 	});
 
-	return data.recepient_code;
+	return data.recipient_code;
 };
 
 // TODO: Use authorization code to return the tokenization fee to user programmatically.
