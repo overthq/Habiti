@@ -6,8 +6,24 @@ const product: Resolver = async (_, { id }, ctx) => {
 	return fetchedProduct;
 };
 
-const storeProducts: Resolver = async (_, { storeId }, ctx) => {
-	const products = await ctx.prisma.product.findMany({ where: { storeId } });
+interface StoreProductsArgs {
+	storeId: string;
+	orderBy?: {
+		createdAt?: 'asc' | 'desc';
+		updatedAt?: 'asc' | 'desc';
+		unitPrice?: 'asc' | 'desc';
+	}[];
+}
+
+const storeProducts: Resolver<StoreProductsArgs> = async (
+	_,
+	{ storeId, orderBy },
+	ctx
+) => {
+	const products = await ctx.prisma.product.findMany({
+		where: { storeId },
+		orderBy
+	});
 
 	return products;
 };

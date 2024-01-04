@@ -65,6 +65,11 @@ const Root = `
 		id: ID!
 	}
 
+	enum Sort {
+		asc
+		desc
+	}
+
 	type Query { _: Boolean }
 	type Mutation { _: Boolean }
 `;

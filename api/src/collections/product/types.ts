@@ -36,9 +36,15 @@ const ProductTypes = gql`
 		imageFiles: [Upload!]!
 	}
 
+	input ProductOrderByInput {
+		createdAt: Sort
+		updatedAt: Sort
+		unitPrice: Sort
+	}
+
 	extend type Query {
 		product(id: ID!): Product!
-		storeProducts(id: ID!): [Product!]!
+		storeProducts(storeId: ID!, orderBy: [ProductOrderByInput!]): [Product!]!
 	}
 
 	extend type Mutation {
