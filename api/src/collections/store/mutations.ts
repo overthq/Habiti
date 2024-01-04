@@ -29,11 +29,7 @@ const createStore: Resolver<CreateStoreArgs> = async (_, { input }, ctx) => {
 	const store = await ctx.prisma.store.create({
 		data: {
 			...rest,
-			managers: {
-				create: {
-					managerId: ctx.user.id
-				}
-			},
+			managers: { create: { managerId: ctx.user.id } },
 			...(!!uploadedImage
 				? {
 						image: {

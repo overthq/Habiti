@@ -1,13 +1,14 @@
 import React from 'react';
-import { View } from 'react-native';
 import SettingSelectRow from './SettingSelectRow';
 import useStore from '../../state';
 import useGoBack from '../../hooks/useGoBack';
+import Screen from '../global/Screen';
 
 type Theme = 'light' | 'dark' | 'auto';
 
 const themes: Theme[] = ['light', 'dark', 'auto'];
 
+// TODO: Move this into the "screens" folder.
 const SettingsTheme = () => {
 	const { theme, setPreference } = useStore(state => ({
 		theme: state.theme,
@@ -24,7 +25,7 @@ const SettingsTheme = () => {
 	useGoBack();
 
 	return (
-		<View>
+		<Screen>
 			{themes.map(t => (
 				<SettingSelectRow
 					key={t}
@@ -33,7 +34,7 @@ const SettingsTheme = () => {
 					onSelectRow={handleThemeSelect(t)}
 				/>
 			))}
-		</View>
+		</Screen>
 	);
 };
 

@@ -25,7 +25,6 @@ const BankSelectModal: React.FC<BankSelectModalProps> = ({
 
 	const handleBankSelect = React.useCallback(
 		(code: string) => () => {
-			console.log('Doing something');
 			setBank(code);
 			modalRef.current?.dismiss();
 		},

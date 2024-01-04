@@ -6,6 +6,7 @@ import {
 } from '@react-navigation/native';
 import { Provider } from 'urql';
 import { StatusBar } from 'expo-status-bar';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 import Register from '../screens/Register';
 import Authenticate from '../screens/Authenticate';
@@ -20,7 +21,6 @@ import { AppStack } from './AppStack';
 import ModalGroup from './ModalGroup';
 import { getStatusBarStyle } from '../utils/theme';
 import useTheme from '../hooks/useTheme';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
 const Routes: React.FC = () => {
 	const client = useClient();
