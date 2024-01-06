@@ -1,9 +1,7 @@
 import { Resolver } from '../../types/resolvers';
 
-const product: Resolver = async (_, { id }, ctx) => {
-	const fetchedProduct = await ctx.prisma.product.findUnique({ where: { id } });
-
-	return fetchedProduct;
+const product: Resolver = (_, { id }, ctx) => {
+	return ctx.prisma.product.findUnique({ where: { id } });
 };
 
 interface OrdersArgs {
