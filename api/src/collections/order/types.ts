@@ -48,6 +48,11 @@ const OrderTypes = gql`
 		status: OrderStatus
 	}
 
+	input OrderOrderByInput {
+		createdAt: Sort
+		updatedAt: Sort
+	}
+
 	extend type Query {
 		order(id: ID!): Order!
 	}

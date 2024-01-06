@@ -6,51 +6,38 @@ const product: Resolver = async (_, { id }, ctx) => {
 	return fetchedProduct;
 };
 
-interface StoreProductsArgs {
-	storeId: string;
+interface OrdersArgs {
 	orderBy?: {
 		createdAt?: 'asc' | 'desc';
 		updatedAt?: 'asc' | 'desc';
-		unitPrice?: 'asc' | 'desc';
-	}[];
+	};
 }
 
-const storeProducts: Resolver<StoreProductsArgs> = async (
-	_,
-	{ storeId, orderBy },
-	ctx
-) => {
-	const products = await ctx.prisma.product.findMany({
-		where: { storeId },
-		orderBy
-	});
-
-	return products;
+const orders: Resolver<OrdersArgs> = (parent, { orderBy }, ctx) => {
+	return ctx.prisma.product
+		.findUnique({ where: { id: parent.id } })
+		.orders({ orderBy: { order: orderBy } });
 };
 
-const orders: Resolver = async (parent, _, ctx) => {
+const carts: Resolver = (parent, _, ctx) => {
 	return ctx.prisma.product.findUnique({ where: { id: parent.id } }).orders();
 };
 
-const carts: Resolver = async (parent, _, ctx) => {
-	return ctx.prisma.product.findUnique({ where: { id: parent.id } }).orders();
-};
-
-const store: Resolver = async (parent, _, ctx) => {
+const store: Resolver = (parent, _, ctx) => {
 	return ctx.prisma.product.findUnique({ where: { id: parent.id } }).store();
 };
 
-const images: Resolver = async (parent, _, ctx) => {
+const images: Resolver = (parent, _, ctx) => {
 	return ctx.prisma.product.findUnique({ where: { id: parent.id } }).images();
 };
 
-const categories: Resolver = async (parent, _, ctx) => {
+const categories: Resolver = (parent, _, ctx) => {
 	return ctx.prisma.product
 		.findUnique({ where: { id: parent.id } })
 		.categories();
 };
 
-// TODO: Very hacky and bad.
+// FIXME: Very hacky.
 const inCart: Resolver = async (parent, _, ctx) => {
 	const fetchedCart = await ctx.prisma.cart.findUnique({
 		where: { userId_storeId: { userId: ctx.user.id, storeId: parent.storeId } }
@@ -70,8 +57,7 @@ const inCart: Resolver = async (parent, _, ctx) => {
 
 export default {
 	Query: {
-		product,
-		storeProducts
+		product
 	},
 	Product: {
 		orders,

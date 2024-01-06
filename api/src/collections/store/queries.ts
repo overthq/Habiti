@@ -18,12 +18,31 @@ const stores: Resolver = (_, __, ctx) => {
 	return ctx.prisma.store.findMany();
 };
 
-const products: Resolver = (parent, _, ctx) => {
-	return ctx.prisma.store.findUnique({ where: { id: parent.id } }).products();
+interface ProductsArgs {
+	orderBy?: {
+		createdAt?: 'asc' | 'desc';
+		updatedAt?: 'asc' | 'desc';
+		unitPrice?: 'asc' | 'desc';
+	}[];
+}
+
+const products: Resolver<ProductsArgs> = (parent, { orderBy }, ctx) => {
+	return ctx.prisma.store
+		.findUnique({ where: { id: parent.id } })
+		.products({ orderBy });
 };
 
-const orders: Resolver = (parent, _, ctx) => {
-	return ctx.prisma.store.findUnique({ where: { id: parent.id } }).orders();
+interface OrdersArgs {
+	orderBy?: {
+		createdAt?: 'asc' | 'desc';
+		updatedAt?: 'asc' | 'desc';
+	}[];
+}
+
+const orders: Resolver<OrdersArgs> = (parent, { orderBy }, ctx) => {
+	return ctx.prisma.store
+		.findUnique({ where: { id: parent.id } })
+		.orders({ orderBy });
 };
 
 const managers: Resolver = (parent, _, ctx) => {

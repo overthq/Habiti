@@ -20,7 +20,7 @@ const StoreTypes = gql`
 		followedByUser: Boolean!
 		cartId: ID
 		products: [Product!]!
-		orders: [Order!]!
+		orders(orderBy: OrderOrderByInput): [Order!]!
 		managers: [StoreManager!]!
 		followers: [StoreFollower!]!
 		carts: [Cart!]!
