@@ -378,6 +378,11 @@ export type Order = {
 	userId: Scalars['ID']['output'];
 };
 
+export type OrderOrderByInput = {
+	createdAt?: InputMaybe<Sort>;
+	updatedAt?: InputMaybe<Sort>;
+};
+
 export type OrderProduct = {
 	__typename?: 'OrderProduct';
 	id: Scalars['ID']['output'];
@@ -426,6 +431,10 @@ export type Product = {
 	watchlists: Array<WatchlistProduct>;
 };
 
+export type ProductOrdersArgs = {
+	orderBy?: InputMaybe<Array<OrderOrderByInput>>;
+};
+
 export type ProductCategory = {
 	__typename?: 'ProductCategory';
 	category: StoreProductCategory;
@@ -433,6 +442,12 @@ export type ProductCategory = {
 	id: Scalars['ID']['output'];
 	product: Product;
 	productId: Scalars['ID']['output'];
+};
+
+export type ProductOrderByInput = {
+	createdAt?: InputMaybe<Sort>;
+	unitPrice?: InputMaybe<Sort>;
+	updatedAt?: InputMaybe<Sort>;
 };
 
 export type Query = {
@@ -446,7 +461,6 @@ export type Query = {
 	product: Product;
 	stats: Stats;
 	store: Store;
-	storeProducts: Array<Product>;
 	stores: Array<Store>;
 	user: User;
 	users: Array<User>;
@@ -472,10 +486,6 @@ export type QueryStoreArgs = {
 	id: Scalars['ID']['input'];
 };
 
-export type QueryStoreProductsArgs = {
-	id: Scalars['ID']['input'];
-};
-
 export type QueryUserArgs = {
 	id: Scalars['ID']['input'];
 };
@@ -490,6 +500,11 @@ export type RemoveProductFromCategoryInput = {
 	categoryId: Scalars['ID']['input'];
 	productId: Scalars['ID']['input'];
 };
+
+export enum Sort {
+	Asc = 'asc',
+	Desc = 'desc'
+}
 
 export enum StatPeriod {
 	Day = 'Day',
@@ -534,6 +549,14 @@ export type Store = {
 	unrealizedRevenue: Scalars['Int']['output'];
 	updatedAt: Scalars['String']['output'];
 	website?: Maybe<Scalars['String']['output']>;
+};
+
+export type StoreOrdersArgs = {
+	orderBy?: InputMaybe<OrderOrderByInput>;
+};
+
+export type StoreProductsArgs = {
+	orderBy?: InputMaybe<Array<ProductOrderByInput>>;
 };
 
 export type StoreFollower = {
