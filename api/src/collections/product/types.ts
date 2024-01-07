@@ -42,6 +42,11 @@ const ProductTypes = gql`
 		unitPrice: Sort
 	}
 
+	input ProductFilterInput {
+		unitPrice: IntWhere
+		quantity: IntWhere
+	}
+
 	extend type Query {
 		product(id: ID!): Product!
 	}

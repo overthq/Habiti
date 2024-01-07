@@ -18,7 +18,13 @@ const stores: Resolver = (_, __, ctx) => {
 	return ctx.prisma.store.findMany();
 };
 
+type IntWhere = Partial<Record<'lt' | 'lte' | 'gt' | 'gte', number>>;
+
 interface ProductsArgs {
+	filter?: {
+		unitPrice?: IntWhere;
+		quantity?: IntWhere;
+	};
 	orderBy?: {
 		createdAt?: 'asc' | 'desc';
 		updatedAt?: 'asc' | 'desc';
@@ -26,10 +32,10 @@ interface ProductsArgs {
 	}[];
 }
 
-const products: Resolver<ProductsArgs> = (parent, { orderBy }, ctx) => {
+const products: Resolver<ProductsArgs> = (parent, { filter, orderBy }, ctx) => {
 	return ctx.prisma.store
 		.findUnique({ where: { id: parent.id } })
-		.products({ orderBy });
+		.products({ where: filter, orderBy });
 };
 
 interface OrdersArgs {
