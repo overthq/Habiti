@@ -11,6 +11,14 @@ export interface PreferencesSlice {
 	setPreference: (payload: Partial<PreferencesSlice>) => void;
 }
 
+export interface ProductFiltersSlice {
+	categories: string[];
+	inStock?: boolean;
+	minPrice?: undefined;
+	maxPrice?: undefined;
+	clear(): void;
+}
+
 export type Mutators = [['zustand/persist', unknown]];
 
-export type AppState = AuthSlice & PreferencesSlice;
+export type AppState = AuthSlice & PreferencesSlice & ProductFiltersSlice;

@@ -8,12 +8,9 @@ import { useNavigation } from '@react-navigation/native';
 
 // Filter options
 // Sort by: price, rating, category, in stock
-// Use simple expandable rows
-
-// Rename to "FilterProducts"
+// Use simple expandable rows (accordion)
 
 const FilterProducts = () => {
-	// TODO: Persist state to Zustand
 	const { goBack } = useNavigation();
 	useGoBack('x');
 
@@ -28,8 +25,9 @@ const FilterProducts = () => {
 
 	return (
 		<Screen style={styles.container}>
+			<Typography>Sort by</Typography>
 			<Typography>Price</Typography>
-			<Typography>Rating</Typography>
+			{/* <Typography>Rating</Typography> */}
 			<Typography>Category</Typography>
 			<Typography>In Stock</Typography>
 			<Button
