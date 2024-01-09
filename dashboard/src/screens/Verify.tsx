@@ -20,35 +20,28 @@ const Verify: React.FC = () => {
 	const codeRef = React.useRef<(TextInput | null)[]>([]);
 	const codeThing = new Array(6).fill(0);
 
-	const handleKeyPress = React.useCallback(
-		(key: string, index: number) => {
-			if (key === 'Backspace' && index !== 0 && codeRef.current) {
-				codeRef.current[index - 1]?.focus();
+	const handleKeyPress = (key: string, index: number) => {
+		if (key === 'Backspace' && index !== 0 && codeRef.current) {
+			codeRef.current[index - 1]?.focus();
+		}
+	};
+	const handleFieldChange = (value: string, index: number) => {
+		if (codeRef.current) {
+			if (index < 5 && value) {
+				codeRef.current[index + 1]?.focus();
 			}
-		},
-		[codeRef.current]
-	);
 
-	const handleFieldChange = React.useCallback(
-		(value: string, index: number) => {
-			if (codeRef.current) {
-				if (index < 5 && value) {
-					codeRef.current[index + 1]?.focus();
-				}
-
-				if (index === codeRef.current.length - 1) {
-					codeRef.current[index]?.blur();
-				}
-
-				const newCode = [...code];
-				newCode[index] = value;
-				setCode(newCode);
+			if (index === codeRef.current.length - 1) {
+				codeRef.current[index]?.blur();
 			}
-		},
-		[codeRef.current]
-	);
 
-	const handleSubmit = React.useCallback(async () => {
+			const newCode = [...code];
+			newCode[index] = value;
+			setCode(newCode);
+		}
+	};
+
+	const handleSubmit = async () => {
 		try {
 			const { data } = await verify({
 				input: { phone, code: code.join('') }
@@ -61,7 +54,7 @@ const Verify: React.FC = () => {
 		} catch (error) {
 			console.log(error);
 		}
-	}, []);
+	};
 
 	return (
 		<Screen style={authStyles.container}>
