@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FormProvider, useForm } from 'react-hook-form';
 import Animated, { Layout } from 'react-native-reanimated';
 import Button from '../components/global/Button';
@@ -10,6 +10,7 @@ import SortProducts from '../components/filter-products/SortProducts';
 import Checkbox from '../components/global/Checkbox';
 import Screen from '../components/global/Screen';
 import Typography from '../components/global/Typography';
+import { MainTabParamList } from '../types/navigation';
 
 type AccordionKey = 'sort-by' | 'price' | 'rating' | 'category' | 'in-stock';
 
@@ -21,12 +22,16 @@ interface FilterProductsFormValues {
 }
 
 const buildFilterQuery = (values: FilterProductsFormValues) => {
+	const filter = {};
+	const orderBy = {};
 	// Convert values to "filter" and "orderBy" variables.
+
+	return { filter, orderBy };
 };
 
 const FilterProducts = () => {
 	const [open, setOpen] = React.useState<AccordionKey>();
-	const { goBack } = useNavigation();
+	const { navigate } = useNavigation<NavigationProp<MainTabParamList>>();
 	useGoBack('x');
 
 	const methods = useForm<FilterProductsFormValues>({
@@ -46,12 +51,11 @@ const FilterProducts = () => {
 	);
 
 	const handleClearFilters = React.useCallback(() => {
-		// TODO: Clear
+		methods.reset();
 	}, []);
 
-	const handleApply = React.useCallback(() => {
-		// TODO: Set latest changes
-		goBack();
+	const onSubmit = React.useCallback((values: FilterProductsFormValues) => {
+		navigate('Products', buildFilterQuery(values));
 	}, []);
 
 	return (
@@ -101,7 +105,11 @@ const FilterProducts = () => {
 						text='Clear filters'
 						onPress={handleClearFilters}
 					/>
-					<Button style={styles.button} text='Apply' onPress={handleApply} />
+					<Button
+						style={styles.button}
+						text='Apply'
+						onPress={methods.handleSubmit(onSubmit)}
+					/>
 				</View>
 			</Screen>
 		</FormProvider>

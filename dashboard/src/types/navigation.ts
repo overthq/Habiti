@@ -1,3 +1,5 @@
+import { IntWhere } from './api';
+
 export type AppStackParamList = {
 	Main: undefined;
 	Authenticate: undefined;
@@ -18,7 +20,7 @@ export type AppStackParamList = {
 export type MainTabParamList = {
 	Home: undefined;
 	Orders: undefined;
-	Products: undefined;
+	Products?: ProductsParams;
 	Store: undefined;
 };
 
@@ -52,4 +54,13 @@ export type StoreStackParamList = {
 	Payouts: undefined;
 	Managers: undefined;
 	Categories: undefined;
+};
+
+type ProductsParams = {
+	filter?: {
+		unitPrice?: IntWhere;
+	};
+	orderBy?: {
+		createdAt?: 'asc' | 'desc';
+	};
 };
