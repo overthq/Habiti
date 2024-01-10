@@ -1,6 +1,15 @@
 import React from 'react';
 import { Pressable, View, StyleSheet } from 'react-native';
-import Animated, { FadeIn, FadeOut, Layout } from 'react-native-reanimated';
+import Animated, {
+	FadeIn,
+	FadeOut,
+	Layout,
+	interpolate,
+	useAnimatedStyle,
+	useDerivedValue,
+	useSharedValue,
+	withTiming
+} from 'react-native-reanimated';
 import Typography from '../global/Typography';
 import { Icon } from '../Icon';
 
@@ -23,13 +32,29 @@ const AccordionRow: React.FC<AccordionRowProps> = ({
 	display,
 	onPress
 }) => {
+	const offset = useSharedValue(0);
+
+	React.useEffect(() => {
+		offset.value = withTiming(open ? 1 : 0);
+	}, [open]);
+
+	const rotate = useDerivedValue(() => {
+		return `${interpolate(offset.value, [0, 1], [0, -180])}deg`;
+	});
+
+	const animatedStyle = useAnimatedStyle(() => {
+		return { transform: [{ rotateZ: rotate.value }] };
+	});
+
 	return (
 		<Animated.View layout={Layout} style={styles.container}>
 			<Pressable style={styles.row} onPress={onPress}>
 				<Typography>{title}</Typography>
 				<View style={styles.right}>
 					<Typography variant='secondary'>{display}</Typography>
-					<Icon name='chevron-down' />
+					<Animated.View style={animatedStyle}>
+						<Icon name='chevron-down' />
+					</Animated.View>
 				</View>
 			</Pressable>
 			{open && (

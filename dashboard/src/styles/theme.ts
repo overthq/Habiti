@@ -54,7 +54,7 @@ const palette = {
 const dark = {
 	text: {
 		primary: palette.neutral.n1,
-		secondary: '',
+		secondary: palette.neutral.n10,
 		tertiary: '',
 		disabled: '',
 		error: '',
@@ -97,7 +97,7 @@ const dark = {
 const light = {
 	text: {
 		primary: palette.neutral.n100,
-		secondary: '',
+		secondary: palette.neutral.n10,
 		tertiary: '',
 		disabled: '',
 		error: '',

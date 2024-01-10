@@ -11,18 +11,25 @@ import Checkbox from '../components/global/Checkbox';
 import Screen from '../components/global/Screen';
 import Typography from '../components/global/Typography';
 
-// Filter options
-// Sort by: price, rating, category, in stock
-// Use simple expandable rows (accordion)
-
 type AccordionKey = 'sort-by' | 'price' | 'rating' | 'category' | 'in-stock';
+
+interface FilterProductsFormValues {
+	minPrice?: number;
+	maxPrice?: number;
+	categories: string[];
+	inStock?: boolean;
+}
+
+const buildFilterQuery = (values: FilterProductsFormValues) => {
+	// Convert values to "filter" and "orderBy" variables.
+};
 
 const FilterProducts = () => {
 	const [open, setOpen] = React.useState<AccordionKey>();
 	const { goBack } = useNavigation();
 	useGoBack('x');
 
-	const methods = useForm({
+	const methods = useForm<FilterProductsFormValues>({
 		defaultValues: {
 			minPrice: undefined,
 			maxPrice: undefined,
