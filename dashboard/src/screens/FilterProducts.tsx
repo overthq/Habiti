@@ -15,6 +15,7 @@ import { MainTabParamList } from '../types/navigation';
 type AccordionKey = 'sort-by' | 'price' | 'rating' | 'category' | 'in-stock';
 
 interface FilterProductsFormValues {
+	sortBy?: undefined;
 	minPrice?: number;
 	maxPrice?: number;
 	categories: string[];
@@ -22,9 +23,15 @@ interface FilterProductsFormValues {
 }
 
 const buildFilterQuery = (values: FilterProductsFormValues) => {
-	const filter = {};
-	const orderBy = {};
-	// Convert values to "filter" and "orderBy" variables.
+	const { minPrice, maxPrice } = values;
+
+	const filter = {
+		...(minPrice || maxPrice
+			? { unitPrice: { gte: minPrice, lte: maxPrice } }
+			: {})
+	};
+
+	const orderBy = [{}];
 
 	return { filter, orderBy };
 };
@@ -36,6 +43,7 @@ const FilterProducts = () => {
 
 	const methods = useForm<FilterProductsFormValues>({
 		defaultValues: {
+			sortBy: undefined,
 			minPrice: undefined,
 			maxPrice: undefined,
 			categories: [],

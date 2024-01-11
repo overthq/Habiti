@@ -180,11 +180,10 @@ export type Image = {
 };
 
 export type IntWhere = {
-	__typename?: 'IntWhere';
-	gt?: Maybe<Scalars['Int']['output']>;
-	gte?: Maybe<Scalars['Int']['output']>;
-	lt?: Maybe<Scalars['Int']['output']>;
-	lte?: Maybe<Scalars['Int']['output']>;
+	gt?: InputMaybe<Scalars['Int']['input']>;
+	gte?: InputMaybe<Scalars['Int']['input']>;
+	lt?: InputMaybe<Scalars['Int']['input']>;
+	lte?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type Mutation = {
@@ -444,6 +443,11 @@ export type ProductCategory = {
 	productId: Scalars['ID']['output'];
 };
 
+export type ProductFilterInput = {
+	quantity?: InputMaybe<IntWhere>;
+	unitPrice?: InputMaybe<IntWhere>;
+};
+
 export type ProductOrderByInput = {
 	createdAt?: InputMaybe<Sort>;
 	unitPrice?: InputMaybe<Sort>;
@@ -556,6 +560,7 @@ export type StoreOrdersArgs = {
 };
 
 export type StoreProductsArgs = {
+	filter?: InputMaybe<ProductFilterInput>;
 	orderBy?: InputMaybe<Array<ProductOrderByInput>>;
 };
 
@@ -594,8 +599,10 @@ export enum StoreStatPeriod {
 }
 
 export type StringWhere = {
-	__typename?: 'StringWhere';
-	contains?: Maybe<Scalars['String']['output']>;
+	contains?: InputMaybe<Scalars['String']['input']>;
+	endsWith?: InputMaybe<Scalars['String']['input']>;
+	search?: InputMaybe<Scalars['String']['input']>;
+	startsWith?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateCartProductInput = {
@@ -849,7 +856,10 @@ export type VerifyBankAccountMutation = {
 	};
 };
 
-export type ProductsQueryVariables = Exact<{ [key: string]: never }>;
+export type ProductsQueryVariables = Exact<{
+	filter?: InputMaybe<ProductFilterInput>;
+	orderBy?: InputMaybe<Array<ProductOrderByInput> | ProductOrderByInput>;
+}>;
 
 export type ProductsQuery = {
 	__typename?: 'Query';
@@ -1315,10 +1325,13 @@ export function useVerifyBankAccountMutation() {
 	>(VerifyBankAccountDocument);
 }
 export const ProductsDocument = gql`
-	query Products {
+	query Products(
+		$filter: ProductFilterInput
+		$orderBy: [ProductOrderByInput!]
+	) {
 		currentStore {
 			id
-			products {
+			products(filter: $filter, orderBy: $orderBy) {
 				id
 				name
 				description

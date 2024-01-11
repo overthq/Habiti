@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import ProductList from '../components/products/ProductList';
 import ProductsFilter from '../components/products/ProductsFilter';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Icon } from '../components/Icon';
 import { AppStackParamList } from '../types/navigation';
 import Screen from '../components/global/Screen';

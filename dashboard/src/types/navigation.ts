@@ -1,4 +1,4 @@
-import { IntWhere } from './api';
+import { IntWhere, Sort } from './api';
 
 export type AppStackParamList = {
 	Main: undefined;
@@ -61,6 +61,6 @@ type ProductsParams = {
 		unitPrice?: IntWhere;
 	};
 	orderBy?: {
-		createdAt?: 'asc' | 'desc';
-	};
+		createdAt?: Sort;
+	}[];
 };
