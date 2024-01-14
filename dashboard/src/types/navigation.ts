@@ -20,7 +20,7 @@ export type AppStackParamList = {
 export type MainTabParamList = {
 	Home: undefined;
 	Orders: undefined;
-	Products?: ProductsParams;
+	Products?: undefined;
 	Store: undefined;
 };
 
@@ -38,7 +38,7 @@ export type OrdersStackParamList = {
 };
 
 export type ProductsStackParamList = {
-	ProductsList: undefined;
+	ProductsList: ProductsParams;
 	Product: { productId: string };
 };
 
@@ -62,5 +62,7 @@ type ProductsParams = {
 	};
 	orderBy?: {
 		createdAt?: Sort;
+		updatedAt?: Sort;
+		unitPrice?: Sort;
 	}[];
 };

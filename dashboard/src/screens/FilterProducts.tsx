@@ -10,20 +10,25 @@ import SortProducts from '../components/filter-products/SortProducts';
 import Checkbox from '../components/global/Checkbox';
 import Screen from '../components/global/Screen';
 import Typography from '../components/global/Typography';
-import { MainTabParamList } from '../types/navigation';
+import { ProductsStackParamList } from '../types/navigation';
+import { Sort } from '../types/api';
 
 type AccordionKey = 'sort-by' | 'price' | 'rating' | 'category' | 'in-stock';
 
 interface FilterProductsFormValues {
-	sortBy?: undefined;
+	sortBy?: CreatedAtSortBy | UpdatedAtSortBy | UnitPriceSortBy;
 	minPrice?: number;
 	maxPrice?: number;
 	categories: string[];
 	inStock?: boolean;
 }
 
+type CreatedAtSortBy = 'created-at-asc' | 'created-at-desc';
+type UpdatedAtSortBy = 'updated-at-asc' | 'updated-at-desc';
+type UnitPriceSortBy = 'unit-price-asc' | 'unit-price-desc';
+
 const buildFilterQuery = (values: FilterProductsFormValues) => {
-	const { minPrice, maxPrice } = values;
+	const { sortBy, minPrice, maxPrice } = values;
 
 	const filter = {
 		...(minPrice || maxPrice
@@ -31,14 +36,42 @@ const buildFilterQuery = (values: FilterProductsFormValues) => {
 			: {})
 	};
 
-	const orderBy = [{}];
+	let orderBy = undefined;
+
+	// FIXME: I only just realized this means we only allow sorting
+	// by a singular parameter. We should change that.
+
+	if (!!sortBy) {
+		orderBy = [];
+
+		switch (sortBy) {
+			case 'created-at-asc':
+				orderBy.push({ createdAt: Sort.Asc });
+				break;
+			case 'created-at-desc':
+				orderBy.push({ createdAt: Sort.Desc });
+				break;
+			case 'updated-at-asc':
+				orderBy.push({ updatedAt: Sort.Asc });
+				break;
+			case 'updated-at-desc':
+				orderBy.push({ updatedAt: Sort.Desc });
+				break;
+			case 'unit-price-asc':
+				orderBy.push({ unitPrice: Sort.Asc });
+				break;
+			case 'unit-price-desc':
+				orderBy.push({ unitPrice: Sort.Desc });
+				break;
+		}
+	}
 
 	return { filter, orderBy };
 };
 
 const FilterProducts = () => {
 	const [open, setOpen] = React.useState<AccordionKey>();
-	const { navigate } = useNavigation<NavigationProp<MainTabParamList>>();
+	const { navigate } = useNavigation<NavigationProp<ProductsStackParamList>>();
 	useGoBack('x');
 
 	const methods = useForm<FilterProductsFormValues>({
@@ -63,7 +96,7 @@ const FilterProducts = () => {
 	}, []);
 
 	const onSubmit = React.useCallback((values: FilterProductsFormValues) => {
-		navigate('Products', buildFilterQuery(values));
+		navigate('ProductsList', buildFilterQuery(values));
 	}, []);
 
 	return (
