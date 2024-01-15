@@ -15,6 +15,7 @@ export type AppStackParamList = {
 	AddCategory: undefined;
 	AddManager: undefined;
 	FilterProducts: undefined;
+	FilterOrders: undefined;
 };
 
 export type MainTabParamList = {
