@@ -10,7 +10,7 @@ import FilterProducts from '../screens/FilterProducts';
 import FilterOrders from '../screens/FilterOrders';
 
 const ModalGroup = (
-	<AppStack.Group screenOptions={{ presentation: 'modal' }}>
+	<AppStack.Group screenOptions={{ presentation: 'modal', headerShown: true }}>
 		<AppStack.Screen name='Add Product' component={AddProduct} />
 		<AppStack.Screen
 			name='Settings'

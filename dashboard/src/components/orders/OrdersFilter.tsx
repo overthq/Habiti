@@ -3,6 +3,8 @@ import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { OrderStatus } from '../../types/api';
 import { Icon } from '../Icon';
 import useTheme from '../../hooks/useTheme';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { AppStackParamList } from '../../types/navigation';
 
 interface FilterButtonProps {
 	text: string;
@@ -34,14 +36,15 @@ export const FilterButton: React.FC<FilterButtonProps> = ({
 const OrdersFilter: React.FC = () => {
 	const [status, setStatus] = React.useState<OrderStatus>();
 	const { theme } = useTheme();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	const handleChangeStatus = (status?: OrderStatus) => () => {
 		setStatus(status);
 	};
 
-	const openFilterSheet = () => {
-		// Do something
-	};
+	const openFilterSheet = React.useCallback(() => {
+		navigate('FilterOrders');
+	}, []);
 
 	return (
 		<View style={[styles.container, { borderBottomColor: theme.border.color }]}>
