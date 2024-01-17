@@ -11,14 +11,14 @@ interface RadioProps {
 }
 
 const Radio: React.FC<RadioProps> = ({ active }) => {
-	const val = useSharedValue(0.5);
+	const opacity = useSharedValue(0.5);
 
 	React.useEffect(() => {
-		val.value = withTiming(active ? 1 : 0.5);
+		opacity.value = withTiming(active ? 1 : 0.5);
 	}, [active]);
 
 	const style = useAnimatedStyle(() => {
-		return { opacity: val.value };
+		return { opacity: opacity.value };
 	});
 
 	return (
