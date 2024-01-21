@@ -1,18 +1,31 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FormProvider, useForm } from 'react-hook-form';
 import Screen from '../components/global/Screen';
 import useGoBack from '../hooks/useGoBack';
 import AccordionRow from '../components/filter-products/AccordionRow';
 import SortOrders from '../components/filter-orders/SortOrders';
+import Button from '../components/global/Button';
+import { OrdersStackParamList } from '../types/navigation';
+import { FilterOrdersFormValues } from '../types/forms';
 
 type OrderAccordionKey = 'sort-by' | 'total';
 
 const FilterOrders = () => {
 	const [open, setOpen] = React.useState<OrderAccordionKey>();
-	const methods = useForm();
-
+	const { navigate } = useNavigation<NavigationProp<OrdersStackParamList>>();
 	useGoBack('x');
+
+	const methods = useForm({
+		defaultValues: {
+			sortBy: undefined
+		}
+	});
+
+	const handleClearFilters = React.useCallback(() => {
+		methods.reset();
+	}, []);
 
 	const handleExpandSection = React.useCallback(
 		(key: OrderAccordionKey) => () => {
@@ -21,16 +34,35 @@ const FilterOrders = () => {
 		[]
 	);
 
+	const onSubmit = React.useCallback((values: FilterOrdersFormValues) => {
+		console.log({ values });
+		navigate('OrdersList');
+	}, []);
+
 	return (
 		<FormProvider {...methods}>
 			<Screen style={styles.container}>
-				<AccordionRow
-					title='Sort by'
-					open={open === 'sort-by'}
-					onPress={handleExpandSection('sort-by')}
-				>
-					<SortOrders />
-				</AccordionRow>
+				<View>
+					<AccordionRow
+						title='Sort by'
+						open={open === 'sort-by'}
+						onPress={handleExpandSection('sort-by')}
+					>
+						<SortOrders />
+					</AccordionRow>
+				</View>
+				<View style={styles.footer}>
+					<Button
+						style={styles.button}
+						text='Clear filters'
+						onPress={handleClearFilters}
+					/>
+					<Button
+						style={styles.button}
+						text='Apply'
+						onPress={methods.handleSubmit(onSubmit)}
+					/>
+				</View>
 			</Screen>
 		</FormProvider>
 	);
@@ -38,7 +70,16 @@ const FilterOrders = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		padding: 16
+		padding: 16,
+		justifyContent: 'space-between'
+	},
+	footer: {
+		flexGrow: 1,
+		justifyContent: 'flex-end',
+		paddingBottom: 16
+	},
+	button: {
+		marginTop: 8
 	}
 });
 

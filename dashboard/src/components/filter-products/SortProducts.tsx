@@ -1,16 +1,15 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import Typography from '../global/Typography';
 import Radio from '../global/Radio';
-import { Controller } from 'react-hook-form';
 import { FilterProductsFormValues } from '../../types/forms';
 
 const SortProducts = () => {
 	const { control, setValue } = useFormContext<FilterProductsFormValues>();
 
 	return (
-		<View style={{ marginTop: 8 }}>
+		<View style={styles.container}>
 			<Controller
 				name='sortBy'
 				control={control}
@@ -52,6 +51,9 @@ const SortProducts = () => {
 };
 
 const styles = StyleSheet.create({
+	container: {
+		marginTop: 8
+	},
 	option: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
