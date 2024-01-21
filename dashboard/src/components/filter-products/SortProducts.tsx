@@ -4,18 +4,7 @@ import { useFormContext } from 'react-hook-form';
 import Typography from '../global/Typography';
 import Radio from '../global/Radio';
 import { Controller } from 'react-hook-form';
-
-interface FilterProductsFormValues {
-	sortBy?: CreatedAtSortBy | UpdatedAtSortBy | UnitPriceSortBy;
-	minPrice?: number;
-	maxPrice?: number;
-	categories: string[];
-	inStock?: boolean;
-}
-
-type CreatedAtSortBy = 'created-at-asc' | 'created-at-desc';
-type UpdatedAtSortBy = 'updated-at-asc' | 'updated-at-desc';
-type UnitPriceSortBy = 'unit-price-asc' | 'unit-price-desc';
+import { FilterProductsFormValues } from '../../types/forms';
 
 const SortProducts = () => {
 	const { control, setValue } = useFormContext<FilterProductsFormValues>();

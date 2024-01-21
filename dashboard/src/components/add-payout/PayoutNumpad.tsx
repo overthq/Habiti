@@ -3,6 +3,7 @@ import { View, Pressable, StyleSheet } from 'react-native';
 import Button from '../global/Button';
 import { Icon } from '../Icon';
 import Typography from '../global/Typography';
+import NumpadButton from './NumpadButton';
 
 interface PayoutNumpadProps {
 	onUpdate(text: string): void;
@@ -10,41 +11,37 @@ interface PayoutNumpadProps {
 	onClear(): void;
 }
 
+// FIXME: Some weird styling issues here still mean that
+// the '0' button is slightly skewed to the left.
+// (It's visible with a border around the numpad buttons).
+
 const PayoutNumpad: React.FC<PayoutNumpadProps> = ({ onDelete, onClear }) => {
 	return (
 		<View style={styles.container}>
 			<View>
 				<View style={styles.row}>
-					<Pressable>
-						<Typography>1</Typography>
-					</Pressable>
-					<Pressable>
-						<Typography>2</Typography>
-					</Pressable>
-					<Pressable>
-						<Typography>3</Typography>
-					</Pressable>
+					<NumpadButton value='1' />
+					<NumpadButton value='2' />
+					<NumpadButton value='3' />
 				</View>
 				<View style={styles.row}>
-					<Pressable>
-						<Typography>4</Typography>
-					</Pressable>
-					<Pressable>
-						<Typography>5</Typography>
-					</Pressable>
-					<Pressable>
-						<Typography>6</Typography>
-					</Pressable>
+					<NumpadButton value='4' />
+					<NumpadButton value='5' />
+					<NumpadButton value='6' />
 				</View>
 				<View style={styles.row}>
-					<Pressable>
-						<Typography>.</Typography>
+					<Pressable style={styles.cell}>
+						<Typography size='xlarge' style={styles.text}>
+							.
+						</Typography>
 					</Pressable>
-					<Pressable>
-						<Typography>0</Typography>
-					</Pressable>
-					<Pressable onPress={onDelete} onLongPress={onClear}>
-						<Icon name='chevron-left' />
+					<NumpadButton value='0' />
+					<Pressable
+						style={styles.back}
+						onPress={onDelete}
+						onLongPress={onClear}
+					>
+						<Icon size={24} name='chevron-left' />
 					</Pressable>
 				</View>
 			</View>
@@ -56,6 +53,23 @@ const PayoutNumpad: React.FC<PayoutNumpadProps> = ({ onDelete, onClear }) => {
 const styles = StyleSheet.create({
 	container: {
 		padding: 16
+	},
+	cell: {
+		flexGrow: 1,
+		// borderColor: 'red',
+		// borderWidth: 1,
+		padding: 8
+	},
+	text: {
+		textAlign: 'center',
+		fontVariant: ['tabular-nums']
+	},
+	back: {
+		flexGrow: 1,
+		// borderColor: 'red',
+		// borderWidth: 1,
+		justifyContent: 'center',
+		alignItems: 'center'
 	},
 	row: {
 		flexDirection: 'row',

@@ -26,14 +26,15 @@ export const typography = {
 		xlarge: 20
 	},
 	weight: {
-		regular: {},
-		medium: {}
+		regular: 'normal',
+		medium: '500',
+		bold: 'bold'
 	},
 	family: {
 		regular: {},
 		medium: {}
 	}
-};
+} as const;
 
 const palette = {
 	neutral: {

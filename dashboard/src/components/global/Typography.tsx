@@ -21,6 +21,7 @@ const Typography: React.FC<TypographyProps> = ({
 	children,
 	variant = 'primary',
 	size = 'regular',
+	weight = 'regular',
 	style,
 	...props
 }) => {
@@ -29,7 +30,11 @@ const Typography: React.FC<TypographyProps> = ({
 	return (
 		<Text
 			style={[
-				{ color: theme.text[variant], fontSize: typography.size[size] },
+				{
+					color: theme.text[variant],
+					fontSize: typography.size[size],
+					fontWeight: typography.weight[weight]
+				},
 				style
 			]}
 			{...props}
