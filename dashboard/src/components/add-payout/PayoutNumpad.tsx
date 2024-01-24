@@ -18,42 +18,33 @@ interface PayoutNumpadProps {
 const PayoutNumpad: React.FC<PayoutNumpadProps> = ({ onDelete, onClear }) => {
 	return (
 		<View style={styles.container}>
-			<View>
-				<View style={styles.row}>
-					<NumpadButton value='1' />
-					<NumpadButton value='2' />
-					<NumpadButton value='3' />
-				</View>
-				<View style={styles.row}>
-					<NumpadButton value='4' />
-					<NumpadButton value='5' />
-					<NumpadButton value='6' />
-				</View>
-				<View style={styles.row}>
-					<Pressable style={styles.cell}>
-						<Typography size='xlarge' style={styles.text}>
-							.
-						</Typography>
-					</Pressable>
-					<NumpadButton value='0' />
-					<Pressable
-						style={styles.back}
-						onPress={onDelete}
-						onLongPress={onClear}
-					>
-						<Icon size={24} name='chevron-left' />
-					</Pressable>
-				</View>
+			<View style={styles.row}>
+				<NumpadButton value='1' />
+				<NumpadButton value='2' />
+				<NumpadButton value='3' />
 			</View>
-			<Button text='Payout' />
+			<View style={styles.row}>
+				<NumpadButton value='4' />
+				<NumpadButton value='5' />
+				<NumpadButton value='6' />
+			</View>
+			<View style={styles.row}>
+				<Pressable style={styles.cell}>
+					<Typography size='xlarge' style={styles.text}>
+						.
+					</Typography>
+				</Pressable>
+				<NumpadButton value='0' />
+				<Pressable style={styles.back} onPress={onDelete} onLongPress={onClear}>
+					<Icon size={24} name='chevron-left' />
+				</Pressable>
+			</View>
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		padding: 16
-	},
+	container: {},
 	cell: {
 		flexGrow: 1,
 		// borderColor: 'red',

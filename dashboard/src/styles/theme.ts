@@ -14,7 +14,8 @@ export const spacing = {
 	small: 4,
 	regular: 8,
 	medium: 16,
-	large: 24
+	large: 24,
+	xlarge: 32
 };
 
 export const typography = {
@@ -23,7 +24,8 @@ export const typography = {
 		small: 14,
 		regular: 16,
 		large: 18,
-		xlarge: 20
+		xlarge: 20,
+		xxlarge: 32
 	},
 	weight: {
 		regular: 'normal',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import useGoBack from '../hooks/useGoBack';
 import Button from '../components/global/Button';
 import Screen from '../components/global/Screen';
@@ -26,14 +26,17 @@ const AddPayout: React.FC = () => {
 		<Screen style={styles.container}>
 			<AmountDisplay amount={amount} />
 			<PayoutNumpad onUpdate={noop} onClear={handleClear} onDelete={noop} />
-			<Button text='Add payout' onPress={handleAddPayout} />
+			<View style={{ marginTop: 32, paddingHorizontal: 16 }}>
+				<Button text='Add payout' onPress={handleAddPayout} />
+			</View>
 		</Screen>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		padding: 16
+		// borderColor: 'red',
+		// borderWidth: 1
 	},
 	input: {
 		marginVertical: 8

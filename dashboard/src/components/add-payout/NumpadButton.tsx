@@ -9,7 +9,7 @@ interface NumpadButtonProps {
 const NumpadButton: React.FC<NumpadButtonProps> = ({ value }) => {
 	return (
 		<Pressable style={styles.debug}>
-			<Typography size='xlarge' weight='medium' style={styles.text}>
+			<Typography size='xxlarge' weight='medium' style={styles.text}>
 				{value}
 			</Typography>
 		</Pressable>
