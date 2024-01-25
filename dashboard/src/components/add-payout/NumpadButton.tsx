@@ -4,11 +4,12 @@ import Typography from '../global/Typography';
 
 interface NumpadButtonProps {
 	value: string;
+	onPress(): void;
 }
 
-const NumpadButton: React.FC<NumpadButtonProps> = ({ value }) => {
+const NumpadButton: React.FC<NumpadButtonProps> = ({ value, onPress }) => {
 	return (
-		<Pressable style={styles.debug}>
+		<Pressable style={styles.debug} onPress={onPress}>
 			<Typography size='xxlarge' weight='medium' style={styles.text}>
 				{value}
 			</Typography>

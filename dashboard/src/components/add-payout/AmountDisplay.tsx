@@ -10,7 +10,8 @@ interface AmountDisplayProps {
 const AmountDisplay: React.FC<AmountDisplayProps> = ({ amount }) => {
 	const display = React.useMemo(() => {
 		// TODO: Compute correct value from `amount`.
-		return formatNaira(0);
+		const computed = Number(amount) * 100;
+		return formatNaira(computed);
 	}, [amount]);
 
 	return (

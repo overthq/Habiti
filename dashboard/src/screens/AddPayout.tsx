@@ -14,8 +14,16 @@ const AddPayout: React.FC = () => {
 		// Mutation code
 	}, []);
 
-	const noop = React.useCallback(() => {
-		// Do nothing
+	const handleDelete = React.useCallback(() => {
+		setAmount(a => a.slice(0, -1));
+	}, []);
+
+	const handleUpdate = React.useCallback((value: string) => {
+		if (value === '.') {
+			// Special case?
+		} else {
+			setAmount(a => a + value);
+		}
 	}, []);
 
 	const handleClear = React.useCallback(() => {
@@ -25,7 +33,11 @@ const AddPayout: React.FC = () => {
 	return (
 		<Screen style={styles.container}>
 			<AmountDisplay amount={amount} />
-			<PayoutNumpad onUpdate={noop} onClear={handleClear} onDelete={noop} />
+			<PayoutNumpad
+				onUpdate={handleUpdate}
+				onClear={handleClear}
+				onDelete={handleDelete}
+			/>
 			<View style={{ marginTop: 32, paddingHorizontal: 16 }}>
 				<Button text='Add payout' onPress={handleAddPayout} />
 			</View>
