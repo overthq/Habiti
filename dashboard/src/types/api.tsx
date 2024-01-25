@@ -556,7 +556,7 @@ export type Store = {
 };
 
 export type StoreOrdersArgs = {
-	orderBy?: InputMaybe<OrderOrderByInput>;
+	orderBy?: InputMaybe<Array<OrderOrderByInput>>;
 };
 
 export type StoreProductsArgs = {
@@ -745,7 +745,9 @@ export type ManagersQuery = {
 	};
 };
 
-export type OrdersQueryVariables = Exact<{ [key: string]: never }>;
+export type OrdersQueryVariables = Exact<{
+	orderBy?: InputMaybe<Array<OrderOrderByInput> | OrderOrderByInput>;
+}>;
 
 export type OrdersQuery = {
 	__typename?: 'Query';
@@ -1185,10 +1187,10 @@ export function useManagersQuery(
 	});
 }
 export const OrdersDocument = gql`
-	query Orders {
+	query Orders($orderBy: [OrderOrderByInput!]) {
 		currentStore {
 			id
-			orders {
+			orders(orderBy: $orderBy) {
 				id
 				user {
 					id

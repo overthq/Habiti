@@ -1,7 +1,7 @@
-query Orders {
+query Orders($orderBy: [OrderOrderByInput!]) {
 	currentStore {
 		id
-		orders {
+		orders(orderBy: $orderBy) {
 			id
 			user {
 				id
