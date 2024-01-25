@@ -180,11 +180,10 @@ export type Image = {
 };
 
 export type IntWhere = {
-	__typename?: 'IntWhere';
-	gt?: Maybe<Scalars['Int']['output']>;
-	gte?: Maybe<Scalars['Int']['output']>;
-	lt?: Maybe<Scalars['Int']['output']>;
-	lte?: Maybe<Scalars['Int']['output']>;
+	gt?: InputMaybe<Scalars['Int']['input']>;
+	gte?: InputMaybe<Scalars['Int']['input']>;
+	lt?: InputMaybe<Scalars['Int']['input']>;
+	lte?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type Mutation = {
@@ -378,6 +377,11 @@ export type Order = {
 	userId: Scalars['ID']['output'];
 };
 
+export type OrderOrderByInput = {
+	createdAt?: InputMaybe<Sort>;
+	updatedAt?: InputMaybe<Sort>;
+};
+
 export type OrderProduct = {
 	__typename?: 'OrderProduct';
 	id: Scalars['ID']['output'];
@@ -426,6 +430,10 @@ export type Product = {
 	watchlists: Array<WatchlistProduct>;
 };
 
+export type ProductOrdersArgs = {
+	orderBy?: InputMaybe<Array<OrderOrderByInput>>;
+};
+
 export type ProductCategory = {
 	__typename?: 'ProductCategory';
 	category: StoreProductCategory;
@@ -433,6 +441,17 @@ export type ProductCategory = {
 	id: Scalars['ID']['output'];
 	product: Product;
 	productId: Scalars['ID']['output'];
+};
+
+export type ProductFilterInput = {
+	quantity?: InputMaybe<IntWhere>;
+	unitPrice?: InputMaybe<IntWhere>;
+};
+
+export type ProductOrderByInput = {
+	createdAt?: InputMaybe<Sort>;
+	unitPrice?: InputMaybe<Sort>;
+	updatedAt?: InputMaybe<Sort>;
 };
 
 export type Query = {
@@ -446,7 +465,6 @@ export type Query = {
 	product: Product;
 	stats: Stats;
 	store: Store;
-	storeProducts: Array<Product>;
 	stores: Array<Store>;
 	user: User;
 	users: Array<User>;
@@ -472,10 +490,6 @@ export type QueryStoreArgs = {
 	id: Scalars['ID']['input'];
 };
 
-export type QueryStoreProductsArgs = {
-	id: Scalars['ID']['input'];
-};
-
 export type QueryUserArgs = {
 	id: Scalars['ID']['input'];
 };
@@ -490,6 +504,11 @@ export type RemoveProductFromCategoryInput = {
 	categoryId: Scalars['ID']['input'];
 	productId: Scalars['ID']['input'];
 };
+
+export enum Sort {
+	Asc = 'asc',
+	Desc = 'desc'
+}
 
 export enum StatPeriod {
 	Day = 'Day',
@@ -536,6 +555,15 @@ export type Store = {
 	website?: Maybe<Scalars['String']['output']>;
 };
 
+export type StoreOrdersArgs = {
+	orderBy?: InputMaybe<Array<OrderOrderByInput>>;
+};
+
+export type StoreProductsArgs = {
+	filter?: InputMaybe<ProductFilterInput>;
+	orderBy?: InputMaybe<Array<ProductOrderByInput>>;
+};
+
 export type StoreFollower = {
 	__typename?: 'StoreFollower';
 	follower: User;
@@ -571,8 +599,10 @@ export enum StoreStatPeriod {
 }
 
 export type StringWhere = {
-	__typename?: 'StringWhere';
-	contains?: Maybe<Scalars['String']['output']>;
+	contains?: InputMaybe<Scalars['String']['input']>;
+	endsWith?: InputMaybe<Scalars['String']['input']>;
+	search?: InputMaybe<Scalars['String']['input']>;
+	startsWith?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateCartProductInput = {
@@ -715,7 +745,9 @@ export type ManagersQuery = {
 	};
 };
 
-export type OrdersQueryVariables = Exact<{ [key: string]: never }>;
+export type OrdersQueryVariables = Exact<{
+	orderBy?: InputMaybe<Array<OrderOrderByInput> | OrderOrderByInput>;
+}>;
 
 export type OrdersQuery = {
 	__typename?: 'Query';
@@ -826,7 +858,10 @@ export type VerifyBankAccountMutation = {
 	};
 };
 
-export type ProductsQueryVariables = Exact<{ [key: string]: never }>;
+export type ProductsQueryVariables = Exact<{
+	filter?: InputMaybe<ProductFilterInput>;
+	orderBy?: InputMaybe<Array<ProductOrderByInput> | ProductOrderByInput>;
+}>;
 
 export type ProductsQuery = {
 	__typename?: 'Query';
@@ -1152,10 +1187,10 @@ export function useManagersQuery(
 	});
 }
 export const OrdersDocument = gql`
-	query Orders {
+	query Orders($orderBy: [OrderOrderByInput!]) {
 		currentStore {
 			id
-			orders {
+			orders(orderBy: $orderBy) {
 				id
 				user {
 					id
@@ -1292,10 +1327,13 @@ export function useVerifyBankAccountMutation() {
 	>(VerifyBankAccountDocument);
 }
 export const ProductsDocument = gql`
-	query Products {
+	query Products(
+		$filter: ProductFilterInput
+		$orderBy: [ProductOrderByInput!]
+	) {
 		currentStore {
 			id
-			products {
+			products(filter: $filter, orderBy: $orderBy) {
 				id
 				name
 				description

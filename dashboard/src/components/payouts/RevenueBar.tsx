@@ -38,11 +38,6 @@ const RevenueBar: React.FC<RevenueBarProps> = ({
 		return `${Math.floor((available / realizedRevenue) * 100)}%` as const;
 	}, [available, realizedRevenue]);
 
-	React.useEffect(() => {
-		console.log('realizedPercent: ', realizedPercent);
-		console.log('availablePercent: ', availablePercent);
-	}, [realizedPercent, availablePercent]);
-
 	return (
 		<View style={styles.bar}>
 			<View style={[styles.realized, { width: realizedPercent }]}>

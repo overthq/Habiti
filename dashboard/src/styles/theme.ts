@@ -14,7 +14,8 @@ export const spacing = {
 	small: 4,
 	regular: 8,
 	medium: 16,
-	large: 24
+	large: 24,
+	xlarge: 32
 };
 
 export const typography = {
@@ -23,17 +24,19 @@ export const typography = {
 		small: 14,
 		regular: 16,
 		large: 18,
-		xlarge: 20
+		xlarge: 20,
+		xxlarge: 32
 	},
 	weight: {
-		regular: {},
-		medium: {}
+		regular: 'normal',
+		medium: '500',
+		bold: 'bold'
 	},
 	family: {
 		regular: {},
 		medium: {}
 	}
-};
+} as const;
 
 const palette = {
 	neutral: {
@@ -54,7 +57,7 @@ const palette = {
 const dark = {
 	text: {
 		primary: palette.neutral.n1,
-		secondary: '',
+		secondary: palette.neutral.n10,
 		tertiary: '',
 		disabled: '',
 		error: '',
@@ -97,7 +100,7 @@ const dark = {
 const light = {
 	text: {
 		primary: palette.neutral.n100,
-		secondary: '',
+		secondary: palette.neutral.n10,
 		tertiary: '',
 		disabled: '',
 		error: '',

@@ -40,20 +40,17 @@ const Routes: React.FC = () => {
 						initialRouteName={
 							accessToken ? (!activeStore ? 'StoreSelect' : 'Main') : 'Register'
 						}
+						screenOptions={{ headerShown: false }}
 					>
 						{accessToken ? (
 							!activeStore ? (
-								<AppStack.Group screenOptions={{ headerShown: false }}>
+								<AppStack.Group>
 									<AppStack.Screen name='StoreSelect' component={StoreSelect} />
 									<AppStack.Screen name='CreateStore' component={CreateStore} />
 								</AppStack.Group>
 							) : (
 								<>
-									<AppStack.Screen
-										name='Main'
-										component={MainTabNavigator}
-										options={{ headerShown: false }}
-									/>
+									<AppStack.Screen name='Main' component={MainTabNavigator} />
 									{ModalGroup}
 								</>
 							)

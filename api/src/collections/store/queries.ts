@@ -18,12 +18,37 @@ const stores: Resolver = (_, __, ctx) => {
 	return ctx.prisma.store.findMany();
 };
 
-const products: Resolver = (parent, _, ctx) => {
-	return ctx.prisma.store.findUnique({ where: { id: parent.id } }).products();
+type IntWhere = Partial<Record<'lt' | 'lte' | 'gt' | 'gte', number>>;
+
+interface ProductsArgs {
+	filter?: {
+		unitPrice?: IntWhere;
+		quantity?: IntWhere;
+	};
+	orderBy?: {
+		createdAt?: 'asc' | 'desc';
+		updatedAt?: 'asc' | 'desc';
+		unitPrice?: 'asc' | 'desc';
+	}[];
+}
+
+const products: Resolver<ProductsArgs> = (parent, { filter, orderBy }, ctx) => {
+	return ctx.prisma.store
+		.findUnique({ where: { id: parent.id } })
+		.products({ where: filter, orderBy });
 };
 
-const orders: Resolver = (parent, _, ctx) => {
-	return ctx.prisma.store.findUnique({ where: { id: parent.id } }).orders();
+interface OrdersArgs {
+	orderBy?: {
+		createdAt?: 'asc' | 'desc';
+		updatedAt?: 'asc' | 'desc';
+	}[];
+}
+
+const orders: Resolver<OrdersArgs> = (parent, { orderBy }, ctx) => {
+	return ctx.prisma.store
+		.findUnique({ where: { id: parent.id } })
+		.orders({ orderBy });
 };
 
 const managers: Resolver = (parent, _, ctx) => {

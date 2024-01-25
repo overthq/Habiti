@@ -1,11 +1,19 @@
 import React from 'react';
 import { View } from 'react-native';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
+import {
+	useNavigation,
+	NavigationProp,
+	useRoute,
+	RouteProp
+} from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import ProductsListItem from './ProductsListItem';
 import ProductGridItem from './ProductGridItem';
 import { ProductsQuery, useProductsQuery } from '../../types/api';
-import { ProductsStackParamList } from '../../types/navigation';
+import {
+	MainTabParamList,
+	ProductsStackParamList
+} from '../../types/navigation';
 
 interface ProductListProps {
 	mode: 'list' | 'grid';
@@ -17,8 +25,9 @@ interface ProductListProps {
 const ProductListHeader = <View style={{ height: 4 }} />;
 
 const ProductList: React.FC<ProductListProps> = ({ mode }) => {
-	const [{ data }] = useProductsQuery();
+	const { params } = useRoute<RouteProp<MainTabParamList, 'Products'>>();
 	const { navigate } = useNavigation<NavigationProp<ProductsStackParamList>>();
+	const [{ data }] = useProductsQuery({ variables: params });
 
 	const handlePress = React.useCallback(
 		(productId: string) => () => navigate('Product', { productId }),

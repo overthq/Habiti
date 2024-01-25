@@ -65,6 +65,25 @@ const Root = `
 		id: ID!
 	}
 
+	enum Sort {
+		asc
+		desc
+	}
+
+	input IntWhere {
+		lt: Int
+		lte: Int
+		gt: Int
+		gte: Int
+	}
+
+	input StringWhere {
+		contains: String
+		search: String
+		startsWith: String
+		endsWith: String
+	}
+
 	type Query { _: Boolean }
 	type Mutation { _: Boolean }
 `;

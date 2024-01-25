@@ -28,17 +28,6 @@ const OrderTypes = gql`
 		last: Int
 	}
 
-	type IntWhere {
-		gt: Int
-		lt: Int
-		lte: Int
-		gte: Int
-	}
-
-	type StringWhere {
-		contains: String
-	}
-
 	input CreateOrderInput {
 		cartId: ID!
 		cardId: ID
@@ -46,6 +35,11 @@ const OrderTypes = gql`
 
 	input UpdateOrderInput {
 		status: OrderStatus
+	}
+
+	input OrderOrderByInput {
+		createdAt: Sort
+		updatedAt: Sort
 	}
 
 	extend type Query {

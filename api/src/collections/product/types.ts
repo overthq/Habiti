@@ -13,7 +13,7 @@ const ProductTypes = gql`
 
 		inCart: Boolean!
 		store: Store!
-		orders: [Order!]!
+		orders(orderBy: [OrderOrderByInput!]): [Order!]!
 		carts: [CartProduct!]!
 		images: [Image!]!
 		watchlists: [WatchlistProduct!]!
@@ -36,9 +36,19 @@ const ProductTypes = gql`
 		imageFiles: [Upload!]!
 	}
 
+	input ProductOrderByInput {
+		createdAt: Sort
+		updatedAt: Sort
+		unitPrice: Sort
+	}
+
+	input ProductFilterInput {
+		unitPrice: IntWhere
+		quantity: IntWhere
+	}
+
 	extend type Query {
 		product(id: ID!): Product!
-		storeProducts(id: ID!): [Product!]!
 	}
 
 	extend type Mutation {

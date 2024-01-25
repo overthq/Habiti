@@ -1,10 +1,10 @@
 # This is temporary. In the future, queries will no longer be domain-scoped.
 # They will be created on the component level.
 
-query Products {
+query Products($filter: ProductFilterInput, $orderBy: [ProductOrderByInput!]) {
 	currentStore {
 		id
-		products {
+		products(filter: $filter, orderBy: $orderBy) {
 			id
 			name
 			description
