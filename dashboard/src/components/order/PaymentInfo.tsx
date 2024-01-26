@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import {
 	OrderQuery,
 	OrderStatus,
@@ -7,6 +7,7 @@ import {
 } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
 import Button from '../global/Button';
+import Typography from '../global/Typography';
 
 interface PaymentInfoProps {
 	order: OrderQuery['order'];
@@ -33,10 +34,12 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({ order }) => {
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.sectionHeader}>Payment</Text>
+			<Typography weight='medium' style={styles.sectionHeader}>
+				Payment
+			</Typography>
 			<View style={styles.row}>
-				<Text style={styles.text}>Total</Text>
-				<Text style={styles.text}>{formatNaira(order.total)}</Text>
+				<Typography>Total</Typography>
+				<Typography>{formatNaira(order.total)}</Typography>
 			</View>
 			<Button
 				style={styles.button}
@@ -55,8 +58,6 @@ const styles = StyleSheet.create({
 		paddingVertical: 8
 	},
 	sectionHeader: {
-		fontSize: 16,
-		fontWeight: '500',
 		marginBottom: 8
 	},
 	row: {
@@ -64,9 +65,6 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		marginBottom: 4
-	},
-	text: {
-		fontSize: 16
 	},
 	button: {
 		marginTop: 4

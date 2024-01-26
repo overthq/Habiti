@@ -69,8 +69,8 @@ const dark = {
 			text: palette.neutral.n100
 		},
 		secondary: {
-			background: '',
-			text: ''
+			background: palette.neutral.n10,
+			text: palette.neutral.n50
 		},
 		tertiary: {
 			background: '',
