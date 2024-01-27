@@ -1,4 +1,7 @@
-import { FilterProductsFormValues } from '../types/forms';
+import {
+	FilterOrdersFormValues,
+	FilterProductsFormValues
+} from '../types/forms';
 import { Sort } from '../types/api';
 
 export const buildProductsFilterQuery = (values: FilterProductsFormValues) => {
@@ -43,6 +46,29 @@ export const buildProductsFilterQuery = (values: FilterProductsFormValues) => {
 	return { filter, orderBy };
 };
 
-export const buildOrdersFilterQuery = () => {
-	// TODO
+export const buildOrdersFilterQuery = (values: FilterOrdersFormValues) => {
+	const { sortBy } = values;
+
+	let orderBy = undefined;
+
+	if (!!sortBy) {
+		orderBy = [];
+
+		switch (sortBy) {
+			case 'created-at-asc':
+				orderBy.push({ createdAt: Sort.Asc });
+				break;
+			case 'created-at-desc':
+				orderBy.push({ createdAt: Sort.Desc });
+				break;
+			case 'updated-at-asc':
+				orderBy.push({ updatedAt: Sort.Asc });
+				break;
+			case 'updated-at-desc':
+				orderBy.push({ updatedAt: Sort.Desc });
+				break;
+		}
+	}
+
+	return { orderBy };
 };

@@ -33,7 +33,7 @@ export type HomeStackParamList = {
 };
 
 export type OrdersStackParamList = {
-	OrdersList: undefined;
+	OrdersList: OrdersParams;
 	Order: { orderId: string };
 	Product: { productId: string };
 };
@@ -65,5 +65,12 @@ type ProductsParams = {
 		createdAt?: Sort;
 		updatedAt?: Sort;
 		unitPrice?: Sort;
+	}[];
+};
+
+type OrdersParams = {
+	orderBy?: {
+		createdAt?: Sort;
+		updatedAt?: Sort;
 	}[];
 };

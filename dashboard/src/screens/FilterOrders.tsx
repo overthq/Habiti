@@ -9,6 +9,7 @@ import SortOrders from '../components/filter-orders/SortOrders';
 import Button from '../components/global/Button';
 import { OrdersStackParamList } from '../types/navigation';
 import { FilterOrdersFormValues } from '../types/forms';
+import { buildOrdersFilterQuery } from '../utils/filters';
 
 type OrderAccordionKey = 'sort-by' | 'total';
 
@@ -35,8 +36,7 @@ const FilterOrders = () => {
 	);
 
 	const onSubmit = React.useCallback((values: FilterOrdersFormValues) => {
-		console.log({ values });
-		navigate('OrdersList');
+		navigate('OrdersList', buildOrdersFilterQuery(values));
 	}, []);
 
 	return (

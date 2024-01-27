@@ -1,10 +1,15 @@
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import {
+	NavigationProp,
+	RouteProp,
+	useNavigation,
+	useRoute
+} from '@react-navigation/native';
 import React from 'react';
 import { View, Text, FlatList, StyleSheet, ListRenderItem } from 'react-native';
 import OrdersFilter from '../components/orders/OrdersFilter';
 import OrdersListItem from '../components/orders/OrdersListItem';
 import { OrdersQuery, useOrdersQuery } from '../types/api';
-import { OrdersStackParamList } from '../types/navigation';
+import { MainTabParamList, OrdersStackParamList } from '../types/navigation';
 import Screen from '../components/global/Screen';
 
 // Ultimately, we should consider making this a SectionList
@@ -13,8 +18,9 @@ import Screen from '../components/global/Screen';
 // A searchbar is also important.
 
 const Orders: React.FC = () => {
+	const { params } = useRoute<RouteProp<MainTabParamList, 'Orders'>>();
 	const { navigate } = useNavigation<NavigationProp<OrdersStackParamList>>();
-	const [{ data }] = useOrdersQuery();
+	const [{ data }] = useOrdersQuery({ variables: params });
 
 	const handleOrderPress = React.useCallback(
 		(orderId: string) => () => {
