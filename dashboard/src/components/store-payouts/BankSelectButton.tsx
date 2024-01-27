@@ -1,10 +1,11 @@
 import React from 'react';
 import { Pressable, View, Text, StyleSheet } from 'react-native';
-import { Control, FieldValues, Path, useController } from 'react-hook-form';
+import { Control, useController } from 'react-hook-form';
 import { Icon } from '../Icon';
 import { BANKS_BY_CODE } from '../../utils/transform';
 import Typography from '../global/Typography';
 import useTheme from '../../hooks/useTheme';
+import { EditPayoutInfoFormValues } from '../../types/forms';
 
 // While this shares significant style similarities with the generic <Button>
 // component, it is weirdly specific in certain ways.
@@ -12,16 +13,16 @@ import useTheme from '../../hooks/useTheme';
 // a conscious decision to make it a separate component.
 // If deemed expedient in the future, we should make this a variant of <Button>.
 
-interface BankSelectButtonProps<T extends FieldValues> {
-	control: Control<T>;
+interface BankSelectButtonProps {
+	control: Control<EditPayoutInfoFormValues>;
 	onPress(): void;
 }
 
-const BankSelectButton = <T extends FieldValues>({
+const BankSelectButton: React.FC<BankSelectButtonProps> = ({
 	control,
 	onPress
-}: BankSelectButtonProps<T>) => {
-	const { field } = useController({ control, name: 'bank' as Path<T> });
+}) => {
+	const { field } = useController({ control, name: 'bank' });
 	const { theme } = useTheme();
 
 	return (

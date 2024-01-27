@@ -17,3 +17,8 @@ export interface FilterProductsFormValues {
 export interface FilterOrdersFormValues {
 	sortBy?: OrderSortBy;
 }
+
+export interface EditPayoutInfoFormValues {
+	accountNumber: string;
+	bank: string;
+}

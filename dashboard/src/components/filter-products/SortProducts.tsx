@@ -1,52 +1,98 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Controller, useFormContext } from 'react-hook-form';
-import Typography from '../global/Typography';
 import Radio from '../global/Radio';
 import { FilterProductsFormValues } from '../../types/forms';
+import AnimatedTypography from '../global/AnimatedTypography';
+import {
+	useAnimatedStyle,
+	useSharedValue,
+	withTiming
+} from 'react-native-reanimated';
+
+// FIXME: Using `value` and `fieldValue` feels very wrong.
+// An `active` prop is probably much better.
+// However, can't stop, won't stop.
+
+// Also, there is a name for this pattern: RadioGroup
+// Why haven't I simply created a component for this?
+
+interface RadioRowProps {
+	title: string;
+	value: FilterProductsFormValues['sortBy'];
+	fieldValue: FilterProductsFormValues['sortBy'];
+	onSelect(value: FilterProductsFormValues['sortBy']): () => void;
+}
+
+const RadioRow: React.FC<RadioRowProps> = ({
+	title,
+	value,
+	fieldValue,
+	onSelect
+}) => {
+	const active = React.useMemo(() => {
+		return value === fieldValue;
+	}, [value, fieldValue]);
+
+	const opacity = useSharedValue(0.5);
+
+	React.useEffect(() => {
+		opacity.value = withTiming(active ? 1 : 0.5);
+	}, [active]);
+
+	const style = useAnimatedStyle(() => {
+		return { opacity: opacity.value };
+	});
+
+	return (
+		<Pressable style={styles.option} onPress={onSelect(value)}>
+			<AnimatedTypography style={style}>{title}</AnimatedTypography>
+			<Radio active={value === fieldValue} />
+		</Pressable>
+	);
+};
 
 const SortProducts = () => {
 	const { control, setValue } = useFormContext<FilterProductsFormValues>();
 
+	const handleSortSelect =
+		(value: FilterProductsFormValues['sortBy']) => () => {
+			setValue('sortBy', value);
+		};
+
 	return (
-		<View style={styles.container}>
-			<Controller
-				name='sortBy'
-				control={control}
-				render={({ field }) => (
-					<>
-						<Pressable
-							style={styles.option}
-							onPress={() => setValue('sortBy', undefined)}
-						>
-							<Typography>Default</Typography>
-							<Radio active={field.value === undefined} />
-						</Pressable>
-						<Pressable
-							style={styles.option}
-							onPress={() => setValue('sortBy', 'created-at-desc')}
-						>
-							<Typography>Newest</Typography>
-							<Radio active={field.value === 'created-at-desc'} />
-						</Pressable>
-						<Pressable
-							style={styles.option}
-							onPress={() => setValue('sortBy', 'unit-price-desc')}
-						>
-							<Typography>Highest to lowest price</Typography>
-							<Radio active={field.value === 'unit-price-desc'} />
-						</Pressable>
-						<Pressable
-							style={styles.option}
-							onPress={() => setValue('sortBy', 'unit-price-asc')}
-						>
-							<Typography>Lowest to highest price</Typography>
-							<Radio active={field.value === 'unit-price-asc'} />
-						</Pressable>
-					</>
-				)}
-			/>
-		</View>
+		<Controller
+			name='sortBy'
+			control={control}
+			render={({ field }) => (
+				<View style={styles.container}>
+					<RadioRow
+						title='Default'
+						value={undefined}
+						fieldValue={field.value}
+						onSelect={handleSortSelect}
+					/>
+					<RadioRow
+						title='Newest to oldest'
+						value='created-at-desc'
+						fieldValue={field.value}
+						onSelect={handleSortSelect}
+					/>
+					<RadioRow
+						title='Highest to lowest price'
+						value='unit-price-desc'
+						fieldValue={field.value}
+						onSelect={handleSortSelect}
+					/>
+					<RadioRow
+						title='Lowest to highest price'
+						value='unit-price-asc'
+						fieldValue={field.value}
+						onSelect={handleSortSelect}
+					/>
+				</View>
+			)}
+		/>
 	);
 };
 

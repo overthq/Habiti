@@ -13,11 +13,7 @@ import { useVerifyBankAccountMutation } from '../../types/api';
 import BankSelectModal from './BankSelectModal';
 import BankSelectButton from './BankSelectButton';
 import ConfirmationModal from './ConfirmationModal';
-
-interface EditPayoutInfoValues {
-	accountNumber: string;
-	bank: string;
-}
+import { EditPayoutInfoFormValues } from '../../types/forms';
 
 interface StorePayoutsMainProps {
 	bankAccountNumber?: string | null;
@@ -34,7 +30,7 @@ const StorePayoutsMain: React.FC<StorePayoutsMainProps> = ({
 	const selectModalRef = React.useRef<BottomSheetModal>(null);
 	const confirmationModalRef = React.useRef<BottomSheetModal>(null);
 
-	const methods = useForm<EditPayoutInfoValues>({
+	const methods = useForm<EditPayoutInfoFormValues>({
 		defaultValues: {
 			accountNumber: bankAccountNumber ?? '',
 			bank: bankCode ?? ''
@@ -48,7 +44,7 @@ const StorePayoutsMain: React.FC<StorePayoutsMainProps> = ({
 	}, []);
 
 	const onSubmit = React.useCallback(
-		async (values: EditPayoutInfoValues) => {
+		async (values: EditPayoutInfoFormValues) => {
 			verifyBankAccount({
 				input: {
 					bankAccountNumber: values.accountNumber,
