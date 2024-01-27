@@ -9,6 +9,10 @@ import { useCustomerInfoQuery } from '../types/api';
 import type { AppStackParamList } from '../types/navigation';
 import OrderDetail from '../components/customer-info/OrderDetail';
 
+// TODO: This screen should contain a brief overview of the orders
+// a specific user has made. Beneath this should be a full list of
+// the orders.
+
 const CustomerInfo: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'CustomerInfo'>>();
 	const [{ data, fetching }] = useCustomerInfoQuery({

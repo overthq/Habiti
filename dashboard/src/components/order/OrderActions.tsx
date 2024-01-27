@@ -41,8 +41,7 @@ const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		padding: 16,
-		flexDirection: 'row'
+		padding: 16
 	},
 	button: {
 		height: 40

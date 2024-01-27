@@ -100,7 +100,7 @@ const dark = {
 const light = {
 	text: {
 		primary: palette.neutral.n100,
-		secondary: palette.neutral.n10,
+		secondary: palette.neutral.n50,
 		tertiary: '',
 		disabled: '',
 		error: '',
