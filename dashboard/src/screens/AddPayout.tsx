@@ -6,6 +6,18 @@ import Screen from '../components/global/Screen';
 import PayoutNumpad from '../components/add-payout/PayoutNumpad';
 import AmountDisplay from '../components/add-payout/AmountDisplay';
 
+// _: ""
+// +1 :  "1" -> "1.00"
+// +2 : "12" -> "12.00"
+// +3 : "123" -> "123.00"
+// < : "12" -> "12.00"
+// +. : "12." -> "12.00"
+// +. : "12." -> "12.00" (edge case)
+// < : "1" -> "1.00" (edge case)
+// +. : "1." -> "1.00"
+// +0 : "1.0" -> "1.00"
+// +5 : "1.05" -> "1.05"
+
 const AddPayout: React.FC = () => {
 	const [amount, setAmount] = React.useState('');
 	useGoBack('x');
