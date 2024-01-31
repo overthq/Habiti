@@ -19,8 +19,6 @@ const AddPayout: React.FC = () => {
 	}, [amount]);
 
 	const handleDelete = React.useCallback(() => {
-		console.log({ type: 'delete', lastCharIsDot });
-
 		setAmount(a => a.slice(0, -(lastCharIsDot ? 2 : 1)));
 	}, [lastCharIsDot]);
 

@@ -19,7 +19,7 @@ const PayoutNumpad: React.FC<PayoutNumpadProps> = ({
 	onClear
 }) => {
 	return (
-		<View style={styles.container}>
+		<View>
 			<View style={styles.row}>
 				<NumpadButton value='1' onPress={() => onUpdate('1')} />
 				<NumpadButton value='2' onPress={() => onUpdate('2')} />
@@ -42,7 +42,6 @@ const PayoutNumpad: React.FC<PayoutNumpadProps> = ({
 };
 
 const styles = StyleSheet.create({
-	container: {},
 	cell: {
 		flexGrow: 1,
 		padding: 8
