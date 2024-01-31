@@ -16,31 +16,21 @@ export const buildProductsFilterQuery = (values: FilterProductsFormValues) => {
 	let orderBy = undefined;
 
 	// FIXME: I only just realized this means we only allow sorting
-	// by a singular parameter. We should change that.
+	// by a singular parameter. We should probably change that.
 
 	if (!!sortBy) {
-		orderBy = [];
-
-		switch (sortBy) {
-			case 'created-at-asc':
-				orderBy.push({ createdAt: Sort.Asc });
-				break;
-			case 'created-at-desc':
-				orderBy.push({ createdAt: Sort.Desc });
-				break;
-			case 'updated-at-asc':
-				orderBy.push({ updatedAt: Sort.Asc });
-				break;
-			case 'updated-at-desc':
-				orderBy.push({ updatedAt: Sort.Desc });
-				break;
-			case 'unit-price-asc':
-				orderBy.push({ unitPrice: Sort.Asc });
-				break;
-			case 'unit-price-desc':
-				orderBy.push({ unitPrice: Sort.Desc });
-				break;
-		}
+		orderBy = [
+			(
+				{
+					'created-at-asc': { createdAt: Sort.Asc },
+					'created-at-desc': { createdAt: Sort.Desc },
+					'updated-at-asc': { updatedAt: Sort.Asc },
+					'updated-at-desc': { updatedAt: Sort.Desc },
+					'unit-price-asc': { unitPrice: Sort.Asc },
+					'unit-price-desc': { unitPrice: Sort.Desc }
+				} as const
+			)[sortBy]
+		];
 	}
 
 	return { filter, orderBy };
@@ -52,22 +42,16 @@ export const buildOrdersFilterQuery = (values: FilterOrdersFormValues) => {
 	let orderBy = undefined;
 
 	if (!!sortBy) {
-		orderBy = [];
-
-		switch (sortBy) {
-			case 'created-at-asc':
-				orderBy.push({ createdAt: Sort.Asc });
-				break;
-			case 'created-at-desc':
-				orderBy.push({ createdAt: Sort.Desc });
-				break;
-			case 'updated-at-asc':
-				orderBy.push({ updatedAt: Sort.Asc });
-				break;
-			case 'updated-at-desc':
-				orderBy.push({ updatedAt: Sort.Desc });
-				break;
-		}
+		orderBy = [
+			(
+				{
+					'created-at-asc': { createdAt: Sort.Asc },
+					'created-at-desc': { createdAt: Sort.Desc },
+					'updated-at-asc': { updatedAt: Sort.Asc },
+					'updated-at-desc': { updatedAt: Sort.Desc }
+				} as const
+			)[sortBy]
+		];
 	}
 
 	return { orderBy };

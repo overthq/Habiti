@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 import { Icon } from '../Icon';
-import Typography from '../global/Typography';
 import NumpadButton from './NumpadButton';
 
 interface PayoutNumpadProps {
@@ -19,32 +18,21 @@ const PayoutNumpad: React.FC<PayoutNumpadProps> = ({
 	onDelete,
 	onClear
 }) => {
-	const handlePress = React.useCallback(
-		(value: string) => () => {
-			onUpdate(value);
-		},
-		[]
-	);
-
 	return (
 		<View style={styles.container}>
 			<View style={styles.row}>
-				<NumpadButton value='1' onPress={handlePress('1')} />
-				<NumpadButton value='2' onPress={handlePress('2')} />
-				<NumpadButton value='3' onPress={handlePress('3')} />
+				<NumpadButton value='1' onPress={() => onUpdate('1')} />
+				<NumpadButton value='2' onPress={() => onUpdate('2')} />
+				<NumpadButton value='3' onPress={() => onUpdate('3')} />
 			</View>
 			<View style={styles.row}>
-				<NumpadButton value='4' onPress={handlePress('4')} />
-				<NumpadButton value='5' onPress={handlePress('5')} />
-				<NumpadButton value='6' onPress={handlePress('6')} />
+				<NumpadButton value='4' onPress={() => onUpdate('4')} />
+				<NumpadButton value='5' onPress={() => onUpdate('5')} />
+				<NumpadButton value='6' onPress={() => onUpdate('6')} />
 			</View>
 			<View style={styles.row}>
-				<Pressable style={styles.cell}>
-					<Typography size='xlarge' style={styles.text}>
-						.
-					</Typography>
-				</Pressable>
-				<NumpadButton value='0' onPress={handlePress('0')} />
+				<NumpadButton value='.' onPress={() => onUpdate('.')} />
+				<NumpadButton value='0' onPress={() => onUpdate('0')} />
 				<Pressable style={styles.back} onPress={onDelete} onLongPress={onClear}>
 					<Icon size={24} name='chevron-left' />
 				</Pressable>
@@ -57,18 +45,10 @@ const styles = StyleSheet.create({
 	container: {},
 	cell: {
 		flexGrow: 1,
-		// borderColor: 'red',
-		// borderWidth: 1,
 		padding: 8
-	},
-	text: {
-		textAlign: 'center',
-		fontVariant: ['tabular-nums']
 	},
 	back: {
 		flexGrow: 1,
-		// borderColor: 'red',
-		// borderWidth: 1,
 		justifyContent: 'center',
 		alignItems: 'center'
 	},
