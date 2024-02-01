@@ -5,14 +5,20 @@ import Button from '../components/global/Button';
 import Screen from '../components/global/Screen';
 import PayoutNumpad from '../components/add-payout/PayoutNumpad';
 import AmountDisplay from '../components/add-payout/AmountDisplay';
+import { useCreatePayoutMutation } from '../types/api';
 
 const AddPayout: React.FC = () => {
 	const [amount, setAmount] = React.useState('');
+	const [, createPayout] = useCreatePayoutMutation();
 	useGoBack('x');
 
 	const handleAddPayout = React.useCallback(() => {
-		// Mutation code
-	}, []);
+		try {
+			createPayout({ input: { amount: Number(amount) * 100 } });
+		} catch (error) {
+			console.log(error);
+		}
+	}, [amount]);
 
 	const lastCharIsDot = React.useMemo(() => {
 		return amount.charAt(amount.length - 1) === '.';
