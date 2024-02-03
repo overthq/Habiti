@@ -118,8 +118,8 @@ const light = {
 			text: palette.neutral.n1
 		},
 		secondary: {
-			background: '',
-			text: ''
+			background: palette.neutral.n50,
+			text: palette.neutral.n10
 		},
 		tertiary: {
 			background: '',
