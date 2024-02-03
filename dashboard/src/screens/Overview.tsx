@@ -7,16 +7,6 @@ import ManagePayouts from '../components/overview/ManagePayouts';
 import LowStockProducts from '../components/overview/LowStockProducts';
 import ScrollableScreen from '../components/global/ScrollableScreen';
 
-// Overview
-// - Available (unpaid) revenue
-// - Keep stats on hold.
-// - Information on next payout.
-
-// General things to do
-// - Add onboarding section to app.
-
-// Probably add a greeting (to take space): "Good afternoon, {name}".
-
 const Overview: React.FC = () => {
 	const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
@@ -47,11 +37,6 @@ const styles = StyleSheet.create({
 	},
 	settings: {
 		marginRight: 16
-	},
-	stats: {
-		paddingHorizontal: 16,
-		flexDirection: 'row',
-		flexWrap: 'wrap'
 	}
 });
 

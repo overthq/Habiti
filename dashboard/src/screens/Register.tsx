@@ -1,7 +1,6 @@
 import React from 'react';
 import {
 	View,
-	Text,
 	TextInput,
 	KeyboardAvoidingView,
 	TouchableOpacity
@@ -11,6 +10,8 @@ import authStyles from '../styles/auth';
 import Button from '../components/global/Button';
 import { AppStackParamList } from '../types/navigation';
 import { useRegisterMutation } from '../types/api';
+import Typography from '../components/global/Typography';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Register: React.FC = () => {
 	const [name, setName] = React.useState('');
@@ -33,40 +34,42 @@ const Register: React.FC = () => {
 	};
 
 	return (
-		<KeyboardAvoidingView style={authStyles.container}>
-			<Text style={authStyles.title}>{`Let's meet you.`}</Text>
-			<Text
-				style={authStyles.description}
-			>{`This helps us in personalizing your experience.`}</Text>
-			<View>
-				<Text style={authStyles.inputLabel}>Name</Text>
-				<TextInput
-					value={name}
-					onChangeText={setName}
-					style={authStyles.input}
-				/>
-			</View>
-			<View>
-				<Text style={authStyles.inputLabel}>Email</Text>
-				<TextInput
-					value={email}
-					onChangeText={setEmail}
-					style={authStyles.input}
-				/>
-			</View>
-			<View>
-				<Text style={authStyles.inputLabel}>Phone</Text>
-				<TextInput
-					value={phone}
-					onChangeText={setPhone}
-					style={authStyles.input}
-				/>
-			</View>
-			<Button text='Register' onPress={handleSubmit} loading={fetching} />
-			<TouchableOpacity onPress={goToAuth} style={{ marginTop: 8 }}>
-				<Text style={{ fontSize: 16 }}>Already have an account? Log in.</Text>
-			</TouchableOpacity>
-		</KeyboardAvoidingView>
+		<SafeAreaView>
+			<KeyboardAvoidingView style={authStyles.container}>
+				<Typography style={authStyles.title}>{`Let's meet you.`}</Typography>
+				<Typography
+					style={authStyles.description}
+				>{`This helps us in personalizing your experience.`}</Typography>
+				<View>
+					<Typography style={authStyles.inputLabel}>Name</Typography>
+					<TextInput
+						value={name}
+						onChangeText={setName}
+						style={authStyles.input}
+					/>
+				</View>
+				<View>
+					<Typography style={authStyles.inputLabel}>Email</Typography>
+					<TextInput
+						value={email}
+						onChangeText={setEmail}
+						style={authStyles.input}
+					/>
+				</View>
+				<View>
+					<Typography style={authStyles.inputLabel}>Phone</Typography>
+					<TextInput
+						value={phone}
+						onChangeText={setPhone}
+						style={authStyles.input}
+					/>
+				</View>
+				<Button text='Register' onPress={handleSubmit} loading={fetching} />
+				<TouchableOpacity onPress={goToAuth} style={{ marginTop: 8 }}>
+					<Typography>Already have an account? Log in.</Typography>
+				</TouchableOpacity>
+			</KeyboardAvoidingView>
+		</SafeAreaView>
 	);
 };
 

@@ -8,8 +8,10 @@ import authStyles from '../styles/auth';
 import useStore from '../state';
 import { useVerifyMutation } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
+import CodeInput from '../components/verify/CodeInput';
 
 const Verify: React.FC = () => {
+	const [newCode, setNewCode] = React.useState('');
 	const [code, setCode] = React.useState<string[]>([]);
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Verify'>>();
 	const logIn = useStore(state => state.logIn);
@@ -25,6 +27,7 @@ const Verify: React.FC = () => {
 			codeRef.current[index - 1]?.focus();
 		}
 	};
+
 	const handleFieldChange = (value: string, index: number) => {
 		if (codeRef.current) {
 			if (index < 5 && value) {
@@ -62,17 +65,21 @@ const Verify: React.FC = () => {
 			<Typography style={authStyles.description}>
 				A verification code was sent to your phone via SMS.
 			</Typography>
+			<TextInput style={styles.hidden} onChangeText={setNewCode} />
 			<View style={styles.inputs}>
 				{codeThing.map((_, index) => (
-					<TextInput
-						key={index}
-						ref={el => codeRef.current?.push(el)}
-						style={styles.input}
-						keyboardType='numeric'
-						onChangeText={val => handleFieldChange(val, index)}
-						onKeyPress={e => handleKeyPress(e.nativeEvent.key, index)}
-						caretHidden
-					/>
+					<>
+						<CodeInput active value={newCode[index]} />
+						<TextInput
+							key={index}
+							ref={el => codeRef.current?.push(el)}
+							style={styles.input}
+							keyboardType='numeric'
+							onChangeText={val => handleFieldChange(val, index)}
+							onKeyPress={e => handleKeyPress(e.nativeEvent.key, index)}
+							caretHidden
+						/>
+					</>
 				))}
 			</View>
 			<Button onPress={handleSubmit} text='Verify' loading={fetching} />
@@ -90,12 +97,18 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		marginBottom: 8
 	},
+	hidden: {
+		height: 1,
+		width: 1,
+		opacity: 0
+	},
 	input: {
 		height: 50,
 		width: 50,
-		borderRadius: 8,
+		borderRadius: 4,
 		borderWidth: 2,
 		fontSize: 17,
+		fontWeight: '500',
 		textAlign: 'center',
 		borderColor: '#D3D3D3'
 	}
