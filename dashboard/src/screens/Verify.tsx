@@ -11,44 +11,16 @@ import { AppStackParamList } from '../types/navigation';
 import CodeInput from '../components/verify/CodeInput';
 
 const Verify: React.FC = () => {
-	const [newCode, setNewCode] = React.useState('');
-	const [code, setCode] = React.useState<string[]>([]);
+	const [code, setCode] = React.useState('');
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Verify'>>();
 	const logIn = useStore(state => state.logIn);
 	const [{ fetching }, verify] = useVerifyMutation();
 
 	const { phone } = params;
 
-	const codeRef = React.useRef<(TextInput | null)[]>([]);
-	const codeThing = new Array(6).fill(0);
-
-	const handleKeyPress = (key: string, index: number) => {
-		if (key === 'Backspace' && index !== 0 && codeRef.current) {
-			codeRef.current[index - 1]?.focus();
-		}
-	};
-
-	const handleFieldChange = (value: string, index: number) => {
-		if (codeRef.current) {
-			if (index < 5 && value) {
-				codeRef.current[index + 1]?.focus();
-			}
-
-			if (index === codeRef.current.length - 1) {
-				codeRef.current[index]?.blur();
-			}
-
-			const newCode = [...code];
-			newCode[index] = value;
-			setCode(newCode);
-		}
-	};
-
 	const handleSubmit = async () => {
 		try {
-			const { data } = await verify({
-				input: { phone, code: code.join('') }
-			});
+			const { data } = await verify({ input: { phone, code } });
 
 			if (data?.verify) {
 				const { userId, accessToken } = data.verify;
@@ -65,27 +37,31 @@ const Verify: React.FC = () => {
 			<Typography style={authStyles.description}>
 				A verification code was sent to your phone via SMS.
 			</Typography>
-			<TextInput style={styles.hidden} onChangeText={setNewCode} />
+			<TextInput
+				autoFocus
+				style={styles.hidden}
+				onChangeText={setCode}
+				keyboardType='number-pad'
+			/>
 			<View style={styles.inputs}>
-				{codeThing.map((_, index) => (
-					<>
-						<CodeInput active value={newCode[index]} />
-						<TextInput
-							key={index}
-							ref={el => codeRef.current?.push(el)}
-							style={styles.input}
-							keyboardType='numeric'
-							onChangeText={val => handleFieldChange(val, index)}
-							onKeyPress={e => handleKeyPress(e.nativeEvent.key, index)}
-							caretHidden
-						/>
-					</>
+				{Array(6).map((_, index) => (
+					<CodeInput key={index} value={code[index]} />
 				))}
 			</View>
 			<Button onPress={handleSubmit} text='Verify' loading={fetching} />
 		</Screen>
 	);
 };
+
+/* <TextInput
+		key={index}
+		ref={el => codeRef.current?.push(el)}
+		style={styles.input}
+		keyboardType='numeric'
+		onChangeText={val => handleFieldChange(val, index)}
+		onKeyPress={e => handleKeyPress(e.nativeEvent.key, index)}
+		caretHidden
+	/> */
 
 const styles = StyleSheet.create({
 	container: {
@@ -101,16 +77,6 @@ const styles = StyleSheet.create({
 		height: 1,
 		width: 1,
 		opacity: 0
-	},
-	input: {
-		height: 50,
-		width: 50,
-		borderRadius: 4,
-		borderWidth: 2,
-		fontSize: 17,
-		fontWeight: '500',
-		textAlign: 'center',
-		borderColor: '#D3D3D3'
 	}
 });
 
