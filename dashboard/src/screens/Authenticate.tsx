@@ -24,25 +24,25 @@ const Authenticate: React.FC = () => {
 	};
 
 	return (
-		<SafeAreaView>
-			<Screen style={styles.container}>
-				<Typography style={styles.title}>Enter your phone number.</Typography>
-				<Typography style={styles.description}>
-					{`We'll send your verification code here.`}
-				</Typography>
-				<View>
-					<Text style={styles.inputLabel}>Phone number</Text>
-					<TextInput
-						style={styles.input}
-						placeholder='08012345678'
-						value={phone}
-						onChangeText={setPhone}
-						keyboardType='number-pad'
-					/>
-				</View>
-				<Button loading={fetching} text='Next' onPress={handleSubmit} />
-			</Screen>
-		</SafeAreaView>
+		// <SafeAreaView>
+		<Screen style={styles.container}>
+			<Typography style={styles.title}>Enter your phone number.</Typography>
+			<Typography style={styles.description}>
+				{`We'll send your verification code here.`}
+			</Typography>
+			<View>
+				<Text style={styles.inputLabel}>Phone number</Text>
+				<TextInput
+					style={styles.input}
+					placeholder='08012345678'
+					value={phone}
+					onChangeText={setPhone}
+					keyboardType='number-pad'
+				/>
+			</View>
+			<Button loading={fetching} text='Next' onPress={handleSubmit} />
+		</Screen>
+		// </SafeAreaView>
 	);
 };
 

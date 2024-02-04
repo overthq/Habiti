@@ -2,7 +2,6 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, {
 	useAnimatedStyle,
-	useSharedValue,
 	withTiming
 } from 'react-native-reanimated';
 
@@ -11,14 +10,8 @@ interface RadioProps {
 }
 
 const Radio: React.FC<RadioProps> = ({ active }) => {
-	const opacity = useSharedValue(0.5);
-
-	React.useEffect(() => {
-		opacity.value = withTiming(active ? 1 : 0.5);
-	}, [active]);
-
 	const style = useAnimatedStyle(() => {
-		return { opacity: opacity.value };
+		return { opacity: withTiming(active ? 1 : 0.5) };
 	});
 
 	return (

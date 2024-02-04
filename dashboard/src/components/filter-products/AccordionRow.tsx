@@ -16,6 +16,7 @@ import { Icon } from '../Icon';
 // FIXME: Maybe there is a more ergonomic way to handle
 // the fact that onPress in this case is always a toggle/expand action
 // but it's not really that important for now.
+// Also, figure out effective way of getting rid of effect here.
 
 interface AccordionRowProps {
 	title: string;

@@ -4,18 +4,11 @@ import { Controller, useFormContext } from 'react-hook-form';
 import Radio from '../global/Radio';
 import { FilterProductsFormValues } from '../../types/forms';
 import AnimatedTypography from '../global/AnimatedTypography';
-import {
-	useAnimatedStyle,
-	useSharedValue,
-	withTiming
-} from 'react-native-reanimated';
+import { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 // FIXME: Using `value` and `fieldValue` feels very wrong.
 // An `active` prop is probably much better.
 // However, can't stop, won't stop.
-
-// Also, there is a name for this pattern: RadioGroup
-// Why haven't I simply created a component for this?
 
 interface RadioRowProps {
 	title: string;
@@ -34,14 +27,8 @@ const RadioRow: React.FC<RadioRowProps> = ({
 		return value === fieldValue;
 	}, [value, fieldValue]);
 
-	const opacity = useSharedValue(0.5);
-
-	React.useEffect(() => {
-		opacity.value = withTiming(active ? 1 : 0.5);
-	}, [active]);
-
 	const style = useAnimatedStyle(() => {
-		return { opacity: opacity.value };
+		return { opacity: withTiming(active ? 1 : 0.5) };
 	});
 
 	return (

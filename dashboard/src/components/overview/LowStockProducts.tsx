@@ -20,7 +20,7 @@ const LowStockProduct: React.FC<LowStockProductProps> = ({
 	return (
 		<Pressable onPress={onPress} style={{ marginRight: 8, width: 160 }}>
 			<CustomImage uri={product.images[0]?.path} size={160} />
-			<Typography style={styles.name} numberOfLines={1}>
+			<Typography weight='medium' style={styles.name} numberOfLines={1}>
 				{product.name}
 			</Typography>
 			<Typography variant='label' style={styles.price} numberOfLines={1}>
@@ -46,7 +46,7 @@ const LowStockProducts = () => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.heading}>
-				<Typography variant='label' style={styles.title}>
+				<Typography variant='label' weight='bold' size='large'>
 					Low stock products
 				</Typography>
 				<TextButton size={16} onPress={navigateToProducts}>
@@ -81,10 +81,6 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 16,
 		marginBottom: 4
 	},
-	title: {
-		fontSize: 16,
-		fontWeight: '500'
-	},
 	placeholder: {
 		borderRadius: 4,
 		height: 160,
@@ -97,8 +93,7 @@ const styles = StyleSheet.create({
 		height: '100%'
 	},
 	name: {
-		marginTop: 2,
-		fontWeight: '500'
+		marginTop: 2
 	},
 	price: {
 		marginTop: 2

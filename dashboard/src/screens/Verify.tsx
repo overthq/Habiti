@@ -44,9 +44,11 @@ const Verify: React.FC = () => {
 				keyboardType='number-pad'
 			/>
 			<View style={styles.inputs}>
-				{Array(6).map((_, index) => (
-					<CodeInput key={index} value={code[index]} />
-				))}
+				{Array(6)
+					.fill(0)
+					.map((_, index) => (
+						<CodeInput key={index} value={code[index]} />
+					))}
 			</View>
 			<Button onPress={handleSubmit} text='Verify' loading={fetching} />
 		</Screen>
@@ -71,7 +73,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		marginBottom: 8
+		marginBottom: 16
 	},
 	hidden: {
 		height: 1,

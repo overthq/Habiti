@@ -1,7 +1,6 @@
 import React from 'react';
 import Animated, {
 	useAnimatedStyle,
-	useSharedValue,
 	withTiming
 } from 'react-native-reanimated';
 import { View, Pressable, StyleSheet } from 'react-native';
@@ -14,14 +13,11 @@ interface CodeInputProps {
 
 const CodeInput: React.FC<CodeInputProps> = ({ value }) => {
 	const { theme } = useTheme();
-	const opacity = useSharedValue(0.5);
 	const active = React.useMemo(() => !!value, [value]);
 
-	React.useEffect(() => {
-		opacity.value = withTiming(active ? 1 : 0.5);
-	}, [active]);
-
-	const style = useAnimatedStyle(() => ({ opacity: opacity.value }));
+	const style = useAnimatedStyle(() => ({
+		opacity: withTiming(active ? 1 : 0.5)
+	}));
 
 	return (
 		<Pressable>
@@ -53,6 +49,7 @@ const styles = StyleSheet.create({
 	},
 	input: {
 		flex: 1,
+		borderRadius: 2,
 		justifyContent: 'center',
 		alignItems: 'center'
 	}
