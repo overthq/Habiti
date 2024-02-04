@@ -1,34 +1,11 @@
 import React from 'react';
-import { View, FlatList, StyleSheet, Pressable } from 'react-native';
+import { View, FlatList, StyleSheet } from 'react-native';
 import TextButton from '../global/TextButton';
-import { ProductsQuery, useProductsQuery } from '../../types/api';
-import { formatNaira } from '../../utils/currency';
+import { useProductsQuery } from '../../types/api';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { HomeStackParamList, MainTabParamList } from '../../types/navigation';
-import CustomImage from '../global/CustomImage';
 import Typography from '../global/Typography';
-
-interface LowStockProductProps {
-	onPress(): void;
-	product: ProductsQuery['currentStore']['products'][number];
-}
-
-const LowStockProduct: React.FC<LowStockProductProps> = ({
-	onPress,
-	product
-}) => {
-	return (
-		<Pressable onPress={onPress} style={{ marginRight: 8, width: 160 }}>
-			<CustomImage uri={product.images[0]?.path} size={160} />
-			<Typography weight='medium' style={styles.name} numberOfLines={1}>
-				{product.name}
-			</Typography>
-			<Typography variant='label' style={styles.price} numberOfLines={1}>
-				{formatNaira(product.unitPrice)}
-			</Typography>
-		</Pressable>
-	);
-};
+import LowStockProduct from './LowStockProduct';
 
 const LowStockProducts = () => {
 	const [{ data }] = useProductsQuery();
@@ -91,12 +68,6 @@ const styles = StyleSheet.create({
 	image: {
 		width: '100%',
 		height: '100%'
-	},
-	name: {
-		marginTop: 2
-	},
-	price: {
-		marginTop: 2
 	}
 });
 

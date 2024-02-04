@@ -15,6 +15,7 @@ interface TypographyProps extends TextProps {
 		| 'label';
 	size?: 'xsmall' | 'small' | 'regular' | 'large' | 'xlarge' | 'xxlarge';
 	weight?: 'regular' | 'medium' | 'bold';
+	ellipsize?: boolean;
 }
 
 const Typography: React.FC<TypographyProps> = ({
@@ -23,6 +24,7 @@ const Typography: React.FC<TypographyProps> = ({
 	size = 'regular',
 	weight = 'regular',
 	style,
+	ellipsize,
 	...props
 }) => {
 	const { theme } = useTheme();
@@ -37,6 +39,7 @@ const Typography: React.FC<TypographyProps> = ({
 				},
 				style
 			]}
+			{...(ellipsize ? { numberOfLines: 1 } : {})}
 			{...props}
 		>
 			{children}
