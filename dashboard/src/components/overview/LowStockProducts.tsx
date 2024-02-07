@@ -57,17 +57,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		paddingHorizontal: 16,
 		marginBottom: 4
-	},
-	placeholder: {
-		borderRadius: 4,
-		height: 160,
-		width: 160,
-		backgroundColor: '#D3D3D3',
-		overflow: 'hidden'
-	},
-	image: {
-		width: '100%',
-		height: '100%'
 	}
 });
 

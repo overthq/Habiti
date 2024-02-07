@@ -8,7 +8,6 @@ import { Icon } from '../components/Icon';
 import { AppStackParamList } from '../types/navigation';
 import Screen from '../components/global/Screen';
 import Typography from '../components/global/Typography';
-import SectionHeader from '../components/global/SectionHeader';
 import PayoutRow from '../components/payouts/PayoutRow';
 import RevenueBar from '../components/payouts/RevenueBar';
 
@@ -40,8 +39,10 @@ const Payouts = () => {
 
 	return (
 		<Screen style={styles.container}>
-			<SectionHeader title='Available:' />
-			<Typography style={styles.available}>{formatNaira(50000)}</Typography>
+			<Typography>Available:</Typography>
+			<Typography size='xlarge' weight='bold' style={styles.available}>
+				{formatNaira(50000)}
+			</Typography>
 			<RevenueBar realizedRevenue={75} unrealizedRevenue={50} payedOut={25} />
 			<Typography>Payout History</Typography>
 			{data.currentStore.payouts.map(payout => (
@@ -53,12 +54,9 @@ const Payouts = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		paddingTop: 16,
-		paddingHorizontal: 16
+		padding: 16
 	},
 	available: {
-		fontSize: 24,
-		fontWeight: 'bold',
 		marginBottom: 8
 	}
 });
