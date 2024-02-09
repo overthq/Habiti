@@ -1,20 +1,14 @@
 import React from 'react';
 import { StyleProp, Text, TextProps, TextStyle } from 'react-native';
 import useTheme from '../../hooks/useTheme';
-import { typography } from '../../styles/theme';
+import { typography, ThemeObject } from '../../styles/theme';
 
 interface TypographyProps extends TextProps {
 	children: React.ReactNode;
 	style?: StyleProp<TextStyle>;
-	variant?:
-		| 'primary'
-		| 'secondary'
-		| 'tertiary'
-		| 'disabled'
-		| 'error'
-		| 'label';
-	size?: 'xsmall' | 'small' | 'regular' | 'large' | 'xlarge' | 'xxlarge';
-	weight?: 'regular' | 'medium' | 'bold';
+	variant?: keyof ThemeObject['text'];
+	size?: keyof typeof typography['size'];
+	weight?: keyof typeof typography['weight'];
 	ellipsize?: boolean;
 }
 
@@ -31,6 +25,8 @@ const Typography: React.FC<TypographyProps> = ({
 
 	return (
 		<Text
+			{...(ellipsize ? { numberOfLines: 1 } : {})}
+			{...props}
 			style={[
 				{
 					color: theme.text[variant],
@@ -39,8 +35,6 @@ const Typography: React.FC<TypographyProps> = ({
 				},
 				style
 			]}
-			{...(ellipsize ? { numberOfLines: 1 } : {})}
-			{...props}
 		>
 			{children}
 		</Text>

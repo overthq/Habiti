@@ -1,8 +1,15 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import useTheme from '../../hooks/useTheme';
 
 const InfoCard = () => {
-	return <View style={styles.container}></View>;
+	const { theme } = useTheme();
+
+	return (
+		<View
+			style={[styles.container, { backgroundColor: theme.text.secondary }]}
+		></View>
+	);
 };
 
 const styles = StyleSheet.create({
