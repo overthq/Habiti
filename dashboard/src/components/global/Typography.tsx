@@ -10,6 +10,7 @@ interface TypographyProps extends TextProps {
 	size?: keyof typeof typography['size'];
 	weight?: keyof typeof typography['weight'];
 	ellipsize?: boolean;
+	number?: boolean;
 }
 
 const Typography: React.FC<TypographyProps> = ({
@@ -19,6 +20,7 @@ const Typography: React.FC<TypographyProps> = ({
 	weight = 'regular',
 	style,
 	ellipsize,
+	number,
 	...props
 }) => {
 	const { theme } = useTheme();
@@ -31,7 +33,8 @@ const Typography: React.FC<TypographyProps> = ({
 				{
 					color: theme.text[variant],
 					fontSize: typography.size[size],
-					fontWeight: typography.weight[weight]
+					fontWeight: typography.weight[weight],
+					...(number ? { fontVariant: ['tabular-nums'] } : {})
 				},
 				style
 			]}

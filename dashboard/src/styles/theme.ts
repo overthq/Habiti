@@ -25,7 +25,8 @@ export const typography = {
 		regular: 16,
 		large: 18,
 		xlarge: 20,
-		xxlarge: 32
+		xxlarge: 24,
+		xxxlarge: 32
 	},
 	weight: {
 		regular: 'normal',

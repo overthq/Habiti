@@ -1,24 +1,27 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Icon } from '../components/Icon';
 import { AppStackParamList } from '../types/navigation';
 import ManagePayouts from '../components/overview/ManagePayouts';
-import LowStockProducts from '../components/overview/LowStockProducts';
 import ScrollableScreen from '../components/global/ScrollableScreen';
+
+// Revenue and payout information (front and center)
+// Quick actions (orders to process, low stock products)
 
 const Overview: React.FC = () => {
 	const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
+	const goToSettings = React.useCallback(() => {
+		navigation.navigate('Settings');
+	}, []);
+
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
 			headerRight: () => (
-				<TouchableOpacity
-					style={styles.settings}
-					onPress={() => navigation.navigate('Settings')}
-				>
+				<Pressable style={styles.settings} onPress={goToSettings}>
 					<Icon name='settings' />
-				</TouchableOpacity>
+				</Pressable>
 			)
 		});
 	}, []);
@@ -26,7 +29,6 @@ const Overview: React.FC = () => {
 	return (
 		<ScrollableScreen style={styles.container}>
 			<ManagePayouts />
-			<LowStockProducts />
 		</ScrollableScreen>
 	);
 };
