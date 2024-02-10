@@ -5,6 +5,8 @@ import { Icon } from '../components/Icon';
 import { AppStackParamList } from '../types/navigation';
 import ManagePayouts from '../components/overview/ManagePayouts';
 import ScrollableScreen from '../components/global/ScrollableScreen';
+import QuickActions from '../components/overview/QuickActions';
+import LowStockProducts from '../components/overview/LowStockProducts';
 
 // Revenue and payout information (front and center)
 // Quick actions (orders to process, low stock products)
@@ -29,6 +31,8 @@ const Overview: React.FC = () => {
 	return (
 		<ScrollableScreen style={styles.container}>
 			<ManagePayouts />
+			<QuickActions />
+			<LowStockProducts />
 		</ScrollableScreen>
 	);
 };
