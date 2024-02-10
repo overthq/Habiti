@@ -101,6 +101,24 @@ const dark = {
 	},
 	image: {
 		placeholder: palette.neutral.n50
+	},
+	badge: {
+		success: {
+			backgroundColor: '',
+			color: ''
+		},
+		danger: {
+			backgroundColor: '',
+			color: ''
+		},
+		warning: {
+			backgroundColor: '',
+			color: ''
+		},
+		neutral: {
+			backgroundColor: '',
+			color: ''
+		}
 	}
 } as const;
 
@@ -144,6 +162,24 @@ const light = {
 	},
 	image: {
 		placeholder: palette.neutral.n10
+	},
+	badge: {
+		success: {
+			backgroundColor: '',
+			color: ''
+		},
+		danger: {
+			backgroundColor: '',
+			color: ''
+		},
+		warning: {
+			backgroundColor: '',
+			color: ''
+		},
+		neutral: {
+			backgroundColor: '',
+			color: ''
+		}
 	}
 } as const;
 
