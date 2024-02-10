@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, View, Text, StyleSheet } from 'react-native';
+import { Pressable, View, StyleSheet } from 'react-native';
 import { Control, useController } from 'react-hook-form';
 import { Icon } from '../Icon';
 import { BANKS_BY_CODE } from '../../utils/transform';
@@ -27,7 +27,13 @@ const BankSelectButton: React.FC<BankSelectButtonProps> = ({
 
 	return (
 		<View>
-			<Text style={[styles.label, { color: theme.input.label }]}>Bank</Text>
+			<Typography
+				size='small'
+				weight='medium'
+				style={[styles.label, { color: theme.input.label }]}
+			>
+				Bank
+			</Typography>
 			<Pressable
 				style={[styles.button, { backgroundColor: theme.input.background }]}
 				onPress={onPress}
@@ -43,9 +49,7 @@ const BankSelectButton: React.FC<BankSelectButtonProps> = ({
 
 const styles = StyleSheet.create({
 	label: {
-		marginBottom: 4,
-		fontSize: 14,
-		fontWeight: '500'
+		marginBottom: 4
 	},
 	button: {
 		paddingHorizontal: 8,

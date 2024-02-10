@@ -23,7 +23,10 @@ const Section: React.FC<SectionProps> = ({
 
 	return (
 		<View style={styles.section}>
-			<Typography style={[styles.title, { color: theme.input.label }]}>
+			<Typography
+				weight='medium'
+				style={[styles.title, { color: theme.input.label }]}
+			>
 				{title}
 			</Typography>
 			<Controller
@@ -51,8 +54,7 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 16
 	},
 	title: {
-		marginBottom: 2,
-		fontWeight: '500'
+		marginBottom: 2
 	},
 	input: {
 		fontSize: 18

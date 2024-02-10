@@ -18,7 +18,7 @@ const CustomerDetails: React.FC<CustomerDetailProps> = ({ user }) => {
 
 	return (
 		<View style={styles.container}>
-			<Typography style={styles.title}>Customer Details</Typography>
+			<Typography weight='medium'>Customer Details</Typography>
 			<Pressable onPress={handlePress}>
 				<Typography>{user.name}</Typography>
 			</Pressable>
@@ -30,9 +30,6 @@ const styles = StyleSheet.create({
 	container: {
 		paddingHorizontal: 16,
 		paddingBottom: 16
-	},
-	title: {
-		fontWeight: '500'
 	}
 });
 

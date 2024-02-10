@@ -1,14 +1,8 @@
-import { PreferencesSlice } from '../state/types';
-
 export enum ThemeMap {
 	light = 'Light',
 	dark = 'Dark',
 	auto = 'Auto'
 }
-
-export const getStatusBarStyle = (theme: PreferencesSlice['theme']) => {
-	return ({ light: 'dark', dark: 'light', auto: 'light' } as const)[theme];
-};
 
 export const spacing = {
 	small: 4,

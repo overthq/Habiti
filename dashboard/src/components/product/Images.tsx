@@ -34,7 +34,10 @@ const Images: React.FC<ImagesProps> = ({
 
 	return (
 		<View style={styles.section}>
-			<Typography style={[styles.title, { color: theme.input.label }]}>
+			<Typography
+				weight='medium'
+				style={[styles.title, { color: theme.input.label }]}
+			>
 				Images
 			</Typography>
 			<View style={styles.images}>
@@ -58,8 +61,7 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 16
 	},
 	title: {
-		marginBottom: 8,
-		fontWeight: '500'
+		marginBottom: 8
 	},
 	images: {
 		width: '100%',

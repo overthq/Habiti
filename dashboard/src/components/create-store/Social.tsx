@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet, Dimensions } from 'react-native';
 import { Controller, useFormContext } from 'react-hook-form';
+import Typography from '../global/Typography';
 
 const { width } = Dimensions.get('window');
 
@@ -9,10 +10,12 @@ const Social = () => {
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}>Social media</Text>
-			<Text style={styles.description}>
+			<Typography size='xxxlarge' weight='bold'>
+				Social media
+			</Typography>
+			<Typography>
 				Link your social accounts, so shoppers can follow you elsewhere.
-			</Text>
+			</Typography>
 			<View>
 				<Text style={styles.label}>Twitter username</Text>
 				<Controller
@@ -50,7 +53,9 @@ const Social = () => {
 				/>
 			</View>
 			<View>
-				<Text style={styles.label}>Website</Text>
+				<Typography weight='medium' style={styles.label}>
+					Website
+				</Typography>
 				<Controller
 					name='website'
 					control={control}
@@ -76,16 +81,7 @@ const styles = StyleSheet.create({
 		width,
 		padding: 16
 	},
-	title: {
-		fontSize: 32,
-		fontWeight: 'bold'
-	},
-	description: {
-		fontSize: 16
-	},
 	label: {
-		fontSize: 16,
-		fontWeight: '500',
 		marginTop: 8,
 		marginBottom: 4
 	},

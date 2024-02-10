@@ -1,7 +1,6 @@
 import React from 'react';
-
-import { OrderStatus } from '../../types/api';
 import Badge from '../global/Badge';
+import { OrderStatus } from '../../types/api';
 
 const StatusColorMap = {
 	[OrderStatus.Cancelled]: 'danger',

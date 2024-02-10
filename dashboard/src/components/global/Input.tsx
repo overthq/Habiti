@@ -1,12 +1,7 @@
 import React from 'react';
-import {
-	View,
-	Text,
-	TextInput,
-	TextInputProps,
-	StyleSheet
-} from 'react-native';
+import { View, TextInput, TextInputProps, StyleSheet } from 'react-native';
 import useTheme from '../../hooks/useTheme';
+import Typography from './Typography';
 
 export interface InputProps extends TextInputProps {
 	label?: string;
@@ -35,9 +30,13 @@ const Input: React.FC<InputProps> = ({ label, textArea, ...props }) => {
 	return (
 		<View>
 			{label && (
-				<Text style={[styles.label, { color: theme.input.label }]}>
+				<Typography
+					size='small'
+					weight='medium'
+					style={[styles.label, { color: theme.input.label }]}
+				>
 					{label}
-				</Text>
+				</Typography>
 			)}
 			<TextInput
 				placeholderTextColor='#696969'
@@ -52,9 +51,7 @@ const Input: React.FC<InputProps> = ({ label, textArea, ...props }) => {
 
 const styles = StyleSheet.create({
 	label: {
-		marginBottom: 4,
-		fontSize: 14,
-		fontWeight: '500'
+		marginBottom: 4
 	},
 	input: {
 		fontSize: 16,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { ManagersQuery } from '../../types/api';
 import Typography from '../global/Typography';
 
@@ -14,7 +14,9 @@ const ManagerRow: React.FC<ManagerRowProps> = ({ manager, you }) => {
 			<Typography>{manager.name}</Typography>
 			{you && (
 				<View style={styles.you}>
-					<Text style={styles.youText}>You</Text>
+					<Typography size='small' weight='medium' style={styles.youText}>
+						You
+					</Typography>
 				</View>
 			)}
 		</View>
@@ -34,8 +36,6 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 8
 	},
 	youText: {
-		fontSize: 14,
-		fontWeight: '500',
 		color: '#505050'
 	}
 });
