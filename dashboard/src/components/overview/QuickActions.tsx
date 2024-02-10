@@ -1,9 +1,13 @@
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import Typography from '../global/Typography';
 import { Icon } from '../Icon';
+import { MainTabParamList } from '../../types/navigation';
 
 const QuickActions = () => {
+	const { navigate } = useNavigation<NavigationProp<MainTabParamList>>();
+
 	return (
 		<View style={styles.container}>
 			<Typography
@@ -14,11 +18,11 @@ const QuickActions = () => {
 			>
 				Quick actions
 			</Typography>
-			<Pressable style={styles.row}>
+			<Pressable style={styles.row} onPress={() => navigate('Orders')}>
 				<Typography>5 orders to fulfill</Typography>
 				<Icon name='chevron-right' />
 			</Pressable>
-			<Pressable style={styles.row}>
+			<Pressable style={styles.row} onPress={() => navigate('Products')}>
 				<Typography>10 low-stock products</Typography>
 				<Icon name='chevron-right' />
 			</Pressable>

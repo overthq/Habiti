@@ -2,10 +2,11 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import Typography from './Typography';
 import useTheme from '../../hooks/useTheme';
+import { ThemeObject } from '../../styles/theme';
 
 interface BadgeProps {
 	text: string;
-	variant: 'success' | 'danger' | 'warning' | 'neutral';
+	variant: ThemeObject['badge'];
 }
 
 const Badge: React.FC<BadgeProps> = ({ text }) => {

@@ -23,13 +23,11 @@ const Payouts = () => {
 
 	React.useLayoutEffect(() => {
 		setOptions({
-			headerRight: () => {
-				return (
-					<Pressable style={{ marginRight: 16 }} onPress={handleNewPayout}>
-						<Icon name='plus' />
-					</Pressable>
-				);
-			}
+			headerRight: () => (
+				<Pressable style={{ marginRight: 16 }} onPress={handleNewPayout}>
+					<Icon name='plus' />
+				</Pressable>
+			)
 		});
 	}, []);
 
@@ -39,12 +37,16 @@ const Payouts = () => {
 
 	return (
 		<Screen style={styles.container}>
-			<Typography>Available:</Typography>
-			<Typography size='xlarge' weight='bold' style={styles.available}>
+			<Typography variant='label' weight='medium'>
+				Available
+			</Typography>
+			<Typography size='xxxlarge' weight='bold' style={styles.available}>
 				{formatNaira(50000)}
 			</Typography>
 			<RevenueBar realizedRevenue={75} unrealizedRevenue={50} payedOut={25} />
-			<Typography>Payout History</Typography>
+			<Typography variant='label' weight='medium'>
+				Payout History
+			</Typography>
 			{data.currentStore.payouts.map(payout => (
 				<PayoutRow key={payout.id} payout={payout} />
 			))}
