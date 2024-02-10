@@ -1,29 +1,14 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
 
 import { OrderStatus } from '../../types/api';
+import Badge from '../global/Badge';
 
 const StatusColorMap = {
-	[OrderStatus.Cancelled]: {
-		backgroundColor: '#D3D3D3',
-		textColor: '#000000'
-	},
-	[OrderStatus.Completed]: {
-		backgroundColor: '#D3D3D3',
-		textColor: '#000000'
-	},
-	[OrderStatus.Delivered]: {
-		backgroundColor: '#D3D3D3',
-		textColor: '#000000'
-	},
-	[OrderStatus.Pending]: {
-		backgroundColor: '#D3D3D3',
-		textColor: '#000000'
-	},
-	[OrderStatus.Processing]: {
-		backgroundColor: '#D3D3D3',
-		textColor: '#000000'
-	}
+	[OrderStatus.Cancelled]: 'danger',
+	[OrderStatus.Completed]: 'success',
+	[OrderStatus.Delivered]: 'success',
+	[OrderStatus.Pending]: 'warning',
+	[OrderStatus.Processing]: 'warning'
 } as const;
 
 interface StatusPillProps {
@@ -31,28 +16,7 @@ interface StatusPillProps {
 }
 
 const StatusPill: React.FC<StatusPillProps> = ({ status }) => (
-	<View
-		style={[
-			styles.pill,
-			{ backgroundColor: StatusColorMap[status].backgroundColor }
-		]}
-	>
-		<Text style={[styles.text, { color: StatusColorMap[status].textColor }]}>
-			{status}
-		</Text>
-	</View>
+	<Badge variant={StatusColorMap[status]} text={status} />
 );
-
-const styles = StyleSheet.create({
-	pill: {
-		paddingVertical: 4,
-		paddingHorizontal: 6,
-		borderRadius: 4,
-		alignSelf: 'flex-start'
-	},
-	text: {
-		fontWeight: '500'
-	}
-});
 
 export default StatusPill;

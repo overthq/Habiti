@@ -104,20 +104,20 @@ const dark = {
 	},
 	badge: {
 		success: {
-			backgroundColor: '',
-			color: ''
+			backgroundColor: '#B8EDAD',
+			color: '#1A6E2B'
 		},
 		danger: {
-			backgroundColor: '',
-			color: ''
+			backgroundColor: '#EDB7AD',
+			color: '#6E2B1A'
 		},
 		warning: {
-			backgroundColor: '',
-			color: ''
+			backgroundColor: '#ECEDAD',
+			color: '#696E1A'
 		},
 		neutral: {
-			backgroundColor: '',
-			color: ''
+			backgroundColor: '#505050',
+			color: '#D3D3D3'
 		}
 	}
 } as const;
@@ -165,20 +165,20 @@ const light = {
 	},
 	badge: {
 		success: {
-			backgroundColor: '',
-			color: ''
+			backgroundColor: '#B8EDAD',
+			color: '#1A6E2B'
 		},
 		danger: {
-			backgroundColor: '',
-			color: ''
+			backgroundColor: '#EDB7AD',
+			color: '#6E2B1A'
 		},
 		warning: {
-			backgroundColor: '',
-			color: ''
+			backgroundColor: '#ECEDAD',
+			color: '#696E1A'
 		},
 		neutral: {
-			backgroundColor: '',
-			color: ''
+			backgroundColor: '#505050',
+			color: '#D3D3D3'
 		}
 	}
 } as const;

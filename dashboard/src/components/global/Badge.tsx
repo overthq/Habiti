@@ -13,8 +13,17 @@ const Badge: React.FC<BadgeProps> = ({ text, variant }) => {
 	const { theme } = useTheme();
 
 	return (
-		<View style={[styles.container, theme.badge[variant]]}>
-			<Typography size='small' weight='medium'>
+		<View
+			style={[
+				styles.container,
+				{ backgroundColor: theme.badge[variant].backgroundColor }
+			]}
+		>
+			<Typography
+				size='small'
+				weight='medium'
+				style={{ color: theme.badge[variant].color }}
+			>
 				{text}
 			</Typography>
 		</View>
@@ -23,7 +32,9 @@ const Badge: React.FC<BadgeProps> = ({ text, variant }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		padding: 4,
+		alignSelf: 'flex-start',
+		paddingHorizontal: 8,
+		paddingVertical: 4,
 		borderRadius: 4
 	}
 });
