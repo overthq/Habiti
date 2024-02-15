@@ -30,7 +30,9 @@ const OrderProducts: React.FC<OrderProductsProps> = ({ products }) => {
 
 	return (
 		<View style={styles.container}>
-			<Typography style={styles.sectionHeader}>Products</Typography>
+			<Typography weight='medium' style={styles.sectionHeader}>
+				Products
+			</Typography>
 			<FlatList
 				horizontal
 				data={products}
@@ -51,7 +53,6 @@ const styles = StyleSheet.create({
 		paddingLeft: 16
 	},
 	sectionHeader: {
-		fontWeight: '500',
 		marginLeft: 16,
 		marginBottom: 8
 	}

@@ -55,16 +55,6 @@ const Verify: React.FC = () => {
 	);
 };
 
-/* <TextInput
-		key={index}
-		ref={el => codeRef.current?.push(el)}
-		style={styles.input}
-		keyboardType='numeric'
-		onChangeText={val => handleFieldChange(val, index)}
-		onKeyPress={e => handleKeyPress(e.nativeEvent.key, index)}
-		caretHidden
-	/> */
-
 const styles = StyleSheet.create({
 	container: {
 		paddingHorizontal: 16

@@ -28,7 +28,7 @@ const InventoryInput = () => {
 			name='quantity'
 			render={({ field: { onBlur, onChange, value } }) => (
 				<View style={styles.container}>
-					<Typography style={[styles.title, { color: theme.input.label }]}>
+					<Typography weight='medium' style={{ color: theme.input.label }}>
 						Inventory
 					</Typography>
 					<View style={styles.right}>
@@ -56,9 +56,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		padding: 16
-	},
-	title: {
-		fontWeight: '500'
 	},
 	right: {
 		flexDirection: 'row',

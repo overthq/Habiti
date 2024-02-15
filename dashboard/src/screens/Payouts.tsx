@@ -8,7 +8,6 @@ import { Icon } from '../components/Icon';
 import { AppStackParamList } from '../types/navigation';
 import Screen from '../components/global/Screen';
 import Typography from '../components/global/Typography';
-import SectionHeader from '../components/global/SectionHeader';
 import PayoutRow from '../components/payouts/PayoutRow';
 import RevenueBar from '../components/payouts/RevenueBar';
 
@@ -24,13 +23,11 @@ const Payouts = () => {
 
 	React.useLayoutEffect(() => {
 		setOptions({
-			headerRight: () => {
-				return (
-					<Pressable style={{ marginRight: 16 }} onPress={handleNewPayout}>
-						<Icon name='plus' />
-					</Pressable>
-				);
-			}
+			headerRight: () => (
+				<Pressable style={{ marginRight: 16 }} onPress={handleNewPayout}>
+					<Icon name='plus' />
+				</Pressable>
+			)
 		});
 	}, []);
 
@@ -40,10 +37,16 @@ const Payouts = () => {
 
 	return (
 		<Screen style={styles.container}>
-			<SectionHeader title='Available:' />
-			<Typography style={styles.available}>{formatNaira(50000)}</Typography>
+			<Typography variant='label' weight='medium'>
+				Available
+			</Typography>
+			<Typography size='xxxlarge' weight='bold' style={styles.available}>
+				{formatNaira(50000)}
+			</Typography>
 			<RevenueBar realizedRevenue={75} unrealizedRevenue={50} payedOut={25} />
-			<Typography>Payout History</Typography>
+			<Typography variant='label' weight='medium'>
+				Payout History
+			</Typography>
 			{data.currentStore.payouts.map(payout => (
 				<PayoutRow key={payout.id} payout={payout} />
 			))}
@@ -53,12 +56,9 @@ const Payouts = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		paddingTop: 16,
-		paddingHorizontal: 16
+		padding: 16
 	},
 	available: {
-		fontSize: 24,
-		fontWeight: 'bold',
 		marginBottom: 8
 	}
 });

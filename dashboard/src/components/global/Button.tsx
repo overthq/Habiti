@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-	Text,
 	Pressable,
 	ActivityIndicator,
 	StyleSheet,
@@ -8,6 +7,7 @@ import {
 	PressableProps
 } from 'react-native';
 import useTheme from '../../hooks/useTheme';
+import Typography from './Typography';
 
 interface ButtonProps extends PressableProps {
 	variant?: 'primary' | 'secondary' | 'tertiary';
@@ -41,9 +41,12 @@ const Button: React.FC<ButtonProps> = ({
 			{loading ? (
 				<ActivityIndicator />
 			) : (
-				<Text style={[styles.text, { color: theme.button[variant].text }]}>
+				<Typography
+					weight='medium'
+					style={[styles.text, { color: theme.button[variant].text }]}
+				>
 					{text}
-				</Text>
+				</Typography>
 			)}
 		</Pressable>
 	);
@@ -51,7 +54,6 @@ const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		// flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
 		height: 45,
@@ -59,8 +61,7 @@ const styles = StyleSheet.create({
 		borderRadius: 4
 	},
 	text: {
-		fontSize: 17,
-		fontWeight: '500'
+		fontSize: 17
 	}
 });
 

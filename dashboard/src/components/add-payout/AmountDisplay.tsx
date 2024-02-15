@@ -18,7 +18,7 @@ const AmountDisplay: React.FC<AmountDisplayProps> = ({ amount }) => {
 
 	return (
 		<View style={styles.container}>
-			<Typography style={styles.amount} weight='bold' size='xxlarge'>
+			<Typography style={styles.amount} weight='bold' size='xxxlarge' number>
 				{display}
 			</Typography>
 		</View>
@@ -27,11 +27,13 @@ const AmountDisplay: React.FC<AmountDisplayProps> = ({ amount }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		paddingVertical: 64
+		flexGrow: 1,
+		paddingVertical: 56,
+		justifyContent: 'center'
 	},
 	amount: {
 		textAlign: 'center',
-		fontVariant: ['tabular-nums']
+		fontSize: 52
 	}
 });
 

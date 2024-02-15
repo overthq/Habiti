@@ -17,9 +17,7 @@ const StoreSelectListItem: React.FC<StoresListItemProps> = ({
 		onPress={onPress}
 		style={[styles.container, selected ? styles.selected : undefined]}
 	>
-		<Typography style={[selected ? styles.selectedText : undefined]}>
-			{text}
-		</Typography>
+		<Typography weight={selected ? 'medium' : undefined}>{text}</Typography>
 	</Pressable>
 );
 
@@ -34,9 +32,6 @@ const styles = StyleSheet.create({
 	},
 	selected: {
 		backgroundColor: '#D3D3D3'
-	},
-	selectedText: {
-		fontWeight: '500'
 	}
 });
 

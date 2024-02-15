@@ -63,7 +63,8 @@ model Product {
   watchlists  WatchlistProduct[]
   categories  ProductCategory[]
 
-  store Store @relation(fields: [storeId], references: [id])
+  store  Store    @relation(fields: [storeId], references: [id])
+  Review Review[]
 }
 
 model Order {
@@ -197,6 +198,16 @@ model StoreProductCategory {
   store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
 
   products ProductCategory[]
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  productId String
+  body      String?
+  rating    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 enum OrderStatus {

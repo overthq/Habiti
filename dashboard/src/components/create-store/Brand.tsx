@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, Dimensions } from 'react-native';
+import { View, TextInput, StyleSheet, Dimensions } from 'react-native';
 import { useFormContext, Controller } from 'react-hook-form';
 import Typography from '../global/Typography';
 import Screen from '../global/Screen';
@@ -11,10 +11,14 @@ const Brand: React.FC = () => {
 
 	return (
 		<Screen style={styles.container}>
-			<Text style={styles.title}>Your brand</Text>
+			<Typography weight='bold' size='xxxlarge'>
+				Your brand
+			</Typography>
 			<Typography>Please enter the name of your store.</Typography>
 			<View>
-				<Text style={styles.label}>Store name</Text>
+				<Typography weight='medium' style={styles.label}>
+					Store name
+				</Typography>
 				<Controller
 					name='name'
 					control={control}
@@ -38,13 +42,7 @@ const styles = StyleSheet.create({
 		width,
 		padding: 16
 	},
-	title: {
-		fontWeight: 'bold',
-		fontSize: 32
-	},
 	label: {
-		fontSize: 16,
-		fontWeight: '500',
 		marginTop: 8,
 		marginBottom: 4
 	},

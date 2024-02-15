@@ -1,14 +1,8 @@
-import { PreferencesSlice } from '../state/types';
-
 export enum ThemeMap {
 	light = 'Light',
 	dark = 'Dark',
 	auto = 'Auto'
 }
-
-export const getStatusBarStyle = (theme: PreferencesSlice['theme']) => {
-	return ({ light: 'dark', dark: 'light', auto: 'light' } as const)[theme];
-};
 
 export const spacing = {
 	small: 4,
@@ -25,7 +19,8 @@ export const typography = {
 		regular: 16,
 		large: 18,
 		xlarge: 20,
-		xxlarge: 32
+		xxlarge: 24,
+		xxxlarge: 32
 	},
 	weight: {
 		regular: 'normal',
@@ -100,6 +95,24 @@ const dark = {
 	},
 	image: {
 		placeholder: palette.neutral.n50
+	},
+	badge: {
+		success: {
+			backgroundColor: '#B8EDAD',
+			color: '#1A6E2B'
+		},
+		danger: {
+			backgroundColor: '#EDB7AD',
+			color: '#6E2B1A'
+		},
+		warning: {
+			backgroundColor: '#ECEDAD',
+			color: '#696E1A'
+		},
+		neutral: {
+			backgroundColor: '#505050',
+			color: '#D3D3D3'
+		}
 	}
 } as const;
 
@@ -143,6 +156,24 @@ const light = {
 	},
 	image: {
 		placeholder: palette.neutral.n10
+	},
+	badge: {
+		success: {
+			backgroundColor: '#B8EDAD',
+			color: '#1A6E2B'
+		},
+		danger: {
+			backgroundColor: '#EDB7AD',
+			color: '#6E2B1A'
+		},
+		warning: {
+			backgroundColor: '#ECEDAD',
+			color: '#696E1A'
+		},
+		neutral: {
+			backgroundColor: '#505050',
+			color: '#D3D3D3'
+		}
 	}
 } as const;
 

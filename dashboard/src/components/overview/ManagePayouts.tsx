@@ -1,11 +1,11 @@
 import React from 'react';
+import { View, StyleSheet, Pressable } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { View, StyleSheet } from 'react-native';
 import { useStoreQuery } from '../../types/api';
 import { HomeStackParamList } from '../../types/navigation';
 import { formatNaira } from '../../utils/currency';
-import Button from '../global/Button';
 import Typography from '../global/Typography';
+import { Icon } from '../Icon';
 
 const ManagePayouts = () => {
 	const [{ data }] = useStoreQuery();
@@ -17,13 +17,16 @@ const ManagePayouts = () => {
 
 	return (
 		<View style={styles.container}>
-			<Typography variant='label' style={{ fontWeight: '500' }}>
-				Payouts
+			<Typography variant='label' weight='medium'>
+				Available Revenue
 			</Typography>
-			<Typography style={{ fontSize: 24, fontWeight: '500', marginBottom: 8 }}>
-				{formatNaira(data?.currentStore.realizedRevenue ?? 0)}
-			</Typography>
-			<Button text='Manage payouts' onPress={navigateToPayouts} />
+			<Pressable style={styles.amount} onPress={navigateToPayouts}>
+				<Typography size='xxxlarge' weight='bold'>
+					{formatNaira(50000)}
+					{/* {formatNaira(data?.currentStore.realizedRevenue ?? 0)} */}
+				</Typography>
+				<Icon name='chevron-right' color='#D3D3D3' />
+			</Pressable>
 		</View>
 	);
 };
@@ -31,6 +34,11 @@ const ManagePayouts = () => {
 const styles = StyleSheet.create({
 	container: {
 		paddingHorizontal: 16
+	},
+	amount: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		marginBottom: 8
 	}
 });
 
