@@ -10,12 +10,7 @@ const QuickActions = () => {
 
 	return (
 		<View style={styles.container}>
-			<Typography
-				variant='label'
-				size='large'
-				weight='medium'
-				style={styles.label}
-			>
+			<Typography variant='label' weight='medium' style={styles.label}>
 				Quick actions
 			</Typography>
 			<Pressable style={styles.row} onPress={() => navigate('Orders')}>

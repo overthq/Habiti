@@ -30,7 +30,6 @@ const CustomerInfo: React.FC = () => {
 			<Typography weight='medium' size='xxlarge'>
 				{data.user.name}
 			</Typography>
-			<Typography>{data.user.phone}</Typography>
 			<Typography>Previous Orders:</Typography>
 			{data.user.orders.map(order => (
 				<OrderDetail key={order.id} order={order} />

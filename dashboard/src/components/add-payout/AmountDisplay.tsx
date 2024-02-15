@@ -27,10 +27,13 @@ const AmountDisplay: React.FC<AmountDisplayProps> = ({ amount }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		paddingVertical: 64
+		flexGrow: 1,
+		paddingVertical: 56,
+		justifyContent: 'center'
 	},
 	amount: {
-		textAlign: 'center'
+		textAlign: 'center',
+		fontSize: 52
 	}
 });
 

@@ -23,7 +23,9 @@ const LowStockProducts = () => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.heading}>
-				<Typography weight='medium'>Low stock products</Typography>
+				<Typography variant='label' weight='medium'>
+					Low stock products
+				</Typography>
 				<TextButton size={16} onPress={navigateToProducts}>
 					View all
 				</TextButton>

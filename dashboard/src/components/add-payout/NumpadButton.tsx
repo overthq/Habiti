@@ -9,8 +9,8 @@ interface NumpadButtonProps {
 
 const NumpadButton: React.FC<NumpadButtonProps> = ({ value, onPress }) => {
 	return (
-		<Pressable style={styles.debug} onPress={onPress}>
-			<Typography size='xxlarge' weight='medium' style={styles.text} number>
+		<Pressable style={styles.container} onPress={onPress}>
+			<Typography size='xxxlarge' weight='medium' style={styles.text} number>
 				{value}
 			</Typography>
 		</Pressable>
@@ -18,11 +18,11 @@ const NumpadButton: React.FC<NumpadButtonProps> = ({ value, onPress }) => {
 };
 
 const styles = StyleSheet.create({
-	debug: {
+	container: {
 		padding: 8,
-		// borderWidth: 1,
-		// borderColor: 'red',
-		flexGrow: 1
+		flexGrow: 1,
+		justifyContent: 'center',
+		alignContent: 'center'
 	},
 	text: {
 		textAlign: 'center'
