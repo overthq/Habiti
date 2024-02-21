@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
 		backgroundColor: '#D3D3D3',
 		borderRadius: 4,
 		overflow: 'hidden'
-		// marginRight: 8
 	},
 	image: {
 		width: '100%',

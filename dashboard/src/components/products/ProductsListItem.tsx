@@ -20,7 +20,8 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
 			<CustomImage
 				uri={product.images[0]?.path}
 				style={styles.image}
-				size={48}
+				height={48}
+				width={48}
 			/>
 			<View>
 				<Typography style={styles.name}>{product.name}</Typography>

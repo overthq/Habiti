@@ -5,18 +5,24 @@ import useTheme from '../../hooks/useTheme';
 
 interface CustomImageProps {
 	uri?: string;
-	size?: number;
 	style?: ViewStyle;
+	height?: number;
+	width?: number;
 }
 
-const CustomImage: React.FC<CustomImageProps> = ({ uri, size, style }) => {
+const CustomImage: React.FC<CustomImageProps> = ({
+	uri,
+	height,
+	width,
+	style
+}) => {
 	const { theme } = useTheme();
 
 	return (
 		<View
 			style={[
 				styles.container,
-				{ width: size, height: size, backgroundColor: theme.image.placeholder },
+				{ width, height, backgroundColor: theme.image.placeholder },
 				style
 			]}
 		>

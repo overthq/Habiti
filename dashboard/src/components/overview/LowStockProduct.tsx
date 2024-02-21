@@ -16,7 +16,7 @@ const LowStockProduct: React.FC<LowStockProductProps> = ({
 }) => {
 	return (
 		<Pressable onPress={onPress} style={{ marginRight: 8, width: 160 }}>
-			<CustomImage uri={product.images[0]?.path} size={160} />
+			<CustomImage uri={product.images[0]?.path} height={160} width={160} />
 			<Typography weight='medium' style={styles.text} ellipsize>
 				{product.name}
 			</Typography>
