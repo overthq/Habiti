@@ -146,7 +146,7 @@ const light = {
 		placeholder: '',
 		label: palette.neutral.n50,
 		background: palette.neutral.n5,
-		text: palette.neutral.n50
+		text: palette.neutral.n100
 	},
 	icon: {
 		default: { color: palette.neutral.n100 }
