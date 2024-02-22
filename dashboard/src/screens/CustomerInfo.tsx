@@ -27,10 +27,12 @@ const CustomerInfo: React.FC = () => {
 
 	return (
 		<ScrollableScreen style={styles.container}>
-			<Typography weight='medium' size='xxlarge'>
+			<Typography weight='medium' size='large'>
 				{data.user.name}
 			</Typography>
-			<Typography>Previous Orders:</Typography>
+			<Typography variant='label' style={styles.sectionHeader}>
+				Previous Orders
+			</Typography>
 			{data.user.orders.map(order => (
 				<OrderDetail key={order.id} order={order} />
 			))}
@@ -41,6 +43,9 @@ const CustomerInfo: React.FC = () => {
 const styles = StyleSheet.create({
 	container: {
 		padding: 16
+	},
+	sectionHeader: {
+		marginVertical: 8
 	}
 });
 
