@@ -14,7 +14,6 @@ interface PaymentInfoProps {
 // - Fee breakdown (payment provider and ours).
 // - Tax (VAT and otherwise)
 // - Total
-// - Refund button (should this be different from order cancellation?)
 
 const PaymentInfo: React.FC<PaymentInfoProps> = ({ order }) => {
 	return (
