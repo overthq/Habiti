@@ -30,8 +30,8 @@ const Order: React.FC = () => {
 			<OrderOverview order={data.order} />
 			<CustomerDetails user={data.order.user} />
 			<OrderProducts products={data.order.products} />
-			<OrderActions orderId={data.order.id} status={data.order.status} />
 			<PaymentInfo order={data.order} />
+			<OrderActions orderId={data.order.id} status={data.order.status} />
 		</ScrollableScreen>
 	);
 };

@@ -20,12 +20,8 @@ const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 				console.log(error);
 			}
 		},
-		[]
+		[orderId, status]
 	);
-
-	if (status !== OrderStatus.Pending) {
-		return null;
-	}
 
 	return (
 		<View style={styles.container}>
@@ -35,6 +31,15 @@ const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 				onPress={updateOrderStatus(OrderStatus.Completed)}
 				style={styles.button}
 			/>
+			{status !== OrderStatus.Cancelled && (
+				<Button
+					style={styles.button}
+					loading={fetching}
+					variant='secondary'
+					onPress={updateOrderStatus(OrderStatus.Cancelled)}
+					text='Refund'
+				/>
+			)}
 		</View>
 	);
 };
@@ -44,7 +49,7 @@ const styles = StyleSheet.create({
 		padding: 16
 	},
 	button: {
-		height: 40
+		marginBottom: 8
 	}
 });
 

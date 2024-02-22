@@ -56,8 +56,7 @@ const styles = StyleSheet.create({
 	container: {
 		justifyContent: 'center',
 		alignItems: 'center',
-		height: 45,
-		maxHeight: 45,
+		height: 40,
 		borderRadius: 4
 	},
 	text: {

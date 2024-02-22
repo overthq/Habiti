@@ -39,7 +39,7 @@ const OrderProducts: React.FC<OrderProductsProps> = ({ products }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		paddingVertical: 12
+		marginVertical: 16
 	},
 	sectionHeader: {
 		marginLeft: 16,

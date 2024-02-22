@@ -1,12 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import {
-	OrderQuery,
-	OrderStatus,
-	useUpdateOrderMutation
-} from '../../types/api';
+import { OrderQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
-import Button from '../global/Button';
 import Typography from '../global/Typography';
 
 interface PaymentInfoProps {
@@ -22,16 +17,6 @@ interface PaymentInfoProps {
 // - Refund button (should this be different from order cancellation?)
 
 const PaymentInfo: React.FC<PaymentInfoProps> = ({ order }) => {
-	const [{ fetching }, updateOrder] = useUpdateOrderMutation();
-
-	const handleRefund = React.useCallback(() => {
-		// For now, this is equivalent to order cancellation.
-		updateOrder({
-			orderId: order.id,
-			input: { status: OrderStatus.Cancelled }
-		});
-	}, [order.id]);
-
 	return (
 		<View style={styles.container}>
 			<Typography weight='medium' style={styles.sectionHeader}>
@@ -41,13 +26,10 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({ order }) => {
 				<Typography>Total</Typography>
 				<Typography>{formatNaira(order.total)}</Typography>
 			</View>
-			<Button
-				style={styles.button}
-				loading={fetching}
-				variant='secondary'
-				onPress={handleRefund}
-				text='Refund'
-			/>
+			<View style={styles.row}>
+				<Typography>Fees</Typography>
+				<Typography>{formatNaira(5000)}</Typography>
+			</View>
 		</View>
 	);
 };
