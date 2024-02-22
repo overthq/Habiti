@@ -9,11 +9,9 @@ interface PaymentInfoProps {
 }
 
 // This should show the payment details for the order.
-// - Sub total (plain cost of products)
 // - Discounts or coupons, if any
 // - Fee breakdown (payment provider and ours).
 // - Tax (VAT and otherwise)
-// - Total
 
 const PaymentInfo: React.FC<PaymentInfoProps> = ({ order }) => {
 	return (
@@ -22,12 +20,16 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({ order }) => {
 				Payment
 			</Typography>
 			<View style={styles.row}>
-				<Typography>Total</Typography>
+				<Typography>Subtotal</Typography>
 				<Typography>{formatNaira(order.total)}</Typography>
 			</View>
 			<View style={styles.row}>
 				<Typography>Fees</Typography>
 				<Typography>{formatNaira(5000)}</Typography>
+			</View>
+			<View style={styles.row}>
+				<Typography>Total</Typography>
+				<Typography>{formatNaira(order.total)}</Typography>
 			</View>
 		</View>
 	);
