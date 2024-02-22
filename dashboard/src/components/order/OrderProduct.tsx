@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Image, Pressable, StyleSheet } from 'react-native';
+import { View, Pressable, StyleSheet } from 'react-native';
 import { OrderQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
-import { plural } from '../../utils/strings';
 import Typography from '../global/Typography';
+import CustomImage from '../global/CustomImage';
 
 interface OrderProductProps {
 	orderProduct: OrderQuery['order']['products'][number];
@@ -14,14 +14,14 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 	orderProduct: { product, quantity, unitPrice },
 	onPress
 }) => (
-	<Pressable style={styles.container} onPress={onPress}>
-		<View style={styles.placeholder}>
-			<Image source={{ uri: product.images[0]?.path }} style={styles.image} />
+	<Pressable key={product.id} onPress={onPress} style={styles.container}>
+		<View style={styles.image}>
+			<CustomImage uri={product.images[0]?.path} height={40} width={40} />
 		</View>
 		<View>
-			<Typography style={styles.name}>{product.name}</Typography>
-			<Typography variant='label'>
-				{plural('unit', quantity)} · {formatNaira(quantity * unitPrice)}
+			<Typography>{product.name}</Typography>
+			<Typography size='small' variant='secondary'>
+				{formatNaira(unitPrice * quantity)}
 			</Typography>
 		</View>
 	</Pressable>
@@ -29,21 +29,13 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		marginRight: 8
-	},
-	placeholder: {
-		height: 200,
-		width: 150,
-		backgroundColor: '#D3D3D3',
-		borderRadius: 4,
-		overflow: 'hidden'
+		flexDirection: 'row',
+		alignItems: 'center',
+		paddingHorizontal: 16,
+		paddingVertical: 4
 	},
 	image: {
-		width: '100%',
-		height: '100%'
-	},
-	name: {
-		marginTop: 4
+		marginRight: 8
 	}
 });
 

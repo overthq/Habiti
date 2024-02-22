@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, FlatList, ListRenderItem } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import OrderProduct from './OrderProduct';
 import { OrderQuery } from '../../types/api';
@@ -20,27 +20,19 @@ const OrderProducts: React.FC<OrderProductsProps> = ({ products }) => {
 		[]
 	);
 
-	const renderOrderProduct: ListRenderItem<
-		OrderQuery['order']['products'][number]
-	> = React.useCallback(({ item }) => {
-		return (
-			<OrderProduct onPress={handlePress(item.productId)} orderProduct={item} />
-		);
-	}, []);
-
 	return (
 		<View style={styles.container}>
 			<Typography weight='medium' style={styles.sectionHeader}>
 				Products
 			</Typography>
-			<FlatList
-				horizontal
-				data={products}
-				keyExtractor={item => item.id}
-				contentContainerStyle={styles.content}
-				renderItem={renderOrderProduct}
-				showsHorizontalScrollIndicator={false}
-			/>
+
+			{products.map(p => (
+				<OrderProduct
+					key={p.id}
+					onPress={handlePress(p.productId)}
+					orderProduct={p}
+				/>
+			))}
 		</View>
 	);
 };
@@ -48,9 +40,6 @@ const OrderProducts: React.FC<OrderProductsProps> = ({ products }) => {
 const styles = StyleSheet.create({
 	container: {
 		paddingVertical: 12
-	},
-	content: {
-		paddingLeft: 16
 	},
 	sectionHeader: {
 		marginLeft: 16,

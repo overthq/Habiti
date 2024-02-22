@@ -25,7 +25,7 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
 			/>
 			<View>
 				<Typography style={styles.name}>{product.name}</Typography>
-				<Typography style={styles.price}>
+				<Typography variant='secondary'>
 					{formatNaira(product.unitPrice)}
 				</Typography>
 			</View>
@@ -44,12 +44,7 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 12
 	},
 	name: {
-		fontSize: 16,
 		marginBottom: 2
-	},
-	price: {
-		fontSize: 16,
-		color: '#777777'
 	},
 	left: {
 		flexDirection: 'row',
