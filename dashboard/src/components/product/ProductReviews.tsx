@@ -1,13 +1,22 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import Typography from '../global/Typography';
 
 const ProductReviews = () => {
 	return (
-		<View>
-			<Typography weight='medium'>Reviews</Typography>
+		<View style={styles.container}>
+			<Typography weight='medium' variant='label'>
+				Reviews
+			</Typography>
 		</View>
 	);
 };
+
+const styles = StyleSheet.create({
+	container: {
+		paddingVertical: 8,
+		paddingHorizontal: 16
+	}
+});
 
 export default ProductReviews;

@@ -5,6 +5,7 @@ import { ProductsQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
 import Typography from '../global/Typography';
 import CustomImage from '../global/CustomImage';
+import useTheme from '../../hooks/useTheme';
 
 interface ProductsListItemProps {
 	product: ProductsQuery['currentStore']['products'][number];
@@ -14,25 +15,29 @@ interface ProductsListItemProps {
 const ProductsListItem: React.FC<ProductsListItemProps> = ({
 	product,
 	onPress
-}) => (
-	<Pressable onPress={onPress} style={styles.container}>
-		<View style={styles.left}>
-			<CustomImage
-				uri={product.images[0]?.path}
-				style={styles.image}
-				height={48}
-				width={48}
-			/>
-			<View>
-				<Typography style={styles.name}>{product.name}</Typography>
-				<Typography variant='secondary'>
-					{formatNaira(product.unitPrice)}
-				</Typography>
+}) => {
+	const { theme } = useTheme();
+
+	return (
+		<Pressable onPress={onPress} style={styles.container}>
+			<View style={styles.left}>
+				<CustomImage
+					uri={product.images[0]?.path}
+					style={styles.image}
+					height={48}
+					width={48}
+				/>
+				<View>
+					<Typography style={styles.name}>{product.name}</Typography>
+					<Typography variant='secondary'>
+						{formatNaira(product.unitPrice)}
+					</Typography>
+				</View>
 			</View>
-		</View>
-		<Icon name='chevron-right' />
-	</Pressable>
-);
+			<Icon name='chevron-right' color={theme.text.secondary} />
+		</Pressable>
+	);
+};
 
 const styles = StyleSheet.create({
 	container: {

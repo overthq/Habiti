@@ -8,12 +8,16 @@ import InventoryInput from './InventoryInput';
 import { formatNaira } from '../../utils/currency';
 import { ProductQuery } from '../../types/api';
 import ScrollableScreen from '../global/ScrollableScreen';
+import ProductOptions from './ProductOptions';
+import ProductReviews from './ProductReviews';
 
 interface ProductFormProps {
 	images?: ProductQuery['product']['images'];
 	imagesToUpload: string[];
 	setImagesToUpload: React.Dispatch<React.SetStateAction<string[]>>;
 }
+
+// TODO: Consider making "Options" and "Reviews" invisible on "Add Product"
 
 const ProductForm: React.FC<ProductFormProps> = ({
 	images,
@@ -46,6 +50,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
 				setImagesToUpload={setImagesToUpload}
 			/>
 			<InventoryInput />
+			<ProductOptions />
+			<ProductReviews />
 		</ScrollableScreen>
 	);
 };

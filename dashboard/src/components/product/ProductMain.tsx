@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { FormProvider, useForm } from 'react-hook-form';
 import { ProductQuery, useEditProductMutation } from '../../types/api';
@@ -7,9 +7,11 @@ import ProductForm from './ProductForm';
 import type { ProductFormData } from '../../screens/AddProduct';
 import { generateUploadFile } from '../../utils/images';
 import TextButton from '../global/TextButton';
+import { Icon } from '../Icon';
 
 interface ProductMainProps {
 	product: ProductQuery['product'];
+	mode: 'add' | 'edit';
 }
 
 const ProductMain: React.FC<ProductMainProps> = ({ product }) => {
@@ -46,17 +48,23 @@ const ProductMain: React.FC<ProductMainProps> = ({ product }) => {
 		navigation.setOptions({
 			headerRight: () => {
 				return (
-					<View style={{ marginRight: 16 }}>
-						{fetching ? (
-							<ActivityIndicator />
-						) : (
-							<TextButton
-								onPress={formMethods.handleSubmit(onSubmit)}
-								disabled={disabled}
-							>
-								Save
-							</TextButton>
-						)}
+					<View
+						style={{
+							flexDirection: 'row',
+							alignItems: 'center',
+							marginRight: 16
+						}}
+					>
+						<TextButton
+							onPress={formMethods.handleSubmit(onSubmit)}
+							disabled={disabled || fetching}
+							style={{ marginRight: 8 }}
+						>
+							Save
+						</TextButton>
+						<Pressable>
+							<Icon name='more-horizontal' />
+						</Pressable>
 					</View>
 				);
 			}
