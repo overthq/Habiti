@@ -18,7 +18,6 @@ interface ButtonProps extends PressableProps {
 }
 
 const Button: React.FC<ButtonProps> = ({
-	onPress,
 	text,
 	loading,
 	style,
@@ -34,7 +33,6 @@ const Button: React.FC<ButtonProps> = ({
 				{ backgroundColor: theme.button[variant].background },
 				style
 			]}
-			onPress={onPress}
 			disabled={loading || props.disabled}
 			{...props}
 		>
