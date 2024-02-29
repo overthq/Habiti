@@ -1,13 +1,12 @@
+import { Button, Screen, Typography } from '@market/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, TextInput } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import styles from '../styles/auth';
-import { AppStackParamList } from '../types/navigation';
-import { useAuthenticateMutation } from '../types/api';
-import Screen from '../components/global/Screen';
-import Typography from '../components/global/Typography';
-import Button from '../components/global/Button';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+import styles from '../styles/auth';
+import { useAuthenticateMutation } from '../types/api';
+import { AppStackParamList } from '../types/navigation';
 
 const Authenticate: React.FC = () => {
 	const [phone, setPhone] = React.useState('');

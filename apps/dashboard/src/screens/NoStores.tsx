@@ -1,8 +1,9 @@
+import { Button } from '@market/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+
 import { AppStackParamList } from '../types/navigation';
-import Button from '../components/global/Button';
 
 const NoStores: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();

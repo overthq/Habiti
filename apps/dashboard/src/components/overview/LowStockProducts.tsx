@@ -1,11 +1,11 @@
+import { TextButton, Typography } from '@market/components';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
-import TextButton from '../global/TextButton';
-import { useProductsQuery } from '../../types/api';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { HomeStackParamList, MainTabParamList } from '../../types/navigation';
-import Typography from '../global/Typography';
+
 import LowStockProduct from './LowStockProduct';
+import { useProductsQuery } from '../../types/api';
+import { HomeStackParamList, MainTabParamList } from '../../types/navigation';
 
 const LowStockProducts = () => {
 	const [{ data }] = useProductsQuery();

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Pressable, View, Text, Image, StyleSheet } from 'react-native';
+
 import { ProductsQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
 

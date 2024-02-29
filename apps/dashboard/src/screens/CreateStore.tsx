@@ -1,4 +1,6 @@
+import { Button, Screen } from '@market/components';
 import React from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
 import {
 	FlatList,
 	StyleSheet,
@@ -10,14 +12,12 @@ import Animated, {
 	useSharedValue,
 	useAnimatedScrollHandler
 } from 'react-native-reanimated';
-import { useCreateStoreMutation } from '../types/api';
-import Button from '../components/global/Button';
+
 import Brand from '../components/create-store/Brand';
 import Social from '../components/create-store/Social';
 import StoreImage from '../components/create-store/StoreImage';
 import useStore from '../state';
-import { useForm, FormProvider } from 'react-hook-form';
-import Screen from '../components/global/Screen';
+import { useCreateStoreMutation } from '../types/api';
 
 const { width } = Dimensions.get('window');
 
@@ -28,7 +28,7 @@ const steps = [
 ];
 
 const AnimatedFlatList =
-	Animated.createAnimatedComponent<FlatListProps<typeof steps[number]>>(
+	Animated.createAnimatedComponent<FlatListProps<(typeof steps)[number]>>(
 		FlatList
 	);
 

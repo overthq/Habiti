@@ -1,10 +1,9 @@
+import { useTheme, Icon, Typography } from '@market/components';
+import * as ImagePicker from 'expo-image-picker';
 import React from 'react';
 import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+
 import { ProductQuery } from '../../types/api';
-import Typography from '../global/Typography';
-import { Icon } from '../Icon';
-import useTheme from '../../hooks/useTheme';
 
 interface ImagesProps {
 	images?: ProductQuery['product']['images'];

@@ -1,11 +1,11 @@
+import { useRoute, RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { View } from 'react-native';
-import { useRoute, RouteProp } from '@react-navigation/native';
 
+import ProductMain from '../components/product/ProductMain';
+import useGoBack from '../hooks/useGoBack';
 import { useProductQuery } from '../types/api';
 import { ProductsStackParamList } from '../types/navigation';
-import useGoBack from '../hooks/useGoBack';
-import ProductMain from '../components/product/ProductMain';
 
 const Product: React.FC = () => {
 	const {
@@ -22,7 +22,7 @@ const Product: React.FC = () => {
 		return <View />;
 	}
 
-	return <ProductMain product={data.product} />;
+	return <ProductMain mode='edit' product={data.product} />;
 };
 
 export default Product;

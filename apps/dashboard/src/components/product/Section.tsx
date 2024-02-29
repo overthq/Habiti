@@ -1,9 +1,8 @@
+import { useTheme, Typography } from '@market/components';
 import React from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 import { View, TextInput, StyleSheet } from 'react-native';
 import type { TextInputProps } from 'react-native';
-import { Controller, useFormContext } from 'react-hook-form';
-import useTheme from '../../hooks/useTheme';
-import Typography from '../global/Typography';
 
 interface SectionProps {
 	title: string;

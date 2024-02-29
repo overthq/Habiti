@@ -1,10 +1,11 @@
+import { Typography } from '@market/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+
 import OrderProduct from './OrderProduct';
 import { OrderQuery } from '../../types/api';
 import { ProductsStackParamList } from '../../types/navigation';
-import Typography from '../global/Typography';
 
 interface OrderProductsProps {
 	products: OrderQuery['order']['products'];

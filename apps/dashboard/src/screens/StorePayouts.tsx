@@ -1,8 +1,9 @@
 import React from 'react';
 import { View } from 'react-native';
+
+import StorePayoutsMain from '../components/store-payouts/StorePayoutsMain';
 import useGoBack from '../hooks/useGoBack';
 import { useStoreQuery } from '../types/api';
-import StorePayoutsMain from '../components/store-payouts/StorePayoutsMain';
 
 // What settings should store owners be able to control from here?
 // Account settings (account number, bank)

@@ -1,8 +1,9 @@
+import { Typography } from '@market/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+
 import { OrderQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
-import Typography from '../global/Typography';
 
 interface PaymentInfoProps {
 	order: OrderQuery['order'];

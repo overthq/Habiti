@@ -1,6 +1,6 @@
+import { Typography } from '@market/components';
 import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
-import Typography from '../global/Typography';
 
 interface StoresListItemProps {
 	text: string;

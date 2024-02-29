@@ -1,18 +1,17 @@
-import React from 'react';
-import { StyleSheet } from 'react-native';
-import { FormProvider, useForm } from 'react-hook-form';
 import {
 	BottomSheetBackdrop,
 	BottomSheetBackdropProps,
 	BottomSheetModal
 } from '@gorhom/bottom-sheet';
-import Screen from '../global/Screen';
-import FormInput from '../global/FormInput';
-import Button from '../global/Button';
-import { useVerifyBankAccountMutation } from '../../types/api';
-import BankSelectModal from './BankSelectModal';
+import { Button, FormInput, Screen } from '@market/components';
+import React from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { StyleSheet } from 'react-native';
+
 import BankSelectButton from './BankSelectButton';
+import BankSelectModal from './BankSelectModal';
 import ConfirmationModal from './ConfirmationModal';
+import { useVerifyBankAccountMutation } from '../../types/api';
 import { EditPayoutInfoFormValues } from '../../types/forms';
 
 interface StorePayoutsMainProps {

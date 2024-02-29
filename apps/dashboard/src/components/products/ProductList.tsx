@@ -1,5 +1,3 @@
-import React from 'react';
-import { View } from 'react-native';
 import {
 	useNavigation,
 	NavigationProp,
@@ -7,8 +5,11 @@ import {
 	RouteProp
 } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import ProductsListItem from './ProductsListItem';
+import React from 'react';
+import { View } from 'react-native';
+
 import ProductGridItem from './ProductGridItem';
+import ProductsListItem from './ProductsListItem';
 import { ProductsQuery, useProductsQuery } from '../../types/api';
 import {
 	MainTabParamList,

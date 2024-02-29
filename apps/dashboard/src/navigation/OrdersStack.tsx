@@ -1,7 +1,8 @@
-import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import Orders from '../screens/Orders';
+import React from 'react';
+
 import Order from '../screens/Order';
+import Orders from '../screens/Orders';
 import Product from '../screens/Product';
 import { OrdersStackParamList } from '../types/navigation';
 

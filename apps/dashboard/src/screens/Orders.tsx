@@ -1,3 +1,4 @@
+import { Screen } from '@market/components';
 import {
 	NavigationProp,
 	RouteProp,
@@ -6,11 +7,11 @@ import {
 } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, FlatList, StyleSheet, ListRenderItem } from 'react-native';
+
 import OrdersFilter from '../components/orders/OrdersFilter';
 import OrdersListItem from '../components/orders/OrdersListItem';
 import { OrdersQuery, useOrdersQuery } from '../types/api';
 import { MainTabParamList, OrdersStackParamList } from '../types/navigation';
-import Screen from '../components/global/Screen';
 
 // Ultimately, we should consider making this a SectionList
 // or advanced FlatList, that can separate records based on dates.

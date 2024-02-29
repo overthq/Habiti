@@ -1,8 +1,8 @@
+import { Icon, Typography } from '@market/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import Typography from '../global/Typography';
-import { Icon } from '../Icon';
+
 import { MainTabParamList } from '../../types/navigation';
 
 const QuickActions = () => {

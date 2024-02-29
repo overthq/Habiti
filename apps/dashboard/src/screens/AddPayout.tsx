@@ -1,10 +1,10 @@
+import { Button, Screen } from '@market/components';
 import React from 'react';
 import { View } from 'react-native';
-import useGoBack from '../hooks/useGoBack';
-import Button from '../components/global/Button';
-import Screen from '../components/global/Screen';
-import PayoutNumpad from '../components/add-payout/PayoutNumpad';
+
 import AmountDisplay from '../components/add-payout/AmountDisplay';
+import PayoutNumpad from '../components/add-payout/PayoutNumpad';
+import useGoBack from '../hooks/useGoBack';
 import { useCreatePayoutMutation } from '../types/api';
 
 const AddPayout: React.FC = () => {

@@ -1,8 +1,8 @@
+import { Radio, Typography } from '@market/components';
 import React from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
 import { Controller, useFormContext } from 'react-hook-form';
-import Typography from '../global/Typography';
-import Radio from '../global/Radio';
+import { View, Pressable, StyleSheet } from 'react-native';
+
 import { FilterOrdersFormValues } from '../../types/forms';
 
 // TODO: Add sorting by total

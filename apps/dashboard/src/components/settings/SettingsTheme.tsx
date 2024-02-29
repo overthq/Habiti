@@ -1,8 +1,9 @@
+import { Screen } from '@market/components';
 import React from 'react';
+
 import SettingSelectRow from './SettingSelectRow';
-import useStore from '../../state';
 import useGoBack from '../../hooks/useGoBack';
-import Screen from '../global/Screen';
+import useStore from '../../state';
 
 type Theme = 'light' | 'dark' | 'auto';
 

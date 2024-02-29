@@ -1,6 +1,6 @@
+import { Icon } from '@market/components';
 import React from 'react';
 import { View, Pressable, Text, StyleSheet } from 'react-native';
-import { Icon } from '../Icon';
 
 interface OverviewActionsProps {
 	pendingOrderCount: number;

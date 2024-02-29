@@ -1,13 +1,14 @@
 import React from 'react';
+
 import { AppStack } from './AppStack';
 import SettingsStackNavigator from './SettingsStack';
-import AddProduct from '../screens/AddProduct';
-import CustomerInfo from '../screens/CustomerInfo';
-import AddPayout from '../screens/AddPayout';
 import AddCategory from '../screens/AddCategory';
 import AddManager from '../screens/AddManager';
-import FilterProducts from '../screens/FilterProducts';
+import AddPayout from '../screens/AddPayout';
+import AddProduct from '../screens/AddProduct';
+import CustomerInfo from '../screens/CustomerInfo';
 import FilterOrders from '../screens/FilterOrders';
+import FilterProducts from '../screens/FilterProducts';
 
 const ModalGroup = (
 	<AppStack.Group screenOptions={{ presentation: 'modal', headerShown: true }}>

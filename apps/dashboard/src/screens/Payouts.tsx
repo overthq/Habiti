@@ -1,15 +1,14 @@
+import { Icon, Screen, Typography } from '@market/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import useGoBack from '../hooks/useGoBack';
-import { useStorePayoutsQuery } from '../types/api';
-import { formatNaira } from '../utils/currency';
-import { Icon } from '../components/Icon';
-import { AppStackParamList } from '../types/navigation';
-import Screen from '../components/global/Screen';
-import Typography from '../components/global/Typography';
+
 import PayoutRow from '../components/payouts/PayoutRow';
 import RevenueBar from '../components/payouts/RevenueBar';
+import useGoBack from '../hooks/useGoBack';
+import { useStorePayoutsQuery } from '../types/api';
+import { AppStackParamList } from '../types/navigation';
+import { formatNaira } from '../utils/currency';
 
 const Payouts = () => {
 	const [{ data, fetching }] = useStorePayoutsQuery();

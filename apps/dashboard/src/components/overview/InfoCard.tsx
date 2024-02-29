@@ -1,6 +1,6 @@
+import { useTheme } from '@market/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import useTheme from '../../hooks/useTheme';
 
 const InfoCard = () => {
 	const { theme } = useTheme();

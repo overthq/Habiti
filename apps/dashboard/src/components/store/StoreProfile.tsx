@@ -1,7 +1,8 @@
+import { Typography } from '@market/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+
 import { StoreQuery } from '../../types/api';
-import Typography from '../global/Typography';
 
 interface StoreProfileProps {
 	store: StoreQuery['currentStore'];

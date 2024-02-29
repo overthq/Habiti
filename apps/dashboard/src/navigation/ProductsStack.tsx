@@ -1,9 +1,8 @@
-import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import React from 'react';
 
-import Products from '../screens/Products';
 import Product from '../screens/Product';
-
+import Products from '../screens/Products';
 import { ProductsStackParamList } from '../types/navigation';
 // import SearchProducts from '../components/products/SearchProducts';
 

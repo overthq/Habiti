@@ -1,10 +1,10 @@
+import { useTheme, Typography } from '@market/components';
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
+
 import { OrdersQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
 import { parseTimestamp } from '../../utils/date';
-import Typography from '../global/Typography';
-import useTheme from '../../hooks/useTheme';
 
 interface OrdersListItemProps {
 	order: OrdersQuery['currentStore']['orders'][number];

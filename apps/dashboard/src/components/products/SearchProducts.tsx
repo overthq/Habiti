@@ -1,6 +1,6 @@
+import { Screen } from '@market/components';
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
-import Screen from '../global/Screen';
 
 const SearchProducts = () => {
 	return (

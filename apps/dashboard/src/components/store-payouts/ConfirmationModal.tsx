@@ -1,14 +1,14 @@
-import React from 'react';
-import { Text, View } from 'react-native';
 import {
 	BottomSheetBackdropProps,
-	BottomSheetModal
+	BottomSheetModal,
+	TouchableOpacity
 } from '@gorhom/bottom-sheet';
-import Typography from '../global/Typography';
-import { useEditStoreMutation } from '../../types/api';
+import { useTheme, Typography } from '@market/components';
+import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import useTheme from '../../hooks/useTheme';
-import { TouchableOpacity } from '@gorhom/bottom-sheet';
+import { Text, View } from 'react-native';
+
+import { useEditStoreMutation } from '../../types/api';
 
 interface ConfirmationModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;

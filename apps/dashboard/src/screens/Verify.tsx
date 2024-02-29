@@ -1,14 +1,13 @@
+import { Button, Screen, Typography } from '@market/components';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
-import { RouteProp, useRoute } from '@react-navigation/native';
-import Screen from '../components/global/Screen';
-import Typography from '../components/global/Typography';
-import Button from '../components/global/Button';
-import authStyles from '../styles/auth';
+
+import CodeInput from '../components/verify/CodeInput';
 import useStore from '../state';
+import authStyles from '../styles/auth';
 import { useVerifyMutation } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
-import CodeInput from '../components/verify/CodeInput';
 
 const Verify: React.FC = () => {
 	const [code, setCode] = React.useState('');

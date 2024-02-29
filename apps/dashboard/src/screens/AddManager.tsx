@@ -1,10 +1,9 @@
+import { Button, Input, Screen } from '@market/components';
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import { useForm } from 'react-hook-form';
-import Screen from '../components/global/Screen';
+import { StyleSheet } from 'react-native';
+
 import useGoBack from '../hooks/useGoBack';
-import Button from '../components/global/Button';
-import Input from '../components/global/Input';
 
 const AddManager = () => {
 	useGoBack('x');

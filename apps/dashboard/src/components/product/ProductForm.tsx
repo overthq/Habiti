@@ -1,15 +1,14 @@
+import { ScrollableScreen } from '@market/components';
 import React from 'react';
 import { Platform, StyleSheet } from 'react-native';
 
-import Section from './Section';
 import Images from './Images';
 import InventoryInput from './InventoryInput';
-
-import { formatNaira } from '../../utils/currency';
-import { ProductQuery } from '../../types/api';
-import ScrollableScreen from '../global/ScrollableScreen';
 import ProductOptions from './ProductOptions';
 import ProductReviews from './ProductReviews';
+import Section from './Section';
+import { ProductQuery } from '../../types/api';
+import { formatNaira } from '../../utils/currency';
 
 interface ProductFormProps {
 	images?: ProductQuery['product']['images'];

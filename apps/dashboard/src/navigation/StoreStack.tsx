@@ -1,10 +1,11 @@
-import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import Store from '../screens/Store';
+import React from 'react';
+
+import Categories from '../screens/Categories';
 import EditStore from '../screens/EditStore';
 import Managers from '../screens/Managers';
+import Store from '../screens/Store';
 import StorePayouts from '../screens/StorePayouts';
-import Categories from '../screens/Categories';
 import { StoreStackParamList } from '../types/navigation';
 
 const StoreStack = createStackNavigator<StoreStackParamList>();

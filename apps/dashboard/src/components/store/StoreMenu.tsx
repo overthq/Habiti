@@ -1,8 +1,9 @@
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import type { StoreStackParamList } from '../../types/navigation';
+
 import StoreMenuRow from './StoreMenuRow';
+import type { StoreStackParamList } from '../../types/navigation';
 
 const StoreMenu = () => {
 	const { navigate } = useNavigation<NavigationProp<StoreStackParamList>>();

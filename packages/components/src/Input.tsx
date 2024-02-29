@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TextInput, TextInputProps, StyleSheet } from 'react-native';
-import useTheme from '../../hooks/useTheme';
+
+import { useTheme } from './Theme';
 import Typography from './Typography';
 
 export interface InputProps extends TextInputProps {

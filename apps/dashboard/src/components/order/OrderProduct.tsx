@@ -1,9 +1,9 @@
+import { CustomImage, Typography } from '@market/components';
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
+
 import { OrderQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
-import Typography from '../global/Typography';
-import CustomImage from '../global/CustomImage';
 
 interface OrderProductProps {
 	orderProduct: OrderQuery['order']['products'][number];

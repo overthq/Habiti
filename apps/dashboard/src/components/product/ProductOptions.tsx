@@ -1,6 +1,6 @@
+import { Typography } from '@market/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import Typography from '../global/Typography';
 
 const ProductOptions = () => {
 	return (

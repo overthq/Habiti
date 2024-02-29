@@ -1,18 +1,16 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Button, Checkbox, Screen, Typography } from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { StyleSheet, View } from 'react-native';
 import Animated, { Layout } from 'react-native-reanimated';
-import Button from '../components/global/Button';
-import useGoBack from '../hooks/useGoBack';
+
 import AccordionRow from '../components/filter-products/AccordionRow';
 import SortProducts from '../components/filter-products/SortProducts';
-import Checkbox from '../components/global/Checkbox';
-import Screen from '../components/global/Screen';
-import Typography from '../components/global/Typography';
+import useGoBack from '../hooks/useGoBack';
+import { FilterProductsFormValues } from '../types/forms';
 import { ProductsStackParamList } from '../types/navigation';
 import { buildProductsFilterQuery } from '../utils/filters';
-import { FilterProductsFormValues } from '../types/forms';
 
 type AccordionKey = 'sort-by' | 'price' | 'rating' | 'category' | 'in-stock';
 

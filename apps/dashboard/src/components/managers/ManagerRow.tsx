@@ -1,7 +1,8 @@
+import { Typography } from '@market/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+
 import { ManagersQuery } from '../../types/api';
-import Typography from '../global/Typography';
 
 interface ManagerRowProps {
 	manager: ManagersQuery['currentStore']['managers'][number]['manager'];

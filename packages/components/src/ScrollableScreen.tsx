@@ -1,17 +1,18 @@
 import React from 'react';
-import { View, StyleSheet, ViewProps } from 'react-native';
-import useTheme from '../../hooks/useTheme';
+import { ScrollView, StyleSheet, ScrollViewProps } from 'react-native';
 
-interface ScreenProps extends ViewProps {
+import { useTheme } from './Theme';
+
+interface ScrollableScreenProps extends ScrollViewProps {
 	paddingType?: 'sides' | 'all';
 	paddingSize?: 'small' | 'medium' | 'large';
 }
 
-const Screen: React.FC<ScreenProps> = props => {
+const ScrollableScreen: React.FC<ScrollableScreenProps> = props => {
 	const { theme } = useTheme();
 
 	return (
-		<View
+		<ScrollView
 			{...props}
 			style={[
 				{ backgroundColor: theme.screen.background },
@@ -28,4 +29,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default Screen;
+export default ScrollableScreen;

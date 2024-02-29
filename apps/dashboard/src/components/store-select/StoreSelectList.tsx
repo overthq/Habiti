@@ -1,8 +1,9 @@
 import React from 'react';
 import { FlatList, ListRenderItem } from 'react-native';
-import { ManagedStoresQuery, useManagedStoresQuery } from '../../types/api';
-import useStore from '../../state';
+
 import StoreSelectListItem from './StoreSelectListItem';
+import useStore from '../../state';
+import { ManagedStoresQuery, useManagedStoresQuery } from '../../types/api';
 
 const StoreSelectList: React.FC = () => {
 	const { setPreference, activeStore } = useStore(state => ({

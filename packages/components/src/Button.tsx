@@ -6,7 +6,8 @@ import {
 	ViewStyle,
 	PressableProps
 } from 'react-native';
-import useTheme from '../../hooks/useTheme';
+
+import { useTheme } from './Theme';
 import Typography from './Typography';
 
 interface ButtonProps extends PressableProps {

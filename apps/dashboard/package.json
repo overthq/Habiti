@@ -2,7 +2,7 @@
 	"name": "@market/dashboard",
 	"version": "1.0.0",
 	"private": true,
-	"main": "node_modules/expo/AppEntry.js",
+	"main": "index.js",
 	"scripts": {
 		"lint": "eslint .",
 		"generate-types": "graphql-codegen --config codegen.yml",
@@ -14,6 +14,7 @@
 	},
 	"dependencies": {
 		"@gorhom/bottom-sheet": "^4",
+		"@market/components": "*",
 		"@react-native-async-storage/async-storage": "1.21.0",
 		"@react-native-community/masked-view": "0.1.11",
 		"@react-native-masked-view/masked-view": "0.3.0",

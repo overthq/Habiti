@@ -1,10 +1,10 @@
+import { useTheme, Icon } from '@market/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
-import { Icon } from '../Icon';
-import { FilterButton } from '../orders/OrdersFilter';
-import useTheme from '../../hooks/useTheme';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+
 import { AppStackParamList } from '../../types/navigation';
+import { FilterButton } from '../orders/OrdersFilter';
 
 const ProductsFilter = () => {
 	const { theme } = useTheme();

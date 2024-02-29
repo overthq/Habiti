@@ -1,8 +1,9 @@
+import { Typography } from '@market/components';
 import React from 'react';
 import { View } from 'react-native';
-import Typography from '../global/Typography';
-import { formatNaira } from '../../utils/currency';
+
 import { StorePayoutsQuery } from '../../types/api';
+import { formatNaira } from '../../utils/currency';
 
 interface PayoutRowProps {
 	payout: StorePayoutsQuery['currentStore']['payouts'][number];

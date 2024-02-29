@@ -1,7 +1,6 @@
+import { Icon, Typography } from '@market/components';
 import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
-import Typography from '../global/Typography';
-import { Icon } from '../Icon';
 
 interface StoreMenuRowProps {
 	title: string;

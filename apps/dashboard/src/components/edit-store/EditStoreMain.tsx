@@ -1,12 +1,10 @@
-import React from 'react';
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import { FormInput, Screen, TextButton } from '@market/components';
 import { useNavigation } from '@react-navigation/native';
+import React from 'react';
 import { useForm } from 'react-hook-form';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
 
-import FormInput from '../global/FormInput';
 import { StoreQuery, useEditStoreMutation } from '../../types/api';
-import TextButton from '../global/TextButton';
-import Screen from '../global/Screen';
 
 interface EditStoreFormData {
 	name: string;

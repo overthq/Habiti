@@ -1,13 +1,11 @@
+import { EmptyState, Icon, Screen, Typography } from '@market/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, ActivityIndicator, Pressable } from 'react-native';
-import { useCategoriesQuery } from '../types/api';
+
 import useGoBack from '../hooks/useGoBack';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { Icon } from '../components/Icon';
+import { useCategoriesQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
-import Screen from '../components/global/Screen';
-import Typography from '../components/global/Typography';
-import EmptyState from '../components/global/EmptyState';
 
 const Categories = () => {
 	const [{ data, fetching }] = useCategoriesQuery();

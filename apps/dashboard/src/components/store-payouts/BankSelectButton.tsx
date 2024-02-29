@@ -1,11 +1,10 @@
+import { useTheme, Icon, Typography } from '@market/components';
 import React from 'react';
-import { Pressable, View, StyleSheet } from 'react-native';
 import { Control, useController } from 'react-hook-form';
-import { Icon } from '../Icon';
-import { BANKS_BY_CODE } from '../../utils/transform';
-import Typography from '../global/Typography';
-import useTheme from '../../hooks/useTheme';
+import { Pressable, View, StyleSheet } from 'react-native';
+
 import { EditPayoutInfoFormValues } from '../../types/forms';
+import { BANKS_BY_CODE } from '../../utils/transform';
 
 // While this shares significant style similarities with the generic <Button>
 // component, it is weirdly specific in certain ways.

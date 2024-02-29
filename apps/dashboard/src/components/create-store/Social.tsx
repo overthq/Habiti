@@ -1,7 +1,7 @@
+import { Typography } from '@market/components';
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, Dimensions } from 'react-native';
 import { Controller, useFormContext } from 'react-hook-form';
-import Typography from '../global/Typography';
+import { View, Text, TextInput, StyleSheet, Dimensions } from 'react-native';
 
 const { width } = Dimensions.get('window');
 

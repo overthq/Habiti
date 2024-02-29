@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+
+import { useTheme } from './Theme';
 import Typography from './Typography';
-import useTheme from '../../hooks/useTheme';
-import { ThemeObject } from '../../styles/theme';
+import { ThemeObject } from './styles/theme';
 
 interface BadgeProps {
 	text: string;

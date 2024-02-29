@@ -1,7 +1,7 @@
+import { Button } from '@market/components';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import Button from '../global/Button';
 import { useUpdateOrderMutation, OrderStatus } from '../../types/api';
 
 interface OrderActionsProps {

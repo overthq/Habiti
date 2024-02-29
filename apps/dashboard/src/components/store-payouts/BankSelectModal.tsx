@@ -1,13 +1,13 @@
-import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
 import {
 	BottomSheetBackdropProps,
 	BottomSheetFlatList,
 	BottomSheetModal
 } from '@gorhom/bottom-sheet';
+import { useTheme, Typography } from '@market/components';
+import React from 'react';
+import { Pressable, StyleSheet } from 'react-native';
+
 import { BANKS } from '../../utils/banks';
-import Typography from '../global/Typography';
-import useTheme from '../../hooks/useTheme';
 
 interface BankSelectModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;

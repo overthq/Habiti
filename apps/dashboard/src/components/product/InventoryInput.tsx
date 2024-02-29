@@ -1,10 +1,7 @@
+import { useTheme, Icon, Typography } from '@market/components';
 import React from 'react';
-import { View, Pressable, TextInput, StyleSheet } from 'react-native';
 import { Controller, useFormContext } from 'react-hook-form';
-
-import { Icon } from '../Icon';
-import Typography from '../global/Typography';
-import useTheme from '../../hooks/useTheme';
+import { View, Pressable, TextInput, StyleSheet } from 'react-native';
 
 const InventoryInput = () => {
 	const { theme } = useTheme();

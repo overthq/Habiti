@@ -1,11 +1,10 @@
-import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import React from 'react';
 
+import Order from '../screens/Order';
 import Overview from '../screens/Overview';
 import Payouts from '../screens/Payouts';
-import Order from '../screens/Order';
 import Product from '../screens/Product';
-
 import { HomeStackParamList } from '../types/navigation';
 
 const HomeStack = createStackNavigator<HomeStackParamList>();

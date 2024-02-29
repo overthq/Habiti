@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import Typography from './Typography';
-import Screen from './Screen';
+
 import Button from './Button';
+import Screen from './Screen';
+import Typography from './Typography';
 
 interface EmptyStateProps {
 	title: string;

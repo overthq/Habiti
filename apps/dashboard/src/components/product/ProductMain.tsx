@@ -1,13 +1,13 @@
-import React from 'react';
-import { Pressable, View } from 'react-native';
+import { Icon, TextButton } from '@market/components';
 import { useNavigation } from '@react-navigation/native';
+import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { ProductQuery, useEditProductMutation } from '../../types/api';
+import { Pressable, View } from 'react-native';
+
 import ProductForm from './ProductForm';
 import type { ProductFormData } from '../../screens/AddProduct';
+import { ProductQuery, useEditProductMutation } from '../../types/api';
 import { generateUploadFile } from '../../utils/images';
-import TextButton from '../global/TextButton';
-import { Icon } from '../Icon';
 
 interface ProductMainProps {
 	product: ProductQuery['product'];

@@ -1,3 +1,4 @@
+import { Icon, Typography } from '@market/components';
 import React from 'react';
 import { Pressable, View, StyleSheet } from 'react-native';
 import Animated, {
@@ -10,8 +11,6 @@ import Animated, {
 	useSharedValue,
 	withTiming
 } from 'react-native-reanimated';
-import Typography from '../global/Typography';
-import { Icon } from '../Icon';
 
 // FIXME: Maybe there is a more ergonomic way to handle
 // the fact that onPress in this case is always a toggle/expand action

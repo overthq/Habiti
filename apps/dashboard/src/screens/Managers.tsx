@@ -1,13 +1,13 @@
+import { Icon, Screen } from '@market/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
+
 import ManagerRow from '../components/managers/ManagerRow';
 import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useManagersQuery } from '../types/api';
-import Screen from '../components/global/Screen';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { AppStackParamList } from '../types/navigation';
-import { Icon } from '../components/Icon';
 
 const Managers = () => {
 	const [{ data, fetching }] = useManagersQuery();

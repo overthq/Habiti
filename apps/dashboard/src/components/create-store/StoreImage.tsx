@@ -1,4 +1,7 @@
+import { Icon } from '@market/components';
+import * as ImagePicker from 'expo-image-picker';
 import React from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
 import {
 	View,
 	Text,
@@ -7,9 +10,7 @@ import {
 	Dimensions,
 	Pressable
 } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import { Controller, useFormContext } from 'react-hook-form';
-import { Icon } from '../Icon';
+
 import { CreateStoreFormValues } from '../../screens/CreateStore';
 
 const { width } = Dimensions.get('window');

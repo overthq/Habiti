@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import type { ViewStyle } from 'react-native';
-import useTheme from '../../hooks/useTheme';
+
+import { useTheme } from './Theme';
 
 interface CustomImageProps {
 	uri?: string;

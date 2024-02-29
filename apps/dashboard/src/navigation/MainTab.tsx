@@ -1,15 +1,13 @@
-import React from 'react';
+import { useTheme, Icon } from '@market/components';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import React from 'react';
 
 import HomeStackNavigator from './HomeStack';
 import OrdersStackNavigator from './OrdersStack';
 import ProductsStackNavigator from './ProductsStack';
 import StoreStackNavigator from './StoreStack';
-
-import { Icon } from '../components/Icon';
-import { getIcon } from '../utils/navigation';
 import { MainTabParamList } from '../types/navigation';
-import useTheme from '../hooks/useTheme';
+import { getIcon } from '../utils/navigation';
 
 const MainTab = createBottomTabNavigator<MainTabParamList>();
 

@@ -1,3 +1,5 @@
+import { Button, Typography } from '@market/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import {
 	View,
@@ -5,13 +7,11 @@ import {
 	KeyboardAvoidingView,
 	TouchableOpacity
 } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import authStyles from '../styles/auth';
-import Button from '../components/global/Button';
-import { AppStackParamList } from '../types/navigation';
-import { useRegisterMutation } from '../types/api';
-import Typography from '../components/global/Typography';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+import authStyles from '../styles/auth';
+import { useRegisterMutation } from '../types/api';
+import { AppStackParamList } from '../types/navigation';
 
 const Register: React.FC = () => {
 	const [name, setName] = React.useState('');

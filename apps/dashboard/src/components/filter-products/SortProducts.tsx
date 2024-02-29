@@ -1,10 +1,10 @@
+import { AnimatedTypography, Radio } from '@market/components';
 import React from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
 import { Controller, useFormContext } from 'react-hook-form';
-import Radio from '../global/Radio';
-import { FilterProductsFormValues } from '../../types/forms';
-import AnimatedTypography from '../global/AnimatedTypography';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useAnimatedStyle, withTiming } from 'react-native-reanimated';
+
+import { FilterProductsFormValues } from '../../types/forms';
 
 // FIXME: Using `value` and `fieldValue` feels very wrong.
 // An `active` prop is probably much better.

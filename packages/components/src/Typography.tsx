@@ -1,14 +1,15 @@
 import React from 'react';
 import { StyleProp, Text, TextProps, TextStyle } from 'react-native';
-import useTheme from '../../hooks/useTheme';
-import { typography, ThemeObject } from '../../styles/theme';
+
+import { useTheme } from './Theme';
+import { typography, ThemeObject } from './styles/theme';
 
 interface TypographyProps extends TextProps {
 	children: React.ReactNode;
 	style?: StyleProp<TextStyle>;
 	variant?: keyof ThemeObject['text'];
-	size?: keyof typeof typography['size'];
-	weight?: keyof typeof typography['weight'];
+	size?: keyof (typeof typography)['size'];
+	weight?: keyof (typeof typography)['weight'];
 	ellipsize?: boolean;
 	number?: boolean;
 }

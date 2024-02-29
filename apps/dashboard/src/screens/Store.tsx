@@ -1,9 +1,10 @@
+import { Screen } from '@market/components';
 import React from 'react';
 import { View } from 'react-native';
-import { useStoreQuery } from '../types/api';
-import StoreProfile from '../components/store/StoreProfile';
+
 import StoreMenu from '../components/store/StoreMenu';
-import Screen from '../components/global/Screen';
+import StoreProfile from '../components/store/StoreProfile';
+import { useStoreQuery } from '../types/api';
 
 const Store: React.FC = () => {
 	const [{ data, fetching }] = useStoreQuery();

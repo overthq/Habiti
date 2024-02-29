@@ -1,6 +1,7 @@
 import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
-import useTheme from '../../hooks/useTheme';
+
+import { useTheme } from './Theme';
 import Typography from './Typography';
 
 // It is not lost on me that this is probably a bad name/idea for a component.

@@ -1,9 +1,9 @@
+import { CustomImage, Typography } from '@market/components';
 import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
-import Typography from '../global/Typography';
-import { formatNaira } from '../../utils/currency';
-import CustomImage from '../global/CustomImage';
+
 import { ProductsQuery } from '../../types/api';
+import { formatNaira } from '../../utils/currency';
 
 interface LowStockProductProps {
 	onPress(): void;

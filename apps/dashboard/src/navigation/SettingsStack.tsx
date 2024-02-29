@@ -1,9 +1,10 @@
-import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { SettingsStackParamList } from '../types/navigation';
-import Settings from '../screens/Settings';
+import React from 'react';
+
 import SettingsActiveStore from '../components/settings/SettingsActiveStore';
 import SettingsTheme from '../components/settings/SettingsTheme';
+import Settings from '../screens/Settings';
+import { SettingsStackParamList } from '../types/navigation';
 
 const SettingsStack = createStackNavigator<SettingsStackParamList>();
 

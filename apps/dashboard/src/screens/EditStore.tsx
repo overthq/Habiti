@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { useStoreQuery } from '../types/api';
-import useGoBack from '../hooks/useGoBack';
+
 import EditStoreMain from '../components/edit-store/EditStoreMain';
+import useGoBack from '../hooks/useGoBack';
+import { useStoreQuery } from '../types/api';
 
 const EditStore: React.FC = () => {
 	const [{ data, fetching }] = useStoreQuery();

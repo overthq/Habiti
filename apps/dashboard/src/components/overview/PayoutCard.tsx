@@ -1,7 +1,7 @@
+import { useTheme, Typography } from '@market/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import useTheme from '../../hooks/useTheme';
-import Typography from '../global/Typography';
+
 import { useStoreQuery } from '../../types/api';
 
 const PayoutCard = () => {

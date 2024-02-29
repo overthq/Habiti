@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
-import { useManagedStoresQuery } from '../../types/api';
-import useGoBack from '../../hooks/useGoBack';
+
 import SettingSelectRow from './SettingSelectRow';
+import useGoBack from '../../hooks/useGoBack';
 import useStore from '../../state';
+import { useManagedStoresQuery } from '../../types/api';
 
 const SettingsActiveStore: React.FC = () => {
 	const { activeStore, setPreference } = useStore(state => ({

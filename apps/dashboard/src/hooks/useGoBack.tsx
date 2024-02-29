@@ -1,7 +1,7 @@
+import { Icon, IconType } from '@market/components';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Pressable } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { Icon, IconType } from '../components/Icon';
 
 const useGoBack = (icon?: IconType, margin?: number) => {
 	const navigation = useNavigation();

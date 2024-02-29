@@ -1,9 +1,9 @@
+import { useTheme, Icon } from '@market/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
+
 import { OrderStatus } from '../../types/api';
-import { Icon } from '../Icon';
-import useTheme from '../../hooks/useTheme';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { AppStackParamList } from '../../types/navigation';
 
 interface FilterButtonProps {

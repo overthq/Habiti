@@ -1,13 +1,12 @@
+import { ScrollableScreen, Typography } from '@market/components';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { RouteProp, useRoute } from '@react-navigation/native';
 
-import ScrollableScreen from '../components/global/ScrollableScreen';
-import Typography from '../components/global/Typography';
+import OrderDetail from '../components/customer-info/OrderDetail';
 import useGoBack from '../hooks/useGoBack';
 import { useCustomerInfoQuery } from '../types/api';
 import type { AppStackParamList } from '../types/navigation';
-import OrderDetail from '../components/customer-info/OrderDetail';
 
 // TODO: This screen should contain a brief overview of the orders
 // a specific user has made. Beneath this should be a full list of

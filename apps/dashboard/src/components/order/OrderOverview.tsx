@@ -1,10 +1,10 @@
+import { Typography } from '@market/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import StatusPill from './StatusPill';
-import { parseTimestamp } from '../../utils/date';
 import { OrderQuery } from '../../types/api';
-import Typography from '../global/Typography';
+import { parseTimestamp } from '../../utils/date';
 
 interface OrderOverviewProps {
 	order: OrderQuery['order'];

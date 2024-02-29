@@ -1,9 +1,10 @@
+import { Typography } from '@market/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { AppStackParamList } from '../../types/navigation';
+
 import { OrderQuery } from '../../types/api';
-import Typography from '../global/Typography';
+import { AppStackParamList } from '../../types/navigation';
 
 interface CustomerDetailProps {
 	user: OrderQuery['order']['user'];

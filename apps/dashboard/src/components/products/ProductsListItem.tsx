@@ -1,11 +1,9 @@
+import { useTheme, CustomImage, Icon, Typography } from '@market/components';
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
-import { Icon } from '../Icon';
+
 import { ProductsQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
-import Typography from '../global/Typography';
-import CustomImage from '../global/CustomImage';
-import useTheme from '../../hooks/useTheme';
 
 interface ProductsListItemProps {
 	product: ProductsQuery['currentStore']['products'][number];

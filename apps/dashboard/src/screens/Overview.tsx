@@ -1,12 +1,12 @@
+import { Icon, ScrollableScreen } from '@market/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { Icon } from '../components/Icon';
-import { AppStackParamList } from '../types/navigation';
-import ManagePayouts from '../components/overview/ManagePayouts';
-import ScrollableScreen from '../components/global/ScrollableScreen';
-import QuickActions from '../components/overview/QuickActions';
+
 import LowStockProducts from '../components/overview/LowStockProducts';
+import ManagePayouts from '../components/overview/ManagePayouts';
+import QuickActions from '../components/overview/QuickActions';
+import { AppStackParamList } from '../types/navigation';
 
 // Revenue and payout information (front and center)
 // Quick actions (orders to process, low stock products)

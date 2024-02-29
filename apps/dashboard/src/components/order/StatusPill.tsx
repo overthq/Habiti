@@ -1,5 +1,6 @@
+import { Badge } from '@market/components';
 import React from 'react';
-import Badge from '../global/Badge';
+
 import { OrderStatus } from '../../types/api';
 
 const StatusColorMap = {

@@ -1,15 +1,14 @@
+import { Button, ScrollableScreen } from '@market/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 
-import ScrollableScreen from '../components/global/ScrollableScreen';
 import SettingRow from '../components/settings/SettingRow';
-import Button from '../components/global/Button';
+import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useStoreQuery } from '../types/api';
-import useGoBack from '../hooks/useGoBack';
-import { capitalize } from '../utils/strings';
 import type { SettingsStackParamList } from '../types/navigation';
+import { capitalize } from '../utils/strings';
 
 const Settings: React.FC = () => {
 	const { theme, logOut } = useStore(state => ({

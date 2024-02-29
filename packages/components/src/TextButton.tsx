@@ -1,6 +1,7 @@
 import React from 'react';
 import { Pressable, PressableProps, Text } from 'react-native';
-import useTheme from '../../hooks/useTheme';
+
+import { useTheme } from './Theme';
 
 interface TextButtonProps extends PressableProps {
 	children: React.ReactNode;

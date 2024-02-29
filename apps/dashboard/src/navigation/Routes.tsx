@@ -1,26 +1,25 @@
-import React from 'react';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { useTheme } from '@market/components';
 import {
 	DarkTheme,
 	DefaultTheme,
 	NavigationContainer
 } from '@react-navigation/native';
-import { Provider } from 'urql';
 import { StatusBar } from 'expo-status-bar';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import React from 'react';
+import { Provider } from 'urql';
 
-import Register from '../screens/Register';
-import Authenticate from '../screens/Authenticate';
-import Verify from '../screens/Verify';
-import StoreSelect from '../screens/StoreSelect';
-import CreateStore from '../screens/CreateStore';
-
-import useClient from '../hooks/useClient';
-import MainTabNavigator from './MainTab';
-import useStore from '../state';
 import { AppStack } from './AppStack';
+import MainTabNavigator from './MainTab';
 import ModalGroup from './ModalGroup';
+import useClient from '../hooks/useClient';
+import Authenticate from '../screens/Authenticate';
+import CreateStore from '../screens/CreateStore';
+import Register from '../screens/Register';
+import StoreSelect from '../screens/StoreSelect';
+import Verify from '../screens/Verify';
+import useStore from '../state';
 import { getStatusBarStyle } from '../utils/theme';
-import useTheme from '../hooks/useTheme';
 
 const Routes: React.FC = () => {
 	const { name } = useTheme();

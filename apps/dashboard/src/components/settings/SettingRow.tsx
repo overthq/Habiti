@@ -1,8 +1,6 @@
+import { useTheme, Icon, Typography } from '@market/components';
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
-import { Icon } from '../Icon';
-import useTheme from '../../hooks/useTheme';
-import Typography from '../global/Typography';
 
 interface SettingRowProps {
 	name: string;

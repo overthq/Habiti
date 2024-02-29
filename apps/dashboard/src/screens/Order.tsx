@@ -1,18 +1,16 @@
+import { ScrollableScreen } from '@market/components';
+import { useRoute, RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { View } from 'react-native';
-import { useRoute, RouteProp } from '@react-navigation/native';
 
+import CustomerDetails from '../components/order/CustomerDetails';
+import OrderActions from '../components/order/OrderActions';
+import OrderOverview from '../components/order/OrderOverview';
 import OrderProducts from '../components/order/OrderProducts';
 import PaymentInfo from '../components/order/PaymentInfo';
-import OrderActions from '../components/order/OrderActions';
-import CustomerDetails from '../components/order/CustomerDetails';
-import OrderOverview from '../components/order/OrderOverview';
-
 import useGoBack from '../hooks/useGoBack';
-
 import { useOrderQuery } from '../types/api';
 import { OrdersStackParamList } from '../types/navigation';
-import ScrollableScreen from '../components/global/ScrollableScreen';
 
 const Order: React.FC = () => {
 	const {

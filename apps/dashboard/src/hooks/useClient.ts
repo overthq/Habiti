@@ -1,18 +1,15 @@
 import React from 'react';
 import { createClient, fetchExchange } from 'urql';
+
 import env from '../../env';
 import useStore from '../state';
 import customCache from '../utils/cache';
-import { shallow } from 'zustand/shallow';
 
 const useClient = () => {
-	const { accessToken, activeStore } = useStore(
-		state => ({
-			accessToken: state.accessToken,
-			activeStore: state.activeStore
-		}),
-		shallow
-	);
+	const { accessToken, activeStore } = useStore(state => ({
+		accessToken: state.accessToken,
+		activeStore: state.activeStore
+	}));
 
 	const client = React.useMemo(
 		() =>

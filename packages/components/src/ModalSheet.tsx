@@ -1,6 +1,5 @@
-import React from 'react';
 import BottomSheet from '@gorhom/bottom-sheet';
-// import useTheme from '../../hooks/useTheme';
+import React from 'react';
 
 interface ModalSheetProps {
 	children: React.ReactNode;

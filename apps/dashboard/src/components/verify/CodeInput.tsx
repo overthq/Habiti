@@ -1,11 +1,10 @@
+import { useTheme, Typography } from '@market/components';
 import React from 'react';
+import { View, Pressable, StyleSheet } from 'react-native';
 import Animated, {
 	useAnimatedStyle,
 	withTiming
 } from 'react-native-reanimated';
-import { View, Pressable, StyleSheet } from 'react-native';
-import useTheme from '../../hooks/useTheme';
-import Typography from '../global/Typography';
 
 interface CodeInputProps {
 	value: string;
