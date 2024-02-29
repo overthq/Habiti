@@ -14,27 +14,25 @@ jobs:
     name: Run static tests
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v1
+      - name: Checkout repository
+        uses: actions/checkout@v1
 
-    - name: Setup Node
-      uses: actions/setup-node@v1
-      with:
-        node-version: 16.x
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18.x
 
-    - name: Install dependencies
-      run: |
-        yarn
-        cd app && yarn && cd ..
-        cd dashboard && yarn && cd ..
-        cd api && yarn
+      - name: Install dependencies
+        run: |
+          yarn
+          cd api && yarn
 
-    - name: Run lint
-      run: |
-        yarn lint
+      - name: Run lint
+        run: |
+          yarn lint
 
-    - name: Run typecheck
-      run: |
-        cd app && yarn tsc && cd ..
-        cd dashboard && yarn tsc && cd ..
-        cd api && yarn tsc
+      - name: Run typecheck
+        run: |
+          cd app && yarn tsc && cd ..
+          cd dashboard && yarn tsc && cd ..
+          cd api && yarn tsc

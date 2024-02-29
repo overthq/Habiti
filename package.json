@@ -8,7 +8,7 @@
 	"license": "GPL-3.0-or-later",
 	"private": true,
 	"scripts": {
-		"lint": "eslint --ext .ts,.tsx api/src app dashboard",
+		"lint": "eslint --ext .ts,.tsx api/src apps/app apps/dashboard",
 		"start-redis": "redis-server --daemonize yes",
 		"postinstall": "husky install",
 		"load-bank-list": "node scripts/load-banks"
