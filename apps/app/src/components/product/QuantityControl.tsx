@@ -1,6 +1,6 @@
+import { Icon } from '@market/components';
 import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { Icon } from '../Icon';
 
 interface QuantityControlProps {
 	cartId?: string | null | undefined;

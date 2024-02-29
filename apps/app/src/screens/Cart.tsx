@@ -1,20 +1,21 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { Button } from '@market/components';
 import {
 	useRoute,
 	RouteProp,
 	useNavigation,
 	NavigationProp
 } from '@react-navigation/native';
+import React from 'react';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 import CartProduct from '../components/cart/CartProduct';
+import SelectCard from '../components/cart/SelectCard';
+import useGoBack from '../hooks/useGoBack';
+import useStore from '../state';
 import { useCreateOrderMutation, useCartQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
-import Button from '../components/global/Button';
-import SelectCard from '../components/cart/SelectCard';
 import { formatNaira } from '../utils/currency';
-import useStore from '../state';
-import useGoBack from '../hooks/useGoBack';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Maintain a list of recently viewed stores and items.
 // So that we can use them in the empty state for this screen.

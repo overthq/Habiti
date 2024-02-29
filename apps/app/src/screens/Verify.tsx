@@ -1,11 +1,12 @@
+import { Button } from '@market/components';
+import { useRoute, RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, TextInput } from 'react-native';
-import { useRoute, RouteProp } from '@react-navigation/native';
-import styles from '../styles/auth';
-import { AppStackParamList } from '../types/navigation';
-import Button from '../components/global/Button';
+
 import useStore from '../state';
+import styles from '../styles/auth';
 import { useVerifyMutation } from '../types/api';
+import { AppStackParamList } from '../types/navigation';
 
 const VerifyAuthentication: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Verify'>>();

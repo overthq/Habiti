@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, useWindowDimensions } from 'react-native';
-import Animated, { interpolate } from 'react-native-reanimated';
+import Animated, { interpolate, SharedValue } from 'react-native-reanimated';
 
 interface ImageCarouselDotsProps {
-	scrollX: Animated.SharedValue<number>;
+	scrollX: SharedValue<number>;
 	length: number;
 }
 

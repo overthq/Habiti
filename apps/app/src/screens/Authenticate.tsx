@@ -1,3 +1,6 @@
+import { Button, Screen } from '@market/components';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import {
 	View,
@@ -6,12 +9,10 @@ import {
 	TouchableOpacity,
 	KeyboardAvoidingView
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+
 import styles from '../styles/auth';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { AppStackParamList } from '../types/navigation';
-import Button from '../components/global/Button';
 import { useAuthenticateMutation } from '../types/api';
+import { AppStackParamList } from '../types/navigation';
 
 const Authenticate = () => {
 	const [phone, setPhone] = React.useState('');
@@ -34,7 +35,7 @@ const Authenticate = () => {
 	const goToRegister = () => navigate('Register');
 
 	return (
-		<View style={styles.container}>
+		<Screen style={styles.container}>
 			<KeyboardAvoidingView style={{ width: '100%' }} behavior='padding'>
 				<Text style={styles.title}>Enter your phone number.</Text>
 				<Text
@@ -64,7 +65,7 @@ const Authenticate = () => {
 					>{`Don't have an account?`}</Text>
 				</TouchableOpacity>
 			</KeyboardAvoidingView>
-		</View>
+		</Screen>
 	);
 };
 

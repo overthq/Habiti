@@ -1,9 +1,10 @@
+import { Icon } from '@market/components';
 import React from 'react';
 import { View, Pressable, Text, Image, StyleSheet } from 'react-native';
+
 import { OrderQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
 import { plural } from '../../utils/strings';
-import { Icon } from '../Icon';
 
 interface OrderProductProps {
 	orderProduct: OrderQuery['order']['products'][-1];

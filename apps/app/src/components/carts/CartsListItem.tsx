@@ -1,8 +1,9 @@
+import { Icon } from '@market/components';
 import React from 'react';
 import { View, Image, Text, StyleSheet, Pressable } from 'react-native';
+
 import { CartsQuery } from '../../types/api';
 import { plural } from '../../utils/strings';
-import { Icon } from '../Icon';
 
 interface CartListItemProps {
 	cart: CartsQuery['currentUser']['carts'][number];

@@ -1,7 +1,7 @@
+import { Icon } from '@market/components';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { Icon } from '../Icon';
 
 const CloseButton: React.FC = () => {
 	const { goBack } = useNavigation();

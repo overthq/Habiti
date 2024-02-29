@@ -1,7 +1,8 @@
+import { Icon } from '@market/components';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { Icon } from '../Icon';
+
 import { useAddToWatchlistMutation } from '../../types/api';
 
 interface ProductButtonsProps {

@@ -1,3 +1,4 @@
+import { useTheme } from '@market/components';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
@@ -7,7 +8,6 @@ import { Provider } from 'urql';
 
 import HomeTabNavigator from './HomeTab';
 import useClient from '../hooks/useClient';
-import useTheme from '../hooks/useTheme';
 import AddCardWebview from '../screens/AddCardWebview';
 import Authenticate from '../screens/Authenticate';
 import Cart from '../screens/Cart';

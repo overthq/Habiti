@@ -1,3 +1,4 @@
+import { Icon } from '@market/components';
 import React from 'react';
 import {
 	View,
@@ -6,9 +7,9 @@ import {
 	ActivityIndicator,
 	StyleSheet
 } from 'react-native';
-import { useCardsQuery } from '../../types/api';
-import { Icon } from '../Icon';
+
 import { MastercardIcon } from './CardIcons';
+import { useCardsQuery } from '../../types/api';
 
 interface SelectCardProps {
 	selectedCard: string | null;

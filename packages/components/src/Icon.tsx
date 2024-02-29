@@ -5,6 +5,7 @@ import { Svg, Circle, Rect, Path } from 'react-native-svg';
 import { useTheme } from './Theme';
 
 const icons = {
+	bookmark: <Path d='m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z' />,
 	check: <Path d='M20 6L9 17l-5-5' />,
 	'chevron-left': <Path d='M15 18l-6-6 6-6' />,
 	'chevron-right': <Path d='M9 18l6-6-6-6' />,

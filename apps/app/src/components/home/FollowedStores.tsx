@@ -1,12 +1,13 @@
+import { ListEmpty } from '@market/components';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { FlashList } from '@shopify/flash-list';
 import React from 'react';
 import { View, Text } from 'react-native';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { HomeQuery } from '../../types/api';
-import { AppStackParamList, HomeTabParamList } from '../../types/navigation';
-import ListEmpty from '../global/ListEmpty';
+
 import FollowedStoresItem from './FollowedStoresItem';
 import textStyles from '../../styles/text';
-import { FlashList } from '@shopify/flash-list';
+import { HomeQuery } from '../../types/api';
+import { AppStackParamList, HomeTabParamList } from '../../types/navigation';
 
 interface FollowedStoresProps {
 	followed: HomeQuery['currentUser']['followed'];

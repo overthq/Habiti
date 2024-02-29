@@ -1,7 +1,8 @@
+import { Button } from '@market/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import Button from '../global/Button';
+
 import { useAddToCartMutation } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
 

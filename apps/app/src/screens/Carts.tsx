@@ -1,11 +1,12 @@
+import { ListEmpty } from '@market/components';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { FlashList } from '@shopify/flash-list';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
+
 import CartsListItem from '../components/carts/CartsListItem';
-import ListEmpty from '../components/global/ListEmpty';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useCartsQuery } from '../types/api';
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { AppStackParamList, HomeTabParamList } from '../types/navigation';
 
 const Carts: React.FC = () => {

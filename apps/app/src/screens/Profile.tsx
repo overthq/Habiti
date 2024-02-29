@@ -1,12 +1,13 @@
+import { Button } from '@market/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import Button from '../components/global/Button';
+
+import ProfileRow from '../components/profile/ProfileRow';
 import UserCard from '../components/profile/UserCard';
+import useStore from '../state';
 import { useCurrentUserQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
-import ProfileRow from '../components/profile/ProfileRow';
-import useStore from '../state';
 
 /* Account Settings:
   - Account Info

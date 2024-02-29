@@ -1,13 +1,13 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import { ListEmpty } from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
+import React from 'react';
+import { View, Text } from 'react-native';
 
+import TrendingStoresItem from './TrendingStoresItem';
 import textStyles from '../../styles/text';
 import { useStoresQuery } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
-import ListEmpty from '../global/ListEmpty';
-import TrendingStoresItem from './TrendingStoresItem';
 
 const TrendingStores: React.FC = () => {
 	const [{ data }] = useStoresQuery();

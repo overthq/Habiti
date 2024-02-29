@@ -1,12 +1,13 @@
+import { ListEmpty } from '@market/components';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { FlashList } from '@shopify/flash-list';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
+
 import WatchlistProduct from './WatchlistProduct';
-import ListEmpty from '../global/ListEmpty';
+import textStyles from '../../styles/text';
 import { HomeQuery } from '../../types/api';
 import { HomeTabParamList, AppStackParamList } from '../../types/navigation';
-import textStyles from '../../styles/text';
-import { FlashList } from '@shopify/flash-list';
 
 interface WatchlistProps {
 	watchlist: HomeQuery['currentUser']['watchlist'];

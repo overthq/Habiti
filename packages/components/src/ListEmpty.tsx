@@ -1,6 +1,8 @@
+// Temporarily create a ListEmpty file.
 import React from 'react';
-import { View, Text, StyleSheet, ViewStyle } from 'react-native';
-import ListEmptyButton from '../../components/global/ListEmptyButton';
+import { View, Text, ViewStyle, StyleSheet } from 'react-native';
+
+import ListEmptyButton from './ListEmptyButton';
 
 interface ListEmptyProps {
 	title?: string;
@@ -44,5 +46,3 @@ const styles = StyleSheet.create({
 		marginVertical: 8
 	}
 });
-
-export default ListEmpty;

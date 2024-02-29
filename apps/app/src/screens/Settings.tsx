@@ -1,8 +1,9 @@
-import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { Button } from '@market/components';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import Button from '../components/global/Button';
+import React from 'react';
+import { ScrollView, StyleSheet } from 'react-native';
+
 import SettingRow from '../components/settings/SettingRow';
 import useStore from '../state';
 import { ThemeMap } from '../utils/theme';

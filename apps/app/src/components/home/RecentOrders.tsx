@@ -1,10 +1,11 @@
+import { ListEmpty } from '@market/components';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { HomeQuery } from '../../types/api';
-import textStyles from '../../styles/text';
+
 import RecentOrder from './RecentOrder';
-import ListEmpty from '../global/ListEmpty';
+import textStyles from '../../styles/text';
+import { HomeQuery } from '../../types/api';
 import { AppStackParamList, HomeTabParamList } from '../../types/navigation';
 
 interface RecentOrdersProps {

@@ -1,3 +1,5 @@
+import { Icon, ListEmpty } from '@market/components';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
 import {
 	View,
@@ -6,14 +8,11 @@ import {
 	ActivityIndicator,
 	Pressable
 } from 'react-native';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
 
-import ListEmpty from '../components/global/ListEmpty';
-import { Icon } from '../components/Icon';
 import { MastercardIcon } from '../components/cart/CardIcons';
 import useGoBack from '../hooks/useGoBack';
-import { AppStackParamList } from '../types/navigation';
 import { useCardsQuery } from '../types/api';
+import { AppStackParamList } from '../types/navigation';
 
 const PaymentMethods: React.FC = () => {
 	const [{ data, fetching }] = useCardsQuery();

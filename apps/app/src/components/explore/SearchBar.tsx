@@ -1,3 +1,4 @@
+import { Icon } from '@market/components';
 import React from 'react';
 import {
 	View,
@@ -6,7 +7,6 @@ import {
 	TouchableOpacity,
 	StyleSheet
 } from 'react-native';
-import { Icon } from '../Icon';
 
 interface SearchBarProps {
 	onSearchTermChange(term: string): void;

@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
+
 import { HomeQuery } from '../../types/api';
 import { relativeTimestamp } from '../../utils/date';
 import { plural } from '../../utils/strings';
@@ -17,12 +18,7 @@ interface RecentOrderProps {
 
 const RecentOrder: React.FC<RecentOrderProps> = ({ order, onPress }) => {
 	return (
-		<TouchableOpacity
-			activeOpacity={0.8}
-			key={order.id}
-			style={styles.container}
-			onPress={onPress}
-		>
+		<Pressable key={order.id} style={styles.container} onPress={onPress}>
 			<View style={styles.avatar}>
 				<Image style={styles.image} source={{ uri: order.store.image?.path }} />
 			</View>
@@ -34,7 +30,7 @@ const RecentOrder: React.FC<RecentOrderProps> = ({ order, onPress }) => {
 				</Text>
 				<Text style={styles.status}>{order.status}</Text>
 			</View>
-		</TouchableOpacity>
+		</Pressable>
 	);
 };
 

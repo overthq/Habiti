@@ -1,6 +1,7 @@
+import { Icon } from '@market/components';
 import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
-import { Icon } from '../Icon';
+
 import { useAddToWatchlistMutation } from '../../types/api';
 
 interface WatchlistButtonProps {

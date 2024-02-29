@@ -1,7 +1,8 @@
+import { Icon } from '@market/components';
 import React from 'react';
 import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
+
 import { CartQuery } from '../../types/api';
-import { Icon } from '../Icon';
 import { formatNaira } from '../../utils/currency';
 import { plural } from '../../utils/strings';
 

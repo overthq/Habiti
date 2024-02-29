@@ -1,8 +1,8 @@
+import { Icon } from '@market/components';
 import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
-import { Icon } from '../Icon';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
+
 import { LinkType, openLink, getLink } from '../../utils/links';
-import { StyleSheet } from 'react-native';
 
 interface SocialLinksProps {
 	links: {

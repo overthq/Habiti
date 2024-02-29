@@ -1,18 +1,17 @@
-import React from 'react';
-import { View, StyleSheet, Pressable, ScrollViewProps } from 'react-native';
+import { Icon } from '@market/components';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { GestureHandlerRefContext } from '@react-navigation/stack';
+import React from 'react';
+import { View, StyleSheet, Pressable, ScrollViewProps } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
-import ImageCarousel from '../components/product/ImageCarousel';
 import AddToCart from '../components/product/AddToCart';
+import ImageCarousel from '../components/product/ImageCarousel';
 import ProductDetails from '../components/product/ProductDetails';
-
+import RelatedProducts from '../components/product/RelatedProducts';
+import useGoBack from '../hooks/useGoBack';
 import { useProductQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
-import useGoBack from '../hooks/useGoBack';
-import { Icon } from '../components/Icon';
-import RelatedProducts from '../components/product/RelatedProducts';
 
 const Product: React.FC = () => {
 	const { setOptions } = useNavigation();

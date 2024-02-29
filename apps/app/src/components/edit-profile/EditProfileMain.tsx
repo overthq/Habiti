@@ -1,10 +1,9 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { FormInput, TextButton } from '@market/components';
 import { useNavigation } from '@react-navigation/native';
+import React from 'react';
 import { useForm } from 'react-hook-form';
+import { View, StyleSheet } from 'react-native';
 
-import FormInput from '../global/FormInput';
-import TextButton from '../global/TextButton';
 import { CurrentUserQuery, useEditProfileMutation } from '../../types/api';
 
 interface EditProfileMainProps {
