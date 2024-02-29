@@ -1,8 +1,8 @@
-import { FormInput, TextButton } from '@market/components';
+import { FormInput, Screen, TextButton } from '@market/components';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { CurrentUserQuery, useEditProfileMutation } from '../../types/api';
 
@@ -36,6 +36,7 @@ const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
 				<TextButton
 					onPress={handleSubmit(onSubmit)}
 					disabled={!formState.isDirty}
+					style={{ marginRight: 16 }}
 				>
 					Save
 				</TextButton>
@@ -44,7 +45,7 @@ const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
 	}, [formState.isDirty]);
 
 	return (
-		<View style={styles.container}>
+		<Screen style={styles.container}>
 			<FormInput
 				name='name'
 				label='Name'
@@ -52,16 +53,13 @@ const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
 				style={styles.input}
 			/>
 			<FormInput name='phone' label='Phone' control={control} />
-		</View>
+		</Screen>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		backgroundColor: '#FFFFFF',
-		paddingTop: 8,
-		paddingHorizontal: 16
+		padding: 16
 	},
 	input: {
 		marginBottom: 8

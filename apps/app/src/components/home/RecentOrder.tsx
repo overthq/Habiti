@@ -1,5 +1,6 @@
+import { CustomImage, Typography } from '@market/components';
 import React from 'react';
-import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet, Pressable } from 'react-native';
 
 import { HomeQuery } from '../../types/api';
 import { relativeTimestamp } from '../../utils/date';
@@ -19,16 +20,21 @@ interface RecentOrderProps {
 const RecentOrder: React.FC<RecentOrderProps> = ({ order, onPress }) => {
 	return (
 		<Pressable key={order.id} style={styles.container} onPress={onPress}>
-			<View style={styles.avatar}>
-				<Image style={styles.image} source={{ uri: order.store.image?.path }} />
-			</View>
+			<CustomImage
+				uri={order.store.image?.path}
+				height={50}
+				width={50}
+				style={styles.image}
+			/>
 			<View style={styles.info}>
-				<Text style={styles.name}>{order.store.name}</Text>
-				<Text style={styles.count}>
+				<Typography weight='medium'>{order.store.name}</Typography>
+				<Typography size='small'>
 					{plural('product', order.products.length)} ·{' '}
 					{relativeTimestamp(order.createdAt)}
-				</Text>
-				<Text style={styles.status}>{order.status}</Text>
+				</Typography>
+				<Typography size='small' weight='medium' variant='secondary'>
+					{order.status}
+				</Typography>
 			</View>
 		</Pressable>
 	);
@@ -43,35 +49,11 @@ const styles = StyleSheet.create({
 		borderColor: 'red',
 		marginBottom: 8
 	},
-	avatar: {
-		height: 50,
-		width: 50,
-		borderRadius: 25,
-		backgroundColor: '#D3D3D3',
-		overflow: 'hidden'
-	},
 	image: {
-		width: '100%',
-		height: '100%'
-	},
-	name: {
-		fontSize: 16,
-		fontWeight: '500'
-	},
-	count: {
-		fontSize: 14
-	},
-	date: {
-		fontSize: 14,
-		color: '#505050'
+		borderRadius: 25
 	},
 	info: {
-		marginLeft: 10
-	},
-	status: {
-		fontSize: 14,
-		fontWeight: '500',
-		color: 'gray'
+		marginLeft: 8
 	}
 });
 

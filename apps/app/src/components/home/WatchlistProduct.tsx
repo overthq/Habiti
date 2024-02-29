@@ -1,5 +1,7 @@
+import { CustomImage, Typography } from '@market/components';
 import React from 'react';
-import { View, Image, Pressable, Text, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
+
 import { WatchlistQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
 
@@ -14,13 +16,18 @@ const WatchlistProduct: React.FC<WatchlistProductProps> = ({
 }) => {
 	return (
 		<Pressable style={styles.container} onPress={onPress}>
-			<View style={styles.placeholder}>
-				<Image source={{ uri: product.images[0]?.path }} style={styles.image} />
-			</View>
-			<Text style={styles.name} numberOfLines={1}>
+			<CustomImage
+				uri={product.images[0]?.path}
+				width={160}
+				height={160}
+				style={styles.image}
+			/>
+			<Typography weight='medium' numberOfLines={1}>
 				{product.name}
-			</Text>
-			<Text style={styles.price}>{formatNaira(product.unitPrice)}</Text>
+			</Typography>
+			<Typography variant='secondary'>
+				{formatNaira(product.unitPrice)}
+			</Typography>
 		</Pressable>
 	);
 };
@@ -30,25 +37,8 @@ const styles = StyleSheet.create({
 		marginLeft: 16,
 		width: 160
 	},
-	placeholder: {
-		borderRadius: 6,
-		backgroundColor: '#D3D3D3',
-		width: 160,
-		height: 160,
-		marginBottom: 8,
-		overflow: 'hidden'
-	},
 	image: {
-		height: '100%',
-		width: '100%'
-	},
-	name: {
-		fontSize: 16,
-		fontWeight: '500'
-	},
-	price: {
-		fontSize: 16,
-		color: '#505050'
+		marginBottom: 8
 	},
 	status: {
 		fontSize: 14,

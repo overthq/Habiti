@@ -1,6 +1,6 @@
 import { Icon } from '@market/components';
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, StyleSheet, Pressable } from 'react-native';
 
 import { LinkType, openLink, getLink } from '../../utils/links';
 
@@ -16,14 +16,13 @@ const SocialLinks: React.FC<SocialLinksProps> = ({ links }) => (
 		{links.map(
 			({ type, value }) =>
 				value && (
-					<TouchableOpacity
+					<Pressable
 						key={type}
 						style={{ marginRight: 8 }}
-						activeOpacity={0.8}
 						onPress={() => openLink(getLink(type, value))}
 					>
 						<Icon name={type} size={20} />
-					</TouchableOpacity>
+					</Pressable>
 				)
 		)}
 	</View>

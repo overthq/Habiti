@@ -1,8 +1,10 @@
+import { Typography } from '@market/components';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+
 import { OrderQuery } from '../../types/api';
-import { relativeTimestamp } from '../../utils/date';
 import { formatNaira } from '../../utils/currency';
+import { relativeTimestamp } from '../../utils/date';
 
 interface OrderMetaProps {
 	order: OrderQuery['order'];
@@ -34,12 +36,14 @@ const OrderMeta: React.FC<OrderMetaProps> = ({ order }) => {
 				<Icon name='chevron-right' />
 			</Pressable> */}
 			<View style={styles.row}>
-				<Text style={styles.label}>Date</Text>
-				<Text style={styles.date}>{relativeTimestamp(order.createdAt)}</Text>
+				<Typography>Date</Typography>
+				<Typography variant='secondary'>
+					{relativeTimestamp(order.createdAt)}
+				</Typography>
 			</View>
 			<View style={styles.row}>
-				<Text style={styles.label}>Total</Text>
-				<Text style={styles.date}>{formatNaira(order.total)}</Text>
+				<Typography>Total</Typography>
+				<Typography variant='secondary'>{formatNaira(order.total)}</Typography>
 			</View>
 		</View>
 	);
@@ -76,26 +80,14 @@ const styles = StyleSheet.create({
 	placeholder: {
 		height: 36,
 		width: 36,
-		borderRadius: 20,
-		backgroundColor: '#D3D3D3',
+		borderRadius: 18,
 		justifyContent: 'center',
 		alignItems: 'center',
 		marginRight: 8
 	},
-	image: {
-		width: '100%',
-		height: '100%'
-	},
 	avatarText: {
 		fontSize: 20,
 		fontWeight: '500',
-		color: '#505050'
-	},
-	label: {
-		fontSize: 16
-	},
-	date: {
-		fontSize: 16,
 		color: '#505050'
 	}
 });

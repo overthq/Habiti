@@ -1,12 +1,6 @@
-import { Icon } from '@market/components';
+import { Icon, Typography } from '@market/components';
 import React from 'react';
-import {
-	View,
-	Text,
-	TextInput,
-	TouchableOpacity,
-	StyleSheet
-} from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 
 interface SearchBarProps {
 	onSearchTermChange(term: string): void;
@@ -45,7 +39,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 						inputRef.current?.blur();
 					}}
 				>
-					<Text style={styles.cancelText}>Cancel</Text>
+					<Typography>Cancel</Typography>
 				</TouchableOpacity>
 			)}
 		</View>
@@ -75,9 +69,6 @@ const styles = StyleSheet.create({
 	},
 	cancelButton: {
 		marginLeft: 8
-	},
-	cancelText: {
-		fontSize: 16
 	}
 });
 

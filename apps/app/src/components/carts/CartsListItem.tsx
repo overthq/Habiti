@@ -1,6 +1,6 @@
-import { Icon } from '@market/components';
+import { CustomImage, Icon, Typography } from '@market/components';
 import React from 'react';
-import { View, Image, Text, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet, Pressable } from 'react-native';
 
 import { CartsQuery } from '../../types/api';
 import { plural } from '../../utils/strings';
@@ -13,14 +13,12 @@ interface CartListItemProps {
 const CartsListItem: React.FC<CartListItemProps> = ({ cart, onPress }) => (
 	<Pressable onPress={onPress} style={styles.container}>
 		<View style={styles.main}>
-			<View style={styles.placeholder}>
-				<Image style={styles.image} source={{ uri: cart.store.image?.path }} />
-			</View>
+			<CustomImage uri={cart.store.image?.path} style={styles.image} />
 			<View>
-				<Text style={styles.name}>{cart.store.name}</Text>
-				<Text style={styles.count}>
+				<Typography weight='medium'>{cart.store.name}</Typography>
+				<Typography size='small' variant='secondary'>
 					{plural('product', cart.products.length)}
-				</Text>
+				</Typography>
 			</View>
 		</View>
 		<Icon name='chevron-right' size={24} color='#777777' />
@@ -40,25 +38,9 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center'
 	},
-	placeholder: {
-		width: 50,
-		height: 50,
-		overflow: 'hidden',
-		marginRight: 10,
-		backgroundColor: '#D3D3D3',
-		borderRadius: 30
-	},
 	image: {
-		height: '100%',
-		width: '100%'
-	},
-	name: {
-		fontSize: 16,
-		fontWeight: '500'
-	},
-	count: {
-		fontSize: 14,
-		color: '#505050'
+		marginRight: 10,
+		borderRadius: 30
 	}
 });
 

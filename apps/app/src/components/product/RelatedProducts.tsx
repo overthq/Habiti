@@ -1,10 +1,11 @@
+import { Typography } from '@market/components';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 const RelatedProducts = () => {
 	return (
 		<View style={styles.container}>
-			<Text>Related products</Text>
+			<Typography>Related products</Typography>
 		</View>
 	);
 };

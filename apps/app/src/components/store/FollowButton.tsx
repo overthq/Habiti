@@ -1,6 +1,6 @@
-import { Icon } from '@market/components';
+import { Icon, Typography } from '@market/components';
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { StyleSheet, Pressable } from 'react-native';
 
 import {
 	useFollowStoreMutation,
@@ -25,14 +25,12 @@ const FollowButton: React.FC<FollowButtonProps> = ({ storeId, followed }) => {
 	}, [followed]);
 
 	return (
-		<TouchableOpacity
-			style={styles.container}
-			activeOpacity={0.8}
-			onPress={handlePress}
-		>
+		<Pressable style={styles.container} onPress={handlePress}>
 			<Icon size={18} style={styles.icon} name={followed ? 'check' : 'plus'} />
-			<Text style={styles.text}>{followed ? 'Following' : 'Follow'}</Text>
-		</TouchableOpacity>
+			<Typography weight='medium'>
+				{followed ? 'Following' : 'Follow'}
+			</Typography>
+		</Pressable>
 	);
 };
 
@@ -50,10 +48,6 @@ const styles = StyleSheet.create({
 	},
 	icon: {
 		marginRight: 4
-	},
-	text: {
-		fontSize: 16,
-		fontWeight: '500'
 	}
 });
 

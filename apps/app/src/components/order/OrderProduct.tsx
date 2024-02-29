@@ -1,6 +1,6 @@
-import { Icon } from '@market/components';
+import { CustomImage, Icon, Typography } from '@market/components';
 import React from 'react';
-import { View, Pressable, Text, Image, StyleSheet } from 'react-native';
+import { View, Pressable, StyleSheet } from 'react-native';
 
 import { OrderQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
@@ -18,18 +18,18 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 	return (
 		<Pressable style={styles.container} onPress={onPress}>
 			<View style={styles.left}>
-				<View style={styles.placeholder}>
-					<Image
-						source={{ uri: product.images[0]?.path }}
-						style={styles.image}
-					/>
-				</View>
+				<CustomImage
+					height={40}
+					width={40}
+					uri={product.images[0]?.path}
+					style={styles.image}
+				/>
 				<View>
-					<Text style={styles.name}>{product.name}</Text>
-					<Text style={styles.price}>
+					<Typography>{product.name}</Typography>
+					<Typography variant='secondary' style={styles.price}>
 						{`${plural('unit', quantity)} · `}
 						{formatNaira(quantity * unitPrice)}
-					</Text>
+					</Typography>
 				</View>
 			</View>
 			<Icon name='chevron-right' />
@@ -42,32 +42,17 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		backgroundColor: '#FFFFFF',
 		paddingVertical: 4
 	},
 	left: {
 		flexDirection: 'row',
 		alignItems: 'center'
 	},
-	placeholder: {
-		borderRadius: 4,
-		backgroundColor: '#D3D3D3',
-		height: 40,
-		width: 40,
-		marginRight: 8,
-		overflow: 'hidden'
-	},
 	image: {
-		width: '100%',
-		height: '100%'
-	},
-	name: {
-		fontSize: 16
+		marginRight: 8
 	},
 	price: {
-		fontSize: 16,
-		marginTop: 4,
-		color: '#777777'
+		marginTop: 4
 	}
 });
 

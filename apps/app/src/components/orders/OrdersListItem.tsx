@@ -1,5 +1,7 @@
+import { Typography } from '@market/components';
 import React from 'react';
 import { View, Pressable, Text } from 'react-native';
+
 import { UserOrdersQuery } from '../../types/api';
 
 interface OrdersListItemProps {
@@ -11,7 +13,7 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
 	return (
 		<Pressable onPress={onPress}>
 			<View>
-				<Text>{order.store.name}</Text>
+				<Typography>{order.store.name}</Typography>
 			</View>
 		</Pressable>
 	);

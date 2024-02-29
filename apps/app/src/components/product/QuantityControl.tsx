@@ -1,6 +1,6 @@
-import { Icon } from '@market/components';
+import { Icon, Typography } from '@market/components';
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet, Pressable } from 'react-native';
 
 interface QuantityControlProps {
 	cartId?: string | null | undefined;
@@ -38,7 +38,9 @@ const QuantityControl: React.FC<QuantityControlProps> = ({
 			<Pressable disabled={disabled || decrementDisabled} onPress={decrement}>
 				<Icon name='minus' color='#505050' />
 			</Pressable>
-			<Text style={styles.quantity}>{quantity}</Text>
+			<Typography size='large' number>
+				{quantity}
+			</Typography>
 			<Pressable disabled={disabled} onPress={increment}>
 				<Icon name='plus' color='#505050' />
 			</Pressable>
@@ -56,14 +58,6 @@ const styles = StyleSheet.create({
 		borderRadius: 4,
 		paddingHorizontal: 16,
 		marginRight: 16
-	},
-	title: {
-		fontSize: 16,
-		fontWeight: '500'
-	},
-	quantity: {
-		fontSize: 18,
-		fontVariant: ['tabular-nums']
 	}
 });
 

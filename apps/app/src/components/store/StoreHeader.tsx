@@ -1,9 +1,11 @@
+import { CustomImage, Typography } from '@market/components';
 import React from 'react';
-import { View, Image, Text, Pressable, StyleSheet } from 'react-native';
-import { openLink } from '../../utils/links';
-import { StoreQuery } from '../../types/api';
+import { View, Pressable, StyleSheet } from 'react-native';
+
 import FollowButton from './FollowButton';
 import SocialLinks from './SocialLinks';
+import { StoreQuery } from '../../types/api';
+import { openLink } from '../../utils/links';
 
 interface StoreHeaderProps {
 	store: StoreQuery['store'];
@@ -13,17 +15,24 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.main}>
-				<View style={styles.placeholder}>
-					<Image source={{ uri: store.image?.path }} style={styles.image} />
-				</View>
+				<CustomImage
+					uri={store.image?.path}
+					height={80}
+					width={80}
+					style={styles.image}
+				/>
 				<View style={{ marginLeft: 16, flex: 1 }}>
-					<Text style={styles.name}>{store.name}</Text>
+					<Typography size='xlarge' weight='medium'>
+						{store.name}
+					</Typography>
 					{store.website && (
 						<Pressable
 							style={styles.website}
 							onPress={() => openLink(store?.website)}
 						>
-							<Text style={styles.websiteLinkText}>{store.website}</Text>
+							<Typography style={styles.websiteLinkText}>
+								{store.website}
+							</Typography>
 						</Pressable>
 					)}
 					<View style={{ marginTop: 4, flexDirection: 'row' }}>
@@ -51,34 +60,17 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		marginBottom: 8
 	},
-	placeholder: {
-		backgroundColor: '#D3D3D3',
-		width: 80,
-		height: 80,
-		borderRadius: 40,
-		overflow: 'hidden'
-	},
 	image: {
-		width: '100%',
-		height: '100%'
+		borderRadius: 40
 	},
 	actions: {
 		flexDirection: 'row',
 		alignItems: 'center'
 	},
-	name: {
-		fontSize: 20,
-		fontWeight: '500'
-	},
-	description: {
-		fontSize: 14,
-		marginBottom: 4
-	},
 	website: {
 		marginTop: 2
 	},
 	websiteLinkText: {
-		fontSize: 16,
 		color: '#455e96'
 	}
 });

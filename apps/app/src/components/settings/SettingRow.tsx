@@ -1,6 +1,6 @@
-import { Icon } from '@market/components';
+import { Icon, Typography } from '@market/components';
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, StyleSheet, Pressable } from 'react-native';
 
 interface SettingRowProps {
 	name: string;
@@ -13,16 +13,12 @@ const SettingRow: React.FC<SettingRowProps> = ({
 	onPress,
 	displayValue
 }) => (
-	<TouchableOpacity
-		activeOpacity={0.8}
-		style={styles.container}
-		onPress={onPress}
-	>
-		<Text style={styles.name}>{name}</Text>
+	<Pressable style={styles.container} onPress={onPress}>
+		<Typography>{name}</Typography>
 		<View style={styles.right}>
 			{displayValue && (
 				<View>
-					<Text style={styles.display}>{displayValue}</Text>
+					<Typography variant='secondary'>{displayValue}</Typography>
 				</View>
 			)}
 			<Icon
@@ -32,7 +28,7 @@ const SettingRow: React.FC<SettingRowProps> = ({
 				style={styles.icon}
 			/>
 		</View>
-	</TouchableOpacity>
+	</Pressable>
 );
 
 const styles = StyleSheet.create({
@@ -46,13 +42,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center'
-	},
-	name: {
-		fontSize: 16
-	},
-	display: {
-		fontSize: 16,
-		color: '#505050'
 	},
 	right: {
 		flexDirection: 'row',

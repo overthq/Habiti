@@ -4,8 +4,9 @@ import Animated, {
 	useSharedValue,
 	useAnimatedScrollHandler
 } from 'react-native-reanimated';
-import ImageCarouselDots from '../profile/ImageCarouselDots';
+
 import { ProductQuery } from '../../types/api';
+import ImageCarouselDots from '../profile/ImageCarouselDots';
 
 const { width } = Dimensions.get('window');
 
@@ -51,8 +52,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 const styles = StyleSheet.create({
 	container: {
 		height: width,
-		width: '100%',
-		backgroundColor: '#FFFFFF'
+		width: '100%'
 	},
 	image: {
 		flex: 1

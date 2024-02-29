@@ -1,6 +1,6 @@
-import { Icon } from '@market/components';
+import { Icon, Typography } from '@market/components';
 import React from 'react';
-import { Pressable, Text, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 
 interface ProfileRowProps {
 	title: string;
@@ -9,7 +9,7 @@ interface ProfileRowProps {
 
 const ProfileRow: React.FC<ProfileRowProps> = ({ title, onPress }) => (
 	<Pressable style={styles.container} onPress={onPress}>
-		<Text style={styles.title}>{title}</Text>
+		<Typography>{title}</Typography>
 		<Icon name='chevron-right' />
 	</Pressable>
 );
@@ -21,11 +21,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		paddingVertical: 8,
-		paddingHorizontal: 16,
-		backgroundColor: '#FFFFFF'
-	},
-	title: {
-		fontSize: 16
+		paddingHorizontal: 16
 	}
 });
 

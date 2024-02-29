@@ -1,5 +1,7 @@
+import { Typography } from '@market/components';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+
 import { ProductQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
 
@@ -10,11 +12,15 @@ interface ProductDetailsProps {
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => (
 	<View style={styles.container}>
 		<View style={styles.meta}>
-			<Text style={styles.name}>{product.name}</Text>
-			<Text style={styles.price}>{formatNaira(product.unitPrice)}</Text>
+			<Typography size='xxlarge' weight='medium'>
+				{product.name}
+			</Typography>
+			<Typography size='large'>{formatNaira(product.unitPrice)}</Typography>
 		</View>
-		<Text style={styles.header}>Description</Text>
-		<Text style={styles.description}>{product?.description}</Text>
+		<Typography weight='medium' variant='secondary'>
+			Description
+		</Typography>
+		<Typography>{product?.description}</Typography>
 	</View>
 );
 
@@ -22,13 +28,6 @@ const styles = StyleSheet.create({
 	container: {
 		paddingHorizontal: 16,
 		paddingTop: 16
-	},
-	name: {
-		fontSize: 24,
-		fontWeight: '500'
-	},
-	price: {
-		fontSize: 18
 	},
 	meta: {
 		flexDirection: 'row',
@@ -38,12 +37,7 @@ const styles = StyleSheet.create({
 	},
 	header: {
 		marginVertical: 8,
-		textTransform: 'uppercase',
-		color: '#505050',
-		fontWeight: '500'
-	},
-	description: {
-		fontSize: 16
+		textTransform: 'uppercase'
 	}
 });
 

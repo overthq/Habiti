@@ -1,12 +1,6 @@
-import { Icon } from '@market/components';
+import { Icon, Typography } from '@market/components';
 import React from 'react';
-import {
-	View,
-	Text,
-	Pressable,
-	ActivityIndicator,
-	StyleSheet
-} from 'react-native';
+import { View, Pressable, ActivityIndicator, StyleSheet } from 'react-native';
 
 import { MastercardIcon } from './CardIcons';
 import { useCardsQuery } from '../../types/api';
@@ -41,13 +35,13 @@ const SelectCard: React.FC<SelectCardProps> = ({
 		<View>
 			<Pressable style={styles.row} onPress={toggleExpanded}>
 				<View style={styles.cardInfo}>
-					<Text style={styles.cardText}>
+					<Typography style={styles.cardText}>
 						{!expanded
 							? displayCard
 								? `${displayCard.cardType} *${displayCard.last4}`
 								: 'Add card'
 							: ''}
-					</Text>
+					</Typography>
 				</View>
 				<Icon name='chevron-right' style={{ marginRight: -8 }} />
 			</Pressable>
@@ -61,9 +55,9 @@ const SelectCard: React.FC<SelectCardProps> = ({
 							style={styles.row}
 						>
 							<MastercardIcon />
-							<Text style={{ textTransform: 'capitalize' }}>
+							<Typography style={{ textTransform: 'capitalize' }}>
 								{card.cardType} *{card.last4}
-							</Text>
+							</Typography>
 							{selectedCard === card.id && <Icon name='check' />}
 						</Pressable>
 					))}

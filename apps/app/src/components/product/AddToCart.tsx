@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import QuantityControl from './QuantityControl';
+
 import CartButton from './CartButton';
+import QuantityControl from './QuantityControl';
 
 interface AddToCartProps {
 	storeId: string;

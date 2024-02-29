@@ -1,4 +1,4 @@
-import { ListEmpty } from '@market/components';
+import { ListEmpty, Typography } from '@market/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
@@ -42,9 +42,13 @@ const Watchlist: React.FC<WatchlistProps> = ({ watchlist }) => {
 
 	return (
 		<View>
-			<Text style={[textStyles.sectionHeader, { marginLeft: 16 }]}>
+			<Typography
+				variant='secondary'
+				weight='bold'
+				style={[textStyles.sectionHeader, { marginLeft: 16 }]}
+			>
 				Watchlist
-			</Text>
+			</Typography>
 			<FlashList
 				horizontal
 				showsHorizontalScrollIndicator={false}
@@ -66,9 +70,6 @@ const styles = StyleSheet.create({
 		height: 250
 	},
 	sectionHeader: {
-		fontWeight: 'bold',
-		color: '#505050',
-		fontSize: 16,
 		marginVertical: 8,
 		marginLeft: 16
 	}
