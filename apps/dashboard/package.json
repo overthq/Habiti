@@ -4,6 +4,7 @@
 	"private": true,
 	"main": "node_modules/expo/AppEntry.js",
 	"scripts": {
+		"lint": "eslint .",
 		"generate-types": "graphql-codegen --config codegen.yml",
 		"start": "expo start",
 		"android": "expo start --android",
@@ -51,6 +52,7 @@
 		"@types/extract-files": "^8.1.1",
 		"@types/react": "~18.2.14",
 		"@types/react-dom": "~18.0.10",
+		"eslint": "^8.57.0",
 		"typescript": "^5.1.3"
 	}
 }

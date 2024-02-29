@@ -1,11 +1,10 @@
 import 'core-js/full/symbol/async-iterator';
-import 'react-native-gesture-handler';
 import React from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import Routes from './src/navigation/Routes';
 import { ThemeProvider } from './src/contexts/ThemeContext';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Routes from './src/navigation/Routes';
 
 const App: React.FC = () => (
 	<SafeAreaProvider>
