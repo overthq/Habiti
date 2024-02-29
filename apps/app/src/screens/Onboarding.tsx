@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
 const Onboarding: React.FC = () => {
-	return <View style={styles.container}></View>;
+	return <View style={styles.container} />;
 };
 
 const styles = StyleSheet.create({

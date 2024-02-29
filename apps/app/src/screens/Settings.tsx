@@ -1,8 +1,8 @@
-import { Button } from '@market/components';
+import { Button, ScrollableScreen } from '@market/components';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import SettingRow from '../components/settings/SettingRow';
 import useStore from '../state';
@@ -23,7 +23,7 @@ const Settings: React.FC = () => {
 	);
 
 	return (
-		<ScrollView style={styles.container}>
+		<ScrollableScreen>
 			<SettingRow
 				name='Theme'
 				onPress={handleRowNavigate('SettingsTheme')}
@@ -31,14 +31,11 @@ const Settings: React.FC = () => {
 			/>
 
 			<Button text='Log Out' onPress={logOut} style={styles.logOut} />
-		</ScrollView>
+		</ScrollableScreen>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1
-	},
 	logOut: {
 		margin: 8
 	}

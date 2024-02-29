@@ -1,10 +1,12 @@
+import { Screen } from '@market/components';
+import { useRoute, RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
-import { useRoute, RouteProp } from '@react-navigation/native';
-import { useStoreQuery } from '../types/api';
-import { AppStackParamList } from '../types/navigation';
+
 import StoreProducts from '../components/store/StoreProducts';
 import useGoBack from '../hooks/useGoBack';
+import { useStoreQuery } from '../types/api';
+import { AppStackParamList } from '../types/navigation';
 
 const Store: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Store'>>();
@@ -16,16 +18,14 @@ const Store: React.FC = () => {
 	if (fetching || !data?.store) return <ActivityIndicator />;
 
 	return (
-		<View style={styles.container}>
+		<Screen style={styles.container}>
 			<StoreProducts store={data.store} />
-		</View>
+		</Screen>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		backgroundColor: '#FFFFFF',
 		paddingHorizontal: 8
 	},
 	back: {

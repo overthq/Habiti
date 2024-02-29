@@ -1,6 +1,6 @@
-import React from 'react';
+import { Icon, IconType } from '@market/components';
 import { useNavigation } from '@react-navigation/native';
-import { Icon, IconType } from '../components/Icon';
+import React from 'react';
 
 const useGoBack = (icon?: IconType, margin?: number) => {
 	const navigation = useNavigation();

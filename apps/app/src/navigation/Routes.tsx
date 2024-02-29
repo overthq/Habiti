@@ -1,5 +1,9 @@
 import { useTheme } from '@market/components';
-import { NavigationContainer } from '@react-navigation/native';
+import {
+	DarkTheme,
+	DefaultTheme,
+	NavigationContainer
+} from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
@@ -31,7 +35,7 @@ const Routes: React.FC = () => {
 	return (
 		<Provider value={client}>
 			<StatusBar style={getStatusBarStyle(name)} />
-			<NavigationContainer>
+			<NavigationContainer theme={name === 'dark' ? DarkTheme : DefaultTheme}>
 				<AppStack.Navigator screenOptions={{ headerShown: false }}>
 					{accessToken ? (
 						<>

@@ -1,8 +1,11 @@
+import { Button, ScrollableScreen } from '@market/components';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
+
+import FollowedStores from '../components/home/FollowedStores';
 import RecentOrders from '../components/home/RecentOrders';
 import Watchlist from '../components/home/Watchlist';
-import FollowedStores from '../components/home/FollowedStores';
 import { useHomeQuery } from '../types/api';
 
 // TODO: To encourage purchases, whe should probably list the sections in this order:
@@ -18,6 +21,7 @@ import { useHomeQuery } from '../types/api';
 
 const Home: React.FC = () => {
 	const [{ fetching, data }] = useHomeQuery();
+	const { navigate } = useNavigation();
 
 	if (fetching || !data) {
 		return (
@@ -28,19 +32,13 @@ const Home: React.FC = () => {
 	}
 
 	return (
-		<ScrollView style={styles.container}>
+		<ScrollableScreen>
+			<Button onPress={() => navigate('Settings')} text='Settings' />
 			<RecentOrders orders={data?.currentUser.orders} />
 			<FollowedStores followed={data?.currentUser.followed} />
 			<Watchlist watchlist={data?.currentUser.watchlist} />
-		</ScrollView>
+		</ScrollableScreen>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#FFFFFF'
-	}
-});
 
 export default Home;

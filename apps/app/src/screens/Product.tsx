@@ -1,8 +1,8 @@
-import { Icon } from '@market/components';
+import { Icon, useTheme } from '@market/components';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { GestureHandlerRefContext } from '@react-navigation/stack';
 import React from 'react';
-import { View, StyleSheet, Pressable, ScrollViewProps } from 'react-native';
+import { View, Pressable, ScrollViewProps } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
 import AddToCart from '../components/product/AddToCart';
@@ -20,6 +20,7 @@ const Product: React.FC = () => {
 		variables: { productId: params.productId }
 	});
 	const [scrolledTop, setScrolledTop] = React.useState(true);
+	const { theme } = useTheme();
 
 	const handleScroll = React.useCallback<
 		NonNullable<ScrollViewProps['onScroll']>
@@ -56,7 +57,7 @@ const Product: React.FC = () => {
 					waitFor={scrolledTop ? ref : undefined}
 					onScroll={handleScroll}
 					scrollEventThrottle={16}
-					style={styles.container}
+					style={{ backgroundColor: theme.screen.background }}
 				>
 					<ImageCarousel images={data.product.images} />
 					<ProductDetails product={data.product} />
@@ -72,11 +73,5 @@ const Product: React.FC = () => {
 		</GestureHandlerRefContext.Consumer>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		backgroundColor: '#FFFFFF'
-	}
-});
 
 export default Product;

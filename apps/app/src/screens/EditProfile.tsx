@@ -1,8 +1,9 @@
 import React from 'react';
 import { View } from 'react-native';
-import { useCurrentUserQuery } from '../types/api';
-import useGoBack from '../hooks/useGoBack';
+
 import EditProfileMain from '../components/edit-profile/EditProfileMain';
+import useGoBack from '../hooks/useGoBack';
+import { useCurrentUserQuery } from '../types/api';
 
 const EditProfile: React.FC = () => {
 	const [{ data, fetching }] = useCurrentUserQuery();

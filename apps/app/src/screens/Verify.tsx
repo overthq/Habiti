@@ -1,7 +1,7 @@
-import { Button } from '@market/components';
+import { Button, Screen } from '@market/components';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, TextInput } from 'react-native';
+import { Text, TextInput } from 'react-native';
 
 import useStore from '../state';
 import styles from '../styles/auth';
@@ -27,7 +27,7 @@ const VerifyAuthentication: React.FC = () => {
 	};
 
 	return (
-		<View style={styles.container}>
+		<Screen>
 			<Text style={styles.title}>Enter your verification code</Text>
 			<Text style={styles.description}>
 				A verification code was sent to your phone via SMS.
@@ -38,7 +38,7 @@ const VerifyAuthentication: React.FC = () => {
 				keyboardType='number-pad'
 			/>
 			<Button text='Verify Code' onPress={handleSubmit} loading={fetching} />
-		</View>
+		</Screen>
 	);
 };
 

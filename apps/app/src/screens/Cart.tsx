@@ -1,4 +1,4 @@
-import { Button } from '@market/components';
+import { Button, ScrollableScreen } from '@market/components';
 import {
 	useRoute,
 	RouteProp,
@@ -6,7 +6,7 @@ import {
 	NavigationProp
 } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import CartProduct from '../components/cart/CartProduct';
@@ -63,7 +63,7 @@ const Cart: React.FC = () => {
 	if (fetching || !cart) return <View style={styles.loading} />;
 
 	return (
-		<ScrollView style={[styles.container, { paddingBottom: bottom }]}>
+		<ScrollableScreen style={[styles.container, { paddingBottom: bottom }]}>
 			<Text style={styles.sectionHeader}>Order Summary</Text>
 
 			{cart.products.map(cartProduct => (
@@ -106,20 +106,17 @@ const Cart: React.FC = () => {
 					style={styles.button}
 				/>
 			</View>
-		</ScrollView>
+		</ScrollableScreen>
 	);
 };
 
 const styles = StyleSheet.create({
 	loading: {
-		flex: 1,
-		backgroundColor: '#FFFFFF'
+		flex: 1
 	},
 	container: {
-		flex: 1,
 		paddingTop: 8,
-		paddingHorizontal: 16,
-		backgroundColor: '#FFFFFF'
+		paddingHorizontal: 16
 	},
 	heading: {
 		fontWeight: 'bold',

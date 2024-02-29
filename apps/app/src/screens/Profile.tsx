@@ -1,4 +1,4 @@
-import { Button } from '@market/components';
+import { Button, Screen } from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
@@ -43,7 +43,7 @@ const Profile: React.FC = () => {
 	}
 
 	return (
-		<View style={styles.container}>
+		<Screen>
 			<View style={{ paddingHorizontal: 16, marginBottom: 8 }}>
 				<UserCard user={data?.currentUser} />
 			</View>
@@ -61,7 +61,7 @@ const Profile: React.FC = () => {
 			<View style={{ paddingHorizontal: 16, marginTop: 8 }}>
 				<Button text='Log Out' onPress={logOut} />
 			</View>
-		</View>
+		</Screen>
 	);
 };
 
@@ -70,10 +70,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center'
-	},
-	container: {
-		flex: 1,
-		backgroundColor: '#FFFFFF'
 	},
 	section: {
 		borderRadius: 4,

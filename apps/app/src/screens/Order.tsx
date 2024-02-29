@@ -1,16 +1,18 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { Screen } from '@market/components';
 import {
 	NavigationProp,
 	RouteProp,
 	useNavigation,
 	useRoute
 } from '@react-navigation/native';
-import { useOrderQuery } from '../types/api';
-import { AppStackParamList } from '../types/navigation';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
+import OrderMeta from '../components/order/OrderMeta';
 import OrderProduct from '../components/order/OrderProduct';
 import useGoBack from '../hooks/useGoBack';
-import OrderMeta from '../components/order/OrderMeta';
+import { useOrderQuery } from '../types/api';
+import { AppStackParamList } from '../types/navigation';
 
 // What actions should users be able to carry out on their orders on this screen?
 
@@ -42,7 +44,7 @@ const Order: React.FC = () => {
 	}
 
 	return (
-		<View style={styles.container}>
+		<Screen style={styles.container}>
 			<View style={{ marginLeft: 16, marginBottom: 16 }}>
 				<Text>{order.status}</Text>
 			</View>
@@ -56,17 +58,15 @@ const Order: React.FC = () => {
 				))}
 			</View>
 			<OrderMeta order={order} />
-		</View>
+		</Screen>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
 		paddingTop: 16
 	},
 	products: {
-		backgroundColor: '#FFFFFF',
 		marginHorizontal: 16,
 		paddingHorizontal: 16,
 		paddingVertical: 8,

@@ -1,6 +1,7 @@
-import React from 'react';
+import { Icon, IconType } from '@market/components';
 import { RouteProp } from '@react-navigation/native';
-import { Icon, IconType } from '../components/Icon';
+import React from 'react';
+
 import { HomeTabParamList } from '../types/navigation';
 
 export const getIcon = (routeName: keyof HomeTabParamList): IconType => {
@@ -16,16 +17,14 @@ export const getIcon = (routeName: keyof HomeTabParamList): IconType => {
 	}
 };
 
-export const tabScreenOptions = ({
-	route
-}: {
-	route: RouteProp<HomeTabParamList>;
-}) => ({
-	headerShown: false,
-	tabBarActiveTintColor: 'black',
-	tabBarInactiveTintColor: 'gray',
-	tabBarShowLabel: false,
-	tabBarIcon: ({ color }: { color: string }) => (
-		<Icon name={getIcon(route.name)} color={color} size={28} />
-	)
-});
+export const tabScreenOptions =
+	(themeName: 'light' | 'dark') =>
+	({ route }: { route: RouteProp<HomeTabParamList> }) => ({
+		headerShown: false,
+		tabBarActiveTintColor: themeName === 'light' ? 'black' : 'white',
+		tabBarInactiveTintColor: 'gray',
+		tabBarShowLabel: false,
+		tabBarIcon: ({ color }: { color: string }) => (
+			<Icon name={getIcon(route.name)} color={color} size={28} />
+		)
+	});

@@ -1,9 +1,8 @@
-import { ListEmpty } from '@market/components';
+import { ListEmpty, Screen } from '@market/components';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
 
 import CartsListItem from '../components/carts/CartsListItem';
 import { useCartsQuery } from '../types/api';
@@ -25,7 +24,7 @@ const Carts: React.FC = () => {
 	);
 
 	return (
-		<View style={styles.container}>
+		<Screen>
 			<FlashList
 				keyExtractor={c => c.id}
 				renderItem={({ item }) => (
@@ -49,31 +48,8 @@ const Carts: React.FC = () => {
 					refetch({ requestPolicy: 'cache-and-network' });
 				}}
 			/>
-		</View>
+		</Screen>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		paddingTop: 4,
-		backgroundColor: '#FFFFFF'
-	},
-	header: {
-		paddingVertical: 16,
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center'
-	},
-	title: {
-		fontWeight: 'bold',
-		fontSize: 32
-	},
-	separator: {
-		width: '100%',
-		height: 1,
-		backgroundColor: '#D3D3D3'
-	}
-});
 
 export default Carts;

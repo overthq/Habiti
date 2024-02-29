@@ -1,4 +1,4 @@
-import { Icon, ListEmpty } from '@market/components';
+import { Icon, ListEmpty, Screen } from '@market/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
 import {
@@ -41,7 +41,7 @@ const PaymentMethods: React.FC = () => {
 	}
 
 	return (
-		<View style={styles.container}>
+		<Screen style={styles.container}>
 			{cards.length === 0 ? (
 				<ListEmpty
 					title='No cards added'
@@ -62,13 +62,12 @@ const PaymentMethods: React.FC = () => {
 					))}
 				</View>
 			)}
-		</View>
+		</Screen>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
 		paddingHorizontal: 16
 	},
 	sectionHeader: {

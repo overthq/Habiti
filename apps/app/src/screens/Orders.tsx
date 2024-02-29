@@ -1,11 +1,13 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { Screen } from '@market/components';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { FlashList } from '@shopify/flash-list';
+import React from 'react';
+import { View } from 'react-native';
+
+import OrdersListItem from '../components/orders/OrdersListItem';
 import { useUserOrdersQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
-import OrdersListItem from '../components/orders/OrdersListItem';
 
 const Orders: React.FC = () => {
 	const [{ data, fetching }] = useUserOrdersQuery();
@@ -21,21 +23,15 @@ const Orders: React.FC = () => {
 	if (fetching) return <View />;
 
 	return (
-		<View style={styles.container}>
+		<Screen>
 			<FlashList
 				data={data?.currentUser.orders}
 				renderItem={({ item }) => (
 					<OrdersListItem order={item} onPress={handleOrderPress(item.id)} />
 				)}
 			/>
-		</View>
+		</Screen>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1
-	}
-});
 
 export default Orders;

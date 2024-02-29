@@ -1,6 +1,8 @@
+import { Screen } from '@market/components';
 import React from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
+
 import useGoBack from '../hooks/useGoBack';
 import { attemptInitialCharge, InitialChargeResponse } from '../utils/payments';
 
@@ -18,23 +20,14 @@ const AddCardWebview: React.FC = () => {
 	}, []);
 
 	return (
-		<View style={styles.container}>
+		<Screen>
 			{data ? (
-				<WebView
-					style={styles.container}
-					source={{ uri: data.authorization_url }}
-				/>
+				<WebView style={{ flex: 1 }} source={{ uri: data.authorization_url }} />
 			) : (
 				<ActivityIndicator />
 			)}
-		</View>
+		</Screen>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1
-	}
-});
 
 export default AddCardWebview;
