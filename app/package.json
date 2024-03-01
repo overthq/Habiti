@@ -21,7 +21,7 @@
 		"@urql/exchange-graphcache": "^6.0.4",
 		"core-js": "^3.30.1",
 		"date-fns": "^2.29.3",
-		"expo": "^48.0.0",
+		"expo": "^50.0.8",
 		"expo-file-system": "~15.2.2",
 		"expo-status-bar": "~1.4.4",
 		"graphql": "^16.6.0",
