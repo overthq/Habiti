@@ -1,10 +1,9 @@
-import { ListEmpty } from '@market/components';
+import { ListEmpty, Typography } from '@market/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import RecentOrder from './RecentOrder';
-import textStyles from '../../styles/text';
 import { HomeQuery } from '../../types/api';
 import { AppStackParamList, HomeTabParamList } from '../../types/navigation';
 
@@ -30,9 +29,9 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 
 	return (
 		<View style={styles.container}>
-			<Text style={[textStyles.sectionHeader, { marginLeft: 16 }]}>
+			<Typography weight='medium' style={{ marginLeft: 16, marginBottom: 8 }}>
 				Recent Orders
-			</Text>
+			</Typography>
 			{!orders || orders?.length === 0 ? (
 				<ListEmpty
 					description='When you have pending orders, they will be displayed here.'
@@ -55,7 +54,9 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 };
 
 const styles = StyleSheet.create({
-	container: {}
+	container: {
+		paddingTop: 16
+	}
 });
 
 export default RecentOrders;

@@ -1,11 +1,10 @@
-import { ListEmpty } from '@market/components';
+import { ListEmpty, Typography } from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 
 import TrendingStoresItem from './TrendingStoresItem';
-import textStyles from '../../styles/text';
 import { useStoresQuery } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
 
@@ -26,9 +25,13 @@ const TrendingStores: React.FC = () => {
 
 	return (
 		<View>
-			<Text style={[textStyles.sectionHeader, { marginLeft: 16 }]}>
+			<Typography
+				variant='label'
+				weight='medium'
+				style={{ marginLeft: 16, marginBottom: 8 }}
+			>
 				Trending Stores
-			</Text>
+			</Typography>
 			<FlashList
 				horizontal
 				data={data.stores}

@@ -1,8 +1,9 @@
 // Temporarily create a ListEmpty file.
 import React from 'react';
-import { View, Text, ViewStyle, StyleSheet } from 'react-native';
+import { View, ViewStyle, StyleSheet } from 'react-native';
 
 import ListEmptyButton from './ListEmptyButton';
+import Typography from './Typography';
 
 interface ListEmptyProps {
 	title?: string;
@@ -21,8 +22,14 @@ const ListEmpty: React.FC<ListEmptyProps> = ({
 	viewStyle
 }) => (
 	<View style={[styles.container, viewStyle]}>
-		{title && <Text style={styles.title}>{title}</Text>}
-		<Text style={styles.description}>{description}</Text>
+		{title && (
+			<Typography size='large' weight='medium'>
+				{title}
+			</Typography>
+		)}
+		<Typography variant='secondary' style={styles.description}>
+			{description}
+		</Typography>
 		{cta && <ListEmptyButton text={cta.text} onPress={cta.action} />}
 	</View>
 );
@@ -34,14 +41,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center'
 	},
-	title: {
-		fontSize: 18,
-		color: '#100100',
-		fontWeight: '500'
-	},
 	description: {
-		fontSize: 16,
-		color: '#505050',
 		textAlign: 'center',
 		marginVertical: 8
 	}

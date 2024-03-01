@@ -2,10 +2,9 @@ import { ListEmpty, Typography } from '@market/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import WatchlistProduct from './WatchlistProduct';
-import textStyles from '../../styles/text';
 import { HomeQuery } from '../../types/api';
 import { HomeTabParamList, AppStackParamList } from '../../types/navigation';
 
@@ -26,9 +25,13 @@ const Watchlist: React.FC<WatchlistProps> = ({ watchlist }) => {
 	if (!products || products?.length === 0) {
 		return (
 			<View style={styles.container}>
-				<Text style={[textStyles.sectionHeader, { marginLeft: 16 }]}>
+				<Typography
+					variant='label'
+					weight='medium'
+					style={{ marginLeft: 16, marginBottom: 8 }}
+				>
 					Watchlist
-				</Text>
+				</Typography>
 				<ListEmpty
 					description={`When you add items to your watchlist, you'll see them here.`}
 					cta={{
@@ -43,9 +46,9 @@ const Watchlist: React.FC<WatchlistProps> = ({ watchlist }) => {
 	return (
 		<View>
 			<Typography
-				variant='secondary'
+				variant='label'
 				weight='bold'
-				style={[textStyles.sectionHeader, { marginLeft: 16 }]}
+				style={{ marginLeft: 16, marginBottom: 8 }}
 			>
 				Watchlist
 			</Typography>

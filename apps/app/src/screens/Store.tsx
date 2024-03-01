@@ -1,7 +1,7 @@
 import { Screen } from '@market/components';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import React from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { StyleSheet, ActivityIndicator } from 'react-native';
 
 import StoreProducts from '../components/store/StoreProducts';
 import useGoBack from '../hooks/useGoBack';

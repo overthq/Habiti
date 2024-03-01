@@ -1,11 +1,10 @@
-import { ListEmpty } from '@market/components';
+import { ListEmpty, Typography } from '@market/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 
 import FollowedStoresItem from './FollowedStoresItem';
-import textStyles from '../../styles/text';
 import { HomeQuery } from '../../types/api';
 import { AppStackParamList, HomeTabParamList } from '../../types/navigation';
 
@@ -32,9 +31,9 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 	if (!stores || stores?.length === 0) {
 		return (
 			<View>
-				<Text style={[textStyles.sectionHeader, { marginLeft: 16 }]}>
+				<Typography weight='medium' style={{ marginLeft: 16, marginBottom: 8 }}>
 					Followed Stores
-				</Text>
+				</Typography>
 				<ListEmpty
 					description={`When you follow stores, you'll see updates from them here.`}
 					cta={{
@@ -48,9 +47,9 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 
 	return (
 		<View>
-			<Text style={[textStyles.sectionHeader, { marginLeft: 16 }]}>
+			<Typography weight='medium' style={{ marginLeft: 16, marginBottom: 8 }}>
 				Followed Stores
-			</Text>
+			</Typography>
 			<FlashList
 				horizontal
 				data={stores}
