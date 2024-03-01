@@ -21,7 +21,7 @@ import { useHomeQuery } from '../types/api';
 
 const Home: React.FC = () => {
 	const [{ fetching, data }] = useHomeQuery();
-	const { navigate } = useNavigation();
+	// const { navigate } = useNavigation();
 
 	if (fetching || !data) {
 		return (
@@ -33,9 +33,9 @@ const Home: React.FC = () => {
 
 	return (
 		<ScrollableScreen>
-			<Button onPress={() => navigate('Settings')} text='Settings' />
-			<RecentOrders orders={data?.currentUser.orders} />
 			<FollowedStores followed={data?.currentUser.followed} />
+			{/* <Button onPress={() => navigate('Settings')} text='Settings' /> */}
+			<RecentOrders orders={data?.currentUser.orders} />
 			<Watchlist watchlist={data?.currentUser.watchlist} />
 		</ScrollableScreen>
 	);

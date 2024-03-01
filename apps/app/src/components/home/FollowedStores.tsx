@@ -2,7 +2,7 @@ import { ListEmpty, Typography } from '@market/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import FollowedStoresItem from './FollowedStoresItem';
 import { HomeQuery } from '../../types/api';
@@ -46,7 +46,7 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 	}
 
 	return (
-		<View>
+		<View style={styles.container}>
 			<Typography weight='medium' style={{ marginLeft: 16, marginBottom: 8 }}>
 				Followed Stores
 			</Typography>
@@ -65,5 +65,11 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 		</View>
 	);
 };
+
+const styles = StyleSheet.create({
+	container: {
+		paddingTop: 16
+	}
+});
 
 export default FollowedStores;

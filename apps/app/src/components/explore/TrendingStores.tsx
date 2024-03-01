@@ -2,7 +2,7 @@ import { ListEmpty, Typography } from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import TrendingStoresItem from './TrendingStoresItem';
 import { useStoresQuery } from '../../types/api';
@@ -24,7 +24,7 @@ const TrendingStores: React.FC = () => {
 	}
 
 	return (
-		<View>
+		<View style={styles.container}>
 			<Typography
 				variant='label'
 				weight='medium'
@@ -54,5 +54,11 @@ const TrendingStores: React.FC = () => {
 		</View>
 	);
 };
+
+const styles = StyleSheet.create({
+	container: {
+		paddingTop: 8
+	}
+});
 
 export default TrendingStores;

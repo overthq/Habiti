@@ -1,4 +1,4 @@
-import { Icon, Typography } from '@market/components';
+import { Icon, Typography, useTheme } from '@market/components';
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
 
@@ -12,33 +12,36 @@ const SettingRow: React.FC<SettingRowProps> = ({
 	name,
 	onPress,
 	displayValue
-}) => (
-	<Pressable style={styles.container} onPress={onPress}>
-		<Typography>{name}</Typography>
-		<View style={styles.right}>
-			{displayValue && (
-				<View>
+}) => {
+	const { theme } = useTheme();
+
+	return (
+		<Pressable
+			style={[styles.container, { borderBottomColor: theme.border.color }]}
+			onPress={onPress}
+		>
+			<Typography>{name}</Typography>
+			<View style={styles.right}>
+				{displayValue ? (
 					<Typography variant='secondary'>{displayValue}</Typography>
-				</View>
-			)}
-			<Icon
-				name='chevron-right'
-				color='#505050'
-				size={24}
-				style={styles.icon}
-			/>
-		</View>
-	</Pressable>
-);
+				) : null}
+				<Icon
+					name='chevron-right'
+					color={theme.text.secondary}
+					size={24}
+					style={styles.icon}
+				/>
+			</View>
+		</Pressable>
+	);
+};
 
 const styles = StyleSheet.create({
 	container: {
 		width: '100%',
 		height: 45,
 		paddingHorizontal: 16,
-		backgroundColor: '#FFFFFF',
-		borderTopWidth: 1,
-		borderTopColor: '#EDEDED',
+		borderBottomWidth: 1,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center'

@@ -20,14 +20,14 @@ const SettingRow: React.FC<SettingRowProps> = ({
 			style={[styles.container, { borderBottomColor: theme.border.color }]}
 			onPress={onPress}
 		>
-			<Typography style={styles.settingName}>{name}</Typography>
+			<Typography>{name}</Typography>
 			<View style={styles.right}>
 				{displayValue ? (
 					<Typography variant='label'>{displayValue}</Typography>
 				) : null}
 				<Icon
 					name='chevron-right'
-					color='#505050'
+					color={theme.text.secondary}
 					size={24}
 					style={styles.icon}
 				/>
@@ -41,14 +41,10 @@ const styles = StyleSheet.create({
 		width: '100%',
 		height: 45,
 		paddingHorizontal: 16,
-		backgroundColor: 'transparent',
 		borderBottomWidth: 1,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center'
-	},
-	settingName: {
-		fontSize: 16
 	},
 	right: {
 		flexDirection: 'row',
