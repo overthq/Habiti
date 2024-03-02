@@ -1,4 +1,4 @@
-import { Icon } from '@market/components';
+import { Icon, Typography } from '@market/components';
 import React from 'react';
 import { View, Pressable, Text, StyleSheet } from 'react-native';
 
@@ -25,9 +25,9 @@ const OverviewActions: React.FC<OverviewActionsProps> = ({
 			<Pressable style={styles.row}>
 				<View style={styles.left}>
 					<Icon name='tag' size={20} />
-					<Text style={styles.text}>
+					<Typography style={styles.text}>
 						{lowStockCount} products are running low
-					</Text>
+					</Typography>
 				</View>
 				<Icon name='chevron-right' size={20} />
 			</Pressable>
@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row'
 	},
 	text: {
-		fontSize: 16,
 		marginLeft: 8
 	}
 });

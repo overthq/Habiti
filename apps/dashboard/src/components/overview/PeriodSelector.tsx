@@ -1,5 +1,6 @@
+import { Typography } from '@market/components';
 import React from 'react';
-import { View, Pressable, Text, StyleSheet } from 'react-native';
+import { View, Pressable, StyleSheet } from 'react-native';
 
 import { StatPeriod } from '../../types/api';
 
@@ -32,7 +33,7 @@ const PeriodSelector: React.FC<PeriodSelectorProps> = ({
 					onPress={handlePeriodSelect(p)}
 					disabled={p === selectedPeriod}
 				>
-					<Text style={styles.text}>{p}</Text>
+					<Typography>{p}</Typography>
 				</Pressable>
 			))}
 		</View>
@@ -51,9 +52,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center'
-	},
-	text: {
-		fontSize: 16
 	}
 });
 

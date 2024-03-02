@@ -1,4 +1,4 @@
-import { Screen } from '@market/components';
+import { Screen, Typography } from '@market/components';
 import {
 	NavigationProp,
 	RouteProp,
@@ -46,10 +46,10 @@ const Orders: React.FC = () => {
 					renderItem={renderOrder}
 					ListEmptyComponent={
 						<View style={styles.empty}>
-							<Text style={styles.emptyText}>
+							<Typography variant='secondary' style={styles.emptyText}>
 								There are currently no orders. While you wait, you can customize
 								your store.
-							</Text>
+							</Typography>
 						</View>
 					}
 				/>
@@ -67,9 +67,7 @@ const styles = StyleSheet.create({
 	},
 	emptyText: {
 		paddingHorizontal: 16,
-		textAlign: 'center',
-		color: '#505050',
-		fontSize: 16
+		textAlign: 'center'
 	}
 });
 

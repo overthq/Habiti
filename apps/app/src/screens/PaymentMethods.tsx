@@ -1,13 +1,7 @@
-import { Icon, ListEmpty, Screen } from '@market/components';
+import { Icon, ListEmpty, Screen, Typography } from '@market/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
-import {
-	View,
-	Text,
-	StyleSheet,
-	ActivityIndicator,
-	Pressable
-} from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Pressable } from 'react-native';
 
 import { MastercardIcon } from '../components/cart/CardIcons';
 import useGoBack from '../hooks/useGoBack';
@@ -53,11 +47,17 @@ const PaymentMethods: React.FC = () => {
 				/>
 			) : (
 				<View>
-					<Text style={styles.sectionHeader}>Cards</Text>
+					<Typography
+						weight='medium'
+						variant='label'
+						style={styles.sectionHeader}
+					>
+						Cards
+					</Typography>
 					{cards.map(card => (
 						<View key={card.id} style={styles.card}>
 							<MastercardIcon />
-							<Text style={styles.number}>Ending with {card.last4}</Text>
+							<Typography>Ending with {card.last4}</Typography>
 						</View>
 					))}
 				</View>
@@ -71,10 +71,7 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 16
 	},
 	sectionHeader: {
-		fontSize: 16,
-		marginTop: 8,
-		fontWeight: '500',
-		color: '#505050'
+		marginTop: 8
 	},
 	add: {
 		marginRight: 16
@@ -88,9 +85,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		paddingVertical: 4
-	},
-	number: {
-		fontSize: 16
 	}
 });
 

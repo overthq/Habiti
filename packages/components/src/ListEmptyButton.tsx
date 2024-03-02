@@ -1,5 +1,7 @@
 import React from 'react';
-import { Text, Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
+
+import Typography from './Typography';
 
 interface ListEmptyButtonProps {
 	text: string;
@@ -8,7 +10,9 @@ interface ListEmptyButtonProps {
 
 const ListEmptyButton: React.FC<ListEmptyButtonProps> = ({ text, onPress }) => (
 	<Pressable style={styles.container} onPress={onPress}>
-		<Text style={styles.text}>{text}</Text>
+		<Typography weight='medium' style={styles.text}>
+			{text}
+		</Typography>
 	</Pressable>
 );
 
@@ -23,8 +27,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	text: {
-		fontSize: 16,
-		fontWeight: '500',
 		color: '#2B2B2B'
 	}
 });

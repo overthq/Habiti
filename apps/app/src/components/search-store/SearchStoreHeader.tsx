@@ -104,7 +104,7 @@ const SearchStoreHeader = () => {
 const styles = StyleSheet.create({
 	container: {
 		flexDirection: 'row',
-		borderBottomWidth: 1,
+		borderBottomWidth: 0.5,
 		paddingRight: 16,
 		alignItems: 'center',
 		paddingBottom: 8

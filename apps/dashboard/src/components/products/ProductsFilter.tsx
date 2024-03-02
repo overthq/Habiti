@@ -51,9 +51,6 @@ const styles = StyleSheet.create({
 	},
 	button: {
 		marginRight: 16
-	},
-	text: {
-		fontSize: 16
 	}
 });
 

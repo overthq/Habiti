@@ -1,5 +1,6 @@
+import { Typography } from '@market/components';
 import React from 'react';
-import { Pressable, View, Text, Image, StyleSheet } from 'react-native';
+import { Pressable, View, Image, StyleSheet } from 'react-native';
 
 import { ProductsQuery } from '../../types/api';
 import { formatNaira } from '../../utils/currency';
@@ -17,8 +18,10 @@ const ProductGridItem: React.FC<ProductGridItemProps> = ({
 		<View style={styles.placeholder}>
 			<Image style={styles.image} source={{ uri: product.images[0]?.path }} />
 		</View>
-		<Text style={styles.name}>{product.name}</Text>
-		<Text style={styles.price}>{formatNaira(product.unitPrice)}</Text>
+		<Typography style={styles.name}>{product.name}</Typography>
+		<Typography variant='secondary'>
+			{formatNaira(product.unitPrice)}
+		</Typography>
 	</Pressable>
 );
 
@@ -39,11 +42,9 @@ const styles = StyleSheet.create({
 		height: '100%'
 	},
 	name: {
-		fontSize: 16,
 		marginTop: 4
 	},
 	price: {
-		fontSize: 16,
 		color: '#777777'
 	}
 });

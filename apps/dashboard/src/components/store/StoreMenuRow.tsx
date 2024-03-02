@@ -10,7 +10,7 @@ interface StoreMenuRowProps {
 const StoreMenuRow: React.FC<StoreMenuRowProps> = ({ title, onPress }) => {
 	return (
 		<Pressable style={styles.menuButton} onPress={onPress}>
-			<Typography style={styles.menuButtonText}>{title}</Typography>
+			<Typography>{title}</Typography>
 			<Icon name='chevron-right' color='#505050' />
 		</Pressable>
 	);
@@ -23,9 +23,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		paddingHorizontal: 16,
 		paddingVertical: 8
-	},
-	menuButtonText: {
-		fontSize: 16
 	}
 });
 

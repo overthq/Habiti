@@ -126,9 +126,6 @@ const styles = StyleSheet.create({
 	headerAction: {
 		marginRight: 16
 	},
-	headerButtonText: {
-		fontSize: 16
-	},
 	button: {
 		marginTop: 8
 	}
