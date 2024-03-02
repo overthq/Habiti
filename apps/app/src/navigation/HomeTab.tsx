@@ -10,18 +10,24 @@ import Home from '../screens/Home';
 import Order from '../screens/Order';
 import PaymentMethods from '../screens/PaymentMethods';
 import Profile from '../screens/Profile';
+import SearchStore from '../screens/SearchStore';
 import Settings from '../screens/Settings';
 import SettingsTheme from '../screens/SettingsTheme';
 import Store from '../screens/Store';
-import { HomeTabParamList } from '../types/navigation';
+import {
+	ExploreStackParamList,
+	HomeStackParamList,
+	HomeTabParamList,
+	ProfileStackParamList
+} from '../types/navigation';
 import { tabScreenOptions } from '../utils/navigation';
 
 const HomeTab = createBottomTabNavigator<HomeTabParamList>();
 
-const HomeNavigator = createStackNavigator();
-const ExploreNavigator = createStackNavigator();
+const HomeNavigator = createStackNavigator<HomeStackParamList>();
+const ExploreNavigator = createStackNavigator<ExploreStackParamList>();
 const CartsNavigator = createStackNavigator();
-const ProfileNavigator = createStackNavigator();
+const ProfileNavigator = createStackNavigator<ProfileStackParamList>();
 
 const HomeThing = () => {
 	return (
@@ -47,6 +53,11 @@ const ExploreThing = () => {
 				name='Store'
 				component={Store}
 				options={{ headerTitle: '' }}
+			/>
+			<ExploreNavigator.Screen
+				name='SearchStore'
+				component={SearchStore}
+				options={{ headerShown: false }}
 			/>
 		</ExploreNavigator.Navigator>
 	);

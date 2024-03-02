@@ -19,22 +19,6 @@ const OrderMeta: React.FC<OrderMetaProps> = ({ order }) => {
 
 	return (
 		<View style={styles.container}>
-			{/* <Pressable style={styles.store} onPress={handleStorePress}>
-				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-					<View style={styles.placeholder}>
-						{order.store.image ? (
-							<Image
-								style={styles.image}
-								source={{ uri: order.store.image.path }}
-							/>
-						) : (
-							<Text style={styles.avatarText}>{order.store.name[0]}</Text>
-						)}
-					</View>
-					<Text style={styles.storeName}>{order.store.name}</Text>
-				</View>
-				<Icon name='chevron-right' />
-			</Pressable> */}
 			<View style={styles.row}>
 				<Typography>Date</Typography>
 				<Typography variant='secondary'>
@@ -51,7 +35,6 @@ const OrderMeta: React.FC<OrderMetaProps> = ({ order }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: '#FFFFFF',
 		paddingTop: 8,
 		paddingBottom: 4,
 		paddingHorizontal: 16,
@@ -73,10 +56,6 @@ const styles = StyleSheet.create({
 		borderBottomColor: '#D3D3D3',
 		borderBottomWidth: 1
 	},
-	storeName: {
-		fontSize: 18,
-		fontWeight: '500'
-	},
 	placeholder: {
 		height: 36,
 		width: 36,
@@ -84,11 +63,6 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		marginRight: 8
-	},
-	avatarText: {
-		fontSize: 20,
-		fontWeight: '500',
-		color: '#505050'
 	}
 });
 

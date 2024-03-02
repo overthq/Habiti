@@ -1,4 +1,4 @@
-import { Button, Screen } from '@market/components';
+import { Button, Screen, useTheme } from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
@@ -27,6 +27,7 @@ import { AppStackParamList } from '../types/navigation';
 const Profile: React.FC = () => {
 	const logOut = useStore(state => state.logOut);
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { theme } = useTheme();
 
 	const [{ data, fetching }] = useCurrentUserQuery();
 
@@ -44,10 +45,12 @@ const Profile: React.FC = () => {
 
 	return (
 		<Screen>
-			<View style={{ paddingHorizontal: 16, marginBottom: 8 }}>
+			<View style={{ paddingHorizontal: 16 }}>
 				<UserCard user={data?.currentUser} />
 			</View>
-			<View style={styles.separator} />
+			<View
+				style={[styles.separator, { backgroundColor: theme.border.color }]}
+			/>
 			<View style={styles.section}>
 				<ProfileRow
 					title='Payment methods'
@@ -72,14 +75,12 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	section: {
-		borderRadius: 4,
 		marginBottom: 16
 	},
 	separator: {
-		width: '100%',
 		height: 1,
-		backgroundColor: '#D3D3D3',
-		marginBottom: 8
+		marginBottom: 8,
+		marginHorizontal: 16
 	}
 });
 

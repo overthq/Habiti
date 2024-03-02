@@ -31,9 +31,9 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 	if (!stores || stores?.length === 0) {
 		return (
 			<View>
-				<Typography weight='medium' style={{ marginLeft: 16, marginBottom: 8 }}>
+				{/* <Typography weight='medium' style={{ marginLeft: 16, marginBottom: 8 }}>
 					Followed Stores
-				</Typography>
+				</Typography> */}
 				<ListEmpty
 					description={`When you follow stores, you'll see updates from them here.`}
 					cta={{
@@ -47,9 +47,9 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 
 	return (
 		<View style={styles.container}>
-			<Typography weight='medium' style={{ marginLeft: 16, marginBottom: 8 }}>
+			{/* <Typography weight='medium' style={{ marginLeft: 16, marginBottom: 8 }}>
 				Followed Stores
-			</Typography>
+			</Typography> */}
 			<FlashList
 				horizontal
 				data={stores}
@@ -60,7 +60,7 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 						onPress={handleStorePress(item.id)}
 					/>
 				)}
-				estimatedItemSize={100}
+				estimatedItemSize={108}
 			/>
 		</View>
 	);

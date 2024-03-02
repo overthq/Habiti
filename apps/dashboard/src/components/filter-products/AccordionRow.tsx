@@ -4,7 +4,7 @@ import { Pressable, View, StyleSheet } from 'react-native';
 import Animated, {
 	FadeIn,
 	FadeOut,
-	Layout,
+	LinearTransition,
 	interpolate,
 	useAnimatedStyle,
 	useDerivedValue,
@@ -47,7 +47,7 @@ const AccordionRow: React.FC<AccordionRowProps> = ({
 	});
 
 	return (
-		<Animated.View layout={Layout} style={styles.container}>
+		<Animated.View layout={LinearTransition} style={styles.container}>
 			<Pressable style={styles.row} onPress={onPress}>
 				<Typography>{title}</Typography>
 				<View style={styles.right}>

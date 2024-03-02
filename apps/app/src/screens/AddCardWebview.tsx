@@ -1,6 +1,6 @@
 import { Screen } from '@market/components';
 import React from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import useGoBack from '../hooks/useGoBack';
@@ -24,7 +24,9 @@ const AddCardWebview: React.FC = () => {
 			{data ? (
 				<WebView style={{ flex: 1 }} source={{ uri: data.authorization_url }} />
 			) : (
-				<ActivityIndicator />
+				<View style={{ paddingTop: 16 }}>
+					<ActivityIndicator />
+				</View>
 			)}
 		</Screen>
 	);

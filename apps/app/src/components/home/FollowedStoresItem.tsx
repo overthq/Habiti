@@ -5,31 +5,30 @@ import { StyleSheet, Pressable } from 'react-native';
 import { StoresFollowedQuery } from '../../types/api';
 
 interface FollowedStoresItemProps {
-	store: StoresFollowedQuery['currentUser']['followed'][-1]['store'];
+	store: StoresFollowedQuery['currentUser']['followed'][number]['store'];
 	onPress(): void;
 }
 
 const FollowedStoresItem: React.FC<FollowedStoresItemProps> = ({
 	store,
 	onPress
-}) => {
-	return (
-		<Pressable style={styles.container} onPress={onPress}>
-			<CustomImage
-				uri={store.image?.path}
-				height={70}
-				width={70}
-				style={styles.image}
-			/>
-			<Typography style={styles.name}>{store.name}</Typography>
-		</Pressable>
-	);
-};
+}) => (
+	<Pressable style={styles.container} onPress={onPress}>
+		<CustomImage
+			uri={store.image?.path}
+			height={68}
+			width={68}
+			style={styles.image}
+		/>
+		<Typography size='small' weight='medium' style={styles.name}>
+			{store.name}
+		</Typography>
+	</Pressable>
+);
 
 const styles = StyleSheet.create({
 	container: {
-		marginLeft: 16,
-		marginRight: 16
+		marginHorizontal: 16
 	},
 	image: {
 		borderRadius: 35

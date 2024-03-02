@@ -1,4 +1,4 @@
-import { Typography } from '@market/components';
+import { Typography, useTheme } from '@market/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
@@ -10,12 +10,23 @@ interface UserCardProps {
 	user: CurrentUserQuery['currentUser'];
 }
 
+// TODO: Replace "Edit profile" with {user.email}
+
 const UserCard: React.FC<UserCardProps> = ({ user }) => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { theme } = useTheme();
 
 	return (
-		<Pressable onPress={() => navigate('Edit Profile')} style={styles.card}>
-			<View style={styles.placeholder}>
+		<Pressable
+			onPress={() => navigate('Edit Profile')}
+			style={[styles.card, { backgroundColor: theme.input.background }]}
+		>
+			<View
+				style={[
+					styles.placeholder,
+					{ backgroundColor: theme.image.placeholder }
+				]}
+			>
 				<Typography weight='medium' size='xxlarge'>
 					{user.name[0]}
 				</Typography>
@@ -23,7 +34,8 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
 			<View style={{ marginLeft: 12 }}>
 				<Typography weight='medium'>{user.name}</Typography>
 				<Typography variant='secondary' style={styles.phone}>
-					{user.phone}
+					{/* {user.phone} */}
+					Edit profile
 				</Typography>
 			</View>
 		</Pressable>
@@ -33,7 +45,6 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
 const styles = StyleSheet.create({
 	card: {
 		borderRadius: 4,
-		width: '100%',
 		padding: 12,
 		marginVertical: 16,
 		flexDirection: 'row'
@@ -41,7 +52,6 @@ const styles = StyleSheet.create({
 	placeholder: {
 		height: 40,
 		width: 40,
-		backgroundColor: '#D3D3D3',
 		borderRadius: 20,
 		justifyContent: 'center',
 		alignItems: 'center'

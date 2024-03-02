@@ -22,7 +22,7 @@ const TextButton: React.FC<TextButtonProps> = ({
 				style={[
 					{
 						color: disabled ? '#777777' : theme.text.primary,
-						fontSize: size ?? 17
+						fontSize: size ?? 16
 					}
 				]}
 			>

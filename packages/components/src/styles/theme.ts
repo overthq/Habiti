@@ -39,6 +39,7 @@ const palette = {
 		n5: '#EDEDED',
 		n10: '#D3D3D3',
 		n50: '#505050',
+		n90: '#1C1C1C',
 		n100: '#000000'
 	},
 	red: {
@@ -84,14 +85,14 @@ const dark = {
 	input: {
 		placeholder: '',
 		label: palette.neutral.n10,
-		background: palette.neutral.n50,
+		background: palette.neutral.n90,
 		text: palette.neutral.n1
 	},
 	icon: {
 		default: { color: palette.neutral.n1 }
 	},
 	border: {
-		color: palette.neutral.n50
+		color: palette.neutral.n90
 	},
 	image: {
 		placeholder: palette.neutral.n50

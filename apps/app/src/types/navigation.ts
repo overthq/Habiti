@@ -12,6 +12,26 @@ export type AppStackParamList = {
 	'Payment Methods': undefined;
 };
 
+export type HomeStackParamList = {
+	Home: undefined;
+	Order: { orderId: string };
+	Store: { storeId: string };
+	Settings: undefined;
+	SettingsTheme: undefined;
+};
+
+export type ExploreStackParamList = {
+	Explore: undefined;
+	Store: { storeId: string };
+	SearchStore: { storeId: string }; // TODO: Add store name
+};
+
+export type ProfileStackParamList = {
+	Profile: undefined;
+	'Edit Profile': undefined;
+	'Payment Methods': undefined;
+};
+
 export type HomeTabParamList = {
 	'For You': undefined;
 	Explore: undefined;

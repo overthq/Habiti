@@ -7,7 +7,7 @@ import { relativeTimestamp } from '../../utils/date';
 import { plural } from '../../utils/strings';
 
 interface RecentOrderProps {
-	order: HomeQuery['currentUser']['orders'][-1];
+	order: HomeQuery['currentUser']['orders'][number];
 	onPress(): void;
 }
 
@@ -22,8 +22,8 @@ const RecentOrder: React.FC<RecentOrderProps> = ({ order, onPress }) => {
 		<Pressable key={order.id} style={styles.container} onPress={onPress}>
 			<CustomImage
 				uri={order.store.image?.path}
-				height={50}
-				width={50}
+				height={56}
+				width={56}
 				style={styles.image}
 			/>
 			<View style={styles.info}>
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
 		marginBottom: 8
 	},
 	image: {
-		borderRadius: 25
+		borderRadius: 28
 	},
 	info: {
 		marginLeft: 8
