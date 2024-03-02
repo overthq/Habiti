@@ -8,9 +8,9 @@
 	"license": "GPL-3.0-or-later",
 	"private": true,
 	"scripts": {
-		"lint": "eslint --ext .ts,.tsx api/src app dashboard",
+		"lint": "yarn workspaces run lint",
 		"start-redis": "redis-server --daemonize yes",
-		"postinstall": "husky install",
+		"postinstall": "husky",
 		"load-bank-list": "node scripts/load-banks"
 	},
 	"lint-staged": {
@@ -20,17 +20,16 @@
 		]
 	},
 	"devDependencies": {
-		"@typescript-eslint/eslint-plugin": "^5.43.0",
-		"@typescript-eslint/parser": "^5.43.0",
-		"eslint": "^8.28.0",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-plugin-import": "^2.26.0",
-		"eslint-plugin-jsx-a11y": "^6.6.1",
-		"eslint-plugin-react": "^7.31.11",
-		"husky": "^8.0.2",
-		"lint-staged": "^13.0.3",
+		"eslint": "^8.57.0",
+		"eslint-config-universe": "^12.0.0",
+		"husky": "^9.0.11",
+		"lint-staged": "^15.2.2",
 		"node-fetch": "2",
-		"prettier": "^2.7.1",
-		"typescript": "^4.9.3"
-	}
+		"prettier": "^3.2.5",
+		"typescript": "^5.3.3"
+	},
+	"workspaces": [
+		"packages/*",
+		"apps/*"
+	]
 }

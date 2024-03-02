@@ -55,6 +55,7 @@ model Product {
   unitPrice   Int
   quantity    Int                @default(0)
   storeId     String
+  status      ProductStatus      @default(Draft)
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
   images      Image[]
@@ -208,6 +209,11 @@ model Review {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+enum ProductStatus {
+  Active
+  Draft
 }
 
 enum OrderStatus {

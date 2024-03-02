@@ -1,47 +1,5 @@
 {
-	"parser": "@typescript-eslint/parser",
-	"plugins": ["@typescript-eslint", "react", "import"],
-	"parserOptions": {
-		"sourceType": "module"
-	},
-	"env": {
-		"browser": true,
-		"node": true,
-		"jest": true,
-		"mocha": true
-	},
-	"extends": [
-		"plugin:@typescript-eslint/recommended",
-		"plugin:react/recommended",
-		"prettier"
-	],
-	"rules": {
-		"indent": 0,
-		"no-tabs": 0,
-		"no-unused-vars": ["off"],
-		"no-use-before-define": 0,
-		"react/display-name": 0,
-		"react/jsx-filename-extension": [2, { "extensions": [".tsx"] }],
-		"react/no-array-index-key": 0,
-		"react/prop-types": 0,
-		"@typescript-eslint/ban-ts-error": 0,
-		"@typescript-eslint/camelcase": 0,
-		"@typescript-eslint/no-use-before-define": 0,
-		"@typescript-eslint/explicit-member-accessibility": 0,
-		"@typescript-eslint/explicit-function-return-type": 0,
-		"@typescript-eslint/explicit-module-boundary-types": 0
-	},
-	"settings": {
-		"import/resolver": {
-			"node": {
-				"extensions": [".ts", ".tsx"]
-			}
-		},
-		"react": {
-			"version": "detect"
-		}
-	},
-	"globals": {
-		"__DEV__": true
-	}
+  "root": true,
+  "extends": ["universe"],
+  "ignorePatterns": ["dist"],
 }
