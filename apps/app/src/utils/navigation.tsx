@@ -14,6 +14,8 @@ export const getIcon = (routeName: keyof HomeTabParamList): IconType => {
 			return 'shopping-bag';
 		case 'Profile':
 			return 'user';
+		// case 'Notifications':
+		// 	return ''
 	}
 };
 

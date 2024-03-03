@@ -6,8 +6,9 @@ import {
 	useRoute
 } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
+import OrderStatusPill from '../components/home/OrderStatusPill';
 import OrderMeta from '../components/order/OrderMeta';
 import OrderProduct from '../components/order/OrderProduct';
 import useGoBack from '../hooks/useGoBack';
@@ -45,9 +46,10 @@ const Order: React.FC = () => {
 
 	return (
 		<Screen style={styles.container}>
-			<View style={{ marginLeft: 16, marginBottom: 16 }}>
-				<Text>{order.status}</Text>
-			</View>
+			<OrderStatusPill status={order.status} />
+			{/* <View style={{ marginLeft: 16, marginBottom: 16 }}>
+				<Typography>{order.status}</Typography>
+			</View> */}
 			<View style={styles.products}>
 				{order.products.map(orderProduct => (
 					<OrderProduct
@@ -67,7 +69,6 @@ const styles = StyleSheet.create({
 		paddingTop: 16
 	},
 	products: {
-		marginHorizontal: 16,
 		paddingHorizontal: 16,
 		paddingVertical: 8,
 		borderRadius: 4,

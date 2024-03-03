@@ -13,7 +13,7 @@ interface StoreListItemProps {
 const StoreListItem: React.FC<StoreListItemProps> = ({ item, onPress }) => (
 	<Pressable key={item.id} style={styles.pressable} onPress={onPress}>
 		<CustomImage height={200} style={styles.image} uri={item.images[0]?.path} />
-		<Typography style={styles.name}>{item.name}</Typography>
+		<Typography weight='medium'>{item.name}</Typography>
 		<Typography variant='secondary'>{formatNaira(item.unitPrice)}</Typography>
 	</Pressable>
 );
@@ -25,10 +25,7 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		width: '100%',
-		marginBottom: 4
-	},
-	name: {
-		marginBottom: 2
+		marginBottom: 8
 	}
 });
 

@@ -1,4 +1,4 @@
-import { Icon, Typography } from '@market/components';
+import { Icon, Typography, useTheme } from '@market/components';
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
 
@@ -19,6 +19,7 @@ const QuantityControl: React.FC<QuantityControlProps> = ({
 	cartId,
 	productId
 }) => {
+	const { theme } = useTheme();
 	const [quantity, setQuantity] = React.useState(0);
 
 	const disabled = React.useMemo(() => !!cartId, []);
@@ -34,7 +35,9 @@ const QuantityControl: React.FC<QuantityControlProps> = ({
 	}, []);
 
 	return (
-		<View style={styles.controls}>
+		<View
+			style={[styles.controls, { backgroundColor: theme.input.background }]}
+		>
 			<Pressable disabled={disabled || decrementDisabled} onPress={decrement}>
 				<Icon name='minus' color='#505050' />
 			</Pressable>

@@ -1,4 +1,4 @@
-import { CustomImage, Icon, Typography } from '@market/components';
+import { CustomImage, Typography } from '@market/components';
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 
@@ -26,13 +26,12 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 				/>
 				<View>
 					<Typography>{product.name}</Typography>
-					<Typography variant='secondary' style={styles.price}>
+					<Typography variant='secondary' size='small' style={styles.price}>
 						{`${plural('unit', quantity)} · `}
 						{formatNaira(quantity * unitPrice)}
 					</Typography>
 				</View>
 			</View>
-			<Icon name='chevron-right' />
 		</Pressable>
 	);
 };
@@ -52,7 +51,7 @@ const styles = StyleSheet.create({
 		marginRight: 8
 	},
 	price: {
-		marginTop: 4
+		marginTop: 2
 	}
 });
 
