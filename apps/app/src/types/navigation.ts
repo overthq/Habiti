@@ -26,6 +26,10 @@ export type ExploreStackParamList = {
 	SearchStore: { storeId: string }; // TODO: Add store name
 };
 
+export type CartStackParamList = {
+	'Carts.Main': undefined;
+};
+
 export type ProfileStackParamList = {
 	'Profile.Main': undefined;
 	'Edit Profile': undefined;
