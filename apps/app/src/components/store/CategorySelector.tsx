@@ -21,7 +21,9 @@ const CategorySelectorItem: React.FC<CategorySelectorItemProps> = ({
 }) => {
 	return (
 		<Pressable onPress={onPress} disabled={active} style={{ marginRight: 8 }}>
-			<Typography size='large'>{name}</Typography>
+			<Typography weight='medium' variant={active ? 'primary' : 'secondary'}>
+				{name}
+			</Typography>
 		</Pressable>
 	);
 };
