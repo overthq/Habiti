@@ -10,17 +10,17 @@ interface CategorySelectorProps {
 
 interface CategorySelectorItemProps {
 	name: string;
-	categoryId?: string;
-	onPress(categoryId?: string): void;
-	selected: boolean;
+	onPress(): void;
+	active: boolean;
 }
 
 const CategorySelectorItem: React.FC<CategorySelectorItemProps> = ({
 	name,
-	categoryId
+	onPress,
+	active
 }) => {
 	return (
-		<Pressable style={{ marginRight: 16 }}>
+		<Pressable onPress={onPress} disabled={active} style={{ marginRight: 8 }}>
 			<Typography size='large'>{name}</Typography>
 		</Pressable>
 	);
@@ -34,28 +34,18 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
 	return (
 		<View style={styles.container}>
 			<ScrollView style={styles.scroll} horizontal>
-				<Pressable disabled={selected === undefined}>
-					<Typography
-						size='large'
-						weight={selected === undefined ? 'medium' : 'regular'}
-						variant={selected === undefined ? 'primary' : 'secondary'}
-					>
-						All Products
-					</Typography>
-				</Pressable>
+				<CategorySelectorItem
+					name='All Products'
+					active={selected === undefined}
+					onPress={() => selectCategory(undefined)}
+				/>
 				{categories.map(({ id, name }) => (
-					<Pressable
-						disabled={id === selected}
+					<CategorySelectorItem
+						key={id}
+						name={name}
+						active={selected === id}
 						onPress={() => selectCategory(id)}
-					>
-						<Typography
-							size='large'
-							weight={id === selected ? 'medium' : 'regular'}
-							variant={id === selected ? 'primary' : 'secondary'}
-						>
-							{name}
-						</Typography>
-					</Pressable>
+					/>
 				))}
 			</ScrollView>
 		</View>

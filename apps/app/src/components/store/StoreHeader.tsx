@@ -11,7 +11,8 @@ interface StoreHeaderProps {
 }
 
 const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
-	const handleSelectCategory = React.useCallback(() => {}, []);
+	const [activeCategory, setActiveCategory] = React.useState<string>();
+	// const handleSelectCategory = React.useCallback(() => {}, []);
 
 	return (
 		<View style={styles.container}>
@@ -29,7 +30,14 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 				{store.name}
 			</Typography>
 			<FollowButton storeId={store.id} followed={store.followedByUser} />
-			<CategorySelector categories={[]} selectCategory={handleSelectCategory} />
+			<CategorySelector
+				selected={activeCategory}
+				categories={[
+					{ id: '1', name: 'Shoes' },
+					{ id: '2', name: 'Another thing' }
+				]}
+				selectCategory={setActiveCategory}
+			/>
 		</View>
 	);
 };
