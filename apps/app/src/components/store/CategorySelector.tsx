@@ -1,6 +1,6 @@
 import { Typography } from '@market/components';
 import React from 'react';
-import { View, Pressable, ScrollView } from 'react-native';
+import { View, Pressable, StyleSheet, ScrollView } from 'react-native';
 
 interface CategorySelectorProps {
 	categories: any[];
@@ -14,14 +14,27 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
 	selectCategory
 }) => {
 	return (
-		<View style={{ height: 20 }}>
-			<ScrollView style={{ height: 20 }} horizontal>
+		<View style={styles.container}>
+			<ScrollView style={styles.scroll} horizontal>
 				<Pressable disabled={selected === undefined}>
-					<Typography>All</Typography>
+					<Typography
+						size='large'
+						weight={selected === undefined ? 'medium' : 'regular'}
+						variant={selected === undefined ? 'primary' : 'secondary'}
+					>
+						All Products
+					</Typography>
 				</Pressable>
 				{categories.map(({ id, name }) => (
-					<Pressable onPress={() => selectCategory(id)}>
-						<Typography variant={id === selected ? 'primary' : 'secondary'}>
+					<Pressable
+						disabled={id === selected}
+						onPress={() => selectCategory(id)}
+					>
+						<Typography
+							size='large'
+							weight={id === selected ? 'medium' : 'regular'}
+							variant={id === selected ? 'primary' : 'secondary'}
+						>
 							{name}
 						</Typography>
 					</Pressable>
@@ -30,5 +43,16 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
 		</View>
 	);
 };
+
+const styles = StyleSheet.create({
+	container: {
+		// height: 20
+		paddingTop: 16,
+		paddingBottom: 8
+	},
+	scroll: {
+		paddingLeft: 16
+	}
+});
 
 export default CategorySelector;

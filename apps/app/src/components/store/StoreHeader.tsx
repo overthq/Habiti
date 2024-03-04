@@ -37,8 +37,8 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 const styles = StyleSheet.create({
 	container: {
 		width: '100%',
-		alignSelf: 'center',
 		paddingHorizontal: 8,
+		marginHorizontal: -16,
 		paddingTop: 16,
 		paddingBottom: 8
 	},
