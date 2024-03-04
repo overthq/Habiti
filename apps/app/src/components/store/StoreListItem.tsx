@@ -8,10 +8,22 @@ import { formatNaira } from '../../utils/currency';
 interface StoreListItemProps {
 	item: StoreProductsQuery['store']['products'][number];
 	onPress(): void;
+	side: 'left' | 'right';
 }
 
-const StoreListItem: React.FC<StoreListItemProps> = ({ item, onPress }) => (
-	<Pressable key={item.id} style={styles.pressable} onPress={onPress}>
+const StoreListItem: React.FC<StoreListItemProps> = ({
+	item,
+	onPress,
+	side
+}) => (
+	<Pressable
+		key={item.id}
+		style={[
+			styles.pressable,
+			{ [side === 'left' ? 'marginLeft' : 'marginRight']: 16 }
+		]}
+		onPress={onPress}
+	>
 		<CustomImage height={200} style={styles.image} uri={item.images[0]?.path} />
 		<Typography weight='medium'>{item.name}</Typography>
 		<Typography variant='secondary'>{formatNaira(item.unitPrice)}</Typography>

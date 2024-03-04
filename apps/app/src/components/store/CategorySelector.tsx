@@ -8,6 +8,24 @@ interface CategorySelectorProps {
 	selectCategory(categoryId: string): void;
 }
 
+interface CategorySelectorItemProps {
+	name: string;
+	categoryId?: string;
+	onPress(categoryId?: string): void;
+	selected: boolean;
+}
+
+const CategorySelectorItem: React.FC<CategorySelectorItemProps> = ({
+	name,
+	categoryId
+}) => {
+	return (
+		<Pressable style={{ marginRight: 16 }}>
+			<Typography size='large'>{name}</Typography>
+		</Pressable>
+	);
+};
+
 const CategorySelector: React.FC<CategorySelectorProps> = ({
 	categories,
 	selected,
@@ -46,9 +64,9 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		// height: 20
-		paddingTop: 16,
-		paddingBottom: 8
+		width: '100%',
+		marginTop: 8,
+		paddingVertical: 8
 	},
 	scroll: {
 		paddingLeft: 16
