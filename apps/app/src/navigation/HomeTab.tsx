@@ -15,6 +15,7 @@ import Settings from '../screens/Settings';
 import SettingsTheme from '../screens/SettingsTheme';
 import Store from '../screens/Store';
 import {
+	CartStackParamList,
 	ExploreStackParamList,
 	HomeStackParamList,
 	HomeTabParamList,
@@ -26,7 +27,7 @@ const HomeTab = createBottomTabNavigator<HomeTabParamList>();
 
 const HomeNavigator = createStackNavigator<HomeStackParamList>();
 const ExploreNavigator = createStackNavigator<ExploreStackParamList>();
-const CartsNavigator = createStackNavigator();
+const CartsNavigator = createStackNavigator<CartStackParamList>();
 const ProfileNavigator = createStackNavigator<ProfileStackParamList>();
 
 const HomeThing = () => {
@@ -48,7 +49,7 @@ const HomeThing = () => {
 const ExploreThing = () => {
 	return (
 		<ExploreNavigator.Navigator>
-			<ExploreNavigator.Screen name='Explore' component={Explore} />
+			<ExploreNavigator.Screen name='Explore.Main' component={Explore} />
 			<ExploreNavigator.Screen
 				name='Store'
 				component={Store}
@@ -66,7 +67,7 @@ const ExploreThing = () => {
 const CartsThing = () => {
 	return (
 		<CartsNavigator.Navigator>
-			<CartsNavigator.Screen name='Carts' component={Carts} />
+			<CartsNavigator.Screen name='Carts.Main' component={Carts} />
 		</CartsNavigator.Navigator>
 	);
 };
@@ -74,7 +75,7 @@ const CartsThing = () => {
 const ProfileThing = () => {
 	return (
 		<ProfileNavigator.Navigator>
-			<ProfileNavigator.Screen name='Profile' component={Profile} />
+			<ProfileNavigator.Screen name='Profile.Main' component={Profile} />
 			<ProfileNavigator.Screen name='Edit Profile' component={EditProfile} />
 			<ProfileNavigator.Screen
 				name='Payment Methods'

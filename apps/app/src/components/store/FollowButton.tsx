@@ -1,4 +1,4 @@
-import { Icon, Typography } from '@market/components';
+import { Icon, Typography, useTheme } from '@market/components';
 import React from 'react';
 import { StyleSheet, Pressable } from 'react-native';
 
@@ -15,6 +15,7 @@ interface FollowButtonProps {
 const FollowButton: React.FC<FollowButtonProps> = ({ storeId, followed }) => {
 	const [, followStore] = useFollowStoreMutation();
 	const [, unfollowStore] = useUnfollowStoreMutation();
+	const { theme } = useTheme();
 
 	const handlePress = React.useCallback(async () => {
 		if (followed) {
@@ -25,9 +26,18 @@ const FollowButton: React.FC<FollowButtonProps> = ({ storeId, followed }) => {
 	}, [followed]);
 
 	return (
-		<Pressable style={styles.container} onPress={handlePress}>
+		<Pressable
+			style={[
+				styles.container,
+				{
+					backgroundColor: theme.input.background,
+					borderColor: theme.border.color
+				}
+			]}
+			onPress={handlePress}
+		>
 			<Icon size={18} style={styles.icon} name={followed ? 'check' : 'plus'} />
-			<Typography weight='medium'>
+			<Typography weight='medium' style={{ marginLeft: 4 }}>
 				{followed ? 'Following' : 'Follow'}
 			</Typography>
 		</Pressable>
@@ -36,15 +46,16 @@ const FollowButton: React.FC<FollowButtonProps> = ({ storeId, followed }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		flexGrow: 1,
 		paddingVertical: 4,
+		paddingHorizontal: 16,
+		marginTop: 8,
 		marginLeft: 8,
 		borderWidth: 1,
-		borderColor: '#D3D3D3',
 		borderRadius: 4,
 		flexDirection: 'row',
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
+		alignSelf: 'center'
 	},
 	icon: {
 		marginRight: 4

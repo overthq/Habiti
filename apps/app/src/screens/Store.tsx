@@ -6,8 +6,9 @@ import {
 	NavigationProp
 } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet, ActivityIndicator, Pressable } from 'react-native';
+import { ActivityIndicator, Pressable } from 'react-native';
 
+import StoreHeader from '../components/store/StoreHeader';
 import StoreProducts from '../components/store/StoreProducts';
 import useGoBack from '../hooks/useGoBack';
 import { useStoreQuery } from '../types/api';
@@ -38,19 +39,11 @@ const Store: React.FC = () => {
 	if (fetching || !data?.store) return <ActivityIndicator />;
 
 	return (
-		<Screen style={styles.container}>
+		<Screen>
+			{/* <StoreHeader store={data.store} /> */}
 			<StoreProducts store={data.store} />
 		</Screen>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		paddingHorizontal: 8
-	},
-	back: {
-		paddingLeft: 8
-	}
-});
 
 export default Store;

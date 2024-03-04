@@ -21,13 +21,13 @@ export type HomeStackParamList = {
 };
 
 export type ExploreStackParamList = {
-	Explore: undefined;
+	'Explore.Main': undefined;
 	Store: { storeId: string };
 	SearchStore: { storeId: string }; // TODO: Add store name
 };
 
 export type ProfileStackParamList = {
-	Profile: undefined;
+	'Profile.Main': undefined;
 	'Edit Profile': undefined;
 	'Payment Methods': undefined;
 };

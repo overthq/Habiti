@@ -7,7 +7,7 @@ import { formatNaira } from '../../utils/currency';
 import { plural } from '../../utils/strings';
 
 interface OrderProductProps {
-	orderProduct: OrderQuery['order']['products'][-1];
+	orderProduct: OrderQuery['order']['products'][number];
 	onPress(): void;
 }
 

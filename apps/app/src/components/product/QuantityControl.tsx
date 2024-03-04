@@ -41,7 +41,7 @@ const QuantityControl: React.FC<QuantityControlProps> = ({
 			<Pressable disabled={disabled || decrementDisabled} onPress={decrement}>
 				<Icon name='minus' color='#505050' />
 			</Pressable>
-			<Typography size='large' number>
+			<Typography size='large' weight='medium' number>
 				{quantity}
 			</Typography>
 			<Pressable disabled={disabled} onPress={increment}>

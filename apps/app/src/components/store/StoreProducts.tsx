@@ -52,7 +52,6 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 		<FlashList
 			data={products}
 			keyExtractor={({ id }) => id}
-			ListHeaderComponent={() => <StoreHeader store={store} />}
 			showsVerticalScrollIndicator={false}
 			estimatedItemSize={240}
 			renderItem={({ item }) => (
@@ -60,6 +59,8 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 			)}
 			numColumns={2}
 			onScroll={handleScroll}
+			style={{ paddingHorizontal: 8 }}
+			ListHeaderComponent={() => <StoreHeader store={store} />}
 		/>
 	);
 };

@@ -12,7 +12,7 @@ interface ProductDetailsProps {
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => (
 	<View style={styles.container}>
 		<View style={styles.meta}>
-			<Typography size='xxlarge' weight='medium'>
+			<Typography size='xxlarge' weight='bold'>
 				{product.name}
 			</Typography>
 			<Typography size='large'>{formatNaira(product.unitPrice)}</Typography>
