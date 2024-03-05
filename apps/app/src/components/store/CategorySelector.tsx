@@ -2,8 +2,10 @@ import { Typography } from '@market/components';
 import React from 'react';
 import { View, Pressable, StyleSheet, ScrollView } from 'react-native';
 
+import { StoreQuery } from '../../types/api';
+
 interface CategorySelectorProps {
-	categories: any[];
+	categories: StoreQuery['store']['categories'];
 	selected?: string;
 	selectCategory(categoryId: string): void;
 }

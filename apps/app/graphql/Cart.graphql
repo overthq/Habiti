@@ -92,7 +92,9 @@ mutation CreateCart($input: CreateCartInput!) {
 }
 
 mutation DeleteCart($cartId: ID!) {
-	deleteCart(cartId: $cartId)
+	deleteCart(cartId: $cartId) {
+		id
+	}
 }
 
 mutation UpdateCartProduct($input: UpdateCartProductInput!) {

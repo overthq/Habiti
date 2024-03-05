@@ -32,10 +32,7 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 			<FollowButton storeId={store.id} followed={store.followedByUser} />
 			<CategorySelector
 				selected={activeCategory}
-				categories={[
-					{ id: '1', name: 'Shoes' },
-					{ id: '2', name: 'Another thing' }
-				]}
+				categories={store.categories}
 				selectCategory={setActiveCategory}
 			/>
 		</View>
