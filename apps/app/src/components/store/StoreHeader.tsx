@@ -12,7 +12,6 @@ interface StoreHeaderProps {
 
 const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
 	const [activeCategory, setActiveCategory] = React.useState<string>();
-	// const handleSelectCategory = React.useCallback(() => {}, []);
 
 	return (
 		<View style={styles.container}>
