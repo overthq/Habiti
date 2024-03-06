@@ -49,7 +49,11 @@ const HomeThing = () => {
 const ExploreThing = () => {
 	return (
 		<ExploreNavigator.Navigator>
-			<ExploreNavigator.Screen name='Explore.Main' component={Explore} />
+			<ExploreNavigator.Screen
+				name='Explore.Main'
+				component={Explore}
+				options={{ headerShown: false }}
+			/>
 			<ExploreNavigator.Screen
 				name='Store'
 				component={Store}
