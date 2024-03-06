@@ -1,8 +1,10 @@
-import React from 'react';
-import { Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
-import { TabBar, TabView, SceneMap } from 'react-native-tab-view';
+import { Typography } from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { FlashList } from '@shopify/flash-list';
+import React from 'react';
+import { Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { TabBar, TabView, SceneMap } from 'react-native-tab-view';
+
 import { Product, Store } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
 
@@ -23,7 +25,7 @@ const StoresView: React.FC<StoresViewProps> = ({ data }) => {
 					style={styles.row}
 				>
 					<Image source={{ uri: item.image?.path }} style={styles.thumbnail} />
-					<Text style={{ fontSize: 16 }}>{item.name}</Text>
+					<Typography>{item.name}</Typography>
 				</TouchableOpacity>
 			)}
 		/>
@@ -57,7 +59,7 @@ const ProductsView: React.FC<ProductsViewProps> = ({ data }) => {
 						source={{ uri: item.images[0]?.path }}
 						style={styles.thumbnail}
 					/>
-					<Text style={{ fontSize: 16 }}>{item.name}</Text>
+					<Typography>{item.name}</Typography>
 				</TouchableOpacity>
 			)}
 		/>
