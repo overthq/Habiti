@@ -38,6 +38,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ inputRef, setFocused }) => {
 	return (
 		<Animated.View
 			style={[styles.wrapper, { backgroundColor: theme.input.background }]}
+			layout={LinearTransition}
 		>
 			<Icon name='search' size={18} color={theme.text.secondary} />
 			<TextInput
@@ -70,7 +71,6 @@ const SearchStoreHeader = () => {
 
 	return (
 		<Animated.View
-			layout={LinearTransition}
 			style={[
 				styles.container,
 				{
