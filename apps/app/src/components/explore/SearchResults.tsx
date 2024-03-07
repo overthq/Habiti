@@ -78,11 +78,8 @@ const SearchResults: React.FC<SearchResultsProps> = ({
 }) => {
 	return (
 		<Screen style={{ display: searchOpen ? 'flex' : 'none' }}>
-			{!searchTerm ? (
-				<RecentSearches />
-			) : (
-				<SearchResultsMain searchTerm={searchTerm} />
-			)}
+			<RecentSearches display={!searchTerm} />
+			<SearchResultsMain searchTerm={searchTerm} />
 		</Screen>
 	);
 };
@@ -114,6 +111,7 @@ const SearchResultsMain: React.FC<SearchResultsMainProps> = ({
 
 	return (
 		<TabView
+			style={{ display: searchTerm ? 'flex' : 'none' }}
 			navigationState={{ index, routes }}
 			renderTabBar={props => (
 				<TabBar
