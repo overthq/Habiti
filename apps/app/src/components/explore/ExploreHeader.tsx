@@ -1,17 +1,21 @@
 import { Icon, TextButton, useTheme } from '@market/components';
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
-import Animated from 'react-native-reanimated';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface ExploreHeaderProps {
 	searchOpen: boolean;
 	setSearchOpen(value: boolean): void;
+	searchTerm: string;
+	setSearchTerm(value: string): void;
 }
 
 const ExploreHeader: React.FC<ExploreHeaderProps> = ({
 	searchOpen,
-	setSearchOpen
+	setSearchOpen,
+	searchTerm,
+	setSearchTerm
 }) => {
 	const { top } = useSafeAreaInsets();
 	const { theme } = useTheme();
@@ -34,15 +38,18 @@ const ExploreHeader: React.FC<ExploreHeaderProps> = ({
 		<View style={[styles.container, { paddingTop: top }]}>
 			<Animated.View
 				style={[styles.input, { backgroundColor: theme.input.background }]}
+				layout={LinearTransition}
 			>
 				<Icon name='search' size={18} color={theme.text.secondary} />
 				<TextInput
 					ref={inputRef}
+					value={searchTerm}
 					placeholder='Search products and stores'
 					placeholderTextColor={theme.text.secondary}
 					style={styles.inputText}
 					onBlur={handleBlur}
 					onFocus={handleFocus}
+					onChangeText={setSearchTerm} // TODO: Add debounce
 				/>
 			</Animated.View>
 			{searchOpen ? (

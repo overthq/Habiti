@@ -1,10 +1,11 @@
-import { Typography } from '@market/components';
+import { Screen, Typography, useTheme } from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { Image, TouchableOpacity, StyleSheet, View } from 'react-native';
 import { TabBar, TabView, SceneMap } from 'react-native-tab-view';
 
+import RecentSearches from './RecentSearches';
 import { Product, Store } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
 
@@ -67,19 +68,48 @@ const ProductsView: React.FC<ProductsViewProps> = ({ data }) => {
 };
 
 interface SearchResultsProps {
-	searchData: any;
+	searchOpen: boolean;
+	searchTerm: string;
 }
 
-const SearchResults: React.FC<SearchResultsProps> = ({ searchData }) => {
+const SearchResults: React.FC<SearchResultsProps> = ({
+	searchOpen,
+	searchTerm
+}) => {
+	return (
+		<Screen style={{ display: searchOpen ? 'flex' : 'none' }}>
+			{!searchTerm ? (
+				<RecentSearches />
+			) : (
+				<SearchResultsMain searchTerm={searchTerm} />
+			)}
+		</Screen>
+	);
+};
+
+interface SearchResultsMainProps {
+	searchTerm: string;
+}
+
+const SearchResultsMain: React.FC<SearchResultsMainProps> = ({
+	searchTerm
+}) => {
+	const { theme } = useTheme();
+	const searchData = { stores: [], products: [] };
 	const [index, setIndex] = React.useState(0);
 	const [routes] = React.useState([
 		{ key: 'stores', title: 'Stores' },
 		{ key: 'products', title: 'Products' }
 	]);
 
+	// const renderScene = SceneMap({
+	// 	stores: () => <StoresView data={searchData.stores} />,
+	// 	items: () => <ProductsView data={searchData.products} />
+	// });
+
 	const renderScene = SceneMap({
-		stores: () => <StoresView data={searchData.stores} />,
-		items: () => <ProductsView data={searchData.products} />
+		stores: () => <View />,
+		products: () => <View />
 	});
 
 	return (
