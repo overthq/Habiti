@@ -1,15 +1,8 @@
-import { Icon } from '@market/components';
+import { Screen, Icon, Typography, useTheme } from '@market/components';
 import * as ImagePicker from 'expo-image-picker';
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import {
-	View,
-	Text,
-	Image,
-	StyleSheet,
-	Dimensions,
-	Pressable
-} from 'react-native';
+import { View, Image, StyleSheet, Dimensions, Pressable } from 'react-native';
 
 import { CreateStoreFormValues } from '../../screens/CreateStore';
 
@@ -17,6 +10,7 @@ const { width } = Dimensions.get('window');
 
 const StoreImage: React.FC = () => {
 	const { setValue, control } = useFormContext<CreateStoreFormValues>();
+	const { theme } = useTheme();
 
 	const handlePickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
@@ -34,8 +28,10 @@ const StoreImage: React.FC = () => {
 	}, []);
 
 	return (
-		<View style={styles.container}>
-			<Text style={styles.title}>Store Image</Text>
+		<Screen style={styles.container}>
+			<Typography size='xxxlarge' weight='bold'>
+				Store Image
+			</Typography>
 			<Controller
 				name='storeImage'
 				control={control}
@@ -44,7 +40,7 @@ const StoreImage: React.FC = () => {
 						<View style={styles.preview}>
 							<Image source={{ uri: value }} style={styles.image} />
 							<Pressable onPress={removeImage} style={styles.close}>
-								<Icon name='x' size={20} color='#FFFFFF' />
+								<Icon name='x' size={20} color={theme.text.tertiary} />
 							</Pressable>
 						</View>
 					) : (
@@ -54,7 +50,7 @@ const StoreImage: React.FC = () => {
 					)
 				}
 			/>
-		</View>
+		</Screen>
 	);
 };
 
@@ -63,10 +59,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		width,
 		padding: 16
-	},
-	title: {
-		fontSize: 32,
-		fontWeight: 'bold'
 	},
 	image: {
 		width: '100%',
