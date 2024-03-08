@@ -54,7 +54,7 @@ const CreateStore: React.FC = () => {
 			animated: true,
 			index: activeStepIndex + 1
 		});
-	}, [listRef.current]);
+	}, [listRef.current, activeStepIndex]);
 
 	const handleViewableItemsChanged = React.useCallback(
 		({ viewableItems }: { viewableItems: ViewToken[] }) => {
@@ -74,9 +74,7 @@ const CreateStore: React.FC = () => {
 	const onSubmit = React.useCallback(
 		async (values: CreateStoreFormValues) => {
 			try {
-				const { data } = await createStore({
-					input: values
-				});
+				const { data } = await createStore({ input: values });
 
 				if (data?.createStore?.id) {
 					setPreference({ activeStore: data.createStore.id });
@@ -116,23 +114,6 @@ const CreateStore: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-	title: {
-		fontSize: 36,
-		fontWeight: 'bold',
-		marginBottom: 16
-	},
-	input: {
-		fontSize: 16,
-		borderRadius: 4,
-		borderWidth: 2,
-		borderColor: '#D3D3D3',
-		paddingLeft: 8,
-		height: 40
-	},
-	formStep: {
-		width,
-		paddingHorizontal: 16
-	},
 	button: {
 		alignSelf: 'center',
 		width: width - 32

@@ -17,8 +17,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ExploreStackParamList } from '../../types/navigation';
 
-// FIXME: The search input does not correctly animate its width transition.
-
 interface SearchInputProps {
 	inputRef: React.RefObject<TextInput>;
 	setFocused(s: boolean): void;
@@ -112,9 +110,8 @@ const styles = StyleSheet.create({
 	wrapper: {
 		flex: 1,
 		marginLeft: 8,
-		height: 40,
 		borderRadius: 6,
-		paddingHorizontal: 12,
+		padding: 8,
 		flexDirection: 'row',
 		alignItems: 'center'
 	},
