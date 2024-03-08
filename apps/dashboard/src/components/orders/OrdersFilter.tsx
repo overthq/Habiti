@@ -1,7 +1,7 @@
-import { useTheme, Icon } from '@market/components';
+import { useTheme, Icon, TextButton } from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Pressable, StyleSheet } from 'react-native';
 
 import { OrderStatus } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
@@ -17,19 +17,10 @@ export const FilterButton: React.FC<FilterButtonProps> = ({
 	onPress,
 	active
 }) => {
-	const { theme } = useTheme();
-
 	return (
-		<Pressable style={styles.button} onPress={onPress}>
-			<Text
-				style={[
-					styles.text,
-					{ color: active ? theme.text.primary : '#777777' }
-				]}
-			>
-				{text}
-			</Text>
-		</Pressable>
+		<TextButton style={styles.button} disabled={!active} onPress={onPress}>
+			{text}
+		</TextButton>
 	);
 };
 
@@ -91,9 +82,6 @@ const styles = StyleSheet.create({
 	},
 	button: {
 		marginRight: 16
-	},
-	text: {
-		fontSize: 16
 	}
 });
 

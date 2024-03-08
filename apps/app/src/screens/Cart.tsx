@@ -1,4 +1,4 @@
-import { Button, ScrollableScreen } from '@market/components';
+import { Button, ScrollableScreen, Typography } from '@market/components';
 import {
 	useRoute,
 	RouteProp,
@@ -6,7 +6,7 @@ import {
 	NavigationProp
 } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import CartProduct from '../components/cart/CartProduct';
@@ -64,7 +64,7 @@ const Cart: React.FC = () => {
 
 	return (
 		<ScrollableScreen style={[styles.container, { paddingBottom: bottom }]}>
-			<Text style={styles.sectionHeader}>Order Summary</Text>
+			<Typography style={styles.sectionHeader}>Order Summary</Typography>
 
 			{cart.products.map(cartProduct => (
 				<CartProduct
@@ -74,10 +74,10 @@ const Cart: React.FC = () => {
 				/>
 			))}
 
-			<Text style={styles.sectionHeader}>Delivery Address</Text>
+			<Typography style={styles.sectionHeader}>Delivery Address</Typography>
 
 			<View>
-				<Text style={styles.sectionHeader}>Payment Method</Text>
+				<Typography style={styles.sectionHeader}>Payment Method</Typography>
 				<SelectCard
 					selectedCard={selectedCard}
 					onCardSelect={handleCardSelect}
@@ -85,18 +85,18 @@ const Cart: React.FC = () => {
 			</View>
 
 			<View style={[styles.row, { marginTop: 40 }]}>
-				<Text style={styles.total}>Subtotal</Text>
-				<Text style={styles.total}>{formatNaira(cart.total)}</Text>
+				<Typography>Subtotal</Typography>
+				<Typography>{formatNaira(cart.total)}</Typography>
 			</View>
 
 			<View style={styles.row}>
-				<Text style={styles.total}>Service Fee</Text>
-				<Text style={styles.total}>-</Text>
+				<Typography>Service Fee</Typography>
+				<Typography>-</Typography>
 			</View>
 
 			<View style={styles.row}>
-				<Text style={styles.total}>Taxes</Text>
-				<Text style={styles.total}>-</Text>
+				<Typography>Taxes</Typography>
+				<Typography>-</Typography>
 			</View>
 
 			<View style={styles.bottom}>
@@ -118,13 +118,7 @@ const styles = StyleSheet.create({
 		paddingTop: 8,
 		paddingHorizontal: 16
 	},
-	heading: {
-		fontWeight: 'bold',
-		fontSize: 32,
-		marginBottom: 16
-	},
 	sectionHeader: {
-		fontSize: 16,
 		fontWeight: '500',
 		color: '#505050',
 		marginVertical: 4
@@ -138,9 +132,6 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		marginBottom: 4
-	},
-	total: {
-		fontSize: 16
 	},
 	button: {
 		marginTop: 16

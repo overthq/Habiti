@@ -32,8 +32,10 @@ const Verify: React.FC = () => {
 
 	return (
 		<Screen style={authStyles.container}>
-			<Typography style={authStyles.title}>Your verification code</Typography>
-			<Typography style={authStyles.description}>
+			<Typography weight='bold' size='xxxlarge'>
+				Your verification code
+			</Typography>
+			<Typography>
 				A verification code was sent to your phone via SMS.
 			</Typography>
 			<TextInput
