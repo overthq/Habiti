@@ -16,13 +16,11 @@ export const FilterButton: React.FC<FilterButtonProps> = ({
 	text,
 	onPress,
 	active
-}) => {
-	return (
-		<TextButton style={styles.button} disabled={!active} onPress={onPress}>
-			{text}
-		</TextButton>
-	);
-};
+}) => (
+	<TextButton style={styles.button} disabled={!active} onPress={onPress}>
+		{text}
+	</TextButton>
+);
 
 const OrdersFilter: React.FC = () => {
 	const [status, setStatus] = React.useState<OrderStatus>();
