@@ -24,9 +24,7 @@ const OverviewActions: React.FC<OverviewActionsProps> = ({
 			<Pressable style={styles.row}>
 				<View style={styles.left}>
 					<Icon name='tag' size={20} />
-					<Typography style={styles.text}>
-						{lowStockCount} products are running low
-					</Typography>
+					<Typography>{lowStockCount} products are running low</Typography>
 				</View>
 				<Icon name='chevron-right' size={20} />
 			</Pressable>
