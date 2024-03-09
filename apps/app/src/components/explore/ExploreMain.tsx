@@ -1,4 +1,4 @@
-import { Screen, useTheme } from '@market/components';
+import { ScrollableScreen, useTheme } from '@market/components';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
@@ -11,18 +11,17 @@ interface ExloreMainProps {
 const ExploreMain: React.FC<ExloreMainProps> = ({ searchOpen }) => {
 	const { theme } = useTheme();
 	return (
-		<Screen
+		<ScrollableScreen
 			style={[
 				styles.container,
 				{
 					display: searchOpen ? 'none' : 'flex',
-
 					borderTopColor: theme.border.color
 				}
 			]}
 		>
 			<TrendingStores />
-		</Screen>
+		</ScrollableScreen>
 	);
 };
 

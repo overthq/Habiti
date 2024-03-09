@@ -116,11 +116,12 @@ const SearchResultsMain: React.FC<SearchResultsMainProps> = ({
 			renderTabBar={props => (
 				<TabBar
 					{...props}
-					activeColor='black'
-					inactiveColor='#505050'
-					indicatorStyle={{ backgroundColor: 'black' }}
+					activeColor={theme.text.primary}
+					inactiveColor={theme.text.secondary}
+					indicatorStyle={{ backgroundColor: theme.text.primary }}
 					getLabelText={({ route }) => route.title[0] + route.title.slice(1)}
-					style={{ backgroundColor: 'white' }}
+					labelStyle={{ textTransform: 'none', fontSize: 16 }}
+					style={{ backgroundColor: theme.screen.background }}
 				/>
 			)}
 			renderScene={renderScene}

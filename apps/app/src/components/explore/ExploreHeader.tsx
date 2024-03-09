@@ -35,7 +35,7 @@ const ExploreHeader: React.FC<ExploreHeaderProps> = ({
 	};
 
 	return (
-		<View style={[styles.container, { paddingTop: top }]}>
+		<View style={[styles.container, { paddingTop: top + 8 }]}>
 			<Animated.View
 				style={[styles.input, { backgroundColor: theme.input.background }]}
 				layout={LinearTransition}
@@ -46,7 +46,9 @@ const ExploreHeader: React.FC<ExploreHeaderProps> = ({
 					value={searchTerm}
 					placeholder='Search products and stores'
 					placeholderTextColor={theme.text.secondary}
-					style={styles.inputText}
+					inputMode='search'
+					// returnKeyType='search'
+					style={[styles.inputText, { color: theme.input.text }]}
 					onBlur={handleBlur}
 					onFocus={handleFocus}
 					onChangeText={setSearchTerm} // TODO: Add debounce

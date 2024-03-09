@@ -1,4 +1,4 @@
-import { Icon, Typography } from '@market/components';
+import { Icon, Typography, useTheme } from '@market/components';
 import React from 'react';
 import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 
@@ -16,6 +16,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 	cancel
 }) => {
 	const inputRef = React.useRef<TextInput>(null);
+	const { theme } = useTheme();
 
 	return (
 		<View style={styles.container}>
@@ -23,7 +24,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 				<Icon name='search' color='#505050' size={20} />
 				<TextInput
 					ref={inputRef}
-					style={styles.input}
+					style={[styles.input, { color: theme.input.text }]}
 					placeholder='Search stores and items'
 					onChangeText={onSearchTermChange}
 					onFocus={onFocus}
