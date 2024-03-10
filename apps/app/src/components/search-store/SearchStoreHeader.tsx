@@ -72,7 +72,7 @@ const SearchStoreHeader = () => {
 			style={[
 				styles.container,
 				{
-					paddingTop: top,
+					paddingTop: top + 8,
 					borderBottomColor: theme.border.color,
 					backgroundColor: navigationTheme.colors.card
 				}

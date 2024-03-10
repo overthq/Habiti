@@ -99,7 +99,6 @@ const SearchResultsMain: React.FC<SearchResultsMainProps> = ({
 	searchTerm
 }) => {
 	const { theme } = useTheme();
-	const searchData = { stores: [], products: [] };
 	const [index, setIndex] = React.useState(0);
 	const [routes] = React.useState([
 		{ key: 'stores', title: 'Stores' },
