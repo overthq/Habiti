@@ -1,8 +1,14 @@
-import { Screen, Typography, useTheme } from '@market/components';
+import {
+	CustomImage,
+	Screen,
+	Spacer,
+	Typography,
+	useTheme
+} from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { Image, TouchableOpacity, StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Pressable } from 'react-native';
 import { TabBar, TabView, SceneMap } from 'react-native-tab-view';
 
 import RecentSearches from './RecentSearches';
@@ -21,13 +27,14 @@ const StoresView: React.FC<StoresViewProps> = ({ data }) => {
 			keyExtractor={s => s.id}
 			data={data}
 			renderItem={({ item }) => (
-				<TouchableOpacity
+				<Pressable
 					onPress={() => navigate('Store', { storeId: item.id })}
 					style={styles.row}
 				>
-					<Image source={{ uri: item.image?.path }} style={styles.thumbnail} />
+					<CustomImage uri={item.image?.path} circle height={35} width={35} />
+					<Spacer x={8} />
 					<Typography>{item.name}</Typography>
-				</TouchableOpacity>
+				</Pressable>
 			)}
 		/>
 	);
@@ -52,16 +59,16 @@ const ProductsView: React.FC<ProductsViewProps> = ({ data }) => {
 			keyExtractor={i => i.id}
 			data={data}
 			renderItem={({ item }) => (
-				<TouchableOpacity
-					onPress={handleProductPress(item.id)}
-					style={styles.row}
-				>
-					<Image
-						source={{ uri: item.images[0]?.path }}
-						style={styles.thumbnail}
+				<Pressable onPress={handleProductPress(item.id)} style={styles.row}>
+					<CustomImage
+						uri={item.images[0]?.path}
+						circle
+						height={35}
+						width={35}
 					/>
+					<Spacer x={8} />
 					<Typography>{item.name}</Typography>
-				</TouchableOpacity>
+				</Pressable>
 			)}
 		/>
 	);
@@ -135,12 +142,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		padding: 8,
 		alignItems: 'center'
-	},
-	thumbnail: {
-		width: 35,
-		height: 35,
-		marginRight: 8,
-		borderRadius: 4
 	}
 });
 

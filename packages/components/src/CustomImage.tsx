@@ -9,13 +9,15 @@ interface CustomImageProps {
 	style?: ViewStyle;
 	height?: number;
 	width?: number;
+	circle?: boolean;
 }
 
 const CustomImage: React.FC<CustomImageProps> = ({
 	uri,
 	height,
 	width,
-	style
+	style,
+	circle
 }) => {
 	const { theme } = useTheme();
 
@@ -23,7 +25,12 @@ const CustomImage: React.FC<CustomImageProps> = ({
 		<View
 			style={[
 				styles.container,
-				{ width, height, backgroundColor: theme.image.placeholder },
+				{
+					width,
+					height,
+					backgroundColor: theme.image.placeholder,
+					borderRadius: circle ? height / 2 : 4
+				},
 				style
 			]}
 		>
@@ -34,8 +41,7 @@ const CustomImage: React.FC<CustomImageProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		overflow: 'hidden',
-		borderRadius: 4
+		overflow: 'hidden'
 	},
 	image: {
 		height: '100%',

@@ -71,7 +71,11 @@ const ExploreThing = () => {
 const CartsThing = () => {
 	return (
 		<CartsNavigator.Navigator>
-			<CartsNavigator.Screen name='Carts.Main' component={Carts} />
+			<CartsNavigator.Screen
+				name='Carts.Main'
+				component={Carts}
+				options={{ headerTitle: 'Cart' }}
+			/>
 		</CartsNavigator.Navigator>
 	);
 };
@@ -79,7 +83,11 @@ const CartsThing = () => {
 const ProfileThing = () => {
 	return (
 		<ProfileNavigator.Navigator>
-			<ProfileNavigator.Screen name='Profile.Main' component={Profile} />
+			<ProfileNavigator.Screen
+				name='Profile.Main'
+				component={Profile}
+				options={{ headerTitle: 'Profile' }}
+			/>
 			<ProfileNavigator.Screen name='Edit Profile' component={EditProfile} />
 			<ProfileNavigator.Screen
 				name='Payment Methods'
