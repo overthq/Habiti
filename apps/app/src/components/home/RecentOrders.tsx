@@ -5,7 +5,7 @@ import { View, StyleSheet } from 'react-native';
 
 import RecentOrder from './RecentOrder';
 import { HomeQuery } from '../../types/api';
-import { AppStackParamList, HomeTabParamList } from '../../types/navigation';
+import { HomeStackParamList, HomeTabParamList } from '../../types/navigation';
 
 interface RecentOrdersProps {
 	orders: HomeQuery['currentUser']['orders'];
@@ -16,13 +16,12 @@ interface RecentOrdersProps {
 // (infinite scrolling and filters) of all previous orders.
 
 const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
-	const { navigate } = useNavigation<NavigationProp<HomeTabParamList>>();
-
-	const appNavigation = useNavigation<NavigationProp<AppStackParamList>>();
+	const { navigate } =
+		useNavigation<NavigationProp<HomeTabParamList & HomeStackParamList>>();
 
 	const handleOrderPress = React.useCallback(
 		(orderId: string) => () => {
-			appNavigation.navigate('Order', { orderId });
+			navigate('Order', { orderId });
 		},
 		[]
 	);

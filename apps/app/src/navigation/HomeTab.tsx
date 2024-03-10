@@ -4,9 +4,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 
 import Carts from '../screens/Carts';
+import DeliveryAddress from '../screens/DeliveryAddress';
 import EditProfile from '../screens/EditProfile';
 import Explore from '../screens/Explore';
 import Home from '../screens/Home';
+import NotificationSettings from '../screens/NotificationSettings';
 import Order from '../screens/Order';
 import PaymentMethods from '../screens/PaymentMethods';
 import Profile from '../screens/Profile';
@@ -92,6 +94,15 @@ const ProfileThing = () => {
 			<ProfileNavigator.Screen
 				name='Payment Methods'
 				component={PaymentMethods}
+			/>
+			<ProfileNavigator.Screen
+				name='DeliveryAddress'
+				component={DeliveryAddress}
+			/>
+			<ProfileNavigator.Screen
+				name='NotificationSettings'
+				component={NotificationSettings}
+				options={{ headerTitle: 'Notifications' }}
 			/>
 		</ProfileNavigator.Navigator>
 	);

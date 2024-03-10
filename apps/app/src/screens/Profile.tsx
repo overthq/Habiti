@@ -7,7 +7,7 @@ import ProfileRow from '../components/profile/ProfileRow';
 import UserCard from '../components/profile/UserCard';
 import useStore from '../state';
 import { useCurrentUserQuery } from '../types/api';
-import { AppStackParamList } from '../types/navigation';
+import { ProfileStackParamList } from '../types/navigation';
 
 /* Account Settings:
   - Account Info
@@ -26,7 +26,7 @@ import { AppStackParamList } from '../types/navigation';
 
 const Profile: React.FC = () => {
 	const logOut = useStore(state => state.logOut);
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { navigate } = useNavigation<NavigationProp<ProfileStackParamList>>();
 	const { theme } = useTheme();
 
 	const [{ data, fetching }] = useCurrentUserQuery();
@@ -56,8 +56,14 @@ const Profile: React.FC = () => {
 					title='Payment methods'
 					onPress={() => navigate('Payment Methods')}
 				/>
-				<ProfileRow title='Delivery address' onPress={noop} />
-				<ProfileRow title='Notifications' onPress={noop} />
+				<ProfileRow
+					title='Delivery address'
+					onPress={() => navigate('DeliveryAddress')}
+				/>
+				<ProfileRow
+					title='Notifications'
+					onPress={() => navigate('NotificationSettings')}
+				/>
 				<ProfileRow title='About this app' onPress={noop} />
 				<ProfileRow title='Support' onPress={noop} />
 			</View>
