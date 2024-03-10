@@ -1,0 +1,21 @@
+import { gql } from 'apollo-server-express';
+
+const DeliveryAddressTypes = gql`
+	type DeliveryAddress {
+		id: ID!
+		userId: ID!
+		name: String
+
+		user: User!
+	}
+
+	input AddDeliveryAddressInput {
+		name: String
+	}
+
+	extend type Mutation {
+		addDeliveryAddress(input: AddDeliveryAddressInput): DeliveryAddress
+	}
+`;
+
+export default DeliveryAddressTypes;
