@@ -1,10 +1,15 @@
 import React from 'react';
 
 interface SearchContextValue {
+	fetching: boolean;
 	data: any[];
+	error?: any;
 }
 
-const SearchContext = React.createContext<SearchContextValue>({ data: [] });
+const SearchContext = React.createContext<SearchContextValue>({
+	fetching: true,
+	data: []
+});
 
 interface SearchProviderProps {
 	searchTerm: string;
@@ -17,7 +22,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
 }) => {
 	// Fetch data with searchTerm
 	return (
-		<SearchContext.Provider value={{ data: [] }}>
+		<SearchContext.Provider value={{ fetching: true, data: [] }}>
 			{children}
 		</SearchContext.Provider>
 	);

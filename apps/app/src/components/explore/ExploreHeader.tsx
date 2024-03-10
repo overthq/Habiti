@@ -22,13 +22,11 @@ const ExploreHeader: React.FC<ExploreHeaderProps> = ({
 
 	const inputRef = React.useRef<TextInput>(null);
 
-	const blurInput = React.useCallback(() => {
+	const cancel = React.useCallback(() => {
 		inputRef.current?.blur();
-	}, [inputRef.current]);
-
-	const handleBlur = () => {
+		setSearchTerm('');
 		setSearchOpen(false);
-	};
+	}, [inputRef.current]);
 
 	const handleFocus = () => {
 		setSearchOpen(true);
@@ -47,16 +45,14 @@ const ExploreHeader: React.FC<ExploreHeaderProps> = ({
 					placeholder='Search products and stores'
 					placeholderTextColor={theme.text.secondary}
 					inputMode='search'
-					// returnKeyType='search'
 					style={[styles.inputText, { color: theme.input.text }]}
-					onBlur={handleBlur}
 					onFocus={handleFocus}
 					onChangeText={setSearchTerm} // TODO: Add debounce
 				/>
 			</Animated.View>
 			{searchOpen ? (
 				<View style={{ marginLeft: 12 }}>
-					<TextButton onPress={blurInput}>Cancel</TextButton>
+					<TextButton onPress={cancel}>Cancel</TextButton>
 				</View>
 			) : null}
 		</View>
