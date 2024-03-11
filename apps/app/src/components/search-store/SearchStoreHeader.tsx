@@ -20,9 +20,16 @@ import { ExploreStackParamList } from '../../types/navigation';
 interface SearchInputProps {
 	inputRef: React.RefObject<TextInput>;
 	setFocused(s: boolean): void;
+	searchTerm: string;
+	setSearchTerm(value: string): void;
 }
 
-const SearchInput: React.FC<SearchInputProps> = ({ inputRef, setFocused }) => {
+const SearchInput: React.FC<SearchInputProps> = ({
+	inputRef,
+	setFocused,
+	searchTerm,
+	setSearchTerm
+}) => {
 	const { theme } = useTheme();
 
 	const handleFocus = () => {
@@ -41,6 +48,8 @@ const SearchInput: React.FC<SearchInputProps> = ({ inputRef, setFocused }) => {
 			<Icon name='search' size={18} color={theme.text.secondary} />
 			<TextInput
 				ref={inputRef}
+				value={searchTerm}
+				onChangeText={setSearchTerm}
 				style={[styles.input, { color: theme.text.primary }]}
 				placeholder='Search products'
 				placeholderTextColor={theme.text.secondary}
@@ -51,7 +60,15 @@ const SearchInput: React.FC<SearchInputProps> = ({ inputRef, setFocused }) => {
 	);
 };
 
-const SearchStoreHeader = () => {
+interface SearchStoreHeaderProps {
+	searchTerm: string;
+	setSearchTerm(value: string): void;
+}
+
+const SearchStoreHeader: React.FC<SearchStoreHeaderProps> = ({
+	searchTerm,
+	setSearchTerm
+}) => {
 	const { theme } = useTheme();
 	const { top } = useSafeAreaInsets();
 	const { navigate } = useNavigation<NavigationProp<ExploreStackParamList>>();
@@ -84,7 +101,12 @@ const SearchStoreHeader = () => {
 			>
 				<Icon name='chevron-left' size={28} />
 			</Pressable>
-			<SearchInput inputRef={inputRef} setFocused={setFocused} />
+			<SearchInput
+				inputRef={inputRef}
+				setFocused={setFocused}
+				searchTerm={searchTerm}
+				setSearchTerm={setSearchTerm}
+			/>
 			{focused ? (
 				<Animated.View
 					layout={LinearTransition}

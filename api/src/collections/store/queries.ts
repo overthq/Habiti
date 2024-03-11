@@ -18,10 +18,14 @@ const stores: Resolver = (_, __, ctx) => {
 	return ctx.prisma.store.findMany();
 };
 
+type StringWhere = Partial<
+	Record<'contains' | 'search' | `${'starts' | 'ends'}With`, string>
+>;
 type IntWhere = Partial<Record<'lt' | 'lte' | 'gt' | 'gte', number>>;
 
 interface ProductsArgs {
 	filter?: {
+		name?: StringWhere;
 		unitPrice?: IntWhere;
 		quantity?: IntWhere;
 	};

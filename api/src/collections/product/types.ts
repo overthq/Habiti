@@ -43,6 +43,7 @@ const ProductTypes = gql`
 	}
 
 	input ProductFilterInput {
+		name: StringWhere
 		unitPrice: IntWhere
 		quantity: IntWhere
 	}

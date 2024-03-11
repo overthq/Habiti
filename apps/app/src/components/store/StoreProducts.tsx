@@ -63,7 +63,6 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 			)}
 			numColumns={2}
 			onScroll={handleScroll}
-			// contentContainerStyle={{ paddingHorizontal: 8 }}
 			ListHeaderComponent={() => <StoreHeader store={store} />}
 		/>
 	);

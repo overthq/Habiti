@@ -8,7 +8,6 @@ import {
 import React from 'react';
 import { ActivityIndicator, Pressable } from 'react-native';
 
-import StoreHeader from '../components/store/StoreHeader';
 import StoreProducts from '../components/store/StoreProducts';
 import useGoBack from '../hooks/useGoBack';
 import { useStoreQuery } from '../types/api';
@@ -40,7 +39,6 @@ const Store: React.FC = () => {
 
 	return (
 		<Screen>
-			{/* <StoreHeader store={data.store} /> */}
 			<StoreProducts store={data.store} />
 		</Screen>
 	);

@@ -22,6 +22,10 @@ export type Scalars = {
 	Upload: any;
 };
 
+export type AddDeliveryAddressInput = {
+	name?: InputMaybe<Scalars['String']>;
+};
+
 export type AddProductToCategoryInput = {
 	categoryId: Scalars['ID'];
 	productId: Scalars['ID'];
@@ -126,6 +130,14 @@ export type CreateStoreInput = {
 	website?: InputMaybe<Scalars['String']>;
 };
 
+export type DeliveryAddress = {
+	__typename?: 'DeliveryAddress';
+	id: Scalars['ID'];
+	name?: Maybe<Scalars['String']>;
+	user: User;
+	userId: Scalars['ID'];
+};
+
 export type EditProductInput = {
 	description?: InputMaybe<Scalars['String']>;
 	imageFiles: Scalars['Upload'][];
@@ -180,6 +192,7 @@ export type IntWhere = {
 export type Mutation = {
 	__typename?: 'Mutation';
 	_?: Maybe<Scalars['Boolean']>;
+	addDeliveryAddress?: Maybe<DeliveryAddress>;
 	addProductToCategory: ProductCategory;
 	addStoreManager: StoreManager;
 	addToCart: CartProduct;
@@ -212,6 +225,10 @@ export type Mutation = {
 	updateOrder: Order;
 	verify: VerifyResponse;
 	verifyBankAccount: VerifyBankAccountResponse;
+};
+
+export type MutationAddDeliveryAddressArgs = {
+	input?: InputMaybe<AddDeliveryAddressInput>;
 };
 
 export type MutationAddProductToCategoryArgs = {
@@ -392,6 +409,14 @@ export enum OrderStatus {
 	Processing = 'Processing'
 }
 
+export type PageInfo = {
+	__typename?: 'PageInfo';
+	endCursor?: Maybe<Scalars['String']>;
+	hasNextPage: Scalars['Boolean'];
+	hasPreviousPage: Scalars['Boolean'];
+	startCursor?: Maybe<Scalars['String']>;
+};
+
 export type Payout = {
 	__typename?: 'Payout';
 	amount: Scalars['Int'];
@@ -434,7 +459,14 @@ export type ProductCategory = {
 	productId: Scalars['ID'];
 };
 
+export type ProductCategoryEdge = {
+	__typename?: 'ProductCategoryEdge';
+	cursor: Scalars['String'];
+	node?: Maybe<ProductCategory>;
+};
+
 export type ProductFilterInput = {
+	name?: InputMaybe<StringWhere>;
 	quantity?: InputMaybe<IntWhere>;
 	unitPrice?: InputMaybe<IntWhere>;
 };
@@ -447,11 +479,11 @@ export type ProductOrderByInput = {
 
 export type Query = {
 	__typename?: 'Query';
-	_?: Maybe<Scalars['Boolean']>;
 	cart: Cart;
 	carts: Cart[];
 	currentStore: Store;
 	currentUser: User;
+	node?: Maybe<Node>;
 	order: Order;
 	product: Product;
 	stats: Stats;
@@ -462,6 +494,10 @@ export type Query = {
 };
 
 export type QueryCartArgs = {
+	id: Scalars['ID'];
+};
+
+export type QueryNodeArgs = {
 	id: Scalars['ID'];
 };
 
@@ -955,6 +991,8 @@ export type CreateOrderMutation = {
 
 export type StoreProductsQueryVariables = Exact<{
 	storeId: Scalars['ID'];
+	filter?: InputMaybe<ProductFilterInput>;
+	orderBy?: InputMaybe<ProductOrderByInput[] | ProductOrderByInput>;
 }>;
 
 export type StoreProductsQuery = {
@@ -1536,11 +1574,15 @@ export function useCreateOrderMutation() {
 	);
 }
 export const StoreProductsDocument = gql`
-	query StoreProducts($storeId: ID!) {
+	query StoreProducts(
+		$storeId: ID!
+		$filter: ProductFilterInput
+		$orderBy: [ProductOrderByInput!]
+	) {
 		store(id: $storeId) {
 			id
 			name
-			products {
+			products(filter: $filter, orderBy: $orderBy) {
 				id
 				name
 				description
