@@ -88,11 +88,17 @@ const Root = `
 		gte: Int
 	}
 
+	enum StringWhereMode {
+		default
+		insensitive
+	}
+
 	input StringWhere {
 		contains: String
 		search: String
 		startsWith: String
 		endsWith: String
+		mode: StringWhereMode
 	}
 
 	type Query {

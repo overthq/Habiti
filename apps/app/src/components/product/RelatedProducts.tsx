@@ -13,15 +13,14 @@ const RelatedProducts = () => {
 				Related products
 			</Typography>
 			<ScrollView
-				// style={styles.scroll}
 				contentContainerStyle={styles.scroll}
 				horizontal
 				showsHorizontalScrollIndicator={false}
 			>
 				{Array(5)
 					.fill(0)
-					.map(() => (
-						<View style={{ marginLeft: 8 }}>
+					.map((_, index) => (
+						<View key={index} style={{ marginLeft: 8 }}>
 							<CustomImage height={120} width={120} />
 						</View>
 					))}

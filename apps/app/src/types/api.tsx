@@ -628,9 +628,15 @@ export enum StoreStatPeriod {
 export type StringWhere = {
 	contains?: InputMaybe<Scalars['String']>;
 	endsWith?: InputMaybe<Scalars['String']>;
+	mode?: InputMaybe<StringWhereMode>;
 	search?: InputMaybe<Scalars['String']>;
 	startsWith?: InputMaybe<Scalars['String']>;
 };
+
+export enum StringWhereMode {
+	Default = 'default',
+	Insensitive = 'insensitive'
+}
 
 export type UpdateCartProductInput = {
 	cartId: Scalars['ID'];

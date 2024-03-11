@@ -12,7 +12,7 @@ import { ActivityIndicator } from 'react-native';
 import SearchStoreHeader from '../components/search-store/SearchStoreHeader';
 import StoreListItem from '../components/store/StoreListItem';
 import StoreProducts from '../components/store/StoreProducts';
-import { useStoreProductsQuery } from '../types/api';
+import { StringWhereMode, useStoreProductsQuery } from '../types/api';
 import { AppStackParamList, ExploreStackParamList } from '../types/navigation';
 
 const SearchStore = () => {
@@ -25,7 +25,9 @@ const SearchStore = () => {
 	const [{ data, fetching }, refetchProducts] = useStoreProductsQuery({
 		variables: {
 			storeId: params.storeId,
-			filter: { name: { startsWith: searchTerm } }
+			filter: {
+				name: { contains: searchTerm, mode: StringWhereMode.Insensitive }
+			}
 		}
 	});
 

@@ -55,6 +55,8 @@ const SearchInput: React.FC<SearchInputProps> = ({
 				placeholderTextColor={theme.text.secondary}
 				onFocus={handleFocus}
 				onBlur={handleBlur}
+				autoCapitalize='none'
+				autoCorrect={false}
 			/>
 		</Animated.View>
 	);
