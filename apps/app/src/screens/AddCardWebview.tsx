@@ -8,7 +8,7 @@ import { attemptInitialCharge, InitialChargeResponse } from '../utils/payments';
 
 const AddCardWebview: React.FC = () => {
 	const [data, setData] = React.useState<InitialChargeResponse>();
-	useGoBack();
+	useGoBack('x');
 
 	const getData = React.useCallback(async () => {
 		const fetchedData = await attemptInitialCharge();

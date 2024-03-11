@@ -6,7 +6,6 @@ export type AppStackParamList = {
 	Verify: { phone: string };
 	Product: { productId: string };
 	Cart: { cartId: string };
-	// Order: { orderId: string };
 };
 
 export type HomeStackParamList = {

@@ -7,11 +7,11 @@ import { View } from 'react-native';
 
 import OrdersListItem from '../components/orders/OrdersListItem';
 import { useUserOrdersQuery } from '../types/api';
-import { AppStackParamList } from '../types/navigation';
+import { HomeStackParamList } from '../types/navigation';
 
 const Orders: React.FC = () => {
 	const [{ data, fetching }] = useUserOrdersQuery();
-	const { navigate } = useNavigation<StackNavigationProp<AppStackParamList>>();
+	const { navigate } = useNavigation<StackNavigationProp<HomeStackParamList>>();
 
 	const handleOrderPress = React.useCallback(
 		(orderId: string) => () => {
