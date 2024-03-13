@@ -10,6 +10,7 @@ interface ExloreMainProps {
 
 const ExploreMain: React.FC<ExloreMainProps> = ({ searchOpen }) => {
 	const { theme } = useTheme();
+
 	return (
 		<ScrollableScreen
 			style={[
