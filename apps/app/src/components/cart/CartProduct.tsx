@@ -1,4 +1,10 @@
-import { CustomImage, Icon, Typography } from '@market/components';
+import {
+	CustomImage,
+	Icon,
+	Spacer,
+	Typography,
+	useTheme
+} from '@market/components';
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 
@@ -15,20 +21,24 @@ const CartProduct: React.FC<CartProductProps> = ({
 	cartProduct: { product, quantity },
 	onPress
 }) => {
+	const { theme } = useTheme();
+
 	return (
 		<Pressable style={styles.container} onPress={onPress}>
 			<View style={{ flexDirection: 'row' }}>
 				<CustomImage uri={product.images[0]?.path} height={40} width={40} />
+				<Spacer x={8} />
 				<View>
 					<Typography>{product.name}</Typography>
-					<Typography style={styles.price}>
+					<Spacer y={2} />
+					<Typography size='small' variant='secondary'>
 						{`${plural('unit', quantity)} · ${formatNaira(
 							product.unitPrice * quantity
 						)}`}
 					</Typography>
 				</View>
 			</View>
-			<Icon name='chevron-right' color='#505050' />
+			<Icon name='chevron-right' color={theme.text.secondary} />
 		</Pressable>
 	);
 };
@@ -39,14 +49,6 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		marginVertical: 4
-	},
-	image: {
-		width: '100%',
-		height: '100%'
-	},
-	price: {
-		marginTop: 4,
-		color: '#777777'
 	}
 });
 

@@ -76,7 +76,7 @@ const CartsThing = () => {
 			<CartsNavigator.Screen
 				name='Carts.Main'
 				component={Carts}
-				options={{ headerTitle: 'Cart' }}
+				options={{ headerTitle: 'Carts' }}
 			/>
 		</CartsNavigator.Navigator>
 	);
@@ -98,12 +98,14 @@ const ProfileThing = () => {
 			<ProfileNavigator.Screen
 				name='DeliveryAddress'
 				component={DeliveryAddress}
+				options={{ headerTitle: 'Delivery Address' }}
 			/>
 			<ProfileNavigator.Screen
 				name='NotificationSettings'
 				component={NotificationSettings}
 				options={{ headerTitle: 'Notifications' }}
 			/>
+			<ProfileNavigator.Screen name='Appearance' component={SettingsTheme} />
 		</ProfileNavigator.Navigator>
 	);
 };

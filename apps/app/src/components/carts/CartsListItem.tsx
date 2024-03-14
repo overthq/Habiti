@@ -1,4 +1,4 @@
-import { CustomImage, Icon, Typography } from '@market/components';
+import { CustomImage, Icon, Typography, useTheme } from '@market/components';
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
 
@@ -10,20 +10,29 @@ interface CartListItemProps {
 	onPress(): void;
 }
 
-const CartsListItem: React.FC<CartListItemProps> = ({ cart, onPress }) => (
-	<Pressable onPress={onPress} style={styles.container}>
-		<View style={styles.main}>
-			<CustomImage uri={cart.store.image?.path} style={styles.image} />
-			<View>
-				<Typography weight='medium'>{cart.store.name}</Typography>
-				<Typography size='small' variant='secondary'>
-					{plural('product', cart.products.length)}
-				</Typography>
+const CartsListItem: React.FC<CartListItemProps> = ({ cart, onPress }) => {
+	const { theme } = useTheme();
+
+	return (
+		<Pressable onPress={onPress} style={styles.container}>
+			<View style={styles.main}>
+				<CustomImage
+					uri={cart.store.image?.path}
+					style={styles.image}
+					height={48}
+					width={48}
+				/>
+				<View>
+					<Typography weight='medium'>{cart.store.name}</Typography>
+					<Typography size='small' variant='secondary'>
+						{plural('product', cart.products.length)}
+					</Typography>
+				</View>
 			</View>
-		</View>
-		<Icon name='chevron-right' size={24} color='#777777' />
-	</Pressable>
-);
+			<Icon name='chevron-right' size={24} color={theme.text.secondary} />
+		</Pressable>
+	);
+};
 
 const styles = StyleSheet.create({
 	container: {

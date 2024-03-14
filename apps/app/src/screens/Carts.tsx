@@ -32,6 +32,7 @@ const Carts: React.FC = () => {
 				)}
 				estimatedItemSize={66}
 				data={carts}
+				contentContainerStyle={{ paddingTop: 8 }}
 				ListEmptyComponent={
 					<ListEmpty
 						title='Empty cart'

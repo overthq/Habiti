@@ -64,6 +64,10 @@ const Profile: React.FC = () => {
 					title='Notifications'
 					onPress={() => navigate('NotificationSettings')}
 				/>
+				<ProfileRow title='Appearance' onPress={() => navigate('Appearance')} />
+				<View
+					style={[styles.separator, { backgroundColor: theme.border.color }]}
+				/>
 				<ProfileRow title='About this app' onPress={noop} />
 				<ProfileRow title='Support' onPress={noop} />
 			</View>
@@ -85,7 +89,7 @@ const styles = StyleSheet.create({
 	},
 	separator: {
 		height: 1,
-		marginBottom: 8,
+		marginVertical: 8,
 		marginHorizontal: 16
 	}
 });

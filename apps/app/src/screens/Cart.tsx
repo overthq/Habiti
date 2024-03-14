@@ -1,4 +1,9 @@
-import { Button, ScrollableScreen, Typography } from '@market/components';
+import {
+	Button,
+	ScrollableScreen,
+	Spacer,
+	Typography
+} from '@market/components';
 import {
 	useRoute,
 	RouteProp,
@@ -64,7 +69,11 @@ const Cart: React.FC = () => {
 
 	return (
 		<ScrollableScreen style={[styles.container, { paddingBottom: bottom }]}>
-			<Typography style={styles.sectionHeader}>Order Summary</Typography>
+			<Typography weight='medium' variant='secondary'>
+				Order Summary
+			</Typography>
+
+			<Spacer y={2} />
 
 			{cart.products.map(cartProduct => (
 				<CartProduct
@@ -74,17 +83,27 @@ const Cart: React.FC = () => {
 				/>
 			))}
 
-			<Typography style={styles.sectionHeader}>Delivery Address</Typography>
+			<Spacer y={16} />
+
+			<Typography weight='medium' variant='secondary'>
+				Delivery Address
+			</Typography>
+
+			<Spacer y={16} />
 
 			<View>
-				<Typography style={styles.sectionHeader}>Payment Method</Typography>
+				<Typography weight='medium' variant='secondary'>
+					Payment Method
+				</Typography>
 				<SelectCard
 					selectedCard={selectedCard}
 					onCardSelect={handleCardSelect}
 				/>
 			</View>
 
-			<View style={[styles.row, { marginTop: 40 }]}>
+			<Spacer y={40} />
+
+			<View style={styles.row}>
 				<Typography>Subtotal</Typography>
 				<Typography>{formatNaira(cart.total)}</Typography>
 			</View>
@@ -99,13 +118,7 @@ const Cart: React.FC = () => {
 				<Typography>-</Typography>
 			</View>
 
-			<View style={styles.bottom}>
-				<Button
-					text='Place Order'
-					onPress={handleSubmit}
-					style={styles.button}
-				/>
-			</View>
+			<Button text='Place Order' onPress={handleSubmit} style={styles.button} />
 		</ScrollableScreen>
 	);
 };
@@ -115,13 +128,8 @@ const styles = StyleSheet.create({
 		flex: 1
 	},
 	container: {
-		paddingTop: 8,
+		paddingTop: 16,
 		paddingHorizontal: 16
-	},
-	sectionHeader: {
-		fontWeight: '500',
-		color: '#505050',
-		marginVertical: 4
 	},
 	bottom: {
 		flex: 1,

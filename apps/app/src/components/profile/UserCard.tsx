@@ -4,7 +4,7 @@ import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 
 import { CurrentUserQuery } from '../../types/api';
-import { AppStackParamList } from '../../types/navigation';
+import { ProfileStackParamList } from '../../types/navigation';
 
 interface UserCardProps {
 	user: CurrentUserQuery['currentUser'];
@@ -13,7 +13,7 @@ interface UserCardProps {
 // TODO: Replace "Edit profile" with {user.email}
 
 const UserCard: React.FC<UserCardProps> = ({ user }) => {
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { navigate } = useNavigation<NavigationProp<ProfileStackParamList>>();
 	const { theme } = useTheme();
 
 	return (
@@ -46,7 +46,8 @@ const styles = StyleSheet.create({
 	card: {
 		borderRadius: 4,
 		padding: 12,
-		marginVertical: 16,
+		marginTop: 16,
+		marginBottom: 8,
 		flexDirection: 'row'
 	},
 	placeholder: {

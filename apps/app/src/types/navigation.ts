@@ -32,6 +32,7 @@ export type ProfileStackParamList = {
 	'Payment Methods': undefined;
 	DeliveryAddress: undefined;
 	NotificationSettings: undefined;
+	Appearance: undefined;
 };
 
 export type HomeTabParamList = {
