@@ -1,9 +1,10 @@
-import { Button, Input, Screen, Typography } from '@market/components';
+import { Button, Screen, Typography } from '@market/components';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import React from 'react';
+import { StyleSheet, TextInput, View } from 'react-native';
 
+import CodeInput from '../components/verify/CodeInput';
 import useStore from '../state';
-import styles from '../styles/auth';
 import { useVerifyMutation } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 
@@ -15,14 +16,17 @@ const VerifyAuthentication: React.FC = () => {
 	const [{ fetching }, verify] = useVerifyMutation();
 
 	const handleSubmit = async () => {
+		// TODO: Could do with some more validation.
 		if (phone && code) {
-			const { data } = await verify({ input: { phone, code } });
+			const { data, error } = await verify({ input: { phone, code } });
+
 			if (data?.verify) {
 				const { accessToken, userId } = data.verify;
 				logIn(userId, accessToken);
+			} else if (error) {
+				console.log(error);
 			}
 		}
-		// Show some validation error.
 	};
 
 	return (
@@ -33,10 +37,36 @@ const VerifyAuthentication: React.FC = () => {
 			<Typography>
 				A verification code was sent to your phone via SMS.
 			</Typography>
-			<Input onChangeText={setCode} keyboardType='number-pad' />
-			<Button text='Verify Code' onPress={handleSubmit} loading={fetching} />
+			<TextInput
+				autoFocus
+				style={styles.hidden}
+				onChangeText={setCode}
+				keyboardType='number-pad'
+			/>
+			<View style={styles.inputs}>
+				{Array(6)
+					.fill(0)
+					.map((_, index) => (
+						<CodeInput key={index} value={code[index]} />
+					))}
+			</View>
+			<Button text='Verify' onPress={handleSubmit} loading={fetching} />
 		</Screen>
 	);
 };
+
+const styles = StyleSheet.create({
+	inputs: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		marginBottom: 16
+	},
+	hidden: {
+		height: 1,
+		width: 1,
+		opacity: 0
+	}
+});
 
 export default VerifyAuthentication;

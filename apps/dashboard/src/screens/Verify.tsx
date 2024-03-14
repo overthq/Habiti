@@ -18,14 +18,12 @@ const Verify: React.FC = () => {
 	const { phone } = params;
 
 	const handleSubmit = async () => {
-		try {
-			const { data } = await verify({ input: { phone, code } });
+		const { data, error } = await verify({ input: { phone, code } });
 
-			if (data?.verify) {
-				const { userId, accessToken } = data.verify;
-				logIn(userId, accessToken);
-			}
-		} catch (error) {
+		if (data?.verify) {
+			const { userId, accessToken } = data.verify;
+			logIn(userId, accessToken);
+		} else if (error) {
 			console.log(error);
 		}
 	};
