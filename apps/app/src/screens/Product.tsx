@@ -8,7 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import AddToCart from '../components/product/AddToCart';
 import ImageCarousel from '../components/product/ImageCarousel';
 import ProductDetails from '../components/product/ProductDetails';
-import RelatedProducts from '../components/product/RelatedProducts';
+// import RelatedProducts from '../components/product/RelatedProducts';
 import useGoBack from '../hooks/useGoBack';
 import { useProductQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
@@ -61,7 +61,7 @@ const Product: React.FC = () => {
 				>
 					<ImageCarousel images={data.product.images} />
 					<ProductDetails product={data.product} />
-					<RelatedProducts />
+					{/* <RelatedProducts /> */}
 					<AddToCart
 						storeId={data.product.storeId}
 						productId={data.product.id}

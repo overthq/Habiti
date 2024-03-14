@@ -13,7 +13,6 @@ import Order from '../screens/Order';
 import PaymentMethods from '../screens/PaymentMethods';
 import Profile from '../screens/Profile';
 import SearchStore from '../screens/SearchStore';
-import Settings from '../screens/Settings';
 import SettingsTheme from '../screens/SettingsTheme';
 import Store from '../screens/Store';
 import {
@@ -32,7 +31,7 @@ const ExploreNavigator = createStackNavigator<ExploreStackParamList>();
 const CartsNavigator = createStackNavigator<CartStackParamList>();
 const ProfileNavigator = createStackNavigator<ProfileStackParamList>();
 
-const HomeThing = () => {
+const HomeStack = () => {
 	return (
 		<HomeNavigator.Navigator>
 			<HomeNavigator.Screen name='Home' component={Home} />
@@ -42,13 +41,11 @@ const HomeThing = () => {
 				component={Store}
 				options={{ headerTitle: '' }}
 			/>
-			<HomeNavigator.Screen name='Settings' component={Settings} />
-			<HomeNavigator.Screen name='SettingsTheme' component={SettingsTheme} />
 		</HomeNavigator.Navigator>
 	);
 };
 
-const ExploreThing = () => {
+const ExploreStack = () => {
 	return (
 		<ExploreNavigator.Navigator>
 			<ExploreNavigator.Screen
@@ -70,7 +67,7 @@ const ExploreThing = () => {
 	);
 };
 
-const CartsThing = () => {
+const CartsStack = () => {
 	return (
 		<CartsNavigator.Navigator>
 			<CartsNavigator.Screen
@@ -82,7 +79,7 @@ const CartsThing = () => {
 	);
 };
 
-const ProfileThing = () => {
+const ProfileStack = () => {
 	return (
 		<ProfileNavigator.Navigator>
 			<ProfileNavigator.Screen
@@ -115,10 +112,10 @@ const HomeTabNavigator = () => {
 
 	return (
 		<HomeTab.Navigator screenOptions={tabScreenOptions(name)}>
-			<HomeTab.Screen name='For You' component={HomeThing} />
-			<HomeTab.Screen name='Explore' component={ExploreThing} />
-			<HomeTab.Screen name='Carts' component={CartsThing} />
-			<HomeTab.Screen name='Profile' component={ProfileThing} />
+			<HomeTab.Screen name='For You' component={HomeStack} />
+			<HomeTab.Screen name='Explore' component={ExploreStack} />
+			<HomeTab.Screen name='Carts' component={CartsStack} />
+			<HomeTab.Screen name='Profile' component={ProfileStack} />
 		</HomeTab.Navigator>
 	);
 };

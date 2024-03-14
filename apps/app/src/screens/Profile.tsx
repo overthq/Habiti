@@ -13,7 +13,6 @@ import { ProfileStackParamList } from '../types/navigation';
   - Account Info
   - Addresses
   - Loyalty Cards (list followed stores that support loyalty cards.)
-  - Notifications
   - Country*
 * About this app
   - Legal

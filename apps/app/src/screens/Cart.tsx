@@ -79,7 +79,7 @@ const Cart: React.FC = () => {
 				<CartProduct
 					key={cartProduct.id}
 					cartProduct={cartProduct}
-					onPress={handleCartProductPress(cartProduct.id)}
+					onPress={handleCartProductPress(cartProduct.productId)}
 				/>
 			))}
 
