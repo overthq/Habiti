@@ -1,8 +1,25 @@
 import React from 'react';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
+import Animated from 'react-native-reanimated';
+
+import { useCardsQuery } from '../../types/api';
 
 const PaymentMethodSelect = () => {
-	return <View />;
+	const [] = useCardsQuery();
+
+	return (
+		<View>
+			<PaymentMethodOption />
+		</View>
+	);
+};
+
+const PaymentMethodOption = () => {
+	return (
+		<Pressable>
+			<Animated.View />
+		</Pressable>
+	);
 };
 
 export default PaymentMethodSelect;

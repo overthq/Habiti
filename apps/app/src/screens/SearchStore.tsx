@@ -11,7 +11,7 @@ import { ActivityIndicator } from 'react-native';
 
 import SearchStoreHeader from '../components/search-store/SearchStoreHeader';
 import StoreListItem from '../components/store/StoreListItem';
-import StoreProducts from '../components/store/StoreProducts';
+// import StoreProducts from '../components/store/StoreProducts';
 import { StringWhereMode, useStoreProductsQuery } from '../types/api';
 import { AppStackParamList, ExploreStackParamList } from '../types/navigation';
 
@@ -19,8 +19,7 @@ const SearchStore = () => {
 	const [searchTerm, setSearchTerm] = React.useState('');
 	const { params } =
 		useRoute<RouteProp<ExploreStackParamList, 'SearchStore'>>();
-	const { navigate, setOptions } =
-		useNavigation<NavigationProp<AppStackParamList>>();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	// Add "filter" parameter to this query
 	const [{ data, fetching }, refetchProducts] = useStoreProductsQuery({
 		variables: {
@@ -31,13 +30,9 @@ const SearchStore = () => {
 		}
 	});
 
-	React.useEffect(() => {
-		console.log('length', data?.store.products.length);
-	}, [data?.store]);
-
 	// const debounceRefetchProducts = React.useCallback(() => {}, []);
 
-	const handleRefetch = () => {
+	const handleRefresh = () => {
 		refetchProducts();
 	};
 

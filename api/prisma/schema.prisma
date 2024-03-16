@@ -9,19 +9,20 @@ datasource db {
 }
 
 model User {
-  id        String             @id @default(uuid())
-  name      String
-  phone     String             @unique
-  email     String             @unique
-  createdAt DateTime           @default(now())
-  updatedAt DateTime           @updatedAt
-  orders    Order[]
-  managed   StoreManager[]
-  followed  StoreFollower[]
-  carts     Cart[]
-  watchlist WatchlistProduct[]
-  cards     Card[]
-  addresses DeliveryAddress[]
+  id            String             @id @default(uuid())
+  name          String
+  phone         String             @unique
+  email         String             @unique
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  orders        Order[]
+  managed       StoreManager[]
+  followed      StoreFollower[]
+  carts         Cart[]
+  watchlist     WatchlistProduct[]
+  cards         Card[]
+  addresses     DeliveryAddress[]
+  UserPushToken UserPushToken[]
 }
 
 model Store {
@@ -219,6 +220,15 @@ model DeliveryAddress {
   name   String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserPushToken {
+  userId String
+  token  String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, token])
 }
 
 enum ProductStatus {

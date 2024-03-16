@@ -1,7 +1,7 @@
 import { ListEmpty, Typography } from '@market/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ScrollView, Pressable } from 'react-native';
 
 import RecentOrder from './RecentOrder';
 import { HomeQuery } from '../../types/api';
@@ -48,6 +48,47 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 					/>
 				))
 			)}
+		</View>
+	);
+};
+
+interface NewHorizontalItemProps {
+	order: HomeQuery['currentUser']['orders'][number];
+	onPress(): void;
+}
+
+const NewHorizontalItem: React.FC<NewHorizontalItemProps> = ({
+	order,
+	onPress
+}) => {
+	return <Pressable />;
+};
+
+const NewHorizontal: React.FC<RecentOrdersProps> = ({ orders }) => {
+	const { navigate } =
+		useNavigation<NavigationProp<HomeTabParamList & HomeStackParamList>>();
+
+	const handleOrderPress = React.useCallback(
+		(orderId: string) => () => {
+			navigate('Order', { orderId });
+		},
+		[]
+	);
+
+	return (
+		<View style={styles.container}>
+			<Typography weight='medium' style={{ marginLeft: 16, marginBottom: 8 }}>
+				Recent Orders
+			</Typography>
+			<ScrollView horizontal>
+				{orders.map(order => (
+					<NewHorizontalItem
+						key={order.id}
+						order={order}
+						onPress={handleOrderPress(order.id)}
+					/>
+				))}
+			</ScrollView>
 		</View>
 	);
 };
