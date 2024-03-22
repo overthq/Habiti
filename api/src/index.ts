@@ -1,15 +1,15 @@
-import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { graphqlUploadExpress } from 'graphql-upload';
-import { expressjwt } from 'express-jwt';
 import compression from 'compression';
+import express from 'express';
+import { expressjwt } from 'express-jwt';
+import { graphqlUploadExpress } from 'graphql-upload';
 import { createServer } from 'http';
 
-import webhooks from './webhooks';
+import prismaClient from './config/prisma';
+import redisClient from './config/redis';
 import payments from './payments';
 import schema from './schema';
-import redisClient from './config/redis';
-import prismaClient from './config/prisma';
+import webhooks from './webhooks';
 import './config/cloudinary';
 
 const main = async () => {
