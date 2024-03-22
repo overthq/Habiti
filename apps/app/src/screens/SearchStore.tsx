@@ -65,6 +65,7 @@ const SearchStore = () => {
 						/>
 					)}
 					numColumns={2}
+					contentContainerStyle={{ paddingTop: 8 }}
 				/>
 			)}
 		</Screen>

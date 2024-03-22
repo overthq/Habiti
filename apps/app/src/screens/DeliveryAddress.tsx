@@ -1,5 +1,6 @@
-import { Screen, Typography } from '@market/components';
+import { Screen } from '@market/components';
 import React from 'react';
+import { View } from 'react-native';
 
 import useGoBack from '../hooks/useGoBack';
 
@@ -8,7 +9,7 @@ const DeliveryAddress = () => {
 
 	return (
 		<Screen>
-			<Typography>Delivery Address</Typography>
+			<View />
 		</Screen>
 	);
 };

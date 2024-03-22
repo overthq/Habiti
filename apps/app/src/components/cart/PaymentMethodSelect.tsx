@@ -4,8 +4,12 @@ import Animated from 'react-native-reanimated';
 
 import { useCardsQuery } from '../../types/api';
 
-const PaymentMethodSelect = () => {
-	const [] = useCardsQuery();
+interface PaymentMethodSelectProps {
+	cards: any[];
+}
+
+const PaymentMethodSelect: React.FC<PaymentMethodSelectProps> = ({ cards }) => {
+	const [{ data, fetching }] = useCardsQuery();
 
 	return (
 		<View>
