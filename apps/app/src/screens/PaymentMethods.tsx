@@ -22,7 +22,7 @@ const PaymentMethods: React.FC = () => {
 				</Pressable>
 			)
 		});
-	});
+	}, []);
 
 	const cards = data?.currentUser.cards;
 

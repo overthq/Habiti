@@ -96,6 +96,7 @@ const Cart: React.FC = () => {
 					Payment Method
 				</Typography>
 				<SelectCard
+					cards={cart.user.cards}
 					selectedCard={selectedCard}
 					onCardSelect={handleCardSelect}
 				/>

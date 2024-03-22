@@ -28,6 +28,15 @@ query Cart($cartId: ID!) {
 	cart(id: $cartId) {
 		id
 		userId
+		user {
+			id
+			cards {
+				id
+				email
+				cardType
+				last4
+			}
+		}
 		storeId
 		store {
 			id

@@ -756,6 +756,17 @@ export type CartQuery = {
 		userId: string;
 		storeId: string;
 		total: number;
+		user: {
+			__typename?: 'User';
+			id: string;
+			cards: {
+				__typename?: 'Card';
+				id: string;
+				email: string;
+				cardType: string;
+				last4: string;
+			}[];
+		};
 		store: { __typename?: 'Store'; id: string; name: string };
 		products: {
 			__typename?: 'CartProduct';
@@ -1272,6 +1283,15 @@ export const CartDocument = gql`
 		cart(id: $cartId) {
 			id
 			userId
+			user {
+				id
+				cards {
+					id
+					email
+					cardType
+					last4
+				}
+			}
 			storeId
 			store {
 				id
