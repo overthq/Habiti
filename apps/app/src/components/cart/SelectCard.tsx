@@ -18,6 +18,7 @@ const SelectCard: React.FC<SelectCardProps> = ({
 	onCardSelect
 }) => {
 	const { theme } = useTheme();
+
 	return (
 		<Animated.View>
 			<View

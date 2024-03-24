@@ -12,20 +12,23 @@ interface CartTotalProps {
 const CartTotal: React.FC<CartTotalProps> = ({ cart }) => {
 	return (
 		<View style={{ paddingHorizontal: 16 }}>
-			<View style={styles.row}>
-				<Typography>Subtotal</Typography>
-				<Typography>{formatNaira(cart.total)}</Typography>
-			</View>
+			<CartTotalRow title='Subtotal' value={formatNaira(cart.total)} />
+			<CartTotalRow title='Service Fee' value='-' />
+			<CartTotalRow title='Taxes' value='-' />
+		</View>
+	);
+};
 
-			<View style={styles.row}>
-				<Typography>Service Fee</Typography>
-				<Typography>-</Typography>
-			</View>
+interface CartTotalRowProps {
+	title: string;
+	value: string;
+}
 
-			<View style={styles.row}>
-				<Typography>Taxes</Typography>
-				<Typography>-</Typography>
-			</View>
+const CartTotalRow: React.FC<CartTotalRowProps> = ({ title, value }) => {
+	return (
+		<View style={styles.row}>
+			<Typography>{title}</Typography>
+			<Typography>{value}</Typography>
 		</View>
 	);
 };

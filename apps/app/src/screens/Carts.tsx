@@ -1,5 +1,4 @@
 import { ListEmpty, Screen } from '@market/components';
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
@@ -14,16 +13,15 @@ import { AppStackParamList, HomeTabParamList } from '../types/navigation';
 const Carts: React.FC = () => {
 	const [{ data, fetching }, refetch] = useCartsQuery();
 	const { navigate } =
-		useNavigation<BottomTabNavigationProp<HomeTabParamList, 'Carts'>>();
-	const navigation = useNavigation<NavigationProp<AppStackParamList>>();
+		useNavigation<NavigationProp<HomeTabParamList & AppStackParamList>>();
 
 	const carts = data?.currentUser.carts;
 
 	const handleCartPress = React.useCallback(
 		(cartId: string) => () => {
-			navigation.navigate('Cart', { cartId });
+			navigate('Cart', { cartId });
 		},
-		[]
+		[navigate]
 	);
 
 	return (
