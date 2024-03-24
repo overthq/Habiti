@@ -15,15 +15,13 @@ import { View, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import CartProduct from '../components/cart/CartProduct';
+import CartTotal from '../components/cart/CartTotal';
+import DeliveryInfo from '../components/cart/DeliveryInfo';
 import SelectCard from '../components/cart/SelectCard';
 import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useCreateOrderMutation, useCartQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
-import { formatNaira } from '../utils/currency';
-
-// Maintain a list of recently viewed stores and items.
-// So that we can use them in the empty state for this screen.
 
 const Cart: React.FC = () => {
 	const {
@@ -40,7 +38,6 @@ const Cart: React.FC = () => {
 	const { bottom } = useSafeAreaInsets();
 
 	const [selectedCard, setSelectedCard] = React.useState(defaultCardId);
-	const cart = data?.cart;
 
 	const handleSubmit = React.useCallback(async () => {
 		try {
@@ -62,39 +59,46 @@ const Cart: React.FC = () => {
 		(productId: string) => () => {
 			navigate('Product', { productId });
 		},
-		[]
+		[navigate]
 	);
 
-	if (fetching || !cart) return <View style={styles.loading} />;
+	const cart = data?.cart;
+
+	if (fetching || !cart) return <View />;
 
 	return (
 		<ScrollableScreen style={[styles.container, { paddingBottom: bottom }]}>
-			<Typography weight='medium' variant='secondary'>
-				Order Summary
-			</Typography>
+			<View style={{ paddingHorizontal: 16 }}>
+				<Typography weight='medium' variant='secondary'>
+					Order Summary
+				</Typography>
 
-			<Spacer y={2} />
+				<Spacer y={2} />
 
-			{cart.products.map(cartProduct => (
-				<CartProduct
-					key={cartProduct.id}
-					cartProduct={cartProduct}
-					onPress={handleCartProductPress(cartProduct.productId)}
-				/>
-			))}
+				{cart.products.map(cartProduct => (
+					<CartProduct
+						key={cartProduct.id}
+						cartProduct={cartProduct}
+						onPress={handleCartProductPress(cartProduct.productId)}
+					/>
+				))}
+			</View>
 
 			<Spacer y={16} />
 
-			<Typography weight='medium' variant='secondary'>
-				Delivery Address
-			</Typography>
+			<DeliveryInfo />
 
 			<Spacer y={16} />
 
 			<View>
-				<Typography weight='medium' variant='secondary'>
+				<Typography
+					weight='medium'
+					variant='secondary'
+					style={{ marginLeft: 16 }}
+				>
 					Payment Method
 				</Typography>
+				<Spacer y={8} />
 				<SelectCard
 					cards={cart.user.cards}
 					selectedCard={selectedCard}
@@ -104,22 +108,15 @@ const Cart: React.FC = () => {
 
 			<Spacer y={40} />
 
-			<View style={styles.row}>
-				<Typography>Subtotal</Typography>
-				<Typography>{formatNaira(cart.total)}</Typography>
-			</View>
+			<CartTotal cart={cart} />
 
-			<View style={styles.row}>
-				<Typography>Service Fee</Typography>
-				<Typography>-</Typography>
+			<View style={{ paddingHorizontal: 16 }}>
+				<Button
+					text='Place Order'
+					onPress={handleSubmit}
+					style={styles.button}
+				/>
 			</View>
-
-			<View style={styles.row}>
-				<Typography>Taxes</Typography>
-				<Typography>-</Typography>
-			</View>
-
-			<Button text='Place Order' onPress={handleSubmit} style={styles.button} />
 		</ScrollableScreen>
 	);
 };
@@ -129,8 +126,7 @@ const styles = StyleSheet.create({
 		flex: 1
 	},
 	container: {
-		paddingTop: 16,
-		paddingHorizontal: 16
+		paddingTop: 16
 	},
 	bottom: {
 		flex: 1,

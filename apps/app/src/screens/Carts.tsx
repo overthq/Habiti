@@ -8,6 +8,9 @@ import CartsListItem from '../components/carts/CartsListItem';
 import { useCartsQuery } from '../types/api';
 import { AppStackParamList, HomeTabParamList } from '../types/navigation';
 
+// Maintain a list of recently viewed stores and items.
+// So that we can use them in the empty state for this screen.
+
 const Carts: React.FC = () => {
 	const [{ data, fetching }, refetch] = useCartsQuery();
 	const { navigate } =

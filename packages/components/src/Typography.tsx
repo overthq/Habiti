@@ -14,22 +14,27 @@ interface TypographyProps extends TextProps {
 	number?: boolean;
 }
 
-const Typography: React.FC<TypographyProps> = ({
-	children,
-	variant = 'primary',
-	size = 'regular',
-	weight = 'regular',
-	style,
-	ellipsize,
-	number,
-	...props
-}) => {
+const Typography: React.FC<TypographyProps> = React.forwardRef<
+	Text,
+	TypographyProps
+>((props, forwardedRef) => {
+	const {
+		children,
+		variant = 'primary',
+		size = 'regular',
+		weight = 'regular',
+		style,
+		ellipsize,
+		number,
+		...rest
+	} = props;
 	const { theme } = useTheme();
 
 	return (
 		<Text
+			ref={forwardedRef}
 			{...(ellipsize ? { numberOfLines: 1 } : {})}
-			{...props}
+			{...rest}
 			style={[
 				{
 					color: theme.text[variant],
@@ -43,6 +48,6 @@ const Typography: React.FC<TypographyProps> = ({
 			{children}
 		</Text>
 	);
-};
+});
 
 export default Typography;

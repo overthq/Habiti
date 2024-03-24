@@ -1,6 +1,6 @@
-import { AnimatedTypography, Spacer } from '@market/components';
+import { Icon, Spacer, Typography, useTheme } from '@market/components';
 import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { MastercardIcon } from './CardIcons';
@@ -9,7 +9,7 @@ import { CartQuery } from '../../types/api';
 interface SelectCardProps {
 	cards: CartQuery['cart']['user']['cards'];
 	selectedCard?: string;
-	onCardSelect(cardId: string): void;
+	onCardSelect(cardId: string): () => void;
 }
 
 const SelectCard: React.FC<SelectCardProps> = ({
@@ -17,13 +17,20 @@ const SelectCard: React.FC<SelectCardProps> = ({
 	selectedCard,
 	onCardSelect
 }) => {
+	const { theme } = useTheme();
 	return (
 		<Animated.View>
+			<View
+				style={{
+					borderBottomWidth: 0.5,
+					borderBottomColor: theme.border.color
+				}}
+			/>
 			{cards.map(card => (
 				<SelectCardOption
 					key={card.id}
 					card={card}
-					onPress={() => onCardSelect(card.id)}
+					onSelect={onCardSelect}
 					selected={selectedCard === card.id}
 				/>
 			))}
@@ -33,24 +40,30 @@ const SelectCard: React.FC<SelectCardProps> = ({
 
 interface SelectCardOptionProps {
 	card: CartQuery['cart']['user']['cards'][number];
-	onPress(): void;
+	onSelect(cardId: string): () => void;
 	selected: boolean;
 }
 
 const SelectCardOption: React.FC<SelectCardOptionProps> = ({
 	card,
-	onPress,
+	onSelect,
 	selected
 }) => {
+	const { theme } = useTheme();
+
 	return (
-		<Pressable onPress={onPress}>
-			<Animated.View style={styles.option}>
+		<Pressable
+			style={[styles.option, { borderBottomColor: theme.border.color }]}
+			onPress={onSelect(card.id)}
+		>
+			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 				<MastercardIcon />
-				<Spacer x={8} />
-				<AnimatedTypography>
-					{card.cardType} *{card.last4}
-				</AnimatedTypography>
-			</Animated.View>
+				<Spacer x={4} />
+				<Typography style={styles.capitalize}>
+					{`${card.cardType} \u2022\u2022\u2022\u2022${card.last4}`}
+				</Typography>
+			</View>
+			{selected ? <Icon name='check' /> : null}
 		</Pressable>
 	);
 };
@@ -58,10 +71,14 @@ const SelectCardOption: React.FC<SelectCardOptionProps> = ({
 const styles = StyleSheet.create({
 	option: {
 		flexDirection: 'row',
+		justifyContent: 'space-between',
 		alignItems: 'center',
-		padding: 8,
-		borderRadius: 4,
-		borderWidth: 1
+		paddingVertical: 4,
+		paddingHorizontal: 16,
+		borderBottomWidth: 0.5
+	},
+	capitalize: {
+		textTransform: 'capitalize'
 	}
 });
 
