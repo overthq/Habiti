@@ -43,12 +43,12 @@ const styles = StyleSheet.create({
 	container: {
 		height: 48,
 		width: 48,
-		borderRadius: 4,
+		borderRadius: 8,
 		padding: 2
 	},
 	input: {
 		flex: 1,
-		borderRadius: 2,
+		borderRadius: 6,
 		justifyContent: 'center',
 		alignItems: 'center'
 	}

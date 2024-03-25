@@ -1,4 +1,4 @@
-import { Button, Screen, Typography } from '@market/components';
+import { Button, Screen, Spacer, Typography } from '@market/components';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
@@ -30,11 +30,11 @@ const VerifyAuthentication: React.FC = () => {
 	};
 
 	return (
-		<Screen>
+		<Screen style={{ justifyContent: 'center', paddingHorizontal: 16 }}>
 			<Typography size='xxxlarge' weight='bold'>
-				Enter your verification code
+				Enter verification code
 			</Typography>
-			<Typography>
+			<Typography variant='secondary'>
 				A verification code was sent to your phone via SMS.
 			</Typography>
 			<TextInput
@@ -43,6 +43,7 @@ const VerifyAuthentication: React.FC = () => {
 				onChangeText={setCode}
 				keyboardType='number-pad'
 			/>
+			<Spacer y={8} />
 			<View style={styles.inputs}>
 				{Array(6)
 					.fill(0)

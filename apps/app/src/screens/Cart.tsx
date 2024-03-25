@@ -14,7 +14,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import CartProduct from '../components/cart/CartProduct';
+import CartSummary from '../components/cart/CartSummary';
 import CartTotal from '../components/cart/CartTotal';
 import DeliveryInfo from '../components/cart/DeliveryInfo';
 import SelectCard from '../components/cart/SelectCard';
@@ -33,7 +33,6 @@ const Cart: React.FC = () => {
 		params: { cartId }
 	} = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
 	const { goBack } = useNavigation<NavigationProp<AppStackParamList>>();
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	useGoBack();
 
 	const [{ data, fetching }] = useCartQuery({ variables: { cartId } });
@@ -60,13 +59,6 @@ const Cart: React.FC = () => {
 		[]
 	);
 
-	const handleCartProductPress = React.useCallback(
-		(productId: string) => () => {
-			navigate('Product', { productId });
-		},
-		[navigate]
-	);
-
 	const cart = data?.cart;
 
 	if (fetching || !cart) return <View />;
@@ -75,21 +67,7 @@ const Cart: React.FC = () => {
 		<ScrollableScreen style={[styles.container, { paddingBottom: bottom }]}>
 			<StoreInfo store={cart.store} />
 
-			<View style={{ paddingHorizontal: 16 }}>
-				<Typography weight='medium' variant='secondary'>
-					Order Summary
-				</Typography>
-
-				<Spacer y={2} />
-
-				{cart.products.map(cartProduct => (
-					<CartProduct
-						key={cartProduct.id}
-						cartProduct={cartProduct}
-						onPress={handleCartProductPress(cartProduct.productId)}
-					/>
-				))}
-			</View>
+			<CartSummary products={cart.products} />
 
 			<Spacer y={16} />
 

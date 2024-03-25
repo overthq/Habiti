@@ -57,7 +57,9 @@ const PaymentMethods: React.FC = () => {
 					{cards.map(card => (
 						<View key={card.id} style={styles.card}>
 							<MastercardIcon />
-							<Typography>Ending with {card.last4}</Typography>
+							<Typography
+								style={styles.capitalize}
+							>{`${card.cardType} \u2022\u2022\u2022\u2022${card.last4}`}</Typography>
 						</View>
 					))}
 				</View>
@@ -85,6 +87,9 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		paddingVertical: 4
+	},
+	capitalize: {
+		textTransform: 'capitalize'
 	}
 });
 

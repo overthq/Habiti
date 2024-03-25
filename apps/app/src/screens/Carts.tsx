@@ -7,8 +7,10 @@ import CartsListItem from '../components/carts/CartsListItem';
 import { useCartsQuery } from '../types/api';
 import { AppStackParamList, HomeTabParamList } from '../types/navigation';
 
-// Maintain a list of recently viewed stores and items.
-// So that we can use them in the empty state for this screen.
+// TODO:
+// - Maintain a list of recently viewed stores and items,
+//   so that we can use them in the empty state for this screen.
+// - Add "Edit" mode to this screen (with nice animations).
 
 const Carts: React.FC = () => {
 	const [{ data, fetching }, refetch] = useCartsQuery();

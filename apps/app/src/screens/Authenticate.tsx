@@ -1,4 +1,4 @@
-import { Button, Input, Screen, Typography } from '@market/components';
+import { Button, Input, Screen, Spacer, Typography } from '@market/components';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
@@ -32,10 +32,11 @@ const Authenticate = () => {
 		<Screen style={styles.container}>
 			<KeyboardAvoidingView style={{ width: '100%' }} behavior='padding'>
 				<Typography weight='bold' size='xxxlarge'>
-					Enter your phone number.
+					Welcome back
 				</Typography>
 				<Typography variant='secondary'>{`We'll send your verification code here.`}</Typography>
 
+				<Spacer y={16} />
 				<Input
 					label='Phone'
 					placeholder='08012345678'
@@ -43,6 +44,8 @@ const Authenticate = () => {
 					value={phone}
 					onChangeText={setPhone}
 				/>
+
+				<Spacer y={16} />
 
 				<Button
 					text='Send verification code'

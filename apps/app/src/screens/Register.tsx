@@ -1,4 +1,4 @@
-import { Button, Input, Typography } from '@market/components';
+import { Button, Input, Spacer, Typography } from '@market/components';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
@@ -38,7 +38,9 @@ const Register = () => {
 					size='xxxlarge'
 					weight='bold'
 				>{`Let's meet you.`}</Typography>
+				<Spacer y={2} />
 				<Typography>This helps us in personalizing your experience.</Typography>
+				<Spacer y={16} />
 				<Input
 					label='Name'
 					onChangeText={setName}
@@ -46,6 +48,7 @@ const Register = () => {
 					autoCorrect={false}
 					autoCapitalize='words'
 				/>
+				<Spacer y={8} />
 				<Input
 					label='Email'
 					onChangeText={setEmail}
@@ -54,6 +57,7 @@ const Register = () => {
 					autoCapitalize='none'
 					keyboardType='email-address'
 				/>
+				<Spacer y={8} />
 				<Input
 					label='Phone'
 					onChangeText={setPhone}
@@ -62,6 +66,7 @@ const Register = () => {
 					autoCorrect={false}
 					autoCapitalize='none'
 				/>
+				<Spacer y={16} />
 				<Button text='Next' onPress={handleSubmit} loading={fetching} />
 				<TouchableOpacity
 					style={{ alignSelf: 'center', marginTop: 8 }}
