@@ -18,10 +18,15 @@ import CartProduct from '../components/cart/CartProduct';
 import CartTotal from '../components/cart/CartTotal';
 import DeliveryInfo from '../components/cart/DeliveryInfo';
 import SelectCard from '../components/cart/SelectCard';
+import StoreInfo from '../components/cart/StoreInfo';
 import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useCreateOrderMutation, useCartQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
+
+// There is a need to master optimistic updates on this screen,
+// It is also important to make use of tasteful animations to make
+// it feel slick.
 
 const Cart: React.FC = () => {
 	const {
@@ -68,6 +73,8 @@ const Cart: React.FC = () => {
 
 	return (
 		<ScrollableScreen style={[styles.container, { paddingBottom: bottom }]}>
+			<StoreInfo store={cart.store} />
+
 			<View style={{ paddingHorizontal: 16 }}>
 				<Typography weight='medium' variant='secondary'>
 					Order Summary
@@ -110,12 +117,8 @@ const Cart: React.FC = () => {
 
 			<CartTotal cart={cart} />
 
-			<View style={{ paddingHorizontal: 16 }}>
-				<Button
-					text='Place Order'
-					onPress={handleSubmit}
-					style={styles.button}
-				/>
+			<View style={{ paddingTop: 16, paddingHorizontal: 16 }}>
+				<Button text='Place Order' onPress={handleSubmit} />
 			</View>
 		</ScrollableScreen>
 	);
@@ -127,19 +130,6 @@ const styles = StyleSheet.create({
 	},
 	container: {
 		paddingTop: 16
-	},
-	bottom: {
-		flex: 1,
-		justifyContent: 'flex-end'
-	},
-	row: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		marginBottom: 4
-	},
-	button: {
-		marginTop: 16
 	}
 });
 

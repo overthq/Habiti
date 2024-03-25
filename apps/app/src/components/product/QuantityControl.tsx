@@ -60,8 +60,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'space-between',
 		borderRadius: 4,
-		paddingHorizontal: 16,
-		marginRight: 16
+		paddingHorizontal: 16
 	}
 });
 

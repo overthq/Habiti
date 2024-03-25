@@ -15,6 +15,7 @@ const CartTotal: React.FC<CartTotalProps> = ({ cart }) => {
 			<CartTotalRow title='Subtotal' value={formatNaira(cart.total)} />
 			<CartTotalRow title='Service Fee' value='-' />
 			<CartTotalRow title='Taxes' value='-' />
+			<CartTotalRow title='Total' value={formatNaira(cart.total)} total />
 		</View>
 	);
 };
@@ -22,13 +23,24 @@ const CartTotal: React.FC<CartTotalProps> = ({ cart }) => {
 interface CartTotalRowProps {
 	title: string;
 	value: string;
+	total?: boolean;
 }
 
-const CartTotalRow: React.FC<CartTotalRowProps> = ({ title, value }) => {
+const CartTotalRow: React.FC<CartTotalRowProps> = ({ title, value, total }) => {
 	return (
 		<View style={styles.row}>
-			<Typography>{title}</Typography>
-			<Typography>{value}</Typography>
+			<Typography
+				variant={total ? 'primary' : 'secondary'}
+				weight={total ? 'medium' : 'regular'}
+			>
+				{title}
+			</Typography>
+			<Typography
+				variant={total ? 'primary' : 'secondary'}
+				weight={total ? 'medium' : 'regular'}
+			>
+				{value}
+			</Typography>
 		</View>
 	);
 };
@@ -38,7 +50,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		marginBottom: 4
+		marginBottom: 8
 	}
 });
 

@@ -8,7 +8,7 @@ const DeliveryInfo = () => {
 			<Typography weight='medium' variant='secondary'>
 				Delivery Address
 			</Typography>
-			<Spacer y={4} />
+			<Spacer y={8} />
 			<Typography>There are no delivery addresses set up.</Typography>
 		</View>
 	);

@@ -17,17 +17,20 @@ const CartProduct: React.FC<CartProductProps> = ({
 }) => {
 	return (
 		<Pressable style={styles.container} onPress={onPress}>
-			<CustomImage uri={product.images[0]?.path} height={40} width={40} />
-			<Spacer x={8} />
-			<View>
-				<Typography>{product.name}</Typography>
-				<Spacer y={2} />
-				<Typography size='small' variant='secondary'>
-					{`${plural('unit', quantity)} · ${formatNaira(
-						product.unitPrice * quantity
-					)}`}
-				</Typography>
+			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+				<CustomImage uri={product.images[0]?.path} height={40} width={40} />
+				<Spacer x={8} />
+				<View>
+					<Typography>{product.name}</Typography>
+					<Spacer y={2} />
+					<Typography size='small' variant='secondary'>
+						{`${plural('unit', quantity)} · ${formatNaira(
+							product.unitPrice * quantity
+						)}`}
+					</Typography>
+				</View>
 			</View>
+			<Typography>{formatNaira(product.unitPrice * quantity)}</Typography>
 		</Pressable>
 	);
 };
@@ -36,7 +39,8 @@ const styles = StyleSheet.create({
 	container: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		marginVertical: 4
+		justifyContent: 'space-between',
+		paddingVertical: 8
 	}
 });
 

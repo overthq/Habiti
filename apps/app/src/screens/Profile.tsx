@@ -14,6 +14,7 @@ import { ProfileStackParamList } from '../types/navigation';
   - Addresses
   - Loyalty Cards (list followed stores that support loyalty cards.)
   - Country*
+	- Market Pro* (subscription membership with perks).
 * About this app
   - Legal
 	- TOS
