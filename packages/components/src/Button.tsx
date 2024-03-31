@@ -23,6 +23,7 @@ const Button: React.FC<ButtonProps> = ({
 	loading,
 	style,
 	variant = 'primary',
+	disabled,
 	...props
 }) => {
 	const { theme } = useTheme();
@@ -31,10 +32,13 @@ const Button: React.FC<ButtonProps> = ({
 		<Pressable
 			style={[
 				styles.container,
-				{ backgroundColor: theme.button[variant].background },
+				{
+					backgroundColor:
+						theme.button[disabled ? 'disabled' : variant].background
+				},
 				style
 			]}
-			disabled={loading || props.disabled}
+			disabled={loading || disabled}
 			{...props}
 		>
 			{loading ? (

@@ -83,6 +83,10 @@ const dark = {
 		tertiary: {
 			background: '',
 			text: ''
+		},
+		disabled: {
+			background: '',
+			text: ''
 		}
 	},
 	screen: {
@@ -142,6 +146,10 @@ const light = {
 			text: palette.neutral.n10
 		},
 		tertiary: {
+			background: '',
+			text: ''
+		},
+		disabled: {
 			background: '',
 			text: ''
 		}
