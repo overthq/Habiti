@@ -10,6 +10,11 @@ const ProductCategoryTypes = gql`
 		category: StoreProductCategory!
 	}
 
+	type ProductCategoryEdge {
+		cursor: String!
+		node: ProductCategory
+	}
+
 	type StoreProductCategory {
 		id: ID!
 		name: String!

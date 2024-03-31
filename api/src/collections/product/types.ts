@@ -43,12 +43,17 @@ const ProductTypes = gql`
 	}
 
 	input ProductFilterInput {
+		name: StringWhere
 		unitPrice: IntWhere
 		quantity: IntWhere
 	}
 
 	extend type Query {
 		product(id: ID!): Product!
+		products(
+			filter: ProductFilterInput
+			orderBy: [ProductOrderByInput!]
+		): [Product!]!
 	}
 
 	extend type Mutation {

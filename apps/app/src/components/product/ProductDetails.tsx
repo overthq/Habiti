@@ -1,4 +1,4 @@
-import { Typography } from '@market/components';
+import { Spacer, Typography } from '@market/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
@@ -12,7 +12,7 @@ interface ProductDetailsProps {
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => (
 	<View style={styles.container}>
 		<View style={styles.meta}>
-			<Typography size='xxlarge' weight='medium'>
+			<Typography size='xxlarge' weight='bold'>
 				{product.name}
 			</Typography>
 			<Typography size='large'>{formatNaira(product.unitPrice)}</Typography>
@@ -20,6 +20,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => (
 		<Typography weight='medium' variant='secondary'>
 			Description
 		</Typography>
+		<Spacer y={2} />
 		<Typography>{product?.description}</Typography>
 	</View>
 );

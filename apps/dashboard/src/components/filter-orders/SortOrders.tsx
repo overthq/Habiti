@@ -11,30 +11,28 @@ const SortOrders = () => {
 	const { control, setValue } = useFormContext<FilterOrdersFormValues>();
 
 	return (
-		<View style={styles.container}>
-			<Controller
-				name='sortBy'
-				control={control}
-				render={({ field }) => (
-					<>
-						<Pressable
-							style={styles.option}
-							onPress={() => setValue('sortBy', undefined)}
-						>
-							<Typography>Default</Typography>
-							<Radio active={field.value === undefined} />
-						</Pressable>
-						<Pressable
-							style={styles.option}
-							onPress={() => setValue('sortBy', 'created-at-desc')}
-						>
-							<Typography>Newest</Typography>
-							<Radio active={field.value === 'created-at-desc'} />
-						</Pressable>
-					</>
-				)}
-			/>
-		</View>
+		<Controller
+			name='sortBy'
+			control={control}
+			render={({ field }) => (
+				<View style={styles.container}>
+					<Pressable
+						style={styles.option}
+						onPress={() => setValue('sortBy', undefined)}
+					>
+						<Typography>Default</Typography>
+						<Radio active={field.value === undefined} />
+					</Pressable>
+					<Pressable
+						style={styles.option}
+						onPress={() => setValue('sortBy', 'created-at-desc')}
+					>
+						<Typography>Newest</Typography>
+						<Radio active={field.value === 'created-at-desc'} />
+					</Pressable>
+				</View>
+			)}
+		/>
 	);
 };
 

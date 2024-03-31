@@ -1,4 +1,4 @@
-import { CustomImage, Icon, Typography } from '@market/components';
+import { CustomImage, Spacer, Typography } from '@market/components';
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 
@@ -17,18 +17,20 @@ const CartProduct: React.FC<CartProductProps> = ({
 }) => {
 	return (
 		<Pressable style={styles.container} onPress={onPress}>
-			<View style={{ flexDirection: 'row' }}>
+			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 				<CustomImage uri={product.images[0]?.path} height={40} width={40} />
+				<Spacer x={8} />
 				<View>
 					<Typography>{product.name}</Typography>
-					<Typography style={styles.price}>
+					<Spacer y={2} />
+					<Typography size='small' variant='secondary'>
 						{`${plural('unit', quantity)} · ${formatNaira(
 							product.unitPrice * quantity
 						)}`}
 					</Typography>
 				</View>
 			</View>
-			<Icon name='chevron-right' color='#505050' />
+			<Typography>{formatNaira(product.unitPrice * quantity)}</Typography>
 		</Pressable>
 	);
 };
@@ -36,17 +38,9 @@ const CartProduct: React.FC<CartProductProps> = ({
 const styles = StyleSheet.create({
 	container: {
 		flexDirection: 'row',
-		justifyContent: 'space-between',
 		alignItems: 'center',
-		marginVertical: 4
-	},
-	image: {
-		width: '100%',
-		height: '100%'
-	},
-	price: {
-		marginTop: 4,
-		color: '#777777'
+		justifyContent: 'space-between',
+		paddingVertical: 8
 	}
 });
 

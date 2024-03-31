@@ -1,5 +1,4 @@
 import { ListEmpty, Screen } from '@market/components';
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
@@ -8,19 +7,23 @@ import CartsListItem from '../components/carts/CartsListItem';
 import { useCartsQuery } from '../types/api';
 import { AppStackParamList, HomeTabParamList } from '../types/navigation';
 
+// TODO:
+// - Maintain a list of recently viewed stores and items,
+//   so that we can use them in the empty state for this screen.
+// - Add "Edit" mode to this screen (with nice animations).
+
 const Carts: React.FC = () => {
 	const [{ data, fetching }, refetch] = useCartsQuery();
 	const { navigate } =
-		useNavigation<BottomTabNavigationProp<HomeTabParamList, 'Carts'>>();
-	const navigation = useNavigation<NavigationProp<AppStackParamList>>();
+		useNavigation<NavigationProp<HomeTabParamList & AppStackParamList>>();
 
 	const carts = data?.currentUser.carts;
 
 	const handleCartPress = React.useCallback(
 		(cartId: string) => () => {
-			navigation.navigate('Cart', { cartId });
+			navigate('Cart', { cartId });
 		},
-		[]
+		[navigate]
 	);
 
 	return (
@@ -32,6 +35,7 @@ const Carts: React.FC = () => {
 				)}
 				estimatedItemSize={66}
 				data={carts}
+				contentContainerStyle={{ paddingTop: 8 }}
 				ListEmptyComponent={
 					<ListEmpty
 						title='Empty cart'

@@ -1,11 +1,8 @@
-import { Button } from '@market/components';
+import { Button, Input, Spacer, Typography } from '@market/components';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import {
-	View,
-	TextInput,
-	Text,
 	KeyboardAvoidingView,
 	TouchableOpacity,
 	TouchableWithoutFeedback,
@@ -37,50 +34,45 @@ const Register = () => {
 	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 			<KeyboardAvoidingView style={styles.container} behavior='padding'>
-				<Text style={styles.title}>{`Let's meet you.`}</Text>
-				<Text style={styles.description}>
-					This helps us in personalizing your experience.
-				</Text>
-				<View>
-					<Text style={styles.inputLabel}>Name</Text>
-					<TextInput
-						style={styles.input}
-						onChangeText={setName}
-						placeholder='John Doe'
-						autoCorrect={false}
-						autoCapitalize='words'
-					/>
-				</View>
-				<View>
-					<Text style={styles.inputLabel}>Email</Text>
-					<TextInput
-						style={styles.input}
-						onChangeText={setEmail}
-						placeholder='john@johndoe.io'
-						autoCorrect={false}
-						autoCapitalize='none'
-						keyboardType='email-address'
-					/>
-				</View>
-				<View>
-					<Text style={styles.inputLabel}>Phone</Text>
-					<TextInput
-						style={styles.input}
-						onChangeText={setPhone}
-						placeholder='08012345678'
-						autoCorrect={false}
-						autoCapitalize='none'
-						keyboardType='phone-pad'
-					/>
-				</View>
+				<Typography
+					size='xxxlarge'
+					weight='bold'
+				>{`Let's meet you.`}</Typography>
+				<Spacer y={2} />
+				<Typography>This helps us in personalizing your experience.</Typography>
+				<Spacer y={16} />
+				<Input
+					label='Name'
+					onChangeText={setName}
+					placeholder='John Doe'
+					autoCorrect={false}
+					autoCapitalize='words'
+				/>
+				<Spacer y={8} />
+				<Input
+					label='Email'
+					onChangeText={setEmail}
+					placeholder='john@johndoe.io'
+					autoCorrect={false}
+					autoCapitalize='none'
+					keyboardType='email-address'
+				/>
+				<Spacer y={8} />
+				<Input
+					label='Phone'
+					onChangeText={setPhone}
+					placeholder='08012345678'
+					keyboardType='phone-pad'
+					autoCorrect={false}
+					autoCapitalize='none'
+				/>
+				<Spacer y={16} />
 				<Button text='Next' onPress={handleSubmit} loading={fetching} />
 				<TouchableOpacity
 					style={{ alignSelf: 'center', marginTop: 8 }}
 					onPress={() => navigate('Authenticate')}
 				>
-					<Text style={{ fontWeight: '500', fontSize: 15 }}>
-						Already have an account?
-					</Text>
+					<Typography weight='medium'>Already have an account?</Typography>
 				</TouchableOpacity>
 			</KeyboardAvoidingView>
 		</TouchableWithoutFeedback>

@@ -1,6 +1,6 @@
-import { Icon, Typography } from '@market/components';
+import { Icon, Spacer, Typography } from '@market/components';
 import React from 'react';
-import { View, Pressable, Text, StyleSheet } from 'react-native';
+import { View, Pressable, StyleSheet } from 'react-native';
 
 interface OverviewActionsProps {
 	pendingOrderCount: number;
@@ -16,18 +16,15 @@ const OverviewActions: React.FC<OverviewActionsProps> = ({
 			<Pressable style={styles.row}>
 				<View style={styles.left}>
 					<Icon name='inbox' size={20} />
-					<Text style={styles.text}>
-						You have {pendingOrderCount} pending orders
-					</Text>
+					<Spacer x={8} />
+					<Typography>You have {pendingOrderCount} pending orders</Typography>
 				</View>
 				<Icon name='chevron-right' size={20} />
 			</Pressable>
 			<Pressable style={styles.row}>
 				<View style={styles.left}>
 					<Icon name='tag' size={20} />
-					<Typography style={styles.text}>
-						{lowStockCount} products are running low
-					</Typography>
+					<Typography>{lowStockCount} products are running low</Typography>
 				</View>
 				<Icon name='chevron-right' size={20} />
 			</Pressable>
@@ -47,9 +44,6 @@ const styles = StyleSheet.create({
 	},
 	left: {
 		flexDirection: 'row'
-	},
-	text: {
-		marginLeft: 8
 	}
 });
 

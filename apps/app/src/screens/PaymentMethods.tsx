@@ -1,4 +1,10 @@
-import { Icon, ListEmpty, Screen, Typography } from '@market/components';
+import {
+	Icon,
+	ListEmpty,
+	Screen,
+	Typography,
+	useTheme
+} from '@market/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, ActivityIndicator, Pressable } from 'react-native';
@@ -12,6 +18,7 @@ const PaymentMethods: React.FC = () => {
 	const [{ data, fetching }] = useCardsQuery();
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
+	const { theme } = useTheme();
 	useGoBack();
 
 	React.useLayoutEffect(() => {
@@ -22,7 +29,7 @@ const PaymentMethods: React.FC = () => {
 				</Pressable>
 			)
 		});
-	});
+	}, []);
 
 	const cards = data?.currentUser.cards;
 
@@ -35,7 +42,7 @@ const PaymentMethods: React.FC = () => {
 	}
 
 	return (
-		<Screen style={styles.container}>
+		<Screen>
 			{cards.length === 0 ? (
 				<ListEmpty
 					title='No cards added'
@@ -54,11 +61,22 @@ const PaymentMethods: React.FC = () => {
 					>
 						Cards
 					</Typography>
+					<View
+						style={[
+							styles.separator,
+							{ borderBottomColor: theme.border.color }
+						]}
+					/>
 					{cards.map(card => (
-						<View key={card.id} style={styles.card}>
+						<Pressable
+							key={card.id}
+							style={[styles.card, { borderBottomColor: theme.border.color }]}
+						>
 							<MastercardIcon />
-							<Typography>Ending with {card.last4}</Typography>
-						</View>
+							<Typography
+								style={styles.capitalize}
+							>{`${card.cardType} \u2022\u2022\u2022\u2022${card.last4}`}</Typography>
+						</Pressable>
 					))}
 				</View>
 			)}
@@ -67,11 +85,10 @@ const PaymentMethods: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		paddingHorizontal: 16
-	},
 	sectionHeader: {
-		marginTop: 8
+		marginTop: 16,
+		marginBottom: 8,
+		marginLeft: 16
 	},
 	add: {
 		marginRight: 16
@@ -84,7 +101,15 @@ const styles = StyleSheet.create({
 	card: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		paddingVertical: 4
+		paddingVertical: 4,
+		paddingHorizontal: 16,
+		borderBottomWidth: 0.5
+	},
+	capitalize: {
+		textTransform: 'capitalize'
+	},
+	separator: {
+		borderBottomWidth: 0.5
 	}
 });
 

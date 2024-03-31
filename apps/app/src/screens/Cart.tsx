@@ -1,4 +1,9 @@
-import { Button, ScrollableScreen } from '@market/components';
+import {
+	Button,
+	ScrollableScreen,
+	Spacer,
+	Typography
+} from '@market/components';
 import {
 	useRoute,
 	RouteProp,
@@ -6,26 +11,28 @@ import {
 	NavigationProp
 } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import CartProduct from '../components/cart/CartProduct';
+import CartSummary from '../components/cart/CartSummary';
+import CartTotal from '../components/cart/CartTotal';
+import DeliveryInfo from '../components/cart/DeliveryInfo';
 import SelectCard from '../components/cart/SelectCard';
+import StoreInfo from '../components/cart/StoreInfo';
 import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useCreateOrderMutation, useCartQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
-import { formatNaira } from '../utils/currency';
 
-// Maintain a list of recently viewed stores and items.
-// So that we can use them in the empty state for this screen.
+// There is a need to master optimistic updates on this screen,
+// It is also important to make use of tasteful animations to make
+// it feel slick.
 
 const Cart: React.FC = () => {
 	const {
 		params: { cartId }
 	} = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
 	const { goBack } = useNavigation<NavigationProp<AppStackParamList>>();
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	useGoBack();
 
 	const [{ data, fetching }] = useCartQuery({ variables: { cartId } });
@@ -35,7 +42,6 @@ const Cart: React.FC = () => {
 	const { bottom } = useSafeAreaInsets();
 
 	const [selectedCard, setSelectedCard] = React.useState(defaultCardId);
-	const cart = data?.cart;
 
 	const handleSubmit = React.useCallback(async () => {
 		try {
@@ -53,58 +59,44 @@ const Cart: React.FC = () => {
 		[]
 	);
 
-	const handleCartProductPress = React.useCallback(
-		(productId: string) => () => {
-			navigate('Product', { productId });
-		},
-		[]
-	);
+	const cart = data?.cart;
 
-	if (fetching || !cart) return <View style={styles.loading} />;
+	if (fetching || !cart) return <View />;
 
 	return (
 		<ScrollableScreen style={[styles.container, { paddingBottom: bottom }]}>
-			<Text style={styles.sectionHeader}>Order Summary</Text>
+			<StoreInfo store={cart.store} />
 
-			{cart.products.map(cartProduct => (
-				<CartProduct
-					key={cartProduct.id}
-					cartProduct={cartProduct}
-					onPress={handleCartProductPress(cartProduct.id)}
-				/>
-			))}
+			<CartSummary products={cart.products} />
 
-			<Text style={styles.sectionHeader}>Delivery Address</Text>
+			<Spacer y={16} />
+
+			<DeliveryInfo />
+
+			<Spacer y={16} />
 
 			<View>
-				<Text style={styles.sectionHeader}>Payment Method</Text>
+				<Typography
+					weight='medium'
+					variant='secondary'
+					style={{ marginLeft: 16 }}
+				>
+					Payment Method
+				</Typography>
+				<Spacer y={8} />
 				<SelectCard
+					cards={cart.user.cards}
 					selectedCard={selectedCard}
 					onCardSelect={handleCardSelect}
 				/>
 			</View>
 
-			<View style={[styles.row, { marginTop: 40 }]}>
-				<Text style={styles.total}>Subtotal</Text>
-				<Text style={styles.total}>{formatNaira(cart.total)}</Text>
-			</View>
+			<Spacer y={40} />
 
-			<View style={styles.row}>
-				<Text style={styles.total}>Service Fee</Text>
-				<Text style={styles.total}>-</Text>
-			</View>
+			<CartTotal cart={cart} />
 
-			<View style={styles.row}>
-				<Text style={styles.total}>Taxes</Text>
-				<Text style={styles.total}>-</Text>
-			</View>
-
-			<View style={styles.bottom}>
-				<Button
-					text='Place Order'
-					onPress={handleSubmit}
-					style={styles.button}
-				/>
+			<View style={{ paddingTop: 16, paddingHorizontal: 16 }}>
+				<Button text='Place Order' onPress={handleSubmit} />
 			</View>
 		</ScrollableScreen>
 	);
@@ -115,35 +107,7 @@ const styles = StyleSheet.create({
 		flex: 1
 	},
 	container: {
-		paddingTop: 8,
-		paddingHorizontal: 16
-	},
-	heading: {
-		fontWeight: 'bold',
-		fontSize: 32,
-		marginBottom: 16
-	},
-	sectionHeader: {
-		fontSize: 16,
-		fontWeight: '500',
-		color: '#505050',
-		marginVertical: 4
-	},
-	bottom: {
-		flex: 1,
-		justifyContent: 'flex-end'
-	},
-	row: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		marginBottom: 4
-	},
-	total: {
-		fontSize: 16
-	},
-	button: {
-		marginTop: 16
+		paddingTop: 16
 	}
 });
 

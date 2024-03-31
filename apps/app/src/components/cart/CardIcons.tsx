@@ -17,3 +17,11 @@ export const MastercardIcon = () => (
 		/>
 	</Svg>
 );
+
+export const VisaIcon = () => {
+	return <Svg />;
+};
+
+export const CardIconMap = {
+	visa: <VisaIcon />
+} as const;

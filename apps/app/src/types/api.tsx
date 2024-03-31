@@ -22,6 +22,15 @@ export type Scalars = {
 	Upload: any;
 };
 
+export type AddDeliveryAddressInput = {
+	name?: InputMaybe<Scalars['String']>;
+};
+
+export type AddProductToCategoryInput = {
+	categoryId: Scalars['ID'];
+	productId: Scalars['ID'];
+};
+
 export type AddStoreManagerInput = {
 	managerId: Scalars['ID'];
 	storeId: Scalars['ID'];
@@ -63,7 +72,7 @@ export type Cart = {
 	__typename?: 'Cart';
 	createdAt: Scalars['String'];
 	id: Scalars['ID'];
-	products: Array<CartProduct>;
+	products: CartProduct[];
 	store: Store;
 	storeId: Scalars['ID'];
 	total: Scalars['Int'];
@@ -88,21 +97,31 @@ export type CreateCartInput = {
 	storeId: Scalars['ID'];
 };
 
+export type CreateCategoryInput = {
+	description?: InputMaybe<Scalars['String']>;
+	name: Scalars['String'];
+};
+
 export type CreateOrderInput = {
 	cardId?: InputMaybe<Scalars['ID']>;
 	cartId: Scalars['ID'];
 };
 
+export type CreatePayoutInput = {
+	amount: Scalars['Int'];
+};
+
 export type CreateProductInput = {
 	description: Scalars['String'];
-	imageFiles: Array<Scalars['Upload']>;
+	imageFiles: Scalars['Upload'][];
 	name: Scalars['String'];
 	quantity: Scalars['Int'];
-	storeId: Scalars['ID'];
 	unitPrice: Scalars['Int'];
 };
 
 export type CreateStoreInput = {
+	bankAccountNumber?: InputMaybe<Scalars['String']>;
+	bankCode?: InputMaybe<Scalars['String']>;
 	description: Scalars['String'];
 	instagram?: InputMaybe<Scalars['String']>;
 	name: Scalars['String'];
@@ -111,9 +130,17 @@ export type CreateStoreInput = {
 	website?: InputMaybe<Scalars['String']>;
 };
 
+export type DeliveryAddress = {
+	__typename?: 'DeliveryAddress';
+	id: Scalars['ID'];
+	name?: Maybe<Scalars['String']>;
+	user: User;
+	userId: Scalars['ID'];
+};
+
 export type EditProductInput = {
 	description?: InputMaybe<Scalars['String']>;
-	imageFiles: Array<Scalars['Upload']>;
+	imageFiles: Scalars['Upload'][];
 	name?: InputMaybe<Scalars['String']>;
 	quantity?: InputMaybe<Scalars['Int']>;
 	unitPrice?: InputMaybe<Scalars['Int']>;
@@ -126,12 +153,20 @@ export type EditProfileInput = {
 };
 
 export type EditStoreInput = {
+	bankAccountNumber?: InputMaybe<Scalars['String']>;
+	bankCode?: InputMaybe<Scalars['String']>;
 	description?: InputMaybe<Scalars['String']>;
 	imageFile?: InputMaybe<Scalars['Upload']>;
 	instagram?: InputMaybe<Scalars['String']>;
 	name?: InputMaybe<Scalars['String']>;
 	twitter?: InputMaybe<Scalars['String']>;
 	website?: InputMaybe<Scalars['String']>;
+};
+
+export type Filter = {
+	__typename?: 'Filter';
+	first?: Maybe<Scalars['Int']>;
+	last?: Maybe<Scalars['Int']>;
 };
 
 export type Image = {
@@ -147,35 +182,57 @@ export type Image = {
 	updatedAt: Scalars['String'];
 };
 
+export type IntWhere = {
+	gt?: InputMaybe<Scalars['Int']>;
+	gte?: InputMaybe<Scalars['Int']>;
+	lt?: InputMaybe<Scalars['Int']>;
+	lte?: InputMaybe<Scalars['Int']>;
+};
+
 export type Mutation = {
 	__typename?: 'Mutation';
 	_?: Maybe<Scalars['Boolean']>;
+	addDeliveryAddress?: Maybe<DeliveryAddress>;
+	addProductToCategory: ProductCategory;
 	addStoreManager: StoreManager;
 	addToCart: CartProduct;
 	addToWatchlist: WatchlistProduct;
 	authenticate: AuthenticateResponse;
 	createCart: Cart;
 	createOrder: Order;
+	createPayout: Payout;
 	createProduct: Product;
+	createProductCategory: StoreProductCategory;
 	createStore: Store;
 	deleteAccount: User;
 	deleteCard: Card;
-	deleteCart: Scalars['ID'];
+	deleteCart: Cart;
 	deleteImage: Image;
 	deleteProduct: Product;
+	deleteProductCategory: StoreProductCategory;
 	deleteStore: Scalars['ID'];
-	deleteUser: Scalars['ID'];
+	deleteUser: User;
 	editProduct: Product;
 	editProfile: User;
 	editStore: Store;
 	followStore: StoreFollower;
 	register: User;
 	removeFromCart: Scalars['ID'];
+	removeProductFromCategory: ProductCategory;
 	removeStoreManager: StoreManager;
 	unfollowStore: StoreFollower;
 	updateCartProduct: CartProduct;
 	updateOrder: Order;
 	verify: VerifyResponse;
+	verifyBankAccount: VerifyBankAccountResponse;
+};
+
+export type MutationAddDeliveryAddressArgs = {
+	input?: InputMaybe<AddDeliveryAddressInput>;
+};
+
+export type MutationAddProductToCategoryArgs = {
+	input: AddProductToCategoryInput;
 };
 
 export type MutationAddStoreManagerArgs = {
@@ -202,8 +259,16 @@ export type MutationCreateOrderArgs = {
 	input: CreateOrderInput;
 };
 
+export type MutationCreatePayoutArgs = {
+	input: CreatePayoutInput;
+};
+
 export type MutationCreateProductArgs = {
 	input: CreateProductInput;
+};
+
+export type MutationCreateProductCategoryArgs = {
+	input: CreateCategoryInput;
 };
 
 export type MutationCreateStoreArgs = {
@@ -226,6 +291,10 @@ export type MutationDeleteProductArgs = {
 	id: Scalars['ID'];
 };
 
+export type MutationDeleteProductCategoryArgs = {
+	categoryId: Scalars['ID'];
+};
+
 export type MutationDeleteStoreArgs = {
 	id: Scalars['ID'];
 };
@@ -244,7 +313,6 @@ export type MutationEditProfileArgs = {
 };
 
 export type MutationEditStoreArgs = {
-	id: Scalars['ID'];
 	input: EditStoreInput;
 };
 
@@ -259,6 +327,10 @@ export type MutationRegisterArgs = {
 export type MutationRemoveFromCartArgs = {
 	cartId: Scalars['ID'];
 	productId: Scalars['ID'];
+};
+
+export type MutationRemoveProductFromCategoryArgs = {
+	input: RemoveProductFromCategoryInput;
 };
 
 export type MutationRemoveStoreManagerArgs = {
@@ -283,6 +355,10 @@ export type MutationVerifyArgs = {
 	input: VerifyInput;
 };
 
+export type MutationVerifyBankAccountArgs = {
+	input: VerifyBankAccountInput;
+};
+
 export type NewStats = {
 	__typename?: 'NewStats';
 	daily: Stats;
@@ -291,11 +367,15 @@ export type NewStats = {
 	yearly: Stats;
 };
 
+export type Node = {
+	id: Scalars['ID'];
+};
+
 export type Order = {
 	__typename?: 'Order';
 	createdAt: Scalars['String'];
 	id: Scalars['ID'];
-	products: Array<OrderProduct>;
+	products: OrderProduct[];
 	status: OrderStatus;
 	store: Store;
 	storeId: Scalars['ID'];
@@ -303,6 +383,11 @@ export type Order = {
 	updatedAt: Scalars['String'];
 	user: User;
 	userId: Scalars['ID'];
+};
+
+export type OrderOrderByInput = {
+	createdAt?: InputMaybe<Sort>;
+	updatedAt?: InputMaybe<Sort>;
 };
 
 export type OrderProduct = {
@@ -324,41 +409,96 @@ export enum OrderStatus {
 	Processing = 'Processing'
 }
 
+export type PageInfo = {
+	__typename?: 'PageInfo';
+	endCursor?: Maybe<Scalars['String']>;
+	hasNextPage: Scalars['Boolean'];
+	hasPreviousPage: Scalars['Boolean'];
+	startCursor?: Maybe<Scalars['String']>;
+};
+
+export type Payout = {
+	__typename?: 'Payout';
+	amount: Scalars['Int'];
+	createdAt: Scalars['String'];
+	id: Scalars['ID'];
+	store: Store;
+	storeId: Scalars['ID'];
+	updatedAt: Scalars['String'];
+};
+
 export type Product = {
 	__typename?: 'Product';
-	carts: Array<CartProduct>;
+	carts: CartProduct[];
+	categories: ProductCategory[];
 	createdAt: Scalars['String'];
 	description: Scalars['String'];
 	id: Scalars['ID'];
-	images: Array<Image>;
+	images: Image[];
 	inCart: Scalars['Boolean'];
 	name: Scalars['String'];
-	orders: Array<Order>;
+	orders: Order[];
 	quantity: Scalars['Int'];
 	store: Store;
 	storeId: Scalars['ID'];
 	unitPrice: Scalars['Int'];
 	updatedAt: Scalars['String'];
-	watchlists: Array<WatchlistProduct>;
+	watchlists: WatchlistProduct[];
+};
+
+export type ProductOrdersArgs = {
+	orderBy?: InputMaybe<OrderOrderByInput[]>;
+};
+
+export type ProductCategory = {
+	__typename?: 'ProductCategory';
+	category: StoreProductCategory;
+	categoryId: Scalars['ID'];
+	id: Scalars['ID'];
+	product: Product;
+	productId: Scalars['ID'];
+};
+
+export type ProductCategoryEdge = {
+	__typename?: 'ProductCategoryEdge';
+	cursor: Scalars['String'];
+	node?: Maybe<ProductCategory>;
+};
+
+export type ProductFilterInput = {
+	name?: InputMaybe<StringWhere>;
+	quantity?: InputMaybe<IntWhere>;
+	unitPrice?: InputMaybe<IntWhere>;
+};
+
+export type ProductOrderByInput = {
+	createdAt?: InputMaybe<Sort>;
+	unitPrice?: InputMaybe<Sort>;
+	updatedAt?: InputMaybe<Sort>;
 };
 
 export type Query = {
 	__typename?: 'Query';
-	_?: Maybe<Scalars['Boolean']>;
 	cart: Cart;
-	carts: Array<Cart>;
+	carts: Cart[];
+	currentStore: Store;
 	currentUser: User;
+	node?: Maybe<Node>;
 	order: Order;
 	product: Product;
+	products: Product[];
 	stats: Stats;
 	store: Store;
-	storeProducts: Array<Product>;
-	stores: Array<Store>;
+	stores: Store[];
 	user: User;
-	users: Array<User>;
+	users: User[];
 };
 
 export type QueryCartArgs = {
+	id: Scalars['ID'];
+};
+
+export type QueryNodeArgs = {
 	id: Scalars['ID'];
 };
 
@@ -370,17 +510,21 @@ export type QueryProductArgs = {
 	id: Scalars['ID'];
 };
 
+export type QueryProductsArgs = {
+	filter?: InputMaybe<ProductFilterInput>;
+	orderBy?: InputMaybe<ProductOrderByInput[]>;
+};
+
 export type QueryStatsArgs = {
 	period?: InputMaybe<StatPeriod>;
-	storeId: Scalars['ID'];
 };
 
 export type QueryStoreArgs = {
 	id: Scalars['ID'];
 };
 
-export type QueryStoreProductsArgs = {
-	id: Scalars['ID'];
+export type QueryStoresArgs = {
+	filter?: InputMaybe<StoreFilterInput>;
 };
 
 export type QueryUserArgs = {
@@ -393,6 +537,16 @@ export type RegisterInput = {
 	phone: Scalars['String'];
 };
 
+export type RemoveProductFromCategoryInput = {
+	categoryId: Scalars['ID'];
+	productId: Scalars['ID'];
+};
+
+export enum Sort {
+	Asc = 'asc',
+	Desc = 'desc'
+}
+
 export enum StatPeriod {
 	Day = 'Day',
 	Month = 'Month',
@@ -403,30 +557,52 @@ export enum StatPeriod {
 export type Stats = {
 	__typename?: 'Stats';
 	id: Scalars['ID'];
-	orders: Array<Order>;
-	products: Array<Product>;
+	orders: Order[];
+	pendingOrderCount: Scalars['Int'];
+	products: Product[];
 	revenue: Scalars['Int'];
 	storeId: Scalars['ID'];
 };
 
 export type Store = {
 	__typename?: 'Store';
+	bankAccountNumber?: Maybe<Scalars['String']>;
+	bankAccountReference?: Maybe<Scalars['String']>;
+	bankCode?: Maybe<Scalars['String']>;
 	cartId?: Maybe<Scalars['ID']>;
-	carts: Array<Cart>;
+	carts: Cart[];
+	categories: StoreProductCategory[];
 	createdAt: Scalars['String'];
 	description?: Maybe<Scalars['String']>;
 	followedByUser: Scalars['Boolean'];
-	followers: Array<StoreFollower>;
+	followers: StoreFollower[];
 	id: Scalars['ID'];
 	image?: Maybe<Image>;
 	instagram?: Maybe<Scalars['String']>;
-	managers: Array<StoreManager>;
+	managers: StoreManager[];
 	name: Scalars['String'];
-	orders: Array<Order>;
-	products: Array<Product>;
+	orders: Order[];
+	payedOut: Scalars['Int'];
+	payouts: Payout[];
+	products: Product[];
+	realizedRevenue: Scalars['Int'];
 	twitter?: Maybe<Scalars['String']>;
+	unrealizedRevenue: Scalars['Int'];
 	updatedAt: Scalars['String'];
 	website?: Maybe<Scalars['String']>;
+};
+
+export type StoreOrdersArgs = {
+	orderBy?: InputMaybe<OrderOrderByInput[]>;
+};
+
+export type StoreProductsArgs = {
+	filter?: InputMaybe<ProductFilterInput>;
+	orderBy?: InputMaybe<ProductOrderByInput[]>;
+};
+
+export type StoreFilterInput = {
+	name?: InputMaybe<StringWhere>;
 };
 
 export type StoreFollower = {
@@ -447,11 +623,33 @@ export type StoreManager = {
 	storeId: Scalars['ID'];
 };
 
+export type StoreProductCategory = {
+	__typename?: 'StoreProductCategory';
+	id: Scalars['ID'];
+	name: Scalars['String'];
+	products: ProductCategory[];
+	store: Store;
+	storeId: Scalars['ID'];
+};
+
 export enum StoreStatPeriod {
 	Day = 'Day',
 	Month = 'Month',
 	Week = 'Week',
 	Year = 'Year'
+}
+
+export type StringWhere = {
+	contains?: InputMaybe<Scalars['String']>;
+	endsWith?: InputMaybe<Scalars['String']>;
+	mode?: InputMaybe<StringWhereMode>;
+	search?: InputMaybe<Scalars['String']>;
+	startsWith?: InputMaybe<Scalars['String']>;
+};
+
+export enum StringWhereMode {
+	Default = 'default',
+	Insensitive = 'insensitive'
 }
 
 export type UpdateCartProductInput = {
@@ -466,18 +664,29 @@ export type UpdateOrderInput = {
 
 export type User = {
 	__typename?: 'User';
-	cards: Array<Card>;
-	carts: Array<Cart>;
+	cards: Card[];
+	carts: Cart[];
 	createdAt: Scalars['String'];
 	email: Scalars['String'];
-	followed: Array<StoreFollower>;
+	followed: StoreFollower[];
 	id: Scalars['ID'];
-	managed: Array<StoreManager>;
+	managed: StoreManager[];
 	name: Scalars['String'];
-	orders: Array<Order>;
+	orders: Order[];
 	phone: Scalars['String'];
 	updatedAt: Scalars['String'];
-	watchlist: Array<WatchlistProduct>;
+	watchlist: WatchlistProduct[];
+};
+
+export type VerifyBankAccountInput = {
+	bankAccountNumber: Scalars['String'];
+	bankCode: Scalars['String'];
+};
+
+export type VerifyBankAccountResponse = {
+	__typename?: 'VerifyBankAccountResponse';
+	accountName: Scalars['String'];
+	accountNumber: Scalars['String'];
 };
 
 export type VerifyInput = {
@@ -507,7 +716,7 @@ export type CardsQuery = {
 	currentUser: {
 		__typename?: 'User';
 		id: string;
-		cards: Array<{
+		cards: {
 			__typename?: 'Card';
 			id: string;
 			email: string;
@@ -517,7 +726,7 @@ export type CardsQuery = {
 			expYear: string;
 			bank: string;
 			countryCode: string;
-		}>;
+		}[];
 	};
 };
 
@@ -528,7 +737,7 @@ export type CartsQuery = {
 	currentUser: {
 		__typename?: 'User';
 		id: string;
-		carts: Array<{
+		carts: {
 			__typename?: 'Cart';
 			id: string;
 			userId: string;
@@ -540,12 +749,12 @@ export type CartsQuery = {
 				name: string;
 				image?: { __typename?: 'Image'; id: string; path: string } | null;
 			};
-			products: Array<{
+			products: {
 				__typename?: 'CartProduct';
 				id: string;
 				quantity: number;
-			}>;
-		}>;
+			}[];
+		}[];
 	};
 };
 
@@ -561,8 +770,19 @@ export type CartQuery = {
 		userId: string;
 		storeId: string;
 		total: number;
+		user: {
+			__typename?: 'User';
+			id: string;
+			cards: {
+				__typename?: 'Card';
+				id: string;
+				email: string;
+				cardType: string;
+				last4: string;
+			}[];
+		};
 		store: { __typename?: 'Store'; id: string; name: string };
-		products: Array<{
+		products: {
 			__typename?: 'CartProduct';
 			id: string;
 			cartId: string;
@@ -574,9 +794,9 @@ export type CartQuery = {
 				name: string;
 				unitPrice: number;
 				storeId: string;
-				images: Array<{ __typename?: 'Image'; id: string; path: string }>;
+				images: { __typename?: 'Image'; id: string; path: string }[];
 			};
-		}>;
+		}[];
 	};
 };
 
@@ -618,7 +838,7 @@ export type CreateCartMutation = {
 		storeId: string;
 		total: number;
 		store: { __typename?: 'Store'; id: string; name: string };
-		products: Array<{
+		products: {
 			__typename?: 'CartProduct';
 			cartId: string;
 			productId: string;
@@ -629,7 +849,7 @@ export type CreateCartMutation = {
 				name: string;
 				unitPrice: number;
 			};
-		}>;
+		}[];
 	};
 };
 
@@ -639,7 +859,7 @@ export type DeleteCartMutationVariables = Exact<{
 
 export type DeleteCartMutation = {
 	__typename?: 'Mutation';
-	deleteCart: string;
+	deleteCart: { __typename?: 'Cart'; id: string };
 };
 
 export type UpdateCartProductMutationVariables = Exact<{
@@ -665,7 +885,7 @@ export type HomeQuery = {
 	currentUser: {
 		__typename?: 'User';
 		id: string;
-		orders: Array<{
+		orders: {
 			__typename?: 'Order';
 			id: string;
 			total: number;
@@ -677,15 +897,15 @@ export type HomeQuery = {
 				name: string;
 				image?: { __typename?: 'Image'; id: string; path: string } | null;
 			};
-			products: Array<{
+			products: {
 				__typename?: 'OrderProduct';
 				id: string;
 				unitPrice: number;
 				quantity: number;
 				product: { __typename?: 'Product'; id: string; name: string };
-			}>;
-		}>;
-		followed: Array<{
+			}[];
+		}[];
+		followed: {
 			__typename?: 'StoreFollower';
 			id: string;
 			storeId: string;
@@ -696,8 +916,8 @@ export type HomeQuery = {
 				name: string;
 				image?: { __typename?: 'Image'; id: string; path: string } | null;
 			};
-		}>;
-		watchlist: Array<{
+		}[];
+		watchlist: {
 			__typename?: 'WatchlistProduct';
 			id: string;
 			userId: string;
@@ -708,9 +928,9 @@ export type HomeQuery = {
 				name: string;
 				unitPrice: number;
 				store: { __typename?: 'Store'; id: string; name: string };
-				images: Array<{ __typename?: 'Image'; id: string; path: string }>;
+				images: { __typename?: 'Image'; id: string; path: string }[];
 			};
-		}>;
+		}[];
 	};
 };
 
@@ -721,7 +941,7 @@ export type UserOrdersQuery = {
 	currentUser: {
 		__typename?: 'User';
 		id: string;
-		orders: Array<{
+		orders: {
 			__typename?: 'Order';
 			id: string;
 			status: OrderStatus;
@@ -733,14 +953,14 @@ export type UserOrdersQuery = {
 				name: string;
 				image?: { __typename?: 'Image'; id: string; path: string } | null;
 			};
-			products: Array<{
+			products: {
 				__typename?: 'OrderProduct';
 				id: string;
 				unitPrice: number;
 				quantity: number;
 				product: { __typename?: 'Product'; id: string; name: string };
-			}>;
-		}>;
+			}[];
+		}[];
 	};
 };
 
@@ -762,7 +982,7 @@ export type OrderQuery = {
 			name: string;
 			image?: { __typename?: 'Image'; id: string; path: string } | null;
 		};
-		products: Array<{
+		products: {
 			__typename?: 'OrderProduct';
 			id: string;
 			orderId: string;
@@ -773,9 +993,9 @@ export type OrderQuery = {
 				__typename?: 'Product';
 				id: string;
 				name: string;
-				images: Array<{ __typename?: 'Image'; id: string; path: string }>;
+				images: { __typename?: 'Image'; id: string; path: string }[];
 			};
-		}>;
+		}[];
 	};
 };
 
@@ -790,18 +1010,20 @@ export type CreateOrderMutation = {
 		id: string;
 		total: number;
 		store: { __typename?: 'Store'; id: string; name: string };
-		products: Array<{
+		products: {
 			__typename?: 'OrderProduct';
 			id: string;
 			unitPrice: number;
 			quantity: number;
 			product: { __typename?: 'Product'; id: string; name: string };
-		}>;
+		}[];
 	};
 };
 
 export type StoreProductsQueryVariables = Exact<{
 	storeId: Scalars['ID'];
+	filter?: InputMaybe<ProductFilterInput>;
+	orderBy?: InputMaybe<ProductOrderByInput[] | ProductOrderByInput>;
 }>;
 
 export type StoreProductsQuery = {
@@ -810,15 +1032,15 @@ export type StoreProductsQuery = {
 		__typename?: 'Store';
 		id: string;
 		name: string;
-		products: Array<{
+		products: {
 			__typename?: 'Product';
 			id: string;
 			name: string;
 			description: string;
 			unitPrice: number;
 			storeId: string;
-			images: Array<{ __typename?: 'Image'; id: string; path: string }>;
-		}>;
+			images: { __typename?: 'Image'; id: string; path: string }[];
+		}[];
 	};
 };
 
@@ -837,7 +1059,7 @@ export type ProductQuery = {
 		storeId: string;
 		inCart: boolean;
 		store: { __typename?: 'Store'; id: string; cartId?: string | null };
-		images: Array<{ __typename?: 'Image'; id: string; path: string }>;
+		images: { __typename?: 'Image'; id: string; path: string }[];
 	};
 };
 
@@ -848,7 +1070,7 @@ export type WatchlistQuery = {
 	currentUser: {
 		__typename?: 'User';
 		id: string;
-		watchlist: Array<{
+		watchlist: {
 			__typename?: 'WatchlistProduct';
 			userId: string;
 			productId: string;
@@ -858,9 +1080,9 @@ export type WatchlistQuery = {
 				name: string;
 				unitPrice: number;
 				store: { __typename?: 'Store'; id: string; name: string };
-				images: Array<{ __typename?: 'Image'; id: string; path: string }>;
+				images: { __typename?: 'Image'; id: string; path: string }[];
 			};
-		}>;
+		}[];
 	};
 };
 
@@ -877,16 +1099,36 @@ export type AddToWatchlistMutation = {
 	};
 };
 
-export type StoresQueryVariables = Exact<{ [key: string]: never }>;
+export type SearchQueryVariables = Exact<{
+	searchTerm: Scalars['String'];
+}>;
 
-export type StoresQuery = {
+export type SearchQuery = {
 	__typename?: 'Query';
-	stores: Array<{
+	stores: {
 		__typename?: 'Store';
 		id: string;
 		name: string;
 		image?: { __typename?: 'Image'; id: string; path: string } | null;
-	}>;
+	}[];
+	products: {
+		__typename?: 'Product';
+		id: string;
+		name: string;
+		images: { __typename?: 'Image'; id: string; path: string }[];
+	}[];
+};
+
+export type StoresQueryVariables = Exact<{ [key: string]: never }>;
+
+export type StoresQuery = {
+	__typename?: 'Query';
+	stores: {
+		__typename?: 'Store';
+		id: string;
+		name: string;
+		image?: { __typename?: 'Image'; id: string; path: string } | null;
+	}[];
 };
 
 export type StoreQueryVariables = Exact<{
@@ -905,6 +1147,11 @@ export type StoreQuery = {
 		instagram?: string | null;
 		followedByUser: boolean;
 		image?: { __typename?: 'Image'; id: string; path: string } | null;
+		categories: {
+			__typename?: 'StoreProductCategory';
+			id: string;
+			name: string;
+		}[];
 	};
 };
 
@@ -933,7 +1180,7 @@ export type StoresFollowedQuery = {
 	currentUser: {
 		__typename?: 'User';
 		id: string;
-		followed: Array<{
+		followed: {
 			__typename?: 'StoreFollower';
 			id: string;
 			storeId: string;
@@ -944,7 +1191,7 @@ export type StoresFollowedQuery = {
 				name: string;
 				image?: { __typename?: 'Image'; id: string; path: string } | null;
 			};
-		}>;
+		}[];
 	};
 };
 
@@ -1070,6 +1317,15 @@ export const CartDocument = gql`
 		cart(id: $cartId) {
 			id
 			userId
+			user {
+				id
+				cards {
+					id
+					email
+					cardType
+					last4
+				}
+			}
 			storeId
 			store {
 				id
@@ -1166,7 +1422,9 @@ export function useCreateCartMutation() {
 }
 export const DeleteCartDocument = gql`
 	mutation DeleteCart($cartId: ID!) {
-		deleteCart(cartId: $cartId)
+		deleteCart(cartId: $cartId) {
+			id
+		}
 	}
 `;
 
@@ -1376,11 +1634,15 @@ export function useCreateOrderMutation() {
 	);
 }
 export const StoreProductsDocument = gql`
-	query StoreProducts($storeId: ID!) {
+	query StoreProducts(
+		$storeId: ID!
+		$filter: ProductFilterInput
+		$orderBy: [ProductOrderByInput!]
+	) {
 		store(id: $storeId) {
 			id
 			name
-			products {
+			products(filter: $filter, orderBy: $orderBy) {
 				id
 				name
 				description
@@ -1480,6 +1742,35 @@ export function useAddToWatchlistMutation() {
 		AddToWatchlistMutationVariables
 	>(AddToWatchlistDocument);
 }
+export const SearchDocument = gql`
+	query Search($searchTerm: String!) {
+		stores(filter: { name: { contains: $searchTerm, mode: insensitive } }) {
+			id
+			name
+			image {
+				id
+				path
+			}
+		}
+		products(filter: { name: { contains: $searchTerm, mode: insensitive } }) {
+			id
+			name
+			images {
+				id
+				path
+			}
+		}
+	}
+`;
+
+export function useSearchQuery(
+	options: Omit<Urql.UseQueryArgs<SearchQueryVariables>, 'query'>
+) {
+	return Urql.useQuery<SearchQuery, SearchQueryVariables>({
+		query: SearchDocument,
+		...options
+	});
+}
 export const StoresDocument = gql`
 	query Stores {
 		stores {
@@ -1513,6 +1804,10 @@ export const StoreDocument = gql`
 			image {
 				id
 				path
+			}
+			categories {
+				id
+				name
 			}
 			followedByUser
 		}

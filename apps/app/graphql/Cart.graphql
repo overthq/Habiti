@@ -28,6 +28,15 @@ query Cart($cartId: ID!) {
 	cart(id: $cartId) {
 		id
 		userId
+		user {
+			id
+			cards {
+				id
+				email
+				cardType
+				last4
+			}
+		}
 		storeId
 		store {
 			id
@@ -92,7 +101,9 @@ mutation CreateCart($input: CreateCartInput!) {
 }
 
 mutation DeleteCart($cartId: ID!) {
-	deleteCart(cartId: $cartId)
+	deleteCart(cartId: $cartId) {
+		id
+	}
 }
 
 mutation UpdateCartProduct($input: UpdateCartProductInput!) {

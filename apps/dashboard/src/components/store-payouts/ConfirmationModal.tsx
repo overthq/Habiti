@@ -6,7 +6,7 @@ import {
 import { useTheme, Typography } from '@market/components';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { useEditStoreMutation } from '../../types/api';
 
@@ -73,15 +73,12 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 							backgroundColor: theme.button['primary'].background
 						}}
 					>
-						<Text
-							style={{
-								fontSize: 17,
-								fontWeight: '500',
-								color: theme.button['primary'].text
-							}}
+						<Typography
+							weight='medium'
+							style={{ color: theme.button['primary'].text }}
 						>
 							Confirm details
-						</Text>
+						</Typography>
 					</TouchableOpacity>
 					{/* <Button text='Confirm details' onPress={handleSubmit} /> */}
 				</View>

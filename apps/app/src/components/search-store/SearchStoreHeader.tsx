@@ -17,14 +17,19 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ExploreStackParamList } from '../../types/navigation';
 
-// FIXME: The search input does not correctly animate its width transition.
-
 interface SearchInputProps {
 	inputRef: React.RefObject<TextInput>;
 	setFocused(s: boolean): void;
+	searchTerm: string;
+	setSearchTerm(value: string): void;
 }
 
-const SearchInput: React.FC<SearchInputProps> = ({ inputRef, setFocused }) => {
+const SearchInput: React.FC<SearchInputProps> = ({
+	inputRef,
+	setFocused,
+	searchTerm,
+	setSearchTerm
+}) => {
 	const { theme } = useTheme();
 
 	const handleFocus = () => {
@@ -38,21 +43,34 @@ const SearchInput: React.FC<SearchInputProps> = ({ inputRef, setFocused }) => {
 	return (
 		<Animated.View
 			style={[styles.wrapper, { backgroundColor: theme.input.background }]}
+			layout={LinearTransition}
 		>
 			<Icon name='search' size={18} color={theme.text.secondary} />
 			<TextInput
 				ref={inputRef}
+				value={searchTerm}
+				onChangeText={setSearchTerm}
 				style={[styles.input, { color: theme.text.primary }]}
 				placeholder='Search products'
 				placeholderTextColor={theme.text.secondary}
 				onFocus={handleFocus}
 				onBlur={handleBlur}
+				autoCapitalize='none'
+				autoCorrect={false}
 			/>
 		</Animated.View>
 	);
 };
 
-const SearchStoreHeader = () => {
+interface SearchStoreHeaderProps {
+	searchTerm: string;
+	setSearchTerm(value: string): void;
+}
+
+const SearchStoreHeader: React.FC<SearchStoreHeaderProps> = ({
+	searchTerm,
+	setSearchTerm
+}) => {
 	const { theme } = useTheme();
 	const { top } = useSafeAreaInsets();
 	const { navigate } = useNavigation<NavigationProp<ExploreStackParamList>>();
@@ -70,11 +88,10 @@ const SearchStoreHeader = () => {
 
 	return (
 		<Animated.View
-			layout={LinearTransition}
 			style={[
 				styles.container,
 				{
-					paddingTop: top,
+					paddingTop: top + 8,
 					borderBottomColor: theme.border.color,
 					backgroundColor: navigationTheme.colors.card
 				}
@@ -86,7 +103,12 @@ const SearchStoreHeader = () => {
 			>
 				<Icon name='chevron-left' size={28} />
 			</Pressable>
-			<SearchInput inputRef={inputRef} setFocused={setFocused} />
+			<SearchInput
+				inputRef={inputRef}
+				setFocused={setFocused}
+				searchTerm={searchTerm}
+				setSearchTerm={setSearchTerm}
+			/>
 			{focused ? (
 				<Animated.View
 					layout={LinearTransition}
@@ -112,9 +134,8 @@ const styles = StyleSheet.create({
 	wrapper: {
 		flex: 1,
 		marginLeft: 8,
-		height: 40,
 		borderRadius: 6,
-		paddingHorizontal: 12,
+		padding: 8,
 		flexDirection: 'row',
 		alignItems: 'center'
 	},

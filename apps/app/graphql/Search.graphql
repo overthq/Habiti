@@ -1,12 +1,19 @@
-# query Search($searchTerm: String!) {
-# 	stores(where: { name: { _ilike: $searchTerm } }, order_by: [{ name: asc }]) {
-# 		id
-# 		name
-# 		short_name
-# 	}
+query Search($searchTerm: String!) {
+	stores(filter: { name: { contains: $searchTerm, mode: insensitive } }) {
+		id
+		name
+		image {
+			id
+			path
+		}
+	}
 
-# 	items(where: { name: { _ilike: $searchTerm } }, order_by: [{ name: asc }]) {
-# 		id
-# 		name
-# 	}
-# }
+	products(filter: { name: { contains: $searchTerm, mode: insensitive } }) {
+		id
+		name
+		images {
+			id
+			path
+		}
+	}
+}

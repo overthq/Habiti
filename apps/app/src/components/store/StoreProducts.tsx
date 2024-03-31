@@ -52,14 +52,18 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 		<FlashList
 			data={products}
 			keyExtractor={({ id }) => id}
-			ListHeaderComponent={() => <StoreHeader store={store} />}
 			showsVerticalScrollIndicator={false}
 			estimatedItemSize={240}
-			renderItem={({ item }) => (
-				<StoreListItem item={item} onPress={handleProductPress(item.id)} />
+			renderItem={({ item, index }) => (
+				<StoreListItem
+					item={item}
+					onPress={handleProductPress(item.id)}
+					side={index % 2 === 0 ? 'left' : 'right'}
+				/>
 			)}
 			numColumns={2}
 			onScroll={handleScroll}
+			ListHeaderComponent={() => <StoreHeader store={store} />}
 		/>
 	);
 };

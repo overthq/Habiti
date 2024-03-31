@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { GraphQLUpload } from 'graphql-upload';
 import merge from 'lodash/merge';
@@ -58,11 +59,21 @@ import productCategoryQueries from './collections/product-category/queries';
 import productCategoryMutations from './collections/product-category/mutations';
 import ProductCategoryTypes from './collections/product-category/types';
 
+import deliveryAddressMutations from './collections/delivery-address/mutations';
+import DeliveryAddressTypes from './collections/delivery-address/types';
+
 const Root = `
 	scalar Upload
 
 	interface Node {
 		id: ID!
+	}
+
+	type PageInfo {
+		hasNextPage: Boolean!
+		hasPreviousPage: Boolean!
+		startCursor: String
+		endCursor: String
 	}
 
 	enum Sort {
@@ -77,14 +88,23 @@ const Root = `
 		gte: Int
 	}
 
+	enum StringWhereMode {
+		default
+		insensitive
+	}
+
 	input StringWhere {
 		contains: String
 		search: String
 		startsWith: String
 		endsWith: String
+		mode: StringWhereMode
 	}
 
-	type Query { _: Boolean }
+	type Query {
+		node(id: ID!): Node
+	}
+
 	type Mutation { _: Boolean }
 `;
 
@@ -115,7 +135,8 @@ const resolvers = merge(
 	statsQueries,
 	payoutMutations,
 	productCategoryQueries,
-	productCategoryMutations
+	productCategoryMutations,
+	deliveryAddressMutations
 );
 
 const schema = makeExecutableSchema({
@@ -135,7 +156,8 @@ const schema = makeExecutableSchema({
 		WatchlistProductTypes,
 		StatsTypes,
 		PayoutTypes,
-		ProductCategoryTypes
+		ProductCategoryTypes,
+		DeliveryAddressTypes
 	],
 	resolvers
 });

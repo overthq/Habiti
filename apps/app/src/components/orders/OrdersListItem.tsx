@@ -1,6 +1,6 @@
 import { Typography } from '@market/components';
 import React from 'react';
-import { View, Pressable, Text } from 'react-native';
+import { View, Pressable } from 'react-native';
 
 import { UserOrdersQuery } from '../../types/api';
 

@@ -6,10 +6,7 @@ export type AppStackParamList = {
 	Verify: { phone: string };
 	Product: { productId: string };
 	Cart: { cartId: string };
-	Order: { orderId: string };
-	'Edit Profile': undefined;
 	'Add Card': undefined;
-	'Payment Methods': undefined;
 };
 
 export type HomeStackParamList = {
@@ -21,15 +18,22 @@ export type HomeStackParamList = {
 };
 
 export type ExploreStackParamList = {
-	Explore: undefined;
+	'Explore.Main': undefined;
 	Store: { storeId: string };
 	SearchStore: { storeId: string }; // TODO: Add store name
 };
 
+export type CartStackParamList = {
+	'Carts.Main': undefined;
+};
+
 export type ProfileStackParamList = {
-	Profile: undefined;
+	'Profile.Main': undefined;
 	'Edit Profile': undefined;
 	'Payment Methods': undefined;
+	DeliveryAddress: undefined;
+	NotificationSettings: undefined;
+	Appearance: undefined;
 };
 
 export type HomeTabParamList = {

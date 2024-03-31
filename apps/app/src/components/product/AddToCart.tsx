@@ -35,7 +35,8 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		width: '100%',
 		paddingHorizontal: 16,
-		marginVertical: 16
+		marginVertical: 16,
+		gap: 16
 	}
 });
 

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Pressable, PressableProps, Text } from 'react-native';
+import { Pressable, PressableProps } from 'react-native';
 
 import { useTheme } from './Theme';
+import Typography from './Typography';
 
 interface TextButtonProps extends PressableProps {
 	children: React.ReactNode;
@@ -18,7 +19,7 @@ const TextButton: React.FC<TextButtonProps> = ({
 
 	return (
 		<Pressable disabled={disabled} {...props}>
-			<Text
+			<Typography
 				style={[
 					{
 						color: disabled ? '#777777' : theme.text.primary,
@@ -27,7 +28,7 @@ const TextButton: React.FC<TextButtonProps> = ({
 				]}
 			>
 				{children}
-			</Text>
+			</Typography>
 		</Pressable>
 	);
 };

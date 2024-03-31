@@ -1,4 +1,5 @@
 import { StateCreator } from 'zustand';
+
 import { AppState, AuthSlice, Mutators } from './types';
 
 export const createAuthSlice: StateCreator<

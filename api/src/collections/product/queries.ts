@@ -1,7 +1,12 @@
+import { ProductsArgs } from '../../types/filters';
 import { Resolver } from '../../types/resolvers';
 
 const product: Resolver = (_, { id }, ctx) => {
 	return ctx.prisma.product.findUnique({ where: { id } });
+};
+
+const products: Resolver<ProductsArgs> = (_, { filter, orderBy }, ctx) => {
+	return ctx.prisma.product.findMany({ where: filter, orderBy });
 };
 
 interface OrdersArgs {
@@ -55,7 +60,8 @@ const inCart: Resolver = async (parent, _, ctx) => {
 
 export default {
 	Query: {
-		product
+		product,
+		products
 	},
 	Product: {
 		orders,

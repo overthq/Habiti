@@ -16,18 +16,19 @@ const TrendingStoresItem: React.FC<TrendingStoresItemProps> = ({
 	<Pressable style={styles.container} onPress={onPress}>
 		<CustomImage
 			uri={store.image?.path}
-			height={70}
-			width={70}
+			height={68}
+			width={68}
 			style={styles.image}
 		/>
-		<Typography style={styles.name}>{store.name}</Typography>
+		<Typography size='small' weight='medium' style={styles.name}>
+			{store.name}
+		</Typography>
 	</Pressable>
 );
 
 const styles = StyleSheet.create({
 	container: {
-		marginLeft: 16,
-		marginRight: 16
+		marginHorizontal: 16
 	},
 	image: {
 		borderRadius: 35

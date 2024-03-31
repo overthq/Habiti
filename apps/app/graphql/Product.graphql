@@ -1,8 +1,12 @@
-query StoreProducts($storeId: ID!) {
+query StoreProducts(
+	$storeId: ID!
+	$filter: ProductFilterInput
+	$orderBy: [ProductOrderByInput!]
+) {
 	store(id: $storeId) {
 		id
 		name
-		products {
+		products(filter: $filter, orderBy: $orderBy) {
 			id
 			name
 			description

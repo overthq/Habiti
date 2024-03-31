@@ -21,6 +21,10 @@ query Store($storeId: ID!) {
 			id
 			path
 		}
+		categories {
+			id
+			name
+		}
 		followedByUser
 	}
 }

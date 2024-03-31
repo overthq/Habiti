@@ -13,13 +13,22 @@ interface FollowedStoresProps {
 }
 
 const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const navigation = useNavigation<NavigationProp<HomeTabParamList>>();
-
-	const stores = React.useMemo(
-		() => followed.map(({ store }) => store),
-		[followed]
+	return (
+		<View style={styles.container}>
+			<FollowedStoresMain followed={followed} />
+		</View>
 	);
+};
+
+interface FollowedStoresMainProps {
+	followed: HomeQuery['currentUser']['followed'];
+}
+
+const FollowedStoresMain: React.FC<FollowedStoresMainProps> = ({
+	followed
+}) => {
+	const { navigate } =
+		useNavigation<NavigationProp<HomeTabParamList & AppStackParamList>>();
 
 	const handleStorePress = React.useCallback(
 		(storeId: string) => () => {
@@ -28,41 +37,33 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 		[]
 	);
 
+	const stores = React.useMemo(
+		() => followed.map(({ store }) => store),
+		[followed]
+	);
+
 	if (!stores || stores?.length === 0) {
 		return (
-			<View>
-				{/* <Typography weight='medium' style={{ marginLeft: 16, marginBottom: 8 }}>
-					Followed Stores
-				</Typography> */}
-				<ListEmpty
-					description={`When you follow stores, you'll see updates from them here.`}
-					cta={{
-						text: 'Discover new stores',
-						action: () => navigation.navigate('Explore')
-					}}
-				/>
-			</View>
+			<ListEmpty
+				description={`When you follow stores, you'll see updates from them here.`}
+				cta={{
+					text: 'Discover new stores',
+					action: () => navigate('Explore')
+				}}
+			/>
 		);
 	}
 
 	return (
-		<View style={styles.container}>
-			{/* <Typography weight='medium' style={{ marginLeft: 16, marginBottom: 8 }}>
-				Followed Stores
-			</Typography> */}
-			<FlashList
-				horizontal
-				data={stores}
-				keyExtractor={item => item.id}
-				renderItem={({ item }) => (
-					<FollowedStoresItem
-						store={item}
-						onPress={handleStorePress(item.id)}
-					/>
-				)}
-				estimatedItemSize={108}
-			/>
-		</View>
+		<FlashList
+			horizontal
+			data={stores}
+			keyExtractor={item => item.id}
+			renderItem={({ item }) => (
+				<FollowedStoresItem store={item} onPress={handleStorePress(item.id)} />
+			)}
+			estimatedItemSize={108}
+		/>
 	);
 };
 

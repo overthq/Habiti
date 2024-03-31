@@ -1,14 +1,8 @@
-import { Button, Screen } from '@market/components';
+import { Button, Input, Screen, Spacer, Typography } from '@market/components';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import {
-	View,
-	Text,
-	TextInput,
-	TouchableOpacity,
-	KeyboardAvoidingView
-} from 'react-native';
+import { TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 
 import styles from '../styles/auth';
 import { useAuthenticateMutation } from '../types/api';
@@ -37,32 +31,33 @@ const Authenticate = () => {
 	return (
 		<Screen style={styles.container}>
 			<KeyboardAvoidingView style={{ width: '100%' }} behavior='padding'>
-				<Text style={styles.title}>Enter your phone number.</Text>
-				<Text
-					style={styles.description}
-				>{`We'll send your verification code here.`}</Text>
-				<View>
-					<Text style={styles.inputLabel}>Phone</Text>
-					<TextInput
-						placeholder='08012345678'
-						keyboardType='number-pad'
-						style={styles.input}
-						value={phone}
-						onChangeText={setPhone}
-					/>
-				</View>
+				<Typography weight='bold' size='xxxlarge'>
+					Welcome back
+				</Typography>
+				<Typography variant='secondary'>{`We'll send your verification code here.`}</Typography>
+
+				<Spacer y={16} />
+				<Input
+					label='Phone'
+					placeholder='08012345678'
+					keyboardType='number-pad'
+					value={phone}
+					onChangeText={setPhone}
+				/>
+
+				<Spacer y={16} />
+
 				<Button
 					text='Send verification code'
 					onPress={handleSubmit}
 					loading={fetching}
 				/>
+
 				<TouchableOpacity
 					style={{ alignSelf: 'center', marginTop: 8 }}
 					onPress={goToRegister}
 				>
-					<Text
-						style={{ fontWeight: '500', fontSize: 15 }}
-					>{`Don't have an account?`}</Text>
+					<Typography weight='medium'>{`Don't have an account?`}</Typography>
 				</TouchableOpacity>
 			</KeyboardAvoidingView>
 		</Screen>

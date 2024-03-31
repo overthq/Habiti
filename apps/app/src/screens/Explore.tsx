@@ -1,13 +1,25 @@
-import { ScrollableScreen } from '@market/components';
+import { Screen } from '@market/components';
 import React from 'react';
 
-import TrendingStores from '../components/explore/TrendingStores';
+import ExploreHeader from '../components/explore/ExploreHeader';
+import ExploreMain from '../components/explore/ExploreMain';
+import SearchResults from '../components/explore/SearchResults';
 
 const Explore: React.FC = () => {
+	const [searchOpen, setSearchOpen] = React.useState(false);
+	const [searchTerm, setSearchTerm] = React.useState('');
+
 	return (
-		<ScrollableScreen keyboardShouldPersistTaps='handled'>
-			<TrendingStores />
-		</ScrollableScreen>
+		<Screen>
+			<ExploreHeader
+				searchOpen={searchOpen}
+				setSearchOpen={setSearchOpen}
+				searchTerm={searchTerm}
+				setSearchTerm={setSearchTerm}
+			/>
+			<ExploreMain searchOpen={searchOpen} />
+			<SearchResults searchTerm={searchTerm} searchOpen={searchOpen} />
+		</Screen>
 	);
 };
 

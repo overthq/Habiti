@@ -52,8 +52,7 @@ const CartButton: React.FC<CartButtonProps> = ({
 
 const styles = StyleSheet.create({
 	button: {
-		flexGrow: 1,
-		width: undefined
+		flexGrow: 1
 	}
 });
 

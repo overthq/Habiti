@@ -1,4 +1,4 @@
-import { Icon, Typography } from '@market/components';
+import { Icon, Typography, useTheme } from '@market/components';
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
 
@@ -15,10 +15,13 @@ interface QuantityControlProps {
 // The commit button (add to cart/update quantity) is enabled.
 // The only prop it needs is the server quantity.
 
+// NOTICE: This component currently does NOT work!
+
 const QuantityControl: React.FC<QuantityControlProps> = ({
 	cartId,
 	productId
 }) => {
+	const { theme } = useTheme();
 	const [quantity, setQuantity] = React.useState(0);
 
 	const disabled = React.useMemo(() => !!cartId, []);
@@ -34,15 +37,17 @@ const QuantityControl: React.FC<QuantityControlProps> = ({
 	}, []);
 
 	return (
-		<View style={styles.controls}>
+		<View
+			style={[styles.controls, { backgroundColor: theme.input.background }]}
+		>
 			<Pressable disabled={disabled || decrementDisabled} onPress={decrement}>
-				<Icon name='minus' color='#505050' />
+				<Icon name='minus' color={theme.text.secondary} />
 			</Pressable>
-			<Typography size='large' number>
+			<Typography size='large' weight='medium' number>
 				{quantity}
 			</Typography>
 			<Pressable disabled={disabled} onPress={increment}>
-				<Icon name='plus' color='#505050' />
+				<Icon name='plus' color={theme.text.secondary} />
 			</Pressable>
 		</View>
 	);
@@ -54,10 +59,8 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		backgroundColor: '#D3D3D3',
 		borderRadius: 4,
-		paddingHorizontal: 16,
-		marginRight: 16
+		paddingHorizontal: 16
 	}
 });
 

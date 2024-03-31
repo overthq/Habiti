@@ -15,6 +15,7 @@ export { default as Screen } from './Screen';
 export { default as ScrollableScreen } from './ScrollableScreen';
 export { default as SectionHeader } from './SectionHeader';
 export { default as SmallButton } from './SmallButton';
+export { default as Spacer } from './Spacer';
 export { default as TextButton } from './TextButton';
 export { useTheme, ThemeProvider } from './Theme';
 export { default as Typography } from './Typography';

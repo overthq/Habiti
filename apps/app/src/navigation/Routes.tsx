@@ -15,7 +15,6 @@ import useClient from '../hooks/useClient';
 import AddCardWebview from '../screens/AddCardWebview';
 import Authenticate from '../screens/Authenticate';
 import Cart from '../screens/Cart';
-import Order from '../screens/Order';
 import Product from '../screens/Product';
 import Register from '../screens/Register';
 import Verify from '../screens/Verify';
@@ -52,7 +51,6 @@ const Routes: React.FC = () => {
 											gestureResponseDistance: Dimensions.get('window').height
 										}}
 									/>
-									<AppStack.Screen name='Order' component={Order} />
 									<AppStack.Screen name='Add Card' component={AddCardWebview} />
 								</AppStack.Group>
 							</AppStack.Group>

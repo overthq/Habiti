@@ -8,6 +8,8 @@
 	"license": "GPL-3.0-or-later",
 	"private": true,
 	"scripts": {
+		"start:app": "yarn workspace @market/app start",
+		"start:dashboard": "yarn workspace @market/dashboard start",
 		"lint": "yarn workspaces run lint",
 		"start-redis": "redis-server --daemonize yes",
 		"postinstall": "husky",

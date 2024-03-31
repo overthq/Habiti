@@ -1,4 +1,5 @@
 import { PrismaClient, User } from '@prisma/client';
+
 import type { RedisClient } from '../config/redis';
 
 export interface ResolverContext {

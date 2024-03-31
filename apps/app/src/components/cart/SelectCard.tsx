@@ -1,111 +1,85 @@
-import { Icon, Typography } from '@market/components';
+import { Icon, Spacer, Typography, useTheme } from '@market/components';
 import React from 'react';
-import { View, Pressable, ActivityIndicator, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import { MastercardIcon } from './CardIcons';
-import { useCardsQuery } from '../../types/api';
+import { CartQuery } from '../../types/api';
 
 interface SelectCardProps {
-	selectedCard: string | null;
+	cards: CartQuery['cart']['user']['cards'];
+	selectedCard?: string;
 	onCardSelect(cardId: string): () => void;
 }
 
 const SelectCard: React.FC<SelectCardProps> = ({
+	cards,
 	selectedCard,
 	onCardSelect
 }) => {
-	const [{ data, fetching }] = useCardsQuery();
-	const [expanded, toggleExpanded] = React.useReducer(e => !e, false);
-
-	const cards = data?.currentUser.cards ?? [];
-
-	const displayCard = React.useMemo(() => {
-		return cards.find(c => c.id === selectedCard) ?? cards[0];
-	}, [selectedCard, cards]);
-
-	if (fetching) {
-		return (
-			<View style={styles.loading}>
-				<ActivityIndicator />
-			</View>
-		);
-	}
+	const { theme } = useTheme();
 
 	return (
-		<View>
-			<Pressable style={styles.row} onPress={toggleExpanded}>
-				<View style={styles.cardInfo}>
-					<Typography style={styles.cardText}>
-						{!expanded
-							? displayCard
-								? `${displayCard.cardType} *${displayCard.last4}`
-								: 'Add card'
-							: ''}
-					</Typography>
-				</View>
-				<Icon name='chevron-right' style={{ marginRight: -8 }} />
-			</Pressable>
+		<Animated.View>
+			<View
+				style={{
+					borderBottomWidth: 0.5,
+					borderBottomColor: theme.border.color
+				}}
+			/>
+			{cards.map(card => (
+				<SelectCardOption
+					key={card.id}
+					card={card}
+					onSelect={onCardSelect}
+					selected={selectedCard === card.id}
+				/>
+			))}
+		</Animated.View>
+	);
+};
 
-			{expanded && (
-				<View>
-					{cards.map(card => (
-						<Pressable
-							key={card.id}
-							onPress={onCardSelect(card.id)}
-							style={styles.row}
-						>
-							<MastercardIcon />
-							<Typography style={{ textTransform: 'capitalize' }}>
-								{card.cardType} *{card.last4}
-							</Typography>
-							{selectedCard === card.id && <Icon name='check' />}
-						</Pressable>
-					))}
-				</View>
-			)}
-		</View>
+interface SelectCardOptionProps {
+	card: CartQuery['cart']['user']['cards'][number];
+	onSelect(cardId: string): () => void;
+	selected: boolean;
+}
+
+const SelectCardOption: React.FC<SelectCardOptionProps> = ({
+	card,
+	onSelect,
+	selected
+}) => {
+	const { theme } = useTheme();
+
+	return (
+		<Pressable
+			style={[styles.option, { borderBottomColor: theme.border.color }]}
+			onPress={onSelect(card.id)}
+		>
+			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+				<MastercardIcon />
+				<Spacer x={4} />
+				<Typography style={styles.capitalize}>
+					{`${card.cardType} \u2022\u2022\u2022\u2022${card.last4}`}
+				</Typography>
+			</View>
+			{selected ? <Icon name='check' /> : null}
+		</Pressable>
 	);
 };
 
 const styles = StyleSheet.create({
-	loading: {
-		justifyContent: 'center',
-		alignItems: 'center'
-	},
-	row: {
-		width: '100%',
+	option: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems: 'center'
-	},
-	cardInfo: {
-		flexDirection: 'row',
-		alignItems: 'center'
-	},
-	cardText: {
-		fontSize: 16,
-		marginHorizontal: 8,
-		textTransform: 'capitalize'
-	},
-	modal: {
+		alignItems: 'center',
+		paddingVertical: 4,
 		paddingHorizontal: 16,
-		paddingTop: 8,
-		shadowColor: '#000',
-		shadowOffset: {
-			width: 0,
-			height: 4
-		},
-		shadowOpacity: 0.3,
-		shadowRadius: 4.65,
-
-		elevation: 8
+		borderBottomWidth: 0.5
 	},
-	modalBackground: {
-		backgroundColor: '#FFFFFF'
-	},
-	title: {
-		fontSize: 18,
-		fontWeight: '500'
+	capitalize: {
+		textTransform: 'capitalize'
 	}
 });
 

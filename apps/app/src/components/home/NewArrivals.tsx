@@ -1,6 +1,7 @@
+import { Typography } from '@market/components';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 
 const NewArrivals: React.FC = () => {
 	const fetching = true;
@@ -8,7 +9,7 @@ const NewArrivals: React.FC = () => {
 	if (fetching) {
 		return (
 			<View>
-				<Text>Still fetching...</Text>
+				<Typography>Still fetching...</Typography>
 			</View>
 		);
 	}
@@ -21,7 +22,7 @@ const NewArrivals: React.FC = () => {
 			renderItem={({ item }) => (
 				<View>
 					<View />
-					<Text>{item.name}</Text>
+					<Typography>{item.name}</Typography>
 				</View>
 			)}
 		/>

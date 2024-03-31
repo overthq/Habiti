@@ -18,22 +18,22 @@ const Verify: React.FC = () => {
 	const { phone } = params;
 
 	const handleSubmit = async () => {
-		try {
-			const { data } = await verify({ input: { phone, code } });
+		const { data, error } = await verify({ input: { phone, code } });
 
-			if (data?.verify) {
-				const { userId, accessToken } = data.verify;
-				logIn(userId, accessToken);
-			}
-		} catch (error) {
+		if (data?.verify) {
+			const { userId, accessToken } = data.verify;
+			logIn(userId, accessToken);
+		} else if (error) {
 			console.log(error);
 		}
 	};
 
 	return (
 		<Screen style={authStyles.container}>
-			<Typography style={authStyles.title}>Your verification code</Typography>
-			<Typography style={authStyles.description}>
+			<Typography weight='bold' size='xxxlarge'>
+				Your verification code
+			</Typography>
+			<Typography>
 				A verification code was sent to your phone via SMS.
 			</Typography>
 			<TextInput

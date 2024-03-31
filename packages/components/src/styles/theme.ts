@@ -1,3 +1,7 @@
+import { PixelRatio } from 'react-native';
+
+const FONT_SCALE = PixelRatio.getFontScale();
+
 export enum ThemeMap {
 	light = 'Light',
 	dark = 'Dark',
@@ -12,15 +16,17 @@ export const spacing = {
 	xlarge: 32
 };
 
+const normalizeFontSize = (size: number) => size / FONT_SCALE;
+
 export const typography = {
 	size: {
-		xsmall: 12,
-		small: 14,
-		regular: 16,
-		large: 18,
-		xlarge: 20,
-		xxlarge: 24,
-		xxxlarge: 32
+		xsmall: normalizeFontSize(12),
+		small: normalizeFontSize(14),
+		regular: normalizeFontSize(16),
+		large: normalizeFontSize(18),
+		xlarge: normalizeFontSize(20),
+		xxlarge: normalizeFontSize(24),
+		xxxlarge: normalizeFontSize(32)
 	},
 	weight: {
 		regular: 'normal',
@@ -60,7 +66,7 @@ const dark = {
 	text: {
 		primary: palette.neutral.n1,
 		secondary: palette.neutral.n10,
-		tertiary: '',
+		tertiary: palette.neutral.n50,
 		disabled: '',
 		error: '',
 		label: palette.neutral.n10
@@ -75,6 +81,10 @@ const dark = {
 			text: palette.neutral.n10
 		},
 		tertiary: {
+			background: '',
+			text: ''
+		},
+		disabled: {
 			background: '',
 			text: ''
 		}
@@ -121,7 +131,7 @@ const light = {
 	text: {
 		primary: palette.neutral.n100,
 		secondary: palette.neutral.n50,
-		tertiary: '',
+		tertiary: palette.neutral.n10,
 		disabled: '',
 		error: '',
 		label: palette.neutral.n50
@@ -136,6 +146,10 @@ const light = {
 			text: palette.neutral.n10
 		},
 		tertiary: {
+			background: '',
+			text: ''
+		},
+		disabled: {
 			background: '',
 			text: ''
 		}
