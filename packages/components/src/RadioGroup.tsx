@@ -9,7 +9,7 @@ interface RadioGroupProps {
 const RadioGroup: React.FC<RadioGroupProps> = () => {
 	// const { field } = useController({ });
 
-	return <View></View>;
+	return <View />;
 };
 
 export default RadioGroup;
