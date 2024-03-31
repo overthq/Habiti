@@ -61,10 +61,14 @@ const StoreTypes = gql`
 		bankCode: String
 	}
 
+	input StoreFilterInput {
+		name: StringWhere
+	}
+
 	extend type Query {
 		currentStore: Store!
 		store(id: ID!): Store!
-		stores: [Store!]!
+		stores(filter: StoreFilterInput): [Store!]!
 	}
 
 	extend type Mutation {

@@ -486,6 +486,7 @@ export type Query = {
 	node?: Maybe<Node>;
 	order: Order;
 	product: Product;
+	products: Product[];
 	stats: Stats;
 	store: Store;
 	stores: Store[];
@@ -509,12 +510,21 @@ export type QueryProductArgs = {
 	id: Scalars['ID'];
 };
 
+export type QueryProductsArgs = {
+	filter?: InputMaybe<ProductFilterInput>;
+	orderBy?: InputMaybe<ProductOrderByInput[]>;
+};
+
 export type QueryStatsArgs = {
 	period?: InputMaybe<StatPeriod>;
 };
 
 export type QueryStoreArgs = {
 	id: Scalars['ID'];
+};
+
+export type QueryStoresArgs = {
+	filter?: InputMaybe<StoreFilterInput>;
 };
 
 export type QueryUserArgs = {
@@ -589,6 +599,10 @@ export type StoreOrdersArgs = {
 export type StoreProductsArgs = {
 	filter?: InputMaybe<ProductFilterInput>;
 	orderBy?: InputMaybe<ProductOrderByInput[]>;
+};
+
+export type StoreFilterInput = {
+	name?: InputMaybe<StringWhere>;
 };
 
 export type StoreFollower = {
@@ -1083,6 +1097,26 @@ export type AddToWatchlistMutation = {
 		userId: string;
 		productId: string;
 	};
+};
+
+export type SearchQueryVariables = Exact<{
+	searchTerm: Scalars['String'];
+}>;
+
+export type SearchQuery = {
+	__typename?: 'Query';
+	stores: {
+		__typename?: 'Store';
+		id: string;
+		name: string;
+		image?: { __typename?: 'Image'; id: string; path: string } | null;
+	}[];
+	products: {
+		__typename?: 'Product';
+		id: string;
+		name: string;
+		images: { __typename?: 'Image'; id: string; path: string }[];
+	}[];
 };
 
 export type StoresQueryVariables = Exact<{ [key: string]: never }>;
@@ -1707,6 +1741,35 @@ export function useAddToWatchlistMutation() {
 		AddToWatchlistMutation,
 		AddToWatchlistMutationVariables
 	>(AddToWatchlistDocument);
+}
+export const SearchDocument = gql`
+	query Search($searchTerm: String!) {
+		stores(filter: { name: { contains: $searchTerm, mode: insensitive } }) {
+			id
+			name
+			image {
+				id
+				path
+			}
+		}
+		products(filter: { name: { contains: $searchTerm, mode: insensitive } }) {
+			id
+			name
+			images {
+				id
+				path
+			}
+		}
+	}
+`;
+
+export function useSearchQuery(
+	options: Omit<Urql.UseQueryArgs<SearchQueryVariables>, 'query'>
+) {
+	return Urql.useQuery<SearchQuery, SearchQueryVariables>({
+		query: SearchDocument,
+		...options
+	});
 }
 export const StoresDocument = gql`
 	query Stores {

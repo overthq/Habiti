@@ -1,3 +1,4 @@
+import { ProductsArgs, StringWhere } from '../../types/filters';
 import { Resolver } from '../../types/resolvers';
 
 interface StoreArgs {
@@ -14,32 +15,15 @@ const currentStore: Resolver = (_, __, ctx) => {
 	return ctx.prisma.store.findUnique({ where: { id: ctx.storeId } });
 };
 
-const stores: Resolver = (_, __, ctx) => {
-	return ctx.prisma.store.findMany();
-};
-
-type StringWhere = {
-	contains?: string;
-	search?: string;
-	startsWith?: string;
-	endsWith?: string;
-	mode?: 'insensitive' | 'default';
-};
-
-type IntWhere = Partial<Record<'lt' | 'lte' | 'gt' | 'gte', number>>;
-
-interface ProductsArgs {
+interface StoresArgs {
 	filter?: {
-		name?: StringWhere;
-		unitPrice?: IntWhere;
-		quantity?: IntWhere;
+		name: StringWhere;
 	};
-	orderBy?: {
-		createdAt?: 'asc' | 'desc';
-		updatedAt?: 'asc' | 'desc';
-		unitPrice?: 'asc' | 'desc';
-	}[];
 }
+
+const stores: Resolver<StoresArgs> = (_, { filter }, ctx) => {
+	return ctx.prisma.store.findMany({ where: filter });
+};
 
 const products: Resolver<ProductsArgs> = (parent, { filter, orderBy }, ctx) => {
 	return ctx.prisma.store

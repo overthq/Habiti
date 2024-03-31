@@ -50,6 +50,10 @@ const ProductTypes = gql`
 
 	extend type Query {
 		product(id: ID!): Product!
+		products(
+			filter: ProductFilterInput
+			orderBy: [ProductOrderByInput!]
+		): [Product!]!
 	}
 
 	extend type Mutation {
