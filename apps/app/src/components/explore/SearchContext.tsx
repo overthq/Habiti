@@ -1,15 +1,16 @@
 import React from 'react';
+import { CombinedError } from 'urql';
+
+import { SearchQuery, useSearchQuery } from '../../types/api';
 
 interface SearchContextValue {
 	fetching: boolean;
-	data: any[];
-	error?: any;
+	products: SearchQuery['products'];
+	stores: SearchQuery['stores'];
+	error: CombinedError;
 }
 
-const SearchContext = React.createContext<SearchContextValue>({
-	fetching: true,
-	data: []
-});
+const SearchContext = React.createContext<SearchContextValue | null>(null);
 
 interface SearchProviderProps {
 	searchTerm: string;
@@ -20,12 +21,32 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
 	searchTerm,
 	children
 }) => {
-	// Fetch data with searchTerm
+	const [{ fetching, error, data }] = useSearchQuery({
+		variables: { searchTerm }
+	});
+
 	return (
-		<SearchContext.Provider value={{ fetching: true, data: [] }}>
+		<SearchContext.Provider
+			value={{
+				fetching,
+				error,
+				stores: data?.stores ?? [],
+				products: data?.products ?? []
+			}}
+		>
 			{children}
 		</SearchContext.Provider>
 	);
+};
+
+export const useSearchContext = () => {
+	const searchContext = React.useContext(SearchContext);
+
+	if (!searchContext) {
+		throw new Error('useSearchContext must be used in a SearchProvider');
+	}
+
+	return searchContext;
 };
 
 export default SearchContext;

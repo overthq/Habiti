@@ -8,24 +8,26 @@ import {
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { StyleSheet, View, Pressable } from 'react-native';
+import { StyleSheet, Pressable, View } from 'react-native';
 import { TabBar, TabView, SceneMap } from 'react-native-tab-view';
 
 import RecentSearches from './RecentSearches';
-import { Product, Store } from '../../types/api';
+import { SearchProvider, useSearchContext } from './SearchContext';
+// import { useSearchQuery } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
 
-interface StoresViewProps {
-	data: Store[];
-}
-
-const StoresView: React.FC<StoresViewProps> = ({ data }) => {
+const StoresView: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { fetching, stores } = useSearchContext();
+
+	if (fetching || !stores) {
+		return <View />;
+	}
 
 	return (
 		<FlashList
 			keyExtractor={s => s.id}
-			data={data}
+			data={stores}
 			renderItem={({ item }) => (
 				<Pressable
 					onPress={() => navigate('Store', { storeId: item.id })}
@@ -40,12 +42,9 @@ const StoresView: React.FC<StoresViewProps> = ({ data }) => {
 	);
 };
 
-interface ProductsViewProps {
-	data: Product[];
-}
-
-const ProductsView: React.FC<ProductsViewProps> = ({ data }) => {
+const ProductsView: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { fetching, products } = useSearchContext();
 
 	const handleProductPress = React.useCallback(
 		(productId: string) => () => {
@@ -54,10 +53,14 @@ const ProductsView: React.FC<ProductsViewProps> = ({ data }) => {
 		[]
 	);
 
+	if (fetching || !products) {
+		return <View />;
+	}
+
 	return (
 		<FlashList
 			keyExtractor={i => i.id}
-			data={data}
+			data={products}
 			renderItem={({ item }) => (
 				<Pressable onPress={handleProductPress(item.id)} style={styles.row}>
 					<CustomImage
@@ -104,34 +107,32 @@ const SearchResultsMain: React.FC<SearchResultsMainProps> = ({
 		{ key: 'stores', title: 'Stores' },
 		{ key: 'products', title: 'Products' }
 	]);
-
-	// const renderScene = SceneMap({
-	// 	stores: () => <StoresView data={searchData.stores} />,
-	// 	items: () => <ProductsView data={searchData.products} />
-	// });
+	// const [{ fetching, data }] = useSearchQuery({ variables: { searchTerm } });
 
 	const renderScene = SceneMap({
-		stores: () => <View />,
-		products: () => <View />
+		stores: StoresView,
+		products: ProductsView
 	});
 
 	return (
-		<TabView
-			style={{ display: searchTerm ? 'flex' : 'none' }}
-			navigationState={{ index, routes }}
-			renderTabBar={props => (
-				<TabBar
-					{...props}
-					activeColor={theme.text.primary}
-					inactiveColor={theme.text.secondary}
-					indicatorStyle={{ backgroundColor: theme.text.primary }}
-					labelStyle={{ textTransform: 'none', fontSize: 16 }}
-					style={{ backgroundColor: theme.screen.background }}
-				/>
-			)}
-			renderScene={renderScene}
-			onIndexChange={setIndex}
-		/>
+		<SearchProvider searchTerm={searchTerm}>
+			<TabView
+				style={{ display: searchTerm ? 'flex' : 'none' }}
+				navigationState={{ index, routes }}
+				renderTabBar={props => (
+					<TabBar
+						{...props}
+						activeColor={theme.text.primary}
+						inactiveColor={theme.text.secondary}
+						indicatorStyle={{ backgroundColor: theme.text.primary }}
+						labelStyle={{ textTransform: 'none', fontSize: 16 }}
+						style={{ backgroundColor: theme.screen.background }}
+					/>
+				)}
+				renderScene={renderScene}
+				onIndexChange={setIndex}
+			/>
+		</SearchProvider>
 	);
 };
 
