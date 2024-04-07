@@ -29,7 +29,6 @@ const ExploreMain: React.FC<ExloreMainProps> = ({ searchOpen }) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		marginTop: 12,
 		borderTopWidth: 0.5
 	}
 });

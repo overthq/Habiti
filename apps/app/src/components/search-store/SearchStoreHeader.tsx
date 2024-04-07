@@ -2,7 +2,6 @@ import { Icon, TextButton, useTheme } from '@market/components';
 import {
 	useNavigation,
 	useRoute,
-	useTheme as useNavigationTheme,
 	RouteProp,
 	NavigationProp
 } from '@react-navigation/native';
@@ -77,7 +76,6 @@ const SearchStoreHeader: React.FC<SearchStoreHeaderProps> = ({
 	const {
 		params: { storeId }
 	} = useRoute<RouteProp<ExploreStackParamList>>();
-	const navigationTheme = useNavigationTheme();
 
 	const inputRef = React.useRef<TextInput>(null);
 	const [focused, setFocused] = React.useState(false);
@@ -90,11 +88,7 @@ const SearchStoreHeader: React.FC<SearchStoreHeaderProps> = ({
 		<Animated.View
 			style={[
 				styles.container,
-				{
-					paddingTop: top + 8,
-					borderBottomColor: theme.border.color,
-					backgroundColor: navigationTheme.colors.card
-				}
+				{ paddingTop: top + 8, borderBottomColor: theme.border.color }
 			]}
 		>
 			<Pressable
@@ -129,7 +123,7 @@ const styles = StyleSheet.create({
 		borderBottomWidth: 0.5,
 		paddingRight: 16,
 		alignItems: 'center',
-		paddingBottom: 8
+		paddingBottom: 12
 	},
 	wrapper: {
 		flex: 1,
