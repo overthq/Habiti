@@ -1,4 +1,5 @@
 import { Router } from 'express';
+
 import { initialCharge, verifyTransaction } from './utils/paystack';
 
 const router: Router = Router();

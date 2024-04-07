@@ -7,13 +7,18 @@ import { createServer } from 'http';
 
 import prismaClient from './config/prisma';
 import redisClient from './config/redis';
+import { initSentry } from './config/sentry';
 import payments from './payments';
 import schema from './schema';
+import Services from './services';
 import webhooks from './webhooks';
+
 import './config/cloudinary';
 
 const main = async () => {
 	const app = express();
+
+	initSentry(app);
 
 	app.use(express.json());
 	app.use(compression());
@@ -27,13 +32,15 @@ const main = async () => {
 	app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 
 	const httpServer = createServer(app);
+	const services = new Services();
 	const apolloServer = new ApolloServer({
 		schema,
 		context: ({ req }) => ({
 			user: (req as any).auth ?? null,
 			storeId: req.headers['x-market-store-id'] || undefined,
 			prisma: prismaClient,
-			redisClient
+			redisClient,
+			services
 		})
 	});
 

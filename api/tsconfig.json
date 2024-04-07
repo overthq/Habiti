@@ -1,5 +1,5 @@
 {
-	"compilerOptions": {
+  "compilerOptions": {
 		"allowJs": false,
 		"composite": true,
 		"noEmit": false,
@@ -9,7 +9,13 @@
 		"module": "commonjs",
 		"lib": ["dom", "es2017"],
 		"target": "es5",
-		"esModuleInterop": true
+		"esModuleInterop": true,
+		"sourceMap": true,
+		"inlineSources": true,
+		// Set `sourceRoot` to  "/" to strip the build path prefix
+		// from generated source code references.
+		// This improves issue grouping in Sentry.
+		"sourceRoot": "/"
 	},
 	"include": ["src"]
 }
