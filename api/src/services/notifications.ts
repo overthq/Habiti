@@ -20,6 +20,7 @@ export default class NotificationsService {
 		for (const chunk of chunks) {
 			try {
 				const tickets = await expo.sendPushNotificationsAsync(chunk);
+				console.log({ tickets });
 			} catch (error) {
 				console.log({ error });
 			}
