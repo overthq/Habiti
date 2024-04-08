@@ -5,8 +5,6 @@ import { View, Pressable, StyleSheet } from 'react-native';
 
 import { FilterOrdersFormValues } from '../../types/forms';
 
-// TODO: Add sorting by total
-
 const SortOrders = () => {
 	const { control, setValue } = useFormContext<FilterOrdersFormValues>();
 
@@ -29,6 +27,13 @@ const SortOrders = () => {
 					>
 						<Typography>Newest</Typography>
 						<Radio active={field.value === 'created-at-desc'} />
+					</Pressable>
+					<Pressable
+						style={styles.option}
+						onPress={() => setValue('sortBy', 'total-desc')}
+					>
+						<Typography>Total (Highest to lowest)</Typography>
+						<Radio active={field.value === 'total-desc'} />
 					</Pressable>
 				</View>
 			)}

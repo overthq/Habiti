@@ -1,8 +1,8 @@
+import { Sort } from '../types/api';
 import {
 	FilterOrdersFormValues,
 	FilterProductsFormValues
 } from '../types/forms';
-import { Sort } from '../types/api';
 
 export const buildProductsFilterQuery = (values: FilterProductsFormValues) => {
 	const { sortBy, minPrice, maxPrice } = values;
@@ -18,7 +18,7 @@ export const buildProductsFilterQuery = (values: FilterProductsFormValues) => {
 	// FIXME: I only just realized this means we only allow sorting
 	// by a singular parameter. We should probably change that.
 
-	if (!!sortBy) {
+	if (sortBy) {
 		orderBy = [
 			(
 				{
@@ -41,14 +41,16 @@ export const buildOrdersFilterQuery = (values: FilterOrdersFormValues) => {
 
 	let orderBy = undefined;
 
-	if (!!sortBy) {
+	if (sortBy) {
 		orderBy = [
 			(
 				{
 					'created-at-asc': { createdAt: Sort.Asc },
 					'created-at-desc': { createdAt: Sort.Desc },
 					'updated-at-asc': { updatedAt: Sort.Asc },
-					'updated-at-desc': { updatedAt: Sort.Desc }
+					'updated-at-desc': { updatedAt: Sort.Desc },
+					'total-asc': { total: Sort.Asc },
+					'total-desc': { total: Sort.Desc }
 				} as const
 			)[sortBy]
 		];

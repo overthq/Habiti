@@ -1,6 +1,7 @@
+import { OrderStatus } from 'prisma';
+
 import { Resolver } from '../../types/resolvers';
 import { chargeAuthorization } from '../../utils/paystack';
-import { OrderStatus } from 'prisma';
 
 interface CreateOrderArgs {
 	input: {
@@ -56,9 +57,11 @@ const createOrder: Resolver<CreateOrderArgs> = async (
 			data: {
 				userId: ctx.user.id,
 				storeId: cart.storeId,
-				products: { createMany: { data: orderData } }
+				products: { createMany: { data: orderData } },
+				total
 			}
 		}),
+		// ctx.prisma.userPushToken.findUnique({ where: { userId: ctx.user.id } }),
 		ctx.prisma.store.update({
 			where: { id: cart.storeId },
 			data: { unrealizedRevenue: { increment: total } }
@@ -70,6 +73,12 @@ const createOrder: Resolver<CreateOrderArgs> = async (
 		email: card.email,
 		amount: String(total),
 		authorizationCode: card.authorizationCode
+	});
+
+	ctx.services.notifications.queueMessage({
+		to: '', // pushToken
+		title: 'Order created',
+		body: `[user.name] created a $x order`
 	});
 
 	return order;
@@ -97,7 +106,7 @@ const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
 		switch (args.input.status) {
 			case OrderStatus.Canceled:
 				break;
-			case OrderStatus.Fulfilled:
+			case OrderStatus.Fulfilled: {
 				const total = order.products.reduce((acc, next) => {
 					return acc + next.product.unitPrice * next.quantity;
 				}, 0);
@@ -111,6 +120,7 @@ const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
 				});
 
 				break;
+			}
 			default:
 				break;
 		}
