@@ -1,11 +1,13 @@
-import { Router } from 'express';
 import { createHmac } from 'crypto';
+import { Router } from 'express';
+
+import { MarketRequest } from './types/misc';
 import { storeCard } from './utils/paystack';
 import { handleTransferFailure, handleTransferSuccess } from './utils/webhooks';
 
 const router: Router = Router();
 
-router.post('/paystack', async (req, res) => {
+router.post('/paystack', async (req: MarketRequest, res) => {
 	const hash = createHmac('sha512', process.env.PAYSTACK_SECRET_KEY)
 		.update(JSON.stringify(req.body))
 		.digest('hex');
@@ -16,7 +18,9 @@ router.post('/paystack', async (req, res) => {
 		if (event === 'charge.success') {
 			// FIXME: req.auth.id cannot be populated with the user id,
 			// as this request is originating from Paystack.
-			await storeCard((req as any).auth.id, data);
+			if (req.auth.id) {
+				await storeCard(req.auth.id, data);
+			}
 		} else if (event === 'transfer.success') {
 			handleTransferSuccess(data);
 		} else if (event === 'transfer.failure') {

@@ -11,6 +11,7 @@ import { initSentry } from './config/sentry';
 import payments from './payments';
 import schema from './schema';
 import Services from './services';
+import { MarketRequest } from './types/misc';
 import webhooks from './webhooks';
 
 import './config/cloudinary';
@@ -35,8 +36,8 @@ const main = async () => {
 	const services = new Services();
 	const apolloServer = new ApolloServer({
 		schema,
-		context: ({ req }) => ({
-			user: (req as any).auth ?? null,
+		context: ({ req }: { req: MarketRequest }) => ({
+			user: req.auth ?? null,
 			storeId: req.headers['x-market-store-id'] || undefined,
 			prisma: prismaClient,
 			redisClient,
