@@ -33,7 +33,7 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 			</Typography>
 			{!orders || orders?.length === 0 ? (
 				<ListEmpty
-					description='When you have pending orders, they will be displayed here.'
+					description='Pending orders will be displayed here.'
 					cta={{
 						text: 'View your carts',
 						action: () => navigate('Carts')

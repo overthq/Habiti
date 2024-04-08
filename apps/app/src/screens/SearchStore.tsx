@@ -13,12 +13,11 @@ import SearchStoreHeader from '../components/search-store/SearchStoreHeader';
 import StoreListItem from '../components/store/StoreListItem';
 // import StoreProducts from '../components/store/StoreProducts';
 import { StringWhereMode, useStoreProductsQuery } from '../types/api';
-import { AppStackParamList, ExploreStackParamList } from '../types/navigation';
+import { AppStackParamList, StoreStackParamList } from '../types/navigation';
 
 const SearchStore = () => {
 	const [searchTerm, setSearchTerm] = React.useState('');
-	const { params } =
-		useRoute<RouteProp<ExploreStackParamList, 'SearchStore'>>();
+	const { params } = useRoute<RouteProp<StoreStackParamList, 'Store.Search'>>();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const [{ data, fetching }, refetchProducts] = useStoreProductsQuery({
 		variables: {

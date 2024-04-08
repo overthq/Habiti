@@ -15,6 +15,9 @@ interface FollowedStoresProps {
 const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 	return (
 		<View style={styles.container}>
+			<Typography style={{ marginLeft: 16, marginBottom: 2 }}>
+				Followed Stores
+			</Typography>
 			<FollowedStoresMain followed={followed} />
 		</View>
 	);
@@ -32,7 +35,7 @@ const FollowedStoresMain: React.FC<FollowedStoresMainProps> = ({
 
 	const handleStorePress = React.useCallback(
 		(storeId: string) => () => {
-			navigate('Store', { storeId });
+			navigate('Store', { screen: 'Store.Main', params: { storeId } });
 		},
 		[]
 	);

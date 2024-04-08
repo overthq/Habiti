@@ -14,7 +14,7 @@ const TrendingStores: React.FC = () => {
 
 	const handleStorePress = React.useCallback(
 		(storeId: string) => () => {
-			navigate('Store', { storeId });
+			navigate('Store', { screen: 'Store.Main', params: { storeId } });
 		},
 		[]
 	);

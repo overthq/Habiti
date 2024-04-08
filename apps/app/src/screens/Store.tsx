@@ -11,12 +11,12 @@ import { ActivityIndicator, Pressable } from 'react-native';
 import StoreProducts from '../components/store/StoreProducts';
 import useGoBack from '../hooks/useGoBack';
 import { useStoreQuery } from '../types/api';
-import { AppStackParamList, ExploreStackParamList } from '../types/navigation';
+import { StoreStackParamList } from '../types/navigation';
 
 const Store: React.FC = () => {
 	const { navigate, setOptions } =
-		useNavigation<NavigationProp<ExploreStackParamList>>();
-	const { params } = useRoute<RouteProp<AppStackParamList, 'Store'>>();
+		useNavigation<NavigationProp<StoreStackParamList>>();
+	const { params } = useRoute<RouteProp<StoreStackParamList, 'Store.Main'>>();
 	const [{ data, fetching }] = useStoreQuery({
 		variables: { storeId: params.storeId }
 	});
@@ -27,7 +27,7 @@ const Store: React.FC = () => {
 			headerRight: () => (
 				<Pressable
 					style={{ marginRight: 16 }}
-					onPress={() => navigate('SearchStore', { storeId: params.storeId })}
+					onPress={() => navigate('Store.Search', { storeId: params.storeId })}
 				>
 					<Icon name='search' size={22} />
 				</Pressable>

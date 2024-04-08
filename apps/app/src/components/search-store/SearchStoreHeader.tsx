@@ -1,10 +1,5 @@
 import { Icon, TextButton, useTheme } from '@market/components';
-import {
-	useNavigation,
-	useRoute,
-	RouteProp,
-	NavigationProp
-} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, TextInput, Pressable } from 'react-native';
 import Animated, {
@@ -13,8 +8,6 @@ import Animated, {
 	LinearTransition
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import { ExploreStackParamList } from '../../types/navigation';
 
 interface SearchInputProps {
 	inputRef: React.RefObject<TextInput>;
@@ -72,10 +65,7 @@ const SearchStoreHeader: React.FC<SearchStoreHeaderProps> = ({
 }) => {
 	const { theme } = useTheme();
 	const { top } = useSafeAreaInsets();
-	const { navigate } = useNavigation<NavigationProp<ExploreStackParamList>>();
-	const {
-		params: { storeId }
-	} = useRoute<RouteProp<ExploreStackParamList>>();
+	const { goBack } = useNavigation();
 
 	const inputRef = React.useRef<TextInput>(null);
 	const [focused, setFocused] = React.useState(false);
@@ -91,10 +81,7 @@ const SearchStoreHeader: React.FC<SearchStoreHeaderProps> = ({
 				{ paddingTop: top + 8, borderBottomColor: theme.border.color }
 			]}
 		>
-			<Pressable
-				onPress={() => navigate('Store', { storeId })}
-				style={{ marginLeft: 8 }}
-			>
+			<Pressable onPress={goBack} style={{ marginLeft: 8 }}>
 				<Icon name='chevron-left' size={28} />
 			</Pressable>
 			<SearchInput

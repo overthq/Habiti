@@ -1,6 +1,8 @@
+import { NavigatorScreenParams } from '@react-navigation/native';
+
 export type AppStackParamList = {
 	Home: undefined;
-	Store: { storeId: string };
+	Store: NavigatorScreenParams<StoreStackParamList>;
 	Register: undefined;
 	Authenticate: undefined;
 	Verify: { phone: string };
@@ -19,8 +21,7 @@ export type HomeStackParamList = {
 
 export type ExploreStackParamList = {
 	'Explore.Main': undefined;
-	Store: { storeId: string };
-	SearchStore: { storeId: string }; // TODO: Add store name
+	Store: NavigatorScreenParams<StoreStackParamList>;
 };
 
 export type CartStackParamList = {
@@ -34,6 +35,12 @@ export type ProfileStackParamList = {
 	DeliveryAddress: undefined;
 	NotificationSettings: undefined;
 	Appearance: undefined;
+};
+
+// TODO: Create context for storeId (and store name) in this case.
+export type StoreStackParamList = {
+	'Store.Main': { storeId: string };
+	'Store.Search': { storeId: string }; // Store name goes here
 };
 
 export type HomeTabParamList = {

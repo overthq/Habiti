@@ -13,14 +13,14 @@ import OrderMeta from '../components/order/OrderMeta';
 import OrderProduct from '../components/order/OrderProduct';
 import useGoBack from '../hooks/useGoBack';
 import { useOrderQuery } from '../types/api';
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList, HomeStackParamList } from '../types/navigation';
 
 // What actions should users be able to carry out on their orders on this screen?
 
 const Order: React.FC = () => {
 	const {
 		params: { orderId }
-	} = useRoute<RouteProp<AppStackParamList, 'Order'>>();
+	} = useRoute<RouteProp<HomeStackParamList, 'Order'>>();
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const [{ data, fetching }] = useOrderQuery({ variables: { orderId } });
