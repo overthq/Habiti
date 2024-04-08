@@ -1,4 +1,5 @@
 import { StateCreator } from 'zustand';
+
 import { AppState, Mutators, PreferencesSlice } from './types';
 
 export const createPreferencesSlice: StateCreator<

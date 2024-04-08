@@ -4,7 +4,7 @@ type GeneralPrefix = 'created-at' | 'updated-at';
 
 type ProductSortBy = `${GeneralPrefix | 'unit-price'}-${SortSuffix}`;
 
-type OrderSortBy = `${GeneralPrefix}-${SortSuffix}`;
+type OrderSortBy = `${GeneralPrefix | 'total'}-${SortSuffix}`;
 
 export interface FilterProductsFormValues {
 	sortBy?: ProductSortBy;

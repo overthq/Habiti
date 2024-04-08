@@ -43,8 +43,8 @@ const Register: React.FC = () => {
 		<FormProvider {...formMethods}>
 			<SafeAreaView>
 				<KeyboardAvoidingView style={authStyles.container}>
-					<Typography style={authStyles.title}>{`Let's meet you.`}</Typography>
-					<Typography style={authStyles.description}>
+					<Typography size='xxlarge'>{`Let's meet you.`}</Typography>
+					<Typography variant='secondary'>
 						This helps us in personalizing your experience.
 					</Typography>
 					<FormInput

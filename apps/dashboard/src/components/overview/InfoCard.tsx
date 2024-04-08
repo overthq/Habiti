@@ -8,7 +8,7 @@ const InfoCard = () => {
 	return (
 		<View
 			style={[styles.container, { backgroundColor: theme.text.secondary }]}
-		></View>
+		/>
 	);
 };
 

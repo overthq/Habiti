@@ -40,6 +40,7 @@ const OrderTypes = gql`
 	input OrderOrderByInput {
 		createdAt: Sort
 		updatedAt: Sort
+		total: Sort
 	}
 
 	extend type Query {

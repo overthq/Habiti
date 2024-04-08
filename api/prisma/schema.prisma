@@ -76,6 +76,7 @@ model Order {
   userId    String
   storeId   String
   status    OrderStatus    @default(Pending)
+  total     Int
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
   products  OrderProduct[]

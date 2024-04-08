@@ -31,9 +31,8 @@ const RecentSearches: React.FC<RecentSearchesProps> = ({ display }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		marginTop: 12,
 		borderTopWidth: 0.5,
-		paddingTop: 8
+		paddingTop: 12
 	},
 	header: {
 		marginLeft: 16,

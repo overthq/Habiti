@@ -8,7 +8,6 @@ import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import React from 'react';
 import { View } from 'react-native';
 
-import ProductGridItem from './ProductGridItem';
 import ProductsListItem from './ProductsListItem';
 import { ProductsQuery, useProductsQuery } from '../../types/api';
 import {
@@ -20,12 +19,9 @@ interface ProductListProps {
 	mode: 'list' | 'grid';
 }
 
-// TODO: Investigate performance around using two separate components for
-// each mode versus one.
-
 const ProductListHeader = <View style={{ height: 4 }} />;
 
-const ProductList: React.FC<ProductListProps> = ({ mode }) => {
+const ProductList: React.FC<ProductListProps> = () => {
 	const { params } = useRoute<RouteProp<MainTabParamList, 'Products'>>();
 	const { navigate } = useNavigation<NavigationProp<ProductsStackParamList>>();
 	const [{ data }] = useProductsQuery({ variables: params });
@@ -41,23 +37,13 @@ const ProductList: React.FC<ProductListProps> = ({ mode }) => {
 		return <ProductsListItem product={item} onPress={handlePress(item.id)} />;
 	}, []);
 
-	return mode === 'list' ? (
+	return (
 		<FlashList
 			keyExtractor={i => i.id}
 			data={data?.currentStore.products}
 			renderItem={renderProduct}
 			ListHeaderComponent={ProductListHeader}
 			estimatedItemSize={60}
-		/>
-	) : (
-		<FlashList
-			keyExtractor={i => i.id}
-			numColumns={2}
-			data={data?.currentStore.products}
-			renderItem={({ item }) => (
-				<ProductGridItem product={item} onPress={handlePress(item.id)} />
-			)}
-			estimatedItemSize={240}
 		/>
 	);
 };

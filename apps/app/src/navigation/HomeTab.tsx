@@ -20,7 +20,8 @@ import {
 	ExploreStackParamList,
 	HomeStackParamList,
 	HomeTabParamList,
-	ProfileStackParamList
+	ProfileStackParamList,
+	StoreStackParamList
 } from '../types/navigation';
 import { tabScreenOptions } from '../utils/navigation';
 
@@ -30,6 +31,7 @@ const HomeNavigator = createStackNavigator<HomeStackParamList>();
 const ExploreNavigator = createStackNavigator<ExploreStackParamList>();
 const CartsNavigator = createStackNavigator<CartStackParamList>();
 const ProfileNavigator = createStackNavigator<ProfileStackParamList>();
+const StoreNavigator = createStackNavigator<StoreStackParamList>();
 
 const HomeStack = () => {
 	return (
@@ -38,8 +40,8 @@ const HomeStack = () => {
 			<HomeNavigator.Screen name='Order' component={Order} />
 			<HomeNavigator.Screen
 				name='Store'
-				component={Store}
-				options={{ headerTitle: '' }}
+				component={StoreStack}
+				options={{ headerShown: false }}
 			/>
 		</HomeNavigator.Navigator>
 	);
@@ -55,12 +57,7 @@ const ExploreStack = () => {
 			/>
 			<ExploreNavigator.Screen
 				name='Store'
-				component={Store}
-				options={{ headerTitle: '' }}
-			/>
-			<ExploreNavigator.Screen
-				name='SearchStore'
-				component={SearchStore}
+				component={StoreStack}
 				options={{ headerShown: false }}
 			/>
 		</ExploreNavigator.Navigator>
@@ -104,6 +101,23 @@ const ProfileStack = () => {
 			/>
 			<ProfileNavigator.Screen name='Appearance' component={SettingsTheme} />
 		</ProfileNavigator.Navigator>
+	);
+};
+
+const StoreStack = () => {
+	return (
+		<StoreNavigator.Navigator>
+			<StoreNavigator.Screen
+				name='Store.Main'
+				component={Store}
+				options={{ headerTitle: '' }}
+			/>
+			<StoreNavigator.Screen
+				name='Store.Search'
+				component={SearchStore}
+				options={{ headerShown: false }}
+			/>
+		</StoreNavigator.Navigator>
 	);
 };
 

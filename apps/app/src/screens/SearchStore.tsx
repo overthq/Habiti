@@ -13,15 +13,13 @@ import SearchStoreHeader from '../components/search-store/SearchStoreHeader';
 import StoreListItem from '../components/store/StoreListItem';
 // import StoreProducts from '../components/store/StoreProducts';
 import { StringWhereMode, useStoreProductsQuery } from '../types/api';
-import { AppStackParamList, ExploreStackParamList } from '../types/navigation';
+import { AppStackParamList, StoreStackParamList } from '../types/navigation';
 
 const SearchStore = () => {
 	const [searchTerm, setSearchTerm] = React.useState('');
-	const { params } =
-		useRoute<RouteProp<ExploreStackParamList, 'SearchStore'>>();
+	const { params } = useRoute<RouteProp<StoreStackParamList, 'Store.Search'>>();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	// Add "filter" parameter to this query
-	const [{ data, fetching }, refetchProducts] = useStoreProductsQuery({
+	const [{ data, fetching }] = useStoreProductsQuery({
 		variables: {
 			storeId: params.storeId,
 			filter: {
@@ -29,12 +27,6 @@ const SearchStore = () => {
 			}
 		}
 	});
-
-	// const debounceRefetchProducts = React.useCallback(() => {}, []);
-
-	const handleRefresh = () => {
-		refetchProducts();
-	};
 
 	const handleProductPress = React.useCallback(
 		(productId: string) => () => {

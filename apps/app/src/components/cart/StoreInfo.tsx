@@ -8,6 +8,7 @@ interface StoreInfoProps {
 	store: CartQuery['cart']['store'];
 }
 
+// TODO: Allow navigation to store screen from here too
 const StoreInfo: React.FC<StoreInfoProps> = ({ store }) => {
 	return (
 		<View style={{ paddingLeft: 16, paddingBottom: 8 }}>

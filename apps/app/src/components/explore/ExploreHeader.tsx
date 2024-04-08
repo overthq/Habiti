@@ -48,6 +48,8 @@ const ExploreHeader: React.FC<ExploreHeaderProps> = ({
 					style={[styles.inputText, { color: theme.input.text }]}
 					onFocus={handleFocus}
 					onChangeText={setSearchTerm} // TODO: Add debounce
+					autoCapitalize='none'
+					autoCorrect={false}
 				/>
 			</Animated.View>
 			{searchOpen ? (
@@ -63,7 +65,8 @@ const styles = StyleSheet.create({
 	container: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		paddingHorizontal: 16
+		paddingHorizontal: 16,
+		paddingBottom: 12
 	},
 	input: {
 		flexDirection: 'row',
