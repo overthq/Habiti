@@ -20,7 +20,6 @@ const SearchStore = () => {
 	const { params } =
 		useRoute<RouteProp<ExploreStackParamList, 'SearchStore'>>();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	// Add "filter" parameter to this query
 	const [{ data, fetching }, refetchProducts] = useStoreProductsQuery({
 		variables: {
 			storeId: params.storeId,
