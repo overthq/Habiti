@@ -22,7 +22,7 @@
     "compression": "^1.7.4",
     "dotenv": "^16.3.1",
     "expo-server-sdk": "^3.9.0",
-    "express": "^4.18.2",
+    "express": "^4.19.2",
     "express-jwt": "^8.4.1",
     "graphql": "^16.8.0",
     "graphql-tools": "^9.0.0",
