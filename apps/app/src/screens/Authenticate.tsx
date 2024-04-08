@@ -15,14 +15,12 @@ const Authenticate = () => {
 	const [{ fetching }, authenticate] = useAuthenticateMutation();
 
 	const handleSubmit = async () => {
-		try {
-			const { data, error } = await authenticate({ input: { phone } });
+		const { error } = await authenticate({ input: { phone } });
+
+		if (error) {
+			console.log({ error });
+		} else {
 			navigate('Verify', { phone });
-			console.log({ data, error });
-		} catch (error) {
-			// FIXME: Handle errors better here.
-			// (For some reason, the errors do not propagate here.)
-			console.log(error);
 		}
 	};
 

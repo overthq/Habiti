@@ -19,7 +19,7 @@ const SearchStore = () => {
 	const [searchTerm, setSearchTerm] = React.useState('');
 	const { params } = useRoute<RouteProp<StoreStackParamList, 'Store.Search'>>();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const [{ data, fetching }, refetchProducts] = useStoreProductsQuery({
+	const [{ data, fetching }] = useStoreProductsQuery({
 		variables: {
 			storeId: params.storeId,
 			filter: {
@@ -27,12 +27,6 @@ const SearchStore = () => {
 			}
 		}
 	});
-
-	// const debounceRefetchProducts = React.useCallback(() => {}, []);
-
-	const handleRefresh = () => {
-		refetchProducts();
-	};
 
 	const handleProductPress = React.useCallback(
 		(productId: string) => () => {
