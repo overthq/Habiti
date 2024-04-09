@@ -69,16 +69,18 @@ const styles = StyleSheet.create({
 		paddingBottom: 12
 	},
 	input: {
-		flexDirection: 'row',
 		flex: 1,
+		flexDirection: 'row',
 		alignItems: 'center',
+		height: 36,
 		borderRadius: 6,
-		padding: 8
+		paddingHorizontal: 12
 	},
 	inputText: {
 		flex: 1,
 		marginLeft: 8,
-		fontSize: 16
+		fontSize: 16,
+		height: '100%'
 	}
 });
 
