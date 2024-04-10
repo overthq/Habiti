@@ -50,6 +50,7 @@ const ExploreHeader: React.FC<ExploreHeaderProps> = ({
 					onChangeText={setSearchTerm} // TODO: Add debounce
 					autoCapitalize='none'
 					autoCorrect={false}
+					selectionColor={theme.text.primary}
 				/>
 			</Animated.View>
 			{searchOpen ? (

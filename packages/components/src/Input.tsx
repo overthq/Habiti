@@ -43,6 +43,7 @@ const Input: React.FC<InputProps> = ({ label, textArea, ...props }) => {
 				placeholderTextColor='#696969'
 				multiline={textArea}
 				textAlignVertical={textArea ? 'top' : undefined}
+				selectionColor={theme.text.primary}
 				{...props}
 				style={style}
 			/>
