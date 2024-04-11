@@ -1,6 +1,12 @@
-import { ScrollableScreen, useTheme } from '@market/components';
+import {
+	Button,
+	ScrollableScreen,
+	Spacer,
+	Typography,
+	useTheme
+} from '@market/components';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import TrendingStores from './TrendingStores';
 
@@ -22,6 +28,29 @@ const ExploreMain: React.FC<ExloreMainProps> = ({ searchOpen }) => {
 			]}
 		>
 			<TrendingStores />
+			<View style={{ padding: 16 }}>
+				<View
+					style={{
+						backgroundColor: theme.input.background,
+						borderRadius: 6,
+						padding: 16
+					}}
+				>
+					<Typography
+						size='xlarge'
+						weight='medium'
+						style={{ textAlign: 'center' }}
+					>
+						Discover stores
+					</Typography>
+					<Spacer y={4} />
+					<Typography variant='secondary' style={{ textAlign: 'center' }}>
+						Follow more stores to get the most out of Market.
+					</Typography>
+					<Spacer y={8} />
+					<Button text='Find stores' />
+				</View>
+			</View>
 		</ScrollableScreen>
 	);
 };

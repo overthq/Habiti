@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
 	}
 });
 
-// TODO: Move this into the "screens" folder.
 const SettingsTheme = () => {
 	const { theme, setPreference } = useStore(state => ({
 		theme: state.theme,

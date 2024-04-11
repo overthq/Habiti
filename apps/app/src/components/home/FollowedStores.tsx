@@ -6,7 +6,7 @@ import { View, StyleSheet } from 'react-native';
 
 import FollowedStoresItem from './FollowedStoresItem';
 import { HomeQuery } from '../../types/api';
-import { AppStackParamList, HomeTabParamList } from '../../types/navigation';
+import { HomeStackParamList, HomeTabParamList } from '../../types/navigation';
 
 interface FollowedStoresProps {
 	followed: HomeQuery['currentUser']['followed'];
@@ -31,7 +31,7 @@ const FollowedStoresMain: React.FC<FollowedStoresMainProps> = ({
 	followed
 }) => {
 	const { navigate } =
-		useNavigation<NavigationProp<HomeTabParamList & AppStackParamList>>();
+		useNavigation<NavigationProp<HomeStackParamList & HomeTabParamList>>();
 
 	const handleStorePress = React.useCallback(
 		(storeId: string) => () => {

@@ -2,6 +2,9 @@ import { PixelRatio } from 'react-native';
 
 const FONT_SCALE = PixelRatio.getFontScale();
 
+// TODO: Spend a significant amount of time building out novel designs
+// based on a green accent color.
+
 export enum ThemeMap {
 	light = 'Light',
 	dark = 'Dark',

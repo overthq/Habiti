@@ -6,11 +6,11 @@ import { View, StyleSheet } from 'react-native';
 
 import TrendingStoresItem from './TrendingStoresItem';
 import { useStoresQuery } from '../../types/api';
-import { AppStackParamList } from '../../types/navigation';
+import { ExploreStackParamList } from '../../types/navigation';
 
 const TrendingStores: React.FC = () => {
 	const [{ data }] = useStoresQuery();
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { navigate } = useNavigation<NavigationProp<ExploreStackParamList>>();
 
 	const handleStorePress = React.useCallback(
 		(storeId: string) => () => {
