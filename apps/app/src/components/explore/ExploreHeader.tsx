@@ -1,7 +1,11 @@
 import { Icon, TextButton, useTheme } from '@market/components';
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
-import Animated, { LinearTransition } from 'react-native-reanimated';
+import Animated, {
+	FadeIn,
+	FadeOut,
+	LinearTransition
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface ExploreHeaderProps {
@@ -54,9 +58,13 @@ const ExploreHeader: React.FC<ExploreHeaderProps> = ({
 				/>
 			</Animated.View>
 			{searchOpen ? (
-				<View style={{ marginLeft: 12 }}>
+				<Animated.View
+					entering={FadeIn.delay(50)}
+					exiting={FadeOut}
+					style={{ marginLeft: 12 }}
+				>
 					<TextButton onPress={cancel}>Cancel</TextButton>
-				</View>
+				</Animated.View>
 			) : null}
 		</View>
 	);

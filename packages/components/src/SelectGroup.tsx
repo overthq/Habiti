@@ -13,10 +13,19 @@ interface SelectOption {
 interface SelectGroupProps {
 	selected: string;
 	options: SelectOption[];
+	onSelect(value: string): void;
 }
 
-const SelectGroup: React.FC<SelectGroupProps> = ({ selected, options }) => {
+const SelectGroup: React.FC<SelectGroupProps> = ({
+	selected,
+	options,
+	onSelect
+}) => {
 	const { theme } = useTheme();
+
+	const handlePress = (value: string) => () => {
+		onSelect(value);
+	};
 
 	return (
 		<View
@@ -27,6 +36,7 @@ const SelectGroup: React.FC<SelectGroupProps> = ({ selected, options }) => {
 					key={o.value}
 					{...o}
 					selected={selected === o.value}
+					onPress={handlePress(o.value)}
 				/>
 			))}
 		</View>
@@ -35,14 +45,24 @@ const SelectGroup: React.FC<SelectGroupProps> = ({ selected, options }) => {
 
 interface SelectGroupOptionProps extends SelectOption {
 	selected: boolean;
+	onPress(): void;
 }
 
 const SelectGroupOption: React.FC<SelectGroupOptionProps> = ({
 	title,
-	selected
+	selected,
+	onPress
 }) => {
 	return (
-		<Pressable>
+		<Pressable
+			onPress={onPress}
+			style={{
+				flexDirection: 'row',
+				justifyContent: 'space-between',
+				paddingVertical: 12,
+				paddingHorizontal: 16
+			}}
+		>
 			<Typography>{title}</Typography>
 			<Radio active={selected} />
 		</Pressable>
@@ -51,7 +71,7 @@ const SelectGroupOption: React.FC<SelectGroupOptionProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		borderRadius: 4,
+		borderRadius: 6,
 		overflow: 'hidden'
 	}
 });

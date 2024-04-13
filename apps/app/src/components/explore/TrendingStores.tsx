@@ -57,7 +57,7 @@ const TrendingStores: React.FC = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		paddingTop: 8
+		paddingTop: 12
 	}
 });
 
