@@ -42,7 +42,8 @@ const main = async () => {
 			prisma: prismaClient,
 			redisClient,
 			services
-		})
+		}),
+		cache: 'bounded'
 	});
 
 	await apolloServer.start();
