@@ -16,6 +16,7 @@ export type HomeStackParamList = {
 	Store: NavigatorScreenParams<StoreStackParamList>;
 	Settings: undefined;
 	SettingsTheme: undefined;
+	Notifications: undefined;
 };
 
 export type ExploreStackParamList = {

@@ -1,11 +1,10 @@
-import { ScrollableScreen } from '@market/components';
+import { Icon, Screen } from '@market/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { Pressable } from 'react-native';
 
-import FollowedStores from '../components/home/FollowedStores';
-import RecentOrders from '../components/home/RecentOrders';
-// import Watchlist from '../components/home/Watchlist';
 import { useHomeQuery } from '../types/api';
+import { HomeStackParamList } from '../types/navigation';
 
 // TODO: To encourage purchases, whe should probably list the sections in this order:
 // - "items you will love"
@@ -20,22 +19,25 @@ import { useHomeQuery } from '../types/api';
 
 const Home: React.FC = () => {
 	const [{ fetching, data }] = useHomeQuery();
+	const { navigate, setOptions } =
+		useNavigation<NavigationProp<HomeStackParamList>>();
 
-	if (fetching || !data) {
-		return (
-			<View>
-				<ActivityIndicator />
-			</View>
-		);
-	}
+	React.useLayoutEffect(() => {
+		setOptions({
+			headerRight: () => {
+				return (
+					<Pressable
+						onPress={() => navigate('Notifications')}
+						style={{ marginRight: 16 }}
+					>
+						<Icon name='bell' size={22} />
+					</Pressable>
+				);
+			}
+		});
+	}, []);
 
-	return (
-		<ScrollableScreen>
-			<FollowedStores followed={data?.currentUser.followed} />
-			<RecentOrders orders={data?.currentUser.orders} />
-			{/* <Watchlist watchlist={data?.currentUser.watchlist} /> */}
-		</ScrollableScreen>
-	);
+	return <Screen />;
 };
 
 export default Home;

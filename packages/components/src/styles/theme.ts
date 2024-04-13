@@ -1,7 +1,3 @@
-import { PixelRatio } from 'react-native';
-
-const FONT_SCALE = PixelRatio.getFontScale();
-
 // TODO: Spend a significant amount of time building out novel designs
 // based on a green accent color.
 
@@ -18,29 +14,6 @@ export const spacing = {
 	large: 24,
 	xlarge: 32
 };
-
-const normalizeFontSize = (size: number) => size / FONT_SCALE;
-
-export const typography = {
-	size: {
-		xsmall: normalizeFontSize(12),
-		small: normalizeFontSize(14),
-		regular: normalizeFontSize(16),
-		large: normalizeFontSize(18),
-		xlarge: normalizeFontSize(20),
-		xxlarge: normalizeFontSize(24),
-		xxxlarge: normalizeFontSize(32)
-	},
-	weight: {
-		regular: 'normal',
-		medium: '500',
-		bold: 'bold'
-	},
-	family: {
-		regular: {},
-		medium: {}
-	}
-} as const;
 
 const palette = {
 	neutral: {

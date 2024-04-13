@@ -9,6 +9,7 @@ import EditProfile from '../screens/EditProfile';
 import Explore from '../screens/Explore';
 import Home from '../screens/Home';
 import NotificationSettings from '../screens/NotificationSettings';
+import Notifications from '../screens/Notifications';
 import Order from '../screens/Order';
 import PaymentMethods from '../screens/PaymentMethods';
 import Profile from '../screens/Profile';
@@ -38,6 +39,7 @@ const HomeStack = () => {
 		<HomeNavigator.Navigator>
 			<HomeNavigator.Screen name='Home' component={Home} />
 			<HomeNavigator.Screen name='Order' component={Order} />
+			<HomeNavigator.Screen name='Notifications' component={Notifications} />
 			<HomeNavigator.Screen
 				name='Store'
 				component={StoreStack}

@@ -19,7 +19,7 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
 	return (
 		<Pressable
 			onPress={() => navigate('Edit Profile')}
-			style={[styles.card, { backgroundColor: theme.input.background }]}
+			style={[styles.card /*{ backgroundColor: theme.input.background }*/]}
 		>
 			<View
 				style={[
@@ -44,16 +44,17 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
 
 const styles = StyleSheet.create({
 	card: {
-		borderRadius: 4,
-		padding: 12,
+		// borderRadius: 4,
+		// padding: 12,
 		marginTop: 16,
 		marginBottom: 8,
-		flexDirection: 'row'
+		flexDirection: 'row',
+		alignItems: 'center'
 	},
 	placeholder: {
-		height: 40,
-		width: 40,
-		borderRadius: 20,
+		height: 52,
+		width: 52,
+		borderRadius: 26,
 		justifyContent: 'center',
 		alignItems: 'center'
 	},

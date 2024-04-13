@@ -15,7 +15,10 @@ interface FollowedStoresProps {
 const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 	return (
 		<View style={styles.container}>
-			<Typography weight='medium' style={{ marginLeft: 16, marginBottom: 2 }}>
+			<Typography
+				preset='sectionHeader'
+				style={{ marginLeft: 16, marginBottom: 2 }}
+			>
 				Followed Stores
 			</Typography>
 			<FollowedStoresMain followed={followed} />

@@ -28,7 +28,10 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 
 	return (
 		<View style={styles.container}>
-			<Typography weight='medium' style={{ marginLeft: 16, marginBottom: 8 }}>
+			<Typography
+				preset='sectionHeader'
+				style={{ marginLeft: 16, marginBottom: 8 }}
+			>
 				Recent Orders
 			</Typography>
 			{!orders || orders?.length === 0 ? (
