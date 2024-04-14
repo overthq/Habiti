@@ -1,4 +1,4 @@
-import { ListEmpty, Typography } from '@market/components';
+import { ListEmpty, SectionHeader } from '@market/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
@@ -17,13 +17,7 @@ interface WatchlistProps {
 const Watchlist: React.FC<WatchlistProps> = ({ watchlist }) => {
 	return (
 		<View style={styles.container}>
-			<Typography
-				variant='label'
-				weight='medium'
-				style={{ marginLeft: 16, marginBottom: 8 }}
-			>
-				Watchlist
-			</Typography>
+			<SectionHeader title='Watchlist' />
 			<WatchlistMain watchlist={watchlist} />
 		</View>
 	);

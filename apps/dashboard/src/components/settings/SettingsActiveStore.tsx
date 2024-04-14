@@ -34,7 +34,6 @@ const SettingsActiveStore: React.FC = () => {
 					onSelectRow={handleRowSelect(store.id)}
 				/>
 			))}
-			{/* <Spacer y={16} /> */}
 			<View style={{ padding: 16 }}>
 				<Button
 					text='Create new store'

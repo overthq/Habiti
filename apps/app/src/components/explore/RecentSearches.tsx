@@ -1,4 +1,4 @@
-import { Screen, Typography, useTheme } from '@market/components';
+import { Screen, SectionHeader, useTheme } from '@market/components';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
@@ -22,9 +22,7 @@ const RecentSearches: React.FC<RecentSearchesProps> = ({ display }) => {
 				}
 			]}
 		>
-			<Typography weight='medium' variant='label' style={styles.header}>
-				Recent searches
-			</Typography>
+			<SectionHeader title='Recent searches' />
 		</Screen>
 	);
 };

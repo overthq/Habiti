@@ -1,4 +1,4 @@
-import { ListEmpty, Typography } from '@market/components';
+import { ListEmpty, SectionHeader } from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
@@ -25,13 +25,7 @@ const TrendingStores: React.FC = () => {
 
 	return (
 		<View style={styles.container}>
-			<Typography
-				variant='label'
-				weight='medium'
-				style={{ marginLeft: 16, marginBottom: 8 }}
-			>
-				Trending Stores
-			</Typography>
+			<SectionHeader title='Trending Stores' />
 			<FlashList
 				horizontal
 				data={data.stores}

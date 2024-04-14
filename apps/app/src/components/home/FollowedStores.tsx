@@ -1,4 +1,4 @@
-import { ListEmpty, Typography } from '@market/components';
+import { ListEmpty, SectionHeader } from '@market/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
@@ -15,12 +15,7 @@ interface FollowedStoresProps {
 const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 	return (
 		<View style={styles.container}>
-			<Typography
-				preset='sectionHeader'
-				style={{ marginLeft: 16, marginBottom: 2 }}
-			>
-				Followed Stores
-			</Typography>
+			<SectionHeader title='Followed stores' />
 			<FollowedStoresMain followed={followed} />
 		</View>
 	);
