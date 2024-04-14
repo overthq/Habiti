@@ -10,11 +10,16 @@ interface SectionHeaderProps {
 		text: string;
 		onPress(): void;
 	};
+	padded?: boolean;
 }
 
-const SectionHeader: React.FC<SectionHeaderProps> = ({ title, action }) => {
+const SectionHeader: React.FC<SectionHeaderProps> = ({
+	title,
+	action,
+	padded = true
+}) => {
 	return (
-		<View style={styles.container}>
+		<View style={[styles.container, padded ? { paddingHorizontal: 16 } : {}]}>
 			<Typography preset='sectionHeader'>{title}</Typography>
 			{action ? (
 				<TextButton onPress={action.onPress}>{action.text}</TextButton>
@@ -28,8 +33,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingHorizontal: 16,
-		marginBottom: 8
+		marginBottom: 4
 	}
 });
 

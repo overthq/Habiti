@@ -8,7 +8,7 @@ const size = {
 	xsmall: normalizeFontSize(12),
 	small: normalizeFontSize(14),
 	regular: normalizeFontSize(16),
-	large: normalizeFontSize(18),
+	large: normalizeFontSize(17),
 	xlarge: normalizeFontSize(20),
 	xxlarge: normalizeFontSize(24),
 	xxxlarge: normalizeFontSize(32)
@@ -22,7 +22,7 @@ const weight = {
 
 const preset = {
 	sectionHeader: {
-		size: 'regular',
+		size: 'large',
 		weight: 'medium',
 		variant: 'primary'
 	},

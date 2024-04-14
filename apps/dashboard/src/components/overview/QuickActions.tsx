@@ -1,4 +1,4 @@
-import { Icon, Typography } from '@market/components';
+import { Icon, SectionHeader, Typography } from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
@@ -10,25 +10,24 @@ const QuickActions = () => {
 
 	return (
 		<View style={styles.container}>
-			<Typography variant='label' weight='medium' style={styles.label}>
-				Quick actions
-			</Typography>
-			<Pressable style={styles.row} onPress={() => navigate('Orders')}>
-				<Typography>5 orders to fulfill</Typography>
-				<Icon name='chevron-right' />
-			</Pressable>
-			<Pressable style={styles.row} onPress={() => navigate('Products')}>
-				<Typography>10 low-stock products</Typography>
-				<Icon name='chevron-right' />
-			</Pressable>
+			<SectionHeader title='Quick actions' />
+			<View style={{ paddingHorizontal: 16 }}>
+				<Pressable style={styles.row} onPress={() => navigate('Orders')}>
+					<Typography>5 orders to fulfill</Typography>
+					<Icon name='chevron-right' />
+				</Pressable>
+				<Pressable style={styles.row} onPress={() => navigate('Products')}>
+					<Typography>10 low-stock products</Typography>
+					<Icon name='chevron-right' />
+				</Pressable>
+			</View>
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		marginTop: 16,
-		paddingHorizontal: 16
+		marginTop: 16
 	},
 	label: {
 		marginBottom: 4
