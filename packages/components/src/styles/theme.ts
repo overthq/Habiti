@@ -81,7 +81,7 @@ const dark = {
 		color: palette.neutral.n90
 	},
 	image: {
-		placeholder: palette.neutral.n50
+		placeholder: palette.neutral.n90
 	},
 	badge: {
 		success: {
