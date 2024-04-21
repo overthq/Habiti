@@ -2,6 +2,7 @@ export { default as AnimatedTypography } from './AnimatedTypography';
 export { default as Badge } from './Badge';
 export { default as Button } from './Button';
 export { default as Checkbox } from './Checkbox';
+export { default as Dialog } from './Dialog';
 export { default as CustomImage } from './CustomImage';
 export { default as EmptyState } from './EmptyState';
 export { default as FormInput } from './FormInput';

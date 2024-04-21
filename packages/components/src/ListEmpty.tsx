@@ -8,10 +8,7 @@ import Typography from './Typography';
 interface ListEmptyProps {
 	title?: string;
 	description: string;
-	cta?: {
-		text: string;
-		action(): void;
-	};
+	cta?: { text: string; action(): void };
 	viewStyle?: ViewStyle;
 }
 
@@ -36,7 +33,6 @@ const ListEmpty: React.FC<ListEmptyProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
 		paddingHorizontal: 16,
 		justifyContent: 'center',
 		alignItems: 'center'
