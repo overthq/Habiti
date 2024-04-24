@@ -12,7 +12,6 @@ interface FormInputProps<T extends FieldValues> extends InputProps {
 const FormInput = <T extends FieldValues>({
 	name,
 	control,
-	style,
 	...props
 }: FormInputProps<T>) => {
 	const { field } = useController({ control, name });
@@ -22,7 +21,6 @@ const FormInput = <T extends FieldValues>({
 			value={field.value}
 			onChangeText={field.onChange}
 			onBlur={field.onBlur}
-			style={style}
 			{...props}
 		/>
 	);

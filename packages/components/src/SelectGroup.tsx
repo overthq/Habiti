@@ -59,7 +59,7 @@ const SelectGroupOption: React.FC<SelectGroupOptionProps> = ({
 			style={{
 				flexDirection: 'row',
 				justifyContent: 'space-between',
-				paddingVertical: 12,
+				paddingVertical: 8,
 				paddingHorizontal: 16
 			}}
 		>
@@ -71,6 +71,7 @@ const SelectGroupOption: React.FC<SelectGroupOptionProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
+		paddingVertical: 2,
 		borderRadius: 6,
 		overflow: 'hidden'
 	}

@@ -1,6 +1,10 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
-import Animated, { LinearTransition } from 'react-native-reanimated';
+import Animated, {
+	LinearTransition,
+	FadeInDown,
+	FadeOutUp
+} from 'react-native-reanimated';
 
 import { Icon } from './Icon';
 import Spacer from './Spacer';
@@ -21,10 +25,10 @@ const Dialog: React.FC<DialogProps> = ({ title, description, style }) => {
 		setOpen(false);
 	};
 
-	if (!open) return null;
-
-	return (
+	return open ? (
 		<Animated.View
+			entering={FadeInDown}
+			exiting={FadeOutUp}
 			layout={LinearTransition}
 			style={[
 				styles.container,
@@ -45,7 +49,7 @@ const Dialog: React.FC<DialogProps> = ({ title, description, style }) => {
 				{description}
 			</Typography>
 		</Animated.View>
-	);
+	) : null;
 };
 
 const styles = StyleSheet.create({

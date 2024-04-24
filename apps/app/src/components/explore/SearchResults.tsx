@@ -16,7 +16,7 @@ import {
 
 const StoresView: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<ExploreStackParamList>>();
-	const { fetching, stores } = useSearchContext();
+	const { stores } = useSearchContext();
 
 	const handleStorePress = (storeId: string) => () => {
 		navigate('Store', {
@@ -25,7 +25,7 @@ const StoresView: React.FC = () => {
 		});
 	};
 
-	if (fetching || !stores) {
+	if (!stores) {
 		return <View />;
 	}
 
@@ -42,7 +42,7 @@ const StoresView: React.FC = () => {
 
 const ProductsView: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const { fetching, products } = useSearchContext();
+	const { products } = useSearchContext();
 
 	const handleProductPress = React.useCallback(
 		(productId: string) => () => {
@@ -51,13 +51,9 @@ const ProductsView: React.FC = () => {
 		[]
 	);
 
-	if (fetching || !products) {
-		return <View />;
-	}
-
 	return (
 		<FlashList
-			keyExtractor={i => i.id}
+			keyExtractor={p => p.id}
 			data={products}
 			renderItem={({ item }) => (
 				<ProductResultRow

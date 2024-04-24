@@ -11,12 +11,14 @@ interface ProductDetailsProps {
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => (
 	<View style={styles.container}>
-		<View style={styles.meta}>
-			<Typography size='xxlarge' weight='bold'>
-				{product.name}
-			</Typography>
-			<Typography size='large'>{formatNaira(product.unitPrice)}</Typography>
-		</View>
+		<Typography size='xxlarge' weight='bold'>
+			{product.name}
+		</Typography>
+		<Spacer y={2} />
+		<Typography size='xlarge' weight='medium' variant='secondary'>
+			{formatNaira(product.unitPrice)}
+		</Typography>
+		<Spacer y={8} />
 		<Typography weight='medium' variant='secondary'>
 			Description
 		</Typography>
@@ -29,12 +31,6 @@ const styles = StyleSheet.create({
 	container: {
 		paddingHorizontal: 16,
 		paddingTop: 16
-	},
-	meta: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		paddingBottom: 4
 	},
 	header: {
 		marginVertical: 8,

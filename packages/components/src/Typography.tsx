@@ -22,9 +22,9 @@ const Typography: React.FC<TypographyProps> = React.forwardRef<
 >((props, forwardedRef) => {
 	const {
 		children,
-		variant = 'primary',
-		size = 'regular',
-		weight = 'regular',
+		variant,
+		size,
+		weight,
 		style,
 		ellipsize,
 		number,
@@ -52,7 +52,7 @@ const generateStyles = ({
 	size = 'regular',
 	weight = 'regular',
 	preset,
-	variant,
+	variant = 'primary',
 	number,
 	theme
 }: Pick<
@@ -60,9 +60,7 @@ const generateStyles = ({
 	'size' | 'weight' | 'preset' | 'variant' | 'number'
 > & { theme: ThemeObject }): TextStyle => {
 	if (preset) {
-		size = typography.preset[preset].size;
-		weight = typography.preset[preset].weight;
-		variant = typography.preset[preset].variant;
+		({ size, weight, variant } = typography.preset[preset]);
 	}
 
 	return {
