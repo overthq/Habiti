@@ -35,9 +35,6 @@ const palette = {
 	}
 };
 
-// TODO: Move palette, typography, spacing to separate files
-// Set up a file for individual theme items like buttons, text etc.
-
 const dark = {
 	text: {
 		primary: palette.neutral.n1,

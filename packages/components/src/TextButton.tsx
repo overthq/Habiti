@@ -22,7 +22,7 @@ const TextButton: React.FC<TextButtonProps> = ({
 			<Typography
 				style={[
 					{
-						color: disabled ? '#777777' : theme.text.primary,
+						color: theme.text[disabled ? 'disabled' : 'primary'],
 						fontSize: size ?? 16
 					}
 				]}
