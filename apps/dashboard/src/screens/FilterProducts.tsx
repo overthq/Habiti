@@ -67,7 +67,13 @@ const FilterProducts = () => {
 						open={open === 'rating'}
 						onPress={handleExpandSection('rating')}
 					>
-						<View />
+						<View>
+							<Typography>5 stars</Typography>
+							<Typography>4 stars and up</Typography>
+							<Typography>3 stars and up</Typography>
+							<Typography>2 stars and up</Typography>
+							<Typography>1 star and up</Typography>
+						</View>
 					</AccordionRow>
 					<AccordionRow
 						title='Category'

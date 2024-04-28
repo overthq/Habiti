@@ -62,6 +62,12 @@ import ProductCategoryTypes from './collections/product-category/types';
 import deliveryAddressMutations from './collections/delivery-address/mutations';
 import DeliveryAddressTypes from './collections/delivery-address/types';
 
+import ProductReviewTypes from './collections/product-review/types';
+import productReviewMutations from './collections/product-review/mutations';
+
+import ProductOptionTypes from './collections/product-option/types';
+import productOptionMutations from './collections/product-option/mutations';
+
 const Root = `
 	scalar Upload
 
@@ -136,7 +142,9 @@ const resolvers = merge(
 	payoutMutations,
 	productCategoryQueries,
 	productCategoryMutations,
-	deliveryAddressMutations
+	deliveryAddressMutations,
+	productReviewMutations,
+	productOptionMutations
 );
 
 const schema = makeExecutableSchema({
@@ -157,7 +165,9 @@ const schema = makeExecutableSchema({
 		StatsTypes,
 		PayoutTypes,
 		ProductCategoryTypes,
-		DeliveryAddressTypes
+		DeliveryAddressTypes,
+		ProductReviewTypes,
+		ProductOptionTypes
 	],
 	resolvers
 });

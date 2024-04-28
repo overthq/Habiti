@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+
 import prismaClient from '../config/prisma';
 
 const API_URL = 'https://api.paystack.co';

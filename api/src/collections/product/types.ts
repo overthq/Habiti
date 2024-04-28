@@ -18,6 +18,8 @@ const ProductTypes = gql`
 		images: [Image!]!
 		watchlists: [WatchlistProduct!]!
 		categories: [ProductCategory!]!
+		reviews: [ProductReview!]!
+		options: [ProductOption!]!
 	}
 
 	input CreateProductInput {
