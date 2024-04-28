@@ -17,7 +17,7 @@ export const FilterButton: React.FC<FilterButtonProps> = ({
 	onPress,
 	active
 }) => (
-	<TextButton style={styles.button} disabled={!active} onPress={onPress}>
+	<TextButton size={15} disabled={!active} onPress={onPress}>
 		{text}
 	</TextButton>
 );
@@ -76,10 +76,8 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 16
 	},
 	left: {
-		flexDirection: 'row'
-	},
-	button: {
-		marginRight: 16
+		flexDirection: 'row',
+		gap: 12
 	}
 });
 

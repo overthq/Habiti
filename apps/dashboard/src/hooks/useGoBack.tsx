@@ -14,7 +14,7 @@ const useGoBack = (icon?: IconType, margin?: number) => {
 					<Icon
 						name={icon ?? 'chevron-left'}
 						size={28}
-						style={{ marginLeft: margin ?? 8 }}
+						style={{ marginLeft: icon === 'x' ? 12 : margin ?? 8 }}
 					/>
 				</Pressable>
 			)

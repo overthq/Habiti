@@ -20,7 +20,7 @@ const ProductsFilter = () => {
 
 	return (
 		<View style={[styles.container, { borderBottomColor: theme.border.color }]}>
-			<View style={{ flexDirection: 'row' }}>
+			<View style={{ flexDirection: 'row', gap: 12 }}>
 				<FilterButton text='All' onPress={handleChangeStatus()} active />
 				<FilterButton
 					text='Active'
@@ -48,9 +48,6 @@ const styles = StyleSheet.create({
 		paddingVertical: 12,
 		paddingHorizontal: 16,
 		borderBottomWidth: 0.5
-	},
-	button: {
-		marginRight: 16
 	}
 });
 

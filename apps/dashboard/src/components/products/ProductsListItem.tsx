@@ -22,8 +22,8 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
 				<CustomImage
 					uri={product.images[0]?.path}
 					style={styles.image}
-					height={48}
-					width={48}
+					height={44}
+					width={44}
 				/>
 				<View>
 					<Typography style={styles.name}>{product.name}</Typography>
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	image: {
-		marginRight: 12
+		marginRight: 8
 	}
 });
 

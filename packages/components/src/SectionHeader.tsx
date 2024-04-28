@@ -22,7 +22,9 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
 		<View style={[styles.container, padded ? { paddingHorizontal: 16 } : {}]}>
 			<Typography preset='sectionHeader'>{title}</Typography>
 			{action ? (
-				<TextButton onPress={action.onPress}>{action.text}</TextButton>
+				<TextButton size={15} onPress={action.onPress}>
+					{action.text}
+				</TextButton>
 			) : null}
 		</View>
 	);

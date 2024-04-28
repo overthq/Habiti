@@ -55,7 +55,7 @@ const Categories = () => {
 	}
 
 	return (
-		<Screen>
+		<Screen style={{ padding: 16 }}>
 			{data?.currentStore.categories.map(category => (
 				<Typography key={category.id}>{category.name}</Typography>
 			))}

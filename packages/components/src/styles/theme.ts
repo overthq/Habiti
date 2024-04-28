@@ -20,10 +20,15 @@ export const spacing = {
 const palette = {
 	neutral: {
 		n1: '#FFFFFF',
-		n5: '#EDEDED',
-		n10: '#D3D3D3',
-		n50: '#505050',
-		n90: '#1C1C1C',
+		n10: '#E0E3E6',
+		n20: '#BFC8D1',
+		n30: '#9FADBD',
+		n40: '#8193A6',
+		n50: '#67798C',
+		n60: '#506070',
+		n70: '#3C4752',
+		n80: '#292F35',
+		n90: '#141619',
 		n100: '#000000'
 	},
 	red: {
@@ -40,9 +45,9 @@ const palette = {
 const dark = {
 	text: {
 		primary: palette.neutral.n1,
-		secondary: palette.neutral.n10,
+		secondary: palette.neutral.n40,
 		tertiary: palette.neutral.n50,
-		disabled: palette.neutral.n5,
+		disabled: palette.neutral.n10,
 		error: '',
 		label: palette.neutral.n10
 	},
@@ -68,7 +73,7 @@ const dark = {
 		background: palette.neutral.n100
 	},
 	input: {
-		placeholder: '',
+		placeholder: palette.neutral.n30,
 		label: palette.neutral.n10,
 		background: palette.neutral.n90,
 		text: palette.neutral.n1
@@ -109,7 +114,7 @@ const light = {
 		tertiary: palette.neutral.n10,
 		disabled: palette.neutral.n50,
 		error: '',
-		label: palette.neutral.n50
+		label: palette.neutral.n60
 	},
 	button: {
 		primary: {
@@ -133,16 +138,16 @@ const light = {
 		background: palette.neutral.n1
 	},
 	input: {
-		placeholder: '',
-		label: palette.neutral.n50,
-		background: palette.neutral.n5,
+		placeholder: palette.neutral.n30,
+		label: palette.neutral.n60,
+		background: palette.neutral.n10,
 		text: palette.neutral.n100
 	},
 	icon: {
 		default: { color: palette.neutral.n100 }
 	},
 	border: {
-		color: palette.neutral.n5
+		color: palette.neutral.n10
 	},
 	image: {
 		placeholder: palette.neutral.n10

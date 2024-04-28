@@ -14,8 +14,12 @@ const QuickActions = () => {
 			<SectionHeader title='Quick actions' />
 			<View
 				style={{
+					borderRadius: 6,
 					backgroundColor: theme.input.background,
-					paddingHorizontal: 16
+					marginTop: 4,
+					marginHorizontal: 16,
+					paddingLeft: 12,
+					paddingRight: 10
 				}}
 			>
 				<Pressable style={styles.row} onPress={() => navigate('Orders')}>
@@ -42,7 +46,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingVertical: 8
+		paddingVertical: 4
 	}
 });
 

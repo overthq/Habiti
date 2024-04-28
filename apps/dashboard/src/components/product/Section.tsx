@@ -38,7 +38,7 @@ const Section: React.FC<SectionProps> = ({
 						onBlur={onBlur}
 						style={[styles.input, { color: theme.text.primary }]}
 						placeholder={placeholder}
-						placeholderTextColor='#777777'
+						placeholderTextColor={theme.input.placeholder}
 						{...inputProps}
 					/>
 				)}
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
 		marginBottom: 2
 	},
 	input: {
-		fontSize: 18
+		fontSize: 17
 	}
 });
 

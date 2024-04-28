@@ -7,7 +7,7 @@ const normalizeFontSize = (size: number) => size / FONT_SCALE;
 const size = {
 	xsmall: normalizeFontSize(12),
 	small: normalizeFontSize(14),
-	regular: normalizeFontSize(16),
+	regular: normalizeFontSize(15),
 	large: normalizeFontSize(17),
 	xlarge: normalizeFontSize(20),
 	xxlarge: normalizeFontSize(24),
@@ -24,12 +24,12 @@ const preset = {
 	sectionHeader: {
 		size: 'large',
 		weight: 'medium',
-		variant: 'primary'
+		variant: 'label'
 	},
 	body: {
 		size: 'regular',
 		weight: 'regular',
-		variant: 'label'
+		variant: 'primary'
 	}
 } as const;
 
