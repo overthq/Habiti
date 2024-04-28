@@ -9,20 +9,20 @@ datasource db {
 }
 
 model User {
-  id            String             @id @default(uuid())
-  name          String
-  phone         String             @unique
-  email         String             @unique
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
-  orders        Order[]
-  managed       StoreManager[]
-  followed      StoreFollower[]
-  carts         Cart[]
-  watchlist     WatchlistProduct[]
-  cards         Card[]
-  addresses     DeliveryAddress[]
-  UserPushToken UserPushToken[]
+  id         String             @id @default(uuid())
+  name       String
+  phone      String             @unique
+  email      String             @unique
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+  orders     Order[]
+  managed    StoreManager[]
+  followed   StoreFollower[]
+  carts      Cart[]
+  watchlist  WatchlistProduct[]
+  cards      Card[]
+  addresses  DeliveryAddress[]
+  pushTokens UserPushToken[]
 }
 
 model Store {

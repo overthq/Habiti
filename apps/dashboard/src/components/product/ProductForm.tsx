@@ -12,6 +12,7 @@ import { formatNaira } from '../../utils/currency';
 
 interface ProductFormProps {
 	images?: ProductQuery['product']['images'];
+	options?: ProductQuery['product']['options'];
 	imagesToUpload: string[];
 	setImagesToUpload: React.Dispatch<React.SetStateAction<string[]>>;
 }
@@ -20,6 +21,7 @@ interface ProductFormProps {
 
 const ProductForm: React.FC<ProductFormProps> = ({
 	images,
+	options,
 	imagesToUpload,
 	setImagesToUpload
 }) => {
@@ -49,7 +51,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 				setImagesToUpload={setImagesToUpload}
 			/>
 			<InventoryInput />
-			<ProductOptions />
+			<ProductOptions options={options} />
 			<ProductReviews />
 		</ScrollableScreen>
 	);

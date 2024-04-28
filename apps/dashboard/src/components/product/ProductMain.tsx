@@ -75,6 +75,7 @@ const ProductMain: React.FC<ProductMainProps> = ({ product }) => {
 		<FormProvider {...formMethods}>
 			<ProductForm
 				images={product.images}
+				options={product.options}
 				imagesToUpload={toUpload}
 				setImagesToUpload={setToUpload}
 			/>

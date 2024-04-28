@@ -1,4 +1,4 @@
-import { Button, Input, Screen } from '@market/components';
+import { Button, Input, Screen, Spacer } from '@market/components';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
@@ -16,11 +16,8 @@ const AddManager = () => {
 
 	return (
 		<Screen style={styles.container}>
-			<Input
-				label='E-mail address'
-				placeholder='john@doe.com'
-				style={styles.input}
-			/>
+			<Input label='E-mail address' placeholder='john@doe.com' />
+			<Spacer y={16} />
 			<Button text='Submit' onPress={handleSubmit(onSubmit)} />
 		</Screen>
 	);
@@ -29,9 +26,6 @@ const AddManager = () => {
 const styles = StyleSheet.create({
 	container: {
 		padding: 16
-	},
-	input: {
-		marginBottom: 8
 	}
 });
 

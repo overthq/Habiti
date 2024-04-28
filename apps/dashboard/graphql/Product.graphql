@@ -29,6 +29,10 @@ query Product($id: ID!) {
 			id
 			path
 		}
+		options {
+			id
+			name
+		}
 	}
 }
 

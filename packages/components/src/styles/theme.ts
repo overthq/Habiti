@@ -15,6 +15,8 @@ export const spacing = {
 	xlarge: 32
 };
 
+// https://matthewstrom.com/writing/generating-color-palettes/
+
 const palette = {
 	neutral: {
 		n1: '#FFFFFF',
@@ -40,7 +42,7 @@ const dark = {
 		primary: palette.neutral.n1,
 		secondary: palette.neutral.n10,
 		tertiary: palette.neutral.n50,
-		disabled: '',
+		disabled: palette.neutral.n5,
 		error: '',
 		label: palette.neutral.n10
 	},
@@ -105,7 +107,7 @@ const light = {
 		primary: palette.neutral.n100,
 		secondary: palette.neutral.n50,
 		tertiary: palette.neutral.n10,
-		disabled: '',
+		disabled: palette.neutral.n50,
 		error: '',
 		label: palette.neutral.n50
 	},
