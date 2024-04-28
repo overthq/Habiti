@@ -1,26 +1,31 @@
-import {
-	CustomImage,
-	Screen,
-	Spacer,
-	Typography,
-	useTheme
-} from '@market/components';
+import { Screen, useTheme } from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { StyleSheet, Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { TabBar, TabView, SceneMap } from 'react-native-tab-view';
 
+import ProductResultRow from './ProductResultRow';
 import RecentSearches from './RecentSearches';
 import { SearchProvider, useSearchContext } from './SearchContext';
-// import { useSearchQuery } from '../../types/api';
-import { AppStackParamList } from '../../types/navigation';
+import StoreResultRow from './StoreResultRow';
+import {
+	AppStackParamList,
+	ExploreStackParamList
+} from '../../types/navigation';
 
 const StoresView: React.FC = () => {
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const { fetching, stores } = useSearchContext();
+	const { navigate } = useNavigation<NavigationProp<ExploreStackParamList>>();
+	const { stores } = useSearchContext();
 
-	if (fetching || !stores) {
+	const handleStorePress = (storeId: string) => () => {
+		navigate('Store', {
+			screen: 'Store.Main',
+			params: { storeId }
+		});
+	};
+
+	if (!stores) {
 		return <View />;
 	}
 
@@ -29,14 +34,7 @@ const StoresView: React.FC = () => {
 			keyExtractor={s => s.id}
 			data={stores}
 			renderItem={({ item }) => (
-				<Pressable
-					onPress={() => navigate('Store', { storeId: item.id })}
-					style={styles.row}
-				>
-					<CustomImage uri={item.image?.path} circle height={35} width={35} />
-					<Spacer x={8} />
-					<Typography>{item.name}</Typography>
-				</Pressable>
+				<StoreResultRow store={item} onPress={handleStorePress(item.id)} />
 			)}
 		/>
 	);
@@ -44,7 +42,7 @@ const StoresView: React.FC = () => {
 
 const ProductsView: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const { fetching, products } = useSearchContext();
+	const { products } = useSearchContext();
 
 	const handleProductPress = React.useCallback(
 		(productId: string) => () => {
@@ -53,25 +51,15 @@ const ProductsView: React.FC = () => {
 		[]
 	);
 
-	if (fetching || !products) {
-		return <View />;
-	}
-
 	return (
 		<FlashList
-			keyExtractor={i => i.id}
+			keyExtractor={p => p.id}
 			data={products}
 			renderItem={({ item }) => (
-				<Pressable onPress={handleProductPress(item.id)} style={styles.row}>
-					<CustomImage
-						uri={item.images[0]?.path}
-						circle
-						height={35}
-						width={35}
-					/>
-					<Spacer x={8} />
-					<Typography>{item.name}</Typography>
-				</Pressable>
+				<ProductResultRow
+					product={item}
+					onPress={handleProductPress(item.id)}
+				/>
 			)}
 		/>
 	);
@@ -107,7 +95,6 @@ const SearchResultsMain: React.FC<SearchResultsMainProps> = ({
 		{ key: 'stores', title: 'Stores' },
 		{ key: 'products', title: 'Products' }
 	]);
-	// const [{ fetching, data }] = useSearchQuery({ variables: { searchTerm } });
 
 	const renderScene = SceneMap({
 		stores: StoresView,
@@ -135,14 +122,5 @@ const SearchResultsMain: React.FC<SearchResultsMainProps> = ({
 		</SearchProvider>
 	);
 };
-
-const styles = StyleSheet.create({
-	row: {
-		width: '100%',
-		flexDirection: 'row',
-		padding: 8,
-		alignItems: 'center'
-	}
-});
 
 export default SearchResults;

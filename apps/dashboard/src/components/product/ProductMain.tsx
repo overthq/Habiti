@@ -58,7 +58,7 @@ const ProductMain: React.FC<ProductMainProps> = ({ product }) => {
 						<TextButton
 							onPress={formMethods.handleSubmit(onSubmit)}
 							disabled={disabled || fetching}
-							style={{ marginRight: 8 }}
+							style={{ marginRight: 16 }}
 						>
 							Save
 						</TextButton>
@@ -75,6 +75,7 @@ const ProductMain: React.FC<ProductMainProps> = ({ product }) => {
 		<FormProvider {...formMethods}>
 			<ProductForm
 				images={product.images}
+				options={product.options}
 				imagesToUpload={toUpload}
 				setImagesToUpload={setToUpload}
 			/>

@@ -2,12 +2,17 @@ import * as Sentry from '@sentry/node';
 import { nodeProfilingIntegration } from '@sentry/profiling-node';
 import { Express } from 'express';
 
+import prismaClient from './prisma';
+
 export const initSentry = (app: Express) => {
 	Sentry.init({
 		dsn: process.env.SENTRY_DSN,
 		integrations: [
 			new Sentry.Integrations.Http({ tracing: true }),
 			new Sentry.Integrations.Express({ app }),
+			new Sentry.Integrations.Prisma({ client: prismaClient }),
+			new Sentry.Integrations.GraphQL(),
+			new Sentry.Integrations.Apollo(),
 			nodeProfilingIntegration()
 		],
 		tracesSampleRate: 1.0,

@@ -40,6 +40,14 @@ const categories: Resolver = (parent, _, ctx) => {
 		.categories();
 };
 
+const options: Resolver = (parent, _, ctx) => {
+	return ctx.prisma.product.findUnique({ where: { id: parent.id } }).options();
+};
+
+const reviews: Resolver = (parent, _, ctx) => {
+	return ctx.prisma.product.findUnique({ where: { id: parent.id } }).reviews();
+};
+
 // FIXME: Very hacky.
 const inCart: Resolver = async (parent, _, ctx) => {
 	const fetchedCart = await ctx.prisma.cart.findUnique({
@@ -69,6 +77,8 @@ export default {
 		store,
 		images,
 		categories,
+		options,
+		reviews,
 		inCart
 	}
 };

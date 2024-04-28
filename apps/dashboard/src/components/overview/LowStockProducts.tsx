@@ -1,4 +1,4 @@
-import { TextButton, Typography } from '@market/components';
+import { SectionHeader, Spacer } from '@market/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
@@ -22,14 +22,11 @@ const LowStockProducts = () => {
 
 	return (
 		<View style={styles.container}>
-			<View style={styles.heading}>
-				<Typography variant='label' weight='medium'>
-					Low stock products
-				</Typography>
-				<TextButton size={16} onPress={navigateToProducts}>
-					View all
-				</TextButton>
-			</View>
+			<SectionHeader
+				title='Low stock products'
+				action={{ text: 'View all', onPress: navigateToProducts }}
+			/>
+			<Spacer y={4} />
 			<FlatList
 				keyExtractor={i => i.id}
 				data={data?.currentStore.products}
@@ -41,7 +38,7 @@ const LowStockProducts = () => {
 				)}
 				horizontal
 				showsHorizontalScrollIndicator={false}
-				ListHeaderComponent={<View style={{ width: 8 }} />}
+				ListHeaderComponent={<View style={{ width: 16 }} />}
 			/>
 		</View>
 	);

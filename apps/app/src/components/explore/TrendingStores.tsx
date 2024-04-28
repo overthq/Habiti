@@ -1,4 +1,4 @@
-import { ListEmpty, Typography } from '@market/components';
+import { ListEmpty, SectionHeader } from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
@@ -6,11 +6,11 @@ import { View, StyleSheet } from 'react-native';
 
 import TrendingStoresItem from './TrendingStoresItem';
 import { useStoresQuery } from '../../types/api';
-import { AppStackParamList } from '../../types/navigation';
+import { ExploreStackParamList } from '../../types/navigation';
 
 const TrendingStores: React.FC = () => {
 	const [{ data }] = useStoresQuery();
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { navigate } = useNavigation<NavigationProp<ExploreStackParamList>>();
 
 	const handleStorePress = React.useCallback(
 		(storeId: string) => () => {
@@ -25,13 +25,7 @@ const TrendingStores: React.FC = () => {
 
 	return (
 		<View style={styles.container}>
-			<Typography
-				variant='label'
-				weight='medium'
-				style={{ marginLeft: 16, marginBottom: 8 }}
-			>
-				Trending Stores
-			</Typography>
+			<SectionHeader title='Trending Stores' />
 			<FlashList
 				horizontal
 				data={data.stores}
@@ -57,7 +51,7 @@ const TrendingStores: React.FC = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		paddingTop: 8
+		paddingTop: 12
 	}
 });
 

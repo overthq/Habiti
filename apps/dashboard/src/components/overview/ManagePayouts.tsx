@@ -1,4 +1,4 @@
-import { Icon, Typography } from '@market/components';
+import { Icon, SectionHeader, Typography } from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
@@ -16,25 +16,22 @@ const ManagePayouts = () => {
 	}, []);
 
 	return (
-		<View style={styles.container}>
-			<Typography variant='label' weight='medium'>
-				Available Revenue
-			</Typography>
-			<Pressable style={styles.amount} onPress={navigateToPayouts}>
-				<Typography size='xxxlarge' weight='bold'>
-					{formatNaira(50000)}
-					{/* {formatNaira(data?.currentStore.realizedRevenue ?? 0)} */}
-				</Typography>
-				<Icon name='chevron-right' color='#D3D3D3' />
-			</Pressable>
+		<View>
+			<SectionHeader title='Available Revenue' />
+			<View style={{ paddingHorizontal: 16 }}>
+				<Pressable style={styles.amount} onPress={navigateToPayouts}>
+					<Typography size='xxxlarge' weight='bold'>
+						{formatNaira(50000)}
+						{/* {formatNaira(data?.currentStore.realizedRevenue ?? 0)} */}
+					</Typography>
+					<Icon name='chevron-right' color='#D3D3D3' />
+				</Pressable>
+			</View>
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		paddingHorizontal: 16
-	},
 	amount: {
 		flexDirection: 'row',
 		alignItems: 'center',

@@ -1,4 +1,4 @@
-import { Icon, Screen, Typography } from '@market/components';
+import { Icon, Screen, SectionHeader, Typography } from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
@@ -36,16 +36,12 @@ const Payouts = () => {
 
 	return (
 		<Screen style={styles.container}>
-			<Typography variant='label' weight='medium'>
-				Available
-			</Typography>
+			<SectionHeader title='Available' padded={false} />
 			<Typography size='xxxlarge' weight='bold' style={styles.available}>
 				{formatNaira(50000)}
 			</Typography>
 			<RevenueBar realizedRevenue={75} unrealizedRevenue={50} payedOut={25} />
-			<Typography variant='label' weight='medium'>
-				Payout History
-			</Typography>
+			<SectionHeader title='Payout History' padded={false} />
 			{data.currentStore.payouts.map(payout => (
 				<PayoutRow key={payout.id} payout={payout} />
 			))}

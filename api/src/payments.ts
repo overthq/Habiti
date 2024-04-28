@@ -1,5 +1,6 @@
 import { Router } from 'express';
 
+import { MarketRequest } from './types/misc';
 import { initialCharge, verifyTransaction } from './utils/paystack';
 
 const router: Router = Router();
@@ -23,13 +24,18 @@ router.post('/initial-charge', async (req, res) => {
 	}
 });
 
-router.post('/verify-transaction', async (req, res) => {
+router.post('/verify-transaction', async (req: MarketRequest, res) => {
 	const { reference } = req.body;
 
 	try {
-		const data = await verifyTransaction((req as any).auth.id, reference);
-
-		return res.status(200).json({ success: true, data });
+		if (req.auth?.id) {
+			const data = await verifyTransaction((req as any).auth.id, reference);
+			return res.status(200).json({ success: true, data });
+		}
+		return res.status(401).json({
+			success: false,
+			message: 'A bearer token is required for this action.'
+		});
 	} catch (error) {
 		return res.status(400).json({ success: false, error });
 	}

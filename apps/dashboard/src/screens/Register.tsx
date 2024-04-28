@@ -1,9 +1,14 @@
-import { Button, FormInput, Typography } from '@market/components';
+import { Button, FormInput, Typography, Spacer } from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { KeyboardAvoidingView, Pressable } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+	Keyboard,
+	KeyboardAvoidingView,
+	Pressable,
+	TouchableWithoutFeedback
+} from 'react-native';
+// import { SafeAreaView } from 'react-native-safe-area-context';
 
 import authStyles from '../styles/auth';
 import { useRegisterMutation } from '../types/api';
@@ -41,37 +46,53 @@ const Register: React.FC = () => {
 
 	return (
 		<FormProvider {...formMethods}>
-			<SafeAreaView>
-				<KeyboardAvoidingView style={authStyles.container}>
-					<Typography size='xxlarge'>{`Let's meet you.`}</Typography>
+			<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+				{/* <SafeAreaView> */}
+				<KeyboardAvoidingView style={authStyles.container} behavior='padding'>
+					<Typography
+						size='xxxlarge'
+						weight='bold'
+					>{`Let's meet you.`}</Typography>
+					<Spacer y={2} />
 					<Typography variant='secondary'>
 						This helps us in personalizing your experience.
 					</Typography>
+					<Spacer y={16} />
 					<FormInput
 						name='name'
+						label='Name'
 						placeholder='John Doe'
 						control={formMethods.control}
 					/>
+					<Spacer y={8} />
 					<FormInput
 						name='email'
+						label='Email address'
 						placeholder='john.doe@gmail.com'
 						control={formMethods.control}
 					/>
+					<Spacer y={8} />
 					<FormInput
 						name='phone'
+						label='Phone'
 						placeholder='08012345678'
 						control={formMethods.control}
 					/>
+					<Spacer y={8} />
 					<Button
 						text='Register'
 						onPress={formMethods.handleSubmit(onSubmit)}
 						loading={fetching}
 					/>
-					<Pressable onPress={goToAuth} style={{ marginTop: 8 }}>
+					<Pressable
+						onPress={goToAuth}
+						style={{ alignSelf: 'center', marginTop: 8 }}
+					>
 						<Typography>Already have an account? Log in.</Typography>
 					</Pressable>
 				</KeyboardAvoidingView>
-			</SafeAreaView>
+				{/* </SafeAreaView> */}
+			</TouchableWithoutFeedback>
 		</FormProvider>
 	);
 };

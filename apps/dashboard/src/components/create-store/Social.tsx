@@ -1,4 +1,4 @@
-import { FormInput, Typography } from '@market/components';
+import { FormInput, Spacer, Typography } from '@market/components';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { View, StyleSheet, Dimensions } from 'react-native';
@@ -16,6 +16,7 @@ const Social = () => {
 			<Typography>
 				Link your social accounts, so shoppers can follow you elsewhere.
 			</Typography>
+			<Spacer y={16} />
 			<FormInput
 				control={control}
 				label='Twitter username'
@@ -24,6 +25,7 @@ const Social = () => {
 				autoCapitalize='none'
 				autoCorrect={false}
 			/>
+			<Spacer y={16} />
 			<FormInput
 				control={control}
 				label='Instagram username'
@@ -32,6 +34,7 @@ const Social = () => {
 				autoCapitalize='none'
 				autoCorrect={false}
 			/>
+			<Spacer y={16} />
 			<FormInput
 				control={control}
 				label='Website'
@@ -45,7 +48,6 @@ const Social = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
 		width,
 		padding: 16
 	}

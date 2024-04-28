@@ -3,7 +3,7 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
-import Animated, { Layout } from 'react-native-reanimated';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 
 import AccordionRow from '../components/filter-products/AccordionRow';
 import SortProducts from '../components/filter-products/SortProducts';
@@ -67,7 +67,13 @@ const FilterProducts = () => {
 						open={open === 'rating'}
 						onPress={handleExpandSection('rating')}
 					>
-						<View />
+						<View>
+							<Typography>5 stars</Typography>
+							<Typography>4 stars and up</Typography>
+							<Typography>3 stars and up</Typography>
+							<Typography>2 stars and up</Typography>
+							<Typography>1 star and up</Typography>
+						</View>
 					</AccordionRow>
 					<AccordionRow
 						title='Category'
@@ -76,7 +82,7 @@ const FilterProducts = () => {
 					>
 						<View />
 					</AccordionRow>
-					<Animated.View layout={Layout} style={{ marginBottom: 8 }}>
+					<Animated.View layout={LinearTransition} style={{ marginBottom: 8 }}>
 						<View style={styles.row}>
 							<Typography>In Stock</Typography>
 							<Checkbox />

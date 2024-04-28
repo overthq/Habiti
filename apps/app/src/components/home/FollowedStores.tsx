@@ -1,4 +1,4 @@
-import { ListEmpty, Typography } from '@market/components';
+import { ListEmpty, SectionHeader } from '@market/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
@@ -6,7 +6,7 @@ import { View, StyleSheet } from 'react-native';
 
 import FollowedStoresItem from './FollowedStoresItem';
 import { HomeQuery } from '../../types/api';
-import { AppStackParamList, HomeTabParamList } from '../../types/navigation';
+import { HomeStackParamList, HomeTabParamList } from '../../types/navigation';
 
 interface FollowedStoresProps {
 	followed: HomeQuery['currentUser']['followed'];
@@ -15,9 +15,7 @@ interface FollowedStoresProps {
 const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 	return (
 		<View style={styles.container}>
-			<Typography style={{ marginLeft: 16, marginBottom: 2 }}>
-				Followed Stores
-			</Typography>
+			<SectionHeader title='Followed stores' />
 			<FollowedStoresMain followed={followed} />
 		</View>
 	);
@@ -31,7 +29,7 @@ const FollowedStoresMain: React.FC<FollowedStoresMainProps> = ({
 	followed
 }) => {
 	const { navigate } =
-		useNavigation<NavigationProp<HomeTabParamList & AppStackParamList>>();
+		useNavigation<NavigationProp<HomeStackParamList & HomeTabParamList>>();
 
 	const handleStorePress = React.useCallback(
 		(storeId: string) => () => {

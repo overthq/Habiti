@@ -16,6 +16,7 @@ export type AppStackParamList = {
 	AddManager: undefined;
 	FilterProducts: undefined;
 	FilterOrders: undefined;
+	'Modal.CreateStore': undefined;
 };
 
 export type MainTabParamList = {

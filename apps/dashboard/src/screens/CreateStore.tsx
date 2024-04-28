@@ -3,10 +3,10 @@ import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import {
 	FlatList,
-	StyleSheet,
 	Dimensions,
 	ViewToken,
-	FlatListProps
+	FlatListProps,
+	View
 } from 'react-native';
 import Animated, {
 	useSharedValue,
@@ -16,6 +16,7 @@ import Animated, {
 import Brand from '../components/create-store/Brand';
 import Social from '../components/create-store/Social';
 import StoreImage from '../components/create-store/StoreImage';
+import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useCreateStoreMutation } from '../types/api';
 
@@ -48,6 +49,8 @@ const CreateStore: React.FC = () => {
 	const scrollX = useSharedValue(0);
 	const setPreference = useStore(state => state.setPreference);
 	const formMethods = useForm<CreateStoreFormValues>();
+
+	useGoBack('x');
 
 	const toNext = React.useCallback(() => {
 		listRef.current?.scrollToIndex({
@@ -104,20 +107,14 @@ const CreateStore: React.FC = () => {
 					onScroll={handleScroll}
 				/>
 			</FormProvider>
-			<Button
-				text={isLastStep ? 'Submit' : 'Next'}
-				onPress={isLastStep ? formMethods.handleSubmit(onSubmit) : toNext}
-				style={styles.button}
-			/>
+			<View style={{ paddingHorizontal: 16 }}>
+				<Button
+					text={isLastStep ? 'Submit' : 'Next'}
+					onPress={isLastStep ? formMethods.handleSubmit(onSubmit) : toNext}
+				/>
+			</View>
 		</Screen>
 	);
 };
-
-const styles = StyleSheet.create({
-	button: {
-		alignSelf: 'center',
-		width: width - 32
-	}
-});
 
 export default CreateStore;

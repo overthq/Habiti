@@ -1,10 +1,13 @@
+import { Button } from '@market/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import SettingSelectRow from './SettingSelectRow';
 import useGoBack from '../../hooks/useGoBack';
 import useStore from '../../state';
 import { useManagedStoresQuery } from '../../types/api';
+import { AppStackParamList } from '../../types/navigation';
 
 const SettingsActiveStore: React.FC = () => {
 	const { activeStore, setPreference } = useStore(state => ({
@@ -13,6 +16,7 @@ const SettingsActiveStore: React.FC = () => {
 	}));
 
 	const [{ data }] = useManagedStoresQuery();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	useGoBack();
 
 	const stores = data?.currentUser.managed.map(({ store }) => store);
@@ -23,17 +27,19 @@ const SettingsActiveStore: React.FC = () => {
 
 	return (
 		<View style={styles.container}>
-			<FlatList
-				data={stores}
-				keyExtractor={s => s.id}
-				renderItem={({ item }) => (
-					<SettingSelectRow
-						name={item.name}
-						isSelected={activeStore === item.id}
-						onSelectRow={handleRowSelect(item.id)}
-					/>
-				)}
-			/>
+			{stores?.map(store => (
+				<SettingSelectRow
+					name={store.name}
+					isSelected={activeStore === store.id}
+					onSelectRow={handleRowSelect(store.id)}
+				/>
+			))}
+			<View style={{ padding: 16 }}>
+				<Button
+					text='Create new store'
+					onPress={() => navigate('Modal.CreateStore')}
+				/>
+			</View>
 		</View>
 	);
 };

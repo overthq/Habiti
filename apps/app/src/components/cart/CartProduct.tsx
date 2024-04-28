@@ -19,14 +19,12 @@ const CartProduct: React.FC<CartProductProps> = ({
 		<Pressable style={styles.container} onPress={onPress}>
 			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 				<CustomImage uri={product.images[0]?.path} height={40} width={40} />
-				<Spacer x={8} />
+				<Spacer x={12} />
 				<View>
 					<Typography>{product.name}</Typography>
 					<Spacer y={2} />
 					<Typography size='small' variant='secondary'>
-						{`${plural('unit', quantity)} · ${formatNaira(
-							product.unitPrice * quantity
-						)}`}
+						{`${plural('unit', quantity)}`}
 					</Typography>
 				</View>
 			</View>
@@ -40,7 +38,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		paddingVertical: 8
+		paddingVertical: 4
 	}
 });
 

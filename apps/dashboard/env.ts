@@ -13,7 +13,7 @@ const ENV = {
 	staging: {
 		apiUrl: ''
 	},
-	prod: {
+	production: {
 		apiUrl: ''
 	}
 };

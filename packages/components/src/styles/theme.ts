@@ -1,6 +1,5 @@
-import { PixelRatio } from 'react-native';
-
-const FONT_SCALE = PixelRatio.getFontScale();
+// TODO: Spend a significant amount of time building out novel designs
+// based on a green accent color.
 
 export enum ThemeMap {
 	light = 'Light',
@@ -16,28 +15,7 @@ export const spacing = {
 	xlarge: 32
 };
 
-const normalizeFontSize = (size: number) => size / FONT_SCALE;
-
-export const typography = {
-	size: {
-		xsmall: normalizeFontSize(12),
-		small: normalizeFontSize(14),
-		regular: normalizeFontSize(16),
-		large: normalizeFontSize(18),
-		xlarge: normalizeFontSize(20),
-		xxlarge: normalizeFontSize(24),
-		xxxlarge: normalizeFontSize(32)
-	},
-	weight: {
-		regular: 'normal',
-		medium: '500',
-		bold: 'bold'
-	},
-	family: {
-		regular: {},
-		medium: {}
-	}
-} as const;
+// https://matthewstrom.com/writing/generating-color-palettes/
 
 const palette = {
 	neutral: {
@@ -59,15 +37,12 @@ const palette = {
 	}
 };
 
-// TODO: Move palette, typography, spacing to separate files
-// Set up a file for individual theme items like buttons, text etc.
-
 const dark = {
 	text: {
 		primary: palette.neutral.n1,
 		secondary: palette.neutral.n10,
 		tertiary: palette.neutral.n50,
-		disabled: '',
+		disabled: palette.neutral.n5,
 		error: '',
 		label: palette.neutral.n10
 	},
@@ -105,7 +80,7 @@ const dark = {
 		color: palette.neutral.n90
 	},
 	image: {
-		placeholder: palette.neutral.n50
+		placeholder: palette.neutral.n90
 	},
 	badge: {
 		success: {
@@ -132,7 +107,7 @@ const light = {
 		primary: palette.neutral.n100,
 		secondary: palette.neutral.n50,
 		tertiary: palette.neutral.n10,
-		disabled: '',
+		disabled: palette.neutral.n50,
 		error: '',
 		label: palette.neutral.n50
 	},

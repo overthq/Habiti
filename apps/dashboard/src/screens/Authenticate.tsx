@@ -1,4 +1,4 @@
-import { Button, Input, Screen, Typography } from '@market/components';
+import { Button, Input, Screen, Spacer, Typography } from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 
@@ -26,7 +26,8 @@ const Authenticate: React.FC = () => {
 			<Typography weight='bold' size='xxxlarge'>
 				Enter your phone number.
 			</Typography>
-			<Typography>{`We'll send your verification code here.`}</Typography>
+			<Typography variant='secondary'>{`We'll send your verification code here.`}</Typography>
+			<Spacer y={16} />
 			<Input
 				label='Phone number'
 				placeholder='08012345678'
@@ -34,6 +35,7 @@ const Authenticate: React.FC = () => {
 				onChangeText={setPhone}
 				keyboardType='number-pad'
 			/>
+			<Spacer y={16} />
 			<Button loading={fetching} text='Next' onPress={handleSubmit} />
 		</Screen>
 		// </SafeAreaView>

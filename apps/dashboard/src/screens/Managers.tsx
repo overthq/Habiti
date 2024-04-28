@@ -19,17 +19,12 @@ const Managers = () => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<View
-					style={{
-						flexDirection: 'row',
-						alignItems: 'center',
-						marginRight: 16
-					}}
+				<Pressable
+					style={{ marginRight: 16 }}
+					onPress={() => navigate('AddManager')}
 				>
-					<Pressable onPress={() => navigate('AddManager')}>
-						<Icon name='plus' />
-					</Pressable>
-				</View>
+					<Icon name='plus' />
+				</Pressable>
 			)
 		});
 	}, []);

@@ -2,7 +2,6 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 
 export type AppStackParamList = {
 	Home: undefined;
-	Store: NavigatorScreenParams<StoreStackParamList>;
 	Register: undefined;
 	Authenticate: undefined;
 	Verify: { phone: string };
@@ -14,9 +13,10 @@ export type AppStackParamList = {
 export type HomeStackParamList = {
 	Home: undefined;
 	Order: { orderId: string };
-	Store: { storeId: string };
+	Store: NavigatorScreenParams<StoreStackParamList>;
 	Settings: undefined;
 	SettingsTheme: undefined;
+	Notifications: undefined;
 };
 
 export type ExploreStackParamList = {

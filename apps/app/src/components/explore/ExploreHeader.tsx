@@ -1,7 +1,11 @@
 import { Icon, TextButton, useTheme } from '@market/components';
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
-import Animated, { LinearTransition } from 'react-native-reanimated';
+import Animated, {
+	FadeIn,
+	FadeOut,
+	LinearTransition
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface ExploreHeaderProps {
@@ -50,12 +54,17 @@ const ExploreHeader: React.FC<ExploreHeaderProps> = ({
 					onChangeText={setSearchTerm} // TODO: Add debounce
 					autoCapitalize='none'
 					autoCorrect={false}
+					selectionColor={theme.text.primary}
 				/>
 			</Animated.View>
 			{searchOpen ? (
-				<View style={{ marginLeft: 12 }}>
+				<Animated.View
+					entering={FadeIn.delay(50)}
+					exiting={FadeOut}
+					style={{ marginLeft: 12 }}
+				>
 					<TextButton onPress={cancel}>Cancel</TextButton>
-				</View>
+				</Animated.View>
 			) : null}
 		</View>
 	);
@@ -69,16 +78,18 @@ const styles = StyleSheet.create({
 		paddingBottom: 12
 	},
 	input: {
-		flexDirection: 'row',
 		flex: 1,
+		flexDirection: 'row',
 		alignItems: 'center',
+		height: 36,
 		borderRadius: 6,
-		padding: 8
+		paddingHorizontal: 12
 	},
 	inputText: {
 		flex: 1,
 		marginLeft: 8,
-		fontSize: 16
+		fontSize: 16,
+		height: '100%'
 	}
 });
 

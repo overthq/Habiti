@@ -9,20 +9,20 @@ datasource db {
 }
 
 model User {
-  id            String             @id @default(uuid())
-  name          String
-  phone         String             @unique
-  email         String             @unique
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
-  orders        Order[]
-  managed       StoreManager[]
-  followed      StoreFollower[]
-  carts         Cart[]
-  watchlist     WatchlistProduct[]
-  cards         Card[]
-  addresses     DeliveryAddress[]
-  UserPushToken UserPushToken[]
+  id         String             @id @default(uuid())
+  name       String
+  phone      String             @unique
+  email      String             @unique
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+  orders     Order[]
+  managed    StoreManager[]
+  followed   StoreFollower[]
+  carts      Cart[]
+  watchlist  WatchlistProduct[]
+  cards      Card[]
+  addresses  DeliveryAddress[]
+  pushTokens UserPushToken[]
 }
 
 model Store {
@@ -67,8 +67,10 @@ model Product {
   watchlists  WatchlistProduct[]
   categories  ProductCategory[]
 
-  store  Store    @relation(fields: [storeId], references: [id])
-  Review Review[]
+  store Store @relation(fields: [storeId], references: [id])
+
+  reviews ProductReview[]
+  options ProductOption[]
 }
 
 model Order {
@@ -205,7 +207,7 @@ model StoreProductCategory {
   products ProductCategory[]
 }
 
-model Review {
+model ProductReview {
   id        String   @id @default(uuid())
   productId String
   body      String?
@@ -230,6 +232,28 @@ model UserPushToken {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, token])
+}
+
+model ProductOption {
+  id          String  @id @default(uuid())
+  productId   String
+  name        String
+  description String?
+
+  product Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  values  ProductOptionValue[]
+
+  @@unique([productId, name])
+}
+
+model ProductOptionValue {
+  id       String @id @default(uuid())
+  optionId String
+  name     String
+
+  option ProductOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+
+  @@unique([optionId, name])
 }
 
 enum ProductStatus {
