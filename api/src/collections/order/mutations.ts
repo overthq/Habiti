@@ -1,4 +1,4 @@
-import { OrderStatus } from 'prisma';
+import { OrderStatus } from '@prisma/client';
 
 import { Resolver } from '../../types/resolvers';
 import { chargeAuthorization } from '../../utils/paystack';
@@ -104,9 +104,9 @@ const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
 
 	if (args.input.status) {
 		switch (args.input.status) {
-			case OrderStatus.Canceled:
+			case OrderStatus.Cancelled:
 				break;
-			case OrderStatus.Fulfilled: {
+			case OrderStatus.Completed: {
 				const total = order.products.reduce((acc, next) => {
 					return acc + next.product.unitPrice * next.quantity;
 				}, 0);

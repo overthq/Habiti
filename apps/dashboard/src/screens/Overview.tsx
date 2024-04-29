@@ -5,7 +5,7 @@ import { Pressable, StyleSheet } from 'react-native';
 
 import LowStockProducts from '../components/overview/LowStockProducts';
 import ManagePayouts from '../components/overview/ManagePayouts';
-import QuickActions from '../components/overview/QuickActions';
+// import QuickActions from '../components/overview/QuickActions';
 import { AppStackParamList } from '../types/navigation';
 
 // Revenue and payout information (front and center)
@@ -31,7 +31,7 @@ const Overview: React.FC = () => {
 	return (
 		<ScrollableScreen style={styles.container}>
 			<ManagePayouts />
-			<QuickActions />
+			{/* <QuickActions /> */}
 			<LowStockProducts />
 		</ScrollableScreen>
 	);

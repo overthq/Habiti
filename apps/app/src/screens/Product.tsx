@@ -9,6 +9,7 @@ import AddToCart from '../components/product/AddToCart';
 import ImageCarousel from '../components/product/ImageCarousel';
 import ProductDetails from '../components/product/ProductDetails';
 // import RelatedProducts from '../components/product/RelatedProducts';
+import ProductReviews from '../components/product/ProductReviews';
 import useGoBack from '../hooks/useGoBack';
 import { useProductQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
@@ -61,6 +62,7 @@ const Product: React.FC = () => {
 				>
 					<ImageCarousel images={data.product.images} />
 					<ProductDetails product={data.product} />
+					<ProductReviews reviews={data.product.reviews} />
 					{/* <RelatedProducts /> */}
 					<AddToCart
 						storeId={data.product.storeId}

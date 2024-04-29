@@ -26,6 +26,18 @@ export type AddDeliveryAddressInput = {
 	name?: InputMaybe<Scalars['String']>;
 };
 
+export type AddProductOptionInput = {
+	description?: InputMaybe<Scalars['String']>;
+	name: Scalars['String'];
+	productId: Scalars['ID'];
+};
+
+export type AddProductReviewInput = {
+	body?: InputMaybe<Scalars['String']>;
+	productId: Scalars['ID'];
+	rating: Scalars['Int'];
+};
+
 export type AddProductToCategoryInput = {
 	categoryId: Scalars['ID'];
 	productId: Scalars['ID'];
@@ -193,6 +205,8 @@ export type Mutation = {
 	__typename?: 'Mutation';
 	_?: Maybe<Scalars['Boolean']>;
 	addDeliveryAddress?: Maybe<DeliveryAddress>;
+	addProductOption: ProductOption;
+	addProductReview: ProductReview;
 	addProductToCategory: ProductCategory;
 	addStoreManager: StoreManager;
 	addToCart: CartProduct;
@@ -229,6 +243,14 @@ export type Mutation = {
 
 export type MutationAddDeliveryAddressArgs = {
 	input?: InputMaybe<AddDeliveryAddressInput>;
+};
+
+export type MutationAddProductOptionArgs = {
+	input: AddProductOptionInput;
+};
+
+export type MutationAddProductReviewArgs = {
+	input: AddProductReviewInput;
 };
 
 export type MutationAddProductToCategoryArgs = {
@@ -387,6 +409,7 @@ export type Order = {
 
 export type OrderOrderByInput = {
 	createdAt?: InputMaybe<Sort>;
+	total?: InputMaybe<Sort>;
 	updatedAt?: InputMaybe<Sort>;
 };
 
@@ -437,8 +460,10 @@ export type Product = {
 	images: Image[];
 	inCart: Scalars['Boolean'];
 	name: Scalars['String'];
+	options: ProductOption[];
 	orders: Order[];
 	quantity: Scalars['Int'];
+	reviews: ProductReview[];
 	store: Store;
 	storeId: Scalars['ID'];
 	unitPrice: Scalars['Int'];
@@ -471,10 +496,31 @@ export type ProductFilterInput = {
 	unitPrice?: InputMaybe<IntWhere>;
 };
 
+export type ProductOption = {
+	__typename?: 'ProductOption';
+	description?: Maybe<Scalars['String']>;
+	id: Scalars['ID'];
+	name: Scalars['String'];
+	product: Product;
+	productId: Scalars['ID'];
+};
+
 export type ProductOrderByInput = {
 	createdAt?: InputMaybe<Sort>;
 	unitPrice?: InputMaybe<Sort>;
 	updatedAt?: InputMaybe<Sort>;
+};
+
+export type ProductReview = {
+	__typename?: 'ProductReview';
+	body?: Maybe<Scalars['String']>;
+	createdAt: Scalars['String'];
+	id: Scalars['ID'];
+	product: Product;
+	productId: Scalars['ID'];
+	rating: Scalars['Int'];
+	updatedAt: Scalars['String'];
+	user: User;
 };
 
 export type Query = {
@@ -1060,6 +1106,14 @@ export type ProductQuery = {
 		inCart: boolean;
 		store: { __typename?: 'Store'; id: string; cartId?: string | null };
 		images: { __typename?: 'Image'; id: string; path: string }[];
+		reviews: {
+			__typename?: 'ProductReview';
+			id: string;
+			body?: string | null;
+			rating: number;
+			createdAt: string;
+			user: { __typename?: 'User'; id: string; name: string };
+		}[];
 	};
 };
 
@@ -1680,6 +1734,16 @@ export const ProductDocument = gql`
 			images {
 				id
 				path
+			}
+			reviews {
+				id
+				body
+				rating
+				createdAt
+				user {
+					id
+					name
+				}
 			}
 			inCart
 		}

@@ -14,7 +14,12 @@ const addProductReview: Resolver<AddProductReviewArgs> = async (
 	ctx
 ) => {
 	const productReview = await ctx.prisma.productReview.create({
-		data: { productId: input.productId, body: input.body, rating: input.rating }
+		data: {
+			userId: ctx.user.id,
+			productId: input.productId,
+			body: input.body,
+			rating: input.rating
+		}
 	});
 
 	return productReview;

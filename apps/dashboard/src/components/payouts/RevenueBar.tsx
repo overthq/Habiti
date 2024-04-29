@@ -1,3 +1,5 @@
+import { useTheme } from '@market/components';
+import { palette } from '@market/components/src/styles/theme';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
@@ -20,6 +22,7 @@ const RevenueBar: React.FC<RevenueBarProps> = ({
 	unrealizedRevenue,
 	payedOut
 }) => {
+	const { theme } = useTheme();
 	const totalRevenue = React.useMemo(
 		() => realizedRevenue + unrealizedRevenue,
 		[realizedRevenue, unrealizedRevenue]
@@ -39,9 +42,19 @@ const RevenueBar: React.FC<RevenueBarProps> = ({
 	}, [available, realizedRevenue]);
 
 	return (
-		<View style={styles.bar}>
-			<View style={[styles.realized, { width: realizedPercent }]}>
-				<View style={[styles.available, { width: availablePercent }]} />
+		<View style={[styles.bar, { backgroundColor: palette.neutral.n40 }]}>
+			<View
+				style={[
+					styles.realized,
+					{ backgroundColor: palette.yellow.y40, width: realizedPercent }
+				]}
+			>
+				<View
+					style={[
+						styles.available,
+						{ backgroundColor: palette.green.g40, width: availablePercent }
+					]}
+				/>
 			</View>
 		</View>
 	);
@@ -51,7 +64,7 @@ const styles = StyleSheet.create({
 	bar: {
 		width: '100%',
 		height: 16,
-		borderRadius: 8,
+		borderRadius: 4,
 		flexDirection: 'row',
 		overflow: 'hidden',
 		backgroundColor: 'grey',

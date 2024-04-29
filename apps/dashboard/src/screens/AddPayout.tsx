@@ -9,8 +9,12 @@ import { useCreatePayoutMutation } from '../types/api';
 
 const AddPayout: React.FC = () => {
 	const [amount, setAmount] = React.useState('');
-	const [, createPayout] = useCreatePayoutMutation();
+	const [{ error }, createPayout] = useCreatePayoutMutation();
 	useGoBack('x');
+
+	React.useEffect(() => {
+		console.log({ error });
+	}, [error]);
 
 	const handleAddPayout = React.useCallback(() => {
 		try {

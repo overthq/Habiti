@@ -19,17 +19,18 @@ const QuickActions = () => {
 					marginTop: 4,
 					marginHorizontal: 16,
 					paddingLeft: 12,
-					paddingRight: 10
+					paddingRight: 10,
+					height: 200
 				}}
 			>
-				<Pressable style={styles.row} onPress={() => navigate('Orders')}>
+				{/* <Pressable style={styles.row} onPress={() => navigate('Orders')}>
 					<Typography>5 orders to fulfill</Typography>
 					<Icon name='chevron-right' />
 				</Pressable>
 				<Pressable style={styles.row} onPress={() => navigate('Products')}>
 					<Typography>10 low-stock products</Typography>
 					<Icon name='chevron-right' />
-				</Pressable>
+				</Pressable> */}
 			</View>
 		</View>
 	);

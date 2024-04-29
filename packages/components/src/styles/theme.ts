@@ -17,7 +17,7 @@ export const spacing = {
 
 // https://matthewstrom.com/writing/generating-color-palettes/
 
-const palette = {
+export const palette = {
 	neutral: {
 		n1: '#FFFFFF',
 		n10: '#E0E3E6',
@@ -35,17 +35,33 @@ const palette = {
 		r1: ''
 	},
 	yellow: {
-		y1: ''
+		y10: '#F7E9A3',
+		y20: '#EBBE83',
+		y30: '#E09C34',
+		y40: '#C3810A',
+		y50: '#A26900',
+		y60: '#815304',
+		y70: '#5F3E0B',
+		y80: '#3E290F',
+		y90: '#1D150B'
 	},
 	green: {
-		g1: ''
+		g10: '#D8E8D4',
+		g20: '#9ADB90',
+		g30: '#67C55B',
+		g40: '#39AC30',
+		g50: '#009100',
+		g60: '#AE0F33',
+		g70: '#7E1A28',
+		g80: '#4E1B1E',
+		g90: '#221111'
 	}
 };
 
 const dark = {
 	text: {
 		primary: palette.neutral.n1,
-		secondary: palette.neutral.n40,
+		secondary: palette.neutral.n30,
 		tertiary: palette.neutral.n50,
 		disabled: palette.neutral.n10,
 		error: '',
@@ -104,7 +120,8 @@ const dark = {
 			backgroundColor: '#505050',
 			color: '#D3D3D3'
 		}
-	}
+	},
+	navigation: {}
 } as const;
 
 const light = {
@@ -169,7 +186,8 @@ const light = {
 			backgroundColor: '#505050',
 			color: '#D3D3D3'
 		}
-	}
+	},
+	navigation: {}
 } as const;
 
 export type ThemeObject = typeof light;

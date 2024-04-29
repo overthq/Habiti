@@ -9,6 +9,7 @@ const ProductReviewTypes = gql`
 		createdAt: String!
 		updatedAt: String!
 
+		user: User!
 		product: Product!
 	}
 

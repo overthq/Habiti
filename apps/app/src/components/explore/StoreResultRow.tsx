@@ -12,7 +12,7 @@ interface StoreResultRowProps {
 const StoreResultRow: React.FC<StoreResultRowProps> = ({ store, onPress }) => {
 	return (
 		<Pressable onPress={onPress} style={styles.container}>
-			<CustomImage uri={store.image?.path} circle height={35} width={35} />
+			<CustomImage uri={store.image?.path} circle height={44} width={44} />
 			<Spacer x={8} />
 			<Typography>{store.name}</Typography>
 		</Pressable>

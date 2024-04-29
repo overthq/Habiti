@@ -63,6 +63,7 @@ import deliveryAddressMutations from './collections/delivery-address/mutations';
 import DeliveryAddressTypes from './collections/delivery-address/types';
 
 import ProductReviewTypes from './collections/product-review/types';
+import productReviewQueries from './collections/product-review/queries';
 import productReviewMutations from './collections/product-review/mutations';
 
 import ProductOptionTypes from './collections/product-option/types';
@@ -143,6 +144,7 @@ const resolvers = merge(
 	productCategoryQueries,
 	productCategoryMutations,
 	deliveryAddressMutations,
+	productReviewQueries,
 	productReviewMutations,
 	productOptionMutations
 );

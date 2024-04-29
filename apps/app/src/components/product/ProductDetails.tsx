@@ -1,4 +1,4 @@
-import { Spacer, Typography } from '@market/components';
+import { SectionHeader, Spacer, Typography } from '@market/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
@@ -19,9 +19,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => (
 			{formatNaira(product.unitPrice)}
 		</Typography>
 		<Spacer y={8} />
-		<Typography weight='medium' variant='secondary'>
-			Description
-		</Typography>
+		<SectionHeader title='Description' padded={false} />
 		<Spacer y={2} />
 		<Typography>{product?.description}</Typography>
 	</View>
@@ -31,10 +29,6 @@ const styles = StyleSheet.create({
 	container: {
 		paddingHorizontal: 16,
 		paddingTop: 16
-	},
-	header: {
-		marginVertical: 8,
-		textTransform: 'uppercase'
 	}
 });
 

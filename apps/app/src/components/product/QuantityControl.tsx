@@ -22,11 +22,11 @@ const QuantityControl: React.FC<QuantityControlProps> = ({
 	productId
 }) => {
 	const { theme } = useTheme();
-	const [quantity, setQuantity] = React.useState(0);
+	const [quantity, setQuantity] = React.useState(1);
 
 	const disabled = React.useMemo(() => !!cartId, []);
 
-	const decrementDisabled = React.useMemo(() => quantity === 0, [quantity]);
+	const decrementDisabled = React.useMemo(() => quantity === 1, [quantity]);
 
 	const decrement = React.useCallback(() => {
 		setQuantity(q => q - 1);

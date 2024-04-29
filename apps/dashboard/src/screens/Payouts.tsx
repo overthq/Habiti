@@ -1,4 +1,10 @@
-import { Icon, Screen, SectionHeader, Typography } from '@market/components';
+import {
+	Icon,
+	Screen,
+	SectionHeader,
+	Spacer,
+	Typography
+} from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
@@ -41,10 +47,26 @@ const Payouts = () => {
 				{formatNaira(50000)}
 			</Typography>
 			<RevenueBar realizedRevenue={75} unrealizedRevenue={50} payedOut={25} />
+			<Spacer y={24} />
 			<SectionHeader title='Payout History' padded={false} />
-			{data.currentStore.payouts.map(payout => (
-				<PayoutRow key={payout.id} payout={payout} />
-			))}
+			{data.currentStore.payouts.length === 0 ? (
+				<View style={{ paddingTop: 16 }}>
+					<Typography
+						size='small'
+						variant='secondary'
+						style={{ textAlign: 'center' }}
+					>
+						You do not have any previous payouts. When you do, they will be
+						displayed here.
+					</Typography>
+				</View>
+			) : (
+				<>
+					{data.currentStore.payouts.map(payout => (
+						<PayoutRow key={payout.id} payout={payout} />
+					))}
+				</>
+			)}
 		</Screen>
 	);
 };

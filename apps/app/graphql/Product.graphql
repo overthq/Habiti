@@ -35,6 +35,16 @@ query Product($productId: ID!) {
 			id
 			path
 		}
+		reviews {
+			id
+			body
+			rating
+			createdAt
+			user {
+				id
+				name
+			}
+		}
 		inCart
 	}
 }
