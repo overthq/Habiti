@@ -5,11 +5,11 @@ import { View, StyleSheet, Pressable } from 'react-native';
 
 import ProductList from '../components/products/ProductList';
 import ProductsFilter from '../components/products/ProductsFilter';
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList, ProductsStackParamList } from '../types/navigation';
 
 const Products: React.FC = () => {
 	const { navigate, setOptions } =
-		useNavigation<NavigationProp<AppStackParamList>>();
+		useNavigation<NavigationProp<AppStackParamList & ProductsStackParamList>>();
 
 	React.useLayoutEffect(() => {
 		setOptions({
