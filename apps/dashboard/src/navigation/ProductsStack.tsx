@@ -3,6 +3,7 @@ import React from 'react';
 
 import Product from '../screens/Product';
 import Products from '../screens/Products';
+import SearchProducts from '../screens/SearchProducts';
 import { ProductsStackParamList } from '../types/navigation';
 // import SearchProducts from '../components/products/SearchProducts';
 
@@ -16,13 +17,14 @@ const ProductsStackNavigator = () => (
 			component={Product}
 			options={{ title: '' }}
 		/>
-		{/* <ProductsStack.Screen
-			name='SearchProducts'
+		<ProductsStack.Screen
+			name='Products.Search'
 			component={SearchProducts}
-			options={{
-				cardStyleInterpolator: ({ current }) => ({ opacity: current.progress })
-			}}
-		/> */}
+			options={{ headerShown: false }}
+			// options={{
+			// 	cardStyleInterpolator: ({ current }) => ({ opacity: current.progress })
+			// }}
+		/>
 	</ProductsStack.Navigator>
 );
 

@@ -41,6 +41,7 @@ export type OrdersStackParamList = {
 
 export type ProductsStackParamList = {
 	ProductsList: ProductsParams;
+	'Products.Search': undefined;
 	Product: { productId: string };
 };
 

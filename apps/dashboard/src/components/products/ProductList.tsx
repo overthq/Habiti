@@ -15,13 +15,9 @@ import {
 	ProductsStackParamList
 } from '../../types/navigation';
 
-interface ProductListProps {
-	mode: 'list' | 'grid';
-}
-
 const ProductListHeader = <View style={{ height: 4 }} />;
 
-const ProductList: React.FC<ProductListProps> = () => {
+const ProductList: React.FC = () => {
 	const { params } = useRoute<RouteProp<MainTabParamList, 'Products'>>();
 	const { navigate } = useNavigation<NavigationProp<ProductsStackParamList>>();
 	const [{ data }] = useProductsQuery({ variables: params });

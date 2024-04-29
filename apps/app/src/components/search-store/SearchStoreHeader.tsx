@@ -1,4 +1,4 @@
-import { Icon, TextButton, useTheme } from '@market/components';
+import { Icon, SearchInput, TextButton, useTheme } from '@market/components';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, TextInput, Pressable } from 'react-native';
@@ -8,51 +8,6 @@ import Animated, {
 	LinearTransition
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-interface SearchInputProps {
-	inputRef: React.RefObject<TextInput>;
-	setFocused(s: boolean): void;
-	searchTerm: string;
-	setSearchTerm(value: string): void;
-}
-
-const SearchInput: React.FC<SearchInputProps> = ({
-	inputRef,
-	setFocused,
-	searchTerm,
-	setSearchTerm
-}) => {
-	const { theme } = useTheme();
-
-	const handleFocus = () => {
-		setFocused(true);
-	};
-
-	const handleBlur = () => {
-		setFocused(false);
-	};
-
-	return (
-		<Animated.View
-			style={[styles.wrapper, { backgroundColor: theme.input.background }]}
-			layout={LinearTransition}
-		>
-			<Icon name='search' size={18} color={theme.text.secondary} />
-			<TextInput
-				ref={inputRef}
-				value={searchTerm}
-				onChangeText={setSearchTerm}
-				style={[styles.input, { color: theme.text.primary }]}
-				placeholder='Search products'
-				placeholderTextColor={theme.text.secondary}
-				onFocus={handleFocus}
-				onBlur={handleBlur}
-				autoCapitalize='none'
-				autoCorrect={false}
-			/>
-		</Animated.View>
-	);
-};
 
 interface SearchStoreHeaderProps {
 	searchTerm: string;
@@ -111,19 +66,6 @@ const styles = StyleSheet.create({
 		paddingRight: 16,
 		alignItems: 'center',
 		paddingBottom: 12
-	},
-	wrapper: {
-		flex: 1,
-		marginLeft: 8,
-		borderRadius: 6,
-		padding: 8,
-		flexDirection: 'row',
-		alignItems: 'center'
-	},
-	input: {
-		fontSize: 16,
-		marginLeft: 8,
-		flex: 1
 	}
 });
 

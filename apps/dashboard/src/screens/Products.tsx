@@ -16,12 +16,12 @@ const Products: React.FC = () => {
 			title: 'Products',
 			headerRight: () => (
 				<View style={styles.headerActions}>
-					{/* <Pressable
-							onPress={() => navigation.navigate('SearchProducts')}
-							style={{ marginRight: 4 }}
-						>
-							<Icon name='search' />
-						</Pressable> */}
+					<Pressable
+						onPress={() => navigate('Products.Search')}
+						style={{ marginRight: 12 }}
+					>
+						<Icon name='search' size={22} />
+					</Pressable>
 					<Pressable onPress={() => navigate('Add Product')}>
 						<Icon name='plus' />
 					</Pressable>
@@ -34,7 +34,7 @@ const Products: React.FC = () => {
 		<Screen>
 			<ProductsFilter />
 			<View style={{ flex: 1 }}>
-				<ProductList mode='list' />
+				<ProductList />
 			</View>
 		</Screen>
 	);
@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
 	headerActions: {
 		flexDirection: 'row',
 		alignItems: 'center',
+		justifyContent: 'center',
 		marginRight: 16
 	}
 });
