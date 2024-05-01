@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import CartButton from './CartButton';
 import QuantityControl from './QuantityControl';
@@ -17,8 +18,10 @@ const AddToCart: React.FC<AddToCartProps> = ({
 	cartId,
 	inCart
 }) => {
+	const { bottom } = useSafeAreaInsets();
+
 	return (
-		<View style={styles.container}>
+		<View style={[styles.container, { bottom }]}>
 			<QuantityControl cartId={cartId} productId={productId} />
 			<CartButton
 				storeId={storeId}
@@ -32,10 +35,10 @@ const AddToCart: React.FC<AddToCartProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
+		position: 'absolute',
 		flexDirection: 'row',
 		width: '100%',
 		paddingHorizontal: 16,
-		marginVertical: 16,
 		gap: 16
 	}
 });

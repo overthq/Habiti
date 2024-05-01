@@ -27,8 +27,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => (
 
 const styles = StyleSheet.create({
 	container: {
-		paddingHorizontal: 16,
-		paddingTop: 16
+		paddingHorizontal: 16
 	}
 });
 
