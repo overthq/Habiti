@@ -32,7 +32,15 @@ export const palette = {
 		n100: '#000000'
 	},
 	red: {
-		r1: ''
+		r10: '#F9D1D6',
+		r20: '#F1B5B7',
+		r30: '#F7838C',
+		r40: '#FA405E',
+		r50: '#DD0042',
+		r60: '#AE0F33',
+		r70: '#7E1A28',
+		r80: '#4E1B1E',
+		r90: '#221111'
 	},
 	yellow: {
 		y10: '#F7E9A3',
@@ -51,10 +59,10 @@ export const palette = {
 		g30: '#67C55B',
 		g40: '#39AC30',
 		g50: '#009100',
-		g60: '#AE0F33',
-		g70: '#7E1A28',
-		g80: '#4E1B1E',
-		g90: '#221111'
+		g60: '#227021',
+		g70: '#255125',
+		g80: '#1C351C',
+		g90: '#101910'
 	}
 };
 
@@ -105,20 +113,20 @@ const dark = {
 	},
 	badge: {
 		success: {
-			backgroundColor: '#B8EDAD',
-			color: '#1A6E2B'
+			backgroundColor: palette.green.g10,
+			color: palette.green.g70
 		},
 		danger: {
-			backgroundColor: '#EDB7AD',
-			color: '#6E2B1A'
+			backgroundColor: palette.red.r10,
+			color: palette.red.r70
 		},
 		warning: {
-			backgroundColor: '#ECEDAD',
-			color: '#696E1A'
+			backgroundColor: palette.yellow.y10,
+			color: palette.yellow.y70
 		},
 		neutral: {
-			backgroundColor: '#505050',
-			color: '#D3D3D3'
+			backgroundColor: palette.neutral.n10,
+			color: palette.neutral.n70
 		}
 	},
 	navigation: {}
@@ -130,7 +138,7 @@ const light = {
 		secondary: palette.neutral.n50,
 		tertiary: palette.neutral.n10,
 		disabled: palette.neutral.n50,
-		error: '',
+		error: palette.red.r50,
 		label: palette.neutral.n60
 	},
 	button: {
@@ -171,20 +179,20 @@ const light = {
 	},
 	badge: {
 		success: {
-			backgroundColor: '#B8EDAD',
-			color: '#1A6E2B'
+			backgroundColor: palette.green.g10,
+			color: palette.green.g70
 		},
 		danger: {
-			backgroundColor: '#EDB7AD',
-			color: '#6E2B1A'
+			backgroundColor: palette.red.r10,
+			color: palette.red.r70
 		},
 		warning: {
-			backgroundColor: '#ECEDAD',
-			color: '#696E1A'
+			backgroundColor: palette.yellow.y10,
+			color: palette.yellow.y70
 		},
 		neutral: {
-			backgroundColor: '#505050',
-			color: '#D3D3D3'
+			backgroundColor: palette.neutral.n10,
+			color: palette.neutral.n70
 		}
 	},
 	navigation: {}

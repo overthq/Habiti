@@ -1,4 +1,5 @@
-import { Typography } from '@market/components';
+import { Typography, useTheme } from '@market/components';
+import { ThemeObject } from '@market/components/src/styles/theme';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
@@ -8,14 +9,24 @@ interface OrderStatusPillProps {
 	status: OrderStatus;
 }
 
+const statusToBadgeVariant: Record<OrderStatus, keyof ThemeObject['badge']> = {
+	[OrderStatus.Cancelled]: 'danger',
+	[OrderStatus.Pending]: 'warning',
+	[OrderStatus.Processing]: 'warning',
+	[OrderStatus.Completed]: 'success',
+	[OrderStatus.Delivered]: 'success'
+};
+
 const OrderStatusPill: React.FC<OrderStatusPillProps> = ({ status }) => {
+	const { theme } = useTheme();
+	const { color, backgroundColor } = theme.badge[statusToBadgeVariant[status]];
+
 	return (
-		<View style={styles.container}>
+		<View style={[styles.container, { backgroundColor }]}>
 			<Typography
 				size='xsmall'
 				weight='medium'
-				variant='tertiary'
-				style={{ lineHeight: 16 }}
+				style={{ lineHeight: 16, color }}
 			>
 				{status}
 			</Typography>
@@ -31,7 +42,6 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor: '#D3D3D3',
 		marginLeft: 16
 	}
 });
