@@ -47,9 +47,6 @@ const Order: React.FC = () => {
 	return (
 		<Screen style={styles.container}>
 			<OrderStatusPill status={order.status} />
-			{/* <View style={{ marginLeft: 16, marginBottom: 16 }}>
-				<Typography>{order.status}</Typography>
-			</View> */}
 			<View style={styles.products}>
 				{order.products.map(orderProduct => (
 					<OrderProduct

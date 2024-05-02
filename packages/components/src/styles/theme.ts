@@ -16,6 +16,8 @@ export const spacing = {
 };
 
 // https://matthewstrom.com/writing/generating-color-palettes/
+//
+// Potential: https://bottosson.github.io/posts/colorpicker/
 
 export const palette = {
 	neutral: {
