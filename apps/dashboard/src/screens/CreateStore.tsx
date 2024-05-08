@@ -76,13 +76,11 @@ const CreateStore: React.FC = () => {
 
 	const onSubmit = React.useCallback(
 		async (values: CreateStoreFormValues) => {
-			try {
-				const { data } = await createStore({ input: values });
+			const { data, error } = await createStore({ input: values });
 
-				if (data?.createStore?.id) {
-					setPreference({ activeStore: data.createStore.id });
-				}
-			} catch (error) {
+			if (data?.createStore?.id) {
+				setPreference({ activeStore: data.createStore.id });
+			} else if (error) {
 				console.log(error);
 			}
 		},

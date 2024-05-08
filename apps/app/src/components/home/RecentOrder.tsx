@@ -32,7 +32,7 @@ const RecentOrder: React.FC<RecentOrderProps> = ({ order, onPress }) => {
 					{plural('product', order.products.length)} ·{' '}
 					{relativeTimestamp(order.createdAt)}
 				</Typography>
-				<Typography size='small' weight='medium' variant='secondary'>
+				<Typography size='xsmall' weight='medium' variant='secondary'>
 					{order.status}
 				</Typography>
 			</View>

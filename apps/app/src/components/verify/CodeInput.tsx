@@ -15,18 +15,12 @@ const CodeInput: React.FC<CodeInputProps> = ({ value }) => {
 	const active = React.useMemo(() => !!value, [value]);
 
 	const style = useAnimatedStyle(() => ({
-		opacity: withTiming(active ? 1 : 0.5)
+		backgroundColor: withTiming(theme.text[active ? 'primary' : 'tertiary'])
 	}));
 
 	return (
-		<Pressable>
-			<Animated.View
-				style={[
-					styles.container,
-					{ backgroundColor: theme.text.primary },
-					style
-				]}
-			>
+		<Pressable style={{ flex: 1 }}>
+			<Animated.View style={[styles.container, style]}>
 				<View
 					style={[styles.input, { backgroundColor: theme.screen.background }]}
 				>
@@ -41,14 +35,17 @@ const CodeInput: React.FC<CodeInputProps> = ({ value }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		height: 48,
-		width: 48,
-		borderRadius: 8,
+		backgroundColor: 'red',
+		// flex: 1,
+		flexGrow: 1,
+		height: 56,
+		// width: 48,
+		borderRadius: 6,
 		padding: 2
 	},
 	input: {
 		flex: 1,
-		borderRadius: 6,
+		borderRadius: 4,
 		justifyContent: 'center',
 		alignItems: 'center'
 	}

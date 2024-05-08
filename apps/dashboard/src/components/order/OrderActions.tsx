@@ -25,12 +25,14 @@ const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 
 	return (
 		<View style={styles.container}>
-			<Button
-				text='Mark as fulfilled'
-				loading={fetching}
-				onPress={updateOrderStatus(OrderStatus.Completed)}
-				style={styles.button}
-			/>
+			{status !== OrderStatus.Completed && (
+				<Button
+					text='Mark as fulfilled'
+					loading={fetching}
+					onPress={updateOrderStatus(OrderStatus.Completed)}
+					style={styles.button}
+				/>
+			)}
 			{status !== OrderStatus.Cancelled && (
 				<Button
 					style={styles.button}

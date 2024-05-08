@@ -108,7 +108,7 @@ const dark = {
 		default: { color: palette.neutral.n1 }
 	},
 	border: {
-		color: palette.neutral.n90
+		color: palette.neutral.n80
 	},
 	image: {
 		placeholder: palette.neutral.n90
@@ -174,7 +174,7 @@ const light = {
 		default: { color: palette.neutral.n100 }
 	},
 	border: {
-		color: palette.neutral.n10
+		color: palette.neutral.n20
 	},
 	image: {
 		placeholder: palette.neutral.n10

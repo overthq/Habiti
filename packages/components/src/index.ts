@@ -12,6 +12,7 @@ export { default as ListEmpty } from './ListEmpty';
 export { default as ModalSheet } from './ModalSheet';
 export { default as Radio } from './Radio';
 export { default as Screen } from './Screen';
+export { default as Separator } from './Separator';
 export { default as SearchInput } from './SearchInput';
 export { default as SelectGroup } from './SelectGroup';
 export { default as ScrollableScreen } from './ScrollableScreen';
