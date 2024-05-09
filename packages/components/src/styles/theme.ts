@@ -91,8 +91,8 @@ const dark = {
 			text: ''
 		},
 		disabled: {
-			background: '',
-			text: ''
+			background: palette.neutral.n30,
+			text: palette.neutral.n70
 		}
 	},
 	screen: {
@@ -157,8 +157,8 @@ const light = {
 			text: ''
 		},
 		disabled: {
-			background: '',
-			text: ''
+			background: palette.neutral.n40,
+			text: palette.neutral.n60
 		}
 	},
 	screen: {

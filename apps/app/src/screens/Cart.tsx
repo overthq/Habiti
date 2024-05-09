@@ -84,7 +84,7 @@ const Cart: React.FC = () => {
 			<CartTotal cart={cart} />
 
 			<View style={{ paddingTop: 16, paddingHorizontal: 16 }}>
-				<Button text='Place Order' onPress={handleSubmit} />
+				<Button text='Place Order' onPress={handleSubmit} disabled />
 			</View>
 		</ScrollableScreen>
 	);

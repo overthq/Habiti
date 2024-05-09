@@ -51,7 +51,7 @@ const VerifyAuthentication: React.FC = () => {
 						<CodeInput key={index} value={code[index]} />
 					))}
 			</View>
-			<Spacer y={16} />
+			<Spacer y={32} />
 			<Button text='Verify' onPress={handleSubmit} loading={fetching} />
 		</Screen>
 	);

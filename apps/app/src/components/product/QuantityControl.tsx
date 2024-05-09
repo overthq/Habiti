@@ -24,7 +24,7 @@ const QuantityControl: React.FC<QuantityControlProps> = ({
 	const { theme } = useTheme();
 	const [quantity, setQuantity] = React.useState(1);
 
-	const disabled = React.useMemo(() => !!cartId, []);
+	const disabled = React.useMemo(() => !!cartId, [cartId]);
 
 	const decrementDisabled = React.useMemo(() => quantity === 1, [quantity]);
 
