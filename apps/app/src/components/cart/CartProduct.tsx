@@ -1,9 +1,9 @@
+import { formatNaira } from '@market/common';
 import { CustomImage, Spacer, Typography } from '@market/components';
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 
 import { CartQuery } from '../../types/api';
-import { formatNaira } from '../../utils/currency';
 import { plural } from '../../utils/strings';
 
 interface CartProductProps {

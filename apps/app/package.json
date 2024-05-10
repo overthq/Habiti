@@ -13,6 +13,7 @@
 		"eject": "expo eject"
 	},
 	"dependencies": {
+		"@market/common": "*",
 		"@market/components": "*",
 		"@react-native-async-storage/async-storage": "1.21.0",
 		"@react-native-community/masked-view": "0.1.11",

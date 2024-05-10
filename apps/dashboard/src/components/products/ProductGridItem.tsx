@@ -1,9 +1,9 @@
+import { formatNaira } from '@market/common';
 import { Typography } from '@market/components';
 import React from 'react';
 import { Pressable, View, Image, StyleSheet } from 'react-native';
 
 import { ProductsQuery } from '../../types/api';
-import { formatNaira } from '../../utils/currency';
 
 interface ProductGridItemProps {
 	product: ProductsQuery['currentStore']['products'][number];

@@ -1,3 +1,4 @@
+import { formatNaira } from '@market/common';
 import {
 	Icon,
 	Screen,
@@ -14,7 +15,6 @@ import RevenueBar from '../components/payouts/RevenueBar';
 import useGoBack from '../hooks/useGoBack';
 import { useStorePayoutsQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
-import { formatNaira } from '../utils/currency';
 
 const Payouts = () => {
 	const [{ data, fetching }] = useStorePayoutsQuery();

@@ -1,9 +1,9 @@
+import { formatNaira } from '@market/common';
 import { useTheme, Typography } from '@market/components';
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 
 import { OrdersQuery } from '../../types/api';
-import { formatNaira } from '../../utils/currency';
 import { parseTimestamp } from '../../utils/date';
 
 interface OrdersListItemProps {

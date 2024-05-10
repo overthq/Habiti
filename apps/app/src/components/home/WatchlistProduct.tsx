@@ -1,9 +1,9 @@
+import { formatNaira } from '@market/common';
 import { CustomImage, Typography } from '@market/components';
 import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 
 import { WatchlistQuery } from '../../types/api';
-import { formatNaira } from '../../utils/currency';
 
 interface WatchlistProductProps {
 	onPress(): void;

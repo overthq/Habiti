@@ -26,7 +26,7 @@ const AddToCart: React.FC<AddToCartProps> = ({
 		<View
 			style={[styles.container, { bottom, borderTopColor: theme.border.color }]}
 		>
-			<QuantityControl cartId={cartId} productId={productId} />
+			<QuantityControl cartId={cartId} productId={productId} inCart={inCart} />
 			<CartButton
 				storeId={storeId}
 				productId={productId}

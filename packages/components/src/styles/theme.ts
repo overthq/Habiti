@@ -157,8 +157,8 @@ const light = {
 			text: ''
 		},
 		disabled: {
-			background: palette.neutral.n40,
-			text: palette.neutral.n60
+			background: palette.neutral.n30,
+			text: palette.neutral.n70
 		}
 	},
 	screen: {

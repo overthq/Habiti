@@ -135,3 +135,44 @@ export const requestAuth = (otp: any) => {
 export const requestOtp = () => {
 	// Do something
 };
+
+const validateKey = (publicKey: string) => {};
+
+const initWithPublicKey = async (publicKey: string) => {
+	const apiUrl = '';
+
+	await fetch(apiUrl, {
+		headers: {
+			'X-Paystack-User-Agent': '', // paystackUserAgentDetails
+			'Paystack-Version': paystackAPIVersion,
+			Authorization: '', // auth
+			'X-Paystack-Build': '' // PSTCKSDKBuild
+		}
+	});
+};
+
+const getDeviceId = () => {
+	return 'iossdk_'; // + stringByAppendingString:[[[UIDevice currentDevice] identifierForVendor] UUIDString]];
+};
+
+const getPaystackUserAgent = () => {
+	const details = {
+		lang: 'objective-c',
+		bindings_version: '', // PSTCKSDKVersion,
+		os_version: '', // [UIDevice currentDevice].systemVersion;,
+		// struct utsname systemInfo;
+		//   uname(&systemInfo);
+		//   NSString *deviceType = @(systemInfo.machine);
+		type: '', // deviceType
+		model: '', // [UIDevice currentDevice].localizedModel;
+		// if ([[UIDevice currentDevice] respondsToSelector:@selector(identifierForVendor)]) {
+		//       NSString *vendorIdentifier = [[[UIDevice currentDevice] performSelector:@selector(identifierForVendor)] performSelector:@selector(UUIDString)];
+		//       if (vendorIdentifier) {
+		//           details[@"vendor_identifier"] = vendorIdentifier;
+		//       }
+		//   }
+		vendor_identifier: '' // vendorIdentifier
+	};
+
+	return JSON.stringify(details);
+};

@@ -1,3 +1,4 @@
+import { formatNaira } from '@market/common';
 import { ScrollableScreen } from '@market/components';
 import React from 'react';
 import { Platform, StyleSheet } from 'react-native';
@@ -8,7 +9,6 @@ import ProductOptions from './ProductOptions';
 import ProductReviews from './ProductReviews';
 import Section from './Section';
 import { ProductQuery } from '../../types/api';
-import { formatNaira } from '../../utils/currency';
 
 interface ProductFormProps {
 	images?: ProductQuery['product']['images'];

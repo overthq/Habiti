@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
-import { Svg, Circle, Rect, Path } from 'react-native-svg';
+import { Svg, Circle, Rect, Path, SvgProps } from 'react-native-svg';
 
 import { useTheme } from './Theme';
 
@@ -73,7 +73,7 @@ const icons = {
 	x: <Path d='M18 6 6 18M6 6l12 12' />
 };
 
-interface IconProps {
+export interface IconProps extends SvgProps {
 	size?: number;
 	color?: string;
 	name: keyof typeof icons;
@@ -86,7 +86,8 @@ export const Icon: React.FC<IconProps> = ({
 	size = 24,
 	color,
 	name,
-	style
+	style,
+	...props
 }) => {
 	const { theme } = useTheme();
 
@@ -101,6 +102,7 @@ export const Icon: React.FC<IconProps> = ({
 			strokeLinecap='round'
 			strokeLinejoin='round'
 			style={style}
+			{...props}
 		>
 			{icons[name]}
 		</Svg>

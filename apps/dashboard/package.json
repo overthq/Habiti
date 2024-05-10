@@ -14,6 +14,7 @@
 	},
 	"dependencies": {
 		"@gorhom/bottom-sheet": "^4",
+		"@market/common": "*",
 		"@market/components": "*",
 		"@react-native-async-storage/async-storage": "1.21.0",
 		"@react-native-community/masked-view": "0.1.11",
