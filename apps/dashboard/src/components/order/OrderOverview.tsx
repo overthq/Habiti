@@ -1,4 +1,4 @@
-import { Typography } from '@market/components';
+import { Spacer, Typography } from '@market/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
@@ -18,6 +18,7 @@ const OrderOverview: React.FC<OrderOverviewProps> = ({ order }) => {
 	return (
 		<View style={styles.container}>
 			<StatusPill status={order.status} />
+			<Spacer y={4} />
 			<Typography style={styles.date}>
 				{parseTimestamp(order.createdAt)}
 			</Typography>

@@ -1,6 +1,6 @@
 import { useTheme, Typography } from '@market/components';
 import React from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import Animated, {
 	useAnimatedStyle,
 	withTiming
@@ -12,28 +12,17 @@ interface CodeInputProps {
 
 const CodeInput: React.FC<CodeInputProps> = ({ value }) => {
 	const { theme } = useTheme();
-	const active = React.useMemo(() => !!value, [value]);
 
 	const style = useAnimatedStyle(() => ({
-		opacity: withTiming(active ? 1 : 0.5)
+		borderColor: withTiming(theme.text[value ? 'primary' : 'tertiary'])
 	}));
 
 	return (
-		<Pressable>
-			<Animated.View
-				style={[
-					styles.container,
-					{ backgroundColor: theme.text.primary },
-					style
-				]}
-			>
-				<View
-					style={[styles.input, { backgroundColor: theme.screen.background }]}
-				>
-					<Typography weight='medium' size='xlarge'>
-						{value}
-					</Typography>
-				</View>
+		<Pressable style={{ flex: 1 }}>
+			<Animated.View style={[styles.container, style]}>
+				<Typography weight='medium' size='xlarge'>
+					{value}
+				</Typography>
 			</Animated.View>
 		</Pressable>
 	);
@@ -41,16 +30,13 @@ const CodeInput: React.FC<CodeInputProps> = ({ value }) => {
 
 const styles = StyleSheet.create({
 	container: {
+		flexGrow: 1,
 		height: 48,
-		width: 48,
-		borderRadius: 4,
-		padding: 2
-	},
-	input: {
-		flex: 1,
-		borderRadius: 2,
+		borderRadius: 6,
+		padding: 2,
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
+		borderWidth: 1
 	}
 });
 

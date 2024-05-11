@@ -44,9 +44,13 @@ const Payouts = () => {
 		<Screen style={styles.container}>
 			<SectionHeader title='Available' padded={false} />
 			<Typography size='xxxlarge' weight='bold' style={styles.available}>
-				{formatNaira(50000)}
+				{formatNaira(data?.currentStore.realizedRevenue ?? 0)}
 			</Typography>
-			<RevenueBar realizedRevenue={75} unrealizedRevenue={50} payedOut={25} />
+			<RevenueBar
+				realizedRevenue={data?.currentStore.realizedRevenue}
+				unrealizedRevenue={data?.currentStore.unrealizedRevenue}
+				paidOut={data?.currentStore.paidOut}
+			/>
 			<Spacer y={24} />
 			<SectionHeader title='Payout History' padded={false} />
 			{data.currentStore.payouts.length === 0 ? (

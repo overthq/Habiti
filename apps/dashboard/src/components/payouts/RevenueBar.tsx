@@ -5,7 +5,7 @@ import { View, StyleSheet } from 'react-native';
 
 // Displays a breakdown of unrealized and realized revenue, as well as total amount available for payout.
 // Total revenue = unrealized + realized
-// Payed out = % of realized that has been claimed
+// Paid out = % of realized that has been claimed
 // Available = % of realized that has not been claimed
 // Available is displayed with a green bar section, as well as boldly displayed on the top of the screen
 // Make sure to gracefully handle "0" edge case.
@@ -14,13 +14,13 @@ import { View, StyleSheet } from 'react-native';
 interface RevenueBarProps {
 	realizedRevenue: number;
 	unrealizedRevenue: number;
-	payedOut: number;
+	paidOut: number;
 }
 
 const RevenueBar: React.FC<RevenueBarProps> = ({
 	realizedRevenue,
 	unrealizedRevenue,
-	payedOut
+	paidOut
 }) => {
 	const { theme } = useTheme();
 	const totalRevenue = React.useMemo(
@@ -29,8 +29,8 @@ const RevenueBar: React.FC<RevenueBarProps> = ({
 	);
 
 	const available = React.useMemo(
-		() => realizedRevenue - payedOut,
-		[realizedRevenue, payedOut]
+		() => realizedRevenue - paidOut,
+		[realizedRevenue, paidOut]
 	);
 
 	const realizedPercent = React.useMemo(() => {

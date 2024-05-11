@@ -20,7 +20,7 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 		</View>
 		<View>
 			<Typography>{product.name}</Typography>
-			<Typography size='small' variant='secondary'>
+			<Typography size='small' variant='label'>
 				{formatNaira(unitPrice * quantity)}
 			</Typography>
 		</View>

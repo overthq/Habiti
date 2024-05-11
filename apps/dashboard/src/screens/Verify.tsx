@@ -1,4 +1,4 @@
-import { Button, Screen, Typography } from '@market/components';
+import { Button, Screen, Spacer, Typography } from '@market/components';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
@@ -18,13 +18,16 @@ const Verify: React.FC = () => {
 	const { phone } = params;
 
 	const handleSubmit = async () => {
-		const { data, error } = await verify({ input: { phone, code } });
+		// TODO: Could do with some more validation.
+		if (phone && code) {
+			const { data, error } = await verify({ input: { phone, code } });
 
-		if (data?.verify) {
-			const { userId, accessToken } = data.verify;
-			logIn(userId, accessToken);
-		} else if (error) {
-			console.log(error);
+			if (data?.verify) {
+				const { accessToken, userId } = data.verify;
+				logIn(userId, accessToken);
+			} else if (error) {
+				console.log(error);
+			}
 		}
 	};
 
@@ -33,7 +36,7 @@ const Verify: React.FC = () => {
 			<Typography weight='bold' size='xxxlarge'>
 				Your verification code
 			</Typography>
-			<Typography>
+			<Typography variant='secondary'>
 				A verification code was sent to your phone via SMS.
 			</Typography>
 			<TextInput
@@ -42,6 +45,7 @@ const Verify: React.FC = () => {
 				onChangeText={setCode}
 				keyboardType='number-pad'
 			/>
+			<Spacer y={16} />
 			<View style={styles.inputs}>
 				{Array(6)
 					.fill(0)
@@ -49,6 +53,7 @@ const Verify: React.FC = () => {
 						<CodeInput key={index} value={code[index]} />
 					))}
 			</View>
+			<Spacer y={32} />
 			<Button onPress={handleSubmit} text='Verify' loading={fetching} />
 		</Screen>
 	);
@@ -62,7 +67,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		marginBottom: 16
+		gap: 16
 	},
 	hidden: {
 		height: 1,

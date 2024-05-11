@@ -1,5 +1,6 @@
 // Webhook handlers
 import { PayoutStatus } from '@prisma/client';
+
 import prismaClient from '../config/prisma';
 
 export const handleChargeSuccess = async (data: any) => {
@@ -25,7 +26,7 @@ export const handleTransferSuccess = async (data: any) => {
 		}),
 		prismaClient.store.update({
 			where: { id: storeId },
-			data: { payedOut: { increment: Number(data.amount) } }
+			data: { paidOut: { increment: Number(data.amount) } }
 		})
 	]);
 };

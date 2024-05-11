@@ -10,7 +10,7 @@ const StoreTypes = gql`
 		instagram: String
 		realizedRevenue: Int!
 		unrealizedRevenue: Int!
-		payedOut: Int!
+		paidOut: Int!
 		bankAccountNumber: String
 		bankCode: String
 		bankAccountReference: String

@@ -35,7 +35,7 @@ model Store {
   instagram            String?  @db.VarChar(30)
   unrealizedRevenue    Int      @default(0)
   realizedRevenue      Int      @default(0)
-  payedOut             Int      @default(0)
+  paidOut             Int      @default(0)
   bankAccountNumber    String?
   bankCode             String?
   bankAccountReference String?

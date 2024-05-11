@@ -628,7 +628,7 @@ export type Store = {
 	managers: StoreManager[];
 	name: Scalars['String'];
 	orders: Order[];
-	payedOut: Scalars['Int'];
+	paidOut: Scalars['Int'];
 	payouts: Payout[];
 	products: Product[];
 	realizedRevenue: Scalars['Int'];

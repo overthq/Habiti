@@ -29,7 +29,7 @@ query Store {
 		instagram
 		realizedRevenue
 		unrealizedRevenue
-		payedOut
+		paidOut
 		bankAccountNumber
 		bankCode
 		bankAccountReference
