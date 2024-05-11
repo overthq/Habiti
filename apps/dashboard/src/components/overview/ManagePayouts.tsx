@@ -22,8 +22,7 @@ const ManagePayouts = () => {
 			<View style={{ paddingHorizontal: 16 }}>
 				<Pressable style={styles.amount} onPress={navigateToPayouts}>
 					<Typography size='xxxlarge' weight='bold'>
-						{formatNaira(50000)}
-						{/* {formatNaira(data?.currentStore.realizedRevenue ?? 0)} */}
+						{formatNaira(data?.currentStore.realizedRevenue ?? 0)}
 					</Typography>
 					<Icon name='chevron-right' color={theme.text.secondary} />
 				</Pressable>

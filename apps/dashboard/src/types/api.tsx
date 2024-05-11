@@ -927,6 +927,7 @@ export type StorePayoutsQuery = {
 		id: string;
 		unrealizedRevenue: number;
 		realizedRevenue: number;
+		paidOut: number;
 		payouts: {
 			__typename?: 'Payout';
 			id: string;
@@ -1387,6 +1388,7 @@ export const StorePayoutsDocument = gql`
 			id
 			unrealizedRevenue
 			realizedRevenue
+			paidOut
 			payouts {
 				id
 				amount
