@@ -21,7 +21,11 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order }) => {
 			<View style={styles.row}>
 				{order.products.slice(0, 3).map(product => (
 					<View key={product.id} style={styles.item}>
-						<CustomImage height={60} width={60} />
+						<CustomImage
+							uri={product.product.images[0]?.path}
+							height={44}
+							width={44}
+						/>
 					</View>
 				))}
 			</View>

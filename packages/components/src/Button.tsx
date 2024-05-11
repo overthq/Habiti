@@ -9,9 +9,10 @@ import {
 
 import { useTheme } from './Theme';
 import Typography from './Typography';
+import { ThemeObject } from './styles/theme';
 
 interface ButtonProps extends PressableProps {
-	variant?: 'primary' | 'secondary' | 'tertiary';
+	variant?: keyof ThemeObject['button'];
 	text: string;
 	loading?: boolean;
 	style?: ViewStyle;

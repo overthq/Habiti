@@ -1,6 +1,6 @@
 import { Button } from '@market/components';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 
 import { useUpdateOrderMutation, OrderStatus } from '../../types/api';
 
@@ -12,11 +12,24 @@ interface OrderActionsProps {
 const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 	const [{ fetching }, updateOrder] = useUpdateOrderMutation();
 
+	const confirmCancel = () => {
+		Alert.alert('Cancel order', 'Are you sure you want to cancel this order', [
+			{
+				text: 'Proceed',
+				style: 'destructive',
+				onPress: () => {
+					updateOrderStatus(OrderStatus.Cancelled)();
+				}
+			},
+			{ text: 'Cancel', style: 'cancel' }
+		]);
+	};
+
 	const updateOrderStatus = React.useCallback(
-		(status: OrderStatus) => () => {
-			try {
-				updateOrder({ orderId, input: { status } });
-			} catch (error) {
+		(status: OrderStatus) => async () => {
+			const { error } = await updateOrder({ orderId, input: { status } });
+
+			if (error) {
 				console.log(error);
 			}
 		},
@@ -37,9 +50,9 @@ const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 				<Button
 					style={styles.button}
 					loading={fetching}
-					variant='secondary'
-					onPress={updateOrderStatus(OrderStatus.Cancelled)}
-					text='Refund'
+					variant='destructive'
+					onPress={confirmCancel}
+					text='Cancel'
 				/>
 			)}
 		</View>

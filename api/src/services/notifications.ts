@@ -8,6 +8,13 @@ const expo = new Expo();
 // We technically can return the user's pushToken from the data when we run
 // any DB transactions, instead of having a separate lookup.
 
+// Initial list of actions we want to send user a notification for:
+// - New order (store managers)
+// - Payout confirmed (when Paystack confirms the transaction is sent)
+// - New follower (store managers)
+// - Order fulfilled (user)
+// - Delivery confirmed (store managers)
+
 export default class NotificationsService {
 	private messages = [];
 

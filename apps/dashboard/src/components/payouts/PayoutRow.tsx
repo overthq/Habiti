@@ -1,7 +1,7 @@
 import { formatNaira } from '@market/common';
 import { Typography } from '@market/components';
 import React from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import { StorePayoutsQuery } from '../../types/api';
 import { parseTimestamp } from '../../utils/date';
@@ -12,17 +12,22 @@ interface PayoutRowProps {
 
 const PayoutRow: React.FC<PayoutRowProps> = ({ payout }) => {
 	return (
-		<View
-			style={{
-				flexDirection: 'row',
-				justifyContent: 'space-between',
-				alignItems: 'center'
-			}}
-		>
+		<View style={styles.container}>
 			<Typography>{formatNaira(payout.amount)}</Typography>
-			<Typography>{parseTimestamp(payout.createdAt)}</Typography>
+			<Typography variant='label'>
+				{parseTimestamp(payout.createdAt)}
+			</Typography>
 		</View>
 	);
 };
+
+const styles = StyleSheet.create({
+	container: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		paddingVertical: 8
+	}
+});
 
 export default PayoutRow;

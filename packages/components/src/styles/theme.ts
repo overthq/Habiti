@@ -64,7 +64,7 @@ export const palette = {
 const dark = {
 	text: {
 		primary: palette.neutral.n1,
-		secondary: palette.neutral.n30,
+		secondary: palette.neutral.n20,
 		tertiary: palette.neutral.n50,
 		disabled: palette.neutral.n10,
 		error: '',
@@ -86,6 +86,10 @@ const dark = {
 		disabled: {
 			background: palette.neutral.n30,
 			text: palette.neutral.n70
+		},
+		destructive: {
+			background: palette.red.r30,
+			text: palette.red.r70
 		}
 	},
 	screen: {
@@ -162,8 +166,12 @@ const light = {
 			text: ''
 		},
 		disabled: {
-			background: palette.neutral.n30,
-			text: palette.neutral.n70
+			background: palette.neutral.n70,
+			text: palette.neutral.n30
+		},
+		destructive: {
+			background: palette.red.r10,
+			text: palette.red.r60
 		}
 	},
 	screen: {

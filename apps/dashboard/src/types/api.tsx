@@ -1162,7 +1162,12 @@ export type CustomerInfoQuery = {
 			products: {
 				__typename?: 'OrderProduct';
 				id: string;
-				product: { __typename?: 'Product'; id: string; name: string };
+				product: {
+					__typename?: 'Product';
+					id: string;
+					name: string;
+					images: { __typename?: 'Image'; id: string; path: string }[];
+				};
 			}[];
 		}[];
 	};
@@ -1680,6 +1685,10 @@ export const CustomerInfoDocument = gql`
 					product {
 						id
 						name
+						images {
+							id
+							path
+						}
 					}
 				}
 				total
