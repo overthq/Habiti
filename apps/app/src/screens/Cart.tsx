@@ -1,8 +1,8 @@
 import {
 	Button,
 	ScrollableScreen,
-	Spacer,
-	Typography
+	Separator,
+	Spacer
 } from '@market/components';
 import {
 	useRoute,
@@ -44,20 +44,18 @@ const Cart: React.FC = () => {
 	const [selectedCard, setSelectedCard] = React.useState(defaultCardId);
 
 	const handleSubmit = React.useCallback(async () => {
-		try {
-			await createOrder({ input: { cartId, cardId: selectedCard } });
-			goBack();
-		} catch (error) {
+		const { error } = await createOrder({
+			input: { cartId, cardId: selectedCard }
+		});
+
+		if (error) {
+			// TODO: Alert the user that something has gone wrong.
+			// Also, why does this feel like writing Go?
 			console.log(error);
+		} else {
+			goBack();
 		}
 	}, [cartId]);
-
-	const handleCardSelect = React.useCallback(
-		(cardId: string) => () => {
-			setSelectedCard(cardId);
-		},
-		[]
-	);
 
 	const cart = data?.cart;
 
@@ -75,28 +73,22 @@ const Cart: React.FC = () => {
 
 			<Spacer y={16} />
 
-			<View>
-				<Typography
-					weight='medium'
-					variant='secondary'
-					style={{ marginLeft: 16 }}
-				>
-					Payment Method
-				</Typography>
-				<Spacer y={8} />
-				<SelectCard
-					cards={cart.user.cards}
-					selectedCard={selectedCard}
-					onCardSelect={handleCardSelect}
-				/>
-			</View>
+			<SelectCard
+				cards={cart.user.cards}
+				selectedCard={selectedCard}
+				onCardSelect={setSelectedCard}
+			/>
 
-			<Spacer y={40} />
+			<Separator style={{ margin: 16 }} />
 
 			<CartTotal cart={cart} />
 
 			<View style={{ paddingTop: 16, paddingHorizontal: 16 }}>
-				<Button text='Place Order' onPress={handleSubmit} />
+				<Button
+					text='Place Order'
+					onPress={handleSubmit}
+					disabled={!selectedCard}
+				/>
 			</View>
 		</ScrollableScreen>
 	);

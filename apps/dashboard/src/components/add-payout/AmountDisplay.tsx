@@ -1,8 +1,7 @@
+import { formatNaira } from '@market/common';
 import { Typography } from '@market/components';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-
-import { formatNaira } from '../../utils/currency';
 
 interface AmountDisplayProps {
 	amount: string;

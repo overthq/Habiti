@@ -43,7 +43,7 @@ const VerifyAuthentication: React.FC = () => {
 				onChangeText={setCode}
 				keyboardType='number-pad'
 			/>
-			<Spacer y={8} />
+			<Spacer y={16} />
 			<View style={styles.inputs}>
 				{Array(6)
 					.fill(0)
@@ -51,6 +51,7 @@ const VerifyAuthentication: React.FC = () => {
 						<CodeInput key={index} value={code[index]} />
 					))}
 			</View>
+			<Spacer y={32} />
 			<Button text='Verify' onPress={handleSubmit} loading={fetching} />
 		</Screen>
 	);
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		marginBottom: 16
+		gap: 16
 	},
 	hidden: {
 		height: 1,

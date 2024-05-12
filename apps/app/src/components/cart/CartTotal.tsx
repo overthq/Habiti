@@ -1,21 +1,27 @@
+import { formatNaira } from '@market/common';
 import { Typography } from '@market/components';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { CartQuery } from '../../types/api';
-import { formatNaira } from '../../utils/currency';
+import { calculateFees } from '../../utils/fees';
 
 interface CartTotalProps {
 	cart: CartQuery['cart'];
 }
 
 const CartTotal: React.FC<CartTotalProps> = ({ cart }) => {
+	const fees = calculateFees(cart.total);
+
 	return (
 		<View style={{ paddingHorizontal: 16 }}>
 			<CartTotalRow title='Subtotal' value={formatNaira(cart.total)} />
-			<CartTotalRow title='Service Fee' value='-' />
-			<CartTotalRow title='Taxes' value='-' />
-			<CartTotalRow title='Total' value={formatNaira(cart.total)} total />
+			<CartTotalRow
+				title='Transaction Fee'
+				value={formatNaira(fees.transaction)}
+			/>
+			<CartTotalRow title='Service Fee' value={formatNaira(fees.service)} />
+			<CartTotalRow title='Total' value={formatNaira(fees.total)} total />
 		</View>
 	);
 };

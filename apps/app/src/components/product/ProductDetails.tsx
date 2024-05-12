@@ -1,9 +1,9 @@
+import { formatNaira } from '@market/common';
 import { SectionHeader, Spacer, Typography } from '@market/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import { ProductQuery } from '../../types/api';
-import { formatNaira } from '../../utils/currency';
 
 interface ProductDetailsProps {
 	product: ProductQuery['product'];

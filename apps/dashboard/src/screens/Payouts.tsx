@@ -1,3 +1,4 @@
+import { formatNaira } from '@market/common';
 import {
 	Icon,
 	Screen,
@@ -14,7 +15,6 @@ import RevenueBar from '../components/payouts/RevenueBar';
 import useGoBack from '../hooks/useGoBack';
 import { useStorePayoutsQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
-import { formatNaira } from '../utils/currency';
 
 const Payouts = () => {
 	const [{ data, fetching }] = useStorePayoutsQuery();
@@ -44,9 +44,13 @@ const Payouts = () => {
 		<Screen style={styles.container}>
 			<SectionHeader title='Available' padded={false} />
 			<Typography size='xxxlarge' weight='bold' style={styles.available}>
-				{formatNaira(50000)}
+				{formatNaira(data?.currentStore.realizedRevenue ?? 0)}
 			</Typography>
-			<RevenueBar realizedRevenue={75} unrealizedRevenue={50} payedOut={25} />
+			<RevenueBar
+				realizedRevenue={data?.currentStore.realizedRevenue}
+				unrealizedRevenue={data?.currentStore.unrealizedRevenue}
+				paidOut={data?.currentStore.paidOut}
+			/>
 			<Spacer y={24} />
 			<SectionHeader title='Payout History' padded={false} />
 			{data.currentStore.payouts.length === 0 ? (

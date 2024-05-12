@@ -12,7 +12,7 @@ import { getIcon } from '../utils/navigation';
 const MainTab = createBottomTabNavigator<MainTabParamList>();
 
 const MainTabNavigator = () => {
-	const { name } = useTheme();
+	const { theme } = useTheme();
 
 	return (
 		<MainTab.Navigator
@@ -20,7 +20,7 @@ const MainTabNavigator = () => {
 				tabBarIcon: ({ color }) => (
 					<Icon name={getIcon(route.name)} color={color} size={28} />
 				),
-				tabBarActiveTintColor: name === 'light' ? 'black' : 'white',
+				tabBarActiveTintColor: theme.icon.default.color,
 				tabBarInactiveTintColor: 'gray',
 				tabBarShowLabel: false,
 				headerShown: false

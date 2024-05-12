@@ -29,6 +29,10 @@ query CustomerInfo($userId: ID!) {
 				product {
 					id
 					name
+					images {
+						id
+						path
+					}
 				}
 			}
 			total

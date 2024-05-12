@@ -1,9 +1,9 @@
+import { formatNaira } from '@market/common';
 import { CustomImage, Typography } from '@market/components';
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 
 import { OrderQuery } from '../../types/api';
-import { formatNaira } from '../../utils/currency';
 
 interface OrderProductProps {
 	orderProduct: OrderQuery['order']['products'][number];
@@ -20,7 +20,7 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 		</View>
 		<View>
 			<Typography>{product.name}</Typography>
-			<Typography size='small' variant='secondary'>
+			<Typography size='small' variant='label'>
 				{formatNaira(unitPrice * quantity)}
 			</Typography>
 		</View>

@@ -3,7 +3,7 @@ import {
 	BottomSheetBackdropProps,
 	BottomSheetModal
 } from '@gorhom/bottom-sheet';
-import { Button, FormInput, Screen } from '@market/components';
+import { Button, FormInput, Screen, Spacer } from '@market/components';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
@@ -35,12 +35,6 @@ const StorePayoutsMain: React.FC<StorePayoutsMainProps> = ({
 			bank: bankCode ?? ''
 		}
 	});
-
-	const { control, setValue, handleSubmit } = methods;
-
-	const handleSetBank = React.useCallback((code: string) => {
-		setValue('bank', code);
-	}, []);
 
 	const onSubmit = React.useCallback(
 		async (values: EditPayoutInfoFormValues) => {
@@ -77,16 +71,20 @@ const StorePayoutsMain: React.FC<StorePayoutsMainProps> = ({
 				<FormInput
 					name='accountNumber'
 					label='Account Number'
-					control={control}
+					control={methods.control}
 					style={styles.input}
 					keyboardType='number-pad'
 				/>
-				<BankSelectButton control={control} onPress={toggleSelect} />
-				<Button text='Update information' onPress={handleSubmit(onSubmit)} />
+				<BankSelectButton control={methods.control} onPress={toggleSelect} />
+				<Spacer y={8} />
+				<Button
+					text='Update information'
+					onPress={methods.handleSubmit(onSubmit)}
+					disabled={!methods.formState.isDirty}
+				/>
 				<BankSelectModal
 					backdropComponent={renderBackdrop}
 					modalRef={selectModalRef}
-					setBank={handleSetBank}
 				/>
 				<ConfirmationModal
 					backdropComponent={renderBackdrop}

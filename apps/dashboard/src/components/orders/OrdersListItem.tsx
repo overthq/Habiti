@@ -1,9 +1,9 @@
+import { formatNaira } from '@market/common';
 import { useTheme, Typography } from '@market/components';
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 
 import { OrdersQuery } from '../../types/api';
-import { formatNaira } from '../../utils/currency';
 import { parseTimestamp } from '../../utils/date';
 
 interface OrdersListItemProps {
@@ -20,8 +20,8 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
 			style={[styles.container, { borderBottomColor: theme.border.color }]}
 		>
 			<View>
-				<Typography weight='medium'>{order.user.name}</Typography>
-				<Typography size='small' variant='label' style={styles.date}>
+				<Typography>{order.user.name}</Typography>
+				<Typography size='small' variant='secondary' style={styles.date}>
 					{order.status} · {parseTimestamp(order.createdAt)}
 				</Typography>
 			</View>

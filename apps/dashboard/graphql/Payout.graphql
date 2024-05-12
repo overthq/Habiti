@@ -1,6 +1,9 @@
 query StorePayouts {
 	currentStore {
 		id
+		unrealizedRevenue
+		realizedRevenue
+		paidOut
 		payouts {
 			id
 			amount

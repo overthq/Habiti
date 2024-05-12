@@ -1,12 +1,6 @@
 // TODO: Spend a significant amount of time building out novel designs
 // based on a green accent color.
 
-export enum ThemeMap {
-	light = 'Light',
-	dark = 'Dark',
-	auto = 'Auto'
-}
-
 export const spacing = {
 	small: 4,
 	regular: 8,
@@ -16,7 +10,6 @@ export const spacing = {
 };
 
 // https://matthewstrom.com/writing/generating-color-palettes/
-//
 // Potential: https://bottosson.github.io/posts/colorpicker/
 
 export const palette = {
@@ -71,7 +64,7 @@ export const palette = {
 const dark = {
 	text: {
 		primary: palette.neutral.n1,
-		secondary: palette.neutral.n30,
+		secondary: palette.neutral.n20,
 		tertiary: palette.neutral.n50,
 		disabled: palette.neutral.n10,
 		error: '',
@@ -91,8 +84,12 @@ const dark = {
 			text: ''
 		},
 		disabled: {
-			background: '',
-			text: ''
+			background: palette.neutral.n70,
+			text: palette.neutral.n20
+		},
+		destructive: {
+			background: palette.neutral.n10,
+			text: palette.red.r60
 		}
 	},
 	screen: {
@@ -108,7 +105,7 @@ const dark = {
 		default: { color: palette.neutral.n1 }
 	},
 	border: {
-		color: palette.neutral.n90
+		color: palette.neutral.n80
 	},
 	image: {
 		placeholder: palette.neutral.n90
@@ -131,7 +128,19 @@ const dark = {
 			color: palette.neutral.n70
 		}
 	},
-	navigation: {}
+	navigation: {
+		// Default theme from react-navigation
+		colors: {
+			background: 'rgb(1, 1, 1)',
+			border: 'rgb(39, 39, 41)',
+			card: 'rgb(18, 18, 18)',
+			notification: 'rgb(255, 69, 58)',
+			primary: 'rgb(10, 132, 255)',
+			text: 'rgb(229, 229, 231)'
+		},
+		dark: true
+	},
+	statusBar: 'light'
 } as const;
 
 const light = {
@@ -157,8 +166,12 @@ const light = {
 			text: ''
 		},
 		disabled: {
-			background: '',
-			text: ''
+			background: palette.neutral.n20,
+			text: palette.neutral.n70
+		},
+		destructive: {
+			background: palette.red.r10,
+			text: palette.red.r60
 		}
 	},
 	screen: {
@@ -197,7 +210,19 @@ const light = {
 			color: palette.neutral.n70
 		}
 	},
-	navigation: {}
+	navigation: {
+		// Default theme from react-navigation
+		colors: {
+			background: 'rgb(242, 242, 242)',
+			border: 'rgb(216, 216, 216)',
+			card: 'rgb(255, 255, 255)',
+			notification: 'rgb(255, 59, 48)',
+			primary: 'rgb(0, 122, 255)',
+			text: 'rgb(28, 28, 30)'
+		},
+		dark: false
+	},
+	statusBar: 'dark'
 } as const;
 
 export type ThemeObject = typeof light;

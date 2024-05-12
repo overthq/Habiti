@@ -12,6 +12,7 @@ import Animated, {
 	useSharedValue,
 	useAnimatedScrollHandler
 } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Brand from '../components/create-store/Brand';
 import Social from '../components/create-store/Social';
@@ -49,6 +50,7 @@ const CreateStore: React.FC = () => {
 	const scrollX = useSharedValue(0);
 	const setPreference = useStore(state => state.setPreference);
 	const formMethods = useForm<CreateStoreFormValues>();
+	const { bottom } = useSafeAreaInsets();
 
 	useGoBack('x');
 
@@ -76,13 +78,11 @@ const CreateStore: React.FC = () => {
 
 	const onSubmit = React.useCallback(
 		async (values: CreateStoreFormValues) => {
-			try {
-				const { data } = await createStore({ input: values });
+			const { data, error } = await createStore({ input: values });
 
-				if (data?.createStore?.id) {
-					setPreference({ activeStore: data.createStore.id });
-				}
-			} catch (error) {
+			if (data?.createStore?.id) {
+				setPreference({ activeStore: data.createStore.id });
+			} else if (error) {
 				console.log(error);
 			}
 		},
@@ -92,7 +92,7 @@ const CreateStore: React.FC = () => {
 	const isLastStep = activeStepIndex === steps.length - 1;
 
 	return (
-		<Screen>
+		<Screen style={{ paddingBottom: bottom }}>
 			<FormProvider {...formMethods}>
 				<AnimatedFlatList
 					ref={listRef}

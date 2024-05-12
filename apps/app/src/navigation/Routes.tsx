@@ -1,9 +1,5 @@
 import { useTheme } from '@market/components';
-import {
-	DarkTheme,
-	DefaultTheme,
-	NavigationContainer
-} from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
@@ -20,12 +16,11 @@ import Register from '../screens/Register';
 import Verify from '../screens/Verify';
 import useStore from '../state';
 import { AppStackParamList } from '../types/navigation';
-import { getStatusBarStyle } from '../utils/theme';
 
 const AppStack = createStackNavigator<AppStackParamList>();
 
 const Routes: React.FC = () => {
-	const { name } = useTheme();
+	const { theme } = useTheme();
 	const { accessToken } = useStore(state => ({
 		accessToken: state.accessToken
 	}));
@@ -33,8 +28,8 @@ const Routes: React.FC = () => {
 
 	return (
 		<Provider value={client}>
-			<StatusBar style={getStatusBarStyle(name)} />
-			<NavigationContainer theme={name === 'dark' ? DarkTheme : DefaultTheme}>
+			<StatusBar style={theme.statusBar} />
+			<NavigationContainer theme={theme.navigation}>
 				<AppStack.Navigator screenOptions={{ headerShown: false }}>
 					{accessToken ? (
 						<>

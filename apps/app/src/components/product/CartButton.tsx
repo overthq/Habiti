@@ -20,7 +20,7 @@ const CartButton: React.FC<CartButtonProps> = ({
 	inCart
 }) => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const [, addToCart] = useAddToCartMutation();
+	const [{ fetching }, addToCart] = useAddToCartMutation();
 
 	const handlePress = React.useCallback(async () => {
 		await addToCart({
@@ -37,6 +37,7 @@ const CartButton: React.FC<CartButtonProps> = ({
 	if (!cartId || (cartId && !inCart)) {
 		return (
 			<Button
+				loading={fetching}
 				onPress={handlePress}
 				text='Add to cart'
 				disabled={inCart}

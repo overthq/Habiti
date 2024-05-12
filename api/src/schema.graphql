@@ -40,7 +40,7 @@ type Store implements Node {
 	instagram: String
 	realizedRevenue: Int!
 	unrealizedRevenue: Int!
-	payedOut: Int!
+	paidOut: Int!
 	createdAt: String!
 	updatedAt: String!
 

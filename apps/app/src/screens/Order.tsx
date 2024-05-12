@@ -11,6 +11,7 @@ import { View, StyleSheet } from 'react-native';
 import OrderStatusPill from '../components/home/OrderStatusPill';
 import OrderMeta from '../components/order/OrderMeta';
 import OrderProduct from '../components/order/OrderProduct';
+import StoreMeta from '../components/order/StoreMeta';
 import useGoBack from '../hooks/useGoBack';
 import { useOrderQuery } from '../types/api';
 import { AppStackParamList, HomeStackParamList } from '../types/navigation';
@@ -57,6 +58,7 @@ const Order: React.FC = () => {
 				))}
 			</View>
 			<OrderMeta order={order} />
+			<StoreMeta store={order.store} />
 		</Screen>
 	);
 };

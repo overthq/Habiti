@@ -5,7 +5,6 @@ import Product from '../screens/Product';
 import Products from '../screens/Products';
 import SearchProducts from '../screens/SearchProducts';
 import { ProductsStackParamList } from '../types/navigation';
-// import SearchProducts from '../components/products/SearchProducts';
 
 const ProductsStack = createStackNavigator<ProductsStackParamList>();
 

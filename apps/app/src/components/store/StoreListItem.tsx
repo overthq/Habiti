@@ -1,9 +1,9 @@
+import { formatNaira } from '@market/common';
 import { CustomImage, Typography } from '@market/components';
 import React from 'react';
 import { StyleSheet, Pressable } from 'react-native';
 
 import { StoreProductsQuery } from '../../types/api';
-import { formatNaira } from '../../utils/currency';
 
 interface StoreListItemProps {
 	item: StoreProductsQuery['store']['products'][number];

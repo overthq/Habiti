@@ -2,6 +2,7 @@ import {
 	Icon,
 	ListEmpty,
 	Screen,
+	Separator,
 	Typography,
 	useTheme
 } from '@market/components';
@@ -61,12 +62,7 @@ const PaymentMethods: React.FC = () => {
 					>
 						Cards
 					</Typography>
-					<View
-						style={[
-							styles.separator,
-							{ borderBottomColor: theme.border.color }
-						]}
-					/>
+					<Separator />
 					{cards.map(card => (
 						<Pressable
 							key={card.id}
@@ -107,9 +103,6 @@ const styles = StyleSheet.create({
 	},
 	capitalize: {
 		textTransform: 'capitalize'
-	},
-	separator: {
-		borderBottomWidth: 0.5
 	}
 });
 

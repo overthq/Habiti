@@ -55,7 +55,7 @@ interface StatsArgs {
 //
 // export type StoreAllTime = {
 // 	revenue: number;
-// 	payedOut: number;
+// 	paidOut: number;
 // 	orderCount: number;
 // };
 

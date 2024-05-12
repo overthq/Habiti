@@ -1,4 +1,4 @@
-import { Button, Screen, Typography } from '@market/components';
+import { Button, Screen, Spacer, Typography } from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet } from 'react-native';
@@ -13,13 +13,13 @@ const StoreSelect: React.FC = () => {
 	return (
 		<Screen style={styles.container}>
 			<SafeAreaView>
-				<Typography size='xxlarge' weight='bold' style={styles.header}>
+				<Typography size='xxxlarge' weight='bold' style={styles.header}>
 					Select store
 				</Typography>
-
-				<Typography style={styles.description}>
-					You can choose an existing store you manage, or create a new one:
+				<Typography variant='secondary'>
+					You can choose an existing store you manage, or create a new one.
 				</Typography>
+				<Spacer y={16} />
 				<StoreSelectList />
 				<Button
 					onPress={() => navigate('CreateStore')}
@@ -33,13 +33,8 @@ const StoreSelect: React.FC = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		paddingHorizontal: 16
-	},
-	header: {
-		marginBottom: 8
-	},
-	description: {
-		marginBottom: 16
+		paddingHorizontal: 16,
+		paddingTop: 32
 	}
 });
 

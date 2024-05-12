@@ -529,6 +529,7 @@ export type ProductReview = {
 	productId: Scalars['ID']['output'];
 	rating: Scalars['Int']['output'];
 	updatedAt: Scalars['String']['output'];
+	user: User;
 };
 
 export type Query = {
@@ -636,7 +637,7 @@ export type Store = {
 	managers: StoreManager[];
 	name: Scalars['String']['output'];
 	orders: Order[];
-	payedOut: Scalars['Int']['output'];
+	paidOut: Scalars['Int']['output'];
 	payouts: Payout[];
 	products: Product[];
 	realizedRevenue: Scalars['Int']['output'];
@@ -924,6 +925,9 @@ export type StorePayoutsQuery = {
 	currentStore: {
 		__typename?: 'Store';
 		id: string;
+		unrealizedRevenue: number;
+		realizedRevenue: number;
+		paidOut: number;
 		payouts: {
 			__typename?: 'Payout';
 			id: string;
@@ -1097,7 +1101,7 @@ export type StoreQuery = {
 		instagram?: string | null;
 		realizedRevenue: number;
 		unrealizedRevenue: number;
-		payedOut: number;
+		paidOut: number;
 		bankAccountNumber?: string | null;
 		bankCode?: string | null;
 		bankAccountReference?: string | null;
@@ -1158,7 +1162,12 @@ export type CustomerInfoQuery = {
 			products: {
 				__typename?: 'OrderProduct';
 				id: string;
-				product: { __typename?: 'Product'; id: string; name: string };
+				product: {
+					__typename?: 'Product';
+					id: string;
+					name: string;
+					images: { __typename?: 'Image'; id: string; path: string }[];
+				};
 			}[];
 		}[];
 	};
@@ -1382,6 +1391,9 @@ export const StorePayoutsDocument = gql`
 	query StorePayouts {
 		currentStore {
 			id
+			unrealizedRevenue
+			realizedRevenue
+			paidOut
 			payouts {
 				id
 				amount
@@ -1600,7 +1612,7 @@ export const StoreDocument = gql`
 			instagram
 			realizedRevenue
 			unrealizedRevenue
-			payedOut
+			paidOut
 			bankAccountNumber
 			bankCode
 			bankAccountReference
@@ -1673,6 +1685,10 @@ export const CustomerInfoDocument = gql`
 					product {
 						id
 						name
+						images {
+							id
+							path
+						}
 					}
 				}
 				total

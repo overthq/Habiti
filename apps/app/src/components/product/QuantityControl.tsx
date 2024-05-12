@@ -5,6 +5,7 @@ import { View, StyleSheet, Pressable } from 'react-native';
 interface QuantityControlProps {
 	cartId?: string | null | undefined;
 	productId: string;
+	inCart: boolean;
 }
 
 // TODO:
@@ -17,14 +18,9 @@ interface QuantityControlProps {
 
 // NOTICE: This component currently does NOT work!
 
-const QuantityControl: React.FC<QuantityControlProps> = ({
-	cartId,
-	productId
-}) => {
+const QuantityControl: React.FC<QuantityControlProps> = ({ inCart }) => {
 	const { theme } = useTheme();
 	const [quantity, setQuantity] = React.useState(1);
-
-	const disabled = React.useMemo(() => !!cartId, []);
 
 	const decrementDisabled = React.useMemo(() => quantity === 1, [quantity]);
 
@@ -40,13 +36,13 @@ const QuantityControl: React.FC<QuantityControlProps> = ({
 		<View
 			style={[styles.controls, { backgroundColor: theme.input.background }]}
 		>
-			<Pressable disabled={disabled || decrementDisabled} onPress={decrement}>
+			<Pressable disabled={inCart || decrementDisabled} onPress={decrement}>
 				<Icon name='minus' color={theme.text.secondary} />
 			</Pressable>
 			<Typography size='large' weight='medium' number>
 				{quantity}
 			</Typography>
-			<Pressable disabled={disabled} onPress={increment}>
+			<Pressable disabled={inCart} onPress={increment}>
 				<Icon name='plus' color={theme.text.secondary} />
 			</Pressable>
 		</View>

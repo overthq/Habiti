@@ -44,6 +44,9 @@ const createOrder: Resolver<CreateOrderArgs> = async (
 		throw new Error('You are not authorized to access this cart.');
 	}
 
+	// This is going to go, seeing that we now require users to pass in the
+	// payment method they want to use on a per-order basis.
+
 	const card = cardId
 		? cart.user.cards.find(c => c.id === cardId)
 		: cart.user.cards[0];
@@ -105,6 +108,9 @@ const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
 	if (args.input.status) {
 		switch (args.input.status) {
 			case OrderStatus.Cancelled:
+				ctx.services.notifications.queueMessage({
+					to: ''
+				});
 				break;
 			case OrderStatus.Completed: {
 				const total = order.products.reduce((acc, next) => {

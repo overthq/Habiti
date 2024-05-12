@@ -73,7 +73,8 @@ const styles = StyleSheet.create({
 	row: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems: 'center'
+		alignItems: 'center',
+		paddingRight: 8
 	},
 	right: {
 		flexDirection: 'row',

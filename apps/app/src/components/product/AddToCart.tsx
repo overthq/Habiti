@@ -26,7 +26,7 @@ const AddToCart: React.FC<AddToCartProps> = ({
 		<View
 			style={[styles.container, { bottom, borderTopColor: theme.border.color }]}
 		>
-			<QuantityControl cartId={cartId} productId={productId} />
+			<QuantityControl cartId={cartId} productId={productId} inCart={inCart} />
 			<CartButton
 				storeId={storeId}
 				productId={productId}
@@ -41,12 +41,10 @@ const styles = StyleSheet.create({
 	container: {
 		position: 'absolute',
 		flexDirection: 'row',
-		width: '100%',
-		paddingHorizontal: 16,
-		paddingTop: 16,
+		gap: 16,
+		padding: 16,
 		paddingBottom: 8,
-		borderTopWidth: 1,
-		gap: 16
+		borderTopWidth: 0.5
 	}
 });
 
