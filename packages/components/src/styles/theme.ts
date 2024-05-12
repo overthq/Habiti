@@ -84,12 +84,12 @@ const dark = {
 			text: ''
 		},
 		disabled: {
-			background: palette.neutral.n30,
-			text: palette.neutral.n70
+			background: palette.neutral.n70,
+			text: palette.neutral.n20
 		},
 		destructive: {
-			background: palette.red.r30,
-			text: palette.red.r70
+			background: palette.neutral.n10,
+			text: palette.red.r60
 		}
 	},
 	screen: {

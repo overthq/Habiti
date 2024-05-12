@@ -12,10 +12,10 @@ const NoProductOptions = () => {
 	return (
 		<View>
 			<Spacer y={8} />
-			<Typography>
-				There are no product options. Created options appear here.
+			<Typography variant='secondary' style={{ textAlign: 'center' }}>
+				There are currently no product options. Created options appear here.
 			</Typography>
-			<Spacer y={8} />
+			<Spacer y={16} />
 			<Button text='Create option' />
 		</View>
 	);
@@ -36,8 +36,7 @@ const styles = StyleSheet.create({
 	container: {
 		paddingVertical: 8,
 		paddingHorizontal: 16
-	},
-	title: {}
+	}
 });
 
 export default ProductOptions;

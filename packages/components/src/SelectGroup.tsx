@@ -7,13 +7,13 @@ import Typography from './Typography';
 
 interface SelectOption {
 	title: string;
-	value: string;
+	value?: string;
 }
 
 interface SelectGroupProps {
-	selected: string;
+	selected?: string;
 	options: SelectOption[];
-	onSelect(value: string): void;
+	onSelect(value?: string): void;
 	capitalize?: boolean;
 }
 
@@ -25,7 +25,7 @@ const SelectGroup: React.FC<SelectGroupProps> = ({
 }) => {
 	const { theme } = useTheme();
 
-	const handlePress = (value: string) => () => {
+	const handlePress = (value?: string) => () => {
 		onSelect(value);
 	};
 

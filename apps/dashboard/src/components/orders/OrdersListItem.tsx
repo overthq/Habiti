@@ -20,8 +20,8 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
 			style={[styles.container, { borderBottomColor: theme.border.color }]}
 		>
 			<View>
-				<Typography weight='medium'>{order.user.name}</Typography>
-				<Typography size='small' variant='label' style={styles.date}>
+				<Typography>{order.user.name}</Typography>
+				<Typography size='small' variant='secondary' style={styles.date}>
 					{order.status} · {parseTimestamp(order.createdAt)}
 				</Typography>
 			</View>

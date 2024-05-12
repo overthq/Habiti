@@ -1,83 +1,41 @@
-import { AnimatedTypography, Radio } from '@market/components';
+import { SelectGroup, Spacer } from '@market/components';
 import React from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { Controller } from 'react-hook-form';
+import { StyleSheet } from 'react-native';
 
 import { FilterProductsFormValues } from '../../types/forms';
 
-// FIXME: Using `value` and `fieldValue` feels very wrong.
-// An `active` prop is probably much better.
-// However, can't stop, won't stop.
-
-interface RadioRowProps {
-	title: string;
-	value: FilterProductsFormValues['sortBy'];
-	fieldValue: FilterProductsFormValues['sortBy'];
-	onSelect(value: FilterProductsFormValues['sortBy']): () => void;
-}
-
-const RadioRow: React.FC<RadioRowProps> = ({
-	title,
-	value,
-	fieldValue,
-	onSelect
-}) => {
-	const active = React.useMemo(() => {
-		return value === fieldValue;
-	}, [value, fieldValue]);
-
-	const style = useAnimatedStyle(() => {
-		return { opacity: withTiming(active ? 1 : 0.5) };
-	});
-
-	return (
-		<Pressable style={styles.option} onPress={onSelect(value)}>
-			<AnimatedTypography style={style}>{title}</AnimatedTypography>
-			<Radio active={value === fieldValue} />
-		</Pressable>
-	);
-};
-
 const SortProducts = () => {
-	const { control, setValue } = useFormContext<FilterProductsFormValues>();
-
-	const handleSortSelect =
-		(value: FilterProductsFormValues['sortBy']) => () => {
-			setValue('sortBy', value);
-		};
-
 	return (
-		<Controller
+		<Controller<FilterProductsFormValues>
 			name='sortBy'
-			control={control}
 			render={({ field }) => (
-				<View style={styles.container}>
-					<RadioRow
-						title='Default'
-						value={undefined}
-						fieldValue={field.value}
-						onSelect={handleSortSelect}
+				<>
+					<Spacer y={8} />
+					<SelectGroup
+						selected={field.value as string}
+						options={[
+							{
+								title: 'Default',
+								value: undefined
+							},
+							{
+								title: 'Newest to oldest',
+								value: 'created-at-desc'
+							},
+							{
+								title: 'Highest to lowest price',
+								value: 'unit-price-desc'
+							},
+							{
+								title: 'Lowest to highest price',
+								value: 'unit-price-asc'
+							}
+						]}
+						onSelect={field.onChange}
 					/>
-					<RadioRow
-						title='Newest to oldest'
-						value='created-at-desc'
-						fieldValue={field.value}
-						onSelect={handleSortSelect}
-					/>
-					<RadioRow
-						title='Highest to lowest price'
-						value='unit-price-desc'
-						fieldValue={field.value}
-						onSelect={handleSortSelect}
-					/>
-					<RadioRow
-						title='Lowest to highest price'
-						value='unit-price-asc'
-						fieldValue={field.value}
-						onSelect={handleSortSelect}
-					/>
-				</View>
+					<Spacer y={4} />
+				</>
 			)}
 		/>
 	);

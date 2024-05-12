@@ -47,7 +47,7 @@ const FilterProducts = () => {
 	return (
 		<FormProvider {...methods}>
 			<Screen style={styles.container}>
-				<View>
+				<View style={{ flex: 1 }}>
 					<AccordionRow
 						title='Sort by'
 						open={open === 'sort-by'}
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between'
 	},
 	button: {
-		marginTop: 8
+		flex: 1
 	},
 	row: {
 		flexDirection: 'row',
@@ -120,9 +120,9 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	footer: {
-		flexGrow: 1,
-		justifyContent: 'flex-end',
-		paddingBottom: 16
+		paddingBottom: 16,
+		flexDirection: 'row',
+		gap: 12
 	}
 });
 

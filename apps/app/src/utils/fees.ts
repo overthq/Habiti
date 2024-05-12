@@ -7,12 +7,20 @@
 // Once discounts and other factors come in, this should move
 // server-side.
 
-export const calculatePaystackFee = (total: number) => {
+export const calculatePaystackFee = (subTotal: number) => {
 	// Total is in kobo
-	const raw = 0.015 * total + 10000;
+	const raw = 0.015 * subTotal + 10000;
 	return raw > 200000 ? 200000 : raw;
 };
 
 export const calculateMarketFee = () => {
 	return 100000;
+};
+
+export const calculateFees = (subTotal: number) => {
+	const transaction = calculatePaystackFee(subTotal);
+	const service = calculateMarketFee();
+	const total = transaction + service;
+
+	return { transaction, service, total };
 };
