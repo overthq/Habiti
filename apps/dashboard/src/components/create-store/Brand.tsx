@@ -1,4 +1,4 @@
-import { FormInput, Screen, Spacer, Typography } from '@market/components';
+import { FormInput, Spacer, Typography } from '@market/components';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { StyleSheet, Dimensions, View } from 'react-native';
@@ -13,11 +13,11 @@ const Brand: React.FC = () => {
 			<Typography weight='bold' size='xxxlarge'>
 				Your brand
 			</Typography>
-			<Spacer y={2} />
+			<Spacer y={4} />
 			<Typography variant='secondary'>
 				Please enter the name of your store.
 			</Typography>
-			<Spacer y={8} />
+			<Spacer y={16} />
 			<FormInput
 				control={control}
 				name='name'

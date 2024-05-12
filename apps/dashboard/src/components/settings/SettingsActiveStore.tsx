@@ -29,6 +29,7 @@ const SettingsActiveStore: React.FC = () => {
 		<View style={styles.container}>
 			{stores?.map(store => (
 				<SettingSelectRow
+					key={store.name}
 					name={store.name}
 					isSelected={activeStore === store.id}
 					onSelectRow={handleRowSelect(store.id)}

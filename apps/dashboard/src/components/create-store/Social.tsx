@@ -13,7 +13,7 @@ const Social = () => {
 			<Typography size='xxxlarge' weight='bold'>
 				Social media
 			</Typography>
-			<Typography>
+			<Typography variant='secondary'>
 				Link your social accounts, so shoppers can follow you elsewhere.
 			</Typography>
 			<Spacer y={16} />

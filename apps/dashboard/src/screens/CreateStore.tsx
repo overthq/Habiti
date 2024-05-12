@@ -12,6 +12,7 @@ import Animated, {
 	useSharedValue,
 	useAnimatedScrollHandler
 } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Brand from '../components/create-store/Brand';
 import Social from '../components/create-store/Social';
@@ -49,6 +50,7 @@ const CreateStore: React.FC = () => {
 	const scrollX = useSharedValue(0);
 	const setPreference = useStore(state => state.setPreference);
 	const formMethods = useForm<CreateStoreFormValues>();
+	const { bottom } = useSafeAreaInsets();
 
 	useGoBack('x');
 
@@ -90,7 +92,7 @@ const CreateStore: React.FC = () => {
 	const isLastStep = activeStepIndex === steps.length - 1;
 
 	return (
-		<Screen>
+		<Screen style={{ paddingBottom: bottom }}>
 			<FormProvider {...formMethods}>
 				<AnimatedFlatList
 					ref={listRef}
