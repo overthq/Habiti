@@ -166,8 +166,8 @@ const light = {
 			text: ''
 		},
 		disabled: {
-			background: palette.neutral.n70,
-			text: palette.neutral.n30
+			background: palette.neutral.n20,
+			text: palette.neutral.n70
 		},
 		destructive: {
 			background: palette.red.r10,
@@ -187,7 +187,7 @@ const light = {
 		default: { color: palette.neutral.n100 }
 	},
 	border: {
-		color: palette.neutral.n20
+		color: palette.neutral.n10
 	},
 	image: {
 		placeholder: palette.neutral.n10

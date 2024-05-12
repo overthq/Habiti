@@ -4,6 +4,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { CartQuery } from '../../types/api';
+import { calculateMarketFee, calculatePaystackFee } from '../../utils/fees';
 
 interface CartTotalProps {
 	cart: CartQuery['cart'];
@@ -13,8 +14,14 @@ const CartTotal: React.FC<CartTotalProps> = ({ cart }) => {
 	return (
 		<View style={{ paddingHorizontal: 16 }}>
 			<CartTotalRow title='Subtotal' value={formatNaira(cart.total)} />
-			<CartTotalRow title='Service Fee' value='-' />
-			<CartTotalRow title='Taxes' value='-' />
+			<CartTotalRow
+				title='Transaction Fee'
+				value={formatNaira(calculatePaystackFee(cart.total))}
+			/>
+			<CartTotalRow
+				title='Service Fee'
+				value={formatNaira(calculateMarketFee())}
+			/>
 			<CartTotalRow title='Total' value={formatNaira(cart.total)} total />
 		</View>
 	);
