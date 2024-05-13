@@ -5,19 +5,24 @@ import {
 	TextButton,
 	Typography
 } from '@market/components';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 
+import { AppStackParamList } from '../types/navigation';
+
 const Landing = () => {
-	const { navigate } = useNavigation();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	return (
 		<Screen style={{ padding: 16, justifyContent: 'center' }}>
-			<Typography size='xxxlarge'>Welcome to Market</Typography>
+			<Typography size='xxxlarge' weight='bold' style={{ textAlign: 'center' }}>
+				Welcome to Market
+			</Typography>
 			<Spacer y={16} />
 			<Button text='Sign up' onPress={() => navigate('Register')} />
 			<Spacer y={8} />
 			<TextButton
+				weight='medium'
 				style={{ alignSelf: 'center' }}
 				onPress={() => navigate('Authenticate')}
 			>

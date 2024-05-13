@@ -3,24 +3,17 @@ import argon2 from 'argon2';
 import { Resolver } from '../../types/resolvers';
 import { generateAccessToken } from '../../utils/auth';
 
-enum PushTokenType {
-	Shopper = 'Shopper',
-	Merchant = 'Merchant'
-}
-
 interface RegisterArgs {
 	input: {
 		name: string;
 		email: string;
 		password: string;
-		pushToken?: string;
-		pushTokenType: PushTokenType;
 	};
 }
 
 export const register: Resolver<RegisterArgs> = async (
 	_,
-	{ input: { name, email, password, pushToken, pushTokenType } },
+	{ input: { name, email, password } },
 	ctx
 ) => {
 	// TODO: Validate password
@@ -28,14 +21,7 @@ export const register: Resolver<RegisterArgs> = async (
 	const passwordHash = await argon2.hash(password);
 
 	const user = await ctx.prisma.user.create({
-		data: {
-			name,
-			email,
-			passwordHash,
-			pushTokens: {
-				create: { token: pushToken, type: pushTokenType }
-			}
-		}
+		data: { name, email, passwordHash }
 	});
 
 	// ctx.services.email.queueMail({});

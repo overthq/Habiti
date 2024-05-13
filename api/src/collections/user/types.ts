@@ -31,8 +31,6 @@ const UserTypes = gql`
 		name: String!
 		email: String!
 		password: String!
-		confirmPassword: String!
-		pushToken: String
 	}
 
 	input AuthenticateInput {

@@ -579,11 +579,9 @@ export type QueryUserArgs = {
 };
 
 export type RegisterInput = {
-	confirmPassword: Scalars['String'];
 	email: Scalars['String'];
 	name: Scalars['String'];
 	password: Scalars['String'];
-	pushToken?: InputMaybe<Scalars['String']>;
 };
 
 export type RemoveProductFromCategoryInput = {

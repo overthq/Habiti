@@ -23,7 +23,7 @@ interface AuthenticateFormValues {
 const Authenticate = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const logIn = useStore(state => state.logIn);
-	const [{ fetching, data }, authenticate] = useAuthenticateMutation();
+	const [{ fetching }, authenticate] = useAuthenticateMutation();
 	const { control, handleSubmit } = useForm<AuthenticateFormValues>({
 		defaultValues: {
 			email: '',
@@ -32,7 +32,7 @@ const Authenticate = () => {
 	});
 
 	const onSubmit = async (values: AuthenticateFormValues) => {
-		const { error } = await authenticate({ input: values });
+		const { error, data } = await authenticate({ input: values });
 
 		if (error) {
 			console.log({ error });
@@ -60,6 +60,8 @@ const Authenticate = () => {
 					label='Email address'
 					placeholder='john@market.com'
 					keyboardType='email-address'
+					autoCorrect={false}
+					autoCapitalize='none'
 				/>
 
 				<Spacer y={8} />

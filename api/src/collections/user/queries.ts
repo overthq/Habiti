@@ -1,6 +1,7 @@
 import { Resolver } from '../../types/resolvers';
 
 const currentUser: Resolver = (_, __, ctx) => {
+	console.log(ctx.user);
 	return ctx.prisma.user.findUnique({ where: { id: ctx.user.id } });
 };
 
