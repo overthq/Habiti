@@ -55,12 +55,14 @@ export type AddToCartInput = {
 };
 
 export type AuthenticateInput = {
-	phone: Scalars['String'];
+	email: Scalars['String'];
+	password: Scalars['String'];
 };
 
 export type AuthenticateResponse = {
 	__typename?: 'AuthenticateResponse';
-	message?: Maybe<Scalars['String']>;
+	accessToken: Scalars['String'];
+	userId: Scalars['ID'];
 };
 
 export type Card = {
@@ -161,7 +163,6 @@ export type EditProductInput = {
 export type EditProfileInput = {
 	email?: InputMaybe<Scalars['String']>;
 	name?: InputMaybe<Scalars['String']>;
-	phone?: InputMaybe<Scalars['String']>;
 };
 
 export type EditStoreInput = {
@@ -578,9 +579,11 @@ export type QueryUserArgs = {
 };
 
 export type RegisterInput = {
+	confirmPassword: Scalars['String'];
 	email: Scalars['String'];
 	name: Scalars['String'];
-	phone: Scalars['String'];
+	password: Scalars['String'];
+	pushToken?: InputMaybe<Scalars['String']>;
 };
 
 export type RemoveProductFromCategoryInput = {
@@ -719,7 +722,6 @@ export type User = {
 	managed: StoreManager[];
 	name: Scalars['String'];
 	orders: Order[];
-	phone: Scalars['String'];
 	updatedAt: Scalars['String'];
 	watchlist: WatchlistProduct[];
 };
@@ -737,7 +739,7 @@ export type VerifyBankAccountResponse = {
 
 export type VerifyInput = {
 	code: Scalars['String'];
-	phone: Scalars['String'];
+	email: Scalars['String'];
 };
 
 export type VerifyResponse = {
@@ -1253,7 +1255,7 @@ export type CurrentUserQueryVariables = Exact<{ [key: string]: never }>;
 
 export type CurrentUserQuery = {
 	__typename?: 'Query';
-	currentUser: { __typename?: 'User'; id: string; name: string; phone: string };
+	currentUser: { __typename?: 'User'; id: string; name: string; email: string };
 };
 
 export type RegisterMutationVariables = Exact<{
@@ -1273,7 +1275,8 @@ export type AuthenticateMutation = {
 	__typename?: 'Mutation';
 	authenticate: {
 		__typename?: 'AuthenticateResponse';
-		message?: string | null;
+		accessToken: string;
+		userId: string;
 	};
 };
 
@@ -1296,7 +1299,7 @@ export type EditProfileMutationVariables = Exact<{
 
 export type EditProfileMutation = {
 	__typename?: 'Mutation';
-	editProfile: { __typename?: 'User'; id: string; name: string; phone: string };
+	editProfile: { __typename?: 'User'; id: string; name: string; email: string };
 };
 
 export type DeleteAccountMutationVariables = Exact<{ [key: string]: never }>;
@@ -1947,7 +1950,7 @@ export const CurrentUserDocument = gql`
 		currentUser {
 			id
 			name
-			phone
+			email
 		}
 	}
 `;
@@ -1976,7 +1979,8 @@ export function useRegisterMutation() {
 export const AuthenticateDocument = gql`
 	mutation Authenticate($input: AuthenticateInput!) {
 		authenticate(input: $input) {
-			message
+			accessToken
+			userId
 		}
 	}
 `;
@@ -2005,7 +2009,7 @@ export const EditProfileDocument = gql`
 		editProfile(input: $input) {
 			id
 			name
-			phone
+			email
 		}
 	}
 `;

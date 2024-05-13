@@ -5,6 +5,7 @@ import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
 import RecentOrders from '../components/home/RecentOrders';
+import useStore from '../state';
 import { useHomeQuery } from '../types/api';
 import { HomeStackParamList } from '../types/navigation';
 

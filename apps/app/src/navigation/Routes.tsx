@@ -11,6 +11,8 @@ import useClient from '../hooks/useClient';
 import AddCardWebview from '../screens/AddCardWebview';
 import Authenticate from '../screens/Authenticate';
 import Cart from '../screens/Cart';
+import Landing from '../screens/Landing';
+import Onboarding from '../screens/Onboarding';
 import Product from '../screens/Product';
 import Register from '../screens/Register';
 import Verify from '../screens/Verify';
@@ -52,7 +54,8 @@ const Routes: React.FC = () => {
 						</>
 					) : (
 						<>
-							<AppStack.Screen name='Register' component={Register} />
+							<AppStack.Screen name='Landing' component={Landing} />
+							<AppStack.Screen name='Register' component={Onboarding} />
 							<AppStack.Screen name='Authenticate' component={Authenticate} />
 							<AppStack.Screen name='Verify' component={Verify} />
 						</>

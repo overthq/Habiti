@@ -9,12 +9,12 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   orders        Order[]
   managed       StoreManager[]
@@ -233,6 +233,7 @@ model DeliveryAddress {
 model UserPushToken {
   userId String
   token  String
+  type   PushTokenType @default(Shopper)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -278,4 +279,9 @@ enum PayoutStatus {
   Pending
   Success
   Failure
+}
+
+enum PushTokenType {
+  Shopper
+  Merchant
 }

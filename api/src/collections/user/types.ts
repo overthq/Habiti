@@ -5,7 +5,6 @@ const UserTypes = gql`
 		id: ID!
 		name: String!
 		email: String!
-		password: String!
 		createdAt: String!
 		updatedAt: String!
 
@@ -33,6 +32,7 @@ const UserTypes = gql`
 		email: String!
 		password: String!
 		confirmPassword: String!
+		pushToken: String
 	}
 
 	input AuthenticateInput {
@@ -46,7 +46,8 @@ const UserTypes = gql`
 	}
 
 	type AuthenticateResponse {
-		message: String
+		accessToken: String!
+		userId: ID!
 	}
 
 	type VerifyResponse {
