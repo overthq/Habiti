@@ -82,6 +82,14 @@ export type Card = {
 	userId: Scalars['ID'];
 };
 
+export type CardAuthorization = {
+	__typename?: 'CardAuthorization';
+	access_code: Scalars['String'];
+	authorization_url: Scalars['String'];
+	id: Scalars['ID'];
+	reference: Scalars['String'];
+};
+
 export type Cart = {
 	__typename?: 'Cart';
 	createdAt: Scalars['String'];
@@ -526,6 +534,7 @@ export type ProductReview = {
 
 export type Query = {
 	__typename?: 'Query';
+	cardAuthorization: CardAuthorization;
 	cart: Cart;
 	carts: Cart[];
 	currentStore: Store;
@@ -773,6 +782,19 @@ export type CardsQuery = {
 			bank: string;
 			countryCode: string;
 		}[];
+	};
+};
+
+export type CardAuthorizationQueryVariables = Exact<{ [key: string]: never }>;
+
+export type CardAuthorizationQuery = {
+	__typename?: 'Query';
+	cardAuthorization: {
+		__typename?: 'CardAuthorization';
+		id: string;
+		authorization_url: string;
+		access_code: string;
+		reference: string;
 	};
 };
 
@@ -1332,6 +1354,24 @@ export function useCardsQuery(
 		query: CardsDocument,
 		...options
 	});
+}
+export const CardAuthorizationDocument = gql`
+	query CardAuthorization {
+		cardAuthorization {
+			id
+			authorization_url
+			access_code
+			reference
+		}
+	}
+`;
+
+export function useCardAuthorizationQuery(
+	options?: Omit<Urql.UseQueryArgs<CardAuthorizationQueryVariables>, 'query'>
+) {
+	return Urql.useQuery<CardAuthorizationQuery, CardAuthorizationQueryVariables>(
+		{ query: CardAuthorizationDocument, ...options }
+	);
 }
 export const CartsDocument = gql`
 	query Carts {

@@ -15,12 +15,11 @@ router.post('/paystack', async (req: MarketRequest, res) => {
 	if (hash === req.headers['x-paystack-signature']) {
 		const { event, data } = req.body;
 
+		// TODO: Defer these actions. Push them to a queue and handle them
+		// separately, to ensure that we can respond to Paystack quickly.
+
 		if (event === 'charge.success') {
-			// FIXME: req.auth.id cannot be populated with the user id,
-			// as this request is originating from Paystack.
-			if (req.auth.id) {
-				await storeCard(req.auth.id, data);
-			}
+			await storeCard(data);
 		} else if (event === 'transfer.success') {
 			handleTransferSuccess(data);
 		} else if (event === 'transfer.failure') {

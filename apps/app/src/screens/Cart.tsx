@@ -28,6 +28,9 @@ import { AppStackParamList } from '../types/navigation';
 // It is also important to make use of tasteful animations to make
 // it feel slick.
 
+// A cart screen is usually distinct from a checkout screen on most
+// production apps. Find out why.
+
 const Cart: React.FC = () => {
 	const {
 		params: { cartId }

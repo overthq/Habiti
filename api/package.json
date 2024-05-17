@@ -38,8 +38,7 @@
   "devDependencies": {
     "@types/busboy": "^1.5.1",
     "@types/compression": "^1.7.3",
-    "@types/express": "^4.17.17",
-    "@types/express-jwt": "^7.4.2",
+    "@types/express": "^4.17.21",
     "@types/fs-capacitor": "^8.0.0",
     "@types/graphql-upload": "^8.0.11",
     "@types/jsonwebtoken": "^9.0.3",
@@ -49,6 +48,6 @@
     "nodemon": "^3.0.1",
     "prisma": "^5.13.0",
     "ts-node": "^10.9.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.3.3"
   }
 }

@@ -4,25 +4,33 @@ import { ActivityIndicator, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import useGoBack from '../hooks/useGoBack';
-import { attemptInitialCharge, InitialChargeResponse } from '../utils/payments';
+import { useCardAuthorizationQuery } from '../types/api';
+
+// Before opening this screen, we should probably explain to users why we have
+// to charge them a small amount of money. I should probably also figure out a
+// programmatic way to refund the charge.
+// We should probably just add all these customers to a cache and send a bulk
+// transfer out at the end of each day.
+// To do this though, we have to collect their bank account information.
+// Or we can just create "Market cash" and load the money there, and it can
+// be added to their transaction.
 
 const AddCardWebview: React.FC = () => {
-	const [data, setData] = React.useState<InitialChargeResponse>();
-	useGoBack('x');
-
-	const getData = React.useCallback(async () => {
-		const fetchedData = await attemptInitialCharge();
-		setData(fetchedData);
-	}, []);
+	const [{ fetching, data, error }] = useCardAuthorizationQuery();
 
 	React.useEffect(() => {
-		getData();
+		console.log({ fetching, data, error });
 	}, []);
+
+	useGoBack('x');
 
 	return (
 		<Screen>
-			{data ? (
-				<WebView style={{ flex: 1 }} source={{ uri: data.authorization_url }} />
+			{!fetching && data ? (
+				<WebView
+					style={{ flex: 1 }}
+					source={{ uri: data.cardAuthorization.authorization_url }}
+				/>
 			) : (
 				<View style={{ paddingTop: 16 }}>
 					<ActivityIndicator />

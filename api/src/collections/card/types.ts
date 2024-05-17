@@ -17,6 +17,17 @@ const CardTypes = gql`
 		user: User!
 	}
 
+	type CardAuthorization {
+		id: ID!
+		authorization_url: String!
+		access_code: String!
+		reference: String!
+	}
+
+	extend type Query {
+		cardAuthorization: CardAuthorization!
+	}
+
 	extend type Mutation {
 		deleteCard(id: ID!): Card!
 	}
