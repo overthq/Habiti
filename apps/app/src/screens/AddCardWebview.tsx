@@ -16,11 +16,7 @@ import { useCardAuthorizationQuery } from '../types/api';
 // be added to their transaction.
 
 const AddCardWebview: React.FC = () => {
-	const [{ fetching, data, error }] = useCardAuthorizationQuery();
-
-	React.useEffect(() => {
-		console.log({ fetching, data, error });
-	}, []);
+	const [{ fetching, data }] = useCardAuthorizationQuery();
 
 	useGoBack('x');
 
