@@ -1,6 +1,7 @@
 mutation Authenticate($input: AuthenticateInput!) {
 	authenticate(input: $input) {
-		message
+		accessToken
+		userId
 	}
 }
 
@@ -21,7 +22,7 @@ query CustomerInfo($userId: ID!) {
 	user(id: $userId) {
 		id
 		name
-		phone
+		email
 		orders {
 			id
 			products {
@@ -38,5 +39,11 @@ query CustomerInfo($userId: ID!) {
 			total
 			createdAt
 		}
+	}
+}
+
+mutation DeleteAccount {
+	deleteAccount {
+		id
 	}
 }

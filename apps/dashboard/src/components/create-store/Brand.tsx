@@ -24,6 +24,14 @@ const Brand: React.FC = () => {
 				label='Store name'
 				placeholder='Nike'
 			/>
+			<Spacer y={16} />
+			<FormInput
+				control={control}
+				name='description'
+				label='Store description'
+				placeholder='Brief description of your store'
+				textArea
+			/>
 		</View>
 	);
 };

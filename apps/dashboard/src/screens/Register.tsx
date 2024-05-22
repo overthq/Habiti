@@ -16,8 +16,8 @@ import { AppStackParamList } from '../types/navigation';
 
 interface RegisterFormValues {
 	name: string;
-	phone: string;
 	email: string;
+	password: string;
 }
 
 const Register: React.FC = () => {
@@ -26,8 +26,8 @@ const Register: React.FC = () => {
 	const formMethods = useForm<RegisterFormValues>({
 		defaultValues: {
 			name: '',
-			phone: '',
-			email: ''
+			email: '',
+			password: ''
 		}
 	});
 
@@ -37,8 +37,12 @@ const Register: React.FC = () => {
 
 	const onSubmit = async (values: RegisterFormValues) => {
 		try {
-			await register({ input: values });
-			navigate('Verify', { phone: values.phone });
+			const { error } = await register({ input: values });
+			if (error) {
+				console.log(error);
+			} else {
+				navigate('Authenticate');
+			}
 		} catch (error) {
 			console.log(error);
 		}
@@ -73,9 +77,9 @@ const Register: React.FC = () => {
 					/>
 					<Spacer y={8} />
 					<FormInput
-						name='phone'
-						label='Phone'
-						placeholder='08012345678'
+						name='password'
+						label='Password'
+						placeholder='Password'
 						control={formMethods.control}
 					/>
 					<Spacer y={8} />

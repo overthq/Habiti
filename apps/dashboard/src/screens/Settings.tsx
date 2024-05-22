@@ -11,9 +11,10 @@ import type { SettingsStackParamList } from '../types/navigation';
 import { capitalize } from '../utils/strings';
 
 const Settings: React.FC = () => {
-	const { theme, logOut } = useStore(state => ({
+	const { theme, logOut, setPreference } = useStore(state => ({
 		theme: state.theme,
-		logOut: state.logOut
+		logOut: state.logOut,
+		setPreference: state.setPreference
 	}));
 
 	const [{ data }] = useStoreQuery();
@@ -27,6 +28,11 @@ const Settings: React.FC = () => {
 		},
 		[navigate]
 	);
+
+	const handleLogout = () => {
+		logOut();
+		setPreference({ activeStore: null });
+	};
 
 	const store = data?.currentStore;
 
@@ -43,7 +49,7 @@ const Settings: React.FC = () => {
 				displayValue={capitalize(theme)}
 			/>
 			<View style={styles.buttonContainer}>
-				<Button text='Log Out' onPress={logOut} />
+				<Button text='Log Out' onPress={handleLogout} />
 			</View>
 		</ScrollableScreen>
 	);

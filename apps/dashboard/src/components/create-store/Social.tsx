@@ -41,6 +41,8 @@ const Social = () => {
 				name='website'
 				placeholder='https://nike.com'
 				keyboardType='url'
+				autoCorrect={false}
+				autoCapitalize='none'
 			/>
 		</View>
 	);
