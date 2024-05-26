@@ -4,7 +4,7 @@ import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHt
 import compression from 'compression';
 import express from 'express';
 import { expressjwt } from 'express-jwt';
-import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs';
+import { graphqlUploadExpress } from 'graphql-upload';
 import { createServer } from 'http';
 
 import prismaClient from './config/prisma';
