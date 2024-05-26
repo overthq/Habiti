@@ -1,8 +1,10 @@
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import compression from 'compression';
 import express from 'express';
 import { expressjwt } from 'express-jwt';
-import { graphqlUploadExpress } from 'graphql-upload';
+import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs';
 import { createServer } from 'http';
 
 import prismaClient from './config/prisma';
@@ -18,7 +20,6 @@ import './config/cloudinary';
 
 const main = async () => {
 	const app = express();
-
 	initSentry(app);
 
 	app.use(express.json());
@@ -30,27 +31,33 @@ const main = async () => {
 			credentialsRequired: false
 		})
 	);
-	app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
+	app.use('/webhooks', webhooks);
+	app.use('/payments', payments);
 
-	const httpServer = createServer(app);
 	const services = new Services();
+	const httpServer = createServer(app);
 	const apolloServer = new ApolloServer({
 		schema,
-		context: ({ req }: { req: MarketRequest }) => ({
-			user: req.auth ?? null,
-			storeId: req.headers['x-market-store-id'] || undefined,
-			prisma: prismaClient,
-			redisClient,
-			services
-		}),
+		plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 		cache: 'bounded'
 	});
 
 	await apolloServer.start();
-	apolloServer.applyMiddleware({ app });
 
-	app.use('/webhooks', webhooks);
-	app.use('/payments', payments);
+	app.use(
+		'/graphql',
+		express.json(),
+		graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
+		expressMiddleware(apolloServer, {
+			context: async ({ req }: { req: MarketRequest }) => ({
+				user: req.auth ?? null,
+				storeId: req.headers['x-market-store-id'] || undefined,
+				prisma: prismaClient,
+				redisClient,
+				services
+			})
+		})
+	);
 
 	const PORT = Number(process.env.PORT || 3000);
 	httpServer.listen({ port: PORT });
