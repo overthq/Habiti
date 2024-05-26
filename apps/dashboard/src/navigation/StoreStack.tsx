@@ -1,4 +1,4 @@
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 
 import Categories from '../screens/Categories';
@@ -8,7 +8,7 @@ import Store from '../screens/Store';
 import StorePayouts from '../screens/StorePayouts';
 import { StoreStackParamList } from '../types/navigation';
 
-const StoreStack = createStackNavigator<StoreStackParamList>();
+const StoreStack = createNativeStackNavigator<StoreStackParamList>();
 
 const StoreStackNavigator = () => {
 	return (

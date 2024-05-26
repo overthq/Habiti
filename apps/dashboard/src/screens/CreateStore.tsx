@@ -82,6 +82,7 @@ const CreateStore: React.FC = () => {
 			if (data?.createStore?.id) {
 				setPreference({ activeStore: data.createStore.id });
 			} else if (error) {
+				console.log('Error while creating store:');
 				console.log(error);
 			}
 		},

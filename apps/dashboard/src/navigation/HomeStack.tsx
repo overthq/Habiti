@@ -1,4 +1,4 @@
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 
 import Order from '../screens/Order';
@@ -7,7 +7,7 @@ import Payouts from '../screens/Payouts';
 import Product from '../screens/Product';
 import { HomeStackParamList } from '../types/navigation';
 
-const HomeStack = createStackNavigator<HomeStackParamList>();
+const HomeStack = createNativeStackNavigator<HomeStackParamList>();
 
 const HomeStackNavigator = () => {
 	return (

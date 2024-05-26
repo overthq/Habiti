@@ -35,7 +35,7 @@ const SelectGroup: React.FC<SelectGroupProps> = ({
 		>
 			{options.map((o, i) => (
 				<SelectGroupOption
-					key={o.value}
+					key={String(o.value)}
 					{...o}
 					selected={selected === o.value}
 					onPress={handlePress(o.value)}

@@ -1,5 +1,5 @@
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { AppStackParamList } from '../types/navigation';
 
-export const AppStack = createStackNavigator<AppStackParamList>();
+export const AppStack = createNativeStackNavigator<AppStackParamList>();

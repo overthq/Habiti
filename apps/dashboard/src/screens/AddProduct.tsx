@@ -30,7 +30,7 @@ const AddProduct: React.FC = () => {
 
 	const onSubmit = React.useCallback(
 		async (values: ProductFormData) => {
-			await createProduct({
+			const { error } = await createProduct({
 				input: {
 					name: values.name,
 					description: values.description,
@@ -40,9 +40,17 @@ const AddProduct: React.FC = () => {
 				}
 			});
 
-			setToUpload([]);
+			// We want to preserve state when an error occurs.
+			// For retries (if it's just a network thing), or for observing
+			// the state that led to the error.
 
-			goBack();
+			if (error) {
+				console.log('Error while creating product');
+				console.log(error);
+			} else {
+				setToUpload([]);
+				goBack();
+			}
 		},
 		[toUpload]
 	);

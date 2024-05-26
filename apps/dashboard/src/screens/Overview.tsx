@@ -21,7 +21,7 @@ const Overview: React.FC = () => {
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
 			headerRight: () => (
-				<Pressable style={styles.settings} onPress={goToSettings}>
+				<Pressable onPress={goToSettings}>
 					<Icon name='settings' />
 				</Pressable>
 			)
@@ -40,9 +40,6 @@ const Overview: React.FC = () => {
 const styles = StyleSheet.create({
 	container: {
 		paddingTop: 16
-	},
-	settings: {
-		marginRight: 16
 	}
 });
 

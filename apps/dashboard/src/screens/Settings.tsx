@@ -20,7 +20,7 @@ const Settings: React.FC = () => {
 	const [{ data }] = useStoreQuery();
 
 	const { navigate } = useNavigation<NavigationProp<SettingsStackParamList>>();
-	useGoBack('x', 12);
+	useGoBack('x');
 
 	const handleSettingsNavigate = React.useCallback(
 		(screen: keyof SettingsStackParamList) => () => {

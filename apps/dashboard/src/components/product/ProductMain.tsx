@@ -29,7 +29,7 @@ const ProductMain: React.FC<ProductMainProps> = ({ product }) => {
 	});
 
 	const onSubmit = async (values: ProductFormData) => {
-		await editProduct({
+		const { error } = await editProduct({
 			id: product.id,
 			input: {
 				...values,
@@ -39,7 +39,12 @@ const ProductMain: React.FC<ProductMainProps> = ({ product }) => {
 			}
 		});
 
-		setToUpload([]);
+		if (error) {
+			console.log('Error while editing product: ');
+			console.log(error);
+		} else {
+			setToUpload([]);
+		}
 	};
 
 	React.useLayoutEffect(() => {
@@ -48,17 +53,11 @@ const ProductMain: React.FC<ProductMainProps> = ({ product }) => {
 		navigation.setOptions({
 			headerRight: () => {
 				return (
-					<View
-						style={{
-							flexDirection: 'row',
-							alignItems: 'center',
-							marginRight: 16
-						}}
-					>
+					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 						<TextButton
 							onPress={formMethods.handleSubmit(onSubmit)}
 							disabled={disabled || fetching}
-							style={{ marginRight: 16 }}
+							style={{ marginRight: 12 }}
 						>
 							Save
 						</TextButton>

@@ -1,4 +1,4 @@
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 
 import Order from '../screens/Order';
@@ -6,7 +6,7 @@ import Orders from '../screens/Orders';
 import Product from '../screens/Product';
 import { OrdersStackParamList } from '../types/navigation';
 
-const OrdersStack = createStackNavigator<OrdersStackParamList>();
+const OrdersStack = createNativeStackNavigator<OrdersStackParamList>();
 
 const OrdersStackNavigator = () => (
 	<OrdersStack.Navigator initialRouteName='OrdersList'>

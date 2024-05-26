@@ -1,4 +1,4 @@
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 
 import Product from '../screens/Product';
@@ -6,7 +6,7 @@ import Products from '../screens/Products';
 import SearchProducts from '../screens/SearchProducts';
 import { ProductsStackParamList } from '../types/navigation';
 
-const ProductsStack = createStackNavigator<ProductsStackParamList>();
+const ProductsStack = createNativeStackNavigator<ProductsStackParamList>();
 
 const ProductsStackNavigator = () => (
 	<ProductsStack.Navigator initialRouteName='ProductsList'>

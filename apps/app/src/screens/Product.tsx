@@ -27,7 +27,7 @@ const Product: React.FC = () => {
 		setScrolledTop(nativeEvent.contentOffset.y <= 0);
 	}, []);
 
-	useGoBack('x', 16);
+	useGoBack('x');
 
 	React.useLayoutEffect(() => {
 		setOptions({ headerShadowVisible: !scrolledTop });
