@@ -2,6 +2,7 @@ import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import compression from 'compression';
+import cors from 'cors';
 import express from 'express';
 import { expressjwt } from 'express-jwt';
 import { graphqlUploadExpress } from 'graphql-upload';
@@ -23,7 +24,7 @@ const main = async () => {
 	initSentry(app);
 
 	app.use(express.json());
-	app.use(compression());
+	// app.use(compression());
 	app.use(
 		expressjwt({
 			secret: process.env.JWT_SECRET,
@@ -31,23 +32,23 @@ const main = async () => {
 			credentialsRequired: false
 		})
 	);
-	app.use('/webhooks', webhooks);
-	app.use('/payments', payments);
 
 	const services = new Services();
 	const httpServer = createServer(app);
 	const apolloServer = new ApolloServer({
 		schema,
 		plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-		cache: 'bounded'
+		cache: 'bounded',
+		csrfPrevention: false
 	});
 
 	await apolloServer.start();
 
+	app.use(cors());
+	app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 	app.use(
 		'/graphql',
 		express.json(),
-		graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
 		expressMiddleware(apolloServer, {
 			context: async ({ req }: { req: MarketRequest }) => ({
 				user: req.auth ?? null,
@@ -58,6 +59,8 @@ const main = async () => {
 			})
 		})
 	);
+	app.use('/webhooks', webhooks);
+	app.use('/payments', payments);
 
 	const PORT = Number(process.env.PORT || 3000);
 	httpServer.listen({ port: PORT });
