@@ -17,7 +17,7 @@ export interface ProductFormData {
 const AddProduct: React.FC = () => {
 	const [toUpload, setToUpload] = React.useState<string[]>([]);
 	const { goBack, setOptions } = useNavigation();
-	const [, createProduct] = useCreateProductMutation();
+	const [{ fetching }, createProduct] = useCreateProductMutation();
 
 	const formMethods = useForm<ProductFormData>({
 		defaultValues: {
@@ -57,21 +57,17 @@ const AddProduct: React.FC = () => {
 
 	React.useLayoutEffect(() => {
 		setOptions({
-			headerLeft: () => (
-				<TextButton style={{ marginLeft: 16 }} onPress={goBack}>
-					Cancel
-				</TextButton>
-			),
+			headerLeft: () => <TextButton onPress={goBack}>Cancel</TextButton>,
 			headerRight: () => (
 				<TextButton
-					style={{ marginRight: 16 }}
+					disabled={fetching}
 					onPress={formMethods.handleSubmit(onSubmit)}
 				>
 					Save
 				</TextButton>
 			)
 		});
-	}, [toUpload]);
+	}, [toUpload, fetching]);
 
 	return (
 		<FormProvider {...formMethods}>
