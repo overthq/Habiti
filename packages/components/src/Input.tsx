@@ -40,7 +40,7 @@ const Input: React.FC<InputProps> = ({ label, textArea, ...props }) => {
 				</Typography>
 			)}
 			<TextInput
-				placeholderTextColor='#696969'
+				placeholderTextColor={theme.input.placeholder}
 				multiline={textArea}
 				textAlignVertical={textArea ? 'top' : undefined}
 				selectionColor={theme.text.primary}

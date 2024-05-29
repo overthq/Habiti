@@ -1,7 +1,6 @@
-import { Radio, Typography } from '@market/components';
+import { SelectGroup, Spacer } from '@market/components';
 import React from 'react';
 import { Controller } from 'react-hook-form';
-import { View, Pressable, StyleSheet } from 'react-native';
 
 import { FilterOrdersFormValues } from '../../types/forms';
 
@@ -10,45 +9,23 @@ const SortOrders = () => {
 		<Controller<FilterOrdersFormValues>
 			name='sortBy'
 			render={({ field }) => (
-				<View style={styles.container}>
-					<Pressable
-						style={styles.option}
-						onPress={() => field.onChange(undefined)}
-					>
-						<Typography>Default</Typography>
-						<Radio active={field.value === undefined} />
-					</Pressable>
-					<Pressable
-						style={styles.option}
-						onPress={() => field.onChange('created-at-desc')}
-					>
-						<Typography>Newest</Typography>
-						<Radio active={field.value === 'created-at-desc'} />
-					</Pressable>
-					<Pressable
-						style={styles.option}
-						onPress={() => field.onChange('total-desc')}
-					>
-						<Typography>Total (Highest to lowest)</Typography>
-						<Radio active={field.value === 'total-desc'} />
-					</Pressable>
-				</View>
+				<>
+					<Spacer y={8} />
+					<SelectGroup
+						selected={field.value as string}
+						options={[
+							{ title: 'Default', value: undefined },
+							{ title: 'Newest to oldest', value: 'created-at-desc' },
+							{ title: 'Total (highest to lowest)', value: 'total-desc' },
+							{ title: 'Total (lowest to highest)', value: 'total-asc' }
+						]}
+						onSelect={field.onChange}
+					/>
+					<Spacer y={4} />
+				</>
 			)}
 		/>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		marginTop: 8
-	},
-	option: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		marginBottom: 4,
-		paddingRight: 2
-	}
-});
 
 export default SortOrders;

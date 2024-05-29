@@ -1,4 +1,4 @@
-import { Button, Spacer, Typography } from '@market/components';
+import { Spacer, TextButton, Typography, useTheme } from '@market/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
@@ -9,14 +9,30 @@ interface ProductOptionsProps {
 }
 
 const NoProductOptions = () => {
+	const { theme } = useTheme();
+
 	return (
-		<View>
-			<Spacer y={8} />
-			<Typography variant='secondary' style={{ textAlign: 'center' }}>
-				There are currently no product options. Created options appear here.
-			</Typography>
-			<Spacer y={16} />
-			<Button text='Create option' />
+		<View style={{ paddingVertical: 8 }}>
+			<View
+				style={{
+					backgroundColor: theme.input.background,
+					padding: 12,
+					borderRadius: 6
+				}}
+			>
+				<Typography weight='medium' size='large'>
+					No product options
+				</Typography>
+				<Spacer y={4} />
+				<Typography variant='secondary' size='small'>
+					There are currently no options for this product. When you create
+					options, they will appear here.
+				</Typography>
+				<Spacer y={8} />
+				<View style={{ backgroundColor: theme.border.color, height: 1 }} />
+				<Spacer y={8} />
+				<TextButton size={14}>Create product option</TextButton>
+			</View>
 		</View>
 	);
 };
