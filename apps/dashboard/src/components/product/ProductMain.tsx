@@ -14,7 +14,7 @@ interface ProductMainProps {
 	mode: 'add' | 'edit';
 }
 
-const ProductMain: React.FC<ProductMainProps> = ({ product }) => {
+const ProductMain: React.FC<ProductMainProps> = ({ product, mode }) => {
 	const navigation = useNavigation();
 	const [toUpload, setToUpload] = React.useState<string[]>([]);
 	const [{ fetching }, editProduct] = useEditProductMutation();
@@ -77,6 +77,7 @@ const ProductMain: React.FC<ProductMainProps> = ({ product }) => {
 				options={product.options}
 				imagesToUpload={toUpload}
 				setImagesToUpload={setToUpload}
+				mode={mode}
 			/>
 		</FormProvider>
 	);

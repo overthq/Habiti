@@ -1,10 +1,11 @@
 import { formatNaira } from '@market/common';
-import { ScrollableScreen } from '@market/components';
+import { ScrollableScreen, Spacer } from '@market/components';
 import React from 'react';
 import { Platform, StyleSheet } from 'react-native';
 
 import Images from './Images';
 import InventoryInput from './InventoryInput';
+import ProductActions from './ProductActions';
 import ProductOptions from './ProductOptions';
 import ProductReviews from './ProductReviews';
 import Section from './Section';
@@ -15,15 +16,15 @@ interface ProductFormProps {
 	options?: ProductQuery['product']['options'];
 	imagesToUpload: string[];
 	setImagesToUpload: React.Dispatch<React.SetStateAction<string[]>>;
+	mode: 'add' | 'edit';
 }
-
-// TODO: Consider making "Options" and "Reviews" invisible on "Add Product"
 
 const ProductForm: React.FC<ProductFormProps> = ({
 	images,
 	options,
 	imagesToUpload,
-	setImagesToUpload
+	setImagesToUpload,
+	mode
 }) => {
 	return (
 		<ScrollableScreen
@@ -32,6 +33,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 				ios: 'interactive',
 				android: 'on-drag'
 			})}
+			showsVerticalScrollIndicator={false}
 		>
 			<Section title='Name' placeholder='Product name' field='name' />
 			<Section
@@ -51,8 +53,14 @@ const ProductForm: React.FC<ProductFormProps> = ({
 				setImagesToUpload={setImagesToUpload}
 			/>
 			<InventoryInput />
-			<ProductOptions options={options} />
-			<ProductReviews />
+			{mode === 'edit' && (
+				<>
+					<ProductOptions options={options} />
+					<ProductReviews />
+					<ProductActions />
+					<Spacer y={8} />
+				</>
+			)}
 		</ScrollableScreen>
 	);
 };

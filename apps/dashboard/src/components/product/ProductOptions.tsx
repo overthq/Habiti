@@ -31,7 +31,7 @@ const NoProductOptions = () => {
 				<Spacer y={8} />
 				<View style={{ backgroundColor: theme.border.color, height: 1 }} />
 				<Spacer y={8} />
-				<TextButton size={14}>Create product option</TextButton>
+				<TextButton>Add product option</TextButton>
 			</View>
 		</View>
 	);

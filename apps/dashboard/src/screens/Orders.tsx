@@ -1,4 +1,4 @@
-import { Screen, Typography } from '@market/components';
+import { Screen, Typography, useTheme } from '@market/components';
 import {
 	NavigationProp,
 	RouteProp,
@@ -6,7 +6,13 @@ import {
 	useRoute
 } from '@react-navigation/native';
 import React from 'react';
-import { View, FlatList, StyleSheet, ListRenderItem } from 'react-native';
+import {
+	View,
+	FlatList,
+	StyleSheet,
+	ListRenderItem,
+	RefreshControl
+} from 'react-native';
 
 import OrdersFilter from '../components/orders/OrdersFilter';
 import OrdersListItem from '../components/orders/OrdersListItem';
@@ -21,7 +27,8 @@ import { MainTabParamList, OrdersStackParamList } from '../types/navigation';
 const Orders: React.FC = () => {
 	const { params } = useRoute<RouteProp<MainTabParamList, 'Orders'>>();
 	const { navigate } = useNavigation<NavigationProp<OrdersStackParamList>>();
-	const [{ data }] = useOrdersQuery({ variables: params });
+	const [{ fetching, data }, refetch] = useOrdersQuery({ variables: params });
+	const { theme } = useTheme();
 
 	const handleOrderPress = React.useCallback(
 		(orderId: string) => () => {
@@ -51,6 +58,15 @@ const Orders: React.FC = () => {
 								your store.
 							</Typography>
 						</View>
+					}
+					refreshControl={
+						<RefreshControl
+							refreshing={fetching}
+							onRefresh={() => {
+								refetch({ requestPolicy: 'network-only' });
+							}}
+							tintColor={theme.text.secondary}
+						/>
 					}
 				/>
 			</View>

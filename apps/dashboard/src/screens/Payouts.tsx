@@ -29,7 +29,7 @@ const Payouts = () => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<Pressable style={{ marginRight: 16 }} onPress={handleNewPayout}>
+				<Pressable onPress={handleNewPayout}>
 					<Icon name='plus' />
 				</Pressable>
 			)

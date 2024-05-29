@@ -38,12 +38,14 @@ const AddCategory = () => {
 			<FormInput
 				name='name'
 				label='Category name'
+				placeholder='First category'
 				style={styles.input}
 				control={control}
 			/>
 			<FormInput
 				name='description'
 				label='Category description'
+				placeholder='First category description'
 				control={control}
 				textArea
 				style={styles.input}
