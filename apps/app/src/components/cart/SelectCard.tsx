@@ -1,4 +1,10 @@
-import { SelectGroup, Spacer, Typography } from '@market/components';
+import {
+	SelectGroup,
+	Spacer,
+	TextButton,
+	Typography,
+	useTheme
+} from '@market/components';
 import React from 'react';
 import { View } from 'react-native';
 
@@ -11,26 +17,52 @@ interface SelectCardProps {
 	onCardSelect(cardId: string): void;
 }
 
+// FIXME: I have to standardize this empty state component across the app.
+
 const SelectCard: React.FC<SelectCardProps> = ({
 	cards,
 	selectedCard,
 	onCardSelect
 }) => {
+	const { theme } = useTheme();
+
 	return (
 		<View style={{ paddingHorizontal: 16 }}>
 			<Typography weight='medium' variant='secondary'>
 				Payment Method
 			</Typography>
 			<Spacer y={8} />
-			<SelectGroup
-				selected={selectedCard}
-				options={cards.map(card => ({
-					title: `${card.cardType} \u2022\u2022\u2022\u2022${card.last4}`,
-					value: card.id
-				}))}
-				onSelect={onCardSelect}
-				capitalize
-			/>
+			{cards.length === 0 ? (
+				<View
+					style={{
+						backgroundColor: theme.input.background,
+						padding: 12,
+						borderRadius: 6
+					}}
+				>
+					<Typography weight='medium' size='large'>
+						No payment methods
+					</Typography>
+					<Spacer y={4} />
+					<Typography variant='secondary' size='small'>
+						A valid payment method is required to create your order.
+					</Typography>
+					<Spacer y={8} />
+					<View style={{ backgroundColor: theme.border.color, height: 1 }} />
+					<Spacer y={8} />
+					<TextButton onPress={() => {}}>Add payment method</TextButton>
+				</View>
+			) : (
+				<SelectGroup
+					selected={selectedCard}
+					options={cards.map(card => ({
+						title: `${card.cardType} \u2022\u2022\u2022\u2022${card.last4}`,
+						value: card.id
+					}))}
+					onSelect={onCardSelect}
+					capitalize
+				/>
+			)}
 		</View>
 	);
 };
