@@ -36,11 +36,9 @@ const Product: React.FC = () => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<View style={{ marginRight: 16 }}>
-					<Pressable>
-						<Icon name='bookmark' />
-					</Pressable>
-				</View>
+				<Pressable>
+					<Icon name='bookmark' />
+				</Pressable>
 			)
 		});
 	}, []);

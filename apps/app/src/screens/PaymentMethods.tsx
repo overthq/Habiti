@@ -26,7 +26,7 @@ const PaymentMethods: React.FC = () => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<Pressable style={styles.add} onPress={() => navigate('Add Card')}>
+				<Pressable onPress={() => navigate('Add Card')}>
 					<Icon name='plus' />
 				</Pressable>
 			)
@@ -89,9 +89,6 @@ const styles = StyleSheet.create({
 		marginTop: 16,
 		marginBottom: 8,
 		marginLeft: 16
-	},
-	add: {
-		marginRight: 16
 	},
 	loading: {
 		flex: 1,

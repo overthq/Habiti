@@ -26,7 +26,6 @@ const Store: React.FC = () => {
 		setOptions({
 			headerRight: () => (
 				<Pressable
-					style={{ marginRight: 16 }}
 					onPress={() => navigate('Store.Search', { storeId: params.storeId })}
 				>
 					<Icon name='search' size={22} />
