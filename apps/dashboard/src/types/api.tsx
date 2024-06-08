@@ -1096,6 +1096,15 @@ export type EditStoreMutation = {
 	};
 };
 
+export type DeleteStoreMutationVariables = Exact<{
+	id: Scalars['ID']['input'];
+}>;
+
+export type DeleteStoreMutation = {
+	__typename?: 'Mutation';
+	deleteStore: string;
+};
+
 export type StoreQueryVariables = Exact<{ [key: string]: never }>;
 
 export type StoreQuery = {
@@ -1616,6 +1625,17 @@ export const EditStoreDocument = gql`
 export function useEditStoreMutation() {
 	return Urql.useMutation<EditStoreMutation, EditStoreMutationVariables>(
 		EditStoreDocument
+	);
+}
+export const DeleteStoreDocument = gql`
+	mutation DeleteStore($id: ID!) {
+		deleteStore(id: $id)
+	}
+`;
+
+export function useDeleteStoreMutation() {
+	return Urql.useMutation<DeleteStoreMutation, DeleteStoreMutationVariables>(
+		DeleteStoreDocument
 	);
 }
 export const StoreDocument = gql`

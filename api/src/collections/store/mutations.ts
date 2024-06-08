@@ -1,8 +1,9 @@
-import { FileUpload } from 'graphql-upload';
 import { UploadApiResponse } from 'cloudinary';
+import { FileUpload } from 'graphql-upload';
+
 import { Resolver } from '../../types/resolvers';
-import { uploadStream } from '../../utils/upload';
 import { createTransferReceipient } from '../../utils/paystack';
+import { uploadStream } from '../../utils/upload';
 
 interface CreateStoreArgs {
 	input: {
@@ -30,7 +31,7 @@ const createStore: Resolver<CreateStoreArgs> = async (_, { input }, ctx) => {
 		data: {
 			...rest,
 			managers: { create: { managerId: ctx.user.id } },
-			...(!!uploadedImage
+			...(uploadedImage
 				? {
 						image: {
 							create: {
@@ -38,7 +39,7 @@ const createStore: Resolver<CreateStoreArgs> = async (_, { input }, ctx) => {
 								publicId: uploadedImage.public_id
 							}
 						}
-				  }
+					}
 				: {})
 		}
 	});
@@ -103,6 +104,7 @@ interface DeleteStoreArgs {
 	id: string;
 }
 
+// FIXME: We need better access control
 const deleteStore: Resolver<DeleteStoreArgs> = async (_, { id }, ctx) => {
 	const storeManagers = await ctx.prisma.storeManager.findMany({
 		where: { storeId: id }
