@@ -36,7 +36,6 @@ const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
 				<TextButton
 					onPress={handleSubmit(onSubmit)}
 					disabled={!formState.isDirty}
-					style={{ marginRight: 16 }}
 				>
 					Save
 				</TextButton>
