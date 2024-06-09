@@ -65,6 +65,10 @@ const Profile: React.FC = () => {
 					onPress={() => navigate('NotificationSettings')}
 				/>
 				<ProfileRow title='Appearance' onPress={() => navigate('Appearance')} />
+				<ProfileRow
+					title='Manage account'
+					onPress={() => navigate('Profile.AccountSettings')}
+				/>
 				<View
 					style={[styles.separator, { backgroundColor: theme.border.color }]}
 				/>

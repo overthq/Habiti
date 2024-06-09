@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 
+import AccountSettings from '../screens/AccountSettings';
 import Carts from '../screens/Carts';
 import DeliveryAddress from '../screens/DeliveryAddress';
 import EditProfile from '../screens/EditProfile';
@@ -102,6 +103,11 @@ const ProfileStack = () => {
 				options={{ headerTitle: 'Notifications' }}
 			/>
 			<ProfileNavigator.Screen name='Appearance' component={SettingsTheme} />
+			<ProfileNavigator.Screen
+				name='Profile.AccountSettings'
+				component={AccountSettings}
+				options={{ headerTitle: 'Account Settings' }}
+			/>
 		</ProfileNavigator.Navigator>
 	);
 };

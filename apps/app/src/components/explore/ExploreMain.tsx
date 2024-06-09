@@ -1,6 +1,9 @@
-import { Dialog, ScrollableScreen, useTheme } from '@market/components';
+import { ScrollableScreen, useTheme } from '@market/components';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
+
+import { useHomeQuery } from '../../types/api';
+import FollowedStores from '../home/FollowedStores';
 
 interface ExloreMainProps {
 	searchOpen: boolean;
@@ -8,6 +11,11 @@ interface ExloreMainProps {
 
 const ExploreMain: React.FC<ExloreMainProps> = ({ searchOpen }) => {
 	const { theme } = useTheme();
+	const [{ fetching, data }] = useHomeQuery();
+
+	if (fetching || !data) {
+		return <ActivityIndicator />;
+	}
 
 	return (
 		<ScrollableScreen
@@ -19,11 +27,7 @@ const ExploreMain: React.FC<ExloreMainProps> = ({ searchOpen }) => {
 				}
 			]}
 		>
-			<Dialog
-				style={styles.dialog}
-				title='No followed stores'
-				description='Discover and follow more stores to improve your experience on the app.'
-			/>
+			<FollowedStores followed={data.currentUser.followed} />
 		</ScrollableScreen>
 	);
 };

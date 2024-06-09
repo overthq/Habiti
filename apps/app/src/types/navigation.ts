@@ -36,6 +36,7 @@ export type ProfileStackParamList = {
 	DeliveryAddress: undefined;
 	NotificationSettings: undefined;
 	Appearance: undefined;
+	'Profile.AccountSettings': undefined;
 };
 
 // TODO: Create context for storeId (and store name) in this case.

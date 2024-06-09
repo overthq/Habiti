@@ -1,4 +1,4 @@
-import { Screen } from '@market/components';
+import { Screen, Spacer } from '@market/components';
 import {
 	NavigationProp,
 	RouteProp,
@@ -22,8 +22,7 @@ const Order: React.FC = () => {
 	const {
 		params: { orderId }
 	} = useRoute<RouteProp<HomeStackParamList, 'Order'>>();
-	const { navigate, setOptions } =
-		useNavigation<NavigationProp<AppStackParamList>>();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const [{ data, fetching }] = useOrderQuery({ variables: { orderId } });
 	useGoBack();
 	const order = data?.order;
@@ -35,18 +34,14 @@ const Order: React.FC = () => {
 		[]
 	);
 
-	React.useLayoutEffect(() => {
-		if (!fetching) {
-			setOptions({ headerTitle: `${data?.order.store.name} Order` });
-		}
-	}, [fetching, data?.order.store.name]);
-
 	if (fetching || !order) {
 		return <View style={styles.container} />;
 	}
 
 	return (
 		<Screen style={styles.container}>
+			<StoreMeta store={order.store} />
+			<Spacer y={16} />
 			<OrderStatusPill status={order.status} />
 			<View style={styles.products}>
 				{order.products.map(orderProduct => (
@@ -58,7 +53,6 @@ const Order: React.FC = () => {
 				))}
 			</View>
 			<OrderMeta order={order} />
-			<StoreMeta store={order.store} />
 		</Screen>
 	);
 };

@@ -5,11 +5,13 @@ import {
 	Typography,
 	useTheme
 } from '@market/components';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
 import { View } from 'react-native';
 
 // import { MastercardIcon } from './CardIcons';
 import { CartQuery } from '../../types/api';
+import { AppStackParamList } from '../../types/navigation';
 
 interface SelectCardProps {
 	cards: CartQuery['cart']['user']['cards'];
@@ -25,6 +27,7 @@ const SelectCard: React.FC<SelectCardProps> = ({
 	onCardSelect
 }) => {
 	const { theme } = useTheme();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	return (
 		<View style={{ paddingHorizontal: 16 }}>
@@ -50,7 +53,9 @@ const SelectCard: React.FC<SelectCardProps> = ({
 					<Spacer y={8} />
 					<View style={{ backgroundColor: theme.border.color, height: 1 }} />
 					<Spacer y={8} />
-					<TextButton onPress={() => {}}>Add payment method</TextButton>
+					<TextButton onPress={() => navigate('Add Card')}>
+						Add payment method
+					</TextButton>
 				</View>
 			) : (
 				<SelectGroup

@@ -16,7 +16,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import CartSummary from '../components/cart/CartSummary';
 import CartTotal from '../components/cart/CartTotal';
-import DeliveryInfo from '../components/cart/DeliveryInfo';
+// import DeliveryInfo from '../components/cart/DeliveryInfo';
 import SelectCard from '../components/cart/SelectCard';
 import StoreInfo from '../components/cart/StoreInfo';
 import useGoBack from '../hooks/useGoBack';
@@ -72,7 +72,7 @@ const Cart: React.FC = () => {
 
 			<Spacer y={16} />
 
-			<DeliveryInfo />
+			{/* <DeliveryInfo /> */}
 
 			<Spacer y={16} />
 
