@@ -5,7 +5,10 @@
 			"distribution": "internal"
 		},
 		"preview": {
-			"distribution": "internal"
+			"distribution": "internal",
+			"env": {
+				"API_URL": ""
+			}
 		},
 		"production": {
 			"android": {
@@ -13,6 +16,9 @@
 			},
 			"ios": {
 				"image": "latest"
+			},
+			"env": {
+				"API_URL": ""
 			}
 		}
 	},

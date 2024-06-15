@@ -24,7 +24,7 @@ jobs:
         with:
           packager: yarn
           eas-version: latest
-          token: ${{ secrets.APP_EXPO_TOKEN }}
+          token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Build and deploy
         run: eas build -p android --profile=production --auto-submit --non-interactive --no-wait
@@ -48,7 +48,7 @@ jobs:
         with:
           packager: yarn
           eas-version: latest
-          token: ${{ secrets.DASHBOARD_EXPO_TOKEN }}
+          token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Build and deploy
         run: eas build -p android --profile=production --auto-submit --non-interactive --no-wait
