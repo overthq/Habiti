@@ -19,7 +19,7 @@
 			"supportsTablet": true
 		},
 		"android": {
-			"package": "dev.overt.market-dashboard",
+			"package": "dev.overt.marketDashboard",
 			"adaptiveIcon": {
 				"foregroundImage": "./assets/adaptive-icon.png",
 				"backgroundColor": "#FFFFFF"
