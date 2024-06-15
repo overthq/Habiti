@@ -1,4 +1,3 @@
-import { useTheme } from '@market/components';
 import { palette } from '@market/components/src/styles/theme';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
@@ -22,7 +21,6 @@ const RevenueBar: React.FC<RevenueBarProps> = ({
 	unrealizedRevenue,
 	paidOut
 }) => {
-	const { theme } = useTheme();
 	const totalRevenue = React.useMemo(
 		() => realizedRevenue + unrealizedRevenue,
 		[realizedRevenue, unrealizedRevenue]

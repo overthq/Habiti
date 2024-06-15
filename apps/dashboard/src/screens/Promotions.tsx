@@ -1,8 +1,12 @@
-import { Screen } from '@market/components';
+import { Screen, Typography } from '@market/components';
 import React from 'react';
 
 const Promotions = () => {
-	return <Screen></Screen>;
+	return (
+		<Screen>
+			<Typography>Promotions</Typography>
+		</Screen>
+	);
 };
 
 export default Promotions;
