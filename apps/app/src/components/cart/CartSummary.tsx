@@ -27,7 +27,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({ products }) => {
 				Order Summary
 			</Typography>
 
-			<Spacer y={2} />
+			<Spacer y={4} />
 
 			{products.map(cartProduct => (
 				<CartProduct

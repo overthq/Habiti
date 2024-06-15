@@ -5,7 +5,6 @@ import { View, TextInput, StyleSheet } from 'react-native';
 
 import CodeInput from '../components/verify/CodeInput';
 import useStore from '../state';
-import authStyles from '../styles/auth';
 import { useVerifyMutation } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 
@@ -32,7 +31,7 @@ const Verify: React.FC = () => {
 	};
 
 	return (
-		<Screen style={authStyles.container}>
+		<Screen>
 			<Typography weight='bold' size='xxxlarge'>
 				Your verification code
 			</Typography>

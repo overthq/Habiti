@@ -1,8 +1,9 @@
 import { useTheme } from '@market/components';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 
+import AccountSettings from '../screens/AccountSettings';
 import Carts from '../screens/Carts';
 import DeliveryAddress from '../screens/DeliveryAddress';
 import EditProfile from '../screens/EditProfile';
@@ -28,11 +29,11 @@ import { tabScreenOptions } from '../utils/navigation';
 
 const HomeTab = createBottomTabNavigator<HomeTabParamList>();
 
-const HomeNavigator = createStackNavigator<HomeStackParamList>();
-const ExploreNavigator = createStackNavigator<ExploreStackParamList>();
-const CartsNavigator = createStackNavigator<CartStackParamList>();
-const ProfileNavigator = createStackNavigator<ProfileStackParamList>();
-const StoreNavigator = createStackNavigator<StoreStackParamList>();
+const HomeNavigator = createNativeStackNavigator<HomeStackParamList>();
+const ExploreNavigator = createNativeStackNavigator<ExploreStackParamList>();
+const CartsNavigator = createNativeStackNavigator<CartStackParamList>();
+const ProfileNavigator = createNativeStackNavigator<ProfileStackParamList>();
+const StoreNavigator = createNativeStackNavigator<StoreStackParamList>();
 
 const HomeStack = () => {
 	return (
@@ -102,6 +103,11 @@ const ProfileStack = () => {
 				options={{ headerTitle: 'Notifications' }}
 			/>
 			<ProfileNavigator.Screen name='Appearance' component={SettingsTheme} />
+			<ProfileNavigator.Screen
+				name='Profile.AccountSettings'
+				component={AccountSettings}
+				options={{ headerTitle: 'Account Settings' }}
+			/>
 		</ProfileNavigator.Navigator>
 	);
 };

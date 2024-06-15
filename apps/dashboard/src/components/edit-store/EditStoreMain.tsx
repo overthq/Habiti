@@ -35,7 +35,7 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<View style={styles.headerAction}>
+				<View>
 					{fetching ? (
 						<ActivityIndicator />
 					) : (
@@ -122,9 +122,6 @@ const styles = StyleSheet.create({
 	input: {
 		borderRadius: 4,
 		marginBottom: 8
-	},
-	headerAction: {
-		marginRight: 16
 	},
 	button: {
 		marginTop: 8

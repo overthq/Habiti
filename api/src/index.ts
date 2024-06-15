@@ -1,5 +1,8 @@
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import compression from 'compression';
+import cors from 'cors';
 import express from 'express';
 import { expressjwt } from 'express-jwt';
 import { graphqlUploadExpress } from 'graphql-upload';
@@ -18,11 +21,10 @@ import './config/cloudinary';
 
 const main = async () => {
 	const app = express();
-
 	initSentry(app);
 
 	app.use(express.json());
-	app.use(compression());
+	// app.use(compression());
 	app.use(
 		expressjwt({
 			secret: process.env.JWT_SECRET,
@@ -30,25 +32,33 @@ const main = async () => {
 			credentialsRequired: false
 		})
 	);
-	app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 
-	const httpServer = createServer(app);
 	const services = new Services();
+	const httpServer = createServer(app);
 	const apolloServer = new ApolloServer({
 		schema,
-		context: ({ req }: { req: MarketRequest }) => ({
-			user: req.auth ?? null,
-			storeId: req.headers['x-market-store-id'] || undefined,
-			prisma: prismaClient,
-			redisClient,
-			services
-		}),
-		cache: 'bounded'
+		plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+		cache: 'bounded',
+		csrfPrevention: false
 	});
 
 	await apolloServer.start();
-	apolloServer.applyMiddleware({ app });
 
+	app.use(cors());
+	app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
+	app.use(
+		'/graphql',
+		express.json(),
+		expressMiddleware(apolloServer, {
+			context: async ({ req }: { req: MarketRequest }) => ({
+				user: req.auth ?? null,
+				storeId: req.headers['x-market-store-id'] || undefined,
+				prisma: prismaClient,
+				redisClient,
+				services
+			})
+		})
+	);
 	app.use('/webhooks', webhooks);
 	app.use('/payments', payments);
 

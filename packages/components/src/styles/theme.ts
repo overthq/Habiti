@@ -88,8 +88,8 @@ const dark = {
 			text: palette.neutral.n20
 		},
 		destructive: {
-			background: palette.neutral.n10,
-			text: palette.red.r60
+			background: palette.red.r20,
+			text: palette.red.r80
 		}
 	},
 	screen: {

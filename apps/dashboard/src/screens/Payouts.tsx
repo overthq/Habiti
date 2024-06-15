@@ -4,7 +4,9 @@ import {
 	Screen,
 	SectionHeader,
 	Spacer,
-	Typography
+	TextButton,
+	Typography,
+	useTheme
 } from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
@@ -21,6 +23,7 @@ const Payouts = () => {
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 	useGoBack();
+	const { theme } = useTheme();
 
 	const handleNewPayout = React.useCallback(() => {
 		navigate('AddPayout');
@@ -29,7 +32,7 @@ const Payouts = () => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<Pressable style={{ marginRight: 16 }} onPress={handleNewPayout}>
+				<Pressable onPress={handleNewPayout}>
 					<Icon name='plus' />
 				</Pressable>
 			)
@@ -54,15 +57,26 @@ const Payouts = () => {
 			<Spacer y={24} />
 			<SectionHeader title='Payout History' padded={false} />
 			{data.currentStore.payouts.length === 0 ? (
-				<View style={{ paddingTop: 16 }}>
-					<Typography
-						size='small'
-						variant='secondary'
-						style={{ textAlign: 'center' }}
+				<View style={{ paddingVertical: 8 }}>
+					<View
+						style={{
+							backgroundColor: theme.input.background,
+							padding: 12,
+							borderRadius: 6
+						}}
 					>
-						You do not have any previous payouts. When you do, they will be
-						displayed here.
-					</Typography>
+						<Typography weight='medium' size='large'>
+							No payouts
+						</Typography>
+						<Spacer y={4} />
+						<Typography variant='secondary' size='small'>
+							Created payouts will appear here.
+						</Typography>
+						<Spacer y={8} />
+						<View style={{ backgroundColor: theme.border.color, height: 1 }} />
+						<Spacer y={8} />
+						<TextButton onPress={handleNewPayout}>Add payout</TextButton>
+					</View>
 				</View>
 			) : (
 				<>

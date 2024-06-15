@@ -21,17 +21,9 @@ const Categories = () => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<View
-					style={{
-						flexDirection: 'row',
-						alignItems: 'center',
-						marginRight: 16
-					}}
-				>
-					<Pressable onPress={handleAddCategory}>
-						<Icon name='plus' />
-					</Pressable>
-				</View>
+				<Pressable onPress={handleAddCategory}>
+					<Icon name='plus' />
+				</Pressable>
 			)
 		});
 	}, []);

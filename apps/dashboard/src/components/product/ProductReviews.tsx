@@ -1,6 +1,31 @@
-import { Typography } from '@market/components';
+import { Spacer, Typography, useTheme } from '@market/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+
+const NoProductReviews = () => {
+	const { theme } = useTheme();
+
+	return (
+		<View style={{ paddingVertical: 8 }}>
+			<View
+				style={{
+					backgroundColor: theme.input.background,
+					padding: 12,
+					borderRadius: 6
+				}}
+			>
+				<Typography weight='medium' size='large'>
+					No reviews yet
+				</Typography>
+				<Spacer y={4} />
+				<Typography variant='secondary' size='small'>
+					This product has not received any reviews yet. When users post reviews
+					for this product, they will appear here.
+				</Typography>
+			</View>
+		</View>
+	);
+};
 
 const ProductReviews = () => {
 	return (
@@ -8,6 +33,7 @@ const ProductReviews = () => {
 			<Typography weight='medium' variant='label'>
 				Reviews
 			</Typography>
+			<NoProductReviews />
 		</View>
 	);
 };

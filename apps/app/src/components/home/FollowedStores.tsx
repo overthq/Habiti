@@ -1,4 +1,4 @@
-import { ListEmpty, SectionHeader } from '@market/components';
+import { Dialog, SectionHeader } from '@market/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
@@ -15,8 +15,18 @@ interface FollowedStoresProps {
 const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 	return (
 		<View style={styles.container}>
-			<SectionHeader title='Followed stores' />
-			<FollowedStoresMain followed={followed} />
+			{followed.length === 0 ? (
+				<Dialog
+					style={styles.dialog}
+					title='No followed stores'
+					description='Discover and follow more stores to improve your experience on the app.'
+				/>
+			) : (
+				<>
+					<SectionHeader title='Followed stores' />
+					<FollowedStoresMain followed={followed} />
+				</>
+			)}
 		</View>
 	);
 };
@@ -43,18 +53,6 @@ const FollowedStoresMain: React.FC<FollowedStoresMainProps> = ({
 		[followed]
 	);
 
-	if (!stores || stores?.length === 0) {
-		return (
-			<ListEmpty
-				description={`When you follow stores, you'll see updates from them here.`}
-				cta={{
-					text: 'Discover new stores',
-					action: () => navigate('Explore')
-				}}
-			/>
-		);
-	}
-
 	return (
 		<FlashList
 			horizontal
@@ -70,7 +68,10 @@ const FollowedStoresMain: React.FC<FollowedStoresMainProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		paddingTop: 16
+		// paddingTop: 16
+	},
+	dialog: {
+		marginHorizontal: 16
 	}
 });
 

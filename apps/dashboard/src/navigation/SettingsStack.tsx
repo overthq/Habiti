@@ -1,4 +1,4 @@
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 
 import SettingsActiveStore from '../components/settings/SettingsActiveStore';
@@ -6,11 +6,11 @@ import SettingsTheme from '../components/settings/SettingsTheme';
 import Settings from '../screens/Settings';
 import { SettingsStackParamList } from '../types/navigation';
 
-const SettingsStack = createStackNavigator<SettingsStackParamList>();
+const SettingsStack = createNativeStackNavigator<SettingsStackParamList>();
 
 const SettingsStackNavigator = () => (
 	<SettingsStack.Navigator
-		screenOptions={{ headerStatusBarHeight: 0 }}
+		// screenOptions={{ headerStatusBarHeight: 0 }}
 		initialRouteName='SettingsList'
 	>
 		<SettingsStack.Screen

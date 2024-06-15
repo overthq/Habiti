@@ -12,7 +12,7 @@ interface EditProfileMainProps {
 
 interface EditProfileFormValues {
 	name: string;
-	phone: string;
+	email: string;
 }
 
 const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
@@ -22,7 +22,7 @@ const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
 	const { control, handleSubmit, formState } = useForm<EditProfileFormValues>({
 		defaultValues: {
 			name: currentUser.name,
-			phone: currentUser.phone
+			email: currentUser.email
 		}
 	});
 
@@ -36,7 +36,6 @@ const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
 				<TextButton
 					onPress={handleSubmit(onSubmit)}
 					disabled={!formState.isDirty}
-					style={{ marginRight: 16 }}
 				>
 					Save
 				</TextButton>
@@ -52,7 +51,7 @@ const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
 				control={control}
 				style={styles.input}
 			/>
-			<FormInput name='phone' label='Phone' control={control} />
+			<FormInput name='email' label='Email address' control={control} />
 		</Screen>
 	);
 };

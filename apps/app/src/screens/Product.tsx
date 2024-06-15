@@ -27,7 +27,7 @@ const Product: React.FC = () => {
 		setScrolledTop(nativeEvent.contentOffset.y <= 0);
 	}, []);
 
-	useGoBack('x', 16);
+	useGoBack('x');
 
 	React.useLayoutEffect(() => {
 		setOptions({ headerShadowVisible: !scrolledTop });
@@ -36,11 +36,9 @@ const Product: React.FC = () => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<View style={{ marginRight: 16 }}>
-					<Pressable>
-						<Icon name='bookmark' />
-					</Pressable>
-				</View>
+				<Pressable>
+					<Icon name='bookmark' />
+				</Pressable>
 			)
 		});
 	}, []);

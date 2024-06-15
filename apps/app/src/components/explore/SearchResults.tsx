@@ -106,6 +106,7 @@ const SearchResultsMain: React.FC<SearchResultsMainProps> = ({
 			<TabView
 				style={{ display: searchTerm ? 'flex' : 'none' }}
 				navigationState={{ index, routes }}
+				keyboardDismissMode='none'
 				renderTabBar={props => (
 					<TabBar
 						{...props}

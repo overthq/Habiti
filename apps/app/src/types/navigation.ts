@@ -1,6 +1,7 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 
 export type AppStackParamList = {
+	Landing: undefined;
 	Home: undefined;
 	Register: undefined;
 	Authenticate: undefined;
@@ -35,6 +36,7 @@ export type ProfileStackParamList = {
 	DeliveryAddress: undefined;
 	NotificationSettings: undefined;
 	Appearance: undefined;
+	'Profile.AccountSettings': undefined;
 };
 
 // TODO: Create context for storeId (and store name) in this case.

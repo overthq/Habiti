@@ -1,61 +1,80 @@
+import argon2 from 'argon2';
+
 import { Resolver } from '../../types/resolvers';
-import { generateAccessToken, sendVerificationCode } from '../../utils/auth';
+import { generateAccessToken } from '../../utils/auth';
 
 interface RegisterArgs {
 	input: {
 		name: string;
 		email: string;
-		phone: string;
+		password: string;
 	};
 }
 
-export const register: Resolver<RegisterArgs> = (
+export const register: Resolver<RegisterArgs> = async (
 	_,
-	{ input: { name, email, phone } },
+	{ input: { name, email, password } },
 	ctx
 ) => {
-	return ctx.prisma.user.create({ data: { name, email, phone } });
+	// TODO: Validate password
+
+	const passwordHash = await argon2.hash(password);
+
+	const user = await ctx.prisma.user.create({
+		data: { name, email, passwordHash }
+	});
+
+	// ctx.services.email.queueMail({});
+
+	return user;
 };
 
 interface AuthenticateArgs {
 	input: {
-		phone: string;
+		email: string;
+		password: string;
 	};
 }
 
 export const authenticate: Resolver<AuthenticateArgs> = async (
 	_,
-	{ input: { phone } },
+	{ input: { email, password } },
 	ctx
 ) => {
-	const user = await ctx.prisma.user.findUnique({ where: { phone } });
+	const user = await ctx.prisma.user.findUnique({ where: { email } });
 
 	if (!user) throw new Error('The specified user does not exist.');
 
-	await sendVerificationCode(phone);
+	const correct = await argon2.verify(user.passwordHash, password);
 
-	return { message: 'Authentication successful.' };
+	if (!correct) {
+		throw new Error('The entered password is incorrect');
+	}
+
+	const accessToken = await generateAccessToken(user);
+
+	return { accessToken, userId: user.id };
 };
 
 interface VerifyArgs {
 	input: {
-		phone: string;
+		email: string;
 		code: string;
 	};
 }
 
 export const verify: Resolver<VerifyArgs> = async (
 	_,
-	{ input: { phone, code } },
+	{ input: { email, code } },
 	ctx
 ) => {
-	const cachedCode = await ctx.redisClient.get(phone);
+	const cachedCode = await ctx.redisClient.get(email);
 
 	if (!cachedCode) throw new Error('No code found for user.');
 
 	if (cachedCode === code) {
 		const user = await ctx.prisma.user.findUnique({
-			where: { phone }
+			where: { email }
 		});
 
 		const accessToken = await generateAccessToken(user);
@@ -70,7 +89,7 @@ interface EditProfileArgs {
 	id: string;
 	input: {
 		name?: string;
-		phone?: string;
+		email?: string;
 	};
 }
 
@@ -79,11 +98,11 @@ export const editProfile: Resolver<EditProfileArgs> = (
 	{ id, input },
 	ctx
 ) => {
-	const { name, phone } = input;
+	const { name, email } = input;
 
 	return ctx.prisma.user.update({
 		where: { id },
-		data: { name, phone }
+		data: { name, email }
 	});
 };
 

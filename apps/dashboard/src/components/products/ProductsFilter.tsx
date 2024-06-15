@@ -9,9 +9,10 @@ import { FilterButton } from '../orders/OrdersFilter';
 const ProductsFilter = () => {
 	const { theme } = useTheme();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const [status, setStatus] = React.useState<'all' | 'active' | 'draft'>('all');
 
-	const handleChangeStatus = () => () => {
-		// Do something
+	const handleChangeStatus = (s: typeof status) => () => {
+		setStatus(s);
 	};
 
 	const handleOpenFilterSheet = () => {
@@ -21,16 +22,20 @@ const ProductsFilter = () => {
 	return (
 		<View style={[styles.container, { borderBottomColor: theme.border.color }]}>
 			<View style={{ flexDirection: 'row', gap: 12 }}>
-				<FilterButton text='All' onPress={handleChangeStatus()} active />
+				<FilterButton
+					text='All'
+					onPress={handleChangeStatus('all')}
+					active={status === 'all'}
+				/>
 				<FilterButton
 					text='Active'
-					onPress={handleChangeStatus()}
-					active={false}
+					onPress={handleChangeStatus('active')}
+					active={status === 'active'}
 				/>
 				<FilterButton
 					text='Draft'
-					onPress={handleChangeStatus()}
-					active={false}
+					onPress={handleChangeStatus('draft')}
+					active={status === 'draft'}
 				/>
 			</View>
 			<Pressable onPress={handleOpenFilterSheet}>

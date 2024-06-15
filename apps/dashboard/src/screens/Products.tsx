@@ -44,8 +44,7 @@ const styles = StyleSheet.create({
 	headerActions: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		justifyContent: 'center',
-		marginRight: 16
+		justifyContent: 'center'
 	}
 });
 

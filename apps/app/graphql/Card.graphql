@@ -13,3 +13,13 @@ query Cards {
 		}
 	}
 }
+
+# This should be renamed to "GetCardAuthorization" or something.
+query CardAuthorization {
+	cardAuthorization {
+		id
+		authorization_url
+		access_code
+		reference
+	}
+}

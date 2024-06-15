@@ -1,11 +1,10 @@
-import { gql } from 'apollo-server-express';
+import gql from 'graphql-tag';
 
 const UserTypes = gql`
 	type User {
 		id: ID!
 		name: String!
 		email: String!
-		phone: String!
 		createdAt: String!
 		updatedAt: String!
 
@@ -26,26 +25,27 @@ const UserTypes = gql`
 	input EditProfileInput {
 		name: String
 		email: String
-		phone: String
 	}
 
 	input RegisterInput {
 		name: String!
 		email: String!
-		phone: String!
+		password: String!
 	}
 
 	input AuthenticateInput {
-		phone: String!
+		email: String!
+		password: String!
 	}
 
 	input VerifyInput {
-		phone: String!
+		email: String!
 		code: String!
 	}
 
 	type AuthenticateResponse {
-		message: String
+		accessToken: String!
+		userId: ID!
 	}
 
 	type VerifyResponse {

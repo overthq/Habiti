@@ -64,12 +64,14 @@ export type AddToCartInput = {
 };
 
 export type AuthenticateInput = {
-	phone: Scalars['String']['input'];
+	email: Scalars['String']['input'];
+	password: Scalars['String']['input'];
 };
 
 export type AuthenticateResponse = {
 	__typename?: 'AuthenticateResponse';
-	message?: Maybe<Scalars['String']['output']>;
+	accessToken: Scalars['String']['output'];
+	userId: Scalars['ID']['output'];
 };
 
 export type Card = {
@@ -87,6 +89,14 @@ export type Card = {
 	signature: Scalars['String']['output'];
 	user: User;
 	userId: Scalars['ID']['output'];
+};
+
+export type CardAuthorization = {
+	__typename?: 'CardAuthorization';
+	access_code: Scalars['String']['output'];
+	authorization_url: Scalars['String']['output'];
+	id: Scalars['ID']['output'];
+	reference: Scalars['String']['output'];
 };
 
 export type Cart = {
@@ -170,7 +180,6 @@ export type EditProductInput = {
 export type EditProfileInput = {
 	email?: InputMaybe<Scalars['String']['input']>;
 	name?: InputMaybe<Scalars['String']['input']>;
-	phone?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type EditStoreInput = {
@@ -534,6 +543,7 @@ export type ProductReview = {
 
 export type Query = {
 	__typename?: 'Query';
+	cardAuthorization: CardAuthorization;
 	cart: Cart;
 	carts: Cart[];
 	currentStore: Store;
@@ -589,7 +599,7 @@ export type QueryUserArgs = {
 export type RegisterInput = {
 	email: Scalars['String']['input'];
 	name: Scalars['String']['input'];
-	phone: Scalars['String']['input'];
+	password: Scalars['String']['input'];
 };
 
 export type RemoveProductFromCategoryInput = {
@@ -728,7 +738,6 @@ export type User = {
 	managed: StoreManager[];
 	name: Scalars['String']['output'];
 	orders: Order[];
-	phone: Scalars['String']['output'];
 	updatedAt: Scalars['String']['output'];
 	watchlist: WatchlistProduct[];
 };
@@ -746,7 +755,7 @@ export type VerifyBankAccountResponse = {
 
 export type VerifyInput = {
 	code: Scalars['String']['input'];
-	phone: Scalars['String']['input'];
+	email: Scalars['String']['input'];
 };
 
 export type VerifyResponse = {
@@ -1087,6 +1096,15 @@ export type EditStoreMutation = {
 	};
 };
 
+export type DeleteStoreMutationVariables = Exact<{
+	id: Scalars['ID']['input'];
+}>;
+
+export type DeleteStoreMutation = {
+	__typename?: 'Mutation';
+	deleteStore: string;
+};
+
 export type StoreQueryVariables = Exact<{ [key: string]: never }>;
 
 export type StoreQuery = {
@@ -1117,7 +1135,8 @@ export type AuthenticateMutation = {
 	__typename?: 'Mutation';
 	authenticate: {
 		__typename?: 'AuthenticateResponse';
-		message?: string | null;
+		accessToken: string;
+		userId: string;
 	};
 };
 
@@ -1153,7 +1172,7 @@ export type CustomerInfoQuery = {
 		__typename?: 'User';
 		id: string;
 		name: string;
-		phone: string;
+		email: string;
 		orders: {
 			__typename?: 'Order';
 			id: string;
@@ -1171,6 +1190,13 @@ export type CustomerInfoQuery = {
 			}[];
 		}[];
 	};
+};
+
+export type DeleteAccountMutationVariables = Exact<{ [key: string]: never }>;
+
+export type DeleteAccountMutation = {
+	__typename?: 'Mutation';
+	deleteAccount: { __typename?: 'User'; id: string };
 };
 
 export const CategoriesDocument = gql`
@@ -1601,6 +1627,17 @@ export function useEditStoreMutation() {
 		EditStoreDocument
 	);
 }
+export const DeleteStoreDocument = gql`
+	mutation DeleteStore($id: ID!) {
+		deleteStore(id: $id)
+	}
+`;
+
+export function useDeleteStoreMutation() {
+	return Urql.useMutation<DeleteStoreMutation, DeleteStoreMutationVariables>(
+		DeleteStoreDocument
+	);
+}
 export const StoreDocument = gql`
 	query Store {
 		currentStore {
@@ -1635,7 +1672,8 @@ export function useStoreQuery(
 export const AuthenticateDocument = gql`
 	mutation Authenticate($input: AuthenticateInput!) {
 		authenticate(input: $input) {
-			message
+			accessToken
+			userId
 		}
 	}
 `;
@@ -1677,7 +1715,7 @@ export const CustomerInfoDocument = gql`
 		user(id: $userId) {
 			id
 			name
-			phone
+			email
 			orders {
 				id
 				products {
@@ -1705,4 +1743,18 @@ export function useCustomerInfoQuery(
 		query: CustomerInfoDocument,
 		...options
 	});
+}
+export const DeleteAccountDocument = gql`
+	mutation DeleteAccount {
+		deleteAccount {
+			id
+		}
+	}
+`;
+
+export function useDeleteAccountMutation() {
+	return Urql.useMutation<
+		DeleteAccountMutation,
+		DeleteAccountMutationVariables
+	>(DeleteAccountDocument);
 }

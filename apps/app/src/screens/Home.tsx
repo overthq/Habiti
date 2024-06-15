@@ -5,13 +5,22 @@ import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
 import RecentOrders from '../components/home/RecentOrders';
+import useStore from '../state';
 import { useHomeQuery } from '../types/api';
 import { HomeStackParamList } from '../types/navigation';
 
 const Home: React.FC = () => {
-	const [{ fetching, data }] = useHomeQuery();
+	const [{ fetching, data, error }] = useHomeQuery();
+	const logOut = useStore(state => state.logOut);
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<HomeStackParamList>>();
+
+	React.useEffect(() => {
+		// HACK: While authentication is still flaky:
+		if (error) {
+			logOut();
+		}
+	}, [error]);
 
 	// React.useLayoutEffect(() => {
 	// 	setOptions({
@@ -28,7 +37,7 @@ const Home: React.FC = () => {
 	// 	});
 	// }, []);
 
-	if (fetching) {
+	if (fetching || !data) {
 		return (
 			<View>
 				<ActivityIndicator />

@@ -1,4 +1,4 @@
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 
 import Categories from '../screens/Categories';
@@ -6,9 +6,10 @@ import EditStore from '../screens/EditStore';
 import Managers from '../screens/Managers';
 import Store from '../screens/Store';
 import StorePayouts from '../screens/StorePayouts';
+import StoreSettings from '../screens/StoreSettings';
 import { StoreStackParamList } from '../types/navigation';
 
-const StoreStack = createStackNavigator<StoreStackParamList>();
+const StoreStack = createNativeStackNavigator<StoreStackParamList>();
 
 const StoreStackNavigator = () => {
 	return (
@@ -22,6 +23,7 @@ const StoreStackNavigator = () => {
 			<StoreStack.Screen name='Managers' component={Managers} />
 			<StoreStack.Screen name='Payouts' component={StorePayouts} />
 			<StoreStack.Screen name='Categories' component={Categories} />
+			<StoreStack.Screen name='Settings' component={StoreSettings} />
 		</StoreStack.Navigator>
 	);
 };

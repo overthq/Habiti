@@ -16,7 +16,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import CartSummary from '../components/cart/CartSummary';
 import CartTotal from '../components/cart/CartTotal';
-import DeliveryInfo from '../components/cart/DeliveryInfo';
+// import DeliveryInfo from '../components/cart/DeliveryInfo';
 import SelectCard from '../components/cart/SelectCard';
 import StoreInfo from '../components/cart/StoreInfo';
 import useGoBack from '../hooks/useGoBack';
@@ -27,6 +27,9 @@ import { AppStackParamList } from '../types/navigation';
 // There is a need to master optimistic updates on this screen,
 // It is also important to make use of tasteful animations to make
 // it feel slick.
+
+// A cart screen is usually distinct from a checkout screen on most
+// production apps. Find out why.
 
 const Cart: React.FC = () => {
 	const {
@@ -69,7 +72,7 @@ const Cart: React.FC = () => {
 
 			<Spacer y={16} />
 
-			<DeliveryInfo />
+			{/* <DeliveryInfo /> */}
 
 			<Spacer y={16} />
 

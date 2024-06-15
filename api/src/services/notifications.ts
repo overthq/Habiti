@@ -15,16 +15,43 @@ const expo = new Expo();
 // - Order fulfilled (user)
 // - Delivery confirmed (store managers)
 
+// Architecture:
+// When we call ctx.services.notifications.queueMessage(...), a message gets
+// added to the queue. Every minute (or maybe 15 seconds), we get all items
+// in the queue and dump them into the expo.chunkPushNotifications(...)
+// method, which chunks and sends them.
+//
+// In the future, we can also commit the messages if they reach a certain
+// count threshold and/or tweak the batch time.
+//
+// I'm a little worried that it isn't trivial to implement something that
+// works at scale here. Resetting messages to an empty array is a little
+// risky, if it's possible for that array to have been appended to after
+// chunking. A very trivial way to mitigate this is to store the array length
+// before chunking and check if it has changed after.
+//
+// Who ever said that mutexes aren't useful?
+
+const BATCH_TIME = 15 * 1000;
+
 export default class NotificationsService {
 	private messages = [];
+
+	constructor() {
+		setInterval(() => {
+			this.sendMessages();
+		}, BATCH_TIME);
+	}
 
 	queueMessage(message: ExpoPushMessage) {
 		this.messages.push(message);
 	}
 
-	// Runs on a constant timer
 	async sendMessages() {
 		const chunks = expo.chunkPushNotifications(this.messages);
+
+		// Reset messages to make sure we don't send them again.
+		this.messages = [];
 
 		for (const chunk of chunks) {
 			try {

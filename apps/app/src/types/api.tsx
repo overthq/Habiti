@@ -55,12 +55,14 @@ export type AddToCartInput = {
 };
 
 export type AuthenticateInput = {
-	phone: Scalars['String'];
+	email: Scalars['String'];
+	password: Scalars['String'];
 };
 
 export type AuthenticateResponse = {
 	__typename?: 'AuthenticateResponse';
-	message?: Maybe<Scalars['String']>;
+	accessToken: Scalars['String'];
+	userId: Scalars['ID'];
 };
 
 export type Card = {
@@ -78,6 +80,14 @@ export type Card = {
 	signature: Scalars['String'];
 	user: User;
 	userId: Scalars['ID'];
+};
+
+export type CardAuthorization = {
+	__typename?: 'CardAuthorization';
+	access_code: Scalars['String'];
+	authorization_url: Scalars['String'];
+	id: Scalars['ID'];
+	reference: Scalars['String'];
 };
 
 export type Cart = {
@@ -161,7 +171,6 @@ export type EditProductInput = {
 export type EditProfileInput = {
 	email?: InputMaybe<Scalars['String']>;
 	name?: InputMaybe<Scalars['String']>;
-	phone?: InputMaybe<Scalars['String']>;
 };
 
 export type EditStoreInput = {
@@ -525,6 +534,7 @@ export type ProductReview = {
 
 export type Query = {
 	__typename?: 'Query';
+	cardAuthorization: CardAuthorization;
 	cart: Cart;
 	carts: Cart[];
 	currentStore: Store;
@@ -580,7 +590,7 @@ export type QueryUserArgs = {
 export type RegisterInput = {
 	email: Scalars['String'];
 	name: Scalars['String'];
-	phone: Scalars['String'];
+	password: Scalars['String'];
 };
 
 export type RemoveProductFromCategoryInput = {
@@ -719,7 +729,6 @@ export type User = {
 	managed: StoreManager[];
 	name: Scalars['String'];
 	orders: Order[];
-	phone: Scalars['String'];
 	updatedAt: Scalars['String'];
 	watchlist: WatchlistProduct[];
 };
@@ -737,7 +746,7 @@ export type VerifyBankAccountResponse = {
 
 export type VerifyInput = {
 	code: Scalars['String'];
-	phone: Scalars['String'];
+	email: Scalars['String'];
 };
 
 export type VerifyResponse = {
@@ -773,6 +782,19 @@ export type CardsQuery = {
 			bank: string;
 			countryCode: string;
 		}[];
+	};
+};
+
+export type CardAuthorizationQueryVariables = Exact<{ [key: string]: never }>;
+
+export type CardAuthorizationQuery = {
+	__typename?: 'Query';
+	cardAuthorization: {
+		__typename?: 'CardAuthorization';
+		id: string;
+		authorization_url: string;
+		access_code: string;
+		reference: string;
 	};
 };
 
@@ -1253,7 +1275,7 @@ export type CurrentUserQueryVariables = Exact<{ [key: string]: never }>;
 
 export type CurrentUserQuery = {
 	__typename?: 'Query';
-	currentUser: { __typename?: 'User'; id: string; name: string; phone: string };
+	currentUser: { __typename?: 'User'; id: string; name: string; email: string };
 };
 
 export type RegisterMutationVariables = Exact<{
@@ -1273,7 +1295,8 @@ export type AuthenticateMutation = {
 	__typename?: 'Mutation';
 	authenticate: {
 		__typename?: 'AuthenticateResponse';
-		message?: string | null;
+		accessToken: string;
+		userId: string;
 	};
 };
 
@@ -1296,7 +1319,7 @@ export type EditProfileMutationVariables = Exact<{
 
 export type EditProfileMutation = {
 	__typename?: 'Mutation';
-	editProfile: { __typename?: 'User'; id: string; name: string; phone: string };
+	editProfile: { __typename?: 'User'; id: string; name: string; email: string };
 };
 
 export type DeleteAccountMutationVariables = Exact<{ [key: string]: never }>;
@@ -1331,6 +1354,24 @@ export function useCardsQuery(
 		query: CardsDocument,
 		...options
 	});
+}
+export const CardAuthorizationDocument = gql`
+	query CardAuthorization {
+		cardAuthorization {
+			id
+			authorization_url
+			access_code
+			reference
+		}
+	}
+`;
+
+export function useCardAuthorizationQuery(
+	options?: Omit<Urql.UseQueryArgs<CardAuthorizationQueryVariables>, 'query'>
+) {
+	return Urql.useQuery<CardAuthorizationQuery, CardAuthorizationQueryVariables>(
+		{ query: CardAuthorizationDocument, ...options }
+	);
 }
 export const CartsDocument = gql`
 	query Carts {
@@ -1947,7 +1988,7 @@ export const CurrentUserDocument = gql`
 		currentUser {
 			id
 			name
-			phone
+			email
 		}
 	}
 `;
@@ -1976,7 +2017,8 @@ export function useRegisterMutation() {
 export const AuthenticateDocument = gql`
 	mutation Authenticate($input: AuthenticateInput!) {
 		authenticate(input: $input) {
-			message
+			accessToken
+			userId
 		}
 	}
 `;
@@ -2005,7 +2047,7 @@ export const EditProfileDocument = gql`
 		editProfile(input: $input) {
 			id
 			name
-			phone
+			email
 		}
 	}
 `;

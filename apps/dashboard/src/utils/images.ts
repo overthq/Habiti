@@ -1,4 +1,4 @@
-import { ReactNativeFile } from 'extract-files';
+import { ReactNativeFile } from './upload';
 
 export const generateUploadFile = (uri: string) => {
 	return new ReactNativeFile({

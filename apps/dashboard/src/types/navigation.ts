@@ -57,6 +57,7 @@ export type StoreStackParamList = {
 	Payouts: undefined;
 	Managers: undefined;
 	Categories: undefined;
+	Settings: undefined;
 };
 
 type ProductsParams = {

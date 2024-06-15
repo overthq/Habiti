@@ -1,44 +1,101 @@
-import { Button, Input, Screen, Spacer, Typography } from '@market/components';
+import {
+	Button,
+	FormInput,
+	Screen,
+	Spacer,
+	TextButton,
+	Typography
+} from '@market/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
+import { useForm } from 'react-hook-form';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import styles from '../styles/auth';
+import useStore from '../state';
 import { useAuthenticateMutation } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 
+interface AuthenticateFormValues {
+	email: string;
+	password: string;
+}
+
 const Authenticate: React.FC = () => {
-	const [phone, setPhone] = React.useState('');
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+
+	const methods = useForm<AuthenticateFormValues>({
+		defaultValues: {
+			email: '',
+			password: ''
+		}
+	});
+
+	const logIn = useStore(({ logIn }) => logIn);
 	const [{ fetching }, authenticate] = useAuthenticateMutation();
 
-	const handleSubmit = async () => {
+	const backToRegister = () => {
+		navigate('Register');
+	};
+
+	const onSubmit = async (values: AuthenticateFormValues) => {
 		try {
-			await authenticate({ input: { phone } });
-			navigate('Verify', { phone });
+			const { error, data } = await authenticate({ input: values });
+
+			if (error) {
+				console.log(error);
+			} else if (data?.authenticate) {
+				logIn(data.authenticate.userId, data.authenticate.accessToken);
+			}
+			// navigate('Verify', { phone });
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
 	return (
-		// <SafeAreaView>
-		<Screen style={styles.container}>
-			<Typography weight='bold' size='xxxlarge'>
-				Enter your phone number.
-			</Typography>
-			<Typography variant='secondary'>{`We'll send your verification code here.`}</Typography>
-			<Spacer y={16} />
-			<Input
-				label='Phone number'
-				placeholder='08012345678'
-				value={phone}
-				onChangeText={setPhone}
-				keyboardType='number-pad'
-			/>
-			<Spacer y={16} />
-			<Button loading={fetching} text='Next' onPress={handleSubmit} />
+		<Screen style={{ padding: 16, paddingTop: 32 }}>
+			<SafeAreaView>
+				<Typography weight='bold' size='xxxlarge'>
+					Welcome back.
+				</Typography>
+				<Spacer y={4} />
+				<Typography variant='secondary'>
+					Log back in with your details.
+				</Typography>
+				<Spacer y={16} />
+				<FormInput
+					name='email'
+					control={methods.control}
+					label='Email address'
+					placeholder='john.doe@gmail.com'
+					keyboardType='email-address'
+					autoCapitalize='none'
+					autoCorrect={false}
+				/>
+				<Spacer y={8} />
+				<FormInput
+					name='password'
+					control={methods.control}
+					label='Password'
+					placeholder='Password'
+					secureTextEntry
+				/>
+				<Spacer y={16} />
+				<Button
+					loading={fetching}
+					text='Next'
+					onPress={methods.handleSubmit(onSubmit)}
+				/>
+				<Spacer y={8} />
+				<TextButton
+					weight='medium'
+					style={{ alignSelf: 'center' }}
+					onPress={backToRegister}
+				>
+					Don't have an account yet?
+				</TextButton>
+			</SafeAreaView>
 		</Screen>
-		// </SafeAreaView>
 	);
 };
 

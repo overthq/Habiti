@@ -1,26 +1,44 @@
-import { Button, Input, Screen, Spacer, Typography } from '@market/components';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import {
+	Button,
+	FormInput,
+	Screen,
+	Spacer,
+	Typography
+} from '@market/components';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
+import { useForm } from 'react-hook-form';
 import { TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 
+import useStore from '../state';
 import styles from '../styles/auth';
 import { useAuthenticateMutation } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 
-const Authenticate = () => {
-	const [phone, setPhone] = React.useState('');
-	const { navigate } =
-		useNavigation<StackNavigationProp<AppStackParamList, 'Authenticate'>>();
-	const [{ fetching }, authenticate] = useAuthenticateMutation();
+interface AuthenticateFormValues {
+	email: string;
+	password: string;
+}
 
-	const handleSubmit = async () => {
-		const { error } = await authenticate({ input: { phone } });
+const Authenticate = () => {
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const logIn = useStore(state => state.logIn);
+	const [{ fetching }, authenticate] = useAuthenticateMutation();
+	const { control, handleSubmit } = useForm<AuthenticateFormValues>({
+		defaultValues: {
+			email: '',
+			password: ''
+		}
+	});
+
+	const onSubmit = async (values: AuthenticateFormValues) => {
+		const { error, data } = await authenticate({ input: values });
 
 		if (error) {
 			console.log({ error });
-		} else {
-			navigate('Verify', { phone });
+		} else if (data?.authenticate) {
+			const { accessToken, userId } = data.authenticate;
+			logIn(userId, accessToken);
 		}
 	};
 
@@ -35,19 +53,32 @@ const Authenticate = () => {
 				<Typography variant='secondary'>{`We'll send your verification code here.`}</Typography>
 
 				<Spacer y={16} />
-				<Input
-					label='Phone'
-					placeholder='08012345678'
-					keyboardType='number-pad'
-					value={phone}
-					onChangeText={setPhone}
+
+				<FormInput
+					name='email'
+					control={control}
+					label='Email address'
+					placeholder='john@market.com'
+					keyboardType='email-address'
+					autoCorrect={false}
+					autoCapitalize='none'
+				/>
+
+				<Spacer y={8} />
+
+				<FormInput
+					name='password'
+					control={control}
+					label='Password'
+					placeholder='Your password'
+					secureTextEntry
 				/>
 
 				<Spacer y={16} />
 
 				<Button
-					text='Send verification code'
-					onPress={handleSubmit}
+					text='Submit'
+					onPress={handleSubmit(onSubmit)}
 					loading={fetching}
 				/>
 

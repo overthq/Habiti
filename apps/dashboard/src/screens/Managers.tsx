@@ -19,10 +19,7 @@ const Managers = () => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<Pressable
-					style={{ marginRight: 16 }}
-					onPress={() => navigate('AddManager')}
-				>
+				<Pressable onPress={() => navigate('AddManager')}>
 					<Icon name='plus' />
 				</Pressable>
 			)

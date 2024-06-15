@@ -21,7 +21,11 @@ const CartTotal: React.FC<CartTotalProps> = ({ cart }) => {
 				value={formatNaira(fees.transaction)}
 			/>
 			<CartTotalRow title='Service Fee' value={formatNaira(fees.service)} />
-			<CartTotalRow title='Total' value={formatNaira(fees.total)} total />
+			<CartTotalRow
+				title='Total'
+				value={formatNaira(fees.total + cart.total)}
+				total
+			/>
 		</View>
 	);
 };

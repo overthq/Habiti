@@ -17,7 +17,7 @@ export interface ProductFormData {
 const AddProduct: React.FC = () => {
 	const [toUpload, setToUpload] = React.useState<string[]>([]);
 	const { goBack, setOptions } = useNavigation();
-	const [, createProduct] = useCreateProductMutation();
+	const [{ fetching }, createProduct] = useCreateProductMutation();
 
 	const formMethods = useForm<ProductFormData>({
 		defaultValues: {
@@ -30,7 +30,7 @@ const AddProduct: React.FC = () => {
 
 	const onSubmit = React.useCallback(
 		async (values: ProductFormData) => {
-			await createProduct({
+			const { error } = await createProduct({
 				input: {
 					name: values.name,
 					description: values.description,
@@ -40,30 +40,34 @@ const AddProduct: React.FC = () => {
 				}
 			});
 
-			setToUpload([]);
+			// We want to preserve state when an error occurs.
+			// For retries (if it's just a network thing), or for observing
+			// the state that led to the error.
 
-			goBack();
+			if (error) {
+				console.log('Error while creating product');
+				console.log(error);
+			} else {
+				setToUpload([]);
+				goBack();
+			}
 		},
 		[toUpload]
 	);
 
 	React.useLayoutEffect(() => {
 		setOptions({
-			headerLeft: () => (
-				<TextButton style={{ marginLeft: 16 }} onPress={goBack}>
-					Cancel
-				</TextButton>
-			),
+			headerLeft: () => <TextButton onPress={goBack}>Cancel</TextButton>,
 			headerRight: () => (
 				<TextButton
-					style={{ marginRight: 16 }}
+					disabled={fetching}
 					onPress={formMethods.handleSubmit(onSubmit)}
 				>
 					Save
 				</TextButton>
 			)
 		});
-	}, [toUpload]);
+	}, [toUpload, fetching]);
 
 	return (
 		<FormProvider {...formMethods}>

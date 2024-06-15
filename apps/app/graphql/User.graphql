@@ -2,7 +2,7 @@ query CurrentUser {
 	currentUser {
 		id
 		name
-		phone
+		email
 	}
 }
 
@@ -14,7 +14,8 @@ mutation Register($input: RegisterInput!) {
 
 mutation Authenticate($input: AuthenticateInput!) {
 	authenticate(input: $input) {
-		message
+		accessToken
+		userId
 	}
 }
 
@@ -29,7 +30,7 @@ mutation EditProfile($input: EditProfileInput!) {
 	editProfile(input: $input) {
 		id
 		name
-		phone
+		email
 	}
 }
 

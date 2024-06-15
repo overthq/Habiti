@@ -1,4 +1,4 @@
-import { gql } from 'apollo-server-express';
+import gql from 'graphql-tag';
 
 const CardTypes = gql`
 	type Card {
@@ -15,6 +15,17 @@ const CardTypes = gql`
 		signature: String!
 		countryCode: String!
 		user: User!
+	}
+
+	type CardAuthorization {
+		id: ID!
+		authorization_url: String!
+		access_code: String!
+		reference: String!
+	}
+
+	extend type Query {
+		cardAuthorization: CardAuthorization!
 	}
 
 	extend type Mutation {

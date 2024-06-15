@@ -10,12 +10,11 @@ const InventoryInput = () => {
 	const handleCounterPress = React.useCallback(
 		(action: 'add' | 'sub') => () => {
 			const inventory = Number(getValues().quantity);
-			if (!Number.isNaN(inventory)) {
-				if (action === 'add') {
-					setValue('quantity', String(inventory + 1));
-				} else {
-					setValue('quantity', String(inventory - 1));
-				}
+
+			if (action === 'add') {
+				setValue('quantity', String(inventory + 1));
+			} else if (action === 'sub') {
+				setValue('quantity', String(inventory - 1));
 			}
 		},
 		[]
@@ -30,7 +29,10 @@ const InventoryInput = () => {
 						Inventory
 					</Typography>
 					<View style={styles.right}>
-						<Pressable onPress={handleCounterPress('sub')}>
+						<Pressable
+							disabled={value === '0'}
+							onPress={handleCounterPress('sub')}
+						>
 							<Icon name='minus' size={18} color='#505050' />
 						</Pressable>
 						<TextInput

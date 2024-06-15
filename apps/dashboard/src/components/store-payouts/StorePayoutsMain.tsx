@@ -71,6 +71,7 @@ const StorePayoutsMain: React.FC<StorePayoutsMainProps> = ({
 				<FormInput
 					name='accountNumber'
 					label='Account Number'
+					placeholder='Account Number'
 					control={methods.control}
 					style={styles.input}
 					keyboardType='number-pad'

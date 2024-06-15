@@ -1,3 +1,4 @@
+import { useTheme } from '@market/components';
 import {
 	useNavigation,
 	NavigationProp,
@@ -6,7 +7,7 @@ import {
 } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import React from 'react';
-import { View } from 'react-native';
+import { RefreshControl, View } from 'react-native';
 
 import ProductsListItem from './ProductsListItem';
 import { ProductsQuery, useProductsQuery } from '../../types/api';
@@ -20,7 +21,10 @@ const ProductListHeader = <View style={{ height: 4 }} />;
 const ProductList: React.FC = () => {
 	const { params } = useRoute<RouteProp<MainTabParamList, 'Products'>>();
 	const { navigate } = useNavigation<NavigationProp<ProductsStackParamList>>();
-	const [{ data }] = useProductsQuery({ variables: params });
+	const [{ fetching, data }, refetch] = useProductsQuery({
+		variables: params
+	});
+	const { theme } = useTheme();
 
 	const handlePress = React.useCallback(
 		(productId: string) => () => navigate('Product', { productId }),
@@ -40,6 +44,15 @@ const ProductList: React.FC = () => {
 			renderItem={renderProduct}
 			ListHeaderComponent={ProductListHeader}
 			estimatedItemSize={60}
+			refreshControl={
+				<RefreshControl
+					refreshing={fetching}
+					onRefresh={() => {
+						refetch({ requestPolicy: 'network-only' });
+					}}
+					tintColor={theme.text.secondary}
+				/>
+			}
 		/>
 	);
 };

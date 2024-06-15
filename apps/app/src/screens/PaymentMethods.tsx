@@ -3,6 +3,7 @@ import {
 	ListEmpty,
 	Screen,
 	Separator,
+	Spacer,
 	Typography,
 	useTheme
 } from '@market/components';
@@ -25,7 +26,7 @@ const PaymentMethods: React.FC = () => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<Pressable style={styles.add} onPress={() => navigate('Add Card')}>
+				<Pressable onPress={() => navigate('Add Card')}>
 					<Icon name='plus' />
 				</Pressable>
 			)
@@ -45,14 +46,17 @@ const PaymentMethods: React.FC = () => {
 	return (
 		<Screen>
 			{cards.length === 0 ? (
-				<ListEmpty
-					title='No cards added'
-					description='When you add your cards, they will be displayed here.'
-					cta={{
-						text: 'Add card',
-						action: () => navigate('Add Card')
-					}}
-				/>
+				<View>
+					<Spacer y={16} />
+					<ListEmpty
+						title='No cards added'
+						description='When you add your cards, they will be displayed here.'
+						cta={{
+							text: 'Add card',
+							action: () => navigate('Add Card')
+						}}
+					/>
+				</View>
 			) : (
 				<View>
 					<Typography
@@ -85,9 +89,6 @@ const styles = StyleSheet.create({
 		marginTop: 16,
 		marginBottom: 8,
 		marginLeft: 16
-	},
-	add: {
-		marginRight: 16
 	},
 	loading: {
 		flex: 1,

@@ -61,7 +61,7 @@ interface StoreCardData {
 	};
 }
 
-export const storeCard = (userId: string, data: StoreCardData) => {
+export const storeCard = async (data: StoreCardData) => {
 	return prismaClient.card.upsert({
 		where: { signature: data.authorization.signature },
 		update: {},
@@ -76,7 +76,9 @@ export const storeCard = (userId: string, data: StoreCardData) => {
 			signature: data.authorization.signature,
 			cardType: data.authorization.card_type,
 			countryCode: data.authorization.country_code,
-			userId
+			user: {
+				connect: { email: data.customer.email }
+			}
 		}
 	});
 };
@@ -93,11 +95,11 @@ export const initialCharge = async (email: string) => {
 // Hack to verify transaction in dev.
 // (On prod, the webhook should do this).
 
-export const verifyTransaction = async (userId: string, reference: string) => {
+export const verifyTransaction = async (reference: string) => {
 	const { data, status } = await get(`/transaction/verify/${reference}`);
 
 	if (status === true && data.status === 'success') {
-		return storeCard(userId, data);
+		return storeCard(data);
 	} else {
 		throw new Error('Verification failed!');
 	}
