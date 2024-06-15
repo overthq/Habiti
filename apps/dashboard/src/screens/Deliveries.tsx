@@ -1,8 +1,12 @@
-import { Screen } from '@market/components';
+import { Screen, Typography } from '@market/components';
 import React from 'react';
 
 const Deliveries = () => {
-	return <Screen></Screen>;
+	return (
+		<Screen>
+			<Typography>Deliveries</Typography>
+		</Screen>
+	);
 };
 
 export default Deliveries;

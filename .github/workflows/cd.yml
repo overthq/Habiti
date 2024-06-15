@@ -31,7 +31,7 @@ jobs:
         working-directory: ./apps/app
 
   deploy-dashboard:
-    name: Deploy app
+    name: Deploy dashboard
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

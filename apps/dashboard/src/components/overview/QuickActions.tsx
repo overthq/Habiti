@@ -1,12 +1,8 @@
-import { Icon, SectionHeader, Typography, useTheme } from '@market/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { SectionHeader, useTheme } from '@market/components';
 import React from 'react';
-import { View, StyleSheet, Pressable } from 'react-native';
-
-import { MainTabParamList } from '../../types/navigation';
+import { View, StyleSheet } from 'react-native';
 
 const QuickActions = () => {
-	const { navigate } = useNavigation<NavigationProp<MainTabParamList>>();
 	const { theme } = useTheme();
 
 	return (
