@@ -178,7 +178,7 @@ const light = {
 		background: palette.neutral.n1
 	},
 	input: {
-		placeholder: palette.neutral.n30,
+		placeholder: palette.neutral.n40,
 		label: palette.neutral.n60,
 		background: palette.neutral.n10,
 		text: palette.neutral.n100

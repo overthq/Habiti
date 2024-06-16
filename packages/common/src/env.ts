@@ -6,8 +6,6 @@ const localhostString = (port: string) =>
 		.shift()
 		?.concat(`:${port}`)}`;
 
-const env = {
+export const env = {
 	apiUrl: process.env.API_URL || localhostString('4000')
 };
-
-export default env;
