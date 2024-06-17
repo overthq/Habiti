@@ -1,4 +1,4 @@
-import { palette } from '@market/components/src/styles/theme';
+import { palette } from '@habiti/components/src/styles/theme';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 

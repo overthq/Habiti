@@ -4,7 +4,7 @@ import {
 	Spacer,
 	TextButton,
 	Typography
-} from '@market/components';
+} from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';

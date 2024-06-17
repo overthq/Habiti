@@ -1,5 +1,5 @@
 {
-	"name": "@market/api",
+	"name": "@habiti/api",
 	"version": "0.0.1",
 	"main": "dist/index.js",
 	"license": "GPL-3.0",

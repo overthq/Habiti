@@ -1,4 +1,4 @@
-import { CustomImage, Typography } from '@market/components';
+import { CustomImage, Typography } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 

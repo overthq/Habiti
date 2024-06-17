@@ -1,4 +1,4 @@
-import { SelectGroup, Spacer } from '@market/components';
+import { SelectGroup, Spacer } from '@habiti/components';
 import React from 'react';
 import { Controller } from 'react-hook-form';
 

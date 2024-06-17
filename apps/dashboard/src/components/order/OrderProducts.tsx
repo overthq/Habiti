@@ -1,4 +1,4 @@
-import { Typography } from '@market/components';
+import { Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';

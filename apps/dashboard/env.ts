@@ -6,19 +6,8 @@ const localhostString = (port: string) =>
 		.shift()
 		?.concat(`:${port}`)}`;
 
-const ENV = {
-	dev: {
-		apiUrl: localhostString('4000')
-	},
-	staging: {
-		apiUrl: ''
-	},
-	production: {
-		apiUrl: ''
-	}
+const env = {
+	apiUrl: process.env.API_URL || localhostString('4000')
 };
 
-const getEnvVars = (env?: keyof typeof ENV) =>
-	env ? ENV[env] : ENV.dev || ENV.staging;
-
-export default getEnvVars('dev');
+export default env;

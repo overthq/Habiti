@@ -1,4 +1,4 @@
-import { Screen, Typography, useTheme } from '@market/components';
+import { Screen, Typography, useTheme } from '@habiti/components';
 import {
 	NavigationProp,
 	RouteProp,

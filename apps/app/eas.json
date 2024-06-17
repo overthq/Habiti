@@ -1,10 +1,20 @@
 {
+	"cli": {
+		"appVersionSource": "remote"
+	},
 	"build": {
 		"development": {
 			"developmentClient": true,
 			"distribution": "internal"
 		},
+		"simulator": {
+			"developmentClient": true,
+			"ios": {
+				"simulator": true
+			}
+		},
 		"production": {
+			"autoIncrement": true,
 			"android": {
 				"image": "latest"
 			},

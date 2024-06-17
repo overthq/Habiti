@@ -1,20 +1,20 @@
-# Market
+# Habiti
 
-Market is an open-source mobile-first e-commerce platform that aims to improve the online shopping and store management experience for small to medium-scale retailers in Nigeria.
+Habiti is an open-source mobile-first e-commerce platform that aims to improve the online shopping and store management experience for small to medium-scale retailers in Nigeria.
 
 ## Motivation
 
 ### For shoppers
 
-The average online shopper usually has to create multiple accounts for each store, and keep going back to get information on new arrivals, product discounts and availability. Market solves this by providing an app where shoppers can purchase products, discover and follow stores, get updates and more, all from a single account.
+The average online shopper usually has to create multiple accounts for each store, and keep going back to get information on new arrivals, product discounts and availability. Habiti solves this by providing an app where shoppers can purchase products, discover and follow stores, get updates and more, all from a single account.
 
 ### For store owners
 
-For most small to medium-scale retailers, setting up an online store is difficult and expensive, and attracting potential customers is even more so. Market solves this by providing an affordable and simple dashboard to manage orders, inventory, analytics and other store-related information. It also helps merchants advertise both their store and products, making it easier for newer stores to gain traction.
+For most small to medium-scale retailers, setting up an online store is difficult and expensive, and attracting potential customers is even more so. Habiti solves this by providing an affordable and simple dashboard to manage orders, inventory, analytics and other store-related information. It also helps merchants advertise both their store and products, making it easier for newer stores to gain traction.
 
 ## Getting Started
 
-This section will help you get Market up and running in your development environment.
+This section will help you get Habiti up and running in your development environment.
 
 ### Prerequisites
 
@@ -30,7 +30,7 @@ To clone this repo and install the base dependencies:
 
 ```sh
 # Clone the repository
-git clone https://github.com/overthq/Market.git && cd Market
+git clone https://github.com/overthq/Habiti.git && cd Habiti
 
 # Install general dependencies
 yarn
@@ -48,7 +48,7 @@ Contributions are welcome. Be sure to check out the [contribution guidelines](.g
 
 ## Tech Stack
 
-Market is a TypeScript-based application. It is built with popular JS libraries/frameworks like React, React Native and Express. Here's what the stack looks like:
+Habiti is a TypeScript-based application. It is built with popular JS libraries/frameworks like React, React Native and Express. Here's what the stack looks like:
 
 - Front-End
   - Framework: [React Native](https://reactnative.dev) and [Expo](https://expo.io)

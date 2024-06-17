@@ -1,4 +1,4 @@
-import { Icon } from '@market/components';
+import { Icon } from '@habiti/components';
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 

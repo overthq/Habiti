@@ -4,7 +4,7 @@ import {
 	Spacer,
 	TextButton,
 	Typography
-} from '@market/components';
+} from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 
@@ -16,7 +16,7 @@ const Landing = () => {
 	return (
 		<Screen style={{ padding: 16, justifyContent: 'center' }}>
 			<Typography size='xxxlarge' weight='bold' style={{ textAlign: 'center' }}>
-				Welcome to Market
+				Welcome to Habiti
 			</Typography>
 			<Spacer y={16} />
 			<Button text='Sign up' onPress={() => navigate('Register')} />

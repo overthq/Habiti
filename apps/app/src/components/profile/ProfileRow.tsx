@@ -1,4 +1,4 @@
-import { Icon, Typography, useTheme } from '@market/components';
+import { Icon, Typography, useTheme } from '@habiti/components';
 import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 

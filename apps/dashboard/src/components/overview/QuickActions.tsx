@@ -1,4 +1,4 @@
-import { SectionHeader, useTheme } from '@market/components';
+import { SectionHeader, useTheme } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 

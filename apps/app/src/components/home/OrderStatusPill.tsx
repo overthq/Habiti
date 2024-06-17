@@ -1,5 +1,5 @@
-import { Typography, useTheme } from '@market/components';
-import { ThemeObject } from '@market/components/src/styles/theme';
+import { Typography, useTheme } from '@habiti/components';
+import { ThemeObject } from '@habiti/components/src/styles/theme';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 

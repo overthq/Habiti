@@ -1,4 +1,4 @@
-import { Button, Input, Screen, Spacer } from '@market/components';
+import { Button, Input, Screen, Spacer } from '@habiti/components';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { StyleSheet } from 'react-native';

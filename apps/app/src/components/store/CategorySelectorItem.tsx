@@ -1,4 +1,4 @@
-import { Typography } from '@market/components';
+import { Typography } from '@habiti/components';
 import { Pressable } from 'react-native';
 
 interface CategorySelectorItemProps {

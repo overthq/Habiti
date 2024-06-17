@@ -1,4 +1,4 @@
-import { Button, Screen, Spacer, Typography } from '@market/components';
+import { Button, Screen, Spacer, Typography } from '@habiti/components';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';

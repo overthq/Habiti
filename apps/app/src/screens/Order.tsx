@@ -1,4 +1,4 @@
-import { Screen, Spacer } from '@market/components';
+import { Screen, Spacer } from '@habiti/components';
 import {
 	NavigationProp,
 	RouteProp,

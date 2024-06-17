@@ -1,4 +1,4 @@
-import { ListEmpty, Screen } from '@market/components';
+import { ListEmpty, Screen } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';

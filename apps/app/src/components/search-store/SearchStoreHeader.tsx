@@ -1,4 +1,4 @@
-import { Icon, SearchInput, TextButton, useTheme } from '@market/components';
+import { Icon, SearchInput, TextButton, useTheme } from '@habiti/components';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, TextInput, Pressable } from 'react-native';

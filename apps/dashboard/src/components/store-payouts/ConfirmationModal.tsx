@@ -3,7 +3,7 @@ import {
 	BottomSheetModal,
 	TouchableOpacity
 } from '@gorhom/bottom-sheet';
-import { useTheme, Typography } from '@market/components';
+import { useTheme, Typography } from '@habiti/components';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { View } from 'react-native';

@@ -1,4 +1,4 @@
-import { Icon, Screen } from '@market/components';
+import { Icon, Screen } from '@habiti/components';
 import {
 	useRoute,
 	RouteProp,

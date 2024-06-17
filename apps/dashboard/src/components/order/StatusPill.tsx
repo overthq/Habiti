@@ -1,4 +1,4 @@
-import { Badge } from '@market/components';
+import { Badge } from '@habiti/components';
 import React from 'react';
 
 import { OrderStatus } from '../../types/api';

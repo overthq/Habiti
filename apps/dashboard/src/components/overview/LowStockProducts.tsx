@@ -1,4 +1,4 @@
-import { SectionHeader, Spacer } from '@market/components';
+import { SectionHeader, Spacer } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';

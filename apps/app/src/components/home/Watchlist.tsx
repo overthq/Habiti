@@ -1,4 +1,4 @@
-import { ListEmpty, SectionHeader } from '@market/components';
+import { ListEmpty, SectionHeader } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';

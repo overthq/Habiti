@@ -1,4 +1,4 @@
-import { Screen, SelectGroup, Spacer, Typography } from '@market/components';
+import { Screen, SelectGroup, Spacer, Typography } from '@habiti/components';
 import React from 'react';
 
 import useGoBack from '../hooks/useGoBack';

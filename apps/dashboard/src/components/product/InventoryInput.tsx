@@ -1,4 +1,4 @@
-import { useTheme, Icon, Typography } from '@market/components';
+import { useTheme, Icon, Typography } from '@habiti/components';
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { View, Pressable, TextInput, StyleSheet } from 'react-native';

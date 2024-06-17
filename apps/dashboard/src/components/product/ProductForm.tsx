@@ -1,5 +1,5 @@
-import { formatNaira } from '@market/common';
-import { ScrollableScreen, Spacer } from '@market/components';
+import { formatNaira } from '@habiti/common';
+import { ScrollableScreen, Spacer } from '@habiti/components';
 import React from 'react';
 import { Platform, StyleSheet } from 'react-native';
 

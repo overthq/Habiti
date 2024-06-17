@@ -1,5 +1,5 @@
-import { formatNaira } from '@market/common';
-import { Icon, SectionHeader, Typography, useTheme } from '@market/components';
+import { formatNaira } from '@habiti/common';
+import { Icon, SectionHeader, Typography, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';

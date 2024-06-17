@@ -1,4 +1,4 @@
-import { Button } from '@market/components';
+import { Button } from '@habiti/components';
 import React from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 

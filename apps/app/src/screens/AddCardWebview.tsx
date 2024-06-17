@@ -1,4 +1,4 @@
-import { Screen } from '@market/components';
+import { Screen } from '@habiti/components';
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { WebView } from 'react-native-webview';
@@ -12,7 +12,7 @@ import { useCardAuthorizationQuery } from '../types/api';
 // We should probably just add all these customers to a cache and send a bulk
 // transfer out at the end of each day.
 // To do this though, we have to collect their bank account information.
-// Or we can just create "Market cash" and load the money there, and it can
+// Or we can just create "Habiti cash" and load the money there, and it can
 // be added to their transaction.
 
 const AddCardWebview: React.FC = () => {

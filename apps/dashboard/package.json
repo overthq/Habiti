@@ -1,8 +1,9 @@
 {
-	"name": "@market/dashboard",
+	"name": "@habiti/dashboard",
 	"version": "1.0.0",
 	"private": true,
 	"main": "index.js",
+	"license": "GPL-3.0-or-later",
 	"scripts": {
 		"lint": "eslint .",
 		"generate-types": "graphql-codegen --config codegen.yml",
@@ -14,8 +15,8 @@
 	},
 	"dependencies": {
 		"@gorhom/bottom-sheet": "^4",
-		"@market/common": "*",
-		"@market/components": "*",
+		"@habiti/common": "*",
+		"@habiti/components": "*",
 		"@react-native-async-storage/async-storage": "1.23.1",
 		"@react-native-masked-view/masked-view": "0.3.1",
 		"@react-navigation/bottom-tabs": "^6.5.11",

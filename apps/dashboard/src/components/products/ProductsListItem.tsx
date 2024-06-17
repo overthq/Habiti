@@ -1,5 +1,5 @@
-import { formatNaira } from '@market/common';
-import { useTheme, CustomImage, Icon, Typography } from '@market/components';
+import { formatNaira } from '@habiti/common';
+import { useTheme, CustomImage, Icon, Typography } from '@habiti/components';
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 

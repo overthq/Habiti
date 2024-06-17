@@ -1,4 +1,4 @@
-import { Icon, ScrollableScreen } from '@market/components';
+import { Icon, ScrollableScreen } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';

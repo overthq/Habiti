@@ -1,4 +1,4 @@
-import { CustomImage, Screen, Typography } from '@market/components';
+import { CustomImage, Screen, Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';

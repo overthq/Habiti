@@ -1,4 +1,4 @@
-import { ScrollableScreen } from '@market/components';
+import { ScrollableScreen } from '@habiti/components';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { View } from 'react-native';

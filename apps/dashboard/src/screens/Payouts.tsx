@@ -1,4 +1,4 @@
-import { formatNaira } from '@market/common';
+import { formatNaira } from '@habiti/common';
 import {
 	Icon,
 	Screen,
@@ -7,7 +7,7 @@ import {
 	TextButton,
 	Typography,
 	useTheme
-} from '@market/components';
+} from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';

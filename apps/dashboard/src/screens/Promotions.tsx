@@ -1,4 +1,4 @@
-import { Screen, Typography } from '@market/components';
+import { Screen, Typography } from '@habiti/components';
 import React from 'react';
 
 const Promotions = () => {

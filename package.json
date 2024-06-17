@@ -1,25 +1,22 @@
 {
-	"name": "market",
+	"name": "habiti",
 	"version": "0.0.1",
 	"description": "Simplifying online shopping",
 	"main": "index.js",
-	"repository": "https://github.com/overthq/Market.git",
+	"repository": "https://github.com/overthq/Habiti.git",
 	"author": "Oluwakorede Fashokun <koredefashokun@gmail.com>",
 	"license": "GPL-3.0-or-later",
 	"private": true,
 	"scripts": {
-		"start:app": "yarn workspace @market/app start",
-		"start:dashboard": "yarn workspace @market/dashboard start",
+		"start:app": "yarn workspace @habiti/app start",
+		"start:dashboard": "yarn workspace @habiti/dashboard start",
 		"lint": "yarn workspaces run lint",
 		"start-redis": "redis-server --daemonize yes",
 		"postinstall": "husky",
 		"load-bank-list": "node scripts/load-banks"
 	},
 	"lint-staged": {
-		"*.{ts,tsx}": [
-			"eslint --fix",
-			"prettier --write"
-		]
+		"*.{ts,tsx}": ["eslint --fix", "prettier --write"]
 	},
 	"devDependencies": {
 		"eslint": "^8.57.0",
@@ -30,8 +27,5 @@
 		"prettier": "^3.2.5",
 		"typescript": "^5.3.3"
 	},
-	"workspaces": [
-		"packages/*",
-		"apps/*"
-	]
+	"workspaces": ["packages/*", "apps/*"]
 }

@@ -1,4 +1,5 @@
-import { IconType } from '../components/Icon';
+import { IconType } from '@habiti/components';
+
 import { MainTabParamList } from '../types/navigation';
 
 const icons: Record<keyof MainTabParamList, IconType> = {

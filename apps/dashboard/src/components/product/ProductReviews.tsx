@@ -1,4 +1,4 @@
-import { Spacer, Typography, useTheme } from '@market/components';
+import { Spacer, Typography, useTheme } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 

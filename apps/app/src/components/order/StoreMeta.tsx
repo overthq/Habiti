@@ -1,4 +1,4 @@
-import { CustomImage, Typography, useTheme } from '@market/components';
+import { CustomImage, Typography, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Pressable, View } from 'react-native';

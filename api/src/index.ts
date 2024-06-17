@@ -14,7 +14,7 @@ import { initSentry } from './config/sentry';
 import payments from './payments';
 import schema from './schema';
 import Services from './services';
-import { MarketRequest } from './types/misc';
+import { HabitiRequest } from './types/misc';
 import webhooks from './webhooks';
 
 import './config/cloudinary';
@@ -24,7 +24,7 @@ const main = async () => {
 	initSentry(app);
 
 	app.use(express.json());
-	// app.use(compression());
+	app.use(compression());
 	app.use(
 		expressjwt({
 			secret: process.env.JWT_SECRET,
@@ -50,7 +50,7 @@ const main = async () => {
 		'/graphql',
 		express.json(),
 		expressMiddleware(apolloServer, {
-			context: async ({ req }: { req: MarketRequest }) => ({
+			context: async ({ req }: { req: HabitiRequest }) => ({
 				user: req.auth ?? null,
 				storeId: req.headers['x-market-store-id'] || undefined,
 				prisma: prismaClient,

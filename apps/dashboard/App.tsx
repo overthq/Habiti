@@ -1,5 +1,5 @@
 import 'core-js/full/symbol/async-iterator';
-import { ThemeProvider } from '@market/components';
+import { ThemeProvider } from '@habiti/components';
 import React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';

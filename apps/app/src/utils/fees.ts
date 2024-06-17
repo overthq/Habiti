@@ -13,13 +13,13 @@ export const calculatePaystackFee = (subTotal: number) => {
 	return raw > 200000 ? 200000 : raw;
 };
 
-export const calculateMarketFee = () => {
+export const calculateHabitiFee = () => {
 	return 100000;
 };
 
 export const calculateFees = (subTotal: number) => {
 	const transaction = calculatePaystackFee(subTotal);
-	const service = calculateMarketFee();
+	const service = calculateHabitiFee();
 	const total = transaction + service;
 
 	return { transaction, service, total };
