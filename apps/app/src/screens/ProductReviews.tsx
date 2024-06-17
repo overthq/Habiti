@@ -1,4 +1,4 @@
-import { Screen, Typography } from '@market/components';
+import { Screen, Typography } from '@habiti/components';
 import { useRoute } from '@react-navigation/native';
 import React from 'react';
 

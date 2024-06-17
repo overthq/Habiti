@@ -1,7 +1,7 @@
 {
 	"expo": {
-		"name": "Market Dashboard",
-		"slug": "market-dashboard",
+		"name": "Habiti Dashboard",
+		"slug": "habiti-dashboard",
 		"owner": "overthq",
 		"version": "1.0.0",
 		"orientation": "portrait",
@@ -19,7 +19,7 @@
 			"supportsTablet": true
 		},
 		"android": {
-			"package": "dev.overt.marketDashboard",
+			"package": "app.habiti.dashboard",
 			"adaptiveIcon": {
 				"foregroundImage": "./assets/adaptive-icon.png",
 				"backgroundColor": "#FFFFFF"
@@ -30,7 +30,7 @@
 		},
 		"extra": {
 			"eas": {
-				"projectId": "6f450068-239a-4903-b9bb-96a6f1400117"
+				"projectId": "dc06d296-cd6f-4950-85d3-1483d3a394df"
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-import { Screen } from '@market/components';
+import { Screen } from '@habiti/components';
 import {
 	NavigationProp,
 	RouteProp,

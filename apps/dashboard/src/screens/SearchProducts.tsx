@@ -4,7 +4,7 @@ import {
 	SearchInput,
 	TextButton,
 	useTheme
-} from '@market/components';
+} from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import React from 'react';

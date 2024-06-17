@@ -1,4 +1,4 @@
-import { Icon, IconType } from '@market/components';
+import { Icon, IconType } from '@habiti/components';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Pressable } from 'react-native';

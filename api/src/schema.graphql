@@ -1,4 +1,4 @@
-# This file implements a new Relay-compatible schema for Market.
+# This file implements a new Relay-compatible schema for Habiti.
 # This will probably not be implemented for a while, as I'm still figuring out how to
 # implement the Relay pagination spec with Prisma.
 # This will also make it easier to port to Go/Rust for v2.

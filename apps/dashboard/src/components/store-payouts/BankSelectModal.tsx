@@ -3,7 +3,7 @@ import {
 	BottomSheetFlatList,
 	BottomSheetModal
 } from '@gorhom/bottom-sheet';
-import { useTheme, Typography } from '@market/components';
+import { useTheme, Typography } from '@habiti/components';
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import { Pressable, StyleSheet } from 'react-native';

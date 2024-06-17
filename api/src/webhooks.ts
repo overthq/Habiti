@@ -1,13 +1,13 @@
 import { createHmac } from 'crypto';
 import { Router } from 'express';
 
-import { MarketRequest } from './types/misc';
+import { HabitiRequest } from './types/misc';
 import { storeCard } from './utils/paystack';
 import { handleTransferFailure, handleTransferSuccess } from './utils/webhooks';
 
 const router: Router = Router();
 
-router.post('/paystack', async (req: MarketRequest, res) => {
+router.post('/paystack', async (req: HabitiRequest, res) => {
 	const hash = createHmac('sha512', process.env.PAYSTACK_SECRET_KEY)
 		.update(JSON.stringify(req.body))
 		.digest('hex');

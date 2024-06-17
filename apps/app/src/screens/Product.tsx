@@ -1,4 +1,4 @@
-import { Icon, Screen, Spacer } from '@market/components';
+import { Icon, Screen, Spacer } from '@habiti/components';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { GestureHandlerRefContext } from '@react-navigation/stack';
 import React from 'react';

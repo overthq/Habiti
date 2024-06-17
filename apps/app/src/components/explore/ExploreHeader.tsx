@@ -1,4 +1,4 @@
-import { Icon, TextButton, useTheme } from '@market/components';
+import { Icon, TextButton, useTheme } from '@habiti/components';
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 import Animated, {

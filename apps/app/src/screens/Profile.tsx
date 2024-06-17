@@ -1,4 +1,4 @@
-import { Button, Screen, useTheme } from '@market/components';
+import { Button, Screen, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
@@ -14,7 +14,7 @@ import { ProfileStackParamList } from '../types/navigation';
   - Addresses
   - Loyalty Cards (list followed stores that support loyalty cards.)
   - Country*
-	- Market Pro* (subscription membership with perks).
+	- Habiti Pro* (subscription membership with perks).
 * About this app
   - Legal
 	- TOS

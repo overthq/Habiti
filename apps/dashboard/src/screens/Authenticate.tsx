@@ -5,7 +5,7 @@ import {
 	Spacer,
 	TextButton,
 	Typography
-} from '@market/components';
+} from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { useForm } from 'react-hook-form';

@@ -1,4 +1,4 @@
-import { useTheme, Icon, Typography } from '@market/components';
+import { useTheme, Icon, Typography } from '@habiti/components';
 import * as ImagePicker from 'expo-image-picker';
 import React from 'react';
 import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';

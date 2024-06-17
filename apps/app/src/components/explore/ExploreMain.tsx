@@ -1,4 +1,4 @@
-import { ScrollableScreen, useTheme } from '@market/components';
+import { ScrollableScreen, useTheme } from '@habiti/components';
 import React from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 

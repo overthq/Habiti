@@ -3,7 +3,7 @@ import {
 	ScrollableScreen,
 	Separator,
 	Spacer
-} from '@market/components';
+} from '@habiti/components';
 import {
 	useRoute,
 	RouteProp,

@@ -1,4 +1,4 @@
-import { Typography } from '@market/components';
+import { Typography } from '@habiti/components';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
 import { View } from 'react-native';

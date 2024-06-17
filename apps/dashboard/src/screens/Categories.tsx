@@ -1,4 +1,4 @@
-import { EmptyState, Icon, Screen, Typography } from '@market/components';
+import { EmptyState, Icon, Screen, Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, ActivityIndicator, Pressable } from 'react-native';

@@ -1,4 +1,4 @@
-import { Button, Screen, TextButton, Typography } from '@market/components';
+import { Button, Screen, TextButton, Typography } from '@habiti/components';
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';

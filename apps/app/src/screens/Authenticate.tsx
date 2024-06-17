@@ -4,7 +4,7 @@ import {
 	Screen,
 	Spacer,
 	Typography
-} from '@market/components';
+} from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
 import { useForm } from 'react-hook-form';
@@ -58,7 +58,7 @@ const Authenticate = () => {
 					name='email'
 					control={control}
 					label='Email address'
-					placeholder='john@market.com'
+					placeholder='john@habiti.app'
 					keyboardType='email-address'
 					autoCorrect={false}
 					autoCapitalize='none'

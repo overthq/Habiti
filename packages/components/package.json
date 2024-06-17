@@ -1,7 +1,8 @@
 {
-	"name": "@market/components",
+	"name": "@habiti/components",
 	"version": "0.0.1",
 	"main": "src/index.ts",
+	"license": "GPL-3.0-or-later",
 	"scripts": {
 		"lint": "eslint ."
 	},

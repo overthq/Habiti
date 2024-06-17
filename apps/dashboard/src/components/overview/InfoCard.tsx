@@ -1,4 +1,4 @@
-import { useTheme } from '@market/components';
+import { useTheme } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 

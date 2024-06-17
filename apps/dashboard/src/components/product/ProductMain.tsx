@@ -1,4 +1,4 @@
-import { Icon, TextButton } from '@market/components';
+import { Icon, TextButton } from '@habiti/components';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';

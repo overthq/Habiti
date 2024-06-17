@@ -1,5 +1,5 @@
-import { formatNaira } from '@market/common';
-import { SectionHeader, Spacer, Typography } from '@market/components';
+import { formatNaira } from '@habiti/common';
+import { SectionHeader, Spacer, Typography } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 

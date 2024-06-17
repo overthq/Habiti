@@ -1,11 +1,11 @@
 import { Router } from 'express';
 
-import { MarketRequest } from './types/misc';
+import { HabitiRequest } from './types/misc';
 import { verifyTransaction } from './utils/paystack';
 
 const router: Router = Router();
 
-router.post('/verify-transaction', async (req: MarketRequest, res) => {
+router.post('/verify-transaction', async (req: HabitiRequest, res) => {
 	const { reference } = req.body;
 
 	try {

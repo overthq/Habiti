@@ -1,4 +1,4 @@
-import { Button, FormInput, Screen } from '@market/components';
+import { Button, FormInput, Screen } from '@habiti/components';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { useForm } from 'react-hook-form';

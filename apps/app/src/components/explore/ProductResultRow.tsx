@@ -1,4 +1,4 @@
-import { CustomImage, Spacer, Typography } from '@market/components';
+import { CustomImage, Spacer, Typography } from '@habiti/components';
 import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 

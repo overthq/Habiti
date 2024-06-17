@@ -1,4 +1,4 @@
-import { Screen, Icon, Typography, useTheme } from '@market/components';
+import { Screen, Icon, Typography, useTheme } from '@habiti/components';
 import * as ImagePicker from 'expo-image-picker';
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';

@@ -1,4 +1,4 @@
-import { ScrollableScreen, Typography } from '@market/components';
+import { ScrollableScreen, Typography } from '@habiti/components';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';

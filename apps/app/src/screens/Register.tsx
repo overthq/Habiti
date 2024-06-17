@@ -1,4 +1,4 @@
-import { Button, Input, Spacer, Typography } from '@market/components';
+import { Button, Input, Spacer, Typography } from '@habiti/components';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';

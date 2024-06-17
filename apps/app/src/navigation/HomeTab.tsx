@@ -1,4 +1,4 @@
-import { useTheme } from '@market/components';
+import { useTheme } from '@habiti/components';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';

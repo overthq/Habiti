@@ -6,7 +6,7 @@ import {
 	Spacer,
 	Typography,
 	useTheme
-} from '@market/components';
+} from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, ActivityIndicator, Pressable } from 'react-native';

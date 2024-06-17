@@ -3,7 +3,7 @@ import {
 	BottomSheetBackdropProps,
 	BottomSheetModal
 } from '@gorhom/bottom-sheet';
-import { Button, FormInput, Screen, Spacer } from '@market/components';
+import { Button, FormInput, Screen, Spacer } from '@habiti/components';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { StyleSheet } from 'react-native';

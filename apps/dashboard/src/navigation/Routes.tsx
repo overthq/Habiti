@@ -1,5 +1,5 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { useTheme } from '@market/components';
+import { useTheme } from '@habiti/components';
 import {
 	DarkTheme,
 	DefaultTheme,

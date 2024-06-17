@@ -1,4 +1,4 @@
-# Market App
+# Habiti App
 
 This is the front-facing app that shoppers will use.
 
@@ -13,4 +13,3 @@ yarn
 
 yarn start
 ```
-

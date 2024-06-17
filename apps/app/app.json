@@ -1,7 +1,8 @@
 {
 	"expo": {
-		"name": "Market",
-		"slug": "market",
+		"name": "Habiti",
+		"slug": "habiti",
+		"owner": "overthq",
 		"version": "1.0.0",
 		"orientation": "portrait",
 		"icon": "./assets/icon.png",
@@ -18,7 +19,7 @@
 			"supportsTablet": true
 		},
 		"android": {
-			"package": "dev.overt.market",
+			"package": "app.habiti.app",
 			"adaptiveIcon": {
 				"foregroundImage": "./assets/adaptive-icon.png",
 				"backgroundColor": "#FFFFFF"
@@ -29,9 +30,8 @@
 		},
 		"extra": {
 			"eas": {
-				"projectId": "cb3a245a-4a6a-4c65-979d-bb5ef810b12c"
+				"projectId": "f09782f6-8048-4ad4-8ff1-3fb7a65fbe48"
 			}
-		},
-		"owner": "overthq"
+		}
 	}
 }

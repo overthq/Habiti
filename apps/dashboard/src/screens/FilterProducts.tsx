@@ -1,4 +1,4 @@
-import { Button, Checkbox, Screen, Typography } from '@market/components';
+import { Button, Checkbox, Screen, Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';

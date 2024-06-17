@@ -1,4 +1,4 @@
-import { FormInput, Spacer, Typography } from '@market/components';
+import { FormInput, Spacer, Typography } from '@habiti/components';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { StyleSheet, Dimensions, View } from 'react-native';
