@@ -23,6 +23,7 @@
 		"@react-navigation/native": "^6.1.9",
 		"@react-navigation/native-stack": "^6.9.26",
 		"@react-navigation/stack": "^6.3.20",
+		"@sentry/react-native": "^5.24.0",
 		"@shopify/flash-list": "1.6.4",
 		"@urql/exchange-graphcache": "^7.1.0",
 		"core-js": "^3.30.1",

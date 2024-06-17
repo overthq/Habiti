@@ -22,7 +22,8 @@
 				"image": "latest"
 			},
 			"env": {
-				"API_URL": "https://market-api-d47w.onrender.com"
+				"API_URL": "https://market-api-d47w.onrender.com",
+				"SENTRY_DSN": "https://385d60a93aee3e59df675a79c82b0beb@o4507042729099264.ingest.us.sentry.io/4507449670172672"
 			}
 		}
 	},
