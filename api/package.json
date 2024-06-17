@@ -3,7 +3,6 @@
 	"version": "0.0.1",
 	"main": "dist/index.js",
 	"license": "GPL-3.0",
-	"type": "module",
 	"scripts": {
 		"dev": "nodemon",
 		"build": "tsc && yarn sentry:sourcemaps",
