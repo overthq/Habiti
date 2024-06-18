@@ -106,7 +106,7 @@ const handleResponse = (responseObj: any, meta?: any) => {
 			responseObj.auth.toLowerCase() === '3ds' &&
 			validUrl(responseObj.otpmessage)
 		) {
-			requestAuth(responseObj.otpmessage);
+			requestAuth(/*responseObj.otpmessage*/);
 		} else if (responseObj.status === '3') {
 		} else if (responseObj.status.toLowerCase() === 'requery') {
 			setTimeout(() => {
