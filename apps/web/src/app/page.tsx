@@ -1,7 +1,13 @@
+import Footer from '@/components/home/Footer';
+import Header from '@/components/home/Header';
+import Hero from '@/components/home/Hero';
+
 const Home = () => {
 	return (
 		<main>
-			<div>Welcome to Habiti!</div>
+			<Header />
+			<Hero />
+			<Footer />
 		</main>
 	);
 };

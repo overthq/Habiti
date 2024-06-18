@@ -7,7 +7,7 @@
 		"dev": "nodemon",
 		"build": "tsc && yarn sentry:sourcemaps",
 		"start": "node dist/index",
-		"sentry:sourcemaps": "sentry-cli sourcemaps inject --org market-dv --project market-api ./dist && sentry-cli sourcemaps upload --org market-dv --project market-api ./dist"
+		"sentry:sourcemaps": "sentry-cli sourcemaps inject --org habiti --project habiti-api ./dist && sentry-cli sourcemaps upload --org habiti --project habiti-api ./dist"
 	},
 	"dependencies": {
 		"@apollo/server": "^4.10.4",
