@@ -128,7 +128,7 @@ export const requestAvs = () => {
 	// Do something
 };
 
-export const requestAuth = (otp: any) => {
+export const requestAuth = (/*otp: any*/) => {
 	// Do something
 };
 
@@ -136,9 +136,9 @@ export const requestOtp = () => {
 	// Do something
 };
 
-const validateKey = (publicKey: string) => {};
+export const validateKey = (/* publicKey: string*/) => {};
 
-const initWithPublicKey = async (publicKey: string) => {
+export const initWithPublicKey = async (/*publicKey: string*/) => {
 	const apiUrl = '';
 
 	await fetch(apiUrl, {
@@ -151,11 +151,11 @@ const initWithPublicKey = async (publicKey: string) => {
 	});
 };
 
-const getDeviceId = () => {
+export const getDeviceId = () => {
 	return 'iossdk_'; // + stringByAppendingString:[[[UIDevice currentDevice] identifierForVendor] UUIDString]];
 };
 
-const getPaystackUserAgent = () => {
+export const getPaystackUserAgent = () => {
 	const details = {
 		lang: 'objective-c',
 		bindings_version: '', // PSTCKSDKVersion,
