@@ -176,16 +176,17 @@ const PushNotifications = () => {
 			const projectId =
 				Constants?.expoConfig?.extra?.eas?.projectId ??
 				Constants?.easConfig?.projectId;
+
 			if (!projectId) {
 				handleRegistrationError('Project ID not found');
 			}
+
 			try {
 				const pushTokenString = (
 					await Notifications.getExpoPushTokenAsync({
 						projectId
 					})
 				).data;
-				console.log(pushTokenString);
 				return pushTokenString;
 			} catch (e: unknown) {
 				handleRegistrationError(`${e}`);
@@ -218,7 +219,8 @@ const PushNotifications = () => {
 const steps = [
 	{ id: 'name', screen: <Name /> },
 	{ id: 'email', screen: <Email /> },
-	{ id: 'password', screen: <Password /> }
+	{ id: 'password', screen: <Password /> },
+	{ id: 'push-notifications', screen: <PushNotifications /> }
 ] as const;
 
 const Onboarding: React.FC = () => {
