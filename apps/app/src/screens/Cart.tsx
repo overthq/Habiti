@@ -41,7 +41,10 @@ const Cart: React.FC = () => {
 	const [{ data, fetching }] = useCartQuery({ variables: { cartId } });
 	const [, createOrder] = useCreateOrderMutation();
 
-	const defaultCardId = useStore(state => state.defaultCard);
+	const { defaultCardId, setPreference } = useStore(state => ({
+		defaultCardId: state.defaultCard,
+		setPreference: state.setPreference
+	}));
 	const { bottom } = useSafeAreaInsets();
 
 	const [selectedCard, setSelectedCard] = React.useState(defaultCardId);
@@ -50,6 +53,8 @@ const Cart: React.FC = () => {
 		const { error } = await createOrder({
 			input: { cartId, cardId: selectedCard }
 		});
+
+		setPreference({ defaultCard: selectedCard });
 
 		if (error) {
 			// TODO: Alert the user that something has gone wrong.
