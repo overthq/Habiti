@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 import prismaClient from '../config/prisma';
 
 const API_URL = 'https://api.paystack.co';
@@ -179,6 +177,19 @@ export const createTransferReceipient = async (
 	});
 
 	return data.recipient_code;
+};
+
+export const loadBanks = async () => {
+	const response = await fetch('https://api.paystack.co/bank?country=nigeria', {
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json'
+		}
+	});
+
+	const { data } = await response.json();
+
+	return data;
 };
 
 // TODO: Use authorization code to return the tokenization fee to user programmatically.
