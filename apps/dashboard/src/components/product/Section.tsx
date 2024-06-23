@@ -9,13 +9,15 @@ interface SectionProps {
 	placeholder: string;
 	field: string;
 	inputProps?: TextInputProps;
+	children?: React.ReactNode;
 }
 
 const Section: React.FC<SectionProps> = ({
 	title,
 	field,
 	placeholder,
-	inputProps
+	inputProps,
+	children
 }) => {
 	const { control } = useFormContext();
 	const { theme } = useTheme();
@@ -28,21 +30,23 @@ const Section: React.FC<SectionProps> = ({
 			>
 				{title}
 			</Typography>
-			<Controller
-				name={field}
-				control={control}
-				render={({ field: { onChange, onBlur, value } }) => (
-					<TextInput
-						value={value}
-						onChangeText={onChange}
-						onBlur={onBlur}
-						style={[styles.input, { color: theme.text.primary }]}
-						placeholder={placeholder}
-						placeholderTextColor={theme.input.placeholder}
-						{...inputProps}
-					/>
-				)}
-			/>
+			{children ?? (
+				<Controller
+					name={field}
+					control={control}
+					render={({ field: { onChange, onBlur, value } }) => (
+						<TextInput
+							value={value}
+							onChangeText={onChange}
+							onBlur={onBlur}
+							style={[styles.input, { color: theme.text.primary }]}
+							placeholder={placeholder}
+							placeholderTextColor={theme.input.placeholder}
+							{...inputProps}
+						/>
+					)}
+				/>
+			)}
 		</View>
 	);
 };

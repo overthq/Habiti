@@ -1,4 +1,4 @@
-import { Typography } from '@habiti/components';
+import { Typography, useTheme } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
@@ -9,9 +9,13 @@ interface StoreProfileProps {
 }
 
 const StoreProfile: React.FC<StoreProfileProps> = ({ store }) => {
+	const { theme } = useTheme();
+
 	return (
 		<View style={styles.container}>
-			<View style={styles.avatar}>
+			<View
+				style={[styles.avatar, { backgroundColor: theme.image.placeholder }]}
+			>
 				<Typography weight='medium' size='xxxlarge' style={styles.avatarText}>
 					{store.name[0]}
 				</Typography>
@@ -34,7 +38,6 @@ const styles = StyleSheet.create({
 		borderRadius: 40,
 		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor: '#D3D3D3',
 		marginRight: 8
 	},
 	avatarText: {

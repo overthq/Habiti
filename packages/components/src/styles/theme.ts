@@ -187,7 +187,7 @@ const light = {
 		default: { color: palette.neutral.n100 }
 	},
 	border: {
-		color: palette.neutral.n10
+		color: palette.neutral.n20
 	},
 	image: {
 		placeholder: palette.neutral.n10

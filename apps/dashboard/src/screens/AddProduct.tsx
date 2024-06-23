@@ -71,7 +71,11 @@ const AddProduct: React.FC = () => {
 
 	return (
 		<FormProvider {...formMethods}>
-			<ProductForm imagesToUpload={toUpload} setImagesToUpload={setToUpload} />
+			<ProductForm
+				mode='add'
+				imagesToUpload={toUpload}
+				setImagesToUpload={setToUpload}
+			/>
 		</FormProvider>
 	);
 };

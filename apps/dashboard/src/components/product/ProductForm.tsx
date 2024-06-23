@@ -3,6 +3,7 @@ import { ScrollableScreen, Spacer } from '@habiti/components';
 import React from 'react';
 import { Platform, StyleSheet } from 'react-native';
 
+import CurrencyInput from './CurrencyInput';
 import Images from './Images';
 import InventoryInput from './InventoryInput';
 import ProductActions from './ProductActions';
@@ -46,7 +47,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
 				title='Unit Price'
 				placeholder={formatNaira(0.0)}
 				field='unitPrice'
-			/>
+			>
+				<CurrencyInput />
+			</Section>
 			<Images
 				images={images}
 				imagesToUpload={imagesToUpload}
