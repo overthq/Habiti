@@ -4,6 +4,7 @@ import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import ProductForm from '../components/product/ProductForm';
+import useGoBack from '../hooks/useGoBack';
 import { useCreateProductMutation } from '../types/api';
 import { generateUploadFile } from '../utils/images';
 
@@ -18,6 +19,7 @@ const AddProduct: React.FC = () => {
 	const [toUpload, setToUpload] = React.useState<string[]>([]);
 	const { goBack, setOptions } = useNavigation();
 	const [{ fetching }, createProduct] = useCreateProductMutation();
+	useGoBack('x');
 
 	const formMethods = useForm<ProductFormData>({
 		defaultValues: {
@@ -57,7 +59,6 @@ const AddProduct: React.FC = () => {
 
 	React.useLayoutEffect(() => {
 		setOptions({
-			headerLeft: () => <TextButton onPress={goBack}>Cancel</TextButton>,
 			headerRight: () => (
 				<TextButton
 					disabled={fetching}

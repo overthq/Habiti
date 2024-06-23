@@ -146,7 +146,7 @@ const dark = {
 const light = {
 	text: {
 		primary: palette.neutral.n100,
-		secondary: palette.neutral.n50,
+		secondary: palette.neutral.n80,
 		tertiary: palette.neutral.n10,
 		disabled: palette.neutral.n50,
 		error: palette.red.r50,
@@ -225,6 +225,6 @@ const light = {
 	statusBar: 'dark'
 } as const;
 
-export type ThemeObject = typeof light;
+export type ThemeObject = typeof light | typeof dark;
 
 export const themes = { light, dark };

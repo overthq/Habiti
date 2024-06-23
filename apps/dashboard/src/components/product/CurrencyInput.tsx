@@ -38,6 +38,7 @@ const CurrencyInput = () => {
 							onBlur();
 						}}
 						keyboardType='number-pad'
+						autoFocus
 					/>
 				)
 			}

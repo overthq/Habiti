@@ -1,7 +1,7 @@
-import { Button } from '@habiti/components';
+import { Button, Screen } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 
 import SettingSelectRow from './SettingSelectRow';
 import useGoBack from '../../hooks/useGoBack';
@@ -26,7 +26,7 @@ const SettingsActiveStore: React.FC = () => {
 	};
 
 	return (
-		<View style={styles.container}>
+		<Screen>
 			{stores?.map(store => (
 				<SettingSelectRow
 					key={store.name}
@@ -41,14 +41,8 @@ const SettingsActiveStore: React.FC = () => {
 					onPress={() => navigate('Modal.CreateStore')}
 				/>
 			</View>
-		</View>
+		</Screen>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1
-	}
-});
 
 export default SettingsActiveStore;
