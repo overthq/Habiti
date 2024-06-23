@@ -16,18 +16,21 @@ import { AppStackParamList } from '../types/navigation';
 const Register = () => {
 	const [name, setName] = React.useState('');
 	const [email, setEmail] = React.useState('');
-	const [phone, setPhone] = React.useState('');
+	const [password, setPassword] = React.useState('');
 
 	const { navigate } =
 		useNavigation<StackNavigationProp<AppStackParamList, 'Authenticate'>>();
 	const [{ fetching }, register] = useRegisterMutation();
 
 	const handleSubmit = async () => {
-		try {
-			await register({ input: { name, phone, email } });
-			navigate('Verify', { phone });
-		} catch (error) {
+		const { error, data } = await register({
+			input: { name, email, password }
+		});
+
+		if (error) {
 			console.log(error);
+		} else if (data?.register) {
+			navigate('Authenticate');
 		}
 	};
 
@@ -59,12 +62,10 @@ const Register = () => {
 				/>
 				<Spacer y={8} />
 				<Input
-					label='Phone'
-					onChangeText={setPhone}
-					placeholder='08012345678'
-					keyboardType='phone-pad'
-					autoCorrect={false}
-					autoCapitalize='none'
+					label='Password'
+					onChangeText={setPassword}
+					placeholder='Your password'
+					secureTextEntry
 				/>
 				<Spacer y={16} />
 				<Button text='Next' onPress={handleSubmit} loading={fetching} />

@@ -38,18 +38,14 @@ const Authenticate: React.FC = () => {
 	};
 
 	const onSubmit = async (values: AuthenticateFormValues) => {
-		try {
-			const { error, data } = await authenticate({ input: values });
+		const { error, data } = await authenticate({ input: values });
 
-			if (error) {
-				console.log(error);
-			} else if (data?.authenticate) {
-				logIn(data.authenticate.userId, data.authenticate.accessToken);
-			}
-			// navigate('Verify', { phone });
-		} catch (error) {
+		if (error) {
 			console.log(error);
+		} else if (data?.authenticate) {
+			logIn(data.authenticate.userId, data.authenticate.accessToken);
 		}
+		// navigate('Verify', { phone });
 	};
 
 	return (
