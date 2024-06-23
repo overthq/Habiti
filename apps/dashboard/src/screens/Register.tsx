@@ -40,15 +40,11 @@ const Register: React.FC = () => {
 	};
 
 	const onSubmit = async (values: RegisterFormValues) => {
-		try {
-			const { error } = await register({ input: values });
-			if (error) {
-				console.log(error);
-			} else {
-				navigate('Authenticate');
-			}
-		} catch (error) {
+		const { error } = await register({ input: values });
+		if (error) {
 			console.log(error);
+		} else {
+			navigate('Authenticate');
 		}
 	};
 
@@ -91,6 +87,7 @@ const Register: React.FC = () => {
 							label='Password'
 							placeholder='Password'
 							control={formMethods.control}
+							secureTextEntry
 						/>
 						<Spacer y={8} />
 						<Button

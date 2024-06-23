@@ -7,5 +7,5 @@ const localhostString = (port: string) =>
 		?.concat(`:${port}`)}`;
 
 export const env = {
-	apiUrl: process.env.API_URL || localhostString('4000')
+	apiUrl: process.env.EXPO_PUBLIC_API_URL || localhostString('4000')
 };

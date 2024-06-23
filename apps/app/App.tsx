@@ -9,7 +9,7 @@ import Routes from './src/navigation/Routes';
 import useStore from './src/state';
 
 Sentry.init({
-	dsn: process.env.SENTRY_DSN
+	dsn: process.env.EXPO_PUBLIC_SENTRY_DSN
 });
 
 const App: React.FC = () => {
