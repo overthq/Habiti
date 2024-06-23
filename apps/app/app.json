@@ -22,7 +22,7 @@
 			"package": "app.habiti.app",
 			"adaptiveIcon": {
 				"foregroundImage": "./assets/adaptive-icon.png",
-				"backgroundColor": "#FFFFFF"
+				"backgroundColor": "#000000"
 			}
 		},
 		"web": {

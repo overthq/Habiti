@@ -5,3 +5,4 @@ dump.rdb
 *.rdb
 *.tsbuildinfo
 remix/
+.DS_Store

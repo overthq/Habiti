@@ -21,7 +21,6 @@ const Hero = () => {
 				>
 					<button
 						style={{
-							fontFamily: 'Inter',
 							marginTop: 16,
 							padding: '12px 24px',
 							backgroundColor: '#108910',
