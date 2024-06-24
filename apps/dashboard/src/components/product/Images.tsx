@@ -46,7 +46,10 @@ const Images: React.FC<ImagesProps> = ({
 				{imagesToUpload.map(uri => (
 					<Image key={uri} source={{ uri }} style={styles.image} />
 				))}
-				<TouchableOpacity onPress={handlePickImage} style={styles.add}>
+				<TouchableOpacity
+					onPress={handlePickImage}
+					style={[styles.add, { borderColor: theme.border.color }]}
+				>
 					<Icon name='plus' size={24} />
 				</TouchableOpacity>
 			</View>
@@ -76,7 +79,6 @@ const styles = StyleSheet.create({
 		width: 60,
 		height: 60,
 		borderRadius: 6,
-		borderColor: '#E3E3E3',
 		borderWidth: 2,
 		justifyContent: 'center',
 		alignItems: 'center'
