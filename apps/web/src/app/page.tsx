@@ -4,7 +4,7 @@ import Hero from '@/components/home/Hero';
 
 const Home = () => {
 	return (
-		<main>
+		<main style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
 			<Header />
 			<Hero />
 			<Footer />
