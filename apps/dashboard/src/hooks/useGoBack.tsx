@@ -9,7 +9,7 @@ const useGoBack = (icon?: IconType, margin?: number) => {
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
 			headerLeft: () => (
-				<Pressable onPress={navigation.goBack}>
+				<Pressable style={{ marginRight: 4 }} onPress={navigation.goBack}>
 					<Icon
 						name={icon ?? 'chevron-left'}
 						size={28}
