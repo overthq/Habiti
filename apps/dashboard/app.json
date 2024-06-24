@@ -16,7 +16,8 @@
 		},
 		"assetBundlePatterns": ["**/*"],
 		"ios": {
-			"supportsTablet": true
+			"supportsTablet": true,
+			"bundleIdentifier": "app.habiti.dashboard"
 		},
 		"android": {
 			"package": "app.habiti.dashboard",
