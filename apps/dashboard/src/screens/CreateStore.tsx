@@ -12,7 +12,7 @@ import Animated, {
 	useSharedValue,
 	useAnimatedScrollHandler
 } from 'react-native-reanimated';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Brand from '../components/create-store/Brand';
 import Social from '../components/create-store/Social';
@@ -50,6 +50,7 @@ const CreateStore: React.FC = () => {
 	const scrollX = useSharedValue(0);
 	const setPreference = useStore(state => state.setPreference);
 	const formMethods = useForm<CreateStoreFormValues>();
+	const { bottom } = useSafeAreaInsets();
 
 	useGoBack('x');
 
@@ -92,30 +93,28 @@ const CreateStore: React.FC = () => {
 	const isLastStep = activeStepIndex === steps.length - 1;
 
 	return (
-		<SafeAreaView style={{ flex: 1 }}>
-			<Screen>
-				<FormProvider {...formMethods}>
-					<AnimatedFlatList
-						ref={listRef}
-						horizontal
-						decelerationRate='fast'
-						snapToInterval={width}
-						showsHorizontalScrollIndicator={false}
-						data={steps}
-						keyExtractor={s => s.title}
-						renderItem={({ item }) => item.component}
-						onViewableItemsChanged={handleViewableItemsChanged}
-						onScroll={handleScroll}
-					/>
-				</FormProvider>
-				<View style={{ paddingHorizontal: 16 }}>
-					<Button
-						text={isLastStep ? 'Submit' : 'Next'}
-						onPress={isLastStep ? formMethods.handleSubmit(onSubmit) : toNext}
-					/>
-				</View>
-			</Screen>
-		</SafeAreaView>
+		<Screen style={{ paddingBottom: bottom }}>
+			<FormProvider {...formMethods}>
+				<AnimatedFlatList
+					ref={listRef}
+					horizontal
+					decelerationRate='fast'
+					snapToInterval={width}
+					showsHorizontalScrollIndicator={false}
+					data={steps}
+					keyExtractor={s => s.title}
+					renderItem={({ item }) => item.component}
+					onViewableItemsChanged={handleViewableItemsChanged}
+					onScroll={handleScroll}
+				/>
+			</FormProvider>
+			<View style={{ paddingHorizontal: 16 }}>
+				<Button
+					text={isLastStep ? 'Submit' : 'Next'}
+					onPress={isLastStep ? formMethods.handleSubmit(onSubmit) : toNext}
+				/>
+			</View>
+		</Screen>
 	);
 };
 

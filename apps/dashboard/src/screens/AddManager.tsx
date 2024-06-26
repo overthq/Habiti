@@ -16,7 +16,12 @@ const AddManager = () => {
 
 	return (
 		<Screen style={styles.container}>
-			<Input label='E-mail address' placeholder='john@doe.com' />
+			<Input
+				label='E-mail address'
+				placeholder='john@doe.com'
+				keyboardType='email-address'
+				autoCapitalize='none'
+			/>
 			<Spacer y={16} />
 			<Button text='Submit' onPress={handleSubmit(onSubmit)} />
 		</Screen>

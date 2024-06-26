@@ -75,6 +75,7 @@ const Authenticate: React.FC = () => {
 					label='Password'
 					placeholder='Password'
 					secureTextEntry
+					autoCapitalize='none'
 				/>
 				<Spacer y={16} />
 				<Button

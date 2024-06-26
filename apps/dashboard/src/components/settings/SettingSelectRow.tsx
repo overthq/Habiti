@@ -20,7 +20,7 @@ const SettingSelectRow: React.FC<SettingSelectRowProps> = ({
 			style={[styles.row, { borderBottomColor: theme.border.color }]}
 			onPress={onSelectRow}
 		>
-			<Typography style={{ fontSize: 16 }}>{name}</Typography>
+			<Typography>{name}</Typography>
 			<View>{isSelected && <Icon name='check' size={22} />}</View>
 		</Pressable>
 	);
@@ -34,8 +34,7 @@ const styles = StyleSheet.create({
 		paddingVertical: 12,
 		paddingHorizontal: 16,
 		backgroundColor: 'transparent',
-		borderBottomWidth: 1,
-		height: 44
+		borderBottomWidth: 0.5
 	}
 });
 
