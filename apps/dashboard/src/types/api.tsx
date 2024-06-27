@@ -375,7 +375,6 @@ export type MutationRemoveProductFromCategoryArgs = {
 
 export type MutationRemoveStoreManagerArgs = {
 	managerId: Scalars['ID']['input'];
-	storeId: Scalars['ID']['input'];
 };
 
 export type MutationUnfollowStoreArgs = {
@@ -856,6 +855,28 @@ export type ManagersQuery = {
 	};
 };
 
+export type AddStoreManagerMutationVariables = Exact<{
+	input: AddStoreManagerInput;
+}>;
+
+export type AddStoreManagerMutation = {
+	__typename?: 'Mutation';
+	addStoreManager: { __typename?: 'StoreManager'; id: string; storeId: string };
+};
+
+export type RemoveStoreManagerMutationVariables = Exact<{
+	managerId: Scalars['ID']['input'];
+}>;
+
+export type RemoveStoreManagerMutation = {
+	__typename?: 'Mutation';
+	removeStoreManager: {
+		__typename?: 'StoreManager';
+		id: string;
+		storeId: string;
+	};
+};
+
 export type OrdersQueryVariables = Exact<{
 	orderBy?: InputMaybe<OrderOrderByInput[] | OrderOrderByInput>;
 }>;
@@ -1322,6 +1343,36 @@ export function useManagersQuery(
 		query: ManagersDocument,
 		...options
 	});
+}
+export const AddStoreManagerDocument = gql`
+	mutation AddStoreManager($input: AddStoreManagerInput!) {
+		addStoreManager(input: $input) {
+			id
+			storeId
+		}
+	}
+`;
+
+export function useAddStoreManagerMutation() {
+	return Urql.useMutation<
+		AddStoreManagerMutation,
+		AddStoreManagerMutationVariables
+	>(AddStoreManagerDocument);
+}
+export const RemoveStoreManagerDocument = gql`
+	mutation RemoveStoreManager($managerId: ID!) {
+		removeStoreManager(managerId: $managerId) {
+			id
+			storeId
+		}
+	}
+`;
+
+export function useRemoveStoreManagerMutation() {
+	return Urql.useMutation<
+		RemoveStoreManagerMutation,
+		RemoveStoreManagerMutationVariables
+	>(RemoveStoreManagerDocument);
 }
 export const OrdersDocument = gql`
 	query Orders($orderBy: [OrderOrderByInput!]) {
