@@ -1,8 +1,8 @@
-import { Icon, TextButton } from '@habiti/components';
+import { TextButton } from '@habiti/components';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 
 import ProductForm from './ProductForm';
 import type { ProductFormData } from '../../screens/AddProduct';
@@ -40,8 +40,7 @@ const ProductMain: React.FC<ProductMainProps> = ({ product, mode }) => {
 		});
 
 		if (error) {
-			console.log('Error while editing product: ');
-			console.log(error);
+			console.log(`Error while editing product:\n${error}`);
 		} else {
 			setToUpload([]);
 		}
@@ -57,13 +56,9 @@ const ProductMain: React.FC<ProductMainProps> = ({ product, mode }) => {
 						<TextButton
 							onPress={formMethods.handleSubmit(onSubmit)}
 							disabled={disabled || fetching}
-							style={{ marginRight: 12 }}
 						>
 							Save
 						</TextButton>
-						<Pressable>
-							<Icon name='more-horizontal' />
-						</Pressable>
 					</View>
 				);
 			}

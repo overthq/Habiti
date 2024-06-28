@@ -9,8 +9,9 @@ import {
 	useTheme
 } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { View, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet, Pressable, RefreshControl } from 'react-native';
 
 import PayoutRow from '../components/payouts/PayoutRow';
 import RevenueBar from '../components/payouts/RevenueBar';
@@ -18,12 +19,43 @@ import useGoBack from '../hooks/useGoBack';
 import { useStorePayoutsQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 
+interface NoPayoutsProps {
+	action(): void;
+}
+
+const NoPayouts: React.FC<NoPayoutsProps> = ({ action }) => {
+	const { theme } = useTheme();
+
+	return (
+		<View
+			style={{
+				backgroundColor: theme.input.background,
+				padding: 12,
+				borderRadius: 6,
+				marginVertical: 8
+			}}
+		>
+			<Typography weight='medium' size='large'>
+				No payouts
+			</Typography>
+			<Spacer y={4} />
+			<Typography variant='secondary'>
+				Created payouts will appear here.
+			</Typography>
+			<Spacer y={8} />
+			<View style={{ backgroundColor: theme.border.color, height: 1 }} />
+			<Spacer y={8} />
+			<TextButton onPress={action}>Add payout</TextButton>
+		</View>
+	);
+};
+
 const Payouts = () => {
-	const [{ data, fetching }] = useStorePayoutsQuery();
+	const [{ data, fetching }, refetch] = useStorePayoutsQuery();
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
-	useGoBack();
 	const { theme } = useTheme();
+	useGoBack();
 
 	const handleNewPayout = React.useCallback(() => {
 		navigate('AddPayout');
@@ -45,46 +77,36 @@ const Payouts = () => {
 
 	return (
 		<Screen style={styles.container}>
-			<SectionHeader title='Available' padded={false} />
-			<Typography size='xxxlarge' weight='bold' style={styles.available}>
-				{formatNaira(data?.currentStore.realizedRevenue ?? 0)}
-			</Typography>
-			<RevenueBar
-				realizedRevenue={data?.currentStore.realizedRevenue}
-				unrealizedRevenue={data?.currentStore.unrealizedRevenue}
-				paidOut={data?.currentStore.paidOut}
-			/>
-			<Spacer y={24} />
-			<SectionHeader title='Payout History' padded={false} />
-			{data.currentStore.payouts.length === 0 ? (
-				<View style={{ paddingVertical: 8 }}>
-					<View
-						style={{
-							backgroundColor: theme.input.background,
-							padding: 12,
-							borderRadius: 6
+			<FlashList
+				refreshControl={
+					<RefreshControl
+						refreshing={fetching}
+						onRefresh={() => {
+							refetch({ requestPolicy: 'network-only' });
 						}}
-					>
-						<Typography weight='medium' size='large'>
-							No payouts
+						tintColor={theme.text.secondary}
+					/>
+				}
+				ListHeaderComponent={
+					<>
+						<SectionHeader title='Available' padded={false} />
+						<Typography size='xxxlarge' weight='bold' style={styles.available}>
+							{formatNaira(data?.currentStore.realizedRevenue ?? 0)}
 						</Typography>
-						<Spacer y={4} />
-						<Typography variant='secondary' size='small'>
-							Created payouts will appear here.
-						</Typography>
-						<Spacer y={8} />
-						<View style={{ backgroundColor: theme.border.color, height: 1 }} />
-						<Spacer y={8} />
-						<TextButton onPress={handleNewPayout}>Add payout</TextButton>
-					</View>
-				</View>
-			) : (
-				<>
-					{data.currentStore.payouts.map(payout => (
-						<PayoutRow key={payout.id} payout={payout} />
-					))}
-				</>
-			)}
+						<RevenueBar
+							realizedRevenue={data?.currentStore.realizedRevenue}
+							unrealizedRevenue={data?.currentStore.unrealizedRevenue}
+							paidOut={data?.currentStore.paidOut}
+						/>
+						<Spacer y={16} />
+						<SectionHeader title='Payout History' padded={false} />
+					</>
+				}
+				data={data.currentStore.payouts}
+				keyExtractor={p => p.id}
+				renderItem={({ item }) => <PayoutRow key={item.id} payout={item} />}
+				ListEmptyComponent={<NoPayouts action={handleNewPayout} />}
+			/>
 		</Screen>
 	);
 };

@@ -12,13 +12,12 @@ const VerifyAuthentication: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Verify'>>();
 	const logIn = useStore(state => state.logIn);
 	const [code, setCode] = React.useState('');
-	const { phone } = params;
+	const { email } = params;
 	const [{ fetching }, verify] = useVerifyMutation();
 
 	const handleSubmit = async () => {
-		// TODO: Could do with some more validation.
-		if (phone && code) {
-			const { data, error } = await verify({ input: { phone, code } });
+		if (email && code) {
+			const { data, error } = await verify({ input: { email, code } });
 
 			if (data?.verify) {
 				const { accessToken, userId } = data.verify;

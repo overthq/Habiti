@@ -21,7 +21,6 @@ const addStoreManager: Resolver<AddStoreManagerArgs> = async (
 };
 
 interface RemoveStoreManagerArgs {
-	storeId: string;
 	managerId: string;
 }
 
@@ -30,10 +29,14 @@ const removeStoreManager: Resolver<RemoveStoreManagerArgs> = async (
 	args,
 	ctx
 ) => {
+	if (!ctx.storeId) {
+		throw new Error('No storeId specified');
+	}
+
 	return ctx.prisma.storeManager.delete({
 		where: {
 			storeId_managerId: {
-				storeId: args.storeId,
+				storeId: ctx.storeId,
 				managerId: args.managerId
 			}
 		}

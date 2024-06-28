@@ -13,13 +13,11 @@ const Verify: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Verify'>>();
 	const logIn = useStore(state => state.logIn);
 	const [{ fetching }, verify] = useVerifyMutation();
-
-	const { phone } = params;
+	const { email } = params;
 
 	const handleSubmit = async () => {
-		// TODO: Could do with some more validation.
-		if (phone && code) {
-			const { data, error } = await verify({ input: { phone, code } });
+		if (email && code) {
+			const { data, error } = await verify({ input: { email, code } });
 
 			if (data?.verify) {
 				const { accessToken, userId } = data.verify;
@@ -36,7 +34,7 @@ const Verify: React.FC = () => {
 				Your verification code
 			</Typography>
 			<Typography variant='secondary'>
-				A verification code was sent to your phone via SMS.
+				A verification code was sent to your email. Enter it below to verify.
 			</Typography>
 			<TextInput
 				autoFocus

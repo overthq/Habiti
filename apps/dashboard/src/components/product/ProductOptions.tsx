@@ -12,27 +12,26 @@ const NoProductOptions = () => {
 	const { theme } = useTheme();
 
 	return (
-		<View style={{ paddingVertical: 8 }}>
-			<View
-				style={{
-					backgroundColor: theme.input.background,
-					padding: 12,
-					borderRadius: 6
-				}}
-			>
-				<Typography weight='medium' size='large'>
-					No product options
-				</Typography>
-				<Spacer y={4} />
-				<Typography variant='secondary' size='small'>
-					There are currently no options for this product. When you create
-					options, they will appear here.
-				</Typography>
-				<Spacer y={8} />
-				<View style={{ backgroundColor: theme.border.color, height: 1 }} />
-				<Spacer y={8} />
-				<TextButton>Add product option</TextButton>
-			</View>
+		<View
+			style={{
+				backgroundColor: theme.input.background,
+				padding: 12,
+				borderRadius: 6,
+				marginVertical: 8
+			}}
+		>
+			<Typography weight='medium' size='large'>
+				No product options
+			</Typography>
+			<Spacer y={4} />
+			<Typography variant='secondary'>
+				There are currently no options for this product. When you create
+				options, they will appear here.
+			</Typography>
+			<Spacer y={8} />
+			<View style={{ backgroundColor: theme.border.color, height: 1 }} />
+			<Spacer y={8} />
+			<TextButton>Add product option</TextButton>
 		</View>
 	);
 };

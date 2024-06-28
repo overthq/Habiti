@@ -16,7 +16,7 @@ const StoreManagerTypes = gql`
 
 	extend type Mutation {
 		addStoreManager(input: AddStoreManagerInput): StoreManager!
-		removeStoreManager(storeId: ID!, managerId: ID!): StoreManager!
+		removeStoreManager(managerId: ID!): StoreManager!
 	}
 `;
 

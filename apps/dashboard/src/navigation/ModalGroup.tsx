@@ -8,6 +8,7 @@ import AddPayout from '../screens/AddPayout';
 import AddProduct from '../screens/AddProduct';
 import CreateStore from '../screens/CreateStore';
 import CustomerInfo from '../screens/CustomerInfo';
+import EditCategory from '../screens/EditCategory';
 import FilterOrders from '../screens/FilterOrders';
 import FilterProducts from '../screens/FilterProducts';
 
@@ -33,6 +34,11 @@ const ModalGroup = (
 			name='AddCategory'
 			component={AddCategory}
 			options={{ headerTitle: 'Add Category' }}
+		/>
+		<AppStack.Screen
+			name='Modals.EditCategory'
+			component={EditCategory}
+			options={{ headerTitle: 'Edit Category' }}
 		/>
 		<AppStack.Screen
 			name='AddManager'

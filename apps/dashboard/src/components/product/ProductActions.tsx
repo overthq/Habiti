@@ -7,7 +7,7 @@ const ProductActions = () => {
 		Alert.alert(
 			'Confirm delete',
 			'Are you sure you want to delete this product?',
-			[{ text: 'Cancel' }, { text: 'Delete' }]
+			[{ text: 'Cancel' }, { text: 'Delete', style: 'destructive' }]
 		);
 	};
 

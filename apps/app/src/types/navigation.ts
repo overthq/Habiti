@@ -5,7 +5,7 @@ export type AppStackParamList = {
 	Home: undefined;
 	Register: undefined;
 	Authenticate: undefined;
-	Verify: { phone: string };
+	Verify: { email: string };
 	Product: { productId: string };
 	Cart: { cartId: string };
 	'Add Card': undefined;

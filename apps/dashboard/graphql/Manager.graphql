@@ -26,9 +26,16 @@ query Managers {
 	}
 }
 
-# mutation RemoveManager($userId: uuid!, $storeId: uuid!) {
-# 	delete_store_managers_by_pk(store_id: $storeId, manager_id: $userId) {
-# 		manager_id
-# 		store_id
-# 	}
-# }
+mutation AddStoreManager($input: AddStoreManagerInput!) {
+	addStoreManager(input: $input) {
+		id
+		storeId
+	}
+}
+
+mutation RemoveStoreManager($managerId: ID!) {
+	removeStoreManager(managerId: $managerId) {
+		id
+		storeId
+	}
+}

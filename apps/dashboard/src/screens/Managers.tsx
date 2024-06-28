@@ -1,7 +1,7 @@
-import { Icon, Screen } from '@habiti/components';
+import { Icon, ScrollableScreen, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet, Pressable, RefreshControl } from 'react-native';
 
 import ManagerRow from '../components/managers/ManagerRow';
 import useGoBack from '../hooks/useGoBack';
@@ -10,11 +10,12 @@ import { useManagersQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 
 const Managers = () => {
-	const [{ data, fetching }] = useManagersQuery();
+	const [{ data, fetching }, refetch] = useManagersQuery();
 	useGoBack();
 	const userId = useStore(({ userId }) => userId);
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
+	const { theme } = useTheme();
 
 	React.useLayoutEffect(() => {
 		setOptions({
@@ -31,23 +32,28 @@ const Managers = () => {
 	}
 
 	return (
-		<Screen style={styles.container}>
-			<View style={styles.managers}>
-				{data.currentStore.managers.map(({ id, manager }) => (
-					<ManagerRow key={id} manager={manager} you={userId === manager.id} />
-				))}
-			</View>
-		</Screen>
+		<ScrollableScreen
+			style={styles.container}
+			refreshControl={
+				<RefreshControl
+					refreshing={fetching}
+					onRefresh={() => {
+						refetch({ requestPolicy: 'network-only' });
+					}}
+					tintColor={theme.text.secondary}
+				/>
+			}
+		>
+			{data.currentStore.managers.map(({ id, manager }) => (
+				<ManagerRow key={id} manager={manager} you={userId === manager.id} />
+			))}
+		</ScrollableScreen>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		paddingTop: 16,
-		paddingHorizontal: 16
-	},
-	managers: {
-		borderRadius: 4
+		padding: 16
 	}
 });
 

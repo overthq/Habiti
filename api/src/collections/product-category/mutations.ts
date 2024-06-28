@@ -54,6 +54,25 @@ const createProductCategory: Resolver<CreateProductCategoryArgs> = async (
 	return category;
 };
 
+interface EditProductCategoryArgs {
+	categoryId: string;
+	input: {
+		name?: string;
+		description?: string;
+	};
+}
+
+const editProductCategory: Resolver<EditProductCategoryArgs> = async (
+	_,
+	{ categoryId, input },
+	ctx
+) => {
+	return ctx.prisma.storeProductCategory.update({
+		where: { id: categoryId },
+		data: input
+	});
+};
+
 interface DeleteProductCategoryArgs {
 	categoryId: string;
 }
@@ -74,6 +93,7 @@ export default {
 	Mutation: {
 		addProductToCategory,
 		createProductCategory,
+		editProductCategory,
 		deleteProductCategory,
 		removeProductFromCategory
 	}

@@ -40,15 +40,6 @@ const Hero = () => {
 					</button>
 				</a>
 			</div>
-
-			<div
-				style={{
-					marginTop: 32,
-					display: 'flex',
-					gap: 16,
-					justifyContent: 'center'
-				}}
-			></div>
 		</div>
 	);
 };

@@ -25,12 +25,13 @@ const AddCategory = () => {
 	});
 
 	const onSubmit = React.useCallback(async (values: AddCategoryValues) => {
-		try {
-			await addCategory({ input: values });
-			goBack();
-		} catch (error) {
+		const { error } = await addCategory({ input: values });
+
+		if (error) {
 			console.log(error);
 		}
+
+		goBack();
 	}, []);
 
 	return (
