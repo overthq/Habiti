@@ -1,10 +1,14 @@
 import { Button, FormInput, Screen, Spacer } from '@habiti/components';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FormProvider, useForm } from 'react-hook-form';
 import { ActivityIndicator } from 'react-native';
 
 import useGoBack from '../hooks/useGoBack';
-import { CategoryQuery, useCategoryQuery } from '../types/api';
+import {
+	CategoryQuery,
+	useCategoryQuery,
+	useEditProductCategoryMutation
+} from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 
 interface EditCategoryFormValues {
@@ -13,10 +17,17 @@ interface EditCategoryFormValues {
 }
 
 interface EditCategoryMainProps {
+	categoryId: string;
 	data: CategoryQuery;
 }
 
-const EditCategoryMain: React.FC<EditCategoryMainProps> = ({ data }) => {
+const EditCategoryMain: React.FC<EditCategoryMainProps> = ({
+	categoryId,
+	data
+}) => {
+	const { goBack } = useNavigation();
+	const [{ fetching }, editCategory] = useEditProductCategoryMutation();
+
 	const methods = useForm<EditCategoryFormValues>({
 		defaultValues: {
 			name: data.storeProductCategory?.name ?? '',
@@ -24,7 +35,15 @@ const EditCategoryMain: React.FC<EditCategoryMainProps> = ({ data }) => {
 		}
 	});
 
-	const onSubmit = async () => {};
+	const onSubmit = async (values: EditCategoryFormValues) => {
+		const { error } = await editCategory({ categoryId, input: values });
+
+		if (error) {
+			console.log(error);
+		} else {
+			goBack();
+		}
+	};
 
 	return (
 		<FormProvider {...methods}>
@@ -37,7 +56,11 @@ const EditCategoryMain: React.FC<EditCategoryMainProps> = ({ data }) => {
 				textArea
 			/>
 			<Spacer y={8} />
-			<Button text='Edit profile' onPress={methods.handleSubmit(onSubmit)} />
+			<Button
+				text='Edit profile'
+				onPress={methods.handleSubmit(onSubmit)}
+				loading={fetching}
+			/>
 		</FormProvider>
 	);
 };
@@ -56,7 +79,7 @@ const EditCategory = () => {
 
 	return (
 		<Screen style={{ padding: 16 }}>
-			<EditCategoryMain data={data} />
+			<EditCategoryMain categoryId={params.categoryId} data={data} />
 		</Screen>
 	);
 };
