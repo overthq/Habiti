@@ -37,7 +37,9 @@ const Managers = () => {
 			refreshControl={
 				<RefreshControl
 					refreshing={fetching}
-					onRefresh={refetch}
+					onRefresh={() => {
+						refetch({ requestPolicy: 'network-only' });
+					}}
 					tintColor={theme.text.secondary}
 				/>
 			}
