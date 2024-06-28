@@ -1,4 +1,4 @@
-import { FormInput, Screen, Spacer } from '@habiti/components';
+import { Button, FormInput, Screen, Spacer } from '@habiti/components';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { FormProvider, useForm } from 'react-hook-form';
 import { ActivityIndicator } from 'react-native';
@@ -24,6 +24,8 @@ const EditCategoryMain: React.FC<EditCategoryMainProps> = ({ data }) => {
 		}
 	});
 
+	const onSubmit = async () => {};
+
 	return (
 		<FormProvider {...methods}>
 			<FormInput label='Name' name='name' control={methods.control} />
@@ -34,6 +36,8 @@ const EditCategoryMain: React.FC<EditCategoryMainProps> = ({ data }) => {
 				control={methods.control}
 				textArea
 			/>
+			<Spacer y={8} />
+			<Button text='Edit profile' onPress={methods.handleSubmit(onSubmit)} />
 		</FormProvider>
 	);
 };

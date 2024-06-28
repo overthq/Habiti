@@ -22,6 +22,14 @@ mutation CreateProductCategory($input: CreateCategoryInput!) {
 	}
 }
 
+mutation EditProductCategory($categoryId: ID!, $input: EditCategoryInput!) {
+	editProductCategory(categoryId: $categoryId, input: $input) {
+		id
+		name
+		description
+	}
+}
+
 mutation DeleteProductCategory($categoryId: ID!) {
 	deleteProductCategory(categoryId: $categoryId) {
 		id

@@ -169,6 +169,11 @@ export type DeliveryAddress = {
 	userId: Scalars['ID']['output'];
 };
 
+export type EditCategoryInput = {
+	description?: InputMaybe<Scalars['String']['input']>;
+	name?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type EditProductInput = {
 	description?: InputMaybe<Scalars['String']['input']>;
 	imageFiles: Scalars['Upload']['input'][];
@@ -245,6 +250,7 @@ export type Mutation = {
 	deleteStore: Scalars['ID']['output'];
 	deleteUser: User;
 	editProduct: Product;
+	editProductCategory: StoreProductCategory;
 	editProfile: User;
 	editStore: Store;
 	followStore: StoreFollower;
@@ -346,6 +352,11 @@ export type MutationDeleteUserArgs = {
 export type MutationEditProductArgs = {
 	id: Scalars['ID']['input'];
 	input: EditProductInput;
+};
+
+export type MutationEditProductCategoryArgs = {
+	categoryId: Scalars['ID']['input'];
+	input: EditCategoryInput;
 };
 
 export type MutationEditProfileArgs = {
@@ -814,6 +825,21 @@ export type CreateProductCategoryMutationVariables = Exact<{
 export type CreateProductCategoryMutation = {
 	__typename?: 'Mutation';
 	createProductCategory: { __typename?: 'StoreProductCategory'; id: string };
+};
+
+export type EditProductCategoryMutationVariables = Exact<{
+	categoryId: Scalars['ID']['input'];
+	input: EditCategoryInput;
+}>;
+
+export type EditProductCategoryMutation = {
+	__typename?: 'Mutation';
+	editProductCategory: {
+		__typename?: 'StoreProductCategory';
+		id: string;
+		name: string;
+		description?: string | null;
+	};
 };
 
 export type DeleteProductCategoryMutationVariables = Exact<{
@@ -1291,6 +1317,22 @@ export function useCreateProductCategoryMutation() {
 		CreateProductCategoryMutation,
 		CreateProductCategoryMutationVariables
 	>(CreateProductCategoryDocument);
+}
+export const EditProductCategoryDocument = gql`
+	mutation EditProductCategory($categoryId: ID!, $input: EditCategoryInput!) {
+		editProductCategory(categoryId: $categoryId, input: $input) {
+			id
+			name
+			description
+		}
+	}
+`;
+
+export function useEditProductCategoryMutation() {
+	return Urql.useMutation<
+		EditProductCategoryMutation,
+		EditProductCategoryMutationVariables
+	>(EditProductCategoryDocument);
 }
 export const DeleteProductCategoryDocument = gql`
 	mutation DeleteProductCategory($categoryId: ID!) {
