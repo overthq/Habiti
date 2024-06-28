@@ -8,6 +8,14 @@ query Categories {
 	}
 }
 
+query Category($id: ID!) {
+	storeProductCategory(id: $id) {
+		id
+		name
+		description
+	}
+}
+
 mutation CreateProductCategory($input: CreateCategoryInput!) {
 	createProductCategory(input: $input) {
 		id

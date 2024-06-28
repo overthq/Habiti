@@ -553,6 +553,7 @@ export type Query = {
 	products: Product[];
 	stats: Stats;
 	store: Store;
+	storeProductCategory?: Maybe<StoreProductCategory>;
 	stores: Store[];
 	user: User;
 	users: User[];
@@ -584,6 +585,10 @@ export type QueryStatsArgs = {
 };
 
 export type QueryStoreArgs = {
+	id: Scalars['ID']['input'];
+};
+
+export type QueryStoreProductCategoryArgs = {
 	id: Scalars['ID']['input'];
 };
 
@@ -689,6 +694,7 @@ export type StoreManager = {
 
 export type StoreProductCategory = {
 	__typename?: 'StoreProductCategory';
+	description?: Maybe<Scalars['String']['output']>;
 	id: Scalars['ID']['output'];
 	name: Scalars['String']['output'];
 	products: ProductCategory[];
@@ -785,6 +791,20 @@ export type CategoriesQuery = {
 			name: string;
 		}[];
 	};
+};
+
+export type CategoryQueryVariables = Exact<{
+	id: Scalars['ID']['input'];
+}>;
+
+export type CategoryQuery = {
+	__typename?: 'Query';
+	storeProductCategory?: {
+		__typename?: 'StoreProductCategory';
+		id: string;
+		name: string;
+		description?: string | null;
+	} | null;
 };
 
 export type CreateProductCategoryMutationVariables = Exact<{
@@ -1237,6 +1257,24 @@ export function useCategoriesQuery(
 ) {
 	return Urql.useQuery<CategoriesQuery, CategoriesQueryVariables>({
 		query: CategoriesDocument,
+		...options
+	});
+}
+export const CategoryDocument = gql`
+	query Category($id: ID!) {
+		storeProductCategory(id: $id) {
+			id
+			name
+			description
+		}
+	}
+`;
+
+export function useCategoryQuery(
+	options: Omit<Urql.UseQueryArgs<CategoryQueryVariables>, 'query'>
+) {
+	return Urql.useQuery<CategoryQuery, CategoryQueryVariables>({
+		query: CategoryDocument,
 		...options
 	});
 }

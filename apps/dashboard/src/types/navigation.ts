@@ -4,7 +4,7 @@ export type AppStackParamList = {
 	Main: undefined;
 	Authenticate: undefined;
 	Register: undefined;
-	Verify: { phone: string };
+	Verify: { email: string };
 	StoreSelect: undefined;
 	CreateStore: undefined;
 	Root: undefined;
@@ -13,6 +13,7 @@ export type AppStackParamList = {
 	CustomerInfo: { userId: string };
 	AddPayout: undefined;
 	AddCategory: undefined;
+	'Modals.EditCategory': { categoryId: string };
 	AddManager: undefined;
 	FilterProducts: undefined;
 	FilterOrders: undefined;

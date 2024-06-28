@@ -40,7 +40,22 @@ const category: Resolver = async (parent, _, ctx) => {
 		.category();
 };
 
+interface StoreProductCategoryArgs {
+	id: string;
+}
+
+const storeProductCategory: Resolver<StoreProductCategoryArgs> = async (
+	_,
+	{ id },
+	ctx
+) => {
+	return ctx.prisma.storeProductCategory.findUnique({
+		where: { id }
+	});
+};
+
 export default {
+	Query: { storeProductCategory },
 	ProductCategory: { id, product, category },
 	StoreProductCategory: { store, products }
 };

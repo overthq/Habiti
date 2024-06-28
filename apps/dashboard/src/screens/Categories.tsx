@@ -38,6 +38,10 @@ const Categories = () => {
 		});
 	}, []);
 
+	const handleCategoryPress = (categoryId: string) => () => {
+		navigate('Modals.EditCategory', { categoryId });
+	};
+
 	if (fetching) {
 		return (
 			<View>
@@ -64,7 +68,9 @@ const Categories = () => {
 			}
 		>
 			{data?.currentStore.categories.map(category => (
-				<Typography key={category.id}>{category.name}</Typography>
+				<Pressable key={category.id} onPress={handleCategoryPress(category.id)}>
+					<Typography>{category.name}</Typography>
+				</Pressable>
 			))}
 		</ScrollableScreen>
 	);

@@ -17,8 +17,9 @@ const ProductCategoryTypes = gql`
 
 	type StoreProductCategory {
 		id: ID!
-		name: String!
 		storeId: ID!
+		name: String!
+		description: String
 
 		store: Store!
 		products: [ProductCategory!]!
@@ -26,6 +27,11 @@ const ProductCategoryTypes = gql`
 
 	input CreateCategoryInput {
 		name: String!
+		description: String
+	}
+
+	input EditCategoryInput {
+		name: String
 		description: String
 	}
 
@@ -39,8 +45,16 @@ const ProductCategoryTypes = gql`
 		categoryId: ID!
 	}
 
+	extend type Query {
+		storeProductCategory(id: ID!): StoreProductCategory
+	}
+
 	extend type Mutation {
 		createProductCategory(input: CreateCategoryInput!): StoreProductCategory!
+		editProductCategory(
+			categoryId: ID!
+			input: EditCategoryInput!
+		): StoreProductCategory!
 		deleteProductCategory(categoryId: ID!): StoreProductCategory!
 		addProductToCategory(input: AddProductToCategoryInput!): ProductCategory!
 		removeProductFromCategory(
