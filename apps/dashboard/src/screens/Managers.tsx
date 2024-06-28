@@ -1,4 +1,4 @@
-import { Icon, ScrollableScreen } from '@habiti/components';
+import { Icon, ScrollableScreen, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, Pressable, RefreshControl } from 'react-native';
@@ -15,6 +15,7 @@ const Managers = () => {
 	const userId = useStore(({ userId }) => userId);
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
+	const { theme } = useTheme();
 
 	React.useLayoutEffect(() => {
 		setOptions({
@@ -34,7 +35,11 @@ const Managers = () => {
 		<ScrollableScreen
 			style={styles.container}
 			refreshControl={
-				<RefreshControl refreshing={fetching} onRefresh={refetch} />
+				<RefreshControl
+					refreshing={fetching}
+					onRefresh={refetch}
+					tintColor={theme.text.secondary}
+				/>
 			}
 		>
 			{data.currentStore.managers.map(({ id, manager }) => (

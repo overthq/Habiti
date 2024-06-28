@@ -2,7 +2,8 @@ import {
 	EmptyState,
 	Icon,
 	ScrollableScreen,
-	Typography
+	Typography,
+	useTheme
 } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
@@ -21,6 +22,7 @@ const Categories = () => {
 	const [{ data, fetching }, refetch] = useCategoriesQuery();
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
+	const { theme } = useTheme();
 
 	useGoBack();
 
@@ -64,7 +66,11 @@ const Categories = () => {
 		<ScrollableScreen
 			style={{ padding: 16 }}
 			refreshControl={
-				<RefreshControl refreshing={fetching} onRefresh={refetch} />
+				<RefreshControl
+					refreshing={fetching}
+					onRefresh={refetch}
+					tintColor={theme.text.secondary}
+				/>
 			}
 		>
 			{data?.currentStore.categories.map(category => (
