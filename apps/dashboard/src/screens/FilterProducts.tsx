@@ -1,4 +1,11 @@
-import { Button, Checkbox, Screen, Typography } from '@habiti/components';
+import {
+	Button,
+	Checkbox,
+	Screen,
+	SelectGroup,
+	Spacer,
+	Typography
+} from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -6,6 +13,7 @@ import { StyleSheet, View } from 'react-native';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 
 import AccordionRow from '../components/filter-products/AccordionRow';
+import ProductCategories from '../components/filter-products/ProductCategories';
 import SortProducts from '../components/filter-products/SortProducts';
 import useGoBack from '../hooks/useGoBack';
 import { FilterProductsFormValues } from '../types/forms';
@@ -67,20 +75,28 @@ const FilterProducts = () => {
 						open={open === 'rating'}
 						onPress={handleExpandSection('rating')}
 					>
-						<View>
-							<Typography>5 stars</Typography>
-							<Typography>4 stars and up</Typography>
-							<Typography>3 stars and up</Typography>
-							<Typography>2 stars and up</Typography>
-							<Typography>1 star and up</Typography>
-						</View>
+						<>
+							<Spacer y={8} />
+							<SelectGroup
+								selected={undefined}
+								onSelect={value => console.log(value)}
+								options={[
+									{ title: '5 stars', value: '5' },
+									{ title: '4 stars and up', value: '4' },
+									{ title: '3 stars and up', value: '3' },
+									{ title: '2 stars and up', value: '2' },
+									{ title: '1 star and up', value: '1' }
+								]}
+							/>
+							<Spacer y={4} />
+						</>
 					</AccordionRow>
 					<AccordionRow
 						title='Category'
 						open={open === 'category'}
 						onPress={handleExpandSection('category')}
 					>
-						<View />
+						<ProductCategories />
 					</AccordionRow>
 					<Animated.View layout={LinearTransition} style={{ marginBottom: 8 }}>
 						<View style={styles.row}>

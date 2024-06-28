@@ -57,26 +57,25 @@ const Payouts = () => {
 			<Spacer y={24} />
 			<SectionHeader title='Payout History' padded={false} />
 			{data.currentStore.payouts.length === 0 ? (
-				<View style={{ paddingVertical: 8 }}>
-					<View
-						style={{
-							backgroundColor: theme.input.background,
-							padding: 12,
-							borderRadius: 6
-						}}
-					>
-						<Typography weight='medium' size='large'>
-							No payouts
-						</Typography>
-						<Spacer y={4} />
-						<Typography variant='secondary' size='small'>
-							Created payouts will appear here.
-						</Typography>
-						<Spacer y={8} />
-						<View style={{ backgroundColor: theme.border.color, height: 1 }} />
-						<Spacer y={8} />
-						<TextButton onPress={handleNewPayout}>Add payout</TextButton>
-					</View>
+				<View
+					style={{
+						backgroundColor: theme.input.background,
+						padding: 12,
+						borderRadius: 6,
+						marginVertical: 8
+					}}
+				>
+					<Typography weight='medium' size='large'>
+						No payouts
+					</Typography>
+					<Spacer y={4} />
+					<Typography variant='secondary'>
+						Created payouts will appear here.
+					</Typography>
+					<Spacer y={8} />
+					<View style={{ backgroundColor: theme.border.color, height: 1 }} />
+					<Spacer y={8} />
+					<TextButton onPress={handleNewPayout}>Add payout</TextButton>
 				</View>
 			) : (
 				<>

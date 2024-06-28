@@ -1,14 +1,24 @@
-import { EmptyState, Icon, Screen, Typography } from '@habiti/components';
+import {
+	EmptyState,
+	Icon,
+	ScrollableScreen,
+	Typography
+} from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, ActivityIndicator, Pressable } from 'react-native';
+import {
+	View,
+	ActivityIndicator,
+	Pressable,
+	RefreshControl
+} from 'react-native';
 
 import useGoBack from '../hooks/useGoBack';
 import { useCategoriesQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 
 const Categories = () => {
-	const [{ data, fetching }] = useCategoriesQuery();
+	const [{ data, fetching }, refetch] = useCategoriesQuery();
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 
@@ -47,11 +57,16 @@ const Categories = () => {
 	}
 
 	return (
-		<Screen style={{ padding: 16 }}>
+		<ScrollableScreen
+			style={{ padding: 16 }}
+			refreshControl={
+				<RefreshControl refreshing={fetching} onRefresh={refetch} />
+			}
+		>
 			{data?.currentStore.categories.map(category => (
 				<Typography key={category.id}>{category.name}</Typography>
 			))}
-		</Screen>
+		</ScrollableScreen>
 	);
 };
 
