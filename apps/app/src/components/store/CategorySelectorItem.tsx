@@ -13,8 +13,8 @@ const CategorySelectorItem: React.FC<CategorySelectorItemProps> = ({
 	active
 }) => {
 	return (
-		<Pressable onPress={onPress} disabled={active} style={{ marginRight: 8 }}>
-			<Typography weight='medium' variant={active ? 'primary' : 'secondary'}>
+		<Pressable onPress={onPress} disabled={active} style={{ marginRight: 12 }}>
+			<Typography weight='medium' variant={active ? 'primary' : 'disabled'}>
 				{name}
 			</Typography>
 		</Pressable>

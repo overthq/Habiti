@@ -3,7 +3,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-// import { Dimensions } from 'react-native';
 import { Provider } from 'urql';
 
 import HomeTabNavigator from './HomeTab';
@@ -14,7 +13,6 @@ import Cart from '../screens/Cart';
 import Landing from '../screens/Landing';
 import Onboarding from '../screens/Onboarding';
 import Product from '../screens/Product';
-// import Register from '../screens/Register';
 import Verify from '../screens/Verify';
 import useStore from '../state';
 import { AppStackParamList } from '../types/navigation';

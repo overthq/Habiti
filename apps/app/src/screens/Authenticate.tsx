@@ -8,10 +8,10 @@ import {
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import useStore from '../state';
-import styles from '../styles/auth';
 import { useAuthenticateMutation } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 
@@ -45,10 +45,11 @@ const Authenticate = () => {
 	const goToRegister = () => navigate('Register');
 
 	return (
-		<Screen style={styles.container}>
-			<KeyboardAvoidingView style={{ width: '100%' }} behavior='padding'>
+		<Screen style={{ paddingHorizontal: 16 }}>
+			<SafeAreaView>
+				<Spacer y={24} />
 				<Typography weight='bold' size='xxxlarge'>
-					Welcome back
+					Welcome back.
 				</Typography>
 				<Typography variant='secondary'>{`We'll send your verification code here.`}</Typography>
 
@@ -88,7 +89,7 @@ const Authenticate = () => {
 				>
 					<Typography weight='medium'>{`Don't have an account?`}</Typography>
 				</TouchableOpacity>
-			</KeyboardAvoidingView>
+			</SafeAreaView>
 		</Screen>
 	);
 };
