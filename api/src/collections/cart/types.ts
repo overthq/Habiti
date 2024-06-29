@@ -12,7 +12,6 @@ const CartTypes = gql`
 		user: User!
 		store: Store!
 		products: [CartProduct!]!
-		# productsAggregate: Aggregate!
 	}
 
 	input CreateCartInput {
@@ -30,14 +29,6 @@ const CartTypes = gql`
 		createCart(input: CreateCartInput!): Cart!
 		deleteCart(cartId: ID!): Cart!
 	}
-
-	# We can't use type here, since it's not an entity (entities require IDs).
-	# I don't have the time to start creating a scalar right now.
-	# However, if you do, feel free to implement this.
-
-	# type Aggregate {
-	# 	count: Int!
-	# }
 `;
 
 export default CartTypes;

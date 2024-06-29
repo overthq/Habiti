@@ -69,6 +69,9 @@ import productReviewMutations from './collections/product-review/mutations';
 import ProductOptionTypes from './collections/product-option/types';
 import productOptionMutations from './collections/product-option/mutations';
 
+import PushTokenTypes from './collections/push-token/types';
+import pushTokenQueries from './collections/push-token/queries';
+
 const Root = `
 	scalar Upload
 
@@ -146,7 +149,8 @@ const resolvers = merge(
 	deliveryAddressMutations,
 	productReviewQueries,
 	productReviewMutations,
-	productOptionMutations
+	productOptionMutations,
+	pushTokenQueries
 );
 
 const schema = makeExecutableSchema({
@@ -169,7 +173,8 @@ const schema = makeExecutableSchema({
 		ProductCategoryTypes,
 		DeliveryAddressTypes,
 		ProductReviewTypes,
-		ProductOptionTypes
+		ProductOptionTypes,
+		PushTokenTypes
 	],
 	resolvers
 });
