@@ -8,7 +8,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import AddToCart from '../components/product/AddToCart';
 import ImageCarousel from '../components/product/ImageCarousel';
 import ProductDetails from '../components/product/ProductDetails';
-import ProductReviews from '../components/product/ProductReviews';
+// import ProductReviews from '../components/product/ProductReviews';
 import useGoBack from '../hooks/useGoBack';
 import { useProductQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
@@ -60,7 +60,7 @@ const Product: React.FC = () => {
 						<Spacer y={16} />
 						<ProductDetails product={data.product} />
 						<Spacer y={16} />
-						<ProductReviews reviews={data.product.reviews} />
+						{/* <ProductReviews reviews={data.product.reviews} /> */}
 					</ScrollView>
 				)}
 			</GestureHandlerRefContext.Consumer>
