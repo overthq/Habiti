@@ -1,6 +1,7 @@
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus, PushTokenType } from '@prisma/client';
 
 import { Resolver } from '../../types/resolvers';
+import { getPushTokensForStore } from '../../utils/notifications';
 import { chargeAuthorization } from '../../utils/paystack';
 
 interface CreateOrderArgs {
@@ -78,11 +79,17 @@ const createOrder: Resolver<CreateOrderArgs> = async (
 		authorizationCode: card.authorizationCode
 	});
 
-	ctx.services.notifications.queueMessage({
-		to: '', // pushToken
-		title: 'Order created',
-		body: `[user.name] created a $x order`
-	});
+	const pushTokens = await getPushTokensForStore(order.storeId);
+
+	for (const pushToken of pushTokens) {
+		if (pushToken) {
+			ctx.services.notifications.queueMessage({
+				to: pushToken,
+				title: 'Order created',
+				body: `${ctx.user.name} created a ${order.total} order`
+			});
+		}
+	}
 
 	return order;
 };
@@ -98,7 +105,13 @@ const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
 	const order = await ctx.prisma.order.update({
 		where: { id: args.orderId },
 		data: args.input,
-		include: { products: { include: { product: true } } }
+		include: {
+			products: { include: { product: true } },
+			user: {
+				include: { pushTokens: { where: { type: PushTokenType.Shopper } } }
+			},
+			store: true
+		}
 	});
 
 	// Workflow:
@@ -108,9 +121,13 @@ const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
 	if (args.input.status) {
 		switch (args.input.status) {
 			case OrderStatus.Cancelled:
-				ctx.services.notifications.queueMessage({
-					to: ''
-				});
+				if (order.user.pushTokens[0]) {
+					ctx.services.notifications.queueMessage({
+						to: order.user.pushTokens[0].token,
+						title: 'Order cancelled',
+						body: `Your order with ${order.store.name} has been cancelled.`
+					});
+				}
 				break;
 			case OrderStatus.Completed: {
 				const total = order.products.reduce((acc, next) => {
@@ -124,6 +141,14 @@ const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
 						unrealizedRevenue: { decrement: total }
 					}
 				});
+
+				if (order.user.pushTokens[0]) {
+					ctx.services.notifications.queueMessage({
+						to: order.user.pushTokens[0].token,
+						title: 'Order completed',
+						body: `Your order with ${order.store.name} has been marked as complete.`
+					});
+				}
 
 				break;
 			}
