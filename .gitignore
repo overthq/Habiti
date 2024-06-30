@@ -6,3 +6,4 @@ dump.rdb
 *.tsbuildinfo
 remix/
 .DS_Store
+google-services.json
