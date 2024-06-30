@@ -12,5 +12,6 @@ export const getPushTokensForStore = async (storeId: string) => {
 		}
 	});
 
+	// TODO: Cache these tokenIds in the CacheService.
 	return managers.map(m => m.manager.pushTokens[0].token);
 };
