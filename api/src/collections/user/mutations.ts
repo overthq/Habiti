@@ -16,8 +16,6 @@ export const register: Resolver<RegisterArgs> = async (
 	{ input: { name, email, password } },
 	ctx
 ) => {
-	// TODO: Validate password
-
 	const passwordHash = await argon2.hash(password);
 
 	const user = await ctx.prisma.user.create({

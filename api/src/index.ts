@@ -11,11 +11,11 @@ import { createServer } from 'http';
 import prismaClient from './config/prisma';
 import redisClient from './config/redis';
 import { initSentry } from './config/sentry';
-import payments from './payments';
+import payments from './routes/payments';
+import webhooks from './routes/webhooks';
 import schema from './schema';
 import Services from './services';
 import { HabitiRequest } from './types/misc';
-import webhooks from './webhooks';
 
 import './config/cloudinary';
 
