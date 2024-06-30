@@ -1,7 +1,8 @@
-import { ListEmpty, Screen } from '@habiti/components';
+import { ListEmpty, Screen, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
+import { RefreshControl } from 'react-native';
 
 import CartsListItem from '../components/carts/CartsListItem';
 import { useCartsQuery } from '../types/api';
@@ -16,6 +17,7 @@ const Carts: React.FC = () => {
 	const [{ data, fetching }, refetch] = useCartsQuery();
 	const { navigate } =
 		useNavigation<NavigationProp<HomeTabParamList & AppStackParamList>>();
+	const { theme } = useTheme();
 
 	const carts = data?.currentUser.carts;
 
@@ -47,10 +49,15 @@ const Carts: React.FC = () => {
 						viewStyle={{ marginTop: 32 }}
 					/>
 				}
-				refreshing={fetching}
-				onRefresh={() => {
-					refetch({ requestPolicy: 'cache-and-network' });
-				}}
+				refreshControl={
+					<RefreshControl
+						refreshing={fetching}
+						onRefresh={() => {
+							refetch({ requestPolicy: 'cache-and-network' });
+						}}
+						tintColor={theme.text.secondary}
+					/>
+				}
 			/>
 		</Screen>
 	);

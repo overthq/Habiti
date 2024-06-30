@@ -37,7 +37,7 @@ const NotificationSettings = () => {
 			/>
 
 			<Spacer y={16} />
-			<Typography weight='medium'>In-app notifications</Typography>
+			{/* <Typography weight='medium'>In-app notifications</Typography> */}
 		</Screen>
 	);
 };
