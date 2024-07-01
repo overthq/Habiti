@@ -1,7 +1,7 @@
 import { Button } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 import { useAddToCartMutation } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
@@ -34,26 +34,24 @@ const CartButton: React.FC<CartButtonProps> = ({
 		}
 	}, [cartId]);
 
-	if (!cartId || (cartId && !inCart)) {
-		return (
-			<Button
-				loading={fetching}
-				onPress={handlePress}
-				text='Add to cart'
-				disabled={inCart}
-				style={styles.button}
-			/>
-		);
-	} else {
-		return (
-			<Button text='View in cart' onPress={goToCart} style={styles.button} />
-		);
-	}
+	const isNotInCart = !cartId || (cartId && !inCart);
+
+	return (
+		<Button
+			loading={fetching}
+			onPress={isNotInCart ? handlePress : goToCart}
+			text={isNotInCart ? 'Add to cart' : 'In cart'}
+			disabled={inCart}
+			style={styles.button}
+		/>
+	);
 };
+
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
 	button: {
-		flexGrow: 1
+		width: (width - 16 * 3) / 2
 	}
 });
 

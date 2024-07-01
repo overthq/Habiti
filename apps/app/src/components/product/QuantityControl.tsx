@@ -1,11 +1,11 @@
 import { Icon, Typography, useTheme } from '@habiti/components';
 import React from 'react';
-import { View, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet, Pressable, Dimensions } from 'react-native';
 
 interface QuantityControlProps {
-	cartId?: string | null | undefined;
-	productId: string;
 	inCart: boolean;
+	quantity: number;
+	setQuantity: React.Dispatch<React.SetStateAction<number>>;
 }
 
 // TODO:
@@ -18,9 +18,12 @@ interface QuantityControlProps {
 
 // NOTICE: This component currently does NOT work!
 
-const QuantityControl: React.FC<QuantityControlProps> = ({ inCart }) => {
+const QuantityControl: React.FC<QuantityControlProps> = ({
+	inCart,
+	quantity,
+	setQuantity
+}) => {
 	const { theme } = useTheme();
-	const [quantity, setQuantity] = React.useState(1);
 
 	const decrementDisabled = React.useMemo(() => quantity === 1, [quantity]);
 
@@ -49,9 +52,11 @@ const QuantityControl: React.FC<QuantityControlProps> = ({ inCart }) => {
 	);
 };
 
+const { width } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
 	controls: {
-		flexGrow: 1,
+		width: (width - 16 * 3) / 2,
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
