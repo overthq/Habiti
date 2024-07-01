@@ -2,7 +2,8 @@ import {
 	Button,
 	ScrollableScreen,
 	Separator,
-	Spacer
+	Spacer,
+	useTheme
 } from '@habiti/components';
 import {
 	useRoute,
@@ -47,9 +48,14 @@ const Cart: React.FC = () => {
 		setPreference: state.setPreference
 	}));
 	const { bottom } = useSafeAreaInsets();
+	const { theme } = useTheme();
 
 	const [selectedCard, setSelectedCard] = React.useState(defaultCardId);
-	const fees = calculateFees(data.cart?.total ?? 0);
+
+	const fees = React.useMemo(
+		() => calculateFees(data?.cart.total ?? 0),
+		[data?.cart.total]
+	);
 
 	// TODO: Process the fee amount on the server, to make sure we don't have to
 	// update client code to reflect new fee changes.
@@ -88,6 +94,7 @@ const Cart: React.FC = () => {
 					onRefresh={() => {
 						refetch({ requestPolicy: 'network-only' });
 					}}
+					tintColor={theme.text.secondary}
 				/>
 			}
 		>
