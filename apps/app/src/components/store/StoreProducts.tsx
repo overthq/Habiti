@@ -1,7 +1,8 @@
+import { useTheme } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { ScrollViewProps, View } from 'react-native';
+import { RefreshControl, ScrollViewProps, View } from 'react-native';
 
 import StoreHeader from './StoreHeader';
 import StoreListItem from './StoreListItem';
@@ -13,12 +14,13 @@ interface StoreProductsProps {
 }
 
 const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
-	const [{ data, fetching }] = useStoreProductsQuery({
+	const [{ data, fetching }, refetch] = useStoreProductsQuery({
 		variables: { storeId: store.id }
 	});
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const [headerVisible, setHeaderVisible] = React.useState(false);
+	const { theme } = useTheme();
 
 	const products = data?.store.products;
 
@@ -64,6 +66,15 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 			numColumns={2}
 			onScroll={handleScroll}
 			ListHeaderComponent={() => <StoreHeader store={store} />}
+			refreshControl={
+				<RefreshControl
+					refreshing={fetching}
+					onRefresh={() => {
+						refetch({ requestPolicy: 'network-only' });
+					}}
+					tintColor={theme.text.secondary}
+				/>
+			}
 		/>
 	);
 };
