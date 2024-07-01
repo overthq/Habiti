@@ -19,11 +19,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
 		style={styles.container}
 		horizontal
 		showsHorizontalScrollIndicator={false}
-		contentContainerStyle={{
-			alignItems: 'center',
-			paddingHorizontal: 16,
-			gap: 12
-		}}
+		contentContainerStyle={styles.content}
 	>
 		<CategorySelectorItem
 			name='All Products'
@@ -46,6 +42,11 @@ const styles = StyleSheet.create({
 		width: '100%',
 		marginTop: 8,
 		paddingVertical: 8
+	},
+	content: {
+		alignItems: 'center',
+		paddingHorizontal: 16,
+		gap: 12
 	}
 });
 
