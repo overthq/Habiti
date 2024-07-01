@@ -1,3 +1,4 @@
+import { useTheme } from '@habiti/components';
 import React from 'react';
 import { View, Image, StyleSheet, Dimensions } from 'react-native';
 import Animated, {
@@ -16,6 +17,7 @@ interface ImageCarouselProps {
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 	const scrollX = useSharedValue(0);
+	const { theme } = useTheme();
 
 	const handleScroll = useAnimatedScrollHandler({
 		onScroll: ({ contentOffset: { x } }) => {
@@ -34,6 +36,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 				snapToAlignment='center'
 				showsHorizontalScrollIndicator={false}
 				contentContainerStyle={{ flexGrow: 1 }}
+				style={{ backgroundColor: theme.input.background }}
 			>
 				{images.map(image => (
 					<Image
