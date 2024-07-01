@@ -8,12 +8,14 @@ interface CreateOrderArgs {
 	input: {
 		cartId: string;
 		cardId?: string;
+		transactionFee: number;
+		serviceFee: number;
 	};
 }
 
 const createOrder: Resolver<CreateOrderArgs> = async (
 	_,
-	{ input: { cartId, cardId } },
+	{ input: { cartId, cardId, transactionFee, serviceFee } },
 	ctx
 ) => {
 	const cart = await ctx.prisma.cart.findUnique({
@@ -62,10 +64,11 @@ const createOrder: Resolver<CreateOrderArgs> = async (
 				userId: ctx.user.id,
 				storeId: cart.storeId,
 				products: { createMany: { data: orderData } },
-				total
+				total,
+				transactionFee,
+				serviceFee
 			}
 		}),
-		// ctx.prisma.userPushToken.findUnique({ where: { userId: ctx.user.id } }),
 		ctx.prisma.store.update({
 			where: { id: cart.storeId },
 			data: { unrealizedRevenue: { increment: total } }

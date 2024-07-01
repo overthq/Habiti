@@ -136,6 +136,8 @@ export type CreateCategoryInput = {
 export type CreateOrderInput = {
 	cardId?: InputMaybe<Scalars['ID']['input']>;
 	cartId: Scalars['ID']['input'];
+	serviceFee: Scalars['Int']['input'];
+	transactionFee: Scalars['Int']['input'];
 };
 
 export type CreatePayoutInput = {
@@ -426,10 +428,12 @@ export type Order = {
 	createdAt: Scalars['String']['output'];
 	id: Scalars['ID']['output'];
 	products: OrderProduct[];
+	serviceFee: Scalars['Int']['output'];
 	status: OrderStatus;
 	store: Store;
 	storeId: Scalars['ID']['output'];
 	total: Scalars['Int']['output'];
+	transactionFee: Scalars['Int']['output'];
 	updatedAt: Scalars['String']['output'];
 	user: User;
 	userId: Scalars['ID']['output'];
@@ -550,6 +554,11 @@ export type ProductReview = {
 	updatedAt: Scalars['String']['output'];
 	user: User;
 };
+
+export enum PushTokenType {
+	Merchant = 'Merchant',
+	Shopper = 'Shopper'
+}
 
 export type Query = {
 	__typename?: 'Query';
@@ -754,8 +763,17 @@ export type User = {
 	managed: StoreManager[];
 	name: Scalars['String']['output'];
 	orders: Order[];
+	pushTokens: UserPushToken[];
 	updatedAt: Scalars['String']['output'];
 	watchlist: WatchlistProduct[];
+};
+
+export type UserPushToken = {
+	__typename?: 'UserPushToken';
+	id: Scalars['ID']['output'];
+	token: Scalars['String']['output'];
+	type: PushTokenType;
+	userId: Scalars['String']['output'];
 };
 
 export type VerifyBankAccountInput = {

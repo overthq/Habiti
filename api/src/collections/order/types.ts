@@ -6,10 +6,12 @@ const OrderTypes = gql`
 		userId: ID!
 		storeId: ID!
 		status: OrderStatus!
+		transactionFee: Int!
+		serviceFee: Int!
+		total: Int!
 		createdAt: String!
 		updatedAt: String!
 
-		total: Int!
 		user: User!
 		store: Store!
 		products: [OrderProduct!]!
@@ -30,6 +32,8 @@ const OrderTypes = gql`
 
 	input CreateOrderInput {
 		cartId: ID!
+		transactionFee: Int!
+		serviceFee: Int!
 		cardId: ID
 	}
 

@@ -73,6 +73,8 @@ const Authenticate = () => {
 					label='Password'
 					placeholder='Your password'
 					secureTextEntry
+					autoCapitalize='none'
+					autoCorrect={false}
 				/>
 
 				<Spacer y={16} />

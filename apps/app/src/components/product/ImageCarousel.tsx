@@ -43,7 +43,6 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 						key={image.id}
 						source={{ uri: image.path }}
 						style={styles.image}
-						resizeMode='cover'
 					/>
 				))}
 			</Animated.ScrollView>
@@ -58,7 +57,7 @@ const styles = StyleSheet.create({
 		width: '100%'
 	},
 	image: {
-		flex: 1
+		width
 	}
 });
 

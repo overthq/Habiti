@@ -76,14 +76,16 @@ model Product {
 }
 
 model Order {
-  id        String         @id @default(uuid())
-  userId    String
-  storeId   String
-  status    OrderStatus    @default(Pending)
-  total     Int
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-  products  OrderProduct[]
+  id             String         @id @default(uuid())
+  userId         String
+  storeId        String
+  status         OrderStatus    @default(Pending)
+  transactionFee Int            @default(0)
+  serviceFee     Int            @default(0)
+  total          Int
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  products       OrderProduct[]
 
   user  User  @relation(fields: [userId], references: [id])
   store Store @relation(fields: [storeId], references: [id])
