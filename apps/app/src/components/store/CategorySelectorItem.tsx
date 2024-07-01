@@ -1,5 +1,4 @@
-import { Typography } from '@habiti/components';
-import { Pressable } from 'react-native';
+import { TextButton } from '@habiti/components';
 
 interface CategorySelectorItemProps {
 	name: string;
@@ -13,11 +12,9 @@ const CategorySelectorItem: React.FC<CategorySelectorItemProps> = ({
 	active
 }) => {
 	return (
-		<Pressable onPress={onPress} disabled={active}>
-			<Typography weight='medium' variant={active ? 'primary' : 'disabled'}>
-				{name}
-			</Typography>
-		</Pressable>
+		<TextButton onPress={onPress} active={active} weight='medium'>
+			{name}
+		</TextButton>
 	);
 };
 
