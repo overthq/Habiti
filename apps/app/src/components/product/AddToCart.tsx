@@ -37,6 +37,7 @@ const AddToCart: React.FC<AddToCartProps> = ({
 				productId={productId}
 				cartId={cartId}
 				inCart={inCart}
+				quantity={quantity}
 			/>
 		</View>
 	);

@@ -11,20 +11,22 @@ interface CartButtonProps {
 	productId: string;
 	cartId?: string | null;
 	inCart: boolean;
+	quantity: number;
 }
 
 const CartButton: React.FC<CartButtonProps> = ({
 	storeId,
 	productId,
 	cartId,
-	inCart
+	inCart,
+	quantity
 }) => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const [{ fetching }, addToCart] = useAddToCartMutation();
 
 	const handlePress = React.useCallback(async () => {
 		await addToCart({
-			input: { storeId, productId, quantity: 1 }
+			input: { storeId, productId, quantity }
 		});
 	}, [storeId, productId]);
 
