@@ -47,7 +47,7 @@ const SelectCard: React.FC<SelectCardProps> = ({
 						No payment methods
 					</Typography>
 					<Spacer y={4} />
-					<Typography variant='secondary' size='small'>
+					<Typography variant='secondary'>
 						A valid payment method is required to create your order.
 					</Typography>
 					<Spacer y={8} />

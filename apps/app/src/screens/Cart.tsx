@@ -2,7 +2,8 @@ import {
 	Button,
 	ScrollableScreen,
 	Separator,
-	Spacer
+	Spacer,
+	useTheme
 } from '@habiti/components';
 import {
 	useRoute,
@@ -11,7 +12,7 @@ import {
 	NavigationProp
 } from '@react-navigation/native';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import CartSummary from '../components/cart/CartSummary';
@@ -23,6 +24,7 @@ import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useCreateOrderMutation, useCartQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
+import { calculateFees } from '../utils/fees';
 
 // There is a need to master optimistic updates on this screen,
 // It is also important to make use of tasteful animations to make
@@ -38,7 +40,7 @@ const Cart: React.FC = () => {
 	const { goBack } = useNavigation<NavigationProp<AppStackParamList>>();
 	useGoBack();
 
-	const [{ data, fetching }] = useCartQuery({ variables: { cartId } });
+	const [{ data, fetching }, refetch] = useCartQuery({ variables: { cartId } });
 	const [, createOrder] = useCreateOrderMutation();
 
 	const { defaultCardId, setPreference } = useStore(state => ({
@@ -46,12 +48,26 @@ const Cart: React.FC = () => {
 		setPreference: state.setPreference
 	}));
 	const { bottom } = useSafeAreaInsets();
+	const { theme } = useTheme();
 
 	const [selectedCard, setSelectedCard] = React.useState(defaultCardId);
 
+	const fees = React.useMemo(
+		() => calculateFees(data?.cart.total ?? 0),
+		[data?.cart.total]
+	);
+
+	// TODO: Process the fee amount on the server, to make sure we don't have to
+	// update client code to reflect new fee changes.
+
 	const handleSubmit = React.useCallback(async () => {
 		const { error } = await createOrder({
-			input: { cartId, cardId: selectedCard }
+			input: {
+				cartId,
+				cardId: selectedCard,
+				transactionFee: fees.total,
+				serviceFee: fees.service
+			}
 		});
 
 		setPreference({ defaultCard: selectedCard });
@@ -63,19 +79,28 @@ const Cart: React.FC = () => {
 		} else {
 			goBack();
 		}
-	}, [cartId]);
+	}, [cartId, fees]);
 
 	const cart = data?.cart;
 
 	if (fetching || !cart) return <View />;
 
 	return (
-		<ScrollableScreen style={[styles.container, { paddingBottom: bottom }]}>
+		<ScrollableScreen
+			style={[styles.container, { paddingBottom: bottom }]}
+			refreshControl={
+				<RefreshControl
+					refreshing={fetching}
+					onRefresh={() => {
+						refetch({ requestPolicy: 'network-only' });
+					}}
+					tintColor={theme.text.secondary}
+				/>
+			}
+		>
 			<StoreInfo store={cart.store} />
 
 			<CartSummary products={cart.products} />
-
-			<Spacer y={16} />
 
 			{/* <DeliveryInfo /> */}
 
@@ -89,7 +114,7 @@ const Cart: React.FC = () => {
 
 			<Separator style={{ margin: 16 }} />
 
-			<CartTotal cart={cart} />
+			<CartTotal cart={cart} fees={fees} />
 
 			<View style={{ paddingTop: 16, paddingHorizontal: 16 }}>
 				<Button

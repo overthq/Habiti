@@ -127,6 +127,8 @@ export type CreateCategoryInput = {
 export type CreateOrderInput = {
 	cardId?: InputMaybe<Scalars['ID']>;
 	cartId: Scalars['ID'];
+	serviceFee: Scalars['Int'];
+	transactionFee: Scalars['Int'];
 };
 
 export type CreatePayoutInput = {
@@ -158,6 +160,11 @@ export type DeliveryAddress = {
 	name?: Maybe<Scalars['String']>;
 	user: User;
 	userId: Scalars['ID'];
+};
+
+export type EditCategoryInput = {
+	description?: InputMaybe<Scalars['String']>;
+	name?: InputMaybe<Scalars['String']>;
 };
 
 export type EditProductInput = {
@@ -236,6 +243,7 @@ export type Mutation = {
 	deleteStore: Scalars['ID'];
 	deleteUser: User;
 	editProduct: Product;
+	editProductCategory: StoreProductCategory;
 	editProfile: User;
 	editStore: Store;
 	followStore: StoreFollower;
@@ -339,6 +347,11 @@ export type MutationEditProductArgs = {
 	input: EditProductInput;
 };
 
+export type MutationEditProductCategoryArgs = {
+	categoryId: Scalars['ID'];
+	input: EditCategoryInput;
+};
+
 export type MutationEditProfileArgs = {
 	input: EditProfileInput;
 };
@@ -366,7 +379,6 @@ export type MutationRemoveProductFromCategoryArgs = {
 
 export type MutationRemoveStoreManagerArgs = {
 	managerId: Scalars['ID'];
-	storeId: Scalars['ID'];
 };
 
 export type MutationUnfollowStoreArgs = {
@@ -407,10 +419,12 @@ export type Order = {
 	createdAt: Scalars['String'];
 	id: Scalars['ID'];
 	products: OrderProduct[];
+	serviceFee: Scalars['Int'];
 	status: OrderStatus;
 	store: Store;
 	storeId: Scalars['ID'];
 	total: Scalars['Int'];
+	transactionFee: Scalars['Int'];
 	updatedAt: Scalars['String'];
 	user: User;
 	userId: Scalars['ID'];
@@ -532,6 +546,11 @@ export type ProductReview = {
 	user: User;
 };
 
+export enum PushTokenType {
+	Merchant = 'Merchant',
+	Shopper = 'Shopper'
+}
+
 export type Query = {
 	__typename?: 'Query';
 	cardAuthorization: CardAuthorization;
@@ -545,6 +564,7 @@ export type Query = {
 	products: Product[];
 	stats: Stats;
 	store: Store;
+	storeProductCategory?: Maybe<StoreProductCategory>;
 	stores: Store[];
 	user: User;
 	users: User[];
@@ -576,6 +596,10 @@ export type QueryStatsArgs = {
 };
 
 export type QueryStoreArgs = {
+	id: Scalars['ID'];
+};
+
+export type QueryStoreProductCategoryArgs = {
 	id: Scalars['ID'];
 };
 
@@ -681,6 +705,7 @@ export type StoreManager = {
 
 export type StoreProductCategory = {
 	__typename?: 'StoreProductCategory';
+	description?: Maybe<Scalars['String']>;
 	id: Scalars['ID'];
 	name: Scalars['String'];
 	products: ProductCategory[];
@@ -729,8 +754,17 @@ export type User = {
 	managed: StoreManager[];
 	name: Scalars['String'];
 	orders: Order[];
+	pushTokens: UserPushToken[];
 	updatedAt: Scalars['String'];
 	watchlist: WatchlistProduct[];
+};
+
+export type UserPushToken = {
+	__typename?: 'UserPushToken';
+	id: Scalars['ID'];
+	token: Scalars['String'];
+	type: PushTokenType;
+	userId: Scalars['String'];
 };
 
 export type VerifyBankAccountInput = {

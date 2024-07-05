@@ -17,7 +17,7 @@ export const FilterButton: React.FC<FilterButtonProps> = ({
 	onPress,
 	active
 }) => (
-	<TextButton size={15} disabled={!active} onPress={onPress}>
+	<TextButton size={15} active={active} onPress={onPress}>
 		{text}
 	</TextButton>
 );

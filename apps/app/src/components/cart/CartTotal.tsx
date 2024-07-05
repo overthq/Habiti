@@ -8,11 +8,10 @@ import { calculateFees } from '../../utils/fees';
 
 interface CartTotalProps {
 	cart: CartQuery['cart'];
+	fees: ReturnType<typeof calculateFees>;
 }
 
-const CartTotal: React.FC<CartTotalProps> = ({ cart }) => {
-	const fees = calculateFees(cart.total);
-
+const CartTotal: React.FC<CartTotalProps> = ({ cart, fees }) => {
 	return (
 		<View style={{ paddingHorizontal: 16 }}>
 			<CartTotalRow title='Subtotal' value={formatNaira(cart.total)} />

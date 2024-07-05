@@ -2,12 +2,6 @@ import { Expo, ExpoPushMessage } from 'expo-server-sdk';
 
 const expo = new Expo();
 
-// Considerations:
-// - It would be sad if we had to look up the user's pushToken every time
-//   they made a request that needed it.
-// We technically can return the user's pushToken from the data when we run
-// any DB transactions, instead of having a separate lookup.
-
 // Initial list of actions we want to send user a notification for:
 // - New order (store managers)
 // - Payout confirmed (when Paystack confirms the transaction is sent)

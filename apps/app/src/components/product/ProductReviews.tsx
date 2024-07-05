@@ -14,7 +14,7 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({ reviews }) => {
 			<SectionHeader title='Reviews' />
 			{reviews.length === 0 ? (
 				<View style={{ paddingHorizontal: 16 }}>
-					<Typography variant='secondary' size='small'>
+					<Typography variant='secondary'>
 						There are currently no reviews. Be the first to create one.
 					</Typography>
 				</View>

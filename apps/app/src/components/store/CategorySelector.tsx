@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 
 import CategorySelectorItem from './CategorySelectorItem';
 import { StoreQuery } from '../../types/api';
@@ -15,23 +15,26 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
 	selected,
 	selectCategory
 }) => (
-	<View style={styles.container}>
-		<ScrollView style={styles.scroll} horizontal>
+	<ScrollView
+		style={styles.container}
+		horizontal
+		showsHorizontalScrollIndicator={false}
+		contentContainerStyle={styles.content}
+	>
+		<CategorySelectorItem
+			name='All Products'
+			active={selected === undefined}
+			onPress={() => selectCategory(undefined)}
+		/>
+		{categories.map(({ id, name }) => (
 			<CategorySelectorItem
-				name='All Products'
-				active={selected === undefined}
-				onPress={() => selectCategory(undefined)}
+				key={id}
+				name={name}
+				active={selected === id}
+				onPress={() => selectCategory(id)}
 			/>
-			{categories.map(({ id, name }) => (
-				<CategorySelectorItem
-					key={id}
-					name={name}
-					active={selected === id}
-					onPress={() => selectCategory(id)}
-				/>
-			))}
-		</ScrollView>
-	</View>
+		))}
+	</ScrollView>
 );
 
 const styles = StyleSheet.create({
@@ -40,8 +43,10 @@ const styles = StyleSheet.create({
 		marginTop: 8,
 		paddingVertical: 8
 	},
-	scroll: {
-		paddingLeft: 16
+	content: {
+		alignItems: 'center',
+		paddingHorizontal: 16,
+		gap: 12
 	}
 });
 

@@ -1,26 +1,29 @@
 import { Typography, useTheme } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
+import { View, Pressable, StyleSheet, ActivityIndicator } from 'react-native';
 
-import { CurrentUserQuery } from '../../types/api';
+import { useCurrentUserQuery } from '../../types/api';
 import { ProfileStackParamList } from '../../types/navigation';
-
-interface UserCardProps {
-	user: CurrentUserQuery['currentUser'];
-}
 
 // TODO: Replace "Edit profile" with {user.email}
 
-const UserCard: React.FC<UserCardProps> = ({ user }) => {
+const UserCard: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<ProfileStackParamList>>();
 	const { theme } = useTheme();
 
+	const [{ data, fetching }] = useCurrentUserQuery();
+
+	if (fetching || !data) {
+		return (
+			<View>
+				<ActivityIndicator />
+			</View>
+		);
+	}
+
 	return (
-		<Pressable
-			onPress={() => navigate('Edit Profile')}
-			style={[styles.card /*{ backgroundColor: theme.input.background }*/]}
-		>
+		<Pressable onPress={() => navigate('Edit Profile')} style={[styles.card]}>
 			<View
 				style={[
 					styles.placeholder,
@@ -28,13 +31,12 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
 				]}
 			>
 				<Typography weight='medium' size='xxlarge'>
-					{user.name[0]}
+					{data.currentUser.name[0]}
 				</Typography>
 			</View>
 			<View style={{ marginLeft: 12 }}>
-				<Typography weight='medium'>{user.name}</Typography>
+				<Typography weight='medium'>{data.currentUser.name}</Typography>
 				<Typography variant='secondary' style={styles.phone}>
-					{/* {user.phone} */}
 					Edit profile
 				</Typography>
 			</View>
@@ -44,8 +46,7 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
 
 const styles = StyleSheet.create({
 	card: {
-		// borderRadius: 4,
-		// padding: 12,
+		marginHorizontal: 16,
 		marginTop: 16,
 		marginBottom: 8,
 		flexDirection: 'row',

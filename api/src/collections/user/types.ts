@@ -8,6 +8,7 @@ const UserTypes = gql`
 		createdAt: String!
 		updatedAt: String!
 
+		pushTokens: [UserPushToken!]!
 		carts: [Cart!]!
 		orders: [Order!]!
 		managed: [StoreManager!]!

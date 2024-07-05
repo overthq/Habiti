@@ -21,17 +21,23 @@ const AddToCart: React.FC<AddToCartProps> = ({
 }) => {
 	const { theme } = useTheme();
 	const { bottom } = useSafeAreaInsets();
+	const [quantity, setQuantity] = React.useState(1);
 
 	return (
 		<View
 			style={[styles.container, { bottom, borderTopColor: theme.border.color }]}
 		>
-			<QuantityControl cartId={cartId} productId={productId} inCart={inCart} />
+			<QuantityControl
+				inCart={inCart}
+				quantity={quantity}
+				setQuantity={setQuantity}
+			/>
 			<CartButton
 				storeId={storeId}
 				productId={productId}
 				cartId={cartId}
 				inCart={inCart}
+				quantity={quantity}
 			/>
 		</View>
 	);

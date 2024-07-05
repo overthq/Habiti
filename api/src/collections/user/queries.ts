@@ -36,6 +36,10 @@ const cards: Resolver = (parent, _, ctx) => {
 	return ctx.prisma.user.findUnique({ where: { id: parent.id } }).cards();
 };
 
+const pushTokens: Resolver = (parent, _, ctx) => {
+	return ctx.prisma.user.findUnique({ where: { id: parent.id } }).pushTokens();
+};
+
 export default {
 	Query: {
 		currentUser,
@@ -48,6 +52,7 @@ export default {
 		followed,
 		carts,
 		watchlist,
-		cards
+		cards,
+		pushTokens
 	}
 };

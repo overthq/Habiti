@@ -1,10 +1,6 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useTheme } from '@habiti/components';
-import {
-	DarkTheme,
-	DefaultTheme,
-	NavigationContainer
-} from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Provider } from 'urql';
@@ -22,7 +18,7 @@ import useStore from '../state';
 import { getStatusBarStyle } from '../utils/theme';
 
 const Routes: React.FC = () => {
-	const { name } = useTheme();
+	const { name, theme } = useTheme();
 	const client = useClient();
 	const { accessToken, activeStore } = useStore(state => ({
 		accessToken: state.accessToken,
@@ -32,7 +28,7 @@ const Routes: React.FC = () => {
 	return (
 		<Provider value={client}>
 			<StatusBar style={getStatusBarStyle(name)} />
-			<NavigationContainer theme={name === 'dark' ? DarkTheme : DefaultTheme}>
+			<NavigationContainer theme={theme.navigation}>
 				<BottomSheetModalProvider>
 					<AppStack.Navigator
 						initialRouteName={

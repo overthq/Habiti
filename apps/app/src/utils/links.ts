@@ -17,3 +17,10 @@ export const getLink = (type: LinkType, value: string) => {
 			return `https://instagram.com/${value}`;
 	}
 };
+
+// export const config = {
+// 	screens: {
+// 		Home: '',
+// 		Product: ''
+// 	}
+// };
