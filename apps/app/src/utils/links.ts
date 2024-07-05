@@ -18,9 +18,9 @@ export const getLink = (type: LinkType, value: string) => {
 	}
 };
 
-// export const config = {
-// 	screens: {
-// 		Home: '',
-// 		Product: ''
-// 	}
-// };
+export const config = {
+	screens: {
+		Home: '',
+		Product: ''
+	}
+};
