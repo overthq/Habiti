@@ -1,6 +1,7 @@
 import { useTheme } from '@habiti/components';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+// import * as Linking from 'expo-linking';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Provider } from 'urql';
@@ -17,6 +18,8 @@ import Verify from '../screens/Verify';
 import useStore from '../state';
 import { AppStackParamList } from '../types/navigation';
 
+// const prefix = Linking.createURL('/');
+
 const AppStack = createNativeStackNavigator<AppStackParamList>();
 
 const Routes: React.FC = () => {
@@ -26,10 +29,14 @@ const Routes: React.FC = () => {
 	}));
 	const client = useClient(accessToken);
 
+	// const linking = {
+	// 	prefixes: [prefix, 'https://habiti.app']
+	// };
+
 	return (
 		<Provider value={client}>
 			<StatusBar style={theme.statusBar} />
-			<NavigationContainer theme={theme.navigation}>
+			<NavigationContainer theme={theme.navigation} linking={linking}>
 				<AppStack.Navigator screenOptions={{ headerShown: false }}>
 					{accessToken ? (
 						<>
