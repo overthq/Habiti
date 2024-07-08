@@ -36,7 +36,7 @@ const Routes: React.FC = () => {
 	return (
 		<Provider value={client}>
 			<StatusBar style={theme.statusBar} />
-			<NavigationContainer theme={theme.navigation} linking={linking}>
+			<NavigationContainer theme={theme.navigation} /*linking={linking}*/>
 				<AppStack.Navigator screenOptions={{ headerShown: false }}>
 					{accessToken ? (
 						<>
