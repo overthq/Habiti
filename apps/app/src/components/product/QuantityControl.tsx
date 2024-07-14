@@ -39,13 +39,17 @@ const QuantityControl: React.FC<QuantityControlProps> = ({
 		<View
 			style={[styles.controls, { backgroundColor: theme.input.background }]}
 		>
-			<Pressable disabled={inCart || decrementDisabled} onPress={decrement}>
+			<Pressable
+				hitSlop={16}
+				disabled={inCart || decrementDisabled}
+				onPress={decrement}
+			>
 				<Icon name='minus' color={theme.text.secondary} />
 			</Pressable>
 			<Typography size='large' weight='medium' number>
 				{quantity}
 			</Typography>
-			<Pressable disabled={inCart} onPress={increment}>
+			<Pressable hitSlop={16} disabled={inCart} onPress={increment}>
 				<Icon name='plus' color={theme.text.secondary} />
 			</Pressable>
 		</View>
