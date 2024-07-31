@@ -32,7 +32,7 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 				preset='sectionHeader'
 				style={{ marginLeft: 16, marginBottom: 8 }}
 			>
-				Recent Orders
+				Recent orders
 			</Typography>
 			{!orders || orders?.length === 0 ? (
 				<ListEmpty

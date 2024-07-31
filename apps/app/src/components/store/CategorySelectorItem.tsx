@@ -12,7 +12,7 @@ const CategorySelectorItem: React.FC<CategorySelectorItemProps> = ({
 	active
 }) => {
 	return (
-		<TextButton onPress={onPress} active={active} weight='medium'>
+		<TextButton onPress={onPress} active={active} weight='medium' size={17}>
 			{name}
 		</TextButton>
 	);

@@ -13,14 +13,20 @@ const StoreSelect: React.FC = () => {
 	return (
 		<Screen style={styles.container}>
 			<SafeAreaView>
-				<Typography size='xxxlarge' weight='bold' style={styles.header}>
+				<Typography size='xxxlarge' weight='bold'>
 					Select store
 				</Typography>
+
+				<Spacer y={2} />
+
 				<Typography variant='secondary'>
 					You can choose an existing store you manage, or create a new one.
 				</Typography>
+
 				<Spacer y={16} />
+
 				<StoreSelectList />
+
 				<Button
 					onPress={() => navigate('CreateStore')}
 					style={{ marginBottom: 16 }}

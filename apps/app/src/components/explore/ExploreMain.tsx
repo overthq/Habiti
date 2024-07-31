@@ -36,9 +36,6 @@ const styles = StyleSheet.create({
 	container: {
 		borderTopWidth: 0.5,
 		paddingTop: 12
-	},
-	dialog: {
-		marginHorizontal: 16
 	}
 });
 

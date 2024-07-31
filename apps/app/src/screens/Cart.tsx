@@ -83,8 +83,6 @@ const Cart: React.FC = () => {
 
 	const cart = data?.cart;
 
-	if (fetching || !cart) return <View />;
-
 	return (
 		<ScrollableScreen
 			style={[styles.container, { paddingBottom: bottom }]}
@@ -98,31 +96,35 @@ const Cart: React.FC = () => {
 				/>
 			}
 		>
-			<StoreInfo store={cart.store} />
+			{cart && (
+				<>
+					<StoreInfo store={cart.store} />
 
-			<CartSummary products={cart.products} />
+					<CartSummary products={cart.products} />
 
-			{/* <DeliveryInfo /> */}
+					{/* <DeliveryInfo /> */}
 
-			<Spacer y={16} />
+					<Spacer y={16} />
 
-			<SelectCard
-				cards={cart.user.cards}
-				selectedCard={selectedCard}
-				onCardSelect={setSelectedCard}
-			/>
+					<SelectCard
+						cards={cart.user.cards}
+						selectedCard={selectedCard}
+						onCardSelect={setSelectedCard}
+					/>
 
-			<Separator style={{ margin: 16 }} />
+					<Separator style={{ margin: 16 }} />
 
-			<CartTotal cart={cart} fees={fees} />
+					<CartTotal cart={cart} fees={fees} />
 
-			<View style={{ paddingTop: 16, paddingHorizontal: 16 }}>
-				<Button
-					text='Place Order'
-					onPress={handleSubmit}
-					disabled={!selectedCard}
-				/>
-			</View>
+					<View style={{ paddingTop: 16, paddingHorizontal: 16 }}>
+						<Button
+							text='Place Order'
+							onPress={handleSubmit}
+							disabled={!selectedCard}
+						/>
+					</View>
+				</>
+			)}
 		</ScrollableScreen>
 	);
 };
