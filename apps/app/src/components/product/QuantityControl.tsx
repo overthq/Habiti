@@ -9,14 +9,8 @@ interface QuantityControlProps {
 }
 
 // TODO:
-// Simply, this should work as follows:
-// The "Add to cart" button is a commit button.
-// The quantity control button is local.
-// Once it is out of sync with the reality on the server,
-// The commit button (add to cart/update quantity) is enabled.
-// The only prop it needs is the server quantity.
-
-// NOTICE: This component currently does NOT work!
+// Add disabled state (color) for decrement button when quantity is 1
+// Add disabled state for both buttons (and text) when inCart is true
 
 const QuantityControl: React.FC<QuantityControlProps> = ({
 	inCart,

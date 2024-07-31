@@ -37,7 +37,7 @@ const OrderStatusPill: React.FC<OrderStatusPillProps> = ({ status }) => {
 const styles = StyleSheet.create({
 	container: {
 		alignSelf: 'flex-start',
-		paddingVertical: 2,
+		paddingVertical: 4,
 		paddingHorizontal: 8,
 		borderRadius: 4,
 		justifyContent: 'center',
