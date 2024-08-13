@@ -21,7 +21,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	ios: {
 		supportsTablet: true,
 		bundleIdentifier: 'app.habiti.app',
-		associatedDomains: ['applinks:habiti.app']
+		associatedDomains: ['applinks:habiti.app'],
+		config: {
+			usesNonExemptEncryption: false
+		}
 	},
 	android: {
 		package: 'app.habiti.app',
