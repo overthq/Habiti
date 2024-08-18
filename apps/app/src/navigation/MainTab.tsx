@@ -2,8 +2,10 @@ import { useTheme } from '@habiti/components';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 
+import CartsStack from './CartsStack';
 import ExploreStack from './ExploreStack';
 import HomeStack from './HomeStack';
+import ProfileStack from './ProfileStack';
 import { MainTabParamList } from '../types/navigation';
 import { tabScreenOptions } from '../utils/navigation';
 
