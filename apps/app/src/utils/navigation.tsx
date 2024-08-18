@@ -2,9 +2,9 @@ import { Icon, IconType } from '@habiti/components';
 import { RouteProp } from '@react-navigation/native';
 import React from 'react';
 
-import { HomeTabParamList } from '../types/navigation';
+import { MainTabParamList } from '../types/navigation';
 
-export const getIcon = (routeName: keyof HomeTabParamList): IconType => {
+export const getIcon = (routeName: keyof MainTabParamList): IconType => {
 	switch (routeName) {
 		case 'For You':
 			return 'home';
@@ -21,7 +21,7 @@ export const getIcon = (routeName: keyof HomeTabParamList): IconType => {
 
 export const tabScreenOptions =
 	(themeName: 'light' | 'dark') =>
-	({ route }: { route: RouteProp<HomeTabParamList> }) => ({
+	({ route }: { route: RouteProp<MainTabParamList> }) => ({
 		headerShown: false,
 		tabBarActiveTintColor: themeName === 'light' ? 'black' : 'white',
 		tabBarInactiveTintColor: 'gray',

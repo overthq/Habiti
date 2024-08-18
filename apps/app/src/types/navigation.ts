@@ -2,7 +2,7 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 
 export type AppStackParamList = {
 	Landing: undefined;
-	Home: undefined;
+	Main: undefined;
 	Register: undefined;
 	Authenticate: undefined;
 	Verify: { email: string };
@@ -45,7 +45,7 @@ export type StoreStackParamList = {
 	'Store.Search': { storeId: string }; // Store name goes here
 };
 
-export type HomeTabParamList = {
+export type MainTabParamList = {
 	'For You': undefined;
 	Explore: undefined;
 	Carts: undefined;

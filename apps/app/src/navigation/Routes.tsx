@@ -6,7 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Provider } from 'urql';
 
-import HomeTabNavigator from './HomeTab';
+import MainTabNavigator from './MainTab';
 import useClient from '../hooks/useClient';
 import AddCardWebview from '../screens/AddCardWebview';
 import Authenticate from '../screens/Authenticate';
@@ -40,7 +40,7 @@ const Routes: React.FC = () => {
 				<AppStack.Navigator screenOptions={{ headerShown: false }}>
 					{accessToken ? (
 						<>
-							<AppStack.Screen name='Home' component={HomeTabNavigator} />
+							<AppStack.Screen name='Main' component={MainTabNavigator} />
 							<AppStack.Group screenOptions={{ headerShown: true }}>
 								<AppStack.Screen name='Cart' component={Cart} />
 								<AppStack.Group screenOptions={{ presentation: 'modal' }}>

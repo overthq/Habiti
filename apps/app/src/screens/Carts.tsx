@@ -6,7 +6,7 @@ import { RefreshControl } from 'react-native';
 
 import CartsListItem from '../components/carts/CartsListItem';
 import { useCartsQuery } from '../types/api';
-import { AppStackParamList, HomeTabParamList } from '../types/navigation';
+import { AppStackParamList, MainTabParamList } from '../types/navigation';
 
 // TODO:
 // - Maintain a list of recently viewed stores and items,
@@ -16,7 +16,7 @@ import { AppStackParamList, HomeTabParamList } from '../types/navigation';
 const Carts: React.FC = () => {
 	const [{ data, fetching }, refetch] = useCartsQuery();
 	const { navigate } =
-		useNavigation<NavigationProp<HomeTabParamList & AppStackParamList>>();
+		useNavigation<NavigationProp<MainTabParamList & AppStackParamList>>();
 	const { theme } = useTheme();
 
 	const carts = data?.currentUser.carts;

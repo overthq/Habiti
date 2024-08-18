@@ -6,7 +6,7 @@ import { View, StyleSheet } from 'react-native';
 
 import WatchlistProduct from './WatchlistProduct';
 import { HomeQuery } from '../../types/api';
-import { HomeTabParamList, AppStackParamList } from '../../types/navigation';
+import { MainTabParamList, AppStackParamList } from '../../types/navigation';
 
 // Consider not displaying anything when the watchlist is empty.
 
@@ -28,7 +28,7 @@ interface WatchlistMainProps {
 }
 
 const WatchlistMain: React.FC<WatchlistMainProps> = ({ watchlist }) => {
-	const { navigate } = useNavigation<NavigationProp<HomeTabParamList>>();
+	const { navigate } = useNavigation<NavigationProp<MainTabParamList>>();
 	const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
 	const products = watchlist.map(({ product }) => product);

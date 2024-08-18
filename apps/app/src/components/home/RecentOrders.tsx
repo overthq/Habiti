@@ -5,7 +5,7 @@ import { View, StyleSheet } from 'react-native';
 
 import RecentOrder from './RecentOrder';
 import { HomeQuery } from '../../types/api';
-import { HomeStackParamList, HomeTabParamList } from '../../types/navigation';
+import { HomeStackParamList, MainTabParamList } from '../../types/navigation';
 
 interface RecentOrdersProps {
 	orders: HomeQuery['currentUser']['orders'];
@@ -17,7 +17,7 @@ interface RecentOrdersProps {
 
 const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 	const { navigate } =
-		useNavigation<NavigationProp<HomeTabParamList & HomeStackParamList>>();
+		useNavigation<NavigationProp<MainTabParamList & HomeStackParamList>>();
 
 	const handleOrderPress = React.useCallback(
 		(orderId: string) => () => {
