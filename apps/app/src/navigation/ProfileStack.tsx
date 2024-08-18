@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import AccountSettings from '../screens/AccountSettings';
 import DeliveryAddress from '../screens/DeliveryAddress';
+import EditProfile from '../screens/EditProfile';
 import NotificationSettings from '../screens/NotificationSettings';
 import PaymentMethods from '../screens/PaymentMethods';
 import Profile from '../screens/Profile';
