@@ -28,4 +28,6 @@ const Product: React.FC<ProductProps> = ({ id, name, unitPrice, images }) => {
 	);
 };
 
+export const runtime = 'edge';
+
 export default Product;

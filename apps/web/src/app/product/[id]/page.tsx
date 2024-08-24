@@ -104,4 +104,6 @@ const ProductPage = () => {
 	);
 };
 
+export const runtime = 'edge';
+
 export default ProductPage;
