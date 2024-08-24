@@ -61,4 +61,6 @@ const StorePage = () => {
 	);
 };
 
+export const runtime = 'edge';
+
 export default StorePage;
