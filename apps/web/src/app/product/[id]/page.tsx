@@ -1,8 +1,11 @@
 'use client';
 
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import React from 'react';
 import { useQuery } from 'urql';
+
+import { formatNaira } from '@/utils/currency';
 
 const PRODUCT_QUERY = `
   query($id: ID!) {
@@ -14,6 +17,15 @@ const PRODUCT_QUERY = `
       images {
         id
         path
+      }
+      store {
+        id
+        name
+        description
+        image {
+          id
+          path
+        }
       }
     }
   }
@@ -56,7 +68,7 @@ const ProductPage = () => {
 				</div>
 				<div>
 					<p className='text-xl font-semibold mb-2'>
-						${product.unitPrice.toFixed(2)}
+						{formatNaira(product.unitPrice)}
 					</p>
 					<p className='text-gray-600 mb-4'>{product.description}</p>
 					<button className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'>
@@ -64,6 +76,30 @@ const ProductPage = () => {
 					</button>
 				</div>
 			</div>
+			{product.store && (
+				<div className='mt-8 border-t pt-6'>
+					<h2 className='text-2xl font-semibold mb-4'>Sold by</h2>
+					<div className='flex items-center'>
+						{product.store.image && (
+							<img
+								src={product.store.image.path}
+								alt={product.store.name}
+								className='w-16 h-16 rounded-full mr-4 object-cover'
+							/>
+						)}
+						<div>
+							<h3 className='text-xl font-medium'>{product.store.name}</h3>
+							<p className='text-gray-600'>{product.store.description}</p>
+							<Link
+								href={`/store/${product.store.id}`}
+								className='text-blue-500 hover:underline mt-2 inline-block'
+							>
+								Visit Store
+							</Link>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };
