@@ -76,30 +76,28 @@ const ProductPage = () => {
 					</button>
 				</div>
 			</div>
-			{product.store && (
-				<div className='mt-8 border-t pt-6'>
-					<h2 className='text-2xl font-semibold mb-4'>Sold by</h2>
-					<div className='flex items-center'>
-						{product.store.image && (
-							<img
-								src={product.store.image.path}
-								alt={product.store.name}
-								className='w-16 h-16 rounded-full mr-4 object-cover'
-							/>
-						)}
-						<div>
-							<h3 className='text-xl font-medium'>{product.store.name}</h3>
-							<p className='text-gray-600'>{product.store.description}</p>
-							<Link
-								href={`/store/${product.store.id}`}
-								className='text-blue-500 hover:underline mt-2 inline-block'
-							>
-								Visit Store
-							</Link>
-						</div>
+			<div className='mt-8 border-t pt-6'>
+				<h2 className='text-2xl font-semibold mb-4'>Sold by</h2>
+				<div className='flex items-center'>
+					{product.store.image && (
+						<img
+							src={product.store.image.path}
+							alt={product.store.name}
+							className='w-16 h-16 rounded-full mr-4 object-cover'
+						/>
+					)}
+					<div>
+						<h3 className='text-xl font-medium'>{product.store.name}</h3>
+						<p className='text-gray-600'>{product.store.description}</p>
+						<Link
+							href={`/store/${product.store.id}`}
+							className='text-blue-500 hover:underline mt-2 inline-block'
+						>
+							Visit Store
+						</Link>
 					</div>
 				</div>
-			)}
+			</div>
 		</div>
 	);
 };

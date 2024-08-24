@@ -28,17 +28,12 @@ const STORE_QUERY = `
 const StorePage = () => {
 	const { id } = useParams();
 
-	const [result, reexecuteQuery] = useQuery({
+	const [result] = useQuery({
 		query: STORE_QUERY,
 		variables: { id }
 	});
 
 	const { data, fetching, error } = result;
-
-	React.useEffect(() => {
-		// You can reexecute the query when needed
-		// reexecuteQuery({ requestPolicy: 'network-only' });
-	}, []);
 
 	if (!id) {
 		return <div>Error: Store ID is missing</div>;

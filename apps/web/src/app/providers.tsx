@@ -4,8 +4,8 @@ import { Provider } from 'urql';
 
 import client from '@/config/client';
 
+// TODO: Fix any type
 type ProvidersProps = {
-	// TODO: Fix any type
 	children: any;
 };
 
