@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: |
           pnpm i
-          cd api && pnpm i
+          cd api && pnpm i --ignore-workspace
 
       - name: Run lint
         run: |
