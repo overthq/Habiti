@@ -53,6 +53,9 @@ importers:
       express-jwt:
         specifier: ^8.4.1
         version: 8.4.1
+      fs-capacitor:
+        specifier: ^8.0.0
+        version: 8.0.0
       graphql:
         specifier: ^16.8.1
         version: 16.9.0
@@ -75,7 +78,7 @@ importers:
         specifier: ^6.9.13
         version: 6.9.14
       redis:
-        specifier: ^4.6.8
+        specifier: ^4.7.0
         version: 4.7.0
       subscriptions-transport-ws:
         specifier: ^0.11.0
