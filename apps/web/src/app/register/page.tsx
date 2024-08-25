@@ -1,5 +1,3 @@
-'use client';
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
@@ -25,18 +23,14 @@ const registerSchema = z.object({
 
 const RegisterPage = () => {
 	const REGISTER_MUTATION = gql`
-		mutation Register($name: String!, $email: String!, $password: String!) {
-			register(name: $name, email: $email, password: $password) {
-				token
-				user {
-					id
-					email
-				}
+		mutation Register($input: RegisterInput!) {
+			register(input: $input) {
+				id
 			}
 		}
 	`;
 
-	const [registerResult, register] = useMutation(REGISTER_MUTATION);
+	const [, register] = useMutation(REGISTER_MUTATION);
 
 	const form = useForm({
 		resolver: zodResolver(registerSchema),
@@ -47,8 +41,20 @@ const RegisterPage = () => {
 		}
 	});
 
-	const onSubmit = (values: z.infer<typeof registerSchema>) => {
-		console.log(values);
+	const onSubmit = async (values: z.infer<typeof registerSchema>) => {
+		const { data, error } = await register({
+			input: {
+				name: values.name,
+				email: values.email,
+				password: values.password
+			}
+		});
+
+		if (error) {
+			console.error(error);
+		} else {
+			console.log(data);
+		}
 	};
 
 	return (
@@ -113,7 +119,5 @@ const RegisterPage = () => {
 		</div>
 	);
 };
-
-export const runtime = 'edge';
 
 export default RegisterPage;
