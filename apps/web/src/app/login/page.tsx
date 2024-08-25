@@ -16,6 +16,7 @@ import {
 	FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import Link from 'next/link';
 
 const loginSchema = z.object({
 	email: z.string().email(),
@@ -47,6 +48,9 @@ const LoginPage = () => {
 	};
 
 	return (
+		<div className="flex justify-center items-center min-h-screen">
+			<div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+				<h1 className="text-2xl font-bold mb-4">Login</h1>
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
 				<FormField
@@ -75,10 +79,22 @@ const LoginPage = () => {
 						</FormItem>
 					)}
 				/>
-				<Button type='submit'>Login</Button>
-			</form>
-		</Form>
+				<Button type='submit' className='w-full'>Login</Button>
+					<div className="mt-4">
+						<p className="text-sm text-gray-600 text-center">
+							Don't have an account?{' '}
+							<Link href="/register" className="text-blue-600 hover:underline">
+								Register here
+							</Link>
+						</p>
+					</div>
+					</form>
+				</Form>
+			</div>
+		</div>
 	);
 };
+
+export const runtime = 'edge';
 
 export default LoginPage;
