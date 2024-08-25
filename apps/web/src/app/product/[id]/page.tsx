@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import React from 'react';
 import { useQuery } from 'urql';
 
+import { Button } from '@/components/ui/button';
 import { formatNaira } from '@/utils/currency';
 
 const PRODUCT_QUERY = `
@@ -55,7 +56,6 @@ const ProductPage = () => {
 
 	return (
 		<div className='container mx-auto px-4 py-8'>
-			<h1 className='text-3xl font-bold mb-4'>{product.name}</h1>
 			<div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
 				<div>
 					{product.images && product.images.length > 0 && (
@@ -67,13 +67,12 @@ const ProductPage = () => {
 					)}
 				</div>
 				<div>
+					<h1 className='text-3xl font-bold mb-4'>{product.name}</h1>
 					<p className='text-xl font-semibold mb-2'>
 						{formatNaira(product.unitPrice)}
 					</p>
 					<p className='text-gray-600 mb-4'>{product.description}</p>
-					<button className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'>
-						Add to Cart
-					</button>
+					<Button>Add to Cart</Button>
 				</div>
 			</div>
 			<div className='mt-8 border-t pt-6'>
