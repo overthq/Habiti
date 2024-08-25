@@ -42,15 +42,13 @@ const StorePage = () => {
 	if (error) return <div>Error: {error.message}</div>;
 
 	return (
-		<div>
-			<div>
-				<h1>{data.store.name}</h1>
-				<p>{data.store.description}</p>
-				<div>
-					{data.store.products.map((product: any) => (
-						<Product key={product.id} {...product} />
-					))}
-				</div>
+		<div className='container mx-auto py-8'>
+			<h1 className='text-2xl font-bold'>{data.store.name}</h1>
+			<p className='text-gray-600'>{data.store.description}</p>
+			<div className='mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
+				{data.store.products.map((product: any) => (
+					<Product key={product.id} {...product} />
+				))}
 			</div>
 		</div>
 	);

@@ -1,60 +1,102 @@
+'use client';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { useMutation, gql } from 'urql';
+import { z } from 'zod';
+
+import { Button } from '@/components/ui/button';
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+
+const registerSchema = z.object({
+	name: z.string(),
+	email: z.string().email(),
+	password: z.string().min(8)
+});
+
 const RegisterPage = () => {
+	const REGISTER_MUTATION = gql`
+		mutation Register($name: String!, $email: String!, $password: String!) {
+			register(name: $name, email: $email, password: $password) {
+				token
+				user {
+					id
+					email
+				}
+			}
+		}
+	`;
+
+	const [registerResult, register] = useMutation(REGISTER_MUTATION);
+
+	const form = useForm({
+		resolver: zodResolver(registerSchema),
+		defaultValues: {
+			name: '',
+			email: '',
+			password: ''
+		}
+	});
+
+	const onSubmit = (values: z.infer<typeof registerSchema>) => {
+		console.log(values);
+	};
+
 	return (
-		<div>
-			<form className='space-y-4'>
-				<div>
-					<label
-						htmlFor='name'
-						className='block text-sm font-medium text-gray-700'
-					>
-						Name
-					</label>
-					<input
-						type='text'
-						id='name'
-						name='name'
-						className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-						required
-					/>
-				</div>
-				<div>
-					<label
-						htmlFor='email'
-						className='block text-sm font-medium text-gray-700'
-					>
-						Email
-					</label>
-					<input
-						type='email'
-						id='email'
-						name='email'
-						className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-						required
-					/>
-				</div>
-				<div>
-					<label
-						htmlFor='password'
-						className='block text-sm font-medium text-gray-700'
-					>
-						Password
-					</label>
-					<input
-						type='password'
-						id='password'
-						name='password'
-						className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-						required
-					/>
-				</div>
-				<button
-					type='submit'
-					className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-				>
+		<Form {...form}>
+			<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+				<FormField
+					control={form.control}
+					name='name'
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Name</FormLabel>
+							<FormControl>
+								<Input {...field} />
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name='email'
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Email</FormLabel>
+							<FormControl>
+								<Input {...field} type='email' />
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name='password'
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Password</FormLabel>
+							<FormControl>
+								<Input {...field} type='password' />
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<Button type='submit' className='w-full'>
 					Register
-				</button>
+				</Button>
 			</form>
-		</div>
+		</Form>
 	);
 };
 

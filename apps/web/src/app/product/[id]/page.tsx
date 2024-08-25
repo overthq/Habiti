@@ -58,7 +58,7 @@ const ProductPage = () => {
 		<div className='container mx-auto px-4 py-8'>
 			<div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
 				<div>
-					{product.images && product.images.length > 0 && (
+					{product.images.length > 0 && (
 						<img
 							src={product.images[0].path}
 							alt={product.name}
@@ -86,14 +86,25 @@ const ProductPage = () => {
 						/>
 					)}
 					<div>
-						<h3 className='text-xl font-medium'>{product.store.name}</h3>
-						<p className='text-gray-600'>{product.store.description}</p>
-						<Link
-							href={`/store/${product.store.id}`}
-							className='text-blue-500 hover:underline mt-2 inline-block'
-						>
-							Visit Store
-						</Link>
+						<div className='flex items-center'>
+							{product.store.image && (
+								<img
+									src={product.store.image.path}
+									alt={product.store.name}
+									className='w-12 h-12 rounded-full mr-4 object-cover'
+								/>
+							)}
+							<div>
+								<h3 className='text-xl font-medium'>{product.store.name}</h3>
+								<p className='text-gray-600'>{product.store.description}</p>
+								<Link
+									href={`/store/${product.store.id}`}
+									className='text-blue-500 hover:underline mt-2 inline-block'
+								>
+									Visit Store
+								</Link>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
