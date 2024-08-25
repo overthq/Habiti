@@ -35,12 +35,12 @@ jobs:
       - uses: actions/setup-node@v4
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm i --frozen-lockfile
 
       - name: Setup Expo
         uses: expo/expo-github-action@v8
         with:
-          packager: yarn
+          packager: pnpm
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
@@ -59,12 +59,12 @@ jobs:
       - uses: actions/setup-node@v4
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm i --frozen-lockfile
 
       - name: Setup Expo
         uses: expo/expo-github-action@v8
         with:
-          packager: yarn
+          packager: pnpm
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 

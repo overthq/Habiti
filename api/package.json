@@ -5,7 +5,7 @@
 	"license": "GPL-3.0",
 	"scripts": {
 		"dev": "nodemon",
-		"build": "tsc && yarn sentry:sourcemaps",
+		"build": "tsc && pnpm sentry:sourcemaps",
 		"start": "node dist/index",
 		"sentry:sourcemaps": "sentry-cli sourcemaps inject --org habiti --project habiti-api ./dist && sentry-cli sourcemaps upload --org habiti --project habiti-api ./dist"
 	},
@@ -44,7 +44,7 @@
 		"@types/jsonwebtoken": "^9.0.3",
 		"@types/lodash": "^4.14.198",
 		"@types/nodemailer": "^6.4.15",
-		"nodemon": "^3.0.1",
+		"nodemon": "^3.1.4",
 		"prisma": "^5.13.0",
 		"ts-node": "^10.9.2",
 		"tsx": "^4.11.0",

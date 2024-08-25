@@ -8,7 +8,7 @@ From the root directory, run the following commands:
 
 ```sh
 cd api
-yarn
-yarn start-redis # Only necessary if Redis isn't running in the background.
-yarn dev
+pnpm i
+pnpm start-redis # Only necessary if Redis isn't running in the background.
+pnpm dev
 ```

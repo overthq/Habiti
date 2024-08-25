@@ -24,15 +24,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          yarn
-          cd api && yarn
+          pnpm i
+          cd api && pnpm i
 
       - name: Run lint
         run: |
-          yarn lint
+          pnpm lint
 
       - name: Run typecheck
         run: |
-          cd app && yarn tsc && cd ..
-          cd dashboard && yarn tsc && cd ..
-          cd api && yarn tsc
+          cd app && pnpm tsc && cd ..
+          cd dashboard && pnpm tsc && cd ..
+          cd api && pnpm tsc
