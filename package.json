@@ -8,9 +8,9 @@
 	"license": "GPL-3.0-or-later",
 	"private": true,
 	"scripts": {
-		"start:app": "yarn workspace @habiti/app start",
-		"start:dashboard": "yarn workspace @habiti/dashboard start",
-		"lint": "yarn workspaces run lint",
+		"start:app": "pnpm --filter @habiti/app start",
+		"start:dashboard": "pnpm --filter @habiti/dashboard start",
+		"lint": "pnpm -r run lint",
 		"start-redis": "redis-server --daemonize yes",
 		"postinstall": "husky",
 		"load-bank-list": "node scripts/load-banks"
@@ -26,6 +26,5 @@
 		"node-fetch": "2",
 		"prettier": "^3.2.5",
 		"typescript": "^5.3.3"
-	},
-	"workspaces": ["packages/*", "apps/*"]
+	}
 }

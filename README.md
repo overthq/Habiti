@@ -21,7 +21,7 @@ This section will help you get Habiti up and running in your development environ
 Before starting the installation process, the following are required:
 
 - [Node.js](https://nodejs.org) (LTS recommended).
-- [Yarn v1](https://yarnpkg.com)
+- [pnpm](https://pnpm.io)
 - [PostgresQL](https://postgresql.com)
 
 ### Installation and Setup
@@ -33,7 +33,7 @@ To clone this repo and install the base dependencies:
 git clone https://github.com/overthq/Habiti.git && cd Habiti
 
 # Install general dependencies
-yarn
+pnpm i
 ```
 
 Next, proceed to the following links for more information on how to set each project set up correctly.
