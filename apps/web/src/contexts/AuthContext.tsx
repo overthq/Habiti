@@ -4,12 +4,14 @@ interface AuthContextType {
 	accessToken?: string;
 	userId?: string;
 	onLogin: (accessToken: string, userId: string) => void;
+	onLogout: () => void;
 }
 
 const AuthContext = React.createContext<AuthContextType>({
 	accessToken: undefined,
 	userId: undefined,
-	onLogin: () => {}
+	onLogin: () => {},
+	onLogout: () => {}
 	// isLoggedIn: false,
 	// onLogout: () => {},
 	// onLogin: (email, password) => {}
@@ -38,12 +40,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 		window.localStorage.setItem('userId', userId);
 	};
 
+	const handleLogout = () => {
+		setAccessToken(undefined);
+		setUserId(undefined);
+		window.localStorage.removeItem('accessToken');
+		window.localStorage.removeItem('userId');
+	};
+
 	return (
 		<AuthContext.Provider
 			value={{
 				accessToken,
 				userId,
-				onLogin: handleLogin
+				onLogin: handleLogin,
+				onLogout: handleLogout
 				// isLoggedIn: false,
 				// onLogout: () => {},
 				// onLogin: (email, password) => {}

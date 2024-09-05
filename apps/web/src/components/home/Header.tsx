@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useAuthContext } from '@/contexts/AuthContext';
 
 const Header = () => {
-	const { userId } = useAuthContext();
+	const { userId, onLogout } = useAuthContext();
 
 	return (
 		<nav
@@ -18,13 +18,15 @@ const Header = () => {
 			<Link href='/'>
 				<p style={{ fontWeight: '500', fontSize: '1.1rem' }}>Habiti</p>
 			</Link>
-			{!userId && (
+			{!userId ? (
 				<div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
 					<Link href='/login'>Login</Link>
 					<Link href='/register'>
 						<Button>Register</Button>
 					</Link>
 				</div>
+			) : (
+				<Button onClick={onLogout}>Logout</Button>
 			)}
 		</nav>
 	);
