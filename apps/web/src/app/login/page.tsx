@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { useMutation, gql } from 'urql';
 import { z } from 'zod';
@@ -16,6 +17,7 @@ import {
 	FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 const loginSchema = z.object({
 	email: z.string().email(),
@@ -23,6 +25,8 @@ const loginSchema = z.object({
 });
 
 const LoginPage = () => {
+	const router = useRouter();
+
 	const LOGIN_MUTATION = gql`
 		mutation Login($input: AuthenticateInput!) {
 			authenticate(input: $input) {
@@ -41,11 +45,16 @@ const LoginPage = () => {
 		}
 	});
 
+	const { onLogin } = useAuthContext();
+
 	const onSubmit = async (values: z.infer<typeof loginSchema>) => {
 		const { data } = await login({
 			input: { email: values.email, password: values.password }
 		});
-		console.log(data);
+
+		onLogin(data.authenticate.accessToken, data.authenticate.userId);
+		// TODO: Handle non-home origin routes.
+		router.push('/');
 	};
 
 	return (
