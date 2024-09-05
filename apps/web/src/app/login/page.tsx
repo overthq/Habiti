@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { useMutation, gql } from 'urql';
 import { z } from 'zod';

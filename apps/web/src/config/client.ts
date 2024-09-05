@@ -6,7 +6,7 @@ export const generateClient = (accessToken?: string) => {
 		exchanges: [cacheExchange, fetchExchange],
 		fetchOptions: {
 			headers: {
-				Authorization: `Bearer ${accessToken}`
+				...(accessToken ? { authorization: `Bearer ${accessToken}` } : {})
 			}
 		}
 	});
