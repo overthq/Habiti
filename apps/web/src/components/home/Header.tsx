@@ -1,5 +1,7 @@
 import Link from 'next/link';
 
+import CartSheet from '../cart/CartSheet';
+
 import { Button } from '@/components/ui/button';
 import { useAuthContext } from '@/contexts/AuthContext';
 
@@ -26,7 +28,10 @@ const Header = () => {
 					</Link>
 				</div>
 			) : (
-				<Button onClick={onLogout}>Logout</Button>
+				<div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+					<CartSheet />
+					<Button onClick={onLogout}>Logout</Button>
+				</div>
 			)}
 		</nav>
 	);

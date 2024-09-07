@@ -26,3 +26,29 @@ export const uploadImages = async (imageFiles: Promise<FileUpload>[]) => {
 export const uploadImage = async (imageFile: Promise<FileUpload>) => {
 	return uploadStream((await imageFile).createReadStream());
 };
+
+// const { createReadStream } = await imageFile;
+// const stream = createReadStream();
+
+// // Generate blurhash
+// const chunks: Buffer[] = [];
+// for await (const chunk of stream) {
+// 	chunks.push(chunk);
+// }
+// const buffer = Buffer.concat(chunks);
+// const { encode } = await import('blurhash');
+// const sharp = (await import('sharp')).default;
+// const { width, height, data } = await sharp(buffer)
+// 	.raw()
+// 	.ensureAlpha()
+// 	.resize(32, 32, { fit: 'inside' })
+// 	.toBuffer({ resolveWithObject: true });
+// const blurhash = encode(new Uint8ClampedArray(data), width, height, 4, 4);
+
+// // Reset stream for Cloudinary upload
+// const newStream = new ReadStream();
+// newStream.push(buffer);
+// newStream.push(null);
+
+// const uploadResult = await uploadStream(newStream);
+// return { ...uploadResult, blurhash };
