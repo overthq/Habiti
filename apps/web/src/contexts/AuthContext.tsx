@@ -12,9 +12,6 @@ const AuthContext = React.createContext<AuthContextType>({
 	userId: undefined,
 	onLogin: () => {},
 	onLogout: () => {}
-	// isLoggedIn: false,
-	// onLogout: () => {},
-	// onLogin: (email, password) => {}
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -54,9 +51,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 				userId,
 				onLogin: handleLogin,
 				onLogout: handleLogout
-				// isLoggedIn: false,
-				// onLogout: () => {},
-				// onLogin: (email, password) => {}
 			}}
 		>
 			{children}
