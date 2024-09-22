@@ -21,6 +21,15 @@
 			"prettier --write"
 		]
 	},
+	"pnpm": {
+		"peerDependencyRules": {
+			"ignoreMissing": [
+				"@babel/*",
+				"expo-modules-*",
+				"typescript"
+			]
+		}
+	},
 	"devDependencies": {
 		"@types/node": "^20",
 		"eslint": "^8.57.0",
