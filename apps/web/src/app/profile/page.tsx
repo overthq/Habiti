@@ -1,3 +1,5 @@
+'use client';
+
 import Header from '@/components/home/Header';
 
 const ProfilePage = () => {
@@ -8,5 +10,7 @@ const ProfilePage = () => {
 		</div>
 	);
 };
+
+export const runtime = 'edge';
 
 export default ProfilePage;
