@@ -1,5 +1,5 @@
 'use client';
-import Image from 'next/image';
+
 import Link from 'next/link';
 import { gql, useQuery } from 'urql';
 
@@ -55,7 +55,7 @@ const ExplorePage = () => {
 							>
 								<div className='w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center'>
 									{store.image ? (
-										<Image
+										<img
 											src={store.image.path}
 											alt={store.name}
 											className='w-full h-full object-cover'
@@ -84,7 +84,7 @@ const ExplorePage = () => {
 							href={`/product/${product.id}`}
 							className='bg-white rounded-lg'
 						>
-							<Image
+							<img
 								src={product.images[0].path}
 								alt={product.name}
 								className='w-full h-40 object-cover rounded-md mb-2'

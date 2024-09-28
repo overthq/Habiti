@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import React from 'react';
@@ -63,7 +62,7 @@ const ProductPage = () => {
 				<div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
 					<div>
 						{product.images.length > 0 && (
-							<Image
+							<img
 								src={product.images[0].path}
 								alt={product.name}
 								className='w-full h-auto object-cover rounded-lg'
@@ -83,7 +82,7 @@ const ProductPage = () => {
 					<h2 className='text-2xl font-semibold mb-4'>Sold by</h2>
 					<div className='flex items-center'>
 						{product.store.image && (
-							<Image
+							<img
 								src={product.store.image.path}
 								alt={product.store.name}
 								className='w-16 h-16 rounded-full mr-4 object-cover'
@@ -92,7 +91,7 @@ const ProductPage = () => {
 						<div>
 							<div className='flex items-center'>
 								{product.store.image && (
-									<Image
+									<img
 										src={product.store.image.path}
 										alt={product.store.name}
 										className='w-12 h-12 rounded-full mr-4 object-cover'
