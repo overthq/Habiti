@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
@@ -18,7 +19,7 @@ const Product: React.FC<ProductProps> = ({ id, name, unitPrice, images }) => {
 			<div key={id}>
 				<div className='bg-gray-200 rounded-lg overflow-hidden'>
 					{images.length > 0 && (
-						<img
+						<Image
 							src={images[0].path}
 							alt={name}
 							className='w-full h-48 object-cover rounded-lg'
