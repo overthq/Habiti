@@ -1,16 +1,27 @@
 'use client';
 
+import React from 'react';
 import { Provider } from 'urql';
 
-import client from '@/config/client';
+import { generateClient } from '@/config/client';
+import { AuthProvider, useAuthContext } from '@/contexts/AuthContext';
 
-// TODO: Fix any type
 type ProvidersProps = {
-	children: any;
+	children: React.ReactNode;
 };
 
 const Providers: React.FC<ProvidersProps> = ({ children }) => {
-	return <Provider value={client}>{children}</Provider>;
+	const { accessToken } = useAuthContext();
+
+	const client = React.useMemo(() => {
+		return generateClient(accessToken);
+	}, [accessToken]);
+
+	return (
+		<AuthProvider>
+			<Provider value={client}>{children}</Provider>
+		</AuthProvider>
+	);
 };
 
 export default Providers;

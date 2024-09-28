@@ -1,4 +1,4 @@
-import type { ExpoConfig, ConfigContext } from '@expo/config';
+import type { ExpoConfig, ConfigContext } from 'expo/config';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
 	...config,
@@ -33,6 +33,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 			foregroundImage: './assets/adaptive-icon.png',
 			backgroundColor: '#FFFFFF'
 		},
+		softwareKeyboardLayoutMode: 'pan',
 		intentFilters: [
 			{
 				action: 'VIEW',
