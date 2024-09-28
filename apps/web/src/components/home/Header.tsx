@@ -1,9 +1,9 @@
 import Link from 'next/link';
 
-import CartSheet from '../cart/CartSheet';
-
 import { Button } from '@/components/ui/button';
 import { useAuthContext } from '@/contexts/AuthContext';
+
+import CartSheet from '../cart/CartSheet';
 
 const Header = () => {
 	const { userId, onLogout } = useAuthContext();
