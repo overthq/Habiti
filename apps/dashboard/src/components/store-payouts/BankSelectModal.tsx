@@ -3,7 +3,7 @@ import {
 	BottomSheetFlatList,
 	BottomSheetModal
 } from '@gorhom/bottom-sheet';
-import { useTheme, Typography } from '@habiti/components';
+import { useTheme, Typography, Spacer } from '@habiti/components';
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import { Pressable, StyleSheet } from 'react-native';
@@ -36,11 +36,16 @@ const BankSelectModal: React.FC<BankSelectModalProps> = ({
 					index={0}
 					ref={modalRef}
 					snapPoints={snapPoints}
-					backgroundStyle={{ backgroundColor: '#505050' }}
+					backgroundStyle={{ backgroundColor: theme.screen.background }}
 					handleIndicatorStyle={{ backgroundColor: theme.text.primary }}
 					enablePanDownToClose
 					backdropComponent={backdropComponent}
 				>
+					<Spacer y={8} />
+					<Typography style={{ paddingLeft: 16 }} weight='medium' size='large'>
+						Choose your bank
+					</Typography>
+					<Spacer y={8} />
 					<BottomSheetFlatList
 						data={BANKS}
 						keyExtractor={b => b.id.toString()}
@@ -65,7 +70,7 @@ const BankSelectModal: React.FC<BankSelectModalProps> = ({
 const styles = StyleSheet.create({
 	row: {
 		paddingHorizontal: 16,
-		paddingVertical: 4
+		paddingVertical: 8
 	}
 });
 
