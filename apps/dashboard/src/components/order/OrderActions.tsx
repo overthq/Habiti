@@ -52,7 +52,7 @@ const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 					loading={fetching}
 					variant='destructive'
 					onPress={confirmCancel}
-					text='Cancel'
+					text='Cancel order'
 				/>
 			)}
 		</View>

@@ -44,7 +44,7 @@
 		"@types/jsonwebtoken": "^9.0.3",
 		"@types/lodash": "^4.14.198",
 		"@types/nodemailer": "^6.4.15",
-		"nodemon": "^3.1.4",
+		"nodemon": "^3.1.7",
 		"prisma": "^5.13.0",
 		"ts-node": "^10.9.2",
 		"tsx": "^4.11.0",

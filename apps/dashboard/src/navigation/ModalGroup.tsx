@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { AppStack } from './AppStack';
-import SettingsStackNavigator from './SettingsStack';
 import AddCategory from '../screens/AddCategory';
 import AddManager from '../screens/AddManager';
 import AddPayout from '../screens/AddPayout';
@@ -15,11 +14,6 @@ import FilterProducts from '../screens/FilterProducts';
 const ModalGroup = (
 	<AppStack.Group screenOptions={{ presentation: 'modal', headerShown: true }}>
 		<AppStack.Screen name='Add Product' component={AddProduct} />
-		<AppStack.Screen
-			name='Settings'
-			component={SettingsStackNavigator}
-			options={{ headerShown: false }}
-		/>
 		<AppStack.Screen
 			name='CustomerInfo'
 			component={CustomerInfo}

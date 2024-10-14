@@ -1,15 +1,14 @@
 import { Screen } from '@habiti/components';
 import React from 'react';
 
-import SettingSelectRow from './SettingSelectRow';
-import useGoBack from '../../hooks/useGoBack';
-import useStore from '../../state';
+import SettingSelectRow from '../components/settings/SettingSelectRow';
+import useGoBack from '../hooks/useGoBack';
+import useStore from '../state';
 
 type Theme = 'light' | 'dark' | 'auto';
 
 const themes: Theme[] = ['light', 'dark', 'auto'];
 
-// TODO: Move this into the "screens" folder.
 const SettingsTheme = () => {
 	const { theme, setPreference } = useStore(state => ({
 		theme: state.theme,

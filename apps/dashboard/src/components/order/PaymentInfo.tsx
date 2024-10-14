@@ -26,11 +26,15 @@ const PaymentInfo: React.FC<PaymentInfoProps> = ({ order }) => {
 			</View>
 			<View style={styles.row}>
 				<Typography>Fees</Typography>
-				<Typography>{formatNaira(5000)}</Typography>
+				<Typography>
+					{formatNaira(order.serviceFee + order.transactionFee)}
+				</Typography>
 			</View>
 			<View style={styles.row}>
 				<Typography>Total</Typography>
-				<Typography>{formatNaira(order.total)}</Typography>
+				<Typography>
+					{formatNaira(order.total + order.serviceFee + order.transactionFee)}
+				</Typography>
 			</View>
 		</View>
 	);
