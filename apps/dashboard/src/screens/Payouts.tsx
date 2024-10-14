@@ -91,6 +91,7 @@ const Payouts = () => {
 	return (
 		<Screen style={styles.container}>
 			<FlashList
+				estimatedItemSize={100}
 				refreshControl={
 					<RefreshControl
 						refreshing={fetching}

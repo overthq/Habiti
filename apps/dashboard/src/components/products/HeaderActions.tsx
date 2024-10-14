@@ -16,9 +16,6 @@ const HeaderActions = () => {
 			<Pressable onPress={() => navigate('Products.Search')}>
 				<Icon name='search' size={22} />
 			</Pressable>
-			<Pressable onPress={() => navigate('Add Product')}>
-				<Icon name='plus' />
-			</Pressable>
 		</View>
 	);
 };
