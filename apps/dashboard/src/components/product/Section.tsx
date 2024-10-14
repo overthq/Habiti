@@ -42,6 +42,7 @@ const Section: React.FC<SectionProps> = ({
 							style={[styles.input, { color: theme.text.primary }]}
 							placeholder={placeholder}
 							placeholderTextColor={theme.input.placeholder}
+							selectionColor={theme.text.primary}
 							{...inputProps}
 						/>
 					)}
