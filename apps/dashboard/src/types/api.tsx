@@ -980,6 +980,8 @@ export type OrderQuery = {
 	order: {
 		__typename?: 'Order';
 		id: string;
+		transactionFee: number;
+		serviceFee: number;
 		total: number;
 		status: OrderStatus;
 		createdAt: string;
@@ -1533,6 +1535,8 @@ export const OrderDocument = gql`
 				unitPrice
 				quantity
 			}
+			transactionFee
+			serviceFee
 			total
 			status
 			createdAt

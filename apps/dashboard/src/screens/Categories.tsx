@@ -23,6 +23,18 @@ const Categories = () => {
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
+	const [refreshing, setRefreshing] = React.useState(false);
+
+	const handleRefresh = React.useCallback(() => {
+		setRefreshing(true);
+		refetch();
+	}, [refetch]);
+
+	React.useEffect(() => {
+		if (!fetching && refreshing) {
+			setRefreshing(false);
+		}
+	}, [fetching, refreshing]);
 
 	useGoBack();
 
@@ -68,15 +80,17 @@ const Categories = () => {
 			refreshControl={
 				<RefreshControl
 					refreshing={fetching}
-					onRefresh={() => {
-						refetch({ requestPolicy: 'network-only' });
-					}}
+					onRefresh={handleRefresh}
 					tintColor={theme.text.secondary}
 				/>
 			}
 		>
 			{data?.currentStore.categories.map(category => (
-				<Pressable key={category.id} onPress={handleCategoryPress(category.id)}>
+				<Pressable
+					key={category.id}
+					onPress={handleCategoryPress(category.id)}
+					style={{ marginBottom: 8 }}
+				>
 					<Typography>{category.name}</Typography>
 				</Pressable>
 			))}

@@ -61,8 +61,8 @@ const Profile: React.FC = () => {
 				<ProfileRow title='About this app' onPress={noop} />
 				<ProfileRow title='Support' onPress={noop} />
 			</View>
-			<Spacer y={16} />
-			<View style={{ paddingHorizontal: 16, marginTop: 8 }}>
+			<Spacer y={24} />
+			<View style={{ paddingHorizontal: 16 }}>
 				<Button text='Log Out' onPress={logOut} />
 			</View>
 		</Screen>

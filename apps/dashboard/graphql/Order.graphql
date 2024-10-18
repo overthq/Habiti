@@ -48,6 +48,8 @@ query Order($id: ID!) {
 			unitPrice
 			quantity
 		}
+		transactionFee
+		serviceFee
 		total
 		status
 		createdAt

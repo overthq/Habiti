@@ -1,5 +1,5 @@
 import { formatNaira } from '@habiti/common';
-import { CustomImage, Typography } from '@habiti/components';
+import { CustomImage, Spacer, Typography } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
@@ -14,17 +14,21 @@ interface OrderDetailProps {
 const OrderDetail: React.FC<OrderDetailProps> = ({ order }) => {
 	return (
 		<View style={styles.container}>
-			<Typography size='small' style={styles.info}>
-				{plural('item', order.products.length)} ·{' '}
-				{parseTimestamp(order.createdAt)} · {formatNaira(order.total)}
+			<Typography size='small'>{parseTimestamp(order.createdAt)}</Typography>
+			<Spacer y={4} />
+			<Typography size='small'>
+				{plural('item', order.products.length)}
 			</Typography>
+			<Spacer y={4} />
+			<Typography size='small'>{formatNaira(order.total)}</Typography>
+			<Spacer y={4} />
 			<View style={styles.row}>
 				{order.products.slice(0, 3).map(product => (
 					<View key={product.id} style={styles.item}>
 						<CustomImage
 							uri={product.product.images[0]?.path}
-							height={44}
-							width={44}
+							height={48}
+							width={48}
 						/>
 					</View>
 				))}
@@ -35,10 +39,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		marginBottom: 8
-	},
-	info: {
-		marginBottom: 4
+		marginBottom: 16
 	},
 	row: {
 		flexDirection: 'row',

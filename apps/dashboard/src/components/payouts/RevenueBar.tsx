@@ -1,3 +1,4 @@
+import { useTheme } from '@habiti/components';
 import { palette } from '@habiti/components/src/styles/theme';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
@@ -21,6 +22,8 @@ const RevenueBar: React.FC<RevenueBarProps> = ({
 	unrealizedRevenue,
 	paidOut
 }) => {
+	const { theme } = useTheme();
+
 	const totalRevenue = React.useMemo(
 		() => realizedRevenue + unrealizedRevenue,
 		[realizedRevenue, unrealizedRevenue]
@@ -40,7 +43,7 @@ const RevenueBar: React.FC<RevenueBarProps> = ({
 	}, [available, realizedRevenue]);
 
 	return (
-		<View style={[styles.bar, { backgroundColor: palette.neutral.n40 }]}>
+		<View style={[styles.bar, { backgroundColor: theme.input.background }]}>
 			<View
 				style={[
 					styles.realized,
@@ -65,7 +68,6 @@ const styles = StyleSheet.create({
 		borderRadius: 4,
 		flexDirection: 'row',
 		overflow: 'hidden',
-		backgroundColor: 'grey',
 		marginBottom: 8
 	},
 	realized: {

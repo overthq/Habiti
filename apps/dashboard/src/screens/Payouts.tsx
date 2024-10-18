@@ -55,7 +55,20 @@ const Payouts = () => {
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
+	const [refreshing, setRefreshing] = React.useState(false);
+
 	useGoBack();
+
+	const handleRefresh = () => {
+		setRefreshing(true);
+		refetch();
+	};
+
+	React.useEffect(() => {
+		if (!fetching && refreshing) {
+			setRefreshing(false);
+		}
+	}, [fetching, refreshing]);
 
 	const handleNewPayout = React.useCallback(() => {
 		navigate('AddPayout');
@@ -78,12 +91,11 @@ const Payouts = () => {
 	return (
 		<Screen style={styles.container}>
 			<FlashList
+				estimatedItemSize={100}
 				refreshControl={
 					<RefreshControl
 						refreshing={fetching}
-						onRefresh={() => {
-							refetch({ requestPolicy: 'network-only' });
-						}}
+						onRefresh={handleRefresh}
 						tintColor={theme.text.secondary}
 					/>
 				}

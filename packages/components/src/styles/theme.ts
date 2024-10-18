@@ -140,7 +140,10 @@ const dark = {
 		},
 		dark: true
 	},
-	statusBar: 'light'
+	statusBar: 'light',
+	row: {
+		focus: palette.neutral.n80
+	}
 } as const;
 
 const light = {
@@ -222,7 +225,10 @@ const light = {
 		},
 		dark: false
 	},
-	statusBar: 'dark'
+	statusBar: 'dark',
+	row: {
+		focus: palette.neutral.n10
+	}
 } as const;
 
 export type ThemeObject = typeof light | typeof dark;
