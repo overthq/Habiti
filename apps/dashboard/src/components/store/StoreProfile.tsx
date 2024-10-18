@@ -1,7 +1,9 @@
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Typography, useTheme } from '@habiti/components';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Pressable } from 'react-native';
 
+import StoreSelectModal from './StoreSelectModal';
 import { StoreQuery } from '../../types/api';
 
 interface StoreProfileProps {
@@ -10,19 +12,22 @@ interface StoreProfileProps {
 
 const StoreProfile: React.FC<StoreProfileProps> = ({ store }) => {
 	const { theme } = useTheme();
+	const modalRef = React.useRef<BottomSheetModal>(null);
 
 	return (
 		<View style={styles.container}>
-			<View
+			<Pressable
 				style={[styles.avatar, { backgroundColor: theme.image.placeholder }]}
+				onPress={() => modalRef.current?.present()}
 			>
 				<Typography weight='medium' size='xxxlarge' style={styles.avatarText}>
 					{store.name[0]}
 				</Typography>
-			</View>
+			</Pressable>
 			<Typography weight='medium' size='xxlarge' style={styles.name}>
 				{store.name}
 			</Typography>
+			<StoreSelectModal modalRef={modalRef} />
 		</View>
 	);
 };
