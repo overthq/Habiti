@@ -1,4 +1,4 @@
-import { ScrollableScreen, Typography } from '@habiti/components';
+import { ScrollableScreen, Spacer, Typography } from '@habiti/components';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
@@ -25,9 +25,9 @@ const CustomerInfo: React.FC = () => {
 			<Typography weight='medium' size='large'>
 				{data.user.name}
 			</Typography>
-			<Typography variant='label' style={styles.sectionHeader}>
-				Previous Orders
-			</Typography>
+			<Spacer y={4} />
+			<Typography variant='label'>Previous Orders</Typography>
+			<Spacer y={16} />
 			{data.user.orders.map(order => (
 				<OrderDetail key={order.id} order={order} />
 			))}
@@ -38,9 +38,6 @@ const CustomerInfo: React.FC = () => {
 const styles = StyleSheet.create({
 	container: {
 		padding: 16
-	},
-	sectionHeader: {
-		marginVertical: 8
 	}
 });
 

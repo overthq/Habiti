@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 
+import Appearance from '../screens/Appearance';
 import Categories from '../screens/Categories';
 import EditStore from '../screens/EditStore';
 import Managers from '../screens/Managers';
@@ -24,6 +25,7 @@ const StoreStackNavigator = () => {
 			<StoreStack.Screen name='Payouts' component={StorePayouts} />
 			<StoreStack.Screen name='Categories' component={Categories} />
 			<StoreStack.Screen name='Settings' component={StoreSettings} />
+			<StoreStack.Screen name='Appearance' component={Appearance} />
 		</StoreStack.Navigator>
 	);
 };

@@ -96,7 +96,11 @@ const FilterProducts = () => {
 						open={open === 'category'}
 						onPress={handleExpandSection('category')}
 					>
-						<ProductCategories />
+						<>
+							<Spacer y={8} />
+							<ProductCategories />
+							<Spacer y={4} />
+						</>
 					</AccordionRow>
 					<Animated.View layout={LinearTransition} style={{ marginBottom: 8 }}>
 						<View style={styles.row}>

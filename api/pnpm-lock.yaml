@@ -106,8 +106,8 @@ importers:
         specifier: ^6.4.15
         version: 6.4.15
       nodemon:
-        specifier: ^3.1.4
-        version: 3.1.4
+        specifier: ^3.1.7
+        version: 3.1.7
       prisma:
         specifier: ^5.13.0
         version: 5.18.0
@@ -1226,8 +1226,8 @@ packages:
     resolution: {integrity: sha512-Dobp/ebDKBvz91sbtRKhcznLThrKxKt97GI2FAlAyy+fk19j73Uz3sBXolVtmcXjaorivqsbbbjDY+Jkt4/bQA==}
     engines: {node: '>=6.0.0'}
 
-  nodemon@3.1.4:
-    resolution: {integrity: sha512-wjPBbFhtpJwmIeY2yP7QF+UKzPfltVGtfce1g/bB15/8vCGZj8uxD62b/b9M9/WVgme0NZudpownKN+c0plXlQ==}
+  nodemon@3.1.7:
+    resolution: {integrity: sha512-hLj7fuMow6f0lbB0cD14Lz2xNjwsyruH251Pk4t/yIitCFJbmY1myuLlHm/q06aST4jg6EgAh74PIBBrRqpVAQ==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -2676,7 +2676,7 @@ snapshots:
 
   nodemailer@6.9.14: {}
 
-  nodemon@3.1.4:
+  nodemon@3.1.7:
     dependencies:
       chokidar: 3.6.0
       debug: 4.3.6(supports-color@5.5.0)

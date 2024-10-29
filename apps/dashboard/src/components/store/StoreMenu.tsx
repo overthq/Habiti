@@ -25,6 +25,7 @@ const StoreMenu = () => {
 			{/* <StoreMenuRow title='Managers' onPress={handleNavigate('Managers')} /> */}
 			<StoreMenuRow title='Categories' onPress={handleNavigate('Categories')} />
 			<StoreMenuRow title='Settings' onPress={handleNavigate('Settings')} />
+			<StoreMenuRow title='Appearance' onPress={handleNavigate('Appearance')} />
 		</View>
 	);
 };

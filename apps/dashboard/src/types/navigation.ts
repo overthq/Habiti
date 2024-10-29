@@ -59,6 +59,7 @@ export type StoreStackParamList = {
 	Managers: undefined;
 	Categories: undefined;
 	Settings: undefined;
+	Appearance: undefined;
 };
 
 type ProductsParams = {
