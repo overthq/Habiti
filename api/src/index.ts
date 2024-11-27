@@ -27,7 +27,7 @@ const main = async () => {
 	app.use(compression());
 	app.use(
 		expressjwt({
-			secret: process.env.JWT_SECRET,
+			secret: process.env.JWT_SECRET as string,
 			algorithms: ['HS256'],
 			credentialsRequired: false
 		})

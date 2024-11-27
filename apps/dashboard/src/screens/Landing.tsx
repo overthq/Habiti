@@ -29,7 +29,7 @@ const Landing = () => {
 					</Typography>
 				</View>
 				<View style={{ flex: 1, justifyContent: 'flex-end' }}>
-					<Button text='Sign up' onPress={() => navigate('Register')} />
+					<Button text='Create account' onPress={() => navigate('Register')} />
 					<Spacer y={8} />
 					<TextButton
 						weight='medium'
@@ -38,6 +38,7 @@ const Landing = () => {
 					>
 						Already have an account? Log in.
 					</TextButton>
+					<Spacer y={24} />
 				</View>
 			</Screen>
 		</SafeAreaView>

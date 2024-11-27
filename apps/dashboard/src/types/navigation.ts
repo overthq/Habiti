@@ -3,6 +3,7 @@ import { IntWhere, Sort } from './api';
 export type AppStackParamList = {
 	Main: undefined;
 	Authenticate: undefined;
+	Landing: undefined;
 	Register: undefined;
 	Verify: { email: string };
 	StoreSelect: undefined;

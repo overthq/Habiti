@@ -1,56 +1,62 @@
 import {
 	Button,
 	FormInput,
+	Icon,
 	Screen,
 	Spacer,
-	TextButton,
 	Typography
 } from '@habiti/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { z } from 'zod';
 
 import useStore from '../state';
 import { useAuthenticateMutation } from '../types/api';
-import { AppStackParamList } from '../types/navigation';
 
-interface AuthenticateFormValues {
-	email: string;
-	password: string;
-}
+const authenticateSchema = z.object({
+	email: z.string().email('Invalid email address'),
+	password: z.string().min(8, 'Password must be at least 8 characters long')
+});
+
+type AuthenticateFormValues = z.infer<typeof authenticateSchema>;
 
 const Authenticate: React.FC = () => {
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { goBack } = useNavigation();
 
 	const methods = useForm<AuthenticateFormValues>({
 		defaultValues: {
 			email: '',
 			password: ''
-		}
+		},
+		resolver: zodResolver(authenticateSchema)
 	});
 
 	const logIn = useStore(({ logIn }) => logIn);
 	const [{ fetching }, authenticate] = useAuthenticateMutation();
 
-	const backToRegister = () => {
-		navigate('Register');
-	};
-
 	const onSubmit = async (values: AuthenticateFormValues) => {
 		const { error, data } = await authenticate({ input: values });
+		console.log({ values });
 
 		if (error) {
 			console.log(error);
 		} else if (data?.authenticate) {
+			console.log(data?.authenticate);
 			logIn(data.authenticate.userId, data.authenticate.accessToken);
 		}
-		// navigate('Verify', { phone });
 	};
 
 	return (
-		<Screen style={{ padding: 16, paddingTop: 32 }}>
-			<SafeAreaView>
+		<SafeAreaView style={{ flex: 1 }}>
+			<Screen style={{ padding: 16 }}>
+				<Pressable onPress={goBack}>
+					<Icon name='chevron-left' />
+				</Pressable>
+				<Spacer y={8} />
 				<Typography weight='bold' size='xxxlarge'>
 					Welcome back.
 				</Typography>
@@ -82,17 +88,11 @@ const Authenticate: React.FC = () => {
 					loading={fetching}
 					text='Next'
 					onPress={methods.handleSubmit(onSubmit)}
+					disabled={!methods.formState.isValid}
 				/>
 				<Spacer y={8} />
-				<TextButton
-					weight='medium'
-					style={{ alignSelf: 'center' }}
-					onPress={backToRegister}
-				>
-					Don't have an account yet?
-				</TextButton>
-			</SafeAreaView>
-		</Screen>
+			</Screen>
+		</SafeAreaView>
 	);
 };
 

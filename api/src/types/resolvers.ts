@@ -5,7 +5,7 @@ import Services from '../services';
 
 export interface ResolverContext {
 	prisma: PrismaClient;
-	user: User | null;
+	user: User; // This should be nullable, but I want to circumvent validating users everywhere.
 	redisClient: RedisClient;
 	storeId?: string;
 	services: Services;
