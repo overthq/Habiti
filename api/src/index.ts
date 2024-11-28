@@ -11,6 +11,7 @@ import { createServer } from 'http';
 import prismaClient from './config/prisma';
 import redisClient from './config/redis';
 import { initSentry } from './config/sentry';
+import health from './routes/health';
 import payments from './routes/payments';
 import webhooks from './routes/webhooks';
 import schema from './schema';
@@ -60,6 +61,7 @@ const main = async () => {
 	);
 	app.use('/webhooks', webhooks);
 	app.use('/payments', payments);
+	app.use('/health', health);
 
 	const PORT = Number(process.env.PORT || 3000);
 	httpServer.listen({ port: PORT });
