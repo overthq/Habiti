@@ -15,7 +15,7 @@ const FollowedStores = () => {
 	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();
 
 	const handleStoreItemPress = (storeId: string) => () => {
-		navigate('Store', { screen: 'Store.Main', params: { storeId } });
+		navigate('Home.Store', { screen: 'Store.Main', params: { storeId } });
 	};
 
 	const handleStoreItemLongPress = (storeId: string) => () => {

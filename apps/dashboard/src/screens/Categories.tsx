@@ -1,6 +1,8 @@
 import {
 	EmptyState,
 	Icon,
+	Row,
+	Screen,
 	ScrollableScreen,
 	Typography,
 	useTheme
@@ -14,9 +16,26 @@ import {
 	RefreshControl
 } from 'react-native';
 
+import FAB from '../components/products/FAB';
 import useGoBack from '../hooks/useGoBack';
-import { useCategoriesQuery } from '../types/api';
+import { CategoriesQuery, useCategoriesQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
+
+interface CategoriesListItemProps {
+	category: CategoriesQuery['currentStore']['categories'][number];
+	onPress: () => void;
+}
+
+const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
+	category,
+	onPress
+}) => {
+	return (
+		<Row onPress={onPress} style={{ paddingVertical: 8 }}>
+			<Typography>{category.name}</Typography>
+		</Row>
+	);
+};
 
 const Categories = () => {
 	const [{ data, fetching }, refetch] = useCategoriesQuery();
@@ -75,26 +94,26 @@ const Categories = () => {
 	}
 
 	return (
-		<ScrollableScreen
-			style={{ padding: 16 }}
-			refreshControl={
-				<RefreshControl
-					refreshing={fetching}
-					onRefresh={handleRefresh}
-					tintColor={theme.text.secondary}
-				/>
-			}
-		>
-			{data?.currentStore.categories.map(category => (
-				<Pressable
-					key={category.id}
-					onPress={handleCategoryPress(category.id)}
-					style={{ marginBottom: 8 }}
-				>
-					<Typography>{category.name}</Typography>
-				</Pressable>
-			))}
-		</ScrollableScreen>
+		<Screen>
+			<ScrollableScreen
+				refreshControl={
+					<RefreshControl
+						refreshing={fetching}
+						onRefresh={handleRefresh}
+						tintColor={theme.text.secondary}
+					/>
+				}
+			>
+				{data?.currentStore.categories.map(category => (
+					<CategoriesListItem
+						key={category.id}
+						category={category}
+						onPress={handleCategoryPress(category.id)}
+					/>
+				))}
+			</ScrollableScreen>
+			<FAB onPress={handleAddCategory} text='Add Category' />
+		</Screen>
 	);
 };
 

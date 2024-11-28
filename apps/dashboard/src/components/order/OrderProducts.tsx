@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
 	},
 	sectionHeader: {
 		marginLeft: 16,
-		marginBottom: 8
+		marginBottom: 4
 	}
 });
 

@@ -1,7 +1,7 @@
 import { formatNaira } from '@habiti/common';
-import { useTheme, Typography } from '@habiti/components';
+import { useTheme, Typography, Row } from '@habiti/components';
 import React from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import { OrdersQuery } from '../../types/api';
 import { parseTimestamp } from '../../utils/date';
@@ -15,7 +15,7 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
 	const { theme } = useTheme();
 
 	return (
-		<Pressable
+		<Row
 			onPress={onPress}
 			style={[styles.container, { borderBottomColor: theme.border.color }]}
 		>
@@ -26,7 +26,7 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
 				</Typography>
 			</View>
 			<Typography style={styles.total}>{formatNaira(order.total)}</Typography>
-		</Pressable>
+		</Row>
 	);
 };
 

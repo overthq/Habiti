@@ -142,7 +142,7 @@ const dark = {
 	},
 	statusBar: 'light',
 	row: {
-		focus: palette.neutral.n80
+		focus: palette.neutral.n90
 	}
 } as const;
 

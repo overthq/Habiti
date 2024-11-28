@@ -18,22 +18,25 @@ const ProfileStack = () => {
 				component={Profile}
 				options={{ headerTitle: 'Profile' }}
 			/>
-			<ProfileNavigator.Screen name='Edit Profile' component={EditProfile} />
+			<ProfileNavigator.Screen name='Profile.Edit' component={EditProfile} />
 			<ProfileNavigator.Screen
-				name='Payment Methods'
+				name='Profile.PaymentMethods'
 				component={PaymentMethods}
 			/>
 			<ProfileNavigator.Screen
-				name='DeliveryAddress'
+				name='Profile.DeliveryAddress'
 				component={DeliveryAddress}
 				options={{ headerTitle: 'Delivery Address' }}
 			/>
 			<ProfileNavigator.Screen
-				name='NotificationSettings'
+				name='Profile.NotificationSettings'
 				component={NotificationSettings}
 				options={{ headerTitle: 'Notifications' }}
 			/>
-			<ProfileNavigator.Screen name='Appearance' component={SettingsTheme} />
+			<ProfileNavigator.Screen
+				name='Profile.Appearance'
+				component={SettingsTheme}
+			/>
 			<ProfileNavigator.Screen
 				name='Profile.AccountSettings'
 				component={AccountSettings}

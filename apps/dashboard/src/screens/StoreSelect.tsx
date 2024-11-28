@@ -11,8 +11,8 @@ const StoreSelect: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	return (
-		<Screen style={styles.container}>
-			<SafeAreaView>
+		<SafeAreaView>
+			<Screen style={styles.container}>
 				<Typography size='xxxlarge' weight='bold'>
 					Select store
 				</Typography>
@@ -32,8 +32,8 @@ const StoreSelect: React.FC = () => {
 					style={{ marginBottom: 16 }}
 					text='Create a store'
 				/>
-			</SafeAreaView>
-		</Screen>
+			</Screen>
+		</SafeAreaView>
 	);
 };
 

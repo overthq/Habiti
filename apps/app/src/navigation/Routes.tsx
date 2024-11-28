@@ -47,11 +47,7 @@ const Routes: React.FC = () => {
 									<AppStack.Screen
 										name='Product'
 										component={Product}
-										options={{
-											headerTitle: '',
-											gestureDirection: 'vertical'
-											// gestureResponseDistance: Dimensions.get('window').height
-										}}
+										options={{ headerTitle: '', gestureDirection: 'vertical' }}
 									/>
 									<AppStack.Screen name='Add Card' component={AddCardWebview} />
 								</AppStack.Group>

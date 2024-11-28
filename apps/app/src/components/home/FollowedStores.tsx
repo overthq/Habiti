@@ -43,7 +43,7 @@ const FollowedStoresMain: React.FC<FollowedStoresMainProps> = ({
 
 	const handleStorePress = React.useCallback(
 		(storeId: string) => () => {
-			navigate('Store', { screen: 'Store.Main', params: { storeId } });
+			navigate('Home.Store', { screen: 'Store.Main', params: { storeId } });
 		},
 		[]
 	);

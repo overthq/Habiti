@@ -16,7 +16,7 @@ import {
 	ProductsStackParamList
 } from '../../types/navigation';
 
-const ProductListHeader = <View style={{ height: 4 }} />;
+const ProductListHeader = <View style={{}} />;
 
 const ProductList: React.FC = () => {
 	const { params } = useRoute<RouteProp<MainTabParamList, 'Products'>>();

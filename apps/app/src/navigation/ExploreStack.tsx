@@ -15,7 +15,7 @@ const ExploreStack = () => {
 				options={{ headerShown: false }}
 			/>
 			<ExploreNavigator.Screen
-				name='Store'
+				name='Explore.Store'
 				component={StoreStack}
 				options={{ headerShown: false }}
 			/>

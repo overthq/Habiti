@@ -103,7 +103,6 @@ const Password = () => {
 		if (error) {
 			console.log(error);
 		} else if (data?.register) {
-			// FIXME: UX hole! Let them know that their account has been created.
 			navigate('Authenticate');
 		}
 	};

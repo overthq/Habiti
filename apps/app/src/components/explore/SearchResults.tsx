@@ -19,7 +19,7 @@ const StoresView: React.FC = () => {
 	const { stores } = useSearchContext();
 
 	const handleStorePress = (storeId: string) => () => {
-		navigate('Store', {
+		navigate('Explore.Store', {
 			screen: 'Store.Main',
 			params: { storeId }
 		});

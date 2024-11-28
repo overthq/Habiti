@@ -40,7 +40,7 @@ const Profile: React.FC = () => {
 			<View>
 				<ProfileRow
 					title='Payment methods'
-					onPress={() => navigate('Payment Methods')}
+					onPress={() => navigate('Profile.PaymentMethods')}
 				/>
 				{/* <ProfileRow
 					title='Delivery address'
@@ -48,9 +48,12 @@ const Profile: React.FC = () => {
 				/> */}
 				<ProfileRow
 					title='Notifications'
-					onPress={() => navigate('NotificationSettings')}
+					onPress={() => navigate('Profile.NotificationSettings')}
 				/>
-				<ProfileRow title='Appearance' onPress={() => navigate('Appearance')} />
+				<ProfileRow
+					title='Appearance'
+					onPress={() => navigate('Profile.Appearance')}
+				/>
 				<ProfileRow
 					title='Manage account'
 					onPress={() => navigate('Profile.AccountSettings')}

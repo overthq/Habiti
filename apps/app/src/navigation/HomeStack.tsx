@@ -11,11 +11,14 @@ const HomeNavigator = createNativeStackNavigator<HomeStackParamList>();
 const HomeStack = () => {
 	return (
 		<HomeNavigator.Navigator>
-			<HomeNavigator.Screen name='Home' component={Home} />
-			<HomeNavigator.Screen name='Order' component={Order} />
-			<HomeNavigator.Screen name='Notifications' component={Notifications} />
+			<HomeNavigator.Screen name='Home.Main' component={Home} />
+			<HomeNavigator.Screen name='Home.Order' component={Order} />
 			<HomeNavigator.Screen
-				name='Store'
+				name='Home.Notifications'
+				component={Notifications}
+			/>
+			<HomeNavigator.Screen
+				name='Home.Store'
 				component={StoreStack}
 				options={{ headerShown: false }}
 			/>
