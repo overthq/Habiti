@@ -28,10 +28,7 @@ const Authenticate: React.FC = () => {
 	const { goBack } = useNavigation();
 
 	const methods = useForm<AuthenticateFormValues>({
-		defaultValues: {
-			email: '',
-			password: ''
-		},
+		defaultValues: { email: '', password: '' },
 		resolver: zodResolver(authenticateSchema)
 	});
 
@@ -40,12 +37,10 @@ const Authenticate: React.FC = () => {
 
 	const onSubmit = async (values: AuthenticateFormValues) => {
 		const { error, data } = await authenticate({ input: values });
-		console.log({ values });
 
 		if (error) {
 			console.log(error);
 		} else if (data?.authenticate) {
-			console.log(data?.authenticate);
 			logIn(data.authenticate.userId, data.authenticate.accessToken);
 		}
 	};

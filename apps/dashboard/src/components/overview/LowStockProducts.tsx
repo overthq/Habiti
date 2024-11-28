@@ -8,7 +8,9 @@ import { useProductsQuery } from '../../types/api';
 import { HomeStackParamList, MainTabParamList } from '../../types/navigation';
 
 const LowStockProducts = () => {
-	const [{ data }] = useProductsQuery();
+	const [{ data }] = useProductsQuery({
+		variables: { filter: { quantity: { lte: 10 } } }
+	});
 	const { navigate } = useNavigation<NavigationProp<MainTabParamList>>();
 	const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
 

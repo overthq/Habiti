@@ -21,7 +21,7 @@ const StoreMenu = () => {
 	return (
 		<View>
 			<StoreMenuRow
-				title='Edit profile'
+				title='Edit Profile'
 				onPress={handleNavigate('Edit Store')}
 			/>
 			<StoreMenuRow title='Payouts' onPress={handleNavigate('Payouts')} />

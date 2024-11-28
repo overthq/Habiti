@@ -30,12 +30,8 @@ const Register: React.FC = () => {
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const [{ fetching }, register] = useRegisterMutation();
 	const methods = useForm<RegisterFormValues>({
-		resolver: zodResolver(registerSchema),
-		defaultValues: {
-			name: '',
-			email: '',
-			password: ''
-		}
+		defaultValues: { name: '', email: '', password: '' },
+		resolver: zodResolver(registerSchema)
 	});
 
 	const onSubmit = async (values: RegisterFormValues) => {

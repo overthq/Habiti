@@ -52,7 +52,7 @@ const AddPayout: React.FC = () => {
 				onDelete={handleDelete}
 			/>
 			<View style={{ marginBottom: 56, paddingHorizontal: 16 }}>
-				<Button text='Add payout' onPress={handleAddPayout} />
+				<Button text='Add Payout' onPress={handleAddPayout} />
 			</View>
 		</Screen>
 	);
