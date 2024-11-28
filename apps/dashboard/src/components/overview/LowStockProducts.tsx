@@ -11,11 +11,11 @@ const LowStockProducts = () => {
 	const [{ data }] = useProductsQuery({
 		variables: { filter: { quantity: { lte: 10 } } }
 	});
-	const { navigate } = useNavigation<NavigationProp<MainTabParamList>>();
-	const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
+	const { navigate } =
+		useNavigation<NavigationProp<HomeStackParamList & MainTabParamList>>();
 
 	const navigateToProduct = (productId: string) => () => {
-		navigation.navigate('Product', { productId });
+		navigate('Product', { productId });
 	};
 
 	const navigateToProducts = () => {

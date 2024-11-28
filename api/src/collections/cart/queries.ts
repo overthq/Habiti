@@ -29,6 +29,10 @@ const total: Resolver = async (parent, _, ctx) => {
 		.findUnique({ where: { id: parent.id } })
 		.products({ include: { product: true } });
 
+	if (!fetchedProducts) {
+		throw new Error('Cart not found');
+	}
+
 	const computedTotal = fetchedProducts.reduce((acc, p) => {
 		return acc + p.product.unitPrice * p.quantity;
 	}, 0);

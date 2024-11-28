@@ -18,7 +18,7 @@ interface CreateStoreArgs {
 
 const createStore: Resolver<CreateStoreArgs> = async (_, { input }, ctx) => {
 	const { storeImage, ...rest } = input;
-	let uploadedImage: UploadApiResponse;
+	let uploadedImage: UploadApiResponse | undefined;
 
 	if (storeImage) {
 		const { createReadStream } = await storeImage;
@@ -76,7 +76,7 @@ const editStore: Resolver<EditStoreArgs> = async (_, { input }, ctx) => {
 		uploadedUrl = url;
 	}
 
-	let bankAccountReference: string = undefined;
+	let bankAccountReference: string | undefined;
 
 	if (rest.bankAccountNumber && rest.bankCode) {
 		bankAccountReference = await createTransferReceipient(

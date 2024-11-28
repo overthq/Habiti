@@ -16,8 +16,8 @@ const currentStore: Resolver = (_, __, ctx) => {
 };
 
 interface StoresArgs {
-	filter?: {
-		name: StringWhere;
+	filter: {
+		name?: StringWhere;
 	};
 }
 
@@ -32,7 +32,7 @@ const products: Resolver<ProductsArgs> = (parent, { filter, orderBy }, ctx) => {
 };
 
 interface OrdersArgs {
-	orderBy?: {
+	orderBy: {
 		createdAt?: 'asc' | 'desc';
 		updatedAt?: 'asc' | 'desc';
 	}[];
@@ -79,12 +79,16 @@ const followedByUser: Resolver = async (parent, _, ctx) => {
 };
 
 const cartId: Resolver = async (parent, _, ctx) => {
-	const { id } = await ctx.prisma.cart.findUnique({
+	const fetchedCart = await ctx.prisma.cart.findUnique({
 		where: { userId_storeId: { userId: ctx.user.id, storeId: parent.id } },
 		select: { id: true }
 	});
 
-	return id;
+	if (!fetchedCart) {
+		throw new Error('Cart not found');
+	}
+
+	return fetchedCart.id;
 };
 
 export default {

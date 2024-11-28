@@ -26,6 +26,10 @@ const createOrder: Resolver<CreateOrderArgs> = async (
 		}
 	});
 
+	if (!cart) {
+		throw new Error('Cart not found');
+	}
+
 	let total = 0;
 
 	const orderData = cart.products.map(p => {

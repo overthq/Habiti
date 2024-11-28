@@ -10,7 +10,7 @@ const products: Resolver<ProductsArgs> = (_, { filter, orderBy }, ctx) => {
 };
 
 interface OrdersArgs {
-	orderBy?: {
+	orderBy: {
 		createdAt?: 'asc' | 'desc';
 		updatedAt?: 'asc' | 'desc';
 	};

@@ -1,4 +1,5 @@
 import cloudinary from 'cloudinary';
+
 import { Resolver } from '../../types/resolvers';
 
 interface DeleteImageArgs {
