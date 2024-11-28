@@ -15,7 +15,6 @@ import payments from './routes/payments';
 import webhooks from './routes/webhooks';
 import schema from './schema';
 import Services from './services';
-import { HabitiRequest } from './types/misc';
 
 import './config/cloudinary';
 
@@ -50,7 +49,7 @@ const main = async () => {
 		'/graphql',
 		express.json(),
 		expressMiddleware(apolloServer, {
-			context: async ({ req }: { req: HabitiRequest }) => ({
+			context: async ({ req }) => ({
 				user: req.auth ?? null,
 				storeId: req.headers['x-market-store-id'] || undefined,
 				prisma: prismaClient,

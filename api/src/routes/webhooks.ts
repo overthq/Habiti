@@ -1,7 +1,6 @@
 import { createHmac } from 'crypto';
 import { Router } from 'express';
 
-import { HabitiRequest } from '../types/misc';
 import { storeCard } from '../utils/paystack';
 import {
 	handleTransferFailure,
@@ -10,8 +9,8 @@ import {
 
 const webhookRouter: Router = Router();
 
-webhookRouter.post('/paystack', async (req: HabitiRequest, res) => {
-	const hash = createHmac('sha512', process.env.PAYSTACK_SECRET_KEY)
+webhookRouter.post('/paystack', async (req, res) => {
+	const hash = createHmac('sha512', process.env.PAYSTACK_SECRET_KEY as string)
 		.update(JSON.stringify(req.body))
 		.digest('hex');
 
