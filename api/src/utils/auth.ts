@@ -1,11 +1,14 @@
 import { User } from '@prisma/client';
+import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 
 import redisClient from '../config/redis';
 
-// Is the entropy enough to guarantee no collisions?
-const generateCode = () =>
-	Math.floor(100000 + Math.random() * 900000).toString();
+const generateCode = () => {
+	return Array.from(crypto.randomBytes(3))
+		.map(byte => byte % 10)
+		.join('');
+};
 
 export const sendVerificationCode = async (phone: string) => {
 	const code = generateCode();
@@ -18,6 +21,6 @@ export const sendVerificationCode = async (phone: string) => {
 export const generateAccessToken = async (user: User) => {
 	return jwt.sign(
 		{ id: user.id, name: user.name, email: user.email },
-		process.env.JWT_SECRET
+		process.env.JWT_SECRET as string
 	);
 };
