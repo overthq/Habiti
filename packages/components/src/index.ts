@@ -6,6 +6,7 @@ export { default as Dialog } from './Dialog';
 export { default as CustomImage } from './CustomImage';
 export { default as EmptyState } from './EmptyState';
 export { default as FormInput } from './FormInput';
+export { default as HoldableButton } from './HoldableButton';
 export { Icon, IconType } from './Icon';
 export { default as IconButton } from './IconButton';
 export { default as Input } from './Input';
