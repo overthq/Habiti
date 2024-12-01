@@ -9,6 +9,7 @@ export type AppStackParamList = {
 	Product: { productId: string };
 	Cart: { cartId: string };
 	'Add Card': undefined;
+	'Modal.AddDeliveryAddress': undefined;
 };
 
 export type HomeStackParamList = {

@@ -9,6 +9,7 @@ import { Provider } from 'urql';
 import MainTabNavigator from './MainTab';
 import useClient from '../hooks/useClient';
 import AddCardWebview from '../screens/AddCardWebview';
+import AddDeliveryAddress from '../screens/AddDeliveryAddress';
 import Authenticate from '../screens/Authenticate';
 import Cart from '../screens/Cart';
 import Landing from '../screens/Landing';
@@ -50,6 +51,11 @@ const Routes: React.FC = () => {
 										options={{ headerTitle: '', gestureDirection: 'vertical' }}
 									/>
 									<AppStack.Screen name='Add Card' component={AddCardWebview} />
+									<AppStack.Screen
+										name='Modal.AddDeliveryAddress'
+										component={AddDeliveryAddress}
+										options={{ headerTitle: 'Add Delivery Address' }}
+									/>
 								</AppStack.Group>
 							</AppStack.Group>
 						</>

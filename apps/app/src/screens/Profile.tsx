@@ -42,10 +42,10 @@ const Profile: React.FC = () => {
 					title='Payment Methods'
 					onPress={() => navigate('Profile.PaymentMethods')}
 				/>
-				{/* <ProfileRow
-					title='Delivery address'
-					onPress={() => navigate('DeliveryAddress')}
-				/> */}
+				<ProfileRow
+					title='Delivery Addresses'
+					onPress={() => navigate('Profile.DeliveryAddress')}
+				/>
 				<ProfileRow
 					title='Notifications'
 					onPress={() => navigate('Profile.NotificationSettings')}
