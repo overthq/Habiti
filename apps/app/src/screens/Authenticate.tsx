@@ -1,19 +1,19 @@
 import {
 	Button,
 	FormInput,
+	Icon,
 	Screen,
 	Spacer,
 	Typography
 } from '@habiti/components';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { TouchableOpacity } from 'react-native';
+import { Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import useStore from '../state';
 import { useAuthenticateMutation } from '../types/api';
-import { AppStackParamList } from '../types/navigation';
 
 interface AuthenticateFormValues {
 	email: string;
@@ -21,15 +21,12 @@ interface AuthenticateFormValues {
 }
 
 const Authenticate = () => {
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const logIn = useStore(state => state.logIn);
 	const [{ fetching }, authenticate] = useAuthenticateMutation();
 	const { control, handleSubmit } = useForm<AuthenticateFormValues>({
-		defaultValues: {
-			email: '',
-			password: ''
-		}
+		defaultValues: { email: '', password: '' }
 	});
+	const { goBack } = useNavigation();
 
 	const onSubmit = async (values: AuthenticateFormValues) => {
 		const { error, data } = await authenticate({ input: values });
@@ -42,12 +39,15 @@ const Authenticate = () => {
 		}
 	};
 
-	const goToRegister = () => navigate('Register');
-
 	return (
-		<Screen style={{ paddingHorizontal: 16 }}>
-			<SafeAreaView>
-				<Spacer y={24} />
+		<SafeAreaView style={{ flex: 1 }}>
+			<Screen style={{ padding: 16 }}>
+				<Pressable onPress={goBack}>
+					<Icon name='chevron-left' />
+				</Pressable>
+
+				<Spacer y={8} />
+
 				<Typography weight='bold' size='xxxlarge'>
 					Welcome back.
 				</Typography>
@@ -84,15 +84,8 @@ const Authenticate = () => {
 					onPress={handleSubmit(onSubmit)}
 					loading={fetching}
 				/>
-
-				<TouchableOpacity
-					style={{ alignSelf: 'center', marginTop: 8 }}
-					onPress={goToRegister}
-				>
-					<Typography weight='medium'>{`Don't have an account?`}</Typography>
-				</TouchableOpacity>
-			</SafeAreaView>
-		</Screen>
+			</Screen>
+		</SafeAreaView>
 	);
 };
 

@@ -16,18 +16,13 @@ const StoreMeta: React.FC<StoreMetaProps> = ({ store }) => {
 
 	return (
 		<Pressable
-			style={{
-				// padding: 16,
-				marginHorizontal: 16,
-				// backgroundColor: theme.input.background,
-				borderRadius: 6
-			}}
-			onPress={() =>
-				navigate('Store', {
+			style={{ marginHorizontal: 16, borderRadius: 6 }}
+			onPress={() => {
+				navigate('Home.Store', {
 					screen: 'Store.Main',
 					params: { storeId: store.id }
-				})
-			}
+				});
+			}}
 		>
 			<View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
 				<CustomImage

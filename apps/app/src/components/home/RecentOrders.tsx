@@ -21,7 +21,7 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 
 	const handleOrderPress = React.useCallback(
 		(orderId: string) => () => {
-			navigate('Order', { orderId });
+			navigate('Home.Order', { orderId });
 		},
 		[]
 	);
@@ -39,7 +39,7 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 					description='Pending orders will be displayed here.'
 					cta={{
 						text: 'View your carts',
-						action: () => navigate('Carts')
+						action: () => navigate('Main.Carts')
 					}}
 				/>
 			) : (

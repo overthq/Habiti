@@ -10,16 +10,8 @@ import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import React from 'react';
-import { FormProvider, useForm, useFormContext } from 'react-hook-form';
-import {
-	View,
-	StyleSheet,
-	Dimensions,
-	Alert,
-	Platform,
-	ViewToken
-} from 'react-native';
-import Animated from 'react-native-reanimated';
+import { FormProvider, useForm } from 'react-hook-form';
+import { View, Dimensions, Alert, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useRegisterMutation } from '../types/api';
@@ -35,59 +27,16 @@ interface RegisterFormValues {
 
 const { width } = Dimensions.get('window');
 
-const Name = () => {
-	const { control } = useFormContext<RegisterFormValues>();
-	const { toNext } = useOnboardingContext();
-
-	return (
-		<View style={{ width, paddingHorizontal: 16 }}>
-			<Spacer y={32} />
-			<Typography weight='bold' size='xxxlarge'>
-				What's your name?
-			</Typography>
-			<Typography variant='secondary'>Let's meet you.</Typography>
-			<Spacer y={16} />
-			<FormInput
-				name='name'
-				control={control}
-				label='Name'
-				placeholder='John Doe'
-				autoCorrect={false}
-			/>
-			<Spacer y={16} />
-			<Button text='Next' onPress={toNext} />
-		</View>
-	);
-};
-
-const Email = () => {
-	const { control } = useFormContext<RegisterFormValues>();
-	const { toNext } = useOnboardingContext();
-
-	return (
-		<View style={{ width, paddingHorizontal: 16 }}>
-			<Spacer y={32} />
-			<Typography weight='bold' size='xxxlarge'>
-				Enter your email.
-			</Typography>
-			<Typography variant='secondary'>We won't spam you, promise.</Typography>
-			<Spacer y={16} />
-			<FormInput
-				name='email'
-				control={control}
-				label='Email address'
-				placeholder='john.appleseed@gmail.com'
-				keyboardType='email-address'
-				autoCapitalize='none'
-			/>
-			<Spacer y={16} />
-			<Button text='Next' onPress={toNext} />
-		</View>
-	);
-};
-
-const Password = () => {
-	const { control, handleSubmit } = useFormContext<RegisterFormValues>();
+const RegisterForm = () => {
+	const methods = useForm<RegisterFormValues>({
+		defaultValues: {
+			name: '',
+			email: '',
+			password: '',
+			confirmPassword: '',
+			pushToken: undefined
+		}
+	});
 	const [{ fetching }, register] = useRegisterMutation();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
@@ -108,37 +57,56 @@ const Password = () => {
 	};
 
 	return (
-		<View style={{ width, paddingHorizontal: 16 }}>
-			<Spacer y={32} />
-			<Typography weight='bold' size='xxxlarge'>
-				Create a password.
-			</Typography>
-			<Typography variant='secondary'>
-				Help us keep your account secure.
-			</Typography>
-			<Spacer y={16} />
-			<FormInput
-				name='password'
-				control={control}
-				label='Password'
-				placeholder='Password'
-				secureTextEntry
-			/>
-			<Spacer y={8} />
-			<FormInput
-				name='confirmPassword'
-				control={control}
-				label='Confirm password'
-				placeholder='Confirm password'
-				secureTextEntry
-			/>
-			<Spacer y={16} />
-			<Button
-				loading={fetching}
-				text='Create account'
-				onPress={handleSubmit(onSubmit)}
-			/>
-		</View>
+		<FormProvider {...methods}>
+			<View style={{ width, paddingHorizontal: 16 }}>
+				<Spacer y={32} />
+				<Typography weight='bold' size='xxxlarge'>
+					Create your account
+				</Typography>
+				<Typography variant='secondary'>Let's get you started.</Typography>
+				<Spacer y={16} />
+				<FormInput
+					name='name'
+					control={methods.control}
+					label='Name'
+					placeholder='John Doe'
+					autoCorrect={false}
+				/>
+				<Spacer y={8} />
+				<FormInput
+					name='email'
+					control={methods.control}
+					label='Email address'
+					placeholder='john.appleseed@gmail.com'
+					keyboardType='email-address'
+					autoCapitalize='none'
+				/>
+				<Spacer y={8} />
+				<FormInput
+					name='password'
+					control={methods.control}
+					label='Password'
+					placeholder='Password'
+					secureTextEntry
+					autoCapitalize='none'
+				/>
+				<Spacer y={8} />
+				<FormInput
+					name='confirmPassword'
+					control={methods.control}
+					label='Confirm password'
+					placeholder='Confirm password'
+					secureTextEntry
+					autoCapitalize='none'
+				/>
+				<Spacer y={16} />
+				<Button
+					loading={fetching}
+					text='Create account'
+					onPress={methods.handleSubmit(onSubmit)}
+				/>
+			</View>
+		</FormProvider>
 	);
 };
 
@@ -215,18 +183,7 @@ const PushNotifications = () => {
 	);
 };
 
-const steps = [
-	{ id: 'name', screen: <Name /> },
-	{ id: 'email', screen: <Email /> },
-	{ id: 'password', screen: <Password /> },
-	{ id: 'push-notifications', screen: <PushNotifications /> }
-] as const;
-
 const Onboarding: React.FC = () => {
-	const scrollRef =
-		React.useRef<Animated.FlatList<(typeof steps)[number]>>(null);
-	const [activeStepIndex, setActiveStepIndex] = React.useState(0);
-
 	const methods = useForm<RegisterFormValues>({
 		defaultValues: {
 			name: '',
@@ -237,67 +194,13 @@ const Onboarding: React.FC = () => {
 		}
 	});
 
-	const toNext = React.useCallback(() => {
-		scrollRef.current?.scrollToIndex({
-			index: activeStepIndex + 1,
-			animated: true
-		});
-	}, [scrollRef.current, activeStepIndex]);
-
-	const handleViewableItemsChanged = React.useCallback(
-		({ viewableItems }: { viewableItems: ViewToken[] }) => {
-			if (viewableItems[0]?.index) {
-				setActiveStepIndex(viewableItems[0].index);
-			}
-		},
-		[]
-	);
-
 	return (
-		<OnboardingContext.Provider value={{ toNext }}>
-			<FormProvider {...methods}>
-				<SafeAreaView style={{ flex: 1 }}>
-					<View style={styles.container}>
-						<Animated.FlatList
-							ref={scrollRef}
-							horizontal
-							decelerationRate='fast'
-							snapToInterval={width}
-							scrollEnabled={false}
-							showsHorizontalScrollIndicator={false}
-							style={{ flex: 1 }}
-							data={steps}
-							keyExtractor={s => s.id}
-							renderItem={({ item }) => item.screen}
-							onViewableItemsChanged={handleViewableItemsChanged}
-						/>
-					</View>
-				</SafeAreaView>
-			</FormProvider>
-		</OnboardingContext.Provider>
+		<FormProvider {...methods}>
+			<SafeAreaView style={{ flex: 1 }}>
+				<RegisterForm />
+			</SafeAreaView>
+		</FormProvider>
 	);
 };
-
-interface OnboardingContextType {
-	toNext(): void;
-}
-
-const OnboardingContext = React.createContext<OnboardingContextType>(null);
-
-const useOnboardingContext = () => {
-	const context = React.useContext(OnboardingContext);
-
-	if (!context) {
-		throw new Error('Must be used inside an OnboardingContext.Provider');
-	}
-
-	return context;
-};
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1
-	}
-});
 
 export default Onboarding;

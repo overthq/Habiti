@@ -22,6 +22,7 @@ const ProfileStack = () => {
 			<ProfileNavigator.Screen
 				name='Profile.PaymentMethods'
 				component={PaymentMethods}
+				options={{ headerTitle: 'Payment Methods' }}
 			/>
 			<ProfileNavigator.Screen
 				name='Profile.DeliveryAddress'

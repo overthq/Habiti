@@ -21,6 +21,16 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const [headerVisible, setHeaderVisible] = React.useState(false);
 	const { theme } = useTheme();
+	const [refreshing, setRefreshing] = React.useState(false);
+
+	const handleRefresh = React.useCallback(() => {
+		setRefreshing(true);
+		refetch();
+	}, [refetch]);
+
+	React.useEffect(() => {
+		if (!fetching && refreshing) setRefreshing(false);
+	}, [fetching, refreshing]);
 
 	const products = data?.store.products;
 
@@ -65,13 +75,11 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 			)}
 			numColumns={2}
 			onScroll={handleScroll}
-			ListHeaderComponent={() => <StoreHeader store={store} />}
+			ListHeaderComponent={<StoreHeader store={store} />}
 			refreshControl={
 				<RefreshControl
-					refreshing={fetching}
-					onRefresh={() => {
-						refetch({ requestPolicy: 'network-only' });
-					}}
+					refreshing={refreshing}
+					onRefresh={handleRefresh}
 					tintColor={theme.text.secondary}
 				/>
 			}

@@ -39,7 +39,7 @@ const Profile: React.FC = () => {
 			<Spacer y={8} />
 			<View>
 				<ProfileRow
-					title='Payment methods'
+					title='Payment Methods'
 					onPress={() => navigate('Profile.PaymentMethods')}
 				/>
 				{/* <ProfileRow
@@ -55,7 +55,7 @@ const Profile: React.FC = () => {
 					onPress={() => navigate('Profile.Appearance')}
 				/>
 				<ProfileRow
-					title='Manage account'
+					title='Manage Account'
 					onPress={() => navigate('Profile.AccountSettings')}
 				/>
 				<Spacer y={8} />
