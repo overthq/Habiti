@@ -12,7 +12,7 @@
 	"dependencies": {
 		"@apollo/server": "^4.10.4",
 		"@graphql-tools/schema": "^10.0.0",
-		"@prisma/client": "^5.13.0",
+		"@prisma/client": "^6.0.0",
 		"@sentry/cli": "^2.31.0",
 		"@sentry/node": "^7.109.0",
 		"@sentry/profiling-node": "^7.109.0",
@@ -45,7 +45,7 @@
 		"@types/lodash": "^4.14.198",
 		"@types/nodemailer": "^6.4.15",
 		"nodemon": "^3.1.7",
-		"prisma": "^5.13.0",
+		"prisma": "^6.0.0",
 		"ts-node": "^10.9.2",
 		"tsx": "^4.11.0",
 		"typescript": "^5.3.3"

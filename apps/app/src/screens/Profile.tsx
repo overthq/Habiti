@@ -1,7 +1,7 @@
 import { Button, Screen, Separator, Spacer } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 
 import ProfileRow from '../components/profile/ProfileRow';
 import UserCard from '../components/profile/UserCard';
@@ -27,9 +27,12 @@ const Profile: React.FC = () => {
 	const logOut = useStore(state => state.logOut);
 	const { navigate } = useNavigation<NavigationProp<ProfileStackParamList>>();
 
-	const noop = React.useCallback(() => {
-		// Something
-	}, []);
+	const confirmLogOut = React.useCallback(() => {
+		Alert.alert('Log Out', 'Are you sure you want to log out?', [
+			{ text: 'Cancel', style: 'cancel' },
+			{ text: 'Log Out', style: 'destructive', onPress: logOut }
+		]);
+	}, [logOut]);
 
 	return (
 		<Screen>
@@ -61,12 +64,12 @@ const Profile: React.FC = () => {
 				<Spacer y={8} />
 				<Separator style={{ marginHorizontal: 16 }} />
 				<Spacer y={8} />
-				<ProfileRow title='About this app' onPress={noop} />
-				<ProfileRow title='Support' onPress={noop} />
+				<ProfileRow title='About this app' onPress={() => {}} />
+				<ProfileRow title='Support' onPress={() => {}} />
 			</View>
 			<Spacer y={24} />
 			<View style={{ paddingHorizontal: 16 }}>
-				<Button text='Log Out' onPress={logOut} />
+				<Button text='Log Out' onPress={confirmLogOut} />
 			</View>
 		</Screen>
 	);
