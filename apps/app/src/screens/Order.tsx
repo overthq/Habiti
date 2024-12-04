@@ -21,7 +21,7 @@ import { AppStackParamList, HomeStackParamList } from '../types/navigation';
 const Order: React.FC = () => {
 	const {
 		params: { orderId }
-	} = useRoute<RouteProp<HomeStackParamList, 'Order'>>();
+	} = useRoute<RouteProp<HomeStackParamList, 'Home.Order'>>();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const [{ data, fetching }] = useOrderQuery({ variables: { orderId } });
 	useGoBack();

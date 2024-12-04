@@ -11,6 +11,7 @@ import ModalGroup from './ModalGroup';
 import useClient from '../hooks/useClient';
 import Authenticate from '../screens/Authenticate';
 import CreateStore from '../screens/CreateStore';
+import Landing from '../screens/Landing';
 import Register from '../screens/Register';
 import StoreSelect from '../screens/StoreSelect';
 import Verify from '../screens/Verify';
@@ -32,7 +33,7 @@ const Routes: React.FC = () => {
 				<BottomSheetModalProvider>
 					<AppStack.Navigator
 						initialRouteName={
-							accessToken ? (!activeStore ? 'StoreSelect' : 'Main') : 'Register'
+							accessToken ? (!activeStore ? 'StoreSelect' : 'Main') : 'Landing'
 						}
 						screenOptions={{ headerShown: false }}
 					>
@@ -50,6 +51,7 @@ const Routes: React.FC = () => {
 							)
 						) : (
 							<AppStack.Group>
+								<AppStack.Screen name='Landing' component={Landing} />
 								<AppStack.Screen name='Register' component={Register} />
 								<AppStack.Screen name='Authenticate' component={Authenticate} />
 								<AppStack.Screen name='Verify' component={Verify} />

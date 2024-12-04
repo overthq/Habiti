@@ -1,5 +1,5 @@
 {
-  "compilerOptions": {
+	"compilerOptions": {
 		"allowJs": false,
 		"composite": true,
 		"noEmit": false,
@@ -15,7 +15,11 @@
 		// Set `sourceRoot` to  "/" to strip the build path prefix
 		// from generated source code references.
 		// This improves issue grouping in Sentry.
-		"sourceRoot": "/"
+		"sourceRoot": "/",
+		// Make sure that Prisma is aggressive with type-related issues.
+		"strictNullChecks": true,
+		"exactOptionalPropertyTypes": true,
+		"noUncheckedIndexedAccess": true
 	},
 	"include": ["src"]
 }

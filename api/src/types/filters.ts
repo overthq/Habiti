@@ -9,12 +9,12 @@ export type StringWhere = {
 export type IntWhere = Partial<Record<'lt' | 'lte' | 'gt' | 'gte', number>>;
 
 export interface ProductsArgs {
-	filter?: {
+	filter: {
 		name?: StringWhere;
 		unitPrice?: IntWhere;
 		quantity?: IntWhere;
 	};
-	orderBy?: {
+	orderBy: {
 		createdAt?: 'asc' | 'desc';
 		updatedAt?: 'asc' | 'desc';
 		unitPrice?: 'asc' | 'desc';

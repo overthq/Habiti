@@ -1,6 +1,12 @@
-import { CustomImage, Icon, Typography, useTheme } from '@habiti/components';
+import {
+	CustomImage,
+	Icon,
+	Row,
+	Typography,
+	useTheme
+} from '@habiti/components';
 import React from 'react';
-import { View, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import { CartsQuery } from '../../types/api';
 import { plural } from '../../utils/strings';
@@ -14,7 +20,7 @@ const CartsListItem: React.FC<CartListItemProps> = ({ cart, onPress }) => {
 	const { theme } = useTheme();
 
 	return (
-		<Pressable onPress={onPress} style={styles.container}>
+		<Row onPress={onPress} style={styles.container}>
 			<View style={styles.main}>
 				<CustomImage
 					uri={cart.store.image?.path}
@@ -30,7 +36,7 @@ const CartsListItem: React.FC<CartListItemProps> = ({ cart, onPress }) => {
 				</View>
 			</View>
 			<Icon name='chevron-right' size={24} color={theme.text.secondary} />
-		</Pressable>
+		</Row>
 	);
 };
 

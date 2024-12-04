@@ -1,10 +1,11 @@
 import { FormInput, Screen, TextButton } from '@habiti/components';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
 
 import { CurrentUserQuery, useEditProfileMutation } from '../../types/api';
+import { ProfileStackParamList } from '../../types/navigation';
 
 interface EditProfileMainProps {
 	currentUser: CurrentUserQuery['currentUser'];
@@ -16,7 +17,7 @@ interface EditProfileFormValues {
 }
 
 const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
-	const navigation = useNavigation();
+	const navigation = useNavigation<NavigationProp<ProfileStackParamList>>();
 	const [, editProfile] = useEditProfileMutation();
 
 	const { control, handleSubmit, formState } = useForm<EditProfileFormValues>({

@@ -1,7 +1,13 @@
 import { formatNaira } from '@habiti/common';
-import { useTheme, CustomImage, Icon, Typography } from '@habiti/components';
+import {
+	useTheme,
+	CustomImage,
+	Icon,
+	Typography,
+	Row
+} from '@habiti/components';
 import React from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import { ProductsQuery } from '../../types/api';
 
@@ -17,7 +23,7 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
 	const { theme } = useTheme();
 
 	return (
-		<Pressable onPress={onPress} style={styles.container}>
+		<Row onPress={onPress} style={styles.container}>
 			<View style={styles.left}>
 				<CustomImage
 					uri={product.images[0]?.path}
@@ -33,7 +39,7 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
 				</View>
 			</View>
 			<Icon name='chevron-right' color={theme.text.secondary} />
-		</Pressable>
+		</Row>
 	);
 };
 
@@ -43,7 +49,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingVertical: 4,
+		paddingVertical: 6,
 		paddingHorizontal: 12
 	},
 	name: {

@@ -23,7 +23,7 @@ const UserCard: React.FC = () => {
 	}
 
 	return (
-		<Pressable onPress={() => navigate('Edit Profile')} style={[styles.card]}>
+		<Pressable onPress={() => navigate('Profile.Edit')} style={[styles.card]}>
 			<View
 				style={[
 					styles.placeholder,
@@ -37,7 +37,7 @@ const UserCard: React.FC = () => {
 			<View style={{ marginLeft: 12 }}>
 				<Typography weight='medium'>{data.currentUser.name}</Typography>
 				<Typography variant='secondary' style={styles.phone}>
-					Edit profile
+					{data.currentUser.email}
 				</Typography>
 			</View>
 		</Pressable>

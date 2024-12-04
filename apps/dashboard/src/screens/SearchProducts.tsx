@@ -109,7 +109,6 @@ const SearchProducts = () => {
 					showsVerticalScrollIndicator={false}
 					renderItem={renderProduct}
 					estimatedItemSize={60}
-					contentContainerStyle={{ paddingTop: 8 }}
 				/>
 			)}
 		</Screen>

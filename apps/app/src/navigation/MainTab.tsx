@@ -16,10 +16,10 @@ const MainTabNavigator = () => {
 
 	return (
 		<MainTab.Navigator screenOptions={tabScreenOptions(name)}>
-			<MainTab.Screen name='For You' component={HomeStack} />
-			<MainTab.Screen name='Explore' component={ExploreStack} />
-			<MainTab.Screen name='Carts' component={CartsStack} />
-			<MainTab.Screen name='Profile' component={ProfileStack} />
+			<MainTab.Screen name='Main.ForYou' component={HomeStack} />
+			<MainTab.Screen name='Main.Explore' component={ExploreStack} />
+			<MainTab.Screen name='Main.Carts' component={CartsStack} />
+			<MainTab.Screen name='Main.Profile' component={ProfileStack} />
 		</MainTab.Navigator>
 	);
 };

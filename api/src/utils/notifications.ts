@@ -7,11 +7,15 @@ export const getPushTokensForStore = async (storeId: string) => {
 		where: { storeId },
 		include: {
 			manager: {
-				include: { pushTokens: { where: { type: PushTokenType.Merchant } } }
+				include: {
+					pushTokens: { where: { type: PushTokenType.Merchant } }
+				}
 			}
 		}
 	});
 
 	// TODO: Cache these tokenIds in the CacheService.
-	return managers.map(m => m.manager.pushTokens[0].token);
+	return managers
+		.map(m => m.manager.pushTokens[0]?.token)
+		.filter(Boolean) as string[];
 };

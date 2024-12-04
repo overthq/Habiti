@@ -1,11 +1,11 @@
 import { createClient, RedisClientType } from 'redis';
 
 const prod = {
-	url: process.env.REDIS_TLS_URL,
+	url: process.env.REDIS_TLS_URL as string,
 	tls: { rejectUnauthorized: false }
 };
 
-const dev = { url: process.env.REDIS_URL };
+const dev = { url: process.env.REDIS_URL as string };
 const client: RedisClientType = createClient(
 	process.env.NODE_ENV === 'production' ? prod : dev
 );

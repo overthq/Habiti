@@ -6,13 +6,13 @@ import { MainTabParamList } from '../types/navigation';
 
 export const getIcon = (routeName: keyof MainTabParamList): IconType => {
 	switch (routeName) {
-		case 'For You':
+		case 'Main.ForYou':
 			return 'home';
-		case 'Explore':
+		case 'Main.Explore':
 			return 'search';
-		case 'Carts':
+		case 'Main.Carts':
 			return 'shopping-bag';
-		case 'Profile':
+		case 'Main.Profile':
 			return 'user';
 		// case 'Notifications':
 		// 	return ''

@@ -17,7 +17,7 @@ const addProductReview: Resolver<AddProductReviewArgs> = async (
 		data: {
 			userId: ctx.user.id,
 			productId: input.productId,
-			body: input.body,
+			body: input.body ?? null,
 			rating: input.rating
 		}
 	});

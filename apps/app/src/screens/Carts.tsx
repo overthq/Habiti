@@ -44,7 +44,7 @@ const Carts: React.FC = () => {
 						description={`Looks like your cart is empty. Let's change that.`}
 						cta={{
 							text: 'Discover new stores',
-							action: () => navigate('Explore')
+							action: () => navigate('Main.Explore')
 						}}
 						viewStyle={{ marginTop: 32 }}
 					/>

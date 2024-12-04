@@ -1,7 +1,7 @@
 import { formatNaira } from '@habiti/common';
-import { CustomImage, Typography } from '@habiti/components';
+import { CustomImage, Typography, Row } from '@habiti/components';
 import React from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import { OrderQuery } from '../../types/api';
 
@@ -14,7 +14,7 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 	orderProduct: { product, quantity, unitPrice },
 	onPress
 }) => (
-	<Pressable key={product.id} onPress={onPress} style={styles.container}>
+	<Row key={product.id} onPress={onPress} style={styles.container}>
 		<View style={styles.image}>
 			<CustomImage uri={product.images[0]?.path} height={40} width={40} />
 		</View>
@@ -24,7 +24,7 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 				{formatNaira(unitPrice * quantity)}
 			</Typography>
 		</View>
-	</Pressable>
+	</Row>
 );
 
 const styles = StyleSheet.create({
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		paddingHorizontal: 16,
-		paddingVertical: 4
+		paddingVertical: 6
 	},
 	image: {
 		marginRight: 8

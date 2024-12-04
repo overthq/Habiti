@@ -15,7 +15,7 @@ const Orders: React.FC = () => {
 
 	const handleOrderPress = React.useCallback(
 		(orderId: string) => () => {
-			navigate('Order', { orderId });
+			navigate('Home.Order', { orderId });
 		},
 		[]
 	);

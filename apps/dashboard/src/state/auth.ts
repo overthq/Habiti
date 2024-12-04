@@ -14,6 +14,6 @@ export const createAuthSlice: StateCreator<
 		set({ userId, accessToken });
 	},
 	logOut: () => {
-		set({ userId: null, accessToken: null });
+		set({ userId: null, accessToken: null, activeStore: null });
 	}
 });

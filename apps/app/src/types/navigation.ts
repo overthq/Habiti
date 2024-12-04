@@ -9,20 +9,21 @@ export type AppStackParamList = {
 	Product: { productId: string };
 	Cart: { cartId: string };
 	'Add Card': undefined;
+	'Modal.AddDeliveryAddress': undefined;
 };
 
 export type HomeStackParamList = {
-	Home: undefined;
-	Order: { orderId: string };
-	Store: NavigatorScreenParams<StoreStackParamList>;
-	Settings: undefined;
-	SettingsTheme: undefined;
-	Notifications: undefined;
+	'Home.Main': undefined;
+	'Home.Order': { orderId: string };
+	'Home.Store': NavigatorScreenParams<StoreStackParamList>;
+	'Home.Settings': undefined;
+	'Home.SettingsTheme': undefined;
+	'Home.Notifications': undefined;
 };
 
 export type ExploreStackParamList = {
 	'Explore.Main': undefined;
-	Store: NavigatorScreenParams<StoreStackParamList>;
+	'Explore.Store': NavigatorScreenParams<StoreStackParamList>;
 };
 
 export type CartStackParamList = {
@@ -31,11 +32,11 @@ export type CartStackParamList = {
 
 export type ProfileStackParamList = {
 	'Profile.Main': undefined;
-	'Edit Profile': undefined;
-	'Payment Methods': undefined;
-	DeliveryAddress: undefined;
-	NotificationSettings: undefined;
-	Appearance: undefined;
+	'Profile.Edit': undefined;
+	'Profile.PaymentMethods': undefined;
+	'Profile.DeliveryAddress': undefined;
+	'Profile.NotificationSettings': undefined;
+	'Profile.Appearance': undefined;
 	'Profile.AccountSettings': undefined;
 };
 
@@ -46,8 +47,8 @@ export type StoreStackParamList = {
 };
 
 export type MainTabParamList = {
-	'For You': undefined;
-	Explore: undefined;
-	Carts: undefined;
-	Profile: undefined;
+	'Main.ForYou': undefined;
+	'Main.Explore': undefined;
+	'Main.Carts': undefined;
+	'Main.Profile': undefined;
 };

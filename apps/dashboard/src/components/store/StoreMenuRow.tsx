@@ -1,6 +1,6 @@
-import { Icon, Typography } from '@habiti/components';
+import { Icon, Row, Typography } from '@habiti/components';
 import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 interface StoreMenuRowProps {
 	title: string;
@@ -9,10 +9,10 @@ interface StoreMenuRowProps {
 
 const StoreMenuRow: React.FC<StoreMenuRowProps> = ({ title, onPress }) => {
 	return (
-		<Pressable style={styles.menuButton} onPress={onPress}>
+		<Row onPress={onPress} style={styles.menuButton}>
 			<Typography>{title}</Typography>
 			<Icon name='chevron-right' color='#505050' />
-		</Pressable>
+		</Row>
 	);
 };
 
@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingHorizontal: 16,
+		paddingLeft: 16,
+		paddingRight: 12,
 		paddingVertical: 8
 	}
 });

@@ -17,7 +17,7 @@ const addProductOption: Resolver<AddProductOptionArgs> = async (
 		data: {
 			productId: input.productId,
 			name: input.name,
-			description: input.description
+			description: input.description ?? null
 		}
 	});
 

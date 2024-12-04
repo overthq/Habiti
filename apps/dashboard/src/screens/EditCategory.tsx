@@ -52,12 +52,13 @@ const EditCategoryMain: React.FC<EditCategoryMainProps> = ({
 			<FormInput
 				label='Description'
 				name='description'
+				placeholder='Describe your category'
 				control={methods.control}
 				textArea
 			/>
-			<Spacer y={8} />
+			<Spacer y={16} />
 			<Button
-				text='Edit profile'
+				text='Edit Category'
 				onPress={methods.handleSubmit(onSubmit)}
 				loading={fetching}
 			/>

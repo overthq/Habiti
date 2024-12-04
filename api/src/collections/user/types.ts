@@ -15,6 +15,7 @@ const UserTypes = gql`
 		followed: [StoreFollower!]!
 		watchlist: [WatchlistProduct!]!
 		cards: [Card!]!
+		addresses: [DeliveryAddress!]!
 	}
 
 	extend type Query {

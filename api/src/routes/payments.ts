@@ -1,11 +1,10 @@
 import { Router } from 'express';
 
-import { HabitiRequest } from '../types/misc';
 import { verifyTransaction } from '../utils/paystack';
 
 const paymentsRouter: Router = Router();
 
-paymentsRouter.post('/verify-transaction', async (req: HabitiRequest, res) => {
+paymentsRouter.post('/verify-transaction', async (req, res) => {
 	const { reference } = req.body;
 
 	try {

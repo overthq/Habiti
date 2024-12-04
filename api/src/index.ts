@@ -11,11 +11,11 @@ import { createServer } from 'http';
 import prismaClient from './config/prisma';
 import redisClient from './config/redis';
 import { initSentry } from './config/sentry';
+import health from './routes/health';
 import payments from './routes/payments';
 import webhooks from './routes/webhooks';
 import schema from './schema';
 import Services from './services';
-import { HabitiRequest } from './types/misc';
 
 import './config/cloudinary';
 
@@ -27,7 +27,7 @@ const main = async () => {
 	app.use(compression());
 	app.use(
 		expressjwt({
-			secret: process.env.JWT_SECRET,
+			secret: process.env.JWT_SECRET as string,
 			algorithms: ['HS256'],
 			credentialsRequired: false
 		})
@@ -50,7 +50,7 @@ const main = async () => {
 		'/graphql',
 		express.json(),
 		expressMiddleware(apolloServer, {
-			context: async ({ req }: { req: HabitiRequest }) => ({
+			context: async ({ req }) => ({
 				user: req.auth ?? null,
 				storeId: req.headers['x-market-store-id'] || undefined,
 				prisma: prismaClient,
@@ -61,6 +61,7 @@ const main = async () => {
 	);
 	app.use('/webhooks', webhooks);
 	app.use('/payments', payments);
+	app.use('/health', health);
 
 	const PORT = Number(process.env.PORT || 3000);
 	httpServer.listen({ port: PORT });

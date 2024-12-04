@@ -18,6 +18,10 @@ const createPayout: Resolver<CreatePayoutArgs> = async (
 		where: { id: ctx.storeId }
 	});
 
+	if (!store) {
+		throw new Error('Store not found');
+	}
+
 	// Extra validation (the frontend should cover this).
 	if (store.realizedRevenue < store.paidOut + amount) {
 		throw new Error('Insufficient funds');

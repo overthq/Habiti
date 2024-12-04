@@ -44,13 +44,13 @@ const removeFromCart: Resolver<RemoveProductArgs> = async (
 	{ cartId, productId },
 	ctx
 ) => {
-	const { userId } = await ctx.prisma.cart.findUnique({
-		where: {
-			id: cartId
-		}
-	});
+	const cart = await ctx.prisma.cart.findUnique({ where: { id: cartId } });
 
-	if (userId === ctx.user.id) {
+	if (!cart) {
+		throw new Error('Cart not found');
+	}
+
+	if (cart.userId === ctx.user.id) {
 		const product = await ctx.prisma.cartProduct.delete({
 			where: { cartId_productId: { cartId, productId } }
 		});
@@ -75,12 +75,8 @@ const updateCartProduct: Resolver<UpdateCartProductArgs> = (
 	ctx
 ) => {
 	return ctx.prisma.cartProduct.update({
-		where: {
-			cartId_productId: { cartId, productId }
-		},
-		data: {
-			quantity
-		}
+		where: { cartId_productId: { cartId, productId } },
+		data: { quantity }
 	});
 };
 

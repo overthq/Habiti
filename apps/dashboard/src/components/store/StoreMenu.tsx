@@ -1,12 +1,15 @@
+import { Button } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View } from 'react-native';
 
 import StoreMenuRow from './StoreMenuRow';
+import useStore from '../../state';
 import type { StoreStackParamList } from '../../types/navigation';
 
 const StoreMenu = () => {
 	const { navigate } = useNavigation<NavigationProp<StoreStackParamList>>();
+	const { logOut } = useStore();
 
 	const handleNavigate = React.useCallback(
 		(screen: keyof StoreStackParamList) => () => {
@@ -18,7 +21,7 @@ const StoreMenu = () => {
 	return (
 		<View>
 			<StoreMenuRow
-				title='Edit profile'
+				title='Edit Profile'
 				onPress={handleNavigate('Edit Store')}
 			/>
 			<StoreMenuRow title='Payouts' onPress={handleNavigate('Payouts')} />
@@ -26,6 +29,10 @@ const StoreMenu = () => {
 			<StoreMenuRow title='Categories' onPress={handleNavigate('Categories')} />
 			<StoreMenuRow title='Settings' onPress={handleNavigate('Settings')} />
 			<StoreMenuRow title='Appearance' onPress={handleNavigate('Appearance')} />
+
+			<View style={{ padding: 16 }}>
+				<Button text='Logout' onPress={logOut} />
+			</View>
 		</View>
 	);
 };

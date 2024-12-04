@@ -22,12 +22,12 @@ const CustomerInfo: React.FC = () => {
 
 	return (
 		<ScrollableScreen style={styles.container}>
-			<Typography weight='medium' size='large'>
+			<Typography weight='medium' size='xlarge'>
 				{data.user.name}
 			</Typography>
-			<Spacer y={4} />
-			<Typography variant='label'>Previous Orders</Typography>
 			<Spacer y={16} />
+			<Typography variant='label'>Previous Orders</Typography>
+			<Spacer y={8} />
 			{data.user.orders.map(order => (
 				<OrderDetail key={order.id} order={order} />
 			))}

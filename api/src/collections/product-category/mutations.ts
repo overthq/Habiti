@@ -47,6 +47,10 @@ const createProductCategory: Resolver<CreateProductCategoryArgs> = async (
 	{ input },
 	ctx
 ) => {
+	if (!ctx.storeId) {
+		throw new Error('Store not found');
+	}
+
 	const category = await ctx.prisma.storeProductCategory.create({
 		data: { storeId: ctx.storeId, name: input.name }
 	});
@@ -67,6 +71,10 @@ const editProductCategory: Resolver<EditProductCategoryArgs> = async (
 	{ categoryId, input },
 	ctx
 ) => {
+	if (!ctx.storeId) {
+		throw new Error('Store not found');
+	}
+
 	return ctx.prisma.storeProductCategory.update({
 		where: { id: categoryId },
 		data: input
@@ -82,6 +90,10 @@ const deleteProductCategory: Resolver<DeleteProductCategoryArgs> = async (
 	{ categoryId },
 	ctx
 ) => {
+	if (!ctx.storeId) {
+		throw new Error('Store not found');
+	}
+
 	const category = await ctx.prisma.storeProductCategory.delete({
 		where: { id: categoryId }
 	});

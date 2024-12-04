@@ -50,7 +50,6 @@ const OrdersList = () => {
 			data={data?.currentStore.orders}
 			renderItem={renderOrder}
 			estimatedItemSize={60}
-			ListHeaderComponent={<View style={{ height: 4 }} />}
 			ListEmptyComponent={
 				<View style={styles.empty}>
 					<Typography variant='secondary' style={styles.emptyText}>

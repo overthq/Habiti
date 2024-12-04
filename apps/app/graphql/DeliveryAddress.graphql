@@ -1,0 +1,14 @@
+mutation AddDeliveryAddress($input: AddDeliveryAddressInput!) {
+	addDeliveryAddress(input: $input) {
+		id
+	}
+}
+
+query DeliveryAddresses {
+	currentUser {
+		addresses {
+			id
+			name
+		}
+	}
+}

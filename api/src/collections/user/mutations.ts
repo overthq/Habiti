@@ -16,6 +16,18 @@ export const register: Resolver<RegisterArgs> = async (
 	{ input: { name, email, password } },
 	ctx
 ) => {
+	if (!name || !email || !password) {
+		throw new Error('Name, email, and password are required.');
+	}
+
+	if (password.length < 8) {
+		throw new Error('Password must be at least 8 characters long.');
+	}
+
+	if (!email.includes('@')) {
+		throw new Error('Please provide a valid email address.');
+	}
+
 	const passwordHash = await argon2.hash(password);
 
 	const user = await ctx.prisma.user.create({
@@ -39,6 +51,10 @@ export const authenticate: Resolver<AuthenticateArgs> = async (
 	{ input: { email, password } },
 	ctx
 ) => {
+	if (!email || !password) {
+		throw new Error('Email and password are required.');
+	}
+
 	const user = await ctx.prisma.user.findUnique({ where: { email } });
 
 	if (!user) throw new Error('The specified user does not exist.');
@@ -66,6 +82,10 @@ export const verify: Resolver<VerifyArgs> = async (
 	{ input: { email, code } },
 	ctx
 ) => {
+	if (!email || !code) {
+		throw new Error('Email and verification code are required.');
+	}
+
 	const cachedCode = await ctx.redisClient.get(email);
 
 	if (!cachedCode) throw new Error('No code found for user.');
@@ -74,6 +94,10 @@ export const verify: Resolver<VerifyArgs> = async (
 		const user = await ctx.prisma.user.findUnique({
 			where: { email }
 		});
+
+		if (!user) {
+			throw new Error('');
+		}
 
 		const accessToken = await generateAccessToken(user);
 
@@ -96,11 +120,17 @@ export const editProfile: Resolver<EditProfileArgs> = (
 	{ id, input },
 	ctx
 ) => {
-	const { name, email } = input;
+	if (!id) throw new Error('User ID is required.');
+	if (!input.name && !input.email) {
+		throw new Error('At least one field (name or email) must be provided.');
+	}
+	if (input.email && !input.email.includes('@')) {
+		throw new Error('Please provide a valid email address.');
+	}
 
 	return ctx.prisma.user.update({
 		where: { id },
-		data: { name, email }
+		data: input
 	});
 };
 

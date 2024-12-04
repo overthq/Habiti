@@ -754,6 +754,7 @@ export type UpdateOrderInput = {
 
 export type User = {
 	__typename?: 'User';
+	addresses: DeliveryAddress[];
 	cards: Card[];
 	carts: Cart[];
 	createdAt: Scalars['String']['output'];
@@ -986,6 +987,29 @@ export type UpdateCartProductMutation = {
 		quantity: number;
 		cart: { __typename?: 'Cart'; id: string };
 		product: { __typename?: 'Product'; id: string };
+	};
+};
+
+export type AddDeliveryAddressMutationVariables = Exact<{
+	input: AddDeliveryAddressInput;
+}>;
+
+export type AddDeliveryAddressMutation = {
+	__typename?: 'Mutation';
+	addDeliveryAddress?: { __typename?: 'DeliveryAddress'; id: string } | null;
+};
+
+export type DeliveryAddressesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type DeliveryAddressesQuery = {
+	__typename?: 'Query';
+	currentUser: {
+		__typename?: 'User';
+		addresses: {
+			__typename?: 'DeliveryAddress';
+			id: string;
+			name?: string | null;
+		}[];
 	};
 };
 
@@ -1592,6 +1616,38 @@ export function useUpdateCartProductMutation() {
 		UpdateCartProductMutation,
 		UpdateCartProductMutationVariables
 	>(UpdateCartProductDocument);
+}
+export const AddDeliveryAddressDocument = gql`
+	mutation AddDeliveryAddress($input: AddDeliveryAddressInput!) {
+		addDeliveryAddress(input: $input) {
+			id
+		}
+	}
+`;
+
+export function useAddDeliveryAddressMutation() {
+	return Urql.useMutation<
+		AddDeliveryAddressMutation,
+		AddDeliveryAddressMutationVariables
+	>(AddDeliveryAddressDocument);
+}
+export const DeliveryAddressesDocument = gql`
+	query DeliveryAddresses {
+		currentUser {
+			addresses {
+				id
+				name
+			}
+		}
+	}
+`;
+
+export function useDeliveryAddressesQuery(
+	options?: Omit<Urql.UseQueryArgs<DeliveryAddressesQueryVariables>, 'query'>
+) {
+	return Urql.useQuery<DeliveryAddressesQuery, DeliveryAddressesQueryVariables>(
+		{ query: DeliveryAddressesDocument, ...options }
+	);
 }
 export const HomeDocument = gql`
 	query Home {

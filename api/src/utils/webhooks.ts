@@ -15,9 +15,13 @@ export const handleChargeSuccess = async (data: any) => {
 
 export const handleTransferSuccess = async (data: any) => {
 	// TODO: Maybe less logic duplication?
-	const { storeId } = await prismaClient.payout.findUnique({
+	const payout = await prismaClient.payout.findUnique({
 		where: { id: data.reference }
 	});
+
+	if (!payout) {
+		throw new Error('Payout not found');
+	}
 
 	await prismaClient.$transaction([
 		prismaClient.payout.update({
@@ -25,7 +29,7 @@ export const handleTransferSuccess = async (data: any) => {
 			data: { status: PayoutStatus.Success }
 		}),
 		prismaClient.store.update({
-			where: { id: storeId },
+			where: { id: payout.storeId },
 			data: { paidOut: { increment: Number(data.amount) } }
 		})
 	]);

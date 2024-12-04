@@ -6,7 +6,7 @@ import prismaClient from './prisma';
 
 export const initSentry = (app: Express) => {
 	Sentry.init({
-		dsn: process.env.SENTRY_DSN,
+		dsn: process.env.SENTRY_DSN as string,
 		integrations: [
 			new Sentry.Integrations.Http({ tracing: true }),
 			new Sentry.Integrations.Express({ app }),
