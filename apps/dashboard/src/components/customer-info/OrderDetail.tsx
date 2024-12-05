@@ -23,7 +23,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order }) => {
 		>
 			<View style={styles.header}>
 				<View style={styles.headerText}>
-					<Typography size='small' weight='medium'>
+					<Typography size='small'>
 						{parseTimestamp(order.createdAt)}
 					</Typography>
 					<Typography size='small' variant='secondary' weight='medium'>

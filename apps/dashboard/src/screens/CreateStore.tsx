@@ -1,38 +1,12 @@
-import { Button, Screen } from '@habiti/components';
+import { Button, FormInput, Screen, Spacer } from '@habiti/components';
 import React from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
-import {
-	FlatList,
-	Dimensions,
-	ViewToken,
-	FlatListProps,
-	View
-} from 'react-native';
-import Animated, {
-	useSharedValue,
-	useAnimatedScrollHandler
-} from 'react-native-reanimated';
+import { useForm } from 'react-hook-form';
+import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import Brand from '../components/create-store/Brand';
-import Social from '../components/create-store/Social';
-import StoreImage from '../components/create-store/StoreImage';
 import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useCreateStoreMutation } from '../types/api';
-
-const { width } = Dimensions.get('window');
-
-const steps = [
-	{ title: 'Brand', component: <Brand /> },
-	{ title: 'Social', component: <Social /> },
-	{ title: 'Store Image', component: <StoreImage /> }
-];
-
-const AnimatedFlatList =
-	Animated.createAnimatedComponent<FlatListProps<(typeof steps)[number]>>(
-		FlatList
-	);
 
 export interface CreateStoreFormValues {
 	name: string;
@@ -45,36 +19,11 @@ export interface CreateStoreFormValues {
 
 const CreateStore: React.FC = () => {
 	const [, createStore] = useCreateStoreMutation();
-	const [activeStepIndex, setActiveStepIndex] = React.useState(0);
-	const listRef = React.useRef<FlatList>(null);
-	const scrollX = useSharedValue(0);
 	const setPreference = useStore(state => state.setPreference);
-	const formMethods = useForm<CreateStoreFormValues>();
+	const methods = useForm<CreateStoreFormValues>();
 	const { bottom } = useSafeAreaInsets();
 
 	useGoBack('x');
-
-	const toNext = React.useCallback(() => {
-		listRef.current?.scrollToIndex({
-			animated: true,
-			index: activeStepIndex + 1
-		});
-	}, [listRef.current, activeStepIndex]);
-
-	const handleViewableItemsChanged = React.useCallback(
-		({ viewableItems }: { viewableItems: ViewToken[] }) => {
-			if (viewableItems[0]?.index) {
-				setActiveStepIndex(viewableItems[0].index);
-			}
-		},
-		[]
-	);
-
-	const handleScroll = useAnimatedScrollHandler({
-		onScroll: ({ contentOffset: { x } }) => {
-			scrollX.value = x;
-		}
-	});
 
 	const onSubmit = React.useCallback(
 		async (values: CreateStoreFormValues) => {
@@ -83,36 +32,58 @@ const CreateStore: React.FC = () => {
 			if (data?.createStore?.id) {
 				setPreference({ activeStore: data.createStore.id });
 			} else if (error) {
-				console.log('Error while creating store:');
-				console.log(error);
+				console.log('Error while creating store:', error);
 			}
 		},
-		[setPreference]
+		[setPreference, createStore]
 	);
-
-	const isLastStep = activeStepIndex === steps.length - 1;
 
 	return (
 		<Screen style={{ paddingBottom: bottom }}>
-			<FormProvider {...formMethods}>
-				<AnimatedFlatList
-					ref={listRef}
-					horizontal
-					decelerationRate='fast'
-					snapToInterval={width}
-					showsHorizontalScrollIndicator={false}
-					data={steps}
-					keyExtractor={s => s.title}
-					renderItem={({ item }) => item.component}
-					onViewableItemsChanged={handleViewableItemsChanged}
-					onScroll={handleScroll}
-				/>
-			</FormProvider>
+			<FormInput
+				control={methods.control}
+				name='name'
+				label='Store name'
+				placeholder='Nike'
+			/>
+			<Spacer y={16} />
+			<FormInput
+				control={methods.control}
+				name='description'
+				label='Store description'
+				placeholder='Brief description of your store'
+				textArea
+			/>
+			<Spacer y={16} />
+			<FormInput
+				control={methods.control}
+				label='Twitter username'
+				name='twitter'
+				placeholder='@nike'
+				autoCapitalize='none'
+				autoCorrect={false}
+			/>
+			<Spacer y={16} />
+			<FormInput
+				control={methods.control}
+				label='Instagram username'
+				name='instagram'
+				placeholder='@nike'
+				autoCapitalize='none'
+				autoCorrect={false}
+			/>
+			<Spacer y={16} />
+			<FormInput
+				control={methods.control}
+				label='Website'
+				name='website'
+				placeholder='https://nike.com'
+				keyboardType='url'
+				autoCorrect={false}
+				autoCapitalize='none'
+			/>
 			<View style={{ paddingHorizontal: 16 }}>
-				<Button
-					text={isLastStep ? 'Submit' : 'Next'}
-					onPress={isLastStep ? formMethods.handleSubmit(onSubmit) : toNext}
-				/>
+				<Button text='Submit' onPress={methods.handleSubmit(onSubmit)} />
 			</View>
 		</Screen>
 	);

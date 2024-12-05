@@ -9,12 +9,7 @@ import {
 } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import {
-	View,
-	ActivityIndicator,
-	Pressable,
-	RefreshControl
-} from 'react-native';
+import { View, Pressable, RefreshControl } from 'react-native';
 
 import FAB from '../components/products/FAB';
 import useGoBack from '../hooks/useGoBack';
@@ -76,11 +71,7 @@ const Categories = () => {
 	};
 
 	if (fetching) {
-		return (
-			<View>
-				<ActivityIndicator />
-			</View>
-		);
+		return <View />;
 	}
 
 	if (data?.currentStore.categories.length === 0) {
@@ -98,7 +89,7 @@ const Categories = () => {
 			<ScrollableScreen
 				refreshControl={
 					<RefreshControl
-						refreshing={fetching}
+						refreshing={refreshing}
 						onRefresh={handleRefresh}
 						tintColor={theme.text.secondary}
 					/>
