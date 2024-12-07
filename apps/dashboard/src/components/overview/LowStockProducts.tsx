@@ -25,7 +25,7 @@ const LowStockProducts = () => {
 	return (
 		<View style={styles.container}>
 			<SectionHeader
-				title='Low stock products'
+				title='Low Stock'
 				action={{ text: 'View all', onPress: navigateToProducts }}
 			/>
 			<Spacer y={4} />

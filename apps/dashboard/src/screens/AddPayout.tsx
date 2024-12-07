@@ -1,4 +1,4 @@
-import { Button, Screen } from '@habiti/components';
+import { HoldableButton, Screen } from '@habiti/components';
 import React from 'react';
 import { View } from 'react-native';
 
@@ -52,7 +52,7 @@ const AddPayout: React.FC = () => {
 				onDelete={handleDelete}
 			/>
 			<View style={{ marginBottom: 56, paddingHorizontal: 16 }}>
-				<Button text='Add Payout' onPress={handleAddPayout} />
+				<HoldableButton text='Add Payout' onComplete={handleAddPayout} />
 			</View>
 		</Screen>
 	);

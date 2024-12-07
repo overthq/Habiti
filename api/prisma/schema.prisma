@@ -37,6 +37,7 @@ model Store {
   unrealizedRevenue    Int      @default(0)
   realizedRevenue      Int      @default(0)
   paidOut              Int      @default(0)
+  orderCount           Int      @default(0)
   bankAccountNumber    String?
   bankCode             String?
   bankAccountReference String?
@@ -77,6 +78,7 @@ model Product {
 
 model Order {
   id             String         @id @default(uuid())
+  serialNumber Int
   userId         String
   storeId        String
   status         OrderStatus    @default(Pending)
@@ -89,6 +91,8 @@ model Order {
 
   user  User  @relation(fields: [userId], references: [id])
   store Store @relation(fields: [storeId], references: [id])
+
+  @@unique([storeId, serialNumber])
 }
 
 model OrderProduct {

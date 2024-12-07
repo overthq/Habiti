@@ -17,7 +17,7 @@ const ManagePayouts = () => {
 	}, []);
 
 	return (
-		<View>
+		<View style={styles.container}>
 			<SectionHeader title='Available Revenue' />
 			<View style={{ paddingHorizontal: 16 }}>
 				<Pressable style={styles.amount} onPress={navigateToPayouts}>
@@ -32,6 +32,9 @@ const ManagePayouts = () => {
 };
 
 const styles = StyleSheet.create({
+	container: {
+		paddingTop: 16
+	},
 	amount: {
 		flexDirection: 'row',
 		alignItems: 'center',

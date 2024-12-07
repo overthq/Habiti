@@ -13,20 +13,16 @@ interface FollowedStoresProps {
 }
 
 const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
-	return (
-		<View style={styles.container}>
-			{followed.length === 0 ? (
-				<Dialog
-					style={styles.dialog}
-					title='No followed stores'
-					description='Discover and follow more stores to improve your experience on the app.'
-				/>
-			) : (
-				<>
-					<SectionHeader title='Followed stores' />
-					<FollowedStoresMain followed={followed} />
-				</>
-			)}
+	return followed.length === 0 ? (
+		<Dialog
+			style={styles.dialog}
+			title='No followed stores'
+			description='Discover and follow more stores to improve your experience on the app.'
+		/>
+	) : (
+		<View>
+			<SectionHeader title='Followed stores' />
+			<FollowedStoresMain followed={followed} />
 		</View>
 	);
 };
@@ -48,18 +44,16 @@ const FollowedStoresMain: React.FC<FollowedStoresMainProps> = ({
 		[]
 	);
 
-	const stores = React.useMemo(
-		() => followed.map(({ store }) => store),
-		[followed]
-	);
-
 	return (
 		<FlashList
 			horizontal
-			data={stores}
-			keyExtractor={item => item.id}
+			data={followed}
+			keyExtractor={item => item.store.id}
 			renderItem={({ item }) => (
-				<FollowedStoresItem store={item} onPress={handleStorePress(item.id)} />
+				<FollowedStoresItem
+					store={item.store}
+					onPress={handleStorePress(item.store.id)}
+				/>
 			)}
 			estimatedItemSize={108}
 		/>
@@ -67,9 +61,6 @@ const FollowedStoresMain: React.FC<FollowedStoresMainProps> = ({
 };
 
 const styles = StyleSheet.create({
-	container: {
-		// paddingTop: 16
-	},
 	dialog: {
 		marginHorizontal: 16
 	}
