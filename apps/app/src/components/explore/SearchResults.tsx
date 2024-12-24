@@ -36,6 +36,7 @@ const StoresView: React.FC = () => {
 			renderItem={({ item }) => (
 				<StoreResultRow store={item} onPress={handleStorePress(item.id)} />
 			)}
+			estimatedItemSize={100}
 		/>
 	);
 };
@@ -61,6 +62,7 @@ const ProductsView: React.FC = () => {
 					onPress={handleProductPress(item.id)}
 				/>
 			)}
+			estimatedItemSize={100}
 		/>
 	);
 };
