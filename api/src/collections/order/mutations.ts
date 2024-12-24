@@ -18,11 +18,17 @@ const createOrder: Resolver<CreateOrderArgs> = async (
 	{ input: { cartId, cardId, transactionFee, serviceFee } },
 	ctx
 ) => {
+	// Get all required data in a single query
 	const cart = await ctx.prisma.cart.findUnique({
 		where: { id: cartId },
 		include: {
-			user: { include: { cards: true } },
-			products: { include: { product: true } }
+			user: {
+				include: {
+					cards: cardId ? { where: { id: cardId } } : true
+				}
+			},
+			products: { include: { product: true } },
+			store: true
 		}
 	});
 
@@ -30,11 +36,23 @@ const createOrder: Resolver<CreateOrderArgs> = async (
 		throw new Error('Cart not found');
 	}
 
-	let total = 0;
+	if (cart.userId !== ctx.user.id) {
+		throw new Error('You are not authorized to access this cart.');
+	}
 
+	if (!cart.store) {
+		throw new Error('Store not found');
+	}
+
+	const card = cart.user.cards[0];
+
+	if (!card) {
+		throw new Error('Please add a card to authorize this transaction');
+	}
+
+	let total = 0;
 	const orderData = cart.products.map(p => {
 		total += p.product.unitPrice * p.quantity;
-
 		return {
 			productId: p.productId,
 			unitPrice: p.product.unitPrice,
@@ -42,61 +60,52 @@ const createOrder: Resolver<CreateOrderArgs> = async (
 		};
 	});
 
-	// TODO:
-	// 1. Retrieve (or listen to) the status from the chargeAuthorization call,
-	//    so we can update the order status (esp. in the case that the payment fails).
-	// 2. It probably makes more sense to always pass the cardId.
+	// Execute all database operations and payment in a single transaction
+	const [order] = await ctx.prisma.$transaction(async prisma => {
+		// Charge the card first - if this fails, no DB changes will be made
+		await chargeAuthorization({
+			email: card.email,
+			amount: String(total),
+			authorizationCode: card.authorizationCode
+		});
 
-	if (cart.userId !== ctx.user.id) {
-		throw new Error('You are not authorized to access this cart.');
-	}
+		const [, order] = await Promise.all([
+			prisma.store.update({
+				where: { id: cart.storeId },
+				data: {
+					orderCount: { increment: 1 },
+					unrealizedRevenue: { increment: total }
+				}
+			}),
+			prisma.order.create({
+				data: {
+					userId: ctx.user.id,
+					storeId: cart.storeId,
+					serialNumber: cart.store.orderCount + 1,
+					products: { createMany: { data: orderData } },
+					total,
+					transactionFee,
+					serviceFee
+				}
+			}),
+			prisma.cart.delete({ where: { id: cartId } })
+		]);
 
-	// This is going to go, seeing that we now require users to pass in the
-	// payment method they want to use on a per-order basis.
-
-	const card = cardId
-		? cart.user.cards.find(c => c.id === cardId)
-		: cart.user.cards[0];
-
-	if (!card) {
-		throw new Error('Please add a card to authorize this transaction');
-	}
-
-	const [order] = await ctx.prisma.$transaction([
-		ctx.prisma.order.create({
-			data: {
-				userId: ctx.user.id,
-				storeId: cart.storeId,
-				products: { createMany: { data: orderData } },
-				total,
-				transactionFee,
-				serviceFee
-			}
-		}),
-		ctx.prisma.store.update({
-			where: { id: cart.storeId },
-			data: { unrealizedRevenue: { increment: total } }
-		}),
-		ctx.prisma.cart.delete({ where: { id: cartId } })
-	]);
-
-	await chargeAuthorization({
-		email: card.email,
-		amount: String(total),
-		authorizationCode: card.authorizationCode
+		return [order];
 	});
 
+	// Queue notifications outside transaction since they're not critical
 	const pushTokens = await getPushTokensForStore(order.storeId);
 
-	for (const pushToken of pushTokens) {
-		if (pushToken) {
-			ctx.services.notifications.queueMessage({
-				to: pushToken,
-				title: 'Order created',
-				body: `${ctx.user.name} created a ${order.total} order`
-			});
-		}
-	}
+	ctx.services.notifications.queueNotification({
+		type: 'NEW_ORDER',
+		data: {
+			customerName: ctx.user.name,
+			amount: order.total,
+			orderId: order.id
+		},
+		recipientTokens: pushTokens
+	});
 
 	return order;
 };
@@ -129,10 +138,13 @@ const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
 		switch (args.input.status) {
 			case OrderStatus.Cancelled:
 				if (order.user.pushTokens[0]) {
-					ctx.services.notifications.queueMessage({
-						to: order.user.pushTokens[0].token,
-						title: 'Order cancelled',
-						body: `Your order with ${order.store.name} has been cancelled.`
+					ctx.services.notifications.queueNotification({
+						type: 'ORDER_CANCELLED',
+						data: {
+							customerName: order.user.name,
+							orderId: order.id
+						},
+						recipientTokens: [order.user.pushTokens[0].token]
 					});
 				}
 				break;
@@ -150,10 +162,13 @@ const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
 				});
 
 				if (order.user.pushTokens[0]) {
-					ctx.services.notifications.queueMessage({
-						to: order.user.pushTokens[0].token,
-						title: 'Order completed',
-						body: `Your order with ${order.store.name} has been marked as complete.`
+					ctx.services.notifications.queueNotification({
+						type: 'ORDER_COMPLETED',
+						data: {
+							customerName: order.user.name,
+							orderId: order.id
+						},
+						recipientTokens: [order.user.pushTokens[0].token]
 					});
 				}
 
