@@ -31,5 +31,9 @@ export const notificationTemplates: Record<
 	ORDER_COMPLETED: {
 		title: 'Order Completed',
 		body: data => `Your order #${data.orderId} has been completed`
+	},
+	NEW_FOLLOW: {
+		title: 'New Store Follower',
+		body: data => `${data.followerName} started following your store`
 	}
 };

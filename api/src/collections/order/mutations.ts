@@ -20,7 +20,7 @@ const createOrder: Resolver<CreateOrderArgs> = async (
 ) => {
 	// Get all required data in a single query
 	const cart = await ctx.prisma.cart.findUnique({
-		where: { id: cartId },
+		where: { id: cartId, userId: ctx.user.id },
 		include: {
 			user: {
 				include: {
@@ -34,14 +34,6 @@ const createOrder: Resolver<CreateOrderArgs> = async (
 
 	if (!cart) {
 		throw new Error('Cart not found');
-	}
-
-	if (cart.userId !== ctx.user.id) {
-		throw new Error('You are not authorized to access this cart.');
-	}
-
-	if (!cart.store) {
-		throw new Error('Store not found');
 	}
 
 	const card = cart.user.cards[0];

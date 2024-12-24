@@ -5,7 +5,8 @@ export type NotificationType =
 	| 'ORDER_FULFILLED'
 	| 'DELIVERY_CONFIRMED'
 	| 'ORDER_CANCELLED'
-	| 'ORDER_COMPLETED';
+	| 'ORDER_COMPLETED'
+	| 'NEW_FOLLOW';
 
 export interface NotificationTemplate {
 	title: string;
