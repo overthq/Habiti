@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { APIException } from '../routes/types';
-import { verifyToken } from '../utils/auth';
+import { verifyAccessToken } from '../utils/auth';
 
 export const authenticate = async (
 	req: Request,
@@ -15,7 +15,7 @@ export const authenticate = async (
 			throw new APIException(401, 'Authentication required');
 		}
 
-		const decoded = await verifyToken(token);
+		const decoded = await verifyAccessToken(token);
 		req.auth = decoded as any;
 		next();
 	} catch (error) {
@@ -31,7 +31,7 @@ export const optionalAuth = async (
 	try {
 		const token = req.headers.authorization?.split(' ')[1];
 		if (token) {
-			const decoded = await verifyToken(token);
+			const decoded = await verifyAccessToken(token);
 			req.auth = decoded as any;
 		}
 		next();

@@ -30,7 +30,7 @@ router.put('/current', authenticate, async (req: Request, res: Response) => {
 	const [updatedUser] = await db
 		.update(User)
 		.set({ name, email })
-		.where(eq(User.id, req.auth.id))
+		.where(eq(User.id, req.auth!.id))
 		.returning();
 
 	return res.json({ user: updatedUser });
@@ -42,7 +42,7 @@ router.get(
 	authenticate,
 	async (req: Request, res: Response) => {
 		const addresses = await db.query.DeliveryAddress.findMany({
-			where: eq(DeliveryAddress.userId, req.auth.id)
+			where: eq(DeliveryAddress.userId, req.auth!.id)
 		});
 
 		return res.json({ addresses });
@@ -58,7 +58,7 @@ router.post(
 
 		const [address] = await db
 			.insert(DeliveryAddress)
-			.values({ userId: req.auth.id, name })
+			.values({ userId: req.auth!.id, name })
 			.returning();
 
 		return res.status(201).json({ address });
@@ -80,7 +80,7 @@ router.put(
 		const address = await db.query.DeliveryAddress.findFirst({
 			where: and(
 				eq(DeliveryAddress.id, id),
-				eq(DeliveryAddress.userId, req.auth.id)
+				eq(DeliveryAddress.userId, req.auth!.id)
 			)
 		});
 
@@ -112,7 +112,7 @@ router.delete(
 		const address = await db.query.DeliveryAddress.findFirst({
 			where: and(
 				eq(DeliveryAddress.id, id),
-				eq(DeliveryAddress.userId, req.auth.id)
+				eq(DeliveryAddress.userId, req.auth!.id)
 			)
 		});
 

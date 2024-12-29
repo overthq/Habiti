@@ -24,3 +24,7 @@ export const generateAccessToken = async (user: User) => {
 		process.env.JWT_SECRET as string
 	);
 };
+
+export const verifyAccessToken = async (token: string) => {
+	return jwt.verify(token, process.env.JWT_SECRET as string);
+};
