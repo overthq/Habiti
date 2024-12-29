@@ -78,7 +78,7 @@ model Product {
 
 model Order {
   id             String         @id @default(uuid())
-  serialNumber Int
+  serialNumber   Int
   userId         String
   storeId        String
   status         OrderStatus    @default(Pending)
@@ -153,6 +153,8 @@ model Image {
 model StoreManager {
   storeId   String
   managerId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   store     Store  @relation(fields: [storeId], references: [id], onDelete: Cascade)
   manager   User   @relation(fields: [managerId], references: [id], onDelete: Cascade)
 
@@ -162,6 +164,8 @@ model StoreManager {
 model StoreFollower {
   storeId    String
   followerId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
   store      Store  @relation(fields: [storeId], references: [id], onDelete: Cascade)
   follower   User   @relation(fields: [followerId], references: [id], onDelete: Cascade)
 
@@ -169,7 +173,7 @@ model StoreFollower {
 }
 
 model Card {
-  id                String @id @default(uuid())
+  id                String   @id @default(uuid())
   userId            String
   email             String
   authorizationCode String
@@ -179,9 +183,11 @@ model Card {
   expYear           String
   bin               String
   bank              String
-  signature         String @unique
+  signature         String   @unique
   countryCode       String
-  user              User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Payout {
@@ -197,6 +203,8 @@ model Payout {
 model ProductCategory {
   productId  String
   categoryId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   product  Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
   category StoreProductCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
@@ -205,10 +213,12 @@ model ProductCategory {
 }
 
 model StoreProductCategory {
-  id          String  @id @default(uuid())
+  id          String    @id @default(uuid())
   storeId     String
   name        String
   description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
 
@@ -229,17 +239,21 @@ model ProductReview {
 }
 
 model DeliveryAddress {
-  id     String  @id @default(uuid())
-  userId String
-  name   String?
+  id        String   @id @default(uuid())
+  userId    String
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model UserPushToken {
-  userId String
-  token  String
-  type   PushTokenType @default(Shopper)
+  userId    String
+  token     String
+  type      PushTokenType @default(Shopper)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -247,10 +261,12 @@ model UserPushToken {
 }
 
 model ProductOption {
-  id          String  @id @default(uuid())
+  id          String    @id @default(uuid())
   productId   String
   name        String
   description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   product Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
   values  ProductOptionValue[]
@@ -259,9 +275,11 @@ model ProductOption {
 }
 
 model ProductOptionValue {
-  id       String @id @default(uuid())
-  optionId String
-  name     String
+  id        String   @id @default(uuid())
+  optionId  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   option ProductOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
 
