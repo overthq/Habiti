@@ -94,7 +94,7 @@ const Payouts = () => {
 				estimatedItemSize={100}
 				refreshControl={
 					<RefreshControl
-						refreshing={fetching}
+						refreshing={refreshing}
 						onRefresh={handleRefresh}
 						tintColor={theme.text.secondary}
 					/>

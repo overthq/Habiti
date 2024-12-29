@@ -1,11 +1,11 @@
-import { Button, FormInput, Screen, Spacer } from '@habiti/components';
+import { Button, FormInput, Spacer } from '@habiti/components';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View } from 'react-native';
 
-import useGoBack from '../hooks/useGoBack';
-import useStore from '../state';
-import { useCreateStoreMutation } from '../types/api';
+import useGoBack from '../../hooks/useGoBack';
+import useStore from '../../state';
+import { useCreateStoreMutation } from '../../types/api';
 
 export interface CreateStoreFormValues {
 	name: string;
@@ -15,11 +15,10 @@ export interface CreateStoreFormValues {
 	website: string;
 }
 
-const CreateStore: React.FC = () => {
+const CreateStoreForm: React.FC = () => {
 	const [, createStore] = useCreateStoreMutation();
 	const setPreference = useStore(state => state.setPreference);
 	const methods = useForm<CreateStoreFormValues>();
-	const { bottom } = useSafeAreaInsets();
 
 	useGoBack('x');
 
@@ -37,7 +36,7 @@ const CreateStore: React.FC = () => {
 	);
 
 	return (
-		<Screen style={{ padding: 16, paddingTop: 64, paddingBottom: bottom }}>
+		<View>
 			<FormInput
 				control={methods.control}
 				name='name'
@@ -82,8 +81,8 @@ const CreateStore: React.FC = () => {
 			/>
 			<Spacer y={16} />
 			<Button text='Submit' onPress={methods.handleSubmit(onSubmit)} />
-		</Screen>
+		</View>
 	);
 };
 
-export default CreateStore;
+export default CreateStoreForm;

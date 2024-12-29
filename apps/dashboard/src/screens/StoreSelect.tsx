@@ -1,38 +1,58 @@
-import { Button, Screen, Spacer, Typography } from '@habiti/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { ScrollableScreen, Spacer, Typography } from '@habiti/components';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import CreateStoreForm from '../components/store-select/CreateStoreForm';
 import StoreSelectList from '../components/store-select/StoreSelectList';
-import { AppStackParamList } from '../types/navigation';
+import { useManagedStoresQuery } from '../types/api';
 
 const StoreSelect: React.FC = () => {
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const [{ fetching, data }] = useManagedStoresQuery();
+
+	if (fetching || !data) {
+		return <View />;
+	}
 
 	return (
-		<SafeAreaView>
-			<Screen style={styles.container}>
+		<SafeAreaView style={{ flex: 1 }}>
+			<ScrollableScreen style={styles.container}>
 				<Typography size='xxxlarge' weight='bold'>
-					Select store
+					{data?.currentUser.managed.length
+						? 'Select store'
+						: 'Create a new store'}
 				</Typography>
-
 				<Spacer y={2} />
-
 				<Typography variant='secondary'>
-					You can choose an existing store you manage, or create a new one.
+					{data?.currentUser.managed.length
+						? 'Select the store you want to manage.'
+						: 'Enter the details of your store to get started.'}
 				</Typography>
 
 				<Spacer y={16} />
 
-				<StoreSelectList />
-
-				<Button
-					onPress={() => navigate('CreateStore')}
-					style={{ marginBottom: 16 }}
-					text='Create a store'
+				<StoreSelectList
+					stores={data?.currentUser.managed.map(({ store }) => store) ?? []}
 				/>
-			</Screen>
+
+				{data?.currentUser.managed.length ? (
+					<View>
+						<Typography
+							variant='secondary'
+							style={{ marginVertical: 4, textAlign: 'center' }}
+						>
+							OR
+						</Typography>
+						<Spacer y={2} />
+						<Typography size='large' weight='bold'>
+							Create a new store
+						</Typography>
+						<Spacer y={8} />
+					</View>
+				) : null}
+
+				<CreateStoreForm />
+			</ScrollableScreen>
 		</SafeAreaView>
 	);
 };
