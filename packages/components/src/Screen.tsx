@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, Keyboard, StyleSheet, ViewProps } from 'react-native';
+import { Pressable, Keyboard, StyleSheet, ViewProps, View } from 'react-native';
 
 import { useTheme } from './Theme';
 interface ScreenProps extends ViewProps {
@@ -11,8 +11,8 @@ const Screen: React.FC<ScreenProps> = props => {
 	const { theme } = useTheme();
 
 	return (
-		<Pressable
-			onPress={Keyboard.dismiss}
+		<View
+			// onPress={Keyboard.dismiss}
 			{...props}
 			style={[
 				{ backgroundColor: theme.screen.background },

@@ -10,7 +10,6 @@ const router: Router = Router();
 
 // GET /users/current
 router.get('/current', authenticate, async (req: Request, res: Response) => {
-	console.log('current user', req.auth!.id);
 	const user = await db.query.User.findFirst({
 		where: eq(User.id, req.auth!.id),
 		with: { deliveryAddresses: true, cards: true }

@@ -1,8 +1,8 @@
 import { ListEmpty, Screen, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { FlashList } from '@shopify/flash-list';
+// import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { RefreshControl } from 'react-native';
+import { FlatList, RefreshControl } from 'react-native';
 
 import CartsListItem from '../components/carts/CartsListItem';
 import { useCartsQuery } from '../types/api';
@@ -15,9 +15,16 @@ import { AppStackParamList, MainTabParamList } from '../types/navigation';
 
 const Carts: React.FC = () => {
 	const [{ data, fetching }, refetch] = useCartsQuery();
+	const [refreshing, setRefreshing] = React.useState(false);
 	const { navigate } =
 		useNavigation<NavigationProp<MainTabParamList & AppStackParamList>>();
 	const { theme } = useTheme();
+
+	React.useEffect(() => {
+		if (!fetching && refreshing) {
+			setRefreshing(false);
+		}
+	}, [fetching, refreshing]);
 
 	const carts = data?.currentUser.carts;
 
@@ -28,17 +35,23 @@ const Carts: React.FC = () => {
 		[navigate]
 	);
 
+	const handleRefresh = () => {
+		setRefreshing(true);
+		refetch();
+	};
+
 	return (
 		<Screen>
-			<FlashList
+			<FlatList
+				style={{ flex: 1 }}
 				keyExtractor={c => c.id}
 				renderItem={({ item }) => (
 					<CartsListItem cart={item} onPress={handleCartPress(item.id)} />
 				)}
-				estimatedItemSize={66}
+				// estimatedItemSize={66}
 				data={carts}
-				contentContainerStyle={{ paddingTop: 8 }}
-				ListEmptyComponent={
+				contentContainerStyle={{ flexGrow: 1 }}
+				ListEmptyComponent={() => (
 					<ListEmpty
 						title='Empty cart'
 						description={`Looks like your cart is empty. Let's change that.`}
@@ -46,15 +59,13 @@ const Carts: React.FC = () => {
 							text: 'Discover new stores',
 							action: () => navigate('Main.Explore')
 						}}
-						viewStyle={{ marginTop: 32 }}
+						viewStyle={{ flex: 1 }}
 					/>
-				}
+				)}
 				refreshControl={
 					<RefreshControl
-						refreshing={fetching}
-						onRefresh={() => {
-							refetch({ requestPolicy: 'cache-and-network' });
-						}}
+						refreshing={refreshing}
+						onRefresh={handleRefresh}
 						tintColor={theme.text.secondary}
 					/>
 				}
