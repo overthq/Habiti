@@ -48,6 +48,18 @@ const ProductTypes = gql`
 		name: StringWhere
 		unitPrice: IntWhere
 		quantity: IntWhere
+		categories: CategoriesWhere
+	}
+
+	input CategoriesWhere {
+		every: ProductCategoryWhere
+		some: ProductCategoryWhere
+		none: ProductCategoryWhere
+	}
+
+	input ProductCategoryWhere {
+		productId: StringWhere
+		categoryId: StringWhere
 	}
 
 	extend type Query {

@@ -14,8 +14,16 @@ interface StoreProductsProps {
 }
 
 const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
+	const [activeCategory, setActiveCategory] = React.useState<string>();
 	const [{ data, fetching }, refetch] = useStoreProductsQuery({
-		variables: { storeId: store.id }
+		variables: {
+			storeId: store.id,
+			...(activeCategory && {
+				filter: {
+					categories: { some: { categoryId: { equals: activeCategory } } }
+				}
+			})
+		}
 	});
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
@@ -75,7 +83,13 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 			)}
 			numColumns={2}
 			onScroll={handleScroll}
-			ListHeaderComponent={<StoreHeader store={store} />}
+			ListHeaderComponent={
+				<StoreHeader
+					store={store}
+					activeCategory={activeCategory}
+					setActiveCategory={setActiveCategory}
+				/>
+			}
 			refreshControl={
 				<RefreshControl
 					refreshing={refreshing}

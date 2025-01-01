@@ -68,7 +68,8 @@ const dark = {
 		tertiary: palette.neutral.n50,
 		disabled: palette.neutral.n20,
 		error: '',
-		label: palette.neutral.n10
+		label: palette.neutral.n10,
+		invert: palette.neutral.n100
 	},
 	button: {
 		primary: {
@@ -153,7 +154,8 @@ const light = {
 		tertiary: palette.neutral.n10,
 		disabled: palette.neutral.n50,
 		error: palette.red.r50,
-		label: palette.neutral.n60
+		label: palette.neutral.n60,
+		invert: palette.neutral.n1
 	},
 	button: {
 		primary: {

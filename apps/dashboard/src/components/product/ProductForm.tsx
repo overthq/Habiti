@@ -19,6 +19,7 @@ interface ProductFormProps {
 	imagesToUpload: string[];
 	setImagesToUpload: React.Dispatch<React.SetStateAction<string[]>>;
 	mode: 'add' | 'edit';
+	categories: ProductQuery['product']['categories'];
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({
@@ -26,7 +27,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
 	options,
 	imagesToUpload,
 	setImagesToUpload,
-	mode
+	mode,
+	categories
 }) => {
 	return (
 		<ScrollableScreen
@@ -61,7 +63,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 				<>
 					{/* <ProductOptions options={options} />
 					<ProductReviews /> */}
-					<Categories />
+					<Categories categories={categories} />
 					<ProductActions />
 					<Spacer y={8} />
 				</>

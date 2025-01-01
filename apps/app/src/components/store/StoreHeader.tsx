@@ -8,11 +8,15 @@ import { StoreQuery } from '../../types/api';
 
 interface StoreHeaderProps {
 	store: StoreQuery['store'];
+	activeCategory: string;
+	setActiveCategory: (category: string) => void;
 }
 
-const StoreHeader: React.FC<StoreHeaderProps> = ({ store }) => {
-	const [activeCategory, setActiveCategory] = React.useState<string>();
-
+const StoreHeader: React.FC<StoreHeaderProps> = ({
+	store,
+	activeCategory,
+	setActiveCategory
+}) => {
 	return (
 		<View style={styles.container}>
 			<CustomImage

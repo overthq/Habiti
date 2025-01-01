@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, Keyboard, StyleSheet, ViewProps, View } from 'react-native';
+import { StyleSheet, ViewProps, View } from 'react-native';
 
 import { useTheme } from './Theme';
 interface ScreenProps extends ViewProps {

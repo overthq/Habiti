@@ -122,6 +122,12 @@ export type CartProduct = {
 	quantity: Scalars['Int']['output'];
 };
 
+export type CategoriesWhere = {
+	every?: InputMaybe<ProductCategoryWhere>;
+	none?: InputMaybe<ProductCategoryWhere>;
+	some?: InputMaybe<ProductCategoryWhere>;
+};
+
 export type CreateCartInput = {
 	productId: Scalars['ID']['input'];
 	quantity: Scalars['Int']['input'];
@@ -522,7 +528,13 @@ export type ProductCategoryEdge = {
 	node?: Maybe<ProductCategory>;
 };
 
+export type ProductCategoryWhere = {
+	categoryId?: InputMaybe<StringWhere>;
+	productId?: InputMaybe<StringWhere>;
+};
+
 export type ProductFilterInput = {
+	categories?: InputMaybe<CategoriesWhere>;
 	name?: InputMaybe<StringWhere>;
 	quantity?: InputMaybe<IntWhere>;
 	unitPrice?: InputMaybe<IntWhere>;
@@ -732,6 +744,7 @@ export enum StoreStatPeriod {
 export type StringWhere = {
 	contains?: InputMaybe<Scalars['String']['input']>;
 	endsWith?: InputMaybe<Scalars['String']['input']>;
+	equals?: InputMaybe<Scalars['String']['input']>;
 	mode?: InputMaybe<StringWhereMode>;
 	search?: InputMaybe<Scalars['String']['input']>;
 	startsWith?: InputMaybe<Scalars['String']['input']>;
