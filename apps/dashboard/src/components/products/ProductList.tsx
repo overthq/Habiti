@@ -7,7 +7,7 @@ import {
 } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import React from 'react';
-import { RefreshControl, View } from 'react-native';
+import { RefreshControl } from 'react-native';
 
 import ProductsListItem from './ProductsListItem';
 import { ProductsQuery, useProductsQuery } from '../../types/api';
@@ -16,15 +16,25 @@ import {
 	ProductsStackParamList
 } from '../../types/navigation';
 
-const ProductListHeader = <View style={{}} />;
-
 const ProductList: React.FC = () => {
 	const { params } = useRoute<RouteProp<MainTabParamList, 'Products'>>();
 	const { navigate } = useNavigation<NavigationProp<ProductsStackParamList>>();
 	const [{ fetching, data }, refetch] = useProductsQuery({
 		variables: params
 	});
+	const [refreshing, setRefreshing] = React.useState(false);
 	const { theme } = useTheme();
+
+	React.useEffect(() => {
+		if (!fetching && refreshing) {
+			setRefreshing(false);
+		}
+	}, [fetching, refreshing]);
+
+	const handleRefresh = () => {
+		setRefreshing(true);
+		refetch();
+	};
 
 	const handlePress = React.useCallback(
 		(productId: string) => () => navigate('Product', { productId }),
@@ -42,14 +52,11 @@ const ProductList: React.FC = () => {
 			keyExtractor={i => i.id}
 			data={data?.currentStore.products}
 			renderItem={renderProduct}
-			ListHeaderComponent={ProductListHeader}
 			estimatedItemSize={60}
 			refreshControl={
 				<RefreshControl
 					refreshing={fetching}
-					onRefresh={() => {
-						refetch({ requestPolicy: 'network-only' });
-					}}
+					onRefresh={handleRefresh}
 					tintColor={theme.text.secondary}
 				/>
 			}

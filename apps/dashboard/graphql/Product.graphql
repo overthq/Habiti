@@ -33,6 +33,13 @@ query Product($id: ID!) {
 			id
 			name
 		}
+		categories {
+			id
+			category {
+				id
+				name
+			}
+		}
 	}
 }
 

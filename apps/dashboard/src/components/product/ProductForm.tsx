@@ -3,12 +3,13 @@ import { ScrollableScreen, Spacer } from '@habiti/components';
 import React from 'react';
 import { Platform, StyleSheet } from 'react-native';
 
+import Categories from './Categories';
 import CurrencyInput from './CurrencyInput';
 import Images from './Images';
 import InventoryInput from './InventoryInput';
 import ProductActions from './ProductActions';
-import ProductOptions from './ProductOptions';
-import ProductReviews from './ProductReviews';
+// import ProductOptions from './ProductOptions';
+// import ProductReviews from './ProductReviews';
 import Section from './Section';
 import { ProductQuery } from '../../types/api';
 
@@ -58,8 +59,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
 			<InventoryInput />
 			{mode === 'edit' && (
 				<>
-					<ProductOptions options={options} />
-					<ProductReviews />
+					{/* <ProductOptions options={options} />
+					<ProductReviews /> */}
+					<Categories />
 					<ProductActions />
 					<Spacer y={8} />
 				</>
