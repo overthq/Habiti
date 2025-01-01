@@ -66,6 +66,44 @@ const inCart: Resolver = async (parent, _, ctx) => {
 	}
 };
 
+const relatedProducts: Resolver = async (parent, _, ctx) => {
+	// Get the current product's categories
+	const productCategories = await ctx.prisma.productCategory.findMany({
+		where: { productId: parent.id },
+		select: { categoryId: true }
+	});
+
+	const categoryIds = productCategories.map(pc => pc.categoryId);
+
+	// Find products that share categories with the current product
+	if (categoryIds.length > 0) {
+		return ctx.prisma.product.findMany({
+			where: {
+				AND: [
+					{ id: { not: parent.id } }, // Exclude current product
+					{ storeId: parent.storeId }, // Same store
+					{
+						categories: {
+							some: {
+								categoryId: { in: categoryIds }
+							}
+						}
+					}
+				]
+			},
+			take: 5 // Limit to 5 related products
+		});
+	}
+
+	// Fallback: if no categories, return other products from same store
+	return ctx.prisma.product.findMany({
+		where: {
+			AND: [{ id: { not: parent.id } }, { storeId: parent.storeId }]
+		},
+		take: 5
+	});
+};
+
 export default {
 	Query: {
 		product,
@@ -79,6 +117,7 @@ export default {
 		categories,
 		options,
 		reviews,
-		inCart
+		inCart,
+		relatedProducts
 	}
 };

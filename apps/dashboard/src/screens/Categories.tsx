@@ -4,6 +4,7 @@ import {
 	Row,
 	Screen,
 	ScrollableScreen,
+	Spacer,
 	Typography,
 	useTheme
 } from '@habiti/components';
@@ -95,6 +96,7 @@ const Categories = () => {
 					/>
 				}
 			>
+				<Spacer y={16} />
 				{data?.currentStore.categories.map(category => (
 					<CategoriesListItem
 						key={category.id}

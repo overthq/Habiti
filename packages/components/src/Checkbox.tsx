@@ -6,22 +6,24 @@ import { useTheme } from './Theme';
 
 interface CheckBoxProps {
 	active?: boolean;
-	onPress: () => void;
+	onPress: (value: boolean) => void;
 }
 
 const Checkbox: React.FC<CheckBoxProps> = ({ active, onPress }) => {
 	const { theme } = useTheme();
 	return (
-		<Pressable onPress={onPress}>
+		<Pressable onPress={() => onPress(!active)}>
 			<View
 				style={[
 					styles.square,
-					{ borderColor: active ? theme.border.color : theme.text.primary }
+					{
+						borderColor: !active ? theme.icon.default.color : theme.text.primary
+					}
 				]}
 			>
 				{active && (
 					<View style={[styles.check, { backgroundColor: theme.text.primary }]}>
-						<Icon name='check' size={12} color={theme.text.invert} />
+						<Icon name='check' size={14} color={theme.text.invert} />
 					</View>
 				)}
 			</View>
@@ -34,7 +36,7 @@ const styles = StyleSheet.create({
 		height: 20,
 		width: 20,
 		borderRadius: 4,
-		borderWidth: 1,
+		borderWidth: 1.5,
 		overflow: 'hidden'
 	},
 	check: {

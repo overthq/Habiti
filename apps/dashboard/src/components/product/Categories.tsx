@@ -32,12 +32,11 @@ const Categories: React.FC<CategoriesProps> = ({ categories }) => {
 			<Spacer y={8} />
 			{data?.currentStore.categories.map(({ id, name }) => (
 				<View key={id} style={styles.row}>
+					<Typography>{name}</Typography>
 					<Checkbox
 						active={selectedCategories.includes(id)}
 						onPress={() => handleSelectCategory(id)}
 					/>
-					<Spacer x={8} />
-					<Typography>{name}</Typography>
 				</View>
 			))}
 		</View>
@@ -51,7 +50,8 @@ const styles = StyleSheet.create({
 	},
 	row: {
 		flexDirection: 'row',
-		alignItems: 'center'
+		alignItems: 'center',
+		justifyContent: 'space-between'
 	}
 });
 

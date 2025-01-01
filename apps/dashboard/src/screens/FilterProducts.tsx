@@ -8,7 +8,7 @@ import {
 } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 
@@ -105,7 +105,13 @@ const FilterProducts = () => {
 					<Animated.View layout={LinearTransition} style={{ marginBottom: 8 }}>
 						<View style={styles.row}>
 							<Typography>In Stock</Typography>
-							<Checkbox />
+							<Controller
+								control={methods.control}
+								name='inStock'
+								render={({ field: { value, onChange } }) => (
+									<Checkbox active={value} onPress={onChange} />
+								)}
+							/>
 						</View>
 					</Animated.View>
 				</View>
@@ -135,9 +141,11 @@ const styles = StyleSheet.create({
 		flex: 1
 	},
 	row: {
+		marginTop: 4,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems: 'center'
+		alignItems: 'center',
+		paddingRight: 8
 	},
 	footer: {
 		paddingBottom: 16,

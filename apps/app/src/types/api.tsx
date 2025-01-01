@@ -501,6 +501,7 @@ export type Product = {
 	options: ProductOption[];
 	orders: Order[];
 	quantity: Scalars['Int']['output'];
+	relatedProducts: Product[];
 	reviews: ProductReview[];
 	store: Store;
 	storeId: Scalars['ID']['output'];
@@ -1216,6 +1217,13 @@ export type ProductQuery = {
 			createdAt: string;
 			user: { __typename?: 'User'; id: string; name: string };
 		}[];
+		relatedProducts: {
+			__typename?: 'Product';
+			id: string;
+			name: string;
+			unitPrice: number;
+			images: { __typename?: 'Image'; id: string; path: string }[];
+		}[];
 	};
 };
 
@@ -1899,6 +1907,15 @@ export const ProductDocument = gql`
 				}
 			}
 			inCart
+			relatedProducts {
+				id
+				name
+				unitPrice
+				images {
+					id
+					path
+				}
+			}
 		}
 	}
 `;

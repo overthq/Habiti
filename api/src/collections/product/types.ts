@@ -20,6 +20,7 @@ const ProductTypes = gql`
 		categories: [ProductCategory!]!
 		reviews: [ProductReview!]!
 		options: [ProductOption!]!
+		relatedProducts: [Product!]!
 	}
 
 	input CreateProductInput {

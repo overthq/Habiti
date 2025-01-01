@@ -46,6 +46,15 @@ query Product($productId: ID!) {
 			}
 		}
 		inCart
+		relatedProducts {
+			id
+			name
+			unitPrice
+			images {
+				id
+				path
+			}
+		}
 	}
 }
 
