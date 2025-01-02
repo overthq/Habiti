@@ -2,26 +2,15 @@ import { cacheExchange } from '@urql/exchange-graphcache';
 
 import {
 	MutationAddToCartArgs,
+	MutationCreateProductCategoryArgs,
 	MutationDeleteCartArgs,
+	MutationDeleteProductCategoryArgs,
+	MutationEditProductCategoryArgs,
 	MutationFollowStoreArgs,
 	MutationRemoveFromCartArgs,
 	MutationUnfollowStoreArgs,
 	MutationUpdateCartProductArgs
 } from '../types/api';
-
-// Because I'm a bit lazy, I have decided to just go ahead
-// and invalidate entities instead of writing decent updaters.
-// That said, anyone reading this should feel free to write
-// good updaters that manipulate the cache.
-//
-// However, invalidating entities might actually be meta,
-// because I can't tell the ways the schema is going to evolve
-// in the near future, and we can implement schema-awareness
-// to help us out till the schema is concrete.
-
-// Important caveat: invalidating entities incurs the cost of
-// a network request (I think). I should remember to add loading
-// indicators or block the UI while this is happening.
 
 const customCache = cacheExchange({
 	updates: {
@@ -47,6 +36,34 @@ const customCache = cacheExchange({
 			updateCartProduct(_result, args: MutationUpdateCartProductArgs, cache) {
 				cache.invalidate({ __typename: 'Product', id: args.input.productId });
 				cache.invalidate({ __typename: 'Cart', id: args.input.cartId });
+			},
+			createProductCategory(
+				_result,
+				_args: MutationCreateProductCategoryArgs,
+				cache
+			) {
+				console.log('createProductCategory', _result, _args);
+				cache.invalidate({ __typename: 'StoreProductCategory' });
+			},
+			editProductCategory(
+				_result,
+				args: MutationEditProductCategoryArgs,
+				cache
+			) {
+				cache.invalidate({
+					__typename: 'StoreProductCategory',
+					id: args.categoryId
+				});
+			},
+			deleteProductCategory(
+				_result,
+				args: MutationDeleteProductCategoryArgs,
+				cache
+			) {
+				cache.invalidate({
+					__typename: 'StoreProductCategory',
+					id: args.categoryId
+				});
 			}
 		}
 	}

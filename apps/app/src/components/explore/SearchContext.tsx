@@ -31,7 +31,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
 				fetching,
 				error,
 				stores: data?.stores ?? [],
-				products: data?.products ?? []
+				products: data?.products
 			}}
 		>
 			{children}

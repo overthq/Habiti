@@ -47,8 +47,31 @@ const OrderTypes = gql`
 		total: Sort
 	}
 
+	input OrderFilterInput {
+		total: IntWhere
+	}
+
+	type OrderEdge {
+		cursor: String!
+		node: Order!
+	}
+
+	type OrderConnection {
+		edges: [OrderEdge!]!
+		pageInfo: PageInfo!
+		totalCount: Int!
+	}
+
 	extend type Query {
 		order(id: ID!): Order!
+		orders(
+			first: Int
+			after: String
+			last: Int
+			before: String
+			filter: OrderFilterInput
+			orderBy: [OrderOrderByInput!]
+		): OrderConnection!
 	}
 
 	extend type Mutation {

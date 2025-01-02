@@ -42,15 +42,20 @@ const ProductList: React.FC = () => {
 	);
 
 	const renderProduct: ListRenderItem<
-		ProductsQuery['currentStore']['products'][number]
+		ProductsQuery['currentStore']['products']['edges'][number]
 	> = React.useCallback(({ item }) => {
-		return <ProductsListItem product={item} onPress={handlePress(item.id)} />;
+		return (
+			<ProductsListItem
+				product={item.node}
+				onPress={handlePress(item.node.id)}
+			/>
+		);
 	}, []);
 
 	return (
 		<FlashList
-			keyExtractor={i => i.id}
-			data={data?.currentStore.products}
+			keyExtractor={i => i.node.id}
+			data={data?.currentStore.products.edges}
 			renderItem={renderProduct}
 			estimatedItemSize={60}
 			refreshControl={

@@ -1,12 +1,37 @@
 import { ProductsArgs } from '../../types/filters';
+import { PaginationArgs } from '../../types/pagination';
 import { Resolver } from '../../types/resolvers';
+import { decodeCursor, paginateQuery } from '../../utils/pagination';
 
 const product: Resolver = (_, { id }, ctx) => {
 	return ctx.prisma.product.findUnique({ where: { id } });
 };
 
-const products: Resolver<ProductsArgs> = (_, { filter, orderBy }, ctx) => {
-	return ctx.prisma.product.findMany({ where: filter, orderBy });
+const products: Resolver<ProductsArgs & PaginationArgs> = async (
+	_,
+	args,
+	ctx
+) => {
+	const { filter, orderBy, ...paginationArgs } = args;
+
+	return paginateQuery(
+		paginationArgs,
+		async (take, cursor) => {
+			const query: any = {
+				where: filter,
+				orderBy,
+				take
+			};
+
+			if (cursor) {
+				query.cursor = { id: decodeCursor(cursor) };
+				query.skip = 1;
+			}
+
+			return ctx.prisma.product.findMany(query);
+		},
+		() => ctx.prisma.product.count({ where: filter })
+	);
 };
 
 interface OrdersArgs {

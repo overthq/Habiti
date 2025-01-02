@@ -70,14 +70,14 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 
 	return (
 		<FlashList
-			data={products}
-			keyExtractor={({ id }) => id}
+			data={products.edges}
+			keyExtractor={({ node }) => node.id}
 			showsVerticalScrollIndicator={false}
 			estimatedItemSize={240}
 			renderItem={({ item, index }) => (
 				<StoreListItem
 					item={item}
-					onPress={handleProductPress(item.id)}
+					onPress={handleProductPress(item.node.id)}
 					side={index % 2 === 0 ? 'left' : 'right'}
 				/>
 			)}

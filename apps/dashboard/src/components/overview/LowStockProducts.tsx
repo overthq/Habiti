@@ -30,12 +30,12 @@ const LowStockProducts = () => {
 			/>
 			<Spacer y={4} />
 			<FlatList
-				keyExtractor={i => i.id}
-				data={data?.currentStore.products}
+				data={data?.currentStore.products.edges}
+				keyExtractor={i => i.node.id}
 				renderItem={({ item }) => (
 					<LowStockProduct
-						onPress={navigateToProduct(item.id)}
-						product={item}
+						onPress={navigateToProduct(item.node.id)}
+						product={item.node}
 					/>
 				)}
 				horizontal

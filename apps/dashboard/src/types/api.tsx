@@ -445,6 +445,23 @@ export type Order = {
 	userId: Scalars['ID']['output'];
 };
 
+export type OrderConnection = {
+	__typename?: 'OrderConnection';
+	edges: OrderEdge[];
+	pageInfo: PageInfo;
+	totalCount: Scalars['Int']['output'];
+};
+
+export type OrderEdge = {
+	__typename?: 'OrderEdge';
+	cursor: Scalars['String']['output'];
+	node: Order;
+};
+
+export type OrderFilterInput = {
+	total?: InputMaybe<IntWhere>;
+};
+
 export type OrderOrderByInput = {
 	createdAt?: InputMaybe<Sort>;
 	total?: InputMaybe<Sort>;
@@ -501,6 +518,7 @@ export type Product = {
 	options: ProductOption[];
 	orders: Order[];
 	quantity: Scalars['Int']['output'];
+	relatedProducts: Product[];
 	reviews: ProductReview[];
 	store: Store;
 	storeId: Scalars['ID']['output'];
@@ -531,6 +549,19 @@ export type ProductCategoryEdge = {
 export type ProductCategoryWhere = {
 	categoryId?: InputMaybe<StringWhere>;
 	productId?: InputMaybe<StringWhere>;
+};
+
+export type ProductConnection = {
+	__typename?: 'ProductConnection';
+	edges: ProductEdge[];
+	pageInfo: PageInfo;
+	totalCount: Scalars['Int']['output'];
+};
+
+export type ProductEdge = {
+	__typename?: 'ProductEdge';
+	cursor: Scalars['String']['output'];
+	node: Product;
 };
 
 export type ProductFilterInput = {
@@ -581,8 +612,9 @@ export type Query = {
 	currentUser: User;
 	node?: Maybe<Node>;
 	order: Order;
+	orders: OrderConnection;
 	product: Product;
-	products: Product[];
+	products: ProductConnection;
 	stats: Stats;
 	store: Store;
 	storeProductCategory?: Maybe<StoreProductCategory>;
@@ -603,12 +635,25 @@ export type QueryOrderArgs = {
 	id: Scalars['ID']['input'];
 };
 
+export type QueryOrdersArgs = {
+	after?: InputMaybe<Scalars['String']['input']>;
+	before?: InputMaybe<Scalars['String']['input']>;
+	filter?: InputMaybe<OrderFilterInput>;
+	first?: InputMaybe<Scalars['Int']['input']>;
+	last?: InputMaybe<Scalars['Int']['input']>;
+	orderBy?: InputMaybe<OrderOrderByInput[]>;
+};
+
 export type QueryProductArgs = {
 	id: Scalars['ID']['input'];
 };
 
 export type QueryProductsArgs = {
+	after?: InputMaybe<Scalars['String']['input']>;
+	before?: InputMaybe<Scalars['String']['input']>;
 	filter?: InputMaybe<ProductFilterInput>;
+	first?: InputMaybe<Scalars['Int']['input']>;
+	last?: InputMaybe<Scalars['Int']['input']>;
 	orderBy?: InputMaybe<ProductOrderByInput[]>;
 };
 
@@ -685,7 +730,7 @@ export type Store = {
 	orders: Order[];
 	paidOut: Scalars['Int']['output'];
 	payouts: Payout[];
-	products: Product[];
+	products: ProductConnection;
 	realizedRevenue: Scalars['Int']['output'];
 	twitter?: Maybe<Scalars['String']['output']>;
 	unrealizedRevenue: Scalars['Int']['output'];
@@ -698,7 +743,9 @@ export type StoreOrdersArgs = {
 };
 
 export type StoreProductsArgs = {
+	after?: InputMaybe<Scalars['String']['input']>;
 	filter?: InputMaybe<ProductFilterInput>;
+	first?: InputMaybe<Scalars['Int']['input']>;
 	orderBy?: InputMaybe<ProductOrderByInput[]>;
 };
 
@@ -1076,6 +1123,8 @@ export type VerifyBankAccountMutation = {
 export type ProductsQueryVariables = Exact<{
 	filter?: InputMaybe<ProductFilterInput>;
 	orderBy?: InputMaybe<ProductOrderByInput[] | ProductOrderByInput>;
+	first?: InputMaybe<Scalars['Int']['input']>;
+	after?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 export type ProductsQuery = {
@@ -1084,14 +1133,28 @@ export type ProductsQuery = {
 		__typename?: 'Store';
 		id: string;
 		products: {
-			__typename?: 'Product';
-			id: string;
-			name: string;
-			description: string;
-			unitPrice: number;
-			quantity: number;
-			images: { __typename?: 'Image'; id: string; path: string }[];
-		}[];
+			__typename?: 'ProductConnection';
+			edges: {
+				__typename?: 'ProductEdge';
+				cursor: string;
+				node: {
+					__typename?: 'Product';
+					id: string;
+					name: string;
+					description: string;
+					unitPrice: number;
+					quantity: number;
+					images: { __typename?: 'Image'; id: string; path: string }[];
+				};
+			}[];
+			pageInfo: {
+				__typename?: 'PageInfo';
+				hasNextPage: boolean;
+				hasPreviousPage: boolean;
+				startCursor?: string | null;
+				endCursor?: string | null;
+			};
+		};
 	};
 };
 
@@ -1646,18 +1709,36 @@ export const ProductsDocument = gql`
 	query Products(
 		$filter: ProductFilterInput
 		$orderBy: [ProductOrderByInput!]
+		$first: Int
+		$after: String
 	) {
 		currentStore {
 			id
-			products(filter: $filter, orderBy: $orderBy) {
-				id
-				name
-				description
-				unitPrice
-				quantity
-				images {
-					id
-					path
+			products(
+				filter: $filter
+				orderBy: $orderBy
+				first: $first
+				after: $after
+			) {
+				edges {
+					cursor
+					node {
+						id
+						name
+						description
+						unitPrice
+						quantity
+						images {
+							id
+							path
+						}
+					}
+				}
+				pageInfo {
+					hasNextPage
+					hasPreviousPage
+					startCursor
+					endCursor
 				}
 			}
 		}

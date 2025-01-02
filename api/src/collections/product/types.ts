@@ -63,12 +63,27 @@ const ProductTypes = gql`
 		categoryId: StringWhere
 	}
 
+	type ProductEdge {
+		cursor: String!
+		node: Product!
+	}
+
+	type ProductConnection {
+		edges: [ProductEdge!]!
+		pageInfo: PageInfo!
+		totalCount: Int!
+	}
+
 	extend type Query {
 		product(id: ID!): Product!
 		products(
+			first: Int
+			after: String
+			last: Int
+			before: String
 			filter: ProductFilterInput
 			orderBy: [ProductOrderByInput!]
-		): [Product!]!
+		): ProductConnection!
 	}
 
 	extend type Mutation {
