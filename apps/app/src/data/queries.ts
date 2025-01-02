@@ -27,13 +27,6 @@ export const useOrderQuery = (orderId: string) => {
 };
 
 // Product Queries
-export const useProductsQuery = (filter?: any, orderBy?: any) => {
-	return useQuery({
-		queryKey: ['products', filter, orderBy],
-		queryFn: () => dataService.products.getProducts({ filter, orderBy })
-	});
-};
-
 export const useProductQuery = (productId: string) => {
 	return useQuery({
 		queryKey: ['products', productId],

@@ -24,7 +24,7 @@ export default class CartService {
 	}
 
 	public getCarts() {
-		return this.api.get('/carts');
+		return this.api.get('/users/current/carts');
 	}
 
 	public getCart(cartId: string) {
@@ -32,18 +32,14 @@ export default class CartService {
 	}
 
 	public addProductToCart(body: AddProductToCartBody) {
-		return this.api.post(`/carts/${body.storeId}/products`, body);
+		return this.api.post(`/carts/products`, body);
 	}
 
-	public removeProductFromCart(body: AddProductToCartBody) {
-		return this.api.delete(`/carts/${body.storeId}/products/${body.productId}`);
+	public removeProductFromCart(cartId: string, productId: string) {
+		return this.api.delete(`/carts/${cartId}/products/${productId}`);
 	}
 
 	public updateCartProduct(productId: string, body: UpdateCartProductBody) {
 		return this.api.patch(`/carts/${body.cartId}/products/${productId}`, body);
-	}
-
-	public removeFromCart(productId: string, cartId: string) {
-		return this.api.delete(`/carts/${cartId}/products/${productId}`);
 	}
 }

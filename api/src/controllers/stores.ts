@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 import prismaClient from '../config/prisma';
+import { hydrateQuery } from '../utils/queries';
 import { uploadImages } from '../utils/upload';
 
 export default class StoreController {
@@ -40,13 +41,11 @@ export default class StoreController {
 
 	// GET /stores/:id/products
 	public async getStoreProducts(req: Request, res: Response) {
+		const query = hydrateQuery(req.query);
+
 		const products = await prismaClient.store
-			.findUnique({
-				where: {
-					id: req.headers['x-market-store-id'] as string
-				}
-			})
-			.products();
+			.findUnique({ where: { id: req.headers['x-market-store-id'] as string } })
+			.products(query);
 
 		return res.json({ products });
 	}
@@ -85,13 +84,11 @@ export default class StoreController {
 
 	// GET /stores/:id/orders
 	public async getStoreOrders(req: Request, res: Response) {
+		const query = hydrateQuery(req.query);
+
 		const orders = await prismaClient.store
-			.findUnique({
-				where: {
-					id: req.headers['x-market-store-id'] as string
-				}
-			})
-			.orders();
+			.findUnique({ where: { id: req.headers['x-market-store-id'] as string } })
+			.orders(query);
 
 		return res.json({ orders });
 	}

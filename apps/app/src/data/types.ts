@@ -103,6 +103,8 @@ export interface WatchlistProduct {
 	id: string;
 	productId: string;
 	userId: string;
+	product: Product;
+	user: User;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -112,6 +114,8 @@ export interface Image {
 	storeId: string;
 	productId: string;
 	path: string;
+	store: Store;
+	product: Product;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -120,6 +124,8 @@ export interface StoreManager {
 	id: string;
 	storeId: string;
 	managerId: string;
+	store: Store;
+	manager: User;
 	createdAt: string;
 	updatedAt: string;
 }

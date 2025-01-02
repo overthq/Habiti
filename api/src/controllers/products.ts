@@ -98,4 +98,24 @@ export default class ProductController {
 
 		return res.json({ review });
 	}
+
+	// PUT /products/:id
+	public async updateProduct(req: Request, res: Response) {
+		if (!req.auth) {
+			return res.status(401).json({ error: 'Unauthorized' });
+		}
+
+		if (!req.params.id) {
+			return res.status(400).json({ error: 'Product ID is required' });
+		}
+
+		const { name, description, unitPrice, quantity } = req.body;
+
+		const product = await prismaClient.product.update({
+			where: { id: req.params.id },
+			data: { name, description, unitPrice, quantity }
+		});
+
+		return res.json({ product });
+	}
 }

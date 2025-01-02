@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 import prismaClient from '../config/prisma';
+import { hydrateQuery } from '../utils/queries';
 
 export default class UserController {
 	// GET /users/current
@@ -25,12 +26,15 @@ export default class UserController {
 
 	// GET /users/current/orders
 	public async getOrders(req: Request, res: Response) {
+		const query = hydrateQuery(req.query);
+
 		if (!req.auth) {
 			return res.status(401).json({ error: 'User not authenticated' });
 		}
 
 		const orders = await prismaClient.order.findMany({
-			where: { userId: req.auth.id }
+			where: { userId: req.auth.id },
+			...query
 		});
 
 		return res.json({ orders });
