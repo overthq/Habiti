@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { LogInBody, SignUpBody } from './auth';
+import { LogInBody, ResetPasswordBody, SignUpBody } from './auth';
 import { AddProductToCartBody } from './carts';
 import dataService from './index';
 import { CreateOrderBody } from './orders';
@@ -31,7 +31,8 @@ export const useLogInMutation = () => {
 
 export const useResetPasswordMutation = () => {
 	return useMutation({
-		mutationFn: dataService.auth.resetPassword
+		mutationFn: (body: ResetPasswordBody) =>
+			dataService.auth.resetPassword(body)
 	});
 };
 
@@ -50,7 +51,8 @@ export const useAddToCartMutation = () => {
 export const useRemoveFromCartMutation = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: dataService.carts.removeProductFromCart,
+		mutationFn: (body: AddProductToCartBody) =>
+			dataService.carts.removeProductFromCart(body),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['cart'] });
 		}
@@ -147,7 +149,7 @@ export const useAddDeliveryAddressMutation = () => {
 export const useDeleteDeliveryAddressMutation = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: dataService.users.deleteDeliveryAddress,
+		mutationFn: (id: string) => dataService.users.deleteDeliveryAddress(id),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['user'] });
 		}

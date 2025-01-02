@@ -16,24 +16,22 @@ export default class OrderController {
 		const cart = await prismaClient.cart.findUnique({
 			where: { id: cartId, userId },
 			include: {
-				user: {
-					include: {
-						cards: cardId ? { where: { id: cardId } } : true
-					}
-				},
+				user: { include: { cards: cardId ? { where: { id: cardId } } : true } },
 				products: { include: { product: true } },
 				store: true
 			}
 		});
 
 		if (!cart) {
-			throw new Error('Cart not found');
+			return res.status(404).json({ error: 'Cart not found' });
 		}
 
 		const card = cart.user.cards[0];
 
 		if (!card) {
-			throw new Error('Please add a card to authorize this transaction');
+			return res
+				.status(400)
+				.json({ error: 'Please add a card to authorize this transaction' });
 		}
 
 		let total = 0;

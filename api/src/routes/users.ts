@@ -1,9 +1,7 @@
-import { eq } from 'drizzle-orm';
 import { Router, Request, Response } from 'express';
 
+import prismaClient from '../config/prisma';
 import UserController from '../controllers/users';
-import { db } from '../db';
-import { User } from '../db/schema';
 import { authenticate } from '../middleware/auth';
 
 const router: Router = Router();
@@ -26,13 +24,16 @@ router.get(
 
 // PUT /users/current
 router.put('/current', authenticate, async (req: Request, res: Response) => {
+	if (!req.auth) {
+		return res.status(401).json({ error: 'User not authenticated' });
+	}
+
 	const { name, email } = req.body;
 
-	const [updatedUser] = await db
-		.update(User)
-		.set({ name, email })
-		.where(eq(User.id, req.auth!.id))
-		.returning();
+	const updatedUser = await prismaClient.user.update({
+		where: { id: req.auth!.id },
+		data: { name, email }
+	});
 
 	return res.json({ user: updatedUser });
 });
