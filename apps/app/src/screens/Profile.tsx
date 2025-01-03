@@ -49,10 +49,10 @@ const Profile: React.FC = () => {
 					title='Delivery Addresses'
 					onPress={() => navigate('Profile.DeliveryAddress')}
 				/>
-				<ProfileRow
+				{/* <ProfileRow
 					title='Notifications'
 					onPress={() => navigate('Profile.NotificationSettings')}
-				/>
+				/> */}
 				<ProfileRow
 					title='Appearance'
 					onPress={() => navigate('Profile.Appearance')}
@@ -63,9 +63,8 @@ const Profile: React.FC = () => {
 				/>
 				<Spacer y={8} />
 				<Separator style={{ marginHorizontal: 16 }} />
-				<Spacer y={8} />
-				<ProfileRow title='About this app' onPress={() => {}} />
-				<ProfileRow title='Support' onPress={() => {}} />
+				{/* <ProfileRow title='About this app' onPress={() => {}} />
+				<ProfileRow title='Support' onPress={() => {}} /> */}
 			</View>
 			<Spacer y={24} />
 			<View style={{ paddingHorizontal: 16 }}>

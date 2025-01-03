@@ -29,7 +29,8 @@ const AddToCart: React.FC<AddToCartProps> = ({
 				styles.container,
 				{
 					backgroundColor: theme.screen.background,
-					bottom,
+					paddingBottom: bottom,
+					bottom: 0,
 					borderTopColor: theme.border.color
 				}
 			]}

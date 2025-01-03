@@ -8,10 +8,6 @@ interface QuantityControlProps {
 	setQuantity: React.Dispatch<React.SetStateAction<number>>;
 }
 
-// TODO:
-// Add disabled state (color) for decrement button when quantity is 1
-// Add disabled state for both buttons (and text) when inCart is true
-
 const QuantityControl: React.FC<QuantityControlProps> = ({
 	inCart,
 	quantity,

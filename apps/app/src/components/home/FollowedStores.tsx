@@ -6,7 +6,7 @@ import { View, StyleSheet } from 'react-native';
 
 import FollowedStoresItem from './FollowedStoresItem';
 import { HomeQuery } from '../../types/api';
-import { HomeStackParamList, MainTabParamList } from '../../types/navigation';
+import { ExploreStackParamList } from '../../types/navigation';
 
 interface FollowedStoresProps {
 	followed: HomeQuery['currentUser']['followed'];
@@ -21,7 +21,7 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 		/>
 	) : (
 		<View>
-			<SectionHeader title='Followed stores' />
+			<SectionHeader title='Followed Stores' />
 			<FollowedStoresMain followed={followed} />
 		</View>
 	);
@@ -34,12 +34,11 @@ interface FollowedStoresMainProps {
 const FollowedStoresMain: React.FC<FollowedStoresMainProps> = ({
 	followed
 }) => {
-	const { navigate } =
-		useNavigation<NavigationProp<HomeStackParamList & MainTabParamList>>();
+	const { navigate } = useNavigation<NavigationProp<ExploreStackParamList>>();
 
 	const handleStorePress = React.useCallback(
 		(storeId: string) => () => {
-			navigate('Home.Store', { screen: 'Store.Main', params: { storeId } });
+			navigate('Explore.Store', { screen: 'Store.Main', params: { storeId } });
 		},
 		[]
 	);

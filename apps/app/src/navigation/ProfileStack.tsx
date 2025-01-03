@@ -41,6 +41,7 @@ const ProfileStack = () => {
 			<ProfileNavigator.Screen
 				name='Profile.Appearance'
 				component={SettingsTheme}
+				options={{ headerTitle: 'Appearance' }}
 			/>
 			<ProfileNavigator.Screen
 				name='Profile.AccountSettings'

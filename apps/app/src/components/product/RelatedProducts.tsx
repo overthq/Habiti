@@ -15,9 +15,9 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ products }) => {
 	return (
 		<View style={styles.container}>
 			<Typography variant='label' weight='medium' style={{ marginLeft: 16 }}>
-				Related
+				Related products
 			</Typography>
-			<Spacer y={4} />
+			<Spacer y={8} />
 			<ScrollView
 				contentContainerStyle={styles.scroll}
 				horizontal

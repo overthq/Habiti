@@ -61,6 +61,7 @@ const Product: React.FC = () => {
 						<ProductDetails product={data.product} />
 						<Spacer y={16} />
 						<RelatedProducts products={data.product.relatedProducts} />
+						<Spacer y={120} />
 					</ScrollView>
 				)}
 			</GestureHandlerRefContext.Consumer>
