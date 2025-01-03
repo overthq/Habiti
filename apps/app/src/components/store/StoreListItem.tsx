@@ -6,7 +6,7 @@ import { StyleSheet, Pressable } from 'react-native';
 import { StoreProductsQuery } from '../../types/api';
 
 interface StoreListItemProps {
-	item: StoreProductsQuery['store']['products'][number];
+	item: StoreProductsQuery['store']['products']['edges'][number]['node'];
 	onPress(): void;
 	side: 'left' | 'right';
 }

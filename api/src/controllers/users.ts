@@ -10,6 +10,22 @@ export default class UserController {
 		return res.json({ user });
 	}
 
+	// PUT /users/current
+	public async updateCurrentUser(req: Request, res: Response) {
+		const { name, email } = req.body;
+
+		if (!req.auth) {
+			return res.status(401).json({ error: 'User not authenticated' });
+		}
+
+		const updatedUser = await prismaClient.user.update({
+			where: { id: req.auth.id },
+			data: { name, email }
+		});
+
+		return res.json({ user: updatedUser });
+	}
+
 	// GET /users/current/followed-stores
 	public async getFollowedStores(req: Request, res: Response) {
 		if (!req.auth) {
@@ -42,12 +58,14 @@ export default class UserController {
 
 	// GET /users/current/carts
 	public async getCarts(req: Request, res: Response) {
+		console.log('get carts');
 		if (!req.auth) {
 			return res.status(401).json({ error: 'User not authenticated' });
 		}
 
 		const carts = await prismaClient.cart.findMany({
-			where: { userId: req.auth.id }
+			where: { userId: req.auth.id },
+			include: { store: { include: { image: true } }, products: true }
 		});
 
 		return res.json({ carts });
@@ -64,6 +82,20 @@ export default class UserController {
 		});
 
 		return res.json({ cards });
+	}
+
+	// GET /users/managed-stores
+	public async getManagedStores(req: Request, res: Response) {
+		if (!req.auth) {
+			return res.status(401).json({ error: 'User not authenticated' });
+		}
+
+		const stores = await prismaClient.storeManager.findMany({
+			where: { managerId: req.auth.id },
+			include: { store: true }
+		});
+
+		return res.json({ stores });
 	}
 
 	// GET /users/current/delivery-addresses

@@ -5,28 +5,16 @@ import React from 'react';
 import { FlatList, RefreshControl } from 'react-native';
 
 import CartsListItem from '../components/carts/CartsListItem';
-import { useCartsQuery } from '../types/api';
+import { useCartsQuery } from '../data/queries';
+import useRefreshing from '../hooks/useRefreshing';
 import { AppStackParamList, MainTabParamList } from '../types/navigation';
 
-// TODO:
-// - Maintain a list of recently viewed stores and items,
-//   so that we can use them in the empty state for this screen.
-// - Add "Edit" mode to this screen (with nice animations).
-
 const Carts: React.FC = () => {
-	const [{ data, fetching }, refetch] = useCartsQuery();
-	const [refreshing, setRefreshing] = React.useState(false);
+	const { data, refetch } = useCartsQuery();
+	const { refreshing, handleRefresh } = useRefreshing(refetch);
 	const { navigate } =
 		useNavigation<NavigationProp<MainTabParamList & AppStackParamList>>();
 	const { theme } = useTheme();
-
-	React.useEffect(() => {
-		if (!fetching && refreshing) {
-			setRefreshing(false);
-		}
-	}, [fetching, refreshing]);
-
-	const carts = data?.currentUser.carts;
 
 	const handleCartPress = React.useCallback(
 		(cartId: string) => () => {
@@ -34,11 +22,6 @@ const Carts: React.FC = () => {
 		},
 		[navigate]
 	);
-
-	const handleRefresh = () => {
-		setRefreshing(true);
-		refetch();
-	};
 
 	return (
 		<Screen>
@@ -49,7 +32,7 @@ const Carts: React.FC = () => {
 					<CartsListItem cart={item} onPress={handleCartPress(item.id)} />
 				)}
 				// estimatedItemSize={66}
-				data={carts}
+				data={data?.carts}
 				contentContainerStyle={{ flexGrow: 1 }}
 				ListEmptyComponent={() => (
 					<ListEmpty

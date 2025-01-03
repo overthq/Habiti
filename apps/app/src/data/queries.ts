@@ -80,19 +80,6 @@ export const useStoreProductsQuery = (
 	});
 };
 
-export const useStoreOrdersQuery = (
-	storeId: string,
-	filter?: any,
-	orderBy?: any
-) => {
-	return useQuery({
-		queryKey: ['stores', storeId, 'orders', filter, orderBy],
-		queryFn: () =>
-			dataService.stores.getStoreOrders(storeId, { filter, orderBy }),
-		enabled: !!storeId
-	});
-};
-
 // Card Queries
 export const useCardsQuery = () => {
 	return useQuery({

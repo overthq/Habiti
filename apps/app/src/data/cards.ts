@@ -4,6 +4,6 @@ export class CardService {
 	constructor(private api: APIService) {}
 
 	public getCards() {
-		return this.api.get('/cards');
+		return this.api.get('/users/current/cards');
 	}
 }

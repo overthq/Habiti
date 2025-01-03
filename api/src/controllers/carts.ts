@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import prismaClient from '../config/prisma';
 
 export default class CartController {
+	// GET /carts/:id
 	public async getCartById(req: Request, res: Response) {
 		if (!req.auth) {
 			return res.status(401).json({ error: 'User not authenticated' });
@@ -23,6 +24,7 @@ export default class CartController {
 		return res.json({ cart });
 	}
 
+	// POST /carts/products
 	public async addProductToCart(req: Request, res: Response) {
 		const { productId, quantity } = req.body;
 

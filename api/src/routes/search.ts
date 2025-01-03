@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 
-import { db } from '../db';
+import prismaClient from '../config/prisma';
 
 const router: Router = Router();
 
@@ -9,16 +9,15 @@ router.get('/', async (req: Request, res: Response) => {
 	const { query } = req.query;
 
 	if (!query || typeof query !== 'string') {
-		res.json({ data: [] });
-		return;
+		return res.json({ data: [] });
 	}
 
 	const [products, stores] = await Promise.all([
-		db.query.Product.findMany({
-			where: (products, { ilike }) => ilike(products.name, `%${query}%`)
+		prismaClient.product.findMany({
+			where: { name: { contains: query, mode: 'insensitive' } }
 		}),
-		db.query.Store.findMany({
-			where: (stores, { ilike }) => ilike(stores.name, `%${query}%`)
+		prismaClient.store.findMany({
+			where: { name: { contains: query, mode: 'insensitive' } }
 		})
 	]);
 

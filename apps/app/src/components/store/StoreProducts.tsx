@@ -76,7 +76,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 			estimatedItemSize={240}
 			renderItem={({ item, index }) => (
 				<StoreListItem
-					item={item}
+					item={item.node}
 					onPress={handleProductPress(item.node.id)}
 					side={index % 2 === 0 ? 'left' : 'right'}
 				/>

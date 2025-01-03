@@ -46,17 +46,26 @@ export default class UserService {
 		addressId: string,
 		body: UpdateDeliveryAddressBody
 	) {
-		return this.api.patch(
-			`/users/current/delivery-addresses/${addressId}`,
-			body
-		);
+		return this.api.patch(`/delivery-addresses/${addressId}`, body);
 	}
 
 	public deleteDeliveryAddress(addressId: string) {
-		return this.api.delete(`/users/current/delivery-addresses/${addressId}`);
+		return this.api.delete(`/delivery-addresses/${addressId}`);
 	}
 
 	public getFollowedStores() {
 		return this.api.get('/users/current/followed-stores');
+	}
+
+	public getManagedStores() {
+		return this.api.get('/users/current/managed-stores');
+	}
+
+	public getOrders() {
+		return this.api.get('/users/current/orders');
+	}
+
+	public getCarts() {
+		return this.api.get('/users/current/carts');
 	}
 }
