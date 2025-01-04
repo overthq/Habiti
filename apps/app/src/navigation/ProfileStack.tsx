@@ -16,7 +16,7 @@ const ProfileStack = () => {
 			<ProfileNavigator.Screen
 				name='Profile.Main'
 				component={Profile}
-				options={{ headerTitle: 'Profile' }}
+				options={{ headerShown: false }}
 			/>
 			<ProfileNavigator.Screen
 				name='Profile.Edit'

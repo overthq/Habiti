@@ -19,20 +19,20 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 }) => {
 	return (
 		<View style={styles.container}>
-			<CustomImage
-				uri={store.image?.path}
-				height={80}
-				width={80}
-				style={styles.image}
-			/>
-			<Typography
-				size='xlarge'
-				weight='medium'
-				style={{ textAlign: 'center', marginTop: 4 }}
-			>
-				{store.name}
-			</Typography>
-			<FollowButton storeId={store.id} followed={store.followedByUser} />
+			<View style={styles.header}>
+				<View style={styles.left}>
+					<CustomImage
+						uri={store.image?.path}
+						height={56}
+						width={56}
+						style={styles.image}
+					/>
+					<Typography size='large' weight='medium'>
+						{store.name}
+					</Typography>
+				</View>
+				<FollowButton storeId={store.id} followed={store.followedByUser} />
+			</View>
 			<CategorySelector
 				selected={activeCategory}
 				categories={store.categories}
@@ -47,9 +47,20 @@ const styles = StyleSheet.create({
 		width: '100%',
 		paddingTop: 16
 	},
+	header: {
+		paddingHorizontal: 16,
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between'
+	},
+	left: {
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
 	image: {
 		borderRadius: 40,
-		alignSelf: 'center'
+		alignSelf: 'center',
+		marginRight: 12
 	}
 });
 

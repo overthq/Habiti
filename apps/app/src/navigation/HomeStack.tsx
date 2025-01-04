@@ -14,7 +14,7 @@ const HomeStack = () => {
 			<HomeNavigator.Screen
 				name='Home.Main'
 				component={Home}
-				options={{ headerTitle: 'Home' }}
+				options={{ headerShown: false }}
 			/>
 			<HomeNavigator.Screen
 				name='Home.Order'

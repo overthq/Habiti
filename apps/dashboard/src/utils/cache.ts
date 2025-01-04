@@ -33,19 +33,14 @@ const customCache = cacheExchange({
 				cache.invalidate({ __typename: 'Store' });
 			},
 			addStoreManager: (result: AddStoreManagerMutation, _args, cache) => {
-				cache.invalidate({
-					__typename: 'StoreManager',
-					id: result.addStoreManager.id
-				});
-				cache.invalidate({ __typename: 'Store' });
+				cache.invalidate('StoreManager');
 			},
 			createProductCategory: (
 				_result: CreateProductCategoryMutation,
 				_args,
 				cache
 			) => {
-				cache.invalidate({ __typename: 'StoreProductCategory' });
-				cache.invalidate({ __typename: 'Store' });
+				cache.invalidate('StoreProductCategory');
 			},
 			editProductCategory: (
 				result: EditProductCategoryMutation,
@@ -58,15 +53,11 @@ const customCache = cacheExchange({
 				});
 			},
 			deleteProductCategory: (
-				result: DeleteProductCategoryMutation,
+				_result: DeleteProductCategoryMutation,
 				_args,
 				cache
 			) => {
-				cache.invalidate({
-					__typename: 'StoreProductCategory',
-					id: result.deleteProductCategory.id
-				});
-				cache.invalidate({ __typename: 'Store' });
+				cache.invalidate('StoreProductCategory');
 			},
 			editStore: (result: EditStoreMutation, _args, cache) => {
 				cache.invalidate({
@@ -75,7 +66,7 @@ const customCache = cacheExchange({
 				});
 			},
 			createPayout: (_result: CreatePayoutMutation, _args, cache) => {
-				cache.invalidate({ __typename: 'Store' });
+				cache.invalidate('Payout');
 			}
 		}
 	}

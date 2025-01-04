@@ -66,7 +66,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 		[data?.store.name, headerVisible]
 	);
 
-	if (fetching || !products) return <View />;
+	if (fetching && !products) return <View />;
 
 	return (
 		<FlashList

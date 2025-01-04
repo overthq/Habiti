@@ -16,16 +16,13 @@ const customCache = cacheExchange({
 		Mutation: {
 			followStore(_result, args: MutationFollowStoreArgs, cache) {
 				cache.invalidate({ __typename: 'Store', id: args.storeId });
-				cache.invalidate({ __typename: 'User' });
 			},
 			unfollowStore(_result, args: MutationUnfollowStoreArgs, cache) {
 				cache.invalidate({ __typename: 'Store', id: args.storeId });
-				cache.invalidate({ __typename: 'User' });
 			},
 			addToCart(_result, args: MutationAddToCartArgs, cache) {
 				cache.invalidate({ __typename: 'Product', id: args.input.productId });
 				cache.invalidate({ __typename: 'Store', id: args.input.storeId });
-				cache.invalidate({ __typename: 'Cart' });
 			},
 			removeFromCart(_result, args: MutationRemoveFromCartArgs, cache) {
 				cache.invalidate({ __typename: 'Product', id: args.productId });
@@ -33,7 +30,7 @@ const customCache = cacheExchange({
 			},
 			deleteCart(_result, args: MutationDeleteCartArgs, cache) {
 				cache.invalidate({ __typename: 'Cart', id: args.cartId });
-				cache.invalidate({ __typename: 'User' });
+				cache.invalidate('Cart');
 			},
 			updateCartProduct(_result, args: MutationUpdateCartProductArgs, cache) {
 				cache.invalidate({ __typename: 'Product', id: args.input.productId });
@@ -41,12 +38,11 @@ const customCache = cacheExchange({
 			},
 			addToWatchlist(_result, args: MutationAddToWatchlistArgs, cache) {
 				cache.invalidate({ __typename: 'Product', id: args.productId });
-				cache.invalidate({ __typename: 'User' });
 			},
 			createOrder(_result, args: MutationCreateOrderArgs, cache) {
-				cache.invalidate({ __typename: 'Cart' });
-				cache.invalidate({ __typename: 'User' });
-				cache.invalidate({ __typename: 'Store' });
+				// cache.invalidate({ __typename: 'Cart' });
+				// cache.invalidate({ __typename: 'User' });
+				// cache.invalidate({ __typename: 'Store' });
 			}
 		}
 	}

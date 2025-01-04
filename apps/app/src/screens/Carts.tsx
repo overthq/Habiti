@@ -1,8 +1,9 @@
-import { ListEmpty, Screen, useTheme } from '@habiti/components';
+import { ListEmpty, Screen, ScreenHeader, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 // import { FlashList } from '@shopify/flash-list';
 import React from 'react';
 import { FlatList, RefreshControl } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import CartsListItem from '../components/carts/CartsListItem';
 import { useCartsQuery } from '../data/queries';
@@ -23,8 +24,11 @@ const Carts: React.FC = () => {
 		[navigate]
 	);
 
+	const { top } = useSafeAreaInsets();
+
 	return (
-		<Screen>
+		<Screen style={{ paddingTop: top }}>
+			<ScreenHeader title='Carts' />
 			<FlatList
 				style={{ flex: 1 }}
 				keyExtractor={c => c.id}
