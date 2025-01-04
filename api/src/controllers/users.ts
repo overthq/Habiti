@@ -58,7 +58,6 @@ export default class UserController {
 
 	// GET /users/current/carts
 	public async getCarts(req: Request, res: Response) {
-		console.log('get carts');
 		if (!req.auth) {
 			return res.status(401).json({ error: 'User not authenticated' });
 		}
