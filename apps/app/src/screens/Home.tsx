@@ -4,6 +4,7 @@ import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import FollowedStores from '../components/home/FollowedStores';
 import RecentOrders from '../components/home/RecentOrders';
 import { useHomeQuery } from '../types/api';
 import { HomeStackParamList } from '../types/navigation';
@@ -31,6 +32,7 @@ const Home: React.FC = () => {
 				}}
 			/>
 			<ScrollableScreen>
+				<FollowedStores followed={data.currentUser.followed} />
 				<RecentOrders orders={data.currentUser.orders} />
 			</ScrollableScreen>
 		</Screen>
