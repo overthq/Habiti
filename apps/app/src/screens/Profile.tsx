@@ -1,7 +1,14 @@
-import { Button, Screen, Separator, Spacer } from '@habiti/components';
+import {
+	Button,
+	Screen,
+	ScreenHeader,
+	Separator,
+	Spacer
+} from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Alert, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import ProfileRow from '../components/profile/ProfileRow';
 import UserCard from '../components/profile/UserCard';
@@ -26,6 +33,7 @@ import { ProfileStackParamList } from '../types/navigation';
 const Profile: React.FC = () => {
 	const logOut = useStore(state => state.logOut);
 	const { navigate } = useNavigation<NavigationProp<ProfileStackParamList>>();
+	const { top } = useSafeAreaInsets();
 
 	const confirmLogOut = React.useCallback(() => {
 		Alert.alert('Log Out', 'Are you sure you want to log out?', [
@@ -35,7 +43,8 @@ const Profile: React.FC = () => {
 	}, [logOut]);
 
 	return (
-		<Screen>
+		<Screen style={{ paddingTop: top }}>
+			<ScreenHeader title='Profile' />
 			<UserCard />
 			<Spacer y={8} />
 			<Separator style={{ marginHorizontal: 16 }} />
@@ -49,10 +58,10 @@ const Profile: React.FC = () => {
 					title='Delivery Addresses'
 					onPress={() => navigate('Profile.DeliveryAddress')}
 				/>
-				<ProfileRow
+				{/* <ProfileRow
 					title='Notifications'
 					onPress={() => navigate('Profile.NotificationSettings')}
-				/>
+				/> */}
 				<ProfileRow
 					title='Appearance'
 					onPress={() => navigate('Profile.Appearance')}
@@ -63,9 +72,8 @@ const Profile: React.FC = () => {
 				/>
 				<Spacer y={8} />
 				<Separator style={{ marginHorizontal: 16 }} />
-				<Spacer y={8} />
-				<ProfileRow title='About this app' onPress={() => {}} />
-				<ProfileRow title='Support' onPress={() => {}} />
+				{/* <ProfileRow title='About this app' onPress={() => {}} />
+				<ProfileRow title='Support' onPress={() => {}} /> */}
 			</View>
 			<Spacer y={24} />
 			<View style={{ paddingHorizontal: 16 }}>

@@ -36,8 +36,8 @@ const FollowButton: React.FC<FollowButtonProps> = ({ storeId, followed }) => {
 			]}
 			onPress={handlePress}
 		>
-			<Icon size={18} style={styles.icon} name={followed ? 'check' : 'plus'} />
-			<Typography weight='medium' style={{ marginLeft: 4 }}>
+			<Icon size={16} style={styles.icon} name={followed ? 'check' : 'plus'} />
+			<Typography size='small' weight='medium'>
 				{followed ? 'Following' : 'Follow'}
 			</Typography>
 		</Pressable>
@@ -47,10 +47,8 @@ const FollowButton: React.FC<FollowButtonProps> = ({ storeId, followed }) => {
 const styles = StyleSheet.create({
 	container: {
 		paddingVertical: 4,
-		paddingHorizontal: 16,
-		marginTop: 8,
-		marginLeft: 8,
-		borderWidth: 1,
+		paddingLeft: 8,
+		paddingRight: 10,
 		borderRadius: 4,
 		flexDirection: 'row',
 		justifyContent: 'center',

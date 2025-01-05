@@ -1,12 +1,37 @@
 import { ProductsArgs } from '../../types/filters';
+import { PaginationArgs } from '../../types/pagination';
 import { Resolver } from '../../types/resolvers';
+import { decodeCursor, paginateQuery } from '../../utils/pagination';
 
 const product: Resolver = (_, { id }, ctx) => {
 	return ctx.prisma.product.findUnique({ where: { id } });
 };
 
-const products: Resolver<ProductsArgs> = (_, { filter, orderBy }, ctx) => {
-	return ctx.prisma.product.findMany({ where: filter, orderBy });
+const products: Resolver<ProductsArgs & PaginationArgs> = async (
+	_,
+	args,
+	ctx
+) => {
+	const { filter, orderBy, ...paginationArgs } = args;
+
+	return paginateQuery(
+		paginationArgs,
+		async (take, cursor) => {
+			const query: any = {
+				where: filter,
+				orderBy,
+				take
+			};
+
+			if (cursor) {
+				query.cursor = { id: decodeCursor(cursor) };
+				query.skip = 1;
+			}
+
+			return ctx.prisma.product.findMany(query);
+		},
+		() => ctx.prisma.product.count({ where: filter })
+	);
 };
 
 interface OrdersArgs {
@@ -66,6 +91,44 @@ const inCart: Resolver = async (parent, _, ctx) => {
 	}
 };
 
+const relatedProducts: Resolver = async (parent, _, ctx) => {
+	// Get the current product's categories
+	const productCategories = await ctx.prisma.productCategory.findMany({
+		where: { productId: parent.id },
+		select: { categoryId: true }
+	});
+
+	const categoryIds = productCategories.map(pc => pc.categoryId);
+
+	// Find products that share categories with the current product
+	if (categoryIds.length > 0) {
+		return ctx.prisma.product.findMany({
+			where: {
+				AND: [
+					{ id: { not: parent.id } }, // Exclude current product
+					{ storeId: parent.storeId }, // Same store
+					{
+						categories: {
+							some: {
+								categoryId: { in: categoryIds }
+							}
+						}
+					}
+				]
+			},
+			take: 5 // Limit to 5 related products
+		});
+	}
+
+	// Fallback: if no categories, return other products from same store
+	return ctx.prisma.product.findMany({
+		where: {
+			AND: [{ id: { not: parent.id } }, { storeId: parent.storeId }]
+		},
+		take: 5
+	});
+};
+
 export default {
 	Query: {
 		product,
@@ -79,6 +142,7 @@ export default {
 		categories,
 		options,
 		reviews,
-		inCart
+		inCart,
+		relatedProducts
 	}
 };

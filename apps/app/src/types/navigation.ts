@@ -19,6 +19,7 @@ export type HomeStackParamList = {
 	'Home.Settings': undefined;
 	'Home.SettingsTheme': undefined;
 	'Home.Notifications': undefined;
+	'Home.Search': undefined;
 };
 
 export type ExploreStackParamList = {

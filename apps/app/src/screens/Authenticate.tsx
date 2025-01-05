@@ -51,7 +51,7 @@ const Authenticate = () => {
 				<Typography weight='bold' size='xxxlarge'>
 					Welcome back.
 				</Typography>
-				<Typography variant='secondary'>{`We'll send your verification code here.`}</Typography>
+				<Typography variant='secondary'>Log in to your account.</Typography>
 
 				<Spacer y={16} />
 

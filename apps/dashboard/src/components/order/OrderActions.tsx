@@ -1,4 +1,4 @@
-import { Button, HoldableButton, Spacer } from '@habiti/components';
+import { HoldableButton, Spacer } from '@habiti/components';
 import React from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 
@@ -47,11 +47,11 @@ const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 			)}
 			<Spacer y={8} />
 			{status !== OrderStatus.Cancelled && (
-				<Button
+				<HoldableButton
 					loading={fetching}
 					variant='destructive'
-					onPress={confirmCancel}
-					text='Cancel order'
+					onComplete={confirmCancel}
+					text='Cancel Order'
 				/>
 			)}
 		</View>

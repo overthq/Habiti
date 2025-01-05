@@ -1,5 +1,7 @@
 import { ProductsArgs, StringWhere } from '../../types/filters';
+import { PaginationArgs } from '../../types/pagination';
 import { Resolver } from '../../types/resolvers';
+import { decodeCursor, paginateQuery } from '../../utils/pagination';
 
 interface StoreArgs {
 	id: string;
@@ -25,10 +27,31 @@ const stores: Resolver<StoresArgs> = (_, { filter }, ctx) => {
 	return ctx.prisma.store.findMany({ where: filter });
 };
 
-const products: Resolver<ProductsArgs> = (parent, { filter, orderBy }, ctx) => {
-	return ctx.prisma.store
-		.findUnique({ where: { id: parent.id } })
-		.products({ where: filter, orderBy });
+const products: Resolver<ProductsArgs & PaginationArgs> = (
+	parent,
+	args,
+	ctx
+) => {
+	const { filter, orderBy, ...paginationArgs } = args;
+
+	return paginateQuery(
+		paginationArgs,
+		async (take, cursor) => {
+			const query: any = { where: filter, orderBy, take };
+
+			if (cursor) {
+				query.cursor = { id: decodeCursor(cursor) };
+				query.skip = 1;
+			}
+
+			const result = await ctx.prisma.store
+				.findUnique({ where: { id: parent.id } })
+				.products(query);
+
+			return result ?? [];
+		},
+		() => ctx.prisma.product.count({ where: { ...filter, storeId: parent.id } })
+	);
 };
 
 interface OrdersArgs {

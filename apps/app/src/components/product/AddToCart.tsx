@@ -25,7 +25,15 @@ const AddToCart: React.FC<AddToCartProps> = ({
 
 	return (
 		<View
-			style={[styles.container, { bottom, borderTopColor: theme.border.color }]}
+			style={[
+				styles.container,
+				{
+					backgroundColor: theme.screen.background,
+					paddingBottom: bottom,
+					bottom: 0,
+					borderTopColor: theme.border.color
+				}
+			]}
 		>
 			<QuantityControl
 				inCart={inCart}

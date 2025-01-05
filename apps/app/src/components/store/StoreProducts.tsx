@@ -14,8 +14,16 @@ interface StoreProductsProps {
 }
 
 const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
+	const [activeCategory, setActiveCategory] = React.useState<string>();
 	const [{ data, fetching }, refetch] = useStoreProductsQuery({
-		variables: { storeId: store.id }
+		variables: {
+			storeId: store.id,
+			...(activeCategory && {
+				filter: {
+					categories: { some: { categoryId: { equals: activeCategory } } }
+				}
+			})
+		}
 	});
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
@@ -58,24 +66,30 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 		[data?.store.name, headerVisible]
 	);
 
-	if (fetching || !products) return <View />;
+	if (fetching && !products) return <View />;
 
 	return (
 		<FlashList
-			data={products}
-			keyExtractor={({ id }) => id}
+			data={products.edges}
+			keyExtractor={({ node }) => node.id}
 			showsVerticalScrollIndicator={false}
 			estimatedItemSize={240}
 			renderItem={({ item, index }) => (
 				<StoreListItem
-					item={item}
-					onPress={handleProductPress(item.id)}
+					item={item.node}
+					onPress={handleProductPress(item.node.id)}
 					side={index % 2 === 0 ? 'left' : 'right'}
 				/>
 			)}
 			numColumns={2}
 			onScroll={handleScroll}
-			ListHeaderComponent={<StoreHeader store={store} />}
+			ListHeaderComponent={
+				<StoreHeader
+					store={store}
+					activeCategory={activeCategory}
+					setActiveCategory={setActiveCategory}
+				/>
+			}
 			refreshControl={
 				<RefreshControl
 					refreshing={refreshing}

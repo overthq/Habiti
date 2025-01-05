@@ -6,22 +6,10 @@ import {
 	MutationFollowStoreArgs,
 	MutationRemoveFromCartArgs,
 	MutationUnfollowStoreArgs,
-	MutationUpdateCartProductArgs
+	MutationUpdateCartProductArgs,
+	MutationAddToWatchlistArgs,
+	MutationCreateOrderArgs
 } from '../types/api';
-
-// Because I'm a bit lazy, I have decided to just go ahead
-// and invalidate entities instead of writing decent updaters.
-// That said, anyone reading this should feel free to write
-// good updaters that manipulate the cache.
-//
-// However, invalidating entities might actually be meta,
-// because I can't tell the ways the schema is going to evolve
-// in the near future, and we can implement schema-awareness
-// to help us out till the schema is concrete.
-
-// Important caveat: invalidating entities incurs the cost of
-// a network request (I think). I should remember to add loading
-// indicators or block the UI while this is happening.
 
 const customCache = cacheExchange({
 	updates: {
@@ -41,12 +29,20 @@ const customCache = cacheExchange({
 				cache.invalidate({ __typename: 'Cart', id: args.cartId });
 			},
 			deleteCart(_result, args: MutationDeleteCartArgs, cache) {
-				// TODO: Invalidate the products as well.
 				cache.invalidate({ __typename: 'Cart', id: args.cartId });
+				cache.invalidate('Cart');
 			},
 			updateCartProduct(_result, args: MutationUpdateCartProductArgs, cache) {
 				cache.invalidate({ __typename: 'Product', id: args.input.productId });
 				cache.invalidate({ __typename: 'Cart', id: args.input.cartId });
+			},
+			addToWatchlist(_result, args: MutationAddToWatchlistArgs, cache) {
+				cache.invalidate({ __typename: 'Product', id: args.productId });
+			},
+			createOrder(_result, args: MutationCreateOrderArgs, cache) {
+				// cache.invalidate({ __typename: 'Cart' });
+				// cache.invalidate({ __typename: 'User' });
+				// cache.invalidate({ __typename: 'Store' });
 			}
 		}
 	}

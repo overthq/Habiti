@@ -11,7 +11,7 @@ const CartsStack = () => {
 			<CartsNavigator.Screen
 				name='Carts.Main'
 				component={Carts}
-				options={{ headerTitle: 'Carts' }}
+				options={{ headerShown: false }}
 			/>
 		</CartsNavigator.Navigator>
 	);

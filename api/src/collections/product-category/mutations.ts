@@ -39,6 +39,7 @@ const removeProductFromCategory: Resolver<AddProductToCategoryArgs> = async (
 interface CreateProductCategoryArgs {
 	input: {
 		name: string;
+		description?: string;
 	};
 }
 
@@ -52,7 +53,11 @@ const createProductCategory: Resolver<CreateProductCategoryArgs> = async (
 	}
 
 	const category = await ctx.prisma.storeProductCategory.create({
-		data: { storeId: ctx.storeId, name: input.name }
+		data: {
+			storeId: ctx.storeId,
+			name: input.name,
+			description: input.description ?? null
+		}
 	});
 
 	return category;

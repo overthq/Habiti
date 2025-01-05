@@ -1,4 +1,5 @@
 import { Icon, TextButton, useTheme } from '@habiti/components';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 import Animated, {
@@ -9,32 +10,25 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface ExploreHeaderProps {
-	searchOpen: boolean;
-	setSearchOpen(value: boolean): void;
 	searchTerm: string;
 	setSearchTerm(value: string): void;
 }
 
 const ExploreHeader: React.FC<ExploreHeaderProps> = ({
-	searchOpen,
-	setSearchOpen,
 	searchTerm,
 	setSearchTerm
 }) => {
 	const { top } = useSafeAreaInsets();
 	const { theme } = useTheme();
+	const { goBack } = useNavigation();
 
 	const inputRef = React.useRef<TextInput>(null);
 
 	const cancel = React.useCallback(() => {
 		inputRef.current?.blur();
 		setSearchTerm('');
-		setSearchOpen(false);
+		goBack();
 	}, [inputRef.current]);
-
-	const handleFocus = () => {
-		setSearchOpen(true);
-	};
 
 	return (
 		<View style={[styles.container, { paddingTop: top + 8 }]}>
@@ -50,22 +44,20 @@ const ExploreHeader: React.FC<ExploreHeaderProps> = ({
 					placeholderTextColor={theme.text.secondary}
 					inputMode='search'
 					style={[styles.inputText, { color: theme.input.text }]}
-					onFocus={handleFocus}
 					onChangeText={setSearchTerm} // TODO: Add debounce
 					autoCapitalize='none'
 					autoCorrect={false}
 					selectionColor={theme.text.primary}
+					autoFocus
 				/>
 			</Animated.View>
-			{searchOpen ? (
-				<Animated.View
-					entering={FadeIn.delay(50)}
-					exiting={FadeOut}
-					style={{ marginLeft: 12 }}
-				>
-					<TextButton onPress={cancel}>Cancel</TextButton>
-				</Animated.View>
-			) : null}
+			<Animated.View
+				entering={FadeIn.delay(50)}
+				exiting={FadeOut}
+				style={{ marginLeft: 12 }}
+			>
+				<TextButton onPress={cancel}>Cancel</TextButton>
+			</Animated.View>
 		</View>
 	);
 };

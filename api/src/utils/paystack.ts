@@ -74,9 +74,7 @@ export const storeCard = async (data: StoreCardData) => {
 			signature: data.authorization.signature,
 			cardType: data.authorization.card_type,
 			countryCode: data.authorization.country_code,
-			user: {
-				connect: { email: data.customer.email }
-			}
+			user: { connect: { email: data.customer.email } }
 		}
 	});
 };

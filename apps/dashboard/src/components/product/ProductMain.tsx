@@ -70,6 +70,7 @@ const ProductMain: React.FC<ProductMainProps> = ({ product, mode }) => {
 			<ProductForm
 				images={product.images}
 				options={product.options}
+				categories={product.categories}
 				imagesToUpload={toUpload}
 				setImagesToUpload={setToUpload}
 				mode={mode}

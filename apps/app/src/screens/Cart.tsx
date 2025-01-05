@@ -1,5 +1,5 @@
 import {
-	Button,
+	HoldableButton,
 	ScrollableScreen,
 	Separator,
 	Spacer,
@@ -30,9 +30,6 @@ import { calculateFees } from '../utils/fees';
 // It is also important to make use of tasteful animations to make
 // it feel slick.
 
-// A cart screen is usually distinct from a checkout screen on most
-// production apps. Find out why.
-
 const Cart: React.FC = () => {
 	const {
 		params: { cartId }
@@ -41,6 +38,7 @@ const Cart: React.FC = () => {
 	useGoBack();
 
 	const [{ data, fetching }, refetch] = useCartQuery({ variables: { cartId } });
+	const [refreshing, setRefreshing] = React.useState(false);
 	const [, createOrder] = useCreateOrderMutation();
 
 	const { defaultCardId, setPreference } = useStore(state => ({
@@ -51,6 +49,15 @@ const Cart: React.FC = () => {
 	const { theme } = useTheme();
 
 	const [selectedCard, setSelectedCard] = React.useState(defaultCardId);
+
+	const handleRefresh = React.useCallback(() => {
+		setRefreshing(true);
+		refetch();
+	}, [refetch]);
+
+	React.useEffect(() => {
+		if (!fetching && refreshing) setRefreshing(false);
+	}, [fetching, refreshing]);
 
 	const fees = React.useMemo(
 		() => calculateFees(data?.cart.total ?? 0),
@@ -73,13 +80,11 @@ const Cart: React.FC = () => {
 		setPreference({ defaultCard: selectedCard });
 
 		if (error) {
-			// TODO: Alert the user that something has gone wrong.
-			// Also, why does this feel like writing Go?
-			console.log(error);
+			console.log('Error while creating order:', error);
 		} else {
 			goBack();
 		}
-	}, [cartId, fees]);
+	}, [cartId, fees, selectedCard]);
 
 	const cart = data?.cart;
 
@@ -88,10 +93,8 @@ const Cart: React.FC = () => {
 			style={[styles.container, { paddingBottom: bottom }]}
 			refreshControl={
 				<RefreshControl
-					refreshing={fetching}
-					onRefresh={() => {
-						refetch({ requestPolicy: 'network-only' });
-					}}
+					refreshing={refreshing}
+					onRefresh={handleRefresh}
 					tintColor={theme.text.secondary}
 				/>
 			}
@@ -117,10 +120,10 @@ const Cart: React.FC = () => {
 					<CartTotal cart={cart} fees={fees} />
 
 					<View style={{ paddingTop: 16, paddingHorizontal: 16 }}>
-						<Button
+						<HoldableButton
 							text='Place Order'
-							onPress={handleSubmit}
 							disabled={!selectedCard}
+							onComplete={handleSubmit}
 						/>
 					</View>
 				</>

@@ -25,17 +25,17 @@ const LowStockProducts = () => {
 	return (
 		<View style={styles.container}>
 			<SectionHeader
-				title='Low stock products'
+				title='Low Stock'
 				action={{ text: 'View all', onPress: navigateToProducts }}
 			/>
 			<Spacer y={4} />
 			<FlatList
-				keyExtractor={i => i.id}
-				data={data?.currentStore.products}
+				data={data?.currentStore.products.edges}
+				keyExtractor={i => i.node.id}
 				renderItem={({ item }) => (
 					<LowStockProduct
-						onPress={navigateToProduct(item.id)}
-						product={item}
+						onPress={navigateToProduct(item.node.id)}
+						product={item.node}
 					/>
 				)}
 				horizontal

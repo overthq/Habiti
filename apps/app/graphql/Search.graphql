@@ -8,12 +8,27 @@ query Search($searchTerm: String!) {
 		}
 	}
 
-	products(filter: { name: { contains: $searchTerm, mode: insensitive } }) {
-		id
-		name
-		images {
-			id
-			path
+	products(
+		filter: { name: { contains: $searchTerm, mode: insensitive } }
+		first: 10
+	) {
+		edges {
+			cursor
+			node {
+				id
+				name
+				images {
+					id
+					path
+				}
+			}
+		}
+		pageInfo {
+			hasNextPage
+			hasPreviousPage
+			startCursor
+			endCursor
 		}
 	}
 }
+

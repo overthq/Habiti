@@ -3,17 +3,17 @@ import { FlatList, ListRenderItem } from 'react-native';
 
 import StoreSelectListItem from './StoreSelectListItem';
 import useStore from '../../state';
-import { ManagedStoresQuery, useManagedStoresQuery } from '../../types/api';
+import { ManagedStoresQuery } from '../../types/api';
 
-const StoreSelectList: React.FC = () => {
+interface StoreSelectListProps {
+	stores: ManagedStoresQuery['currentUser']['managed'][number]['store'][];
+}
+
+const StoreSelectList: React.FC<StoreSelectListProps> = ({ stores }) => {
 	const { setPreference, activeStore } = useStore(state => ({
 		setPreference: state.setPreference,
 		activeStore: state.activeStore
 	}));
-
-	const [{ data }] = useManagedStoresQuery();
-
-	const stores = data?.currentUser.managed.map(({ store }) => store);
 
 	const handleStoreSelect = React.useCallback(
 		(storeId: string) => () => {
@@ -40,6 +40,8 @@ const StoreSelectList: React.FC = () => {
 			data={stores}
 			keyExtractor={store => store.id}
 			renderItem={renderStore}
+			horizontal
+			showsHorizontalScrollIndicator={false}
 		/>
 	);
 };

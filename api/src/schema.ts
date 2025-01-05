@@ -109,6 +109,7 @@ const Root = `
 		startsWith: String
 		endsWith: String
 		mode: StringWhereMode
+		equals: String
 	}
 
 	type Query {

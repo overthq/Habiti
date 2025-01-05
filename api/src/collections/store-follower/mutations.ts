@@ -15,10 +15,12 @@ const followStore: Resolver<FollowStoreArgs> = async (_, { storeId }, ctx) => {
 
 	for (const pushToken of pushTokens) {
 		if (pushToken) {
-			ctx.services.notifications.queueMessage({
-				to: pushToken,
-				title: `${follower.store.name} has a new follower`,
-				body: `${ctx.user.name} followed you`
+			ctx.services.notifications.queueNotification({
+				type: 'NEW_FOLLOW',
+				data: {
+					followerName: ctx.user.name
+				},
+				recipientTokens: [pushToken]
 			});
 		}
 	}

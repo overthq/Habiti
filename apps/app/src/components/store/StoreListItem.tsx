@@ -1,12 +1,12 @@
 import { formatNaira } from '@habiti/common';
-import { CustomImage, Typography } from '@habiti/components';
+import { CustomImage, Spacer, Typography } from '@habiti/components';
 import React from 'react';
 import { StyleSheet, Pressable } from 'react-native';
 
 import { StoreProductsQuery } from '../../types/api';
 
 interface StoreListItemProps {
-	item: StoreProductsQuery['store']['products'][number];
+	item: StoreProductsQuery['store']['products']['edges'][number]['node'];
 	onPress(): void;
 	side: 'left' | 'right';
 }
@@ -26,6 +26,7 @@ const StoreListItem: React.FC<StoreListItemProps> = ({
 	>
 		<CustomImage height={200} style={styles.image} uri={item.images[0]?.path} />
 		<Typography weight='medium'>{item.name}</Typography>
+		<Spacer y={2} />
 		<Typography variant='secondary'>{formatNaira(item.unitPrice)}</Typography>
 	</Pressable>
 );

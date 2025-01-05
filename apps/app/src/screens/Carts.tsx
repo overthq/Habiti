@@ -1,25 +1,21 @@
-import { ListEmpty, Screen, useTheme } from '@habiti/components';
+import { ListEmpty, Screen, ScreenHeader, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { FlashList } from '@shopify/flash-list';
+// import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { RefreshControl } from 'react-native';
+import { FlatList, RefreshControl } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import CartsListItem from '../components/carts/CartsListItem';
-import { useCartsQuery } from '../types/api';
+import { useCartsQuery } from '../data/queries';
+import useRefreshing from '../hooks/useRefreshing';
 import { AppStackParamList, MainTabParamList } from '../types/navigation';
 
-// TODO:
-// - Maintain a list of recently viewed stores and items,
-//   so that we can use them in the empty state for this screen.
-// - Add "Edit" mode to this screen (with nice animations).
-
 const Carts: React.FC = () => {
-	const [{ data, fetching }, refetch] = useCartsQuery();
+	const { data, refetch } = useCartsQuery();
+	const { refreshing, handleRefresh } = useRefreshing(refetch);
 	const { navigate } =
 		useNavigation<NavigationProp<MainTabParamList & AppStackParamList>>();
 	const { theme } = useTheme();
-
-	const carts = data?.currentUser.carts;
 
 	const handleCartPress = React.useCallback(
 		(cartId: string) => () => {
@@ -28,17 +24,21 @@ const Carts: React.FC = () => {
 		[navigate]
 	);
 
+	const { top } = useSafeAreaInsets();
+
 	return (
-		<Screen>
-			<FlashList
+		<Screen style={{ paddingTop: top }}>
+			<ScreenHeader title='Carts' />
+			<FlatList
+				style={{ flex: 1 }}
 				keyExtractor={c => c.id}
 				renderItem={({ item }) => (
 					<CartsListItem cart={item} onPress={handleCartPress(item.id)} />
 				)}
-				estimatedItemSize={66}
-				data={carts}
-				contentContainerStyle={{ paddingTop: 8 }}
-				ListEmptyComponent={
+				// estimatedItemSize={66}
+				data={data?.carts}
+				contentContainerStyle={{ flexGrow: 1 }}
+				ListEmptyComponent={() => (
 					<ListEmpty
 						title='Empty cart'
 						description={`Looks like your cart is empty. Let's change that.`}
@@ -46,15 +46,13 @@ const Carts: React.FC = () => {
 							text: 'Discover new stores',
 							action: () => navigate('Main.Explore')
 						}}
-						viewStyle={{ marginTop: 32 }}
+						viewStyle={{ flex: 1 }}
 					/>
-				}
+				)}
 				refreshControl={
 					<RefreshControl
-						refreshing={fetching}
-						onRefresh={() => {
-							refetch({ requestPolicy: 'cache-and-network' });
-						}}
+						refreshing={refreshing}
+						onRefresh={handleRefresh}
 						tintColor={theme.text.secondary}
 					/>
 				}

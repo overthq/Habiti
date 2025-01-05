@@ -17,11 +17,11 @@ const ManagePayouts = () => {
 	}, []);
 
 	return (
-		<View>
+		<View style={styles.container}>
 			<SectionHeader title='Available Revenue' />
 			<View style={{ paddingHorizontal: 16 }}>
 				<Pressable style={styles.amount} onPress={navigateToPayouts}>
-					<Typography size='xxxlarge' weight='bold'>
+					<Typography size='xxlarge' weight='bold'>
 						{formatNaira(data?.currentStore.realizedRevenue ?? 0)}
 					</Typography>
 					<Icon name='chevron-right' color={theme.text.secondary} />
@@ -32,6 +32,9 @@ const ManagePayouts = () => {
 };
 
 const styles = StyleSheet.create({
+	container: {
+		paddingTop: 16
+	},
 	amount: {
 		flexDirection: 'row',
 		alignItems: 'center',

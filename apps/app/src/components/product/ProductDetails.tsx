@@ -1,5 +1,5 @@
 import { formatNaira } from '@habiti/common';
-import { SectionHeader, Spacer, Typography } from '@habiti/components';
+import { Spacer, Typography } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
@@ -18,9 +18,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => (
 		<Typography size='xlarge' weight='medium' variant='secondary'>
 			{formatNaira(product.unitPrice)}
 		</Typography>
-		<Spacer y={8} />
-		<SectionHeader title='Description' padded={false} />
-		<Spacer y={2} />
+		<Spacer y={12} />
+		<Typography variant='label' weight='medium'>
+			Description
+		</Typography>
+		<Spacer y={4} />
 		<Typography>{product?.description}</Typography>
 	</View>
 );

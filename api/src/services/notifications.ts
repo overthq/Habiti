@@ -1,13 +1,9 @@
 import { Expo, ExpoPushMessage } from 'expo-server-sdk';
 
-const expo = new Expo();
+import { notificationTemplates } from '../templates/notifications';
+import { NotificationPayload } from '../types/notifications';
 
-// Initial list of actions we want to send user a notification for:
-// - New order (store managers)
-// - Payout confirmed (when Paystack confirms the transaction is sent)
-// - New follower (store managers)
-// - Order fulfilled (user)
-// - Delivery confirmed (store managers)
+const expo = new Expo();
 
 const BATCH_TIME = 15 * 1000;
 
@@ -22,8 +18,25 @@ export default class NotificationsService {
 		}, BATCH_TIME);
 	}
 
-	queueMessage(message: ExpoPushMessage) {
-		this.messages.push(message);
+	queueNotification(payload: NotificationPayload) {
+		const template = notificationTemplates[payload.type];
+
+		if (!template) {
+			console.error(`No template found for notification type: ${payload.type}`);
+			return;
+		}
+
+		const messages: ExpoPushMessage[] = payload.recipientTokens.map(token => ({
+			to: token,
+			title: template.title,
+			body: template.body(payload.data),
+			data: {
+				type: payload.type,
+				...payload.data
+			}
+		}));
+
+		this.messages.push(...messages);
 	}
 
 	private async sendMessages() {

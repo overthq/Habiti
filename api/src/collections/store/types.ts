@@ -22,7 +22,9 @@ const StoreTypes = gql`
 		products(
 			filter: ProductFilterInput
 			orderBy: [ProductOrderByInput!]
-		): [Product!]!
+			first: Int
+			after: String
+		): ProductConnection!
 		orders(orderBy: [OrderOrderByInput!]): [Order!]!
 		managers: [StoreManager!]!
 		followers: [StoreFollower!]!

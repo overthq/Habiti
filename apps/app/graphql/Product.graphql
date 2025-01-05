@@ -2,19 +2,37 @@ query StoreProducts(
 	$storeId: ID!
 	$filter: ProductFilterInput
 	$orderBy: [ProductOrderByInput!]
+	$first: Int
+	$after: String
 ) {
 	store(id: $storeId) {
 		id
 		name
-		products(filter: $filter, orderBy: $orderBy) {
-			id
-			name
-			description
-			unitPrice
-			storeId
-			images {
-				id
-				path
+		products(
+			filter: $filter
+			orderBy: $orderBy
+			first: $first
+			after: $after
+		) {
+			edges {
+				cursor
+				node {
+					id
+					name
+					description
+					unitPrice
+					storeId
+					images {
+						id
+						path
+					}
+				}
+			}
+			pageInfo {
+				hasNextPage
+				hasPreviousPage
+				startCursor
+				endCursor
 			}
 		}
 	}
@@ -46,6 +64,15 @@ query Product($productId: ID!) {
 			}
 		}
 		inCart
+		relatedProducts {
+			id
+			name
+			unitPrice
+			images {
+				id
+				path
+			}
+		}
 	}
 }
 

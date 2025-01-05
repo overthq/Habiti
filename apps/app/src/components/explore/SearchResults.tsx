@@ -36,6 +36,7 @@ const StoresView: React.FC = () => {
 			renderItem={({ item }) => (
 				<StoreResultRow store={item} onPress={handleStorePress(item.id)} />
 			)}
+			estimatedItemSize={100}
 		/>
 	);
 };
@@ -53,29 +54,26 @@ const ProductsView: React.FC = () => {
 
 	return (
 		<FlashList
-			keyExtractor={p => p.id}
-			data={products}
+			keyExtractor={p => p.node.id}
+			data={products.edges}
 			renderItem={({ item }) => (
 				<ProductResultRow
-					product={item}
-					onPress={handleProductPress(item.id)}
+					product={item.node}
+					onPress={handleProductPress(item.node.id)}
 				/>
 			)}
+			estimatedItemSize={100}
 		/>
 	);
 };
 
 interface SearchResultsProps {
-	searchOpen: boolean;
 	searchTerm: string;
 }
 
-const SearchResults: React.FC<SearchResultsProps> = ({
-	searchOpen,
-	searchTerm
-}) => {
+const SearchResults: React.FC<SearchResultsProps> = ({ searchTerm }) => {
 	return (
-		<Screen style={{ display: searchOpen ? 'flex' : 'none' }}>
+		<Screen>
 			<RecentSearches display={!searchTerm} />
 			<SearchResultsMain searchTerm={searchTerm} />
 		</Screen>

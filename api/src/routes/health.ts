@@ -13,7 +13,7 @@ healthRouter.get('/', async (_, res) => {
 		// Check Redis connection
 		await redisClient.ping();
 
-		return res.json({
+		return res.status(200).json({
 			status: 'healthy',
 			timestamp: new Date().toISOString(),
 			services: { database: 'up', redis: 'up' }

@@ -10,7 +10,6 @@ import MainTabNavigator from './MainTab';
 import ModalGroup from './ModalGroup';
 import useClient from '../hooks/useClient';
 import Authenticate from '../screens/Authenticate';
-import CreateStore from '../screens/CreateStore';
 import Landing from '../screens/Landing';
 import Register from '../screens/Register';
 import StoreSelect from '../screens/StoreSelect';
@@ -41,7 +40,6 @@ const Routes: React.FC = () => {
 							!activeStore ? (
 								<AppStack.Group>
 									<AppStack.Screen name='StoreSelect' component={StoreSelect} />
-									<AppStack.Screen name='CreateStore' component={CreateStore} />
 								</AppStack.Group>
 							) : (
 								<>

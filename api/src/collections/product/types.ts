@@ -20,6 +20,7 @@ const ProductTypes = gql`
 		categories: [ProductCategory!]!
 		reviews: [ProductReview!]!
 		options: [ProductOption!]!
+		relatedProducts: [Product!]!
 	}
 
 	input CreateProductInput {
@@ -48,14 +49,41 @@ const ProductTypes = gql`
 		name: StringWhere
 		unitPrice: IntWhere
 		quantity: IntWhere
+		categories: CategoriesWhere
+	}
+
+	input CategoriesWhere {
+		every: ProductCategoryWhere
+		some: ProductCategoryWhere
+		none: ProductCategoryWhere
+	}
+
+	input ProductCategoryWhere {
+		productId: StringWhere
+		categoryId: StringWhere
+	}
+
+	type ProductEdge {
+		cursor: String!
+		node: Product!
+	}
+
+	type ProductConnection {
+		edges: [ProductEdge!]!
+		pageInfo: PageInfo!
+		totalCount: Int!
 	}
 
 	extend type Query {
 		product(id: ID!): Product!
 		products(
+			first: Int
+			after: String
+			last: Int
+			before: String
 			filter: ProductFilterInput
 			orderBy: [ProductOrderByInput!]
-		): [Product!]!
+		): ProductConnection!
 	}
 
 	extend type Mutation {

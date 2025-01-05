@@ -6,27 +6,23 @@ import { View, StyleSheet } from 'react-native';
 
 import FollowedStoresItem from './FollowedStoresItem';
 import { HomeQuery } from '../../types/api';
-import { HomeStackParamList, MainTabParamList } from '../../types/navigation';
+import { ExploreStackParamList } from '../../types/navigation';
 
 interface FollowedStoresProps {
 	followed: HomeQuery['currentUser']['followed'];
 }
 
 const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
-	return (
-		<View style={styles.container}>
-			{followed.length === 0 ? (
-				<Dialog
-					style={styles.dialog}
-					title='No followed stores'
-					description='Discover and follow more stores to improve your experience on the app.'
-				/>
-			) : (
-				<>
-					<SectionHeader title='Followed stores' />
-					<FollowedStoresMain followed={followed} />
-				</>
-			)}
+	return followed.length === 0 ? (
+		<Dialog
+			style={styles.dialog}
+			title='No followed stores'
+			description='Discover and follow more stores to improve your experience on the app.'
+		/>
+	) : (
+		<View>
+			<SectionHeader title='Followed Stores' />
+			<FollowedStoresMain followed={followed} />
 		</View>
 	);
 };
@@ -38,28 +34,25 @@ interface FollowedStoresMainProps {
 const FollowedStoresMain: React.FC<FollowedStoresMainProps> = ({
 	followed
 }) => {
-	const { navigate } =
-		useNavigation<NavigationProp<HomeStackParamList & MainTabParamList>>();
+	const { navigate } = useNavigation<NavigationProp<ExploreStackParamList>>();
 
 	const handleStorePress = React.useCallback(
 		(storeId: string) => () => {
-			navigate('Home.Store', { screen: 'Store.Main', params: { storeId } });
+			navigate('Explore.Store', { screen: 'Store.Main', params: { storeId } });
 		},
 		[]
-	);
-
-	const stores = React.useMemo(
-		() => followed.map(({ store }) => store),
-		[followed]
 	);
 
 	return (
 		<FlashList
 			horizontal
-			data={stores}
-			keyExtractor={item => item.id}
+			data={followed}
+			keyExtractor={item => item.store.id}
 			renderItem={({ item }) => (
-				<FollowedStoresItem store={item} onPress={handleStorePress(item.id)} />
+				<FollowedStoresItem
+					store={item.store}
+					onPress={handleStorePress(item.store.id)}
+				/>
 			)}
 			estimatedItemSize={108}
 		/>
@@ -67,9 +60,6 @@ const FollowedStoresMain: React.FC<FollowedStoresMainProps> = ({
 };
 
 const styles = StyleSheet.create({
-	container: {
-		// paddingTop: 16
-	},
 	dialog: {
 		marginHorizontal: 16
 	}
