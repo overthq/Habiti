@@ -15,7 +15,7 @@ interface StoreProductsProps {
 
 const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 	const [activeCategory, setActiveCategory] = React.useState<string>();
-	const [{ data, fetching }, refetch] = useStoreProductsQuery({
+	const [{ data, error, fetching }, refetch] = useStoreProductsQuery({
 		variables: {
 			storeId: store.id,
 			...(activeCategory && {
@@ -35,6 +35,10 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 		setRefreshing(true);
 		refetch();
 	}, [refetch]);
+
+	React.useEffect(() => {
+		console.log({ data, error });
+	}, [data, error]);
 
 	React.useEffect(() => {
 		if (!fetching && refreshing) setRefreshing(false);

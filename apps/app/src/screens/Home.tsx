@@ -1,4 +1,9 @@
-import { Screen, ScreenHeader, ScrollableScreen } from '@habiti/components';
+import {
+	Screen,
+	ScreenHeader,
+	ScrollableScreen,
+	Spacer
+} from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
@@ -32,7 +37,9 @@ const Home: React.FC = () => {
 				}}
 			/>
 			<ScrollableScreen>
+				<Spacer y={16} />
 				<FollowedStores followed={data.currentUser.followed} />
+				<Spacer y={8} />
 				<RecentOrders orders={data.currentUser.orders} />
 			</ScrollableScreen>
 		</Screen>
