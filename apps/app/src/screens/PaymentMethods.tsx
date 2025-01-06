@@ -2,7 +2,6 @@ import {
 	Icon,
 	ListEmpty,
 	Screen,
-	Separator,
 	Typography,
 	useTheme
 } from '@habiti/components';
