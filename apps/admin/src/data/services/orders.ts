@@ -1,6 +1,7 @@
 import { APIService } from './api';
 import { Product } from './products';
 import { Store } from './stores';
+import { User } from './users';
 
 export enum OrderStatus {
 	Pending = 'Pending',
@@ -21,6 +22,9 @@ export interface OrderProduct {
 
 export interface Order {
 	id: string;
+	userId: string;
+	storeId: string;
+	user: User;
 	store: Store;
 	products: OrderProduct[];
 	total: number;
