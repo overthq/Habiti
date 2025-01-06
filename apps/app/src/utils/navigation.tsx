@@ -1,21 +1,17 @@
 import { Icon, IconType } from '@habiti/components';
-import { RouteProp } from '@react-navigation/native';
+import { NavigationProp, RouteProp } from '@react-navigation/native';
 import React from 'react';
 
-import { MainTabParamList } from '../types/navigation';
+import { AppStackParamList, MainTabParamList } from '../types/navigation';
 
 export const getIcon = (routeName: keyof MainTabParamList): IconType => {
 	switch (routeName) {
 		case 'Main.ForYou':
 			return 'home';
-		case 'Main.Explore':
-			return 'search';
 		case 'Main.Carts':
 			return 'shopping-bag';
 		case 'Main.Profile':
 			return 'user';
-		// case 'Notifications':
-		// 	return ''
 	}
 };
 
@@ -30,3 +26,11 @@ export const tabScreenOptions =
 			<Icon name={getIcon(route.name)} color={color} size={28} />
 		)
 	});
+
+export const navigateToProduct = (
+	navigation: NavigationProp<AppStackParamList>,
+	productId: string
+) => {
+	navigation.navigate('Product', { productId });
+	// TODO: Add recently viewed product
+};

@@ -1,6 +1,5 @@
 import { ListEmpty, Screen, ScreenHeader, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-// import { FlashList } from '@shopify/flash-list';
 import React from 'react';
 import { FlatList, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -35,7 +34,6 @@ const Carts: React.FC = () => {
 				renderItem={({ item }) => (
 					<CartsListItem cart={item} onPress={handleCartPress(item.id)} />
 				)}
-				// estimatedItemSize={66}
 				data={data?.carts}
 				contentContainerStyle={{ flexGrow: 1 }}
 				ListEmptyComponent={() => (
@@ -44,7 +42,7 @@ const Carts: React.FC = () => {
 						description={`Looks like your cart is empty. Let's change that.`}
 						cta={{
 							text: 'Discover new stores',
-							action: () => navigate('Main.Explore')
+							action: () => {}
 						}}
 						viewStyle={{ flex: 1 }}
 					/>

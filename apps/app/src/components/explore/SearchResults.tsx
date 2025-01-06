@@ -9,17 +9,14 @@ import ProductResultRow from './ProductResultRow';
 import RecentSearches from './RecentSearches';
 import { SearchProvider, useSearchContext } from './SearchContext';
 import StoreResultRow from './StoreResultRow';
-import {
-	AppStackParamList,
-	ExploreStackParamList
-} from '../../types/navigation';
+import { AppStackParamList, HomeStackParamList } from '../../types/navigation';
 
 const StoresView: React.FC = () => {
-	const { navigate } = useNavigation<NavigationProp<ExploreStackParamList>>();
+	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();
 	const { stores } = useSearchContext();
 
 	const handleStorePress = (storeId: string) => () => {
-		navigate('Explore.Store', {
+		navigate('Home.Store', {
 			screen: 'Store.Main',
 			params: { storeId }
 		});

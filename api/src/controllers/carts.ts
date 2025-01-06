@@ -14,14 +14,23 @@ export default class CartController {
 		}
 
 		const cart = await prismaClient.cart.findUnique({
-			where: { id: req.params.id, userId: req.auth.id }
+			where: { id: req.params.id, userId: req.auth.id },
+			include: {
+				user: { include: { cards: true } },
+				store: { include: { image: true } },
+				products: { include: { product: { include: { images: true } } } }
+			}
 		});
 
 		if (!cart) {
 			return res.status(404).json({ error: 'Cart not found' });
 		}
 
-		return res.json({ cart });
+		const computedTotal = cart.products.reduce((acc, p) => {
+			return acc + p.product.unitPrice * p.quantity;
+		}, 0);
+
+		return res.json({ cart: { ...cart, total: computedTotal } });
 	}
 
 	// POST /carts/products

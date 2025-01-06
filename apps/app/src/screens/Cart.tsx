@@ -20,9 +20,11 @@ import CartTotal from '../components/cart/CartTotal';
 // import DeliveryInfo from '../components/cart/DeliveryInfo';
 import SelectCard from '../components/cart/SelectCard';
 import StoreInfo from '../components/cart/StoreInfo';
+import { useCartQuery } from '../data/queries';
 import useGoBack from '../hooks/useGoBack';
+import useRefreshing from '../hooks/useRefreshing';
 import useStore from '../state';
-import { useCreateOrderMutation, useCartQuery } from '../types/api';
+import { useCreateOrderMutation } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 import { calculateFees } from '../utils/fees';
 
@@ -37,8 +39,8 @@ const Cart: React.FC = () => {
 	const { goBack } = useNavigation<NavigationProp<AppStackParamList>>();
 	useGoBack();
 
-	const [{ data, fetching }, refetch] = useCartQuery({ variables: { cartId } });
-	const [refreshing, setRefreshing] = React.useState(false);
+	const { data, error, refetch } = useCartQuery(cartId);
+	const { refreshing, handleRefresh } = useRefreshing(refetch);
 	const [, createOrder] = useCreateOrderMutation();
 
 	const { defaultCardId, setPreference } = useStore(state => ({
@@ -50,19 +52,14 @@ const Cart: React.FC = () => {
 
 	const [selectedCard, setSelectedCard] = React.useState(defaultCardId);
 
-	const handleRefresh = React.useCallback(() => {
-		setRefreshing(true);
-		refetch();
-	}, [refetch]);
-
-	React.useEffect(() => {
-		if (!fetching && refreshing) setRefreshing(false);
-	}, [fetching, refreshing]);
-
 	const fees = React.useMemo(
 		() => calculateFees(data?.cart.total ?? 0),
 		[data?.cart.total]
 	);
+
+	React.useEffect(() => {
+		console.log({ data: JSON.stringify(data, null, 2), error });
+	}, [data, error]);
 
 	// TODO: Process the fee amount on the server, to make sure we don't have to
 	// update client code to reflect new fee changes.
