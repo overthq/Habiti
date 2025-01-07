@@ -7,7 +7,7 @@ const router: Router = Router();
 
 const storeController = new StoreController();
 
-router.get('/', storeController.getStores);
+router.get('/', isAdmin, storeController.getStores);
 
 router.post('/', authenticate, storeController.createStore);
 router.post('/:id/follow', authenticate, storeController.followStore);

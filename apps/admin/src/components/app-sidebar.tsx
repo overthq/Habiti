@@ -1,5 +1,8 @@
+'use client';
+
 import { Store, ShoppingCart, Users, Home } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 import {
 	Sidebar,
@@ -37,6 +40,8 @@ const items = [
 ];
 
 export function AppSidebar() {
+	const pathname = usePathname();
+
 	return (
 		<Sidebar>
 			<SidebarHeader />
@@ -46,7 +51,7 @@ export function AppSidebar() {
 						<SidebarMenu>
 							{items.map(item => (
 								<SidebarMenuItem key={item.title}>
-									<SidebarMenuButton asChild>
+									<SidebarMenuButton isActive={pathname === item.url} asChild>
 										<Link href={item.url}>
 											<item.icon />
 											<span>{item.title}</span>
