@@ -11,6 +11,7 @@ import { createServer } from 'http';
 import prismaClient from './config/prisma';
 import redisClient from './config/redis';
 import { initSentry } from './config/sentry';
+import admin from './routes/admin';
 import carts from './routes/carts';
 import health from './routes/health';
 import orders from './routes/orders';
@@ -70,6 +71,7 @@ const main = async () => {
 	app.use('/carts', carts);
 	app.use('/stores', stores);
 	app.use('/orders', orders);
+	app.use('/admin', admin);
 
 	const PORT = Number(process.env.PORT || 3000);
 	httpServer.listen({ port: PORT });

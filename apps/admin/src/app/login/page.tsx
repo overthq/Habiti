@@ -1,13 +1,31 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import React from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLoginMutation } from '@/data/mutations/auth';
 
 export default function LoginPage() {
-	const { mutate: login } = useLoginMutation();
+	const [email, setEmail] = React.useState('');
+	const [password, setPassword] = React.useState('');
+
+	const { mutateAsync: login } = useLoginMutation();
+	const router = useRouter();
+
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+		try {
+			const { accessToken } = await login({ email, password });
+			localStorage.setItem('accessToken', accessToken);
+			router.push('/dashboard');
+		} catch (error) {
+			console.error(error);
+		}
+	};
 
 	return (
 		<div className='min-h-screen flex items-center justify-center'>
@@ -18,7 +36,7 @@ export default function LoginPage() {
 						Enter your credentials to continue
 					</p>
 				</div>
-				<form className='space-y-4'>
+				<form className='space-y-4' onSubmit={handleSubmit}>
 					<div className='space-y-2'>
 						<label htmlFor='email' className='text-sm font-medium'>
 							Email
@@ -28,21 +46,23 @@ export default function LoginPage() {
 							type='email'
 							placeholder='name@example.com'
 							required
+							value={email}
+							onChange={e => setEmail(e.target.value)}
 						/>
 					</div>
 					<div className='space-y-2'>
 						<label htmlFor='password' className='text-sm font-medium'>
 							Password
 						</label>
-						<Input id='password' type='password' required />
+						<Input
+							id='password'
+							type='password'
+							required
+							value={password}
+							onChange={e => setPassword(e.target.value)}
+						/>
 					</div>
-					<Button
-						type='submit'
-						className='w-full'
-						onClick={() =>
-							login({ email: 'admin@example.com', password: 'password' })
-						}
-					>
+					<Button type='submit' className='w-full'>
 						Sign in
 					</Button>
 				</form>
