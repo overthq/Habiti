@@ -42,23 +42,35 @@ export interface UpdateOrderBody {
 	status?: OrderStatus;
 }
 
+interface GetOrdersResponse {
+	orders: Order[];
+}
+
+interface GetOrderResponse {
+	order: Order;
+}
+
+interface UpdateOrderResponse {
+	order: Order;
+}
+
 export class OrderService {
 	constructor(private readonly api: APIService) {}
 
 	async getOrders(params?: OrderFilters) {
-		return this.api.get<Order[]>('/orders', params);
+		return this.api.get<GetOrdersResponse>('/orders', params);
 	}
 
 	async getOrder(id: string) {
-		return this.api.get<Order>(`/orders/${id}`);
+		return this.api.get<GetOrderResponse>(`/orders/${id}`);
 	}
 
 	async updateOrder(id: string, body: UpdateOrderBody) {
-		return this.api.patch<Order>(`/orders/${id}`, body);
+		return this.api.patch<UpdateOrderResponse>(`/orders/${id}`, body);
 	}
 
 	async cancelOrder(id: string) {
-		return this.api.patch<Order>(`/orders/${id}`, {
+		return this.api.patch<UpdateOrderResponse>(`/orders/${id}`, {
 			status: OrderStatus.Cancelled
 		});
 	}

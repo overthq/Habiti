@@ -26,6 +26,17 @@ export default class UserController {
 		return res.json({ user: updatedUser });
 	}
 
+	// DELETE /users/current
+	public async deleteCurrentUser(req: Request, res: Response) {
+		if (!req.auth) {
+			return res.status(401).json({ error: 'User not authenticated' });
+		}
+
+		await prismaClient.user.delete({ where: { id: req.auth.id } });
+
+		return res.status(204).json({ message: 'User deleted' });
+	}
+
 	// GET /users/current/followed-stores
 	public async getFollowedStores(req: Request, res: Response) {
 		if (!req.auth) {

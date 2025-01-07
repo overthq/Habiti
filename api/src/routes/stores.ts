@@ -1,11 +1,13 @@
 import { Router } from 'express';
 
 import StoreController from '../controllers/stores';
-import { authenticate, optionalAuth } from '../middleware/auth';
+import { authenticate, isAdmin, optionalAuth } from '../middleware/auth';
 
 const router: Router = Router();
 
 const storeController = new StoreController();
+
+router.get('/', storeController.getStores);
 
 router.post('/', authenticate, storeController.createStore);
 router.post('/:id/follow', authenticate, storeController.followStore);

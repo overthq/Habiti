@@ -13,6 +13,7 @@ import redisClient from './config/redis';
 import { initSentry } from './config/sentry';
 import carts from './routes/carts';
 import health from './routes/health';
+import orders from './routes/orders';
 import payments from './routes/payments';
 import stores from './routes/stores';
 import users from './routes/users';
@@ -68,6 +69,7 @@ const main = async () => {
 	app.use('/users', users);
 	app.use('/carts', carts);
 	app.use('/stores', stores);
+	app.use('/orders', orders);
 
 	const PORT = Number(process.env.PORT || 3000);
 	httpServer.listen({ port: PORT });

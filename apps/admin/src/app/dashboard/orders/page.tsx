@@ -23,7 +23,8 @@ const statusVariants = {
 } as const;
 
 export default function OrdersPage() {
-	const { data: orders, isLoading } = useOrdersQuery();
+	const { data, isLoading } = useOrdersQuery();
+
 	return (
 		<div className='space-y-6'>
 			<div className='flex justify-between items-center'>
@@ -51,7 +52,7 @@ export default function OrdersPage() {
 								</TableCell>
 							</TableRow>
 						) : (
-							orders?.map(order => (
+							data?.orders?.map(order => (
 								<TableRow key={order.id}>
 									<TableCell>{order.id}</TableCell>
 									<TableCell>{order.user.name}</TableCell>

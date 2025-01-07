@@ -14,7 +14,7 @@ import {
 import { useUsersQuery } from '@/data/queries/users';
 
 export default function UsersPage() {
-	const { data: users, isLoading } = useUsersQuery();
+	const { data, isLoading } = useUsersQuery();
 
 	return (
 		<div className='space-y-6'>
@@ -40,7 +40,7 @@ export default function UsersPage() {
 								</TableCell>
 							</TableRow>
 						) : (
-							users?.map(user => (
+							data?.users?.map(user => (
 								<TableRow key={user.id}>
 									<TableCell>{user.name}</TableCell>
 									<TableCell>{user.email}</TableCell>

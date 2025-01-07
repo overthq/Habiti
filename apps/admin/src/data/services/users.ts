@@ -13,11 +13,15 @@ export interface User {
 	updatedAt: string;
 }
 
+export interface GetUsersResponse {
+	users: User[];
+}
+
 export class UserService {
 	constructor(private readonly api: APIService) {}
 
 	async getUsers() {
-		return this.api.get<User[]>('/users');
+		return this.api.get<GetUsersResponse>('/users');
 	}
 
 	async getUser(id: string) {

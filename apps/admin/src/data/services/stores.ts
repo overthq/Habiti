@@ -12,6 +12,10 @@ export interface Store {
 	updatedAt: string;
 }
 
+export interface GetStoresResponse {
+	stores: Store[];
+}
+
 export interface StoreFilters {
 	filter?: Record<string, any>;
 	orderBy?: Record<string, 'asc' | 'desc'>;
@@ -26,7 +30,7 @@ export class StoreService {
 	constructor(private readonly api: APIService) {}
 
 	async getStores(params?: StoreFilters) {
-		return this.api.get<Store[]>('/stores', params);
+		return this.api.get<GetStoresResponse>('/stores', params);
 	}
 
 	async getStore(id: string) {

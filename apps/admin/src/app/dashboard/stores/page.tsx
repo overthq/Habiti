@@ -14,7 +14,7 @@ import {
 import { useStoresQuery } from '@/data/queries/stores';
 
 export default function StoresPage() {
-	const { data: stores, isLoading } = useStoresQuery();
+	const { data, isLoading } = useStoresQuery();
 
 	return (
 		<div className='space-y-6'>
@@ -38,7 +38,7 @@ export default function StoresPage() {
 								</TableCell>
 							</TableRow>
 						) : (
-							stores?.map(store => (
+							data?.stores?.map(store => (
 								<TableRow key={store.id}>
 									<TableCell>{store.name}</TableCell>
 									<TableCell>

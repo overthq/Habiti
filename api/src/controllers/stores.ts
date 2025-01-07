@@ -5,6 +5,14 @@ import { hydrateQuery } from '../utils/queries';
 import { uploadImages } from '../utils/upload';
 
 export default class StoreController {
+	public async getStores(req: Request, res: Response) {
+		const query = hydrateQuery(req.query);
+
+		const stores = await prismaClient.store.findMany(query);
+
+		return res.json({ stores });
+	}
+
 	// POST /stores
 	public async createStore(req: Request, res: Response) {
 		const { name, description, website, twitter, instagram } = req.body;
