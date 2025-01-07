@@ -1,4 +1,4 @@
-import { Store, ShoppingCart, Users } from 'lucide-react';
+import { Store, ShoppingCart, Users, Home } from 'lucide-react';
 import Link from 'next/link';
 
 import {
@@ -14,6 +14,11 @@ import {
 } from '@/components/ui/sidebar';
 
 const items = [
+	{
+		title: 'Home',
+		url: '/dashboard',
+		icon: Home
+	},
 	{
 		title: 'Stores',
 		url: '/dashboard/stores',
