@@ -1,6 +1,0 @@
-{
-	"extends": ["universe/native"],
-	"globals": {
-    "__dirname": true
-  }
-}

@@ -20,22 +20,22 @@ export class APIService {
 		});
 	}
 
-	async get<T>(path: string, params?: Record<string, any>): Promise<T> {
+	async get<T>(path: string, params?: object): Promise<T> {
 		const response = await this.api.get(path, { params });
 		return response.data;
 	}
 
-	async post<T>(path: string, body: any): Promise<T> {
+	async post<T>(path: string, body: object): Promise<T> {
 		const response = await this.api.post(path, body);
 		return response.data;
 	}
 
-	async put<T>(path: string, body: any): Promise<T> {
+	async put<T>(path: string, body: object): Promise<T> {
 		const response = await this.api.put(path, body);
 		return response.data;
 	}
 
-	async patch<T>(path: string, body: any): Promise<T> {
+	async patch<T>(path: string, body: object): Promise<T> {
 		const response = await this.api.patch(path, body);
 		return response.data;
 	}

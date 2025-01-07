@@ -1,6 +1,7 @@
 'use client';
 
 import { Edit, Trash } from 'lucide-react';
+import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -43,8 +44,15 @@ export default function StoresPage() {
 									<TableCell>{store.name}</TableCell>
 									<TableCell>
 										<div className='flex gap-2'>
-											<Button variant='ghost' size='sm' className='h-8 w-8 p-0'>
-												<Edit className='h-4 w-4' />
+											<Button
+												variant='ghost'
+												size='sm'
+												className='h-8 w-8 p-0'
+												asChild
+											>
+												<Link href={`/dashboard/stores/${store.id}`}>
+													<Edit className='h-4 w-4' />
+												</Link>
 											</Button>
 											<Button
 												variant='ghost'

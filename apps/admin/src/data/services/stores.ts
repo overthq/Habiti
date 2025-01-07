@@ -1,4 +1,5 @@
 import { APIService } from './api';
+import { Product } from './products';
 
 export interface Store {
 	id: string;
@@ -17,13 +18,17 @@ export interface GetStoresResponse {
 }
 
 export interface StoreFilters {
-	filter?: Record<string, any>;
+	filter?: Record<string, string | number>;
 	orderBy?: Record<string, 'asc' | 'desc'>;
 }
 
 export interface UpdateStoreBody {
 	name?: string;
 	description?: string;
+}
+
+export interface GetStoreProductsResponse {
+	products: Product[];
 }
 
 export class StoreService {
@@ -46,7 +51,10 @@ export class StoreService {
 	}
 
 	async getStoreProducts(id: string, params?: StoreFilters) {
-		return this.api.get(`/stores/${id}/products`, params);
+		return this.api.get<GetStoreProductsResponse>(
+			`/stores/${id}/products`,
+			params
+		);
 	}
 
 	async getStoreOrders(id: string, params?: StoreFilters) {

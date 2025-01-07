@@ -16,7 +16,7 @@ export interface Product {
 }
 
 export interface ProductFilters {
-	filter?: Record<string, any>;
+	filter?: Record<string, string | number>;
 	orderBy?: Record<string, 'asc' | 'desc'>;
 }
 

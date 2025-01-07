@@ -34,7 +34,7 @@ export interface Order {
 }
 
 export interface OrderFilters {
-	filter?: Record<string, any>;
+	filter?: Record<string, string | number>;
 	orderBy?: Record<string, 'asc' | 'desc'>;
 }
 

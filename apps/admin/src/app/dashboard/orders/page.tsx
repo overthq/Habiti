@@ -1,6 +1,7 @@
 'use client';
 
 import { Eye } from 'lucide-react';
+import Link from 'next/link';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -74,8 +75,15 @@ export default function OrdersPage() {
 									</TableCell>
 									<TableCell>
 										<div className='flex gap-2'>
-											<Button variant='ghost' size='sm' className='h-8 w-8 p-0'>
-												<Eye className='h-4 w-4' />
+											<Button
+												variant='ghost'
+												size='sm'
+												className='h-8 w-8 p-0'
+												asChild
+											>
+												<Link href={`/dashboard/orders/${order.id}`}>
+													<Eye className='h-4 w-4' />
+												</Link>
 											</Button>
 										</div>
 									</TableCell>
