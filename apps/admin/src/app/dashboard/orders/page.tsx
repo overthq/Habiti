@@ -32,67 +32,65 @@ export default function OrdersPage() {
 				<h1 className='text-3xl font-bold'>Orders</h1>
 			</div>
 
-			<div className='bg-white dark:bg-gray-900 shadow rounded-lg'>
-				<Table>
-					<TableHeader>
+			<Table>
+				<TableHeader>
+					<TableRow>
+						<TableHead>Order ID</TableHead>
+						<TableHead>Customer</TableHead>
+						<TableHead>Store</TableHead>
+						<TableHead>Status</TableHead>
+						<TableHead>Total</TableHead>
+						<TableHead>Date</TableHead>
+						<TableHead>Actions</TableHead>
+					</TableRow>
+				</TableHeader>
+				<TableBody>
+					{isLoading ? (
 						<TableRow>
-							<TableHead>Order ID</TableHead>
-							<TableHead>Customer</TableHead>
-							<TableHead>Store</TableHead>
-							<TableHead>Status</TableHead>
-							<TableHead>Total</TableHead>
-							<TableHead>Date</TableHead>
-							<TableHead>Actions</TableHead>
+							<TableCell colSpan={7} className='text-center'>
+								Loading...
+							</TableCell>
 						</TableRow>
-					</TableHeader>
-					<TableBody>
-						{isLoading ? (
-							<TableRow>
-								<TableCell colSpan={7} className='text-center'>
-									Loading...
+					) : (
+						data?.orders?.map(order => (
+							<TableRow key={order.id}>
+								<TableCell>{order.id}</TableCell>
+								<TableCell>{order.user.name}</TableCell>
+								<TableCell>{order.store.name}</TableCell>
+								<TableCell>
+									<Badge
+										variant={
+											statusVariants[
+												order.status as keyof typeof statusVariants
+											]
+										}
+									>
+										{order.status}
+									</Badge>
+								</TableCell>
+								<TableCell>${order.total.toFixed(2)}</TableCell>
+								<TableCell>
+									{new Date(order.createdAt).toLocaleDateString()}
+								</TableCell>
+								<TableCell>
+									<div className='flex gap-2'>
+										<Button
+											variant='ghost'
+											size='sm'
+											className='h-8 w-8 p-0'
+											asChild
+										>
+											<Link href={`/dashboard/orders/${order.id}`}>
+												<Eye className='h-4 w-4' />
+											</Link>
+										</Button>
+									</div>
 								</TableCell>
 							</TableRow>
-						) : (
-							data?.orders?.map(order => (
-								<TableRow key={order.id}>
-									<TableCell>{order.id}</TableCell>
-									<TableCell>{order.user.name}</TableCell>
-									<TableCell>{order.store.name}</TableCell>
-									<TableCell>
-										<Badge
-											variant={
-												statusVariants[
-													order.status as keyof typeof statusVariants
-												]
-											}
-										>
-											{order.status}
-										</Badge>
-									</TableCell>
-									<TableCell>${order.total.toFixed(2)}</TableCell>
-									<TableCell>
-										{new Date(order.createdAt).toLocaleDateString()}
-									</TableCell>
-									<TableCell>
-										<div className='flex gap-2'>
-											<Button
-												variant='ghost'
-												size='sm'
-												className='h-8 w-8 p-0'
-												asChild
-											>
-												<Link href={`/dashboard/orders/${order.id}`}>
-													<Eye className='h-4 w-4' />
-												</Link>
-											</Button>
-										</div>
-									</TableCell>
-								</TableRow>
-							))
-						)}
-					</TableBody>
-				</Table>
-			</div>
+						))
+					)}
+				</TableBody>
+			</Table>
 		</div>
 	);
 }
