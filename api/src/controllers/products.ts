@@ -118,4 +118,36 @@ export default class ProductController {
 
 		return res.json({ product });
 	}
+
+	// PUT /products/:id/categories
+	public async updateProductCategories(
+		req: Request<{ id: string }, {}, { add: string[]; remove: string[] }>,
+		res: Response
+	) {
+		if (!req.auth) {
+			return res.status(401).json({ error: 'Unauthorized' });
+		}
+
+		if (!req.params.id) {
+			return res.status(400).json({ error: 'Product ID is required' });
+		}
+
+		const { add, remove } = req.body;
+
+		await prismaClient.productCategory.deleteMany({
+			where: { productId: req.params.id, categoryId: { in: remove } }
+		});
+
+		await prismaClient.productCategory.createMany({
+			data: add.map(categoryId => ({ productId: req.params.id, categoryId })),
+			skipDuplicates: true
+		});
+
+		const product = await prismaClient.product.findUnique({
+			where: { id: req.params.id },
+			include: { categories: true }
+		});
+
+		return res.json({ product });
+	}
 }

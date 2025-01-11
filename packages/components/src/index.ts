@@ -11,7 +11,7 @@ export { Icon, IconType } from './Icon';
 export { default as IconButton } from './IconButton';
 export { default as Input } from './Input';
 export { default as ListEmpty } from './ListEmpty';
-export { default as ModalSheet } from './ModalSheet';
+export { default as BottomModal } from './BottomModal';
 export { default as Radio } from './Radio';
 export { default as Row } from './Row';
 export { default as Screen } from './Screen';

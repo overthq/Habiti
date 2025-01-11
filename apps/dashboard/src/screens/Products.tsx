@@ -23,7 +23,7 @@ const Products: React.FC = () => {
 			<View style={{ flex: 1 }}>
 				<ProductList />
 			</View>
-			<FAB onPress={() => navigate('Add Product')} text='Add Product' />
+			<FAB onPress={() => navigate('Add Product')} text='New Product' />
 		</Screen>
 	);
 };

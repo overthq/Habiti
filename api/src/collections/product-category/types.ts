@@ -45,6 +45,11 @@ const ProductCategoryTypes = gql`
 		categoryId: ID!
 	}
 
+	input UpdateProductCategoriesInput {
+		add: [ID!]!
+		remove: [ID!]!
+	}
+
 	extend type Query {
 		storeProductCategory(id: ID!): StoreProductCategory
 	}
@@ -60,6 +65,10 @@ const ProductCategoryTypes = gql`
 		removeProductFromCategory(
 			input: RemoveProductFromCategoryInput!
 		): ProductCategory!
+		updateProductCategories(
+			id: ID!
+			input: UpdateProductCategoriesInput!
+		): Product!
 	}
 `;
 

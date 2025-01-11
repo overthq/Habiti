@@ -18,9 +18,6 @@ const useClient = () => {
 				fetchOptions: () => ({
 					headers: {
 						authorization: accessToken ? `Bearer ${accessToken}` : '',
-						// FIXME: This is inherently insecure. We have to either:
-						// - Add the storeId to the accessToken before signing, or
-						// - Add access control checks on the server.
 						'x-market-store-id': activeStore ?? ''
 					}
 				}),

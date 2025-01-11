@@ -52,6 +52,11 @@ const ProductTypes = gql`
 		categories: CategoriesWhere
 	}
 
+	input UpdateProductImagesInput {
+		add: [Upload!]!
+		remove: [ID!]!
+	}
+
 	input CategoriesWhere {
 		every: ProductCategoryWhere
 		some: ProductCategoryWhere
@@ -90,6 +95,7 @@ const ProductTypes = gql`
 		createProduct(input: CreateProductInput!): Product!
 		editProduct(id: ID!, input: EditProductInput!): Product!
 		deleteProduct(id: ID!): Product!
+		updateProductImages(id: ID!, input: UpdateProductImagesInput!): Product!
 	}
 `;
 

@@ -9,7 +9,7 @@ const Home = () => {
 	const { userId } = useAuthContext();
 
 	return (
-		<main style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+		<main className='flex flex-col h-screen'>
 			<Header />
 			<Hero />
 			<Footer />

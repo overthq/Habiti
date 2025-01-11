@@ -1,13 +1,15 @@
-import { TextButton } from '@habiti/components';
+import { Icon, TextButton } from '@habiti/components';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import ProductForm from './ProductForm';
 import type { ProductFormData } from '../../screens/AddProduct';
 import { ProductQuery, useEditProductMutation } from '../../types/api';
 import { generateUploadFile } from '../../utils/images';
+import ProductSettings from './ProductSettings';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 interface ProductMainProps {
 	product: ProductQuery['product'];
@@ -18,13 +20,15 @@ const ProductMain: React.FC<ProductMainProps> = ({ product, mode }) => {
 	const navigation = useNavigation();
 	const [toUpload, setToUpload] = React.useState<string[]>([]);
 	const [{ fetching }, editProduct] = useEditProductMutation();
+	const settingsModalRef = React.useRef<BottomSheetModal>(null);
 
 	const formMethods = useForm<ProductFormData>({
 		defaultValues: {
 			name: product.name,
 			description: product.description,
 			unitPrice: String(product.unitPrice),
-			quantity: String(product.quantity)
+			quantity: String(product.quantity),
+			categories: product.categories.map(({ category }) => category.id)
 		}
 	});
 
@@ -52,13 +56,20 @@ const ProductMain: React.FC<ProductMainProps> = ({ product, mode }) => {
 		navigation.setOptions({
 			headerRight: () => {
 				return (
-					<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+					<View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
 						<TextButton
 							onPress={formMethods.handleSubmit(onSubmit)}
 							disabled={disabled || fetching}
 						>
 							Save
 						</TextButton>
+						<Pressable
+							onPress={() => {
+								settingsModalRef.current?.present();
+							}}
+						>
+							<Icon name='more-horizontal' size={20} />
+						</Pressable>
 					</View>
 				);
 			}
@@ -75,6 +86,7 @@ const ProductMain: React.FC<ProductMainProps> = ({ product, mode }) => {
 				setImagesToUpload={setToUpload}
 				mode={mode}
 			/>
+			<ProductSettings productId={product.id} modalRef={settingsModalRef} />
 		</FormProvider>
 	);
 };

@@ -1,32 +1,51 @@
 import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, PressableProps } from 'react-native';
 
 import Typography from './Typography';
+import { ThemeObject } from './styles/theme';
+import { Icon, IconType } from './Icon';
+import { useTheme } from './Theme';
 
-// It is not lost on me that this is probably a bad name/idea for a component.
-// TODO: Move this entire component to a "subtype" of `Button`
-
-interface SmallButtonProps {
+interface SmallButtonProps extends PressableProps {
+	variant?: keyof ThemeObject['button'];
 	text: string;
+	icon?: IconType;
 }
 
-const SmallButton: React.FC<SmallButtonProps> = ({ text }) => {
+const SmallButton: React.FC<SmallButtonProps> = ({
+	text,
+	icon,
+	variant = 'primary',
+	...props
+}) => {
+	const { theme } = useTheme();
+	const colors = theme.button[variant];
+
 	return (
-		<Pressable style={styles.container}>
-			<Typography>{text}</Typography>
+		<Pressable
+			style={[styles.container, { backgroundColor: colors.background }]}
+			{...props}
+		>
+			{icon && <Icon name={icon} size={12} color={colors.text} />}
+			<Typography weight='medium' size='small' style={{ color: colors.text }}>
+				{text}
+			</Typography>
 		</Pressable>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		paddingVertical: 4,
-		paddingHorizontal: 8,
-		borderRadius: 4,
-		justifyContent: 'center',
-		alignItems: 'center'
+		paddingVertical: 6,
+		paddingHorizontal: 12,
+		borderRadius: 6,
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 4
 	},
-	text: {}
+	text: {
+		fontSize: 12
+	}
 });
 
 export default SmallButton;

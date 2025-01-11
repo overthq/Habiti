@@ -60,7 +60,7 @@ const OrdersFilter: React.FC = () => {
 				/>
 			</View>
 			<Pressable onPress={openFilterSheet}>
-				<Icon name='filter' size={20} />
+				<Icon name='sliders-horizontal' size={20} />
 			</Pressable>
 		</View>
 	);

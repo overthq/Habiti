@@ -91,10 +91,49 @@ const deleteProduct: Resolver<DeleteProductArgs> = async (_, { id }, ctx) => {
 	return product;
 };
 
+interface UpdateProductImagesArgs {
+	id: string;
+	input: {
+		add: Promise<FileUpload>[];
+		remove: string[];
+	};
+}
+
+const updateProductImages: Resolver<UpdateProductImagesArgs> = async (
+	_,
+	{ id, input },
+	ctx
+) => {
+	const uploadedImages = await uploadImages(input.add);
+
+	if (input.remove.length > 0) {
+		await ctx.prisma.image.deleteMany({
+			where: { id: { in: input.remove } }
+		});
+	}
+
+	const product = await ctx.prisma.product.update({
+		where: { id },
+		data: {
+			images: {
+				createMany: {
+					data: uploadedImages.map(({ url, public_id }) => ({
+						path: url,
+						publicId: public_id
+					}))
+				}
+			}
+		}
+	});
+
+	return product;
+};
+
 export default {
 	Mutation: {
 		createProduct,
 		editProduct,
-		deleteProduct
+		deleteProduct,
+		updateProductImages
 	}
 };

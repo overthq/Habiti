@@ -49,14 +49,6 @@ const PaymentMethods: React.FC = () => {
 
 	return (
 		<Screen>
-			{/* <Typography
-					weight='medium'
-					variant='label'
-					style={styles.sectionHeader}
-				>
-					Cards
-				</Typography>
-				<Separator /> */}
 			<FlatList
 				style={{ flex: 1 }}
 				contentContainerStyle={{ flexGrow: 1 }}

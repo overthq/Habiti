@@ -30,6 +30,15 @@ export default class StoreController {
 		return res.json({ store });
 	}
 
+	// GET /stores/current/payouts
+	public async getCurrentStorePayouts(req: Request, res: Response) {
+		const store = await this.loadCurrentStore(req);
+		const payouts = await prismaClient.payout.findMany({
+			where: { storeId: store.id }
+		});
+		return res.json({ payouts });
+	}
+
 	// GET /stores/:id
 	public async getStoreById(req: Request, res: Response) {
 		if (!req.params.id) {

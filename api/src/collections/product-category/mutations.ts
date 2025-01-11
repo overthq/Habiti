@@ -36,6 +36,39 @@ const removeProductFromCategory: Resolver<AddProductToCategoryArgs> = async (
 	return productCategory;
 };
 
+interface UpdateProductCategoriesArgs {
+	input: {
+		productId: string;
+		add: string[];
+		remove: string[];
+	};
+}
+
+const updateProductCategories: Resolver<UpdateProductCategoriesArgs> = async (
+	_,
+	{ input },
+	ctx
+) => {
+	await ctx.prisma.productCategory.deleteMany({
+		where: { productId: input.productId, categoryId: { in: input.remove } }
+	});
+
+	await ctx.prisma.productCategory.createMany({
+		data: input.add.map(categoryId => ({
+			productId: input.productId,
+			categoryId
+		})),
+		skipDuplicates: true
+	});
+
+	const product = await ctx.prisma.product.findUnique({
+		where: { id: input.productId },
+		include: { categories: true }
+	});
+
+	return product;
+};
+
 interface CreateProductCategoryArgs {
 	input: {
 		name: string;
@@ -112,6 +145,7 @@ export default {
 		createProductCategory,
 		editProductCategory,
 		deleteProductCategory,
-		removeProductFromCategory
+		removeProductFromCategory,
+		updateProductCategories
 	}
 };

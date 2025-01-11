@@ -7,7 +7,6 @@ import Categories from './Categories';
 import CurrencyInput from './CurrencyInput';
 import Images from './Images';
 import InventoryInput from './InventoryInput';
-import ProductActions from './ProductActions';
 // import ProductOptions from './ProductOptions';
 // import ProductReviews from './ProductReviews';
 import Section from './Section';
@@ -64,7 +63,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
 					{/* <ProductOptions options={options} />
 					<ProductReviews /> */}
 					<Categories categories={categories} />
-					<ProductActions />
 					<Spacer y={8} />
 				</>
 			)}
