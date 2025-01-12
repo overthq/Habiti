@@ -35,8 +35,7 @@ const ProductMain: React.FC<ProductMainProps> = ({ product, mode }) => {
 			name: product.name,
 			description: product.description,
 			unitPrice: String(product.unitPrice),
-			quantity: String(product.quantity),
-			categories: product.categories.map(({ category }) => category.id)
+			quantity: String(product.quantity)
 		}
 	});
 

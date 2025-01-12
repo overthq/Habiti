@@ -34,6 +34,27 @@ const StoreTypes = gql`
 		categories: [StoreProductCategory!]!
 	}
 
+	type StoreFollower {
+		id: ID!
+		storeId: ID!
+		followerId: ID!
+		store: Store!
+		follower: User!
+	}
+
+	type StoreManager {
+		id: ID!
+		storeId: ID!
+		managerId: ID!
+		store: Store!
+		manager: User!
+	}
+
+	input AddStoreManagerInput {
+		storeId: ID!
+		managerId: ID!
+	}
+
 	enum StoreStatPeriod {
 		Day
 		Week
@@ -77,6 +98,10 @@ const StoreTypes = gql`
 		createStore(input: CreateStoreInput!): Store!
 		editStore(input: EditStoreInput!): Store!
 		deleteStore(id: ID!): ID!
+		followStore(storeId: ID!): StoreFollower!
+		unfollowStore(storeId: ID!): StoreFollower!
+		addStoreManager(input: AddStoreManagerInput): StoreManager!
+		removeStoreManager(managerId: ID!): StoreManager!
 	}
 `;
 

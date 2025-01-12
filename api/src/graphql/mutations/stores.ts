@@ -4,6 +4,7 @@ import { FileUpload } from 'graphql-upload';
 import { Resolver } from '../../types/resolvers';
 import { createTransferReceipient } from '../../utils/paystack';
 import { uploadStream } from '../../utils/upload';
+import { getPushTokensForStore } from '../../utils/notifications';
 
 interface CreateStoreArgs {
 	input: {
@@ -121,10 +122,98 @@ const deleteStore: Resolver<DeleteStoreArgs> = async (_, { id }, ctx) => {
 	return id;
 };
 
+interface FollowStoreArgs {
+	storeId: string;
+}
+
+const followStore: Resolver<FollowStoreArgs> = async (_, { storeId }, ctx) => {
+	const follower = await ctx.prisma.storeFollower.create({
+		data: { followerId: ctx.user.id, storeId },
+		include: { store: true }
+	});
+
+	const pushTokens = await getPushTokensForStore(storeId);
+
+	for (const pushToken of pushTokens) {
+		if (pushToken) {
+			ctx.services.notifications.queueNotification({
+				type: 'NEW_FOLLOW',
+				data: {
+					followerName: ctx.user.name
+				},
+				recipientTokens: [pushToken]
+			});
+		}
+	}
+
+	return follower;
+};
+
+interface UnfollowStoreArgs {
+	storeId: string;
+}
+
+const unfollowStore: Resolver<UnfollowStoreArgs> = async (
+	_,
+	{ storeId },
+	ctx
+) => {
+	return ctx.prisma.storeFollower.delete({
+		where: { storeId_followerId: { storeId, followerId: ctx.user.id } }
+	});
+};
+
+interface AddStoreManagerArgs {
+	input: {
+		storeId: string;
+		managerId: string;
+	};
+}
+
+const addStoreManager: Resolver<AddStoreManagerArgs> = async (
+	_parent,
+	args,
+	ctx
+) => {
+	return ctx.prisma.storeManager.create({
+		data: {
+			storeId: args.input.storeId,
+			managerId: args.input.managerId
+		}
+	});
+};
+
+interface RemoveStoreManagerArgs {
+	managerId: string;
+}
+
+const removeStoreManager: Resolver<RemoveStoreManagerArgs> = async (
+	_parent,
+	args,
+	ctx
+) => {
+	if (!ctx.storeId) {
+		throw new Error('No storeId specified');
+	}
+
+	return ctx.prisma.storeManager.delete({
+		where: {
+			storeId_managerId: {
+				storeId: ctx.storeId,
+				managerId: args.managerId
+			}
+		}
+	});
+};
+
 export default {
 	Mutation: {
 		createStore,
 		editStore,
-		deleteStore
+		deleteStore,
+		followStore,
+		unfollowStore,
+		addStoreManager,
+		removeStoreManager
 	}
 };

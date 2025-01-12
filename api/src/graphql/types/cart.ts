@@ -1,6 +1,19 @@
 import gql from 'graphql-tag';
 
-const CartProductTypes = gql`
+const CartTypes = gql`
+	type Cart {
+		id: ID!
+		userId: ID!
+		storeId: ID!
+		createdAt: String!
+		updatedAt: String!
+
+		total: Int!
+		user: User!
+		store: Store!
+		products: [CartProduct!]!
+	}
+
 	type CartProduct {
 		id: ID!
 		cartId: ID!
@@ -22,11 +35,24 @@ const CartProductTypes = gql`
 		quantity: Int!
 	}
 
+	input CreateCartInput {
+		storeId: ID!
+		productId: ID!
+		quantity: Int!
+	}
+
+	extend type Query {
+		carts: [Cart!]!
+		cart(id: ID!): Cart!
+	}
+
 	extend type Mutation {
+		createCart(input: CreateCartInput!): Cart!
+		deleteCart(cartId: ID!): Cart!
 		addToCart(input: AddToCartInput!): CartProduct!
 		updateCartProduct(input: UpdateCartProductInput!): CartProduct!
 		removeFromCart(cartId: ID!, productId: ID!): ID!
 	}
 `;
 
-export default CartProductTypes;
+export default CartTypes;

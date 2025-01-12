@@ -21,6 +21,32 @@ const deleteImage: Resolver<DeleteImageArgs> = async (_, { id }, ctx) => {
 	return image;
 };
 
+interface DeleteImagesArgs {
+	imageIds: string[];
+}
+
+const deleteImages: Resolver<DeleteImagesArgs> = async (
+	_,
+	{ imageIds },
+	ctx
+) => {
+	const images = await ctx.prisma.image.findMany({
+		where: { id: { in: imageIds } }
+	});
+
+	cloudinary.v2.api.delete_resources(
+		images.map(({ publicId }) => publicId),
+		error => {
+			if (error) console.log(error);
+			else console.log('Deleted');
+		}
+	);
+
+	await ctx.prisma.image.deleteMany({ where: { id: { in: imageIds } } });
+
+	return images;
+};
+
 export default {
 	Mutation: {
 		deleteImage

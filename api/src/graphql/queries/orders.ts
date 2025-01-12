@@ -17,7 +17,9 @@ const store: Resolver = async (parent, _, ctx) => {
 };
 
 const products: Resolver = async (parent, _, ctx) => {
-	return ctx.prisma.order.findUnique({ where: { id: parent.id } }).products();
+	return ctx.prisma.order
+		.findUnique({ where: { id: parent.id } })
+		.products({ include: { order: true, product: true } });
 };
 
 const total: Resolver = async (parent, _, ctx) => {

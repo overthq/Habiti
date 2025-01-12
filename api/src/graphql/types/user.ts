@@ -18,6 +18,18 @@ const UserTypes = gql`
 		addresses: [DeliveryAddress!]!
 	}
 
+	type UserPushToken {
+		id: ID!
+		userId: String!
+		token: String!
+		type: PushTokenType!
+	}
+
+	enum PushTokenType {
+		Shopper
+		Merchant
+	}
+
 	extend type Query {
 		currentUser: User!
 		user(id: ID!): User!

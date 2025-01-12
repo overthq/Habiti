@@ -17,6 +17,16 @@ const OrderTypes = gql`
 		products: [OrderProduct!]!
 	}
 
+	type OrderProduct {
+		id: ID!
+		orderId: ID!
+		productId: ID!
+		unitPrice: Int!
+		quantity: Int!
+		order: Order!
+		product: Product!
+	}
+
 	enum OrderStatus {
 		Pending
 		Processing
