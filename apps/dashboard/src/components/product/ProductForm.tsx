@@ -17,6 +17,8 @@ interface ProductFormProps {
 	options?: ProductQuery['product']['options'];
 	imagesToUpload: string[];
 	setImagesToUpload: React.Dispatch<React.SetStateAction<string[]>>;
+	selectedCategories: string[];
+	setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
 	mode: 'add' | 'edit';
 	categories: ProductQuery['product']['categories'];
 }
@@ -27,6 +29,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
 	imagesToUpload,
 	setImagesToUpload,
 	mode,
+	selectedCategories,
+	setSelectedCategories,
 	categories
 }) => {
 	return (
@@ -62,7 +66,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
 				<>
 					{/* <ProductOptions options={options} />
 					<ProductReviews /> */}
-					<Categories categories={categories} />
+					<Categories
+						categories={categories}
+						selectedCategories={selectedCategories}
+						setSelectedCategories={setSelectedCategories}
+					/>
 					<Spacer y={8} />
 				</>
 			)}

@@ -6,7 +6,11 @@ import { Pressable, View } from 'react-native';
 
 import ProductForm from './ProductForm';
 import type { ProductFormData } from '../../screens/AddProduct';
-import { ProductQuery, useEditProductMutation } from '../../types/api';
+import {
+	ProductQuery,
+	useEditProductMutation,
+	useUpdateProductCategoriesMutation
+} from '../../types/api';
 import { generateUploadFile } from '../../utils/images';
 import ProductSettings from './ProductSettings';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
@@ -21,6 +25,10 @@ const ProductMain: React.FC<ProductMainProps> = ({ product, mode }) => {
 	const [toUpload, setToUpload] = React.useState<string[]>([]);
 	const [{ fetching }, editProduct] = useEditProductMutation();
 	const settingsModalRef = React.useRef<BottomSheetModal>(null);
+	const [selectedCategories, setSelectedCategories] = React.useState<string[]>(
+		product.categories.map(({ category }) => category.id)
+	);
+	const [, updateProductCategories] = useUpdateProductCategoriesMutation();
 
 	const formMethods = useForm<ProductFormData>({
 		defaultValues: {
@@ -42,6 +50,23 @@ const ProductMain: React.FC<ProductMainProps> = ({ product, mode }) => {
 				imageFiles: toUpload.map(generateUploadFile)
 			}
 		});
+
+		const add = selectedCategories.filter(
+			id => !product.categories.some(category => category.id === id)
+		);
+		const remove = product.categories
+			.filter(category => !selectedCategories.includes(category.id))
+			.map(({ id }) => id);
+
+		const { error: updateError } = await updateProductCategories({
+			id: product.id,
+			input: { add, remove }
+		});
+
+		if (updateError) {
+			console.log(`Error while updating product categories:\n${updateError}`);
+		} else {
+		}
 
 		if (error) {
 			console.log(`Error while editing product:\n${error}`);
@@ -84,6 +109,8 @@ const ProductMain: React.FC<ProductMainProps> = ({ product, mode }) => {
 				categories={product.categories}
 				imagesToUpload={toUpload}
 				setImagesToUpload={setToUpload}
+				selectedCategories={selectedCategories}
+				setSelectedCategories={setSelectedCategories}
 				mode={mode}
 			/>
 			<ProductSettings productId={product.id} modalRef={settingsModalRef} />

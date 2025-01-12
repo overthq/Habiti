@@ -18,7 +18,7 @@ const StoreStackNavigator = () => {
 			<StoreStack.Screen
 				name='StoreHome'
 				component={Store}
-				options={{ headerTitle: 'Store' }}
+				options={{ headerShown: false }}
 			/>
 			<StoreStack.Screen name='Edit Store' component={EditStore} />
 			<StoreStack.Screen name='Managers' component={Managers} />

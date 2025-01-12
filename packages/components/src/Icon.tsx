@@ -13,6 +13,7 @@ const icons = {
 	'chevron-left': <Path d='M15 18l-6-6 6-6' />,
 	'chevron-right': <Path d='M9 18l6-6-6-6' />,
 	'chevron-down': <Path d='m6 9 6 6 6-6' />,
+	'chevrons-up-down': <Path d='m7 15 5 5 5-5M7 9l5-5 5 5' />,
 	filter: <Path d='M22 3H2l8 9.46V19l4 2v-8.54L22 3z' />,
 	inbox: (
 		<>
@@ -50,6 +51,9 @@ const icons = {
 	),
 	twitter: (
 		<Path d='M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z' />
+	),
+	'log-out': (
+		<Path d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9' />
 	),
 	minus: <Path d='M5 12h14' />,
 	'more-vertical': (

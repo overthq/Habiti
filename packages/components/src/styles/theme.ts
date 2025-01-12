@@ -67,7 +67,7 @@ const dark = {
 		secondary: palette.neutral.n20,
 		tertiary: palette.neutral.n50,
 		disabled: palette.neutral.n20,
-		error: '',
+		error: palette.red.r60,
 		label: palette.neutral.n10,
 		invert: palette.neutral.n100
 	},

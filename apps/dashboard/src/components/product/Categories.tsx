@@ -6,12 +6,14 @@ import { ProductQuery, useCategoriesQuery } from '../../types/api';
 
 interface CategoriesProps {
 	categories: ProductQuery['product']['categories'];
+	selectedCategories: string[];
+	setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const Categories: React.FC<CategoriesProps> = ({ categories }) => {
-	const [selectedCategories, setSelectedCategories] = React.useState<string[]>(
-		categories.map(({ id }) => id)
-	);
+const Categories: React.FC<CategoriesProps> = ({
+	selectedCategories,
+	setSelectedCategories
+}) => {
 	const [{ data, fetching }] = useCategoriesQuery();
 
 	const handleSelectCategory = (id: string) => {
