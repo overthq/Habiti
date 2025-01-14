@@ -5,6 +5,7 @@ import { Resolver } from '../../types/resolvers';
 import { createTransferReceipient } from '../../utils/paystack';
 import { uploadStream } from '../../utils/upload';
 import { getPushTokensForStore } from '../../utils/notifications';
+import { canManageStore } from '../permissions';
 
 interface CreateStoreArgs {
 	input: {
@@ -66,6 +67,12 @@ const editStore: Resolver<EditStoreArgs> = async (_, { input }, ctx) => {
 		throw new Error('No storeId specified');
 	}
 
+	const permitted = canManageStore(ctx.user.id, ctx.storeId);
+
+	if (!permitted) {
+		throw new Error('You are not authorized to edit this store');
+	}
+
 	const { imageFile, ...rest } = input;
 	let uploadedUrl = '';
 
@@ -107,17 +114,13 @@ interface DeleteStoreArgs {
 
 // FIXME: We need better access control
 const deleteStore: Resolver<DeleteStoreArgs> = async (_, { id }, ctx) => {
-	const storeManagers = await ctx.prisma.storeManager.findMany({
-		where: { storeId: id }
-	});
+	const permitted = canManageStore(ctx.user.id, id);
 
-	const storeManagerIds = storeManagers.map(manager => manager.managerId);
-
-	if (storeManagerIds.includes(ctx.user.id)) {
-		await ctx.prisma.store.delete({ where: { id } });
-	} else {
+	if (!permitted) {
 		throw new Error('You are not authorized to delete this store');
 	}
+
+	await ctx.prisma.store.delete({ where: { id } });
 
 	return id;
 };
@@ -175,6 +178,12 @@ const addStoreManager: Resolver<AddStoreManagerArgs> = async (
 	args,
 	ctx
 ) => {
+	const permitted = canManageStore(ctx.user.id, args.input.storeId);
+
+	if (!permitted) {
+		throw new Error('You are not authorized to add a manager to this store');
+	}
+
 	return ctx.prisma.storeManager.create({
 		data: {
 			storeId: args.input.storeId,

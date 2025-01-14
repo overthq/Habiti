@@ -2,6 +2,7 @@ import { FileUpload } from 'graphql-upload';
 
 import { Resolver } from '../../types/resolvers';
 import { uploadImages } from '../../utils/upload';
+import { canManageStore } from '../permissions';
 
 interface CreateProductArgs {
 	input: {
@@ -20,6 +21,12 @@ const createProduct: Resolver<CreateProductArgs> = async (
 ) => {
 	if (!ctx.storeId) {
 		throw new Error('No storeId provided');
+	}
+
+	const permitted = await canManageStore(ctx.user.id, ctx.storeId);
+
+	if (!permitted) {
+		throw new Error('You do not have permission to manage this store');
 	}
 
 	const { imageFiles, ...rest } = input;
@@ -59,12 +66,22 @@ const editProduct: Resolver<EditProductArgs> = async (
 	{ id, input },
 	ctx
 ) => {
+	if (!ctx.storeId) {
+		throw new Error('No storeId provided');
+	}
+
+	const permitted = await canManageStore(ctx.user.id, ctx.storeId);
+
+	if (!permitted) {
+		throw new Error('You do not have permission to manage this store');
+	}
+
 	const { imageFiles, ...rest } = input;
 
 	const uploadedImages = await uploadImages(imageFiles);
 
 	const product = await ctx.prisma.product.update({
-		where: { id },
+		where: { id, storeId: ctx.storeId },
 		data: {
 			...rest,
 			images: {

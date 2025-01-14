@@ -16,6 +16,7 @@ const ImageTypes = gql`
 
 	extend type Mutation {
 		deleteImage(id: ID!): Image!
+		deleteImages(imageIds: [ID!]!): [Image!]!
 	}
 `;
 

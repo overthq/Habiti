@@ -49,6 +49,7 @@ const deleteImages: Resolver<DeleteImagesArgs> = async (
 
 export default {
 	Mutation: {
-		deleteImage
+		deleteImage,
+		deleteImages
 	}
 };

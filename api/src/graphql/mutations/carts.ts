@@ -1,4 +1,4 @@
-import { Resolver } from '../../types/resolvers';
+import { authenticatedResolver } from '../permissions';
 
 interface CreateCartArgs {
 	input: {
@@ -8,30 +8,27 @@ interface CreateCartArgs {
 	};
 }
 
-const createCart: Resolver<CreateCartArgs> = (_, { input }, ctx) => {
-	const { storeId, productId, quantity } = input;
+const createCart = authenticatedResolver<CreateCartArgs>(
+	(_, { input }, ctx) => {
+		const { storeId, productId, quantity } = input;
 
-	return ctx.prisma.cart.create({
-		data: {
-			userId: ctx.user.id,
-			storeId,
-			products: {
-				create: {
-					productId,
-					quantity
-				}
+		return ctx.prisma.cart.create({
+			data: {
+				userId: ctx.user.id,
+				storeId,
+				products: { create: { productId, quantity } }
 			}
-		}
-	});
-};
+		});
+	}
+);
 
 interface DeleteCartArgs {
 	id: string;
 }
 
-const deleteCart: Resolver<DeleteCartArgs> = (_, { id }, ctx) => {
-	return ctx.prisma.cart.delete({ where: { id } });
-};
+const deleteCart = authenticatedResolver<DeleteCartArgs>((_, { id }, ctx) => {
+	return ctx.prisma.cart.delete({ where: { id, userId: ctx.user.id } });
+});
 
 interface AddToCartArgs {
 	input: {
@@ -41,58 +38,52 @@ interface AddToCartArgs {
 	};
 }
 
-const addToCart: Resolver<AddToCartArgs> = async (
-	_,
-	{ input: { storeId, productId, quantity } },
-	ctx
-) => {
-	const cart = await ctx.prisma.cart.upsert({
-		where: { userId_storeId: { userId: ctx.user.id, storeId } },
-		update: {},
-		create: { userId: ctx.user.id, storeId }
-	});
+const addToCart = authenticatedResolver<AddToCartArgs>(
+	async (_, { input: { storeId, productId, quantity } }, ctx) => {
+		const cart = await ctx.prisma.cart.upsert({
+			where: { userId_storeId: { userId: ctx.user.id, storeId } },
+			update: {},
+			create: { userId: ctx.user.id, storeId }
+		});
 
-	const cartProduct = await ctx.prisma.cartProduct.upsert({
-		where: { cartId_productId: { cartId: cart.id, productId } },
-		update: {
-			quantity
-		},
-		create: {
-			cartId: cart.id,
-			productId,
-			quantity
-		}
-	});
+		const cartProduct = await ctx.prisma.cartProduct.upsert({
+			where: { cartId_productId: { cartId: cart.id, productId } },
+			update: { quantity },
+			create: {
+				cartId: cart.id,
+				productId,
+				quantity
+			}
+		});
 
-	return cartProduct;
-};
+		return cartProduct;
+	}
+);
 
 interface RemoveProductArgs {
 	cartId: string;
 	productId: string;
 }
 
-const removeFromCart: Resolver<RemoveProductArgs> = async (
-	_,
-	{ cartId, productId },
-	ctx
-) => {
-	const cart = await ctx.prisma.cart.findUnique({ where: { id: cartId } });
+const removeFromCart = authenticatedResolver<RemoveProductArgs>(
+	async (_, { cartId, productId }, ctx) => {
+		const cart = await ctx.prisma.cart.findUnique({ where: { id: cartId } });
 
-	if (!cart) {
-		throw new Error('Cart not found');
-	}
+		if (!cart) {
+			throw new Error('Cart not found');
+		}
 
-	if (cart.userId === ctx.user.id) {
+		if (cart.userId !== ctx.user.id) {
+			throw new Error('You are not authorized to access this product');
+		}
+
 		const product = await ctx.prisma.cartProduct.delete({
 			where: { cartId_productId: { cartId, productId } }
 		});
 
 		return `${product.cartId}-${product.productId}`;
-	} else {
-		throw new Error('You are not authorized to access this product');
 	}
-};
+);
 
 interface UpdateCartProductArgs {
 	input: {
@@ -102,16 +93,14 @@ interface UpdateCartProductArgs {
 	};
 }
 
-const updateCartProduct: Resolver<UpdateCartProductArgs> = (
-	_,
-	{ input: { cartId, productId, quantity } },
-	ctx
-) => {
-	return ctx.prisma.cartProduct.update({
-		where: { cartId_productId: { cartId, productId } },
-		data: { quantity }
-	});
-};
+const updateCartProduct = authenticatedResolver<UpdateCartProductArgs>(
+	async (_, { input: { cartId, productId, quantity } }, ctx) => {
+		return ctx.prisma.cartProduct.update({
+			where: { cartId_productId: { cartId, productId } },
+			data: { quantity }
+		});
+	}
+);
 
 export default {
 	Mutation: {
