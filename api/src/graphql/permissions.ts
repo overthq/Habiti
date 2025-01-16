@@ -22,7 +22,7 @@ export const authenticatedResolver =
 export const storeAuthorizedResolver =
 	<T>(resolver: Resolver<T>) =>
 	async (...args: Parameters<Resolver<T>>) => {
-		if (!args[2].user?.id) {
+		if (!args[2].user.id) {
 			throw new Error('Not authenticated');
 		}
 
