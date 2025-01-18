@@ -8,6 +8,7 @@ import StoreHeader from './StoreHeader';
 import StoreListItem from './StoreListItem';
 import { StoreQuery, useStoreProductsQuery } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
+import useRefresh from '../../hooks/useRefresh';
 
 interface StoreProductsProps {
 	store: StoreQuery['store'];
@@ -25,20 +26,11 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 			})
 		}
 	});
+	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const [headerVisible, setHeaderVisible] = React.useState(false);
 	const { theme } = useTheme();
-	const [refreshing, setRefreshing] = React.useState(false);
-
-	const handleRefresh = React.useCallback(() => {
-		setRefreshing(true);
-		refetch();
-	}, [refetch]);
-
-	React.useEffect(() => {
-		if (!fetching && refreshing) setRefreshing(false);
-	}, [fetching, refreshing]);
 
 	const products = data?.store.products;
 
@@ -93,7 +85,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 			refreshControl={
 				<RefreshControl
 					refreshing={refreshing}
-					onRefresh={handleRefresh}
+					onRefresh={refresh}
 					tintColor={theme.text.secondary}
 				/>
 			}

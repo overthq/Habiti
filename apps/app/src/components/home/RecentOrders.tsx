@@ -1,4 +1,4 @@
-import { ListEmpty, Typography } from '@habiti/components';
+import { Typography } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
@@ -11,10 +11,6 @@ interface RecentOrdersProps {
 	orders: HomeQuery['currentUser']['orders'];
 }
 
-// This should only query the last three orders.
-// We should have a "view all" button that navigates to a more in-depth view
-// (infinite scrolling and filters) of all previous orders.
-
 const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 	const { navigate } =
 		useNavigation<NavigationProp<MainTabParamList & HomeStackParamList>>();
@@ -26,6 +22,10 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 		[]
 	);
 
+	if (!orders || orders.length === 0) {
+		return null;
+	}
+
 	return (
 		<View style={styles.container}>
 			<Typography
@@ -34,23 +34,13 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 			>
 				Recent orders
 			</Typography>
-			{!orders || orders?.length === 0 ? (
-				<ListEmpty
-					description='Pending orders will be displayed here.'
-					cta={{
-						text: 'View your carts',
-						action: () => navigate('Main.Carts')
-					}}
+			{orders.map(order => (
+				<RecentOrder
+					key={order.id}
+					order={order}
+					onPress={handleOrderPress(order.id)}
 				/>
-			) : (
-				orders.map(order => (
-					<RecentOrder
-						key={order.id}
-						order={order}
-						onPress={handleOrderPress(order.id)}
-					/>
-				))
-			)}
+			))}
 		</View>
 	);
 };

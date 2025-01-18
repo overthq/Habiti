@@ -5,7 +5,7 @@ import { useTheme } from './Theme';
 
 interface RowProps extends PressableProps {
 	children: React.ReactNode;
-	style: StyleProp<ViewStyle>;
+	style?: StyleProp<ViewStyle>;
 }
 
 const Row: React.FC<RowProps> = ({ style, children, ...props }) => {

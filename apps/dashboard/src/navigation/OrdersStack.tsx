@@ -13,7 +13,7 @@ const OrdersStackNavigator = () => (
 		<OrdersStack.Screen
 			name='OrdersList'
 			component={Orders}
-			options={{ title: 'Orders' }}
+			options={{ headerShown: false }}
 		/>
 		<OrdersStack.Screen name='Order' component={Order} />
 		<OrdersStack.Screen name='Product' component={Product} />

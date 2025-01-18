@@ -2,8 +2,20 @@ import { Request, Response } from 'express';
 
 import prismaClient from '../config/prisma';
 import { chargeAuthorization } from '../utils/paystack';
+import { hydrateQuery } from '../utils/queries';
 
 export default class OrderController {
+	public async getOrders(req: Request, res: Response) {
+		const query = hydrateQuery(req.query);
+
+		const orders = await prismaClient.order.findMany({
+			...query,
+			include: { user: true, store: true }
+		});
+
+		return res.json({ orders });
+	}
+
 	public async createOrder(req: Request, res: Response) {
 		const { cartId, cardId, transactionFee, serviceFee } = req.body;
 

@@ -13,6 +13,12 @@ import {
 } from '../types/api';
 
 const customCache = cacheExchange({
+	keys: {
+		OrderProduct: data => `${data.orderId}-${data.productId}`,
+		CartProduct: data => `${data.cartId}-${data.productId}`,
+		ProductCategory: data => `${data.categoryId}-${data.productId}`,
+		StoreManager: data => `${data.storeId}-${data.managerId}`
+	},
 	updates: {
 		Mutation: {
 			createProduct: (result: CreateProductMutation, _args, cache) => {

@@ -31,7 +31,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({ products }) => {
 
 			{products.map(cartProduct => (
 				<CartProduct
-					key={cartProduct.id}
+					key={`${cartProduct.cartId}-${cartProduct.productId}`}
 					cartProduct={cartProduct}
 					onPress={handleCartProductPress(cartProduct.productId)}
 				/>

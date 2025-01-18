@@ -5,6 +5,14 @@ import { hydrateQuery } from '../utils/queries';
 import { uploadImages } from '../utils/upload';
 
 export default class StoreController {
+	public async getStores(req: Request, res: Response) {
+		const query = hydrateQuery(req.query);
+
+		const stores = await prismaClient.store.findMany(query);
+
+		return res.json({ stores });
+	}
+
 	// POST /stores
 	public async createStore(req: Request, res: Response) {
 		const { name, description, website, twitter, instagram } = req.body;
@@ -20,6 +28,15 @@ export default class StoreController {
 	public async getCurrentStore(req: Request, res: Response) {
 		const store = await this.loadCurrentStore(req);
 		return res.json({ store });
+	}
+
+	// GET /stores/current/payouts
+	public async getCurrentStorePayouts(req: Request, res: Response) {
+		const store = await this.loadCurrentStore(req);
+		const payouts = await prismaClient.payout.findMany({
+			where: { storeId: store.id }
+		});
+		return res.json({ payouts });
 	}
 
 	// GET /stores/:id

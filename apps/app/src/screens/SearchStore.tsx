@@ -45,14 +45,14 @@ const SearchStore = () => {
 				<ActivityIndicator />
 			) : (
 				<FlashList
-					data={data.store.products}
-					keyExtractor={({ id }) => id}
+					data={data.store.products.edges}
+					keyExtractor={({ node }) => node.id}
 					showsVerticalScrollIndicator={false}
 					estimatedItemSize={240}
 					renderItem={({ item, index }) => (
 						<StoreListItem
-							item={item}
-							onPress={handleProductPress(item.id)}
+							item={item.node}
+							onPress={handleProductPress(item.node.id)}
 							side={index % 2 === 0 ? 'left' : 'right'}
 						/>
 					)}

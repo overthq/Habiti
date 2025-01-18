@@ -103,7 +103,7 @@ export type Cart = {
 	__typename?: 'Cart';
 	createdAt: Scalars['String']['output'];
 	id: Scalars['ID']['output'];
-	products: CartProduct[];
+	products: Array<CartProduct>;
 	store: Store;
 	storeId: Scalars['ID']['output'];
 	total: Scalars['Int']['output'];
@@ -152,7 +152,7 @@ export type CreatePayoutInput = {
 
 export type CreateProductInput = {
 	description: Scalars['String']['input'];
-	imageFiles: Scalars['Upload']['input'][];
+	imageFiles: Array<Scalars['Upload']['input']>;
 	name: Scalars['String']['input'];
 	quantity: Scalars['Int']['input'];
 	unitPrice: Scalars['Int']['input'];
@@ -184,7 +184,7 @@ export type EditCategoryInput = {
 
 export type EditProductInput = {
 	description?: InputMaybe<Scalars['String']['input']>;
-	imageFiles: Scalars['Upload']['input'][];
+	imageFiles: Array<Scalars['Upload']['input']>;
 	name?: InputMaybe<Scalars['String']['input']>;
 	quantity?: InputMaybe<Scalars['Int']['input']>;
 	unitPrice?: InputMaybe<Scalars['Int']['input']>;
@@ -269,6 +269,8 @@ export type Mutation = {
 	unfollowStore: StoreFollower;
 	updateCartProduct: CartProduct;
 	updateOrder: Order;
+	updateProductCategories: Product;
+	updateProductImages: Product;
 	verify: VerifyResponse;
 	verifyBankAccount: VerifyBankAccountResponse;
 };
@@ -409,6 +411,16 @@ export type MutationUpdateOrderArgs = {
 	orderId: Scalars['ID']['input'];
 };
 
+export type MutationUpdateProductCategoriesArgs = {
+	id: Scalars['ID']['input'];
+	input: UpdateProductCategoriesInput;
+};
+
+export type MutationUpdateProductImagesArgs = {
+	id: Scalars['ID']['input'];
+	input: UpdateProductImagesInput;
+};
+
 export type MutationVerifyArgs = {
 	input: VerifyInput;
 };
@@ -433,7 +445,7 @@ export type Order = {
 	__typename?: 'Order';
 	createdAt: Scalars['String']['output'];
 	id: Scalars['ID']['output'];
-	products: OrderProduct[];
+	products: Array<OrderProduct>;
 	serviceFee: Scalars['Int']['output'];
 	status: OrderStatus;
 	store: Store;
@@ -447,7 +459,7 @@ export type Order = {
 
 export type OrderConnection = {
 	__typename?: 'OrderConnection';
-	edges: OrderEdge[];
+	edges: Array<OrderEdge>;
 	pageInfo: PageInfo;
 	totalCount: Scalars['Int']['output'];
 };
@@ -507,28 +519,28 @@ export type Payout = {
 
 export type Product = {
 	__typename?: 'Product';
-	carts: CartProduct[];
-	categories: ProductCategory[];
+	carts: Array<CartProduct>;
+	categories: Array<ProductCategory>;
 	createdAt: Scalars['String']['output'];
 	description: Scalars['String']['output'];
 	id: Scalars['ID']['output'];
-	images: Image[];
+	images: Array<Image>;
 	inCart: Scalars['Boolean']['output'];
 	name: Scalars['String']['output'];
-	options: ProductOption[];
-	orders: Order[];
+	options: Array<ProductOption>;
+	orders: Array<Order>;
 	quantity: Scalars['Int']['output'];
-	relatedProducts: Product[];
-	reviews: ProductReview[];
+	relatedProducts: Array<Product>;
+	reviews: Array<ProductReview>;
 	store: Store;
 	storeId: Scalars['ID']['output'];
 	unitPrice: Scalars['Int']['output'];
 	updatedAt: Scalars['String']['output'];
-	watchlists: WatchlistProduct[];
+	watchlists: Array<WatchlistProduct>;
 };
 
 export type ProductOrdersArgs = {
-	orderBy?: InputMaybe<OrderOrderByInput[]>;
+	orderBy?: InputMaybe<Array<OrderOrderByInput>>;
 };
 
 export type ProductCategory = {
@@ -553,7 +565,7 @@ export type ProductCategoryWhere = {
 
 export type ProductConnection = {
 	__typename?: 'ProductConnection';
-	edges: ProductEdge[];
+	edges: Array<ProductEdge>;
 	pageInfo: PageInfo;
 	totalCount: Scalars['Int']['output'];
 };
@@ -607,7 +619,7 @@ export type Query = {
 	__typename?: 'Query';
 	cardAuthorization: CardAuthorization;
 	cart: Cart;
-	carts: Cart[];
+	carts: Array<Cart>;
 	currentStore: Store;
 	currentUser: User;
 	node?: Maybe<Node>;
@@ -618,9 +630,9 @@ export type Query = {
 	stats: Stats;
 	store: Store;
 	storeProductCategory?: Maybe<StoreProductCategory>;
-	stores: Store[];
+	stores: Array<Store>;
 	user: User;
-	users: User[];
+	users: Array<User>;
 };
 
 export type QueryCartArgs = {
@@ -641,7 +653,7 @@ export type QueryOrdersArgs = {
 	filter?: InputMaybe<OrderFilterInput>;
 	first?: InputMaybe<Scalars['Int']['input']>;
 	last?: InputMaybe<Scalars['Int']['input']>;
-	orderBy?: InputMaybe<OrderOrderByInput[]>;
+	orderBy?: InputMaybe<Array<OrderOrderByInput>>;
 };
 
 export type QueryProductArgs = {
@@ -654,7 +666,7 @@ export type QueryProductsArgs = {
 	filter?: InputMaybe<ProductFilterInput>;
 	first?: InputMaybe<Scalars['Int']['input']>;
 	last?: InputMaybe<Scalars['Int']['input']>;
-	orderBy?: InputMaybe<ProductOrderByInput[]>;
+	orderBy?: InputMaybe<Array<ProductOrderByInput>>;
 };
 
 export type QueryStatsArgs = {
@@ -703,9 +715,9 @@ export enum StatPeriod {
 export type Stats = {
 	__typename?: 'Stats';
 	id: Scalars['ID']['output'];
-	orders: Order[];
+	orders: Array<Order>;
 	pendingOrderCount: Scalars['Int']['output'];
-	products: Product[];
+	products: Array<Product>;
 	revenue: Scalars['Int']['output'];
 	storeId: Scalars['ID']['output'];
 };
@@ -716,20 +728,20 @@ export type Store = {
 	bankAccountReference?: Maybe<Scalars['String']['output']>;
 	bankCode?: Maybe<Scalars['String']['output']>;
 	cartId?: Maybe<Scalars['ID']['output']>;
-	carts: Cart[];
-	categories: StoreProductCategory[];
+	carts: Array<Cart>;
+	categories: Array<StoreProductCategory>;
 	createdAt: Scalars['String']['output'];
 	description?: Maybe<Scalars['String']['output']>;
 	followedByUser: Scalars['Boolean']['output'];
-	followers: StoreFollower[];
+	followers: Array<StoreFollower>;
 	id: Scalars['ID']['output'];
 	image?: Maybe<Image>;
 	instagram?: Maybe<Scalars['String']['output']>;
-	managers: StoreManager[];
+	managers: Array<StoreManager>;
 	name: Scalars['String']['output'];
-	orders: Order[];
+	orders: Array<Order>;
 	paidOut: Scalars['Int']['output'];
-	payouts: Payout[];
+	payouts: Array<Payout>;
 	products: ProductConnection;
 	realizedRevenue: Scalars['Int']['output'];
 	twitter?: Maybe<Scalars['String']['output']>;
@@ -739,14 +751,14 @@ export type Store = {
 };
 
 export type StoreOrdersArgs = {
-	orderBy?: InputMaybe<OrderOrderByInput[]>;
+	orderBy?: InputMaybe<Array<OrderOrderByInput>>;
 };
 
 export type StoreProductsArgs = {
 	after?: InputMaybe<Scalars['String']['input']>;
 	filter?: InputMaybe<ProductFilterInput>;
 	first?: InputMaybe<Scalars['Int']['input']>;
-	orderBy?: InputMaybe<ProductOrderByInput[]>;
+	orderBy?: InputMaybe<Array<ProductOrderByInput>>;
 };
 
 export type StoreFilterInput = {
@@ -776,7 +788,7 @@ export type StoreProductCategory = {
 	description?: Maybe<Scalars['String']['output']>;
 	id: Scalars['ID']['output'];
 	name: Scalars['String']['output'];
-	products: ProductCategory[];
+	products: Array<ProductCategory>;
 	store: Store;
 	storeId: Scalars['ID']['output'];
 };
@@ -812,21 +824,31 @@ export type UpdateOrderInput = {
 	status?: InputMaybe<OrderStatus>;
 };
 
+export type UpdateProductCategoriesInput = {
+	add: Array<Scalars['ID']['input']>;
+	remove: Array<Scalars['ID']['input']>;
+};
+
+export type UpdateProductImagesInput = {
+	add: Array<Scalars['Upload']['input']>;
+	remove: Array<Scalars['ID']['input']>;
+};
+
 export type User = {
 	__typename?: 'User';
-	addresses: DeliveryAddress[];
-	cards: Card[];
-	carts: Cart[];
+	addresses: Array<DeliveryAddress>;
+	cards: Array<Card>;
+	carts: Array<Cart>;
 	createdAt: Scalars['String']['output'];
 	email: Scalars['String']['output'];
-	followed: StoreFollower[];
+	followed: Array<StoreFollower>;
 	id: Scalars['ID']['output'];
-	managed: StoreManager[];
+	managed: Array<StoreManager>;
 	name: Scalars['String']['output'];
-	orders: Order[];
-	pushTokens: UserPushToken[];
+	orders: Array<Order>;
+	pushTokens: Array<UserPushToken>;
 	updatedAt: Scalars['String']['output'];
-	watchlist: WatchlistProduct[];
+	watchlist: Array<WatchlistProduct>;
 };
 
 export type UserPushToken = {
@@ -875,11 +897,11 @@ export type CategoriesQuery = {
 	currentStore: {
 		__typename?: 'Store';
 		id: string;
-		categories: {
+		categories: Array<{
 			__typename?: 'StoreProductCategory';
 			id: string;
 			name: string;
-		}[];
+		}>;
 	};
 };
 
@@ -955,13 +977,13 @@ export type ManagedStoresQuery = {
 	currentUser: {
 		__typename?: 'User';
 		id: string;
-		managed: {
+		managed: Array<{
 			__typename?: 'StoreManager';
 			id: string;
 			storeId: string;
 			managerId: string;
 			store: { __typename?: 'Store'; id: string; name: string };
-		}[];
+		}>;
 	};
 };
 
@@ -972,11 +994,11 @@ export type ManagersQuery = {
 	currentStore: {
 		__typename?: 'Store';
 		id: string;
-		managers: {
+		managers: Array<{
 			__typename?: 'StoreManager';
 			id: string;
 			manager: { __typename?: 'User'; id: string; name: string };
-		}[];
+		}>;
 	};
 };
 
@@ -1003,7 +1025,7 @@ export type RemoveStoreManagerMutation = {
 };
 
 export type OrdersQueryVariables = Exact<{
-	orderBy?: InputMaybe<OrderOrderByInput[] | OrderOrderByInput>;
+	orderBy?: InputMaybe<Array<OrderOrderByInput> | OrderOrderByInput>;
 }>;
 
 export type OrdersQuery = {
@@ -1011,7 +1033,7 @@ export type OrdersQuery = {
 	currentStore: {
 		__typename?: 'Store';
 		id: string;
-		orders: {
+		orders: Array<{
 			__typename?: 'Order';
 			id: string;
 			total: number;
@@ -1019,7 +1041,7 @@ export type OrdersQuery = {
 			createdAt: string;
 			updatedAt: string;
 			user: { __typename?: 'User'; id: string; name: string };
-			products: {
+			products: Array<{
 				__typename?: 'OrderProduct';
 				id: string;
 				orderId: string;
@@ -1027,8 +1049,8 @@ export type OrdersQuery = {
 				unitPrice: number;
 				quantity: number;
 				product: { __typename?: 'Product'; id: string; name: string };
-			}[];
-		}[];
+			}>;
+		}>;
 	};
 };
 
@@ -1048,7 +1070,7 @@ export type OrderQuery = {
 		createdAt: string;
 		updatedAt: string;
 		user: { __typename?: 'User'; id: string; name: string };
-		products: {
+		products: Array<{
 			__typename?: 'OrderProduct';
 			id: string;
 			orderId: string;
@@ -1059,9 +1081,9 @@ export type OrderQuery = {
 				__typename?: 'Product';
 				id: string;
 				name: string;
-				images: { __typename?: 'Image'; id: string; path: string }[];
+				images: Array<{ __typename?: 'Image'; id: string; path: string }>;
 			};
-		}[];
+		}>;
 	};
 };
 
@@ -1085,12 +1107,12 @@ export type StorePayoutsQuery = {
 		unrealizedRevenue: number;
 		realizedRevenue: number;
 		paidOut: number;
-		payouts: {
+		payouts: Array<{
 			__typename?: 'Payout';
 			id: string;
 			amount: number;
 			createdAt: string;
-		}[];
+		}>;
 	};
 };
 
@@ -1122,7 +1144,7 @@ export type VerifyBankAccountMutation = {
 
 export type ProductsQueryVariables = Exact<{
 	filter?: InputMaybe<ProductFilterInput>;
-	orderBy?: InputMaybe<ProductOrderByInput[] | ProductOrderByInput>;
+	orderBy?: InputMaybe<Array<ProductOrderByInput> | ProductOrderByInput>;
 	first?: InputMaybe<Scalars['Int']['input']>;
 	after?: InputMaybe<Scalars['String']['input']>;
 }>;
@@ -1134,7 +1156,7 @@ export type ProductsQuery = {
 		id: string;
 		products: {
 			__typename?: 'ProductConnection';
-			edges: {
+			edges: Array<{
 				__typename?: 'ProductEdge';
 				cursor: string;
 				node: {
@@ -1144,9 +1166,9 @@ export type ProductsQuery = {
 					description: string;
 					unitPrice: number;
 					quantity: number;
-					images: { __typename?: 'Image'; id: string; path: string }[];
+					images: Array<{ __typename?: 'Image'; id: string; path: string }>;
 				};
-			}[];
+			}>;
 			pageInfo: {
 				__typename?: 'PageInfo';
 				hasNextPage: boolean;
@@ -1171,9 +1193,9 @@ export type ProductQuery = {
 		description: string;
 		unitPrice: number;
 		quantity: number;
-		images: { __typename?: 'Image'; id: string; path: string }[];
-		options: { __typename?: 'ProductOption'; id: string; name: string }[];
-		categories: {
+		images: Array<{ __typename?: 'Image'; id: string; path: string }>;
+		options: Array<{ __typename?: 'ProductOption'; id: string; name: string }>;
+		categories: Array<{
 			__typename?: 'ProductCategory';
 			id: string;
 			category: {
@@ -1181,7 +1203,7 @@ export type ProductQuery = {
 				id: string;
 				name: string;
 			};
-		}[];
+		}>;
 	};
 };
 
@@ -1198,7 +1220,7 @@ export type CreateProductMutation = {
 		description: string;
 		unitPrice: number;
 		quantity: number;
-		images: { __typename?: 'Image'; id: string; path: string }[];
+		images: Array<{ __typename?: 'Image'; id: string; path: string }>;
 	};
 };
 
@@ -1216,7 +1238,29 @@ export type EditProductMutation = {
 		description: string;
 		unitPrice: number;
 		quantity: number;
-		images: { __typename?: 'Image'; id: string; path: string }[];
+		images: Array<{ __typename?: 'Image'; id: string; path: string }>;
+	};
+};
+
+export type UpdateProductCategoriesMutationVariables = Exact<{
+	id: Scalars['ID']['input'];
+	input: UpdateProductCategoriesInput;
+}>;
+
+export type UpdateProductCategoriesMutation = {
+	__typename?: 'Mutation';
+	updateProductCategories: {
+		__typename?: 'Product';
+		id: string;
+		categories: Array<{
+			__typename?: 'ProductCategory';
+			id: string;
+			category: {
+				__typename?: 'StoreProductCategory';
+				id: string;
+				name: string;
+			};
+		}>;
 	};
 };
 
@@ -1231,14 +1275,14 @@ export type StatsQuery = {
 		id: string;
 		revenue: number;
 		pendingOrderCount: number;
-		orders: {
+		orders: Array<{
 			__typename?: 'Order';
 			id: string;
 			status: OrderStatus;
 			total: number;
 			createdAt: string;
 			updatedAt: string;
-		}[];
+		}>;
 	};
 };
 
@@ -1346,22 +1390,22 @@ export type CustomerInfoQuery = {
 		id: string;
 		name: string;
 		email: string;
-		orders: {
+		orders: Array<{
 			__typename?: 'Order';
 			id: string;
 			total: number;
 			createdAt: string;
-			products: {
+			products: Array<{
 				__typename?: 'OrderProduct';
 				id: string;
 				product: {
 					__typename?: 'Product';
 					id: string;
 					name: string;
-					images: { __typename?: 'Image'; id: string; path: string }[];
+					images: Array<{ __typename?: 'Image'; id: string; path: string }>;
 				};
-			}[];
-		}[];
+			}>;
+		}>;
 	};
 };
 
@@ -1830,6 +1874,30 @@ export function useEditProductMutation() {
 	return Urql.useMutation<EditProductMutation, EditProductMutationVariables>(
 		EditProductDocument
 	);
+}
+export const UpdateProductCategoriesDocument = gql`
+	mutation UpdateProductCategories(
+		$id: ID!
+		$input: UpdateProductCategoriesInput!
+	) {
+		updateProductCategories(id: $id, input: $input) {
+			id
+			categories {
+				id
+				category {
+					id
+					name
+				}
+			}
+		}
+	}
+`;
+
+export function useUpdateProductCategoriesMutation() {
+	return Urql.useMutation<
+		UpdateProductCategoriesMutation,
+		UpdateProductCategoriesMutationVariables
+	>(UpdateProductCategoriesDocument);
 }
 export const StatsDocument = gql`
 	query Stats($period: StatPeriod!) {

@@ -26,6 +26,17 @@ export default class UserController {
 		return res.json({ user: updatedUser });
 	}
 
+	// DELETE /users/current
+	public async deleteCurrentUser(req: Request, res: Response) {
+		if (!req.auth) {
+			return res.status(401).json({ error: 'User not authenticated' });
+		}
+
+		await prismaClient.user.delete({ where: { id: req.auth.id } });
+
+		return res.status(204).json({ message: 'User deleted' });
+	}
+
 	// GET /users/current/followed-stores
 	public async getFollowedStores(req: Request, res: Response) {
 		if (!req.auth) {
@@ -108,6 +119,37 @@ export default class UserController {
 		});
 
 		return res.json({ addresses });
+	}
+
+	// GET /users
+	public async getUsers(req: Request, res: Response) {
+		if (!req.auth) {
+			return res.status(401).json({ error: 'User not authenticated' });
+		}
+
+		const query = hydrateQuery(req.query);
+
+		const users = await prismaClient.user.findMany({
+			...query
+		});
+
+		return res.json({ users });
+	}
+
+	// GET /users/:id
+	public async getUser(req: Request, res: Response) {
+		if (!req.auth) {
+			return res.status(401).json({ error: 'User not authenticated' });
+		}
+
+		const { id } = req.params;
+
+		if (!id) {
+			return res.status(400).json({ error: 'User ID is required' });
+		}
+
+		const user = await prismaClient.user.findUnique({ where: { id } });
+		return res.json({ user });
 	}
 
 	private async loadCurrentUser(req: Request) {

@@ -14,7 +14,7 @@ const AmountDisplay: React.FC<AmountDisplayProps> = ({ amount }) => {
 
 	return (
 		<View style={styles.container}>
-			<Typography style={styles.amount} weight='bold' size='xxxlarge' number>
+			<Typography style={styles.amount} weight='medium' size='xxxlarge' number>
 				{display}
 			</Typography>
 		</View>

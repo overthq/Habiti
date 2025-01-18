@@ -49,7 +49,6 @@ export type StoreStackParamList = {
 
 export type MainTabParamList = {
 	'Main.ForYou': undefined;
-	'Main.Explore': undefined;
 	'Main.Carts': undefined;
 	'Main.Profile': undefined;
 };

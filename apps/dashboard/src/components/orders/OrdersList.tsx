@@ -12,24 +12,14 @@ import { View, RefreshControl, StyleSheet } from 'react-native';
 import OrdersListItem from '../../components/orders/OrdersListItem';
 import { OrdersQuery, useOrdersQuery } from '../../types/api';
 import { MainTabParamList, OrdersStackParamList } from '../../types/navigation';
+import useRefresh from '../../hooks/useRefresh';
 
 const OrdersList = () => {
 	const { params } = useRoute<RouteProp<MainTabParamList, 'Orders'>>();
 	const { navigate } = useNavigation<NavigationProp<OrdersStackParamList>>();
 	const [{ fetching, data }, refetch] = useOrdersQuery({ variables: params });
+	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 	const { theme } = useTheme();
-	const [refreshing, setRefreshing] = React.useState(false);
-
-	const handleRefresh = () => {
-		setRefreshing(true);
-		refetch();
-	};
-
-	React.useEffect(() => {
-		if (!fetching && refreshing) {
-			setRefreshing(false);
-		}
-	}, [fetching, refreshing]);
 
 	const handleOrderPress = React.useCallback(
 		(orderId: string) => () => {
@@ -61,7 +51,7 @@ const OrdersList = () => {
 			refreshControl={
 				<RefreshControl
 					refreshing={refreshing}
-					onRefresh={handleRefresh}
+					onRefresh={refresh}
 					tintColor={theme.text.secondary}
 				/>
 			}

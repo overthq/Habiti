@@ -18,9 +18,12 @@ export const sendVerificationCode = async (phone: string) => {
 	console.log(phone, code);
 };
 
-export const generateAccessToken = async (user: User) => {
+export const generateAccessToken = async (
+	user: User,
+	role: 'admin' | 'user' = 'user'
+) => {
 	return jwt.sign(
-		{ id: user.id, name: user.name, email: user.email },
+		{ id: user.id, name: user.name, email: user.email, role },
 		process.env.JWT_SECRET as string
 	);
 };

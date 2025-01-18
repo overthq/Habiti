@@ -1,7 +1,12 @@
 # This is temporary. In the future, queries will no longer be domain-scoped.
 # They will be created on the component level.
 
-query Products($filter: ProductFilterInput, $orderBy: [ProductOrderByInput!], $first: Int, $after: String) {
+query Products(
+	$filter: ProductFilterInput
+	$orderBy: [ProductOrderByInput!]
+	$first: Int
+	$after: String
+) {
 	currentStore {
 		id
 		products(filter: $filter, orderBy: $orderBy, first: $first, after: $after) {
@@ -78,6 +83,22 @@ mutation EditProduct($id: ID!, $input: EditProductInput!) {
 		images {
 			id
 			path
+		}
+	}
+}
+
+mutation UpdateProductCategories(
+	$id: ID!
+	$input: UpdateProductCategoriesInput!
+) {
+	updateProductCategories(id: $id, input: $input) {
+		id
+		categories {
+			id
+			category {
+				id
+				name
+			}
 		}
 	}
 }

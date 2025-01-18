@@ -7,7 +7,6 @@ import Categories from './Categories';
 import CurrencyInput from './CurrencyInput';
 import Images from './Images';
 import InventoryInput from './InventoryInput';
-import ProductActions from './ProductActions';
 // import ProductOptions from './ProductOptions';
 // import ProductReviews from './ProductReviews';
 import Section from './Section';
@@ -18,6 +17,8 @@ interface ProductFormProps {
 	options?: ProductQuery['product']['options'];
 	imagesToUpload: string[];
 	setImagesToUpload: React.Dispatch<React.SetStateAction<string[]>>;
+	selectedCategories: string[];
+	setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
 	mode: 'add' | 'edit';
 	categories: ProductQuery['product']['categories'];
 }
@@ -28,6 +29,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
 	imagesToUpload,
 	setImagesToUpload,
 	mode,
+	selectedCategories,
+	setSelectedCategories,
 	categories
 }) => {
 	return (
@@ -63,8 +66,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
 				<>
 					{/* <ProductOptions options={options} />
 					<ProductReviews /> */}
-					<Categories categories={categories} />
-					<ProductActions />
+					<Categories
+						categories={categories}
+						selectedCategories={selectedCategories}
+						setSelectedCategories={setSelectedCategories}
+					/>
 					<Spacer y={8} />
 				</>
 			)}

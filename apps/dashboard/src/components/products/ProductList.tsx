@@ -15,6 +15,7 @@ import {
 	MainTabParamList,
 	ProductsStackParamList
 } from '../../types/navigation';
+import useRefresh from '../../hooks/useRefresh';
 
 const ProductList: React.FC = () => {
 	const { params } = useRoute<RouteProp<MainTabParamList, 'Products'>>();
@@ -22,19 +23,8 @@ const ProductList: React.FC = () => {
 	const [{ fetching, data }, refetch] = useProductsQuery({
 		variables: params
 	});
-	const [refreshing, setRefreshing] = React.useState(false);
+	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 	const { theme } = useTheme();
-
-	React.useEffect(() => {
-		if (!fetching && refreshing) {
-			setRefreshing(false);
-		}
-	}, [fetching, refreshing]);
-
-	const handleRefresh = () => {
-		setRefreshing(true);
-		refetch();
-	};
 
 	const handlePress = React.useCallback(
 		(productId: string) => () => navigate('Product', { productId }),
@@ -60,8 +50,8 @@ const ProductList: React.FC = () => {
 			estimatedItemSize={60}
 			refreshControl={
 				<RefreshControl
-					refreshing={fetching}
-					onRefresh={handleRefresh}
+					refreshing={refreshing}
+					onRefresh={refresh}
 					tintColor={theme.text.secondary}
 				/>
 			}

@@ -2,14 +2,18 @@ import {
 	Icon,
 	ListEmpty,
 	Screen,
-	Separator,
-	Spacer,
 	Typography,
 	useTheme
 } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
-import { View, StyleSheet, ActivityIndicator, Pressable } from 'react-native';
+import {
+	View,
+	StyleSheet,
+	ActivityIndicator,
+	Pressable,
+	FlatList
+} from 'react-native';
 
 import { MastercardIcon } from '../components/cart/CardIcons';
 import { useCardsQuery } from '../data/queries';
@@ -45,9 +49,22 @@ const PaymentMethods: React.FC = () => {
 
 	return (
 		<Screen>
-			{cards.length === 0 ? (
-				<View>
-					<Spacer y={16} />
+			<FlatList
+				style={{ flex: 1 }}
+				contentContainerStyle={{ flexGrow: 1 }}
+				data={cards}
+				keyExtractor={c => c.id}
+				renderItem={({ item: card }) => (
+					<Pressable
+						style={[styles.card, { borderBottomColor: theme.border.color }]}
+					>
+						<MastercardIcon />
+						<Typography
+							style={styles.capitalize}
+						>{`${card.cardType} \u2022\u2022\u2022\u2022${card.last4}`}</Typography>
+					</Pressable>
+				)}
+				ListEmptyComponent={() => (
 					<ListEmpty
 						title='No cards added'
 						description='When you add your cards, they will be displayed here.'
@@ -55,31 +72,10 @@ const PaymentMethods: React.FC = () => {
 							text: 'Add card',
 							action: () => navigate('Add Card')
 						}}
+						viewStyle={{ flex: 1 }}
 					/>
-				</View>
-			) : (
-				<View>
-					<Typography
-						weight='medium'
-						variant='label'
-						style={styles.sectionHeader}
-					>
-						Cards
-					</Typography>
-					<Separator />
-					{cards.map(card => (
-						<Pressable
-							key={card.id}
-							style={[styles.card, { borderBottomColor: theme.border.color }]}
-						>
-							<MastercardIcon />
-							<Typography
-								style={styles.capitalize}
-							>{`${card.cardType} \u2022\u2022\u2022\u2022${card.last4}`}</Typography>
-						</Pressable>
-					))}
-				</View>
-			)}
+				)}
+			/>
 		</Screen>
 	);
 };

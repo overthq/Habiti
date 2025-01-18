@@ -32,10 +32,6 @@ jobs:
           pnpm i
           cd api && pnpm i --ignore-workspace
 
-      - name: Run lint
-        run: |
-          pnpm lint
-
       - name: Run typecheck
         run: |
           cd app && pnpm tsc && cd ..

@@ -1,6 +1,6 @@
-import { Icon, Typography, useTheme } from '@habiti/components';
+import { Icon, Row, Typography, useTheme } from '@habiti/components';
 import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 interface ProfileRowProps {
 	title: string;
@@ -11,10 +11,10 @@ const ProfileRow: React.FC<ProfileRowProps> = ({ title, onPress }) => {
 	const { theme } = useTheme();
 
 	return (
-		<Pressable style={styles.container} onPress={onPress}>
+		<Row style={styles.container} onPress={onPress}>
 			<Typography>{title}</Typography>
 			<Icon name='chevron-right' color={theme.text.secondary} />
-		</Pressable>
+		</Row>
 	);
 };
 

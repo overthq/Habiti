@@ -11,8 +11,9 @@ import { generateUploadFile } from '../utils/images';
 export interface ProductFormData {
 	name: string;
 	description: string;
-	unitPrice: string; // ???
-	quantity: string; // ???
+	unitPrice: string;
+	quantity: string;
+	categories: string[];
 }
 
 const AddProduct: React.FC = () => {
@@ -26,7 +27,8 @@ const AddProduct: React.FC = () => {
 			name: '',
 			description: '',
 			unitPrice: '',
-			quantity: ''
+			quantity: '',
+			categories: []
 		}
 	});
 
@@ -76,6 +78,7 @@ const AddProduct: React.FC = () => {
 				mode='add'
 				imagesToUpload={toUpload}
 				setImagesToUpload={setToUpload}
+				categories={[]}
 			/>
 		</FormProvider>
 	);

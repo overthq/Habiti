@@ -10,7 +10,11 @@ const ProductsStack = createNativeStackNavigator<ProductsStackParamList>();
 
 const ProductsStackNavigator = () => (
 	<ProductsStack.Navigator initialRouteName='ProductsList'>
-		<ProductsStack.Screen name='ProductsList' component={Products} />
+		<ProductsStack.Screen
+			name='ProductsList'
+			component={Products}
+			options={{ headerShown: false }}
+		/>
 		<ProductsStack.Screen
 			name='Product'
 			component={Product}
@@ -20,9 +24,6 @@ const ProductsStackNavigator = () => (
 			name='Products.Search'
 			component={SearchProducts}
 			options={{ headerShown: false }}
-			// options={{
-			// 	cardStyleInterpolator: ({ current }) => ({ opacity: current.progress })
-			// }}
 		/>
 	</ProductsStack.Navigator>
 );
