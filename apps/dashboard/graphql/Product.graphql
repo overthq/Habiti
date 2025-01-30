@@ -50,7 +50,8 @@ query Product($id: ID!) {
 			name
 		}
 		categories {
-			id
+			categoryId
+			productId
 			category {
 				id
 				name
@@ -94,7 +95,8 @@ mutation UpdateProductCategories(
 	updateProductCategories(id: $id, input: $input) {
 		id
 		categories {
-			id
+			categoryId
+			productId
 			category {
 				id
 				name

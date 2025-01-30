@@ -18,7 +18,6 @@ const OrderTypes = gql`
 	}
 
 	type OrderProduct {
-		id: ID!
 		orderId: ID!
 		productId: ID!
 		unitPrice: Int!

@@ -17,7 +17,6 @@ const SupportPage = () => {
 				<h2 className='text-2xl font-semibold mb-4'>Contact Information</h2>
 				<ul className='list-disc list-inside mb-6'>
 					<li>Email: support@habiti.app</li>
-					{/* <li>Phone: +1 (555) 123-4567</li> */}
 					<li>Hours: Monday - Friday, 9:00 AM - 5:00 PM EST</li>
 				</ul>
 				<h2 className='text-2xl font-semibold mb-4'>

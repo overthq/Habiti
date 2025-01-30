@@ -26,7 +26,8 @@ query CustomerInfo($userId: ID!) {
 		orders {
 			id
 			products {
-				id
+				orderId
+				productId
 				product {
 					id
 					name

@@ -68,7 +68,9 @@ const orders: Resolver<OrdersArgs> = (parent, { orderBy }, ctx) => {
 };
 
 const managers: Resolver = (parent, _, ctx) => {
-	return ctx.prisma.store.findUnique({ where: { id: parent.id } }).managers();
+	return ctx.prisma.store
+		.findUnique({ where: { id: parent.id } })
+		.managers({ include: { manager: true } });
 };
 
 const followers: Resolver = (parent, _, ctx) => {

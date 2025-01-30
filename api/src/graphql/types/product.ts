@@ -53,7 +53,6 @@ const ProductTypes = gql`
 	}
 
 	type ProductCategory {
-		id: ID!
 		productId: ID!
 		categoryId: ID!
 

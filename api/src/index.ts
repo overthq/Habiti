@@ -23,6 +23,7 @@ import schema from './schema';
 import Services from './services';
 
 import './config/cloudinary';
+import './config/env';
 
 const main = async () => {
 	const app = express();

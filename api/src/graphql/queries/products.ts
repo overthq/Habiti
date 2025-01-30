@@ -62,7 +62,7 @@ const images: Resolver = (parent, _, ctx) => {
 const categories: Resolver = (parent, _, ctx) => {
 	return ctx.prisma.product
 		.findUnique({ where: { id: parent.id } })
-		.categories();
+		.categories({ include: { category: true } });
 };
 
 const options: Resolver = (parent, _, ctx) => {
