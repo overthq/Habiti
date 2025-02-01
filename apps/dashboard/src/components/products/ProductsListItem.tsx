@@ -12,7 +12,7 @@ import { View, StyleSheet } from 'react-native';
 import { ProductsQuery } from '../../types/api';
 
 interface ProductsListItemProps {
-	product: ProductsQuery['currentStore']['products'][number];
+	product: ProductsQuery['currentStore']['products']['edges'][number]['node'];
 	onPress(): void;
 }
 
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingVertical: 6,
+		paddingVertical: 8,
 		paddingHorizontal: 12
 	},
 	name: {

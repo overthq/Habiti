@@ -39,7 +39,7 @@ const ProductsFilter = () => {
 				/>
 			</View>
 			<Pressable onPress={handleOpenFilterSheet}>
-				<Icon name='filter' size={20} />
+				<Icon name='sliders-horizontal' size={20} />
 			</Pressable>
 		</View>
 	);
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingVertical: 12,
+		paddingBottom: 12,
 		paddingHorizontal: 16,
 		borderBottomWidth: 0.5
 	}

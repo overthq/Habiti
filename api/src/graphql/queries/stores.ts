@@ -2,6 +2,7 @@ import { ProductsArgs, StringWhere } from '../../types/filters';
 import { PaginationArgs } from '../../types/pagination';
 import { Resolver } from '../../types/resolvers';
 import { decodeCursor, paginateQuery } from '../../utils/pagination';
+import { storeAuthorizedResolver } from '../permissions';
 
 interface StoreArgs {
 	id: string;
@@ -11,11 +12,11 @@ const store: Resolver<StoreArgs> = (_, { id }, ctx) => {
 	return ctx.prisma.store.findUnique({ where: { id } });
 };
 
-const currentStore: Resolver = (_, __, ctx) => {
+const currentStore = storeAuthorizedResolver((_, __, ctx) => {
 	if (!ctx.storeId) throw new Error('Invalid storeId');
 
 	return ctx.prisma.store.findUnique({ where: { id: ctx.storeId } });
-};
+});
 
 interface StoresArgs {
 	filter: {
@@ -74,7 +75,9 @@ const managers: Resolver = (parent, _, ctx) => {
 };
 
 const followers: Resolver = (parent, _, ctx) => {
-	return ctx.prisma.store.findUnique({ where: { id: parent.id } }).followers();
+	return ctx.prisma.store
+		.findUnique({ where: { id: parent.id } })
+		.followers({ include: { follower: true } });
 };
 
 const carts: Resolver = (parent, _, ctx) => {
