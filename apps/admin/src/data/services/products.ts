@@ -35,15 +35,23 @@ export interface UpdateProductBody {
 	quantity?: number;
 }
 
+interface GetProductsResponse {
+	products: Product[];
+}
+
+interface GetProductResponse {
+	product: Product;
+}
+
 export class ProductService {
 	constructor(private readonly api: APIService) {}
 
 	async getProducts(params?: ProductFilters) {
-		return this.api.get<Product[]>('/products', params);
+		return this.api.get<GetProductsResponse>('/products', params);
 	}
 
 	async getProduct(id: string) {
-		return this.api.get<Product>(`/products/${id}`);
+		return this.api.get<GetProductResponse>(`/products/${id}`);
 	}
 
 	async createProduct(body: CreateProductBody) {

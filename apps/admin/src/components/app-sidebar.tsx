@@ -1,6 +1,6 @@
 'use client';
 
-import { Store, ShoppingCart, Users, Home } from 'lucide-react';
+import { Store, ShoppingCart, Users, Home, Package } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -36,6 +36,11 @@ const items = [
 		title: 'Users',
 		url: '/users',
 		icon: Users
+	},
+	{
+		title: 'Products',
+		url: '/products',
+		icon: Package
 	}
 ];
 

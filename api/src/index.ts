@@ -16,6 +16,7 @@ import carts from './routes/carts';
 import health from './routes/health';
 import orders from './routes/orders';
 import payments from './routes/payments';
+import products from './routes/products';
 import stores from './routes/stores';
 import users from './routes/users';
 import webhooks from './routes/webhooks';
@@ -72,6 +73,7 @@ const main = async () => {
 	app.use('/carts', carts);
 	app.use('/stores', stores);
 	app.use('/orders', orders);
+	app.use('/products', products);
 	app.use('/admin', admin);
 
 	const PORT = Number(process.env.PORT || 3000);

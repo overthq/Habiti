@@ -66,6 +66,7 @@ export interface Order {
 	products: OrderProduct[];
 	total: number;
 	status: string;
+	user: User;
 	createdAt: string;
 	updatedAt: string;
 }

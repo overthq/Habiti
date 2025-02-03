@@ -1,17 +1,65 @@
 'use client';
 
-import { Edit, Trash } from 'lucide-react';
+import { MoreHorizontal } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow
-} from '@/components/ui/table';
 import { useUsersQuery } from '@/data/queries/users';
+import { ColumnDef } from '@tanstack/react-table';
+import { User } from '@/data/services/users';
+import {
+	DropdownMenu,
+	DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
+import { DataTable } from '@/components/ui/data-table';
+import { Checkbox } from '@/components/ui/checkbox';
+
+const columns: ColumnDef<User>[] = [
+	{
+		id: 'select',
+		header: ({ table }) => (
+			<Checkbox
+				checked={
+					table.getIsAllPageRowsSelected() ||
+					(table.getIsSomePageRowsSelected() && 'indeterminate')
+				}
+				onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
+				aria-label='Select all'
+			/>
+		),
+		cell: ({ row }) => (
+			<Checkbox
+				checked={row.getIsSelected()}
+				onCheckedChange={value => row.toggleSelected(!!value)}
+				aria-label='Select row'
+			/>
+		),
+		enableSorting: false,
+		enableHiding: false
+	},
+	{
+		accessorKey: 'name',
+		header: 'Name'
+	},
+	{
+		accessorKey: 'email',
+		header: 'Email'
+	},
+	{
+		accessorKey: 'createdAt',
+		header: 'Joined',
+		cell: ({ row }) => new Date(row.getValue('createdAt')).toLocaleDateString()
+	},
+	{
+		id: 'actions',
+		header: 'Actions',
+		cell: ({ row }) => (
+			<DropdownMenu>
+				<DropdownMenuTrigger>
+					<MoreHorizontal />
+				</DropdownMenuTrigger>
+			</DropdownMenu>
+		)
+	}
+];
 
 export default function UsersPage() {
 	const { data, isLoading } = useUsersQuery();
@@ -22,49 +70,7 @@ export default function UsersPage() {
 				<h1 className='text-3xl font-bold'>Users</h1>
 			</div>
 
-			<Table>
-				<TableHeader>
-					<TableRow>
-						<TableHead>Name</TableHead>
-						<TableHead>Email</TableHead>
-						<TableHead>Joined</TableHead>
-						<TableHead>Actions</TableHead>
-					</TableRow>
-				</TableHeader>
-				<TableBody>
-					{isLoading ? (
-						<TableRow>
-							<TableCell colSpan={6} className='text-center'>
-								Loading...
-							</TableCell>
-						</TableRow>
-					) : (
-						data?.users?.map(user => (
-							<TableRow key={user.id}>
-								<TableCell>{user.name}</TableCell>
-								<TableCell>{user.email}</TableCell>
-								<TableCell>
-									{new Date(user.createdAt).toLocaleDateString()}
-								</TableCell>
-								<TableCell>
-									<div className='flex gap-2'>
-										<Button variant='ghost' size='sm' className='h-8 w-8 p-0'>
-											<Edit className='h-4 w-4' />
-										</Button>
-										<Button
-											variant='ghost'
-											size='sm'
-											className='h-8 w-8 p-0 text-destructive hover:text-destructive'
-										>
-											<Trash className='h-4 w-4' />
-										</Button>
-									</div>
-								</TableCell>
-							</TableRow>
-						))
-					)}
-				</TableBody>
-			</Table>
+			<DataTable columns={columns} data={data?.users ?? []} />
 		</div>
 	);
 }

@@ -1,8 +1,19 @@
 import { Request, Response } from 'express';
 
 import prismaClient from '../config/prisma';
+import { hydrateQuery } from '../utils/queries';
 
 export default class ProductController {
+	public async getProducts(req: Request, res: Response) {
+		const query = hydrateQuery(req.query);
+
+		const products = await prismaClient.product.findMany({
+			include: { categories: { include: { category: true } } },
+			...query
+		});
+		return res.json({ products });
+	}
+
 	public async getProductById(req: Request, res: Response) {
 		if (!req.params.id) {
 			return res.status(400).json({ error: 'Product ID is required' });
