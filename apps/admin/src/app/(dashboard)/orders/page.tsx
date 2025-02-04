@@ -9,14 +9,6 @@ import { Order } from '@/data/services/orders';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/ui/data-table';
 
-// const statusVariants = {
-// 	Pending: 'secondary',
-// 	Processing: 'default',
-// 	Completed: 'success',
-// 	Cancelled: 'destructive',
-// 	Delivered: 'success'
-// } as const;
-
 const columns: ColumnDef<Order>[] = [
 	{
 		id: 'select',
