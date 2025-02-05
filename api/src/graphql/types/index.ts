@@ -8,6 +8,7 @@ import ImageTypes from './image';
 import CardTypes from './card';
 import PayoutTypes from './payout';
 import DeliveryAddressTypes from './delivery-address';
+import SearchTypes from './search';
 
 export default [
 	RootTypes,
@@ -19,5 +20,6 @@ export default [
 	ImageTypes,
 	CardTypes,
 	PayoutTypes,
-	DeliveryAddressTypes
+	DeliveryAddressTypes,
+	SearchTypes
 ];

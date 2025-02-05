@@ -7,7 +7,7 @@ import typeDefs from './types';
 
 const resolvers = {
 	Mutation,
-	Query,
+	...Query,
 	Upload: GraphQLUpload
 };
 
