@@ -1,18 +1,12 @@
-import {
-	BottomSheetBackdropProps,
-	BottomSheetModal,
-	TouchableOpacity
-} from '@gorhom/bottom-sheet';
-import { useTheme, Typography } from '@habiti/components';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { useTheme, Button, Typography, BottomModal } from '@habiti/components';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { View } from 'react-native';
 
 import { useEditStoreMutation } from '../../types/api';
 
 interface ConfirmationModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
-	backdropComponent: React.FC<BottomSheetBackdropProps>;
 	fetching: boolean;
 	accountName?: string;
 }
@@ -24,7 +18,6 @@ interface EditPayoutInfoValues {
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 	modalRef,
-	backdropComponent,
 	fetching,
 	accountName
 }) => {
@@ -44,46 +37,16 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 	}, []);
 
 	return (
-		<BottomSheetModal
-			index={0}
-			ref={modalRef}
-			snapPoints={snapPoints}
-			backgroundStyle={{ backgroundColor: '#505050' }}
-			handleIndicatorStyle={{ backgroundColor: theme.text.primary }}
-			backdropComponent={backdropComponent}
-			enablePanDownToClose
-		>
+		<BottomModal modalRef={modalRef} snapPoints={snapPoints}>
 			{fetching ? (
-				<View>
-					<Typography>Loading</Typography>
-				</View>
+				<Typography>Loading</Typography>
 			) : (
-				<View style={{ flex: 1, padding: 8 }}>
+				<>
 					<Typography>Account Name: {accountName}</Typography>
-					<TouchableOpacity
-						activeOpacity={1}
-						onPress={handleSubmit}
-						style={{
-							flex: 1,
-							justifyContent: 'center',
-							alignItems: 'center',
-							height: 45,
-							maxHeight: 45,
-							borderRadius: 4,
-							backgroundColor: theme.button['primary'].background
-						}}
-					>
-						<Typography
-							weight='medium'
-							style={{ color: theme.button['primary'].text }}
-						>
-							Confirm details
-						</Typography>
-					</TouchableOpacity>
-					{/* <Button text='Confirm details' onPress={handleSubmit} /> */}
-				</View>
+					<Button text='Confirm details' onPress={handleSubmit} />
+				</>
 			)}
-		</BottomSheetModal>
+		</BottomModal>
 	);
 };
 

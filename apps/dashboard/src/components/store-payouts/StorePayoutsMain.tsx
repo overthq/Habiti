@@ -1,8 +1,4 @@
-import {
-	BottomSheetBackdrop,
-	BottomSheetBackdropProps,
-	BottomSheetModal
-} from '@gorhom/bottom-sheet';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Button, FormInput, Screen, Spacer } from '@habiti/components';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -53,18 +49,6 @@ const StorePayoutsMain: React.FC<StorePayoutsMainProps> = ({
 		selectModalRef.current?.present();
 	}, []);
 
-	const renderBackdrop = React.useCallback(
-		(props: BottomSheetBackdropProps) => (
-			<BottomSheetBackdrop
-				{...props}
-				pressBehavior='close'
-				disappearsOnIndex={-1}
-				appearsOnIndex={0}
-			/>
-		),
-		[]
-	);
-
 	return (
 		<Screen style={styles.container}>
 			<FormProvider {...methods}>
@@ -83,12 +67,8 @@ const StorePayoutsMain: React.FC<StorePayoutsMainProps> = ({
 					onPress={methods.handleSubmit(onSubmit)}
 					disabled={!methods.formState.isDirty}
 				/>
-				<BankSelectModal
-					backdropComponent={renderBackdrop}
-					modalRef={selectModalRef}
-				/>
+				<BankSelectModal modalRef={selectModalRef} />
 				<ConfirmationModal
-					backdropComponent={renderBackdrop}
 					modalRef={confirmationModalRef}
 					fetching={fetching}
 					accountName={data?.verifyBankAccount?.accountName}

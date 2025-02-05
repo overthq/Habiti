@@ -92,9 +92,14 @@ const SearchProducts = () => {
 	);
 
 	const renderProduct: ListRenderItem<
-		ProductsQuery['currentStore']['products'][number]
+		ProductsQuery['currentStore']['products']['edges'][number]
 	> = React.useCallback(({ item }) => {
-		return <ProductsListItem product={item} onPress={handlePress(item.id)} />;
+		return (
+			<ProductsListItem
+				product={item.node}
+				onPress={handlePress(item.node.id)}
+			/>
+		);
 	}, []);
 
 	return (
@@ -104,8 +109,8 @@ const SearchProducts = () => {
 				<ActivityIndicator />
 			) : (
 				<FlashList
-					data={data.currentStore.products}
-					keyExtractor={p => p.id}
+					data={data.currentStore.products.edges}
+					keyExtractor={p => p.node.id}
 					showsVerticalScrollIndicator={false}
 					renderItem={renderProduct}
 					estimatedItemSize={60}
