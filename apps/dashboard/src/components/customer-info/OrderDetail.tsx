@@ -41,7 +41,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order }) => {
 			<View style={styles.row}>
 				{order.products.slice(0, 3).map((product, index) => (
 					<View
-						key={product.id}
+						key={product.productId}
 						style={[
 							styles.item,
 							index === order.products.slice(0, 3).length - 1 && styles.lastItem

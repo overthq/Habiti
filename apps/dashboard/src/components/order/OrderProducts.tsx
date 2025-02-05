@@ -29,7 +29,7 @@ const OrderProducts: React.FC<OrderProductsProps> = ({ products }) => {
 
 			{products.map(p => (
 				<OrderProduct
-					key={p.id}
+					key={p.productId}
 					onPress={handlePress(p.productId)}
 					orderProduct={p}
 				/>
