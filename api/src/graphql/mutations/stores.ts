@@ -4,8 +4,8 @@ import { FileUpload } from 'graphql-upload';
 import { Resolver } from '../../types/resolvers';
 import { createTransferReceipient } from '../../utils/paystack';
 import { uploadStream } from '../../utils/upload';
-import { getPushTokensForStore } from '../../utils/notifications';
-import { canManageStore } from '../permissions';
+import { getStorePushTokens } from '../../utils/notifications';
+import { canManageStore, storeAuthorizedResolver } from '../permissions';
 
 interface CreateStoreArgs {
 	input: {
@@ -135,15 +135,13 @@ const followStore: Resolver<FollowStoreArgs> = async (_, { storeId }, ctx) => {
 		include: { store: true }
 	});
 
-	const pushTokens = await getPushTokensForStore(storeId);
+	const pushTokens = await getStorePushTokens(storeId);
 
 	for (const pushToken of pushTokens) {
 		if (pushToken) {
 			ctx.services.notifications.queueNotification({
 				type: 'NEW_FOLLOW',
-				data: {
-					followerName: ctx.user.name
-				},
+				data: { followerName: ctx.user.name },
 				recipientTokens: [pushToken]
 			});
 		}
@@ -173,47 +171,37 @@ interface AddStoreManagerArgs {
 	};
 }
 
-const addStoreManager: Resolver<AddStoreManagerArgs> = async (
-	_parent,
-	args,
-	ctx
-) => {
-	const permitted = canManageStore(ctx.user.id, args.input.storeId);
-
-	if (!permitted) {
-		throw new Error('You are not authorized to add a manager to this store');
+const addStoreManager = storeAuthorizedResolver<AddStoreManagerArgs>(
+	async (_, args, ctx) => {
+		return ctx.prisma.storeManager.create({
+			data: {
+				storeId: args.input.storeId,
+				managerId: args.input.managerId
+			}
+		});
 	}
-
-	return ctx.prisma.storeManager.create({
-		data: {
-			storeId: args.input.storeId,
-			managerId: args.input.managerId
-		}
-	});
-};
+);
 
 interface RemoveStoreManagerArgs {
 	managerId: string;
 }
 
-const removeStoreManager: Resolver<RemoveStoreManagerArgs> = async (
-	_parent,
-	args,
-	ctx
-) => {
-	if (!ctx.storeId) {
-		throw new Error('No storeId specified');
-	}
-
-	return ctx.prisma.storeManager.delete({
-		where: {
-			storeId_managerId: {
-				storeId: ctx.storeId,
-				managerId: args.managerId
-			}
+const removeStoreManager = storeAuthorizedResolver<RemoveStoreManagerArgs>(
+	async (_, args, ctx) => {
+		if (!ctx.storeId) {
+			throw new Error('No storeId specified');
 		}
-	});
-};
+
+		return ctx.prisma.storeManager.delete({
+			where: {
+				storeId_managerId: {
+					storeId: ctx.storeId,
+					managerId: args.managerId
+				}
+			}
+		});
+	}
+);
 
 export default {
 	Mutation: {

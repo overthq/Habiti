@@ -7,7 +7,7 @@ import { useTheme } from './Theme';
 interface CustomImageProps {
 	uri?: string;
 	style?: ViewStyle;
-	height?: number;
+	height: number | (undefined extends true ? number | undefined : number);
 	width?: number;
 	circle?: boolean;
 }

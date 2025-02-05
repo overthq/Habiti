@@ -79,6 +79,8 @@ const AddProduct: React.FC = () => {
 				imagesToUpload={toUpload}
 				setImagesToUpload={setToUpload}
 				categories={[]}
+				selectedCategories={[]}
+				setSelectedCategories={() => {}}
 			/>
 		</FormProvider>
 	);

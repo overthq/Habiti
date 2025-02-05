@@ -48,11 +48,16 @@ export const useAddToCartMutation = () => {
 	});
 };
 
+interface RemoveFromCartArgs {
+	cartId: string;
+	productId: string;
+}
+
 export const useRemoveFromCartMutation = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (body: AddProductToCartBody) =>
-			dataService.carts.removeProductFromCart(body),
+		mutationFn: (args: RemoveFromCartArgs) =>
+			dataService.carts.removeProductFromCart(args.cartId, args.productId),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['cart'] });
 		}

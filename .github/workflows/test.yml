@@ -25,7 +25,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: 18.x
+          node-version: 20.x
 
       - name: Install dependencies
         run: |
@@ -34,6 +34,6 @@ jobs:
 
       - name: Run typecheck
         run: |
-          cd app && pnpm tsc && cd ..
-          cd dashboard && pnpm tsc && cd ..
-          cd api && pnpm tsc
+          cd apps/app && pnpm tsc
+          cd ../dashboard && pnpm tsc
+          cd ../../api && pnpm tsc

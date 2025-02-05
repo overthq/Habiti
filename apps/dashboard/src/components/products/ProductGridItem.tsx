@@ -6,7 +6,7 @@ import { Pressable, View, Image, StyleSheet } from 'react-native';
 import { ProductsQuery } from '../../types/api';
 
 interface ProductGridItemProps {
-	product: ProductsQuery['currentStore']['products'][number];
+	product: ProductsQuery['currentStore']['products']['edges'][number]['node'];
 	onPress(): void;
 }
 

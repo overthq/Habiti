@@ -86,6 +86,7 @@ const OrderTypes = gql`
 	extend type Mutation {
 		createOrder(input: CreateOrderInput!): Order!
 		updateOrder(orderId: ID!, input: UpdateOrderInput!): Order!
+		updateOrderStatus(orderId: ID!, status: OrderStatus!): Order!
 	}
 `;
 

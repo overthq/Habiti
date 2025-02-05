@@ -7,7 +7,7 @@ import { ProductsQuery } from '../../types/api';
 
 interface LowStockProductProps {
 	onPress(): void;
-	product: ProductsQuery['currentStore']['products'][number];
+	product: ProductsQuery['currentStore']['products']['edges'][number]['node'];
 }
 
 const LowStockProduct: React.FC<LowStockProductProps> = ({

@@ -1,12 +1,12 @@
-import { ListEmpty, SectionHeader } from '@habiti/components';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { FlashList } from '@shopify/flash-list';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import { SectionHeader } from '@habiti/components';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { FlashList } from '@shopify/flash-list';
 
 import WatchlistProduct from './WatchlistProduct';
 import { HomeQuery } from '../../types/api';
-import { MainTabParamList, AppStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../types/navigation';
 
 // Consider not displaying anything when the watchlist is empty.
 
@@ -28,7 +28,6 @@ interface WatchlistMainProps {
 }
 
 const WatchlistMain: React.FC<WatchlistMainProps> = ({ watchlist }) => {
-	const { navigate } = useNavigation<NavigationProp<MainTabParamList>>();
 	const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
 	const products = watchlist.map(({ product }) => product);
@@ -38,15 +37,7 @@ const WatchlistMain: React.FC<WatchlistMainProps> = ({ watchlist }) => {
 	};
 
 	if (!products || products?.length === 0) {
-		return (
-			<ListEmpty
-				description={`When you add items to your watchlist, you'll see them here.`}
-				cta={{
-					text: 'View trending',
-					action: () => navigate('Explore')
-				}}
-			/>
-		);
+		return null;
 	}
 
 	return (

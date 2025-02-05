@@ -2,7 +2,7 @@ import { PushTokenType } from '@prisma/client';
 
 import prismaClient from '../config/prisma';
 
-export const getPushTokensForStore = async (storeId: string) => {
+export const getStorePushTokens = async (storeId: string) => {
 	const managers = await prismaClient.storeManager.findMany({
 		where: { storeId },
 		include: {

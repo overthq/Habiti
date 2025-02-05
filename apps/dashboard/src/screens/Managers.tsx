@@ -53,8 +53,12 @@ const Managers = () => {
 					/>
 				}
 			>
-				{data.currentStore.managers.map(({ id, manager }) => (
-					<ManagerRow key={id} manager={manager} you={userId === manager.id} />
+				{data.currentStore.managers.map(({ manager }) => (
+					<ManagerRow
+						key={manager.id}
+						manager={manager}
+						you={userId === manager.id}
+					/>
 				))}
 			</ScrollableScreen>
 		</Screen>

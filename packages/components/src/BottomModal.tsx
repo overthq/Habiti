@@ -8,12 +8,12 @@ import {
 
 import { useTheme } from './Theme';
 
-interface ModalSheetProps extends BottomSheetModalProps {
+interface BottomModalProps extends BottomSheetModalProps {
 	children: React.ReactNode;
 	modalRef: React.RefObject<BottomSheetModal>;
 }
 
-const ModalSheet: React.FC<ModalSheetProps> = ({ modalRef, ...props }) => {
+const BottomModal: React.FC<BottomModalProps> = ({ modalRef, ...props }) => {
 	const { theme } = useTheme();
 
 	const renderBackdrop = React.useCallback(
@@ -41,4 +41,4 @@ const ModalSheet: React.FC<ModalSheetProps> = ({ modalRef, ...props }) => {
 	);
 };
 
-export default ModalSheet;
+export default BottomModal;

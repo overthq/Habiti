@@ -18,7 +18,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
 }) => {
 	const [{ data }] = useCategoriesQuery();
 	const [selectedCategories, setSelectedCategories] = React.useState<string[]>(
-		categories.map(({ id }) => id)
+		categories.map(({ categoryId }) => categoryId)
 	);
 	const [, updateProductCategories] = useUpdateProductCategoriesMutation();
 
@@ -32,11 +32,11 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
 
 	const handleUpdateCategories = async () => {
 		const add = selectedCategories.filter(
-			id => !categories.some(category => category.id === id)
+			id => !categories.some(category => category.categoryId === id)
 		);
 		const remove = categories
-			.filter(category => !selectedCategories.includes(category.id))
-			.map(({ id }) => id);
+			.filter(category => !selectedCategories.includes(category.categoryId))
+			.map(({ categoryId }) => categoryId);
 
 		await updateProductCategories({ id: productId, input: { add, remove } });
 	};

@@ -5,7 +5,7 @@ import { Pressable, StyleSheet } from 'react-native';
 import { SearchQuery } from '../../types/api';
 
 interface ProductResultRowProps {
-	product: SearchQuery['products'][number];
+	product: SearchQuery['products']['edges'][number]['node'];
 	onPress(): void;
 }
 
