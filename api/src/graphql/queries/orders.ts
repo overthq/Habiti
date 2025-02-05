@@ -1,6 +1,6 @@
 import { Resolver } from '../../types/resolvers';
 
-interface OrderArgs {
+export interface OrderArgs {
 	id: string;
 }
 

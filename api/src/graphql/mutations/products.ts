@@ -4,7 +4,7 @@ import { Resolver } from '../../types/resolvers';
 import { uploadImages } from '../../utils/upload';
 import { canManageStore } from '../permissions';
 
-interface CreateProductArgs {
+export interface CreateProductArgs {
 	input: {
 		name: string;
 		description: string;
@@ -14,7 +14,7 @@ interface CreateProductArgs {
 	};
 }
 
-const createProduct: Resolver<CreateProductArgs> = async (
+export const createProduct: Resolver<CreateProductArgs> = async (
 	_,
 	{ input },
 	ctx
@@ -51,7 +51,7 @@ const createProduct: Resolver<CreateProductArgs> = async (
 	return product;
 };
 
-interface EditProductArgs {
+export interface EditProductArgs {
 	id: string;
 	input: {
 		name?: string;
@@ -61,7 +61,7 @@ interface EditProductArgs {
 	};
 }
 
-const editProduct: Resolver<EditProductArgs> = async (
+export const editProduct: Resolver<EditProductArgs> = async (
 	_,
 	{ id, input },
 	ctx
@@ -98,17 +98,21 @@ const editProduct: Resolver<EditProductArgs> = async (
 	return product;
 };
 
-interface DeleteProductArgs {
+export interface DeleteProductArgs {
 	id: string;
 }
 
-const deleteProduct: Resolver<DeleteProductArgs> = async (_, { id }, ctx) => {
+export const deleteProduct: Resolver<DeleteProductArgs> = async (
+	_,
+	{ id },
+	ctx
+) => {
 	const product = await ctx.prisma.product.delete({ where: { id } });
 
 	return product;
 };
 
-interface UpdateProductImagesArgs {
+export interface UpdateProductImagesArgs {
 	id: string;
 	input: {
 		add: Promise<FileUpload>[];
@@ -116,7 +120,7 @@ interface UpdateProductImagesArgs {
 	};
 }
 
-const updateProductImages: Resolver<UpdateProductImagesArgs> = async (
+export const updateProductImages: Resolver<UpdateProductImagesArgs> = async (
 	_,
 	{ id, input },
 	ctx
@@ -146,11 +150,11 @@ const updateProductImages: Resolver<UpdateProductImagesArgs> = async (
 	return product;
 };
 
-interface AddToWatchlistArgs {
+export interface AddToWatchlistArgs {
 	productId: string;
 }
 
-const addToWatchlist: Resolver<AddToWatchlistArgs> = (
+export const addToWatchlist: Resolver<AddToWatchlistArgs> = (
 	_,
 	{ productId },
 	ctx
@@ -163,7 +167,7 @@ const addToWatchlist: Resolver<AddToWatchlistArgs> = (
 	});
 };
 
-interface AddProductReviewArgs {
+export interface AddProductReviewArgs {
 	input: {
 		productId: string;
 		body?: string;
@@ -171,7 +175,7 @@ interface AddProductReviewArgs {
 	};
 }
 
-const addProductReview: Resolver<AddProductReviewArgs> = async (
+export const addProductReview: Resolver<AddProductReviewArgs> = async (
 	_,
 	{ input },
 	ctx
@@ -188,7 +192,7 @@ const addProductReview: Resolver<AddProductReviewArgs> = async (
 	return productReview;
 };
 
-interface AddProductOptionArgs {
+export interface AddProductOptionArgs {
 	input: {
 		productId: string;
 		name: string;
@@ -196,7 +200,7 @@ interface AddProductOptionArgs {
 	};
 }
 
-const addProductOption: Resolver<AddProductOptionArgs> = async (
+export const addProductOption: Resolver<AddProductOptionArgs> = async (
 	_,
 	{ input },
 	ctx
@@ -212,7 +216,7 @@ const addProductOption: Resolver<AddProductOptionArgs> = async (
 	return productOption;
 };
 
-interface UpdateProductCategoriesArgs {
+export interface UpdateProductCategoriesArgs {
 	id: string;
 	input: {
 		add: string[];
@@ -220,11 +224,9 @@ interface UpdateProductCategoriesArgs {
 	};
 }
 
-const updateProductCategories: Resolver<UpdateProductCategoriesArgs> = async (
-	_,
-	{ id, input },
-	ctx
-) => {
+export const updateProductCategories: Resolver<
+	UpdateProductCategoriesArgs
+> = async (_, { id, input }, ctx) => {
 	await ctx.prisma.productCategory.deleteMany({
 		where: { productId: id, categoryId: { in: input.remove } }
 	});
@@ -242,18 +244,16 @@ const updateProductCategories: Resolver<UpdateProductCategoriesArgs> = async (
 	return product;
 };
 
-interface CreateProductCategoryArgs {
+export interface CreateProductCategoryArgs {
 	input: {
 		name: string;
 		description?: string;
 	};
 }
 
-const createProductCategory: Resolver<CreateProductCategoryArgs> = async (
-	_,
-	{ input },
-	ctx
-) => {
+export const createProductCategory: Resolver<
+	CreateProductCategoryArgs
+> = async (_, { input }, ctx) => {
 	if (!ctx.storeId) {
 		throw new Error('Store not found');
 	}
@@ -269,7 +269,7 @@ const createProductCategory: Resolver<CreateProductCategoryArgs> = async (
 	return category;
 };
 
-interface EditProductCategoryArgs {
+export interface EditProductCategoryArgs {
 	categoryId: string;
 	input: {
 		name?: string;
@@ -277,7 +277,7 @@ interface EditProductCategoryArgs {
 	};
 }
 
-const editProductCategory: Resolver<EditProductCategoryArgs> = async (
+export const editProductCategory: Resolver<EditProductCategoryArgs> = async (
 	_,
 	{ categoryId, input },
 	ctx
@@ -292,15 +292,13 @@ const editProductCategory: Resolver<EditProductCategoryArgs> = async (
 	});
 };
 
-interface DeleteProductCategoryArgs {
+export interface DeleteProductCategoryArgs {
 	categoryId: string;
 }
 
-const deleteProductCategory: Resolver<DeleteProductCategoryArgs> = async (
-	_,
-	{ categoryId },
-	ctx
-) => {
+export const deleteProductCategory: Resolver<
+	DeleteProductCategoryArgs
+> = async (_, { categoryId }, ctx) => {
 	if (!ctx.storeId) {
 		throw new Error('Store not found');
 	}
@@ -310,20 +308,4 @@ const deleteProductCategory: Resolver<DeleteProductCategoryArgs> = async (
 	});
 
 	return category;
-};
-
-export default {
-	Mutation: {
-		createProduct,
-		editProduct,
-		deleteProduct,
-		addToWatchlist,
-		updateProductImages,
-		addProductReview,
-		addProductOption,
-		createProductCategory,
-		editProductCategory,
-		deleteProductCategory,
-		updateProductCategories
-	}
 };

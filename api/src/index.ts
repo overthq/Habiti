@@ -20,7 +20,7 @@ import products from './routes/products';
 import stores from './routes/stores';
 import users from './routes/users';
 import webhooks from './routes/webhooks';
-import schema from './schema';
+import schema from './graphql/schema';
 import Services from './services';
 
 import './config/cloudinary';

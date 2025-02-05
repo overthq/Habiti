@@ -3,7 +3,7 @@ import argon2 from 'argon2';
 import { Resolver } from '../../types/resolvers';
 import { generateAccessToken } from '../../utils/auth';
 
-interface RegisterArgs {
+export interface RegisterArgs {
 	input: {
 		name: string;
 		email: string;
@@ -39,7 +39,7 @@ export const register: Resolver<RegisterArgs> = async (
 	return user;
 };
 
-interface AuthenticateArgs {
+export interface AuthenticateArgs {
 	input: {
 		email: string;
 		password: string;
@@ -70,7 +70,7 @@ export const authenticate: Resolver<AuthenticateArgs> = async (
 	return { accessToken, userId: user.id };
 };
 
-interface VerifyArgs {
+export interface VerifyArgs {
 	input: {
 		email: string;
 		code: string;
@@ -107,7 +107,7 @@ export const verify: Resolver<VerifyArgs> = async (
 	}
 };
 
-interface EditProfileArgs {
+export interface EditProfileArgs {
 	id: string;
 	input: {
 		name?: string;
@@ -134,21 +134,10 @@ export const editProfile: Resolver<EditProfileArgs> = (
 	});
 };
 
-const deleteAccount: Resolver = (_, __, ctx) => {
+export const deleteAccount: Resolver = (_, __, ctx) => {
 	return ctx.prisma.user.delete({ where: { id: ctx.user.id } });
 };
 
-const deleteUser: Resolver = (_, { id }, ctx) => {
+export const deleteUser: Resolver = (_, { id }, ctx) => {
 	return ctx.prisma.user.delete({ where: { id } });
-};
-
-export default {
-	Mutation: {
-		register,
-		authenticate,
-		verify,
-		editProfile,
-		deleteUser,
-		deleteAccount
-	}
 };

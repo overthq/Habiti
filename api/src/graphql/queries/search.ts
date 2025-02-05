@@ -1,6 +1,6 @@
 import { Resolver } from '../../types/resolvers';
 
-interface SearchArgs {
+export interface SearchArgs {
 	searchTerm: string;
 }
 

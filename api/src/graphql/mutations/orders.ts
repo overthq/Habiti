@@ -9,7 +9,7 @@ import {
 	sendNewOrderNotification
 } from '../hooks/orders';
 
-interface CreateOrderArgs {
+export interface CreateOrderArgs {
 	input: {
 		cartId: string;
 		cardId?: string;
@@ -18,7 +18,7 @@ interface CreateOrderArgs {
 	};
 }
 
-const createOrder: Resolver<CreateOrderArgs> = async (
+export const createOrder: Resolver<CreateOrderArgs> = async (
 	_,
 	{ input: { cartId, cardId, transactionFee, serviceFee } },
 	ctx
@@ -96,17 +96,21 @@ const createOrder: Resolver<CreateOrderArgs> = async (
 	return order;
 };
 
-interface UpdateOrderArgs {
+export interface UpdateOrderArgs {
 	orderId: string;
 	input: {
 		status?: OrderStatus;
 	};
 }
 
-const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
+export const updateOrder: Resolver<UpdateOrderArgs> = async (
+	_,
+	{ orderId, input },
+	ctx
+) => {
 	const order = await ctx.prisma.order.update({
-		where: { id: args.orderId },
-		data: args.input,
+		where: { id: orderId },
+		data: input,
 		include: {
 			products: { include: { product: true } },
 			user: {
@@ -119,12 +123,12 @@ const updateOrder: Resolver<UpdateOrderArgs> = async (_, args, ctx) => {
 	return order;
 };
 
-interface UpdateOrderStatusArgs {
+export interface UpdateOrderStatusArgs {
 	orderId: string;
 	status: OrderStatus;
 }
 
-const updateOrderStatus = storeAuthorizedResolver<UpdateOrderStatusArgs>(
+export const updateOrderStatus = storeAuthorizedResolver<UpdateOrderStatusArgs>(
 	async (_, { orderId, status }, ctx) => {
 		const order = await ctx.prisma.order.update({
 			where: { id: orderId },
@@ -154,11 +158,3 @@ const updateOrderStatus = storeAuthorizedResolver<UpdateOrderStatusArgs>(
 		}
 	}
 );
-
-export default {
-	Mutation: {
-		createOrder,
-		updateOrder,
-		updateOrderStatus
-	}
-};

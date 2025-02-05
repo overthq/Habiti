@@ -4,7 +4,7 @@ import { Resolver } from '../../types/resolvers';
 import { decodeCursor, paginateQuery } from '../../utils/pagination';
 import { storeAuthorizedResolver } from '../permissions';
 
-interface StoreArgs {
+export interface StoreArgs {
 	id: string;
 }
 
@@ -18,7 +18,7 @@ const currentStore = storeAuthorizedResolver((_, __, ctx) => {
 	return ctx.prisma.store.findUnique({ where: { id: ctx.storeId } });
 });
 
-interface StoresArgs {
+export interface StoresArgs {
 	filter: {
 		name?: StringWhere;
 	};
@@ -55,7 +55,7 @@ const products: Resolver<ProductsArgs & PaginationArgs> = (
 	);
 };
 
-interface OrdersArgs {
+export interface OrdersArgs {
 	orderBy: {
 		createdAt?: 'asc' | 'desc';
 		updatedAt?: 'asc' | 'desc';

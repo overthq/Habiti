@@ -1,30 +1,30 @@
 import { Resolver } from '../../types/resolvers';
 
-const carts: Resolver = async (_parent, _args, ctx) => {
+export const carts: Resolver = async (_parent, _args, ctx) => {
 	return ctx.prisma.cart.findMany();
 };
 
-interface CartArgs {
+export interface CartArgs {
 	id: string;
 }
 
-const cart: Resolver<CartArgs> = async (_, { id }, ctx) => {
+export const cart: Resolver<CartArgs> = async (_, { id }, ctx) => {
 	return ctx.prisma.cart.findUnique({ where: { id } });
 };
 
-const user: Resolver = async (parent, _, ctx) => {
+export const user: Resolver = async (parent, _, ctx) => {
 	return ctx.prisma.cart.findUnique({ where: { id: parent.id } }).user();
 };
 
-const products: Resolver = (parent, _, ctx) => {
+export const products: Resolver = (parent, _, ctx) => {
 	return ctx.prisma.cart.findUnique({ where: { id: parent.id } }).products();
 };
 
-const store: Resolver = async (parent, _, ctx) => {
+export const store: Resolver = async (parent, _, ctx) => {
 	return ctx.prisma.cart.findUnique({ where: { id: parent.id } }).store();
 };
 
-const total: Resolver = async (parent, _, ctx) => {
+export const total: Resolver = async (parent, _, ctx) => {
 	const fetchedProducts = await ctx.prisma.cart
 		.findUnique({ where: { id: parent.id } })
 		.products({ include: { product: true } });
