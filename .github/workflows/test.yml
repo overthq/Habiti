@@ -35,5 +35,5 @@ jobs:
       - name: Run typecheck
         run: |
           cd apps/app && pnpm tsc
-          cd apps/dashboard && pnpm tsc
-          cd api && pnpm tsc
+          cd ../dashboard && pnpm tsc
+          cd ../../api && pnpm tsc
