@@ -35,15 +35,3 @@ mutation DeleteProductCategory($categoryId: ID!) {
 		id
 	}
 }
-
-mutation AddProductToCategory($input: AddProductToCategoryInput!) {
-	addProductToCategory(input: $input) {
-		id
-	}
-}
-
-mutation RemoveProductFromCategory($input: RemoveProductFromCategoryInput!) {
-	removeProductFromCategory(input: $input) {
-		id
-	}
-}

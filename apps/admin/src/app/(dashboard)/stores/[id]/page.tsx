@@ -72,7 +72,7 @@ export default function StoreDetailPage({
 					<CardHeader className='flex flex-row items-center justify-between'>
 						<CardTitle>Products</CardTitle>
 						<Button variant='outline' size='sm' asChild>
-							<Link href={`/dashboard/stores/${id}/products/new`}>
+							<Link href={`/stores/${id}/products/new`}>
 								<Package className='h-4 w-4 mr-2' />
 								Add Product
 							</Link>

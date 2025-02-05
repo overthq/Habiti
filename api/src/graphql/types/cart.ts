@@ -15,7 +15,6 @@ const CartTypes = gql`
 	}
 
 	type CartProduct {
-		id: ID!
 		cartId: ID!
 		productId: ID!
 		quantity: Int!

@@ -4,7 +4,7 @@
 	"main": "dist/index.js",
 	"license": "GPL-3.0",
 	"scripts": {
-		"dev": "nodemon",
+		"dev": "tsx watch src",
 		"build": "tsc && pnpm sentry:sourcemaps",
 		"start": "node dist/index",
 		"sentry:sourcemaps": "sentry-cli sourcemaps inject --org habiti --project habiti-api ./dist && sentry-cli sourcemaps upload --org habiti --project habiti-api ./dist"
@@ -46,9 +46,7 @@
 		"@types/lodash": "^4.14.198",
 		"@types/nodemailer": "^6.4.15",
 		"@types/pg": "^8.11.10",
-		"nodemon": "^3.1.7",
 		"prisma": "^6.1.0",
-		"ts-node": "^10.9.2",
 		"tsx": "^4.11.0",
 		"typescript": "^5.3.3"
 	}

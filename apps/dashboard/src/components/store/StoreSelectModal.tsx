@@ -1,3 +1,4 @@
+import React from 'react';
 import {
 	BottomSheetBackdrop,
 	BottomSheetModal,
@@ -16,7 +17,11 @@ interface StoreSelectModalProps {
 const StoreSelectModal: React.FC<StoreSelectModalProps> = ({ modalRef }) => {
 	const { theme } = useTheme();
 	const { bottom } = useSafeAreaInsets();
-	const [{ data }] = useManagedStoresQuery();
+	const [{ data, error }] = useManagedStoresQuery();
+
+	React.useEffect(() => {
+		console.log({ error });
+	}, [error]);
 
 	return (
 		<BottomSheetModal

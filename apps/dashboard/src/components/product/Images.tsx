@@ -49,6 +49,7 @@ const Images: React.FC<ImagesProps> = ({
 				<TouchableOpacity
 					onPress={handlePickImage}
 					style={[styles.add, { borderColor: theme.border.color }]}
+					activeOpacity={0.8}
 				>
 					<Icon name='plus' size={24} />
 				</TouchableOpacity>

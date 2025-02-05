@@ -2,7 +2,6 @@ query ManagedStores {
 	currentUser {
 		id
 		managed {
-			id
 			storeId
 			managerId
 			store {
@@ -17,7 +16,8 @@ query Managers {
 	currentStore {
 		id
 		managers {
-			id
+			storeId
+			managerId
 			manager {
 				id
 				name
@@ -28,14 +28,14 @@ query Managers {
 
 mutation AddStoreManager($input: AddStoreManagerInput!) {
 	addStoreManager(input: $input) {
-		id
 		storeId
+		managerId
 	}
 }
 
 mutation RemoveStoreManager($managerId: ID!) {
 	removeStoreManager(managerId: $managerId) {
-		id
 		storeId
+		managerId
 	}
 }

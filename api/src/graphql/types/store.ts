@@ -35,7 +35,6 @@ const StoreTypes = gql`
 	}
 
 	type StoreFollower {
-		id: ID!
 		storeId: ID!
 		followerId: ID!
 		store: Store!
@@ -43,7 +42,6 @@ const StoreTypes = gql`
 	}
 
 	type StoreManager {
-		id: ID!
 		storeId: ID!
 		managerId: ID!
 		store: Store!

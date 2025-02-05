@@ -26,7 +26,7 @@ const ProductMain: React.FC<ProductMainProps> = ({ product, mode }) => {
 	const [{ fetching }, editProduct] = useEditProductMutation();
 	const settingsModalRef = React.useRef<BottomSheetModal>(null);
 	const [selectedCategories, setSelectedCategories] = React.useState<string[]>(
-		product.categories.map(({ category }) => category.id)
+		product.categories.map(({ categoryId }) => categoryId)
 	);
 	const [, updateProductCategories] = useUpdateProductCategoriesMutation();
 
@@ -51,11 +51,11 @@ const ProductMain: React.FC<ProductMainProps> = ({ product, mode }) => {
 		});
 
 		const add = selectedCategories.filter(
-			id => !product.categories.some(category => category.id === id)
+			id => !product.categories.some(category => category.categoryId === id)
 		);
 		const remove = product.categories
-			.filter(category => !selectedCategories.includes(category.id))
-			.map(({ id }) => id);
+			.filter(category => !selectedCategories.includes(category.categoryId))
+			.map(({ categoryId }) => categoryId);
 
 		const { error: updateError } = await updateProductCategories({
 			id: product.id,

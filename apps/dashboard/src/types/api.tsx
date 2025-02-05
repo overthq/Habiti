@@ -47,11 +47,6 @@ export type AddProductReviewInput = {
 	rating: Scalars['Int']['input'];
 };
 
-export type AddProductToCategoryInput = {
-	categoryId: Scalars['ID']['input'];
-	productId: Scalars['ID']['input'];
-};
-
 export type AddStoreManagerInput = {
 	managerId: Scalars['ID']['input'];
 	storeId: Scalars['ID']['input'];
@@ -116,7 +111,6 @@ export type CartProduct = {
 	__typename?: 'CartProduct';
 	cart: Cart;
 	cartId: Scalars['ID']['output'];
-	id: Scalars['ID']['output'];
 	product: Product;
 	productId: Scalars['ID']['output'];
 	quantity: Scalars['Int']['output'];
@@ -238,7 +232,6 @@ export type Mutation = {
 	addDeliveryAddress?: Maybe<DeliveryAddress>;
 	addProductOption: ProductOption;
 	addProductReview: ProductReview;
-	addProductToCategory: ProductCategory;
 	addStoreManager: StoreManager;
 	addToCart: CartProduct;
 	addToWatchlist: WatchlistProduct;
@@ -253,6 +246,7 @@ export type Mutation = {
 	deleteCard: Card;
 	deleteCart: Cart;
 	deleteImage: Image;
+	deleteImages: Array<Image>;
 	deleteProduct: Product;
 	deleteProductCategory: StoreProductCategory;
 	deleteStore: Scalars['ID']['output'];
@@ -264,7 +258,6 @@ export type Mutation = {
 	followStore: StoreFollower;
 	register: User;
 	removeFromCart: Scalars['ID']['output'];
-	removeProductFromCategory: ProductCategory;
 	removeStoreManager: StoreManager;
 	unfollowStore: StoreFollower;
 	updateCartProduct: CartProduct;
@@ -285,10 +278,6 @@ export type MutationAddProductOptionArgs = {
 
 export type MutationAddProductReviewArgs = {
 	input: AddProductReviewInput;
-};
-
-export type MutationAddProductToCategoryArgs = {
-	input: AddProductToCategoryInput;
 };
 
 export type MutationAddStoreManagerArgs = {
@@ -343,6 +332,10 @@ export type MutationDeleteImageArgs = {
 	id: Scalars['ID']['input'];
 };
 
+export type MutationDeleteImagesArgs = {
+	imageIds: Array<Scalars['ID']['input']>;
+};
+
 export type MutationDeleteProductArgs = {
 	id: Scalars['ID']['input'];
 };
@@ -390,10 +383,6 @@ export type MutationRemoveFromCartArgs = {
 	productId: Scalars['ID']['input'];
 };
 
-export type MutationRemoveProductFromCategoryArgs = {
-	input: RemoveProductFromCategoryInput;
-};
-
 export type MutationRemoveStoreManagerArgs = {
 	managerId: Scalars['ID']['input'];
 };
@@ -427,14 +416,6 @@ export type MutationVerifyArgs = {
 
 export type MutationVerifyBankAccountArgs = {
 	input: VerifyBankAccountInput;
-};
-
-export type NewStats = {
-	__typename?: 'NewStats';
-	daily: Stats;
-	monthly: Stats;
-	weekly: Stats;
-	yearly: Stats;
 };
 
 export type Node = {
@@ -482,7 +463,6 @@ export type OrderOrderByInput = {
 
 export type OrderProduct = {
 	__typename?: 'OrderProduct';
-	id: Scalars['ID']['output'];
 	order: Order;
 	orderId: Scalars['ID']['output'];
 	product: Product;
@@ -547,7 +527,6 @@ export type ProductCategory = {
 	__typename?: 'ProductCategory';
 	category: StoreProductCategory;
 	categoryId: Scalars['ID']['output'];
-	id: Scalars['ID']['output'];
 	product: Product;
 	productId: Scalars['ID']['output'];
 };
@@ -627,7 +606,6 @@ export type Query = {
 	orders: OrderConnection;
 	product: Product;
 	products: ProductConnection;
-	stats: Stats;
 	store: Store;
 	storeProductCategory?: Maybe<StoreProductCategory>;
 	stores: Array<Store>;
@@ -669,10 +647,6 @@ export type QueryProductsArgs = {
 	orderBy?: InputMaybe<Array<ProductOrderByInput>>;
 };
 
-export type QueryStatsArgs = {
-	period?: InputMaybe<StatPeriod>;
-};
-
 export type QueryStoreArgs = {
 	id: Scalars['ID']['input'];
 };
@@ -695,32 +669,10 @@ export type RegisterInput = {
 	password: Scalars['String']['input'];
 };
 
-export type RemoveProductFromCategoryInput = {
-	categoryId: Scalars['ID']['input'];
-	productId: Scalars['ID']['input'];
-};
-
 export enum Sort {
 	Asc = 'asc',
 	Desc = 'desc'
 }
-
-export enum StatPeriod {
-	Day = 'Day',
-	Month = 'Month',
-	Week = 'Week',
-	Year = 'Year'
-}
-
-export type Stats = {
-	__typename?: 'Stats';
-	id: Scalars['ID']['output'];
-	orders: Array<Order>;
-	pendingOrderCount: Scalars['Int']['output'];
-	products: Array<Product>;
-	revenue: Scalars['Int']['output'];
-	storeId: Scalars['ID']['output'];
-};
 
 export type Store = {
 	__typename?: 'Store';
@@ -769,14 +721,12 @@ export type StoreFollower = {
 	__typename?: 'StoreFollower';
 	follower: User;
 	followerId: Scalars['ID']['output'];
-	id: Scalars['ID']['output'];
 	store: Store;
 	storeId: Scalars['ID']['output'];
 };
 
 export type StoreManager = {
 	__typename?: 'StoreManager';
-	id: Scalars['ID']['output'];
 	manager: User;
 	managerId: Scalars['ID']['output'];
 	store: Store;
@@ -952,24 +902,6 @@ export type DeleteProductCategoryMutation = {
 	deleteProductCategory: { __typename?: 'StoreProductCategory'; id: string };
 };
 
-export type AddProductToCategoryMutationVariables = Exact<{
-	input: AddProductToCategoryInput;
-}>;
-
-export type AddProductToCategoryMutation = {
-	__typename?: 'Mutation';
-	addProductToCategory: { __typename?: 'ProductCategory'; id: string };
-};
-
-export type RemoveProductFromCategoryMutationVariables = Exact<{
-	input: RemoveProductFromCategoryInput;
-}>;
-
-export type RemoveProductFromCategoryMutation = {
-	__typename?: 'Mutation';
-	removeProductFromCategory: { __typename?: 'ProductCategory'; id: string };
-};
-
 export type ManagedStoresQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ManagedStoresQuery = {
@@ -979,7 +911,6 @@ export type ManagedStoresQuery = {
 		id: string;
 		managed: Array<{
 			__typename?: 'StoreManager';
-			id: string;
 			storeId: string;
 			managerId: string;
 			store: { __typename?: 'Store'; id: string; name: string };
@@ -996,7 +927,8 @@ export type ManagersQuery = {
 		id: string;
 		managers: Array<{
 			__typename?: 'StoreManager';
-			id: string;
+			storeId: string;
+			managerId: string;
 			manager: { __typename?: 'User'; id: string; name: string };
 		}>;
 	};
@@ -1008,7 +940,11 @@ export type AddStoreManagerMutationVariables = Exact<{
 
 export type AddStoreManagerMutation = {
 	__typename?: 'Mutation';
-	addStoreManager: { __typename?: 'StoreManager'; id: string; storeId: string };
+	addStoreManager: {
+		__typename?: 'StoreManager';
+		storeId: string;
+		managerId: string;
+	};
 };
 
 export type RemoveStoreManagerMutationVariables = Exact<{
@@ -1019,8 +955,8 @@ export type RemoveStoreManagerMutation = {
 	__typename?: 'Mutation';
 	removeStoreManager: {
 		__typename?: 'StoreManager';
-		id: string;
 		storeId: string;
+		managerId: string;
 	};
 };
 
@@ -1043,7 +979,6 @@ export type OrdersQuery = {
 			user: { __typename?: 'User'; id: string; name: string };
 			products: Array<{
 				__typename?: 'OrderProduct';
-				id: string;
 				orderId: string;
 				productId: string;
 				unitPrice: number;
@@ -1072,7 +1007,6 @@ export type OrderQuery = {
 		user: { __typename?: 'User'; id: string; name: string };
 		products: Array<{
 			__typename?: 'OrderProduct';
-			id: string;
 			orderId: string;
 			productId: string;
 			unitPrice: number;
@@ -1197,7 +1131,8 @@ export type ProductQuery = {
 		options: Array<{ __typename?: 'ProductOption'; id: string; name: string }>;
 		categories: Array<{
 			__typename?: 'ProductCategory';
-			id: string;
+			categoryId: string;
+			productId: string;
 			category: {
 				__typename?: 'StoreProductCategory';
 				id: string;
@@ -1254,34 +1189,13 @@ export type UpdateProductCategoriesMutation = {
 		id: string;
 		categories: Array<{
 			__typename?: 'ProductCategory';
-			id: string;
+			categoryId: string;
+			productId: string;
 			category: {
 				__typename?: 'StoreProductCategory';
 				id: string;
 				name: string;
 			};
-		}>;
-	};
-};
-
-export type StatsQueryVariables = Exact<{
-	period: StatPeriod;
-}>;
-
-export type StatsQuery = {
-	__typename?: 'Query';
-	stats: {
-		__typename?: 'Stats';
-		id: string;
-		revenue: number;
-		pendingOrderCount: number;
-		orders: Array<{
-			__typename?: 'Order';
-			id: string;
-			status: OrderStatus;
-			total: number;
-			createdAt: string;
-			updatedAt: string;
 		}>;
 	};
 };
@@ -1397,7 +1311,8 @@ export type CustomerInfoQuery = {
 			createdAt: string;
 			products: Array<{
 				__typename?: 'OrderProduct';
-				id: string;
+				orderId: string;
+				productId: string;
 				product: {
 					__typename?: 'Product';
 					id: string;
@@ -1498,40 +1413,11 @@ export function useDeleteProductCategoryMutation() {
 		DeleteProductCategoryMutationVariables
 	>(DeleteProductCategoryDocument);
 }
-export const AddProductToCategoryDocument = gql`
-	mutation AddProductToCategory($input: AddProductToCategoryInput!) {
-		addProductToCategory(input: $input) {
-			id
-		}
-	}
-`;
-
-export function useAddProductToCategoryMutation() {
-	return Urql.useMutation<
-		AddProductToCategoryMutation,
-		AddProductToCategoryMutationVariables
-	>(AddProductToCategoryDocument);
-}
-export const RemoveProductFromCategoryDocument = gql`
-	mutation RemoveProductFromCategory($input: RemoveProductFromCategoryInput!) {
-		removeProductFromCategory(input: $input) {
-			id
-		}
-	}
-`;
-
-export function useRemoveProductFromCategoryMutation() {
-	return Urql.useMutation<
-		RemoveProductFromCategoryMutation,
-		RemoveProductFromCategoryMutationVariables
-	>(RemoveProductFromCategoryDocument);
-}
 export const ManagedStoresDocument = gql`
 	query ManagedStores {
 		currentUser {
 			id
 			managed {
-				id
 				storeId
 				managerId
 				store {
@@ -1556,7 +1442,8 @@ export const ManagersDocument = gql`
 		currentStore {
 			id
 			managers {
-				id
+				storeId
+				managerId
 				manager {
 					id
 					name
@@ -1577,8 +1464,8 @@ export function useManagersQuery(
 export const AddStoreManagerDocument = gql`
 	mutation AddStoreManager($input: AddStoreManagerInput!) {
 		addStoreManager(input: $input) {
-			id
 			storeId
+			managerId
 		}
 	}
 `;
@@ -1592,8 +1479,8 @@ export function useAddStoreManagerMutation() {
 export const RemoveStoreManagerDocument = gql`
 	mutation RemoveStoreManager($managerId: ID!) {
 		removeStoreManager(managerId: $managerId) {
-			id
 			storeId
+			managerId
 		}
 	}
 `;
@@ -1615,7 +1502,6 @@ export const OrdersDocument = gql`
 					name
 				}
 				products {
-					id
 					orderId
 					productId
 					product {
@@ -1651,7 +1537,6 @@ export const OrderDocument = gql`
 				name
 			}
 			products {
-				id
 				orderId
 				productId
 				product {
@@ -1814,7 +1699,8 @@ export const ProductDocument = gql`
 				name
 			}
 			categories {
-				id
+				categoryId
+				productId
 				category {
 					id
 					name
@@ -1883,7 +1769,8 @@ export const UpdateProductCategoriesDocument = gql`
 		updateProductCategories(id: $id, input: $input) {
 			id
 			categories {
-				id
+				categoryId
+				productId
 				category {
 					id
 					name
@@ -1898,31 +1785,6 @@ export function useUpdateProductCategoriesMutation() {
 		UpdateProductCategoriesMutation,
 		UpdateProductCategoriesMutationVariables
 	>(UpdateProductCategoriesDocument);
-}
-export const StatsDocument = gql`
-	query Stats($period: StatPeriod!) {
-		stats(period: $period) {
-			id
-			orders {
-				id
-				status
-				total
-				createdAt
-				updatedAt
-			}
-			revenue
-			pendingOrderCount
-		}
-	}
-`;
-
-export function useStatsQuery(
-	options: Omit<Urql.UseQueryArgs<StatsQueryVariables>, 'query'>
-) {
-	return Urql.useQuery<StatsQuery, StatsQueryVariables>({
-		query: StatsDocument,
-		...options
-	});
 }
 export const CreateStoreDocument = gql`
 	mutation CreateStore($input: CreateStoreInput!) {
@@ -2051,7 +1913,8 @@ export const CustomerInfoDocument = gql`
 			orders {
 				id
 				products {
-					id
+					orderId
+					productId
 					product {
 						id
 						name
