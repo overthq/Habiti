@@ -1,11 +1,11 @@
 import { Resolver } from '../../types/resolvers';
 import { payAccount, resolveAccountNumber } from '../../utils/paystack';
 
-interface CreatePayoutArgs {
+export interface CreatePayoutArgs {
 	input: { amount: number };
 }
 
-const createPayout: Resolver<CreatePayoutArgs> = async (
+export const createPayout: Resolver<CreatePayoutArgs> = async (
 	_,
 	{ input: { amount } },
 	ctx
@@ -38,14 +38,14 @@ const createPayout: Resolver<CreatePayoutArgs> = async (
 	return payout;
 };
 
-interface VerifyBankAccountArgs {
+export interface VerifyBankAccountArgs {
 	input: {
 		bankAccountNumber: string;
 		bankCode: string;
 	};
 }
 
-const verifyBankAccount: Resolver<VerifyBankAccountArgs> = async (
+export const verifyBankAccount: Resolver<VerifyBankAccountArgs> = async (
 	_,
 	{ input: { bankAccountNumber, bankCode } }
 ) => {
@@ -55,11 +55,4 @@ const verifyBankAccount: Resolver<VerifyBankAccountArgs> = async (
 		accountNumber: data.account_number,
 		accountName: data.account_name
 	};
-};
-
-export default {
-	Mutation: {
-		createPayout,
-		verifyBankAccount
-	}
 };

@@ -1,6 +1,6 @@
 import { authenticatedResolver } from '../permissions';
 
-interface CreateCartArgs {
+export interface CreateCartArgs {
 	input: {
 		storeId: string;
 		productId: string;
@@ -8,7 +8,7 @@ interface CreateCartArgs {
 	};
 }
 
-const createCart = authenticatedResolver<CreateCartArgs>(
+export const createCart = authenticatedResolver<CreateCartArgs>(
 	(_, { input }, ctx) => {
 		const { storeId, productId, quantity } = input;
 
@@ -22,15 +22,17 @@ const createCart = authenticatedResolver<CreateCartArgs>(
 	}
 );
 
-interface DeleteCartArgs {
+export interface DeleteCartArgs {
 	id: string;
 }
 
-const deleteCart = authenticatedResolver<DeleteCartArgs>((_, { id }, ctx) => {
-	return ctx.prisma.cart.delete({ where: { id, userId: ctx.user.id } });
-});
+export const deleteCart = authenticatedResolver<DeleteCartArgs>(
+	(_, { id }, ctx) => {
+		return ctx.prisma.cart.delete({ where: { id, userId: ctx.user.id } });
+	}
+);
 
-interface AddToCartArgs {
+export interface AddToCartArgs {
 	input: {
 		storeId: string;
 		productId: string;
@@ -38,7 +40,7 @@ interface AddToCartArgs {
 	};
 }
 
-const addToCart = authenticatedResolver<AddToCartArgs>(
+export const addToCart = authenticatedResolver<AddToCartArgs>(
 	async (_, { input: { storeId, productId, quantity } }, ctx) => {
 		const cart = await ctx.prisma.cart.upsert({
 			where: { userId_storeId: { userId: ctx.user.id, storeId } },
@@ -60,12 +62,12 @@ const addToCart = authenticatedResolver<AddToCartArgs>(
 	}
 );
 
-interface RemoveProductArgs {
+export interface RemoveProductArgs {
 	cartId: string;
 	productId: string;
 }
 
-const removeFromCart = authenticatedResolver<RemoveProductArgs>(
+export const removeFromCart = authenticatedResolver<RemoveProductArgs>(
 	async (_, { cartId, productId }, ctx) => {
 		const cart = await ctx.prisma.cart.findUnique({ where: { id: cartId } });
 
@@ -85,7 +87,7 @@ const removeFromCart = authenticatedResolver<RemoveProductArgs>(
 	}
 );
 
-interface UpdateCartProductArgs {
+export interface UpdateCartProductArgs {
 	input: {
 		cartId: string;
 		productId: string;
@@ -93,7 +95,7 @@ interface UpdateCartProductArgs {
 	};
 }
 
-const updateCartProduct = authenticatedResolver<UpdateCartProductArgs>(
+export const updateCartProduct = authenticatedResolver<UpdateCartProductArgs>(
 	async (_, { input: { cartId, productId, quantity } }, ctx) => {
 		return ctx.prisma.cartProduct.update({
 			where: { cartId_productId: { cartId, productId } },
@@ -101,13 +103,3 @@ const updateCartProduct = authenticatedResolver<UpdateCartProductArgs>(
 		});
 	}
 );
-
-export default {
-	Mutation: {
-		createCart,
-		deleteCart,
-		addToCart,
-		removeFromCart,
-		updateCartProduct
-	}
-};

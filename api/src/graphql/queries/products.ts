@@ -34,7 +34,7 @@ const products: Resolver<ProductsArgs & PaginationArgs> = async (
 	);
 };
 
-interface OrdersArgs {
+export interface OrdersArgs {
 	orderBy: {
 		createdAt?: 'asc' | 'desc';
 		updatedAt?: 'asc' | 'desc';

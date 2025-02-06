@@ -7,7 +7,7 @@ import { uploadStream } from '../../utils/upload';
 import { getStorePushTokens } from '../../utils/notifications';
 import { canManageStore, storeAuthorizedResolver } from '../permissions';
 
-interface CreateStoreArgs {
+export interface CreateStoreArgs {
 	input: {
 		name: string;
 		description?: string;
@@ -18,7 +18,11 @@ interface CreateStoreArgs {
 	};
 }
 
-const createStore: Resolver<CreateStoreArgs> = async (_, { input }, ctx) => {
+export const createStore: Resolver<CreateStoreArgs> = async (
+	_,
+	{ input },
+	ctx
+) => {
 	const { storeImage, ...rest } = input;
 	let uploadedImage: UploadApiResponse | undefined;
 
@@ -49,7 +53,7 @@ const createStore: Resolver<CreateStoreArgs> = async (_, { input }, ctx) => {
 	return store;
 };
 
-interface EditStoreArgs {
+export interface EditStoreArgs {
 	input: {
 		name?: string;
 		description?: string;
@@ -62,7 +66,7 @@ interface EditStoreArgs {
 	};
 }
 
-const editStore: Resolver<EditStoreArgs> = async (_, { input }, ctx) => {
+export const editStore: Resolver<EditStoreArgs> = async (_, { input }, ctx) => {
 	if (!ctx.storeId) {
 		throw new Error('No storeId specified');
 	}
@@ -108,12 +112,16 @@ const editStore: Resolver<EditStoreArgs> = async (_, { input }, ctx) => {
 	return store;
 };
 
-interface DeleteStoreArgs {
+export interface DeleteStoreArgs {
 	id: string;
 }
 
 // FIXME: We need better access control
-const deleteStore: Resolver<DeleteStoreArgs> = async (_, { id }, ctx) => {
+export const deleteStore: Resolver<DeleteStoreArgs> = async (
+	_,
+	{ id },
+	ctx
+) => {
 	const permitted = canManageStore(ctx.user.id, id);
 
 	if (!permitted) {
@@ -125,11 +133,15 @@ const deleteStore: Resolver<DeleteStoreArgs> = async (_, { id }, ctx) => {
 	return id;
 };
 
-interface FollowStoreArgs {
+export interface FollowStoreArgs {
 	storeId: string;
 }
 
-const followStore: Resolver<FollowStoreArgs> = async (_, { storeId }, ctx) => {
+export const followStore: Resolver<FollowStoreArgs> = async (
+	_,
+	{ storeId },
+	ctx
+) => {
 	const follower = await ctx.prisma.storeFollower.create({
 		data: { followerId: ctx.user.id, storeId },
 		include: { store: true }
@@ -150,11 +162,11 @@ const followStore: Resolver<FollowStoreArgs> = async (_, { storeId }, ctx) => {
 	return follower;
 };
 
-interface UnfollowStoreArgs {
+export interface UnfollowStoreArgs {
 	storeId: string;
 }
 
-const unfollowStore: Resolver<UnfollowStoreArgs> = async (
+export const unfollowStore: Resolver<UnfollowStoreArgs> = async (
 	_,
 	{ storeId },
 	ctx
@@ -164,14 +176,14 @@ const unfollowStore: Resolver<UnfollowStoreArgs> = async (
 	});
 };
 
-interface AddStoreManagerArgs {
+export interface AddStoreManagerArgs {
 	input: {
 		storeId: string;
 		managerId: string;
 	};
 }
 
-const addStoreManager = storeAuthorizedResolver<AddStoreManagerArgs>(
+export const addStoreManager = storeAuthorizedResolver<AddStoreManagerArgs>(
 	async (_, args, ctx) => {
 		return ctx.prisma.storeManager.create({
 			data: {
@@ -182,12 +194,12 @@ const addStoreManager = storeAuthorizedResolver<AddStoreManagerArgs>(
 	}
 );
 
-interface RemoveStoreManagerArgs {
+export interface RemoveStoreManagerArgs {
 	managerId: string;
 }
 
-const removeStoreManager = storeAuthorizedResolver<RemoveStoreManagerArgs>(
-	async (_, args, ctx) => {
+export const removeStoreManager =
+	storeAuthorizedResolver<RemoveStoreManagerArgs>(async (_, args, ctx) => {
 		if (!ctx.storeId) {
 			throw new Error('No storeId specified');
 		}
@@ -200,17 +212,4 @@ const removeStoreManager = storeAuthorizedResolver<RemoveStoreManagerArgs>(
 				}
 			}
 		});
-	}
-);
-
-export default {
-	Mutation: {
-		createStore,
-		editStore,
-		deleteStore,
-		followStore,
-		unfollowStore,
-		addStoreManager,
-		removeStoreManager
-	}
-};
+	});

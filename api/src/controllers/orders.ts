@@ -1,11 +1,11 @@
-import { Request, Response } from 'express';
+import { RequestHandler } from 'express';
 
 import prismaClient from '../config/prisma';
 import { chargeAuthorization } from '../utils/paystack';
 import { hydrateQuery } from '../utils/queries';
 
 export default class OrderController {
-	public async getOrders(req: Request, res: Response) {
+	public getOrders: RequestHandler = async (req, res) => {
 		const query = hydrateQuery(req.query);
 
 		const orders = await prismaClient.order.findMany({
@@ -14,9 +14,9 @@ export default class OrderController {
 		});
 
 		return res.json({ orders });
-	}
+	};
 
-	public async createOrder(req: Request, res: Response) {
+	public createOrder: RequestHandler = async (req, res) => {
 		const { cartId, cardId, transactionFee, serviceFee } = req.body;
 
 		if (!req.auth) {
@@ -91,9 +91,9 @@ export default class OrderController {
 		});
 
 		return res.json({ order });
-	}
+	};
 
-	public async getOrderById(req: Request, res: Response) {
+	public getOrderById: RequestHandler = async (req, res) => {
 		const { id } = req.params;
 
 		if (!id) {
@@ -107,5 +107,5 @@ export default class OrderController {
 		}
 
 		return res.json({ order });
-	}
+	};
 }

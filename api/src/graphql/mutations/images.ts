@@ -2,11 +2,15 @@ import cloudinary from 'cloudinary';
 
 import { Resolver } from '../../types/resolvers';
 
-interface DeleteImageArgs {
+export interface DeleteImageArgs {
 	id: string;
 }
 
-const deleteImage: Resolver<DeleteImageArgs> = async (_, { id }, ctx) => {
+export const deleteImage: Resolver<DeleteImageArgs> = async (
+	_,
+	{ id },
+	ctx
+) => {
 	const image = await ctx.prisma.image.delete({ where: { id } });
 
 	cloudinary.v2.uploader.destroy(
@@ -21,11 +25,11 @@ const deleteImage: Resolver<DeleteImageArgs> = async (_, { id }, ctx) => {
 	return image;
 };
 
-interface DeleteImagesArgs {
+export interface DeleteImagesArgs {
 	imageIds: string[];
 }
 
-const deleteImages: Resolver<DeleteImagesArgs> = async (
+export const deleteImages: Resolver<DeleteImagesArgs> = async (
 	_,
 	{ imageIds },
 	ctx
@@ -45,11 +49,4 @@ const deleteImages: Resolver<DeleteImagesArgs> = async (
 	await ctx.prisma.image.deleteMany({ where: { id: { in: imageIds } } });
 
 	return images;
-};
-
-export default {
-	Mutation: {
-		deleteImage,
-		deleteImages
-	}
 };
