@@ -39,6 +39,31 @@ export default class StoreController {
 		return res.json({ payouts });
 	}
 
+	// GET /stores/current/managers
+	public async getCurrentStoreManagers(req: Request, res: Response) {
+		const store = await this.loadCurrentStore(req);
+		const managers = await prismaClient.storeManager.findMany({
+			where: { storeId: store.id }
+		});
+		return res.json({ managers });
+	}
+
+	// GET /stores/:id/payouts
+	public async getStorePayouts(req: Request, res: Response) {
+		if (!req.params.id) {
+			return res.status(400).json({ error: 'Store ID is required' });
+		}
+
+		const query = hydrateQuery(req.query);
+
+		const payouts = await prismaClient.payout.findMany({
+			where: { storeId: req.params.id },
+			...query
+		});
+
+		return res.json({ payouts });
+	}
+
 	// GET /stores/:id
 	public async getStoreById(req: Request, res: Response) {
 		if (!req.params.id) {
@@ -126,7 +151,7 @@ export default class StoreController {
 
 		const managers = await prismaClient.store
 			.findUnique({ where: { id: req.params.id } })
-			.managers();
+			.managers({ include: { manager: true } });
 
 		return res.json({ managers });
 	}

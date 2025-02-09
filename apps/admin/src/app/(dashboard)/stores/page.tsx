@@ -62,13 +62,13 @@ const columns: ColumnDef<Store>[] = [
 					<DropdownMenuContent align='end'>
 						<DropdownMenuLabel>Actions</DropdownMenuLabel>
 						<DropdownMenuItem
-							onClick={() => navigator.clipboard.writeText(row.original.id)}
+							onClick={() => navigator.clipboard.writeText(store.id)}
 						>
 							Copy store ID
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem
-							onClick={() => router.push(`/stores/${row.original.id}`)}
+							onClick={() => router.push(`/stores/${store.id}`)}
 						>
 							View store
 						</DropdownMenuItem>
@@ -81,7 +81,6 @@ const columns: ColumnDef<Store>[] = [
 
 export default function StoresPage() {
 	const { data, isLoading } = useStoresQuery();
-	const router = useRouter();
 
 	return (
 		<div className='space-y-6'>

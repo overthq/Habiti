@@ -33,3 +33,19 @@ export const useStoreOrdersQuery = (id: string, params?: StoreFilters) => {
 		enabled: !!id
 	});
 };
+
+export const useStorePayoutsQuery = (id: string, params?: StoreFilters) => {
+	return useQuery({
+		queryKey: ['stores', id, 'payouts', params],
+		queryFn: () => dataService.stores.getStorePayouts(id, params),
+		enabled: !!id
+	});
+};
+
+export const useStoreManagersQuery = (id: string, params?: StoreFilters) => {
+	return useQuery({
+		queryKey: ['stores', id, 'managers', params],
+		queryFn: () => dataService.stores.getStoreManagers(id, params),
+		enabled: !!id
+	});
+};
