@@ -31,6 +31,10 @@ export interface GetStoreProductsResponse {
 	products: Product[];
 }
 
+export interface GetStoreResponse {
+	store: Store;
+}
+
 export class StoreService {
 	constructor(private readonly api: APIService) {}
 
@@ -39,7 +43,7 @@ export class StoreService {
 	}
 
 	async getStore(id: string) {
-		return this.api.get<Store>(`/stores/${id}`);
+		return this.api.get<GetStoreResponse>(`/stores/${id}`);
 	}
 
 	async updateStore(id: string, body: UpdateStoreBody) {

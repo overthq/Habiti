@@ -15,12 +15,9 @@ import {
 	TableRow
 } from '@/components/ui/table';
 import { useStoreProductsQuery, useStoreQuery } from '@/data/queries/stores';
+import { formatNaira } from '@/utils/format';
 
-export default function StoreDetailPage({
-	params
-}: {
-	params: Promise<{ id: string }>;
-}) {
+const StoreDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
 	const { id } = React.use(params);
 	const { data: storeData, isLoading: isLoadingStore } = useStoreQuery(id);
 	const { data: productsData, isLoading: isLoadingProducts } =
@@ -30,7 +27,7 @@ export default function StoreDetailPage({
 		return <div>Loading...</div>;
 	}
 
-	const store = storeData;
+	const store = storeData?.store;
 	const products = productsData?.products || [];
 
 	return (
@@ -79,40 +76,44 @@ export default function StoreDetailPage({
 						</Button>
 					</CardHeader>
 					<CardContent>
-						<Table>
-							<TableHeader>
-								<TableRow>
-									<TableHead>Name</TableHead>
-									<TableHead>Price</TableHead>
-									<TableHead>Stock</TableHead>
-									<TableHead>Actions</TableHead>
-								</TableRow>
-							</TableHeader>
-							<TableBody>
-								{products.map(product => (
-									<TableRow key={product.id}>
-										<TableCell>{product.name}</TableCell>
-										<TableCell>${product.unitPrice.toFixed(2)}</TableCell>
-										<TableCell>{product.quantity}</TableCell>
-										<TableCell>
-											<Button
-												variant='ghost'
-												size='sm'
-												className='h-8 w-8 p-0'
-												asChild
-											>
-												<Link href={`/dashboard/products/${product.id}`}>
-													<Edit className='h-4 w-4' />
-												</Link>
-											</Button>
-										</TableCell>
+						<div className='rounded-md border'>
+							<Table>
+								<TableHeader>
+									<TableRow>
+										<TableHead>Name</TableHead>
+										<TableHead>Price</TableHead>
+										<TableHead>Stock</TableHead>
+										<TableHead>Actions</TableHead>
 									</TableRow>
-								))}
-							</TableBody>
-						</Table>
+								</TableHeader>
+								<TableBody>
+									{products.map(product => (
+										<TableRow key={product.id}>
+											<TableCell>{product.name}</TableCell>
+											<TableCell>{formatNaira(product.unitPrice)}</TableCell>
+											<TableCell>{product.quantity}</TableCell>
+											<TableCell>
+												<Button
+													variant='ghost'
+													size='sm'
+													className='h-8 w-8 p-0'
+													asChild
+												>
+													<Link href={`/dashboard/products/${product.id}`}>
+														<Edit className='h-4 w-4' />
+													</Link>
+												</Button>
+											</TableCell>
+										</TableRow>
+									))}
+								</TableBody>
+							</Table>
+						</div>
 					</CardContent>
 				</Card>
 			</div>
 		</div>
 	);
-}
+};
+
+export default StoreDetailPage;
