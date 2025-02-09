@@ -6,7 +6,6 @@ import storeQueries from './stores';
 import userQueries from './users';
 import searchQueries from './search';
 
-// Combine all Query resolvers
 const Query = {
 	...cardQueries.Query,
 	...cartQueries.Query,
@@ -17,7 +16,6 @@ const Query = {
 	...searchQueries.Query
 };
 
-// Combine all field resolvers
 const fieldResolvers = {
 	Card: cardQueries.Card,
 	Cart: cartQueries.Cart,
