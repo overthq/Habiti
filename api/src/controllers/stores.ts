@@ -58,10 +58,14 @@ export default class StoreController {
 
 	// GET /stores/:id/products
 	public async getStoreProducts(req: Request, res: Response) {
+		if (!req.params.id) {
+			return res.status(400).json({ error: 'Store ID is required' });
+		}
+
 		const query = hydrateQuery(req.query);
 
 		const products = await prismaClient.store
-			.findUnique({ where: { id: req.headers['x-market-store-id'] as string } })
+			.findUnique({ where: { id: req.params.id } })
 			.products(query);
 
 		return res.json({ products });
