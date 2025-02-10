@@ -8,6 +8,16 @@ import { formatNaira } from '@/utils/format';
 import { Order } from '@/data/services/orders';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/ui/data-table';
+import { Button } from '@/components/ui/button';
+import {
+	DropdownMenuContent,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { MoreHorizontal } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const columns: ColumnDef<Order>[] = [
 	{
@@ -51,6 +61,39 @@ const columns: ColumnDef<Order>[] = [
 		accessorKey: 'createdAt',
 		header: 'Created',
 		cell: ({ row }) => new Date(row.getValue('createdAt')).toLocaleDateString()
+	},
+	{
+		id: 'actions',
+		header: 'Actions',
+		cell: ({ row }) => {
+			const router = useRouter();
+			const order = row.original;
+
+			return (
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button variant='ghost' className='h-8 w-8 p-0'>
+							<span className='sr-only'>Open menu</span>
+							<MoreHorizontal />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align='end'>
+						<DropdownMenuLabel>Actions</DropdownMenuLabel>
+						<DropdownMenuItem
+							onClick={() => navigator.clipboard.writeText(order.id)}
+						>
+							Copy order ID
+						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem
+							onClick={() => router.push(`/orders/${order.id}`)}
+						>
+							View order
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
+			);
+		}
 	}
 ];
 
