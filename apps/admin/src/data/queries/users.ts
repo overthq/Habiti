@@ -8,3 +8,11 @@ export const useUsersQuery = () => {
 		queryFn: () => dataService.users.getUsers()
 	});
 };
+
+export const useUserQuery = (id: string) => {
+	return useQuery({
+		queryKey: ['users', id],
+		queryFn: () => dataService.users.getUser(id),
+		enabled: !!id
+	});
+};
