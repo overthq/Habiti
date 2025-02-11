@@ -39,6 +39,31 @@ export default class StoreController {
 		return res.json({ payouts });
 	}
 
+	// GET /stores/current/managers
+	public async getCurrentStoreManagers(req: Request, res: Response) {
+		const store = await this.loadCurrentStore(req);
+		const managers = await prismaClient.storeManager.findMany({
+			where: { storeId: store.id }
+		});
+		return res.json({ managers });
+	}
+
+	// GET /stores/:id/payouts
+	public async getStorePayouts(req: Request, res: Response) {
+		if (!req.params.id) {
+			return res.status(400).json({ error: 'Store ID is required' });
+		}
+
+		const query = hydrateQuery(req.query);
+
+		const payouts = await prismaClient.payout.findMany({
+			where: { storeId: req.params.id },
+			...query
+		});
+
+		return res.json({ payouts });
+	}
+
 	// GET /stores/:id
 	public async getStoreById(req: Request, res: Response) {
 		if (!req.params.id) {
@@ -58,10 +83,14 @@ export default class StoreController {
 
 	// GET /stores/:id/products
 	public async getStoreProducts(req: Request, res: Response) {
+		if (!req.params.id) {
+			return res.status(400).json({ error: 'Store ID is required' });
+		}
+
 		const query = hydrateQuery(req.query);
 
 		const products = await prismaClient.store
-			.findUnique({ where: { id: req.headers['x-market-store-id'] as string } })
+			.findUnique({ where: { id: req.params.id } })
 			.products(query);
 
 		return res.json({ products });
@@ -101,10 +130,14 @@ export default class StoreController {
 
 	// GET /stores/:id/orders
 	public async getStoreOrders(req: Request, res: Response) {
+		if (!req.params.id) {
+			return res.status(400).json({ error: 'Store ID is required' });
+		}
+
 		const query = hydrateQuery(req.query);
 
 		const orders = await prismaClient.store
-			.findUnique({ where: { id: req.headers['x-market-store-id'] as string } })
+			.findUnique({ where: { id: req.params.id } })
 			.orders(query);
 
 		return res.json({ orders });
@@ -112,11 +145,13 @@ export default class StoreController {
 
 	// GET /stores/:id/managers
 	public async getStoreManagers(req: Request, res: Response) {
+		if (!req.params.id) {
+			return res.status(400).json({ error: 'Store ID is required' });
+		}
+
 		const managers = await prismaClient.store
-			.findUnique({
-				where: { id: req.headers['x-market-store-id'] as string }
-			})
-			.managers();
+			.findUnique({ where: { id: req.params.id } })
+			.managers({ include: { manager: true } });
 
 		return res.json({ managers });
 	}

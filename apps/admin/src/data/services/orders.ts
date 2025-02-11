@@ -12,7 +12,6 @@ export enum OrderStatus {
 }
 
 export interface OrderProduct {
-	id: string;
 	product: Product;
 	quantity: number;
 	unitPrice: number;

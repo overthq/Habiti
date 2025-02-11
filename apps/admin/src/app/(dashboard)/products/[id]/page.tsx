@@ -27,7 +27,7 @@ export default function ProductDetailPage({
 		return <div>Loading...</div>;
 	}
 
-	const product = productData;
+	const product = productData?.product;
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();

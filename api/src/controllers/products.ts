@@ -20,7 +20,8 @@ export default class ProductController {
 		}
 
 		const product = await prismaClient.product.findUnique({
-			where: { id: req.params.id }
+			where: { id: req.params.id },
+			include: { images: true }
 		});
 
 		if (!product) {

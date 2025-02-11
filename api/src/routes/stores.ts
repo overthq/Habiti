@@ -17,6 +17,8 @@ router.post('/:id/products', authenticate, storeController.createStoreProduct);
 router.get('/current', authenticate, storeController.getCurrentStore);
 router.get('/:id', optionalAuth, storeController.getStoreById);
 router.get('/:id/products', optionalAuth, storeController.getStoreProducts);
+router.get('/:id/managers', isAdmin, storeController.getStoreManagers);
+router.get('/:id/payouts', isAdmin, storeController.getStorePayouts);
 router.get('/:id/orders', optionalAuth, storeController.getStoreOrders);
 
 export default router;

@@ -1,4 +1,5 @@
 import { APIService } from './api';
+import { Order } from './orders';
 import { Product } from './products';
 
 export interface Store {
@@ -9,6 +10,14 @@ export interface Store {
 		id: string;
 		path: string;
 	};
+	createdAt: string;
+	updatedAt: string;
+}
+
+export interface Payout {
+	id: string;
+	amount: number;
+	status: string;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -31,6 +40,28 @@ export interface GetStoreProductsResponse {
 	products: Product[];
 }
 
+export interface GetStoreResponse {
+	store: Store;
+}
+
+export interface GetStoreManagersResponse {
+	managers: {
+		manager: {
+			id: string;
+			name: string;
+			email: string;
+		};
+	}[];
+}
+
+export interface GetStorePayoutsResponse {
+	payouts: Payout[];
+}
+
+export interface GetStoreOrdersResponse {
+	orders: Order[];
+}
+
 export class StoreService {
 	constructor(private readonly api: APIService) {}
 
@@ -39,7 +70,7 @@ export class StoreService {
 	}
 
 	async getStore(id: string) {
-		return this.api.get<Store>(`/stores/${id}`);
+		return this.api.get<GetStoreResponse>(`/stores/${id}`);
 	}
 
 	async updateStore(id: string, body: UpdateStoreBody) {
@@ -58,6 +89,20 @@ export class StoreService {
 	}
 
 	async getStoreOrders(id: string, params?: StoreFilters) {
-		return this.api.get(`/stores/${id}/orders`, params);
+		return this.api.get<GetStoreOrdersResponse>(`/stores/${id}/orders`, params);
+	}
+
+	async getStorePayouts(id: string, params?: StoreFilters) {
+		return this.api.get<GetStorePayoutsResponse>(
+			`/stores/${id}/payouts`,
+			params
+		);
+	}
+
+	async getStoreManagers(id: string, params?: StoreFilters) {
+		return this.api.get<GetStoreManagersResponse>(
+			`/stores/${id}/managers`,
+			params
+		);
 	}
 }

@@ -7,10 +7,16 @@ import { ColumnDef } from '@tanstack/react-table';
 import { User } from '@/data/services/users';
 import {
 	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { DataTable } from '@/components/ui/data-table';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 
 const columns: ColumnDef<User>[] = [
 	{
@@ -51,13 +57,33 @@ const columns: ColumnDef<User>[] = [
 	{
 		id: 'actions',
 		header: 'Actions',
-		cell: ({ row }) => (
-			<DropdownMenu>
-				<DropdownMenuTrigger>
-					<MoreHorizontal />
-				</DropdownMenuTrigger>
-			</DropdownMenu>
-		)
+		cell: ({ row }) => {
+			const router = useRouter();
+			const user = row.original;
+
+			return (
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button variant='ghost' className='h-8 w-8 p-0'>
+							<span className='sr-only'>Open menu</span>
+							<MoreHorizontal />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align='end'>
+						<DropdownMenuLabel>Actions</DropdownMenuLabel>
+						<DropdownMenuItem
+							onClick={() => navigator.clipboard.writeText(user.id)}
+						>
+							Copy user ID
+						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem onClick={() => router.push(`/users/${user.id}`)}>
+							View user
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
+			);
+		}
 	}
 ];
 

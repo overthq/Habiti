@@ -24,6 +24,7 @@ import {
 import { useUpdateOrderMutation } from '@/data/mutations/orders';
 import { useOrderQuery } from '@/data/queries/orders';
 import { OrderStatus } from '@/data/services/orders';
+import { formatNaira } from '@/utils/format';
 
 const statusVariants = {
 	[OrderStatus.Pending]: 'secondary',
@@ -113,7 +114,7 @@ export default function OrderDetailPage({
 								<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
 									Total
 								</dt>
-								<dd className='mt-1'>${order?.total.toFixed(2)}</dd>
+								<dd className='mt-1'>{formatNaira(order?.total || 0)}</dd>
 							</div>
 							<div>
 								<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
@@ -132,28 +133,30 @@ export default function OrderDetailPage({
 						<CardTitle>Products</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<Table>
-							<TableHeader>
-								<TableRow>
-									<TableHead>Product</TableHead>
-									<TableHead>Quantity</TableHead>
-									<TableHead>Unit Price</TableHead>
-									<TableHead>Total</TableHead>
-								</TableRow>
-							</TableHeader>
-							<TableBody>
-								{order?.products.map(item => (
-									<TableRow key={item.id}>
-										<TableCell>{item.product.name}</TableCell>
-										<TableCell>{item.quantity}</TableCell>
-										<TableCell>${item.unitPrice.toFixed(2)}</TableCell>
-										<TableCell>
-											${(item.quantity * item.unitPrice).toFixed(2)}
-										</TableCell>
+						<div className='rounded-md border'>
+							<Table>
+								<TableHeader>
+									<TableRow>
+										<TableHead>Product</TableHead>
+										<TableHead>Quantity</TableHead>
+										<TableHead>Unit Price</TableHead>
+										<TableHead>Total</TableHead>
 									</TableRow>
-								))}
-							</TableBody>
-						</Table>
+								</TableHeader>
+								<TableBody>
+									{order?.products.map(item => (
+										<TableRow key={item.product.id}>
+											<TableCell>{item.product.name}</TableCell>
+											<TableCell>{item.quantity}</TableCell>
+											<TableCell>{formatNaira(item.unitPrice)}</TableCell>
+											<TableCell>
+												{formatNaira(item.quantity * item.unitPrice)}
+											</TableCell>
+										</TableRow>
+									))}
+								</TableBody>
+							</Table>
+						</div>
 					</CardContent>
 				</Card>
 			</div>

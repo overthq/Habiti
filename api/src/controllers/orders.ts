@@ -100,7 +100,14 @@ export default class OrderController {
 			return res.status(400).json({ error: 'Order ID is required' });
 		}
 
-		const order = await prismaClient.order.findUnique({ where: { id } });
+		const order = await prismaClient.order.findUnique({
+			where: { id },
+			include: {
+				user: true,
+				store: true,
+				products: { include: { product: true } }
+			}
+		});
 
 		if (!order) {
 			return res.status(404).json({ error: 'Order not found' });
