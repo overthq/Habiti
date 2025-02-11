@@ -110,3 +110,5 @@ const ProductsPage = () => {
 };
 
 export default ProductsPage;
+
+export const runtime = 'edge';

@@ -86,3 +86,5 @@ export default function SignupPage() {
 		</div>
 	);
 }
+
+export const runtime = 'edge';

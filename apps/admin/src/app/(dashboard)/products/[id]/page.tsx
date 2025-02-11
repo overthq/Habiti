@@ -131,3 +131,5 @@ export default function ProductDetailPage({
 		</div>
 	);
 }
+
+export const runtime = 'edge';

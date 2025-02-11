@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 
+// Probably use loops.so
 export default class EmailService {
 	private mails: any[];
 	private transporter: ReturnType<(typeof nodemailer)['createTransport']>;

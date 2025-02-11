@@ -92,3 +92,5 @@ export default function StoresPage() {
 		</div>
 	);
 }
+
+export const runtime = 'edge';

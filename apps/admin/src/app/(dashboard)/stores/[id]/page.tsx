@@ -186,3 +186,5 @@ const StoreDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
 };
 
 export default StoreDetailPage;
+
+export const runtime = 'edge';

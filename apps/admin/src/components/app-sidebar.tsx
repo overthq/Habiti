@@ -72,3 +72,5 @@ export function AppSidebar() {
 		</Sidebar>
 	);
 }
+
+export const runtime = 'edge';

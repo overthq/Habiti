@@ -35,3 +35,5 @@ const UserDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
 };
 
 export default UserDetailPage;
+
+export const runtime = 'edge';

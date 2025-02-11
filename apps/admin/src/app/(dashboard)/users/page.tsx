@@ -100,3 +100,5 @@ export default function UsersPage() {
 		</div>
 	);
 }
+
+export const runtime = 'edge';
