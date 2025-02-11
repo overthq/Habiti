@@ -112,3 +112,5 @@ const OrdersPage = () => {
 };
 
 export default OrdersPage;
+
+export const runtime = 'edge';
