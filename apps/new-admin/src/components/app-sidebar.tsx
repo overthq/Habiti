@@ -1,5 +1,5 @@
 import { Store, ShoppingCart, Users, Home, Package } from 'lucide-react';
-import { Link } from 'react-router';
+import { NavLink } from 'react-router';
 import { usePathname } from 'next/navigation';
 
 import {
@@ -55,10 +55,10 @@ export function AppSidebar() {
 							{items.map(item => (
 								<SidebarMenuItem key={item.title}>
 									<SidebarMenuButton isActive={pathname === item.url} asChild>
-										<Link to={item.url}>
+										<NavLink to={item.url}>
 											<item.icon />
 											<span>{item.title}</span>
-										</Link>
+										</NavLink>
 									</SidebarMenuButton>
 								</SidebarMenuItem>
 							))}
