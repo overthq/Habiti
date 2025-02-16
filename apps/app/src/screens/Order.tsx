@@ -1,4 +1,4 @@
-import { Screen, Spacer } from '@habiti/components';
+import { Button, Screen, Spacer } from '@habiti/components';
 import {
 	NavigationProp,
 	RouteProp,
@@ -53,6 +53,9 @@ const Order: React.FC = () => {
 				))}
 			</View>
 			<OrderMeta order={order} />
+			<View style={{ paddingHorizontal: 16 }}>
+				<Button text='Cancel Order' variant='destructive' onPress={() => {}} />
+			</View>
 		</Screen>
 	);
 };
