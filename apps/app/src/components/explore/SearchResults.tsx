@@ -108,7 +108,6 @@ const SearchResultsMain: React.FC<SearchResultsMainProps> = ({
 						activeColor={theme.text.primary}
 						inactiveColor={theme.text.secondary}
 						indicatorStyle={{ backgroundColor: theme.text.primary }}
-						labelStyle={{ textTransform: 'none', fontSize: 15 }}
 						style={{ backgroundColor: theme.screen.background }}
 					/>
 				)}
