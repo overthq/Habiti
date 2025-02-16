@@ -3,14 +3,17 @@ import React from 'react';
 
 import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
+import { useShallow } from 'zustand/shallow';
 
 type Theme = 'light' | 'dark' | 'auto';
 
 const SettingsTheme = () => {
-	const { theme, setPreference } = useStore(state => ({
-		theme: state.theme,
-		setPreference: state.setPreference
-	}));
+	const { theme, setPreference } = useStore(
+		useShallow(state => ({
+			theme: state.theme,
+			setPreference: state.setPreference
+		}))
+	);
 
 	const handleThemeSelect = React.useCallback((theme: Theme) => {
 		setPreference({ theme });

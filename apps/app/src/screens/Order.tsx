@@ -62,7 +62,6 @@ const styles = StyleSheet.create({
 		paddingTop: 16
 	},
 	products: {
-		paddingHorizontal: 16,
 		paddingVertical: 8,
 		borderRadius: 4,
 		overflow: 'hidden'

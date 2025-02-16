@@ -1,31 +1,17 @@
-import {
-	Screen,
-	ScreenHeader,
-	ScrollableScreen,
-	Spacer,
-	useTheme
-} from '@habiti/components';
+import { Screen, ScreenHeader } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { ActivityIndicator, RefreshControl, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import FollowedStores from '../components/home/FollowedStores';
-import RecentOrders from '../components/home/RecentOrders';
 import { useHomeQuery } from '../types/api';
 import { HomeStackParamList } from '../types/navigation';
-import useRefresh from '../hooks/useRefresh';
+import HomeMain from '../components/home/HomeMain';
 
 const Home: React.FC = () => {
-	const [{ fetching, data, error }, refetch] = useHomeQuery();
-	const { refreshing, refresh } = useRefresh({ fetching, refetch });
+	const [{ fetching, data }] = useHomeQuery();
 	const { top } = useSafeAreaInsets();
 	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();
-	const { theme } = useTheme();
-
-	React.useEffect(() => {
-		console.log({ error });
-	}, [error]);
 
 	if (fetching || !data) {
 		return (
@@ -43,21 +29,9 @@ const Home: React.FC = () => {
 					placeholder: 'Search all stores and products',
 					onPress: () => navigate('Home.Search')
 				}}
+				hasBottomBorder
 			/>
-			<ScrollableScreen
-				refreshControl={
-					<RefreshControl
-						refreshing={refreshing}
-						onRefresh={refresh}
-						tintColor={theme.text.secondary}
-					/>
-				}
-			>
-				<Spacer y={16} />
-				<FollowedStores followed={data.currentUser.followed} />
-				<Spacer y={8} />
-				<RecentOrders orders={data.currentUser.orders} />
-			</ScrollableScreen>
+			<HomeMain />
 		</Screen>
 	);
 };

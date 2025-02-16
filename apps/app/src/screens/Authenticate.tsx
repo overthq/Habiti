@@ -40,8 +40,8 @@ const Authenticate = () => {
 	};
 
 	return (
-		<SafeAreaView style={{ flex: 1 }}>
-			<Screen style={{ padding: 16 }}>
+		<Screen style={{ padding: 16 }}>
+			<SafeAreaView style={{ flex: 1 }}>
 				<Pressable onPress={goBack}>
 					<Icon name='chevron-left' />
 				</Pressable>
@@ -84,8 +84,8 @@ const Authenticate = () => {
 					onPress={handleSubmit(onSubmit)}
 					loading={fetching}
 				/>
-			</Screen>
-		</SafeAreaView>
+			</SafeAreaView>
+		</Screen>
 	);
 };
 
