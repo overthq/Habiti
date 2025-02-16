@@ -45,7 +45,7 @@ const FollowedStores = () => {
 						selected={selectedStores.includes(item.store.id)}
 					/>
 				)}
-				keyExtractor={f => f.id}
+				keyExtractor={f => f.storeId}
 			/>
 		</Screen>
 	);

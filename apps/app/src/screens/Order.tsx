@@ -46,7 +46,7 @@ const Order: React.FC = () => {
 			<View style={styles.products}>
 				{order.products.map(orderProduct => (
 					<OrderProduct
-						key={orderProduct.id}
+						key={orderProduct.productId}
 						orderProduct={orderProduct}
 						onPress={handleOrderProductPress(orderProduct.productId)}
 					/>
