@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Provider } from 'urql';
+import { useShallow } from 'zustand/shallow';
 
 import MainTabNavigator from './MainTab';
 import useClient from '../hooks/useClient';
@@ -25,9 +26,11 @@ const AppStack = createNativeStackNavigator<AppStackParamList>();
 
 const Routes: React.FC = () => {
 	const { theme } = useTheme();
-	const { accessToken } = useStore(state => ({
-		accessToken: state.accessToken
-	}));
+	const { accessToken } = useStore(
+		useShallow(state => ({
+			accessToken: state.accessToken
+		}))
+	);
 	const client = useClient(accessToken);
 
 	// const linking = {

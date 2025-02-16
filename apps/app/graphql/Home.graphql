@@ -13,7 +13,6 @@ query Home {
 				}
 			}
 			products {
-				id
 				product {
 					id
 					name
@@ -27,7 +26,6 @@ query Home {
 		}
 
 		followed {
-			id
 			storeId
 			followerId
 			store {
@@ -41,7 +39,6 @@ query Home {
 		}
 
 		watchlist {
-			id
 			userId
 			productId
 			product {

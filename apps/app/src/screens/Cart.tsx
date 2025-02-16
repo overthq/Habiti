@@ -20,13 +20,12 @@ import CartTotal from '../components/cart/CartTotal';
 // import DeliveryInfo from '../components/cart/DeliveryInfo';
 import SelectCard from '../components/cart/SelectCard';
 import StoreInfo from '../components/cart/StoreInfo';
-import { useCartQuery } from '../data/queries';
 import useGoBack from '../hooks/useGoBack';
-import useRefreshing from '../hooks/useRefreshing';
 import useStore from '../state';
-import { useCreateOrderMutation } from '../types/api';
+import { useCreateOrderMutation, useCartQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 import { calculateFees } from '../utils/fees';
+import useRefresh from '../hooks/useRefresh';
 
 // There is a need to master optimistic updates on this screen,
 // It is also important to make use of tasteful animations to make
@@ -39,8 +38,9 @@ const Cart: React.FC = () => {
 	const { goBack } = useNavigation<NavigationProp<AppStackParamList>>();
 	useGoBack();
 
-	const { data, error, refetch } = useCartQuery(cartId);
-	const { refreshing, handleRefresh } = useRefreshing(refetch);
+	const [{ data, fetching }, refetch] = useCartQuery({ variables: { cartId } });
+	// const { data, error, refetch } = useCartQuery(cartId);
+	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 	const [, createOrder] = useCreateOrderMutation();
 
 	const { defaultCardId, setPreference } = useStore(state => ({
@@ -56,10 +56,6 @@ const Cart: React.FC = () => {
 		() => calculateFees(data?.cart.total ?? 0),
 		[data?.cart.total]
 	);
-
-	React.useEffect(() => {
-		console.log({ data: JSON.stringify(data, null, 2), error });
-	}, [data, error]);
 
 	// TODO: Process the fee amount on the server, to make sure we don't have to
 	// update client code to reflect new fee changes.
@@ -91,7 +87,7 @@ const Cart: React.FC = () => {
 			refreshControl={
 				<RefreshControl
 					refreshing={refreshing}
-					onRefresh={handleRefresh}
+					onRefresh={refresh}
 					tintColor={theme.text.secondary}
 				/>
 			}

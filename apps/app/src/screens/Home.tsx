@@ -14,24 +14,18 @@ import FollowedStores from '../components/home/FollowedStores';
 import RecentOrders from '../components/home/RecentOrders';
 import { useHomeQuery } from '../types/api';
 import { HomeStackParamList } from '../types/navigation';
+import useRefresh from '../hooks/useRefresh';
 
 const Home: React.FC = () => {
-	const [{ fetching, data }, refetch] = useHomeQuery();
+	const [{ fetching, data, error }, refetch] = useHomeQuery();
+	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 	const { top } = useSafeAreaInsets();
 	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();
-	const [refreshing, setRefreshing] = React.useState(false);
 	const { theme } = useTheme();
 
 	React.useEffect(() => {
-		if (!fetching && refreshing) {
-			setRefreshing(false);
-		}
-	}, [fetching, refreshing]);
-
-	const handleRefresh = () => {
-		setRefreshing(true);
-		refetch();
-	};
+		console.log({ error });
+	}, [error]);
 
 	if (fetching || !data) {
 		return (
@@ -54,7 +48,7 @@ const Home: React.FC = () => {
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}
-						onRefresh={handleRefresh}
+						onRefresh={refresh}
 						tintColor={theme.text.secondary}
 					/>
 				}

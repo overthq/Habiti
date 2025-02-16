@@ -11,21 +11,17 @@ import useStore from './src/state';
 
 Sentry.init({ dsn: process.env.EXPO_PUBLIC_SENTRY_DSN });
 
-const queryClient = new QueryClient();
-
 const App: React.FC = () => {
 	const theme = useStore(({ theme }) => theme);
 
 	return (
-		<QueryClientProvider client={queryClient}>
-			<SafeAreaProvider>
-				<ThemeProvider theme={theme}>
-					<GestureHandlerRootView style={{ flex: 1 }}>
-						<Routes />
-					</GestureHandlerRootView>
-				</ThemeProvider>
-			</SafeAreaProvider>
-		</QueryClientProvider>
+		<SafeAreaProvider>
+			<ThemeProvider theme={theme}>
+				<GestureHandlerRootView style={{ flex: 1 }}>
+					<Routes />
+				</GestureHandlerRootView>
+			</ThemeProvider>
+		</SafeAreaProvider>
 	);
 };
 

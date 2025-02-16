@@ -10,7 +10,7 @@ const Header = () => {
 	const { userId, onLogout } = useAuthContext();
 
 	return (
-		<nav className='py-4 px-4 md:px-16 flex justify-between items-center'>
+		<nav className='mx-auto py-4 px-4 md:px-16 flex justify-between items-center'>
 			<Link href='/'>
 				<Image
 					src='/images/habiti-wordmark-black.svg'

@@ -1,12 +1,14 @@
 mutation FollowStore($storeId: ID!) {
 	followStore(storeId: $storeId) {
-		id
+		storeId
+		followerId
 	}
 }
 
 mutation UnfollowStore($storeId: ID!) {
 	unfollowStore(storeId: $storeId) {
-		id
+		storeId
+		followerId
 	}
 }
 
@@ -14,7 +16,6 @@ query StoresFollowed {
 	currentUser {
 		id
 		followed {
-			id
 			storeId
 			followerId
 			store {
