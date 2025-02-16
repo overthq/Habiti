@@ -23,7 +23,9 @@ const managed: Resolver = (parent, _, ctx) => {
 };
 
 const followed: Resolver = (parent, _, ctx) => {
-	return ctx.prisma.user.findUnique({ where: { id: parent.id } }).followed();
+	return ctx.prisma.user
+		.findUnique({ where: { id: parent.id } })
+		.followed({ include: { store: true } });
 };
 
 const carts: Resolver = (parent, _, ctx) => {

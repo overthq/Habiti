@@ -1,7 +1,7 @@
 import { formatNaira } from '@habiti/common';
-import { CustomImage, Typography } from '@habiti/components';
+import { CustomImage, Row, Typography } from '@habiti/components';
 import React from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import { OrderQuery } from '../../types/api';
 import { plural } from '../../utils/strings';
@@ -16,7 +16,7 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 	onPress
 }) => {
 	return (
-		<Pressable style={styles.container} onPress={onPress}>
+		<Row style={styles.container} onPress={onPress}>
 			<View style={styles.left}>
 				<CustomImage
 					height={40}
@@ -32,7 +32,7 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 					</Typography>
 				</View>
 			</View>
-		</Pressable>
+		</Row>
 	);
 };
 

@@ -1,6 +1,6 @@
-import { CustomImage, Spacer, Typography } from '@habiti/components';
+import { CustomImage, Row, Spacer, Typography } from '@habiti/components';
 import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { SearchQuery } from '../../types/api';
 
@@ -11,19 +11,19 @@ interface StoreResultRowProps {
 
 const StoreResultRow: React.FC<StoreResultRowProps> = ({ store, onPress }) => {
 	return (
-		<Pressable onPress={onPress} style={styles.container}>
+		<Row onPress={onPress} style={styles.container}>
 			<CustomImage uri={store.image?.path} circle height={44} width={44} />
 			<Spacer x={8} />
 			<Typography>{store.name}</Typography>
-		</Pressable>
+		</Row>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		width: '100%',
 		flexDirection: 'row',
 		padding: 8,
+		paddingHorizontal: 16,
 		alignItems: 'center'
 	}
 });

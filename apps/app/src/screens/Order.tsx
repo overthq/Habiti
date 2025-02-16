@@ -1,4 +1,4 @@
-import { Screen, Spacer } from '@habiti/components';
+import { Button, Screen, Spacer } from '@habiti/components';
 import {
 	NavigationProp,
 	RouteProp,
@@ -46,13 +46,16 @@ const Order: React.FC = () => {
 			<View style={styles.products}>
 				{order.products.map(orderProduct => (
 					<OrderProduct
-						key={orderProduct.id}
+						key={orderProduct.productId}
 						orderProduct={orderProduct}
 						onPress={handleOrderProductPress(orderProduct.productId)}
 					/>
 				))}
 			</View>
 			<OrderMeta order={order} />
+			<View style={{ paddingHorizontal: 16 }}>
+				<Button text='Cancel Order' variant='destructive' onPress={() => {}} />
+			</View>
 		</Screen>
 	);
 };
@@ -62,7 +65,6 @@ const styles = StyleSheet.create({
 		paddingTop: 16
 	},
 	products: {
-		paddingHorizontal: 16,
 		paddingVertical: 8,
 		borderRadius: 4,
 		overflow: 'hidden'

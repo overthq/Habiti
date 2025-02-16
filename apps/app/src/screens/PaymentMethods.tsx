@@ -16,12 +16,12 @@ import {
 } from 'react-native';
 
 import { MastercardIcon } from '../components/cart/CardIcons';
-import { useCardsQuery } from '../data/queries';
 import useGoBack from '../hooks/useGoBack';
 import { AppStackParamList } from '../types/navigation';
+import { useCardsQuery } from '../types/api';
 
 const PaymentMethods: React.FC = () => {
-	const { isFetching, data } = useCardsQuery();
+	const [{ data, fetching }] = useCardsQuery();
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
@@ -37,9 +37,9 @@ const PaymentMethods: React.FC = () => {
 		});
 	}, []);
 
-	const cards = data?.cards;
+	const cards = data?.currentUser.cards;
 
-	if (isFetching || !cards) {
+	if (fetching || !cards) {
 		return (
 			<View style={styles.loading}>
 				<ActivityIndicator />

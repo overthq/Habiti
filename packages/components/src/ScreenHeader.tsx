@@ -7,17 +7,29 @@ import Typography from './Typography';
 
 interface ScreenHeaderProps {
 	title: string;
+	hasBottomBorder?: boolean;
 	search?: {
 		placeholder: string;
 		onPress: () => void;
 	};
 }
 
-const ScreenHeader: React.FC<ScreenHeaderProps> = ({ title, search }) => {
+const ScreenHeader: React.FC<ScreenHeaderProps> = ({
+	title,
+	hasBottomBorder = false,
+	search
+}) => {
 	const { theme } = useTheme();
 
 	return (
-		<View style={[styles.container]}>
+		<View
+			style={[
+				styles.container,
+				hasBottomBorder
+					? { borderBottomWidth: 0.5, borderBottomColor: theme.border.color }
+					: {}
+			]}
+		>
 			<Typography size='xxxlarge' weight='bold'>
 				{title}
 			</Typography>
@@ -32,6 +44,16 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({ title, search }) => {
 					</Typography>
 				</Pressable>
 			)}
+			{/* <Spacer y={12} /> */}
+			{/* {hasBottomBorder && (
+				<View
+					style={{
+						height: 0.5,
+						backgroundColor: theme.border.color,
+						marginRight: -16
+					}}
+				/>
+			)} */}
 		</View>
 	);
 };
