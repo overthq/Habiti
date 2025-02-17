@@ -1,6 +1,6 @@
 const PrivacyPolicy = () => {
 	return (
-		<>
+		<div className='container'>
 			<h1>Privacy Policy</h1>
 			<p>Last updated: June 22, 2024</p>
 			<p>
@@ -474,7 +474,7 @@ const PrivacyPolicy = () => {
 					</p>
 				</li>
 			</ul>
-		</>
+		</div>
 	);
 };
 
