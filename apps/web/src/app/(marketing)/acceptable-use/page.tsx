@@ -1,7 +1,7 @@
 const AcceptableUse = () => {
 	return (
 		<div className='container flex flex-col flex-1 py-8 gap-3'>
-			<h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl'>
+			<h1 className='scroll-m-20 text-4xl font-medium tracking-tight mb-4'>
 				Acceptable Use Policy (AUP)
 			</h1>
 			<p>
@@ -47,16 +47,17 @@ const AcceptableUse = () => {
 					use the Services as infrastructure for your own product or service;
 				</li>
 				<li> use the Services to promote gambling or related activities;</li>
-				<p>
-					In the event of a violation of this policy, we reserve the right to
-					take appropriate action, including removing stores and products,
-					suspending user accounts or terminating a user or store.
-				</p>
-				<p>
-					For clarification on any of the points outlined above, do not hesitate
-					to contact us at support@habiti.app.
-				</p>
 			</ul>
+
+			<p>
+				In the event of a violation of this policy, we reserve the right to take
+				appropriate action, including removing stores and products, suspending
+				user accounts or terminating a user or store.
+			</p>
+			<p>
+				For clarification on any of the points outlined above, do not hesitate
+				to contact us at support@habiti.app.
+			</p>
 		</div>
 	);
 };
