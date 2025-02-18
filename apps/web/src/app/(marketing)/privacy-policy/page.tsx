@@ -1,7 +1,9 @@
 const PrivacyPolicy = () => {
 	return (
-		<div className='container'>
-			<h1>Privacy Policy</h1>
+		<div className='container flex flex-col flex-1 py-8 gap-3'>
+			<h1 className='scroll-m-20 text-4xl font-semibold tracking-tight'>
+				Privacy Policy
+			</h1>
 			<p>Last updated: June 22, 2024</p>
 			<p>
 				This Privacy Policy describes Our policies and procedures on the

@@ -1,24 +1,23 @@
 'use client';
 
-import Header from '@/components/home/Header';
 import React from 'react';
 
 const SupportPage = () => {
 	return (
-		<div className='container mx-auto px-4 py-8'>
-			<h1 className='text-3xl font-bold mb-6'>Support</h1>
-			<p className='mb-4'>
+		<div className='container flex flex-col flex-1 py-8 gap-3'>
+			<h1 className='scroll-m-20 text-4xl font-semibold tracking-tight mb-4'>
+				Support
+			</h1>
+			<p>
 				If you need assistance with Habiti, please don&apos;t hesitate to
 				contact us. We&apos;re here to help!
 			</p>
-			<h2 className='text-2xl font-semibold mb-4'>Contact Information</h2>
-			<ul className='list-disc list-inside mb-6'>
+			<h2 className='text-2xl font-medium'>Contact Information</h2>{' '}
+			<ul className='list-disc list-inside'>
 				<li>Email: support@habiti.app</li>
 				<li>Hours: Monday - Friday, 9:00 AM - 5:00 PM EST</li>
 			</ul>
-			<h2 className='text-2xl font-semibold mb-4'>
-				Frequently Asked Questions
-			</h2>
+			<h2 className='text-2xl font-medium'>Frequently Asked Questions</h2>
 			<div className='space-y-4'>
 				<div>
 					<h3 className='text-xl font-medium mb-2'>

@@ -1,7 +1,7 @@
 const AcceptableUse = () => {
 	return (
 		<div className='container flex flex-col flex-1 py-8 gap-3'>
-			<h1 className='scroll-m-20 text-4xl font-medium tracking-tight mb-4'>
+			<h1 className='scroll-m-20 text-4xl font-semibold tracking-tight mb-4'>
 				Acceptable Use Policy (AUP)
 			</h1>
 			<p>
