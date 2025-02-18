@@ -11,7 +11,7 @@ const Header = () => {
 
 	return (
 		<nav className='border-b'>
-			<div className='container mx-auto py-4 px-4 md:px-16 flex justify-between items-center'>
+			<div className='container py-4 flex justify-between items-center'>
 				<Link href='/'>
 					<Image
 						src='/images/habiti-wordmark-black.svg'
