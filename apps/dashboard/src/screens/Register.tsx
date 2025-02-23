@@ -44,8 +44,8 @@ const Register: React.FC = () => {
 	};
 
 	return (
-		<SafeAreaView style={{ flex: 1 }}>
-			<Screen style={{ padding: 16 }}>
+		<Screen style={{ padding: 16 }}>
+			<SafeAreaView style={{ flex: 1 }}>
 				<Pressable onPress={goBack}>
 					<Icon name='chevron-left' />
 				</Pressable>
@@ -88,8 +88,8 @@ const Register: React.FC = () => {
 					loading={fetching}
 					disabled={!methods.formState.isValid}
 				/>
-			</Screen>
-		</SafeAreaView>
+			</SafeAreaView>
+		</Screen>
 	);
 };
 

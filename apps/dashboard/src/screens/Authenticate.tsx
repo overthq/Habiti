@@ -46,8 +46,8 @@ const Authenticate: React.FC = () => {
 	};
 
 	return (
-		<SafeAreaView style={{ flex: 1 }}>
-			<Screen style={{ padding: 16 }}>
+		<Screen style={{ padding: 16 }}>
+			<SafeAreaView style={{ flex: 1 }}>
 				<Pressable onPress={goBack}>
 					<Icon name='chevron-left' />
 				</Pressable>
@@ -86,8 +86,8 @@ const Authenticate: React.FC = () => {
 					disabled={!methods.formState.isValid}
 				/>
 				<Spacer y={8} />
-			</Screen>
-		</SafeAreaView>
+			</SafeAreaView>
+		</Screen>
 	);
 };
 
