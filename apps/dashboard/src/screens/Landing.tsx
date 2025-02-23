@@ -16,8 +16,8 @@ const Landing = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	return (
-		<SafeAreaView style={{ flex: 1 }}>
-			<Screen style={{ padding: 16, justifyContent: 'center' }}>
+		<Screen style={{ padding: 16, justifyContent: 'center' }}>
+			<SafeAreaView style={{ flex: 1 }}>
 				<View style={{ flex: 1 }} />
 				<View style={{ flex: 1 }}>
 					<Typography
@@ -40,8 +40,8 @@ const Landing = () => {
 					</TextButton>
 					<Spacer y={24} />
 				</View>
-			</Screen>
-		</SafeAreaView>
+			</SafeAreaView>
+		</Screen>
 	);
 };
 
