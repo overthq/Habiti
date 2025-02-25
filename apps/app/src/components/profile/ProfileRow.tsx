@@ -1,19 +1,24 @@
-import { Icon, Row, Typography, useTheme } from '@habiti/components';
+import { Icon, IconType, Row, Typography, useTheme } from '@habiti/components';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
 interface ProfileRowProps {
 	title: string;
 	onPress(): void;
+	icon?: IconType;
 }
 
-const ProfileRow: React.FC<ProfileRowProps> = ({ title, onPress }) => {
+const ProfileRow: React.FC<ProfileRowProps> = ({
+	title,
+	onPress,
+	icon = 'chevron-right'
+}) => {
 	const { theme } = useTheme();
 
 	return (
 		<Row style={styles.container} onPress={onPress}>
 			<Typography>{title}</Typography>
-			<Icon name='chevron-right' color={theme.text.secondary} />
+			<Icon name={icon} color={theme.text.secondary} />
 		</Row>
 	);
 };

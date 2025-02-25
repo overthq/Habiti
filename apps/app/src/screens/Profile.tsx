@@ -7,13 +7,17 @@ import {
 } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { Alert, View } from 'react-native';
+import { Alert, Linking, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import ProfileRow from '../components/profile/ProfileRow';
 import UserCard from '../components/profile/UserCard';
 import useStore from '../state';
 import { ProfileStackParamList } from '../types/navigation';
+
+const PRIVACY_POLICY_URL = 'https://habiti.app/privacy-policy';
+const SUPPORT_URL = 'https://habiti.app/support';
+const ACCEPTABLE_USE_URL = 'https://habiti.app/acceptable-use-policy';
 
 /* Account Settings:
   - Account Info
@@ -72,8 +76,24 @@ const Profile: React.FC = () => {
 				/>
 				<Spacer y={8} />
 				<Separator style={{ marginHorizontal: 16 }} />
-				{/* <ProfileRow title='About this app' onPress={() => {}} />
-				<ProfileRow title='Support' onPress={() => {}} /> */}
+				<ProfileRow
+					title='Privacy Policy'
+					onPress={() => {
+						Linking.openURL(PRIVACY_POLICY_URL);
+					}}
+				/>
+				<ProfileRow
+					title='Support'
+					onPress={() => {
+						Linking.openURL(SUPPORT_URL);
+					}}
+				/>
+				<ProfileRow
+					title='Acceptable Use'
+					onPress={() => {
+						Linking.openURL(ACCEPTABLE_USE_URL);
+					}}
+				/>
 			</View>
 			<Spacer y={24} />
 			<View style={{ paddingHorizontal: 16 }}>
