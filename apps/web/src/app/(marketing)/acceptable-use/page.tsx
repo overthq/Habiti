@@ -25,11 +25,13 @@ const AcceptableUse = () => {
 				</li>
 				<li>
 					access, tamper with, or use non-public areas or parts of the Services,
-					or shared areas of the Services you haven’t been invited to; - create
-					or manage Stores that advertise or sell materials that constitute
-					pornography, child sexually exploitative material, or are otherwise
-					indecent or sexual in nature;
-				</li>{' '}
+					or shared areas of the Services you haven’t been invited to;
+				</li>
+				<li>
+					create or manage Stores that advertise or sell materials that
+					constitute pornography, child sexually exploitative material, or are
+					otherwise indecent or sexual in nature;
+				</li>
 				<li>
 					harass or otherwise abuse Habiti employees or individuals performing
 					services on the Company’s behalf;
@@ -41,12 +43,13 @@ const AcceptableUse = () => {
 				</li>
 				<li>
 					create, promote or manage Products other than your own without
-					appropriate authorization; - violate the law in any way;
+					appropriate authorization;
 				</li>
+				<li>violate the law in any way;</li>
 				<li>
 					use the Services as infrastructure for your own product or service;
 				</li>
-				<li> use the Services to promote gambling or related activities;</li>
+				<li> use the Services to promote gambling or related activities.</li>
 			</ul>
 
 			<p>
