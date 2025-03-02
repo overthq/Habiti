@@ -1,8 +1,9 @@
 import { Resolver } from '../../types/resolvers';
+import { authenticatedResolver } from '../permissions';
 
-const currentUser: Resolver = (_, __, ctx) => {
+const currentUser = authenticatedResolver(async (_, __, ctx) => {
 	return ctx.prisma.user.findUnique({ where: { id: ctx.user.id } });
-};
+});
 
 const user: Resolver = (_, { id }, ctx) => {
 	return ctx.prisma.user.findUnique({ where: { id } });

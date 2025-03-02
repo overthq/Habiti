@@ -10,16 +10,20 @@ type ProvidersProps = {
 	children: React.ReactNode;
 };
 
-const Providers: React.FC<ProvidersProps> = ({ children }) => {
+const WrappedProviders = ({ children }: ProvidersProps) => {
 	const { accessToken } = useAuthContext();
 
 	const client = React.useMemo(() => {
 		return generateClient(accessToken);
 	}, [accessToken]);
 
+	return <Provider value={client}>{children}</Provider>;
+};
+
+const Providers: React.FC<ProvidersProps> = ({ children }) => {
 	return (
 		<AuthProvider>
-			<Provider value={client}>{children}</Provider>
+			<WrappedProviders>{children}</WrappedProviders>
 		</AuthProvider>
 	);
 };

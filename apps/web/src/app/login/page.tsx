@@ -24,17 +24,17 @@ const loginSchema = z.object({
 	password: z.string().min(8)
 });
 
+const LOGIN_MUTATION = gql`
+	mutation Login($input: AuthenticateInput!) {
+		authenticate(input: $input) {
+			accessToken
+			userId
+		}
+	}
+`;
+
 const LoginPage = () => {
 	const router = useRouter();
-
-	const LOGIN_MUTATION = gql`
-		mutation Login($input: AuthenticateInput!) {
-			authenticate(input: $input) {
-				accessToken
-				userId
-			}
-		}
-	`;
 
 	const [, login] = useMutation(LOGIN_MUTATION);
 	const form = useForm({
@@ -53,13 +53,15 @@ const LoginPage = () => {
 		});
 
 		onLogin(data.authenticate.accessToken, data.authenticate.userId);
+
 		// TODO: Handle non-home origin routes.
-		router.push('/');
+
+		router.push('/home');
 	};
 
 	return (
 		<div className='flex justify-center items-center min-h-screen'>
-			<div className='w-full max-w-md p-6 bg-white rounded-lg shadow-md border border-gray-200'>
+			<div className='w-full max-w-md'>
 				<h1 className='text-2xl font-bold mb-4'>Welcome back.</h1>
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
