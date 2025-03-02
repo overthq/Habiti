@@ -19,6 +19,8 @@ const HOME_QUERY = gql`
 				}
 
 				products {
+					orderId
+					productId
 					product {
 						id
 						name

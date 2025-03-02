@@ -1,5 +1,6 @@
 'use client';
 
+import MainNavigation from '@/components/main/MainNavigation';
 import React from 'react';
 
 // Ensure that the user is authenticated, or redirect to the login page
@@ -9,7 +10,12 @@ interface MainLayoutProps {
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
-	return <div>{children}</div>;
+	return (
+		<div>
+			<MainNavigation />
+			<div className='container mx-auto'>{children}</div>
+		</div>
+	);
 };
 
 export default MainLayout;

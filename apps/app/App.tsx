@@ -1,7 +1,6 @@
 import 'core-js/full/symbol/async-iterator';
 import { ThemeProvider } from '@habiti/components';
 import * as Sentry from '@sentry/react-native';
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
