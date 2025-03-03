@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { gql, useQuery } from 'urql';
 
 const HOME_QUERY = gql`
@@ -76,7 +77,34 @@ const HomePage = () => {
 	return (
 		<div className='container mx-auto'>
 			<h1>Home</h1>
-			<pre>{JSON.stringify(data, null, 2)}</pre>
+			<h2>Orders</h2>
+			<div>
+				{data.currentUser.orders.map((order: any) => (
+					<div key={order.id}>
+						<h2>{order.store.name}</h2>
+						{order.products.map((product: any) => (
+							<div key={product.productId}>
+								<h3>{product.product.name}</h3>
+								<p>Price: {product.unitPrice}</p>
+								<p>Quantity: {product.quantity}</p>
+							</div>
+						))}
+						<p>Total: {order.total}</p>
+						<p>Status: {order.status}</p>
+						<p>Created At: {order.createdAt}</p>
+						<Link href={`/orders/${order.id}`}>View Order</Link>
+					</div>
+				))}
+			</div>
+			<h2>Followed Stores</h2>
+			<div>
+				{data.currentUser.followed.map((followed: any) => (
+					<div key={followed.store.id}>
+						<h2>{followed.store.name}</h2>
+						<image href={followed.store.image?.path} />
+					</div>
+				))}
+			</div>
 		</div>
 	);
 };

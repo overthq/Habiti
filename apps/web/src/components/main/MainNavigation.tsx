@@ -26,7 +26,7 @@ const items = [
 		icon: ShoppingBag
 	},
 	{
-		href: '/cart',
+		href: '/carts',
 		icon: ShoppingCart
 	}
 ];

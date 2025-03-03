@@ -1,32 +1,34 @@
+'use client';
+
+import Link from 'next/link';
 import { gql, useQuery } from 'urql';
 
 const CARTS_QUERY = gql`
-  query Carts {
-    currentUser {
-      id
-      carts {
-        id
+	query Carts {
+		currentUser {
+			id
+			carts {
+				id
 
-        store {
-          id
-            name
-          }
-        }
+				store {
+					id
+					name
+				}
 
-        products {
-          cartId
-          productId
-          quantity
+				products {
+					cartId
+					productId
+					quantity
 
-          product {
-            id
-            name
-            unitPrice
-          }
-        }
-      }
-    }
-  }
+					product {
+						id
+						name
+						unitPrice
+					}
+				}
+			}
+		}
+	}
 `;
 
 const CartsPage = () => {
@@ -38,7 +40,12 @@ const CartsPage = () => {
 	return (
 		<div>
 			<h1>Carts</h1>
-			<pre>{JSON.stringify(data, null, 2)}</pre>
+			{data?.currentUser?.carts.map((cart: any) => (
+				<div key={cart.id}>
+					<h2>{cart.store.name}</h2>
+					<Link href={`/carts/${cart.id}`}>View Cart</Link>
+				</div>
+			))}
 		</div>
 	);
 };
