@@ -1,5 +1,6 @@
 'use client';
 
+import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { gql, useQuery } from 'urql';
 
@@ -75,34 +76,84 @@ const HomePage = () => {
 	if (error) return <div>Error: {error.message}</div>;
 
 	return (
-		<div className='container mx-auto'>
-			<h1>Home</h1>
-			<h2>Orders</h2>
-			<div>
+		<div className='container py-6'>
+			<h1 className='text-2xl font-bold mb-6'>Welcome Home</h1>
+
+			<h2 className='text-xl font-semibold mb-4'>Recent Orders</h2>
+			<div className='space-y-4 mb-8'>
 				{data.currentUser.orders.map((order: any) => (
-					<div key={order.id}>
-						<h2>{order.store.name}</h2>
-						{order.products.map((product: any) => (
-							<div key={product.productId}>
-								<h3>{product.product.name}</h3>
-								<p>Price: {product.unitPrice}</p>
-								<p>Quantity: {product.quantity}</p>
+					<Link href={`/orders/${order.id}`} key={order.id}>
+						<div className='flex justify-between items-center p-4 rounded-lg border hover:shadow-md transition-shadow'>
+							<div className='flex gap-4 items-center'>
+								<div className='w-16 h-16 rounded-full overflow-hidden bg-muted-foreground flex-shrink-0'>
+									{order.store.image && (
+										<img
+											src={order.store.image?.path}
+											alt={order.store.name}
+											className='size-full object-cover'
+										/>
+									)}
+								</div>
+
+								<div>
+									<p className='font-medium'>
+										{order.store.name} -{' '}
+										<span className='text-primary'>
+											{order.products.length} items
+										</span>
+									</p>
+									<p className='text-sm text-muted-foreground'>
+										{new Date(order.createdAt).toLocaleDateString('en-US', {
+											year: 'numeric',
+											month: 'long',
+											day: 'numeric',
+											hour: '2-digit',
+											minute: '2-digit'
+										})}
+									</p>
+									<p className='text-sm font-medium mt-1'>
+										₦{order.total.toLocaleString()} ·
+										<span
+											className={`capitalize ml-1 ${order.status === 'completed' ? 'text-green-600' : 'text-amber-600'}`}
+										>
+											{order.status}
+										</span>
+									</p>
+								</div>
 							</div>
-						))}
-						<p>Total: {order.total}</p>
-						<p>Status: {order.status}</p>
-						<p>Created At: {order.createdAt}</p>
-						<Link href={`/orders/${order.id}`}>View Order</Link>
-					</div>
+							<ChevronRight className='text-muted-foreground' />
+						</div>
+					</Link>
 				))}
 			</div>
-			<h2>Followed Stores</h2>
-			<div>
+
+			<h2 className='text-xl font-semibold mb-4'>Followed Stores</h2>
+			<div className='flex overflow-x-auto gap-4 py-4'>
 				{data.currentUser.followed.map((followed: any) => (
-					<div key={followed.store.id}>
-						<h2>{followed.store.name}</h2>
-						<image href={followed.store.image?.path} />
-					</div>
+					<Link
+						href={`/stores/${followed.store.id}`}
+						key={followed.store.id}
+						className='flex flex-col items-center min-w-[80px]'
+					>
+						<div className='w-16 h-16 rounded-full overflow-hidden bg-muted-foreground mb-2'>
+							{followed.store.image ? (
+								<img
+									src={followed.store.image?.path}
+									alt={followed.store.name}
+									className='w-full h-full object-cover'
+								/>
+							) : (
+								<div className='w-full h-full bg-primary-foreground flex items-center justify-center'>
+									<span className='text-lg font-bold text-primary'>
+										{followed.store.name.charAt(0)}
+									</span>
+								</div>
+							)}
+						</div>
+						<span className='text-xs text-center truncate w-full'>
+							{followed.store.name}
+						</span>
+					</Link>
 				))}
 			</div>
 		</div>

@@ -34,10 +34,13 @@ const OrderPage = () => {
 		variables: { id }
 	});
 
+	if (fetching) {
+		return <p>Loading...</p>;
+	}
+
 	return (
 		<div>
 			<Link href={`/store/${data?.order.storeId}`}>View store</Link>
-			<pre>{JSON.stringify(data, null, 2)}</pre>
 		</div>
 	);
 };
