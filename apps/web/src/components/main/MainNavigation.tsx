@@ -13,7 +13,16 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
 	href,
 	children
 }) => {
-	return <Link href={href}>{children}</Link>;
+	return (
+		<Link
+			href={href}
+			className={`p-2 rounded-lg transition-colors ${
+				isActive ? 'bg-muted' : 'hover:bg-muted/50 opacity-70 hover:opacity-100'
+			}`}
+		>
+			{children}
+		</Link>
+	);
 };
 
 const items = [
@@ -35,7 +44,7 @@ const MainNavigation = () => {
 	const pathname = usePathname();
 
 	return (
-		<div className='border-b py-4 mb-4'>
+		<div className='border-b py-2 mb-4'>
 			<nav className='container mx-auto'>
 				<ul className='flex justify-center items-center gap-8'>
 					{items.map(item => (
