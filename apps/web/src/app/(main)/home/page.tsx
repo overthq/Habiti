@@ -103,13 +103,16 @@ const HomePage = () => {
 										</span>
 									</p>
 									<p className='text-sm text-muted-foreground'>
-										{new Date(order.createdAt).toLocaleDateString('en-US', {
-											year: 'numeric',
-											month: 'long',
-											day: 'numeric',
-											hour: '2-digit',
-											minute: '2-digit'
-										})}
+										{new Date(Number(order.createdAt)).toLocaleDateString(
+											'en-US',
+											{
+												year: 'numeric',
+												month: 'long',
+												day: 'numeric',
+												hour: '2-digit',
+												minute: '2-digit'
+											}
+										)}
 									</p>
 									<p className='text-sm font-medium mt-1'>
 										₦{order.total.toLocaleString()} ·
@@ -131,7 +134,7 @@ const HomePage = () => {
 			<div className='flex overflow-x-auto gap-4 py-4'>
 				{data.currentUser.followed.map((followed: any) => (
 					<Link
-						href={`/stores/${followed.store.id}`}
+						href={`/store/${followed.store.id}`}
 						key={followed.store.id}
 						className='flex flex-col items-center min-w-[80px]'
 					>
