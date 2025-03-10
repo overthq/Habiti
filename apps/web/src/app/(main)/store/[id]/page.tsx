@@ -14,17 +14,17 @@ const STORE_QUERY = `
 			description
 			products {
   			edges {
-     cursor
-     node {
-     id
-				name
-				unitPrice
-				images {
-					id
-					path
-				}
-     }
-  			}
+        cursor
+          node {
+            id
+    				name
+    				unitPrice
+    				images {
+     					id
+     					path
+    				}
+          }
+   			}
 			}
 		}
 	}
