@@ -62,7 +62,10 @@ const ProductPage = () => {
 						>
 							Add to Cart
 						</Button>
-						<StorePreview store={data.product.store} />
+						<StorePreview
+							store={data.product.store}
+							followed={data.product.store.followedByUser}
+						/>
 					</div>
 				</div>
 			</div>
@@ -93,6 +96,7 @@ const PRODUCT_QUERY = gql`
 					id
 					path
 				}
+				followedByUser
 			}
 		}
 	}
