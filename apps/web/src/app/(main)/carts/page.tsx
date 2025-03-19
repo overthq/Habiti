@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { gql, useQuery } from 'urql';
+import { formatNaira } from '@/utils/currency';
 
 const CARTS_QUERY = gql`
 	query Carts {
@@ -66,7 +67,7 @@ const CartsPage = () => {
 								>
 									<span>{item.product.name}</span>
 									<span>
-										{item.quantity} × ${item.product.unitPrice}
+										{item.quantity} × {formatNaira(item.product.unitPrice)}
 									</span>
 								</div>
 							))}

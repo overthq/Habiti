@@ -53,7 +53,7 @@ const StorePage = () => {
 				<p className='text-gray-600'>{data.store.description}</p>
 				<div className='mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
 					{data.store.products.edges.map((product: any) => (
-						<Product key={product.id} {...product.node} />
+						<Product key={product.node.id} {...product.node} />
 					))}
 				</div>
 			</div>

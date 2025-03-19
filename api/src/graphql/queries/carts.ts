@@ -17,7 +17,9 @@ export const user: Resolver = async (parent, _, ctx) => {
 };
 
 export const products: Resolver = (parent, _, ctx) => {
-	return ctx.prisma.cart.findUnique({ where: { id: parent.id } }).products();
+	return ctx.prisma.cart
+		.findUnique({ where: { id: parent.id } })
+		.products({ include: { product: true } });
 };
 
 export const store: Resolver = async (parent, _, ctx) => {

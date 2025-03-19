@@ -23,7 +23,7 @@ const ProductPage = () => {
 
 	const handleAddToCart = (storeId: string) => {
 		addToCart({
-			input: { storeId, productId: id, quantity: 1 }
+			input: { storeId, productId: id, quantity }
 		});
 	};
 
@@ -49,8 +49,8 @@ const ProductPage = () => {
 						)}
 					</div>
 					<div>
-						<h1 className='text-3xl font-semibold mb-4'>{product.name}</h1>
-						<p className='text-xl font-medium mb-2'>
+						<h1 className='text-xl font-semibold mb-4'>{product.name}</h1>
+						<p className='text-lg font-medium mb-2'>
 							{formatNaira(product.unitPrice)}
 						</p>
 						<p className='text-gray-600 mb-4'>{product.description}</p>
@@ -105,7 +105,8 @@ const PRODUCT_QUERY = gql`
 const ADD_TO_CART_MUTATION = gql`
 	mutation AddToCart($input: AddToCartInput!) {
 		addToCart(input: $input) {
-			id
+			cartId
+			productId
 			quantity
 		}
 	}
