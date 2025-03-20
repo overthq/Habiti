@@ -99,3 +99,5 @@ const OrderPage = () => {
 };
 
 export default OrderPage;
+
+export const runtime = 'edge';

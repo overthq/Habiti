@@ -152,3 +152,5 @@ const CREATE_ORDER = gql`
 `;
 
 export default CartPage;
+
+export const runtime = 'edge';
