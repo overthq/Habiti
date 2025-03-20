@@ -24,17 +24,17 @@ const customCache = cacheExchange({
 	},
 	updates: {
 		Mutation: {
-			followStore(_result, args: MutationFollowStoreArgs, cache) {
+			followStore(_result, args: any, cache) {
 				cache.invalidate({ __typename: 'Store', id: args.storeId });
 			},
-			unfollowStore(_result, args: MutationUnfollowStoreArgs, cache) {
+			unfollowStore(_result, args: any, cache) {
 				cache.invalidate({ __typename: 'Store', id: args.storeId });
 			},
-			addToCart(_result, args: MutationAddToCartArgs, cache) {
+			addToCart(_result, args: any, cache) {
 				cache.invalidate({ __typename: 'Product', id: args.input.productId });
 				cache.invalidate({ __typename: 'Store', id: args.input.storeId });
 			},
-			removeFromCart(_result, args: MutationRemoveFromCartArgs, cache) {
+			removeFromCart(_result, args: any, cache) {
 				cache.invalidate({ __typename: 'Product', id: args.productId });
 				cache.invalidate({ __typename: 'Cart', id: args.cartId });
 			}
