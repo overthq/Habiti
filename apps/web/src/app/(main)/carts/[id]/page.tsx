@@ -38,7 +38,7 @@ const CartPage = () => {
 			{data.cart.products.map((product: any) => (
 				<div
 					key={product.id}
-					className='flex items-center gap-4 p-4 border rounded-md mb-2'
+					className='flex items-center gap-4 p-4 border rounded-md mb-6'
 				>
 					<div className='w-16 h-16 bg-gray-200 rounded flex items-center justify-center'>
 						{product.product.images[0] && (
@@ -58,7 +58,6 @@ const CartPage = () => {
 						<p className='text-gray-600'>
 							{formatNaira(product.product.unitPrice)}
 						</p>
-						<p className='text-sm'>Quantity: {product.quantity}</p>
 					</div>
 				</div>
 			))}

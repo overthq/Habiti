@@ -54,10 +54,7 @@ const CartsPage = () => {
 			<h1 className='text-3xl font-bold mb-8'>Carts</h1>
 			<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
 				{data?.currentUser?.carts.map((cart: any) => (
-					<div
-						key={cart.id}
-						className='bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200'
-					>
+					<div key={cart.id} className='border bg-white rounded-lg p-6'>
 						<h2 className='text-xl font-semibold mb-4'>{cart.store.name}</h2>
 						<div className='space-y-2 mb-4'>
 							{cart.products.map((item: any) => (

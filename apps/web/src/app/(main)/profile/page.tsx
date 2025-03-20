@@ -4,6 +4,11 @@ import { useQuery, gql } from 'urql';
 
 const ProfilePage = () => {
 	const [{ data, fetching }] = useQuery({ query: PROFILE_QUERY });
+	const { onLogout } = useAuthContext();
+
+	const handleLogOut = () => {
+		onLogout();
+	};
 
 	if (fetching) {
 		return <div />;
@@ -12,6 +17,7 @@ const ProfilePage = () => {
 	return (
 		<div>
 			<h1>Profile</h1>
+			<Button onClick={handleLogOut}>Log Out</Button>
 		</div>
 	);
 };

@@ -7,20 +7,17 @@ interface AuthContextType {
 	userId?: string;
 	onLogin: (accessToken: string, userId: string) => void;
 	onLogout: () => void;
+	loading: boolean;
 }
 
-const AuthContext = React.createContext<AuthContextType>({
-	accessToken: undefined,
-	userId: undefined,
-	onLogin: () => {},
-	onLogout: () => {}
-});
+const AuthContext = React.createContext<AuthContextType>(null);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 	children
 }) => {
 	const [accessToken, setAccessToken] = React.useState<string>();
 	const [userId, setUserId] = React.useState<string>();
+	const [loading, setLoading] = React.useState(true);
 
 	React.useEffect(() => {
 		const accessToken = window.localStorage.getItem('accessToken');
@@ -30,6 +27,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 			setAccessToken(accessToken);
 			setUserId(userId);
 		}
+
+		setLoading(false);
 	}, []);
 
 	const handleLogin = (accessToken: string, userId: string) => {
@@ -52,7 +51,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 				accessToken,
 				userId,
 				onLogin: handleLogin,
-				onLogout: handleLogout
+				onLogout: handleLogout,
+				loading
 			}}
 		>
 			{children}
