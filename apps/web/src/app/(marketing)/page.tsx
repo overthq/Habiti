@@ -12,10 +12,10 @@ const Home = () => {
 	const router = useRouter();
 
 	React.useEffect(() => {
-		if (userId && accessToken) {
+		if (!loading && userId && accessToken) {
 			router.push('/home');
 		}
-	}, [userId, accessToken, router]);
+	}, [userId, accessToken, loading, router]);
 
 	if (loading) {
 		return <div />;

@@ -16,6 +16,7 @@ import {
 	FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useRouter } from 'next/navigation';
 
 const registerSchema = z.object({
 	name: z.string(),
@@ -24,6 +25,8 @@ const registerSchema = z.object({
 });
 
 const RegisterPage = () => {
+	const router = useRouter();
+
 	const REGISTER_MUTATION = gql`
 		mutation Register($input: RegisterInput!) {
 			register(input: $input) {
@@ -44,7 +47,7 @@ const RegisterPage = () => {
 	});
 
 	const onSubmit = async (values: z.infer<typeof registerSchema>) => {
-		const { data, error } = await register({
+		const { error } = await register({
 			input: {
 				name: values.name,
 				email: values.email,
@@ -55,7 +58,7 @@ const RegisterPage = () => {
 		if (error) {
 			console.error(error);
 		} else {
-			console.log(data);
+			router.push('/login');
 		}
 	};
 

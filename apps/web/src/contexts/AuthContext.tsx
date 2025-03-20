@@ -8,9 +8,10 @@ interface AuthContextType {
 	onLogin: (accessToken: string, userId: string) => void;
 	onLogout: () => void;
 	loading: boolean;
+	loggedIn: boolean;
 }
 
-const AuthContext = React.createContext<AuthContextType>(null);
+const AuthContext = React.createContext<AuthContextType | null>(null);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 	children
@@ -45,6 +46,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 		window.localStorage.removeItem('userId');
 	};
 
+	const loggedIn = React.useMemo(
+		() => !!accessToken && !!userId,
+		[accessToken, userId]
+	);
+
 	return (
 		<AuthContext.Provider
 			value={{
@@ -52,7 +58,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 				userId,
 				onLogin: handleLogin,
 				onLogout: handleLogout,
-				loading
+				loading,
+				loggedIn
 			}}
 		>
 			{children}
