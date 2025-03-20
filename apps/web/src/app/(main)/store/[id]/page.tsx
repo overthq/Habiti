@@ -4,7 +4,6 @@ import { useParams } from 'next/navigation';
 import React from 'react';
 import { useQuery } from 'urql';
 
-import Header from '@/components/home/Header';
 import Product from '@/components/store/Product';
 
 const STORE_QUERY = `
@@ -14,13 +13,18 @@ const STORE_QUERY = `
 			name
 			description
 			products {
-				id
-				name
-				unitPrice
-				images {
-					id
-					path
-				}
+  			edges {
+        cursor
+          node {
+            id
+    				name
+    				unitPrice
+    				images {
+     					id
+     					path
+    				}
+          }
+   			}
 			}
 		}
 	}
@@ -44,13 +48,12 @@ const StorePage = () => {
 
 	return (
 		<div>
-			<Header />
 			<div className='container mx-auto py-8'>
 				<h1 className='text-2xl font-bold'>{data.store.name}</h1>
 				<p className='text-gray-600'>{data.store.description}</p>
 				<div className='mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
-					{data.store.products.map((product: any) => (
-						<Product key={product.id} {...product} />
+					{data.store.products.edges.map((product: any) => (
+						<Product key={product.node.id} {...product.node} />
 					))}
 				</div>
 			</div>

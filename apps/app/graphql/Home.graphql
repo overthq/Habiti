@@ -13,6 +13,8 @@ query Home {
 				}
 			}
 			products {
+				orderId
+				productId
 				product {
 					id
 					name

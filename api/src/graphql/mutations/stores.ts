@@ -116,22 +116,13 @@ export interface DeleteStoreArgs {
 	id: string;
 }
 
-// FIXME: We need better access control
-export const deleteStore: Resolver<DeleteStoreArgs> = async (
-	_,
-	{ id },
-	ctx
-) => {
-	const permitted = canManageStore(ctx.user.id, id);
+export const deleteStore: Resolver<DeleteStoreArgs> = storeAuthorizedResolver(
+	async (_, { id }, ctx) => {
+		await ctx.prisma.store.delete({ where: { id } });
 
-	if (!permitted) {
-		throw new Error('You are not authorized to delete this store');
+		return id;
 	}
-
-	await ctx.prisma.store.delete({ where: { id } });
-
-	return id;
-};
+);
 
 export interface FollowStoreArgs {
 	storeId: string;
@@ -142,6 +133,7 @@ export const followStore: Resolver<FollowStoreArgs> = async (
 	{ storeId },
 	ctx
 ) => {
+	console.log('userid', ctx.user.id);
 	const follower = await ctx.prisma.storeFollower.create({
 		data: { followerId: ctx.user.id, storeId },
 		include: { store: true }

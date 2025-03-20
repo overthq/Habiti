@@ -24,8 +24,8 @@ import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useCreateOrderMutation, useCartQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
-import { calculateFees } from '../utils/fees';
 import useRefresh from '../hooks/useRefresh';
+import { useShallow } from 'zustand/shallow';
 
 // There is a need to master optimistic updates on this screen,
 // It is also important to make use of tasteful animations to make
@@ -39,34 +39,27 @@ const Cart: React.FC = () => {
 	useGoBack();
 
 	const [{ data, fetching }, refetch] = useCartQuery({ variables: { cartId } });
-	// const { data, error, refetch } = useCartQuery(cartId);
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 	const [, createOrder] = useCreateOrderMutation();
 
-	const { defaultCardId, setPreference } = useStore(state => ({
-		defaultCardId: state.defaultCard,
-		setPreference: state.setPreference
-	}));
+	const { defaultCardId, setPreference } = useStore(
+		useShallow(state => ({
+			defaultCardId: state.defaultCard,
+			setPreference: state.setPreference
+		}))
+	);
 	const { bottom } = useSafeAreaInsets();
 	const { theme } = useTheme();
 
 	const [selectedCard, setSelectedCard] = React.useState(defaultCardId);
-
-	const fees = React.useMemo(
-		() => calculateFees(data?.cart.total ?? 0),
-		[data?.cart.total]
-	);
-
-	// TODO: Process the fee amount on the server, to make sure we don't have to
-	// update client code to reflect new fee changes.
 
 	const handleSubmit = React.useCallback(async () => {
 		const { error } = await createOrder({
 			input: {
 				cartId,
 				cardId: selectedCard,
-				transactionFee: fees.total,
-				serviceFee: fees.service
+				transactionFee: data?.cart.fees.total ?? 0,
+				serviceFee: data?.cart.fees.service ?? 0
 			}
 		});
 
@@ -77,7 +70,7 @@ const Cart: React.FC = () => {
 		} else {
 			goBack();
 		}
-	}, [cartId, fees, selectedCard]);
+	}, [data, cartId, selectedCard]);
 
 	const cart = data?.cart;
 
@@ -110,7 +103,7 @@ const Cart: React.FC = () => {
 
 					<Separator style={{ margin: 16 }} />
 
-					<CartTotal cart={cart} fees={fees} />
+					<CartTotal cart={cart} />
 
 					<View style={{ paddingTop: 16, paddingHorizontal: 16 }}>
 						<HoldableButton
