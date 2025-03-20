@@ -25,6 +25,7 @@ import useStore from '../state';
 import { useCreateOrderMutation, useCartQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 import useRefresh from '../hooks/useRefresh';
+import { useShallow } from 'zustand/shallow';
 
 // There is a need to master optimistic updates on this screen,
 // It is also important to make use of tasteful animations to make
@@ -38,21 +39,19 @@ const Cart: React.FC = () => {
 	useGoBack();
 
 	const [{ data, fetching }, refetch] = useCartQuery({ variables: { cartId } });
-	// const { data, error, refetch } = useCartQuery(cartId);
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 	const [, createOrder] = useCreateOrderMutation();
 
-	const { defaultCardId, setPreference } = useStore(state => ({
-		defaultCardId: state.defaultCard,
-		setPreference: state.setPreference
-	}));
+	const { defaultCardId, setPreference } = useStore(
+		useShallow(state => ({
+			defaultCardId: state.defaultCard,
+			setPreference: state.setPreference
+		}))
+	);
 	const { bottom } = useSafeAreaInsets();
 	const { theme } = useTheme();
 
 	const [selectedCard, setSelectedCard] = React.useState(defaultCardId);
-
-	// TODO: Process the fee amount on the server, to make sure we don't have to
-	// update client code to reflect new fee changes.
 
 	const handleSubmit = React.useCallback(async () => {
 		const { error } = await createOrder({
@@ -71,7 +70,7 @@ const Cart: React.FC = () => {
 		} else {
 			goBack();
 		}
-	}, [cartId, selectedCard]);
+	}, [data, cartId, selectedCard]);
 
 	const cart = data?.cart;
 
