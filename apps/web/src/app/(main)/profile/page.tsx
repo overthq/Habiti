@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery, gql } from 'urql';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 const ProfilePage = () => {
 	const [{ data, fetching }] = useQuery({ query: PROFILE_QUERY });
