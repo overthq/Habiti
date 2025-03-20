@@ -1,28 +1,29 @@
-import { formatNaira } from '@habiti/common';
-import { Typography } from '@habiti/components';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { Typography } from '@habiti/components';
+import { formatNaira } from '@habiti/common';
 
 import { CartQuery } from '../../types/api';
-import { calculateFees } from '../../utils/fees';
 
 interface CartTotalProps {
 	cart: CartQuery['cart'];
-	fees: ReturnType<typeof calculateFees>;
 }
 
-const CartTotal: React.FC<CartTotalProps> = ({ cart, fees }) => {
+const CartTotal: React.FC<CartTotalProps> = ({ cart }) => {
 	return (
 		<View style={{ paddingHorizontal: 16 }}>
 			<CartTotalRow title='Subtotal' value={formatNaira(cart.total)} />
 			<CartTotalRow
 				title='Transaction Fee'
-				value={formatNaira(fees.transaction)}
+				value={formatNaira(cart.fees.transaction)}
 			/>
-			<CartTotalRow title='Service Fee' value={formatNaira(fees.service)} />
+			<CartTotalRow
+				title='Service Fee'
+				value={formatNaira(cart.fees.service)}
+			/>
 			<CartTotalRow
 				title='Total'
-				value={formatNaira(fees.total + cart.total)}
+				value={formatNaira(cart.fees.total + cart.total)}
 				total
 			/>
 		</View>

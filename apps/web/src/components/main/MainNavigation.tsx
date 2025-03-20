@@ -1,4 +1,4 @@
-import { Home, ShoppingBag, ShoppingCart } from 'lucide-react';
+import { Home, ShoppingBag, ShoppingCart, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -37,6 +37,10 @@ const items = [
 	{
 		href: '/carts',
 		icon: ShoppingCart
+	},
+	{
+		href: '/profile',
+		icon: User
 	}
 ];
 

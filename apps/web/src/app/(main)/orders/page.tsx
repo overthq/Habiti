@@ -50,7 +50,7 @@ const OrdersPage = () => {
 			<div className='space-y-4'>
 				{data?.currentUser.orders.map((order: any) => (
 					<Link href={`/orders/${order.id}`} key={order.id}>
-						<div className='flex justify-between items-center p-4 rounded-lg border hover:shadow-md transition-shadow'>
+						<div className='flex justify-between items-center p-4 rounded-lg border'>
 							<div className='flex gap-4 items-center'>
 								<div className='w-16 h-16 rounded-full overflow-hidden bg-muted-foreground flex-shrink-0'>
 									{order.store.image && (

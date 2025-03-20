@@ -9,6 +9,7 @@ const CartTypes = gql`
 		updatedAt: String!
 
 		total: Int!
+		fees: Fees!
 		user: User!
 		store: Store!
 		products: [CartProduct!]!
@@ -20,6 +21,12 @@ const CartTypes = gql`
 		quantity: Int!
 		cart: Cart!
 		product: Product!
+	}
+
+	type Fees {
+		transaction: Int!
+		service: Int!
+		total: Int!
 	}
 
 	input AddToCartInput {

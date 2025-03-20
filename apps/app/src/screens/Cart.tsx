@@ -24,7 +24,6 @@ import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useCreateOrderMutation, useCartQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
-import { calculateFees } from '../utils/fees';
 import useRefresh from '../hooks/useRefresh';
 
 // There is a need to master optimistic updates on this screen,
@@ -52,11 +51,6 @@ const Cart: React.FC = () => {
 
 	const [selectedCard, setSelectedCard] = React.useState(defaultCardId);
 
-	const fees = React.useMemo(
-		() => calculateFees(data?.cart.total ?? 0),
-		[data?.cart.total]
-	);
-
 	// TODO: Process the fee amount on the server, to make sure we don't have to
 	// update client code to reflect new fee changes.
 
@@ -65,8 +59,8 @@ const Cart: React.FC = () => {
 			input: {
 				cartId,
 				cardId: selectedCard,
-				transactionFee: fees.total,
-				serviceFee: fees.service
+				transactionFee: data?.cart.fees.total ?? 0,
+				serviceFee: data?.cart.fees.service ?? 0
 			}
 		});
 
@@ -77,7 +71,7 @@ const Cart: React.FC = () => {
 		} else {
 			goBack();
 		}
-	}, [cartId, fees, selectedCard]);
+	}, [cartId, selectedCard]);
 
 	const cart = data?.cart;
 
@@ -110,7 +104,7 @@ const Cart: React.FC = () => {
 
 					<Separator style={{ margin: 16 }} />
 
-					<CartTotal cart={cart} fees={fees} />
+					<CartTotal cart={cart} />
 
 					<View style={{ paddingTop: 16, paddingHorizontal: 16 }}>
 						<HoldableButton

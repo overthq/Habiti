@@ -38,8 +38,8 @@ const ProductPage = () => {
 	return (
 		<div>
 			<div className='container mx-auto px-4 py-8'>
-				<div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
-					<div>
+				<div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
+					<div className='md:col-span-2'>
 						{product.images.length > 0 && (
 							<img
 								src={product.images[0].path}
@@ -48,11 +48,9 @@ const ProductPage = () => {
 							/>
 						)}
 					</div>
-					<div>
-						<h1 className='text-xl font-semibold mb-4'>{product.name}</h1>
-						<p className='text-lg font-medium mb-2'>
-							{formatNaira(product.unitPrice)}
-						</p>
+					<div className='md:col-span-1'>
+						<h1 className='text-xl font-medium mb-1'>{product.name}</h1>
+						<p className='text-lg mb-2'>{formatNaira(product.unitPrice)}</p>
 						<p className='text-gray-600 mb-4'>{product.description}</p>
 						<QuantityControl value={quantity} onValueChange={setQuantity} />
 						<Button

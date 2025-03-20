@@ -31,11 +31,11 @@ const StorePreview: React.FC<StorePreviewProps> = ({ store, followed }) => {
 				<Button onClick={handleSubmit}>
 					{followed ? (
 						<>
-							<Check /> Following
+							<Check size={20} className='mr-1' /> Following
 						</>
 					) : (
 						<>
-							<Plus /> Follow
+							<Plus size={20} className='mr-2' /> Follow
 						</>
 					)}
 				</Button>

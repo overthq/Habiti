@@ -12,16 +12,16 @@ const QuantityControl: React.FC<QuantityControlProps> = ({
 }) => {
 	return (
 		<div className='flex justify-between items-center mb-4'>
-			<p className='text-lg font-medium'>Quantity</p>
-			<div className='flex items-center p-2 gap-4 border shadow-sm rounded-md'>
+			<p className='font-medium'>Quantity</p>
+			<div className='flex items-center p-1 gap-4 border shadow-sm rounded-md'>
 				<Button
 					variant='ghost'
 					size='sm'
-					onClick={() => onValueChange(v => v - 1)}
+					onClick={() => onValueChange(v => Math.max(0, v - 1))}
 				>
 					<Minus className='w-4 h-4' />
 				</Button>
-				<p>{value}</p>
+				<p className='tabular-nums'>{value}</p>
 				<Button
 					variant='ghost'
 					size='sm'

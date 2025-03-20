@@ -42,6 +42,35 @@ export const total: Resolver = async (parent, _, ctx) => {
 	return computedTotal;
 };
 
+const calculatePaystackFee = (subTotal: number) => {
+	return Math.min(200000, 0.015 * subTotal + 10000);
+};
+
+const calculateHabitiFee = () => 100000;
+
+export const fees: Resolver = async (parent, _, ctx) => {
+	// FIXME: This is duplicated from the total resolver.
+	// Use a denormalized field for the total instead.
+
+	const fetchedProducts = await ctx.prisma.cart
+		.findUnique({ where: { id: parent.id } })
+		.products({ include: { product: true } });
+
+	if (!fetchedProducts) {
+		throw new Error('Cart not found');
+	}
+
+	const computedTotal = fetchedProducts.reduce((acc, p) => {
+		return acc + p.product.unitPrice * p.quantity;
+	}, 0);
+
+	const transaction = calculatePaystackFee(computedTotal);
+	const service = calculateHabitiFee();
+	const total = transaction + service;
+
+	return { transaction, service, total };
+};
+
 export default {
 	Query: {
 		carts,
@@ -51,6 +80,7 @@ export default {
 		user,
 		products,
 		store,
-		total
+		total,
+		fees
 	}
 };

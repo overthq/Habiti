@@ -59,6 +59,11 @@ query Cart($cartId: ID!) {
 			quantity
 		}
 		total
+		fees {
+			transaction
+			service
+			total
+		}
 	}
 }
 

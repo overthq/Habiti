@@ -97,6 +97,7 @@ export type CardAuthorization = {
 export type Cart = {
 	__typename?: 'Cart';
 	createdAt: Scalars['String']['output'];
+	fees: Fees;
 	id: Scalars['ID']['output'];
 	products: Array<CartProduct>;
 	store: Store;
@@ -198,6 +199,13 @@ export type EditStoreInput = {
 	name?: InputMaybe<Scalars['String']['input']>;
 	twitter?: InputMaybe<Scalars['String']['input']>;
 	website?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type Fees = {
+	__typename?: 'Fees';
+	service: Scalars['Int']['output'];
+	total: Scalars['Int']['output'];
+	transaction: Scalars['Int']['output'];
 };
 
 export type Filter = {
@@ -958,6 +966,12 @@ export type CartQuery = {
 				images: Array<{ __typename?: 'Image'; id: string; path: string }>;
 			};
 		}>;
+		fees: {
+			__typename?: 'Fees';
+			transaction: number;
+			service: number;
+			total: number;
+		};
 	};
 };
 
@@ -1082,6 +1096,8 @@ export type HomeQuery = {
 			};
 			products: Array<{
 				__typename?: 'OrderProduct';
+				orderId: string;
+				productId: string;
 				unitPrice: number;
 				quantity: number;
 				product: { __typename?: 'Product'; id: string; name: string };
@@ -1596,6 +1612,11 @@ export const CartDocument = gql`
 				quantity
 			}
 			total
+			fees {
+				transaction
+				service
+				total
+			}
 		}
 	}
 `;
@@ -1749,6 +1770,8 @@ export const HomeDocument = gql`
 					}
 				}
 				products {
+					orderId
+					productId
 					product {
 						id
 						name

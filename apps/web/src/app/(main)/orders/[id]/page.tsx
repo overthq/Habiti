@@ -61,14 +61,14 @@ const OrderPage = () => {
 				</Link>
 			</div>
 
-			<div className='bg-white rounded-lg shadow-md p-6'>
-				<h1 className='text-2xl font-bold mb-6'>Order Details</h1>
+			<div className='bg-white'>
+				<h1 className='text-2xl font-semibold mb-6'>Order Details</h1>
 
 				<div className='space-y-6'>
 					{order.products.map((item: any) => (
 						<div
 							key={item.productId}
-							className='flex items-start gap-4 border-b pb-4 last:border-b-0'
+							className='flex items-center gap-4 border-b pb-4 last:border-b-0'
 						>
 							{item.product.images?.[0] && (
 								<img
@@ -78,7 +78,7 @@ const OrderPage = () => {
 								/>
 							)}
 							<div className='flex-1'>
-								<h2 className='text-lg font-semibold'>{item.product.name}</h2>
+								<h2 className='text-lg'>{item.product.name}</h2>
 								<div className='mt-2 text-gray-600'>
 									<p>Unit Price: {formatNaira(item.product.unitPrice)}</p>
 									<p>Quantity: {item.product.quantity}</p>
