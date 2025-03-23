@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, ListRenderItem } from 'react-native';
+import { FlatList, ListRenderItem, View } from 'react-native';
 
 import StoreSelectListItem from './StoreSelectListItem';
 import useStore from '../../state';
@@ -36,13 +36,15 @@ const StoreSelectList: React.FC<StoreSelectListProps> = ({ stores }) => {
 	);
 
 	return (
-		<FlatList
-			data={stores}
-			keyExtractor={store => store.id}
-			renderItem={renderStore}
-			horizontal
-			showsHorizontalScrollIndicator={false}
-		/>
+		<View style={{ flex: 1 }}>
+			<FlatList
+				data={stores}
+				keyExtractor={store => store.id}
+				renderItem={renderStore}
+				horizontal
+				showsHorizontalScrollIndicator={false}
+			/>
+		</View>
 	);
 };
 

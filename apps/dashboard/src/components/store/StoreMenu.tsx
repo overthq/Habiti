@@ -1,6 +1,6 @@
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Linking, View } from 'react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import StoreMenuRow from './StoreMenuRow';
 import useStore from '../../state';
@@ -12,7 +12,7 @@ import { StoreQuery } from '../../types/api';
 
 const PRIVACY_POLICY_URL = 'https://habiti.app/privacy-policy';
 const SUPPORT_URL = 'https://habiti.app/support';
-const ACCEPTABLE_USE_URL = 'https://habiti.app/acceptable-use-policy';
+const ACCEPTABLE_USE_URL = 'https://habiti.app/acceptable-use';
 
 interface StoreMenuProps {
 	store: StoreQuery['currentStore'];
@@ -32,7 +32,6 @@ const StoreMenu: React.FC<StoreMenuProps> = ({ store }) => {
 
 	return (
 		<View>
-			<Spacer y={16} />
 			<StoreMenuRow
 				title='Current store'
 				onPress={() => modalRef.current?.present()}
@@ -46,26 +45,29 @@ const StoreMenu: React.FC<StoreMenuProps> = ({ store }) => {
 			<StoreMenuRow title='Appearance' onPress={handleNavigate('Appearance')} />
 			<Separator style={{ marginHorizontal: 16, marginVertical: 8 }} />
 			<StoreMenuRow
-				title='Privacy Policy'
+				title='Privacy'
 				onPress={() => {
 					Linking.openURL(PRIVACY_POLICY_URL);
 				}}
+				icon='arrow-up-right'
 			/>
 			<StoreMenuRow
 				title='Support'
 				onPress={() => {
 					Linking.openURL(SUPPORT_URL);
 				}}
+				icon='arrow-up-right'
 			/>
 			<StoreMenuRow
 				title='Acceptable Use'
 				onPress={() => {
 					Linking.openURL(ACCEPTABLE_USE_URL);
 				}}
+				icon='arrow-up-right'
 			/>
 			<Separator style={{ marginHorizontal: 16, marginVertical: 8 }} />
 			<StoreMenuRow
-				title='Log Out'
+				title='Log out'
 				onPress={logOut}
 				icon='log-out'
 				destructive

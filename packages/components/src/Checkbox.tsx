@@ -17,7 +17,7 @@ const Checkbox: React.FC<CheckBoxProps> = ({ active, onPress }) => {
 				style={[
 					styles.square,
 					{
-						borderColor: !active ? theme.icon.default.color : theme.text.primary
+						borderColor: active ? theme.text.primary : theme.border.color
 					}
 				]}
 			>
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
 		height: 20,
 		width: 20,
 		borderRadius: 4,
-		borderWidth: 1.5,
+		borderWidth: 2,
 		overflow: 'hidden'
 	},
 	check: {

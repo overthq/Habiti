@@ -54,24 +54,6 @@ const CreateStoreForm: React.FC = () => {
 			<Spacer y={16} />
 			<FormInput
 				control={methods.control}
-				label='Twitter username'
-				name='twitter'
-				placeholder='@nike'
-				autoCapitalize='none'
-				autoCorrect={false}
-			/>
-			<Spacer y={16} />
-			<FormInput
-				control={methods.control}
-				label='Instagram username'
-				name='instagram'
-				placeholder='@nike'
-				autoCapitalize='none'
-				autoCorrect={false}
-			/>
-			<Spacer y={16} />
-			<FormInput
-				control={methods.control}
 				label='Website'
 				name='website'
 				placeholder='https://nike.com'

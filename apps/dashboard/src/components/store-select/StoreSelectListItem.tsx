@@ -1,6 +1,6 @@
-import { Typography, useTheme } from '@habiti/components';
 import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Typography, useTheme } from '@habiti/components';
+import { Pressable, View, StyleSheet } from 'react-native';
 
 interface StoresListItemProps {
 	text: string;
@@ -23,16 +23,33 @@ const StoreSelectListItem: React.FC<StoresListItemProps> = ({
 				{ borderColor: selected ? theme.text.primary : theme.border.color }
 			]}
 		>
-			<Typography weight={selected ? 'medium' : undefined}>{text}</Typography>
+			<View
+				style={{
+					justifyContent: 'center',
+					alignItems: 'center',
+					width: 80,
+					height: 80,
+					borderWidth: 2,
+					borderRadius: 50,
+					borderColor: selected ? theme.text.primary : theme.border.color,
+					marginBottom: 4
+				}}
+			>
+				<Typography size='xxlarge'>{text[0]}</Typography>
+			</View>
+			<Typography
+				weight={selected ? 'medium' : undefined}
+				style={{ textAlign: 'center' }}
+			>
+				{text}
+			</Typography>
 		</Pressable>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		borderWidth: 1,
 		padding: 12,
-		borderRadius: 4,
 		marginBottom: 8
 	}
 });

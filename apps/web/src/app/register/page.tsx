@@ -27,14 +27,6 @@ const registerSchema = z.object({
 const RegisterPage = () => {
 	const router = useRouter();
 
-	const REGISTER_MUTATION = gql`
-		mutation Register($input: RegisterInput!) {
-			register(input: $input) {
-				id
-			}
-		}
-	`;
-
 	const [, register] = useMutation(REGISTER_MUTATION);
 
 	const form = useForm({
@@ -124,5 +116,13 @@ const RegisterPage = () => {
 		</div>
 	);
 };
+
+const REGISTER_MUTATION = gql`
+	mutation Register($input: RegisterInput!) {
+		register(input: $input) {
+			id
+		}
+	}
+`;
 
 export default RegisterPage;

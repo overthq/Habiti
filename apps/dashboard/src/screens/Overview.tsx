@@ -10,7 +10,7 @@ const Overview: React.FC = () => {
 
 	return (
 		<Screen style={{ paddingTop: top }}>
-			<ScreenHeader title='Overview' hasBottomBorder />
+			<ScreenHeader title='Overview' />
 			<ScrollableScreen>
 				<ManagePayouts />
 				<LowStockProducts />
