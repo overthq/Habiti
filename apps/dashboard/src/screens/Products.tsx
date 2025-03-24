@@ -1,5 +1,4 @@
 import React from 'react';
-import { View } from 'react-native';
 import { Screen, ScreenHeader } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -17,9 +16,7 @@ const Products: React.FC = () => {
 		<Screen style={{ paddingTop: top }}>
 			<ScreenHeader title='Products' />
 			<ProductsFilter />
-			<View style={{ flex: 1 }}>
-				<ProductList />
-			</View>
+			<ProductList />
 			<FAB onPress={() => navigate('Add Product')} text='New Product' />
 		</Screen>
 	);
