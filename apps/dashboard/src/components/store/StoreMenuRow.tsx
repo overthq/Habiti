@@ -20,7 +20,7 @@ const StoreMenuRow: React.FC<StoreMenuRowProps> = ({
 	const { theme } = useTheme();
 	return (
 		<Row onPress={onPress} style={styles.menuButton}>
-			<Typography variant={destructive ? 'error' : 'primary'} weight='medium'>
+			<Typography variant={destructive ? 'error' : 'primary'}>
 				{title}
 			</Typography>
 			<View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
