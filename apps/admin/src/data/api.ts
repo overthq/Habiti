@@ -45,3 +45,5 @@ export class APIService {
 		return response.data;
 	}
 }
+
+export const api = new APIService();
