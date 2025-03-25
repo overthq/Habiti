@@ -1,10 +1,13 @@
-'use client';
-
-import { MoreHorizontal } from 'lucide-react';
-
-import { useUsersQuery } from '@/data/queries/users';
 import { ColumnDef } from '@tanstack/react-table';
-import { User } from '@/data/services/users';
+import { MoreHorizontal } from 'lucide-react';
+import { useNavigate } from 'react-router';
+
+import { useOrdersQuery } from '@/data/queries/orders';
+import { formatNaira } from '@/utils/format';
+import { Order } from '@/data/services/orders';
+import { Checkbox } from '@/components/ui/checkbox';
+import { DataTable } from '@/components/ui/data-table';
+import { Button } from '@/components/ui/button';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -13,12 +16,8 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { DataTable } from '@/components/ui/data-table';
-import { Checkbox } from '@/components/ui/checkbox';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 
-const columns: ColumnDef<User>[] = [
+const columns: ColumnDef<Order>[] = [
 	{
 		id: 'select',
 		header: ({ table }) => (
@@ -42,24 +41,32 @@ const columns: ColumnDef<User>[] = [
 		enableHiding: false
 	},
 	{
-		accessorKey: 'name',
-		header: 'Name'
+		accessorKey: 'id',
+		header: 'Order ID',
+		cell: ({ row }) => row.getValue('id')
 	},
 	{
-		accessorKey: 'email',
-		header: 'Email'
+		accessorFn: row => row.user.name,
+		header: 'Customer',
+		cell: ({ row }) => row.original.user.name
+	},
+	{
+		accessorKey: 'total',
+		header: 'Total',
+		cell: ({ row }) => formatNaira(row.getValue('total'))
 	},
 	{
 		accessorKey: 'createdAt',
-		header: 'Joined',
+		header: 'Created',
 		cell: ({ row }) => new Date(row.getValue('createdAt')).toLocaleDateString()
 	},
 	{
 		id: 'actions',
 		header: 'Actions',
 		cell: ({ row }) => {
-			const router = useRouter();
-			const user = row.original;
+			// eslint-disable-next-line react-hooks/rules-of-hooks
+			const navigate = useNavigate();
+			const order = row.original;
 
 			return (
 				<DropdownMenu>
@@ -72,13 +79,15 @@ const columns: ColumnDef<User>[] = [
 					<DropdownMenuContent align='end'>
 						<DropdownMenuLabel>Actions</DropdownMenuLabel>
 						<DropdownMenuItem
-							onClick={() => navigator.clipboard.writeText(user.id)}
+							onClick={() => navigator.clipboard.writeText(order.id)}
 						>
-							Copy user ID
+							Copy order ID
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem onClick={() => router.push(`/users/${user.id}`)}>
-							View user
+						<DropdownMenuItem
+							onClick={() => navigate(`/dashboard/order/${order.id}`)}
+						>
+							View order
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
@@ -87,18 +96,22 @@ const columns: ColumnDef<User>[] = [
 	}
 ];
 
-export default function UsersPage() {
-	const { data, isLoading } = useUsersQuery();
+const OrdersPage = () => {
+	const { data, isLoading } = useOrdersQuery();
+
+	if (isLoading) {
+		return <div>Loading...</div>;
+	}
 
 	return (
 		<div className='space-y-6'>
 			<div className='flex justify-between items-center'>
-				<h1 className='text-3xl font-bold'>Users</h1>
+				<h1 className='text-3xl font-bold'>Orders</h1>
 			</div>
 
-			<DataTable columns={columns} data={data?.users ?? []} />
+			<DataTable data={data?.orders ?? []} columns={columns} />
 		</div>
 	);
-}
+};
 
-export const runtime = 'edge';
+export default OrdersPage;

@@ -1,4 +1,6 @@
 import React from 'react';
+import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import {
 	BottomModal,
@@ -8,8 +10,6 @@ import {
 	Spacer,
 	Typography
 } from '@habiti/components';
-import { View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useManagedStoresQuery } from '../../types/api';
 

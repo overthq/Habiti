@@ -5,7 +5,7 @@ export class APIService {
 
 	constructor() {
 		this.api = axios.create({
-			baseURL: process.env.NEXT_PUBLIC_API_URL,
+			baseURL: import.meta.env.BASE_URL,
 			headers: {
 				'Content-Type': 'application/json'
 			}

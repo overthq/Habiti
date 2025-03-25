@@ -150,6 +150,9 @@ const dark = {
 	statusBar: 'light',
 	row: {
 		focus: palette.neutral.n900
+	},
+	modal: {
+		background: palette.neutral.n900
 	}
 } as const;
 
@@ -158,14 +161,14 @@ const light = {
 		primary: palette.neutral.n700,
 		secondary: palette.neutral.n600,
 		tertiary: palette.neutral.n100,
-		disabled: palette.neutral.n50,
+		disabled: palette.neutral.n500,
 		error: palette.red.r700,
 		label: palette.neutral.n600,
 		invert: palette.neutral.n50
 	},
 	button: {
 		primary: {
-			background: palette.neutral.n100,
+			background: palette.neutral.n800,
 			text: palette.neutral.n50
 		},
 		secondary: {
@@ -236,6 +239,9 @@ const light = {
 	statusBar: 'dark',
 	row: {
 		focus: palette.neutral.n200
+	},
+	modal: {
+		background: palette.neutral.n200
 	}
 } as const;
 

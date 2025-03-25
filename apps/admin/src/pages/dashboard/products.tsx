@@ -1,9 +1,4 @@
-'use client';
-
-import { useStoresQuery } from '@/data/queries/stores';
-import { ColumnDef } from '@tanstack/react-table';
-import { Store } from '@/data/services/stores';
-import { DataTable } from '@/components/ui/data-table';
+import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
 	DropdownMenu,
@@ -13,11 +8,15 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { DataTable } from '@/components/ui/data-table';
+import { useProductsQuery } from '@/data/queries/products';
+import { Product } from '@/data/services/products';
+import { formatNaira } from '@/utils/format';
+import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
+import { useNavigate } from 'react-router';
 
-const columns: ColumnDef<Store>[] = [
+const columns: ColumnDef<Product>[] = [
 	{
 		id: 'select',
 		header: ({ table }) => (
@@ -45,11 +44,25 @@ const columns: ColumnDef<Store>[] = [
 		header: 'Name'
 	},
 	{
+		accessorKey: 'unitPrice',
+		header: 'Price',
+		cell: ({ row }) => formatNaira(row.getValue('unitPrice'))
+	},
+	{
+		accessorKey: 'quantity',
+		header: 'Stock'
+	},
+	{
+		accessorKey: 'storeId',
+		header: 'Store'
+	},
+	{
 		id: 'actions',
 		header: 'Actions',
 		cell: ({ row }) => {
-			const router = useRouter();
-			const store = row.original;
+			// eslint-disable-next-line react-hooks/rules-of-hooks
+			const navigate = useNavigate();
+			const product = row.original;
 
 			return (
 				<DropdownMenu>
@@ -62,15 +75,15 @@ const columns: ColumnDef<Store>[] = [
 					<DropdownMenuContent align='end'>
 						<DropdownMenuLabel>Actions</DropdownMenuLabel>
 						<DropdownMenuItem
-							onClick={() => navigator.clipboard.writeText(store.id)}
+							onClick={() => navigator.clipboard.writeText(product.id)}
 						>
-							Copy store ID
+							Copy product ID
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem
-							onClick={() => router.push(`/stores/${store.id}`)}
+							onClick={() => navigate(`/dashboard/product/${product.id}`)}
 						>
-							View store
+							View product
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
@@ -79,18 +92,22 @@ const columns: ColumnDef<Store>[] = [
 	}
 ];
 
-export default function StoresPage() {
-	const { data, isLoading } = useStoresQuery();
+const ProductsPage = () => {
+	const { data, isLoading } = useProductsQuery();
+
+	if (isLoading) {
+		return <div>Loading...</div>;
+	}
 
 	return (
 		<div className='space-y-6'>
 			<div className='flex justify-between items-center'>
-				<h1 className='text-3xl font-bold'>Stores</h1>
+				<h1 className='text-3xl font-bold'>Products</h1>
 			</div>
 
-			<DataTable columns={columns} data={data?.stores ?? []} />
+			<DataTable columns={columns} data={data?.products ?? []} />
 		</div>
 	);
-}
+};
 
-export const runtime = 'edge';
+export default ProductsPage;
