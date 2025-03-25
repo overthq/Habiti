@@ -20,7 +20,14 @@ import {
 	GetUserResponse,
 	UpdateUserBody,
 	UpdateStoreBody,
-	Store
+	Store,
+	GetStoreManagersResponse,
+	GetStorePayoutsResponse,
+	GetStoreOrdersResponse,
+	GetStoreProductsResponse,
+	GetStoreResponse,
+	GetStoresResponse,
+	StoreFilters
 } from './types';
 
 export const login = (body: LoginBody) => {
@@ -91,4 +98,28 @@ export const updateStore = (id: string, body: UpdateStoreBody) => {
 
 export const deleteStore = (id: string) => {
 	return api.delete<void>(`/stores/${id}`);
+};
+
+export const getStores = (params?: StoreFilters) => {
+	return api.get<GetStoresResponse>('/stores', params);
+};
+
+export const getStore = (id: string) => {
+	return api.get<GetStoreResponse>(`/stores/${id}`);
+};
+
+export const getStoreProducts = (id: string, params?: StoreFilters) => {
+	return api.get<GetStoreProductsResponse>(`/stores/${id}/products`, params);
+};
+
+export const getStoreOrders = (id: string, params?: StoreFilters) => {
+	return api.get<GetStoreOrdersResponse>(`/stores/${id}/orders`, params);
+};
+
+export const getStorePayouts = (id: string, params?: StoreFilters) => {
+	return api.get<GetStorePayoutsResponse>(`/stores/${id}/payouts`, params);
+};
+
+export const getStoreManagers = (id: string, params?: StoreFilters) => {
+	return api.get<GetStoreManagersResponse>(`/stores/${id}/managers`, params);
 };

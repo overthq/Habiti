@@ -8,9 +8,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { useUpdateProductMutation } from '@/data/mutations/products';
-import { useProductQuery } from '@/data/queries/products';
-import { UpdateProductBody } from '@/data/services/products';
+import { useUpdateProductMutation } from '@/data/mutations';
+import { useProductQuery } from '@/data/queries';
+import { UpdateProductBody } from '@/data/types';
 
 const ProductPage = () => {
 	const { id } = useParams();

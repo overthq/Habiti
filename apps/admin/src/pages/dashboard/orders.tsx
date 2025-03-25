@@ -2,9 +2,9 @@ import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
 import { useNavigate } from 'react-router';
 
-import { useOrdersQuery } from '@/data/queries/orders';
+import { useOrdersQuery } from '@/data/queries';
+import { Order } from '@/data/types';
 import { formatNaira } from '@/utils/format';
-import { Order } from '@/data/services/orders';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/ui/data-table';
 import { Button } from '@/components/ui/button';

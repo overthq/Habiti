@@ -9,8 +9,8 @@ import {
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { DataTable } from '@/components/ui/data-table';
-import { useProductsQuery } from '@/data/queries/products';
-import { Product } from '@/data/services/products';
+import { useProductsQuery } from '@/data/queries';
+import { Product } from '@/data/types';
 import { formatNaira } from '@/utils/format';
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';

@@ -20,9 +20,9 @@ import {
 	TableHeader,
 	TableRow
 } from '@/components/ui/table';
-import { useUpdateOrderMutation } from '@/data/mutations/orders';
-import { useOrderQuery } from '@/data/queries/orders';
-import { OrderStatus } from '@/data/services/orders';
+import { useUpdateOrderMutation } from '@/data/mutations';
+import { useOrderQuery } from '@/data/queries';
+import { OrderStatus } from '@/data/types';
 import { formatNaira } from '@/utils/format';
 
 const statusVariants = {
