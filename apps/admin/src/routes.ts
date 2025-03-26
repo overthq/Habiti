@@ -14,7 +14,8 @@ export default [
 		route('products', './pages/dashboard/products.tsx'),
 		route('products/:id', './pages/dashboard/product.tsx'),
 		route('users', './pages/dashboard/users.tsx'),
-		route('users/:id', './pages/dashboard/user.tsx')
+		route('users/:id', './pages/dashboard/user.tsx'),
+		route('home', './pages/dashboard/home.tsx')
 	]),
 
 	// * matches all URLs, the ? makes it optional so it will match / as well

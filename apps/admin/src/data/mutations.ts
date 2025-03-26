@@ -19,10 +19,17 @@ import {
 	updateStore,
 	deleteStore
 } from './requests';
+import { useNavigate } from 'react-router';
 
 export const useLoginMutation = () => {
+	const navigate = useNavigate();
+
 	return useMutation({
-		mutationFn: (body: LoginBody) => login(body)
+		mutationFn: (body: LoginBody) => login(body),
+		onSuccess: data => {
+			localStorage.setItem('accessToken', data.accessToken);
+			navigate('/stores');
+		}
 	});
 };
 
