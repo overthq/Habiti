@@ -1,6 +1,5 @@
 import { Store, ShoppingCart, Users, Home, Package } from 'lucide-react';
-import { NavLink } from 'react-router';
-import { usePathname } from 'next/navigation';
+import { NavLink, useLocation } from 'react-router';
 
 import {
 	Sidebar,
@@ -43,7 +42,7 @@ const items = [
 ];
 
 export function AppSidebar() {
-	const pathname = usePathname();
+	const { pathname } = useLocation();
 
 	return (
 		<Sidebar>
