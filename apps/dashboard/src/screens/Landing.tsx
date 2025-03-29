@@ -25,7 +25,7 @@ const Landing = () => {
 						weight='bold'
 						style={{ textAlign: 'center' }}
 					>
-						Habiti
+						Habiti Dashboard
 					</Typography>
 				</View>
 				<View style={{ flex: 1, justifyContent: 'flex-end' }}>
