@@ -31,6 +31,10 @@
 		"production": {
 			"android": {
 				"track": "alpha"
+			},
+			"ios": {
+				"ascAppId": "6743947238",
+				"companyName": "HABITI FZE"
 			}
 		}
 	}
