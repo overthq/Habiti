@@ -18,7 +18,7 @@ const ProfileRow: React.FC<ProfileRowProps> = ({
 	return (
 		<Row style={styles.container} onPress={onPress}>
 			<Typography>{title}</Typography>
-			<Icon name={icon} color={theme.text.secondary} />
+			<Icon name={icon} color={theme.text.secondary} size={20} />
 		</Row>
 	);
 };
