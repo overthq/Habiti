@@ -1,6 +1,3 @@
-// TODO: Spend a significant amount of time building out novel designs
-// based on a green accent color.
-
 export const spacing = {
 	small: 4,
 	regular: 8,
@@ -9,124 +6,133 @@ export const spacing = {
 	xlarge: 32
 };
 
-// https://matthewstrom.com/writing/generating-color-palettes/
-// Potential: https://bottosson.github.io/posts/colorpicker/
+// Maybe in the future:
+// - https://matthewstrom.com/writing/generating-color-palettes/
+// - Potential: https://bottosson.github.io/posts/colorpicker/
+//
+// For now, Tailwind CSS colors work well: https://ui.shadcn.com/colors
 
 export const palette = {
 	neutral: {
-		n1: '#FFFFFF',
-		n10: '#E0E3E6',
-		n20: '#BFC8D1',
-		n30: '#9FADBD',
-		n40: '#8193A6',
-		n50: '#67798C',
-		n60: '#506070',
-		n70: '#3C4752',
-		n80: '#292F35',
-		n90: '#141619',
-		n100: '#000000'
+		n50: 'hsl(0 0% 98%)',
+		n100: 'hsl(0 0% 96.1%)',
+		n200: 'hsl( 0 0% 89.8%)',
+		n300: 'hsl(0 0% 83.1%)',
+		n400: 'hsl(0 0% 63.9%)',
+		n500: 'hsl(0 0% 45.1%)',
+		n600: 'hsl(0 0% 32.2%)',
+		n700: 'hsl(0 0% 25.1%)',
+		n800: 'hsl(0 0% 14.9%)',
+		n900: 'hsl(0 0% 9%)',
+		n950: 'hsl(0 0% 3.9%)'
 	},
 	red: {
-		r10: '#F9D1D6',
-		r20: '#F1B5B7',
-		r30: '#F7838C',
-		r40: '#FA405E',
-		r50: '#DD0042',
-		r60: '#AE0F33',
-		r70: '#7E1A28',
-		r80: '#4E1B1E',
-		r90: '#221111'
+		r50: 'hsl(0 85.7% 97.3%)',
+		r100: 'hsl(0 93.3% 94.1%)',
+		r200: 'hsl(0 96.3% 89.4%)',
+		r300: 'hsl(0 93.5% 81.8%)',
+		r400: 'hsl(0 90.6% 70.8%)',
+		r500: 'hsl(0 84.2% 60.2%)',
+		r600: 'hsl(0 72.2% 50.6%)',
+		r700: 'hsl(0 73.7% 41.8%)',
+		r800: 'hsl(0 70% 35.3%)',
+		r900: 'hsl(0 62.8% 30.6%)',
+		r950: 'hsl(0 74.7% 15.5%)'
 	},
 	yellow: {
-		y10: '#F7E9A3',
-		y20: '#EBBE83',
-		y30: '#E09C34',
-		y40: '#C3810A',
-		y50: '#A26900',
-		y60: '#815304',
-		y70: '#5F3E0B',
-		y80: '#3E290F',
-		y90: '#1D150B'
+		y50: 'hsl(54.5 91.7% 95.3%)',
+		y100: 'hsl(54.9 96.7% 88%)',
+		y200: 'hsl(52.8 98.3% 76.9%)',
+		y300: 'hsl(50.4 97.8% 63.5%)',
+		y400: 'hsl(47.9 95.8% 53.1%)',
+		y500: 'hsl(45.4 93.4% 47.5%)',
+		y600: 'hsl(40.6 96.1% 40.4%)',
+		y700: 'hsl(35.5 91.7% 32.9%)',
+		y800: 'hsl(28.4 72.5% 25.7%)',
+		y900: 'hsl(26 83.3% 14.1%)',
+		y950: 'hsl(26 83.3% 14.1%)'
 	},
 	green: {
-		g10: '#D8E8D4',
-		g20: '#9ADB90',
-		g30: '#67C55B',
-		g40: '#39AC30',
-		g50: '#009100',
-		g60: '#227021',
-		g70: '#255125',
-		g80: '#1C351C',
-		g90: '#101910'
+		g50: 'hsl(138.5 76.5% 96.7%)',
+		g100: 'hsl(140.6 84.2% 92.5%)',
+		g200: 'hsl(141 78.9% 85.1%)',
+		g300: 'hsl(141.7 76.6% 73.1%)',
+		g400: 'hsl(141.9 69.2% 58%)',
+		g500: 'hsl(142.1 70.6% 45.3%)',
+		g600: 'hsl(142.1 76.2% 36.3%)',
+		g700: 'hsl(142.4 71.8% 29.2%)',
+		g800: 'hsl(142.8 64.2% 24.1%)',
+		g900: 'hsl(143.8 61.2% 20.2%)',
+		g950: 'hsl(144.9 80.4% 10%)'
 	}
 };
 
 const dark = {
 	text: {
-		primary: palette.neutral.n1,
-		secondary: palette.neutral.n20,
-		tertiary: palette.neutral.n50,
-		disabled: palette.neutral.n20,
-		error: palette.red.r60,
-		label: palette.neutral.n10,
-		invert: palette.neutral.n100
+		primary: palette.neutral.n50,
+		secondary: palette.neutral.n200,
+		tertiary: palette.neutral.n500,
+		disabled: palette.neutral.n200,
+		error: palette.red.r600,
+		label: palette.neutral.n100,
+		invert: palette.neutral.n950
 	},
 	button: {
 		primary: {
-			background: palette.neutral.n1,
-			text: palette.neutral.n100
+			background: palette.neutral.n50,
+			text: palette.neutral.n900
 		},
 		secondary: {
 			background: palette.neutral.n50,
-			text: palette.neutral.n10
+			text: palette.neutral.n100
 		},
 		tertiary: {
 			background: '',
 			text: ''
 		},
 		disabled: {
-			background: palette.neutral.n70,
-			text: palette.neutral.n20
+			background: palette.neutral.n700,
+			text: palette.neutral.n200
 		},
 		destructive: {
-			background: palette.red.r20,
-			text: palette.red.r80
+			background: palette.red.r200,
+			text: palette.red.r800
 		}
 	},
 	screen: {
-		background: palette.neutral.n100
+		background: palette.neutral.n950
 	},
 	input: {
-		placeholder: palette.neutral.n30,
-		label: palette.neutral.n10,
-		background: palette.neutral.n90,
-		text: palette.neutral.n1
+		placeholder: palette.neutral.n300,
+		label: palette.neutral.n100,
+		background: palette.neutral.n900,
+		text: palette.neutral.n50
 	},
 	icon: {
-		default: { color: palette.neutral.n1 }
+		default: { color: palette.neutral.n50 }
 	},
 	border: {
-		color: palette.neutral.n80
+		color: palette.neutral.n800
 	},
 	image: {
-		placeholder: palette.neutral.n90
+		placeholder: palette.neutral.n900
 	},
 	badge: {
 		success: {
-			backgroundColor: palette.green.g10,
-			color: palette.green.g70
+			backgroundColor: palette.green.g100,
+			color: palette.green.g700
 		},
 		danger: {
-			backgroundColor: palette.red.r10,
-			color: palette.red.r70
+			backgroundColor: palette.red.r100,
+			color: palette.red.r700
 		},
 		warning: {
-			backgroundColor: palette.yellow.y10,
-			color: palette.yellow.y70
+			backgroundColor: palette.yellow.y100,
+			color: palette.yellow.y700
 		},
 		neutral: {
-			backgroundColor: palette.neutral.n10,
-			color: palette.neutral.n70
+			backgroundColor: palette.neutral.n100,
+			color: palette.neutral.n700
 		}
 	},
 	navigation: {
@@ -143,76 +149,79 @@ const dark = {
 	},
 	statusBar: 'light',
 	row: {
-		focus: palette.neutral.n90
+		focus: palette.neutral.n900
+	},
+	modal: {
+		background: palette.neutral.n900
 	}
 } as const;
 
 const light = {
 	text: {
-		primary: palette.neutral.n100,
-		secondary: palette.neutral.n60,
-		tertiary: palette.neutral.n10,
-		disabled: palette.neutral.n50,
-		error: palette.red.r50,
-		label: palette.neutral.n60,
-		invert: palette.neutral.n1
+		primary: palette.neutral.n700,
+		secondary: palette.neutral.n600,
+		tertiary: palette.neutral.n100,
+		disabled: palette.neutral.n500,
+		error: palette.red.r700,
+		label: palette.neutral.n600,
+		invert: palette.neutral.n50
 	},
 	button: {
 		primary: {
-			background: palette.neutral.n100,
-			text: palette.neutral.n1
+			background: palette.neutral.n800,
+			text: palette.neutral.n50
 		},
 		secondary: {
-			background: palette.neutral.n50,
-			text: palette.neutral.n10
+			background: palette.neutral.n500,
+			text: palette.neutral.n100
 		},
 		tertiary: {
 			background: '',
 			text: ''
 		},
 		disabled: {
-			background: palette.neutral.n20,
-			text: palette.neutral.n70
+			background: palette.neutral.n200,
+			text: palette.neutral.n700
 		},
 		destructive: {
-			background: palette.red.r10,
-			text: palette.red.r60
+			background: palette.red.r200,
+			text: palette.red.r700
 		}
 	},
 	screen: {
-		background: palette.neutral.n1
+		background: palette.neutral.n100
 	},
 	input: {
-		placeholder: palette.neutral.n40,
-		label: palette.neutral.n60,
-		background: palette.neutral.n10,
-		text: palette.neutral.n100
+		placeholder: palette.neutral.n400,
+		label: palette.neutral.n600,
+		background: palette.neutral.n200,
+		text: palette.neutral.n950
 	},
 	icon: {
-		default: { color: palette.neutral.n100 }
+		default: { color: palette.neutral.n950 }
 	},
 	border: {
-		color: palette.neutral.n20
+		color: palette.neutral.n200
 	},
 	image: {
-		placeholder: palette.neutral.n10
+		placeholder: palette.neutral.n400
 	},
 	badge: {
 		success: {
-			backgroundColor: palette.green.g10,
-			color: palette.green.g70
+			backgroundColor: palette.green.g100,
+			color: palette.green.g700
 		},
 		danger: {
-			backgroundColor: palette.red.r10,
-			color: palette.red.r70
+			backgroundColor: palette.red.r100,
+			color: palette.red.r700
 		},
 		warning: {
-			backgroundColor: palette.yellow.y10,
-			color: palette.yellow.y70
+			backgroundColor: palette.yellow.y100,
+			color: palette.yellow.y700
 		},
 		neutral: {
-			backgroundColor: palette.neutral.n10,
-			color: palette.neutral.n70
+			backgroundColor: palette.neutral.n100,
+			color: palette.neutral.n700
 		}
 	},
 	navigation: {
@@ -229,7 +238,10 @@ const light = {
 	},
 	statusBar: 'dark',
 	row: {
-		focus: palette.neutral.n10
+		focus: palette.neutral.n200
+	},
+	modal: {
+		background: palette.neutral.n200
 	}
 } as const;
 

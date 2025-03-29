@@ -30,7 +30,7 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 					: {}
 			]}
 		>
-			<Typography size='xxxlarge' weight='bold'>
+			<Typography size='xxlarge' weight='bold'>
 				{title}
 			</Typography>
 			{search && (
@@ -44,16 +44,6 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 					</Typography>
 				</Pressable>
 			)}
-			{/* <Spacer y={12} /> */}
-			{/* {hasBottomBorder && (
-				<View
-					style={{
-						height: 0.5,
-						backgroundColor: theme.border.color,
-						marginRight: -16
-					}}
-				/>
-			)} */}
 		</View>
 	);
 };

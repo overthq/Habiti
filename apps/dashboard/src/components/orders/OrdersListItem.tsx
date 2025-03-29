@@ -1,5 +1,5 @@
 import { formatNaira } from '@habiti/common';
-import { useTheme, Typography, Row } from '@habiti/components';
+import { Typography, Row } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
@@ -12,13 +12,8 @@ interface OrdersListItemProps {
 }
 
 const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
-	const { theme } = useTheme();
-
 	return (
-		<Row
-			onPress={onPress}
-			style={[styles.container, { borderBottomColor: theme.border.color }]}
-		>
+		<Row onPress={onPress} style={styles.container}>
 			<View>
 				<Typography>{order.user.name}</Typography>
 				<Typography size='small' variant='secondary' style={styles.date}>
@@ -37,8 +32,8 @@ const styles = StyleSheet.create({
 		paddingRight: 8,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems: 'center',
-		borderBottomWidth: 0.5
+		alignItems: 'center'
+		// borderBottomWidth: 0.5
 	},
 	date: {
 		marginTop: 2

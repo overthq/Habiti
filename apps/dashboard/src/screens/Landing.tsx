@@ -16,7 +16,7 @@ const Landing = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	return (
-		<Screen style={{ padding: 16, justifyContent: 'center' }}>
+		<Screen style={{ paddingHorizontal: 16, justifyContent: 'center' }}>
 			<SafeAreaView style={{ flex: 1 }}>
 				<View style={{ flex: 1 }} />
 				<View style={{ flex: 1 }}>
@@ -30,7 +30,7 @@ const Landing = () => {
 				</View>
 				<View style={{ flex: 1, justifyContent: 'flex-end' }}>
 					<Button text='Create account' onPress={() => navigate('Register')} />
-					<Spacer y={8} />
+					<Spacer y={12} />
 					<TextButton
 						weight='medium'
 						style={{ alignSelf: 'center' }}

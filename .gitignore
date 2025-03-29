@@ -8,3 +8,4 @@ remix/
 .DS_Store
 google-services.json
 .react-router
+.cursor

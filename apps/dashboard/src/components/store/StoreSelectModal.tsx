@@ -1,8 +1,15 @@
 import React from 'react';
-import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
-import { BottomModal, Button, Spacer, Typography } from '@habiti/components';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
+import {
+	BottomModal,
+	Button,
+	CustomImage,
+	Row,
+	Spacer,
+	Typography
+} from '@habiti/components';
 
 import { useManagedStoresQuery } from '../../types/api';
 
@@ -16,18 +23,27 @@ const StoreSelectModal: React.FC<StoreSelectModalProps> = ({ modalRef }) => {
 
 	return (
 		<BottomModal modalRef={modalRef} enableDynamicSizing>
-			<BottomSheetView style={{ paddingBottom: bottom, paddingHorizontal: 16 }}>
-				<Typography size='xlarge' weight='bold'>
+			<BottomSheetView style={{ paddingBottom: bottom }}>
+				<Typography size='xlarge' weight='bold' style={{ marginLeft: 16 }}>
 					Select store
 				</Typography>
 				<Spacer y={8} />
 				{data?.currentUser.managed.map(({ store }) => (
-					<View key={store.id} style={{ paddingVertical: 8 }}>
+					<Row key={store.id} style={{ alignItems: 'center' }}>
+						<CustomImage
+							uri={store.image?.path}
+							style={{ marginRight: 8 }}
+							height={40}
+							width={40}
+							circle
+						/>
 						<Typography>{store.name}</Typography>
-					</View>
+					</Row>
 				))}
 				<Spacer y={16} />
-				<Button onPress={() => {}} text='Create new store' />
+				<View style={{ paddingHorizontal: 16 }}>
+					<Button onPress={() => {}} text='Create new store' />
+				</View>
 			</BottomSheetView>
 		</BottomModal>
 	);

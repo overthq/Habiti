@@ -1,3 +1,5 @@
+import React from 'react';
+import { View, RefreshControl } from 'react-native';
 import { useTheme } from '@habiti/components';
 import {
 	useNavigation,
@@ -6,8 +8,6 @@ import {
 	RouteProp
 } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import React from 'react';
-import { RefreshControl } from 'react-native';
 
 import ProductsListItem from './ProductsListItem';
 import { ProductsQuery, useProductsQuery } from '../../types/api';
@@ -43,19 +43,21 @@ const ProductList: React.FC = () => {
 	}, []);
 
 	return (
-		<FlashList
-			keyExtractor={i => i.node.id}
-			data={data?.currentStore.products.edges}
-			renderItem={renderProduct}
-			estimatedItemSize={60}
-			refreshControl={
-				<RefreshControl
-					refreshing={refreshing}
-					onRefresh={refresh}
-					tintColor={theme.text.secondary}
-				/>
-			}
-		/>
+		<View style={{ flex: 1 }}>
+			<FlashList
+				keyExtractor={i => i.node.id}
+				data={data?.currentStore.products.edges}
+				renderItem={renderProduct}
+				estimatedItemSize={60}
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={refresh}
+						tintColor={theme.text.secondary}
+					/>
+				}
+			/>
+		</View>
 	);
 };
 

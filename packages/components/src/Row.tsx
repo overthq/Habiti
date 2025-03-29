@@ -17,7 +17,8 @@ const Row: React.FC<RowProps> = ({ style, children, ...props }) => {
 				{
 					backgroundColor: pressed ? theme.row.focus : 'transparent',
 					paddingHorizontal: 16,
-					paddingVertical: 6
+					paddingVertical: 6,
+					flexDirection: 'row'
 				},
 				style
 			]}

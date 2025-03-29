@@ -97,6 +97,7 @@ export type CardAuthorization = {
 export type Cart = {
 	__typename?: 'Cart';
 	createdAt: Scalars['String']['output'];
+	fees: Fees;
 	id: Scalars['ID']['output'];
 	products: Array<CartProduct>;
 	store: Store;
@@ -200,6 +201,13 @@ export type EditStoreInput = {
 	website?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type Fees = {
+	__typename?: 'Fees';
+	service: Scalars['Int']['output'];
+	total: Scalars['Int']['output'];
+	transaction: Scalars['Int']['output'];
+};
+
 export type Filter = {
 	__typename?: 'Filter';
 	first?: Maybe<Scalars['Int']['output']>;
@@ -262,6 +270,7 @@ export type Mutation = {
 	unfollowStore: StoreFollower;
 	updateCartProduct: CartProduct;
 	updateOrder: Order;
+	updateOrderStatus: Order;
 	updateProductCategories: Product;
 	updateProductImages: Product;
 	verify: VerifyResponse;
@@ -398,6 +407,11 @@ export type MutationUpdateCartProductArgs = {
 export type MutationUpdateOrderArgs = {
 	input: UpdateOrderInput;
 	orderId: Scalars['ID']['input'];
+};
+
+export type MutationUpdateOrderStatusArgs = {
+	orderId: Scalars['ID']['input'];
+	status: OrderStatus;
 };
 
 export type MutationUpdateProductCategoriesArgs = {
@@ -606,6 +620,7 @@ export type Query = {
 	orders: OrderConnection;
 	product: Product;
 	products: ProductConnection;
+	search?: Maybe<SearchResults>;
 	store: Store;
 	storeProductCategory?: Maybe<StoreProductCategory>;
 	stores: Array<Store>;
@@ -647,6 +662,10 @@ export type QueryProductsArgs = {
 	orderBy?: InputMaybe<Array<ProductOrderByInput>>;
 };
 
+export type QuerySearchArgs = {
+	searchTerm: Scalars['String']['input'];
+};
+
 export type QueryStoreArgs = {
 	id: Scalars['ID']['input'];
 };
@@ -667,6 +686,12 @@ export type RegisterInput = {
 	email: Scalars['String']['input'];
 	name: Scalars['String']['input'];
 	password: Scalars['String']['input'];
+};
+
+export type SearchResults = {
+	__typename?: 'SearchResults';
+	products: Array<Product>;
+	stores: Array<Store>;
 };
 
 export enum Sort {
@@ -913,7 +938,12 @@ export type ManagedStoresQuery = {
 			__typename?: 'StoreManager';
 			storeId: string;
 			managerId: string;
-			store: { __typename?: 'Store'; id: string; name: string };
+			store: {
+				__typename?: 'Store';
+				id: string;
+				name: string;
+				image?: { __typename?: 'Image'; id: string; path: string } | null;
+			};
 		}>;
 	};
 };
@@ -1423,6 +1453,10 @@ export const ManagedStoresDocument = gql`
 				store {
 					id
 					name
+					image {
+						id
+						path
+					}
 				}
 			}
 		}

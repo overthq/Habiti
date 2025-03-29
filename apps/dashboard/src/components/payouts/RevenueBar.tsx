@@ -1,7 +1,7 @@
-import { useTheme } from '@habiti/components';
-import { palette } from '@habiti/components/src/styles/theme';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import { useTheme } from '@habiti/components';
+import { palette } from '@habiti/components/src/styles/theme';
 
 // Displays a breakdown of unrealized and realized revenue, as well as total amount available for payout.
 // Total revenue = unrealized + realized
@@ -47,13 +47,13 @@ const RevenueBar: React.FC<RevenueBarProps> = ({
 			<View
 				style={[
 					styles.realized,
-					{ backgroundColor: palette.yellow.y40, width: realizedPercent }
+					{ backgroundColor: palette.yellow.y400, width: realizedPercent }
 				]}
 			>
 				<View
 					style={[
 						styles.available,
-						{ backgroundColor: palette.green.g40, width: availablePercent }
+						{ backgroundColor: palette.green.g400, width: availablePercent }
 					]}
 				/>
 			</View>
@@ -71,11 +71,9 @@ const styles = StyleSheet.create({
 		marginBottom: 8
 	},
 	realized: {
-		backgroundColor: 'yellow',
 		flexDirection: 'row'
 	},
 	available: {
-		backgroundColor: 'green',
 		height: '100%'
 	}
 });

@@ -81,18 +81,21 @@ const Profile: React.FC = () => {
 					onPress={() => {
 						Linking.openURL(PRIVACY_POLICY_URL);
 					}}
+					icon='arrow-up-right'
 				/>
 				<ProfileRow
 					title='Support'
 					onPress={() => {
 						Linking.openURL(SUPPORT_URL);
 					}}
+					icon='arrow-up-right'
 				/>
 				<ProfileRow
 					title='Acceptable Use'
 					onPress={() => {
 						Linking.openURL(ACCEPTABLE_USE_URL);
 					}}
+					icon='arrow-up-right'
 				/>
 			</View>
 			<Spacer y={24} />

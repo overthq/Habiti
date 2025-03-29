@@ -1,8 +1,5 @@
-'use client';
-
 import { Store, ShoppingCart, Users, Home, Package } from 'lucide-react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { NavLink, useLocation } from 'react-router';
 
 import {
 	Sidebar,
@@ -19,7 +16,7 @@ import {
 const items = [
 	{
 		title: 'Home',
-		url: '/',
+		url: '/home',
 		icon: Home
 	},
 	{
@@ -45,7 +42,7 @@ const items = [
 ];
 
 export function AppSidebar() {
-	const pathname = usePathname();
+	const { pathname } = useLocation();
 
 	return (
 		<Sidebar>
@@ -57,10 +54,10 @@ export function AppSidebar() {
 							{items.map(item => (
 								<SidebarMenuItem key={item.title}>
 									<SidebarMenuButton isActive={pathname === item.url} asChild>
-										<Link href={item.url}>
+										<NavLink to={item.url}>
 											<item.icon />
 											<span>{item.title}</span>
-										</Link>
+										</NavLink>
 									</SidebarMenuButton>
 								</SidebarMenuItem>
 							))}
@@ -72,5 +69,3 @@ export function AppSidebar() {
 		</Sidebar>
 	);
 }
-
-export const runtime = 'edge';

@@ -1,5 +1,3 @@
-'use client';
-
 import * as React from 'react';
 import {
 	ColumnDef,
@@ -21,7 +19,7 @@ import {
 	DropdownMenuContent,
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Input } from './input';
+// import { Input } from './input';
 import {
 	Table,
 	TableBody,

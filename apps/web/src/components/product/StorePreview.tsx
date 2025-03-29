@@ -1,3 +1,5 @@
+'use client';
+
 import { gql, useMutation } from 'urql';
 import { Button } from '@/components/ui/button';
 import { Check, Plus } from 'lucide-react';

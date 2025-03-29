@@ -8,7 +8,7 @@ const size = {
 	xsmall: normalizeFontSize(12),
 	small: normalizeFontSize(14),
 	regular: normalizeFontSize(
-		Platform.select({ ios: 15, android: 16, default: 15 })
+		Platform.select({ ios: 16, android: 16, default: 15 })
 	),
 	large: normalizeFontSize(17),
 	xlarge: normalizeFontSize(20),
