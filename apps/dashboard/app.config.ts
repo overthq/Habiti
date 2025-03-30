@@ -31,12 +31,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 			foregroundImage: './assets/adaptive-icon.png',
 			backgroundColor: '#000000'
 		},
-		softwareKeyboardLayoutMode: 'pan',
-		// FIXME: We should not need this in SDK 52, but maybe we can remove it after one build works.
-		blockedPermissions: [
-			'android.permission.READ_MEDIA_IMAGES',
-			'android.permission.READ_MEDIA_VIDEO'
-		]
+		softwareKeyboardLayoutMode: 'pan'
 	},
 	web: {
 		favicon: './assets/favicon.png'
