@@ -15,7 +15,7 @@ const Row: React.FC<RowProps> = ({ style, children, ...props }) => {
 		<Pressable
 			style={({ pressed }) => [
 				{
-					backgroundColor: pressed ? theme.row.focus : 'transparent',
+					backgroundColor: pressed ? theme.row.focus : theme.screen.background,
 					paddingHorizontal: 16,
 					paddingVertical: 6,
 					flexDirection: 'row'

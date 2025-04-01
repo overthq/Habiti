@@ -31,7 +31,7 @@ const StoreMenuRow: React.FC<StoreMenuRowProps> = ({
 				)}
 				<Icon
 					name={icon}
-					color={destructive ? theme.text.error : '#505050'}
+					color={destructive ? theme.text.error : theme.text.secondary}
 					size={20}
 				/>
 			</View>
