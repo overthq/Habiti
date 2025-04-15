@@ -1,10 +1,11 @@
-import { CustomImage, Typography } from '@habiti/components';
+import { CustomImage, Icon, Typography, useTheme } from '@habiti/components';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Pressable } from 'react-native';
 
 import CategorySelector from './CategorySelector';
 import FollowButton from './FollowButton';
 import { StoreQuery } from '../../types/api';
+import { useNavigation } from '@react-navigation/native';
 
 interface StoreHeaderProps {
 	store: StoreQuery['store'];
@@ -17,19 +18,23 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 	activeCategory,
 	setActiveCategory
 }) => {
+	const { goBack } = useNavigation();
+	const { theme } = useTheme();
+
 	return (
-		<View style={styles.container}>
+		<View
+			style={[styles.container, { backgroundColor: theme.screen.background }]}
+		>
 			<View style={styles.header}>
-				<View style={styles.left}>
-					<CustomImage
-						uri={store.image?.path}
-						height={56}
-						width={56}
-						style={styles.image}
-					/>
-					<Typography size='large' weight='medium'>
-						{store.name}
-					</Typography>
+				<View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+					<Pressable hitSlop={8} onPress={goBack}>
+						<Icon name='chevron-left' size={24} color={theme.text.primary} />
+					</Pressable>
+					<View style={styles.left}>
+						<Typography size='large' weight='medium'>
+							{store.name}
+						</Typography>
+					</View>
 				</View>
 				<FollowButton storeId={store.id} followed={store.followedByUser} />
 			</View>

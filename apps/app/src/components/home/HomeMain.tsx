@@ -12,6 +12,8 @@ const HomeMain = () => {
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 	const { theme } = useTheme();
 
+	if (!data) return null;
+
 	return (
 		<ScrollableScreen
 			refreshControl={

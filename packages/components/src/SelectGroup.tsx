@@ -70,9 +70,7 @@ const SelectGroupOption: React.FC<SelectGroupOptionProps> = ({
 			<View
 				style={[
 					styles.main,
-					!last
-						? { borderBottomWidth: 0.5, borderColor: theme.border.color }
-						: {}
+					!last ? { borderBottomWidth: 1, borderColor: theme.border.color } : {}
 				]}
 			>
 				<View style={{ flexDirection: 'row', gap: 8 }}>

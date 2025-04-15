@@ -1,6 +1,4 @@
 import React from 'react';
-import { Save } from 'lucide-react';
-import Image from 'next/image';
 import { useParams } from 'react-router';
 
 import { Button } from '@/components/ui/button';
@@ -45,7 +43,6 @@ const ProductPage = () => {
 			<div className='flex justify-between items-center'>
 				<h1 className='text-3xl font-bold'>{product?.name}</h1>
 				<Button onClick={handleSubmit} disabled={!Object.keys(formData).length}>
-					<Save className='h-4 w-4 mr-2' />
 					Save Changes
 				</Button>
 			</div>
@@ -111,10 +108,9 @@ const ProductPage = () => {
 									key={image.id}
 									className='relative aspect-square rounded-lg overflow-hidden'
 								>
-									<Image
+									<img
 										src={image.path}
 										alt={product.name}
-										fill
 										className='object-cover'
 									/>
 								</div>
