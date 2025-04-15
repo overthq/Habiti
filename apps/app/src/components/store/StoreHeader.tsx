@@ -23,15 +23,44 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 
 	return (
 		<View
-			style={[styles.container, { backgroundColor: theme.screen.background }]}
+			style={[
+				styles.container,
+				{
+					backgroundColor: theme.screen.background,
+					borderBottomWidth: 1,
+					borderColor: theme.border.color
+				}
+			]}
 		>
 			<View style={styles.header}>
-				<View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-					<Pressable hitSlop={8} onPress={goBack}>
-						<Icon name='chevron-left' size={24} color={theme.text.primary} />
+				<View
+					style={{
+						flexDirection: 'row',
+						alignItems: 'center',
+						gap: 8
+					}}
+				>
+					<Pressable
+						style={{
+							backgroundColor: theme.button.secondary.background,
+							height: 24,
+							width: 24,
+							borderRadius: 100,
+							justifyContent: 'center',
+							alignItems: 'center'
+						}}
+						hitSlop={8}
+						onPress={goBack}
+					>
+						<Icon
+							name='chevron-left'
+							size={20}
+							color={theme.text.primary}
+							style={{ marginLeft: -1 }}
+						/>
 					</Pressable>
 					<View style={styles.left}>
-						<Typography size='large' weight='medium'>
+						<Typography size='xlarge' weight='medium'>
 							{store.name}
 						</Typography>
 					</View>
@@ -61,11 +90,6 @@ const styles = StyleSheet.create({
 	left: {
 		flexDirection: 'row',
 		alignItems: 'center'
-	},
-	image: {
-		borderRadius: 40,
-		alignSelf: 'center',
-		marginRight: 12
 	}
 });
 

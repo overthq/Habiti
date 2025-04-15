@@ -72,7 +72,7 @@ const dark = {
 		primary: palette.neutral.n50,
 		secondary: palette.neutral.n200,
 		tertiary: palette.neutral.n500,
-		disabled: palette.neutral.n200,
+		disabled: palette.neutral.n500,
 		error: palette.red.r600,
 		label: palette.neutral.n100,
 		invert: palette.neutral.n950
@@ -83,7 +83,7 @@ const dark = {
 			text: palette.neutral.n900
 		},
 		secondary: {
-			background: palette.neutral.n50,
+			background: palette.neutral.n800,
 			text: palette.neutral.n100
 		},
 		tertiary: {
@@ -161,7 +161,7 @@ const light = {
 		primary: palette.neutral.n700,
 		secondary: palette.neutral.n600,
 		tertiary: palette.neutral.n100,
-		disabled: palette.neutral.n500,
+		disabled: palette.neutral.n400,
 		error: palette.red.r700,
 		label: palette.neutral.n600,
 		invert: palette.neutral.n50
@@ -172,7 +172,7 @@ const light = {
 			text: palette.neutral.n50
 		},
 		secondary: {
-			background: palette.neutral.n500,
+			background: palette.neutral.n300,
 			text: palette.neutral.n100
 		},
 		tertiary: {

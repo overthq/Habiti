@@ -16,6 +16,7 @@ const HomeMain = () => {
 
 	return (
 		<ScrollableScreen
+			contentContainerStyle={{ backgroundColor: theme.screen.background }}
 			refreshControl={
 				<RefreshControl
 					refreshing={refreshing}

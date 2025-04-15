@@ -49,11 +49,10 @@ const styles = StyleSheet.create({
 		paddingVertical: 4,
 		paddingLeft: 8,
 		paddingRight: 10,
-		borderRadius: 4,
+		borderRadius: 100,
 		flexDirection: 'row',
 		justifyContent: 'center',
-		alignItems: 'center',
-		alignSelf: 'center'
+		alignItems: 'center'
 	},
 	icon: {
 		marginRight: 4
