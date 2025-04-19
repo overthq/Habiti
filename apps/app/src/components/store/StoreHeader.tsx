@@ -1,11 +1,12 @@
-import { CustomImage, Icon, Typography, useTheme } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
+import { Icon, Typography, useTheme } from '@habiti/components';
 
 import CategorySelector from './CategorySelector';
 import FollowButton from './FollowButton';
 import { StoreQuery } from '../../types/api';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { StoreStackParamList } from '../../types/navigation';
 
 interface StoreHeaderProps {
 	store: StoreQuery['store'];
@@ -18,8 +19,13 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 	activeCategory,
 	setActiveCategory
 }) => {
+	const { navigate } = useNavigation<NavigationProp<StoreStackParamList>>();
 	const { goBack } = useNavigation();
 	const { theme } = useTheme();
+
+	const handleOpenSearch = () => {
+		navigate('Store.Search', { storeId: store.id });
+	};
 
 	return (
 		<View
@@ -33,22 +39,12 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 			]}
 		>
 			<View style={styles.header}>
-				<View
-					style={{
-						flexDirection: 'row',
-						alignItems: 'center',
-						gap: 8
-					}}
-				>
+				<View style={styles.left}>
 					<Pressable
-						style={{
-							backgroundColor: theme.button.secondary.background,
-							height: 24,
-							width: 24,
-							borderRadius: 100,
-							justifyContent: 'center',
-							alignItems: 'center'
-						}}
+						style={[
+							styles.back,
+							{ backgroundColor: theme.button.secondary.background }
+						]}
 						hitSlop={8}
 						onPress={goBack}
 					>
@@ -59,13 +55,28 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 							style={{ marginLeft: -1 }}
 						/>
 					</Pressable>
-					<View style={styles.left}>
-						<Typography size='xlarge' weight='medium'>
-							{store.name}
-						</Typography>
-					</View>
+					<Typography size='xlarge' weight='medium'>
+						{store.name}
+					</Typography>
 				</View>
-				<FollowButton storeId={store.id} followed={store.followedByUser} />
+				<View style={styles.right}>
+					<FollowButton storeId={store.id} followed={store.followedByUser} />
+					<Pressable
+						onPress={handleOpenSearch}
+						style={[
+							{
+								height: 28,
+								width: 28,
+								borderRadius: 100,
+								justifyContent: 'center',
+								alignItems: 'center'
+							},
+							{ backgroundColor: theme.button.secondary.background }
+						]}
+					>
+						<Icon name='search' size={18} color={theme.text.primary} />
+					</Pressable>
+				</View>
 			</View>
 			<CategorySelector
 				selected={activeCategory}
@@ -89,7 +100,20 @@ const styles = StyleSheet.create({
 	},
 	left: {
 		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 8
+	},
+	back: {
+		height: 24,
+		width: 24,
+		borderRadius: 100,
+		justifyContent: 'center',
 		alignItems: 'center'
+	},
+	right: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 8
 	}
 });
 
