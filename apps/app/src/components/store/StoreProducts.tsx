@@ -61,35 +61,36 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 	if (fetching && !products) return <View />;
 
 	return (
-		<FlashList
-			data={products.edges}
-			keyExtractor={({ node }) => node.id}
-			showsVerticalScrollIndicator={false}
-			estimatedItemSize={240}
-			renderItem={({ item, index }) => (
-				<StoreListItem
-					item={item.node}
-					onPress={handleProductPress(item.node.id)}
-					side={index % 2 === 0 ? 'left' : 'right'}
-				/>
-			)}
-			numColumns={2}
-			onScroll={handleScroll}
-			ListHeaderComponent={
-				<StoreHeader
-					store={store}
-					activeCategory={activeCategory}
-					setActiveCategory={setActiveCategory}
-				/>
-			}
-			refreshControl={
-				<RefreshControl
-					refreshing={refreshing}
-					onRefresh={refresh}
-					tintColor={theme.text.secondary}
-				/>
-			}
-		/>
+		<View style={{ flex: 1 }}>
+			<StoreHeader
+				store={store}
+				activeCategory={activeCategory}
+				setActiveCategory={setActiveCategory}
+			/>
+			<FlashList
+				contentContainerStyle={{ backgroundColor: theme.screen.background }}
+				data={products.edges}
+				keyExtractor={({ node }) => node.id}
+				showsVerticalScrollIndicator={false}
+				estimatedItemSize={240}
+				renderItem={({ item, index }) => (
+					<StoreListItem
+						item={item.node}
+						onPress={handleProductPress(item.node.id)}
+						side={index % 2 === 0 ? 'left' : 'right'}
+					/>
+				)}
+				numColumns={2}
+				onScroll={handleScroll}
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={refresh}
+						tintColor={theme.text.secondary}
+					/>
+				}
+			/>
+		</View>
 	);
 };
 

@@ -48,6 +48,7 @@ const FollowedStoresMain: React.FC<FollowedStoresMainProps> = ({
 			horizontal
 			data={followed}
 			keyExtractor={item => item.store.id}
+			contentContainerStyle={{ paddingLeft: 16 }}
 			renderItem={({ item }) => (
 				<FollowedStoresItem
 					store={item.store}

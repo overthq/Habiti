@@ -12,8 +12,11 @@ const HomeMain = () => {
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 	const { theme } = useTheme();
 
+	if (!data) return null;
+
 	return (
 		<ScrollableScreen
+			contentContainerStyle={{ backgroundColor: theme.screen.background }}
 			refreshControl={
 				<RefreshControl
 					refreshing={refreshing}

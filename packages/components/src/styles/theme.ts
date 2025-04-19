@@ -72,7 +72,7 @@ const dark = {
 		primary: palette.neutral.n50,
 		secondary: palette.neutral.n200,
 		tertiary: palette.neutral.n500,
-		disabled: palette.neutral.n200,
+		disabled: palette.neutral.n500,
 		error: palette.red.r600,
 		label: palette.neutral.n100,
 		invert: palette.neutral.n950
@@ -83,7 +83,7 @@ const dark = {
 			text: palette.neutral.n900
 		},
 		secondary: {
-			background: palette.neutral.n50,
+			background: palette.neutral.n800,
 			text: palette.neutral.n100
 		},
 		tertiary: {
@@ -115,7 +115,7 @@ const dark = {
 		color: palette.neutral.n800
 	},
 	image: {
-		placeholder: palette.neutral.n900
+		placeholder: palette.neutral.n800
 	},
 	badge: {
 		success: {
@@ -161,7 +161,7 @@ const light = {
 		primary: palette.neutral.n700,
 		secondary: palette.neutral.n600,
 		tertiary: palette.neutral.n100,
-		disabled: palette.neutral.n500,
+		disabled: palette.neutral.n400,
 		error: palette.red.r700,
 		label: palette.neutral.n600,
 		invert: palette.neutral.n50
@@ -172,7 +172,7 @@ const light = {
 			text: palette.neutral.n50
 		},
 		secondary: {
-			background: palette.neutral.n500,
+			background: palette.neutral.n300,
 			text: palette.neutral.n100
 		},
 		tertiary: {
@@ -189,7 +189,7 @@ const light = {
 		}
 	},
 	screen: {
-		background: palette.neutral.n100
+		background: palette.neutral.n50
 	},
 	input: {
 		placeholder: palette.neutral.n400,
@@ -201,10 +201,10 @@ const light = {
 		default: { color: palette.neutral.n950 }
 	},
 	border: {
-		color: palette.neutral.n200
+		color: palette.neutral.n300
 	},
 	image: {
-		placeholder: palette.neutral.n400
+		placeholder: palette.neutral.n300
 	},
 	badge: {
 		success: {

@@ -12,12 +12,14 @@ interface ScreenHeaderProps {
 		placeholder: string;
 		onPress: () => void;
 	};
+	right?: React.ReactNode;
 }
 
 const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 	title,
 	hasBottomBorder = false,
-	search
+	search,
+	right
 }) => {
 	const { theme } = useTheme();
 
@@ -30,9 +32,12 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 					: {}
 			]}
 		>
-			<Typography size='xxlarge' weight='bold'>
-				{title}
-			</Typography>
+			<View style={styles.title}>
+				<Typography size='xxlarge' weight='bold'>
+					{title}
+				</Typography>
+				{right}
+			</View>
 			{search && (
 				<Pressable
 					style={[styles.search, { backgroundColor: theme.input.background }]}
@@ -52,6 +57,11 @@ const styles = StyleSheet.create({
 	container: {
 		paddingHorizontal: 16,
 		paddingVertical: 12
+	},
+	title: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between'
 	},
 	search: {
 		marginTop: 12,

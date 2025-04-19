@@ -25,7 +25,8 @@ const Separator: React.FC<SeparatorProps> = ({ inset, style, ...props }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		height: 0.5
+		height: 1,
+		marginVertical: 2
 	}
 });
 

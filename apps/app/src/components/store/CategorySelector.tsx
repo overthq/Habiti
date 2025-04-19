@@ -40,8 +40,8 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
 const styles = StyleSheet.create({
 	container: {
 		width: '100%',
-		marginTop: 8,
-		paddingVertical: 12
+		paddingTop: 12,
+		paddingBottom: 8
 	},
 	content: {
 		alignItems: 'center',

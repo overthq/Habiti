@@ -12,7 +12,7 @@ const StoreStack = () => {
 			<StoreNavigator.Screen
 				name='Store.Main'
 				component={Store}
-				options={{ headerTitle: '' }}
+				options={{ headerShown: false }}
 			/>
 			<StoreNavigator.Screen
 				name='Store.Search'

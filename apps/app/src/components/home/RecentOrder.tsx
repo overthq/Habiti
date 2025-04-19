@@ -1,6 +1,6 @@
-import { CustomImage, Typography } from '@habiti/components';
+import { CustomImage, Row, Typography } from '@habiti/components';
 import React from 'react';
-import { View, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import { HomeQuery } from '../../types/api';
 import { relativeTimestamp } from '../../utils/date';
@@ -19,7 +19,7 @@ interface RecentOrderProps {
 
 const RecentOrder: React.FC<RecentOrderProps> = ({ order, onPress }) => {
 	return (
-		<Pressable key={order.id} style={styles.container} onPress={onPress}>
+		<Row key={order.id} style={styles.container} onPress={onPress}>
 			<CustomImage
 				uri={order.store.image?.path}
 				height={56}
@@ -36,18 +36,15 @@ const RecentOrder: React.FC<RecentOrderProps> = ({ order, onPress }) => {
 					{order.status}
 				</Typography>
 			</View>
-		</Pressable>
+		</Row>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
 		width: '100%',
-		marginLeft: 16,
 		flexDirection: 'row',
-		alignItems: 'center',
-		borderColor: 'red',
-		marginBottom: 8
+		alignItems: 'center'
 	},
 	image: {
 		borderRadius: 28

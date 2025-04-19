@@ -50,9 +50,9 @@ const Profile: React.FC = () => {
 		<Screen style={{ paddingTop: top }}>
 			<ScreenHeader title='Profile' />
 			<UserCard />
-			<Spacer y={8} />
+			{/* <Spacer y={8} /> */}
 			<Separator style={{ marginHorizontal: 16 }} />
-			<Spacer y={8} />
+			{/* <Spacer y={8} /> */}
 			<View>
 				<ProfileRow
 					title='Payment Methods'
@@ -74,8 +74,8 @@ const Profile: React.FC = () => {
 					title='Manage Account'
 					onPress={() => navigate('Profile.AccountSettings')}
 				/>
-				<Spacer y={8} />
-				<Separator style={{ marginHorizontal: 16 }} />
+				{/* <Spacer y={8} /> */}
+				<Separator inset />
 				<ProfileRow
 					title='Privacy Policy'
 					onPress={() => {
