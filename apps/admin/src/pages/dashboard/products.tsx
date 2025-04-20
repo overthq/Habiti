@@ -14,7 +14,7 @@ import { Product } from '@/data/types';
 import { formatNaira } from '@/utils/format';
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 const columns: ColumnDef<Product>[] = [
 	{
@@ -41,7 +41,10 @@ const columns: ColumnDef<Product>[] = [
 	},
 	{
 		accessorKey: 'name',
-		header: 'Name'
+		header: 'Name',
+		cell: ({ row }) => (
+			<Link to={`/products/${row.original.id}`}>{row.original.name}</Link>
+		)
 	},
 	{
 		accessorKey: 'unitPrice',

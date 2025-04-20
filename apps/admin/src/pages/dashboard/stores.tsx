@@ -2,11 +2,15 @@ import { Store } from '@/data/types';
 import { ColumnDef } from '@tanstack/react-table';
 import { useStoresQuery } from '@/data/queries';
 import { DataTable } from '@/components/ui/data-table';
+import { Link } from 'react-router';
 
 const columns: ColumnDef<Store>[] = [
 	{
 		accessorKey: 'name',
-		header: 'Name'
+		header: 'Name',
+		cell: ({ row }) => (
+			<Link to={`/stores/${row.original.id}`}>{row.original.name}</Link>
+		)
 	},
 	{
 		accessorKey: 'createdAt',
