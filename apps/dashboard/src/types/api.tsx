@@ -1185,6 +1185,7 @@ export type CreateProductMutation = {
 		description: string;
 		unitPrice: number;
 		quantity: number;
+		storeId: string;
 		images: Array<{ __typename?: 'Image'; id: string; path: string }>;
 	};
 };
@@ -1764,6 +1765,7 @@ export const CreateProductDocument = gql`
 				id
 				path
 			}
+			storeId
 		}
 	}
 `;
