@@ -1,11 +1,10 @@
 import { Router } from 'express';
 
-import AdminController from '../controllers/admin';
+import { login, createAdmin } from '../controllers/admin';
 
 const adminRouter: Router = Router();
-const adminController = new AdminController();
 
-adminRouter.post('/login', adminController.login);
-adminRouter.post('/register', adminController.createAdmin);
+adminRouter.post('/login', login);
+adminRouter.post('/register', createAdmin);
 
 export default adminRouter;

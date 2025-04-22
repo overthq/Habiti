@@ -1,24 +1,34 @@
 import { Router } from 'express';
 
-import StoreController from '../controllers/stores';
+import {
+	getStores,
+	createStore,
+	followStore,
+	unfollowStore,
+	createStoreProduct,
+	getCurrentStore,
+	getStoreById,
+	getStoreProducts,
+	getStoreManagers,
+	getStorePayouts,
+	getStoreOrders
+} from '../controllers/stores';
 import { authenticate, isAdmin, optionalAuth } from '../middleware/auth';
 
 const router: Router = Router();
 
-const storeController = new StoreController();
+router.get('/', isAdmin, getStores);
 
-router.get('/', isAdmin, storeController.getStores);
+router.post('/', authenticate, createStore);
+router.post('/:id/follow', authenticate, followStore);
+router.post('/:id/unfollow', authenticate, unfollowStore);
+router.post('/:id/products', authenticate, createStoreProduct);
 
-router.post('/', authenticate, storeController.createStore);
-router.post('/:id/follow', authenticate, storeController.followStore);
-router.post('/:id/unfollow', authenticate, storeController.unfollowStore);
-router.post('/:id/products', authenticate, storeController.createStoreProduct);
-
-router.get('/current', authenticate, storeController.getCurrentStore);
-router.get('/:id', optionalAuth, storeController.getStoreById);
-router.get('/:id/products', optionalAuth, storeController.getStoreProducts);
-router.get('/:id/managers', isAdmin, storeController.getStoreManagers);
-router.get('/:id/payouts', isAdmin, storeController.getStorePayouts);
-router.get('/:id/orders', optionalAuth, storeController.getStoreOrders);
+router.get('/current', authenticate, getCurrentStore);
+router.get('/:id', optionalAuth, getStoreById);
+router.get('/:id/products', optionalAuth, getStoreProducts);
+router.get('/:id/managers', isAdmin, getStoreManagers);
+router.get('/:id/payouts', isAdmin, getStorePayouts);
+router.get('/:id/orders', optionalAuth, getStoreOrders);
 
 export default router;

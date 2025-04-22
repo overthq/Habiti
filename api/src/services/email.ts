@@ -1,33 +1,16 @@
-import nodemailer from 'nodemailer';
+import { LoopsClient } from 'loops';
+import { env } from '../config/env';
 
-// Probably use loops.so
 export default class EmailService {
-	private mails: any[];
-	private transporter: ReturnType<(typeof nodemailer)['createTransport']>;
+	private loops: LoopsClient;
 
 	constructor() {
-		this.transporter = nodemailer.createTransport({
-			host: 'smtp.ethereal.email',
-			port: 587,
-			secure: false, // Use `true` for port 465, `false` for all other ports
-			auth: {
-				user: 'maddison53@ethereal.email',
-				pass: 'jn7jnAPss4f63QBp6D'
-			}
-		});
+		if (process.env.NODE_ENV === 'production') {
+			this.loops = new LoopsClient(env.LOOPS_API_KEY);
+		}
 	}
 
-	public queueMail(mail: any) {
-		this.mails.push(mail);
-	}
+	public queueMail(mail: any) {}
 
-	public sendMails() {
-		this.transporter.sendMail({
-			from: '"Something something" <something@example.com>',
-			to: 'example@example.com',
-			subject: 'Hello world!',
-			text: 'Hello world!'
-			// html: '<h1>Hello world!</h1>'
-		});
-	}
+	public sendMails() {}
 }

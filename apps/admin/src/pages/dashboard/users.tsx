@@ -35,7 +35,11 @@ const Users = () => {
 	if (!data) return <div>No data</div>;
 
 	return (
-		<div>
+		<div className='space-y-6'>
+			<div className='flex justify-between items-center'>
+				<h1 className='text-3xl font-bold'>Users</h1>
+			</div>
+
 			<DataTable columns={columns} data={data.users} />
 		</div>
 	);

@@ -1,5 +1,5 @@
 import { Store, ShoppingCart, Users, Home, Package } from 'lucide-react';
-import { NavLink, useLocation } from 'react-router';
+import { Link, NavLink, useLocation } from 'react-router';
 
 import {
 	Sidebar,
@@ -46,7 +46,22 @@ export function AppSidebar() {
 
 	return (
 		<Sidebar>
-			<SidebarHeader />
+			<SidebarHeader>
+				<SidebarMenu>
+					<SidebarMenuItem>
+						<SidebarMenuButton
+							asChild
+							className='data-[slot=sidebar-menu-button]:!p-1.5'
+						>
+							<Link to='/'>
+								<span className='text-base font-semibold'>
+									Habiti Dashboard
+								</span>
+							</Link>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+				</SidebarMenu>
+			</SidebarHeader>
 			<SidebarContent>
 				<SidebarGroup>
 					<SidebarGroupContent>

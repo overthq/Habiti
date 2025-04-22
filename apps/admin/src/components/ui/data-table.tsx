@@ -28,6 +28,7 @@ import {
 	TableHeader,
 	TableRow
 } from './table';
+import { ChevronDown } from 'lucide-react';
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
@@ -76,7 +77,7 @@ export function DataTable<TData, TValue>({
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button variant='outline' className='ml-auto'>
-							Columns
+							Columns <ChevronDown />
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align='end'>

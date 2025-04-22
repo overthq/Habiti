@@ -1,21 +1,22 @@
 import { Router } from 'express';
 
-import ProductController from '../controllers/products';
+import {
+	getProductById,
+	getProductReviews,
+	createProductReview,
+	getRelatedProducts,
+	getProducts
+} from '../controllers/products';
 import { authenticate, isAdmin, optionalAuth } from '../middleware/auth';
 
 const router: Router = Router();
-const productController = new ProductController();
 
-router.get('/:id', optionalAuth, productController.getProductById);
-router.get('/:id/reviews', optionalAuth, productController.getProductReviews);
+router.get('/:id', optionalAuth, getProductById);
+router.get('/:id/reviews', optionalAuth, getProductReviews);
 
-router.post(
-	'/:id/reviews',
-	authenticate,
-	productController.createProductReview
-);
-router.get('/:id/related', optionalAuth, productController.getRelatedProducts);
+router.post('/:id/reviews', authenticate, createProductReview);
+router.get('/:id/related', optionalAuth, getRelatedProducts);
 
-router.get('/', isAdmin, productController.getProducts);
+router.get('/', isAdmin, getProducts);
 
 export default router;
