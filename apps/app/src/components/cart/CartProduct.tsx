@@ -1,7 +1,7 @@
-import { formatNaira } from '@habiti/common';
-import { CustomImage, Spacer, Typography } from '@habiti/components';
 import React from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
+import { formatNaira } from '@habiti/common';
+import { CustomImage, Row, Spacer, Typography } from '@habiti/components';
+import { View, StyleSheet } from 'react-native';
 
 import { CartQuery } from '../../types/api';
 import { plural } from '../../utils/strings';
@@ -16,7 +16,7 @@ const CartProduct: React.FC<CartProductProps> = ({
 	onPress
 }) => {
 	return (
-		<Pressable style={styles.container} onPress={onPress}>
+		<Row style={styles.container} onPress={onPress}>
 			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 				<CustomImage uri={product.images[0]?.path} height={40} width={40} />
 				<Spacer x={12} />
@@ -29,13 +29,12 @@ const CartProduct: React.FC<CartProductProps> = ({
 				</View>
 			</View>
 			<Typography>{formatNaira(product.unitPrice * quantity)}</Typography>
-		</Pressable>
+		</Row>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
 		paddingVertical: 4

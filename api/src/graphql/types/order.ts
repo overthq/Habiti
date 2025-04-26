@@ -43,7 +43,7 @@ const OrderTypes = gql`
 		cartId: ID!
 		transactionFee: Int!
 		serviceFee: Int!
-		cardId: ID
+		cardId: ID!
 	}
 
 	input UpdateOrderInput {

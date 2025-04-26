@@ -1,14 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-import { Button } from '@/components/ui/button';
-import { useAuthContext } from '@/contexts/AuthContext';
-
-import CartSheet from '../cart/CartSheet';
-
 const Header = () => {
-	const { userId, onLogout } = useAuthContext();
-
 	return (
 		<nav className='border-b'>
 			<div className='container py-4 flex justify-between items-center'>
@@ -20,19 +13,6 @@ const Header = () => {
 						width={85}
 					/>
 				</Link>
-				{!userId ? (
-					<div className='flex gap-4 items-center'>
-						<Link href='/login'>Login</Link>
-						<Link href='/register'>
-							<Button>Register</Button>
-						</Link>
-					</div>
-				) : (
-					<div className='flex gap-4 items-center'>
-						<CartSheet />
-						<Button onClick={onLogout}>Logout</Button>
-					</div>
-				)}
 			</div>
 		</nav>
 	);

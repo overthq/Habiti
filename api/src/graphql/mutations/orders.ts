@@ -12,7 +12,7 @@ import {
 export interface CreateOrderArgs {
 	input: {
 		cartId: string;
-		cardId?: string;
+		cardId: string;
 		transactionFee: number;
 		serviceFee: number;
 	};
@@ -26,7 +26,7 @@ export const createOrder: Resolver<CreateOrderArgs> = async (
 	const cart = await ctx.prisma.cart.findUnique({
 		where: { id: cartId, userId: ctx.user.id },
 		include: {
-			user: { include: { cards: cardId ? { where: { id: cardId } } : true } },
+			user: { include: { cards: { where: { id: cardId } } } },
 			products: { include: { product: true } },
 			store: true
 		}

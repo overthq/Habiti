@@ -84,6 +84,7 @@ const StoreTypes = gql`
 
 	input StoreFilterInput {
 		name: StringWhere
+		unlisted: Boolean
 	}
 
 	extend type Query {
