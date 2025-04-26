@@ -2,6 +2,7 @@ export interface User {
 	id: string;
 	name: string;
 	email: string;
+	suspended: boolean;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -9,6 +10,7 @@ export interface User {
 export interface UpdateUserBody {
 	name?: string;
 	email?: string;
+	suspended?: boolean;
 }
 
 export interface GetUsersResponse {
@@ -132,6 +134,7 @@ export interface Store {
 		id: string;
 		path: string;
 	};
+	unlisted: boolean;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -156,6 +159,7 @@ export interface StoreFilters {
 export interface UpdateStoreBody {
 	name?: string;
 	description?: string;
+	unlisted?: boolean;
 }
 
 export interface GetStoreProductsResponse {
