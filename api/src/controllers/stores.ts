@@ -149,9 +149,13 @@ export async function getStoreOrders(req: Request, res: Response) {
 
 	const query = hydrateQuery(req.query);
 
+	// Add include user to the query
 	const orders = await prismaClient.store
 		.findUnique({ where: { id: req.params.id } })
-		.orders(query);
+		.orders({
+			...query,
+			include: { user: true }
+		});
 
 	return res.json({ orders });
 }

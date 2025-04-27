@@ -39,3 +39,20 @@ export async function login(req: Request, res: Response) {
 
 	return res.json({ accessToken, adminId: admin.id });
 }
+
+export const getOverview = async (_: Request, res: Response) => {
+	const [totalStores, totalOrders, totalProducts, totalUsers] =
+		await prisma.$transaction([
+			prisma.store.count({ where: { unlisted: false } }),
+			prisma.order.count({ where: { store: { unlisted: false } } }),
+			prisma.product.count({ where: { store: { unlisted: false } } }),
+			prisma.user.count()
+		]);
+
+	return res.status(200).json({
+		totalStores,
+		totalOrders,
+		totalProducts,
+		totalUsers
+	});
+};
