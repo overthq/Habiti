@@ -14,7 +14,8 @@ import {
 	getStorePayouts,
 	getStoreManagers,
 	getUsers,
-	getUser
+	getUser,
+	getOverview
 } from './requests';
 
 export const useOrdersQuery = (params?: OrderFilters) => {
@@ -114,5 +115,12 @@ export const useUserQuery = (id: string) => {
 		queryKey: ['users', id],
 		queryFn: () => getUser(id),
 		enabled: !!id
+	});
+};
+
+export const useOverviewQuery = () => {
+	return useQuery({
+		queryKey: ['overview'],
+		queryFn: () => getOverview()
 	});
 };

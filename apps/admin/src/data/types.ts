@@ -170,14 +170,14 @@ export interface GetStoreResponse {
 	store: Store;
 }
 
+export interface StoreManager {
+	id: string;
+	name: string;
+	email: string;
+}
+
 export interface GetStoreManagersResponse {
-	managers: {
-		manager: {
-			id: string;
-			name: string;
-			email: string;
-		};
-	}[];
+	managers: StoreManager[];
 }
 
 export interface GetStorePayoutsResponse {
@@ -202,4 +202,11 @@ export interface GetOrderResponse {
 
 export interface UpdateOrderResponse {
 	order: Order;
+}
+
+export interface GetOverviewResponse {
+	totalStores: number;
+	totalOrders: number;
+	totalProducts: number;
+	totalUsers: number;
 }
