@@ -123,7 +123,7 @@ const StoreMain = ({ store }: StoreMainProps) => {
 					</Card>
 				</div>
 
-				<Tabs>
+				<Tabs defaultValue='products'>
 					<TabsList>
 						<TabsTrigger value='products'>Products</TabsTrigger>
 						<TabsTrigger value='orders'>Orders</TabsTrigger>

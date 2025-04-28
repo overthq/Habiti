@@ -171,9 +171,10 @@ export interface GetStoreResponse {
 }
 
 export interface StoreManager {
-	id: string;
-	name: string;
-	email: string;
+	managerId: string;
+	manager: User;
+	storeId: string;
+	store: Store;
 }
 
 export interface GetStoreManagersResponse {

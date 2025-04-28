@@ -6,11 +6,11 @@ import { StoreManager } from '@/data/types';
 const columns: ColumnDef<StoreManager>[] = [
 	{
 		header: 'Name',
-		accessorKey: 'name'
+		accessorKey: 'manager.name'
 	},
 	{
 		header: 'Email',
-		accessorKey: 'email'
+		accessorKey: 'manager.email'
 	}
 ];
 
