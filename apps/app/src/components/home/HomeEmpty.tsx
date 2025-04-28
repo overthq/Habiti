@@ -1,10 +1,13 @@
-import { Screen, Typography } from '@habiti/components';
 import React from 'react';
+import { Screen, Typography } from '@habiti/components';
 
 const HomeEmpty = () => {
 	return (
 		<Screen>
-			<Typography>No stores found</Typography>
+			<Typography>Welcome to Habiti</Typography>
+			<Typography>
+				You can get started by searching for stores or products above.
+			</Typography>
 		</Screen>
 	);
 };

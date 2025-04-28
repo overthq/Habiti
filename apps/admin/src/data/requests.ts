@@ -27,7 +27,8 @@ import {
 	GetStoreProductsResponse,
 	GetStoreResponse,
 	GetStoresResponse,
-	StoreFilters
+	StoreFilters,
+	GetOverviewResponse
 } from './types';
 
 export const login = (body: LoginBody) => {
@@ -122,4 +123,8 @@ export const getStorePayouts = (id: string, params?: StoreFilters) => {
 
 export const getStoreManagers = (id: string, params?: StoreFilters) => {
 	return api.get<GetStoreManagersResponse>(`/stores/${id}/managers`, params);
+};
+
+export const getOverview = () => {
+	return api.get<GetOverviewResponse>('/admin/overview');
 };

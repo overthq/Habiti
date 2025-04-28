@@ -41,11 +41,6 @@ const columns: ColumnDef<Order>[] = [
 		enableHiding: false
 	},
 	{
-		accessorKey: 'id',
-		header: 'Order ID',
-		cell: ({ row }) => row.getValue('id')
-	},
-	{
 		accessorFn: row => row.user.name,
 		header: 'Customer',
 		cell: ({ row }) => row.original.user.name

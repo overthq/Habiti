@@ -2,6 +2,7 @@ export interface User {
 	id: string;
 	name: string;
 	email: string;
+	suspended: boolean;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -9,6 +10,7 @@ export interface User {
 export interface UpdateUserBody {
 	name?: string;
 	email?: string;
+	suspended?: boolean;
 }
 
 export interface GetUsersResponse {
@@ -132,6 +134,7 @@ export interface Store {
 		id: string;
 		path: string;
 	};
+	unlisted: boolean;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -156,6 +159,7 @@ export interface StoreFilters {
 export interface UpdateStoreBody {
 	name?: string;
 	description?: string;
+	unlisted?: boolean;
 }
 
 export interface GetStoreProductsResponse {
@@ -166,14 +170,15 @@ export interface GetStoreResponse {
 	store: Store;
 }
 
+export interface StoreManager {
+	managerId: string;
+	manager: User;
+	storeId: string;
+	store: Store;
+}
+
 export interface GetStoreManagersResponse {
-	managers: {
-		manager: {
-			id: string;
-			name: string;
-			email: string;
-		};
-	}[];
+	managers: StoreManager[];
 }
 
 export interface GetStorePayoutsResponse {
@@ -198,4 +203,12 @@ export interface GetOrderResponse {
 
 export interface UpdateOrderResponse {
 	order: Order;
+}
+
+export interface GetOverviewResponse {
+	totalStores: number;
+	totalOrders: number;
+	totalProducts: number;
+	totalUsers: number;
+	totalRevenue: number;
 }

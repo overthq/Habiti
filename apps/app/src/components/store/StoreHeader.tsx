@@ -40,20 +40,8 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 		>
 			<View style={styles.header}>
 				<View style={styles.left}>
-					<Pressable
-						style={[
-							styles.back,
-							{ backgroundColor: theme.button.secondary.background }
-						]}
-						hitSlop={8}
-						onPress={goBack}
-					>
-						<Icon
-							name='chevron-left'
-							size={20}
-							color={theme.text.primary}
-							style={{ marginLeft: -1 }}
-						/>
+					<Pressable style={styles.back} onPress={goBack}>
+						<Icon name='chevron-left' size={22} />
 					</Pressable>
 					<Typography size='xlarge' weight='medium'>
 						{store.name}
@@ -61,20 +49,8 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 				</View>
 				<View style={styles.right}>
 					<FollowButton storeId={store.id} followed={store.followedByUser} />
-					<Pressable
-						onPress={handleOpenSearch}
-						style={[
-							{
-								height: 28,
-								width: 28,
-								borderRadius: 100,
-								justifyContent: 'center',
-								alignItems: 'center'
-							},
-							{ backgroundColor: theme.button.secondary.background }
-						]}
-					>
-						<Icon name='search' size={18} color={theme.text.primary} />
+					<Pressable onPress={handleOpenSearch}>
+						<Icon name='search' size={20} color={theme.text.primary} />
 					</Pressable>
 				</View>
 			</View>
@@ -104,11 +80,9 @@ const styles = StyleSheet.create({
 		gap: 8
 	},
 	back: {
-		height: 24,
-		width: 24,
-		borderRadius: 100,
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
+		marginLeft: -4
 	},
 	right: {
 		flexDirection: 'row',

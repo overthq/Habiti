@@ -3,6 +3,7 @@ import { PaginationArgs } from '../../types/pagination';
 import { Resolver } from '../../types/resolvers';
 import { decodeCursor, paginateQuery } from '../../utils/pagination';
 import { storeAuthorizedResolver } from '../permissions';
+import { CAN_VIEW_UNLISTED_STORES } from '../../utils/allowlist';
 
 export interface StoreArgs {
 	id: string;
@@ -19,13 +20,19 @@ const currentStore = storeAuthorizedResolver((_, __, ctx) => {
 });
 
 export interface StoresArgs {
-	filter: {
+	filter?: {
 		name?: StringWhere;
 	};
 }
 
 const stores: Resolver<StoresArgs> = (_, { filter }, ctx) => {
-	return ctx.prisma.store.findMany({ where: filter });
+	const canViewUnlisted = CAN_VIEW_UNLISTED_STORES.includes(ctx.user?.id || '');
+	const where = {
+		...filter,
+		...(canViewUnlisted ? {} : { unlisted: false })
+	};
+
+	return ctx.prisma.store.findMany({ where });
 };
 
 const products: Resolver<ProductsArgs & PaginationArgs> = (

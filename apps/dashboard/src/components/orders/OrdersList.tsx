@@ -1,3 +1,4 @@
+import React from 'react';
 import { Typography, useTheme } from '@habiti/components';
 import {
 	NavigationProp,
@@ -6,7 +7,6 @@ import {
 	useRoute
 } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import React from 'react';
 import { View, RefreshControl, StyleSheet } from 'react-native';
 
 import OrdersListItem from '../../components/orders/OrdersListItem';
@@ -40,6 +40,7 @@ const OrdersList = () => {
 			data={data?.currentStore.orders}
 			renderItem={renderOrder}
 			estimatedItemSize={60}
+			contentContainerStyle={{ backgroundColor: theme.screen.background }}
 			ListEmptyComponent={
 				<View style={styles.empty}>
 					<Typography variant='secondary' style={styles.emptyText}>

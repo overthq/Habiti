@@ -1,0 +1,44 @@
+import { DataTable } from '../ui/data-table';
+import { useStorePayoutsQuery } from '@/data/queries';
+import { ColumnDef } from '@tanstack/react-table';
+import { Payout } from '@/data/types';
+
+const columns: ColumnDef<Payout>[] = [
+	{
+		header: 'Amount',
+		accessorKey: 'amount',
+		cell: ({ row }) => `$${row.original.amount.toFixed(2)}`
+	},
+	{
+		header: 'Status',
+		accessorKey: 'status'
+	},
+	{
+		header: 'Created At',
+		accessorKey: 'createdAt',
+		cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString()
+	},
+	{
+		header: 'Updated At',
+		accessorKey: 'updatedAt',
+		cell: ({ row }) => new Date(row.original.updatedAt).toLocaleDateString()
+	}
+];
+
+const StorePayouts = ({ storeId }: { storeId: string }) => {
+	const { data } = useStorePayoutsQuery(storeId);
+
+	if (!data) return null;
+
+	return (
+		<div>
+			<DataTable
+				columns={columns}
+				data={data.payouts}
+				hasColumnDropdown={false}
+			/>
+		</div>
+	);
+};
+
+export default StorePayouts;

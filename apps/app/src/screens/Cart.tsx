@@ -77,6 +77,7 @@ const Cart: React.FC = () => {
 	return (
 		<ScrollableScreen
 			style={[styles.container, { paddingBottom: bottom }]}
+			contentContainerStyle={{ backgroundColor: theme.screen.background }}
 			refreshControl={
 				<RefreshControl
 					refreshing={refreshing}
@@ -100,6 +101,8 @@ const Cart: React.FC = () => {
 						selectedCard={selectedCard}
 						onCardSelect={setSelectedCard}
 					/>
+
+					<Spacer y={8} />
 
 					<Separator style={{ margin: 16 }} />
 

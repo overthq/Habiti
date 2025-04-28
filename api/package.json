@@ -12,7 +12,7 @@
 	"dependencies": {
 		"@apollo/server": "^4.11.3",
 		"@graphql-tools/schema": "^10.0.16",
-		"@prisma/client": "^6.3.1",
+		"@prisma/client": "^6.6.0",
 		"@prisma/instrumentation": "^6.3.1",
 		"@sentry/cli": "^2.41.1",
 		"@sentry/node": "^8.54.0",
@@ -31,8 +31,10 @@
 		"graphql-tools": "^9.0.11",
 		"graphql-upload": "^13.0.0",
 		"jsonwebtoken": "^9.0.2",
+		"loops": "^4.1.0",
 		"nodemailer": "^6.10.0",
 		"pg": "^8.13.1",
+		"posthog-node": "^4.14.0",
 		"redis": "^4.7.0"
 	},
 	"devDependencies": {
@@ -42,7 +44,7 @@
 		"@types/jsonwebtoken": "^9.0.8",
 		"@types/nodemailer": "^6.4.17",
 		"@types/pg": "^8.11.10",
-		"prisma": "^6.1.0",
+		"prisma": "^6.6.0",
 		"tsx": "^4.11.0",
 		"typescript": "^5.7.3"
 	}

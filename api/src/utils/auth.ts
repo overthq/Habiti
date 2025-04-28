@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { Admin, User } from '@prisma/client';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 
@@ -19,7 +19,7 @@ export const sendVerificationCode = async (phone: string) => {
 };
 
 export const generateAccessToken = async (
-	user: User,
+	user: User | Admin,
 	role: 'admin' | 'user' = 'user'
 ) => {
 	return jwt.sign(

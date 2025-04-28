@@ -22,8 +22,14 @@ const customCache = cacheExchange({
 	updates: {
 		Mutation: {
 			createProduct: (result: CreateProductMutation, _args, cache) => {
-				cache.invalidate({ __typename: 'Product' });
-				cache.invalidate({ __typename: 'Store' });
+				cache.invalidate({
+					__typename: 'Product',
+					id: result.createProduct.id
+				});
+				cache.invalidate({
+					__typename: 'Store',
+					id: result.createProduct.storeId
+				});
 			},
 			editProduct: (result: EditProductMutation, _args, cache) => {
 				cache.invalidate({

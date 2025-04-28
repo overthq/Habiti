@@ -6,7 +6,7 @@ const DashboardLayout = () => {
 	return (
 		<SidebarProvider>
 			<AppSidebar />
-			<main className='flex-1 p-8 bg-gray-100 dark:bg-zinc-950'>
+			<main className='flex-1 p-8'>
 				<Outlet />
 			</main>
 		</SidebarProvider>

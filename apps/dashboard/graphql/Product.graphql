@@ -71,6 +71,7 @@ mutation CreateProduct($input: CreateProductInput!) {
 			id
 			path
 		}
+		storeId
 	}
 }
 

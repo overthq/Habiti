@@ -2,11 +2,15 @@ import { DataTable } from '@/components/ui/data-table';
 import { useUsersQuery } from '@/data/queries';
 import { User } from '@/data/types';
 import { ColumnDef } from '@tanstack/react-table';
+import { Link } from 'react-router';
 
 const columns: ColumnDef<User>[] = [
 	{
 		accessorKey: 'name',
-		header: 'Name'
+		header: 'Name',
+		cell: ({ row }) => (
+			<Link to={`/users/${row.original.id}`}>{row.original.name}</Link>
+		)
 	},
 	{
 		accessorKey: 'email',
@@ -31,7 +35,11 @@ const Users = () => {
 	if (!data) return <div>No data</div>;
 
 	return (
-		<div>
+		<div className='space-y-6'>
+			<div className='flex justify-between items-center'>
+				<h1 className='text-3xl font-bold'>Users</h1>
+			</div>
+
 			<DataTable columns={columns} data={data.users} />
 		</div>
 	);

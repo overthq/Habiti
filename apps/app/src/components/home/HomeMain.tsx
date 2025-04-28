@@ -6,13 +6,19 @@ import RecentOrders from './RecentOrders';
 
 import { useHomeQuery } from '../../types/api';
 import useRefresh from '../../hooks/useRefresh';
+import HomeEmpty from './HomeEmpty';
 
 const HomeMain = () => {
 	const [{ fetching, data }, refetch] = useHomeQuery();
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 	const { theme } = useTheme();
 
-	if (!data) return null;
+	if (
+		!data ||
+		(data.currentUser.orders.length === 0 &&
+			data.currentUser.followed.length === 0)
+	)
+		return <HomeEmpty />;
 
 	return (
 		<ScrollableScreen

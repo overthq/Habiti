@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { gql, useQuery } from 'urql';
@@ -81,8 +82,8 @@ const HomePage = () => {
 
 			<div className='mb-8'>
 				{data.currentUser.orders.map((order: any) => (
-					<>
-						<Link href={`/orders/${order.id}`} key={order.id}>
+					<React.Fragment key={order.id}>
+						<Link href={`/orders/${order.id}`} className='mb-2'>
 							<div className='flex justify-between items-center p-4 rounded-lg border'>
 								<div className='flex gap-4 items-center'>
 									<div className='w-16 h-16 rounded-full overflow-hidden bg-muted-foreground flex-shrink-0'>
@@ -128,7 +129,7 @@ const HomePage = () => {
 							</div>
 						</Link>
 						<div className='h-2' />
-					</>
+					</React.Fragment>
 				))}
 			</div>
 
