@@ -4,18 +4,25 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useUpdateStoreMutation } from '@/data/mutations';
 import { useStoreQuery } from '@/data/queries';
 import { UpdateStoreBody } from '@/data/types';
-import { Form } from '@/components/ui/form';
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage
+} from '@/components/ui/form';
 import { Store as StoreType } from '@/data/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import StoreManagers from '@/components/stores/store-managers';
 import StoreProducts from '@/components/stores/store-products';
 import StoreOrders from '@/components/stores/store-orders';
 import StorePayouts from '@/components/stores/store-payouts';
+
 interface StoreMainProps {
 	store: StoreType;
 }
@@ -57,27 +64,32 @@ const StoreMain = ({ store }: StoreMainProps) => {
 								className='space-y-4'
 								onSubmit={form.handleSubmit(onSubmit)}
 							>
-								<div className='space-y-2'>
-									<Label htmlFor='name'>Name</Label>
-									<Input id='name' {...form.register('name')} />
-									{form.formState.errors.name && (
-										<p className='text-sm text-red-500'>
-											{form.formState.errors.name.message}
-										</p>
+								<FormField
+									control={form.control}
+									name='name'
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Name</FormLabel>
+											<FormControl>
+												<Input id='name' {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
 									)}
-								</div>
-								<div className='space-y-2'>
-									<Label htmlFor='description'>Description</Label>
-									<Textarea
-										id='description'
-										{...form.register('description')}
-									/>
-									{form.formState.errors.description && (
-										<p className='text-sm text-red-500'>
-											{form.formState.errors.description.message}
-										</p>
+								/>
+								<FormField
+									control={form.control}
+									name='description'
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Description</FormLabel>
+											<FormControl>
+												<Textarea id='description' {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
 									)}
-								</div>
+								/>
 							</form>
 						</CardContent>
 					</Card>

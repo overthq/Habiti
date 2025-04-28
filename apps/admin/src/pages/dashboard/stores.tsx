@@ -28,6 +28,9 @@ const Stores = () => {
 
 	return (
 		<div>
+			<div className='flex justify-between items-center mb-6'>
+				<h1 className='text-3xl font-bold'>Stores</h1>
+			</div>
 			<DataTable columns={columns} data={data.stores} />
 		</div>
 	);

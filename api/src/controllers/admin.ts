@@ -41,18 +41,26 @@ export async function login(req: Request, res: Response) {
 }
 
 export const getOverview = async (_: Request, res: Response) => {
-	const [totalStores, totalOrders, totalProducts, totalUsers] =
+	const [totalStores, totalOrders, totalProducts, totalUsers, totalRevenue] =
 		await prisma.$transaction([
 			prisma.store.count({ where: { unlisted: false } }),
 			prisma.order.count({ where: { store: { unlisted: false } } }),
 			prisma.product.count({ where: { store: { unlisted: false } } }),
-			prisma.user.count()
+			prisma.user.count(),
+			prisma.order.aggregate({
+				where: {
+					store: { unlisted: false },
+					status: 'Completed'
+				},
+				_sum: { total: true }
+			})
 		]);
 
 	return res.status(200).json({
 		totalStores,
 		totalOrders,
 		totalProducts,
-		totalUsers
+		totalUsers,
+		totalRevenue: totalRevenue._sum.total
 	});
 };

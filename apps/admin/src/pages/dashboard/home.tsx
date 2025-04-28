@@ -5,6 +5,7 @@ import {
 	CardDescription
 } from '@/components/ui/card';
 import { useOverviewQuery } from '@/data/queries';
+import { formatNaira } from '@/utils/format';
 
 const Home = () => {
 	const { data: overview } = useOverviewQuery();
@@ -15,29 +16,48 @@ const Home = () => {
 
 	return (
 		<div>
-			<div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
+			<div className='flex justify-between items-center mb-6'>
+				<h1 className='text-3xl font-bold'>Home</h1>
+			</div>
+			<div className='*:data-[slot=card]:shadow-xs grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5'>
 				<Card>
 					<CardHeader>
 						<CardDescription>Total Stores</CardDescription>
-						<CardTitle>{overview.totalStores}</CardTitle>
+						<CardTitle className='@[250px]/card:text-3xl text-2xl font-semibold tabular-nums'>
+							{overview.totalStores}
+						</CardTitle>
 					</CardHeader>
 				</Card>
 				<Card>
 					<CardHeader>
 						<CardDescription>Total Orders</CardDescription>
-						<CardTitle>{overview.totalOrders}</CardTitle>
+						<CardTitle className='@[250px]/card:text-3xl text-2xl font-semibold tabular-nums'>
+							{overview.totalOrders}
+						</CardTitle>
 					</CardHeader>
 				</Card>
 				<Card>
 					<CardHeader>
 						<CardDescription>Total Products</CardDescription>
-						<CardTitle>{overview.totalProducts}</CardTitle>
+						<CardTitle className='@[250px]/card:text-3xl text-2xl font-semibold tabular-nums'>
+							{overview.totalProducts}
+						</CardTitle>
 					</CardHeader>
 				</Card>
 				<Card>
 					<CardHeader>
 						<CardDescription>Total Users</CardDescription>
-						<CardTitle>{overview.totalUsers}</CardTitle>
+						<CardTitle className='@[250px]/card:text-3xl text-2xl font-semibold tabular-nums'>
+							{overview.totalUsers}
+						</CardTitle>
+					</CardHeader>
+				</Card>
+				<Card>
+					<CardHeader>
+						<CardDescription>Total Revenue</CardDescription>
+						<CardTitle className='@[250px]/card:text-3xl text-2xl font-semibold tabular-nums'>
+							{formatNaira(overview.totalRevenue)}
+						</CardTitle>
 					</CardHeader>
 				</Card>
 			</div>
