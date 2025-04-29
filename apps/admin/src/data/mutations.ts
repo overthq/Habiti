@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import {
 	CreateAdminBody,
@@ -30,14 +31,24 @@ export const useLoginMutation = () => {
 		mutationFn: (body: LoginBody) => login(body),
 		onSuccess: data => {
 			localStorage.setItem('accessToken', data.accessToken);
+			toast.success('Successfully logged in');
 			navigate('/stores');
+		},
+		onError: () => {
+			toast.error('Failed to log in');
 		}
 	});
 };
 
 export const useCreateAdminMutation = () => {
 	return useMutation({
-		mutationFn: (body: CreateAdminBody) => createAdmin(body)
+		mutationFn: (body: CreateAdminBody) => createAdmin(body),
+		onSuccess: () => {
+			toast.success('Admin created successfully');
+		},
+		onError: () => {
+			toast.error('Failed to create admin');
+		}
 	});
 };
 
@@ -47,8 +58,11 @@ export const useUpdateOrderMutation = (id: string) => {
 	return useMutation({
 		mutationFn: (body: UpdateOrderBody) => updateOrder(id, body),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['orders'] });
 			queryClient.invalidateQueries({ queryKey: ['orders', id] });
+			toast.success('Order updated successfully');
+		},
+		onError: () => {
+			toast.error('Failed to update order');
 		}
 	});
 };
@@ -59,8 +73,11 @@ export const useCancelOrderMutation = (id: string) => {
 	return useMutation({
 		mutationFn: () => cancelOrder(id),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['orders'] });
 			queryClient.invalidateQueries({ queryKey: ['orders', id] });
+			toast.success('Order cancelled successfully');
+		},
+		onError: () => {
+			toast.error('Failed to cancel order');
 		}
 	});
 };
@@ -71,7 +88,11 @@ export const useCreateProductMutation = () => {
 	return useMutation({
 		mutationFn: (body: CreateProductBody) => createProduct(body),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['products'] });
+			queryClient.invalidateQueries({ queryKey: ['products'], exact: true });
+			toast.success('Product created successfully');
+		},
+		onError: () => {
+			toast.error('Failed to create product');
 		}
 	});
 };
@@ -82,8 +103,11 @@ export const useUpdateProductMutation = (id: string) => {
 	return useMutation({
 		mutationFn: (body: UpdateProductBody) => updateProduct(id, body),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['products'] });
 			queryClient.invalidateQueries({ queryKey: ['products', id] });
+			toast.success('Product updated successfully');
+		},
+		onError: () => {
+			toast.error('Failed to update product');
 		}
 	});
 };
@@ -94,7 +118,11 @@ export const useDeleteProductMutation = (id: string) => {
 	return useMutation({
 		mutationFn: () => deleteProduct(id),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['products'] });
+			queryClient.invalidateQueries({ queryKey: ['products'], exact: true });
+			toast.success('Product deleted successfully');
+		},
+		onError: () => {
+			toast.error('Failed to delete product');
 		}
 	});
 };
@@ -105,8 +133,11 @@ export const useUpdateStoreMutation = (id: string) => {
 	return useMutation({
 		mutationFn: (body: UpdateStoreBody) => updateStore(id, body),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['stores'] });
 			queryClient.invalidateQueries({ queryKey: ['stores', id] });
+			toast.success('Store updated successfully');
+		},
+		onError: () => {
+			toast.error('Failed to update store');
 		}
 	});
 };
@@ -117,7 +148,11 @@ export const useDeleteStoreMutation = (id: string) => {
 	return useMutation({
 		mutationFn: () => deleteStore(id),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['stores'] });
+			queryClient.invalidateQueries({ queryKey: ['stores'], exact: true });
+			toast.success('Store deleted successfully');
+		},
+		onError: () => {
+			toast.error('Failed to delete store');
 		}
 	});
 };
@@ -128,8 +163,11 @@ export const useUpdateUserMutation = (id: string) => {
 	return useMutation({
 		mutationFn: (body: UpdateUserBody) => updateUser(id, body),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['users'] });
 			queryClient.invalidateQueries({ queryKey: ['users', id] });
+			toast.success('User updated successfully');
+		},
+		onError: () => {
+			toast.error('Failed to update user');
 		}
 	});
 };
