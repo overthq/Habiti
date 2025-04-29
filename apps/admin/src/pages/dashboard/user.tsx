@@ -12,9 +12,11 @@ const User = () => {
 	const { user } = data;
 
 	return (
-		<div className='p-6'>
-			<h1 className='text-2xl font-bold mb-4'>User Details</h1>
-			<div className='bg-white shadow rounded-lg p-6'>
+		<div className='space-y-6'>
+			<div className='flex justify-between items-center'>
+				<h1 className='text-3xl font-bold'>User</h1>
+			</div>
+			<div>
 				<div className='grid grid-cols-2 gap-4'>
 					<div>
 						<p className='text-gray-500'>ID</p>

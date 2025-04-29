@@ -1,124 +1,51 @@
-import React from 'react';
 import { useParams } from 'react-router';
 
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { useUpdateProductMutation } from '@/data/mutations';
 import { useProductQuery } from '@/data/queries';
-import { UpdateProductBody } from '@/data/types';
+import UpdateProductDialog from '@/components/product/update-product-dialog';
 
 const ProductPage = () => {
 	const { id } = useParams();
 	const { data: productData, isLoading } = useProductQuery(id as string);
-	const { mutateAsync: updateProduct } = useUpdateProductMutation(id as string);
-	const [formData, setFormData] = React.useState<UpdateProductBody>({});
 
 	if (isLoading || !id) {
 		return <div>Loading...</div>;
 	}
 
-	const product = productData?.product;
+	if (!productData?.product) {
+		return <div>Product not found</div>;
+	}
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		await updateProduct(formData);
-	};
-
-	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	) => {
-		const { name, value } = e.target;
-		setFormData(prev => ({
-			...prev,
-			[name]:
-				name === 'unitPrice' || name === 'quantity' ? Number(value) : value
-		}));
-	};
+	const product = productData.product;
 
 	return (
 		<div className='space-y-6'>
 			<div className='flex justify-between items-center'>
 				<h1 className='text-3xl font-bold'>{product?.name}</h1>
-				<Button onClick={handleSubmit} disabled={!Object.keys(formData).length}>
-					Save Changes
-				</Button>
+				<UpdateProductDialog product={product} />
 			</div>
 
-			<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-				<Card>
-					<CardHeader>
-						<CardTitle>Product Details</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<form className='space-y-4'>
-							<div className='space-y-2'>
-								<Label htmlFor='name'>Name</Label>
-								<Input
-									id='name'
-									name='name'
-									defaultValue={product?.name}
-									onChange={handleChange}
+			<Card>
+				<CardHeader>
+					<CardTitle>Product Images</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<div className='grid grid-cols-2 gap-4'>
+						{product?.images.map(image => (
+							<div
+								key={image.id}
+								className='relative aspect-square rounded-lg overflow-hidden'
+							>
+								<img
+									src={image.path}
+									alt={product.name}
+									className='object-cover'
 								/>
 							</div>
-							<div className='space-y-2'>
-								<Label htmlFor='description'>Description</Label>
-								<Textarea
-									id='description'
-									name='description'
-									defaultValue={product?.description}
-									onChange={handleChange}
-								/>
-							</div>
-							<div className='space-y-2'>
-								<Label htmlFor='unitPrice'>Unit Price</Label>
-								<Input
-									id='unitPrice'
-									name='unitPrice'
-									type='number'
-									step='0.01'
-									defaultValue={product?.unitPrice}
-									onChange={handleChange}
-								/>
-							</div>
-							<div className='space-y-2'>
-								<Label htmlFor='quantity'>Stock Quantity</Label>
-								<Input
-									id='quantity'
-									name='quantity'
-									type='number'
-									defaultValue={product?.quantity}
-									onChange={handleChange}
-								/>
-							</div>
-						</form>
-					</CardContent>
-				</Card>
-
-				<Card>
-					<CardHeader>
-						<CardTitle>Product Images</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<div className='grid grid-cols-2 gap-4'>
-							{product?.images.map(image => (
-								<div
-									key={image.id}
-									className='relative aspect-square rounded-lg overflow-hidden'
-								>
-									<img
-										src={image.path}
-										alt={product.name}
-										className='object-cover'
-									/>
-								</div>
-							))}
-						</div>
-					</CardContent>
-				</Card>
-			</div>
+						))}
+					</div>
+				</CardContent>
+			</Card>
 		</div>
 	);
 };
