@@ -24,28 +24,26 @@ import { Textarea } from '../ui/textarea';
 import { Product } from '@/data/types';
 
 interface UpdateProductDialogProps {
-	productId: string;
 	product: Product;
 }
 
 const updateProductFormSchema = z.object({
 	name: z.string().min(1),
 	description: z.string().min(1),
-	unitPrice: z.number().min(0)
+	unitPrice: z.number().min(0),
+	quantity: z.number().min(0)
 });
 
-const UpdateProductDialog = ({
-	productId,
-	product
-}: UpdateProductDialogProps) => {
-	const updateProductMutation = useUpdateProductMutation(productId);
+const UpdateProductDialog = ({ product }: UpdateProductDialogProps) => {
+	const updateProductMutation = useUpdateProductMutation(product.id);
 
 	const form = useForm<z.infer<typeof updateProductFormSchema>>({
 		resolver: zodResolver(updateProductFormSchema),
 		defaultValues: {
 			name: product.name,
 			description: product.description,
-			unitPrice: product.unitPrice
+			unitPrice: product.unitPrice,
+			quantity: product.quantity
 		}
 	});
 
@@ -53,7 +51,8 @@ const UpdateProductDialog = ({
 		updateProductMutation.mutate({
 			name: data.name,
 			description: data.description,
-			unitPrice: data.unitPrice
+			unitPrice: data.unitPrice,
+			quantity: data.quantity
 		});
 	};
 
@@ -107,6 +106,20 @@ const UpdateProductDialog = ({
 											<FormLabel>Unit Price</FormLabel>
 											<FormControl>
 												<Input {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+
+								<FormField
+									control={form.control}
+									name='quantity'
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Quantity</FormLabel>
+											<FormControl>
+												<Input type='number' {...field} />
 											</FormControl>
 											<FormMessage />
 										</FormItem>
