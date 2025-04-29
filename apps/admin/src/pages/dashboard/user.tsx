@@ -1,3 +1,5 @@
+import UpdateUserDialog from '@/components/user/update-user-dialog';
+import UserOrders from '@/components/user/user-orders';
 import { useUserQuery } from '@/data/queries';
 import { useParams } from 'react-router';
 
@@ -50,6 +52,8 @@ const User = () => {
 					</div>
 				</div>
 			</div>
+			<UpdateUserDialog user={user} />
+			<UserOrders user={user} />
 		</div>
 	);
 };

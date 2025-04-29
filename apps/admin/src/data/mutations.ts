@@ -6,7 +6,8 @@ import {
 	UpdateOrderBody,
 	CreateProductBody,
 	UpdateProductBody,
-	UpdateStoreBody
+	UpdateStoreBody,
+	UpdateUserBody
 } from './types';
 import {
 	login,
@@ -17,7 +18,8 @@ import {
 	updateProduct,
 	deleteProduct,
 	updateStore,
-	deleteStore
+	deleteStore,
+	updateUser
 } from './requests';
 import { useNavigate } from 'react-router';
 
@@ -116,6 +118,18 @@ export const useDeleteStoreMutation = (id: string) => {
 		mutationFn: () => deleteStore(id),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['stores'] });
+		}
+	});
+};
+
+export const useUpdateUserMutation = (id: string) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (body: UpdateUserBody) => updateUser(id, body),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['users'] });
+			queryClient.invalidateQueries({ queryKey: ['users', id] });
 		}
 	});
 };
