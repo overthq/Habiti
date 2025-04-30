@@ -128,7 +128,7 @@ const UpdateProductDialog = ({ product }: UpdateProductDialogProps) => {
 							</div>
 
 							<DialogFooter>
-								<Button type='submit'>Update</Button>
+								<Button type='submit'>Save changes</Button>
 							</DialogFooter>
 						</div>
 					</DialogContent>
