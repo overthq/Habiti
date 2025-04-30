@@ -1,6 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { MoreHorizontal } from 'lucide-react';
-import { useNavigate } from 'react-router';
+import { MoreVertical } from 'lucide-react';
+import { Link, useNavigate } from 'react-router';
 
 import { useOrdersQuery } from '@/data/queries';
 import { Order } from '@/data/types';
@@ -43,7 +43,13 @@ const columns: ColumnDef<Order>[] = [
 	{
 		accessorFn: row => row.user.name,
 		header: 'Customer',
-		cell: ({ row }) => row.original.user.name
+		cell: ({ row }) => (
+			<Link to={`/orders/${row.original.id}`}>{row.original.user.name}</Link>
+		)
+	},
+	{
+		header: 'Store',
+		accessorKey: 'store.name'
 	},
 	{
 		accessorKey: 'total',
@@ -68,7 +74,7 @@ const columns: ColumnDef<Order>[] = [
 					<DropdownMenuTrigger asChild>
 						<Button variant='ghost' className='h-8 w-8 p-0'>
 							<span className='sr-only'>Open menu</span>
-							<MoreHorizontal />
+							<MoreVertical />
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align='end'>

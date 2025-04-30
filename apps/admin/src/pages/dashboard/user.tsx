@@ -1,3 +1,5 @@
+import UpdateUserDialog from '@/components/user/update-user-dialog';
+import UserOrders from '@/components/user/user-orders';
 import { useUserQuery } from '@/data/queries';
 import { useParams } from 'react-router';
 
@@ -12,25 +14,27 @@ const User = () => {
 	const { user } = data;
 
 	return (
-		<div className='p-6'>
-			<h1 className='text-2xl font-bold mb-4'>User Details</h1>
-			<div className='bg-white shadow rounded-lg p-6'>
+		<div className='space-y-6'>
+			<div className='flex justify-between items-center'>
+				<h1 className='text-3xl font-bold'>User</h1>
+			</div>
+			<div>
 				<div className='grid grid-cols-2 gap-4'>
 					<div>
 						<p className='text-gray-500'>ID</p>
-						<p className='font-medium'>{user.id}</p>
+						<p>{user.id}</p>
 					</div>
 					<div>
 						<p className='text-gray-500'>Name</p>
-						<p className='font-medium'>{user.name}</p>
+						<p>{user.name}</p>
 					</div>
 					<div>
 						<p className='text-gray-500'>Email</p>
-						<p className='font-medium'>{user.email}</p>
+						<p>{user.email}</p>
 					</div>
 					<div>
 						<p className='text-gray-500'>Status</p>
-						<p className='font-medium'>
+						<p>
 							<span
 								className={`px-2 py-1 rounded text-sm ${user.suspended ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}
 							>
@@ -40,18 +44,16 @@ const User = () => {
 					</div>
 					<div>
 						<p className='text-gray-500'>Created At</p>
-						<p className='font-medium'>
-							{new Date(user.createdAt).toLocaleString()}
-						</p>
+						<p>{new Date(user.createdAt).toLocaleString()}</p>
 					</div>
 					<div>
 						<p className='text-gray-500'>Updated At</p>
-						<p className='font-medium'>
-							{new Date(user.updatedAt).toLocaleString()}
-						</p>
+						<p>{new Date(user.updatedAt).toLocaleString()}</p>
 					</div>
 				</div>
 			</div>
+			<UpdateUserDialog user={user} />
+			<UserOrders user={user} />
 		</div>
 	);
 };

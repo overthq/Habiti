@@ -106,6 +106,8 @@ const Cart: React.FC = () => {
 
 					<Separator style={{ margin: 16 }} />
 
+					<Spacer y={8} />
+
 					<CartTotal cart={cart} />
 
 					<View style={{ paddingTop: 16, paddingHorizontal: 16 }}>

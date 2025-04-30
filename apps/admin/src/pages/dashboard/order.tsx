@@ -4,7 +4,6 @@ import { useParams } from 'react-router';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
 	Select,
 	SelectContent,
@@ -53,7 +52,9 @@ const OrderDetailPage = () => {
 	return (
 		<div className='space-y-6'>
 			<div className='flex justify-between items-center'>
-				<h1 className='text-3xl font-bold'>Order #{order?.id}</h1>
+				<h1 className='text-3xl font-bold'>
+					{order?.store.name} Order #{order?.serialNumber}
+				</h1>
 				<div className='flex items-center gap-4'>
 					<Badge
 						variant={
@@ -86,74 +87,64 @@ const OrderDetailPage = () => {
 				</div>
 			</div>
 
-			<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-				<Card>
-					<CardHeader>
-						<CardTitle>Order Details</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<dl className='space-y-4'>
-							<div>
-								<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-									Customer
-								</dt>
-								<dd className='mt-1'>{order?.user.name}</dd>
-							</div>
-							<div>
-								<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-									Store
-								</dt>
-								<dd className='mt-1'>{order?.store.name}</dd>
-							</div>
-							<div>
-								<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-									Total
-								</dt>
-								<dd className='mt-1'>{formatNaira(order?.total || 0)}</dd>
-							</div>
-							<div>
-								<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-									Date
-								</dt>
-								<dd className='mt-1'>
-									{new Date(order?.createdAt || '').toLocaleDateString()}
-								</dd>
-							</div>
-						</dl>
-					</CardContent>
-				</Card>
+			<div>
+				<p className='text-lg font-bold'>Order Details</p>
+				<dl className='space-y-4'>
+					<div>
+						<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+							Customer
+						</dt>
+						<dd className='mt-1'>{order?.user.name}</dd>
+					</div>
+					<div>
+						<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+							Store
+						</dt>
+						<dd className='mt-1'>{order?.store.name}</dd>
+					</div>
+					<div>
+						<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+							Total
+						</dt>
+						<dd className='mt-1'>{formatNaira(order?.total || 0)}</dd>
+					</div>
+					<div>
+						<dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+							Date
+						</dt>
+						<dd className='mt-1'>
+							{new Date(order?.createdAt || '').toLocaleDateString()}
+						</dd>
+					</div>
+				</dl>
+			</div>
 
-				<Card>
-					<CardHeader>
-						<CardTitle>Products</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<div className='rounded-md border'>
-							<Table>
-								<TableHeader>
-									<TableRow>
-										<TableHead>Product</TableHead>
-										<TableHead>Quantity</TableHead>
-										<TableHead>Unit Price</TableHead>
-										<TableHead>Total</TableHead>
-									</TableRow>
-								</TableHeader>
-								<TableBody>
-									{order?.products.map(item => (
-										<TableRow key={item.product.id}>
-											<TableCell>{item.product.name}</TableCell>
-											<TableCell>{item.quantity}</TableCell>
-											<TableCell>{formatNaira(item.unitPrice)}</TableCell>
-											<TableCell>
-												{formatNaira(item.quantity * item.unitPrice)}
-											</TableCell>
-										</TableRow>
-									))}
-								</TableBody>
-							</Table>
-						</div>
-					</CardContent>
-				</Card>
+			<div>
+				<p className='text-lg font-bold'>Products</p>
+				<div className='rounded-md border'>
+					<Table>
+						<TableHeader>
+							<TableRow>
+								<TableHead>Product</TableHead>
+								<TableHead>Quantity</TableHead>
+								<TableHead>Unit Price</TableHead>
+								<TableHead>Total</TableHead>
+							</TableRow>
+						</TableHeader>
+						<TableBody>
+							{order?.products.map(item => (
+								<TableRow key={item.product.id}>
+									<TableCell>{item.product.name}</TableCell>
+									<TableCell>{item.quantity}</TableCell>
+									<TableCell>{formatNaira(item.unitPrice)}</TableCell>
+									<TableCell>
+										{formatNaira(item.quantity * item.unitPrice)}
+									</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+				</div>
 			</div>
 		</div>
 	);

@@ -69,6 +69,7 @@ export interface Order {
 	id: string;
 	userId: string;
 	storeId: string;
+	serialNumber: number;
 	user: User;
 	store: Store;
 	products: OrderProduct[];
