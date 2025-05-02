@@ -24,6 +24,9 @@ const Footer = () => {
 								<Link href='/privacy-policy'>Privacy Policy</Link>
 							</li>
 							<li className='mb-2'>
+								<Link href='/acceptable-use'>Acceptable Use Policy</Link>
+							</li>
+							<li className='mb-2'>
 								<Link href='/support'>Support</Link>
 							</li>
 						</ul>
