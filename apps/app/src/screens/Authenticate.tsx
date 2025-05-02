@@ -30,13 +30,16 @@ const Authenticate = () => {
 	const { goBack } = useNavigation();
 
 	const onSubmit = async (values: AuthenticateFormValues) => {
-		const { error, data } = await authenticate({ input: values });
+		if (values.email && values.password) {
+			const { error, data } = await authenticate({
+				input: { email: values.email, password: values.password }
+			});
 
-		if (error) {
-			console.log({ error });
-		} else if (data?.authenticate) {
-			const { accessToken, userId } = data.authenticate;
-			logIn(userId, accessToken);
+			if (error) {
+				console.log(error);
+			} else if (data?.authenticate) {
+				logIn(data.authenticate.userId, data.authenticate.accessToken);
+			}
 		}
 	};
 
