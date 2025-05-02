@@ -1,3 +1,5 @@
+import { fonts } from './typography';
+
 export const spacing = {
 	small: 4,
 	regular: 8,
@@ -145,7 +147,8 @@ const dark = {
 			primary: 'rgb(10, 132, 255)',
 			text: 'rgb(229, 229, 231)'
 		},
-		dark: true
+		dark: true,
+		fonts
 	},
 	statusBar: 'light',
 	row: {
@@ -234,7 +237,8 @@ const light = {
 			primary: 'rgb(0, 122, 255)',
 			text: 'rgb(28, 28, 30)'
 		},
-		dark: false
+		dark: false,
+		fonts
 	},
 	statusBar: 'dark',
 	row: {

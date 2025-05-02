@@ -1,5 +1,9 @@
 import { useTheme } from '@habiti/components';
-import { NavigationContainer } from '@react-navigation/native';
+import {
+	DarkTheme,
+	DefaultTheme,
+	NavigationContainer
+} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // import * as Linking from 'expo-linking';
 import { StatusBar } from 'expo-status-bar';
@@ -38,12 +42,10 @@ const Routes: React.FC = () => {
 	// 	prefixes: [prefix, 'https://habiti.app']
 	// };
 
-	// Landing, Register, Authenticate, Verify all fine.
-
 	return (
 		<Provider value={client}>
 			<StatusBar style={theme.statusBar} />
-			<NavigationContainer /*theme={theme.navigation} /*linking={linking}*/>
+			<NavigationContainer theme={theme.navigation} /*linking={linking}*/>
 				<AppStack.Navigator
 					id='AppStack'
 					screenOptions={{ headerShown: false }}
