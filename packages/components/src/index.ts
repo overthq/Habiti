@@ -26,3 +26,4 @@ export { default as Spacer } from './Spacer';
 export { default as TextButton } from './TextButton';
 export { useTheme, ThemeProvider } from './Theme';
 export { default as Typography } from './Typography';
+export { themes } from './styles/theme';

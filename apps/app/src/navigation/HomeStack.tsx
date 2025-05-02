@@ -9,12 +9,12 @@ import { HomeStackParamList } from '../types/navigation';
 
 const HomeNavigator = createNativeStackNavigator<
 	HomeStackParamList,
-	'HomeNavigator'
+	'HomeStack'
 >();
 
 const HomeStack = () => {
 	return (
-		<HomeNavigator.Navigator id='HomeNavigator'>
+		<HomeNavigator.Navigator id='HomeStack'>
 			<HomeNavigator.Screen
 				name='Home.Main'
 				component={Home}

@@ -138,14 +138,13 @@ const dark = {
 		}
 	},
 	navigation: {
-		// Default theme from react-navigation
 		colors: {
-			background: 'rgb(1, 1, 1)',
-			border: 'rgb(39, 39, 41)',
+			background: palette.neutral.n950,
+			border: palette.neutral.n800,
 			card: 'rgb(18, 18, 18)',
 			notification: 'rgb(255, 69, 58)',
 			primary: 'rgb(10, 132, 255)',
-			text: 'rgb(229, 229, 231)'
+			text: palette.neutral.n50
 		},
 		dark: true,
 		fonts
@@ -161,9 +160,9 @@ const dark = {
 
 const light = {
 	text: {
-		primary: palette.neutral.n700,
+		primary: palette.neutral.n800,
 		secondary: palette.neutral.n600,
-		tertiary: palette.neutral.n100,
+		tertiary: palette.neutral.n400,
 		disabled: palette.neutral.n400,
 		error: palette.red.r700,
 		label: palette.neutral.n600,

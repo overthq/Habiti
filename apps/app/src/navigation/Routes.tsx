@@ -1,9 +1,5 @@
 import { useTheme } from '@habiti/components';
-import {
-	DarkTheme,
-	DefaultTheme,
-	NavigationContainer
-} from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // import * as Linking from 'expo-linking';
 import { StatusBar } from 'expo-status-bar';
@@ -82,43 +78,6 @@ const Routes: React.FC = () => {
 			</NavigationContainer>
 		</Provider>
 	);
-
-	// <Provider value={client}>
-	// 	<NavigationContainer /*theme={theme.navigation} /*linking={linking}*/>
-	// 		<AppStack.Navigator screenOptions={{ headerShown: false }}>
-	{
-		accessToken ? (
-			<>
-				<AppStack.Screen name='Main' component={MainTabNavigator} />
-				<AppStack.Group screenOptions={{ headerShown: true }}>
-					<AppStack.Screen name='Cart' component={Cart} />
-					<AppStack.Group screenOptions={{ presentation: 'modal' }}>
-						<AppStack.Screen
-							name='Product'
-							component={Product}
-							options={{ headerTitle: '', gestureDirection: 'vertical' }}
-						/>
-						<AppStack.Screen name='Add Card' component={AddCardWebview} />
-						<AppStack.Screen
-							name='Modal.AddDeliveryAddress'
-							component={AddDeliveryAddress}
-							options={{ headerTitle: 'Add Delivery Address' }}
-						/>
-					</AppStack.Group>
-				</AppStack.Group>
-			</>
-		) : (
-			<>
-				<AppStack.Screen name='Landing' component={Landing} />
-				<AppStack.Screen name='Register' component={Onboarding} />
-				<AppStack.Screen name='Authenticate' component={Authenticate} />
-				<AppStack.Screen name='Verify' component={Verify} />
-			</>
-		);
-	}
-	// 		</AppStack.Navigator>
-	// 	</NavigationContainer>
-	// </Provider>
 };
 
 export default Routes;

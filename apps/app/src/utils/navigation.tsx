@@ -1,4 +1,4 @@
-import { Icon, IconType } from '@habiti/components';
+import { Icon, IconType, themes } from '@habiti/components';
 import { NavigationProp, RouteProp } from '@react-navigation/native';
 import React from 'react';
 
@@ -19,8 +19,8 @@ export const tabScreenOptions =
 	(themeName: 'light' | 'dark') =>
 	({ route }: { route: RouteProp<MainTabParamList> }) => ({
 		headerShown: false,
-		tabBarActiveTintColor: themeName === 'light' ? 'black' : 'white',
-		tabBarInactiveTintColor: 'gray',
+		tabBarActiveTintColor: themes[themeName].text.primary,
+		tabBarInactiveTintColor: themes[themeName].text.tertiary,
 		tabBarShowLabel: false,
 		tabBarIcon: ({ color }: { color: string }) => (
 			<Icon name={getIcon(route.name)} color={color} size={28} />

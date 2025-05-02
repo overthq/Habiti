@@ -1,8 +1,10 @@
 import React from 'react';
-import { Icon, Typography, useTheme } from '@habiti/components';
-import { Pressable, StyleSheet, TextInput } from 'react-native';
+import { Icon, TextButton, Typography, useTheme } from '@habiti/components';
+import { StyleSheet, TextInput } from 'react-native';
 import Animated, {
+	FadeIn,
 	FadeInUp,
+	FadeOut,
 	FadeOutUp,
 	LinearTransition
 } from 'react-native-reanimated';
@@ -83,10 +85,12 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 					/>
 				</Animated.View>
 				{searchOpen && (
-					<Animated.View style={{ marginLeft: 12 }}>
-						<Pressable onPress={cancel}>
-							<Typography>Cancel</Typography>
-						</Pressable>
+					<Animated.View
+						style={{ marginLeft: 12 }}
+						entering={FadeIn.delay(50)}
+						exiting={FadeOut}
+					>
+						<TextButton onPress={cancel}>Cancel</TextButton>
 					</Animated.View>
 				)}
 			</Animated.View>

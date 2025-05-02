@@ -4,11 +4,14 @@ import StoreStack from './StoreStack';
 import Explore from '../screens/Explore';
 import { ExploreStackParamList } from '../types/navigation';
 
-const ExploreNavigator = createNativeStackNavigator<ExploreStackParamList>();
+const ExploreNavigator = createNativeStackNavigator<
+	ExploreStackParamList,
+	'ExploreStack'
+>();
 
 const ExploreStack = () => {
 	return (
-		<ExploreNavigator.Navigator>
+		<ExploreNavigator.Navigator id='ExploreStack'>
 			<ExploreNavigator.Screen
 				name='Explore.Main'
 				component={Explore}
