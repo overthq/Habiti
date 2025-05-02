@@ -10,8 +10,6 @@ const icons: Record<keyof MainTabParamList, IconType> = {
 	Store: 'shopping-bag'
 };
 
-export const getIcon = (route: keyof MainTabParamList) => icons[route];
-
 export const tabScreenOptions =
 	(themeName: 'light' | 'dark') =>
 	({ route }: { route: RouteProp<MainTabParamList> }) => ({
@@ -20,6 +18,6 @@ export const tabScreenOptions =
 		tabBarInactiveTintColor: themes[themeName].text.tertiary,
 		tabBarShowLabel: false,
 		tabBarIcon: ({ color }: { color: string }) => (
-			<Icon name={getIcon(route.name)} color={color} size={28} />
+			<Icon name={icons[route.name]} color={color} size={28} />
 		)
 	});
