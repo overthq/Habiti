@@ -31,7 +31,7 @@ const Routes: React.FC = () => {
 	return (
 		<Provider value={client}>
 			<StatusBar style={getStatusBarStyle(name)} />
-			<NavigationContainer /*theme={theme.navigation}*/>
+			<NavigationContainer theme={theme.navigation}>
 				<BottomSheetModalProvider>
 					<AppStack.Navigator
 						id='AppStack'

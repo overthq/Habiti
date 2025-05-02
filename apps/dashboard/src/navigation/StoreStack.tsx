@@ -10,11 +10,14 @@ import StorePayouts from '../screens/StorePayouts';
 import StoreSettings from '../screens/StoreSettings';
 import { StoreStackParamList } from '../types/navigation';
 
-const StoreStack = createNativeStackNavigator<StoreStackParamList>();
+const StoreStack = createNativeStackNavigator<
+	StoreStackParamList,
+	'StoreStack'
+>();
 
 const StoreStackNavigator = () => {
 	return (
-		<StoreStack.Navigator initialRouteName='StoreHome'>
+		<StoreStack.Navigator id='StoreStack' initialRouteName='StoreHome'>
 			<StoreStack.Screen
 				name='StoreHome'
 				component={Store}

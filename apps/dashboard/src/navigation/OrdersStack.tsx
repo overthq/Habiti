@@ -6,10 +6,13 @@ import Orders from '../screens/Orders';
 import Product from '../screens/Product';
 import { OrdersStackParamList } from '../types/navigation';
 
-const OrdersStack = createNativeStackNavigator<OrdersStackParamList>();
+const OrdersStack = createNativeStackNavigator<
+	OrdersStackParamList,
+	'OrdersStack'
+>();
 
 const OrdersStackNavigator = () => (
-	<OrdersStack.Navigator initialRouteName='OrdersList'>
+	<OrdersStack.Navigator id='OrdersStack' initialRouteName='OrdersList'>
 		<OrdersStack.Screen
 			name='OrdersList'
 			component={Orders}

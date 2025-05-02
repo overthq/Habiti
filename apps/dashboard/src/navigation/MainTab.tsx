@@ -9,13 +9,14 @@ import StoreStackNavigator from './StoreStack';
 import { MainTabParamList } from '../types/navigation';
 import { getIcon } from '../utils/navigation';
 
-const MainTab = createBottomTabNavigator<MainTabParamList>();
+const MainTab = createBottomTabNavigator<MainTabParamList, 'MainTab'>();
 
 const MainTabNavigator = () => {
 	const { theme } = useTheme();
 
 	return (
 		<MainTab.Navigator
+			id='MainTab'
 			screenOptions={({ route }) => ({
 				tabBarIcon: ({ color }) => (
 					<Icon name={getIcon(route.name)} color={color} size={28} />
