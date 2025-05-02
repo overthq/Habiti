@@ -1,5 +1,4 @@
 import React from 'react';
-import { ThemeProvider } from 'next-themes';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 import { Toaster } from 'sonner';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -29,10 +28,8 @@ const queryClient = new QueryClient();
 export default function Root() {
 	return (
 		<QueryClientProvider client={queryClient}>
-			<ThemeProvider>
-				<Outlet />
-				<Toaster />
-			</ThemeProvider>
+			<Outlet />
+			<Toaster />
 		</QueryClientProvider>
 	);
 }
