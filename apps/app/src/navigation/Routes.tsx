@@ -48,13 +48,49 @@ const Routes: React.FC = () => {
 					id='AppStack'
 					screenOptions={{ headerShown: false }}
 				>
-					<>
-						<AppStack.Screen name='Landing' component={Landing} />
-						<AppStack.Screen name='Main' component={MainTabNavigator} />
-						<AppStack.Screen name='Register' component={Onboarding} />
-						<AppStack.Screen name='Authenticate' component={Authenticate} />
-						<AppStack.Screen name='Verify' component={Verify} />
-						<AppStack.Screen name='Cart' component={Cart} />
+					{accessToken ? (
+						<>
+							<AppStack.Screen name='Main' component={MainTabNavigator} />
+							<AppStack.Group screenOptions={{ headerShown: true }}>
+								<AppStack.Screen name='Cart' component={Cart} />
+								<AppStack.Group screenOptions={{ presentation: 'modal' }}>
+									<AppStack.Screen
+										name='Product'
+										component={Product}
+										options={{ headerTitle: '', gestureDirection: 'vertical' }}
+									/>
+									<AppStack.Screen name='Add Card' component={AddCardWebview} />
+									<AppStack.Screen
+										name='Modal.AddDeliveryAddress'
+										component={AddDeliveryAddress}
+										options={{ headerTitle: 'Add Delivery Address' }}
+									/>
+								</AppStack.Group>
+							</AppStack.Group>
+						</>
+					) : (
+						<>
+							<AppStack.Screen name='Landing' component={Landing} />
+							<AppStack.Screen name='Register' component={Onboarding} />
+							<AppStack.Screen name='Authenticate' component={Authenticate} />
+							<AppStack.Screen name='Verify' component={Verify} />
+						</>
+					)}
+				</AppStack.Navigator>
+			</NavigationContainer>
+		</Provider>
+	);
+
+	// <Provider value={client}>
+	// 	<NavigationContainer /*theme={theme.navigation} /*linking={linking}*/>
+	// 		<AppStack.Navigator screenOptions={{ headerShown: false }}>
+	{
+		accessToken ? (
+			<>
+				<AppStack.Screen name='Main' component={MainTabNavigator} />
+				<AppStack.Group screenOptions={{ headerShown: true }}>
+					<AppStack.Screen name='Cart' component={Cart} />
+					<AppStack.Group screenOptions={{ presentation: 'modal' }}>
 						<AppStack.Screen
 							name='Product'
 							component={Product}
@@ -66,43 +102,18 @@ const Routes: React.FC = () => {
 							component={AddDeliveryAddress}
 							options={{ headerTitle: 'Add Delivery Address' }}
 						/>
-					</>
-				</AppStack.Navigator>
-			</NavigationContainer>
-		</Provider>
-	);
-
-	// <Provider value={client}>
-	// 	<NavigationContainer /*theme={theme.navigation} /*linking={linking}*/>
-	// 		<AppStack.Navigator screenOptions={{ headerShown: false }}>
-	// 			{accessToken ? (
-	// 				<>
-	// 					<AppStack.Screen name='Main' component={MainTabNavigator} />
-	// 					<AppStack.Group screenOptions={{ headerShown: true }}>
-	// 						<AppStack.Screen name='Cart' component={Cart} />
-	// 						<AppStack.Group screenOptions={{ presentation: 'modal' }}>
-	// 							<AppStack.Screen
-	// 								name='Product'
-	// 								component={Product}
-	// 								options={{ headerTitle: '', gestureDirection: 'vertical' }}
-	// 							/>
-	// 							<AppStack.Screen name='Add Card' component={AddCardWebview} />
-	// 							<AppStack.Screen
-	// 								name='Modal.AddDeliveryAddress'
-	// 								component={AddDeliveryAddress}
-	// 								options={{ headerTitle: 'Add Delivery Address' }}
-	// 							/>
-	// 						</AppStack.Group>
-	// 					</AppStack.Group>
-	// 				</>
-	// 			) : (
-	// 				<>
-	// 					<AppStack.Screen name='Landing' component={Landing} />
-	// 					<AppStack.Screen name='Register' component={Onboarding} />
-	// 					<AppStack.Screen name='Authenticate' component={Authenticate} />
-	// 					<AppStack.Screen name='Verify' component={Verify} />
-	// 				</>
-	// 			)}
+					</AppStack.Group>
+				</AppStack.Group>
+			</>
+		) : (
+			<>
+				<AppStack.Screen name='Landing' component={Landing} />
+				<AppStack.Screen name='Register' component={Onboarding} />
+				<AppStack.Screen name='Authenticate' component={Authenticate} />
+				<AppStack.Screen name='Verify' component={Verify} />
+			</>
+		);
+	}
 	// 		</AppStack.Navigator>
 	// 	</NavigationContainer>
 	// </Provider>

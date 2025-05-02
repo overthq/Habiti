@@ -1,9 +1,15 @@
 import React from 'react';
-import { Screen, Spacer, Typography } from '@habiti/components';
+import Animated, { LinearTransition } from 'react-native-reanimated';
+import { Spacer, Typography, useTheme } from '@habiti/components';
 
 const HomeEmpty = () => {
+	const { theme } = useTheme();
+
 	return (
-		<Screen style={{ padding: 16 }}>
+		<Animated.View
+			style={{ flex: 1, backgroundColor: theme.screen.background, padding: 16 }}
+			layout={LinearTransition}
+		>
 			<Typography weight='medium' size='xxlarge' variant='secondary'>
 				Welcome to Habiti
 			</Typography>
@@ -11,7 +17,7 @@ const HomeEmpty = () => {
 			<Typography variant='secondary'>
 				You can get started by searching for stores or products above.
 			</Typography>
-		</Screen>
+		</Animated.View>
 	);
 };
 

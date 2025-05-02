@@ -35,11 +35,19 @@ const Register: React.FC = () => {
 	});
 
 	const onSubmit = async (values: RegisterFormValues) => {
-		const { error } = await register({ input: values });
-		if (error) {
-			console.log(error);
-		} else {
-			navigate('Authenticate');
+		if (values.email && values.name) {
+			const { error } = await register({
+				input: {
+					email: values.email,
+					name: values.name,
+					password: values.password
+				}
+			});
+			if (error) {
+				console.log(error);
+			} else {
+				navigate('Authenticate');
+			}
 		}
 	};
 

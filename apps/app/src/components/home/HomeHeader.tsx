@@ -1,8 +1,7 @@
-import { Icon, Typography, useTheme } from '@habiti/components';
 import React from 'react';
-import { Pressable, View, StyleSheet } from 'react-native';
+import { Icon, Typography, useTheme } from '@habiti/components';
+import { Pressable, StyleSheet, TextInput } from 'react-native';
 import Animated, {
-	FadeInDown,
 	FadeInUp,
 	FadeOutUp,
 	LinearTransition
@@ -11,25 +10,49 @@ import Animated, {
 interface HomeHeaderProps {
 	searchOpen: boolean;
 	setSearchOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	searchTerm: string;
+	setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
 }
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const HomeHeader: React.FC<HomeHeaderProps> = ({
 	searchOpen,
-	setSearchOpen
+	setSearchOpen,
+	searchTerm,
+	setSearchTerm
 }) => {
+	const inputRef = React.useRef(null);
 	const { theme } = useTheme();
+
+	const handleFocus = React.useCallback(() => {
+		setSearchOpen(true);
+	}, []);
+
+	const handleBlur = React.useCallback(() => {
+		setSearchOpen(false);
+	}, []);
+
+	const cancel = React.useCallback(() => {
+		inputRef.current?.blur();
+		setSearchTerm('');
+	}, [inputRef.current]);
 
 	return (
 		<Animated.View
+			layout={LinearTransition}
 			style={[
 				styles.container,
-				{ borderBottomWidth: 0.5, borderBottomColor: theme.border.color }
+				{
+					borderBottomWidth: 0.5,
+					borderBottomColor: theme.border.color
+				}
 			]}
 		>
 			{!searchOpen && (
-				<Animated.View entering={FadeInUp} exiting={FadeOutUp}>
+				<Animated.View
+					entering={FadeInUp}
+					exiting={FadeOutUp}
+					style={{ paddingBottom: 8 }}
+				>
 					<Typography size='xxlarge' weight='bold'>
 						Home
 					</Typography>
@@ -37,27 +60,34 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 			)}
 			<Animated.View
 				layout={LinearTransition}
-				style={{ flexDirection: 'row', gap: 12 }}
+				style={{ flexDirection: 'row', alignItems: 'center' }}
 			>
-				<AnimatedPressable
-					style={[styles.search, { backgroundColor: theme.input.background }]}
-					onPress={() => setSearchOpen(!searchOpen)}
+				<Animated.View
+					style={[styles.input, { backgroundColor: theme.input.background }]}
+					layout={LinearTransition}
 				>
-					<Icon name='search' size={20} color={theme.input.placeholder} />
-					<Typography style={{ color: theme.input.placeholder }}>
-						Search all stores and products
-					</Typography>
-				</AnimatedPressable>
+					<Icon name='search' size={18} color={theme.text.secondary} />
+					<TextInput
+						ref={inputRef}
+						value={searchTerm}
+						placeholder='Search products and stores'
+						placeholderTextColor={theme.text.secondary}
+						inputMode='search'
+						style={[styles.inputText, { color: theme.input.text }]}
+						onChangeText={setSearchTerm} // TODO: Add debounce
+						autoCapitalize='none'
+						autoCorrect={false}
+						selectionColor={theme.text.primary}
+						onFocus={handleFocus}
+						onBlur={handleBlur}
+					/>
+				</Animated.View>
 				{searchOpen && (
-					<Pressable
-						style={[styles.search, { backgroundColor: theme.input.background }]}
-						onPress={() => setSearchOpen(!searchOpen)}
-					>
-						<Icon name='x' size={20} color={theme.input.placeholder} />
-						<Typography style={{ color: theme.input.placeholder }}>
-							Close search
-						</Typography>
-					</Pressable>
+					<Animated.View style={{ marginLeft: 12 }}>
+						<Pressable onPress={cancel}>
+							<Typography>Cancel</Typography>
+						</Pressable>
+					</Animated.View>
 				)}
 			</Animated.View>
 		</Animated.View>
@@ -67,21 +97,27 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 const styles = StyleSheet.create({
 	container: {
 		paddingHorizontal: 16,
-		paddingVertical: 12
+		paddingTop: 4,
+		paddingBottom: 12
 	},
 	title: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between'
 	},
-	search: {
-		marginTop: 12,
+	input: {
+		flex: 1,
 		flexDirection: 'row',
 		alignItems: 'center',
+		height: 36,
 		borderRadius: 6,
-		paddingHorizontal: 12,
-		paddingVertical: 8,
-		gap: 8
+		paddingHorizontal: 12
+	},
+	inputText: {
+		flex: 1,
+		marginLeft: 8,
+		fontSize: 16,
+		height: '100%'
 	}
 });
 
