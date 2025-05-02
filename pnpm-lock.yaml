@@ -114,9 +114,6 @@ importers:
       tailwind-merge:
         specifier: ^3.2.0
         version: 3.2.0
-      tailwindcss-animate:
-        specifier: ^1.0.7
-        version: 1.0.7(tailwindcss@4.1.5)
       zod:
         specifier: ^3.24.3
         version: 3.24.3
@@ -154,6 +151,9 @@ importers:
       tailwindcss:
         specifier: ^4.1.5
         version: 4.1.5
+      tw-animate-css:
+        specifier: ^1.2.9
+        version: 1.2.9
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -501,9 +501,6 @@ importers:
       tailwind-merge:
         specifier: ^2.6.0
         version: 2.6.0
-      tailwindcss-animate:
-        specifier: ^1.0.7
-        version: 1.0.7(tailwindcss@4.1.5)
       urql:
         specifier: ^4.2.2
         version: 4.2.2(@urql/core@5.1.1(graphql@16.11.0))(react@19.0.0)
@@ -6279,11 +6276,6 @@ packages:
 
   tailwind-merge@3.2.0:
     resolution: {integrity: sha512-FQT/OVqCD+7edmmJpsgCsY820RTD5AkBryuG5IUqR5YQZSdj5xlH5nLgH7YPths7WsLPSpSBNneJdM8aS8aeFA==}
-
-  tailwindcss-animate@1.0.7:
-    resolution: {integrity: sha512-bl6mpH3T7I3UFxuvDEXLxy/VuFxBk5bbzplh7tXI68mwMokNYd1t9qPBHlnyTwfa4JGC4zP516I1hYYtQ/vspA==}
-    peerDependencies:
-      tailwindcss: '>=3.0.0 || insiders'
 
   tailwindcss@4.1.5:
     resolution: {integrity: sha512-nYtSPfWGDiWgCkwQG/m+aX83XCwf62sBgg3bIlNiiOcggnS1x3uVRDAuyelBFL+vJdOPPCGElxv9DjHJjRHiVA==}
@@ -13704,10 +13696,6 @@ snapshots:
   tailwind-merge@2.6.0: {}
 
   tailwind-merge@3.2.0: {}
-
-  tailwindcss-animate@1.0.7(tailwindcss@4.1.5):
-    dependencies:
-      tailwindcss: 4.1.5
 
   tailwindcss@4.1.5: {}
 
