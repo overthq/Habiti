@@ -17,6 +17,7 @@
 		"@gorhom/bottom-sheet": "^5.1.2",
 		"@habiti/common": "workspace:*",
 		"@habiti/components": "workspace:*",
+		"@hookform/resolvers": "^5.0.1",
 		"@react-native-async-storage/async-storage": "2.1.2",
 		"@react-native-masked-view/masked-view": "0.3.2",
 		"@react-navigation/bottom-tabs": "^7.3.10",
@@ -52,6 +53,7 @@
 		"react-native-web": "~0.20.0",
 		"react-native-webview": "13.13.5",
 		"urql": "^4.2.2",
+		"zod": "^3.24.3",
 		"zustand": "^5.0.3"
 	},
 	"devDependencies": {
