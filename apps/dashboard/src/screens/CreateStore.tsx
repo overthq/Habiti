@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useCreateStoreMutation } from '../types/api';
+import { useShallow } from 'zustand/react/shallow';
 
 export interface CreateStoreFormValues {
 	name: string;
@@ -17,7 +18,7 @@ export interface CreateStoreFormValues {
 
 const CreateStore: React.FC = () => {
 	const [, createStore] = useCreateStoreMutation();
-	const setPreference = useStore(state => state.setPreference);
+	const setPreference = useStore(useShallow(state => state.setPreference));
 	const methods = useForm<CreateStoreFormValues>();
 	const { bottom } = useSafeAreaInsets();
 

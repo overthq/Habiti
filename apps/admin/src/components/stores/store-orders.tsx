@@ -1,7 +1,7 @@
 import { DataTable } from '../ui/data-table';
 import { useStoreOrdersQuery } from '@/data/queries';
-import { ColumnDef } from '@tanstack/react-table';
-import { Order } from '@/data/types';
+import { type ColumnDef } from '@tanstack/react-table';
+import { type Order } from '@/data/types';
 import { formatNaira } from '@/utils/format';
 
 const columns: ColumnDef<Order>[] = [

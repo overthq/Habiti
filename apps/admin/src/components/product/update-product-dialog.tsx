@@ -21,7 +21,7 @@ import {
 } from '../ui/form';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
-import { Product } from '@/data/types';
+import { type Product } from '@/data/types';
 
 interface UpdateProductDialogProps {
 	product: Product;

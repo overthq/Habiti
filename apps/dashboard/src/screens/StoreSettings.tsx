@@ -5,10 +5,11 @@ import { Alert } from 'react-native';
 import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useDeleteStoreMutation } from '../types/api';
+import { useShallow } from 'zustand/react/shallow';
 
 const StoreSettings = () => {
 	const [, deleteStore] = useDeleteStoreMutation();
-	const activeStore = useStore(({ activeStore }) => activeStore);
+	const activeStore = useStore(useShallow(({ activeStore }) => activeStore));
 	useGoBack();
 
 	const handleDeleteStore = () => {

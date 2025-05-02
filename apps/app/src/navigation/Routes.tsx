@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Provider } from 'urql';
-import { useShallow } from 'zustand/shallow';
+import { useShallow } from 'zustand/react/shallow';
 
 import MainTabNavigator from './MainTab';
 import useClient from '../hooks/useClient';
@@ -22,7 +22,7 @@ import { AppStackParamList } from '../types/navigation';
 
 // const prefix = Linking.createURL('/');
 
-const AppStack = createNativeStackNavigator<AppStackParamList>();
+const AppStack = createNativeStackNavigator<AppStackParamList, 'AppStack'>();
 
 const Routes: React.FC = () => {
 	const { theme } = useTheme();
@@ -31,49 +31,81 @@ const Routes: React.FC = () => {
 			accessToken: state.accessToken
 		}))
 	);
+
 	const client = useClient(accessToken);
 
 	// const linking = {
 	// 	prefixes: [prefix, 'https://habiti.app']
 	// };
 
+	// Landing, Register, Authenticate, Verify all fine.
+
 	return (
 		<Provider value={client}>
 			<StatusBar style={theme.statusBar} />
-			<NavigationContainer theme={theme.navigation} /*linking={linking}*/>
-				<AppStack.Navigator screenOptions={{ headerShown: false }}>
-					{accessToken ? (
-						<>
-							<AppStack.Screen name='Main' component={MainTabNavigator} />
-							<AppStack.Group screenOptions={{ headerShown: true }}>
-								<AppStack.Screen name='Cart' component={Cart} />
-								<AppStack.Group screenOptions={{ presentation: 'modal' }}>
-									<AppStack.Screen
-										name='Product'
-										component={Product}
-										options={{ headerTitle: '', gestureDirection: 'vertical' }}
-									/>
-									<AppStack.Screen name='Add Card' component={AddCardWebview} />
-									<AppStack.Screen
-										name='Modal.AddDeliveryAddress'
-										component={AddDeliveryAddress}
-										options={{ headerTitle: 'Add Delivery Address' }}
-									/>
-								</AppStack.Group>
-							</AppStack.Group>
-						</>
-					) : (
-						<>
-							<AppStack.Screen name='Landing' component={Landing} />
-							<AppStack.Screen name='Register' component={Onboarding} />
-							<AppStack.Screen name='Authenticate' component={Authenticate} />
-							<AppStack.Screen name='Verify' component={Verify} />
-						</>
-					)}
+			<NavigationContainer /*theme={theme.navigation} /*linking={linking}*/>
+				<AppStack.Navigator
+					id='AppStack'
+					screenOptions={{ headerShown: false }}
+				>
+					<>
+						<AppStack.Screen name='Landing' component={Landing} />
+						<AppStack.Screen name='Main' component={MainTabNavigator} />
+						<AppStack.Screen name='Register' component={Onboarding} />
+						<AppStack.Screen name='Authenticate' component={Authenticate} />
+						<AppStack.Screen name='Verify' component={Verify} />
+						<AppStack.Screen name='Cart' component={Cart} />
+						<AppStack.Screen
+							name='Product'
+							component={Product}
+							options={{ headerTitle: '', gestureDirection: 'vertical' }}
+						/>
+						<AppStack.Screen name='Add Card' component={AddCardWebview} />
+						<AppStack.Screen
+							name='Modal.AddDeliveryAddress'
+							component={AddDeliveryAddress}
+							options={{ headerTitle: 'Add Delivery Address' }}
+						/>
+					</>
 				</AppStack.Navigator>
 			</NavigationContainer>
 		</Provider>
 	);
+
+	// <Provider value={client}>
+	// 	<NavigationContainer /*theme={theme.navigation} /*linking={linking}*/>
+	// 		<AppStack.Navigator screenOptions={{ headerShown: false }}>
+	// 			{accessToken ? (
+	// 				<>
+	// 					<AppStack.Screen name='Main' component={MainTabNavigator} />
+	// 					<AppStack.Group screenOptions={{ headerShown: true }}>
+	// 						<AppStack.Screen name='Cart' component={Cart} />
+	// 						<AppStack.Group screenOptions={{ presentation: 'modal' }}>
+	// 							<AppStack.Screen
+	// 								name='Product'
+	// 								component={Product}
+	// 								options={{ headerTitle: '', gestureDirection: 'vertical' }}
+	// 							/>
+	// 							<AppStack.Screen name='Add Card' component={AddCardWebview} />
+	// 							<AppStack.Screen
+	// 								name='Modal.AddDeliveryAddress'
+	// 								component={AddDeliveryAddress}
+	// 								options={{ headerTitle: 'Add Delivery Address' }}
+	// 							/>
+	// 						</AppStack.Group>
+	// 					</AppStack.Group>
+	// 				</>
+	// 			) : (
+	// 				<>
+	// 					<AppStack.Screen name='Landing' component={Landing} />
+	// 					<AppStack.Screen name='Register' component={Onboarding} />
+	// 					<AppStack.Screen name='Authenticate' component={Authenticate} />
+	// 					<AppStack.Screen name='Verify' component={Verify} />
+	// 				</>
+	// 			)}
+	// 		</AppStack.Navigator>
+	// 	</NavigationContainer>
+	// </Provider>
 };
 
 export default Routes;

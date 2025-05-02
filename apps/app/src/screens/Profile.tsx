@@ -14,6 +14,7 @@ import ProfileRow from '../components/profile/ProfileRow';
 import UserCard from '../components/profile/UserCard';
 import useStore from '../state';
 import { ProfileStackParamList } from '../types/navigation';
+import { useShallow } from 'zustand/react/shallow';
 
 const PRIVACY_POLICY_URL = 'https://habiti.app/privacy-policy';
 const SUPPORT_URL = 'https://habiti.app/support';
@@ -35,7 +36,7 @@ const ACCEPTABLE_USE_URL = 'https://habiti.app/acceptable-use-policy';
 * Set up your own store*/
 
 const Profile: React.FC = () => {
-	const logOut = useStore(state => state.logOut);
+	const logOut = useStore(useShallow(state => state.logOut));
 	const { navigate } = useNavigation<NavigationProp<ProfileStackParamList>>();
 	const { top } = useSafeAreaInsets();
 

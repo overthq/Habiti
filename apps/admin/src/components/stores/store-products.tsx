@@ -1,7 +1,7 @@
 import { DataTable } from '../ui/data-table';
 import { useStoreProductsQuery } from '@/data/queries';
-import { ColumnDef } from '@tanstack/react-table';
-import { Product } from '@/data/types';
+import { type ColumnDef } from '@tanstack/react-table';
+import { type Product } from '@/data/types';
 import { formatNaira } from '@/utils/format';
 
 const columns: ColumnDef<Product>[] = [

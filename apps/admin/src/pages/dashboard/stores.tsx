@@ -1,5 +1,5 @@
-import { Store } from '@/data/types';
-import { ColumnDef } from '@tanstack/react-table';
+import { type Store } from '@/data/types';
+import { type ColumnDef } from '@tanstack/react-table';
 import { useStoresQuery } from '@/data/queries';
 import { DataTable } from '@/components/ui/data-table';
 import { Link } from 'react-router';

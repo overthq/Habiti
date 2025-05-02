@@ -22,8 +22,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 	const autoTheme = useColorScheme();
 
 	const parsed = React.useMemo(() => {
-		return theme === 'auto' ? (autoTheme ?? 'light') : theme;
-	}, [theme, autoTheme]);
+		return theme === 'auto' ? 'light' : theme;
+	}, [theme]);
 
 	const context = React.useMemo(
 		() => ({ name: parsed, theme: themes[parsed] }),

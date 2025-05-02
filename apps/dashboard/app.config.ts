@@ -27,6 +27,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	},
 	android: {
 		package: 'app.habiti.dashboard',
+		edgeToEdgeEnabled: true,
 		adaptiveIcon: {
 			foregroundImage: './assets/adaptive-icon.png',
 			backgroundColor: '#000000'

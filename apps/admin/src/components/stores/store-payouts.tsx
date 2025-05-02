@@ -1,7 +1,7 @@
 import { DataTable } from '../ui/data-table';
 import { useStorePayoutsQuery } from '@/data/queries';
-import { ColumnDef } from '@tanstack/react-table';
-import { Payout } from '@/data/types';
+import { type ColumnDef } from '@tanstack/react-table';
+import { type Payout } from '@/data/types';
 
 const columns: ColumnDef<Payout>[] = [
 	{

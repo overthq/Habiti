@@ -8,12 +8,13 @@ import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useManagersQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
+import { useShallow } from 'zustand/react/shallow';
 
 const Managers = () => {
 	const [{ data, fetching }, refetch] = useManagersQuery();
 	const [refreshing, setRefreshing] = React.useState(false);
 	useGoBack();
-	const userId = useStore(({ userId }) => userId);
+	const userId = useStore(useShallow(({ userId }) => userId));
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();

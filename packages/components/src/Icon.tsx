@@ -75,7 +75,12 @@ const icons = {
 	home: (
 		<Path d='M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' />
 	),
-	search: <Path d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' />,
+	search: (
+		<>
+			<Circle cx={11} cy={11} r={8} />
+			<Path d='m21 21-4.3-4.3' />
+		</>
+	),
 	'sliders-horizontal': (
 		<Path d='M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4' />
 	),

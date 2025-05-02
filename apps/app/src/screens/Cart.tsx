@@ -25,7 +25,7 @@ import useStore from '../state';
 import { useCreateOrderMutation, useCartQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 import useRefresh from '../hooks/useRefresh';
-import { useShallow } from 'zustand/shallow';
+import { useShallow } from 'zustand/react/shallow';
 
 // There is a need to master optimistic updates on this screen,
 // It is also important to make use of tasteful animations to make

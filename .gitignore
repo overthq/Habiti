@@ -1,6 +1,7 @@
 node_modules
 app/ios/Pods
 .env
+.env.local
 dump.rdb
 *.rdb
 *.tsbuildinfo

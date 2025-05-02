@@ -3,7 +3,7 @@ import React from 'react';
 
 import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
-import { useShallow } from 'zustand/shallow';
+import { useShallow } from 'zustand/react/shallow';
 
 type Theme = 'light' | 'dark' | 'auto';
 

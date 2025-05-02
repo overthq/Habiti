@@ -1,7 +1,7 @@
 import { useOrdersQuery } from '@/data/queries';
-import { Order, User } from '@/data/types';
+import { type Order, type User } from '@/data/types';
 import { DataTable } from '../ui/data-table';
-import { ColumnDef } from '@tanstack/react-table';
+import { type ColumnDef } from '@tanstack/react-table';
 import { formatNaira } from '@/utils/format';
 
 interface UserOrdersProps {
