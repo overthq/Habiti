@@ -1,6 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { OrderFilters, ProductFilters, StoreFilters } from './types';
+import {
+	type OrderFilters,
+	type ProductFilters,
+	type StoreFilters
+} from './types';
 import {
 	getOrders,
 	getOrder,

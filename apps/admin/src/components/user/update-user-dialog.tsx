@@ -8,7 +8,7 @@ import {
 	DialogTrigger
 } from '@/components/ui/dialog';
 import { Button } from '../ui/button';
-import { User } from '@/data/types';
+import { type User } from '@/data/types';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';

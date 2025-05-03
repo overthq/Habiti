@@ -2,13 +2,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import {
-	CreateAdminBody,
-	LoginBody,
-	UpdateOrderBody,
-	CreateProductBody,
-	UpdateProductBody,
-	UpdateStoreBody,
-	UpdateUserBody
+	type CreateAdminBody,
+	type LoginBody,
+	type UpdateOrderBody,
+	type CreateProductBody,
+	type UpdateProductBody,
+	type UpdateStoreBody,
+	type UpdateUserBody
 } from './types';
 import {
 	login,

@@ -8,11 +8,14 @@ import PaymentMethods from '../screens/PaymentMethods';
 import Profile from '../screens/Profile';
 import SettingsTheme from '../screens/SettingsTheme';
 import { ProfileStackParamList } from '../types/navigation';
-const ProfileNavigator = createNativeStackNavigator<ProfileStackParamList>();
+const ProfileNavigator = createNativeStackNavigator<
+	ProfileStackParamList,
+	'ProfileStack'
+>();
 
 const ProfileStack = () => {
 	return (
-		<ProfileNavigator.Navigator>
+		<ProfileNavigator.Navigator id='ProfileStack'>
 			<ProfileNavigator.Screen
 				name='Profile.Main'
 				component={Profile}

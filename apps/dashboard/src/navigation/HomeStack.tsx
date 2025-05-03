@@ -7,11 +7,11 @@ import Payouts from '../screens/Payouts';
 import Product from '../screens/Product';
 import { HomeStackParamList } from '../types/navigation';
 
-const HomeStack = createNativeStackNavigator<HomeStackParamList>();
+const HomeStack = createNativeStackNavigator<HomeStackParamList, 'HomeStack'>();
 
 const HomeStackNavigator = () => {
 	return (
-		<HomeStack.Navigator initialRouteName='Overview'>
+		<HomeStack.Navigator initialRouteName='Overview' id='HomeStack'>
 			<HomeStack.Screen
 				name='Overview'
 				component={Overview}

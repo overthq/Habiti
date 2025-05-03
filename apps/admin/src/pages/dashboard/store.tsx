@@ -1,7 +1,7 @@
 import { useParams } from 'react-router';
 
 import { useStoreQuery } from '@/data/queries';
-import { Store as StoreType } from '@/data/types';
+import { type Store as StoreType } from '@/data/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import StoreManagers from '@/components/stores/store-managers';
 import StoreProducts from '@/components/stores/store-products';

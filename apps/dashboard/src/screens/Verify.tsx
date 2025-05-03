@@ -7,11 +7,16 @@ import CodeInput from '../components/verify/CodeInput';
 import useStore from '../state';
 import { useVerifyMutation } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
+import { useShallow } from 'zustand/react/shallow';
 
 const Verify: React.FC = () => {
 	const [code, setCode] = React.useState('');
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Verify'>>();
-	const logIn = useStore(state => state.logIn);
+	const { logIn } = useStore(
+		useShallow(state => ({
+			logIn: state.logIn
+		}))
+	);
 	const [{ fetching }, verify] = useVerifyMutation();
 	const { email } = params;
 

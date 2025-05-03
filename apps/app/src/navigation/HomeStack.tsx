@@ -7,11 +7,14 @@ import Notifications from '../screens/Notifications';
 import Order from '../screens/Order';
 import { HomeStackParamList } from '../types/navigation';
 
-const HomeNavigator = createNativeStackNavigator<HomeStackParamList>();
+const HomeNavigator = createNativeStackNavigator<
+	HomeStackParamList,
+	'HomeStack'
+>();
 
 const HomeStack = () => {
 	return (
-		<HomeNavigator.Navigator>
+		<HomeNavigator.Navigator id='HomeStack'>
 			<HomeNavigator.Screen
 				name='Home.Main'
 				component={Home}

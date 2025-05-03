@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import useStore from '../state';
 import { useAuthenticateMutation } from '../types/api';
+import { useShallow } from 'zustand/react/shallow';
 
 interface AuthenticateFormValues {
 	email: string;
@@ -21,7 +22,7 @@ interface AuthenticateFormValues {
 }
 
 const Authenticate = () => {
-	const logIn = useStore(state => state.logIn);
+	const logIn = useStore(useShallow(state => state.logIn));
 	const [{ fetching }, authenticate] = useAuthenticateMutation();
 	const { control, handleSubmit } = useForm<AuthenticateFormValues>({
 		defaultValues: { email: '', password: '' }
@@ -29,13 +30,16 @@ const Authenticate = () => {
 	const { goBack } = useNavigation();
 
 	const onSubmit = async (values: AuthenticateFormValues) => {
-		const { error, data } = await authenticate({ input: values });
+		if (values.email && values.password) {
+			const { error, data } = await authenticate({
+				input: { email: values.email, password: values.password }
+			});
 
-		if (error) {
-			console.log({ error });
-		} else if (data?.authenticate) {
-			const { accessToken, userId } = data.authenticate;
-			logIn(userId, accessToken);
+			if (error) {
+				console.log(error);
+			} else if (data?.authenticate) {
+				logIn(data.authenticate.userId, data.authenticate.accessToken);
+			}
 		}
 	};
 

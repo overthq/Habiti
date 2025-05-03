@@ -1,4 +1,4 @@
-import { useTheme, Icon } from '@habiti/components';
+import { useTheme, Icon, themes } from '@habiti/components';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 
@@ -7,24 +7,17 @@ import OrdersStackNavigator from './OrdersStack';
 import ProductsStackNavigator from './ProductsStack';
 import StoreStackNavigator from './StoreStack';
 import { MainTabParamList } from '../types/navigation';
-import { getIcon } from '../utils/navigation';
+import { tabScreenOptions } from '../utils/navigation';
 
-const MainTab = createBottomTabNavigator<MainTabParamList>();
+const MainTab = createBottomTabNavigator<MainTabParamList, 'MainTab'>();
 
 const MainTabNavigator = () => {
-	const { theme } = useTheme();
+	const { name } = useTheme();
 
 	return (
 		<MainTab.Navigator
-			screenOptions={({ route }) => ({
-				tabBarIcon: ({ color }) => (
-					<Icon name={getIcon(route.name)} color={color} size={28} />
-				),
-				tabBarActiveTintColor: theme.icon.default.color,
-				tabBarInactiveTintColor: 'gray',
-				tabBarShowLabel: false,
-				headerShown: false
-			})}
+			id='MainTab'
+			screenOptions={tabScreenOptions(name)}
 			initialRouteName='Home'
 		>
 			<MainTab.Screen name='Home' component={HomeStackNavigator} />

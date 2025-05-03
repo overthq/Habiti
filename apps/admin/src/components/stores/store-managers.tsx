@@ -1,7 +1,7 @@
 import { DataTable } from '../ui/data-table';
 import { useStoreManagersQuery } from '@/data/queries';
-import { ColumnDef } from '@tanstack/react-table';
-import { StoreManager } from '@/data/types';
+import { type ColumnDef } from '@tanstack/react-table';
+import { type StoreManager } from '@/data/types';
 
 const columns: ColumnDef<StoreManager>[] = [
 	{

@@ -3,11 +3,15 @@
 	"version": "0.0.1",
 	"main": "src/index.ts",
 	"license": "GPL-3.0-or-later",
-	"peerDependencies": {
-		"@types/react": "~18.3.18",
-		"react": "18.3.1",
-		"react-hook-form": "^7.38.0",
-		"react-native": "0.76.7",
-		"react-native-svg": "15.8.0"
+	"devDependencies": {
+		"@types/react": "~19.0.14"
+	},
+	"dependencies": {
+		"@gorhom/bottom-sheet": "^5.1.2",
+		"react": "19.0.0",
+		"react-hook-form": "^7.56.1",
+		"react-native": "0.79.1",
+		"react-native-svg": "15.11.2",
+		"react-native-reanimated": "~3.17.5"
 	}
 }

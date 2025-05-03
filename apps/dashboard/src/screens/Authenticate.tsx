@@ -16,6 +16,7 @@ import { z } from 'zod';
 
 import useStore from '../state';
 import { useAuthenticateMutation } from '../types/api';
+import { useShallow } from 'zustand/react/shallow';
 
 const authenticateSchema = z.object({
 	email: z.string().email('Invalid email address'),
@@ -32,16 +33,20 @@ const Authenticate: React.FC = () => {
 		resolver: zodResolver(authenticateSchema)
 	});
 
-	const logIn = useStore(({ logIn }) => logIn);
+	const logIn = useStore(useShallow(({ logIn }) => logIn));
 	const [{ fetching }, authenticate] = useAuthenticateMutation();
 
 	const onSubmit = async (values: AuthenticateFormValues) => {
-		const { error, data } = await authenticate({ input: values });
+		if (values.email && values.password) {
+			const { error, data } = await authenticate({
+				input: { email: values.email, password: values.password }
+			});
 
-		if (error) {
-			console.log(error);
-		} else if (data?.authenticate) {
-			logIn(data.authenticate.userId, data.authenticate.accessToken);
+			if (error) {
+				console.log(error);
+			} else if (data?.authenticate) {
+				logIn(data.authenticate.userId, data.authenticate.accessToken);
+			}
 		}
 	};
 

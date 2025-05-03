@@ -5,14 +5,17 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 
 import SettingRow from '../components/settings/SettingRow';
+import { useShallow } from 'zustand/react/shallow';
 import useStore from '../state';
 import { ThemeMap } from '../utils/theme';
 
 const Settings: React.FC = () => {
-	const { theme, logOut } = useStore(state => ({
-		theme: state.theme,
-		logOut: state.logOut
-	}));
+	const { theme, logOut } = useStore(
+		useShallow(state => ({
+			theme: state.theme,
+			logOut: state.logOut
+		}))
+	);
 	const { navigate } = useNavigation<StackNavigationProp<any>>();
 
 	const handleRowNavigate = React.useCallback(

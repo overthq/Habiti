@@ -10,9 +10,9 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { DataTable } from '@/components/ui/data-table';
 import { useProductsQuery } from '@/data/queries';
-import { Product } from '@/data/types';
+import { type Product } from '@/data/types';
 import { formatNaira } from '@/utils/format';
-import { ColumnDef } from '@tanstack/react-table';
+import { type ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 
@@ -84,7 +84,7 @@ const columns: ColumnDef<Product>[] = [
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem
-							onClick={() => navigate(`/dashboard/product/${product.id}`)}
+							onClick={() => navigate(`/products/${product.id}`)}
 						>
 							View product
 						</DropdownMenuItem>

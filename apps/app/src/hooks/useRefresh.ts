@@ -1,5 +1,5 @@
 import React from 'react';
-import { OperationContext } from '@urql/core';
+import { OperationContext } from 'urql';
 
 const useRefresh = ({
 	fetching,

@@ -1,13 +1,13 @@
 import { Icon, IconType, themes } from '@habiti/components';
-import { RouteProp } from '@react-navigation/native';
-import React from 'react';
 
 import { MainTabParamList } from '../types/navigation';
+import { RouteProp } from '@react-navigation/native';
 
-export const icons: Record<keyof MainTabParamList, IconType> = {
-	'Main.ForYou': 'home',
-	'Main.Carts': 'shopping-bag',
-	'Main.Profile': 'user'
+const icons: Record<keyof MainTabParamList, IconType> = {
+	Home: 'home',
+	Products: 'tag',
+	Orders: 'inbox',
+	Store: 'shopping-bag'
 };
 
 export const tabScreenOptions =

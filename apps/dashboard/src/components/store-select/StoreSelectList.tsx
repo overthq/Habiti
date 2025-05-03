@@ -4,16 +4,19 @@ import { FlatList, ListRenderItem, View } from 'react-native';
 import StoreSelectListItem from './StoreSelectListItem';
 import useStore from '../../state';
 import { ManagedStoresQuery } from '../../types/api';
+import { useShallow } from 'zustand/react/shallow';
 
 interface StoreSelectListProps {
 	stores: ManagedStoresQuery['currentUser']['managed'][number]['store'][];
 }
 
 const StoreSelectList: React.FC<StoreSelectListProps> = ({ stores }) => {
-	const { setPreference, activeStore } = useStore(state => ({
-		setPreference: state.setPreference,
-		activeStore: state.activeStore
-	}));
+	const { setPreference, activeStore } = useStore(
+		useShallow(state => ({
+			setPreference: state.setPreference,
+			activeStore: state.activeStore
+		}))
+	);
 
 	const handleStoreSelect = React.useCallback(
 		(storeId: string) => () => {

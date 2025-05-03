@@ -8,12 +8,15 @@ import useGoBack from '../../hooks/useGoBack';
 import useStore from '../../state';
 import { useManagedStoresQuery } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
+import { useShallow } from 'zustand/react/shallow';
 
 const SettingsActiveStore: React.FC = () => {
-	const { activeStore, setPreference } = useStore(state => ({
-		activeStore: state.activeStore,
-		setPreference: state.setPreference
-	}));
+	const { activeStore, setPreference } = useStore(
+		useShallow(state => ({
+			activeStore: state.activeStore,
+			setPreference: state.setPreference
+		}))
+	);
 
 	const [{ data }] = useManagedStoresQuery();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();

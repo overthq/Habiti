@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Provider } from 'urql';
-import { useShallow } from 'zustand/shallow';
+import { useShallow } from 'zustand/react/shallow';
 
 import MainTabNavigator from './MainTab';
 import useClient from '../hooks/useClient';
@@ -22,7 +22,7 @@ import { AppStackParamList } from '../types/navigation';
 
 // const prefix = Linking.createURL('/');
 
-const AppStack = createNativeStackNavigator<AppStackParamList>();
+const AppStack = createNativeStackNavigator<AppStackParamList, 'AppStack'>();
 
 const Routes: React.FC = () => {
 	const { theme } = useTheme();
@@ -31,6 +31,7 @@ const Routes: React.FC = () => {
 			accessToken: state.accessToken
 		}))
 	);
+
 	const client = useClient(accessToken);
 
 	// const linking = {
@@ -41,7 +42,10 @@ const Routes: React.FC = () => {
 		<Provider value={client}>
 			<StatusBar style={theme.statusBar} />
 			<NavigationContainer theme={theme.navigation} /*linking={linking}*/>
-				<AppStack.Navigator screenOptions={{ headerShown: false }}>
+				<AppStack.Navigator
+					id='AppStack'
+					screenOptions={{ headerShown: false }}
+				>
 					{accessToken ? (
 						<>
 							<AppStack.Screen name='Main' component={MainTabNavigator} />

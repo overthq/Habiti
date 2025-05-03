@@ -4,11 +4,14 @@ import SearchStore from '../screens/SearchStore';
 import Store from '../screens/Store';
 import { StoreStackParamList } from '../types/navigation';
 
-const StoreNavigator = createNativeStackNavigator<StoreStackParamList>();
+const StoreNavigator = createNativeStackNavigator<
+	StoreStackParamList,
+	'StoreStack'
+>();
 
 const StoreStack = () => {
 	return (
-		<StoreNavigator.Navigator>
+		<StoreNavigator.Navigator id='StoreStack'>
 			<StoreNavigator.Screen
 				name='Store.Main'
 				component={Store}

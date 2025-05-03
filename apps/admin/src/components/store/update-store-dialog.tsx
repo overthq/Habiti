@@ -21,7 +21,7 @@ import {
 } from '../ui/form';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
-import { Store } from '@/data/types';
+import { type Store } from '@/data/types';
 
 interface UpdateStoreDialogProps {
 	store: Store;

@@ -1,9 +1,10 @@
+import React from 'react';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useTheme } from '@habiti/components';
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
 import { Provider } from 'urql';
+import { useShallow } from 'zustand/react/shallow';
 
 import { AppStack } from './AppStack';
 import MainTabNavigator from './MainTab';
@@ -20,10 +21,12 @@ import { getStatusBarStyle } from '../utils/theme';
 const Routes: React.FC = () => {
 	const { name, theme } = useTheme();
 	const client = useClient();
-	const { accessToken, activeStore } = useStore(state => ({
-		accessToken: state.accessToken,
-		activeStore: state.activeStore
-	}));
+	const { accessToken, activeStore } = useStore(
+		useShallow(state => ({
+			accessToken: state.accessToken,
+			activeStore: state.activeStore
+		}))
+	);
 
 	return (
 		<Provider value={client}>
@@ -31,6 +34,7 @@ const Routes: React.FC = () => {
 			<NavigationContainer theme={theme.navigation}>
 				<BottomSheetModalProvider>
 					<AppStack.Navigator
+						id='AppStack'
 						initialRouteName={
 							accessToken ? (!activeStore ? 'StoreSelect' : 'Main') : 'Landing'
 						}

@@ -8,13 +8,13 @@ import ProfileStack from './ProfileStack';
 import { MainTabParamList } from '../types/navigation';
 import { tabScreenOptions } from '../utils/navigation';
 
-const MainTab = createBottomTabNavigator<MainTabParamList>();
+const MainTab = createBottomTabNavigator<MainTabParamList, 'MainTab'>();
 
 const MainTabNavigator = () => {
 	const { name } = useTheme();
 
 	return (
-		<MainTab.Navigator screenOptions={tabScreenOptions(name)}>
+		<MainTab.Navigator screenOptions={tabScreenOptions(name)} id='MainTab'>
 			<MainTab.Screen name='Main.ForYou' component={HomeStack} />
 			<MainTab.Screen name='Main.Carts' component={CartsStack} />
 			<MainTab.Screen name='Main.Profile' component={ProfileStack} />

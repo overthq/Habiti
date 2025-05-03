@@ -14,10 +14,11 @@ import ProfileRow from '../components/profile/ProfileRow';
 import UserCard from '../components/profile/UserCard';
 import useStore from '../state';
 import { ProfileStackParamList } from '../types/navigation';
+import { useShallow } from 'zustand/react/shallow';
 
 const PRIVACY_POLICY_URL = 'https://habiti.app/privacy-policy';
 const SUPPORT_URL = 'https://habiti.app/support';
-const ACCEPTABLE_USE_URL = 'https://habiti.app/acceptable-use-policy';
+const ACCEPTABLE_USE_URL = 'https://habiti.app/acceptable-use';
 
 /* Account Settings:
   - Account Info
@@ -35,7 +36,7 @@ const ACCEPTABLE_USE_URL = 'https://habiti.app/acceptable-use-policy';
 * Set up your own store*/
 
 const Profile: React.FC = () => {
-	const logOut = useStore(state => state.logOut);
+	const logOut = useStore(useShallow(state => state.logOut));
 	const { navigate } = useNavigation<NavigationProp<ProfileStackParamList>>();
 	const { top } = useSafeAreaInsets();
 
@@ -54,25 +55,25 @@ const Profile: React.FC = () => {
 			<Separator style={{ marginHorizontal: 16 }} />
 			{/* <Spacer y={8} /> */}
 			<View>
-				<ProfileRow
-					title='Payment Methods'
-					onPress={() => navigate('Profile.PaymentMethods')}
-				/>
-				<ProfileRow
+				{/* <ProfileRow
 					title='Delivery Addresses'
 					onPress={() => navigate('Profile.DeliveryAddress')}
-				/>
+				/> */}
 				{/* <ProfileRow
 					title='Notifications'
 					onPress={() => navigate('Profile.NotificationSettings')}
 				/> */}
 				<ProfileRow
-					title='Appearance'
-					onPress={() => navigate('Profile.Appearance')}
-				/>
-				<ProfileRow
 					title='Manage Account'
 					onPress={() => navigate('Profile.AccountSettings')}
+				/>
+				<ProfileRow
+					title='Payment Methods'
+					onPress={() => navigate('Profile.PaymentMethods')}
+				/>
+				<ProfileRow
+					title='Appearance'
+					onPress={() => navigate('Profile.Appearance')}
 				/>
 				{/* <Spacer y={8} /> */}
 				<Separator inset />

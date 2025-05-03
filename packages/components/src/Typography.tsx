@@ -14,12 +14,10 @@ interface TypographyProps extends TextProps {
 	preset?: keyof (typeof typography)['preset'];
 	ellipsize?: boolean;
 	number?: boolean;
+	ref?: React.Ref<Text>;
 }
 
-const Typography: React.FC<TypographyProps> = React.forwardRef<
-	Text,
-	TypographyProps
->((props, forwardedRef) => {
+const Typography: React.FC<TypographyProps> = props => {
 	const {
 		children,
 		variant,
@@ -35,7 +33,6 @@ const Typography: React.FC<TypographyProps> = React.forwardRef<
 
 	return (
 		<Text
-			ref={forwardedRef}
 			{...(ellipsize ? { numberOfLines: 1 } : {})}
 			{...rest}
 			style={[
@@ -46,7 +43,7 @@ const Typography: React.FC<TypographyProps> = React.forwardRef<
 			{children}
 		</Text>
 	);
-});
+};
 
 const generateStyles = ({
 	size = 'regular',
