@@ -43,15 +43,21 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 					<Pressable style={styles.back} onPress={goBack}>
 						<Icon name='chevron-left' size={22} />
 					</Pressable>
-					<Typography size='xlarge' weight='medium'>
+				</View>
+				<View style={styles.center}>
+					<Typography
+						size='xlarge'
+						weight='medium'
+						style={{ textAlign: 'center' }}
+					>
 						{store.name}
 					</Typography>
 				</View>
 				<View style={styles.right}>
-					<FollowButton storeId={store.id} followed={store.followedByUser} />
 					<Pressable onPress={handleOpenSearch}>
-						<Icon name='search' size={20} color={theme.text.primary} />
+						<Icon name='search' size={22} color={theme.text.primary} />
 					</Pressable>
+					<FollowButton storeId={store.id} followed={store.followedByUser} />
 				</View>
 			</View>
 			<CategorySelector
@@ -69,15 +75,20 @@ const styles = StyleSheet.create({
 		paddingTop: 16
 	},
 	header: {
-		paddingHorizontal: 16,
+		paddingHorizontal: 12,
 		flexDirection: 'row',
 		alignItems: 'center',
-		justifyContent: 'space-between'
+		width: '100%'
 	},
 	left: {
+		width: '33.33%',
 		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 8
+		alignItems: 'center'
+	},
+	center: {
+		width: '33.33%',
+		justifyContent: 'center',
+		alignItems: 'center'
 	},
 	back: {
 		justifyContent: 'center',
@@ -85,9 +96,11 @@ const styles = StyleSheet.create({
 		marginLeft: -4
 	},
 	right: {
+		width: '33.33%',
 		flexDirection: 'row',
+		justifyContent: 'flex-end',
 		alignItems: 'center',
-		gap: 8
+		gap: 12
 	}
 });
 

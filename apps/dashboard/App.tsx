@@ -9,9 +9,7 @@ import Routes from './src/navigation/Routes';
 import useStore from './src/state';
 import { useShallow } from 'zustand/react/shallow';
 
-Sentry.init({
-	dsn: process.env.EXPO_PUBLIC_SENTRY_DSN
-});
+Sentry.init({ dsn: process.env.EXPO_PUBLIC_SENTRY_DSN });
 
 const App: React.FC = () => {
 	const theme = useStore(useShallow(({ theme }) => theme));

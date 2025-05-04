@@ -28,35 +28,29 @@ const FollowButton: React.FC<FollowButtonProps> = ({ storeId, followed }) => {
 	return (
 		<Pressable
 			style={[
-				styles.container,
+				// styles.container,
 				{
-					backgroundColor: theme.input.background,
+					// backgroundColor: theme.input.background,
 					borderColor: theme.border.color
 				}
 			]}
 			onPress={handlePress}
 		>
-			<Icon size={16} style={styles.icon} name={followed ? 'check' : 'plus'} />
-			<Typography size='small' weight='medium'>
-				{followed ? 'Following' : 'Follow'}
-			</Typography>
+			<Icon size={20} name='heart' filled={followed} />
 		</Pressable>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		height: 28,
-		// paddingVertical: 4,
-		paddingLeft: 8,
-		paddingRight: 10,
+		height: 32,
+		width: 32,
 		borderRadius: 100,
-		flexDirection: 'row',
+		// flexDirection: 'row',
 		justifyContent: 'center',
-		alignItems: 'center'
-	},
-	icon: {
-		marginRight: 4
+		alignItems: 'center',
+		// gap: 4,
+		borderWidth: 1
 	}
 });
 

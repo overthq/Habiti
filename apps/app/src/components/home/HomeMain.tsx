@@ -1,5 +1,5 @@
 import { Screen, ScrollableScreen, Spacer, useTheme } from '@habiti/components';
-import { ActivityIndicator, RefreshControl, View } from 'react-native';
+import { RefreshControl, View } from 'react-native';
 
 import FollowedStores from './FollowedStores';
 import RecentOrders from './RecentOrders';
@@ -7,24 +7,13 @@ import RecentOrders from './RecentOrders';
 import { useHomeQuery } from '../../types/api';
 import useRefresh from '../../hooks/useRefresh';
 import HomeEmpty from './HomeEmpty';
-import Animated, { LinearTransition } from 'react-native-reanimated';
 
-interface HomeMainProps {
-	searchOpen: boolean;
-}
-
-const HomeMain: React.FC<HomeMainProps> = () => {
+const HomeMain = () => {
 	const [{ fetching, data }, refetch] = useHomeQuery();
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 	const { theme } = useTheme();
 
-	if (fetching) {
-		return (
-			<View>
-				<ActivityIndicator color={theme.text.primary} />
-			</View>
-		);
-	}
+	if (fetching) return <View />;
 
 	if (
 		!data ||
@@ -58,18 +47,10 @@ interface HomeMainWrapperProps {
 }
 
 const HomeMainWrapper: React.FC<HomeMainWrapperProps> = ({ searchOpen }) => {
-	const { theme } = useTheme();
 	return (
-		<Animated.View
-			style={{
-				flex: 1,
-				backgroundColor: theme.screen.background,
-				display: !searchOpen ? 'flex' : 'none'
-			}}
-			layout={LinearTransition}
-		>
-			<HomeMain searchOpen={searchOpen} />
-		</Animated.View>
+		<Screen style={{ display: searchOpen ? 'none' : 'flex' }}>
+			<HomeMain />
+		</Screen>
 	);
 };
 

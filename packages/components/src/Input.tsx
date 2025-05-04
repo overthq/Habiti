@@ -10,7 +10,7 @@ export interface InputProps extends TextInputProps {
 }
 
 const Input: React.FC<InputProps> = ({ label, textArea, ...props }) => {
-	const { theme } = useTheme();
+	const { name, theme } = useTheme();
 
 	const inputColors = React.useMemo(
 		() => ({
@@ -44,6 +44,7 @@ const Input: React.FC<InputProps> = ({ label, textArea, ...props }) => {
 				multiline={textArea}
 				textAlignVertical={textArea ? 'top' : undefined}
 				selectionColor={theme.text.primary}
+				keyboardAppearance={name === 'dark' ? 'dark' : 'light'}
 				{...props}
 				style={style}
 			/>

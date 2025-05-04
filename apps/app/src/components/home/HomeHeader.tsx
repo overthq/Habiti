@@ -2,12 +2,13 @@ import React from 'react';
 import { Icon, TextButton, Typography, useTheme } from '@habiti/components';
 import { StyleSheet, TextInput } from 'react-native';
 import Animated, {
-	FadeIn,
+	FadeInRight,
 	FadeInUp,
-	FadeOut,
+	FadeOutRight,
 	FadeOutUp,
 	LinearTransition
 } from 'react-native-reanimated';
+import useFirstRender from '../../hooks/useFirstRender';
 
 interface HomeHeaderProps {
 	searchOpen: boolean;
@@ -22,16 +23,18 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 	searchTerm,
 	setSearchTerm
 }) => {
+	const isFirstRender = useFirstRender();
+
 	const inputRef = React.useRef(null);
-	const { theme } = useTheme();
+	const { name, theme } = useTheme();
 
 	const handleFocus = React.useCallback(() => {
 		setSearchOpen(true);
 	}, []);
 
 	const handleBlur = React.useCallback(() => {
-		setSearchOpen(false);
-	}, []);
+		setSearchOpen(searchTerm.length > 0);
+	}, [searchTerm]);
 
 	const cancel = React.useCallback(() => {
 		inputRef.current?.blur();
@@ -51,7 +54,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 		>
 			{!searchOpen && (
 				<Animated.View
-					entering={FadeInUp}
+					entering={isFirstRender ? undefined : FadeInUp}
 					exiting={FadeOutUp}
 					style={{ paddingBottom: 8 }}
 				>
@@ -76,19 +79,20 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 						placeholderTextColor={theme.text.secondary}
 						inputMode='search'
 						style={[styles.inputText, { color: theme.input.text }]}
-						onChangeText={setSearchTerm} // TODO: Add debounce
+						onChangeText={setSearchTerm}
 						autoCapitalize='none'
 						autoCorrect={false}
 						selectionColor={theme.text.primary}
 						onFocus={handleFocus}
 						onBlur={handleBlur}
+						keyboardAppearance={name === 'dark' ? 'dark' : 'light'}
 					/>
 				</Animated.View>
 				{searchOpen && (
 					<Animated.View
 						style={{ marginLeft: 12 }}
-						entering={FadeIn.delay(50)}
-						exiting={FadeOut}
+						entering={FadeInRight}
+						exiting={FadeOutRight}
 					>
 						<TextButton onPress={cancel}>Cancel</TextButton>
 					</Animated.View>
@@ -113,8 +117,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'row',
 		alignItems: 'center',
-		height: 36,
-		borderRadius: 6,
+		height: 40,
+		borderRadius: 8,
 		paddingHorizontal: 12
 	},
 	inputText: {

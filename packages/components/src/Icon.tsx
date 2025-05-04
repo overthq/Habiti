@@ -5,6 +5,7 @@ import { Svg, Circle, Rect, Path, SvgProps } from 'react-native-svg';
 import { useTheme } from './Theme';
 
 const icons = {
+	'arrow-left': <Path d='m12 19-7-7 7-7M19 12H5' />,
 	'arrow-up-right': <Path d='M7 7h10v10M7 17 17 7' />,
 	bell: (
 		<Path d='M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0' />
@@ -16,6 +17,9 @@ const icons = {
 	'chevron-down': <Path d='m6 9 6 6 6-6' />,
 	'chevrons-up-down': <Path d='m7 15 5 5 5-5M7 9l5-5 5 5' />,
 	filter: <Path d='M22 3H2l8 9.46V19l4 2v-8.54L22 3z' />,
+	heart: (
+		<Path d='M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z' />
+	),
 	inbox: (
 		<>
 			<Path d='M22 12h-6l-2 3h-4l-2-3H2' />
@@ -98,6 +102,7 @@ export interface IconProps extends SvgProps {
 	color?: string;
 	name: keyof typeof icons;
 	style?: StyleProp<ViewStyle>;
+	filled?: boolean;
 }
 
 export type IconType = keyof typeof icons;
@@ -107,6 +112,7 @@ export const Icon: React.FC<IconProps> = ({
 	color,
 	name,
 	style,
+	filled = false,
 	...props
 }) => {
 	const { theme } = useTheme();
@@ -116,7 +122,7 @@ export const Icon: React.FC<IconProps> = ({
 			width={size}
 			height={size}
 			viewBox='0 0 24 24'
-			fill='none'
+			fill={filled ? (color ?? theme.icon.default.color) : 'none'}
 			stroke={color ?? theme.icon.default.color}
 			strokeWidth={2}
 			strokeLinecap='round'

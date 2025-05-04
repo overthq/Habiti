@@ -27,9 +27,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 		}
 	});
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
-	const { navigate, setOptions } =
-		useNavigation<NavigationProp<AppStackParamList>>();
-	const [headerVisible, setHeaderVisible] = React.useState(false);
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
 
 	const products = data?.store.products;
@@ -39,23 +37,6 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 			navigate('Product', { productId });
 		},
 		[]
-	);
-
-	const handleScroll = React.useCallback<
-		NonNullable<ScrollViewProps['onScroll']>
-	>(
-		({ nativeEvent }) => {
-			if (data?.store.name) {
-				if (nativeEvent.contentOffset.y >= 100 && !headerVisible) {
-					setHeaderVisible(true);
-					setOptions({ headerTitle: data.store.name });
-				} else if (nativeEvent.contentOffset.y < 100 && headerVisible) {
-					setHeaderVisible(false);
-					setOptions({ headerTitle: '' });
-				}
-			}
-		},
-		[data?.store.name, headerVisible]
 	);
 
 	if (fetching && !products) return <View />;
@@ -68,7 +49,10 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 				setActiveCategory={setActiveCategory}
 			/>
 			<FlashList
-				contentContainerStyle={{ backgroundColor: theme.screen.background }}
+				contentContainerStyle={{
+					backgroundColor: theme.screen.background,
+					paddingTop: 8
+				}}
 				data={products.edges}
 				keyExtractor={({ node }) => node.id}
 				showsVerticalScrollIndicator={false}
@@ -81,7 +65,6 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 					/>
 				)}
 				numColumns={2}
-				onScroll={handleScroll}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}

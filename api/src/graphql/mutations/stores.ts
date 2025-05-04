@@ -133,7 +133,6 @@ export const followStore: Resolver<FollowStoreArgs> = async (
 	{ storeId },
 	ctx
 ) => {
-	console.log('userid', ctx.user.id);
 	const follower = await ctx.prisma.storeFollower.create({
 		data: { followerId: ctx.user.id, storeId },
 		include: { store: true }
