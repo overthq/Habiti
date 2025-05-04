@@ -4,18 +4,23 @@ import { FlashList } from '@shopify/flash-list';
 import React from 'react';
 import { RefreshControl, View } from 'react-native';
 
-import StoreHeader from './StoreHeader';
 import StoreListItem from './StoreListItem';
 import { StoreQuery, useStoreProductsQuery } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
 import useRefresh from '../../hooks/useRefresh';
+import ViewCart from './ViewCart';
 
 interface StoreProductsProps {
 	store: StoreQuery['store'];
+	activeCategory: string;
+	searchTerm: string;
 }
 
-const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
-	const [activeCategory, setActiveCategory] = React.useState<string>();
+const StoreProducts: React.FC<StoreProductsProps> = ({
+	store,
+	activeCategory,
+	searchTerm
+}) => {
 	const [{ data, fetching }, refetch] = useStoreProductsQuery({
 		variables: {
 			storeId: store.id,
@@ -42,12 +47,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 	if (fetching && !products) return <View />;
 
 	return (
-		<View style={{ flex: 1 }}>
-			<StoreHeader
-				store={store}
-				activeCategory={activeCategory}
-				setActiveCategory={setActiveCategory}
-			/>
+		<View style={{ flex: 1, display: !searchTerm ? 'flex' : 'none' }}>
 			<FlashList
 				contentContainerStyle={{
 					backgroundColor: theme.screen.background,
@@ -72,6 +72,10 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 						tintColor={theme.text.secondary}
 					/>
 				}
+			/>
+			<ViewCart
+				cartId={store.userCart?.id}
+				count={store.userCart?.products.length}
 			/>
 		</View>
 	);

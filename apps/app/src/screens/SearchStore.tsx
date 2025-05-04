@@ -9,21 +9,29 @@ import { FlashList } from '@shopify/flash-list';
 import React from 'react';
 import { ActivityIndicator } from 'react-native';
 
-import SearchStoreHeader from '../components/search-store/SearchStoreHeader';
 import StoreListItem from '../components/store/StoreListItem';
 // import StoreProducts from '../components/store/StoreProducts';
 import { StringWhereMode, useStoreProductsQuery } from '../types/api';
 import { AppStackParamList, StoreStackParamList } from '../types/navigation';
+import useDebounced from '../hooks/useDebounced';
 
-const SearchStore = () => {
-	const [searchTerm, setSearchTerm] = React.useState('');
+interface SearchStoreProps {
+	searchTerm: string;
+}
+
+const SearchStore: React.FC<SearchStoreProps> = ({ searchTerm }) => {
+	const debouncedSearchTerm = useDebounced(searchTerm);
+
 	const { params } = useRoute<RouteProp<StoreStackParamList, 'Store.Search'>>();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const [{ data, fetching }] = useStoreProductsQuery({
 		variables: {
 			storeId: params.storeId,
 			filter: {
-				name: { contains: searchTerm, mode: StringWhereMode.Insensitive }
+				name: {
+					contains: debouncedSearchTerm,
+					mode: StringWhereMode.Insensitive
+				}
 			}
 		}
 	});
@@ -36,11 +44,7 @@ const SearchStore = () => {
 	);
 
 	return (
-		<Screen>
-			<SearchStoreHeader
-				searchTerm={searchTerm}
-				setSearchTerm={setSearchTerm}
-			/>
+		<Screen style={{ display: !!searchTerm ? 'flex' : 'none' }}>
 			{fetching || !data?.store ? (
 				<ActivityIndicator />
 			) : (

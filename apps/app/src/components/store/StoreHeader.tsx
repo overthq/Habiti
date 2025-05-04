@@ -21,15 +21,18 @@ interface StoreHeaderProps {
 	store: StoreQuery['store'];
 	activeCategory: string;
 	setActiveCategory: (category: string) => void;
+	searchTerm: string;
+	setSearchTerm: (term: string) => void;
 }
 
 const StoreHeader: React.FC<StoreHeaderProps> = ({
 	store,
 	activeCategory,
-	setActiveCategory
+	setActiveCategory,
+	searchTerm,
+	setSearchTerm
 }) => {
 	const [searchOpen, setSearchOpen] = React.useState(false);
-	const [searchTerm, setSearchTerm] = React.useState('');
 
 	const isFirstRender = useFirstRender();
 	const { goBack } = useNavigation();
