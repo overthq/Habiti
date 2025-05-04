@@ -16,10 +16,7 @@ const StoresView: React.FC = () => {
 	const { stores } = useSearchContext();
 
 	const handleStorePress = (storeId: string) => () => {
-		navigate('Home.Store', {
-			screen: 'Store.Main',
-			params: { storeId }
-		});
+		navigate('Home.Store', { storeId });
 	};
 
 	if (!stores) {

@@ -1,12 +1,21 @@
 import React from 'react';
-import { View, StyleSheet, Pressable } from 'react-native';
-import { Icon, Typography, useTheme } from '@habiti/components';
+import { View, StyleSheet, Pressable, TextInput } from 'react-native';
+import { Icon, TextButton, Typography, useTheme } from '@habiti/components';
 
 import CategorySelector from './CategorySelector';
 import FollowButton from './FollowButton';
 import { StoreQuery } from '../../types/api';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { StoreStackParamList } from '../../types/navigation';
+import { useNavigation } from '@react-navigation/native';
+import Animated, {
+	FadeInDown,
+	FadeInRight,
+	FadeInUp,
+	FadeOutDown,
+	FadeOutRight,
+	FadeOutUp,
+	LinearTransition
+} from 'react-native-reanimated';
+import useFirstRender from '../../hooks/useFirstRender';
 
 interface StoreHeaderProps {
 	store: StoreQuery['store'];
@@ -19,12 +28,32 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 	activeCategory,
 	setActiveCategory
 }) => {
-	const { navigate } = useNavigation<NavigationProp<StoreStackParamList>>();
+	const [searchOpen, setSearchOpen] = React.useState(false);
+	const [searchTerm, setSearchTerm] = React.useState('');
+
+	const isFirstRender = useFirstRender();
 	const { goBack } = useNavigation();
-	const { theme } = useTheme();
+	const { name, theme } = useTheme();
+
+	const inputRef = React.useRef(null);
+
+	const handleFocus = React.useCallback(() => {
+		setSearchOpen(true);
+	}, []);
+
+	const handleBlur = React.useCallback(() => {
+		setSearchOpen(searchTerm.length > 0);
+	}, [searchTerm]);
 
 	const handleOpenSearch = () => {
-		navigate('Store.Search', { storeId: store.id });
+		setSearchOpen(true);
+		inputRef.current?.focus();
+	};
+
+	const handleSearchCancel = () => {
+		inputRef.current?.blur();
+		setSearchOpen(false);
+		setSearchTerm('');
 	};
 
 	return (
@@ -38,33 +67,85 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 				}
 			]}
 		>
-			<View style={styles.header}>
-				<View style={styles.left}>
-					<Pressable style={styles.back} onPress={goBack}>
-						<Icon name='chevron-left' size={22} />
-					</Pressable>
-				</View>
-				<View style={styles.center}>
-					<Typography
-						size='xlarge'
-						weight='medium'
-						style={{ textAlign: 'center' }}
+			{!searchOpen && (
+				<Animated.View
+					entering={isFirstRender ? undefined : FadeInUp}
+					exiting={FadeOutUp}
+				>
+					<View style={styles.header}>
+						<View style={styles.left}>
+							<Pressable style={styles.back} onPress={goBack}>
+								<Icon name='chevron-left' />
+							</Pressable>
+						</View>
+						<View style={styles.center}>
+							<Typography
+								size='xlarge'
+								weight='medium'
+								style={{ textAlign: 'center' }}
+							>
+								{store.name}
+							</Typography>
+						</View>
+						<View style={styles.right}>
+							<Pressable onPress={handleOpenSearch}>
+								<Icon name='search' size={22} color={theme.text.primary} />
+							</Pressable>
+							<FollowButton
+								storeId={store.id}
+								followed={store.followedByUser}
+							/>
+						</View>
+					</View>
+					<CategorySelector
+						selected={activeCategory}
+						categories={store.categories}
+						selectCategory={setActiveCategory}
+					/>
+				</Animated.View>
+			)}
+			{searchOpen && (
+				<Animated.View
+					entering={FadeInDown}
+					exiting={FadeOutDown}
+					layout={LinearTransition}
+					style={{
+						flexDirection: 'row',
+						alignItems: 'center',
+						paddingHorizontal: 16,
+						paddingBottom: 12
+					}}
+				>
+					<Animated.View
+						style={[styles.input, { backgroundColor: theme.input.background }]}
+						layout={LinearTransition}
 					>
-						{store.name}
-					</Typography>
-				</View>
-				<View style={styles.right}>
-					<Pressable onPress={handleOpenSearch}>
-						<Icon name='search' size={22} color={theme.text.primary} />
-					</Pressable>
-					<FollowButton storeId={store.id} followed={store.followedByUser} />
-				</View>
-			</View>
-			<CategorySelector
-				selected={activeCategory}
-				categories={store.categories}
-				selectCategory={setActiveCategory}
-			/>
+						<Icon name='search' size={18} color={theme.text.secondary} />
+						<TextInput
+							ref={inputRef}
+							value={searchTerm}
+							placeholder='Search products and stores'
+							placeholderTextColor={theme.text.secondary}
+							inputMode='search'
+							style={[styles.inputText, { color: theme.input.text }]}
+							onChangeText={setSearchTerm}
+							autoCapitalize='none'
+							autoCorrect={false}
+							selectionColor={theme.text.primary}
+							onFocus={handleFocus}
+							onBlur={handleBlur}
+							keyboardAppearance={name === 'dark' ? 'dark' : 'light'}
+						/>
+					</Animated.View>
+					<Animated.View
+						style={{ marginLeft: 12 }}
+						entering={FadeInRight}
+						exiting={FadeOutRight}
+					>
+						<TextButton onPress={handleSearchCancel}>Cancel</TextButton>
+					</Animated.View>
+				</Animated.View>
+			)}
 		</View>
 	);
 };
@@ -101,6 +182,20 @@ const styles = StyleSheet.create({
 		justifyContent: 'flex-end',
 		alignItems: 'center',
 		gap: 12
+	},
+	input: {
+		flex: 1,
+		flexDirection: 'row',
+		alignItems: 'center',
+		height: 40,
+		borderRadius: 8,
+		paddingHorizontal: 12
+	},
+	inputText: {
+		flex: 1,
+		marginLeft: 8,
+		fontSize: 16,
+		height: '100%'
 	}
 });
 

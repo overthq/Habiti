@@ -12,7 +12,7 @@ import useRefresh from '../hooks/useRefresh';
 const Carts: React.FC = () => {
 	const [{ data, fetching }, refetch] = useCartsQuery();
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
-	const { navigate } =
+	const { navigate, goBack } =
 		useNavigation<NavigationProp<MainTabParamList & AppStackParamList>>();
 	const { theme } = useTheme();
 
@@ -27,7 +27,7 @@ const Carts: React.FC = () => {
 
 	return (
 		<Screen style={{ paddingTop: top }}>
-			<ScreenHeader title='Carts' />
+			<ScreenHeader title='Carts' hasBottomBorder goBack={goBack} />
 			<FlatList
 				style={{ flex: 1 }}
 				keyExtractor={c => c.id}

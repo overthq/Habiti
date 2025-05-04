@@ -1,6 +1,6 @@
-import { Icon, Typography, useTheme } from '@habiti/components';
+import { Icon, useTheme } from '@habiti/components';
 import React from 'react';
-import { StyleSheet, Pressable } from 'react-native';
+import { Pressable } from 'react-native';
 
 import {
 	useFollowStoreMutation,
@@ -27,31 +27,12 @@ const FollowButton: React.FC<FollowButtonProps> = ({ storeId, followed }) => {
 
 	return (
 		<Pressable
-			style={[
-				// styles.container,
-				{
-					// backgroundColor: theme.input.background,
-					borderColor: theme.border.color
-				}
-			]}
+			style={{ borderColor: theme.border.color }}
 			onPress={handlePress}
 		>
-			<Icon size={20} name='heart' filled={followed} />
+			<Icon size={22} name='heart' filled={followed} />
 		</Pressable>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		height: 32,
-		width: 32,
-		borderRadius: 100,
-		// flexDirection: 'row',
-		justifyContent: 'center',
-		alignItems: 'center',
-		// gap: 4,
-		borderWidth: 1
-	}
-});
 
 export default FollowButton;

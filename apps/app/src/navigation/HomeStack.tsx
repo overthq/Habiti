@@ -1,11 +1,10 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import StoreStack from './StoreStack';
-import Explore from '../screens/Explore';
 import Home from '../screens/Home';
 import Notifications from '../screens/Notifications';
 import Order from '../screens/Order';
 import { HomeStackParamList } from '../types/navigation';
+import Store from '../screens/Store';
 
 const HomeNavigator = createNativeStackNavigator<
 	HomeStackParamList,
@@ -32,12 +31,7 @@ const HomeStack = () => {
 			/>
 			<HomeNavigator.Screen
 				name='Home.Store'
-				component={StoreStack}
-				options={{ headerShown: false }}
-			/>
-			<HomeNavigator.Screen
-				name='Home.Search'
-				component={Explore}
+				component={Store}
 				options={{ headerShown: false }}
 			/>
 		</HomeNavigator.Navigator>

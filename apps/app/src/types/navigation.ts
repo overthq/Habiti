@@ -17,7 +17,7 @@ export type AppStackParamList = {
 export type HomeStackParamList = {
 	'Home.Main': undefined;
 	'Home.Order': { orderId: string };
-	'Home.Store': NavigatorScreenParams<StoreStackParamList>;
+	'Home.Store': { storeId: string };
 	'Home.Settings': undefined;
 	'Home.SettingsTheme': undefined;
 	'Home.Notifications': undefined;

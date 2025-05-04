@@ -70,26 +70,10 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 						Home
 					</Typography>
 					<View style={{ gap: 16, flexDirection: 'row' }}>
-						<Pressable
-							onPress={() => navigate('App.Profile')}
-							style={
-								[
-									// styles.headerButton,
-									// { backgroundColor: theme.input.background }
-								]
-							}
-						>
+						<Pressable onPress={() => navigate('App.Profile')}>
 							<Icon name='user-round' />
 						</Pressable>
-						<Pressable
-							onPress={() => navigate('App.Carts')}
-							style={
-								[
-									// styles.headerButton,
-									// { backgroundColor: theme.input.background }
-								]
-							}
-						>
+						<Pressable onPress={() => navigate('App.Carts')}>
 							<Icon name='shopping-basket' />
 						</Pressable>
 					</View>
@@ -158,15 +142,6 @@ const styles = StyleSheet.create({
 		marginLeft: 8,
 		fontSize: 16,
 		height: '100%'
-	},
-	headerButton: {
-		padding: 8,
-		borderRadius: 100,
-		height: 32,
-		width: 32,
-		// borderWidth: StyleSheet.hairlineWidth,
-		alignItems: 'center',
-		justifyContent: 'center'
 	}
 });
 
