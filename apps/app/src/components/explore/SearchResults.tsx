@@ -31,6 +31,7 @@ const StoresView: React.FC = () => {
 				<StoreResultRow store={item} onPress={handleStorePress(item.id)} />
 			)}
 			estimatedItemSize={100}
+			keyboardShouldPersistTaps='handled'
 		/>
 	);
 };
@@ -48,6 +49,7 @@ const ProductsView: React.FC = () => {
 
 	return (
 		<FlashList
+			keyboardShouldPersistTaps='handled'
 			keyExtractor={p => p.node.id}
 			data={products.edges}
 			renderItem={({ item }) => (

@@ -49,6 +49,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 	return (
 		<View style={{ flex: 1, display: !searchTerm ? 'flex' : 'none' }}>
 			<FlashList
+				keyboardShouldPersistTaps='handled'
 				contentContainerStyle={{
 					backgroundColor: theme.screen.background,
 					paddingTop: 8

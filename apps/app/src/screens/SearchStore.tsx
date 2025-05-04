@@ -49,6 +49,7 @@ const SearchStore: React.FC<SearchStoreProps> = ({ searchTerm }) => {
 				<ActivityIndicator />
 			) : (
 				<FlashList
+					keyboardShouldPersistTaps='handled'
 					data={data.store.products.edges}
 					keyExtractor={({ node }) => node.id}
 					showsVerticalScrollIndicator={false}

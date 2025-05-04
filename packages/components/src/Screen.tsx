@@ -12,7 +12,6 @@ const Screen: React.FC<ScreenProps> = props => {
 
 	return (
 		<View
-			// onPress={Keyboard.dismiss}
 			{...props}
 			style={[
 				{ backgroundColor: theme.screen.background },
