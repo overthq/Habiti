@@ -131,6 +131,7 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 							onChangeText={setSearchTerm}
 							autoCapitalize='none'
 							autoCorrect={false}
+							autoFocus
 							selectionColor={theme.text.primary}
 							onFocus={handleFocus}
 							onBlur={handleBlur}
