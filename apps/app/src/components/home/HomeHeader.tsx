@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, TextButton, Typography, useTheme } from '@habiti/components';
-import { StyleSheet, TextInput } from 'react-native';
+import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import Animated, {
 	FadeInRight,
 	FadeInUp,
@@ -9,6 +9,8 @@ import Animated, {
 	LinearTransition
 } from 'react-native-reanimated';
 import useFirstRender from '../../hooks/useFirstRender';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { AppStackParamList } from '../../types/navigation';
 
 interface HomeHeaderProps {
 	searchOpen: boolean;
@@ -23,6 +25,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 	searchTerm,
 	setSearchTerm
 }) => {
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const isFirstRender = useFirstRender();
 
 	const inputRef = React.useRef(null);
@@ -56,11 +59,40 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 				<Animated.View
 					entering={isFirstRender ? undefined : FadeInUp}
 					exiting={FadeOutUp}
-					style={{ paddingBottom: 8 }}
+					style={{
+						paddingBottom: 8,
+						flexDirection: 'row',
+						alignItems: 'center',
+						justifyContent: 'space-between'
+					}}
 				>
 					<Typography size='xxlarge' weight='bold'>
 						Home
 					</Typography>
+					<View style={{ gap: 16, flexDirection: 'row' }}>
+						<Pressable
+							onPress={() => navigate('App.Profile')}
+							style={
+								[
+									// styles.headerButton,
+									// { backgroundColor: theme.input.background }
+								]
+							}
+						>
+							<Icon name='user-round' />
+						</Pressable>
+						<Pressable
+							onPress={() => navigate('App.Carts')}
+							style={
+								[
+									// styles.headerButton,
+									// { backgroundColor: theme.input.background }
+								]
+							}
+						>
+							<Icon name='shopping-basket' />
+						</Pressable>
+					</View>
 				</Animated.View>
 			)}
 			<Animated.View
@@ -126,6 +158,15 @@ const styles = StyleSheet.create({
 		marginLeft: 8,
 		fontSize: 16,
 		height: '100%'
+	},
+	headerButton: {
+		padding: 8,
+		borderRadius: 100,
+		height: 32,
+		width: 32,
+		// borderWidth: StyleSheet.hairlineWidth,
+		alignItems: 'center',
+		justifyContent: 'center'
 	}
 });
 

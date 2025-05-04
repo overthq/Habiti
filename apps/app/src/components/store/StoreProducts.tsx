@@ -2,7 +2,7 @@ import { useTheme } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { RefreshControl, ScrollViewProps, View } from 'react-native';
+import { RefreshControl, View } from 'react-native';
 
 import StoreHeader from './StoreHeader';
 import StoreListItem from './StoreListItem';

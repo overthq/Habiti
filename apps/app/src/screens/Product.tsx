@@ -68,7 +68,7 @@ const Product: React.FC = () => {
 			<AddToCart
 				storeId={data.product.storeId}
 				productId={data.product.id}
-				cartId={data.product.store.cartId}
+				cartId={data.product.store.userCart?.id}
 				inCart={data.product.inCart}
 			/>
 		</Screen>

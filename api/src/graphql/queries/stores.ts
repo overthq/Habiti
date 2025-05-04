@@ -113,17 +113,15 @@ const followedByUser: Resolver = async (parent, _, ctx) => {
 	return !!fetchedFollower;
 };
 
-const cartId: Resolver = async (parent, _, ctx) => {
+const userCart: Resolver = async (parent, _, ctx) => {
 	const fetchedCart = await ctx.prisma.cart.findUnique({
 		where: { userId_storeId: { userId: ctx.user.id, storeId: parent.id } },
-		select: { id: true }
+		// FIXME: This is a little wasteful just to get the item count,
+		// but I'm also not sure what the client requirements will become soon.
+		include: { products: true }
 	});
 
-	if (!fetchedCart) {
-		throw new Error('Cart not found');
-	}
-
-	return fetchedCart.id;
+	return fetchedCart;
 };
 
 export default {
@@ -141,7 +139,7 @@ export default {
 		image,
 		payouts,
 		followedByUser,
-		cartId,
+		userCart,
 		categories
 	}
 };

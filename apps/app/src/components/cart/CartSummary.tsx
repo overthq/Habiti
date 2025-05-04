@@ -22,8 +22,12 @@ const CartSummary: React.FC<CartSummaryProps> = ({ products }) => {
 	);
 
 	return (
-		<View style={{ paddingHorizontal: 16 }}>
-			<Typography weight='medium' variant='secondary'>
+		<View>
+			<Typography
+				weight='medium'
+				variant='secondary'
+				style={{ marginLeft: 16 }}
+			>
 				Order Summary
 			</Typography>
 

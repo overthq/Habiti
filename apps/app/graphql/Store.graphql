@@ -26,5 +26,12 @@ query Store($storeId: ID!) {
 			name
 		}
 		followedByUser
+		userCart {
+			id
+			products {
+				cartId
+				productId
+			}
+		}
 	}
 }

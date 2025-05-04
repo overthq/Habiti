@@ -85,6 +85,9 @@ const icons = {
 			<Path d='m21 21-4.3-4.3' />
 		</>
 	),
+	'shopping-basket': (
+		<Path d='m15 11-1 9M19 11l-4-7M2 11h20M3.5 11l1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4M4.5 15.5h15M5 11l4-7M9 11l1 9' />
+	),
 	'sliders-horizontal': (
 		<Path d='M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4' />
 	),
@@ -93,6 +96,12 @@ const icons = {
 	),
 	upload: (
 		<Path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12' />
+	),
+	'user-round': (
+		<>
+			<Circle cx={12} cy={8} r={5} />
+			<Path d='M20 21a8 8 0 0 0-16 0' />
+		</>
 	),
 	x: <Path d='M18 6 6 18M6 6l12 12' />
 };

@@ -18,7 +18,7 @@ const StoreTypes = gql`
 		updatedAt: String!
 
 		followedByUser: Boolean!
-		cartId: ID
+		userCart: Cart
 		products(
 			filter: ProductFilterInput
 			orderBy: [ProductOrderByInput!]

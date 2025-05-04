@@ -8,12 +8,7 @@ query StoreProducts(
 	store(id: $storeId) {
 		id
 		name
-		products(
-			filter: $filter
-			orderBy: $orderBy
-			first: $first
-			after: $after
-		) {
+		products(filter: $filter, orderBy: $orderBy, first: $first, after: $after) {
 			edges {
 				cursor
 				node {
@@ -47,7 +42,13 @@ query Product($productId: ID!) {
 		storeId
 		store {
 			id
-			cartId
+			userCart {
+				id
+				products {
+					cartId
+					productId
+				}
+			}
 		}
 		images {
 			id

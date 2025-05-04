@@ -2,7 +2,9 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 
 export type AppStackParamList = {
 	Landing: undefined;
-	Main: undefined;
+	'App.Home': undefined;
+	'App.Profile': undefined;
+	'App.Carts': undefined;
 	Register: undefined;
 	Authenticate: undefined;
 	Verify: { email: string };
