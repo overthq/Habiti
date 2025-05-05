@@ -2,13 +2,13 @@ import React from 'react';
 import { Screen } from '@habiti/components';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { ActivityIndicator } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import StoreProducts from '../components/store/StoreProducts';
 import { useStoreQuery } from '../types/api';
 import { StoreStackParamList } from '../types/navigation';
 import StoreHeader from '../components/store/StoreHeader';
-import Animated from 'react-native-reanimated';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 import SearchStore from './SearchStore';
 
 const Store: React.FC = () => {
@@ -18,28 +18,27 @@ const Store: React.FC = () => {
 	});
 	const [searchTerm, setSearchTerm] = React.useState<string>();
 	const [activeCategory, setActiveCategory] = React.useState<string>();
+	const { top } = useSafeAreaInsets();
 
 	if (fetching || !data?.store) return <ActivityIndicator />;
 
 	return (
-		<Screen>
-			<SafeAreaView style={{ flex: 1 }}>
-				<StoreHeader
+		<Screen style={{ paddingTop: top }}>
+			<StoreHeader
+				store={data.store}
+				activeCategory={activeCategory}
+				setActiveCategory={setActiveCategory}
+				searchTerm={searchTerm}
+				setSearchTerm={setSearchTerm}
+			/>
+			<Animated.View style={{ flex: 1 }} layout={LinearTransition}>
+				<StoreProducts
 					store={data.store}
 					activeCategory={activeCategory}
-					setActiveCategory={setActiveCategory}
 					searchTerm={searchTerm}
-					setSearchTerm={setSearchTerm}
 				/>
-				<Animated.View style={{ flex: 1 }}>
-					<StoreProducts
-						store={data.store}
-						activeCategory={activeCategory}
-						searchTerm={searchTerm}
-					/>
-					<SearchStore searchTerm={searchTerm} />
-				</Animated.View>
-			</SafeAreaView>
+				<SearchStore searchTerm={searchTerm} />
+			</Animated.View>
 		</Screen>
 	);
 };

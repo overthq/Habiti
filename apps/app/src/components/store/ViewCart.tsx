@@ -3,6 +3,7 @@ import { Pressable, StyleSheet } from 'react-native';
 import { AppStackParamList } from '../../types/navigation';
 import { Icon, Typography, useTheme } from '@habiti/components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 
 interface ViewCartProps {
 	cartId?: string;
@@ -21,29 +22,36 @@ const ViewCart = ({ cartId, count }: ViewCartProps) => {
 	if (!count || count === 0) return null;
 
 	return (
-		<Pressable
-			style={[styles.button, { backgroundColor: theme.text.primary, bottom }]}
-			onPress={handlePress}
+		<Animated.View
+			layout={LinearTransition}
+			style={[styles.container, { bottom: bottom + 16 }]}
 		>
-			<Icon name='shopping-basket' color={theme.text.invert} />
-			<Typography
-				weight='medium'
-				size='large'
-				style={{ color: theme.text.invert }}
+			<Pressable
+				style={[styles.button, { backgroundColor: theme.text.primary }]}
+				onPress={handlePress}
 			>
-				View cart · {count}
-			</Typography>
-		</Pressable>
+				<Icon name='shopping-basket' color={theme.text.invert} />
+				<Typography
+					weight='medium'
+					size='large'
+					style={{ color: theme.text.invert }}
+				>
+					View cart · {count}
+				</Typography>
+			</Pressable>
+		</Animated.View>
 	);
 };
 
 const styles = StyleSheet.create({
-	button: {
+	container: {
 		position: 'absolute',
+		alignSelf: 'center'
+	},
+	button: {
 		borderRadius: 100,
 		paddingHorizontal: 16,
 		paddingVertical: 12,
-		alignSelf: 'center',
 		flexDirection: 'row',
 		alignItems: 'center',
 		gap: 8
