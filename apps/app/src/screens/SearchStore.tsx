@@ -7,7 +7,7 @@ import {
 } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 
 import StoreListItem from '../components/store/StoreListItem';
 // import StoreProducts from '../components/store/StoreProducts';
@@ -43,28 +43,28 @@ const SearchStore: React.FC<SearchStoreProps> = ({ searchTerm }) => {
 		[]
 	);
 
+	if (fetching || !data?.store) {
+		return <View />;
+	}
+
 	return (
 		<Screen style={{ display: !!searchTerm ? 'flex' : 'none' }}>
-			{fetching || !data?.store ? (
-				<ActivityIndicator />
-			) : (
-				<FlashList
-					keyboardShouldPersistTaps='handled'
-					data={data.store.products.edges}
-					keyExtractor={({ node }) => node.id}
-					showsVerticalScrollIndicator={false}
-					estimatedItemSize={240}
-					renderItem={({ item, index }) => (
-						<StoreListItem
-							item={item.node}
-							onPress={handleProductPress(item.node.id)}
-							side={index % 2 === 0 ? 'left' : 'right'}
-						/>
-					)}
-					numColumns={2}
-					contentContainerStyle={{ paddingTop: 8 }}
-				/>
-			)}
+			<FlashList
+				keyboardShouldPersistTaps='handled'
+				data={data.store.products.edges}
+				keyExtractor={({ node }) => node.id}
+				showsVerticalScrollIndicator={false}
+				estimatedItemSize={240}
+				renderItem={({ item, index }) => (
+					<StoreListItem
+						item={item.node}
+						onPress={handleProductPress(item.node.id)}
+						side={index % 2 === 0 ? 'left' : 'right'}
+					/>
+				)}
+				numColumns={2}
+				contentContainerStyle={{ paddingTop: 8 }}
+			/>
 		</Screen>
 	);
 };
