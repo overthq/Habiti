@@ -7,7 +7,6 @@ import React from 'react';
 import { Provider } from 'urql';
 import { useShallow } from 'zustand/react/shallow';
 
-import MainTabNavigator from './MainTab';
 import useClient from '../hooks/useClient';
 import AddCardWebview from '../screens/AddCardWebview';
 import AddDeliveryAddress from '../screens/AddDeliveryAddress';
@@ -19,6 +18,9 @@ import Product from '../screens/Product';
 import Verify from '../screens/Verify';
 import useStore from '../state';
 import { AppStackParamList } from '../types/navigation';
+import HomeStack from './HomeStack';
+import ProfileStack from './ProfileStack';
+import Carts from '../screens/Carts';
 
 // const prefix = Linking.createURL('/');
 
@@ -48,22 +50,32 @@ const Routes: React.FC = () => {
 				>
 					{accessToken ? (
 						<>
-							<AppStack.Screen name='Main' component={MainTabNavigator} />
-							<AppStack.Group screenOptions={{ headerShown: true }}>
+							<AppStack.Screen name='App.Home' component={HomeStack} />
+							<AppStack.Screen
+								name='App.Carts'
+								component={Carts}
+								options={{ headerTitle: 'Carts' }}
+							/>
+							<AppStack.Group
+								screenOptions={{ headerShown: true, presentation: 'modal' }}
+							>
+								<AppStack.Screen
+									name='App.Profile'
+									component={ProfileStack}
+									options={{ headerShown: false, headerTitle: 'Profile' }}
+								/>
 								<AppStack.Screen name='Cart' component={Cart} />
-								<AppStack.Group screenOptions={{ presentation: 'modal' }}>
-									<AppStack.Screen
-										name='Product'
-										component={Product}
-										options={{ headerTitle: '', gestureDirection: 'vertical' }}
-									/>
-									<AppStack.Screen name='Add Card' component={AddCardWebview} />
-									<AppStack.Screen
-										name='Modal.AddDeliveryAddress'
-										component={AddDeliveryAddress}
-										options={{ headerTitle: 'Add Delivery Address' }}
-									/>
-								</AppStack.Group>
+								<AppStack.Screen
+									name='Product'
+									component={Product}
+									options={{ headerTitle: '', gestureDirection: 'vertical' }}
+								/>
+								<AppStack.Screen name='Add Card' component={AddCardWebview} />
+								<AppStack.Screen
+									name='Modal.AddDeliveryAddress'
+									component={AddDeliveryAddress}
+									options={{ headerTitle: 'Add Delivery Address' }}
+								/>
 							</AppStack.Group>
 						</>
 					) : (

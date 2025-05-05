@@ -36,7 +36,7 @@ const Cart: React.FC = () => {
 		params: { cartId }
 	} = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
 	const { goBack } = useNavigation<NavigationProp<AppStackParamList>>();
-	useGoBack();
+	useGoBack('x');
 
 	const [{ data, fetching }, refetch] = useCartQuery({ variables: { cartId } });
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });

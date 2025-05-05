@@ -8,13 +8,13 @@ import {
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Alert, Linking, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import ProfileRow from '../components/profile/ProfileRow';
 import UserCard from '../components/profile/UserCard';
 import useStore from '../state';
 import { ProfileStackParamList } from '../types/navigation';
 import { useShallow } from 'zustand/react/shallow';
+import useGoBack from '../hooks/useGoBack';
 
 const PRIVACY_POLICY_URL = 'https://habiti.app/privacy-policy';
 const SUPPORT_URL = 'https://habiti.app/support';
@@ -38,7 +38,7 @@ const ACCEPTABLE_USE_URL = 'https://habiti.app/acceptable-use';
 const Profile: React.FC = () => {
 	const logOut = useStore(useShallow(state => state.logOut));
 	const { navigate } = useNavigation<NavigationProp<ProfileStackParamList>>();
-	const { top } = useSafeAreaInsets();
+	useGoBack('x');
 
 	const confirmLogOut = React.useCallback(() => {
 		Alert.alert('Log Out', 'Are you sure you want to log out?', [
@@ -48,8 +48,8 @@ const Profile: React.FC = () => {
 	}, [logOut]);
 
 	return (
-		<Screen style={{ paddingTop: top }}>
-			<ScreenHeader title='Profile' />
+		<Screen>
+			{/* <ScreenHeader title='Profile' /> */}
 			<UserCard />
 			{/* <Spacer y={8} /> */}
 			<Separator style={{ marginHorizontal: 16 }} />

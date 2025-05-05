@@ -14,22 +14,22 @@ const useClient = () => {
 		}))
 	);
 
-	// const client = React.useMemo(
-	// 	() =>
-	// 		createClient({
-	// 			url: `${env.apiUrl}/graphql`,
-	// 			fetchOptions: () => ({
-	// 				headers: {
-	// 					authorization: accessToken ? `Bearer ${accessToken}` : '',
-	// 					'x-market-store-id': activeStore ?? ''
-	// 				}
-	// 			}),
-	// 			exchanges: [customCache, fetchExchange]
-	// 		}),
-	// 	[accessToken, activeStore]
-	// );
+	const client = React.useMemo(
+		() =>
+			createClient({
+				url: `${env.apiUrl}/graphql`,
+				fetchOptions: () => ({
+					headers: {
+						authorization: accessToken ? `Bearer ${accessToken}` : '',
+						'x-market-store-id': activeStore ?? ''
+					}
+				}),
+				exchanges: [customCache, fetchExchange]
+			}),
+		[accessToken, activeStore]
+	);
 
-	return {};
+	return client;
 };
 
 export default useClient;

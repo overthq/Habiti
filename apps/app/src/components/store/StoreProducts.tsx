@@ -2,20 +2,25 @@ import { useTheme } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { RefreshControl, ScrollViewProps, View } from 'react-native';
+import { RefreshControl, View } from 'react-native';
 
-import StoreHeader from './StoreHeader';
 import StoreListItem from './StoreListItem';
 import { StoreQuery, useStoreProductsQuery } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
 import useRefresh from '../../hooks/useRefresh';
+import ViewCart from './ViewCart';
 
 interface StoreProductsProps {
 	store: StoreQuery['store'];
+	activeCategory: string;
+	searchTerm: string;
 }
 
-const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
-	const [activeCategory, setActiveCategory] = React.useState<string>();
+const StoreProducts: React.FC<StoreProductsProps> = ({
+	store,
+	activeCategory,
+	searchTerm
+}) => {
 	const [{ data, fetching }, refetch] = useStoreProductsQuery({
 		variables: {
 			storeId: store.id,
@@ -27,9 +32,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 		}
 	});
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
-	const { navigate, setOptions } =
-		useNavigation<NavigationProp<AppStackParamList>>();
-	const [headerVisible, setHeaderVisible] = React.useState(false);
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
 
 	const products = data?.store.products;
@@ -41,34 +44,16 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 		[]
 	);
 
-	const handleScroll = React.useCallback<
-		NonNullable<ScrollViewProps['onScroll']>
-	>(
-		({ nativeEvent }) => {
-			if (data?.store.name) {
-				if (nativeEvent.contentOffset.y >= 100 && !headerVisible) {
-					setHeaderVisible(true);
-					setOptions({ headerTitle: data.store.name });
-				} else if (nativeEvent.contentOffset.y < 100 && headerVisible) {
-					setHeaderVisible(false);
-					setOptions({ headerTitle: '' });
-				}
-			}
-		},
-		[data?.store.name, headerVisible]
-	);
-
 	if (fetching && !products) return <View />;
 
 	return (
-		<View style={{ flex: 1 }}>
-			<StoreHeader
-				store={store}
-				activeCategory={activeCategory}
-				setActiveCategory={setActiveCategory}
-			/>
+		<View style={{ flex: 1, display: !searchTerm ? 'flex' : 'none' }}>
 			<FlashList
-				contentContainerStyle={{ backgroundColor: theme.screen.background }}
+				keyboardShouldPersistTaps='handled'
+				contentContainerStyle={{
+					backgroundColor: theme.screen.background,
+					paddingTop: 8
+				}}
 				data={products.edges}
 				keyExtractor={({ node }) => node.id}
 				showsVerticalScrollIndicator={false}
@@ -81,7 +66,6 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 					/>
 				)}
 				numColumns={2}
-				onScroll={handleScroll}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}
@@ -89,6 +73,10 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 						tintColor={theme.text.secondary}
 					/>
 				}
+			/>
+			<ViewCart
+				cartId={store.userCart?.id}
+				count={store.userCart?.products.length}
 			/>
 		</View>
 	);

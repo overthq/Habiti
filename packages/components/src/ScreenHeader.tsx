@@ -13,13 +13,15 @@ interface ScreenHeaderProps {
 		onPress: () => void;
 	};
 	right?: React.ReactNode;
+	goBack?: () => void;
 }
 
 const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 	title,
 	hasBottomBorder = false,
 	search,
-	right
+	right,
+	goBack
 }) => {
 	const { theme } = useTheme();
 
@@ -33,9 +35,16 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 			]}
 		>
 			<View style={styles.title}>
-				<Typography size='xxlarge' weight='bold'>
-					{title}
-				</Typography>
+				<View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+					{goBack && (
+						<Pressable onPress={goBack}>
+							<Icon name='arrow-left' size={20} color={theme.text.primary} />
+						</Pressable>
+					)}
+					<Typography size='xxlarge' weight='bold'>
+						{title}
+					</Typography>
+				</View>
 				{right}
 			</View>
 			{search && (

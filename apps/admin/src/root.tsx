@@ -23,13 +23,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
 	);
 }
 
-const queryClient = new QueryClient();
-
 export default function Root() {
-	return (
-		<QueryClientProvider client={queryClient}>
-			<Outlet />
-			<Toaster />
-		</QueryClientProvider>
-	);
+	return <Outlet />;
 }

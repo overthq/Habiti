@@ -16,10 +16,10 @@ import Register from '../screens/Register';
 import StoreSelect from '../screens/StoreSelect';
 import Verify from '../screens/Verify';
 import useStore from '../state';
-import { getStatusBarStyle } from '../utils/theme';
+import { View } from 'react-native';
 
 const Routes: React.FC = () => {
-	const { name, theme } = useTheme();
+	const { theme } = useTheme();
 	const client = useClient();
 	const { accessToken, activeStore } = useStore(
 		useShallow(state => ({
@@ -30,7 +30,7 @@ const Routes: React.FC = () => {
 
 	return (
 		<Provider value={client}>
-			<StatusBar style={getStatusBarStyle(name)} />
+			<StatusBar style={theme.statusBar} />
 			<NavigationContainer theme={theme.navigation}>
 				<BottomSheetModalProvider>
 					<AppStack.Navigator
@@ -61,6 +61,7 @@ const Routes: React.FC = () => {
 						)}
 					</AppStack.Navigator>
 				</BottomSheetModalProvider>
+				<View />
 			</NavigationContainer>
 		</Provider>
 	);

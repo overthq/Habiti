@@ -22,7 +22,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 	const autoTheme = useColorScheme();
 
 	const parsed = React.useMemo(() => {
-		return theme === 'auto' ? 'light' : theme;
+		return theme === 'auto' ? (autoTheme ?? 'light') : theme;
 	}, [theme]);
 
 	const context = React.useMemo(
@@ -43,8 +43,4 @@ export const useTheme = () => {
 	}
 
 	return context;
-};
-
-export const getStatusBarStyle = (theme: 'light' | 'dark') => {
-	return ({ light: 'dark', dark: 'light' } as const)[theme];
 };

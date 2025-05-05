@@ -18,10 +18,7 @@ const StoreMeta: React.FC<StoreMetaProps> = ({ store }) => {
 		<Pressable
 			style={{ marginHorizontal: 16, borderRadius: 6 }}
 			onPress={() => {
-				navigate('Home.Store', {
-					screen: 'Store.Main',
-					params: { storeId: store.id }
-				});
+				navigate('Home.Store', { storeId: store.id });
 			}}
 		>
 			<View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>

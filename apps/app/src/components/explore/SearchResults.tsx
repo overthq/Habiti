@@ -16,10 +16,7 @@ const StoresView: React.FC = () => {
 	const { stores } = useSearchContext();
 
 	const handleStorePress = (storeId: string) => () => {
-		navigate('Home.Store', {
-			screen: 'Store.Main',
-			params: { storeId }
-		});
+		navigate('Home.Store', { storeId });
 	};
 
 	if (!stores) {
@@ -34,6 +31,7 @@ const StoresView: React.FC = () => {
 				<StoreResultRow store={item} onPress={handleStorePress(item.id)} />
 			)}
 			estimatedItemSize={100}
+			keyboardShouldPersistTaps='handled'
 		/>
 	);
 };
@@ -51,6 +49,7 @@ const ProductsView: React.FC = () => {
 
 	return (
 		<FlashList
+			keyboardShouldPersistTaps='handled'
 			keyExtractor={p => p.node.id}
 			data={products.edges}
 			renderItem={({ item }) => (

@@ -135,7 +135,7 @@ export type CreateCategoryInput = {
 };
 
 export type CreateOrderInput = {
-	cardId?: InputMaybe<Scalars['ID']['input']>;
+	cardId: Scalars['ID']['input'];
 	cartId: Scalars['ID']['input'];
 	serviceFee: Scalars['Int']['input'];
 	transactionFee: Scalars['Int']['input'];
@@ -704,7 +704,6 @@ export type Store = {
 	bankAccountNumber?: Maybe<Scalars['String']['output']>;
 	bankAccountReference?: Maybe<Scalars['String']['output']>;
 	bankCode?: Maybe<Scalars['String']['output']>;
-	cartId?: Maybe<Scalars['ID']['output']>;
 	carts: Array<Cart>;
 	categories: Array<StoreProductCategory>;
 	createdAt: Scalars['String']['output'];
@@ -724,6 +723,7 @@ export type Store = {
 	twitter?: Maybe<Scalars['String']['output']>;
 	unrealizedRevenue: Scalars['Int']['output'];
 	updatedAt: Scalars['String']['output'];
+	userCart?: Maybe<Cart>;
 	website?: Maybe<Scalars['String']['output']>;
 };
 
@@ -740,6 +740,7 @@ export type StoreProductsArgs = {
 
 export type StoreFilterInput = {
 	name?: InputMaybe<StringWhere>;
+	unlisted?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type StoreFollower = {
@@ -1267,7 +1268,19 @@ export type ProductQuery = {
 		unitPrice: number;
 		storeId: string;
 		inCart: boolean;
-		store: { __typename?: 'Store'; id: string; cartId?: string | null };
+		store: {
+			__typename?: 'Store';
+			id: string;
+			userCart?: {
+				__typename?: 'Cart';
+				id: string;
+				products: Array<{
+					__typename?: 'CartProduct';
+					cartId: string;
+					productId: string;
+				}>;
+			} | null;
+		};
 		images: Array<{ __typename?: 'Image'; id: string; path: string }>;
 		reviews: Array<{
 			__typename?: 'ProductReview';
@@ -1390,6 +1403,15 @@ export type StoreQuery = {
 			id: string;
 			name: string;
 		}>;
+		userCart?: {
+			__typename?: 'Cart';
+			id: string;
+			products: Array<{
+				__typename?: 'CartProduct';
+				cartId: string;
+				productId: string;
+			}>;
+		} | null;
 	};
 };
 
@@ -1989,7 +2011,13 @@ export const ProductDocument = gql`
 			storeId
 			store {
 				id
-				cartId
+				userCart {
+					id
+					products {
+						cartId
+						productId
+					}
+				}
 			}
 			images {
 				id
@@ -2157,6 +2185,13 @@ export const StoreDocument = gql`
 				name
 			}
 			followedByUser
+			userCart {
+				id
+				products {
+					cartId
+					productId
+				}
+			}
 		}
 	}
 `;

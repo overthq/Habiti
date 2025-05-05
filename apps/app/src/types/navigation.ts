@@ -2,7 +2,9 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 
 export type AppStackParamList = {
 	Landing: undefined;
-	Main: undefined;
+	'App.Home': undefined;
+	'App.Profile': undefined;
+	'App.Carts': undefined;
 	Register: undefined;
 	Authenticate: undefined;
 	Verify: { email: string };
@@ -15,7 +17,7 @@ export type AppStackParamList = {
 export type HomeStackParamList = {
 	'Home.Main': undefined;
 	'Home.Order': { orderId: string };
-	'Home.Store': NavigatorScreenParams<StoreStackParamList>;
+	'Home.Store': { storeId: string };
 	'Home.Settings': undefined;
 	'Home.SettingsTheme': undefined;
 	'Home.Notifications': undefined;
