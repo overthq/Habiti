@@ -17,9 +17,9 @@ const Store: React.FC = () => {
 
 	if (fetching || !store) {
 		return (
-			<View>
+			<Screen style={{ paddingTop: top }}>
 				<Button text='Log Out' onPress={logOut} />
-			</View>
+			</Screen>
 		);
 	}
 
