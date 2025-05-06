@@ -16,7 +16,11 @@ const Store: React.FC = () => {
 	const store = data?.currentStore;
 
 	if (fetching || !store) {
-		return <View />;
+		return (
+			<View>
+				<Button text='Log Out' onPress={logOut} />
+			</View>
+		);
 	}
 
 	if (error) {
