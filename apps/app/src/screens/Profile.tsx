@@ -1,10 +1,4 @@
-import {
-	Button,
-	Screen,
-	ScreenHeader,
-	Separator,
-	Spacer
-} from '@habiti/components';
+import { Button, Screen, Separator, Spacer } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Alert, Linking, View } from 'react-native';

@@ -60,7 +60,8 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 	};
 
 	return (
-		<View
+		<Animated.View
+			layout={LinearTransition}
 			style={[
 				styles.container,
 				{
@@ -111,7 +112,6 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 				<Animated.View
 					entering={FadeInDown}
 					exiting={FadeOutDown}
-					layout={LinearTransition}
 					style={{
 						flexDirection: 'row',
 						alignItems: 'center',
@@ -150,7 +150,7 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 					</Animated.View>
 				</Animated.View>
 			)}
-		</View>
+		</Animated.View>
 	);
 };
 
