@@ -51,15 +51,11 @@ export const authenticate: Resolver<AuthenticateArgs> = async (
 	{ input: { email, password } },
 	ctx
 ) => {
-	console.log({ email, password });
-
 	if (!email || !password) {
 		throw new Error('Email and password are required.');
 	}
 
 	const user = await ctx.prisma.user.findUnique({ where: { email } });
-
-	console.log({ user });
 
 	if (!user) throw new Error('The specified user does not exist.');
 
@@ -69,11 +65,7 @@ export const authenticate: Resolver<AuthenticateArgs> = async (
 		throw new Error('The entered password is incorrect');
 	}
 
-	console.log({ correct });
-
 	const accessToken = await generateAccessToken(user);
-
-	console.log({ accessToken, userId: user.id });
 
 	return { accessToken, userId: user.id };
 };
