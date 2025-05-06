@@ -16,7 +16,6 @@ import Register from '../screens/Register';
 import StoreSelect from '../screens/StoreSelect';
 import Verify from '../screens/Verify';
 import useStore from '../state';
-import { View } from 'react-native';
 
 const Routes: React.FC = () => {
 	const { theme } = useTheme();
@@ -61,7 +60,6 @@ const Routes: React.FC = () => {
 						)}
 					</AppStack.Navigator>
 				</BottomSheetModalProvider>
-				<View />
 			</NavigationContainer>
 		</Provider>
 	);
