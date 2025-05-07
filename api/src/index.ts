@@ -1,3 +1,5 @@
+import './config/sentry';
+
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
@@ -7,10 +9,10 @@ import express from 'express';
 import { expressjwt } from 'express-jwt';
 import { graphqlUploadExpress } from 'graphql-upload';
 import { createServer } from 'http';
+import * as Sentry from '@sentry/node';
 
 import prismaClient from './config/prisma';
 import redisClient from './config/redis';
-import { initSentry } from './config/sentry';
 import admin from './routes/admin';
 import carts from './routes/carts';
 import health from './routes/health';
@@ -28,7 +30,7 @@ import './config/env';
 
 const main = async () => {
 	const app = express();
-	initSentry(app);
+	Sentry.setupExpressErrorHandler(app);
 
 	app.use(express.json());
 	app.use(compression());
@@ -66,6 +68,7 @@ const main = async () => {
 			})
 		})
 	);
+
 	app.use('/webhooks', webhooks);
 	app.use('/payments', payments);
 	app.use('/health', health);
