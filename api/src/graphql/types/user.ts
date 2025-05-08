@@ -5,6 +5,7 @@ const UserTypes = gql`
 		id: ID!
 		name: String!
 		email: String!
+		suspended: Boolean!
 		createdAt: String!
 		updatedAt: String!
 

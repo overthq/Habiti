@@ -1,10 +1,12 @@
-import { Screen } from '@habiti/components';
 import React from 'react';
+import { Screen } from '@habiti/components';
 import { ActivityIndicator, View } from 'react-native';
 import { WebView } from 'react-native-webview';
+import { RouteProp, useRoute } from '@react-navigation/native';
 
 import useGoBack from '../hooks/useGoBack';
 import { useCardAuthorizationQuery } from '../types/api';
+import { AppStackParamList } from '../types/navigation';
 
 // Before opening this screen, we should probably explain to users why we have
 // to charge them a small amount of money. I should probably also figure out a
@@ -16,7 +18,12 @@ import { useCardAuthorizationQuery } from '../types/api';
 // be added to their transaction.
 
 const AddCardWebview: React.FC = () => {
-	const [{ fetching, data }] = useCardAuthorizationQuery();
+	const {
+		params: { amount }
+	} = useRoute<RouteProp<AppStackParamList, 'Add Card'>>();
+	const [{ fetching, data }] = useCardAuthorizationQuery({
+		variables: { amount }
+	});
 
 	useGoBack('x');
 

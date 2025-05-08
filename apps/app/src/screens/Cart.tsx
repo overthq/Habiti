@@ -35,7 +35,8 @@ const Cart: React.FC = () => {
 	const {
 		params: { cartId }
 	} = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
-	const { goBack } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { navigate, goBack } =
+		useNavigation<NavigationProp<AppStackParamList>>();
 	useGoBack('x');
 
 	const [{ data, fetching }, refetch] = useCartQuery({ variables: { cartId } });
@@ -54,7 +55,7 @@ const Cart: React.FC = () => {
 	const [selectedCard, setSelectedCard] = React.useState(defaultCardId);
 
 	const handleSubmit = React.useCallback(async () => {
-		const { error } = await createOrder({
+		const { error, data: orderData } = await createOrder({
 			input: {
 				cartId,
 				cardId: selectedCard,
@@ -68,7 +69,12 @@ const Cart: React.FC = () => {
 		if (error) {
 			console.log('Error while creating order:', error);
 		} else {
-			goBack();
+			if (!selectedCard) {
+				// TODO: Open a modal to add a payment method (with the total as an argument)
+				navigate('Add Card', { amount: orderData?.createOrder.total });
+			} else {
+				goBack();
+			}
 		}
 	}, [data, cartId, selectedCard]);
 

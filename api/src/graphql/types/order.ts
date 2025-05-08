@@ -32,6 +32,7 @@ const OrderTypes = gql`
 		Cancelled
 		Completed
 		Delivered
+		PaymentPending
 	}
 
 	type Filter {
@@ -43,7 +44,7 @@ const OrderTypes = gql`
 		cartId: ID!
 		transactionFee: Int!
 		serviceFee: Int!
-		cardId: ID!
+		cardId: ID
 	}
 
 	input UpdateOrderInput {
