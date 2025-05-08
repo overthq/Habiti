@@ -2,6 +2,7 @@ import { Screen } from '@habiti/components';
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { WebView } from 'react-native-webview';
+import * as Sentry from '@sentry/react-native';
 
 import useGoBack from '../hooks/useGoBack';
 import { useCardAuthorizationQuery } from '../types/api';
@@ -26,6 +27,14 @@ const AddCardWebview: React.FC = () => {
 				<WebView
 					style={{ flex: 1 }}
 					source={{ uri: data.cardAuthorization.authorization_url }}
+					onError={error => {
+						console.log('AddCardWebView error: ', JSON.stringify(error));
+						Sentry.captureException(new Error(JSON.stringify(error)));
+					}}
+					onHttpError={error => {
+						console.log('AddCardWebView error: ', JSON.stringify(error));
+						Sentry.captureException(new Error(JSON.stringify(error)));
+					}}
 				/>
 			) : (
 				<View style={{ paddingTop: 16 }}>
