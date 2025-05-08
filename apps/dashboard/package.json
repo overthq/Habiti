@@ -51,7 +51,7 @@
 		"@babel/core": "^7.20.0",
 		"@graphql-codegen/cli": "^5.0.2",
 		"@graphql-codegen/typescript": "^4.0.9",
-		"@graphql-codegen/typescript-operations": "^4.2.3",
+		"@graphql-codegen/typescript-operations": "^4.6.1",
 		"@graphql-codegen/typescript-urql": "^4.0.0",
 		"@types/cors": "^2.8.17",
 		"@types/extract-files": "^8.1.1",
