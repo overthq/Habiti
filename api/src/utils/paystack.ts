@@ -12,6 +12,10 @@ const post = async (path: string, body: object) => {
 		body: JSON.stringify(body)
 	});
 
+	console.log('POST request!');
+	console.log('path', path);
+	console.log('status', response.status);
+
 	const data = await response.json();
 	return data;
 };
@@ -84,6 +88,8 @@ export const initialCharge = async (email: string, amount?: number) => {
 		email,
 		amount: amount ?? 5000
 	});
+
+	console.log('[initialCharge]: ', JSON.stringify(data));
 
 	return data;
 };

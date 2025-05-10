@@ -3,7 +3,9 @@ import { PayoutStatus } from '@prisma/client';
 
 import prismaClient from '../config/prisma';
 
-export const handleChargeSuccess = async (data: any) => {
+interface ChargeSuccessPayload {}
+
+export const handleChargeSuccess = async (data: ChargeSuccessPayload) => {
 	// TODO: Copy over storeCard logic
 	// Check if it is a tokenization charge.
 	// If it is:
@@ -13,7 +15,12 @@ export const handleChargeSuccess = async (data: any) => {
 	// - Update order status to "Confirmed"
 };
 
-export const handleTransferSuccess = async (data: any) => {
+interface TransferSuccessPayload {
+	reference: string;
+	amount: string;
+}
+
+export const handleTransferSuccess = async (data: TransferSuccessPayload) => {
 	// TODO: Maybe less logic duplication?
 	const payout = await prismaClient.payout.findUnique({
 		where: { id: data.reference }
