@@ -1,17 +1,9 @@
-import {
-	SelectGroup,
-	Spacer,
-	TextButton,
-	Typography,
-	useTheme
-} from '@habiti/components';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
 import { View } from 'react-native';
+import { SelectGroup, Spacer, Typography, useTheme } from '@habiti/components';
 
 // import { MastercardIcon } from './CardIcons';
 import { CartQuery } from '../../types/api';
-import { AppStackParamList } from '../../types/navigation';
 
 interface SelectCardProps {
 	cards: CartQuery['cart']['user']['cards'];
@@ -19,15 +11,12 @@ interface SelectCardProps {
 	onCardSelect(cardId: string): void;
 }
 
-// FIXME: I have to standardize this empty state component across the app.
-
 const SelectCard: React.FC<SelectCardProps> = ({
 	cards,
 	selectedCard,
 	onCardSelect
 }) => {
 	const { theme } = useTheme();
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	return (
 		<View style={{ paddingHorizontal: 16 }}>
@@ -48,14 +37,9 @@ const SelectCard: React.FC<SelectCardProps> = ({
 					</Typography>
 					<Spacer y={4} />
 					<Typography variant='secondary'>
-						A valid payment method is required to create your order.
+						You will be prompted to add a payment method when you place this
+						order.
 					</Typography>
-					<Spacer y={8} />
-					<View style={{ backgroundColor: theme.border.color, height: 1 }} />
-					<Spacer y={8} />
-					<TextButton onPress={() => navigate('Add Card')}>
-						Add payment method
-					</TextButton>
 				</View>
 			) : (
 				<SelectGroup

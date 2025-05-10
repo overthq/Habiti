@@ -17,20 +17,25 @@ webhookRouter.post('/paystack', async (req, res) => {
 	if (hash === req.headers['x-paystack-signature']) {
 		const { event, data } = req.body;
 
-		// TODO: Defer these actions. Push them to a queue and handle them
-		// separately, to ensure that we can respond to Paystack quickly.
+		// Process webhook actions in the background
+		Promise.resolve().then(async () => {
+			try {
+				if (event === 'charge.success') {
+					await storeCard(data);
+				} else if (event === 'transfer.success') {
+					await handleTransferSuccess(data);
+				} else if (event === 'transfer.failure') {
+					await handleTransferFailure(data);
+				}
+			} catch (error) {
+				console.error('Error processing webhook:', error);
+			}
+		});
 
-		if (event === 'charge.success') {
-			await storeCard(data);
-		} else if (event === 'transfer.success') {
-			handleTransferSuccess(data);
-		} else if (event === 'transfer.failure') {
-			handleTransferFailure(data);
-		}
-
+		// Respond immediately
 		return res.status(200).json({
 			success: true,
-			data: { message: 'Done.' }
+			data: { message: 'Webhook received and processing.' }
 		});
 	} else {
 		return res.status(400).json({

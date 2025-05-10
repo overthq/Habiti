@@ -3,6 +3,7 @@ import {
 	ScrollableScreen,
 	Separator,
 	Spacer,
+	Typography,
 	useTheme
 } from '@habiti/components';
 import {
@@ -41,7 +42,7 @@ const Cart: React.FC = () => {
 
 	const [{ data, fetching }, refetch] = useCartQuery({ variables: { cartId } });
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
-	const [, createOrder] = useCreateOrderMutation();
+	const [{ data: createOrderData }, createOrder] = useCreateOrderMutation();
 
 	const { defaultCardId, setPreference } = useStore(
 		useShallow(state => ({
@@ -80,6 +81,15 @@ const Cart: React.FC = () => {
 
 	const cart = data?.cart;
 
+	// TODO: Make sure that users get navigated to the home screen instead.
+	if (createOrderData) {
+		return (
+			<View>
+				<Typography>Order submitted</Typography>
+			</View>
+		);
+	}
+
 	return (
 		<ScrollableScreen
 			style={[styles.container, { paddingBottom: bottom }]}
@@ -108,20 +118,16 @@ const Cart: React.FC = () => {
 						onCardSelect={setSelectedCard}
 					/>
 
-					<Spacer y={8} />
+					<Spacer y={16} />
 
 					<Separator style={{ margin: 16 }} />
 
-					<Spacer y={8} />
+					<Spacer y={16} />
 
 					<CartTotal cart={cart} />
 
 					<View style={{ paddingTop: 16, paddingHorizontal: 16 }}>
-						<HoldableButton
-							text='Place Order'
-							disabled={!selectedCard}
-							onComplete={handleSubmit}
-						/>
+						<HoldableButton text='Place Order' onComplete={handleSubmit} />
 					</View>
 				</>
 			)}

@@ -17,30 +17,38 @@ import { AppStackParamList } from '../types/navigation';
 // Or we can just create "Habiti cash" and load the money there, and it can
 // be added to their transaction.
 
-const AddCardWebview: React.FC = () => {
-	const {
-		params: { amount }
-	} = useRoute<RouteProp<AppStackParamList, 'Add Card'>>();
-	const [{ fetching, data }] = useCardAuthorizationQuery({
-		variables: { amount }
-	});
+// const {
+// 	params: { amount }
+// } = useRoute<RouteProp<AppStackParamList, 'Add Card'>>();
+// const [{ fetching, data }] = useCardAuthorizationQuery({
+// 	variables: { amount }
+// });
 
+const AddCardWebview: React.FC = () => {
 	useGoBack('x');
+
+	// if (fetching || !data) {
+	// 	return (
+	// 		<View style={{ flex: 1, paddingTop: 16 }}>
+	// 			<ActivityIndicator />
+	// 		</View>
+	// 	);
+	// }
 
 	return (
 		<Screen>
-			{!fetching && data ? (
-				<WebView
-					style={{ flex: 1 }}
-					source={{ uri: data.cardAuthorization.authorization_url }}
-				/>
-			) : (
-				<View style={{ paddingTop: 16 }}>
-					<ActivityIndicator />
-				</View>
-			)}
+			<WebView style={{ flex: 1 }} source={{ uri: 'https://google.com' }} />
 		</Screen>
 	);
+	// return (
+	// 	<Screen>
+	// 			<WebView
+	// 				style={{ flex: 1 }}
+	// 				source={{ uri: data.cardAuthorization.authorization_url }}
+	// 			/>
+	// 		)}
+	// 	</Screen>
+	// );
 };
 
 export default AddCardWebview;
