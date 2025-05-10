@@ -1,11 +1,12 @@
-import { Screen } from '@habiti/components';
 import React from 'react';
+import { Screen } from '@habiti/components';
 import { ActivityIndicator, View } from 'react-native';
 import { WebView } from 'react-native-webview';
-import * as Sentry from '@sentry/react-native';
+import { RouteProp, useRoute } from '@react-navigation/native';
 
 import useGoBack from '../hooks/useGoBack';
 import { useCardAuthorizationQuery } from '../types/api';
+import { AppStackParamList } from '../types/navigation';
 
 // Before opening this screen, we should probably explain to users why we have
 // to charge them a small amount of money. I should probably also figure out a
@@ -16,33 +17,38 @@ import { useCardAuthorizationQuery } from '../types/api';
 // Or we can just create "Habiti cash" and load the money there, and it can
 // be added to their transaction.
 
-const AddCardWebview: React.FC = () => {
-	const [{ fetching, data }] = useCardAuthorizationQuery();
+// const {
+// 	params: { amount }
+// } = useRoute<RouteProp<AppStackParamList, 'Add Card'>>();
+// const [{ fetching, data }] = useCardAuthorizationQuery({
+// 	variables: { amount }
+// });
 
+const AddCardWebview: React.FC = () => {
 	useGoBack('x');
+
+	// if (fetching || !data) {
+	// 	return (
+	// 		<View style={{ flex: 1, paddingTop: 16 }}>
+	// 			<ActivityIndicator />
+	// 		</View>
+	// 	);
+	// }
 
 	return (
 		<Screen>
-			{!fetching && data ? (
-				<WebView
-					style={{ flex: 1 }}
-					source={{ uri: data.cardAuthorization.authorization_url }}
-					onError={error => {
-						console.log('AddCardWebView error: ', JSON.stringify(error));
-						Sentry.captureException(new Error(JSON.stringify(error)));
-					}}
-					onHttpError={error => {
-						console.log('AddCardWebView error: ', JSON.stringify(error));
-						Sentry.captureException(new Error(JSON.stringify(error)));
-					}}
-				/>
-			) : (
-				<View style={{ paddingTop: 16 }}>
-					<ActivityIndicator />
-				</View>
-			)}
+			<WebView style={{ flex: 1 }} source={{ uri: 'https://google.com' }} />
 		</Screen>
 	);
+	// return (
+	// 	<Screen>
+	// 			<WebView
+	// 				style={{ flex: 1 }}
+	// 				source={{ uri: data.cardAuthorization.authorization_url }}
+	// 			/>
+	// 		)}
+	// 	</Screen>
+	// );
 };
 
 export default AddCardWebview;

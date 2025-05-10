@@ -14,6 +14,7 @@ const StoreTypes = gql`
 		bankAccountNumber: String
 		bankCode: String
 		bankAccountReference: String
+		unlisted: Boolean!
 		createdAt: String!
 		updatedAt: String!
 

@@ -3,6 +3,7 @@ import {
 	ScrollableScreen,
 	Separator,
 	Spacer,
+	Typography,
 	useTheme
 } from '@habiti/components';
 import {
@@ -35,12 +36,13 @@ const Cart: React.FC = () => {
 	const {
 		params: { cartId }
 	} = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
-	const { goBack } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { navigate, goBack } =
+		useNavigation<NavigationProp<AppStackParamList>>();
 	useGoBack('x');
 
 	const [{ data, fetching }, refetch] = useCartQuery({ variables: { cartId } });
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
-	const [, createOrder] = useCreateOrderMutation();
+	const [{ data: createOrderData }, createOrder] = useCreateOrderMutation();
 
 	const { defaultCardId, setPreference } = useStore(
 		useShallow(state => ({
@@ -54,7 +56,7 @@ const Cart: React.FC = () => {
 	const [selectedCard, setSelectedCard] = React.useState(defaultCardId);
 
 	const handleSubmit = React.useCallback(async () => {
-		const { error } = await createOrder({
+		const { error, data: orderData } = await createOrder({
 			input: {
 				cartId,
 				cardId: selectedCard,
@@ -68,11 +70,25 @@ const Cart: React.FC = () => {
 		if (error) {
 			console.log('Error while creating order:', error);
 		} else {
-			goBack();
+			if (!selectedCard) {
+				// TODO: Open a modal to add a payment method (with the total as an argument)
+				navigate('Add Card', { amount: orderData?.createOrder.total });
+			} else {
+				goBack();
+			}
 		}
 	}, [data, cartId, selectedCard]);
 
 	const cart = data?.cart;
+
+	// TODO: Make sure that users get navigated to the home screen instead.
+	if (createOrderData) {
+		return (
+			<View>
+				<Typography>Order submitted</Typography>
+			</View>
+		);
+	}
 
 	return (
 		<ScrollableScreen
@@ -102,20 +118,16 @@ const Cart: React.FC = () => {
 						onCardSelect={setSelectedCard}
 					/>
 
-					<Spacer y={8} />
+					<Spacer y={16} />
 
 					<Separator style={{ margin: 16 }} />
 
-					<Spacer y={8} />
+					<Spacer y={16} />
 
 					<CartTotal cart={cart} />
 
 					<View style={{ paddingTop: 16, paddingHorizontal: 16 }}>
-						<HoldableButton
-							text='Place Order'
-							disabled={!selectedCard}
-							onComplete={handleSubmit}
-						/>
+						<HoldableButton text='Place Order' onComplete={handleSubmit} />
 					</View>
 				</>
 			)}

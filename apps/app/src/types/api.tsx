@@ -135,7 +135,7 @@ export type CreateCategoryInput = {
 };
 
 export type CreateOrderInput = {
-	cardId: Scalars['ID']['input'];
+	cardId?: InputMaybe<Scalars['ID']['input']>;
 	cartId: Scalars['ID']['input'];
 	serviceFee: Scalars['Int']['input'];
 	transactionFee: Scalars['Int']['input'];
@@ -489,6 +489,7 @@ export enum OrderStatus {
 	Cancelled = 'Cancelled',
 	Completed = 'Completed',
 	Delivered = 'Delivered',
+	PaymentPending = 'PaymentPending',
 	Pending = 'Pending',
 	Processing = 'Processing'
 }
@@ -628,6 +629,10 @@ export type Query = {
 	users: Array<User>;
 };
 
+export type QueryCardAuthorizationArgs = {
+	amount?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type QueryCartArgs = {
 	id: Scalars['ID']['input'];
 };
@@ -721,6 +726,7 @@ export type Store = {
 	products: ProductConnection;
 	realizedRevenue: Scalars['Int']['output'];
 	twitter?: Maybe<Scalars['String']['output']>;
+	unlisted: Scalars['Boolean']['output'];
 	unrealizedRevenue: Scalars['Int']['output'];
 	updatedAt: Scalars['String']['output'];
 	userCart?: Maybe<Cart>;
@@ -823,6 +829,7 @@ export type User = {
 	name: Scalars['String']['output'];
 	orders: Array<Order>;
 	pushTokens: Array<UserPushToken>;
+	suspended: Scalars['Boolean']['output'];
 	updatedAt: Scalars['String']['output'];
 	watchlist: Array<WatchlistProduct>;
 };
@@ -887,7 +894,9 @@ export type CardsQuery = {
 	};
 };
 
-export type CardAuthorizationQueryVariables = Exact<{ [key: string]: never }>;
+export type CardAuthorizationQueryVariables = Exact<{
+	amount?: InputMaybe<Scalars['Int']['input']>;
+}>;
 
 export type CardAuthorizationQuery = {
 	__typename?: 'Query';
@@ -1547,8 +1556,8 @@ export function useCardsQuery(
 	});
 }
 export const CardAuthorizationDocument = gql`
-	query CardAuthorization {
-		cardAuthorization {
+	query CardAuthorization($amount: Int) {
+		cardAuthorization(amount: $amount) {
 			id
 			authorization_url
 			access_code

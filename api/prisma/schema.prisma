@@ -157,8 +157,8 @@ model StoreManager {
   managerId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  store     Store  @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  manager   User   @relation(fields: [managerId], references: [id], onDelete: Cascade)
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  manager   User     @relation(fields: [managerId], references: [id], onDelete: Cascade)
 
   @@unique([storeId, managerId])
 }
@@ -168,8 +168,8 @@ model StoreFollower {
   followerId String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  store      Store  @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  follower   User   @relation(fields: [followerId], references: [id], onDelete: Cascade)
+  store      Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  follower   User     @relation(fields: [followerId], references: [id], onDelete: Cascade)
 
   @@unique([storeId, followerId])
 }
@@ -215,12 +215,12 @@ model ProductCategory {
 }
 
 model StoreProductCategory {
-  id          String    @id @default(uuid())
+  id          String   @id @default(uuid())
   storeId     String
   name        String
   description String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
 
@@ -263,12 +263,12 @@ model UserPushToken {
 }
 
 model ProductOption {
-  id          String    @id @default(uuid())
+  id          String   @id @default(uuid())
   productId   String
   name        String
   description String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   product Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
   values  ProductOptionValue[]
@@ -289,12 +289,12 @@ model ProductOptionValue {
 }
 
 model Admin {
-  id            String   @id @default(uuid())
-  name          String
-  email         String   @unique
-  passwordHash  String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 enum ProductStatus {
@@ -308,6 +308,7 @@ enum OrderStatus {
   Cancelled
   Completed
   Delivered
+  PaymentPending
 }
 
 enum PayoutStatus {
