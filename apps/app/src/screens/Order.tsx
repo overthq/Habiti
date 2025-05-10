@@ -40,9 +40,11 @@ const Order: React.FC = () => {
 
 	return (
 		<Screen style={styles.container}>
-			<StoreMeta store={order.store} />
+			<View style={{ flexDirection: 'row' }}>
+				<StoreMeta store={order.store} />
+				<OrderStatusPill status={order.status} />
+			</View>
 			<Spacer y={16} />
-			<OrderStatusPill status={order.status} />
 			<View style={styles.products}>
 				{order.products.map(orderProduct => (
 					<OrderProduct
