@@ -70,9 +70,9 @@ const Cart: React.FC = () => {
 		if (error) {
 			console.log('Error while creating order:', error);
 		} else {
-			if (!selectedCard) {
+			if (!selectedCard && orderData?.createOrder.total) {
 				// TODO: Open a modal to add a payment method (with the total as an argument)
-				navigate('Add Card', { amount: orderData?.createOrder.total });
+				navigate('Add Card', { amount: orderData.createOrder.total });
 			} else {
 				goBack();
 			}
