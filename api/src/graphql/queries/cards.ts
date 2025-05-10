@@ -5,7 +5,7 @@ const user: Resolver = async (parent, _, ctx) => {
 	return ctx.prisma.card.findUnique({ where: { id: parent.id } }).user();
 };
 
-interface CardAuthorizationArgs {
+export interface CardAuthorizationArgs {
 	amount?: number;
 }
 
