@@ -30,7 +30,7 @@ const PaymentMethods: React.FC = () => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<Pressable onPress={() => navigate('Add Card')}>
+				<Pressable onPress={() => navigate('Add Card', { amount: 5000 })}>
 					<Icon name='plus' />
 				</Pressable>
 			)
@@ -70,7 +70,7 @@ const PaymentMethods: React.FC = () => {
 						description='When you add your cards, they will be displayed here.'
 						cta={{
 							text: 'Add card',
-							action: () => navigate('Add Card')
+							action: () => navigate('Add Card', { amount: 5000 })
 						}}
 						viewStyle={{ flex: 1 }}
 					/>

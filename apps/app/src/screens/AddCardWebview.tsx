@@ -18,12 +18,10 @@ import { AppStackParamList } from '../types/navigation';
 // be added to their transaction.
 
 const AddCardWebview: React.FC = () => {
-	const {
-		params: { amount }
-	} = useRoute<RouteProp<AppStackParamList, 'Add Card'>>();
+	const { params } = useRoute<RouteProp<AppStackParamList, 'Add Card'>>();
 
 	const [{ fetching, data }] = useCardAuthorizationQuery({
-		variables: { amount }
+		variables: { amount: params.amount }
 	});
 
 	useGoBack('x');
