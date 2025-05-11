@@ -86,4 +86,7 @@ const main = async () => {
 	console.log(`Server running on port ${PORT}`);
 };
 
-main();
+main().catch(error => {
+	console.error('Fatal error during server startup:', error);
+	process.exit(1);
+});
