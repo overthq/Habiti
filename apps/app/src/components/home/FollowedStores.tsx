@@ -16,7 +16,7 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 	return followed.length === 0 ? (
 		<Dialog
 			style={styles.dialog}
-			title='No followed stores'
+			title='You haven’t followed any stores yet'
 			description='Discover and follow more stores to improve your experience on the app.'
 		/>
 	) : (

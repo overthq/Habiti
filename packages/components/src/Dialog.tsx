@@ -25,7 +25,9 @@ const Dialog: React.FC<DialogProps> = ({ title, description, style }) => {
 		setOpen(false);
 	};
 
-	return open ? (
+	if (!open) return null;
+
+	return (
 		<Animated.View
 			entering={FadeInDown}
 			exiting={FadeOutUp}
@@ -37,25 +39,25 @@ const Dialog: React.FC<DialogProps> = ({ title, description, style }) => {
 			]}
 		>
 			<View style={styles.header}>
-				<Typography weight='medium' size='xlarge'>
+				<Typography weight='medium' size='large'>
 					{title}
 				</Typography>
 				<TouchableOpacity onPress={handleClose}>
-					<Icon name='x' />
+					<Icon name='x' size={20} />
 				</TouchableOpacity>
 			</View>
-			<Spacer y={2} />
-			<Typography style={{ marginRight: 18 }} variant='secondary'>
+			{/* <Spacer y={2} /> */}
+			<Typography style={{ marginRight: 18 }} size='small' variant='secondary'>
 				{description}
 			</Typography>
 		</Animated.View>
-	) : null;
+	);
 };
 
 const styles = StyleSheet.create({
 	container: {
 		borderRadius: 6,
-		padding: 16
+		padding: 12
 	},
 	header: {
 		flexDirection: 'row',

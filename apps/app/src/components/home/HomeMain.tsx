@@ -13,7 +13,7 @@ const HomeMain = () => {
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 	const { theme } = useTheme();
 
-	if (fetching) return <View />;
+	if (fetching && !data) return <View />;
 
 	if (
 		!data ||
