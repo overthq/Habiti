@@ -185,7 +185,7 @@ model Card {
   expYear           String
   bin               String
   bank              String
-  signature         String   @unique
+  signature         String
   countryCode       String
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt

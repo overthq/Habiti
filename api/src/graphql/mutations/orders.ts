@@ -1,13 +1,14 @@
 import { OrderStatus, PushTokenType } from '@prisma/client';
 
 import { Resolver } from '../../types/resolvers';
-import { chargeAuthorization } from '../../utils/paystack';
 import { storeAuthorizedResolver } from '../permissions';
 import {
 	updateStoreRevenue,
 	sendStatusNotification,
 	sendNewOrderNotification
 } from '../hooks/orders';
+import { saveOrderData } from '../../core/data/orders';
+import { loadCart } from '../../core/data/carts';
 
 export interface CreateOrderArgs {
 	input: {
@@ -23,100 +24,25 @@ export const createOrder: Resolver<CreateOrderArgs> = async (
 	{ input: { cartId, cardId, transactionFee, serviceFee } },
 	ctx
 ) => {
-	const cart = await ctx.prisma.cart.findUnique({
-		where: { id: cartId, userId: ctx.user.id },
-		include: {
-			products: { include: { product: true } },
-			store: true
-		}
+	const cart = await loadCart(ctx, cartId);
+
+	// TODO: Validations
+
+	const order = await saveOrderData(ctx, {
+		cardId,
+		transactionFee,
+		serviceFee,
+		cart,
+		storeId: cart.storeId,
+		products: cart.products.map(p => p.product)
 	});
 
-	if (!cart) {
-		throw new Error('Cart not found');
-	}
-
-	let total = 0;
-	const orderData = cart.products.map(p => {
-		total += p.product.unitPrice * p.quantity;
-		return {
-			productId: p.productId,
-			unitPrice: p.product.unitPrice,
-			quantity: p.quantity
-		};
+	await sendNewOrderNotification(ctx, {
+		storeId: cart.storeId,
+		orderId: order.id,
+		customerName: ctx.user.name,
+		amount: order.total
 	});
-
-	if (!cardId) {
-		const [, order] = await ctx.prisma.$transaction([
-			ctx.prisma.store.update({
-				where: { id: cart.storeId },
-				data: {
-					orderCount: { increment: 1 }
-				}
-			}),
-			ctx.prisma.order.create({
-				data: {
-					userId: ctx.user.id,
-					storeId: cart.storeId,
-					serialNumber: cart.store.orderCount + 1,
-					products: { createMany: { data: orderData } },
-					total,
-					transactionFee,
-					serviceFee,
-					status: OrderStatus.PaymentPending
-				}
-			}),
-			ctx.prisma.cart.delete({ where: { id: cartId } })
-		]);
-
-		return order;
-	} else {
-		// Execute all database operations and payment in a single transaction
-		const [order] = await ctx.prisma.$transaction(async prisma => {
-			// Charge the card first - if this fails, no DB changes will be made
-			const card = await prisma.card.findUnique({ where: { id: cardId } });
-
-			if (!card) {
-				throw new Error(`No card found with the provided id: ${cardId}`);
-			}
-
-			await chargeAuthorization({
-				email: card.email,
-				amount: String(total),
-				authorizationCode: card.authorizationCode
-			});
-
-			const [, order] = await Promise.all([
-				prisma.store.update({
-					where: { id: cart.storeId },
-					data: {
-						orderCount: { increment: 1 },
-						unrealizedRevenue: { increment: total }
-					}
-				}),
-				prisma.order.create({
-					data: {
-						userId: ctx.user.id,
-						storeId: cart.storeId,
-						serialNumber: cart.store.orderCount + 1,
-						products: { createMany: { data: orderData } },
-						total,
-						transactionFee,
-						serviceFee
-					}
-				}),
-				prisma.cart.delete({ where: { id: cartId } })
-			]);
-
-			return [order];
-		});
-
-		await sendNewOrderNotification(ctx, {
-			storeId: cart.storeId,
-			orderId: order.id,
-			customerName: ctx.user.name,
-			amount: total
-		});
-	}
 };
 
 export interface UpdateOrderArgs {
