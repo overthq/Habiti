@@ -1,11 +1,11 @@
 import React from 'react';
 import { Screen } from '@habiti/components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 
 import HomeMain from '../components/home/HomeMain';
 import HomeHeader from '../components/home/HomeHeader';
 import HomeSearch from '../components/home/HomeSearch';
-import Animated, { LinearTransition } from 'react-native-reanimated';
 
 const Home: React.FC = () => {
 	const [searchOpen, setSearchOpen] = React.useState(false);

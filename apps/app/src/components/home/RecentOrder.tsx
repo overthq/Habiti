@@ -1,10 +1,11 @@
-import { CustomImage, Row, Typography } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import { CustomImage, Row, Typography } from '@habiti/components';
 
 import { HomeQuery } from '../../types/api';
 import { relativeTimestamp } from '../../utils/date';
 import { plural } from '../../utils/strings';
+import { formatNaira } from '@habiti/common';
 
 interface RecentOrderProps {
 	order: HomeQuery['currentUser']['orders'][number];
@@ -22,18 +23,15 @@ const RecentOrder: React.FC<RecentOrderProps> = ({ order, onPress }) => {
 		<Row key={order.id} style={styles.container} onPress={onPress}>
 			<CustomImage
 				uri={order.store.image?.path}
-				height={56}
-				width={56}
-				style={styles.image}
+				height={48}
+				width={48}
+				circle
 			/>
 			<View style={styles.info}>
 				<Typography weight='medium'>{order.store.name}</Typography>
-				<Typography size='small'>
+				<Typography size='small' variant='secondary'>
 					{plural('product', order.products.length)} ·{' '}
-					{relativeTimestamp(order.createdAt)}
-				</Typography>
-				<Typography size='xsmall' weight='medium' variant='secondary'>
-					{order.status}
+					{relativeTimestamp(order.createdAt)} · {formatNaira(order.total)}
 				</Typography>
 			</View>
 		</Row>
@@ -46,10 +44,8 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center'
 	},
-	image: {
-		borderRadius: 28
-	},
 	info: {
+		// marginTop: 2,
 		marginLeft: 8
 	}
 });

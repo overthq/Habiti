@@ -46,7 +46,13 @@ export const createOrder: Resolver<CreateOrderArgs> = async (
 	});
 
 	if (!cardId) {
-		const [order] = await ctx.prisma.$transaction([
+		const [, order] = await ctx.prisma.$transaction([
+			ctx.prisma.store.update({
+				where: { id: cart.storeId },
+				data: {
+					orderCount: { increment: 1 }
+				}
+			}),
 			ctx.prisma.order.create({
 				data: {
 					userId: ctx.user.id,

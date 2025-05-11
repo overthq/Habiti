@@ -16,24 +16,26 @@ const StoreMeta: React.FC<StoreMetaProps> = ({ store }) => {
 
 	return (
 		<Pressable
-			style={{ marginHorizontal: 16, borderRadius: 6 }}
+			style={{
+				marginHorizontal: 16,
+				padding: 12,
+				borderRadius: 6,
+				backgroundColor: theme.input.background
+			}}
 			onPress={() => {
 				navigate('Home.Store', { storeId: store.id });
 			}}
 		>
 			<View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
-				<CustomImage
-					height={40}
-					width={40}
-					style={{
-						borderRadius: 40,
-						backgroundColor: theme.border.color
-					}}
-					uri={store.image?.path}
-				/>
-				<Typography weight='medium' size='large'>
-					{store.name}
-				</Typography>
+				<CustomImage height={40} width={40} uri={store.image?.path} circle />
+				<View>
+					<Typography weight='medium' size='large'>
+						{store.name}
+					</Typography>
+					<Typography size='small' variant='secondary'>
+						Visit store
+					</Typography>
+				</View>
 			</View>
 		</Pressable>
 	);

@@ -24,6 +24,7 @@ const CartTypes = gql`
 	}
 
 	type Fees {
+		id: ID!
 		transaction: Int!
 		service: Int!
 		total: Int!

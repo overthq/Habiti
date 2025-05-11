@@ -25,7 +25,7 @@ const CardTypes = gql`
 	}
 
 	extend type Query {
-		cardAuthorization(amount: Int): CardAuthorization!
+		cardAuthorization(orderId: ID): CardAuthorization!
 	}
 
 	extend type Mutation {

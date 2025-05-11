@@ -203,6 +203,7 @@ export type EditStoreInput = {
 
 export type Fees = {
 	__typename?: 'Fees';
+	id: Scalars['ID']['output'];
 	service: Scalars['Int']['output'];
 	total: Scalars['Int']['output'];
 	transaction: Scalars['Int']['output'];
@@ -630,7 +631,7 @@ export type Query = {
 };
 
 export type QueryCardAuthorizationArgs = {
-	amount?: InputMaybe<Scalars['Int']['input']>;
+	orderId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 export type QueryCartArgs = {
@@ -895,7 +896,7 @@ export type CardsQuery = {
 };
 
 export type CardAuthorizationQueryVariables = Exact<{
-	amount?: InputMaybe<Scalars['Int']['input']>;
+	orderId?: InputMaybe<Scalars['ID']['input']>;
 }>;
 
 export type CardAuthorizationQuery = {
@@ -978,6 +979,7 @@ export type CartQuery = {
 		}>;
 		fees: {
 			__typename?: 'Fees';
+			id: string;
 			transaction: number;
 			service: number;
 			total: number;
@@ -1556,8 +1558,8 @@ export function useCardsQuery(
 	});
 }
 export const CardAuthorizationDocument = gql`
-	query CardAuthorization($amount: Int) {
-		cardAuthorization(amount: $amount) {
+	query CardAuthorization($orderId: ID) {
+		cardAuthorization(orderId: $orderId) {
 			id
 			authorization_url
 			access_code
@@ -1644,6 +1646,7 @@ export const CartDocument = gql`
 			}
 			total
 			fees {
+				id
 				transaction
 				service
 				total

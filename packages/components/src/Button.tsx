@@ -16,14 +16,30 @@ interface ButtonProps extends PressableProps {
 	text: string;
 	loading?: boolean;
 	style?: ViewStyle;
-	size?: 'regular' | 'medium' | 'large';
+	size?: 'small' | 'regular' | 'large';
 }
+
+const sizeMap = {
+	small: {
+		height: 36,
+		fontSize: 15
+	},
+	regular: {
+		height: 44,
+		fontSize: 17
+	},
+	large: {
+		height: 48,
+		fontSize: 17
+	}
+} as const;
 
 const Button: React.FC<ButtonProps> = ({
 	text,
 	loading,
 	style,
 	variant = 'primary',
+	size = 'regular',
 	disabled,
 	...props
 }) => {
@@ -32,7 +48,11 @@ const Button: React.FC<ButtonProps> = ({
 
 	return (
 		<Pressable
-			style={[styles.container, { backgroundColor: colors.background }, style]}
+			style={[
+				styles.container,
+				{ backgroundColor: colors.background, height: sizeMap[size].height },
+				style
+			]}
 			disabled={loading || disabled}
 			{...props}
 		>
@@ -41,7 +61,10 @@ const Button: React.FC<ButtonProps> = ({
 			) : (
 				<Typography
 					weight='medium'
-					style={[styles.text, { color: colors.text }]}
+					style={[
+						styles.text,
+						{ color: colors.text, fontSize: sizeMap[size].fontSize }
+					]}
 				>
 					{text}
 				</Typography>
