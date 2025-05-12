@@ -10,6 +10,7 @@ interface CustomImageProps {
 	height: number | (undefined extends true ? number | undefined : number);
 	width?: number;
 	circle?: boolean;
+	fallback?: string;
 }
 
 const CustomImage: React.FC<CustomImageProps> = ({
