@@ -24,7 +24,7 @@ importers:
         specifier: ^6.7.0
         version: 6.7.0(prisma@6.7.0(typescript@5.8.3))(typescript@5.8.3)
       '@prisma/instrumentation':
-        specifier: ^6.3.1
+        specifier: ^6.7.0
         version: 6.7.0(@opentelemetry/api@1.9.0)
       '@sentry/cli':
         specifier: ^2.41.1
@@ -51,7 +51,7 @@ importers:
         specifier: ^16.4.7
         version: 16.5.0
       expo-server-sdk:
-        specifier: ^3.13.0
+        specifier: ^3.15.0
         version: 3.15.0
       express:
         specifier: ^4.21.2
