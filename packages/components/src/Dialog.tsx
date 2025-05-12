@@ -19,17 +19,9 @@ interface DialogProps {
 
 const Dialog: React.FC<DialogProps> = ({ title, description, style }) => {
 	const { theme } = useTheme();
-	const [open, setOpen] = React.useState(true);
 
-	const handleClose = () => {
-		setOpen(false);
-	};
-
-	return open ? (
-		<Animated.View
-			entering={FadeInDown}
-			exiting={FadeOutUp}
-			layout={LinearTransition}
+	return (
+		<View
 			style={[
 				styles.container,
 				{ backgroundColor: theme.input.background },
@@ -37,25 +29,20 @@ const Dialog: React.FC<DialogProps> = ({ title, description, style }) => {
 			]}
 		>
 			<View style={styles.header}>
-				<Typography weight='medium' size='xlarge'>
-					{title}
-				</Typography>
-				<TouchableOpacity onPress={handleClose}>
-					<Icon name='x' />
-				</TouchableOpacity>
+				<Typography weight='medium'>{title}</Typography>
 			</View>
 			<Spacer y={2} />
-			<Typography style={{ marginRight: 18 }} variant='secondary'>
+			<Typography style={{ marginRight: 18 }} size='small' variant='secondary'>
 				{description}
 			</Typography>
-		</Animated.View>
-	) : null;
+		</View>
+	);
 };
 
 const styles = StyleSheet.create({
 	container: {
 		borderRadius: 6,
-		padding: 16
+		padding: 12
 	},
 	header: {
 		flexDirection: 'row',

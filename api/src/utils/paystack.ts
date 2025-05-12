@@ -83,10 +83,21 @@ export const storeCard = async (data: StoreCardData) => {
 	});
 };
 
-export const initialCharge = async (email: string, amount?: number) => {
+interface InitialChargeOptions {
+	email: string;
+	amount: number;
+	orderId: string | undefined;
+}
+
+export const initialCharge = async (options: InitialChargeOptions) => {
 	const data = await post('/transaction/initialize', {
-		email,
-		amount: amount ?? 5000
+		email: options.email,
+		amount: options.amount,
+		...(options.orderId && {
+			metadata: {
+				orderId: options.orderId
+			}
+		})
 	});
 
 	console.log('[initialCharge]: ', JSON.stringify(data));

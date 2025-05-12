@@ -15,8 +15,8 @@ query Cards {
 }
 
 # This should be renamed to "GetCardAuthorization" or something.
-query CardAuthorization($amount: Int) {
-	cardAuthorization(amount: $amount) {
+query CardAuthorization($orderId: ID) {
+	cardAuthorization(orderId: $orderId) {
 		id
 		authorization_url
 		access_code

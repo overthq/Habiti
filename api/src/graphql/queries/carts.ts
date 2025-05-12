@@ -68,7 +68,7 @@ export const fees: Resolver = async (parent, _, ctx) => {
 	const service = calculateHabitiFee();
 	const total = transaction + service;
 
-	return { transaction, service, total };
+	return { id: `fees-${parent.id}`, transaction, service, total };
 };
 
 export default {

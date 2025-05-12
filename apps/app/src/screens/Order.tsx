@@ -1,4 +1,10 @@
-import { Button, Screen, Spacer } from '@habiti/components';
+import {
+	Button,
+	Screen,
+	Spacer,
+	Typography,
+	useTheme
+} from '@habiti/components';
 import {
 	NavigationProp,
 	RouteProp,
@@ -8,15 +14,54 @@ import {
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
-import OrderStatusPill from '../components/home/OrderStatusPill';
 import OrderMeta from '../components/order/OrderMeta';
 import OrderProduct from '../components/order/OrderProduct';
 import StoreMeta from '../components/order/StoreMeta';
 import useGoBack from '../hooks/useGoBack';
-import { useOrderQuery } from '../types/api';
+import { OrderStatus, useOrderQuery } from '../types/api';
 import { AppStackParamList, HomeStackParamList } from '../types/navigation';
 
 // What actions should users be able to carry out on their orders on this screen?
+
+const PaymentPendingWarning = () => {
+	const { theme } = useTheme();
+
+	return (
+		<View
+			style={{
+				marginBottom: 12,
+				marginHorizontal: 16,
+				backgroundColor: theme.input.background,
+				padding: 12,
+				borderRadius: 8
+			}}
+		>
+			<Typography weight='medium'>Payment pending</Typography>
+			<Spacer y={4} />
+			<Typography variant='secondary' size='small'>
+				This order has a pending payment. Please make the payment to complete
+				your order.
+			</Typography>
+			<Spacer y={12} />
+			<View style={{ flexDirection: 'row', gap: 8 }}>
+				<Button
+					style={{ flex: 1 }}
+					text='Make Payment'
+					variant='primary'
+					size='small'
+					onPress={() => {}}
+				/>
+				<Button
+					style={{ flex: 1 }}
+					text='Cancel Order'
+					variant='destructive'
+					size='small'
+					onPress={() => {}}
+				/>
+			</View>
+		</View>
+	);
+};
 
 const Order: React.FC = () => {
 	const {
@@ -40,12 +85,9 @@ const Order: React.FC = () => {
 
 	return (
 		<Screen style={styles.container}>
-			<View style={{ flexDirection: 'row' }}>
-				<StoreMeta store={order.store} />
-				<OrderStatusPill status={order.status} />
-			</View>
-			<Spacer y={16} />
-			<View style={styles.products}>
+			<StoreMeta store={order.store} />
+			<Spacer y={12} />
+			<View>
 				{order.products.map(orderProduct => (
 					<OrderProduct
 						key={orderProduct.productId}
@@ -55,21 +97,14 @@ const Order: React.FC = () => {
 				))}
 			</View>
 			<OrderMeta order={order} />
-			<View style={{ paddingHorizontal: 16 }}>
-				<Button text='Cancel Order' variant='destructive' onPress={() => {}} />
-			</View>
+			{order.status === OrderStatus.PaymentPending && <PaymentPendingWarning />}
 		</Screen>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		paddingTop: 16
-	},
-	products: {
-		paddingVertical: 8,
-		borderRadius: 4,
-		overflow: 'hidden'
+		paddingTop: 12
 	}
 });
 

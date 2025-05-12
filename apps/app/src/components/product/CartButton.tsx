@@ -1,7 +1,7 @@
-import { Button } from '@habiti/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
+import { Button } from '@habiti/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { useAddToCartMutation } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
@@ -21,13 +21,16 @@ const CartButton: React.FC<CartButtonProps> = ({
 	inCart,
 	quantity
 }) => {
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { navigate, goBack } =
+		useNavigation<NavigationProp<AppStackParamList>>();
 	const [{ fetching }, addToCart] = useAddToCartMutation();
 
 	const handlePress = React.useCallback(async () => {
 		await addToCart({
 			input: { storeId, productId, quantity }
 		});
+
+		goBack();
 	}, [storeId, productId]);
 
 	const goToCart = React.useCallback(() => {

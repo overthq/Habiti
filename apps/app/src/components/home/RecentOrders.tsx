@@ -47,7 +47,7 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		paddingTop: 16
+		paddingTop: 8
 	}
 });
 

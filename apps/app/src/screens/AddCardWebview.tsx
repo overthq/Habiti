@@ -21,7 +21,9 @@ const AddCardWebview: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Add Card'>>();
 
 	const [{ fetching, data }] = useCardAuthorizationQuery({
-		variables: { amount: params.amount }
+		variables: {
+			...(params?.orderId && { orderId: params.orderId })
+		}
 	});
 
 	useGoBack('x');

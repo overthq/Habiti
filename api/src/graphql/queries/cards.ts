@@ -1,3 +1,4 @@
+import { OrderStatus } from '@prisma/client';
 import { Resolver } from '../../types/resolvers';
 import { initialCharge } from '../../utils/paystack';
 
@@ -6,15 +7,36 @@ const user: Resolver = async (parent, _, ctx) => {
 };
 
 export interface CardAuthorizationArgs {
-	amount?: number;
+	orderId?: string;
 }
 
 const cardAuthorization: Resolver<CardAuthorizationArgs> = async (
 	_,
-	{ amount },
+	{ orderId },
 	ctx
 ) => {
-	const { data } = await initialCharge(ctx.user.email, amount);
+	// Default to least amount possible.
+	let amount = 5000;
+
+	if (orderId) {
+		const order = await ctx.prisma.order.findUnique({
+			where: { id: orderId }
+		});
+
+		if (!order) {
+			throw new Error('Order not found');
+		} else if (order.status !== OrderStatus.PaymentPending) {
+			throw new Error('Order is not in payment pending state');
+		}
+
+		amount = order.total;
+	}
+
+	const { data } = await initialCharge({
+		email: ctx.user.email,
+		amount,
+		orderId
+	});
 
 	return { id: data.access_code, ...data };
 };
