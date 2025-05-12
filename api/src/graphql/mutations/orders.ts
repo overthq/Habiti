@@ -43,6 +43,8 @@ export const createOrder: Resolver<CreateOrderArgs> = async (
 		customerName: ctx.user.name,
 		amount: order.total
 	});
+
+	return order;
 };
 
 export interface UpdateOrderArgs {
