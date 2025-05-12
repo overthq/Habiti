@@ -212,8 +212,8 @@ importers:
         specifier: ^3.30.1
         version: 3.42.0
       date-fns:
-        specifier: ^2.30.0
-        version: 2.30.0
+        specifier: ^4.1.0
+        version: 4.1.0
       expo:
         specifier: ^53.0.7
         version: 53.0.9(@babel/core@7.27.1)(graphql@16.11.0)(react-native-webview@13.13.5(react-native@0.79.2(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.2(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
@@ -363,8 +363,8 @@ importers:
         specifier: ^3.30.1
         version: 3.42.0
       date-fns:
-        specifier: ^2.30.0
-        version: 2.30.0
+        specifier: ^4.1.0
+        version: 4.1.0
       expo:
         specifier: ^53.0.7
         version: 53.0.9(@babel/core@7.27.1)(graphql@16.11.0)(react-native-webview@13.13.5(react-native@0.79.2(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.2(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
@@ -3623,9 +3623,8 @@ packages:
   dataloader@2.2.3:
     resolution: {integrity: sha512-y2krtASINtPFS1rSDjacrFgn1dcUuoREVabwlOGOe4SdxenREqwjwjElAdwvbGM7kgZz9a3KVicWR7vcz8rnzA==}
 
-  date-fns@2.30.0:
-    resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}
-    engines: {node: '>=0.11'}
+  date-fns@4.1.0:
+    resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
 
   debounce@1.2.1:
     resolution: {integrity: sha512-XRRe6Glud4rd/ZGQfiV1ruXSfbvfJedlV9Y6zOlP+2K04vBYiJEte6stfFkCP03aMnY5tsipamumUjL14fofug==}
@@ -10546,9 +10545,7 @@ snapshots:
 
   dataloader@2.2.3: {}
 
-  date-fns@2.30.0:
-    dependencies:
-      '@babel/runtime': 7.27.1
+  date-fns@4.1.0: {}
 
   debounce@1.2.1: {}
 
