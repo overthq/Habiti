@@ -18,13 +18,34 @@ import OrderMeta from '../components/order/OrderMeta';
 import OrderProduct from '../components/order/OrderProduct';
 import StoreMeta from '../components/order/StoreMeta';
 import useGoBack from '../hooks/useGoBack';
-import { OrderStatus, useOrderQuery } from '../types/api';
+import {
+	OrderStatus,
+	useOrderQuery,
+	useUpdateOrderMutation
+} from '../types/api';
 import { AppStackParamList, HomeStackParamList } from '../types/navigation';
 
 // What actions should users be able to carry out on their orders on this screen?
 
-const PaymentPendingWarning = () => {
+interface PaymentPendingWarningProps {
+	orderId: string;
+}
+
+const PaymentPendingWarning = ({ orderId }: PaymentPendingWarningProps) => {
 	const { theme } = useTheme();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const [, updateOrder] = useUpdateOrderMutation();
+
+	const handleMakePayment = () => {
+		navigate('Add Card', { orderId });
+	};
+
+	const handleCancelOrder = () => {
+		updateOrder({
+			orderId,
+			input: { status: OrderStatus.Cancelled }
+		});
+	};
 
 	return (
 		<View
@@ -49,14 +70,14 @@ const PaymentPendingWarning = () => {
 					text='Make Payment'
 					variant='primary'
 					size='small'
-					onPress={() => {}}
+					onPress={handleMakePayment}
 				/>
 				<Button
 					style={{ flex: 1 }}
 					text='Cancel Order'
 					variant='destructive'
 					size='small'
-					onPress={() => {}}
+					onPress={handleCancelOrder}
 				/>
 			</View>
 		</View>
@@ -97,7 +118,9 @@ const Order: React.FC = () => {
 				))}
 			</View>
 			<OrderMeta order={order} />
-			{order.status === OrderStatus.PaymentPending && <PaymentPendingWarning />}
+			{order.status === OrderStatus.PaymentPending && (
+				<PaymentPendingWarning orderId={orderId} />
+			)}
 		</Screen>
 	);
 };

@@ -75,3 +75,10 @@ mutation CreateOrder($input: CreateOrderInput!) {
 		total
 	}
 }
+
+mutation UpdateOrder($orderId: ID!, $input: UpdateOrderInput!) {
+	updateOrder(orderId: $orderId, input: $input) {
+		id
+		status
+	}
+}

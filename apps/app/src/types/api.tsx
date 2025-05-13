@@ -1225,6 +1225,16 @@ export type CreateOrderMutation = {
 	};
 };
 
+export type UpdateOrderMutationVariables = Exact<{
+	orderId: Scalars['ID']['input'];
+	input: UpdateOrderInput;
+}>;
+
+export type UpdateOrderMutation = {
+	__typename?: 'Mutation';
+	updateOrder: { __typename?: 'Order'; id: string; status: OrderStatus };
+};
+
 export type StoreProductsQueryVariables = Exact<{
 	storeId: Scalars['ID']['input'];
 	filter?: InputMaybe<ProductFilterInput>;
@@ -1961,6 +1971,20 @@ export const CreateOrderDocument = gql`
 export function useCreateOrderMutation() {
 	return Urql.useMutation<CreateOrderMutation, CreateOrderMutationVariables>(
 		CreateOrderDocument
+	);
+}
+export const UpdateOrderDocument = gql`
+	mutation UpdateOrder($orderId: ID!, $input: UpdateOrderInput!) {
+		updateOrder(orderId: $orderId, input: $input) {
+			id
+			status
+		}
+	}
+`;
+
+export function useUpdateOrderMutation() {
+	return Urql.useMutation<UpdateOrderMutation, UpdateOrderMutationVariables>(
+		UpdateOrderDocument
 	);
 }
 export const StoreProductsDocument = gql`

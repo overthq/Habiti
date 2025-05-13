@@ -15,49 +15,35 @@ export const saveOrderData = async (
 	ctx: ResolverContext,
 	params: SaveOrderDataParams
 ) => {
-	let order: Order;
+	const { cardId, storeId, cart, products, transactionFee, serviceFee } =
+		params;
+	const { orderData, total } = getOrderData(products);
 
-	let total = 0;
-	const orderData = params.products.map(p => {
-		total += p.unitPrice * p.quantity;
-		return {
-			productId: p.id,
-			unitPrice: p.unitPrice,
-			quantity: p.quantity
-		};
-	});
-
-	const { cardId } = params;
-
-	if (!cardId) {
-		order = await ctx.prisma.$transaction(async prisma => {
-			const store = await prisma.store.update({
-				where: { id: params.storeId },
-				data: { orderCount: { increment: 1 } }
-			});
-
-			const [order] = await Promise.all([
-				prisma.order.create({
-					data: {
-						userId: ctx.user.id,
-						storeId: params.storeId,
-						serialNumber: store.orderCount,
-						products: { createMany: { data: orderData } },
-						total,
-						transactionFee: params.transactionFee,
-						serviceFee: params.serviceFee,
-						status: OrderStatus.PaymentPending
-					}
-				}),
-				ctx.prisma.cart.delete({ where: { id: params.cart.id } })
-			]);
-
-			return order;
+	const order = await ctx.prisma.$transaction(async prisma => {
+		const store = await prisma.store.update({
+			where: { id: storeId },
+			data: {
+				orderCount: { increment: 1 },
+				...(cardId ? { unrealizedRevenue: { increment: total } } : {})
+			}
 		});
-	} else {
-		// Execute all database operations and payment in a single transaction
-		order = await ctx.prisma.$transaction(async prisma => {
-			// Charge the card first - if this fails, no DB changes will be made
+
+		const newOrder = await prisma.order.create({
+			data: {
+				userId: ctx.user.id,
+				storeId,
+				serialNumber: store.orderCount,
+				products: { createMany: { data: orderData } },
+				total,
+				transactionFee,
+				serviceFee,
+				status: cardId ? OrderStatus.PaymentPending : OrderStatus.Pending
+			}
+		});
+
+		await prisma.cart.delete({ where: { id: cart.id } });
+
+		if (cardId) {
 			const card = await prisma.card.findUnique({
 				where: { id: cardId }
 			});
@@ -66,38 +52,31 @@ export const saveOrderData = async (
 				throw new Error(`No card found with the provided id: ${cardId}`);
 			}
 
-			await chargeAuthorization({
-				email: card.email,
-				amount: String(total),
-				authorizationCode: card.authorizationCode
-			});
+			try {
+				await chargeAuthorization({
+					email: card.email,
+					amount: String(total),
+					authorizationCode: card.authorizationCode
+				});
+			} catch (error) {
+				console.error(error);
+				throw new Error('Failed to charge card');
+			}
+		}
 
-			const store = await prisma.store.update({
-				where: { id: params.storeId },
-				data: {
-					orderCount: { increment: 1 },
-					unrealizedRevenue: { increment: total }
-				}
-			});
-
-			const [order] = await Promise.all([
-				prisma.order.create({
-					data: {
-						userId: ctx.user.id,
-						storeId: params.storeId,
-						serialNumber: store.orderCount,
-						products: { createMany: { data: orderData } },
-						total,
-						transactionFee: params.transactionFee,
-						serviceFee: params.serviceFee
-					}
-				}),
-				prisma.cart.delete({ where: { id: params.cart.id } })
-			]);
-
-			return order;
-		});
-	}
+		return newOrder;
+	});
 
 	return order;
+};
+
+const getOrderData = (products: Product[]) => {
+	let total = 0;
+
+	const orderData = products.map(p => {
+		total += p.unitPrice * p.quantity;
+		return { productId: p.id, unitPrice: p.unitPrice, quantity: p.quantity };
+	});
+
+	return { orderData, total };
 };
