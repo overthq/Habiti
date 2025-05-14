@@ -1214,8 +1214,22 @@ export type CreateOrderMutation = {
 	createOrder: {
 		__typename?: 'Order';
 		id: string;
+		userId: string;
 		total: number;
-		store: { __typename?: 'Store'; id: string; name: string };
+		store: {
+			__typename?: 'Store';
+			id: string;
+			name: string;
+			userCart?: {
+				__typename?: 'Cart';
+				id: string;
+				products: Array<{
+					__typename?: 'CartProduct';
+					cartId: string;
+					productId: string;
+				}>;
+			} | null;
+		};
 		products: Array<{
 			__typename?: 'OrderProduct';
 			unitPrice: number;
@@ -1951,9 +1965,17 @@ export const CreateOrderDocument = gql`
 	mutation CreateOrder($input: CreateOrderInput!) {
 		createOrder(input: $input) {
 			id
+			userId
 			store {
 				id
 				name
+				userCart {
+					id
+					products {
+						cartId
+						productId
+					}
+				}
 			}
 			products {
 				product {

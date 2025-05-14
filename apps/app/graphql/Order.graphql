@@ -60,9 +60,17 @@ query Order($orderId: ID!) {
 mutation CreateOrder($input: CreateOrderInput!) {
 	createOrder(input: $input) {
 		id
+		userId
 		store {
 			id
 			name
+			userCart {
+				id
+				products {
+					cartId
+					productId
+				}
+			}
 		}
 		products {
 			product {

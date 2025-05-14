@@ -37,7 +37,7 @@ export const saveOrderData = async (
 				total,
 				transactionFee,
 				serviceFee,
-				status: cardId ? OrderStatus.PaymentPending : OrderStatus.Pending
+				status: cardId ? OrderStatus.Pending : OrderStatus.PaymentPending
 			}
 		});
 

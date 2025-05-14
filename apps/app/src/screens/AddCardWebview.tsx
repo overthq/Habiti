@@ -20,13 +20,19 @@ import { AppStackParamList } from '../types/navigation';
 const AddCardWebview: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Add Card'>>();
 
-	const [{ fetching, data }] = useCardAuthorizationQuery({
+	const [{ error, fetching, data }] = useCardAuthorizationQuery({
 		variables: {
 			...(params?.orderId && { orderId: params.orderId })
 		}
 	});
 
 	useGoBack('x');
+
+	React.useEffect(() => {
+		if (error) {
+			console.log(error);
+		}
+	}, [error]);
 
 	if (fetching || !data) {
 		return (
