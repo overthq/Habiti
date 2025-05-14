@@ -1,4 +1,4 @@
-import { CustomImage, Typography, useTheme } from '@habiti/components';
+import { CustomImage, Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Pressable, View } from 'react-native';
@@ -12,16 +12,10 @@ interface StoreMetaProps {
 
 const StoreMeta: React.FC<StoreMetaProps> = ({ store }) => {
 	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();
-	const { theme } = useTheme();
 
 	return (
 		<Pressable
-			style={{
-				marginHorizontal: 16,
-				padding: 12,
-				borderRadius: 6,
-				backgroundColor: theme.input.background
-			}}
+			style={{ marginHorizontal: 16, paddingVertical: 12 }}
 			onPress={() => {
 				navigate('Home.Store', { storeId: store.id });
 			}}

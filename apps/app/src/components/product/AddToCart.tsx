@@ -11,17 +11,19 @@ interface AddToCartProps {
 	productId: string;
 	cartId?: string | null;
 	inCart: boolean;
+	quantity?: number | null;
 }
 
 const AddToCart: React.FC<AddToCartProps> = ({
 	storeId,
 	productId,
 	cartId,
-	inCart
+	inCart,
+	quantity: initialQuantity
 }) => {
 	const { theme } = useTheme();
 	const { bottom } = useSafeAreaInsets();
-	const [quantity, setQuantity] = React.useState(1);
+	const [quantity, setQuantity] = React.useState(initialQuantity || 1);
 
 	return (
 		<View
@@ -30,7 +32,6 @@ const AddToCart: React.FC<AddToCartProps> = ({
 				{
 					backgroundColor: theme.screen.background,
 					paddingBottom: bottom,
-					bottom: 0,
 					borderTopColor: theme.border.color
 				}
 			]}
@@ -58,7 +59,8 @@ const styles = StyleSheet.create({
 		gap: 16,
 		padding: 16,
 		paddingBottom: 8,
-		borderTopWidth: 0.5
+		borderTopWidth: 0.5,
+		bottom: 0
 	}
 });
 

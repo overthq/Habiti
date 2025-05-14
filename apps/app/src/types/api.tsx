@@ -1313,6 +1313,7 @@ export type ProductQuery = {
 					__typename?: 'CartProduct';
 					cartId: string;
 					productId: string;
+					quantity: number;
 				}>;
 			} | null;
 		};
@@ -2074,6 +2075,7 @@ export const ProductDocument = gql`
 					products {
 						cartId
 						productId
+						quantity
 					}
 				}
 			}

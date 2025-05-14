@@ -58,10 +58,6 @@ const customCache = cacheExchange({
 					id: args.input.cartId
 				});
 				cache.invalidate({
-					__typename: 'User',
-					id: _result.createOrder.userId
-				});
-				cache.invalidate({
 					__typename: 'Store',
 					id: _result.createOrder.store.id
 				});

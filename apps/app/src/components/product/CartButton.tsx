@@ -31,7 +31,7 @@ const CartButton: React.FC<CartButtonProps> = ({
 		});
 
 		goBack();
-	}, [storeId, productId]);
+	}, [storeId, productId, quantity]);
 
 	const goToCart = React.useCallback(() => {
 		if (cartId) navigate('Cart', { cartId });

@@ -25,6 +25,14 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
 		}
 	});
 
+	if (images.length === 0 || images.length === 1) {
+		return (
+			<View style={styles.container}>
+				<Image source={{ uri: images[0].path }} style={styles.image} />
+			</View>
+		);
+	}
+
 	return (
 		<View style={styles.container}>
 			<Animated.ScrollView
