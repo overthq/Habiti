@@ -4,6 +4,7 @@ import { View, ViewStyle, StyleSheet } from 'react-native';
 
 import ListEmptyButton from './ListEmptyButton';
 import Typography from './Typography';
+import Spacer from './Spacer';
 
 interface ListEmptyProps {
 	title?: string;
@@ -20,9 +21,12 @@ const ListEmpty: React.FC<ListEmptyProps> = ({
 }) => (
 	<View style={[styles.container, viewStyle]}>
 		{title && (
-			<Typography size='large' weight='medium'>
-				{title}
-			</Typography>
+			<>
+				<Typography size='xxlarge' weight='medium'>
+					{title}
+				</Typography>
+				<Spacer y={12} />
+			</>
 		)}
 		<Typography variant='secondary' style={styles.description}>
 			{description}

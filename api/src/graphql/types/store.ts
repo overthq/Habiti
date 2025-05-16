@@ -26,7 +26,7 @@ const StoreTypes = gql`
 			first: Int
 			after: String
 		): ProductConnection!
-		orders(orderBy: [OrderOrderByInput!]): [Order!]!
+		orders(orderBy: [OrderOrderByInput!], status: OrderStatus): [Order!]!
 		managers: [StoreManager!]!
 		followers: [StoreFollower!]!
 		carts: [Cart!]!
