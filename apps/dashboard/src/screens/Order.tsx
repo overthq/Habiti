@@ -11,6 +11,7 @@ import PaymentInfo from '../components/order/PaymentInfo';
 import useGoBack from '../hooks/useGoBack';
 import { useOrderQuery } from '../types/api';
 import { OrdersStackParamList } from '../types/navigation';
+import useRefresh from '../hooks/useRefresh';
 
 const Order: React.FC = () => {
 	const {
@@ -19,20 +20,11 @@ const Order: React.FC = () => {
 	const [{ data, fetching }, refetch] = useOrderQuery({
 		variables: { id: orderId }
 	});
-	const [refreshing, setRefreshing] = React.useState(false);
+	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 	const { theme } = useTheme();
 	useGoBack();
 
-	const handleRefresh = React.useCallback(() => {
-		setRefreshing(true);
-		refetch();
-	}, [refetch]);
-
-	React.useEffect(() => {
-		if (!fetching && refreshing) setRefreshing(false);
-	}, [fetching, refreshing]);
-
-	if (fetching || !data?.order) {
+	if (!data?.order) {
 		return <View />;
 	}
 
@@ -41,7 +33,7 @@ const Order: React.FC = () => {
 			refreshControl={
 				<RefreshControl
 					refreshing={refreshing}
-					onRefresh={handleRefresh}
+					onRefresh={refresh}
 					tintColor={theme.text.secondary}
 				/>
 			}
