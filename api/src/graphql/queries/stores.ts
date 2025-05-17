@@ -4,6 +4,7 @@ import { Resolver } from '../../types/resolvers';
 import { decodeCursor, paginateQuery } from '../../utils/pagination';
 import { storeAuthorizedResolver } from '../permissions';
 import { CAN_VIEW_UNLISTED_STORES } from '../../utils/allowlist';
+import { OrderStatus } from '@prisma/client';
 
 export interface StoreArgs {
 	id: string;
@@ -63,16 +64,30 @@ const products: Resolver<ProductsArgs & PaginationArgs> = (
 };
 
 export interface OrdersArgs {
+	status?: OrderStatus;
 	orderBy: {
 		createdAt?: 'asc' | 'desc';
 		updatedAt?: 'asc' | 'desc';
 	}[];
 }
 
-const orders: Resolver<OrdersArgs> = (parent, { orderBy }, ctx) => {
-	return ctx.prisma.store
-		.findUnique({ where: { id: parent.id } })
-		.orders({ orderBy });
+const orders: Resolver<OrdersArgs> = (parent, { orderBy, status }, ctx) => {
+	console.log('status', status);
+	console.log('ctx.storeId', ctx.storeId);
+
+	return ctx.prisma.store.findUnique({ where: { id: parent.id } }).orders({
+		orderBy,
+		// FIXME: We should make this a filter on the client side.
+		where: {
+			...(status && ctx.storeId
+				? { AND: [{ status }, { status: { not: OrderStatus.PaymentPending } }] }
+				: status
+					? { status }
+					: ctx.storeId
+						? { status: { not: OrderStatus.PaymentPending } }
+						: {})
+		}
+	});
 };
 
 const managers: Resolver = (parent, _, ctx) => {
