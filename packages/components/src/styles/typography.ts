@@ -26,7 +26,7 @@ const preset = {
 	sectionHeader: {
 		size: 'regular',
 		weight: 'medium',
-		variant: 'label'
+		variant: 'secondary'
 	},
 	body: {
 		size: 'regular',

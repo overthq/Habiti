@@ -27,7 +27,8 @@ const ProductList: React.FC = () => {
 	const { theme } = useTheme();
 
 	const handlePress = React.useCallback(
-		(productId: string) => () => navigate('Product', { productId }),
+		(productId: string) => () =>
+			navigate('Product', { screen: 'Product', params: { productId } }),
 		[]
 	);
 

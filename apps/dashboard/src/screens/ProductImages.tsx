@@ -1,22 +1,16 @@
-import { useTheme, Icon, Typography } from '@habiti/components';
-import * as ImagePicker from 'expo-image-picker';
 import React from 'react';
-import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { TouchableOpacity, View, StyleSheet, Image } from 'react-native';
+import { Icon, Typography, useTheme } from '@habiti/components';
+import * as ImagePicker from 'expo-image-picker';
+import { ProductQuery } from '../types/api';
 
-import { ProductQuery } from '../../types/api';
-
-interface ImagesProps {
-	images?: ProductQuery['product']['images'];
-	imagesToUpload: string[];
-	setImagesToUpload: React.Dispatch<React.SetStateAction<string[]>>;
+interface ProductImagesProps {
+	images: ProductQuery['product']['images'];
 }
 
-const Images: React.FC<ImagesProps> = ({
-	images,
-	imagesToUpload,
-	setImagesToUpload
-}) => {
+const ProductImages: React.FC<ProductImagesProps> = ({ images }) => {
 	const { theme } = useTheme();
+	const [imagesToUpload, setImagesToUpload] = React.useState<string[]>([]);
 
 	const handlePickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
@@ -86,4 +80,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default Images;
+export default ProductImages;

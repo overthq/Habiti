@@ -1,3 +1,4 @@
+import { NavigatorScreenParams } from '@react-navigation/native';
 import { IntWhere, Sort } from './api';
 
 export type AppStackParamList = {
@@ -44,7 +45,7 @@ export type OrdersStackParamList = {
 export type ProductsStackParamList = {
 	ProductsList: ProductsParams;
 	'Products.Search': undefined;
-	Product: { productId: string };
+	Product: NavigatorScreenParams<ProductStackParamList>;
 };
 
 export type SettingsStackParamList = {
@@ -61,6 +62,13 @@ export type StoreStackParamList = {
 	Categories: undefined;
 	Settings: undefined;
 	Appearance: undefined;
+};
+
+// TODO: Use context for productId and other shared details if needed.
+export type ProductStackParamList = {
+	Product: { productId: string };
+	ProductImages: { productId: string };
+	ProductCategories: { productId: string };
 };
 
 type ProductsParams = {

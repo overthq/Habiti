@@ -1,4 +1,4 @@
-import { TextButton } from '@habiti/components';
+import { FormInput, Screen, Spacer, TextButton } from '@habiti/components';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -73,16 +73,31 @@ const AddProduct: React.FC = () => {
 	}, [toUpload, fetching]);
 
 	return (
-		<FormProvider {...formMethods}>
-			<ProductForm
-				mode='add'
-				imagesToUpload={toUpload}
-				setImagesToUpload={setToUpload}
-				categories={[]}
-				selectedCategories={[]}
-				setSelectedCategories={() => {}}
-			/>
-		</FormProvider>
+		<Screen style={{ padding: 16 }}>
+			<FormProvider {...formMethods}>
+				<FormInput
+					name='name'
+					label='Name'
+					placeholder='Enter product name'
+					control={formMethods.control}
+				/>
+				<Spacer y={8} />
+				<FormInput
+					name='description'
+					label='Description'
+					placeholder='Describe your product'
+					control={formMethods.control}
+					textArea
+				/>
+				<Spacer y={8} />
+				<FormInput
+					name='unitPrice'
+					label='Price'
+					placeholder='Enter product price'
+					control={formMethods.control}
+				/>
+			</FormProvider>
+		</Screen>
 	);
 };
 

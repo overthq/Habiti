@@ -19,7 +19,7 @@ const Section: React.FC<SectionProps> = ({
 	inputProps,
 	children
 }) => {
-	const { control } = useFormContext();
+	// const { control } = useFormContext();
 	const { theme } = useTheme();
 
 	return (
@@ -30,24 +30,7 @@ const Section: React.FC<SectionProps> = ({
 			>
 				{title}
 			</Typography>
-			{children ?? (
-				<Controller
-					name={field}
-					control={control}
-					render={({ field: { onChange, onBlur, value } }) => (
-						<TextInput
-							value={value}
-							onChangeText={onChange}
-							onBlur={onBlur}
-							style={[styles.input, { color: theme.text.primary }]}
-							placeholder={placeholder}
-							placeholderTextColor={theme.input.placeholder}
-							selectionColor={theme.text.primary}
-							{...inputProps}
-						/>
-					)}
-				/>
-			)}
+			{children}
 		</View>
 	);
 };
