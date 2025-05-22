@@ -155,6 +155,9 @@ const dark = {
 	},
 	modal: {
 		background: palette.neutral.n900
+	},
+	card: {
+		background: palette.neutral.n900
 	}
 } as const;
 
@@ -244,6 +247,9 @@ const light = {
 		focus: palette.neutral.n200
 	},
 	modal: {
+		background: palette.neutral.n200
+	},
+	card: {
 		background: palette.neutral.n200
 	}
 } as const;

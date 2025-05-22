@@ -1,5 +1,5 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
-import { IntWhere, Sort } from './api';
+import { IntWhere, ProductQuery, Sort } from './api';
 
 export type AppStackParamList = {
 	Main: undefined;
@@ -33,13 +33,13 @@ export type HomeStackParamList = {
 	Overview: undefined;
 	Payouts: undefined;
 	Order: { orderId: string };
-	Product: { productId: string };
+	Product: NavigatorScreenParams<ProductStackParamList>;
 };
 
 export type OrdersStackParamList = {
 	OrdersList: OrdersParams;
 	Order: { orderId: string };
-	Product: { productId: string };
+	Product: NavigatorScreenParams<ProductStackParamList>;
 };
 
 export type ProductsStackParamList = {
@@ -66,9 +66,16 @@ export type StoreStackParamList = {
 
 // TODO: Use context for productId and other shared details if needed.
 export type ProductStackParamList = {
-	Product: { productId: string };
-	ProductImages: { productId: string };
-	ProductCategories: { productId: string };
+	'Product.Main': { productId: string };
+	'Product.Images': {
+		productId: string;
+		images: ProductQuery['product']['images'];
+	};
+	'Product.Categories': {
+		productId: string;
+		categories: ProductQuery['product']['categories'];
+	};
+	'Product.Details': { productId: string; name: string; description: string };
 };
 
 type ProductsParams = {

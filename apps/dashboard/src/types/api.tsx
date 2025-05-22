@@ -147,7 +147,7 @@ export type CreatePayoutInput = {
 
 export type CreateProductInput = {
 	description: Scalars['String']['input'];
-	imageFiles: Array<Scalars['Upload']['input']>;
+	imageFiles?: InputMaybe<Array<Scalars['Upload']['input']>>;
 	name: Scalars['String']['input'];
 	quantity: Scalars['Int']['input'];
 	unitPrice: Scalars['Int']['input'];
@@ -179,7 +179,7 @@ export type EditCategoryInput = {
 
 export type EditProductInput = {
 	description?: InputMaybe<Scalars['String']['input']>;
-	imageFiles: Array<Scalars['Upload']['input']>;
+	imageFiles?: InputMaybe<Array<Scalars['Upload']['input']>>;
 	name?: InputMaybe<Scalars['String']['input']>;
 	quantity?: InputMaybe<Scalars['Int']['input']>;
 	unitPrice?: InputMaybe<Scalars['Int']['input']>;

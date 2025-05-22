@@ -57,7 +57,7 @@ export interface EditProductArgs {
 		name?: string;
 		description?: string;
 		unitPrice?: number;
-		imageFiles: Promise<FileUpload>[];
+		imageFiles?: Promise<FileUpload>[];
 	};
 }
 
@@ -78,7 +78,11 @@ export const editProduct: Resolver<EditProductArgs> = async (
 
 	const { imageFiles, ...rest } = input;
 
-	const uploadedImages = await uploadImages(imageFiles);
+	let uploadedImages: { url: string; public_id: string }[] = [];
+
+	if (imageFiles) {
+		uploadedImages = await uploadImages(imageFiles);
+	}
 
 	const product = await ctx.prisma.product.update({
 		where: { id, storeId: ctx.storeId },

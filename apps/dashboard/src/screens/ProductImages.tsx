@@ -2,15 +2,21 @@ import React from 'react';
 import { TouchableOpacity, View, StyleSheet, Image } from 'react-native';
 import { Icon, Typography, useTheme } from '@habiti/components';
 import * as ImagePicker from 'expo-image-picker';
-import { ProductQuery } from '../types/api';
+import useGoBack from '../hooks/useGoBack';
+import { ProductStackParamList } from '../types/navigation';
+import { RouteProp, useRoute } from '@react-navigation/native';
 
-interface ProductImagesProps {
-	images: ProductQuery['product']['images'];
-}
-
-const ProductImages: React.FC<ProductImagesProps> = ({ images }) => {
+const ProductImages: React.FC = () => {
 	const { theme } = useTheme();
 	const [imagesToUpload, setImagesToUpload] = React.useState<string[]>([]);
+
+	// TODO: Run a query here for this purpose
+	// Or use a context
+	const {
+		params: { images }
+	} = useRoute<RouteProp<ProductStackParamList, 'Product.Images'>>();
+
+	useGoBack();
 
 	const handlePickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({

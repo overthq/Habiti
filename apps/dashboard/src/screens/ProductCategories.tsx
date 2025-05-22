@@ -1,26 +1,34 @@
-import { Checkbox, Typography } from '@habiti/components';
-import React from 'react';
-import { View, StyleSheet, Button } from 'react-native';
 import {
-	ProductQuery,
+	Screen,
+	Checkbox,
+	Typography,
+	Button,
+	Spacer
+} from '@habiti/components';
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+import {
 	useCategoriesQuery,
 	useUpdateProductCategoriesMutation
 } from '../types/api';
+import { ProductStackParamList } from '../types/navigation';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import useGoBack from '../hooks/useGoBack';
 
 interface ProductCategoriesProps {
 	productId: string;
-	categories: ProductQuery['product']['categories'];
 }
 
-const ProductCategories: React.FC<ProductCategoriesProps> = ({
-	productId,
-	categories
-}) => {
+const ProductCategories: React.FC<ProductCategoriesProps> = ({ productId }) => {
+	const {
+		params: { categories }
+	} = useRoute<RouteProp<ProductStackParamList, 'Product.Categories'>>();
 	const [{ data }] = useCategoriesQuery();
 	const [selectedCategories, setSelectedCategories] = React.useState<string[]>(
 		categories.map(({ categoryId }) => categoryId)
 	);
 	const [, updateProductCategories] = useUpdateProductCategoriesMutation();
+	useGoBack();
 
 	const handleSelectCategory = (id: string) => {
 		setSelectedCategories(prev =>
@@ -42,19 +50,23 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
 	};
 
 	return (
-		<View>
-			<Typography>Product Categories</Typography>
-			{data?.currentStore.categories.map(({ id, name }) => (
-				<View key={id} style={styles.row}>
-					<Typography>{name}</Typography>
-					<Checkbox
-						active={selectedCategories.includes(id)}
-						onPress={() => handleSelectCategory(id)}
-					/>
-				</View>
-			))}
-			<Button title='Update Categories' onPress={handleUpdateCategories} />
-		</View>
+		<Screen style={styles.container}>
+			<View style={{ flex: 1 }}>
+				{data?.currentStore.categories.map(({ id, name }) => (
+					<View key={id} style={styles.row}>
+						<Typography>{name}</Typography>
+						<Checkbox
+							active={selectedCategories.includes(id)}
+							onPress={() => handleSelectCategory(id)}
+						/>
+					</View>
+				))}
+			</View>
+			<View>
+				<Button text='Update Categories' onPress={handleUpdateCategories} />
+				<Spacer y={8} />
+			</View>
+		</Screen>
 	);
 };
 
@@ -67,7 +79,8 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		marginBottom: 8
+		marginBottom: 8,
+		paddingVertical: 4
 	}
 });
 

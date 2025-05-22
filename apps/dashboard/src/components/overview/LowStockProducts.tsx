@@ -1,7 +1,7 @@
-import { SectionHeader, Spacer } from '@habiti/components';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
+import { SectionHeader, Spacer } from '@habiti/components';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 import LowStockProduct from './LowStockProduct';
 import { useProductsQuery } from '../../types/api';
@@ -15,7 +15,7 @@ const LowStockProducts = () => {
 		useNavigation<NavigationProp<HomeStackParamList & MainTabParamList>>();
 
 	const navigateToProduct = (productId: string) => () => {
-		navigate('Product', { productId });
+		navigate('Product', { screen: 'Product.Main', params: { productId } });
 	};
 
 	const navigateToProducts = () => {

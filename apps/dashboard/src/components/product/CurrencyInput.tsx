@@ -16,7 +16,10 @@ const CurrencyInput: React.FC<CurrencyInputProps> = ({ value }) => {
 
 	return (
 		<Pressable onPress={() => {}}>
-			<Typography style={[styles.text, { color: theme.text.primary }]}>
+			<Typography
+				size='xlarge'
+				style={[styles.text, { color: theme.text.primary }]}
+			>
 				{formatValue(value.toString())}
 			</Typography>
 		</Pressable>
@@ -24,9 +27,7 @@ const CurrencyInput: React.FC<CurrencyInputProps> = ({ value }) => {
 };
 
 const styles = StyleSheet.create({
-	text: {
-		fontSize: 17
-	}
+	text: {}
 });
 
 export default CurrencyInput;

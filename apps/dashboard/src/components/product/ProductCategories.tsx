@@ -2,14 +2,20 @@ import { View } from 'react-native';
 
 import { Spacer, TextButton, Typography, useTheme } from '@habiti/components';
 import { ProductQuery } from '../../types/api';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { ProductStackParamList } from '../../types/navigation';
+
 interface ProductCategoriesProps {
 	categories: ProductQuery['product']['categories'];
+	productId: string;
 }
 
 const ProductCategories: React.FC<ProductCategoriesProps> = ({
-	categories
+	categories,
+	productId
 }) => {
 	const { theme } = useTheme();
+	const { navigate } = useNavigation<NavigationProp<ProductStackParamList>>();
 
 	return (
 		<View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
@@ -20,10 +26,17 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
 					alignItems: 'center'
 				}}
 			>
-				<Typography size='large' weight='medium' variant='label'>
+				<Typography size='large' weight='medium'>
 					Categories
 				</Typography>
-				<TextButton>Manage categories</TextButton>
+				<TextButton
+					weight='medium'
+					onPress={() =>
+						navigate('Product.Categories', { productId, categories })
+					}
+				>
+					Update
+				</TextButton>
 			</View>
 			<Spacer y={8} />
 			<View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
@@ -31,7 +44,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
 					<View
 						key={category.id}
 						style={{
-							backgroundColor: theme.button.primary.background,
+							backgroundColor: theme.button.disabled.background,
 							flexDirection: 'row',
 							alignItems: 'center',
 							paddingHorizontal: 8,
@@ -39,7 +52,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
 							borderRadius: 100
 						}}
 					>
-						<Typography variant='invert' size='small'>
+						<Typography variant='primary' size='small'>
 							{category.name}
 						</Typography>
 					</View>

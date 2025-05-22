@@ -19,5 +19,8 @@ export const tabScreenOptions =
 		tabBarShowLabel: false,
 		tabBarIcon: ({ color }: { color: string }) => (
 			<Icon name={icons[route.name]} color={color} size={28} />
-		)
+		),
+		tabBarStyle: {
+			paddingTop: 8
+		}
 	});

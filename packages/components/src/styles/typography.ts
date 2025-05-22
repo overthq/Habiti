@@ -13,7 +13,7 @@ const size = {
 	large: normalizeFontSize(17),
 	xlarge: normalizeFontSize(20),
 	xxlarge: normalizeFontSize(24),
-	xxxlarge: normalizeFontSize(32)
+	xxxlarge: normalizeFontSize(28)
 } as const;
 
 const weight = {

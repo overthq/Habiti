@@ -1,12 +1,18 @@
 import { Spacer, TextButton, Typography } from '@habiti/components';
 import { Image, StyleSheet, View } from 'react-native';
 import { ProductQuery } from '../../types/api';
+import { NavigationProp } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import { ProductStackParamList } from '../../types/navigation';
 
 interface ProductMediaProps {
 	images: ProductQuery['product']['images'];
+	productId: string;
 }
 
-const ProductMedia: React.FC<ProductMediaProps> = ({ images }) => {
+const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
+	const { navigate } = useNavigation<NavigationProp<ProductStackParamList>>();
+
 	return (
 		<View style={{ paddingVertical: 8, paddingHorizontal: 16 }}>
 			<View
@@ -19,9 +25,14 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images }) => {
 				<Typography weight='medium' size='large'>
 					Images
 				</Typography>
-				<TextButton>Manage</TextButton>
+				<TextButton
+					weight='medium'
+					onPress={() => navigate('Product.Images', { productId, images })}
+				>
+					Manage
+				</TextButton>
 			</View>
-			<Spacer y={12} />
+			<Spacer y={8} />
 			<View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
 				{images.map(image => (
 					<Image
