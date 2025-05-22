@@ -3,7 +3,6 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import ProductForm from '../components/product/ProductForm';
 import useGoBack from '../hooks/useGoBack';
 import { useCreateProductMutation } from '../types/api';
 import { generateUploadFile } from '../utils/images';

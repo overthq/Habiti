@@ -16,7 +16,7 @@ const OrderProducts: React.FC<OrderProductsProps> = ({ products }) => {
 
 	const handlePress = React.useCallback(
 		(productId: string) => () => {
-			navigate('Product', { productId });
+			navigate('Product', { screen: 'Product.Main', params: { productId } });
 		},
 		[]
 	);

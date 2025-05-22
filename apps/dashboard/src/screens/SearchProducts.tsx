@@ -87,7 +87,8 @@ const SearchProducts = () => {
 	});
 
 	const handlePress = React.useCallback(
-		(productId: string) => () => navigate('Product', { productId }),
+		(productId: string) => () =>
+			navigate('Product', { screen: 'Product.Main', params: { productId } }),
 		[]
 	);
 
