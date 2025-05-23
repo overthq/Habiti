@@ -67,9 +67,14 @@ const Categories = () => {
 		});
 	}, []);
 
-	const handleCategoryPress = (categoryId: string) => () => {
-		navigate('Modals.EditCategory', { categoryId });
-	};
+	const handleCategoryPress =
+		(category: CategoriesQuery['currentStore']['categories'][number]) => () => {
+			navigate('Modals.EditCategory', {
+				categoryId: category.id,
+				name: category.name,
+				description: category.description
+			});
+		};
 
 	if (fetching) {
 		return <View />;
@@ -101,7 +106,7 @@ const Categories = () => {
 					<CategoriesListItem
 						key={category.id}
 						category={category}
-						onPress={handleCategoryPress(category.id)}
+						onPress={handleCategoryPress(category)}
 					/>
 				))}
 			</ScrollableScreen>

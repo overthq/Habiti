@@ -19,6 +19,7 @@ const size = {
 const weight = {
 	regular: 'normal',
 	medium: '500',
+	semibold: '600',
 	bold: 'bold'
 } as const;
 
@@ -26,7 +27,7 @@ const preset = {
 	sectionHeader: {
 		size: 'regular',
 		weight: 'medium',
-		variant: 'label'
+		variant: 'secondary'
 	},
 	body: {
 		size: 'regular',

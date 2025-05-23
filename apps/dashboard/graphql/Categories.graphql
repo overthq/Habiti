@@ -4,6 +4,7 @@ query Categories {
 		categories {
 			id
 			name
+			description
 		}
 	}
 }

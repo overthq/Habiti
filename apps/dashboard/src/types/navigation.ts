@@ -1,4 +1,5 @@
-import { IntWhere, Sort } from './api';
+import { NavigatorScreenParams } from '@react-navigation/native';
+import { IntWhere, ProductQuery, Sort } from './api';
 
 export type AppStackParamList = {
 	Main: undefined;
@@ -14,7 +15,11 @@ export type AppStackParamList = {
 	CustomerInfo: { userId: string };
 	AddPayout: undefined;
 	AddCategory: undefined;
-	'Modals.EditCategory': { categoryId: string };
+	'Modals.EditCategory': {
+		categoryId: string;
+		name: string;
+		description: string;
+	};
 	AddManager: undefined;
 	FilterProducts: undefined;
 	FilterOrders: undefined;
@@ -32,19 +37,19 @@ export type HomeStackParamList = {
 	Overview: undefined;
 	Payouts: undefined;
 	Order: { orderId: string };
-	Product: { productId: string };
+	Product: NavigatorScreenParams<ProductStackParamList>;
 };
 
 export type OrdersStackParamList = {
 	OrdersList: OrdersParams;
 	Order: { orderId: string };
-	Product: { productId: string };
+	Product: NavigatorScreenParams<ProductStackParamList>;
 };
 
 export type ProductsStackParamList = {
 	ProductsList: ProductsParams;
 	'Products.Search': undefined;
-	Product: { productId: string };
+	Product: NavigatorScreenParams<ProductStackParamList>;
 };
 
 export type SettingsStackParamList = {
@@ -61,6 +66,20 @@ export type StoreStackParamList = {
 	Categories: undefined;
 	Settings: undefined;
 	Appearance: undefined;
+};
+
+// TODO: Use context for productId and other shared details if needed.
+export type ProductStackParamList = {
+	'Product.Main': { productId: string };
+	'Product.Images': {
+		productId: string;
+		images: ProductQuery['product']['images'];
+	};
+	'Product.Categories': {
+		productId: string;
+		categories: ProductQuery['product']['categories'];
+	};
+	'Product.Details': { productId: string; name: string; description: string };
 };
 
 type ProductsParams = {

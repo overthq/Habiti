@@ -8,7 +8,7 @@ import {
 	sendNewOrderNotification
 } from '../hooks/orders';
 import { saveOrderData } from '../../core/data/orders';
-import { loadCart } from '../../core/data/carts';
+import { getCartById } from '../../core/data/carts';
 
 export interface CreateOrderArgs {
 	input: {
@@ -24,7 +24,7 @@ export const createOrder: Resolver<CreateOrderArgs> = async (
 	{ input: { cartId, cardId, transactionFee, serviceFee } },
 	ctx
 ) => {
-	const cart = await loadCart(ctx, cartId);
+	const cart = await getCartById(ctx, cartId);
 
 	// TODO: Validations
 

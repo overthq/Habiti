@@ -1,14 +1,9 @@
 import { Button, FormInput, Screen, Spacer } from '@habiti/components';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FormProvider, useForm } from 'react-hook-form';
-import { ActivityIndicator } from 'react-native';
 
 import useGoBack from '../hooks/useGoBack';
-import {
-	CategoryQuery,
-	useCategoryQuery,
-	useEditProductCategoryMutation
-} from '../types/api';
+import { useEditProductCategoryMutation } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 
 interface EditCategoryFormValues {
@@ -16,27 +11,18 @@ interface EditCategoryFormValues {
 	description: string;
 }
 
-interface EditCategoryMainProps {
-	categoryId: string;
-	data: CategoryQuery;
-}
-
-const EditCategoryMain: React.FC<EditCategoryMainProps> = ({
-	categoryId,
-	data
-}) => {
+const EditCategory = () => {
+	const { params } =
+		useRoute<RouteProp<AppStackParamList, 'Modals.EditCategory'>>();
 	const { goBack } = useNavigation();
 	const [{ fetching }, editCategory] = useEditProductCategoryMutation();
-
-	const methods = useForm<EditCategoryFormValues>({
-		defaultValues: {
-			name: data.storeProductCategory?.name ?? '',
-			description: data.storeProductCategory?.description ?? ''
-		}
-	});
+	useGoBack('x');
 
 	const onSubmit = async (values: EditCategoryFormValues) => {
-		const { error } = await editCategory({ categoryId, input: values });
+		const { error } = await editCategory({
+			categoryId: params.categoryId,
+			input: values
+		});
 
 		if (error) {
 			console.log(error);
@@ -45,42 +31,32 @@ const EditCategoryMain: React.FC<EditCategoryMainProps> = ({
 		}
 	};
 
-	return (
-		<FormProvider {...methods}>
-			<FormInput label='Name' name='name' control={methods.control} />
-			<Spacer y={8} />
-			<FormInput
-				label='Description'
-				name='description'
-				placeholder='Describe your category'
-				control={methods.control}
-				textArea
-			/>
-			<Spacer y={16} />
-			<Button
-				text='Edit Category'
-				onPress={methods.handleSubmit(onSubmit)}
-				loading={fetching}
-			/>
-		</FormProvider>
-	);
-};
-
-const EditCategory = () => {
-	const { params } =
-		useRoute<RouteProp<AppStackParamList, 'Modals.EditCategory'>>();
-	const [{ data, fetching }] = useCategoryQuery({
-		variables: { id: params.categoryId }
+	const methods = useForm<EditCategoryFormValues>({
+		defaultValues: {
+			name: params.name,
+			description: params.description
+		}
 	});
-	useGoBack('x');
-
-	if (fetching || !data) {
-		return <ActivityIndicator />;
-	}
 
 	return (
 		<Screen style={{ padding: 16 }}>
-			<EditCategoryMain categoryId={params.categoryId} data={data} />
+			<FormProvider {...methods}>
+				<FormInput label='Name' name='name' control={methods.control} />
+				<Spacer y={8} />
+				<FormInput
+					label='Description'
+					name='description'
+					placeholder='Describe your category'
+					control={methods.control}
+					textArea
+				/>
+				<Spacer y={16} />
+				<Button
+					text='Edit Category'
+					onPress={methods.handleSubmit(onSubmit)}
+					loading={fetching}
+				/>
+			</FormProvider>
 		</Screen>
 	);
 };

@@ -1,9 +1,8 @@
-import { TextButton } from '@habiti/components';
+import { FormInput, Screen, Spacer, TextButton } from '@habiti/components';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import ProductForm from '../components/product/ProductForm';
 import useGoBack from '../hooks/useGoBack';
 import { useCreateProductMutation } from '../types/api';
 import { generateUploadFile } from '../utils/images';
@@ -13,11 +12,9 @@ export interface ProductFormData {
 	description: string;
 	unitPrice: string;
 	quantity: string;
-	categories: string[];
 }
 
 const AddProduct: React.FC = () => {
-	const [toUpload, setToUpload] = React.useState<string[]>([]);
 	const { goBack, setOptions } = useNavigation();
 	const [{ fetching }, createProduct] = useCreateProductMutation();
 	useGoBack('x');
@@ -27,37 +24,32 @@ const AddProduct: React.FC = () => {
 			name: '',
 			description: '',
 			unitPrice: '',
-			quantity: '',
-			categories: []
+			quantity: ''
 		}
 	});
 
-	const onSubmit = React.useCallback(
-		async (values: ProductFormData) => {
-			const { error } = await createProduct({
-				input: {
-					name: values.name,
-					description: values.description,
-					unitPrice: Number(values.unitPrice) * 100,
-					quantity: Number(values.quantity),
-					imageFiles: toUpload.map(generateUploadFile)
-				}
-			});
-
-			// We want to preserve state when an error occurs.
-			// For retries (if it's just a network thing), or for observing
-			// the state that led to the error.
-
-			if (error) {
-				console.log('Error while creating product');
-				console.log(error);
-			} else {
-				setToUpload([]);
-				goBack();
+	const onSubmit = React.useCallback(async (values: ProductFormData) => {
+		const { error } = await createProduct({
+			input: {
+				name: values.name,
+				description: values.description,
+				unitPrice: Number(values.unitPrice) * 100,
+				// quantity: Number(values.quantity)
+				quantity: 1
 			}
-		},
-		[toUpload]
-	);
+		});
+
+		// We want to preserve state when an error occurs.
+		// For retries (if it's just a network thing), or for observing
+		// the state that led to the error.
+
+		if (error) {
+			console.log('Error while creating product');
+			console.log(error);
+		} else {
+			goBack();
+		}
+	}, []);
 
 	React.useLayoutEffect(() => {
 		setOptions({
@@ -70,19 +62,34 @@ const AddProduct: React.FC = () => {
 				</TextButton>
 			)
 		});
-	}, [toUpload, fetching]);
+	}, [fetching]);
 
 	return (
-		<FormProvider {...formMethods}>
-			<ProductForm
-				mode='add'
-				imagesToUpload={toUpload}
-				setImagesToUpload={setToUpload}
-				categories={[]}
-				selectedCategories={[]}
-				setSelectedCategories={() => {}}
-			/>
-		</FormProvider>
+		<Screen style={{ padding: 16 }}>
+			<FormProvider {...formMethods}>
+				<FormInput
+					name='name'
+					label='Name'
+					placeholder='Enter product name'
+					control={formMethods.control}
+				/>
+				<Spacer y={8} />
+				<FormInput
+					name='description'
+					label='Description'
+					placeholder='Describe your product'
+					control={formMethods.control}
+					textArea
+				/>
+				<Spacer y={8} />
+				<FormInput
+					name='unitPrice'
+					label='Price'
+					placeholder='Enter product price'
+					control={formMethods.control}
+				/>
+			</FormProvider>
+		</Screen>
 	);
 };
 

@@ -1,11 +1,12 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Order from '../screens/Order';
 import Overview from '../screens/Overview';
 import Payouts from '../screens/Payouts';
-import Product from '../screens/Product';
+
 import { HomeStackParamList } from '../types/navigation';
+import ProductStackNavigator from './ProductStack';
 
 const HomeStack = createNativeStackNavigator<HomeStackParamList, 'HomeStack'>();
 
@@ -19,7 +20,11 @@ const HomeStackNavigator = () => {
 			/>
 			<HomeStack.Screen name='Payouts' component={Payouts} />
 			<HomeStack.Screen name='Order' component={Order} />
-			<HomeStack.Screen name='Product' component={Product} />
+			<HomeStack.Screen
+				name='Product'
+				component={ProductStackNavigator}
+				options={{ headerShown: false }}
+			/>
 		</HomeStack.Navigator>
 	);
 };

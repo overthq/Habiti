@@ -1,55 +1,42 @@
+import React from 'react';
+import { Pressable, View } from 'react-native';
 import { formatNaira } from '@habiti/common';
 import { Typography, useTheme } from '@habiti/components';
-import React from 'react';
-import { Controller } from 'react-hook-form';
-import { TextInput, StyleSheet, Pressable } from 'react-native';
 
-const CurrencyInput = () => {
-	const [mode, setMode] = React.useState<'view' | 'input'>('view');
-	const inputRef = React.useRef<TextInput>(null);
+interface CurrencyInputProps {
+	value: number;
+	onPress: () => void;
+}
+
+const CurrencyInput: React.FC<CurrencyInputProps> = ({ value, onPress }) => {
 	const { theme } = useTheme();
 
 	const formatValue = React.useCallback((value: string) => {
 		return formatNaira(value ? Number(value) : 0);
 	}, []);
 
-	const handleBlur = () => {
-		setMode('view');
-	};
-
 	return (
-		<Controller
-			name='unitPrice'
-			render={({ field: { onChange, onBlur, value } }) =>
-				mode === 'view' ? (
-					<Pressable onPress={() => setMode('input')}>
-						<Typography style={[styles.text, { color: theme.text.primary }]}>
-							{formatValue(value)}
-						</Typography>
-					</Pressable>
-				) : (
-					<TextInput
-						ref={inputRef}
-						value={value}
-						onChangeText={onChange}
-						style={[styles.text, { color: theme.text.primary }]}
-						onBlur={() => {
-							handleBlur();
-							onBlur();
-						}}
-						keyboardType='number-pad'
-						autoFocus
-					/>
-				)
-			}
-		/>
+		<Pressable
+			style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}
+			onPress={onPress}
+		>
+			<Typography size='xlarge' style={{ color: theme.text.primary }}>
+				{formatValue(value.toString())}
+			</Typography>
+			<View
+				style={{
+					borderRadius: 100,
+					paddingVertical: 4,
+					paddingHorizontal: 8,
+					backgroundColor: theme.text.primary
+				}}
+			>
+				<Typography variant='invert' size='small'>
+					Edit
+				</Typography>
+			</View>
+		</Pressable>
 	);
 };
-
-const styles = StyleSheet.create({
-	text: {
-		fontSize: 17
-	}
-});
 
 export default CurrencyInput;

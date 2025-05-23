@@ -1,22 +1,33 @@
-import { useTheme, Icon, Typography } from '@habiti/components';
-import * as ImagePicker from 'expo-image-picker';
 import React from 'react';
-import { View, Image, TouchableOpacity, StyleSheet } from 'react-native';
-
-import { ProductQuery } from '../../types/api';
-
-interface ImagesProps {
-	images?: ProductQuery['product']['images'];
-	imagesToUpload: string[];
-	setImagesToUpload: React.Dispatch<React.SetStateAction<string[]>>;
-}
-
-const Images: React.FC<ImagesProps> = ({
-	images,
-	imagesToUpload,
-	setImagesToUpload
-}) => {
+import { TouchableOpacity, View, StyleSheet, Image } from 'react-native';
+import { Icon, TextButton, useTheme } from '@habiti/components';
+import * as ImagePicker from 'expo-image-picker';
+import useGoBack from '../hooks/useGoBack';
+import { ProductStackParamList } from '../types/navigation';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+const ProductImages: React.FC = () => {
 	const { theme } = useTheme();
+	const [imagesToUpload, setImagesToUpload] = React.useState<string[]>([]);
+
+	// TODO: Run a query here for this purpose
+	// Or use a context
+	const {
+		params: { images }
+	} = useRoute<RouteProp<ProductStackParamList, 'Product.Images'>>();
+
+	const { setOptions } = useNavigation();
+
+	useGoBack();
+
+	React.useLayoutEffect(() => {
+		setOptions({
+			headerRight: () => (
+				<TextButton variant='secondary' onPress={handlePickImage}>
+					Add
+				</TextButton>
+			)
+		});
+	}, []);
 
 	const handlePickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
@@ -33,12 +44,6 @@ const Images: React.FC<ImagesProps> = ({
 
 	return (
 		<View style={styles.section}>
-			<Typography
-				weight='medium'
-				style={[styles.title, { color: theme.input.label }]}
-			>
-				Images
-			</Typography>
 			<View style={styles.images}>
 				{images?.map(({ id, path }) => (
 					<Image key={id} source={{ uri: path }} style={styles.image} />
@@ -63,9 +68,6 @@ const styles = StyleSheet.create({
 		paddingVertical: 8,
 		paddingHorizontal: 16
 	},
-	title: {
-		marginBottom: 8
-	},
 	images: {
 		width: '100%',
 		flexDirection: 'row'
@@ -86,4 +88,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default Images;
+export default ProductImages;

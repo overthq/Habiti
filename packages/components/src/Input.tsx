@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		paddingLeft: 8,
 		height: 40,
-		borderRadius: 4
+		borderRadius: 6
 	},
 	textArea: {
 		paddingTop: 8,

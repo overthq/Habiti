@@ -147,7 +147,7 @@ export type CreatePayoutInput = {
 
 export type CreateProductInput = {
 	description: Scalars['String']['input'];
-	imageFiles: Array<Scalars['Upload']['input']>;
+	imageFiles?: InputMaybe<Array<Scalars['Upload']['input']>>;
 	name: Scalars['String']['input'];
 	quantity: Scalars['Int']['input'];
 	unitPrice: Scalars['Int']['input'];
@@ -179,7 +179,7 @@ export type EditCategoryInput = {
 
 export type EditProductInput = {
 	description?: InputMaybe<Scalars['String']['input']>;
-	imageFiles: Array<Scalars['Upload']['input']>;
+	imageFiles?: InputMaybe<Array<Scalars['Upload']['input']>>;
 	name?: InputMaybe<Scalars['String']['input']>;
 	quantity?: InputMaybe<Scalars['Int']['input']>;
 	unitPrice?: InputMaybe<Scalars['Int']['input']>;
@@ -203,6 +203,7 @@ export type EditStoreInput = {
 
 export type Fees = {
 	__typename?: 'Fees';
+	id: Scalars['ID']['output'];
 	service: Scalars['Int']['output'];
 	total: Scalars['Int']['output'];
 	transaction: Scalars['Int']['output'];
@@ -489,6 +490,7 @@ export enum OrderStatus {
 	Cancelled = 'Cancelled',
 	Completed = 'Completed',
 	Delivered = 'Delivered',
+	PaymentPending = 'PaymentPending',
 	Pending = 'Pending',
 	Processing = 'Processing'
 }
@@ -628,6 +630,10 @@ export type Query = {
 	users: Array<User>;
 };
 
+export type QueryCardAuthorizationArgs = {
+	orderId?: InputMaybe<Scalars['ID']['input']>;
+};
+
 export type QueryCartArgs = {
 	id: Scalars['ID']['input'];
 };
@@ -704,7 +710,6 @@ export type Store = {
 	bankAccountNumber?: Maybe<Scalars['String']['output']>;
 	bankAccountReference?: Maybe<Scalars['String']['output']>;
 	bankCode?: Maybe<Scalars['String']['output']>;
-	cartId?: Maybe<Scalars['ID']['output']>;
 	carts: Array<Cart>;
 	categories: Array<StoreProductCategory>;
 	createdAt: Scalars['String']['output'];
@@ -722,13 +727,16 @@ export type Store = {
 	products: ProductConnection;
 	realizedRevenue: Scalars['Int']['output'];
 	twitter?: Maybe<Scalars['String']['output']>;
+	unlisted: Scalars['Boolean']['output'];
 	unrealizedRevenue: Scalars['Int']['output'];
 	updatedAt: Scalars['String']['output'];
+	userCart?: Maybe<Cart>;
 	website?: Maybe<Scalars['String']['output']>;
 };
 
 export type StoreOrdersArgs = {
 	orderBy?: InputMaybe<Array<OrderOrderByInput>>;
+	status?: InputMaybe<OrderStatus>;
 };
 
 export type StoreProductsArgs = {
@@ -740,6 +748,7 @@ export type StoreProductsArgs = {
 
 export type StoreFilterInput = {
 	name?: InputMaybe<StringWhere>;
+	unlisted?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type StoreFollower = {
@@ -822,6 +831,7 @@ export type User = {
 	name: Scalars['String']['output'];
 	orders: Array<Order>;
 	pushTokens: Array<UserPushToken>;
+	suspended: Scalars['Boolean']['output'];
 	updatedAt: Scalars['String']['output'];
 	watchlist: Array<WatchlistProduct>;
 };
@@ -876,6 +886,7 @@ export type CategoriesQuery = {
 			__typename?: 'StoreProductCategory';
 			id: string;
 			name: string;
+			description?: string | null;
 		}>;
 	};
 };
@@ -992,6 +1003,7 @@ export type RemoveStoreManagerMutation = {
 
 export type OrdersQueryVariables = Exact<{
 	orderBy?: InputMaybe<Array<OrderOrderByInput> | OrderOrderByInput>;
+	status?: InputMaybe<OrderStatus>;
 }>;
 
 export type OrdersQuery = {
@@ -1369,6 +1381,7 @@ export const CategoriesDocument = gql`
 			categories {
 				id
 				name
+				description
 			}
 		}
 	}
@@ -1527,10 +1540,10 @@ export function useRemoveStoreManagerMutation() {
 	>(RemoveStoreManagerDocument);
 }
 export const OrdersDocument = gql`
-	query Orders($orderBy: [OrderOrderByInput!]) {
+	query Orders($orderBy: [OrderOrderByInput!], $status: OrderStatus) {
 		currentStore {
 			id
-			orders(orderBy: $orderBy) {
+			orders(orderBy: $orderBy, status: $status) {
 				id
 				user {
 					id
