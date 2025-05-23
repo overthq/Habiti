@@ -12,11 +12,9 @@ export interface ProductFormData {
 	description: string;
 	unitPrice: string;
 	quantity: string;
-	categories: string[];
 }
 
 const AddProduct: React.FC = () => {
-	const [toUpload, setToUpload] = React.useState<string[]>([]);
 	const { goBack, setOptions } = useNavigation();
 	const [{ fetching }, createProduct] = useCreateProductMutation();
 	useGoBack('x');
@@ -26,37 +24,32 @@ const AddProduct: React.FC = () => {
 			name: '',
 			description: '',
 			unitPrice: '',
-			quantity: '',
-			categories: []
+			quantity: ''
 		}
 	});
 
-	const onSubmit = React.useCallback(
-		async (values: ProductFormData) => {
-			const { error } = await createProduct({
-				input: {
-					name: values.name,
-					description: values.description,
-					unitPrice: Number(values.unitPrice) * 100,
-					quantity: Number(values.quantity),
-					imageFiles: toUpload.map(generateUploadFile)
-				}
-			});
-
-			// We want to preserve state when an error occurs.
-			// For retries (if it's just a network thing), or for observing
-			// the state that led to the error.
-
-			if (error) {
-				console.log('Error while creating product');
-				console.log(error);
-			} else {
-				setToUpload([]);
-				goBack();
+	const onSubmit = React.useCallback(async (values: ProductFormData) => {
+		const { error } = await createProduct({
+			input: {
+				name: values.name,
+				description: values.description,
+				unitPrice: Number(values.unitPrice) * 100,
+				// quantity: Number(values.quantity)
+				quantity: 1
 			}
-		},
-		[toUpload]
-	);
+		});
+
+		// We want to preserve state when an error occurs.
+		// For retries (if it's just a network thing), or for observing
+		// the state that led to the error.
+
+		if (error) {
+			console.log('Error while creating product');
+			console.log(error);
+		} else {
+			goBack();
+		}
+	}, []);
 
 	React.useLayoutEffect(() => {
 		setOptions({
@@ -69,7 +62,7 @@ const AddProduct: React.FC = () => {
 				</TextButton>
 			)
 		});
-	}, [toUpload, fetching]);
+	}, [fetching]);
 
 	return (
 		<Screen style={{ padding: 16 }}>

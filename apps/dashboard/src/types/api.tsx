@@ -886,6 +886,7 @@ export type CategoriesQuery = {
 			__typename?: 'StoreProductCategory';
 			id: string;
 			name: string;
+			description?: string | null;
 		}>;
 	};
 };
@@ -1380,6 +1381,7 @@ export const CategoriesDocument = gql`
 			categories {
 				id
 				name
+				description
 			}
 		}
 	}

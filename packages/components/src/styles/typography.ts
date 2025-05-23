@@ -13,12 +13,13 @@ const size = {
 	large: normalizeFontSize(17),
 	xlarge: normalizeFontSize(20),
 	xxlarge: normalizeFontSize(24),
-	xxxlarge: normalizeFontSize(28)
+	xxxlarge: normalizeFontSize(32)
 } as const;
 
 const weight = {
 	regular: 'normal',
 	medium: '500',
+	semibold: '600',
 	bold: 'bold'
 } as const;
 

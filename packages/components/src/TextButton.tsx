@@ -9,6 +9,7 @@ interface TextButtonProps extends PressableProps {
 	children: React.ReactNode;
 	size?: number;
 	weight?: keyof typeof typography.weight;
+	variant?: 'primary' | 'secondary' | 'label';
 	active?: boolean;
 }
 
@@ -18,6 +19,7 @@ const TextButton: React.FC<TextButtonProps> = ({
 	size,
 	weight = 'regular',
 	active = true,
+	variant = 'primary',
 	...props
 }) => {
 	const { theme } = useTheme();
@@ -25,6 +27,7 @@ const TextButton: React.FC<TextButtonProps> = ({
 	return (
 		<Pressable disabled={disabled} {...props}>
 			<Typography
+				variant={variant}
 				weight={weight}
 				style={[
 					{

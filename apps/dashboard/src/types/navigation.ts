@@ -15,7 +15,11 @@ export type AppStackParamList = {
 	CustomerInfo: { userId: string };
 	AddPayout: undefined;
 	AddCategory: undefined;
-	'Modals.EditCategory': { categoryId: string };
+	'Modals.EditCategory': {
+		categoryId: string;
+		name: string;
+		description: string;
+	};
 	AddManager: undefined;
 	FilterProducts: undefined;
 	FilterOrders: undefined;

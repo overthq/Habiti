@@ -3,8 +3,8 @@ import React from 'react';
 
 import Order from '../screens/Order';
 import Orders from '../screens/Orders';
-import Product from '../screens/Product';
 import { OrdersStackParamList } from '../types/navigation';
+import ProductStackNavigator from './ProductStack';
 
 const OrdersStack = createNativeStackNavigator<
 	OrdersStackParamList,
@@ -19,7 +19,11 @@ const OrdersStackNavigator = () => (
 			options={{ headerShown: false }}
 		/>
 		<OrdersStack.Screen name='Order' component={Order} />
-		<OrdersStack.Screen name='Product' component={Product} />
+		<OrdersStack.Screen
+			name='Product'
+			component={ProductStackNavigator}
+			options={{ headerShown: false }}
+		/>
 	</OrdersStack.Navigator>
 );
 

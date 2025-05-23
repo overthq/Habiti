@@ -141,7 +141,7 @@ const dark = {
 		colors: {
 			background: palette.neutral.n950,
 			border: palette.neutral.n800,
-			card: palette.neutral.n900,
+			card: palette.neutral.n950,
 			notification: 'rgb(255, 69, 58)',
 			primary: 'rgb(10, 132, 255)',
 			text: palette.neutral.n50

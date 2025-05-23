@@ -72,9 +72,6 @@ export interface OrdersArgs {
 }
 
 const orders: Resolver<OrdersArgs> = (parent, { orderBy, status }, ctx) => {
-	console.log('status', status);
-	console.log('ctx.storeId', ctx.storeId);
-
 	return ctx.prisma.store.findUnique({ where: { id: parent.id } }).orders({
 		orderBy,
 		// FIXME: We should make this a filter on the client side.

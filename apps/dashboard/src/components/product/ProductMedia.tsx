@@ -22,11 +22,10 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 					alignItems: 'center'
 				}}
 			>
-				<Typography weight='medium' size='large'>
+				<Typography weight='semibold' size='large'>
 					Images
 				</Typography>
 				<TextButton
-					weight='medium'
 					onPress={() => navigate('Product.Images', { productId, images })}
 				>
 					Manage

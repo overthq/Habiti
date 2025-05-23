@@ -1,35 +1,19 @@
-import { useTheme, Typography } from '@habiti/components';
 import React from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
-import { View, TextInput, StyleSheet } from 'react-native';
-import type { TextInputProps } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { Typography, Spacer } from '@habiti/components';
 
 interface SectionProps {
 	title: string;
-	placeholder: string;
-	field: string;
-	inputProps?: TextInputProps;
 	children?: React.ReactNode;
 }
 
-const Section: React.FC<SectionProps> = ({
-	title,
-	field,
-	placeholder,
-	inputProps,
-	children
-}) => {
-	// const { control } = useFormContext();
-	const { theme } = useTheme();
-
+const Section: React.FC<SectionProps> = ({ title, children }) => {
 	return (
 		<View style={styles.section}>
-			<Typography
-				weight='medium'
-				style={[styles.title, { color: theme.input.label }]}
-			>
+			<Typography weight='semibold' size='large'>
 				{title}
 			</Typography>
+			<Spacer y={4} />
 			{children}
 		</View>
 	);
@@ -37,14 +21,7 @@ const Section: React.FC<SectionProps> = ({
 
 const styles = StyleSheet.create({
 	section: {
-		paddingVertical: 8,
 		paddingHorizontal: 16
-	},
-	title: {
-		marginBottom: 2
-	},
-	input: {
-		fontSize: 17
 	}
 });
 

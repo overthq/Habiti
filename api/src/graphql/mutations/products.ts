@@ -10,7 +10,7 @@ export interface CreateProductArgs {
 		description: string;
 		unitPrice: number;
 		quantity: number;
-		imageFiles: Promise<FileUpload>[];
+		imageFiles?: Promise<FileUpload>[];
 	};
 }
 
@@ -31,7 +31,11 @@ export const createProduct: Resolver<CreateProductArgs> = async (
 
 	const { imageFiles, ...rest } = input;
 
-	const uploadedImages = await uploadImages(imageFiles);
+	let uploadedImages: { url: string; public_id: string }[] = [];
+
+	if (imageFiles && imageFiles.length > 0) {
+		uploadedImages = await uploadImages(imageFiles);
+	}
 
 	const product = await ctx.prisma.product.create({
 		data: {

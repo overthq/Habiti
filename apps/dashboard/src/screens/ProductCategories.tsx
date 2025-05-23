@@ -30,6 +30,16 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ productId }) => {
 	const [, updateProductCategories] = useUpdateProductCategoriesMutation();
 	useGoBack();
 
+	const disabled = React.useMemo(() => {
+		const originalCategoryIds = categories
+			.map(({ categoryId }) => categoryId)
+			.sort();
+		const currentCategoryIds = [...selectedCategories].sort();
+		return (
+			JSON.stringify(originalCategoryIds) === JSON.stringify(currentCategoryIds)
+		);
+	}, [selectedCategories]);
+
 	const handleSelectCategory = (id: string) => {
 		setSelectedCategories(prev =>
 			prev.includes(id)
@@ -63,7 +73,11 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ productId }) => {
 				))}
 			</View>
 			<View>
-				<Button text='Update Categories' onPress={handleUpdateCategories} />
+				<Button
+					text='Update Categories'
+					disabled={disabled}
+					onPress={handleUpdateCategories}
+				/>
 				<Spacer y={8} />
 			</View>
 		</Screen>
