@@ -1,3 +1,4 @@
+import React from 'react';
 import {
 	Screen,
 	Checkbox,
@@ -5,24 +6,20 @@ import {
 	Button,
 	Spacer
 } from '@habiti/components';
-import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import {
 	useCategoriesQuery,
 	useUpdateProductCategoriesMutation
 } from '../types/api';
 import { ProductStackParamList } from '../types/navigation';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import useGoBack from '../hooks/useGoBack';
 
-interface ProductCategoriesProps {
-	productId: string;
-}
-
-const ProductCategories: React.FC<ProductCategoriesProps> = ({ productId }) => {
+const ProductCategories: React.FC = () => {
 	const {
-		params: { categories }
+		params: { productId, categories }
 	} = useRoute<RouteProp<ProductStackParamList, 'Product.Categories'>>();
+	const { goBack } = useNavigation();
 	const [{ data }] = useCategoriesQuery();
 	const [selectedCategories, setSelectedCategories] = React.useState<string[]>(
 		categories.map(({ categoryId }) => categoryId)
@@ -56,7 +53,16 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({ productId }) => {
 			.filter(category => !selectedCategories.includes(category.categoryId))
 			.map(({ categoryId }) => categoryId);
 
-		await updateProductCategories({ id: productId, input: { add, remove } });
+		const { error, data: data2 } = await updateProductCategories({
+			id: productId,
+			input: { add, remove }
+		});
+
+		if (error) {
+			console.log(error);
+		} else {
+			goBack();
+		}
 	};
 
 	return (

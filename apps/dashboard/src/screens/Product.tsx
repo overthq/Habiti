@@ -89,26 +89,25 @@ const Product: React.FC = () => {
 			>
 				<Spacer y={16} />
 				<ProductDetails product={data.product} />
-				<Spacer y={8} />
+				<Spacer y={12} />
 				<ProductMedia images={data.product.images} productId={productId} />
-				<Spacer y={8} />
+				<Spacer y={12} />
 				<Section title='Price'>
 					<CurrencyInput
 						value={data.product.unitPrice}
 						onPress={openPriceModal}
 					/>
 				</Section>
-				<Spacer y={8} />
+				<Spacer y={12} />
 				<InventoryInput
 					onPress={openInventoryModal}
 					quantity={data.product.quantity}
 				/>
-				<Spacer y={8} />
+				<Spacer y={12} />
 				<ProductCategories
 					categories={data.product.categories}
 					productId={productId}
 				/>
-				<Spacer y={8} />
 			</ScrollableScreen>
 			<ProductSettings productId={productId} modalRef={settingsModalRef} />
 			<ProductPriceModal

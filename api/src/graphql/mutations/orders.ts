@@ -71,6 +71,25 @@ export const updateOrder: Resolver<UpdateOrderArgs> = async (
 		}
 	});
 
+	if (input.status === OrderStatus.Completed) {
+		await updateStoreRevenue(ctx, {
+			storeId: order.storeId,
+			status: input.status,
+			total: order.total
+		});
+
+		const pushToken = order.user.pushTokens?.[0];
+
+		if (pushToken) {
+			sendStatusNotification(ctx, {
+				orderId: order.id,
+				status: OrderStatus.Completed,
+				customerName: order.user.name,
+				pushToken
+			});
+		}
+	}
+
 	return order;
 };
 
