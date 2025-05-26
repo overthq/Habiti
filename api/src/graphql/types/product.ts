@@ -107,7 +107,7 @@ const ProductTypes = gql`
 		description: String!
 		unitPrice: Int!
 		quantity: Int!
-		imageFiles: [Upload!]!
+		imageFiles: [Upload!]
 	}
 
 	input EditProductInput {
@@ -115,7 +115,7 @@ const ProductTypes = gql`
 		description: String
 		unitPrice: Int
 		quantity: Int
-		imageFiles: [Upload!]!
+		imageFiles: [Upload!]
 	}
 
 	input ProductOrderByInput {

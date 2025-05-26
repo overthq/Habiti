@@ -2,7 +2,6 @@ import {
 	Button,
 	Checkbox,
 	Screen,
-	SelectGroup,
 	Spacer,
 	Typography
 } from '@habiti/components';
@@ -70,7 +69,7 @@ const FilterProducts = () => {
 					>
 						<View />
 					</AccordionRow>
-					<AccordionRow
+					{/* <AccordionRow
 						title='Rating'
 						open={open === 'rating'}
 						onPress={handleExpandSection('rating')}
@@ -90,7 +89,7 @@ const FilterProducts = () => {
 							/>
 							<Spacer y={4} />
 						</>
-					</AccordionRow>
+					</AccordionRow> */}
 					<AccordionRow
 						title='Category'
 						open={open === 'category'}

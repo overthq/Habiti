@@ -1,6 +1,6 @@
+import React from 'react';
 import { useTheme, Icon, TextButton } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 
 import { OrderStatus } from '../../types/api';
@@ -22,13 +22,15 @@ export const FilterButton: React.FC<FilterButtonProps> = ({
 	</TextButton>
 );
 
-const OrdersFilter: React.FC = () => {
-	const [status, setStatus] = React.useState<OrderStatus>();
+const OrdersFilter: React.FC<{
+	status: OrderStatus;
+	onStatusChange: (status: OrderStatus) => void;
+}> = ({ status, onStatusChange }) => {
 	const { theme } = useTheme();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	const handleChangeStatus = (status?: OrderStatus) => () => {
-		setStatus(status);
+		onStatusChange(status);
 	};
 
 	const openFilterSheet = React.useCallback(() => {

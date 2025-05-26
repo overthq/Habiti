@@ -14,6 +14,7 @@ const ScrollableScreen: React.FC<ScrollableScreenProps> = props => {
 	return (
 		<ScrollView
 			{...props}
+			contentContainerStyle={{ backgroundColor: theme.screen.background }}
 			style={[
 				{ backgroundColor: theme.screen.background },
 				styles.container,

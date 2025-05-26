@@ -8,7 +8,7 @@ import {
 	sendNewOrderNotification
 } from '../hooks/orders';
 import { saveOrderData } from '../../core/data/orders';
-import { loadCart } from '../../core/data/carts';
+import { getCartById } from '../../core/data/carts';
 
 export interface CreateOrderArgs {
 	input: {
@@ -24,7 +24,7 @@ export const createOrder: Resolver<CreateOrderArgs> = async (
 	{ input: { cartId, cardId, transactionFee, serviceFee } },
 	ctx
 ) => {
-	const cart = await loadCart(ctx, cartId);
+	const cart = await getCartById(ctx, cartId);
 
 	// TODO: Validations
 
@@ -70,6 +70,25 @@ export const updateOrder: Resolver<UpdateOrderArgs> = async (
 			store: true
 		}
 	});
+
+	if (input.status === OrderStatus.Completed) {
+		await updateStoreRevenue(ctx, {
+			storeId: order.storeId,
+			status: input.status,
+			total: order.total
+		});
+
+		const pushToken = order.user.pushTokens?.[0];
+
+		if (pushToken) {
+			sendStatusNotification(ctx, {
+				orderId: order.id,
+				status: OrderStatus.Completed,
+				customerName: order.user.name,
+				pushToken
+			});
+		}
+	}
 
 	return order;
 };

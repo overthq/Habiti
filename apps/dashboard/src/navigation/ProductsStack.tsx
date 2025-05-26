@@ -5,6 +5,7 @@ import Product from '../screens/Product';
 import Products from '../screens/Products';
 import SearchProducts from '../screens/SearchProducts';
 import { ProductsStackParamList } from '../types/navigation';
+import ProductStackNavigator from './ProductStack';
 
 const ProductsStack = createNativeStackNavigator<
 	ProductsStackParamList,
@@ -20,8 +21,8 @@ const ProductsStackNavigator = () => (
 		/>
 		<ProductsStack.Screen
 			name='Product'
-			component={Product}
-			options={{ title: '' }}
+			component={ProductStackNavigator}
+			options={{ headerShown: false }}
 		/>
 		<ProductsStack.Screen
 			name='Products.Search'

@@ -18,6 +18,7 @@ import RevenueBar from '../components/payouts/RevenueBar';
 import useGoBack from '../hooks/useGoBack';
 import { useStorePayoutsQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
+import useRefresh from '../hooks/useRefresh';
 
 interface NoPayoutsProps {
 	action(): void;
@@ -55,20 +56,9 @@ const Payouts = () => {
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
-	const [refreshing, setRefreshing] = React.useState(false);
+	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 
 	useGoBack();
-
-	const handleRefresh = () => {
-		setRefreshing(true);
-		refetch();
-	};
-
-	React.useEffect(() => {
-		if (!fetching && refreshing) {
-			setRefreshing(false);
-		}
-	}, [fetching, refreshing]);
 
 	const handleNewPayout = React.useCallback(() => {
 		navigate('AddPayout');
@@ -84,18 +74,19 @@ const Payouts = () => {
 		});
 	}, []);
 
-	if (fetching || !data?.currentStore) {
+	if (!data?.currentStore) {
 		return <View />;
 	}
 
 	return (
 		<Screen style={styles.container}>
 			<FlashList
+				contentContainerStyle={{ backgroundColor: theme.screen.background }}
 				estimatedItemSize={100}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}
-						onRefresh={handleRefresh}
+						onRefresh={refresh}
 						tintColor={theme.text.secondary}
 					/>
 				}

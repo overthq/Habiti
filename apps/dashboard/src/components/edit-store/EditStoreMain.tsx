@@ -120,7 +120,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	input: {
-		borderRadius: 4,
 		marginBottom: 8
 	},
 	button: {
