@@ -1,8 +1,19 @@
 import React from 'react';
-import { BottomModal, Button, Spacer, Typography } from '@habiti/components';
-import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
+import {
+	BottomModal,
+	Button,
+	Spacer,
+	Typography,
+	useTheme
+} from '@habiti/components';
+import {
+	BottomSheetModal,
+	BottomSheetTextInput,
+	BottomSheetView
+} from '@gorhom/bottom-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useEditProductMutation } from '../../types/api';
+import { StyleSheet } from 'react-native';
 
 interface ProductPriceModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
@@ -17,6 +28,8 @@ const ProductPriceModal: React.FC<ProductPriceModalProps> = ({
 }) => {
 	const { bottom } = useSafeAreaInsets();
 	const [{ fetching }, editProduct] = useEditProductMutation();
+	const [price, setPrice] = React.useState(String(initialPrice));
+	const { name, theme } = useTheme();
 
 	const handleSubmit = async () => {
 		await editProduct({
@@ -36,6 +49,13 @@ const ProductPriceModal: React.FC<ProductPriceModalProps> = ({
 					Price
 				</Typography>
 				<Spacer y={16} />
+				<BottomSheetTextInput
+					style={[styles.input, { color: theme.input.text }]}
+					value={price}
+					autoFocus
+					keyboardAppearance={name === 'dark' ? 'dark' : 'light'}
+				/>
+				<Spacer y={16} />
 				<Button
 					text='Save'
 					onPress={handleSubmit}
@@ -46,5 +66,13 @@ const ProductPriceModal: React.FC<ProductPriceModalProps> = ({
 		</BottomModal>
 	);
 };
+
+const styles = StyleSheet.create({
+	input: {
+		fontSize: 32,
+		fontWeight: 'medium',
+		height: 36
+	}
+});
 
 export default ProductPriceModal;
