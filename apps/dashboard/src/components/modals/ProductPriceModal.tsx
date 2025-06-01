@@ -28,15 +28,18 @@ const ProductPriceModal: React.FC<ProductPriceModalProps> = ({
 }) => {
 	const { bottom } = useSafeAreaInsets();
 	const [{ fetching }, editProduct] = useEditProductMutation();
-	const [price, setPrice] = React.useState(String(initialPrice));
+	const [price, setPrice] = React.useState(String(initialPrice / 100));
 	const { name, theme } = useTheme();
+
+	const isInitialPrice = React.useMemo(
+		() => price === String(initialPrice / 100),
+		[price, initialPrice]
+	);
 
 	const handleSubmit = async () => {
 		await editProduct({
 			id: productId,
-			input: {
-				unitPrice: initialPrice
-			}
+			input: { unitPrice: Number(price) * 100 }
 		});
 
 		modalRef.current.close();
@@ -52,15 +55,17 @@ const ProductPriceModal: React.FC<ProductPriceModalProps> = ({
 				<BottomSheetTextInput
 					style={[styles.input, { color: theme.input.text }]}
 					value={price}
+					onChangeText={setPrice}
 					autoFocus
 					keyboardAppearance={name === 'dark' ? 'dark' : 'light'}
+					keyboardType='numeric'
 				/>
 				<Spacer y={16} />
 				<Button
 					text='Save'
 					onPress={handleSubmit}
 					loading={fetching}
-					disabled={fetching}
+					disabled={fetching || isInitialPrice}
 				/>
 			</BottomSheetView>
 		</BottomModal>
@@ -71,7 +76,8 @@ const styles = StyleSheet.create({
 	input: {
 		fontSize: 32,
 		fontWeight: 'medium',
-		height: 36
+		height: 36,
+		alignSelf: 'center'
 	}
 });
 
