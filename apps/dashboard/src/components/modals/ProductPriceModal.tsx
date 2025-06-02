@@ -1,8 +1,19 @@
 import React from 'react';
-import { BottomModal, Button, Spacer, Typography } from '@habiti/components';
-import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
+import {
+	BottomModal,
+	Button,
+	Spacer,
+	Typography,
+	useTheme
+} from '@habiti/components';
+import {
+	BottomSheetModal,
+	BottomSheetTextInput,
+	BottomSheetView
+} from '@gorhom/bottom-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useEditProductMutation } from '../../types/api';
+import { StyleSheet } from 'react-native';
 
 interface ProductPriceModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
@@ -17,13 +28,18 @@ const ProductPriceModal: React.FC<ProductPriceModalProps> = ({
 }) => {
 	const { bottom } = useSafeAreaInsets();
 	const [{ fetching }, editProduct] = useEditProductMutation();
+	const [price, setPrice] = React.useState(String(initialPrice / 100));
+	const { name, theme } = useTheme();
+
+	const isInitialPrice = React.useMemo(
+		() => price === String(initialPrice / 100),
+		[price, initialPrice]
+	);
 
 	const handleSubmit = async () => {
 		await editProduct({
 			id: productId,
-			input: {
-				unitPrice: initialPrice
-			}
+			input: { unitPrice: Number(price) * 100 }
 		});
 
 		modalRef.current.close();
@@ -36,15 +52,33 @@ const ProductPriceModal: React.FC<ProductPriceModalProps> = ({
 					Price
 				</Typography>
 				<Spacer y={16} />
+				<BottomSheetTextInput
+					style={[styles.input, { color: theme.input.text }]}
+					value={price}
+					onChangeText={setPrice}
+					autoFocus
+					keyboardAppearance={name === 'dark' ? 'dark' : 'light'}
+					keyboardType='numeric'
+				/>
+				<Spacer y={16} />
 				<Button
 					text='Save'
 					onPress={handleSubmit}
 					loading={fetching}
-					disabled={fetching}
+					disabled={fetching || isInitialPrice}
 				/>
 			</BottomSheetView>
 		</BottomModal>
 	);
 };
+
+const styles = StyleSheet.create({
+	input: {
+		fontSize: 32,
+		fontWeight: 'medium',
+		height: 36,
+		alignSelf: 'center'
+	}
+});
 
 export default ProductPriceModal;
