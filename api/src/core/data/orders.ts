@@ -1,4 +1,4 @@
-import { Cart, Order, OrderStatus, Product } from '@prisma/client';
+import { Cart, OrderStatus, Product } from '@prisma/client';
 import { ResolverContext } from '../../types/resolvers';
 import { chargeAuthorization } from '../../utils/paystack';
 
