@@ -25,14 +25,13 @@ export async function executeOrderSideEffects(
 		promises.push(updateStoreRevenue(ctx, sideEffects.revenueUpdate));
 	}
 
-	if (sideEffects.analyticsEvents?.length) {
+	await Promise.allSettled(promises);
+
+	if (sideEffects.analyticsEvents.length) {
 		for (const event of sideEffects.analyticsEvents) {
 			trackOrderEvent(ctx, event);
 		}
 	}
-
-	// TODO: Implement error handling and retry logic for failed promises.
-	await Promise.allSettled(promises);
 }
 
 const executeOrderNotifications = async (
@@ -41,31 +40,23 @@ const executeOrderNotifications = async (
 ): Promise<void> => {
 	for (const notification of notifications) {
 		try {
-			if (notification.type === NotificationType.NewOrder) {
-				const pushTokens = await getStorePushTokens(notification.data.storeId);
-				await sendOrderNotification(ctx, notification, pushTokens);
-			} else {
-				const pushTokens = await getUserPushTokens(ctx.user.id);
-				await sendOrderNotification(ctx, notification, pushTokens);
-			}
+			const pushTokens =
+				notification.type === NotificationType.NewOrder
+					? await getStorePushTokens(notification.data.storeId)
+					: await getUserPushTokens(ctx.user.id);
+
+			await sendOrderNotification(ctx, notification, pushTokens);
 		} catch (error) {
 			console.error('Failed to send order notification:', error);
 		}
 	}
 };
 
-const ORDER_NOTIFICATION_TYPES = [
-	'NEW_ORDER',
-	'ORDER_STATUS_CHANGED',
-	'ORDER_COMPLETED',
-	'ORDER_CANCELLED'
-] as const;
-
-async function sendOrderNotification(
+const sendOrderNotification = async (
 	ctx: ResolverContext,
 	notification: OrderNotification,
 	recipientTokens: string[]
-): Promise<void> {
+): Promise<void> => {
 	const { type, data } = notification;
 
 	if (type === NotificationType.NewOrder) {
@@ -89,7 +80,7 @@ async function sendOrderNotification(
 			recipientTokens
 		});
 	}
-}
+};
 
 const updateStoreRevenue = async (
 	ctx: ResolverContext,

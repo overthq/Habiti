@@ -11,8 +11,7 @@ import { OrderStatus } from '@prisma/client';
 
 // Validation functions
 export async function validateCreateOrderInput(
-	input: CreateOrderInput,
-	ctx: ResolverContext
+	input: CreateOrderInput
 ): Promise<void> {
 	if (!input.cartId) {
 		throw new Error('Cart ID is required');
@@ -54,7 +53,7 @@ export async function createOrder(
 	const { cartId, cardId, transactionFee, serviceFee } = input;
 
 	// Validation
-	await validateCreateOrderInput(input, ctx);
+	await validateCreateOrderInput(input);
 
 	// Get cart with validation
 	const cart = await getCartById(ctx, cartId);

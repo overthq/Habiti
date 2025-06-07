@@ -5,8 +5,7 @@ import { NotificationType } from '../../../types/notifications';
 
 // Validation functions
 export async function validateUpdateOrderInput(
-	input: UpdateOrderStatusInput,
-	ctx: ResolverContext
+	input: UpdateOrderStatusInput
 ): Promise<void> {
 	if (!input.orderId) {
 		throw new Error('Order ID is required');
@@ -19,8 +18,7 @@ export async function validateUpdateOrderInput(
 
 export async function validateStatusTransition(
 	currentStatus: OrderStatus,
-	newStatus: OrderStatus,
-	ctx: ResolverContext
+	newStatus: OrderStatus
 ): Promise<void> {
 	const validTransitions: Record<OrderStatus, OrderStatus[]> = {
 		[OrderStatus.PaymentPending]: [OrderStatus.Pending, OrderStatus.Cancelled],
@@ -54,8 +52,7 @@ const statusToNotificationType = {
 
 export function prepareSideEffectsForStatusUpdate(
 	order: Order & { user: User },
-	status: OrderStatus,
-	ctx: ResolverContext
+	status: OrderStatus
 ): OrderUpdateResult['sideEffects'] {
 	const sideEffects: OrderUpdateResult['sideEffects'] = {
 		notifications: [],
@@ -102,7 +99,7 @@ export async function updateOrderStatus(
 ): Promise<OrderUpdateResult> {
 	const { orderId, status } = input;
 
-	await validateUpdateOrderInput(input, ctx);
+	await validateUpdateOrderInput(input);
 
 	const currentOrder = await ctx.prisma.order.findUnique({
 		where: { id: orderId },
@@ -113,7 +110,7 @@ export async function updateOrderStatus(
 		throw new Error(`Order not found: ${orderId}`);
 	}
 
-	await validateStatusTransition(currentOrder.status, status, ctx);
+	await validateStatusTransition(currentOrder.status, status);
 
 	const updatedOrder = await ctx.prisma.order.update({
 		where: { id: orderId },
@@ -125,11 +122,7 @@ export async function updateOrderStatus(
 		}
 	});
 
-	const sideEffects = prepareSideEffectsForStatusUpdate(
-		updatedOrder,
-		status,
-		ctx
-	);
+	const sideEffects = prepareSideEffectsForStatusUpdate(updatedOrder, status);
 
 	return { order: updatedOrder, sideEffects };
 }

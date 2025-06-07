@@ -43,6 +43,15 @@ export const saveOrderData = async (
 
 		await prisma.cart.delete({ where: { id: cart.id } });
 
+		await prisma.product.updateMany({
+			where: { id: { in: products.map(p => p.id) } },
+			data: {
+				quantity: {
+					decrement: products.reduce((acc, p) => acc + p.quantity, 0)
+				}
+			}
+		});
+
 		if (cardId) {
 			const card = await prisma.card.findUnique({
 				where: { id: cardId }
