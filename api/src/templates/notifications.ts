@@ -32,6 +32,11 @@ export const notificationTemplates: Record<
 		title: 'Order Completed',
 		body: data => `Your order #${data.orderId} has been completed`
 	},
+	ORDER_STATUS_CHANGED: {
+		title: 'Order Status Changed',
+		body: data =>
+			`Your order #${data.orderId}'s status has been updated to ${data.status}`
+	},
 	NEW_FOLLOW: {
 		title: 'New Store Follower',
 		body: data => `${data.followerName} started following your store`

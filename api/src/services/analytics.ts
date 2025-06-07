@@ -1,5 +1,4 @@
 import { PostHog } from 'posthog-node';
-import posthogClient from '../config/posthog';
 
 export interface AnalyticsEvent {
 	event: string;
@@ -29,12 +28,16 @@ export default class AnalyticsService {
 	private client: PostHog;
 	private isEnabled: boolean;
 
-	constructor(client?: PostHog) {
-		this.client = client || posthogClient;
-		this.isEnabled = !!process.env.POSTHOG_API_KEY;
+	constructor() {
+		if (!!process.env.POSTHOG_API_KEY) {
+			this.client = new PostHog(process.env.POSTHOG_API_KEY);
+			this.isEnabled = true;
+		} else {
+			this.isEnabled = false;
+		}
 	}
 
-	async track(event: AnalyticsEvent): Promise<void> {
+	track(event: AnalyticsEvent) {
 		if (!this.isEnabled) {
 			console.warn(
 				'PostHog is not configured - skipping analytics event:',
@@ -56,7 +59,7 @@ export default class AnalyticsService {
 		}
 	}
 
-	async identify(data: AnalyticsIdentifyData): Promise<void> {
+	identify(data: AnalyticsIdentifyData) {
 		if (!this.isEnabled) return;
 
 		try {
@@ -69,7 +72,7 @@ export default class AnalyticsService {
 		}
 	}
 
-	async group(data: AnalyticsGroupData): Promise<void> {
+	group(data: AnalyticsGroupData) {
 		if (!this.isEnabled) return;
 
 		try {
@@ -83,7 +86,7 @@ export default class AnalyticsService {
 		}
 	}
 
-	async alias(data: AnalyticsAlias): Promise<void> {
+	alias(data: AnalyticsAlias) {
 		if (!this.isEnabled) return;
 
 		try {
@@ -96,7 +99,7 @@ export default class AnalyticsService {
 		}
 	}
 
-	async trackOrderEvent(
+	trackOrderEvent(
 		eventName: string,
 		orderData: {
 			orderId: string;
@@ -114,8 +117,8 @@ export default class AnalyticsService {
 				quantity: number;
 			}>;
 		}
-	): Promise<void> {
-		await this.track({
+	) {
+		this.track({
 			event: eventName,
 			distinctId: orderData.userId,
 			properties: {
@@ -135,7 +138,7 @@ export default class AnalyticsService {
 		});
 	}
 
-	async trackProductEvent(
+	trackProductEvent(
 		eventName: string,
 		productData: {
 			productId: string;
@@ -147,8 +150,8 @@ export default class AnalyticsService {
 			quantity?: number;
 			searchQuery?: string;
 		}
-	): Promise<void> {
-		await this.track({
+	) {
+		this.track({
 			event: eventName,
 			distinctId: productData.userId || 'anonymous',
 			properties: {
@@ -168,7 +171,7 @@ export default class AnalyticsService {
 	/**
 	 * Track store-related events
 	 */
-	async trackStoreEvent(
+	trackStoreEvent(
 		eventName: string,
 		storeData: {
 			storeId: string;
@@ -177,8 +180,8 @@ export default class AnalyticsService {
 			category?: string;
 			action?: string;
 		}
-	): Promise<void> {
-		await this.track({
+	) {
+		this.track({
 			event: eventName,
 			distinctId: storeData.userId || 'anonymous',
 			properties: {
@@ -195,7 +198,7 @@ export default class AnalyticsService {
 	/**
 	 * Track user authentication events
 	 */
-	async trackAuthEvent(
+	trackAuthEvent(
 		eventName: string,
 		userData: {
 			userId: string;
@@ -203,8 +206,8 @@ export default class AnalyticsService {
 			success?: boolean;
 			errorCode?: string;
 		}
-	): Promise<void> {
-		await this.track({
+	) {
+		this.track({
 			event: eventName,
 			distinctId: userData.userId,
 			properties: {
@@ -218,7 +221,7 @@ export default class AnalyticsService {
 	/**
 	 * Track payment-related events
 	 */
-	async trackPaymentEvent(
+	trackPaymentEvent(
 		eventName: string,
 		paymentData: {
 			userId: string;
@@ -230,8 +233,8 @@ export default class AnalyticsService {
 			errorCode?: string;
 			provider?: string;
 		}
-	): Promise<void> {
-		await this.track({
+	) {
+		this.track({
 			event: eventName,
 			distinctId: paymentData.userId,
 			properties: {
@@ -251,7 +254,7 @@ export default class AnalyticsService {
 	/**
 	 * Flush any pending events (useful for serverless functions)
 	 */
-	async flush(): Promise<void> {
+	async flush() {
 		if (!this.isEnabled) return;
 
 		try {
