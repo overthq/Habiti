@@ -12,9 +12,7 @@ import { useForm } from 'react-hook-form';
 import { Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import useStore from '../state';
-import { useAuthenticateMutation } from '../types/api';
-import { useShallow } from 'zustand/react/shallow';
+import { useAuthenticateMutation } from '../hooks/mutations';
 
 interface AuthenticateFormValues {
 	email: string;
@@ -22,25 +20,18 @@ interface AuthenticateFormValues {
 }
 
 const Authenticate = () => {
-	const logIn = useStore(useShallow(state => state.logIn));
-	const [{ fetching }, authenticate] = useAuthenticateMutation();
+	const authenticateMutation = useAuthenticateMutation();
 	const { control, handleSubmit } = useForm<AuthenticateFormValues>({
 		defaultValues: { email: '', password: '' }
 	});
 	const { goBack } = useNavigation();
 
-	const onSubmit = async (values: AuthenticateFormValues) => {
-		if (values.email && values.password) {
-			const { error, data } = await authenticate({
-				input: { email: values.email, password: values.password }
-			});
-
-			if (error) {
-				console.log(error);
-			} else if (data?.authenticate) {
-				logIn(data.authenticate.userId, data.authenticate.accessToken);
-			}
-		}
+	const onSubmit = (values: AuthenticateFormValues) => {
+		console.log(values);
+		authenticateMutation.mutate({
+			email: values.email,
+			password: values.password
+		});
 	};
 
 	return (
@@ -86,7 +77,7 @@ const Authenticate = () => {
 				<Button
 					text='Submit'
 					onPress={handleSubmit(onSubmit)}
-					loading={fetching}
+					loading={authenticateMutation.isPending}
 				/>
 			</SafeAreaView>
 		</Screen>

@@ -7,15 +7,14 @@ import {
 	Icon
 } from '@habiti/components';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { z } from 'zod';
 
-import { useRegisterMutation } from '../types/api';
-import { AppStackParamList } from '../types/navigation';
+import { useRegisterMutation } from '../hooks/mutations';
 
 const registerSchema = z.object({
 	name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -26,29 +25,19 @@ const registerSchema = z.object({
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 const Register: React.FC = () => {
-	const { navigate, goBack } =
-		useNavigation<NavigationProp<AppStackParamList>>();
-	const [{ fetching }, register] = useRegisterMutation();
+	const { goBack } = useNavigation();
+	const registerMutation = useRegisterMutation();
 	const methods = useForm<RegisterFormValues>({
 		defaultValues: { name: '', email: '', password: '' },
 		resolver: zodResolver(registerSchema)
 	});
 
-	const onSubmit = async (values: RegisterFormValues) => {
-		if (values.email && values.name) {
-			const { error } = await register({
-				input: {
-					email: values.email,
-					name: values.name,
-					password: values.password
-				}
-			});
-			if (error) {
-				console.log(error);
-			} else {
-				navigate('Authenticate');
-			}
-		}
+	const onSubmit = (values: RegisterFormValues) => {
+		registerMutation.mutate({
+			email: values.email,
+			name: values.name,
+			password: values.password
+		});
 	};
 
 	return (
@@ -93,7 +82,7 @@ const Register: React.FC = () => {
 				<Button
 					text='Register'
 					onPress={methods.handleSubmit(onSubmit)}
-					loading={fetching}
+					loading={registerMutation.isPending}
 					disabled={!methods.formState.isValid}
 				/>
 			</SafeAreaView>

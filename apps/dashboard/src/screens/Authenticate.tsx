@@ -14,9 +14,7 @@ import { Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { z } from 'zod';
 
-import useStore from '../state';
-import { useAuthenticateMutation } from '../types/api';
-import { useShallow } from 'zustand/react/shallow';
+import { useAuthenticateMutation } from '../hooks/mutations';
 
 const authenticateSchema = z.object({
 	email: z.string().email('Invalid email address'),
@@ -29,25 +27,17 @@ const Authenticate: React.FC = () => {
 	const { goBack } = useNavigation();
 
 	const methods = useForm<AuthenticateFormValues>({
-		defaultValues: { email: '', password: '' },
-		resolver: zodResolver(authenticateSchema)
+		resolver: zodResolver(authenticateSchema),
+		defaultValues: { email: '', password: '' }
 	});
 
-	const logIn = useStore(useShallow(({ logIn }) => logIn));
-	const [{ fetching }, authenticate] = useAuthenticateMutation();
+	const authenticateMutation = useAuthenticateMutation();
 
-	const onSubmit = async (values: AuthenticateFormValues) => {
-		if (values.email && values.password) {
-			const { error, data } = await authenticate({
-				input: { email: values.email, password: values.password }
-			});
-
-			if (error) {
-				console.log(error);
-			} else if (data?.authenticate) {
-				logIn(data.authenticate.userId, data.authenticate.accessToken);
-			}
-		}
+	const onSubmit = (values: AuthenticateFormValues) => {
+		authenticateMutation.mutate({
+			email: values.email,
+			password: values.password
+		});
 	};
 
 	return (
@@ -85,7 +75,7 @@ const Authenticate: React.FC = () => {
 				/>
 				<Spacer y={16} />
 				<Button
-					loading={fetching}
+					loading={authenticateMutation.isPending}
 					text='Next'
 					onPress={methods.handleSubmit(onSubmit)}
 					disabled={!methods.formState.isValid}

@@ -6,7 +6,6 @@ import {
 	Typography,
 	Screen
 } from '@habiti/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
@@ -15,8 +14,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { View, Dimensions, Alert, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useRegisterMutation } from '../types/api';
-import { AppStackParamList } from '../types/navigation';
+import { useRegisterMutation } from '../hooks/mutations';
 
 interface RegisterFormValues {
 	name: string;
@@ -38,23 +36,14 @@ const RegisterForm = () => {
 			pushToken: undefined
 		}
 	});
-	const [{ fetching }, register] = useRegisterMutation();
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const registerMutation = useRegisterMutation();
 
-	const onSubmit = async (values: RegisterFormValues) => {
-		const { error, data } = await register({
-			input: {
-				name: values.name,
-				email: values.email,
-				password: values.password
-			}
+	const onSubmit = (values: RegisterFormValues) => {
+		registerMutation.mutate({
+			name: values.name,
+			email: values.email,
+			password: values.password
 		});
-
-		if (error) {
-			console.log(error);
-		} else if (data?.register) {
-			navigate('Authenticate');
-		}
 	};
 
 	return (
@@ -104,7 +93,7 @@ const RegisterForm = () => {
 					/>
 					<Spacer y={16} />
 					<Button
-						loading={fetching}
+						loading={registerMutation.isPending}
 						text='Create account'
 						onPress={methods.handleSubmit(onSubmit)}
 					/>

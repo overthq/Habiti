@@ -356,6 +356,9 @@ importers:
       '@shopify/flash-list':
         specifier: 1.7.6
         version: 1.7.6(@babel/runtime@7.27.1)(react-native@0.79.2(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+      '@tanstack/react-query':
+        specifier: ^5.75.0
+        version: 5.75.7(react@19.0.0)
       '@urql/exchange-graphcache':
         specifier: ^7.2.3
         version: 7.2.3(@urql/core@5.1.1(graphql@16.11.0))(graphql@16.11.0)
