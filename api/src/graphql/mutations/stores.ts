@@ -2,6 +2,7 @@ import { UploadApiResponse } from 'cloudinary';
 import { FileUpload } from 'graphql-upload';
 
 import { Resolver } from '../../types/resolvers';
+import { NotificationType } from '../../types/notifications';
 import { createTransferReceipient } from '../../utils/paystack';
 import { uploadStream } from '../../utils/upload';
 import { getStorePushTokens } from '../../utils/notifications';
@@ -143,7 +144,7 @@ export const followStore: Resolver<FollowStoreArgs> = async (
 	for (const pushToken of pushTokens) {
 		if (pushToken) {
 			ctx.services.notifications.queueNotification({
-				type: 'NEW_FOLLOW',
+				type: NotificationType.NewFollower,
 				data: { followerName: ctx.user.name },
 				recipientTokens: [pushToken]
 			});

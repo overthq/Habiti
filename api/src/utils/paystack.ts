@@ -1,34 +1,6 @@
-import prismaClient from '../config/prisma';
+import { storeCard } from '../core/data/cards';
 
 const API_URL = 'https://api.paystack.co';
-
-const post = async (path: string, body: object) => {
-	const response = await fetch(`${API_URL}${path}`, {
-		method: 'POST',
-		headers: {
-			Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(body)
-	});
-
-	console.log('POST request!');
-	console.log('path', path);
-	console.log('status', response.status);
-
-	const data = await response.json();
-	return data;
-};
-
-const get = async (path: string) => {
-	const response = await fetch(`${API_URL}${path}`, {
-		method: 'GET',
-		headers: { Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` }
-	});
-
-	const data = await response.json();
-	return data;
-};
 
 interface ChargeAuthorizationOptions {
 	authorizationCode: string;
@@ -48,41 +20,6 @@ export const chargeAuthorization = async (
 	return data;
 };
 
-interface StoreCardData {
-	customer: { email: string };
-	authorization: {
-		signature: string;
-		authorization_code: string;
-		bin: string;
-		last4: string;
-		exp_month: string;
-		exp_year: string;
-		bank: string;
-		card_type: string;
-		country_code: string;
-	};
-}
-
-export const storeCard = async (data: StoreCardData) => {
-	return prismaClient.card.upsert({
-		where: { signature: data.authorization.signature },
-		update: {},
-		create: {
-			email: data.customer.email,
-			authorizationCode: data.authorization.authorization_code,
-			bin: data.authorization.bin,
-			last4: data.authorization.last4,
-			expMonth: data.authorization.exp_month,
-			expYear: data.authorization.exp_year,
-			bank: data.authorization.bank,
-			signature: data.authorization.signature,
-			cardType: data.authorization.card_type,
-			countryCode: data.authorization.country_code,
-			user: { connect: { email: data.customer.email } }
-		}
-	});
-};
-
 interface InitialChargeOptions {
 	email: string;
 	amount: number;
@@ -100,22 +37,7 @@ export const initialCharge = async (options: InitialChargeOptions) => {
 		})
 	});
 
-	console.log('[initialCharge]: ', JSON.stringify(data));
-
 	return data;
-};
-
-// Hack to verify transaction in dev.
-// (On prod, the webhook should do this).
-
-export const verifyTransaction = async (reference: string) => {
-	const { data, status } = await get(`/transaction/verify/${reference}`);
-
-	if (status === true && data.status === 'success') {
-		return storeCard(data);
-	} else {
-		throw new Error('Verification failed!');
-	}
 };
 
 export const createRecepient = async (
@@ -207,4 +129,39 @@ export const loadBanks = async () => {
 	return data;
 };
 
-// TODO: Use authorization code to return the tokenization fee to user programmatically.
+// Hack to verify transaction in dev.
+// (On prod, the webhook should do this).
+
+export const verifyTransaction = async (reference: string) => {
+	const { data, status } = await get(`/transaction/verify/${reference}`);
+
+	if (status === true && data.status === 'success') {
+		return storeCard(data);
+	} else {
+		throw new Error('Verification failed!');
+	}
+};
+
+const post = async (path: string, body: object) => {
+	const response = await fetch(`${API_URL}${path}`, {
+		method: 'POST',
+		headers: {
+			Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(body)
+	});
+
+	const data = await response.json();
+	return data;
+};
+
+const get = async (path: string) => {
+	const response = await fetch(`${API_URL}${path}`, {
+		method: 'GET',
+		headers: { Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` }
+	});
+
+	const data = await response.json();
+	return data;
+};
