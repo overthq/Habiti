@@ -11,10 +11,10 @@ import {
 	OrderSideEffects
 } from './types';
 
-export async function executeOrderSideEffects(
+export const executeOrderSideEffects = async (
 	ctx: ResolverContext,
 	sideEffects: OrderSideEffects
-): Promise<void> {
+) => {
 	const promises: Promise<void>[] = [];
 
 	if (sideEffects.notifications?.length) {
@@ -32,7 +32,7 @@ export async function executeOrderSideEffects(
 			trackOrderEvent(ctx, event);
 		}
 	}
-}
+};
 
 const executeOrderNotifications = async (
 	ctx: ResolverContext,
@@ -45,7 +45,9 @@ const executeOrderNotifications = async (
 					? await getStorePushTokens(notification.data.storeId)
 					: await getUserPushTokens(ctx.user.id);
 
-			await sendOrderNotification(ctx, notification, pushTokens);
+			if (pushTokens.length) {
+				await sendOrderNotification(ctx, notification, pushTokens);
+			}
 		} catch (error) {
 			console.error('Failed to send order notification:', error);
 		}

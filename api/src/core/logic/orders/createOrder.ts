@@ -7,12 +7,9 @@ import {
 	OrderSideEffects
 } from './types';
 import { NotificationType } from '../../../types/notifications';
-import { OrderStatus } from '@prisma/client';
+import { Cart, CartProduct, OrderStatus, Product } from '@prisma/client';
 
-// Validation functions
-export async function validateCreateOrderInput(
-	input: CreateOrderInput
-): Promise<void> {
+export const validateCreateOrderInput = async (input: CreateOrderInput) => {
 	if (!input.cartId) {
 		throw new Error('Cart ID is required');
 	}
@@ -20,12 +17,12 @@ export async function validateCreateOrderInput(
 	if (input.transactionFee < 0 || input.serviceFee < 0) {
 		throw new Error('Fees cannot be negative');
 	}
-}
+};
 
-export async function validateCart(
-	cart: any,
+export const validateCart = async (
+	cart: Cart & { products: (CartProduct & { product: Product })[] },
 	ctx: ResolverContext
-): Promise<void> {
+) => {
 	if (!cart) {
 		throw new Error('Cart not found');
 	}
@@ -44,18 +41,16 @@ export async function validateCart(
 			throw new Error(`Insufficient stock for product: ${product.name}`);
 		}
 	}
-}
+};
 
-export async function createOrder(
+export const createOrder = async (
 	input: CreateOrderInput,
 	ctx: ResolverContext
-): Promise<OrderCreationResult> {
+): Promise<OrderCreationResult> => {
 	const { cartId, cardId, transactionFee, serviceFee } = input;
 
-	// Validation
 	await validateCreateOrderInput(input);
 
-	// Get cart with validation
 	const cart = await getCartById(ctx, cartId);
 	await validateCart(cart, ctx);
 
@@ -102,4 +97,4 @@ export async function createOrder(
 	} satisfies OrderSideEffects;
 
 	return { order, sideEffects };
-}
+};

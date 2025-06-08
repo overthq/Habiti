@@ -3,10 +3,47 @@ import { ResolverContext } from '../../../types/resolvers';
 import { UpdateOrderStatusInput, OrderUpdateResult } from './types';
 import { NotificationType } from '../../../types/notifications';
 
+export const updateOrderStatus = async (
+	input: UpdateOrderStatusInput,
+	ctx: ResolverContext
+): Promise<OrderUpdateResult> => {
+	const { orderId, status } = input;
+
+	await validateUpdateOrderInput(input);
+
+	const currentOrder = await ctx.prisma.order.findUnique({
+		where: { id: orderId },
+		include: { store: true }
+	});
+
+	if (!currentOrder) {
+		throw new Error(`Order not found: ${orderId}`);
+	}
+
+	await validateStatusTransition(currentOrder.status, status);
+
+	const updatedOrder = await ctx.prisma.order.update({
+		where: { id: orderId },
+		data: { status },
+		include: {
+			products: { include: { product: true } },
+			store: true
+		}
+	});
+
+	const sideEffects = prepareSideEffectsForStatusUpdate(
+		updatedOrder,
+		status,
+		ctx
+	);
+
+	return { order: updatedOrder, sideEffects };
+};
+
 // Validation functions
-export async function validateUpdateOrderInput(
+export const validateUpdateOrderInput = async (
 	input: UpdateOrderStatusInput
-): Promise<void> {
+): Promise<void> => {
 	if (!input.orderId) {
 		throw new Error('Order ID is required');
 	}
@@ -14,12 +51,12 @@ export async function validateUpdateOrderInput(
 	if (!Object.values(OrderStatus).includes(input.status)) {
 		throw new Error('Invalid order status');
 	}
-}
+};
 
-export async function validateStatusTransition(
+export const validateStatusTransition = async (
 	currentStatus: OrderStatus,
 	newStatus: OrderStatus
-): Promise<void> {
+) => {
 	const validTransitions: Record<OrderStatus, OrderStatus[]> = {
 		[OrderStatus.PaymentPending]: [OrderStatus.Pending, OrderStatus.Cancelled],
 		[OrderStatus.Pending]: [
@@ -39,7 +76,7 @@ export async function validateStatusTransition(
 			`Invalid status transition from ${currentStatus} to ${newStatus}`
 		);
 	}
-}
+};
 
 const statusToNotificationType = {
 	[OrderStatus.Completed]: NotificationType.OrderCompleted,
@@ -50,10 +87,11 @@ const statusToNotificationType = {
 	[OrderStatus.Delivered]: NotificationType.OrderStatusChanged
 } as const;
 
-export function prepareSideEffectsForStatusUpdate(
-	order: Order & { user: User },
-	status: OrderStatus
-): OrderUpdateResult['sideEffects'] {
+export const prepareSideEffectsForStatusUpdate = (
+	order: Order,
+	status: OrderStatus,
+	ctx: ResolverContext
+): OrderUpdateResult['sideEffects'] => {
 	const sideEffects: OrderUpdateResult['sideEffects'] = {
 		notifications: [],
 		revenueUpdate: undefined,
@@ -67,7 +105,7 @@ export function prepareSideEffectsForStatusUpdate(
 			storeId: order.storeId,
 			amount: order.total,
 			status,
-			customerName: order.user.name
+			customerName: ctx.user.name
 		}
 	});
 
@@ -91,38 +129,4 @@ export function prepareSideEffectsForStatusUpdate(
 	});
 
 	return sideEffects;
-}
-
-export async function updateOrderStatus(
-	input: UpdateOrderStatusInput,
-	ctx: ResolverContext
-): Promise<OrderUpdateResult> {
-	const { orderId, status } = input;
-
-	await validateUpdateOrderInput(input);
-
-	const currentOrder = await ctx.prisma.order.findUnique({
-		where: { id: orderId },
-		include: { user: true, store: true }
-	});
-
-	if (!currentOrder) {
-		throw new Error(`Order not found: ${orderId}`);
-	}
-
-	await validateStatusTransition(currentOrder.status, status);
-
-	const updatedOrder = await ctx.prisma.order.update({
-		where: { id: orderId },
-		data: { status },
-		include: {
-			products: { include: { product: true } },
-			user: true,
-			store: true
-		}
-	});
-
-	const sideEffects = prepareSideEffectsForStatusUpdate(updatedOrder, status);
-
-	return { order: updatedOrder, sideEffects };
-}
+};

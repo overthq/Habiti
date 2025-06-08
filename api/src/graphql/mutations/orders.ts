@@ -2,10 +2,8 @@ import { OrderStatus } from '@prisma/client';
 
 import { Resolver } from '../../types/resolvers';
 import { storeAuthorizedResolver } from '../permissions';
-import {
-	createOrder as createOrderLogic,
-	updateOrderStatus as updateOrderStatusLogic
-} from '../../core/logic/orders';
+import { createOrder as createOrderLogic } from '../../core/logic/orders/createOrder';
+import { updateOrderStatus as updateOrderStatusLogic } from '../../core/logic/orders/updateOrder';
 import { executeOrderSideEffects } from '../../core/logic/orders/sideEffects';
 
 export interface CreateOrderArgs {
