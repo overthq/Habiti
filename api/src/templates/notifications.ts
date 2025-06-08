@@ -36,9 +36,5 @@ export const notificationTemplates: Record<
 		title: 'Order Status Changed',
 		body: data =>
 			`Your order #${data.orderId}'s status has been updated to ${data.status}`
-	},
-	NEW_FOLLOW: {
-		title: 'New Store Follower',
-		body: data => `${data.followerName} started following your store`
 	}
 };

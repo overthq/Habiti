@@ -38,7 +38,8 @@
 		"nodemailer": "^6.10.0",
 		"pg": "^8.13.1",
 		"posthog-node": "^4.14.0",
-		"redis": "^4.7.0"
+		"redis": "^4.7.0",
+		"zod": "^3.25.56"
 	},
 	"devDependencies": {
 		"@types/compression": "^1.7.5",

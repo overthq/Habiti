@@ -95,6 +95,9 @@ importers:
       redis:
         specifier: ^4.7.0
         version: 4.7.1
+      zod:
+        specifier: ^3.25.56
+        version: 3.25.56
     devDependencies:
       '@types/compression':
         specifier: ^1.7.5
@@ -3308,6 +3311,9 @@ packages:
 
   zen-observable@0.8.15:
     resolution: {integrity: sha512-PQ2PC7R9rslx84ndNBZB/Dkv8V8fZEpk83RLgXtYd0fwUgEjseMn1Dgajh2x6S8QbZAFa9p2qVCEuYZNgve0dQ==}
+
+  zod@3.25.56:
+    resolution: {integrity: sha512-rd6eEF3BTNvQnR2e2wwolfTmUTnp70aUTqr0oaGbHifzC3BKJsoV+Gat8vxUMR1hwOKBs6El+qWehrHbCpW6SQ==}
 
 snapshots:
 
@@ -7137,3 +7143,5 @@ snapshots:
 
   zen-observable@0.8.15:
     optional: true
+
+  zod@3.25.56: {}

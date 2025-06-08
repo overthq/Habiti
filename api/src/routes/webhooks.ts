@@ -1,11 +1,7 @@
 import { createHmac } from 'crypto';
 import { Router } from 'express';
 
-import { storeCard } from '../utils/paystack';
-import {
-	handleTransferFailure,
-	handleTransferSuccess
-} from '../utils/webhooks';
+import { handlePaystackWebhookEvent } from '../utils/webhooks';
 
 const webhookRouter: Router = Router();
 
@@ -19,17 +15,7 @@ webhookRouter.post('/paystack', async (req, res) => {
 
 		// Process webhook actions in the background
 		Promise.resolve().then(async () => {
-			try {
-				if (event === 'charge.success') {
-					await storeCard(data);
-				} else if (event === 'transfer.success') {
-					await handleTransferSuccess(data);
-				} else if (event === 'transfer.failure') {
-					await handleTransferFailure(data);
-				}
-			} catch (error) {
-				console.error('Error processing webhook:', error);
-			}
+			handlePaystackWebhookEvent(event, data);
 		});
 
 		// Respond immediately
