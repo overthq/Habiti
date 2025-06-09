@@ -5,6 +5,8 @@ import Notifications from '../screens/Notifications';
 import Order from '../screens/Order';
 import { HomeStackParamList } from '../types/navigation';
 import Store from '../screens/Store';
+import Orders from '../screens/Orders';
+import FollowedStores from '../screens/FollowedStores';
 
 const HomeNavigator = createNativeStackNavigator<
 	HomeStackParamList,
@@ -33,6 +35,16 @@ const HomeStack = () => {
 				name='Home.Store'
 				component={Store}
 				options={{ headerShown: false }}
+			/>
+			<HomeNavigator.Screen
+				name='Home.Orders'
+				component={Orders}
+				options={{ headerTitle: 'Orders' }}
+			/>
+			<HomeNavigator.Screen
+				name='Home.FollowedStores'
+				component={FollowedStores}
+				options={{ headerTitle: 'Followed Stores' }}
 			/>
 		</HomeNavigator.Navigator>
 	);
