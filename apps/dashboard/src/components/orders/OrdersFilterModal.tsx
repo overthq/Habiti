@@ -2,9 +2,11 @@ import React from 'react';
 import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { BottomModal, Typography } from '@habiti/components';
 
-const OrdersFilterModal = () => {
-	const modalRef = React.useRef<BottomSheetModal>(null);
+interface OrdersFilterModalProps {
+	modalRef: React.RefObject<BottomSheetModal>;
+}
 
+const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({ modalRef }) => {
 	return (
 		<BottomModal modalRef={modalRef}>
 			<BottomSheetView>

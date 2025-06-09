@@ -7,13 +7,16 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import FAB from '../components/products/FAB';
 import ProductList from '../components/products/ProductList';
 import { AppStackParamList } from '../types/navigation';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import ProductsFilterModal from '../components/products/ProductsFilterModal';
 
 const Products: React.FC = () => {
 	const { top } = useSafeAreaInsets();
+	const filterModalRef = React.useRef<BottomSheetModal>(null);
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	const handleOpenFilterSheet = () => {
-		navigate('FilterProducts');
+		filterModalRef.current?.present();
 	};
 
 	return (
@@ -29,6 +32,7 @@ const Products: React.FC = () => {
 			/>
 			<ProductList />
 			<FAB onPress={() => navigate('Add Product')} text='New Product' />
+			<ProductsFilterModal modalRef={filterModalRef} />
 		</Screen>
 	);
 };
