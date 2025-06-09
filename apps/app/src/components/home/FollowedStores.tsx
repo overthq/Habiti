@@ -1,4 +1,4 @@
-import { Dialog, SectionHeader } from '@habiti/components';
+import { Dialog, SectionHeader, Spacer, TextButton } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
@@ -13,6 +13,8 @@ interface FollowedStoresProps {
 }
 
 const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
+	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();
+
 	return followed.length === 0 ? (
 		<Dialog
 			style={styles.dialog}
@@ -21,7 +23,15 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 		/>
 	) : (
 		<View>
-			<SectionHeader title='Followed stores' />
+			<SectionHeader
+				title='Followed stores'
+				padded
+				action={{
+					text: 'View all',
+					onPress: () => navigate('Home.FollowedStores')
+				}}
+			/>
+			<Spacer y={4} />
 			<FollowedStoresMain followed={followed} />
 		</View>
 	);
@@ -46,7 +56,7 @@ const FollowedStoresMain: React.FC<FollowedStoresMainProps> = ({
 	return (
 		<FlashList
 			horizontal
-			data={followed}
+			data={followed.slice(0, 8)}
 			keyExtractor={item => item.store.id}
 			contentContainerStyle={{ paddingLeft: 16 }}
 			renderItem={({ item }) => (
