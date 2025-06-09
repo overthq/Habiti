@@ -22,6 +22,8 @@ export type HomeStackParamList = {
 	'Home.SettingsTheme': undefined;
 	'Home.Notifications': undefined;
 	'Home.Search': undefined;
+	'Home.Orders': undefined;
+	'Home.FollowedStores': undefined;
 };
 
 export type ExploreStackParamList = {

@@ -1,33 +1,13 @@
 import { Button, Screen, Spacer, Typography } from '@habiti/components';
-import { useRoute, RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 
 import CodeInput from '../components/verify/CodeInput';
-import useStore from '../state';
-import { useVerifyMutation } from '../types/api';
-import { AppStackParamList } from '../types/navigation';
-import { useShallow } from 'zustand/react/shallow';
 
 const VerifyAuthentication: React.FC = () => {
-	const { params } = useRoute<RouteProp<AppStackParamList, 'Verify'>>();
-	const logIn = useStore(useShallow(state => state.logIn));
 	const [code, setCode] = React.useState('');
-	const { email } = params;
-	const [{ fetching }, verify] = useVerifyMutation();
 
-	const handleSubmit = async () => {
-		if (email && code) {
-			const { data, error } = await verify({ input: { email, code } });
-
-			if (data?.verify) {
-				const { accessToken, userId } = data.verify;
-				logIn(userId, accessToken);
-			} else if (error) {
-				console.log(error);
-			}
-		}
-	};
+	const handleSubmit = async () => {};
 
 	return (
 		<Screen style={{ justifyContent: 'center', paddingHorizontal: 16 }}>
@@ -52,7 +32,7 @@ const VerifyAuthentication: React.FC = () => {
 					))}
 			</View>
 			<Spacer y={32} />
-			<Button text='Verify' onPress={handleSubmit} loading={fetching} />
+			<Button text='Verify' onPress={handleSubmit} />
 		</Screen>
 	);
 };

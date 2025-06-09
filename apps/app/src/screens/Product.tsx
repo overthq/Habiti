@@ -24,26 +24,14 @@ const Product: React.FC = () => {
 	}
 
 	return (
-		<>
+		<View style={{ flex: 1 }}>
 			<ScrollableScreen>
-				{/* <Pressable
-					style={{
-						position: 'absolute',
-						top: 8,
-						left: 8,
-						borderRadius: 100,
-						backgroundColor: '#FFFFFF',
-						padding: 8
-					}}
-				>
-					<Icon name='x' size={24} color='#000000' />
-				</Pressable> */}
 				<ImageCarousel images={data.product.images} />
 				<Spacer y={16} />
 				<ProductDetails product={data.product} />
 				<Spacer y={16} />
 				<RelatedProducts products={data.product.relatedProducts} />
-				<Spacer y={120} />
+				<Spacer y={16} />
 			</ScrollableScreen>
 			<AddToCart
 				storeId={data.product.storeId}
@@ -56,7 +44,7 @@ const Product: React.FC = () => {
 					)?.quantity
 				}
 			/>
-		</>
+		</View>
 	);
 };
 

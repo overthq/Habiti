@@ -1,6 +1,6 @@
 import { OrderStatus, UserPushToken } from '@prisma/client';
+import { NotificationType } from '../../types/notifications';
 import { ResolverContext } from '../../types/resolvers';
-import { getStorePushTokens } from '../../utils/notifications';
 
 interface UpdateStoreRevenueArgs {
 	storeId: string;
@@ -38,36 +38,15 @@ export const sendStatusNotification = async (
 
 	if (status === OrderStatus.Cancelled) {
 		ctx.services.notifications.queueNotification({
-			type: 'ORDER_CANCELLED',
+			type: NotificationType.OrderCancelled,
 			data: meta,
 			recipientTokens: [pushToken.token]
 		});
 	} else if (status === OrderStatus.Completed) {
 		ctx.services.notifications.queueNotification({
-			type: 'ORDER_COMPLETED',
+			type: NotificationType.OrderCompleted,
 			data: meta,
 			recipientTokens: [pushToken.token]
 		});
 	}
-};
-
-interface SendNewOrderNotificationArgs {
-	storeId: string;
-	orderId: string;
-	customerName: string;
-	amount: number;
-}
-
-export const sendNewOrderNotification = async (
-	ctx: ResolverContext,
-	args: SendNewOrderNotificationArgs
-) => {
-	const { storeId, ...data } = args;
-	const pushTokens = await getStorePushTokens(storeId);
-
-	ctx.services.notifications.queueNotification({
-		type: 'NEW_ORDER',
-		data,
-		recipientTokens: pushTokens
-	});
 };

@@ -1,12 +1,13 @@
-export type NotificationType =
-	| 'NEW_ORDER'
-	| 'PAYOUT_CONFIRMED'
-	| 'NEW_FOLLOWER'
-	| 'ORDER_FULFILLED'
-	| 'DELIVERY_CONFIRMED'
-	| 'ORDER_CANCELLED'
-	| 'ORDER_COMPLETED'
-	| 'NEW_FOLLOW';
+export enum NotificationType {
+	NewOrder = 'NEW_ORDER',
+	PayoutConfirmed = 'PAYOUT_CONFIRMED',
+	NewFollower = 'NEW_FOLLOWER',
+	OrderFulfilled = 'ORDER_FULFILLED',
+	DeliveryConfirmed = 'DELIVERY_CONFIRMED',
+	OrderCancelled = 'ORDER_CANCELLED',
+	OrderCompleted = 'ORDER_COMPLETED',
+	OrderStatusChanged = 'ORDER_STATUS_CHANGED'
+}
 
 export interface NotificationTemplate {
 	title: string;

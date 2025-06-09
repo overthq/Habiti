@@ -1,14 +1,10 @@
-import { OrderStatus, PushTokenType } from '@prisma/client';
+import { OrderStatus } from '@prisma/client';
 
 import { Resolver } from '../../types/resolvers';
 import { storeAuthorizedResolver } from '../permissions';
-import {
-	updateStoreRevenue,
-	sendStatusNotification,
-	sendNewOrderNotification
-} from '../hooks/orders';
-import { saveOrderData } from '../../core/data/orders';
-import { getCartById } from '../../core/data/carts';
+import { createOrder as createOrderLogic } from '../../core/logic/orders/createOrder';
+import { updateOrderStatus as updateOrderStatusLogic } from '../../core/logic/orders/updateOrder';
+import { executeOrderSideEffects } from '../../core/logic/orders/sideEffects';
 
 export interface CreateOrderArgs {
 	input: {
@@ -21,30 +17,16 @@ export interface CreateOrderArgs {
 
 export const createOrder: Resolver<CreateOrderArgs> = async (
 	_,
-	{ input: { cartId, cardId, transactionFee, serviceFee } },
+	{ input },
 	ctx
 ) => {
-	const cart = await getCartById(ctx, cartId);
+	const result = await createOrderLogic(input, ctx);
 
-	// TODO: Validations
-
-	const order = await saveOrderData(ctx, {
-		cardId,
-		transactionFee,
-		serviceFee,
-		cart,
-		storeId: cart.storeId,
-		products: cart.products.map(p => p.product)
+	executeOrderSideEffects(ctx, result.sideEffects).catch(error => {
+		console.error('Order side effects execution failed:', error);
 	});
 
-	await sendNewOrderNotification(ctx, {
-		storeId: cart.storeId,
-		orderId: order.id,
-		customerName: ctx.user.name,
-		amount: order.total
-	});
-
-	return order;
+	return result.order;
 };
 
 export interface UpdateOrderArgs {
@@ -59,38 +41,20 @@ export const updateOrder: Resolver<UpdateOrderArgs> = async (
 	{ orderId, input },
 	ctx
 ) => {
-	const order = await ctx.prisma.order.update({
-		where: { id: orderId },
-		data: input,
-		include: {
-			products: { include: { product: true } },
-			user: {
-				include: { pushTokens: { where: { type: PushTokenType.Shopper } } }
-			},
-			store: true
-		}
-	});
-
-	if (input.status === OrderStatus.Completed) {
-		await updateStoreRevenue(ctx, {
-			storeId: order.storeId,
-			status: input.status,
-			total: order.total
-		});
-
-		const pushToken = order.user.pushTokens?.[0];
-
-		if (pushToken) {
-			sendStatusNotification(ctx, {
-				orderId: order.id,
-				status: OrderStatus.Completed,
-				customerName: order.user.name,
-				pushToken
-			});
-		}
+	if (!input.status) {
+		throw new Error('Status is required for order updates');
 	}
 
-	return order;
+	const result = await updateOrderStatusLogic(
+		{ orderId, status: input.status },
+		ctx
+	);
+
+	executeOrderSideEffects(ctx, result.sideEffects).catch(error => {
+		console.error('Order side effects execution failed:', error);
+	});
+
+	return result.order;
 };
 
 export interface UpdateOrderStatusArgs {
@@ -100,31 +64,12 @@ export interface UpdateOrderStatusArgs {
 
 export const updateOrderStatus = storeAuthorizedResolver<UpdateOrderStatusArgs>(
 	async (_, { orderId, status }, ctx) => {
-		const order = await ctx.prisma.order.update({
-			where: { id: orderId },
-			data: { status },
-			include: {
-				user: {
-					include: { pushTokens: { where: { type: PushTokenType.Shopper } } }
-				}
-			}
+		const result = await updateOrderStatusLogic({ orderId, status }, ctx);
+
+		executeOrderSideEffects(ctx, result.sideEffects).catch(error => {
+			console.error('Order side effects execution failed:', error);
 		});
 
-		await updateStoreRevenue(ctx, {
-			storeId: order.storeId,
-			status,
-			total: order.total
-		});
-
-		const pushToken = order.user.pushTokens?.[0];
-
-		if (pushToken) {
-			sendStatusNotification(ctx, {
-				orderId: order.id,
-				status,
-				customerName: order.user.name,
-				pushToken
-			});
-		}
+		return result.order;
 	}
 );

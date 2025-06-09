@@ -1,5 +1,5 @@
 import React from 'react';
-import { useColorScheme } from 'react-native';
+import { Appearance, useColorScheme } from 'react-native';
 
 import { ThemeObject, themes } from './styles/theme';
 
@@ -29,6 +29,10 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 		() => ({ name: parsed, theme: themes[parsed] }),
 		[parsed]
 	);
+
+	React.useEffect(() => {
+		Appearance.setColorScheme(parsed);
+	}, [parsed]);
 
 	return (
 		<ThemeContext.Provider value={context}>{children}</ThemeContext.Provider>

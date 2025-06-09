@@ -42,38 +42,8 @@ const UserTypes = gql`
 		email: String
 	}
 
-	input RegisterInput {
-		name: String!
-		email: String!
-		password: String!
-	}
-
-	input AuthenticateInput {
-		email: String!
-		password: String!
-	}
-
-	input VerifyInput {
-		email: String!
-		code: String!
-	}
-
-	type AuthenticateResponse {
-		accessToken: String!
-		userId: ID!
-	}
-
-	type VerifyResponse {
-		accessToken: String!
-		userId: ID!
-	}
-
 	extend type Mutation {
-		authenticate(input: AuthenticateInput!): AuthenticateResponse!
-		register(input: RegisterInput!): User!
-		verify(input: VerifyInput!): VerifyResponse!
 		editProfile(input: EditProfileInput!): User!
-		deleteUser(userId: ID!): User!
 		deleteAccount: User!
 	}
 `;

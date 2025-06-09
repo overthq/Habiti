@@ -2,6 +2,7 @@ import {
 	Icon,
 	ListEmpty,
 	Screen,
+	SectionHeader,
 	Typography,
 	useTheme
 } from '@habiti/components';
@@ -49,6 +50,7 @@ const PaymentMethods: React.FC = () => {
 
 	return (
 		<Screen>
+			<SectionHeader title='Saved payment methods' />
 			<FlatList
 				style={{ flex: 1 }}
 				contentContainerStyle={{ flexGrow: 1 }}

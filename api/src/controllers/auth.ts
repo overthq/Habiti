@@ -1,41 +1,30 @@
-import argon2 from 'argon2';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 import prismaClient from '../config/prisma';
 import redisClient from '../config/redis';
 import { generateAccessToken } from '../utils/auth';
+import {
+	hashPassword,
+	validateAuthenticateBody,
+	validateRegisterBody,
+	verifyPassword
+} from '../core/logic/auth';
 
-export async function register(req: Request, res: Response) {
-	const { name, email, password } = req.body;
+export const register = async (req: Request, res: Response) => {
+	const { name, email, password } = validateRegisterBody(req.body);
 
-	if (!name || !email || !password) {
-		throw new Error('Name, email, and password are required.');
-	}
-
-	if (password.length < 8) {
-		throw new Error('Password must be at least 8 characters long.');
-	}
-
-	if (!email.includes('@')) {
-		throw new Error('Please provide a valid email address.');
-	}
-
-	const passwordHash = await argon2.hash(password);
+	const passwordHash = await hashPassword(password);
 
 	const user = await prismaClient.user.create({
 		data: { name, email, passwordHash }
 	});
 
 	return res.status(201).json({ user });
-}
+};
 
-export async function login(req: Request, res: Response) {
-	const { email, password } = req.body;
-
-	if (!email || !password) {
-		throw new Error('Email and password are required.');
-	}
+export const login = async (req: Request, res: Response) => {
+	const { email, password } = validateAuthenticateBody(req.body);
 
 	const user = await prismaClient.user.findUnique({ where: { email } });
 
@@ -43,7 +32,7 @@ export async function login(req: Request, res: Response) {
 		throw new Error('The specified user does not exist.');
 	}
 
-	const correct = await argon2.verify(user.passwordHash, password);
+	const correct = await verifyPassword(password, user.passwordHash);
 
 	if (!correct) {
 		throw new Error('The entered password is incorrect');
@@ -52,9 +41,9 @@ export async function login(req: Request, res: Response) {
 	const accessToken = await generateAccessToken(user);
 
 	return res.status(200).json({ accessToken, userId: user.id });
-}
+};
 
-export async function verify(req: Request, res: Response) {
+export const verify = async (req: Request, res: Response) => {
 	const { email, code } = req.body;
 
 	if (!email || !code) {
@@ -78,9 +67,9 @@ export async function verify(req: Request, res: Response) {
 	} else {
 		return res.status(400).json({ error: 'Invalid code' });
 	}
-}
+};
 
-export async function appleCallback(req: Request, res: Response) {
+export const appleCallback = async (req: Request, res: Response) => {
 	try {
 		const response = await fetch('https://appleid.apple.com/auth/token', {
 			method: 'POST',
@@ -105,13 +94,11 @@ export async function appleCallback(req: Request, res: Response) {
 			});
 		}
 
-		// Check if user exists
 		let user = await prismaClient.user.findUnique({
 			where: { email: decodedToken.email }
 		});
 
 		if (!user) {
-			// Create new user if they don't exist
 			user = await prismaClient.user.create({
 				data: {
 					email: decodedToken.email,
@@ -121,13 +108,12 @@ export async function appleCallback(req: Request, res: Response) {
 			});
 		}
 
-		// Generate JWT token
-		const token = jwt.sign(user, process.env.JWT_SECRET as string);
+		const accessToken = await generateAccessToken(user);
 
-		return res.status(200).json({ userId: user.id, token });
+		return res.status(200).json({ accessToken, userId: user.id });
 	} catch (error) {
 		return res.status(500).json({
 			message: error.message
 		});
 	}
-}
+};

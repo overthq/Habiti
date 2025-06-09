@@ -25,9 +25,9 @@ const weight = {
 
 const preset = {
 	sectionHeader: {
-		size: 'regular',
+		size: 'large',
 		weight: 'medium',
-		variant: 'secondary'
+		variant: 'primary'
 	},
 	body: {
 		size: 'regular',

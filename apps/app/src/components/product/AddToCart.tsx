@@ -54,7 +54,6 @@ const AddToCart: React.FC<AddToCartProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		position: 'absolute',
 		flexDirection: 'row',
 		gap: 16,
 		padding: 16,

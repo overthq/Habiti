@@ -14,6 +14,7 @@ import * as Sentry from '@sentry/node';
 import prismaClient from './config/prisma';
 import redisClient from './config/redis';
 import admin from './routes/admin';
+import auth from './routes/auth';
 import carts from './routes/carts';
 import health from './routes/health';
 import orders from './routes/orders';
@@ -78,6 +79,7 @@ const main = async () => {
 	app.use('/orders', orders);
 	app.use('/products', products);
 	app.use('/admin', admin);
+	app.use('/auth', auth);
 
 	const PORT = Number(process.env.PORT || 3000);
 	httpServer.listen({ port: PORT });

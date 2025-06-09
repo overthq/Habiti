@@ -50,6 +50,7 @@ query Cart($cartId: ID!) {
 				id
 				name
 				unitPrice
+				quantity
 				storeId
 				images {
 					id

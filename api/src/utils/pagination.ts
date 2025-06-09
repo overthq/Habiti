@@ -5,15 +5,14 @@ import {
 	PageInfo
 } from '../types/pagination';
 
-export async function paginateQuery<T extends { id: string }>(
+export const paginateQuery = async <T extends { id: string }>(
 	args: PaginationArgs,
 	queryFn: (take: number, cursor?: string) => Promise<T[]>,
 	countFn: () => Promise<number>,
 	defaultPageSize = 20
-): Promise<Connection<T>> {
+): Promise<Connection<T>> => {
 	const { first, after, last, before } = args;
 
-	// Validate pagination args
 	if (first && last) {
 		throw new Error('Cannot specify both first and last');
 	}
@@ -48,13 +47,9 @@ export async function paginateQuery<T extends { id: string }>(
 
 	const totalCount = await countFn();
 
-	return {
-		edges,
-		pageInfo,
-		totalCount
-	};
-}
+	return { edges, pageInfo, totalCount };
+};
 
-export function decodeCursor(cursor: string): string {
+export const decodeCursor = (cursor: string): string => {
 	return Buffer.from(cursor, 'base64').toString('utf-8');
-}
+};
