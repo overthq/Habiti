@@ -31,7 +31,10 @@ const TextButton: React.FC<TextButtonProps> = ({
 				weight={weight}
 				style={[
 					{
-						color: theme.text[disabled || !active ? 'disabled' : 'primary'],
+						color:
+							theme.text[
+								disabled ? 'disabled' : active ? 'primary' : 'inactive'
+							],
 						fontSize: size ?? 16
 					}
 				]}

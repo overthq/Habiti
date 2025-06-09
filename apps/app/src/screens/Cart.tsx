@@ -111,9 +111,9 @@ const Cart: React.FC = () => {
 				<>
 					<StoreInfo store={cart.store} />
 
-					<CartSummary products={cart.products} />
+					<Spacer y={4} />
 
-					{/* <DeliveryInfo /> */}
+					<CartSummary products={cart.products} />
 
 					<Spacer y={16} />
 

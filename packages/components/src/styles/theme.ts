@@ -77,7 +77,8 @@ const dark = {
 		disabled: palette.neutral.n500,
 		error: palette.red.r600,
 		label: palette.neutral.n100,
-		invert: palette.neutral.n950
+		invert: palette.neutral.n950,
+		inactive: palette.neutral.n600
 	},
 	button: {
 		primary: {
@@ -169,7 +170,8 @@ const light = {
 		disabled: palette.neutral.n400,
 		error: palette.red.r700,
 		label: palette.neutral.n600,
-		invert: palette.neutral.n50
+		invert: palette.neutral.n50,
+		inactive: palette.neutral.n500
 	},
 	button: {
 		primary: {
