@@ -109,6 +109,10 @@ export const getPayouts = async (req: Request, res: Response) => {
 export const getPayout = async (req: Request, res: Response) => {
 	const { id } = req.params;
 
+	if (!id) {
+		return res.status(400).json({ error: 'Payout ID is required' });
+	}
+
 	const payout = await prisma.payout.findUnique({
 		where: { id },
 		include: {
@@ -138,6 +142,10 @@ const updatePayoutSchema = z.object({
 
 export const updatePayout = async (req: Request, res: Response) => {
 	const { id } = req.params;
+
+	if (!id) {
+		return res.status(400).json({ error: 'Payout ID is required' });
+	}
 
 	try {
 		const { status } = updatePayoutSchema.parse(req.body);
