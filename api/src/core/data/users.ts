@@ -7,3 +7,11 @@ export const getUserById = async (ctx: ResolverContext, userId: string) => {
 
 	return user;
 };
+
+export const getUserByEmail = async (ctx: ResolverContext, email: string) => {
+	const user = await ctx.prisma.user.findUnique({
+		where: { email }
+	});
+
+	return user;
+};
