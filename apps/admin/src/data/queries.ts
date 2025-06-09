@@ -3,7 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import {
 	type OrderFilters,
 	type ProductFilters,
-	type StoreFilters
+	type StoreFilters,
+	type PayoutFilters
 } from './types';
 import {
 	getOrders,
@@ -19,7 +20,9 @@ import {
 	getStoreManagers,
 	getUsers,
 	getUser,
-	getOverview
+	getOverview,
+	getPayouts,
+	getPayout
 } from './requests';
 
 export const useOrdersQuery = (params?: OrderFilters) => {
@@ -126,5 +129,20 @@ export const useOverviewQuery = () => {
 	return useQuery({
 		queryKey: ['overview'],
 		queryFn: () => getOverview()
+	});
+};
+
+export const usePayoutsQuery = (params?: PayoutFilters) => {
+	return useQuery({
+		queryKey: ['payouts', params],
+		queryFn: () => getPayouts(params)
+	});
+};
+
+export const usePayoutQuery = (id: string) => {
+	return useQuery({
+		queryKey: ['payouts', id],
+		queryFn: () => getPayout(id),
+		enabled: !!id
 	});
 };

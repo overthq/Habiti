@@ -28,7 +28,12 @@ import {
 	type GetStoreResponse,
 	type GetStoresResponse,
 	type StoreFilters,
-	type GetOverviewResponse
+	type GetOverviewResponse,
+	type PayoutFilters,
+	type GetPayoutsResponse,
+	type GetPayoutResponse,
+	type UpdatePayoutBody,
+	type UpdatePayoutResponse
 } from './types';
 
 export const login = (body: LoginBody) => {
@@ -127,4 +132,16 @@ export const getStoreManagers = (id: string, params?: StoreFilters) => {
 
 export const getOverview = () => {
 	return api.get<GetOverviewResponse>('/admin/overview');
+};
+
+export const getPayouts = (params?: PayoutFilters) => {
+	return api.get<GetPayoutsResponse>('/admin/payouts', params);
+};
+
+export const getPayout = (id: string) => {
+	return api.get<GetPayoutResponse>(`/admin/payouts/${id}`);
+};
+
+export const updatePayout = (id: string, body: UpdatePayoutBody) => {
+	return api.patch<UpdatePayoutResponse>(`/admin/payouts/${id}`, body);
 };

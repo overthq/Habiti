@@ -16,6 +16,8 @@ export default [
 			route('products/:id', './pages/dashboard/product.tsx'),
 			route('users', './pages/dashboard/users.tsx'),
 			route('users/:id', './pages/dashboard/user.tsx'),
+			route('payouts', './pages/dashboard/payouts.tsx'),
+			route('payouts/:id', './pages/dashboard/payout.tsx'),
 			route('home', './pages/dashboard/home.tsx')
 		])
 	])

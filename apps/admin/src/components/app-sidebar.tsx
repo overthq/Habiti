@@ -1,4 +1,11 @@
-import { Store, ShoppingCart, Users, Home, Package } from 'lucide-react';
+import {
+	Store,
+	ShoppingCart,
+	Users,
+	Home,
+	Package,
+	DollarSign
+} from 'lucide-react';
 import { Link, NavLink, useLocation } from 'react-router';
 
 import {
@@ -38,6 +45,11 @@ const items = [
 		title: 'Products',
 		url: '/products',
 		icon: Package
+	},
+	{
+		title: 'Payouts',
+		url: '/payouts',
+		icon: DollarSign
 	}
 ];
 
