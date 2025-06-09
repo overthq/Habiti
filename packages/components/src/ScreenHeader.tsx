@@ -37,7 +37,7 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 			<View style={styles.title}>
 				<View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
 					{goBack && (
-						<Pressable onPress={goBack}>
+						<Pressable hitSlop={8} onPress={goBack}>
 							<Icon name='arrow-left' size={20} color={theme.text.primary} />
 						</Pressable>
 					)}

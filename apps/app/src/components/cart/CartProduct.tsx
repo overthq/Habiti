@@ -11,6 +11,7 @@ import {
 import { View, StyleSheet, Pressable } from 'react-native';
 
 import { CartQuery, useUpdateCartProductMutation } from '../../types/api';
+import useDebounced from '../../hooks/useDebounced';
 
 interface CartProductProps {
 	cartProduct: CartQuery['cart']['products'][number];
@@ -59,22 +60,28 @@ const CartProductQuantity: React.FC<CartProductQuantityProps> = ({
 	const { theme } = useTheme();
 	const [quantity, setQuantity] = React.useState(initialQuantity);
 	const [, updateCartProduct] = useUpdateCartProductMutation();
+	const debouncedQuantity = useDebounced(quantity, 300);
 
 	const handleQuantityChange = (change: number) => {
+		// disabled states do not work in this case since they make the
+		// button default to the surrounding pressable.
 		const newQuantity = quantity + change;
 
 		// Allow decreasing even if current quantity is above max
 		if (newQuantity < 1 || (change > 0 && newQuantity > maxQuantity)) return;
 
 		setQuantity(newQuantity);
-		// updateCartProduct({
-		// 	input: {
-		// 		cartId: cartProduct.cartId,
-		// 		productId: cartProduct.productId,
-		// 		quantity: quantity + change
-		// 	}
-		// });
 	};
+
+	React.useEffect(() => {
+		updateCartProduct({
+			input: {
+				cartId: cartProduct.cartId,
+				productId: cartProduct.productId,
+				quantity: debouncedQuantity
+			}
+		});
+	}, [debouncedQuantity]);
 
 	return (
 		<View
