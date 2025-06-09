@@ -10,6 +10,34 @@ interface ProductCategoriesProps {
 	productId: string;
 }
 
+interface NoCategoriesProps {
+	action(): void;
+}
+
+const NoCategories: React.FC<NoCategoriesProps> = ({ action }) => {
+	const { theme } = useTheme();
+
+	return (
+		<View
+			style={{
+				backgroundColor: theme.input.background,
+				padding: 12,
+				borderRadius: 6
+			}}
+		>
+			<Typography weight='medium' size='large'>
+				No categories
+			</Typography>
+			<Spacer y={4} />
+			<Typography variant='secondary'>Categories will appear here.</Typography>
+			<Spacer y={8} />
+			<View style={{ backgroundColor: theme.border.color, height: 1 }} />
+			<Spacer y={8} />
+			<TextButton onPress={action}>Add category</TextButton>
+		</View>
+	);
+};
+
 const ProductCategories: React.FC<ProductCategoriesProps> = ({
 	categories,
 	productId
@@ -34,21 +62,29 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
 				</TextButton>
 			</View>
 			<Spacer y={8} />
-			<View style={styles.chips}>
-				{categories.map(({ category }) => (
-					<View
-						key={category.id}
-						style={[
-							styles.chip,
-							{ backgroundColor: theme.button.disabled.background }
-						]}
-					>
-						<Typography variant='primary' weight='medium' size='small'>
-							{category.name}
-						</Typography>
-					</View>
-				))}
-			</View>
+			{categories?.length === 0 ? (
+				<NoCategories
+					action={() =>
+						navigate('Product.Categories', { productId, categories })
+					}
+				/>
+			) : (
+				<View style={styles.chips}>
+					{categories.map(({ category }) => (
+						<View
+							key={category.id}
+							style={[
+								styles.chip,
+								{ backgroundColor: theme.button.disabled.background }
+							]}
+						>
+							<Typography variant='primary' weight='medium' size='small'>
+								{category.name}
+							</Typography>
+						</View>
+					))}
+				</View>
+			)}
 		</View>
 	);
 };
