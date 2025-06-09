@@ -1,7 +1,7 @@
-import { Typography } from '@habiti/components';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
+import { SectionHeader, Spacer } from '@habiti/components';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 import RecentOrder from './RecentOrder';
 import { HomeQuery } from '../../types/api';
@@ -22,19 +22,20 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 		[]
 	);
 
-	if (!orders || orders.length === 0) {
-		return null;
-	}
+	if (!orders || orders.length === 0) return null;
 
 	return (
-		<View style={styles.container}>
-			<Typography
-				preset='sectionHeader'
-				style={{ marginLeft: 16, marginBottom: 8 }}
-			>
-				Recent orders
-			</Typography>
-			{orders.map(order => (
+		<View>
+			<SectionHeader
+				title='Recent orders'
+				padded
+				action={{
+					text: 'View all',
+					onPress: () => navigate('Home.Orders')
+				}}
+			/>
+			<Spacer y={4} />
+			{orders.slice(0, 3).map(order => (
 				<RecentOrder
 					key={order.id}
 					order={order}
@@ -44,11 +45,5 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 		</View>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		paddingTop: 8
-	}
-});
 
 export default RecentOrders;
