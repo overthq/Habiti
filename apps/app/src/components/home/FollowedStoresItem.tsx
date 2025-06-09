@@ -2,7 +2,7 @@ import { CustomImage, Typography } from '@habiti/components';
 import React from 'react';
 import { StyleSheet, Pressable } from 'react-native';
 
-import { HomeQuery, StoresFollowedQuery } from '../../types/api';
+import { HomeQuery } from '../../types/api';
 
 interface FollowedStoresItemProps {
 	store: HomeQuery['currentUser']['followed'][number]['store'];
