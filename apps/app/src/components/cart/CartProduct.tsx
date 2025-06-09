@@ -61,7 +61,12 @@ const CartProductQuantity: React.FC<CartProductQuantityProps> = ({
 	const [, updateCartProduct] = useUpdateCartProductMutation();
 
 	const handleQuantityChange = (change: number) => {
-		setQuantity(quantity + change);
+		const newQuantity = quantity + change;
+
+		// Allow decreasing even if current quantity is above max
+		if (newQuantity < 1 || (change > 0 && newQuantity > maxQuantity)) return;
+
+		setQuantity(newQuantity);
 		// updateCartProduct({
 		// 	input: {
 		// 		cartId: cartProduct.cartId,
@@ -78,7 +83,7 @@ const CartProductQuantity: React.FC<CartProductQuantityProps> = ({
 				{ backgroundColor: theme.input.background }
 			]}
 		>
-			<Pressable onPress={() => handleQuantityChange(-1)}>
+			<Pressable onPress={() => handleQuantityChange(-1)} hitSlop={12}>
 				<Icon name='minus' size={16} color='#000000' />
 			</Pressable>
 			<Typography
@@ -86,12 +91,9 @@ const CartProductQuantity: React.FC<CartProductQuantityProps> = ({
 				weight='medium'
 				style={{ width: 24, textAlign: 'center' }}
 			>
-				{initialQuantity}
+				{quantity}
 			</Typography>
-			<Pressable
-				disabled={quantity >= maxQuantity}
-				onPress={() => handleQuantityChange(1)}
-			>
+			<Pressable onPress={() => handleQuantityChange(1)} hitSlop={12}>
 				<Icon name='plus' size={16} color='#000000' />
 			</Pressable>
 		</View>

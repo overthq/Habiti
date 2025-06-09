@@ -24,14 +24,14 @@ const Product: React.FC = () => {
 	}
 
 	return (
-		<>
+		<View style={{ flex: 1 }}>
 			<ScrollableScreen>
 				<ImageCarousel images={data.product.images} />
 				<Spacer y={16} />
 				<ProductDetails product={data.product} />
 				<Spacer y={16} />
 				<RelatedProducts products={data.product.relatedProducts} />
-				<Spacer y={120} />
+				<Spacer y={16} />
 			</ScrollableScreen>
 			<AddToCart
 				storeId={data.product.storeId}
@@ -44,7 +44,7 @@ const Product: React.FC = () => {
 					)?.quantity
 				}
 			/>
-		</>
+		</View>
 	);
 };
 
