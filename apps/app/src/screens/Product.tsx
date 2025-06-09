@@ -26,18 +26,6 @@ const Product: React.FC = () => {
 	return (
 		<>
 			<ScrollableScreen>
-				{/* <Pressable
-					style={{
-						position: 'absolute',
-						top: 8,
-						left: 8,
-						borderRadius: 100,
-						backgroundColor: '#FFFFFF',
-						padding: 8
-					}}
-				>
-					<Icon name='x' size={24} color='#000000' />
-				</Pressable> */}
 				<ImageCarousel images={data.product.images} />
 				<Spacer y={16} />
 				<ProductDetails product={data.product} />

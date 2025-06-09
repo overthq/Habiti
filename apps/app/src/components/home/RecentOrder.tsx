@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { CustomImage, Row, Typography } from '@habiti/components';
+import { CustomImage, Row, Spacer, Typography } from '@habiti/components';
 import { formatNaira } from '@habiti/common';
 
 import { HomeQuery } from '../../types/api';
@@ -22,10 +22,18 @@ const RecentOrder: React.FC<RecentOrderProps> = ({ order, onPress }) => {
 				circle
 			/>
 			<View style={styles.info}>
-				<Typography weight='medium'>{order.store.name}</Typography>
+				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+					<Typography weight='medium' size='large'>
+						{order.store.name}
+					</Typography>
+					<Typography size='small' variant='secondary'>
+						{` · ${relativeTimestamp(order.createdAt)}`}
+					</Typography>
+				</View>
+				<Spacer y={4} />
 				<Typography size='small' variant='secondary'>
-					{plural('product', order.products.length)} ·{' '}
-					{relativeTimestamp(order.createdAt)} · {formatNaira(order.total)}
+					{formatNaira(order.total)} ·{' '}
+					{plural('product', order.products.length)}
 				</Typography>
 			</View>
 		</Row>
@@ -39,7 +47,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	info: {
-		// marginTop: 2,
 		marginLeft: 8
 	}
 });
