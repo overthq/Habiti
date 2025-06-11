@@ -9,6 +9,7 @@ import ProductList from '../components/products/ProductList';
 import { AppStackParamList } from '../types/navigation';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import ProductsFilterModal from '../components/products/ProductsFilterModal';
+import { ProductsProvider } from '../components/products/ProductsContext';
 
 const Products: React.FC = () => {
 	const { top } = useSafeAreaInsets();
@@ -20,20 +21,22 @@ const Products: React.FC = () => {
 	};
 
 	return (
-		<Screen style={{ paddingTop: top }}>
-			<ScreenHeader
-				title='Products'
-				right={
-					<Pressable onPress={handleOpenFilterSheet}>
-						<Icon name='sliders-horizontal' size={20} />
-					</Pressable>
-				}
-				hasBottomBorder
-			/>
-			<ProductList />
-			<FAB onPress={() => navigate('Add Product')} text='New Product' />
-			<ProductsFilterModal modalRef={filterModalRef} />
-		</Screen>
+		<ProductsProvider>
+			<Screen style={{ paddingTop: top }}>
+				<ScreenHeader
+					title='Products'
+					right={
+						<Pressable onPress={handleOpenFilterSheet}>
+							<Icon name='sliders-horizontal' size={20} />
+						</Pressable>
+					}
+					hasBottomBorder
+				/>
+				<ProductList />
+				<FAB onPress={() => navigate('Add Product')} text='New Product' />
+				<ProductsFilterModal modalRef={filterModalRef} />
+			</Screen>
+		</ProductsProvider>
 	);
 };
 

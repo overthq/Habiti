@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import OrdersList from '../components/orders/OrdersList';
 import OrdersFilterModal from '../components/orders/OrdersFilterModal';
+import { OrdersProvider } from '../components/orders/OrdersContext';
 
 const Orders: React.FC = () => {
 	const { top } = useSafeAreaInsets();
@@ -16,18 +17,21 @@ const Orders: React.FC = () => {
 	};
 
 	return (
-		<Screen style={{ paddingTop: top }}>
-			<ScreenHeader
-				title='Orders'
-				right={
-					<Pressable onPress={handleOpenFilterSheet}>
-						<Icon name='sliders-horizontal' size={20} />
-					</Pressable>
-				}
-			/>
-			<OrdersList />
-			<OrdersFilterModal modalRef={filterModalRef} />
-		</Screen>
+		<OrdersProvider>
+			<Screen style={{ paddingTop: top }}>
+				<ScreenHeader
+					title='Orders'
+					right={
+						<Pressable onPress={handleOpenFilterSheet}>
+							<Icon name='sliders-horizontal' size={20} />
+						</Pressable>
+					}
+					hasBottomBorder
+				/>
+				<OrdersList />
+				<OrdersFilterModal modalRef={filterModalRef} />
+			</Screen>
+		</OrdersProvider>
 	);
 };
 
