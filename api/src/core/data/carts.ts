@@ -1,5 +1,16 @@
 import { ResolverContext } from '../../types/resolvers';
 
+interface CreateCartParams {
+	userId: string;
+	storeId: string;
+}
+
+interface UpdateCartQuantityParams {
+	cartId: string;
+	productId: string;
+	quantity: number;
+}
+
 export const getCartById = async (ctx: ResolverContext, cartId: string) => {
 	const cart = await ctx.prisma.cart.findUnique({
 		where: { id: cartId, userId: ctx.user.id },
@@ -35,6 +46,17 @@ export const getCartsByUserId = async (
 	return carts;
 };
 
+export const createCart = async (
+	ctx: ResolverContext,
+	params: CreateCartParams
+) => {
+	const cart = await ctx.prisma.cart.create({
+		data: params
+	});
+
+	return cart;
+};
+
 export const addProductToCart = async (
 	ctx: ResolverContext,
 	cartId: string,
@@ -50,6 +72,25 @@ export const addProductToCart = async (
 			products: { create: { productId, quantity: 1 } }
 		}
 	});
+};
+
+export const updateCartProductQuantity = async (
+	ctx: ResolverContext,
+	params: UpdateCartQuantityParams
+) => {
+	const { cartId, productId, quantity } = params;
+
+	if (quantity <= 0) {
+		await ctx.prisma.cartProduct.delete({
+			where: { cartId_productId: { cartId, productId } }
+		});
+	} else {
+		await ctx.prisma.cartProduct.upsert({
+			where: { cartId_productId: { cartId, productId } },
+			update: { quantity },
+			create: { cartId, productId, quantity }
+		});
+	}
 };
 
 export const removeProductFromCart = async (

@@ -2,6 +2,21 @@ import { Cart, OrderStatus, Product } from '@prisma/client';
 import { ResolverContext } from '../../types/resolvers';
 import { chargeAuthorization } from '../../utils/paystack';
 
+interface CreateOrderParams {
+	storeId: string;
+	total: number;
+	transactionFee?: number;
+	serviceFee?: number;
+	status?: OrderStatus;
+}
+
+interface UpdateOrderParams {
+	status?: OrderStatus;
+	total?: number;
+	transactionFee?: number;
+	serviceFee?: number;
+}
+
 interface SaveOrderDataParams {
 	cardId?: string | undefined;
 	storeId: string;
@@ -88,4 +103,126 @@ const getOrderData = (products: Product[]) => {
 	});
 
 	return { orderData, total };
+};
+
+export const createOrder = async (
+	ctx: ResolverContext,
+	params: CreateOrderParams
+) => {
+	const store = await ctx.prisma.store.update({
+		where: { id: params.storeId },
+		data: { orderCount: { increment: 1 } }
+	});
+
+	const order = await ctx.prisma.order.create({
+		data: {
+			userId: ctx.user.id,
+			storeId: params.storeId,
+			serialNumber: store.orderCount,
+			total: params.total,
+			transactionFee: params.transactionFee ?? 0,
+			serviceFee: params.serviceFee ?? 0,
+			status: params.status ?? OrderStatus.Pending
+		}
+	});
+
+	return order;
+};
+
+export const updateOrder = async (
+	ctx: ResolverContext,
+	orderId: string,
+	params: UpdateOrderParams
+) => {
+	const order = await ctx.prisma.order.update({
+		where: { id: orderId },
+		data: params
+	});
+
+	return order;
+};
+
+export const getOrderById = async (ctx: ResolverContext, orderId: string) => {
+	const order = await ctx.prisma.order.findUnique({
+		where: { id: orderId },
+		include: {
+			store: {
+				include: { image: true }
+			},
+			user: true,
+			products: {
+				include: {
+					product: {
+						include: { images: true }
+					}
+				}
+			}
+		}
+	});
+
+	return order;
+};
+
+export const getOrdersByUserId = async (
+	ctx: ResolverContext,
+	userId: string
+) => {
+	const orders = await ctx.prisma.order.findMany({
+		where: { userId },
+		include: {
+			store: {
+				include: { image: true }
+			},
+			products: {
+				include: {
+					product: {
+						include: { images: true }
+					}
+				}
+			}
+		},
+		orderBy: { createdAt: 'desc' }
+	});
+
+	return orders;
+};
+
+export const getOrdersByStoreId = async (
+	ctx: ResolverContext,
+	storeId: string
+) => {
+	const orders = await ctx.prisma.order.findMany({
+		where: { storeId },
+		include: {
+			user: true,
+			products: {
+				include: {
+					product: {
+						include: { images: true }
+					}
+				}
+			}
+		},
+		orderBy: { createdAt: 'desc' }
+	});
+
+	return orders;
+};
+
+export const cancelOrder = async (ctx: ResolverContext, orderId: string) => {
+	const order = await ctx.prisma.order.update({
+		where: { id: orderId },
+		data: { status: OrderStatus.Cancelled }
+	});
+
+	return order;
+};
+
+export const fulfillOrder = async (ctx: ResolverContext, orderId: string) => {
+	const order = await ctx.prisma.order.update({
+		where: { id: orderId },
+		data: { status: OrderStatus.Completed }
+	});
+
+	return order;
 };

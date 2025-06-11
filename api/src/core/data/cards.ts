@@ -1,4 +1,19 @@
 import prismaClient from '../../config/prisma';
+import { ResolverContext } from '../../types/resolvers';
+
+interface CreateCardParams {
+	email: string;
+	authorizationCode: string;
+	bin: string;
+	last4: string;
+	expMonth: string;
+	expYear: string;
+	bank: string;
+	signature: string;
+	cardType: string;
+	countryCode: string;
+	userId: string;
+}
 
 interface StoreCardData {
 	customer: { email: string };
@@ -33,4 +48,52 @@ export const storeCard = async (data: StoreCardData) => {
 			user: { connect: { email: data.customer.email } }
 		}
 	});
+};
+
+export const createCard = async (
+	ctx: ResolverContext,
+	params: CreateCardParams
+) => {
+	const card = await ctx.prisma.card.create({
+		data: params
+	});
+
+	return card;
+};
+
+export const getCardsByUserId = async (
+	ctx: ResolverContext,
+	userId: string
+) => {
+	const cards = await ctx.prisma.card.findMany({
+		where: { userId },
+		orderBy: { createdAt: 'desc' }
+	});
+
+	return cards;
+};
+
+export const getCardById = async (ctx: ResolverContext, cardId: string) => {
+	const card = await ctx.prisma.card.findUnique({
+		where: { id: cardId }
+	});
+
+	return card;
+};
+
+export const deleteCard = async (ctx: ResolverContext, cardId: string) => {
+	await ctx.prisma.card.delete({
+		where: { id: cardId }
+	});
+};
+
+export const getCardBySignature = async (
+	ctx: ResolverContext,
+	signature: string
+) => {
+	const card = await ctx.prisma.card.findUnique({
+		where: { signature }
+	});
+
+	return card;
 };

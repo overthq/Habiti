@@ -7,7 +7,7 @@ import prisma from '../config/prisma';
 import { generateAccessToken } from '../utils/auth';
 import { hydrateQuery } from '../utils/queries';
 
-export async function createAdmin(req: Request, res: Response) {
+export const createAdmin = async (req: Request, res: Response) => {
 	const { name, email, password } = req.body;
 
 	const passwordHash = await argon2.hash(password);
@@ -17,9 +17,9 @@ export async function createAdmin(req: Request, res: Response) {
 	});
 
 	return res.status(201).json({ admin });
-}
+};
 
-export async function login(req: Request, res: Response) {
+export const login = async (req: Request, res: Response) => {
 	const { email, password } = req.body;
 
 	if (!email || !password) {
@@ -41,7 +41,7 @@ export async function login(req: Request, res: Response) {
 	const accessToken = await generateAccessToken(admin, 'admin');
 
 	return res.json({ accessToken, adminId: admin.id });
-}
+};
 
 export const getOverview = async (_: Request, res: Response) => {
 	const [totalStores, totalOrders, totalProducts, totalUsers, totalRevenue] =
