@@ -21,7 +21,7 @@ import {
 } from '../ui/form';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
-import { type Product } from '@/data/types';
+import type { Product } from '@/data/types';
 
 interface UpdateProductDialogProps {
 	product: Product;
@@ -30,8 +30,8 @@ interface UpdateProductDialogProps {
 const updateProductFormSchema = z.object({
 	name: z.string().min(1),
 	description: z.string().min(1),
-	unitPrice: z.number().min(0),
-	quantity: z.number().min(0)
+	unitPrice: z.string().min(1),
+	quantity: z.string().min(1)
 });
 
 const UpdateProductDialog = ({ product }: UpdateProductDialogProps) => {
@@ -42,28 +42,30 @@ const UpdateProductDialog = ({ product }: UpdateProductDialogProps) => {
 		defaultValues: {
 			name: product.name,
 			description: product.description,
-			unitPrice: product.unitPrice,
-			quantity: product.quantity
+			unitPrice: product.unitPrice.toString(),
+			quantity: product.quantity.toString()
 		}
 	});
+
+	console.log('isValid', form.formState.isValid);
 
 	const onSubmit = (data: z.infer<typeof updateProductFormSchema>) => {
 		updateProductMutation.mutate({
 			name: data.name,
 			description: data.description,
-			unitPrice: data.unitPrice,
-			quantity: data.quantity
+			unitPrice: Number(data.unitPrice),
+			quantity: Number(data.quantity)
 		});
 	};
 
 	return (
-		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)}>
-				<Dialog>
-					<DialogTrigger asChild>
-						<Button>Update Product</Button>
-					</DialogTrigger>
-					<DialogContent>
+		<Dialog>
+			<DialogTrigger asChild>
+				<Button>Update Product</Button>
+			</DialogTrigger>
+			<DialogContent>
+				<Form {...form}>
+					<form onSubmit={form.handleSubmit(onSubmit)}>
 						<DialogHeader>
 							<DialogTitle>Update Product</DialogTitle>
 						</DialogHeader>
@@ -128,13 +130,18 @@ const UpdateProductDialog = ({ product }: UpdateProductDialogProps) => {
 							</div>
 
 							<DialogFooter>
-								<Button type='submit'>Save changes</Button>
+								<Button
+									type='submit'
+									disabled={!form.formState.isValid || !form.formState.isDirty}
+								>
+									Save changes
+								</Button>
 							</DialogFooter>
 						</div>
-					</DialogContent>
-				</Dialog>
-			</form>
-		</Form>
+					</form>
+				</Form>
+			</DialogContent>
+		</Dialog>
 	);
 };
 

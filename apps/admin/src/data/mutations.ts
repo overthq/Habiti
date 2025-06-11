@@ -103,7 +103,9 @@ export const useUpdateProductMutation = (id: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (body: UpdateProductBody) => updateProduct(id, body),
+		mutationFn: (body: UpdateProductBody) => {
+			return updateProduct(id, body);
+		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['products', id] });
 			toast.success('Product updated successfully');

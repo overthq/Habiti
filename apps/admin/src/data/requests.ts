@@ -53,11 +53,11 @@ export const getOrder = (id: string) => {
 };
 
 export const updateOrder = (id: string, body: UpdateOrderBody) => {
-	return api.patch<UpdateOrderResponse>(`/orders/${id}`, body);
+	return api.put<UpdateOrderResponse>(`/orders/${id}`, body);
 };
 
 export const cancelOrder = (id: string) => {
-	return api.patch<UpdateOrderResponse>(`/orders/${id}`, {
+	return api.put<UpdateOrderResponse>(`/orders/${id}`, {
 		status: OrderStatus.Cancelled
 	});
 };
@@ -75,7 +75,7 @@ export const createProduct = (body: CreateProductBody) => {
 };
 
 export const updateProduct = (id: string, body: UpdateProductBody) => {
-	return api.patch<Product>(`/products/${id}`, body);
+	return api.put<Product>(`/products/${id}`, body);
 };
 
 export const deleteProduct = (id: string) => {
@@ -95,11 +95,11 @@ export const getUser = (id: string) => {
 };
 
 export const updateUser = (id: string, body: UpdateUserBody) => {
-	return api.patch<GetUserResponse>(`/users/${id}`, body);
+	return api.put<GetUserResponse>(`/users/${id}`, body);
 };
 
 export const updateStore = (id: string, body: UpdateStoreBody) => {
-	return api.patch<Store>(`/stores/${id}`, body);
+	return api.put<Store>(`/stores/${id}`, body);
 };
 
 export const deleteStore = (id: string) => {
