@@ -58,17 +58,6 @@ export type AddToCartInput = {
 	storeId: Scalars['ID']['input'];
 };
 
-export type AuthenticateInput = {
-	email: Scalars['String']['input'];
-	password: Scalars['String']['input'];
-};
-
-export type AuthenticateResponse = {
-	__typename?: 'AuthenticateResponse';
-	accessToken: Scalars['String']['output'];
-	userId: Scalars['ID']['output'];
-};
-
 export type Card = {
 	__typename?: 'Card';
 	authorizationCode: Scalars['String']['output'];
@@ -244,7 +233,6 @@ export type Mutation = {
 	addStoreManager: StoreManager;
 	addToCart: CartProduct;
 	addToWatchlist: WatchlistProduct;
-	authenticate: AuthenticateResponse;
 	createCart: Cart;
 	createOrder: Order;
 	createPayout: Payout;
@@ -259,13 +247,11 @@ export type Mutation = {
 	deleteProduct: Product;
 	deleteProductCategory: StoreProductCategory;
 	deleteStore: Scalars['ID']['output'];
-	deleteUser: User;
 	editProduct: Product;
 	editProductCategory: StoreProductCategory;
 	editProfile: User;
 	editStore: Store;
 	followStore: StoreFollower;
-	register: User;
 	removeFromCart: Scalars['ID']['output'];
 	removeStoreManager: StoreManager;
 	unfollowStore: StoreFollower;
@@ -274,7 +260,6 @@ export type Mutation = {
 	updateOrderStatus: Order;
 	updateProductCategories: Product;
 	updateProductImages: Product;
-	verify: VerifyResponse;
 	verifyBankAccount: VerifyBankAccountResponse;
 };
 
@@ -300,10 +285,6 @@ export type MutationAddToCartArgs = {
 
 export type MutationAddToWatchlistArgs = {
 	productId: Scalars['ID']['input'];
-};
-
-export type MutationAuthenticateArgs = {
-	input: AuthenticateInput;
 };
 
 export type MutationCreateCartArgs = {
@@ -358,10 +339,6 @@ export type MutationDeleteStoreArgs = {
 	id: Scalars['ID']['input'];
 };
 
-export type MutationDeleteUserArgs = {
-	userId: Scalars['ID']['input'];
-};
-
 export type MutationEditProductArgs = {
 	id: Scalars['ID']['input'];
 	input: EditProductInput;
@@ -382,10 +359,6 @@ export type MutationEditStoreArgs = {
 
 export type MutationFollowStoreArgs = {
 	storeId: Scalars['ID']['input'];
-};
-
-export type MutationRegisterArgs = {
-	input: RegisterInput;
 };
 
 export type MutationRemoveFromCartArgs = {
@@ -423,10 +396,6 @@ export type MutationUpdateProductCategoriesArgs = {
 export type MutationUpdateProductImagesArgs = {
 	id: Scalars['ID']['input'];
 	input: UpdateProductImagesInput;
-};
-
-export type MutationVerifyArgs = {
-	input: VerifyInput;
 };
 
 export type MutationVerifyBankAccountArgs = {
@@ -688,12 +657,6 @@ export type QueryUserArgs = {
 	id: Scalars['ID']['input'];
 };
 
-export type RegisterInput = {
-	email: Scalars['String']['input'];
-	name: Scalars['String']['input'];
-	password: Scalars['String']['input'];
-};
-
 export type SearchResults = {
 	__typename?: 'SearchResults';
 	products: Array<Product>;
@@ -853,17 +816,6 @@ export type VerifyBankAccountResponse = {
 	__typename?: 'VerifyBankAccountResponse';
 	accountName: Scalars['String']['output'];
 	accountNumber: Scalars['String']['output'];
-};
-
-export type VerifyInput = {
-	code: Scalars['String']['input'];
-	email: Scalars['String']['input'];
-};
-
-export type VerifyResponse = {
-	__typename?: 'VerifyResponse';
-	accessToken: Scalars['String']['output'];
-	userId: Scalars['ID']['output'];
 };
 
 export type WatchlistProduct = {
@@ -1243,6 +1195,15 @@ export type UpdateProductCategoriesMutation = {
 	};
 };
 
+export type DeleteProductMutationVariables = Exact<{
+	id: Scalars['ID']['input'];
+}>;
+
+export type DeleteProductMutation = {
+	__typename?: 'Mutation';
+	deleteProduct: { __typename?: 'Product'; id: string };
+};
+
 export type CreateStoreMutationVariables = Exact<{
 	input: CreateStoreInput;
 }>;
@@ -1298,41 +1259,6 @@ export type StoreQuery = {
 		bankCode?: string | null;
 		bankAccountReference?: string | null;
 		image?: { __typename?: 'Image'; id: string; path: string } | null;
-	};
-};
-
-export type AuthenticateMutationVariables = Exact<{
-	input: AuthenticateInput;
-}>;
-
-export type AuthenticateMutation = {
-	__typename?: 'Mutation';
-	authenticate: {
-		__typename?: 'AuthenticateResponse';
-		accessToken: string;
-		userId: string;
-	};
-};
-
-export type RegisterMutationVariables = Exact<{
-	input: RegisterInput;
-}>;
-
-export type RegisterMutation = {
-	__typename?: 'Mutation';
-	register: { __typename?: 'User'; id: string };
-};
-
-export type VerifyMutationVariables = Exact<{
-	input: VerifyInput;
-}>;
-
-export type VerifyMutation = {
-	__typename?: 'Mutation';
-	verify: {
-		__typename?: 'VerifyResponse';
-		accessToken: string;
-		userId: string;
 	};
 };
 
@@ -1835,6 +1761,20 @@ export function useUpdateProductCategoriesMutation() {
 		UpdateProductCategoriesMutationVariables
 	>(UpdateProductCategoriesDocument);
 }
+export const DeleteProductDocument = gql`
+	mutation DeleteProduct($id: ID!) {
+		deleteProduct(id: $id) {
+			id
+		}
+	}
+`;
+
+export function useDeleteProductMutation() {
+	return Urql.useMutation<
+		DeleteProductMutation,
+		DeleteProductMutationVariables
+	>(DeleteProductDocument);
+}
 export const CreateStoreDocument = gql`
 	mutation CreateStore($input: CreateStoreInput!) {
 		createStore(input: $input) {
@@ -1911,47 +1851,6 @@ export function useStoreQuery(
 		query: StoreDocument,
 		...options
 	});
-}
-export const AuthenticateDocument = gql`
-	mutation Authenticate($input: AuthenticateInput!) {
-		authenticate(input: $input) {
-			accessToken
-			userId
-		}
-	}
-`;
-
-export function useAuthenticateMutation() {
-	return Urql.useMutation<AuthenticateMutation, AuthenticateMutationVariables>(
-		AuthenticateDocument
-	);
-}
-export const RegisterDocument = gql`
-	mutation Register($input: RegisterInput!) {
-		register(input: $input) {
-			id
-		}
-	}
-`;
-
-export function useRegisterMutation() {
-	return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(
-		RegisterDocument
-	);
-}
-export const VerifyDocument = gql`
-	mutation Verify($input: VerifyInput!) {
-		verify(input: $input) {
-			accessToken
-			userId
-		}
-	}
-`;
-
-export function useVerifyMutation() {
-	return Urql.useMutation<VerifyMutation, VerifyMutationVariables>(
-		VerifyDocument
-	);
 }
 export const CustomerInfoDocument = gql`
 	query CustomerInfo($userId: ID!) {
