@@ -10,13 +10,7 @@ interface OrderActionsProps {
 }
 
 const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
-	const [{ fetching, data, error }, updateOrder] = useUpdateOrderMutation();
-
-	React.useEffect(() => {
-		console.log('fetching', fetching);
-		console.log('data', data?.updateOrder);
-		console.log('error', error);
-	}, [fetching, data, error]);
+	const [{ fetching }, updateOrder] = useUpdateOrderMutation();
 
 	const confirmCancel = () => {
 		Alert.alert('Cancel order', 'Are you sure you want to cancel this order', [
