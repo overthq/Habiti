@@ -1022,7 +1022,7 @@ export type UpdateOrderMutationVariables = Exact<{
 
 export type UpdateOrderMutation = {
 	__typename?: 'Mutation';
-	updateOrder: { __typename?: 'Order'; id: string };
+	updateOrder: { __typename?: 'Order'; id: string; storeId: string };
 };
 
 export type StorePayoutsQueryVariables = Exact<{ [key: string]: never }>;
@@ -1546,6 +1546,7 @@ export const UpdateOrderDocument = gql`
 	mutation UpdateOrder($orderId: ID!, $input: UpdateOrderInput!) {
 		updateOrder(orderId: $orderId, input: $input) {
 			id
+			storeId
 		}
 	}
 `;

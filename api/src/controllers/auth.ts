@@ -4,15 +4,10 @@ import jwt from 'jsonwebtoken';
 import prismaClient from '../config/prisma';
 import redisClient from '../config/redis';
 import { generateAccessToken } from '../utils/auth';
-import {
-	hashPassword,
-	validateAuthenticateBody,
-	validateRegisterBody,
-	verifyPassword
-} from '../core/logic/auth';
+import { hashPassword, verifyPassword } from '../core/logic/auth';
 
 export const register = async (req: Request, res: Response) => {
-	const { name, email, password } = validateRegisterBody(req.body);
+	const { name, email, password } = req.body;
 
 	const passwordHash = await hashPassword(password);
 
@@ -24,18 +19,20 @@ export const register = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
-	const { email, password } = validateAuthenticateBody(req.body);
+	const { email, password } = req.body;
 
 	const user = await prismaClient.user.findUnique({ where: { email } });
 
 	if (!user) {
-		throw new Error('The specified user does not exist.');
+		return res
+			.status(401)
+			.json({ error: 'The specified user does not exist.' });
 	}
 
 	const correct = await verifyPassword(password, user.passwordHash);
 
 	if (!correct) {
-		throw new Error('The entered password is incorrect');
+		return res.status(401).json({ error: 'The entered password is incorrect' });
 	}
 
 	const accessToken = await generateAccessToken(user);
@@ -47,7 +44,9 @@ export const verify = async (req: Request, res: Response) => {
 	const { email, code } = req.body;
 
 	if (!email || !code) {
-		throw new Error('Email and verification code are required.');
+		return res
+			.status(400)
+			.json({ error: 'Email and verification code are required.' });
 	}
 
 	const cachedCode = await redisClient.get(email);

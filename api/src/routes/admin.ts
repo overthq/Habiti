@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import {
 	login,
-	createAdmin,
+	// createAdmin,
 	getOverview,
 	getPayouts,
 	getPayout,
@@ -12,7 +12,7 @@ import {
 const adminRouter: Router = Router();
 
 adminRouter.post('/login', login);
-adminRouter.post('/register', createAdmin);
+// adminRouter.post('/register', createAdmin);
 adminRouter.get('/overview', getOverview);
 adminRouter.get('/payouts', getPayouts);
 adminRouter.get('/payouts/:id', getPayout);

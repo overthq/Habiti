@@ -42,7 +42,10 @@ const customCache = cacheExchange({
 					__typename: 'Order',
 					id: result.updateOrder.id
 				});
-				cache.invalidate({ __typename: 'Store' });
+				cache.invalidate({
+					__typename: 'Store',
+					id: result.updateOrder.storeId
+				});
 			},
 			addStoreManager: (result: AddStoreManagerMutation, _args, cache) => {
 				cache.invalidate('StoreManager');

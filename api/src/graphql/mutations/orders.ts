@@ -41,18 +41,25 @@ export const updateOrder: Resolver<UpdateOrderArgs> = async (
 	{ orderId, input },
 	ctx
 ) => {
+	console.log('input', input);
 	if (!input.status) {
 		throw new Error('Status is required for order updates');
 	}
+
+	console.log('here 1');
 
 	const result = await updateOrderStatusLogic(
 		{ orderId, status: input.status },
 		ctx
 	);
 
+	console.log('here 2', result);
+
 	executeOrderSideEffects(ctx, result.sideEffects).catch(error => {
 		console.error('Order side effects execution failed:', error);
 	});
+
+	console.log('here 3');
 
 	return result.order;
 };
