@@ -51,10 +51,9 @@ export interface CreateAdminResponse {
 
 export enum OrderStatus {
 	Pending = 'Pending',
-	Processing = 'Processing',
+	PaymentPending = 'PaymentPending',
 	Completed = 'Completed',
-	Cancelled = 'Cancelled',
-	Delivered = 'Delivered'
+	Cancelled = 'Cancelled'
 }
 
 export interface OrderProduct {

@@ -26,10 +26,8 @@ import { formatNaira } from '@/utils/format';
 
 const statusVariants = {
 	[OrderStatus.Pending]: 'secondary',
-	[OrderStatus.Processing]: 'default',
 	[OrderStatus.Completed]: 'default',
-	[OrderStatus.Cancelled]: 'destructive',
-	[OrderStatus.Delivered]: 'default'
+	[OrderStatus.Cancelled]: 'destructive'
 } as const;
 
 const OrderDetailPage = () => {
