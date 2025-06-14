@@ -1,4 +1,4 @@
-import { Order, OrderStatus, User } from '@prisma/client';
+import { Order, OrderStatus } from '@prisma/client';
 import { ResolverContext } from '../../../types/resolvers';
 import { UpdateOrderStatusInput, OrderUpdateResult } from './types';
 import { NotificationType } from '../../../types/notifications';
@@ -60,8 +60,8 @@ export const validateStatusTransition = async (
 	const validTransitions: Record<OrderStatus, OrderStatus[]> = {
 		[OrderStatus.PaymentPending]: [OrderStatus.Pending, OrderStatus.Cancelled],
 		[OrderStatus.Pending]: [OrderStatus.Completed, OrderStatus.Cancelled],
-		[OrderStatus.Completed]: [], // Terminal state
-		[OrderStatus.Cancelled]: [] // Terminal state
+		[OrderStatus.Completed]: [],
+		[OrderStatus.Cancelled]: []
 	};
 
 	const allowedTransitions = validTransitions[currentStatus] || [];

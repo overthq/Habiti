@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 
 import prismaClient from '../config/prisma';
+import { getRelatedProducts as getRelatedProductsData } from '../core/data/products';
 import { hydrateQuery } from '../utils/queries';
 
-export async function getProducts(req: Request, res: Response) {
+export const getProducts = async (req: Request, res: Response) => {
 	const query = hydrateQuery(req.query);
 
 	const products = await prismaClient.product.findMany({
@@ -11,9 +12,9 @@ export async function getProducts(req: Request, res: Response) {
 		...query
 	});
 	return res.json({ products });
-}
+};
 
-export async function getProductById(req: Request, res: Response) {
+export const getProductById = async (req: Request, res: Response) => {
 	if (!req.params.id) {
 		return res.status(400).json({ error: 'Product ID is required' });
 	}
@@ -28,58 +29,20 @@ export async function getProductById(req: Request, res: Response) {
 	}
 
 	return res.json({ product });
-}
+};
 
-export async function getRelatedProducts(req: Request, res: Response) {
+export const getRelatedProducts = async (req: Request, res: Response) => {
 	if (!req.params.id) {
 		return res.status(400).json({ error: 'Product ID is required' });
 	}
 
-	const product = await prismaClient.product.findUnique({
-		where: { id: req.params.id }
-	});
-
-	if (!product) {
-		return res.status(404).json({ error: 'Product not found' });
-	}
-
-	// Get the current product's categories
-	const productCategories = await prismaClient.productCategory.findMany({
-		where: { productId: req.params.id },
-		select: { categoryId: true }
-	});
-
-	const categoryIds = productCategories.map(pc => pc.categoryId);
-
-	// Find products that share categories with the current product
-	if (categoryIds.length > 0) {
-		const products = await prismaClient.product.findMany({
-			where: {
-				AND: [
-					{ id: { not: req.params.id } }, // Exclude current product
-					{ storeId: product.storeId }, // Same store
-					{ categories: { some: { categoryId: { in: categoryIds } } } }
-				]
-			},
-			take: 5 // Limit to 5 related products
-		});
-
-		return res.json({ products });
-	}
-
-	// Fallback: if no categories, return other products from same store
-	const products = await prismaClient.product.findMany({
-		where: {
-			AND: [{ id: { not: req.params.id } }, { storeId: product.storeId }]
-		},
-		take: 5
-	});
+	const products = await getRelatedProductsData(req.auth as any, req.params.id);
 
 	return res.json({ products });
-}
+};
 
 // GET /products/:id/reviews
-export async function getProductReviews(req: Request, res: Response) {
+export const getProductReviews = async (req: Request, res: Response) => {
 	if (!req.params.id) {
 		return res.status(400).json({ error: 'Product ID is required' });
 	}
@@ -89,10 +52,10 @@ export async function getProductReviews(req: Request, res: Response) {
 	});
 
 	return res.json({ reviews });
-}
+};
 
 // POST /products/:id/reviews
-export async function createProductReview(req: Request, res: Response) {
+export const createProductReview = async (req: Request, res: Response) => {
 	if (!req.auth) {
 		return res.status(401).json({ error: 'Unauthorized' });
 	}
@@ -108,10 +71,10 @@ export async function createProductReview(req: Request, res: Response) {
 	});
 
 	return res.json({ review });
-}
+};
 
 // PUT /products/:id
-export async function updateProduct(req: Request, res: Response) {
+export const updateProduct = async (req: Request, res: Response) => {
 	if (!req.auth) {
 		return res.status(401).json({ error: 'Unauthorized' });
 	}
@@ -128,13 +91,13 @@ export async function updateProduct(req: Request, res: Response) {
 	});
 
 	return res.json({ product });
-}
+};
 
 // PUT /products/:id/categories
-export async function updateProductCategories(
+export const updateProductCategories = async (
 	req: Request<{ id: string }, {}, { add: string[]; remove: string[] }>,
 	res: Response
-) {
+) => {
 	if (!req.auth) {
 		return res.status(401).json({ error: 'Unauthorized' });
 	}
@@ -160,4 +123,4 @@ export async function updateProductCategories(
 	});
 
 	return res.json({ product });
-}
+};
