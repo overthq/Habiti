@@ -1,4 +1,4 @@
-import { formatNaira } from '@habiti/common';
+import { formatNairaAbbreviated } from '@habiti/common';
 import { Icon, SectionHeader, Typography, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
@@ -22,7 +22,7 @@ const ManagePayouts = () => {
 			<View style={{ paddingHorizontal: 16 }}>
 				<Pressable style={styles.amount} onPress={navigateToPayouts}>
 					<Typography size='xxxlarge' weight='bold'>
-						{formatNaira(data?.currentStore.realizedRevenue ?? 0)}
+						{formatNairaAbbreviated(data?.currentStore.realizedRevenue ?? 0)}
 					</Typography>
 					<Icon name='chevron-right' color={theme.text.secondary} />
 				</Pressable>

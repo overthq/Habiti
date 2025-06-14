@@ -1,5 +1,4 @@
-import { PayoutStatus } from '@prisma/client';
-import { ResolverContext } from '../../types/resolvers';
+import { PayoutStatus, PrismaClient } from '@prisma/client';
 import prismaClient from '../../config/prisma';
 
 interface SavePayoutParams {
@@ -8,23 +7,22 @@ interface SavePayoutParams {
 }
 
 export const savePayout = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	params: SavePayoutParams
 ) => {
 	const { storeId, amount } = params;
 
-	await ctx.prisma.payout.create({
+	await prisma.payout.create({
 		data: { storeId, amount }
 	});
 };
 
-export const getStorePayouts = async (ctx: ResolverContext) => {
-	if (!ctx.storeId) {
-		throw new Error('Store ID is required');
-	}
-
-	const payouts = await ctx.prisma.payout.findMany({
-		where: { storeId: ctx.storeId }
+export const getStorePayouts = async (
+	prisma: PrismaClient,
+	storeId: string
+) => {
+	const payouts = await prisma.payout.findMany({
+		where: { storeId }
 	});
 
 	return payouts;

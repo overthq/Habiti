@@ -304,10 +304,8 @@ enum ProductStatus {
 
 enum OrderStatus {
   Pending
-  Processing
   Cancelled
   Completed
-  Delivered
   PaymentPending
 }
 

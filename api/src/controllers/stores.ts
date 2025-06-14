@@ -4,7 +4,7 @@ import prismaClient from '../config/prisma';
 import { hydrateQuery } from '../utils/queries';
 import { uploadImages } from '../utils/upload';
 
-async function loadCurrentStore(req: Request) {
+const loadCurrentStore = async (req: Request) => {
 	const store = await prismaClient.store.findUnique({
 		where: {
 			id: req.headers['x-market-store-id'] as string
@@ -16,18 +16,18 @@ async function loadCurrentStore(req: Request) {
 	}
 
 	return store;
-}
+};
 
-export async function getStores(req: Request, res: Response) {
+export const getStores = async (req: Request, res: Response) => {
 	const query = hydrateQuery(req.query);
 
 	const stores = await prismaClient.store.findMany(query);
 
 	return res.json({ stores });
-}
+};
 
 // POST /stores
-export async function createStore(req: Request, res: Response) {
+export const createStore = async (req: Request, res: Response) => {
 	const { name, description, website, twitter, instagram } = req.body;
 
 	const store = await prismaClient.store.create({
@@ -35,34 +35,34 @@ export async function createStore(req: Request, res: Response) {
 	});
 
 	return res.status(201).json({ store });
-}
+};
 
 // GET /stores/current
-export async function getCurrentStore(req: Request, res: Response) {
+export const getCurrentStore = async (req: Request, res: Response) => {
 	const store = await loadCurrentStore(req);
 	return res.json({ store });
-}
+};
 
 // GET /stores/current/payouts
-export async function getCurrentStorePayouts(req: Request, res: Response) {
+export const getCurrentStorePayouts = async (req: Request, res: Response) => {
 	const store = await loadCurrentStore(req);
 	const payouts = await prismaClient.payout.findMany({
 		where: { storeId: store.id }
 	});
 	return res.json({ payouts });
-}
+};
 
 // GET /stores/current/managers
-export async function getCurrentStoreManagers(req: Request, res: Response) {
+export const getCurrentStoreManagers = async (req: Request, res: Response) => {
 	const store = await loadCurrentStore(req);
 	const managers = await prismaClient.storeManager.findMany({
 		where: { storeId: store.id }
 	});
 	return res.json({ managers });
-}
+};
 
 // GET /stores/:id/payouts
-export async function getStorePayouts(req: Request, res: Response) {
+export const getStorePayouts = async (req: Request, res: Response) => {
 	if (!req.params.id) {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
@@ -75,10 +75,10 @@ export async function getStorePayouts(req: Request, res: Response) {
 	});
 
 	return res.json({ payouts });
-}
+};
 
 // GET /stores/:id
-export async function getStoreById(req: Request, res: Response) {
+export const getStoreById = async (req: Request, res: Response) => {
 	if (!req.params.id) {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
@@ -92,10 +92,10 @@ export async function getStoreById(req: Request, res: Response) {
 	}
 
 	return res.json({ store });
-}
+};
 
 // GET /stores/:id/products
-export async function getStoreProducts(req: Request, res: Response) {
+export const getStoreProducts = async (req: Request, res: Response) => {
 	if (!req.params.id) {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
@@ -107,10 +107,10 @@ export async function getStoreProducts(req: Request, res: Response) {
 		.products(query);
 
 	return res.json({ products });
-}
+};
 
 // POST /stores/:id/products
-export async function createStoreProduct(req: Request, res: Response) {
+export const createStoreProduct = async (req: Request, res: Response) => {
 	const { name, description, unitPrice, quantity, imageFiles } = req.body;
 
 	if (!req.headers['x-market-store-id']) {
@@ -139,10 +139,10 @@ export async function createStoreProduct(req: Request, res: Response) {
 	});
 
 	return res.json({ product });
-}
+};
 
 // GET /stores/:id/orders
-export async function getStoreOrders(req: Request, res: Response) {
+export const getStoreOrders = async (req: Request, res: Response) => {
 	if (!req.params.id) {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
@@ -158,10 +158,10 @@ export async function getStoreOrders(req: Request, res: Response) {
 		});
 
 	return res.json({ orders });
-}
+};
 
 // GET /stores/:id/managers
-export async function getStoreManagers(req: Request, res: Response) {
+export const getStoreManagers = async (req: Request, res: Response) => {
 	if (!req.params.id) {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
@@ -171,10 +171,10 @@ export async function getStoreManagers(req: Request, res: Response) {
 		.managers({ include: { manager: true } });
 
 	return res.json({ managers });
-}
+};
 
 // POST /stores/:id/follow
-export async function followStore(req: Request, res: Response) {
+export const followStore = async (req: Request, res: Response) => {
 	if (!req.auth) {
 		return res.status(401).json({ error: 'User not authenticated' });
 	}
@@ -188,10 +188,10 @@ export async function followStore(req: Request, res: Response) {
 	});
 
 	return res.status(200).json({ message: 'Store followed' });
-}
+};
 
 // POST /stores/:id/unfollow
-export async function unfollowStore(req: Request, res: Response) {
+export const unfollowStore = async (req: Request, res: Response) => {
 	if (!req.auth) {
 		return res.status(401).json({ error: 'User not authenticated' });
 	}
@@ -210,4 +210,4 @@ export async function unfollowStore(req: Request, res: Response) {
 	});
 
 	return res.status(200).json({ message: 'Store unfollowed' });
-}
+};

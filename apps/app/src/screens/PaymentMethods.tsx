@@ -1,13 +1,14 @@
+import React from 'react';
 import {
 	Icon,
 	ListEmpty,
 	Screen,
 	SectionHeader,
+	Spacer,
 	Typography,
 	useTheme
 } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import React from 'react';
 import {
 	View,
 	StyleSheet,
@@ -16,7 +17,7 @@ import {
 	FlatList
 } from 'react-native';
 
-import { MastercardIcon } from '../components/cart/CardIcons';
+import { CardIconMap } from '../components/cart/CardIcons';
 import useGoBack from '../hooks/useGoBack';
 import { AppStackParamList } from '../types/navigation';
 import { useCardsQuery } from '../types/api';
@@ -50,6 +51,7 @@ const PaymentMethods: React.FC = () => {
 
 	return (
 		<Screen>
+			<Spacer y={16} />
 			<SectionHeader title='Saved payment methods' />
 			<FlatList
 				style={{ flex: 1 }}
@@ -60,10 +62,10 @@ const PaymentMethods: React.FC = () => {
 					<Pressable
 						style={[styles.card, { borderBottomColor: theme.border.color }]}
 					>
-						<MastercardIcon />
+						{CardIconMap[card.cardType.trim()]}
 						<Typography
 							style={styles.capitalize}
-						>{`${card.cardType} \u2022\u2022\u2022\u2022${card.last4}`}</Typography>
+						>{`\u2022\u2022\u2022\u2022${card.last4}`}</Typography>
 					</Pressable>
 				)}
 				ListEmptyComponent={() => (

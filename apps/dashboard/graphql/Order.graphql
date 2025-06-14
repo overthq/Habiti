@@ -58,5 +58,6 @@ query Order($id: ID!) {
 mutation UpdateOrder($orderId: ID!, $input: UpdateOrderInput!) {
 	updateOrder(orderId: $orderId, input: $input) {
 		id
+		storeId
 	}
 }

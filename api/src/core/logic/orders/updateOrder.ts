@@ -1,4 +1,4 @@
-import { Order, OrderStatus, User } from '@prisma/client';
+import { Order, OrderStatus } from '@prisma/client';
 import { ResolverContext } from '../../../types/resolvers';
 import { UpdateOrderStatusInput, OrderUpdateResult } from './types';
 import { NotificationType } from '../../../types/notifications';
@@ -59,15 +59,9 @@ export const validateStatusTransition = async (
 ) => {
 	const validTransitions: Record<OrderStatus, OrderStatus[]> = {
 		[OrderStatus.PaymentPending]: [OrderStatus.Pending, OrderStatus.Cancelled],
-		[OrderStatus.Pending]: [
-			OrderStatus.Processing,
-			OrderStatus.Completed,
-			OrderStatus.Cancelled
-		],
-		[OrderStatus.Processing]: [OrderStatus.Cancelled],
-		[OrderStatus.Delivered]: [OrderStatus.Completed],
-		[OrderStatus.Completed]: [], // Terminal state
-		[OrderStatus.Cancelled]: [] // Terminal state
+		[OrderStatus.Pending]: [OrderStatus.Completed, OrderStatus.Cancelled],
+		[OrderStatus.Completed]: [],
+		[OrderStatus.Cancelled]: []
 	};
 
 	const allowedTransitions = validTransitions[currentStatus] || [];
@@ -82,9 +76,7 @@ const statusToNotificationType = {
 	[OrderStatus.Completed]: NotificationType.OrderCompleted,
 	[OrderStatus.Cancelled]: NotificationType.OrderCancelled,
 	[OrderStatus.PaymentPending]: NotificationType.OrderStatusChanged,
-	[OrderStatus.Pending]: NotificationType.OrderStatusChanged,
-	[OrderStatus.Processing]: NotificationType.OrderStatusChanged,
-	[OrderStatus.Delivered]: NotificationType.OrderStatusChanged
+	[OrderStatus.Pending]: NotificationType.OrderStatusChanged
 } as const;
 
 export const prepareSideEffectsForStatusUpdate = (

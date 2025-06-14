@@ -28,10 +28,8 @@ const OrderTypes = gql`
 
 	enum OrderStatus {
 		Pending
-		Processing
 		Cancelled
 		Completed
-		Delivered
 		PaymentPending
 	}
 

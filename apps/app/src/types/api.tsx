@@ -458,10 +458,8 @@ export type OrderProduct = {
 export enum OrderStatus {
 	Cancelled = 'Cancelled',
 	Completed = 'Completed',
-	Delivered = 'Delivered',
 	PaymentPending = 'PaymentPending',
-	Pending = 'Pending',
-	Processing = 'Processing'
+	Pending = 'Pending'
 }
 
 export type PageInfo = {

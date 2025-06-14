@@ -1,4 +1,19 @@
 import prismaClient from '../../config/prisma';
+import { PrismaClient } from '@prisma/client';
+
+interface CreateCardParams {
+	email: string;
+	authorizationCode: string;
+	bin: string;
+	last4: string;
+	expMonth: string;
+	expYear: string;
+	bank: string;
+	signature: string;
+	cardType: string;
+	countryCode: string;
+	userId: string;
+}
 
 interface StoreCardData {
 	customer: { email: string };
@@ -33,4 +48,52 @@ export const storeCard = async (data: StoreCardData) => {
 			user: { connect: { email: data.customer.email } }
 		}
 	});
+};
+
+export const createCard = async (
+	prisma: PrismaClient,
+	params: CreateCardParams
+) => {
+	const card = await prisma.card.create({
+		data: params
+	});
+
+	return card;
+};
+
+export const getCardsByUserId = async (
+	prisma: PrismaClient,
+	userId: string
+) => {
+	const cards = await prisma.card.findMany({
+		where: { userId },
+		orderBy: { createdAt: 'desc' }
+	});
+
+	return cards;
+};
+
+export const getCardById = async (prisma: PrismaClient, cardId: string) => {
+	const card = await prisma.card.findUnique({
+		where: { id: cardId }
+	});
+
+	return card;
+};
+
+export const deleteCard = async (prisma: PrismaClient, cardId: string) => {
+	await prisma.card.delete({
+		where: { id: cardId }
+	});
+};
+
+export const getCardBySignature = async (
+	prisma: PrismaClient,
+	signature: string
+) => {
+	const card = await prisma.card.findUnique({
+		where: { signature }
+	});
+
+	return card;
 };

@@ -7,10 +7,8 @@ const healthRouter: Router = Router();
 
 healthRouter.get('/', async (_, res) => {
 	try {
-		// Check database connection
 		await prismaClient.$queryRaw`SELECT 1`;
 
-		// Check Redis connection
 		await redisClient.ping();
 
 		return res.status(200).json({

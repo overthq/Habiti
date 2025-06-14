@@ -28,7 +28,12 @@ import {
 	type GetStoreResponse,
 	type GetStoresResponse,
 	type StoreFilters,
-	type GetOverviewResponse
+	type GetOverviewResponse,
+	type PayoutFilters,
+	type GetPayoutsResponse,
+	type GetPayoutResponse,
+	type UpdatePayoutBody,
+	type UpdatePayoutResponse
 } from './types';
 
 export const login = (body: LoginBody) => {
@@ -48,11 +53,11 @@ export const getOrder = (id: string) => {
 };
 
 export const updateOrder = (id: string, body: UpdateOrderBody) => {
-	return api.patch<UpdateOrderResponse>(`/orders/${id}`, body);
+	return api.put<UpdateOrderResponse>(`/orders/${id}`, body);
 };
 
 export const cancelOrder = (id: string) => {
-	return api.patch<UpdateOrderResponse>(`/orders/${id}`, {
+	return api.put<UpdateOrderResponse>(`/orders/${id}`, {
 		status: OrderStatus.Cancelled
 	});
 };
@@ -70,7 +75,7 @@ export const createProduct = (body: CreateProductBody) => {
 };
 
 export const updateProduct = (id: string, body: UpdateProductBody) => {
-	return api.patch<Product>(`/products/${id}`, body);
+	return api.put<Product>(`/products/${id}`, body);
 };
 
 export const deleteProduct = (id: string) => {
@@ -90,11 +95,11 @@ export const getUser = (id: string) => {
 };
 
 export const updateUser = (id: string, body: UpdateUserBody) => {
-	return api.patch<GetUserResponse>(`/users/${id}`, body);
+	return api.put<GetUserResponse>(`/users/${id}`, body);
 };
 
 export const updateStore = (id: string, body: UpdateStoreBody) => {
-	return api.patch<Store>(`/stores/${id}`, body);
+	return api.put<Store>(`/stores/${id}`, body);
 };
 
 export const deleteStore = (id: string) => {
@@ -127,4 +132,16 @@ export const getStoreManagers = (id: string, params?: StoreFilters) => {
 
 export const getOverview = () => {
 	return api.get<GetOverviewResponse>('/admin/overview');
+};
+
+export const getPayouts = (params?: PayoutFilters) => {
+	return api.get<GetPayoutsResponse>('/admin/payouts', params);
+};
+
+export const getPayout = (id: string) => {
+	return api.get<GetPayoutResponse>(`/admin/payouts/${id}`);
+};
+
+export const updatePayout = (id: string, body: UpdatePayoutBody) => {
+	return api.patch<UpdatePayoutResponse>(`/admin/payouts/${id}`, body);
 };

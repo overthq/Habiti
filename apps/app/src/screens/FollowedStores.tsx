@@ -104,8 +104,18 @@ const FollowedStoreItem: React.FC<FollowedStoreItemProps> = ({
 				/>
 				<Typography weight='medium'>{store.name}</Typography>
 			</View>
-			<Pressable style={styles.button} onPress={handleFollowPress}>
-				<Typography variant='secondary' size='small' weight='medium'>
+			<Pressable
+				style={[
+					styles.button,
+					{ backgroundColor: theme.button.primary.background }
+				]}
+				onPress={handleFollowPress}
+			>
+				<Typography
+					size='small'
+					weight='medium'
+					style={{ color: theme.button.primary.text }}
+				>
 					Unfollow
 				</Typography>
 			</Pressable>
