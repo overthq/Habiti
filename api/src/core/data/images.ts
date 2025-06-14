@@ -1,4 +1,4 @@
-import { ResolverContext } from '../../types/resolvers';
+import { PrismaClient } from '@prisma/client';
 
 interface CreateImageParams {
 	publicId: string;
@@ -13,10 +13,10 @@ interface UpdateImageParams {
 }
 
 export const createImage = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	params: CreateImageParams
 ) => {
-	const image = await ctx.prisma.image.create({
+	const image = await prisma.image.create({
 		data: params
 	});
 
@@ -24,11 +24,11 @@ export const createImage = async (
 };
 
 export const updateImage = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	imageId: string,
 	params: UpdateImageParams
 ) => {
-	const image = await ctx.prisma.image.update({
+	const image = await prisma.image.update({
 		where: { id: imageId },
 		data: params
 	});
@@ -36,8 +36,8 @@ export const updateImage = async (
 	return image;
 };
 
-export const getImageById = async (ctx: ResolverContext, imageId: string) => {
-	const image = await ctx.prisma.image.findUnique({
+export const getImageById = async (prisma: PrismaClient, imageId: string) => {
+	const image = await prisma.image.findUnique({
 		where: { id: imageId }
 	});
 
@@ -45,10 +45,10 @@ export const getImageById = async (ctx: ResolverContext, imageId: string) => {
 };
 
 export const getImagesByProductId = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	productId: string
 ) => {
-	const images = await ctx.prisma.image.findMany({
+	const images = await prisma.image.findMany({
 		where: { productId },
 		orderBy: { createdAt: 'asc' }
 	});
@@ -57,27 +57,27 @@ export const getImagesByProductId = async (
 };
 
 export const getImageByStoreId = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	storeId: string
 ) => {
-	const image = await ctx.prisma.image.findFirst({
+	const image = await prisma.image.findFirst({
 		where: { storeId }
 	});
 
 	return image;
 };
 
-export const deleteImage = async (ctx: ResolverContext, imageId: string) => {
-	await ctx.prisma.image.delete({
+export const deleteImage = async (prisma: PrismaClient, imageId: string) => {
+	await prisma.image.delete({
 		where: { id: imageId }
 	});
 };
 
 export const deleteImagesByProductId = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	productId: string
 ) => {
-	await ctx.prisma.image.deleteMany({
+	await prisma.image.deleteMany({
 		where: { productId }
 	});
 };

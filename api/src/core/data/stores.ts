@@ -1,4 +1,4 @@
-import { ResolverContext } from '../../types/resolvers';
+import { PrismaClient } from '@prisma/client';
 
 interface CreateStoreParams {
 	name: string;
@@ -34,10 +34,10 @@ interface CreateStoreFollowerParams {
 }
 
 export const createStore = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	params: CreateStoreParams
 ) => {
-	const store = await ctx.prisma.store.create({
+	const store = await prisma.store.create({
 		data: params
 	});
 
@@ -45,11 +45,11 @@ export const createStore = async (
 };
 
 export const updateStore = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	storeId: string,
 	params: UpdateStoreParams
 ) => {
-	const store = await ctx.prisma.store.update({
+	const store = await prisma.store.update({
 		where: { id: storeId },
 		data: params
 	});
@@ -57,8 +57,8 @@ export const updateStore = async (
 	return store;
 };
 
-export const getStoreById = async (ctx: ResolverContext, storeId: string) => {
-	const store = await ctx.prisma.store.findUnique({
+export const getStoreById = async (prisma: PrismaClient, storeId: string) => {
+	const store = await prisma.store.findUnique({
 		where: { id: storeId },
 		include: {
 			image: true,
@@ -77,14 +77,14 @@ export const getStoreById = async (ctx: ResolverContext, storeId: string) => {
 	return store;
 };
 
-export const deleteStore = async (ctx: ResolverContext, storeId: string) => {
-	await ctx.prisma.store.delete({
+export const deleteStore = async (prisma: PrismaClient, storeId: string) => {
+	await prisma.store.delete({
 		where: { id: storeId }
 	});
 };
 
 export const updateStoreRevenue = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	storeId: string,
 	amount: number,
 	type: 'unrealized' | 'realized' | 'paidOut'
@@ -99,7 +99,7 @@ export const updateStoreRevenue = async (
 		updateData['paidOut'] = { increment: amount };
 	}
 
-	const store = await ctx.prisma.store.update({
+	const store = await prisma.store.update({
 		where: { id: storeId },
 		data: updateData
 	});
@@ -108,10 +108,10 @@ export const updateStoreRevenue = async (
 };
 
 export const incrementOrderCount = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	storeId: string
 ) => {
-	const store = await ctx.prisma.store.update({
+	const store = await prisma.store.update({
 		where: { id: storeId },
 		data: { orderCount: { increment: 1 } }
 	});
@@ -120,10 +120,10 @@ export const incrementOrderCount = async (
 };
 
 export const createStoreManager = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	params: CreateStoreManagerParams
 ) => {
-	const manager = await ctx.prisma.storeManager.create({
+	const manager = await prisma.storeManager.create({
 		data: {
 			...params,
 			managerId: params.userId
@@ -134,11 +134,11 @@ export const createStoreManager = async (
 };
 
 export const removeStoreManager = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	storeId: string,
 	userId: string
 ) => {
-	await ctx.prisma.storeManager.delete({
+	await prisma.storeManager.delete({
 		where: {
 			storeId_managerId: {
 				managerId: userId,
@@ -149,10 +149,10 @@ export const removeStoreManager = async (
 };
 
 export const followStore = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	params: CreateStoreFollowerParams
 ) => {
-	const follower = await ctx.prisma.storeFollower.create({
+	const follower = await prisma.storeFollower.create({
 		data: {
 			...params,
 			followerId: params.userId
@@ -163,11 +163,11 @@ export const followStore = async (
 };
 
 export const unfollowStore = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	storeId: string,
 	userId: string
 ) => {
-	await ctx.prisma.storeFollower.delete({
+	await prisma.storeFollower.delete({
 		where: {
 			storeId_followerId: {
 				followerId: userId,
@@ -178,10 +178,10 @@ export const unfollowStore = async (
 };
 
 export const getStoresByUserId = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	userId: string
 ) => {
-	const stores = await ctx.prisma.store.findMany({
+	const stores = await prisma.store.findMany({
 		where: { managers: { some: { managerId: userId } } },
 		include: { image: true }
 	});
@@ -190,10 +190,10 @@ export const getStoresByUserId = async (
 };
 
 export const getFollowedStores = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	userId: string
 ) => {
-	const followedStores = await ctx.prisma.storeFollower.findMany({
+	const followedStores = await prisma.storeFollower.findMany({
 		where: { followerId: userId },
 		include: {
 			store: { include: { image: true } }

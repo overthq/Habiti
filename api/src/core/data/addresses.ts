@@ -1,4 +1,4 @@
-import { ResolverContext } from '../../types/resolvers';
+import { PrismaClient } from '@prisma/client';
 
 interface CreateDeliveryAddressParams {
 	userId: string;
@@ -18,10 +18,10 @@ interface UpdateDeliveryAddressParams {
 }
 
 export const createDeliveryAddress = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	params: CreateDeliveryAddressParams
 ) => {
-	const address = await ctx.prisma.deliveryAddress.create({
+	const address = await prisma.deliveryAddress.create({
 		data: params
 	});
 
@@ -29,11 +29,11 @@ export const createDeliveryAddress = async (
 };
 
 export const updateDeliveryAddress = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	addressId: string,
 	params: UpdateDeliveryAddressParams
 ) => {
-	const address = await ctx.prisma.deliveryAddress.update({
+	const address = await prisma.deliveryAddress.update({
 		where: { id: addressId },
 		data: params
 	});
@@ -42,10 +42,10 @@ export const updateDeliveryAddress = async (
 };
 
 export const getDeliveryAddressById = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	addressId: string
 ) => {
-	const address = await ctx.prisma.deliveryAddress.findUnique({
+	const address = await prisma.deliveryAddress.findUnique({
 		where: { id: addressId }
 	});
 
@@ -53,10 +53,10 @@ export const getDeliveryAddressById = async (
 };
 
 export const getDeliveryAddressesByUserId = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	userId: string
 ) => {
-	const addresses = await ctx.prisma.deliveryAddress.findMany({
+	const addresses = await prisma.deliveryAddress.findMany({
 		where: { userId },
 		orderBy: { createdAt: 'desc' }
 	});
@@ -65,10 +65,10 @@ export const getDeliveryAddressesByUserId = async (
 };
 
 export const deleteDeliveryAddress = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	addressId: string
 ) => {
-	await ctx.prisma.deliveryAddress.delete({
+	await prisma.deliveryAddress.delete({
 		where: { id: addressId }
 	});
 };

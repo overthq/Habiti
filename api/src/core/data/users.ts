@@ -1,4 +1,4 @@
-import { ResolverContext } from '../../types/resolvers';
+import { PrismaClient } from '@prisma/client';
 
 interface CreateUserParams {
 	name: string;
@@ -14,10 +14,10 @@ interface UpdateUserParams {
 }
 
 export const createUser = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	params: CreateUserParams
 ) => {
-	const user = await ctx.prisma.user.create({
+	const user = await prisma.user.create({
 		data: params
 	});
 
@@ -25,11 +25,11 @@ export const createUser = async (
 };
 
 export const updateUser = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	userId: string,
 	params: UpdateUserParams
 ) => {
-	const user = await ctx.prisma.user.update({
+	const user = await prisma.user.update({
 		where: { id: userId },
 		data: params
 	});
@@ -37,24 +37,24 @@ export const updateUser = async (
 	return user;
 };
 
-export const getUserById = async (ctx: ResolverContext, userId: string) => {
-	const user = await ctx.prisma.user.findUnique({
+export const getUserById = async (prisma: PrismaClient, userId: string) => {
+	const user = await prisma.user.findUnique({
 		where: { id: userId }
 	});
 
 	return user;
 };
 
-export const getUserByEmail = async (ctx: ResolverContext, email: string) => {
-	const user = await ctx.prisma.user.findUnique({
+export const getUserByEmail = async (prisma: PrismaClient, email: string) => {
+	const user = await prisma.user.findUnique({
 		where: { email }
 	});
 
 	return user;
 };
 
-export const deleteUser = async (ctx: ResolverContext, userId: string) => {
-	await ctx.prisma.user.delete({
+export const deleteUser = async (prisma: PrismaClient, userId: string) => {
+	await prisma.user.delete({
 		where: { id: userId }
 	});
 };

@@ -36,7 +36,7 @@ export const getRelatedProducts = async (req: Request, res: Response) => {
 		return res.status(400).json({ error: 'Product ID is required' });
 	}
 
-	const products = await getRelatedProductsData(req.auth as any, req.params.id);
+	const products = await getRelatedProductsData(prismaClient, req.params.id);
 
 	return res.json({ products });
 };

@@ -1,5 +1,4 @@
-import { Cart, OrderStatus, Product } from '@prisma/client';
-import { ResolverContext } from '../../types/resolvers';
+import { Cart, OrderStatus, Product, PrismaClient } from '@prisma/client';
 import { chargeAuthorization } from '../../utils/paystack';
 
 interface CreateOrderParams {
@@ -27,14 +26,15 @@ interface SaveOrderDataParams {
 }
 
 export const saveOrderData = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
+	userId: string,
 	params: SaveOrderDataParams
 ) => {
 	const { cardId, storeId, cart, products, transactionFee, serviceFee } =
 		params;
 	const { orderData, total } = getOrderData(products);
 
-	const order = await ctx.prisma.$transaction(async prisma => {
+	const order = await prisma.$transaction(async prisma => {
 		const store = await prisma.store.update({
 			where: { id: storeId },
 			data: {
@@ -45,7 +45,7 @@ export const saveOrderData = async (
 
 		const newOrder = await prisma.order.create({
 			data: {
-				userId: ctx.user.id,
+				userId,
 				storeId,
 				serialNumber: store.orderCount,
 				products: { createMany: { data: orderData } },
@@ -106,17 +106,18 @@ const getOrderData = (products: Product[]) => {
 };
 
 export const createOrder = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
+	userId: string,
 	params: CreateOrderParams
 ) => {
-	const store = await ctx.prisma.store.update({
+	const store = await prisma.store.update({
 		where: { id: params.storeId },
 		data: { orderCount: { increment: 1 } }
 	});
 
-	const order = await ctx.prisma.order.create({
+	const order = await prisma.order.create({
 		data: {
-			userId: ctx.user.id,
+			userId,
 			storeId: params.storeId,
 			serialNumber: store.orderCount,
 			total: params.total,
@@ -130,11 +131,11 @@ export const createOrder = async (
 };
 
 export const updateOrder = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	orderId: string,
 	params: UpdateOrderParams
 ) => {
-	const order = await ctx.prisma.order.update({
+	const order = await prisma.order.update({
 		where: { id: orderId },
 		data: params
 	});
@@ -142,8 +143,8 @@ export const updateOrder = async (
 	return order;
 };
 
-export const getOrderById = async (ctx: ResolverContext, orderId: string) => {
-	const order = await ctx.prisma.order.findUnique({
+export const getOrderById = async (prisma: PrismaClient, orderId: string) => {
+	const order = await prisma.order.findUnique({
 		where: { id: orderId },
 		include: {
 			store: {
@@ -164,10 +165,10 @@ export const getOrderById = async (ctx: ResolverContext, orderId: string) => {
 };
 
 export const getOrdersByUserId = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	userId: string
 ) => {
-	const orders = await ctx.prisma.order.findMany({
+	const orders = await prisma.order.findMany({
 		where: { userId },
 		include: {
 			store: {
@@ -188,10 +189,10 @@ export const getOrdersByUserId = async (
 };
 
 export const getOrdersByStoreId = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	storeId: string
 ) => {
-	const orders = await ctx.prisma.order.findMany({
+	const orders = await prisma.order.findMany({
 		where: { storeId },
 		include: {
 			user: true,
@@ -209,8 +210,8 @@ export const getOrdersByStoreId = async (
 	return orders;
 };
 
-export const cancelOrder = async (ctx: ResolverContext, orderId: string) => {
-	const order = await ctx.prisma.order.update({
+export const cancelOrder = async (prisma: PrismaClient, orderId: string) => {
+	const order = await prisma.order.update({
 		where: { id: orderId },
 		data: { status: OrderStatus.Cancelled }
 	});
@@ -218,8 +219,8 @@ export const cancelOrder = async (ctx: ResolverContext, orderId: string) => {
 	return order;
 };
 
-export const fulfillOrder = async (ctx: ResolverContext, orderId: string) => {
-	const order = await ctx.prisma.order.update({
+export const fulfillOrder = async (prisma: PrismaClient, orderId: string) => {
+	const order = await prisma.order.update({
 		where: { id: orderId },
 		data: { status: OrderStatus.Completed }
 	});

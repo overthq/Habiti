@@ -1,5 +1,4 @@
-import { ProductStatus } from '@prisma/client';
-import { ResolverContext } from '../../types/resolvers';
+import { ProductStatus, PrismaClient } from '@prisma/client';
 
 interface CreateProductParams {
 	name: string;
@@ -28,10 +27,10 @@ interface CreateProductReviewParams {
 }
 
 export const createProduct = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	params: CreateProductParams
 ) => {
-	const product = await ctx.prisma.product.create({
+	const product = await prisma.product.create({
 		data: {
 			...params,
 			quantity: params.quantity ?? 0,
@@ -43,11 +42,11 @@ export const createProduct = async (
 };
 
 export const updateProduct = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	productId: string,
 	params: UpdateProductParams
 ) => {
-	const product = await ctx.prisma.product.update({
+	const product = await prisma.product.update({
 		where: { id: productId },
 		data: params
 	});
@@ -56,10 +55,10 @@ export const updateProduct = async (
 };
 
 export const getProductById = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	productId: string
 ) => {
-	const product = await ctx.prisma.product.findUnique({
+	const product = await prisma.product.findUnique({
 		where: { id: productId },
 		include: {
 			store: true,
@@ -75,10 +74,10 @@ export const getProductById = async (
 };
 
 export const getProductsByStoreId = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	storeId: string
 ) => {
-	const products = await ctx.prisma.product.findMany({
+	const products = await prisma.product.findMany({
 		where: { storeId },
 		include: {
 			images: true,
@@ -91,20 +90,20 @@ export const getProductsByStoreId = async (
 };
 
 export const deleteProduct = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	productId: string
 ) => {
-	await ctx.prisma.product.delete({
+	await prisma.product.delete({
 		where: { id: productId }
 	});
 };
 
 export const updateProductQuantity = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	productId: string,
 	quantity: number
 ) => {
-	const product = await ctx.prisma.product.update({
+	const product = await prisma.product.update({
 		where: { id: productId },
 		data: { quantity }
 	});
@@ -113,11 +112,11 @@ export const updateProductQuantity = async (
 };
 
 export const incrementProductQuantity = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	productId: string,
 	increment: number
 ) => {
-	const product = await ctx.prisma.product.update({
+	const product = await prisma.product.update({
 		where: { id: productId },
 		data: { quantity: { increment } }
 	});
@@ -126,11 +125,11 @@ export const incrementProductQuantity = async (
 };
 
 export const decrementProductQuantity = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	productId: string,
 	decrement: number
 ) => {
-	const product = await ctx.prisma.product.update({
+	const product = await prisma.product.update({
 		where: { id: productId },
 		data: { quantity: { decrement } }
 	});
@@ -139,10 +138,10 @@ export const decrementProductQuantity = async (
 };
 
 export const createProductReview = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	params: CreateProductReviewParams
 ) => {
-	const review = await ctx.prisma.productReview.create({
+	const review = await prisma.productReview.create({
 		data: params
 	});
 
@@ -150,12 +149,13 @@ export const createProductReview = async (
 };
 
 export const addToWatchlist = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
+	userId: string,
 	productId: string
 ) => {
-	const watchlistItem = await ctx.prisma.watchlistProduct.create({
+	const watchlistItem = await prisma.watchlistProduct.create({
 		data: {
-			userId: ctx.user.id,
+			userId,
 			productId
 		}
 	});
@@ -164,15 +164,53 @@ export const addToWatchlist = async (
 };
 
 export const removeFromWatchlist = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
+	userId: string,
 	productId: string
 ) => {
-	await ctx.prisma.watchlistProduct.delete({
+	await prisma.watchlistProduct.delete({
 		where: {
 			userId_productId: {
-				userId: ctx.user.id,
+				userId,
 				productId
 			}
 		}
 	});
+};
+
+export const getRelatedProducts = async (
+	prisma: PrismaClient,
+	productId: string
+) => {
+	const product = await prisma.product.findUnique({
+		where: { id: productId },
+		include: {
+			store: true,
+			images: true,
+			categories: { include: { category: true } }
+		}
+	});
+
+	if (!product) {
+		throw new Error('Product not found');
+	}
+
+	let relatedProducts = await prisma.product.findMany({
+		where: {
+			storeId: product.storeId,
+			categories: {
+				some: { categoryId: { in: product.categories.map(c => c.categoryId) } }
+			}
+		},
+		take: 5
+	});
+
+	if (relatedProducts.length === 0) {
+		relatedProducts = await prisma.product.findMany({
+			where: { storeId: product.storeId },
+			take: 5
+		});
+	}
+
+	return relatedProducts;
 };

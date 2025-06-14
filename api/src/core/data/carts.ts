@@ -1,4 +1,4 @@
-import { ResolverContext } from '../../types/resolvers';
+import { PrismaClient } from '@prisma/client';
 
 interface CreateCartParams {
 	userId: string;
@@ -11,9 +11,13 @@ interface UpdateCartQuantityParams {
 	quantity: number;
 }
 
-export const getCartById = async (ctx: ResolverContext, cartId: string) => {
-	const cart = await ctx.prisma.cart.findUnique({
-		where: { id: cartId, userId: ctx.user.id },
+export const getCartById = async (
+	prisma: PrismaClient,
+	cartId: string,
+	userId: string
+) => {
+	const cart = await prisma.cart.findUnique({
+		where: { id: cartId, userId },
 		include: {
 			products: { include: { product: true } },
 			store: true
@@ -27,15 +31,15 @@ export const getCartById = async (ctx: ResolverContext, cartId: string) => {
 	return cart;
 };
 
-export const deleteCart = async (ctx: ResolverContext, cartId: string) => {
-	await ctx.prisma.cart.delete({ where: { id: cartId } });
+export const deleteCart = async (prisma: PrismaClient, cartId: string) => {
+	await prisma.cart.delete({ where: { id: cartId } });
 };
 
 export const getCartsByUserId = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	userId: string
 ) => {
-	const carts = await ctx.prisma.cart.findMany({
+	const carts = await prisma.cart.findMany({
 		where: { userId },
 		include: {
 			products: { include: { product: true } },
@@ -47,10 +51,10 @@ export const getCartsByUserId = async (
 };
 
 export const createCart = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	params: CreateCartParams
 ) => {
-	const cart = await ctx.prisma.cart.create({
+	const cart = await prisma.cart.create({
 		data: params
 	});
 
@@ -58,16 +62,17 @@ export const createCart = async (
 };
 
 export const addProductToCart = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	cartId: string,
 	storeId: string,
-	productId: string
+	productId: string,
+	userId: string
 ) => {
-	await ctx.prisma.cart.upsert({
+	await prisma.cart.upsert({
 		where: { id: cartId },
 		update: { products: { create: { productId, quantity: 1 } } },
 		create: {
-			userId: ctx.user.id,
+			userId,
 			storeId,
 			products: { create: { productId, quantity: 1 } }
 		}
@@ -75,17 +80,17 @@ export const addProductToCart = async (
 };
 
 export const updateCartProductQuantity = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	params: UpdateCartQuantityParams
 ) => {
 	const { cartId, productId, quantity } = params;
 
 	if (quantity <= 0) {
-		await ctx.prisma.cartProduct.delete({
+		await prisma.cartProduct.delete({
 			where: { cartId_productId: { cartId, productId } }
 		});
 	} else {
-		await ctx.prisma.cartProduct.upsert({
+		await prisma.cartProduct.upsert({
 			where: { cartId_productId: { cartId, productId } },
 			update: { quantity },
 			create: { cartId, productId, quantity }
@@ -94,15 +99,15 @@ export const updateCartProductQuantity = async (
 };
 
 export const removeProductFromCart = async (
-	ctx: ResolverContext,
+	prisma: PrismaClient,
 	cartId: string,
 	productId: string
 ) => {
-	await ctx.prisma.cartProduct.delete({
+	await prisma.cartProduct.delete({
 		where: { cartId_productId: { cartId, productId } }
 	});
 };
 
-export const clearCart = async (ctx: ResolverContext, cartId: string) => {
-	await ctx.prisma.cart.delete({ where: { id: cartId } });
+export const clearCart = async (prisma: PrismaClient, cartId: string) => {
+	await prisma.cart.delete({ where: { id: cartId } });
 };
