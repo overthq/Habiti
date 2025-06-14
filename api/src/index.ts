@@ -11,7 +11,7 @@ import { graphqlUploadExpress } from 'graphql-upload';
 import { createServer } from 'http';
 import * as Sentry from '@sentry/node';
 
-import prismaClient from './config/prisma';
+import { getAppContext } from './utils/context';
 import redisClient from './config/redis';
 import admin from './routes/admin';
 import auth from './routes/auth';
@@ -24,7 +24,6 @@ import stores from './routes/stores';
 import users from './routes/users';
 import webhooks from './routes/webhooks';
 import schema from './graphql/schema';
-import Services from './services';
 
 import './config/cloudinary';
 import './config/env';
@@ -43,7 +42,6 @@ const main = async () => {
 		})
 	);
 
-	const services = new Services();
 	const httpServer = createServer(app);
 	const apolloServer = new ApolloServer({
 		schema,
@@ -60,13 +58,7 @@ const main = async () => {
 		'/graphql',
 		express.json(),
 		expressMiddleware(apolloServer, {
-			context: async ({ req }) => ({
-				user: req.auth ?? null,
-				storeId: req.headers['x-market-store-id'] || undefined,
-				prisma: prismaClient,
-				redisClient,
-				services
-			})
+			context: async ({ req }) => getAppContext(req)
 		})
 	);
 

@@ -53,6 +53,9 @@ export const saveOrderData = async (
 				transactionFee,
 				serviceFee,
 				status: cardId ? OrderStatus.Pending : OrderStatus.PaymentPending
+			},
+			include: {
+				user: { include: { pushTokens: true } }
 			}
 		});
 
@@ -137,7 +140,12 @@ export const updateOrder = async (
 ) => {
 	const order = await prisma.order.update({
 		where: { id: orderId },
-		data: params
+		data: params,
+		include: {
+			products: { include: { product: true } },
+			store: true,
+			user: { include: { pushTokens: true } }
+		}
 	});
 
 	return order;

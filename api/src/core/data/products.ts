@@ -23,7 +23,7 @@ interface CreateProductReviewParams {
 	productId: string;
 	userId: string;
 	rating: number;
-	comment?: string;
+	body?: string;
 }
 
 export const createProduct = async (
@@ -71,6 +71,17 @@ export const getProductById = async (
 	});
 
 	return product;
+};
+
+export const getProductReviews = async (
+	prisma: PrismaClient,
+	productId: string
+) => {
+	const reviews = await prisma.productReview.findMany({
+		where: { productId }
+	});
+
+	return reviews;
 };
 
 export const getProductsByStoreId = async (

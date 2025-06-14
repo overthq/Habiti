@@ -1,28 +1,27 @@
 import { Request, Response } from 'express';
 
 import prismaClient from '../config/prisma';
-import { getRelatedProducts as getRelatedProductsData } from '../core/data/products';
+import * as ProductData from '../core/data/products';
 import { hydrateQuery } from '../utils/queries';
 
 export const getProducts = async (req: Request, res: Response) => {
 	const query = hydrateQuery(req.query);
 
 	const products = await prismaClient.product.findMany({
-		include: { categories: { include: { category: true } } },
+		include: {
+			categories: { include: { category: true } },
+			store: true
+		},
 		...query
 	});
 	return res.json({ products });
 };
 
-export const getProductById = async (req: Request, res: Response) => {
-	if (!req.params.id) {
-		return res.status(400).json({ error: 'Product ID is required' });
-	}
-
-	const product = await prismaClient.product.findUnique({
-		where: { id: req.params.id },
-		include: { images: true }
-	});
+export const getProductById = async (
+	req: Request<{ id: string }>,
+	res: Response
+) => {
+	const product = await ProductData.getProductById(prismaClient, req.params.id);
 
 	if (!product) {
 		return res.status(404).json({ error: 'Product not found' });
@@ -31,63 +30,68 @@ export const getProductById = async (req: Request, res: Response) => {
 	return res.json({ product });
 };
 
-export const getRelatedProducts = async (req: Request, res: Response) => {
-	if (!req.params.id) {
-		return res.status(400).json({ error: 'Product ID is required' });
-	}
-
-	const products = await getRelatedProductsData(prismaClient, req.params.id);
+export const getRelatedProducts = async (
+	req: Request<{ id: string }>,
+	res: Response
+) => {
+	const products = await ProductData.getRelatedProducts(
+		prismaClient,
+		req.params.id
+	);
 
 	return res.json({ products });
 };
 
 // GET /products/:id/reviews
-export const getProductReviews = async (req: Request, res: Response) => {
-	if (!req.params.id) {
-		return res.status(400).json({ error: 'Product ID is required' });
-	}
-
-	const reviews = await prismaClient.productReview.findMany({
-		where: { productId: req.params.id }
-	});
+export const getProductReviews = async (
+	req: Request<{ id: string }>,
+	res: Response
+) => {
+	const reviews = await ProductData.getProductReviews(
+		prismaClient,
+		req.params.id
+	);
 
 	return res.json({ reviews });
 };
 
 // POST /products/:id/reviews
-export const createProductReview = async (req: Request, res: Response) => {
+export const createProductReview = async (
+	req: Request<{ id: string }>,
+	res: Response
+) => {
 	if (!req.auth) {
 		return res.status(401).json({ error: 'Unauthorized' });
 	}
 
-	if (!req.params.id) {
-		return res.status(400).json({ error: 'Product ID is required' });
-	}
-
 	const { rating, body } = req.body;
 
-	const review = await prismaClient.productReview.create({
-		data: { productId: req.params.id, userId: req.auth.id, rating, body }
+	const review = await ProductData.createProductReview(prismaClient, {
+		productId: req.params.id,
+		userId: req.auth.id,
+		rating,
+		body
 	});
 
 	return res.json({ review });
 };
 
 // PUT /products/:id
-export const updateProduct = async (req: Request, res: Response) => {
+export const updateProduct = async (
+	req: Request<{ id: string }>,
+	res: Response
+) => {
 	if (!req.auth) {
 		return res.status(401).json({ error: 'Unauthorized' });
 	}
 
-	if (!req.params.id) {
-		return res.status(400).json({ error: 'Product ID is required' });
-	}
-
 	const { name, description, unitPrice, quantity } = req.body;
 
-	const product = await prismaClient.product.update({
-		where: { id: req.params.id },
-		data: { name, description, unitPrice, quantity }
+	const product = await ProductData.updateProduct(prismaClient, req.params.id, {
+		name,
+		description,
+		unitPrice,
+		quantity
 	});
 
 	return res.json({ product });
@@ -100,10 +104,6 @@ export const updateProductCategories = async (
 ) => {
 	if (!req.auth) {
 		return res.status(401).json({ error: 'Unauthorized' });
-	}
-
-	if (!req.params.id) {
-		return res.status(400).json({ error: 'Product ID is required' });
 	}
 
 	const { add, remove } = req.body;

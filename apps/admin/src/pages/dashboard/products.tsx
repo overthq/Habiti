@@ -56,7 +56,7 @@ const columns: ColumnDef<Product>[] = [
 		header: 'Stock'
 	},
 	{
-		accessorKey: 'storeId',
+		accessorKey: 'store.name',
 		header: 'Store'
 	},
 	{
