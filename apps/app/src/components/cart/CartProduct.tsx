@@ -10,8 +10,7 @@ import {
 } from '@habiti/components';
 import { View, StyleSheet, Pressable } from 'react-native';
 
-import { CartQuery, useUpdateCartProductMutation } from '../../types/api';
-import useDebounced from '../../hooks/useDebounced';
+import { CartQuery } from '../../types/api';
 import { useCart } from './CartContext';
 
 interface CartProductProps {

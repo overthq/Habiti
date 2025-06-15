@@ -25,7 +25,6 @@ interface CartContextType {
 	selectedCard: string;
 	setSelectedCard: (cardId: string) => void;
 	updateProductQuantity: (productId: string, quantity: number) => void;
-	addProductToCart: (productId: string, quantity: number) => void;
 	removeProductFromCart: (productId: string) => void;
 	dispatch: React.Dispatch<{
 		type: 'add' | 'remove' | 'update';
@@ -68,18 +67,6 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 	}, [cart.user.cards, defaultCard, selectedCard]);
 
 	const disabled = isUpdatingCartProduct || isCreatingOrder;
-
-	const addProductToCart = (productId: string, quantity: number) => {
-		// if (quantity < 1) return;
-
-		updateCartProduct({
-			input: {
-				cartId: cart.id,
-				productId,
-				quantity
-			}
-		});
-	};
 
 	const removeProductFromCart = (productId: string) => {
 		updateCartProduct({
@@ -143,7 +130,6 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 				selectedCard,
 				setSelectedCard,
 				updateProductQuantity,
-				addProductToCart,
 				removeProductFromCart,
 				dispatch
 			}}
