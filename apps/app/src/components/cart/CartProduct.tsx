@@ -64,21 +64,15 @@ const CartProductQuantity: React.FC<CartProductQuantityProps> = ({
 	maxQuantity
 }) => {
 	const { theme } = useTheme();
-	const { dispatch } = useCart();
+	const { updateProductQuantity } = useCart();
 
 	const incrementProductQuantity = React.useCallback(() => {
-		dispatch({
-			type: 'update',
-			product: { ...cartProduct, quantity: quantity + 1 }
-		});
-	}, [cartProduct, dispatch, quantity]);
+		updateProductQuantity(cartProduct.productId, quantity + 1);
+	}, [cartProduct.productId, quantity, updateProductQuantity]);
 
 	const decrementProductQuantity = React.useCallback(() => {
-		dispatch({
-			type: 'update',
-			product: { ...cartProduct, quantity: quantity - 1 }
-		});
-	}, [cartProduct, dispatch, quantity]);
+		updateProductQuantity(cartProduct.productId, Math.max(quantity - 1, 0));
+	}, [cartProduct.productId, quantity, updateProductQuantity]);
 
 	return (
 		<View

@@ -14,6 +14,7 @@ import {
 } from '@react-navigation/native';
 import { AppStackParamList } from '../../types/navigation';
 import useRefresh from '../../hooks/useRefresh';
+import useDebounce from '../../hooks/useDebounce';
 
 interface CartContextType {
 	cart: CartQuery['cart'];
@@ -26,10 +27,7 @@ interface CartContextType {
 	setSelectedCard: (cardId: string) => void;
 	updateProductQuantity: (productId: string, quantity: number) => void;
 	removeProductFromCart: (productId: string) => void;
-	dispatch: React.Dispatch<{
-		type: 'add' | 'remove' | 'update';
-		product: CartQuery['cart']['products'][number];
-	}>;
+	dispatch: React.Dispatch<Action>;
 }
 
 const CartContext = React.createContext<CartContextType | null>(null);
@@ -69,6 +67,13 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 	const disabled = isUpdatingCartProduct || isCreatingOrder;
 
 	const removeProductFromCart = (productId: string) => {
+		dispatch({ type: 'remove', productId });
+
+		debouncedRemoveCartProduct(productId);
+	};
+
+	const debouncedRemoveCartProduct = useDebounce((productId: string) => {
+		console.log('Removing product:', productId);
 		updateCartProduct({
 			input: {
 				cartId: cart.id,
@@ -76,22 +81,27 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 				quantity: 0
 			}
 		});
-	};
+	}, 1000);
+
+	const debouncedUpdateCartProduct = useDebounce(
+		(productId: string, quantity: number) => {
+			console.log('Updating product quantity:', productId, quantity);
+			updateCartProduct({
+				input: {
+					cartId: cart.id,
+					productId,
+					quantity
+				}
+			});
+		},
+		1000
+	);
 
 	const updateProductQuantity = async (productId: string, quantity: number) => {
-		if (quantity < 1) return removeProductFromCart(productId);
+		// if (quantity < 1) return removeProductFromCart(productId);
+		dispatch({ type: 'update', productId, quantity });
 
-		const { error } = await updateCartProduct({
-			input: {
-				cartId: cart.id,
-				productId,
-				quantity
-			}
-		});
-
-		if (error) {
-			console.log('Error while updating product quantity:', error);
-		}
+		debouncedUpdateCartProduct(productId, quantity);
 	};
 
 	const handleSubmit = async () => {
@@ -139,28 +149,40 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 	);
 };
 
+type AddAction = {
+	type: 'add';
+	product: CartQuery['cart']['products'][number];
+};
+
+type RemoveAction = {
+	type: 'remove';
+	productId: string;
+};
+
+type UpdateAction = {
+	type: 'update';
+	productId: string;
+	quantity: number;
+};
+
+type Action = AddAction | RemoveAction | UpdateAction;
+
 const useCartReducer = (initialState: CartQuery['cart']['products']) => {
 	const [state, dispatch] = React.useReducer(
-		(
-			state: CartQuery['cart']['products'],
-			action: {
-				type: 'add' | 'remove' | 'update';
-				product: CartQuery['cart']['products'][number];
-			}
-		) => {
+		(state: CartQuery['cart']['products'], action: Action) => {
 			switch (action.type) {
 				case 'add':
 					return [...state, action.product];
 				case 'remove':
 					return state.filter(
-						product => product.productId !== action.product.productId
+						product => product.productId !== action.productId
 					);
 				case 'update':
 					return state.map(product =>
-						product.productId === action.product.productId
+						product.productId === action.productId
 							? {
 									...product,
-									quantity: Math.max(action.product.quantity, 0)
+									quantity: Math.max(action.quantity, 0)
 								}
 							: product
 					);
