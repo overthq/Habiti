@@ -2,7 +2,8 @@ import { RequestHandler } from 'express';
 
 import prismaClient from '../config/prisma';
 import { hydrateQuery } from '../utils/queries';
-import { createOrder as createOrderLogic } from '../core/logic/orders/createOrder';
+import * as OrderLogic from '../core/logic/orders';
+import { getAppContext } from '../utils/context';
 
 export const getOrders: RequestHandler = async (req, res) => {
 	const query = hydrateQuery(req.query);
@@ -22,14 +23,9 @@ export const createOrder: RequestHandler = async (req, res) => {
 		return res.status(401).json({ error: 'User not authenticated' });
 	}
 
-	const order = await createOrderLogic(
-		{
-			cartId,
-			cardId,
-			transactionFee,
-			serviceFee
-		},
-		req.auth as any // FIXME: We need to stop passing the resolver context everywhere
+	const order = await OrderLogic.createOrder(
+		{ cartId, cardId, transactionFee, serviceFee },
+		getAppContext(req)
 	);
 
 	return res.json({ order });

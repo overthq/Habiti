@@ -47,8 +47,6 @@ const UpdateProductDialog = ({ product }: UpdateProductDialogProps) => {
 		}
 	});
 
-	console.log('isValid', form.formState.isValid);
-
 	const onSubmit = (data: z.infer<typeof updateProductFormSchema>) => {
 		updateProductMutation.mutate({
 			name: data.name,

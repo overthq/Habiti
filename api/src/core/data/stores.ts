@@ -83,30 +83,6 @@ export const deleteStore = async (prisma: PrismaClient, storeId: string) => {
 	});
 };
 
-export const updateStoreRevenue = async (
-	prisma: PrismaClient,
-	storeId: string,
-	amount: number,
-	type: 'unrealized' | 'realized' | 'paidOut'
-) => {
-	const updateData = {};
-
-	if (type === 'unrealized') {
-		updateData['unrealizedRevenue'] = { increment: amount };
-	} else if (type === 'realized') {
-		updateData['realizedRevenue'] = { increment: amount };
-	} else if (type === 'paidOut') {
-		updateData['paidOut'] = { increment: amount };
-	}
-
-	const store = await prisma.store.update({
-		where: { id: storeId },
-		data: updateData
-	});
-
-	return store;
-};
-
 export const incrementOrderCount = async (
 	prisma: PrismaClient,
 	storeId: string

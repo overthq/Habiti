@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import prismaClient from '../config/prisma';
 import { hydrateQuery } from '../utils/queries';
 import { uploadImages } from '../utils/upload';
+import { getAppContext } from '../utils/context';
 
 const loadCurrentStore = async (req: Request) => {
 	const store = await prismaClient.store.findUnique({
@@ -210,4 +211,21 @@ export const unfollowStore = async (req: Request, res: Response) => {
 	});
 
 	return res.status(200).json({ message: 'Store unfollowed' });
+};
+
+// GET /stores/current/home
+export const getStoreHome = async (req: Request, res: Response) => {
+	const context = getAppContext(req);
+
+	const store = await context.prisma.store.findUnique({
+		where: { id: context.storeId as string },
+		include: {
+			image: true,
+			products: {
+				where: { quantity: { lte: 10 } }
+			}
+		}
+	});
+
+	return res.json({ store });
 };

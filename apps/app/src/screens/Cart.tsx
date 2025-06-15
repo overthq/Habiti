@@ -56,8 +56,6 @@ const Cart: React.FC = () => {
 	const [selectedCard, setSelectedCard] = React.useState(defaultCardId);
 
 	const handleSubmit = React.useCallback(async () => {
-		console.log('Submitting order');
-
 		const { error, data: orderData } = await createOrder({
 			input: {
 				cartId,
@@ -68,9 +66,6 @@ const Cart: React.FC = () => {
 		});
 
 		setPreference({ defaultCard: selectedCard });
-
-		console.log('error', error);
-		console.log('orderData', orderData);
 
 		if (error) {
 			console.log('Error while creating order:', error);
