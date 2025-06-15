@@ -2,9 +2,7 @@ import { OrderStatus } from '@prisma/client';
 
 import { Resolver } from '../../types/resolvers';
 import { storeAuthorizedResolver } from '../permissions';
-import { createOrder as createOrderLogic } from '../../core/logic/orders/createOrder';
-import { updateOrderStatus as updateOrderStatusLogic } from '../../core/logic/orders/updateOrder';
-import { executeOrderSideEffects } from '../../core/logic/orders/sideEffects';
+import * as OrderLogic from '../../core/logic/orders';
 
 export interface CreateOrderArgs {
 	input: {
@@ -20,13 +18,9 @@ export const createOrder: Resolver<CreateOrderArgs> = async (
 	{ input },
 	ctx
 ) => {
-	const result = await createOrderLogic(input, ctx);
+	const order = await OrderLogic.createOrder(input, ctx);
 
-	executeOrderSideEffects(ctx, result.sideEffects).catch(error => {
-		console.error('Order side effects execution failed:', error);
-	});
-
-	return result.order;
+	return order;
 };
 
 export interface UpdateOrderArgs {
@@ -45,16 +39,12 @@ export const updateOrder: Resolver<UpdateOrderArgs> = async (
 		throw new Error('Status is required for order updates');
 	}
 
-	const result = await updateOrderStatusLogic(
+	const order = await OrderLogic.updateOrderStatus(
 		{ orderId, status: input.status },
 		ctx
 	);
 
-	executeOrderSideEffects(ctx, result.sideEffects).catch(error => {
-		console.error('Order side effects execution failed:', error);
-	});
-
-	return result.order;
+	return order;
 };
 
 export interface UpdateOrderStatusArgs {
@@ -64,12 +54,8 @@ export interface UpdateOrderStatusArgs {
 
 export const updateOrderStatus = storeAuthorizedResolver<UpdateOrderStatusArgs>(
 	async (_, { orderId, status }, ctx) => {
-		const result = await updateOrderStatusLogic({ orderId, status }, ctx);
+		const order = await OrderLogic.updateOrderStatus({ orderId, status }, ctx);
 
-		executeOrderSideEffects(ctx, result.sideEffects).catch(error => {
-			console.error('Order side effects execution failed:', error);
-		});
-
-		return result.order;
+		return order;
 	}
 );

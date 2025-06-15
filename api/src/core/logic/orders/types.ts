@@ -1,6 +1,5 @@
-import { Order, OrderStatus } from '@prisma/client';
+import { OrderStatus } from '@prisma/client';
 import { NotificationType } from '../../../types/notifications';
-import { AnalyticsEvent } from '../../../services/analytics';
 
 export interface CreateOrderInput {
 	cartId: string;
@@ -12,16 +11,6 @@ export interface CreateOrderInput {
 export interface UpdateOrderStatusInput {
 	orderId: string;
 	status: OrderStatus;
-}
-
-export interface OrderCreationResult {
-	order: Order;
-	sideEffects: OrderSideEffects;
-}
-
-export interface OrderUpdateResult {
-	order: Order;
-	sideEffects: OrderSideEffects;
 }
 
 type OrderNotificationType =
@@ -45,10 +34,4 @@ export interface OrderRevenueUpdate {
 	storeId: string;
 	realized: number;
 	unrealized: number;
-}
-
-export interface OrderSideEffects {
-	notifications: OrderNotification[];
-	revenueUpdate: OrderRevenueUpdate | undefined;
-	analyticsEvents: AnalyticsEvent[];
 }

@@ -35,7 +35,6 @@ const FEED_QUERY = gql`
 const FeedPage = () => {
 	const [{ data, fetching }] = useQuery({ query: FEED_QUERY });
 
-	console.log({ data, fetching });
 	if (fetching) return <div>Loading...</div>;
 
 	return (

@@ -16,8 +16,22 @@
 				"simulator": true
 			}
 		},
+		"preview": {
+			"distribution": "internal",
+			"android": {
+				"image": "latest"
+			},
+			"ios": {
+				"image": "latest"
+			},
+			"env": {
+				"EXPO_PUBLIC_API_URL": "https://market-api-d47w.onrender.com",
+				"EXPO_PUBLIC_SENTRY_DSN": "https://5bed064f57bf09d2b706b4ab455d1f32@o4507042729099264.ingest.us.sentry.io/4507449710280704"
+			}
+		},
 		"production": {
 			"autoIncrement": true,
+			"channel": "production",
 			"android": {
 				"image": "latest"
 			},

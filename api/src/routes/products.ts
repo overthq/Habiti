@@ -5,13 +5,15 @@ import {
 	getProductReviews,
 	createProductReview,
 	getRelatedProducts,
-	getProducts
+	getProducts,
+	updateProduct
 } from '../controllers/products';
 import { authenticate, isAdmin, optionalAuth } from '../middleware/auth';
 
 const router: Router = Router();
 
 router.get('/:id', optionalAuth, getProductById);
+router.put('/:id', isAdmin, updateProduct);
 router.get('/:id/reviews', optionalAuth, getProductReviews);
 
 router.post('/:id/reviews', authenticate, createProductReview);

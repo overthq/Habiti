@@ -2,7 +2,6 @@ import React from 'react';
 import { View } from 'react-native';
 import { SelectGroup, Spacer, Typography, useTheme } from '@habiti/components';
 
-// import { MastercardIcon } from './CardIcons';
 import { CartQuery } from '../../types/api';
 
 interface SelectCardProps {

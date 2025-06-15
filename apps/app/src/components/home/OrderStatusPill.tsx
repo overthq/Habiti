@@ -12,9 +12,7 @@ interface OrderStatusPillProps {
 const statusToBadgeVariant: Record<OrderStatus, keyof ThemeObject['badge']> = {
 	[OrderStatus.Cancelled]: 'danger',
 	[OrderStatus.Pending]: 'warning',
-	[OrderStatus.Processing]: 'warning',
 	[OrderStatus.Completed]: 'success',
-	[OrderStatus.Delivered]: 'success',
 	[OrderStatus.PaymentPending]: 'warning'
 };
 

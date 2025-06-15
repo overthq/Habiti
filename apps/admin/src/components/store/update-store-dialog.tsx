@@ -50,13 +50,13 @@ const UpdateStoreDialog = ({ store }: UpdateStoreDialogProps) => {
 	};
 
 	return (
-		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)}>
-				<Dialog>
-					<DialogTrigger asChild>
-						<Button>Update Store</Button>
-					</DialogTrigger>
-					<DialogContent>
+		<Dialog>
+			<DialogTrigger asChild>
+				<Button>Update Store</Button>
+			</DialogTrigger>
+			<DialogContent>
+				<Form {...form}>
+					<form onSubmit={form.handleSubmit(onSubmit)}>
 						<DialogHeader>
 							<DialogTitle>Update Store</DialogTitle>
 						</DialogHeader>
@@ -93,10 +93,10 @@ const UpdateStoreDialog = ({ store }: UpdateStoreDialogProps) => {
 						<DialogFooter>
 							<Button type='submit'>Save changes</Button>
 						</DialogFooter>
-					</DialogContent>
-				</Dialog>
-			</form>
-		</Form>
+					</form>
+				</Form>
+			</DialogContent>
+		</Dialog>
 	);
 };
 

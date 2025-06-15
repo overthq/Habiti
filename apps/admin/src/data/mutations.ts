@@ -8,7 +8,8 @@ import {
 	type CreateProductBody,
 	type UpdateProductBody,
 	type UpdateStoreBody,
-	type UpdateUserBody
+	type UpdateUserBody,
+	type UpdatePayoutBody
 } from './types';
 import {
 	login,
@@ -20,7 +21,8 @@ import {
 	deleteProduct,
 	updateStore,
 	deleteStore,
-	updateUser
+	updateUser,
+	updatePayout
 } from './requests';
 import { useNavigate } from 'react-router';
 
@@ -101,7 +103,9 @@ export const useUpdateProductMutation = (id: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (body: UpdateProductBody) => updateProduct(id, body),
+		mutationFn: (body: UpdateProductBody) => {
+			return updateProduct(id, body);
+		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['products', id] });
 			toast.success('Product updated successfully');
@@ -168,6 +172,22 @@ export const useUpdateUserMutation = (id: string) => {
 		},
 		onError: () => {
 			toast.error('Failed to update user');
+		}
+	});
+};
+
+export const useUpdatePayoutMutation = (id: string) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (body: UpdatePayoutBody) => updatePayout(id, body),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['payouts'] });
+			queryClient.invalidateQueries({ queryKey: ['payouts', id] });
+			toast.success('Payout updated successfully');
+		},
+		onError: () => {
+			toast.error('Failed to update payout');
 		}
 	});
 };

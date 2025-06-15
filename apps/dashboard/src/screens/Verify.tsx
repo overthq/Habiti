@@ -1,45 +1,21 @@
 import { Button, Screen, Spacer, Typography } from '@habiti/components';
-import { RouteProp, useRoute } from '@react-navigation/native';
 import React from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 
 import CodeInput from '../components/verify/CodeInput';
-import useStore from '../state';
-import { useVerifyMutation } from '../types/api';
-import { AppStackParamList } from '../types/navigation';
-import { useShallow } from 'zustand/react/shallow';
 
 const Verify: React.FC = () => {
 	const [code, setCode] = React.useState('');
-	const { params } = useRoute<RouteProp<AppStackParamList, 'Verify'>>();
-	const { logIn } = useStore(
-		useShallow(state => ({
-			logIn: state.logIn
-		}))
-	);
-	const [{ fetching }, verify] = useVerifyMutation();
-	const { email } = params;
 
-	const handleSubmit = async () => {
-		if (email && code) {
-			const { data, error } = await verify({ input: { email, code } });
-
-			if (data?.verify) {
-				const { accessToken, userId } = data.verify;
-				logIn(userId, accessToken);
-			} else if (error) {
-				console.log(error);
-			}
-		}
-	};
+	const handleSubmit = async () => {};
 
 	return (
-		<Screen>
-			<Typography weight='bold' size='xxxlarge'>
-				Your verification code
+		<Screen style={{ justifyContent: 'center', paddingHorizontal: 16 }}>
+			<Typography size='xxxlarge' weight='bold'>
+				Enter verification code
 			</Typography>
 			<Typography variant='secondary'>
-				A verification code was sent to your email. Enter it below to verify.
+				A verification code was sent to your phone via SMS.
 			</Typography>
 			<TextInput
 				autoFocus
@@ -56,15 +32,12 @@ const Verify: React.FC = () => {
 					))}
 			</View>
 			<Spacer y={32} />
-			<Button onPress={handleSubmit} text='Verify' loading={fetching} />
+			<Button text='Verify' onPress={handleSubmit} />
 		</Screen>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		paddingHorizontal: 16
-	},
 	inputs: {
 		flexDirection: 'row',
 		alignItems: 'center',
