@@ -1011,7 +1011,17 @@ export type UpdateCartProductMutation = {
 		cartId: string;
 		productId: string;
 		quantity: number;
-		cart: { __typename?: 'Cart'; id: string };
+		cart: {
+			__typename?: 'Cart';
+			id: string;
+			fees: {
+				__typename?: 'Fees';
+				id: string;
+				transaction: number;
+				service: number;
+				total: number;
+			};
+		};
 		product: { __typename?: 'Product'; id: string };
 	};
 };
@@ -1687,6 +1697,12 @@ export const UpdateCartProductDocument = gql`
 			quantity
 			cart {
 				id
+				fees {
+					id
+					transaction
+					service
+					total
+				}
 			}
 			product {
 				id

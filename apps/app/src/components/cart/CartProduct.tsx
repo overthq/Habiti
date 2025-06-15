@@ -91,7 +91,7 @@ const CartProductQuantity: React.FC<CartProductQuantityProps> = ({
 			]}
 		>
 			<Pressable onPress={() => handleQuantityChange(-1)} hitSlop={12}>
-				<Icon name='minus' size={16} color='#000000' />
+				<Icon name='minus' size={16} color={theme.text.primary} />
 			</Pressable>
 			<Typography
 				size='small'
@@ -101,7 +101,7 @@ const CartProductQuantity: React.FC<CartProductQuantityProps> = ({
 				{quantity}
 			</Typography>
 			<Pressable onPress={() => handleQuantityChange(1)} hitSlop={12}>
-				<Icon name='plus' size={16} color='#000000' />
+				<Icon name='plus' size={16} color={theme.text.primary} />
 			</Pressable>
 		</View>
 	);
