@@ -23,6 +23,9 @@ interface CartContextType {
 	refresh: () => void;
 	selectedCard: string;
 	setSelectedCard: (cardId: string) => void;
+	updateProductQuantity: (productId: string, quantity: number) => void;
+	addProductToCart: (productId: string, quantity: number) => void;
+	removeProductFromCart: (productId: string) => void;
 }
 
 const CartContext = React.createContext<CartContextType | null>(null);
@@ -48,6 +51,13 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 	const { defaultCard, setPreference } = useStore();
 	const [selectedCard, setSelectedCard] = React.useState(defaultCard);
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
+
+	// Hacky, but reliable.
+	React.useEffect(() => {
+		if (data?.cart?.user?.cards.length && !defaultCard && !selectedCard) {
+			setSelectedCard(data.cart.user.cards[0]?.id);
+		}
+	}, [data?.cart, defaultCard, selectedCard]);
 
 	const disabled = isUpdatingCartProduct || isCreatingOrder;
 
@@ -75,14 +85,18 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 		});
 	};
 
-	const setProductQuantity = (productId: string, quantity: number) => {
-		updateCartProduct({
+	const updateProductQuantity = async (productId: string, quantity: number) => {
+		const { error } = await updateCartProduct({
 			input: {
 				cartId,
 				productId,
 				quantity
 			}
 		});
+
+		if (error) {
+			console.log('Error while updating product quantity:', error);
+		}
 	};
 
 	const handleSubmit = async () => {
@@ -118,7 +132,10 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 				refreshing,
 				refresh,
 				selectedCard,
-				setSelectedCard
+				setSelectedCard,
+				updateProductQuantity,
+				addProductToCart,
+				removeProductFromCart
 			}}
 		>
 			{children}

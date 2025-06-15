@@ -12,6 +12,7 @@ import { View, StyleSheet, Pressable } from 'react-native';
 
 import { CartQuery, useUpdateCartProductMutation } from '../../types/api';
 import useDebounced from '../../hooks/useDebounced';
+import { useCart } from './CartContext';
 
 interface CartProductProps {
 	cartProduct: CartQuery['cart']['products'][number];
@@ -21,6 +22,8 @@ interface CartProductProps {
 const CartProduct: React.FC<CartProductProps> = ({ cartProduct, onPress }) => {
 	const { product, quantity } = cartProduct;
 
+	const hasExceededMaxQuantity = quantity > product.quantity;
+
 	return (
 		<Row style={styles.container} onPress={onPress}>
 			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -29,7 +32,11 @@ const CartProduct: React.FC<CartProductProps> = ({ cartProduct, onPress }) => {
 				<View>
 					<Typography size='small'>{product.name}</Typography>
 					<Spacer y={2} />
-					<Typography size='small' weight='medium' variant='secondary'>
+					<Typography
+						size='small'
+						weight='medium'
+						variant={hasExceededMaxQuantity ? 'error' : 'secondary'}
+					>
 						{formatNaira(product.unitPrice * quantity)}
 					</Typography>
 				</View>
@@ -59,29 +66,11 @@ const CartProductQuantity: React.FC<CartProductQuantityProps> = ({
 }) => {
 	const { theme } = useTheme();
 	const [quantity, setQuantity] = React.useState(initialQuantity);
-	const [, updateCartProduct] = useUpdateCartProductMutation();
-	const debouncedQuantity = useDebounced(quantity, 300);
+	const { updateProductQuantity } = useCart();
 
 	const handleQuantityChange = (change: number) => {
-		// disabled states do not work in this case since they make the
-		// button default to the surrounding pressable.
-		const newQuantity = quantity + change;
-
-		// Allow decreasing even if current quantity is above max
-		if (newQuantity < 1 || (change > 0 && newQuantity > maxQuantity)) return;
-
-		setQuantity(newQuantity);
+		updateProductQuantity(cartProduct.productId, quantity + change);
 	};
-
-	React.useEffect(() => {
-		updateCartProduct({
-			input: {
-				cartId: cartProduct.cartId,
-				productId: cartProduct.productId,
-				quantity: debouncedQuantity
-			}
-		});
-	}, [debouncedQuantity]);
 
 	return (
 		<View
@@ -90,18 +79,24 @@ const CartProductQuantity: React.FC<CartProductQuantityProps> = ({
 				{ backgroundColor: theme.input.background }
 			]}
 		>
-			<Pressable onPress={() => handleQuantityChange(-1)} hitSlop={12}>
-				<Icon name='minus' size={16} color={theme.text.primary} />
-			</Pressable>
-			<Typography
-				size='small'
-				weight='medium'
-				style={{ width: 24, textAlign: 'center' }}
+			<Pressable
+				onPress={() =>
+					updateProductQuantity(cartProduct.productId, quantity - 1)
+				}
+				hitSlop={12}
 			>
+				<Icon name='minus' size={20} color={theme.text.primary} />
+			</Pressable>
+			<Typography weight='medium' style={{ width: 24, textAlign: 'center' }}>
 				{quantity}
 			</Typography>
-			<Pressable onPress={() => handleQuantityChange(1)} hitSlop={12}>
-				<Icon name='plus' size={16} color={theme.text.primary} />
+			<Pressable
+				onPress={() =>
+					updateProductQuantity(cartProduct.productId, quantity + 1)
+				}
+				hitSlop={12}
+			>
+				<Icon name='plus' size={20} color={theme.text.primary} />
 			</Pressable>
 		</View>
 	);
