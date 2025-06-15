@@ -6,13 +6,15 @@ import { View } from 'react-native';
 import CartProduct from './CartProduct';
 import { CartQuery } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
+import { useCart } from './CartContext';
 
 interface CartSummaryProps {
 	products: CartQuery['cart']['products'];
 }
 
-const CartSummary: React.FC<CartSummaryProps> = ({ products }) => {
+const CartSummary: React.FC<CartSummaryProps> = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { products, dispatch } = useCart();
 
 	const handleCartProductPress = React.useCallback(
 		(productId: string) => () => {

@@ -44,7 +44,7 @@ const CartProduct: React.FC<CartProductProps> = ({ cartProduct, onPress }) => {
 			<View>
 				<CartProductQuantity
 					cartProduct={cartProduct}
-					initialQuantity={quantity}
+					quantity={quantity}
 					maxQuantity={product.quantity}
 				/>
 				<Spacer y={4} />
@@ -55,18 +55,31 @@ const CartProduct: React.FC<CartProductProps> = ({ cartProduct, onPress }) => {
 
 interface CartProductQuantityProps {
 	cartProduct: CartQuery['cart']['products'][number];
-	initialQuantity: number;
+	quantity: number;
 	maxQuantity: number;
 }
 
 const CartProductQuantity: React.FC<CartProductQuantityProps> = ({
 	cartProduct,
-	initialQuantity,
+	quantity,
 	maxQuantity
 }) => {
 	const { theme } = useTheme();
-	const [quantity, setQuantity] = React.useState(initialQuantity);
-	const { updateProductQuantity } = useCart();
+	const { dispatch } = useCart();
+
+	const incrementProductQuantity = React.useCallback(() => {
+		dispatch({
+			type: 'update',
+			product: { ...cartProduct, quantity: quantity + 1 }
+		});
+	}, [cartProduct, dispatch, quantity]);
+
+	const decrementProductQuantity = React.useCallback(() => {
+		dispatch({
+			type: 'update',
+			product: { ...cartProduct, quantity: quantity - 1 }
+		});
+	}, [cartProduct, dispatch, quantity]);
 
 	return (
 		<View
@@ -75,23 +88,13 @@ const CartProductQuantity: React.FC<CartProductQuantityProps> = ({
 				{ backgroundColor: theme.input.background }
 			]}
 		>
-			<Pressable
-				onPress={() =>
-					updateProductQuantity(cartProduct.productId, quantity - 1)
-				}
-				hitSlop={12}
-			>
+			<Pressable onPress={decrementProductQuantity} hitSlop={12}>
 				<Icon name='minus' size={20} color={theme.text.primary} />
 			</Pressable>
 			<Typography weight='medium' style={{ width: 24, textAlign: 'center' }}>
 				{quantity}
 			</Typography>
-			<Pressable
-				onPress={() =>
-					updateProductQuantity(cartProduct.productId, quantity + 1)
-				}
-				hitSlop={12}
-			>
+			<Pressable onPress={incrementProductQuantity} hitSlop={12}>
 				<Icon name='plus' size={20} color={theme.text.primary} />
 			</Pressable>
 		</View>

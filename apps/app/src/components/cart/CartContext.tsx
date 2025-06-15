@@ -27,6 +27,10 @@ interface CartContextType {
 	updateProductQuantity: (productId: string, quantity: number) => void;
 	addProductToCart: (productId: string, quantity: number) => void;
 	removeProductFromCart: (productId: string) => void;
+	dispatch: React.Dispatch<{
+		type: 'add' | 'remove' | 'update';
+		product: CartQuery['cart']['products'][number];
+	}>;
 }
 
 const CartContext = React.createContext<CartContextType | null>(null);
@@ -140,7 +144,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 				setSelectedCard,
 				updateProductQuantity,
 				addProductToCart,
-				removeProductFromCart
+				removeProductFromCart,
+				dispatch
 			}}
 		>
 			{children}
@@ -167,7 +172,10 @@ const useCartReducer = (initialState: CartQuery['cart']['products']) => {
 				case 'update':
 					return state.map(product =>
 						product.productId === action.product.productId
-							? { ...product, quantity: action.product.quantity }
+							? {
+									...product,
+									quantity: Math.max(action.product.quantity, 0)
+								}
 							: product
 					);
 			}
@@ -178,7 +186,13 @@ const useCartReducer = (initialState: CartQuery['cart']['products']) => {
 	return { state, dispatch };
 };
 
-const CartContextWrapper: React.FC<CartProviderProps> = ({ children }) => {
+interface CartContextWrapperProps {
+	children: React.ReactNode;
+}
+
+const CartContextWrapper: React.FC<CartContextWrapperProps> = ({
+	children
+}) => {
 	const {
 		params: { cartId }
 	} = useRoute<RouteProp<AppStackParamList, 'Cart'>>();

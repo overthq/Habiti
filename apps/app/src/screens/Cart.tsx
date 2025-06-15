@@ -14,7 +14,7 @@ import CartTotal from '../components/cart/CartTotal';
 import SelectCard from '../components/cart/SelectCard';
 import StoreInfo from '../components/cart/StoreInfo';
 import useGoBack from '../hooks/useGoBack';
-import { CartProvider, useCart } from '../components/cart/CartContext';
+import CartProvider, { useCart } from '../components/cart/CartContext';
 
 // There is a need to master optimistic updates on this screen,
 // It is also important to make use of tasteful animations to make
