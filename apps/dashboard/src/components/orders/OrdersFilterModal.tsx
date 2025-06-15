@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { BottomModal, Spacer, Typography } from '@habiti/components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -45,12 +45,6 @@ const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({ modalRef }) => {
 						Filter
 					</Typography>
 					<Spacer y={8} />
-					{/* <View>
-					<View style={styles.row}>
-						<Typography weight='medium'>Status</Typography>
-						<Typography>{status ?? 'Default'}</Typography>
-					</View>
-				</View> */}
 					<AccordionRow
 						title='Sort by'
 						open={open === 'sort-by'}
@@ -81,14 +75,5 @@ const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({ modalRef }) => {
 		</BottomModal>
 	);
 };
-
-const styles = StyleSheet.create({
-	row: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		paddingVertical: 12
-	}
-});
 
 export default OrdersFilterModal;

@@ -26,7 +26,7 @@ interface ConfirmationModalProps {
 	children: React.ReactNode;
 }
 
-const ConfirmationModalProvider: React.FC<ConfirmationModalProps> = ({
+export const ConfirmationModalProvider: React.FC<ConfirmationModalProps> = ({
 	children
 }) => {
 	const [title, setTitle] = React.useState('');
@@ -69,7 +69,7 @@ const ConfirmationModalProvider: React.FC<ConfirmationModalProps> = ({
 			}}
 		>
 			{children}
-			<BottomModal modalRef={modalRef}>
+			<BottomModal modalRef={modalRef} enableDynamicSizing>
 				<BottomSheetView
 					style={{ paddingBottom: bottom, paddingHorizontal: 16 }}
 				>
@@ -80,8 +80,17 @@ const ConfirmationModalProvider: React.FC<ConfirmationModalProps> = ({
 					<Typography>{description}</Typography>
 					<Spacer y={16} />
 					<View style={{ flexDirection: 'row', gap: 16 }}>
-						<Button onPress={onConfirm} text={confirmText} />
-						<Button onPress={onCancel} text={cancelText} />
+						<Button
+							variant='destructive'
+							onPress={onCancel}
+							text={cancelText}
+							style={{ flex: 1 }}
+						/>
+						<Button
+							onPress={onConfirm}
+							text={confirmText}
+							style={{ flex: 1 }}
+						/>
 					</View>
 				</BottomSheetView>
 			</BottomModal>
@@ -100,5 +109,3 @@ export const useConfirmationModal = () => {
 
 	return context;
 };
-
-export { ConfirmationModalProvider, ConfirmationModalContext };
