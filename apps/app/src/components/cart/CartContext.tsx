@@ -17,6 +17,7 @@ import useRefresh from '../../hooks/useRefresh';
 
 interface CartContextType {
 	cart: CartQuery['cart'];
+	products: CartQuery['cart']['products'];
 	disabled: boolean;
 	handleSubmit: () => Promise<void>;
 	refreshing: boolean;
@@ -32,15 +33,17 @@ const CartContext = React.createContext<CartContextType | null>(null);
 
 interface CartProviderProps {
 	children: React.ReactNode;
+	cart: CartQuery['cart'];
+	refreshing: boolean;
+	refresh: () => void;
 }
 
-export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
-	const {
-		params: { cartId }
-	} = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
-	const [{ data, fetching }, refetch] = useCartQuery({
-		variables: { cartId }
-	});
+export const CartProvider: React.FC<CartProviderProps> = ({
+	children,
+	cart,
+	refreshing,
+	refresh
+}) => {
 	const [{ fetching: isUpdatingCartProduct }, updateCartProduct] =
 		useUpdateCartProductMutation();
 	const [{ fetching: isCreatingOrder }, createOrder] = useCreateOrderMutation();
@@ -50,25 +53,24 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
 	const { defaultCard, setPreference } = useStore();
 	const [selectedCard, setSelectedCard] = React.useState(defaultCard);
-	const { refreshing, refresh } = useRefresh({ fetching, refetch });
+	const { state, dispatch } = useCartReducer(cart.products);
 
-	// Hacky, but reliable.
 	React.useEffect(() => {
-		if (data?.cart?.user?.cards.length && !defaultCard && !selectedCard) {
-			setSelectedCard(data.cart.user.cards[0]?.id);
+		const firstCard = cart.user.cards[0];
+
+		if (firstCard && !defaultCard && !selectedCard) {
+			setSelectedCard(firstCard.id);
 		}
-	}, [data?.cart, defaultCard, selectedCard]);
+	}, [cart.user.cards, defaultCard, selectedCard]);
 
 	const disabled = isUpdatingCartProduct || isCreatingOrder;
 
-	const cart = data?.cart;
-
 	const addProductToCart = (productId: string, quantity: number) => {
-		if (quantity < 1) return;
+		// if (quantity < 1) return;
 
 		updateCartProduct({
 			input: {
-				cartId,
+				cartId: cart.id,
 				productId,
 				quantity
 			}
@@ -78,7 +80,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 	const removeProductFromCart = (productId: string) => {
 		updateCartProduct({
 			input: {
-				cartId,
+				cartId: cart.id,
 				productId,
 				quantity: 0
 			}
@@ -86,9 +88,11 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 	};
 
 	const updateProductQuantity = async (productId: string, quantity: number) => {
+		if (quantity < 1) return removeProductFromCart(productId);
+
 		const { error } = await updateCartProduct({
 			input: {
-				cartId,
+				cartId: cart.id,
 				productId,
 				quantity
 			}
@@ -102,10 +106,10 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 	const handleSubmit = async () => {
 		const { error, data: orderData } = await createOrder({
 			input: {
-				cartId,
+				cartId: cart.id,
 				cardId: selectedCard,
-				transactionFee: data?.cart.fees.total ?? 0,
-				serviceFee: data?.cart.fees.service ?? 0
+				transactionFee: cart.fees.total ?? 0,
+				serviceFee: cart.fees.service ?? 0
 			}
 		});
 
@@ -127,6 +131,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 		<CartContext.Provider
 			value={{
 				cart,
+				products: state,
 				disabled,
 				handleSubmit,
 				refreshing,
@@ -143,6 +148,55 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 	);
 };
 
+const useCartReducer = (initialState: CartQuery['cart']['products']) => {
+	const [state, dispatch] = React.useReducer(
+		(
+			state: CartQuery['cart']['products'],
+			action: {
+				type: 'add' | 'remove' | 'update';
+				product: CartQuery['cart']['products'][number];
+			}
+		) => {
+			switch (action.type) {
+				case 'add':
+					return [...state, action.product];
+				case 'remove':
+					return state.filter(
+						product => product.productId !== action.product.productId
+					);
+				case 'update':
+					return state.map(product =>
+						product.productId === action.product.productId
+							? { ...product, quantity: action.product.quantity }
+							: product
+					);
+			}
+		},
+		initialState
+	);
+
+	return { state, dispatch };
+};
+
+const CartContextWrapper: React.FC<CartProviderProps> = ({ children }) => {
+	const {
+		params: { cartId }
+	} = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
+	const [{ data, fetching }, refetch] = useCartQuery({
+		variables: { cartId }
+	});
+
+	const { refreshing, refresh } = useRefresh({ fetching, refetch });
+
+	if (!data?.cart) return null;
+
+	return (
+		<CartProvider cart={data.cart} refreshing={refreshing} refresh={refresh}>
+			{children}
+		</CartProvider>
+	);
+};
+
 export const useCart = () => {
 	const context = React.useContext(CartContext);
 
@@ -153,4 +207,4 @@ export const useCart = () => {
 	return context;
 };
 
-export default CartContext;
+export default CartContextWrapper;

@@ -68,10 +68,6 @@ const CartProductQuantity: React.FC<CartProductQuantityProps> = ({
 	const [quantity, setQuantity] = React.useState(initialQuantity);
 	const { updateProductQuantity } = useCart();
 
-	const handleQuantityChange = (change: number) => {
-		updateProductQuantity(cartProduct.productId, quantity + change);
-	};
-
 	return (
 		<View
 			style={[
