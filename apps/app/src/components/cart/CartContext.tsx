@@ -66,26 +66,17 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 
 	const disabled = isUpdatingCartProduct || isCreatingOrder;
 
-	const removeProductFromCart = (productId: string) => {
-		dispatch({ type: 'remove', productId });
+	// Batch updates to prevent race conditions
+	const pendingUpdatesRef = React.useRef<Map<string, number>>(new Map());
 
-		debouncedRemoveCartProduct(productId);
-	};
+	const processBatchedUpdates = React.useCallback(() => {
+		const updates = Array.from(pendingUpdatesRef.current.entries());
+		if (updates.length === 0) return;
 
-	const debouncedRemoveCartProduct = useDebounce((productId: string) => {
-		console.log('Removing product:', productId);
-		updateCartProduct({
-			input: {
-				cartId: cart.id,
-				productId,
-				quantity: 0
-			}
-		});
-	}, 1000);
+		console.log('Processing batched updates:', updates);
 
-	const debouncedUpdateCartProduct = useDebounce(
-		(productId: string, quantity: number) => {
-			console.log('Updating product quantity:', productId, quantity);
+		// Process all updates
+		updates.forEach(([productId, quantity]) => {
 			updateCartProduct({
 				input: {
 					cartId: cart.id,
@@ -93,15 +84,32 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 					quantity
 				}
 			});
-		},
+		});
+
+		// Clear the pending updates
+		pendingUpdatesRef.current.clear();
+	}, [cart.id, updateCartProduct]);
+
+	const debouncedProcessBatchedUpdates = useDebounce(
+		processBatchedUpdates,
 		1000
 	);
+
+	const removeProductFromCart = (productId: string) => {
+		dispatch({ type: 'remove', productId });
+
+		// Add to batch with quantity 0 (removal)
+		pendingUpdatesRef.current.set(productId, 0);
+		debouncedProcessBatchedUpdates();
+	};
 
 	const updateProductQuantity = async (productId: string, quantity: number) => {
 		// if (quantity < 1) return removeProductFromCart(productId);
 		dispatch({ type: 'update', productId, quantity });
 
-		debouncedUpdateCartProduct(productId, quantity);
+		// Add to batch - this will overwrite any previous pending update for the same product
+		pendingUpdatesRef.current.set(productId, quantity);
+		debouncedProcessBatchedUpdates();
 	};
 
 	const handleSubmit = async () => {
