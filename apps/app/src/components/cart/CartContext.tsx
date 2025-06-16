@@ -64,10 +64,13 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 		}
 	}, [cart.user.cards, defaultCard, selectedCard]);
 
-	const disabled = isUpdatingCartProduct || isCreatingOrder;
-
 	// Batch updates to prevent race conditions
 	const pendingUpdatesRef = React.useRef<Map<string, number>>(new Map());
+
+	const disabled =
+		isUpdatingCartProduct ||
+		isCreatingOrder ||
+		pendingUpdatesRef.current.size > 0;
 
 	const processBatchedUpdates = React.useCallback(() => {
 		const updates = Array.from(pendingUpdatesRef.current.entries());
@@ -128,7 +131,6 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 			console.log('Error while creating order:', error);
 		} else {
 			if (!selectedCard && orderData?.createOrder.total) {
-				// TODO: Open a modal to add a payment method (with the total as an argument)
 				navigate('Add Card', { orderId: orderData.createOrder.id });
 			} else {
 				goBack();
