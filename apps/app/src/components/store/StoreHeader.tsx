@@ -112,12 +112,7 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 				<Animated.View
 					entering={FadeInDown}
 					exiting={FadeOutDown}
-					style={{
-						flexDirection: 'row',
-						alignItems: 'center',
-						paddingHorizontal: 16,
-						paddingBottom: 12
-					}}
+					style={styles.search}
 				>
 					<Animated.View
 						style={[styles.input, { backgroundColor: theme.input.background }]}
@@ -127,7 +122,7 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 						<TextInput
 							ref={inputRef}
 							value={searchTerm}
-							placeholder='Search products and stores'
+							placeholder={`Search ${store.name} products`}
 							placeholderTextColor={theme.text.secondary}
 							inputMode='search'
 							style={[styles.inputText, { color: theme.input.text }]}
@@ -200,6 +195,12 @@ const styles = StyleSheet.create({
 		marginLeft: 8,
 		fontSize: 16,
 		height: '100%'
+	},
+	search: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		paddingHorizontal: 16,
+		paddingBottom: 12
 	}
 });
 
