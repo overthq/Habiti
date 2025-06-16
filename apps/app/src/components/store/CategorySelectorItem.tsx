@@ -1,11 +1,6 @@
 import React from 'react';
 import { Pressable, View } from 'react-native';
 import { Spacer, Typography, useTheme } from '@habiti/components';
-import Animated, {
-	useAnimatedStyle,
-	withSpring,
-	useSharedValue
-} from 'react-native-reanimated';
 
 interface CategorySelectorItemProps {
 	name: string;
@@ -19,21 +14,6 @@ const CategorySelectorItem: React.FC<CategorySelectorItemProps> = ({
 	active
 }) => {
 	const { theme } = useTheme();
-	const scale = useSharedValue(active ? 1 : 0);
-
-	React.useEffect(() => {
-		scale.value = withSpring(active ? 1 : 0, {
-			damping: 15,
-			stiffness: 120
-		});
-	}, [active]);
-
-	const animatedStyle = useAnimatedStyle(() => ({
-		transform: [{ scaleX: scale.value }],
-		height: 2,
-		backgroundColor: active ? theme.text.primary : 'transparent',
-		width: '100%'
-	}));
 
 	return (
 		<Pressable onPress={onPress}>
@@ -44,7 +24,13 @@ const CategorySelectorItem: React.FC<CategorySelectorItemProps> = ({
 			</View>
 			<Spacer y={8} />
 			<View style={{ alignItems: 'center' }}>
-				<Animated.View style={animatedStyle} />
+				<View
+					style={{
+						height: 2,
+						backgroundColor: active ? theme.text.primary : 'transparent',
+						width: '100%'
+					}}
+				/>
 			</View>
 		</Pressable>
 	);

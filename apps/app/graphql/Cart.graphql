@@ -119,6 +119,17 @@ mutation UpdateCartProduct($input: UpdateCartProductInput!) {
 		quantity
 		cart {
 			id
+			products {
+				cartId
+				productId
+				quantity
+			}
+			fees {
+				id
+				transaction
+				service
+				total
+			}
 		}
 		product {
 			id

@@ -2,7 +2,7 @@ import { FileUpload } from 'graphql-upload';
 
 import { Resolver } from '../../types/resolvers';
 import { uploadImages } from '../../utils/upload';
-import { canManageStore } from '../permissions';
+import { canManageStore, storeAuthorizedResolver } from '../permissions';
 
 export interface CreateProductArgs {
 	input: {
@@ -110,15 +110,17 @@ export interface DeleteProductArgs {
 	id: string;
 }
 
-export const deleteProduct: Resolver<DeleteProductArgs> = async (
-	_,
-	{ id },
-	ctx
-) => {
-	const product = await ctx.prisma.product.delete({ where: { id } });
+export const deleteProduct = storeAuthorizedResolver<DeleteProductArgs>(
+	async (_, { id }, ctx) => {
+		if (!ctx.storeId) {
+			throw new Error('No storeId provided');
+		}
 
-	return product;
-};
+		return ctx.prisma.product.delete({
+			where: { id, storeId: ctx.storeId! }
+		});
+	}
+);
 
 export interface UpdateProductImagesArgs {
 	id: string;

@@ -9,7 +9,8 @@ import {
 	MutationUpdateCartProductArgs,
 	MutationAddToWatchlistArgs,
 	MutationCreateOrderArgs,
-	CreateOrderMutation
+	CreateOrderMutation,
+	AddToCartMutation
 } from '../types/api';
 
 const customCache = cacheExchange({
@@ -29,7 +30,8 @@ const customCache = cacheExchange({
 			unfollowStore(_result, args: MutationUnfollowStoreArgs, cache) {
 				cache.invalidate({ __typename: 'Store', id: args.storeId });
 			},
-			addToCart(_result, args: MutationAddToCartArgs, cache) {
+			addToCart(result: AddToCartMutation, args: MutationAddToCartArgs, cache) {
+				cache.invalidate({ __typename: 'Cart', id: result.addToCart.cartId });
 				cache.invalidate({ __typename: 'Product', id: args.input.productId });
 				cache.invalidate({ __typename: 'Store', id: args.input.storeId });
 			},

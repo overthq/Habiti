@@ -10,8 +10,8 @@ import {
 } from '@habiti/components';
 import { View, StyleSheet, Pressable } from 'react-native';
 
-import { CartQuery, useUpdateCartProductMutation } from '../../types/api';
-import useDebounced from '../../hooks/useDebounced';
+import { CartQuery } from '../../types/api';
+import { useCart } from './CartContext';
 
 interface CartProductProps {
 	cartProduct: CartQuery['cart']['products'][number];
@@ -21,6 +21,8 @@ interface CartProductProps {
 const CartProduct: React.FC<CartProductProps> = ({ cartProduct, onPress }) => {
 	const { product, quantity } = cartProduct;
 
+	const hasExceededMaxQuantity = quantity > product.quantity;
+
 	return (
 		<Row style={styles.container} onPress={onPress}>
 			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -29,7 +31,11 @@ const CartProduct: React.FC<CartProductProps> = ({ cartProduct, onPress }) => {
 				<View>
 					<Typography size='small'>{product.name}</Typography>
 					<Spacer y={2} />
-					<Typography size='small' weight='medium' variant='secondary'>
+					<Typography
+						size='small'
+						weight='medium'
+						variant={hasExceededMaxQuantity ? 'error' : 'secondary'}
+					>
 						{formatNaira(product.unitPrice * quantity)}
 					</Typography>
 				</View>
@@ -37,7 +43,7 @@ const CartProduct: React.FC<CartProductProps> = ({ cartProduct, onPress }) => {
 			<View>
 				<CartProductQuantity
 					cartProduct={cartProduct}
-					initialQuantity={quantity}
+					quantity={quantity}
 					maxQuantity={product.quantity}
 				/>
 				<Spacer y={4} />
@@ -48,40 +54,25 @@ const CartProduct: React.FC<CartProductProps> = ({ cartProduct, onPress }) => {
 
 interface CartProductQuantityProps {
 	cartProduct: CartQuery['cart']['products'][number];
-	initialQuantity: number;
+	quantity: number;
 	maxQuantity: number;
 }
 
 const CartProductQuantity: React.FC<CartProductQuantityProps> = ({
 	cartProduct,
-	initialQuantity,
+	quantity,
 	maxQuantity
 }) => {
 	const { theme } = useTheme();
-	const [quantity, setQuantity] = React.useState(initialQuantity);
-	const [, updateCartProduct] = useUpdateCartProductMutation();
-	const debouncedQuantity = useDebounced(quantity, 300);
+	const { updateProductQuantity } = useCart();
 
-	const handleQuantityChange = (change: number) => {
-		// disabled states do not work in this case since they make the
-		// button default to the surrounding pressable.
-		const newQuantity = quantity + change;
+	const incrementProductQuantity = React.useCallback(() => {
+		updateProductQuantity(cartProduct.productId, quantity + 1);
+	}, [cartProduct.productId, quantity, updateProductQuantity]);
 
-		// Allow decreasing even if current quantity is above max
-		if (newQuantity < 1 || (change > 0 && newQuantity > maxQuantity)) return;
-
-		setQuantity(newQuantity);
-	};
-
-	React.useEffect(() => {
-		updateCartProduct({
-			input: {
-				cartId: cartProduct.cartId,
-				productId: cartProduct.productId,
-				quantity: debouncedQuantity
-			}
-		});
-	}, [debouncedQuantity]);
+	const decrementProductQuantity = React.useCallback(() => {
+		updateProductQuantity(cartProduct.productId, Math.max(quantity - 1, 0));
+	}, [cartProduct.productId, quantity, updateProductQuantity]);
 
 	return (
 		<View
@@ -90,18 +81,14 @@ const CartProductQuantity: React.FC<CartProductQuantityProps> = ({
 				{ backgroundColor: theme.input.background }
 			]}
 		>
-			<Pressable onPress={() => handleQuantityChange(-1)} hitSlop={12}>
-				<Icon name='minus' size={16} color='#000000' />
+			<Pressable onPress={decrementProductQuantity} hitSlop={12}>
+				<Icon name='minus' size={20} color={theme.text.primary} />
 			</Pressable>
-			<Typography
-				size='small'
-				weight='medium'
-				style={{ width: 24, textAlign: 'center' }}
-			>
+			<Typography weight='medium' style={{ width: 24, textAlign: 'center' }}>
 				{quantity}
 			</Typography>
-			<Pressable onPress={() => handleQuantityChange(1)} hitSlop={12}>
-				<Icon name='plus' size={16} color='#000000' />
+			<Pressable onPress={incrementProductQuantity} hitSlop={12}>
+				<Icon name='plus' size={20} color={theme.text.primary} />
 			</Pressable>
 		</View>
 	);

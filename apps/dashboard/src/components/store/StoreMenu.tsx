@@ -1,5 +1,5 @@
 import React from 'react';
-import { Linking, View } from 'react-native';
+import { Alert, Linking, View } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import StoreMenuRow from './StoreMenuRow';
@@ -7,7 +7,7 @@ import useStore from '../../state';
 import type { StoreStackParamList } from '../../types/navigation';
 import StoreSelectModal from './StoreSelectModal';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { Separator, Spacer } from '@habiti/components';
+import { Separator } from '@habiti/components';
 import { StoreQuery } from '../../types/api';
 
 const PRIVACY_POLICY_URL = 'https://habiti.app/privacy-policy';
@@ -29,6 +29,16 @@ const StoreMenu: React.FC<StoreMenuProps> = ({ store }) => {
 		},
 		[]
 	);
+
+	const handleLogOut = React.useCallback(() => {
+		Alert.alert('Log out', 'Are you sure you want to log out?', [
+			{
+				text: 'Cancel',
+				style: 'cancel'
+			},
+			{ text: 'Log out', onPress: logOut }
+		]);
+	}, [logOut]);
 
 	return (
 		<View>
@@ -68,7 +78,7 @@ const StoreMenu: React.FC<StoreMenuProps> = ({ store }) => {
 			<Separator style={{ marginHorizontal: 16, marginVertical: 8 }} />
 			<StoreMenuRow
 				title='Log out'
-				onPress={logOut}
+				onPress={handleLogOut}
 				icon='log-out'
 				destructive
 			/>

@@ -99,7 +99,11 @@ export const updateCartProduct = authenticatedResolver<UpdateCartProductArgs>(
 	async (_, { input: { cartId, productId, quantity } }, ctx) => {
 		return ctx.prisma.cartProduct.update({
 			where: { cartId_productId: { cartId, productId } },
-			data: { quantity }
+			data: { quantity },
+			include: {
+				cart: true,
+				product: true
+			}
 		});
 	}
 );

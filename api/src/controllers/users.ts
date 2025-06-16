@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import prismaClient from '../config/prisma';
 import { hydrateQuery } from '../utils/queries';
 
-async function loadCurrentUser(req: Request) {
+const loadCurrentUser = async (req: Request) => {
 	if (!req.auth) {
 		throw new Error('User not authenticated');
 	}
@@ -17,16 +17,16 @@ async function loadCurrentUser(req: Request) {
 	}
 
 	return user;
-}
+};
 
 // GET /users/current
-export async function getCurrentUser(req: Request, res: Response) {
+export const getCurrentUser = async (req: Request, res: Response) => {
 	const user = await loadCurrentUser(req);
 	return res.json({ user });
-}
+};
 
 // PUT /users/current
-export async function updateCurrentUser(req: Request, res: Response) {
+export const updateCurrentUser = async (req: Request, res: Response) => {
 	const { name, email } = req.body;
 
 	if (!req.auth) {
@@ -39,10 +39,10 @@ export async function updateCurrentUser(req: Request, res: Response) {
 	});
 
 	return res.json({ user: updatedUser });
-}
+};
 
 // DELETE /users/current
-export async function deleteCurrentUser(req: Request, res: Response) {
+export const deleteCurrentUser = async (req: Request, res: Response) => {
 	if (!req.auth) {
 		return res.status(401).json({ error: 'User not authenticated' });
 	}
@@ -50,10 +50,10 @@ export async function deleteCurrentUser(req: Request, res: Response) {
 	await prismaClient.user.delete({ where: { id: req.auth.id } });
 
 	return res.status(204).json({ message: 'User deleted' });
-}
+};
 
 // GET /users/current/followed-stores
-export async function getFollowedStores(req: Request, res: Response) {
+export const getFollowedStores = async (req: Request, res: Response) => {
 	if (!req.auth) {
 		return res.status(401).json({ error: 'User not authenticated' });
 	}
@@ -64,10 +64,10 @@ export async function getFollowedStores(req: Request, res: Response) {
 	});
 
 	return res.json({ followedStores });
-}
+};
 
 // GET /users/current/orders
-export async function getOrders(req: Request, res: Response) {
+export const getOrders = async (req: Request, res: Response) => {
 	const query = hydrateQuery(req.query);
 
 	if (!req.auth) {
@@ -80,10 +80,10 @@ export async function getOrders(req: Request, res: Response) {
 	});
 
 	return res.json({ orders });
-}
+};
 
 // GET /users/current/carts
-export async function getCarts(req: Request, res: Response) {
+export const getCarts = async (req: Request, res: Response) => {
 	if (!req.auth) {
 		return res.status(401).json({ error: 'User not authenticated' });
 	}
@@ -94,10 +94,10 @@ export async function getCarts(req: Request, res: Response) {
 	});
 
 	return res.json({ carts });
-}
+};
 
 // GET /users/current/cards
-export async function getCards(req: Request, res: Response) {
+export const getCards = async (req: Request, res: Response) => {
 	if (!req.auth) {
 		return res.status(401).json({ error: 'User not authenticated' });
 	}
@@ -107,10 +107,10 @@ export async function getCards(req: Request, res: Response) {
 	});
 
 	return res.json({ cards });
-}
+};
 
 // GET /users/managed-stores
-export async function getManagedStores(req: Request, res: Response) {
+export const getManagedStores = async (req: Request, res: Response) => {
 	if (!req.auth) {
 		return res.status(401).json({ error: 'User not authenticated' });
 	}
@@ -121,10 +121,10 @@ export async function getManagedStores(req: Request, res: Response) {
 	});
 
 	return res.json({ stores });
-}
+};
 
 // GET /users/current/delivery-addresses
-export async function getDeliveryAddresses(req: Request, res: Response) {
+export const getDeliveryAddresses = async (req: Request, res: Response) => {
 	if (!req.auth) {
 		return res.status(401).json({ error: 'User not authenticated' });
 	}
@@ -134,10 +134,10 @@ export async function getDeliveryAddresses(req: Request, res: Response) {
 	});
 
 	return res.json({ addresses });
-}
+};
 
 // GET /users
-export async function getUsers(req: Request, res: Response) {
+export const getUsers = async (req: Request, res: Response) => {
 	if (!req.auth) {
 		return res.status(401).json({ error: 'User not authenticated' });
 	}
@@ -149,10 +149,10 @@ export async function getUsers(req: Request, res: Response) {
 	});
 
 	return res.json({ users });
-}
+};
 
 // GET /users/:id
-export async function getUser(req: Request, res: Response) {
+export const getUser = async (req: Request, res: Response) => {
 	if (!req.auth) {
 		return res.status(401).json({ error: 'User not authenticated' });
 	}
@@ -165,4 +165,14 @@ export async function getUser(req: Request, res: Response) {
 
 	const user = await prismaClient.user.findUnique({ where: { id } });
 	return res.json({ user });
-}
+};
+
+// GET /users/current/home
+export const getUserHome = async (req: Request, res: Response) => {
+	if (!req.auth) {
+		return res.status(401).json({ error: 'User not authenticated' });
+	}
+
+	const user = await loadCurrentUser(req);
+	return res.json({ user });
+};

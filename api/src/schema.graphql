@@ -228,7 +228,7 @@ type StoreEdge {
 
 enum OrderStatus {
 	Pending
-	Delivered
+	PaymentPending
 	Completed
 	Cancelled
 }

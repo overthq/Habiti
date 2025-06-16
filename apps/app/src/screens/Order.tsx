@@ -1,6 +1,6 @@
 import {
 	Button,
-	Screen,
+	ScrollableScreen,
 	Spacer,
 	Typography,
 	useTheme
@@ -12,7 +12,7 @@ import {
 	useRoute
 } from '@react-navigation/native';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, RefreshControl } from 'react-native';
 
 import OrderMeta from '../components/order/OrderMeta';
 import OrderProduct from '../components/order/OrderProduct';
@@ -24,6 +24,7 @@ import {
 	useUpdateOrderMutation
 } from '../types/api';
 import { AppStackParamList, HomeStackParamList } from '../types/navigation';
+import useRefresh from '../hooks/useRefresh';
 
 // What actions should users be able to carry out on their orders on this screen?
 
@@ -89,9 +90,13 @@ const Order: React.FC = () => {
 		params: { orderId }
 	} = useRoute<RouteProp<HomeStackParamList, 'Home.Order'>>();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const [{ data, fetching }] = useOrderQuery({ variables: { orderId } });
+	const [{ data, fetching }, refetch] = useOrderQuery({
+		variables: { orderId }
+	});
 	useGoBack();
 	const order = data?.order;
+	const { theme } = useTheme();
+	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 
 	const handleOrderProductPress = React.useCallback(
 		(productId: string) => () => {
@@ -100,12 +105,21 @@ const Order: React.FC = () => {
 		[]
 	);
 
-	if (fetching || !order) {
+	if (fetching && !order) {
 		return <View style={styles.container} />;
 	}
 
 	return (
-		<Screen style={styles.container}>
+		<ScrollableScreen
+			style={styles.container}
+			refreshControl={
+				<RefreshControl
+					refreshing={refreshing}
+					onRefresh={refresh}
+					tintColor={theme.text.secondary}
+				/>
+			}
+		>
 			<StoreMeta store={order.store} />
 			<Spacer y={12} />
 			<View>
@@ -121,7 +135,7 @@ const Order: React.FC = () => {
 			{order.status === OrderStatus.PaymentPending && (
 				<PaymentPendingWarning orderId={orderId} />
 			)}
-		</Screen>
+		</ScrollableScreen>
 	);
 };
 

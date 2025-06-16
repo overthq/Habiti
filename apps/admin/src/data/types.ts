@@ -51,10 +51,9 @@ export interface CreateAdminResponse {
 
 export enum OrderStatus {
 	Pending = 'Pending',
-	Processing = 'Processing',
+	PaymentPending = 'PaymentPending',
 	Completed = 'Completed',
-	Cancelled = 'Cancelled',
-	Delivered = 'Delivered'
+	Cancelled = 'Cancelled'
 }
 
 export interface OrderProduct {
@@ -140,12 +139,25 @@ export interface Store {
 	updatedAt: string;
 }
 
+export enum PayoutStatus {
+	Pending = 'Pending',
+	Success = 'Success',
+	Failure = 'Failure'
+}
+
 export interface Payout {
 	id: string;
+	storeId: string;
 	amount: number;
-	status: string;
+	status: PayoutStatus;
 	createdAt: string;
 	updatedAt: string;
+	store: {
+		id: string;
+		name: string;
+		description: string;
+		unlisted: boolean;
+	};
 }
 
 export interface GetStoresResponse {
@@ -212,4 +224,25 @@ export interface GetOverviewResponse {
 	totalProducts: number;
 	totalUsers: number;
 	totalRevenue: number;
+}
+
+export interface PayoutFilters {
+	filter?: Record<string, string | number>;
+	orderBy?: Record<string, 'asc' | 'desc'>;
+}
+
+export interface GetPayoutsResponse {
+	payouts: Payout[];
+}
+
+export interface GetPayoutResponse {
+	payout: Payout;
+}
+
+export interface UpdatePayoutBody {
+	status: PayoutStatus;
+}
+
+export interface UpdatePayoutResponse {
+	payout: Payout;
 }

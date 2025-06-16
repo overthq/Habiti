@@ -33,7 +33,10 @@ const BottomModal: React.FC<BottomModalProps> = ({ modalRef, ...props }) => {
 			index={0}
 			ref={modalRef}
 			backgroundStyle={{ backgroundColor: theme.modal.background }}
-			handleIndicatorStyle={{ backgroundColor: theme.text.primary }}
+			handleIndicatorStyle={{
+				backgroundColor: theme.text.tertiary,
+				width: 36
+			}}
 			enablePanDownToClose
 			backdropComponent={renderBackdrop}
 			{...props}

@@ -195,7 +195,6 @@ export interface ProductReview {
 export enum OrderStatus {
 	Cancelled = 'Cancelled',
 	Pending = 'Pending',
-	Processing = 'Processing',
-	Completed = 'Completed',
-	Delivered = 'Delivered'
+	PaymentPending = 'PaymentPending',
+	Completed = 'Completed'
 }

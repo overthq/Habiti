@@ -6,9 +6,7 @@ import { OrderStatus } from '../../types/api';
 const StatusColorMap = {
 	[OrderStatus.Cancelled]: 'danger',
 	[OrderStatus.Completed]: 'success',
-	[OrderStatus.Delivered]: 'success',
-	[OrderStatus.Pending]: 'warning',
-	[OrderStatus.Processing]: 'warning'
+	[OrderStatus.Pending]: 'warning'
 } as const;
 
 interface StatusPillProps {

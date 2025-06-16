@@ -1,28 +1,17 @@
 import React from 'react';
 import { Typography, useTheme } from '@habiti/components';
-import {
-	NavigationProp,
-	RouteProp,
-	useNavigation,
-	useRoute
-} from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { View, RefreshControl, StyleSheet } from 'react-native';
 
 import OrdersListItem from '../../components/orders/OrdersListItem';
-import { OrdersQuery, OrderStatus, useOrdersQuery } from '../../types/api';
-import { MainTabParamList, OrdersStackParamList } from '../../types/navigation';
-import useRefresh from '../../hooks/useRefresh';
-import OrdersFilter from './OrdersFilter';
+import { OrdersQuery } from '../../types/api';
+import { OrdersStackParamList } from '../../types/navigation';
+import { useOrdersContext } from './OrdersContext';
 
 const OrdersList = () => {
-	const { params } = useRoute<RouteProp<MainTabParamList, 'Orders'>>();
-	const [status, setStatus] = React.useState<OrderStatus>();
 	const { navigate } = useNavigation<NavigationProp<OrdersStackParamList>>();
-	const [{ fetching, data }, refetch] = useOrdersQuery({
-		variables: { ...(params ? params : {}), status }
-	});
-	const { refreshing, refresh } = useRefresh({ fetching, refetch });
+	const { data, refreshing, refresh } = useOrdersContext();
 	const { theme } = useTheme();
 
 	const handleOrderPress = React.useCallback(
@@ -40,7 +29,6 @@ const OrdersList = () => {
 
 	return (
 		<View style={{ flex: 1 }}>
-			<OrdersFilter status={status} onStatusChange={setStatus} />
 			<FlashList
 				keyExtractor={i => i.id}
 				data={data?.currentStore.orders}

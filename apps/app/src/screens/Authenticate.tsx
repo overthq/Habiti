@@ -27,7 +27,6 @@ const Authenticate = () => {
 	const { goBack } = useNavigation();
 
 	const onSubmit = (values: AuthenticateFormValues) => {
-		console.log(values);
 		authenticateMutation.mutate({
 			email: values.email,
 			password: values.password
