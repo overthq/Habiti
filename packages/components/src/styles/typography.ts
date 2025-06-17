@@ -8,13 +8,26 @@ const size = {
 	xsmall: normalizeFontSize(12),
 	small: normalizeFontSize(14),
 	regular: normalizeFontSize(
-		Platform.select({ ios: 16, android: 16, default: 15 })
+		Platform.select({ ios: 17, android: 16, default: 15 })
 	),
 	large: normalizeFontSize(17),
 	xlarge: normalizeFontSize(20),
 	xxlarge: normalizeFontSize(24),
 	xxxlarge: normalizeFontSize(32)
 } as const;
+
+/*
+Large Title: 34
+Title 1: 28
+Title 2: 22
+Title 3: 20
+Headline: 17
+Subheadline: 15
+Body: 17
+Callout: 16
+Caption 1: 12
+Caption 2: 11
+*/
 
 const weight = {
 	regular: 'normal',

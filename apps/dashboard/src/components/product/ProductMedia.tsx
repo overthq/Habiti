@@ -42,19 +42,14 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 	const { navigate } = useNavigation<NavigationProp<ProductStackParamList>>();
 
 	return (
-		<View style={{ paddingVertical: 8, paddingHorizontal: 16 }}>
-			<View
-				style={{
-					flexDirection: 'row',
-					justifyContent: 'space-between',
-					alignItems: 'center'
-				}}
-			>
-				<Typography weight='semibold' size='large'>
-					Images
+		<View style={{ paddingHorizontal: 16 }}>
+			<View style={styles.header}>
+				<Typography weight='medium' size='xlarge'>
+					Media
 				</Typography>
 				<TextButton
 					onPress={() => navigate('Product.Images', { productId, images })}
+					size={17}
 				>
 					Manage
 				</TextButton>
@@ -84,6 +79,11 @@ const styles = StyleSheet.create({
 		width: 100,
 		height: 100,
 		borderRadius: 8
+	},
+	header: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center'
 	}
 });
 

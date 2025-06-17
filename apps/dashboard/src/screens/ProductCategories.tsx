@@ -4,9 +4,11 @@ import {
 	Checkbox,
 	Typography,
 	Button,
-	Spacer
+	Spacer,
+	Icon,
+	TextButton
 } from '@habiti/components';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Pressable } from 'react-native';
 import {
 	useCategoriesQuery,
 	useUpdateProductCategoriesMutation
@@ -19,7 +21,7 @@ const ProductCategories: React.FC = () => {
 	const {
 		params: { productId, categories }
 	} = useRoute<RouteProp<ProductStackParamList, 'Product.Categories'>>();
-	const { goBack } = useNavigation();
+	const { goBack, setOptions } = useNavigation();
 	const [{ data }] = useCategoriesQuery();
 	const [selectedCategories, setSelectedCategories] = React.useState<string[]>(
 		categories.map(({ categoryId }) => categoryId)
@@ -36,6 +38,16 @@ const ProductCategories: React.FC = () => {
 			JSON.stringify(originalCategoryIds) === JSON.stringify(currentCategoryIds)
 		);
 	}, [selectedCategories]);
+
+	React.useLayoutEffect(() => {
+		setOptions({
+			headerRight: () => (
+				<TextButton disabled={disabled} onPress={handleUpdateCategories}>
+					Save
+				</TextButton>
+			)
+		});
+	}, [disabled]);
 
 	const handleSelectCategory = (id: string) => {
 		setSelectedCategories(prev =>
@@ -77,14 +89,6 @@ const ProductCategories: React.FC = () => {
 						/>
 					</View>
 				))}
-			</View>
-			<View>
-				<Button
-					text='Update Categories'
-					disabled={disabled}
-					onPress={handleUpdateCategories}
-				/>
-				<Spacer y={8} />
 			</View>
 		</Screen>
 	);
