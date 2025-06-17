@@ -1023,6 +1023,32 @@ export type UpdateOrderMutation = {
 	updateOrder: { __typename?: 'Order'; id: string; storeId: string };
 };
 
+export type OverviewQueryVariables = Exact<{ [key: string]: never }>;
+
+export type OverviewQuery = {
+	__typename?: 'Query';
+	currentStore: {
+		__typename?: 'Store';
+		id: string;
+		realizedRevenue: number;
+		products: {
+			__typename?: 'ProductConnection';
+			edges: Array<{
+				__typename?: 'ProductEdge';
+				cursor: string;
+				node: {
+					__typename?: 'Product';
+					id: string;
+					name: string;
+					quantity: number;
+					unitPrice: number;
+					images: Array<{ __typename?: 'Image'; id: string; path: string }>;
+				};
+			}>;
+		};
+	};
+};
+
 export type StorePayoutsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type StorePayoutsQuery = {
@@ -1553,6 +1579,38 @@ export function useUpdateOrderMutation() {
 	return Urql.useMutation<UpdateOrderMutation, UpdateOrderMutationVariables>(
 		UpdateOrderDocument
 	);
+}
+export const OverviewDocument = gql`
+	query Overview {
+		currentStore {
+			id
+			realizedRevenue
+			products(first: 10, filter: { quantity: { lte: 10 } }) {
+				edges {
+					cursor
+					node {
+						id
+						name
+						quantity
+						unitPrice
+						images {
+							id
+							path
+						}
+					}
+				}
+			}
+		}
+	}
+`;
+
+export function useOverviewQuery(
+	options?: Omit<Urql.UseQueryArgs<OverviewQueryVariables>, 'query'>
+) {
+	return Urql.useQuery<OverviewQuery, OverviewQueryVariables>({
+		query: OverviewDocument,
+		...options
+	});
 }
 export const StorePayoutsDocument = gql`
 	query StorePayouts {

@@ -4,11 +4,13 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
 
-import { useStoreQuery } from '../../types/api';
 import { HomeStackParamList } from '../../types/navigation';
 
-const ManagePayouts = () => {
-	const [{ data }] = useStoreQuery();
+interface ManagePayoutsProps {
+	realizedRevenue: number;
+}
+
+const ManagePayouts: React.FC<ManagePayoutsProps> = ({ realizedRevenue }) => {
 	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();
 	const { theme } = useTheme();
 
@@ -22,7 +24,7 @@ const ManagePayouts = () => {
 			<View style={{ paddingHorizontal: 16 }}>
 				<Pressable style={styles.amount} onPress={navigateToPayouts}>
 					<Typography size='xxxlarge' weight='bold'>
-						{formatNairaAbbreviated(data?.currentStore.realizedRevenue ?? 0)}
+						{formatNairaAbbreviated(realizedRevenue)}
 					</Typography>
 					<Icon name='chevron-right' color={theme.text.secondary} />
 				</Pressable>

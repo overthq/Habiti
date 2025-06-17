@@ -1,13 +1,13 @@
-import { formatNaira } from '@habiti/common';
-import { CustomImage, Spacer, Typography } from '@habiti/components';
 import React from 'react';
 import { Pressable } from 'react-native';
+import { CustomImage, Spacer, Typography } from '@habiti/components';
+import { formatNaira } from '@habiti/common';
 
-import { ProductsQuery } from '../../types/api';
+import { OverviewQuery } from '../../types/api';
 
 interface LowStockProductProps {
 	onPress(): void;
-	product: ProductsQuery['currentStore']['products']['edges'][number]['node'];
+	product: OverviewQuery['currentStore']['products']['edges'][number]['node'];
 }
 
 const LowStockProduct: React.FC<LowStockProductProps> = ({

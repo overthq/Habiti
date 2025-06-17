@@ -4,13 +4,14 @@ import { SectionHeader, Spacer } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 import LowStockProduct from './LowStockProduct';
-import { useProductsQuery } from '../../types/api';
 import { HomeStackParamList, MainTabParamList } from '../../types/navigation';
+import { OverviewQuery } from '../../types/api';
 
-const LowStockProducts = () => {
-	const [{ data }] = useProductsQuery({
-		variables: { filter: { quantity: { lte: 10 } } }
-	});
+interface LowStockProductsProps {
+	products: OverviewQuery['currentStore']['products']['edges'];
+}
+
+const LowStockProducts: React.FC<LowStockProductsProps> = ({ products }) => {
 	const { navigate } =
 		useNavigation<NavigationProp<HomeStackParamList & MainTabParamList>>();
 
@@ -30,7 +31,7 @@ const LowStockProducts = () => {
 			/>
 			<Spacer y={4} />
 			<FlatList
-				data={data?.currentStore.products.edges}
+				data={products}
 				keyExtractor={i => i.node.id}
 				renderItem={({ item }) => (
 					<LowStockProduct

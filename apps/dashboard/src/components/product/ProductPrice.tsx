@@ -31,12 +31,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({ value, onPress }) => {
 					{formatValue(value.toString())}
 				</Typography>
 				<View
-					style={{
-						borderRadius: 100,
-						paddingVertical: 4,
-						paddingHorizontal: 8,
-						backgroundColor: theme.text.primary
-					}}
+					style={[styles.editButton, { backgroundColor: theme.text.primary }]}
 				>
 					<Typography variant='invert' size='small'>
 						Edit
@@ -52,6 +47,11 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center'
+	},
+	editButton: {
+		borderRadius: 100,
+		paddingVertical: 4,
+		paddingHorizontal: 8
 	}
 });
 
