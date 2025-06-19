@@ -50,7 +50,7 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Build and deploy
-        run: eas build -p all --profile=production --auto-submit --non-interactive --no-wait
+        run: eas workflow:run update-or-build.yml
         working-directory: ./apps/app
 
   deploy-dashboard:
@@ -79,5 +79,5 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Build and deploy
-        run: eas build -p all --profile=production --auto-submit --non-interactive --no-wait
+        run: eas workflow:run update-or-build.yml
         working-directory: ./apps/dashboard

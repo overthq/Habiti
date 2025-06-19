@@ -1,12 +1,12 @@
-import { Screen, ScreenHeader, ScrollableScreen } from '@habiti/components';
 import React from 'react';
+import { RefreshControl } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Screen, ScreenHeader, ScrollableScreen } from '@habiti/components';
 
 import LowStockProducts from '../components/overview/LowStockProducts';
 import ManagePayouts from '../components/overview/ManagePayouts';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useOverviewQuery } from '../types/api';
 import useRefresh from '../hooks/useRefresh';
-import { RefreshControl } from 'react-native';
+import { useOverviewQuery } from '../types/api';
 
 const OverviewMain = () => {
 	const [{ data, fetching }, refetch] = useOverviewQuery();

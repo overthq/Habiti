@@ -1,5 +1,5 @@
 import { formatNaira } from '@habiti/common';
-import { Typography, Row } from '@habiti/components';
+import { Typography, Row, Spacer } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
@@ -15,8 +15,9 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
 	return (
 		<Row onPress={onPress} style={styles.container}>
 			<View>
-				<Typography>{order.user.name}</Typography>
-				<Typography size='small' variant='secondary' style={styles.date}>
+				<Typography weight='medium'>{order.user.name}</Typography>
+				<Spacer y={2} />
+				<Typography size='small' style={styles.date}>
 					{order.status} · {parseTimestamp(order.createdAt)}
 				</Typography>
 			</View>
@@ -33,7 +34,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center'
-		// borderBottomWidth: 0.5
 	},
 	date: {
 		marginTop: 2
