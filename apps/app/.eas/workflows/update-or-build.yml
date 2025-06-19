@@ -1,13 +1,11 @@
 name: Deploy to production
 
-# on:
-#   push:
-#     branches: ['main']
-
 jobs:
   fingerprint:
     name: Fingerprint
     type: fingerprint
+    env:
+      EXPO_DEBUG: 1
   get_android_build:
     name: Check for existing android build
     needs: [fingerprint]
