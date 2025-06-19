@@ -43,7 +43,7 @@
 		"react-dom": "19.0.0",
 		"react-hook-form": "^7.56.1",
 		"react-native": "0.79.3",
-		"react-native-gesture-handler": "~2.24.0",
+		"react-native-gesture-handler": "~2.26.0",
 		"react-native-pager": "^0.0.3",
 		"react-native-pager-view": "6.7.1",
 		"react-native-reanimated": "~3.17.5",
