@@ -14,8 +14,7 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import ProductSettings from '../components/product/ProductSettings';
 import { Spacer, TextButton, useTheme } from '@habiti/components';
 import ProductDetails from '../components/product/ProductDetails';
-import Section from '../components/product/Section';
-import CurrencyInput from '../components/product/CurrencyInput';
+import ProductPrice from '../components/product/ProductPrice';
 import ProductMedia from '../components/product/ProductMedia';
 import InventoryInput from '../components/product/InventoryInput';
 import { ScrollableScreen } from '@habiti/components';
@@ -88,27 +87,32 @@ const Product: React.FC = () => {
 				showsVerticalScrollIndicator={false}
 			>
 				<Spacer y={16} />
+
 				<ProductDetails product={data.product} />
-				<Spacer y={12} />
+
+				<Spacer y={16} />
+
+				<ProductPrice value={data.product.unitPrice} onPress={openPriceModal} />
+
+				<Spacer y={16} />
+
 				<ProductMedia images={data.product.images} productId={productId} />
-				<Spacer y={12} />
-				<Section title='Price'>
-					<CurrencyInput
-						value={data.product.unitPrice}
-						onPress={openPriceModal}
-					/>
-				</Section>
-				<Spacer y={12} />
+
+				<Spacer y={16} />
+
 				<InventoryInput
 					onPress={openInventoryModal}
 					quantity={data.product.quantity}
 				/>
-				<Spacer y={12} />
+
+				<Spacer y={16} />
+
 				<ProductCategories
 					categories={data.product.categories}
 					productId={productId}
 				/>
 			</ScrollableScreen>
+
 			<ProductSettings productId={productId} modalRef={settingsModalRef} />
 			<ProductPriceModal
 				modalRef={priceModalRef}

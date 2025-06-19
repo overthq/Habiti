@@ -1,7 +1,7 @@
-import { formatNaira } from '@habiti/common';
-import { CustomImage, Spacer, Typography, useTheme } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import { formatNaira } from '@habiti/common';
+import { CustomImage, Spacer, Typography, useTheme } from '@habiti/components';
 
 import { CustomerInfoQuery } from '../../types/api';
 import { parseTimestamp } from '../../utils/date';
@@ -37,7 +37,9 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order }) => {
 					{formatNaira(order.total)}
 				</Typography>
 			</View>
+
 			<Spacer y={8} />
+
 			<View style={styles.row}>
 				{order.products.slice(0, 3).map((product, index) => (
 					<View

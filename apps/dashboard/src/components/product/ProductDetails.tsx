@@ -1,6 +1,6 @@
 import { View, StyleSheet } from 'react-native';
 
-import { Spacer, Typography, useTheme } from '@habiti/components';
+import { Spacer, Typography } from '@habiti/components';
 import { ProductQuery } from '../../types/api';
 
 interface ProductDetailsProps {
@@ -8,15 +8,9 @@ interface ProductDetailsProps {
 }
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
-	const { theme } = useTheme();
-
 	return (
-		<View
-			style={[styles.container, { backgroundColor: theme.screen.background }]}
-		>
-			<Typography size='xxlarge' weight='semibold'>
-				{product.name}
-			</Typography>
+		<View style={styles.container}>
+			<Typography size='xxlarge'>{product.name}</Typography>
 			<Spacer y={4} />
 			<Typography variant='secondary'>{product.description}</Typography>
 		</View>

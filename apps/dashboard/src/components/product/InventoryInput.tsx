@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
-import { useTheme, Typography, Spacer } from '@habiti/components';
+import { Typography, Spacer } from '@habiti/components';
 
 interface InventoryInputProps {
 	onPress: () => void;
@@ -13,13 +13,13 @@ const InventoryInput: React.FC<InventoryInputProps> = ({
 }) => {
 	return (
 		<View style={styles.container}>
-			<Typography weight='semibold' size='large'>
+			<Typography weight='medium' size='xlarge'>
 				Inventory
 			</Typography>
 			<Spacer y={4} />
 			<View style={styles.right}>
 				<Pressable onPress={onPress}>
-					<Typography size='xlarge'>{quantity}</Typography>
+					<Typography size='xxlarge'>{quantity}</Typography>
 				</Pressable>
 			</View>
 		</View>

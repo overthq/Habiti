@@ -1,12 +1,13 @@
 import React from 'react';
-import { TouchableOpacity, View, StyleSheet, Image } from 'react-native';
-import { Icon, TextButton, useTheme } from '@habiti/components';
+import { View, StyleSheet, Image, Pressable } from 'react-native';
+import { Icon } from '@habiti/components';
 import * as ImagePicker from 'expo-image-picker';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+
 import useGoBack from '../hooks/useGoBack';
 import { ProductStackParamList } from '../types/navigation';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+
 const ProductImages: React.FC = () => {
-	const { theme } = useTheme();
 	const [imagesToUpload, setImagesToUpload] = React.useState<string[]>([]);
 
 	// TODO: Run a query here for this purpose
@@ -22,9 +23,9 @@ const ProductImages: React.FC = () => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<TextButton variant='secondary' onPress={handlePickImage}>
-					Add
-				</TextButton>
+				<Pressable onPress={handlePickImage}>
+					<Icon name='plus' size={24} />
+				</Pressable>
 			)
 		});
 	}, []);
@@ -51,13 +52,6 @@ const ProductImages: React.FC = () => {
 				{imagesToUpload.map(uri => (
 					<Image key={uri} source={{ uri }} style={styles.image} />
 				))}
-				<TouchableOpacity
-					onPress={handlePickImage}
-					style={[styles.add, { borderColor: theme.border.color }]}
-					activeOpacity={0.8}
-				>
-					<Icon name='plus' size={24} />
-				</TouchableOpacity>
 			</View>
 		</View>
 	);
@@ -65,26 +59,17 @@ const ProductImages: React.FC = () => {
 
 const styles = StyleSheet.create({
 	section: {
-		paddingVertical: 8,
-		paddingHorizontal: 16
+		padding: 16
 	},
 	images: {
 		width: '100%',
 		flexDirection: 'row'
 	},
 	image: {
-		height: 60,
-		width: 60,
+		height: 80,
+		width: 80,
 		borderRadius: 4,
 		marginRight: 8
-	},
-	add: {
-		width: 60,
-		height: 60,
-		borderRadius: 6,
-		borderWidth: 2,
-		justifyContent: 'center',
-		alignItems: 'center'
 	}
 });
 
