@@ -14,50 +14,42 @@ type FilterOperators = {
 	gte?: number;
 };
 
+const parseValue = (val: string) => (!isNaN(Number(val)) ? Number(val) : val);
+
 export const hydrateQuery = (query: Request['query']) => {
 	const filter: Record<string, FilterOperators> = {};
 	const orderBy: Record<string, 'asc' | 'desc'> = {};
 
-	// Process each query parameter
 	Object.entries(query).forEach(([key, value]) => {
-		// Normalize the value to string or string[]
 		const normalizedValue = Array.isArray(value)
-			? value.map(v => v.toString())
+			? value.map(String)
 			: value?.toString();
-
 		if (!normalizedValue) return;
 
 		// Handle orderBy parameters
-		if (key.startsWith('orderBy[')) {
+		if (key.startsWith('orderBy[') && key.endsWith(']')) {
 			const field = key.slice(8, -1);
 			orderBy[field] = normalizedValue as 'asc' | 'desc';
 			return;
 		}
 
-		// Rest of the function remains the same...
+		// Handle filter parameters
 		const filterMatch = key.match(/^(\w+)\[(\w+)\]$/);
 		if (filterMatch) {
 			const [, field, operator] = filterMatch;
-			if (!field || !operator) return;
-
-			if (!filter[field]) {
-				filter[field] = {};
-			}
-
-			if (Array.isArray(normalizedValue)) {
-				filter[field][operator] = normalizedValue.map(v =>
-					!isNaN(Number(v)) ? Number(v) : v
-				);
-			} else {
-				filter[field][operator] = !isNaN(Number(normalizedValue))
-					? Number(normalizedValue)
-					: normalizedValue;
+			if (field) {
+				filter[field] ??= {};
+				if (operator) {
+					filter[field][operator] = Array.isArray(normalizedValue)
+						? normalizedValue.map(parseValue)
+						: parseValue(normalizedValue);
+				}
 			}
 		}
 	});
 
 	return {
-		...(Object.keys(filter).length > 0 && { where: filter }),
-		...(Object.keys(orderBy).length > 0 && { orderBy })
+		...(Object.keys(filter).length && { where: filter }),
+		...(Object.keys(orderBy).length && { orderBy })
 	};
 };
