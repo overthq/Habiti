@@ -1,9 +1,9 @@
-name: Deploy
+name: EAS Deploy
 
-# on:
-#   push:
-#     branches:
-#       - main
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   changes:
@@ -13,6 +13,7 @@ jobs:
     outputs:
       app: ${{ steps.filter.outputs.app }}
       dashboard: ${{ steps.filter.outputs.dashboard }}
+      should_build: ${{ steps.check_commit.outputs.should_build }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -23,6 +24,16 @@ jobs:
               - 'apps/app/**'
             dashboard:
               - 'apps/dashboard/**'
+
+      - name: Check commit message for build trigger
+        id: check_commit
+        run: |
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          if [[ "$COMMIT_MSG" == *"[build-native]"* ]]; then
+            echo "should_build=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_build=false" >> $GITHUB_OUTPUT
+          fi
 
   deploy-app:
     needs: changes
@@ -49,8 +60,16 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Build and deploy
-        run: eas workflow:run update-or-build.yml
+      - name: Build and submit native apps
+        if: ${{ needs.changes.outputs.should_build == 'true' }}
+        run: |
+          eas build -p all --profile=production --auto-submit --non-interactive --no-wait
+        working-directory: ./apps/app
+
+      - name: Publish EAS update
+        if: ${{ needs.changes.outputs.should_build == 'false' }}
+        run: |
+          eas update --branch production --message "Auto update from commit ${{ github.sha }}"
         working-directory: ./apps/app
 
   deploy-dashboard:
@@ -78,6 +97,14 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Build and deploy
-        run: eas workflow:run update-or-build.yml
+      - name: Build and submit native apps
+        if: ${{ needs.changes.outputs.should_build == 'true' }}
+        run: |
+          eas build -p all --profile=production --auto-submit --non-interactive --no-wait
+        working-directory: ./apps/dashboard
+
+      - name: Publish EAS update
+        if: ${{ needs.changes.outputs.should_build == 'false' }}
+        run: |
+          eas update --branch production --message "Auto update from commit ${{ github.sha }}"
         working-directory: ./apps/dashboard

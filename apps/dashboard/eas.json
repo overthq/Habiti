@@ -5,16 +5,19 @@
 	"build": {
 		"development": {
 			"developmentClient": true,
-			"distribution": "internal"
+			"distribution": "internal",
+			"channel": "development"
 		},
 		"simulator": {
 			"developmentClient": true,
+			"channel": "development",
 			"ios": {
 				"simulator": true
 			}
 		},
 		"preview": {
 			"distribution": "internal",
+			"channel": "preview",
 			"android": {
 				"image": "latest"
 			},
@@ -28,6 +31,7 @@
 		},
 		"production": {
 			"autoIncrement": true,
+			"channel": "production",
 			"android": {
 				"image": "latest"
 			},
