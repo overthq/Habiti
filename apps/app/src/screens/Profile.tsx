@@ -1,14 +1,16 @@
-import { Button, Screen, Separator, Spacer } from '@habiti/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Alert, Linking, View } from 'react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { Button, Screen, Separator, Spacer } from '@habiti/components';
+import { useShallow } from 'zustand/react/shallow';
 
 import ProfileRow from '../components/profile/ProfileRow';
 import UserCard from '../components/profile/UserCard';
+
 import useStore from '../state';
-import { ProfileStackParamList } from '../types/navigation';
-import { useShallow } from 'zustand/react/shallow';
 import useGoBack from '../hooks/useGoBack';
+
+import { ProfileStackParamList } from '../types/navigation';
 
 const PRIVACY_POLICY_URL = 'https://habiti.app/privacy-policy';
 const SUPPORT_URL = 'https://habiti.app/support';
@@ -43,19 +45,12 @@ const Profile: React.FC = () => {
 
 	return (
 		<Screen>
-			{/* <ScreenHeader title='Profile' /> */}
 			<UserCard />
-			{/* <Spacer y={8} /> */}
 			<Separator style={{ marginHorizontal: 16 }} />
-			{/* <Spacer y={8} /> */}
 			<View>
 				{/* <ProfileRow
 					title='Delivery Addresses'
 					onPress={() => navigate('Profile.DeliveryAddress')}
-				/> */}
-				{/* <ProfileRow
-					title='Notifications'
-					onPress={() => navigate('Profile.NotificationSettings')}
 				/> */}
 				<ProfileRow
 					title='Manage Account'
@@ -66,10 +61,13 @@ const Profile: React.FC = () => {
 					onPress={() => navigate('Profile.PaymentMethods')}
 				/>
 				<ProfileRow
+					title='Notifications'
+					onPress={() => navigate('Profile.NotificationSettings')}
+				/>
+				<ProfileRow
 					title='Appearance'
 					onPress={() => navigate('Profile.Appearance')}
 				/>
-				{/* <Spacer y={8} /> */}
 				<Separator inset />
 				<ProfileRow
 					title='Privacy Policy'

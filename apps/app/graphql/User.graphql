@@ -19,6 +19,22 @@ mutation EditProfile($input: EditProfileInput!) {
 	}
 }
 
+mutation SavePushToken($input: SavePushTokenInput!) {
+	savePushToken(input: $input) {
+		id
+		token
+		type
+	}
+}
+
+mutation DeletePushToken($input: DeletePushTokenInput!) {
+	deletePushToken(input: $input) {
+		id
+		token
+		type
+	}
+}
+
 mutation DeleteAccount {
 	deleteAccount {
 		id

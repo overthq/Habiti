@@ -10,7 +10,9 @@ import useGoBack from '../hooks/useGoBack';
 import {
 	useCurrentUserQuery,
 	CurrentUserQuery,
-	PushTokenType
+	PushTokenType,
+	useSavePushTokenMutation,
+	useDeletePushTokenMutation
 } from '../types/api';
 
 const getUserPushToken = (user: CurrentUserQuery['currentUser']) => {
@@ -19,6 +21,8 @@ const getUserPushToken = (user: CurrentUserQuery['currentUser']) => {
 
 const NotificationSettings = () => {
 	const [{ data }] = useCurrentUserQuery();
+	const [, savePushToken] = useSavePushTokenMutation();
+	const [, deletePushToken] = useDeletePushTokenMutation();
 
 	useGoBack();
 
@@ -29,6 +33,7 @@ const NotificationSettings = () => {
 	const user = data.currentUser;
 
 	const pushToken = getUserPushToken(user);
+
 	const handleRegistrationError = (errorMessage: string) => {
 		Alert.alert(errorMessage);
 		throw new Error(errorMessage);
@@ -72,7 +77,10 @@ const NotificationSettings = () => {
 						projectId
 					})
 				).data;
-				return pushTokenString;
+
+				await savePushToken({
+					input: { token: pushTokenString, type: PushTokenType.Shopper }
+				});
 			} catch (e: unknown) {
 				handleRegistrationError(`${e}`);
 			}
@@ -82,9 +90,16 @@ const NotificationSettings = () => {
 			);
 		}
 	};
+
+	const handleDeletePushToken = async () => {
+		await deletePushToken({
+			input: { token: pushToken.token, type: PushTokenType.Shopper }
+		});
+	};
+
 	if (!pushToken) {
 		return (
-			<Screen>
+			<Screen style={{ padding: 16 }}>
 				<Typography weight='medium'>Push notifications</Typography>
 
 				<Spacer y={16} />
@@ -102,6 +117,11 @@ const NotificationSettings = () => {
 			<Typography weight='medium'>Push notifications</Typography>
 
 			<Spacer y={16} />
+
+			<Button
+				text='Disable push notifications'
+				onPress={handleDeletePushToken}
+			/>
 		</Screen>
 	);
 };
