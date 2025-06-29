@@ -42,9 +42,21 @@ const UserTypes = gql`
 		email: String
 	}
 
+	input SavePushTokenInput {
+		token: String!
+		type: PushTokenType!
+	}
+
+	input DeletePushTokenInput {
+		token: String!
+		type: PushTokenType!
+	}
+
 	extend type Mutation {
 		editProfile(input: EditProfileInput!): User!
 		deleteAccount: User!
+		savePushToken(input: SavePushTokenInput!): UserPushToken!
+		deletePushToken(input: DeletePushTokenInput!): UserPushToken!
 	}
 `;
 

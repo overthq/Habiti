@@ -1471,7 +1471,18 @@ export type CurrentUserQueryVariables = Exact<{ [key: string]: never }>;
 
 export type CurrentUserQuery = {
 	__typename?: 'Query';
-	currentUser: { __typename?: 'User'; id: string; name: string; email: string };
+	currentUser: {
+		__typename?: 'User';
+		id: string;
+		name: string;
+		email: string;
+		pushTokens: Array<{
+			__typename?: 'UserPushToken';
+			id: string;
+			token: string;
+			type: PushTokenType;
+		}>;
+	};
 };
 
 export type EditProfileMutationVariables = Exact<{
@@ -2274,6 +2285,11 @@ export const CurrentUserDocument = gql`
 			id
 			name
 			email
+			pushTokens {
+				id
+				token
+				type
+			}
 		}
 	}
 `;

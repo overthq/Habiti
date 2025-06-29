@@ -3,6 +3,11 @@ query CurrentUser {
 		id
 		name
 		email
+		pushTokens {
+			id
+			token
+			type
+		}
 	}
 }
 
