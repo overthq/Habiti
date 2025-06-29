@@ -16,6 +16,7 @@ interface ProductContextType {
 	cartCommitDisabled: boolean;
 	cartCommitText: string;
 	inCart: boolean;
+	initialQuantity: number;
 	quantity: number;
 	setQuantity: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -36,7 +37,6 @@ const ProductProviderInner: React.FC<ProductProviderProps> = ({
 	children,
 	product
 }) => {
-	const [quantity, setQuantity] = React.useState(1);
 	const { goBack } = useNavigation();
 
 	const [{ fetching: addFetching }, addToCart] = useAddToCartMutation();
@@ -54,6 +54,8 @@ const ProductProviderInner: React.FC<ProductProviderProps> = ({
 				?.quantity,
 		[product.store.userCart?.products, product.id]
 	);
+
+	const [quantity, setQuantity] = React.useState(initialQuantity ?? 1);
 
 	const isNotInCart = React.useMemo(
 		() => !cartId || (cartId && !product.inCart),
@@ -76,8 +78,10 @@ const ProductProviderInner: React.FC<ProductProviderProps> = ({
 		[isNotInCart, quantityChanged]
 	);
 
-	const cartCommitDisabled =
-		product.inCart || !quantityChanged || cartCommitFetching;
+	const cartCommitDisabled = React.useMemo(
+		() => (product.inCart && !quantityChanged) || cartCommitFetching,
+		[product.inCart, quantityChanged, cartCommitFetching]
+	);
 
 	const onCartCommit = React.useCallback(async () => {
 		if (isNotInCart) {
@@ -91,11 +95,9 @@ const ProductProviderInner: React.FC<ProductProviderProps> = ({
 		}
 
 		goBack();
-	}, [product.storeId, product.id, quantity, isNotInCart, cartId]);
+	}, [product.storeId, product.id, quantity, isNotInCart, cartId, goBack]);
 
-	if (!product) {
-		return <View />;
-	}
+	if (!product) return <View />;
 
 	return (
 		<ProductContext.Provider
@@ -106,6 +108,7 @@ const ProductProviderInner: React.FC<ProductProviderProps> = ({
 				cartCommitDisabled,
 				cartCommitText,
 				inCart: product.inCart,
+				initialQuantity,
 				quantity,
 				setQuantity
 			}}
