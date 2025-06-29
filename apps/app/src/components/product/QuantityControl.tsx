@@ -2,17 +2,10 @@ import { Icon, Typography, useTheme } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet, Pressable, Dimensions } from 'react-native';
 
-interface QuantityControlProps {
-	inCart: boolean;
-	quantity: number;
-	setQuantity: React.Dispatch<React.SetStateAction<number>>;
-}
+import { useProductContext } from './ProductContext';
 
-const QuantityControl: React.FC<QuantityControlProps> = ({
-	inCart,
-	quantity,
-	setQuantity
-}) => {
+const QuantityControl: React.FC = () => {
+	const { inCart, quantity, setQuantity } = useProductContext();
 	const { theme } = useTheme();
 
 	const decrementDisabled = React.useMemo(() => quantity === 1, [quantity]);

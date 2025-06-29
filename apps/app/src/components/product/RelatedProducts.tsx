@@ -4,14 +4,13 @@ import { CustomImage, Spacer, Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { formatNaira } from '@habiti/common';
 
-import { ProductQuery } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
+import { useProductContext } from './ProductContext';
 
-interface RelatedProductsProps {
-	products: ProductQuery['product']['relatedProducts'];
-}
-
-const RelatedProducts: React.FC<RelatedProductsProps> = ({ products }) => {
+const RelatedProducts: React.FC = () => {
+	const {
+		product: { relatedProducts }
+	} = useProductContext();
 	// @ts-expect-error - push is a valid navigation prop
 	const { push } = useNavigation<NavigationProp<AppStackParamList>>();
 
@@ -26,7 +25,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ products }) => {
 				horizontal
 				showsHorizontalScrollIndicator={false}
 			>
-				{products.map(product => (
+				{relatedProducts.map(product => (
 					<Pressable
 						key={product.id}
 						onPress={() => push('Product', { productId: product.id })}

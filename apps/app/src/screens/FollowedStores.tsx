@@ -12,7 +12,6 @@ import {
 
 import {
 	StoresFollowedQuery,
-	useFollowStoreMutation,
 	useUnfollowStoreMutation,
 	useStoresFollowedQuery
 } from '../types/api';
@@ -72,8 +71,7 @@ const FollowedStoreItem: React.FC<FollowedStoreItemProps> = ({
 	onPress
 }) => {
 	const { theme } = useTheme();
-	const [{ fetching }, unfollowStore] = useUnfollowStoreMutation();
-	const [{ fetching: followFetching }, followStore] = useFollowStoreMutation();
+	const [, unfollowStore] = useUnfollowStoreMutation();
 
 	const handleFollowPress = async () => {
 		await unfollowStore({ storeId: store.id });

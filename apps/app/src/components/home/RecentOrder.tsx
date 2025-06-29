@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { CustomImage, Row, Spacer, Typography } from '@habiti/components';
+import { Avatar, Row, Spacer, Typography } from '@habiti/components';
 import { formatNaira } from '@habiti/common';
 
 import { HomeQuery } from '../../types/api';
@@ -15,11 +15,11 @@ interface RecentOrderProps {
 const RecentOrder: React.FC<RecentOrderProps> = ({ order, onPress }) => {
 	return (
 		<Row key={order.id} style={styles.container} onPress={onPress}>
-			<CustomImage
+			<Avatar
 				uri={order.store.image?.path}
-				height={48}
-				width={48}
+				size={48}
 				circle
+				fallbackText={order.store.name}
 			/>
 			<View style={styles.info}>
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
