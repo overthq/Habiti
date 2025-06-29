@@ -153,6 +153,11 @@ export type CreateStoreInput = {
 	website?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type DeletePushTokenInput = {
+	token: Scalars['String']['input'];
+	type: PushTokenType;
+};
+
 export type DeliveryAddress = {
 	__typename?: 'DeliveryAddress';
 	id: Scalars['ID']['output'];
@@ -246,6 +251,7 @@ export type Mutation = {
 	deleteImages: Array<Image>;
 	deleteProduct: Product;
 	deleteProductCategory: StoreProductCategory;
+	deletePushToken: UserPushToken;
 	deleteStore: Scalars['ID']['output'];
 	editProduct: Product;
 	editProductCategory: StoreProductCategory;
@@ -254,6 +260,7 @@ export type Mutation = {
 	followStore: StoreFollower;
 	removeFromCart: Scalars['ID']['output'];
 	removeStoreManager: StoreManager;
+	savePushToken: UserPushToken;
 	unfollowStore: StoreFollower;
 	updateCartProduct: CartProduct;
 	updateOrder: Order;
@@ -335,6 +342,10 @@ export type MutationDeleteProductCategoryArgs = {
 	categoryId: Scalars['ID']['input'];
 };
 
+export type MutationDeletePushTokenArgs = {
+	input: DeletePushTokenInput;
+};
+
 export type MutationDeleteStoreArgs = {
 	id: Scalars['ID']['input'];
 };
@@ -368,6 +379,10 @@ export type MutationRemoveFromCartArgs = {
 
 export type MutationRemoveStoreManagerArgs = {
 	managerId: Scalars['ID']['input'];
+};
+
+export type MutationSavePushTokenArgs = {
+	input: SavePushTokenInput;
 };
 
 export type MutationUnfollowStoreArgs = {
@@ -653,6 +668,11 @@ export type QueryStoresArgs = {
 
 export type QueryUserArgs = {
 	id: Scalars['ID']['input'];
+};
+
+export type SavePushTokenInput = {
+	token: Scalars['String']['input'];
+	type: PushTokenType;
 };
 
 export type SearchResults = {
@@ -1471,7 +1491,18 @@ export type CurrentUserQueryVariables = Exact<{ [key: string]: never }>;
 
 export type CurrentUserQuery = {
 	__typename?: 'Query';
-	currentUser: { __typename?: 'User'; id: string; name: string; email: string };
+	currentUser: {
+		__typename?: 'User';
+		id: string;
+		name: string;
+		email: string;
+		pushTokens: Array<{
+			__typename?: 'UserPushToken';
+			id: string;
+			token: string;
+			type: PushTokenType;
+		}>;
+	};
 };
 
 export type EditProfileMutationVariables = Exact<{
@@ -1481,6 +1512,34 @@ export type EditProfileMutationVariables = Exact<{
 export type EditProfileMutation = {
 	__typename?: 'Mutation';
 	editProfile: { __typename?: 'User'; id: string; name: string; email: string };
+};
+
+export type SavePushTokenMutationVariables = Exact<{
+	input: SavePushTokenInput;
+}>;
+
+export type SavePushTokenMutation = {
+	__typename?: 'Mutation';
+	savePushToken: {
+		__typename?: 'UserPushToken';
+		id: string;
+		token: string;
+		type: PushTokenType;
+	};
+};
+
+export type DeletePushTokenMutationVariables = Exact<{
+	input: DeletePushTokenInput;
+}>;
+
+export type DeletePushTokenMutation = {
+	__typename?: 'Mutation';
+	deletePushToken: {
+		__typename?: 'UserPushToken';
+		id: string;
+		token: string;
+		type: PushTokenType;
+	};
 };
 
 export type DeleteAccountMutationVariables = Exact<{ [key: string]: never }>;
@@ -2274,6 +2333,11 @@ export const CurrentUserDocument = gql`
 			id
 			name
 			email
+			pushTokens {
+				id
+				token
+				type
+			}
 		}
 	}
 `;
@@ -2300,6 +2364,38 @@ export function useEditProfileMutation() {
 	return Urql.useMutation<EditProfileMutation, EditProfileMutationVariables>(
 		EditProfileDocument
 	);
+}
+export const SavePushTokenDocument = gql`
+	mutation SavePushToken($input: SavePushTokenInput!) {
+		savePushToken(input: $input) {
+			id
+			token
+			type
+		}
+	}
+`;
+
+export function useSavePushTokenMutation() {
+	return Urql.useMutation<
+		SavePushTokenMutation,
+		SavePushTokenMutationVariables
+	>(SavePushTokenDocument);
+}
+export const DeletePushTokenDocument = gql`
+	mutation DeletePushToken($input: DeletePushTokenInput!) {
+		deletePushToken(input: $input) {
+			id
+			token
+			type
+		}
+	}
+`;
+
+export function useDeletePushTokenMutation() {
+	return Urql.useMutation<
+		DeletePushTokenMutation,
+		DeletePushTokenMutationVariables
+	>(DeletePushTokenDocument);
 }
 export const DeleteAccountDocument = gql`
 	mutation DeleteAccount {

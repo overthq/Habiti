@@ -3,6 +3,11 @@ query CurrentUser {
 		id
 		name
 		email
+		pushTokens {
+			id
+			token
+			type
+		}
 	}
 }
 
@@ -11,6 +16,22 @@ mutation EditProfile($input: EditProfileInput!) {
 		id
 		name
 		email
+	}
+}
+
+mutation SavePushToken($input: SavePushTokenInput!) {
+	savePushToken(input: $input) {
+		id
+		token
+		type
+	}
+}
+
+mutation DeletePushToken($input: DeletePushTokenInput!) {
+	deletePushToken(input: $input) {
+		id
+		token
+		type
 	}
 }
 

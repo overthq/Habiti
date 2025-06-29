@@ -13,7 +13,7 @@ import AddDeliveryAddress from '../screens/AddDeliveryAddress';
 import Authenticate from '../screens/Authenticate';
 import Cart from '../screens/Cart';
 import Landing from '../screens/Landing';
-import Onboarding from '../screens/Onboarding';
+import Register from '../screens/Register';
 import Product from '../screens/Product';
 import Verify from '../screens/Verify';
 import useStore from '../state';
@@ -81,7 +81,7 @@ const Routes: React.FC = () => {
 					) : (
 						<>
 							<AppStack.Screen name='Landing' component={Landing} />
-							<AppStack.Screen name='Register' component={Onboarding} />
+							<AppStack.Screen name='Register' component={Register} />
 							<AppStack.Screen name='Authenticate' component={Authenticate} />
 							<AppStack.Screen name='Verify' component={Verify} />
 						</>

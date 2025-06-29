@@ -1,3 +1,4 @@
+import { PushTokenType } from '@prisma/client';
 import { authenticatedResolver } from '../permissions';
 
 export interface EditProfileArgs {
@@ -21,6 +22,48 @@ export const editProfile = authenticatedResolver<EditProfileArgs>(
 		return ctx.prisma.user.update({
 			where: { id: ctx.user.id },
 			data: input
+		});
+	}
+);
+
+export interface SavePushTokenArgs {
+	input: {
+		token: string;
+		type: PushTokenType;
+	};
+}
+
+export const savePushToken = authenticatedResolver<SavePushTokenArgs>(
+	(_, { input }, ctx) => {
+		return ctx.prisma.userPushToken.create({
+			data: {
+				token: input.token,
+				type: input.type,
+				user: {
+					connect: { id: ctx.user.id }
+				}
+			}
+		});
+	}
+);
+
+export interface DeletePushTokenArgs {
+	input: {
+		token: string;
+		type: PushTokenType;
+	};
+}
+
+export const deletePushToken = authenticatedResolver<DeletePushTokenArgs>(
+	(_, { input }, ctx) => {
+		return ctx.prisma.userPushToken.delete({
+			where: {
+				userId_token: {
+					userId: ctx.user.id,
+					token: input.token
+				},
+				type: input.type
+			}
 		});
 	}
 );
