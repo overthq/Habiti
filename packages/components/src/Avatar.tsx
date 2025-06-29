@@ -25,18 +25,20 @@ const Avatar: React.FC<AvatarProps> = ({
 
 	const showFallback = !uri || imageError;
 
-	const getFallbackText = () => {
+	const fallbackInitials = React.useMemo(() => {
 		if (!fallbackText) return '';
 
-		const words = fallbackText.trim().split(' ');
+		const words = fallbackText.trim().split(/\s+/);
+
 		if (words.length === 1) {
 			return words[0].charAt(0).toUpperCase();
 		}
+
 		return words
 			.slice(0, 2)
 			.map(word => word.charAt(0).toUpperCase())
 			.join('');
-	};
+	}, [fallbackText]);
 
 	const fontSize = React.useMemo(() => Math.floor(size * 0.4), [size]);
 
@@ -56,7 +58,7 @@ const Avatar: React.FC<AvatarProps> = ({
 			{showFallback ? (
 				<View style={styles.fallback}>
 					<Typography variant='secondary' weight='medium' style={{ fontSize }}>
-						{getFallbackText()}
+						{fallbackInitials}
 					</Typography>
 				</View>
 			) : (
