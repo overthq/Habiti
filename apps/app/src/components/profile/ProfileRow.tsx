@@ -6,26 +6,33 @@ interface ProfileRowProps {
 	title: string;
 	onPress(): void;
 	icon?: IconType;
+	destructive?: boolean;
 }
 
 const ProfileRow: React.FC<ProfileRowProps> = ({
 	title,
 	onPress,
-	icon = 'chevron-right'
+	icon = 'chevron-right',
+	destructive = false
 }) => {
 	const { theme } = useTheme();
 
 	return (
 		<Row style={styles.container} onPress={onPress}>
-			<Typography>{title}</Typography>
-			<Icon name={icon} color={theme.text.secondary} size={20} />
+			<Typography variant={destructive ? 'error' : 'primary'}>
+				{title}
+			</Typography>
+			<Icon
+				name={icon}
+				color={destructive ? theme.text.error : theme.text.secondary}
+				size={20}
+			/>
 		</Row>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		width: '100%',
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',

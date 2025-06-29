@@ -1,7 +1,7 @@
 import React from 'react';
-import { Alert, Linking, View } from 'react-native';
+import { Alert, Linking } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { Button, Screen, Separator, Spacer } from '@habiti/components';
+import { Screen, Separator } from '@habiti/components';
 import { useShallow } from 'zustand/react/shallow';
 
 import ProfileRow from '../components/profile/ProfileRow';
@@ -47,54 +47,50 @@ const Profile: React.FC = () => {
 		<Screen>
 			<UserCard />
 			<Separator style={{ marginHorizontal: 16 }} />
-			<View>
-				{/* <ProfileRow
-					title='Delivery Addresses'
-					onPress={() => navigate('Profile.DeliveryAddress')}
-				/> */}
-				<ProfileRow
-					title='Manage Account'
-					onPress={() => navigate('Profile.AccountSettings')}
-				/>
-				<ProfileRow
-					title='Payment Methods'
-					onPress={() => navigate('Profile.PaymentMethods')}
-				/>
-				<ProfileRow
-					title='Notifications'
-					onPress={() => navigate('Profile.NotificationSettings')}
-				/>
-				<ProfileRow
-					title='Appearance'
-					onPress={() => navigate('Profile.Appearance')}
-				/>
-				<Separator inset />
-				<ProfileRow
-					title='Privacy Policy'
-					onPress={() => {
-						Linking.openURL(PRIVACY_POLICY_URL);
-					}}
-					icon='arrow-up-right'
-				/>
-				<ProfileRow
-					title='Support'
-					onPress={() => {
-						Linking.openURL(SUPPORT_URL);
-					}}
-					icon='arrow-up-right'
-				/>
-				<ProfileRow
-					title='Acceptable Use'
-					onPress={() => {
-						Linking.openURL(ACCEPTABLE_USE_URL);
-					}}
-					icon='arrow-up-right'
-				/>
-			</View>
-			<Spacer y={24} />
-			<View style={{ paddingHorizontal: 16 }}>
-				<Button text='Log Out' onPress={confirmLogOut} />
-			</View>
+			<ProfileRow
+				title='Manage Account'
+				onPress={() => navigate('Profile.AccountSettings')}
+			/>
+			<ProfileRow
+				title='Payment Methods'
+				onPress={() => navigate('Profile.PaymentMethods')}
+			/>
+			<ProfileRow
+				title='Notifications'
+				onPress={() => navigate('Profile.NotificationSettings')}
+			/>
+			<ProfileRow
+				title='Appearance'
+				onPress={() => navigate('Profile.Appearance')}
+			/>
+			<Separator inset />
+			<ProfileRow
+				title='Privacy Policy'
+				onPress={() => {
+					Linking.openURL(PRIVACY_POLICY_URL);
+				}}
+				icon='arrow-up-right'
+			/>
+			<ProfileRow
+				title='Support'
+				onPress={() => {
+					Linking.openURL(SUPPORT_URL);
+				}}
+				icon='arrow-up-right'
+			/>
+			<ProfileRow
+				title='Acceptable Use'
+				onPress={() => {
+					Linking.openURL(ACCEPTABLE_USE_URL);
+				}}
+				icon='arrow-up-right'
+			/>
+			<ProfileRow
+				title='Log Out'
+				onPress={confirmLogOut}
+				icon='log-out'
+				destructive
+			/>
 		</Screen>
 	);
 };
