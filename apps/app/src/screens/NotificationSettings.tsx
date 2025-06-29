@@ -36,7 +36,6 @@ const NotificationSettings = () => {
 
 	const handleRegistrationError = (errorMessage: string) => {
 		Alert.alert(errorMessage);
-		throw new Error(errorMessage);
 	};
 
 	const requestPushPermission = async () => {
