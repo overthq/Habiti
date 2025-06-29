@@ -8,30 +8,34 @@ import {
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { z } from 'zod';
 
 import { useRegisterMutation } from '../hooks/mutations';
 
-interface RegisterFormValues {
-	name: string;
-	email: string;
-	password: string;
-	confirmPassword: string;
-	pushToken?: string;
-}
+const registerFormSchema = z
+	.object({
+		name: z.string().min(1),
+		email: z.string().email(),
+		password: z.string().min(8),
+		confirmPassword: z.string().min(8)
+	})
+	.refine(data => data.password === data.confirmPassword, {
+		message: 'Passwords do not match',
+		path: ['confirmPassword']
+	});
 
 const Register = () => {
-	const methods = useForm<RegisterFormValues>({
+	const methods = useForm<z.infer<typeof registerFormSchema>>({
 		defaultValues: {
 			name: '',
 			email: '',
 			password: '',
-			confirmPassword: '',
-			pushToken: undefined
+			confirmPassword: ''
 		}
 	});
 	const registerMutation = useRegisterMutation();
 
-	const onSubmit = (values: RegisterFormValues) => {
+	const onSubmit = (values: z.infer<typeof registerFormSchema>) => {
 		registerMutation.mutate({
 			name: values.name,
 			email: values.email,
@@ -86,6 +90,7 @@ const Register = () => {
 					/>
 					<Spacer y={16} />
 					<Button
+						disabled={!methods.formState.isValid}
 						loading={registerMutation.isPending}
 						text='Create account'
 						onPress={methods.handleSubmit(onSubmit)}
