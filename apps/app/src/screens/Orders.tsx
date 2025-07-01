@@ -29,7 +29,7 @@ const Orders: React.FC = () => {
 	if (fetching && !data) return <View />;
 
 	return (
-		<Screen style={{ paddingHorizontal: 16, paddingTop: 16 }}>
+		<Screen style={{ paddingTop: 16 }}>
 			<FlashList
 				refreshControl={
 					<RefreshControl
