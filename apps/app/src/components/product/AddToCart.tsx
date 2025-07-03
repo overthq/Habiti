@@ -1,29 +1,14 @@
-import { useTheme } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme } from '@habiti/components';
 
 import CartButton from './CartButton';
 import QuantityControl from './QuantityControl';
 
-interface AddToCartProps {
-	storeId: string;
-	productId: string;
-	cartId?: string | null;
-	inCart: boolean;
-	quantity?: number | null;
-}
-
-const AddToCart: React.FC<AddToCartProps> = ({
-	storeId,
-	productId,
-	cartId,
-	inCart,
-	quantity: initialQuantity
-}) => {
+const AddToCart: React.FC = () => {
 	const { theme } = useTheme();
 	const { bottom } = useSafeAreaInsets();
-	const [quantity, setQuantity] = React.useState(initialQuantity || 1);
 
 	return (
 		<View
@@ -36,18 +21,8 @@ const AddToCart: React.FC<AddToCartProps> = ({
 				}
 			]}
 		>
-			<QuantityControl
-				inCart={inCart}
-				quantity={quantity}
-				setQuantity={setQuantity}
-			/>
-			<CartButton
-				storeId={storeId}
-				productId={productId}
-				cartId={cartId}
-				inCart={inCart}
-				quantity={quantity}
-			/>
+			<QuantityControl />
+			<CartButton />
 		</View>
 	);
 };

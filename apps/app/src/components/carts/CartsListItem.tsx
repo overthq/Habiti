@@ -1,10 +1,4 @@
-import {
-	CustomImage,
-	Icon,
-	Row,
-	Typography,
-	useTheme
-} from '@habiti/components';
+import { Avatar, Icon, Row, Typography, useTheme } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
@@ -22,11 +16,11 @@ const CartsListItem: React.FC<CartListItemProps> = ({ cart, onPress }) => {
 	return (
 		<Row onPress={onPress} style={styles.container}>
 			<View style={styles.main}>
-				<CustomImage
+				<Avatar
 					uri={cart.store.image?.path}
 					style={styles.image}
-					height={48}
-					width={48}
+					fallbackText={cart.store.name}
+					size={48}
 				/>
 				<View>
 					<Typography weight='medium'>{cart.store.name}</Typography>

@@ -20,6 +20,10 @@ const Products: React.FC = () => {
 		filterModalRef.current?.present();
 	};
 
+	const handleOpenAddProduct = () => {
+		navigate('Add Product');
+	};
+
 	return (
 		<ProductsProvider>
 			<Screen style={{ paddingTop: top }}>
@@ -33,7 +37,7 @@ const Products: React.FC = () => {
 					hasBottomBorder
 				/>
 				<ProductList />
-				<FAB onPress={() => navigate('Add Product')} text='New Product' />
+				<FAB onPress={handleOpenAddProduct} text='New Product' />
 				<ProductsFilterModal modalRef={filterModalRef} />
 			</Screen>
 		</ProductsProvider>

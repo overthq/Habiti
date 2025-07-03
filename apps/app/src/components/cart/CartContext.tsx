@@ -57,6 +57,10 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 	const { state, dispatch } = useCartReducer(cart.products);
 
 	React.useEffect(() => {
+		dispatch({ type: 'reset', products: cart.products });
+	}, [cart.products, dispatch]);
+
+	React.useEffect(() => {
 		const firstCard = cart.user.cards[0];
 
 		if (firstCard && !defaultCard && !selectedCard) {
@@ -175,7 +179,12 @@ type UpdateAction = {
 	quantity: number;
 };
 
-type Action = AddAction | RemoveAction | UpdateAction;
+type ResetAction = {
+	type: 'reset';
+	products: CartQuery['cart']['products'];
+};
+
+type Action = AddAction | RemoveAction | UpdateAction | ResetAction;
 
 const useCartReducer = (initialState: CartQuery['cart']['products']) => {
 	const [state, dispatch] = React.useReducer(
@@ -196,6 +205,8 @@ const useCartReducer = (initialState: CartQuery['cart']['products']) => {
 								}
 							: product
 					);
+				case 'reset':
+					return action.products;
 			}
 		},
 		initialState

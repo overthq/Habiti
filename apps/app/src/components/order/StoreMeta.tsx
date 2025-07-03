@@ -1,4 +1,4 @@
-import { CustomImage, Typography } from '@habiti/components';
+import { Avatar, CustomImage, Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Pressable, View } from 'react-native';
@@ -21,7 +21,12 @@ const StoreMeta: React.FC<StoreMetaProps> = ({ store }) => {
 			}}
 		>
 			<View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
-				<CustomImage height={40} width={40} uri={store.image?.path} circle />
+				<Avatar
+					size={40}
+					uri={store.image?.path}
+					circle
+					fallbackText={store.name}
+				/>
 				<View>
 					<Typography weight='medium' size='large'>
 						{store.name}

@@ -1,17 +1,18 @@
 import React from 'react';
-import { Typography, useTheme } from '@habiti/components';
-import { Pressable, View, StyleSheet } from 'react-native';
+import { Avatar, Spacer, Typography, useTheme } from '@habiti/components';
+import { Pressable, StyleSheet } from 'react-native';
+import { ManagedStoresQuery } from '../../types/api';
 
 interface StoresListItemProps {
-	text: string;
 	selected: boolean;
+	store: ManagedStoresQuery['currentUser']['managed'][number]['store'];
 	onPress(): void;
 }
 
 const StoreSelectListItem: React.FC<StoresListItemProps> = ({
 	selected,
 	onPress,
-	text
+	store
 }) => {
 	const { theme } = useTheme();
 
@@ -23,25 +24,19 @@ const StoreSelectListItem: React.FC<StoresListItemProps> = ({
 				{ borderColor: selected ? theme.text.primary : theme.border.color }
 			]}
 		>
-			<View
-				style={{
-					justifyContent: 'center',
-					alignItems: 'center',
-					width: 80,
-					height: 80,
-					borderWidth: 2,
-					borderRadius: 50,
-					borderColor: selected ? theme.text.primary : theme.border.color,
-					marginBottom: 4
-				}}
-			>
-				<Typography size='xxlarge'>{text[0]}</Typography>
-			</View>
+			<Avatar
+				uri={store.image?.path}
+				fallbackText={store.name}
+				size={72}
+				circle
+			/>
+			<Spacer y={2} />
 			<Typography
+				size='small'
 				weight={selected ? 'medium' : undefined}
 				style={{ textAlign: 'center' }}
 			>
-				{text}
+				{store.name}
 			</Typography>
 		</Pressable>
 	);
@@ -49,7 +44,7 @@ const StoreSelectListItem: React.FC<StoresListItemProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		padding: 12,
+		marginRight: 12,
 		marginBottom: 8
 	}
 });

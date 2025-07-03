@@ -1,10 +1,4 @@
-import {
-	CustomImage,
-	Row,
-	Screen,
-	Typography,
-	useTheme
-} from '@habiti/components';
+import { Avatar, Row, Screen, Typography, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
@@ -18,7 +12,6 @@ import {
 
 import {
 	StoresFollowedQuery,
-	useFollowStoreMutation,
 	useUnfollowStoreMutation,
 	useStoresFollowedQuery
 } from '../types/api';
@@ -28,8 +21,6 @@ import useRefresh from '../hooks/useRefresh';
 
 const FollowedStores = () => {
 	const { theme } = useTheme();
-	const [editMode, setEditMode] = React.useState(false);
-	const [selectedStores, setSelectedStores] = React.useState<string[]>([]);
 	const [{ data, fetching }, refetch] = useStoresFollowedQuery();
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();
@@ -62,8 +53,6 @@ const FollowedStores = () => {
 					<FollowedStoreItem
 						store={item.store}
 						onPress={handleStoreItemPress(item.store.id)}
-						editMode={editMode}
-						selected={selectedStores.includes(item.store.id)}
 					/>
 				)}
 				keyExtractor={f => f.storeId}
@@ -75,19 +64,14 @@ const FollowedStores = () => {
 interface FollowedStoreItemProps {
 	store: StoresFollowedQuery['currentUser']['followed'][number]['store'];
 	onPress(): void;
-	editMode: boolean;
-	selected: boolean;
 }
 
 const FollowedStoreItem: React.FC<FollowedStoreItemProps> = ({
 	store,
-	onPress,
-	editMode,
-	selected
+	onPress
 }) => {
 	const { theme } = useTheme();
-	const [{ fetching }, unfollowStore] = useUnfollowStoreMutation();
-	const [{ fetching: followFetching }, followStore] = useFollowStoreMutation();
+	const [, unfollowStore] = useUnfollowStoreMutation();
 
 	const handleFollowPress = async () => {
 		await unfollowStore({ storeId: store.id });
@@ -96,11 +80,12 @@ const FollowedStoreItem: React.FC<FollowedStoreItemProps> = ({
 	return (
 		<Row onPress={onPress} style={styles.item}>
 			<View style={styles.left}>
-				<CustomImage
-					width={40}
-					height={40}
-					style={styles.image}
+				<Avatar
+					size={40}
 					uri={store.image?.path}
+					circle
+					fallbackText={store.name}
+					style={styles.image}
 				/>
 				<Typography weight='medium'>{store.name}</Typography>
 			</View>
@@ -134,7 +119,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	image: {
-		borderRadius: 20,
 		marginRight: 8
 	},
 	button: {

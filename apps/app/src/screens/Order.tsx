@@ -1,10 +1,4 @@
-import {
-	Button,
-	ScrollableScreen,
-	Spacer,
-	Typography,
-	useTheme
-} from '@habiti/components';
+import { ScrollableScreen, Spacer, useTheme } from '@habiti/components';
 import {
 	NavigationProp,
 	RouteProp,
@@ -18,72 +12,12 @@ import OrderMeta from '../components/order/OrderMeta';
 import OrderProduct from '../components/order/OrderProduct';
 import StoreMeta from '../components/order/StoreMeta';
 import useGoBack from '../hooks/useGoBack';
-import {
-	OrderStatus,
-	useOrderQuery,
-	useUpdateOrderMutation
-} from '../types/api';
+import { OrderStatus, useOrderQuery } from '../types/api';
 import { AppStackParamList, HomeStackParamList } from '../types/navigation';
 import useRefresh from '../hooks/useRefresh';
+import PaymentPendingWarning from '../components/order/PaymentPendingWarning';
 
 // What actions should users be able to carry out on their orders on this screen?
-
-interface PaymentPendingWarningProps {
-	orderId: string;
-}
-
-const PaymentPendingWarning = ({ orderId }: PaymentPendingWarningProps) => {
-	const { theme } = useTheme();
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const [, updateOrder] = useUpdateOrderMutation();
-
-	const handleMakePayment = () => {
-		navigate('Add Card', { orderId });
-	};
-
-	const handleCancelOrder = () => {
-		updateOrder({
-			orderId,
-			input: { status: OrderStatus.Cancelled }
-		});
-	};
-
-	return (
-		<View
-			style={{
-				marginBottom: 12,
-				marginHorizontal: 16,
-				backgroundColor: theme.input.background,
-				padding: 12,
-				borderRadius: 8
-			}}
-		>
-			<Typography weight='medium'>Payment pending</Typography>
-			<Spacer y={4} />
-			<Typography variant='secondary' size='small'>
-				This order has a pending payment. Please make the payment to complete
-				your order.
-			</Typography>
-			<Spacer y={12} />
-			<View style={{ flexDirection: 'row', gap: 8 }}>
-				<Button
-					style={{ flex: 1 }}
-					text='Make Payment'
-					variant='primary'
-					size='small'
-					onPress={handleMakePayment}
-				/>
-				<Button
-					style={{ flex: 1 }}
-					text='Cancel Order'
-					variant='destructive'
-					size='small'
-					onPress={handleCancelOrder}
-				/>
-			</View>
-		</View>
-	);
-};
 
 const Order: React.FC = () => {
 	const {

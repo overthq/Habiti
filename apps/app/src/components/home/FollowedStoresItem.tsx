@@ -1,6 +1,6 @@
-import { CustomImage, Typography } from '@habiti/components';
 import React from 'react';
 import { StyleSheet, Pressable } from 'react-native';
+import { Avatar, Typography } from '@habiti/components';
 
 import { HomeQuery } from '../../types/api';
 
@@ -14,10 +14,10 @@ const FollowedStoresItem: React.FC<FollowedStoresItemProps> = ({
 	onPress
 }) => (
 	<Pressable style={styles.container} onPress={onPress}>
-		<CustomImage
+		<Avatar
 			uri={store.image?.path}
-			height={68}
-			width={68}
+			size={68}
+			fallbackText={store.name}
 			style={styles.image}
 		/>
 		<Typography size='small' weight='medium' style={styles.name}>

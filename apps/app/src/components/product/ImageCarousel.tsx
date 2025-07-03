@@ -6,18 +6,17 @@ import Animated, {
 	useAnimatedScrollHandler
 } from 'react-native-reanimated';
 
-import { ProductQuery } from '../../types/api';
 import ImageCarouselDots from '../profile/ImageCarouselDots';
+import { useProductContext } from './ProductContext';
 
 const { width } = Dimensions.get('window');
 
-interface ImageCarouselProps {
-	images: ProductQuery['product']['images'];
-}
-
-const ImageCarousel: React.FC<ImageCarouselProps> = ({ images }) => {
+const ImageCarousel: React.FC = () => {
 	const scrollX = useSharedValue(0);
 	const { theme } = useTheme();
+	const {
+		product: { images }
+	} = useProductContext();
 
 	const handleScroll = useAnimatedScrollHandler({
 		onScroll: ({ contentOffset: { x } }) => {

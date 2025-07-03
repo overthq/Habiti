@@ -75,7 +75,7 @@ const dark = {
 		secondary: palette.neutral.n200,
 		tertiary: palette.neutral.n500,
 		disabled: palette.neutral.n500,
-		error: palette.red.r600,
+		error: palette.red.r500,
 		label: palette.neutral.n100,
 		invert: palette.neutral.n950,
 		inactive: palette.neutral.n600

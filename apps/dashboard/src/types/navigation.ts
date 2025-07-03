@@ -10,7 +10,9 @@ export type AppStackParamList = {
 	StoreSelect: undefined;
 	CreateStore: undefined;
 	Root: undefined;
-	'Add Product': undefined;
+	'Add Product': {
+		onClose?(productId: string): void;
+	};
 	Settings: undefined;
 	CustomerInfo: { userId: string };
 	AddPayout: undefined;
@@ -21,8 +23,6 @@ export type AppStackParamList = {
 		description: string;
 	};
 	AddManager: undefined;
-	FilterProducts: undefined;
-	FilterOrders: undefined;
 	'Modal.CreateStore': undefined;
 };
 
