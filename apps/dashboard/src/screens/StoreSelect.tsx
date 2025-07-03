@@ -1,7 +1,8 @@
-import { Screen, Spacer, Typography } from '@habiti/components';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Screen, Spacer, Typography } from '@habiti/components';
 
 import CreateStoreForm from '../components/store-select/CreateStoreForm';
 import StoreSelectList from '../components/store-select/StoreSelectList';
@@ -9,6 +10,7 @@ import { useManagedStoresQuery } from '../types/api';
 
 const StoreSelect: React.FC = () => {
 	const [{ fetching, data }] = useManagedStoresQuery();
+	const [showCreateStore, setShowCreateStore] = React.useState(false);
 
 	if (fetching || !data) {
 		return <View />;
@@ -17,12 +19,14 @@ const StoreSelect: React.FC = () => {
 	return (
 		<Screen style={styles.container}>
 			<SafeAreaView style={{ flex: 1 }}>
-				<Typography size='xxxlarge' weight='bold'>
+				<Typography size='xxlarge' weight='bold'>
 					{data?.currentUser.managed.length
 						? 'Select store'
 						: 'Create a new store'}
 				</Typography>
+
 				<Spacer y={2} />
+
 				<Typography variant='secondary'>
 					{data?.currentUser.managed.length
 						? 'Select the store you want to manage.'
@@ -31,29 +35,19 @@ const StoreSelect: React.FC = () => {
 
 				<Spacer y={16} />
 
-				<View style={{ flex: 1 }}>
-					<StoreSelectList
-						stores={data?.currentUser.managed.map(({ store }) => store) ?? []}
-					/>
-
-					{data?.currentUser.managed.length ? (
-						<View>
-							<Typography
-								variant='secondary'
-								style={{ marginVertical: 4, textAlign: 'center' }}
-							>
-								OR
-							</Typography>
-							<Spacer y={2} />
-							<Typography size='large' weight='bold'>
-								Create a new store
-							</Typography>
-							<Spacer y={8} />
-						</View>
-					) : null}
-
-					<CreateStoreForm />
-				</View>
+				<Animated.View style={{ flex: 1 }}>
+					{showCreateStore ? (
+						<CreateStoreForm
+							hasTitle={!!data?.currentUser.managed.length}
+							onCancel={() => setShowCreateStore(false)}
+						/>
+					) : (
+						<StoreSelectList
+							stores={data?.currentUser.managed.map(({ store }) => store) ?? []}
+							onAddStore={() => setShowCreateStore(true)}
+						/>
+					)}
+				</Animated.View>
 			</SafeAreaView>
 		</Screen>
 	);
@@ -62,7 +56,7 @@ const StoreSelect: React.FC = () => {
 const styles = StyleSheet.create({
 	container: {
 		paddingHorizontal: 16,
-		paddingTop: 32
+		paddingTop: 16
 	}
 });
 

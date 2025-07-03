@@ -1,7 +1,17 @@
-import { Button, FormInput, Spacer } from '@habiti/components';
+import {
+	Button,
+	FormInput,
+	Spacer,
+	TextButton,
+	Typography
+} from '@habiti/components';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { View } from 'react-native';
+import Animated, {
+	FadeInDown,
+	FadeInUp,
+	FadeOutDown
+} from 'react-native-reanimated';
 
 import useGoBack from '../../hooks/useGoBack';
 import useStore from '../../state';
@@ -16,7 +26,15 @@ export interface CreateStoreFormValues {
 	website: string;
 }
 
-const CreateStoreForm: React.FC = () => {
+interface CreateStoreFormProps {
+	hasTitle?: boolean;
+	onCancel(): void;
+}
+
+const CreateStoreForm: React.FC<CreateStoreFormProps> = ({
+	hasTitle,
+	onCancel
+}) => {
 	const [, createStore] = useCreateStoreMutation();
 	const setPreference = useStore(useShallow(state => state.setPreference));
 	const methods = useForm<CreateStoreFormValues>();
@@ -37,8 +55,17 @@ const CreateStoreForm: React.FC = () => {
 	);
 
 	return (
-		<View>
+		<Animated.View entering={FadeInDown} exiting={FadeOutDown}>
+			{hasTitle && (
+				<>
+					<Typography size='large' weight='bold'>
+						Create a new store
+					</Typography>
+					<Spacer y={8} />
+				</>
+			)}
 			<FormInput
+				autoFocus
 				control={methods.control}
 				name='name'
 				label='Store name'
@@ -62,9 +89,17 @@ const CreateStoreForm: React.FC = () => {
 				autoCorrect={false}
 				autoCapitalize='none'
 			/>
-			<Spacer y={16} />
+			<Spacer y={32} />
 			<Button text='Submit' onPress={methods.handleSubmit(onSubmit)} />
-		</View>
+			<Spacer y={16} />
+			<TextButton
+				style={{ alignSelf: 'center' }}
+				onPress={onCancel}
+				variant='secondary'
+			>
+				Select an existing store instead?
+			</TextButton>
+		</Animated.View>
 	);
 };
 
