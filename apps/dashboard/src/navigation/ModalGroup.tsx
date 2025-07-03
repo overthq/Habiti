@@ -8,8 +8,6 @@ import AddProduct from '../screens/AddProduct';
 import CreateStore from '../screens/CreateStore';
 import CustomerInfo from '../screens/CustomerInfo';
 import EditCategory from '../screens/EditCategory';
-import FilterOrders from '../screens/FilterOrders';
-import FilterProducts from '../screens/FilterProducts';
 
 const ModalGroup = (
 	<AppStack.Group screenOptions={{ presentation: 'modal', headerShown: true }}>
@@ -38,16 +36,6 @@ const ModalGroup = (
 			name='AddManager'
 			component={AddManager}
 			options={{ headerTitle: 'Add Manager' }}
-		/>
-		<AppStack.Screen
-			name='FilterProducts'
-			component={FilterProducts}
-			options={{ headerTitle: 'Filter Products' }}
-		/>
-		<AppStack.Screen
-			name='FilterOrders'
-			component={FilterOrders}
-			options={{ headerTitle: 'Filter Orders' }}
 		/>
 		<AppStack.Screen
 			name='Modal.CreateStore'

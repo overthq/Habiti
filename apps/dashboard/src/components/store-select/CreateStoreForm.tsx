@@ -7,11 +7,7 @@ import {
 } from '@habiti/components';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import Animated, {
-	FadeInDown,
-	FadeInUp,
-	FadeOutDown
-} from 'react-native-reanimated';
+import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 
 import useGoBack from '../../hooks/useGoBack';
 import useStore from '../../state';

@@ -21,8 +21,6 @@ export type AppStackParamList = {
 		description: string;
 	};
 	AddManager: undefined;
-	FilterProducts: undefined;
-	FilterOrders: undefined;
 	'Modal.CreateStore': undefined;
 };
 
