@@ -41,7 +41,7 @@ const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({ modalRef }) => {
 		<BottomModal modalRef={modalRef} enableDynamicSizing>
 			<BottomSheetView style={{ paddingBottom: bottom, paddingHorizontal: 16 }}>
 				<FormProvider {...methods}>
-					<Typography weight='semibold' size='large'>
+					<Typography weight='semibold' size='xlarge'>
 						Filter
 					</Typography>
 					<Spacer y={8} />
