@@ -1,7 +1,8 @@
+import React from 'react';
 import { FormInput, Screen, Spacer, TextButton } from '@habiti/components';
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 import useGoBack from '../hooks/useGoBack';
 import { useCreateProductMutation } from '../types/api';
@@ -13,12 +14,19 @@ export interface ProductFormData {
 	quantity: string;
 }
 
+const addProductSchema = z.object({
+	name: z.string().min(1),
+	description: z.string().min(1),
+	unitPrice: z.string().min(1),
+	quantity: z.string().min(1)
+});
+
 const AddProduct: React.FC = () => {
 	const { goBack, setOptions } = useNavigation();
 	const [{ fetching }, createProduct] = useCreateProductMutation();
 	useGoBack('x');
 
-	const formMethods = useForm<ProductFormData>({
+	const formMethods = useForm<z.infer<typeof addProductSchema>>({
 		defaultValues: {
 			name: '',
 			description: '',
@@ -28,14 +36,13 @@ const AddProduct: React.FC = () => {
 	});
 
 	const onSubmit = React.useCallback(
-		async (values: ProductFormData) => {
+		async (values: z.infer<typeof addProductSchema>) => {
 			const { error } = await createProduct({
 				input: {
 					name: values.name,
 					description: values.description,
 					unitPrice: Number(values.unitPrice) * 100,
-					// quantity: Number(values.quantity)
-					quantity: 1
+					quantity: Number(values.quantity)
 				}
 			});
 
@@ -93,6 +100,15 @@ const AddProduct: React.FC = () => {
 					label='Price'
 					placeholder='Enter product price'
 					control={formMethods.control}
+					keyboardType='number-pad'
+				/>
+				<Spacer y={8} />
+				<FormInput
+					name='quantity'
+					label='Quantity'
+					placeholder='Enter product quantity'
+					control={formMethods.control}
+					keyboardType='number-pad'
 				/>
 			</FormProvider>
 		</Screen>
