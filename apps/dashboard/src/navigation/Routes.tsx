@@ -7,7 +7,6 @@ import { useShallow } from 'zustand/react/shallow';
 import { AppStack } from './AppStack';
 import MainTabNavigator from './MainTab';
 import ModalGroup from './ModalGroup';
-import useClient from '../hooks/useClient';
 import Authenticate from '../screens/Authenticate';
 import Landing from '../screens/Landing';
 import Register from '../screens/Register';
