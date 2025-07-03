@@ -3,12 +3,13 @@ import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import {
+	Avatar,
 	BottomModal,
 	Button,
-	CustomImage,
 	Row,
 	Spacer,
-	Typography
+	Typography,
+	useTheme
 } from '@habiti/components';
 
 import { useManagedStoresQuery } from '../../types/api';
@@ -20,6 +21,12 @@ interface StoreSelectModalProps {
 const StoreSelectModal: React.FC<StoreSelectModalProps> = ({ modalRef }) => {
 	const { bottom } = useSafeAreaInsets();
 	const [{ data }] = useManagedStoresQuery();
+	const { theme } = useTheme();
+
+	const handleCreateStore = () => {
+		modalRef.current?.dismiss();
+		// TODO: Allow the ability to create a new store, or just log the user out.
+	};
 
 	return (
 		<BottomModal modalRef={modalRef} enableDynamicSizing>
@@ -29,20 +36,28 @@ const StoreSelectModal: React.FC<StoreSelectModalProps> = ({ modalRef }) => {
 				</Typography>
 				<Spacer y={8} />
 				{data?.currentUser.managed.map(({ store }) => (
-					<Row key={store.id} style={{ alignItems: 'center' }}>
-						<CustomImage
+					<Row
+						key={store.id}
+						style={{
+							backgroundColor: theme.modal.background,
+							alignItems: 'center'
+						}}
+					>
+						<Avatar
 							uri={store.image?.path}
-							style={{ marginRight: 8 }}
-							height={40}
-							width={40}
+							fallbackText={store.name}
+							size={40}
 							circle
+							style={{ marginRight: 8 }}
 						/>
 						<Typography>{store.name}</Typography>
 					</Row>
 				))}
+
 				<Spacer y={16} />
+
 				<View style={{ paddingHorizontal: 16 }}>
-					<Button onPress={() => {}} text='Create new store' />
+					<Button onPress={handleCreateStore} text='Create new store' />
 				</View>
 			</BottomSheetView>
 		</BottomModal>
