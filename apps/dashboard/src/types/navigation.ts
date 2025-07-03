@@ -10,9 +10,7 @@ export type AppStackParamList = {
 	StoreSelect: undefined;
 	CreateStore: undefined;
 	Root: undefined;
-	'Add Product': {
-		onClose?(productId: string): void;
-	};
+	'Add Product': undefined;
 	Settings: undefined;
 	CustomerInfo: { userId: string };
 	AddPayout: undefined;

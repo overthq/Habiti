@@ -37,7 +37,11 @@ const BankSelectButton: React.FC<BankSelectButtonProps> = ({
 				style={[styles.button, { backgroundColor: theme.input.background }]}
 				onPress={onPress}
 			>
-				<Typography style={{ color: theme.input.text }}>
+				<Typography
+					style={{
+						color: field.value ? theme.text.primary : theme.input.placeholder
+					}}
+				>
 					{field.value ? BANKS_BY_CODE[field.value].name : 'Select Bank'}
 				</Typography>
 				<Icon name='chevron-down' />
@@ -56,7 +60,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		borderRadius: 4,
+		borderRadius: 6,
 		marginBottom: 8
 	}
 });

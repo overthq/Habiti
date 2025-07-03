@@ -1,7 +1,13 @@
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import { BottomSheetFlatList, BottomSheetModal } from '@gorhom/bottom-sheet';
-import { Typography, Spacer, Row, BottomModal } from '@habiti/components';
+import {
+	Typography,
+	Spacer,
+	Row,
+	BottomModal,
+	useTheme
+} from '@habiti/components';
 
 import { BANKS } from '../../utils/banks';
 
@@ -10,6 +16,8 @@ interface BankSelectModalProps {
 }
 
 const BankSelectModal: React.FC<BankSelectModalProps> = ({ modalRef }) => {
+	const { theme } = useTheme();
+
 	const dismissModal = React.useCallback(() => {
 		modalRef.current?.dismiss();
 	}, [modalRef.current]);
@@ -31,6 +39,7 @@ const BankSelectModal: React.FC<BankSelectModalProps> = ({ modalRef }) => {
 						keyExtractor={b => b.id.toString()}
 						renderItem={({ item }) => (
 							<Row
+								style={{ backgroundColor: theme.modal.background }}
 								onPress={() => {
 									field.onChange(item.code);
 									dismissModal();
