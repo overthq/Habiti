@@ -18,6 +18,7 @@ const EditButtons: React.FC<EditButtonsProps> = ({ product }) => {
 	const openPriceModal = () => {
 		priceModalRef.current?.present();
 	};
+
 	const openInventoryModal = () => {
 		inventoryModalRef.current?.present();
 	};

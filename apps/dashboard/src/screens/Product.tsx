@@ -10,18 +10,12 @@ import {
 import useGoBack from '../hooks/useGoBack';
 import { useProductQuery } from '../types/api';
 import { ProductStackParamList } from '../types/navigation';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import ProductSettings from '../components/product/ProductSettings';
 import { Spacer, TextButton, useTheme } from '@habiti/components';
 import ProductDetails from '../components/product/ProductDetails';
-import ProductPrice from '../components/product/ProductPrice';
 import ProductMedia from '../components/product/ProductMedia';
-import InventoryInput from '../components/product/InventoryInput';
 import { ScrollableScreen } from '@habiti/components';
 import ProductCategories from '../components/product/ProductCategories';
 import useRefresh from '../hooks/useRefresh';
-import ProductPriceModal from '../components/modals/ProductPriceModal';
-import ProductInventoryModal from '../components/modals/ProductInventoryModal';
 import EditButtons from '../components/product/EditButtons';
 
 const Product: React.FC = () => {
@@ -31,10 +25,6 @@ const Product: React.FC = () => {
 	const { setOptions, navigate } =
 		useNavigation<NavigationProp<ProductStackParamList>>();
 
-	const settingsModalRef = React.useRef<BottomSheetModal>(null);
-	const priceModalRef = React.useRef<BottomSheetModal>(null);
-	const inventoryModalRef = React.useRef<BottomSheetModal>(null);
-
 	const [{ data, fetching }, refetch] = useProductQuery({
 		variables: { id: productId }
 	});
@@ -43,14 +33,6 @@ const Product: React.FC = () => {
 	const { theme } = useTheme();
 
 	useGoBack();
-
-	const openPriceModal = () => {
-		priceModalRef.current?.present();
-	};
-
-	const openInventoryModal = () => {
-		inventoryModalRef.current?.present();
-	};
 
 	React.useLayoutEffect(() => {
 		setOptions({
@@ -106,18 +88,6 @@ const Product: React.FC = () => {
 					productId={productId}
 				/>
 			</ScrollableScreen>
-
-			<ProductSettings productId={productId} modalRef={settingsModalRef} />
-			<ProductPriceModal
-				modalRef={priceModalRef}
-				productId={productId}
-				initialPrice={data.product.unitPrice}
-			/>
-			<ProductInventoryModal
-				productId={productId}
-				initialQuantity={data.product.quantity}
-				modalRef={inventoryModalRef}
-			/>
 		</>
 	);
 };
