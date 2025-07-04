@@ -49,7 +49,7 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 				</Typography>
 				<TextButton
 					onPress={() => navigate('Product.Images', { productId, images })}
-					size={17}
+					size={15}
 				>
 					Manage
 				</TextButton>

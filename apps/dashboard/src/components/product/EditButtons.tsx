@@ -35,7 +35,6 @@ const EditButtons: React.FC<EditButtonsProps> = ({ product }) => {
 					onPress={openInventoryModal}
 					value={product.quantity.toString()}
 				/>
-				{/* <EditButton label='Delete' onPress={() => {}} /> */}
 			</View>
 			<ProductPriceModal
 				modalRef={priceModalRef}
@@ -51,11 +50,13 @@ const EditButtons: React.FC<EditButtonsProps> = ({ product }) => {
 	);
 };
 
-const EditButton: React.FC<{
+interface EditButtonProps {
 	label: string;
 	value: string;
-	onPress: () => void;
-}> = ({ label, value, onPress }) => {
+	onPress(): void;
+}
+
+const EditButton: React.FC<EditButtonProps> = ({ label, value, onPress }) => {
 	const { theme } = useTheme();
 
 	return (
