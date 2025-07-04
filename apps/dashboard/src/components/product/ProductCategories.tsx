@@ -48,7 +48,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
-				<Typography size='large' weight='semibold'>
+				<Typography size='large' weight='medium'>
 					Categories
 				</Typography>
 				<TextButton

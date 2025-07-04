@@ -10,7 +10,9 @@ interface ProductDetailsProps {
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 	return (
 		<View style={styles.container}>
-			<Typography size='xxlarge'>{product.name}</Typography>
+			<Typography size='xlarge' weight='medium'>
+				{product.name}
+			</Typography>
 			<Spacer y={4} />
 			<Typography variant='secondary'>{product.description}</Typography>
 		</View>

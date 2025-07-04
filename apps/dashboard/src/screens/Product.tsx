@@ -22,6 +22,7 @@ import ProductCategories from '../components/product/ProductCategories';
 import useRefresh from '../hooks/useRefresh';
 import ProductPriceModal from '../components/modals/ProductPriceModal';
 import ProductInventoryModal from '../components/modals/ProductInventoryModal';
+import EditButtons from '../components/product/EditButtons';
 
 const Product: React.FC = () => {
 	const {
@@ -92,18 +93,11 @@ const Product: React.FC = () => {
 
 				<Spacer y={16} />
 
-				<ProductPrice value={data.product.unitPrice} onPress={openPriceModal} />
+				<EditButtons product={data.product} />
 
 				<Spacer y={16} />
 
 				<ProductMedia images={data.product.images} productId={productId} />
-
-				<Spacer y={16} />
-
-				<InventoryInput
-					onPress={openInventoryModal}
-					quantity={data.product.quantity}
-				/>
 
 				<Spacer y={16} />
 
