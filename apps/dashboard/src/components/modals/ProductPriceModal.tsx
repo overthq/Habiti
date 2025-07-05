@@ -65,7 +65,7 @@ const ProductPriceModal: React.FC<ProductPriceModalProps> = ({
 					text='Save'
 					onPress={handleSubmit}
 					loading={fetching}
-					disabled={fetching || isInitialPrice}
+					// disabled={fetching || isInitialPrice}
 				/>
 			</BottomSheetView>
 		</BottomModal>
