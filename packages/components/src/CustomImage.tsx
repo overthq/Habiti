@@ -30,7 +30,7 @@ const CustomImage: React.FC<CustomImageProps> = ({
 					width,
 					height,
 					backgroundColor: theme.image.placeholder,
-					borderRadius: circle ? height / 2 : 4
+					borderRadius: circle ? height / 2 : 6
 				},
 				style
 			]}

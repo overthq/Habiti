@@ -44,12 +44,12 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 	return (
 		<View style={{ paddingHorizontal: 16 }}>
 			<View style={styles.header}>
-				<Typography weight='medium' size='xlarge'>
+				<Typography weight='medium' size='large'>
 					Media
 				</Typography>
 				<TextButton
 					onPress={() => navigate('Product.Images', { productId, images })}
-					size={17}
+					size={15}
 				>
 					Manage
 				</TextButton>
