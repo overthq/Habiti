@@ -4,7 +4,7 @@ import { ProductQuery } from '../../types/api';
 import ProductPriceModal from '../modals/ProductPriceModal';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import ProductInventoryModal from '../modals/ProductInventoryModal';
-import { Typography, useTheme, Spacer } from '@habiti/components';
+import { Typography, useTheme, Spacer, Icon } from '@habiti/components';
 import { formatNaira } from '@habiti/common';
 
 interface EditButtonsProps {
@@ -69,9 +69,13 @@ const EditButton: React.FC<EditButtonProps> = ({ label, value, onPress }) => {
 				{label}
 			</Typography>
 			<Spacer y={4} />
-			<Typography size='xlarge' weight='medium'>
-				{value}
-			</Typography>
+			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+				<Typography size='xlarge' weight='medium'>
+					{value}
+				</Typography>
+				<Spacer x={8} />
+				<Icon name='pencil' size={16} />
+			</View>
 		</Pressable>
 	);
 };
