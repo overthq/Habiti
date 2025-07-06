@@ -1,5 +1,4 @@
 import 'core-js/full/symbol/async-iterator';
-import 'react-native';
 import { ThemeProvider } from '@habiti/components';
 import * as Sentry from '@sentry/react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
