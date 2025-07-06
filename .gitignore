@@ -10,3 +10,4 @@ remix/
 google-services.json
 .react-router
 .cursor
+dist
