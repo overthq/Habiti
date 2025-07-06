@@ -38,7 +38,7 @@ const ProductCategories: React.FC = () => {
 
 	const handleAddCategory = React.useCallback(() => {
 		navigate('AddCategory');
-	}, []);
+	}, [navigate]);
 
 	const disabled = React.useMemo(() => {
 		const originalCategoryIds = categories

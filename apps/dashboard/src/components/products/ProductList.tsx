@@ -37,7 +37,9 @@ const ProductList: React.FC = () => {
 	const handleLongPress = React.useCallback(
 		(productId: string) => () => {
 			setEditMode(true);
-			setSelectedProducts(prev => [...prev, productId]);
+			setSelectedProducts(prev =>
+				prev.includes(productId) ? prev : [...prev, productId]
+			);
 		},
 		[]
 	);
