@@ -69,7 +69,7 @@ jobs:
       - name: Publish EAS update
         if: ${{ needs.changes.outputs.should_build == 'false' }}
         run: |
-          eas update --branch production --message "Auto update from commit ${{ github.sha }}"
+          eas update --branch production --channel production --message "Auto update from commit ${{ github.sha }}"
         working-directory: ./apps/app
 
   deploy-dashboard:
@@ -106,5 +106,5 @@ jobs:
       - name: Publish EAS update
         if: ${{ needs.changes.outputs.should_build == 'false' }}
         run: |
-          eas update --branch production --message "Auto update from commit ${{ github.sha }}"
+          eas update --branch production --channel production --message "Auto update from commit ${{ github.sha }}"
         working-directory: ./apps/dashboard
