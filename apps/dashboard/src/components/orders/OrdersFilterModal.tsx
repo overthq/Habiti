@@ -44,7 +44,7 @@ const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({ modalRef }) => {
 					<Typography weight='semibold' size='xlarge'>
 						Filter
 					</Typography>
-					<Spacer y={8} />
+					<Spacer y={12} />
 					<AccordionRow
 						title='Sort by'
 						open={open === 'sort-by'}

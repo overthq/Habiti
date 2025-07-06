@@ -14,16 +14,18 @@ import { ProductsQuery } from '../../types/api';
 interface ProductsListItemProps {
 	product: ProductsQuery['currentStore']['products']['edges'][number]['node'];
 	onPress(): void;
+	onLongPress(): void;
 }
 
 const ProductsListItem: React.FC<ProductsListItemProps> = ({
 	product,
-	onPress
+	onPress,
+	onLongPress
 }) => {
 	const { theme } = useTheme();
 
 	return (
-		<Row onPress={onPress} style={styles.container}>
+		<Row onPress={onPress} onLongPress={onLongPress} style={styles.container}>
 			<View style={styles.left}>
 				<CustomImage
 					uri={product.images[0]?.path}

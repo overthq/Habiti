@@ -13,21 +13,32 @@ import {
 	useCategoriesQuery,
 	useUpdateProductCategoriesMutation
 } from '../types/api';
-import { ProductStackParamList } from '../types/navigation';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { AppStackParamList, ProductStackParamList } from '../types/navigation';
+import {
+	NavigationProp,
+	RouteProp,
+	useNavigation,
+	useRoute
+} from '@react-navigation/native';
 import useGoBack from '../hooks/useGoBack';
+import FAB from '../components/products/FAB';
 
 const ProductCategories: React.FC = () => {
 	const {
 		params: { productId, categories }
 	} = useRoute<RouteProp<ProductStackParamList, 'Product.Categories'>>();
-	const { goBack, setOptions } = useNavigation();
+	const { navigate, goBack, setOptions } =
+		useNavigation<NavigationProp<AppStackParamList>>();
 	const [{ data }] = useCategoriesQuery();
 	const [selectedCategories, setSelectedCategories] = React.useState<string[]>(
 		categories.map(({ categoryId }) => categoryId)
 	);
 	const [, updateProductCategories] = useUpdateProductCategoriesMutation();
 	useGoBack();
+
+	const handleAddCategory = React.useCallback(() => {
+		navigate('AddCategory');
+	}, []);
 
 	const disabled = React.useMemo(() => {
 		const originalCategoryIds = categories
@@ -90,6 +101,7 @@ const ProductCategories: React.FC = () => {
 					</View>
 				))}
 			</View>
+			<FAB onPress={handleAddCategory} text='Add Category' />
 		</Screen>
 	);
 };

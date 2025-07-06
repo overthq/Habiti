@@ -25,12 +25,27 @@ const ProductList: React.FC = () => {
 	});
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 	const { theme } = useTheme();
+	const [editMode, setEditMode] = React.useState(false);
+	const [selectedProducts, setSelectedProducts] = React.useState<string[]>([]);
 
 	const handlePress = React.useCallback(
 		(productId: string) => () =>
 			navigate('Product', { screen: 'Product.Main', params: { productId } }),
 		[]
 	);
+
+	const handleLongPress = React.useCallback(
+		(productId: string) => () => {
+			setEditMode(true);
+			setSelectedProducts(prev => [...prev, productId]);
+		},
+		[]
+	);
+
+	const clearSelectedProducts = React.useCallback(() => {
+		setEditMode(false);
+		setSelectedProducts([]);
+	}, []);
 
 	const renderProduct: ListRenderItem<
 		ProductsQuery['currentStore']['products']['edges'][number]
@@ -39,6 +54,7 @@ const ProductList: React.FC = () => {
 			<ProductsListItem
 				product={item.node}
 				onPress={handlePress(item.node.id)}
+				onLongPress={handleLongPress(item.node.id)}
 			/>
 		);
 	}, []);
