@@ -14,7 +14,7 @@ import { ProductsQuery } from '../../types/api';
 interface ProductsListItemProps {
 	product: ProductsQuery['currentStore']['products']['edges'][number]['node'];
 	onPress(): void;
-	onLongPress(): void;
+	onLongPress?(): void;
 }
 
 const ProductsListItem: React.FC<ProductsListItemProps> = ({
