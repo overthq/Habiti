@@ -26,7 +26,7 @@
 			},
 			"env": {
 				"EXPO_PUBLIC_API_URL": "https://market-api-d47w.onrender.com",
-				"EXPO_PUBLIC_SENTRY_DSN": "https://5bed064f57bf09d2b706b4ab455d1f32@o4507042729099264.ingest.us.sentry.io/4507449710280704"
+				"EXPO_PUBLIC_SENTRY_DSN": "https://385d60a93aee3e59df675a79c82b0beb@o4507042729099264.ingest.us.sentry.io/4507449670172672"
 			}
 		},
 		"production": {
