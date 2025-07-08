@@ -15,6 +15,10 @@ query UserOrders {
 				product {
 					id
 					name
+					images {
+						id
+						path
+					}
 				}
 				unitPrice
 				quantity
