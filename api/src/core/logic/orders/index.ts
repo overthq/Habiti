@@ -18,11 +18,12 @@ export const createOrder = async (input: CreateOrderInput, ctx: AppContext) => {
 
 	const { cartId, cardId, transactionFee, serviceFee } = validatedInput;
 
-	const cart = await getCartById(ctx.prisma, ctx.user.id, cartId);
+	const cart = await getCartById(ctx.prisma, cartId);
+
 	await validateCart(cart, ctx.user.id);
 
 	const order = await saveOrderData(ctx.prisma, ctx.user.id, {
-		cardId,
+		cardId: cardId ?? undefined,
 		transactionFee,
 		serviceFee,
 		cart,

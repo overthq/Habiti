@@ -120,6 +120,13 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 	};
 
 	const handleSubmit = async () => {
+		console.log({
+			cartId: cart.id,
+			cardId: selectedCard || undefined,
+			transactionFee: cart.fees.total ?? 0,
+			serviceFee: cart.fees.service ?? 0
+		});
+
 		const { error, data: orderData } = await createOrder({
 			input: {
 				cartId: cart.id,
@@ -128,6 +135,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 				serviceFee: cart.fees.service ?? 0
 			}
 		});
+
+		console.log('orderData', orderData);
 
 		setPreference({ defaultCard: selectedCard });
 
