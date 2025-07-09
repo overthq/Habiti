@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 export const createOrderSchema = z.object({
 	cartId: z.string(),
-	cardId: z.string(),
+	cardId: z.string().nullable(),
 	transactionFee: z.number(),
 	serviceFee: z.number()
 });

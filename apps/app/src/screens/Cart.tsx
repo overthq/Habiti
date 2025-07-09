@@ -36,15 +36,6 @@ const Cart: React.FC = () => {
 		setSelectedCard
 	} = useCart();
 
-	// TODO: Make sure that users get navigated to the home screen instead.
-	// if (createOrderData) {
-	// 	return (
-	// 		<View>
-	// 			<Typography>Order submitted</Typography>
-	// 		</View>
-	// 	);
-	// }
-
 	return (
 		<ScrollableScreen
 			style={[styles.container, { paddingBottom: bottom }]}

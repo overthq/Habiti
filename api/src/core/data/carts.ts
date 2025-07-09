@@ -11,13 +11,9 @@ interface UpdateCartQuantityParams {
 	quantity: number;
 }
 
-export const getCartById = async (
-	prisma: PrismaClient,
-	cartId: string,
-	userId: string
-) => {
+export const getCartById = async (prisma: PrismaClient, cartId: string) => {
 	const cart = await prisma.cart.findUnique({
-		where: { id: cartId, userId },
+		where: { id: cartId },
 		include: {
 			products: { include: { product: true } },
 			store: true
