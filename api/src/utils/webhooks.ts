@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { OrderStatus } from '@prisma/client';
+
 import { storeCard } from '../core/data/cards';
 import {
 	markPayoutAsFailed,
@@ -6,7 +8,6 @@ import {
 } from '../core/data/payouts';
 import { getOrderById, updateOrder } from '../core/data/orders';
 import prismaClient from '../config/prisma';
-import { OrderStatus } from '@prisma/client';
 
 const SUPPORTED_EVENTS = [
 	'charge.success',
@@ -40,23 +41,21 @@ const handleChargeSuccess = async (data: ChargeSuccessPayload) => {
 	} else {
 		await storeCard(data);
 
-		// Transition status from PaymentPending to Pending
 		if (data.metadata.orderId) {
+			// Transition status from PaymentPending to Pending
 			const order = await getOrderById(prismaClient, data.metadata.orderId);
 
 			if (!order) {
 				console.warn(`Order not found for charge: ${data.metadata.orderId}`);
-				return;
 			} else if (order.status !== OrderStatus.PaymentPending) {
 				console.warn(
 					`Order ${order.id} is not in the PaymentPending state. It is in the ${order.status} state.`
 				);
-				return;
+			} else {
+				await updateOrder(prismaClient, order.id, {
+					status: OrderStatus.Pending
+				});
 			}
-
-			await updateOrder(prismaClient, order.id, {
-				status: OrderStatus.Pending
-			});
 		}
 	}
 };
