@@ -4,6 +4,9 @@ import {
 	markPayoutAsFailed,
 	markPayoutAsSuccessful
 } from '../core/data/payouts';
+import { getOrderById, updateOrder } from '../core/data/orders';
+import prismaClient from '../config/prisma';
+import { OrderStatus } from '@prisma/client';
 
 const SUPPORTED_EVENTS = [
 	'charge.success',
@@ -36,6 +39,25 @@ const handleChargeSuccess = async (data: ChargeSuccessPayload) => {
 		return;
 	} else {
 		await storeCard(data);
+
+		// Transition status from PaymentPending to Pending
+		if (data.metadata.orderId) {
+			const order = await getOrderById(prismaClient, data.metadata.orderId);
+
+			if (!order) {
+				console.warn(`Order not found for charge: ${data.metadata.orderId}`);
+				return;
+			} else if (order.status !== OrderStatus.PaymentPending) {
+				console.warn(
+					`Order ${order.id} is not in the PaymentPending state. It is in the ${order.status} state.`
+				);
+				return;
+			}
+
+			await updateOrder(prismaClient, order.id, {
+				status: OrderStatus.Pending
+			});
+		}
 	}
 };
 
@@ -93,13 +115,20 @@ const TransferAuthorizationSchema = z.object({
 	receiver_bank: z.string()
 });
 
+const CardChargeMetadataSchema = z.object({
+	userId: z.string().optional().nullable(),
+	orderId: z.string().optional().nullable()
+});
+
 const CardChargeSuccessSchema = z.object({
 	customer: z.object({ email: z.string() }), // I don't know if this is actually supplied.
-	authorization: CardAuthorizationSchema
+	authorization: CardAuthorizationSchema,
+	metadata: CardChargeMetadataSchema
 });
 
 const TransferChargeSuccessSchema = z.object({
-	authorization: TransferAuthorizationSchema
+	authorization: TransferAuthorizationSchema,
+	metadata: CardChargeMetadataSchema
 });
 
 type CardChargeSuccessPayload = z.infer<typeof CardChargeSuccessSchema>;
