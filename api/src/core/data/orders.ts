@@ -17,7 +17,7 @@ interface UpdateOrderParams {
 }
 
 interface SaveOrderDataParams {
-	cardId?: string | undefined;
+	cardId?: string | undefined | null;
 	storeId: string;
 	cart: Cart;
 	products: Product[];

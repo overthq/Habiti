@@ -23,7 +23,7 @@ export const createOrder = async (input: CreateOrderInput, ctx: AppContext) => {
 	await validateCart(cart, ctx.user.id);
 
 	const order = await saveOrderData(ctx.prisma, ctx.user.id, {
-		cardId: cardId ?? undefined,
+		cardId,
 		transactionFee,
 		serviceFee,
 		cart,
