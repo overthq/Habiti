@@ -2,8 +2,7 @@ import { Request, Response } from 'express';
 
 import prismaClient from '../config/prisma';
 
-// GET /carts/:id
-export async function getCartById(req: Request, res: Response) {
+export const getCartById = async (req: Request, res: Response) => {
 	if (!req.auth) {
 		return res.status(401).json({ error: 'User not authenticated' });
 	}
@@ -30,10 +29,9 @@ export async function getCartById(req: Request, res: Response) {
 	}, 0);
 
 	return res.json({ cart: { ...cart, total: computedTotal } });
-}
+};
 
-// POST /carts/products
-export async function addProductToCart(req: Request, res: Response) {
+export const addProductToCart = async (req: Request, res: Response) => {
 	const { productId, quantity } = req.body;
 
 	if (!req.auth) {
@@ -64,10 +62,9 @@ export async function addProductToCart(req: Request, res: Response) {
 	});
 
 	return res.json({ cartProduct });
-}
+};
 
-// DELETE /carts/:id/products/:productId
-export async function removeProductFromCart(req: Request, res: Response) {
+export const removeProductFromCart = async (req: Request, res: Response) => {
 	const { id, productId } = req.params;
 
 	if (!id || !productId) {
@@ -93,4 +90,4 @@ export async function removeProductFromCart(req: Request, res: Response) {
 	});
 
 	return res.json({ cartProduct });
-}
+};
