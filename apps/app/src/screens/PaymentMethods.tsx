@@ -52,7 +52,6 @@ const PaymentMethods: React.FC = () => {
 	return (
 		<Screen>
 			<Spacer y={16} />
-			<SectionHeader title='Saved payment methods' />
 			<FlatList
 				style={{ flex: 1 }}
 				contentContainerStyle={{ flexGrow: 1 }}
