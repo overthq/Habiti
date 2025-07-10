@@ -3,7 +3,6 @@ import {
 	Icon,
 	ListEmpty,
 	Screen,
-	SectionHeader,
 	Spacer,
 	Typography,
 	useTheme
