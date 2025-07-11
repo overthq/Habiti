@@ -13,7 +13,7 @@ export interface InitialChargeOptions {
 export interface PayAccountOptions {
 	amount: string;
 	reference: string;
-	recepient: string;
+	recipient: string;
 }
 
 export interface VerifyTransferOptions {

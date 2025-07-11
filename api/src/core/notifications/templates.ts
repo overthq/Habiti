@@ -1,7 +1,4 @@
-import {
-	NotificationTemplate,
-	NotificationType
-} from '../core/notifications/types';
+import { NotificationTemplate, NotificationType } from './types';
 
 export const notificationTemplates: Record<
 	NotificationType,

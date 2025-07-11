@@ -7,129 +7,78 @@ import {
 	ResolveAccountNumberOptions,
 	VerifyTransferOptions
 } from './types';
-
-const API_URL = 'https://api.paystack.co';
+import * as Paystack from './paystack';
+import { transitionOrderToPending } from './webhooks';
 
 export const chargeAuthorization = async (
 	options: ChargeAuthorizationOptions
 ) => {
-	const data = await post('/transaction/charge_authorization', {
-		authorization_code: options.authorizationCode,
-		email: options.email,
-		amount: options.amount
-	});
+	const data = await Paystack.chargeAuthorization(options);
 
 	return data;
 };
 
 export const initialCharge = async (options: InitialChargeOptions) => {
-	const data = await post('/transaction/initialize', {
+	const data = await Paystack.initializeTransaction({
 		email: options.email,
 		amount: options.amount,
-		...(options.orderId && {
-			metadata: {
-				orderId: options.orderId
-			}
-		})
+		...(options.orderId && { metadata: { orderId: options.orderId } })
 	});
 
 	return data;
 };
 
 export const payAccount = async (options: PayAccountOptions) => {
-	const data = await post('/transfer', {
-		source: 'balance',
+	return await Paystack.transfer({
 		amount: options.amount,
 		reference: options.reference,
-		recepient: options.recepient,
-		reason: 'Payout'
+		recipient: options.recipient
 	});
-
-	return data;
 };
 
 export const verifyTransfer = async (options: VerifyTransferOptions) => {
-	const data = await get(`/transfer/verify/${options.transferId}`);
-
-	return data;
+	return await Paystack.verifyTransfer(options.transferId);
 };
 
 export const resolveAccountNumber = async (
 	options: ResolveAccountNumberOptions
 ) => {
-	const { data } = await get(
-		`/bank/resolve?account_number=${options.accountNumber}&bank_code=${options.bankCode}`
-	);
-
-	return data;
+	return await Paystack.resolveAccountNumber(options);
 };
-
-// This should probably be run on the frontend in a script.
-// We should generate the list and store it with the code as a JSON file,
-// We can update it OTA.
 
 export const createTransferReceipient = async (
 	options: CreateTransferReceipientOptions
 ) => {
-	try {
-		const { data } = await post('/transferrecipient', {
-			type: 'nuban',
-			name: options.name,
-			account_number: options.accountNumber,
-			bank_code: options.bankCode,
-			currency: 'NGN'
-		});
-
-		return data.recipient_code;
-	} catch (error) {
-		console.log('An error occurred while creating a transfer recepient:');
-		console.log(error);
-		throw error;
-	}
-};
-
-export const loadBanks = async () => {
-	const data = await get('/bank?currency=NGN');
-
-	return data;
-};
-
-export const verifyTransaction = async (reference: string) => {
-	const { data, status } = await get(`/transaction/verify/${reference}`);
-
-	if (status === true && data.status === 'success') {
-		return storeCard(data);
-	} else {
-		throw new Error('Verification failed!');
-	}
+	return await Paystack.createTransferReceipient(options);
 };
 
 export const listBanks = async () => {
-	const data = await get('/bank?currency=NGN');
-
-	return data;
+	return await Paystack.listBanks();
 };
 
-const post = async (path: string, body: object) => {
-	const response = await fetch(`${API_URL}${path}`, {
-		method: 'POST',
-		headers: {
-			Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(body)
-	});
+export const verifyTransaction = async (reference: string) => {
+	const { data, status } = await Paystack.verifyTransaction(reference);
 
-	const data = await response.json();
-	return data;
-};
+	if (status === true && data.status === 'success') {
+		const card = await storeCard({
+			email: data.customer.email,
+			signature: data.authorization.signature,
+			authorizationCode: data.authorization.authorization_code,
+			bin: data.authorization.bin,
+			last4: data.authorization.last4,
+			expMonth: data.authorization.exp_month,
+			expYear: data.authorization.exp_year,
+			bank: data.authorization.bank,
+			cardType: data.authorization.card_type,
+			countryCode: data.authorization.country_code
+		});
 
-const get = async (path: string) => {
-	const response = await fetch(`${API_URL}${path}`, {
-		method: 'GET',
-		headers: { Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` }
-	});
+		if (typeof data.metadata === 'object' && data.metadata?.orderId) {
+			console.log('Transitioning order to pending', data.metadata.orderId);
 
-	const data = await response.json();
-	return data;
+			await transitionOrderToPending(data.metadata.orderId);
+		}
+
+		return card;
+	}
 };

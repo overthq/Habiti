@@ -1,7 +1,7 @@
 import { createHmac } from 'crypto';
 import { Router } from 'express';
 
-import { handlePaystackWebhookEvent } from '../utils/webhooks';
+import { handlePaystackWebhookEvent } from '../core/payments/webhooks';
 
 const webhookRouter: Router = Router();
 
