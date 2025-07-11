@@ -1,5 +1,5 @@
 import { Cart, OrderStatus, Product, PrismaClient } from '@prisma/client';
-import { chargeAuthorization } from '../../utils/paystack';
+import { chargeAuthorization } from '../payments';
 
 interface CreateOrderParams {
 	storeId: string;

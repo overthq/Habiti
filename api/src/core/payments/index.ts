@@ -1,12 +1,14 @@
-import { storeCard } from '../core/data/cards';
+import { storeCard } from '../data/cards';
+import {
+	ChargeAuthorizationOptions,
+	CreateTransferReceipientOptions,
+	InitialChargeOptions,
+	PayAccountOptions,
+	ResolveAccountNumberOptions,
+	VerifyTransferOptions
+} from './types';
 
 const API_URL = 'https://api.paystack.co';
-
-interface ChargeAuthorizationOptions {
-	authorizationCode: string;
-	email: string;
-	amount: string;
-}
 
 export const chargeAuthorization = async (
 	options: ChargeAuthorizationOptions
@@ -19,12 +21,6 @@ export const chargeAuthorization = async (
 
 	return data;
 };
-
-interface InitialChargeOptions {
-	email: string;
-	amount: number;
-	orderId: string | undefined;
-}
 
 export const initialCharge = async (options: InitialChargeOptions) => {
 	const data = await post('/transaction/initialize', {
@@ -40,51 +36,29 @@ export const initialCharge = async (options: InitialChargeOptions) => {
 	return data;
 };
 
-export const createRecepient = async (
-	name: string,
-	accountNumber: string,
-	bankCode: string
-) => {
-	// Consider also doing this with the authorization code.
-	const { data } = await post('/transferrecipient', {
-		type: 'nuban',
-		name,
-		account_number: accountNumber,
-		bank_code: bankCode,
-		currency: 'NGN'
-	});
-
-	return data;
-};
-
-export const payAccount = async (
-	amount: string,
-	reference: string,
-	recepient: string
-) => {
+export const payAccount = async (options: PayAccountOptions) => {
 	const data = await post('/transfer', {
 		source: 'balance',
-		amount,
-		reference,
-		recepient,
+		amount: options.amount,
+		reference: options.reference,
+		recepient: options.recepient,
 		reason: 'Payout'
 	});
 
 	return data;
 };
 
-export const verifyTransfer = async (transferId: string) => {
-	const data = await get(`/transfer/verify/${transferId}`);
+export const verifyTransfer = async (options: VerifyTransferOptions) => {
+	const data = await get(`/transfer/verify/${options.transferId}`);
 
 	return data;
 };
 
 export const resolveAccountNumber = async (
-	accountNumber: string,
-	bankCode: string
+	options: ResolveAccountNumberOptions
 ) => {
 	const { data } = await get(
-		`/bank/resolve?account_number=${accountNumber}&bank_code=${bankCode}`
+		`/bank/resolve?account_number=${options.accountNumber}&bank_code=${options.bankCode}`
 	);
 
 	return data;
@@ -94,43 +68,31 @@ export const resolveAccountNumber = async (
 // We should generate the list and store it with the code as a JSON file,
 // We can update it OTA.
 
-export const listBanks = async () => {
+export const createTransferReceipient = async (
+	options: CreateTransferReceipientOptions
+) => {
+	try {
+		const { data } = await post('/transferrecipient', {
+			type: 'nuban',
+			name: options.name,
+			account_number: options.accountNumber,
+			bank_code: options.bankCode,
+			currency: 'NGN'
+		});
+
+		return data.recipient_code;
+	} catch (error) {
+		console.log('An error occurred while creating a transfer recepient:');
+		console.log(error);
+		throw error;
+	}
+};
+
+export const loadBanks = async () => {
 	const data = await get('/bank?currency=NGN');
 
 	return data;
 };
-
-export const createTransferReceipient = async (
-	name: string,
-	accountNumber: string,
-	bankCode: string
-) => {
-	const { data } = await post('/transferrecipient', {
-		type: 'nuban',
-		name,
-		account_number: accountNumber,
-		bank_code: bankCode,
-		currency: 'NGN'
-	});
-
-	return data.recipient_code;
-};
-
-export const loadBanks = async () => {
-	const response = await fetch('https://api.paystack.co/bank?country=nigeria', {
-		headers: {
-			Accept: 'application/json',
-			'Content-Type': 'application/json'
-		}
-	});
-
-	const { data } = await response.json();
-
-	return data;
-};
-
-// Hack to verify transaction in dev.
-// (On prod, the webhook should do this).
 
 export const verifyTransaction = async (reference: string) => {
 	const { data, status } = await get(`/transaction/verify/${reference}`);
@@ -140,6 +102,12 @@ export const verifyTransaction = async (reference: string) => {
 	} else {
 		throw new Error('Verification failed!');
 	}
+};
+
+export const listBanks = async () => {
+	const data = await get('/bank?currency=NGN');
+
+	return data;
 };
 
 const post = async (path: string, body: object) => {

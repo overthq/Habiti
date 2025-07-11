@@ -2,10 +2,10 @@ import { UploadApiResponse } from 'cloudinary';
 import { FileUpload } from 'graphql-upload';
 
 import { Resolver } from '../../types/resolvers';
-import { NotificationType } from '../../types/notifications';
-import { createTransferReceipient } from '../../utils/paystack';
+import { createTransferReceipient } from '../../core/payments';
 import { uploadStream } from '../../utils/upload';
-import { getStorePushTokens } from '../../utils/notifications';
+import { getStorePushTokens } from '../../core/notifications';
+import { NotificationType } from '../../core/notifications/types';
 import { canManageStore, storeAuthorizedResolver } from '../permissions';
 
 export interface CreateStoreArgs {
@@ -92,11 +92,11 @@ export const editStore: Resolver<EditStoreArgs> = async (_, { input }, ctx) => {
 	let bankAccountReference: string | undefined;
 
 	if (rest.bankAccountNumber && rest.bankCode) {
-		bankAccountReference = await createTransferReceipient(
-			ctx.user.name,
-			rest.bankAccountNumber,
-			rest.bankCode
-		);
+		bankAccountReference = await createTransferReceipient({
+			name: ctx.user.name,
+			accountNumber: rest.bankAccountNumber,
+			bankCode: rest.bankCode
+		});
 	}
 
 	const store = await ctx.prisma.store.update({
