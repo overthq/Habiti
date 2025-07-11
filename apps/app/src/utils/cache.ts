@@ -55,14 +55,14 @@ const customCache = cacheExchange({
 				args: MutationCreateOrderArgs,
 				cache
 			) {
-				cache.invalidate({
-					__typename: 'Cart',
-					id: args.input.cartId
-				});
-				cache.invalidate({
-					__typename: 'Store',
-					id: _result.createOrder.store.id
-				});
+				// cache.invalidate({
+				// 	__typename: 'Cart',
+				// 	id: args.input.cartId
+				// });
+				// cache.invalidate({
+				// 	__typename: 'Store',
+				// 	id: _result.createOrder.store.id
+				// });
 			}
 		}
 	}
