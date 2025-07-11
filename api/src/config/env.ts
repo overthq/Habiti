@@ -1,10 +1,11 @@
 import dotenv from 'dotenv';
+import { z } from 'zod';
 
 dotenv.config();
 
-// TODO: Use zod to validate the environment variables
+const envSchema = z.object({
+	LOOPS_API_KEY: z.string().optional(),
+	POSTHOG_API_KEY: z.string().optional()
+});
 
-export const env = {
-	LOOPS_API_KEY: process.env.LOOPS_API_KEY || '',
-	POSTHOG_API_KEY: process.env.POSTHOG_API_KEY || ''
-};
+export const env = envSchema.parse(process.env);
