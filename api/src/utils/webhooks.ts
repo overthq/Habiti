@@ -34,28 +34,33 @@ export const handlePaystackWebhookEvent = async (event: string, data: any) => {
 	}
 };
 
+// TODO: We should validate the data input, but I'm worried that Paystack might
+// update the schema without warning.
+
 const handleChargeSuccess = async (data: ChargeSuccessPayload) => {
 	if (isTransferCharge(data)) {
 		// TODO: Implement DVAs and regular transfer payments here
 		return;
 	} else {
 		await storeCard(data);
+	}
 
-		if (data.metadata.orderId) {
-			// Transition status from PaymentPending to Pending
-			const order = await getOrderById(prismaClient, data.metadata.orderId);
+	// In both cases, we want to check if `orderId` is set in the metadata.
+	// If it is, we want to transition the order status from PaymentPending to Pending.
 
-			if (!order) {
-				console.warn(`Order not found for charge: ${data.metadata.orderId}`);
-			} else if (order.status !== OrderStatus.PaymentPending) {
-				console.warn(
-					`Order ${order.id} is not in the PaymentPending state. It is in the ${order.status} state.`
-				);
-			} else {
-				await updateOrder(prismaClient, order.id, {
-					status: OrderStatus.Pending
-				});
-			}
+	if (data.metadata.orderId) {
+		const order = await getOrderById(prismaClient, data.metadata.orderId);
+
+		if (!order) {
+			console.warn(`Order not found for charge: ${data.metadata.orderId}`);
+		} else if (order.status !== OrderStatus.PaymentPending) {
+			console.warn(
+				`Order ${order.id} is not in the PaymentPending state. It is in the ${order.status} state.`
+			);
+		} else {
+			await updateOrder(prismaClient, order.id, {
+				status: OrderStatus.Pending
+			});
 		}
 	}
 };

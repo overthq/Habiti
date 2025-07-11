@@ -39,22 +39,27 @@ export const createStore = async (req: Request, res: Response) => {
 
 export const getCurrentStore = async (req: Request, res: Response) => {
 	const store = await loadCurrentStore(req);
+
 	return res.json({ store });
 };
 
 export const getCurrentStorePayouts = async (req: Request, res: Response) => {
 	const store = await loadCurrentStore(req);
+
 	const payouts = await prismaClient.payout.findMany({
 		where: { storeId: store.id }
 	});
+
 	return res.json({ payouts });
 };
 
 export const getCurrentStoreManagers = async (req: Request, res: Response) => {
 	const store = await loadCurrentStore(req);
+
 	const managers = await prismaClient.storeManager.findMany({
 		where: { storeId: store.id }
 	});
+
 	return res.json({ managers });
 };
 
