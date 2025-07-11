@@ -50,6 +50,7 @@ const customCache = cacheExchange({
 			addToWatchlist(_result, args: MutationAddToWatchlistArgs, cache) {
 				cache.invalidate({ __typename: 'Product', id: args.productId });
 			},
+			// This is disabled because the invalidation makes the order result null.
 			createOrder(
 				_result: CreateOrderMutation,
 				args: MutationCreateOrderArgs,
