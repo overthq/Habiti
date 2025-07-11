@@ -68,21 +68,20 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 		}
 	}, [cart.user.cards, defaultCard, selectedCard]);
 
-	// Batch updates to prevent race conditions
 	const pendingUpdatesRef = React.useRef<Map<string, number>>(new Map());
 
-	const disabled =
-		isUpdatingCartProduct ||
-		isCreatingOrder ||
-		pendingUpdatesRef.current.size > 0;
+	const disabled = React.useMemo(() => {
+		return (
+			isUpdatingCartProduct ||
+			isCreatingOrder ||
+			pendingUpdatesRef.current.size > 0
+		);
+	}, [isUpdatingCartProduct, isCreatingOrder]);
 
 	const processBatchedUpdates = React.useCallback(() => {
 		const updates = Array.from(pendingUpdatesRef.current.entries());
 		if (updates.length === 0) return;
 
-		console.log('Processing batched updates:', updates);
-
-		// Process all updates
 		updates.forEach(([productId, quantity]) => {
 			updateCartProduct({
 				input: {
@@ -93,7 +92,6 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 			});
 		});
 
-		// Clear the pending updates
 		pendingUpdatesRef.current.clear();
 	}, [cart.id, updateCartProduct]);
 
@@ -105,7 +103,6 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 	const removeProductFromCart = (productId: string) => {
 		dispatch({ type: 'remove', productId });
 
-		// Add to batch with quantity 0 (removal)
 		pendingUpdatesRef.current.set(productId, 0);
 		debouncedProcessBatchedUpdates();
 	};
@@ -114,12 +111,11 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 		// if (quantity < 1) return removeProductFromCart(productId);
 		dispatch({ type: 'update', productId, quantity });
 
-		// Add to batch - this will overwrite any previous pending update for the same product
 		pendingUpdatesRef.current.set(productId, quantity);
 		debouncedProcessBatchedUpdates();
 	};
 
-	const handleSubmit = async () => {
+	const handleSubmit = React.useCallback(async () => {
 		const { error, data: orderData } = await createOrder({
 			input: {
 				cartId: cart.id,
@@ -140,7 +136,16 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 				goBack();
 			}
 		}
-	};
+	}, [
+		cart.id,
+		cart.fees.total,
+		cart.fees.service,
+		selectedCard,
+		navigate,
+		goBack,
+		createOrder,
+		setPreference
+	]);
 
 	return (
 		<CartContext.Provider

@@ -26,8 +26,7 @@ export const createOrder = async (input: CreateOrderInput, ctx: AppContext) => {
 		transactionFee,
 		serviceFee,
 		cart,
-		storeId: cart.storeId,
-		products: cart.products.map(p => p.product)
+		storeId: cart.storeId
 	});
 
 	createOrderHooks(ctx.prisma, ctx.services, {
