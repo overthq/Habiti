@@ -7,7 +7,6 @@ import { createOrderHooks, updateOrderHooks } from '../../hooks/orders';
 import { validateCart } from '../../validations/carts';
 import { createOrderSchema, updateOrderSchema } from '../../validations/orders';
 import { AppContext } from '../../../utils/context';
-import { ResolverContext } from '../../../types/resolvers';
 
 export const createOrder = async (input: CreateOrderInput, ctx: AppContext) => {
 	const { data: validatedInput, success } = createOrderSchema.safeParse(input);
@@ -49,7 +48,7 @@ export const createOrder = async (input: CreateOrderInput, ctx: AppContext) => {
 
 export const updateOrderStatus = async (
 	input: UpdateOrderStatusInput,
-	ctx: ResolverContext
+	ctx: AppContext
 ) => {
 	const { data: validatedInput, success } = updateOrderSchema.safeParse(input);
 
