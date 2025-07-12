@@ -29,10 +29,17 @@ interface StoreCardData {
 }
 
 export const storeCard = async (data: StoreCardData) => {
-	return await prismaClient.card.upsert({
+	const user = await prismaClient.user.findUnique({
+		where: { email: data.email }
+	});
+
+	if (!user) {
+		throw new Error('User not found');
+	}
+
+	return prismaClient.card.upsert({
 		where: {
-			signature: data.signature,
-			user: { email: data.email }
+			userId_signature: { userId: user.id, signature: data.signature }
 		},
 		update: {},
 		create: {
@@ -86,15 +93,4 @@ export const deleteCard = async (prisma: PrismaClient, cardId: string) => {
 	await prisma.card.delete({
 		where: { id: cardId }
 	});
-};
-
-export const getCardBySignature = async (
-	prisma: PrismaClient,
-	signature: string
-) => {
-	const card = await prisma.card.findUnique({
-		where: { signature }
-	});
-
-	return card;
 };
