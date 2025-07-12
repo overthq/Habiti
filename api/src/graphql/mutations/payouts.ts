@@ -36,7 +36,7 @@ export const createPayout: Resolver<CreatePayoutArgs> = async (
 	await payAccount({
 		amount: amount.toString(),
 		reference: payout.id,
-		recepient: store.bankAccountReference
+		recipient: store.bankAccountReference
 	});
 
 	return payout;
