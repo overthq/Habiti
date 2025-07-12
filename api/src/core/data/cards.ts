@@ -29,8 +29,11 @@ interface StoreCardData {
 }
 
 export const storeCard = async (data: StoreCardData) => {
-	return prismaClient.card.upsert({
-		where: { signature: data.signature },
+	const card = await prismaClient.card.upsert({
+		where: {
+			signature: data.signature,
+			user: { email: data.email }
+		},
 		update: {},
 		create: {
 			email: data.email,
@@ -46,6 +49,10 @@ export const storeCard = async (data: StoreCardData) => {
 			user: { connect: { email: data.email } }
 		}
 	});
+
+	console.log('Stored card', card);
+
+	return card;
 };
 
 export const createCard = async (
