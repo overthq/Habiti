@@ -77,6 +77,8 @@ mutation CreateOrder($input: CreateOrderInput!) {
 			}
 		}
 		products {
+			orderId
+			productId
 			product {
 				id
 				name

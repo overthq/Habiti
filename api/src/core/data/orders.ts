@@ -1,5 +1,5 @@
-import { Cart, OrderStatus, Product, PrismaClient } from '@prisma/client';
-import { chargeAuthorization } from '../../utils/paystack';
+import { Prisma, OrderStatus, PrismaClient } from '@prisma/client';
+import { chargeAuthorization } from '../payments';
 
 interface CreateOrderParams {
 	storeId: string;
@@ -17,24 +17,24 @@ interface UpdateOrderParams {
 }
 
 interface SaveOrderDataParams {
-	cardId?: string | undefined;
+	cardId?: string | undefined | null;
 	storeId: string;
-	cart: Cart;
-	products: Product[];
+	cart: Prisma.CartGetPayload<{
+		include: { products: { include: { product: true } } };
+	}>;
 	transactionFee: number;
 	serviceFee: number;
 }
 
 export const saveOrderData = async (
-	prisma: PrismaClient,
+	prismaClient: PrismaClient,
 	userId: string,
 	params: SaveOrderDataParams
 ) => {
-	const { cardId, storeId, cart, products, transactionFee, serviceFee } =
-		params;
-	const { orderData, total } = getOrderData(products);
+	const { cardId, storeId, cart, transactionFee, serviceFee } = params;
+	const { orderData, total } = getOrderData(cart.products);
 
-	const order = await prisma.$transaction(async prisma => {
+	const order = await prismaClient.$transaction(async prisma => {
 		const store = await prisma.store.update({
 			where: { id: storeId },
 			data: {
@@ -61,14 +61,17 @@ export const saveOrderData = async (
 
 		await prisma.cart.delete({ where: { id: cart.id } });
 
-		await prisma.product.updateMany({
-			where: { id: { in: products.map(p => p.id) } },
-			data: {
-				quantity: {
-					decrement: products.reduce((acc, p) => acc + p.quantity, 0)
+		// Since this is a transaction, it should be fast. Right? right?
+		for (const product of cart.products) {
+			await prisma.product.update({
+				where: { id: product.productId },
+				data: {
+					quantity: {
+						decrement: product.quantity
+					}
 				}
-			}
-		});
+			});
+		}
 
 		if (cardId) {
 			const card = await prisma.card.findUnique({
@@ -97,12 +100,21 @@ export const saveOrderData = async (
 	return order;
 };
 
-const getOrderData = (products: Product[]) => {
+const getOrderData = (
+	products: Prisma.CartProductGetPayload<{
+		include: { product: true };
+	}>[]
+) => {
 	let total = 0;
 
 	const orderData = products.map(p => {
-		total += p.unitPrice * p.quantity;
-		return { productId: p.id, unitPrice: p.unitPrice, quantity: p.quantity };
+		total += p.product.unitPrice * p.quantity;
+
+		return {
+			productId: p.productId,
+			unitPrice: p.product.unitPrice,
+			quantity: p.quantity
+		};
 	});
 
 	return { orderData, total };

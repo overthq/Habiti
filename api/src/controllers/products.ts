@@ -42,7 +42,6 @@ export const getRelatedProducts = async (
 	return res.json({ products });
 };
 
-// GET /products/:id/reviews
 export const getProductReviews = async (
 	req: Request<{ id: string }>,
 	res: Response
@@ -55,7 +54,6 @@ export const getProductReviews = async (
 	return res.json({ reviews });
 };
 
-// POST /products/:id/reviews
 export const createProductReview = async (
 	req: Request<{ id: string }>,
 	res: Response
@@ -76,7 +74,6 @@ export const createProductReview = async (
 	return res.json({ review });
 };
 
-// PUT /products/:id
 export const updateProduct = async (
 	req: Request<{ id: string }>,
 	res: Response
@@ -97,7 +94,6 @@ export const updateProduct = async (
 	return res.json({ product });
 };
 
-// PUT /products/:id/categories
 export const updateProductCategories = async (
 	req: Request<{ id: string }, {}, { add: string[]; remove: string[] }>,
 	res: Response

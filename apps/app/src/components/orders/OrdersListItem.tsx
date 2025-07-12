@@ -1,8 +1,11 @@
 import React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Avatar, Row, Spacer, Typography } from '@habiti/components';
+import { formatNaira } from '@habiti/common';
 
 import { UserOrdersQuery } from '../../types/api';
+import { relativeTimestamp } from '../../utils/date';
+import { plural } from '../../utils/strings';
 
 interface OrdersListItemProps {
 	order: UserOrdersQuery['currentUser']['orders'][number];
@@ -11,27 +14,27 @@ interface OrdersListItemProps {
 
 const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
 	return (
-		<Row onPress={onPress}>
-			<View>
-				<View style={styles.container}>
-					<Avatar
-						uri={order.store.image?.path}
-						fallbackText={order.store.name}
-						size={40}
-					/>
-					<Typography>{order.store.name}</Typography>
+		<Row key={order.id} style={styles.container} onPress={onPress}>
+			<Avatar
+				uri={order.store.image?.path}
+				size={48}
+				circle
+				fallbackText={order.store.name}
+			/>
+			<View style={styles.info}>
+				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+					<Typography weight='medium' size='large'>
+						{order.store.name}
+					</Typography>
+					<Typography size='small' variant='secondary'>
+						{` · ${relativeTimestamp(order.createdAt)}`}
+					</Typography>
 				</View>
-				<Spacer y={8} />
-				<View style={styles.products}>
-					{order.products.map(product => (
-						<View key={product.product.id}>
-							<Image
-								source={{ uri: product.product.images?.[0].path }}
-								style={styles.productImage}
-							/>
-						</View>
-					))}
-				</View>
+				<Spacer y={4} />
+				<Typography size='small' variant='secondary'>
+					{formatNaira(order.total)} ·{' '}
+					{plural('product', order.products.length)}
+				</Typography>
 			</View>
 		</Row>
 	);
@@ -39,18 +42,12 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
 
 const styles = StyleSheet.create({
 	container: {
+		width: '100%',
 		flexDirection: 'row',
-		alignItems: 'center',
-		gap: 8
+		alignItems: 'center'
 	},
-	products: {
-		flexDirection: 'row',
-		gap: 8
-	},
-	productImage: {
-		width: 48,
-		height: 48,
-		borderRadius: 6
+	info: {
+		marginLeft: 8
 	}
 });
 

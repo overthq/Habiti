@@ -27,7 +27,6 @@ export const getStores = async (req: Request, res: Response) => {
 	return res.json({ stores });
 };
 
-// POST /stores
 export const createStore = async (req: Request, res: Response) => {
 	const { name, description, website, twitter, instagram } = req.body;
 
@@ -38,31 +37,32 @@ export const createStore = async (req: Request, res: Response) => {
 	return res.status(201).json({ store });
 };
 
-// GET /stores/current
 export const getCurrentStore = async (req: Request, res: Response) => {
 	const store = await loadCurrentStore(req);
+
 	return res.json({ store });
 };
 
-// GET /stores/current/payouts
 export const getCurrentStorePayouts = async (req: Request, res: Response) => {
 	const store = await loadCurrentStore(req);
+
 	const payouts = await prismaClient.payout.findMany({
 		where: { storeId: store.id }
 	});
+
 	return res.json({ payouts });
 };
 
-// GET /stores/current/managers
 export const getCurrentStoreManagers = async (req: Request, res: Response) => {
 	const store = await loadCurrentStore(req);
+
 	const managers = await prismaClient.storeManager.findMany({
 		where: { storeId: store.id }
 	});
+
 	return res.json({ managers });
 };
 
-// GET /stores/:id/payouts
 export const getStorePayouts = async (req: Request, res: Response) => {
 	if (!req.params.id) {
 		return res.status(400).json({ error: 'Store ID is required' });
@@ -78,7 +78,6 @@ export const getStorePayouts = async (req: Request, res: Response) => {
 	return res.json({ payouts });
 };
 
-// GET /stores/:id
 export const getStoreById = async (req: Request, res: Response) => {
 	if (!req.params.id) {
 		return res.status(400).json({ error: 'Store ID is required' });
@@ -95,7 +94,6 @@ export const getStoreById = async (req: Request, res: Response) => {
 	return res.json({ store });
 };
 
-// GET /stores/:id/products
 export const getStoreProducts = async (req: Request, res: Response) => {
 	if (!req.params.id) {
 		return res.status(400).json({ error: 'Store ID is required' });
@@ -110,7 +108,6 @@ export const getStoreProducts = async (req: Request, res: Response) => {
 	return res.json({ products });
 };
 
-// POST /stores/:id/products
 export const createStoreProduct = async (req: Request, res: Response) => {
 	const { name, description, unitPrice, quantity, imageFiles } = req.body;
 
@@ -142,7 +139,6 @@ export const createStoreProduct = async (req: Request, res: Response) => {
 	return res.json({ product });
 };
 
-// GET /stores/:id/orders
 export const getStoreOrders = async (req: Request, res: Response) => {
 	if (!req.params.id) {
 		return res.status(400).json({ error: 'Store ID is required' });
@@ -161,7 +157,6 @@ export const getStoreOrders = async (req: Request, res: Response) => {
 	return res.json({ orders });
 };
 
-// GET /stores/:id/managers
 export const getStoreManagers = async (req: Request, res: Response) => {
 	if (!req.params.id) {
 		return res.status(400).json({ error: 'Store ID is required' });
@@ -174,7 +169,6 @@ export const getStoreManagers = async (req: Request, res: Response) => {
 	return res.json({ managers });
 };
 
-// POST /stores/:id/follow
 export const followStore = async (req: Request, res: Response) => {
 	if (!req.auth) {
 		return res.status(401).json({ error: 'User not authenticated' });
@@ -191,7 +185,6 @@ export const followStore = async (req: Request, res: Response) => {
 	return res.status(200).json({ message: 'Store followed' });
 };
 
-// POST /stores/:id/unfollow
 export const unfollowStore = async (req: Request, res: Response) => {
 	if (!req.auth) {
 		return res.status(401).json({ error: 'User not authenticated' });
@@ -213,7 +206,6 @@ export const unfollowStore = async (req: Request, res: Response) => {
 	return res.status(200).json({ message: 'Store unfollowed' });
 };
 
-// GET /stores/current/home
 export const getStoreHome = async (req: Request, res: Response) => {
 	const context = getAppContext(req);
 

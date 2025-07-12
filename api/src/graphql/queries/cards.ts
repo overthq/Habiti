@@ -1,6 +1,6 @@
 import { OrderStatus } from '@prisma/client';
 import { Resolver } from '../../types/resolvers';
-import { initialCharge } from '../../utils/paystack';
+import { initialCharge } from '../../core/payments';
 
 const user: Resolver = async (parent, _, ctx) => {
 	return ctx.prisma.card.findUnique({ where: { id: parent.id } }).user();

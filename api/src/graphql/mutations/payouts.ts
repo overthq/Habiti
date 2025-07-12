@@ -1,5 +1,5 @@
 import { Resolver } from '../../types/resolvers';
-import { payAccount, resolveAccountNumber } from '../../utils/paystack';
+import { payAccount, resolveAccountNumber } from '../../core/payments';
 
 export interface CreatePayoutArgs {
 	input: { amount: number };
@@ -33,7 +33,11 @@ export const createPayout: Resolver<CreatePayoutArgs> = async (
 		data: { storeId: ctx.storeId, amount }
 	});
 
-	await payAccount(amount.toString(), payout.id, store.bankAccountReference);
+	await payAccount({
+		amount: amount.toString(),
+		reference: payout.id,
+		recipient: store.bankAccountReference
+	});
 
 	return payout;
 };
@@ -49,7 +53,10 @@ export const verifyBankAccount: Resolver<VerifyBankAccountArgs> = async (
 	_,
 	{ input: { bankAccountNumber, bankCode } }
 ) => {
-	const data = await resolveAccountNumber(bankAccountNumber, bankCode);
+	const data = await resolveAccountNumber({
+		accountNumber: bankAccountNumber,
+		bankCode
+	});
 
 	return {
 		accountNumber: data.account_number,

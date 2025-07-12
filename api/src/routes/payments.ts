@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { verifyTransaction } from '../utils/paystack';
+import { verifyTransaction } from '../core/payments';
 
 const paymentsRouter: Router = Router();
 

@@ -1,6 +1,6 @@
 import { PushTokenType } from '@prisma/client';
 
-import prismaClient from '../config/prisma';
+import prismaClient from '../../config/prisma';
 
 // TODO: These should be cached in redis.
 

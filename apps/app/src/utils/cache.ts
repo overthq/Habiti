@@ -50,19 +50,20 @@ const customCache = cacheExchange({
 			addToWatchlist(_result, args: MutationAddToWatchlistArgs, cache) {
 				cache.invalidate({ __typename: 'Product', id: args.productId });
 			},
+			// This is disabled because the invalidation makes the order result null.
 			createOrder(
 				_result: CreateOrderMutation,
 				args: MutationCreateOrderArgs,
 				cache
 			) {
-				cache.invalidate({
-					__typename: 'Cart',
-					id: args.input.cartId
-				});
-				cache.invalidate({
-					__typename: 'Store',
-					id: _result.createOrder.store.id
-				});
+				// cache.invalidate({
+				// 	__typename: 'Cart',
+				// 	id: args.input.cartId
+				// });
+				// cache.invalidate({
+				// 	__typename: 'Store',
+				// 	id: _result.createOrder.store.id
+				// });
 			}
 		}
 	}

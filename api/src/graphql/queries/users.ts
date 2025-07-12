@@ -14,7 +14,9 @@ const users: Resolver = (_, __, ctx) => {
 };
 
 const orders: Resolver = (parent, _, ctx) => {
-	return ctx.prisma.user.findUnique({ where: { id: parent.id } }).orders();
+	return ctx.prisma.user
+		.findUnique({ where: { id: parent.id } })
+		.orders({ orderBy: { createdAt: 'desc' } });
 };
 
 const managed: Resolver = (parent, _, ctx) => {

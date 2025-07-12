@@ -1225,6 +1225,8 @@ export type CreateOrderMutation = {
 		};
 		products: Array<{
 			__typename?: 'OrderProduct';
+			orderId: string;
+			productId: string;
 			unitPrice: number;
 			quantity: number;
 			product: { __typename?: 'Product'; id: string; name: string };
@@ -1993,6 +1995,8 @@ export const CreateOrderDocument = gql`
 				}
 			}
 			products {
+				orderId
+				productId
 				product {
 					id
 					name
