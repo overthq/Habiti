@@ -881,6 +881,15 @@ export type CardAuthorizationQuery = {
 	};
 };
 
+export type DeleteCardMutationVariables = Exact<{
+	id: Scalars['ID']['input'];
+}>;
+
+export type DeleteCardMutation = {
+	__typename?: 'Mutation';
+	deleteCard: { __typename?: 'Card'; id: string };
+};
+
 export type CartsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type CartsQuery = {
@@ -1598,6 +1607,19 @@ export function useCardAuthorizationQuery(
 ) {
 	return Urql.useQuery<CardAuthorizationQuery, CardAuthorizationQueryVariables>(
 		{ query: CardAuthorizationDocument, ...options }
+	);
+}
+export const DeleteCardDocument = gql`
+	mutation DeleteCard($id: ID!) {
+		deleteCard(id: $id) {
+			id
+		}
+	}
+`;
+
+export function useDeleteCardMutation() {
+	return Urql.useMutation<DeleteCardMutation, DeleteCardMutationVariables>(
+		DeleteCardDocument
 	);
 }
 export const CartsDocument = gql`

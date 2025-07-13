@@ -6,7 +6,7 @@ import Animated, {
 	useAnimatedScrollHandler
 } from 'react-native-reanimated';
 
-import ImageCarouselDots from '../profile/ImageCarouselDots';
+import ImageCarouselDots from './ImageCarouselDots';
 import { useProductContext } from './ProductContext';
 
 const { width } = Dimensions.get('window');

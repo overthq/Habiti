@@ -26,13 +26,12 @@ const CartProduct: React.FC<CartProductProps> = ({ cartProduct, onPress }) => {
 	return (
 		<Row style={styles.container} onPress={onPress}>
 			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-				<CustomImage uri={product.images[0]?.path} height={40} width={40} />
+				<CustomImage uri={product.images[0]?.path} height={48} width={48} />
 				<Spacer x={12} />
 				<View>
-					<Typography size='small'>{product.name}</Typography>
+					<Typography>{product.name}</Typography>
 					<Spacer y={2} />
 					<Typography
-						size='small'
 						weight='medium'
 						variant={hasExceededMaxQuantity ? 'error' : 'secondary'}
 					>
