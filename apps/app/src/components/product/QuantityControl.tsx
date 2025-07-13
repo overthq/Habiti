@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		borderRadius: 4,
+		borderRadius: 6,
 		paddingHorizontal: 16
 	}
 });
