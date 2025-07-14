@@ -14,6 +14,9 @@ export interface PayAccountOptions {
 	amount: string;
 	reference: string;
 	recipient: string;
+	metadata?: {
+		payoutId?: string;
+	};
 }
 
 export interface VerifyTransferOptions {

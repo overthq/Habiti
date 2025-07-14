@@ -1,6 +1,6 @@
-import { Icon, Typography, useTheme } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet, Pressable, Dimensions } from 'react-native';
+import { Icon, Typography, useTheme } from '@habiti/components';
 
 import { useProductContext } from './ProductContext';
 

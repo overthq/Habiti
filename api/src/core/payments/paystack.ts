@@ -52,6 +52,9 @@ interface TransferOptions {
 	amount: string;
 	reference: string;
 	recipient: string;
+	metadata?: {
+		payoutId?: string;
+	};
 }
 
 export const transfer = async (options: TransferOptions) => {
@@ -60,7 +63,8 @@ export const transfer = async (options: TransferOptions) => {
 		amount: options.amount,
 		reference: options.reference,
 		recipient: options.recipient,
-		reason: 'Payout'
+		reason: 'Payout',
+		...(options.metadata && { metadata: options.metadata })
 	});
 
 	return response.data;
