@@ -46,10 +46,13 @@ export const TransferAuthorizationSchema = z.object({
 	receiver_bank: z.string()
 });
 
-export const CardChargeMetadataSchema = z.object({
-	userId: z.string().optional().nullable(),
-	orderId: z.string().optional().nullable()
-});
+export const CardChargeMetadataSchema = z.union([
+	z.object({
+		userId: z.string().optional().nullable(),
+		orderId: z.string().optional().nullable()
+	}),
+	z.string()
+]);
 
 export const CardChargeSuccessSchema = z.object({
 	customer: z.object({ email: z.string() }), // I don't know if this is actually supplied.

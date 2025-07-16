@@ -60,24 +60,28 @@ export const handleChargeSuccess = async (data: ChargeSuccessPayload) => {
 	}
 	// In both cases, we want to check if `orderId` is set in the metadata.
 
-	if (data.metadata.orderId) {
+	if (typeof data.metadata === 'object' && data.metadata?.orderId) {
 		await transitionOrderToPending(data.metadata.orderId);
 	}
 };
 
 export const transitionOrderToPending = async (orderId: string) => {
-	const order = await getOrderById(prismaClient, orderId);
+	try {
+		const order = await getOrderById(prismaClient, orderId);
 
-	if (!order) {
-		console.warn(`Order not found for charge: ${orderId}`);
-	} else if (order.status !== OrderStatus.PaymentPending) {
-		console.warn(
-			`Order ${order.id} is not in the PaymentPending state. It is in the ${order.status} state.`
-		);
-	} else {
-		await updateOrder(prismaClient, order.id, {
-			status: OrderStatus.Pending
-		});
+		if (!order) {
+			console.warn(`Order not found for charge: ${orderId}`);
+		} else if (order.status !== OrderStatus.PaymentPending) {
+			console.warn(
+				`Order ${order.id} is not in the PaymentPending state. It is in the ${order.status} state.`
+			);
+		} else {
+			await updateOrder(prismaClient, order.id, {
+				status: OrderStatus.Pending
+			});
+		}
+	} catch (error) {
+		console.error(error);
 	}
 };
 
