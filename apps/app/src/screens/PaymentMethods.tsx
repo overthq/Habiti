@@ -1,32 +1,57 @@
 import React from 'react';
 import {
-	Icon,
-	ListEmpty,
-	Screen,
-	Spacer,
-	Typography,
-	useTheme
-} from '@habiti/components';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-import {
 	View,
 	StyleSheet,
 	ActivityIndicator,
 	Pressable,
-	FlatList
+	Alert
 } from 'react-native';
+import { Icon, Screen } from '@habiti/components';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
-import { CardIconMap } from '../components/cart/CardIcons';
 import useGoBack from '../hooks/useGoBack';
+import CardRow from '../components/payment-methods/CardRow';
 import { AppStackParamList } from '../types/navigation';
-import { useCardsQuery } from '../types/api';
+import { CardsQuery, useCardsQuery, useDeleteCardMutation } from '../types/api';
 
 const PaymentMethods: React.FC = () => {
 	const [{ data, fetching }] = useCardsQuery();
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
-	const { theme } = useTheme();
+	const [focusedCardId, setFocusedCardId] = React.useState<string>();
+	const [, deleteCard] = useDeleteCardMutation();
+
 	useGoBack();
+
+	const handleLongPress = React.useCallback(
+		(card: CardsQuery['currentUser']['cards'][number]) => {
+			setFocusedCardId(card.id);
+		},
+		[]
+	);
+
+	const handleCardPress = React.useCallback(
+		(card: CardsQuery['currentUser']['cards'][number]) => {
+			if (focusedCardId === card.id) {
+				setFocusedCardId(undefined);
+			}
+		},
+		[focusedCardId]
+	);
+
+	const handleDeleteCard = React.useCallback(
+		(card: CardsQuery['currentUser']['cards'][number]) => {
+			Alert.alert('Delete Card', 'Are you sure you want to delete this card?', [
+				{ text: 'Cancel', style: 'cancel' },
+				{
+					text: 'Delete',
+					style: 'destructive',
+					onPress: () => deleteCard({ id: card.id })
+				}
+			]);
+		},
+		[deleteCard]
+	);
 
 	React.useLayoutEffect(() => {
 		setOptions({
@@ -50,34 +75,16 @@ const PaymentMethods: React.FC = () => {
 
 	return (
 		<Screen>
-			<Spacer y={16} />
-			<FlatList
-				style={{ flex: 1 }}
-				contentContainerStyle={{ flexGrow: 1 }}
-				data={cards}
-				keyExtractor={c => c.id}
-				renderItem={({ item: card }) => (
-					<Pressable
-						style={[styles.card, { borderBottomColor: theme.border.color }]}
-					>
-						{CardIconMap[card.cardType.trim()]}
-						<Typography
-							style={styles.capitalize}
-						>{`\u2022\u2022\u2022\u2022${card.last4}`}</Typography>
-					</Pressable>
-				)}
-				ListEmptyComponent={() => (
-					<ListEmpty
-						title='No cards added'
-						description='When you add your cards, they will be displayed here.'
-						cta={{
-							text: 'Add card',
-							action: () => navigate('Add Card', { orderId: undefined })
-						}}
-						viewStyle={{ flex: 1 }}
-					/>
-				)}
-			/>
+			{cards.map(card => (
+				<CardRow
+					key={card.id}
+					card={card}
+					onPress={() => handleCardPress(card)}
+					onLongPress={() => handleLongPress(card)}
+					focused={focusedCardId === card.id}
+					onDelete={() => handleDeleteCard(card)}
+				/>
+			))}
 		</Screen>
 	);
 };
@@ -92,16 +99,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center'
-	},
-	card: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		paddingVertical: 4,
-		paddingHorizontal: 16,
-		borderBottomWidth: 0.5
-	},
-	capitalize: {
-		textTransform: 'capitalize'
 	}
 });
 

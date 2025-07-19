@@ -27,6 +27,7 @@ import schema from './graphql/schema';
 
 import './config/cloudinary';
 import './config/env';
+import { authenticate } from './middleware/auth';
 
 const main = async () => {
 	const app = express();
@@ -57,6 +58,7 @@ const main = async () => {
 	app.use(
 		'/graphql',
 		express.json(),
+		authenticate,
 		expressMiddleware(apolloServer, {
 			context: async ({ req }) => getAppContext(req)
 		})

@@ -32,7 +32,8 @@ export const payAccount = async (options: PayAccountOptions) => {
 	return await Paystack.transfer({
 		amount: options.amount,
 		reference: options.reference,
-		recipient: options.recipient
+		recipient: options.recipient,
+		...(options.metadata && { metadata: options.metadata })
 	});
 };
 

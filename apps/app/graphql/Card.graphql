@@ -23,3 +23,9 @@ query CardAuthorization($orderId: ID) {
 		reference
 	}
 }
+
+mutation DeleteCard($id: ID!) {
+	deleteCard(id: $id) {
+		id
+	}
+}

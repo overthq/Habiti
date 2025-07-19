@@ -3,6 +3,7 @@ import { useStoreOrdersQuery } from '@/data/queries';
 import { type ColumnDef } from '@tanstack/react-table';
 import { type Order } from '@/data/types';
 import { formatNaira } from '@/utils/format';
+import OrderStatusPill from '../order-status-pill';
 
 const columns: ColumnDef<Order>[] = [
 	{
@@ -17,7 +18,8 @@ const columns: ColumnDef<Order>[] = [
 	},
 	{
 		header: 'Status',
-		accessorKey: 'status'
+		accessorKey: 'status',
+		cell: ({ row }) => <OrderStatusPill status={row.original.status} />
 	},
 	{
 		header: 'Created At',
