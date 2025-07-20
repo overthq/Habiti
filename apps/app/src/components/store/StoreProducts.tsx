@@ -1,8 +1,9 @@
-import { useTheme } from '@habiti/components';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { FlashList } from '@shopify/flash-list';
 import React from 'react';
 import { RefreshControl, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { Spacer, useTheme } from '@habiti/components';
+import { FlashList } from '@shopify/flash-list';
 
 import StoreListItem from './StoreListItem';
 import { StoreQuery, useStoreProductsQuery } from '../../types/api';
@@ -34,6 +35,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
+	const { bottom } = useSafeAreaInsets();
 
 	const products = data?.store.products;
 
@@ -73,6 +75,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 						tintColor={theme.text.secondary}
 					/>
 				}
+				ListFooterComponent={() => <Spacer y={bottom} />}
 			/>
 			<ViewCart
 				cartId={store.userCart?.id}

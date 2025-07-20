@@ -14,7 +14,8 @@ import {
 const SUPPORTED_EVENTS = [
 	'charge.success',
 	'transfer.success',
-	'transfer.failure'
+	'transfer.failure',
+	'transfer.reversed'
 ];
 
 export const handlePaystackWebhookEvent = async (event: string, data: any) => {
@@ -59,31 +60,47 @@ export const handleChargeSuccess = async (data: ChargeSuccessPayload) => {
 	}
 	// In both cases, we want to check if `orderId` is set in the metadata.
 
-	if (data.metadata.orderId) {
+	if (typeof data.metadata === 'object' && data.metadata?.orderId) {
 		await transitionOrderToPending(data.metadata.orderId);
 	}
 };
 
 export const transitionOrderToPending = async (orderId: string) => {
-	const order = await getOrderById(prismaClient, orderId);
+	try {
+		const order = await getOrderById(prismaClient, orderId);
 
-	if (!order) {
-		console.warn(`Order not found for charge: ${orderId}`);
-	} else if (order.status !== OrderStatus.PaymentPending) {
-		console.warn(
-			`Order ${order.id} is not in the PaymentPending state. It is in the ${order.status} state.`
-		);
-	} else {
-		await updateOrder(prismaClient, order.id, {
-			status: OrderStatus.Pending
-		});
+		if (!order) {
+			console.warn(`Order not found for charge: ${orderId}`);
+		} else if (order.status !== OrderStatus.PaymentPending) {
+			console.warn(
+				`Order ${order.id} is not in the PaymentPending state. It is in the ${order.status} state.`
+			);
+		} else {
+			await updateOrder(prismaClient, order.id, {
+				status: OrderStatus.Pending
+			});
+		}
+	} catch (error) {
+		console.error(error);
 	}
 };
 
 export const handleTransferSuccess = async (data: TransferSuccessPayload) => {
-	await markPayoutAsSuccessful(data.reference);
+	if (data.reason !== 'Payout') {
+		console.warn(
+			`Found non-payout transfer. Reason: ${data.reason}. Reference: ${data.reference}`
+		);
+	} else {
+		await markPayoutAsSuccessful(data.reference);
+	}
 };
 
 export const handleTransferFailure = async (data: TransferFailurePayload) => {
-	await markPayoutAsFailed(data.reference);
+	if (data.reason !== 'Payout') {
+		console.warn(
+			`Found non-payout transfer. Reason: ${data.reason}. Reference: ${data.reference}`
+		);
+	} else {
+		await markPayoutAsFailed(data.reference);
+	}
 };

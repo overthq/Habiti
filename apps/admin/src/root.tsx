@@ -1,7 +1,6 @@
 import React from 'react';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
-import { Toaster } from 'sonner';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ThemeProvider } from './components/theme-provider';
 import './index.css';
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -24,5 +23,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function Root() {
-	return <Outlet />;
+	return (
+		<ThemeProvider defaultTheme='dark' storageKey='dashboard-theme'>
+			<Outlet />
+		</ThemeProvider>
+	);
 }

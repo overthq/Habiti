@@ -3,6 +3,7 @@ import { type Order, type User } from '@/data/types';
 import { DataTable } from '../ui/data-table';
 import { type ColumnDef } from '@tanstack/react-table';
 import { formatNaira } from '@/utils/format';
+import OrderStatusPill from '../order-status-pill';
 
 interface UserOrdersProps {
 	user: User;
@@ -26,15 +27,18 @@ const columns: ColumnDef<Order>[] = [
 	},
 	{
 		header: 'Status',
-		accessorKey: 'status'
+		accessorKey: 'status',
+		cell: ({ row }) => <OrderStatusPill status={row.original.status} />
 	},
 	{
 		header: 'Created At',
-		accessorKey: 'createdAt'
+		accessorKey: 'createdAt',
+		cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString()
 	},
 	{
 		header: 'Updated At',
-		accessorKey: 'updatedAt'
+		accessorKey: 'updatedAt',
+		cell: ({ row }) => new Date(row.original.updatedAt).toLocaleDateString()
 	}
 ];
 

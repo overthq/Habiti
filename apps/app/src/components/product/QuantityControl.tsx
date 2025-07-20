@@ -1,6 +1,6 @@
-import { Icon, Typography, useTheme } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet, Pressable, Dimensions } from 'react-native';
+import { Icon, Typography, useTheme } from '@habiti/components';
 
 import { useProductContext } from './ProductContext';
 
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		borderRadius: 4,
+		borderRadius: 6,
 		paddingHorizontal: 16
 	}
 });

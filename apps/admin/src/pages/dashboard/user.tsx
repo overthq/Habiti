@@ -21,19 +21,19 @@ const User = () => {
 			<div>
 				<div className='grid grid-cols-2 gap-4'>
 					<div>
-						<p className='text-gray-500'>ID</p>
+						<p className='text-muted-foreground'>ID</p>
 						<p>{user.id}</p>
 					</div>
 					<div>
-						<p className='text-gray-500'>Name</p>
+						<p className='text-muted-foreground'>Name</p>
 						<p>{user.name}</p>
 					</div>
 					<div>
-						<p className='text-gray-500'>Email</p>
+						<p className='text-muted-foreground'>Email</p>
 						<p>{user.email}</p>
 					</div>
 					<div>
-						<p className='text-gray-500'>Status</p>
+						<p className='text-muted-foreground'>Status</p>
 						<p>
 							<span
 								className={`px-2 py-1 rounded text-sm ${user.suspended ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}
@@ -43,11 +43,11 @@ const User = () => {
 						</p>
 					</div>
 					<div>
-						<p className='text-gray-500'>Created At</p>
+						<p className='text-muted-foreground'>Created At</p>
 						<p>{new Date(user.createdAt).toLocaleString()}</p>
 					</div>
 					<div>
-						<p className='text-gray-500'>Updated At</p>
+						<p className='text-muted-foreground'>Updated At</p>
 						<p>{new Date(user.updatedAt).toLocaleString()}</p>
 					</div>
 				</div>

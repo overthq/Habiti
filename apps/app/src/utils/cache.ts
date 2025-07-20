@@ -10,7 +10,8 @@ import {
 	MutationAddToWatchlistArgs,
 	MutationCreateOrderArgs,
 	CreateOrderMutation,
-	AddToCartMutation
+	AddToCartMutation,
+	MutationDeleteCardArgs
 } from '../types/api';
 
 const customCache = cacheExchange({
@@ -64,6 +65,9 @@ const customCache = cacheExchange({
 				// 	__typename: 'Store',
 				// 	id: _result.createOrder.store.id
 				// });
+			},
+			deleteCard(_result, args: MutationDeleteCardArgs, cache) {
+				cache.invalidate('Card');
 			}
 		}
 	}
