@@ -63,6 +63,8 @@ interface TrackOrderCreatedArgs {
 	userId: string;
 	storeId: string;
 	amount: number;
+	serviceFee: number;
+	transactionFee: number;
 	paymentMethod: string;
 	productCount: number;
 	products: Product[];
@@ -115,6 +117,8 @@ interface CreateOrderHooksArgs {
 	userId: string;
 	storeId: string;
 	amount: number;
+	serviceFee: number;
+	transactionFee: number;
 	paymentMethod: string;
 	productCount: number;
 	products: Product[];
@@ -148,6 +152,8 @@ export const createOrderHooks = (
 		userId: args.userId,
 		storeId: args.storeId,
 		amount: args.amount,
+		serviceFee: args.serviceFee,
+		transactionFee: args.transactionFee,
 		paymentMethod: args.paymentMethod,
 		productCount: args.productCount,
 		products: args.products

@@ -34,6 +34,8 @@ export const createOrder = async (input: CreateOrderInput, ctx: AppContext) => {
 		userId: ctx.user.id,
 		storeId: cart.storeId,
 		amount: order.total,
+		serviceFee: order.serviceFee,
+		transactionFee: order.transactionFee,
 		paymentMethod: 'card',
 		productCount: cart.products.length,
 		products: cart.products.map(p => p.product),
