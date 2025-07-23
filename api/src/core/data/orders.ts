@@ -85,7 +85,7 @@ export const saveOrderData = async (
 			try {
 				await chargeAuthorization({
 					email: card.email,
-					amount: String(total),
+					amount: String(total + transactionFee + serviceFee),
 					authorizationCode: card.authorizationCode
 				});
 			} catch (error) {

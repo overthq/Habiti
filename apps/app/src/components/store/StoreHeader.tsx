@@ -15,7 +15,6 @@ import Animated, {
 	FadeOutUp,
 	LinearTransition
 } from 'react-native-reanimated';
-import useFirstRender from '../../hooks/useFirstRender';
 
 interface StoreHeaderProps {
 	store: StoreQuery['store'];
@@ -33,8 +32,8 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 	setSearchTerm
 }) => {
 	const [searchOpen, setSearchOpen] = React.useState(false);
+	const [canAnimate, setCanAnimate] = React.useState(false);
 
-	const isFirstRender = useFirstRender();
 	const { goBack } = useNavigation();
 	const { name, theme } = useTheme();
 
@@ -48,19 +47,24 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 		setSearchOpen(searchTerm.length > 0);
 	}, [searchTerm]);
 
-	const handleOpenSearch = () => {
+	const handleOpenSearch = React.useCallback(() => {
 		setSearchOpen(true);
 		inputRef.current?.focus();
-	};
+	}, []);
 
-	const handleSearchCancel = () => {
+	const handleSearchCancel = React.useCallback(() => {
 		inputRef.current?.blur();
 		setSearchOpen(false);
 		setSearchTerm('');
-	};
+	}, []);
+
+	const handleLayout = React.useCallback(() => {
+		setCanAnimate(true);
+	}, []);
 
 	return (
 		<Animated.View
+			onLayout={handleLayout}
 			layout={LinearTransition}
 			style={[
 				styles.container,
@@ -73,13 +77,13 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 		>
 			{!searchOpen && (
 				<Animated.View
-					entering={isFirstRender ? undefined : FadeInUp}
+					entering={canAnimate ? FadeInUp : undefined}
 					exiting={FadeOutUp}
 				>
 					<View style={styles.header}>
 						<View style={styles.left}>
 							<Pressable style={styles.back} onPress={goBack}>
-								<Icon name='chevron-left' />
+								<Icon name='chevron-left' size={28} />
 							</Pressable>
 						</View>
 						<View style={styles.center}>
