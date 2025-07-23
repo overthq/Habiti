@@ -47,22 +47,24 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 		setSearchOpen(searchTerm.length > 0);
 	}, [searchTerm]);
 
-	const handleOpenSearch = () => {
+	const handleOpenSearch = React.useCallback(() => {
 		setSearchOpen(true);
 		inputRef.current?.focus();
-	};
+	}, []);
 
-	const handleSearchCancel = () => {
+	const handleSearchCancel = React.useCallback(() => {
 		inputRef.current?.blur();
 		setSearchOpen(false);
 		setSearchTerm('');
-	};
+	}, []);
+
+	const handleLayout = React.useCallback(() => {
+		setCanAnimate(true);
+	}, []);
 
 	return (
 		<Animated.View
-			onLayout={() => {
-				setCanAnimate(true);
-			}}
+			onLayout={handleLayout}
 			layout={LinearTransition}
 			style={[
 				styles.container,
