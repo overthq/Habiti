@@ -83,7 +83,7 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 					<View style={styles.header}>
 						<View style={styles.left}>
 							<Pressable style={styles.back} onPress={goBack}>
-								<Icon name='chevron-left' />
+								<Icon name='chevron-left' size={28} />
 							</Pressable>
 						</View>
 						<View style={styles.center}>
