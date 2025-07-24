@@ -46,37 +46,37 @@ const ProductPage = () => {
 				<CardContent>
 					<div className='grid grid-cols-2 gap-4'>
 						<div>
-							<p className='text-gray-500'>ID</p>
+							<p className='text-muted-foreground'>ID</p>
 							<p className='font-mono text-sm'>{product.id}</p>
 						</div>
 						<div>
-							<p className='text-gray-500'>Name</p>
+							<p className='text-muted-foreground'>Name</p>
 							<p>{product.name}</p>
 						</div>
 						<div>
-							<p className='text-gray-500'>Unit Price</p>
+							<p className='text-muted-foreground'>Unit Price</p>
 							<p className='font-semibold text-lg'>
 								{formatNaira(product.unitPrice)}
 							</p>
 						</div>
 						<div>
-							<p className='text-gray-500'>Stock Status</p>
+							<p className='text-muted-foreground'>Stock Status</p>
 							<Badge className={stockStatus.color}>{stockStatus.text}</Badge>
 						</div>
 						<div>
-							<p className='text-gray-500'>Quantity Available</p>
+							<p className='text-muted-foreground'>Quantity Available</p>
 							<p className='font-semibold'>{product.quantity} units</p>
 						</div>
 						<div>
-							<p className='text-gray-500'>Store ID</p>
+							<p className='text-muted-foreground'>Store ID</p>
 							<p className='font-mono text-sm'>{product.storeId}</p>
 						</div>
 						<div>
-							<p className='text-gray-500'>Created At</p>
+							<p className='text-muted-foreground'>Created At</p>
 							<p>{new Date(product.createdAt).toLocaleString()}</p>
 						</div>
 						<div>
-							<p className='text-gray-500'>Updated At</p>
+							<p className='text-muted-foreground'>Updated At</p>
 							<p>{new Date(product.updatedAt).toLocaleString()}</p>
 						</div>
 					</div>
@@ -88,7 +88,7 @@ const ProductPage = () => {
 					<CardTitle>Description</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<p className='text-gray-700 whitespace-pre-wrap'>
+					<p className='text-muted-foreground whitespace-pre-wrap'>
 						{product.description}
 					</p>
 				</CardContent>
