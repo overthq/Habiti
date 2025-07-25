@@ -13,6 +13,7 @@ import useGoBack from '../hooks/useGoBack';
 import CardRow from '../components/payment-methods/CardRow';
 import { AppStackParamList } from '../types/navigation';
 import { CardsQuery, useCardsQuery, useDeleteCardMutation } from '../types/api';
+import useStore from '../state';
 
 const PaymentMethods: React.FC = () => {
 	const [{ data, fetching }] = useCardsQuery();
@@ -20,6 +21,7 @@ const PaymentMethods: React.FC = () => {
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const [focusedCardId, setFocusedCardId] = React.useState<string>();
 	const [, deleteCard] = useDeleteCardMutation();
+	const { defaultCard, setPreference } = useStore();
 
 	useGoBack();
 
@@ -39,6 +41,17 @@ const PaymentMethods: React.FC = () => {
 		[focusedCardId]
 	);
 
+	const onDeleteCard = React.useCallback(
+		(cardId: string) => {
+			if (cardId === defaultCard) {
+				setPreference({ defaultCard: null });
+			}
+
+			deleteCard({ id: cardId });
+		},
+		[defaultCard, deleteCard, setPreference]
+	);
+
 	const handleDeleteCard = React.useCallback(
 		(card: CardsQuery['currentUser']['cards'][number]) => {
 			Alert.alert('Delete Card', 'Are you sure you want to delete this card?', [
@@ -46,7 +59,7 @@ const PaymentMethods: React.FC = () => {
 				{
 					text: 'Delete',
 					style: 'destructive',
-					onPress: () => deleteCard({ id: card.id })
+					onPress: () => onDeleteCard(card.id)
 				}
 			]);
 		},

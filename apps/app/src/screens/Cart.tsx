@@ -48,39 +48,31 @@ const Cart: React.FC = () => {
 				/>
 			}
 		>
-			{cart && (
-				<>
-					<StoreInfo store={cart.store} />
+			<StoreInfo store={cart.store} />
 
-					<Spacer y={4} />
+			<Spacer y={4} />
 
-					<CartSummary products={cart.products} />
+			<CartSummary products={cart.products} />
 
-					<Spacer y={16} />
+			<Spacer y={16} />
 
-					<SelectCard
-						cards={cart.user.cards}
-						selectedCard={selectedCard}
-						onCardSelect={setSelectedCard}
-					/>
+			<SelectCard
+				cards={cart.user.cards}
+				selectedCard={selectedCard}
+				onCardSelect={setSelectedCard}
+			/>
 
-					<Spacer y={16} />
+			<Spacer y={16} />
 
-					<Separator style={{ margin: 16 }} />
+			<Separator style={{ margin: 16 }} />
 
-					<Spacer y={16} />
+			<Spacer y={16} />
 
-					<CartTotal cart={cart} />
+			<CartTotal cart={cart} />
 
-					<View style={{ paddingTop: 16, paddingHorizontal: 16 }}>
-						<Button
-							text='Place Order'
-							onPress={handleSubmit}
-							disabled={disabled}
-						/>
-					</View>
-				</>
-			)}
+			<View style={{ paddingTop: 16, paddingHorizontal: 16 }}>
+				<Button text='Place Order' onPress={handleSubmit} disabled={disabled} />
+			</View>
 		</ScrollableScreen>
 	);
 };

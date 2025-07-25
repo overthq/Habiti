@@ -1,17 +1,19 @@
 import React from 'react';
 import {
+	NavigationProp,
+	RouteProp,
+	useFocusEffect,
+	useNavigation,
+	useRoute
+} from '@react-navigation/native';
+
+import {
 	CartQuery,
 	useCartQuery,
 	useCreateOrderMutation,
 	useUpdateCartProductMutation
 } from '../../types/api';
 import useStore from '../../state';
-import {
-	NavigationProp,
-	RouteProp,
-	useNavigation,
-	useRoute
-} from '@react-navigation/native';
 import { AppStackParamList } from '../../types/navigation';
 import useRefresh from '../../hooks/useRefresh';
 import useDebounce from '../../hooks/useDebounce';
@@ -47,9 +49,10 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 }) => {
 	const [{ fetching: isUpdatingCartProduct }, updateCartProduct] =
 		useUpdateCartProductMutation();
-	const [{ fetching: isCreatingOrder }, createOrder] = useCreateOrderMutation();
+	const [{ fetching: isCreatingOrder, data: orderData }, createOrder] =
+		useCreateOrderMutation();
 
-	const { navigate, goBack } =
+	const { navigate, goBack, getState } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 
 	const { defaultCard, setPreference } = useStore();
@@ -114,6 +117,18 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 		pendingUpdatesRef.current.set(productId, quantity);
 		debouncedProcessBatchedUpdates();
 	};
+
+	// When the user comes back from the "Add Card" screen, we navigate them back
+	// to the screen they visited before the cart screen
+	// This is a workaround. In the future, when the navigation structure is set
+	// up better, we should not need to do this.
+	useFocusEffect(
+		React.useCallback(() => {
+			if (orderData?.createOrder.id) {
+				goBack();
+			}
+		}, [goBack, orderData])
+	);
 
 	const handleSubmit = React.useCallback(async () => {
 		const { error, data: orderData } = await createOrder({
