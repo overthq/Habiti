@@ -1,10 +1,10 @@
-import React from 'react';
-import { Platform, Alert } from 'react-native';
+import React, { useCallback } from 'react';
+import { Platform, Alert, View, Switch } from 'react-native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 
-import { Button, Screen, Spacer, Typography } from '@habiti/components';
+import { Screen, Typography, useTheme } from '@habiti/components';
 
 import useGoBack from '../hooks/useGoBack';
 import {
@@ -23,6 +23,7 @@ const NotificationSettings = () => {
 	const [{ data }] = useCurrentUserQuery();
 	const [, savePushToken] = useSavePushTokenMutation();
 	const [, deletePushToken] = useDeletePushTokenMutation();
+	const { theme } = useTheme();
 
 	useGoBack();
 
@@ -33,6 +34,7 @@ const NotificationSettings = () => {
 	const user = data.currentUser;
 
 	const pushToken = getUserPushToken(user);
+	const isPushEnabled = !!pushToken;
 
 	const handleRegistrationError = (errorMessage: string) => {
 		Alert.alert(errorMessage);
@@ -96,31 +98,35 @@ const NotificationSettings = () => {
 		});
 	};
 
-	if (!pushToken) {
-		return (
-			<Screen style={{ padding: 16 }}>
-				<Typography weight='medium'>Push notifications</Typography>
-
-				<Spacer y={16} />
-
-				<Button
-					text='Enable push notifications'
-					onPress={requestPushPermission}
-				/>
-			</Screen>
-		);
-	}
+	const handleTogglePush = useCallback(async () => {
+		if (isPushEnabled) {
+			await handleDeletePushToken();
+		} else {
+			await requestPushPermission();
+		}
+	}, [isPushEnabled, handleDeletePushToken, requestPushPermission]);
 
 	return (
 		<Screen style={{ padding: 16 }}>
-			<Typography weight='medium'>Push notifications</Typography>
-
-			<Spacer y={16} />
-
-			<Button
-				text='Disable push notifications'
-				onPress={handleDeletePushToken}
-			/>
+			<View
+				style={{
+					backgroundColor: theme.input.background,
+					paddingHorizontal: 12,
+					paddingVertical: 8,
+					borderRadius: 8,
+					flexDirection: 'row',
+					alignItems: 'center',
+					justifyContent: 'space-between'
+				}}
+			>
+				<Typography>Push notifications</Typography>
+				<Switch
+					disabled={true}
+					style={{ transform: [{ scaleX: 0.9 }, { scaleY: 0.9 }] }}
+					value={isPushEnabled}
+					onValueChange={handleTogglePush}
+				/>
+			</View>
 		</Screen>
 	);
 };

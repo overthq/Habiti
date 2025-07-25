@@ -1,6 +1,6 @@
-import { Button, Screen } from '@habiti/components';
 import React from 'react';
 import { Alert } from 'react-native';
+import { Button, Screen, Spacer, Typography } from '@habiti/components';
 
 import useGoBack from '../hooks/useGoBack';
 import { useDeleteAccountMutation } from '../types/api';
@@ -26,6 +26,11 @@ const AccountSettings = () => {
 
 	return (
 		<Screen style={{ padding: 16 }}>
+			<Typography size='small' variant='secondary'>
+				You can delete your account and all related data with the button below.
+				Please note that this action is irreversible.
+			</Typography>
+			<Spacer y={16} />
 			<Button
 				text='Delete account'
 				variant='destructive'
