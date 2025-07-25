@@ -1,8 +1,5 @@
 import React, { useCallback } from 'react';
-import { Platform, Alert, View, Switch } from 'react-native';
-import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
+import { View, Switch, Alert } from 'react-native';
 
 import { Screen, Typography, useTheme } from '@habiti/components';
 
@@ -14,6 +11,8 @@ import {
 	useSavePushTokenMutation,
 	useDeletePushTokenMutation
 } from '../types/api';
+import { useMutation } from '@tanstack/react-query';
+import { requestPushPermission } from '../utils/notifications';
 
 const getUserPushToken = (user: CurrentUserQuery['currentUser']) => {
 	return user.pushTokens.find(token => token.type === PushTokenType.Shopper);
@@ -27,70 +26,24 @@ const NotificationSettings = () => {
 
 	useGoBack();
 
-	if (!data?.currentUser) {
-		return null;
-	}
+	if (!data?.currentUser) return null;
 
 	const user = data.currentUser;
 
 	const pushToken = getUserPushToken(user);
 	const isPushEnabled = !!pushToken;
 
-	const handleRegistrationError = (errorMessage: string) => {
-		Alert.alert(errorMessage);
-	};
-
-	const requestPushPermission = async () => {
-		if (Platform.OS === 'android') {
-			Notifications.setNotificationChannelAsync('default', {
-				name: 'default',
-				importance: Notifications.AndroidImportance.MAX,
-				vibrationPattern: [0, 250, 250, 250],
-				lightColor: '#FF231F7C'
+	const requestPushTokenMutation = useMutation({
+		mutationFn: async () => {
+			const pushTokenString = await requestPushPermission();
+			await savePushToken({
+				input: { token: pushTokenString, type: PushTokenType.Shopper }
 			});
+		},
+		onError: error => {
+			Alert.alert(error.message || error.toString());
 		}
-
-		if (Device.isDevice) {
-			const { status: existingStatus } =
-				await Notifications.getPermissionsAsync();
-			let finalStatus = existingStatus;
-			if (existingStatus !== 'granted') {
-				const { status } = await Notifications.requestPermissionsAsync();
-				finalStatus = status;
-			}
-			if (finalStatus !== 'granted') {
-				handleRegistrationError(
-					'Permission not granted to get push token for push notification!'
-				);
-				return;
-			}
-			const projectId =
-				Constants?.expoConfig?.extra?.eas?.projectId ??
-				Constants?.easConfig?.projectId;
-
-			if (!projectId) {
-				handleRegistrationError('Project ID not found');
-			}
-
-			try {
-				const pushTokenString = (
-					await Notifications.getExpoPushTokenAsync({
-						projectId
-					})
-				).data;
-
-				await savePushToken({
-					input: { token: pushTokenString, type: PushTokenType.Shopper }
-				});
-			} catch (e: unknown) {
-				handleRegistrationError(`${e}`);
-			}
-		} else {
-			handleRegistrationError(
-				'Must use physical device for push notifications'
-			);
-		}
-	};
+	});
 
 	const handleDeletePushToken = async () => {
 		await deletePushToken({
@@ -102,9 +55,9 @@ const NotificationSettings = () => {
 		if (isPushEnabled) {
 			await handleDeletePushToken();
 		} else {
-			await requestPushPermission();
+			await requestPushTokenMutation.mutateAsync();
 		}
-	}, [isPushEnabled, handleDeletePushToken, requestPushPermission]);
+	}, [isPushEnabled, handleDeletePushToken, requestPushTokenMutation]);
 
 	return (
 		<Screen style={{ padding: 16 }}>
