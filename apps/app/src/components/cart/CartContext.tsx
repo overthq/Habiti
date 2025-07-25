@@ -1,17 +1,19 @@
 import React from 'react';
 import {
+	NavigationProp,
+	RouteProp,
+	useFocusEffect,
+	useNavigation,
+	useRoute
+} from '@react-navigation/native';
+
+import {
 	CartQuery,
 	useCartQuery,
 	useCreateOrderMutation,
 	useUpdateCartProductMutation
 } from '../../types/api';
 import useStore from '../../state';
-import {
-	NavigationProp,
-	RouteProp,
-	useNavigation,
-	useRoute
-} from '@react-navigation/native';
 import { AppStackParamList } from '../../types/navigation';
 import useRefresh from '../../hooks/useRefresh';
 import useDebounce from '../../hooks/useDebounce';
@@ -47,7 +49,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 }) => {
 	const [{ fetching: isUpdatingCartProduct }, updateCartProduct] =
 		useUpdateCartProductMutation();
-	const [{ fetching: isCreatingOrder }, createOrder] = useCreateOrderMutation();
+	const [{ fetching: isCreatingOrder, data: orderData }, createOrder] =
+		useCreateOrderMutation();
 
 	const { navigate, goBack } =
 		useNavigation<NavigationProp<AppStackParamList>>();
@@ -115,6 +118,18 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 		debouncedProcessBatchedUpdates();
 	};
 
+	// When the user comes back from the "Modal.AddCard" screen, we navigate them back
+	// to the screen they visited before the cart screen
+	// This is a workaround. In the future, when the navigation structure is set
+	// up better, we should not need to do this.
+	useFocusEffect(
+		React.useCallback(() => {
+			if (orderData?.createOrder.id) {
+				goBack();
+			}
+		}, [goBack, orderData])
+	);
+
 	const handleSubmit = React.useCallback(async () => {
 		const { error, data: orderData } = await createOrder({
 			input: {
@@ -131,7 +146,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 			console.log('Error while creating order:', error);
 		} else {
 			if (!selectedCard && orderData?.createOrder.total) {
-				navigate('Add Card', { orderId: orderData.createOrder.id });
+				navigate('Modal.AddCard', { orderId: orderData.createOrder.id });
 			} else {
 				goBack();
 			}

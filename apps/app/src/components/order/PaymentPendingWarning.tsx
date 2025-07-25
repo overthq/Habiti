@@ -16,7 +16,7 @@ const PaymentPendingWarning: React.FC<PaymentPendingWarningProps> = ({
 	const [, updateOrder] = useUpdateOrderMutation();
 
 	const handleMakePayment = () => {
-		navigate('Add Card', { orderId });
+		navigate('Modal.AddCard', { orderId });
 	};
 
 	const handleCancelOrder = () => {
