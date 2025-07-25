@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
-import { View, Switch, Alert } from 'react-native';
+import { View, Switch, Alert, StyleSheet } from 'react-native';
+import * as Device from 'expo-device';
 
 import { Screen, Typography, useTheme } from '@habiti/components';
 
@@ -45,6 +46,12 @@ const NotificationSettings = () => {
 		}
 	});
 
+	const switchValue =
+		isPushEnabled ||
+		requestPushTokenMutation.isPending ||
+		requestPushTokenMutation.isSuccess;
+	const switchDisabled = requestPushTokenMutation.isPending || !Device.isDevice;
+
 	const handleDeletePushToken = async () => {
 		await deletePushToken({
 			input: { token: pushToken.token, type: PushTokenType.Shopper }
@@ -61,27 +68,28 @@ const NotificationSettings = () => {
 
 	return (
 		<Screen style={{ padding: 16 }}>
-			<View
-				style={{
-					backgroundColor: theme.input.background,
-					paddingHorizontal: 12,
-					paddingVertical: 8,
-					borderRadius: 8,
-					flexDirection: 'row',
-					alignItems: 'center',
-					justifyContent: 'space-between'
-				}}
-			>
+			<View style={[styles.row, { backgroundColor: theme.input.background }]}>
 				<Typography>Push notifications</Typography>
 				<Switch
-					disabled={true}
+					disabled={switchDisabled}
 					style={{ transform: [{ scaleX: 0.9 }, { scaleY: 0.9 }] }}
-					value={isPushEnabled}
+					value={switchValue}
 					onValueChange={handleTogglePush}
 				/>
 			</View>
 		</Screen>
 	);
 };
+
+const styles = StyleSheet.create({
+	row: {
+		paddingHorizontal: 12,
+		paddingVertical: 8,
+		borderRadius: 8,
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between'
+	}
+});
 
 export default NotificationSettings;
