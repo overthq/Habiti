@@ -69,7 +69,9 @@ const PaymentMethods: React.FC = () => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<Pressable onPress={() => navigate('Add Card', { orderId: undefined })}>
+				<Pressable
+					onPress={() => navigate('Modal.AddCard', { orderId: undefined })}
+				>
 					<Icon name='plus' />
 				</Pressable>
 			)

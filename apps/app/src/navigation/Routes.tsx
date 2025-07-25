@@ -70,7 +70,10 @@ const Routes: React.FC = () => {
 									component={Product}
 									options={{ headerTitle: '', gestureDirection: 'vertical' }}
 								/>
-								<AppStack.Screen name='Add Card' component={AddCardWebview} />
+								<AppStack.Screen
+									name='Modal.AddCard'
+									component={AddCardWebview}
+								/>
 								<AppStack.Screen
 									name='Modal.AddDeliveryAddress'
 									component={AddDeliveryAddress}

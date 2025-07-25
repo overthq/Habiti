@@ -118,7 +118,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 		debouncedProcessBatchedUpdates();
 	};
 
-	// When the user comes back from the "Add Card" screen, we navigate them back
+	// When the user comes back from the "Modal.AddCard" screen, we navigate them back
 	// to the screen they visited before the cart screen
 	// This is a workaround. In the future, when the navigation structure is set
 	// up better, we should not need to do this.
@@ -146,7 +146,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 			console.log('Error while creating order:', error);
 		} else {
 			if (!selectedCard && orderData?.createOrder.total) {
-				navigate('Add Card', { orderId: orderData.createOrder.id });
+				navigate('Modal.AddCard', { orderId: orderData.createOrder.id });
 			} else {
 				goBack();
 			}
