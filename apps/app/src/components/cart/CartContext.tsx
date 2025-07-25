@@ -52,7 +52,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 	const [{ fetching: isCreatingOrder, data: orderData }, createOrder] =
 		useCreateOrderMutation();
 
-	const { navigate, goBack, getState } =
+	const { navigate, goBack } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 
 	const { defaultCard, setPreference } = useStore();
