@@ -73,6 +73,7 @@ const Routes: React.FC = () => {
 								<AppStack.Screen
 									name='Modal.AddCard'
 									component={AddCardWebview}
+									options={{ headerTitle: 'Add Card' }}
 								/>
 								<AppStack.Screen
 									name='Modal.AddDeliveryAddress'
