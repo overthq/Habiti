@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { View, Switch, Alert, StyleSheet } from 'react-native';
 import * as Device from 'expo-device';
 
@@ -58,7 +58,7 @@ const NotificationSettings = () => {
 		});
 	};
 
-	const handleTogglePush = useCallback(async () => {
+	const handleTogglePush = React.useCallback(async () => {
 		if (isPushEnabled) {
 			await handleDeletePushToken();
 		} else {
