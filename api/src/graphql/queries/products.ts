@@ -1,3 +1,5 @@
+import { Prisma } from '@prisma/client';
+
 import { ProductsArgs } from '../../types/filters';
 import { PaginationArgs } from '../../types/pagination';
 import { Resolver } from '../../types/resolvers';
@@ -17,7 +19,7 @@ const products: Resolver<ProductsArgs & PaginationArgs> = async (
 	return paginateQuery(
 		paginationArgs,
 		async (take, cursor) => {
-			const query: any = {
+			let query: Prisma.ProductFindManyArgs = {
 				where: filter,
 				orderBy,
 				take

@@ -3,22 +3,22 @@ import { View } from 'react-native';
 import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { BottomModal, Spacer, Typography } from '@habiti/components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useOrdersContext } from './OrdersContext';
+import { FormProvider, useForm } from 'react-hook-form';
+
 import AccordionRow from '../filter-products/AccordionRow';
-import ProductCategories from '../filter-products/ProductCategories';
 import SortProducts from '../filter-products/SortProducts';
 import { FilterProductsFormValues } from '../../types/forms';
-import { FormProvider, useForm } from 'react-hook-form';
+import { OrdersStackParamList } from '../../types/navigation';
 
 interface OrdersFilterModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
+	onUpdateParams: (params: OrdersStackParamList['OrdersList']) => void;
 }
 
 type AccordionKey = 'sort-by' | 'price' | 'rating' | 'category' | 'in-stock';
 
 const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({ modalRef }) => {
 	const { bottom } = useSafeAreaInsets();
-	const { status, setStatus } = useOrdersContext();
 	const [open, setOpen] = React.useState<AccordionKey>();
 	const methods = useForm<FilterProductsFormValues>({
 		defaultValues: {
@@ -58,17 +58,6 @@ const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({ modalRef }) => {
 						onPress={handleExpandSection('price')}
 					>
 						<View />
-					</AccordionRow>
-					<AccordionRow
-						title='Category'
-						open={open === 'category'}
-						onPress={handleExpandSection('category')}
-					>
-						<>
-							<Spacer y={8} />
-							<ProductCategories />
-							<Spacer y={4} />
-						</>
 					</AccordionRow>
 				</FormProvider>
 			</BottomSheetView>

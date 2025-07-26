@@ -1,8 +1,15 @@
 import React from 'react';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import {
+	NavigationProp,
+	RouteProp,
+	useNavigation,
+	useRoute
+} from '@react-navigation/native';
 import useRefresh from '../../hooks/useRefresh';
-import { MainTabParamList } from '../../types/navigation';
+import { OrdersStackParamList } from '../../types/navigation';
 import { OrdersQuery, OrderStatus, useOrdersQuery } from '../../types/api';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import OrdersFilterModal from './OrdersFilterModal';
 
 interface OrdersContextType {
 	data: OrdersQuery;
@@ -11,6 +18,7 @@ interface OrdersContextType {
 	setStatus: (status: OrderStatus) => void;
 	refreshing: boolean;
 	refresh: () => void;
+	openFilterModal: () => void;
 }
 
 const OrdersContext = React.createContext<OrdersContextType | null>(null);
@@ -22,18 +30,43 @@ const OrdersContext = React.createContext<OrdersContextType | null>(null);
 export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 	children
 }) => {
+	const filterModalRef = React.useRef<BottomSheetModal>(null);
 	const [status, setStatus] = React.useState<OrderStatus>();
-	const { params } = useRoute<RouteProp<MainTabParamList, 'Orders'>>();
+	const { params } = useRoute<RouteProp<OrdersStackParamList, 'OrdersList'>>();
+	const { setParams } =
+		useNavigation<NavigationProp<OrdersStackParamList, 'OrdersList'>>();
 	const [{ data, fetching }, refetch] = useOrdersQuery({
 		variables: { ...(params ? params : {}), status }
 	});
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 
+	const openFilterModal = React.useCallback(() => {
+		filterModalRef.current?.present();
+	}, []);
+
+	const handleUpdateParams = (
+		newParams: OrdersStackParamList['OrdersList']
+	) => {
+		setParams({ ...(params || {}), ...newParams });
+	};
+
 	return (
 		<OrdersContext.Provider
-			value={{ data, fetching, status, setStatus, refreshing, refresh }}
+			value={{
+				data,
+				fetching,
+				status,
+				setStatus,
+				refreshing,
+				refresh,
+				openFilterModal
+			}}
 		>
 			{children}
+			<OrdersFilterModal
+				modalRef={filterModalRef}
+				onUpdateParams={handleUpdateParams}
+			/>
 		</OrdersContext.Provider>
 	);
 };

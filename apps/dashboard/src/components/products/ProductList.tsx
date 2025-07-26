@@ -8,17 +8,14 @@ import {
 	RouteProp
 } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-
 import ProductsListItem from './ProductsListItem';
 import { ProductsQuery, useProductsQuery } from '../../types/api';
-import {
-	MainTabParamList,
-	ProductsStackParamList
-} from '../../types/navigation';
+import { ProductsStackParamList } from '../../types/navigation';
 import useRefresh from '../../hooks/useRefresh';
 
 const ProductList: React.FC = () => {
-	const { params } = useRoute<RouteProp<MainTabParamList, 'Products'>>();
+	const { params } =
+		useRoute<RouteProp<ProductsStackParamList, 'ProductsList'>>();
 	const { navigate } = useNavigation<NavigationProp<ProductsStackParamList>>();
 	const [{ fetching, data }, refetch] = useProductsQuery({
 		variables: params

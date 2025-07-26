@@ -1,5 +1,5 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
-import { IntWhere, ProductQuery, Sort } from './api';
+import { IntWhere, ProductQuery, Sort, CategoriesWhere } from './api';
 
 export type AppStackParamList = {
 	Main: undefined;
@@ -83,6 +83,7 @@ export type ProductStackParamList = {
 type ProductsParams = {
 	filter?: {
 		unitPrice?: IntWhere;
+		categories?: CategoriesWhere;
 	};
 	orderBy?: {
 		createdAt?: Sort;
