@@ -1,7 +1,12 @@
 import React from 'react';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import {
+	NavigationProp,
+	RouteProp,
+	useNavigation,
+	useRoute
+} from '@react-navigation/native';
 import useRefresh from '../../hooks/useRefresh';
-import { MainTabParamList } from '../../types/navigation';
+import { ProductsStackParamList } from '../../types/navigation';
 import { ProductsQuery, useProductsQuery } from '../../types/api';
 
 interface ProductsContextType {
@@ -9,6 +14,7 @@ interface ProductsContextType {
 	fetching: boolean;
 	refreshing: boolean;
 	refresh: () => void;
+	onUpdateParams: (params: ProductsStackParamList['ProductsList']) => void;
 }
 
 const ProductsContext = React.createContext<ProductsContextType | null>(null);
@@ -16,14 +22,31 @@ const ProductsContext = React.createContext<ProductsContextType | null>(null);
 export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 	children
 }) => {
-	const { params } = useRoute<RouteProp<MainTabParamList, 'Products'>>();
+	const { params } =
+		useRoute<RouteProp<ProductsStackParamList, 'ProductsList'>>();
+	const { setParams } =
+		useNavigation<NavigationProp<ProductsStackParamList, 'ProductsList'>>();
 	const [{ data, fetching }, refetch] = useProductsQuery({
 		variables: params
 	});
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 
+	const handleUpdateParams = (
+		newParams: ProductsStackParamList['ProductsList']
+	) => {
+		setParams({ ...(params || {}), ...newParams });
+	};
+
 	return (
-		<ProductsContext.Provider value={{ data, fetching, refreshing, refresh }}>
+		<ProductsContext.Provider
+			value={{
+				data,
+				fetching,
+				refreshing,
+				refresh,
+				onUpdateParams: handleUpdateParams
+			}}
+		>
 			{children}
 		</ProductsContext.Provider>
 	);

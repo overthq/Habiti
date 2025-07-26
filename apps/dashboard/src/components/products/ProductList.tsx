@@ -8,23 +8,29 @@ import {
 	RouteProp
 } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import ProductsListItem from './ProductsListItem';
 import { ProductsQuery, useProductsQuery } from '../../types/api';
-import {
-	MainTabParamList,
-	ProductsStackParamList
-} from '../../types/navigation';
+import { ProductsStackParamList } from '../../types/navigation';
 import useRefresh from '../../hooks/useRefresh';
+import { useProductsContext } from './ProductsContext';
+import ProductsFilterModal from './ProductsFilterModal';
 
-const ProductList: React.FC = () => {
-	const { params } = useRoute<RouteProp<MainTabParamList, 'Products'>>();
+interface ProductListProps {
+	modalRef: React.RefObject<BottomSheetModal>;
+}
+
+const ProductList: React.FC<ProductListProps> = ({ modalRef }) => {
+	const { params } =
+		useRoute<RouteProp<ProductsStackParamList, 'ProductsList'>>();
 	const { navigate } = useNavigation<NavigationProp<ProductsStackParamList>>();
 	const [{ fetching, data }, refetch] = useProductsQuery({
 		variables: params
 	});
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 	const { theme } = useTheme();
+	const { onUpdateParams } = useProductsContext();
 	const [editMode, setEditMode] = React.useState(false);
 	const [selectedProducts, setSelectedProducts] = React.useState<string[]>([]);
 
@@ -75,6 +81,10 @@ const ProductList: React.FC = () => {
 						tintColor={theme.text.secondary}
 					/>
 				}
+			/>
+			<ProductsFilterModal
+				modalRef={modalRef}
+				onUpdateParams={onUpdateParams}
 			/>
 		</View>
 	);

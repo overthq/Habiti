@@ -4,11 +4,20 @@ import { View } from 'react-native';
 
 import { useCategoriesQuery } from '../../types/api';
 
-// TODO: This should ultimately be stored in form state.
+interface ProductCategoriesProps {
+	onSelectCategory: (categoryId: string) => void;
+}
 
-const ProductCategories = () => {
+const ProductCategories: React.FC<ProductCategoriesProps> = ({
+	onSelectCategory
+}) => {
 	const [{ data, fetching }] = useCategoriesQuery();
 	const [selectedCategory, setSelectedCategory] = React.useState<string>();
+
+	const handleSelectCategory = (categoryId: string) => {
+		setSelectedCategory(categoryId);
+		onSelectCategory(categoryId);
+	};
 
 	if (fetching || !data) {
 		return <View />;
@@ -17,7 +26,7 @@ const ProductCategories = () => {
 	return (
 		<SelectGroup
 			selected={selectedCategory}
-			onSelect={setSelectedCategory}
+			onSelect={handleSelectCategory}
 			options={data.currentStore.categories.map(c => ({
 				title: c.name,
 				value: c.id

@@ -8,7 +8,6 @@ import FAB from '../components/products/FAB';
 import ProductList from '../components/products/ProductList';
 import { AppStackParamList } from '../types/navigation';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import ProductsFilterModal from '../components/products/ProductsFilterModal';
 import { ProductsProvider } from '../components/products/ProductsContext';
 
 const Products: React.FC = () => {
@@ -36,9 +35,8 @@ const Products: React.FC = () => {
 					}
 					hasBottomBorder
 				/>
-				<ProductList />
+				<ProductList modalRef={filterModalRef} />
 				<FAB onPress={handleOpenAddProduct} text='New Product' />
-				<ProductsFilterModal modalRef={filterModalRef} />
 			</Screen>
 		</ProductsProvider>
 	);
