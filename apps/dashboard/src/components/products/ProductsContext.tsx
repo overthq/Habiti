@@ -5,16 +5,18 @@ import {
 	useNavigation,
 	useRoute
 } from '@react-navigation/native';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import useRefresh from '../../hooks/useRefresh';
 import { ProductsStackParamList } from '../../types/navigation';
 import { ProductsQuery, useProductsQuery } from '../../types/api';
+import ProductsFilterModal from './ProductsFilterModal';
 
 interface ProductsContextType {
 	data: ProductsQuery;
 	fetching: boolean;
 	refreshing: boolean;
 	refresh: () => void;
-	onUpdateParams: (params: ProductsStackParamList['ProductsList']) => void;
+	openFilterModal: () => void;
 }
 
 const ProductsContext = React.createContext<ProductsContextType | null>(null);
@@ -22,6 +24,7 @@ const ProductsContext = React.createContext<ProductsContextType | null>(null);
 export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 	children
 }) => {
+	const filterModalRef = React.useRef<BottomSheetModal>(null);
 	const { params } =
 		useRoute<RouteProp<ProductsStackParamList, 'ProductsList'>>();
 	const { setParams } =
@@ -37,6 +40,10 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 		setParams({ ...(params || {}), ...newParams });
 	};
 
+	const openFilterModal = React.useCallback(() => {
+		filterModalRef.current?.present();
+	}, []);
+
 	return (
 		<ProductsContext.Provider
 			value={{
@@ -44,10 +51,14 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 				fetching,
 				refreshing,
 				refresh,
-				onUpdateParams: handleUpdateParams
+				openFilterModal
 			}}
 		>
 			{children}
+			<ProductsFilterModal
+				modalRef={filterModalRef}
+				onUpdateParams={handleUpdateParams}
+			/>
 		</ProductsContext.Provider>
 	);
 };
