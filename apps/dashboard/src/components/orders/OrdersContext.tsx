@@ -40,9 +40,6 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 	const handleUpdateParams = (
 		newParams: OrdersStackParamList['OrdersList']
 	) => {
-		console.log('params', params);
-		console.log('newParams', newParams);
-
 		setParams({ ...(params || {}), ...newParams });
 	};
 
