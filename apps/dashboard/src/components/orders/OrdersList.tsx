@@ -3,21 +3,15 @@ import { Typography, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { View, RefreshControl, StyleSheet } from 'react-native';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 import OrdersListItem from '../../components/orders/OrdersListItem';
 import { OrdersQuery } from '../../types/api';
 import { OrdersStackParamList } from '../../types/navigation';
 import { useOrdersContext } from './OrdersContext';
-import OrdersFilterModal from './OrdersFilterModal';
 
-interface OrdersListProps {
-	modalRef: React.RefObject<BottomSheetModal>;
-}
-
-const OrdersList: React.FC<OrdersListProps> = ({ modalRef }) => {
+const OrdersList: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<OrdersStackParamList>>();
-	const { data, refreshing, refresh, onUpdateParams } = useOrdersContext();
+	const { data, refreshing, refresh } = useOrdersContext();
 	const { theme } = useTheme();
 
 	const handleOrderPress = React.useCallback(
@@ -57,7 +51,6 @@ const OrdersList: React.FC<OrdersListProps> = ({ modalRef }) => {
 					/>
 				}
 			/>
-			<OrdersFilterModal modalRef={modalRef} onUpdateParams={onUpdateParams} />
 		</View>
 	);
 };

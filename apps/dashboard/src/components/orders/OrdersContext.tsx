@@ -8,6 +8,8 @@ import {
 import useRefresh from '../../hooks/useRefresh';
 import { OrdersStackParamList } from '../../types/navigation';
 import { OrdersQuery, OrderStatus, useOrdersQuery } from '../../types/api';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import OrdersFilterModal from './OrdersFilterModal';
 
 interface OrdersContextType {
 	data: OrdersQuery;
@@ -16,7 +18,7 @@ interface OrdersContextType {
 	setStatus: (status: OrderStatus) => void;
 	refreshing: boolean;
 	refresh: () => void;
-	onUpdateParams: (params: OrdersStackParamList['OrdersList']) => void;
+	openFilterModal: () => void;
 }
 
 const OrdersContext = React.createContext<OrdersContextType | null>(null);
@@ -28,6 +30,7 @@ const OrdersContext = React.createContext<OrdersContextType | null>(null);
 export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 	children
 }) => {
+	const filterModalRef = React.useRef<BottomSheetModal>(null);
 	const [status, setStatus] = React.useState<OrderStatus>();
 	const { params } = useRoute<RouteProp<OrdersStackParamList, 'OrdersList'>>();
 	const { setParams } =
@@ -36,6 +39,10 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 		variables: { ...(params ? params : {}), status }
 	});
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
+
+	const openFilterModal = React.useCallback(() => {
+		filterModalRef.current?.present();
+	}, []);
 
 	const handleUpdateParams = (
 		newParams: OrdersStackParamList['OrdersList']
@@ -52,10 +59,14 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 				setStatus,
 				refreshing,
 				refresh,
-				onUpdateParams: handleUpdateParams
+				openFilterModal
 			}}
 		>
 			{children}
+			<OrdersFilterModal
+				modalRef={filterModalRef}
+				onUpdateParams={handleUpdateParams}
+			/>
 		</OrdersContext.Provider>
 	);
 };
