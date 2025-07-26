@@ -1,7 +1,12 @@
 import React from 'react';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import {
+	NavigationProp,
+	RouteProp,
+	useNavigation,
+	useRoute
+} from '@react-navigation/native';
 import useRefresh from '../../hooks/useRefresh';
-import { MainTabParamList } from '../../types/navigation';
+import { OrdersStackParamList } from '../../types/navigation';
 import { OrdersQuery, OrderStatus, useOrdersQuery } from '../../types/api';
 
 interface OrdersContextType {
@@ -11,6 +16,7 @@ interface OrdersContextType {
 	setStatus: (status: OrderStatus) => void;
 	refreshing: boolean;
 	refresh: () => void;
+	onUpdateParams: (params: OrdersStackParamList['OrdersList']) => void;
 }
 
 const OrdersContext = React.createContext<OrdersContextType | null>(null);
@@ -23,15 +29,34 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 	children
 }) => {
 	const [status, setStatus] = React.useState<OrderStatus>();
-	const { params } = useRoute<RouteProp<MainTabParamList, 'Orders'>>();
+	const { params } = useRoute<RouteProp<OrdersStackParamList, 'OrdersList'>>();
+	const { setParams } =
+		useNavigation<NavigationProp<OrdersStackParamList, 'OrdersList'>>();
 	const [{ data, fetching }, refetch] = useOrdersQuery({
 		variables: { ...(params ? params : {}), status }
 	});
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 
+	const handleUpdateParams = (
+		newParams: OrdersStackParamList['OrdersList']
+	) => {
+		console.log('params', params);
+		console.log('newParams', newParams);
+
+		setParams({ ...(params || {}), ...newParams });
+	};
+
 	return (
 		<OrdersContext.Provider
-			value={{ data, fetching, status, setStatus, refreshing, refresh }}
+			value={{
+				data,
+				fetching,
+				status,
+				setStatus,
+				refreshing,
+				refresh,
+				onUpdateParams: handleUpdateParams
+			}}
 		>
 			{children}
 		</OrdersContext.Provider>

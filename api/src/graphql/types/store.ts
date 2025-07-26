@@ -32,7 +32,9 @@ const StoreTypes = gql`
 		carts: [Cart!]!
 		payouts: [Payout!]!
 		image: Image
-		categories: [StoreProductCategory!]!
+		categories(
+			filter: StoreProductCategoryFilterInput
+		): [StoreProductCategory!]!
 	}
 
 	type StoreFollower {
@@ -86,6 +88,10 @@ const StoreTypes = gql`
 	input StoreFilterInput {
 		name: StringWhere
 		unlisted: Boolean
+	}
+
+	input StoreProductCategoryFilterInput {
+		id: StringWhere
 	}
 
 	extend type Query {

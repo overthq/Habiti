@@ -111,8 +111,16 @@ const payouts: Resolver = (parent, _, ctx) => {
 	return ctx.prisma.store.findUnique({ where: { id: parent.id } }).payouts();
 };
 
-const categories: Resolver = (parent, _, ctx) => {
-	return ctx.prisma.store.findUnique({ where: { id: parent.id } }).categories();
+export interface CategoriesArgs {
+	filter?: {
+		id?: StringWhere;
+	};
+}
+
+const categories: Resolver<CategoriesArgs> = (parent, { filter }, ctx) => {
+	return ctx.prisma.store
+		.findUnique({ where: { id: parent.id } })
+		.categories({ where: filter ?? {} });
 };
 
 const followedByUser: Resolver = async (parent, _, ctx) => {

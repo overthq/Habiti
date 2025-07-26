@@ -5,7 +5,6 @@ import { Icon, Screen, ScreenHeader } from '@habiti/components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import OrdersList from '../components/orders/OrdersList';
-import OrdersFilterModal from '../components/orders/OrdersFilterModal';
 import { OrdersProvider } from '../components/orders/OrdersContext';
 
 const Orders: React.FC = () => {
@@ -28,8 +27,7 @@ const Orders: React.FC = () => {
 					}
 					hasBottomBorder
 				/>
-				<OrdersList />
-				<OrdersFilterModal modalRef={filterModalRef} />
+				<OrdersList modalRef={filterModalRef} />
 			</Screen>
 		</OrdersProvider>
 	);
