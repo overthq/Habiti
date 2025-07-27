@@ -9,7 +9,7 @@ import { OrdersQuery } from '../../types/api';
 import { OrdersStackParamList } from '../../types/navigation';
 import { useOrdersContext } from './OrdersContext';
 
-const OrdersList: React.FC = () => {
+const OrdersList = () => {
 	const { navigate } = useNavigation<NavigationProp<OrdersStackParamList>>();
 	const { data, refreshing, refresh } = useOrdersContext();
 	const { theme } = useTheme();

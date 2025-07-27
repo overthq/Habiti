@@ -1,34 +1,27 @@
 import React from 'react';
-import { View } from 'react-native';
 import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { BottomModal, Spacer, Typography } from '@habiti/components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { FormProvider, useForm } from 'react-hook-form';
 
 import AccordionRow from '../filter-products/AccordionRow';
-import SortProducts from '../filter-products/SortProducts';
-import { FilterProductsFormValues } from '../../types/forms';
-import { OrdersStackParamList } from '../../types/navigation';
+import { OrdersFilters } from './OrdersContext';
+import SortOrders from '../filter-orders/SortOrders';
 
 interface OrdersFilterModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
-	onUpdateParams: (params: OrdersStackParamList['OrdersList']) => void;
+	filters: OrdersFilters;
+	onUpdateFilters: (filters: OrdersFilters) => void;
 }
 
-type AccordionKey = 'sort-by' | 'price' | 'rating' | 'category' | 'in-stock';
+type AccordionKey = 'sort-by' | 'price';
 
-const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({ modalRef }) => {
+const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({
+	modalRef,
+	filters,
+	onUpdateFilters
+}) => {
 	const { bottom } = useSafeAreaInsets();
 	const [open, setOpen] = React.useState<AccordionKey>();
-	const methods = useForm<FilterProductsFormValues>({
-		defaultValues: {
-			sortBy: undefined,
-			minPrice: undefined,
-			maxPrice: undefined,
-			categories: [],
-			inStock: undefined
-		}
-	});
 
 	const handleExpandSection = React.useCallback(
 		(key: AccordionKey) => () => {
@@ -37,29 +30,30 @@ const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({ modalRef }) => {
 		[]
 	);
 
+	const handleUpdateSortBy = React.useCallback(
+		(sortBy: 'created-at-desc' | 'total-desc' | 'total-asc') => {
+			onUpdateFilters({ sortBy });
+		},
+		[onUpdateFilters]
+	);
+
 	return (
 		<BottomModal modalRef={modalRef} enableDynamicSizing>
 			<BottomSheetView style={{ paddingBottom: bottom, paddingHorizontal: 16 }}>
-				<FormProvider {...methods}>
-					<Typography weight='semibold' size='xlarge'>
-						Filter
-					</Typography>
-					<Spacer y={12} />
-					<AccordionRow
-						title='Sort by'
-						open={open === 'sort-by'}
-						onPress={handleExpandSection('sort-by')}
-					>
-						<SortProducts />
-					</AccordionRow>
-					<AccordionRow
-						title='Price'
-						open={open === 'price'}
-						onPress={handleExpandSection('price')}
-					>
-						<View />
-					</AccordionRow>
-				</FormProvider>
+				<Typography weight='semibold' size='xlarge'>
+					Filter
+				</Typography>
+				<Spacer y={12} />
+				<AccordionRow
+					title='Sort by'
+					open={open === 'sort-by'}
+					onPress={handleExpandSection('sort-by')}
+				>
+					<SortOrders
+						sortBy={filters.sortBy}
+						onUpdateSortBy={handleUpdateSortBy}
+					/>
+				</AccordionRow>
 			</BottomSheetView>
 		</BottomModal>
 	);
