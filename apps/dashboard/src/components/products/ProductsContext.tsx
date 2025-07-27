@@ -2,7 +2,7 @@ import React from 'react';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import useRefresh from '../../hooks/useRefresh';
 import { ProductsStackParamList } from '../../types/navigation';
-import { ProductsQuery, useProductsQuery } from '../../types/api';
+import { ProductsQuery, Sort, useProductsQuery } from '../../types/api';
 import ProductsFilterModal from './ProductsFilterModal';
 
 // TODO:
@@ -24,6 +24,7 @@ interface ProductsContextType {
 
 export interface ProductsFilters {
 	categoryId?: string;
+	sortBy?: 'created-at-desc' | 'unit-price-desc' | 'unit-price-asc';
 }
 
 const ProductsContext = React.createContext<ProductsContextType | null>(null);
@@ -88,8 +89,18 @@ const buildVariablesFromFilters = (filters: ProductsFilters) => {
 		};
 	}
 
+	if (filters.sortBy) {
+		params.orderBy = [sortByMap[filters.sortBy]];
+	}
+
 	return params;
 };
+
+const sortByMap = {
+	'created-at-desc': { createdAt: Sort.Desc },
+	'unit-price-desc': { unitPrice: Sort.Desc },
+	'unit-price-asc': { unitPrice: Sort.Asc }
+} as const;
 
 export const useProductsContext = () => {
 	const context = React.useContext(ProductsContext);

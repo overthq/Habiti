@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AccordionRow from '../filter-products/AccordionRow';
 import ProductCategories from '../filter-products/ProductCategories';
 import { ProductsFilters } from './ProductsContext';
+import SortProducts from '../filter-products/SortProducts';
 
 interface ProductsFilterModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
@@ -12,7 +13,7 @@ interface ProductsFilterModalProps {
 	onUpdateFilters: (filters: ProductsFilters) => void;
 }
 
-type AccordionKey = 'category';
+type AccordionKey = 'sort-by' | 'category';
 
 const ProductsFilterModal: React.FC<ProductsFilterModalProps> = ({
 	modalRef,
@@ -33,6 +34,13 @@ const ProductsFilterModal: React.FC<ProductsFilterModalProps> = ({
 		onUpdateFilters({ categoryId });
 	};
 
+	const handleUpdateSortBy = React.useCallback(
+		(sortBy: 'created-at-desc' | 'unit-price-desc' | 'unit-price-asc') => {
+			onUpdateFilters({ sortBy });
+		},
+		[onUpdateFilters]
+	);
+
 	return (
 		<BottomModal modalRef={modalRef} enableDynamicSizing>
 			<BottomSheetView style={{ paddingBottom: bottom, paddingHorizontal: 16 }}>
@@ -40,6 +48,16 @@ const ProductsFilterModal: React.FC<ProductsFilterModalProps> = ({
 					Filter
 				</Typography>
 				<Spacer y={12} />
+				<AccordionRow
+					title='Sort by'
+					open={open === 'sort-by'}
+					onPress={handleExpandSection('sort-by')}
+				>
+					<SortProducts
+						sortBy={filters.sortBy}
+						onUpdateSortBy={handleUpdateSortBy}
+					/>
+				</AccordionRow>
 				<AccordionRow
 					title='Category'
 					open={open === 'category'}
