@@ -58,7 +58,13 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 	}, []);
 
 	const clearFilters = React.useCallback(() => {
-		setFilters({});
+		setFilters({
+			status: undefined,
+			minPrice: undefined,
+			maxPrice: undefined,
+			categories: undefined,
+			sortBy: undefined
+		});
 	}, []);
 
 	return (
@@ -79,6 +85,7 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 				modalRef={filterModalRef}
 				filters={filters}
 				onUpdateFilters={setFilters}
+				onClearFilters={clearFilters}
 			/>
 		</OrdersContext.Provider>
 	);

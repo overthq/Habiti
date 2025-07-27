@@ -1,16 +1,18 @@
 import React from 'react';
 import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
-import { BottomModal, Spacer, Typography } from '@habiti/components';
+import { BottomModal, Spacer, Typography, useTheme } from '@habiti/components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import AccordionRow from '../filter-products/AccordionRow';
 import { OrdersFilters } from './OrdersContext';
 import SortOrders from '../filter-orders/SortOrders';
+import { Pressable, View } from 'react-native';
 
 interface OrdersFilterModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
 	filters: OrdersFilters;
 	onUpdateFilters: (filters: OrdersFilters) => void;
+	onClearFilters: () => void;
 }
 
 type AccordionKey = 'sort-by' | 'price';
@@ -18,10 +20,12 @@ type AccordionKey = 'sort-by' | 'price';
 const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({
 	modalRef,
 	filters,
-	onUpdateFilters
+	onUpdateFilters,
+	onClearFilters
 }) => {
 	const { bottom } = useSafeAreaInsets();
 	const [open, setOpen] = React.useState<AccordionKey>();
+	const { theme } = useTheme();
 
 	const handleExpandSection = React.useCallback(
 		(key: AccordionKey) => () => {
@@ -40,9 +44,29 @@ const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({
 	return (
 		<BottomModal modalRef={modalRef} enableDynamicSizing>
 			<BottomSheetView style={{ paddingBottom: bottom, paddingHorizontal: 16 }}>
-				<Typography weight='semibold' size='xlarge'>
-					Filter
-				</Typography>
+				<View
+					style={{
+						flexDirection: 'row',
+						justifyContent: 'space-between',
+						alignItems: 'center'
+					}}
+				>
+					<Typography weight='semibold' size='xlarge'>
+						Filter
+					</Typography>
+					<Pressable
+						onPress={onClearFilters}
+						style={{
+							paddingHorizontal: 12,
+							paddingVertical: 4,
+							borderRadius: 100,
+							borderWidth: 1,
+							borderColor: theme.border.color
+						}}
+					>
+						<Typography size='small'>Clear</Typography>
+					</Pressable>
+				</View>
 				<Spacer y={12} />
 				<AccordionRow
 					title='Sort by'

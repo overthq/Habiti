@@ -46,7 +46,10 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 
 	const clearFilters = React.useCallback(() => {
-		setFilters({});
+		setFilters({
+			categoryId: undefined,
+			sortBy: undefined
+		});
 	}, []);
 
 	const openFilterModal = React.useCallback(() => {
@@ -69,6 +72,7 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 				modalRef={filterModalRef}
 				filters={filters}
 				onUpdateFilters={setFilters}
+				onClearFilters={clearFilters}
 			/>
 		</ProductsContext.Provider>
 	);
