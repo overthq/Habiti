@@ -1,21 +1,21 @@
-import { SelectGroup } from '@habiti/components';
 import React from 'react';
 import { View } from 'react-native';
+import { SelectGroup } from '@habiti/components';
 
 import { useCategoriesQuery } from '../../types/api';
 
 interface ProductCategoriesProps {
+	selectedCategory?: string;
 	onSelectCategory: (categoryId: string) => void;
 }
 
 const ProductCategories: React.FC<ProductCategoriesProps> = ({
+	selectedCategory,
 	onSelectCategory
 }) => {
 	const [{ data, fetching }] = useCategoriesQuery();
-	const [selectedCategory, setSelectedCategory] = React.useState<string>();
 
 	const handleSelectCategory = (categoryId: string) => {
-		setSelectedCategory(categoryId);
 		onSelectCategory(categoryId);
 	};
 

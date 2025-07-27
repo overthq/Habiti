@@ -1,15 +1,17 @@
 import React from 'react';
-import {
-	NavigationProp,
-	RouteProp,
-	useNavigation,
-	useRoute
-} from '@react-navigation/native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import useRefresh from '../../hooks/useRefresh';
 import { ProductsStackParamList } from '../../types/navigation';
 import { ProductsQuery, useProductsQuery } from '../../types/api';
 import ProductsFilterModal from './ProductsFilterModal';
+
+// TODO:
+// - Break types up properly to prevent circular dependencies
+// - In the future, it might make sense to have the initial params
+//   build the first filter state. But just passing the params to the query
+//   is probably the cleanest solution. I'm trying to avoid a major backend
+//   refactor for now.
+// - Use zustand to handle filters.
 
 interface ProductsContextType {
 	data: ProductsQuery;
@@ -17,6 +19,11 @@ interface ProductsContextType {
 	refreshing: boolean;
 	refresh: () => void;
 	openFilterModal: () => void;
+	clearFilters: () => void;
+}
+
+export interface ProductsFilters {
+	categoryId?: string;
 }
 
 const ProductsContext = React.createContext<ProductsContextType | null>(null);
@@ -25,24 +32,29 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 	children
 }) => {
 	const filterModalRef = React.useRef<BottomSheetModal>(null);
-	const { params } =
-		useRoute<RouteProp<ProductsStackParamList, 'ProductsList'>>();
-	const { setParams } =
-		useNavigation<NavigationProp<ProductsStackParamList, 'ProductsList'>>();
+
+	const [filters, setFilters] = React.useReducer(
+		(s, p) => ({ ...s, ...p }),
+		{} as ProductsFilters
+	);
+
 	const [{ data, fetching }, refetch] = useProductsQuery({
-		variables: params
+		variables: buildVariablesFromFilters(filters)
 	});
+
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 
-	const handleUpdateParams = (
-		newParams: ProductsStackParamList['ProductsList']
-	) => {
-		setParams({ ...(params || {}), ...newParams });
-	};
+	const clearFilters = React.useCallback(() => {
+		setFilters({});
+	}, []);
 
 	const openFilterModal = React.useCallback(() => {
 		filterModalRef.current?.present();
 	}, []);
+
+	React.useEffect(() => {
+		console.log(JSON.stringify({ data }, null, 2));
+	}, [data]);
 
 	return (
 		<ProductsContext.Provider
@@ -51,16 +63,36 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 				fetching,
 				refreshing,
 				refresh,
-				openFilterModal
+				openFilterModal,
+				clearFilters
 			}}
 		>
 			{children}
 			<ProductsFilterModal
 				modalRef={filterModalRef}
-				onUpdateParams={handleUpdateParams}
+				filters={filters}
+				onUpdateFilters={setFilters}
 			/>
 		</ProductsContext.Provider>
 	);
+};
+
+const buildVariablesFromFilters = (filters: ProductsFilters) => {
+	let params: ProductsStackParamList['ProductsList'] = {};
+
+	if (filters.categoryId) {
+		params = {
+			...params,
+			filter: {
+				...params.filter,
+				categories: {
+					some: { categoryId: { equals: filters.categoryId } }
+				}
+			}
+		};
+	}
+
+	return params;
 };
 
 export const useProductsContext = () => {

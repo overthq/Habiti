@@ -19,6 +19,7 @@ interface OrdersContextType {
 	refreshing: boolean;
 	refresh: () => void;
 	openFilterModal: () => void;
+	clearFilters: () => void;
 }
 
 const OrdersContext = React.createContext<OrdersContextType | null>(null);
@@ -44,6 +45,10 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 		filterModalRef.current?.present();
 	}, []);
 
+	const clearFilters = React.useCallback(() => {
+		setParams(undefined);
+	}, [setParams]);
+
 	const handleUpdateParams = (
 		newParams: OrdersStackParamList['OrdersList']
 	) => {
@@ -59,7 +64,8 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 				setStatus,
 				refreshing,
 				refresh,
-				openFilterModal
+				openFilterModal,
+				clearFilters
 			}}
 		>
 			{children}

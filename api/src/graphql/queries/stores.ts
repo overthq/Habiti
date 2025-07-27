@@ -4,7 +4,7 @@ import { Resolver } from '../../types/resolvers';
 import { decodeCursor, paginateQuery } from '../../utils/pagination';
 import { storeAuthorizedResolver } from '../permissions';
 import { CAN_VIEW_UNLISTED_STORES } from '../../utils/allowlist';
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus, Prisma } from '@prisma/client';
 
 export interface StoreArgs {
 	id: string;
@@ -46,7 +46,7 @@ const products: Resolver<ProductsArgs & PaginationArgs> = (
 	return paginateQuery(
 		paginationArgs,
 		async (take, cursor) => {
-			const query: any = { where: filter, orderBy, take };
+			let query: Prisma.ProductFindManyArgs = { where: filter, orderBy, take };
 
 			if (cursor) {
 				query.cursor = { id: decodeCursor(cursor) };

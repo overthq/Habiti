@@ -4,18 +4,20 @@ import { BottomModal, Spacer, Typography } from '@habiti/components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AccordionRow from '../filter-products/AccordionRow';
 import ProductCategories from '../filter-products/ProductCategories';
-import { ProductsStackParamList } from '../../types/navigation';
+import { ProductsFilters } from './ProductsContext';
 
 interface ProductsFilterModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
-	onUpdateParams: (params: ProductsStackParamList['ProductsList']) => void;
+	filters: ProductsFilters;
+	onUpdateFilters: (filters: ProductsFilters) => void;
 }
 
 type AccordionKey = 'category';
 
 const ProductsFilterModal: React.FC<ProductsFilterModalProps> = ({
 	modalRef,
-	onUpdateParams
+	filters,
+	onUpdateFilters
 }) => {
 	const { bottom } = useSafeAreaInsets();
 	const [open, setOpen] = React.useState<AccordionKey>();
@@ -28,13 +30,7 @@ const ProductsFilterModal: React.FC<ProductsFilterModalProps> = ({
 	);
 
 	const handleSelectCategory = (categoryId: string) => {
-		onUpdateParams({
-			filter: {
-				categories: {
-					some: { categoryId: { equals: categoryId } }
-				}
-			}
-		});
+		onUpdateFilters({ categoryId });
 	};
 
 	return (
@@ -50,7 +46,10 @@ const ProductsFilterModal: React.FC<ProductsFilterModalProps> = ({
 					onPress={handleExpandSection('category')}
 				>
 					<Spacer y={8} />
-					<ProductCategories onSelectCategory={handleSelectCategory} />
+					<ProductCategories
+						selectedCategory={filters.categoryId}
+						onSelectCategory={handleSelectCategory}
+					/>
 					<Spacer y={4} />
 				</AccordionRow>
 			</BottomSheetView>

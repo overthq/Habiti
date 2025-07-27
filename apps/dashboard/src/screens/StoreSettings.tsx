@@ -1,21 +1,22 @@
-import { Button, Screen } from '@habiti/components';
 import React from 'react';
 import { Alert } from 'react-native';
+import { Button, Screen, Spacer, Typography } from '@habiti/components';
 
 import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useDeleteStoreMutation } from '../types/api';
-import { useShallow } from 'zustand/react/shallow';
 
 const StoreSettings = () => {
 	const [, deleteStore] = useDeleteStoreMutation();
-	const activeStore = useStore(useShallow(({ activeStore }) => activeStore));
+	const { activeStore, setPreference } = useStore();
 	useGoBack();
 
-	const handleDeleteStore = () => {
-		// Redundant check
-		if (activeStore) {
-			deleteStore({ id: activeStore });
+	const handleDeleteStore = async () => {
+		try {
+			await deleteStore({ id: activeStore });
+			setPreference({ activeStore: null });
+		} catch (error) {
+			Alert.alert('Error', 'Failed to delete store');
 		}
 	};
 
@@ -32,6 +33,11 @@ const StoreSettings = () => {
 
 	return (
 		<Screen style={{ padding: 16 }}>
+			<Typography variant='secondary' size='small'>
+				You can delete the store using the button below. Please not that this
+				will also delete all products, orders and payout information.
+			</Typography>
+			<Spacer y={8} />
 			<Button
 				text='Delete store'
 				onPress={confirmDeleteStore}
