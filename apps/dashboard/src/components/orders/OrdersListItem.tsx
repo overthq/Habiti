@@ -1,7 +1,7 @@
-import { formatNaira } from '@habiti/common';
-import { Typography, Row, Spacer } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import { Typography, Row, Spacer } from '@habiti/components';
+import { formatNaira } from '@habiti/common';
 
 import { OrdersQuery } from '../../types/api';
 import { parseTimestamp } from '../../utils/date';
@@ -15,9 +15,9 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
 	return (
 		<Row onPress={onPress} style={styles.container}>
 			<View>
-				<Typography weight='medium'>{order.user.name}</Typography>
+				<Typography>{order.user.name}</Typography>
 				<Spacer y={2} />
-				<Typography size='small' style={styles.date}>
+				<Typography size='small' variant='secondary' style={styles.date}>
 					{order.status} · {parseTimestamp(order.createdAt)}
 				</Typography>
 			</View>

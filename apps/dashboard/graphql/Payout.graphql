@@ -3,6 +3,7 @@ query StorePayouts {
 		id
 		unrealizedRevenue
 		realizedRevenue
+		bankAccountNumber
 		paidOut
 		payouts {
 			id
