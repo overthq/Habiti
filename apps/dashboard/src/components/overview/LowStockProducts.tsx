@@ -20,6 +20,7 @@ const LowStockProducts: React.FC<LowStockProductsProps> = ({ products }) => {
 	};
 
 	const navigateToProducts = () => {
+		// TODO: Pass low stock filter to products screen
 		navigate('Products');
 	};
 

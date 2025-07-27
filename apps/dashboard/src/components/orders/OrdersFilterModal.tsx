@@ -1,34 +1,31 @@
 import React from 'react';
-import { View } from 'react-native';
 import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
-import { BottomModal, Spacer, Typography } from '@habiti/components';
+import { BottomModal, Spacer, Typography, useTheme } from '@habiti/components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useOrdersContext } from './OrdersContext';
+
 import AccordionRow from '../filter-products/AccordionRow';
-import ProductCategories from '../filter-products/ProductCategories';
-import SortProducts from '../filter-products/SortProducts';
-import { FilterProductsFormValues } from '../../types/forms';
-import { FormProvider, useForm } from 'react-hook-form';
+import { OrdersFilters } from './OrdersContext';
+import SortOrders from '../filter-orders/SortOrders';
+import { Pressable, View } from 'react-native';
 
 interface OrdersFilterModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
+	filters: OrdersFilters;
+	onUpdateFilters: (filters: OrdersFilters) => void;
+	onClearFilters: () => void;
 }
 
-type AccordionKey = 'sort-by' | 'price' | 'rating' | 'category' | 'in-stock';
+type AccordionKey = 'sort-by' | 'price';
 
-const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({ modalRef }) => {
+const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({
+	modalRef,
+	filters,
+	onUpdateFilters,
+	onClearFilters
+}) => {
 	const { bottom } = useSafeAreaInsets();
-	const { status, setStatus } = useOrdersContext();
 	const [open, setOpen] = React.useState<AccordionKey>();
-	const methods = useForm<FilterProductsFormValues>({
-		defaultValues: {
-			sortBy: undefined,
-			minPrice: undefined,
-			maxPrice: undefined,
-			categories: [],
-			inStock: undefined
-		}
-	});
+	const { theme } = useTheme();
 
 	const handleExpandSection = React.useCallback(
 		(key: AccordionKey) => () => {
@@ -37,40 +34,50 @@ const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({ modalRef }) => {
 		[]
 	);
 
+	const handleUpdateSortBy = React.useCallback(
+		(sortBy: 'created-at-desc' | 'total-desc' | 'total-asc') => {
+			onUpdateFilters({ sortBy });
+		},
+		[onUpdateFilters]
+	);
+
 	return (
 		<BottomModal modalRef={modalRef} enableDynamicSizing>
 			<BottomSheetView style={{ paddingBottom: bottom, paddingHorizontal: 16 }}>
-				<FormProvider {...methods}>
+				<View
+					style={{
+						flexDirection: 'row',
+						justifyContent: 'space-between',
+						alignItems: 'center'
+					}}
+				>
 					<Typography weight='semibold' size='xlarge'>
 						Filter
 					</Typography>
-					<Spacer y={12} />
-					<AccordionRow
-						title='Sort by'
-						open={open === 'sort-by'}
-						onPress={handleExpandSection('sort-by')}
+					<Pressable
+						onPress={onClearFilters}
+						style={{
+							paddingHorizontal: 12,
+							paddingVertical: 4,
+							borderRadius: 100,
+							borderWidth: 1,
+							borderColor: theme.border.color
+						}}
 					>
-						<SortProducts />
-					</AccordionRow>
-					<AccordionRow
-						title='Price'
-						open={open === 'price'}
-						onPress={handleExpandSection('price')}
-					>
-						<View />
-					</AccordionRow>
-					<AccordionRow
-						title='Category'
-						open={open === 'category'}
-						onPress={handleExpandSection('category')}
-					>
-						<>
-							<Spacer y={8} />
-							<ProductCategories />
-							<Spacer y={4} />
-						</>
-					</AccordionRow>
-				</FormProvider>
+						<Typography size='small'>Clear</Typography>
+					</Pressable>
+				</View>
+				<Spacer y={12} />
+				<AccordionRow
+					title='Sort by'
+					open={open === 'sort-by'}
+					onPress={handleExpandSection('sort-by')}
+				>
+					<SortOrders
+						sortBy={filters.sortBy}
+						onUpdateSortBy={handleUpdateSortBy}
+					/>
+				</AccordionRow>
 			</BottomSheetView>
 		</BottomModal>
 	);

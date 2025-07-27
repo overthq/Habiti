@@ -1,30 +1,29 @@
-import { SelectGroup, Spacer } from '@habiti/components';
 import React from 'react';
-import { Controller } from 'react-hook-form';
+import { SelectGroup, Spacer } from '@habiti/components';
 
-import { FilterOrdersFormValues } from '../../types/forms';
+interface SortOrdersProps {
+	sortBy: 'created-at-desc' | 'total-desc' | 'total-asc';
+	onUpdateSortBy: (
+		sortBy: 'created-at-desc' | 'total-desc' | 'total-asc'
+	) => void;
+}
 
-const SortOrders = () => {
+const SortOrders = ({ sortBy, onUpdateSortBy }: SortOrdersProps) => {
 	return (
-		<Controller<FilterOrdersFormValues>
-			name='sortBy'
-			render={({ field }) => (
-				<>
-					<Spacer y={8} />
-					<SelectGroup
-						selected={field.value as string}
-						options={[
-							{ title: 'Default', value: undefined },
-							{ title: 'Newest to oldest', value: 'created-at-desc' },
-							{ title: 'Total (highest to lowest)', value: 'total-desc' },
-							{ title: 'Total (lowest to highest)', value: 'total-asc' }
-						]}
-						onSelect={field.onChange}
-					/>
-					<Spacer y={4} />
-				</>
-			)}
-		/>
+		<>
+			<Spacer y={8} />
+			<SelectGroup
+				selected={sortBy}
+				options={[
+					{ title: 'Default', value: undefined },
+					{ title: 'Newest to oldest', value: 'created-at-desc' },
+					{ title: 'Total (highest to lowest)', value: 'total-desc' },
+					{ title: 'Total (lowest to highest)', value: 'total-asc' }
+				]}
+				onSelect={onUpdateSortBy}
+			/>
+			<Spacer y={4} />
+		</>
 	);
 };
 

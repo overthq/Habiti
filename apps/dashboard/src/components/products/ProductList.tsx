@@ -1,30 +1,17 @@
 import React from 'react';
 import { View, RefreshControl } from 'react-native';
 import { useTheme } from '@habiti/components';
-import {
-	useNavigation,
-	NavigationProp,
-	useRoute,
-	RouteProp
-} from '@react-navigation/native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-
 import ProductsListItem from './ProductsListItem';
-import { ProductsQuery, useProductsQuery } from '../../types/api';
-import {
-	MainTabParamList,
-	ProductsStackParamList
-} from '../../types/navigation';
-import useRefresh from '../../hooks/useRefresh';
+import { ProductsQuery } from '../../types/api';
+import { ProductsStackParamList } from '../../types/navigation';
+import { useProductsContext } from './ProductsContext';
 
 const ProductList: React.FC = () => {
-	const { params } = useRoute<RouteProp<MainTabParamList, 'Products'>>();
 	const { navigate } = useNavigation<NavigationProp<ProductsStackParamList>>();
-	const [{ fetching, data }, refetch] = useProductsQuery({
-		variables: params
-	});
-	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 	const { theme } = useTheme();
+	const { data, refreshing, refresh } = useProductsContext();
 	const [editMode, setEditMode] = React.useState(false);
 	const [selectedProducts, setSelectedProducts] = React.useState<string[]>([]);
 
