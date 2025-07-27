@@ -52,10 +52,6 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 		filterModalRef.current?.present();
 	}, []);
 
-	React.useEffect(() => {
-		console.log(JSON.stringify({ data }, null, 2));
-	}, [data]);
-
 	return (
 		<ProductsContext.Provider
 			value={{
