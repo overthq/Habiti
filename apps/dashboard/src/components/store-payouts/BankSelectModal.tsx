@@ -10,6 +10,7 @@ import {
 } from '@habiti/components';
 
 import { BANKS } from '../../utils/banks';
+import { FullWindowOverlay } from 'react-native-screens';
 
 interface BankSelectModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
@@ -22,13 +23,22 @@ const BankSelectModal: React.FC<BankSelectModalProps> = ({ modalRef }) => {
 		modalRef.current?.dismiss();
 	}, [modalRef.current]);
 
+	const renderContainerComponent = React.useCallback(
+		({ children }) => <FullWindowOverlay>{children}</FullWindowOverlay>,
+		[]
+	);
+
 	const snapPoints = React.useMemo(() => ['25%', '50%', '90%'], []);
 
 	return (
 		<Controller
 			name='bank'
 			render={({ field }) => (
-				<BottomModal modalRef={modalRef} snapPoints={snapPoints}>
+				<BottomModal
+					modalRef={modalRef}
+					snapPoints={snapPoints}
+					containerComponent={renderContainerComponent}
+				>
 					<Spacer y={8} />
 					<Typography style={{ paddingLeft: 16 }} weight='medium' size='large'>
 						Choose your bank

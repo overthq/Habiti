@@ -58,7 +58,7 @@ const main = async () => {
 	app.use(
 		'/graphql',
 		express.json(),
-		authenticate,
+		// authenticate,
 		expressMiddleware(apolloServer, {
 			context: async ({ req }) => getAppContext(req)
 		})

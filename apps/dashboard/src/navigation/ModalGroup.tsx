@@ -8,6 +8,7 @@ import AddProduct from '../screens/AddProduct';
 import CreateStore from '../screens/CreateStore';
 import CustomerInfo from '../screens/CustomerInfo';
 import EditCategory from '../screens/EditCategory';
+import AddPayoutAccount from '../screens/AddPayoutAccount';
 
 const ModalGroup = (
 	<AppStack.Group screenOptions={{ presentation: 'modal', headerShown: true }}>
@@ -41,6 +42,11 @@ const ModalGroup = (
 			name='Modal.CreateStore'
 			component={CreateStore}
 			options={{ headerTitle: 'Create Store' }}
+		/>
+		<AppStack.Screen
+			name='Modal.AddPayoutAccount'
+			component={AddPayoutAccount}
+			options={{ headerTitle: 'Add Payout Account' }}
 		/>
 	</AppStack.Group>
 );

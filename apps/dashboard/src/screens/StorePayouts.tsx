@@ -1,29 +1,63 @@
 import React from 'react';
 import { View } from 'react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { Button, Screen, Spacer, Typography } from '@habiti/components';
 
-import StorePayoutsMain from '../components/store-payouts/StorePayoutsMain';
 import useGoBack from '../hooks/useGoBack';
 import { useStoreQuery } from '../types/api';
+import { AppStackParamList } from '../types/navigation';
 
 // What settings should store owners be able to control from here?
 // Account settings (account number, bank)
 // Generate account name from these details
 
-// Do we want to store the reference information from Paystack alone,
-// or the reference data and actual bank account information
-// i.e. account number and bank code.
+const NoPayoutAccount = () => {
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+
+	const handleAddPayoutAccount = React.useCallback(() => {
+		navigate('Modal.AddPayoutAccount');
+	}, []);
+
+	return (
+		<View style={{ padding: 16 }}>
+			<Typography weight='medium' size='large'>
+				No payout account set up
+			</Typography>
+			<Spacer y={8} />
+			<Typography variant='secondary'>
+				To withdraw your earnings, you need to add a payout account.
+			</Typography>
+			<Spacer y={16} />
+			<Button onPress={handleAddPayoutAccount} text='Add payout account' />
+		</View>
+	);
+};
 
 const StorePayouts = () => {
 	const [{ data, fetching }] = useStoreQuery();
 	useGoBack();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+
+	const handleAddPayoutAccount = React.useCallback(() => {
+		navigate('Modal.AddPayoutAccount');
+	}, []);
 
 	if (fetching) return <View />;
 
+	if (!data?.currentStore.bankAccountNumber) {
+		return <NoPayoutAccount />;
+	}
+
 	return (
-		<StorePayoutsMain
-			bankAccountNumber={data?.currentStore.bankAccountNumber}
-			bankCode={data?.currentStore.bankCode}
-		/>
+		<Screen>
+			<View>
+				<Typography>{data?.currentStore.bankAccountNumber}</Typography>
+				<Button
+					onPress={handleAddPayoutAccount}
+					text='Update account details'
+				/>
+			</View>
+		</Screen>
 	);
 };
 
