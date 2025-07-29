@@ -107,9 +107,11 @@ export const editStore: Resolver<EditStoreArgs> = async (_, { input }, ctx) => {
 			bankCode: rest.bankCode
 		});
 
+		console.log({ data, status });
+
 		if (status) {
-			storeUpdateData.bankAccountNumber = data.account_number;
-			storeUpdateData.bankCode = data.bank_id.toString();
+			storeUpdateData.bankAccountNumber = data.details.account_number;
+			storeUpdateData.bankCode = data.details.bank_code;
 		}
 	}
 

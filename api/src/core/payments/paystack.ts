@@ -141,9 +141,22 @@ export interface CreateTransferReceipientResponse {
 	status: boolean;
 	message: string;
 	data: {
-		account_number: string;
-		account_name: string;
-		bank_id: number;
+		active: boolean;
+		createdAt: string;
+		currency: string;
+		description: string | null;
+		domain: string;
+		email: string | null;
+		id: number;
+		integration: number;
+		metadata: string | null;
+		details: {
+			authorization_code: string | null;
+			account_number: string;
+			account_name: string;
+			bank_code: string;
+			bank_name: string;
+		};
 	};
 }
 
