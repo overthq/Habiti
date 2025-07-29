@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import {
 	Button,
@@ -10,7 +10,7 @@ import {
 } from '@habiti/components';
 
 import useGoBack from '../hooks/useGoBack';
-import { useStoreQuery } from '../types/api';
+import { useEditStoreMutation, useStoreQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 
 // What settings should store owners be able to control from here?
@@ -40,10 +40,41 @@ const NoPayoutAccount = () => {
 };
 
 const StorePayouts = () => {
-	const [{ data, fetching }] = useStoreQuery();
+	const [{ data, fetching }, refetch] = useStoreQuery();
+	const [{ fetching: editing }, editStore] = useEditStoreMutation();
 	const { theme } = useTheme();
 	useGoBack();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+
+	const handleRemovePayoutAccount = React.useCallback(() => {
+		Alert.alert(
+			'Remove account',
+			'Are you sure you want to remove your payout account?',
+			[
+				{
+					text: 'Cancel',
+					style: 'cancel'
+				},
+				{ text: 'Remove', onPress: removePayoutAccount, style: 'destructive' }
+			]
+		);
+	}, []);
+
+	const removePayoutAccount = React.useCallback(async () => {
+		const { error } = await editStore({
+			input: {
+				bankAccountNumber: undefined,
+				bankCode: undefined
+				// bankAccountReference: undefined
+			}
+		});
+
+		if (error) {
+			console.log('error', error);
+		} else {
+			refetch();
+		}
+	}, []);
 
 	const handleAddPayoutAccount = React.useCallback(() => {
 		navigate('Modal.AddPayoutAccount');
@@ -73,6 +104,12 @@ const StorePayouts = () => {
 				<Button
 					onPress={handleAddPayoutAccount}
 					text='Update account details'
+				/>
+				<Spacer y={8} />
+				<Button
+					onPress={handleRemovePayoutAccount}
+					text='Remove account'
+					variant='secondary'
 				/>
 			</View>
 		</Screen>

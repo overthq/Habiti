@@ -150,6 +150,7 @@ export interface CreateTransferReceipientResponse {
 		id: number;
 		integration: number;
 		metadata: string | null;
+		recipient_code: string;
 		details: {
 			authorization_code: string | null;
 			account_number: string;

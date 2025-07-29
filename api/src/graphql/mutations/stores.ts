@@ -107,12 +107,15 @@ export const editStore: Resolver<EditStoreArgs> = async (_, { input }, ctx) => {
 			bankCode: rest.bankCode
 		});
 
-		console.log({ data, status });
-
 		if (status) {
 			storeUpdateData.bankAccountNumber = data.details.account_number;
 			storeUpdateData.bankCode = data.details.bank_code;
+			storeUpdateData.bankAccountReference = data.recipient_code;
 		}
+	} else {
+		storeUpdateData.bankAccountNumber = null;
+		storeUpdateData.bankCode = null;
+		storeUpdateData.bankAccountReference = null;
 	}
 
 	const store = await ctx.prisma.store.update({

@@ -25,8 +25,8 @@ export const createPayout: Resolver<CreatePayoutArgs> = async (
 	// Extra validation (the frontend should cover this).
 	if (store.realizedRevenue < store.paidOut + amount) {
 		throw new Error('Insufficient funds');
-	} else if (!store.bankAccountReference) {
-		throw new Error('No account reference');
+	} else if (!store.bankAccountReference || !store.bankAccountNumber) {
+		throw new Error('No account details provided');
 	}
 
 	const payout = await ctx.prisma.payout.create({
