@@ -1,7 +1,13 @@
 import React from 'react';
 import { View } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { Button, Screen, Spacer, Typography } from '@habiti/components';
+import {
+	Button,
+	Screen,
+	Spacer,
+	Typography,
+	useTheme
+} from '@habiti/components';
 
 import useGoBack from '../hooks/useGoBack';
 import { useStoreQuery } from '../types/api';
@@ -35,6 +41,7 @@ const NoPayoutAccount = () => {
 
 const StorePayouts = () => {
 	const [{ data, fetching }] = useStoreQuery();
+	const { theme } = useTheme();
 	useGoBack();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
@@ -50,8 +57,19 @@ const StorePayouts = () => {
 
 	return (
 		<Screen>
-			<View>
-				<Typography>{data?.currentStore.bankAccountNumber}</Typography>
+			<View
+				style={{
+					marginTop: 16,
+					marginHorizontal: 16,
+					padding: 16,
+					backgroundColor: theme.input.background,
+					borderRadius: 6
+				}}
+			>
+				<Typography>
+					Account number: {data?.currentStore.bankAccountNumber}
+				</Typography>
+				<Spacer y={12} />
 				<Button
 					onPress={handleAddPayoutAccount}
 					text='Update account details'
