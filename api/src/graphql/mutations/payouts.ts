@@ -54,7 +54,7 @@ export const verifyBankAccount: Resolver<VerifyBankAccountArgs> = async (
 	_,
 	{ input: { bankAccountNumber, bankCode } }
 ) => {
-	const data = await resolveAccountNumber({
+	const { data } = await resolveAccountNumber({
 		accountNumber: bankAccountNumber,
 		bankCode
 	});

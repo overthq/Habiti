@@ -7,6 +7,7 @@ import { uploadStream } from '../../utils/upload';
 import { getStorePushTokens } from '../../core/notifications';
 import { NotificationType } from '../../core/notifications/types';
 import { canManageStore, storeAuthorizedResolver } from '../permissions';
+import { Prisma } from '@prisma/client';
 
 export interface CreateStoreArgs {
 	input: {
@@ -81,33 +82,40 @@ export const editStore: Resolver<EditStoreArgs> = async (_, { input }, ctx) => {
 	const { imageFile, ...rest } = input;
 	let uploadedUrl = '';
 
+	let storeUpdateData: Prisma.StoreUpdateInput = {
+		...rest
+	};
+
 	if (imageFile) {
 		const { createReadStream } = await imageFile;
 		const stream = createReadStream();
 
 		const { url } = await uploadStream(stream);
 		uploadedUrl = url;
+
+		storeUpdateData.image = {
+			update: {
+				path: uploadedUrl
+			}
+		};
 	}
 
-	let bankAccountReference: string | undefined;
-
 	if (rest.bankAccountNumber && rest.bankCode) {
-		bankAccountReference = await createTransferReceipient({
+		const { data, status } = await createTransferReceipient({
 			name: ctx.user.name,
 			accountNumber: rest.bankAccountNumber,
 			bankCode: rest.bankCode
 		});
+
+		if (status) {
+			storeUpdateData.bankAccountNumber = data.account_number;
+			storeUpdateData.bankCode = data.bank_id.toString();
+		}
 	}
 
 	const store = await ctx.prisma.store.update({
 		where: { id: ctx.storeId },
-		data: {
-			...rest,
-			...(uploadedUrl !== ''
-				? { image: { update: { path: uploadedUrl } } }
-				: {}),
-			...(bankAccountReference ? { bankAccountReference } : {})
-		}
+		data: storeUpdateData
 	});
 
 	return store;

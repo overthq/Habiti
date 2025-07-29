@@ -134,16 +134,32 @@ interface CreateTransferReceipientOptions {
 	bankCode: string;
 }
 
+// FIXME: Find out what the error shape looks like.
+// For now, we're just checking that "status" is true, which doesn't really
+// mean anything.
+export interface CreateTransferReceipientResponse {
+	status: boolean;
+	message: string;
+	data: {
+		account_number: string;
+		account_name: string;
+		bank_id: number;
+	};
+}
+
 export const createTransferReceipient = async (
 	options: CreateTransferReceipientOptions
 ) => {
-	const response = await client.post('/transferrecipient', {
-		type: 'nuban',
-		name: options.name,
-		account_number: options.accountNumber,
-		bank_code: options.bankCode,
-		currency: 'NGN'
-	});
+	const response = await client.post<CreateTransferReceipientResponse>(
+		'/transferrecipient',
+		{
+			type: 'nuban',
+			name: options.name,
+			account_number: options.accountNumber,
+			bank_code: options.bankCode,
+			currency: 'NGN'
+		}
+	);
 
 	return response.data;
 };
