@@ -23,6 +23,11 @@ export interface VerifyTransferOptions {
 	transferId: string;
 }
 
+export interface FinalizeTransferOptions {
+	transferCode: string;
+	otp: string;
+}
+
 export interface ResolveAccountNumberOptions {
 	accountNumber: string;
 	bankCode: string;
