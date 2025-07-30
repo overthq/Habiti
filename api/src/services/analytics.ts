@@ -1,4 +1,5 @@
 import { PostHog } from 'posthog-node';
+import { env } from '../config/env';
 
 export interface AnalyticsEvent {
 	event: string;
@@ -29,8 +30,8 @@ export default class AnalyticsService {
 	private isEnabled: boolean;
 
 	constructor() {
-		if (!!process.env.POSTHOG_API_KEY) {
-			this.client = new PostHog(process.env.POSTHOG_API_KEY);
+		if (!!env.POSTHOG_API_KEY) {
+			this.client = new PostHog(env.POSTHOG_API_KEY);
 			this.isEnabled = true;
 		} else {
 			this.isEnabled = false;
@@ -285,10 +286,9 @@ export default class AnalyticsService {
 	): Record<string, any> {
 		return {
 			...properties,
-			// Add common properties
 			timestamp: new Date().toISOString(),
-			environment: process.env.NODE_ENV || 'development',
-			version: process.env.APP_VERSION || '1.0.0',
+			environment: env.NODE_ENV || 'development',
+			version: env.APP_VERSION,
 			platform: 'api'
 		};
 	}

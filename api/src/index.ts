@@ -11,8 +11,8 @@ import { graphqlUploadExpress } from 'graphql-upload';
 import { createServer } from 'http';
 import * as Sentry from '@sentry/node';
 
-import { getAppContext } from './utils/context';
-import redisClient from './config/redis';
+import { authenticateProd } from './middleware/auth';
+
 import admin from './routes/admin';
 import auth from './routes/auth';
 import carts from './routes/carts';
@@ -23,11 +23,14 @@ import products from './routes/products';
 import stores from './routes/stores';
 import users from './routes/users';
 import webhooks from './routes/webhooks';
+
+import { getAppContext } from './utils/context';
+
 import schema from './graphql/schema';
 
+import { env } from './config/env';
+import redisClient from './config/redis';
 import './config/cloudinary';
-import './config/env';
-import { authenticate } from './middleware/auth';
 
 const main = async () => {
 	const app = express();
@@ -37,7 +40,7 @@ const main = async () => {
 	app.use(compression());
 	app.use(
 		expressjwt({
-			secret: process.env.JWT_SECRET as string,
+			secret: env.JWT_SECRET,
 			algorithms: ['HS256'],
 			credentialsRequired: false
 		})
@@ -58,7 +61,7 @@ const main = async () => {
 	app.use(
 		'/graphql',
 		express.json(),
-		// authenticate,
+		authenticateProd,
 		expressMiddleware(apolloServer, {
 			context: async ({ req }) => getAppContext(req)
 		})
@@ -75,11 +78,10 @@ const main = async () => {
 	app.use('/admin', admin);
 	app.use('/auth', auth);
 
-	const PORT = Number(process.env.PORT || 3000);
-	httpServer.listen({ port: PORT });
+	httpServer.listen({ port: Number(env.PORT) });
 
 	await redisClient.connect();
-	console.log(`Server running on port ${PORT}`);
+	console.log(`Server running on port ${env.PORT}`);
 };
 
 main();

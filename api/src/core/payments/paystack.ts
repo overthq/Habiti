@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { env } from '../../config/env';
 
 const API_URL = 'https://api.paystack.co';
 
@@ -6,7 +7,7 @@ const client = axios.create({
 	baseURL: API_URL,
 	headers: {
 		'Content-Type': 'application/json',
-		Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+		Authorization: `Bearer ${env.PAYSTACK_SECRET_KEY}`
 	}
 });
 

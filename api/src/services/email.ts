@@ -5,7 +5,7 @@ export default class EmailService {
 	private loops: LoopsClient;
 
 	constructor() {
-		if (process.env.NODE_ENV !== 'production') {
+		if (env.NODE_ENV !== 'production') {
 			console.warn(
 				'Email service is not enabled in non-production environment'
 			);

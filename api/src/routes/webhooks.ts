@@ -2,11 +2,12 @@ import { createHmac } from 'crypto';
 import { Router } from 'express';
 
 import { handlePaystackWebhookEvent } from '../core/payments/webhooks';
+import { env } from '../config/env';
 
 const webhookRouter: Router = Router();
 
 webhookRouter.post('/paystack', async (req, res) => {
-	const hash = createHmac('sha512', process.env.PAYSTACK_SECRET_KEY as string)
+	const hash = createHmac('sha512', env.PAYSTACK_SECRET_KEY)
 		.update(JSON.stringify(req.body))
 		.digest('hex');
 

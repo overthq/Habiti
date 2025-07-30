@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import { APIException } from '../routes/types';
 import { verifyAccessToken } from '../utils/auth';
+import { env } from '../config/env';
 
 type AuthOptions = {
 	required?: boolean;
@@ -46,3 +47,6 @@ export const auth = (options: AuthOptions = {}) => {
 export const authenticate = auth({ required: true });
 export const optionalAuth = auth({ required: false });
 export const isAdmin = auth({ required: true, adminOnly: true });
+export const authenticateProd = auth({
+	required: env.NODE_ENV === 'production'
+});
