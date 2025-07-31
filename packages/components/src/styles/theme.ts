@@ -86,8 +86,8 @@ const dark = {
 			text: palette.neutral.n900
 		},
 		secondary: {
-			background: palette.neutral.n800,
-			text: palette.neutral.n100
+			background: palette.neutral.n700,
+			text: palette.neutral.n200
 		},
 		tertiary: {
 			background: '',
@@ -180,7 +180,7 @@ const light = {
 		},
 		secondary: {
 			background: palette.neutral.n300,
-			text: palette.neutral.n100
+			text: palette.neutral.n600
 		},
 		tertiary: {
 			background: '',

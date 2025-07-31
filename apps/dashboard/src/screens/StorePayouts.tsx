@@ -92,25 +92,34 @@ const StorePayouts = () => {
 				style={{
 					marginTop: 16,
 					marginHorizontal: 16,
-					padding: 16,
+					padding: 12,
 					backgroundColor: theme.input.background,
 					borderRadius: 6
 				}}
 			>
-				<Typography>
-					Account number: {data?.currentStore.bankAccountNumber}
+				<Typography variant='secondary' weight='medium'>
+					Account
+				</Typography>
+				<Spacer y={8} />
+				<Typography size='xxxlarge' weight='semibold'>
+					{data?.currentStore.bankAccountNumber}
 				</Typography>
 				<Spacer y={12} />
-				<Button
-					onPress={handleAddPayoutAccount}
-					text='Update account details'
-				/>
-				<Spacer y={8} />
-				<Button
-					onPress={handleRemovePayoutAccount}
-					text='Remove account'
-					variant='secondary'
-				/>
+				<View style={{ flexDirection: 'row', gap: 12 }}>
+					<Button
+						size='small'
+						onPress={handleAddPayoutAccount}
+						text='Update details'
+						style={{ flexGrow: 1 }}
+					/>
+					<Button
+						size='small'
+						onPress={handleRemovePayoutAccount}
+						text='Remove account'
+						variant='secondary'
+						style={{ flexGrow: 1 }}
+					/>
+				</View>
 			</View>
 		</Screen>
 	);
