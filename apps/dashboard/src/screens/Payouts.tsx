@@ -19,6 +19,7 @@ import useGoBack from '../hooks/useGoBack';
 import { useStorePayoutsQuery } from '../types/api';
 import { AppStackParamList, MainTabParamList } from '../types/navigation';
 import useRefresh from '../hooks/useRefresh';
+import RevenueBarLegend from '../components/payouts/RevenueBarLegend';
 
 interface NoPayoutsProps {
 	action(): void;
@@ -105,6 +106,8 @@ const Payouts = () => {
 							unrealizedRevenue={data?.currentStore.unrealizedRevenue}
 							paidOut={data?.currentStore.paidOut}
 						/>
+						<Spacer y={12} />
+						<RevenueBarLegend />
 						{!data?.currentStore.bankAccountNumber && (
 							<View
 								style={{

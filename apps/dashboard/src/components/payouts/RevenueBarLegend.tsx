@@ -1,21 +1,30 @@
-import { Typography } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import { Typography, useTheme } from '@habiti/components';
+import { palette } from '@habiti/components/src/styles/theme';
 
 const RevenueBarLegend = () => {
+	const { theme } = useTheme();
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.unit}>
-				<View style={[styles.square, { backgroundColor: 'green' }]} />
-				<Typography size='xsmall'>Available</Typography>
+				<View
+					style={[styles.square, { backgroundColor: palette.green.g400 }]}
+				/>
+				<Typography size='small'>Available</Typography>
 			</View>
 			<View style={styles.unit}>
-				<View style={[styles.square, { backgroundColor: 'yellow' }]} />
-				<Typography size='xsmall'>Unrealized</Typography>
+				<View
+					style={[styles.square, { backgroundColor: palette.yellow.y400 }]}
+				/>
+				<Typography size='small'>Realized</Typography>
 			</View>
 			<View style={styles.unit}>
-				<View style={[styles.square, { backgroundColor: 'grey' }]} />
-				<Typography size='xsmall'>Total</Typography>
+				<View
+					style={[styles.square, { backgroundColor: theme.input.background }]}
+				/>
+				<Typography size='small'>Unrealized</Typography>
 			</View>
 		</View>
 	);

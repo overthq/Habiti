@@ -1,7 +1,7 @@
-import { formatNaira } from '@habiti/common';
-import { Typography } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import { Typography } from '@habiti/components';
+import { formatNaira } from '@habiti/common';
 
 import { StorePayoutsQuery } from '../../types/api';
 import { parseTimestamp } from '../../utils/date';
