@@ -97,6 +97,7 @@ const Payouts = () => {
 				}
 				ListHeaderComponent={
 					<>
+						<Spacer y={16} />
 						<SectionHeader title='Available' padded={false} />
 						<Typography size='xxxlarge' weight='bold' style={styles.available}>
 							{formatNaira(data?.currentStore.realizedRevenue ?? 0)}
@@ -139,7 +140,7 @@ const Payouts = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		padding: 16
+		paddingHorizontal: 16
 	},
 	available: {
 		marginBottom: 8
