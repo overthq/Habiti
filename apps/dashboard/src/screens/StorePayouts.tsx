@@ -13,10 +13,6 @@ import useGoBack from '../hooks/useGoBack';
 import { useEditStoreMutation, useStoreQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
 
-// What settings should store owners be able to control from here?
-// Account settings (account number, bank)
-// Generate account name from these details
-
 const NoPayoutAccount = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
