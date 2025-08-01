@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { env } from '../../config/env';
 
 const API_URL = 'https://api.paystack.co';
 
@@ -6,7 +7,7 @@ const client = axios.create({
 	baseURL: API_URL,
 	headers: {
 		'Content-Type': 'application/json',
-		Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+		Authorization: `Bearer ${env.PAYSTACK_SECRET_KEY}`
 	}
 });
 
@@ -107,8 +108,117 @@ export const verifyTransaction = async (reference: string) => {
 	return response.data;
 };
 
+// {
+//   status: true,
+//   message: 'Transfer retrieved',
+//   data: {
+//     amount: 200000,
+//     createdAt: '2025-07-29T08:12:37.000Z',
+//     currency: 'NGN',
+//     domain: 'test',
+//     failures: null,
+//     id: 857012583,
+//     integration: 720234,
+//     reason: 'Payout',
+//     reference: '93c8e1ef-3ab6-4eab-acd9-804a2096ada1',
+//     source: 'balance',
+//     source_details: null,
+//     status: 'abandoned',
+//     titan_code: null,
+//     transfer_code: 'TRF_v2yinnxx82pkqdwt',
+//     request: 1063383178,
+//     transferred_at: null,
+//     updatedAt: '2025-07-29T09:13:51.000Z',
+//     recipient: {
+//       active: true,
+//       createdAt: '2025-07-29T01:07:28.000Z',
+//       currency: 'NGN',
+//       description: null,
+//       domain: 'test',
+//       email: null,
+//       id: 108397942,
+//       integration: 720234,
+//       metadata: null,
+//       name: 'Korede Fashokun',
+//       recipient_code: 'RCP_jc74mmlips477s4',
+//       type: 'nuban',
+//       updatedAt: '2025-07-29T01:07:28.000Z',
+//       is_deleted: false,
+//       isDeleted: false,
+//       details: [Object]
+//     },
+//     session: { provider: null, id: null },
+//     fee_charged: 0,
+//     fees_breakdown: null,
+//     gateway_response: null
+//   }
+// }
+
+interface VerifyTransferResponse {
+	status: boolean;
+	message: string;
+	data: {
+		status: string;
+		reason: string;
+		transfer_code: string;
+	};
+}
+
 export const verifyTransfer = async (transferId: string) => {
-	const response = await client.get(`/transfer/verify/${transferId}`);
+	const response = await client.get<VerifyTransferResponse>(
+		`/transfer/verify/${transferId}`
+	);
+
+	return response.data;
+};
+
+// {
+//   "status": true,
+//   "message": "Transfer has been queued",
+//   "data": {
+//     "domain": "test",
+//     "amount": 1000000,
+//     "currency": "NGN",
+//     "reference": "n7ll9pzl6b",
+//     "source": "balance",
+//     "source_details": null,
+//     "reason": "E go better for you",
+//     "status": "success",
+//     "failures": null,
+//     "transfer_code": "TRF_zuirlnr9qblgfko",
+//     "titan_code": null,
+//     "transferred_at": null,
+//     "id": 529410,
+//     "integration": 123460,
+//     "recipient": 225204,
+//     "createdAt": "2018-08-02T10:02:55.000Z",
+//     "updatedAt": "2018-08-02T10:12:05.000Z"
+//   }
+// }
+
+interface FinalizeTransferOptions {
+	transferCode: string;
+	otp: string;
+}
+
+interface FinalizeTransferResponse {
+	status: boolean;
+	message: string;
+	data: {
+		status: string;
+		reason: string;
+		transfer_code: string;
+	};
+}
+
+export const finalizeTransfer = async (options: FinalizeTransferOptions) => {
+	const response = await client.post<FinalizeTransferResponse>(
+		'/transfer/finalize_transfer',
+		{
+			transfer_code: options.transferCode,
+			otp: options.otp
+		}
+	);
 
 	return response.data;
 };
@@ -134,16 +244,46 @@ interface CreateTransferReceipientOptions {
 	bankCode: string;
 }
 
+// FIXME: Find out what the error shape looks like.
+// For now, we're just checking that "status" is true, which doesn't really
+// mean anything.
+export interface CreateTransferReceipientResponse {
+	status: boolean;
+	message: string;
+	data: {
+		active: boolean;
+		createdAt: string;
+		currency: string;
+		description: string | null;
+		domain: string;
+		email: string | null;
+		id: number;
+		integration: number;
+		metadata: string | null;
+		recipient_code: string;
+		details: {
+			authorization_code: string | null;
+			account_number: string;
+			account_name: string;
+			bank_code: string;
+			bank_name: string;
+		};
+	};
+}
+
 export const createTransferReceipient = async (
 	options: CreateTransferReceipientOptions
 ) => {
-	const response = await client.post('/transferrecipient', {
-		type: 'nuban',
-		name: options.name,
-		account_number: options.accountNumber,
-		bank_code: options.bankCode,
-		currency: 'NGN'
-	});
+	const response = await client.post<CreateTransferReceipientResponse>(
+		'/transferrecipient',
+		{
+			type: 'nuban',
+			name: options.name,
+			account_number: options.accountNumber,
+			bank_code: options.bankCode,
+			currency: 'NGN'
+		}
+	);
 
 	return response.data;
 };

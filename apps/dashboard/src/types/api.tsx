@@ -153,6 +153,11 @@ export type CreateStoreInput = {
 	website?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type DeletePushTokenInput = {
+	token: Scalars['String']['input'];
+	type: PushTokenType;
+};
+
 export type DeliveryAddress = {
 	__typename?: 'DeliveryAddress';
 	id: Scalars['ID']['output'];
@@ -246,6 +251,7 @@ export type Mutation = {
 	deleteImages: Array<Image>;
 	deleteProduct: Product;
 	deleteProductCategory: StoreProductCategory;
+	deletePushToken: UserPushToken;
 	deleteStore: Scalars['ID']['output'];
 	editProduct: Product;
 	editProductCategory: StoreProductCategory;
@@ -254,6 +260,7 @@ export type Mutation = {
 	followStore: StoreFollower;
 	removeFromCart: Scalars['ID']['output'];
 	removeStoreManager: StoreManager;
+	savePushToken: UserPushToken;
 	unfollowStore: StoreFollower;
 	updateCartProduct: CartProduct;
 	updateOrder: Order;
@@ -335,6 +342,10 @@ export type MutationDeleteProductCategoryArgs = {
 	categoryId: Scalars['ID']['input'];
 };
 
+export type MutationDeletePushTokenArgs = {
+	input: DeletePushTokenInput;
+};
+
 export type MutationDeleteStoreArgs = {
 	id: Scalars['ID']['input'];
 };
@@ -368,6 +379,10 @@ export type MutationRemoveFromCartArgs = {
 
 export type MutationRemoveStoreManagerArgs = {
 	managerId: Scalars['ID']['input'];
+};
+
+export type MutationSavePushTokenArgs = {
+	input: SavePushTokenInput;
 };
 
 export type MutationUnfollowStoreArgs = {
@@ -475,10 +490,17 @@ export type Payout = {
 	amount: Scalars['Int']['output'];
 	createdAt: Scalars['String']['output'];
 	id: Scalars['ID']['output'];
+	status: PayoutStatus;
 	store: Store;
 	storeId: Scalars['ID']['output'];
 	updatedAt: Scalars['String']['output'];
 };
+
+export enum PayoutStatus {
+	Failure = 'Failure',
+	Pending = 'Pending',
+	Success = 'Success'
+}
 
 export type Product = {
 	__typename?: 'Product';
@@ -655,6 +677,11 @@ export type QueryUserArgs = {
 	id: Scalars['ID']['input'];
 };
 
+export type SavePushTokenInput = {
+	token: Scalars['String']['input'];
+	type: PushTokenType;
+};
+
 export type SearchResults = {
 	__typename?: 'SearchResults';
 	products: Array<Product>;
@@ -693,6 +720,10 @@ export type Store = {
 	updatedAt: Scalars['String']['output'];
 	userCart?: Maybe<Cart>;
 	website?: Maybe<Scalars['String']['output']>;
+};
+
+export type StoreCategoriesArgs = {
+	filter?: InputMaybe<StoreProductCategoryFilterInput>;
 };
 
 export type StoreOrdersArgs = {
@@ -736,6 +767,10 @@ export type StoreProductCategory = {
 	products: Array<ProductCategory>;
 	store: Store;
 	storeId: Scalars['ID']['output'];
+};
+
+export type StoreProductCategoryFilterInput = {
+	id?: InputMaybe<StringWhere>;
 };
 
 export enum StoreStatPeriod {
@@ -1058,11 +1093,13 @@ export type StorePayoutsQuery = {
 		id: string;
 		unrealizedRevenue: number;
 		realizedRevenue: number;
+		bankAccountNumber?: string | null;
 		paidOut: number;
 		payouts: Array<{
 			__typename?: 'Payout';
 			id: string;
 			amount: number;
+			status: PayoutStatus;
 			createdAt: string;
 		}>;
 	};
@@ -1618,10 +1655,12 @@ export const StorePayoutsDocument = gql`
 			id
 			unrealizedRevenue
 			realizedRevenue
+			bankAccountNumber
 			paidOut
 			payouts {
 				id
 				amount
+				status
 				createdAt
 			}
 		}

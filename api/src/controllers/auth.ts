@@ -5,6 +5,7 @@ import prismaClient from '../config/prisma';
 import redisClient from '../config/redis';
 import { generateAccessToken } from '../utils/auth';
 import { hashPassword, verifyPassword } from '../core/logic/auth';
+import { env } from '../config/env';
 
 export const register = async (req: Request, res: Response) => {
 	const { name, email, password } = req.body;
@@ -70,17 +71,25 @@ export const verify = async (req: Request, res: Response) => {
 
 export const appleCallback = async (req: Request, res: Response) => {
 	try {
+		if (
+			!env.APPLE_CLIENT_ID ||
+			!env.APPLE_CLIENT_SECRET ||
+			!env.APPLE_REDIRECT_URI
+		) {
+			throw new Error('Apple credentials not specified');
+		}
+
 		const response = await fetch('https://appleid.apple.com/auth/token', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded'
 			},
 			body: new URLSearchParams({
-				client_id: process.env.APPLE_CLIENT_ID as string,
-				client_secret: process.env.APPLE_CLIENT_SECRET as string,
+				client_id: env.APPLE_CLIENT_ID,
+				client_secret: env.APPLE_CLIENT_SECRET,
 				code: req.body.code,
 				grant_type: 'authorization_code',
-				redirect_uri: process.env.APPLE_REDIRECT_URI as string
+				redirect_uri: env.APPLE_REDIRECT_URI
 			})
 		});
 

@@ -1,48 +1,47 @@
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { Button, FormInput, Screen, Spacer } from '@habiti/components';
 import React from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
+import { Screen, Spacer, FormInput, Button } from '@habiti/components';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { useForm, FormProvider } from 'react-hook-form';
 
-import BankSelectButton from './BankSelectButton';
-import BankSelectModal from './BankSelectModal';
-import ConfirmationModal from './ConfirmationModal';
-import { useVerifyBankAccountMutation } from '../../types/api';
-import { EditPayoutInfoFormValues } from '../../types/forms';
+import { useVerifyBankAccountMutation } from '../types/api';
+import { EditPayoutInfoFormValues } from '../types/forms';
+import BankSelectButton from '../components/store-payouts/BankSelectButton';
+import BankSelectModal from '../components/store-payouts/BankSelectModal';
+import ConfirmationModal from '../components/store-payouts/ConfirmationModal';
+import useGoBack from '../hooks/useGoBack';
 
-interface StorePayoutsMainProps {
-	bankAccountNumber?: string | null;
-	bankCode?: string | null;
-}
-
-const StorePayoutsMain: React.FC<StorePayoutsMainProps> = ({
-	bankAccountNumber,
-	bankCode
-}) => {
-	const [{ fetching, data }, verifyBankAccount] =
-		useVerifyBankAccountMutation();
+const AddPayoutAccount = () => {
+	const [{ data }, verifyBankAccount] = useVerifyBankAccountMutation();
 
 	const selectModalRef = React.useRef<BottomSheetModal>(null);
 	const confirmationModalRef = React.useRef<BottomSheetModal>(null);
 
+	useGoBack('x');
+
 	const methods = useForm<EditPayoutInfoFormValues>({
 		defaultValues: {
-			accountNumber: bankAccountNumber ?? '',
-			bank: bankCode ?? ''
+			accountNumber: '',
+			bank: ''
 		}
 	});
 
 	const onSubmit = React.useCallback(
 		async (values: EditPayoutInfoFormValues) => {
-			verifyBankAccount({
+			const { error } = await verifyBankAccount({
 				input: {
 					bankAccountNumber: values.accountNumber,
 					bankCode: values.bank
 				}
 			});
-			confirmationModalRef.current?.present();
+
+			if (error) {
+				console.log('error', error);
+			} else {
+				confirmationModalRef.current?.present();
+			}
 		},
-		[confirmationModalRef.current]
+		[]
 	);
 
 	const toggleSelect = React.useCallback(() => {
@@ -50,7 +49,7 @@ const StorePayoutsMain: React.FC<StorePayoutsMainProps> = ({
 	}, []);
 
 	return (
-		<Screen style={styles.container}>
+		<Screen style={{ paddingHorizontal: 16, paddingTop: 16 }}>
 			<FormProvider {...methods}>
 				<FormInput
 					name='accountNumber'
@@ -70,7 +69,6 @@ const StorePayoutsMain: React.FC<StorePayoutsMainProps> = ({
 				<BankSelectModal modalRef={selectModalRef} />
 				<ConfirmationModal
 					modalRef={confirmationModalRef}
-					fetching={fetching}
 					accountName={data?.verifyBankAccount?.accountName}
 				/>
 			</FormProvider>
@@ -88,4 +86,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default StorePayoutsMain;
+export default AddPayoutAccount;

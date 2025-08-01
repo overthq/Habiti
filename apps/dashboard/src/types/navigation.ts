@@ -22,6 +22,7 @@ export type AppStackParamList = {
 	};
 	AddManager: undefined;
 	'Modal.CreateStore': undefined;
+	'Modal.AddPayoutAccount': undefined;
 };
 
 export type MainTabParamList = {

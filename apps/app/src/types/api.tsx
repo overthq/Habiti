@@ -490,10 +490,17 @@ export type Payout = {
 	amount: Scalars['Int']['output'];
 	createdAt: Scalars['String']['output'];
 	id: Scalars['ID']['output'];
+	status?: Maybe<PayoutStatus>;
 	store: Store;
 	storeId: Scalars['ID']['output'];
 	updatedAt: Scalars['String']['output'];
 };
+
+export enum PayoutStatus {
+	Failure = 'Failure',
+	Pending = 'Pending',
+	Success = 'Success'
+}
 
 export type Product = {
 	__typename?: 'Product';
@@ -715,6 +722,10 @@ export type Store = {
 	website?: Maybe<Scalars['String']['output']>;
 };
 
+export type StoreCategoriesArgs = {
+	filter?: InputMaybe<StoreProductCategoryFilterInput>;
+};
+
 export type StoreOrdersArgs = {
 	orderBy?: InputMaybe<Array<OrderOrderByInput>>;
 	status?: InputMaybe<OrderStatus>;
@@ -756,6 +767,10 @@ export type StoreProductCategory = {
 	products: Array<ProductCategory>;
 	store: Store;
 	storeId: Scalars['ID']['output'];
+};
+
+export type StoreProductCategoryFilterInput = {
+	id?: InputMaybe<StringWhere>;
 };
 
 export enum StoreStatPeriod {

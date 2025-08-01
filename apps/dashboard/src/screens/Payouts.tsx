@@ -1,3 +1,5 @@
+import React from 'react';
+import { View, StyleSheet, Pressable, RefreshControl } from 'react-native';
 import { formatNaira } from '@habiti/common';
 import {
 	Icon,
@@ -10,15 +12,14 @@ import {
 } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
-import React from 'react';
-import { View, StyleSheet, Pressable, RefreshControl } from 'react-native';
 
 import PayoutRow from '../components/payouts/PayoutRow';
 import RevenueBar from '../components/payouts/RevenueBar';
 import useGoBack from '../hooks/useGoBack';
 import { useStorePayoutsQuery } from '../types/api';
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList, MainTabParamList } from '../types/navigation';
 import useRefresh from '../hooks/useRefresh';
+import RevenueBarLegend from '../components/payouts/RevenueBarLegend';
 
 interface NoPayoutsProps {
 	action(): void;
@@ -54,11 +55,15 @@ const NoPayouts: React.FC<NoPayoutsProps> = ({ action }) => {
 const Payouts = () => {
 	const [{ data, fetching }, refetch] = useStorePayoutsQuery();
 	const { navigate, setOptions } =
-		useNavigation<NavigationProp<AppStackParamList>>();
+		useNavigation<NavigationProp<AppStackParamList & MainTabParamList>>();
 	const { theme } = useTheme();
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 
 	useGoBack();
+
+	const handleAddPayoutAccount = React.useCallback(() => {
+		navigate('Modal.AddPayoutAccount');
+	}, []);
 
 	const handleNewPayout = React.useCallback(() => {
 		navigate('AddPayout');
@@ -92,6 +97,7 @@ const Payouts = () => {
 				}
 				ListHeaderComponent={
 					<>
+						<Spacer y={16} />
 						<SectionHeader title='Available' padded={false} />
 						<Typography size='xxxlarge' weight='bold' style={styles.available}>
 							{formatNaira(data?.currentStore.realizedRevenue ?? 0)}
@@ -101,6 +107,24 @@ const Payouts = () => {
 							unrealizedRevenue={data?.currentStore.unrealizedRevenue}
 							paidOut={data?.currentStore.paidOut}
 						/>
+						<Spacer y={12} />
+						<RevenueBarLegend />
+						{!data?.currentStore.bankAccountNumber && (
+							<View
+								style={{
+									marginTop: 16,
+									backgroundColor: theme.input.background,
+									padding: 12,
+									borderRadius: 6
+								}}
+							>
+								<Typography>You haven't added a bank account yet.</Typography>
+								<Spacer y={8} />
+								<TextButton onPress={handleAddPayoutAccount}>
+									Add bank account
+								</TextButton>
+							</View>
+						)}
 						<Spacer y={16} />
 						<SectionHeader title='Payout History' padded={false} />
 					</>
@@ -116,7 +140,7 @@ const Payouts = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		padding: 16
+		paddingHorizontal: 16
 	},
 	available: {
 		marginBottom: 8

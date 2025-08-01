@@ -2,6 +2,7 @@ import { storeCard } from '../data/cards';
 import {
 	ChargeAuthorizationOptions,
 	CreateTransferReceipientOptions,
+	FinalizeTransferOptions,
 	InitialChargeOptions,
 	PayAccountOptions,
 	ResolveAccountNumberOptions,
@@ -9,6 +10,7 @@ import {
 } from './types';
 import * as Paystack from './paystack';
 import { transitionOrderToPending } from './webhooks';
+import { markPayoutAsFailed, markPayoutAsSuccessful } from '../data/payouts';
 
 export const chargeAuthorization = async (
 	options: ChargeAuthorizationOptions
@@ -38,7 +40,23 @@ export const payAccount = async (options: PayAccountOptions) => {
 };
 
 export const verifyTransfer = async (options: VerifyTransferOptions) => {
-	return await Paystack.verifyTransfer(options.transferId);
+	const { data, status } = await Paystack.verifyTransfer(options.transferId);
+
+	if (status === true && data.status === 'success') {
+		await markPayoutAsSuccessful(options.transferId);
+	} else {
+		await markPayoutAsFailed(options.transferId);
+	}
+
+	return data;
+};
+
+export const finalizeTransfer = async (options: FinalizeTransferOptions) => {
+	const { data, status } = await Paystack.finalizeTransfer(options);
+
+	if (status === true && data.status === 'success') {
+		await markPayoutAsSuccessful(options.transferCode);
+	}
 };
 
 export const resolveAccountNumber = async (

@@ -1,7 +1,7 @@
-import { Typography, useTheme } from '@habiti/components';
-import { ThemeObject } from '@habiti/components/src/styles/theme';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import { Typography, useTheme } from '@habiti/components';
+import { ThemeObject } from '@habiti/components/src/styles/theme';
 
 import { OrderStatus } from '../../types/api';
 

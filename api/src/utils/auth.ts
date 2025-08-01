@@ -1,6 +1,7 @@
 import { Admin, User } from '@prisma/client';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
+import { env } from '../config/env';
 
 import redisClient from '../config/redis';
 
@@ -24,10 +25,10 @@ export const generateAccessToken = async (
 ) => {
 	return jwt.sign(
 		{ id: user.id, name: user.name, email: user.email, role },
-		process.env.JWT_SECRET as string
+		env.JWT_SECRET
 	);
 };
 
 export const verifyAccessToken = async (token: string) => {
-	return jwt.verify(token, process.env.JWT_SECRET as string);
+	return jwt.verify(token, env.JWT_SECRET);
 };

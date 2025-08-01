@@ -67,8 +67,7 @@ const styles = StyleSheet.create({
 		height: 16,
 		borderRadius: 4,
 		flexDirection: 'row',
-		overflow: 'hidden',
-		marginBottom: 8
+		overflow: 'hidden'
 	},
 	realized: {
 		flexDirection: 'row'

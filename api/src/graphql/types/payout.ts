@@ -5,9 +5,16 @@ const PayoutTypes = gql`
 		id: ID!
 		storeId: ID!
 		amount: Int!
+		status: PayoutStatus!
 		createdAt: String!
 		updatedAt: String!
 		store: Store!
+	}
+
+	enum PayoutStatus {
+		Pending
+		Success
+		Failure
 	}
 
 	input CreatePayoutInput {
