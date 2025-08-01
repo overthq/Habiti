@@ -37,7 +37,11 @@ paymentsRouter.post('/approve-payment', async (req, res) => {
 		// IMPORTANT: We have to ensure that this action stays as fast as possible.
 		// Any latency in our DB calls here will cause the payout to fail.
 		const payout = await prismaClient.payout.findUnique({
-			where: { id: body.data.reference, status: PayoutStatus.Pending }
+			where: {
+				id: body.data.reference,
+				status: PayoutStatus.Pending,
+				amount: body.data.amount
+			}
 		});
 
 		if (!payout) {

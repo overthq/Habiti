@@ -8,6 +8,7 @@ query StorePayouts {
 		payouts {
 			id
 			amount
+			status
 			createdAt
 		}
 	}

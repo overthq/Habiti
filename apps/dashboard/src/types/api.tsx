@@ -490,10 +490,17 @@ export type Payout = {
 	amount: Scalars['Int']['output'];
 	createdAt: Scalars['String']['output'];
 	id: Scalars['ID']['output'];
+	status: PayoutStatus;
 	store: Store;
 	storeId: Scalars['ID']['output'];
 	updatedAt: Scalars['String']['output'];
 };
+
+export enum PayoutStatus {
+	Failure = 'Failure',
+	Pending = 'Pending',
+	Success = 'Success'
+}
 
 export type Product = {
 	__typename?: 'Product';
@@ -1092,6 +1099,7 @@ export type StorePayoutsQuery = {
 			__typename?: 'Payout';
 			id: string;
 			amount: number;
+			status: PayoutStatus;
 			createdAt: string;
 		}>;
 	};
@@ -1652,6 +1660,7 @@ export const StorePayoutsDocument = gql`
 			payouts {
 				id
 				amount
+				status
 				createdAt
 			}
 		}
