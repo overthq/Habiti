@@ -1,6 +1,6 @@
-import { HoldableButton, Spacer } from '@habiti/components';
 import React from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
+import { HoldableButton, Spacer } from '@habiti/components';
 
 import { useUpdateOrderMutation, OrderStatus } from '../../types/api';
 
