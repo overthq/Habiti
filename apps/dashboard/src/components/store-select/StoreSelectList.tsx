@@ -39,6 +39,7 @@ const StoreSelectList: React.FC<StoreSelectListProps> = ({
 		>
 			{stores.map(store => (
 				<StoreSelectListItem
+					key={store.id}
 					store={store}
 					onPress={handleStoreSelect(store.id)}
 					selected={store.id === activeStore}

@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import { PayoutStatus } from '@prisma/client';
 
-import { verifyTransaction, verifyTransfer } from '../core/payments';
-import prismaClient from '../config/prisma';
+import {
+	approvePayment,
+	verifyTransaction,
+	verifyTransfer
+} from '../core/payments';
 
 const paymentsRouter: Router = Router();
 
@@ -37,15 +39,7 @@ paymentsRouter.post('/approve-payment', async (req, res) => {
 	const { body } = req;
 
 	try {
-		const { reference, amount } = extractParameters(body);
-
-		const payout = await prismaClient.payout.findUnique({
-			where: {
-				id: reference,
-				status: PayoutStatus.Pending,
-				amount
-			}
-		});
+		const payout = await approvePayment(body);
 
 		if (!payout) {
 			return res.status(400).json({
@@ -59,23 +53,5 @@ paymentsRouter.post('/approve-payment', async (req, res) => {
 		return res.status(400).json({ success: false, error });
 	}
 });
-
-// It's currently hard to know what the shape of the information from Paystack
-// looks like here, so I'm checking all the _reasonable_ places.
-// It would be good to be sure where this information should be, so we can
-// validate with Zod, but this should work for now.
-
-const extractParameters = (body: any) => {
-	const reference = body?.reference || body?.data?.reference;
-	const amount = body?.amount || body?.data?.amount;
-
-	if (!reference) {
-		throw new Error('Unable to extract reference parameter');
-	} else if (!amount) {
-		throw new Error('Unable to extract amount parameter');
-	}
-
-	return { reference, amount: Number(amount) };
-};
 
 export default paymentsRouter;
