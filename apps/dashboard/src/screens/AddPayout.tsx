@@ -1,6 +1,7 @@
-import { HoldableButton, Screen } from '@habiti/components';
 import React from 'react';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
+import { Button, Screen } from '@habiti/components';
+import { useNavigation } from '@react-navigation/native';
 
 import AmountDisplay from '../components/add-payout/AmountDisplay';
 import PayoutNumpad from '../components/add-payout/PayoutNumpad';
@@ -9,8 +10,20 @@ import { useCreatePayoutMutation } from '../types/api';
 
 const AddPayout: React.FC = () => {
 	const [amount, setAmount] = React.useState('');
-	const [, createPayout] = useCreatePayoutMutation();
+	const [{ fetching }, createPayout] = useCreatePayoutMutation();
+	const { goBack } = useNavigation();
 	useGoBack('x');
+
+	const confirmAddPayout = () => {
+		Alert.alert(
+			'Confirm payout',
+			'This will send the specified amount to the configured bank account',
+			[
+				{ text: 'Cancel', style: 'cancel' },
+				{ text: 'Confirm', onPress: handleAddPayout }
+			]
+		);
+	};
 
 	const handleAddPayout = React.useCallback(async () => {
 		const { error } = await createPayout({
@@ -19,6 +32,8 @@ const AddPayout: React.FC = () => {
 
 		if (error) {
 			console.log(error);
+		} else {
+			goBack();
 		}
 	}, [amount]);
 
@@ -52,7 +67,11 @@ const AddPayout: React.FC = () => {
 				onDelete={handleDelete}
 			/>
 			<View style={{ marginBottom: 56, paddingHorizontal: 16 }}>
-				<HoldableButton text='Add Payout' onComplete={handleAddPayout} />
+				<Button
+					text='Add Payout'
+					loading={fetching}
+					onPress={confirmAddPayout}
+				/>
 			</View>
 		</Screen>
 	);
