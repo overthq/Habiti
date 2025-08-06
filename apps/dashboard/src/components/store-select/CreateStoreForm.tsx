@@ -1,3 +1,6 @@
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import {
 	Button,
 	FormInput,
@@ -5,14 +8,10 @@ import {
 	TextButton,
 	Typography
 } from '@habiti/components';
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 
 import useGoBack from '../../hooks/useGoBack';
 import useStore from '../../state';
 import { useCreateStoreMutation } from '../../types/api';
-import { useShallow } from 'zustand/react/shallow';
 
 export interface CreateStoreFormValues {
 	name: string;
@@ -31,8 +30,8 @@ const CreateStoreForm: React.FC<CreateStoreFormProps> = ({
 	hasTitle,
 	onCancel
 }) => {
-	const [, createStore] = useCreateStoreMutation();
-	const setPreference = useStore(useShallow(state => state.setPreference));
+	const [{ fetching }, createStore] = useCreateStoreMutation();
+	const { setPreference } = useStore();
 	const methods = useForm<CreateStoreFormValues>();
 
 	useGoBack('x');
@@ -86,7 +85,11 @@ const CreateStoreForm: React.FC<CreateStoreFormProps> = ({
 				autoCapitalize='none'
 			/>
 			<Spacer y={32} />
-			<Button text='Submit' onPress={methods.handleSubmit(onSubmit)} />
+			<Button
+				loading={fetching}
+				text='Submit'
+				onPress={methods.handleSubmit(onSubmit)}
+			/>
 			<Spacer y={16} />
 			<TextButton
 				style={{ alignSelf: 'center' }}
