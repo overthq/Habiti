@@ -1,9 +1,13 @@
+import { ImagePickerAsset } from 'expo-image-picker';
 import { ReactNativeFile } from './upload';
 
-export const generateUploadFile = (uri: string) => {
+// FIXME: Maybe just failing when mimeType is not passed is okay?
+// Generate a nice name for the asset, maybe tied to the userId and time?
+
+export const generateUploadFile = (asset: ImagePickerAsset) => {
 	return new ReactNativeFile({
-		uri,
-		type: 'image/jpeg',
-		name: 'upload.jpg'
+		uri: asset.uri,
+		type: asset.mimeType || 'image/jpeg',
+		name: asset.fileName || 'upload.jpeg'
 	});
 };

@@ -3,6 +3,7 @@ import { FileUpload } from 'graphql-upload';
 import { Resolver } from '../../types/resolvers';
 import { uploadImages } from '../../utils/upload';
 import { canManageStore, storeAuthorizedResolver } from '../permissions';
+import { Prisma } from '@prisma/client';
 
 export interface CreateProductArgs {
 	input: {
@@ -88,19 +89,22 @@ export const editProduct: Resolver<EditProductArgs> = async (
 		uploadedImages = await uploadImages(imageFiles);
 	}
 
+	let productUpdateInput: Prisma.ProductUpdateInput = { ...rest };
+
+	if (uploadedImages.length > 0) {
+		productUpdateInput.images = {
+			createMany: {
+				data: uploadedImages.map(({ url, public_id }) => ({
+					path: url,
+					publicId: public_id
+				}))
+			}
+		};
+	}
+
 	const product = await ctx.prisma.product.update({
 		where: { id, storeId: ctx.storeId },
-		data: {
-			...rest,
-			images: {
-				createMany: {
-					data: uploadedImages.map(({ url, public_id }) => ({
-						path: url,
-						publicId: public_id
-					}))
-				}
-			}
-		}
+		data: productUpdateInput
 	});
 
 	return product;

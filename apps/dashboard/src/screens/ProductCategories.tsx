@@ -1,14 +1,6 @@
 import React from 'react';
-import {
-	Screen,
-	Checkbox,
-	Typography,
-	Button,
-	Spacer,
-	Icon,
-	TextButton
-} from '@habiti/components';
-import { View, StyleSheet, Pressable } from 'react-native';
+import { Screen, Checkbox, Typography, TextButton } from '@habiti/components';
+import { View, StyleSheet } from 'react-native';
 import {
 	useCategoriesQuery,
 	useUpdateProductCategoriesMutation
