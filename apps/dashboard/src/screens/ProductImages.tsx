@@ -1,34 +1,61 @@
 import React from 'react';
-import { View, StyleSheet, Image, Pressable } from 'react-native';
-import { Icon } from '@habiti/components';
+import { View, StyleSheet, Image } from 'react-native';
+import { Screen, TextButton } from '@habiti/components';
 import * as ImagePicker from 'expo-image-picker';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import useGoBack from '../hooks/useGoBack';
 import { ProductStackParamList } from '../types/navigation';
+import { useEditProductMutation } from '../types/api';
+import FAB from '../components/products/FAB';
+import { generateUploadFile } from '../utils/images';
+
+// TODO: Run a query here for this purpose
+// Or use a context
 
 const ProductImages: React.FC = () => {
-	const [imagesToUpload, setImagesToUpload] = React.useState<string[]>([]);
+	const [imagesToUpload, setImagesToUpload] = React.useState<
+		ImagePicker.ImagePickerAsset[]
+	>([]);
+	const [, editProduct] = useEditProductMutation();
 
-	// TODO: Run a query here for this purpose
-	// Or use a context
 	const {
-		params: { images }
+		params: { productId, images }
 	} = useRoute<RouteProp<ProductStackParamList, 'Product.Images'>>();
 
-	const { setOptions } = useNavigation();
+	const { goBack, setOptions } = useNavigation();
 
 	useGoBack();
+
+	const handleSaveImages = React.useCallback(async () => {
+		try {
+			const { error } = await editProduct({
+				id: productId,
+				input: { imageFiles: imagesToUpload.map(generateUploadFile) }
+			});
+
+			if (error) {
+				console.log(error);
+			} else {
+				goBack();
+			}
+		} catch (error) {
+			console.log({ error });
+		}
+	}, [editProduct, goBack, imagesToUpload, productId]);
 
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<Pressable onPress={handlePickImage}>
-					<Icon name='plus' size={24} />
-				</Pressable>
+				<TextButton
+					disabled={imagesToUpload.length === 0}
+					onPress={handleSaveImages}
+				>
+					Save
+				</TextButton>
 			)
 		});
-	}, []);
+	}, [imagesToUpload]);
 
 	const handlePickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
@@ -39,26 +66,38 @@ const ProductImages: React.FC = () => {
 		});
 
 		if (!result.canceled) {
-			setImagesToUpload(x => [...x, ...result.assets.map(x => x.uri)]);
+			// TODO: Try to ensure uniqueness here
+			setImagesToUpload(prev => {
+				const existingUris = new Set(prev.map(p => p.uri));
+				const updatedAssets = result.assets.filter(
+					a => !existingUris.has(a.uri)
+				);
+				return [...prev, ...updatedAssets];
+			});
 		}
 	};
 
 	return (
-		<View style={styles.section}>
+		<Screen style={styles.container}>
 			<View style={styles.images}>
 				{images?.map(({ id, path }) => (
 					<Image key={id} source={{ uri: path }} style={styles.image} />
 				))}
-				{imagesToUpload.map(uri => (
-					<Image key={uri} source={{ uri }} style={styles.image} />
+				{imagesToUpload.map(asset => (
+					<Image
+						key={asset.uri}
+						source={{ uri: asset.uri }}
+						style={styles.image}
+					/>
 				))}
 			</View>
-		</View>
+			<FAB onPress={handlePickImage} text='Add new image' />
+		</Screen>
 	);
 };
 
 const styles = StyleSheet.create({
-	section: {
+	container: {
 		padding: 16
 	},
 	images: {

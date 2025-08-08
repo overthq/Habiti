@@ -10,35 +10,54 @@ import { env } from '../config/env';
 export const register = async (req: Request, res: Response) => {
 	const { name, email, password } = req.body;
 
-	const passwordHash = await hashPassword(password);
+	try {
+		const passwordHash = await hashPassword(password);
 
-	const user = await prismaClient.user.create({
-		data: { name, email, passwordHash }
-	});
+		const existingUser = await prismaClient.user.findUnique({
+			where: { email }
+		});
 
-	return res.status(201).json({ user });
+		if (existingUser) {
+			return res.status(400).json({
+				error: 'A user already exists with the specified email'
+			});
+		}
+
+		const user = await prismaClient.user.create({
+			data: { name, email, passwordHash }
+		});
+		return res.status(201).json({ user });
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
 };
 
 export const login = async (req: Request, res: Response) => {
-	const { email, password } = req.body;
+	try {
+		const { email, password } = req.body;
 
-	const user = await prismaClient.user.findUnique({ where: { email } });
+		const user = await prismaClient.user.findUnique({ where: { email } });
 
-	if (!user) {
-		return res
-			.status(401)
-			.json({ error: 'The specified user does not exist.' });
+		if (!user) {
+			return res
+				.status(401)
+				.json({ error: 'The specified user does not exist.' });
+		}
+
+		const correct = await verifyPassword(password, user.passwordHash);
+
+		if (!correct) {
+			return res
+				.status(401)
+				.json({ error: 'The entered password is incorrect' });
+		}
+
+		const accessToken = await generateAccessToken(user);
+
+		return res.status(200).json({ accessToken, userId: user.id });
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
 	}
-
-	const correct = await verifyPassword(password, user.passwordHash);
-
-	if (!correct) {
-		return res.status(401).json({ error: 'The entered password is incorrect' });
-	}
-
-	const accessToken = await generateAccessToken(user);
-
-	return res.status(200).json({ accessToken, userId: user.id });
 };
 
 export const verify = async (req: Request, res: Response) => {
