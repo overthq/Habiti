@@ -8,6 +8,6 @@ export const generateUploadFile = (asset: ImagePickerAsset) => {
 	return new ReactNativeFile({
 		uri: asset.uri,
 		type: asset.mimeType || 'image/jpeg',
-		name: asset.fileName || 'upload.jpeg'
+		name: asset.fileName || 'upload.jpg'
 	});
 };
