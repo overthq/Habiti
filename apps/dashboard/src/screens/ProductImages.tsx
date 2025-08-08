@@ -42,7 +42,7 @@ const ProductImages: React.FC = () => {
 		} catch (error) {
 			console.log({ error });
 		}
-	}, [imagesToUpload.length]);
+	}, [editProduct, goBack, imagesToUpload, productId]);
 
 	React.useLayoutEffect(() => {
 		setOptions({
@@ -67,7 +67,13 @@ const ProductImages: React.FC = () => {
 
 		if (!result.canceled) {
 			// TODO: Try to ensure uniqueness here
-			setImagesToUpload(x => [...x, ...result.assets]);
+			setImagesToUpload(prev => {
+				const existingUris = new Set(prev.map(p => p.uri));
+				const updatedAssets = result.assets.filter(
+					a => !existingUris.has(a.uri)
+				);
+				return [...prev, ...updatedAssets];
+			});
 		}
 	};
 
