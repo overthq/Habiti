@@ -121,7 +121,7 @@ export const deleteProduct = storeAuthorizedResolver<DeleteProductArgs>(
 		}
 
 		return ctx.prisma.product.delete({
-			where: { id, storeId: ctx.storeId! }
+			where: { id, storeId: ctx.storeId }
 		});
 	}
 );
