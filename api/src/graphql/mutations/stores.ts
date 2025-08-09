@@ -75,7 +75,6 @@ export const editStore = storeAuthorizedResolver<EditStoreArgs>(
 		}
 
 		const { imageFile, ...rest } = input;
-		let uploadedUrl = '';
 
 		let storeUpdateData: Prisma.StoreUpdateInput = {
 			...rest
@@ -86,10 +85,9 @@ export const editStore = storeAuthorizedResolver<EditStoreArgs>(
 			const stream = createReadStream();
 
 			const { url } = await uploadStream(stream);
-			uploadedUrl = url;
 
 			storeUpdateData.image = {
-				update: { path: uploadedUrl }
+				update: { path: url }
 			};
 		}
 
