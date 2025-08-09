@@ -34,7 +34,7 @@ const StoreSettings = () => {
 	return (
 		<Screen style={{ padding: 16 }}>
 			<Typography variant='secondary' size='small'>
-				You can delete the store using the button below. Please not that this
+				You can delete the store using the button below. Please note that this
 				will also delete all products, orders and payout information.
 			</Typography>
 			<Spacer y={8} />
