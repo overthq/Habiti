@@ -30,11 +30,15 @@ export const getStores = async (req: Request, res: Response) => {
 export const createStore = async (req: Request, res: Response) => {
 	const { name, description, website, twitter, instagram } = req.body;
 
-	const store = await prismaClient.store.create({
-		data: { name, description, website, twitter, instagram }
-	});
+	try {
+		const store = await prismaClient.store.create({
+			data: { name, description, website, twitter, instagram }
+		});
 
-	return res.status(201).json({ store });
+		return res.status(201).json({ store });
+	} catch (error) {
+		return res.status(500).json({ error: error.message });
+	}
 };
 
 export const getCurrentStore = async (req: Request, res: Response) => {
