@@ -2,6 +2,11 @@ import { useParams } from 'react-router';
 
 import { useStoreQuery } from '@/data/queries';
 import { type Store as StoreType } from '@/data/types';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import CopyableText from '@/components/ui/copy';
+import DescriptionList from '@/components/ui/description-list';
+import InlineMeta from '@/components/ui/inline-meta';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import StoreManagers from '@/components/stores/store-managers';
 import StoreProducts from '@/components/stores/store-products';
@@ -16,14 +21,43 @@ interface StoreMainProps {
 const StoreMain = ({ store }: StoreMainProps) => {
 	return (
 		<div className='space-y-6'>
-			<div className='flex justify-between items-center'>
-				<h1 className='text-3xl font-bold'>{store.name}</h1>
+			<div className='flex flex-col gap-2 md:flex-row md:items-start md:justify-between'>
+				<div className='space-y-1'>
+					<h1 className='text-3xl font-semibold tracking-tight'>
+						{store.name}
+					</h1>
+					<InlineMeta
+						items={[
+							<span key='status'>
+								<Badge variant={store.unlisted ? 'secondary' : 'default'}>
+									{store.unlisted ? 'Unlisted' : 'Listed'}
+								</Badge>
+							</span>,
+							<span key='id'>
+								<CopyableText value={store.id} />
+							</span>,
+							<span key='created' className='font-mono text-sm'>
+								Created {new Date(store.createdAt).toLocaleString()}
+							</span>,
+							<span key='updated' className='font-mono text-sm'>
+								Updated {new Date(store.updatedAt).toLocaleString()}
+							</span>
+						]}
+					/>
+				</div>
 				<UpdateStoreDialog store={store} />
 			</div>
 
-			<div>
-				<p>{store.description}</p>
-			</div>
+			<Card>
+				<CardHeader>
+					<CardTitle>About</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<p className='text-muted-foreground whitespace-pre-wrap'>
+						{store.description || '—'}
+					</p>
+				</CardContent>
+			</Card>
 
 			<Tabs defaultValue='products'>
 				<TabsList>
