@@ -1,13 +1,13 @@
 import { UploadApiResponse } from 'cloudinary';
 import { FileUpload } from 'graphql-upload';
+import { Prisma } from '@prisma/client';
 
 import { Resolver } from '../../types/resolvers';
 import { createTransferReceipient } from '../../core/payments';
 import { uploadStream } from '../../utils/upload';
 import { getStorePushTokens } from '../../core/notifications';
 import { NotificationType } from '../../core/notifications/types';
-import { canManageStore, storeAuthorizedResolver } from '../permissions';
-import { Prisma } from '@prisma/client';
+import { storeAuthorizedResolver } from '../permissions';
 
 export interface CreateStoreArgs {
 	input: {
@@ -28,28 +28,28 @@ export const createStore: Resolver<CreateStoreArgs> = async (
 	const { storeImage, ...rest } = input;
 	let uploadedImage: UploadApiResponse | undefined;
 
+	let storeCreateData: Prisma.StoreCreateInput = { ...rest };
+
 	if (storeImage) {
 		const { createReadStream } = await storeImage;
 		const stream = createReadStream();
 
 		uploadedImage = await uploadStream(stream);
+
+		storeCreateData.image = {
+			create: {
+				path: uploadedImage.url,
+				publicId: uploadedImage.public_id
+			}
+		};
 	}
 
+	storeCreateData.managers = {
+		create: { managerId: ctx.user.id }
+	};
+
 	const store = await ctx.prisma.store.create({
-		data: {
-			...rest,
-			managers: { create: { managerId: ctx.user.id } },
-			...(uploadedImage
-				? {
-						image: {
-							create: {
-								path: uploadedImage.url,
-								publicId: uploadedImage.public_id
-							}
-						}
-					}
-				: {})
-		}
+		data: storeCreateData
 	});
 
 	return store;
@@ -68,63 +68,55 @@ export interface EditStoreArgs {
 	};
 }
 
-export const editStore: Resolver<EditStoreArgs> = async (_, { input }, ctx) => {
-	if (!ctx.storeId) {
-		throw new Error('No storeId specified');
-	}
+export const editStore = storeAuthorizedResolver<EditStoreArgs>(
+	async (_, { input }, ctx) => {
+		if (!ctx.storeId) {
+			throw new Error('No storeId specified');
+		}
 
-	const permitted = canManageStore(ctx.user.id, ctx.storeId);
+		const { imageFile, ...rest } = input;
 
-	if (!permitted) {
-		throw new Error('You are not authorized to edit this store');
-	}
-
-	const { imageFile, ...rest } = input;
-	let uploadedUrl = '';
-
-	let storeUpdateData: Prisma.StoreUpdateInput = {
-		...rest
-	};
-
-	if (imageFile) {
-		const { createReadStream } = await imageFile;
-		const stream = createReadStream();
-
-		const { url } = await uploadStream(stream);
-		uploadedUrl = url;
-
-		storeUpdateData.image = {
-			update: {
-				path: uploadedUrl
-			}
+		let storeUpdateData: Prisma.StoreUpdateInput = {
+			...rest
 		};
-	}
 
-	if (rest.bankAccountNumber && rest.bankCode) {
-		const { data, status } = await createTransferReceipient({
-			name: ctx.user.name,
-			accountNumber: rest.bankAccountNumber,
-			bankCode: rest.bankCode
+		if (imageFile) {
+			const { createReadStream } = await imageFile;
+			const stream = createReadStream();
+
+			const { url } = await uploadStream(stream);
+
+			storeUpdateData.image = {
+				update: { path: url }
+			};
+		}
+
+		if (rest.bankAccountNumber && rest.bankCode) {
+			const { data, status } = await createTransferReceipient({
+				name: ctx.user.name,
+				accountNumber: rest.bankAccountNumber,
+				bankCode: rest.bankCode
+			});
+
+			if (status) {
+				storeUpdateData.bankAccountNumber = data.details.account_number;
+				storeUpdateData.bankCode = data.details.bank_code;
+				storeUpdateData.bankAccountReference = data.recipient_code;
+			}
+		} else {
+			storeUpdateData.bankAccountNumber = null;
+			storeUpdateData.bankCode = null;
+			storeUpdateData.bankAccountReference = null;
+		}
+
+		const store = await ctx.prisma.store.update({
+			where: { id: ctx.storeId },
+			data: storeUpdateData
 		});
 
-		if (status) {
-			storeUpdateData.bankAccountNumber = data.details.account_number;
-			storeUpdateData.bankCode = data.details.bank_code;
-			storeUpdateData.bankAccountReference = data.recipient_code;
-		}
-	} else {
-		storeUpdateData.bankAccountNumber = null;
-		storeUpdateData.bankCode = null;
-		storeUpdateData.bankAccountReference = null;
+		return store;
 	}
-
-	const store = await ctx.prisma.store.update({
-		where: { id: ctx.storeId },
-		data: storeUpdateData
-	});
-
-	return store;
-};
+);
 
 export interface DeleteStoreArgs {
 	id: string;

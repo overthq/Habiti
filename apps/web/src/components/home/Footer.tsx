@@ -2,41 +2,48 @@ import Link from 'next/link';
 
 const Footer = () => {
 	return (
-		<footer className='bg-gray-100 py-8'>
-			<div className='container mx-auto px-4'>
-				<div className='flex flex-wrap justify-between'>
-					<div className='w-full md:w-1/3 mb-6 md:mb-0'>
-						<h3 className='text-lg font-semibold mb-2'>Habiti</h3>
-						<p className='text-sm text-gray-600'>
+		<footer className='border-t bg-background'>
+			<div className='container py-10'>
+				<div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
+					<div>
+						<h3 className='text-base font-semibold'>Habiti</h3>
+						<p className='mt-2 text-sm text-muted-foreground'>
 							Simplifying online shopping for everyone.
 						</p>
 					</div>
-					<div className='w-full md:w-1/3 mb-6 md:mb-0'>
-						<h3 className='text-lg font-semibold mb-2'>Quick Links</h3>
-						<ul className='text-sm'>
-							<li className='mb-2'>
-								<Link href='/'>Home</Link>
+					<div>
+						<h3 className='text-base font-semibold'>Links</h3>
+						<ul className='mt-2 space-y-2 text-sm text-muted-foreground'>
+							<li>
+								<Link href='/about' className='hover:text-foreground'>
+									About
+								</Link>
 							</li>
-							<li className='mb-2'>
-								<Link href='/about'>About</Link>
+							<li>
+								<Link href='/privacy-policy' className='hover:text-foreground'>
+									Privacy Policy
+								</Link>
 							</li>
-							<li className='mb-2'>
-								<Link href='/privacy-policy'>Privacy Policy</Link>
+							<li>
+								<Link href='/acceptable-use' className='hover:text-foreground'>
+									Acceptable Use
+								</Link>
 							</li>
-							<li className='mb-2'>
-								<Link href='/acceptable-use'>Acceptable Use Policy</Link>
-							</li>
-							<li className='mb-2'>
-								<Link href='/support'>Support</Link>
+							<li>
+								<Link href='/support' className='hover:text-foreground'>
+									Support
+								</Link>
 							</li>
 						</ul>
 					</div>
-					<div className='w-full md:w-1/3'>
-						<h3 className='text-lg font-semibold mb-2'>Contact Us</h3>
-						<p className='text-sm text-gray-600'>Email: support@habiti.app</p>
+					<div>
+						<h3 className='text-base font-semibold'>Contact</h3>
+						<p className='mt-2 text-sm text-muted-foreground'>
+							support@habiti.app
+						</p>
 					</div>
 				</div>
-				<div className='mt-8 text-center text-sm text-gray-600'>
+				<div className='mt-10 text-center text-xs text-muted-foreground'>
 					© {new Date().getFullYear()} Habiti. All rights reserved.
 				</div>
 			</div>

@@ -66,7 +66,6 @@ const ProductImages: React.FC = () => {
 		});
 
 		if (!result.canceled) {
-			// TODO: Try to ensure uniqueness here
 			setImagesToUpload(prev => {
 				const existingUris = new Set(prev.map(p => p.uri));
 				const updatedAssets = result.assets.filter(

@@ -227,7 +227,7 @@ export interface GetOverviewResponse {
 }
 
 export interface PayoutFilters {
-	filter?: Record<string, string | number>;
+	filter?: Record<string, Record<string, string | number>>;
 	orderBy?: Record<string, 'asc' | 'desc'>;
 }
 
