@@ -135,13 +135,13 @@ export const getOverview = () => {
 };
 
 export const getPayouts = (params?: PayoutFilters) => {
-	return api.get<GetPayoutsResponse>('/admin/payouts', params);
+	return api.get<GetPayoutsResponse>('/payouts', params);
 };
 
 export const getPayout = (id: string) => {
-	return api.get<GetPayoutResponse>(`/admin/payouts/${id}`);
+	return api.get<GetPayoutResponse>(`/payouts/${id}`);
 };
 
 export const updatePayout = (id: string, body: UpdatePayoutBody) => {
-	return api.patch<UpdatePayoutResponse>(`/admin/payouts/${id}`, body);
+	return api.patch<UpdatePayoutResponse>(`/payouts/${id}`, body);
 };

@@ -128,10 +128,6 @@ export const getDeliveryAddresses = async (req: Request, res: Response) => {
 };
 
 export const getUsers = async (req: Request, res: Response) => {
-	if (!req.auth) {
-		return res.status(401).json({ error: 'User not authenticated' });
-	}
-
 	const query = hydrateQuery(req.query);
 
 	const users = await prismaClient.user.findMany({
@@ -142,10 +138,6 @@ export const getUsers = async (req: Request, res: Response) => {
 };
 
 export const getUser = async (req: Request, res: Response) => {
-	if (!req.auth) {
-		return res.status(401).json({ error: 'User not authenticated' });
-	}
-
 	const { id } = req.params;
 
 	if (!id) {
@@ -153,14 +145,5 @@ export const getUser = async (req: Request, res: Response) => {
 	}
 
 	const user = await prismaClient.user.findUnique({ where: { id } });
-	return res.json({ user });
-};
-
-export const getUserHome = async (req: Request, res: Response) => {
-	if (!req.auth) {
-		return res.status(401).json({ error: 'User not authenticated' });
-	}
-
-	const user = await loadCurrentUser(req);
 	return res.json({ user });
 };

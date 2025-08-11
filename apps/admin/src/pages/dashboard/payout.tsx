@@ -2,7 +2,9 @@ import { useParams } from 'react-router';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import CopyableText from '@/components/ui/copy';
 import { Button } from '@/components/ui/button';
+import InlineMeta from '@/components/ui/inline-meta';
 import {
 	Select,
 	SelectContent,
@@ -11,6 +13,7 @@ import {
 	SelectValue
 } from '@/components/ui/select';
 import { usePayoutQuery } from '@/data/queries';
+import { Link } from 'react-router';
 import { useUpdatePayoutMutation } from '@/data/mutations';
 import { PayoutStatus } from '@/data/types';
 import { formatNaira } from '@/utils/format';
@@ -35,13 +38,13 @@ const PayoutPage = () => {
 	const getStatusBadge = (status: PayoutStatus) => {
 		switch (status) {
 			case PayoutStatus.Pending:
-				return <Badge className='bg-yellow-100 text-yellow-800'>Pending</Badge>;
+				return <Badge variant='secondary'>Pending</Badge>;
 			case PayoutStatus.Success:
-				return <Badge className='bg-green-100 text-green-800'>Success</Badge>;
+				return <Badge variant='default'>Success</Badge>;
 			case PayoutStatus.Failure:
-				return <Badge className='bg-red-100 text-red-800'>Failure</Badge>;
+				return <Badge variant='destructive'>Failure</Badge>;
 			default:
-				return <Badge className='bg-gray-100 text-gray-800'>{status}</Badge>;
+				return <Badge variant='outline'>{status}</Badge>;
 		}
 	};
 
@@ -53,95 +56,34 @@ const PayoutPage = () => {
 
 	return (
 		<div className='space-y-6'>
-			<div className='flex justify-between items-center'>
-				<h1 className='text-3xl font-bold'>Payout Details</h1>
-				{getStatusBadge(payout.status)}
-			</div>
-
-			<Card>
-				<CardHeader>
-					<CardTitle>Payout Information</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className='grid grid-cols-2 gap-4'>
-						<div>
-							<p className='text-gray-500'>ID</p>
-							<p className='font-mono text-sm'>{payout.id}</p>
-						</div>
-						<div>
-							<p className='text-gray-500'>Amount</p>
-							<p className='font-semibold text-lg'>
+			<div className='flex flex-col gap-2 md:flex-row md:items-start md:justify-between'>
+				<div className='space-y-1'>
+					<h1 className='text-3xl font-semibold tracking-tight'>Payout</h1>
+					<InlineMeta
+						items={[
+							<span key='store'>
+								Store:{' '}
+								<Link
+									to={`/stores/${payout.store.id}`}
+									className='underline-offset-4 hover:underline'
+								>
+									{payout.store.name}
+								</Link>
+							</span>,
+							getStatusBadge(payout.status),
+							<span key='amount' className='font-medium'>
 								{formatNaira(payout.amount)}
-							</p>
-						</div>
-						<div>
-							<p className='text-gray-500'>Status</p>
-							{getStatusBadge(payout.status)}
-						</div>
-						<div>
-							<p className='text-gray-500'>Store ID</p>
-							<p className='font-mono text-sm'>{payout.storeId}</p>
-						</div>
-						<div>
-							<p className='text-gray-500'>Created At</p>
-							<p>{new Date(payout.createdAt).toLocaleString()}</p>
-						</div>
-						<div>
-							<p className='text-gray-500'>Updated At</p>
-							<p>{new Date(payout.updatedAt).toLocaleString()}</p>
-						</div>
-					</div>
-				</CardContent>
-			</Card>
-
-			<Card>
-				<CardHeader>
-					<CardTitle>Store Information</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className='grid grid-cols-2 gap-4'>
-						<div>
-							<p className='text-gray-500'>Store Name</p>
-							<p className='font-semibold'>{payout.store.name}</p>
-						</div>
-						<div>
-							<p className='text-gray-500'>Store ID</p>
-							<p className='font-mono text-sm'>{payout.store.id}</p>
-						</div>
-						<div>
-							<p className='text-gray-500'>Description</p>
-							<p>{payout.store.description || 'No description'}</p>
-						</div>
-						<div>
-							<p className='text-gray-500'>Status</p>
-							<Badge
-								className={
-									payout.store.unlisted
-										? 'bg-red-100 text-red-800'
-										: 'bg-green-100 text-green-800'
-								}
-							>
-								{payout.store.unlisted ? 'Unlisted' : 'Listed'}
-							</Badge>
-						</div>
-						{'bankAccountNumber' in payout.store &&
-							payout.store.bankAccountNumber && (
-								<>
-									<div>
-										<p className='text-gray-500'>Bank Account</p>
-										<p className='font-mono'>
-											{payout.store.bankAccountNumber}
-										</p>
-									</div>
-									<div>
-										<p className='text-gray-500'>Bank Code</p>
-										<p className='font-mono'>{payout.store.bankCode}</p>
-									</div>
-								</>
-							)}
-					</div>
-				</CardContent>
-			</Card>
+							</span>,
+							<span key='id'>
+								<CopyableText value={payout.id} />
+							</span>,
+							<span key='created' className='font-mono text-sm'>
+								Created {new Date(payout.createdAt).toLocaleString()}
+							</span>
+						]}
+					/>
+				</div>
+			</div>
 
 			<Card>
 				<CardHeader>

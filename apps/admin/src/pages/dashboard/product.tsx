@@ -2,7 +2,10 @@ import { useParams } from 'react-router';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import CopyableText from '@/components/ui/copy';
+import InlineMeta from '@/components/ui/inline-meta';
 import { useProductQuery } from '@/data/queries';
+import { Link } from 'react-router';
 import UpdateProductDialog from '@/components/product/update-product-dialog';
 import { formatNaira } from '@/utils/format';
 
@@ -22,11 +25,11 @@ const ProductPage = () => {
 
 	const getStockStatus = (quantity: number) => {
 		if (quantity === 0) {
-			return { text: 'Out of Stock', color: 'bg-red-100 text-red-800' };
+			return { text: 'Out of Stock', variant: 'destructive' as const };
 		} else if (quantity <= 10) {
-			return { text: 'Low Stock', color: 'bg-yellow-100 text-yellow-800' };
+			return { text: 'Low Stock', variant: 'secondary' as const };
 		} else {
-			return { text: 'In Stock', color: 'bg-green-100 text-green-800' };
+			return { text: 'In Stock', variant: 'default' as const };
 		}
 	};
 
@@ -34,54 +37,40 @@ const ProductPage = () => {
 
 	return (
 		<div className='space-y-6'>
-			<div className='flex justify-between items-center'>
-				<h1 className='text-3xl font-bold'>{product.name}</h1>
+			<div className='flex flex-col gap-2 md:flex-row md:items-start md:justify-between'>
+				<div className='space-y-1'>
+					<h1 className='text-3xl font-semibold tracking-tight'>
+						{product.name}
+					</h1>
+					<InlineMeta
+						items={[
+							<span key='price' className='font-medium'>
+								{formatNaira(product.unitPrice)}
+							</span>,
+							<span key='qty'>{product.quantity} in stock</span>,
+							<span key='status'>
+								<Badge variant={stockStatus.variant}>{stockStatus.text}</Badge>
+							</span>,
+							<span key='store'>
+								Store:{' '}
+								<Link
+									to={`/stores/${product.storeId}`}
+									className='underline-offset-4 hover:underline'
+								>
+									{product.store.name}
+								</Link>
+							</span>,
+							<span key='id'>
+								<CopyableText value={product.id} />
+							</span>,
+							<span key='created' className='font-mono text-sm'>
+								Created {new Date(product.createdAt).toLocaleString()}
+							</span>
+						]}
+					/>
+				</div>
 				<UpdateProductDialog product={product} />
 			</div>
-
-			<Card>
-				<CardHeader>
-					<CardTitle>Product Details</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className='grid grid-cols-2 gap-4'>
-						<div>
-							<p className='text-muted-foreground'>ID</p>
-							<p className='font-mono text-sm'>{product.id}</p>
-						</div>
-						<div>
-							<p className='text-muted-foreground'>Name</p>
-							<p>{product.name}</p>
-						</div>
-						<div>
-							<p className='text-muted-foreground'>Unit Price</p>
-							<p className='font-semibold text-lg'>
-								{formatNaira(product.unitPrice)}
-							</p>
-						</div>
-						<div>
-							<p className='text-muted-foreground'>Stock Status</p>
-							<Badge className={stockStatus.color}>{stockStatus.text}</Badge>
-						</div>
-						<div>
-							<p className='text-muted-foreground'>Quantity Available</p>
-							<p className='font-semibold'>{product.quantity} units</p>
-						</div>
-						<div>
-							<p className='text-muted-foreground'>Store ID</p>
-							<p className='font-mono text-sm'>{product.storeId}</p>
-						</div>
-						<div>
-							<p className='text-muted-foreground'>Created At</p>
-							<p>{new Date(product.createdAt).toLocaleString()}</p>
-						</div>
-						<div>
-							<p className='text-muted-foreground'>Updated At</p>
-							<p>{new Date(product.updatedAt).toLocaleString()}</p>
-						</div>
-					</div>
-				</CardContent>
-			</Card>
 
 			<Card>
 				<CardHeader>

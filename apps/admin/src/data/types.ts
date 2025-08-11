@@ -94,6 +94,7 @@ export interface Product {
 		path: string;
 	}[];
 	storeId: string;
+	store: Store;
 	createdAt: string;
 	updatedAt: string;
 }
