@@ -9,8 +9,7 @@ import {
 	getFilteredRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
-	useReactTable,
-	type PaginationState
+	useReactTable
 } from '@tanstack/react-table';
 
 import { Button } from '@/components/ui/button';
@@ -20,7 +19,6 @@ import {
 	DropdownMenuContent,
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-// import { Input } from './input';
 import {
 	Table,
 	TableBody,
@@ -49,14 +47,12 @@ interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
 	hasColumnDropdown?: boolean;
-	pageSize?: number; // optional page size override
 }
 
 export function DataTable<TData, TValue>({
 	columns,
 	data,
-	hasColumnDropdown = true,
-	pageSize
+	hasColumnDropdown = true
 }: DataTableProps<TData, TValue>) {
 	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -64,22 +60,6 @@ export function DataTable<TData, TValue>({
 	);
 	const [columnVisibility, setColumnVisibility] =
 		React.useState<VisibilityState>({});
-
-	// Default to show all rows unless overridden
-	const computedPageSize = React.useMemo(() => {
-		const total = Array.isArray(data) ? data.length : 0;
-		return pageSize && pageSize > 0 ? pageSize : total > 0 ? total : 10;
-	}, [data, pageSize]);
-
-	const [pagination, setPagination] = React.useState<PaginationState>({
-		pageIndex: 0,
-		pageSize: computedPageSize
-	});
-
-	// Keep page size in sync if data length or prop changes
-	React.useEffect(() => {
-		setPagination(prev => ({ ...prev, pageSize: computedPageSize }));
-	}, [computedPageSize]);
 
 	const table = useReactTable({
 		data,
@@ -91,15 +71,10 @@ export function DataTable<TData, TValue>({
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
 		onColumnVisibilityChange: setColumnVisibility,
-		onPaginationChange: setPagination,
 		state: {
 			sorting,
 			columnFilters,
-			columnVisibility,
-			pagination
-		},
-		initialState: {
-			pagination: { pageIndex: 0, pageSize: computedPageSize }
+			columnVisibility
 		}
 	});
 
@@ -107,14 +82,6 @@ export function DataTable<TData, TValue>({
 		<div className='space-y-4'>
 			{hasColumnDropdown && (
 				<div className='flex items-center pb-4'>
-					{/* <Input
-					placeholder='Filter I...'
-					value={table.getColumn('email')?.getFilterValue() as string}
-					onChange={event =>
-						table.getColumn('email')?.setFilterValue(event.target.value)
-					}
-					className='max-w-sm'
-				/> */}
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button variant='outline' className='ml-auto'>

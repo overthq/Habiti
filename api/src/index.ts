@@ -19,6 +19,7 @@ import carts from './routes/carts';
 import health from './routes/health';
 import orders from './routes/orders';
 import payments from './routes/payments';
+import payouts from './routes/payouts';
 import products from './routes/products';
 import stores from './routes/stores';
 import users from './routes/users';
@@ -77,6 +78,7 @@ const main = async () => {
 	app.use('/products', products);
 	app.use('/admin', admin);
 	app.use('/auth', auth);
+	app.use('/payouts', payouts);
 
 	httpServer.listen({ port: Number(env.PORT) });
 
