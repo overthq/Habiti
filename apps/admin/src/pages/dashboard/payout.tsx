@@ -34,10 +34,6 @@ const PayoutPage = () => {
 	}
 
 	const payout = payoutData.payout;
-	const bankAccountNumber = (
-		payout.store as unknown as { bankAccountNumber?: string }
-	).bankAccountNumber;
-	const bankCode = (payout.store as unknown as { bankCode?: string }).bankCode;
 
 	const getStatusBadge = (status: PayoutStatus) => {
 		switch (status) {
@@ -65,25 +61,6 @@ const PayoutPage = () => {
 					<h1 className='text-3xl font-semibold tracking-tight'>Payout</h1>
 					<InlineMeta
 						items={[
-							getStatusBadge(payout.status),
-							<span key='amount' className='font-medium'>
-								{formatNaira(payout.amount)}
-							</span>,
-							<span key='id'>
-								<CopyableText value={payout.id} />
-							</span>
-						]}
-					/>
-				</div>
-			</div>
-
-			<Card>
-				<CardHeader>
-					<CardTitle>Identifiers</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<InlineMeta
-						items={[
 							<span key='store'>
 								Store:{' '}
 								<Link
@@ -93,63 +70,20 @@ const PayoutPage = () => {
 									{payout.store.name}
 								</Link>
 							</span>,
+							getStatusBadge(payout.status),
+							<span key='amount' className='font-medium'>
+								{formatNaira(payout.amount)}
+							</span>,
+							<span key='id'>
+								<CopyableText value={payout.id} />
+							</span>,
 							<span key='created' className='font-mono text-sm'>
 								Created {new Date(payout.createdAt).toLocaleString()}
-							</span>,
-							<span key='updated' className='font-mono text-sm'>
-								Updated {new Date(payout.updatedAt).toLocaleString()}
 							</span>
 						]}
 					/>
-				</CardContent>
-			</Card>
-
-			<Card>
-				<CardHeader>
-					<CardTitle>Store Information</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-						<div>
-							<p className='text-muted-foreground text-sm'>Store</p>
-							<p className='font-semibold'>
-								<Link
-									to={`/stores/${payout.store.id}`}
-									className='underline-offset-4 hover:underline'
-								>
-									{payout.store.name}
-								</Link>
-							</p>
-						</div>
-						<div>
-							<p className='text-muted-foreground text-sm'>Store ID</p>
-							<CopyableText value={payout.store.id} />
-						</div>
-						<div>
-							<p className='text-muted-foreground text-sm'>Description</p>
-							<p>{payout.store.description || 'No description'}</p>
-						</div>
-						<div>
-							<p className='text-muted-foreground text-sm'>Status</p>
-							<Badge variant={payout.store.unlisted ? 'secondary' : 'default'}>
-								{payout.store.unlisted ? 'Unlisted' : 'Listed'}
-							</Badge>
-						</div>
-						{bankAccountNumber ? (
-							<>
-								<div>
-									<p className='text-muted-foreground text-sm'>Bank Account</p>
-									<p className='font-mono text-sm'>{bankAccountNumber}</p>
-								</div>
-								<div>
-									<p className='text-muted-foreground text-sm'>Bank Code</p>
-									<p className='font-mono text-sm'>{bankCode ?? '—'}</p>
-								</div>
-							</>
-						) : null}
-					</div>
-				</CardContent>
-			</Card>
+				</div>
+			</div>
 
 			<Card>
 				<CardHeader>

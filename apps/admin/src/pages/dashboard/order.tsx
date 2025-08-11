@@ -89,65 +89,37 @@ const OrderDetailPage = () => {
 				</div>
 			</div>
 
-			<Card>
-				<CardHeader>
-					<CardTitle>Order Details</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-						<div>
-							<p className='text-muted-foreground text-sm'>Order ID</p>
-							<CopyableText value={order?.id || ''} />
-						</div>
-						<div>
-							<p className='text-muted-foreground text-sm'>Serial</p>
-							<p className='font-mono text-sm'>#{order?.serialNumber}</p>
-						</div>
-						<div>
-							<p className='text-muted-foreground text-sm'>Customer</p>
-							<p className='font-medium'>
-								<Link
-									to={`/users/${order?.userId}`}
-									className='underline-offset-4 hover:underline'
-								>
-									{order?.user.name}
-								</Link>
-							</p>
-						</div>
-						<div>
-							<p className='text-muted-foreground text-sm'>Customer ID</p>
-							<CopyableText value={order?.userId || ''} />
-						</div>
-						<div>
-							<p className='text-muted-foreground text-sm'>Store</p>
-							<p className='font-medium'>
-								<Link
-									to={`/stores/${order?.storeId}`}
-									className='underline-offset-4 hover:underline'
-								>
-									{order?.store.name}
-								</Link>
-							</p>
-						</div>
-						<div>
-							<p className='text-muted-foreground text-sm'>Store ID</p>
-							<CopyableText value={order?.storeId || ''} />
-						</div>
-						<div>
-							<p className='text-muted-foreground text-sm'>Total</p>
-							<p className='font-semibold'>{formatNaira(order?.total || 0)}</p>
-						</div>
-						<div>
-							<p className='text-muted-foreground text-sm'>Date</p>
-							<p className='font-mono text-sm'>
-								{order?.createdAt
-									? new Date(order.createdAt).toLocaleString()
-									: '—'}
-							</p>
-						</div>
-					</div>
-				</CardContent>
-			</Card>
+			<InlineMeta
+				items={[
+					<span key='serial' className='font-mono text-sm'>
+						Serial #{order?.serialNumber}
+					</span>,
+					<span key='customer'>
+						Customer:{' '}
+						<Link
+							to={`/users/${order?.userId}`}
+							className='underline-offset-4 hover:underline'
+						>
+							{order?.user.name}
+						</Link>
+					</span>,
+					<span key='store'>
+						Store:{' '}
+						<Link
+							to={`/stores/${order?.storeId}`}
+							className='underline-offset-4 hover:underline'
+						>
+							{order?.store.name}
+						</Link>
+					</span>,
+					<span key='date' className='font-mono text-sm'>
+						Placed{' '}
+						{order?.createdAt
+							? new Date(order.createdAt).toLocaleString()
+							: '—'}
+					</span>
+				]}
+			/>
 
 			<div className='rounded-md border'>
 				<Table>

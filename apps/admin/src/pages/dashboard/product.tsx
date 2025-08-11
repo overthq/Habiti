@@ -88,9 +88,6 @@ const ProductPage = () => {
 							</span>,
 							<span key='created' className='font-mono text-sm'>
 								Created {new Date(product.createdAt).toLocaleString()}
-							</span>,
-							<span key='updated' className='font-mono text-sm'>
-								Updated {new Date(product.updatedAt).toLocaleString()}
 							</span>
 						]}
 					/>
