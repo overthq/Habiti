@@ -3,9 +3,8 @@ import { useParams } from 'react-router';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import CopyableText from '@/components/ui/copy';
-import DescriptionList from '@/components/ui/description-list';
 import InlineMeta from '@/components/ui/inline-meta';
-import { useProductQuery, useStoreQuery } from '@/data/queries';
+import { useProductQuery } from '@/data/queries';
 import { Link } from 'react-router';
 import UpdateProductDialog from '@/components/product/update-product-dialog';
 import { formatNaira } from '@/utils/format';
@@ -63,36 +62,15 @@ const ProductPage = () => {
 							</span>,
 							<span key='id'>
 								<CopyableText value={product.id} />
-							</span>
-						]}
-					/>
-				</div>
-				<UpdateProductDialog product={product} />
-			</div>
-
-			<Card>
-				<CardHeader>
-					<CardTitle>Identifiers</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<InlineMeta
-						items={[
-							<span key='store'>
-								Store:{' '}
-								<Link
-									to={`/stores/${product.storeId}`}
-									className='underline-offset-4 hover:underline'
-								>
-									{product.store.name}
-								</Link>
 							</span>,
 							<span key='created' className='font-mono text-sm'>
 								Created {new Date(product.createdAt).toLocaleString()}
 							</span>
 						]}
 					/>
-				</CardContent>
-			</Card>
+				</div>
+				<UpdateProductDialog product={product} />
+			</div>
 
 			<Card>
 				<CardHeader>
