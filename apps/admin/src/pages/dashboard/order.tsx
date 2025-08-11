@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/table';
 import { useUpdateOrderMutation } from '@/data/mutations';
 import { useOrderQuery } from '@/data/queries';
+import { Link } from 'react-router';
 import { OrderStatus } from '@/data/types';
 import { formatNaira } from '@/utils/format';
 import OrderStatusPill from '@/components/order-status-pill';
@@ -104,7 +105,14 @@ const OrderDetailPage = () => {
 						</div>
 						<div>
 							<p className='text-muted-foreground text-sm'>Customer</p>
-							<p className='font-medium'>{order?.user.name}</p>
+							<p className='font-medium'>
+								<Link
+									to={`/users/${order?.userId}`}
+									className='underline-offset-4 hover:underline'
+								>
+									{order?.user.name}
+								</Link>
+							</p>
 						</div>
 						<div>
 							<p className='text-muted-foreground text-sm'>Customer ID</p>
@@ -112,7 +120,14 @@ const OrderDetailPage = () => {
 						</div>
 						<div>
 							<p className='text-muted-foreground text-sm'>Store</p>
-							<p className='font-medium'>{order?.store.name}</p>
+							<p className='font-medium'>
+								<Link
+									to={`/stores/${order?.storeId}`}
+									className='underline-offset-4 hover:underline'
+								>
+									{order?.store.name}
+								</Link>
+							</p>
 						</div>
 						<div>
 							<p className='text-muted-foreground text-sm'>Store ID</p>
@@ -134,37 +149,30 @@ const OrderDetailPage = () => {
 				</CardContent>
 			</Card>
 
-			<Card>
-				<CardHeader>
-					<CardTitle>Products</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className='rounded-md border'>
-						<Table>
-							<TableHeader>
-								<TableRow>
-									<TableHead>Product</TableHead>
-									<TableHead>Quantity</TableHead>
-									<TableHead>Unit Price</TableHead>
-									<TableHead>Total</TableHead>
-								</TableRow>
-							</TableHeader>
-							<TableBody>
-								{order?.products.map(item => (
-									<TableRow key={item.product.id}>
-										<TableCell>{item.product.name}</TableCell>
-										<TableCell>{item.quantity}</TableCell>
-										<TableCell>{formatNaira(item.unitPrice)}</TableCell>
-										<TableCell>
-											{formatNaira(item.quantity * item.unitPrice)}
-										</TableCell>
-									</TableRow>
-								))}
-							</TableBody>
-						</Table>
-					</div>
-				</CardContent>
-			</Card>
+			<div className='rounded-md border'>
+				<Table>
+					<TableHeader>
+						<TableRow>
+							<TableHead>Product</TableHead>
+							<TableHead>Quantity</TableHead>
+							<TableHead>Unit Price</TableHead>
+							<TableHead>Total</TableHead>
+						</TableRow>
+					</TableHeader>
+					<TableBody>
+						{order?.products.map(item => (
+							<TableRow key={item.product.id}>
+								<TableCell>{item.product.name}</TableCell>
+								<TableCell>{item.quantity}</TableCell>
+								<TableCell>{formatNaira(item.unitPrice)}</TableCell>
+								<TableCell>
+									{formatNaira(item.quantity * item.unitPrice)}
+								</TableCell>
+							</TableRow>
+						))}
+					</TableBody>
+				</Table>
+			</div>
 		</div>
 	);
 };

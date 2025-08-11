@@ -13,6 +13,7 @@ import {
 	SelectValue
 } from '@/components/ui/select';
 import { usePayoutQuery } from '@/data/queries';
+import { Link } from 'react-router';
 import { useUpdatePayoutMutation } from '@/data/mutations';
 import { PayoutStatus } from '@/data/types';
 import { formatNaira } from '@/utils/format';
@@ -84,7 +85,13 @@ const PayoutPage = () => {
 					<InlineMeta
 						items={[
 							<span key='store'>
-								Store: <CopyableText value={payout.storeId} />
+								Store:{' '}
+								<Link
+									to={`/stores/${payout.store.id}`}
+									className='underline-offset-4 hover:underline'
+								>
+									{payout.store.name}
+								</Link>
 							</span>,
 							<span key='created' className='font-mono text-sm'>
 								Created {new Date(payout.createdAt).toLocaleString()}
@@ -104,8 +111,15 @@ const PayoutPage = () => {
 				<CardContent>
 					<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
 						<div>
-							<p className='text-muted-foreground text-sm'>Store Name</p>
-							<p className='font-semibold'>{payout.store.name}</p>
+							<p className='text-muted-foreground text-sm'>Store</p>
+							<p className='font-semibold'>
+								<Link
+									to={`/stores/${payout.store.id}`}
+									className='underline-offset-4 hover:underline'
+								>
+									{payout.store.name}
+								</Link>
+							</p>
 						</div>
 						<div>
 							<p className='text-muted-foreground text-sm'>Store ID</p>

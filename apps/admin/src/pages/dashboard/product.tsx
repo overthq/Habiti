@@ -5,7 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import CopyableText from '@/components/ui/copy';
 import DescriptionList from '@/components/ui/description-list';
 import InlineMeta from '@/components/ui/inline-meta';
-import { useProductQuery } from '@/data/queries';
+import { useProductQuery, useStoreQuery } from '@/data/queries';
+import { Link } from 'react-router';
 import UpdateProductDialog from '@/components/product/update-product-dialog';
 import { formatNaira } from '@/utils/format';
 
@@ -51,6 +52,15 @@ const ProductPage = () => {
 							<span key='status'>
 								<Badge variant={stockStatus.variant}>{stockStatus.text}</Badge>
 							</span>,
+							<span key='store'>
+								Store:{' '}
+								<Link
+									to={`/stores/${product.storeId}`}
+									className='underline-offset-4 hover:underline'
+								>
+									{product.store.name}
+								</Link>
+							</span>,
 							<span key='id'>
 								<CopyableText value={product.id} />
 							</span>
@@ -68,7 +78,13 @@ const ProductPage = () => {
 					<InlineMeta
 						items={[
 							<span key='store'>
-								Store: <CopyableText value={product.storeId} />
+								Store:{' '}
+								<Link
+									to={`/stores/${product.storeId}`}
+									className='underline-offset-4 hover:underline'
+								>
+									{product.store.name}
+								</Link>
 							</span>,
 							<span key='created' className='font-mono text-sm'>
 								Created {new Date(product.createdAt).toLocaleString()}
