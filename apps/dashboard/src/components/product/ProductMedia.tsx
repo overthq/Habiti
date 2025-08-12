@@ -1,5 +1,5 @@
 import { Spacer, TextButton, Typography, useTheme } from '@habiti/components';
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import { ProductQuery } from '../../types/api';
 import { NavigationProp } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
@@ -42,7 +42,7 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 	const { navigate } = useNavigation<NavigationProp<ProductStackParamList>>();
 
 	return (
-		<View style={{ paddingHorizontal: 16 }}>
+		<View>
 			<View style={styles.header}>
 				<Typography weight='medium' size='large'>
 					Media
@@ -60,7 +60,11 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 					action={() => navigate('Product.Images', { productId, images })}
 				/>
 			) : (
-				<View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+				<ScrollView
+					horizontal
+					showsHorizontalScrollIndicator={false}
+					contentContainerStyle={{ paddingLeft: 16 }}
+				>
 					{images.map(image => (
 						<Image
 							key={image.id}
@@ -68,7 +72,7 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 							style={styles.image}
 						/>
 					))}
-				</View>
+				</ScrollView>
 			)}
 		</View>
 	);
@@ -78,12 +82,14 @@ const styles = StyleSheet.create({
 	image: {
 		width: 100,
 		height: 100,
-		borderRadius: 8
+		borderRadius: 8,
+		marginRight: 8
 	},
 	header: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems: 'center'
+		alignItems: 'center',
+		paddingHorizontal: 16
 	}
 });
 
