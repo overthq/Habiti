@@ -50,7 +50,7 @@ const ProductCategories: React.FC = () => {
 		);
 	};
 
-	const handleUpdateCategories = async () => {
+	const handleUpdateCategories = React.useCallback(async () => {
 		const add = selectedCategories.filter(
 			id => !categories.some(category => category.categoryId === id)
 		);
@@ -69,7 +69,13 @@ const ProductCategories: React.FC = () => {
 		} else {
 			goBack();
 		}
-	};
+	}, [
+		selectedCategories,
+		categories,
+		updateProductCategories,
+		goBack,
+		productId
+	]);
 
 	React.useLayoutEffect(() => {
 		setOptions({
