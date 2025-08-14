@@ -22,6 +22,7 @@ const NoImages: React.FC<NoImagesProps> = ({ action }) => {
 			style={{
 				backgroundColor: theme.input.background,
 				padding: 12,
+				marginHorizontal: 16,
 				borderRadius: 6
 			}}
 		>
