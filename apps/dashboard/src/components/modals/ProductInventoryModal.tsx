@@ -64,6 +64,7 @@ const ProductInventoryModal: React.FC<ProductInventoryModalProps> = ({
 						<Icon name='minus' size={24} />
 					</Pressable>
 					<BottomSheetTextInput
+						autoFocus
 						value={quantity.toString()}
 						onChangeText={handleQuantityChange}
 						keyboardType='numeric'

@@ -42,16 +42,6 @@ const ProductCategories: React.FC = () => {
 		);
 	}, [selectedCategories]);
 
-	React.useLayoutEffect(() => {
-		setOptions({
-			headerRight: () => (
-				<TextButton disabled={disabled} onPress={handleUpdateCategories}>
-					Save
-				</TextButton>
-			)
-		});
-	}, [disabled]);
-
 	const handleSelectCategory = (id: string) => {
 		setSelectedCategories(prev =>
 			prev.includes(id)
@@ -64,11 +54,12 @@ const ProductCategories: React.FC = () => {
 		const add = selectedCategories.filter(
 			id => !categories.some(category => category.categoryId === id)
 		);
+
 		const remove = categories
 			.filter(category => !selectedCategories.includes(category.categoryId))
 			.map(({ categoryId }) => categoryId);
 
-		const { error, data: data2 } = await updateProductCategories({
+		const { error } = await updateProductCategories({
 			id: productId,
 			input: { add, remove }
 		});
@@ -79,6 +70,16 @@ const ProductCategories: React.FC = () => {
 			goBack();
 		}
 	};
+
+	React.useLayoutEffect(() => {
+		setOptions({
+			headerRight: () => (
+				<TextButton disabled={disabled} onPress={handleUpdateCategories}>
+					Save
+				</TextButton>
+			)
+		});
+	}, [disabled, handleUpdateCategories]);
 
 	return (
 		<Screen style={styles.container}>
