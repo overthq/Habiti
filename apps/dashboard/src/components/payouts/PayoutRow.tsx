@@ -5,7 +5,6 @@ import { formatNaira } from '@habiti/common';
 
 import { StorePayoutsQuery, PayoutStatus } from '../../types/api';
 import { parseTimestamp } from '../../utils/date';
-import { ThemeObject } from '@habiti/components/src/styles/theme';
 
 interface PayoutRowProps {
 	payout: StorePayoutsQuery['currentStore']['payouts'][number];
@@ -17,7 +16,7 @@ const PayoutRow: React.FC<PayoutRowProps> = ({ payout }) => {
 			<View>
 				<Typography>{formatNaira(payout.amount)}</Typography>
 				<Spacer y={2} />
-				<Typography variant='label' size='small'>
+				<Typography variant='secondary' size='small'>
 					{parseTimestamp(payout.createdAt)}
 				</Typography>
 			</View>
@@ -30,11 +29,11 @@ interface PayoutStatusPillProps {
 	status: PayoutStatus;
 }
 
-const statusToBadgeVariant: Record<PayoutStatus, keyof ThemeObject['badge']> = {
+const statusToBadgeVariant = {
 	[PayoutStatus.Success]: 'success',
 	[PayoutStatus.Pending]: 'warning',
 	[PayoutStatus.Failure]: 'danger'
-};
+} as const;
 
 const PayoutStatusPill: React.FC<PayoutStatusPillProps> = ({ status }) => {
 	const { theme } = useTheme();
