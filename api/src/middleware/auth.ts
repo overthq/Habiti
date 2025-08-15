@@ -43,7 +43,6 @@ export const auth = (options: AuthOptions = {}) => {
 	};
 };
 
-// Convenience functions for backward compatibility
 export const authenticate = auth({ required: true });
 export const optionalAuth = auth({ required: false });
 export const isAdmin = auth({ required: true, adminOnly: true });

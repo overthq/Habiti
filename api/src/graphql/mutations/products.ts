@@ -1,9 +1,9 @@
 import { FileUpload } from 'graphql-upload';
+import { Prisma } from '@prisma/client';
 
 import { Resolver } from '../../types/resolvers';
 import { uploadImages } from '../../utils/upload';
-import { canManageStore, storeAuthorizedResolver } from '../permissions';
-import { Prisma } from '@prisma/client';
+import { storeAuthorizedResolver } from '../permissions';
 
 export interface CreateProductArgs {
 	input: {
@@ -15,46 +15,39 @@ export interface CreateProductArgs {
 	};
 }
 
-export const createProduct: Resolver<CreateProductArgs> = async (
-	_,
-	{ input },
-	ctx
-) => {
-	if (!ctx.storeId) {
-		throw new Error('No storeId provided');
-	}
+export const createProduct = storeAuthorizedResolver<CreateProductArgs>(
+	async (_, { input }, ctx) => {
+		if (!ctx.storeId) {
+			throw new Error('No storeId provided');
+		}
 
-	const permitted = await canManageStore(ctx.user.id, ctx.storeId);
+		const { imageFiles, ...rest } = input;
 
-	if (!permitted) {
-		throw new Error('You do not have permission to manage this store');
-	}
-
-	const { imageFiles, ...rest } = input;
-
-	let uploadedImages: { url: string; public_id: string }[] = [];
-
-	if (imageFiles && imageFiles.length > 0) {
-		uploadedImages = await uploadImages(imageFiles);
-	}
-
-	const product = await ctx.prisma.product.create({
-		data: {
+		let createProductData: Prisma.ProductCreateArgs['data'] = {
 			...rest,
-			storeId: ctx.storeId,
-			images: {
+			storeId: ctx.storeId
+		};
+
+		if (imageFiles && imageFiles.length > 0) {
+			const uploadedImages = await uploadImages(imageFiles);
+
+			createProductData.images = {
 				createMany: {
 					data: uploadedImages.map(({ url, public_id }) => ({
 						path: url,
 						publicId: public_id
 					}))
 				}
-			}
+			};
 		}
-	});
 
-	return product;
-};
+		const product = await ctx.prisma.product.create({
+			data: createProductData
+		});
+
+		return product;
+	}
+);
 
 export interface EditProductArgs {
 	id: string;
@@ -66,49 +59,37 @@ export interface EditProductArgs {
 	};
 }
 
-export const editProduct: Resolver<EditProductArgs> = async (
-	_,
-	{ id, input },
-	ctx
-) => {
-	if (!ctx.storeId) {
-		throw new Error('No storeId provided');
+export const editProduct = storeAuthorizedResolver<EditProductArgs>(
+	async (_, { id, input }, ctx) => {
+		if (!ctx.storeId) {
+			throw new Error('No storeId provided');
+		}
+
+		const { imageFiles, ...rest } = input;
+
+		let productUpdateInput: Prisma.ProductUpdateInput = { ...rest };
+
+		if (imageFiles && imageFiles.length > 0) {
+			const uploadedImages = await uploadImages(imageFiles);
+
+			productUpdateInput.images = {
+				createMany: {
+					data: uploadedImages.map(({ url, public_id }) => ({
+						path: url,
+						publicId: public_id
+					}))
+				}
+			};
+		}
+
+		const product = await ctx.prisma.product.update({
+			where: { id, storeId: ctx.storeId },
+			data: productUpdateInput
+		});
+
+		return product;
 	}
-
-	const permitted = await canManageStore(ctx.user.id, ctx.storeId);
-
-	if (!permitted) {
-		throw new Error('You do not have permission to manage this store');
-	}
-
-	const { imageFiles, ...rest } = input;
-
-	let uploadedImages: { url: string; public_id: string }[] = [];
-
-	if (imageFiles) {
-		uploadedImages = await uploadImages(imageFiles);
-	}
-
-	let productUpdateInput: Prisma.ProductUpdateInput = { ...rest };
-
-	if (uploadedImages.length > 0) {
-		productUpdateInput.images = {
-			createMany: {
-				data: uploadedImages.map(({ url, public_id }) => ({
-					path: url,
-					publicId: public_id
-				}))
-			}
-		};
-	}
-
-	const product = await ctx.prisma.product.update({
-		where: { id, storeId: ctx.storeId },
-		data: productUpdateInput
-	});
-
-	return product;
-};
+);
 
 export interface DeleteProductArgs {
 	id: string;
@@ -134,35 +115,34 @@ export interface UpdateProductImagesArgs {
 	};
 }
 
-export const updateProductImages: Resolver<UpdateProductImagesArgs> = async (
-	_,
-	{ id, input },
-	ctx
-) => {
-	const uploadedImages = await uploadImages(input.add);
+export const updateProductImages =
+	storeAuthorizedResolver<UpdateProductImagesArgs>(
+		async (_, { id, input }, ctx) => {
+			const uploadedImages = await uploadImages(input.add);
 
-	if (input.remove.length > 0) {
-		await ctx.prisma.image.deleteMany({
-			where: { id: { in: input.remove } }
-		});
-	}
-
-	const product = await ctx.prisma.product.update({
-		where: { id },
-		data: {
-			images: {
-				createMany: {
-					data: uploadedImages.map(({ url, public_id }) => ({
-						path: url,
-						publicId: public_id
-					}))
-				}
+			if (input.remove.length > 0) {
+				await ctx.prisma.image.deleteMany({
+					where: { id: { in: input.remove } }
+				});
 			}
-		}
-	});
 
-	return product;
-};
+			const product = await ctx.prisma.product.update({
+				where: { id },
+				data: {
+					images: {
+						createMany: {
+							data: uploadedImages.map(({ url, public_id }) => ({
+								path: url,
+								publicId: public_id
+							}))
+						}
+					}
+				}
+			});
+
+			return product;
+		}
+	);
 
 export interface AddToWatchlistArgs {
 	productId: string;
@@ -214,21 +194,19 @@ export interface AddProductOptionArgs {
 	};
 }
 
-export const addProductOption: Resolver<AddProductOptionArgs> = async (
-	_,
-	{ input },
-	ctx
-) => {
-	const productOption = await ctx.prisma.productOption.create({
-		data: {
-			productId: input.productId,
-			name: input.name,
-			description: input.description ?? null
-		}
-	});
+export const addProductOption = storeAuthorizedResolver<AddProductOptionArgs>(
+	async (_, { input }, ctx) => {
+		const productOption = await ctx.prisma.productOption.create({
+			data: {
+				productId: input.productId,
+				name: input.name,
+				description: input.description ?? null
+			}
+		});
 
-	return productOption;
-};
+		return productOption;
+	}
+);
 
 export interface UpdateProductCategoriesArgs {
 	id: string;
@@ -238,25 +216,26 @@ export interface UpdateProductCategoriesArgs {
 	};
 }
 
-export const updateProductCategories: Resolver<
-	UpdateProductCategoriesArgs
-> = async (_, { id, input }, ctx) => {
-	await ctx.prisma.productCategory.deleteMany({
-		where: { productId: id, categoryId: { in: input.remove } }
-	});
+export const updateProductCategories =
+	storeAuthorizedResolver<UpdateProductCategoriesArgs>(
+		async (_, { id, input }, ctx) => {
+			await ctx.prisma.productCategory.deleteMany({
+				where: { productId: id, categoryId: { in: input.remove } }
+			});
 
-	await ctx.prisma.productCategory.createMany({
-		data: input.add.map(categoryId => ({ productId: id, categoryId })),
-		skipDuplicates: true
-	});
+			await ctx.prisma.productCategory.createMany({
+				data: input.add.map(categoryId => ({ productId: id, categoryId })),
+				skipDuplicates: true
+			});
 
-	const product = await ctx.prisma.product.findUnique({
-		where: { id },
-		include: { categories: true }
-	});
+			const product = await ctx.prisma.product.findUnique({
+				where: { id },
+				include: { categories: true }
+			});
 
-	return product;
-};
+			return product;
+		}
+	);
 
 export interface CreateProductCategoryArgs {
 	input: {
@@ -265,23 +244,24 @@ export interface CreateProductCategoryArgs {
 	};
 }
 
-export const createProductCategory: Resolver<
-	CreateProductCategoryArgs
-> = async (_, { input }, ctx) => {
-	if (!ctx.storeId) {
-		throw new Error('Store not found');
-	}
+export const createProductCategory =
+	storeAuthorizedResolver<CreateProductCategoryArgs>(
+		async (_, { input }, ctx) => {
+			if (!ctx.storeId) {
+				throw new Error('Store not found');
+			}
 
-	const category = await ctx.prisma.storeProductCategory.create({
-		data: {
-			storeId: ctx.storeId,
-			name: input.name,
-			description: input.description ?? null
+			const category = await ctx.prisma.storeProductCategory.create({
+				data: {
+					storeId: ctx.storeId,
+					name: input.name,
+					description: input.description ?? null
+				}
+			});
+
+			return category;
 		}
-	});
-
-	return category;
-};
+	);
 
 export interface EditProductCategoryArgs {
 	categoryId: string;
@@ -291,35 +271,35 @@ export interface EditProductCategoryArgs {
 	};
 }
 
-export const editProductCategory: Resolver<EditProductCategoryArgs> = async (
-	_,
-	{ categoryId, input },
-	ctx
-) => {
-	if (!ctx.storeId) {
-		throw new Error('Store not found');
-	}
+export const editProductCategory =
+	storeAuthorizedResolver<EditProductCategoryArgs>(
+		async (_, { categoryId, input }, ctx) => {
+			if (!ctx.storeId) {
+				throw new Error('Store not found');
+			}
 
-	return ctx.prisma.storeProductCategory.update({
-		where: { id: categoryId },
-		data: input
-	});
-};
+			return ctx.prisma.storeProductCategory.update({
+				where: { id: categoryId },
+				data: input
+			});
+		}
+	);
 
 export interface DeleteProductCategoryArgs {
 	categoryId: string;
 }
 
-export const deleteProductCategory: Resolver<
-	DeleteProductCategoryArgs
-> = async (_, { categoryId }, ctx) => {
-	if (!ctx.storeId) {
-		throw new Error('Store not found');
-	}
+export const deleteProductCategory =
+	storeAuthorizedResolver<DeleteProductCategoryArgs>(
+		async (_, { categoryId }, ctx) => {
+			if (!ctx.storeId) {
+				throw new Error('Store not found');
+			}
 
-	const category = await ctx.prisma.storeProductCategory.delete({
-		where: { id: categoryId }
-	});
+			const category = await ctx.prisma.storeProductCategory.delete({
+				where: { id: categoryId }
+			});
 
-	return category;
-};
+			return category;
+		}
+	);
