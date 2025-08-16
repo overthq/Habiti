@@ -17,9 +17,7 @@ const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 			{
 				text: 'Proceed',
 				style: 'destructive',
-				onPress: () => {
-					updateOrderStatus(OrderStatus.Cancelled)();
-				}
+				onPress: updateOrderStatus(OrderStatus.Cancelled)
 			},
 			{ text: 'Cancel', style: 'cancel' }
 		]);

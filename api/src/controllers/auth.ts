@@ -11,8 +11,6 @@ export const register = async (req: Request, res: Response) => {
 	const { name, email, password } = req.body;
 
 	try {
-		const passwordHash = await hashPassword(password);
-
 		const existingUser = await prismaClient.user.findUnique({
 			where: { email }
 		});
@@ -23,9 +21,12 @@ export const register = async (req: Request, res: Response) => {
 			});
 		}
 
+		const passwordHash = await hashPassword(password);
+
 		const user = await prismaClient.user.create({
 			data: { name, email, passwordHash }
 		});
+
 		return res.status(201).json({ user });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });

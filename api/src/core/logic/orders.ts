@@ -1,12 +1,12 @@
 import { OrderStatus } from '@prisma/client';
 
-import { saveOrderData, updateOrder } from '../../data/orders';
-import { getCartById } from '../../data/carts';
+import { saveOrderData, updateOrder } from '../data/orders';
+import { getCartById } from '../data/carts';
 import { CreateOrderInput, UpdateOrderStatusInput } from './types';
-import { createOrderHooks, updateOrderHooks } from '../../hooks/orders';
-import { validateCart } from '../../validations/carts';
-import { createOrderSchema, updateOrderSchema } from '../../validations/orders';
-import { AppContext } from '../../../utils/context';
+import { createOrderHooks, updateOrderHooks } from './hooks';
+import { validateCart } from '../validations/carts';
+import { createOrderSchema, updateOrderSchema } from '../validations/orders';
+import { AppContext } from '../../utils/context';
 
 export const createOrder = async (input: CreateOrderInput, ctx: AppContext) => {
 	const { data: validatedInput, success } = createOrderSchema.safeParse(input);

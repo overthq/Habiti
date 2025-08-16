@@ -1,4 +1,4 @@
-import { Typography } from '@habiti/components';
+import { Avatar, Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
@@ -15,14 +15,18 @@ const CustomerDetails: React.FC<CustomerDetailProps> = ({ user }) => {
 
 	const handlePress = React.useCallback(() => {
 		navigate('CustomerInfo', { userId: user.id });
-	}, []);
+	}, [user.id]);
 
 	return (
 		<View style={styles.container}>
 			<Typography weight='medium' style={styles.title}>
 				Customer Details
 			</Typography>
-			<Pressable onPress={handlePress}>
+			<Pressable
+				onPress={handlePress}
+				style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}
+			>
+				<Avatar fallbackText={user.name} />
 				<Typography>{user.name}</Typography>
 			</Pressable>
 		</View>

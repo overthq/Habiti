@@ -1,16 +1,8 @@
 import argon2 from 'argon2';
-import { z } from 'zod';
-
-const registerBodySchema = z.object({
-	name: z.string(),
-	email: z.string().email(),
-	password: z.string()
-});
-
-const authenticateBodySchema = z.object({
-	email: z.string().email(),
-	password: z.string()
-});
+import {
+	registerBodySchema,
+	authenticateBodySchema
+} from '../validations/auth';
 
 export const validateRegisterBody = (body: any) => {
 	const { success, data, error } = registerBodySchema.safeParse(body);

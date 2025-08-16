@@ -37,25 +37,22 @@ interface SendStatusNotificationArgs {
 	pushToken: UserPushToken;
 }
 
+const NotificationTypeByOrderStatus = {
+	[OrderStatus.Cancelled]: NotificationType.OrderCancelled,
+	[OrderStatus.Completed]: NotificationType.OrderCompleted
+} as const;
+
 export const sendStatusNotification = async (
 	notificationsService: NotificationsService,
 	args: SendStatusNotificationArgs
 ) => {
 	const { pushToken, status, ...meta } = args;
 
-	if (status === OrderStatus.Cancelled) {
-		notificationsService.queueNotification({
-			type: NotificationType.OrderCancelled,
-			data: meta,
-			recipientTokens: [pushToken.token]
-		});
-	} else if (status === OrderStatus.Completed) {
-		notificationsService.queueNotification({
-			type: NotificationType.OrderCompleted,
-			data: meta,
-			recipientTokens: [pushToken.token]
-		});
-	}
+	notificationsService.queueNotification({
+		type: NotificationTypeByOrderStatus[status],
+		data: meta,
+		recipientTokens: [pushToken.token]
+	});
 };
 
 interface TrackOrderCreatedArgs {

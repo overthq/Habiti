@@ -1,13 +1,13 @@
-import argon2 from 'argon2';
 import { Request, Response } from 'express';
 
 import prisma from '../config/prisma';
 import { generateAccessToken } from '../utils/auth';
+import { hashPassword, verifyPassword } from '../core/logic/auth';
 
 export const createAdmin = async (req: Request, res: Response) => {
 	const { name, email, password } = req.body;
 
-	const passwordHash = await argon2.hash(password);
+	const passwordHash = await hashPassword(password);
 
 	const admin = await prisma.admin.create({
 		data: { name, email, passwordHash }
@@ -29,7 +29,7 @@ export const login = async (req: Request, res: Response) => {
 		return res.status(401).json({ error: 'Invalid credentials' });
 	}
 
-	const correct = await argon2.verify(admin.passwordHash, password);
+	const correct = await verifyPassword(password, admin.passwordHash);
 
 	if (!correct) {
 		return res.status(401).json({ error: 'Invalid credentials' });
