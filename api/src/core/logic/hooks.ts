@@ -48,11 +48,15 @@ export const sendStatusNotification = async (
 ) => {
 	const { pushToken, status, ...meta } = args;
 
-	notificationsService.queueNotification({
-		type: NotificationTypeByOrderStatus[status],
-		data: meta,
-		recipientTokens: [pushToken.token]
-	});
+	const notificationType = NotificationTypeByOrderStatus[status];
+
+	if (notificationType) {
+		notificationsService.queueNotification({
+			type: NotificationTypeByOrderStatus[status],
+			data: meta,
+			recipientTokens: [pushToken.token]
+		});
+	}
 };
 
 interface TrackOrderCreatedArgs {
