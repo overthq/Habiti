@@ -1,11 +1,12 @@
+import React from 'react';
 import { useTheme } from '@habiti/components';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // import * as Linking from 'expo-linking';
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
 import { Provider } from 'urql';
 import { useShallow } from 'zustand/react/shallow';
+import * as Updates from 'expo-updates';
 
 import useClient from '../hooks/useClient';
 import AddCardWebview from '../screens/AddCardWebview';
@@ -27,6 +28,14 @@ import Carts from '../screens/Carts';
 const AppStack = createNativeStackNavigator<AppStackParamList, 'AppStack'>();
 
 const Routes: React.FC = () => {
+	const { isUpdatePending } = Updates.useUpdates();
+
+	React.useEffect(() => {
+		if (isUpdatePending) {
+			Updates.reloadAsync();
+		}
+	}, [isUpdatePending]);
+
 	const { theme } = useTheme();
 	const { accessToken } = useStore(
 		useShallow(state => ({

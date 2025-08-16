@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, Pressable, StyleSheet } from 'react-native';
 import { formatNaira } from '@habiti/common';
 import { CustomImage, Spacer, Typography, useTheme } from '@habiti/components';
 
@@ -9,20 +9,26 @@ import { plural } from '../../utils/strings';
 
 interface OrderDetailProps {
 	order: CustomerInfoQuery['user']['orders'][number];
+	onPress(): void;
 }
 
-const OrderDetail: React.FC<OrderDetailProps> = ({ order }) => {
+const OrderDetail: React.FC<OrderDetailProps> = ({ order, onPress }) => {
 	const { theme } = useTheme();
 
 	return (
-		<View
+		<Pressable
 			style={[
 				styles.container,
 				{ borderBottomWidth: 1, borderColor: theme.border.color }
 			]}
+			onPress={onPress}
 		>
 			<View style={styles.header}>
 				<View style={styles.headerText}>
+					<Typography size='small'>{formatNaira(order.total)}</Typography>
+					<Typography size='small' variant='secondary' weight='medium'>
+						·
+					</Typography>
 					<Typography size='small'>
 						{parseTimestamp(order.createdAt)}
 					</Typography>
@@ -33,9 +39,6 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order }) => {
 						{plural('item', order.products.length)}
 					</Typography>
 				</View>
-				<Typography size='small' weight='medium'>
-					{formatNaira(order.total)}
-				</Typography>
 			</View>
 
 			<Spacer y={8} />
@@ -58,7 +61,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order }) => {
 					</View>
 				))}
 			</View>
-		</View>
+		</Pressable>
 	);
 };
 

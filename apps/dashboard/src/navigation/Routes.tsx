@@ -3,6 +3,7 @@ import { useTheme } from '@habiti/components';
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { useShallow } from 'zustand/react/shallow';
+import * as Updates from 'expo-updates';
 
 import { AppStack } from './AppStack';
 import MainTabNavigator from './MainTab';
@@ -15,6 +16,14 @@ import Verify from '../screens/Verify';
 import useStore from '../state';
 
 const Routes: React.FC = () => {
+	const { isUpdatePending } = Updates.useUpdates();
+
+	React.useEffect(() => {
+		if (isUpdatePending) {
+			Updates.reloadAsync();
+		}
+	}, [isUpdatePending]);
+
 	const { theme } = useTheme();
 	const { accessToken, activeStore } = useStore(
 		useShallow(state => ({
