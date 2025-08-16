@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import prismaClient from '../config/prisma';
 import { hydrateQuery } from '../utils/queries';
 
-const loadCurrentUser = async (req: Request) => {
+export const getCurrentUser = async (req: Request, res: Response) => {
 	if (!req.auth) {
 		throw new Error('User not authenticated');
 	}
@@ -16,11 +16,6 @@ const loadCurrentUser = async (req: Request) => {
 		throw new Error('User not found');
 	}
 
-	return user;
-};
-
-export const getCurrentUser = async (req: Request, res: Response) => {
-	const user = await loadCurrentUser(req);
 	return res.json({ user });
 };
 
