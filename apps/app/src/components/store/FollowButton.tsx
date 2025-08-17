@@ -6,6 +6,7 @@ import {
 	useFollowStoreMutation,
 	useUnfollowStoreMutation
 } from '../../types/api';
+import { palette } from '@habiti/components/src/styles/theme';
 
 interface FollowButtonProps {
 	storeId: string;
@@ -26,11 +27,13 @@ const FollowButton: React.FC<FollowButtonProps> = ({ storeId, followed }) => {
 	}, [followed]);
 
 	return (
-		<Pressable
-			style={{ borderColor: theme.border.color }}
-			onPress={handlePress}
-		>
-			<Icon size={22} name='heart' filled={followed} />
+		<Pressable onPress={handlePress}>
+			<Icon
+				size={22}
+				name='heart'
+				fill={followed ? palette.red.r500 : undefined}
+				color={followed ? palette.red.r500 : undefined}
+			/>
 		</Pressable>
 	);
 };

@@ -2,9 +2,8 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 import prismaClient from '../config/prisma';
-import redisClient from '../config/redis';
-import { generateAccessToken } from '../utils/auth';
-import { hashPassword, verifyPassword } from '../core/logic/auth';
+import * as AuthLogic from '../core/logic/auth';
+
 import { env } from '../config/env';
 
 export const register = async (req: Request, res: Response) => {
@@ -21,7 +20,7 @@ export const register = async (req: Request, res: Response) => {
 			});
 		}
 
-		const passwordHash = await hashPassword(password);
+		const passwordHash = await AuthLogic.hashPassword(password);
 
 		const user = await prismaClient.user.create({
 			data: { name, email, passwordHash }
@@ -45,7 +44,7 @@ export const login = async (req: Request, res: Response) => {
 				.json({ error: 'The specified user does not exist.' });
 		}
 
-		const correct = await verifyPassword(password, user.passwordHash);
+		const correct = await AuthLogic.verifyPassword(password, user.passwordHash);
 
 		if (!correct) {
 			return res
@@ -53,7 +52,7 @@ export const login = async (req: Request, res: Response) => {
 				.json({ error: 'The entered password is incorrect' });
 		}
 
-		const accessToken = await generateAccessToken(user);
+		const accessToken = await AuthLogic.generateAccessToken(user);
 
 		return res.status(200).json({ accessToken, userId: user.id });
 	} catch (error) {
@@ -70,7 +69,7 @@ export const verify = async (req: Request, res: Response) => {
 			.json({ error: 'Email and verification code are required.' });
 	}
 
-	const cachedCode = await redisClient.get(email);
+	const cachedCode = await AuthLogic.retrieveVerificationCode(email);
 
 	if (!cachedCode) throw new Error('No code found for user.');
 
@@ -81,7 +80,7 @@ export const verify = async (req: Request, res: Response) => {
 			throw new Error('The specified user does not exist.');
 		}
 
-		const accessToken = await generateAccessToken(user);
+		const accessToken = await AuthLogic.generateAccessToken(user);
 
 		return res.status(200).json({ accessToken, userId: user.id });
 	} else {
@@ -136,7 +135,7 @@ export const appleCallback = async (req: Request, res: Response) => {
 			});
 		}
 
-		const accessToken = await generateAccessToken(user);
+		const accessToken = await AuthLogic.generateAccessToken(user);
 
 		return res.status(200).json({ accessToken, userId: user.id });
 	} catch (error) {

@@ -15,6 +15,7 @@ import Animated, {
 	FadeOutUp,
 	LinearTransition
 } from 'react-native-reanimated';
+import useFirstRender from '../../hooks/useFirstRender';
 
 interface StoreHeaderProps {
 	store: StoreQuery['store'];
@@ -32,7 +33,7 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 	setSearchTerm
 }) => {
 	const [searchOpen, setSearchOpen] = React.useState(false);
-	const [canAnimate, setCanAnimate] = React.useState(false);
+	const isFirstRender = useFirstRender();
 
 	const { goBack } = useNavigation();
 	const { name, theme } = useTheme();
@@ -58,13 +59,8 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 		setSearchTerm('');
 	}, []);
 
-	const handleLayout = React.useCallback(() => {
-		setCanAnimate(true);
-	}, []);
-
 	return (
 		<Animated.View
-			onLayout={handleLayout}
 			layout={LinearTransition}
 			style={[
 				styles.container,
@@ -77,7 +73,7 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 		>
 			{!searchOpen && (
 				<Animated.View
-					entering={canAnimate ? FadeInUp : undefined}
+					entering={isFirstRender ? undefined : FadeInUp}
 					exiting={FadeOutUp}
 				>
 					<View style={styles.header}>

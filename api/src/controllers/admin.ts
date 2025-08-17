@@ -1,13 +1,12 @@
 import { Request, Response } from 'express';
 
 import prisma from '../config/prisma';
-import { generateAccessToken } from '../utils/auth';
-import { hashPassword, verifyPassword } from '../core/logic/auth';
+import * as AuthLogic from '../core/logic/auth';
 
 export const createAdmin = async (req: Request, res: Response) => {
 	const { name, email, password } = req.body;
 
-	const passwordHash = await hashPassword(password);
+	const passwordHash = await AuthLogic.hashPassword(password);
 
 	const admin = await prisma.admin.create({
 		data: { name, email, passwordHash }
@@ -29,13 +28,13 @@ export const login = async (req: Request, res: Response) => {
 		return res.status(401).json({ error: 'Invalid credentials' });
 	}
 
-	const correct = await verifyPassword(password, admin.passwordHash);
+	const correct = await AuthLogic.verifyPassword(password, admin.passwordHash);
 
 	if (!correct) {
 		return res.status(401).json({ error: 'Invalid credentials' });
 	}
 
-	const accessToken = await generateAccessToken(admin, 'admin');
+	const accessToken = await AuthLogic.generateAccessToken(admin, 'admin');
 
 	return res.json({ accessToken, adminId: admin.id });
 };
