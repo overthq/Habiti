@@ -2,9 +2,10 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 import prismaClient from '../config/prisma';
-import redisClient from '../config/redis';
 import { generateAccessToken } from '../utils/auth';
 import { hashPassword, verifyPassword } from '../core/logic/auth';
+import * as AuthLogic from '../core/logic/auth';
+
 import { env } from '../config/env';
 
 export const register = async (req: Request, res: Response) => {
@@ -70,7 +71,7 @@ export const verify = async (req: Request, res: Response) => {
 			.json({ error: 'Email and verification code are required.' });
 	}
 
-	const cachedCode = await redisClient.get(email);
+	const cachedCode = await AuthLogic.retrieveVerificationCode(email);
 
 	if (!cachedCode) throw new Error('No code found for user.');
 

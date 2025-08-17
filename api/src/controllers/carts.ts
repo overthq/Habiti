@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 import prismaClient from '../config/prisma';
+import * as CartData from '../core/data/carts';
 
 export const getCartById = async (req: Request, res: Response) => {
 	if (!req.auth) {
@@ -11,14 +12,9 @@ export const getCartById = async (req: Request, res: Response) => {
 		return res.status(400).json({ error: 'Cart ID is required' });
 	}
 
-	const cart = await prismaClient.cart.findUnique({
-		where: { id: req.params.id, userId: req.auth.id },
-		include: {
-			user: { include: { cards: true } },
-			store: { include: { image: true } },
-			products: { include: { product: { include: { images: true } } } }
-		}
-	});
+	// TODO: Make sure that if a regular user is accessing this,
+	// they must be the cart owner (or otherwise have provable access to it)
+	const cart = await CartData.getCartById(prismaClient, req.params.id);
 
 	if (!cart) {
 		return res.status(404).json({ error: 'Cart not found' });
@@ -32,33 +28,20 @@ export const getCartById = async (req: Request, res: Response) => {
 };
 
 export const addProductToCart = async (req: Request, res: Response) => {
-	const { productId, quantity } = req.body;
+	const { cartId, storeId, productId, quantity } = req.body;
 
 	if (!req.auth) {
 		return res.status(401).json({ error: 'User not authenticated' });
 	}
 
 	const userId = req.auth.id;
-	const storeId = req.headers['x-market-store-id'] as string;
 
-	const cart = await prismaClient.cart.findUnique({
-		where: { userId_storeId: { userId, storeId } }
-	});
-
-	if (!cart) {
-		return res.status(404).json({ error: 'Cart not found' });
-	}
-
-	const product = await prismaClient.product.findUnique({
-		where: { id: productId }
-	});
-
-	if (!product) {
-		return res.status(404).json({ error: 'Product not found' });
-	}
-
-	const cartProduct = await prismaClient.cartProduct.create({
-		data: { cartId: cart.id, productId, quantity }
+	const cartProduct = await CartData.addProductToCart(prismaClient, {
+		cartId,
+		storeId,
+		productId,
+		quantity,
+		userId
 	});
 
 	return res.json({ cartProduct });

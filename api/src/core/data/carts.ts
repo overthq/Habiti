@@ -15,8 +15,9 @@ export const getCartById = async (prisma: PrismaClient, cartId: string) => {
 	const cart = await prisma.cart.findUnique({
 		where: { id: cartId },
 		include: {
-			products: { include: { product: true } },
-			store: true
+			products: { include: { product: { include: { images: true } } } },
+			store: { include: { image: true } },
+			user: { include: { cards: true } }
 		}
 	});
 
@@ -57,20 +58,31 @@ export const createCart = async (
 	return cart;
 };
 
+interface AddProductToCartArgs {
+	cartId: string;
+	storeId: string;
+	productId: string;
+	userId: string;
+	quantity: number;
+}
+
 export const addProductToCart = async (
 	prisma: PrismaClient,
-	cartId: string,
-	storeId: string,
-	productId: string,
-	userId: string
+	args: AddProductToCartArgs
 ) => {
 	await prisma.cart.upsert({
-		where: { id: cartId },
-		update: { products: { create: { productId, quantity: 1 } } },
+		where: { id: args.cartId },
+		update: {
+			products: {
+				create: { productId: args.productId, quantity: args.quantity }
+			}
+		},
 		create: {
-			userId,
-			storeId,
-			products: { create: { productId, quantity: 1 } }
+			userId: args.userId,
+			storeId: args.storeId,
+			products: {
+				create: { productId: args.productId, quantity: args.quantity }
+			}
 		}
 	});
 };
