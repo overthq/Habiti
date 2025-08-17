@@ -34,6 +34,9 @@ export default class EmailService {
 			this.loops = new LoopsClient(env.LOOPS_API_KEY);
 			this.isEnabled = true;
 		}
+
+		// TODO: Enable emails when we've streamlined the verification structure.
+		this.isEnabled = false;
 	}
 
 	public sendMail(args: SendMailArgs) {

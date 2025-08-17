@@ -114,7 +114,6 @@ export interface IconProps extends SvgProps {
 	color?: string;
 	name: keyof typeof icons;
 	style?: StyleProp<ViewStyle>;
-	filled?: boolean;
 }
 
 export type IconType = keyof typeof icons;
@@ -124,7 +123,6 @@ export const Icon: React.FC<IconProps> = ({
 	color,
 	name,
 	style,
-	filled = false,
 	...props
 }) => {
 	const { theme } = useTheme();
@@ -134,7 +132,6 @@ export const Icon: React.FC<IconProps> = ({
 			width={size}
 			height={size}
 			viewBox='0 0 24 24'
-			fill={filled ? (color ?? theme.input.background) : 'none'}
 			stroke={color ?? theme.icon.default.color}
 			strokeWidth={2}
 			strokeLinecap='round'

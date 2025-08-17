@@ -1,6 +1,6 @@
-import { CustomImage, Row, Spacer, Typography } from '@habiti/components';
 import React from 'react';
 import { StyleSheet } from 'react-native';
+import { Avatar, Row, Spacer, Typography } from '@habiti/components';
 
 import { SearchQuery } from '../../types/api';
 
@@ -12,7 +12,12 @@ interface StoreResultRowProps {
 const StoreResultRow: React.FC<StoreResultRowProps> = ({ store, onPress }) => {
 	return (
 		<Row onPress={onPress} style={styles.container}>
-			<CustomImage uri={store.image?.path} circle height={44} width={44} />
+			<Avatar
+				uri={store.image?.path}
+				circle
+				size={44}
+				fallbackText={store.name}
+			/>
 			<Spacer x={8} />
 			<Typography>{store.name}</Typography>
 		</Row>
