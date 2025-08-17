@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { APIException } from '../routes/types';
-import { verifyAccessToken } from '../utils/auth';
 import { env } from '../config/env';
+import * as AuthLogic from '../core/logic/auth';
 
 type AuthOptions = {
 	required?: boolean;
@@ -24,7 +24,7 @@ export const auth = (options: AuthOptions = {}) => {
 				return next();
 			}
 
-			const decoded = await verifyAccessToken(token);
+			const decoded = await AuthLogic.verifyAccessToken(token);
 
 			if (adminOnly && (decoded as any).role !== 'admin') {
 				throw new APIException(403, 'Forbidden');

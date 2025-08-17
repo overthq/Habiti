@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 import prismaClient from '../config/prisma';
-import { generateAccessToken } from '../utils/auth';
 import { hashPassword, verifyPassword } from '../core/logic/auth';
 import * as AuthLogic from '../core/logic/auth';
 
@@ -54,7 +53,7 @@ export const login = async (req: Request, res: Response) => {
 				.json({ error: 'The entered password is incorrect' });
 		}
 
-		const accessToken = await generateAccessToken(user);
+		const accessToken = await AuthLogic.generateAccessToken(user);
 
 		return res.status(200).json({ accessToken, userId: user.id });
 	} catch (error) {
@@ -82,7 +81,7 @@ export const verify = async (req: Request, res: Response) => {
 			throw new Error('The specified user does not exist.');
 		}
 
-		const accessToken = await generateAccessToken(user);
+		const accessToken = await AuthLogic.generateAccessToken(user);
 
 		return res.status(200).json({ accessToken, userId: user.id });
 	} else {
@@ -137,7 +136,7 @@ export const appleCallback = async (req: Request, res: Response) => {
 			});
 		}
 
-		const accessToken = await generateAccessToken(user);
+		const accessToken = await AuthLogic.generateAccessToken(user);
 
 		return res.status(200).json({ accessToken, userId: user.id });
 	} catch (error) {
