@@ -6,7 +6,7 @@ export enum EmailType {
 }
 
 const TransactionalIDByEmailType = {
-	[EmailType.NewAccount]: ''
+	[EmailType.NewAccount]: 'cmedpo8no43ziwd0i8sboo6vf'
 } as const;
 
 interface SendMailArgs {
