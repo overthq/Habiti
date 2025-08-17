@@ -9,7 +9,7 @@ export const register = async (context: AppContext, args: unknown) => {
 	const { data, error } = registerBodySchema.safeParse(args);
 
 	if (error) {
-		throw new Error(`[UserLogic.register] - Malformed input: ${args}`);
+		throw new Error(`[UserLogic.register] - Malformed input: ${error.message}`);
 	}
 
 	const existingUser = await UserData.getUserByEmail(prismaClient, data.email);

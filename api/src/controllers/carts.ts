@@ -14,6 +14,7 @@ export const getCartById = async (req: Request, res: Response) => {
 
 	// TODO: Make sure that if a regular user is accessing this,
 	// they must be the cart owner (or otherwise have provable access to it)
+	// Admins should be able to get the data without restriction.
 	const cart = await CartData.getCartById(prismaClient, req.params.id);
 
 	if (!cart) {
