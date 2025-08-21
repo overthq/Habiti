@@ -123,6 +123,7 @@ export const Icon: React.FC<IconProps> = ({
 	color,
 	name,
 	style,
+	fill,
 	...props
 }) => {
 	const { theme } = useTheme();
@@ -136,6 +137,7 @@ export const Icon: React.FC<IconProps> = ({
 			strokeWidth={2}
 			strokeLinecap='round'
 			strokeLinejoin='round'
+			fill={fill ?? 'none'}
 			style={style}
 			{...props}
 		>
