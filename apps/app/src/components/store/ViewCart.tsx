@@ -1,3 +1,4 @@
+import React from 'react';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Pressable, StyleSheet } from 'react-native';
 import { AppStackParamList } from '../../types/navigation';
@@ -10,7 +11,7 @@ interface ViewCartProps {
 	count?: number;
 }
 
-const ViewCart = ({ cartId, count }: ViewCartProps) => {
+const ViewCart: React.FC<ViewCartProps> = ({ cartId, count }) => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
 	const { bottom } = useSafeAreaInsets();
