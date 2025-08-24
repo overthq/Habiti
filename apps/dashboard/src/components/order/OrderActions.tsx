@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
-import { HoldableButton, Spacer } from '@habiti/components';
+import { Button, Spacer } from '@habiti/components';
 
 import { useUpdateOrderMutation, OrderStatus } from '../../types/api';
 
@@ -11,6 +11,20 @@ interface OrderActionsProps {
 
 const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 	const [{ fetching }, updateOrder] = useUpdateOrderMutation();
+
+	const onConfirmFulfill = () => {
+		Alert.alert(
+			'Fulfill order',
+			'Are you sure you want to fulfill this order',
+			[
+				{
+					text: 'Fulfill',
+					onPress: updateOrderStatus(OrderStatus.Completed)
+				},
+				{ text: 'Cancel', style: 'cancel' }
+			]
+		);
+	};
 
 	const confirmCancel = () => {
 		Alert.alert('Cancel order', 'Are you sure you want to cancel this order', [
@@ -37,18 +51,18 @@ const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 	return (
 		<View style={styles.container}>
 			{status !== OrderStatus.Completed && (
-				<HoldableButton
+				<Button
 					text='Mark as fulfilled'
 					loading={fetching}
-					onComplete={updateOrderStatus(OrderStatus.Completed)}
+					onPress={onConfirmFulfill}
 				/>
 			)}
 			<Spacer y={8} />
 			{status !== OrderStatus.Cancelled && (
-				<HoldableButton
+				<Button
 					loading={fetching}
 					variant='destructive'
-					onComplete={confirmCancel}
+					onPress={confirmCancel}
 					text='Cancel Order'
 				/>
 			)}
