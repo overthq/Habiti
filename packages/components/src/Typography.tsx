@@ -14,7 +14,7 @@ interface TypographyProps extends TextProps {
 	preset?: keyof (typeof typography)['preset'];
 	ellipsize?: boolean;
 	number?: boolean;
-	ref?: React.Ref<Text>;
+	// ref?: React.Ref<Text>;
 }
 
 const Typography: React.FC<TypographyProps> = props => {
