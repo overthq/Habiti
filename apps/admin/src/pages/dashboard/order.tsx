@@ -2,7 +2,6 @@ import React from 'react';
 import { Check } from 'lucide-react';
 import { useParams } from 'react-router';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import CopyableText from '@/components/ui/copy';
 import { Button } from '@/components/ui/button';
 import {
