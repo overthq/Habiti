@@ -13,17 +13,7 @@ import * as Sentry from '@sentry/node';
 
 import { authenticateProd } from './middleware/auth';
 
-import admin from './routes/admin';
-import auth from './routes/auth';
-import carts from './routes/carts';
-import health from './routes/health';
-import orders from './routes/orders';
-import payments from './routes/payments';
-import payouts from './routes/payouts';
-import products from './routes/products';
-import stores from './routes/stores';
-import users from './routes/users';
-import webhooks from './routes/webhooks';
+import routes from './routes';
 
 import { getAppContext } from './utils/context';
 
@@ -68,17 +58,7 @@ const main = async () => {
 		})
 	);
 
-	app.use('/webhooks', webhooks);
-	app.use('/payments', payments);
-	app.use('/health', health);
-	app.use('/users', users);
-	app.use('/carts', carts);
-	app.use('/stores', stores);
-	app.use('/orders', orders);
-	app.use('/products', products);
-	app.use('/admin', admin);
-	app.use('/auth', auth);
-	app.use('/payouts', payouts);
+	app.use('/', routes);
 
 	httpServer.listen({ port: Number(env.PORT) });
 

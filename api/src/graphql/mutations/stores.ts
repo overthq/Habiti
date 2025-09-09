@@ -5,8 +5,7 @@ import { Prisma } from '@prisma/client';
 import { Resolver } from '../../types/resolvers';
 import { createTransferReceipient } from '../../core/payments';
 import { uploadStream } from '../../utils/upload';
-import { getStorePushTokens } from '../../core/notifications';
-import { NotificationType } from '../../core/notifications/types';
+import { getStorePushTokens, NotificationType } from '../../core/notifications';
 import { storeAuthorizedResolver } from '../permissions';
 
 export interface CreateStoreArgs {

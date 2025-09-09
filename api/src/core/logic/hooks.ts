@@ -4,7 +4,7 @@ import {
 	Product,
 	UserPushToken
 } from '@prisma/client';
-import { NotificationType } from '../notifications/types';
+import { NotificationType } from '../notifications';
 import AnalyticsService from '../../services/analytics';
 import NotificationsService from '../../services/notifications';
 import Services from '../../services';

@@ -1,11 +1,8 @@
-import { Router } from 'express';
-
+import { Response } from 'express';
 import prismaClient from '../config/prisma';
 import redisClient from '../config/redis';
 
-const healthRouter: Router = Router();
-
-healthRouter.get('/', async (_, res) => {
+export const checkHealth = async (_, res: Response) => {
 	try {
 		await prismaClient.$queryRaw`SELECT 1`;
 
@@ -22,6 +19,4 @@ healthRouter.get('/', async (_, res) => {
 			error: error.message
 		});
 	}
-});
-
-export default healthRouter;
+};

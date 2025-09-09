@@ -1,5 +1,5 @@
 import { OrderStatus } from '@prisma/client';
-import { NotificationType } from '../notifications/types';
+import { NotificationType } from '../notifications';
 
 export interface CreateOrderInput {
 	cartId: string;

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { z, ZodSchema } from 'zod';
 
-import { APIException } from '../routes/types';
+import { APIException } from '../types/errors';
 
 /**
  * Creates an Express middleware that validates the request body against a Zod schema.
