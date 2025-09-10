@@ -3,7 +3,7 @@ import { MoreVertical } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 
 import { useOrdersQuery } from '@/data/queries';
-import { type Order } from '@/data/types';
+import type { Order } from '@/data/types';
 import { formatNaira } from '@/utils/format';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/ui/data-table';

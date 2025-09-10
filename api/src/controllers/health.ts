@@ -1,8 +1,9 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
+
 import prismaClient from '../config/prisma';
 import redisClient from '../config/redis';
 
-export const checkHealth = async (_, res: Response) => {
+export const checkHealth = async (_: Request, res: Response) => {
 	try {
 		await prismaClient.$queryRaw`SELECT 1`;
 
