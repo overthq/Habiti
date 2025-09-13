@@ -1,15 +1,14 @@
 import { PrismaClient } from '@prisma/client';
 
-interface CreateCartParams {
-	userId: string;
-	storeId: string;
-}
-
 interface UpdateCartQuantityParams {
 	cartId: string;
 	productId: string;
 	quantity: number;
 }
+
+// TODO: Make sure that if a regular user is accessing this,
+// they must be the cart owner (or otherwise have provable access to it)
+// Admins should be able to get the data without restriction.
 
 export const getCartById = async (prisma: PrismaClient, cartId: string) => {
 	const cart = await prisma.cart.findUnique({
@@ -25,11 +24,11 @@ export const getCartById = async (prisma: PrismaClient, cartId: string) => {
 		throw new Error('Cart not found');
 	}
 
-	return cart;
-};
+	const cartTotal = cart.products.reduce((acc, p) => {
+		return acc + p.product.unitPrice * p.quantity;
+	}, 0);
 
-export const deleteCart = async (prisma: PrismaClient, cartId: string) => {
-	await prisma.cart.delete({ where: { id: cartId } });
+	return { ...cart, total: cartTotal };
 };
 
 export const getCartsByUserId = async (
@@ -47,19 +46,7 @@ export const getCartsByUserId = async (
 	return carts;
 };
 
-export const createCart = async (
-	prisma: PrismaClient,
-	params: CreateCartParams
-) => {
-	const cart = await prisma.cart.create({
-		data: params
-	});
-
-	return cart;
-};
-
 interface AddProductToCartArgs {
-	cartId: string;
 	storeId: string;
 	productId: string;
 	userId: string;
@@ -70,21 +57,50 @@ export const addProductToCart = async (
 	prisma: PrismaClient,
 	args: AddProductToCartArgs
 ) => {
-	await prisma.cart.upsert({
-		where: { id: args.cartId },
-		update: {
-			products: {
-				create: { productId: args.productId, quantity: args.quantity }
-			}
-		},
+	const cart = await prisma.cart.upsert({
+		where: { userId_storeId: { userId: args.userId, storeId: args.storeId } },
+		update: {},
+		create: { userId: args.userId, storeId: args.storeId }
+	});
+
+	const cartProduct = await prisma.cartProduct.upsert({
+		where: { cartId_productId: { cartId: cart.id, productId: args.productId } },
+		update: { quantity: args.quantity },
 		create: {
-			userId: args.userId,
-			storeId: args.storeId,
-			products: {
-				create: { productId: args.productId, quantity: args.quantity }
-			}
+			cartId: cart.id,
+			productId: args.productId,
+			quantity: args.quantity
 		}
 	});
+
+	return cartProduct;
+};
+
+interface RemoveProductFromCartArgs {
+	userId: string;
+	cartId: string;
+	productId: string;
+}
+
+export const removeProductFromCart = async (
+	prisma: PrismaClient,
+	args: RemoveProductFromCartArgs
+) => {
+	const cart = await prisma.cart.findUnique({
+		where: { id: args.cartId, userId: args.userId }
+	});
+
+	if (!cart) {
+		throw new Error('Cart not found');
+	}
+
+	const cartProduct = await prisma.cartProduct.delete({
+		where: {
+			cartId_productId: { cartId: args.cartId, productId: args.productId }
+		}
+	});
+
+	return cartProduct;
 };
 
 export const updateCartProductQuantity = async (
@@ -94,28 +110,38 @@ export const updateCartProductQuantity = async (
 	const { cartId, productId, quantity } = params;
 
 	if (quantity <= 0) {
-		await prisma.cartProduct.delete({
-			where: { cartId_productId: { cartId, productId } }
+		return prisma.cartProduct.delete({
+			where: { cartId_productId: { cartId, productId } },
+			include: { cart: true, product: true }
 		});
 	} else {
-		await prisma.cartProduct.upsert({
+		return prisma.cartProduct.upsert({
 			where: { cartId_productId: { cartId, productId } },
 			update: { quantity },
-			create: { cartId, productId, quantity }
+			create: { cartId, productId, quantity },
+			include: { cart: true, product: true }
 		});
 	}
 };
 
-export const removeProductFromCart = async (
-	prisma: PrismaClient,
-	cartId: string,
-	productId: string
-) => {
-	await prisma.cartProduct.delete({
-		where: { cartId_productId: { cartId, productId } }
-	});
-};
+interface DeleteCartArgs {
+	userId: string;
+	cartId: string;
+}
 
-export const clearCart = async (prisma: PrismaClient, cartId: string) => {
-	await prisma.cart.delete({ where: { id: cartId } });
+export const deleteCart = async (
+	prisma: PrismaClient,
+	args: DeleteCartArgs
+) => {
+	const cart = await prisma.cart.findUnique({ where: { id: args.cartId } });
+
+	if (!cart) {
+		throw new Error('Specified cart does not exist');
+	}
+
+	if (cart?.userId !== args.userId) {
+		throw new Error('User unauthorized to delete this cart');
+	}
+
+	await prisma.cart.delete({ where: { id: args.cartId } });
 };

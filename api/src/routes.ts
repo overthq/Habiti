@@ -77,7 +77,6 @@ router.post(
 );
 
 // Stores
-
 router.get('/stores', isAdmin, getStores);
 
 router.post('/stores', authenticate, createStore);

@@ -2,6 +2,7 @@ import { Prisma, OrderStatus, PrismaClient } from '@prisma/client';
 import { chargeAuthorization } from '../payments';
 
 interface CreateOrderParams {
+	userId: string;
 	storeId: string;
 	total: number;
 	transactionFee?: number;
@@ -66,9 +67,7 @@ export const saveOrderData = async (
 			await prisma.product.update({
 				where: { id: product.productId },
 				data: {
-					quantity: {
-						decrement: product.quantity
-					}
+					quantity: { decrement: product.quantity }
 				}
 			});
 		}
@@ -122,24 +121,25 @@ const getOrderData = (
 
 export const createOrder = async (
 	prisma: PrismaClient,
-	userId: string,
 	params: CreateOrderParams
 ) => {
-	const store = await prisma.store.update({
-		where: { id: params.storeId },
-		data: { orderCount: { increment: 1 } }
-	});
+	const order = await prisma.$transaction(async p => {
+		const store = await p.store.update({
+			where: { id: params.storeId },
+			data: { orderCount: { increment: 1 } }
+		});
 
-	const order = await prisma.order.create({
-		data: {
-			userId,
-			storeId: params.storeId,
-			serialNumber: store.orderCount,
-			total: params.total,
-			transactionFee: params.transactionFee ?? 0,
-			serviceFee: params.serviceFee ?? 0,
-			status: params.status ?? OrderStatus.Pending
-		}
+		return p.order.create({
+			data: {
+				userId: params.userId,
+				storeId: params.storeId,
+				serialNumber: store.orderCount,
+				total: params.total,
+				transactionFee: params.transactionFee ?? 0,
+				serviceFee: params.serviceFee ?? 0,
+				status: params.status ?? OrderStatus.Pending
+			}
+		});
 	});
 
 	return order;
@@ -191,14 +191,10 @@ export const getOrdersByUserId = async (
 	const orders = await prisma.order.findMany({
 		where: { userId },
 		include: {
-			store: {
-				include: { image: true }
-			},
+			store: { include: { image: true } },
 			products: {
 				include: {
-					product: {
-						include: { images: true }
-					}
+					product: { include: { images: true } }
 				}
 			}
 		},
@@ -218,9 +214,7 @@ export const getOrdersByStoreId = async (
 			user: true,
 			products: {
 				include: {
-					product: {
-						include: { images: true }
-					}
+					product: { include: { images: true } }
 				}
 			}
 		},

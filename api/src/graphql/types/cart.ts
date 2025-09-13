@@ -42,19 +42,12 @@ const CartTypes = gql`
 		quantity: Int!
 	}
 
-	input CreateCartInput {
-		storeId: ID!
-		productId: ID!
-		quantity: Int!
-	}
-
 	extend type Query {
 		carts: [Cart!]!
 		cart(id: ID!): Cart!
 	}
 
 	extend type Mutation {
-		createCart(input: CreateCartInput!): Cart!
 		deleteCart(cartId: ID!): Cart!
 		addToCart(input: AddToCartInput!): CartProduct!
 		updateCartProduct(input: UpdateCartProductInput!): CartProduct!

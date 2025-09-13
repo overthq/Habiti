@@ -20,10 +20,6 @@ export const getOrders: RequestHandler = async (req, res) => {
 export const createOrder: RequestHandler = async (req, res) => {
 	const { cartId, cardId, transactionFee, serviceFee } = req.body;
 
-	if (!req.auth) {
-		return res.status(401).json({ error: 'User not authenticated' });
-	}
-
 	const order = await OrderLogic.createOrder(
 		{ cartId, cardId, transactionFee, serviceFee },
 		getAppContext(req)
