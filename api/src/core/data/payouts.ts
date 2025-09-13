@@ -12,7 +12,7 @@ export const savePayout = async (
 ) => {
 	const { storeId, amount } = params;
 
-	await prisma.payout.create({
+	return prisma.payout.create({
 		data: { storeId, amount }
 	});
 };

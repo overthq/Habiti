@@ -78,7 +78,7 @@ export const getStoreById = async (prisma: PrismaClient, storeId: string) => {
 };
 
 export const deleteStore = async (prisma: PrismaClient, storeId: string) => {
-	await prisma.store.delete({
+	return prisma.store.delete({
 		where: { id: storeId }
 	});
 };

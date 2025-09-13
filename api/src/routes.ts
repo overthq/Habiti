@@ -57,6 +57,7 @@ import {
 } from './controllers/payments';
 import { globalSearch } from './controllers/search';
 import { paystackWebhook } from './controllers/webhooks';
+import { validate } from 'graphql';
 
 const router: Router = Router();
 
@@ -134,7 +135,7 @@ router.delete(
 );
 
 // Admin
-router.post('/admin/login', adminLogin);
+router.post('/admin/login', validateBody(authenticateBodySchema), adminLogin);
 router.get('/admin/overview', getOverview);
 
 // Health

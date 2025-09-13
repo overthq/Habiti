@@ -1,6 +1,7 @@
 import { FileUpload } from 'graphql-upload';
 import { Prisma } from '@prisma/client';
 
+import * as ProductLogic from '../../core/logic/products';
 import { Resolver } from '../../types/resolvers';
 import { uploadImages } from '../../utils/upload';
 import { storeAuthorizedResolver } from '../permissions';
@@ -97,13 +98,7 @@ export interface DeleteProductArgs {
 
 export const deleteProduct = storeAuthorizedResolver<DeleteProductArgs>(
 	async (_, { id }, ctx) => {
-		if (!ctx.storeId) {
-			throw new Error('No storeId provided');
-		}
-
-		return ctx.prisma.product.delete({
-			where: { id, storeId: ctx.storeId }
-		});
+		return ProductLogic.deleteProduct(ctx, { productId: id });
 	}
 );
 

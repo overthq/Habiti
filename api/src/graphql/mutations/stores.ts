@@ -2,10 +2,10 @@ import { UploadApiResponse } from 'cloudinary';
 import { FileUpload } from 'graphql-upload';
 import { Prisma } from '@prisma/client';
 
+import * as StoreLogic from '../../core/logic/stores';
 import { Resolver } from '../../types/resolvers';
 import { createTransferReceipient } from '../../core/payments';
 import { uploadStream } from '../../utils/upload';
-import { getStorePushTokens, NotificationType } from '../../core/notifications';
 import { storeAuthorizedResolver } from '../permissions';
 
 export interface CreateStoreArgs {
@@ -123,9 +123,9 @@ export interface DeleteStoreArgs {
 
 export const deleteStore: Resolver<DeleteStoreArgs> = storeAuthorizedResolver(
 	async (_, { id }, ctx) => {
-		await ctx.prisma.store.delete({ where: { id } });
+		const store = await StoreLogic.deleteStore(ctx, { storeId: id });
 
-		return id;
+		return store.id;
 	}
 );
 
@@ -133,43 +133,20 @@ export interface FollowStoreArgs {
 	storeId: string;
 }
 
-export const followStore: Resolver<FollowStoreArgs> = async (
-	_,
-	{ storeId },
-	ctx
-) => {
-	const follower = await ctx.prisma.storeFollower.create({
-		data: { followerId: ctx.user.id, storeId },
-		include: { store: true }
-	});
-
-	const pushTokens = await getStorePushTokens(storeId);
-
-	for (const pushToken of pushTokens) {
-		if (pushToken) {
-			ctx.services.notifications.queueNotification({
-				type: NotificationType.NewFollower,
-				data: { followerName: ctx.user.name },
-				recipientTokens: [pushToken]
-			});
-		}
-	}
-
-	return follower;
+export const followStore: Resolver<FollowStoreArgs> = (_, { storeId }, ctx) => {
+	return StoreLogic.followStore(ctx, { storeId });
 };
 
 export interface UnfollowStoreArgs {
 	storeId: string;
 }
 
-export const unfollowStore: Resolver<UnfollowStoreArgs> = async (
+export const unfollowStore: Resolver<UnfollowStoreArgs> = (
 	_,
 	{ storeId },
 	ctx
 ) => {
-	return ctx.prisma.storeFollower.delete({
-		where: { storeId_followerId: { storeId, followerId: ctx.user.id } }
-	});
+	return StoreLogic.unfollowStore(ctx, { storeId });
 };
 
 export interface AddStoreManagerArgs {
