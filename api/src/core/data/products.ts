@@ -257,3 +257,158 @@ export const getRelatedProducts = async (
 
 	return relatedProducts;
 };
+
+interface UpdateProductImagesParams {
+	productId: string;
+	addImages: {
+		path: string;
+		publicId: string;
+	}[];
+	removeImageIds: string[];
+}
+
+export const updateProductImages = async (
+	prisma: PrismaClient,
+	params: UpdateProductImagesParams
+) => {
+	const { productId, addImages, removeImageIds } = params;
+
+	// Remove specified images
+	if (removeImageIds.length > 0) {
+		await prisma.image.deleteMany({
+			where: { id: { in: removeImageIds } }
+		});
+	}
+
+	// Add new images and return updated product
+	const product = await prisma.product.update({
+		where: { id: productId },
+		data: {
+			images: {
+				createMany: {
+					data: addImages
+				}
+			}
+		},
+		include: {
+			images: true,
+			store: true,
+			categories: { include: { category: true } },
+			reviews: { include: { user: true } }
+		}
+	});
+
+	return product;
+};
+
+interface CreateProductOptionParams {
+	productId: string;
+	name: string;
+	description: string | undefined;
+}
+
+export const createProductOption = async (
+	prisma: PrismaClient,
+	params: CreateProductOptionParams
+) => {
+	const productOption = await prisma.productOption.create({
+		data: {
+			productId: params.productId,
+			name: params.name,
+			description: params.description ?? null
+		}
+	});
+
+	return productOption;
+};
+
+interface UpdateProductCategoriesParams {
+	productId: string;
+	addCategoryIds: string[];
+	removeCategoryIds: string[];
+}
+
+export const updateProductCategories = async (
+	prisma: PrismaClient,
+	params: UpdateProductCategoriesParams
+) => {
+	const { productId, addCategoryIds, removeCategoryIds } = params;
+
+	// Remove specified categories
+	if (removeCategoryIds.length > 0) {
+		await prisma.productCategory.deleteMany({
+			where: { productId, categoryId: { in: removeCategoryIds } }
+		});
+	}
+
+	// Add new categories
+	if (addCategoryIds.length > 0) {
+		await prisma.productCategory.createMany({
+			data: addCategoryIds.map(categoryId => ({ productId, categoryId })),
+			skipDuplicates: true
+		});
+	}
+
+	// Return updated product with categories
+	const product = await prisma.product.findUnique({
+		where: { id: productId },
+		include: {
+			categories: { include: { category: true } },
+			images: true,
+			store: true,
+			reviews: { include: { user: true } }
+		}
+	});
+
+	return product;
+};
+
+interface CreateStoreProductCategoryParams {
+	storeId: string;
+	name: string;
+	description: string | undefined;
+}
+
+export const createStoreProductCategory = async (
+	prisma: PrismaClient,
+	params: CreateStoreProductCategoryParams
+) => {
+	const category = await prisma.storeProductCategory.create({
+		data: {
+			storeId: params.storeId,
+			name: params.name,
+			description: params.description ?? null
+		}
+	});
+
+	return category;
+};
+
+interface UpdateStoreProductCategoryParams {
+	name?: string;
+	description?: string;
+}
+
+export const updateStoreProductCategory = async (
+	prisma: PrismaClient,
+	categoryId: string,
+	params: UpdateStoreProductCategoryParams
+) => {
+	const category = await prisma.storeProductCategory.update({
+		where: { id: categoryId },
+		data: params
+	});
+
+	return category;
+};
+
+export const deleteStoreProductCategory = async (
+	prisma: PrismaClient,
+	categoryId: string
+) => {
+	const category = await prisma.storeProductCategory.delete({
+		where: { id: categoryId }
+	});
+
+	return category;
+};

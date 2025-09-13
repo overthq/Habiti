@@ -33,7 +33,7 @@ export interface UpdateProductInput {
 interface CreateProductReviewInput {
 	productId: string;
 	rating: number;
-	body?: string;
+	body: string | undefined;
 }
 
 interface UpdateProductQuantityInput {
@@ -450,4 +450,258 @@ export const getRelatedProducts = async (
 	}
 
 	return ProductData.getRelatedProducts(ctx.prisma, productId);
+};
+
+interface UpdateProductImagesInput {
+	productId: string;
+	addImages: {
+		path: string;
+		publicId: string;
+	}[];
+	removeImageIds: string[];
+}
+
+interface CreateProductOptionInput {
+	productId: string;
+	name: string;
+	description: string | undefined;
+}
+
+interface UpdateProductCategoriesInput {
+	productId: string;
+	addCategoryIds: string[];
+	removeCategoryIds: string[];
+}
+
+interface CreateStoreProductCategoryInput {
+	name: string;
+	description: string | undefined;
+}
+
+interface UpdateStoreProductCategoryInput {
+	categoryId: string;
+	name?: string;
+	description?: string;
+}
+
+interface DeleteStoreProductCategoryInput {
+	categoryId: string;
+}
+
+export const updateProductImages = async (
+	ctx: AppContext,
+	input: UpdateProductImagesInput
+) => {
+	const { productId, addImages, removeImageIds } = input;
+
+	// Get product to verify ownership
+	const existingProduct = await ProductData.getProductById(
+		ctx.prisma,
+		productId
+	);
+
+	if (!existingProduct) {
+		throw new Error('Product not found');
+	}
+
+	// Verify user has permission to update this product
+	if (ctx.storeId && ctx.storeId !== existingProduct.storeId) {
+		throw new Error(
+			'Unauthorized: Cannot update products from different store'
+		);
+	}
+
+	const product = await ProductData.updateProductImages(ctx.prisma, {
+		productId,
+		addImages,
+		removeImageIds
+	});
+
+	// Track analytics
+	ctx.services.analytics.track({
+		event: 'product_images_updated',
+		distinctId: ctx.user.id,
+		properties: {
+			productId: product.id,
+			imagesAdded: addImages.length,
+			imagesRemoved: removeImageIds.length
+		},
+		groups: { store: product.storeId }
+	});
+
+	return product;
+};
+
+export const createProductOption = async (
+	ctx: AppContext,
+	input: CreateProductOptionInput
+) => {
+	const { productId, name, description } = input;
+
+	// Get product to verify ownership
+	const product = await ProductData.getProductById(ctx.prisma, productId);
+
+	if (!product) {
+		throw new Error('Product not found');
+	}
+
+	// Verify user has permission to update this product
+	if (ctx.storeId && ctx.storeId !== product.storeId) {
+		throw new Error(
+			'Unauthorized: Cannot create options for products from different store'
+		);
+	}
+
+	const productOption = await ProductData.createProductOption(ctx.prisma, {
+		productId,
+		name,
+		description
+	});
+
+	// Track analytics
+	ctx.services.analytics.track({
+		event: 'product_option_created',
+		distinctId: ctx.user.id,
+		properties: {
+			productId,
+			optionName: name,
+			hasDescription: !!description
+		},
+		groups: { store: product.storeId }
+	});
+
+	return productOption;
+};
+
+export const updateProductCategories = async (
+	ctx: AppContext,
+	input: UpdateProductCategoriesInput
+) => {
+	const { productId, addCategoryIds, removeCategoryIds } = input;
+
+	// Get product to verify ownership
+	const existingProduct = await ProductData.getProductById(
+		ctx.prisma,
+		productId
+	);
+
+	if (!existingProduct) {
+		throw new Error('Product not found');
+	}
+
+	// Verify user has permission to update this product
+	if (ctx.storeId && ctx.storeId !== existingProduct.storeId) {
+		throw new Error(
+			'Unauthorized: Cannot update products from different store'
+		);
+	}
+
+	const product = await ProductData.updateProductCategories(ctx.prisma, {
+		productId,
+		addCategoryIds,
+		removeCategoryIds
+	});
+
+	// Track analytics
+	ctx.services.analytics.track({
+		event: 'product_categories_updated',
+		distinctId: ctx.user.id,
+		properties: {
+			productId,
+			categoriesAdded: addCategoryIds.length,
+			categoriesRemoved: removeCategoryIds.length
+		},
+		groups: { store: existingProduct.storeId }
+	});
+
+	return product;
+};
+
+export const createStoreProductCategory = async (
+	ctx: AppContext,
+	input: CreateStoreProductCategoryInput
+) => {
+	if (!ctx.storeId) {
+		throw new Error('Store not found');
+	}
+
+	const category = await ProductData.createStoreProductCategory(ctx.prisma, {
+		storeId: ctx.storeId,
+		name: input.name,
+		description: input.description
+	});
+
+	// Track analytics
+	ctx.services.analytics.track({
+		event: 'store_category_created',
+		distinctId: ctx.user.id,
+		properties: {
+			categoryId: category.id,
+			categoryName: category.name,
+			hasDescription: !!category.description
+		},
+		groups: { store: ctx.storeId }
+	});
+
+	return category;
+};
+
+export const updateStoreProductCategory = async (
+	ctx: AppContext,
+	input: UpdateStoreProductCategoryInput
+) => {
+	const { categoryId, ...updateData } = input;
+
+	if (!ctx.storeId) {
+		throw new Error('Store not found');
+	}
+
+	const category = await ProductData.updateStoreProductCategory(
+		ctx.prisma,
+		categoryId,
+		updateData
+	);
+
+	// Track analytics
+	ctx.services.analytics.track({
+		event: 'store_category_updated',
+		distinctId: ctx.user.id,
+		properties: {
+			categoryId: category.id,
+			categoryName: category.name,
+			updatedFields: Object.keys(updateData)
+		},
+		groups: { store: ctx.storeId }
+	});
+
+	return category;
+};
+
+export const deleteStoreProductCategory = async (
+	ctx: AppContext,
+	input: DeleteStoreProductCategoryInput
+) => {
+	const { categoryId } = input;
+
+	if (!ctx.storeId) {
+		throw new Error('Store not found');
+	}
+
+	const category = await ProductData.deleteStoreProductCategory(
+		ctx.prisma,
+		categoryId
+	);
+
+	// Track analytics
+	ctx.services.analytics.track({
+		event: 'store_category_deleted',
+		distinctId: ctx.user.id,
+		properties: {
+			categoryId: category.id,
+			categoryName: category.name
+		},
+		groups: { store: ctx.storeId }
+	});
+
+	return category;
 };

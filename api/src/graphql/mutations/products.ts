@@ -1,5 +1,4 @@
 import { FileUpload } from 'graphql-upload';
-import { Prisma } from '@prisma/client';
 
 import * as ProductLogic from '../../core/logic/products';
 import { Resolver } from '../../types/resolvers';
@@ -101,27 +100,14 @@ export const updateProductImages =
 		async (_, { id, input }, ctx) => {
 			const uploadedImages = await uploadImages(input.add);
 
-			if (input.remove.length > 0) {
-				await ctx.prisma.image.deleteMany({
-					where: { id: { in: input.remove } }
-				});
-			}
-
-			const product = await ctx.prisma.product.update({
-				where: { id },
-				data: {
-					images: {
-						createMany: {
-							data: uploadedImages.map(({ url, public_id }) => ({
-								path: url,
-								publicId: public_id
-							}))
-						}
-					}
-				}
+			return ProductLogic.updateProductImages(ctx, {
+				productId: id,
+				addImages: uploadedImages.map(({ url, public_id }) => ({
+					path: url,
+					publicId: public_id
+				})),
+				removeImageIds: input.remove
 			});
-
-			return product;
 		}
 	);
 
@@ -134,12 +120,7 @@ export const addToWatchlist: Resolver<AddToWatchlistArgs> = (
 	{ productId },
 	ctx
 ) => {
-	return ctx.prisma.watchlistProduct.create({
-		data: {
-			productId,
-			userId: ctx.user.id
-		}
-	});
+	return ProductLogic.addToWatchlist(ctx, { productId });
 };
 
 export interface AddProductReviewArgs {
@@ -155,16 +136,11 @@ export const addProductReview: Resolver<AddProductReviewArgs> = async (
 	{ input },
 	ctx
 ) => {
-	const productReview = await ctx.prisma.productReview.create({
-		data: {
-			userId: ctx.user.id,
-			productId: input.productId,
-			body: input.body ?? null,
-			rating: input.rating
-		}
+	return ProductLogic.createProductReview(ctx, {
+		productId: input.productId,
+		rating: input.rating,
+		body: input.body
 	});
-
-	return productReview;
 };
 
 export interface AddProductOptionArgs {
@@ -176,16 +152,12 @@ export interface AddProductOptionArgs {
 }
 
 export const addProductOption = storeAuthorizedResolver<AddProductOptionArgs>(
-	async (_, { input }, ctx) => {
-		const productOption = await ctx.prisma.productOption.create({
-			data: {
-				productId: input.productId,
-				name: input.name,
-				description: input.description ?? null
-			}
+	(_, { input }, ctx) => {
+		return ProductLogic.createProductOption(ctx, {
+			productId: input.productId,
+			name: input.name,
+			description: input.description
 		});
-
-		return productOption;
 	}
 );
 
@@ -199,22 +171,12 @@ export interface UpdateProductCategoriesArgs {
 
 export const updateProductCategories =
 	storeAuthorizedResolver<UpdateProductCategoriesArgs>(
-		async (_, { id, input }, ctx) => {
-			await ctx.prisma.productCategory.deleteMany({
-				where: { productId: id, categoryId: { in: input.remove } }
+		(_, { id, input }, ctx) => {
+			return ProductLogic.updateProductCategories(ctx, {
+				productId: id,
+				addCategoryIds: input.add,
+				removeCategoryIds: input.remove
 			});
-
-			await ctx.prisma.productCategory.createMany({
-				data: input.add.map(categoryId => ({ productId: id, categoryId })),
-				skipDuplicates: true
-			});
-
-			const product = await ctx.prisma.product.findUnique({
-				where: { id },
-				include: { categories: true }
-			});
-
-			return product;
 		}
 	);
 
@@ -226,23 +188,12 @@ export interface CreateProductCategoryArgs {
 }
 
 export const createProductCategory =
-	storeAuthorizedResolver<CreateProductCategoryArgs>(
-		async (_, { input }, ctx) => {
-			if (!ctx.storeId) {
-				throw new Error('Store not found');
-			}
-
-			const category = await ctx.prisma.storeProductCategory.create({
-				data: {
-					storeId: ctx.storeId,
-					name: input.name,
-					description: input.description ?? null
-				}
-			});
-
-			return category;
-		}
-	);
+	storeAuthorizedResolver<CreateProductCategoryArgs>((_, { input }, ctx) => {
+		return ProductLogic.createStoreProductCategory(ctx, {
+			name: input.name,
+			description: input.description
+		});
+	});
 
 export interface EditProductCategoryArgs {
 	categoryId: string;
@@ -254,14 +205,10 @@ export interface EditProductCategoryArgs {
 
 export const editProductCategory =
 	storeAuthorizedResolver<EditProductCategoryArgs>(
-		async (_, { categoryId, input }, ctx) => {
-			if (!ctx.storeId) {
-				throw new Error('Store not found');
-			}
-
-			return ctx.prisma.storeProductCategory.update({
-				where: { id: categoryId },
-				data: input
+		(_, { categoryId, input }, ctx) => {
+			return ProductLogic.updateStoreProductCategory(ctx, {
+				categoryId,
+				...input
 			});
 		}
 	);
@@ -272,15 +219,9 @@ export interface DeleteProductCategoryArgs {
 
 export const deleteProductCategory =
 	storeAuthorizedResolver<DeleteProductCategoryArgs>(
-		async (_, { categoryId }, ctx) => {
-			if (!ctx.storeId) {
-				throw new Error('Store not found');
-			}
-
-			const category = await ctx.prisma.storeProductCategory.delete({
-				where: { id: categoryId }
+		(_, { categoryId }, ctx) => {
+			return ProductLogic.deleteStoreProductCategory(ctx, {
+				categoryId
 			});
-
-			return category;
 		}
 	);
