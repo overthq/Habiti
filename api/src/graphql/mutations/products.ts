@@ -24,7 +24,7 @@ export const createProduct = storeAuthorizedResolver<CreateProductArgs>(
 
 		const { imageFiles, ...rest } = input;
 
-		let createProductData: Prisma.ProductCreateArgs['data'] = {
+		let createProductInput: ProductLogic.CreateProductInput = {
 			...rest,
 			storeId: ctx.storeId
 		};
@@ -32,21 +32,13 @@ export const createProduct = storeAuthorizedResolver<CreateProductArgs>(
 		if (imageFiles && imageFiles.length > 0) {
 			const uploadedImages = await uploadImages(imageFiles);
 
-			createProductData.images = {
-				createMany: {
-					data: uploadedImages.map(({ url, public_id }) => ({
-						path: url,
-						publicId: public_id
-					}))
-				}
-			};
+			createProductInput.images = uploadedImages.map(({ url, public_id }) => ({
+				path: url,
+				publicId: public_id
+			}));
 		}
 
-		const product = await ctx.prisma.product.create({
-			data: createProductData
-		});
-
-		return product;
+		return ProductLogic.createProduct(ctx, createProductInput);
 	}
 );
 
@@ -68,27 +60,21 @@ export const editProduct = storeAuthorizedResolver<EditProductArgs>(
 
 		const { imageFiles, ...rest } = input;
 
-		let productUpdateInput: Prisma.ProductUpdateInput = { ...rest };
+		let productUpdateInput: ProductLogic.UpdateProductInput = {
+			...rest,
+			productId: id
+		};
 
 		if (imageFiles && imageFiles.length > 0) {
 			const uploadedImages = await uploadImages(imageFiles);
 
-			productUpdateInput.images = {
-				createMany: {
-					data: uploadedImages.map(({ url, public_id }) => ({
-						path: url,
-						publicId: public_id
-					}))
-				}
-			};
+			productUpdateInput.images = uploadedImages.map(({ url, public_id }) => ({
+				path: url,
+				publicId: public_id
+			}));
 		}
 
-		const product = await ctx.prisma.product.update({
-			where: { id, storeId: ctx.storeId },
-			data: productUpdateInput
-		});
-
-		return product;
+		return ProductLogic.updateProduct(ctx, productUpdateInput);
 	}
 );
 

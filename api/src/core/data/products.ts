@@ -1,4 +1,4 @@
-import { ProductStatus, PrismaClient } from '@prisma/client';
+import { ProductStatus, PrismaClient, Prisma } from '@prisma/client';
 
 interface CreateProductParams {
 	name: string;
@@ -8,6 +8,10 @@ interface CreateProductParams {
 	storeId: string;
 	categoryId?: string;
 	status?: ProductStatus;
+	images?: {
+		path: string;
+		publicId: string;
+	}[];
 }
 
 interface UpdateProductParams {
@@ -17,6 +21,10 @@ interface UpdateProductParams {
 	quantity?: number;
 	categoryId?: string;
 	status?: ProductStatus;
+	images?: {
+		path: string;
+		publicId: string;
+	}[];
 }
 
 interface CreateProductReviewParams {
@@ -30,9 +38,21 @@ export const createProduct = async (
 	prisma: PrismaClient,
 	params: CreateProductParams
 ) => {
+	const { images, ...rest } = params;
+
+	let args: Prisma.ProductCreateArgs['data'] = {
+		...rest
+	};
+
+	if (images && images.length > 0) {
+		args.images = {
+			createMany: { data: images }
+		};
+	}
+
 	const product = await prisma.product.create({
 		data: {
-			...params,
+			...args,
 			quantity: params.quantity ?? 0,
 			status: params.status ?? ProductStatus.Active
 		}
@@ -46,9 +66,21 @@ export const updateProduct = async (
 	productId: string,
 	params: UpdateProductParams
 ) => {
+	const { images, ...rest } = params;
+
+	let args: Prisma.ProductUpdateArgs['data'] = {
+		...rest
+	};
+
+	if (images && images.length > 0) {
+		args.images = {
+			createMany: { data: images }
+		};
+	}
+
 	const product = await prisma.product.update({
 		where: { id: productId },
-		data: params
+		data: args
 	});
 
 	return product;

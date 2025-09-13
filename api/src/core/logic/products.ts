@@ -2,7 +2,7 @@ import { ProductStatus } from '@prisma/client';
 import * as ProductData from '../data/products';
 import { AppContext } from '../../utils/context';
 
-interface CreateProductInput {
+export interface CreateProductInput {
 	name: string;
 	description: string;
 	unitPrice: number;
@@ -10,9 +10,13 @@ interface CreateProductInput {
 	storeId: string;
 	categoryId?: string;
 	status?: ProductStatus;
+	images?: {
+		path: string;
+		publicId: string;
+	}[];
 }
 
-interface UpdateProductInput {
+export interface UpdateProductInput {
 	productId: string;
 	name?: string;
 	description?: string;
@@ -20,6 +24,10 @@ interface UpdateProductInput {
 	quantity?: number;
 	categoryId?: string;
 	status?: ProductStatus;
+	images?: {
+		path: string;
+		publicId: string;
+	}[];
 }
 
 interface CreateProductReviewInput {

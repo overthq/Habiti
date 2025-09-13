@@ -20,10 +20,12 @@ export const getOrders: RequestHandler = async (req, res) => {
 export const createOrder: RequestHandler = async (req, res) => {
 	const { cartId, cardId, transactionFee, serviceFee } = req.body;
 
-	const order = await OrderLogic.createOrder(
-		{ cartId, cardId, transactionFee, serviceFee },
-		getAppContext(req)
-	);
+	const order = await OrderLogic.createOrder(getAppContext(req), {
+		cartId,
+		cardId,
+		transactionFee,
+		serviceFee
+	});
 
 	return res.json({ order });
 };
