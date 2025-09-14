@@ -1,4 +1,4 @@
-import { authenticatedResolver } from '../permissions';
+import { Resolver } from '../../types/resolvers';
 
 export interface AddDeliveryAddressArgs {
 	input: {
@@ -6,12 +6,14 @@ export interface AddDeliveryAddressArgs {
 	};
 }
 
-export const addDeliveryAddress = authenticatedResolver<AddDeliveryAddressArgs>(
-	async (_, { input }, ctx) => {
-		const deliveryAddress = await ctx.prisma.deliveryAddress.create({
-			data: { name: input.name, userId: ctx.user.id }
-		});
+export const addDeliveryAddress: Resolver<AddDeliveryAddressArgs> = async (
+	_,
+	{ input },
+	ctx
+) => {
+	const deliveryAddress = await ctx.prisma.deliveryAddress.create({
+		data: { name: input.name, userId: ctx.user.id }
+	});
 
-		return deliveryAddress;
-	}
-);
+	return deliveryAddress;
+};

@@ -65,10 +65,12 @@ interface UpdateUserInput {
 	email?: string;
 }
 
-export const updateUser = (ctx: AppContext, input: UpdateUserInput) => {
+export const updateUser = async (ctx: AppContext, input: UpdateUserInput) => {
 	const { userId, ...rest } = input;
 
-	if (userId !== ctx.user.id) {
+	const userIsAdmin = await ctx.isAdmin();
+
+	if (userId !== ctx.user.id && !userIsAdmin) {
 		throw new Error('Current user is not authorized to carry out this action');
 	}
 
@@ -90,10 +92,12 @@ interface DeleteUserInput {
 	userId: string;
 }
 
-export const deleteUser = (ctx: AppContext, input: DeleteUserInput) => {
+export const deleteUser = async (ctx: AppContext, input: DeleteUserInput) => {
 	const { userId } = input;
 
-	if (userId !== ctx.user.id) {
+	const userIsAdmin = await ctx.isAdmin();
+
+	if (userId !== ctx.user.id && !userIsAdmin) {
 		throw new Error('Current user is not authorized to carry out this action');
 	}
 

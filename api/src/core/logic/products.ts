@@ -1,6 +1,7 @@
 import { ProductStatus } from '@prisma/client';
 import * as ProductData from '../data/products';
 import { AppContext } from '../../utils/context';
+import { canManageStore } from './permissions';
 
 export interface CreateProductInput {
 	name: string;
@@ -105,7 +106,15 @@ export const updateProduct = async (
 		throw new Error('Product not found');
 	}
 
-	if (ctx.storeId && ctx.storeId !== existingProduct.storeId) {
+	const isManager = await canManageStore(ctx);
+
+	if (!isManager) {
+		throw new Error('You must be a store manager to carry out this action');
+	}
+
+	const userIsAdmin = await ctx.isAdmin();
+
+	if (ctx.storeId && ctx.storeId !== existingProduct.storeId && !userIsAdmin) {
 		throw new Error(
 			'Unauthorized: Cannot update products from different store'
 		);
