@@ -1,47 +1,17 @@
 'use client';
 
-import { gql, useQuery } from 'urql';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { formatNaira } from '@/utils/currency';
-
-const ORDER_QUERY = gql`
-	query Order($id: ID!) {
-		order(id: $id) {
-			id
-			storeId
-			products {
-				orderId
-				productId
-				product {
-					id
-					name
-					unitPrice
-					quantity
-					images {
-						id
-						path
-					}
-				}
-			}
-		}
-	}
-`;
+import { useOrderQuery } from '@/data/queries';
 
 const OrderPage = () => {
 	const { id } = useParams<{ id: string }>();
-	const [{ data, fetching, error }] = useQuery({
-		query: ORDER_QUERY,
-		variables: { id }
-	});
+	const { data, isLoading } = useOrderQuery(id);
 
-	if (fetching) {
+	if (isLoading) {
 		return <p>Loading...</p>;
-	}
-
-	if (error) {
-		return <p>Error loading order: {error.message}</p>;
 	}
 
 	const order = data?.order;

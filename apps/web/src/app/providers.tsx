@@ -2,29 +2,26 @@
 
 import React from 'react';
 import { Provider } from 'urql';
+import { QueryClientProvider } from '@tanstack/react-query';
 
-import { generateClient } from '@/config/client';
-import { AuthProvider, useAuthContext } from '@/contexts/AuthContext';
+import { generateClient, queryClient } from '@/config/client';
+import { useAuthStore } from '@/state/auth-store';
 
 type ProvidersProps = {
 	children: React.ReactNode;
 };
 
-const WrappedProviders = ({ children }: ProvidersProps) => {
-	const { accessToken } = useAuthContext();
+const Providers = ({ children }: ProvidersProps) => {
+	const { accessToken } = useAuthStore();
 
 	const client = React.useMemo(() => {
 		return generateClient(accessToken);
 	}, [accessToken]);
 
-	return <Provider value={client}>{children}</Provider>;
-};
-
-const Providers: React.FC<ProvidersProps> = ({ children }) => {
 	return (
-		<AuthProvider>
-			<WrappedProviders>{children}</WrappedProviders>
-		</AuthProvider>
+		<QueryClientProvider client={queryClient}>
+			<Provider value={client}>{children}</Provider>
+		</QueryClientProvider>
 	);
 };
 

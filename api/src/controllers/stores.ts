@@ -4,6 +4,7 @@ import prismaClient from '../config/prisma';
 import { hydrateQuery } from '../utils/queries';
 import { uploadImages } from '../utils/upload';
 import { getAppContext } from '../utils/context';
+import * as StoreLogic from '../core/logic/stores';
 
 const loadCurrentStore = async (req: Request) => {
 	const store = await prismaClient.store.findUnique({
@@ -82,14 +83,12 @@ export const getStorePayouts = async (req: Request, res: Response) => {
 	return res.json({ payouts });
 };
 
-export const getStoreById = async (req: Request, res: Response) => {
-	if (!req.params.id) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
-	const store = await prismaClient.store.findUnique({
-		where: { id: req.params.id }
-	});
+export const getStoreById = async (
+	req: Request<{ id: string }>,
+	res: Response
+) => {
+	const ctx = getAppContext(req);
+	const store = await StoreLogic.getStoreById(ctx, req.params.id);
 
 	if (!store) {
 		return res.status(404).json({ error: 'Store not found' });

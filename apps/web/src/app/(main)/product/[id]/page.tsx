@@ -10,7 +10,7 @@ import QuantityControl from '@/components/product/QuantityControl';
 import StorePreview from '@/components/product/StorePreview';
 
 const ProductPage = () => {
-	const { id } = useParams();
+	const { id } = useParams<{ id: string }>();
 	const [quantity, setQuantity] = React.useState(1);
 
 	const [{ data, fetching, error }] = useQuery({

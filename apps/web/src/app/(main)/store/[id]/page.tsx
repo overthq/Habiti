@@ -1,50 +1,18 @@
 'use client';
 
-import { useParams } from 'next/navigation';
 import React from 'react';
-import { useQuery } from 'urql';
+import { useParams } from 'next/navigation';
 
 import Product from '@/components/store/Product';
-
-const STORE_QUERY = `
-	query($id: ID!) {
-		store(id: $id) {
-			id
-			name
-			description
-			products {
-  			edges {
-        cursor
-          node {
-            id
-    				name
-    				unitPrice
-    				images {
-     					id
-     					path
-    				}
-          }
-   			}
-			}
-		}
-	}
-`;
+import { useStoreQuery } from '@/data/queries';
 
 const StorePage = () => {
-	const { id } = useParams();
+	const { id } = useParams<{ id: string }>();
+	const { data, isLoading } = useStoreQuery(id);
 
-	const [result] = useQuery({
-		query: STORE_QUERY,
-		variables: { id }
-	});
+	console.log({ data });
 
-	const { data, fetching, error } = result;
-
-	if (!id) {
-		return <div>Error: Store ID is missing</div>;
-	}
-	if (fetching) return <div>Loading...</div>;
-	if (error) return <div>Error: {error.message}</div>;
+	if (isLoading || !data) return <div />;
 
 	return (
 		<div>
@@ -52,8 +20,8 @@ const StorePage = () => {
 				<h1 className='text-2xl font-bold'>{data.store.name}</h1>
 				<p className='text-gray-600'>{data.store.description}</p>
 				<div className='mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
-					{data.store.products.edges.map((product: any) => (
-						<Product key={product.node.id} {...product.node} />
+					{data.store.products.map(product => (
+						<Product key={product.id} {...product} />
 					))}
 				</div>
 			</div>

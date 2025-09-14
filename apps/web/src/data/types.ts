@@ -7,8 +7,11 @@ export interface User {
 export interface Store {
 	id: string;
 	name: string;
+	description?: string;
 	imageId?: string;
 	image?: Image;
+	products: Product[];
+	followedByUser: boolean;
 }
 
 export interface Image {
@@ -20,6 +23,7 @@ export interface Image {
 export interface Product {
 	id: string;
 	name: string;
+	description: string;
 	unitPrice: number;
 	quantity: number;
 	store: Store;
@@ -66,6 +70,12 @@ export interface CartProduct {
 	quantity: number;
 }
 
+export interface StoreProduct {
+	storeId: string;
+	productId: string;
+	product: Product;
+}
+
 export interface Card {
 	id: string;
 	userId: string;
@@ -77,6 +87,11 @@ export interface Card {
 export interface DeliveryAddress {
 	id: string;
 	name: string;
+}
+
+export interface AuthenticateBody {
+	email: string;
+	password: string;
 }
 
 export interface UpdateUserBody {
@@ -93,6 +108,7 @@ export interface UpdateDeliveryAddressBody {
 }
 
 export interface AddToCartBody {
+	storeId: string; // FIXME: Maybe not necessary?
 	productId: string;
 	quantity: number;
 }
@@ -101,4 +117,9 @@ export interface RegisterBody {
 	name: string;
 	email: string;
 	password: string;
+}
+
+export interface GetProductResponse {
+	product: Product;
+	followed: boolean;
 }

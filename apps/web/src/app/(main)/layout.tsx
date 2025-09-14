@@ -4,26 +4,22 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 
 import MainNavigation from '@/components/main/MainNavigation';
-import { useAuthContext } from '@/contexts/AuthContext';
+import { useAuthStore } from '@/state/auth-store';
 
 interface MainLayoutProps {
 	children: React.ReactNode;
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
-	const { loading, loggedIn } = useAuthContext();
+	const { accessToken } = useAuthStore();
 	const router = useRouter();
 
 	// FIXME: This is a very bad solution for authentication.
 	React.useEffect(() => {
-		if (!loading && !loggedIn) {
+		if (!accessToken) {
 			router.push('/');
 		}
-	}, [loading, loggedIn]);
-
-	if (loading) {
-		return <div />;
-	}
+	}, [accessToken]);
 
 	return (
 		<div>

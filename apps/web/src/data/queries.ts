@@ -1,5 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
-import { getCarts, getStore, getCart, getOrders } from './requests';
+import {
+	getCarts,
+	getStore,
+	getCart,
+	getOrders,
+	getCurrentUser,
+	getOrder,
+	getProduct
+} from './requests';
 
 export const useStoreQuery = (storeId: string) => {
 	return useQuery({
@@ -26,5 +34,26 @@ export const useOrdersQuery = () => {
 	return useQuery({
 		queryKey: ['orders'],
 		queryFn: () => getOrders()
+	});
+};
+
+export const useCurrentUserQuery = () => {
+	return useQuery({
+		queryKey: ['users', 'current'],
+		queryFn: () => getCurrentUser()
+	});
+};
+
+export const useOrderQuery = (orderId: string) => {
+	return useQuery({
+		queryKey: ['orders', orderId],
+		queryFn: () => getOrder(orderId)
+	});
+};
+
+export const useProductQuery = (productId: string) => {
+	return useQuery({
+		queryKey: ['products', productId],
+		queryFn: () => getProduct(productId)
 	});
 };

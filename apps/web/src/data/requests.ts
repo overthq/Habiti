@@ -10,26 +10,38 @@ import type {
 	Store,
 	User,
 	Card,
-	DeliveryAddress
+	AuthenticateBody,
+	Product
 } from './types';
+import { useAuthStore } from '@/state/auth-store';
 
 const api = axios.create({
-	baseURL: process.env.NEXT_PUBLIC_API_URL
+	baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
 });
+
+api.interceptors.request.use(config => {
+	const { accessToken } = useAuthStore.getState();
+
+	if (accessToken) {
+		config.headers.Authorization = `Bearer ${accessToken}`;
+	}
+
+	return config;
+});
+
+// Authentication
+
+export const authenticate = async (input: AuthenticateBody) => {
+	const response = await api.post('/auth/login', input);
+	return response.data;
+};
 
 export const register = async (input: RegisterBody) => {
 	const response = await api.post('/auth/register', input);
 	return response.data;
 };
 
-export const getStore = (storeId: string) => {
-	return api.get(`/stores/${storeId}`);
-};
-
-export const getCart = async (cartId: string) => {
-	const response = await api.get(`/carts/${cartId}`);
-	return response.data;
-};
+// Current User
 
 export const getCurrentUser = async () => {
 	const response = await api.get('/users/current');
@@ -38,6 +50,45 @@ export const getCurrentUser = async () => {
 
 export const updateCurrentUser = async (body: UpdateUserBody) => {
 	const response = await api.patch('/users/current', body);
+	return response.data;
+};
+
+export const getFollowedStores = async () => {
+	const response = await api.get<{ stores: Store[] }>(
+		'/users/current/followed-stores'
+	);
+
+	return response.data;
+};
+
+export const getOrders = async () => {
+	const response = await api.get<{ orders: Order[] }>('/users/current/orders');
+	return response.data;
+};
+
+export const getCarts = async () => {
+	const response = await api.get<{ carts: Cart[] }>('/users/current/carts');
+	return response.data;
+};
+
+// Stores
+
+export const getStore = async (storeId: string) => {
+	const response = await api.get<{ store: Store }>(`/stores/${storeId}`);
+	return response.data;
+};
+
+export const followStore = async (storeId: string) => {
+	const response = await api.post<{ store: Store }>(
+		`/stores/${storeId}/follow`
+	);
+	return response.data;
+};
+
+export const unfollowStore = async (storeId: string) => {
+	const response = await api.delete<{ store: Store }>(
+		`/stores/${storeId}/follow`
+	);
 	return response.data;
 };
 
@@ -58,50 +109,20 @@ export const deleteDeliveryAddress = (addressId: string) => {
 	return api.delete(`/delivery-addresses/${addressId}`);
 };
 
-export const getFollowedStores = async () => {
-	const response = await api.get<{ stores: Store[] }>(
-		'/users/current/followed-stores'
-	);
-
-	return response.data;
-};
-
-export const getManagedStores = async () => {
-	const response = await api.get<{ stores: Store[] }>(
-		'/users/current/managed-stores'
-	);
-	return response.data;
-};
-
-export const getOrders = async () => {
-	const response = await api.get<{ orders: Order[] }>('/users/current/orders');
-	return response.data;
-};
-
-export const getCarts = async () => {
-	const response = await api.get<{ carts: Cart[] }>('/users/current/carts');
-	return response.data;
-};
-
 export const getCards = async () => {
 	const response = await api.get<{ cards: Card[] }>('/users/current/cards');
 	return response.data;
 };
 
-export const getDeliveryAddresses = async () => {
-	const response = await api.get<{ deliveryAddresses: DeliveryAddress[] }>(
-		'/users/current/delivery-addresses'
-	);
-	return response.data;
-};
-
-export const getUsers = async () => {
-	const response = await api.get<{ users: User[] }>('/users');
-	return response.data;
-};
-
 export const getUser = async (userId: string) => {
 	const response = await api.get<{ user: User }>(`/users/${userId}`);
+	return response.data;
+};
+
+// Carts
+
+export const getCart = async (cartId: string) => {
+	const response = await api.get(`/carts/${cartId}`);
 	return response.data;
 };
 
@@ -117,16 +138,18 @@ export const removeFromCart = async (cartId: string, productId: string) => {
 	return response.data;
 };
 
-export const followStore = async (storeId: string) => {
-	const response = await api.post<{ store: Store }>(
-		`/stores/${storeId}/follow`
-	);
+// Orders
+
+export const getOrder = async (orderId: string) => {
+	const response = await api.get<{ order: Order }>(`/orders/${orderId}`);
 	return response.data;
 };
 
-export const unfollowStore = async (storeId: string) => {
-	const response = await api.delete<{ store: Store }>(
-		`/stores/${storeId}/follow`
+// Products
+//
+export const getProduct = async (productId: string) => {
+	const response = await api.get<{ product: Product }>(
+		`/products/${productId}`
 	);
 	return response.data;
 };

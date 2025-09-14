@@ -1,8 +1,14 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { addToCart, followStore, unfollowStore, register } from './requests';
+import {
+	addToCart,
+	followStore,
+	unfollowStore,
+	authenticate,
+	register
+} from './requests';
 
-import type { AddToCartBody, RegisterBody } from './types';
+import type { AddToCartBody, AuthenticateBody, RegisterBody } from './types';
 
 export const useAddToCartMutation = () => {
 	const queryClient = useQueryClient();
@@ -45,5 +51,12 @@ export const useRegisterMutation = () => {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['user'] });
 		}
+	});
+};
+
+export const useAuthenticateMutation = () => {
+	return useMutation({
+		mutationFn: (input: AuthenticateBody) => authenticate(input),
+		onSuccess: () => {}
 	});
 };
