@@ -558,6 +558,9 @@ importers:
       '@urql/exchange-graphcache':
         specifier: ^7.2.3
         version: 7.2.3(@urql/core@5.1.1(graphql@16.11.0))(graphql@16.11.0)
+      axios:
+        specifier: ^1.9.0
+        version: 1.9.0
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -621,6 +624,9 @@ importers:
       zod:
         specifier: ^3.24.4
         version: 3.24.4
+      zustand:
+        specifier: ^5.0.4
+        version: 5.0.4(@types/react@19.0.14)(react@19.0.0)(use-sync-external-store@1.5.0(react@19.0.0))
     devDependencies:
       '@types/node':
         specifier: ^20
@@ -8146,7 +8152,7 @@ snapshots:
       '@babel/helper-module-imports': 7.27.1
       '@babel/helper-plugin-utils': 7.27.1
       '@babel/plugin-syntax-jsx': 7.27.1(@babel/core@7.27.1)
-      '@babel/types': 7.27.1
+      '@babel/types': 7.28.2
     transitivePeerDependencies:
       - supports-color
 
