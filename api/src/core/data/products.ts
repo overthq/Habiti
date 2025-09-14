@@ -273,35 +273,28 @@ export const updateProductImages = async (
 ) => {
 	const { productId, addImages, removeImageIds } = params;
 
-	const product = await prisma.$transaction(async tx => {
-		if (removeImageIds.length > 0) {
-			await tx.image.deleteMany({
-				where: { id: { in: removeImageIds } }
-			});
-		}
+	const existingProduct = await prisma.product.findUnique({
+		where: { id: productId }
+	});
 
-		if (addImages.length > 0) {
-			await tx.product.update({
-				where: { id: productId },
-				data: {
-					images: {
-						createMany: {
-							data: addImages
-						}
-					}
-				}
-			});
-		}
+	if (!existingProduct) {
+		throw new Error(`Product ${productId} not found`);
+	}
 
-		return tx.product.findUnique({
-			where: { id: productId },
-			include: {
-				images: true,
-				store: true,
-				categories: { include: { category: true } },
-				reviews: { include: { user: true } }
+	const product = await prisma.product.update({
+		where: { id: productId },
+		data: {
+			images: {
+				createMany: { data: addImages },
+				deleteMany: { id: { in: removeImageIds } }
 			}
-		});
+		},
+		include: {
+			images: true,
+			store: true,
+			categories: { include: { category: true } },
+			reviews: { include: { user: true } }
+		}
 	});
 
 	return product;
@@ -340,29 +333,32 @@ export const updateProductCategories = async (
 ) => {
 	const { productId, addCategoryIds, removeCategoryIds } = params;
 
-	const product = await prisma.$transaction(async tx => {
-		if (removeCategoryIds.length > 0) {
-			await tx.productCategory.deleteMany({
-				where: { productId, categoryId: { in: removeCategoryIds } }
-			});
-		}
+	const existingProduct = await prisma.product.findUnique({
+		where: { id: productId }
+	});
 
-		if (addCategoryIds.length > 0) {
-			await tx.productCategory.createMany({
-				data: addCategoryIds.map(categoryId => ({ productId, categoryId })),
-				skipDuplicates: true
-			});
-		}
+	if (!existingProduct) {
+		throw new Error(`Product ${productId} not found`);
+	}
 
-		return tx.product.findUnique({
-			where: { id: productId },
-			include: {
-				categories: { include: { category: true } },
-				images: true,
-				store: true,
-				reviews: { include: { user: true } }
+	const product = await prisma.product.update({
+		where: { id: productId },
+		data: {
+			categories: {
+				deleteMany: {
+					categoryId: { in: removeCategoryIds }
+				},
+				createMany: {
+					data: addCategoryIds.map(categoryId => ({ productId, categoryId }))
+				}
 			}
-		});
+		},
+		include: {
+			categories: { include: { category: true } },
+			images: true,
+			store: true,
+			reviews: { include: { user: true } }
+		}
 	});
 
 	return product;
