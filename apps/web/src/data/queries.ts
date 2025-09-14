@@ -1,0 +1,30 @@
+import { useQuery } from '@tanstack/react-query';
+import { getCarts, getStore, getCart, getOrders } from './requests';
+
+export const useStoreQuery = (storeId: string) => {
+	return useQuery({
+		queryKey: ['store', storeId],
+		queryFn: () => getStore(storeId)
+	});
+};
+
+export const useCartsQuery = () => {
+	return useQuery({
+		queryKey: ['carts'],
+		queryFn: () => getCarts()
+	});
+};
+
+export const useCartQuery = (cartId: string) => {
+	return useQuery({
+		queryKey: ['cart', cartId],
+		queryFn: () => getCart(cartId)
+	});
+};
+
+export const useOrdersQuery = () => {
+	return useQuery({
+		queryKey: ['orders'],
+		queryFn: () => getOrders()
+	});
+};

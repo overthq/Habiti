@@ -1,25 +1,27 @@
 'use client';
 
-import { gql, useMutation } from 'urql';
 import { Button } from '@/components/ui/button';
 import { Check, Plus } from 'lucide-react';
+import {
+	useFollowStoreMutation,
+	useUnfollowStoreMutation
+} from '@/data/mutations';
+import { Store } from '@/data/types';
 
 interface StorePreviewProps {
-	store: any;
+	store: Store;
 	followed: boolean;
 }
 
 const StorePreview: React.FC<StorePreviewProps> = ({ store, followed }) => {
-	const [, followStore] = useMutation(FOLLOW_STORE);
-	const [, unfollowStore] = useMutation(UNFOLLOW_STORE);
+	const followStoreMutation = useFollowStoreMutation();
+	const unfollowStoreMutation = useUnfollowStoreMutation();
 
-	// FIXME: Maybe convert this to toggleFollow on the backend
-	// But maybe that is not idiomatic enough and allows for race conditions?
 	const handleSubmit = async () => {
 		if (followed) {
-			await unfollowStore({ storeId: store.id });
+			await unfollowStoreMutation.mutateAsync(store.id);
 		} else {
-			await followStore({ storeId: store.id });
+			await followStoreMutation.mutateAsync(store.id);
 		}
 	};
 
@@ -45,23 +47,5 @@ const StorePreview: React.FC<StorePreviewProps> = ({ store, followed }) => {
 		</div>
 	);
 };
-
-const FOLLOW_STORE = gql`
-	mutation FollowStore($storeId: ID!) {
-		followStore(storeId: $storeId) {
-			storeId
-			followerId
-		}
-	}
-`;
-
-const UNFOLLOW_STORE = gql`
-	mutation UnfollowStore($storeId: ID!) {
-		unfollowStore(storeId: $storeId) {
-			storeId
-			followerId
-		}
-	}
-`;
 
 export default StorePreview;

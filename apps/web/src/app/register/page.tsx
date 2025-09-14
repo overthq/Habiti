@@ -3,7 +3,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { useMutation, gql } from 'urql';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -17,6 +16,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
+import { useRegisterMutation } from '@/data/mutations';
 
 const registerSchema = z.object({
 	name: z.string(),
@@ -27,7 +27,7 @@ const registerSchema = z.object({
 const RegisterPage = () => {
 	const router = useRouter();
 
-	const [, register] = useMutation(REGISTER_MUTATION);
+	const registerMutation = useRegisterMutation();
 
 	const form = useForm({
 		resolver: zodResolver(registerSchema),
@@ -39,12 +39,10 @@ const RegisterPage = () => {
 	});
 
 	const onSubmit = async (values: z.infer<typeof registerSchema>) => {
-		const { error } = await register({
-			input: {
-				name: values.name,
-				email: values.email,
-				password: values.password
-			}
+		const { error } = await registerMutation.mutateAsync({
+			name: values.name,
+			email: values.email,
+			password: values.password
 		});
 
 		if (error) {
@@ -116,13 +114,5 @@ const RegisterPage = () => {
 		</div>
 	);
 };
-
-const REGISTER_MUTATION = gql`
-	mutation Register($input: RegisterInput!) {
-		register(input: $input) {
-			id
-		}
-	}
-`;
 
 export default RegisterPage;

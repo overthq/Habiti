@@ -3,44 +3,12 @@
 import { formatNaira } from '@/utils/currency';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import { gql, useQuery } from 'urql';
-
-const ORDERS_QUERY = gql`
-	query Orders {
-		currentUser {
-			id
-			orders {
-				id
-				store {
-					id
-					name
-					image {
-						id
-						path
-					}
-				}
-				products {
-					orderId
-					productId
-					product {
-						id
-						name
-					}
-					unitPrice
-					quantity
-				}
-				total
-				status
-				createdAt
-			}
-		}
-	}
-`;
+import { useOrdersQuery } from '@/data/queries';
 
 const OrdersPage = () => {
-	const [{ data, fetching }] = useQuery({ query: ORDERS_QUERY });
+	const { data, isLoading } = useOrdersQuery();
 
-	if (fetching) {
+	if (isLoading || !data) {
 		return <p>Loading...</p>;
 	}
 
@@ -48,7 +16,7 @@ const OrdersPage = () => {
 		<div className='container py-6'>
 			<h1 className='text-2xl mb-8'>Orders</h1>
 			<div>
-				{data?.currentUser.orders.map((order: any) => (
+				{data.orders.map(order => (
 					<>
 						<Link href={`/orders/${order.id}`} key={order.id}>
 							<div className='flex justify-between items-center p-4 rounded-lg border'>

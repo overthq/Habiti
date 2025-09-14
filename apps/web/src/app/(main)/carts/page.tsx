@@ -1,41 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { gql, useQuery } from 'urql';
 import { formatNaira } from '@/utils/currency';
-
-const CARTS_QUERY = gql`
-	query Carts {
-		currentUser {
-			id
-			carts {
-				id
-
-				store {
-					id
-					name
-				}
-
-				products {
-					cartId
-					productId
-					quantity
-
-					product {
-						id
-						name
-						unitPrice
-					}
-				}
-			}
-		}
-	}
-`;
+import { useCartsQuery } from '@/data/queries';
 
 const CartsPage = () => {
-	const [{ data, fetching, error }] = useQuery({ query: CARTS_QUERY });
+	const { data, isLoading, error } = useCartsQuery();
 
-	if (fetching)
+	if (isLoading || !data)
 		return (
 			<div className='flex items-center justify-center min-h-[60vh]'>
 				<div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary'></div>
@@ -53,7 +25,7 @@ const CartsPage = () => {
 		<div className='container mx-auto px-4 py-4'>
 			<h1 className='text-3xl font-bold mb-8'>Carts</h1>
 			<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-				{data?.currentUser?.carts.map((cart: any) => (
+				{data.carts.map(cart => (
 					<div key={cart.id} className='border bg-white rounded-lg p-6'>
 						<h2 className='text-xl font-semibold mb-4'>{cart.store.name}</h2>
 						<div className='space-y-2 mb-4'>
