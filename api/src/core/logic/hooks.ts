@@ -5,7 +5,6 @@ import {
 	UserPushToken
 } from '@prisma/client';
 import { NotificationType } from '../notifications';
-import NotificationsService from '../../services/notifications';
 import Services from '../../services';
 
 interface UpdateStoreRevenueArgs {
@@ -18,41 +17,19 @@ export const updateStoreRevenue = async (
 	prisma: PrismaClient,
 	args: UpdateStoreRevenueArgs
 ) => {
-	if (args.status === OrderStatus.Completed) {
-		await prisma.store.update({
-			where: { id: args.storeId },
-			data: {
-				realizedRevenue: { increment: args.total },
-				unrealizedRevenue: { decrement: args.total }
-			}
-		});
-	}
+	await prisma.store.update({
+		where: { id: args.storeId },
+		data: {
+			realizedRevenue: { increment: args.total },
+			unrealizedRevenue: { decrement: args.total }
+		}
+	});
 };
-
-interface SendStatusNotificationArgs {
-	orderId: string;
-	status: OrderStatus;
-	customerName: string;
-	pushToken: UserPushToken;
-}
 
 const NotificationTypeByOrderStatus = {
 	[OrderStatus.Cancelled]: NotificationType.OrderCancelled,
 	[OrderStatus.Completed]: NotificationType.OrderCompleted
 } as const;
-
-export const sendStatusNotification = async (
-	notificationsService: NotificationsService,
-	args: SendStatusNotificationArgs
-) => {
-	const { pushToken, status, ...meta } = args;
-
-	notificationsService.queueNotification({
-		type: NotificationTypeByOrderStatus[status],
-		data: meta,
-		recipientTokens: [pushToken.token]
-	});
-};
 
 interface CreateOrderHooksArgs {
 	orderId: string;
@@ -74,18 +51,22 @@ export const createOrderHooks = (
 	services: Services,
 	args: CreateOrderHooksArgs
 ) => {
-	updateStoreRevenue(prisma, {
-		storeId: args.storeId,
-		status: args.status,
-		total: args.amount
-	});
+	if (args.status === OrderStatus.Completed) {
+		updateStoreRevenue(prisma, {
+			storeId: args.storeId,
+			status: args.status,
+			total: args.amount
+		});
+	}
 
 	if (args.pushToken) {
-		sendStatusNotification(services.notifications, {
-			orderId: args.orderId,
-			status: args.status,
-			customerName: args.customerName,
-			pushToken: args.pushToken
+		services.notifications.queueNotification({
+			type: NotificationTypeByOrderStatus[args.status],
+			data: {
+				orderId: args.orderId,
+				customerName: args.customerName
+			},
+			recipientTokens: [args.pushToken.token]
 		});
 	}
 
@@ -118,11 +99,13 @@ export const updateOrderHooks = (
 	services: Services,
 	args: UpdateOrderHooksArgs
 ) => {
-	updateStoreRevenue(prisma, {
-		storeId: args.storeId,
-		status: args.status,
-		total: args.amount
-	});
+	if (args.status === OrderStatus.Completed) {
+		updateStoreRevenue(prisma, {
+			storeId: args.storeId,
+			status: args.status,
+			total: args.amount
+		});
+	}
 
 	services.analytics.track({
 		event: 'order_status_updated',
@@ -136,11 +119,13 @@ export const updateOrderHooks = (
 	});
 
 	if (args.pushToken) {
-		sendStatusNotification(services.notifications, {
-			orderId: args.orderId,
-			status: args.status,
-			customerName: args.customerName,
-			pushToken: args.pushToken
+		services.notifications.queueNotification({
+			type: NotificationTypeByOrderStatus[args.status],
+			data: {
+				orderId: args.orderId,
+				customerName: args.customerName
+			},
+			recipientTokens: [args.pushToken.token]
 		});
 	}
 };

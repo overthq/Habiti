@@ -49,7 +49,7 @@ export interface UpdateOrderStatusArgs {
 }
 
 export const updateOrderStatus = storeAuthorizedResolver<UpdateOrderStatusArgs>(
-	async (_, { orderId, status }, ctx) => {
+	(_, { orderId, status }, ctx) => {
 		return OrderLogic.updateOrderStatus(ctx, { orderId, status });
 	}
 );
