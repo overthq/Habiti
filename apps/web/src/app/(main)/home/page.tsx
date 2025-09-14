@@ -105,13 +105,7 @@ const HomePage = () => {
 									<p className='text-sm text-muted-foreground'>
 										{new Date(Number(order.createdAt)).toLocaleDateString(
 											'en-US',
-											{
-												year: 'numeric',
-												month: 'long',
-												day: 'numeric',
-												hour: '2-digit',
-												minute: '2-digit'
-											}
+											{ year: 'numeric', month: 'long', day: 'numeric' }
 										)}
 									</p>
 									<p className='text-sm font-medium mt-1'>
