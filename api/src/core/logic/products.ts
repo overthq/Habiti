@@ -201,7 +201,7 @@ export const deleteProduct = async (
 		groups: { store: product.storeId }
 	});
 
-	return { success: true };
+	return product;
 };
 
 export const updateProductQuantity = async (
@@ -436,7 +436,7 @@ export const removeFromWatchlist = async (
 		groups: { store: product.storeId }
 	});
 
-	return { success: true };
+	return product;
 };
 
 export const getRelatedProducts = async (
@@ -494,7 +494,6 @@ export const updateProductImages = async (
 ) => {
 	const { productId, addImages, removeImageIds } = input;
 
-	// Get product to verify ownership
 	const existingProduct = await ProductData.getProductById(
 		ctx.prisma,
 		productId
@@ -504,7 +503,6 @@ export const updateProductImages = async (
 		throw new Error('Product not found');
 	}
 
-	// Verify user has permission to update this product
 	if (ctx.storeId && ctx.storeId !== existingProduct.storeId) {
 		throw new Error(
 			'Unauthorized: Cannot update products from different store'
@@ -517,7 +515,6 @@ export const updateProductImages = async (
 		removeImageIds
 	});
 
-	// Track analytics
 	ctx.services.analytics.track({
 		event: 'product_images_updated',
 		distinctId: ctx.user.id,
@@ -538,14 +535,12 @@ export const createProductOption = async (
 ) => {
 	const { productId, name, description } = input;
 
-	// Get product to verify ownership
 	const product = await ProductData.getProductById(ctx.prisma, productId);
 
 	if (!product) {
 		throw new Error('Product not found');
 	}
 
-	// Verify user has permission to update this product
 	if (ctx.storeId && ctx.storeId !== product.storeId) {
 		throw new Error(
 			'Unauthorized: Cannot create options for products from different store'
@@ -558,7 +553,6 @@ export const createProductOption = async (
 		description
 	});
 
-	// Track analytics
 	ctx.services.analytics.track({
 		event: 'product_option_created',
 		distinctId: ctx.user.id,
@@ -579,7 +573,6 @@ export const updateProductCategories = async (
 ) => {
 	const { productId, addCategoryIds, removeCategoryIds } = input;
 
-	// Get product to verify ownership
 	const existingProduct = await ProductData.getProductById(
 		ctx.prisma,
 		productId
@@ -589,7 +582,6 @@ export const updateProductCategories = async (
 		throw new Error('Product not found');
 	}
 
-	// Verify user has permission to update this product
 	if (ctx.storeId && ctx.storeId !== existingProduct.storeId) {
 		throw new Error(
 			'Unauthorized: Cannot update products from different store'
@@ -602,7 +594,6 @@ export const updateProductCategories = async (
 		removeCategoryIds
 	});
 
-	// Track analytics
 	ctx.services.analytics.track({
 		event: 'product_categories_updated',
 		distinctId: ctx.user.id,
@@ -631,7 +622,6 @@ export const createStoreProductCategory = async (
 		description: input.description
 	});
 
-	// Track analytics
 	ctx.services.analytics.track({
 		event: 'store_category_created',
 		distinctId: ctx.user.id,
@@ -662,7 +652,6 @@ export const updateStoreProductCategory = async (
 		updateData
 	);
 
-	// Track analytics
 	ctx.services.analytics.track({
 		event: 'store_category_updated',
 		distinctId: ctx.user.id,
@@ -692,7 +681,6 @@ export const deleteStoreProductCategory = async (
 		categoryId
 	);
 
-	// Track analytics
 	ctx.services.analytics.track({
 		event: 'store_category_deleted',
 		distinctId: ctx.user.id,

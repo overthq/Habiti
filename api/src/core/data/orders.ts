@@ -186,7 +186,8 @@ export const getOrderById = async (prisma: PrismaClient, orderId: string) => {
 
 export const getOrdersByUserId = async (
 	prisma: PrismaClient,
-	userId: string
+	userId: string,
+	query: Prisma.OrderFindManyArgs
 ) => {
 	const orders = await prisma.order.findMany({
 		where: { userId },
@@ -198,7 +199,8 @@ export const getOrdersByUserId = async (
 				}
 			}
 		},
-		orderBy: { createdAt: 'desc' }
+		orderBy: { createdAt: 'desc' },
+		...query
 	});
 
 	return orders;

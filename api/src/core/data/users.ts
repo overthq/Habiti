@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 
 interface CreateUserParams {
 	name: string;
@@ -57,4 +57,23 @@ export const deleteUser = async (prisma: PrismaClient, userId: string) => {
 	await prisma.user.delete({
 		where: { id: userId }
 	});
+};
+
+export const getManagedStores = async (
+	prisma: PrismaClient,
+	userId: string
+) => {
+	const managedStores = await prisma.storeManager.findMany({
+		where: { managerId: userId },
+		include: { store: true }
+	});
+
+	return managedStores;
+};
+
+export const getUsers = async (
+	prisma: PrismaClient,
+	query: Prisma.UserFindManyArgs
+) => {
+	return prisma.user.findMany(query);
 };

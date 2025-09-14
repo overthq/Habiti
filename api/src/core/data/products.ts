@@ -349,7 +349,7 @@ export const updateProductCategories = async (
 					categoryId: { in: removeCategoryIds }
 				},
 				createMany: {
-					data: addCategoryIds.map(categoryId => ({ productId, categoryId }))
+					data: addCategoryIds.map(categoryId => ({ categoryId }))
 				}
 			}
 		},

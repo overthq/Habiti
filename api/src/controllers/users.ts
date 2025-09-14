@@ -1,58 +1,39 @@
 import { Request, Response } from 'express';
+import * as UserLogic from '../core/logic/users';
 
-import prismaClient from '../config/prisma';
 import { hydrateQuery } from '../utils/queries';
+import { getAppContext } from '../utils/context';
 
 export const getCurrentUser = async (req: Request, res: Response) => {
-	if (!req.auth) {
-		throw new Error('User not authenticated');
-	}
-
-	const user = await prismaClient.user.findUnique({
-		where: { id: req.auth.id }
-	});
-
-	if (!user) {
-		throw new Error('User not found');
-	}
+	const ctx = getAppContext(req);
+	const user = await UserLogic.getCurrentUser(ctx);
 
 	return res.json({ user });
 };
 
-export const updateCurrentUser = async (req: Request, res: Response) => {
+export const updateCurrentUser = async (
+	req: Request<{}, {}, { name: string; email: string }>,
+	res: Response
+) => {
 	const { name, email } = req.body;
 
-	if (!req.auth) {
-		return res.status(401).json({ error: 'User not authenticated' });
-	}
-
-	const updatedUser = await prismaClient.user.update({
-		where: { id: req.auth.id },
-		data: { name, email }
-	});
+	const ctx = getAppContext(req);
+	const updatedUser = await UserLogic.updateCurrentUser(ctx, { name, email });
 
 	return res.json({ user: updatedUser });
 };
 
 export const deleteCurrentUser = async (req: Request, res: Response) => {
-	if (!req.auth) {
-		return res.status(401).json({ error: 'User not authenticated' });
-	}
+	const ctx = getAppContext(req);
 
-	await prismaClient.user.delete({ where: { id: req.auth.id } });
+	await UserLogic.deleteCurrentUser(ctx);
 
 	return res.status(204).json({ message: 'User deleted' });
 };
 
 export const getFollowedStores = async (req: Request, res: Response) => {
-	if (!req.auth) {
-		return res.status(401).json({ error: 'User not authenticated' });
-	}
-
-	const followedStores = await prismaClient.storeFollower.findMany({
-		where: { followerId: req.auth.id },
-		include: { store: true }
-	});
+	const ctx = getAppContext(req);
+	const followedStores = await UserLogic.getFollowedStores(ctx);
 
 	return res.json({ followedStores });
 };
@@ -60,64 +41,38 @@ export const getFollowedStores = async (req: Request, res: Response) => {
 export const getOrders = async (req: Request, res: Response) => {
 	const query = hydrateQuery(req.query);
 
-	if (!req.auth) {
-		return res.status(401).json({ error: 'User not authenticated' });
-	}
-
-	const orders = await prismaClient.order.findMany({
-		where: { userId: req.auth.id },
-		...query
-	});
+	const ctx = getAppContext(req);
+	const orders = await UserLogic.getOrders(ctx, query);
 
 	return res.json({ orders });
 };
 
 export const getCarts = async (req: Request, res: Response) => {
-	if (!req.auth) {
-		return res.status(401).json({ error: 'User not authenticated' });
-	}
+	const query = hydrateQuery(req.query);
 
-	const carts = await prismaClient.cart.findMany({
-		where: { userId: req.auth.id },
-		include: { store: { include: { image: true } }, products: true }
-	});
+	const ctx = getAppContext(req);
+	const carts = await UserLogic.getCarts(ctx, query);
 
 	return res.json({ carts });
 };
 
 export const getCards = async (req: Request, res: Response) => {
-	if (!req.auth) {
-		return res.status(401).json({ error: 'User not authenticated' });
-	}
-
-	const cards = await prismaClient.card.findMany({
-		where: { userId: req.auth.id }
-	});
+	const ctx = getAppContext(req);
+	const cards = await UserLogic.getCards(ctx);
 
 	return res.json({ cards });
 };
 
 export const getManagedStores = async (req: Request, res: Response) => {
-	if (!req.auth) {
-		return res.status(401).json({ error: 'User not authenticated' });
-	}
-
-	const stores = await prismaClient.storeManager.findMany({
-		where: { managerId: req.auth.id },
-		include: { store: true }
-	});
+	const ctx = getAppContext(req);
+	const stores = await UserLogic.getManagedStores(ctx);
 
 	return res.json({ stores });
 };
 
 export const getDeliveryAddresses = async (req: Request, res: Response) => {
-	if (!req.auth) {
-		return res.status(401).json({ error: 'User not authenticated' });
-	}
-
-	const addresses = await prismaClient.deliveryAddress.findMany({
-		where: { userId: req.auth.id }
-	});
+	const ctx = getAppContext(req);
+	const addresses = await UserLogic.getDeliveryAddresses(ctx);
 
 	return res.json({ addresses });
 };
@@ -125,20 +80,17 @@ export const getDeliveryAddresses = async (req: Request, res: Response) => {
 export const getUsers = async (req: Request, res: Response) => {
 	const query = hydrateQuery(req.query);
 
-	const users = await prismaClient.user.findMany({
-		...query
-	});
+	const ctx = getAppContext(req);
+	const users = await UserLogic.getUsers(ctx, query);
 
 	return res.json({ users });
 };
 
-export const getUser = async (req: Request, res: Response) => {
+export const getUser = async (req: Request<{ id: string }>, res: Response) => {
 	const { id } = req.params;
 
-	if (!id) {
-		return res.status(400).json({ error: 'User ID is required' });
-	}
+	const ctx = getAppContext(req);
+	const user = await UserLogic.getUserById(ctx, id);
 
-	const user = await prismaClient.user.findUnique({ where: { id } });
 	return res.json({ user });
 };
