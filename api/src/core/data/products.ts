@@ -273,29 +273,35 @@ export const updateProductImages = async (
 ) => {
 	const { productId, addImages, removeImageIds } = params;
 
-	// Remove specified images
-	if (removeImageIds.length > 0) {
-		await prisma.image.deleteMany({
-			where: { id: { in: removeImageIds } }
-		});
-	}
-
-	// Add new images and return updated product
-	const product = await prisma.product.update({
-		where: { id: productId },
-		data: {
-			images: {
-				createMany: {
-					data: addImages
-				}
-			}
-		},
-		include: {
-			images: true,
-			store: true,
-			categories: { include: { category: true } },
-			reviews: { include: { user: true } }
+	const product = await prisma.$transaction(async tx => {
+		if (removeImageIds.length > 0) {
+			await tx.image.deleteMany({
+				where: { id: { in: removeImageIds } }
+			});
 		}
+
+		if (addImages.length > 0) {
+			await tx.product.update({
+				where: { id: productId },
+				data: {
+					images: {
+						createMany: {
+							data: addImages
+						}
+					}
+				}
+			});
+		}
+
+		return tx.product.findUnique({
+			where: { id: productId },
+			include: {
+				images: true,
+				store: true,
+				categories: { include: { category: true } },
+				reviews: { include: { user: true } }
+			}
+		});
 	});
 
 	return product;
@@ -334,30 +340,29 @@ export const updateProductCategories = async (
 ) => {
 	const { productId, addCategoryIds, removeCategoryIds } = params;
 
-	// Remove specified categories
-	if (removeCategoryIds.length > 0) {
-		await prisma.productCategory.deleteMany({
-			where: { productId, categoryId: { in: removeCategoryIds } }
-		});
-	}
-
-	// Add new categories
-	if (addCategoryIds.length > 0) {
-		await prisma.productCategory.createMany({
-			data: addCategoryIds.map(categoryId => ({ productId, categoryId })),
-			skipDuplicates: true
-		});
-	}
-
-	// Return updated product with categories
-	const product = await prisma.product.findUnique({
-		where: { id: productId },
-		include: {
-			categories: { include: { category: true } },
-			images: true,
-			store: true,
-			reviews: { include: { user: true } }
+	const product = await prisma.$transaction(async tx => {
+		if (removeCategoryIds.length > 0) {
+			await tx.productCategory.deleteMany({
+				where: { productId, categoryId: { in: removeCategoryIds } }
+			});
 		}
+
+		if (addCategoryIds.length > 0) {
+			await tx.productCategory.createMany({
+				data: addCategoryIds.map(categoryId => ({ productId, categoryId })),
+				skipDuplicates: true
+			});
+		}
+
+		return tx.product.findUnique({
+			where: { id: productId },
+			include: {
+				categories: { include: { category: true } },
+				images: true,
+				store: true,
+				reviews: { include: { user: true } }
+			}
+		});
 	});
 
 	return product;
