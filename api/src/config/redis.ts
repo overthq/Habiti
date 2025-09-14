@@ -23,6 +23,4 @@ client.on('error', error => {
 	console.log(error);
 });
 
-export type RedisClient = typeof client;
-
 export default client;

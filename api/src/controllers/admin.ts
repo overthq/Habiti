@@ -3,7 +3,10 @@ import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import * as AuthLogic from '../core/logic/auth';
 
-export const createAdmin = async (req: Request, res: Response) => {
+export const createAdmin = async (
+	req: Request<{}, { name: string; email: string; password: string }>,
+	res: Response
+) => {
 	const { name, email, password } = req.body;
 
 	const passwordHash = await AuthLogic.hashPassword(password);
@@ -15,12 +18,11 @@ export const createAdmin = async (req: Request, res: Response) => {
 	return res.status(201).json({ admin });
 };
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (
+	req: Request<{}, { email: string; password: string }>,
+	res: Response
+) => {
 	const { email, password } = req.body;
-
-	if (!email || !password) {
-		return res.status(400).json({ error: 'Email and password are required' });
-	}
 
 	const admin = await prisma.admin.findUnique({ where: { email } });
 

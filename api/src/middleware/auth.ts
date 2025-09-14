@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { APIException } from '../routes/types';
+import { APIException } from '../types/errors';
 import { env } from '../config/env';
 import * as AuthLogic from '../core/logic/auth';
 

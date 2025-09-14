@@ -68,6 +68,7 @@ const AddPayout: React.FC = () => {
 			/>
 			<View style={{ marginBottom: 56, paddingHorizontal: 16 }}>
 				<Button
+					disabled={!amount}
 					text='Add Payout'
 					loading={fetching}
 					onPress={confirmAddPayout}

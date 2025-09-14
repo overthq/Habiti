@@ -1,11 +1,7 @@
-import { Router, Request, Response } from 'express';
-
+import { Request, Response } from 'express';
 import prismaClient from '../config/prisma';
 
-const router: Router = Router();
-
-// GET /search
-router.get('/', async (req: Request, res: Response) => {
+export const globalSearch = async (req: Request, res: Response) => {
 	const { query } = req.query;
 
 	if (!query || typeof query !== 'string') {
@@ -22,6 +18,4 @@ router.get('/', async (req: Request, res: Response) => {
 	]);
 
 	return res.json({ products, stores });
-});
-
-export default router;
+};

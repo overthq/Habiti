@@ -1,7 +1,9 @@
 import { Expo, ExpoPushMessage } from 'expo-server-sdk';
 
-import { NotificationPayload } from '../core/notifications/types';
-import { notificationTemplates } from '../core/notifications/templates';
+import {
+	type NotificationPayload,
+	notificationTemplates
+} from '../core/notifications';
 
 const expo = new Expo();
 

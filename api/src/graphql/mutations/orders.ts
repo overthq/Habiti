@@ -18,9 +18,7 @@ export const createOrder: Resolver<CreateOrderArgs> = async (
 	{ input },
 	ctx
 ) => {
-	const order = await OrderLogic.createOrder(input, ctx);
-
-	return order;
+	return OrderLogic.createOrder(ctx, input);
 };
 
 export interface UpdateOrderArgs {
@@ -39,12 +37,10 @@ export const updateOrder: Resolver<UpdateOrderArgs> = async (
 		throw new Error('Status is required for order updates');
 	}
 
-	const order = await OrderLogic.updateOrderStatus(
-		{ orderId, status: input.status },
-		ctx
-	);
-
-	return order;
+	return OrderLogic.updateOrderStatus(ctx, {
+		orderId,
+		status: input.status
+	});
 };
 
 export interface UpdateOrderStatusArgs {
@@ -53,9 +49,7 @@ export interface UpdateOrderStatusArgs {
 }
 
 export const updateOrderStatus = storeAuthorizedResolver<UpdateOrderStatusArgs>(
-	async (_, { orderId, status }, ctx) => {
-		const order = await OrderLogic.updateOrderStatus({ orderId, status }, ctx);
-
-		return order;
+	(_, { orderId, status }, ctx) => {
+		return OrderLogic.updateOrderStatus(ctx, { orderId, status });
 	}
 );

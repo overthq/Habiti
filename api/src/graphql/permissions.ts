@@ -12,7 +12,9 @@ export const canManageStore = async (managerId: string, storeId: string) => {
 export const authenticatedResolver =
 	<T>(resolver: Resolver<T>) =>
 	async (...args: Parameters<Resolver<T>>) => {
-		if (!args[2].user?.id) {
+		const ctx = args[2];
+
+		if (!ctx.user?.id) {
 			throw new Error('Not authenticated');
 		}
 
@@ -22,15 +24,17 @@ export const authenticatedResolver =
 export const storeAuthorizedResolver =
 	<T>(resolver: Resolver<T>) =>
 	async (...args: Parameters<Resolver<T>>) => {
-		if (!args[2].user.id) {
+		const ctx = args[2];
+
+		if (!ctx.user.id) {
 			throw new Error('Not authenticated');
 		}
 
-		if (!args[2].storeId) {
+		if (!ctx.storeId) {
 			throw new Error('Store not found');
 		}
 
-		const isAuthorized = await canManageStore(args[2].user.id, args[2].storeId);
+		const isAuthorized = await canManageStore(ctx.user.id, ctx.storeId);
 
 		if (!isAuthorized) {
 			throw new Error('Not authorized to manage store');

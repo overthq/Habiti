@@ -8,7 +8,7 @@ import { validateCart } from '../validations/carts';
 import { createOrderSchema, updateOrderSchema } from '../validations/orders';
 import { AppContext } from '../../utils/context';
 
-export const createOrder = async (input: CreateOrderInput, ctx: AppContext) => {
+export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 	const { data: validatedInput, success } = createOrderSchema.safeParse(input);
 
 	if (!success) {
@@ -48,8 +48,8 @@ export const createOrder = async (input: CreateOrderInput, ctx: AppContext) => {
 };
 
 export const updateOrderStatus = async (
-	input: UpdateOrderStatusInput,
-	ctx: AppContext
+	ctx: AppContext,
+	input: UpdateOrderStatusInput
 ) => {
 	const { data: validatedInput, success } = updateOrderSchema.safeParse(input);
 

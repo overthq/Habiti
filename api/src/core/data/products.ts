@@ -1,4 +1,4 @@
-import { ProductStatus, PrismaClient } from '@prisma/client';
+import { ProductStatus, PrismaClient, Prisma } from '@prisma/client';
 
 interface CreateProductParams {
 	name: string;
@@ -8,6 +8,10 @@ interface CreateProductParams {
 	storeId: string;
 	categoryId?: string;
 	status?: ProductStatus;
+	images?: {
+		path: string;
+		publicId: string;
+	}[];
 }
 
 interface UpdateProductParams {
@@ -17,6 +21,10 @@ interface UpdateProductParams {
 	quantity?: number;
 	categoryId?: string;
 	status?: ProductStatus;
+	images?: {
+		path: string;
+		publicId: string;
+	}[];
 }
 
 interface CreateProductReviewParams {
@@ -30,9 +38,21 @@ export const createProduct = async (
 	prisma: PrismaClient,
 	params: CreateProductParams
 ) => {
+	const { images, ...rest } = params;
+
+	let args: Prisma.ProductCreateArgs['data'] = {
+		...rest
+	};
+
+	if (images && images.length > 0) {
+		args.images = {
+			createMany: { data: images }
+		};
+	}
+
 	const product = await prisma.product.create({
 		data: {
-			...params,
+			...args,
 			quantity: params.quantity ?? 0,
 			status: params.status ?? ProductStatus.Active
 		}
@@ -46,9 +66,21 @@ export const updateProduct = async (
 	productId: string,
 	params: UpdateProductParams
 ) => {
+	const { images, ...rest } = params;
+
+	let args: Prisma.ProductUpdateArgs['data'] = {
+		...rest
+	};
+
+	if (images && images.length > 0) {
+		args.images = {
+			createMany: { data: images }
+		};
+	}
+
 	const product = await prisma.product.update({
 		where: { id: productId },
-		data: params
+		data: args
 	});
 
 	return product;
@@ -224,4 +256,160 @@ export const getRelatedProducts = async (
 	}
 
 	return relatedProducts;
+};
+
+interface UpdateProductImagesParams {
+	productId: string;
+	addImages: {
+		path: string;
+		publicId: string;
+	}[];
+	removeImageIds: string[];
+}
+
+export const updateProductImages = async (
+	prisma: PrismaClient,
+	params: UpdateProductImagesParams
+) => {
+	const { productId, addImages, removeImageIds } = params;
+
+	const existingProduct = await prisma.product.findUnique({
+		where: { id: productId }
+	});
+
+	if (!existingProduct) {
+		throw new Error(`Product ${productId} not found`);
+	}
+
+	const product = await prisma.product.update({
+		where: { id: productId },
+		data: {
+			images: {
+				createMany: { data: addImages },
+				deleteMany: { id: { in: removeImageIds } }
+			}
+		},
+		include: {
+			images: true,
+			store: true,
+			categories: { include: { category: true } },
+			reviews: { include: { user: true } }
+		}
+	});
+
+	return product;
+};
+
+interface CreateProductOptionParams {
+	productId: string;
+	name: string;
+	description: string | undefined;
+}
+
+export const createProductOption = async (
+	prisma: PrismaClient,
+	params: CreateProductOptionParams
+) => {
+	const productOption = await prisma.productOption.create({
+		data: {
+			productId: params.productId,
+			name: params.name,
+			description: params.description ?? null
+		}
+	});
+
+	return productOption;
+};
+
+interface UpdateProductCategoriesParams {
+	productId: string;
+	addCategoryIds: string[];
+	removeCategoryIds: string[];
+}
+
+export const updateProductCategories = async (
+	prisma: PrismaClient,
+	params: UpdateProductCategoriesParams
+) => {
+	const { productId, addCategoryIds, removeCategoryIds } = params;
+
+	const existingProduct = await prisma.product.findUnique({
+		where: { id: productId }
+	});
+
+	if (!existingProduct) {
+		throw new Error(`Product ${productId} not found`);
+	}
+
+	const product = await prisma.product.update({
+		where: { id: productId },
+		data: {
+			categories: {
+				deleteMany: {
+					categoryId: { in: removeCategoryIds }
+				},
+				createMany: {
+					data: addCategoryIds.map(categoryId => ({ productId, categoryId }))
+				}
+			}
+		},
+		include: {
+			categories: { include: { category: true } },
+			images: true,
+			store: true,
+			reviews: { include: { user: true } }
+		}
+	});
+
+	return product;
+};
+
+interface CreateStoreProductCategoryParams {
+	storeId: string;
+	name: string;
+	description: string | undefined;
+}
+
+export const createStoreProductCategory = async (
+	prisma: PrismaClient,
+	params: CreateStoreProductCategoryParams
+) => {
+	const category = await prisma.storeProductCategory.create({
+		data: {
+			storeId: params.storeId,
+			name: params.name,
+			description: params.description ?? null
+		}
+	});
+
+	return category;
+};
+
+interface UpdateStoreProductCategoryParams {
+	name?: string;
+	description?: string;
+}
+
+export const updateStoreProductCategory = async (
+	prisma: PrismaClient,
+	categoryId: string,
+	params: UpdateStoreProductCategoryParams
+) => {
+	const category = await prisma.storeProductCategory.update({
+		where: { id: categoryId },
+		data: params
+	});
+
+	return category;
+};
+
+export const deleteStoreProductCategory = async (
+	prisma: PrismaClient,
+	categoryId: string
+) => {
+	const category = await prisma.storeProductCategory.delete({
+		where: { id: categoryId }
+	});
+
+	return category;
 };
