@@ -80,56 +80,53 @@ const HomePage = () => {
 		<div className='container py-6'>
 			<h2 className='text-xl mb-4'>Recent Orders</h2>
 
-			<div className='mb-8'>
+			<div className='mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
 				{data.currentUser.orders.map((order: any) => (
-					<React.Fragment key={order.id}>
-						<Link href={`/orders/${order.id}`} className='mb-2'>
-							<div className='flex justify-between items-center p-4 rounded-lg border'>
-								<div className='flex gap-4 items-center'>
-									<div className='w-16 h-16 rounded-full overflow-hidden bg-muted-foreground flex-shrink-0'>
-										{order.store.image && (
-											<img
-												src={order.store.image?.path}
-												alt={order.store.name}
-												className='size-full object-cover'
-											/>
-										)}
-									</div>
-
-									<div>
-										<p className='font-medium'>
-											{order.store.name} -{' '}
-											<span className='text-primary'>
-												{order.products.length} items
-											</span>
-										</p>
-										<p className='text-sm text-muted-foreground'>
-											{new Date(Number(order.createdAt)).toLocaleDateString(
-												'en-US',
-												{
-													year: 'numeric',
-													month: 'long',
-													day: 'numeric',
-													hour: '2-digit',
-													minute: '2-digit'
-												}
-											)}
-										</p>
-										<p className='text-sm font-medium mt-1'>
-											₦{order.total.toLocaleString()} ·
-											<span
-												className={`capitalize ml-1 ${order.status === 'completed' ? 'text-green-600' : 'text-amber-600'}`}
-											>
-												{order.status}
-											</span>
-										</p>
-									</div>
+					<Link href={`/orders/${order.id}`} key={order.id} className='block'>
+						<div className='h-full flex justify-between items-center p-4 rounded-lg border'>
+							<div className='flex gap-4 items-center'>
+								<div className='w-16 h-16 rounded-full overflow-hidden bg-muted-foreground flex-shrink-0'>
+									{order.store.image && (
+										<img
+											src={order.store.image?.path}
+											alt={order.store.name}
+											className='size-full object-cover'
+										/>
+									)}
 								</div>
-								<ChevronRight className='text-muted-foreground' />
+
+								<div>
+									<p className='font-medium'>
+										{order.store.name} -{' '}
+										<span className='text-primary'>
+											{order.products.length} items
+										</span>
+									</p>
+									<p className='text-sm text-muted-foreground'>
+										{new Date(Number(order.createdAt)).toLocaleDateString(
+											'en-US',
+											{
+												year: 'numeric',
+												month: 'long',
+												day: 'numeric',
+												hour: '2-digit',
+												minute: '2-digit'
+											}
+										)}
+									</p>
+									<p className='text-sm font-medium mt-1'>
+										₦{order.total.toLocaleString()} ·
+										<span
+											className={`capitalize ml-1 ${order.status === 'completed' ? 'text-green-600' : 'text-amber-600'}`}
+										>
+											{order.status}
+										</span>
+									</p>
+								</div>
 							</div>
-						</Link>
-						<div className='h-2' />
-					</React.Fragment>
+							<ChevronRight className='text-muted-foreground' />
+						</div>
+					</Link>
 				))}
 			</div>
 

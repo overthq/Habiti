@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { formatNaira } from '@/utils/currency';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
@@ -17,8 +18,8 @@ const OrdersPage = () => {
 			<h1 className='text-2xl mb-8'>Orders</h1>
 			<div>
 				{data.orders.map(order => (
-					<>
-						<Link href={`/orders/${order.id}`} key={order.id}>
+					<React.Fragment key={order.id}>
+						<Link href={`/orders/${order.id}`}>
 							<div className='flex justify-between items-center p-4 rounded-lg border'>
 								<div className='flex gap-4 items-center'>
 									<div className='w-16 h-16 rounded-full overflow-hidden bg-muted-foreground flex-shrink-0'>
@@ -64,7 +65,7 @@ const OrdersPage = () => {
 							</div>
 						</Link>
 						<div className='h-2' />
-					</>
+					</React.Fragment>
 				))}
 			</div>
 		</div>
