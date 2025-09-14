@@ -1,11 +1,12 @@
 import { Resolver } from '../../types/resolvers';
+import * as UserLogic from '../../core/logic/users';
 
 const currentUser: Resolver = async (_, __, ctx) => {
-	return ctx.prisma.user.findUnique({ where: { id: ctx.user.id } });
+	return UserLogic.getCurrentUser(ctx);
 };
 
 const user: Resolver = (_, { id }, ctx) => {
-	return ctx.prisma.user.findUnique({ where: { id } });
+	return UserLogic.getUserById(ctx, id);
 };
 
 const users: Resolver = (_, __, ctx) => {

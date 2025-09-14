@@ -1,5 +1,6 @@
 import { PushTokenType } from '@prisma/client';
 import { Resolver } from '../../types/resolvers';
+import * as UserLogic from '../../core/logic/users';
 
 export interface EditProfileArgs {
 	input: {
@@ -18,10 +19,7 @@ export const editProfile: Resolver<EditProfileArgs> = (_, { input }, ctx) => {
 		throw new Error('Please provide a valid email address.');
 	}
 
-	return ctx.prisma.user.update({
-		where: { id: ctx.user.id },
-		data: input
-	});
+	return UserLogic.updateCurrentUser(ctx, input);
 };
 
 export interface SavePushTokenArgs {
@@ -71,5 +69,5 @@ export const deletePushToken: Resolver<DeletePushTokenArgs> = (
 };
 
 export const deleteAccount: Resolver = (_, __, ctx) => {
-	return ctx.prisma.user.delete({ where: { id: ctx.user.id } });
+	return UserLogic.deleteCurrentUser(ctx);
 };

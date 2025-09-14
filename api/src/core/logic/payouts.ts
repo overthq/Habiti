@@ -2,6 +2,7 @@ import * as PayoutData from '../data/payouts';
 import * as StoreData from '../data/stores';
 import { AppContext } from '../../utils/context';
 import { payAccount } from '../payments';
+import { PayoutStatus } from '@prisma/client';
 
 interface CreatePayoutInput {
 	amount: number;
@@ -75,6 +76,32 @@ export const createPayout = async (
 			availableBeforePayout: availableForPayout
 		},
 		groups: { store: ctx.storeId }
+	});
+
+	return payout;
+};
+
+interface UpdatePayoutInput {
+	payoutId: string;
+	status: PayoutStatus;
+}
+
+export const updatePayout = async (
+	ctx: AppContext,
+	input: UpdatePayoutInput
+) => {
+	const payout = await PayoutData.updatePayout(ctx.prisma, input);
+
+	ctx.services.analytics.track({
+		event: 'payout_updated',
+		distinctId: ctx.user.id,
+		properties: {
+			storeId: ctx.storeId,
+			amount: payout.amount,
+			storeName: payout.store.name,
+			status: payout.status
+		},
+		groups: { store: payout.storeId }
 	});
 
 	return payout;

@@ -34,7 +34,7 @@ export const getCartById = async (prisma: PrismaClient, cartId: string) => {
 export const getCartsByUserId = async (
 	prisma: PrismaClient,
 	userId: string,
-	query: Prisma.CartFindManyArgs
+	query?: Prisma.CartFindManyArgs
 ) => {
 	const carts = await prisma.cart.findMany({
 		where: { userId },
