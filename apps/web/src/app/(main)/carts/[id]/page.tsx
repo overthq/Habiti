@@ -15,17 +15,15 @@ const CartPage = () => {
 	const handlePlaceOrder = () => {
 		if (data) {
 			createOrderMutation.mutate({
-				input: {
-					cartId: id,
-					cardId: data.cart.user.cards[0].id,
-					transactionFee: data.cart.fees.transaction,
-					serviceFee: data.cart.fees.service
-				}
+				cartId: id,
+				cardId: data.cart.user.cards[0].id,
+				transactionFee: data.cart.fees.transaction,
+				serviceFee: data.cart.fees.service
 			});
 		}
 	};
 
-	if (isLoading) {
+	if (isLoading || !data) {
 		return <div />;
 	}
 
@@ -33,7 +31,7 @@ const CartPage = () => {
 		<div>
 			<h1 className='text-2xl mb-4'>Cart</h1>
 
-			{data.cart.products.map((product: any) => (
+			{data.cart.products.map(product => (
 				<div
 					key={product.productId}
 					className='flex items-center gap-4 p-2 border rounded-md mb-3'
@@ -43,7 +41,7 @@ const CartPage = () => {
 							<img
 								src={product.product.images[0].path}
 								alt={product.product.name}
-								className='w-16 h-16 object-cover rounded'
+								className='size-16 object-cover rounded'
 								loading='lazy'
 								onLoad={e =>
 									e.currentTarget.parentElement?.classList.remove('bg-gray-200')

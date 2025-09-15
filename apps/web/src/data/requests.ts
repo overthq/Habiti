@@ -123,7 +123,7 @@ export const getUser = async (userId: string) => {
 // Carts
 
 export const getCart = async (cartId: string) => {
-	const response = await api.get(`/carts/${cartId}`);
+	const response = await api.get<{ cart: Cart }>(`/carts/${cartId}`);
 	return response.data;
 };
 

@@ -2,6 +2,7 @@ export interface User {
 	id: string;
 	name: string;
 	email: string;
+	cards: Card[];
 }
 
 export interface Store {
@@ -37,7 +38,16 @@ export interface Cart {
 	store: Store;
 	products: CartProduct[];
 	total: number;
+	fees: {
+		transaction: number;
+		service: number;
+		total: number;
+	};
 	user: User;
+}
+
+export interface Card {
+	id: string;
 }
 
 export interface Order {

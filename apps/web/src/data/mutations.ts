@@ -9,7 +9,12 @@ import {
 	createOrder
 } from './requests';
 
-import type { AddToCartBody, AuthenticateBody, RegisterBody } from './types';
+import type {
+	AddToCartBody,
+	AuthenticateBody,
+	CreateOrderBody,
+	RegisterBody
+} from './types';
 
 export const useAddToCartMutation = () => {
 	const queryClient = useQueryClient();
