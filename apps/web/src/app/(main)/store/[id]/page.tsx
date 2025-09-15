@@ -10,8 +10,6 @@ const StorePage = () => {
 	const { id } = useParams<{ id: string }>();
 	const { data, isLoading } = useStoreQuery(id);
 
-	console.log({ data });
-
 	if (isLoading || !data) return <div />;
 
 	return (

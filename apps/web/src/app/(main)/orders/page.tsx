@@ -5,6 +5,7 @@ import { formatNaira } from '@/utils/currency';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useOrdersQuery } from '@/data/queries';
+import { cn } from '@/lib/utils';
 
 const OrdersPage = () => {
 	const { data, isLoading } = useOrdersQuery();
@@ -13,16 +14,18 @@ const OrdersPage = () => {
 		return <p>Loading...</p>;
 	}
 
+	console.log({ data });
+
 	return (
 		<div className='container py-6'>
-			<h1 className='text-2xl mb-8'>Orders</h1>
+			<h1 className='text-2xl font-medium mb-8'>Orders</h1>
 			<div>
 				{data.orders.map(order => (
 					<React.Fragment key={order.id}>
 						<Link href={`/orders/${order.id}`}>
 							<div className='flex justify-between items-center p-4 rounded-lg border'>
 								<div className='flex gap-4 items-center'>
-									<div className='w-16 h-16 rounded-full overflow-hidden bg-muted-foreground flex-shrink-0'>
+									<div className='size-16 rounded-full overflow-hidden bg-muted-foreground flex-shrink-0'>
 										{order.store.image && (
 											<img
 												src={order.store.image?.path}
@@ -40,21 +43,21 @@ const OrdersPage = () => {
 											</span>
 										</p>
 										<p className='text-sm text-muted-foreground'>
-											{new Date(Number(order.createdAt)).toLocaleDateString(
-												'en-US',
-												{
-													year: 'numeric',
-													month: 'long',
-													day: 'numeric',
-													hour: '2-digit',
-													minute: '2-digit'
-												}
-											)}
+											{new Date(order.createdAt).toLocaleDateString('en-US', {
+												year: 'numeric',
+												month: 'long',
+												day: 'numeric'
+											})}
 										</p>
 										<p className='text-sm font-medium mt-1'>
 											{formatNaira(order.total)} ·{' '}
 											<span
-												className={`capitalize ${order.status === 'completed' ? 'text-green-600' : 'text-amber-600'}`}
+												className={cn(
+													'capitalize',
+													order.status === 'Completed'
+														? 'text-green-600'
+														: 'text-amber-600'
+												)}
 											>
 												{order.status}
 											</span>
