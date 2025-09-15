@@ -45,14 +45,10 @@ const LoginPage = () => {
 			password: values.password
 		});
 
-		console.log({ data });
-
 		logIn({
 			accessToken: data.accessToken,
 			userId: data.userId
 		});
-
-		// TODO: Handle non-home origin routes.
 
 		router.push('/home');
 	};
