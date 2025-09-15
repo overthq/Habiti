@@ -45,5 +45,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		eas: {
 			projectId: 'dc06d296-cd6f-4950-85d3-1483d3a394df'
 		}
-	}
+	},
+	plugins: ['expo-notifications']
 });
