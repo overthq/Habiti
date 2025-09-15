@@ -48,7 +48,7 @@ const MainNavigation = () => {
 	const pathname = usePathname();
 
 	return (
-		<div className='border-b py-2 mb-4'>
+		<div className='border-b bg-background py-2 mb-4 fixed top-0 w-full'>
 			<nav className='container mx-auto'>
 				<ul className='flex justify-center items-center gap-8'>
 					{items.map(item => (

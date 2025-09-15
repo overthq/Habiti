@@ -5,7 +5,8 @@ import {
 	followStore,
 	unfollowStore,
 	authenticate,
-	register
+	register,
+	createOrder
 } from './requests';
 
 import type { AddToCartBody, AuthenticateBody, RegisterBody } from './types';
@@ -57,6 +58,13 @@ export const useRegisterMutation = () => {
 export const useAuthenticateMutation = () => {
 	return useMutation({
 		mutationFn: (input: AuthenticateBody) => authenticate(input),
+		onSuccess: () => {}
+	});
+};
+
+export const useCreateOrderMutation = () => {
+	return useMutation({
+		mutationFn: (body: CreateOrderBody) => createOrder(body),
 		onSuccess: () => {}
 	});
 };

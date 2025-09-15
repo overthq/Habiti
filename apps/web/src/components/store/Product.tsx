@@ -28,7 +28,7 @@ const Product: React.FC<ProductProps> = ({ id, name, unitPrice, images }) => {
 					)}
 				</div>
 				<div className='mt-4'>
-					<h2 className='text-lg font-semibold'>{name}</h2>
+					<p className='font-medium'>{name}</p>
 					<p className='text-gray-600'>{formatNaira(unitPrice)}</p>
 				</div>
 			</div>

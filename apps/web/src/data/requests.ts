@@ -11,7 +11,8 @@ import type {
 	User,
 	Card,
 	AuthenticateBody,
-	Product
+	Product,
+	CreateOrderBody
 } from './types';
 import { useAuthStore } from '@/state/auth-store';
 
@@ -142,6 +143,11 @@ export const removeFromCart = async (cartId: string, productId: string) => {
 
 export const getOrder = async (orderId: string) => {
 	const response = await api.get<{ order: Order }>(`/orders/${orderId}`);
+	return response.data;
+};
+
+export const createOrder = async (body: CreateOrderBody) => {
+	const response = await api.post<{ order: Order }>('/orders');
 	return response.data;
 };
 

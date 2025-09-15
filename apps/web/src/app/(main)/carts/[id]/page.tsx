@@ -1,22 +1,20 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { useCreateOrderMutation } from '@/data/mutations';
+import { useCartQuery } from '@/data/queries';
 import { formatNaira } from '@/utils/currency';
 import { useParams } from 'next/navigation';
-import { gql, useMutation, useQuery } from 'urql';
 
 const CartPage = () => {
-	const { id } = useParams();
-	const [{ data, fetching }] = useQuery({
-		query: CART_QUERY,
-		variables: { id }
-	});
+	const { id } = useParams<{ id: string }>();
+	const { data, isLoading } = useCartQuery(id);
 
-	const [, createOrder] = useMutation(CREATE_ORDER);
+	const createOrderMutation = useCreateOrderMutation();
 
 	const handlePlaceOrder = () => {
 		if (data) {
-			createOrder({
+			createOrderMutation.mutate({
 				input: {
 					cartId: id,
 					cardId: data.cart.user.cards[0].id,
@@ -27,7 +25,7 @@ const CartPage = () => {
 		}
 	};
 
-	if (fetching) {
+	if (isLoading) {
 		return <div />;
 	}
 
@@ -85,71 +83,6 @@ const CartPage = () => {
 		</div>
 	);
 };
-
-const CART_QUERY = gql`
-	query Cart($id: ID!) {
-		cart(id: $id) {
-			id
-			userId
-			user {
-				id
-				cards {
-					id
-					email
-					cardType
-					last4
-				}
-			}
-			storeId
-			store {
-				id
-				name
-			}
-			products {
-				cartId
-				productId
-				product {
-					id
-					name
-					unitPrice
-					storeId
-					images {
-						id
-						path
-					}
-				}
-				quantity
-			}
-			total
-			fees {
-				transaction
-				service
-				total
-			}
-		}
-	}
-`;
-
-const CREATE_ORDER = gql`
-	mutation CreateOrder($input: CreateOrderInput!) {
-		createOrder(input: $input) {
-			id
-			store {
-				id
-				name
-			}
-			products {
-				product {
-					id
-					name
-				}
-				unitPrice
-				quantity
-			}
-			total
-		}
-	}
-`;
 
 export default CartPage;
 
