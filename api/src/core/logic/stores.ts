@@ -162,31 +162,6 @@ export const deleteStore = async (ctx: AppContext, input: DeleteStoreInput) => {
 	return store;
 };
 
-export const incrementOrderCount = async (
-	ctx: AppContext,
-	input: IncrementOrderCountInput
-) => {
-	const { storeId } = input;
-
-	if (ctx.storeId && ctx.storeId !== storeId) {
-		throw new Error('Unauthorized: Cannot update different store');
-	}
-
-	const store = await StoreData.incrementOrderCount(ctx.prisma, storeId);
-
-	ctx.services.analytics.track({
-		event: 'store_order_count_incremented',
-		distinctId: ctx.user.id,
-		properties: {
-			storeId: store.id,
-			newOrderCount: store.orderCount
-		},
-		groups: { store: storeId }
-	});
-
-	return store;
-};
-
 export const createStoreManager = async (
 	ctx: AppContext,
 	input: CreateStoreManagerInput
@@ -217,7 +192,7 @@ export const createStoreManager = async (
 		distinctId: ctx.user.id,
 		properties: {
 			storeId,
-			newManagerId: userId,
+			managerId: userId,
 			storeName: store.name
 		},
 		groups: { store: storeId }

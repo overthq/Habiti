@@ -77,22 +77,43 @@ export const getStoreById = async (prisma: PrismaClient, storeId: string) => {
 	return store;
 };
 
+export const getStoreFollowers = async (
+	prisma: PrismaClient,
+	storeId: string
+) => {
+	const storeFollowers = await prisma.store
+		.findUnique({ where: { id: storeId } })
+		.followers();
+
+	return storeFollowers;
+};
+
+export const getStoreProducts = async (
+	prisma: PrismaClient,
+	storeId: string
+) => {
+	const products = await prisma.store
+		.findUnique({ where: { id: storeId } })
+		.products();
+
+	return products;
+};
+
+export const getStoreManagers = async (
+	prisma: PrismaClient,
+	storeId: string
+) => {
+	const storeManagers = await prisma.store
+		.findUnique({ where: { id: storeId } })
+		.products();
+
+	return storeManagers;
+};
+
 export const deleteStore = async (prisma: PrismaClient, storeId: string) => {
 	return prisma.store.delete({
 		where: { id: storeId }
 	});
-};
-
-export const incrementOrderCount = async (
-	prisma: PrismaClient,
-	storeId: string
-) => {
-	const store = await prisma.store.update({
-		where: { id: storeId },
-		data: { orderCount: { increment: 1 } }
-	});
-
-	return store;
 };
 
 export const createStoreManager = async (
