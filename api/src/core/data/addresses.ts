@@ -3,18 +3,10 @@ import { PrismaClient } from '@prisma/client';
 interface CreateDeliveryAddressParams {
 	userId: string;
 	name: string;
-	address: string;
-	city: string;
-	state: string;
-	phoneNumber: string;
 }
 
 interface UpdateDeliveryAddressParams {
 	name?: string;
-	address?: string;
-	city?: string;
-	state?: string;
-	phoneNumber?: string;
 }
 
 export const createDeliveryAddress = async (

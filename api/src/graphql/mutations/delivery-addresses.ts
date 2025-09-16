@@ -1,4 +1,5 @@
 import { Resolver } from '../../types/resolvers';
+import * as DeliveryAddressLogic from '../../core/logic/delivery-addresses';
 
 export interface AddDeliveryAddressArgs {
 	input: {
@@ -11,9 +12,8 @@ export const addDeliveryAddress: Resolver<AddDeliveryAddressArgs> = async (
 	{ input },
 	ctx
 ) => {
-	const deliveryAddress = await ctx.prisma.deliveryAddress.create({
-		data: { name: input.name, userId: ctx.user.id }
+	return DeliveryAddressLogic.createDeliveryAddress(ctx, {
+		...input,
+		userId: ctx.user.id
 	});
-
-	return deliveryAddress;
 };
