@@ -1,59 +1,29 @@
 'use client';
 
+import React from 'react';
 import { formatNaira } from '@/utils/currency';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import { gql, useQuery } from 'urql';
-
-const ORDERS_QUERY = gql`
-	query Orders {
-		currentUser {
-			id
-			orders {
-				id
-				store {
-					id
-					name
-					image {
-						id
-						path
-					}
-				}
-				products {
-					orderId
-					productId
-					product {
-						id
-						name
-					}
-					unitPrice
-					quantity
-				}
-				total
-				status
-				createdAt
-			}
-		}
-	}
-`;
+import { useOrdersQuery } from '@/data/queries';
+import { cn } from '@/lib/utils';
 
 const OrdersPage = () => {
-	const [{ data, fetching }] = useQuery({ query: ORDERS_QUERY });
+	const { data, isLoading } = useOrdersQuery();
 
-	if (fetching) {
+	if (isLoading || !data) {
 		return <p>Loading...</p>;
 	}
 
 	return (
 		<div className='container py-6'>
-			<h1 className='text-2xl mb-8'>Orders</h1>
+			<h1 className='text-2xl font-medium mb-8'>Orders</h1>
 			<div>
-				{data?.currentUser.orders.map((order: any) => (
-					<>
-						<Link href={`/orders/${order.id}`} key={order.id}>
+				{data.orders.map(order => (
+					<React.Fragment key={order.id}>
+						<Link href={`/orders/${order.id}`}>
 							<div className='flex justify-between items-center p-4 rounded-lg border'>
 								<div className='flex gap-4 items-center'>
-									<div className='w-16 h-16 rounded-full overflow-hidden bg-muted-foreground flex-shrink-0'>
+									<div className='size-16 rounded-full overflow-hidden bg-muted-foreground flex-shrink-0'>
 										{order.store.image && (
 											<img
 												src={order.store.image?.path}
@@ -71,21 +41,21 @@ const OrdersPage = () => {
 											</span>
 										</p>
 										<p className='text-sm text-muted-foreground'>
-											{new Date(Number(order.createdAt)).toLocaleDateString(
-												'en-US',
-												{
-													year: 'numeric',
-													month: 'long',
-													day: 'numeric',
-													hour: '2-digit',
-													minute: '2-digit'
-												}
-											)}
+											{new Date(order.createdAt).toLocaleDateString('en-US', {
+												year: 'numeric',
+												month: 'long',
+												day: 'numeric'
+											})}
 										</p>
 										<p className='text-sm font-medium mt-1'>
 											{formatNaira(order.total)} ·{' '}
 											<span
-												className={`capitalize ${order.status === 'completed' ? 'text-green-600' : 'text-amber-600'}`}
+												className={cn(
+													'capitalize',
+													order.status === 'Completed'
+														? 'text-green-600'
+														: 'text-amber-600'
+												)}
 											>
 												{order.status}
 											</span>
@@ -96,7 +66,7 @@ const OrdersPage = () => {
 							</div>
 						</Link>
 						<div className='h-2' />
-					</>
+					</React.Fragment>
 				))}
 			</div>
 		</div>

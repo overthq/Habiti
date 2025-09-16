@@ -1,15 +1,13 @@
-import { authenticatedResolver } from '../permissions';
 import * as CartLogic from '../../core/logic/carts';
+import { Resolver } from '../../types/resolvers';
 
 export interface DeleteCartArgs {
 	id: string;
 }
 
-export const deleteCart = authenticatedResolver<DeleteCartArgs>(
-	(_, { id }, ctx) => {
-		return CartLogic.deleteCart(ctx, { cartId: id });
-	}
-);
+export const deleteCart: Resolver<DeleteCartArgs> = (_, { id }, ctx) => {
+	return CartLogic.deleteCart(ctx, { cartId: id });
+};
 
 export interface AddToCartArgs {
 	input: {
@@ -19,31 +17,35 @@ export interface AddToCartArgs {
 	};
 }
 
-export const addToCart = authenticatedResolver<AddToCartArgs>(
-	(_, { input: { storeId, productId, quantity } }, ctx) => {
-		return CartLogic.addProductToCart(ctx, {
-			storeId,
-			productId,
-			quantity
-		});
-	}
-);
+export const addToCart: Resolver<AddToCartArgs> = (
+	_,
+	{ input: { storeId, productId, quantity } },
+	ctx
+) => {
+	return CartLogic.addProductToCart(ctx, {
+		storeId,
+		productId,
+		quantity
+	});
+};
 
 export interface RemoveProductArgs {
 	cartId: string;
 	productId: string;
 }
 
-export const removeFromCart = authenticatedResolver<RemoveProductArgs>(
-	async (_, { cartId, productId }, ctx) => {
-		const cartProduct = await CartLogic.removeProductFromCart(ctx, {
-			cartId,
-			productId
-		});
+export const removeFromCart: Resolver<RemoveProductArgs> = async (
+	_,
+	{ cartId, productId },
+	ctx
+) => {
+	const cartProduct = await CartLogic.removeProductFromCart(ctx, {
+		cartId,
+		productId
+	});
 
-		return `${cartProduct.cartId}-${cartProduct.productId}`;
-	}
-);
+	return `${cartProduct.cartId}-${cartProduct.productId}`;
+};
 
 export interface UpdateCartProductArgs {
 	input: {
@@ -53,12 +55,14 @@ export interface UpdateCartProductArgs {
 	};
 }
 
-export const updateCartProduct = authenticatedResolver<UpdateCartProductArgs>(
-	async (_, { input: { cartId, productId, quantity } }, ctx) => {
-		return CartLogic.updateCartProductQuantity(ctx, {
-			cartId,
-			productId,
-			quantity
-		});
-	}
-);
+export const updateCartProduct: Resolver<UpdateCartProductArgs> = async (
+	_,
+	{ input: { cartId, productId, quantity } },
+	ctx
+) => {
+	return CartLogic.updateCartProductQuantity(ctx, {
+		cartId,
+		productId,
+		quantity
+	});
+};

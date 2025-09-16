@@ -4,7 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import { useMutation, gql } from 'urql';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -17,26 +16,19 @@ import {
 	FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useAuthContext } from '@/contexts/AuthContext';
+import { useAuthenticateMutation } from '@/data/mutations';
+import { useAuthStore } from '@/state/auth-store';
 
 const loginSchema = z.object({
 	email: z.string().email(),
 	password: z.string().min(8)
 });
 
-const LOGIN_MUTATION = gql`
-	mutation Login($input: AuthenticateInput!) {
-		authenticate(input: $input) {
-			accessToken
-			userId
-		}
-	}
-`;
-
 const LoginPage = () => {
 	const router = useRouter();
 
-	const [, login] = useMutation(LOGIN_MUTATION);
+	const authenticateMutation = useAuthenticateMutation();
+
 	const form = useForm({
 		resolver: zodResolver(loginSchema),
 		defaultValues: {
@@ -45,16 +37,18 @@ const LoginPage = () => {
 		}
 	});
 
-	const { onLogin } = useAuthContext();
+	const { logIn } = useAuthStore();
 
 	const onSubmit = async (values: z.infer<typeof loginSchema>) => {
-		const { data } = await login({
-			input: { email: values.email, password: values.password }
+		const data = await authenticateMutation.mutateAsync({
+			email: values.email,
+			password: values.password
 		});
 
-		onLogin(data.authenticate.accessToken, data.authenticate.userId);
-
-		// TODO: Handle non-home origin routes.
+		logIn({
+			accessToken: data.accessToken,
+			userId: data.userId
+		});
 
 		router.push('/home');
 	};

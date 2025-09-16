@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 
 interface UpdateCartQuantityParams {
 	cartId: string;
@@ -33,14 +33,16 @@ export const getCartById = async (prisma: PrismaClient, cartId: string) => {
 
 export const getCartsByUserId = async (
 	prisma: PrismaClient,
-	userId: string
+	userId: string,
+	query?: Prisma.CartFindManyArgs
 ) => {
 	const carts = await prisma.cart.findMany({
 		where: { userId },
 		include: {
 			products: { include: { product: true } },
 			store: true
-		}
+		},
+		...query
 	});
 
 	return carts;

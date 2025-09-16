@@ -1,30 +1,8 @@
-import { gql, useQuery } from 'urql';
+'use client';
 
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
-
-const CARTS_QUERY = gql`
-	query Carts {
-		currentUser {
-			id
-			carts {
-				id
-				store {
-					id
-					name
-					image {
-						id
-						path
-					}
-				}
-				products {
-					id
-					quantity
-				}
-				total
-			}
-		}
-	}
-`;
+import { useCartsQuery } from '@/data/queries';
+import { Cart } from '@/data/types';
 
 const CartSheet = () => {
 	return (
@@ -39,13 +17,13 @@ const CartSheet = () => {
 };
 
 const CartSheetContent = () => {
-	const [{ data, fetching }] = useQuery({ query: CARTS_QUERY });
+	const { data, isLoading } = useCartsQuery();
 
-	if (fetching) return <div>Loading...</div>;
+	if (isLoading || !data) return <div />;
 
 	return (
 		<div>
-			{data?.currentUser?.carts.map((cart: any) => (
+			{data.carts.map((cart: Cart) => (
 				<div key={cart.id}>
 					<h2>{cart.store.name}</h2>
 					<p>{cart.total}</p>

@@ -17,16 +17,18 @@ const Product: React.FC<ProductProps> = ({ id, name, unitPrice, images }) => {
 		<Link href={`/product/${id}`}>
 			<div key={id}>
 				<div className='bg-gray-200 rounded-lg overflow-hidden'>
-					{images.length > 0 && (
+					{images.length > 0 ? (
 						<img
 							src={images[0].path}
 							alt={name}
 							className='w-full h-48 object-cover rounded-lg'
 						/>
+					) : (
+						<div className='w-full h-48 bg-gray-100 flex items-center justify-center rounded-lg text-gray-400' />
 					)}
 				</div>
 				<div className='mt-4'>
-					<h2 className='text-lg font-semibold mb-1'>{name}</h2>
+					<p className='font-medium'>{name}</p>
 					<p className='text-gray-600'>{formatNaira(unitPrice)}</p>
 				</div>
 			</div>

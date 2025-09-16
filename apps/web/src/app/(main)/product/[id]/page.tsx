@@ -2,34 +2,30 @@
 
 import React from 'react';
 import { useParams } from 'next/navigation';
-import { gql, useMutation, useQuery } from 'urql';
 
 import { Button } from '@/components/ui/button';
 import { formatNaira } from '@/utils/currency';
 import QuantityControl from '@/components/product/QuantityControl';
 import StorePreview from '@/components/product/StorePreview';
+import { useProductQuery } from '@/data/queries';
+import { useAddToCartMutation } from '@/data/mutations';
 
 const ProductPage = () => {
-	const { id } = useParams();
+	const { id } = useParams<{ id: string }>();
 	const [quantity, setQuantity] = React.useState(1);
 
-	const [{ data, fetching, error }] = useQuery({
-		query: PRODUCT_QUERY,
-		variables: { id }
-	});
-
-	const [{ fetching: addToCartFetching }, addToCart] =
-		useMutation(ADD_TO_CART_MUTATION);
+	const { data, isLoading } = useProductQuery(id);
+	const addToCartMutation = useAddToCartMutation();
 
 	const handleAddToCart = (storeId: string) => {
-		addToCart({
-			input: { storeId, productId: id, quantity }
+		addToCartMutation.mutate({
+			storeId,
+			productId: id,
+			quantity
 		});
 	};
 
-	if (!id) return <div>Error: Product ID is missing</div>;
-	if (fetching) return <div>Loading...</div>;
-	if (error) return <div>Error: {error.message}</div>;
+	if (isLoading) return <div />;
 
 	const product = data?.product;
 
@@ -54,16 +50,13 @@ const ProductPage = () => {
 						<p className='text-gray-600 mb-4'>{product.description}</p>
 						<QuantityControl value={quantity} onValueChange={setQuantity} />
 						<Button
-							disabled={addToCartFetching}
+							disabled={addToCartMutation.isPending}
 							onClick={() => handleAddToCart(data.product.store.id)}
 							className='w-full'
 						>
 							Add to Cart
 						</Button>
-						<StorePreview
-							store={data.product.store}
-							followed={data.product.store.followedByUser}
-						/>
+						<StorePreview store={data.product.store} />
 					</div>
 				</div>
 			</div>
@@ -74,38 +67,3 @@ const ProductPage = () => {
 export const runtime = 'edge';
 
 export default ProductPage;
-
-const PRODUCT_QUERY = gql`
-	query ($id: ID!) {
-		product(id: $id) {
-			id
-			name
-			description
-			unitPrice
-			images {
-				id
-				path
-			}
-			store {
-				id
-				name
-				description
-				image {
-					id
-					path
-				}
-				followedByUser
-			}
-		}
-	}
-`;
-
-const ADD_TO_CART_MUTATION = gql`
-	mutation AddToCart($input: AddToCartInput!) {
-		addToCart(input: $input) {
-			cartId
-			productId
-			quantity
-		}
-	}
-`;

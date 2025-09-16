@@ -1,9 +1,14 @@
 import { createClient, fetchExchange } from 'urql';
 import { cacheExchange } from '@urql/exchange-graphcache';
+import { QueryClient } from '@tanstack/react-query';
 
-export const generateClient = (accessToken?: string) => {
+export const queryClient = new QueryClient();
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+
+export const generateClient = (accessToken?: string | null) => {
 	return createClient({
-		url: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/graphql',
+		url: `${API_URL}/graphql`,
 		exchanges: [customCache, fetchExchange],
 		fetchOptions: {
 			headers: {

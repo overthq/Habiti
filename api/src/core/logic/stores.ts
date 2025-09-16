@@ -87,6 +87,7 @@ export const updateStore = async (ctx: AppContext, input: UpdateStoreInput) => {
 	const isManager = existingStore.managers.some(
 		m => m.managerId === ctx.user.id
 	);
+
 	if (!isManager) {
 		throw new Error('Unauthorized: User is not a manager of this store');
 	}

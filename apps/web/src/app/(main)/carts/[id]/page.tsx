@@ -1,51 +1,47 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { useCreateOrderMutation } from '@/data/mutations';
+import { useCartQuery } from '@/data/queries';
 import { formatNaira } from '@/utils/currency';
 import { useParams } from 'next/navigation';
-import { gql, useMutation, useQuery } from 'urql';
 
 const CartPage = () => {
-	const { id } = useParams();
-	const [{ data, fetching, error }] = useQuery({
-		query: CART_QUERY,
-		variables: { id }
-	});
+	const { id } = useParams<{ id: string }>();
+	const { data, isLoading } = useCartQuery(id);
 
-	const [, createOrder] = useMutation(CREATE_ORDER);
+	const createOrderMutation = useCreateOrderMutation();
 
 	const handlePlaceOrder = () => {
 		if (data) {
-			createOrder({
-				input: {
-					cartId: id,
-					cardId: data.cart.user.cards[0].id,
-					transactionFee: data.cart.fees.transaction,
-					serviceFee: data.cart.fees.service
-				}
+			createOrderMutation.mutate({
+				cartId: id,
+				cardId: data.cart.user.cards[0].id,
+				transactionFee: data.cart.fees.transaction,
+				serviceFee: data.cart.fees.service
 			});
 		}
 	};
 
-	if (fetching) {
-		return <div>Loading...</div>;
+	if (isLoading || !data) {
+		return <div />;
 	}
 
 	return (
 		<div>
 			<h1 className='text-2xl mb-4'>Cart</h1>
 
-			{data.cart.products.map((product: any) => (
+			{data.cart.products.map(product => (
 				<div
-					key={product.id}
-					className='flex items-center gap-4 p-4 border rounded-md mb-6'
+					key={product.productId}
+					className='flex items-center gap-4 p-2 border rounded-md mb-3'
 				>
 					<div className='w-16 h-16 bg-gray-200 rounded flex items-center justify-center'>
 						{product.product.images[0] && (
 							<img
 								src={product.product.images[0].path}
 								alt={product.product.name}
-								className='w-16 h-16 object-cover rounded'
+								className='size-16 object-cover rounded'
 								loading='lazy'
 								onLoad={e =>
 									e.currentTarget.parentElement?.classList.remove('bg-gray-200')
@@ -85,71 +81,6 @@ const CartPage = () => {
 		</div>
 	);
 };
-
-const CART_QUERY = gql`
-	query Cart($id: ID!) {
-		cart(id: $id) {
-			id
-			userId
-			user {
-				id
-				cards {
-					id
-					email
-					cardType
-					last4
-				}
-			}
-			storeId
-			store {
-				id
-				name
-			}
-			products {
-				cartId
-				productId
-				product {
-					id
-					name
-					unitPrice
-					storeId
-					images {
-						id
-						path
-					}
-				}
-				quantity
-			}
-			total
-			fees {
-				transaction
-				service
-				total
-			}
-		}
-	}
-`;
-
-const CREATE_ORDER = gql`
-	mutation CreateOrder($input: CreateOrderInput!) {
-		createOrder(input: $input) {
-			id
-			store {
-				id
-				name
-			}
-			products {
-				product {
-					id
-					name
-				}
-				unitPrice
-				quantity
-			}
-			total
-		}
-	}
-`;
 
 export default CartPage;
 

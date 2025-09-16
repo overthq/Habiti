@@ -17,6 +17,48 @@ export const savePayout = async (
 	});
 };
 
+interface UpdatePayoutParams {
+	payoutId: string;
+	status: PayoutStatus;
+}
+
+export const updatePayout = async (
+	prisma: PrismaClient,
+	params: UpdatePayoutParams
+) => {
+	const { payoutId, status } = params;
+
+	const updatedPayout = await prisma.$transaction(async tx => {
+		const existingPayout = await tx.payout.findUnique({
+			where: { id: payoutId }
+		});
+
+		if (!existingPayout) {
+			throw new Error('Payout not found');
+		}
+
+		const updated = await tx.payout.update({
+			where: { id: payoutId },
+			data: { status },
+			include: { store: true }
+		});
+
+		if (
+			status === PayoutStatus.Success &&
+			existingPayout.status !== PayoutStatus.Success
+		) {
+			await tx.store.update({
+				where: { id: existingPayout.storeId },
+				data: { paidOut: { increment: existingPayout.amount } }
+			});
+		}
+
+		return updated;
+	});
+
+	return updatedPayout;
+};
+
 export const getStorePayouts = async (
 	prisma: PrismaClient,
 	storeId: string
