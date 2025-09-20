@@ -48,10 +48,6 @@ interface DeleteStoreInput {
 	storeId: string;
 }
 
-interface IncrementOrderCountInput {
-	storeId: string;
-}
-
 export const createStore = async (ctx: AppContext, input: CreateStoreInput) => {
 	const store = await StoreData.createStore(ctx.prisma, input);
 
@@ -301,11 +297,15 @@ export const unfollowStore = async (
 	}
 
 	const isFollowing = store.followers.some(f => f.followerId === ctx.user.id);
+
 	if (!isFollowing) {
 		throw new Error('Not following this store');
 	}
 
-	await StoreData.unfollowStore(ctx.prisma, storeId, ctx.user.id);
+	const follower = await StoreData.unfollowStore(ctx.prisma, {
+		storeId,
+		userId: ctx.user.id
+	});
 
 	ctx.services.analytics.track({
 		event: 'store_unfollowed',
@@ -317,7 +317,7 @@ export const unfollowStore = async (
 		groups: { store: storeId }
 	});
 
-	return { success: true };
+	return follower;
 };
 
 export const getStoresByUserId = async (ctx: AppContext, userId: string) => {

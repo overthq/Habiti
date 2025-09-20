@@ -28,11 +28,6 @@ interface CreateStoreManagerParams {
 	userId: string;
 }
 
-interface CreateStoreFollowerParams {
-	storeId: string;
-	userId: string;
-}
-
 export const createStore = async (
 	prisma: PrismaClient,
 	params: CreateStoreParams
@@ -145,33 +140,44 @@ export const removeStoreManager = async (
 	});
 };
 
+interface FollowStoreParams {
+	storeId: string;
+	userId: string;
+}
+
 export const followStore = async (
 	prisma: PrismaClient,
-	params: CreateStoreFollowerParams
+	params: FollowStoreParams
 ) => {
 	const follower = await prisma.storeFollower.create({
 		data: {
-			...params,
-			followerId: params.userId
+			followerId: params.userId,
+			storeId: params.storeId
 		}
 	});
 
 	return follower;
 };
 
+interface UnfollowStoreArgs {
+	storeId: string;
+	userId: string;
+}
+
 export const unfollowStore = async (
 	prisma: PrismaClient,
-	storeId: string,
-	userId: string
+	params: UnfollowStoreArgs
 ) => {
-	await prisma.storeFollower.delete({
+	const follower = await prisma.storeFollower.delete({
 		where: {
 			storeId_followerId: {
-				followerId: userId,
-				storeId
+				followerId: params.userId,
+				storeId: params.storeId
 			}
 		}
 	});
+
+	return follower;
 };
 
 export const getStoresByUserId = async (
