@@ -32,20 +32,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - uses: actions/setup-node@v4
+      - uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: pnpm i --frozen-lockfile
+        run: bun install
 
       - name: Setup Expo
         uses: expo/expo-github-action@v8
         with:
-          packager: pnpm
+          packager: bun
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
@@ -61,20 +56,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - uses: actions/setup-node@v4
+      - uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: pnpm i --frozen-lockfile
+        run: bun install
 
       - name: Setup Expo
         uses: expo/expo-github-action@v8
         with:
-          packager: pnpm
+          packager: bun
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
