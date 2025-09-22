@@ -100,7 +100,7 @@ export const getStoreManagers = async (
 ) => {
 	const storeManagers = await prisma.store
 		.findUnique({ where: { id: storeId } })
-		.products();
+		.managers();
 
 	return storeManagers;
 };
