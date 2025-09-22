@@ -28,11 +28,6 @@ interface CreateStoreManagerParams {
 	userId: string;
 }
 
-interface CreateStoreFollowerParams {
-	storeId: string;
-	userId: string;
-}
-
 export const createStore = async (
 	prisma: PrismaClient,
 	params: CreateStoreParams
@@ -77,22 +72,43 @@ export const getStoreById = async (prisma: PrismaClient, storeId: string) => {
 	return store;
 };
 
+export const getStoreFollowers = async (
+	prisma: PrismaClient,
+	storeId: string
+) => {
+	const storeFollowers = await prisma.store
+		.findUnique({ where: { id: storeId } })
+		.followers();
+
+	return storeFollowers;
+};
+
+export const getStoreProducts = async (
+	prisma: PrismaClient,
+	storeId: string
+) => {
+	const products = await prisma.store
+		.findUnique({ where: { id: storeId } })
+		.products();
+
+	return products;
+};
+
+export const getStoreManagers = async (
+	prisma: PrismaClient,
+	storeId: string
+) => {
+	const storeManagers = await prisma.store
+		.findUnique({ where: { id: storeId } })
+		.managers();
+
+	return storeManagers;
+};
+
 export const deleteStore = async (prisma: PrismaClient, storeId: string) => {
 	return prisma.store.delete({
 		where: { id: storeId }
 	});
-};
-
-export const incrementOrderCount = async (
-	prisma: PrismaClient,
-	storeId: string
-) => {
-	const store = await prisma.store.update({
-		where: { id: storeId },
-		data: { orderCount: { increment: 1 } }
-	});
-
-	return store;
 };
 
 export const createStoreManager = async (
@@ -124,33 +140,44 @@ export const removeStoreManager = async (
 	});
 };
 
+interface FollowStoreParams {
+	storeId: string;
+	userId: string;
+}
+
 export const followStore = async (
 	prisma: PrismaClient,
-	params: CreateStoreFollowerParams
+	params: FollowStoreParams
 ) => {
 	const follower = await prisma.storeFollower.create({
 		data: {
-			...params,
-			followerId: params.userId
+			followerId: params.userId,
+			storeId: params.storeId
 		}
 	});
 
 	return follower;
 };
 
+interface UnfollowStoreArgs {
+	storeId: string;
+	userId: string;
+}
+
 export const unfollowStore = async (
 	prisma: PrismaClient,
-	storeId: string,
-	userId: string
+	params: UnfollowStoreArgs
 ) => {
-	await prisma.storeFollower.delete({
+	const follower = await prisma.storeFollower.delete({
 		where: {
 			storeId_followerId: {
-				followerId: userId,
-				storeId
+				followerId: params.userId,
+				storeId: params.storeId
 			}
 		}
 	});
+
+	return follower;
 };
 
 export const getStoresByUserId = async (

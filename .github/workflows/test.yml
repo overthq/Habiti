@@ -6,7 +6,7 @@ on:
       - 'dependabot/**'
   pull_request:
     branches:
-      - master
+      - main
       - staging
 
 jobs:
@@ -14,26 +14,20 @@ jobs:
     name: Run static tests
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
       - name: Checkout repository
         uses: actions/checkout@v1
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - name: Setup Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 20.x
-
       - name: Install dependencies
         run: |
-          pnpm i
-          cd api && pnpm i --ignore-workspace
+          bun install
+          cd api && bun install
 
       - name: Run typecheck
         run: |
-          cd apps/app && pnpm tsc
-          cd ../dashboard && pnpm tsc
-          cd ../../api && pnpm tsc
+          bun run --cwd apps/app tsc
+          bun run --cwd apps/dashboard tsc
+          bun run --cwd api tsc
