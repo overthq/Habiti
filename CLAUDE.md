@@ -11,7 +11,7 @@ Habiti is an open-source mobile-first e-commerce platform for small-to-medium re
 ### Setup and Installation
 ```bash
 # Install all dependencies
-bun i && cd api && bun i
+bun i && bun i --cwd api
 
 # Start Redis (required for API)
 bun start-redis
