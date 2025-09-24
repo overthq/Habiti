@@ -55,18 +55,7 @@ export const updateStore = async (
 export const getStoreById = async (prisma: PrismaClient, storeId: string) => {
 	const store = await prisma.store.findUnique({
 		where: { id: storeId },
-		include: {
-			image: true,
-			products: {
-				include: { images: true }
-			},
-			managers: {
-				include: { manager: true }
-			},
-			followers: {
-				include: { follower: true }
-			}
-		}
+		include: { image: true }
 	});
 
 	return store;

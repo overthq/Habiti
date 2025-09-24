@@ -7,18 +7,22 @@
 	"license": "GPL-3.0-or-later",
 	"private": true,
 	"scripts": {
-		"start:app": "pnpm --filter @habiti/app start",
-		"start:dashboard": "pnpm --filter @habiti/dashboard start",
+		"start:app": "bun run --cwd apps/app start",
+		"start:dashboard": "bun run --cwd apps/dashboard start",
 		"start-redis": "redis-server --daemonize yes",
+		"dev:api": "bun run --cwd api dev",
 		"postinstall": "husky",
-		"load-bank-list": "node scripts/load-banks"
+		"load-bank-list": "bun run scripts/load-banks"
 	},
 	"lint-staged": {
 		"*.{ts,tsx}": [
 			"prettier --write"
 		]
 	},
-	"workspaces": ["packages/*", "apps/*"],
+	"workspaces": [
+		"packages/*",
+		"apps/*"
+	],
 	"overrides": {
 		"react": "19.0.0",
 		"react-dom": "19.0.0"
