@@ -30,7 +30,10 @@ export const createPayout = async (
 		throw new Error('Payout amount must be greater than zero');
 	}
 
-	const store = await StoreData.getStoreById(ctx.prisma, ctx.storeId);
+	const store = await StoreData.getStoreByIdWithManagers(
+		ctx.prisma,
+		ctx.storeId
+	);
 
 	if (!store) {
 		throw new Error('Store not found');
@@ -112,7 +115,7 @@ export const getStorePayouts = async (ctx: AppContext, storeId: string) => {
 		throw new Error('Unauthorized: Cannot view payouts for different store');
 	}
 
-	const store = await StoreData.getStoreById(ctx.prisma, storeId);
+	const store = await StoreData.getStoreByIdWithManagers(ctx.prisma, storeId);
 
 	if (!store) {
 		throw new Error('Store not found');
