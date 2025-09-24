@@ -1,5 +1,4 @@
-import * as Sentry from '@sentry/node';
-import { nodeProfilingIntegration } from '@sentry/profiling-node';
+import * as Sentry from '@sentry/bun';
 import { PrismaInstrumentation } from '@prisma/instrumentation';
 
 import { env } from '../config/env';
@@ -13,10 +12,8 @@ if (env.SENTRY_DSN) {
 			Sentry.prismaIntegration({
 				prismaInstrumentation: new PrismaInstrumentation()
 			}),
-			Sentry.graphqlIntegration(),
-			nodeProfilingIntegration()
+			Sentry.graphqlIntegration()
 		],
-		tracesSampleRate: 1.0,
-		profilesSampleRate: 1.0
+		tracesSampleRate: 1.0
 	});
 }
