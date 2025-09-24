@@ -5,8 +5,8 @@
 	"license": "GPL-3.0",
 	"scripts": {
 		"dev": "tsx watch src",
-		"build": "tsc && pnpm sentry:sourcemaps",
-		"start": "node dist/index",
+		"build": "tsc && bun sentry:sourcemaps",
+		"start": "bun dist/index",
 		"sentry:sourcemaps": "sentry-cli sourcemaps inject --org habiti --project habiti-api ./dist && sentry-cli sourcemaps upload --org habiti --project habiti-api ./dist"
 	},
 	"dependencies": {

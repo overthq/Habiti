@@ -8,7 +8,7 @@ From the root directory, run the following commands:
 
 ```sh
 cd api
-pnpm i
-pnpm start-redis # Only necessary if Redis isn't running in the background.
-pnpm dev
+bun i
+bun start-redis # Only necessary if Redis isn't running in the background.
+bun dev
 ```

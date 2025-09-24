@@ -11,34 +11,34 @@ Habiti is an open-source mobile-first e-commerce platform for small-to-medium re
 ### Setup and Installation
 ```bash
 # Install all dependencies
-pnpm i
+bun i && bun i --cwd api
 
 # Start Redis (required for API)
-pnpm start-redis
+bun start-redis
 
 # Start mobile apps
-pnpm start:app        # Consumer app
-pnpm start:dashboard  # Merchant dashboard
+bun start:app        # Consumer app
+bun start:dashboard  # Merchant dashboard
 ```
 
 ### Individual Application Commands
 ```bash
 # API (GraphQL + REST)
-cd api && pnpm dev              # Development server
-cd api && pnpm build && pnpm start  # Production build
+cd api && bun dev              # Development server
+cd api && bun build && bun start  # Production build
 
 # Mobile Apps (React Native + Expo)
-cd apps/app && pnpm start       # Consumer app dev server
-cd apps/dashboard && pnpm start # Dashboard dev server
-cd apps/app && pnpm generate-types  # Generate GraphQL types
+cd apps/app && bun start       # Consumer app dev server
+cd apps/dashboard && bun start # Dashboard dev server
+cd apps/app && bun generate-types  # Generate GraphQL types
 
 # Web (Next.js)
-cd apps/web && pnpm dev --turbopack  # Development with Turbopack
-cd apps/web && pnpm build && pnpm start  # Production
+cd apps/web && bun dev --turbopack  # Development with Turbopack
+cd apps/web && bun run build && bun start  # Production
 
 # Admin (React Router)
-cd apps/admin && pnpm dev       # Development
-cd apps/admin && pnpm build && pnpm start  # Production
+cd apps/admin && bun dev       # Development
+cd apps/admin && bun run build && bun start  # Production
 ```
 
 ### Database Operations
@@ -54,7 +54,7 @@ cd api && npx prisma studio     # Database GUI
 ### Monorepo Structure
 - `api/` - GraphQL API with Express, Prisma, PostgreSQL, Redis
 - `apps/app/` - Consumer mobile app (React Native + Expo)
-- `apps/dashboard/` - Merchant mobile app (React Native + Expo)  
+- `apps/dashboard/` - Merchant mobile app (React Native + Expo)
 - `apps/web/` - Web frontend (Next.js + Tailwind)
 - `apps/admin/` - Admin panel (React Router + Tailwind)
 - `packages/` - Shared code (utilities, components)
@@ -93,7 +93,7 @@ Core entities: User, Store, Product, Order, Cart with comprehensive relationship
 All frontend apps use GraphQL code generation:
 ```bash
 # Generate types from GraphQL schema
-pnpm generate-types  # In any app directory
+bun generate-types  # In any app directory
 ```
 
 ### Development Workflow

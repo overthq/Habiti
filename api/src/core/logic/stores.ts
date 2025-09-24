@@ -74,7 +74,10 @@ export const updateStore = async (ctx: AppContext, input: UpdateStoreInput) => {
 		throw new Error('Unauthorized: Cannot update different store');
 	}
 
-	const existingStore = await StoreData.getStoreById(ctx.prisma, storeId);
+	const existingStore = await StoreData.getStoreByIdWithManagers(
+		ctx.prisma,
+		storeId
+	);
 
 	if (!existingStore) {
 		throw new Error('Store not found');
@@ -116,9 +119,7 @@ export const getStoreById = async (ctx: AppContext, storeId: string) => {
 		distinctId: ctx.user.id,
 		properties: {
 			storeId: store.id,
-			storeName: store.name,
-			productCount: store.products.length,
-			followerCount: store.followers.length
+			storeName: store.name
 		},
 		groups: { store: storeId }
 	});
@@ -129,7 +130,7 @@ export const getStoreById = async (ctx: AppContext, storeId: string) => {
 export const deleteStore = async (ctx: AppContext, input: DeleteStoreInput) => {
 	const { storeId } = input;
 
-	const store = await StoreData.getStoreById(ctx.prisma, storeId);
+	const store = await StoreData.getStoreByIdWithManagers(ctx.prisma, storeId);
 
 	if (!store) {
 		throw new Error('Store not found');
@@ -148,9 +149,7 @@ export const deleteStore = async (ctx: AppContext, input: DeleteStoreInput) => {
 		distinctId: ctx.user.id,
 		properties: {
 			storeId: store.id,
-			storeName: store.name,
-			productCount: store.products.length,
-			followerCount: store.followers.length
+			storeName: store.name
 		},
 		groups: { store: storeId }
 	});
@@ -164,7 +163,7 @@ export const createStoreManager = async (
 ) => {
 	const { storeId, userId } = input;
 
-	const store = await StoreData.getStoreById(ctx.prisma, storeId);
+	const store = await StoreData.getStoreByIdWithManagers(ctx.prisma, storeId);
 
 	if (!store) {
 		throw new Error('Store not found');
@@ -203,7 +202,7 @@ export const removeStoreManager = async (
 ) => {
 	const { storeId, userId } = input;
 
-	const store = await StoreData.getStoreById(ctx.prisma, storeId);
+	const store = await StoreData.getStoreByIdWithManagers(ctx.prisma, storeId);
 
 	if (!store) {
 		throw new Error('Store not found');
@@ -240,7 +239,7 @@ export const removeStoreManager = async (
 export const followStore = async (ctx: AppContext, input: FollowStoreInput) => {
 	const { storeId } = input;
 
-	const store = await StoreData.getStoreById(ctx.prisma, storeId);
+	const store = await StoreData.getStoreByIdWithFollowers(ctx.prisma, storeId);
 
 	if (!store) {
 		throw new Error('Store not found');
@@ -290,7 +289,7 @@ export const unfollowStore = async (
 ) => {
 	const { storeId } = input;
 
-	const store = await StoreData.getStoreById(ctx.prisma, storeId);
+	const store = await StoreData.getStoreByIdWithFollowers(ctx.prisma, storeId);
 
 	if (!store) {
 		throw new Error('Store not found');
