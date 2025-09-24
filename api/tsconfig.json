@@ -19,8 +19,7 @@
 		// Make sure that Prisma is aggressive with type-related issues.
 		"strictNullChecks": true,
 		"exactOptionalPropertyTypes": true,
-		"noUncheckedIndexedAccess": true,
-		"types": ["bun-types"]
+		"noUncheckedIndexedAccess": true
 	},
 	"include": ["src"]
 }
