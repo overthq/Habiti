@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { PrismaClient, User } from '@prisma/client';
-import { RedisClientType } from 'redis';
+import { RedisClient } from 'bun';
 
 import prismaClient from '../config/prisma';
 import redisClient from '../config/redis';
@@ -11,7 +11,7 @@ export interface AppContext {
 	user: User;
 	storeId?: string;
 	prisma: PrismaClient;
-	redisClient: RedisClientType;
+	redisClient: RedisClient;
 	services: Services;
 	isAdmin: () => Promise<boolean>;
 }

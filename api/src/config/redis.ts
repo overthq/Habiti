@@ -1,5 +1,5 @@
-import { createClient, RedisClientType } from 'redis';
 import { env } from './env';
+import { RedisClient } from 'bun';
 
 const clientURL = env.REDIS_TLS_URL || env.REDIS_URL;
 
@@ -7,20 +7,14 @@ if (!clientURL) {
 	throw new Error('Either REDIS_URL or REDIS_TLS_URL must be supplied!');
 }
 
-const client: RedisClientType = createClient({
-	url: clientURL,
-	socket: {
-		tls: !!env.REDIS_TLS_URL,
-		rejectUnauthorized: false
-	}
-});
+const client = new RedisClient(clientURL, { tls: !!env.REDIS_TLS_URL });
 
-client.on('connect', () => {
+client.onconnect = () => {
 	console.log('Connected to Redis!');
-});
+};
 
-client.on('error', error => {
+client.onclose = error => {
 	console.log(error);
-});
+};
 
 export default client;
