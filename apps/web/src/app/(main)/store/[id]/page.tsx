@@ -14,7 +14,7 @@ const StorePage = () => {
 
 	return (
 		<div>
-			<div className='mx-auto pt-22'>
+			<div className='mx-auto'>
 				<h1 className='text-2xl font-medium'>{data.store.name}</h1>
 				<p className='text-muted-foreground'>{data.store.description}</p>
 				<div className='mt-8 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4'>

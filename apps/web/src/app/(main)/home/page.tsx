@@ -77,7 +77,7 @@ const HomePage = () => {
 	if (error) return <div>Error: {error.message}</div>;
 
 	return (
-		<div className='container py-6'>
+		<div className='container'>
 			<h2 className='text-xl font-medium mb-4'>Recent Orders</h2>
 
 			<div className='mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>

@@ -85,6 +85,18 @@ export const getStoreByIdWithManagers = async (
 	return store;
 };
 
+export const getStoreByIdWithProducts = async (
+	prisma: PrismaClient,
+	storeId: string
+) => {
+	const store = await prisma.store.findUnique({
+		where: { id: storeId },
+		include: { products: { include: { images: true } } }
+	});
+
+	return store;
+};
+
 export const getStoreFollowers = async (
 	prisma: PrismaClient,
 	storeId: string
