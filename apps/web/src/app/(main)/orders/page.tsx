@@ -15,7 +15,7 @@ const OrdersPage = () => {
 	}
 
 	return (
-		<div className='container'>
+		<div>
 			<h1 className='text-2xl font-medium mb-8'>Orders</h1>
 			<div>
 				{data.orders.map(order => (

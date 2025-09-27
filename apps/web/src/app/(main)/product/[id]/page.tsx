@@ -9,9 +9,11 @@ import QuantityControl from '@/components/product/QuantityControl';
 import StorePreview from '@/components/product/StorePreview';
 import { useProductQuery } from '@/data/queries';
 import { useAddToCartMutation } from '@/data/mutations';
+import { Image } from '@/data/types';
 
 const ProductPage = () => {
 	const { id } = useParams<{ id: string }>();
+	const [activeImage, setActiveImage] = React.useState(0);
 	const [quantity, setQuantity] = React.useState(1);
 
 	const { data, isLoading } = useProductQuery(id);
@@ -25,11 +27,15 @@ const ProductPage = () => {
 		});
 	};
 
+	const handleSelectImage = (index: number) => {
+		setActiveImage(index);
+	};
+
 	if (isLoading) return <div />;
 
-	const product = data?.product;
+	if (!data?.product) return <div>Product not found</div>;
 
-	if (!product) return <div>Product not found</div>;
+	const product = data.product;
 
 	return (
 		<div className='container mx-auto px-4'>
@@ -37,13 +43,18 @@ const ProductPage = () => {
 				<div className='md:col-span-2'>
 					{product.images.length > 0 && (
 						<img
-							src={product.images[0].path}
+							src={product.images[activeImage].path}
 							alt={product.name}
-							className='w-full h-auto object-cover rounded-lg'
+							className='w-full max-w-170 h-auto object-cover rounded-lg'
 						/>
 					)}
+					<ImageSelector
+						images={product.images}
+						onSelectImage={handleSelectImage}
+					/>
 				</div>
 				<div className='md:col-span-1'>
+					<StorePreview store={data.product.store} />
 					<h1 className='text-xl font-medium mb-1'>{product.name}</h1>
 					<p className='text-lg mb-2'>{formatNaira(product.unitPrice)}</p>
 					<p className='text-gray-600 mb-4'>{product.description}</p>
@@ -55,9 +66,31 @@ const ProductPage = () => {
 					>
 						Add to Cart
 					</Button>
-					<StorePreview store={data.product.store} />
 				</div>
 			</div>
+		</div>
+	);
+};
+
+interface ImageSelectorProps {
+	images: Image[];
+	onSelectImage(index: number): void;
+}
+
+const ImageSelector: React.FC<ImageSelectorProps> = ({
+	images,
+	onSelectImage
+}) => {
+	return (
+		<div className='mt-4'>
+			{images.map((image, index) => (
+				<div
+					className='size-14 rounded-sm overflow-hidden'
+					onClick={() => onSelectImage(index)}
+				>
+					<img src={image.path} />
+				</div>
+			))}
 		</div>
 	);
 };

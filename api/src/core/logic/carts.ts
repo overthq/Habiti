@@ -29,7 +29,11 @@ export const getCartById = async (ctx: AppContext, cartId: string) => {
 		throw new Error('Unauthorized: Cart does not belong to current user');
 	}
 
-	return cart;
+	const transaction = calculatePaystackFee(cart.total);
+	const service = calculateHabitiFee();
+	const total = transaction + service;
+
+	return { ...cart, total, fees: { transaction, service } };
 };
 
 export const getCartsByUserId = async (ctx: AppContext, userId: string) => {
@@ -164,3 +168,9 @@ export const deleteCart = async (ctx: AppContext, input: DeleteCartInput) => {
 
 	return cart;
 };
+
+export const calculatePaystackFee = (subTotal: number) => {
+	return Math.min(200000, 0.015 * subTotal + 10000);
+};
+
+export const calculateHabitiFee = () => 100000;
