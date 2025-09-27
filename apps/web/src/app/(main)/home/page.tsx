@@ -5,71 +5,6 @@ import Link from 'next/link';
 import { gql, useQuery } from 'urql';
 import { cn } from '@/lib/utils';
 
-const HOME_QUERY = gql`
-	query Home {
-		currentUser {
-			id
-
-			orders {
-				id
-				store {
-					id
-					name
-					image {
-						id
-						path
-					}
-				}
-
-				products {
-					orderId
-					productId
-					product {
-						id
-						name
-					}
-					unitPrice
-					quantity
-				}
-				total
-				status
-				createdAt
-			}
-
-			followed {
-				storeId
-				followerId
-				store {
-					id
-					name
-					image {
-						id
-						path
-					}
-				}
-			}
-
-			watchlist {
-				userId
-				productId
-				product {
-					id
-					name
-					unitPrice
-					store {
-						id
-						name
-					}
-					images {
-						id
-						path
-					}
-				}
-			}
-		}
-	}
-`;
-
 const HomePage = () => {
 	const [{ error, data, fetching }] = useQuery({ query: HOME_QUERY });
 
@@ -78,7 +13,7 @@ const HomePage = () => {
 
 	return (
 		<div>
-			<h2 className='text-xl font-medium mb-4'>Recent Orders</h2>
+			<h1 className='text-2xl font-medium mb-4'>Recent Orders</h1>
 
 			<div className='mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
 				{data.currentUser.orders.map((order: any) => (
@@ -160,5 +95,70 @@ const HomePage = () => {
 		</div>
 	);
 };
+
+const HOME_QUERY = gql`
+	query Home {
+		currentUser {
+			id
+
+			orders {
+				id
+				store {
+					id
+					name
+					image {
+						id
+						path
+					}
+				}
+
+				products {
+					orderId
+					productId
+					product {
+						id
+						name
+					}
+					unitPrice
+					quantity
+				}
+				total
+				status
+				createdAt
+			}
+
+			followed {
+				storeId
+				followerId
+				store {
+					id
+					name
+					image {
+						id
+						path
+					}
+				}
+			}
+
+			watchlist {
+				userId
+				productId
+				product {
+					id
+					name
+					unitPrice
+					store {
+						id
+						name
+					}
+					images {
+						id
+						path
+					}
+				}
+			}
+		}
+	}
+`;
 
 export default HomePage;

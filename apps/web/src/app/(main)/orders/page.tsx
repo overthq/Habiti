@@ -16,7 +16,7 @@ const OrdersPage = () => {
 
 	return (
 		<div>
-			<h1 className='text-2xl font-medium mb-8'>Orders</h1>
+			<h1 className='text-2xl font-medium mb-4'>Orders</h1>
 			<div>
 				{data.orders.map(order => (
 					<React.Fragment key={order.id}>
