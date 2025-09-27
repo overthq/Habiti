@@ -20,7 +20,7 @@ const OrderPage = () => {
 	}
 
 	return (
-		<div className='container mx-auto px-4 py-8'>
+		<div className='container mx-auto'>
 			<div className='mb-6'>
 				<Link
 					href={`/store/${order.storeId}`}

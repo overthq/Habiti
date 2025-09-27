@@ -108,7 +108,7 @@ export const updateStore = async (ctx: AppContext, input: UpdateStoreInput) => {
 };
 
 export const getStoreById = async (ctx: AppContext, storeId: string) => {
-	const store = await StoreData.getStoreById(ctx.prisma, storeId);
+	const store = await StoreData.getStoreByIdWithProducts(ctx.prisma, storeId);
 
 	if (!store) {
 		throw new Error('Store not found');
