@@ -47,6 +47,27 @@ const OrderPage = () => {
 					</div>
 				))}
 			</div>
+
+			<div className='my-4'>
+				<div className='flex justify-between'>
+					<p>Subtotal</p>
+					<p>{formatNaira(order.total)}</p>
+				</div>
+				<div className='flex justify-between'>
+					<p>Transaction Fee</p>
+					<p>{formatNaira(order.transactionFee)}</p>
+				</div>
+				<div className='flex justify-between'>
+					<p>Service Fee</p>
+					<p>{formatNaira(order.serviceFee)}</p>
+				</div>
+				<div className='flex justify-between'>
+					<p>Total</p>
+					<p>
+						{formatNaira(order.total + order.transactionFee + order.serviceFee)}
+					</p>
+				</div>
+			</div>
 		</div>
 	);
 };
