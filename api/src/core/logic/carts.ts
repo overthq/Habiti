@@ -33,7 +33,7 @@ export const getCartById = async (ctx: AppContext, cartId: string) => {
 	const service = calculateHabitiFee();
 	const total = transaction + service;
 
-	return { ...cart, total, fees: { transaction, service } };
+	return { ...cart, fees: { transaction, service, total } };
 };
 
 export const getCartsByUserId = async (ctx: AppContext, userId: string) => {

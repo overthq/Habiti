@@ -37,7 +37,7 @@ const CartPage = () => {
 						key={product.productId}
 						className='flex items-center gap-2 p-2 not-last:border-b'
 					>
-						<div className='size-14 bg-gray-200 rounded flex items-center justify-center'>
+						<div className='size-12 bg-gray-200 rounded flex items-center justify-center'>
 							{product.product.images[0] && (
 								<img
 									src={product.product.images[0].path}
@@ -53,7 +53,7 @@ const CartPage = () => {
 							)}
 						</div>
 						<div className='flex-1'>
-							<p className='font-regular'>{product.product.name}</p>
+							<p className='font-regular text-sm'>{product.product.name}</p>
 							<p className='text-gray-600 text-sm'>
 								{formatNaira(product.product.unitPrice)}
 							</p>
