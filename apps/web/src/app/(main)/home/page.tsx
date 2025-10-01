@@ -31,12 +31,8 @@ const HomePage = () => {
 								</div>
 
 								<div>
-									<p className='font-medium'>
-										{order.store.name} -{' '}
-										<span className='text-primary'>
-											{order.products.length} items
-										</span>
-									</p>
+									<p className='font-medium'>{order.store.name}</p>
+									{/*<p>{order.products.length}</p>*/}
 									<p className='text-sm text-muted-foreground'>
 										{new Date(Number(order.createdAt)).toLocaleDateString(
 											'en-US',

@@ -1,0 +1,59 @@
+'use client';
+
+import React from 'react';
+// import { useRouter } from 'next/navigation';
+
+import { useAuthStore } from '@/state/auth-store';
+import NewFooter from '@/components/home/NewFooter';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import Image from 'next/image';
+
+// TODO: Rethink the entire authentication logic on the frontend
+const Home = () => {
+	// const { userId, accessToken } = useAuthStore();
+	// const router = useRouter();
+
+	// React.useEffect(() => {
+	// 	if (userId && accessToken) {
+	// 		router.push('/home');
+	// 	}
+	// }, [userId, accessToken, router]);
+
+	return (
+		<div className='flex flex-col h-dvh'>
+			<div className='flex flex-1 mx-auto w-full gap-8 max-w-200'>
+				<div className='flex flex-1'>
+					<div className='flex justify-center items-center w-full'>
+						<Image
+							src='/images/landing-image.webp'
+							alt='Habiti store page screenshot'
+							width={295}
+							height={606}
+						/>
+					</div>
+				</div>
+				<div className='flex flex-1 flex-col justify-center'>
+					<h2 className='text-4xl mb-4 font-semibold'>
+						Online shopping, simplified.
+					</h2>
+					<p className='text-lg mb-4 text-muted-foreground'>
+						Habiti helps shoppers and merchants manage their shopping activity
+						in one place.
+					</p>
+					<div className='flex flex-col space-y-2'>
+						<Button asChild>
+							<Link href='/register'>Sign up</Link>
+						</Button>
+						<Button variant='secondary' asChild>
+							<Link href='/login'>Log in</Link>
+						</Button>
+					</div>
+				</div>
+			</div>
+			<NewFooter />
+		</div>
+	);
+};
+
+export default Home;
