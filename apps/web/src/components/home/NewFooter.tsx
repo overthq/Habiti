@@ -5,7 +5,7 @@ export const NewFooter = () => {
 		<div className='flex items-center justify-center'>
 			<div className='max-w-200 w-full flex justify-between p-4 text-sm'>
 				<p>&copy; Habiti {new Date().getFullYear()}</p>
-				<div className='flex gap-6'>
+				<div className='flex gap-4'>
 					<Link
 						href='/acceptable-use'
 						className='text-sm text-muted-foreground'

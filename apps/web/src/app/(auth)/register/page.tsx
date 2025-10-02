@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -60,14 +61,22 @@ const RegisterPage = () => {
 	};
 
 	return (
-		<div className='flex flex-1 justify-center items-center'>
+		<div className='flex flex-col flex-1 justify-center items-center'>
+			<Link href='/' className='flex items-center gap-2 mb-4'>
+				<Image
+					src='/images/habiti-wordmark-black.svg'
+					alt='Habiti'
+					height={36}
+					width={120}
+					className='dark:invert'
+				/>
+			</Link>
 			<div className='w-full max-w-md'>
 				<Card>
-					<CardHeader className='text-center'>
-						<CardTitle className='text-xl'>Welcome back</CardTitle>
+					<CardHeader>
+						<CardTitle>Welcome back</CardTitle>
 						<CardDescription>Create your Habiti account</CardDescription>
 					</CardHeader>
-
 					<CardContent>
 						<Form {...form}>
 							<form
