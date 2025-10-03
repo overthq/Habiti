@@ -22,7 +22,7 @@ const Home = () => {
 
 	return (
 		<div className='flex flex-col h-dvh'>
-			<div className='flex flex-1 mx-auto w-full gap-8 max-w-200'>
+			<div className='flex flex-1 mx-auto w-full gap-8 max-w-200 flex-col-reverse py-4 md:flex-row'>
 				<div className='flex flex-1'>
 					<div className='flex justify-center items-center w-full'>
 						<Image
@@ -33,7 +33,14 @@ const Home = () => {
 						/>
 					</div>
 				</div>
-				<div className='flex flex-1 flex-col justify-center'>
+				<div className='flex flex-1 flex-col justify-center p-8 pt-14 md:p-0 md:pt-0'>
+					<Image
+						src='/images/habiti-wordmark-black.svg'
+						alt='Habiti'
+						height={36}
+						width={120}
+						className='dark:invert mb-8'
+					/>
 					<h2 className='text-4xl mb-4 font-semibold'>
 						Online shopping, simplified.
 					</h2>

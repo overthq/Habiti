@@ -74,7 +74,7 @@ const RegisterPage = () => {
 			<div className='w-full max-w-md'>
 				<Card>
 					<CardHeader>
-						<CardTitle>Welcome back</CardTitle>
+						<CardTitle>Glad you&apos;re here</CardTitle>
 						<CardDescription>Create your Habiti account</CardDescription>
 					</CardHeader>
 					<CardContent>
