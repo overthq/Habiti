@@ -1,25 +1,13 @@
 'use client';
 
 import React from 'react';
-// import { useRouter } from 'next/navigation';
 
-import { useAuthStore } from '@/state/auth-store';
 import NewFooter from '@/components/home/NewFooter';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
 
-// TODO: Rethink the entire authentication logic on the frontend
 const Home = () => {
-	// const { userId, accessToken } = useAuthStore();
-	// const router = useRouter();
-
-	// React.useEffect(() => {
-	// 	if (userId && accessToken) {
-	// 		router.push('/home');
-	// 	}
-	// }, [userId, accessToken, router]);
-
 	return (
 		<div className='flex flex-col h-dvh'>
 			<div className='flex flex-1 mx-auto w-full gap-8 max-w-200 flex-col-reverse py-4 md:flex-row'>
