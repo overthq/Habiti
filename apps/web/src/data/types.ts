@@ -59,6 +59,8 @@ export interface Order {
 	user: User;
 	store: Store;
 	status: string;
+	transactionFee: number;
+	serviceFee: number;
 	createdAt: string;
 	updatedAt: string;
 }

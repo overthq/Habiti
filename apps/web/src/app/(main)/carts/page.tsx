@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { formatNaira } from '@/utils/currency';
 import { useCartsQuery } from '@/data/queries';
+import { Button } from '@/components/ui/button';
 
 const CartsPage = () => {
 	const { data, isLoading, error } = useCartsQuery();
@@ -22,8 +23,8 @@ const CartsPage = () => {
 		);
 
 	return (
-		<div className='container mx-auto px-4 py-4'>
-			<h1 className='text-3xl font-bold mb-8'>Carts</h1>
+		<div>
+			<h1 className='text-2xl font-medium mb-4'>Carts</h1>
 			<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
 				{data.carts.map(cart => (
 					<div key={cart.id} className='border bg-white rounded-lg p-6'>
@@ -41,12 +42,14 @@ const CartsPage = () => {
 								</div>
 							))}
 						</div>
-						<Link
-							href={`/carts/${cart.id}`}
-							className='inline-block bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors duration-200'
-						>
-							View Cart
-						</Link>
+						<div className='flex flex-col gap-2'>
+							<Button asChild>
+								<Link href={`/carts/${cart.id}`}>View cart</Link>
+							</Button>
+							<Button variant='secondary' asChild>
+								<Link href={`/stores/${cart.storeId}`}>Visit store</Link>
+							</Button>
+						</div>
 					</div>
 				))}
 			</div>

@@ -14,20 +14,6 @@ const Header = () => {
 						className='dark:invert'
 					/>
 				</Link>
-				<div className='flex items-center gap-3'>
-					<Link
-						href='/login'
-						className='text-sm text-muted-foreground hover:text-foreground'
-					>
-						Log in
-					</Link>
-					<Link
-						href='/register'
-						className='inline-flex h-9 items-center rounded-md bg-foreground px-4 text-sm font-medium text-background hover:bg-foreground/90'
-					>
-						Get started
-					</Link>
-				</div>
 			</div>
 		</nav>
 	);

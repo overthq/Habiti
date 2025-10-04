@@ -15,8 +15,8 @@ const OrdersPage = () => {
 	}
 
 	return (
-		<div className='container py-6'>
-			<h1 className='text-2xl font-medium mb-8'>Orders</h1>
+		<div>
+			<h1 className='text-2xl font-medium mb-4'>Orders</h1>
 			<div>
 				{data.orders.map(order => (
 					<React.Fragment key={order.id}>

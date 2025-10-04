@@ -31,34 +31,38 @@ const CartPage = () => {
 		<div>
 			<h1 className='text-2xl mb-4'>Cart</h1>
 
-			{data.cart.products.map(product => (
-				<div
-					key={product.productId}
-					className='flex items-center gap-4 p-2 border rounded-md mb-3'
-				>
-					<div className='w-16 h-16 bg-gray-200 rounded flex items-center justify-center'>
-						{product.product.images[0] && (
-							<img
-								src={product.product.images[0].path}
-								alt={product.product.name}
-								className='size-16 object-cover rounded'
-								loading='lazy'
-								onLoad={e =>
-									e.currentTarget.parentElement?.classList.remove('bg-gray-200')
-								}
-							/>
-						)}
+			<div className='border rounded-md'>
+				{data.cart.products.map(product => (
+					<div
+						key={product.productId}
+						className='flex items-center gap-2 p-2 not-last:border-b'
+					>
+						<div className='size-12 bg-gray-200 rounded flex items-center justify-center'>
+							{product.product.images[0] && (
+								<img
+									src={product.product.images[0].path}
+									alt={product.product.name}
+									className='size-full object-cover rounded'
+									loading='lazy'
+									onLoad={e =>
+										e.currentTarget.parentElement?.classList.remove(
+											'bg-gray-200'
+										)
+									}
+								/>
+							)}
+						</div>
+						<div className='flex-1'>
+							<p className='font-regular text-sm'>{product.product.name}</p>
+							<p className='text-gray-600 text-sm'>
+								{formatNaira(product.product.unitPrice)}
+							</p>
+						</div>
 					</div>
-					<div className='flex-1'>
-						<p className='font-medium'>{product.product.name}</p>
-						<p className='text-gray-600'>
-							{formatNaira(product.product.unitPrice)}
-						</p>
-					</div>
-				</div>
-			))}
+				))}
+			</div>
 
-			<div className='mb-4'>
+			<div className='my-4'>
 				<div className='flex justify-between'>
 					<p>Subtotal</p>
 					<p>{formatNaira(data.cart.total)}</p>
