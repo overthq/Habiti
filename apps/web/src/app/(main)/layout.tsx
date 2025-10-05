@@ -11,7 +11,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 	return (
 		<div>
 			<MainNavigation />
-			<div className='container mx-auto pt-20'>{children}</div>
+			<div className='container mx-auto pt-20 pb-8'>{children}</div>
 		</div>
 	);
 };

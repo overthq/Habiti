@@ -27,10 +27,6 @@ const ProductPage = () => {
 		});
 	};
 
-	const handleSelectImage = (index: number) => {
-		setActiveImage(index);
-	};
-
 	if (isLoading) return <div />;
 
 	if (!data?.product) return <div>Product not found</div>;
@@ -41,16 +37,19 @@ const ProductPage = () => {
 		<div className='container mx-auto px-4'>
 			<div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
 				<div className='md:col-span-2'>
-					{product.images.length > 0 && (
+					{product.images.length > 0 ? (
 						<img
+							key={product.id}
 							src={product.images[activeImage].path}
 							alt={product.name}
 							className='w-full max-w-170 h-auto object-cover rounded-lg'
 						/>
+					) : (
+						<div className='w-full max-w-170 h-96 bg-gray-200 rounded-lg' />
 					)}
 					<ImageSelector
 						images={product.images}
-						onSelectImage={handleSelectImage}
+						onSelectImage={setActiveImage}
 					/>
 				</div>
 				<div className='md:col-span-1'>
@@ -82,13 +81,14 @@ const ImageSelector: React.FC<ImageSelectorProps> = ({
 	onSelectImage
 }) => {
 	return (
-		<div className='mt-4'>
+		<div className='flex mt-4 gap-4'>
 			{images.map((image, index) => (
 				<div
+					key={image.id}
 					className='size-14 rounded-sm overflow-hidden'
 					onClick={() => onSelectImage(index)}
 				>
-					<img src={image.path} />
+					<img src={image.path} className='size-full' />
 				</div>
 			))}
 		</div>
