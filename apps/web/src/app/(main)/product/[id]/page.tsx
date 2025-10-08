@@ -10,6 +10,7 @@ import StorePreview from '@/components/product/StorePreview';
 import { useProductQuery } from '@/data/queries';
 import { useAddToCartMutation } from '@/data/mutations';
 import { Image } from '@/data/types';
+import { cn } from '@/lib/utils';
 
 const ProductPage = () => {
 	const { id } = useParams<{ id: string }>();
@@ -34,7 +35,7 @@ const ProductPage = () => {
 	const product = data.product;
 
 	return (
-		<div className='container mx-auto px-4'>
+		<div className='mx-auto max-w-4xl'>
 			<div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
 				<div className='md:col-span-2'>
 					{product.images.length > 0 ? (
@@ -50,6 +51,7 @@ const ProductPage = () => {
 					<ImageSelector
 						images={product.images}
 						onSelectImage={setActiveImage}
+						activeIndex={activeImage}
 					/>
 				</div>
 				<div className='md:col-span-1'>
@@ -58,13 +60,23 @@ const ProductPage = () => {
 					<p className='text-lg mb-2'>{formatNaira(product.unitPrice)}</p>
 					<p className='text-gray-600 mb-4'>{product.description}</p>
 					<QuantityControl value={quantity} onValueChange={setQuantity} />
-					<Button
-						disabled={addToCartMutation.isPending}
-						onClick={() => handleAddToCart(data.product.store.id)}
-						className='w-full'
-					>
-						Add to Cart
-					</Button>
+					<div className='space-y-2'>
+						<Button
+							disabled={addToCartMutation.isPending}
+							onClick={() => handleAddToCart(data.product.store.id)}
+							className='w-full'
+						>
+							Add to Cart
+						</Button>
+						<Button
+							disabled={addToCartMutation.isPending}
+							onClick={() => handleAddToCart(data.product.store.id)}
+							className='w-full'
+							variant='secondary'
+						>
+							Buy now
+						</Button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -74,18 +86,23 @@ const ProductPage = () => {
 interface ImageSelectorProps {
 	images: Image[];
 	onSelectImage(index: number): void;
+	activeIndex: number;
 }
 
 const ImageSelector: React.FC<ImageSelectorProps> = ({
 	images,
-	onSelectImage
+	onSelectImage,
+	activeIndex
 }) => {
 	return (
-		<div className='flex mt-4 gap-4'>
+		<div className='flex mt-4 gap-2'>
 			{images.map((image, index) => (
 				<div
 					key={image.id}
-					className='size-14 rounded-sm overflow-hidden'
+					className={cn(
+						`size-14 rounded-sm overflow-hidden cursor-pointer border-2 border-transparent`,
+						index === activeIndex && 'border-primary'
+					)}
 					onClick={() => onSelectImage(index)}
 				>
 					<img src={image.path} className='size-full' />

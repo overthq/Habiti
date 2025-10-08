@@ -15,7 +15,7 @@ const HomePage = () => {
 		<div>
 			<h1 className='text-2xl font-medium mb-4'>Recent Orders</h1>
 
-			<div className='mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+			<div className='mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
 				{data.currentUser.orders.map((order: any) => (
 					<Link href={`/orders/${order.id}`} key={order.id} className='block'>
 						<div className='h-full flex justify-between items-center p-4 rounded-lg border'>
