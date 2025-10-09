@@ -36,7 +36,7 @@ const OrderPage = () => {
 						)}
 						<div className='flex-1'>
 							<p>{product.name}</p>
-							<div className='text-gray-600'>
+							<div className='text-muted-foreground'>
 								<p>{formatNaira(product.unitPrice)}</p>
 								{/*<p className='text-sm'>{product.quantity}</p>*/}
 								{/*<p className='font-medium'>
