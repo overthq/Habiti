@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { gql, useQuery } from 'urql';
 import { cn } from '@/lib/utils';
+import { formatDateFromTimestamp } from '@/utils/date';
 
 const HomePage = () => {
 	const [{ error, data, fetching }] = useQuery({ query: HOME_QUERY });
@@ -32,12 +33,8 @@ const HomePage = () => {
 
 								<div>
 									<p className='font-medium'>{order.store.name}</p>
-									{/*<p>{order.products.length}</p>*/}
 									<p className='text-sm text-muted-foreground'>
-										{new Date(Number(order.createdAt)).toLocaleDateString(
-											'en-US',
-											{ year: 'numeric', month: 'long', day: 'numeric' }
-										)}
+										{formatDateFromTimestamp(order.createdAt)}
 									</p>
 									<p className='text-sm font-medium mt-1'>
 										₦{order.total.toLocaleString()} ·
@@ -60,14 +57,15 @@ const HomePage = () => {
 			</div>
 
 			<h2 className='text-xl font-medium mb-4'>Followed Stores</h2>
-			<div className='flex overflow-x-auto gap-4 py-4'>
+
+			<div className='flex overflow-x-auto gap-4 py-1'>
 				{data.currentUser.followed.map((followed: any) => (
 					<Link
 						href={`/store/${followed.store.id}`}
 						key={followed.store.id}
 						className='flex flex-col items-center min-w-[80px]'
 					>
-						<div className='size-16 rounded-full overflow-hidden bg-muted-foreground mb-2'>
+						<div className='size-18 rounded-full overflow-hidden mb-2'>
 							{followed.store.image ? (
 								<img
 									src={followed.store.image?.path}
@@ -75,14 +73,14 @@ const HomePage = () => {
 									className='size-full object-cover'
 								/>
 							) : (
-								<div className='size-full bg-primary-foreground flex items-center justify-center'>
-									<span className='text-lg font-bold text-primary'>
+								<div className='size-full bg-muted-foreground/20 flex items-center justify-center'>
+									<span className='text-xl font-medium text-muted-foreground'>
 										{followed.store.name.charAt(0)}
 									</span>
 								</div>
 							)}
 						</div>
-						<span className='text-center truncate w-full'>
+						<span className='text-center truncate w-full font-medium'>
 							{followed.store.name}
 						</span>
 					</Link>
