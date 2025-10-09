@@ -89,13 +89,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ name, email }) => {
 
 const ProfilePage = () => {
 	const { data, isLoading } = useCurrentUserQuery();
-	const { logOut } = useAuthStore();
-	const router = useRouter();
-
-	const handleLogOut = () => {
-		logOut();
-		router.push('/');
-	};
 
 	if (isLoading || !data) {
 		return <div />;
@@ -108,7 +101,6 @@ const ProfilePage = () => {
 			<div className='bg-secondary rounded-md p-4 mb-4 space-y-2'>
 				<p className='text-xl font-medium'>{data.user.name}</p>
 				<p className='text-sm text-muted-foreground'>{data.user.email}</p>
-				<Button onClick={handleLogOut}>Log Out</Button>
 			</div>
 
 			<ProfileForm name={data.user.name} email={data.user.email} />
