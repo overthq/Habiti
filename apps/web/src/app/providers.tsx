@@ -1,10 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Provider } from 'urql';
 import { QueryClientProvider } from '@tanstack/react-query';
 
-import { generateClient, queryClient } from '@/config/client';
+import { queryClient } from '@/config/client';
 import { useAuthStore } from '@/state/auth-store';
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -32,19 +31,12 @@ const Providers = ({ children }: ProvidersProps) => {
 		}
 	}, [userId, accessToken, router, pathname]);
 
-	const client = React.useMemo(
-		() => generateClient(accessToken),
-		[accessToken]
-	);
-
 	if (loading) {
 		return null;
 	}
 
 	return (
-		<QueryClientProvider client={queryClient}>
-			<Provider value={client}>{children}</Provider>
-		</QueryClientProvider>
+		<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 	);
 };
 

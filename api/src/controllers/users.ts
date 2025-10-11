@@ -33,9 +33,9 @@ export const deleteCurrentUser = async (req: Request, res: Response) => {
 
 export const getFollowedStores = async (req: Request, res: Response) => {
 	const ctx = getAppContext(req);
-	const followedStores = await UserLogic.getFollowedStores(ctx);
+	const stores = await UserLogic.getFollowedStores(ctx);
 
-	return res.json({ followedStores });
+	return res.json({ stores });
 };
 
 export const getOrders = async (req: Request, res: Response) => {
