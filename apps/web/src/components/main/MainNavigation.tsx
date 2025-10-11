@@ -9,7 +9,7 @@ interface NavigationItemProps {
 }
 
 import { cn } from '@/lib/utils';
-import { LogOutIcon, UserIcon } from 'lucide-react';
+import { LogOutIcon, UserRoundIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 import {
 	DropdownMenu,
@@ -52,14 +52,14 @@ const ProfileDropdown = () => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button>
-					<UserIcon className='w-4 h-4' />
+				<Button variant='ghost' className='rounded-full'>
+					<UserRoundIcon className='size-5' />
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align='end'>
 				<DropdownMenuItem asChild>
 					<Link href='/profile'>
-						<UserIcon className='w-4 h-4' />
+						<UserRoundIcon className='w-4 h-4' />
 						Profile
 					</Link>
 				</DropdownMenuItem>
