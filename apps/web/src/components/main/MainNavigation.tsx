@@ -9,7 +9,7 @@ interface NavigationItemProps {
 }
 
 import { cn } from '@/lib/utils';
-import { LogOutIcon, UserRoundIcon } from 'lucide-react';
+import { CircleUserIcon, LogOutIcon, UserRoundIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 import {
 	DropdownMenu,
@@ -53,7 +53,7 @@ const ProfileDropdown = () => {
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button variant='ghost' className='rounded-full'>
-					<UserRoundIcon className='size-5' />
+					<CircleUserIcon className='size-5' />
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align='end'>
