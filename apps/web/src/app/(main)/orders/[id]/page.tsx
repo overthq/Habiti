@@ -21,23 +21,23 @@ const OrderPage = () => {
 		<div className='mx-auto'>
 			<h1 className='text-2xl font-medium mb-4'>Order Details</h1>
 
-			<div className='border rounded-md'>
+			<div className='border rounded-lg'>
 				{order.products.map(({ product, productId }) => (
 					<div
 						key={productId}
-						className='flex items-center p-2 gap-2 not-last:border-b'
+						className='flex items-center p-3 gap-3 not-last:border-b'
 					>
 						{product.images?.[0] && (
 							<img
 								src={product.images[0].path}
 								alt={product.name}
-								className='size-12 object-cover rounded-md'
+								className='size-14 object-cover rounded-md'
 							/>
 						)}
 						<div className='flex-1'>
-							<p className='text-sm'>{product.name}</p>
-							<div className='text-gray-600'>
-								<p className='text-sm'>{formatNaira(product.unitPrice)}</p>
+							<p>{product.name}</p>
+							<div className='text-muted-foreground'>
+								<p>{formatNaira(product.unitPrice)}</p>
 								{/*<p className='text-sm'>{product.quantity}</p>*/}
 								{/*<p className='font-medium'>
 									Total: {formatNaira(product.unitPrice * product.quantity)}
@@ -48,7 +48,7 @@ const OrderPage = () => {
 				))}
 			</div>
 
-			<div className='my-4'>
+			<div className=' border rounded-md p-4 bg-muted my-4'>
 				<div className='flex justify-between'>
 					<p>Subtotal</p>
 					<p>{formatNaira(order.total)}</p>
@@ -61,7 +61,7 @@ const OrderPage = () => {
 					<p>Service Fee</p>
 					<p>{formatNaira(order.serviceFee)}</p>
 				</div>
-				<div className='flex justify-between'>
+				<div className='flex font-medium justify-between'>
 					<p>Total</p>
 					<p>
 						{formatNaira(order.total + order.transactionFee + order.serviceFee)}

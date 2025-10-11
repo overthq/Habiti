@@ -6,7 +6,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 
 import { generateClient, queryClient } from '@/config/client';
 import { useAuthStore } from '@/state/auth-store';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 type ProvidersProps = {
 	children: React.ReactNode;
@@ -15,16 +15,22 @@ type ProvidersProps = {
 const Providers = ({ children }: ProvidersProps) => {
 	const { userId, accessToken } = useAuthStore();
 	const router = useRouter();
+	const pathname = usePathname();
 
 	const [loading, setLoading] = React.useState(true);
 
+	// FIXME: This is not a good way to handle authentication.
 	React.useEffect(() => {
 		if (userId && accessToken) {
-			router.push('/home');
+			if (pathname === '/') {
+				router.replace('/home');
+			} else {
+				setLoading(false);
+			}
 		} else {
 			setLoading(false);
 		}
-	}, [userId, accessToken, router]);
+	}, [userId, accessToken, router, pathname]);
 
 	const client = React.useMemo(
 		() => generateClient(accessToken),
