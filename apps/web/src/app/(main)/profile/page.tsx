@@ -3,7 +3,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -18,7 +17,6 @@ import { Input } from '@/components/ui/input';
 
 import { useCurrentUserQuery } from '@/data/queries';
 
-import { useAuthStore } from '@/state/auth-store';
 import {
 	ItemActions,
 	ItemDescription,
