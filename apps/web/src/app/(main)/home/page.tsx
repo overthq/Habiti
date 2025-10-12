@@ -3,8 +3,9 @@
 import React from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { formatDateFromTimestamp } from '@/utils/date';
+import { formatDate } from '@/utils/date';
 import { useFollowedStoresQuery, useOrdersQuery } from '@/data/queries';
+import { formatNaira } from '@/utils/currency';
 
 const RecentOrders = () => {
 	const { isLoading, error, data } = useOrdersQuery();
@@ -32,10 +33,10 @@ const RecentOrders = () => {
 							<div>
 								<p className='font-medium'>{order.store.name}</p>
 								<p className='text-sm text-muted-foreground'>
-									{formatDateFromTimestamp(order.createdAt)}
+									{formatDate(order.createdAt)}
 								</p>
 								<p className='text-sm font-medium mt-1'>
-									₦{order.total.toLocaleString()} ·
+									{formatNaira(order.total)} ·
 									<span
 										className={cn(
 											'capitalize ml-1',

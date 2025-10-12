@@ -22,7 +22,7 @@ const OrderPage = () => {
 			<h1 className='text-2xl font-medium mb-4'>Order Details</h1>
 
 			<div className='border rounded-lg'>
-				{order.products.map(({ product, productId }) => (
+				{order.products.map(({ product, productId, unitPrice, quantity }) => (
 					<div
 						key={productId}
 						className='flex items-center p-3 gap-3 not-last:border-b'
@@ -37,7 +37,7 @@ const OrderPage = () => {
 						<div className='flex-1'>
 							<p>{product.name}</p>
 							<div className='text-muted-foreground'>
-								<p>{formatNaira(product.unitPrice)}</p>
+								<p>{formatNaira(unitPrice * quantity)}</p>
 								{/*<p className='text-sm'>{product.quantity}</p>*/}
 								{/*<p className='font-medium'>
 									Total: {formatNaira(product.unitPrice * product.quantity)}
@@ -51,7 +51,11 @@ const OrderPage = () => {
 			<div className=' border rounded-md p-4 bg-muted my-4'>
 				<div className='flex justify-between'>
 					<p>Subtotal</p>
-					<p>{formatNaira(order.total)}</p>
+					<p>
+						{formatNaira(
+							order.total - (order.transactionFee + order.serviceFee)
+						)}
+					</p>
 				</div>
 				<div className='flex justify-between'>
 					<p>Transaction Fee</p>
@@ -63,9 +67,7 @@ const OrderPage = () => {
 				</div>
 				<div className='flex font-medium justify-between'>
 					<p>Total</p>
-					<p>
-						{formatNaira(order.total + order.transactionFee + order.serviceFee)}
-					</p>
+					<p>{formatNaira(order.total)}</p>
 				</div>
 			</div>
 		</div>

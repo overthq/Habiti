@@ -55,7 +55,7 @@ const CartPage = () => {
 						<div className='flex-1'>
 							<p>{product.product.name}</p>
 							<p className='text-muted-foreground'>
-								{formatNaira(product.product.unitPrice)}
+								{formatNaira(product.product.unitPrice * product.quantity)}
 							</p>
 						</div>
 					</div>

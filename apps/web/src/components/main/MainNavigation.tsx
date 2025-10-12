@@ -29,7 +29,7 @@ const NavigationItem: React.FC<NavigationItemProps> = ({
 		<Link
 			href={href}
 			className={cn(
-				'font-medium',
+				'text-sm font-medium flex gap-2 items-center',
 				isActive
 					? 'text-foreground'
 					: 'text-muted-foreground hover:text-foreground transition-colors duration-200'
@@ -99,7 +99,7 @@ const MainNavigation = () => {
 				>
 					<Logo width={20} height={20} />
 				</Link>
-				<ul className='max-w-4xl flex-1 flex items-center gap-4 pl-6'>
+				<ul className='max-w-4xl flex-1 flex items-center gap-5 pl-6'>
 					{items.map(item => (
 						<NavigationItem
 							key={item.href}
