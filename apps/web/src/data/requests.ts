@@ -147,7 +147,7 @@ export const getOrder = async (orderId: string) => {
 };
 
 export const createOrder = async (body: CreateOrderBody) => {
-	const response = await api.post<{ order: Order }>('/orders');
+	const response = await api.post<{ order: Order }>('/orders', body);
 	return response.data;
 };
 

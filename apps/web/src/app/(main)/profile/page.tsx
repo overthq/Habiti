@@ -24,6 +24,7 @@ import {
 	ItemTitle,
 	Item
 } from '@/components/ui/item';
+import PaymentMethods from '@/components/profile/PaymentMethods';
 
 const profileFormSchema = z.object({
 	name: z.string(),
@@ -102,6 +103,8 @@ const ProfilePage = () => {
 			</div>
 
 			<ProfileForm name={data.user.name} email={data.user.email} />
+
+			<PaymentMethods />
 
 			<Item variant='outline'>
 				<ItemContent>
