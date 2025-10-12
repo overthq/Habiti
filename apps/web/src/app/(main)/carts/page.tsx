@@ -30,14 +30,15 @@ const CartsPage = () => {
 					<div key={cart.id} className='border bg-white rounded-lg p-6'>
 						<h2 className='text-xl font-semibold mb-4'>{cart.store.name}</h2>
 						<div className='space-y-2 mb-4'>
-							{cart.products.map((item: any) => (
+							{cart.products.map(product => (
 								<div
-									key={item.productId}
+									key={product.productId}
 									className='flex justify-between text-sm text-gray-600'
 								>
-									<span>{item.product.name}</span>
+									<span>{product.product.name}</span>
 									<span>
-										{item.quantity} × {formatNaira(item.product.unitPrice)}
+										{product.quantity} ×{' '}
+										{formatNaira(product.product.unitPrice)}
 									</span>
 								</div>
 							))}

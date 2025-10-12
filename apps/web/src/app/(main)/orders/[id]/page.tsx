@@ -38,10 +38,6 @@ const OrderPage = () => {
 							<p>{product.name}</p>
 							<div className='text-muted-foreground'>
 								<p>{formatNaira(unitPrice * quantity)}</p>
-								{/*<p className='text-sm'>{product.quantity}</p>*/}
-								{/*<p className='font-medium'>
-									Total: {formatNaira(product.unitPrice * product.quantity)}
-								</p>*/}
 							</div>
 						</div>
 					</div>
