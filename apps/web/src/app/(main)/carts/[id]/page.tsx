@@ -2,9 +2,19 @@
 
 import { Button } from '@/components/ui/button';
 import { useCreateOrderMutation } from '@/data/mutations';
-import { useCartQuery } from '@/data/queries';
+import { useCardsQuery, useCartQuery } from '@/data/queries';
 import { formatNaira } from '@/utils/currency';
 import { useParams } from 'next/navigation';
+
+const QuantityControl = () => {
+	return <div></div>;
+};
+
+const CardSelector = () => {
+	const { data, isLoading } = useCardsQuery();
+
+	return <div></div>;
+};
 
 const CartPage = () => {
 	const { id } = useParams<{ id: string }>();
@@ -58,6 +68,8 @@ const CartPage = () => {
 								{formatNaira(product.product.unitPrice * product.quantity)}
 							</p>
 						</div>
+
+						<QuantityControl />
 					</div>
 				))}
 			</div>

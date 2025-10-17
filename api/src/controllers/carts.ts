@@ -33,6 +33,30 @@ export const addProductToCart = async (req: Request, res: Response) => {
 	return res.json({ cartProduct });
 };
 
+export const updateCartProductQuantity = async (
+	req: Request,
+	res: Response
+) => {
+	const { id, productId } = req.params;
+	const { quantity } = req.body;
+
+	if (!id || !productId) {
+		return res
+			.status(400)
+			.json({ error: 'Cart ID and product ID are required' });
+	}
+
+	const ctx = getAppContext(req);
+
+	const cartProduct = await CartLogic.updateCartProductQuantity(ctx, {
+		cartId: id,
+		productId,
+		quantity
+	});
+
+	return res.json({ cartProduct });
+};
+
 export const removeProductFromCart = async (req: Request, res: Response) => {
 	const { id, productId } = req.params;
 

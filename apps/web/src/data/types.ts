@@ -1,5 +1,3 @@
-import { Vast_Shadow } from 'next/font/google';
-
 export interface User {
 	id: string;
 	name: string;
@@ -122,6 +120,8 @@ export enum OrderStatus {
 	PaymentPending = 'PaymentPending'
 }
 
+// TODO: Replace "-Body" with "-Args", since some of these might just be params
+
 export interface AuthenticateBody {
 	email: string;
 	password: string;
@@ -163,4 +163,10 @@ export interface CreateOrderBody {
 	// FIXME: We shouldn't be passing these from the frontend
 	transactionFee: number;
 	serviceFee: number;
+}
+
+export interface UpdateCartProductQuantityBody {
+	cartId: string;
+	productId: string;
+	quantity: number;
 }

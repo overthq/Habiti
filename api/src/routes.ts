@@ -41,7 +41,8 @@ import { getPayouts, getPayout, updatePayout } from './controllers/payouts';
 import {
 	getCartById,
 	addProductToCart,
-	removeProductFromCart
+	removeProductFromCart,
+	updateCartProductQuantity
 } from './controllers/carts';
 import { register, login, verify, appleCallback } from './controllers/auth';
 import {
@@ -128,6 +129,11 @@ router.patch('/payouts/:id', isAdmin, updatePayout);
 // Carts
 router.get('/carts/:id', authenticate, getCartById);
 router.post('/carts/products', authenticate, addProductToCart);
+router.put(
+	'/carts/:id/products/:productId',
+	authenticate,
+	updateCartProductQuantity
+);
 router.delete(
 	'/carts/:id/products/:productId',
 	authenticate,

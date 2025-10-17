@@ -6,14 +6,16 @@ import {
 	unfollowStore,
 	authenticate,
 	register,
-	createOrder
+	createOrder,
+	updateCartProductQuantity
 } from './requests';
 
 import type {
 	AddToCartBody,
 	AuthenticateBody,
 	CreateOrderBody,
-	RegisterBody
+	RegisterBody,
+	UpdateCartProductQuantityBody
 } from './types';
 
 export const useAddToCartMutation = () => {
@@ -21,6 +23,19 @@ export const useAddToCartMutation = () => {
 
 	return useMutation({
 		mutationFn: (body: AddToCartBody) => addToCart(body),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['carts'] });
+		}
+	});
+};
+
+export const useUpdateCartProductQuantityMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (body: UpdateCartProductQuantityBody) => {
+			return updateCartProductQuantity(body);
+		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['carts'] });
 		}
