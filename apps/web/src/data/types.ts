@@ -1,3 +1,5 @@
+import { Vast_Shadow } from 'next/font/google';
+
 export interface User {
 	id: string;
 	name: string;
@@ -58,7 +60,7 @@ export interface Order {
 	total: number;
 	user: User;
 	store: Store;
-	status: string;
+	status: OrderStatus;
 	transactionFee: number;
 	serviceFee: number;
 	createdAt: string;
@@ -96,9 +98,28 @@ export interface Card {
 	last4: string;
 }
 
+export interface ProductReview {
+	id: string;
+	userId: string;
+	productId: string;
+	body?: string;
+	rating: number;
+	createdAt: string;
+	updatedAt: string;
+	user: User;
+	product: Product;
+}
+
 export interface DeliveryAddress {
 	id: string;
 	name: string;
+}
+
+export enum OrderStatus {
+	Pending = 'Pending',
+	Cancelled = 'Cancelled',
+	Completed = 'Completed',
+	PaymentPending = 'PaymentPending'
 }
 
 export interface AuthenticateBody {

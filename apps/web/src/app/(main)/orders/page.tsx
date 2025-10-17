@@ -34,17 +34,6 @@ const OrdersPage = () => {
 											/>
 										)}
 									</div>
-
-									{/* <span
-												className={cn(
-													'capitalize',
-													order.status === 'Completed'
-														? 'text-green-600'
-														: 'text-amber-600'
-												)}
-											>
-												{order.status}
-											</span> */}
 									<div>
 										<p className='font-medium'>{order.store.name}</p>
 										{/* <p className='text-sm text-muted-foreground'>

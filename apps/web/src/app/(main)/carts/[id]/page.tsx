@@ -37,7 +37,7 @@ const CartPage = () => {
 						key={product.productId}
 						className='flex items-center gap-3 p-3 not-last:border-b'
 					>
-						<div className='size-14 bg-gray-200 rounded flex items-center justify-center'>
+						<div className='size-14 bg-muted rounded flex items-center justify-center'>
 							{product.product.images[0] && (
 								<img
 									src={product.product.images[0].path}

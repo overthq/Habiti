@@ -27,13 +27,15 @@ const OrderPage = () => {
 						key={productId}
 						className='flex items-center p-3 gap-3 not-last:border-b'
 					>
-						{product.images?.[0] && (
-							<img
-								src={product.images[0].path}
-								alt={product.name}
-								className='size-14 object-cover rounded-md'
-							/>
-						)}
+						<div className='size-14 bg-muted rounded flex items-center justify-center'>
+							{product.images?.[0] && (
+								<img
+									src={product.images[0].path}
+									alt={product.name}
+									className='size-14 object-cover rounded-md'
+								/>
+							)}
+						</div>
 						<div className='flex-1'>
 							<p>{product.name}</p>
 							<div className='text-muted-foreground'>
