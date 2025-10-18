@@ -159,7 +159,7 @@ export interface GetProductResponse {
 
 export interface CreateOrderBody {
 	cartId: string;
-	cardId: string;
+	cardId?: string | null;
 	// FIXME: We shouldn't be passing these from the frontend
 	transactionFee: number;
 	serviceFee: number;
