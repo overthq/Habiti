@@ -6,8 +6,8 @@ import {
 } from '@/data/mutations';
 import { useCartQuery } from '@/data/queries';
 
-import useStore from '../../state';
-import useDebounce from '../../hooks/useDebounce';
+import { usePreferenceStore } from '@/state/preference-store';
+import useDebounce from '@/hooks/use-debounce';
 import { Cart, CartProduct } from '@/data/types';
 import { useParams } from 'next/navigation';
 
@@ -16,7 +16,7 @@ interface CartContextType {
 	products: CartProduct[];
 	disabled: boolean;
 	handleSubmit: () => Promise<void>;
-	selectedCard: string;
+	selectedCard: string | null;
 	setSelectedCard: (cardId: string) => void;
 	updateProductQuantity: (productId: string, quantity: number) => void;
 	removeProductFromCart: (productId: string) => void;
@@ -39,7 +39,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 
 	const createOrderMutation = useCreateOrderMutation();
 
-	const { defaultCard, setPreference } = useStore();
+	const { defaultCard, setPreference } = usePreferenceStore();
 	const [selectedCard, setSelectedCard] = React.useState(defaultCard);
 	const { state, dispatch } = useCartReducer(cart.products);
 
