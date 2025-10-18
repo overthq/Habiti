@@ -24,6 +24,8 @@ import {
 	ItemTitle,
 	Item
 } from '@/components/ui/item';
+import PaymentMethods from '@/components/profile/PaymentMethods';
+import { Separator } from '@/components/ui/separator';
 
 const profileFormSchema = z.object({
 	name: z.string(),
@@ -68,6 +70,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ name, email }) => {
 				<FormField
 					control={form.control}
 					name='email'
+					disabled
 					render={({ field }) => (
 						<FormItem>
 							<FormLabel>Email</FormLabel>
@@ -96,12 +99,13 @@ const ProfilePage = () => {
 		<div className='space-y-4'>
 			<h1 className='text-2xl font-medium mb-4'>Profile</h1>
 
-			<div className='bg-secondary rounded-md p-4 mb-4 space-y-2'>
-				<p className='text-xl font-medium'>{data.user.name}</p>
-				<p className='text-sm text-muted-foreground'>{data.user.email}</p>
-			</div>
-
 			<ProfileForm name={data.user.name} email={data.user.email} />
+
+			<Separator />
+
+			<PaymentMethods />
+
+			<Separator />
 
 			<Item variant='outline'>
 				<ItemContent>

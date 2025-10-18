@@ -12,7 +12,8 @@ import type {
 	Card,
 	AuthenticateBody,
 	Product,
-	CreateOrderBody
+	CreateOrderBody,
+	UpdateCartProductQuantityBody
 } from './types';
 import { useAuthStore } from '@/state/auth-store';
 
@@ -139,6 +140,18 @@ export const removeFromCart = async (cartId: string, productId: string) => {
 	return response.data;
 };
 
+export const updateCartProductQuantity = async ({
+	cartId,
+	productId,
+	quantity
+}: UpdateCartProductQuantityBody) => {
+	const response = await api.put<{ cart: Cart }>(
+		`/carts/${cartId}/products/${productId}`,
+		{ quantity }
+	);
+	return response.data;
+};
+
 // Orders
 
 export const getOrder = async (orderId: string) => {
@@ -147,7 +160,7 @@ export const getOrder = async (orderId: string) => {
 };
 
 export const createOrder = async (body: CreateOrderBody) => {
-	const response = await api.post<{ order: Order }>('/orders');
+	const response = await api.post<{ order: Order }>('/orders', body);
 	return response.data;
 };
 

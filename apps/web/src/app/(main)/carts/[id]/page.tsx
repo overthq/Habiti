@@ -2,9 +2,19 @@
 
 import { Button } from '@/components/ui/button';
 import { useCreateOrderMutation } from '@/data/mutations';
-import { useCartQuery } from '@/data/queries';
+import { useCardsQuery, useCartQuery } from '@/data/queries';
 import { formatNaira } from '@/utils/currency';
 import { useParams } from 'next/navigation';
+
+const QuantityControl = () => {
+	return <div></div>;
+};
+
+const CardSelector = () => {
+	const { data, isLoading } = useCardsQuery();
+
+	return <div></div>;
+};
 
 const CartPage = () => {
 	const { id } = useParams<{ id: string }>();
@@ -37,7 +47,7 @@ const CartPage = () => {
 						key={product.productId}
 						className='flex items-center gap-3 p-3 not-last:border-b'
 					>
-						<div className='size-14 bg-gray-200 rounded flex items-center justify-center'>
+						<div className='size-14 bg-muted rounded flex items-center justify-center'>
 							{product.product.images[0] && (
 								<img
 									src={product.product.images[0].path}
@@ -55,9 +65,11 @@ const CartPage = () => {
 						<div className='flex-1'>
 							<p>{product.product.name}</p>
 							<p className='text-muted-foreground'>
-								{formatNaira(product.product.unitPrice)}
+								{formatNaira(product.product.unitPrice * product.quantity)}
 							</p>
 						</div>
+
+						<QuantityControl />
 					</div>
 				))}
 			</div>

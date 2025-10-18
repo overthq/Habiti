@@ -39,7 +39,7 @@ export const getCartsByUserId = async (
 	const carts = await prisma.cart.findMany({
 		where: { userId },
 		include: {
-			products: { include: { product: true } },
+			products: { include: { product: { include: { images: true } } } },
 			store: true
 		},
 		...query

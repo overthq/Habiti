@@ -199,9 +199,6 @@ const PayoutsPage = () => {
 										<TableCell>
 											<div>
 												<div className='font-medium'>{payout.store.name}</div>
-												<div className='text-sm text-gray-500 font-mono'>
-													{payout.store.id}
-												</div>
 											</div>
 										</TableCell>
 										<TableCell className='font-semibold'>

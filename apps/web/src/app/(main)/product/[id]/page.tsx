@@ -58,7 +58,7 @@ const ProductPage = () => {
 					<StorePreview store={data.product.store} />
 					<h1 className='text-xl font-medium mb-1'>{product.name}</h1>
 					<p className='text-lg mb-2'>{formatNaira(product.unitPrice)}</p>
-					<p className='text-gray-600 mb-4'>{product.description}</p>
+					<p className='text-muted-foreground mb-4'>{product.description}</p>
 					<QuantityControl value={quantity} onValueChange={setQuantity} />
 					<div className='space-y-2'>
 						<Button
@@ -100,8 +100,8 @@ const ImageSelector: React.FC<ImageSelectorProps> = ({
 				<div
 					key={image.id}
 					className={cn(
-						`size-14 rounded-sm overflow-hidden cursor-pointer border-2 border-transparent`,
-						index === activeIndex && 'border-primary'
+						`size-14 rounded-md overflow-hidden cursor-pointer border-2`,
+						index === activeIndex && 'ring'
 					)}
 					onClick={() => onSelectImage(index)}
 				>

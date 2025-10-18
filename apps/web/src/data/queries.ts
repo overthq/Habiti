@@ -7,7 +7,8 @@ import {
 	getCurrentUser,
 	getOrder,
 	getProduct,
-	getFollowedStores
+	getFollowedStores,
+	getCards
 } from './requests';
 
 export const useStoreQuery = (storeId: string) => {
@@ -63,5 +64,12 @@ export const useFollowedStoresQuery = () => {
 	return useQuery({
 		queryKey: ['followed-stores'],
 		queryFn: () => getFollowedStores()
+	});
+};
+
+export const useCardsQuery = () => {
+	return useQuery({
+		queryKey: ['cards'],
+		queryFn: () => getCards()
 	});
 };

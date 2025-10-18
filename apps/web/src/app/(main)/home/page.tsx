@@ -2,9 +2,25 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
-import { formatDateFromTimestamp } from '@/utils/date';
+import { formatDate } from '@/utils/date';
 import { useFollowedStoresQuery, useOrdersQuery } from '@/data/queries';
+import { formatNaira } from '@/utils/currency';
+import { OrderStatus } from '@/data/types';
+import { Badge } from '@/components/ui/badge';
+
+const OrderStatusToBadgeVariant = {
+	[OrderStatus.Pending]: 'warning',
+	[OrderStatus.Cancelled]: 'destructive',
+	[OrderStatus.Completed]: 'success',
+	[OrderStatus.PaymentPending]: 'warning'
+} as const;
+
+const OrderStatusToLabel = {
+	[OrderStatus.Pending]: 'Pending',
+	[OrderStatus.Cancelled]: 'Cancelled',
+	[OrderStatus.Completed]: 'Completed',
+	[OrderStatus.PaymentPending]: 'Payment Pending'
+};
 
 const RecentOrders = () => {
 	const { isLoading, error, data } = useOrdersQuery();
@@ -17,7 +33,10 @@ const RecentOrders = () => {
 		<div className='mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
 			{data.orders.map(order => (
 				<Link href={`/orders/${order.id}`} key={order.id} className='block'>
-					<div className='h-full flex justify-between items-center p-4 rounded-lg border'>
+					<div className='justify-between items-center p-4 rounded-lg border space-y-2'>
+						<p className='text-sm text-muted-foreground leading-none'>
+							{formatDate(order.createdAt)}
+						</p>
 						<div className='flex gap-4 items-center'>
 							<div className='size-14 rounded-full overflow-hidden bg-muted flex-shrink-0'>
 								{order.store.image && (
@@ -30,23 +49,16 @@ const RecentOrders = () => {
 							</div>
 
 							<div>
-								<p className='font-medium'>{order.store.name}</p>
-								<p className='text-sm text-muted-foreground'>
-									{formatDateFromTimestamp(order.createdAt)}
-								</p>
-								<p className='text-sm font-medium mt-1'>
-									₦{order.total.toLocaleString()} ·
-									<span
-										className={cn(
-											'capitalize ml-1',
-											order.status === 'Completed'
-												? 'text-green-600'
-												: 'text-amber-600'
-										)}
+								<div className='flex gap-2'>
+									<p className='font-medium'>{order.store.name}</p>
+									<Badge
+										className='rounded-full'
+										variant={OrderStatusToBadgeVariant[order.status]}
 									>
-										{order.status}
-									</span>
-								</p>
+										{OrderStatusToLabel[order.status]}
+									</Badge>
+								</div>
+								<p className='mt-1'>{formatNaira(order.total)}</p>
 							</div>
 						</div>
 					</div>

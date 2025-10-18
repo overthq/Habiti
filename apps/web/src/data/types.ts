@@ -58,7 +58,7 @@ export interface Order {
 	total: number;
 	user: User;
 	store: Store;
-	status: string;
+	status: OrderStatus;
 	transactionFee: number;
 	serviceFee: number;
 	createdAt: string;
@@ -96,10 +96,31 @@ export interface Card {
 	last4: string;
 }
 
+export interface ProductReview {
+	id: string;
+	userId: string;
+	productId: string;
+	body?: string;
+	rating: number;
+	createdAt: string;
+	updatedAt: string;
+	user: User;
+	product: Product;
+}
+
 export interface DeliveryAddress {
 	id: string;
 	name: string;
 }
+
+export enum OrderStatus {
+	Pending = 'Pending',
+	Cancelled = 'Cancelled',
+	Completed = 'Completed',
+	PaymentPending = 'PaymentPending'
+}
+
+// TODO: Replace "-Body" with "-Args", since some of these might just be params
 
 export interface AuthenticateBody {
 	email: string;
@@ -142,4 +163,10 @@ export interface CreateOrderBody {
 	// FIXME: We shouldn't be passing these from the frontend
 	transactionFee: number;
 	serviceFee: number;
+}
+
+export interface UpdateCartProductQuantityBody {
+	cartId: string;
+	productId: string;
+	quantity: number;
 }
