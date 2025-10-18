@@ -27,7 +27,7 @@ export const useCartsQuery = () => {
 
 export const useCartQuery = (cartId: string) => {
 	return useQuery({
-		queryKey: ['cart', cartId],
+		queryKey: ['carts', cartId],
 		queryFn: () => getCart(cartId)
 	});
 };

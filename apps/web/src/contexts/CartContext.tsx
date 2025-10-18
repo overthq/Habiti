@@ -42,6 +42,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 	const { defaultCard, setPreference } = usePreferenceStore();
 	const [selectedCard, setSelectedCard] = React.useState(defaultCard);
 	const { state, dispatch } = useCartReducer(cart.products);
+	const pendingUpdatesRef = React.useRef<Map<string, number>>(new Map());
 
 	React.useEffect(() => {
 		dispatch({ type: 'reset', products: cart.products });
@@ -54,8 +55,6 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 			setSelectedCard(firstCard.id);
 		}
 	}, [cart.user.cards, defaultCard, selectedCard]);
-
-	const pendingUpdatesRef = React.useRef<Map<string, number>>(new Map());
 
 	const disabled = React.useMemo(() => {
 		return (
@@ -199,8 +198,7 @@ const CartContextWrapper: React.FC<CartContextWrapperProps> = ({
 	children
 }) => {
 	const { id: cartId } = useParams<{ id: string }>();
-
-	const { data, isLoading } = useCartQuery(cartId);
+	const { data } = useCartQuery(cartId);
 
 	if (!data?.cart) return null;
 
