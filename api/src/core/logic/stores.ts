@@ -114,6 +114,18 @@ export const getStoreById = async (ctx: AppContext, storeId: string) => {
 		throw new Error('Store not found');
 	}
 
+	let storeViewerContext: Awaited<
+		ReturnType<typeof StoreData.getStoreViewerContext>
+	> | null = null;
+
+	if (ctx.user.id) {
+		storeViewerContext = await StoreData.getStoreViewerContext(
+			ctx.prisma,
+			ctx.user.id,
+			store.id
+		);
+	}
+
 	ctx.services.analytics.track({
 		event: 'store_viewed',
 		distinctId: ctx.user.id,
@@ -124,7 +136,7 @@ export const getStoreById = async (ctx: AppContext, storeId: string) => {
 		groups: { store: storeId }
 	});
 
-	return store;
+	return { store, viewerContext: storeViewerContext };
 };
 
 export const deleteStore = async (ctx: AppContext, input: DeleteStoreInput) => {

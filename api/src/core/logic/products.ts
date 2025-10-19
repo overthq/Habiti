@@ -147,6 +147,18 @@ export const getProductById = async (ctx: AppContext, productId: string) => {
 		throw new Error('Product not found');
 	}
 
+	let productViewerContext: Awaited<
+		ReturnType<typeof ProductData.getProductViewerContext>
+	> | null = null;
+
+	if (ctx.user.id) {
+		productViewerContext = await ProductData.getProductViewerContext(
+			ctx.prisma,
+			ctx.user.id,
+			product.id
+		);
+	}
+
 	ctx.services.analytics.track({
 		event: 'product_viewed',
 		distinctId: ctx.user.id,
@@ -158,7 +170,7 @@ export const getProductById = async (ctx: AppContext, productId: string) => {
 		groups: { store: product.storeId }
 	});
 
-	return product;
+	return { product, viewerContext: productViewerContext };
 };
 
 export const getProductReviews = async (ctx: AppContext, productId: string) => {

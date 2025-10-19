@@ -413,3 +413,15 @@ export const deleteStoreProductCategory = async (
 
 	return category;
 };
+
+export const getProductViewerContext = async (
+	prisma: PrismaClient,
+	userId: string,
+	productId: string
+) => {
+	const cartProduct = await prisma.cartProduct.findFirst({
+		where: { cart: { userId }, productId }
+	});
+
+	return { cartProduct };
+};

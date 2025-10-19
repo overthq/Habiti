@@ -31,6 +31,31 @@ export const getCartById = async (prisma: PrismaClient, cartId: string) => {
 	return { ...cart, total: cartTotal };
 };
 
+export const getUserCartByStoreId = async (
+	prisma: PrismaClient,
+	userId: string,
+	storeId: string
+) => {
+	const cart = await prisma.cart.findUnique({
+		where: { userId_storeId: { userId, storeId } },
+		include: {
+			products: { include: { product: { include: { images: true } } } },
+			store: { include: { image: true } },
+			user: { include: { cards: true } }
+		}
+	});
+
+	if (!cart) {
+		throw new Error('Cart not found');
+	}
+
+	const cartTotal = cart.products.reduce((acc, p) => {
+		return acc + p.product.unitPrice * p.quantity;
+	}, 0);
+
+	return { ...cart, total: cartTotal };
+};
+
 export const getCartsByUserId = async (
 	prisma: PrismaClient,
 	userId: string,

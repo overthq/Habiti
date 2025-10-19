@@ -88,13 +88,13 @@ export const getStoreById = async (
 	res: Response
 ) => {
 	const ctx = getAppContext(req);
-	const store = await StoreLogic.getStoreById(ctx, req.params.id);
+	const storeWithContext = await StoreLogic.getStoreById(ctx, req.params.id);
 
-	if (!store) {
+	if (!storeWithContext) {
 		return res.status(404).json({ error: 'Store not found' });
 	}
 
-	return res.json({ store });
+	return res.json(storeWithContext);
 };
 
 export const getStoreProducts = async (req: Request, res: Response) => {

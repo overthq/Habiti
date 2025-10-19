@@ -230,3 +230,22 @@ export const getFollowedStores = async (
 
 	return followedStores.map(f => f.store);
 };
+
+export const getStoreViewerContext = async (
+	prisma: PrismaClient,
+	userId: string,
+	storeId: string
+) => {
+	const storeFollower = await prisma.storeFollower.findUnique({
+		where: { storeId_followerId: { storeId, followerId: userId } }
+	});
+
+	const cart = await prisma.cart.findUnique({
+		where: { userId_storeId: { storeId, userId } }
+	});
+
+	return {
+		isFollowing: !!storeFollower,
+		cart
+	};
+};
