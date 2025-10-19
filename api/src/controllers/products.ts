@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 
 import prismaClient from '../config/prisma';
+import * as ProductLogic from '../core/logic/products';
 import * as ProductData from '../core/data/products';
 import { hydrateQuery } from '../utils/queries';
+import { getAppContext } from '../utils/context';
 
 export const getProducts = async (req: Request, res: Response) => {
 	const query = hydrateQuery(req.query);
@@ -21,13 +23,17 @@ export const getProductById = async (
 	req: Request<{ id: string }>,
 	res: Response
 ) => {
-	const product = await ProductData.getProductById(prismaClient, req.params.id);
+	const ctx = getAppContext(req);
+	const productWithContext = await ProductLogic.getProductById(
+		ctx,
+		req.params.id
+	);
 
-	if (!product) {
+	if (!productWithContext) {
 		return res.status(404).json({ error: 'Product not found' });
 	}
 
-	return res.json({ product });
+	return res.json(productWithContext);
 };
 
 export const getRelatedProducts = async (

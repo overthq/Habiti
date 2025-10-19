@@ -27,7 +27,7 @@ const OrderPage = () => {
 						key={productId}
 						className='flex items-center p-3 gap-3 not-last:border-b'
 					>
-						<div className='size-14 bg-muted rounded flex items-center justify-center'>
+						<div className='size-14 bg-muted rounded-md flex items-center justify-center overflow-hidden'>
 							{product.images?.[0] && (
 								<img
 									src={product.images[0].path}

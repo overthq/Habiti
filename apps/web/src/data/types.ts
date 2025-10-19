@@ -27,6 +27,7 @@ export interface Product {
 	description: string;
 	unitPrice: number;
 	quantity: number;
+	storeId: string;
 	store: Store;
 	images: Image[];
 }
@@ -118,6 +119,25 @@ export enum OrderStatus {
 	Cancelled = 'Cancelled',
 	Completed = 'Completed',
 	PaymentPending = 'PaymentPending'
+}
+
+export interface StoreViewerContext {
+	isFollowing: boolean;
+	hasCart: boolean;
+}
+
+export interface GetStoreResponse {
+	store: Store;
+	viewerContext: StoreViewerContext | null;
+}
+
+export interface ProductViewerContext {
+	cartProduct: CartProduct;
+}
+
+export interface GetProductResponse {
+	product: Product;
+	viewerContext: ProductViewerContext;
 }
 
 // TODO: Replace "-Body" with "-Args", since some of these might just be params
