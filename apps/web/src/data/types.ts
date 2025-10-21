@@ -114,6 +114,15 @@ export interface DeliveryAddress {
 	name: string;
 }
 
+export interface StoreFollower {
+	storeId: string;
+	followerId: string;
+	createdAt: string;
+	updatedAt: string;
+	store: Store;
+	follower: User;
+}
+
 export enum OrderStatus {
 	Pending = 'Pending',
 	Cancelled = 'Cancelled',

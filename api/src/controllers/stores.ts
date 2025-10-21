@@ -173,40 +173,31 @@ export const getStoreManagers = async (req: Request, res: Response) => {
 };
 
 export const followStore = async (req: Request, res: Response) => {
-	if (!req.auth) {
-		return res.status(401).json({ error: 'User not authenticated' });
-	}
-
 	if (!req.params.id) {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
 
-	await prismaClient.storeFollower.create({
-		data: { followerId: req.auth.id, storeId: req.params.id }
+	const ctx = getAppContext(req);
+
+	const follower = await StoreLogic.followStore(ctx, {
+		storeId: req.params.id
 	});
 
-	return res.status(200).json({ message: 'Store followed' });
+	return res.status(200).json({ follower });
 };
 
 export const unfollowStore = async (req: Request, res: Response) => {
-	if (!req.auth) {
-		return res.status(401).json({ error: 'User not authenticated' });
-	}
-
 	if (!req.params.id) {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
 
-	await prismaClient.storeFollower.delete({
-		where: {
-			storeId_followerId: {
-				storeId: req.params.id,
-				followerId: req.auth.id
-			}
-		}
+	const ctx = getAppContext(req);
+
+	const follower = await StoreLogic.unfollowStore(ctx, {
+		storeId: req.params.id
 	});
 
-	return res.status(200).json({ message: 'Store unfollowed' });
+	return res.status(200).json({ follower });
 };
 
 export const getStoreHome = async (req: Request, res: Response) => {
