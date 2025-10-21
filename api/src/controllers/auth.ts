@@ -3,28 +3,17 @@ import jwt from 'jsonwebtoken';
 
 import prismaClient from '../config/prisma';
 import * as AuthLogic from '../core/logic/auth';
+import * as UserLogic from '../core/logic/users';
 
 import { env } from '../config/env';
+import { getAppContext } from '../utils/context';
 
 export const register = async (req: Request, res: Response) => {
 	const { name, email, password } = req.body;
+	const ctx = getAppContext(req);
 
 	try {
-		const existingUser = await prismaClient.user.findUnique({
-			where: { email }
-		});
-
-		if (existingUser) {
-			return res.status(400).json({
-				error: 'A user already exists with the specified email'
-			});
-		}
-
-		const passwordHash = await AuthLogic.hashPassword(password);
-
-		const user = await prismaClient.user.create({
-			data: { name, email, passwordHash }
-		});
+		const user = await UserLogic.register(ctx, { name, email, password });
 
 		return res.status(201).json({ user });
 	} catch (error) {

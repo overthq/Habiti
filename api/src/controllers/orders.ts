@@ -3,7 +3,6 @@ import { RequestHandler } from 'express';
 import prismaClient from '../config/prisma';
 import { hydrateQuery } from '../utils/queries';
 import * as OrderLogic from '../core/logic/orders';
-import * as OrderData from '../core/data/orders';
 import { getAppContext } from '../utils/context';
 
 export const getOrders: RequestHandler = async (req, res) => {
@@ -30,14 +29,14 @@ export const createOrder: RequestHandler = async (req, res) => {
 	return res.json({ order });
 };
 
-export const getOrderById: RequestHandler = async (req, res) => {
+export const getOrderById: RequestHandler<{ id: string }> = async (
+	req,
+	res
+) => {
 	const { id } = req.params;
+	const ctx = getAppContext(req);
 
-	if (!id) {
-		return res.status(400).json({ error: 'Order ID is required' });
-	}
-
-	const order = await OrderData.getOrderById(prismaClient, id);
+	const order = await OrderLogic.getOrderById(ctx, id);
 
 	if (!order) {
 		return res.status(404).json({ error: 'Order not found' });
