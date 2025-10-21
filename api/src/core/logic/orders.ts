@@ -114,7 +114,7 @@ export const getOrderById = async (ctx: AppContext, orderId: string) => {
 	}
 
 	ctx.services.analytics.track({
-		event: 'product_viewed',
+		event: 'order_viewed',
 		distinctId: ctx.user.id,
 		properties: {
 			orderId: order.id
