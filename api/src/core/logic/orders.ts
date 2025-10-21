@@ -1,6 +1,6 @@
 import { OrderStatus } from '@prisma/client';
 
-import { saveOrderData, updateOrder } from '../data/orders';
+import * as OrderData from '../data/orders';
 import { getCartById } from '../data/carts';
 import { CreateOrderInput, UpdateOrderStatusInput } from './types';
 import { createOrderHooks, updateOrderHooks } from './hooks';
@@ -21,7 +21,7 @@ export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 
 	await validateCart(cart, ctx.user.id);
 
-	const order = await saveOrderData(ctx.prisma, ctx.user.id, {
+	const order = await OrderData.saveOrderData(ctx.prisma, ctx.user.id, {
 		cardId,
 		transactionFee,
 		serviceFee,
@@ -70,7 +70,9 @@ export const updateOrderStatus = async (
 
 	validateStatusTransition(currentOrder.status, status);
 
-	const updatedOrder = await updateOrder(ctx.prisma, orderId, { status });
+	const updatedOrder = await OrderData.updateOrder(ctx.prisma, orderId, {
+		status
+	});
 
 	updateOrderHooks(ctx.prisma, ctx.services, {
 		customerName: ctx.user.name,
@@ -102,4 +104,23 @@ const validateStatusTransition = (
 			`Invalid status transition from ${currentStatus} to ${newStatus}`
 		);
 	}
+};
+
+export const getOrderById = async (ctx: AppContext, orderId: string) => {
+	const order = await OrderData.getOrderById(ctx.prisma, orderId);
+
+	if (!order) {
+		throw new Error('Order not found');
+	}
+
+	ctx.services.analytics.track({
+		event: 'order_viewed',
+		distinctId: ctx.user.id,
+		properties: {
+			orderId: order.id
+		},
+		groups: { store: order.storeId }
+	});
+
+	return order;
 };

@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 
 import prismaClient from '../config/prisma';
 import * as ProductLogic from '../core/logic/products';
-import * as ProductData from '../core/data/products';
 import { hydrateQuery } from '../utils/queries';
 import { getAppContext } from '../utils/context';
 
@@ -40,10 +39,8 @@ export const getRelatedProducts = async (
 	req: Request<{ id: string }>,
 	res: Response
 ) => {
-	const products = await ProductData.getRelatedProducts(
-		prismaClient,
-		req.params.id
-	);
+	const ctx = getAppContext(req);
+	const products = await ProductLogic.getRelatedProducts(ctx, req.params.id);
 
 	return res.json({ products });
 };
@@ -52,10 +49,8 @@ export const getProductReviews = async (
 	req: Request<{ id: string }>,
 	res: Response
 ) => {
-	const reviews = await ProductData.getProductReviews(
-		prismaClient,
-		req.params.id
-	);
+	const ctx = getAppContext(req);
+	const reviews = await ProductLogic.getProductReviews(ctx, req.params.id);
 
 	return res.json({ reviews });
 };
@@ -64,15 +59,11 @@ export const createProductReview = async (
 	req: Request<{ id: string }>,
 	res: Response
 ) => {
-	if (!req.auth) {
-		return res.status(401).json({ error: 'Unauthorized' });
-	}
-
+	const ctx = getAppContext(req);
 	const { rating, body } = req.body;
 
-	const review = await ProductData.createProductReview(prismaClient, {
+	const review = await ProductLogic.createProductReview(ctx, {
 		productId: req.params.id,
-		userId: req.auth.id,
 		rating,
 		body
 	});
@@ -84,13 +75,11 @@ export const updateProduct = async (
 	req: Request<{ id: string }>,
 	res: Response
 ) => {
-	if (!req.auth) {
-		return res.status(401).json({ error: 'Unauthorized' });
-	}
-
+	const ctx = getAppContext(req);
 	const { name, description, unitPrice, quantity } = req.body;
 
-	const product = await ProductData.updateProduct(prismaClient, req.params.id, {
+	const product = await ProductLogic.updateProduct(ctx, {
+		productId: req.params.id,
 		name,
 		description,
 		unitPrice,
@@ -104,24 +93,13 @@ export const updateProductCategories = async (
 	req: Request<{ id: string }, {}, { add: string[]; remove: string[] }>,
 	res: Response
 ) => {
-	if (!req.auth) {
-		return res.status(401).json({ error: 'Unauthorized' });
-	}
-
+	const ctx = getAppContext(req);
 	const { add, remove } = req.body;
 
-	await prismaClient.productCategory.deleteMany({
-		where: { productId: req.params.id, categoryId: { in: remove } }
-	});
-
-	await prismaClient.productCategory.createMany({
-		data: add.map(categoryId => ({ productId: req.params.id, categoryId })),
-		skipDuplicates: true
-	});
-
-	const product = await prismaClient.product.findUnique({
-		where: { id: req.params.id },
-		include: { categories: true }
+	const product = await ProductLogic.updateProductCategories(ctx, {
+		productId: req.params.id,
+		addCategoryIds: add,
+		removeCategoryIds: remove
 	});
 
 	return res.json({ product });

@@ -31,9 +31,15 @@ export const getStores = async (req: Request, res: Response) => {
 export const createStore = async (req: Request, res: Response) => {
 	const { name, description, website, twitter, instagram } = req.body;
 
+	const ctx = getAppContext(req);
+
 	try {
-		const store = await prismaClient.store.create({
-			data: { name, description, website, twitter, instagram }
+		const store = await StoreLogic.createStore(ctx, {
+			name,
+			description,
+			website,
+			twitter,
+			instagram
 		});
 
 		return res.status(201).json({ store });
@@ -198,20 +204,4 @@ export const unfollowStore = async (req: Request, res: Response) => {
 	});
 
 	return res.status(200).json({ follower });
-};
-
-export const getStoreHome = async (req: Request, res: Response) => {
-	const context = getAppContext(req);
-
-	const store = await context.prisma.store.findUnique({
-		where: { id: context.storeId as string },
-		include: {
-			image: true,
-			products: {
-				where: { quantity: { lte: 10 } }
-			}
-		}
-	});
-
-	return res.json({ store });
 };
