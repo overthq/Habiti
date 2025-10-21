@@ -13,7 +13,7 @@ import {
 
 export const useStoreQuery = (storeId: string) => {
 	return useQuery({
-		queryKey: ['store', storeId],
+		queryKey: ['stores', storeId],
 		queryFn: () => getStore(storeId)
 	});
 };

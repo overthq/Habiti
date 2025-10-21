@@ -11,11 +11,11 @@ import type {
 	User,
 	Card,
 	AuthenticateBody,
-	Product,
 	CreateOrderBody,
 	UpdateCartProductQuantityBody,
 	GetProductResponse,
-	GetStoreResponse
+	GetStoreResponse,
+	StoreFollower
 } from './types';
 import { useAuthStore } from '@/state/auth-store';
 
@@ -83,15 +83,15 @@ export const getStore = async (storeId: string) => {
 };
 
 export const followStore = async (storeId: string) => {
-	const response = await api.post<{ store: Store }>(
+	const response = await api.post<{ follower: StoreFollower }>(
 		`/stores/${storeId}/follow`
 	);
 	return response.data;
 };
 
 export const unfollowStore = async (storeId: string) => {
-	const response = await api.delete<{ store: Store }>(
-		`/stores/${storeId}/follow`
+	const response = await api.post<{ follower: StoreFollower }>(
+		`/stores/${storeId}/unfollow`
 	);
 	return response.data;
 };
