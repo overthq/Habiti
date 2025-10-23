@@ -15,7 +15,8 @@ import type {
 	UpdateCartProductQuantityBody,
 	GetProductResponse,
 	GetStoreResponse,
-	StoreFollower
+	StoreFollower,
+	GetCartResponse
 } from './types';
 import { useAuthStore } from '@/state/auth-store';
 
@@ -126,7 +127,7 @@ export const getUser = async (userId: string) => {
 // Carts
 
 export const getCart = async (cartId: string) => {
-	const response = await api.get<{ cart: Cart }>(`/carts/${cartId}`);
+	const response = await api.get<GetCartResponse>(`/carts/${cartId}`);
 	return response.data;
 };
 

@@ -3,36 +3,35 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import CartProvider, { useCart } from '@/contexts/CartContext';
-import { useCardsQuery } from '@/data/queries';
 import { CartProduct } from '@/data/types';
-import { cn } from '@/lib/utils';
 import { formatNaira } from '@/utils/currency';
 import { Minus, Plus } from 'lucide-react';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue
+} from '@/components/ui/select';
 
 const CardSelector = () => {
-	const { selectedCard, setSelectedCard } = useCart();
-
-	const { data, isLoading } = useCardsQuery();
-
-	if (!data || isLoading) {
-		return <div />;
-	}
+	const { cards, selectedCard, setSelectedCard } = useCart();
 
 	return (
 		<div className='pt-4'>
 			<h2 className='text-lg font-medium mb-2'>Payment Method</h2>
-			{data?.cards.map(card => (
-				<div
-					onClick={() => setSelectedCard(card.id)}
-					key={card.id}
-					className={cn(
-						'border rounded-md p-4',
-						selectedCard === card.id && 'bg-muted'
-					)}
-				>
-					<p className='capitalize'>{`${card.cardType} \u2022\u2022\u2022\u2022${card.last4}`}</p>
-				</div>
-			))}
+			<Select value={selectedCard ?? undefined} onValueChange={setSelectedCard}>
+				<SelectTrigger>
+					<SelectValue placeholder='Select a card' />
+				</SelectTrigger>
+				<SelectContent>
+					{cards.map(card => (
+						<SelectItem key={card.id} value={card.id}>
+							{`${card.cardType} \u2022\u2022\u2022\u2022${card.last4}`}
+						</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
 		</div>
 	);
 };

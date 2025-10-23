@@ -8,11 +8,12 @@ import { useCartQuery } from '@/data/queries';
 
 import { usePreferenceStore } from '@/state/preference-store';
 import useDebounce from '@/hooks/use-debounce';
-import { Cart, CartProduct } from '@/data/types';
+import { Card, Cart, CartProduct, CartViewerContext } from '@/data/types';
 import { useParams } from 'next/navigation';
 
 interface CartContextType {
 	cart: Cart;
+	cards: Card[];
 	products: CartProduct[];
 	disabled: boolean;
 	handleSubmit: () => Promise<void>;
@@ -28,11 +29,13 @@ const CartContext = React.createContext<CartContextType | null>(null);
 interface CartProviderProps {
 	children: React.ReactNode;
 	cart: Cart;
+	viewerContext: CartViewerContext;
 }
 
 export const CartProvider: React.FC<CartProviderProps> = ({
 	children,
-	cart
+	cart,
+	viewerContext
 }) => {
 	const updateCartProductQuantityMutation =
 		useUpdateCartProductQuantityMutation();
@@ -49,12 +52,14 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 	}, [cart.products, dispatch]);
 
 	React.useEffect(() => {
-		const firstCard = cart.user.cards[0];
+		const firstCard = viewerContext?.cards[0];
+		console.log('firstCard', firstCard);
 
 		if (firstCard && !defaultCard && !selectedCard) {
+			console.log('setting selected card', firstCard.id);
 			setSelectedCard(firstCard.id);
 		}
-	}, [cart.user.cards, defaultCard, selectedCard]);
+	}, [viewerContext?.cards, defaultCard, selectedCard]);
 
 	const disabled = React.useMemo(() => {
 		return (
@@ -123,6 +128,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 		<CartContext.Provider
 			value={{
 				cart,
+				cards: viewerContext?.cards ?? [],
 				products: state,
 				disabled,
 				handleSubmit,
@@ -200,9 +206,13 @@ const CartContextWrapper: React.FC<CartContextWrapperProps> = ({
 	const { id: cartId } = useParams<{ id: string }>();
 	const { data } = useCartQuery(cartId);
 
-	if (!data?.cart) return null;
+	if (!data?.cart || !data.viewerContext) return null;
 
-	return <CartProvider cart={data.cart}>{children}</CartProvider>;
+	return (
+		<CartProvider cart={data.cart} viewerContext={data.viewerContext}>
+			{children}
+		</CartProvider>
+	);
 };
 
 export const useCart = () => {

@@ -149,7 +149,15 @@ export interface GetProductResponse {
 	viewerContext: ProductViewerContext;
 }
 
-// TODO: Replace "-Body" with "-Args", since some of these might just be params
+export interface CartViewerContext {
+	cards: Card[];
+}
+
+export interface GetCartResponse {
+	cart: Cart;
+	viewerContext: CartViewerContext;
+}
+//TODO: Replace "-Body" with "-Args", since some of these might just be params
 
 export interface AuthenticateBody {
 	email: string;
