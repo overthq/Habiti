@@ -1,21 +1,40 @@
 'use client';
 
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import CartProvider, { useCart } from '@/contexts/CartContext';
 import { useCardsQuery } from '@/data/queries';
 import { CartProduct } from '@/data/types';
+import { cn } from '@/lib/utils';
 import { formatNaira } from '@/utils/currency';
 import { Minus, Plus } from 'lucide-react';
-import React from 'react';
-
-const QuantityControl = () => {
-	return <div></div>;
-};
 
 const CardSelector = () => {
+	const { selectedCard, setSelectedCard } = useCart();
+
 	const { data, isLoading } = useCardsQuery();
 
-	return <div></div>;
+	if (!data || isLoading) {
+		return <div />;
+	}
+
+	return (
+		<div className='pt-4'>
+			<h2 className='text-lg font-medium mb-2'>Payment Method</h2>
+			{data?.cards.map(card => (
+				<div
+					onClick={() => setSelectedCard(card.id)}
+					key={card.id}
+					className={cn(
+						'border rounded-md p-4',
+						selectedCard === card.id && 'bg-muted'
+					)}
+				>
+					<p className='capitalize'>{`${card.cardType} \u2022\u2022\u2022\u2022${card.last4}`}</p>
+				</div>
+			))}
+		</div>
+	);
 };
 
 interface CartProductQuantityProps {
@@ -59,6 +78,10 @@ const CartMain = () => {
 		<div>
 			<h1 className='text-2xl font-medium mb-4'>Cart</h1>
 
+			<div>
+				<p className='text-lg font-medium mb-2'>{cart.store.name}</p>
+			</div>
+
 			<div className='border rounded-md'>
 				{cart.products.map(cartProduct => (
 					<div
@@ -92,6 +115,8 @@ const CartMain = () => {
 					</div>
 				))}
 			</div>
+
+			<CardSelector />
 
 			<div className='my-4 border rounded-md p-4 bg-muted'>
 				<div className='flex justify-between'>

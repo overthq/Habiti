@@ -10,7 +10,7 @@ const OrdersPage = () => {
 	const { data, isLoading } = useOrdersQuery();
 
 	if (isLoading || !data) {
-		return <p>Loading...</p>;
+		return <div />;
 	}
 
 	return (

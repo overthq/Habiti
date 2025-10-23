@@ -3,6 +3,7 @@
 import { useParams } from 'next/navigation';
 import { formatNaira } from '@/utils/currency';
 import { useOrderQuery } from '@/data/queries';
+import { formatDate } from '@/utils/date';
 
 const OrderPage = () => {
 	const { id } = useParams<{ id: string }>();
@@ -20,6 +21,11 @@ const OrderPage = () => {
 	return (
 		<div className='mx-auto'>
 			<h1 className='text-2xl font-medium mb-4'>Order Details</h1>
+
+			<div>
+				<p>{order.store.name}</p>
+				<p>{formatDate(order.createdAt)}</p>
+			</div>
 
 			<div className='border rounded-lg'>
 				{order.products.map(({ product, productId, unitPrice, quantity }) => (
