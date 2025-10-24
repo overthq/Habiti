@@ -10,13 +10,13 @@ export const getCartById = async (req: Request, res: Response) => {
 
 	const ctx = getAppContext(req);
 
-	const cart = await CartLogic.getCartById(ctx, req.params.id);
+	const cartWithContext = await CartLogic.getCartById(ctx, req.params.id);
 
-	if (!cart) {
+	if (!cartWithContext) {
 		return res.status(404).json({ error: 'Cart not found' });
 	}
 
-	return res.json({ cart });
+	return res.json(cartWithContext);
 };
 
 export const addProductToCart = async (req: Request, res: Response) => {

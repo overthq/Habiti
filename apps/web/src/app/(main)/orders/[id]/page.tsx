@@ -3,25 +3,45 @@
 import { useParams } from 'next/navigation';
 import { formatNaira } from '@/utils/currency';
 import { useOrderQuery } from '@/data/queries';
+import { formatDate } from '@/utils/date';
 
 const OrderPage = () => {
 	const { id } = useParams<{ id: string }>();
 	const { data, isLoading } = useOrderQuery(id);
 
-	if (isLoading) {
-		return <p>Loading...</p>;
+	if (isLoading || !data) {
+		return <div />;
 	}
 
-	const order = data?.order;
-	if (!order) {
-		return <p>Order not found</p>;
-	}
+	const { order } = data;
 
 	return (
 		<div className='mx-auto'>
 			<h1 className='text-2xl font-medium mb-4'>Order Details</h1>
 
-			<div className='border rounded-lg'>
+			<div>
+				<div className='flex items-center gap-2'>
+					<div className='size-10 rounded-full overflow-hidden bg-muted-foreground/20 flex-shrink-0'>
+						{order.store.image && (
+							<img
+								src={order.store.image.path}
+								alt={order.store.name}
+								className='size-full object-cover'
+							/>
+						)}
+					</div>
+					<div>
+						<p className='font-medium'>{order.store.name}</p>
+					</div>
+				</div>
+				<div className='mt-2 flex'>
+					<p className='text-muted-foreground text-sm'>
+						{order.status} · {formatDate(order.createdAt)}
+					</p>
+				</div>
+			</div>
+
+			<div className='border rounded-lg mt-4'>
 				{order.products.map(({ product, productId, unitPrice, quantity }) => (
 					<div
 						key={productId}
@@ -46,7 +66,7 @@ const OrderPage = () => {
 				))}
 			</div>
 
-			<div className=' border rounded-md p-4 bg-muted my-4'>
+			<div className='border rounded-md p-4 bg-muted my-4'>
 				<div className='flex justify-between'>
 					<p>Subtotal</p>
 					<p>

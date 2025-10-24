@@ -25,15 +25,24 @@ interface DeleteCartInput {
 export const getCartById = async (ctx: AppContext, cartId: string) => {
 	const cart = await CartData.getCartById(ctx.prisma, cartId);
 
+	// FIXME: In the future, ensure that this is handled correctly for admins.
 	if (cart.userId !== ctx.user.id) {
 		throw new Error('Unauthorized: Cart does not belong to current user');
 	}
+
+	const cartViewerContext = await CartData.getCartViewerContext(
+		ctx.prisma,
+		ctx.user.id
+	);
 
 	const transaction = calculatePaystackFee(cart.total);
 	const service = calculateHabitiFee();
 	const total = transaction + service;
 
-	return { ...cart, fees: { transaction, service, total } };
+	return {
+		cart: { ...cart, fees: { transaction, service, total } },
+		viewerContext: cartViewerContext
+	};
 };
 
 export const getCartsByUserId = async (ctx: AppContext, userId: string) => {

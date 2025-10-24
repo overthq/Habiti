@@ -31,6 +31,17 @@ export const getCartById = async (prisma: PrismaClient, cartId: string) => {
 	return { ...cart, total: cartTotal };
 };
 
+export const getCartViewerContext = async (
+	prisma: PrismaClient,
+	userId: string
+) => {
+	const cards = await prisma.card.findMany({
+		where: { userId }
+	});
+
+	return { cards };
+};
+
 export const getCartsByUserId = async (
 	prisma: PrismaClient,
 	userId: string,

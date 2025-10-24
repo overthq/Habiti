@@ -19,6 +19,8 @@ export const getOrders: RequestHandler = async (req, res) => {
 export const createOrder: RequestHandler = async (req, res) => {
 	const { cartId, cardId, transactionFee, serviceFee } = req.body;
 
+	// FIXME: This does not return an error when the logic function throws.
+	// The fix will be part of a larger server-wide error handling refactor.
 	const order = await OrderLogic.createOrder(getAppContext(req), {
 		cartId,
 		cardId,

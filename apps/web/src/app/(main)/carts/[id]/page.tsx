@@ -1,21 +1,40 @@
 'use client';
 
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import CartProvider, { useCart } from '@/contexts/CartContext';
-import { useCardsQuery } from '@/data/queries';
 import { CartProduct } from '@/data/types';
 import { formatNaira } from '@/utils/currency';
 import { Minus, Plus } from 'lucide-react';
-import React from 'react';
-
-const QuantityControl = () => {
-	return <div></div>;
-};
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue
+} from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 
 const CardSelector = () => {
-	const { data, isLoading } = useCardsQuery();
+	const { cards, selectedCard, setSelectedCard } = useCart();
 
-	return <div></div>;
+	return (
+		<div className='pt-4'>
+			<h2 className='text-lg font-medium mb-2'>Payment Method</h2>
+			<Select value={selectedCard ?? undefined} onValueChange={setSelectedCard}>
+				<SelectTrigger>
+					<SelectValue placeholder='Select a card' />
+				</SelectTrigger>
+				<SelectContent>
+					{cards.map(card => (
+						<SelectItem key={card.id} value={card.id}>
+							{`${card.cardType} \u2022\u2022\u2022\u2022${card.last4}`}
+						</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
+		</div>
+	);
 };
 
 interface CartProductQuantityProps {
@@ -59,6 +78,10 @@ const CartMain = () => {
 		<div>
 			<h1 className='text-2xl font-medium mb-4'>Cart</h1>
 
+			<div>
+				<p className='text-lg font-medium mb-2'>{cart.store.name}</p>
+			</div>
+
 			<div className='border rounded-md'>
 				{cart.products.map(cartProduct => (
 					<div
@@ -77,7 +100,13 @@ const CartMain = () => {
 						</div>
 						<div className='flex-1'>
 							<p>{cartProduct.product.name}</p>
-							<p className='text-muted-foreground'>
+							<p
+								className={cn(
+									'text-muted-foreground',
+									cartProduct.quantity > cartProduct.product.quantity &&
+										'text-destructive'
+								)}
+							>
 								{formatNaira(
 									cartProduct.product.unitPrice * cartProduct.quantity
 								)}
@@ -92,6 +121,8 @@ const CartMain = () => {
 					</div>
 				))}
 			</div>
+
+			<CardSelector />
 
 			<div className='my-4 border rounded-md p-4 bg-muted'>
 				<div className='flex justify-between'>
