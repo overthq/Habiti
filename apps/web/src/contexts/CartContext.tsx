@@ -53,23 +53,27 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 
 	React.useEffect(() => {
 		const firstCard = viewerContext?.cards[0];
-		console.log('firstCard', firstCard);
 
 		if (firstCard && !defaultCard && !selectedCard) {
-			console.log('setting selected card', firstCard.id);
 			setSelectedCard(firstCard.id);
 		}
 	}, [viewerContext?.cards, defaultCard, selectedCard]);
 
+	const anyCartProductIsOverQuantity = React.useMemo(() => {
+		return state.some(product => product.quantity > product.product.quantity);
+	}, [state]);
+
 	const disabled = React.useMemo(() => {
 		return (
+			anyCartProductIsOverQuantity ||
 			updateCartProductQuantityMutation.isPending ||
 			createOrderMutation.isPending ||
 			pendingUpdatesRef.current.size > 0
 		);
 	}, [
 		updateCartProductQuantityMutation.isPending,
-		createOrderMutation.isPending
+		createOrderMutation.isPending,
+		anyCartProductIsOverQuantity
 	]);
 
 	const processBatchedUpdates = React.useCallback(() => {

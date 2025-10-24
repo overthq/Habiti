@@ -71,15 +71,25 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 		}
 	}, [cart.user.cards, defaultCard, selectedCard]);
 
+	const anyCartProductIsOverQuantity = React.useMemo(() => {
+		return state.some(product => product.quantity > product.product.quantity);
+	}, [state]);
+
 	const pendingUpdatesRef = React.useRef<Map<string, number>>(new Map());
 
 	const disabled = React.useMemo(() => {
 		return (
 			isUpdatingCartProduct ||
 			isCreatingOrder ||
-			pendingUpdatesRef.current.size > 0
+			pendingUpdatesRef.current.size > 0 ||
+			anyCartProductIsOverQuantity
 		);
-	}, [isUpdatingCartProduct, isCreatingOrder]);
+	}, [
+		isUpdatingCartProduct,
+		isCreatingOrder,
+		pendingUpdatesRef.current.size,
+		anyCartProductIsOverQuantity
+	]);
 
 	const processBatchedUpdates = React.useCallback(() => {
 		const updates = Array.from(pendingUpdatesRef.current.entries());

@@ -17,6 +17,7 @@ import type {
 	RegisterBody,
 	UpdateCartProductQuantityBody
 } from './types';
+import { toast } from 'sonner';
 
 export const useAddToCartMutation = () => {
 	const queryClient = useQueryClient();
@@ -85,6 +86,11 @@ export const useAuthenticateMutation = () => {
 export const useCreateOrderMutation = () => {
 	return useMutation({
 		mutationFn: (body: CreateOrderBody) => createOrder(body),
-		onSuccess: () => {}
+		onSuccess: () => {
+			toast.success('Order created successfully');
+		},
+		onError: () => {
+			toast.error('Failed to create order');
+		}
 	});
 };

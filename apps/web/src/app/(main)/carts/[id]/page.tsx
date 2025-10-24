@@ -13,6 +13,7 @@ import {
 	SelectTrigger,
 	SelectValue
 } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 
 const CardSelector = () => {
 	const { cards, selectedCard, setSelectedCard } = useCart();
@@ -99,7 +100,13 @@ const CartMain = () => {
 						</div>
 						<div className='flex-1'>
 							<p>{cartProduct.product.name}</p>
-							<p className='text-muted-foreground'>
+							<p
+								className={cn(
+									'text-muted-foreground',
+									cartProduct.quantity > cartProduct.product.quantity &&
+										'text-destructive'
+								)}
+							>
 								{formatNaira(
 									cartProduct.product.unitPrice * cartProduct.quantity
 								)}
