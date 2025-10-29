@@ -16,7 +16,8 @@ import type {
 	GetProductResponse,
 	GetStoreResponse,
 	StoreFollower,
-	GetCartResponse
+	GetCartResponse,
+	Product
 } from './types';
 import { useAuthStore } from '@/state/auth-store';
 
@@ -171,5 +172,15 @@ export const createOrder = async (body: CreateOrderBody) => {
 
 export const getProduct = async (productId: string) => {
 	const response = await api.get<GetProductResponse>(`/products/${productId}`);
+	return response.data;
+};
+
+// Search
+
+export const globalSearch = async (query: string) => {
+	const response = await api.get<{ products: Product[]; stores: Store[] }>(
+		`/search?query=${query}`
+	);
+
 	return response.data;
 };
