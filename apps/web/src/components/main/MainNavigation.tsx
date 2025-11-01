@@ -19,6 +19,7 @@ import {
 } from '../ui/dropdown-menu';
 import { useAuthStore } from '@/state/auth-store';
 import Logo from './Logo';
+import SearchInput from '../SearchInput';
 
 const NavigationItem: React.FC<NavigationItemProps> = ({
 	isActive,
@@ -91,8 +92,8 @@ const MainNavigation = () => {
 	const pathname = usePathname();
 
 	return (
-		<div className='border-b bg-background py-3 px-4 mb-4 fixed top-0 w-full'>
-			<nav className='mx-auto flex justify-between items-center'>
+		<div className='border-b bg-background py-3 px-4 mb-4 fixed top-0 w-full flex justify-between'>
+			<nav className='flex flex-1 gap-4 items-center'>
 				<Link
 					className='text-muted-foreground hover:text-foreground transition-colors duration-200'
 					href='/'
@@ -110,10 +111,15 @@ const MainNavigation = () => {
 						</NavigationItem>
 					))}
 				</ul>
-				<div className='flex items-center gap-2'>
-					<ProfileDropdown />
-				</div>
 			</nav>
+
+			<div className='flex-1'>
+				<SearchInput />
+			</div>
+
+			<div className='flex flex-1 justify-end items-center gap-2'>
+				<ProfileDropdown />
+			</div>
 		</div>
 	);
 };

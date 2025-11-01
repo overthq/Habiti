@@ -23,11 +23,9 @@ const OrderStatusToLabel = {
 };
 
 const RecentOrders = () => {
-	const { isLoading, error, data } = useOrdersQuery();
+	const { isLoading, data } = useOrdersQuery();
 
-	if (isLoading) return <div>Loading...</div>;
-	if (error) return <div>Error: {error.message}</div>;
-	if (!data) return null;
+	if (isLoading || !data) return <div />;
 
 	return (
 		<div className='mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
@@ -69,14 +67,12 @@ const RecentOrders = () => {
 };
 
 const FollowedStores = () => {
-	const { isLoading, error, data } = useFollowedStoresQuery();
+	const { isLoading, data } = useFollowedStoresQuery();
 
-	if (isLoading) return <div>Loading...</div>;
-	if (error) return <div>Error: {error.message}</div>;
-	if (!data) return null;
+	if (isLoading || !data) return <div />;
 
 	return (
-		<div className='flex overflow-x-auto gap-4 py-1'>
+		<div className='flex overflow-x-auto gap-4 py-1 mb-8'>
 			{data.stores.map(store => (
 				<Link
 					href={`/store/${store.id}`}
@@ -92,15 +88,13 @@ const FollowedStores = () => {
 							/>
 						) : (
 							<div className='size-full bg-muted-foreground/20 flex items-center justify-center'>
-								<span className='text-xl font-medium text-muted-foreground'>
+								<span className='text-2xl font-medium text-muted-foreground'>
 									{store.name.charAt(0)}
 								</span>
 							</div>
 						)}
 					</div>
-					<span className='text-center truncate w-full font-medium'>
-						{store.name}
-					</span>
+					<span className='text-center truncate w-full'>{store.name}</span>
 				</Link>
 			))}
 		</div>
@@ -110,13 +104,13 @@ const FollowedStores = () => {
 const HomePage = () => {
 	return (
 		<div>
-			<h1 className='text-2xl font-medium mb-4'>Recent Orders</h1>
-
-			<RecentOrders />
-
-			<h2 className='text-xl font-medium mb-4'>Followed Stores</h2>
+			<h2 className='text-lg font-medium mb-4'>Followed Stores</h2>
 
 			<FollowedStores />
+
+			<h2 className='text-lg font-medium mb-4'>Recent Orders</h2>
+
+			<RecentOrders />
 		</div>
 	);
 };

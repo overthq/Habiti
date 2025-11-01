@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import {
 	getCarts,
 	getStore,
@@ -8,7 +8,8 @@ import {
 	getOrder,
 	getProduct,
 	getFollowedStores,
-	getCards
+	getCards,
+	globalSearch
 } from './requests';
 
 export const useStoreQuery = (storeId: string) => {
@@ -71,5 +72,13 @@ export const useCardsQuery = () => {
 	return useQuery({
 		queryKey: ['cards'],
 		queryFn: () => getCards()
+	});
+};
+
+export const useGlobalSearchQuery = (query: string) => {
+	return useQuery({
+		queryKey: ['search', query],
+		queryFn: () => globalSearch(query),
+		placeholderData: keepPreviousData
 	});
 };
