@@ -124,6 +124,7 @@ interface SearchResult {
 	id: string;
 	title: string;
 	description?: string;
+	image?: string | null;
 	type: 'product' | 'store';
 }
 
@@ -212,16 +213,29 @@ export function SearchBar({
 							<button
 								key={result.id}
 								onClick={() => handleResultClick(result)}
-								className='flex w-full flex-col items-start gap-1 rounded-md px-3 py-2 text-left transition-colors hover:bg-accent hover:text-accent-foreground'
+								className='flex w-full items-center gap-2 rounded-md px-3 py-2 text-left transition-colors hover:bg-accent hover:text-accent-foreground'
 							>
-								<span className='font-medium text-popover-foreground'>
-									{result.title}
-								</span>
-								{result.description && (
-									<span className='text-sm text-muted-foreground'>
-										{result.description}
+								<div className='size-10 rounded-md bg-muted overflow-hidden'>
+									{result.image && (
+										<Image
+											src={result.image}
+											alt={result.title}
+											className='size-full object-cover'
+											width={32}
+											height={32}
+										/>
+									)}
+								</div>
+								<div className='flex min-w-0 flex-col items-start'>
+									<span className='font-medium text-popover-foreground truncate'>
+										{result.title}
 									</span>
-								)}
+									{result.description && (
+										<span className='text-sm text-muted-foreground line-clamp-1'>
+											{result.description}
+										</span>
+									)}
+								</div>
 							</button>
 						))}
 					</div>
