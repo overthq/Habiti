@@ -1,68 +1,13 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useGlobalSearchQuery } from '@/data/queries';
-import { Product, Store } from '@/data/types';
 import Image from 'next/image';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 import { Search } from 'lucide-react';
 import { Button } from './ui/button';
-import Link from 'next/link';
 import { Input } from './ui/input';
-
-interface ProductCardProps {
-	product: Product;
-}
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-	return (
-		<Link href={`/product/${product.id}`}>
-			<div className='flex items-center gap-2'>
-				<div className='size-8 bg-muted rounded-md overflow-hidden'>
-					{product.images.length > 0 && (
-						<Image
-							src={product.images[0].path}
-							alt={product.name}
-							className='size-full object-cover'
-							width={32}
-							height={32}
-						/>
-					)}
-				</div>
-				<div>
-					<h3>{product.name}</h3>
-				</div>
-			</div>
-		</Link>
-	);
-};
-
-interface StoreCardProps {
-	store: Store;
-}
-
-const StoreCard: React.FC<StoreCardProps> = ({ store }) => {
-	return (
-		<Link href={`/store/${store.id}`}>
-			<div className='flex items-center gap-2'>
-				<div className='size-8 bg-muted rounded-md overflow-hidden'>
-					{store.image && (
-						<Image
-							src={store.image.path}
-							alt={store.name}
-							className='size-full object-cover'
-							width={32}
-							height={32}
-						/>
-					)}
-				</div>
-				<div>
-					<h3>{store.name}</h3>
-				</div>
-			</div>
-		</Link>
-	);
-};
 
 const SearchInput = () => {
 	const [query, setQuery] = React.useState('');
@@ -87,7 +32,6 @@ const SearchInput = () => {
 				title: product.name,
 				description: product.description,
 				type: 'product' as const,
-				// Add image path if available
 				image: product.images?.[0]?.path || null
 			})) ?? [];
 
@@ -97,7 +41,6 @@ const SearchInput = () => {
 				title: store.name,
 				description: store.description,
 				type: 'store' as const,
-				// Add image path if available
 				image: store.image?.path || null
 			})) ?? [];
 
@@ -106,9 +49,10 @@ const SearchInput = () => {
 
 	return (
 		<SearchBar
+			query={query}
 			placeholder='Search products and stores'
 			results={results}
-			onSearch={setQuery}
+			onQueryChange={setQuery}
 			onResultClick={result => {
 				if (result.type === 'product') {
 					router.push(`/product/${result.id}`);
@@ -130,33 +74,33 @@ interface SearchResult {
 
 interface SearchBarProps {
 	placeholder?: string;
+	query: string;
 	results?: SearchResult[];
-	onSearch?: (query: string) => void;
+	onQueryChange?: (query: string) => void;
 	onResultClick?: (result: SearchResult) => void;
 	className?: string;
 }
 
 export function SearchBar({
+	query,
+	onQueryChange,
 	placeholder = 'Search...',
 	results = [],
-	onSearch,
 	onResultClick,
 	className
 }: SearchBarProps) {
-	const [query, setQuery] = React.useState('');
 	const [isOpen, setIsOpen] = React.useState(false);
 	const containerRef = React.useRef<HTMLDivElement>(null);
 
-	// Close dropdown when clicking outside
 	React.useEffect(() => {
-		function handleClickOutside(event: MouseEvent) {
+		const handleClickOutside = (event: MouseEvent) => {
 			if (
 				containerRef.current &&
 				!containerRef.current.contains(event.target as Node)
 			) {
 				setIsOpen(false);
 			}
-		}
+		};
 
 		document.addEventListener('mousedown', handleClickOutside);
 		return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -164,19 +108,17 @@ export function SearchBar({
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value;
-		setQuery(value);
 		setIsOpen(value.length > 0);
-		onSearch?.(value);
+		onQueryChange?.(value);
 	};
 
 	const handleClear = () => {
-		setQuery('');
 		setIsOpen(false);
-		onSearch?.('');
+		onQueryChange?.('');
 	};
 
 	const handleResultClick = (result: SearchResult) => {
-		setQuery(result.title);
+		onQueryChange?.(result.title);
 		setIsOpen(false);
 		onResultClick?.(result);
 	};
