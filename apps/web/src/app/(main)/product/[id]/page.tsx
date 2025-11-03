@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { useParams } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
@@ -248,16 +249,17 @@ const ProductImages = () => {
 
 	return (
 		<div className='md:col-span-2'>
-			{product.images.length > 0 ? (
-				<img
-					key={product.id}
-					src={product.images[activeImage].path}
-					alt={product.name}
-					className='w-full max-w-170 h-auto object-cover rounded-lg'
-				/>
-			) : (
-				<div className='w-full max-w-170 h-96 bg-gray-200 rounded-lg' />
-			)}
+			<div className='relative aspect-square rounded-md overflow-hidden bg-muted'>
+				{product.images.length > 0 && (
+					<Image
+						key={product.id}
+						src={product.images[activeImage].path}
+						alt={product.name}
+						fill
+						className='w-full max-w-170 h-auto object-cover rounded-lg'
+					/>
+				)}
+			</div>
 			<ImageSelector onSelectImage={setActiveImage} activeIndex={activeImage} />
 		</div>
 	);
@@ -275,18 +277,25 @@ const ImageSelector: React.FC<ImageSelectorProps> = ({
 	const { product } = useProductContext();
 
 	return (
-		<div className='flex mt-4 gap-2'>
+		<div className='flex mt-4 gap-3'>
 			{product.images.map((image, index) => (
-				<div
+				<button
 					key={image.id}
 					className={cn(
-						`size-14 rounded-md overflow-hidden cursor-pointer border-2`,
-						index === activeIndex && 'ring'
+						`relative size-14 aspect-square transition-all rounded-md overflow-hidden cursor-pointer`,
+						index === activeIndex
+							? 'ring-2 ring-foreground'
+							: 'opacity-50 hover:opacity-100'
 					)}
 					onClick={() => onSelectImage(index)}
 				>
-					<img src={image.path} className='size-full' />
-				</div>
+					<Image
+						fill
+						src={image.path}
+						alt={image.path}
+						className='object-cover size-full'
+					/>
+				</button>
 			))}
 		</div>
 	);

@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { formatNaira } from '@/utils/currency';
 import { useOrderQuery } from '@/data/queries';
@@ -20,20 +21,22 @@ const OrderPage = () => {
 			<h1 className='text-2xl font-medium mb-4'>Order Details</h1>
 
 			<div>
-				<div className='flex items-center gap-2'>
-					<div className='size-10 rounded-full overflow-hidden bg-muted-foreground/20 flex-shrink-0'>
-						{order.store.image && (
-							<img
-								src={order.store.image.path}
-								alt={order.store.name}
-								className='size-full object-cover'
-							/>
-						)}
+				<Link href={`/store/${order.store.id}`}>
+					<div className='flex items-center gap-2'>
+						<div className='size-10 rounded-full overflow-hidden bg-muted-foreground/20 flex-shrink-0'>
+							{order.store.image && (
+								<img
+									src={order.store.image.path}
+									alt={order.store.name}
+									className='size-full object-cover'
+								/>
+							)}
+						</div>
+						<div>
+							<p className='font-medium'>{order.store.name}</p>
+						</div>
 					</div>
-					<div>
-						<p className='font-medium'>{order.store.name}</p>
-					</div>
-				</div>
+				</Link>
 				<div className='mt-2 flex'>
 					<p className='text-muted-foreground text-sm'>
 						{order.status} · {formatDate(order.createdAt)}
