@@ -100,7 +100,7 @@ const MainNavigation = () => {
 				>
 					<Logo width={20} height={20} />
 				</Link>
-				<ul className='max-w-4xl flex-1 flex items-center gap-5 pl-6'>
+				<ul className='max-w-4xl flex-1 flex items-center gap-5 pl-6 sm:flex hidden'>
 					{items.map(item => (
 						<NavigationItem
 							key={item.href}
@@ -113,7 +113,7 @@ const MainNavigation = () => {
 				</ul>
 			</nav>
 
-			<div className='flex-1'>
+			<div className='flex-1 sm:flex hidden'>
 				<SearchInput />
 			</div>
 
