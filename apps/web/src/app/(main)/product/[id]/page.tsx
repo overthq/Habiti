@@ -144,15 +144,16 @@ const StorePreview = () => {
 
 	return (
 		<Link href={`/store/${product.store.id}`}>
-			<div className='mb-6 rounded-md flex gap-2 items-center'>
-				<div className='size-12 rounded-full bg-muted overflow-hidden'>
-					{product.store.image?.path && (
+			<div className='mb-4 rounded-md flex gap-2 items-center'>
+				<div className='size-10 rounded-full bg-muted flex justify-center items-center overflow-hidden'>
+					{product.store.image?.path ? (
 						<img className='size-full' src={product.store.image?.path} />
+					) : (
+						<p className='text-muted-foreground'>{product.store.name[0]}</p>
 					)}
 				</div>
 				<div className='justify-between items-center'>
 					<p className='font-medium'>{product.store.name}</p>
-					<p className='text-xs text-muted-foreground'>Visit store</p>
 				</div>
 			</div>
 		</Link>
@@ -164,8 +165,10 @@ const ProductDetails = () => {
 
 	return (
 		<div>
-			<h1 className='text-xl font-medium mb-1'>{product.name}</h1>
-			<p className='text-lg mb-2'>{formatNaira(product.unitPrice)}</p>
+			<h2 className='text-2xl font-medium mb-1'>{product.name}</h2>
+			<p className='text-2xl font-medium text-muted-foreground mb-2'>
+				{formatNaira(product.unitPrice)}
+			</p>
 			<p className='text-muted-foreground mb-4'>{product.description}</p>
 		</div>
 	);
@@ -229,9 +232,9 @@ const ProductPage = () => {
 	return (
 		<ProductWrapper>
 			<div className='mx-auto max-w-4xl'>
-				<div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
+				<div className='flex gap-8 sm:flex-row flex-col pt-4'>
 					<ProductImages />
-					<div className='md:col-span-1'>
+					<div className='flex-1'>
 						<StorePreview />
 						<ProductDetails />
 						<QuantityControl />
@@ -248,7 +251,7 @@ const ProductImages = () => {
 	const { product } = useProductContext();
 
 	return (
-		<div className='md:col-span-2'>
+		<div className='sm:min-w-1/2 sm:w-[55%]'>
 			<div className='relative aspect-square rounded-md overflow-hidden bg-muted'>
 				{product.images.length > 0 && (
 					<Image
