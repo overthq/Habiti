@@ -12,7 +12,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 	return (
 		<div>
 			<MainNavigation />
-			<div className='max-w-4xl mx-auto sm:pt-24 pb-8 px-4 pt-16'>
+			<div className='max-w-4xl mx-auto sm:pt-24 pb-8 px-4 pt-18'>
 				{children}
 			</div>
 			<MobileTabBar />

@@ -232,7 +232,7 @@ const ProductPage = () => {
 	return (
 		<ProductWrapper>
 			<div className='mx-auto max-w-4xl'>
-				<div className='flex gap-8 sm:flex-row flex-col pt-4'>
+				<div className='flex gap-8 sm:flex-row flex-col'>
 					<ProductImages />
 					<div className='flex-1'>
 						<StorePreview />

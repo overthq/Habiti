@@ -1,8 +1,13 @@
-// Shows the results of a global search
 'use client';
 
+import SearchInput from '@/components/SearchInput';
+
 const SearchPage = () => {
-	return <div></div>;
+	return (
+		<div>
+			<SearchInput />
+		</div>
+	);
 };
 
 export default SearchPage;
