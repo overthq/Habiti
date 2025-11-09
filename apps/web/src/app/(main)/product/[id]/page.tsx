@@ -49,14 +49,9 @@ const ProductContextProvider: React.FC<ProductContextProviderProps> = ({
 	const initialQuantity = cartProduct?.quantity;
 	const [quantity, setQuantity] = React.useState(initialQuantity ?? 1);
 
-	const inCart = React.useMemo(() => {
-		return !!cartProduct;
-	}, [cartProduct]);
+	const inCart = React.useMemo(() => !!cartProduct, [cartProduct]);
 
-	const isNotInCart = React.useMemo(
-		() => !cartId || (cartId && !inCart),
-		[cartId, inCart]
-	);
+	const isNotInCart = !cartId || (cartId && !inCart);
 
 	const cartCommitFetching = React.useMemo(
 		() =>
@@ -65,10 +60,7 @@ const ProductContextProvider: React.FC<ProductContextProviderProps> = ({
 		[addToCartMutation.isPending, updateCartProductQuantityMutation.isPending]
 	);
 
-	const quantityChanged = React.useMemo(
-		() => initialQuantity !== quantity,
-		[initialQuantity, quantity]
-	);
+	const quantityChanged = initialQuantity !== quantity;
 
 	const cartCommitText = React.useMemo(
 		() =>
@@ -76,12 +68,9 @@ const ProductContextProvider: React.FC<ProductContextProviderProps> = ({
 		[isNotInCart, quantityChanged]
 	);
 
-	const cartCommitDisabled = React.useMemo(
-		() => (inCart && !quantityChanged) || cartCommitFetching,
-		[inCart, quantityChanged, cartCommitFetching]
-	);
+	const cartCommitDisabled = (inCart && !quantityChanged) || cartCommitFetching;
 
-	const onCartCommit = React.useCallback(async () => {
+	const onCartCommit = React.useCallback(() => {
 		if (isNotInCart) {
 			addToCartMutation.mutate({
 				storeId: product.storeId,
@@ -252,14 +241,13 @@ const ProductImages = () => {
 
 	return (
 		<div className='sm:min-w-1/2 sm:w-[55%]'>
-			<div className='relative aspect-square rounded-md overflow-hidden bg-muted'>
+			<div className='aspect-square rounded-md overflow-hidden bg-muted'>
 				{product.images.length > 0 && (
-					<Image
+					<img
 						key={product.id}
 						src={product.images[activeImage].path}
 						alt={product.name}
-						fill
-						className='w-full max-w-170 h-auto object-cover rounded-lg'
+						className='size-full object-cover'
 					/>
 				)}
 			</div>
