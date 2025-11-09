@@ -50,7 +50,7 @@ const StorePage = () => {
 
 	return (
 		<div className='mx-auto'>
-			<div className='flex justify-between'>
+			<div className='flex justify-between py-4'>
 				<div>
 					<h1 className='text-3xl font-medium'>{data.store.name}</h1>
 					<p className='text-muted-foreground'>{data.store.description}</p>
