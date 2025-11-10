@@ -52,6 +52,18 @@ const StorePage = () => {
 		<div className='mx-auto'>
 			<div className='flex justify-between py-4'>
 				<div>
+					<div className='rounded-full size-18 overflow-hidden bg-muted mb-4 flex justify-center items-center'>
+						{data.store.image ? (
+							<img
+								src={data.store.image.path}
+								className='size-full object-cover'
+							/>
+						) : (
+							<p className='text-2xl font-medium text-muted-foreground'>
+								{data.store.name.charAt(0)}
+							</p>
+						)}
+					</div>
 					<h1 className='text-3xl font-medium'>{data.store.name}</h1>
 					<p className='text-muted-foreground'>{data.store.description}</p>
 				</div>
