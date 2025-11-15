@@ -58,7 +58,7 @@ import {
 } from './controllers/payments';
 import { globalSearch } from './controllers/search';
 import { paystackWebhook } from './controllers/webhooks';
-import { validate } from 'graphql';
+import { authorizeCard } from './controllers/cards';
 
 const router: Router = Router();
 
@@ -139,6 +139,9 @@ router.delete(
 	authenticate,
 	removeProductFromCart
 );
+
+// Cards
+router.post('/cards/authorize', authenticate, authorizeCard);
 
 // Admin
 router.post('/admin/login', validateBody(authenticateBodySchema), adminLogin);

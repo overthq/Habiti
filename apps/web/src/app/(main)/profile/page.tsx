@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/item';
 import PaymentMethods from '@/components/profile/PaymentMethods';
 import { Separator } from '@/components/ui/separator';
+import { useUpdateCurrentUserMutation } from '@/data/mutations';
 
 const profileFormSchema = z.object({
 	name: z.string(),
@@ -38,6 +39,8 @@ interface ProfileFormProps {
 }
 
 const ProfileForm: React.FC<ProfileFormProps> = ({ name, email }) => {
+	const updateCurrentUserMutation = useUpdateCurrentUserMutation();
+
 	const form = useForm<z.infer<typeof profileFormSchema>>({
 		resolver: zodResolver(profileFormSchema),
 		defaultValues: {
@@ -47,7 +50,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ name, email }) => {
 	});
 
 	const onSubmit = (data: z.infer<typeof profileFormSchema>) => {
-		console.log(data);
+		updateCurrentUserMutation.mutate(data);
 	};
 
 	return (
@@ -97,7 +100,7 @@ const ProfilePage = () => {
 
 	return (
 		<div className='space-y-4'>
-			<h1 className='text-2xl font-medium mb-4'>Profile</h1>
+			<h1 className='text-3xl font-medium mb-4'>Profile</h1>
 
 			<ProfileForm name={data.user.name} email={data.user.email} />
 

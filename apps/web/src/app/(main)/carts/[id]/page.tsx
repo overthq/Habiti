@@ -5,34 +5,65 @@ import { Button } from '@/components/ui/button';
 import CartProvider, { useCart } from '@/contexts/CartContext';
 import { CartProduct } from '@/data/types';
 import { formatNaira } from '@/utils/currency';
-import { Minus, Plus } from 'lucide-react';
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from '@/components/ui/select';
+import { ArrowLeft, Minus, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import {
+	Field,
+	FieldContent,
+	FieldDescription,
+	FieldGroup,
+	FieldLabel,
+	FieldSet,
+	FieldTitle
+} from '@/components/ui/field';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import Link from 'next/link';
 
 const CardSelector = () => {
 	const { cards, selectedCard, setSelectedCard } = useCart();
 
+	if (cards.length === 0) {
+		return (
+			<Alert>
+				<AlertDescription>
+					You do not currently have any cards added to your account. Clicking
+					the "Place order" button below will give you the opportunity to add
+					one while you pay.
+				</AlertDescription>
+			</Alert>
+		);
+	}
+
 	return (
 		<div className='pt-4'>
-			<h2 className='text-lg font-medium mb-2'>Payment Method</h2>
-			<Select value={selectedCard ?? undefined} onValueChange={setSelectedCard}>
-				<SelectTrigger>
-					<SelectValue placeholder='Select a card' />
-				</SelectTrigger>
-				<SelectContent>
-					{cards.map(card => (
-						<SelectItem key={card.id} value={card.id}>
-							{`${card.cardType} \u2022\u2022\u2022\u2022${card.last4}`}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
+			<FieldGroup>
+				<FieldSet>
+					<FieldLabel>Payment Method</FieldLabel>
+					<FieldDescription>
+						Choose how you want to pay for this order.
+					</FieldDescription>
+					<RadioGroup onValueChange={setSelectedCard}>
+						{cards.map(card => (
+							<FieldLabel key={card.id} htmlFor={card.id}>
+								<Field orientation='horizontal'>
+									<RadioGroupItem
+										value={card.id}
+										id={card.id}
+										aria-label={card.cardType}
+									/>
+									<FieldContent>
+										<FieldTitle className='capitalize'>
+											{card.cardType}
+										</FieldTitle>
+										<FieldDescription>Ends with {card.last4}</FieldDescription>
+									</FieldContent>
+								</Field>
+							</FieldLabel>
+						))}
+					</RadioGroup>
+				</FieldSet>
+			</FieldGroup>
 		</div>
 	);
 };
@@ -76,24 +107,38 @@ const CartMain = () => {
 
 	return (
 		<div>
-			<h1 className='text-2xl font-medium mb-4'>Cart</h1>
+			<Link href='/carts' className='flex gap-1 items-center text-sm mb-4'>
+				<ArrowLeft className='size-4' /> <p>Back to carts</p>
+			</Link>
 
-			<div>
-				<p className='text-lg font-medium mb-2'>{cart.store.name}</p>
+			<div className='flex items-center gap-2 mb-4'>
+				<div className='size-10 rounded-full bg-muted flex items-center justify-center'>
+					{cart.store.image ? (
+						<img
+							src={cart.store.image.path}
+							className='size-full object-cover'
+						/>
+					) : (
+						<p className='text-muted-foreground uppercase font-medium'>
+							{cart.store.name[0]}
+						</p>
+					)}
+				</div>
+				<p className='text-lg font-medium'>{cart.store.name}</p>
 			</div>
 
-			<div className='border rounded-md'>
+			<div className='border rounded-lg'>
 				{cart.products.map(cartProduct => (
 					<div
 						key={`${cartProduct.cartId}-${cartProduct.productId}`}
-						className='flex items-center gap-3 p-3 not-last:border-b'
+						className='flex items-center gap-2 p-2 not-last:border-b'
 					>
 						<div className='size-14 bg-muted rounded flex items-center justify-center'>
 							{cartProduct.product.images[0] && (
 								<img
 									src={cartProduct.product.images[0].path}
 									alt={cartProduct.product.name}
-									className='size-full object-cover rounded'
+									className='size-full object-cover rounded-md'
 									loading='lazy'
 								/>
 							)}

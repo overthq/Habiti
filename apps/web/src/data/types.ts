@@ -164,9 +164,9 @@ export interface AuthenticateBody {
 	password: string;
 }
 
-export interface UpdateUserBody {
-	name: string;
-	email: string;
+export interface UpdateCurrentUserBody {
+	name?: string;
+	email?: string;
 }
 
 export interface AddDeliveryAddressBody {
@@ -200,6 +200,15 @@ export interface CreateOrderBody {
 	// FIXME: We shouldn't be passing these from the frontend
 	transactionFee: number;
 	serviceFee: number;
+}
+
+export interface CreateOrderResponse {
+	order: Order;
+	cardAuthorizationData?: {
+		authorization_url: string;
+		access_code: string;
+		reference: string;
+	};
 }
 
 export interface UpdateCartProductQuantityBody {

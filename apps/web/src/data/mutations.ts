@@ -1,4 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+// @ts-expect-error
+import Paystack from '@paystack/inline-js';
 
 import {
 	addToCart,
@@ -7,7 +9,8 @@ import {
 	authenticate,
 	register,
 	createOrder,
-	updateCartProductQuantity
+	updateCartProductQuantity,
+	updateCurrentUser
 } from './requests';
 
 import type {
@@ -15,7 +18,8 @@ import type {
 	AuthenticateBody,
 	CreateOrderBody,
 	RegisterBody,
-	UpdateCartProductQuantityBody
+	UpdateCartProductQuantityBody,
+	UpdateCurrentUserBody
 } from './types';
 import { toast } from 'sonner';
 
@@ -85,7 +89,26 @@ export const useAuthenticateMutation = () => {
 
 export const useCreateOrderMutation = () => {
 	return useMutation({
-		mutationFn: (body: CreateOrderBody) => createOrder(body),
+		mutationFn: (body: CreateOrderBody) =>
+			createOrder({ ...body, cardId: undefined }),
+		onSuccess: data => {
+			console.log(data);
+			if (data.cardAuthorizationData) {
+				const popup = new Paystack();
+				console.log({ popup });
+				popup.resumeTransaction(data.cardAuthorizationData.access_code);
+			}
+		},
+		onError: error => {
+			console.log(error);
+			toast.error('Failed to create order');
+		}
+	});
+};
+
+export const useUpdateCurrentUserMutation = () => {
+	return useMutation({
+		mutationFn: (body: UpdateCurrentUserBody) => updateCurrentUser(body),
 		onSuccess: () => {
 			toast.success('Order created successfully');
 		},
