@@ -1,5 +1,8 @@
 import * as CardData from '../data/cards';
+import * as OrderData from '../data/orders';
 import { AppContext } from '../../utils/context';
+import { initialCharge } from '../payments';
+import { OrderStatus } from '@prisma/client';
 
 interface CreateCardInput {
 	email: string;
@@ -76,6 +79,37 @@ export const createCard = async (ctx: AppContext, input: CreateCardInput) => {
 	});
 
 	return card;
+};
+
+interface AuthorizeCardInput {
+	orderId?: string | undefined;
+}
+
+export const authorizeCard = async (
+	ctx: AppContext,
+	input: AuthorizeCardInput
+) => {
+	let amount = 5000;
+
+	if (input.orderId) {
+		const order = await OrderData.getOrderById(ctx.prisma, input.orderId);
+
+		if (!order) {
+			throw new Error('Order not found');
+		} else if (order.status !== OrderStatus.PaymentPending) {
+			throw new Error('Order is not in payment pending state');
+		}
+
+		amount = order.total;
+	}
+
+	const { data } = await initialCharge({
+		email: ctx.user.email,
+		amount,
+		orderId: input.orderId
+	});
+
+	return { id: data.access_code, ...data };
 };
 
 export const getCardsByUserId = async (ctx: AppContext, userId: string) => {

@@ -1,6 +1,5 @@
 import axios from 'axios';
 import type {
-	UpdateUserBody,
 	AddDeliveryAddressBody,
 	UpdateDeliveryAddressBody,
 	AddToCartBody,
@@ -13,11 +12,13 @@ import type {
 	AuthenticateBody,
 	CreateOrderBody,
 	UpdateCartProductQuantityBody,
+	CreateOrderResponse,
 	GetProductResponse,
 	GetStoreResponse,
 	StoreFollower,
 	GetCartResponse,
-	Product
+	Product,
+	UpdateCurrentUserBody
 } from './types';
 import { useAuthStore } from '@/state/auth-store';
 
@@ -54,8 +55,8 @@ export const getCurrentUser = async () => {
 	return response.data;
 };
 
-export const updateCurrentUser = async (body: UpdateUserBody) => {
-	const response = await api.patch('/users/current', body);
+export const updateCurrentUser = async (body: UpdateCurrentUserBody) => {
+	const response = await api.put('/users/current', body);
 	return response.data;
 };
 
@@ -164,7 +165,7 @@ export const getOrder = async (orderId: string) => {
 };
 
 export const createOrder = async (body: CreateOrderBody) => {
-	const response = await api.post<{ order: Order }>('/orders', body);
+	const response = await api.post<CreateOrderResponse>('/orders', body);
 	return response.data;
 };
 

@@ -21,14 +21,17 @@ export const createOrder: RequestHandler = async (req, res) => {
 
 	// FIXME: This does not return an error when the logic function throws.
 	// The fix will be part of a larger server-wide error handling refactor.
-	const order = await OrderLogic.createOrder(getAppContext(req), {
-		cartId,
-		cardId,
-		transactionFee,
-		serviceFee
-	});
+	const { order, cardAuthorizationData } = await OrderLogic.createOrder(
+		getAppContext(req),
+		{
+			cartId,
+			cardId,
+			transactionFee,
+			serviceFee
+		}
+	);
 
-	return res.json({ order });
+	return res.json({ order, cardAuthorizationData });
 };
 
 export const getOrderById: RequestHandler<{ id: string }> = async (

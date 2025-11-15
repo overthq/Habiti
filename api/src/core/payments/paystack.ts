@@ -37,14 +37,27 @@ interface InitializeTransactionOptions {
 	};
 }
 
+export interface InitializeTransactionResponse {
+	status: boolean;
+	message: string;
+	data: {
+		authorization_url: string;
+		access_code: string;
+		reference: string;
+	};
+}
+
 export const initializeTransaction = async (
 	options: InitializeTransactionOptions
 ) => {
-	const response = await client.post('/transaction/initialize', {
-		email: options.email,
-		amount: options.amount,
-		...(options.metadata && { metadata: options.metadata })
-	});
+	const response = await client.post<InitializeTransactionResponse>(
+		'/transaction/initialize',
+		{
+			email: options.email,
+			amount: options.amount,
+			...(options.metadata && { metadata: options.metadata })
+		}
+	);
 
 	return response.data;
 };
