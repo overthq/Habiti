@@ -72,7 +72,7 @@ const FollowedStores = () => {
 	if (isLoading || !data) return <div />;
 
 	return (
-		<div className='flex overflow-x-auto gap-4 py-1 mb-8'>
+		<div className='flex overflow-x-auto gap-4 mb-8'>
 			{data.stores.map(store => (
 				<Link
 					href={`/store/${store.id}`}

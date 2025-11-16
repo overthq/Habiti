@@ -17,6 +17,7 @@ import type {
 	GetStoreResponse,
 	StoreFollower,
 	GetCartResponse,
+	GetRelatedProductsResponse,
 	Product,
 	UpdateCurrentUserBody
 } from './types';
@@ -173,6 +174,14 @@ export const createOrder = async (body: CreateOrderBody) => {
 
 export const getProduct = async (productId: string) => {
 	const response = await api.get<GetProductResponse>(`/products/${productId}`);
+	return response.data;
+};
+
+export const getRelatedProducts = async (productId: string) => {
+	const response = await api.get<GetRelatedProductsResponse>(
+		`/products/${productId}/related`
+	);
+
 	return response.data;
 };
 

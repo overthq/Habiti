@@ -10,6 +10,32 @@ import {
 	useUnfollowStoreMutation
 } from '@/data/mutations';
 import { Button } from '@/components/ui/button';
+import { HeartIcon, MoreHorizontal } from 'lucide-react';
+import { GetStoreResponse, Store } from '@/data/types';
+import { cn } from '@/lib/utils';
+
+const StorePage = () => {
+	const { id } = useParams<{ id: string }>();
+	const { data, isLoading } = useStoreQuery(id);
+
+	if (isLoading || !data) return <div />;
+
+	return (
+		<div>
+			<StoreHeader store={data.store} viewerContext={data.viewerContext} />
+
+			<div className='mt-4'>
+				<h2 className='font-medium'>Products</h2>
+
+				<div className='mt-8 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-6 gap-4'>
+					{data.store.products.map(product => (
+						<Product key={product.id} {...product} />
+					))}
+				</div>
+			</div>
+		</div>
+	);
+};
 
 interface FollowButtonProps {
 	storeId: string;
@@ -36,46 +62,49 @@ const FollowButton: React.FC<FollowButtonProps> = ({
 			variant='outline'
 			disabled={isFollowing === undefined}
 			onClick={handleClick}
+			className={cn(
+				isFollowing &&
+					'bg-transparent *:[svg]:fill-red-500 *:[svg]:stroke-red-500'
+			)}
 		>
+			<HeartIcon />
 			{isFollowing ? 'Following' : 'Follow'}
 		</Button>
 	);
 };
 
-const StorePage = () => {
-	const { id } = useParams<{ id: string }>();
-	const { data, isLoading } = useStoreQuery(id);
+interface StoreHeaderProps {
+	store: Store;
+	viewerContext: GetStoreResponse['viewerContext'];
+}
 
-	if (isLoading || !data) return <div />;
-
+const StoreHeader: React.FC<StoreHeaderProps> = ({ store, viewerContext }) => {
 	return (
-		<div className='mx-auto'>
-			<div className='flex justify-between py-4'>
-				<div>
-					<div className='rounded-full size-18 overflow-hidden bg-muted mb-4 flex justify-center items-center'>
-						{data.store.image ? (
-							<img
-								src={data.store.image.path}
-								className='size-full object-cover'
-							/>
-						) : (
-							<p className='text-2xl font-medium text-muted-foreground'>
-								{data.store.name.charAt(0)}
-							</p>
-						)}
-					</div>
-					<h1 className='text-3xl font-medium'>{data.store.name}</h1>
-					<p className='text-muted-foreground'>{data.store.description}</p>
+		<div className='flex justify-between py-4'>
+			<div>
+				<div className='rounded-full size-22 overflow-hidden bg-muted mb-4 flex justify-center items-center'>
+					{store.image ? (
+						<img src={store.image.path} className='size-full object-cover' />
+					) : (
+						<p className='text-4xl font-medium text-muted-foreground'>
+							{store.name.charAt(0)}
+						</p>
+					)}
 				</div>
-				<FollowButton
-					storeId={id}
-					isFollowing={data.viewerContext?.isFollowing}
-				/>
+				<div className='space-y-2'>
+					<h1 className='text-4xl font-medium'>{store.name}</h1>
+					<p className='text-muted-foreground'>{store.description}</p>
+				</div>
 			</div>
-			<div className='mt-8 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-5 gap-4'>
-				{data.store.products.map(product => (
-					<Product key={product.id} {...product} />
-				))}
+
+			<div className='flex gap-2'>
+				<FollowButton
+					storeId={store.id}
+					isFollowing={viewerContext?.isFollowing}
+				/>
+				<Button variant='outline'>
+					<MoreHorizontal />
+				</Button>
 			</div>
 		</div>
 	);

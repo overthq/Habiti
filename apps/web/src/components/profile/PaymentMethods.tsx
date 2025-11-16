@@ -30,33 +30,15 @@ const PaymentMethods = () => {
 
 	return (
 		<div>
-			<FieldGroup>
-				<FieldSet>
-					<FieldLabel>Payment Method</FieldLabel>
-					<FieldDescription>
-						Choose how you want to pay for this order.
-					</FieldDescription>
-					<RadioGroup>
-						{data.cards.map(card => (
-							<FieldLabel htmlFor={card.id}>
-								<Field orientation='horizontal'>
-									<RadioGroupItem
-										value={card.id}
-										id={card.id}
-										aria-label={card.cardType}
-									/>
-									<FieldContent>
-										<FieldTitle className='capitalize'>
-											{card.cardType}
-										</FieldTitle>
-										<FieldDescription>Ends with {card.last4}</FieldDescription>
-									</FieldContent>
-								</Field>
-							</FieldLabel>
-						))}
-					</RadioGroup>
-				</FieldSet>
-			</FieldGroup>
+			<h2>Payment Method</h2>
+
+			{data.cards.map(card => (
+				<div key={card.id}>
+					<p className='capitalize'>
+						{card.cardType} {`\u2022\u2022\u2022\u2022${card.last4}`}
+					</p>
+				</div>
+			))}
 		</div>
 	);
 };

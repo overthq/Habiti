@@ -189,11 +189,6 @@ export interface RegisterBody {
 	password: string;
 }
 
-export interface GetProductResponse {
-	product: Product;
-	followed: boolean;
-}
-
 export interface CreateOrderBody {
 	cartId: string;
 	cardId?: string | null;
@@ -215,4 +210,8 @@ export interface UpdateCartProductQuantityBody {
 	cartId: string;
 	productId: string;
 	quantity: number;
+}
+
+export interface GetRelatedProductsResponse {
+	products: Product[];
 }

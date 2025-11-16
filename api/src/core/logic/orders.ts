@@ -19,8 +19,6 @@ export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 
 	const { cartId, cardId, transactionFee, serviceFee } = validatedInput;
 
-	console.log({ cardId });
-
 	const cart = await getCartById(ctx.prisma, cartId);
 
 	await validateCart(cart, ctx.user.id);

@@ -82,3 +82,10 @@ export const useGlobalSearchQuery = (query: string) => {
 		placeholderData: keepPreviousData
 	});
 };
+
+export const useRelatedProductsQuery = (productId: string) => {
+	return useQuery({
+		queryKey: ['products', productId, 'related-products'],
+		queryFn: () => getRelatedProducts()
+	});
+};

@@ -92,15 +92,13 @@ export const useCreateOrderMutation = () => {
 		mutationFn: (body: CreateOrderBody) =>
 			createOrder({ ...body, cardId: undefined }),
 		onSuccess: data => {
-			console.log(data);
 			if (data.cardAuthorizationData) {
 				const popup = new Paystack();
 				console.log({ popup });
 				popup.resumeTransaction(data.cardAuthorizationData.access_code);
 			}
 		},
-		onError: error => {
-			console.log(error);
+		onError: () => {
 			toast.error('Failed to create order');
 		}
 	});
