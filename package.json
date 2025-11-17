@@ -9,8 +9,10 @@
 	"scripts": {
 		"start:app": "bun run --cwd apps/app start",
 		"start:dashboard": "bun run --cwd apps/dashboard start",
-		"start-redis": "redis-server --daemonize yes",
+		"start:redis": "redis-server --daemonize yes",
 		"dev:api": "bun run --cwd api dev",
+		"dev:web": "bun run --cwd apps/web dev",
+		"dev:admin": "bun run --cwd apps/admin dev",
 		"postinstall": "husky",
 		"load-bank-list": "bun run scripts/load-banks"
 	},

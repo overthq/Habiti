@@ -2,12 +2,13 @@ import { DataTable } from '../ui/data-table';
 import { useStorePayoutsQuery } from '@/data/queries';
 import { type ColumnDef } from '@tanstack/react-table';
 import { type Payout } from '@/data/types';
+import { formatNaira } from '@/utils/format';
 
 const columns: ColumnDef<Payout>[] = [
 	{
 		header: 'Amount',
 		accessorKey: 'amount',
-		cell: ({ row }) => `$${row.original.amount.toFixed(2)}`
+		cell: ({ row }) => `${formatNaira(row.original.amount)}`
 	},
 	{
 		header: 'Status',

@@ -127,7 +127,7 @@ const CartsPage = () => {
 								<Link href={`/carts/${cart.id}`}>View cart</Link>
 							</Button>
 							<Button variant='secondary' asChild>
-								<Link href={`/stores/${cart.storeId}`}>Visit store</Link>
+								<Link href={`/store/${cart.storeId}`}>Visit store</Link>
 							</Button>
 						</div>
 					</div>

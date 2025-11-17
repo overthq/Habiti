@@ -2,6 +2,16 @@ import { useCardsQuery } from '@/data/queries';
 import { Skeleton } from '../ui/skeleton';
 import { Button } from '../ui/button';
 import { Plus } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+import {
+	Field,
+	FieldContent,
+	FieldDescription,
+	FieldGroup,
+	FieldLabel,
+	FieldSet,
+	FieldTitle
+} from '../ui/field';
 
 const PaymentMethodsSkeleton = () => {
 	return (
@@ -20,21 +30,15 @@ const PaymentMethods = () => {
 
 	return (
 		<div>
-			<h2 className='text-xl font-medium mb-4'>Payment Methods</h2>
+			<h2>Payment Method</h2>
 
-			<div>
-				{data.cards.map(card => (
-					<div key={card.id} className='flex py-2'>
-						<p className='capitalize'>{card.cardType}</p>
-						<p>{`\u2022\u2022\u2022\u2022${card.last4}`}</p>
-					</div>
-				))}
-			</div>
-
-			<Button>
-				<Plus />
-				Add Card
-			</Button>
+			{data.cards.map(card => (
+				<div key={card.id}>
+					<p className='capitalize'>
+						{card.cardType} {`\u2022\u2022\u2022\u2022${card.last4}`}
+					</p>
+				</div>
+			))}
 		</div>
 	);
 };

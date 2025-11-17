@@ -7,6 +7,8 @@ import { createOrderHooks, updateOrderHooks } from './hooks';
 import { validateCart } from '../validations/carts';
 import { createOrderSchema, updateOrderSchema } from '../validations/orders';
 import { AppContext } from '../../utils/context';
+import * as CardLogic from './cards';
+import { InitializeTransactionResponse } from '../payments/paystack';
 
 export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 	const { data: validatedInput, success } = createOrderSchema.safeParse(input);
@@ -29,6 +31,19 @@ export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 		storeId: cart.storeId
 	});
 
+	// FIXME: Incredibly hacky (inconsistent response)
+	// To prevent having dealing with multiple requests for the
+	// "create card with this order" flow.
+
+	let cardAuthorizationData: InitializeTransactionResponse['data'] | undefined =
+		undefined;
+
+	if (!cardId) {
+		cardAuthorizationData = await CardLogic.authorizeCard(ctx, {
+			orderId: order.id
+		});
+	}
+
 	createOrderHooks(ctx.prisma, ctx.services, {
 		orderId: order.id,
 		userId: ctx.user.id,
@@ -44,7 +59,7 @@ export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 		status: cardId ? OrderStatus.PaymentPending : OrderStatus.Pending
 	});
 
-	return order;
+	return { order, cardAuthorizationData };
 };
 
 export const updateOrderStatus = async (

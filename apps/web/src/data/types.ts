@@ -164,9 +164,9 @@ export interface AuthenticateBody {
 	password: string;
 }
 
-export interface UpdateUserBody {
-	name: string;
-	email: string;
+export interface UpdateCurrentUserBody {
+	name?: string;
+	email?: string;
 }
 
 export interface AddDeliveryAddressBody {
@@ -189,11 +189,6 @@ export interface RegisterBody {
 	password: string;
 }
 
-export interface GetProductResponse {
-	product: Product;
-	followed: boolean;
-}
-
 export interface CreateOrderBody {
 	cartId: string;
 	cardId?: string | null;
@@ -202,8 +197,21 @@ export interface CreateOrderBody {
 	serviceFee: number;
 }
 
+export interface CreateOrderResponse {
+	order: Order;
+	cardAuthorizationData?: {
+		authorization_url: string;
+		access_code: string;
+		reference: string;
+	};
+}
+
 export interface UpdateCartProductQuantityBody {
 	cartId: string;
 	productId: string;
 	quantity: number;
+}
+
+export interface GetRelatedProductsResponse {
+	products: Product[];
 }

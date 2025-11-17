@@ -9,6 +9,7 @@ import {
 	getProduct,
 	getFollowedStores,
 	getCards,
+	getRelatedProducts,
 	globalSearch
 } from './requests';
 
@@ -80,5 +81,12 @@ export const useGlobalSearchQuery = (query: string) => {
 		queryKey: ['search', query],
 		queryFn: () => globalSearch(query),
 		placeholderData: keepPreviousData
+	});
+};
+
+export const useRelatedProductsQuery = (productId: string) => {
+	return useQuery({
+		queryKey: ['products', productId, 'related-products'],
+		queryFn: () => getRelatedProducts(productId)
 	});
 };
