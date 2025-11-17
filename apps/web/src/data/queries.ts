@@ -9,6 +9,7 @@ import {
 	getProduct,
 	getFollowedStores,
 	getCards,
+	getRelatedProducts,
 	globalSearch
 } from './requests';
 
@@ -86,6 +87,6 @@ export const useGlobalSearchQuery = (query: string) => {
 export const useRelatedProductsQuery = (productId: string) => {
 	return useQuery({
 		queryKey: ['products', productId, 'related-products'],
-		queryFn: () => getRelatedProducts()
+		queryFn: () => getRelatedProducts(productId)
 	});
 };
