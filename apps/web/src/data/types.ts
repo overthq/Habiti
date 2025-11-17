@@ -45,6 +45,8 @@ export interface Cart {
 		total: number;
 	};
 	user: User;
+	createdAt: string;
+	updatedAt: string;
 }
 
 export interface Card {

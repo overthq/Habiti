@@ -10,7 +10,12 @@ import {
 	useUnfollowStoreMutation
 } from '@/data/mutations';
 import { Button } from '@/components/ui/button';
-import { HeartIcon, MoreHorizontal } from 'lucide-react';
+import {
+	ChevronDown,
+	HeartIcon,
+	ListFilterIcon,
+	MoreHorizontal
+} from 'lucide-react';
 import { GetStoreResponse, Store } from '@/data/types';
 import { cn } from '@/lib/utils';
 
@@ -27,12 +32,28 @@ const StorePage = () => {
 			<div className='mt-4'>
 				<h2 className='font-medium'>Products</h2>
 
-				<div className='mt-8 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-6 gap-4'>
+				<StoreProductFilters />
+
+				<div className='mt-8 grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4'>
 					{data.store.products.map(product => (
 						<Product key={product.id} {...product} />
 					))}
 				</div>
 			</div>
+		</div>
+	);
+};
+
+const StoreProductFilters = () => {
+	return (
+		<div className='flex mt-2 gap-2'>
+			<Button variant='outline' size='icon'>
+				<ListFilterIcon />
+			</Button>
+
+			<Button variant='outline'>
+				Sort by <ChevronDown />
+			</Button>
 		</div>
 	);
 };

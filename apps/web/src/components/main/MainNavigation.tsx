@@ -51,12 +51,14 @@ const ProfileDropdown = () => {
 };
 
 const MainNavigation = () => {
+	const { accessToken } = useAuthStore();
+
 	return (
 		<div className='border-b bg-background py-3 px-4 mb-4 fixed top-0 w-full flex justify-between'>
 			<nav className='flex flex-1 gap-4 items-center'>
 				<Link
 					className='text-muted-foreground hover:text-foreground transition-colors duration-200'
-					href='/'
+					href={accessToken ? '/home' : '/'}
 				>
 					<Logo width={20} height={20} />
 				</Link>
