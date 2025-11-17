@@ -18,6 +18,13 @@ import {
 } from 'lucide-react';
 import { GetStoreResponse, Store } from '@/data/types';
 import { cn } from '@/lib/utils';
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger
+} from '@/components/ui/popover';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 
 const StorePage = () => {
 	const { id } = useParams<{ id: string }>();
@@ -51,9 +58,48 @@ const StoreProductFilters = () => {
 				<ListFilterIcon />
 			</Button>
 
-			<Button variant='outline'>
-				Sort by <ChevronDown />
-			</Button>
+			<Popover>
+				<PopoverTrigger asChild>
+					<Button variant='outline'>
+						Sort by <ChevronDown />
+					</Button>
+				</PopoverTrigger>
+				<PopoverContent align='start' className='w-[220px]'>
+					<div>
+						<RadioGroup defaultValue='default'>
+							<div className='flex items-center gap-3'>
+								<RadioGroupItem value='default' id='default' />
+								<Label htmlFor='default'>Default</Label>
+							</div>
+							<div className='flex items-center gap-3'>
+								<RadioGroupItem
+									value='newest-to-oldest'
+									id='newest-to-oldest'
+								/>
+								<Label htmlFor='newest-to-oldest'>Newest to oldest</Label>
+							</div>
+							<div className='flex items-center gap-3'>
+								<RadioGroupItem
+									value='highest-to-lowest-price'
+									id='highest-to-lowest-price'
+								/>
+								<Label htmlFor='highest-to-lowest-price'>
+									Highest to lowest price
+								</Label>
+							</div>
+							<div className='flex items-center gap-3'>
+								<RadioGroupItem
+									value='lowest-to-highest-price'
+									id='lowest-to-highest-price'
+								/>
+								<Label htmlFor='lowest-to-highest-price'>
+									Lowest to highest price
+								</Label>
+							</div>
+						</RadioGroup>
+					</div>
+				</PopoverContent>
+			</Popover>
 		</div>
 	);
 };
