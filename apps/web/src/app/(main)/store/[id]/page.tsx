@@ -125,16 +125,17 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ storeId }) => {
 	const queryParams = React.useMemo(() => {
 		const params = new URLSearchParams();
 
-		if (sortBy === 'newest-to-oldest') {
-			params.set('orderBy[createdAt]', 'desc');
-		}
+		const sortMap: Partial<Record<StoreProductsSortOption, [string, string]>> =
+			{
+				'newest-to-oldest': ['orderBy[createdAt]', 'desc'],
+				'highest-to-lowest-price': ['orderBy[unitPrice]', 'desc'],
+				'lowest-to-highest-price': ['orderBy[unitPrice]', 'asc']
+			};
 
-		if (sortBy === 'highest-to-lowest-price') {
-			params.set('orderBy[unitPrice]', 'desc');
-		}
+		const sortValue = sortMap[sortBy];
 
-		if (sortBy === 'lowest-to-highest-price') {
-			params.set('orderBy[unitPrice]', 'asc');
+		if (sortValue) {
+			params.set(sortValue[0], sortValue[1]);
 		}
 
 		return params;
