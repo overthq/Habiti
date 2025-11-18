@@ -13,6 +13,7 @@ import { registerBodySchema } from '../validations/auth';
 import { EmailType } from '../../services/email';
 
 import type { AppContext } from '../../utils/context';
+import type { CreateUserParams } from '../data/users';
 
 export const register = async (ctx: AppContext, args: unknown) => {
 	const { data, error } = registerBodySchema.safeParse(args);
@@ -130,4 +131,12 @@ export const getCards = (ctx: AppContext) => {
 
 export const getDeliveryAddresses = (ctx: AppContext) => {
 	return AddressData.getDeliveryAddressesByUserId(ctx.prisma, ctx.user.id);
+};
+
+export const getUserByEmail = (ctx: AppContext, email: string) => {
+	return UserData.getUserByEmail(ctx.prisma, email);
+};
+
+export const createUser = (ctx: AppContext, input: CreateUserParams) => {
+	return UserData.createUser(ctx.prisma, input);
 };

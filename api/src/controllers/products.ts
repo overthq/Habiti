@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 
-import prismaClient from '../config/prisma';
 import * as ProductLogic from '../core/logic/products';
 import { hydrateQuery } from '../utils/queries';
 import { getAppContext } from '../utils/context';
@@ -8,13 +7,10 @@ import { getAppContext } from '../utils/context';
 export const getProducts = async (req: Request, res: Response) => {
 	const query = hydrateQuery(req.query);
 
-	const products = await prismaClient.product.findMany({
-		include: {
-			categories: { include: { category: true } },
-			store: true
-		},
-		...query
-	});
+	const ctx = getAppContext(req);
+
+	const products = await ProductLogic.getProducts(ctx, query);
+
 	return res.json({ products });
 };
 

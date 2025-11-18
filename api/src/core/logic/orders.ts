@@ -139,3 +139,7 @@ export const getOrderById = async (ctx: AppContext, orderId: string) => {
 
 	return order;
 };
+
+export const getOrders = async (ctx: AppContext, query: any) => {
+	return OrderData.getOrders(ctx.prisma, query);
+};

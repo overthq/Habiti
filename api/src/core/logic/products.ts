@@ -714,3 +714,7 @@ export const deleteStoreProductCategory = async (
 
 	return category;
 };
+
+export const getProducts = async (ctx: AppContext, query: any) => {
+	return ProductData.getProducts(ctx.prisma, query);
+};

@@ -1,6 +1,7 @@
 import * as StoreData from '../data/stores';
 import { AppContext } from '../../utils/context';
 import { getStorePushTokens, NotificationType } from '../notifications';
+import * as PayoutData from '../data/payouts';
 
 interface CreateStoreInput {
 	name: string;
@@ -345,4 +346,36 @@ export const getFollowedStores = async (ctx: AppContext, userId: string) => {
 	}
 
 	return StoreData.getFollowedStores(ctx.prisma, userId);
+};
+
+export const getStores = async (ctx: AppContext, query: any) => {
+	return StoreData.getStores(ctx.prisma, query);
+};
+
+export const getStorePayouts = async (ctx: AppContext, storeId: string) => {
+	return PayoutData.getStorePayouts(ctx.prisma, storeId);
+};
+
+export const getStoreManagers = async (
+	ctx: AppContext,
+	storeId: string,
+	query: any
+) => {
+	return StoreData.getStoreManagers(ctx.prisma, storeId, query);
+};
+
+export const getStoreProducts = async (
+	ctx: AppContext,
+	storeId: string,
+	query: any
+) => {
+	return StoreData.getStoreProducts(ctx.prisma, storeId, query);
+};
+
+export const getStoreOrders = async (
+	ctx: AppContext,
+	storeId: string,
+	query: any
+) => {
+	return StoreData.getStoreOrders(ctx.prisma, storeId, query);
 };
