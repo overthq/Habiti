@@ -19,6 +19,8 @@ import {
 } from '@/components/ui/field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import Link from 'next/link';
+import { Separator } from '@/components/ui/separator';
+import { formatDate } from '@/utils/date';
 
 const CardSelector = () => {
 	const { cards, selectedCard, setSelectedCard } = useCart();
@@ -36,14 +38,14 @@ const CardSelector = () => {
 	}
 
 	return (
-		<div className='pt-4'>
+		<div>
 			<FieldGroup>
 				<FieldSet>
-					<FieldLabel>Payment Method</FieldLabel>
+					<FieldLabel className='text-lg'>Payment Method</FieldLabel>
 					<FieldDescription>
 						Choose how you want to pay for this order.
 					</FieldDescription>
-					<RadioGroup onValueChange={setSelectedCard}>
+					<RadioGroup value={selectedCard} onValueChange={setSelectedCard}>
 						{cards.map(card => (
 							<FieldLabel key={card.id} htmlFor={card.id}>
 								<Field orientation='horizontal'>
@@ -61,6 +63,21 @@ const CardSelector = () => {
 								</Field>
 							</FieldLabel>
 						))}
+						<FieldLabel htmlFor='new-card'>
+							<Field orientation='horizontal'>
+								<RadioGroupItem
+									value='new-card'
+									id='new-card'
+									aria-label='New payment method'
+								/>
+								<FieldContent>
+									<FieldTitle className='capitalize'>
+										New payment method
+									</FieldTitle>
+									<FieldDescription>Create new payment method</FieldDescription>
+								</FieldContent>
+							</Field>
+						</FieldLabel>
 					</RadioGroup>
 				</FieldSet>
 			</FieldGroup>
@@ -106,39 +123,49 @@ const CartMain = () => {
 	const { cart, handleSubmit, disabled } = useCart();
 
 	return (
-		<div>
-			<Link href='/carts' className='flex gap-1 items-center text-sm mb-4'>
+		<div className='max-w-3xl mx-auto'>
+			<Link
+				href='/carts'
+				className='flex gap-2 items-center text-muted-foreground text-sm mb-8'
+			>
 				<ArrowLeft className='size-4' /> <p>Back to carts</p>
 			</Link>
 
-			<div className='flex items-center gap-2 mb-4'>
-				<div className='size-10 rounded-full bg-muted flex items-center justify-center'>
+			<div className='flex items-center gap-3 mb-6'>
+				<div className='size-14 rounded-full bg-muted flex items-center justify-center'>
 					{cart.store.image ? (
 						<img
 							src={cart.store.image.path}
 							className='size-full object-cover'
 						/>
 					) : (
-						<p className='text-muted-foreground uppercase font-medium'>
+						<p className='text-muted-foreground uppercase font-medium text-xl'>
 							{cart.store.name[0]}
 						</p>
 					)}
 				</div>
-				<p className='text-lg font-medium'>{cart.store.name}</p>
+				<div>
+					<p className='text-lg font-medium'>{cart.store.name}</p>
+					<p className='text-muted-foreground text-sm'>
+						Created on {formatDate(cart.createdAt)}
+					</p>
+				</div>
 			</div>
+
+			<h2 className='text-lg font-medium my-2'>Products</h2>
 
 			<div className='border rounded-lg'>
 				{cart.products.map(cartProduct => (
 					<div
 						key={`${cartProduct.cartId}-${cartProduct.productId}`}
-						className='flex items-center gap-2 p-2 not-last:border-b'
+						className='flex items-center gap-2.5 p-2 not-last:border-b'
 					>
-						<div className='size-14 bg-muted rounded flex items-center justify-center'>
+						<div className='size-13 bg-muted rounded flex items-center justify-center overflow-hidden'>
 							{cartProduct.product.images[0] && (
 								<img
 									src={cartProduct.product.images[0].path}
 									alt={cartProduct.product.name}
-									className='size-full object-cover rounded-md'
+									className='size-full object-cover'
 									loading='lazy'
 								/>
 							)}
@@ -167,7 +194,11 @@ const CartMain = () => {
 				))}
 			</div>
 
+			<Separator className='my-4' />
+
 			<CardSelector />
+
+			<Separator className='my-4' />
 
 			<div className='my-4 border rounded-md p-4 bg-muted'>
 				<div className='flex justify-between'>

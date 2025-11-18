@@ -1,3 +1,5 @@
+'use client';
+
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 // @ts-expect-error
 import Paystack from '@paystack/inline-js';
