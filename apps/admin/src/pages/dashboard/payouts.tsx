@@ -1,17 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
+import { type ColumnDef } from '@tanstack/react-table';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow
-} from '@/components/ui/table';
 import {
 	Select,
 	SelectContent,
@@ -21,9 +14,59 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { DataTable } from '@/components/ui/data-table';
 import { usePayoutsQuery } from '@/data/queries';
-import { PayoutStatus, type PayoutFilters } from '@/data/types';
+import { PayoutStatus, type PayoutFilters, type Payout } from '@/data/types';
 import { formatNaira } from '@/utils/format';
+
+const getStatusBadge = (status: PayoutStatus) => {
+	switch (status) {
+		case PayoutStatus.Pending:
+			return <Badge className='bg-yellow-100 text-yellow-800'>Pending</Badge>;
+		case PayoutStatus.Success:
+			return <Badge className='bg-green-100 text-green-800'>Success</Badge>;
+		case PayoutStatus.Failure:
+			return <Badge className='bg-red-100 text-red-800'>Failure</Badge>;
+		default:
+			return <Badge className='bg-gray-100 text-gray-800'>{status}</Badge>;
+	}
+};
+
+const columns: ColumnDef<Payout>[] = [
+	{
+		header: 'Store',
+		accessorKey: 'store.name'
+	},
+	{
+		header: 'Amount',
+		accessorKey: 'amount',
+		cell: ({ row }) => formatNaira(row.getValue('amount'))
+	},
+	{
+		header: 'Status',
+		accessorKey: 'status',
+		cell: ({ row }) => getStatusBadge(row.original.status)
+	},
+	{
+		header: 'Created',
+		accessorKey: 'createdAt',
+		cell: ({ row }) => new Date(row.getValue('createdAt')).toLocaleDateString()
+	},
+	{
+		id: 'actions',
+		header: 'Actions',
+		cell: ({ row }) => {
+			const payout = row.original;
+			return (
+				<Link to={`/payouts/${payout.id}`}>
+					<Button variant='outline' size='sm'>
+						View Details
+					</Button>
+				</Link>
+			);
+		}
+	}
+];
 
 const PayoutsPage = () => {
 	const [filters, setFilters] = useState<PayoutFilters>({});
@@ -69,19 +112,6 @@ const PayoutsPage = () => {
 		setMaxAmount('');
 		setSortBy('createdAt');
 		setSortOrder('desc');
-	};
-
-	const getStatusBadge = (status: PayoutStatus) => {
-		switch (status) {
-			case PayoutStatus.Pending:
-				return <Badge className='bg-yellow-100 text-yellow-800'>Pending</Badge>;
-			case PayoutStatus.Success:
-				return <Badge className='bg-green-100 text-green-800'>Success</Badge>;
-			case PayoutStatus.Failure:
-				return <Badge className='bg-red-100 text-red-800'>Failure</Badge>;
-			default:
-				return <Badge className='bg-gray-100 text-gray-800'>{status}</Badge>;
-		}
 	};
 
 	if (isLoading) {
@@ -173,55 +203,7 @@ const PayoutsPage = () => {
 				</CardContent>
 			</Card>
 
-			<Card>
-				<CardHeader>
-					<CardTitle>Payouts ({payouts.length})</CardTitle>
-				</CardHeader>
-				<CardContent>
-					{payouts.length === 0 ? (
-						<div className='text-center py-8 text-gray-500'>
-							No payouts found matching your criteria.
-						</div>
-					) : (
-						<Table>
-							<TableHeader>
-								<TableRow>
-									<TableHead>Store</TableHead>
-									<TableHead>Amount</TableHead>
-									<TableHead>Status</TableHead>
-									<TableHead>Created</TableHead>
-									<TableHead>Actions</TableHead>
-								</TableRow>
-							</TableHeader>
-							<TableBody>
-								{payouts.map(payout => (
-									<TableRow key={payout.id}>
-										<TableCell>
-											<div>
-												<div className='font-medium'>{payout.store.name}</div>
-											</div>
-										</TableCell>
-										<TableCell className='font-semibold'>
-											{formatNaira(payout.amount)}
-										</TableCell>
-										<TableCell>{getStatusBadge(payout.status)}</TableCell>
-										<TableCell>
-											{new Date(payout.createdAt).toLocaleDateString()}
-										</TableCell>
-										<TableCell>
-											<Link to={`/payouts/${payout.id}`}>
-												<Button variant='outline' size='sm'>
-													View Details
-												</Button>
-											</Link>
-										</TableCell>
-									</TableRow>
-								))}
-							</TableBody>
-						</Table>
-					)}
-				</CardContent>
-			</Card>
+			<DataTable data={payouts} columns={columns} />
 		</div>
 	);
 };
