@@ -5,6 +5,7 @@ import { hydrateQuery } from '../utils/queries';
 import { uploadImages } from '../utils/upload';
 import { getAppContext } from '../utils/context';
 import * as StoreLogic from '../core/logic/stores';
+import * as StoreData from '../core/data/stores';
 
 const loadCurrentStore = async (req: Request) => {
 	const store = await prismaClient.store.findUnique({
@@ -108,11 +109,14 @@ export const getStoreProducts = async (req: Request, res: Response) => {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
 
+	const ctx = getAppContext(req);
 	const query = hydrateQuery(req.query);
 
-	const products = await prismaClient.store
-		.findUnique({ where: { id: req.params.id } })
-		.products(query);
+	const products = await StoreData.getStoreProducts(
+		ctx.prisma,
+		req.params.id,
+		query
+	);
 
 	return res.json({ products });
 };

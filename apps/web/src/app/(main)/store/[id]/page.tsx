@@ -4,7 +4,7 @@ import React from 'react';
 import { useParams } from 'next/navigation';
 
 import Product from '@/components/store/Product';
-import { useStoreQuery } from '@/data/queries';
+import { useStoreProductsQuery, useStoreQuery } from '@/data/queries';
 import {
 	useFollowStoreMutation,
 	useUnfollowStoreMutation
@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { GetStoreResponse, Store } from '@/data/types';
 import { cn } from '@/lib/utils';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
 	Popover,
 	PopoverContent,
@@ -36,22 +37,26 @@ const StorePage = () => {
 		<div>
 			<StoreHeader store={data.store} viewerContext={data.viewerContext} />
 
-			<div className='mt-4'>
-				<h2 className='font-medium'>Products</h2>
-
-				<StoreProductFilters />
-
-				<div className='mt-8 grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4'>
-					{data.store.products.map(product => (
-						<Product key={product.id} {...product} />
-					))}
-				</div>
-			</div>
+			<StoreProducts storeId={data.store.id} />
 		</div>
 	);
 };
 
-const StoreProductFilters = () => {
+type StoreProductsSortOption =
+	| 'default'
+	| 'newest-to-oldest'
+	| 'highest-to-lowest-price'
+	| 'lowest-to-highest-price';
+
+interface StoreProductFiltersProps {
+	sortBy: StoreProductsSortOption;
+	onSortChange: (value: StoreProductsSortOption) => void;
+}
+
+const StoreProductFilters: React.FC<StoreProductFiltersProps> = ({
+	sortBy,
+	onSortChange
+}) => {
 	return (
 		<div className='flex mt-2 gap-2'>
 			<Button variant='outline' size='icon'>
@@ -66,7 +71,12 @@ const StoreProductFilters = () => {
 				</PopoverTrigger>
 				<PopoverContent align='start' className='w-[220px]'>
 					<div>
-						<RadioGroup defaultValue='default'>
+						<RadioGroup
+							value={sortBy}
+							onValueChange={value =>
+								onSortChange(value as StoreProductsSortOption)
+							}
+						>
 							<div className='flex items-center gap-3'>
 								<RadioGroupItem value='default' id='default' />
 								<Label htmlFor='default'>Default</Label>
@@ -100,6 +110,53 @@ const StoreProductFilters = () => {
 					</div>
 				</PopoverContent>
 			</Popover>
+		</div>
+	);
+};
+
+interface StoreProductsProps {
+	storeId: string;
+}
+
+const StoreProducts: React.FC<StoreProductsProps> = ({ storeId }) => {
+	const [sortBy, setSortBy] =
+		React.useState<StoreProductsSortOption>('default');
+
+	const queryParams = React.useMemo(() => {
+		const params = new URLSearchParams();
+
+		if (sortBy === 'newest-to-oldest') {
+			params.set('orderBy[createdAt]', 'desc');
+		}
+
+		if (sortBy === 'highest-to-lowest-price') {
+			params.set('orderBy[unitPrice]', 'desc');
+		}
+
+		if (sortBy === 'lowest-to-highest-price') {
+			params.set('orderBy[unitPrice]', 'asc');
+		}
+
+		return params;
+	}, [sortBy]);
+
+	const { data, isLoading } = useStoreProductsQuery(storeId, queryParams);
+
+	return (
+		<div className='mt-4'>
+			<h2 className='font-medium'>Products</h2>
+
+			<StoreProductFilters sortBy={sortBy} onSortChange={setSortBy} />
+
+			<div className='mt-8 grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4'>
+				{isLoading
+					? Array.from({ length: 6 }).map((_, index) => (
+							<Skeleton key={index} className='aspect-square rounded-lg' />
+						))
+					: data?.products.map(product => (
+							<Product key={product.id} {...product} />
+						))}
+			</div>
 		</div>
 	);
 };
