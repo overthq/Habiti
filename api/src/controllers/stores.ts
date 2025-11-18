@@ -1,29 +1,15 @@
 import { Request, Response } from 'express';
 
-import prismaClient from '../config/prisma';
 import { hydrateQuery } from '../utils/queries';
-import { uploadImages } from '../utils/upload';
 import { getAppContext } from '../utils/context';
 import * as StoreLogic from '../core/logic/stores';
-
-const loadCurrentStore = async (req: Request) => {
-	const store = await prismaClient.store.findUnique({
-		where: {
-			id: req.headers['x-market-store-id'] as string
-		}
-	});
-
-	if (!store) {
-		throw new Error('Store not found');
-	}
-
-	return store;
-};
+import * as ProductLogic from '../core/logic/products';
 
 export const getStores = async (req: Request, res: Response) => {
 	const query = hydrateQuery(req.query);
+	const ctx = getAppContext(req);
 
-	const stores = await prismaClient.store.findMany(query);
+	const stores = await StoreLogic.getStores(ctx, query);
 
 	return res.json({ stores });
 };
@@ -49,27 +35,39 @@ export const createStore = async (req: Request, res: Response) => {
 };
 
 export const getCurrentStore = async (req: Request, res: Response) => {
-	const store = await loadCurrentStore(req);
+	const ctx = getAppContext(req);
+
+	if (!ctx.storeId) {
+		return res.status(400).json({ error: 'Store ID is required' });
+	}
+
+	const store = await StoreLogic.getStoreById(ctx, ctx.storeId);
 
 	return res.json({ store });
 };
 
 export const getCurrentStorePayouts = async (req: Request, res: Response) => {
-	const store = await loadCurrentStore(req);
+	const ctx = getAppContext(req);
 
-	const payouts = await prismaClient.payout.findMany({
-		where: { storeId: store.id }
-	});
+	if (!ctx.storeId) {
+		return res.status(400).json({ error: 'Store ID is required' });
+	}
+
+	const payouts = await StoreLogic.getStorePayouts(ctx, ctx.storeId);
 
 	return res.json({ payouts });
 };
 
 export const getCurrentStoreManagers = async (req: Request, res: Response) => {
-	const store = await loadCurrentStore(req);
+	const ctx = getAppContext(req);
 
-	const managers = await prismaClient.storeManager.findMany({
-		where: { storeId: store.id }
-	});
+	if (!ctx.storeId) {
+		return res.status(400).json({ error: 'Store ID is required' });
+	}
+
+	const query = hydrateQuery(req.query);
+
+	const managers = await StoreLogic.getStoreManagers(ctx, ctx.storeId, query);
 
 	return res.json({ managers });
 };
@@ -79,12 +77,13 @@ export const getStorePayouts = async (req: Request, res: Response) => {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
 
-	const query = hydrateQuery(req.query);
+	const ctx = getAppContext(req);
 
-	const payouts = await prismaClient.payout.findMany({
-		where: { storeId: req.params.id },
-		...query
-	});
+	if (!ctx.storeId) {
+		return res.status(400).json({ error: 'Store ID is required' });
+	}
+
+	const payouts = await StoreLogic.getStorePayouts(ctx, ctx.storeId);
 
 	return res.json({ payouts });
 };
@@ -108,41 +107,34 @@ export const getStoreProducts = async (req: Request, res: Response) => {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
 
+	const ctx = getAppContext(req);
+
+	if (!ctx.storeId) {
+		return res.status(400).json({ error: 'Store ID is required' });
+	}
+
 	const query = hydrateQuery(req.query);
 
-	const products = await prismaClient.store
-		.findUnique({ where: { id: req.params.id } })
-		.products(query);
+	const products = await StoreLogic.getStoreProducts(ctx, ctx.storeId, query);
 
 	return res.json({ products });
 };
 
 export const createStoreProduct = async (req: Request, res: Response) => {
-	const { name, description, unitPrice, quantity, imageFiles } = req.body;
+	const { name, description, unitPrice, quantity } = req.body;
 
-	if (!req.headers['x-market-store-id']) {
+	const ctx = getAppContext(req);
+
+	if (!ctx.storeId) {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
 
-	// Image uploads have to be handled differently in REST
-	const uploadedImages = await uploadImages(imageFiles);
-
-	const product = await prismaClient.product.create({
-		data: {
-			name,
-			description,
-			unitPrice,
-			quantity,
-			storeId: req.headers['x-market-store-id'] as string,
-			images: {
-				createMany: {
-					data: uploadedImages.map(({ url, public_id }) => ({
-						path: url,
-						publicId: public_id
-					}))
-				}
-			}
-		}
+	const product = await ProductLogic.createProduct(ctx, {
+		name,
+		description,
+		unitPrice,
+		quantity,
+		storeId: ctx.storeId
 	});
 
 	return res.json({ product });
@@ -153,15 +145,15 @@ export const getStoreOrders = async (req: Request, res: Response) => {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
 
+	const ctx = getAppContext(req);
+
+	if (!ctx.storeId) {
+		return res.status(400).json({ error: 'Store ID is required' });
+	}
+
 	const query = hydrateQuery(req.query);
 
-	// Add include user to the query
-	const orders = await prismaClient.store
-		.findUnique({ where: { id: req.params.id } })
-		.orders({
-			...query,
-			include: { user: true }
-		});
+	const orders = await StoreLogic.getStoreOrders(ctx, ctx.storeId, query);
 
 	return res.json({ orders });
 };
@@ -171,9 +163,15 @@ export const getStoreManagers = async (req: Request, res: Response) => {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
 
-	const managers = await prismaClient.store
-		.findUnique({ where: { id: req.params.id } })
-		.managers({ include: { manager: true } });
+	const ctx = getAppContext(req);
+
+	if (!ctx.storeId) {
+		return res.status(400).json({ error: 'Store ID is required' });
+	}
+
+	const query = hydrateQuery(req.query);
+
+	const managers = await StoreLogic.getStoreManagers(ctx, ctx.storeId, query);
 
 	return res.json({ managers });
 };

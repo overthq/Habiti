@@ -425,3 +425,16 @@ export const getProductViewerContext = async (
 
 	return { cartProduct };
 };
+
+export const getProducts = async (prisma: PrismaClient, query: any) => {
+	const products = await prisma.product.findMany({
+		include: {
+			store: true,
+			images: true,
+			categories: { include: { category: true } }
+		},
+		...query
+	});
+
+	return products;
+};

@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 
-interface CreateUserParams {
+export interface CreateUserParams {
 	name: string;
 	email: string;
 	passwordHash: string;

@@ -1,6 +1,5 @@
 import { RequestHandler } from 'express';
 
-import prismaClient from '../config/prisma';
 import { hydrateQuery } from '../utils/queries';
 import * as OrderLogic from '../core/logic/orders';
 import { getAppContext } from '../utils/context';
@@ -8,10 +7,9 @@ import { getAppContext } from '../utils/context';
 export const getOrders: RequestHandler = async (req, res) => {
 	const query = hydrateQuery(req.query);
 
-	const orders = await prismaClient.order.findMany({
-		...query,
-		include: { user: true, store: true }
-	});
+	const ctx = getAppContext(req);
+
+	const orders = await OrderLogic.getOrders(ctx, query);
 
 	return res.json({ orders });
 };
