@@ -20,12 +20,8 @@ const Providers = ({ children }: ProvidersProps) => {
 
 	// FIXME: This is not a good way to handle authentication.
 	React.useEffect(() => {
-		if (userId && accessToken) {
-			if (pathname === '/') {
-				router.replace('/home');
-			} else {
-				setLoading(false);
-			}
+		if (userId && accessToken && pathname === '/') {
+			router.replace('/home');
 		} else {
 			setLoading(false);
 		}

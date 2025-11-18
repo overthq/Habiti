@@ -100,6 +100,17 @@ export const unfollowStore = async (storeId: string) => {
 	return response.data;
 };
 
+export const getStoreProducts = async (
+	storeId: string,
+	queryParams: URLSearchParams
+) => {
+	const response = await api.get<{ products: Product[] }>(
+		`/stores/${storeId}/products`,
+		{ params: queryParams }
+	);
+	return response.data;
+};
+
 export const addDeliveryAddress = async (body: AddDeliveryAddressBody) => {
 	const response = await api.post('/users/current/delivery-addresses', body);
 	return response.data;

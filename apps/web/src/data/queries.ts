@@ -10,6 +10,7 @@ import {
 	getFollowedStores,
 	getCards,
 	getRelatedProducts,
+	getStoreProducts,
 	globalSearch
 } from './requests';
 
@@ -88,5 +89,17 @@ export const useRelatedProductsQuery = (productId: string) => {
 	return useQuery({
 		queryKey: ['products', productId, 'related-products'],
 		queryFn: () => getRelatedProducts(productId)
+	});
+};
+
+export const useStoreProductsQuery = (
+	storeId: string,
+	queryParams: URLSearchParams
+) => {
+	const queryString = queryParams.toString();
+
+	return useQuery({
+		queryKey: ['stores', storeId, 'products', queryString],
+		queryFn: () => getStoreProducts(storeId, queryParams)
 	});
 };

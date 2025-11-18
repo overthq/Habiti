@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 
 interface CreateStoreParams {
 	name: string;
@@ -110,11 +110,12 @@ export const getStoreFollowers = async (
 
 export const getStoreProducts = async (
 	prisma: PrismaClient,
-	storeId: string
+	storeId: string,
+	query: Prisma.ProductFindManyArgs
 ) => {
 	const products = await prisma.store
 		.findUnique({ where: { id: storeId } })
-		.products();
+		.products({ include: { images: true }, ...query });
 
 	return products;
 };
