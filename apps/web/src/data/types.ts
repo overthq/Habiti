@@ -13,6 +13,7 @@ export interface Store {
 	image?: Image;
 	products: Product[];
 	followedByUser: boolean;
+	categories: StoreProductCategory[];
 }
 
 export interface Image {
@@ -123,6 +124,26 @@ export interface StoreFollower {
 	updatedAt: string;
 	store: Store;
 	follower: User;
+}
+
+export interface StoreProductCategory {
+	id: string;
+	storeId: string;
+	name: string;
+	description: string;
+	createdAt: string;
+	updatedAt: string;
+	store: Store;
+	products: ProductCategory[];
+}
+
+export interface ProductCategory {
+	productId: string;
+	categoryId: string;
+	createdAt: string;
+	updatedAt: string;
+	product: Product;
+	category: StoreProductCategory;
 }
 
 export enum OrderStatus {

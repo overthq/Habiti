@@ -16,7 +16,7 @@ import {
 	ListFilterIcon,
 	MoreHorizontal
 } from 'lucide-react';
-import { GetStoreResponse, Store } from '@/data/types';
+import { GetStoreResponse, Store, StoreProductCategory } from '@/data/types';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -37,7 +37,10 @@ const StorePage = () => {
 		<div>
 			<StoreHeader store={data.store} viewerContext={data.viewerContext} />
 
-			<StoreProducts storeId={data.store.id} />
+			<StoreProducts
+				storeId={data.store.id}
+				categories={data.store.categories}
+			/>
 		</div>
 	);
 };
@@ -120,9 +123,13 @@ const StoreProductFilters: React.FC<StoreProductFiltersProps> = ({
 
 interface StoreProductsProps {
 	storeId: string;
+	categories: StoreProductCategory[];
 }
 
-const StoreProducts: React.FC<StoreProductsProps> = ({ storeId }) => {
+const StoreProducts: React.FC<StoreProductsProps> = ({
+	storeId,
+	categories
+}) => {
 	const [sortBy, setSortBy] =
 		React.useState<StoreProductsSortOption>('default');
 
@@ -150,6 +157,14 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ storeId }) => {
 	return (
 		<div className='mt-4'>
 			<h2 className='font-medium'>Products</h2>
+
+			<div className='flex gap-2'>
+				{categories.map(category => (
+					<Button variant='outline' size='sm'>
+						{category.name}
+					</Button>
+				))}
+			</div>
 
 			<StoreProductFilters sortBy={sortBy} onSortChange={setSortBy} />
 
