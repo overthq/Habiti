@@ -3,13 +3,16 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { useStoresQuery } from '@/data/queries';
 import { DataTable } from '@/components/ui/data-table';
 import { Link } from 'react-router';
+import { Button } from '@/components/ui/button';
 
 const columns: ColumnDef<Store>[] = [
 	{
 		accessorKey: 'name',
 		header: 'Name',
 		cell: ({ row }) => (
-			<Link to={`/stores/${row.original.id}`}>{row.original.name}</Link>
+			<Button variant='link' asChild className='px-0 w-fit'>
+				<Link to={`/stores/${row.original.id}`}>{row.original.name}</Link>
+			</Button>
 		)
 	},
 	{
@@ -29,7 +32,7 @@ const Stores = () => {
 	return (
 		<div>
 			<div className='flex justify-between items-center mb-6'>
-				<h1 className='text-3xl font-bold'>Stores</h1>
+				<h1 className='text-3xl font-semibold'>Stores</h1>
 			</div>
 			<DataTable columns={columns} data={data.stores} />
 		</div>

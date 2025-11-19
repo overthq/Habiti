@@ -4,12 +4,20 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { type Order } from '@/data/types';
 import { formatNaira } from '@/utils/format';
 import OrderStatusPill from '../order-status-pill';
+import { Button } from '../ui/button';
+import { Link } from 'react-router';
 
 const columns: ColumnDef<Order>[] = [
 	{
 		id: 'name',
 		header: 'Customer',
-		cell: ({ row }) => row.original.user.name
+		cell: ({ row }) => (
+			<Button variant='link' asChild className='px-0 w-fit'>
+				<Link to={`/users/${row.original.user.id}`}>
+					{row.original.user.name}
+				</Link>
+			</Button>
+		)
 	},
 	{
 		header: 'Total',

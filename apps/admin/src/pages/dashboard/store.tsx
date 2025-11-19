@@ -5,7 +5,6 @@ import { type Store as StoreType } from '@/data/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import CopyableText from '@/components/ui/copy';
-import DescriptionList from '@/components/ui/description-list';
 import InlineMeta from '@/components/ui/inline-meta';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import StoreManagers from '@/components/stores/store-managers';
@@ -48,16 +47,12 @@ const StoreMain = ({ store }: StoreMainProps) => {
 				<UpdateStoreDialog store={store} />
 			</div>
 
-			<Card>
-				<CardHeader>
-					<CardTitle>About</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<p className='text-muted-foreground whitespace-pre-wrap'>
-						{store.description || '—'}
-					</p>
-				</CardContent>
-			</Card>
+			<div>
+				<p>Description</p>
+				<p className='text-muted-foreground whitespace-pre-wrap'>
+					{store.description || '—'}
+				</p>
+			</div>
 
 			<Tabs defaultValue='products'>
 				<TabsList>

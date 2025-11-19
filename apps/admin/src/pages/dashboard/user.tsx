@@ -2,7 +2,7 @@ import UpdateUserDialog from '@/components/user/update-user-dialog';
 import UserOrders from '@/components/user/user-orders';
 import { useUserQuery } from '@/data/queries';
 import { useParams } from 'react-router';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+// import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import CopyableText from '@/components/ui/copy';
 import InlineMeta from '@/components/ui/inline-meta';
@@ -42,25 +42,6 @@ const User = () => {
 				</div>
 				<UpdateUserDialog user={user} />
 			</div>
-
-			<Card>
-				<CardHeader>
-					<CardTitle>Account</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<InlineMeta
-						items={[
-							<span key='created' className='font-mono text-sm'>
-								Created {new Date(user.createdAt).toLocaleString()}
-							</span>,
-							<span key='updated' className='font-mono text-sm'>
-								Updated {new Date(user.updatedAt).toLocaleString()}
-							</span>
-						]}
-					/>
-				</CardContent>
-			</Card>
-
 			<UserOrders user={user} />
 		</div>
 	);

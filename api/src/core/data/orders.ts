@@ -245,7 +245,10 @@ export const fulfillOrder = async (prisma: PrismaClient, orderId: string) => {
 };
 
 export const getOrders = async (prisma: PrismaClient, query: any) => {
-	const orders = await prisma.order.findMany({ ...query });
+	const orders = await prisma.order.findMany({
+		...query,
+		include: { store: true, user: true }
+	});
 
 	return orders;
 };

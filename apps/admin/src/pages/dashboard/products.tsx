@@ -43,7 +43,9 @@ const columns: ColumnDef<Product>[] = [
 		accessorKey: 'name',
 		header: 'Name',
 		cell: ({ row }) => (
-			<Link to={`/products/${row.original.id}`}>{row.original.name}</Link>
+			<Button variant='link' asChild className='px-0 w-fit'>
+				<Link to={`/products/${row.original.id}`}>{row.original.name}</Link>
+			</Button>
 		)
 	},
 	{
@@ -57,7 +59,14 @@ const columns: ColumnDef<Product>[] = [
 	},
 	{
 		accessorKey: 'store.name',
-		header: 'Store'
+		header: 'Store',
+		cell: ({ row }) => (
+			<Button variant='link' asChild className='px-0 w-fit'>
+				<Link to={`/stores/${row.original.store.id}`}>
+					{row.original.store.name}
+				</Link>
+			</Button>
+		)
 	},
 	{
 		id: 'actions',
@@ -105,7 +114,7 @@ const ProductsPage = () => {
 	return (
 		<div className='space-y-6'>
 			<div className='flex justify-between items-center'>
-				<h1 className='text-3xl font-bold'>Products</h1>
+				<h1 className='text-3xl font-semibold'>Products</h1>
 			</div>
 
 			<DataTable columns={columns} data={data?.products ?? []} />
