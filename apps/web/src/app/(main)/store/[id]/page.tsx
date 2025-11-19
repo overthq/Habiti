@@ -59,13 +59,13 @@ const StoreProductFilters: React.FC<StoreProductFiltersProps> = ({
 }) => {
 	return (
 		<div className='flex mt-2 gap-2'>
-			<Button variant='outline' size='icon'>
+			<Button variant='outline' size='icon-sm'>
 				<ListFilterIcon />
 			</Button>
 
 			<Popover>
 				<PopoverTrigger asChild>
-					<Button variant='outline'>
+					<Button variant='outline' size='sm'>
 						Sort by <ChevronDown />
 					</Button>
 				</PopoverTrigger>

@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { formatNaira } from '@/utils/currency';
 import { useOrderQuery } from '@/data/queries';
 import { formatDate } from '@/utils/date';
+import { ArrowLeft } from 'lucide-react';
 
 const OrderPage = () => {
 	const { id } = useParams<{ id: string }>();
@@ -18,37 +19,44 @@ const OrderPage = () => {
 
 	return (
 		<div className='mx-auto'>
-			<h1 className='text-2xl font-medium mb-4'>Order Details</h1>
+			<Link
+				href='/orders'
+				className='flex gap-2 items-center text-muted-foreground text-sm mb-8'
+			>
+				<ArrowLeft className='size-4' /> <p>Back to orders</p>
+			</Link>
 
 			<div>
 				<Link href={`/store/${order.store.id}`}>
 					<div className='flex items-center gap-2'>
-						<div className='size-10 rounded-full overflow-hidden bg-muted-foreground/20 flex-shrink-0'>
-							{order.store.image && (
+						<div className='size-14 rounded-full bg-muted flex items-center justify-center overflow-hidden'>
+							{order.store.image ? (
 								<img
 									src={order.store.image.path}
 									alt={order.store.name}
-									className='size-full object-cover'
+									className='size-14 object-cover rounded-md'
 								/>
+							) : (
+								<p className='text-muted-foreground uppercase font-medium text-xl'>
+									{order.store.name[0]}
+								</p>
 							)}
 						</div>
 						<div>
-							<p className='font-medium'>{order.store.name}</p>
+							<p className='text-lg font-medium'>{order.store.name}</p>
+							<p className='text-muted-foreground text-sm'>
+								Created on {formatDate(order.createdAt)}
+							</p>
 						</div>
 					</div>
 				</Link>
-				<div className='mt-2 flex'>
-					<p className='text-muted-foreground text-sm'>
-						{order.status} · {formatDate(order.createdAt)}
-					</p>
-				</div>
 			</div>
 
 			<div className='border rounded-lg mt-4'>
 				{order.products.map(({ product, productId, unitPrice, quantity }) => (
 					<div
 						key={productId}
-						className='flex items-center p-3 gap-3 not-last:border-b'
+						className='flex items-center p-2.5 gap-2.5 not-last:border-b'
 					>
 						<div className='size-14 bg-muted rounded-md flex items-center justify-center overflow-hidden'>
 							{product.images?.[0] && (
