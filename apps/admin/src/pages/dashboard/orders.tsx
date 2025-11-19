@@ -44,12 +44,23 @@ const columns: ColumnDef<Order>[] = [
 		accessorFn: row => row.user.name,
 		header: 'Customer',
 		cell: ({ row }) => (
-			<Link to={`/orders/${row.original.id}`}>{row.original.user.name}</Link>
+			<Button variant='link' asChild className='px-0 w-fit'>
+				<Link to={`/users/${row.original.user.id}`}>
+					{row.original.user.name}
+				</Link>
+			</Button>
 		)
 	},
 	{
 		header: 'Store',
-		accessorKey: 'store.name'
+		accessorKey: 'store.name',
+		cell: ({ row }) => (
+			<Button variant='link' asChild className='px-0 w-fit'>
+				<Link to={`/stores/${row.original.store.id}`}>
+					{row.original.store.name}
+				</Link>
+			</Button>
+		)
 	},
 	{
 		accessorKey: 'total',
@@ -105,7 +116,7 @@ const OrdersPage = () => {
 	return (
 		<div className='space-y-6'>
 			<div className='flex justify-between items-center'>
-				<h1 className='text-3xl font-bold'>Orders</h1>
+				<h1 className='text-3xl font-semibold'>Orders</h1>
 			</div>
 
 			<DataTable data={data?.orders ?? []} columns={columns} />

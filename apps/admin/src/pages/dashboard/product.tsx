@@ -72,16 +72,10 @@ const ProductPage = () => {
 				<UpdateProductDialog product={product} />
 			</div>
 
-			<Card>
-				<CardHeader>
-					<CardTitle>Description</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<p className='text-muted-foreground whitespace-pre-wrap'>
-						{product.description}
-					</p>
-				</CardContent>
-			</Card>
+			<div>
+				<p>Description</p>
+				<p>{product.description}</p>
+			</div>
 
 			{product.images.length > 0 && (
 				<Card>

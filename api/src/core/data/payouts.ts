@@ -99,7 +99,10 @@ export const markPayoutAsFailed = async (reference: string) => {
 };
 
 export const getPayouts = async (prisma: PrismaClient, query: any) => {
-	const payouts = await prisma.payout.findMany({ ...query });
+	const payouts = await prisma.payout.findMany({
+		...query,
+		include: { store: true }
+	});
 
 	return payouts;
 };
