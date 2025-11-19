@@ -97,3 +97,18 @@ export const markPayoutAsFailed = async (reference: string) => {
 		data: { status: PayoutStatus.Failure }
 	});
 };
+
+export const getPayouts = async (prisma: PrismaClient, query: any) => {
+	const payouts = await prisma.payout.findMany({ ...query });
+
+	return payouts;
+};
+
+export const getPayoutById = async (prisma: PrismaClient, payoutId: string) => {
+	const payout = await prisma.payout.findUnique({
+		where: { id: payoutId },
+		include: { store: true }
+	});
+
+	return payout;
+};

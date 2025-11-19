@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
-import prismaClient from '../config/prisma';
 import * as AuthLogic from '../core/logic/auth';
 import * as UserLogic from '../core/logic/users';
 
@@ -25,7 +24,9 @@ export const login = async (req: Request, res: Response) => {
 	try {
 		const { email, password } = req.body;
 
-		const user = await prismaClient.user.findUnique({ where: { email } });
+		const ctx = getAppContext(req);
+
+		const user = await UserLogic.getUserByEmail(ctx, email);
 
 		if (!user) {
 			return res
@@ -63,7 +64,8 @@ export const verify = async (req: Request, res: Response) => {
 	if (!cachedCode) throw new Error('No code found for user.');
 
 	if (cachedCode === code) {
-		const user = await prismaClient.user.findUnique({ where: { email } });
+		const ctx = getAppContext(req);
+		const user = await UserLogic.getUserByEmail(ctx, email);
 
 		if (!user) {
 			throw new Error('The specified user does not exist.');
@@ -110,17 +112,15 @@ export const appleCallback = async (req: Request, res: Response) => {
 			});
 		}
 
-		let user = await prismaClient.user.findUnique({
-			where: { email: decodedToken.email }
-		});
+		const ctx = getAppContext(req);
+
+		let user = await UserLogic.getUserByEmail(ctx, decodedToken.email);
 
 		if (!user) {
-			user = await prismaClient.user.create({
-				data: {
-					email: decodedToken.email,
-					name: decodedToken.name || '',
-					passwordHash: ''
-				}
+			user = await UserLogic.createUser(ctx, {
+				name: decodedToken.name || '',
+				email: decodedToken.email,
+				passwordHash: ''
 			});
 		}
 

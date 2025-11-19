@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 
-import prismaClient from '../config/prisma';
-import redisClient from '../config/redis';
+import { getAppContext } from '../utils/context';
 
-export const checkHealth = async (_: Request, res: Response) => {
+export const checkHealth = async (req: Request, res: Response) => {
+	const ctx = getAppContext(req);
+
 	try {
-		await prismaClient.$queryRaw`SELECT 1`;
-
-		await redisClient.ping();
+		await ctx.prisma.$queryRaw`SELECT 1`;
+		await ctx.redisClient.ping();
 
 		return res.status(200).json({
 			status: 'healthy',

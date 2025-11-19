@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import prismaClient from '../config/prisma';
+import { getAppContext } from '../utils/context';
+import * as SearchLogic from '../core/logic/search';
 
 export const globalSearch = async (req: Request, res: Response) => {
 	const { query } = req.query;
@@ -8,20 +9,9 @@ export const globalSearch = async (req: Request, res: Response) => {
 		return res.json({ products: [], stores: [] });
 	}
 
-	const [products, stores] = await Promise.all([
-		prismaClient.product.findMany({
-			where: { name: { contains: query, mode: 'insensitive' } },
-			include: {
-				images: true
-			}
-		}),
-		prismaClient.store.findMany({
-			where: { name: { contains: query, mode: 'insensitive' } },
-			include: {
-				image: true
-			}
-		})
-	]);
+	const ctx = getAppContext(req);
+
+	const { products, stores } = await SearchLogic.globalSearch(ctx, query);
 
 	return res.json({ products, stores });
 };

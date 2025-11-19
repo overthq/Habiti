@@ -166,3 +166,11 @@ export const markPayoutAsFailed = async (
 
 	return { success: true };
 };
+
+export const getPayouts = async (ctx: AppContext, query: any) => {
+	return PayoutData.getPayouts(ctx.prisma, query);
+};
+
+export const getPayoutById = async (ctx: AppContext, payoutId: string) => {
+	return PayoutData.getPayoutById(ctx.prisma, payoutId);
+};

@@ -52,6 +52,12 @@ export const updateStore = async (
 	return store;
 };
 
+export const getStores = async (prisma: PrismaClient, query: any) => {
+	const stores = await prisma.store.findMany({ ...query });
+
+	return stores;
+};
+
 export const getStoreById = async (prisma: PrismaClient, storeId: string) => {
 	const store = await prisma.store.findUnique({
 		where: { id: storeId },
@@ -122,13 +128,26 @@ export const getStoreProducts = async (
 
 export const getStoreManagers = async (
 	prisma: PrismaClient,
-	storeId: string
+	storeId: string,
+	query: any
 ) => {
 	const storeManagers = await prisma.store
 		.findUnique({ where: { id: storeId } })
-		.managers();
+		.managers({ ...query });
 
 	return storeManagers;
+};
+
+export const getStoreOrders = async (
+	prisma: PrismaClient,
+	storeId: string,
+	query: any
+) => {
+	const storeOrders = await prisma.store
+		.findUnique({ where: { id: storeId } })
+		.orders({ ...query });
+
+	return storeOrders;
 };
 
 export const deleteStore = async (prisma: PrismaClient, storeId: string) => {
