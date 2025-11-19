@@ -57,7 +57,7 @@ export function AppSidebar() {
 	const { pathname } = useLocation();
 
 	return (
-		<Sidebar>
+		<Sidebar variant='inset'>
 			<SidebarHeader>
 				<SidebarMenu>
 					<SidebarMenuItem>

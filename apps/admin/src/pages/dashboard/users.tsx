@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { useUsersQuery } from '@/data/queries';
 import { type User } from '@/data/types';
@@ -9,7 +10,9 @@ const columns: ColumnDef<User>[] = [
 		accessorKey: 'name',
 		header: 'Name',
 		cell: ({ row }) => (
-			<Link to={`/users/${row.original.id}`}>{row.original.name}</Link>
+			<Button variant='link' asChild className='px-0 w-fit'>
+				<Link to={`/users/${row.original.id}`}>{row.original.name}</Link>
+			</Button>
 		)
 	},
 	{
@@ -37,7 +40,7 @@ const Users = () => {
 	return (
 		<div className='space-y-6'>
 			<div className='flex justify-between items-center'>
-				<h1 className='text-3xl font-bold'>Users</h1>
+				<h1 className='text-3xl font-semibold'>Users</h1>
 			</div>
 
 			<DataTable columns={columns} data={data.users} />

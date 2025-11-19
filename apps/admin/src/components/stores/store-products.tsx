@@ -3,11 +3,18 @@ import { useStoreProductsQuery } from '@/data/queries';
 import { type ColumnDef } from '@tanstack/react-table';
 import { type Product } from '@/data/types';
 import { formatNaira } from '@/utils/format';
+import { Link } from 'react-router';
+import { Button } from '../ui/button';
 
 const columns: ColumnDef<Product>[] = [
 	{
 		header: 'Name',
-		accessorKey: 'name'
+		accessorKey: 'name',
+		cell: ({ row }) => (
+			<Button variant='link' asChild className='px-0 w-fit'>
+				<Link to={`/products/${row.original.id}`}>{row.original.name}</Link>
+			</Button>
+		)
 	},
 	{
 		header: 'Price',

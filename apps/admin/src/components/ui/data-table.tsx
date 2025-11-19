@@ -47,11 +47,13 @@ interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
 	hasColumnDropdown?: boolean;
+	filterButtons?: React.ReactNode;
 }
 
 export function DataTable<TData, TValue>({
 	columns,
 	data,
+	filterButtons,
 	hasColumnDropdown = true
 }: DataTableProps<TData, TValue>) {
 	const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -80,11 +82,13 @@ export function DataTable<TData, TValue>({
 
 	return (
 		<div className='space-y-4'>
-			{hasColumnDropdown && (
-				<div className='flex items-center pb-4'>
+			<div className='flex items-center pb-4'>
+				{filterButtons}
+
+				{hasColumnDropdown && (
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant='outline' className='ml-auto'>
+							<Button variant='outline' size='sm' className='ml-auto'>
 								Columns <ChevronDown />
 							</Button>
 						</DropdownMenuTrigger>
@@ -108,11 +112,12 @@ export function DataTable<TData, TValue>({
 								})}
 						</DropdownMenuContent>
 					</DropdownMenu>
-				</div>
-			)}
-			<div className='rounded-md border'>
+				)}
+			</div>
+
+			<div className='rounded-md border overflow-hidden'>
 				<Table>
-					<TableHeader>
+					<TableHeader className='bg-muted'>
 						{table.getHeaderGroups().map(headerGroup => (
 							<TableRow key={headerGroup.id}>
 								{headerGroup.headers.map(header => {
