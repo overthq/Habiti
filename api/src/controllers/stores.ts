@@ -109,13 +109,9 @@ export const getStoreProducts = async (req: Request, res: Response) => {
 
 	const ctx = getAppContext(req);
 
-	if (!ctx.storeId) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
 	const query = hydrateQuery(req.query);
 
-	const products = await StoreLogic.getStoreProducts(ctx, ctx.storeId, query);
+	const products = await StoreLogic.getStoreProducts(ctx, req.params.id, query);
 
 	return res.json({ products });
 };

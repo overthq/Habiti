@@ -110,6 +110,10 @@ const StoreProductFilters: React.FC<StoreProductFiltersProps> = ({
 					</div>
 				</PopoverContent>
 			</Popover>
+
+			<Button variant='outline' size='sm'>
+				In stock
+			</Button>
 		</div>
 	);
 };
