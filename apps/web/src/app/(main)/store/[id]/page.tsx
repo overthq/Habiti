@@ -10,12 +10,7 @@ import {
 	useUnfollowStoreMutation
 } from '@/data/mutations';
 import { Button } from '@/components/ui/button';
-import {
-	ChevronDown,
-	HeartIcon,
-	ListFilterIcon,
-	MoreHorizontal
-} from 'lucide-react';
+import { ChevronDown, HeartIcon, ListFilterIcon } from 'lucide-react';
 import { GetStoreResponse, Store, StoreProductCategory } from '@/data/types';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -121,6 +116,47 @@ const StoreProductFilters: React.FC<StoreProductFiltersProps> = ({
 	);
 };
 
+interface StoreCategoriesProps {
+	categories: StoreProductCategory[];
+	selectedCategory: string | null;
+	onCategoryChange: (categoryId: string | null) => void;
+}
+
+const StoreCategories: React.FC<StoreCategoriesProps> = ({
+	categories,
+	selectedCategory,
+	onCategoryChange
+}) => {
+	return (
+		<div className='flex gap-3'>
+			<button
+				onClick={() => onCategoryChange(null)}
+				className={cn(
+					'py-1.5 transition-colors',
+					selectedCategory === null ? 'text-primary' : 'text-muted-foreground'
+				)}
+			>
+				All
+			</button>
+
+			{categories.map(category => (
+				<button
+					key={category.id}
+					onClick={() => onCategoryChange(category.id)}
+					className={cn(
+						'py-1.5 transition-colors',
+						selectedCategory === category.id
+							? 'text-primary'
+							: 'text-muted-foreground'
+					)}
+				>
+					{category.name}
+				</button>
+			))}
+		</div>
+	);
+};
+
 interface StoreProductsProps {
 	storeId: string;
 	categories: StoreProductCategory[];
@@ -132,6 +168,9 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 }) => {
 	const [sortBy, setSortBy] =
 		React.useState<StoreProductsSortOption>('default');
+	const [selectedCategory, setSelectedCategory] = React.useState<string | null>(
+		null
+	);
 
 	const queryParams = React.useMemo(() => {
 		const params = new URLSearchParams();
@@ -149,22 +188,24 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 			params.set(sortValue[0], sortValue[1]);
 		}
 
+		if (selectedCategory) {
+			params.set('categoryId', selectedCategory);
+		}
+
 		return params;
-	}, [sortBy]);
+	}, [sortBy, selectedCategory]);
 
 	const { data, isLoading } = useStoreProductsQuery(storeId, queryParams);
 
 	return (
-		<div className='mt-4'>
-			<h2 className='font-medium'>Products</h2>
+		<div className='mt-4 space-y-4'>
+			<h2 className='text-lg font-medium'>Products</h2>
 
-			<div className='flex gap-2'>
-				{categories.map(category => (
-					<Button variant='outline' size='sm'>
-						{category.name}
-					</Button>
-				))}
-			</div>
+			<StoreCategories
+				categories={categories}
+				selectedCategory={selectedCategory}
+				onCategoryChange={setSelectedCategory}
+			/>
 
 			<StoreProductFilters sortBy={sortBy} onSortChange={setSortBy} />
 
@@ -246,9 +287,6 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store, viewerContext }) => {
 					storeId={store.id}
 					isFollowing={viewerContext?.isFollowing}
 				/>
-				<Button variant='outline'>
-					<MoreHorizontal />
-				</Button>
 			</div>
 		</div>
 	);

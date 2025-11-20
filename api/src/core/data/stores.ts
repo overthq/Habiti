@@ -1,4 +1,8 @@
 import { Prisma, PrismaClient } from '@prisma/client';
+import {
+	productFiltersToPrismaClause,
+	ProductFilters
+} from '../../utils/queries';
 
 interface CreateStoreParams {
 	name: string;
@@ -93,12 +97,16 @@ export const getStoreByIdWithManagers = async (
 
 export const getStoreByIdWithProducts = async (
 	prisma: PrismaClient,
-	storeId: string
+	storeId: string,
+	filters?: ProductFilters
 ) => {
 	const store = await prisma.store.findUnique({
 		where: { id: storeId },
 		include: {
-			products: { include: { images: true } },
+			products: {
+				include: { images: true },
+				...productFiltersToPrismaClause(filters)
+			},
 			categories: true
 		}
 	});
@@ -120,11 +128,14 @@ export const getStoreFollowers = async (
 export const getStoreProducts = async (
 	prisma: PrismaClient,
 	storeId: string,
-	query: Prisma.ProductFindManyArgs
+	filters?: ProductFilters
 ) => {
 	const products = await prisma.store
 		.findUnique({ where: { id: storeId } })
-		.products({ include: { images: true }, ...query });
+		.products({
+			include: { images: true },
+			...productFiltersToPrismaClause(filters)
+		});
 
 	return products;
 };

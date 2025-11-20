@@ -1,4 +1,8 @@
 import { ProductStatus, PrismaClient, Prisma } from '@prisma/client';
+import {
+	productFiltersToPrismaClause,
+	ProductFilters
+} from '../../utils/queries';
 
 interface CreateProductParams {
 	name: string;
@@ -426,14 +430,17 @@ export const getProductViewerContext = async (
 	return { cartProduct };
 };
 
-export const getProducts = async (prisma: PrismaClient, query: any) => {
+export const getProducts = async (
+	prisma: PrismaClient,
+	filters: ProductFilters
+) => {
 	const products = await prisma.product.findMany({
 		include: {
 			store: true,
 			images: true,
 			categories: { include: { category: true } }
 		},
-		...query
+		...productFiltersToPrismaClause(filters)
 	});
 
 	return products;
