@@ -10,22 +10,16 @@ import {
 	useUnfollowStoreMutation
 } from '@/data/mutations';
 import { Button } from '@/components/ui/button';
-import {
-	ChevronDown,
-	HeartIcon,
-	ListFilterIcon,
-	MoreHorizontal
-} from 'lucide-react';
-import { GetStoreResponse, Store } from '@/data/types';
+import { ChevronDown, HeartIcon } from 'lucide-react';
+import { GetStoreResponse, Store, StoreProductCategory } from '@/data/types';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger
-} from '@/components/ui/popover';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
+	DropdownMenu,
+	DropdownMenuCheckboxItem,
+	DropdownMenuContent,
+	DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
 
 const StorePage = () => {
 	const { id } = useParams<{ id: string }>();
@@ -37,7 +31,10 @@ const StorePage = () => {
 		<div>
 			<StoreHeader store={data.store} viewerContext={data.viewerContext} />
 
-			<StoreProducts storeId={data.store.id} />
+			<StoreProducts
+				storeId={data.store.id}
+				categories={data.store.categories}
+			/>
 		</div>
 	);
 };
@@ -48,79 +45,116 @@ type StoreProductsSortOption =
 	| 'highest-to-lowest-price'
 	| 'lowest-to-highest-price';
 
-interface StoreProductFiltersProps {
+interface StoreProductFiltersProps extends React.PropsWithChildren {
 	sortBy: StoreProductsSortOption;
 	onSortChange: (value: StoreProductsSortOption) => void;
 }
 
 const StoreProductFilters: React.FC<StoreProductFiltersProps> = ({
 	sortBy,
-	onSortChange
+	onSortChange,
+	children
 }) => {
 	return (
 		<div className='flex mt-2 gap-2'>
-			<Button variant='outline' size='icon'>
-				<ListFilterIcon />
-			</Button>
-
-			<Popover>
-				<PopoverTrigger asChild>
-					<Button variant='outline'>
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<Button variant='outline' size='sm'>
 						Sort by <ChevronDown />
 					</Button>
-				</PopoverTrigger>
-				<PopoverContent align='start' className='w-[220px]'>
-					<div>
-						<RadioGroup
-							value={sortBy}
-							onValueChange={value =>
-								onSortChange(value as StoreProductsSortOption)
-							}
-						>
-							<div className='flex items-center gap-3'>
-								<RadioGroupItem value='default' id='default' />
-								<Label htmlFor='default'>Default</Label>
-							</div>
-							<div className='flex items-center gap-3'>
-								<RadioGroupItem
-									value='newest-to-oldest'
-									id='newest-to-oldest'
-								/>
-								<Label htmlFor='newest-to-oldest'>Newest to oldest</Label>
-							</div>
-							<div className='flex items-center gap-3'>
-								<RadioGroupItem
-									value='highest-to-lowest-price'
-									id='highest-to-lowest-price'
-								/>
-								<Label htmlFor='highest-to-lowest-price'>
-									Highest to lowest price
-								</Label>
-							</div>
-							<div className='flex items-center gap-3'>
-								<RadioGroupItem
-									value='lowest-to-highest-price'
-									id='lowest-to-highest-price'
-								/>
-								<Label htmlFor='lowest-to-highest-price'>
-									Lowest to highest price
-								</Label>
-							</div>
-						</RadioGroup>
-					</div>
-				</PopoverContent>
-			</Popover>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent align='start'>
+					<DropdownMenuCheckboxItem
+						checked={sortBy === 'default'}
+						onCheckedChange={() => onSortChange('default')}
+					>
+						Default
+					</DropdownMenuCheckboxItem>
+					<DropdownMenuCheckboxItem
+						checked={sortBy === 'newest-to-oldest'}
+						onCheckedChange={() => onSortChange('newest-to-oldest')}
+					>
+						Newest to oldest
+					</DropdownMenuCheckboxItem>
+					<DropdownMenuCheckboxItem
+						checked={sortBy === 'highest-to-lowest-price'}
+						onCheckedChange={() => onSortChange('highest-to-lowest-price')}
+					>
+						Highest to lowest price
+					</DropdownMenuCheckboxItem>
+					<DropdownMenuCheckboxItem
+						checked={sortBy === 'lowest-to-highest-price'}
+						onCheckedChange={() => onSortChange('lowest-to-highest-price')}
+					>
+						Lowest to highest price
+					</DropdownMenuCheckboxItem>
+				</DropdownMenuContent>
+			</DropdownMenu>
+
+			{children}
+
+			<Button variant='outline' size='sm'>
+				In stock
+			</Button>
 		</div>
+	);
+};
+
+interface StoreCategoriesProps {
+	categories: StoreProductCategory[];
+	selectedCategory: string | null;
+	onCategoryChange: (categoryId: string | null) => void;
+}
+
+const StoreCategories: React.FC<StoreCategoriesProps> = ({
+	categories,
+	selectedCategory,
+	onCategoryChange
+}) => {
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<Button variant='outline' size='sm'>
+					Category
+					<ChevronDown />
+				</Button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent align='start'>
+				<DropdownMenuCheckboxItem
+					checked={selectedCategory === null}
+					onCheckedChange={() => onCategoryChange(null)}
+				>
+					All
+				</DropdownMenuCheckboxItem>
+
+				{categories.map(category => (
+					<DropdownMenuCheckboxItem
+						key={category.id}
+						checked={selectedCategory === category.id}
+						onCheckedChange={() => onCategoryChange(category.id)}
+					>
+						{category.name}
+					</DropdownMenuCheckboxItem>
+				))}
+			</DropdownMenuContent>
+		</DropdownMenu>
 	);
 };
 
 interface StoreProductsProps {
 	storeId: string;
+	categories: StoreProductCategory[];
 }
 
-const StoreProducts: React.FC<StoreProductsProps> = ({ storeId }) => {
+const StoreProducts: React.FC<StoreProductsProps> = ({
+	storeId,
+	categories
+}) => {
 	const [sortBy, setSortBy] =
 		React.useState<StoreProductsSortOption>('default');
+	const [selectedCategory, setSelectedCategory] = React.useState<string | null>(
+		null
+	);
 
 	const queryParams = React.useMemo(() => {
 		const params = new URLSearchParams();
@@ -138,16 +172,26 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ storeId }) => {
 			params.set(sortValue[0], sortValue[1]);
 		}
 
+		if (selectedCategory) {
+			params.set('categoryId', selectedCategory);
+		}
+
 		return params;
-	}, [sortBy]);
+	}, [sortBy, selectedCategory]);
 
 	const { data, isLoading } = useStoreProductsQuery(storeId, queryParams);
 
 	return (
-		<div className='mt-4'>
-			<h2 className='font-medium'>Products</h2>
+		<div className='mt-4 space-y-3'>
+			<h2 className='text-xl font-medium'>Products</h2>
 
-			<StoreProductFilters sortBy={sortBy} onSortChange={setSortBy} />
+			<StoreProductFilters sortBy={sortBy} onSortChange={setSortBy}>
+				<StoreCategories
+					categories={categories}
+					selectedCategory={selectedCategory}
+					onCategoryChange={setSelectedCategory}
+				/>
+			</StoreProductFilters>
 
 			<div className='mt-8 grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4'>
 				{isLoading
@@ -227,9 +271,6 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store, viewerContext }) => {
 					storeId={store.id}
 					isFollowing={viewerContext?.isFollowing}
 				/>
-				<Button variant='outline'>
-					<MoreHorizontal />
-				</Button>
 			</div>
 		</div>
 	);

@@ -2,6 +2,7 @@ import * as StoreData from '../data/stores';
 import { AppContext } from '../../utils/context';
 import { getStorePushTokens, NotificationType } from '../notifications';
 import * as PayoutData from '../data/payouts';
+import { ProductFilters } from '../../utils/queries';
 
 interface CreateStoreInput {
 	name: string;
@@ -367,9 +368,9 @@ export const getStoreManagers = async (
 export const getStoreProducts = async (
 	ctx: AppContext,
 	storeId: string,
-	query: any
+	filters?: ProductFilters
 ) => {
-	return StoreData.getStoreProducts(ctx.prisma, storeId, query);
+	return StoreData.getStoreProducts(ctx.prisma, storeId, filters);
 };
 
 export const getStoreOrders = async (

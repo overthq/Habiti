@@ -64,7 +64,8 @@ export const getStorePayouts = async (
 	storeId: string
 ) => {
 	const payouts = await prisma.payout.findMany({
-		where: { storeId }
+		where: { storeId },
+		include: { store: true }
 	});
 
 	return payouts;

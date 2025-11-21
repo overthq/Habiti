@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { hydrateQuery } from '../utils/queries';
+import { hydrateQuery, productFiltersSchema } from '../utils/queries';
 import { getAppContext } from '../utils/context';
 import * as StoreLogic from '../core/logic/stores';
 import * as ProductLogic from '../core/logic/products';
@@ -109,13 +109,11 @@ export const getStoreProducts = async (req: Request, res: Response) => {
 
 	const ctx = getAppContext(req);
 
-	if (!ctx.storeId) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
-	const query = hydrateQuery(req.query);
-
-	const products = await StoreLogic.getStoreProducts(ctx, ctx.storeId, query);
+	const products = await StoreLogic.getStoreProducts(
+		ctx,
+		req.params.id,
+		productFiltersSchema.parse(req.query)
+	);
 
 	return res.json({ products });
 };

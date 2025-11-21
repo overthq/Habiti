@@ -28,7 +28,7 @@ const ProductPage = () => {
 			viewerContext={data.viewerContext}
 		>
 			<div className='max-w-4xl mx-auto'>
-				<div className='flex gap-12 sm:flex-row flex-col'>
+				<div className='flex gap-12 md:flex-row flex-col'>
 					<ProductImages />
 					<ProductMeta />
 				</div>
@@ -42,7 +42,7 @@ const ProductImages = () => {
 	const { product } = useProductContext();
 
 	return (
-		<div className='flex-1'>
+		<div className='grow'>
 			<div className='aspect-square rounded-xl overflow-hidden bg-muted'>
 				{product.images.length > 0 && (
 					<img
@@ -153,7 +153,7 @@ const QuantityControl = () => {
 	const decrement = React.useCallback(() => setQuantity(q => q - 1), []);
 
 	return (
-		<div className='mb-4 space-y-2'>
+		<div className='my-4 space-y-2'>
 			<p className='font-medium'>Quantity</p>
 
 			<div className='flex items-center gap-6 border rounded-md w-min py-2 px-3'>
