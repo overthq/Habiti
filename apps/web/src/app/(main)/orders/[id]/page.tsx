@@ -38,7 +38,7 @@ const OrderPage = () => {
 								/>
 							) : (
 								<p className='text-muted-foreground uppercase font-medium text-xl'>
-									{order.store.name[0]}
+									{order.store.name.charAt(0)}
 								</p>
 							)}
 						</div>
