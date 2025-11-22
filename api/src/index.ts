@@ -4,6 +4,7 @@ import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import compression from 'compression';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 import { expressjwt } from 'express-jwt';
@@ -28,6 +29,7 @@ const main = async () => {
 	Sentry.setupExpressErrorHandler(app);
 
 	app.use(express.json());
+	app.use(cookieParser());
 	app.use(compression());
 	app.use(
 		expressjwt({
