@@ -44,7 +44,14 @@ import {
 	removeProductFromCart,
 	updateCartProductQuantity
 } from './controllers/carts';
-import { register, login, verify, appleCallback } from './controllers/auth';
+import {
+	register,
+	login,
+	verify,
+	appleCallback,
+	refresh,
+	logout
+} from './controllers/auth';
 import {
 	registerBodySchema,
 	authenticateBodySchema
@@ -67,6 +74,8 @@ router.post('/auth/register', validateBody(registerBodySchema), register);
 router.post('/auth/login', validateBody(authenticateBodySchema), login);
 router.post('/auth/verify', verify);
 router.post('/auth/apple-callback', appleCallback);
+router.post('/auth/refresh', refresh);
+router.post('/auth/logout', logout);
 
 // Orders
 router.get('/orders', isAdmin, getOrders);

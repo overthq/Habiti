@@ -40,7 +40,7 @@ export default class EmailService {
 	}
 
 	public sendMail(args: SendMailArgs) {
-		if (!this.isEnabled) {
+		if (this.isEnabled) {
 			this.loops.sendTransactionalEmail({
 				transactionalId: TransactionalIDByEmailType[args.emailType],
 				email: args.email,

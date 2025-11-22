@@ -26,6 +26,7 @@ model User {
   addresses     DeliveryAddress[]
   pushTokens    UserPushToken[]
   ProductReview ProductReview[]
+  refreshTokens RefreshToken[]
 }
 
 model Store {
@@ -320,4 +321,16 @@ enum PayoutStatus {
 enum PushTokenType {
   Shopper
   Merchant
+}
+
+model RefreshToken {
+  id          String   @id @default(uuid())
+  hashedToken String
+  userId      String
+  revoked     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  expiresAt   DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

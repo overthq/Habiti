@@ -20,6 +20,7 @@
 		"axios": "^1.10.0",
 		"cloudinary": "^2.5.1",
 		"compression": "^1.7.4",
+		"cookie-parser": "^1.4.7",
 		"cors": "^2.8.5",
 		"dotenv": "^16.4.7",
 		"expo-server-sdk": "^3.15.0",
@@ -40,6 +41,7 @@
 	"devDependencies": {
 		"@types/bun": "^1.2.22",
 		"@types/compression": "^1.7.5",
+		"@types/cookie-parser": "^1.4.10",
 		"@types/cors": "^2.8.17",
 		"@types/express": "^4.17.21",
 		"@types/graphql-upload": "^8.0.11",
