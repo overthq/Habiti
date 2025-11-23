@@ -27,7 +27,8 @@ export const useAuthStore = create<AuthState>()(
 		}),
 		{
 			name: 'auth-store',
-			storage: createJSONStorage(() => window.localStorage)
+			storage: createJSONStorage(() => window.localStorage),
+			partialize: state => ({ userId: state.userId })
 		}
 	)
 );

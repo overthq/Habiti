@@ -5,7 +5,6 @@ import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
-import cors from 'cors';
 import express from 'express';
 import { expressjwt } from 'express-jwt';
 import { graphqlUploadExpress } from 'graphql-upload';
@@ -23,11 +22,13 @@ import schema from './graphql/schema';
 import { env } from './config/env';
 import redisClient from './config/redis';
 import './config/cloudinary';
+import { corsConfig } from './utils/cors';
 
 const main = async () => {
 	const app = express();
 	Sentry.setupExpressErrorHandler(app);
 
+	app.use(corsConfig);
 	app.use(express.json());
 	app.use(cookieParser());
 	app.use(compression());
@@ -49,7 +50,6 @@ const main = async () => {
 
 	await apolloServer.start();
 
-	app.use(cors());
 	app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 	app.use(
 		'/graphql',
