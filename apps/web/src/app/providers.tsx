@@ -13,12 +13,10 @@ type ProvidersProps = {
 };
 
 const Providers = ({ children }: ProvidersProps) => {
-	const { userId, accessToken } = useAuthStore();
-	const router = useRouter();
-	const pathname = usePathname();
-
+	const { accessToken } = useAuthStore();
 	const [loading, setLoading] = React.useState(true);
 
+	// TODO: Find a way to handle this cleanly without depending on the `useEffect` crutch.
 	React.useEffect(() => {
 		const initAuth = async () => {
 			if (!accessToken) {
@@ -38,12 +36,6 @@ const Providers = ({ children }: ProvidersProps) => {
 
 		initAuth();
 	}, [accessToken]);
-
-	React.useEffect(() => {
-		if (!loading && !userId && pathname !== '/' && pathname !== '/auth/login') {
-			// Optional: Redirect to login if needed, but maybe let pages handle it
-		}
-	}, [loading, userId, pathname, router]);
 
 	if (loading) {
 		return null;
