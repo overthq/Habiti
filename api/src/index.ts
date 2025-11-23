@@ -39,6 +39,13 @@ const main = async () => {
 			credentialsRequired: false
 		})
 	);
+	app.use((err, req, res, next) => {
+		if (err.name === 'UnauthorizedError') {
+			res.status(401).json({ message: 'invalid token...' });
+		} else {
+			next(err);
+		}
+	});
 
 	const httpServer = createServer(app);
 	const apolloServer = new ApolloServer({

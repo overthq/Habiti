@@ -1,5 +1,6 @@
 import env from '../../env';
 import useStore from '../state';
+import * as SecureStore from 'expo-secure-store';
 
 export default class API {
 	private get accessToken() {
@@ -30,81 +31,97 @@ export default class API {
 		return url.toString();
 	}
 
-	public async post<T extends object>(path: string, body: T, needsAuth = true) {
+	private async request<T>(
+		path: string,
+		options: RequestInit,
+		needsAuth = true
+	): Promise<T> {
+		const headers: Record<string, string> = {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+			...(options.headers as Record<string, string>)
+		};
+
+		if (needsAuth) {
+			headers.Authorization = `Bearer ${this.accessToken}`;
+		}
+
 		const response = await fetch(`${env.apiUrl}${path}`, {
-			method: 'POST',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-				...(needsAuth ? { Authorization: `Bearer ${this.accessToken}` } : {})
-			},
-			body: JSON.stringify(body)
+			...options,
+			headers
 		});
 
-		const data = await response.json();
+		if (response.status === 401 && needsAuth) {
+			try {
+				const refreshToken = await SecureStore.getItemAsync('refreshToken');
+				if (!refreshToken) throw new Error('No refresh token');
 
-		return data;
+				const refreshResponse = await fetch(`${env.apiUrl}/auth/refresh`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Cookie: `refreshToken=${refreshToken}`
+					},
+					body: JSON.stringify({ refreshToken }) // Send in body too just in case
+				});
+
+				if (!refreshResponse.ok) throw new Error('Refresh failed');
+
+				const data = await refreshResponse.json();
+				useStore.getState().logIn(data.userId, data.accessToken);
+				await SecureStore.setItemAsync('refreshToken', data.refreshToken);
+
+				// Retry original request
+				headers.Authorization = `Bearer ${data.accessToken}`;
+				const retryResponse = await fetch(`${env.apiUrl}${path}`, {
+					...options,
+					headers
+				});
+
+				return retryResponse.json();
+			} catch (error) {
+				useStore.getState().logOut();
+				await SecureStore.deleteItemAsync('refreshToken');
+				throw error;
+			}
+		}
+
+		return response.json();
+	}
+
+	public async post<T extends object>(path: string, body: T, needsAuth = true) {
+		return this.request<any>(
+			path,
+			{
+				method: 'POST',
+				body: JSON.stringify(body)
+			},
+			needsAuth
+		);
 	}
 
 	public async get(path: string, params?: Record<string, any>) {
 		const url = this.buildUrl(path, params);
-
-		const response = await fetch(url, {
-			method: 'GET',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${this.accessToken}`
-			}
-		});
-
-		const data = await response.json();
-
-		return data;
+		// Extract path and query from full URL for request method
+		const relativePath = url.replace(env.apiUrl, '');
+		return this.request<any>(relativePath, { method: 'GET' });
 	}
 
 	public async put<T extends object>(path: string, body: T) {
-		const response = await fetch(`${env.apiUrl}${path}`, {
+		return this.request<any>(path, {
 			method: 'PUT',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${this.accessToken}`
-			},
 			body: JSON.stringify(body)
 		});
-
-		const data = await response.json();
-
-		return data;
 	}
 
 	public async patch<T extends object>(path: string, body: T) {
-		const response = await fetch(`${env.apiUrl}${path}`, {
+		return this.request<any>(path, {
 			method: 'PATCH',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${this.accessToken}`
-			},
 			body: JSON.stringify(body)
 		});
-
-		const data = await response.json();
-
-		return data;
 	}
 
 	public async delete(path: string) {
-		const response = await fetch(`${env.apiUrl}${path}`, {
-			method: 'DELETE',
-			headers: {
-				Authorization: `Bearer ${this.accessToken}`
-			}
-		});
-
-		const data = await response.json();
-
-		return data;
+		return this.request<any>(path, { method: 'DELETE' });
 	}
 }

@@ -6,7 +6,6 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@/config/client';
 import { refreshToken } from '@/data/requests';
 import { useAuthStore } from '@/state/auth-store';
-import { usePathname, useRouter } from 'next/navigation';
 
 type ProvidersProps = {
 	children: React.ReactNode;
