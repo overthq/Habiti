@@ -12,7 +12,7 @@ type ProvidersProps = {
 };
 
 const Providers = ({ children }: ProvidersProps) => {
-	const { accessToken } = useAuthStore();
+	const { accessToken, logIn } = useAuthStore();
 	const [loading, setLoading] = React.useState(true);
 
 	// TODO: Find a way to handle this cleanly without depending on the `useEffect` crutch.
@@ -20,12 +20,9 @@ const Providers = ({ children }: ProvidersProps) => {
 		const initAuth = async () => {
 			if (!accessToken) {
 				try {
-					const { accessToken: newAccessToken, userId: newUserId } =
-						(await refreshToken()) as any;
-					useAuthStore.getState().logIn({
-						accessToken: newAccessToken,
-						userId: newUserId
-					});
+					const { accessToken } = await refreshToken();
+
+					logIn({ accessToken });
 				} catch (error) {
 					// Failed to refresh, user is not logged in
 				}
