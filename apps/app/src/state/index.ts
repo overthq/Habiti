@@ -14,7 +14,11 @@ const useStore = create<AppState>()(
 		}),
 		{
 			name: 'root-store',
-			storage: createJSONStorage(() => AsyncStorage)
+			storage: createJSONStorage(() => AsyncStorage),
+			partialize: state => ({
+				theme: state.theme,
+				defaultCard: state.defaultCard
+			})
 		}
 	)
 );

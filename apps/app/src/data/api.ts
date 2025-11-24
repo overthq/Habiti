@@ -68,7 +68,7 @@ export default class API {
 				if (!refreshResponse.ok) throw new Error('Refresh failed');
 
 				const data = await refreshResponse.json();
-				useStore.getState().logIn(data.userId, data.accessToken);
+				useStore.getState().logIn(data.accessToken);
 				await SecureStore.setItemAsync('refreshToken', data.refreshToken);
 
 				// Retry original request

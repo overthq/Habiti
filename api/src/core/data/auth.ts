@@ -12,30 +12,34 @@ export const createRefreshToken = async (
 	data: CreateRefreshTokenData
 ) => prisma.refreshToken.create({ data });
 
-export const getRefreshTokenById = async (prisma: PrismaClient, id: string) =>
-	prisma.refreshToken.findUnique({
+export const getRefreshTokenById = async (prisma: PrismaClient, id: string) => {
+	return prisma.refreshToken.findUnique({
 		where: { id },
 		include: { user: true }
 	});
+};
 
 export const updateRefreshToken = async (
 	prisma: PrismaClient,
 	id: string,
 	data: { revoked: boolean }
-) =>
-	prisma.refreshToken.update({
+) => {
+	return prisma.refreshToken.update({
 		where: { id },
 		data
 	});
+};
 
-export const revokeRefreshToken = async (prisma: PrismaClient, id: string) =>
-	updateRefreshToken(prisma, id, { revoked: true });
+export const revokeRefreshToken = async (prisma: PrismaClient, id: string) => {
+	return updateRefreshToken(prisma, id, { revoked: true });
+};
 
 export const revokeUserRefreshTokens = async (
 	prisma: PrismaClient,
 	userId: string
-) =>
-	prisma.refreshToken.updateMany({
+) => {
+	return prisma.refreshToken.updateMany({
 		where: { userId },
 		data: { revoked: true }
 	});
+};

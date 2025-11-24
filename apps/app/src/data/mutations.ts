@@ -24,7 +24,7 @@ export const useLogInMutation = () => {
 	return useMutation({
 		mutationFn: (args: LogInBody) => dataService.auth.logIn(args),
 		onSuccess(data) {
-			logIn(data.user.id, data.token);
+			logIn(data.token);
 		}
 	});
 };

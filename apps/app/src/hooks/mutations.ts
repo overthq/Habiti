@@ -55,7 +55,7 @@ export const useAuthenticateMutation = () => {
 			return response.json();
 		},
 		onSuccess: async data => {
-			logIn(data.userId, data.accessToken);
+			logIn(data.accessToken);
 			await SecureStore.setItemAsync('refreshToken', data.refreshToken);
 		}
 	});
