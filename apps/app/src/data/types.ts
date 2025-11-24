@@ -2,152 +2,128 @@ export interface User {
 	id: string;
 	name: string;
 	email: string;
-	phone: string;
-	createdAt: string;
-	updatedAt: string;
-	orders: Order[];
-	followed: StoreFollower[];
 	cards: Card[];
-	deliveryAddresses: DeliveryAddress[];
 }
 
 export interface Store {
 	id: string;
 	name: string;
-	description: string;
+	description?: string;
+	imageId?: string;
 	image?: Image;
 	products: Product[];
-	categories: Category[];
-	createdAt: string;
-	updatedAt: string;
+	followedByUser: boolean;
+	categories: StoreProductCategory[];
+}
+
+export interface Image {
+	id: string;
+	path: string;
+	publicId: string;
 }
 
 export interface Product {
 	id: string;
 	name: string;
 	description: string;
-	images: Image[];
 	unitPrice: number;
-	createdAt: string;
-	updatedAt: string;
+	quantity: number;
+	storeId: string;
+	store: Store;
+	images: Image[];
 }
 
 export interface Cart {
 	id: string;
 	userId: string;
 	storeId: string;
-	total: number;
-	products: CartProduct[];
 	store: Store;
+	products: CartProduct[];
+	total: number;
+	fees: {
+		transaction: number;
+		service: number;
+		total: number;
+	};
+	user: User;
 	createdAt: string;
 	updatedAt: string;
 }
 
 export interface Card {
 	id: string;
-	cardType: string;
-	last4: string;
-	expMonth: number;
-	expYear: number;
-	createdAt: string;
-	updatedAt: string;
-}
-
-export interface Category {
-	id: string;
-	name: string;
-	createdAt: string;
-	updatedAt: string;
 }
 
 export interface Order {
 	id: string;
-	store: Store;
+	userId: string;
+	storeId: string;
 	products: OrderProduct[];
 	total: number;
-	status: string;
 	user: User;
+	store: Store;
+	status: OrderStatus;
+	transactionFee: number;
+	serviceFee: number;
 	createdAt: string;
 	updatedAt: string;
 }
 
 export interface OrderProduct {
 	id: string;
+	orderId: string;
+	productId: string;
 	product: Product;
 	quantity: number;
 	unitPrice: number;
-	createdAt: string;
-	updatedAt: string;
-}
-
-export interface PaymentMethod {
-	id: string;
-	brand: string;
-	last4: string;
-	expMonth: number;
-	expYear: number;
-	createdAt: string;
-	updatedAt: string;
 }
 
 export interface CartProduct {
-	id: string;
+	cartId: string;
 	productId: string;
+	cart: Cart;
+	product: Product;
 	quantity: number;
-	userId: string;
-	product: Product;
-	createdAt: string;
-	updatedAt: string;
 }
 
-export interface WatchlistProduct {
-	id: string;
+export interface StoreProduct {
+	storeId: string;
 	productId: string;
-	userId: string;
 	product: Product;
+}
+
+export interface Card {
+	id: string;
+	userId: string;
+	email: string;
+	cardType: string;
+	last4: string;
+}
+
+export interface ProductReview {
+	id: string;
+	userId: string;
+	productId: string;
+	body?: string;
+	rating: number;
+	createdAt: string;
+	updatedAt: string;
 	user: User;
-	createdAt: string;
-	updatedAt: string;
-}
-
-export interface Image {
-	id: string;
-	storeId: string;
-	productId: string;
-	path: string;
-	store: Store;
 	product: Product;
-	createdAt: string;
-	updatedAt: string;
 }
 
-export interface StoreManager {
+export interface DeliveryAddress {
 	id: string;
-	storeId: string;
-	managerId: string;
-	store: Store;
-	manager: User;
-	createdAt: string;
-	updatedAt: string;
+	name: string;
 }
 
 export interface StoreFollower {
-	id: string;
 	storeId: string;
 	followerId: string;
+	createdAt: string;
+	updatedAt: string;
 	store: Store;
 	follower: User;
-	createdAt: string;
-	updatedAt: string;
-}
-
-export interface Payout {
-	id: string;
-	storeId: string;
-	amount: number;
-	status: string;
-	createdAt: string;
-	updatedAt: string;
 }
 
 export interface StoreProductCategory {
@@ -157,51 +133,108 @@ export interface StoreProductCategory {
 	description: string;
 	createdAt: string;
 	updatedAt: string;
+	store: Store;
+	products: ProductCategory[];
 }
 
 export interface ProductCategory {
-	id: string;
 	productId: string;
-	name: string;
+	categoryId: string;
 	createdAt: string;
 	updatedAt: string;
-}
-
-export interface ProductOption {
-	id: string;
-	productId: string;
-	name: string;
-	value: string;
-	createdAt: string;
-	updatedAt: string;
-}
-
-export interface DeliveryAddress {
-	id: string;
-	userId: string;
-	street: string;
-	city: string;
-	state: string;
-	country: string;
-	postalCode: string;
-	isDefault: boolean;
-	createdAt: string;
-	updatedAt: string;
-}
-
-export interface ProductReview {
-	id: string;
-	productId: string;
-	userId: string;
-	rating: number;
-	comment: string;
-	createdAt: string;
-	updatedAt: string;
+	product: Product;
+	category: StoreProductCategory;
 }
 
 export enum OrderStatus {
-	Cancelled = 'Cancelled',
 	Pending = 'Pending',
-	PaymentPending = 'PaymentPending',
-	Completed = 'Completed'
+	Cancelled = 'Cancelled',
+	Completed = 'Completed',
+	PaymentPending = 'PaymentPending'
+}
+
+export interface StoreViewerContext {
+	isFollowing: boolean;
+	hasCart: boolean;
+}
+
+export interface GetStoreResponse {
+	store: Store;
+	viewerContext: StoreViewerContext | null;
+}
+
+export interface ProductViewerContext {
+	cartProduct: CartProduct;
+}
+
+export interface GetProductResponse {
+	product: Product;
+	viewerContext: ProductViewerContext;
+}
+
+export interface CartViewerContext {
+	cards: Card[];
+}
+
+export interface GetCartResponse {
+	cart: Cart;
+	viewerContext: CartViewerContext;
+}
+//TODO: Replace "-Body" with "-Args", since some of these might just be params
+
+export interface AuthenticateBody {
+	email: string;
+	password: string;
+}
+
+export interface UpdateCurrentUserBody {
+	name?: string;
+	email?: string;
+}
+
+export interface AddDeliveryAddressBody {
+	name: string;
+}
+
+export interface UpdateDeliveryAddressBody {
+	name?: string;
+}
+
+export interface AddToCartBody {
+	storeId: string; // FIXME: Maybe not necessary?
+	productId: string;
+	quantity: number;
+}
+
+export interface RegisterBody {
+	name: string;
+	email: string;
+	password: string;
+}
+
+export interface CreateOrderBody {
+	cartId: string;
+	cardId?: string | null;
+	// FIXME: We shouldn't be passing these from the frontend
+	transactionFee: number;
+	serviceFee: number;
+}
+
+export interface CreateOrderResponse {
+	order: Order;
+	cardAuthorizationData?: {
+		authorization_url: string;
+		access_code: string;
+		reference: string;
+	};
+}
+
+export interface UpdateCartProductQuantityBody {
+	cartId: string;
+	productId: string;
+	quantity: number;
+}
+
+export interface GetRelatedProductsResponse {
+	products: Product[];
 }

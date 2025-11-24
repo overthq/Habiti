@@ -1,4 +1,5 @@
 import axios from 'axios';
+import * as SecureStore from 'expo-secure-store';
 import type {
 	AddDeliveryAddressBody,
 	UpdateDeliveryAddressBody,
@@ -21,17 +22,16 @@ import type {
 	Product,
 	UpdateCurrentUserBody
 } from './types';
-import { useAuthStore } from '@/state/auth-store';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+import useStore from '../state';
+import env from '../../env';
 
 const api = axios.create({
-	baseURL: API_URL,
+	baseURL: env.apiUrl,
 	withCredentials: true
 });
 
 api.interceptors.request.use(config => {
-	const { accessToken } = useAuthStore.getState();
+	const { accessToken } = useStore.getState();
 
 	if (accessToken) {
 		config.headers.Authorization = `Bearer ${accessToken}`;
@@ -46,17 +46,19 @@ api.interceptors.response.use(
 		const originalRequest = error.config;
 
 		if (error.response?.status === 401 && !originalRequest._retry) {
+			console.log('isRetry', originalRequest._retry);
+
 			originalRequest._retry = true;
 
 			try {
+				console.log('here 3');
 				const { accessToken } = await refreshToken();
-				useAuthStore.getState().logIn({ accessToken });
+				useStore.getState().logIn(accessToken);
 
 				originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 				return api(originalRequest);
 			} catch (refreshError) {
-				console.log({ refreshError });
-				useAuthStore.getState().logOut();
+				useStore.getState().logOut();
 				return Promise.reject(refreshError);
 			}
 		}
@@ -74,11 +76,6 @@ export const authenticate = async (input: AuthenticateBody) => {
 
 export const register = async (input: RegisterBody) => {
 	const response = await api.post('/auth/register', input);
-	return response.data;
-};
-
-export const logout = async () => {
-	const response = await api.post('/auth/logout');
 	return response.data;
 };
 
@@ -245,8 +242,18 @@ interface RefreshTokenResponse {
 }
 
 export const refreshToken = async () => {
-	const response = await axios.post<RefreshTokenResponse>(
-		`${API_URL}/auth/refresh`
-	);
-	return response.data;
+	try {
+		const refreshT = await SecureStore.getItemAsync('refreshToken');
+
+		const response = await axios.post<RefreshTokenResponse>(
+			`${env.apiUrl}/auth/refresh`,
+			{ refreshToken: refreshT }
+		);
+
+		await SecureStore.setItemAsync('refreshToken', response.data.refreshToken);
+
+		return response.data;
+	} catch (error) {
+		console.log(error);
+	}
 };

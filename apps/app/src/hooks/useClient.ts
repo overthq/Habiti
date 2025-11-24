@@ -12,6 +12,7 @@ const useClient = (accessToken: string | null) => {
 			createClient({
 				url: `${env.apiUrl}/graphql`,
 				fetch: async (resource, options) => {
+					console.log('hmmm');
 					const response = await fetch(resource, options);
 
 					if (response.status === 401) {
