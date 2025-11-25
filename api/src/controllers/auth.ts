@@ -162,6 +162,7 @@ export const refresh = async (req: Request, res: Response) => {
 	const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
 
 	if (!refreshToken) {
+		console.log('Refresh token required');
 		return res.status(401).json({ error: 'Refresh token required' });
 	}
 
@@ -178,6 +179,8 @@ export const refresh = async (req: Request, res: Response) => {
 
 		return res.status(200).json(tokens);
 	} catch (error) {
+		console.log(error);
+		console.log('Invalid refresh token');
 		return res.status(401).json({ error: 'Invalid refresh token' });
 	}
 };

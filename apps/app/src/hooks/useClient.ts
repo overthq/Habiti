@@ -5,6 +5,7 @@ import env from '../../env';
 import customCache from '../utils/cache';
 import useStore from '../state';
 import * as SecureStore from 'expo-secure-store';
+import { refreshAuthTokens } from '../utils/refreshManager';
 
 const useClient = (accessToken: string | null) => {
 	const client = React.useMemo(
@@ -12,32 +13,11 @@ const useClient = (accessToken: string | null) => {
 			createClient({
 				url: `${env.apiUrl}/graphql`,
 				fetch: async (resource, options) => {
-					console.log('hmmm');
 					const response = await fetch(resource, options);
 
 					if (response.status === 401) {
 						try {
-							const refreshToken =
-								await SecureStore.getItemAsync('refreshToken');
-							if (!refreshToken) throw new Error('No refresh token');
-
-							const refreshResponse = await fetch(
-								`${env.apiUrl}/auth/refresh`,
-								{
-									method: 'POST',
-									headers: {
-										'Content-Type': 'application/json',
-										Cookie: `refreshToken=${refreshToken}`
-									},
-									body: JSON.stringify({ refreshToken })
-								}
-							);
-
-							if (!refreshResponse.ok) throw new Error('Refresh failed');
-
-							const data = await refreshResponse.json();
-							useStore.getState().logIn(data.accessToken);
-							await SecureStore.setItemAsync('refreshToken', data.refreshToken);
+							const data = await refreshAuthTokens();
 
 							// Retry original request with new token
 							const newOptions = {

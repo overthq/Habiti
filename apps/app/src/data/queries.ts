@@ -15,7 +15,6 @@ import {
 	globalSearch,
 	refreshToken
 } from './requests';
-import useStore from '../state';
 
 // User Queries
 export const useCurrentUserQuery = () => {
@@ -116,18 +115,9 @@ export const useSearchQuery = (searchTerm: string) => {
 };
 
 export const useAuthRefreshQuery = () => {
-	const { logIn } = useStore();
-
 	return useQuery({
 		queryKey: ['auth', 'refresh'],
-		queryFn: async () => {
-			const { accessToken, refreshToken: newRefreshToken } =
-				await refreshToken();
-
-			logIn(accessToken);
-
-			return { accessToken, refreshToken: newRefreshToken };
-		},
+		queryFn: () => refreshToken(),
 		retry: false
 	});
 };

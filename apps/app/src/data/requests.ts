@@ -1,5 +1,4 @@
 import axios from 'axios';
-import * as SecureStore from 'expo-secure-store';
 import type {
 	AddDeliveryAddressBody,
 	UpdateDeliveryAddressBody,
@@ -24,6 +23,7 @@ import type {
 } from './types';
 import useStore from '../state';
 import env from '../../env';
+import { refreshAuthTokens } from '../utils/refreshManager';
 
 const api = axios.create({
 	baseURL: env.apiUrl,
@@ -53,7 +53,6 @@ api.interceptors.response.use(
 			try {
 				console.log('here 3');
 				const { accessToken } = await refreshToken();
-				useStore.getState().logIn(accessToken);
 
 				originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 				return api(originalRequest);
@@ -236,24 +235,4 @@ export const globalSearch = async (query: string) => {
 	return response.data;
 };
 
-interface RefreshTokenResponse {
-	accessToken: string;
-	refreshToken: string;
-}
-
-export const refreshToken = async () => {
-	try {
-		const refreshT = await SecureStore.getItemAsync('refreshToken');
-
-		const response = await axios.post<RefreshTokenResponse>(
-			`${env.apiUrl}/auth/refresh`,
-			{ refreshToken: refreshT }
-		);
-
-		await SecureStore.setItemAsync('refreshToken', response.data.refreshToken);
-
-		return response.data;
-	} catch (error) {
-		console.log(error);
-	}
-};
+export const refreshToken = () => refreshAuthTokens();
