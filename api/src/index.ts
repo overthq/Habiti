@@ -23,6 +23,8 @@ import { env } from './config/env';
 import redisClient from './config/redis';
 import './config/cloudinary';
 import { corsConfig } from './utils/cors';
+import logsMiddleware from './middleware/logs';
+import logger from './utils/logger';
 
 const main = async () => {
 	const app = express();
@@ -32,6 +34,7 @@ const main = async () => {
 	app.use(express.json());
 	app.use(cookieParser());
 	app.use(compression());
+	app.use(logsMiddleware);
 	app.use(
 		expressjwt({
 			secret: env.JWT_SECRET,
@@ -39,7 +42,7 @@ const main = async () => {
 			credentialsRequired: false
 		})
 	);
-	app.use((err, req, res, next) => {
+	app.use((err, _, res, next) => {
 		if (err.name === 'UnauthorizedError') {
 			res.status(401).json({ message: 'invalid token...' });
 		} else {
@@ -72,7 +75,7 @@ const main = async () => {
 	httpServer.listen({ port: Number(env.PORT) });
 
 	await redisClient.connect();
-	console.log(`Server running on port ${env.PORT}`);
+	logger.info(`Server running on port ${env.PORT}`);
 };
 
 main();
