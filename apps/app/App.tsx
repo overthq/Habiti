@@ -28,11 +28,7 @@ const App: React.FC = () => {
 
 const AppInner = () => {
 	const theme = useStore(useShallow(({ theme }) => theme));
-	const { data, error, isFetched, isFetching } = useAuthRefreshQuery();
-
-	React.useEffect(() => {
-		console.log({ data, error, isFetching });
-	}, [data, error, isFetching]);
+	const { isFetched } = useAuthRefreshQuery();
 
 	React.useEffect(() => {
 		if (isFetched) {

@@ -55,7 +55,6 @@ api.interceptors.response.use(
 				originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 				return api(originalRequest);
 			} catch (refreshError) {
-				console.log({ refreshError });
 				useAuthStore.getState().logOut();
 				return Promise.reject(refreshError);
 			}
