@@ -19,7 +19,6 @@ const useClient = (accessToken: string | null) => {
 						try {
 							const data = await refreshAuthTokens();
 
-							// Retry original request with new token
 							const newOptions = {
 								...options,
 								headers: {

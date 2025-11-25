@@ -12,9 +12,9 @@ import {
 	getRelatedProducts,
 	getStore,
 	getStoreProducts,
-	globalSearch,
-	refreshToken
+	globalSearch
 } from './requests';
+import { refreshAuthTokens } from '../utils/refreshManager';
 
 // User Queries
 export const useCurrentUserQuery = () => {
@@ -117,7 +117,7 @@ export const useSearchQuery = (searchTerm: string) => {
 export const useAuthRefreshQuery = () => {
 	return useQuery({
 		queryKey: ['auth', 'refresh'],
-		queryFn: () => refreshToken(),
+		queryFn: () => refreshAuthTokens(),
 		retry: false
 	});
 };

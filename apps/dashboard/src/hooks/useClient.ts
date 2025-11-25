@@ -1,11 +1,12 @@
 import React from 'react';
 import { createClient, fetchExchange } from 'urql';
+import * as SecureStore from 'expo-secure-store';
+import { useShallow } from 'zustand/react/shallow';
 
 import env from '../../env';
 import useStore from '../state';
 import customCache from '../utils/cache';
-import { useShallow } from 'zustand/react/shallow';
-import * as SecureStore from 'expo-secure-store';
+import { refreshAuthTokens } from '../utils/refreshManager';
 
 const useClient = () => {
 	const { accessToken, activeStore } = useStore(
@@ -24,29 +25,8 @@ const useClient = () => {
 
 					if (response.status === 401) {
 						try {
-							const refreshToken =
-								await SecureStore.getItemAsync('refreshToken');
-							if (!refreshToken) throw new Error('No refresh token');
+							const data = await refreshAuthTokens();
 
-							const refreshResponse = await fetch(
-								`${env.apiUrl}/auth/refresh`,
-								{
-									method: 'POST',
-									headers: {
-										'Content-Type': 'application/json',
-										Cookie: `refreshToken=${refreshToken}`
-									},
-									body: JSON.stringify({ refreshToken })
-								}
-							);
-
-							if (!refreshResponse.ok) throw new Error('Refresh failed');
-
-							const data = await refreshResponse.json();
-							useStore.getState().logIn(data.accessToken);
-							await SecureStore.setItemAsync('refreshToken', data.refreshToken);
-
-							// Retry original request with new token
 							const newOptions = {
 								...options,
 								headers: {

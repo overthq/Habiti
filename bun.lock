@@ -146,6 +146,7 @@
         "@shopify/flash-list": "1.7.6",
         "@tanstack/react-query": "^5.75.0",
         "@urql/exchange-graphcache": "^7.2.3",
+        "axios": "^1.13.2",
         "core-js": "^3.30.1",
         "date-fns": "^2.30.0",
         "expo": "^53.0.11",

@@ -46,13 +46,10 @@ api.interceptors.response.use(
 		const originalRequest = error.config;
 
 		if (error.response?.status === 401 && !originalRequest._retry) {
-			console.log('isRetry', originalRequest._retry);
-
 			originalRequest._retry = true;
 
 			try {
-				console.log('here 3');
-				const { accessToken } = await refreshToken();
+				const { accessToken } = await refreshAuthTokens();
 
 				originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 				return api(originalRequest);
@@ -234,5 +231,3 @@ export const globalSearch = async (query: string) => {
 
 	return response.data;
 };
-
-export const refreshToken = () => refreshAuthTokens();
