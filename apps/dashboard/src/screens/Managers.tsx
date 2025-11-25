@@ -1,23 +1,20 @@
-import { Icon, ScrollableScreen, Screen, useTheme } from '@habiti/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, Pressable, RefreshControl } from 'react-native';
+import { Icon, ScrollableScreen, Screen, useTheme } from '@habiti/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import ManagerRow from '../components/managers/ManagerRow';
 import useGoBack from '../hooks/useGoBack';
-import useStore from '../state';
 import { useManagersQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
-import { useShallow } from 'zustand/react/shallow';
 
 const Managers = () => {
 	const [{ data, fetching }, refetch] = useManagersQuery();
 	const [refreshing, setRefreshing] = React.useState(false);
-	useGoBack();
-	const userId = useStore(useShallow(({ userId }) => userId));
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
+	useGoBack();
 
 	const refresh = React.useCallback(() => {
 		setRefreshing(true);
@@ -55,11 +52,7 @@ const Managers = () => {
 				}
 			>
 				{data.currentStore.managers.map(({ manager }) => (
-					<ManagerRow
-						key={manager.id}
-						manager={manager}
-						you={userId === manager.id}
-					/>
+					<ManagerRow key={manager.id} manager={manager} you={false} />
 				))}
 			</ScrollableScreen>
 		</Screen>
