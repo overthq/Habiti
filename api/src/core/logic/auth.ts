@@ -99,8 +99,6 @@ export const revokeRefreshToken = async (ctx: AppContext, token: string) => {
 };
 
 export const rotateRefreshToken = async (ctx: AppContext, token: string) => {
-	console.log({ token });
-
 	let decoded: { id: string; userId: string };
 	try {
 		decoded = jwt.verify(token, env.JWT_SECRET) as {

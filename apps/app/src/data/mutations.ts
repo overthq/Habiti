@@ -1,7 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { LogInBody, SignUpBody } from './auth';
-import { AddToCartBody, CreateOrderBody } from './types';
+import {
+	AuthenticateBody,
+	RegisterBody,
+	AddToCartBody,
+	CreateOrderBody
+} from './types';
 import useStore from '../state';
 import {
 	addDeliveryAddress,
@@ -19,7 +23,7 @@ import {
 
 export const useSignUpMutation = () => {
 	return useMutation({
-		mutationFn: (args: SignUpBody) => register(args)
+		mutationFn: (args: RegisterBody) => register(args)
 	});
 };
 
@@ -27,7 +31,7 @@ export const useLogInMutation = () => {
 	const { logIn } = useStore();
 
 	return useMutation({
-		mutationFn: (args: LogInBody) => authenticate(args),
+		mutationFn: (args: AuthenticateBody) => authenticate(args),
 		onSuccess(data) {
 			logIn(data.token);
 		}
