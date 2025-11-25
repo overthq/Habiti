@@ -1,4 +1,5 @@
 import 'core-js/full/symbol/async-iterator';
+import React from 'react';
 import { ThemeProvider } from '@habiti/components';
 import * as Sentry from '@sentry/react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -7,36 +8,58 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useShallow } from 'zustand/react/shallow';
 import { Provider } from 'urql';
+import * as SplashScreen from 'expo-splash-screen';
 
 import { ConfirmationModalProvider } from './src/components/ConfirmationModal';
 import Routes from './src/navigation/Routes';
 import useClient from './src/hooks/useClient';
 import useStore from './src/state';
+import { useAuthRefreshQuery } from './src/data/queries';
 
 Sentry.init({ dsn: process.env.EXPO_PUBLIC_SENTRY_DSN });
 
 const queryClient = new QueryClient();
 
+SplashScreen.preventAutoHideAsync();
+
 const App: React.FC = () => {
+	return (
+		<QueryClientProvider client={queryClient}>
+			<AppInner />
+		</QueryClientProvider>
+	);
+};
+
+const AppInner = () => {
 	const theme = useStore(useShallow(({ theme }) => theme));
 	const client = useClient();
 
+	const { isFetched } = useAuthRefreshQuery();
+
+	React.useEffect(() => {
+		if (isFetched) {
+			SplashScreen.hide();
+		}
+	}, [isFetched]);
+
+	if (!isFetched) {
+		return null;
+	}
+
 	return (
-		<QueryClientProvider client={queryClient}>
-			<Provider value={client}>
-				<SafeAreaProvider>
-					<ThemeProvider theme={theme}>
-						<GestureHandlerRootView style={{ flex: 1 }}>
-							<BottomSheetModalProvider>
-								<ConfirmationModalProvider>
-									<Routes />
-								</ConfirmationModalProvider>
-							</BottomSheetModalProvider>
-						</GestureHandlerRootView>
-					</ThemeProvider>
-				</SafeAreaProvider>
-			</Provider>
-		</QueryClientProvider>
+		<Provider value={client}>
+			<SafeAreaProvider>
+				<ThemeProvider theme={theme}>
+					<GestureHandlerRootView style={{ flex: 1 }}>
+						<BottomSheetModalProvider>
+							<ConfirmationModalProvider>
+								<Routes />
+							</ConfirmationModalProvider>
+						</BottomSheetModalProvider>
+					</GestureHandlerRootView>
+				</ThemeProvider>
+			</SafeAreaProvider>
+		</Provider>
 	);
 };
 

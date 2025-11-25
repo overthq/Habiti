@@ -54,8 +54,7 @@ const LoginPage = () => {
 		});
 
 		logIn({
-			accessToken: data.accessToken,
-			userId: data.userId
+			accessToken: data.accessToken
 		});
 
 		router.push('/home');

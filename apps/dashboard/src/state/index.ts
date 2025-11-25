@@ -18,7 +18,6 @@ const useStore = create<AppState>()(
 			name: 'root-store',
 			storage: createJSONStorage(() => AsyncStorage),
 			partialize: state => ({
-				accessToken: state.accessToken,
 				activeStore: state.activeStore,
 				theme: state.theme
 			})

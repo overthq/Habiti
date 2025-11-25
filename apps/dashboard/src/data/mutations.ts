@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { useShallow } from 'zustand/react/shallow';
+import * as SecureStore from 'expo-secure-store';
 
 import useStore from '../state';
 import env from '../../env';
@@ -46,8 +47,9 @@ export const useAuthenticateMutation = () => {
 
 			return response.json();
 		},
-		onSuccess: data => {
-			logIn(data.userId, data.accessToken);
+		onSuccess: async data => {
+			logIn(data.accessToken);
+			await SecureStore.setItemAsync('refreshToken', data.refreshToken);
 		}
 	});
 };

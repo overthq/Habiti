@@ -21,17 +21,17 @@ import type {
 	Product,
 	UpdateCurrentUserBody
 } from './types';
-import { useAuthStore } from '@/state/auth-store';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+import useStore from '../state';
+import env from '../../env';
+import { refreshAuthTokens } from '../utils/refreshManager';
 
 const api = axios.create({
-	baseURL: API_URL,
+	baseURL: env.apiUrl,
 	withCredentials: true
 });
 
 api.interceptors.request.use(config => {
-	const { accessToken } = useAuthStore.getState();
+	const { accessToken } = useStore.getState();
 
 	if (accessToken) {
 		config.headers.Authorization = `Bearer ${accessToken}`;
@@ -49,13 +49,12 @@ api.interceptors.response.use(
 			originalRequest._retry = true;
 
 			try {
-				const { accessToken } = await refreshToken();
-				useAuthStore.getState().logIn({ accessToken });
+				const { accessToken } = await refreshAuthTokens();
 
 				originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 				return api(originalRequest);
 			} catch (refreshError) {
-				useAuthStore.getState().logOut();
+				useStore.getState().logOut();
 				return Promise.reject(refreshError);
 			}
 		}
@@ -73,11 +72,6 @@ export const authenticate = async (input: AuthenticateBody) => {
 
 export const register = async (input: RegisterBody) => {
 	const response = await api.post('/auth/register', input);
-	return response.data;
-};
-
-export const logout = async () => {
-	const response = await api.post('/auth/logout');
 	return response.data;
 };
 
@@ -235,17 +229,5 @@ export const globalSearch = async (query: string) => {
 		`/search?query=${query}`
 	);
 
-	return response.data;
-};
-
-interface RefreshTokenResponse {
-	accessToken: string;
-	refreshToken: string;
-}
-
-export const refreshToken = async () => {
-	const response = await axios.post<RefreshTokenResponse>(
-		`${API_URL}/auth/refresh`
-	);
 	return response.data;
 };

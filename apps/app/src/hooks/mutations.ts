@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useShallow } from 'zustand/react/shallow';
+import * as SecureStore from 'expo-secure-store';
 
 import useStore from '../state';
 import { AppStackParamList } from '../types/navigation';
@@ -53,8 +54,9 @@ export const useAuthenticateMutation = () => {
 
 			return response.json();
 		},
-		onSuccess: data => {
-			logIn(data.userId, data.accessToken);
+		onSuccess: async data => {
+			logIn(data.accessToken);
+			await SecureStore.setItemAsync('refreshToken', data.refreshToken);
 		}
 	});
 };

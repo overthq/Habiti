@@ -4,7 +4,7 @@ import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import compression from 'compression';
-import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import express from 'express';
 import { expressjwt } from 'express-jwt';
 import { graphqlUploadExpress } from 'graphql-upload';
@@ -22,12 +22,15 @@ import schema from './graphql/schema';
 import { env } from './config/env';
 import redisClient from './config/redis';
 import './config/cloudinary';
+import { corsConfig } from './utils/cors';
 
 const main = async () => {
 	const app = express();
 	Sentry.setupExpressErrorHandler(app);
 
+	app.use(corsConfig);
 	app.use(express.json());
+	app.use(cookieParser());
 	app.use(compression());
 	app.use(
 		expressjwt({
@@ -36,6 +39,13 @@ const main = async () => {
 			credentialsRequired: false
 		})
 	);
+	app.use((err, req, res, next) => {
+		if (err.name === 'UnauthorizedError') {
+			res.status(401).json({ message: 'invalid token...' });
+		} else {
+			next(err);
+		}
+	});
 
 	const httpServer = createServer(app);
 	const apolloServer = new ApolloServer({
@@ -47,7 +57,6 @@ const main = async () => {
 
 	await apolloServer.start();
 
-	app.use(cors());
 	app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 	app.use(
 		'/graphql',

@@ -43,8 +43,16 @@ export const login = async (req: Request, res: Response) => {
 		}
 
 		const accessToken = await AuthLogic.generateAccessToken(user);
+		const refreshToken = await AuthLogic.generateRefreshToken(ctx, user.id);
 
-		return res.status(200).json({ accessToken, userId: user.id });
+		res.cookie('refreshToken', refreshToken, {
+			httpOnly: true,
+			secure: env.NODE_ENV === 'production',
+			sameSite: 'strict',
+			path: '/'
+		});
+
+		return res.status(200).json({ accessToken, refreshToken, userId: user.id });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
@@ -72,8 +80,16 @@ export const verify = async (req: Request, res: Response) => {
 		}
 
 		const accessToken = await AuthLogic.generateAccessToken(user);
+		const refreshToken = await AuthLogic.generateRefreshToken(ctx, user.id);
 
-		return res.status(200).json({ accessToken, userId: user.id });
+		res.cookie('refreshToken', refreshToken, {
+			httpOnly: true,
+			secure: env.NODE_ENV === 'production',
+			sameSite: 'strict',
+			path: '/'
+		});
+
+		return res.status(200).json({ accessToken, refreshToken, userId: user.id });
 	} else {
 		return res.status(400).json({ error: 'Invalid code' });
 	}
@@ -125,11 +141,55 @@ export const appleCallback = async (req: Request, res: Response) => {
 		}
 
 		const accessToken = await AuthLogic.generateAccessToken(user);
+		const refreshToken = await AuthLogic.generateRefreshToken(ctx, user.id);
 
-		return res.status(200).json({ accessToken, userId: user.id });
+		res.cookie('refreshToken', refreshToken, {
+			httpOnly: true,
+			secure: env.NODE_ENV === 'production',
+			sameSite: 'strict',
+			path: '/'
+		});
+
+		return res.status(200).json({ accessToken, refreshToken, userId: user.id });
 	} catch (error) {
 		return res.status(500).json({
 			message: error.message
 		});
 	}
+};
+
+export const refresh = async (req: Request, res: Response) => {
+	const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
+
+	if (!refreshToken) {
+		return res.status(401).json({ error: 'Refresh token required' });
+	}
+
+	try {
+		const ctx = getAppContext(req);
+		const tokens = await AuthLogic.rotateRefreshToken(ctx, refreshToken);
+
+		res.cookie('refreshToken', tokens.refreshToken, {
+			httpOnly: true,
+			secure: env.NODE_ENV === 'production',
+			sameSite: 'strict',
+			path: '/'
+		});
+
+		return res.status(200).json(tokens);
+	} catch (error) {
+		return res.status(401).json({ error: 'Invalid refresh token' });
+	}
+};
+
+export const logout = async (req: Request, res: Response) => {
+	const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
+
+	if (refreshToken) {
+		const ctx = getAppContext(req);
+		await AuthLogic.revokeRefreshToken(ctx, refreshToken);
+	}
+
+	res.clearCookie('refreshToken', { path: '/' });
+	return res.status(200).json({ message: 'Logged out' });
 };

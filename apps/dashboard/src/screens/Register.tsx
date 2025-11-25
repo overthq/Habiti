@@ -14,7 +14,7 @@ import { Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { z } from 'zod';
 
-import { useRegisterMutation } from '../hooks/mutations';
+import { useRegisterMutation } from '../data/mutations';
 
 const registerSchema = z.object({
 	name: z.string().min(2, 'Name must be at least 2 characters'),

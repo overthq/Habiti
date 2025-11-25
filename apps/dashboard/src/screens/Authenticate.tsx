@@ -14,7 +14,7 @@ import { Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { z } from 'zod';
 
-import { useAuthenticateMutation } from '../hooks/mutations';
+import { useAuthenticateMutation } from '../data/mutations';
 
 const authenticateSchema = z.object({
 	email: z.string().email('Invalid email address'),

@@ -198,3 +198,14 @@ export enum OrderStatus {
 	PaymentPending = 'PaymentPending',
 	Completed = 'Completed'
 }
+
+export interface AuthenticateBody {
+	email: string;
+	password: string;
+}
+
+export interface RegisterBody {
+	name: string;
+	email: string;
+	password: string;
+}

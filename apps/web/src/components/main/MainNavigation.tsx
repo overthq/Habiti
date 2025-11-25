@@ -17,12 +17,14 @@ import {
 import { useAuthStore } from '@/state/auth-store';
 import Logo from './Logo';
 import SearchInput from '../SearchInput';
+import { logout } from '@/data/requests';
 
 const ProfileDropdown = () => {
 	const { logOut } = useAuthStore();
 	const router = useRouter();
 
-	const handleLogOut = () => {
+	const handleLogOut = async () => {
+		await logout();
 		logOut();
 		router.push('/');
 	};

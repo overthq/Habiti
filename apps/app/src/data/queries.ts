@@ -1,12 +1,26 @@
 import { useQuery } from '@tanstack/react-query';
 
-import dataService from './index';
+import {
+	getCards,
+	getCart,
+	getCarts,
+	getCurrentUser,
+	getFollowedStores,
+	getOrder,
+	getOrders,
+	getProduct,
+	getRelatedProducts,
+	getStore,
+	getStoreProducts,
+	globalSearch
+} from './requests';
+import { refreshAuthTokens } from '../utils/refreshManager';
 
 // User Queries
 export const useCurrentUserQuery = () => {
 	return useQuery({
 		queryKey: ['user'],
-		queryFn: () => dataService.users.getCurrentUser()
+		queryFn: () => getCurrentUser()
 	});
 };
 
@@ -14,14 +28,14 @@ export const useCurrentUserQuery = () => {
 export const useOrdersQuery = (filter?: any, orderBy?: any) => {
 	return useQuery({
 		queryKey: ['orders', filter, orderBy],
-		queryFn: () => dataService.orders.getOrders({ filter, orderBy })
+		queryFn: () => getOrders()
 	});
 };
 
 export const useOrderQuery = (orderId: string) => {
 	return useQuery({
 		queryKey: ['orders', orderId],
-		queryFn: () => dataService.orders.getOrder(orderId),
+		queryFn: () => getOrder(orderId),
 		enabled: !!orderId
 	});
 };
@@ -30,15 +44,7 @@ export const useOrderQuery = (orderId: string) => {
 export const useProductQuery = (productId: string) => {
 	return useQuery({
 		queryKey: ['products', productId],
-		queryFn: () => dataService.products.getProduct(productId),
-		enabled: !!productId
-	});
-};
-
-export const useProductReviewsQuery = (productId: string) => {
-	return useQuery({
-		queryKey: ['products', productId, 'reviews'],
-		queryFn: () => dataService.products.getProductReviews(productId),
+		queryFn: () => getProduct(productId),
 		enabled: !!productId
 	});
 };
@@ -46,23 +52,15 @@ export const useProductReviewsQuery = (productId: string) => {
 export const useRelatedProductsQuery = (productId: string) => {
 	return useQuery({
 		queryKey: ['products', productId, 'related'],
-		queryFn: () => dataService.products.getRelatedProducts(productId),
+		queryFn: () => getRelatedProducts(productId),
 		enabled: !!productId
-	});
-};
-
-// Store Queries
-export const useStoresQuery = (filter?: any, orderBy?: any) => {
-	return useQuery({
-		queryKey: ['stores', filter, orderBy],
-		queryFn: () => dataService.stores.getStores({ filter, orderBy })
 	});
 };
 
 export const useStoreQuery = (storeId: string) => {
 	return useQuery({
 		queryKey: ['stores', storeId],
-		queryFn: () => dataService.stores.getStore(storeId),
+		queryFn: () => getStore(storeId),
 		enabled: !!storeId
 	});
 };
@@ -74,17 +72,15 @@ export const useStoreProductsQuery = (
 ) => {
 	return useQuery({
 		queryKey: ['stores', storeId, 'products', filter, orderBy],
-		queryFn: () =>
-			dataService.stores.getStoreProducts(storeId, { filter, orderBy }),
+		queryFn: () => getStoreProducts(storeId, new URLSearchParams()),
 		enabled: !!storeId
 	});
 };
 
-// Card Queries
 export const useCardsQuery = () => {
 	return useQuery({
 		queryKey: ['cards'],
-		queryFn: () => dataService.cards.getCards()
+		queryFn: () => getCards()
 	});
 };
 
@@ -92,14 +88,14 @@ export const useCardsQuery = () => {
 export const useCartsQuery = () => {
 	return useQuery({
 		queryKey: ['carts'],
-		queryFn: () => dataService.carts.getCarts()
+		queryFn: () => getCarts()
 	});
 };
 
 export const useCartQuery = (cartId: string) => {
 	return useQuery({
 		queryKey: ['cart', cartId],
-		queryFn: () => dataService.carts.getCart(cartId),
+		queryFn: () => getCart(cartId),
 		enabled: !!cartId
 	});
 };
@@ -107,13 +103,21 @@ export const useCartQuery = (cartId: string) => {
 export const useStoresFollowedQuery = () => {
 	return useQuery({
 		queryKey: ['storesFollowed'],
-		queryFn: () => dataService.users.getFollowedStores()
+		queryFn: () => getFollowedStores()
 	});
 };
 
 export const useSearchQuery = (searchTerm: string) => {
 	return useQuery({
 		queryKey: ['search', searchTerm],
-		queryFn: () => dataService.search.search(searchTerm)
+		queryFn: () => globalSearch(searchTerm)
+	});
+};
+
+export const useAuthRefreshQuery = () => {
+	return useQuery({
+		queryKey: ['auth', 'refresh'],
+		queryFn: () => refreshAuthTokens(),
+		retry: false
 	});
 };
