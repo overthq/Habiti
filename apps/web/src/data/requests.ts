@@ -243,9 +243,36 @@ interface RefreshTokenResponse {
 	refreshToken: string;
 }
 
+let inflightRefresh: Promise<RefreshTokenResponse> | null = null;
+
 export const refreshToken = async () => {
-	const response = await axios.post<RefreshTokenResponse>(
-		`${API_URL}/auth/refresh`
-	);
-	return response.data;
+	if (inflightRefresh) {
+		return inflightRefresh;
+	}
+
+	inflightRefresh = axios
+		.post<RefreshTokenResponse>(
+			`${API_URL}/auth/refresh`,
+			{},
+			{ withCredentials: true }
+		)
+		.then(response => {
+			const data = response.data;
+
+			if (!data.accessToken || !data.refreshToken) {
+				throw new Error('Invalid refresh token');
+			}
+
+			useAuthStore.getState().logIn({ accessToken: data.accessToken });
+
+			return {
+				accessToken: data.accessToken,
+				refreshToken: data.refreshToken
+			};
+		})
+		.finally(() => {
+			inflightRefresh = null;
+		});
+
+	return inflightRefresh;
 };
