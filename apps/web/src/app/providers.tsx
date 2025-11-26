@@ -22,9 +22,7 @@ const ProvidersInner = ({ children }: ProvidersProps) => {
 		const initAuth = async () => {
 			if (!accessToken) {
 				try {
-					const { accessToken } = await refreshToken();
-
-					logIn({ accessToken });
+					await refreshToken();
 
 					router.push('/home');
 				} catch (error) {
