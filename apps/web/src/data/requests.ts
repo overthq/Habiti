@@ -245,7 +245,9 @@ interface RefreshTokenResponse {
 
 export const refreshToken = async () => {
 	const response = await axios.post<RefreshTokenResponse>(
-		`${API_URL}/auth/refresh`
+		`${API_URL}/auth/refresh`,
+		{},
+		{ withCredentials: true }
 	);
 	return response.data;
 };
