@@ -13,7 +13,7 @@ type ProvidersProps = {
 };
 
 const ProvidersInner = ({ children }: ProvidersProps) => {
-	const { accessToken, logIn } = useAuthStore();
+	const { accessToken } = useAuthStore();
 	const [loading, setLoading] = React.useState(true);
 	const router = useRouter();
 
