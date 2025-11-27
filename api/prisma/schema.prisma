@@ -331,6 +331,9 @@ model RefreshToken {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   expiresAt   DateTime
+  sessionId   String
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
 }

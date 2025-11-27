@@ -71,9 +71,18 @@ export const generateAccessToken = async (
 	);
 };
 
-export const generateRefreshToken = async (ctx: AppContext, userId: string) => {
+export const generateRefreshToken = async (
+	ctx: AppContext,
+	userId: string,
+	sessionId?: string
+) => {
 	const id = crypto.randomUUID();
-	const token = jwt.sign({ id, userId }, env.JWT_SECRET, { expiresIn: '30d' });
+	const resolvedSessionId = sessionId ?? crypto.randomUUID();
+	const token = jwt.sign(
+		{ id, userId, sessionId: resolvedSessionId },
+		env.JWT_SECRET,
+		{ expiresIn: '30d' }
+	);
 	const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
 	const expiresAt = new Date();
@@ -83,7 +92,8 @@ export const generateRefreshToken = async (ctx: AppContext, userId: string) => {
 		id,
 		userId,
 		hashedToken,
-		expiresAt
+		expiresAt,
+		sessionId: resolvedSessionId
 	});
 
 	return token;
@@ -99,11 +109,12 @@ export const revokeRefreshToken = async (ctx: AppContext, token: string) => {
 };
 
 export const rotateRefreshToken = async (ctx: AppContext, token: string) => {
-	let decoded: { id: string; userId: string };
+	let decoded: { id: string; userId: string; sessionId?: string };
 	try {
 		decoded = jwt.verify(token, env.JWT_SECRET) as {
 			id: string;
 			userId: string;
+			sessionId?: string;
 		};
 	} catch (error) {
 		throw new Error('Invalid token');
@@ -120,7 +131,10 @@ export const rotateRefreshToken = async (ctx: AppContext, token: string) => {
 	if (hash !== storedToken.hashedToken) throw new Error('Invalid token');
 
 	if (storedToken.revoked) {
-		await AuthData.revokeUserRefreshTokens(ctx.prisma, storedToken.userId);
+		await AuthData.revokeSessionRefreshTokens(
+			ctx.prisma,
+			storedToken.sessionId
+		);
 		throw new Error('Token reused');
 	}
 
@@ -131,7 +145,11 @@ export const rotateRefreshToken = async (ctx: AppContext, token: string) => {
 
 	await AuthData.revokeRefreshToken(ctx.prisma, storedToken.id);
 
-	const newRefreshToken = await generateRefreshToken(ctx, storedToken.userId);
+	const newRefreshToken = await generateRefreshToken(
+		ctx,
+		storedToken.userId,
+		storedToken.sessionId
+	);
 	const newAccessToken = await generateAccessToken(storedToken.user);
 
 	return { accessToken: newAccessToken, refreshToken: newRefreshToken };
