@@ -114,9 +114,9 @@ const FollowedStores = () => {
 const HomePage = () => {
 	return (
 		<div>
-			<FollowedStores />
+			{/* <FollowedStores />
 
-			<RecentOrders />
+			<RecentOrders /> */}
 		</div>
 	);
 };

@@ -23,11 +23,10 @@ const ProvidersInner = ({ children }: ProvidersProps) => {
 		const initAuth = async () => {
 			if (!accessToken) {
 				try {
-					await refreshToken();
-
-					if (pathname === '/') {
-						router.push('/home');
-					}
+					// await refreshToken();
+					// if (pathname === '/') {
+					// 	router.push('/home');
+					// }
 				} catch (error) {
 					// Failed to refresh, user is not logged in
 				}

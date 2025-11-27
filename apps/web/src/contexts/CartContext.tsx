@@ -10,6 +10,8 @@ import { usePreferenceStore } from '@/state/preference-store';
 import useDebounce from '@/hooks/use-debounce';
 import { Card, Cart, CartProduct, CartViewerContext } from '@/data/types';
 import { useParams } from 'next/navigation';
+import SignInPrompt from '@/components/SignInPrompt';
+import { useAuthStore } from '@/state/auth-store';
 
 interface CartContextType {
 	cart: Cart;
@@ -208,7 +210,36 @@ const CartContextWrapper: React.FC<CartContextWrapperProps> = ({
 	children
 }) => {
 	const { id: cartId } = useParams<{ id: string }>();
-	const { data } = useCartQuery(cartId);
+	const { accessToken } = useAuthStore();
+	const isAuthenticated = Boolean(accessToken);
+	const { data, isLoading, error } = useCartQuery(cartId, {
+		enabled: isAuthenticated && Boolean(cartId)
+	});
+
+	if (!isAuthenticated) {
+		return (
+			<SignInPrompt
+				title='Sign in to open this cart'
+				description='We saved the items in your cart, but you need to be signed in to manage them.'
+			/>
+		);
+	}
+
+	if (isLoading || !data) {
+		return (
+			<div className='flex items-center justify-center min-h-[60vh]'>
+				<div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary'></div>
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className='flex items-center justify-center min-h-[60vh] text-center px-4 text-destructive'>
+				Unable to load this cart. Please refresh and try again.
+			</div>
+		);
+	}
 
 	if (!data?.cart || !data.viewerContext) return null;
 

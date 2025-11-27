@@ -1,54 +1,124 @@
 'use client';
 
 import React from 'react';
-
-import NewFooter from '@/components/home/NewFooter';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import Image from 'next/image';
+import { formatDate } from '@/utils/date';
+import { useFollowedStoresQuery, useOrdersQuery } from '@/data/queries';
+import { formatNaira } from '@/utils/currency';
+import { OrderStatus } from '@/data/types';
+import { Badge } from '@/components/ui/badge';
 
-const Home = () => {
+const OrderStatusToBadgeVariant = {
+	[OrderStatus.Pending]: 'warning',
+	[OrderStatus.Cancelled]: 'destructive',
+	[OrderStatus.Completed]: 'success',
+	[OrderStatus.PaymentPending]: 'warning'
+} as const;
+
+const OrderStatusToLabel = {
+	[OrderStatus.Pending]: 'Pending',
+	[OrderStatus.Cancelled]: 'Cancelled',
+	[OrderStatus.Completed]: 'Completed',
+	[OrderStatus.PaymentPending]: 'Payment Pending'
+};
+
+const RecentOrders = () => {
+	const { isLoading, data } = useOrdersQuery();
+
+	if (isLoading || !data) return <div />;
+
 	return (
-		<div className='flex flex-col h-dvh'>
-			<div className='flex flex-1 mx-auto w-full gap-8 max-w-200 flex-col-reverse py-4 md:flex-row'>
-				<div className='flex flex-1'>
-					<div className='flex justify-center items-center w-full'>
-						<Image
-							src='/images/landing-image.webp'
-							alt='Habiti store page screenshot'
-							width={295}
-							height={606}
-						/>
-					</div>
-				</div>
-				<div className='flex flex-1 flex-col justify-center p-8 pt-14 md:p-0 md:pt-0'>
-					<Image
-						src='/images/habiti-wordmark-black.svg'
-						alt='Habiti'
-						height={36}
-						width={120}
-						className='dark:invert mb-8'
-					/>
-					<h2 className='text-4xl mb-4 font-semibold'>
-						Online shopping, simplified.
-					</h2>
-					<p className='text-lg mb-4 text-muted-foreground'>
-						Habiti helps shoppers and merchants manage their shopping activity
-						in one place.
-					</p>
-					<div className='flex flex-col space-y-2'>
-						<Button asChild>
-							<Link href='/register'>Sign up</Link>
-						</Button>
-						<Button variant='secondary' asChild>
-							<Link href='/login'>Log in</Link>
-						</Button>
-					</div>
-				</div>
+		<div>
+			<h2 className='text-lg font-medium mb-3'>Recent orders</h2>
+
+			<div className='mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+				{data.orders.map(order => (
+					<Link href={`/orders/${order.id}`} key={order.id} className='block'>
+						<div className='justify-between items-center p-4 rounded-lg border space-y-2'>
+							<p className='text-sm text-muted-foreground leading-none'>
+								{formatDate(order.createdAt)}
+							</p>
+							<div className='flex gap-4 items-center'>
+								<div className='size-14 rounded-full overflow-hidden bg-muted flex-shrink-0'>
+									{order.store.image && (
+										<img
+											src={order.store.image?.path}
+											alt={order.store.name}
+											className='size-full object-cover'
+										/>
+									)}
+								</div>
+
+								<div>
+									<div className='flex gap-2'>
+										<p className='font-medium'>{order.store.name}</p>
+										<Badge
+											className='rounded-full'
+											variant={OrderStatusToBadgeVariant[order.status]}
+										>
+											{OrderStatusToLabel[order.status]}
+										</Badge>
+									</div>
+									<p className='mt-1'>{formatNaira(order.total)}</p>
+								</div>
+							</div>
+						</div>
+					</Link>
+				))}
 			</div>
-			<NewFooter />
 		</div>
 	);
 };
 
-export default Home;
+const FollowedStores = () => {
+	const { isLoading, data } = useFollowedStoresQuery();
+
+	if (isLoading || !data) return <div />;
+
+	return (
+		<div>
+			<h2 className='text-lg font-medium mb-3'>Followed stores</h2>
+
+			<div className='flex overflow-x-auto gap-4 mb-8'>
+				{data.stores.map(store => (
+					<Link
+						href={`/store/${store.id}`}
+						key={store.id}
+						className='flex flex-col items-center min-w-[80px]'
+					>
+						<div className='size-18 rounded-full overflow-hidden mb-2'>
+							{store.image ? (
+								<img
+									src={store.image?.path}
+									alt={store.name}
+									className='size-full object-cover'
+								/>
+							) : (
+								<div className='size-full bg-muted-foreground/20 flex items-center justify-center'>
+									<span className='text-3xl font-medium text-muted-foreground'>
+										{store.name.charAt(0)}
+									</span>
+								</div>
+							)}
+						</div>
+						<span className='text-center truncate w-full text-sm'>
+							{store.name}
+						</span>
+					</Link>
+				))}
+			</div>
+		</div>
+	);
+};
+
+const HomePage = () => {
+	return (
+		<div>
+			{/* <FollowedStores />
+
+			<RecentOrders /> */}
+		</div>
+	);
+};
+
+export default HomePage;

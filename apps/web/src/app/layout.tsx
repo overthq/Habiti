@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 
 import Providers from './providers';
 import './globals.css';
+import MainNavigation from '@/components/main/MainNavigation';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -31,7 +32,12 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
 	return (
 		<html lang='en'>
 			<body className={inter.className}>
-				<Providers>{children}</Providers>
+				<Providers>
+					<div>
+						<MainNavigation />
+						{children}
+					</div>
+				</Providers>
 			</body>
 		</html>
 	);

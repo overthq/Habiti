@@ -27,6 +27,8 @@ import {
 import PaymentMethods from '@/components/profile/PaymentMethods';
 import { Separator } from '@/components/ui/separator';
 import { useUpdateCurrentUserMutation } from '@/data/mutations';
+import SignInPrompt from '@/components/SignInPrompt';
+import { useAuthStore } from '@/state/auth-store';
 
 const profileFormSchema = z.object({
 	name: z.string(),
@@ -92,7 +94,20 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ name, email }) => {
 };
 
 const ProfilePage = () => {
-	const { data, isLoading } = useCurrentUserQuery();
+	const { accessToken } = useAuthStore();
+	const isAuthenticated = Boolean(accessToken);
+	const { data, isLoading } = useCurrentUserQuery({
+		enabled: isAuthenticated
+	});
+
+	if (!isAuthenticated) {
+		return (
+			<SignInPrompt
+				title='Sign in to manage your profile'
+				description='Update your details, manage payment methods, and keep your preferences in sync by signing in to your Habiti account.'
+			/>
+		);
+	}
 
 	if (isLoading || !data) {
 		return <div />;
