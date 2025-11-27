@@ -6,7 +6,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@/config/client';
 import { refreshToken } from '@/data/requests';
 import { useAuthStore } from '@/state/auth-store';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 type ProvidersProps = {
 	children: React.ReactNode;
@@ -16,6 +16,7 @@ const ProvidersInner = ({ children }: ProvidersProps) => {
 	const { accessToken } = useAuthStore();
 	const [loading, setLoading] = React.useState(true);
 	const router = useRouter();
+	const pathname = usePathname();
 
 	// TODO: Find a way to handle this cleanly without depending on the `useEffect` crutch.
 	React.useEffect(() => {
@@ -24,7 +25,9 @@ const ProvidersInner = ({ children }: ProvidersProps) => {
 				try {
 					await refreshToken();
 
-					router.push('/home');
+					if (pathname === '/') {
+						router.push('/home');
+					}
 				} catch (error) {
 					// Failed to refresh, user is not logged in
 				}
