@@ -131,3 +131,5 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
+export const runtime = 'edge';
