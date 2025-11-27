@@ -8,7 +8,19 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
 	title: 'Habiti',
-	description: 'Simplifying online shopping'
+	description: 'Simplifying online shopping',
+	icons: [
+		{
+			rel: 'icon',
+			url: '/images/favicon-light.ico',
+			media: '(prefers-color-scheme: light)'
+		},
+		{
+			rel: 'icon',
+			url: '/images/favicon-dark.ico',
+			media: '(prefers-color-scheme: dark)'
+		}
+	]
 };
 
 interface RootLayoutProps {
