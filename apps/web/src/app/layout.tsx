@@ -32,12 +32,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
 	return (
 		<html lang='en'>
 			<body className={inter.className}>
-				<Providers>
-					<div>
-						<MainNavigation />
-						{children}
-					</div>
-				</Providers>
+				<Providers>{children}</Providers>
 			</body>
 		</html>
 	);
