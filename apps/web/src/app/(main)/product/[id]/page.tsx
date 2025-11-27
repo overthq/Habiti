@@ -253,14 +253,14 @@ const ProductContextProvider: React.FC<ProductContextProviderProps> = ({
 		async (buyNow = false) => {
 			try {
 				if (isNotInCart) {
-					const { cart } = await addToCartMutation.mutateAsync({
+					const { cartProduct } = await addToCartMutation.mutateAsync({
 						storeId: product.storeId,
 						productId: product.id,
 						quantity
 					});
 
 					if (buyNow) {
-						router.push(`/carts/${cart.id}`);
+						router.push(`/carts/${cartProduct.cartId}`);
 					}
 				} else {
 					await updateCartProductQuantityMutation.mutateAsync({

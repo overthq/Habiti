@@ -19,7 +19,8 @@ import type {
 	GetCartResponse,
 	GetRelatedProductsResponse,
 	Product,
-	UpdateCurrentUserBody
+	UpdateCurrentUserBody,
+	CartProduct
 } from './types';
 import { useAuthStore } from '@/state/auth-store';
 
@@ -178,7 +179,10 @@ export const getCart = async (cartId: string) => {
 };
 
 export const addToCart = async (body: AddToCartBody) => {
-	const response = await api.post<{ cart: Cart }>('/carts/products', body);
+	const response = await api.post<{ cartProduct: CartProduct }>(
+		'/carts/products',
+		body
+	);
 	return response.data;
 };
 
@@ -194,7 +198,7 @@ export const updateCartProductQuantity = async ({
 	productId,
 	quantity
 }: UpdateCartProductQuantityBody) => {
-	const response = await api.put<{ cart: Cart }>(
+	const response = await api.put<{ cartProduct: CartProduct }>(
 		`/carts/${cartId}/products/${productId}`,
 		{ quantity }
 	);

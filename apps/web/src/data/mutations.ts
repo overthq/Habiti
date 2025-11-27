@@ -30,8 +30,13 @@ export const useAddToCartMutation = () => {
 
 	return useMutation({
 		mutationFn: (body: AddToCartBody) => addToCart(body),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['carts'] });
+		onSuccess: data => {
+			queryClient.invalidateQueries({
+				queryKey: ['carts', data.cartProduct.cartId]
+			});
+			queryClient.invalidateQueries({
+				queryKey: ['products', data.cartProduct.productId]
+			});
 		}
 	});
 };
@@ -43,8 +48,13 @@ export const useUpdateCartProductQuantityMutation = () => {
 		mutationFn: (body: UpdateCartProductQuantityBody) => {
 			return updateCartProductQuantity(body);
 		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['carts'] });
+		onSuccess: data => {
+			queryClient.invalidateQueries({
+				queryKey: ['carts', data.cartProduct.cartId]
+			});
+			queryClient.invalidateQueries({
+				queryKey: ['products', data.cartProduct.productId]
+			});
 		}
 	});
 };
