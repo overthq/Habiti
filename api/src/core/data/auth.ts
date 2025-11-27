@@ -5,6 +5,7 @@ interface CreateRefreshTokenData {
 	userId: string;
 	hashedToken: string;
 	expiresAt: Date;
+	sessionId: string;
 }
 
 export const createRefreshToken = async (
@@ -40,6 +41,16 @@ export const revokeUserRefreshTokens = async (
 ) => {
 	return prisma.refreshToken.updateMany({
 		where: { userId },
+		data: { revoked: true }
+	});
+};
+
+export const revokeSessionRefreshTokens = async (
+	prisma: PrismaClient,
+	sessionId: string
+) => {
+	return prisma.refreshToken.updateMany({
+		where: { sessionId },
 		data: { revoked: true }
 	});
 };
