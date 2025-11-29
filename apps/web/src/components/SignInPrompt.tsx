@@ -1,9 +1,9 @@
 'use client';
 
-import Link from 'next/link';
 import { LockIcon } from 'lucide-react';
 
 import { Button } from './ui/button';
+import { useAuthStore } from '@/state/auth-store';
 
 interface SignInPromptProps {
 	title: string;
@@ -16,6 +16,7 @@ const SignInPrompt: React.FC<SignInPromptProps> = ({
 	description,
 	primaryCtaLabel = 'Sign in'
 }) => {
+	const { toggleAuthModal } = useAuthStore();
 	return (
 		<div className='flex flex-col items-center justify-center gap-4 text-center min-h-[60vh] px-4'>
 			<div className='size-14 rounded-full bg-muted flex items-center justify-center text-primary'>
@@ -26,11 +27,9 @@ const SignInPrompt: React.FC<SignInPromptProps> = ({
 				<p className='text-muted-foreground'>{description}</p>
 			</div>
 			<div className='flex flex-wrap gap-3 justify-center'>
-				<Button asChild>
-					<Link href='/login'>{primaryCtaLabel}</Link>
-				</Button>
-				<Button variant='outline' asChild>
-					<Link href='/register'>Create account</Link>
+				<Button onClick={toggleAuthModal}>{primaryCtaLabel}</Button>
+				<Button variant='outline' onClick={toggleAuthModal}>
+					Create account
 				</Button>
 			</div>
 		</div>
