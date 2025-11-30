@@ -35,7 +35,7 @@ const AuthDrawer = () => {
 	if (isDesktop) {
 		return (
 			<Dialog open={authModalOpen} onOpenChange={toggleAuthModal}>
-				<DialogContent>
+				<DialogContent className='sm:max-w-[425px]'>
 					<DialogHeader>
 						<DialogTitle>{mode === 'login' ? 'Log in' : 'Sign up'}</DialogTitle>
 						<DialogDescription>

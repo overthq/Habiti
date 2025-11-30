@@ -55,6 +55,9 @@ const ProfileDropdown = () => {
 };
 
 const MainNavigation = () => {
+	const { accessToken } = useAuthStore();
+	const { toggleAuthModal } = useAuthStore();
+
 	return (
 		<div className='border-b bg-background py-3 px-4 mb-4 fixed top-0 w-full flex justify-between'>
 			<nav className='flex flex-1 gap-4 items-center'>
@@ -70,15 +73,23 @@ const MainNavigation = () => {
 				<SearchInput />
 			</div>
 
-			<div className='flex flex-1 justify-end items-center gap-2'>
-				<Button asChild variant='ghost' size='icon'>
-					<Link href='/carts'>
-						<ShoppingCartIcon />
-					</Link>
-				</Button>
+			{accessToken ? (
+				<div className='flex flex-1 justify-end items-center gap-2'>
+					<Button asChild variant='ghost' size='icon'>
+						<Link href='/carts'>
+							<ShoppingCartIcon />
+						</Link>
+					</Button>
 
-				<ProfileDropdown />
-			</div>
+					<ProfileDropdown />
+				</div>
+			) : (
+				<div className='flex flex-1 justify-end items-center gap-2'>
+					<Button variant='outline' onClick={toggleAuthModal}>
+						Sign in
+					</Button>
+				</div>
+			)}
 		</div>
 	);
 };
