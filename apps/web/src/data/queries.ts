@@ -14,6 +14,10 @@ import {
 	globalSearch
 } from './requests';
 
+type QueryEnabledOptions = {
+	enabled?: boolean;
+};
+
 export const useStoreQuery = (storeId: string) => {
 	return useQuery({
 		queryKey: ['stores', storeId],
@@ -21,38 +25,59 @@ export const useStoreQuery = (storeId: string) => {
 	});
 };
 
-export const useCartsQuery = () => {
+export const useCartsQuery = (options: QueryEnabledOptions = {}) => {
+	const isEnabled = options.enabled ?? true;
+
 	return useQuery({
 		queryKey: ['carts'],
-		queryFn: () => getCarts()
+		queryFn: () => getCarts(),
+		enabled: isEnabled
 	});
 };
 
-export const useCartQuery = (cartId: string) => {
+export const useCartQuery = (
+	cartId: string,
+	options: QueryEnabledOptions = {}
+) => {
+	const isEnabled = options.enabled ?? true;
+
 	return useQuery({
 		queryKey: ['carts', cartId],
-		queryFn: () => getCart(cartId)
+		queryFn: () => getCart(cartId),
+		enabled: Boolean(cartId) && isEnabled
 	});
 };
 
-export const useOrdersQuery = () => {
+export const useOrdersQuery = (options: QueryEnabledOptions = {}) => {
+	const isEnabled = options.enabled ?? true;
+
 	return useQuery({
 		queryKey: ['orders'],
-		queryFn: () => getOrders()
+		queryFn: () => getOrders(),
+		enabled: isEnabled
 	});
 };
 
-export const useCurrentUserQuery = () => {
+export const useCurrentUserQuery = (options: QueryEnabledOptions = {}) => {
+	const isEnabled = options.enabled ?? true;
+
 	return useQuery({
 		queryKey: ['users', 'current'],
-		queryFn: () => getCurrentUser()
+		queryFn: () => getCurrentUser(),
+		enabled: isEnabled
 	});
 };
 
-export const useOrderQuery = (orderId: string) => {
+export const useOrderQuery = (
+	orderId: string,
+	options: QueryEnabledOptions = {}
+) => {
+	const isEnabled = options.enabled ?? true;
+
 	return useQuery({
 		queryKey: ['orders', orderId],
-		queryFn: () => getOrder(orderId)
+		queryFn: () => getOrder(orderId),
+		enabled: Boolean(orderId) && isEnabled
 	});
 };
 
@@ -63,17 +88,23 @@ export const useProductQuery = (productId: string) => {
 	});
 };
 
-export const useFollowedStoresQuery = () => {
+export const useFollowedStoresQuery = (options: QueryEnabledOptions = {}) => {
+	const isEnabled = options.enabled ?? true;
+
 	return useQuery({
 		queryKey: ['followed-stores'],
-		queryFn: () => getFollowedStores()
+		queryFn: () => getFollowedStores(),
+		enabled: isEnabled
 	});
 };
 
-export const useCardsQuery = () => {
+export const useCardsQuery = (options: QueryEnabledOptions = {}) => {
+	const isEnabled = options.enabled ?? true;
+
 	return useQuery({
 		queryKey: ['cards'],
-		queryFn: () => getCards()
+		queryFn: () => getCards(),
+		enabled: isEnabled
 	});
 };
 

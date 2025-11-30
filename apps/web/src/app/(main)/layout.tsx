@@ -1,14 +1,40 @@
 'use client';
 
 import React from 'react';
+import { refreshToken } from '@/data/requests';
 import MainNavigation from '@/components/main/MainNavigation';
 import MobileTabBar from '@/components/main/MobileTabBar';
+import { useAuthStore } from '@/state/auth-store';
+import AuthDrawer from '@/components/AuthDrawer';
 
 interface MainLayoutProps {
 	children: React.ReactNode;
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+	const { accessToken } = useAuthStore();
+	const [loading, setLoading] = React.useState(true);
+
+	// TODO: Find a way to handle this cleanly without depending on the `useEffect` crutch.
+	React.useEffect(() => {
+		const initAuth = async () => {
+			if (!accessToken) {
+				try {
+					await refreshToken();
+				} catch (error) {
+					// Failed to refresh, user is not logged in
+				}
+			}
+			setLoading(false);
+		};
+
+		initAuth();
+	}, [accessToken]);
+
+	if (loading) {
+		return null;
+	}
+
 	return (
 		<div>
 			<MainNavigation />
@@ -16,6 +42,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 				{children}
 			</div>
 			<MobileTabBar />
+			<AuthDrawer />
 		</div>
 	);
 };

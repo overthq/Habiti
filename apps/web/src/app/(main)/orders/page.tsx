@@ -5,9 +5,22 @@ import { formatNaira } from '@/utils/currency';
 import Link from 'next/link';
 import { useOrdersQuery } from '@/data/queries';
 import { formatDate } from '@/utils/date';
+import SignInPrompt from '@/components/SignInPrompt';
+import { useAuthStore } from '@/state/auth-store';
 
 const OrdersPage = () => {
-	const { data, isLoading } = useOrdersQuery();
+	const { accessToken } = useAuthStore();
+	const isAuthenticated = Boolean(accessToken);
+	const { data, isLoading } = useOrdersQuery({ enabled: isAuthenticated });
+
+	if (!isAuthenticated) {
+		return (
+			<SignInPrompt
+				title='Sign in to see your orders'
+				description='Track your purchases, download receipts, and keep tabs on deliveries by signing in to your Habiti account.'
+			/>
+		);
+	}
 
 	if (isLoading || !data) {
 		return <div />;

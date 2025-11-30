@@ -6,10 +6,25 @@ import { formatNaira } from '@/utils/currency';
 import { useOrderQuery } from '@/data/queries';
 import { formatDate } from '@/utils/date';
 import { ArrowLeft } from 'lucide-react';
+import SignInPrompt from '@/components/SignInPrompt';
+import { useAuthStore } from '@/state/auth-store';
 
 const OrderPage = () => {
 	const { id } = useParams<{ id: string }>();
-	const { data, isLoading } = useOrderQuery(id);
+	const { accessToken } = useAuthStore();
+	const isAuthenticated = Boolean(accessToken);
+	const { data, isLoading } = useOrderQuery(id, {
+		enabled: isAuthenticated && Boolean(id)
+	});
+
+	if (!isAuthenticated) {
+		return (
+			<SignInPrompt
+				title='Sign in to view this order'
+				description='Order details are only available to the customer who placed them. Please sign in to continue.'
+			/>
+		);
+	}
 
 	if (isLoading || !data) {
 		return <div />;

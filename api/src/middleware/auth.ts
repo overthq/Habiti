@@ -13,15 +13,15 @@ export const auth = (options: AuthOptions = {}) => {
 	const { required = true, adminOnly = false } = options;
 
 	return async (req: Request, _: Response, next: NextFunction) => {
+		if (!required) {
+			return next();
+		}
+
 		try {
 			const token = req.headers.authorization?.split(' ')[1];
 
 			if (!token) {
-				if (required) {
-					throw new APIException(401, 'Authentication required');
-				}
-				// For optional auth, just continue without setting req.auth
-				return next();
+				throw new APIException(401, 'Authentication required');
 			}
 
 			const decoded = await AuthLogic.verifyAccessToken(token);
@@ -33,12 +33,7 @@ export const auth = (options: AuthOptions = {}) => {
 			req.auth = decoded as any;
 			next();
 		} catch (error) {
-			if (required) {
-				next(new APIException(401, 'Invalid or expired token'));
-			} else {
-				// For optional auth, continue even if token is invalid
-				next();
-			}
+			next(new APIException(401, 'Invalid or expired token'));
 		}
 	};
 };

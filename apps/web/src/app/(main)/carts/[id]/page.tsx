@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import CartProvider, { useCart } from '@/contexts/CartContext';
+import CartContextWrapper, { useCart } from '@/contexts/CartContext';
 import { CartProduct } from '@/data/types';
 import { formatNaira } from '@/utils/currency';
 import { ArrowLeft, Minus, Plus } from 'lucide-react';
@@ -228,9 +228,9 @@ const CartMain = () => {
 
 const CartPage = () => {
 	return (
-		<CartProvider>
+		<CartContextWrapper>
 			<CartMain />
-		</CartProvider>
+		</CartContextWrapper>
 	);
 };
 

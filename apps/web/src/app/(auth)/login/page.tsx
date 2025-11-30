@@ -53,11 +53,9 @@ const LoginPage = () => {
 			password: values.password
 		});
 
-		logIn({
-			accessToken: data.accessToken
-		});
+		logIn({ accessToken: data.accessToken });
 
-		router.push('/home');
+		router.push('/');
 	};
 
 	return (
@@ -133,3 +131,5 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
+export const runtime = 'edge';

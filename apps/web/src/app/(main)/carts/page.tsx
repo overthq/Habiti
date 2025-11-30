@@ -2,6 +2,8 @@
 import Link from 'next/link';
 import { useCartsQuery } from '@/data/queries';
 import { Button } from '@/components/ui/button';
+import SignInPrompt from '@/components/SignInPrompt';
+import { useAuthStore } from '@/state/auth-store';
 
 const buildProductNamesString = (
 	products: Array<{ product: { name: string } }>,
@@ -30,7 +32,20 @@ const buildProductNamesString = (
 };
 
 const CartsPage = () => {
-	const { data, isLoading, error } = useCartsQuery();
+	const { accessToken } = useAuthStore();
+	const isAuthenticated = Boolean(accessToken);
+	const { data, isLoading, error } = useCartsQuery({
+		enabled: isAuthenticated
+	});
+
+	if (!isAuthenticated) {
+		return (
+			<SignInPrompt
+				title='Sign in to view your carts'
+				description='Your carts live in your Habiti account. Sign in to continue shopping or pick up where you left off.'
+			/>
+		);
+	}
 
 	if (isLoading || !data)
 		return (
@@ -42,7 +57,9 @@ const CartsPage = () => {
 	if (error)
 		return (
 			<div className='flex items-center justify-center min-h-[60vh]'>
-				<div className='text-red-500'>Error: {error.message}</div>
+				<div className='text-red-500'>
+					Unable to load carts right now. Please try again.
+				</div>
 			</div>
 		);
 
