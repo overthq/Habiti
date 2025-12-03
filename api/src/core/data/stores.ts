@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient, OrderStatus } from '@prisma/client';
 import {
 	productFiltersToPrismaClause,
 	ProductFilters
@@ -282,4 +282,24 @@ export const getStoreViewerContext = async (
 		isFollowing: !!storeFollower,
 		cart
 	};
+};
+
+export interface GetTrendingStoresOptions {
+	take?: number;
+}
+
+export const getTrendingStores = async (
+	prisma: PrismaClient,
+	options: GetTrendingStoresOptions = {}
+) => {
+	const take = options.take ?? 6;
+
+	const stores = await prisma.store.findMany({
+		where: { unlisted: false },
+		include: { image: true },
+		orderBy: [{ orderCount: 'desc' }, { createdAt: 'desc' }],
+		take
+	});
+
+	return stores;
 };

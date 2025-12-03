@@ -11,7 +11,8 @@ import {
 	getCards,
 	getRelatedProducts,
 	getStoreProducts,
-	globalSearch
+	globalSearch,
+	getLandingHighlights
 } from './requests';
 
 type QueryEnabledOptions = {
@@ -132,5 +133,13 @@ export const useStoreProductsQuery = (
 	return useQuery({
 		queryKey: ['stores', storeId, 'products', queryString],
 		queryFn: () => getStoreProducts(storeId, queryParams)
+	});
+};
+
+export const useLandingHighlightsQuery = () => {
+	return useQuery({
+		queryKey: ['landing-highlights'],
+		queryFn: () => getLandingHighlights(),
+		staleTime: 5 * 60 * 1000
 	});
 };

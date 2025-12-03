@@ -15,6 +15,10 @@ import {
 } from '@/data/mutations';
 import { GetProductResponse, Product } from '@/data/types';
 import { cn } from '@/lib/utils';
+import {
+	RecentlyViewedProduct,
+	useRecentlyViewedStore
+} from '@/state/recently-viewed-store';
 
 const ProductPage = () => {
 	const { id } = useParams<{ id: string }>();
@@ -216,6 +220,17 @@ interface ProductContextProviderProps
 	extends React.PropsWithChildren,
 		GetProductResponse {}
 
+const getRecentProductPayload = (
+	product: Product
+): Omit<RecentlyViewedProduct, 'viewedAt'> => ({
+	id: product.id,
+	name: product.name,
+	storeId: product.storeId,
+	storeName: product.store.name,
+	price: product.unitPrice,
+	image: product.images[0]?.path ?? null
+});
+
 const ProductContextProvider: React.FC<ProductContextProviderProps> = ({
 	children,
 	product,
@@ -225,46 +240,46 @@ const ProductContextProvider: React.FC<ProductContextProviderProps> = ({
 	const updateCartProductQuantityMutation =
 		useUpdateCartProductQuantityMutation();
 	const router = useRouter();
+	const addRecentlyViewedProduct = useRecentlyViewedStore(
+		state => state.addProduct
+	);
 
-	const { cartProduct } = viewerContext;
-
+	const cartProduct = viewerContext?.cartProduct;
 	const cartId = cartProduct?.cartId;
-	const initialQuantity = cartProduct?.quantity;
-	const [quantity, setQuantity] = React.useState(initialQuantity ?? 1);
-
-	const inCart = React.useMemo(() => !!cartProduct, [cartProduct]);
-
-	const isNotInCart = !cartId || (cartId && !inCart);
+	const initialQuantity = cartProduct?.quantity ?? 1;
+	const [quantity, setQuantity] = React.useState(initialQuantity);
 
 	const cartCommitFetching =
 		addToCartMutation.isPending || updateCartProductQuantityMutation.isPending;
 
 	const quantityChanged = initialQuantity !== quantity;
 
-	const cartCommitText = isNotInCart
+	const cartCommitText = !cartProduct
 		? 'Add to cart'
 		: quantityChanged
 			? 'Update cart'
 			: 'In cart';
 
-	const cartCommitDisabled = (inCart && !quantityChanged) || cartCommitFetching;
+	const cartCommitDisabled =
+		(!!cartProduct && !quantityChanged) || cartCommitFetching;
 
 	const onCartCommit = React.useCallback(
 		async (buyNow = false) => {
 			try {
-				if (isNotInCart) {
-					const { cartProduct } = await addToCartMutation.mutateAsync({
-						storeId: product.storeId,
-						productId: product.id,
-						quantity
-					});
+				if (!cartProduct) {
+					const { cartProduct: newCartProduct } =
+						await addToCartMutation.mutateAsync({
+							storeId: product.storeId,
+							productId: product.id,
+							quantity
+						});
 
 					if (buyNow) {
-						router.push(`/carts/${cartProduct.cartId}`);
+						router.push(`/carts/${newCartProduct.cartId}`);
 					}
 				} else {
 					await updateCartProductQuantityMutation.mutateAsync({
-						cartId,
+						cartId: cartProduct.cartId,
 						productId: product.id,
 						quantity
 					});
@@ -277,8 +292,13 @@ const ProductContextProvider: React.FC<ProductContextProviderProps> = ({
 				console.log(error);
 			}
 		},
-		[product.storeId, product.id, quantity, isNotInCart, cartId]
+		[product.storeId, product.id, quantity, cartProduct, cartId]
 	);
+
+	// FIXME: Maybe put this in the query instead?
+	React.useEffect(() => {
+		addRecentlyViewedProduct(getRecentProductPayload(product));
+	}, [addRecentlyViewedProduct, product]);
 
 	return (
 		<ProductContext.Provider
@@ -288,7 +308,7 @@ const ProductContextProvider: React.FC<ProductContextProviderProps> = ({
 				onCartCommit,
 				cartCommitDisabled,
 				cartCommitText,
-				inCart,
+				inCart: !!cartProduct,
 				initialQuantity,
 				quantity,
 				setQuantity

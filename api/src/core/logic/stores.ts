@@ -120,7 +120,7 @@ export const getStoreById = async (ctx: AppContext, storeId: string) => {
 		ReturnType<typeof StoreData.getStoreViewerContext>
 	> | null = null;
 
-	if (ctx.user.id) {
+	if (ctx.user?.id) {
 		storeViewerContext = await StoreData.getStoreViewerContext(
 			ctx.prisma,
 			ctx.user.id,
@@ -130,7 +130,7 @@ export const getStoreById = async (ctx: AppContext, storeId: string) => {
 
 	ctx.services.analytics.track({
 		event: 'store_viewed',
-		distinctId: ctx.user.id,
+		distinctId: ctx.user?.id,
 		properties: {
 			storeId: store.id,
 			storeName: store.name
@@ -379,4 +379,11 @@ export const getStoreOrders = async (
 	query: any
 ) => {
 	return StoreData.getStoreOrders(ctx.prisma, storeId, query);
+};
+
+export const getTrendingStores = async (
+	ctx: AppContext,
+	options: StoreData.GetTrendingStoresOptions = {}
+) => {
+	return StoreData.getTrendingStores(ctx.prisma, options);
 };

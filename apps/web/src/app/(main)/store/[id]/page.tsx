@@ -25,6 +25,7 @@ const StorePage = () => {
 	const { id } = useParams<{ id: string }>();
 	const { data, isLoading } = useStoreQuery(id);
 
+	console.log({ data, isLoading });
 	if (isLoading || !data) return <div />;
 
 	return (
@@ -199,7 +200,13 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 							<Skeleton key={index} className='aspect-square rounded-lg' />
 						))
 					: data?.products.map(product => (
-							<Product key={product.id} {...product} />
+							<Product
+								key={product.id}
+								id={product.id}
+								name={product.name}
+								unitPrice={product.unitPrice}
+								imagePath={product.images[0]?.path}
+							/>
 						))}
 			</div>
 		</div>

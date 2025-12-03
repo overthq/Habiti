@@ -151,7 +151,7 @@ export const getProductById = async (ctx: AppContext, productId: string) => {
 		ReturnType<typeof ProductData.getProductViewerContext>
 	> | null = null;
 
-	if (ctx.user.id) {
+	if (ctx.user?.id) {
 		productViewerContext = await ProductData.getProductViewerContext(
 			ctx.prisma,
 			ctx.user.id,
@@ -161,7 +161,7 @@ export const getProductById = async (ctx: AppContext, productId: string) => {
 
 	ctx.services.analytics.track({
 		event: 'product_viewed',
-		distinctId: ctx.user.id,
+		distinctId: ctx.user?.id,
 		properties: {
 			productId: product.id,
 			productName: product.name,
@@ -400,6 +400,13 @@ export const createProductReview = async (
 	});
 
 	return review;
+};
+
+export const getFeaturedProducts = async (
+	ctx: AppContext,
+	options: ProductData.GetFeaturedProductsOptions = {}
+) => {
+	return ProductData.getFeaturedProducts(ctx.prisma, options);
 };
 
 export const addToWatchlist = async (

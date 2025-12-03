@@ -9,17 +9,22 @@ interface ProductProps {
 	id: string;
 	name: string;
 	unitPrice: number;
-	images: { id: string; path: string }[];
+	imagePath?: string;
 }
 
-const Product: React.FC<ProductProps> = ({ id, name, unitPrice, images }) => {
+const Product: React.FC<ProductProps> = ({
+	id,
+	name,
+	unitPrice,
+	imagePath
+}) => {
 	return (
 		<Link href={`/product/${id}`}>
 			<div key={id}>
 				<div className='bg-muted aspect-square rounded-lg overflow-hidden'>
-					{images.length > 0 && (
+					{imagePath && (
 						<img
-							src={images[0].path}
+							src={imagePath}
 							alt={name}
 							className='size-full object-cover'
 						/>
