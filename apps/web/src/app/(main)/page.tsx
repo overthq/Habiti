@@ -217,7 +217,7 @@ const RecentlyViewedSection: React.FC<RecentlyViewedSectionProps> = ({
 							key={product.id}
 							id={product.id}
 							name={product.name}
-							unitPrice={product.price}
+							unitPrice={product.unitPrice}
 							imagePath={product.image ?? undefined}
 						/>
 					))}
