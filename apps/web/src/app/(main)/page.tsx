@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import React from 'react';
 
-import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLandingHighlightsQuery } from '@/data/queries';
 import { Product as ProductType, Store } from '@/data/types';
@@ -38,14 +37,10 @@ const HomePage = () => {
 
 interface SectionProps {
 	title: string;
-	actionHref?: string;
-	actionLabel?: string;
 }
 
 const Section: React.FC<React.PropsWithChildren<SectionProps>> = ({
 	title,
-	actionHref,
-	actionLabel,
 	children
 }) => {
 	return (
@@ -54,11 +49,6 @@ const Section: React.FC<React.PropsWithChildren<SectionProps>> = ({
 				<div>
 					<h2 className='text-xl font-medium'>{title}</h2>
 				</div>
-				{actionHref && actionLabel ? (
-					<Button asChild variant='ghost'>
-						<Link href={actionHref}>{actionLabel}</Link>
-					</Button>
-				) : null}
 			</div>
 			{children}
 		</section>
@@ -75,11 +65,7 @@ const TrendingStoresSection: React.FC<TrendingStoresSectionProps> = ({
 	isLoading
 }) => {
 	return (
-		<Section
-			title='Trending stores'
-			actionHref='/search?scope=stores'
-			actionLabel='View all stores'
-		>
+		<Section title='Trending stores'>
 			{isLoading ? (
 				<TrendingStoresSkeleton />
 			) : stores.length ? (
@@ -156,11 +142,7 @@ const FeaturedProductsSection: React.FC<FeaturedProductsSectionProps> = ({
 	isLoading
 }) => {
 	return (
-		<Section
-			title='Featured products'
-			actionHref='/search?scope=products'
-			actionLabel='Browse catalogue'
-		>
+		<Section title='Featured products'>
 			{isLoading ? (
 				<FeaturedProductsSkeleton />
 			) : products.length ? (
