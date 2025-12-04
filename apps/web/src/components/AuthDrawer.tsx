@@ -25,6 +25,21 @@ import { Field, FieldError, FieldLabel } from './ui/field';
 
 type AuthMode = 'login' | 'signup' | 'verify-code';
 
+const DrawerDetailsByAuthMode = {
+	login: {
+		title: 'Log in',
+		description: 'Enter your email to receive a verification code.'
+	},
+	signup: {
+		title: 'Sign up',
+		description: 'Create an account with just your name and email.'
+	},
+	'verify-code': {
+		title: 'Verify your code',
+		description: 'Enter the verification code sent to your email'
+	}
+} as const;
+
 const AuthDrawer = () => {
 	const { authModalOpen, toggleAuthModal } = useAuthStore();
 	const [mode, setMode] = React.useState<AuthMode>('login');
@@ -38,11 +53,9 @@ const AuthDrawer = () => {
 			<Dialog open={authModalOpen} onOpenChange={toggleAuthModal}>
 				<DialogContent className='sm:max-w-[425px]'>
 					<DialogHeader>
-						<DialogTitle>{mode === 'login' ? 'Log in' : 'Sign up'}</DialogTitle>
+						<DialogTitle>{DrawerDetailsByAuthMode[mode].title}</DialogTitle>
 						<DialogDescription>
-							{mode === 'login'
-								? 'Enter your email to receive a login link.'
-								: 'Create an account with just your name and email.'}
+							{DrawerDetailsByAuthMode[mode].description}
 						</DialogDescription>
 					</DialogHeader>
 					{mode === 'login' ? (
@@ -59,11 +72,9 @@ const AuthDrawer = () => {
 		<Drawer open={authModalOpen} onOpenChange={toggleAuthModal}>
 			<DrawerContent>
 				<DrawerHeader>
-					<DrawerTitle>{mode === 'login' ? 'Log in' : 'Sign up'}</DrawerTitle>
+					<DrawerTitle>{DrawerDetailsByAuthMode[mode].title}</DrawerTitle>
 					<DrawerDescription>
-						{mode === 'login'
-							? 'Enter your email to receive a login link.'
-							: 'Create an account with just your name and email.'}
+						{DrawerDetailsByAuthMode[mode].description}
 					</DrawerDescription>
 				</DrawerHeader>
 				<div className='p-4 pt-0'>
