@@ -22,6 +22,11 @@ import { Input } from './ui/input';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useAuthStore } from '@/state/auth-store';
 import { Field, FieldError, FieldLabel } from './ui/field';
+import {
+	useAuthenticateMutation,
+	useRegisterMutation,
+	useVerifyCodeMutation
+} from '@/data/mutations';
 
 type AuthMode = 'login' | 'signup' | 'verify-code';
 
@@ -100,8 +105,10 @@ const LoginForm = ({ onModeToggle }: AuthFormProps) => {
 		}
 	});
 
+	const authenticateMutation = useAuthenticateMutation();
+
 	const onSubmit = (data: { email: string }) => {
-		console.log(data);
+		authenticateMutation.mutate({ email: data.email });
 	};
 
 	return (
@@ -153,9 +160,10 @@ const SignupForm = ({ onModeToggle }: AuthFormProps) => {
 			email: ''
 		}
 	});
+	const registerMutation = useRegisterMutation();
 
 	const onSubmit = (data: { name: string; email: string }) => {
-		console.log(data);
+		registerMutation.mutate({ name: data.name, email: data.email });
 	};
 
 	return (
@@ -218,19 +226,20 @@ const SignupForm = ({ onModeToggle }: AuthFormProps) => {
 };
 
 interface VerificationFormProps {
-	onModeToggle(): void;
+	email: string;
 }
 
-const VerificationForm: React.FC<VerificationFormProps> = ({
-	onModeToggle
-}) => {
+const VerificationForm: React.FC<VerificationFormProps> = ({ email }) => {
 	const form = useForm({
 		defaultValues: {
 			code: ''
 		}
 	});
+	const verifyCodeMutation = useVerifyCodeMutation();
 
-	const onSubmit = () => {};
+	const onSubmit = (data: { code: string }) => {
+		verifyCodeMutation.mutate({ email, code: data.code });
+	};
 
 	return (
 		<form onSubmit={form.handleSubmit(onSubmit)}>

@@ -190,7 +190,6 @@ export interface GetCartResponse {
 
 export interface AuthenticateBody {
 	email: string;
-	password: string;
 }
 
 export interface UpdateCurrentUserBody {
@@ -215,7 +214,6 @@ export interface AddToCartBody {
 export interface RegisterBody {
 	name: string;
 	email: string;
-	password: string;
 }
 
 export interface VerifyCodeBody {
