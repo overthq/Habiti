@@ -22,6 +22,12 @@ export interface Image {
 	publicId: string;
 }
 
+export interface StoreReference {
+	id: string;
+	name: string;
+	image?: Image;
+}
+
 export interface Product {
 	id: string;
 	name: string;
@@ -169,7 +175,7 @@ export interface ProductViewerContext {
 
 export interface GetProductResponse {
 	product: Product;
-	viewerContext: ProductViewerContext;
+	viewerContext?: ProductViewerContext;
 }
 
 export interface CartViewerContext {
@@ -237,4 +243,9 @@ export interface UpdateCartProductQuantityBody {
 
 export interface GetRelatedProductsResponse {
 	products: Product[];
+}
+
+export interface LandingHighlightsResponse {
+	trendingStores: Store[];
+	featuredProducts: Product[];
 }

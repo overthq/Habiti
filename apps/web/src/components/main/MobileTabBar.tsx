@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 const tabRoutes = [
-	{ href: '/home', label: 'Home', icon: Home },
+	{ href: '/', label: 'Home', icon: Home },
 	{ href: '/search', label: 'Search', icon: Search },
 	{ href: '/carts', label: 'Carts', icon: ShoppingBag },
 	{ href: '/profile', label: 'Profile', icon: User }

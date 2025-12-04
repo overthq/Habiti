@@ -74,7 +74,7 @@ const CartsPage = () => {
 						Start shopping to add items to your cart
 					</p>
 					<Button asChild>
-						<Link href='/home'>Browse stores</Link>
+						<Link href='/'>Browse stores</Link>
 					</Button>
 				</div>
 			</div>

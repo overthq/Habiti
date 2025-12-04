@@ -368,6 +368,36 @@ export const updateProductCategories = async (
 	return product;
 };
 
+export interface GetFeaturedProductsOptions {
+	take?: number;
+}
+
+export const getFeaturedProducts = async (
+	prisma: PrismaClient,
+	options: GetFeaturedProductsOptions = {}
+) => {
+	const take = options.take ?? 8;
+
+	const products = await prisma.product.findMany({
+		where: {
+			status: ProductStatus.Active,
+			store: { unlisted: false }
+		},
+		include: {
+			images: true,
+			store: {
+				include: {
+					image: true
+				}
+			}
+		},
+		orderBy: [{ watchlists: { _count: 'desc' } }, { createdAt: 'desc' }],
+		take
+	});
+
+	return products;
+};
+
 interface CreateStoreProductCategoryParams {
 	storeId: string;
 	name: string;

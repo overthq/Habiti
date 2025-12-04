@@ -20,7 +20,8 @@ import type {
 	GetRelatedProductsResponse,
 	Product,
 	UpdateCurrentUserBody,
-	CartProduct
+	CartProduct,
+	LandingHighlightsResponse
 } from './types';
 import { useAuthStore } from '@/state/auth-store';
 
@@ -237,6 +238,14 @@ export const getRelatedProducts = async (productId: string) => {
 export const globalSearch = async (query: string) => {
 	const response = await api.get<{ products: Product[]; stores: Store[] }>(
 		`/search?query=${query}`
+	);
+
+	return response.data;
+};
+
+export const getLandingHighlights = async () => {
+	const response = await api.get<LandingHighlightsResponse>(
+		'/landing/highlights'
 	);
 
 	return response.data;

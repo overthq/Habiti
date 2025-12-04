@@ -66,6 +66,7 @@ import {
 import { globalSearch } from './controllers/search';
 import { paystackWebhook } from './controllers/webhooks';
 import { authorizeCard } from './controllers/cards';
+import { getLandingHighlights } from './controllers/highlights';
 
 const router: Router = Router();
 
@@ -166,6 +167,9 @@ router.post('/payments/approve-payment', approvePayment);
 
 // Search
 router.get('/search', globalSearch);
+
+// Landing
+router.get('/landing/highlights', optionalAuth, getLandingHighlights);
 
 // Webhooks
 router.post('/webhooks/paystack', paystackWebhook);

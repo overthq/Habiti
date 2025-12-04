@@ -65,6 +65,7 @@
 		"zustand": "^5.0.8"
 	},
 	"devDependencies": {
+		"@types/lodash.debounce": "^4.0.9",
 		"@types/node": "^20",
 		"@types/react": "~19.0.14",
 		"@types/react-dom": "~19.1.3",
