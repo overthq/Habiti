@@ -227,7 +227,7 @@ const getRecentProductPayload = (
 	name: product.name,
 	storeId: product.storeId,
 	storeName: product.store.name,
-	price: product.unitPrice,
+	unitPrice: product.unitPrice,
 	image: product.images[0]?.path ?? null
 });
 
