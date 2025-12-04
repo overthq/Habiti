@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Controller } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 
 import {
 	Drawer,
@@ -19,9 +19,9 @@ import {
 } from './ui/dialog';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { Label } from './ui/label';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useAuthStore } from '@/state/auth-store';
+import { Field, FieldError, FieldLabel } from './ui/field';
 
 type AuthMode = 'login' | 'signup' | 'verify-code';
 
@@ -83,23 +83,40 @@ type AuthFormProps = {
 };
 
 const LoginForm = ({ onModeToggle }: AuthFormProps) => {
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
+	const form = useForm({
+		defaultValues: {
+			email: ''
+		}
+	});
+
+	const onSubmit = (data: { email: string }) => {
+		console.log(data);
 	};
 
 	return (
-		<form className='grid items-start gap-4' onSubmit={handleSubmit}>
-			<div className='space-y-2'>
-				<Label htmlFor='login-email'>Email</Label>
-				<Input
-					id='login-email'
-					name='email'
-					type='email'
-					inputMode='email'
-					placeholder='jane@example.com'
-					autoComplete='email'
-				/>
-			</div>
+		<form
+			className='grid items-start gap-4'
+			onSubmit={form.handleSubmit(onSubmit)}
+		>
+			<Controller
+				name='email'
+				control={form.control}
+				render={({ field, fieldState }) => (
+					<Field data-invalid={fieldState.invalid}>
+						<FieldLabel htmlFor='email'>Email</FieldLabel>
+						<Input
+							{...field}
+							id={field.name}
+							type='email'
+							inputMode='email'
+							aria-invalid={fieldState.invalid}
+							placeholder='jane@example.com'
+							autoComplete='email'
+						/>
+						{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+					</Field>
+				)}
+			/>
 			<Button type='submit' className='w-full'>
 				Send login link
 			</Button>
@@ -119,32 +136,58 @@ const LoginForm = ({ onModeToggle }: AuthFormProps) => {
 };
 
 const SignupForm = ({ onModeToggle }: AuthFormProps) => {
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
+	const form = useForm({
+		defaultValues: {
+			name: '',
+			email: ''
+		}
+	});
+
+	const onSubmit = (data: { name: string; email: string }) => {
+		console.log(data);
 	};
 
 	return (
-		<form className='grid items-start gap-4' onSubmit={handleSubmit}>
-			<div className='space-y-2'>
-				<Label htmlFor='signup-name'>Name</Label>
-				<Input
-					id='signup-name'
-					name='name'
-					placeholder='Jane Doe'
-					autoComplete='name'
-				/>
-			</div>
-			<div className='space-y-2'>
-				<Label htmlFor='signup-email'>Email</Label>
-				<Input
-					id='signup-email'
-					name='email'
-					type='email'
-					inputMode='email'
-					placeholder='jane@example.com'
-					autoComplete='email'
-				/>
-			</div>
+		<form
+			className='grid items-start gap-4'
+			onSubmit={form.handleSubmit(onSubmit)}
+		>
+			<Controller
+				name='name'
+				control={form.control}
+				render={({ field, fieldState }) => (
+					<Field data-invalid={fieldState.invalid}>
+						<FieldLabel htmlFor='name'>Name</FieldLabel>
+						<Input
+							{...field}
+							id={field.name}
+							aria-invalid={fieldState.invalid}
+							placeholder='Jane Doe'
+							autoComplete='name'
+						/>
+						{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+					</Field>
+				)}
+			/>
+			<Controller
+				name='email'
+				control={form.control}
+				render={({ field, fieldState }) => (
+					<Field data-invalid={fieldState.invalid}>
+						<FieldLabel htmlFor='email'>Email</FieldLabel>
+						<Input
+							{...field}
+							id={field.name}
+							type='email'
+							inputMode='email'
+							aria-invalid={fieldState.invalid}
+							placeholder='jane@example.com'
+							autoComplete='email'
+						/>
+						{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+					</Field>
+				)}
+			/>
 			<Button type='submit' className='w-full'>
 				Create account
 			</Button>
@@ -159,6 +202,43 @@ const SignupForm = ({ onModeToggle }: AuthFormProps) => {
 					Log in
 				</Button>
 			</div>
+		</form>
+	);
+};
+
+interface VerificationFormProps {
+	onModeToggle(): void;
+}
+
+const VerificationForm: React.FC<VerificationFormProps> = ({
+	onModeToggle
+}) => {
+	const form = useForm({
+		defaultValues: {
+			code: ''
+		}
+	});
+
+	const onSubmit = () => {};
+
+	return (
+		<form onSubmit={form.handleSubmit(onSubmit)}>
+			<Controller
+				name='code'
+				control={form.control}
+				render={({ field, fieldState }) => (
+					<Field data-invalid={fieldState.invalid}>
+						<FieldLabel htmlFor='code'>Verification code</FieldLabel>
+						<Input
+							{...field}
+							id={field.name}
+							aria-invalid={fieldState.invalid}
+							placeholder='000000'
+						/>
+						{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+					</Field>
+				)}
+			/>
 		</form>
 	);
 };

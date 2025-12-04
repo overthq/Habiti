@@ -115,7 +115,6 @@ export const useCreateOrderMutation = () => {
 		onSuccess: data => {
 			if (data.cardAuthorizationData) {
 				const popup = new Paystack();
-				console.log({ popup });
 				popup.resumeTransaction(data.cardAuthorizationData.access_code);
 			}
 		},
