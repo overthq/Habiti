@@ -30,28 +30,114 @@ import {
 
 type AuthMode = 'login' | 'signup' | 'verify-code';
 
-const DrawerDetailsByAuthMode = {
-	login: {
-		title: 'Log in',
-		description: 'Enter your email to receive a verification code.'
-	},
-	signup: {
-		title: 'Sign up',
-		description: 'Create an account with just your name and email.'
-	},
-	'verify-code': {
-		title: 'Verify your code',
-		description: 'Enter the verification code sent to your email'
+interface AuthDrawerContextValue {
+	onLoginSubmit: (data: { email: string }) => void;
+	onRegisterSubmit: (data: { name: string; email: string }) => void;
+	onVerifyCodeSubmit: (data: { code: string }) => void;
+	mode: AuthMode;
+	setMode: (mode: AuthMode) => void;
+	onModeToggle(): void;
+}
+
+const AuthDrawerContext = React.createContext<AuthDrawerContextValue | null>(
+	null
+);
+
+const useAuthDrawerContext = () => {
+	const context = React.useContext(AuthDrawerContext);
+	if (!context) {
+		throw new Error(
+			'useAuthDrawerContext must be used within AuthDrawerProvider'
+		);
 	}
-} as const;
+	return context;
+};
+
+const AuthDrawerProvider: React.FC<React.PropsWithChildren> = ({
+	children
+}) => {
+	// FIXME: Rename for collision-sake
+	const [currentEmail, setCurrentEmail] = React.useState('');
+	const [mode, setMode] = React.useState<AuthMode>('login');
+
+	const authenticateMutation = useAuthenticateMutation();
+	const registerMutation = useRegisterMutation();
+	const verifyCodeMutation = useVerifyCodeMutation();
+
+	const onModeToggle = () => {
+		console.log('toggling');
+
+		setMode(prev => {
+			console.log({ prev });
+			return prev === 'login' ? 'signup' : 'login';
+		});
+	};
+
+	const onLoginSubmit = React.useCallback(
+		(data: { email: string }) => {
+			setCurrentEmail(currentEmail);
+			authenticateMutation.mutate(
+				{ email: currentEmail },
+				{
+					onSuccess: () => {
+						setMode('verify-code');
+					}
+				}
+			);
+		},
+		[authenticateMutation]
+	);
+
+	const onRegisterSubmit = React.useCallback(
+		(data: { name: string; email: string }) => {
+			setCurrentEmail(data.email);
+
+			registerMutation.mutate(
+				{ name: data.name, email: data.email },
+				{
+					onSuccess: () => {
+						setMode('verify-code');
+					}
+				}
+			);
+		},
+		[registerMutation]
+	);
+
+	const onVerifyCodeSubmit = React.useCallback(
+		(data: { code: string }) => {
+			verifyCodeMutation.mutate({ email: currentEmail, code: data.code });
+		},
+		[verifyCodeMutation]
+	);
+
+	const contextValue = React.useMemo(
+		() => ({
+			onLoginSubmit,
+			onRegisterSubmit,
+			onVerifyCodeSubmit,
+			mode,
+			setMode,
+			onModeToggle
+		}),
+		[onLoginSubmit, onRegisterSubmit, onVerifyCodeSubmit, onModeToggle, mode]
+	);
+
+	return <AuthDrawerContext value={contextValue}>{children}</AuthDrawerContext>;
+};
+
+const AuthDrawerWrapper = () => {
+	return (
+		<AuthDrawerProvider>
+			<AuthDrawer />
+		</AuthDrawerProvider>
+	);
+};
 
 const AuthDrawer = () => {
 	const { authModalOpen, toggleAuthModal } = useAuthStore();
-	const [mode, setMode] = React.useState<AuthMode>('login');
 	const isDesktop = useMediaQuery('(min-width: 768px)');
-
-	const toggleMode = () =>
-		setMode(prev => (prev === 'login' ? 'signup' : 'login'));
+	const { mode } = useAuthDrawerContext();
 
 	if (isDesktop) {
 		return (
@@ -63,11 +149,7 @@ const AuthDrawer = () => {
 							{DrawerDetailsByAuthMode[mode].description}
 						</DialogDescription>
 					</DialogHeader>
-					{mode === 'login' ? (
-						<LoginForm onModeToggle={toggleMode} />
-					) : (
-						<SignupForm onModeToggle={toggleMode} />
-					)}
+					{DrawerDetailsByAuthMode[mode].content}
 				</DialogContent>
 			</Dialog>
 		);
@@ -82,33 +164,23 @@ const AuthDrawer = () => {
 						{DrawerDetailsByAuthMode[mode].description}
 					</DrawerDescription>
 				</DrawerHeader>
-				<div className='p-4 pt-0'>
-					{mode === 'login' ? (
-						<LoginForm onModeToggle={toggleMode} />
-					) : (
-						<SignupForm onModeToggle={toggleMode} />
-					)}
-				</div>
+				<div className='p-4 pt-0'>{DrawerDetailsByAuthMode[mode].content}</div>
 			</DrawerContent>
 		</Drawer>
 	);
 };
 
-type AuthFormProps = {
-	onModeToggle: () => void;
-};
-
-const LoginForm = ({ onModeToggle }: AuthFormProps) => {
+const LoginForm = () => {
 	const form = useForm({
 		defaultValues: {
 			email: ''
 		}
 	});
 
-	const authenticateMutation = useAuthenticateMutation();
+	const { onModeToggle, onLoginSubmit } = useAuthDrawerContext();
 
 	const onSubmit = (data: { email: string }) => {
-		authenticateMutation.mutate({ email: data.email });
+		onLoginSubmit(data);
 	};
 
 	return (
@@ -153,17 +225,17 @@ const LoginForm = ({ onModeToggle }: AuthFormProps) => {
 	);
 };
 
-const SignupForm = ({ onModeToggle }: AuthFormProps) => {
+const SignupForm = () => {
 	const form = useForm({
 		defaultValues: {
 			name: '',
 			email: ''
 		}
 	});
-	const registerMutation = useRegisterMutation();
+	const { onRegisterSubmit, onModeToggle } = useAuthDrawerContext();
 
 	const onSubmit = (data: { name: string; email: string }) => {
-		registerMutation.mutate({ name: data.name, email: data.email });
+		onRegisterSubmit(data);
 	};
 
 	return (
@@ -225,20 +297,17 @@ const SignupForm = ({ onModeToggle }: AuthFormProps) => {
 	);
 };
 
-interface VerificationFormProps {
-	email: string;
-}
-
-const VerificationForm: React.FC<VerificationFormProps> = ({ email }) => {
+const VerificationForm: React.FC = () => {
 	const form = useForm({
 		defaultValues: {
 			code: ''
 		}
 	});
-	const verifyCodeMutation = useVerifyCodeMutation();
+
+	const { onVerifyCodeSubmit } = useAuthDrawerContext();
 
 	const onSubmit = (data: { code: string }) => {
-		verifyCodeMutation.mutate({ email, code: data.code });
+		onVerifyCodeSubmit(data);
 	};
 
 	return (
@@ -263,4 +332,22 @@ const VerificationForm: React.FC<VerificationFormProps> = ({ email }) => {
 	);
 };
 
-export default AuthDrawer;
+const DrawerDetailsByAuthMode = {
+	login: {
+		title: 'Log in',
+		description: 'Enter your email to receive a verification code.',
+		content: <LoginForm />
+	},
+	signup: {
+		title: 'Sign up',
+		description: 'Create an account with just your name and email.',
+		content: <SignupForm />
+	},
+	'verify-code': {
+		title: 'Verify your code',
+		description: 'Enter the verification code sent to your email',
+		content: <VerificationForm />
+	}
+} as const;
+
+export default AuthDrawerWrapper;
