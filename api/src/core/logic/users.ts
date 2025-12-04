@@ -28,12 +28,10 @@ export const register = async (ctx: AppContext, args: unknown) => {
 		throw new Error('A user already exists with the specified email');
 	}
 
-	const passwordHash = await hashPassword(data.password);
-
 	const user = await UserData.createUser(ctx.prisma, {
 		name: data.name,
 		email: data.email,
-		passwordHash
+		passwordHash: '' // FIXME: Make passwordHash optional on the DB.
 	});
 
 	const code = await cacheVerificationCode(data.email);

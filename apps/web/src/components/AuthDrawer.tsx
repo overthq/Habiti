@@ -65,19 +65,14 @@ const AuthDrawerProvider: React.FC<React.PropsWithChildren> = ({
 	const verifyCodeMutation = useVerifyCodeMutation();
 
 	const onModeToggle = () => {
-		console.log('toggling');
-
-		setMode(prev => {
-			console.log({ prev });
-			return prev === 'login' ? 'signup' : 'login';
-		});
+		setMode(prev => (prev === 'login' ? 'signup' : 'login'));
 	};
 
 	const onLoginSubmit = React.useCallback(
 		(data: { email: string }) => {
 			setCurrentEmail(currentEmail);
 			authenticateMutation.mutate(
-				{ email: currentEmail },
+				{ email: data.email },
 				{
 					onSuccess: () => {
 						setMode('verify-code');
@@ -328,6 +323,10 @@ const VerificationForm: React.FC = () => {
 					</Field>
 				)}
 			/>
+
+			<Button className='w-full mt-4' type='submit'>
+				Submit
+			</Button>
 		</form>
 	);
 };
