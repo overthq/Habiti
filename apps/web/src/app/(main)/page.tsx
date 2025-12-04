@@ -187,11 +187,7 @@ const RecentlyViewedSection: React.FC<RecentlyViewedSectionProps> = ({
 	products
 }) => {
 	return (
-		<Section
-			title='Recently viewed'
-			actionHref='/search'
-			actionLabel='Keep browsing'
-		>
+		<Section title='Recently viewed'>
 			{products.length ? (
 				<div className='grid gap-4 grid-cols-[repeat(6,minmax(150px,1fr))]'>
 					{products.map(product => (
