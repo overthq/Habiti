@@ -54,7 +54,8 @@ import {
 } from './controllers/auth';
 import {
 	registerBodySchema,
-	authenticateBodySchema
+	authenticateBodySchema,
+	verifyCodeBodySchema
 } from './core/validations/auth';
 import { login as adminLogin, getOverview } from './controllers/admin';
 import { checkHealth } from './controllers/health';
@@ -73,7 +74,7 @@ const router: Router = Router();
 // Auth
 router.post('/auth/register', validateBody(registerBodySchema), register);
 router.post('/auth/login', validateBody(authenticateBodySchema), login);
-router.post('/auth/verify-code', verify);
+router.post('/auth/verify-code', validateBody(verifyCodeBodySchema), verify);
 router.post('/auth/apple-callback', appleCallback);
 router.post('/auth/refresh', refresh);
 router.post('/auth/logout', logout);

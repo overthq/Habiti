@@ -56,8 +56,7 @@ const useAuthDrawerContext = () => {
 const AuthDrawerProvider: React.FC<React.PropsWithChildren> = ({
 	children
 }) => {
-	// FIXME: Rename for collision-sake
-	const [currentEmail, setCurrentEmail] = React.useState('');
+	const { currentEmail, setCurrentEmail } = useAuthStore();
 	const [mode, setMode] = React.useState<AuthMode>('login');
 
 	const authenticateMutation = useAuthenticateMutation();
@@ -70,7 +69,8 @@ const AuthDrawerProvider: React.FC<React.PropsWithChildren> = ({
 
 	const onLoginSubmit = React.useCallback(
 		(data: { email: string }) => {
-			setCurrentEmail(currentEmail);
+			setCurrentEmail(data.email);
+
 			authenticateMutation.mutate(
 				{ email: data.email },
 				{
@@ -106,7 +106,7 @@ const AuthDrawerProvider: React.FC<React.PropsWithChildren> = ({
 		[verifyCodeMutation]
 	);
 
-	const contextValue = React.useMemo(
+	const value = React.useMemo(
 		() => ({
 			onLoginSubmit,
 			onRegisterSubmit,
@@ -118,7 +118,7 @@ const AuthDrawerProvider: React.FC<React.PropsWithChildren> = ({
 		[onLoginSubmit, onRegisterSubmit, onVerifyCodeSubmit, onModeToggle, mode]
 	);
 
-	return <AuthDrawerContext value={contextValue}>{children}</AuthDrawerContext>;
+	return <AuthDrawerContext value={value}>{children}</AuthDrawerContext>;
 };
 
 const AuthDrawerWrapper = () => {
