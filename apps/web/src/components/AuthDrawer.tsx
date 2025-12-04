@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { Controller } from 'react-hook-form';
 
 import {
 	Drawer,
@@ -22,7 +23,7 @@ import { Label } from './ui/label';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useAuthStore } from '@/state/auth-store';
 
-type AuthMode = 'login' | 'signup';
+type AuthMode = 'login' | 'signup' | 'verify-code';
 
 const AuthDrawer = () => {
 	const { authModalOpen, toggleAuthModal } = useAuthStore();

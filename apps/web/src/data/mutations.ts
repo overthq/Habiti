@@ -12,7 +12,8 @@ import {
 	register,
 	createOrder,
 	updateCartProductQuantity,
-	updateCurrentUser
+	updateCurrentUser,
+	verifyCode
 } from './requests';
 
 import type {
@@ -21,7 +22,8 @@ import type {
 	CreateOrderBody,
 	RegisterBody,
 	UpdateCartProductQuantityBody,
-	UpdateCurrentUserBody
+	UpdateCurrentUserBody,
+	VerifyCodeBody
 } from './types';
 import { toast } from 'sonner';
 
@@ -95,6 +97,13 @@ export const useRegisterMutation = () => {
 export const useAuthenticateMutation = () => {
 	return useMutation({
 		mutationFn: (input: AuthenticateBody) => authenticate(input),
+		onSuccess: () => {}
+	});
+};
+
+export const useVerifyCodeMutation = () => {
+	return useMutation({
+		mutationFn: (input: VerifyCodeBody) => verifyCode(input),
 		onSuccess: () => {}
 	});
 };

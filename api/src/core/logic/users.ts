@@ -47,6 +47,30 @@ export const register = async (ctx: AppContext, args: unknown) => {
 	return user;
 };
 
+interface LoginInput {
+	email: string;
+}
+
+export const login = async (ctx: AppContext, input: LoginInput) => {
+	const user = await UserData.getUserByEmail(ctx.prisma, input.email);
+
+	if (!user) {
+		throw new Error(
+			'[UserLogic.login] - No user exists with the specified email'
+		);
+	}
+
+	const code = await cacheVerificationCode(input.email);
+
+	ctx.services.email.sendMail({
+		emailType: EmailType.NewAccount,
+		email: input.email,
+		code
+	});
+
+	return user;
+};
+
 export const getUsers = (ctx: AppContext, query: Prisma.UserFindManyArgs) => {
 	return UserData.getUsers(ctx.prisma, query);
 };

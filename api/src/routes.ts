@@ -73,7 +73,7 @@ const router: Router = Router();
 // Auth
 router.post('/auth/register', validateBody(registerBodySchema), register);
 router.post('/auth/login', validateBody(authenticateBodySchema), login);
-router.post('/auth/verify', verify);
+router.post('/auth/verify-code', verify);
 router.post('/auth/apple-callback', appleCallback);
 router.post('/auth/refresh', refresh);
 router.post('/auth/logout', logout);

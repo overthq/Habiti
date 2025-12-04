@@ -218,6 +218,11 @@ export interface RegisterBody {
 	password: string;
 }
 
+export interface VerifyCodeBody {
+	email: string;
+	code: string;
+}
+
 export interface CreateOrderBody {
 	cartId: string;
 	cardId?: string | null;

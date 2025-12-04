@@ -21,7 +21,8 @@ import type {
 	Product,
 	UpdateCurrentUserBody,
 	CartProduct,
-	LandingHighlightsResponse
+	LandingHighlightsResponse,
+	VerifyCodeBody
 } from './types';
 import { useAuthStore } from '@/state/auth-store';
 
@@ -75,6 +76,11 @@ export const authenticate = async (input: AuthenticateBody) => {
 
 export const register = async (input: RegisterBody) => {
 	const response = await api.post('/auth/register', input);
+	return response.data;
+};
+
+export const verifyCode = async (input: VerifyCodeBody) => {
+	const response = await api.post('/auth/verify-code', input);
 	return response.data;
 };
 
