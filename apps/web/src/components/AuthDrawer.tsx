@@ -56,6 +56,7 @@ const useAuthDrawerContext = () => {
 const AuthDrawerProvider: React.FC<React.PropsWithChildren> = ({
 	children
 }) => {
+	// FIXME: Consider moving this back to useState.
 	const { currentEmail, setCurrentEmail } = useAuthStore();
 	const [mode, setMode] = React.useState<AuthMode>('login');
 

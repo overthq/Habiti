@@ -22,7 +22,8 @@ import type {
 	UpdateCurrentUserBody,
 	CartProduct,
 	LandingHighlightsResponse,
-	VerifyCodeBody
+	VerifyCodeBody,
+	VerifyCodeResponse
 } from './types';
 import { useAuthStore } from '@/state/auth-store';
 
@@ -80,7 +81,10 @@ export const register = async (input: RegisterBody) => {
 };
 
 export const verifyCode = async (input: VerifyCodeBody) => {
-	const response = await api.post('/auth/verify-code', input);
+	const response = await api.post<VerifyCodeResponse>(
+		'/auth/verify-code',
+		input
+	);
 	return response.data;
 };
 

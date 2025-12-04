@@ -252,3 +252,8 @@ export interface LandingHighlightsResponse {
 	trendingStores: Store[];
 	featuredProducts: Product[];
 }
+
+export interface VerifyCodeResponse {
+	accessToken: string;
+	refreshToken: string;
+}
