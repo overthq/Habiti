@@ -10,7 +10,6 @@ import { usePreferenceStore } from '@/state/preference-store';
 import useDebounce from '@/hooks/use-debounce';
 import { Card, Cart, CartProduct, CartViewerContext } from '@/data/types';
 import { useParams } from 'next/navigation';
-import SignInPrompt from '@/components/SignInPrompt';
 import { useAuthStore } from '@/state/auth-store';
 
 interface CartContextType {
@@ -31,18 +30,21 @@ const CartContext = React.createContext<CartContextType | null>(null);
 interface CartProviderProps {
 	children: React.ReactNode;
 	cart: Cart;
-	viewerContext: CartViewerContext;
+	viewerContext: CartViewerContext | null;
+	isAuthenticated: boolean;
 }
 
 export const CartProvider: React.FC<CartProviderProps> = ({
 	children,
 	cart,
-	viewerContext
+	viewerContext,
+	isAuthenticated
 }) => {
 	const updateCartProductQuantityMutation =
 		useUpdateCartProductQuantityMutation();
 
 	const createOrderMutation = useCreateOrderMutation();
+	const { toggleAuthModal } = useAuthStore();
 
 	const { defaultCard, setPreference } = usePreferenceStore();
 	const [selectedCard, setSelectedCard] = React.useState(defaultCard);
@@ -113,6 +115,12 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 	};
 
 	const handleSubmit = React.useCallback(async () => {
+		// If user is not authenticated, open auth modal
+		if (!isAuthenticated) {
+			toggleAuthModal();
+			return;
+		}
+
 		createOrderMutation.mutate({
 			cartId: cart.id,
 			cardId: selectedCard,
@@ -127,7 +135,9 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 		cart.fees.service,
 		selectedCard,
 		createOrderMutation,
-		setPreference
+		setPreference,
+		isAuthenticated,
+		toggleAuthModal
 	]);
 
 	return (
@@ -212,18 +222,10 @@ const CartContextWrapper: React.FC<CartContextWrapperProps> = ({
 	const { id: cartId } = useParams<{ id: string }>();
 	const { accessToken } = useAuthStore();
 	const isAuthenticated = Boolean(accessToken);
+	// Allow fetching cart for both authenticated users and guests (by cart ID)
 	const { data, isLoading, error } = useCartQuery(cartId, {
-		enabled: isAuthenticated && Boolean(cartId)
+		enabled: Boolean(cartId)
 	});
-
-	if (!isAuthenticated) {
-		return (
-			<SignInPrompt
-				title='Sign in to open this cart'
-				description='We saved the items in your cart, but you need to be signed in to manage them.'
-			/>
-		);
-	}
 
 	if (isLoading || !data) {
 		return (
@@ -241,10 +243,14 @@ const CartContextWrapper: React.FC<CartContextWrapperProps> = ({
 		);
 	}
 
-	if (!data?.cart || !data.viewerContext) return null;
+	if (!data?.cart) return null;
 
 	return (
-		<CartProvider cart={data.cart} viewerContext={data.viewerContext}>
+		<CartProvider
+			cart={data.cart}
+			viewerContext={data.viewerContext}
+			isAuthenticated={isAuthenticated}
+		>
 			{children}
 		</CartProvider>
 	);

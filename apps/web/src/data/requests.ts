@@ -187,6 +187,13 @@ export const addToCart = async (body: AddToCartBody) => {
 	return response.data;
 };
 
+export const claimCarts = async (cartIds: string[]) => {
+	const response = await api.post<{ claimedCarts: string[] }>('/carts/claim', {
+		cartIds
+	});
+	return response.data;
+};
+
 export const removeFromCart = async (cartId: string, productId: string) => {
 	const response = await api.delete<{ cart: Cart }>(
 		`/carts/${cartId}/products/${productId}`

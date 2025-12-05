@@ -8,7 +8,7 @@ import Services from '../services';
 import { verifyAccessToken } from '../core/logic/auth';
 
 export interface AppContext {
-	user: User;
+	user?: User;
 	storeId?: string;
 	prisma: PrismaClient;
 	redisClient: RedisClient;

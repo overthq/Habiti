@@ -12,7 +12,8 @@ import {
 	register,
 	createOrder,
 	updateCartProductQuantity,
-	updateCurrentUser
+	updateCurrentUser,
+	claimCarts
 } from './requests';
 
 import type {
@@ -124,6 +125,17 @@ export const useUpdateCurrentUserMutation = () => {
 		},
 		onError: () => {
 			toast.error('Failed to create order');
+		}
+	});
+};
+
+export const useClaimCartsMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (cartIds: string[]) => claimCarts(cartIds),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['carts'] });
 		}
 	});
 };

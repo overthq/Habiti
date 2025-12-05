@@ -184,7 +184,7 @@ export interface CartViewerContext {
 
 export interface GetCartResponse {
 	cart: Cart;
-	viewerContext: CartViewerContext;
+	viewerContext: CartViewerContext | null;
 }
 //TODO: Replace "-Body" with "-Args", since some of these might just be params
 
@@ -210,6 +210,7 @@ export interface AddToCartBody {
 	storeId: string; // FIXME: Maybe not necessary?
 	productId: string;
 	quantity: number;
+	cartId?: string; // For guest carts
 }
 
 export interface RegisterBody {
