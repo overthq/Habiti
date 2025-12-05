@@ -1,8 +1,6 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-// @ts-expect-error
-import Paystack from '@paystack/inline-js';
 
 import {
 	addToCart,
@@ -12,7 +10,8 @@ import {
 	register,
 	createOrder,
 	updateCartProductQuantity,
-	updateCurrentUser
+	updateCurrentUser,
+	verifyCode
 } from './requests';
 
 import type {
@@ -21,9 +20,11 @@ import type {
 	CreateOrderBody,
 	RegisterBody,
 	UpdateCartProductQuantityBody,
-	UpdateCurrentUserBody
+	UpdateCurrentUserBody,
+	VerifyCodeBody
 } from './types';
 import { toast } from 'sonner';
+import { useAuthStore } from '@/state/auth-store';
 
 export const useAddToCartMutation = () => {
 	const queryClient = useQueryClient();
@@ -99,14 +100,27 @@ export const useAuthenticateMutation = () => {
 	});
 };
 
+export const useVerifyCodeMutation = () => {
+	const { logIn, toggleAuthModal } = useAuthStore();
+
+	return useMutation({
+		mutationFn: (input: VerifyCodeBody) => verifyCode(input),
+		onSuccess: ({ accessToken }) => {
+			logIn({ accessToken });
+			toggleAuthModal();
+		}
+	});
+};
+
 export const useCreateOrderMutation = () => {
 	return useMutation({
 		mutationFn: (body: CreateOrderBody) =>
 			createOrder({ ...body, cardId: undefined }),
 		onSuccess: data => {
 			if (data.cardAuthorizationData) {
+				const Paystack = require('@paystack/inline-js');
+
 				const popup = new Paystack();
-				console.log({ popup });
 				popup.resumeTransaction(data.cardAuthorizationData.access_code);
 			}
 		},

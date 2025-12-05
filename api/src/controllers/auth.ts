@@ -22,37 +22,15 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
 	try {
-		const { email, password } = req.body;
+		const { email } = req.body;
 
 		const ctx = getAppContext(req);
 
-		const user = await UserLogic.getUserByEmail(ctx, email);
+		await UserLogic.login(ctx, { email });
 
-		if (!user) {
-			return res
-				.status(401)
-				.json({ error: 'The specified user does not exist.' });
-		}
-
-		const correct = await AuthLogic.verifyPassword(password, user.passwordHash);
-
-		if (!correct) {
-			return res
-				.status(401)
-				.json({ error: 'The entered password is incorrect' });
-		}
-
-		const accessToken = await AuthLogic.generateAccessToken(user);
-		const refreshToken = await AuthLogic.generateRefreshToken(ctx, user.id);
-
-		res.cookie('refreshToken', refreshToken, {
-			httpOnly: true,
-			secure: env.NODE_ENV === 'production',
-			sameSite: 'strict',
-			path: '/'
-		});
-
-		return res.status(200).json({ accessToken, refreshToken, userId: user.id });
+		return res
+			.status(200)
+			.json({ message: 'Verification code sent to your email' });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}

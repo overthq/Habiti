@@ -12,12 +12,12 @@ export const metadata: Metadata = {
 	icons: [
 		{
 			rel: 'icon',
-			url: '/images/favicon-light.ico',
+			url: '/images/favicon-light.png',
 			media: '(prefers-color-scheme: light)'
 		},
 		{
 			rel: 'icon',
-			url: '/images/favicon-dark.ico',
+			url: '/images/favicon-dark.png',
 			media: '(prefers-color-scheme: dark)'
 		}
 	]
