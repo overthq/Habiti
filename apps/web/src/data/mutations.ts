@@ -1,8 +1,6 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-// @ts-expect-error
-import Paystack from '@paystack/inline-js';
 
 import {
 	addToCart,
@@ -120,6 +118,8 @@ export const useCreateOrderMutation = () => {
 			createOrder({ ...body, cardId: undefined }),
 		onSuccess: data => {
 			if (data.cardAuthorizationData) {
+				const Paystack = require('@paystack/inline-js');
+
 				const popup = new Paystack();
 				popup.resumeTransaction(data.cardAuthorizationData.access_code);
 			}
