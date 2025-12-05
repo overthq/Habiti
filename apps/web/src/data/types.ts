@@ -190,7 +190,6 @@ export interface GetCartResponse {
 
 export interface AuthenticateBody {
 	email: string;
-	password: string;
 }
 
 export interface UpdateCurrentUserBody {
@@ -216,7 +215,11 @@ export interface AddToCartBody {
 export interface RegisterBody {
 	name: string;
 	email: string;
-	password: string;
+}
+
+export interface VerifyCodeBody {
+	email: string;
+	code: string;
 }
 
 export interface CreateOrderBody {
@@ -249,4 +252,9 @@ export interface GetRelatedProductsResponse {
 export interface LandingHighlightsResponse {
 	trendingStores: Store[];
 	featuredProducts: Product[];
+}
+
+export interface VerifyCodeResponse {
+	accessToken: string;
+	refreshToken: string;
 }

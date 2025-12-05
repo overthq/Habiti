@@ -6,7 +6,7 @@ export enum EmailType {
 }
 
 const TransactionalIDByEmailType = {
-	[EmailType.NewAccount]: 'cmedpo8no43ziwd0i8sboo6vf'
+	[EmailType.NewAccount]: 'cmiqvjjve0jjd2a0i2ozhln4f'
 } as const;
 
 interface SendMailArgs {
@@ -34,9 +34,6 @@ export default class EmailService {
 			this.loops = new LoopsClient(env.LOOPS_API_KEY);
 			this.isEnabled = true;
 		}
-
-		// TODO: Enable emails when we've streamlined the verification structure.
-		this.isEnabled = false;
 	}
 
 	public sendMail(args: SendMailArgs) {

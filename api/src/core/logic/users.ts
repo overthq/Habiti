@@ -28,12 +28,10 @@ export const register = async (ctx: AppContext, args: unknown) => {
 		throw new Error('A user already exists with the specified email');
 	}
 
-	const passwordHash = await hashPassword(data.password);
-
 	const user = await UserData.createUser(ctx.prisma, {
 		name: data.name,
 		email: data.email,
-		passwordHash
+		passwordHash: '' // FIXME: Make passwordHash optional on the DB.
 	});
 
 	const code = await cacheVerificationCode(data.email);
@@ -41,6 +39,30 @@ export const register = async (ctx: AppContext, args: unknown) => {
 	ctx.services.email.sendMail({
 		emailType: EmailType.NewAccount,
 		email: data.email,
+		code
+	});
+
+	return user;
+};
+
+interface LoginInput {
+	email: string;
+}
+
+export const login = async (ctx: AppContext, input: LoginInput) => {
+	const user = await UserData.getUserByEmail(ctx.prisma, input.email);
+
+	if (!user) {
+		throw new Error(
+			'[UserLogic.login] - No user exists with the specified email'
+		);
+	}
+
+	const code = await cacheVerificationCode(input.email);
+
+	ctx.services.email.sendMail({
+		emailType: EmailType.NewAccount,
+		email: input.email,
 		code
 	});
 

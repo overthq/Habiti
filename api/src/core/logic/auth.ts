@@ -162,7 +162,7 @@ export const verifyAccessToken = async (token: string) => {
 // Utilities
 
 const generateCode = () => {
-	return Array.from(crypto.randomBytes(3))
+	return Array.from(crypto.randomBytes(6))
 		.map(byte => byte % 10)
 		.join('');
 };
