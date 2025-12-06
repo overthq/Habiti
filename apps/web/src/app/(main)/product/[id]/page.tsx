@@ -19,6 +19,8 @@ import {
 	RecentlyViewedProduct,
 	useRecentlyViewedStore
 } from '@/state/recently-viewed-store';
+import { useGuestCartStore } from '@/state/guest-cart-store';
+import { useAuthStore } from '@/state/auth-store';
 
 const ProductPage = () => {
 	const { id } = useParams<{ id: string }>();
@@ -243,6 +245,10 @@ const ProductContextProvider: React.FC<ProductContextProviderProps> = ({
 	const addRecentlyViewedProduct = useRecentlyViewedStore(
 		state => state.addProduct
 	);
+	const { accessToken } = useAuthStore();
+	const { cartIds: guestCartIds, addCartId: addGuestCartId } =
+		useGuestCartStore();
+	const isAuthenticated = Boolean(accessToken);
 
 	const cartProduct = viewerContext?.cartProduct;
 	const cartId = cartProduct?.cartId;
@@ -267,12 +273,19 @@ const ProductContextProvider: React.FC<ProductContextProviderProps> = ({
 		async (buyNow = false) => {
 			try {
 				if (!cartProduct) {
+					// Find existing guest cart for this store (if any)
+					// Guest carts are tracked by their IDs in localStorage
 					const { cartProduct: newCartProduct } =
 						await addToCartMutation.mutateAsync({
 							storeId: product.storeId,
 							productId: product.id,
 							quantity
 						});
+
+					// If user is not authenticated, save the cart ID as a guest cart
+					if (!isAuthenticated) {
+						addGuestCartId(newCartProduct.cartId);
+					}
 
 					if (buyNow) {
 						router.push(`/carts/${newCartProduct.cartId}`);
@@ -292,7 +305,15 @@ const ProductContextProvider: React.FC<ProductContextProviderProps> = ({
 				console.log(error);
 			}
 		},
-		[product.storeId, product.id, quantity, cartProduct, cartId]
+		[
+			product.storeId,
+			product.id,
+			quantity,
+			cartProduct,
+			cartId,
+			isAuthenticated,
+			addGuestCartId
+		]
 	);
 
 	// FIXME: Maybe put this in the query instead?

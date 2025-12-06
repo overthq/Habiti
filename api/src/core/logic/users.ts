@@ -7,7 +7,7 @@ import * as CartData from '../data/carts';
 import * as CardData from '../data/cards';
 import * as AddressData from '../data/addresses';
 
-import { cacheVerificationCode, hashPassword } from './auth';
+import { cacheVerificationCode } from './auth';
 import { registerBodySchema } from '../validations/auth';
 
 import { EmailType } from '../../services/email';
@@ -30,8 +30,7 @@ export const register = async (ctx: AppContext, args: unknown) => {
 
 	const user = await UserData.createUser(ctx.prisma, {
 		name: data.name,
-		email: data.email,
-		passwordHash: '' // FIXME: Make passwordHash optional on the DB.
+		email: data.email
 	});
 
 	const code = await cacheVerificationCode(data.email);
@@ -93,7 +92,7 @@ export const updateUser = async (ctx: AppContext, input: UpdateUserInput) => {
 
 	const userIsAdmin = await ctx.isAdmin();
 
-	if (userId !== ctx.user.id && !userIsAdmin) {
+	if (!ctx.user?.id || (userId !== ctx.user.id && !userIsAdmin)) {
 		throw new Error('Current user is not authorized to carry out this action');
 	}
 
@@ -104,10 +103,18 @@ export const updateCurrentUser = (
 	ctx: AppContext,
 	input: Omit<UpdateUserInput, 'userId'>
 ) => {
+	if (!ctx.user?.id) {
+		throw new Error('User is not authenticated');
+	}
+
 	return updateUser(ctx, { ...input, userId: ctx.user.id });
 };
 
 export const deleteCurrentUser = (ctx: AppContext) => {
+	if (!ctx.user?.id) {
+		throw new Error('User is not authenticated');
+	}
+
 	return deleteUser(ctx, { userId: ctx.user.id });
 };
 
@@ -120,7 +127,7 @@ export const deleteUser = async (ctx: AppContext, input: DeleteUserInput) => {
 
 	const userIsAdmin = await ctx.isAdmin();
 
-	if (userId !== ctx.user.id && !userIsAdmin) {
+	if (!ctx.user?.id || (userId !== ctx.user.id && !userIsAdmin)) {
 		throw new Error('Current user is not authorized to carry out this action');
 	}
 
@@ -128,10 +135,18 @@ export const deleteUser = async (ctx: AppContext, input: DeleteUserInput) => {
 };
 
 export const getFollowedStores = (ctx: AppContext) => {
+	if (!ctx.user?.id) {
+		throw new Error('User is not authenticated');
+	}
+
 	return StoreData.getFollowedStores(ctx.prisma, ctx.user.id);
 };
 
 export const getManagedStores = (ctx: AppContext) => {
+	if (!ctx.user?.id) {
+		throw new Error('User is not authenticated');
+	}
+
 	return UserData.getManagedStores(ctx.prisma, ctx.user.id);
 };
 
@@ -140,18 +155,34 @@ export const getUserById = (ctx: AppContext, userId: string) => {
 };
 
 export const getOrders = (ctx: AppContext, query: Prisma.OrderFindManyArgs) => {
+	if (!ctx.user?.id) {
+		throw new Error('User is not authenticated');
+	}
+
 	return OrderData.getOrdersByUserId(ctx.prisma, ctx.user.id, query);
 };
 
 export const getCarts = (ctx: AppContext, query: Prisma.CartFindManyArgs) => {
+	if (!ctx.user?.id) {
+		throw new Error('User is not authenticated');
+	}
+
 	return CartData.getCartsByUserId(ctx.prisma, ctx.user.id, query);
 };
 
 export const getCards = (ctx: AppContext) => {
+	if (!ctx.user?.id) {
+		throw new Error('User is not authenticated');
+	}
+
 	return CardData.getCardsByUserId(ctx.prisma, ctx.user.id);
 };
 
 export const getDeliveryAddresses = (ctx: AppContext) => {
+	if (!ctx.user?.id) {
+		throw new Error('User is not authenticated');
+	}
+
 	return AddressData.getDeliveryAddressesByUserId(ctx.prisma, ctx.user.id);
 };
 

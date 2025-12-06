@@ -5,6 +5,7 @@ interface AddProductToCartInput {
 	storeId: string;
 	productId: string;
 	quantity: number;
+	cartId?: string; // For guest carts
 }
 
 interface RemoveProductFromCartInput {
@@ -25,15 +26,19 @@ interface DeleteCartInput {
 export const getCartById = async (ctx: AppContext, cartId: string) => {
 	const cart = await CartData.getCartById(ctx.prisma, cartId);
 
-	// FIXME: In the future, ensure that this is handled correctly for admins.
-	if (cart.userId !== ctx.user.id) {
+	// Allow access if:
+	// 1. Cart belongs to current user
+	// 2. Cart is a guest cart (no userId) - anyone with the cart ID can view it
+	const isOwner = cart.userId !== null && cart.userId === ctx.user?.id;
+	const isGuestCart = cart.userId === null;
+
+	if (!isOwner && !isGuestCart) {
 		throw new Error('Unauthorized: Cart does not belong to current user');
 	}
 
-	const cartViewerContext = await CartData.getCartViewerContext(
-		ctx.prisma,
-		ctx.user.id
-	);
+	const cartViewerContext = ctx.user?.id
+		? await CartData.getCartViewerContext(ctx.prisma, ctx.user.id)
+		: null;
 
 	const transaction = calculatePaystackFee(cart.total);
 	const service = calculateHabitiFee();
@@ -46,7 +51,7 @@ export const getCartById = async (ctx: AppContext, cartId: string) => {
 };
 
 export const getCartsByUserId = async (ctx: AppContext, userId: string) => {
-	if (userId !== ctx.user.id) {
+	if (!ctx.user?.id || userId !== ctx.user.id) {
 		throw new Error("Unauthorized: Cannot access other user's carts");
 	}
 
@@ -57,7 +62,7 @@ export const addProductToCart = async (
 	ctx: AppContext,
 	input: AddProductToCartInput
 ) => {
-	const { storeId, productId, quantity } = input;
+	const { storeId, productId, quantity, cartId } = input;
 
 	if (quantity <= 0) {
 		throw new Error('Quantity must be greater than 0');
@@ -66,19 +71,23 @@ export const addProductToCart = async (
 	const cartProduct = await CartData.addProductToCart(ctx.prisma, {
 		storeId,
 		productId,
-		userId: ctx.user.id,
-		quantity
+		quantity,
+		...(ctx.user?.id && { userId: ctx.user.id }),
+		...(cartId && { cartId })
 	});
 
-	ctx.services.analytics.track({
-		event: 'product_added_to_cart',
-		distinctId: ctx.user.id,
-		properties: {
-			productId,
-			quantity
-		},
-		groups: { store: storeId }
-	});
+	// Only track analytics if user is authenticated
+	if (ctx.user?.id) {
+		ctx.services.analytics.track({
+			event: 'product_added_to_cart',
+			distinctId: ctx.user.id,
+			properties: {
+				productId,
+				quantity
+			},
+			groups: { store: storeId }
+		});
+	}
 
 	return cartProduct;
 };
@@ -88,6 +97,10 @@ export const removeProductFromCart = async (
 	input: RemoveProductFromCartInput
 ) => {
 	const { cartId, productId } = input;
+
+	if (!ctx.user?.id) {
+		throw new Error('Authentication required');
+	}
 
 	const cart = await CartData.getCartById(ctx.prisma, cartId);
 
@@ -119,6 +132,10 @@ export const updateCartProductQuantity = async (
 	input: UpdateCartQuantityInput
 ) => {
 	const { cartId, productId, quantity } = input;
+
+	if (!ctx.user?.id) {
+		throw new Error('Authentication required');
+	}
 
 	if (quantity < 0) {
 		throw new Error('Quantity cannot be negative');
@@ -153,6 +170,10 @@ export const updateCartProductQuantity = async (
 export const deleteCart = async (ctx: AppContext, input: DeleteCartInput) => {
 	const { cartId } = input;
 
+	if (!ctx.user?.id) {
+		throw new Error('Authentication required');
+	}
+
 	const cart = await CartData.getCartById(ctx.prisma, cartId);
 
 	if (cart.userId !== ctx.user.id) {
@@ -176,6 +197,34 @@ export const deleteCart = async (ctx: AppContext, input: DeleteCartInput) => {
 	});
 
 	return cart;
+};
+
+interface ClaimCartsInput {
+	cartIds: string[];
+}
+
+export const claimCarts = async (ctx: AppContext, input: ClaimCartsInput) => {
+	const { cartIds } = input;
+
+	if (!ctx.user?.id) {
+		throw new Error('Authentication required to claim carts');
+	}
+
+	const claimedCarts = await CartData.claimCarts(ctx.prisma, {
+		userId: ctx.user.id,
+		cartIds
+	});
+
+	ctx.services.analytics.track({
+		event: 'carts_claimed',
+		distinctId: ctx.user.id,
+		properties: {
+			cartIds,
+			claimedCount: claimedCarts.length
+		}
+	});
+
+	return claimedCarts;
 };
 
 export const calculatePaystackFee = (subTotal: number) => {

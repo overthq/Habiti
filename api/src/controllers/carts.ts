@@ -20,17 +20,32 @@ export const getCartById = async (req: Request, res: Response) => {
 };
 
 export const addProductToCart = async (req: Request, res: Response) => {
-	const { storeId, productId, quantity } = req.body;
+	const { storeId, productId, quantity, cartId } = req.body;
 
 	const ctx = getAppContext(req);
 
 	const cartProduct = await CartLogic.addProductToCart(ctx, {
 		storeId,
 		productId,
-		quantity
+		quantity,
+		cartId
 	});
 
 	return res.json({ cartProduct });
+};
+
+export const claimCarts = async (req: Request, res: Response) => {
+	const { cartIds } = req.body;
+
+	if (!Array.isArray(cartIds) || cartIds.length === 0) {
+		return res.status(400).json({ error: 'cartIds array is required' });
+	}
+
+	const ctx = getAppContext(req);
+
+	const claimedCarts = await CartLogic.claimCarts(ctx, { cartIds });
+
+	return res.json({ claimedCarts });
 };
 
 export const updateCartProductQuantity = async (

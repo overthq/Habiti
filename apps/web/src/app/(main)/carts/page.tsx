@@ -4,6 +4,7 @@ import { useCartsQuery } from '@/data/queries';
 import { Button } from '@/components/ui/button';
 import SignInPrompt from '@/components/SignInPrompt';
 import { useAuthStore } from '@/state/auth-store';
+import { useGuestCartStore } from '@/state/guest-cart-store';
 
 const buildProductNamesString = (
 	products: Array<{ product: { name: string } }>,
@@ -32,13 +33,44 @@ const buildProductNamesString = (
 };
 
 const CartsPage = () => {
-	const { accessToken } = useAuthStore();
+	const { accessToken, toggleAuthModal } = useAuthStore();
+	const { cartIds: guestCartIds } = useGuestCartStore();
 	const isAuthenticated = Boolean(accessToken);
 	const { data, isLoading, error } = useCartsQuery({
 		enabled: isAuthenticated
 	});
 
+	// Show guest cart links for unauthenticated users
 	if (!isAuthenticated) {
+		if (guestCartIds.length > 0) {
+			return (
+				<div>
+					<h1 className='text-2xl font-medium mb-4'>Your Carts</h1>
+					<p className='text-muted-foreground mb-6'>
+						You have {guestCartIds.length} cart
+						{guestCartIds.length > 1 ? 's' : ''} saved locally.{' '}
+						<button
+							onClick={toggleAuthModal}
+							className='text-primary underline hover:no-underline'
+						>
+							Sign in
+						</button>{' '}
+						to save them to your account.
+					</p>
+					<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+						{guestCartIds.map((cartId, index) => (
+							<div key={cartId} className='border rounded-lg p-6'>
+								<p className='text-lg font-medium mb-4'>Cart {index + 1}</p>
+								<Button asChild>
+									<Link href={`/carts/${cartId}`}>View cart</Link>
+								</Button>
+							</div>
+						))}
+					</div>
+				</div>
+			);
+		}
+
 		return (
 			<SignInPrompt
 				title='Sign in to view your carts'

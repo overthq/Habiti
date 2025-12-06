@@ -3,7 +3,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 export interface CreateUserParams {
 	name: string;
 	email: string;
-	passwordHash: string;
+	passwordHash?: string;
 }
 
 interface UpdateUserParams {

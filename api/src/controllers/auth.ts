@@ -113,8 +113,7 @@ export const appleCallback = async (req: Request, res: Response) => {
 		if (!user) {
 			user = await UserLogic.createUser(ctx, {
 				name: decodedToken.name || '',
-				email: decodedToken.email,
-				passwordHash: ''
+				email: decodedToken.email
 			});
 		}
 

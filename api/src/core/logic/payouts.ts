@@ -39,9 +39,17 @@ export const createPayout = async (
 		throw new Error('Store not found');
 	}
 
-	const isManager = store.managers.some(m => m.managerId === ctx.user.id);
+	if (!ctx.user) {
+		throw new Error('User is not authenticated');
+	}
 
-	if (!isManager) {
+	const currentUserId = ctx.user.id;
+
+	const isCurrentUserManager = store.managers.some(
+		m => m.managerId === currentUserId
+	);
+
+	if (!isCurrentUserManager) {
 		throw new Error('Unauthorized: User is not a manager of this store');
 	}
 
@@ -69,17 +77,19 @@ export const createPayout = async (
 		metadata: { payoutId: payout.id }
 	});
 
-	ctx.services.analytics.track({
-		event: 'payout_created',
-		distinctId: ctx.user.id,
-		properties: {
-			storeId: ctx.storeId,
-			amount,
-			storeName: store.name,
-			availableBeforePayout: availableForPayout
-		},
-		groups: { store: ctx.storeId }
-	});
+	if (ctx.user?.id) {
+		ctx.services.analytics.track({
+			event: 'payout_created',
+			distinctId: ctx.user.id,
+			properties: {
+				storeId: ctx.storeId,
+				amount,
+				storeName: store.name,
+				availableBeforePayout: availableForPayout
+			},
+			groups: { store: ctx.storeId }
+		});
+	}
 
 	return payout;
 };
@@ -95,17 +105,19 @@ export const updatePayout = async (
 ) => {
 	const payout = await PayoutData.updatePayout(ctx.prisma, input);
 
-	ctx.services.analytics.track({
-		event: 'payout_updated',
-		distinctId: ctx.user.id,
-		properties: {
-			storeId: ctx.storeId,
-			amount: payout.amount,
-			storeName: payout.store.name,
-			status: payout.status
-		},
-		groups: { store: payout.storeId }
-	});
+	if (ctx.user?.id) {
+		ctx.services.analytics.track({
+			event: 'payout_updated',
+			distinctId: ctx.user.id,
+			properties: {
+				storeId: ctx.storeId,
+				amount: payout.amount,
+				storeName: payout.store.name,
+				status: payout.status
+			},
+			groups: { store: payout.storeId }
+		});
+	}
 
 	return payout;
 };
@@ -121,9 +133,17 @@ export const getStorePayouts = async (ctx: AppContext, storeId: string) => {
 		throw new Error('Store not found');
 	}
 
-	const isManager = store.managers.some(m => m.managerId === ctx.user.id);
+	if (!ctx.user) {
+		throw new Error('User is not authenticated');
+	}
 
-	if (!isManager) {
+	const currentUserId = ctx.user.id;
+
+	const isCurrentUserManager = store.managers.some(
+		m => m.managerId === currentUserId
+	);
+
+	if (!isCurrentUserManager) {
 		throw new Error('Unauthorized: User is not a manager of this store');
 	}
 
@@ -140,11 +160,13 @@ export const markPayoutAsSuccessful = async (
 	// but we still track analytics for audit purposes
 	await PayoutData.markPayoutAsSuccessful(reference);
 
-	ctx.services.analytics.track({
-		event: 'payout_successful',
-		distinctId: ctx.user.id,
-		properties: { payoutReference: reference }
-	});
+	if (ctx.user?.id) {
+		ctx.services.analytics.track({
+			event: 'payout_successful',
+			distinctId: ctx.user.id,
+			properties: { payoutReference: reference }
+		});
+	}
 
 	return { success: true };
 };
@@ -158,11 +180,13 @@ export const markPayoutAsFailed = async (
 	// Note: This function is typically called by webhooks/system processes
 	await PayoutData.markPayoutAsFailed(reference);
 
-	ctx.services.analytics.track({
-		event: 'payout_failed',
-		distinctId: ctx.user.id,
-		properties: { payoutReference: reference }
-	});
+	if (ctx.user?.id) {
+		ctx.services.analytics.track({
+			event: 'payout_failed',
+			distinctId: ctx.user.id,
+			properties: { payoutReference: reference }
+		});
+	}
 
 	return { success: true };
 };

@@ -37,21 +37,6 @@ interface CreateProductReviewInput {
 	body: string | undefined;
 }
 
-interface UpdateProductQuantityInput {
-	productId: string;
-	quantity: number;
-}
-
-interface IncrementProductQuantityInput {
-	productId: string;
-	increment: number;
-}
-
-interface DecrementProductQuantityInput {
-	productId: string;
-	decrement: number;
-}
-
 interface WatchlistInput {
 	productId: string;
 }
@@ -65,6 +50,10 @@ export const createProduct = async (
 	input: CreateProductInput
 ) => {
 	const { storeId, ...productData } = input;
+
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
 
 	if (ctx.storeId && ctx.storeId !== storeId) {
 		throw new Error('Unauthorized: Cannot create products for different store');
@@ -96,6 +85,10 @@ export const updateProduct = async (
 	input: UpdateProductInput
 ) => {
 	const { productId, ...updateData } = input;
+
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
 
 	const existingProduct = await ProductData.getProductById(
 		ctx.prisma,
@@ -147,28 +140,26 @@ export const getProductById = async (ctx: AppContext, productId: string) => {
 		throw new Error('Product not found');
 	}
 
-	let productViewerContext: Awaited<
-		ReturnType<typeof ProductData.getProductViewerContext>
-	> | null = null;
+	const productViewerContext = ctx.user?.id
+		? await ProductData.getProductViewerContext(
+				ctx.prisma,
+				ctx.user.id,
+				product.id
+			)
+		: null;
 
 	if (ctx.user?.id) {
-		productViewerContext = await ProductData.getProductViewerContext(
-			ctx.prisma,
-			ctx.user.id,
-			product.id
-		);
+		ctx.services.analytics.track({
+			event: 'product_viewed',
+			distinctId: ctx.user?.id,
+			properties: {
+				productId: product.id,
+				productName: product.name,
+				unitPrice: product.unitPrice
+			},
+			groups: { store: product.storeId }
+		});
 	}
-
-	ctx.services.analytics.track({
-		event: 'product_viewed',
-		distinctId: ctx.user?.id,
-		properties: {
-			productId: product.id,
-			productName: product.name,
-			unitPrice: product.unitPrice
-		},
-		groups: { store: product.storeId }
-	});
 
 	return { product, viewerContext: productViewerContext };
 };
@@ -195,6 +186,10 @@ export const deleteProduct = async (
 	input: DeleteProductInput
 ) => {
 	const { productId } = input;
+
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
 
 	const product = await ProductData.getProductById(ctx.prisma, productId);
 
@@ -225,146 +220,6 @@ export const deleteProduct = async (
 	return product;
 };
 
-export const updateProductQuantity = async (
-	ctx: AppContext,
-	input: UpdateProductQuantityInput
-) => {
-	const { productId, quantity } = input;
-
-	if (quantity < 0) {
-		throw new Error('Quantity cannot be negative');
-	}
-
-	const existingProduct = await ProductData.getProductById(
-		ctx.prisma,
-		productId
-	);
-
-	if (!existingProduct) {
-		throw new Error('Product not found');
-	}
-
-	if (ctx.storeId && ctx.storeId !== existingProduct.storeId) {
-		throw new Error(
-			'Unauthorized: Cannot update products from different store'
-		);
-	}
-
-	const product = await ProductData.updateProductQuantity(
-		ctx.prisma,
-		productId,
-		quantity
-	);
-
-	ctx.services.analytics.track({
-		event: 'product_quantity_updated',
-		distinctId: ctx.user.id,
-		properties: {
-			productId: product.id,
-			previousQuantity: existingProduct.quantity,
-			newQuantity: quantity,
-			difference: quantity - existingProduct.quantity
-		},
-		groups: { store: product.storeId }
-	});
-
-	return product;
-};
-
-export const incrementProductQuantity = async (
-	ctx: AppContext,
-	input: IncrementProductQuantityInput
-) => {
-	const { productId, increment } = input;
-
-	if (increment <= 0) {
-		throw new Error('Increment must be positive');
-	}
-
-	const existingProduct = await ProductData.getProductById(
-		ctx.prisma,
-		productId
-	);
-
-	if (!existingProduct) {
-		throw new Error('Product not found');
-	}
-
-	if (ctx.storeId && ctx.storeId !== existingProduct.storeId) {
-		throw new Error(
-			'Unauthorized: Cannot update products from different store'
-		);
-	}
-
-	const product = await ProductData.incrementProductQuantity(
-		ctx.prisma,
-		productId,
-		increment
-	);
-
-	ctx.services.analytics.track({
-		event: 'product_quantity_incremented',
-		distinctId: ctx.user.id,
-		properties: {
-			productId: product.id,
-			increment,
-			newQuantity: product.quantity
-		},
-		groups: { store: product.storeId }
-	});
-
-	return product;
-};
-
-export const decrementProductQuantity = async (
-	ctx: AppContext,
-	input: DecrementProductQuantityInput
-) => {
-	const { productId, decrement } = input;
-
-	if (decrement <= 0) {
-		throw new Error('Decrement must be positive');
-	}
-
-	const existingProduct = await ProductData.getProductById(
-		ctx.prisma,
-		productId
-	);
-
-	if (!existingProduct) {
-		throw new Error('Product not found');
-	}
-
-	if (ctx.storeId && ctx.storeId !== existingProduct.storeId) {
-		throw new Error(
-			'Unauthorized: Cannot update products from different store'
-		);
-	}
-
-	if (existingProduct.quantity < decrement) {
-		throw new Error('Cannot decrement quantity below zero');
-	}
-
-	const product = await ProductData.decrementProductQuantity(
-		ctx.prisma,
-		productId,
-		decrement
-	);
-
-	ctx.services.analytics.track({
-		event: 'product_quantity_decremented',
-		distinctId: ctx.user.id,
-		properties: {
-			productId: product.id,
-			decrement,
-			newQuantity: product.quantity
-		},
-		groups: { store: product.storeId }
-	});
-
-	return product;
-};
-
 export const createProductReview = async (
 	ctx: AppContext,
 	input: CreateProductReviewInput
@@ -379,6 +234,10 @@ export const createProductReview = async (
 
 	if (!product) {
 		throw new Error('Product not found');
+	}
+
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated.');
 	}
 
 	const review = await ProductData.createProductReview(ctx.prisma, {
@@ -421,6 +280,10 @@ export const addToWatchlist = async (
 		throw new Error('Product not found');
 	}
 
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
+
 	const watchlistItem = await ProductData.addToWatchlist(
 		ctx.prisma,
 		ctx.user.id,
@@ -450,6 +313,10 @@ export const removeFromWatchlist = async (
 
 	if (!product) {
 		throw new Error('Product not found');
+	}
+
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
 	}
 
 	await ProductData.removeFromWatchlist(ctx.prisma, ctx.user.id, productId);
@@ -522,6 +389,10 @@ export const updateProductImages = async (
 ) => {
 	const { productId, addImages, removeImageIds } = input;
 
+	if (!ctx.user?.id) {
+		throw new Error('User is not authenticated');
+	}
+
 	const existingProduct = await ProductData.getProductById(
 		ctx.prisma,
 		productId
@@ -565,6 +436,10 @@ export const createProductOption = async (
 
 	const product = await ProductData.getProductById(ctx.prisma, productId);
 
+	if (!ctx.user?.id) {
+		throw new Error('User is not authenticated');
+	}
+
 	if (!product) {
 		throw new Error('Product not found');
 	}
@@ -600,6 +475,10 @@ export const updateProductCategories = async (
 	input: UpdateProductCategoriesInput
 ) => {
 	const { productId, addCategoryIds, removeCategoryIds } = input;
+
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
 
 	const existingProduct = await ProductData.getProductById(
 		ctx.prisma,
@@ -640,6 +519,10 @@ export const createStoreProductCategory = async (
 	ctx: AppContext,
 	input: CreateStoreProductCategoryInput
 ) => {
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
+
 	if (!ctx.storeId) {
 		throw new Error('Store not found');
 	}
@@ -670,6 +553,10 @@ export const updateStoreProductCategory = async (
 ) => {
 	const { categoryId, ...updateData } = input;
 
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
+
 	if (!ctx.storeId) {
 		throw new Error('Store not found');
 	}
@@ -699,6 +586,10 @@ export const deleteStoreProductCategory = async (
 	input: DeleteStoreProductCategoryInput
 ) => {
 	const { categoryId } = input;
+
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
 
 	if (!ctx.storeId) {
 		throw new Error('Store not found');
