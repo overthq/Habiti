@@ -27,6 +27,7 @@ import {
 	useRegisterMutation,
 	useVerifyCodeMutation
 } from '@/data/mutations';
+import { useGuestCartStore } from '@/state/guest-cart-store';
 
 type AuthMode = 'login' | 'signup' | 'verify-code';
 
@@ -59,6 +60,7 @@ const AuthDrawerProvider: React.FC<React.PropsWithChildren> = ({
 	// FIXME: Consider moving this back to useState.
 	const { currentEmail, setCurrentEmail } = useAuthStore();
 	const [mode, setMode] = React.useState<AuthMode>('login');
+	const { cartIds } = useGuestCartStore();
 
 	const authenticateMutation = useAuthenticateMutation();
 	const registerMutation = useRegisterMutation();
@@ -102,9 +104,13 @@ const AuthDrawerProvider: React.FC<React.PropsWithChildren> = ({
 
 	const onVerifyCodeSubmit = React.useCallback(
 		(data: { code: string }) => {
-			verifyCodeMutation.mutate({ email: currentEmail, code: data.code });
+			verifyCodeMutation.mutate({
+				email: currentEmail,
+				code: data.code,
+				cartIds
+			});
 		},
-		[verifyCodeMutation]
+		[verifyCodeMutation, cartIds]
 	);
 
 	const value = React.useMemo(

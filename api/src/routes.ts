@@ -42,8 +42,7 @@ import {
 	getCartById,
 	addProductToCart,
 	removeProductFromCart,
-	updateCartProductQuantity,
-	claimCarts
+	updateCartProductQuantity
 } from './controllers/carts';
 import {
 	register,
@@ -141,7 +140,6 @@ router.patch('/payouts/:id', isAdmin, updatePayout);
 // Carts
 router.get('/carts/:id', optionalAuth, getCartById);
 router.post('/carts/products', optionalAuth, addProductToCart);
-router.post('/carts/claim', authenticate, claimCarts);
 router.put(
 	'/carts/:id/products/:productId',
 	authenticate,

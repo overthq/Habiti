@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 
 import * as AuthLogic from '../core/logic/auth';
 import * as UserLogic from '../core/logic/users';
+import * as CartLogic from '../core/logic/carts';
 
 import { env } from '../config/env';
 import { getAppContext } from '../utils/context';
@@ -37,7 +38,7 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const verify = async (req: Request, res: Response) => {
-	const { email, code } = req.body;
+	const { email, code, cartIds } = req.body;
 
 	if (!email || !code) {
 		return res
@@ -59,6 +60,12 @@ export const verify = async (req: Request, res: Response) => {
 
 		const accessToken = await AuthLogic.generateAccessToken(user);
 		const refreshToken = await AuthLogic.generateRefreshToken(ctx, user.id);
+
+		// FIXME: A session-id based approach is way better for handling this, but
+		// suffer it to be so for now.
+		if (cartIds && cartIds.length > 0) {
+			await CartLogic.claimCarts(ctx, { cartIds });
+		}
 
 		res.cookie('refreshToken', refreshToken, {
 			httpOnly: true,

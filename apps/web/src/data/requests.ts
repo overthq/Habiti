@@ -1,5 +1,3 @@
-'use client';
-
 import axios from 'axios';
 import type {
 	AddDeliveryAddressBody,
@@ -196,13 +194,6 @@ export const addToCart = async (body: AddToCartBody) => {
 		'/carts/products',
 		body
 	);
-	return response.data;
-};
-
-export const claimCarts = async (cartIds: string[]) => {
-	const response = await api.post<{ claimedCarts: string[] }>('/carts/claim', {
-		cartIds
-	});
 	return response.data;
 };
 
