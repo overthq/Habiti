@@ -1,8 +1,10 @@
 import 'dotenv/config';
-import { defineConfig, env } from 'prisma/config';
+import { defineConfig } from 'prisma/config';
 
 export default defineConfig({
 	datasource: {
-		url: env('DATABASE_URL')
+		// We cannot use the `env` function from 'prisma/config', because we don't
+		// need DATABASE_URL in CI (`prisma generate` does not need a db url).
+		url: process.env.DATABASE_URL!
 	}
 });
