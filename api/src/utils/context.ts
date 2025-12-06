@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { PrismaClient, User } from '@prisma/client';
+import { PrismaClient, User } from '../generated/prisma/client';
 import { RedisClient } from 'bun';
 
 import prismaClient from '../config/prisma';

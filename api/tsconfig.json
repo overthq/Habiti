@@ -6,9 +6,10 @@
 		"outDir": "dist",
 		"rootDir": "src",
 		"skipLibCheck": true,
-		"module": "commonjs",
+		"module": "ESNext",
+		"moduleResolution": "node",
 		"lib": ["dom", "es2017"],
-		"target": "es5",
+		"target": "es2023",
 		"esModuleInterop": true,
 		"sourceMap": true,
 		"inlineSources": true,
@@ -17,6 +18,7 @@
 		// This improves issue grouping in Sentry.
 		"sourceRoot": "/",
 		// Make sure that Prisma is aggressive with type-related issues.
+		"strict": true,
 		"strictNullChecks": true,
 		"exactOptionalPropertyTypes": true,
 		"noUncheckedIndexedAccess": true

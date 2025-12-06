@@ -19,7 +19,8 @@ const envSchema = z.object({
 	APPLE_REDIRECT_URI: z.string().optional(),
 	PAYSTACK_SECRET_KEY: z.string(),
 	REDIS_URL: z.string().optional(),
-	REDIS_TLS_URL: z.string().optional()
+	REDIS_TLS_URL: z.string().optional(),
+	DATABASE_URL: z.string().optional()
 });
 
 export const env = envSchema.parse(process.env);

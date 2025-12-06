@@ -5,3 +5,5 @@ node_modules
 
 # Sentry Config File
 .sentryclirc
+
+src/generated

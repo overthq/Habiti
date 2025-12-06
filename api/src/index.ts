@@ -42,7 +42,7 @@ const main = async () => {
 			credentialsRequired: false
 		})
 	);
-	app.use((err, _, res, next) => {
+	app.use((err: any, _: any, res: any, next: any) => {
 		if (err.name === 'UnauthorizedError') {
 			res.status(401).json({ message: 'invalid token...' });
 		} else {

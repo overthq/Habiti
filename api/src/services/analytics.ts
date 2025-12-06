@@ -26,20 +26,16 @@ export interface AnalyticsAlias {
 }
 
 export default class AnalyticsService {
-	private client: PostHog;
-	private isEnabled: boolean;
+	private client: PostHog | null = null;
 
 	constructor() {
 		if (!!env.POSTHOG_API_KEY) {
 			this.client = new PostHog(env.POSTHOG_API_KEY);
-			this.isEnabled = true;
-		} else {
-			this.isEnabled = false;
 		}
 	}
 
 	track(event: AnalyticsEvent) {
-		if (!this.isEnabled) {
+		if (!this.client) {
 			console.warn(
 				'PostHog is not configured - skipping analytics event:',
 				event.event
@@ -61,10 +57,8 @@ export default class AnalyticsService {
 	}
 
 	identify(data: AnalyticsIdentifyData) {
-		if (!this.isEnabled) return;
-
 		try {
-			this.client.identify({
+			this.client?.identify({
 				distinctId: data.distinctId,
 				properties: data.properties || {}
 			});
@@ -74,10 +68,8 @@ export default class AnalyticsService {
 	}
 
 	group(data: AnalyticsGroupData) {
-		if (!this.isEnabled) return;
-
 		try {
-			this.client.groupIdentify({
+			this.client?.groupIdentify({
 				groupType: data.groupType,
 				groupKey: data.groupKey,
 				properties: data.properties || {}
@@ -88,10 +80,8 @@ export default class AnalyticsService {
 	}
 
 	alias(data: AnalyticsAlias) {
-		if (!this.isEnabled) return;
-
 		try {
-			this.client.alias({
+			this.client?.alias({
 				distinctId: data.distinctId,
 				alias: data.alias
 			});
@@ -104,31 +94,21 @@ export default class AnalyticsService {
 	 * Flush any pending events (useful for serverless functions)
 	 */
 	async flush() {
-		if (!this.isEnabled) return;
-
 		try {
-			await this.client.flush();
+			await this.client?.flush();
 		} catch (error) {
 			console.error('Failed to flush analytics events:', error);
 		}
 	}
 
-	/**
-	 * Shutdown the client gracefully
-	 */
 	async shutdown(): Promise<void> {
-		if (!this.isEnabled) return;
-
 		try {
-			await this.client.shutdown();
+			await this.client?.shutdown();
 		} catch (error) {
 			console.error('Failed to shutdown analytics client:', error);
 		}
 	}
 
-	/**
-	 * Enrich event properties with common metadata
-	 */
 	private enrichProperties(
 		properties: Record<string, any> = {}
 	): Record<string, any> {

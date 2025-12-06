@@ -1,4 +1,4 @@
-import { PayoutStatus, PrismaClient } from '@prisma/client';
+import { PayoutStatus, PrismaClient } from '../../generated/prisma/client';
 import prismaClient from '../../config/prisma';
 
 interface SavePayoutParams {

@@ -1,4 +1,4 @@
-import { Cart, CartProduct, Product } from '@prisma/client';
+import { Cart, CartProduct, Product } from '../../generated/prisma/client';
 
 export const validateCart = async (
 	cart: Cart & { products: (CartProduct & { product: Product })[] },

@@ -30,7 +30,7 @@ export const createStore = async (req: Request, res: Response) => {
 
 		return res.status(201).json({ store });
 	} catch (error) {
-		return res.status(500).json({ error: error.message });
+		return res.status(500).json({ error: (error as Error)?.message });
 	}
 };
 

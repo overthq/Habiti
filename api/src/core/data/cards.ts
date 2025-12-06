@@ -1,5 +1,5 @@
 import prismaClient from '../../config/prisma';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../../generated/prisma/client';
 
 interface CreateCardParams {
 	email: string;

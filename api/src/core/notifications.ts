@@ -1,4 +1,4 @@
-import { PushTokenType } from '@prisma/client';
+import { PushTokenType } from '../generated/prisma/client';
 
 import prismaClient from '../config/prisma';
 

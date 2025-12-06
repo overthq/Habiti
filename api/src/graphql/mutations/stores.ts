@@ -1,6 +1,6 @@
 import { UploadApiResponse } from 'cloudinary';
 import { FileUpload } from 'graphql-upload';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '../../generated/prisma/client';
 
 import * as StoreLogic from '../../core/logic/stores';
 import { Resolver } from '../../types/resolvers';

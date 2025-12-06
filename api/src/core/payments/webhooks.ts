@@ -1,4 +1,4 @@
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus } from '../../generated/prisma/client';
 
 import { storeCard } from '../data/cards';
 import { markPayoutAsFailed, markPayoutAsSuccessful } from '../data/payouts';

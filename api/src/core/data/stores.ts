@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, OrderStatus } from '@prisma/client';
+import { PrismaClient } from '../../generated/prisma/client';
 import {
 	productFiltersToPrismaClause,
 	ProductFilters
