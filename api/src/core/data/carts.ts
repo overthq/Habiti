@@ -9,6 +9,11 @@ interface UpdateCartQuantityParams {
 // TODO: Make sure that if a regular user is accessing this,
 // they must be the cart owner (or otherwise have provable access to it)
 // Admins should be able to get the data without restriction.
+// For unauthenticated (guest) users, consider linking their session
+// to the cart, so we can validate that way.
+// Something like:
+// - ctx.user.id === cart.userId || cart.sessionId === ctx.sessionId
+// In this case, ctx.sessionId would be derived from a cookie.
 
 export const getCartById = async (prisma: PrismaClient, cartId: string) => {
 	const cart = await prisma.cart.findUnique({
@@ -71,7 +76,7 @@ export const addProductToCart = async (
 	prisma: PrismaClient,
 	args: AddProductToCartArgs
 ) => {
-	let cart: Cart;
+	let cart: Cart | null;
 
 	if (args.userId) {
 		// Authenticated user: upsert by userId + storeId
@@ -81,19 +86,17 @@ export const addProductToCart = async (
 			create: { userId: args.userId, storeId: args.storeId }
 		});
 	} else if (args.cartId) {
-		// Guest user with existing cart: find by cartId
 		cart = await prisma.cart.findUnique({
 			where: { id: args.cartId }
 		});
 
+		// FIXME: Return 404 when the cart does not exist.
 		if (!cart || cart.storeId !== args.storeId) {
-			// Cart doesn't exist or is for a different store, create new guest cart
 			cart = await prisma.cart.create({
 				data: { storeId: args.storeId }
 			});
 		}
 	} else {
-		// Guest user without existing cart: create new guest cart
 		cart = await prisma.cart.create({
 			data: { storeId: args.storeId }
 		});
