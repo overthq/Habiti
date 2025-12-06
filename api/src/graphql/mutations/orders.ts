@@ -1,4 +1,4 @@
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus } from '../../generated/prisma/client';
 
 import { Resolver } from '../../types/resolvers';
 import { storeAuthorizedResolver } from '../permissions';

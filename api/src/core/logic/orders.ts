@@ -1,4 +1,4 @@
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus } from '../../generated/prisma/client';
 
 import * as OrderData from '../data/orders';
 import { getCartById } from '../data/carts';

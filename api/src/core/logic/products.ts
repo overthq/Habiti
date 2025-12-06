@@ -1,4 +1,4 @@
-import { ProductStatus } from '@prisma/client';
+import { ProductStatus } from '../../generated/prisma/client';
 import * as ProductData from '../data/products';
 import { AppContext } from '../../utils/context';
 import { canManageStore } from './permissions';

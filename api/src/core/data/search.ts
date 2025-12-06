@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../../generated/prisma/client';
 
 export const globalSearch = async (prisma: PrismaClient, query: string) => {
 	const [products, stores] = await Promise.all([

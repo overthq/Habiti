@@ -17,7 +17,7 @@ export const checkHealth = async (req: Request, res: Response) => {
 	} catch (error) {
 		return res.status(503).json({
 			status: 'unhealthy',
-			error: error.message
+			error: (error as Error).message
 		});
 	}
 };

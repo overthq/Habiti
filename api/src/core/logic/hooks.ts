@@ -3,7 +3,8 @@ import {
 	PrismaClient,
 	Product,
 	UserPushToken
-} from '@prisma/client';
+} from '../../generated/prisma/client';
+
 import { NotificationType } from '../notifications';
 import Services from '../../services';
 
@@ -60,14 +61,19 @@ export const createOrderHooks = (
 	}
 
 	if (args.pushToken) {
-		services.notifications.queueNotification({
-			type: NotificationTypeByOrderStatus[args.status],
-			data: {
-				orderId: args.orderId,
-				customerName: args.customerName
-			},
-			recipientTokens: [args.pushToken.token]
-		});
+		if (
+			args.status === OrderStatus.Completed ||
+			args.status === OrderStatus.Cancelled
+		) {
+			services.notifications.queueNotification({
+				type: NotificationTypeByOrderStatus[args.status],
+				data: {
+					orderId: args.orderId,
+					customerName: args.customerName
+				},
+				recipientTokens: [args.pushToken.token]
+			});
+		}
 	}
 
 	services.analytics.track({
@@ -119,13 +125,18 @@ export const updateOrderHooks = (
 	});
 
 	if (args.pushToken) {
-		services.notifications.queueNotification({
-			type: NotificationTypeByOrderStatus[args.status],
-			data: {
-				orderId: args.orderId,
-				customerName: args.customerName
-			},
-			recipientTokens: [args.pushToken.token]
-		});
+		if (
+			args.status === OrderStatus.Completed ||
+			args.status === OrderStatus.Cancelled
+		) {
+			services.notifications.queueNotification({
+				type: NotificationTypeByOrderStatus[args.status],
+				data: {
+					orderId: args.orderId,
+					customerName: args.customerName
+				},
+				recipientTokens: [args.pushToken.token]
+			});
+		}
 	}
 };

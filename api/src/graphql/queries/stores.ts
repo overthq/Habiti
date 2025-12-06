@@ -4,7 +4,7 @@ import { Resolver } from '../../types/resolvers';
 import { decodeCursor, paginateQuery } from '../../utils/pagination';
 import { storeAuthorizedResolver } from '../permissions';
 import { CAN_VIEW_UNLISTED_STORES } from '../../utils/allowlist';
-import { OrderStatus, Prisma } from '@prisma/client';
+import { OrderStatus, Prisma } from '../../generated/prisma/client';
 
 export interface StoreArgs {
 	id: string;

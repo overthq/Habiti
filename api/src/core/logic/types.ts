@@ -1,4 +1,4 @@
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus } from '../../generated/prisma/client';
 import { NotificationType } from '../notifications';
 
 export interface CreateOrderInput {

@@ -1,4 +1,8 @@
-import { Prisma, OrderStatus, PrismaClient } from '@prisma/client';
+import {
+	Prisma,
+	OrderStatus,
+	PrismaClient
+} from '../../generated/prisma/client';
 import { chargeAuthorization } from '../payments';
 
 interface CreateOrderParams {

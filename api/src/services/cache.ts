@@ -1,9 +1,9 @@
-import { PushTokenType } from '@prisma/client';
+import { PushTokenType } from '../generated/prisma/client';
 
 export default class CacheService {
-	shopperPushTokens: Map<string, string>;
-	merchantPushTokens: Map<string, string>;
-	storeManagers: Map<string, Set<string>>;
+	shopperPushTokens: Map<string, string> = new Map();
+	merchantPushTokens: Map<string, string> = new Map();
+	storeManagers: Map<string, Set<string>> = new Map();
 
 	public registerPushToken(
 		userId: string,
