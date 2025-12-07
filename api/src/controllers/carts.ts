@@ -19,6 +19,20 @@ export const getCartById = async (req: Request, res: Response) => {
 	return res.json(cartWithContext);
 };
 
+export const getCartsFromList = async (req: Request, res: Response) => {
+	const { cartIds } = req.query;
+
+	if (!cartIds || !Array.isArray(cartIds)) {
+		return res.status(400).json({ error: 'Cart IDs must be provided' });
+	}
+
+	const ctx = getAppContext(req);
+
+	const carts = await CartLogic.getCartsFromList(ctx, cartIds as string[]);
+
+	return res.json(carts);
+};
+
 export const addProductToCart = async (req: Request, res: Response) => {
 	const { storeId, productId, quantity, cartId } = req.body;
 

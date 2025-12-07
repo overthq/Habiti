@@ -12,8 +12,10 @@ import {
 	getRelatedProducts,
 	getStoreProducts,
 	globalSearch,
-	getLandingHighlights
+	getLandingHighlights,
+	getGuestCarts
 } from './requests';
+import { useGuestCartStore } from '@/state/guest-cart-store';
 
 type QueryEnabledOptions = {
 	enabled?: boolean;
@@ -46,6 +48,17 @@ export const useCartQuery = (
 		queryKey: ['carts', cartId],
 		queryFn: () => getCart(cartId),
 		enabled: Boolean(cartId) && isEnabled
+	});
+};
+
+export const useGuestCartsQuery = (options: QueryEnabledOptions = {}) => {
+	const isEnabled = options.enabled ?? true;
+	const { cartIds } = useGuestCartStore();
+
+	return useQuery({
+		queryKey: ['carts', 'guest'],
+		queryFn: () => getGuestCarts(cartIds),
+		enabled: isEnabled && cartIds.length > 0
 	});
 };
 

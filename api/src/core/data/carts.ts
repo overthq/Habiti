@@ -64,6 +64,25 @@ export const getCartsByUserId = async (
 	return carts;
 };
 
+export const getCartsFromList = async (
+	prisma: PrismaClient,
+	cartIds: string[]
+) => {
+	if (cartIds.length === 0) {
+		return [];
+	}
+
+	const carts = await prisma.cart.findMany({
+		where: { id: { in: cartIds } },
+		include: {
+			products: { include: { product: { include: { images: true } } } },
+			store: true
+		}
+	});
+
+	return carts;
+};
+
 interface AddProductToCartArgs {
 	storeId: string;
 	productId: string;

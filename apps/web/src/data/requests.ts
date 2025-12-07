@@ -189,6 +189,13 @@ export const getCart = async (cartId: string) => {
 	return response.data;
 };
 
+export const getGuestCarts = async (cartIds: string[]) => {
+	const response = await api.get<{ carts: Cart[] }>('/carts', {
+		params: { cartIds }
+	});
+	return response.data;
+};
+
 export const addToCart = async (body: AddToCartBody) => {
 	const response = await api.post<{ cartProduct: CartProduct }>(
 		'/carts/products',

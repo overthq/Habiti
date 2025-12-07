@@ -58,6 +58,10 @@ export const getCartsByUserId = async (ctx: AppContext, userId: string) => {
 	return CartData.getCartsByUserId(ctx.prisma, userId);
 };
 
+export const getCartsFromList = async (ctx: AppContext, cartIds: string[]) => {
+	return CartData.getCartsFromList(ctx.prisma, cartIds);
+};
+
 export const addProductToCart = async (
 	ctx: AppContext,
 	input: AddProductToCartInput
