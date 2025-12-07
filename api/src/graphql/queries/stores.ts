@@ -124,6 +124,10 @@ const categories: Resolver<CategoriesArgs> = (parent, { filter }, ctx) => {
 };
 
 const followedByUser: Resolver = async (parent, _, ctx) => {
+	if (!ctx.user?.id) {
+		return false;
+	}
+
 	const fetchedFollower = await ctx.prisma.storeFollower.findUnique({
 		where: {
 			storeId_followerId: { storeId: parent.id, followerId: ctx.user.id }
@@ -134,6 +138,10 @@ const followedByUser: Resolver = async (parent, _, ctx) => {
 };
 
 const userCart: Resolver = async (parent, _, ctx) => {
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
+
 	const fetchedCart = await ctx.prisma.cart.findUnique({
 		where: { userId_storeId: { userId: ctx.user.id, storeId: parent.id } },
 		// FIXME: This is a little wasteful just to get the item count,

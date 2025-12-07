@@ -51,6 +51,10 @@ interface DeleteStoreInput {
 }
 
 export const createStore = async (ctx: AppContext, input: CreateStoreInput) => {
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
+
 	const store = await StoreData.createStore(ctx.prisma, input);
 
 	ctx.services.analytics.track({
@@ -85,9 +89,14 @@ export const updateStore = async (ctx: AppContext, input: UpdateStoreInput) => {
 		throw new Error('Store not found');
 	}
 
-	const isManager = existingStore.managers.some(
-		m => m.managerId === ctx.user.id
-	);
+	if (!ctx.user) {
+		throw new Error('User is not authenticated');
+	}
+
+	const userId = ctx.user.id;
+
+	// FIXME: For some reason, using ctx.user.id directly does not work
+	const isManager = existingStore.managers.some(m => m.managerId === userId);
 
 	if (!isManager) {
 		throw new Error('Unauthorized: User is not a manager of this store');
@@ -116,27 +125,21 @@ export const getStoreById = async (ctx: AppContext, storeId: string) => {
 		throw new Error('Store not found');
 	}
 
-	let storeViewerContext: Awaited<
-		ReturnType<typeof StoreData.getStoreViewerContext>
-	> | null = null;
+	const storeViewerContext = ctx.user?.id
+		? await StoreData.getStoreViewerContext(ctx.prisma, ctx.user.id, store.id)
+		: null;
 
 	if (ctx.user?.id) {
-		storeViewerContext = await StoreData.getStoreViewerContext(
-			ctx.prisma,
-			ctx.user.id,
-			store.id
-		);
+		ctx.services.analytics.track({
+			event: 'store_viewed',
+			distinctId: ctx.user.id,
+			properties: {
+				storeId: store.id,
+				storeName: store.name
+			},
+			groups: { store: storeId }
+		});
 	}
-
-	ctx.services.analytics.track({
-		event: 'store_viewed',
-		distinctId: ctx.user?.id,
-		properties: {
-			storeId: store.id,
-			storeName: store.name
-		},
-		groups: { store: storeId }
-	});
 
 	return { store, viewerContext: storeViewerContext };
 };
@@ -150,9 +153,17 @@ export const deleteStore = async (ctx: AppContext, input: DeleteStoreInput) => {
 		throw new Error('Store not found');
 	}
 
-	const isManager = store.managers.some(m => m.managerId === ctx.user.id);
+	if (!ctx.user) {
+		throw new Error('User is not authenticated');
+	}
 
-	if (!isManager) {
+	const currentUserId = ctx.user.id;
+
+	const isCurrentUserManager = store.managers.some(
+		m => m.managerId === currentUserId
+	);
+
+	if (!isCurrentUserManager) {
 		throw new Error('Unauthorized: User is not a manager of this store');
 	}
 
@@ -183,8 +194,14 @@ export const createStoreManager = async (
 		throw new Error('Store not found');
 	}
 
+	if (!ctx.user) {
+		throw new Error('User is not authenticated');
+	}
+
+	const currentUserId = ctx.user.id;
+
 	const isCurrentUserManager = store.managers.some(
-		m => m.managerId === ctx.user.id
+		m => m.managerId === currentUserId
 	);
 
 	if (!isCurrentUserManager) {
@@ -222,8 +239,14 @@ export const removeStoreManager = async (
 		throw new Error('Store not found');
 	}
 
+	if (!ctx.user) {
+		throw new Error('User is not authenticated');
+	}
+
+	const currentUserId = ctx.user.id;
+
 	const isCurrentUserManager = store.managers.some(
-		m => m.managerId === ctx.user.id
+		m => m.managerId === currentUserId
 	);
 
 	if (!isCurrentUserManager) {
@@ -259,8 +282,14 @@ export const followStore = async (ctx: AppContext, input: FollowStoreInput) => {
 		throw new Error('Store not found');
 	}
 
+	if (!ctx.user) {
+		throw new Error('User is not authenticated');
+	}
+
+	const currentUserId = ctx.user.id;
+
 	const isAlreadyFollowing = store.followers.some(
-		f => f.followerId === ctx.user.id
+		f => f.followerId === currentUserId
 	);
 
 	if (isAlreadyFollowing) {
@@ -309,10 +338,20 @@ export const unfollowStore = async (
 		throw new Error('Store not found');
 	}
 
-	const isFollowing = store.followers.some(f => f.followerId === ctx.user.id);
+	if (!ctx.user?.id) {
+		throw new Error('User is not authenticated');
+	}
+
+	const currentUserId = ctx.user.id;
+
+	const isFollowing = store.followers.some(f => f.followerId === currentUserId);
 
 	if (!isFollowing) {
 		throw new Error('Not following this store');
+	}
+
+	if (!ctx.user?.id) {
+		throw new Error('User is not authenticated');
 	}
 
 	const follower = await StoreData.unfollowStore(ctx.prisma, {
@@ -334,7 +373,7 @@ export const unfollowStore = async (
 };
 
 export const getStoresByUserId = async (ctx: AppContext, userId: string) => {
-	if (userId !== ctx.user.id) {
+	if (!ctx.user?.id || userId !== ctx.user.id) {
 		throw new Error("Unauthorized: Cannot access other user's stores");
 	}
 
@@ -342,7 +381,7 @@ export const getStoresByUserId = async (ctx: AppContext, userId: string) => {
 };
 
 export const getFollowedStores = async (ctx: AppContext, userId: string) => {
-	if (userId !== ctx.user.id) {
+	if (!ctx.user?.id || userId !== ctx.user.id) {
 		throw new Error("Unauthorized: Cannot access other user's followed stores");
 	}
 

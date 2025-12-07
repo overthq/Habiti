@@ -1,17 +1,23 @@
 import { OrderStatus } from '../../generated/prisma/client';
 
+import * as CardLogic from './cards';
+
 import * as OrderData from '../data/orders';
-import { getCartById } from '../data/carts';
+import * as CartData from '../data/carts';
+
 import { CreateOrderInput, UpdateOrderStatusInput } from './types';
 import { createOrderHooks, updateOrderHooks } from './hooks';
 import { validateCart } from '../validations/carts';
 import { createOrderSchema, updateOrderSchema } from '../validations/orders';
 import { AppContext } from '../../utils/context';
-import * as CardLogic from './cards';
 import { InitializeTransactionResponse } from '../payments/paystack';
 
 export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 	const { data: validatedInput, success } = createOrderSchema.safeParse(input);
+
+	if (!ctx.user) {
+		throw new Error('User not authenticated');
+	}
 
 	if (!success) {
 		throw new Error('Invalid create order input');
@@ -19,7 +25,7 @@ export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 
 	const { cartId, cardId, transactionFee, serviceFee } = validatedInput;
 
-	const cart = await getCartById(ctx.prisma, cartId);
+	const cart = await CartData.getCartById(ctx.prisma, cartId);
 
 	await validateCart(cart, ctx.user.id);
 
@@ -67,6 +73,10 @@ export const updateOrderStatus = async (
 	input: UpdateOrderStatusInput
 ) => {
 	const { data: validatedInput, success } = updateOrderSchema.safeParse(input);
+
+	if (!ctx.user) {
+		throw new Error('User not authenticated');
+	}
 
 	if (!success) {
 		throw new Error('Invalid update order input');
@@ -122,10 +132,22 @@ const validateStatusTransition = (
 };
 
 export const getOrderById = async (ctx: AppContext, orderId: string) => {
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
+
 	const order = await OrderData.getOrderById(ctx.prisma, orderId);
 
 	if (!order) {
 		throw new Error('Order not found');
+	}
+
+	if (order.userId !== ctx.user.id) {
+		const isUserAdmin = await ctx.isAdmin();
+
+		if (!isUserAdmin) {
+			throw new Error('User not authorized to view this order.');
+		}
 	}
 
 	ctx.services.analytics.track({

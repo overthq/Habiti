@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { z, ZodSchema } from 'zod';
+import { ZodSchema } from 'zod';
 
 import { APIException } from '../types/errors';
 

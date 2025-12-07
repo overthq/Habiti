@@ -35,6 +35,10 @@ interface DeleteCardInput {
 }
 
 export const storeCard = async (ctx: AppContext, input: StoreCardInput) => {
+	if (!ctx.user) {
+		throw new Error('User not authenticated');
+	}
+
 	if (input.email !== ctx.user.email) {
 		throw new Error('Unauthorized: Email does not match current user');
 	}
@@ -57,6 +61,10 @@ export const storeCard = async (ctx: AppContext, input: StoreCardInput) => {
 };
 
 export const createCard = async (ctx: AppContext, input: CreateCardInput) => {
+	if (!ctx.user) {
+		throw new Error('User not authenticated');
+	}
+
 	if (input.email !== ctx.user.email) {
 		throw new Error('Unauthorized: Email does not match current user');
 	}
@@ -89,6 +97,10 @@ export const authorizeCard = async (
 	ctx: AppContext,
 	input: AuthorizeCardInput
 ) => {
+	if (!ctx.user) {
+		throw new Error('User not authenticated');
+	}
+
 	let amount = 5000;
 
 	if (input.orderId) {
@@ -113,6 +125,10 @@ export const authorizeCard = async (
 };
 
 export const getCardsByUserId = async (ctx: AppContext, userId: string) => {
+	if (!ctx.user) {
+		throw new Error('User not authenticated');
+	}
+
 	if (userId !== ctx.user.id) {
 		throw new Error("Unauthorized: Cannot access other user's cards");
 	}
@@ -122,6 +138,10 @@ export const getCardsByUserId = async (ctx: AppContext, userId: string) => {
 
 export const getCardById = async (ctx: AppContext, cardId: string) => {
 	const card = await CardData.getCardById(ctx.prisma, cardId);
+
+	if (!ctx.user) {
+		throw new Error('User not authenticated');
+	}
 
 	if (!card) {
 		throw new Error('Card not found');
@@ -136,6 +156,10 @@ export const getCardById = async (ctx: AppContext, cardId: string) => {
 
 export const deleteCard = async (ctx: AppContext, input: DeleteCardInput) => {
 	const { cardId } = input;
+
+	if (!ctx.user) {
+		throw new Error('User not authenticated');
+	}
 
 	const card = await CardData.getCardById(ctx.prisma, cardId);
 

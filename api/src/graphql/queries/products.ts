@@ -77,6 +77,10 @@ const reviews: Resolver = (parent, _, ctx) => {
 
 // FIXME: Very hacky.
 const inCart: Resolver = async (parent, _, ctx) => {
+	if (!ctx.user?.id) {
+		return false;
+	}
+
 	const fetchedCart = await ctx.prisma.cart.findUnique({
 		where: { userId_storeId: { userId: ctx.user.id, storeId: parent.storeId } }
 	});

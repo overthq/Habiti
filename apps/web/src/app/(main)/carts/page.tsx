@@ -1,9 +1,10 @@
 'use client';
 import Link from 'next/link';
-import { useCartsQuery } from '@/data/queries';
+import { useCartsQuery, useGuestCartsQuery } from '@/data/queries';
 import { Button } from '@/components/ui/button';
 import SignInPrompt from '@/components/SignInPrompt';
 import { useAuthStore } from '@/state/auth-store';
+import { useGuestCartStore } from '@/state/guest-cart-store';
 
 const buildProductNamesString = (
 	products: Array<{ product: { name: string } }>,
@@ -33,12 +34,25 @@ const buildProductNamesString = (
 
 const CartsPage = () => {
 	const { accessToken } = useAuthStore();
+	const { cartIds: guestCartIds } = useGuestCartStore();
 	const isAuthenticated = Boolean(accessToken);
 	const { data, isLoading, error } = useCartsQuery({
 		enabled: isAuthenticated
 	});
+	const {
+		data: guestCartsData,
+		isLoading: isGuestCartLoading,
+		error: guestCartsError
+	} = useGuestCartsQuery({
+		enabled: !isAuthenticated
+	});
 
-	if (!isAuthenticated) {
+	const carts = data?.carts || guestCartsData?.carts;
+	const isCartLoading = isLoading || isGuestCartLoading;
+	const cartError = error || guestCartsError;
+
+	// Show guest cart links for unauthenticated users
+	if (!isAuthenticated && guestCartIds.length === 0) {
 		return (
 			<SignInPrompt
 				title='Sign in to view your carts'
@@ -47,14 +61,14 @@ const CartsPage = () => {
 		);
 	}
 
-	if (isLoading || !data)
+	if (isCartLoading || !carts)
 		return (
 			<div className='flex items-center justify-center min-h-[60vh]'>
 				<div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary'></div>
 			</div>
 		);
 
-	if (error)
+	if (cartError)
 		return (
 			<div className='flex items-center justify-center min-h-[60vh]'>
 				<div className='text-red-500'>
@@ -63,7 +77,7 @@ const CartsPage = () => {
 			</div>
 		);
 
-	if (data.carts.length === 0) {
+	if (carts.length === 0) {
 		return (
 			<div>
 				<h1 className='text-2xl font-medium mb-4'>Carts</h1>
@@ -85,7 +99,7 @@ const CartsPage = () => {
 		<div>
 			<h1 className='text-2xl font-medium mb-4'>Carts</h1>
 			<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-				{data.carts.map(cart => (
+				{carts.map(cart => (
 					<div key={cart.id} className='border rounded-lg p-6'>
 						<div className='flex items-center gap-2 mb-4'>
 							<div className='size-10 rounded-full bg-muted'>

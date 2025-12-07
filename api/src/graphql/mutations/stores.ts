@@ -24,6 +24,10 @@ export const createStore: Resolver<CreateStoreArgs> = async (
 	{ input },
 	ctx
 ) => {
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
+
 	const { storeImage, ...rest } = input;
 	let uploadedImage: UploadApiResponse | undefined;
 
@@ -69,6 +73,10 @@ export interface EditStoreArgs {
 
 export const editStore = storeAuthorizedResolver<EditStoreArgs>(
 	async (_, { input }, ctx) => {
+		if (!ctx.user) {
+			throw new Error('User not authenticated');
+		}
+
 		if (!ctx.storeId) {
 			throw new Error('No storeId specified');
 		}
