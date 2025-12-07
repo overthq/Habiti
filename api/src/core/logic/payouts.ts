@@ -77,19 +77,17 @@ export const createPayout = async (
 		metadata: { payoutId: payout.id }
 	});
 
-	if (ctx.user?.id) {
-		ctx.services.analytics.track({
-			event: 'payout_created',
-			distinctId: ctx.user.id,
-			properties: {
-				storeId: ctx.storeId,
-				amount,
-				storeName: store.name,
-				availableBeforePayout: availableForPayout
-			},
-			groups: { store: ctx.storeId }
-		});
-	}
+	ctx.services.analytics.track({
+		event: 'payout_created',
+		distinctId: ctx.user.id,
+		properties: {
+			storeId: ctx.storeId,
+			amount,
+			storeName: store.name,
+			availableBeforePayout: availableForPayout
+		},
+		groups: { store: ctx.storeId }
+	});
 
 	return payout;
 };
@@ -103,21 +101,23 @@ export const updatePayout = async (
 	ctx: AppContext,
 	input: UpdatePayoutInput
 ) => {
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
+
 	const payout = await PayoutData.updatePayout(ctx.prisma, input);
 
-	if (ctx.user?.id) {
-		ctx.services.analytics.track({
-			event: 'payout_updated',
-			distinctId: ctx.user.id,
-			properties: {
-				storeId: ctx.storeId,
-				amount: payout.amount,
-				storeName: payout.store.name,
-				status: payout.status
-			},
-			groups: { store: payout.storeId }
-		});
-	}
+	ctx.services.analytics.track({
+		event: 'payout_updated',
+		distinctId: ctx.user.id,
+		properties: {
+			storeId: ctx.storeId,
+			amount: payout.amount,
+			storeName: payout.store.name,
+			status: payout.status
+		},
+		groups: { store: payout.storeId }
+	});
 
 	return payout;
 };
@@ -154,19 +154,21 @@ export const markPayoutAsSuccessful = async (
 	ctx: AppContext,
 	input: MarkPayoutSuccessfulInput
 ) => {
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
+
 	const { reference } = input;
 
 	// Note: This function is typically called by webhooks/system processes
 	// but we still track analytics for audit purposes
 	await PayoutData.markPayoutAsSuccessful(reference);
 
-	if (ctx.user?.id) {
-		ctx.services.analytics.track({
-			event: 'payout_successful',
-			distinctId: ctx.user.id,
-			properties: { payoutReference: reference }
-		});
-	}
+	ctx.services.analytics.track({
+		event: 'payout_successful',
+		distinctId: ctx.user.id,
+		properties: { payoutReference: reference }
+	});
 
 	return { success: true };
 };
@@ -175,18 +177,20 @@ export const markPayoutAsFailed = async (
 	ctx: AppContext,
 	input: MarkPayoutFailedInput
 ) => {
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
+
 	const { reference } = input;
 
 	// Note: This function is typically called by webhooks/system processes
 	await PayoutData.markPayoutAsFailed(reference);
 
-	if (ctx.user?.id) {
-		ctx.services.analytics.track({
-			event: 'payout_failed',
-			distinctId: ctx.user.id,
-			properties: { payoutReference: reference }
-		});
-	}
+	ctx.services.analytics.track({
+		event: 'payout_failed',
+		distinctId: ctx.user.id,
+		properties: { payoutReference: reference }
+	});
 
 	return { success: true };
 };

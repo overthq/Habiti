@@ -51,22 +51,24 @@ interface DeleteStoreInput {
 }
 
 export const createStore = async (ctx: AppContext, input: CreateStoreInput) => {
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
+
 	const store = await StoreData.createStore(ctx.prisma, input);
 
-	if (ctx.user?.id) {
-		ctx.services.analytics.track({
-			event: 'store_created',
-			distinctId: ctx.user.id,
-			properties: {
-				storeId: store.id,
-				storeName: store.name,
-				hasDescription: !!store.description,
-				hasWebsite: !!store.website,
-				hasSocialMedia: !!(store.twitter || store.instagram)
-			},
-			groups: { store: store.id }
-		});
-	}
+	ctx.services.analytics.track({
+		event: 'store_created',
+		distinctId: ctx.user.id,
+		properties: {
+			storeId: store.id,
+			storeName: store.name,
+			hasDescription: !!store.description,
+			hasWebsite: !!store.website,
+			hasSocialMedia: !!(store.twitter || store.instagram)
+		},
+		groups: { store: store.id }
+	});
 
 	return store;
 };
@@ -167,17 +169,15 @@ export const deleteStore = async (ctx: AppContext, input: DeleteStoreInput) => {
 
 	await StoreData.deleteStore(ctx.prisma, storeId);
 
-	if (ctx.user?.id) {
-		ctx.services.analytics.track({
-			event: 'store_deleted',
-			distinctId: ctx.user.id,
-			properties: {
-				storeId: store.id,
-				storeName: store.name
-			},
-			groups: { store: storeId }
-		});
-	}
+	ctx.services.analytics.track({
+		event: 'store_deleted',
+		distinctId: ctx.user.id,
+		properties: {
+			storeId: store.id,
+			storeName: store.name
+		},
+		groups: { store: storeId }
+	});
 
 	return store;
 };
@@ -259,18 +259,16 @@ export const removeStoreManager = async (
 
 	await StoreData.removeStoreManager(ctx.prisma, storeId, userId);
 
-	if (ctx.user) {
-		ctx.services.analytics.track({
-			event: 'store_manager_removed',
-			distinctId: ctx.user.id,
-			properties: {
-				storeId,
-				removedManagerId: userId,
-				storeName: store.name
-			},
-			groups: { store: storeId }
-		});
-	}
+	ctx.services.analytics.track({
+		event: 'store_manager_removed',
+		distinctId: ctx.user.id,
+		properties: {
+			storeId,
+			removedManagerId: userId,
+			storeName: store.name
+		},
+		groups: { store: storeId }
+	});
 
 	return { success: true };
 };
@@ -315,17 +313,15 @@ export const followStore = async (ctx: AppContext, input: FollowStoreInput) => {
 		}
 	}
 
-	if (ctx.user?.id) {
-		ctx.services.analytics.track({
-			event: 'store_followed',
-			distinctId: ctx.user.id,
-			properties: {
-				storeId,
-				storeName: store.name
-			},
-			groups: { store: storeId }
-		});
-	}
+	ctx.services.analytics.track({
+		event: 'store_followed',
+		distinctId: ctx.user.id,
+		properties: {
+			storeId,
+			storeName: store.name
+		},
+		groups: { store: storeId }
+	});
 
 	return follower;
 };
@@ -363,17 +359,15 @@ export const unfollowStore = async (
 		userId: ctx.user.id
 	});
 
-	if (ctx.user?.id) {
-		ctx.services.analytics.track({
-			event: 'store_unfollowed',
-			distinctId: ctx.user.id,
-			properties: {
-				storeId,
-				storeName: store.name
-			},
-			groups: { store: storeId }
-		});
-	}
+	ctx.services.analytics.track({
+		event: 'store_unfollowed',
+		distinctId: ctx.user.id,
+		properties: {
+			storeId,
+			storeName: store.name
+		},
+		groups: { store: storeId }
+	});
 
 	return follower;
 };
