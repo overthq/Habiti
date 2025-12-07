@@ -115,7 +115,6 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 	};
 
 	const handleSubmit = React.useCallback(async () => {
-		// If user is not authenticated, open auth modal
 		if (!isAuthenticated) {
 			toggleAuthModal();
 			return;
