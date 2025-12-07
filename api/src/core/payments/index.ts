@@ -12,7 +12,7 @@ import * as Paystack from './paystack';
 import { transitionOrderToPending } from './webhooks';
 import { markPayoutAsFailed, markPayoutAsSuccessful } from '../data/payouts';
 import prismaClient from '../../config/prisma';
-import { PayoutStatus } from '@prisma/client';
+import { PayoutStatus } from '../../generated/prisma/client';
 
 export const chargeAuthorization = async (
 	options: ChargeAuthorizationOptions

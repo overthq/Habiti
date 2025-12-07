@@ -1,4 +1,4 @@
-import { Cart, Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient, Cart } from '../../generated/prisma/client';
 
 interface UpdateCartQuantityParams {
 	cartId: string;

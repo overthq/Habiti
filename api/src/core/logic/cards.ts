@@ -2,7 +2,7 @@ import * as CardData from '../data/cards';
 import * as OrderData from '../data/orders';
 import { AppContext } from '../../utils/context';
 import { initialCharge } from '../payments';
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus } from '../../generated/prisma/client';
 
 interface CreateCardInput {
 	email: string;

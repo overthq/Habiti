@@ -1,4 +1,4 @@
-import { PushTokenType } from '@prisma/client';
+import { PushTokenType } from '../../generated/prisma/client';
 import { Resolver } from '../../types/resolvers';
 import * as UserLogic from '../../core/logic/users';
 

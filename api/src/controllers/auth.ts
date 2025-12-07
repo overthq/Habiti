@@ -17,7 +17,7 @@ export const register = async (req: Request, res: Response) => {
 
 		return res.status(201).json({ user });
 	} catch (error) {
-		return res.status(500).json({ message: error.message });
+		return res.status(500).json({ message: (error as Error)?.message });
 	}
 };
 
@@ -33,7 +33,7 @@ export const login = async (req: Request, res: Response) => {
 			.status(200)
 			.json({ message: 'Verification code sent to your email' });
 	} catch (error) {
-		return res.status(500).json({ message: error.message });
+		return res.status(500).json({ message: (error as Error)?.message });
 	}
 };
 
@@ -137,7 +137,7 @@ export const appleCallback = async (req: Request, res: Response) => {
 		return res.status(200).json({ accessToken, refreshToken, userId: user.id });
 	} catch (error) {
 		return res.status(500).json({
-			message: error.message
+			message: (error as Error)?.message
 		});
 	}
 };

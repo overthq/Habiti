@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { PayoutStatus } from '@prisma/client';
+import { PayoutStatus } from '../generated/prisma/client';
 import { z } from 'zod';
 
 import { hydrateQuery } from '../utils/queries';
@@ -57,6 +57,6 @@ export const updatePayout = async (req: Request, res: Response) => {
 
 		return res.json({ updatedPayout });
 	} catch (error) {
-		return res.status(500).json({ error: error.message });
+		return res.status(500).json({ error: (error as Error)?.message });
 	}
 };

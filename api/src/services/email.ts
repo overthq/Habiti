@@ -16,35 +16,25 @@ interface SendMailArgs {
 }
 
 export default class EmailService {
-	private loops: LoopsClient;
-	private isEnabled: boolean;
+	private loops: LoopsClient | null = null;
 
 	constructor() {
-		if (env.NODE_ENV !== 'production') {
-			console.warn(
-				'Email service is not enabled in non-production environment'
-			);
-
-			this.isEnabled = false;
-		} else {
+		if (env.NODE_ENV === 'production') {
 			if (!env.LOOPS_API_KEY) {
 				throw new Error('LOOPS_API_KEY is not set');
 			}
 
 			this.loops = new LoopsClient(env.LOOPS_API_KEY);
-			this.isEnabled = true;
 		}
 	}
 
 	public sendMail(args: SendMailArgs) {
-		if (this.isEnabled) {
-			this.loops.sendTransactionalEmail({
-				transactionalId: TransactionalIDByEmailType[args.emailType],
-				email: args.email,
-				dataVariables: {
-					verification_code: args.code
-				}
-			});
-		}
+		this.loops?.sendTransactionalEmail({
+			transactionalId: TransactionalIDByEmailType[args.emailType],
+			email: args.email,
+			dataVariables: {
+				verification_code: args.code
+			}
+		});
 	}
 }

@@ -30,4 +30,5 @@ jobs:
         run: |
           bun run --cwd apps/app tsc
           bun run --cwd apps/dashboard tsc
+          bun run --cwd api prisma generate
           bun run --cwd api tsc

@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../../generated/prisma/client';
 
 export const getAdminByEmail = async (prisma: PrismaClient, email: string) => {
 	const admin = await prisma.admin.findUnique({ where: { email } });
