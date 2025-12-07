@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Cart, Prisma, PrismaClient } from '@prisma/client';
 
 interface UpdateCartQuantityParams {
 	cartId: string;
@@ -9,6 +9,11 @@ interface UpdateCartQuantityParams {
 // TODO: Make sure that if a regular user is accessing this,
 // they must be the cart owner (or otherwise have provable access to it)
 // Admins should be able to get the data without restriction.
+// For unauthenticated (guest) users, consider linking their session
+// to the cart, so we can validate that way.
+// Something like:
+// - ctx.user.id === cart.userId || cart.sessionId === ctx.sessionId
+// In this case, ctx.sessionId would be derived from a cookie.
 
 export const getCartById = async (prisma: PrismaClient, cartId: string) => {
 	const cart = await prisma.cart.findUnique({
@@ -59,22 +64,62 @@ export const getCartsByUserId = async (
 	return carts;
 };
 
+export const getCartsFromList = async (
+	prisma: PrismaClient,
+	cartIds: string[]
+) => {
+	if (cartIds.length === 0) {
+		return [];
+	}
+
+	const carts = await prisma.cart.findMany({
+		where: { id: { in: cartIds } },
+		include: {
+			products: { include: { product: { include: { images: true } } } },
+			store: true
+		}
+	});
+
+	return carts;
+};
+
 interface AddProductToCartArgs {
 	storeId: string;
 	productId: string;
-	userId: string;
+	userId?: string;
 	quantity: number;
+	cartId?: string; // For updating existing guest carts
 }
 
 export const addProductToCart = async (
 	prisma: PrismaClient,
 	args: AddProductToCartArgs
 ) => {
-	const cart = await prisma.cart.upsert({
-		where: { userId_storeId: { userId: args.userId, storeId: args.storeId } },
-		update: {},
-		create: { userId: args.userId, storeId: args.storeId }
-	});
+	let cart: Cart | null;
+
+	if (args.userId) {
+		// Authenticated user: upsert by userId + storeId
+		cart = await prisma.cart.upsert({
+			where: { userId_storeId: { userId: args.userId, storeId: args.storeId } },
+			update: {},
+			create: { userId: args.userId, storeId: args.storeId }
+		});
+	} else if (args.cartId) {
+		cart = await prisma.cart.findUnique({
+			where: { id: args.cartId }
+		});
+
+		// FIXME: Return 404 when the cart does not exist.
+		if (!cart || cart.storeId !== args.storeId) {
+			cart = await prisma.cart.create({
+				data: { storeId: args.storeId }
+			});
+		}
+	} else {
+		cart = await prisma.cart.create({
+			data: { storeId: args.storeId }
+		});
+	}
 
 	const cartProduct = await prisma.cartProduct.upsert({
 		where: { cartId_productId: { cartId: cart.id, productId: args.productId } },
@@ -157,6 +202,69 @@ export const deleteCart = async (
 	}
 
 	await prisma.cart.delete({ where: { id: args.cartId } });
+};
+
+interface ClaimCartsArgs {
+	userId: string;
+	cartIds: string[];
+}
+
+export const claimCarts = async (
+	prisma: PrismaClient,
+	args: ClaimCartsArgs
+) => {
+	const { userId, cartIds } = args;
+	const claimedCarts: string[] = [];
+
+	for (const cartId of cartIds) {
+		const guestCart = await prisma.cart.findUnique({
+			where: { id: cartId },
+			include: { products: true }
+		});
+
+		// Skip if cart doesn't exist or already has an owner
+		if (!guestCart || guestCart.userId !== null) {
+			continue;
+		}
+
+		// Check if user already has a cart for this store
+		const existingUserCart = await prisma.cart.findUnique({
+			where: { userId_storeId: { userId, storeId: guestCart.storeId } }
+		});
+
+		if (existingUserCart) {
+			// Merge: move products from guest cart to existing user cart
+			for (const product of guestCart.products) {
+				await prisma.cartProduct.upsert({
+					where: {
+						cartId_productId: {
+							cartId: existingUserCart.id,
+							productId: product.productId
+						}
+					},
+					update: { quantity: product.quantity },
+					create: {
+						cartId: existingUserCart.id,
+						productId: product.productId,
+						quantity: product.quantity
+					}
+				});
+			}
+
+			// Delete the guest cart (products will be cascade deleted)
+			await prisma.cart.delete({ where: { id: cartId } });
+			claimedCarts.push(existingUserCart.id);
+		} else {
+			// Transfer ownership: assign userId to guest cart
+			await prisma.cart.update({
+				where: { id: cartId },
+				data: { userId }
+			});
+			claimedCarts.push(cartId);
+		}
+	}
+
+	return claimedCarts;
 };
 
 export const calculatePaystackFee = (subTotal: number) => {

@@ -12,6 +12,10 @@ export const addDeliveryAddress: Resolver<AddDeliveryAddressArgs> = async (
 	{ input },
 	ctx
 ) => {
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
+
 	return DeliveryAddressLogic.createDeliveryAddress(ctx, {
 		...input,
 		userId: ctx.user.id

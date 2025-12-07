@@ -10,7 +10,7 @@ export interface EditProfileArgs {
 }
 
 export const editProfile: Resolver<EditProfileArgs> = (_, { input }, ctx) => {
-	if (!ctx.user.id) throw new Error('User ID is required.');
+	if (!ctx.user?.id) throw new Error('User ID is required.');
 
 	if (!input.name && !input.email) {
 		throw new Error('At least one field (name or email) must be provided.');
@@ -34,6 +34,10 @@ export const savePushToken: Resolver<SavePushTokenArgs> = (
 	{ input },
 	ctx
 ) => {
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
+
 	return ctx.prisma.userPushToken.create({
 		data: {
 			token: input.token,
@@ -57,6 +61,10 @@ export const deletePushToken: Resolver<DeletePushTokenArgs> = (
 	{ input },
 	ctx
 ) => {
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
+
 	return ctx.prisma.userPushToken.delete({
 		where: {
 			userId_token: {

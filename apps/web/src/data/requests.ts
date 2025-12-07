@@ -1,5 +1,3 @@
-'use client';
-
 import axios from 'axios';
 import type {
 	AddDeliveryAddressBody,
@@ -188,6 +186,13 @@ export const getUser = async (userId: string) => {
 
 export const getCart = async (cartId: string) => {
 	const response = await api.get<GetCartResponse>(`/carts/${cartId}`);
+	return response.data;
+};
+
+export const getGuestCarts = async (cartIds: string[]) => {
+	const response = await api.get<{ carts: Cart[] }>('/carts', {
+		params: { cartIds }
+	});
 	return response.data;
 };
 

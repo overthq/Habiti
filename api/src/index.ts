@@ -12,6 +12,7 @@ import { createServer } from 'http';
 import * as Sentry from '@sentry/node';
 
 import { authenticateProd } from './middleware/auth';
+import { errorHandler } from './middleware/errorHandler';
 
 import routes from './routes';
 
@@ -71,6 +72,8 @@ const main = async () => {
 	);
 
 	app.use('/', routes);
+
+	app.use(errorHandler);
 
 	httpServer.listen({ port: Number(env.PORT) });
 

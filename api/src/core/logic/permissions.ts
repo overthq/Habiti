@@ -9,7 +9,7 @@ import { AppContext } from '../../utils/context';
 // system.
 
 export const canManageStore = async (ctx: AppContext) => {
-	if (!ctx.user.id) {
+	if (!ctx.user?.id) {
 		throw new Error('Not authenticated');
 	}
 

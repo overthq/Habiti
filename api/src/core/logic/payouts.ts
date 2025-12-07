@@ -39,9 +39,17 @@ export const createPayout = async (
 		throw new Error('Store not found');
 	}
 
-	const isManager = store.managers.some(m => m.managerId === ctx.user.id);
+	if (!ctx.user) {
+		throw new Error('User is not authenticated');
+	}
 
-	if (!isManager) {
+	const currentUserId = ctx.user.id;
+
+	const isCurrentUserManager = store.managers.some(
+		m => m.managerId === currentUserId
+	);
+
+	if (!isCurrentUserManager) {
 		throw new Error('Unauthorized: User is not a manager of this store');
 	}
 
@@ -93,6 +101,10 @@ export const updatePayout = async (
 	ctx: AppContext,
 	input: UpdatePayoutInput
 ) => {
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
+
 	const payout = await PayoutData.updatePayout(ctx.prisma, input);
 
 	ctx.services.analytics.track({
@@ -121,9 +133,17 @@ export const getStorePayouts = async (ctx: AppContext, storeId: string) => {
 		throw new Error('Store not found');
 	}
 
-	const isManager = store.managers.some(m => m.managerId === ctx.user.id);
+	if (!ctx.user) {
+		throw new Error('User is not authenticated');
+	}
 
-	if (!isManager) {
+	const currentUserId = ctx.user.id;
+
+	const isCurrentUserManager = store.managers.some(
+		m => m.managerId === currentUserId
+	);
+
+	if (!isCurrentUserManager) {
 		throw new Error('Unauthorized: User is not a manager of this store');
 	}
 
@@ -134,6 +154,10 @@ export const markPayoutAsSuccessful = async (
 	ctx: AppContext,
 	input: MarkPayoutSuccessfulInput
 ) => {
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
+
 	const { reference } = input;
 
 	// Note: This function is typically called by webhooks/system processes
@@ -153,6 +177,10 @@ export const markPayoutAsFailed = async (
 	ctx: AppContext,
 	input: MarkPayoutFailedInput
 ) => {
+	if (!ctx.user?.id) {
+		throw new Error('User not authenticated');
+	}
+
 	const { reference } = input;
 
 	// Note: This function is typically called by webhooks/system processes
