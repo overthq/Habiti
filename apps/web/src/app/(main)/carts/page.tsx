@@ -6,32 +6,6 @@ import SignInPrompt from '@/components/SignInPrompt';
 import { useAuthStore } from '@/state/auth-store';
 import { useGuestCartStore } from '@/state/guest-cart-store';
 
-const buildProductNamesString = (
-	products: Array<{ product: { name: string } }>,
-	maxLength = 60
-): string => {
-	let productNames = '';
-	let visibleCount = 0;
-
-	for (let i = 0; i < products.length; i++) {
-		const name = products[i].product.name;
-		const separator = i === 0 ? '' : ', ';
-		const testString = productNames + separator + name;
-
-		if (testString.length <= maxLength) {
-			productNames = testString;
-			visibleCount = i + 1;
-		} else {
-			break;
-		}
-	}
-
-	const remainingCount = products.length - visibleCount;
-	return remainingCount > 0
-		? `${productNames} and ${remainingCount} more item${remainingCount === 1 ? '' : 's'}`
-		: productNames;
-};
-
 const CartsPage = () => {
 	const { accessToken } = useAuthStore();
 	const { cartIds: guestCartIds } = useGuestCartStore();
@@ -168,6 +142,32 @@ const CartsPage = () => {
 			</div>
 		</div>
 	);
+};
+
+const buildProductNamesString = (
+	products: Array<{ product: { name: string } }>,
+	maxLength = 60
+): string => {
+	let productNames = '';
+	let visibleCount = 0;
+
+	for (let i = 0; i < products.length; i++) {
+		const name = products[i].product.name;
+		const separator = i === 0 ? '' : ', ';
+		const testString = productNames + separator + name;
+
+		if (testString.length <= maxLength) {
+			productNames = testString;
+			visibleCount = i + 1;
+		} else {
+			break;
+		}
+	}
+
+	const remainingCount = products.length - visibleCount;
+	return remainingCount > 0
+		? `${productNames} and ${remainingCount} more item${remainingCount === 1 ? '' : 's'}`
+		: productNames;
 };
 
 export default CartsPage;
