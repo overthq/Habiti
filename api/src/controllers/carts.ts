@@ -30,7 +30,7 @@ export const getCartsFromList = async (req: Request, res: Response) => {
 
 	const carts = await CartLogic.getCartsFromList(ctx, cartIds as string[]);
 
-	return res.json(carts);
+	return res.json({ carts });
 };
 
 export const addProductToCart = async (req: Request, res: Response) => {

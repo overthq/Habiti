@@ -6,32 +6,6 @@ import SignInPrompt from '@/components/SignInPrompt';
 import { useAuthStore } from '@/state/auth-store';
 import { useGuestCartStore } from '@/state/guest-cart-store';
 
-const buildProductNamesString = (
-	products: Array<{ product: { name: string } }>,
-	maxLength = 60
-): string => {
-	let productNames = '';
-	let visibleCount = 0;
-
-	for (let i = 0; i < products.length; i++) {
-		const name = products[i].product.name;
-		const separator = i === 0 ? '' : ', ';
-		const testString = productNames + separator + name;
-
-		if (testString.length <= maxLength) {
-			productNames = testString;
-			visibleCount = i + 1;
-		} else {
-			break;
-		}
-	}
-
-	const remainingCount = products.length - visibleCount;
-	return remainingCount > 0
-		? `${productNames} and ${remainingCount} more item${remainingCount === 1 ? '' : 's'}`
-		: productNames;
-};
-
 const CartsPage = () => {
 	const { accessToken } = useAuthStore();
 	const { cartIds: guestCartIds } = useGuestCartStore();
@@ -61,14 +35,15 @@ const CartsPage = () => {
 		);
 	}
 
-	if (isCartLoading || !carts)
+	if (isCartLoading) {
 		return (
 			<div className='flex items-center justify-center min-h-[60vh]'>
 				<div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary'></div>
 			</div>
 		);
+	}
 
-	if (cartError)
+	if (cartError) {
 		return (
 			<div className='flex items-center justify-center min-h-[60vh]'>
 				<div className='text-red-500'>
@@ -76,8 +51,9 @@ const CartsPage = () => {
 				</div>
 			</div>
 		);
+	}
 
-	if (carts.length === 0) {
+	if (carts?.length === 0) {
 		return (
 			<div>
 				<h1 className='text-2xl font-medium mb-4'>Carts</h1>
@@ -99,7 +75,7 @@ const CartsPage = () => {
 		<div>
 			<h1 className='text-2xl font-medium mb-4'>Carts</h1>
 			<div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-				{carts.map(cart => (
+				{carts?.map(cart => (
 					<div key={cart.id} className='border rounded-lg p-6'>
 						<div className='flex items-center gap-2 mb-4'>
 							<div className='size-10 rounded-full bg-muted'>
@@ -166,6 +142,32 @@ const CartsPage = () => {
 			</div>
 		</div>
 	);
+};
+
+const buildProductNamesString = (
+	products: Array<{ product: { name: string } }>,
+	maxLength = 60
+): string => {
+	let productNames = '';
+	let visibleCount = 0;
+
+	for (let i = 0; i < products.length; i++) {
+		const name = products[i].product.name;
+		const separator = i === 0 ? '' : ', ';
+		const testString = productNames + separator + name;
+
+		if (testString.length <= maxLength) {
+			productNames = testString;
+			visibleCount = i + 1;
+		} else {
+			break;
+		}
+	}
+
+	const remainingCount = products.length - visibleCount;
+	return remainingCount > 0
+		? `${productNames} and ${remainingCount} more item${remainingCount === 1 ? '' : 's'}`
+		: productNames;
 };
 
 export default CartsPage;
