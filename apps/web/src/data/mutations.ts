@@ -25,6 +25,7 @@ import type {
 } from './types';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/state/auth-store';
+import { useGuestCartStore } from '@/state/guest-cart-store';
 
 export const useAddToCartMutation = () => {
 	const queryClient = useQueryClient();
@@ -102,11 +103,13 @@ export const useAuthenticateMutation = () => {
 
 export const useVerifyCodeMutation = () => {
 	const { logIn, toggleAuthModal } = useAuthStore();
+	const { clear } = useGuestCartStore();
 
 	return useMutation({
 		mutationFn: (input: VerifyCodeBody) => verifyCode(input),
 		onSuccess: ({ accessToken }) => {
 			logIn({ accessToken });
+			clear();
 			toggleAuthModal();
 		}
 	});
