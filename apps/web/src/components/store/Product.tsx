@@ -20,7 +20,7 @@ const Product: React.FC<ProductProps> = ({
 }) => {
 	return (
 		<Link href={`/product/${id}`}>
-			<div key={id}>
+			<div key={id} className='min-w-[150px]'>
 				<div className='bg-muted aspect-square rounded-lg overflow-hidden'>
 					{imagePath && (
 						<img

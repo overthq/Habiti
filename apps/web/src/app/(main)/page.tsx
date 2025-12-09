@@ -69,7 +69,7 @@ const TrendingStoresSection: React.FC<TrendingStoresSectionProps> = ({
 			{isLoading ? (
 				<TrendingStoresSkeleton />
 			) : stores.length ? (
-				<div className='flex gap-4'>
+				<div className='flex gap-4 overflow-x-auto'>
 					{stores.map(store => (
 						<StoreCard key={store.id} store={store} />
 					))}
@@ -92,7 +92,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ store }) => {
 			className='rounded-2xl hover:border-foreground/40 transition-colors'
 		>
 			<div className='items-center justify-center gap-4'>
-				<div className='size-26 rounded-full bg-muted flex items-center justify-center overflow-hidden text-3xl font-semibold'>
+				<div className='size-20 rounded-full bg-muted flex items-center justify-center overflow-hidden text-3xl font-semibold'>
 					{store.image?.path ? (
 						<img
 							src={store.image.path}
@@ -104,7 +104,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ store }) => {
 					)}
 				</div>
 				<div className='mt-2'>
-					<p className='text-center'>{store.name}</p>
+					<p className='text-center text-sm'>{store.name}</p>
 				</div>
 			</div>
 		</Link>
@@ -146,7 +146,7 @@ const FeaturedProductsSection: React.FC<FeaturedProductsSectionProps> = ({
 			{isLoading ? (
 				<FeaturedProductsSkeleton />
 			) : products.length ? (
-				<div className='grid gap-4 grid-cols-[repeat(6,minmax(150px,1fr))]'>
+				<div className='flex gap-4 -mx-4 px-4 overflow-x-auto'>
 					{products.map(product => (
 						<Product
 							key={product.id}
@@ -189,7 +189,7 @@ const RecentlyViewedSection: React.FC<RecentlyViewedSectionProps> = ({
 	return (
 		<Section title='Recently viewed'>
 			{products.length ? (
-				<div className='grid gap-4 grid-cols-[repeat(6,minmax(150px,1fr))]'>
+				<div className='flex gap-4 -mx-4 px-4 overflow-x-auto'>
 					{products.map(product => (
 						<Product
 							key={product.id}
