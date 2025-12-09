@@ -206,6 +206,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 								name={product.name}
 								unitPrice={product.unitPrice}
 								imagePath={product.images[0]?.path}
+								inGrid
 							/>
 						))}
 			</div>
