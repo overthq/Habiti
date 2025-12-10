@@ -158,7 +158,11 @@ const AuthDrawer = () => {
 	}
 
 	return (
-		<Drawer open={authModalOpen} onOpenChange={toggleAuthModal}>
+		<Drawer
+			open={authModalOpen}
+			onOpenChange={toggleAuthModal}
+			repositionInputs={false}
+		>
 			<DrawerContent>
 				<DrawerHeader>
 					<DrawerTitle>{DrawerDetailsByAuthMode[mode].title}</DrawerTitle>
