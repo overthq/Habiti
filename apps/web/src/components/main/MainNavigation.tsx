@@ -73,23 +73,20 @@ const MainNavigation = () => {
 				<SearchInput />
 			</div>
 
-			{accessToken ? (
-				<div className='flex flex-1 justify-end items-center gap-2'>
-					<Button asChild variant='ghost' size='icon'>
-						<Link href='/carts'>
-							<ShoppingCartIcon />
-						</Link>
-					</Button>
-
+			<div className='flex flex-1 justify-end items-center gap-3'>
+				<Button asChild variant='ghost' size='icon'>
+					<Link href='/carts'>
+						<ShoppingCartIcon className='size-5' />
+					</Link>
+				</Button>
+				{accessToken ? (
 					<ProfileDropdown />
-				</div>
-			) : (
-				<div className='flex flex-1 justify-end items-center gap-2'>
+				) : (
 					<Button variant='outline' onClick={toggleAuthModal}>
 						Sign in
 					</Button>
-				</div>
-			)}
+				)}
+			</div>
 		</div>
 	);
 };

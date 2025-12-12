@@ -8,12 +8,12 @@ import { Minus, Plus } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { formatNaira } from '@/utils/currency';
-import { useProductQuery } from '@/data/queries';
+import { useProductQuery, useRelatedProductsQuery } from '@/data/queries';
 import {
 	useAddToCartMutation,
 	useUpdateCartProductQuantityMutation
 } from '@/data/mutations';
-import { GetProductResponse, Product } from '@/data/types';
+import { GetProductResponse, Product as ProductType } from '@/data/types';
 import { cn } from '@/lib/utils';
 import {
 	RecentlyViewedProduct,
@@ -21,6 +21,7 @@ import {
 } from '@/state/recently-viewed-store';
 import { useGuestCartStore } from '@/state/guest-cart-store';
 import { useAuthStore } from '@/state/auth-store';
+import Product from '@/components/store/Product';
 
 const ProductPage = () => {
 	const { id } = useParams<{ id: string }>();
@@ -33,11 +34,13 @@ const ProductPage = () => {
 			product={data.product}
 			viewerContext={data.viewerContext}
 		>
-			<div className='max-w-4xl mx-auto'>
+			<div className='max-w-4xl mx-auto space-y-16'>
 				<div className='flex md:gap-12 md:flex-row flex-col gap-4'>
 					<ProductImages />
 					<ProductMeta />
 				</div>
+
+				<RelatedProducts productId={id} />
 			</div>
 		</ProductContextProvider>
 	);
@@ -208,7 +211,7 @@ const ProductButtons = () => {
 };
 
 interface ProductContextType {
-	product: Product;
+	product: ProductType;
 	cartCommitFetching: boolean;
 	onCartCommit: (buyNow?: boolean) => void;
 	cartCommitDisabled: boolean;
@@ -226,7 +229,7 @@ interface ProductContextProviderProps
 		GetProductResponse {}
 
 const getRecentProductPayload = (
-	product: Product
+	product: ProductType
 ): Omit<RecentlyViewedProduct, 'viewedAt'> => ({
 	id: product.id,
 	name: product.name,
@@ -340,6 +343,42 @@ const ProductContextProvider: React.FC<ProductContextProviderProps> = ({
 		>
 			{children}
 		</ProductContext.Provider>
+	);
+};
+
+interface RelatedProductsProps {
+	productId: string;
+}
+
+const RelatedProducts: React.FC<RelatedProductsProps> = ({ productId }) => {
+	const { isFetching, data } = useRelatedProductsQuery(productId);
+
+	if (isFetching) {
+		return <div />; // Or skeleton
+	}
+
+	if (!data || data.products.length === 0) {
+		return null;
+	}
+
+	return (
+		<div>
+			<h2 className='text-lg font-medium mb-4 leading-none'>
+				Related products
+			</h2>
+
+			<div className='flex gap-4 -mx-4 px-4 overflow-x-auto'>
+				{data.products.map(product => (
+					<Product
+						key={product.id}
+						id={product.id}
+						name={product.name}
+						unitPrice={product.unitPrice}
+						imagePath={product.images[0]?.path}
+					/>
+				))}
+			</div>
+		</div>
 	);
 };
 
