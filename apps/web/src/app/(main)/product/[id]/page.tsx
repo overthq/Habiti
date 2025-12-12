@@ -34,7 +34,7 @@ const ProductPage = () => {
 			viewerContext={data.viewerContext}
 		>
 			<div className='max-w-4xl mx-auto'>
-				<div className='flex gap-12 md:flex-row flex-col'>
+				<div className='flex md:gap-12 md:flex-row flex-col gap-4'>
 					<ProductImages />
 					<ProductMeta />
 				</div>
@@ -48,7 +48,7 @@ const ProductImages = () => {
 	const { product } = useProductContext();
 
 	return (
-		<div className='grow'>
+		<div className='grow max-w-lg'>
 			<div className='aspect-square rounded-xl overflow-hidden bg-muted'>
 				{product.images.length > 0 && (
 					<img
@@ -74,6 +74,10 @@ const ImageSelector: React.FC<ImageSelectorProps> = ({
 	activeIndex
 }) => {
 	const { product } = useProductContext();
+
+	if (product.images.length === 0) {
+		return null;
+	}
 
 	return (
 		<div className='flex mt-4 gap-3'>
@@ -128,11 +132,8 @@ const StorePreview = () => {
 	const { product } = useProductContext();
 
 	return (
-		<div className='mb-4 w-min'>
-			<Link
-				href={`/store/${product.store.id}`}
-				className='flex gap-2 items-center'
-			>
+		<div className='mb-4 flex gap-2 items-center'>
+			<Link href={`/store/${product.store.id}`}>
 				<div className='size-10 rounded-full bg-muted flex justify-center items-center overflow-hidden'>
 					{product.store.image?.path ? (
 						<img className='size-full' src={product.store.image.path} />
@@ -142,10 +143,12 @@ const StorePreview = () => {
 						</p>
 					)}
 				</div>
-				<div className='justify-between items-center'>
-					<p className='font-medium'>{product.store.name}</p>
-				</div>
 			</Link>
+			<div className='justify-between items-center'>
+				<Link href={`/store/${product.store.id}`}>
+					<p className='font-medium'>{product.store.name}</p>
+				</Link>
+			</div>
 		</div>
 	);
 };
