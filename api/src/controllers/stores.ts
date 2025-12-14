@@ -46,44 +46,22 @@ export const getCurrentStore = async (req: Request, res: Response) => {
 	return res.json({ store });
 };
 
-export const getCurrentStorePayouts = async (req: Request, res: Response) => {
-	const ctx = getAppContext(req);
-
-	if (!ctx.storeId) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
-	const payouts = await StoreLogic.getStorePayouts(ctx, ctx.storeId);
-
-	return res.json({ payouts });
-};
-
-export const getCurrentStoreManagers = async (req: Request, res: Response) => {
-	const ctx = getAppContext(req);
-
-	if (!ctx.storeId) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
-	const query = hydrateQuery(req.query);
-
-	const managers = await StoreLogic.getStoreManagers(ctx, ctx.storeId, query);
-
-	return res.json({ managers });
-};
-
 export const getStorePayouts = async (req: Request, res: Response) => {
-	if (!req.params.id) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
 	const ctx = getAppContext(req);
 
-	if (!ctx.storeId) {
+	let storeId = ctx.storeId;
+
+	const isAdmin = await ctx.isAdmin();
+
+	if (isAdmin) {
+		storeId = req.params.id;
+	}
+
+	if (!storeId) {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
 
-	const payouts = await StoreLogic.getStorePayouts(ctx, ctx.storeId);
+	const payouts = await StoreLogic.getStorePayouts(ctx, storeId);
 
 	return res.json({ payouts });
 };
@@ -139,37 +117,45 @@ export const createStoreProduct = async (req: Request, res: Response) => {
 };
 
 export const getStoreOrders = async (req: Request, res: Response) => {
-	if (!req.params.id) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
 	const ctx = getAppContext(req);
 
-	if (!ctx.storeId) {
+	let storeId = ctx.storeId;
+
+	const isAdmin = await ctx.isAdmin();
+
+	if (isAdmin) {
+		storeId = req.params.id;
+	}
+
+	if (!storeId) {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
 
 	const query = hydrateQuery(req.query);
 
-	const orders = await StoreLogic.getStoreOrders(ctx, ctx.storeId, query);
+	const orders = await StoreLogic.getStoreOrders(ctx, storeId, query);
 
 	return res.json({ orders });
 };
 
 export const getStoreManagers = async (req: Request, res: Response) => {
-	if (!req.params.id) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
 	const ctx = getAppContext(req);
 
-	if (!ctx.storeId) {
+	let storeId = ctx.storeId;
+
+	const isAdmin = await ctx.isAdmin();
+
+	if (isAdmin) {
+		storeId = req.params.id;
+	}
+
+	if (!storeId) {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
 
 	const query = hydrateQuery(req.query);
 
-	const managers = await StoreLogic.getStoreManagers(ctx, ctx.storeId, query);
+	const managers = await StoreLogic.getStoreManagers(ctx, storeId, query);
 
 	return res.json({ managers });
 };
