@@ -96,12 +96,17 @@ export const logout = async () => {
 // Current User
 
 export const getCurrentUser = async () => {
-	const response = await api.get('/users/current');
+	const response = await api.get<{ user: User }>('/users/current');
 	return response.data;
 };
 
 export const updateCurrentUser = async (body: UpdateCurrentUserBody) => {
 	const response = await api.put('/users/current', body);
+	return response.data;
+};
+
+export const deleteCurrentUser = async () => {
+	const response = await api.delete('/users/current');
 	return response.data;
 };
 

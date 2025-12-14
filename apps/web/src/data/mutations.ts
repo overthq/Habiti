@@ -11,7 +11,8 @@ import {
 	createOrder,
 	updateCartProductQuantity,
 	updateCurrentUser,
-	verifyCode
+	verifyCode,
+	deleteCurrentUser
 } from './requests';
 
 import type {
@@ -141,6 +142,18 @@ export const useUpdateCurrentUserMutation = () => {
 		},
 		onError: () => {
 			toast.error('Failed to create order');
+		}
+	});
+};
+
+export const useDeleteCurrentUserMutation = () => {
+	return useMutation({
+		mutationFn: () => deleteCurrentUser(),
+		onSuccess: () => {
+			toast.success('User deleted successfully');
+		},
+		onError: () => {
+			toast.error('Failed to delete user');
 		}
 	});
 };

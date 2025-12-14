@@ -6,8 +6,8 @@ import { useRouter } from 'next/navigation';
 import {
 	CircleUserIcon,
 	LogOutIcon,
-	ShoppingCartIcon,
-	UserRoundIcon
+	SettingsIcon,
+	ShoppingCartIcon
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import {
@@ -40,9 +40,9 @@ const ProfileDropdown = () => {
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align='end'>
 				<DropdownMenuItem asChild>
-					<Link href='/profile'>
-						<UserRoundIcon className='w-4 h-4' />
-						Profile
+					<Link href='/profile/settings'>
+						<SettingsIcon className='w-4 h-4' />
+						Settings
 					</Link>
 				</DropdownMenuItem>
 				<DropdownMenuItem onClick={handleLogOut}>
