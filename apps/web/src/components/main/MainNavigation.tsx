@@ -6,8 +6,8 @@ import { useRouter } from 'next/navigation';
 import {
 	CircleUserIcon,
 	LogOutIcon,
-	ShoppingCartIcon,
-	UserRoundIcon
+	SettingsIcon,
+	ShoppingCartIcon
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import {
@@ -40,9 +40,9 @@ const ProfileDropdown = () => {
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align='end'>
 				<DropdownMenuItem asChild>
-					<Link href='/profile'>
-						<UserRoundIcon className='w-4 h-4' />
-						Profile
+					<Link href='/profile/settings'>
+						<SettingsIcon className='w-4 h-4' />
+						Settings
 					</Link>
 				</DropdownMenuItem>
 				<DropdownMenuItem onClick={handleLogOut}>
@@ -73,23 +73,20 @@ const MainNavigation = () => {
 				<SearchInput />
 			</div>
 
-			{accessToken ? (
-				<div className='flex flex-1 justify-end items-center gap-2'>
-					<Button asChild variant='ghost' size='icon'>
-						<Link href='/carts'>
-							<ShoppingCartIcon />
-						</Link>
-					</Button>
-
+			<div className='flex flex-1 justify-end items-center gap-3'>
+				<Button asChild variant='ghost' size='icon'>
+					<Link href='/carts'>
+						<ShoppingCartIcon className='size-5' />
+					</Link>
+				</Button>
+				{accessToken ? (
 					<ProfileDropdown />
-				</div>
-			) : (
-				<div className='flex flex-1 justify-end items-center gap-2'>
+				) : (
 					<Button variant='outline' onClick={toggleAuthModal}>
 						Sign in
 					</Button>
-				</div>
-			)}
+				)}
+			</div>
 		</div>
 	);
 };

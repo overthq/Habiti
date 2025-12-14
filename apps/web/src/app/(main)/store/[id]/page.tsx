@@ -25,7 +25,6 @@ const StorePage = () => {
 	const { id } = useParams<{ id: string }>();
 	const { data, isLoading } = useStoreQuery(id);
 
-	console.log({ data, isLoading });
 	if (isLoading || !data) return <div />;
 
 	return (
@@ -184,7 +183,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 
 	return (
 		<div className='mt-4 space-y-3'>
-			<h2 className='text-xl font-medium'>Products</h2>
+			<h2 className='text-lg font-medium mb-4'>Products</h2>
 
 			<StoreProductFilters sortBy={sortBy} onSortChange={setSortBy}>
 				<StoreCategories
@@ -194,7 +193,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 				/>
 			</StoreProductFilters>
 
-			<div className='mt-8 grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4'>
+			<div className='mt-6 grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4'>
 				{isLoading
 					? Array.from({ length: 6 }).map((_, index) => (
 							<Skeleton key={index} className='aspect-square rounded-lg' />
@@ -239,6 +238,7 @@ const FollowButton: React.FC<FollowButtonProps> = ({
 			variant='outline'
 			disabled={isFollowing === undefined}
 			onClick={handleClick}
+			size='sm'
 			className={cn(
 				isFollowing &&
 					'bg-transparent *:[svg]:fill-red-500 *:[svg]:stroke-red-500'

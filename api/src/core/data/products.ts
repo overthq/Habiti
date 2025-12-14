@@ -253,12 +253,18 @@ export const getRelatedProducts = async (
 				some: { categoryId: { in: product.categories.map(c => c.categoryId) } }
 			}
 		},
+		include: {
+			images: true
+		},
 		take: 5
 	});
 
 	if (relatedProducts.length === 0) {
 		relatedProducts = await prisma.product.findMany({
 			where: { storeId: product.storeId },
+			include: {
+				images: true
+			},
 			take: 5
 		});
 	}
