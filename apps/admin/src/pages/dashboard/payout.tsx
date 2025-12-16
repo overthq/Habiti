@@ -58,7 +58,7 @@ const PayoutPage = () => {
 		<div className='space-y-6'>
 			<div className='flex flex-col gap-2 md:flex-row md:items-start md:justify-between'>
 				<div className='space-y-1'>
-					<h1 className='text-3xl font-semibold tracking-tight'>Payout</h1>
+					<h1 className='text-2xl font-semibold'>Payout</h1>
 					<InlineMeta
 						items={[
 							<span key='store'>

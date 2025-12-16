@@ -48,7 +48,7 @@ const OrderDetailPage = () => {
 		<div className='space-y-6'>
 			<div className='flex flex-col gap-2 md:flex-row md:items-start md:justify-between'>
 				<div className='space-y-1'>
-					<h1 className='text-3xl font-semibold tracking-tight'>
+					<h1 className='text-2xl font-semibold'>
 						{order?.store.name} Order #{order?.serialNumber}
 					</h1>
 					<InlineMeta
