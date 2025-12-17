@@ -8,7 +8,7 @@ import { useLandingHighlightsQuery } from '@/data/queries';
 import { Product as ProductType, Store } from '@/data/types';
 import {
 	useRecentlyViewedStore,
-	RecentlyViewedProduct as RecentlyViewedEntry
+	RecentlyViewedProduct
 } from '@/state/recently-viewed-store';
 import Product from '@/components/store/Product';
 
@@ -180,7 +180,7 @@ const FeaturedProductsSkeleton = () => (
 );
 
 interface RecentlyViewedSectionProps {
-	products: RecentlyViewedEntry[];
+	products: RecentlyViewedProduct[];
 }
 
 const RecentlyViewedSection: React.FC<RecentlyViewedSectionProps> = ({

@@ -11,13 +11,17 @@ export const login = async (
 
 	const ctx = getAppContext(req);
 
-	const { accessToken, adminId } = await AdminLogic.adminLogin(
-		ctx,
-		email,
-		password
-	);
+	try {
+		const { accessToken, adminId } = await AdminLogic.adminLogin(
+			ctx,
+			email,
+			password
+		);
 
-	return res.json({ accessToken, adminId });
+		return res.json({ accessToken, adminId });
+	} catch (error) {
+		return res.status(500).json({ message: (error as Error)?.message });
+	}
 };
 
 export const getOverview = async (req: Request, res: Response) => {
