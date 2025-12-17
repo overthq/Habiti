@@ -2,7 +2,6 @@ import { useParams } from 'react-router';
 
 import { useStoreQuery } from '@/data/queries';
 import { type Store as StoreType } from '@/data/types';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import CopyableText from '@/components/ui/copy';
 import InlineMeta from '@/components/ui/inline-meta';
@@ -22,9 +21,7 @@ const StoreMain = ({ store }: StoreMainProps) => {
 		<div className='space-y-6'>
 			<div className='flex flex-col gap-2 md:flex-row md:items-start md:justify-between'>
 				<div className='space-y-1'>
-					<h1 className='text-3xl font-semibold tracking-tight'>
-						{store.name}
-					</h1>
+					<h1 className='text-2xl font-semibold'>{store.name}</h1>
 					<InlineMeta
 						items={[
 							<span key='status'>

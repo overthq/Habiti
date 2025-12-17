@@ -157,9 +157,10 @@ export const getStoreOrders = async (
 	storeId: string,
 	query: any
 ) => {
-	const storeOrders = await prisma.store
-		.findUnique({ where: { id: storeId } })
-		.orders({ ...query });
+	const storeOrders = await prisma.order.findMany({
+		where: { storeId, ...query },
+		include: { user: true }
+	});
 
 	return storeOrders;
 };
