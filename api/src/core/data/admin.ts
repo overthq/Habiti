@@ -3,10 +3,6 @@ import { PrismaClient } from '../../generated/prisma/client';
 export const getAdminByEmail = async (prisma: PrismaClient, email: string) => {
 	const admin = await prisma.admin.findUnique({ where: { email } });
 
-	if (!admin) {
-		throw new Error('Admin not found');
-	}
-
 	return admin;
 };
 
