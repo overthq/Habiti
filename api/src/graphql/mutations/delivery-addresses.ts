@@ -12,12 +12,12 @@ export const addDeliveryAddress: Resolver<AddDeliveryAddressArgs> = async (
 	{ input },
 	ctx
 ) => {
-	if (!ctx.user?.id) {
-		throw new Error('User not authenticated');
-	}
-
-	return DeliveryAddressLogic.createDeliveryAddress(ctx, {
+	const result = await DeliveryAddressLogic.createDeliveryAddress(ctx, {
 		...input,
-		userId: ctx.user.id
+		userId: ctx.user?.id ?? ''
 	});
+
+	if (!result.ok) throw new Error(result.error);
+
+	return result.data;
 };

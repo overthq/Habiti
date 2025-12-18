@@ -4,19 +4,6 @@ import { AppContext } from '../../utils/context';
 import { initialCharge } from '../payments';
 import { OrderStatus } from '../../generated/prisma/client';
 
-interface CreateCardInput {
-	email: string;
-	authorizationCode: string;
-	bin: string;
-	last4: string;
-	expMonth: string;
-	expYear: string;
-	bank: string;
-	signature: string;
-	cardType: string;
-	countryCode: string;
-}
-
 interface StoreCardInput {
 	email: string;
 	signature: string;
@@ -29,11 +16,6 @@ interface StoreCardInput {
 	cardType: string;
 	countryCode: string;
 }
-
-interface DeleteCardInput {
-	cardId: string;
-}
-
 export const storeCard = async (ctx: AppContext, input: StoreCardInput) => {
 	if (!ctx.user) {
 		throw new Error('User not authenticated');
@@ -59,6 +41,19 @@ export const storeCard = async (ctx: AppContext, input: StoreCardInput) => {
 
 	return card;
 };
+
+interface CreateCardInput {
+	email: string;
+	authorizationCode: string;
+	bin: string;
+	last4: string;
+	expMonth: string;
+	expYear: string;
+	bank: string;
+	signature: string;
+	cardType: string;
+	countryCode: string;
+}
 
 export const createCard = async (ctx: AppContext, input: CreateCardInput) => {
 	if (!ctx.user) {
@@ -153,6 +148,10 @@ export const getCardById = async (ctx: AppContext, cardId: string) => {
 
 	return card;
 };
+
+interface DeleteCardInput {
+	cardId: string;
+}
 
 export const deleteCard = async (ctx: AppContext, input: DeleteCardInput) => {
 	const { cardId } = input;

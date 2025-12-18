@@ -1,25 +1,34 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 
 import * as CartLogic from '../core/logic/carts';
 import { getAppContext } from '../utils/context';
+import { logicErrorToApiException } from '../core/logic/errors';
 
-export const getCartById = async (req: Request, res: Response) => {
+export const getCartById = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	if (!req.params.id) {
 		return res.status(400).json({ error: 'Cart ID is required' });
 	}
 
 	const ctx = getAppContext(req);
 
-	const cartWithContext = await CartLogic.getCartById(ctx, req.params.id);
+	const cartWithContextResult = await CartLogic.getCartById(ctx, req.params.id);
 
-	if (!cartWithContext) {
-		return res.status(404).json({ error: 'Cart not found' });
+	if (!cartWithContextResult.ok) {
+		return next(logicErrorToApiException(cartWithContextResult.error));
 	}
 
-	return res.json(cartWithContext);
+	return res.json(cartWithContextResult.data);
 };
 
-export const getCartsFromList = async (req: Request, res: Response) => {
+export const getCartsFromList = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	const { cartIds } = req.query;
 
 	if (!cartIds || !Array.isArray(cartIds)) {
@@ -28,29 +37,45 @@ export const getCartsFromList = async (req: Request, res: Response) => {
 
 	const ctx = getAppContext(req);
 
-	const carts = await CartLogic.getCartsFromList(ctx, cartIds as string[]);
+	const cartsResult = await CartLogic.getCartsFromList(
+		ctx,
+		cartIds as string[]
+	);
 
-	return res.json({ carts });
+	if (!cartsResult.ok) {
+		return next(logicErrorToApiException(cartsResult.error));
+	}
+
+	return res.json({ carts: cartsResult.data });
 };
 
-export const addProductToCart = async (req: Request, res: Response) => {
+export const addProductToCart = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	const { storeId, productId, quantity, cartId } = req.body;
 
 	const ctx = getAppContext(req);
 
-	const cartProduct = await CartLogic.addProductToCart(ctx, {
+	const cartProductResult = await CartLogic.addProductToCart(ctx, {
 		storeId,
 		productId,
 		quantity,
 		cartId
 	});
 
-	return res.json({ cartProduct });
+	if (!cartProductResult.ok) {
+		return next(logicErrorToApiException(cartProductResult.error));
+	}
+
+	return res.json({ cartProduct: cartProductResult.data });
 };
 
 export const updateCartProductQuantity = async (
 	req: Request,
-	res: Response
+	res: Response,
+	next: NextFunction
 ) => {
 	const { id, productId } = req.params;
 	const { quantity } = req.body;
@@ -63,16 +88,24 @@ export const updateCartProductQuantity = async (
 
 	const ctx = getAppContext(req);
 
-	const cartProduct = await CartLogic.updateCartProductQuantity(ctx, {
+	const cartProductResult = await CartLogic.updateCartProductQuantity(ctx, {
 		cartId: id,
 		productId,
 		quantity
 	});
 
-	return res.json({ cartProduct });
+	if (!cartProductResult.ok) {
+		return next(logicErrorToApiException(cartProductResult.error));
+	}
+
+	return res.json({ cartProduct: cartProductResult.data });
 };
 
-export const removeProductFromCart = async (req: Request, res: Response) => {
+export const removeProductFromCart = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	const { id, productId } = req.params;
 
 	if (!id || !productId) {
@@ -83,10 +116,14 @@ export const removeProductFromCart = async (req: Request, res: Response) => {
 
 	const ctx = getAppContext(req);
 
-	const cartProduct = await CartLogic.removeProductFromCart(ctx, {
+	const cartProductResult = await CartLogic.removeProductFromCart(ctx, {
 		cartId: id,
 		productId
 	});
 
-	return res.json({ cartProduct });
+	if (!cartProductResult.ok) {
+		return next(logicErrorToApiException(cartProductResult.error));
+	}
+
+	return res.json({ cartProduct: cartProductResult.data });
 };
