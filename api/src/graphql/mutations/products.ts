@@ -87,30 +87,6 @@ export const deleteProduct = storeAuthorizedResolver<DeleteProductArgs>(
 	}
 );
 
-export interface UpdateProductImagesArgs {
-	id: string;
-	input: {
-		add: Promise<FileUpload>[];
-		remove: string[];
-	};
-}
-
-export const updateProductImages =
-	storeAuthorizedResolver<UpdateProductImagesArgs>(
-		async (_, { id, input }, ctx) => {
-			const uploadedImages = await uploadImages(input.add);
-
-			return ProductLogic.updateProductImages(ctx, {
-				productId: id,
-				addImages: uploadedImages.map(({ url, public_id }) => ({
-					path: url,
-					publicId: public_id
-				})),
-				removeImageIds: input.remove
-			});
-		}
-	);
-
 export interface AddToWatchlistArgs {
 	productId: string;
 }
