@@ -13,7 +13,7 @@ export const login = async (
 
 	const ctx = getAppContext(req);
 
-	const result = await AdminLogic.adminLogin(ctx, email, password);
+	const result = await AdminLogic.adminLogin(ctx, { email, password });
 
 	if (!result.ok) {
 		return next(logicErrorToApiException(result.error));

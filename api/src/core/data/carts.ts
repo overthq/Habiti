@@ -19,7 +19,10 @@ export const getCartById = async (prisma: PrismaClient, cartId: string) => {
 	const cart = await prisma.cart.findUnique({
 		where: { id: cartId },
 		include: {
-			products: { include: { product: { include: { images: true } } } },
+			products: {
+				include: { product: { include: { images: true } } },
+				orderBy: { product: { name: 'asc' } }
+			},
 			store: { include: { image: true } },
 			user: { include: { cards: true } }
 		}
@@ -91,6 +94,7 @@ interface AddProductToCartArgs {
 	cartId?: string; // For updating existing guest carts
 }
 
+// TODO: Prevent case where identical products can exist in the same cart
 export const addProductToCart = async (
 	prisma: PrismaClient,
 	args: AddProductToCartArgs

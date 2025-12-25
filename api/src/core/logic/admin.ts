@@ -4,22 +4,26 @@ import type { AppContext } from '../../utils/context';
 import { err, ok, Result } from './result';
 import { LogicErrorCode } from './errors';
 
+interface AdminLoginInput {
+	email: string;
+	password: string;
+}
+
 export const adminLogin = async (
 	ctx: AppContext,
-	email: string,
-	password: string
+	input: AdminLoginInput
 ): Promise<
 	Result<{ accessToken: string; adminId: string }, LogicErrorCode>
 > => {
 	try {
-		const admin = await AdminData.getAdminByEmail(ctx.prisma, email);
+		const admin = await AdminData.getAdminByEmail(ctx.prisma, input.email);
 
 		if (!admin) {
 			return err(LogicErrorCode.AdminNotFound);
 		}
 
 		const correct = await AuthLogic.verifyPassword(
-			password,
+			input.password,
 			admin.passwordHash
 		);
 
