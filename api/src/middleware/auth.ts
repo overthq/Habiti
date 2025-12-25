@@ -24,7 +24,11 @@ export const auth = (options: AuthOptions = {}) => {
 				throw new APIException(401, 'Authentication required');
 			}
 
-			const decoded = await AuthLogic.verifyAccessToken(token);
+			const decodedResult = await AuthLogic.verifyAccessToken(token);
+			if (!decodedResult.ok) {
+				throw new APIException(401, 'Invalid or expired token');
+			}
+			const decoded = decodedResult.data;
 
 			if (adminOnly && (decoded as any).role !== 'admin') {
 				throw new APIException(403, 'Forbidden');

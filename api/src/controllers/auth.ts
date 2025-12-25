@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 import * as AuthLogic from '../core/logic/auth';
@@ -7,8 +7,13 @@ import * as CartLogic from '../core/logic/carts';
 
 import { env } from '../config/env';
 import { getAppContext } from '../utils/context';
+import { logicErrorToApiException, LogicErrorCode } from '../core/logic/errors';
 
-export const register = async (req: Request, res: Response) => {
+export const register = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	const { name, email, password } = req.body;
 	const ctx = getAppContext(req);
 
@@ -17,11 +22,16 @@ export const register = async (req: Request, res: Response) => {
 
 		return res.status(201).json({ user });
 	} catch (error) {
-		return res.status(500).json({ message: (error as Error)?.message });
+		console.error('[AuthController.register] Unexpected error', error);
+		return next(logicErrorToApiException(LogicErrorCode.Unexpected));
 	}
 };
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	try {
 		const { email } = req.body;
 
@@ -33,11 +43,16 @@ export const login = async (req: Request, res: Response) => {
 			.status(200)
 			.json({ message: 'Verification code sent to your email' });
 	} catch (error) {
-		return res.status(500).json({ message: (error as Error)?.message });
+		console.error('[AuthController.login] Unexpected error', error);
+		return next(logicErrorToApiException(LogicErrorCode.Unexpected));
 	}
 };
 
-export const verify = async (req: Request, res: Response) => {
+export const verify = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	const { email, code, cartIds } = req.body;
 
 	if (!email || !code) {
@@ -46,25 +61,47 @@ export const verify = async (req: Request, res: Response) => {
 			.json({ error: 'Email and verification code are required.' });
 	}
 
-	const cachedCode = await AuthLogic.retrieveVerificationCode(email);
+	const cachedCodeResult = await AuthLogic.retrieveVerificationCode(email);
 
-	if (!cachedCode) throw new Error('No code found for user.');
+	if (!cachedCodeResult.ok) {
+		return next(logicErrorToApiException(cachedCodeResult.error));
+	}
+
+	const cachedCode = cachedCodeResult.data;
+
+	if (!cachedCode) {
+		return next(logicErrorToApiException(LogicErrorCode.NotFound));
+	}
 
 	if (cachedCode === code) {
 		const ctx = getAppContext(req);
 		const user = await UserLogic.getUserByEmail(ctx, email);
 
 		if (!user) {
-			throw new Error('The specified user does not exist.');
+			return next(logicErrorToApiException(LogicErrorCode.UserNotFound));
 		}
 
-		const accessToken = await AuthLogic.generateAccessToken(user);
-		const refreshToken = await AuthLogic.generateRefreshToken(ctx, user.id);
+		const accessTokenResult = await AuthLogic.generateAccessToken(user);
+		if (!accessTokenResult.ok) {
+			return next(logicErrorToApiException(accessTokenResult.error));
+		}
+		const refreshTokenResult = await AuthLogic.generateRefreshToken(
+			ctx,
+			user.id
+		);
+		if (!refreshTokenResult.ok) {
+			return next(logicErrorToApiException(refreshTokenResult.error));
+		}
+		const accessToken = accessTokenResult.data;
+		const refreshToken = refreshTokenResult.data;
 
 		// FIXME: A session-id based approach is way better for handling this, but
 		// suffer it to be so for now.
 		if (cartIds && cartIds.length > 0) {
-			await CartLogic.claimCarts(ctx, { cartIds });
+			const claimResult = await CartLogic.claimCarts(ctx, { cartIds });
+			if (!claimResult.ok) {
+				return next(logicErrorToApiException(claimResult.error));
+			}
 		}
 
 		res.cookie('refreshToken', refreshToken, {
@@ -80,7 +117,11 @@ export const verify = async (req: Request, res: Response) => {
 	}
 };
 
-export const appleCallback = async (req: Request, res: Response) => {
+export const appleCallback = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	try {
 		if (
 			!env.APPLE_CLIENT_ID ||
@@ -124,8 +165,19 @@ export const appleCallback = async (req: Request, res: Response) => {
 			});
 		}
 
-		const accessToken = await AuthLogic.generateAccessToken(user);
-		const refreshToken = await AuthLogic.generateRefreshToken(ctx, user.id);
+		const accessTokenResult = await AuthLogic.generateAccessToken(user);
+		if (!accessTokenResult.ok) {
+			return next(logicErrorToApiException(accessTokenResult.error));
+		}
+		const refreshTokenResult = await AuthLogic.generateRefreshToken(
+			ctx,
+			user.id
+		);
+		if (!refreshTokenResult.ok) {
+			return next(logicErrorToApiException(refreshTokenResult.error));
+		}
+		const accessToken = accessTokenResult.data;
+		const refreshToken = refreshTokenResult.data;
 
 		res.cookie('refreshToken', refreshToken, {
 			httpOnly: true,
@@ -136,42 +188,52 @@ export const appleCallback = async (req: Request, res: Response) => {
 
 		return res.status(200).json({ accessToken, refreshToken, userId: user.id });
 	} catch (error) {
-		return res.status(500).json({
-			message: (error as Error)?.message
-		});
+		console.error('[AuthController.appleCallback] Unexpected error', error);
+		return next(logicErrorToApiException(LogicErrorCode.Unexpected));
 	}
 };
 
-export const refresh = async (req: Request, res: Response) => {
+export const refresh = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
 
 	if (!refreshToken) {
 		return res.status(401).json({ error: 'Refresh token required' });
 	}
 
-	try {
-		const ctx = getAppContext(req);
-		const tokens = await AuthLogic.rotateRefreshToken(ctx, refreshToken);
+	const ctx = getAppContext(req);
+	const tokensResult = await AuthLogic.rotateRefreshToken(ctx, refreshToken);
 
-		res.cookie('refreshToken', tokens.refreshToken, {
-			httpOnly: true,
-			secure: env.NODE_ENV === 'production',
-			sameSite: 'strict',
-			path: '/'
-		});
-
-		return res.status(200).json(tokens);
-	} catch (error) {
-		return res.status(401).json({ error: 'Invalid refresh token' });
+	if (!tokensResult.ok) {
+		return next(logicErrorToApiException(tokensResult.error));
 	}
+
+	res.cookie('refreshToken', tokensResult.data.refreshToken, {
+		httpOnly: true,
+		secure: env.NODE_ENV === 'production',
+		sameSite: 'strict',
+		path: '/'
+	});
+
+	return res.status(200).json(tokensResult.data);
 };
 
-export const logout = async (req: Request, res: Response) => {
+export const logout = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
 
 	if (refreshToken) {
 		const ctx = getAppContext(req);
-		await AuthLogic.revokeRefreshToken(ctx, refreshToken);
+		const revokeResult = await AuthLogic.revokeRefreshToken(ctx, refreshToken);
+		if (!revokeResult.ok) {
+			return next(logicErrorToApiException(revokeResult.error));
+		}
 	}
 
 	res.clearCookie('refreshToken', { path: '/' });

@@ -18,9 +18,11 @@ export const createOrder: Resolver<CreateOrderArgs> = async (
 	{ input },
 	ctx
 ) => {
-	const { order } = await OrderLogic.createOrder(ctx, input);
+	const result = await OrderLogic.createOrder(ctx, input);
 
-	return order;
+	if (!result.ok) throw new Error(result.error);
+
+	return result.data.order;
 };
 
 export interface UpdateOrderArgs {

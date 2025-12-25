@@ -175,7 +175,6 @@ const ProductTypes = gql`
 		createProduct(input: CreateProductInput!): Product!
 		editProduct(id: ID!, input: EditProductInput!): Product!
 		deleteProduct(id: ID!): Product!
-		updateProductImages(id: ID!, input: UpdateProductImagesInput!): Product!
 		addToWatchlist(productId: ID!): WatchlistProduct!
 		addProductReview(input: AddProductReviewInput!): ProductReview!
 		addProductOption(input: AddProductOptionInput!): ProductOption!

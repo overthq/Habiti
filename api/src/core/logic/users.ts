@@ -33,12 +33,17 @@ export const register = async (ctx: AppContext, args: unknown) => {
 		email: data.email
 	});
 
-	const code = await cacheVerificationCode(data.email);
+	const codeResult = await cacheVerificationCode(data.email);
+	if (!codeResult.ok) {
+		throw new Error(
+			'[UserLogic.register] - Failed to create verification code'
+		);
+	}
 
 	ctx.services.email.sendMail({
 		emailType: EmailType.NewAccount,
 		email: data.email,
-		code
+		code: codeResult.data
 	});
 
 	return user;
@@ -57,12 +62,15 @@ export const login = async (ctx: AppContext, input: LoginInput) => {
 		);
 	}
 
-	const code = await cacheVerificationCode(input.email);
+	const codeResult = await cacheVerificationCode(input.email);
+	if (!codeResult.ok) {
+		throw new Error('[UserLogic.login] - Failed to create verification code');
+	}
 
 	ctx.services.email.sendMail({
 		emailType: EmailType.NewAccount,
 		email: input.email,
-		code
+		code: codeResult.data
 	});
 
 	return user;

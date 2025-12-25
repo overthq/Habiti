@@ -3,6 +3,8 @@ import * as StoreData from '../data/stores';
 import { AppContext } from '../../utils/context';
 import { payAccount } from '../payments';
 import { PayoutStatus } from '../../generated/prisma/client';
+import { err, ok, Result } from './result';
+import { LogicErrorCode } from './errors';
 
 interface CreatePayoutInput {
 	amount: number;
@@ -19,77 +21,87 @@ interface MarkPayoutFailedInput {
 export const createPayout = async (
 	ctx: AppContext,
 	input: CreatePayoutInput
-) => {
+): Promise<
+	Result<Awaited<ReturnType<typeof PayoutData.savePayout>>, LogicErrorCode>
+> => {
 	const { amount } = input;
 
-	if (!ctx.storeId) {
-		throw new Error('Only a store can carry out this action');
-	}
+	try {
+		if (!ctx.storeId) {
+			return err(LogicErrorCode.StoreContextRequired);
+		}
 
-	if (amount <= 0) {
-		throw new Error('Payout amount must be greater than zero');
-	}
+		if (amount <= 0) {
+			return err(LogicErrorCode.InvalidInput);
+		}
 
-	const store = await StoreData.getStoreByIdWithManagers(
-		ctx.prisma,
-		ctx.storeId
-	);
-
-	if (!store) {
-		throw new Error('Store not found');
-	}
-
-	if (!ctx.user) {
-		throw new Error('User is not authenticated');
-	}
-
-	const currentUserId = ctx.user.id;
-
-	const isCurrentUserManager = store.managers.some(
-		m => m.managerId === currentUserId
-	);
-
-	if (!isCurrentUserManager) {
-		throw new Error('Unauthorized: User is not a manager of this store');
-	}
-
-	const availableForPayout = store.realizedRevenue - store.paidOut;
-
-	if (amount > availableForPayout) {
-		throw new Error(
-			`Insufficient funds. Available: ${availableForPayout}, Requested: ${amount}`
+		const store = await StoreData.getStoreByIdWithManagers(
+			ctx.prisma,
+			ctx.storeId
 		);
-	}
 
-	if (!store.bankAccountReference || !store.bankAccountNumber) {
-		throw new Error('No account details provided');
-	}
+		if (!store) {
+			return err(LogicErrorCode.StoreNotFound);
+		}
 
-	const payout = await PayoutData.savePayout(ctx.prisma, {
-		storeId: ctx.storeId,
-		amount
-	});
+		if (!ctx.user?.id) {
+			return err(LogicErrorCode.NotAuthenticated);
+		}
 
-	await payAccount({
-		amount: amount.toString(),
-		reference: payout.id,
-		recipient: store.bankAccountReference,
-		metadata: { payoutId: payout.id }
-	});
+		const currentUserId = ctx.user.id;
 
-	ctx.services.analytics.track({
-		event: 'payout_created',
-		distinctId: ctx.user.id,
-		properties: {
+		const isCurrentUserManager = store.managers.some(
+			m => m.managerId === currentUserId
+		);
+
+		if (!isCurrentUserManager) {
+			return err(LogicErrorCode.CannotManageStore);
+		}
+
+		const availableForPayout = store.realizedRevenue - store.paidOut;
+
+		if (amount > availableForPayout) {
+			return err(LogicErrorCode.InsufficientFunds);
+		}
+
+		if (!store.bankAccountReference || !store.bankAccountNumber) {
+			return err(LogicErrorCode.NoAccountDetails);
+		}
+
+		const payout = await PayoutData.savePayout(ctx.prisma, {
 			storeId: ctx.storeId,
-			amount,
-			storeName: store.name,
-			availableBeforePayout: availableForPayout
-		},
-		groups: { store: ctx.storeId }
-	});
+			amount
+		});
 
-	return payout;
+		try {
+			await payAccount({
+				amount: amount.toString(),
+				reference: payout.id,
+				recipient: store.bankAccountReference,
+				metadata: { payoutId: payout.id }
+			});
+		} catch (e) {
+			console.error('[PayoutLogic.createPayout] payAccount error', e);
+			return err(LogicErrorCode.Unexpected);
+		}
+
+		ctx.services.analytics.track({
+			event: 'payout_created',
+			distinctId: ctx.user.id,
+			properties: {
+				storeId: ctx.storeId,
+				amount,
+				storeName: store.name,
+				availableBeforePayout: availableForPayout
+			},
+			groups: { store: ctx.storeId }
+		});
+
+		return ok(payout);
+	} catch (e) {
+		console.error('[PayoutLogic.createPayout] Unexpected error', e);
+		return err(LogicErrorCode.Unexpected);
+	}
 };
 
 interface UpdatePayoutInput {
@@ -100,105 +112,156 @@ interface UpdatePayoutInput {
 export const updatePayout = async (
 	ctx: AppContext,
 	input: UpdatePayoutInput
-) => {
-	if (!ctx.user?.id) {
-		throw new Error('User not authenticated');
+): Promise<
+	Result<Awaited<ReturnType<typeof PayoutData.updatePayout>>, LogicErrorCode>
+> => {
+	try {
+		if (!ctx.user?.id) {
+			return err(LogicErrorCode.NotAuthenticated);
+		}
+
+		const payout = await PayoutData.updatePayout(ctx.prisma, input);
+
+		ctx.services.analytics.track({
+			event: 'payout_updated',
+			distinctId: ctx.user.id,
+			properties: {
+				storeId: ctx.storeId,
+				amount: payout.amount,
+				storeName: payout.store.name,
+				status: payout.status
+			},
+			groups: { store: payout.storeId }
+		});
+
+		return ok(payout);
+	} catch (e) {
+		console.error('[PayoutLogic.updatePayout] Unexpected error', e);
+		return err(LogicErrorCode.Unexpected);
 	}
-
-	const payout = await PayoutData.updatePayout(ctx.prisma, input);
-
-	ctx.services.analytics.track({
-		event: 'payout_updated',
-		distinctId: ctx.user.id,
-		properties: {
-			storeId: ctx.storeId,
-			amount: payout.amount,
-			storeName: payout.store.name,
-			status: payout.status
-		},
-		groups: { store: payout.storeId }
-	});
-
-	return payout;
 };
 
-export const getStorePayouts = async (ctx: AppContext, storeId: string) => {
-	if (ctx.storeId && ctx.storeId !== storeId) {
-		throw new Error('Unauthorized: Cannot view payouts for different store');
+export const getStorePayouts = async (
+	ctx: AppContext,
+	storeId: string
+): Promise<
+	Result<Awaited<ReturnType<typeof PayoutData.getStorePayouts>>, LogicErrorCode>
+> => {
+	try {
+		if (ctx.storeId && ctx.storeId !== storeId) {
+			return err(LogicErrorCode.Forbidden);
+		}
+
+		const store = await StoreData.getStoreByIdWithManagers(ctx.prisma, storeId);
+
+		if (!store) {
+			return err(LogicErrorCode.StoreNotFound);
+		}
+
+		if (!ctx.user?.id) {
+			return err(LogicErrorCode.NotAuthenticated);
+		}
+
+		const currentUserId = ctx.user.id;
+
+		const isCurrentUserManager = store.managers.some(
+			m => m.managerId === currentUserId
+		);
+
+		if (!isCurrentUserManager) {
+			return err(LogicErrorCode.CannotManageStore);
+		}
+
+		return ok(await PayoutData.getStorePayouts(ctx.prisma, storeId));
+	} catch (e) {
+		console.error('[PayoutLogic.getStorePayouts] Unexpected error', e);
+		return err(LogicErrorCode.Unexpected);
 	}
-
-	const store = await StoreData.getStoreByIdWithManagers(ctx.prisma, storeId);
-
-	if (!store) {
-		throw new Error('Store not found');
-	}
-
-	if (!ctx.user) {
-		throw new Error('User is not authenticated');
-	}
-
-	const currentUserId = ctx.user.id;
-
-	const isCurrentUserManager = store.managers.some(
-		m => m.managerId === currentUserId
-	);
-
-	if (!isCurrentUserManager) {
-		throw new Error('Unauthorized: User is not a manager of this store');
-	}
-
-	return PayoutData.getStorePayouts(ctx.prisma, storeId);
 };
 
 export const markPayoutAsSuccessful = async (
 	ctx: AppContext,
 	input: MarkPayoutSuccessfulInput
-) => {
-	if (!ctx.user?.id) {
-		throw new Error('User not authenticated');
+): Promise<Result<{ success: true }, LogicErrorCode>> => {
+	try {
+		if (!ctx.user?.id) {
+			return err(LogicErrorCode.NotAuthenticated);
+		}
+
+		const { reference } = input;
+
+		// Note: This function is typically called by webhooks/system processes
+		// but we still track analytics for audit purposes
+		await PayoutData.markPayoutAsSuccessful(reference);
+
+		ctx.services.analytics.track({
+			event: 'payout_successful',
+			distinctId: ctx.user.id,
+			properties: { payoutReference: reference }
+		});
+
+		return ok({ success: true });
+	} catch (e) {
+		console.error('[PayoutLogic.markPayoutAsSuccessful] Unexpected error', e);
+		return err(LogicErrorCode.Unexpected);
 	}
-
-	const { reference } = input;
-
-	// Note: This function is typically called by webhooks/system processes
-	// but we still track analytics for audit purposes
-	await PayoutData.markPayoutAsSuccessful(reference);
-
-	ctx.services.analytics.track({
-		event: 'payout_successful',
-		distinctId: ctx.user.id,
-		properties: { payoutReference: reference }
-	});
-
-	return { success: true };
 };
 
 export const markPayoutAsFailed = async (
 	ctx: AppContext,
 	input: MarkPayoutFailedInput
-) => {
-	if (!ctx.user?.id) {
-		throw new Error('User not authenticated');
+): Promise<Result<{ success: true }, LogicErrorCode>> => {
+	try {
+		if (!ctx.user?.id) {
+			return err(LogicErrorCode.NotAuthenticated);
+		}
+
+		const { reference } = input;
+
+		// Note: This function is typically called by webhooks/system processes
+		await PayoutData.markPayoutAsFailed(reference);
+
+		ctx.services.analytics.track({
+			event: 'payout_failed',
+			distinctId: ctx.user.id,
+			properties: { payoutReference: reference }
+		});
+
+		return ok({ success: true });
+	} catch (e) {
+		console.error('[PayoutLogic.markPayoutAsFailed] Unexpected error', e);
+		return err(LogicErrorCode.Unexpected);
 	}
-
-	const { reference } = input;
-
-	// Note: This function is typically called by webhooks/system processes
-	await PayoutData.markPayoutAsFailed(reference);
-
-	ctx.services.analytics.track({
-		event: 'payout_failed',
-		distinctId: ctx.user.id,
-		properties: { payoutReference: reference }
-	});
-
-	return { success: true };
 };
 
-export const getPayouts = async (ctx: AppContext, query: any) => {
-	return PayoutData.getPayouts(ctx.prisma, query);
+export const getPayouts = async (
+	ctx: AppContext,
+	query: any
+): Promise<
+	Result<Awaited<ReturnType<typeof PayoutData.getPayouts>>, LogicErrorCode>
+> => {
+	try {
+		return ok(await PayoutData.getPayouts(ctx.prisma, query));
+	} catch (e) {
+		console.error('[PayoutLogic.getPayouts] Unexpected error', e);
+		return err(LogicErrorCode.Unexpected);
+	}
 };
 
-export const getPayoutById = async (ctx: AppContext, payoutId: string) => {
-	return PayoutData.getPayoutById(ctx.prisma, payoutId);
+export const getPayoutById = async (
+	ctx: AppContext,
+	payoutId: string
+): Promise<
+	Result<Awaited<ReturnType<typeof PayoutData.getPayoutById>>, LogicErrorCode>
+> => {
+	try {
+		const payout = await PayoutData.getPayoutById(ctx.prisma, payoutId);
+		if (!payout) {
+			return err(LogicErrorCode.NotFound);
+		}
+		return ok(payout);
+	} catch (e) {
+		console.error('[PayoutLogic.getPayoutById] Unexpected error', e);
+		return err(LogicErrorCode.Unexpected);
+	}
 };

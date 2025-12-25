@@ -22,26 +22,6 @@ interface CreateProductParams {
 	}[];
 }
 
-interface UpdateProductParams {
-	name?: string;
-	description?: string;
-	unitPrice?: number;
-	quantity?: number;
-	categoryId?: string;
-	status?: ProductStatus;
-	images?: {
-		path: string;
-		publicId: string;
-	}[];
-}
-
-interface CreateProductReviewParams {
-	productId: string;
-	userId: string;
-	rating: number;
-	body?: string;
-}
-
 export const createProduct = async (
 	prisma: PrismaClient,
 	params: CreateProductParams
@@ -68,6 +48,19 @@ export const createProduct = async (
 
 	return product;
 };
+
+interface UpdateProductParams {
+	name?: string;
+	description?: string;
+	unitPrice?: number;
+	quantity?: number;
+	categoryId?: string;
+	status?: ProductStatus;
+	images?: {
+		path: string;
+		publicId: string;
+	}[];
+}
 
 export const updateProduct = async (
 	prisma: PrismaClient,
@@ -188,6 +181,13 @@ export const decrementProductQuantity = async (
 	return product;
 };
 
+interface CreateProductReviewParams {
+	productId: string;
+	userId: string;
+	rating: number;
+	body?: string;
+}
+
 export const createProductReview = async (
 	prisma: PrismaClient,
 	params: CreateProductReviewParams
@@ -270,48 +270,6 @@ export const getRelatedProducts = async (
 	}
 
 	return relatedProducts;
-};
-
-interface UpdateProductImagesParams {
-	productId: string;
-	addImages: {
-		path: string;
-		publicId: string;
-	}[];
-	removeImageIds: string[];
-}
-
-export const updateProductImages = async (
-	prisma: PrismaClient,
-	params: UpdateProductImagesParams
-) => {
-	const { productId, addImages, removeImageIds } = params;
-
-	const existingProduct = await prisma.product.findUnique({
-		where: { id: productId }
-	});
-
-	if (!existingProduct) {
-		throw new Error(`Product ${productId} not found`);
-	}
-
-	const product = await prisma.product.update({
-		where: { id: productId },
-		data: {
-			images: {
-				createMany: { data: addImages },
-				deleteMany: { id: { in: removeImageIds } }
-			}
-		},
-		include: {
-			images: true,
-			store: true,
-			categories: { include: { category: true } },
-			reviews: { include: { user: true } }
-		}
-	});
-
-	return product;
 };
 
 interface CreateProductOptionParams {
