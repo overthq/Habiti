@@ -10,10 +10,10 @@ import { useAuthStore } from '@/state/auth-store';
 import { useGuestCartStore } from '@/state/guest-cart-store';
 import { Cart, CartProduct } from '@/data/types';
 import { formatNaira } from '@/utils/currency';
-import { Minus, Plus, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import useDebounce from '@/hooks/use-debounce';
 import { formatDate } from '@/utils/date';
+import QuantityControl from '@/components/QuantityControl';
 
 interface CartProductItemProps {
 	cart: Cart;
@@ -59,30 +59,14 @@ const CartProductItem: React.FC<CartProductItemProps> = ({
 				</p>
 			</div>
 
-			<div className='flex items-center gap-2'>
-				<Button
-					size='sm'
-					variant='outline'
-					onClick={() =>
-						onQuantityChange(
-							cartProduct.productId,
-							Math.max(localQuantity - 1, 0)
-						)
-					}
-				>
-					{localQuantity === 1 ? <Trash2 size={16} /> : <Minus size={16} />}
-				</Button>
-				<p className='font-medium text-center w-6'>{localQuantity}</p>
-				<Button
-					size='sm'
-					variant='outline'
-					onClick={() =>
-						onQuantityChange(cartProduct.productId, localQuantity + 1)
-					}
-				>
-					<Plus size={16} />
-				</Button>
-			</div>
+			<QuantityControl
+				quantity={localQuantity}
+				setQuantity={quantity =>
+					onQuantityChange(cartProduct.productId, quantity)
+				}
+				allowDelete
+				showLabel={false}
+			/>
 		</div>
 	);
 };

@@ -258,8 +258,8 @@ interface StoreHeaderProps {
 const StoreHeader: React.FC<StoreHeaderProps> = ({ store, viewerContext }) => {
 	return (
 		<div className='flex justify-between py-4'>
-			<div>
-				<div className='rounded-full size-22 overflow-hidden bg-muted mb-4 flex justify-center items-center'>
+			<div className='flex items-center gap-4'>
+				<div className='rounded-full size-24 overflow-hidden bg-muted flex justify-center items-center'>
 					{store.image ? (
 						<img src={store.image.path} className='size-full object-cover' />
 					) : (
@@ -268,8 +268,8 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store, viewerContext }) => {
 						</p>
 					)}
 				</div>
-				<div className='space-y-2'>
-					<h1 className='text-4xl font-medium'>{store.name}</h1>
+				<div className='space-y-1'>
+					<h1 className='text-2xl font-medium'>{store.name}</h1>
 					<p className='text-muted-foreground'>{store.description}</p>
 				</div>
 			</div>

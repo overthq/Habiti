@@ -22,6 +22,7 @@ import {
 import { useGuestCartStore } from '@/state/guest-cart-store';
 import { useAuthStore } from '@/state/auth-store';
 import Product from '@/components/store/Product';
+import QuantityControl from '@/components/QuantityControl';
 
 const ProductPage = () => {
 	const { id } = useParams<{ id: string }>();
@@ -108,7 +109,7 @@ const ImageSelector: React.FC<ImageSelectorProps> = ({
 };
 
 const ProductMeta = () => {
-	const { product } = useProductContext();
+	const { product, quantity, setQuantity } = useProductContext();
 
 	return (
 		<div className='md:max-w-xs w-full'>
@@ -119,7 +120,7 @@ const ProductMeta = () => {
 				{formatNaira(product.unitPrice)}
 			</p>
 
-			<QuantityControl />
+			<QuantityControl quantity={quantity} setQuantity={setQuantity} />
 
 			<ProductButtons />
 
@@ -151,35 +152,6 @@ const StorePreview = () => {
 				<Link href={`/store/${product.store.id}`}>
 					<p className='font-medium'>{product.store.name}</p>
 				</Link>
-			</div>
-		</div>
-	);
-};
-
-const QuantityControl = () => {
-	const { quantity, setQuantity } = useProductContext();
-
-	const decrementDisabled = React.useMemo(() => quantity === 1, [quantity]);
-
-	const increment = React.useCallback(() => setQuantity(q => q + 1), []);
-	const decrement = React.useCallback(() => setQuantity(q => q - 1), []);
-
-	return (
-		<div className='my-4 space-y-2'>
-			<p className='font-medium'>Quantity</p>
-
-			<div className='flex items-center gap-6 border rounded-md w-min py-2 px-3'>
-				<button
-					onClick={decrement}
-					disabled={decrementDisabled}
-					className='bg-transparent'
-				>
-					<Minus className='size-4' />
-				</button>
-				<p className='text-sm tabular-nums'>{quantity}</p>
-				<button onClick={increment} className='bg-transparent'>
-					<Plus className='size-4' />
-				</button>
 			</div>
 		</div>
 	);
