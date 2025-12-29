@@ -84,7 +84,7 @@ const MainNavigation = () => {
 
 			<div className='flex flex-1 justify-end items-center gap-3'>
 				<Button asChild variant='ghost' size='icon'>
-					<Link href='/carts'>
+					<Link href='/cart'>
 						<span className='relative inline-flex'>
 							<ShoppingCartIcon className='size-5' />
 							{showCartBadge ? (
