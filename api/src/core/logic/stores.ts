@@ -3,6 +3,8 @@ import { AppContext } from '../../utils/context';
 import { getStorePushTokens, NotificationType } from '../notifications';
 import * as PayoutData from '../data/payouts';
 import { ProductFilters } from '../../utils/queries';
+import { err, ok } from './result';
+import { LogicErrorCode } from './errors';
 
 interface CreateStoreInput {
 	name: string;
@@ -424,5 +426,14 @@ export const getTrendingStores = async (
 	ctx: AppContext,
 	options: StoreData.GetTrendingStoresOptions = {}
 ) => {
-	return StoreData.getTrendingStores(ctx.prisma, options);
+	try {
+		const trendingStores = await StoreData.getTrendingStores(
+			ctx.prisma,
+			options
+		);
+		return ok(trendingStores);
+	} catch (error) {
+		console.log('[StoreLogic.getTrendingStores] Unexpected error', error);
+		return err(LogicErrorCode.Unexpected);
+	}
 };
