@@ -120,7 +120,10 @@ const ProductMeta = () => {
 				{formatNaira(product.unitPrice)}
 			</p>
 
-			<QuantityControl quantity={quantity} setQuantity={setQuantity} />
+			<div className='my-4 space-y-2'>
+				<p className='font-medium'>Quantity</p>
+				<QuantityControl quantity={quantity} setQuantity={setQuantity} />
+			</div>
 
 			<ProductButtons />
 
