@@ -35,9 +35,10 @@ const checkAdminStatus = async (req: Request) => {
 
 	if (!token) return false;
 
-	const parsedTokenResult = await verifyAccessToken(token);
-	if (!parsedTokenResult.ok) return false;
-	const parsedToken = parsedTokenResult.data;
-
-	return (parsedToken as any).role === 'admin' || false;
+	try {
+		const parsedToken = await verifyAccessToken(token);
+		return (parsedToken as any).role === 'admin' || false;
+	} catch {
+		return false;
+	}
 };

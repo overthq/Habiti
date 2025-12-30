@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { APIException } from '../types/errors';
+import { LogicError, logicErrorToApiException } from '../core/logic/errors';
 
 /**
  * Global error handler middleware for Express.
- * Handles APIException errors and returns them as JSON responses.
+ * Handles LogicError and APIException errors and returns them as JSON responses.
  * Must be registered after all routes.
  */
 export const errorHandler = (
@@ -13,6 +14,14 @@ export const errorHandler = (
 	res: Response,
 	_next: NextFunction
 ) => {
+	if (err instanceof LogicError) {
+		const apiException = logicErrorToApiException(err.code);
+		return res.status(apiException.statusCode).json({
+			message: apiException.message,
+			errors: apiException.errors
+		});
+	}
+
 	if (err instanceof APIException) {
 		return res.status(err.statusCode).json({
 			message: err.message,

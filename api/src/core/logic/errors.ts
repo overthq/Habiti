@@ -1,5 +1,15 @@
 import { APIException } from '../../types/errors';
 
+export class LogicError extends Error {
+	public readonly code: LogicErrorCode;
+
+	constructor(code: LogicErrorCode, message?: string) {
+		super(message ?? code);
+		this.name = 'LogicError';
+		this.code = code;
+	}
+}
+
 export enum LogicErrorCode {
 	NotAuthenticated = 'NotAuthenticated',
 	Forbidden = 'Forbidden',

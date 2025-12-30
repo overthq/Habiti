@@ -6,11 +6,7 @@ export interface DeleteCartArgs {
 }
 
 export const deleteCart: Resolver<DeleteCartArgs> = async (_, { id }, ctx) => {
-	const result = await CartLogic.deleteCart(ctx, { cartId: id });
-
-	if (!result.ok) throw new Error(result.error);
-
-	return result.data;
+	return CartLogic.deleteCart(ctx, { cartId: id });
 };
 
 export interface AddToCartArgs {
@@ -26,15 +22,11 @@ export const addToCart: Resolver<AddToCartArgs> = async (
 	{ input: { storeId, productId, quantity } },
 	ctx
 ) => {
-	const result = await CartLogic.addProductToCart(ctx, {
+	return CartLogic.addProductToCart(ctx, {
 		storeId,
 		productId,
 		quantity
 	});
-
-	if (!result.ok) throw new Error(result.error);
-
-	return result.data;
 };
 
 export interface RemoveProductArgs {
@@ -47,14 +39,12 @@ export const removeFromCart: Resolver<RemoveProductArgs> = async (
 	{ cartId, productId },
 	ctx
 ) => {
-	const cartProductResult = await CartLogic.removeProductFromCart(ctx, {
+	const cartProduct = await CartLogic.removeProductFromCart(ctx, {
 		cartId,
 		productId
 	});
 
-	if (!cartProductResult.ok) throw new Error(cartProductResult.error);
-
-	return `${cartProductResult.data.cartId}-${cartProductResult.data.productId}`;
+	return `${cartProduct.cartId}-${cartProduct.productId}`;
 };
 
 export interface UpdateCartProductArgs {
@@ -70,13 +60,9 @@ export const updateCartProduct: Resolver<UpdateCartProductArgs> = async (
 	{ input: { cartId, productId, quantity } },
 	ctx
 ) => {
-	const result = await CartLogic.updateCartProductQuantity(ctx, {
+	return CartLogic.updateCartProductQuantity(ctx, {
 		cartId,
 		productId,
 		quantity
 	});
-
-	if (!result.ok) throw new Error(result.error);
-
-	return result.data;
 };

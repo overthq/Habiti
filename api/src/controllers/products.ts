@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
 import * as ProductLogic from '../core/logic/products';
-import { logicErrorToApiException } from '../core/logic/errors';
 import { hydrateQuery } from '../utils/queries';
 import { getAppContext } from '../utils/context';
 
@@ -10,17 +9,14 @@ export const getProducts = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const query = hydrateQuery(req.query);
-
-	const ctx = getAppContext(req);
-
-	const productsResult = await ProductLogic.getProducts(ctx, query);
-
-	if (!productsResult.ok) {
-		return next(logicErrorToApiException(productsResult.error));
+	try {
+		const query = hydrateQuery(req.query);
+		const ctx = getAppContext(req);
+		const products = await ProductLogic.getProducts(ctx, query);
+		return res.json({ products });
+	} catch (error) {
+		return next(error);
 	}
-
-	return res.json({ products: productsResult.data });
 };
 
 export const getProductById = async (
@@ -28,17 +24,16 @@ export const getProductById = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const ctx = getAppContext(req);
-	const productWithContextResult = await ProductLogic.getProductById(
-		ctx,
-		req.params.id
-	);
-
-	if (!productWithContextResult.ok) {
-		return next(logicErrorToApiException(productWithContextResult.error));
+	try {
+		const ctx = getAppContext(req);
+		const productWithContext = await ProductLogic.getProductById(
+			ctx,
+			req.params.id
+		);
+		return res.json(productWithContext);
+	} catch (error) {
+		return next(error);
 	}
-
-	return res.json(productWithContextResult.data);
 };
 
 export const getRelatedProducts = async (
@@ -46,17 +41,13 @@ export const getRelatedProducts = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const ctx = getAppContext(req);
-	const productsResult = await ProductLogic.getRelatedProducts(
-		ctx,
-		req.params.id
-	);
-
-	if (!productsResult.ok) {
-		return next(logicErrorToApiException(productsResult.error));
+	try {
+		const ctx = getAppContext(req);
+		const products = await ProductLogic.getRelatedProducts(ctx, req.params.id);
+		return res.json({ products });
+	} catch (error) {
+		return next(error);
 	}
-
-	return res.json({ products: productsResult.data });
 };
 
 export const getProductReviews = async (
@@ -64,17 +55,13 @@ export const getProductReviews = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const ctx = getAppContext(req);
-	const reviewsResult = await ProductLogic.getProductReviews(
-		ctx,
-		req.params.id
-	);
-
-	if (!reviewsResult.ok) {
-		return next(logicErrorToApiException(reviewsResult.error));
+	try {
+		const ctx = getAppContext(req);
+		const reviews = await ProductLogic.getProductReviews(ctx, req.params.id);
+		return res.json({ reviews });
+	} catch (error) {
+		return next(error);
 	}
-
-	return res.json({ reviews: reviewsResult.data });
 };
 
 export const createProductReview = async (
@@ -82,20 +69,20 @@ export const createProductReview = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const ctx = getAppContext(req);
-	const { rating, body } = req.body;
+	try {
+		const ctx = getAppContext(req);
+		const { rating, body } = req.body;
 
-	const reviewResult = await ProductLogic.createProductReview(ctx, {
-		productId: req.params.id,
-		rating,
-		body
-	});
+		const review = await ProductLogic.createProductReview(ctx, {
+			productId: req.params.id,
+			rating,
+			body
+		});
 
-	if (!reviewResult.ok) {
-		return next(logicErrorToApiException(reviewResult.error));
+		return res.json({ review });
+	} catch (error) {
+		return next(error);
 	}
-
-	return res.json({ review: reviewResult.data });
 };
 
 export const updateProduct = async (
@@ -103,22 +90,22 @@ export const updateProduct = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const ctx = getAppContext(req);
-	const { name, description, unitPrice, quantity } = req.body;
+	try {
+		const ctx = getAppContext(req);
+		const { name, description, unitPrice, quantity } = req.body;
 
-	const productResult = await ProductLogic.updateProduct(ctx, {
-		productId: req.params.id,
-		name,
-		description,
-		unitPrice,
-		quantity
-	});
+		const product = await ProductLogic.updateProduct(ctx, {
+			productId: req.params.id,
+			name,
+			description,
+			unitPrice,
+			quantity
+		});
 
-	if (!productResult.ok) {
-		return next(logicErrorToApiException(productResult.error));
+		return res.json({ product });
+	} catch (error) {
+		return next(error);
 	}
-
-	return res.json({ product: productResult.data });
 };
 
 export const updateProductCategories = async (
@@ -126,18 +113,18 @@ export const updateProductCategories = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const ctx = getAppContext(req);
-	const { add, remove } = req.body;
+	try {
+		const ctx = getAppContext(req);
+		const { add, remove } = req.body;
 
-	const productResult = await ProductLogic.updateProductCategories(ctx, {
-		productId: req.params.id,
-		addCategoryIds: add,
-		removeCategoryIds: remove
-	});
+		const product = await ProductLogic.updateProductCategories(ctx, {
+			productId: req.params.id,
+			addCategoryIds: add,
+			removeCategoryIds: remove
+		});
 
-	if (!productResult.ok) {
-		return next(logicErrorToApiException(productResult.error));
+		return res.json({ product });
+	} catch (error) {
+		return next(error);
 	}
-
-	return res.json({ product: productResult.data });
 };

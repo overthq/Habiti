@@ -3,6 +3,7 @@ import * as OrderData from '../data/orders';
 import { AppContext } from '../../utils/context';
 import { initialCharge } from '../payments';
 import { OrderStatus } from '../../generated/prisma/client';
+import { LogicError, LogicErrorCode } from './errors';
 
 interface StoreCardInput {
 	email: string;
@@ -18,11 +19,11 @@ interface StoreCardInput {
 }
 export const storeCard = async (ctx: AppContext, input: StoreCardInput) => {
 	if (!ctx.user) {
-		throw new Error('User not authenticated');
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	if (input.email !== ctx.user.email) {
-		throw new Error('Unauthorized: Email does not match current user');
+		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
 	const card = await CardData.storeCard(input);
@@ -57,11 +58,11 @@ interface CreateCardInput {
 
 export const createCard = async (ctx: AppContext, input: CreateCardInput) => {
 	if (!ctx.user) {
-		throw new Error('User not authenticated');
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	if (input.email !== ctx.user.email) {
-		throw new Error('Unauthorized: Email does not match current user');
+		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
 	const card = await CardData.createCard(ctx.prisma, {
@@ -93,7 +94,7 @@ export const authorizeCard = async (
 	input: AuthorizeCardInput
 ) => {
 	if (!ctx.user) {
-		throw new Error('User not authenticated');
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	let amount = 5000;
@@ -102,9 +103,9 @@ export const authorizeCard = async (
 		const order = await OrderData.getOrderById(ctx.prisma, input.orderId);
 
 		if (!order) {
-			throw new Error('Order not found');
+			throw new LogicError(LogicErrorCode.OrderNotFound);
 		} else if (order.status !== OrderStatus.PaymentPending) {
-			throw new Error('Order is not in payment pending state');
+			throw new LogicError(LogicErrorCode.OrderNotPayable);
 		}
 
 		amount = order.total;
@@ -121,11 +122,11 @@ export const authorizeCard = async (
 
 export const getCardsByUserId = async (ctx: AppContext, userId: string) => {
 	if (!ctx.user) {
-		throw new Error('User not authenticated');
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	if (userId !== ctx.user.id) {
-		throw new Error("Unauthorized: Cannot access other user's cards");
+		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
 	return CardData.getCardsByUserId(ctx.prisma, userId);
@@ -135,15 +136,15 @@ export const getCardById = async (ctx: AppContext, cardId: string) => {
 	const card = await CardData.getCardById(ctx.prisma, cardId);
 
 	if (!ctx.user) {
-		throw new Error('User not authenticated');
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	if (!card) {
-		throw new Error('Card not found');
+		throw new LogicError(LogicErrorCode.CardNotFound);
 	}
 
 	if (card.userId !== ctx.user.id) {
-		throw new Error('Unauthorized: Card does not belong to current user');
+		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
 	return card;
@@ -157,17 +158,17 @@ export const deleteCard = async (ctx: AppContext, input: DeleteCardInput) => {
 	const { cardId } = input;
 
 	if (!ctx.user) {
-		throw new Error('User not authenticated');
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	const card = await CardData.getCardById(ctx.prisma, cardId);
 
 	if (!card) {
-		throw new Error('Card not found');
+		throw new LogicError(LogicErrorCode.CardNotFound);
 	}
 
 	if (card.userId !== ctx.user.id) {
-		throw new Error('Unauthorized: Card does not belong to current user');
+		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
 	await CardData.deleteCard(ctx.prisma, cardId);
