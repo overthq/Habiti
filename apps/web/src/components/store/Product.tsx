@@ -33,7 +33,7 @@ const Product: React.FC<ProductProps> = ({
 						/>
 					)}
 				</div>
-				<div className='mt-2'>
+				<div className='text-sm mt-2'>
 					<p className='font-medium'>{name}</p>
 					<p className='text-muted-foreground'>{formatNaira(unitPrice)}</p>
 				</div>

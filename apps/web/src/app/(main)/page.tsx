@@ -91,8 +91,8 @@ const StoreCard: React.FC<StoreCardProps> = ({ store }) => {
 			href={`/store/${store.id}`}
 			className='rounded-2xl hover:border-foreground/40 transition-colors'
 		>
-			<div className='items-center justify-center gap-4 w-20 overflow-hidden'>
-				<div className='size-20 rounded-full bg-muted flex items-center justify-center overflow-hidden text-3xl font-semibold'>
+			<div className='items-center justify-center gap-4 w-24 overflow-hidden'>
+				<div className='size-24 rounded-full bg-muted flex items-center justify-center overflow-hidden text-3xl font-semibold'>
 					{store.image?.path ? (
 						<img
 							src={store.image.path}

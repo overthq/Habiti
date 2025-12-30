@@ -125,10 +125,10 @@ const CartMain = () => {
 	return (
 		<div className='max-w-3xl mx-auto'>
 			<Link
-				href='/carts'
+				href='/cart'
 				className='flex gap-2 items-center text-muted-foreground text-sm mb-8'
 			>
-				<ArrowLeft className='size-4' /> <p>Back to carts</p>
+				<ArrowLeft className='size-4' /> <p>Back to cart</p>
 			</Link>
 
 			<div className='flex items-center gap-3 mb-6'>

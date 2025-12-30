@@ -37,7 +37,7 @@ const ProfileDropdown = () => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant='ghost' className='rounded-full'>
+				<Button variant='ghost'>
 					<CircleUserIcon className='size-5' />
 				</Button>
 			</DropdownMenuTrigger>
@@ -78,13 +78,13 @@ const MainNavigation = () => {
 				</Link>
 			</nav>
 
-			<div className='flex-1 sm:flex hidden'>
+			<div className='grow-1 max-w-3xl mx-auto'>
 				<SearchInput />
 			</div>
 
 			<div className='flex flex-1 justify-end items-center gap-3'>
 				<Button asChild variant='ghost' size='icon'>
-					<Link href='/carts'>
+					<Link href='/cart'>
 						<span className='relative inline-flex'>
 							<ShoppingCartIcon className='size-5' />
 							{showCartBadge ? (

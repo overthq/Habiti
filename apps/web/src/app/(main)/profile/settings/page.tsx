@@ -77,6 +77,10 @@ const AccountTab: React.FC<AccountTabProps> = ({ user }) => {
 						</Field>
 					)}
 				/>
+
+				<Button type='submit' className='mt-4'>
+					Save
+				</Button>
 			</form>
 
 			<Separator className='my-4' />
