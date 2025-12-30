@@ -65,7 +65,6 @@ const CartProductItem: React.FC<CartProductItemProps> = ({
 					onQuantityChange(cartProduct.productId, quantity)
 				}
 				allowDelete
-				showLabel={false}
 			/>
 		</div>
 	);

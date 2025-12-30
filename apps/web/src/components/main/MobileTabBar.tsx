@@ -1,11 +1,10 @@
 import Link from 'next/link';
-import { Home, Search, ShoppingBag, User } from 'lucide-react';
+import { Home, ShoppingBag, User } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 const tabRoutes = [
 	{ href: '/', label: 'Home', icon: Home },
-	{ href: '/search', label: 'Search', icon: Search },
 	{ href: '/cart', label: 'Carts', icon: ShoppingBag },
 	{ href: '/profile', label: 'Profile', icon: User }
 ];

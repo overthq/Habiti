@@ -4,7 +4,6 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { Minus, Plus } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { formatNaira } from '@/utils/currency';
@@ -35,8 +34,8 @@ const ProductPage = () => {
 			product={data.product}
 			viewerContext={data.viewerContext}
 		>
-			<div className='max-w-4xl mx-auto space-y-16'>
-				<div className='flex md:gap-12 md:flex-row flex-col gap-4'>
+			<div className='max-w-4xl mx-auto space-y-8'>
+				<div className='flex flex-col md:gap-12 md:flex-row gap-4'>
 					<ProductImages />
 					<ProductMeta />
 				</div>
@@ -52,7 +51,7 @@ const ProductImages = () => {
 	const { product } = useProductContext();
 
 	return (
-		<div className='grow max-w-lg'>
+		<div className='grow'>
 			<div className='aspect-square rounded-xl overflow-hidden bg-muted'>
 				{product.images.length > 0 && (
 					<img
