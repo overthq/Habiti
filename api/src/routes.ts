@@ -23,8 +23,10 @@ import {
 	createProductReview,
 	getRelatedProducts,
 	getProducts,
-	updateProduct
+	updateProduct,
+	createProduct
 } from './controllers/products';
+import { createProductSchema } from './core/validations/products';
 import {
 	getCurrentUser,
 	updateCurrentUser,
@@ -106,14 +108,18 @@ router.get('/stores/:id/payouts', isAdmin, getStorePayouts);
 router.get('/stores/:id/orders', optionalAuth, getStoreOrders);
 
 // Products
+router.get('/products', isAdmin, getProducts);
+router.post(
+	'/products',
+	isAdmin,
+	validateBody(createProductSchema),
+	createProduct
+);
 router.get('/products/:id', optionalAuth, getProductById);
 router.put('/products/:id', isAdmin, updateProduct);
 router.get('/products/:id/reviews', optionalAuth, getProductReviews);
-
 router.post('/products/:id/reviews', authenticate, createProductReview);
 router.get('/products/:id/related', optionalAuth, getRelatedProducts);
-
-router.get('/products', isAdmin, getProducts);
 
 // Users
 router.get('/users/current', authenticate, getCurrentUser);

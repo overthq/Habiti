@@ -28,7 +28,9 @@ export const createProduct = async (
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	if (ctx.storeId && ctx.storeId !== storeId) {
+	const userIsAdmin = await ctx.isAdmin();
+
+	if (ctx.storeId && ctx.storeId !== storeId && !userIsAdmin) {
 		throw new LogicError(LogicErrorCode.ProductStoreMismatch);
 	}
 

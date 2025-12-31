@@ -5,6 +5,7 @@ import { type Product } from '@/data/types';
 import { formatNaira } from '@/utils/format';
 import { Link } from 'react-router';
 import { Button } from '../ui/button';
+import CreateProductDialog from './create-product-dialog';
 
 const columns: ColumnDef<Product>[] = [
 	{
@@ -38,7 +39,10 @@ const StoreProducts = ({ storeId }: { storeId: string }) => {
 	if (!data) return null;
 
 	return (
-		<div>
+		<div className='space-y-4'>
+			<div className='flex justify-end'>
+				<CreateProductDialog storeId={storeId} />
+			</div>
 			<DataTable
 				columns={columns}
 				data={data.products}

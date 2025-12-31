@@ -128,3 +128,26 @@ export const updateProductCategories = async (
 		return next(error);
 	}
 };
+
+export const createProduct = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const ctx = getAppContext(req);
+		const { name, description, unitPrice, quantity, storeId } = req.body;
+
+		const product = await ProductLogic.createProduct(ctx, {
+			name,
+			description,
+			unitPrice,
+			quantity,
+			storeId
+		});
+
+		return res.json({ product });
+	} catch (error) {
+		return next(error);
+	}
+};
