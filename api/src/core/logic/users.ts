@@ -14,18 +14,25 @@ import { EmailType } from '../../services/email';
 
 import type { AppContext } from '../../utils/context';
 import type { CreateUserParams } from '../data/users';
+import { LogicError, LogicErrorCode } from './errors';
 
 export const register = async (ctx: AppContext, args: unknown) => {
 	const { data, error } = registerBodySchema.safeParse(args);
 
 	if (error) {
-		throw new Error(`[UserLogic.register] - Malformed input: ${error.message}`);
+		throw new LogicError(
+			LogicErrorCode.ValidationFailed,
+			`Malformed input: ${error.message}`
+		);
 	}
 
 	const existingUser = await UserData.getUserByEmail(ctx.prisma, data.email);
 
 	if (existingUser) {
-		throw new Error('A user already exists with the specified email');
+		throw new LogicError(
+			LogicErrorCode.InvalidInput,
+			'A user already exists with the specified email'
+		);
 	}
 
 	const user = await UserData.createUser(ctx.prisma, {
@@ -33,17 +40,12 @@ export const register = async (ctx: AppContext, args: unknown) => {
 		email: data.email
 	});
 
-	const codeResult = await cacheVerificationCode(data.email);
-	if (!codeResult.ok) {
-		throw new Error(
-			'[UserLogic.register] - Failed to create verification code'
-		);
-	}
+	const code = await cacheVerificationCode(data.email);
 
 	ctx.services.email.sendMail({
 		emailType: EmailType.NewAccount,
 		email: data.email,
-		code: codeResult.data
+		code
 	});
 
 	return user;
@@ -57,20 +59,18 @@ export const login = async (ctx: AppContext, input: LoginInput) => {
 	const user = await UserData.getUserByEmail(ctx.prisma, input.email);
 
 	if (!user) {
-		throw new Error(
-			'[UserLogic.login] - No user exists with the specified email'
+		throw new LogicError(
+			LogicErrorCode.UserNotFound,
+			'No user exists with the specified email'
 		);
 	}
 
-	const codeResult = await cacheVerificationCode(input.email);
-	if (!codeResult.ok) {
-		throw new Error('[UserLogic.login] - Failed to create verification code');
-	}
+	const code = await cacheVerificationCode(input.email);
 
 	ctx.services.email.sendMail({
 		emailType: EmailType.NewAccount,
 		email: input.email,
-		code: codeResult.data
+		code
 	});
 
 	return user;
@@ -82,9 +82,7 @@ export const getUsers = (ctx: AppContext, query: Prisma.UserFindManyArgs) => {
 
 export const getCurrentUser = (ctx: AppContext) => {
 	if (!ctx.user) {
-		throw new Error(
-			'[UserLogic.getCurrentUser] - an authenticated user is required to complete this action'
-		);
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 	return UserData.getUserById(ctx.prisma, ctx.user.id);
 };
@@ -101,7 +99,7 @@ export const updateUser = async (ctx: AppContext, input: UpdateUserInput) => {
 	const userIsAdmin = await ctx.isAdmin();
 
 	if (!ctx.user?.id || (userId !== ctx.user.id && !userIsAdmin)) {
-		throw new Error('Current user is not authorized to carry out this action');
+		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
 	return UserData.updateUser(ctx.prisma, userId, rest);
@@ -112,7 +110,7 @@ export const updateCurrentUser = (
 	input: Omit<UpdateUserInput, 'userId'>
 ) => {
 	if (!ctx.user?.id) {
-		throw new Error('User is not authenticated');
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	return updateUser(ctx, { ...input, userId: ctx.user.id });
@@ -120,7 +118,7 @@ export const updateCurrentUser = (
 
 export const deleteCurrentUser = (ctx: AppContext) => {
 	if (!ctx.user?.id) {
-		throw new Error('User is not authenticated');
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	return deleteUser(ctx, { userId: ctx.user.id });
@@ -136,7 +134,7 @@ export const deleteUser = async (ctx: AppContext, input: DeleteUserInput) => {
 	const userIsAdmin = await ctx.isAdmin();
 
 	if (!ctx.user?.id || (userId !== ctx.user.id && !userIsAdmin)) {
-		throw new Error('Current user is not authorized to carry out this action');
+		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
 	return UserData.deleteUser(ctx.prisma, userId);
@@ -144,7 +142,7 @@ export const deleteUser = async (ctx: AppContext, input: DeleteUserInput) => {
 
 export const getFollowedStores = (ctx: AppContext) => {
 	if (!ctx.user?.id) {
-		throw new Error('User is not authenticated');
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	return StoreData.getFollowedStores(ctx.prisma, ctx.user.id);
@@ -152,7 +150,7 @@ export const getFollowedStores = (ctx: AppContext) => {
 
 export const getManagedStores = (ctx: AppContext) => {
 	if (!ctx.user?.id) {
-		throw new Error('User is not authenticated');
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	return UserData.getManagedStores(ctx.prisma, ctx.user.id);
@@ -164,7 +162,7 @@ export const getUserById = (ctx: AppContext, userId: string) => {
 
 export const getOrders = (ctx: AppContext, query: Prisma.OrderFindManyArgs) => {
 	if (!ctx.user?.id) {
-		throw new Error('User is not authenticated');
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	return OrderData.getOrdersByUserId(ctx.prisma, ctx.user.id, query);
@@ -172,7 +170,7 @@ export const getOrders = (ctx: AppContext, query: Prisma.OrderFindManyArgs) => {
 
 export const getCarts = (ctx: AppContext, query: Prisma.CartFindManyArgs) => {
 	if (!ctx.user?.id) {
-		throw new Error('User is not authenticated');
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	return CartData.getCartsByUserId(ctx.prisma, ctx.user.id, query);
@@ -180,7 +178,7 @@ export const getCarts = (ctx: AppContext, query: Prisma.CartFindManyArgs) => {
 
 export const getCards = (ctx: AppContext) => {
 	if (!ctx.user?.id) {
-		throw new Error('User is not authenticated');
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	return CardData.getCardsByUserId(ctx.prisma, ctx.user.id);
@@ -188,7 +186,7 @@ export const getCards = (ctx: AppContext) => {
 
 export const getDeliveryAddresses = (ctx: AppContext) => {
 	if (!ctx.user?.id) {
-		throw new Error('User is not authenticated');
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	return AddressData.getDeliveryAddressesByUserId(ctx.prisma, ctx.user.id);

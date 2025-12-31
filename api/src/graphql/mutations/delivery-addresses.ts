@@ -12,12 +12,8 @@ export const addDeliveryAddress: Resolver<AddDeliveryAddressArgs> = async (
 	{ input },
 	ctx
 ) => {
-	const result = await DeliveryAddressLogic.createDeliveryAddress(ctx, {
+	return DeliveryAddressLogic.createDeliveryAddress(ctx, {
 		...input,
 		userId: ctx.user?.id ?? ''
 	});
-
-	if (!result.ok) throw new Error(result.error);
-
-	return result.data;
 };

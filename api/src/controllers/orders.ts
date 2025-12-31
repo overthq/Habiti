@@ -1,7 +1,6 @@
 import { hydrateQuery } from '../utils/queries';
 import * as OrderLogic from '../core/logic/orders';
 import { getAppContext } from '../utils/context';
-import { logicErrorToApiException } from '../core/logic/errors';
 import { Request, Response, NextFunction } from 'express';
 
 export const getOrders = async (
@@ -9,17 +8,14 @@ export const getOrders = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const query = hydrateQuery(req.query);
-
-	const ctx = getAppContext(req);
-
-	const ordersResult = await OrderLogic.getOrders(ctx, query);
-
-	if (!ordersResult.ok) {
-		return next(logicErrorToApiException(ordersResult.error));
+	try {
+		const query = hydrateQuery(req.query);
+		const ctx = getAppContext(req);
+		const orders = await OrderLogic.getOrders(ctx, query);
+		return res.json({ orders });
+	} catch (error) {
+		return next(error);
 	}
-
-	return res.json({ orders: ordersResult.data });
 };
 
 export const createOrder = async (
@@ -27,23 +23,22 @@ export const createOrder = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const { cartId, cardId, transactionFee, serviceFee } = req.body;
+	try {
+		const { cartId, cardId, transactionFee, serviceFee } = req.body;
+		const result = await OrderLogic.createOrder(getAppContext(req), {
+			cartId,
+			cardId,
+			transactionFee,
+			serviceFee
+		});
 
-	const result = await OrderLogic.createOrder(getAppContext(req), {
-		cartId,
-		cardId,
-		transactionFee,
-		serviceFee
-	});
-
-	if (!result.ok) {
-		return next(logicErrorToApiException(result.error));
+		return res.json({
+			order: result.order,
+			cardAuthorizationData: result.cardAuthorizationData
+		});
+	} catch (error) {
+		return next(error);
 	}
-
-	return res.json({
-		order: result.data.order,
-		cardAuthorizationData: result.data.cardAuthorizationData
-	});
 };
 
 export const getOrderById = async (
@@ -51,14 +46,12 @@ export const getOrderById = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const { id } = req.params;
-	const ctx = getAppContext(req);
-
-	const orderResult = await OrderLogic.getOrderById(ctx, id);
-
-	if (!orderResult.ok) {
-		return next(logicErrorToApiException(orderResult.error));
+	try {
+		const { id } = req.params;
+		const ctx = getAppContext(req);
+		const order = await OrderLogic.getOrderById(ctx, id);
+		return res.json({ order });
+	} catch (error) {
+		return next(error);
 	}
-
-	return res.json({ order: orderResult.data });
 };

@@ -1,8 +1,7 @@
 import * as AdminData from '../data/admin';
 import * as AuthLogic from './auth';
 import type { AppContext } from '../../utils/context';
-import { err, ok, Result } from './result';
-import { LogicErrorCode } from './errors';
+import { LogicError, LogicErrorCode } from './errors';
 
 interface AdminLoginInput {
 	email: string;
@@ -12,49 +11,29 @@ interface AdminLoginInput {
 export const adminLogin = async (
 	ctx: AppContext,
 	input: AdminLoginInput
-): Promise<
-	Result<{ accessToken: string; adminId: string }, LogicErrorCode>
-> => {
-	try {
-		const admin = await AdminData.getAdminByEmail(ctx.prisma, input.email);
+): Promise<{ accessToken: string; adminId: string }> => {
+	const admin = await AdminData.getAdminByEmail(ctx.prisma, input.email);
 
-		if (!admin) {
-			return err(LogicErrorCode.AdminNotFound);
-		}
-
-		const correct = await AuthLogic.verifyPassword(
-			input.password,
-			admin.passwordHash
-		);
-
-		if (!correct) {
-			return err(LogicErrorCode.InvalidCredentials);
-		}
-
-		const accessTokenResult = await AuthLogic.generateAccessToken(
-			admin,
-			'admin'
-		);
-		if (!accessTokenResult.ok) {
-			return err(accessTokenResult.error);
-		}
-
-		return ok({ accessToken: accessTokenResult.data, adminId: admin.id });
-	} catch (e) {
-		console.error('[AdminLogic.adminLogin] Unexpected error', e);
-		return err(LogicErrorCode.Unexpected);
+	if (!admin) {
+		throw new LogicError(LogicErrorCode.AdminNotFound);
 	}
+
+	const correct = await AuthLogic.verifyPassword(
+		input.password,
+		admin.passwordHash
+	);
+
+	if (!correct) {
+		throw new LogicError(LogicErrorCode.InvalidCredentials);
+	}
+
+	const accessToken = await AuthLogic.generateAccessToken(admin, 'admin');
+
+	return { accessToken, adminId: admin.id };
 };
 
 export const getAdminOverview = async (
 	ctx: AppContext
-): Promise<
-	Result<Awaited<ReturnType<typeof AdminData.getAdminOverview>>, LogicErrorCode>
-> => {
-	try {
-		return ok(await AdminData.getAdminOverview(ctx.prisma));
-	} catch (e) {
-		console.error('[AdminLogic.getAdminOverview] Unexpected error', e);
-		return err(LogicErrorCode.Unexpected);
-	}
+): Promise<Awaited<ReturnType<typeof AdminData.getAdminOverview>>> => {
+	return AdminData.getAdminOverview(ctx.prisma);
 };
