@@ -84,13 +84,18 @@ export const useCancelOrderMutation = (id: string) => {
 	});
 };
 
-export const useCreateProductMutation = () => {
+export const useCreateProductMutation = (storeId?: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
 		mutationFn: (body: CreateProductBody) => createProduct(body),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['products'], exact: true });
+			if (storeId) {
+				queryClient.invalidateQueries({
+					queryKey: ['stores', storeId, 'products']
+				});
+			}
 			toast.success('Product created successfully');
 		},
 		onError: () => {
