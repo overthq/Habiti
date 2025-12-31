@@ -213,21 +213,10 @@ export const deleteCart = async (ctx: AppContext, input: DeleteCartInput) => {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	try {
-		await CartData.deleteCart(ctx.prisma, {
-			userId: ctx.user.id,
-			cartId
-		});
-	} catch (e) {
-		const msg = e instanceof Error ? e.message : String(e);
-		if (msg.toLowerCase().includes('does not exist')) {
-			throw new LogicError(LogicErrorCode.NotFound);
-		}
-		if (msg.toLowerCase().includes('unauthorized')) {
-			throw new LogicError(LogicErrorCode.Forbidden);
-		}
-		throw e;
-	}
+	await CartData.deleteCart(ctx.prisma, {
+		userId: ctx.user.id,
+		cartId
+	});
 
 	ctx.services.analytics.track({
 		event: 'cart_deleted',

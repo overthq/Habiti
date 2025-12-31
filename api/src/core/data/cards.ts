@@ -1,20 +1,6 @@
 import prismaClient from '../../config/prisma';
 import { PrismaClient } from '../../generated/prisma/client';
 
-interface CreateCardParams {
-	email: string;
-	authorizationCode: string;
-	bin: string;
-	last4: string;
-	expMonth: string;
-	expYear: string;
-	bank: string;
-	signature: string;
-	cardType: string;
-	countryCode: string;
-	userId: string;
-}
-
 interface StoreCardData {
 	email: string;
 	signature: string;
@@ -57,6 +43,20 @@ export const storeCard = async (data: StoreCardData) => {
 		}
 	});
 };
+
+interface CreateCardParams {
+	email: string;
+	authorizationCode: string;
+	bin: string;
+	last4: string;
+	expMonth: string;
+	expYear: string;
+	bank: string;
+	signature: string;
+	cardType: string;
+	countryCode: string;
+	userId: string;
+}
 
 export const createCard = async (
 	prisma: PrismaClient,

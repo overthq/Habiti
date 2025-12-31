@@ -32,36 +32,15 @@ export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 		throw new LogicError(LogicErrorCode.OrderNotFound);
 	}
 
-	try {
-		await validateCart(cart, ctx.user.id);
-	} catch (e) {
-		const msg = e instanceof Error ? e.message : String(e);
-		if (msg.toLowerCase().includes('unauthorized')) {
-			throw new LogicError(LogicErrorCode.Forbidden);
-		}
-		if (msg.toLowerCase().includes('not found')) {
-			throw new LogicError(LogicErrorCode.NotFound);
-		}
-		throw new LogicError(LogicErrorCode.InvalidInput);
-	}
+	await validateCart(cart, ctx.user.id);
 
-	let order: Awaited<ReturnType<typeof OrderData.saveOrderData>>;
-	try {
-		order = await OrderData.saveOrderData(ctx.prisma, ctx.user.id, {
-			cardId,
-			transactionFee,
-			serviceFee,
-			cart,
-			storeId: cart.storeId
-		});
-	} catch (e) {
-		const msg = e instanceof Error ? e.message : String(e);
-		if (msg.toLowerCase().includes('no card found')) {
-			throw new LogicError(LogicErrorCode.CardNotFound);
-		}
-		console.error('[OrderLogic.createOrder] Unexpected error', e);
-		throw e;
-	}
+	const order = await OrderData.saveOrderData(ctx.prisma, ctx.user.id, {
+		cardId,
+		transactionFee,
+		serviceFee,
+		cart,
+		storeId: cart.storeId
+	});
 
 	// FIXME: Incredibly hacky (inconsistent response)
 	// To prevent having dealing with multiple requests for the
