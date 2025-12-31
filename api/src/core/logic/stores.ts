@@ -16,41 +16,6 @@ interface CreateStoreInput {
 	bankAccountReference?: string;
 }
 
-interface UpdateStoreInput {
-	storeId: string;
-	name?: string;
-	description?: string;
-	website?: string;
-	twitter?: string;
-	instagram?: string;
-	bankAccountNumber?: string;
-	bankCode?: string;
-	bankAccountReference?: string;
-	unlisted?: boolean;
-}
-
-interface CreateStoreManagerInput {
-	storeId: string;
-	userId: string;
-}
-
-interface RemoveStoreManagerInput {
-	storeId: string;
-	userId: string;
-}
-
-interface FollowStoreInput {
-	storeId: string;
-}
-
-interface UnfollowStoreInput {
-	storeId: string;
-}
-
-interface DeleteStoreInput {
-	storeId: string;
-}
-
 export const createStore = async (ctx: AppContext, input: CreateStoreInput) => {
 	if (!ctx.user?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
@@ -73,6 +38,19 @@ export const createStore = async (ctx: AppContext, input: CreateStoreInput) => {
 
 	return store;
 };
+
+interface UpdateStoreInput {
+	storeId: string;
+	name?: string;
+	description?: string;
+	website?: string;
+	twitter?: string;
+	instagram?: string;
+	bankAccountNumber?: string;
+	bankCode?: string;
+	bankAccountReference?: string;
+	unlisted?: boolean;
+}
 
 export const updateStore = async (ctx: AppContext, input: UpdateStoreInput) => {
 	const { storeId, ...updateData } = input;
@@ -145,6 +123,10 @@ export const getStoreById = async (ctx: AppContext, storeId: string) => {
 	return { store, viewerContext: storeViewerContext };
 };
 
+interface DeleteStoreInput {
+	storeId: string;
+}
+
 export const deleteStore = async (ctx: AppContext, input: DeleteStoreInput) => {
 	const { storeId } = input;
 
@@ -182,6 +164,11 @@ export const deleteStore = async (ctx: AppContext, input: DeleteStoreInput) => {
 
 	return store;
 };
+
+interface CreateStoreManagerInput {
+	storeId: string;
+	userId: string;
+}
 
 export const createStoreManager = async (
 	ctx: AppContext,
@@ -228,6 +215,11 @@ export const createStoreManager = async (
 	return manager;
 };
 
+interface RemoveStoreManagerInput {
+	storeId: string;
+	userId: string;
+}
+
 export const removeStoreManager = async (
 	ctx: AppContext,
 	input: RemoveStoreManagerInput
@@ -273,6 +265,10 @@ export const removeStoreManager = async (
 
 	return { success: true };
 };
+
+interface FollowStoreInput {
+	storeId: string;
+}
 
 export const followStore = async (ctx: AppContext, input: FollowStoreInput) => {
 	const { storeId } = input;
@@ -326,6 +322,10 @@ export const followStore = async (ctx: AppContext, input: FollowStoreInput) => {
 
 	return follower;
 };
+
+interface UnfollowStoreInput {
+	storeId: string;
+}
 
 export const unfollowStore = async (
 	ctx: AppContext,

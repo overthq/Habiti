@@ -54,9 +54,7 @@ export const cacheVerificationCode = async (email: string): Promise<string> => {
 	return code;
 };
 
-export const retrieveVerificationCode = async (
-	email: string
-): Promise<string | null> => {
+export const retrieveVerificationCode = async (email: string) => {
 	const cachedCode = await redisClient.get(getEmailCacheKey(email));
 	return cachedCode;
 };
@@ -64,7 +62,7 @@ export const retrieveVerificationCode = async (
 export const generateAccessToken = async (
 	user: User | Admin,
 	role: 'admin' | 'user' = 'user'
-): Promise<string> => {
+) => {
 	return jwt.sign(
 		{ id: user.id, name: user.name, email: user.email, role },
 		env.JWT_SECRET,
@@ -76,7 +74,7 @@ export const generateRefreshToken = async (
 	ctx: AppContext,
 	userId: string,
 	sessionId?: string
-): Promise<string> => {
+) => {
 	const id = crypto.randomUUID();
 	const resolvedSessionId = sessionId ?? crypto.randomUUID();
 	const token = jwt.sign(
@@ -100,10 +98,7 @@ export const generateRefreshToken = async (
 	return token;
 };
 
-export const revokeRefreshToken = async (
-	ctx: AppContext,
-	token: string
-): Promise<void> => {
+export const revokeRefreshToken = async (ctx: AppContext, token: string) => {
 	let decoded: { id: string };
 	try {
 		decoded = jwt.verify(token, env.JWT_SECRET) as { id: string };
@@ -115,10 +110,7 @@ export const revokeRefreshToken = async (
 	await AuthData.revokeRefreshToken(ctx.prisma, decoded.id);
 };
 
-export const rotateRefreshToken = async (
-	ctx: AppContext,
-	token: string
-): Promise<{ accessToken: string; refreshToken: string }> => {
+export const rotateRefreshToken = async (ctx: AppContext, token: string) => {
 	let decoded: { id: string; userId: string; sessionId?: string };
 	try {
 		decoded = jwt.verify(token, env.JWT_SECRET) as {
@@ -173,7 +165,7 @@ export const rotateRefreshToken = async (
 	};
 };
 
-export const verifyAccessToken = async (token: string): Promise<unknown> => {
+export const verifyAccessToken = async (token: string) => {
 	try {
 		return jwt.verify(token, env.JWT_SECRET);
 	} catch (e) {
