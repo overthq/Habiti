@@ -20,7 +20,7 @@ interface MarkPayoutFailedInput {
 export const createPayout = async (
 	ctx: AppContext,
 	input: CreatePayoutInput
-): Promise<Awaited<ReturnType<typeof PayoutData.savePayout>>> => {
+) => {
 	const { amount } = input;
 
 	if (!ctx.storeId) {
@@ -99,7 +99,7 @@ interface UpdatePayoutInput {
 export const updatePayout = async (
 	ctx: AppContext,
 	input: UpdatePayoutInput
-): Promise<Awaited<ReturnType<typeof PayoutData.updatePayout>>> => {
+) => {
 	if (!ctx.user?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
@@ -121,10 +121,7 @@ export const updatePayout = async (
 	return payout;
 };
 
-export const getStorePayouts = async (
-	ctx: AppContext,
-	storeId: string
-): Promise<Awaited<ReturnType<typeof PayoutData.getStorePayouts>>> => {
+export const getStorePayouts = async (ctx: AppContext, storeId: string) => {
 	if (ctx.storeId && ctx.storeId !== storeId) {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
@@ -155,7 +152,7 @@ export const getStorePayouts = async (
 export const markPayoutAsSuccessful = async (
 	ctx: AppContext,
 	input: MarkPayoutSuccessfulInput
-): Promise<{ success: true }> => {
+) => {
 	if (!ctx.user?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
@@ -178,7 +175,7 @@ export const markPayoutAsSuccessful = async (
 export const markPayoutAsFailed = async (
 	ctx: AppContext,
 	input: MarkPayoutFailedInput
-): Promise<{ success: true }> => {
+) => {
 	if (!ctx.user?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
@@ -197,20 +194,16 @@ export const markPayoutAsFailed = async (
 	return { success: true };
 };
 
-export const getPayouts = async (
-	ctx: AppContext,
-	query: any
-): Promise<Awaited<ReturnType<typeof PayoutData.getPayouts>>> => {
+export const getPayouts = async (ctx: AppContext, query: any) => {
 	return PayoutData.getPayouts(ctx.prisma, query);
 };
 
-export const getPayoutById = async (
-	ctx: AppContext,
-	payoutId: string
-): Promise<Awaited<ReturnType<typeof PayoutData.getPayoutById>>> => {
+export const getPayoutById = async (ctx: AppContext, payoutId: string) => {
 	const payout = await PayoutData.getPayoutById(ctx.prisma, payoutId);
+
 	if (!payout) {
 		throw new LogicError(LogicErrorCode.NotFound);
 	}
+
 	return payout;
 };

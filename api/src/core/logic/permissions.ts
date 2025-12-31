@@ -1,4 +1,5 @@
 import { AppContext } from '../../utils/context';
+import { LogicError, LogicErrorCode } from './errors';
 
 // It makes sense to check this on a per-request basis, until:
 // - We scope access tokens to a single store (for store mangement)
@@ -10,11 +11,11 @@ import { AppContext } from '../../utils/context';
 
 export const canManageStore = async (ctx: AppContext) => {
 	if (!ctx.user?.id) {
-		throw new Error('Not authenticated');
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	if (!ctx.storeId) {
-		throw new Error('Store not found');
+		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
 	const storeManager = await ctx.prisma.storeManager.findUnique({

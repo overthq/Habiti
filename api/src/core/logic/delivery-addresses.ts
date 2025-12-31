@@ -10,7 +10,7 @@ interface CreateDeliveryAddressArgs {
 export const createDeliveryAddress = async (
 	ctx: AppContext,
 	args: CreateDeliveryAddressArgs
-): Promise<Awaited<ReturnType<typeof AddressData.createDeliveryAddress>>> => {
+) => {
 	if (!ctx.user?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}

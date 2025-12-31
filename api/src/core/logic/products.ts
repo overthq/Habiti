@@ -21,7 +21,7 @@ export interface CreateProductInput {
 export const createProduct = async (
 	ctx: AppContext,
 	input: CreateProductInput
-): Promise<Awaited<ReturnType<typeof ProductData.createProduct>>> => {
+) => {
 	const { storeId, ...productData } = input;
 
 	if (!ctx.user?.id) {
@@ -70,7 +70,7 @@ export interface UpdateProductInput {
 export const updateProduct = async (
 	ctx: AppContext,
 	input: UpdateProductInput
-): Promise<Awaited<ReturnType<typeof ProductData.updateProduct>>> => {
+) => {
 	const { productId, ...updateData } = input;
 
 	if (!ctx.user?.id) {
@@ -86,13 +86,7 @@ export const updateProduct = async (
 		throw new LogicError(LogicErrorCode.ProductNotFound);
 	}
 
-	let isManager = false;
-	try {
-		isManager = await canManageStore(ctx);
-	} catch {
-		// canManageStore currently throws for unauth/store missing; treat as forbidden here
-		isManager = false;
-	}
+	const isManager = await canManageStore(ctx);
 
 	if (!isManager) {
 		throw new LogicError(LogicErrorCode.Forbidden);
@@ -124,15 +118,7 @@ export const updateProduct = async (
 	return product;
 };
 
-export const getProductById = async (
-	ctx: AppContext,
-	productId: string
-): Promise<{
-	product: Awaited<ReturnType<typeof ProductData.getProductById>>;
-	viewerContext: Awaited<
-		ReturnType<typeof ProductData.getProductViewerContext>
-	> | null;
-}> => {
+export const getProductById = async (ctx: AppContext, productId: string) => {
 	const product = await ProductData.getProductById(ctx.prisma, productId);
 
 	if (!product) {
@@ -163,10 +149,7 @@ export const getProductById = async (
 	return { product, viewerContext: productViewerContext };
 };
 
-export const getProductReviews = async (
-	ctx: AppContext,
-	productId: string
-): Promise<Awaited<ReturnType<typeof ProductData.getProductReviews>>> => {
+export const getProductReviews = async (ctx: AppContext, productId: string) => {
 	const product = await ProductData.getProductById(ctx.prisma, productId);
 
 	if (!product) {
@@ -179,7 +162,7 @@ export const getProductReviews = async (
 export const getProductsByStoreId = async (
 	ctx: AppContext,
 	storeId: string
-): Promise<Awaited<ReturnType<typeof ProductData.getProductsByStoreId>>> => {
+) => {
 	return ProductData.getProductsByStoreId(ctx.prisma, storeId);
 };
 
@@ -190,7 +173,7 @@ interface DeleteProductInput {
 export const deleteProduct = async (
 	ctx: AppContext,
 	input: DeleteProductInput
-): Promise<Awaited<ReturnType<typeof ProductData.getProductById>>> => {
+) => {
 	const { productId } = input;
 
 	if (!ctx.user?.id) {
@@ -233,7 +216,7 @@ interface CreateProductReviewInput {
 export const createProductReview = async (
 	ctx: AppContext,
 	input: CreateProductReviewInput
-): Promise<Awaited<ReturnType<typeof ProductData.createProductReview>>> => {
+) => {
 	const { productId, rating, body } = input;
 
 	if (rating < 1 || rating > 5) {
@@ -274,7 +257,7 @@ export const createProductReview = async (
 export const getFeaturedProducts = async (
 	ctx: AppContext,
 	options: ProductData.GetFeaturedProductsOptions = {}
-): Promise<Awaited<ReturnType<typeof ProductData.getFeaturedProducts>>> => {
+) => {
 	return ProductData.getFeaturedProducts(ctx.prisma, options);
 };
 
@@ -285,7 +268,7 @@ interface AddToWatchlistInput {
 export const addToWatchlist = async (
 	ctx: AppContext,
 	input: AddToWatchlistInput
-): Promise<Awaited<ReturnType<typeof ProductData.addToWatchlist>>> => {
+) => {
 	const { productId } = input;
 
 	const product = await ProductData.getProductById(ctx.prisma, productId);
@@ -324,7 +307,7 @@ interface RemoveFromWatchlistInput {
 export const removeFromWatchlist = async (
 	ctx: AppContext,
 	input: RemoveFromWatchlistInput
-): Promise<Awaited<ReturnType<typeof ProductData.getProductById>>> => {
+) => {
 	const { productId } = input;
 
 	const product = await ProductData.getProductById(ctx.prisma, productId);
@@ -355,7 +338,7 @@ export const removeFromWatchlist = async (
 export const getRelatedProducts = async (
 	ctx: AppContext,
 	productId: string
-): Promise<Awaited<ReturnType<typeof ProductData.getRelatedProducts>>> => {
+) => {
 	const product = await ProductData.getProductById(ctx.prisma, productId);
 
 	if (!product) {
@@ -374,7 +357,7 @@ interface CreateProductOptionInput {
 export const createProductOption = async (
 	ctx: AppContext,
 	input: CreateProductOptionInput
-): Promise<Awaited<ReturnType<typeof ProductData.createProductOption>>> => {
+) => {
 	const { productId, name, description } = input;
 
 	const product = await ProductData.getProductById(ctx.prisma, productId);
@@ -420,7 +403,7 @@ interface UpdateProductCategoriesInput {
 export const updateProductCategories = async (
 	ctx: AppContext,
 	input: UpdateProductCategoriesInput
-): Promise<Awaited<ReturnType<typeof ProductData.updateProductCategories>>> => {
+) => {
 	const { productId, addCategoryIds, removeCategoryIds } = input;
 
 	if (!ctx.user?.id) {
@@ -468,9 +451,7 @@ interface CreateStoreProductCategoryInput {
 export const createStoreProductCategory = async (
 	ctx: AppContext,
 	input: CreateStoreProductCategoryInput
-): Promise<
-	Awaited<ReturnType<typeof ProductData.createStoreProductCategory>>
-> => {
+) => {
 	if (!ctx.user?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
@@ -508,9 +489,7 @@ interface UpdateStoreProductCategoryInput {
 export const updateStoreProductCategory = async (
 	ctx: AppContext,
 	input: UpdateStoreProductCategoryInput
-): Promise<
-	Awaited<ReturnType<typeof ProductData.updateStoreProductCategory>>
-> => {
+) => {
 	const { categoryId, ...updateData } = input;
 
 	if (!ctx.user?.id) {
@@ -548,9 +527,7 @@ interface DeleteStoreProductCategoryInput {
 export const deleteStoreProductCategory = async (
 	ctx: AppContext,
 	input: DeleteStoreProductCategoryInput
-): Promise<
-	Awaited<ReturnType<typeof ProductData.deleteStoreProductCategory>>
-> => {
+) => {
 	const { categoryId } = input;
 
 	if (!ctx.user?.id) {
@@ -579,9 +556,6 @@ export const deleteStoreProductCategory = async (
 	return category;
 };
 
-export const getProducts = async (
-	ctx: AppContext,
-	query: any
-): Promise<Awaited<ReturnType<typeof ProductData.getProducts>>> => {
+export const getProducts = async (ctx: AppContext, query: any) => {
 	return ProductData.getProducts(ctx.prisma, query);
 };

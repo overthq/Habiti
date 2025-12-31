@@ -8,10 +8,7 @@ interface AdminLoginInput {
 	password: string;
 }
 
-export const adminLogin = async (
-	ctx: AppContext,
-	input: AdminLoginInput
-): Promise<{ accessToken: string; adminId: string }> => {
+export const adminLogin = async (ctx: AppContext, input: AdminLoginInput) => {
 	const admin = await AdminData.getAdminByEmail(ctx.prisma, input.email);
 
 	if (!admin) {
@@ -32,8 +29,6 @@ export const adminLogin = async (
 	return { accessToken, adminId: admin.id };
 };
 
-export const getAdminOverview = async (
-	ctx: AppContext
-): Promise<Awaited<ReturnType<typeof AdminData.getAdminOverview>>> => {
+export const getAdminOverview = async (ctx: AppContext) => {
 	return AdminData.getAdminOverview(ctx.prisma);
 };

@@ -2,22 +2,11 @@ import * as CartData from '../data/carts';
 import { AppContext } from '../../utils/context';
 import { LogicError, LogicErrorCode } from './errors';
 
-export const getCartById = async (
-	ctx: AppContext,
-	cartId: string
-): Promise<{
-	cart: Awaited<ReturnType<typeof CartData.getCartById>> & {
-		fees: { transaction: number; service: number; total: number };
-	};
-	viewerContext: Awaited<
-		ReturnType<typeof CartData.getCartViewerContext>
-	> | null;
-}> => {
-	let cart: Awaited<ReturnType<typeof CartData.getCartById>>;
-	try {
-		cart = await CartData.getCartById(ctx.prisma, cartId);
-	} catch {
-		throw new LogicError(LogicErrorCode.NotFound);
+export const getCartById = async (ctx: AppContext, cartId: string) => {
+	const cart = await CartData.getCartById(ctx.prisma, cartId);
+
+	if (!cart) {
+		throw new LogicError(LogicErrorCode.CartNotFound);
 	}
 
 	// Allow access if:
@@ -27,10 +16,10 @@ export const getCartById = async (
 	const isGuestCart = cart.userId === null;
 
 	if (!isOwner && !isGuestCart) {
-		// If unauthenticated and cart is owned, report NotAuthenticated; otherwise Forbidden
 		if (!ctx.user?.id) {
 			throw new LogicError(LogicErrorCode.NotAuthenticated);
 		}
+
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
@@ -48,10 +37,7 @@ export const getCartById = async (
 	};
 };
 
-export const getCartsByUserId = async (
-	ctx: AppContext,
-	userId: string
-): Promise<Awaited<ReturnType<typeof CartData.getCartsByUserId>>> => {
+export const getCartsByUserId = async (ctx: AppContext, userId: string) => {
 	if (!ctx.user?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
@@ -62,10 +48,7 @@ export const getCartsByUserId = async (
 	return CartData.getCartsByUserId(ctx.prisma, userId);
 };
 
-export const getCartsFromList = async (
-	ctx: AppContext,
-	cartIds: string[]
-): Promise<Awaited<ReturnType<typeof CartData.getCartsFromList>>> => {
+export const getCartsFromList = async (ctx: AppContext, cartIds: string[]) => {
 	return CartData.getCartsFromList(ctx.prisma, cartIds);
 };
 
@@ -79,7 +62,7 @@ interface AddProductToCartInput {
 export const addProductToCart = async (
 	ctx: AppContext,
 	input: AddProductToCartInput
-): Promise<Awaited<ReturnType<typeof CartData.addProductToCart>>> => {
+) => {
 	const { storeId, productId, quantity, cartId } = input;
 
 	if (quantity <= 0) {
@@ -118,18 +101,17 @@ interface RemoveProductFromCartInput {
 export const removeProductFromCart = async (
 	ctx: AppContext,
 	input: RemoveProductFromCartInput
-): Promise<Awaited<ReturnType<typeof CartData.removeProductFromCart>>> => {
+) => {
 	const { cartId, productId } = input;
 
 	if (!ctx.user?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	let cart: Awaited<ReturnType<typeof CartData.getCartById>>;
-	try {
-		cart = await CartData.getCartById(ctx.prisma, cartId);
-	} catch {
-		throw new LogicError(LogicErrorCode.NotFound);
+	const cart = await CartData.getCartById(ctx.prisma, cartId);
+
+	if (!cart) {
+		throw new LogicError(LogicErrorCode.CartNotFound);
 	}
 
 	if (cart.userId !== ctx.user.id) {
@@ -169,7 +151,7 @@ interface UpdateCartQuantityInput {
 export const updateCartProductQuantity = async (
 	ctx: AppContext,
 	input: UpdateCartQuantityInput
-): Promise<Awaited<ReturnType<typeof CartData.updateCartProductQuantity>>> => {
+) => {
 	const { cartId, productId, quantity } = input;
 
 	if (!ctx.user?.id) {
@@ -180,11 +162,10 @@ export const updateCartProductQuantity = async (
 		throw new LogicError(LogicErrorCode.NegativeQuantity);
 	}
 
-	let cart: Awaited<ReturnType<typeof CartData.getCartById>>;
-	try {
-		cart = await CartData.getCartById(ctx.prisma, cartId);
-	} catch {
-		throw new LogicError(LogicErrorCode.NotFound);
+	const cart = await CartData.getCartById(ctx.prisma, cartId);
+
+	if (!cart) {
+		throw new LogicError(LogicErrorCode.CartNotFound);
 	}
 
 	if (cart.userId !== ctx.user.id) {
@@ -215,21 +196,17 @@ interface DeleteCartInput {
 	cartId: string;
 }
 
-export const deleteCart = async (
-	ctx: AppContext,
-	input: DeleteCartInput
-): Promise<Awaited<ReturnType<typeof CartData.getCartById>>> => {
+export const deleteCart = async (ctx: AppContext, input: DeleteCartInput) => {
 	const { cartId } = input;
 
 	if (!ctx.user?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	let cart: Awaited<ReturnType<typeof CartData.getCartById>>;
-	try {
-		cart = await CartData.getCartById(ctx.prisma, cartId);
-	} catch {
-		throw new LogicError(LogicErrorCode.NotFound);
+	const cart = await CartData.getCartById(ctx.prisma, cartId);
+
+	if (!cart) {
+		throw new LogicError(LogicErrorCode.CartNotFound);
 	}
 
 	if (cart.userId !== ctx.user.id) {
@@ -270,10 +247,7 @@ interface ClaimCartsInput {
 	cartIds: string[];
 }
 
-export const claimCarts = async (
-	ctx: AppContext,
-	input: ClaimCartsInput
-): Promise<Awaited<ReturnType<typeof CartData.claimCarts>>> => {
+export const claimCarts = async (ctx: AppContext, input: ClaimCartsInput) => {
 	const { cartIds } = input;
 
 	if (!ctx.user?.id) {

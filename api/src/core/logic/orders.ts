@@ -13,13 +13,7 @@ import { AppContext } from '../../utils/context';
 import { InitializeTransactionResponse } from '../payments/paystack';
 import { LogicError, LogicErrorCode } from './errors';
 
-export const createOrder = async (
-	ctx: AppContext,
-	input: CreateOrderInput
-): Promise<{
-	order: Awaited<ReturnType<typeof OrderData.saveOrderData>>;
-	cardAuthorizationData?: InitializeTransactionResponse['data'];
-}> => {
+export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 	const { data: validatedInput, success } = createOrderSchema.safeParse(input);
 
 	if (!ctx.user?.id) {
@@ -32,11 +26,10 @@ export const createOrder = async (
 
 	const { cartId, cardId, transactionFee, serviceFee } = validatedInput;
 
-	let cart: Awaited<ReturnType<typeof CartData.getCartById>>;
-	try {
-		cart = await CartData.getCartById(ctx.prisma, cartId);
-	} catch {
-		throw new LogicError(LogicErrorCode.NotFound);
+	const cart = await CartData.getCartById(ctx.prisma, cartId);
+
+	if (!cart) {
+		throw new LogicError(LogicErrorCode.OrderNotFound);
 	}
 
 	try {
@@ -106,7 +99,7 @@ export const createOrder = async (
 export const updateOrderStatus = async (
 	ctx: AppContext,
 	input: UpdateOrderStatusInput
-): Promise<Awaited<ReturnType<typeof OrderData.updateOrder>>> => {
+) => {
 	const { data: validatedInput, success } = updateOrderSchema.safeParse(input);
 
 	if (!ctx.user?.id) {
@@ -156,7 +149,7 @@ const validateStatusTransition = (
 		[OrderStatus.Pending]: [OrderStatus.Completed, OrderStatus.Cancelled],
 		[OrderStatus.Completed]: [],
 		[OrderStatus.Cancelled]: []
-	};
+	} as const;
 
 	const allowedTransitions = validTransitions[currentStatus] || [];
 	if (!allowedTransitions.includes(newStatus)) {
@@ -164,10 +157,7 @@ const validateStatusTransition = (
 	}
 };
 
-export const getOrderById = async (
-	ctx: AppContext,
-	orderId: string
-): Promise<Awaited<ReturnType<typeof OrderData.getOrderById>>> => {
+export const getOrderById = async (ctx: AppContext, orderId: string) => {
 	if (!ctx.user?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
@@ -198,9 +188,6 @@ export const getOrderById = async (
 	return order;
 };
 
-export const getOrders = async (
-	ctx: AppContext,
-	query: any
-): Promise<Awaited<ReturnType<typeof OrderData.getOrders>>> => {
+export const getOrders = async (ctx: AppContext, query: any) => {
 	return OrderData.getOrders(ctx.prisma, query);
 };

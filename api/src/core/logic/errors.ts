@@ -20,6 +20,7 @@ export enum LogicErrorCode {
 	StoreNotFound = 'StoreNotFound',
 	OrderNotFound = 'OrderNotFound',
 	CardNotFound = 'CardNotFound',
+	CartNotFound = 'CartNotFound',
 	AdminNotFound = 'AdminNotFound',
 
 	InvalidInput = 'InvalidInput',
