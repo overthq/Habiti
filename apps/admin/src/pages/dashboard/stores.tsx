@@ -4,6 +4,7 @@ import { useStoresQuery } from '@/data/queries';
 import { DataTable } from '@/components/ui/data-table';
 import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';
+import CreateStoreDialog from '@/components/stores/create-store-dialog';
 
 const columns: ColumnDef<Store>[] = [
 	{
@@ -33,6 +34,7 @@ const Stores = () => {
 		<div>
 			<div className='flex justify-between items-center mb-6'>
 				<h1 className='text-3xl font-semibold'>Stores</h1>
+				<CreateStoreDialog />
 			</div>
 			<DataTable columns={columns} data={data.stores} />
 		</div>

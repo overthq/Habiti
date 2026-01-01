@@ -7,6 +7,7 @@ import {
 	type UpdateOrderBody,
 	type CreateProductBody,
 	type UpdateProductBody,
+	type CreateStoreBody,
 	type UpdateStoreBody,
 	type UpdateUserBody,
 	type UpdatePayoutBody
@@ -19,6 +20,7 @@ import {
 	createProduct,
 	updateProduct,
 	deleteProduct,
+	createStore,
 	updateStore,
 	deleteStore,
 	updateUser,
@@ -132,6 +134,21 @@ export const useDeleteProductMutation = (id: string) => {
 		},
 		onError: () => {
 			toast.error('Failed to delete product');
+		}
+	});
+};
+
+export const useCreateStoreMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (body: CreateStoreBody) => createStore(body),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['stores'], exact: true });
+			toast.success('Store created successfully');
+		},
+		onError: () => {
+			toast.error('Failed to create store');
 		}
 	});
 };

@@ -60,7 +60,12 @@ import {
 	authenticateBodySchema,
 	verifyCodeBodySchema
 } from './core/validations/auth';
-import { login as adminLogin, getOverview } from './controllers/admin';
+import {
+	login as adminLogin,
+	getOverview,
+	createStore as adminCreateStore
+} from './controllers/admin';
+import { adminCreateStoreSchema } from './core/validations/stores';
 import { checkHealth } from './controllers/health';
 import {
 	approvePayment,
@@ -165,6 +170,12 @@ router.post('/cards/authorize', authenticate, authorizeCard);
 // Admin
 router.post('/admin/login', validateBody(authenticateBodySchema), adminLogin);
 router.get('/admin/overview', getOverview);
+router.post(
+	'/admin/stores',
+	isAdmin,
+	validateBody(adminCreateStoreSchema),
+	adminCreateStore
+);
 
 // Health
 router.get('/health', checkHealth);

@@ -20,6 +20,7 @@ import {
 	type GetUserResponse,
 	type UpdateUserBody,
 	type UpdateStoreBody,
+	type CreateStoreBody,
 	type Store,
 	type GetStoreManagersResponse,
 	type GetStorePayoutsResponse,
@@ -100,6 +101,10 @@ export const updateUser = (id: string, body: UpdateUserBody) => {
 
 export const updateStore = (id: string, body: UpdateStoreBody) => {
 	return api.put<Store>(`/stores/${id}`, body);
+};
+
+export const createStore = (body: CreateStoreBody) => {
+	return api.post<Store>('/admin/stores', body);
 };
 
 export const deleteStore = (id: string) => {

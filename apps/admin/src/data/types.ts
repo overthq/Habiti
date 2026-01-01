@@ -176,6 +176,11 @@ export interface UpdateStoreBody {
 	unlisted?: boolean;
 }
 
+export interface CreateStoreBody {
+	name: string;
+	description?: string;
+}
+
 export interface GetStoreProductsResponse {
 	products: Product[];
 }
