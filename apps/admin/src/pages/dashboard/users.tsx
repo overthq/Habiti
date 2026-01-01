@@ -20,10 +20,6 @@ const columns: ColumnDef<User>[] = [
 		header: 'Email'
 	},
 	{
-		accessorKey: 'role',
-		header: 'Role'
-	},
-	{
 		accessorKey: 'createdAt',
 		header: 'Created At',
 		cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString()
