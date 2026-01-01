@@ -4,6 +4,7 @@ import {
 	type ColumnFiltersState,
 	type SortingState,
 	type VisibilityState,
+	type RowSelectionState,
 	flexRender,
 	getCoreRowModel,
 	getFilteredRowModel,
@@ -48,13 +49,19 @@ interface DataTableProps<TData, TValue> {
 	data: TData[];
 	hasColumnDropdown?: boolean;
 	filterButtons?: React.ReactNode;
+	rowSelection?: RowSelectionState;
+	onRowSelectionChange?: (selection: RowSelectionState) => void;
+	getRowId?: (row: TData) => string;
 }
 
 export function DataTable<TData, TValue>({
 	columns,
 	data,
 	filterButtons,
-	hasColumnDropdown = true
+	hasColumnDropdown = true,
+	rowSelection,
+	onRowSelectionChange,
+	getRowId
 }: DataTableProps<TData, TValue>) {
 	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -62,6 +69,25 @@ export function DataTable<TData, TValue>({
 	);
 	const [columnVisibility, setColumnVisibility] =
 		React.useState<VisibilityState>({});
+	const [internalRowSelection, setInternalRowSelection] =
+		React.useState<RowSelectionState>({});
+
+	const effectiveRowSelection = rowSelection ?? internalRowSelection;
+	const handleRowSelectionChange = (
+		updaterOrValue:
+			| RowSelectionState
+			| ((old: RowSelectionState) => RowSelectionState)
+	) => {
+		const newValue =
+			typeof updaterOrValue === 'function'
+				? updaterOrValue(effectiveRowSelection)
+				: updaterOrValue;
+		if (onRowSelectionChange) {
+			onRowSelectionChange(newValue);
+		} else {
+			setInternalRowSelection(newValue);
+		}
+	};
 
 	const table = useReactTable({
 		data,
@@ -73,10 +99,13 @@ export function DataTable<TData, TValue>({
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
 		onColumnVisibilityChange: setColumnVisibility,
+		onRowSelectionChange: handleRowSelectionChange,
+		getRowId,
 		state: {
 			sorting,
 			columnFilters,
-			columnVisibility
+			columnVisibility,
+			rowSelection: effectiveRowSelection
 		}
 	});
 

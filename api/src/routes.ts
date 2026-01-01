@@ -63,8 +63,20 @@ import {
 import {
 	login as adminLogin,
 	getOverview,
-	createStore as adminCreateStore
+	createStore as adminCreateStore,
+	bulkSuspendUsers,
+	bulkUnsuspendUsers,
+	bulkDeleteUsers,
+	bulkCancelOrders,
+	bulkUpdateOrderStatus,
+	bulkDeleteProducts,
+	bulkUpdateProductStatus
 } from './controllers/admin';
+import {
+	bulkIdsSchema,
+	bulkOrderStatusSchema,
+	bulkProductStatusSchema
+} from './core/validations/admin';
 import { adminCreateStoreSchema } from './core/validations/stores';
 import { checkHealth } from './controllers/health';
 import {
@@ -175,6 +187,54 @@ router.post(
 	isAdmin,
 	validateBody(adminCreateStoreSchema),
 	adminCreateStore
+);
+
+// Admin Bulk Operations - Users
+router.post(
+	'/admin/users/bulk-suspend',
+	isAdmin,
+	validateBody(bulkIdsSchema),
+	bulkSuspendUsers
+);
+router.post(
+	'/admin/users/bulk-unsuspend',
+	isAdmin,
+	validateBody(bulkIdsSchema),
+	bulkUnsuspendUsers
+);
+router.delete(
+	'/admin/users/bulk',
+	isAdmin,
+	validateBody(bulkIdsSchema),
+	bulkDeleteUsers
+);
+
+// Admin Bulk Operations - Orders
+router.post(
+	'/admin/orders/bulk-cancel',
+	isAdmin,
+	validateBody(bulkIdsSchema),
+	bulkCancelOrders
+);
+router.post(
+	'/admin/orders/bulk-status',
+	isAdmin,
+	validateBody(bulkOrderStatusSchema),
+	bulkUpdateOrderStatus
+);
+
+// Admin Bulk Operations - Products
+router.delete(
+	'/admin/products/bulk',
+	isAdmin,
+	validateBody(bulkIdsSchema),
+	bulkDeleteProducts
+);
+router.post(
+	'/admin/products/bulk-status',
+	isAdmin,
+	validateBody(bulkProductStatusSchema),
+	bulkUpdateProductStatus
 );
 
 // Health

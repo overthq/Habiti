@@ -1,13 +1,20 @@
-import { type ColumnDef } from '@tanstack/react-table';
+import { useState } from 'react';
+import { type ColumnDef, type RowSelectionState } from '@tanstack/react-table';
 import { MoreVertical } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 
 import { useOrdersQuery } from '@/data/queries';
-import type { Order } from '@/data/types';
+import {
+	useBulkCancelOrdersMutation,
+	useBulkUpdateOrderStatusMutation
+} from '@/data/mutations';
+import { type Order, OrderStatus } from '@/data/types';
 import { formatNaira } from '@/utils/format';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/ui/data-table';
 import { Button } from '@/components/ui/button';
+import { BulkActionsToolbar } from '@/components/bulk-actions-toolbar';
+import { ConfirmDialog } from '@/components/confirm-dialog';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -68,6 +75,20 @@ const columns: ColumnDef<Order>[] = [
 		cell: ({ row }) => formatNaira(row.getValue('total'))
 	},
 	{
+		accessorKey: 'status',
+		header: 'Status',
+		cell: ({ row }) => {
+			const status = row.original.status;
+			const statusColors: Record<OrderStatus, string> = {
+				[OrderStatus.Pending]: 'text-yellow-600',
+				[OrderStatus.PaymentPending]: 'text-orange-600',
+				[OrderStatus.Completed]: 'text-green-600',
+				[OrderStatus.Cancelled]: 'text-destructive'
+			};
+			return <span className={statusColors[status]}>{status}</span>;
+		}
+	},
+	{
 		accessorKey: 'createdAt',
 		header: 'Created',
 		cell: ({ row }) => new Date(row.getValue('createdAt')).toLocaleDateString()
@@ -108,6 +129,35 @@ const columns: ColumnDef<Order>[] = [
 
 const OrdersPage = () => {
 	const { data, isLoading } = useOrdersQuery();
+	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+
+	const bulkCancelMutation = useBulkCancelOrdersMutation();
+	const bulkUpdateStatusMutation = useBulkUpdateOrderStatusMutation();
+
+	const selectedIds = Object.keys(rowSelection);
+	const selectedCount = selectedIds.length;
+
+	const clearSelection = () => setRowSelection({});
+
+	const handleBulkCancel = () => {
+		bulkCancelMutation.mutate(selectedIds, {
+			onSuccess: () => clearSelection()
+		});
+	};
+
+	const handleBulkMarkCompleted = () => {
+		bulkUpdateStatusMutation.mutate(
+			{ ids: selectedIds, status: OrderStatus.Completed },
+			{ onSuccess: () => clearSelection() }
+		);
+	};
+
+	const handleBulkMarkPending = () => {
+		bulkUpdateStatusMutation.mutate(
+			{ ids: selectedIds, status: OrderStatus.Pending },
+			{ onSuccess: () => clearSelection() }
+		);
+	};
 
 	if (isLoading) {
 		return <div>Loading...</div>;
@@ -119,7 +169,48 @@ const OrdersPage = () => {
 				<h1 className='text-3xl font-semibold'>Orders</h1>
 			</div>
 
-			<DataTable data={data?.orders ?? []} columns={columns} />
+			<BulkActionsToolbar
+				selectedCount={selectedCount}
+				onClearSelection={clearSelection}
+			>
+				<Button
+					size='sm'
+					variant='outline'
+					onClick={handleBulkMarkCompleted}
+					disabled={bulkUpdateStatusMutation.isPending}
+				>
+					Mark Completed
+				</Button>
+				<Button
+					size='sm'
+					variant='outline'
+					onClick={handleBulkMarkPending}
+					disabled={bulkUpdateStatusMutation.isPending}
+				>
+					Mark Pending
+				</Button>
+				<ConfirmDialog
+					title='Cancel Orders'
+					description={`Are you sure you want to cancel ${selectedCount} order(s)? This action cannot be undone.`}
+					confirmLabel='Cancel Orders'
+					variant='destructive'
+					isLoading={bulkCancelMutation.isPending}
+					onConfirm={handleBulkCancel}
+					trigger={
+						<Button size='sm' variant='destructive'>
+							Cancel Orders
+						</Button>
+					}
+				/>
+			</BulkActionsToolbar>
+
+			<DataTable
+				data={data?.orders ?? []}
+				columns={columns}
+				rowSelection={rowSelection}
+				onRowSelectionChange={setRowSelection}
+				getRowId={row => row.id}
+			/>
 		</div>
 	);
 };

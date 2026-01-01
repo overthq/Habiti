@@ -252,3 +252,27 @@ export interface UpdatePayoutBody {
 export interface UpdatePayoutResponse {
 	payout: Payout;
 }
+
+// Bulk Action Types
+export enum ProductStatus {
+	Active = 'Active',
+	Draft = 'Draft'
+}
+
+export interface BulkActionBody {
+	ids: string[];
+}
+
+export interface BulkOrderStatusBody {
+	ids: string[];
+	status: OrderStatus;
+}
+
+export interface BulkProductStatusBody {
+	ids: string[];
+	status: ProductStatus;
+}
+
+export interface BulkActionResponse {
+	count: number;
+}

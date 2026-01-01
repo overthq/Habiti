@@ -1,4 +1,14 @@
-import { PrismaClient } from '../../generated/prisma/client';
+import {
+	PrismaClient,
+	OrderStatus,
+	ProductStatus,
+	Prisma
+} from '../../generated/prisma/client';
+
+type TransactionClient = Omit<
+	PrismaClient,
+	'$connect' | '$disconnect' | '$on' | '$transaction' | '$extends'
+>;
 
 export const getAdminByEmail = async (prisma: PrismaClient, email: string) => {
 	const admin = await prisma.admin.findUnique({ where: { email } });
@@ -38,4 +48,58 @@ export const getAdminOverview = async (prisma: PrismaClient) => {
 		]);
 
 	return { totalStores, totalOrders, totalProducts, totalUsers, totalRevenue };
+};
+
+// Bulk User Operations
+export const bulkUpdateUsers = async (
+	prisma: TransactionClient,
+	ids: string[],
+	data: { suspended: boolean }
+) => {
+	return prisma.user.updateMany({
+		where: { id: { in: ids } },
+		data
+	});
+};
+
+export const bulkDeleteUsers = async (
+	prisma: TransactionClient,
+	ids: string[]
+) => {
+	return prisma.user.deleteMany({
+		where: { id: { in: ids } }
+	});
+};
+
+// Bulk Order Operations
+export const bulkUpdateOrders = async (
+	prisma: TransactionClient,
+	ids: string[],
+	data: { status: OrderStatus }
+) => {
+	return prisma.order.updateMany({
+		where: { id: { in: ids } },
+		data
+	});
+};
+
+// Bulk Product Operations
+export const bulkUpdateProducts = async (
+	prisma: TransactionClient,
+	ids: string[],
+	data: { status: ProductStatus }
+) => {
+	return prisma.product.updateMany({
+		where: { id: { in: ids } },
+		data
+	});
+};
+
+export const bulkDeleteProducts = async (
+	prisma: TransactionClient,
+	ids: string[]
+) => {
+	return prisma.product.deleteMany({
+		where: { id: { in: ids } }
+	});
 };

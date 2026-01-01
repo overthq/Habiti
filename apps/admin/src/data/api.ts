@@ -40,8 +40,8 @@ export class APIService {
 		return response.data;
 	}
 
-	async delete<T>(path: string): Promise<T> {
-		const response = await this.api.delete(path);
+	async delete<T>(path: string, body?: object): Promise<T> {
+		const response = await this.api.delete(path, { data: body });
 		return response.data;
 	}
 }

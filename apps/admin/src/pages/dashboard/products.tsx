@@ -1,3 +1,8 @@
+import { useState } from 'react';
+import { type ColumnDef, type RowSelectionState } from '@tanstack/react-table';
+import { MoreHorizontal } from 'lucide-react';
+import { Link, useNavigate } from 'react-router';
+
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -9,12 +14,15 @@ import {
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { DataTable } from '@/components/ui/data-table';
+import { BulkActionsToolbar } from '@/components/bulk-actions-toolbar';
+import { ConfirmDialog } from '@/components/confirm-dialog';
 import { useProductsQuery } from '@/data/queries';
-import { type Product } from '@/data/types';
+import {
+	useBulkDeleteProductsMutation,
+	useBulkUpdateProductStatusMutation
+} from '@/data/mutations';
+import { type Product, ProductStatus } from '@/data/types';
 import { formatNaira } from '@/utils/format';
-import { type ColumnDef } from '@tanstack/react-table';
-import { MoreHorizontal } from 'lucide-react';
-import { Link, useNavigate } from 'react-router';
 
 const columns: ColumnDef<Product>[] = [
 	{
@@ -106,6 +114,35 @@ const columns: ColumnDef<Product>[] = [
 
 const ProductsPage = () => {
 	const { data, isLoading } = useProductsQuery();
+	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+
+	const bulkDeleteMutation = useBulkDeleteProductsMutation();
+	const bulkUpdateStatusMutation = useBulkUpdateProductStatusMutation();
+
+	const selectedIds = Object.keys(rowSelection);
+	const selectedCount = selectedIds.length;
+
+	const clearSelection = () => setRowSelection({});
+
+	const handleBulkDelete = () => {
+		bulkDeleteMutation.mutate(selectedIds, {
+			onSuccess: () => clearSelection()
+		});
+	};
+
+	const handleBulkSetActive = () => {
+		bulkUpdateStatusMutation.mutate(
+			{ ids: selectedIds, status: ProductStatus.Active },
+			{ onSuccess: () => clearSelection() }
+		);
+	};
+
+	const handleBulkSetDraft = () => {
+		bulkUpdateStatusMutation.mutate(
+			{ ids: selectedIds, status: ProductStatus.Draft },
+			{ onSuccess: () => clearSelection() }
+		);
+	};
 
 	if (isLoading) {
 		return <div>Loading...</div>;
@@ -117,7 +154,48 @@ const ProductsPage = () => {
 				<h1 className='text-3xl font-semibold'>Products</h1>
 			</div>
 
-			<DataTable columns={columns} data={data?.products ?? []} />
+			<BulkActionsToolbar
+				selectedCount={selectedCount}
+				onClearSelection={clearSelection}
+			>
+				<Button
+					size='sm'
+					variant='outline'
+					onClick={handleBulkSetActive}
+					disabled={bulkUpdateStatusMutation.isPending}
+				>
+					Set Active
+				</Button>
+				<Button
+					size='sm'
+					variant='outline'
+					onClick={handleBulkSetDraft}
+					disabled={bulkUpdateStatusMutation.isPending}
+				>
+					Set Draft
+				</Button>
+				<ConfirmDialog
+					title='Delete Products'
+					description={`Are you sure you want to delete ${selectedCount} product(s)? This action cannot be undone.`}
+					confirmLabel='Delete'
+					variant='destructive'
+					isLoading={bulkDeleteMutation.isPending}
+					onConfirm={handleBulkDelete}
+					trigger={
+						<Button size='sm' variant='destructive'>
+							Delete
+						</Button>
+					}
+				/>
+			</BulkActionsToolbar>
+
+			<DataTable
+				columns={columns}
+				data={data?.products ?? []}
+				rowSelection={rowSelection}
+				onRowSelectionChange={setRowSelection}
+				getRowId={row => row.id}
+			/>
 		</div>
 	);
 };

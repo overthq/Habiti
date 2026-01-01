@@ -10,7 +10,9 @@ import {
 	type CreateStoreBody,
 	type UpdateStoreBody,
 	type UpdateUserBody,
-	type UpdatePayoutBody
+	type UpdatePayoutBody,
+	OrderStatus,
+	ProductStatus
 } from './types';
 import {
 	login,
@@ -24,7 +26,14 @@ import {
 	updateStore,
 	deleteStore,
 	updateUser,
-	updatePayout
+	updatePayout,
+	bulkSuspendUsers,
+	bulkUnsuspendUsers,
+	bulkDeleteUsers,
+	bulkCancelOrders,
+	bulkUpdateOrderStatus,
+	bulkDeleteProducts,
+	bulkUpdateProductStatus
 } from './requests';
 import { useNavigate } from 'react-router';
 
@@ -210,6 +219,116 @@ export const useUpdatePayoutMutation = (id: string) => {
 		},
 		onError: () => {
 			toast.error('Failed to update payout');
+		}
+	});
+};
+
+// Bulk User Mutations
+export const useBulkSuspendUsersMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (ids: string[]) => bulkSuspendUsers(ids),
+		onSuccess: data => {
+			queryClient.invalidateQueries({ queryKey: ['users'] });
+			toast.success(`${data.count} user(s) suspended successfully`);
+		},
+		onError: () => {
+			toast.error('Failed to suspend users');
+		}
+	});
+};
+
+export const useBulkUnsuspendUsersMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (ids: string[]) => bulkUnsuspendUsers(ids),
+		onSuccess: data => {
+			queryClient.invalidateQueries({ queryKey: ['users'] });
+			toast.success(`${data.count} user(s) unsuspended successfully`);
+		},
+		onError: () => {
+			toast.error('Failed to unsuspend users');
+		}
+	});
+};
+
+export const useBulkDeleteUsersMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (ids: string[]) => bulkDeleteUsers(ids),
+		onSuccess: data => {
+			queryClient.invalidateQueries({ queryKey: ['users'] });
+			toast.success(`${data.count} user(s) deleted successfully`);
+		},
+		onError: () => {
+			toast.error('Failed to delete users');
+		}
+	});
+};
+
+// Bulk Order Mutations
+export const useBulkCancelOrdersMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (ids: string[]) => bulkCancelOrders(ids),
+		onSuccess: data => {
+			queryClient.invalidateQueries({ queryKey: ['orders'] });
+			toast.success(`${data.count} order(s) cancelled successfully`);
+		},
+		onError: () => {
+			toast.error('Failed to cancel orders');
+		}
+	});
+};
+
+export const useBulkUpdateOrderStatusMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({ ids, status }: { ids: string[]; status: OrderStatus }) =>
+			bulkUpdateOrderStatus(ids, status),
+		onSuccess: data => {
+			queryClient.invalidateQueries({ queryKey: ['orders'] });
+			toast.success(`${data.count} order(s) updated successfully`);
+		},
+		onError: () => {
+			toast.error('Failed to update orders');
+		}
+	});
+};
+
+// Bulk Product Mutations
+export const useBulkDeleteProductsMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (ids: string[]) => bulkDeleteProducts(ids),
+		onSuccess: data => {
+			queryClient.invalidateQueries({ queryKey: ['products'] });
+			toast.success(`${data.count} product(s) deleted successfully`);
+		},
+		onError: () => {
+			toast.error('Failed to delete products');
+		}
+	});
+};
+
+export const useBulkUpdateProductStatusMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({ ids, status }: { ids: string[]; status: ProductStatus }) =>
+			bulkUpdateProductStatus(ids, status),
+		onSuccess: data => {
+			queryClient.invalidateQueries({ queryKey: ['products'] });
+			toast.success(`${data.count} product(s) updated successfully`);
+		},
+		onError: () => {
+			toast.error('Failed to update products');
 		}
 	});
 };
