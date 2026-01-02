@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 import {
 	type OrderFilters,
@@ -29,7 +29,8 @@ import {
 export const useOrdersQuery = (params?: OrderFilters) => {
 	return useQuery({
 		queryKey: ['orders', params],
-		queryFn: () => getOrders(params)
+		queryFn: () => getOrders(params),
+		placeholderData: keepPreviousData
 	});
 };
 
@@ -44,7 +45,8 @@ export const useOrderQuery = (id: string) => {
 export const useProductsQuery = (params?: ProductFilters) => {
 	return useQuery({
 		queryKey: ['products', params],
-		queryFn: () => getProducts(params)
+		queryFn: () => getProducts(params),
+		placeholderData: keepPreviousData
 	});
 };
 
@@ -67,7 +69,8 @@ export const useProductReviewsQuery = (id: string) => {
 export const useStoresQuery = (params?: StoreFilters) => {
 	return useQuery({
 		queryKey: ['stores', params],
-		queryFn: () => getStores(params)
+		queryFn: () => getStores(params),
+		placeholderData: keepPreviousData
 	});
 };
 
@@ -91,7 +94,8 @@ export const useStoreOrdersQuery = (id: string, params?: StoreFilters) => {
 	return useQuery({
 		queryKey: ['stores', id, 'orders', params],
 		queryFn: () => getStoreOrders(id, params),
-		enabled: !!id
+		enabled: !!id,
+		placeholderData: keepPreviousData
 	});
 };
 
@@ -99,7 +103,8 @@ export const useStorePayoutsQuery = (id: string, params?: StoreFilters) => {
 	return useQuery({
 		queryKey: ['stores', id, 'payouts', params],
 		queryFn: () => getStorePayouts(id, params),
-		enabled: !!id
+		enabled: !!id,
+		placeholderData: keepPreviousData
 	});
 };
 
@@ -107,14 +112,16 @@ export const useStoreManagersQuery = (id: string, params?: StoreFilters) => {
 	return useQuery({
 		queryKey: ['stores', id, 'managers', params],
 		queryFn: () => getStoreManagers(id, params),
-		enabled: !!id
+		enabled: !!id,
+		placeholderData: keepPreviousData
 	});
 };
 
 export const useUsersQuery = (params?: UserFilters) => {
 	return useQuery({
 		queryKey: ['users', params],
-		queryFn: () => getUsers(params)
+		queryFn: () => getUsers(params),
+		placeholderData: keepPreviousData
 	});
 };
 
@@ -136,7 +143,8 @@ export const useOverviewQuery = () => {
 export const usePayoutsQuery = (params?: PayoutFilters) => {
 	return useQuery({
 		queryKey: ['payouts', params],
-		queryFn: () => getPayouts(params)
+		queryFn: () => getPayouts(params),
+		placeholderData: keepPreviousData
 	});
 };
 

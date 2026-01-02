@@ -1,12 +1,23 @@
+import { type ColumnDef } from '@tanstack/react-table';
+import { Link } from 'react-router';
+
 import { DataTable } from '../ui/data-table';
 import { useStoreManagersQuery } from '@/data/queries';
-import { type ColumnDef } from '@tanstack/react-table';
+
 import { type StoreManager } from '@/data/types';
+import { Button } from '../ui/button';
 
 const columns: ColumnDef<StoreManager>[] = [
 	{
 		header: 'Name',
-		accessorKey: 'manager.name'
+		accessorKey: 'manager.name',
+		cell: ({ row }) => (
+			<Button variant='link' asChild className='px-0 w-fit'>
+				<Link to={`/users/${row.original.manager.id}`}>
+					{row.original.manager.name}
+				</Link>
+			</Button>
+		)
 	},
 	{
 		header: 'Email',
