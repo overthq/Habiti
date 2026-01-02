@@ -1,18 +1,27 @@
 import { useState } from 'react';
 import { type ColumnDef, type RowSelectionState } from '@tanstack/react-table';
+import { ListFilter } from 'lucide-react';
 import { Link } from 'react-router';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+	DropdownMenu,
+	DropdownMenuCheckboxItem,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuPortal,
+	DropdownMenuSeparator,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
+	DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
 import { DataTable } from '@/components/ui/data-table';
 import { BulkActionsToolbar } from '@/components/bulk-actions-toolbar';
 import { ConfirmDialog } from '@/components/confirm-dialog';
-import {
-	FilterBar,
-	SearchInput,
-	SelectFilter,
-	SortSelect
-} from '@/components/table-filters';
 import { useUsersQuery } from '@/data/queries';
 import {
 	useBulkSuspendUsersMutation,
@@ -118,22 +127,16 @@ const Users = () => {
 		});
 	};
 
-	const handleSortChange = (
-		value: { field: string; direction: 'asc' | 'desc' } | undefined
-	) => {
-		if (value) {
-			setFilter('orderBy', { [value.field]: value.direction });
-		} else {
-			setFilter('orderBy', undefined);
-		}
+	const handleSortChange = (field: string, direction: 'asc' | 'desc') => {
+		setFilter('orderBy', { [field]: direction });
 	};
 
-	// Convert orderBy object to sort value for the select
-	const currentSort = filters.orderBy
-		? {
-				field: Object.keys(filters.orderBy)[0],
-				direction: Object.values(filters.orderBy)[0] as 'asc' | 'desc'
-			}
+	// Get current sort state
+	const currentSortField = filters.orderBy
+		? Object.keys(filters.orderBy)[0]
+		: undefined;
+	const currentSortDirection = filters.orderBy
+		? Object.values(filters.orderBy)[0]
 		: undefined;
 
 	if (isLoading) return <div />;
@@ -143,7 +146,7 @@ const Users = () => {
 	return (
 		<div className='space-y-6'>
 			<div className='flex justify-between items-center'>
-				<h1 className='text-3xl font-semibold'>Users</h1>
+				<h1 className='text-2xl font-semibold'>Users</h1>
 			</div>
 
 			<BulkActionsToolbar
@@ -188,49 +191,144 @@ const Users = () => {
 				onRowSelectionChange={setRowSelection}
 				getRowId={row => row.id}
 				filterButtons={
-					<FilterBar
-						hasActiveFilters={hasActiveFilters}
-						onClearFilters={clearFilters}
-					>
-						<SearchInput
-							value={filters.search ?? ''}
-							onChange={value => setFilter('search', value || undefined)}
-							placeholder='Search users...'
-						/>
-						<SelectFilter
-							value={
-								filters.suspended === undefined
-									? undefined
-									: filters.suspended
-										? 'suspended'
-										: 'active'
-							}
-							onChange={value => {
-								if (value === 'suspended') {
-									setFilter('suspended', true);
-								} else if (value === 'active') {
-									setFilter('suspended', false);
-								} else {
-									setFilter('suspended', undefined);
-								}
-							}}
-							options={[
-								{ label: 'Active', value: 'active' },
-								{ label: 'Suspended', value: 'suspended' }
-							]}
-							placeholder='Status'
-						/>
-						<SortSelect
-							value={currentSort}
-							onChange={handleSortChange}
-							options={[
-								{ label: 'Name', value: 'name' },
-								{ label: 'Email', value: 'email' },
-								{ label: 'Created At', value: 'createdAt' }
-							]}
-							placeholder='Sort by...'
-						/>
-					</FilterBar>
+					<div className='flex items-center gap-2'>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button variant='outline' size='sm'>
+									<ListFilter />
+									Filters
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align='start' className='w-56'>
+								<DropdownMenuSub>
+									<DropdownMenuSubTrigger>Search</DropdownMenuSubTrigger>
+									<DropdownMenuPortal>
+										<DropdownMenuSubContent className='p-4'>
+											<div className='space-y-2'>
+												<Label>Search Users</Label>
+												<Input
+													placeholder='Search users...'
+													value={filters.search ?? ''}
+													onChange={e =>
+														setFilter('search', e.target.value || undefined)
+													}
+												/>
+											</div>
+										</DropdownMenuSubContent>
+									</DropdownMenuPortal>
+								</DropdownMenuSub>
+
+								<DropdownMenuSub>
+									<DropdownMenuSubTrigger>Sort By</DropdownMenuSubTrigger>
+									<DropdownMenuPortal>
+										<DropdownMenuSubContent>
+											<DropdownMenuCheckboxItem
+												checked={
+													currentSortField === 'name' &&
+													currentSortDirection === 'asc'
+												}
+												onCheckedChange={() => handleSortChange('name', 'asc')}
+											>
+												Name (A-Z)
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={
+													currentSortField === 'name' &&
+													currentSortDirection === 'desc'
+												}
+												onCheckedChange={() => handleSortChange('name', 'desc')}
+											>
+												Name (Z-A)
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={
+													currentSortField === 'email' &&
+													currentSortDirection === 'asc'
+												}
+												onCheckedChange={() => handleSortChange('email', 'asc')}
+											>
+												Email (A-Z)
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={
+													currentSortField === 'email' &&
+													currentSortDirection === 'desc'
+												}
+												onCheckedChange={() =>
+													handleSortChange('email', 'desc')
+												}
+											>
+												Email (Z-A)
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={
+													currentSortField === 'createdAt' &&
+													currentSortDirection === 'desc'
+												}
+												onCheckedChange={() =>
+													handleSortChange('createdAt', 'desc')
+												}
+											>
+												Newest First
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={
+													currentSortField === 'createdAt' &&
+													currentSortDirection === 'asc'
+												}
+												onCheckedChange={() =>
+													handleSortChange('createdAt', 'asc')
+												}
+											>
+												Oldest First
+											</DropdownMenuCheckboxItem>
+										</DropdownMenuSubContent>
+									</DropdownMenuPortal>
+								</DropdownMenuSub>
+
+								<DropdownMenuSub>
+									<DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
+									<DropdownMenuPortal>
+										<DropdownMenuSubContent>
+											<DropdownMenuCheckboxItem
+												checked={filters.suspended === false}
+												onCheckedChange={checked => {
+													if (checked) {
+														setFilter('suspended', false);
+													} else {
+														setFilter('suspended', undefined);
+													}
+												}}
+											>
+												Active
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={filters.suspended === true}
+												onCheckedChange={checked => {
+													if (checked) {
+														setFilter('suspended', true);
+													} else {
+														setFilter('suspended', undefined);
+													}
+												}}
+											>
+												Suspended
+											</DropdownMenuCheckboxItem>
+										</DropdownMenuSubContent>
+									</DropdownMenuPortal>
+								</DropdownMenuSub>
+
+								{hasActiveFilters && (
+									<>
+										<DropdownMenuSeparator />
+										<DropdownMenuItem onClick={clearFilters}>
+											Clear Filters
+										</DropdownMenuItem>
+									</>
+								)}
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</div>
 				}
 			/>
 		</div>

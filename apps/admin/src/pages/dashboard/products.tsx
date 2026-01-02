@@ -1,27 +1,28 @@
 import { useState } from 'react';
 import { type ColumnDef, type RowSelectionState } from '@tanstack/react-table';
-import { MoreHorizontal } from 'lucide-react';
+import { ListFilter, MoreHorizontal } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
 	DropdownMenu,
+	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuLabel,
+	DropdownMenuPortal,
 	DropdownMenuSeparator,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { DataTable } from '@/components/ui/data-table';
 import { BulkActionsToolbar } from '@/components/bulk-actions-toolbar';
 import { ConfirmDialog } from '@/components/confirm-dialog';
-import {
-	FilterBar,
-	SearchInput,
-	SelectFilter,
-	SortSelect
-} from '@/components/table-filters';
 import { useProductsQuery } from '@/data/queries';
 import {
 	useBulkDeleteProductsMutation,
@@ -162,22 +163,16 @@ const ProductsPage = () => {
 		);
 	};
 
-	const handleSortChange = (
-		value: { field: string; direction: 'asc' | 'desc' } | undefined
-	) => {
-		if (value) {
-			setFilter('orderBy', { [value.field]: value.direction });
-		} else {
-			setFilter('orderBy', undefined);
-		}
+	const handleSortChange = (field: string, direction: 'asc' | 'desc') => {
+		setFilter('orderBy', { [field]: direction });
 	};
 
-	// Convert orderBy object to sort value for the select
-	const currentSort = filters.orderBy
-		? {
-				field: Object.keys(filters.orderBy)[0],
-				direction: Object.values(filters.orderBy)[0] as 'asc' | 'desc'
-			}
+	// Get current sort state
+	const currentSortField = filters.orderBy
+		? Object.keys(filters.orderBy)[0]
+		: undefined;
+	const currentSortDirection = filters.orderBy
+		? Object.values(filters.orderBy)[0]
 		: undefined;
 
 	if (isLoading) {
@@ -187,7 +182,7 @@ const ProductsPage = () => {
 	return (
 		<div className='space-y-6'>
 			<div className='flex justify-between items-center'>
-				<h1 className='text-3xl font-semibold'>Products</h1>
+				<h1 className='text-2xl font-semibold'>Products</h1>
 			</div>
 
 			<BulkActionsToolbar
@@ -232,59 +227,200 @@ const ProductsPage = () => {
 				onRowSelectionChange={setRowSelection}
 				getRowId={row => row.id}
 				filterButtons={
-					<FilterBar
-						hasActiveFilters={hasActiveFilters}
-						onClearFilters={clearFilters}
-					>
-						<SearchInput
-							value={filters.search ?? ''}
-							onChange={value => setFilter('search', value || undefined)}
-							placeholder='Search products...'
-						/>
-						<SelectFilter
-							value={filters.status}
-							onChange={value => setFilter('status', value as ProductStatus)}
-							options={[
-								{ label: 'Active', value: ProductStatus.Active },
-								{ label: 'Draft', value: ProductStatus.Draft }
-							]}
-							placeholder='Status'
-						/>
-						<SelectFilter
-							value={
-								filters.inStock === undefined
-									? undefined
-									: filters.inStock
-										? 'in_stock'
-										: 'out_of_stock'
-							}
-							onChange={value => {
-								if (value === 'in_stock') {
-									setFilter('inStock', true);
-								} else if (value === 'out_of_stock') {
-									setFilter('inStock', false);
-								} else {
-									setFilter('inStock', undefined);
-								}
-							}}
-							options={[
-								{ label: 'In Stock', value: 'in_stock' },
-								{ label: 'Out of Stock', value: 'out_of_stock' }
-							]}
-							placeholder='Stock'
-						/>
-						<SortSelect
-							value={currentSort}
-							onChange={handleSortChange}
-							options={[
-								{ label: 'Name', value: 'name' },
-								{ label: 'Price', value: 'unitPrice' },
-								{ label: 'Stock', value: 'quantity' },
-								{ label: 'Created At', value: 'createdAt' }
-							]}
-							placeholder='Sort by...'
-						/>
-					</FilterBar>
+					<div className='flex items-center gap-2'>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button variant='outline' size='sm'>
+									<ListFilter />
+									Filters
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align='start' className='w-56'>
+								<DropdownMenuSub>
+									<DropdownMenuSubTrigger>Search</DropdownMenuSubTrigger>
+									<DropdownMenuPortal>
+										<DropdownMenuSubContent className='p-4'>
+											<div className='space-y-2'>
+												<Label>Search Products</Label>
+												<Input
+													placeholder='Search products...'
+													value={filters.search ?? ''}
+													onChange={e =>
+														setFilter('search', e.target.value || undefined)
+													}
+												/>
+											</div>
+										</DropdownMenuSubContent>
+									</DropdownMenuPortal>
+								</DropdownMenuSub>
+
+								<DropdownMenuSub>
+									<DropdownMenuSubTrigger>Sort By</DropdownMenuSubTrigger>
+									<DropdownMenuPortal>
+										<DropdownMenuSubContent>
+											<DropdownMenuCheckboxItem
+												checked={
+													currentSortField === 'name' &&
+													currentSortDirection === 'asc'
+												}
+												onCheckedChange={() => handleSortChange('name', 'asc')}
+											>
+												Name (A-Z)
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={
+													currentSortField === 'name' &&
+													currentSortDirection === 'desc'
+												}
+												onCheckedChange={() => handleSortChange('name', 'desc')}
+											>
+												Name (Z-A)
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={
+													currentSortField === 'unitPrice' &&
+													currentSortDirection === 'asc'
+												}
+												onCheckedChange={() =>
+													handleSortChange('unitPrice', 'asc')
+												}
+											>
+												Price (Low to High)
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={
+													currentSortField === 'unitPrice' &&
+													currentSortDirection === 'desc'
+												}
+												onCheckedChange={() =>
+													handleSortChange('unitPrice', 'desc')
+												}
+											>
+												Price (High to Low)
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={
+													currentSortField === 'quantity' &&
+													currentSortDirection === 'asc'
+												}
+												onCheckedChange={() =>
+													handleSortChange('quantity', 'asc')
+												}
+											>
+												Stock (Low to High)
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={
+													currentSortField === 'quantity' &&
+													currentSortDirection === 'desc'
+												}
+												onCheckedChange={() =>
+													handleSortChange('quantity', 'desc')
+												}
+											>
+												Stock (High to Low)
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={
+													currentSortField === 'createdAt' &&
+													currentSortDirection === 'desc'
+												}
+												onCheckedChange={() =>
+													handleSortChange('createdAt', 'desc')
+												}
+											>
+												Newest First
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={
+													currentSortField === 'createdAt' &&
+													currentSortDirection === 'asc'
+												}
+												onCheckedChange={() =>
+													handleSortChange('createdAt', 'asc')
+												}
+											>
+												Oldest First
+											</DropdownMenuCheckboxItem>
+										</DropdownMenuSubContent>
+									</DropdownMenuPortal>
+								</DropdownMenuSub>
+
+								<DropdownMenuSub>
+									<DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
+									<DropdownMenuPortal>
+										<DropdownMenuSubContent>
+											<DropdownMenuCheckboxItem
+												checked={filters.status === ProductStatus.Active}
+												onCheckedChange={checked => {
+													if (checked) {
+														setFilter('status', ProductStatus.Active);
+													} else {
+														setFilter('status', undefined);
+													}
+												}}
+											>
+												Active
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={filters.status === ProductStatus.Draft}
+												onCheckedChange={checked => {
+													if (checked) {
+														setFilter('status', ProductStatus.Draft);
+													} else {
+														setFilter('status', undefined);
+													}
+												}}
+											>
+												Draft
+											</DropdownMenuCheckboxItem>
+										</DropdownMenuSubContent>
+									</DropdownMenuPortal>
+								</DropdownMenuSub>
+
+								<DropdownMenuSub>
+									<DropdownMenuSubTrigger>Stock</DropdownMenuSubTrigger>
+									<DropdownMenuPortal>
+										<DropdownMenuSubContent>
+											<DropdownMenuCheckboxItem
+												checked={filters.inStock === true}
+												onCheckedChange={checked => {
+													if (checked) {
+														setFilter('inStock', true);
+													} else {
+														setFilter('inStock', undefined);
+													}
+												}}
+											>
+												In Stock
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={filters.inStock === false}
+												onCheckedChange={checked => {
+													if (checked) {
+														setFilter('inStock', false);
+													} else {
+														setFilter('inStock', undefined);
+													}
+												}}
+											>
+												Out of Stock
+											</DropdownMenuCheckboxItem>
+										</DropdownMenuSubContent>
+									</DropdownMenuPortal>
+								</DropdownMenuSub>
+
+								{hasActiveFilters && (
+									<>
+										<DropdownMenuSeparator />
+										<DropdownMenuItem onClick={clearFilters}>
+											Clear Filters
+										</DropdownMenuItem>
+									</>
+								)}
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</div>
 				}
 			/>
 		</div>

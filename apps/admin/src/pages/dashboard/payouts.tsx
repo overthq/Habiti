@@ -15,7 +15,6 @@ import {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
-	DropdownMenuItem,
 	DropdownMenuPortal,
 	DropdownMenuSub,
 	DropdownMenuSubContent,
@@ -134,7 +133,7 @@ const PayoutsPage = () => {
 	return (
 		<div className='space-y-6'>
 			<div className='flex justify-between items-center'>
-				<h1 className='text-3xl font-semibold'>Payouts</h1>
+				<h1 className='text-2xl font-semibold'>Payouts</h1>
 			</div>
 
 			<DataTable

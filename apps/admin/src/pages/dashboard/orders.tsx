@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { type ColumnDef, type RowSelectionState } from '@tanstack/react-table';
-import { MoreVertical } from 'lucide-react';
+import { ListFilter, MoreVertical } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 
 import { useOrdersQuery } from '@/data/queries';
@@ -16,16 +16,16 @@ import { Button } from '@/components/ui/button';
 import { BulkActionsToolbar } from '@/components/bulk-actions-toolbar';
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import {
-	FilterBar,
-	SelectFilter,
-	SortSelect
-} from '@/components/table-filters';
-import {
 	DropdownMenu,
+	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuLabel,
+	DropdownMenuPortal,
 	DropdownMenuSeparator,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { useTableFilters } from '@/hooks/use-table-filters';
@@ -175,22 +175,16 @@ const OrdersPage = () => {
 		);
 	};
 
-	const handleSortChange = (
-		value: { field: string; direction: 'asc' | 'desc' } | undefined
-	) => {
-		if (value) {
-			setFilter('orderBy', { [value.field]: value.direction });
-		} else {
-			setFilter('orderBy', undefined);
-		}
+	const handleSortChange = (field: string, direction: 'asc' | 'desc') => {
+		setFilter('orderBy', { [field]: direction });
 	};
 
-	// Convert orderBy object to sort value for the select
-	const currentSort = filters.orderBy
-		? {
-				field: Object.keys(filters.orderBy)[0],
-				direction: Object.values(filters.orderBy)[0] as 'asc' | 'desc'
-			}
+	// Get current sort state
+	const currentSortField = filters.orderBy
+		? Object.keys(filters.orderBy)[0]
+		: undefined;
+	const currentSortDirection = filters.orderBy
+		? Object.values(filters.orderBy)[0]
 		: undefined;
 
 	if (isLoading) {
@@ -200,7 +194,7 @@ const OrdersPage = () => {
 	return (
 		<div className='space-y-6'>
 			<div className='flex justify-between items-center'>
-				<h1 className='text-3xl font-semibold'>Orders</h1>
+				<h1 className='text-2xl font-semibold'>Orders</h1>
 			</div>
 
 			<BulkActionsToolbar
@@ -245,31 +239,132 @@ const OrdersPage = () => {
 				onRowSelectionChange={setRowSelection}
 				getRowId={row => row.id}
 				filterButtons={
-					<FilterBar
-						hasActiveFilters={hasActiveFilters}
-						onClearFilters={clearFilters}
-					>
-						<SelectFilter
-							value={filters.status}
-							onChange={value => setFilter('status', value as OrderStatus)}
-							options={[
-								{ label: 'Pending', value: OrderStatus.Pending },
-								{ label: 'Payment Pending', value: OrderStatus.PaymentPending },
-								{ label: 'Completed', value: OrderStatus.Completed },
-								{ label: 'Cancelled', value: OrderStatus.Cancelled }
-							]}
-							placeholder='Status'
-						/>
-						<SortSelect
-							value={currentSort}
-							onChange={handleSortChange}
-							options={[
-								{ label: 'Total', value: 'total' },
-								{ label: 'Created At', value: 'createdAt' }
-							]}
-							placeholder='Sort by...'
-						/>
-					</FilterBar>
+					<div className='flex items-center gap-2'>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button variant='outline' size='sm'>
+									<ListFilter />
+									Filters
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align='start' className='w-56'>
+								<DropdownMenuSub>
+									<DropdownMenuSubTrigger>Sort By</DropdownMenuSubTrigger>
+									<DropdownMenuPortal>
+										<DropdownMenuSubContent>
+											<DropdownMenuCheckboxItem
+												checked={
+													currentSortField === 'total' &&
+													currentSortDirection === 'asc'
+												}
+												onCheckedChange={() => handleSortChange('total', 'asc')}
+											>
+												Total (Low to High)
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={
+													currentSortField === 'total' &&
+													currentSortDirection === 'desc'
+												}
+												onCheckedChange={() =>
+													handleSortChange('total', 'desc')
+												}
+											>
+												Total (High to Low)
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={
+													currentSortField === 'createdAt' &&
+													currentSortDirection === 'desc'
+												}
+												onCheckedChange={() =>
+													handleSortChange('createdAt', 'desc')
+												}
+											>
+												Newest First
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={
+													currentSortField === 'createdAt' &&
+													currentSortDirection === 'asc'
+												}
+												onCheckedChange={() =>
+													handleSortChange('createdAt', 'asc')
+												}
+											>
+												Oldest First
+											</DropdownMenuCheckboxItem>
+										</DropdownMenuSubContent>
+									</DropdownMenuPortal>
+								</DropdownMenuSub>
+
+								<DropdownMenuSub>
+									<DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
+									<DropdownMenuPortal>
+										<DropdownMenuSubContent>
+											<DropdownMenuCheckboxItem
+												checked={filters.status === OrderStatus.Pending}
+												onCheckedChange={checked => {
+													if (checked) {
+														setFilter('status', OrderStatus.Pending);
+													} else {
+														setFilter('status', undefined);
+													}
+												}}
+											>
+												Pending
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={filters.status === OrderStatus.PaymentPending}
+												onCheckedChange={checked => {
+													if (checked) {
+														setFilter('status', OrderStatus.PaymentPending);
+													} else {
+														setFilter('status', undefined);
+													}
+												}}
+											>
+												Payment Pending
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={filters.status === OrderStatus.Completed}
+												onCheckedChange={checked => {
+													if (checked) {
+														setFilter('status', OrderStatus.Completed);
+													} else {
+														setFilter('status', undefined);
+													}
+												}}
+											>
+												Completed
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={filters.status === OrderStatus.Cancelled}
+												onCheckedChange={checked => {
+													if (checked) {
+														setFilter('status', OrderStatus.Cancelled);
+													} else {
+														setFilter('status', undefined);
+													}
+												}}
+											>
+												Cancelled
+											</DropdownMenuCheckboxItem>
+										</DropdownMenuSubContent>
+									</DropdownMenuPortal>
+								</DropdownMenuSub>
+
+								{hasActiveFilters && (
+									<>
+										<DropdownMenuSeparator />
+										<DropdownMenuItem onClick={clearFilters}>
+											Clear Filters
+										</DropdownMenuItem>
+									</>
+								)}
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</div>
 				}
 			/>
 		</div>

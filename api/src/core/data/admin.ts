@@ -1,8 +1,7 @@
 import {
 	PrismaClient,
 	OrderStatus,
-	ProductStatus,
-	Prisma
+	ProductStatus
 } from '../../generated/prisma/client';
 
 type TransactionClient = Omit<
