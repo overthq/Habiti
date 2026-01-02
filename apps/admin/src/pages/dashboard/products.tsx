@@ -1,5 +1,9 @@
-import { useState } from 'react';
-import { type ColumnDef, type RowSelectionState } from '@tanstack/react-table';
+import { useState, useMemo } from 'react';
+import {
+	type ColumnDef,
+	type RowSelectionState,
+	type SortingState
+} from '@tanstack/react-table';
 import { ListFilter, MoreHorizontal } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 
@@ -21,6 +25,7 @@ import {
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { DataTable } from '@/components/ui/data-table';
+import { DataTableColumnHeader } from '@/components/data-table-column-header';
 import { BulkActionsToolbar } from '@/components/bulk-actions-toolbar';
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import { useProductsQuery } from '@/data/queries';
@@ -57,7 +62,9 @@ const columns: ColumnDef<Product>[] = [
 	},
 	{
 		accessorKey: 'name',
-		header: 'Name',
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title='Name' />
+		),
 		cell: ({ row }) => (
 			<Button variant='link' asChild className='px-0 w-fit'>
 				<Link to={`/products/${row.original.id}`}>{row.original.name}</Link>
@@ -66,12 +73,16 @@ const columns: ColumnDef<Product>[] = [
 	},
 	{
 		accessorKey: 'unitPrice',
-		header: 'Price',
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title='Price' />
+		),
 		cell: ({ row }) => formatNaira(row.getValue('unitPrice'))
 	},
 	{
 		accessorKey: 'quantity',
-		header: 'Stock'
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title='Stock' />
+		)
 	},
 	{
 		accessorKey: 'store.name',
@@ -163,17 +174,23 @@ const ProductsPage = () => {
 		);
 	};
 
-	const handleSortChange = (field: string, direction: 'asc' | 'desc') => {
-		setFilter('orderBy', { [field]: direction });
-	};
+	// Convert orderBy filter to SortingState
+	const sorting = useMemo<SortingState>(() => {
+		if (!filters.orderBy) return [];
+		const field = Object.keys(filters.orderBy)[0];
+		const direction = Object.values(filters.orderBy)[0] as 'asc' | 'desc';
+		return [{ id: field, desc: direction === 'desc' }];
+	}, [filters.orderBy]);
 
-	// Get current sort state
-	const currentSortField = filters.orderBy
-		? Object.keys(filters.orderBy)[0]
-		: undefined;
-	const currentSortDirection = filters.orderBy
-		? Object.values(filters.orderBy)[0]
-		: undefined;
+	// Handle sorting changes from column headers
+	const handleSortingChange = (newSorting: SortingState) => {
+		if (newSorting.length === 0) {
+			setFilter('orderBy', undefined);
+		} else {
+			const sort = newSorting[0];
+			setFilter('orderBy', { [sort.id]: sort.desc ? 'desc' : 'asc' });
+		}
+	};
 
 	if (isLoading) {
 		return <div>Loading...</div>;
@@ -226,6 +243,8 @@ const ProductsPage = () => {
 				rowSelection={rowSelection}
 				onRowSelectionChange={setRowSelection}
 				getRowId={row => row.id}
+				sorting={sorting}
+				onSortingChange={handleSortingChange}
 				filterButtons={
 					<div className='flex items-center gap-2'>
 						<DropdownMenu>
@@ -250,98 +269,6 @@ const ProductsPage = () => {
 													}
 												/>
 											</div>
-										</DropdownMenuSubContent>
-									</DropdownMenuPortal>
-								</DropdownMenuSub>
-
-								<DropdownMenuSub>
-									<DropdownMenuSubTrigger>Sort By</DropdownMenuSubTrigger>
-									<DropdownMenuPortal>
-										<DropdownMenuSubContent>
-											<DropdownMenuCheckboxItem
-												checked={
-													currentSortField === 'name' &&
-													currentSortDirection === 'asc'
-												}
-												onCheckedChange={() => handleSortChange('name', 'asc')}
-											>
-												Name (A-Z)
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={
-													currentSortField === 'name' &&
-													currentSortDirection === 'desc'
-												}
-												onCheckedChange={() => handleSortChange('name', 'desc')}
-											>
-												Name (Z-A)
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={
-													currentSortField === 'unitPrice' &&
-													currentSortDirection === 'asc'
-												}
-												onCheckedChange={() =>
-													handleSortChange('unitPrice', 'asc')
-												}
-											>
-												Price (Low to High)
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={
-													currentSortField === 'unitPrice' &&
-													currentSortDirection === 'desc'
-												}
-												onCheckedChange={() =>
-													handleSortChange('unitPrice', 'desc')
-												}
-											>
-												Price (High to Low)
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={
-													currentSortField === 'quantity' &&
-													currentSortDirection === 'asc'
-												}
-												onCheckedChange={() =>
-													handleSortChange('quantity', 'asc')
-												}
-											>
-												Stock (Low to High)
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={
-													currentSortField === 'quantity' &&
-													currentSortDirection === 'desc'
-												}
-												onCheckedChange={() =>
-													handleSortChange('quantity', 'desc')
-												}
-											>
-												Stock (High to Low)
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={
-													currentSortField === 'createdAt' &&
-													currentSortDirection === 'desc'
-												}
-												onCheckedChange={() =>
-													handleSortChange('createdAt', 'desc')
-												}
-											>
-												Newest First
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={
-													currentSortField === 'createdAt' &&
-													currentSortDirection === 'asc'
-												}
-												onCheckedChange={() =>
-													handleSortChange('createdAt', 'asc')
-												}
-											>
-												Oldest First
-											</DropdownMenuCheckboxItem>
 										</DropdownMenuSubContent>
 									</DropdownMenuPortal>
 								</DropdownMenuSub>

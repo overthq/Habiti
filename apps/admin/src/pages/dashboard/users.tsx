@@ -1,5 +1,9 @@
-import { useState } from 'react';
-import { type ColumnDef, type RowSelectionState } from '@tanstack/react-table';
+import { useState, useMemo } from 'react';
+import {
+	type ColumnDef,
+	type RowSelectionState,
+	type SortingState
+} from '@tanstack/react-table';
 import { ListFilter } from 'lucide-react';
 import { Link } from 'react-router';
 
@@ -20,6 +24,7 @@ import {
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { DataTable } from '@/components/ui/data-table';
+import { DataTableColumnHeader } from '@/components/data-table-column-header';
 import { BulkActionsToolbar } from '@/components/bulk-actions-toolbar';
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import { useUsersQuery } from '@/data/queries';
@@ -56,7 +61,9 @@ const columns: ColumnDef<User>[] = [
 	},
 	{
 		accessorKey: 'name',
-		header: 'Name',
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title='Name' />
+		),
 		cell: ({ row }) => (
 			<Button variant='link' asChild className='px-0 w-fit'>
 				<Link to={`/users/${row.original.id}`}>{row.original.name}</Link>
@@ -65,7 +72,9 @@ const columns: ColumnDef<User>[] = [
 	},
 	{
 		accessorKey: 'email',
-		header: 'Email'
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title='Email' />
+		)
 	},
 	{
 		accessorKey: 'suspended',
@@ -78,11 +87,14 @@ const columns: ColumnDef<User>[] = [
 			>
 				{row.original.suspended ? 'Suspended' : 'Active'}
 			</span>
-		)
+		),
+		enableSorting: false
 	},
 	{
 		accessorKey: 'createdAt',
-		header: 'Created At',
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title='Created At' />
+		),
 		cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString()
 	}
 ];
@@ -127,17 +139,23 @@ const Users = () => {
 		});
 	};
 
-	const handleSortChange = (field: string, direction: 'asc' | 'desc') => {
-		setFilter('orderBy', { [field]: direction });
-	};
+	// Convert orderBy filter to SortingState
+	const sorting = useMemo<SortingState>(() => {
+		if (!filters.orderBy) return [];
+		const field = Object.keys(filters.orderBy)[0];
+		const direction = Object.values(filters.orderBy)[0] as 'asc' | 'desc';
+		return [{ id: field, desc: direction === 'desc' }];
+	}, [filters.orderBy]);
 
-	// Get current sort state
-	const currentSortField = filters.orderBy
-		? Object.keys(filters.orderBy)[0]
-		: undefined;
-	const currentSortDirection = filters.orderBy
-		? Object.values(filters.orderBy)[0]
-		: undefined;
+	// Handle sorting changes from column headers
+	const handleSortingChange = (newSorting: SortingState) => {
+		if (newSorting.length === 0) {
+			setFilter('orderBy', undefined);
+		} else {
+			const sort = newSorting[0];
+			setFilter('orderBy', { [sort.id]: sort.desc ? 'desc' : 'asc' });
+		}
+	};
 
 	if (isLoading) return <div />;
 
@@ -190,6 +208,8 @@ const Users = () => {
 				rowSelection={rowSelection}
 				onRowSelectionChange={setRowSelection}
 				getRowId={row => row.id}
+				sorting={sorting}
+				onSortingChange={handleSortingChange}
 				filterButtons={
 					<div className='flex items-center gap-2'>
 						<DropdownMenu>
@@ -214,74 +234,6 @@ const Users = () => {
 													}
 												/>
 											</div>
-										</DropdownMenuSubContent>
-									</DropdownMenuPortal>
-								</DropdownMenuSub>
-
-								<DropdownMenuSub>
-									<DropdownMenuSubTrigger>Sort By</DropdownMenuSubTrigger>
-									<DropdownMenuPortal>
-										<DropdownMenuSubContent>
-											<DropdownMenuCheckboxItem
-												checked={
-													currentSortField === 'name' &&
-													currentSortDirection === 'asc'
-												}
-												onCheckedChange={() => handleSortChange('name', 'asc')}
-											>
-												Name (A-Z)
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={
-													currentSortField === 'name' &&
-													currentSortDirection === 'desc'
-												}
-												onCheckedChange={() => handleSortChange('name', 'desc')}
-											>
-												Name (Z-A)
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={
-													currentSortField === 'email' &&
-													currentSortDirection === 'asc'
-												}
-												onCheckedChange={() => handleSortChange('email', 'asc')}
-											>
-												Email (A-Z)
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={
-													currentSortField === 'email' &&
-													currentSortDirection === 'desc'
-												}
-												onCheckedChange={() =>
-													handleSortChange('email', 'desc')
-												}
-											>
-												Email (Z-A)
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={
-													currentSortField === 'createdAt' &&
-													currentSortDirection === 'desc'
-												}
-												onCheckedChange={() =>
-													handleSortChange('createdAt', 'desc')
-												}
-											>
-												Newest First
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={
-													currentSortField === 'createdAt' &&
-													currentSortDirection === 'asc'
-												}
-												onCheckedChange={() =>
-													handleSortChange('createdAt', 'asc')
-												}
-											>
-												Oldest First
-											</DropdownMenuCheckboxItem>
 										</DropdownMenuSubContent>
 									</DropdownMenuPortal>
 								</DropdownMenuSub>

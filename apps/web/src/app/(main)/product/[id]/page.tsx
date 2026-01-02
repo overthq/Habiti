@@ -35,7 +35,7 @@ const ProductPage = () => {
 			viewerContext={data.viewerContext}
 		>
 			<div className='max-w-4xl mx-auto space-y-8'>
-				<div className='flex flex-col md:gap-12 md:flex-row gap-4'>
+				<div className='flex flex-col md:gap-12 md:flex-row gap-4 w-full'>
 					<ProductImages />
 					<ProductMeta />
 				</div>
@@ -51,8 +51,8 @@ const ProductImages = () => {
 	const { product } = useProductContext();
 
 	return (
-		<div className='grow'>
-			<div className='aspect-square rounded-xl overflow-hidden bg-muted'>
+		<div className='grow w-full'>
+			<div className='aspect-square rounded-xl w-full overflow-hidden bg-muted'>
 				{product.images.length > 0 && (
 					<img
 						key={product.id}

@@ -52,6 +52,8 @@ interface DataTableProps<TData, TValue> {
 	rowSelection?: RowSelectionState;
 	onRowSelectionChange?: (selection: RowSelectionState) => void;
 	getRowId?: (row: TData) => string;
+	sorting?: SortingState;
+	onSortingChange?: (sorting: SortingState) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -61,9 +63,13 @@ export function DataTable<TData, TValue>({
 	hasColumnDropdown = true,
 	rowSelection,
 	onRowSelectionChange,
-	getRowId
+	getRowId,
+	sorting: externalSorting,
+	onSortingChange: externalOnSortingChange
 }: DataTableProps<TData, TValue>) {
-	const [sorting, setSorting] = React.useState<SortingState>([]);
+	const [internalSorting, setInternalSorting] = React.useState<SortingState>(
+		[]
+	);
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
 		[]
 	);
@@ -71,6 +77,21 @@ export function DataTable<TData, TValue>({
 		React.useState<VisibilityState>({});
 	const [internalRowSelection, setInternalRowSelection] =
 		React.useState<RowSelectionState>({});
+
+	const sorting = externalSorting ?? internalSorting;
+	const handleSortingChange = (
+		updaterOrValue: SortingState | ((old: SortingState) => SortingState)
+	) => {
+		const newValue =
+			typeof updaterOrValue === 'function'
+				? updaterOrValue(sorting)
+				: updaterOrValue;
+		if (externalOnSortingChange) {
+			externalOnSortingChange(newValue);
+		} else {
+			setInternalSorting(newValue);
+		}
+	};
 
 	const effectiveRowSelection = rowSelection ?? internalRowSelection;
 	const handleRowSelectionChange = (
@@ -92,7 +113,7 @@ export function DataTable<TData, TValue>({
 	const table = useReactTable({
 		data,
 		columns,
-		onSortingChange: setSorting,
+		onSortingChange: handleSortingChange,
 		onColumnFiltersChange: setColumnFilters,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
@@ -148,7 +169,7 @@ export function DataTable<TData, TValue>({
 
 			<div className='rounded-md border overflow-hidden'>
 				<Table>
-					<TableHeader className='bg-muted'>
+					<TableHeader>
 						{table.getHeaderGroups().map(headerGroup => (
 							<TableRow key={headerGroup.id}>
 								{headerGroup.headers.map(header => {

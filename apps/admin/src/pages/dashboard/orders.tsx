@@ -1,5 +1,9 @@
-import { useState } from 'react';
-import { type ColumnDef, type RowSelectionState } from '@tanstack/react-table';
+import { useState, useMemo } from 'react';
+import {
+	type ColumnDef,
+	type RowSelectionState,
+	type SortingState
+} from '@tanstack/react-table';
 import { ListFilter, MoreVertical } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 
@@ -12,6 +16,7 @@ import { type Order, type OrderFilters, OrderStatus } from '@/data/types';
 import { formatNaira } from '@/utils/format';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/ui/data-table';
+import { DataTableColumnHeader } from '@/components/data-table-column-header';
 import { Button } from '@/components/ui/button';
 import { BulkActionsToolbar } from '@/components/bulk-actions-toolbar';
 import { ConfirmDialog } from '@/components/confirm-dialog';
@@ -77,7 +82,9 @@ const columns: ColumnDef<Order>[] = [
 	},
 	{
 		accessorKey: 'total',
-		header: 'Total',
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title='Total' />
+		),
 		cell: ({ row }) => formatNaira(row.getValue('total'))
 	},
 	{
@@ -92,11 +99,14 @@ const columns: ColumnDef<Order>[] = [
 				[OrderStatus.Cancelled]: 'text-destructive'
 			};
 			return <span className={statusColors[status]}>{status}</span>;
-		}
+		},
+		enableSorting: false
 	},
 	{
 		accessorKey: 'createdAt',
-		header: 'Created',
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title='Created' />
+		),
 		cell: ({ row }) => new Date(row.getValue('createdAt')).toLocaleDateString()
 	},
 	{
@@ -175,17 +185,23 @@ const OrdersPage = () => {
 		);
 	};
 
-	const handleSortChange = (field: string, direction: 'asc' | 'desc') => {
-		setFilter('orderBy', { [field]: direction });
-	};
+	// Convert orderBy filter to SortingState
+	const sorting = useMemo<SortingState>(() => {
+		if (!filters.orderBy) return [];
+		const field = Object.keys(filters.orderBy)[0];
+		const direction = Object.values(filters.orderBy)[0] as 'asc' | 'desc';
+		return [{ id: field, desc: direction === 'desc' }];
+	}, [filters.orderBy]);
 
-	// Get current sort state
-	const currentSortField = filters.orderBy
-		? Object.keys(filters.orderBy)[0]
-		: undefined;
-	const currentSortDirection = filters.orderBy
-		? Object.values(filters.orderBy)[0]
-		: undefined;
+	// Handle sorting changes from column headers
+	const handleSortingChange = (newSorting: SortingState) => {
+		if (newSorting.length === 0) {
+			setFilter('orderBy', undefined);
+		} else {
+			const sort = newSorting[0];
+			setFilter('orderBy', { [sort.id]: sort.desc ? 'desc' : 'asc' });
+		}
+	};
 
 	if (isLoading) {
 		return <div>Loading...</div>;
@@ -238,6 +254,8 @@ const OrdersPage = () => {
 				rowSelection={rowSelection}
 				onRowSelectionChange={setRowSelection}
 				getRowId={row => row.id}
+				sorting={sorting}
+				onSortingChange={handleSortingChange}
 				filterButtons={
 					<div className='flex items-center gap-2'>
 						<DropdownMenu>
@@ -248,56 +266,6 @@ const OrdersPage = () => {
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align='start' className='w-56'>
-								<DropdownMenuSub>
-									<DropdownMenuSubTrigger>Sort By</DropdownMenuSubTrigger>
-									<DropdownMenuPortal>
-										<DropdownMenuSubContent>
-											<DropdownMenuCheckboxItem
-												checked={
-													currentSortField === 'total' &&
-													currentSortDirection === 'asc'
-												}
-												onCheckedChange={() => handleSortChange('total', 'asc')}
-											>
-												Total (Low to High)
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={
-													currentSortField === 'total' &&
-													currentSortDirection === 'desc'
-												}
-												onCheckedChange={() =>
-													handleSortChange('total', 'desc')
-												}
-											>
-												Total (High to Low)
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={
-													currentSortField === 'createdAt' &&
-													currentSortDirection === 'desc'
-												}
-												onCheckedChange={() =>
-													handleSortChange('createdAt', 'desc')
-												}
-											>
-												Newest First
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={
-													currentSortField === 'createdAt' &&
-													currentSortDirection === 'asc'
-												}
-												onCheckedChange={() =>
-													handleSortChange('createdAt', 'asc')
-												}
-											>
-												Oldest First
-											</DropdownMenuCheckboxItem>
-										</DropdownMenuSubContent>
-									</DropdownMenuPortal>
-								</DropdownMenuSub>
-
 								<DropdownMenuSub>
 									<DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
 									<DropdownMenuPortal>
