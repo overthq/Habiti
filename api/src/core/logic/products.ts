@@ -3,6 +3,7 @@ import * as ProductData from '../data/products';
 import { AppContext } from '../../utils/context';
 import { canManageStore } from './permissions';
 import { LogicError, LogicErrorCode } from './errors';
+import { ProductFilters } from '../../utils/queries';
 
 export interface CreateProductInput {
 	name: string;
@@ -558,6 +559,9 @@ export const deleteStoreProductCategory = async (
 	return category;
 };
 
-export const getProducts = async (ctx: AppContext, query: any) => {
-	return ProductData.getProducts(ctx.prisma, query);
+export const getProducts = async (
+	ctx: AppContext,
+	filters?: ProductFilters
+) => {
+	return ProductData.getProducts(ctx.prisma, filters);
 };

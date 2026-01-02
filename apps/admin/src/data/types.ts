@@ -13,6 +13,14 @@ export interface UpdateUserBody {
 	suspended?: boolean;
 }
 
+export interface UserFilters {
+	search?: string;
+	suspended?: boolean;
+	orderBy?: Partial<
+		Record<'name' | 'email' | 'createdAt' | 'updatedAt', 'asc' | 'desc'>
+	>;
+}
+
 export interface GetUsersResponse {
 	users: User[];
 }
@@ -79,8 +87,16 @@ export interface Order {
 }
 
 export interface OrderFilters {
-	filter?: Record<string, string | number>;
-	orderBy?: Record<string, 'asc' | 'desc'>;
+	status?: OrderStatus;
+	storeId?: string;
+	userId?: string;
+	minTotal?: number;
+	maxTotal?: number;
+	dateFrom?: string;
+	dateTo?: string;
+	orderBy?: Partial<
+		Record<'total' | 'createdAt' | 'updatedAt', 'asc' | 'desc'>
+	>;
 }
 
 export interface Product {
@@ -100,8 +116,19 @@ export interface Product {
 }
 
 export interface ProductFilters {
-	filter?: Record<string, string | number>;
-	orderBy?: Record<string, 'asc' | 'desc'>;
+	search?: string;
+	categoryId?: string;
+	storeId?: string;
+	status?: ProductStatus;
+	inStock?: boolean;
+	minPrice?: number;
+	maxPrice?: number;
+	orderBy?: Partial<
+		Record<
+			'unitPrice' | 'quantity' | 'name' | 'createdAt' | 'updatedAt',
+			'asc' | 'desc'
+		>
+	>;
 }
 
 export interface CreateProductBody {

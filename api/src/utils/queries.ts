@@ -1,26 +1,77 @@
 import { Request } from 'express';
 import { z } from 'zod';
+import { OrderStatus, ProductStatus } from '../generated/prisma/client';
 
-// Limit these to things we actually want to use to filter from the frontend.
+// ============================================================================
+// User Filters
+// ============================================================================
 
-export const productFiltersSchema = z.object({
-	categoryId: z.string().optional(),
-	inStock: z.boolean().optional(),
-	minPrice: z.number().optional(),
-	maxPrice: z.number().optional(),
+export const userFiltersSchema = z.object({
+	search: z.string().optional(),
+	suspended: z
+		.union([z.boolean(), z.enum(['true', 'false'])])
+		.transform(val => (typeof val === 'string' ? val === 'true' : val))
+		.optional(),
 	orderBy: z
 		.object({
-			unitPrice: z.enum(['asc', 'desc']).optional(),
+			name: z.enum(['asc', 'desc']).optional(),
+			email: z.enum(['asc', 'desc']).optional(),
 			createdAt: z.enum(['asc', 'desc']).optional(),
 			updatedAt: z.enum(['asc', 'desc']).optional()
 		})
 		.optional()
 });
 
-export const orderFiltersSchema = z.object({
+export type UserFilters = z.infer<typeof userFiltersSchema>;
+
+export const userFiltersToPrismaClause = (filters?: UserFilters) => {
+	const where: any = {};
+	let orderBy: any = undefined;
+
+	if (filters?.search) {
+		where.OR = [
+			{ name: { contains: filters.search, mode: 'insensitive' } },
+			{ email: { contains: filters.search, mode: 'insensitive' } }
+		];
+	}
+
+	if (filters?.suspended !== undefined) {
+		where.suspended = filters.suspended;
+	}
+
+	if (filters?.orderBy) {
+		orderBy = filters.orderBy;
+	}
+
+	return { where, orderBy };
+};
+
+// ============================================================================
+// Product Filters
+// ============================================================================
+
+export const productFiltersSchema = z.object({
+	search: z.string().optional(),
+	categoryId: z.string().optional(),
+	storeId: z.string().optional(),
+	status: z.nativeEnum(ProductStatus).optional(),
+	inStock: z
+		.union([z.boolean(), z.enum(['true', 'false'])])
+		.transform(val => (typeof val === 'string' ? val === 'true' : val))
+		.optional(),
+	minPrice: z
+		.union([z.number(), z.string()])
+		.transform(val => (typeof val === 'string' ? parseInt(val, 10) : val))
+		.optional(),
+	maxPrice: z
+		.union([z.number(), z.string()])
+		.transform(val => (typeof val === 'string' ? parseInt(val, 10) : val))
+		.optional(),
 	orderBy: z
 		.object({
-			total: z.enum(['asc', 'desc']).optional(),
+			unitPrice: z.enum(['asc', 'desc']).optional(),
+			quantity: z.enum(['asc', 'desc']).optional(),
+			name: z.enum(['asc', 'desc']).optional(),
 			createdAt: z.enum(['asc', 'desc']).optional(),
 			updatedAt: z.enum(['asc', 'desc']).optional()
 		})
@@ -28,25 +79,36 @@ export const orderFiltersSchema = z.object({
 });
 
 export type ProductFilters = z.infer<typeof productFiltersSchema>;
-export type OrderFilters = z.infer<typeof orderFiltersSchema>;
 
 export const productFiltersToPrismaClause = (filters?: ProductFilters) => {
 	const where: any = {};
 	let orderBy: any = undefined;
 
+	if (filters?.search) {
+		where.name = { contains: filters.search, mode: 'insensitive' };
+	}
+
 	if (filters?.categoryId) {
 		where.categories = { some: { categoryId: { equals: filters.categoryId } } };
+	}
+
+	if (filters?.storeId) {
+		where.storeId = filters.storeId;
+	}
+
+	if (filters?.status) {
+		where.status = filters.status;
 	}
 
 	if (filters?.inStock) {
 		where.quantity = { gt: 0 };
 	}
 
-	if (filters?.minPrice) {
+	if (filters?.minPrice !== undefined && filters?.maxPrice !== undefined) {
+		where.unitPrice = { gte: filters.minPrice, lte: filters.maxPrice };
+	} else if (filters?.minPrice !== undefined) {
 		where.unitPrice = { gte: filters.minPrice };
-	}
-
-	if (filters?.maxPrice) {
+	} else if (filters?.maxPrice !== undefined) {
 		where.unitPrice = { lte: filters.maxPrice };
 	}
 
@@ -57,9 +119,69 @@ export const productFiltersToPrismaClause = (filters?: ProductFilters) => {
 	return { where, orderBy };
 };
 
+// ============================================================================
+// Order Filters
+// ============================================================================
+
+export const orderFiltersSchema = z.object({
+	status: z.nativeEnum(OrderStatus).optional(),
+	storeId: z.string().optional(),
+	userId: z.string().optional(),
+	minTotal: z
+		.union([z.number(), z.string()])
+		.transform(val => (typeof val === 'string' ? parseInt(val, 10) : val))
+		.optional(),
+	maxTotal: z
+		.union([z.number(), z.string()])
+		.transform(val => (typeof val === 'string' ? parseInt(val, 10) : val))
+		.optional(),
+	dateFrom: z.string().optional(),
+	dateTo: z.string().optional(),
+	orderBy: z
+		.object({
+			total: z.enum(['asc', 'desc']).optional(),
+			createdAt: z.enum(['asc', 'desc']).optional(),
+			updatedAt: z.enum(['asc', 'desc']).optional()
+		})
+		.optional()
+});
+
+export type OrderFilters = z.infer<typeof orderFiltersSchema>;
+
 export const orderFiltersToPrismaClause = (filters?: OrderFilters) => {
 	const where: any = {};
 	let orderBy: any = undefined;
+
+	if (filters?.status) {
+		where.status = filters.status;
+	}
+
+	if (filters?.storeId) {
+		where.storeId = filters.storeId;
+	}
+
+	if (filters?.userId) {
+		where.userId = filters.userId;
+	}
+
+	if (filters?.minTotal !== undefined && filters?.maxTotal !== undefined) {
+		where.total = { gte: filters.minTotal, lte: filters.maxTotal };
+	} else if (filters?.minTotal !== undefined) {
+		where.total = { gte: filters.minTotal };
+	} else if (filters?.maxTotal !== undefined) {
+		where.total = { lte: filters.maxTotal };
+	}
+
+	if (filters?.dateFrom && filters?.dateTo) {
+		where.createdAt = {
+			gte: new Date(filters.dateFrom),
+			lte: new Date(filters.dateTo)
+		};
+	} else if (filters?.dateFrom) {
+		where.createdAt = { gte: new Date(filters.dateFrom) };
+	} else if (filters?.dateTo) {
+		where.createdAt = { lte: new Date(filters.dateTo) };
+	}
 
 	if (filters?.orderBy) {
 		orderBy = filters.orderBy;
@@ -67,6 +189,10 @@ export const orderFiltersToPrismaClause = (filters?: OrderFilters) => {
 
 	return { where, orderBy };
 };
+
+// ============================================================================
+// Query Hydration (for generic REST query params)
+// ============================================================================
 
 type FilterOperators = {
 	equals?: any;

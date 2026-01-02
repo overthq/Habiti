@@ -44,9 +44,7 @@ const columns: ColumnDef<Order>[] = [
 
 const UserOrders = ({ user }: UserOrdersProps) => {
 	const { data, isLoading } = useOrdersQuery({
-		filter: {
-			userId: user.id
-		}
+		userId: user.id
 	});
 
 	if (isLoading) return <div>Loading...</div>;

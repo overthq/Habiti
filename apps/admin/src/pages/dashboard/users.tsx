@@ -7,13 +7,20 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/ui/data-table';
 import { BulkActionsToolbar } from '@/components/bulk-actions-toolbar';
 import { ConfirmDialog } from '@/components/confirm-dialog';
+import {
+	FilterBar,
+	SearchInput,
+	SelectFilter,
+	SortSelect
+} from '@/components/table-filters';
 import { useUsersQuery } from '@/data/queries';
 import {
 	useBulkSuspendUsersMutation,
 	useBulkUnsuspendUsersMutation,
 	useBulkDeleteUsersMutation
 } from '@/data/mutations';
-import { type User } from '@/data/types';
+import { type User, type UserFilters } from '@/data/types';
+import { useTableFilters } from '@/hooks/use-table-filters';
 
 const columns: ColumnDef<User>[] = [
 	{
@@ -71,8 +78,17 @@ const columns: ColumnDef<User>[] = [
 	}
 ];
 
+const defaultFilters: UserFilters = {
+	search: undefined,
+	suspended: undefined,
+	orderBy: undefined
+};
+
 const Users = () => {
-	const { data, isLoading } = useUsersQuery();
+	const { filters, setFilter, clearFilters, hasActiveFilters } =
+		useTableFilters({ defaults: defaultFilters });
+
+	const { data, isLoading } = useUsersQuery(filters);
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
 	const bulkSuspendMutation = useBulkSuspendUsersMutation();
@@ -101,6 +117,24 @@ const Users = () => {
 			onSuccess: () => clearSelection()
 		});
 	};
+
+	const handleSortChange = (
+		value: { field: string; direction: 'asc' | 'desc' } | undefined
+	) => {
+		if (value) {
+			setFilter('orderBy', { [value.field]: value.direction });
+		} else {
+			setFilter('orderBy', undefined);
+		}
+	};
+
+	// Convert orderBy object to sort value for the select
+	const currentSort = filters.orderBy
+		? {
+				field: Object.keys(filters.orderBy)[0],
+				direction: Object.values(filters.orderBy)[0] as 'asc' | 'desc'
+			}
+		: undefined;
 
 	if (isLoading) return <div />;
 
@@ -153,6 +187,51 @@ const Users = () => {
 				rowSelection={rowSelection}
 				onRowSelectionChange={setRowSelection}
 				getRowId={row => row.id}
+				filterButtons={
+					<FilterBar
+						hasActiveFilters={hasActiveFilters}
+						onClearFilters={clearFilters}
+					>
+						<SearchInput
+							value={filters.search ?? ''}
+							onChange={value => setFilter('search', value || undefined)}
+							placeholder='Search users...'
+						/>
+						<SelectFilter
+							value={
+								filters.suspended === undefined
+									? undefined
+									: filters.suspended
+										? 'suspended'
+										: 'active'
+							}
+							onChange={value => {
+								if (value === 'suspended') {
+									setFilter('suspended', true);
+								} else if (value === 'active') {
+									setFilter('suspended', false);
+								} else {
+									setFilter('suspended', undefined);
+								}
+							}}
+							options={[
+								{ label: 'Active', value: 'active' },
+								{ label: 'Suspended', value: 'suspended' }
+							]}
+							placeholder='Status'
+						/>
+						<SortSelect
+							value={currentSort}
+							onChange={handleSortChange}
+							options={[
+								{ label: 'Name', value: 'name' },
+								{ label: 'Email', value: 'email' },
+								{ label: 'Created At', value: 'createdAt' }
+							]}
+							placeholder='Sort by...'
+						/>
+					</FilterBar>
+				}
 			/>
 		</div>
 	);

@@ -1,4 +1,5 @@
 import { Prisma, PrismaClient } from '../../generated/prisma/client';
+import { UserFilters, userFiltersToPrismaClause } from '../../utils/queries';
 
 export interface CreateUserParams {
 	name: string;
@@ -71,9 +72,11 @@ export const getManagedStores = async (
 	return managedStores;
 };
 
-export const getUsers = async (
-	prisma: PrismaClient,
-	query: Prisma.UserFindManyArgs
-) => {
-	return prisma.user.findMany(query);
+export const getUsers = async (prisma: PrismaClient, filters?: UserFilters) => {
+	const { where, orderBy } = userFiltersToPrismaClause(filters);
+
+	return prisma.user.findMany({
+		where,
+		orderBy: orderBy ?? { createdAt: 'desc' }
+	});
 };

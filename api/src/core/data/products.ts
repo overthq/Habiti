@@ -430,15 +430,18 @@ export const getProductViewerContext = async (
 
 export const getProducts = async (
 	prisma: PrismaClient,
-	filters: ProductFilters
+	filters?: ProductFilters
 ) => {
+	const { where, orderBy } = productFiltersToPrismaClause(filters);
+
 	const products = await prisma.product.findMany({
+		where,
+		orderBy: orderBy ?? { createdAt: 'desc' },
 		include: {
 			store: true,
 			images: true,
 			categories: { include: { category: true } }
-		},
-		...productFiltersToPrismaClause(filters)
+		}
 	});
 
 	return products;

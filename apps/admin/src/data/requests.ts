@@ -16,6 +16,7 @@ import {
 	type CreateProductBody,
 	type UpdateProductBody,
 	type Product,
+	type UserFilters,
 	type GetUsersResponse,
 	type GetUserResponse,
 	type UpdateUserBody,
@@ -89,8 +90,8 @@ export const getProductReviews = (id: string) => {
 	return api.get(`/products/${id}/reviews`);
 };
 
-export const getUsers = () => {
-	return api.get<GetUsersResponse>('/users');
+export const getUsers = (params?: UserFilters) => {
+	return api.get<GetUsersResponse>('/users', params);
 };
 
 export const getUser = (id: string) => {

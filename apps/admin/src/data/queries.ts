@@ -4,7 +4,8 @@ import {
 	type OrderFilters,
 	type ProductFilters,
 	type StoreFilters,
-	type PayoutFilters
+	type PayoutFilters,
+	type UserFilters
 } from './types';
 import {
 	getOrders,
@@ -110,10 +111,10 @@ export const useStoreManagersQuery = (id: string, params?: StoreFilters) => {
 	});
 };
 
-export const useUsersQuery = () => {
+export const useUsersQuery = (params?: UserFilters) => {
 	return useQuery({
-		queryKey: ['users'],
-		queryFn: () => getUsers()
+		queryKey: ['users', params],
+		queryFn: () => getUsers(params)
 	});
 };
 

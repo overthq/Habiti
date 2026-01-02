@@ -3,6 +3,7 @@ import {
 	OrderStatus,
 	PrismaClient
 } from '../../generated/prisma/client';
+import { OrderFilters, orderFiltersToPrismaClause } from '../../utils/queries';
 import { chargeAuthorization } from '../payments';
 
 interface CreateOrderParams {
@@ -248,9 +249,15 @@ export const fulfillOrder = async (prisma: PrismaClient, orderId: string) => {
 	return order;
 };
 
-export const getOrders = async (prisma: PrismaClient, query: any) => {
+export const getOrders = async (
+	prisma: PrismaClient,
+	filters?: OrderFilters
+) => {
+	const { where, orderBy } = orderFiltersToPrismaClause(filters);
+
 	const orders = await prisma.order.findMany({
-		...query,
+		where,
+		orderBy: orderBy ?? { createdAt: 'desc' },
 		include: { store: true, user: true }
 	});
 

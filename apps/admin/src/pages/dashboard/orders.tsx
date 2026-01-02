@@ -8,13 +8,18 @@ import {
 	useBulkCancelOrdersMutation,
 	useBulkUpdateOrderStatusMutation
 } from '@/data/mutations';
-import { type Order, OrderStatus } from '@/data/types';
+import { type Order, type OrderFilters, OrderStatus } from '@/data/types';
 import { formatNaira } from '@/utils/format';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/ui/data-table';
 import { Button } from '@/components/ui/button';
 import { BulkActionsToolbar } from '@/components/bulk-actions-toolbar';
 import { ConfirmDialog } from '@/components/confirm-dialog';
+import {
+	FilterBar,
+	SelectFilter,
+	SortSelect
+} from '@/components/table-filters';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -23,6 +28,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { useTableFilters } from '@/hooks/use-table-filters';
 
 const columns: ColumnDef<Order>[] = [
 	{
@@ -127,8 +133,18 @@ const columns: ColumnDef<Order>[] = [
 	}
 ];
 
+const defaultFilters: OrderFilters = {
+	status: undefined,
+	storeId: undefined,
+	userId: undefined,
+	orderBy: undefined
+};
+
 const OrdersPage = () => {
-	const { data, isLoading } = useOrdersQuery();
+	const { filters, setFilter, clearFilters, hasActiveFilters } =
+		useTableFilters({ defaults: defaultFilters });
+
+	const { data, isLoading } = useOrdersQuery(filters);
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
 	const bulkCancelMutation = useBulkCancelOrdersMutation();
@@ -158,6 +174,24 @@ const OrdersPage = () => {
 			{ onSuccess: () => clearSelection() }
 		);
 	};
+
+	const handleSortChange = (
+		value: { field: string; direction: 'asc' | 'desc' } | undefined
+	) => {
+		if (value) {
+			setFilter('orderBy', { [value.field]: value.direction });
+		} else {
+			setFilter('orderBy', undefined);
+		}
+	};
+
+	// Convert orderBy object to sort value for the select
+	const currentSort = filters.orderBy
+		? {
+				field: Object.keys(filters.orderBy)[0],
+				direction: Object.values(filters.orderBy)[0] as 'asc' | 'desc'
+			}
+		: undefined;
 
 	if (isLoading) {
 		return <div>Loading...</div>;
@@ -210,6 +244,33 @@ const OrdersPage = () => {
 				rowSelection={rowSelection}
 				onRowSelectionChange={setRowSelection}
 				getRowId={row => row.id}
+				filterButtons={
+					<FilterBar
+						hasActiveFilters={hasActiveFilters}
+						onClearFilters={clearFilters}
+					>
+						<SelectFilter
+							value={filters.status}
+							onChange={value => setFilter('status', value as OrderStatus)}
+							options={[
+								{ label: 'Pending', value: OrderStatus.Pending },
+								{ label: 'Payment Pending', value: OrderStatus.PaymentPending },
+								{ label: 'Completed', value: OrderStatus.Completed },
+								{ label: 'Cancelled', value: OrderStatus.Cancelled }
+							]}
+							placeholder='Status'
+						/>
+						<SortSelect
+							value={currentSort}
+							onChange={handleSortChange}
+							options={[
+								{ label: 'Total', value: 'total' },
+								{ label: 'Created At', value: 'createdAt' }
+							]}
+							placeholder='Sort by...'
+						/>
+					</FilterBar>
+				}
 			/>
 		</div>
 	);
