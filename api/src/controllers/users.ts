@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import * as UserLogic from '../core/logic/users';
 
-import { hydrateQuery } from '../utils/queries';
+import { userFiltersSchema, hydrateQuery } from '../utils/queries';
 import { getAppContext } from '../utils/context';
 
 export const getCurrentUser = async (req: Request, res: Response) => {
@@ -78,10 +78,10 @@ export const getDeliveryAddresses = async (req: Request, res: Response) => {
 };
 
 export const getUsers = async (req: Request, res: Response) => {
-	const query = hydrateQuery(req.query);
+	const filters = userFiltersSchema.parse(req.query);
 
 	const ctx = getAppContext(req);
-	const users = await UserLogic.getUsers(ctx, query);
+	const users = await UserLogic.getUsers(ctx, filters);
 
 	return res.json({ users });
 };

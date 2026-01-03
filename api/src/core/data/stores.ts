@@ -15,6 +15,17 @@ interface CreateStoreParams {
 	bankAccountReference?: string;
 }
 
+export const createStore = async (
+	prisma: PrismaClient,
+	params: CreateStoreParams
+) => {
+	const store = await prisma.store.create({
+		data: params
+	});
+
+	return store;
+};
+
 interface UpdateStoreParams {
 	name?: string;
 	description?: string;
@@ -26,22 +37,6 @@ interface UpdateStoreParams {
 	bankAccountReference?: string;
 	unlisted?: boolean;
 }
-
-interface CreateStoreManagerParams {
-	storeId: string;
-	userId: string;
-}
-
-export const createStore = async (
-	prisma: PrismaClient,
-	params: CreateStoreParams
-) => {
-	const store = await prisma.store.create({
-		data: params
-	});
-
-	return store;
-};
 
 export const updateStore = async (
 	prisma: PrismaClient,
@@ -145,9 +140,10 @@ export const getStoreManagers = async (
 	storeId: string,
 	query: any
 ) => {
-	const storeManagers = await prisma.store
-		.findUnique({ where: { id: storeId } })
-		.managers({ ...query });
+	const storeManagers = await prisma.storeManager.findMany({
+		where: { storeId, ...query },
+		include: { manager: true }
+	});
 
 	return storeManagers;
 };
@@ -170,6 +166,11 @@ export const deleteStore = async (prisma: PrismaClient, storeId: string) => {
 		where: { id: storeId }
 	});
 };
+
+interface CreateStoreManagerParams {
+	storeId: string;
+	userId: string;
+}
 
 export const createStoreManager = async (
 	prisma: PrismaClient,

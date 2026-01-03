@@ -15,6 +15,7 @@ import { EmailType } from '../../services/email';
 import type { AppContext } from '../../utils/context';
 import type { CreateUserParams } from '../data/users';
 import { LogicError, LogicErrorCode } from './errors';
+import { UserFilters } from '../../utils/queries';
 
 export const register = async (ctx: AppContext, args: unknown) => {
 	const { data, error } = registerBodySchema.safeParse(args);
@@ -76,8 +77,8 @@ export const login = async (ctx: AppContext, input: LoginInput) => {
 	return user;
 };
 
-export const getUsers = (ctx: AppContext, query: Prisma.UserFindManyArgs) => {
-	return UserData.getUsers(ctx.prisma, query);
+export const getUsers = (ctx: AppContext, filters?: UserFilters) => {
+	return UserData.getUsers(ctx.prisma, filters);
 };
 
 export const getCurrentUser = (ctx: AppContext) => {

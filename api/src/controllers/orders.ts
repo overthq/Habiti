@@ -1,4 +1,4 @@
-import { hydrateQuery } from '../utils/queries';
+import { orderFiltersSchema } from '../utils/queries';
 import * as OrderLogic from '../core/logic/orders';
 import { getAppContext } from '../utils/context';
 import { Request, Response, NextFunction } from 'express';
@@ -9,9 +9,9 @@ export const getOrders = async (
 	next: NextFunction
 ) => {
 	try {
-		const query = hydrateQuery(req.query);
+		const filters = orderFiltersSchema.parse(req.query);
 		const ctx = getAppContext(req);
-		const orders = await OrderLogic.getOrders(ctx, query);
+		const orders = await OrderLogic.getOrders(ctx, filters);
 		return res.json({ orders });
 	} catch (error) {
 		return next(error);

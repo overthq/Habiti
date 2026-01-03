@@ -4,6 +4,7 @@ import {
 	type ColumnFiltersState,
 	type SortingState,
 	type VisibilityState,
+	type RowSelectionState,
 	flexRender,
 	getCoreRowModel,
 	getFilteredRowModel,
@@ -48,79 +49,127 @@ interface DataTableProps<TData, TValue> {
 	data: TData[];
 	hasColumnDropdown?: boolean;
 	filterButtons?: React.ReactNode;
+	rowSelection?: RowSelectionState;
+	onRowSelectionChange?: (selection: RowSelectionState) => void;
+	getRowId?: (row: TData) => string;
+	sorting?: SortingState;
+	onSortingChange?: (sorting: SortingState) => void;
 }
 
 export function DataTable<TData, TValue>({
 	columns,
 	data,
 	filterButtons,
-	hasColumnDropdown = true
+	hasColumnDropdown = true,
+	rowSelection,
+	onRowSelectionChange,
+	getRowId,
+	sorting: externalSorting,
+	onSortingChange: externalOnSortingChange
 }: DataTableProps<TData, TValue>) {
-	const [sorting, setSorting] = React.useState<SortingState>([]);
+	const [internalSorting, setInternalSorting] = React.useState<SortingState>(
+		[]
+	);
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
 		[]
 	);
 	const [columnVisibility, setColumnVisibility] =
 		React.useState<VisibilityState>({});
+	const [internalRowSelection, setInternalRowSelection] =
+		React.useState<RowSelectionState>({});
+
+	const sorting = externalSorting ?? internalSorting;
+	const handleSortingChange = (
+		updaterOrValue: SortingState | ((old: SortingState) => SortingState)
+	) => {
+		const newValue =
+			typeof updaterOrValue === 'function'
+				? updaterOrValue(sorting)
+				: updaterOrValue;
+		if (externalOnSortingChange) {
+			externalOnSortingChange(newValue);
+		} else {
+			setInternalSorting(newValue);
+		}
+	};
+
+	const effectiveRowSelection = rowSelection ?? internalRowSelection;
+	const handleRowSelectionChange = (
+		updaterOrValue:
+			| RowSelectionState
+			| ((old: RowSelectionState) => RowSelectionState)
+	) => {
+		const newValue =
+			typeof updaterOrValue === 'function'
+				? updaterOrValue(effectiveRowSelection)
+				: updaterOrValue;
+		if (onRowSelectionChange) {
+			onRowSelectionChange(newValue);
+		} else {
+			setInternalRowSelection(newValue);
+		}
+	};
 
 	const table = useReactTable({
 		data,
 		columns,
-		onSortingChange: setSorting,
+		onSortingChange: handleSortingChange,
 		onColumnFiltersChange: setColumnFilters,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
 		onColumnVisibilityChange: setColumnVisibility,
+		onRowSelectionChange: handleRowSelectionChange,
+		getRowId,
 		state: {
 			sorting,
 			columnFilters,
-			columnVisibility
+			columnVisibility,
+			rowSelection: effectiveRowSelection
 		}
 	});
 
 	return (
 		<div className='space-y-4'>
-			{filterButtons ||
-				(hasColumnDropdown && (
-					<div className='flex items-center pb-4'>
-						{filterButtons}
+			{(filterButtons || hasColumnDropdown) && (
+				<div className='flex items-center gap-2'>
+					{filterButtons}
 
-						{hasColumnDropdown && (
-							<DropdownMenu>
-								<DropdownMenuTrigger asChild>
-									<Button variant='outline' size='sm' className='ml-auto'>
-										Columns <ChevronDown />
-									</Button>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent align='end'>
-									{table
-										.getAllColumns()
-										.filter(column => column.getCanHide())
-										.map(column => {
-											return (
-												<DropdownMenuCheckboxItem
-													key={column.id}
-													className='capitalize'
-													checked={column.getIsVisible()}
-													onCheckedChange={value =>
-														column.toggleVisibility(!!value)
-													}
-												>
-													{column.id}
-												</DropdownMenuCheckboxItem>
-											);
-										})}
-								</DropdownMenuContent>
-							</DropdownMenu>
-						)}
-					</div>
-				))}
+					{hasColumnDropdown && (
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button variant='outline' size='sm' className='ml-auto h-8'>
+									Columns <ChevronDown className='ml-2 h-4 w-4' />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align='end'>
+								{table
+									.getAllColumns()
+									.filter(column => column.getCanHide())
+									.map(column => {
+										return (
+											<DropdownMenuCheckboxItem
+												key={column.id}
+												className='capitalize'
+												checked={column.getIsVisible()}
+												onCheckedChange={value =>
+													column.toggleVisibility(!!value)
+												}
+											>
+												{column.id}
+											</DropdownMenuCheckboxItem>
+										);
+									})}
+							</DropdownMenuContent>
+						</DropdownMenu>
+					)}
+				</div>
+			)}
 
 			<div className='rounded-md border overflow-hidden'>
 				<Table>
-					<TableHeader className='bg-muted'>
+					<TableHeader>
 						{table.getHeaderGroups().map(headerGroup => (
 							<TableRow key={headerGroup.id}>
 								{headerGroup.headers.map(header => {

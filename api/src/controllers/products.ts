@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import * as ProductLogic from '../core/logic/products';
-import { hydrateQuery } from '../utils/queries';
+import { productFiltersSchema } from '../utils/queries';
 import { getAppContext } from '../utils/context';
 
 export const getProducts = async (
@@ -10,9 +10,9 @@ export const getProducts = async (
 	next: NextFunction
 ) => {
 	try {
-		const query = hydrateQuery(req.query);
+		const filters = productFiltersSchema.parse(req.query);
 		const ctx = getAppContext(req);
-		const products = await ProductLogic.getProducts(ctx, query);
+		const products = await ProductLogic.getProducts(ctx, filters);
 		return res.json({ products });
 	} catch (error) {
 		return next(error);

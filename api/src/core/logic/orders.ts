@@ -12,6 +12,7 @@ import { createOrderSchema, updateOrderSchema } from '../validations/orders';
 import { AppContext } from '../../utils/context';
 import { InitializeTransactionResponse } from '../payments/paystack';
 import { LogicError, LogicErrorCode } from './errors';
+import { OrderFilters } from '../../utils/queries';
 
 export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 	const { data: validatedInput, success } = createOrderSchema.safeParse(input);
@@ -167,6 +168,6 @@ export const getOrderById = async (ctx: AppContext, orderId: string) => {
 	return order;
 };
 
-export const getOrders = async (ctx: AppContext, query: any) => {
-	return OrderData.getOrders(ctx.prisma, query);
+export const getOrders = async (ctx: AppContext, filters?: OrderFilters) => {
+	return OrderData.getOrders(ctx.prisma, filters);
 };

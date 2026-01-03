@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router';
-import { type ColumnDef } from '@tanstack/react-table';
+import { type ColumnDef, type SortingState } from '@tanstack/react-table';
 
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { DataTable } from '@/components/ui/data-table';
+import { DataTableColumnHeader } from '@/components/data-table-column-header';
 import { usePayoutsQuery } from '@/data/queries';
 import { PayoutStatus, type PayoutFilters, type Payout } from '@/data/types';
 import { formatNaira } from '@/utils/format';
@@ -15,7 +16,6 @@ import {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
-	DropdownMenuItem,
 	DropdownMenuPortal,
 	DropdownMenuSub,
 	DropdownMenuSubContent,
@@ -49,17 +49,22 @@ const columns: ColumnDef<Payout>[] = [
 		)
 	},
 	{
-		header: 'Amount',
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title='Amount' />
+		),
 		accessorKey: 'amount',
 		cell: ({ row }) => formatNaira(row.getValue('amount'))
 	},
 	{
 		header: 'Status',
 		accessorKey: 'status',
-		cell: ({ row }) => getStatusBadge(row.original.status)
+		cell: ({ row }) => getStatusBadge(row.original.status),
+		enableSorting: false
 	},
 	{
-		header: 'Created',
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title='Created' />
+		),
 		accessorKey: 'createdAt',
 		cell: ({ row }) => new Date(row.getValue('createdAt')).toLocaleDateString()
 	},
@@ -89,7 +94,25 @@ const PayoutsPage = () => {
 
 	const { data: payoutsData, isLoading } = usePayoutsQuery(filters);
 
-	const applyFilters = () => {
+	// Convert sortBy/sortOrder to SortingState
+	const sorting = useMemo<SortingState>(() => {
+		return [{ id: sortBy, desc: sortOrder === 'desc' }];
+	}, [sortBy, sortOrder]);
+
+	// Handle sorting changes from column headers
+	const handleSortingChange = (newSorting: SortingState) => {
+		if (newSorting.length === 0) {
+			setSortBy('createdAt');
+			setSortOrder('desc');
+		} else {
+			const sort = newSorting[0];
+			setSortBy(sort.id);
+			setSortOrder(sort.desc ? 'desc' : 'asc');
+		}
+	};
+
+	// Apply filters when sortBy or sortOrder changes
+	useEffect(() => {
 		const newFilters: PayoutFilters = {
 			filter: {},
 			orderBy: { [sortBy]: sortOrder }
@@ -114,7 +137,7 @@ const PayoutsPage = () => {
 		}
 
 		setFilters(newFilters);
-	};
+	}, [sortBy, sortOrder, statusFilter, minAmount, maxAmount]);
 
 	const clearFilters = () => {
 		setFilters({});
@@ -134,12 +157,14 @@ const PayoutsPage = () => {
 	return (
 		<div className='space-y-6'>
 			<div className='flex justify-between items-center'>
-				<h1 className='text-3xl font-semibold'>Payouts</h1>
+				<h1 className='text-2xl font-semibold'>Payouts</h1>
 			</div>
 
 			<DataTable
 				data={payouts}
 				columns={columns}
+				sorting={sorting}
+				onSortingChange={handleSortingChange}
 				filterButtons={
 					<div>
 						<DropdownMenu>
@@ -150,38 +175,6 @@ const PayoutsPage = () => {
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align='start'>
-								<DropdownMenuSub>
-									<DropdownMenuSubTrigger>Sort By</DropdownMenuSubTrigger>
-									<DropdownMenuPortal>
-										<DropdownMenuSubContent>
-											<DropdownMenuCheckboxItem
-												checked={sortBy === 'createdAt-desc'}
-												onCheckedChange={() => setSortBy('createdAt-desc')}
-											>
-												Newest First
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={sortBy === 'createdAt-asc'}
-												onCheckedChange={() => setSortBy('createdAt-asc')}
-											>
-												Oldest First
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={sortBy === 'amount-desc'}
-												onCheckedChange={() => setSortBy('amount-desc')}
-											>
-												Highest Amount
-											</DropdownMenuCheckboxItem>
-											<DropdownMenuCheckboxItem
-												checked={sortBy === 'amount-asc'}
-												onCheckedChange={() => setSortBy('amount-asc')}
-											>
-												Lowest Amount
-											</DropdownMenuCheckboxItem>
-										</DropdownMenuSubContent>
-									</DropdownMenuPortal>
-								</DropdownMenuSub>
-
 								<DropdownMenuSub>
 									<DropdownMenuSubTrigger>Amount</DropdownMenuSubTrigger>
 									<DropdownMenuPortal>

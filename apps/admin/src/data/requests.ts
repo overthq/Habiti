@@ -16,10 +16,12 @@ import {
 	type CreateProductBody,
 	type UpdateProductBody,
 	type Product,
+	type UserFilters,
 	type GetUsersResponse,
 	type GetUserResponse,
 	type UpdateUserBody,
 	type UpdateStoreBody,
+	type CreateStoreBody,
 	type Store,
 	type GetStoreManagersResponse,
 	type GetStorePayoutsResponse,
@@ -33,7 +35,9 @@ import {
 	type GetPayoutsResponse,
 	type GetPayoutResponse,
 	type UpdatePayoutBody,
-	type UpdatePayoutResponse
+	type UpdatePayoutResponse,
+	type BulkActionResponse,
+	ProductStatus
 } from './types';
 
 export const login = (body: LoginBody) => {
@@ -86,8 +90,8 @@ export const getProductReviews = (id: string) => {
 	return api.get(`/products/${id}/reviews`);
 };
 
-export const getUsers = () => {
-	return api.get<GetUsersResponse>('/users');
+export const getUsers = (params?: UserFilters) => {
+	return api.get<GetUsersResponse>('/users', params);
 };
 
 export const getUser = (id: string) => {
@@ -100,6 +104,10 @@ export const updateUser = (id: string, body: UpdateUserBody) => {
 
 export const updateStore = (id: string, body: UpdateStoreBody) => {
 	return api.put<Store>(`/stores/${id}`, body);
+};
+
+export const createStore = (body: CreateStoreBody) => {
+	return api.post<Store>('/admin/stores', body);
 };
 
 export const deleteStore = (id: string) => {
@@ -144,4 +152,44 @@ export const getPayout = (id: string) => {
 
 export const updatePayout = (id: string, body: UpdatePayoutBody) => {
 	return api.patch<UpdatePayoutResponse>(`/payouts/${id}`, body);
+};
+
+// Bulk User Operations
+export const bulkSuspendUsers = (ids: string[]) => {
+	return api.post<BulkActionResponse>('/admin/users/bulk-suspend', { ids });
+};
+
+export const bulkUnsuspendUsers = (ids: string[]) => {
+	return api.post<BulkActionResponse>('/admin/users/bulk-unsuspend', { ids });
+};
+
+export const bulkDeleteUsers = (ids: string[]) => {
+	return api.delete<BulkActionResponse>('/admin/users/bulk', { ids });
+};
+
+// Bulk Order Operations
+export const bulkCancelOrders = (ids: string[]) => {
+	return api.post<BulkActionResponse>('/admin/orders/bulk-cancel', { ids });
+};
+
+export const bulkUpdateOrderStatus = (ids: string[], status: OrderStatus) => {
+	return api.post<BulkActionResponse>('/admin/orders/bulk-status', {
+		ids,
+		status
+	});
+};
+
+// Bulk Product Operations
+export const bulkDeleteProducts = (ids: string[]) => {
+	return api.delete<BulkActionResponse>('/admin/products/bulk', { ids });
+};
+
+export const bulkUpdateProductStatus = (
+	ids: string[],
+	status: ProductStatus
+) => {
+	return api.post<BulkActionResponse>('/admin/products/bulk-status', {
+		ids,
+		status
+	});
 };

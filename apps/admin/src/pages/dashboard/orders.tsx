@@ -1,21 +1,39 @@
-import { type ColumnDef } from '@tanstack/react-table';
-import { MoreVertical } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import {
+	type ColumnDef,
+	type RowSelectionState,
+	type SortingState
+} from '@tanstack/react-table';
+import { ListFilter, MoreVertical } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 
 import { useOrdersQuery } from '@/data/queries';
-import type { Order } from '@/data/types';
+import {
+	useBulkCancelOrdersMutation,
+	useBulkUpdateOrderStatusMutation
+} from '@/data/mutations';
+import { type Order, type OrderFilters, OrderStatus } from '@/data/types';
 import { formatNaira } from '@/utils/format';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/ui/data-table';
+import { DataTableColumnHeader } from '@/components/data-table-column-header';
 import { Button } from '@/components/ui/button';
+import { BulkActionsToolbar } from '@/components/bulk-actions-toolbar';
+import { ConfirmDialog } from '@/components/confirm-dialog';
 import {
 	DropdownMenu,
+	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuLabel,
+	DropdownMenuPortal,
 	DropdownMenuSeparator,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { useTableFilters } from '@/hooks/use-table-filters';
 
 const columns: ColumnDef<Order>[] = [
 	{
@@ -64,12 +82,31 @@ const columns: ColumnDef<Order>[] = [
 	},
 	{
 		accessorKey: 'total',
-		header: 'Total',
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title='Total' />
+		),
 		cell: ({ row }) => formatNaira(row.getValue('total'))
 	},
 	{
+		accessorKey: 'status',
+		header: 'Status',
+		cell: ({ row }) => {
+			const status = row.original.status;
+			const statusColors: Record<OrderStatus, string> = {
+				[OrderStatus.Pending]: 'text-yellow-600',
+				[OrderStatus.PaymentPending]: 'text-orange-600',
+				[OrderStatus.Completed]: 'text-green-600',
+				[OrderStatus.Cancelled]: 'text-destructive'
+			};
+			return <span className={statusColors[status]}>{status}</span>;
+		},
+		enableSorting: false
+	},
+	{
 		accessorKey: 'createdAt',
-		header: 'Created',
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title='Created' />
+		),
 		cell: ({ row }) => new Date(row.getValue('createdAt')).toLocaleDateString()
 	},
 	{
@@ -106,8 +143,65 @@ const columns: ColumnDef<Order>[] = [
 	}
 ];
 
+const defaultFilters: OrderFilters = {
+	status: undefined,
+	storeId: undefined,
+	userId: undefined,
+	orderBy: undefined
+};
+
 const OrdersPage = () => {
-	const { data, isLoading } = useOrdersQuery();
+	const { filters, setFilter, clearFilters, hasActiveFilters } =
+		useTableFilters({ defaults: defaultFilters });
+
+	const { data, isLoading } = useOrdersQuery(filters);
+	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+
+	const bulkCancelMutation = useBulkCancelOrdersMutation();
+	const bulkUpdateStatusMutation = useBulkUpdateOrderStatusMutation();
+
+	const selectedIds = Object.keys(rowSelection);
+	const selectedCount = selectedIds.length;
+
+	const clearSelection = () => setRowSelection({});
+
+	const handleBulkCancel = () => {
+		bulkCancelMutation.mutate(selectedIds, {
+			onSuccess: () => clearSelection()
+		});
+	};
+
+	const handleBulkMarkCompleted = () => {
+		bulkUpdateStatusMutation.mutate(
+			{ ids: selectedIds, status: OrderStatus.Completed },
+			{ onSuccess: () => clearSelection() }
+		);
+	};
+
+	const handleBulkMarkPending = () => {
+		bulkUpdateStatusMutation.mutate(
+			{ ids: selectedIds, status: OrderStatus.Pending },
+			{ onSuccess: () => clearSelection() }
+		);
+	};
+
+	// Convert orderBy filter to SortingState
+	const sorting = useMemo<SortingState>(() => {
+		if (!filters.orderBy) return [];
+		const field = Object.keys(filters.orderBy)[0];
+		const direction = Object.values(filters.orderBy)[0] as 'asc' | 'desc';
+		return [{ id: field, desc: direction === 'desc' }];
+	}, [filters.orderBy]);
+
+	// Handle sorting changes from column headers
+	const handleSortingChange = (newSorting: SortingState) => {
+		if (newSorting.length === 0) {
+			setFilter('orderBy', undefined);
+		} else {
+			const sort = newSorting[0];
+			setFilter('orderBy', { [sort.id]: sort.desc ? 'desc' : 'asc' });
+		}
+	};
 
 	if (isLoading) {
 		return <div>Loading...</div>;
@@ -116,10 +210,131 @@ const OrdersPage = () => {
 	return (
 		<div className='space-y-6'>
 			<div className='flex justify-between items-center'>
-				<h1 className='text-3xl font-semibold'>Orders</h1>
+				<h1 className='text-2xl font-semibold'>Orders</h1>
 			</div>
 
-			<DataTable data={data?.orders ?? []} columns={columns} />
+			<BulkActionsToolbar
+				selectedCount={selectedCount}
+				onClearSelection={clearSelection}
+			>
+				<Button
+					size='sm'
+					variant='outline'
+					onClick={handleBulkMarkCompleted}
+					disabled={bulkUpdateStatusMutation.isPending}
+				>
+					Mark Completed
+				</Button>
+				<Button
+					size='sm'
+					variant='outline'
+					onClick={handleBulkMarkPending}
+					disabled={bulkUpdateStatusMutation.isPending}
+				>
+					Mark Pending
+				</Button>
+				<ConfirmDialog
+					title='Cancel Orders'
+					description={`Are you sure you want to cancel ${selectedCount} order(s)? This action cannot be undone.`}
+					confirmLabel='Cancel Orders'
+					variant='destructive'
+					isLoading={bulkCancelMutation.isPending}
+					onConfirm={handleBulkCancel}
+					trigger={
+						<Button size='sm' variant='destructive'>
+							Cancel Orders
+						</Button>
+					}
+				/>
+			</BulkActionsToolbar>
+
+			<DataTable
+				data={data?.orders ?? []}
+				columns={columns}
+				rowSelection={rowSelection}
+				onRowSelectionChange={setRowSelection}
+				getRowId={row => row.id}
+				sorting={sorting}
+				onSortingChange={handleSortingChange}
+				filterButtons={
+					<div className='flex items-center gap-2'>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button variant='outline' size='sm'>
+									<ListFilter />
+									Filters
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align='start' className='w-56'>
+								<DropdownMenuSub>
+									<DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
+									<DropdownMenuPortal>
+										<DropdownMenuSubContent>
+											<DropdownMenuCheckboxItem
+												checked={filters.status === OrderStatus.Pending}
+												onCheckedChange={checked => {
+													if (checked) {
+														setFilter('status', OrderStatus.Pending);
+													} else {
+														setFilter('status', undefined);
+													}
+												}}
+											>
+												Pending
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={filters.status === OrderStatus.PaymentPending}
+												onCheckedChange={checked => {
+													if (checked) {
+														setFilter('status', OrderStatus.PaymentPending);
+													} else {
+														setFilter('status', undefined);
+													}
+												}}
+											>
+												Payment Pending
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={filters.status === OrderStatus.Completed}
+												onCheckedChange={checked => {
+													if (checked) {
+														setFilter('status', OrderStatus.Completed);
+													} else {
+														setFilter('status', undefined);
+													}
+												}}
+											>
+												Completed
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={filters.status === OrderStatus.Cancelled}
+												onCheckedChange={checked => {
+													if (checked) {
+														setFilter('status', OrderStatus.Cancelled);
+													} else {
+														setFilter('status', undefined);
+													}
+												}}
+											>
+												Cancelled
+											</DropdownMenuCheckboxItem>
+										</DropdownMenuSubContent>
+									</DropdownMenuPortal>
+								</DropdownMenuSub>
+
+								{hasActiveFilters && (
+									<>
+										<DropdownMenuSeparator />
+										<DropdownMenuItem onClick={clearFilters}>
+											Clear Filters
+										</DropdownMenuItem>
+									</>
+								)}
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</div>
+				}
+			/>
 		</div>
 	);
 };
