@@ -38,10 +38,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 	return (
 		<div>
 			<MainNavigation />
-			<div className='max-w-6xl mx-auto sm:pt-24 pb-18 sm:pb-0 px-4 pt-20'>
+			<div className='max-w-6xl mx-auto sm:pt-24 pb-18 sm:pb-0 px-4 pt-32'>
 				{children}
 			</div>
-			<MobileTabBar />
 			<AuthDrawer />
 		</div>
 	);
