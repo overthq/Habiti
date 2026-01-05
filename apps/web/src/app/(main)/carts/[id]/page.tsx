@@ -3,19 +3,22 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import CartContextWrapper, { useCart } from '@/contexts/CartContext';
-import { CartProduct } from '@/data/types';
 import { formatNaira } from '@/utils/currency';
-import { ArrowLeft, Minus, Plus } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
-	Field,
-	FieldContent,
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue
+} from '@/components/ui/select';
+import {
 	FieldDescription,
 	FieldGroup,
 	FieldLabel,
-	FieldSet,
-	FieldTitle
+	FieldLegend,
+	FieldSet
 } from '@/components/ui/field';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import Link from 'next/link';
@@ -25,96 +28,50 @@ import { formatDate } from '@/utils/date';
 const CardSelector = () => {
 	const { cards, selectedCard, setSelectedCard } = useCart();
 
-	if (cards.length === 0) {
-		return (
-			<Alert>
-				<AlertDescription>
-					You do not currently have any cards added to your account. Clicking
-					the "Place order" button below will give you the opportunity to add
-					one while you pay.
-				</AlertDescription>
-			</Alert>
-		);
-	}
+	const hasNoCards = cards.length === 0;
+	const hasNoSelection = !selectedCard;
 
 	return (
 		<div>
 			<FieldGroup>
 				<FieldSet>
-					<FieldLabel className='text-lg'>Payment Method</FieldLabel>
+					<FieldLegend className='text-lg'>Payment Method</FieldLegend>
 					<FieldDescription>
 						Choose how you want to pay for this order.
 					</FieldDescription>
-					<RadioGroup value={selectedCard} onValueChange={setSelectedCard}>
-						{cards.map(card => (
-							<FieldLabel key={card.id} htmlFor={card.id}>
-								<Field orientation='horizontal'>
-									<RadioGroupItem
-										value={card.id}
-										id={card.id}
-										aria-label={card.cardType}
-									/>
-									<FieldContent>
-										<FieldTitle className='capitalize'>
-											{card.cardType}
-										</FieldTitle>
-										<FieldDescription>Ends with {card.last4}</FieldDescription>
-									</FieldContent>
-								</Field>
-							</FieldLabel>
-						))}
-						<FieldLabel htmlFor='new-card'>
-							<Field orientation='horizontal'>
-								<RadioGroupItem
-									value='new-card'
-									id='new-card'
-									aria-label='New payment method'
-								/>
-								<FieldContent>
-									<FieldTitle className='capitalize'>
-										New payment method
-									</FieldTitle>
-									<FieldDescription>Create new payment method</FieldDescription>
-								</FieldContent>
-							</Field>
-						</FieldLabel>
-					</RadioGroup>
+					{hasNoCards ? (
+						<Select disabled value=''>
+							<SelectTrigger className='w-full'>
+								<SelectValue placeholder='No cards available' />
+							</SelectTrigger>
+						</Select>
+					) : (
+						<Select value={selectedCard || ''} onValueChange={setSelectedCard}>
+							<SelectTrigger className='w-[200px]'>
+								<SelectValue placeholder='Select a payment method' />
+							</SelectTrigger>
+							<SelectContent>
+								{cards.map(card => (
+									<SelectItem key={card.id} value={card.id}>
+										{card.cardType.charAt(0).toUpperCase() +
+											card.cardType.slice(1).toLowerCase()}{' '}
+										*{card.last4}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					)}
+					{(hasNoCards || hasNoSelection) && (
+						<Alert className='mt-4'>
+							<AlertDescription>
+								{hasNoCards
+									? 'You do not currently have any cards added to your account. Clicking the "Place order" button below will give you the opportunity to add one while you pay.'
+									: 'You have not selected a payment method. Clicking the "Place order" button below will give you the opportunity to add one while you pay.'}
+							</AlertDescription>
+						</Alert>
+					)}
 				</FieldSet>
 			</FieldGroup>
-		</div>
-	);
-};
-
-interface CartProductQuantityProps {
-	cartProduct: CartProduct;
-	quantity: number;
-	maxQuantity: number;
-}
-
-const CartProductQuantity: React.FC<CartProductQuantityProps> = ({
-	cartProduct,
-	quantity,
-	maxQuantity
-}) => {
-	const { updateProductQuantity } = useCart();
-
-	const incrementProductQuantity = React.useCallback(() => {
-		updateProductQuantity(cartProduct.productId, quantity + 1);
-	}, [cartProduct.productId, quantity, updateProductQuantity]);
-
-	const decrementProductQuantity = React.useCallback(() => {
-		updateProductQuantity(cartProduct.productId, Math.max(quantity - 1, 0));
-	}, [cartProduct.productId, quantity, updateProductQuantity]);
-
-	return (
-		<div className='flex items-center gap-2'>
-			<Button size='sm' variant='outline' onClick={decrementProductQuantity}>
-				<Minus size={20} />
-			</Button>
-			<p className='font-medium text-center w-6'>{quantity}</p>
-			<Button size='sm' variant='outline' onClick={incrementProductQuantity}>
-				<Plus size={20} />
-			</Button>
 		</div>
 	);
 };
@@ -152,15 +109,15 @@ const CartMain = () => {
 				</div>
 			</div>
 
-			<h2 className='text-lg font-medium my-2'>Products</h2>
+			<h2 className='font-medium my-2'>Summary</h2>
 
 			<div className='border rounded-lg'>
 				{cart.products.map(cartProduct => (
 					<div
 						key={`${cartProduct.cartId}-${cartProduct.productId}`}
-						className='flex items-center gap-2.5 p-2 not-last:border-b'
+						className='flex items-center gap-2.5 p-2.5 not-last:border-b'
 					>
-						<div className='size-13 bg-muted rounded flex items-center justify-center overflow-hidden'>
+						<div className='size-14 bg-muted rounded flex items-center justify-center overflow-hidden'>
 							{cartProduct.product.images[0] && (
 								<img
 									src={cartProduct.product.images[0].path}
@@ -179,17 +136,18 @@ const CartMain = () => {
 										'text-destructive'
 								)}
 							>
+								{cartProduct.quantity}{' '}
+								{cartProduct.quantity === 1 ? 'unit' : 'units'}
+							</p>
+						</div>
+
+						<div>
+							<p>
 								{formatNaira(
 									cartProduct.product.unitPrice * cartProduct.quantity
 								)}
 							</p>
 						</div>
-
-						<CartProductQuantity
-							cartProduct={cartProduct}
-							quantity={cartProduct.quantity}
-							maxQuantity={cartProduct.product.quantity}
-						/>
 					</div>
 				))}
 			</div>
