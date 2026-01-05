@@ -209,6 +209,12 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 							/>
 						))}
 			</div>
+
+			{!isLoading && !data?.products.length && (
+				<div className='text-center text-lg font-medium text-muted-foreground'>
+					No products
+				</div>
+			)}
 		</div>
 	);
 };

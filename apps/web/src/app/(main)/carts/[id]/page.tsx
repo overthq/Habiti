@@ -16,7 +16,6 @@ import {
 import {
 	FieldDescription,
 	FieldGroup,
-	FieldLabel,
 	FieldLegend,
 	FieldSet
 } from '@/components/ui/field';
