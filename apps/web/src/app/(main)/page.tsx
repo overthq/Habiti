@@ -92,7 +92,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ store }) => {
 			className='rounded-2xl hover:border-foreground/40 transition-colors'
 		>
 			<div className='items-center justify-center gap-4 w-24 overflow-hidden'>
-				<div className='size-24 rounded-full bg-muted flex items-center justify-center overflow-hidden text-3xl font-semibold'>
+				<div className='size-24 rounded-full bg-muted flex items-center justify-center overflow-hidden text-3xl font-medium'>
 					{store.image?.path ? (
 						<img
 							src={store.image.path}
@@ -112,7 +112,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ store }) => {
 };
 
 const spanFallback = (label: string) => (
-	<span className='text-muted-foreground'>{label.charAt(0)}</span>
+	<span className='text-muted-foreground uppercase'>{label.charAt(0)}</span>
 );
 
 const TrendingStoresSkeleton = () => (
