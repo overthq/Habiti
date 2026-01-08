@@ -23,6 +23,7 @@ interface CartContextType {
 	updateProductQuantity: (productId: string, quantity: number) => void;
 	removeProductFromCart: (productId: string) => void;
 	dispatch: React.Dispatch<Action>;
+	isPlacingOrder: boolean;
 }
 
 const CartContext = React.createContext<CartContextType | null>(null);
@@ -151,7 +152,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 				setSelectedCard,
 				updateProductQuantity,
 				removeProductFromCart,
-				dispatch
+				dispatch,
+				isPlacingOrder: createOrderMutation.isPending
 			}}
 		>
 			{children}

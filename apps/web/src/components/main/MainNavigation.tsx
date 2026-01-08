@@ -7,7 +7,8 @@ import {
 	CircleUserIcon,
 	LogOutIcon,
 	SettingsIcon,
-	ShoppingCartIcon
+	ShoppingCartIcon,
+	UserIcon
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import {
@@ -42,6 +43,12 @@ const ProfileDropdown = () => {
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align='end'>
+				<DropdownMenuItem asChild>
+					<Link href='/profile'>
+						<UserIcon className='w-4 h-4' />
+						Profile
+					</Link>
+				</DropdownMenuItem>
 				<DropdownMenuItem asChild>
 					<Link href='/profile/settings'>
 						<SettingsIcon className='w-4 h-4' />
