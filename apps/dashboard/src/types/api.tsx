@@ -112,12 +112,6 @@ export type CategoriesWhere = {
 	some?: InputMaybe<ProductCategoryWhere>;
 };
 
-export type CreateCartInput = {
-	productId: Scalars['ID']['input'];
-	quantity: Scalars['Int']['input'];
-	storeId: Scalars['ID']['input'];
-};
-
 export type CreateCategoryInput = {
 	description?: InputMaybe<Scalars['String']['input']>;
 	name: Scalars['String']['input'];
@@ -238,7 +232,6 @@ export type Mutation = {
 	addStoreManager: StoreManager;
 	addToCart: CartProduct;
 	addToWatchlist: WatchlistProduct;
-	createCart: Cart;
 	createOrder: Order;
 	createPayout: Payout;
 	createProduct: Product;
@@ -266,7 +259,6 @@ export type Mutation = {
 	updateOrder: Order;
 	updateOrderStatus: Order;
 	updateProductCategories: Product;
-	updateProductImages: Product;
 	verifyBankAccount: VerifyBankAccountResponse;
 };
 
@@ -292,10 +284,6 @@ export type MutationAddToCartArgs = {
 
 export type MutationAddToWatchlistArgs = {
 	productId: Scalars['ID']['input'];
-};
-
-export type MutationCreateCartArgs = {
-	input: CreateCartInput;
 };
 
 export type MutationCreateOrderArgs = {
@@ -406,11 +394,6 @@ export type MutationUpdateOrderStatusArgs = {
 export type MutationUpdateProductCategoriesArgs = {
 	id: Scalars['ID']['input'];
 	input: UpdateProductCategoriesInput;
-};
-
-export type MutationUpdateProductImagesArgs = {
-	id: Scalars['ID']['input'];
-	input: UpdateProductImagesInput;
 };
 
 export type MutationVerifyBankAccountArgs = {
@@ -1319,6 +1302,7 @@ export type StoreQuery = {
 		bankAccountNumber?: string | null;
 		bankCode?: string | null;
 		bankAccountReference?: string | null;
+		unlisted: boolean;
 		image?: { __typename?: 'Image'; id: string; path: string } | null;
 	};
 };
@@ -1932,6 +1916,7 @@ export const StoreDocument = gql`
 			bankAccountNumber
 			bankCode
 			bankAccountReference
+			unlisted
 			image {
 				id
 				path
