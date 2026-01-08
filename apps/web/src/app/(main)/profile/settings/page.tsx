@@ -59,7 +59,7 @@ const AccountTab: React.FC<AccountTabProps> = ({ user }) => {
 
 	return (
 		<div>
-			<h2 className='text-xl font-medium my-4'>Your Profile</h2>
+			<h2 className='font-medium my-4'>Your Profile</h2>
 
 			<form onSubmit={form.handleSubmit(onSubmit)}>
 				<Controller
@@ -86,9 +86,9 @@ const AccountTab: React.FC<AccountTabProps> = ({ user }) => {
 			<Separator className='my-4' />
 
 			<div className='space-y-2'>
-				<h2 className='text-xl font-medium'>Delete Account</h2>
+				<h2 className='font-medium'>Delete Account</h2>
 
-				<p className='text-sm text-muted-foreground'>
+				<p className='text-sm text-muted-foreground mb-3'>
 					Deleting your account will also delete any data associated, including
 					orders and carts.
 				</p>
@@ -128,9 +128,9 @@ const PaymentsTab = () => {
 	return (
 		<div>
 			<div>
-				<h2 className='text-xl font-medium mt-4 mb-1'>Payment Methods</h2>
+				<h2 className='font-medium mt-4 mb-1'>Payment Methods</h2>
 
-				<p className='text-muted-foreground mb-4'>
+				<p className='text-sm text-muted-foreground mb-4'>
 					Your payment methods are stored securely by Paystack.
 				</p>
 
