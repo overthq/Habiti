@@ -112,12 +112,6 @@ export type CategoriesWhere = {
 	some?: InputMaybe<ProductCategoryWhere>;
 };
 
-export type CreateCartInput = {
-	productId: Scalars['ID']['input'];
-	quantity: Scalars['Int']['input'];
-	storeId: Scalars['ID']['input'];
-};
-
 export type CreateCategoryInput = {
 	description?: InputMaybe<Scalars['String']['input']>;
 	name: Scalars['String']['input'];
@@ -238,7 +232,6 @@ export type Mutation = {
 	addStoreManager: StoreManager;
 	addToCart: CartProduct;
 	addToWatchlist: WatchlistProduct;
-	createCart: Cart;
 	createOrder: Order;
 	createPayout: Payout;
 	createProduct: Product;
@@ -266,7 +259,6 @@ export type Mutation = {
 	updateOrder: Order;
 	updateOrderStatus: Order;
 	updateProductCategories: Product;
-	updateProductImages: Product;
 	verifyBankAccount: VerifyBankAccountResponse;
 };
 
@@ -292,10 +284,6 @@ export type MutationAddToCartArgs = {
 
 export type MutationAddToWatchlistArgs = {
 	productId: Scalars['ID']['input'];
-};
-
-export type MutationCreateCartArgs = {
-	input: CreateCartInput;
 };
 
 export type MutationCreateOrderArgs = {
@@ -408,11 +396,6 @@ export type MutationUpdateProductCategoriesArgs = {
 	input: UpdateProductCategoriesInput;
 };
 
-export type MutationUpdateProductImagesArgs = {
-	id: Scalars['ID']['input'];
-	input: UpdateProductImagesInput;
-};
-
 export type MutationVerifyBankAccountArgs = {
 	input: VerifyBankAccountInput;
 };
@@ -490,7 +473,7 @@ export type Payout = {
 	amount: Scalars['Int']['output'];
 	createdAt: Scalars['String']['output'];
 	id: Scalars['ID']['output'];
-	status?: Maybe<PayoutStatus>;
+	status: PayoutStatus;
 	store: Store;
 	storeId: Scalars['ID']['output'];
 	updatedAt: Scalars['String']['output'];
@@ -1007,34 +990,6 @@ export type RemoveFromCartMutation = {
 	removeFromCart: string;
 };
 
-export type CreateCartMutationVariables = Exact<{
-	input: CreateCartInput;
-}>;
-
-export type CreateCartMutation = {
-	__typename?: 'Mutation';
-	createCart: {
-		__typename?: 'Cart';
-		id: string;
-		userId: string;
-		storeId: string;
-		total: number;
-		store: { __typename?: 'Store'; id: string; name: string };
-		products: Array<{
-			__typename?: 'CartProduct';
-			cartId: string;
-			productId: string;
-			cart: { __typename?: 'Cart'; id: string };
-			product: {
-				__typename?: 'Product';
-				id: string;
-				name: string;
-				unitPrice: number;
-			};
-		}>;
-	};
-};
-
 export type DeleteCartMutationVariables = Exact<{
 	cartId: Scalars['ID']['input'];
 }>;
@@ -1433,6 +1388,7 @@ export type StoresQuery = {
 		__typename?: 'Store';
 		id: string;
 		name: string;
+		unlisted: boolean;
 		image?: { __typename?: 'Image'; id: string; path: string } | null;
 	}>;
 };
@@ -1451,6 +1407,7 @@ export type StoreQuery = {
 		website?: string | null;
 		twitter?: string | null;
 		instagram?: string | null;
+		unlisted: boolean;
 		followedByUser: boolean;
 		image?: { __typename?: 'Image'; id: string; path: string } | null;
 		categories: Array<{
@@ -1752,38 +1709,6 @@ export function useRemoveFromCartMutation() {
 		RemoveFromCartMutation,
 		RemoveFromCartMutationVariables
 	>(RemoveFromCartDocument);
-}
-export const CreateCartDocument = gql`
-	mutation CreateCart($input: CreateCartInput!) {
-		createCart(input: $input) {
-			id
-			userId
-			storeId
-			store {
-				id
-				name
-			}
-			products {
-				cartId
-				productId
-				cart {
-					id
-				}
-				product {
-					id
-					name
-					unitPrice
-				}
-			}
-			total
-		}
-	}
-`;
-
-export function useCreateCartMutation() {
-	return Urql.useMutation<CreateCartMutation, CreateCartMutationVariables>(
-		CreateCartDocument
-	);
 }
 export const DeleteCartDocument = gql`
 	mutation DeleteCart($cartId: ID!) {
@@ -2266,6 +2191,7 @@ export const StoresDocument = gql`
 		stores {
 			id
 			name
+			unlisted
 			image {
 				id
 				path
@@ -2291,6 +2217,7 @@ export const StoreDocument = gql`
 			website
 			twitter
 			instagram
+			unlisted
 			image {
 				id
 				path

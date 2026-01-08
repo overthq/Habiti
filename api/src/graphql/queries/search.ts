@@ -5,12 +5,20 @@ export interface SearchArgs {
 }
 
 const search: Resolver<SearchArgs> = async (_, { searchTerm }, ctx) => {
+	const isAdmin = await ctx.isAdmin();
+
 	const [stores, products] = await ctx.prisma.$transaction([
 		ctx.prisma.store.findMany({
-			where: { name: { search: searchTerm } }
+			where: {
+				name: { search: searchTerm },
+				...(isAdmin ? {} : { unlisted: false })
+			}
 		}),
 		ctx.prisma.product.findMany({
-			where: { name: { search: searchTerm } }
+			where: {
+				name: { search: searchTerm },
+				...(isAdmin ? {} : { store: { unlisted: false } })
+			}
 		})
 	]);
 

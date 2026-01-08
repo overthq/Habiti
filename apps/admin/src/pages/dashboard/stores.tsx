@@ -4,6 +4,7 @@ import { useStoresQuery } from '@/data/queries';
 import { DataTable } from '@/components/ui/data-table';
 import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import CreateStoreDialog from '@/components/stores/create-store-dialog';
 
 const columns: ColumnDef<Store>[] = [
@@ -14,6 +15,15 @@ const columns: ColumnDef<Store>[] = [
 			<Button variant='link' asChild className='px-0 w-fit'>
 				<Link to={`/stores/${row.original.id}`}>{row.original.name}</Link>
 			</Button>
+		)
+	},
+	{
+		accessorKey: 'unlisted',
+		header: 'Status',
+		cell: ({ row }) => (
+			<Badge variant={row.original.unlisted ? 'secondary' : 'default'}>
+				{row.original.unlisted ? 'Unlisted' : 'Listed'}
+			</Badge>
 		)
 	},
 	{

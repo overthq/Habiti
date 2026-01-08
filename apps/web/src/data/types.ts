@@ -14,6 +14,7 @@ export interface Store {
 	products: Product[];
 	followedByUser: boolean;
 	categories: StoreProductCategory[];
+	unlisted: boolean;
 }
 
 export interface Image {
