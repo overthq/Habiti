@@ -12,20 +12,28 @@ interface AdminLoginInput {
 export const adminLogin = async (ctx: AppContext, input: AdminLoginInput) => {
 	const admin = await AdminData.getAdminByEmail(ctx.prisma, input.email);
 
+	console.log({ admin });
+
 	if (!admin) {
 		throw new LogicError(LogicErrorCode.AdminNotFound);
 	}
+
+	console.log({ admin });
 
 	const correct = await AuthLogic.verifyPassword(
 		input.password,
 		admin.passwordHash
 	);
 
+	console.log({ correct });
+
 	if (!correct) {
 		throw new LogicError(LogicErrorCode.InvalidCredentials);
 	}
 
 	const accessToken = await AuthLogic.generateAccessToken(admin, 'admin');
+
+	console.log({ accessToken });
 
 	return { accessToken, adminId: admin.id };
 };
