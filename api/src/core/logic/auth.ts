@@ -33,11 +33,7 @@ export const validateAuthenticateBody = (body: any) => {
 };
 
 export const verifyPassword = async (password: string, hash: string) => {
-	// try {
 	return argon2.verify(hash, password);
-	// } catch (error) {
-	// 	throw new LogicError(LogicErrorCode.InvalidCredentials);
-	// }
 };
 
 export const hashPassword = async (password: string) => {
