@@ -81,31 +81,6 @@ mutation RemoveFromCart($productId: ID!, $cartId: ID!) {
 	removeFromCart(productId: $productId, cartId: $cartId)
 }
 
-mutation CreateCart($input: CreateCartInput!) {
-	createCart(input: $input) {
-		id
-		userId
-		storeId
-		store {
-			id
-			name
-		}
-		products {
-			cartId
-			productId
-			cart {
-				id
-			}
-			product {
-				id
-				name
-				unitPrice
-			}
-		}
-		total
-	}
-}
-
 mutation DeleteCart($cartId: ID!) {
 	deleteCart(cartId: $cartId) {
 		id

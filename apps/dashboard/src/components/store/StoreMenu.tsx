@@ -40,12 +40,16 @@ const StoreMenu: React.FC<StoreMenuProps> = ({ store }) => {
 		]);
 	}, [logOut]);
 
+	const storeDisplayName = store?.unlisted
+		? `${store?.name} (Unlisted)`
+		: store?.name;
+
 	return (
 		<View>
 			<StoreMenuRow
 				title='Current store'
 				onPress={() => modalRef.current?.present()}
-				display={store?.name}
+				display={storeDisplayName}
 				icon='chevrons-up-down'
 			/>
 			<StoreMenuRow title='Edit Store' onPress={handleNavigate('Edit Store')} />

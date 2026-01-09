@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 
 import {
 	addToCart,
@@ -117,6 +118,7 @@ export const useVerifyCodeMutation = () => {
 };
 
 export const useCreateOrderMutation = () => {
+	const router = useRouter();
 	return useMutation({
 		mutationFn: (body: CreateOrderBody) =>
 			createOrder({ ...body, cardId: undefined }),
@@ -127,6 +129,8 @@ export const useCreateOrderMutation = () => {
 				const popup = new Paystack();
 				popup.resumeTransaction(data.cardAuthorizationData.access_code);
 			}
+
+			router.push(`/orders/${data.order.id}`);
 		},
 		onError: () => {
 			toast.error('Failed to create order');

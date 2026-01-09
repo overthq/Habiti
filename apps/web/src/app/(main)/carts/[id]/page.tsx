@@ -4,7 +4,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import CartContextWrapper, { useCart } from '@/contexts/CartContext';
 import { formatNaira } from '@/utils/currency';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
 	Select,
@@ -76,7 +76,7 @@ const CardSelector = () => {
 };
 
 const CartMain = () => {
-	const { cart, handleSubmit, disabled } = useCart();
+	const { cart, handleSubmit, disabled, isPlacingOrder } = useCart();
 
 	return (
 		<div className='max-w-3xl mx-auto'>
@@ -177,6 +177,7 @@ const CartMain = () => {
 			</div>
 
 			<Button disabled={disabled} onClick={handleSubmit}>
+				{isPlacingOrder ? <Loader2 className='size-4 animate-spin' /> : null}
 				Place Order
 			</Button>
 		</div>

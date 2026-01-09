@@ -150,6 +150,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 			}
 		});
 
+		// TODO: Consider not doing this
 		setPreference({ defaultCard: selectedCard });
 
 		if (error) {

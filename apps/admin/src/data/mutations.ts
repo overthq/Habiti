@@ -53,6 +53,24 @@ export const useLoginMutation = () => {
 	});
 };
 
+export const useLogoutMutation = () => {
+	const navigate = useNavigate();
+
+	return useMutation({
+		mutationFn: () => {
+			localStorage.removeItem('accessToken');
+			return Promise.resolve();
+		},
+		onSuccess: () => {
+			toast.success('Successfully logged out');
+			navigate('/login');
+		},
+		onError: () => {
+			toast.error('Failed to log out');
+		}
+	});
+};
+
 export const useCreateAdminMutation = () => {
 	return useMutation({
 		mutationFn: (body: CreateAdminBody) => createAdmin(body),

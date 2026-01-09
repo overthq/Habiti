@@ -90,6 +90,21 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 							>
 								{store.name}
 							</Typography>
+							{store.unlisted && (
+								<View
+									style={[
+										styles.unlistedBadge,
+										{ backgroundColor: theme.input.background }
+									]}
+								>
+									<Typography
+										size='xsmall'
+										style={{ color: theme.text.secondary }}
+									>
+										Unlisted
+									</Typography>
+								</View>
+							)}
 						</View>
 						<View style={styles.right}>
 							<Pressable onPress={handleOpenSearch}>
@@ -201,6 +216,12 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		paddingHorizontal: 16,
 		paddingBottom: 12
+	},
+	unlistedBadge: {
+		marginTop: 4,
+		paddingHorizontal: 8,
+		paddingVertical: 2,
+		borderRadius: 4
 	}
 });
 

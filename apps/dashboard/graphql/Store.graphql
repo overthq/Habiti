@@ -37,6 +37,7 @@ query Store {
 		bankAccountNumber
 		bankCode
 		bankAccountReference
+		unlisted
 		image {
 			id
 			path

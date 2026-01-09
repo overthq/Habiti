@@ -2,6 +2,7 @@ query Stores {
 	stores {
 		id
 		name
+		unlisted
 		image {
 			id
 			path
@@ -17,6 +18,7 @@ query Store($storeId: ID!) {
 		website
 		twitter
 		instagram
+		unlisted
 		image {
 			id
 			path

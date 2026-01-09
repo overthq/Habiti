@@ -46,7 +46,13 @@ export const getAdminOverview = async (prisma: PrismaClient) => {
 			})
 		]);
 
-	return { totalStores, totalOrders, totalProducts, totalUsers, totalRevenue };
+	return {
+		totalStores,
+		totalOrders,
+		totalProducts,
+		totalUsers,
+		totalRevenue: totalRevenue._sum.total
+	};
 };
 
 // Bulk User Operations

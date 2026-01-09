@@ -3,7 +3,6 @@ import { PaginationArgs } from '../../types/pagination';
 import { Resolver } from '../../types/resolvers';
 import { decodeCursor, paginateQuery } from '../../utils/pagination';
 import { storeAuthorizedResolver } from '../permissions';
-import { CAN_VIEW_UNLISTED_STORES } from '../../utils/allowlist';
 import { OrderStatus, Prisma } from '../../generated/prisma/client';
 
 export interface StoreArgs {
@@ -26,11 +25,11 @@ export interface StoresArgs {
 	};
 }
 
-const stores: Resolver<StoresArgs> = (_, { filter }, ctx) => {
-	const canViewUnlisted = CAN_VIEW_UNLISTED_STORES.includes(ctx.user?.id || '');
+const stores: Resolver<StoresArgs> = async (_, { filter }, ctx) => {
+	const isAdmin = await ctx.isAdmin();
 	const where = {
 		...filter,
-		...(canViewUnlisted ? {} : { unlisted: false })
+		...(isAdmin ? {} : { unlisted: false })
 	};
 
 	return ctx.prisma.store.findMany({ where });

@@ -181,7 +181,7 @@ router.post('/cards/authorize', authenticate, authorizeCard);
 
 // Admin
 router.post('/admin/login', validateBody(authenticateBodySchema), adminLogin);
-router.get('/admin/overview', getOverview);
+router.get('/admin/overview', isAdmin, getOverview);
 router.post(
 	'/admin/stores',
 	isAdmin,

@@ -4,9 +4,12 @@ import {
 	Users,
 	Home,
 	Package,
-	DollarSign
+	DollarSign,
+	LogOut,
+	User
 } from 'lucide-react';
 import { Link, NavLink, useLocation } from 'react-router';
+import { useState, useEffect } from 'react';
 
 import {
 	Sidebar,
@@ -19,6 +22,15 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem
 } from '@/components/ui/sidebar';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+	DropdownMenuSeparator
+} from '@/components/ui/dropdown-menu';
+import { getCurrentAdmin } from '@/lib/utils';
+import { useLogoutMutation } from '@/data/mutations';
 
 const items = [
 	{
@@ -55,6 +67,16 @@ const items = [
 
 export function AppSidebar() {
 	const { pathname } = useLocation();
+	const [admin, setAdmin] = useState(getCurrentAdmin());
+	const logoutMutation = useLogoutMutation();
+
+	useEffect(() => {
+		setAdmin(getCurrentAdmin());
+	}, []);
+
+	const handleLogout = () => {
+		logoutMutation.mutate();
+	};
 
 	return (
 		<Sidebar variant='inset'>
@@ -92,7 +114,38 @@ export function AppSidebar() {
 					</SidebarGroupContent>
 				</SidebarGroup>
 			</SidebarContent>
-			<SidebarFooter />
+			<SidebarFooter>
+				{admin && (
+					<SidebarMenu>
+						<SidebarMenuItem>
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<SidebarMenuButton className='w-full'>
+										<User className='size-4' />
+										<span className='truncate'>{admin.name}</span>
+									</SidebarMenuButton>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent side='right' align='end' className='w-56'>
+									<div className='px-2 py-1.5 text-sm'>
+										<div className='font-medium'>{admin.name}</div>
+										<div className='text-muted-foreground truncate'>
+											{admin.email}
+										</div>
+									</div>
+									<DropdownMenuSeparator />
+									<DropdownMenuItem
+										onClick={handleLogout}
+										variant='destructive'
+									>
+										<LogOut className='mr-2 size-4' />
+										<span>Log out</span>
+									</DropdownMenuItem>
+								</DropdownMenuContent>
+							</DropdownMenu>
+						</SidebarMenuItem>
+					</SidebarMenu>
+				)}
+			</SidebarFooter>
 		</Sidebar>
 	);
 }

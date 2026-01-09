@@ -15,12 +15,19 @@ const products: Resolver<ProductsArgs & PaginationArgs> = async (
 	ctx
 ) => {
 	const { filter, orderBy, ...paginationArgs } = args;
+	const isAdmin = await ctx.isAdmin();
+
+	// Filter out products from unlisted stores for non-admins
+	const where = {
+		...filter,
+		...(isAdmin ? {} : { store: { unlisted: false } })
+	};
 
 	return paginateQuery(
 		paginationArgs,
 		async (take, cursor) => {
 			let query: Prisma.ProductFindManyArgs = {
-				where: filter,
+				where,
 				orderBy,
 				take
 			};
@@ -32,7 +39,7 @@ const products: Resolver<ProductsArgs & PaginationArgs> = async (
 
 			return ctx.prisma.product.findMany(query);
 		},
-		() => ctx.prisma.product.count({ where: filter })
+		() => ctx.prisma.product.count({ where })
 	);
 };
 

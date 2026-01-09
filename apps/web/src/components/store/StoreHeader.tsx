@@ -3,6 +3,7 @@
 import React from 'react';
 import { Store, GetStoreResponse } from '@/data/types';
 import FollowButton from './FollowButton';
+import { Badge } from '@/components/ui/badge';
 
 interface StoreHeaderProps {
 	store: Store;
@@ -23,7 +24,10 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store, viewerContext }) => {
 					)}
 				</div>
 				<div className='space-y-1'>
-					<h1 className='text-2xl font-medium'>{store.name}</h1>
+					<div className='flex items-center gap-2'>
+						<h1 className='text-2xl font-medium'>{store.name}</h1>
+						{store.unlisted && <Badge variant='warning'>Unlisted</Badge>}
+					</div>
 					<p className='text-muted-foreground'>{store.description}</p>
 				</div>
 			</div>
