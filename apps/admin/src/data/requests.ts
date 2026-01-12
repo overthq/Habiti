@@ -44,6 +44,10 @@ export const login = (body: LoginBody) => {
 	return api.post<LoginResponse>('/admin/login', body);
 };
 
+export const logout = () => {
+	return api.post<{ message: string }>('/admin/logout', {});
+};
+
 export const createAdmin = (body: CreateAdminBody) => {
 	return api.post<CreateAdminResponse>('/admin/register', body);
 };

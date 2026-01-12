@@ -16,6 +16,7 @@ import {
 } from './types';
 import {
 	login,
+	logout,
 	createAdmin,
 	updateOrder,
 	cancelOrder,
@@ -57,16 +58,19 @@ export const useLogoutMutation = () => {
 	const navigate = useNavigate();
 
 	return useMutation({
-		mutationFn: () => {
+		mutationFn: async () => {
+			await logout();
 			localStorage.removeItem('accessToken');
-			return Promise.resolve();
 		},
 		onSuccess: () => {
 			toast.success('Successfully logged out');
 			navigate('/login');
 		},
 		onError: () => {
-			toast.error('Failed to log out');
+			// Still clear local state even if server call fails
+			localStorage.removeItem('accessToken');
+			toast.error('Logged out (session may not be fully revoked)');
+			navigate('/login');
 		}
 	});
 };

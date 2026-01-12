@@ -26,8 +26,9 @@ export const adminLogin = async (ctx: AppContext, input: AdminLoginInput) => {
 	}
 
 	const accessToken = await AuthLogic.generateAccessToken(admin, 'admin');
+	const refreshToken = await AuthLogic.generateAdminRefreshToken(ctx, admin.id);
 
-	return { accessToken, adminId: admin.id };
+	return { accessToken, refreshToken, adminId: admin.id };
 };
 
 export const getAdminOverview = async (ctx: AppContext) => {
