@@ -1,9 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 
 import * as AdminLogic from '../core/logic/admin';
+import * as AuthLogic from '../core/logic/auth';
 import * as StoreData from '../core/data/stores';
 import { getAppContext } from '../utils/context';
 import { OrderStatus, ProductStatus } from '../generated/prisma/client';
+import { env } from '../config/env';
 
 export const login = async (
 	req: Request<{}, { email: string; password: string }>,
@@ -14,7 +16,66 @@ export const login = async (
 		const { email, password } = req.body;
 		const ctx = getAppContext(req);
 		const result = await AdminLogic.adminLogin(ctx, { email, password });
-		return res.json(result);
+
+		res.cookie('adminRefreshToken', result.refreshToken, {
+			httpOnly: true,
+			secure: env.NODE_ENV === 'production',
+			sameSite: 'strict',
+			path: '/'
+		});
+
+		return res.json({
+			accessToken: result.accessToken,
+			adminId: result.adminId
+		});
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const refresh = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const refreshToken = req.cookies.adminRefreshToken || req.body.refreshToken;
+
+		if (!refreshToken) {
+			return res.status(401).json({ error: 'Refresh token required' });
+		}
+
+		const ctx = getAppContext(req);
+		const tokens = await AuthLogic.rotateAdminRefreshToken(ctx, refreshToken);
+
+		res.cookie('adminRefreshToken', tokens.refreshToken, {
+			httpOnly: true,
+			secure: env.NODE_ENV === 'production',
+			sameSite: 'strict',
+			path: '/'
+		});
+
+		return res.status(200).json({ accessToken: tokens.accessToken });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const logout = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const refreshToken = req.cookies.adminRefreshToken || req.body.refreshToken;
+
+		if (refreshToken) {
+			const ctx = getAppContext(req);
+			await AuthLogic.revokeAdminRefreshToken(ctx, refreshToken);
+		}
+
+		res.clearCookie('adminRefreshToken', { path: '/' });
+		return res.status(200).json({ message: 'Logged out' });
 	} catch (error) {
 		return next(error);
 	}

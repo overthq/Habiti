@@ -62,6 +62,8 @@ import {
 } from './core/validations/auth';
 import {
 	login as adminLogin,
+	refresh as adminRefresh,
+	logout as adminLogout,
 	getOverview,
 	createStore as adminCreateStore,
 	bulkSuspendUsers,
@@ -181,6 +183,8 @@ router.post('/cards/authorize', authenticate, authorizeCard);
 
 // Admin
 router.post('/admin/login', validateBody(authenticateBodySchema), adminLogin);
+router.post('/admin/refresh', adminRefresh);
+router.post('/admin/logout', adminLogout);
 router.get('/admin/overview', isAdmin, getOverview);
 router.post(
 	'/admin/stores',

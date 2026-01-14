@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { Admin, User } from '../../generated/prisma/client';
 import * as AuthData from '../data/auth';
+import * as AdminAuthData from '../data/adminAuth';
 import {
 	registerBodySchema,
 	authenticateBodySchema
@@ -55,8 +56,7 @@ export const cacheVerificationCode = async (email: string): Promise<string> => {
 };
 
 export const retrieveVerificationCode = async (email: string) => {
-	const cachedCode = await redisClient.get(getEmailCacheKey(email));
-	return cachedCode;
+	return redisClient.get(getEmailCacheKey(email));
 };
 
 export const generateAccessToken = async (
@@ -175,6 +175,117 @@ export const verifyAccessToken = async (token: string) => {
 		}
 		throw new LogicError(LogicErrorCode.InvalidToken);
 	}
+};
+
+// Admin Refresh Token Functions
+
+export const generateAdminRefreshToken = async (
+	ctx: AppContext,
+	adminId: string,
+	sessionId?: string
+) => {
+	const id = crypto.randomUUID();
+	const resolvedSessionId = sessionId ?? crypto.randomUUID();
+	const token = jwt.sign(
+		{ id, adminId, sessionId: resolvedSessionId, role: 'admin' },
+		env.JWT_SECRET,
+		{ expiresIn: '30d' }
+	);
+	const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+	const expiresAt = new Date();
+	expiresAt.setDate(expiresAt.getDate() + 30);
+
+	await AdminAuthData.createAdminRefreshToken(ctx.prisma, {
+		id,
+		adminId,
+		hashedToken,
+		expiresAt,
+		sessionId: resolvedSessionId
+	});
+
+	return token;
+};
+
+export const revokeAdminRefreshToken = async (
+	ctx: AppContext,
+	token: string
+) => {
+	let decoded: { id: string };
+	try {
+		decoded = jwt.verify(token, env.JWT_SECRET) as { id: string };
+	} catch {
+		return;
+	}
+
+	await AdminAuthData.revokeAdminRefreshToken(ctx.prisma, decoded.id);
+};
+
+export const rotateAdminRefreshToken = async (
+	ctx: AppContext,
+	token: string
+) => {
+	let decoded: {
+		id: string;
+		adminId: string;
+		sessionId?: string;
+		role?: string;
+	};
+	try {
+		decoded = jwt.verify(token, env.JWT_SECRET) as {
+			id: string;
+			adminId: string;
+			sessionId?: string;
+			role?: string;
+		};
+	} catch {
+		throw new LogicError(LogicErrorCode.InvalidToken);
+	}
+
+	if (decoded.role !== 'admin') {
+		throw new LogicError(LogicErrorCode.InvalidToken);
+	}
+
+	const storedToken = await AdminAuthData.getAdminRefreshTokenById(
+		ctx.prisma,
+		decoded.id
+	);
+
+	if (!storedToken) {
+		throw new LogicError(LogicErrorCode.InvalidToken);
+	}
+
+	const hash = crypto.createHash('sha256').update(token).digest('hex');
+	if (hash !== storedToken.hashedToken) {
+		throw new LogicError(LogicErrorCode.InvalidToken);
+	}
+
+	if (storedToken.revoked) {
+		await AdminAuthData.revokeAdminSessionRefreshTokens(
+			ctx.prisma,
+			storedToken.sessionId
+		);
+		throw new LogicError(LogicErrorCode.TokenReused);
+	}
+
+	if (new Date() > storedToken.expiresAt) {
+		throw new LogicError(LogicErrorCode.TokenExpired);
+	}
+
+	await AdminAuthData.revokeAdminRefreshToken(ctx.prisma, storedToken.id);
+
+	const newRefreshToken = await generateAdminRefreshToken(
+		ctx,
+		storedToken.adminId,
+		storedToken.sessionId
+	);
+
+	const newAccessToken = await generateAccessToken(storedToken.admin, 'admin');
+
+	return {
+		accessToken: newAccessToken,
+		refreshToken: newRefreshToken
+	};
 };
 
 // Utilities

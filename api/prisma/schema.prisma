@@ -298,6 +298,8 @@ model Admin {
   passwordHash String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  refreshTokens AdminRefreshToken[]
 }
 
 enum ProductStatus {
@@ -334,6 +336,21 @@ model RefreshToken {
   sessionId   String
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+}
+
+model AdminRefreshToken {
+  id          String   @id @default(uuid())
+  hashedToken String
+  adminId     String
+  revoked     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  expiresAt   DateTime
+  sessionId   String
+
+  admin Admin @relation(fields: [adminId], references: [id], onDelete: Cascade)
 
   @@index([sessionId])
 }

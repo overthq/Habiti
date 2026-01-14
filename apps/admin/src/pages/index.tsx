@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router';
 
 const IndexPage = () => {
 	const navigate = useNavigate();
 
-	useEffect(() => {
+	React.useEffect(() => {
 		const accessToken = localStorage.getItem('accessToken');
 
 		if (accessToken) {
