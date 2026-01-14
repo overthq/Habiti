@@ -3,7 +3,6 @@
 import React from 'react';
 import { refreshToken } from '@/data/requests';
 import MainNavigation from '@/components/main/MainNavigation';
-import MobileTabBar from '@/components/main/MobileTabBar';
 import { useAuthStore } from '@/state/auth-store';
 import AuthDrawer from '@/components/AuthDrawer';
 

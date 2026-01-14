@@ -2,7 +2,6 @@ import UpdateUserDialog from '@/components/user/update-user-dialog';
 import UserOrders from '@/components/user/user-orders';
 import { useUserQuery } from '@/data/queries';
 import { useParams } from 'react-router';
-// import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import CopyableText from '@/components/ui/copy';
 import InlineMeta from '@/components/ui/inline-meta';

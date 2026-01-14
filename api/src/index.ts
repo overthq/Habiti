@@ -6,7 +6,6 @@ import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHt
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import express from 'express';
-import { expressjwt } from 'express-jwt';
 import { graphqlUploadExpress } from 'graphql-upload';
 import { createServer } from 'http';
 import * as Sentry from '@sentry/node';
@@ -36,20 +35,6 @@ const main = async () => {
 	app.use(cookieParser());
 	app.use(compression());
 	app.use(logsMiddleware);
-	app.use(
-		expressjwt({
-			secret: env.JWT_SECRET,
-			algorithms: ['HS256'],
-			credentialsRequired: false
-		})
-	);
-	app.use((err: any, _: any, res: any, next: any) => {
-		if (err.name === 'UnauthorizedError') {
-			res.status(401).json({ message: 'invalid token...' });
-		} else {
-			next(err);
-		}
-	});
 
 	const httpServer = createServer(app);
 	const apolloServer = new ApolloServer({
