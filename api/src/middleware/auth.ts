@@ -13,27 +13,28 @@ export const auth = (options: AuthOptions = {}) => {
 	const { required = true, adminOnly = false } = options;
 
 	return async (req: Request, _: Response, next: NextFunction) => {
-		if (!required) {
-			return next();
-		}
-
 		try {
 			const token = req.headers.authorization?.split(' ')[1];
 
-			if (!token) {
+			if (token) {
+				const decoded = await AuthLogic.verifyAccessToken(token);
+
+				if (adminOnly && (decoded as any).role !== 'admin') {
+					throw new APIException(403, 'Forbidden');
+				}
+
+				req.auth = decoded as any;
+			} else if (required) {
 				throw new APIException(401, 'Authentication required');
 			}
 
-			const decoded = await AuthLogic.verifyAccessToken(token);
-
-			if (adminOnly && (decoded as any).role !== 'admin') {
-				throw new APIException(403, 'Forbidden');
-			}
-
-			req.auth = decoded as any;
 			next();
 		} catch (error) {
-			next(new APIException(401, 'Invalid or expired token'));
+			if (required) {
+				next(new APIException(401, 'Invalid or expired token'));
+			} else {
+				next();
+			}
 		}
 	};
 };

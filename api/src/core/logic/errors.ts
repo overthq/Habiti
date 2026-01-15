@@ -51,7 +51,10 @@ export enum LogicErrorCode {
 
 	PayoutInsufficientFunds = 'PayoutInsufficientFunds',
 
-	Unexpected = 'Unexpected'
+	Unexpected = 'Unexpected',
+
+	CartEmpty = 'CartEmpty',
+	InsufficientStock = 'InsufficientStock'
 }
 
 export const logicErrorToApiException = (

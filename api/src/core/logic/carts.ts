@@ -1,6 +1,7 @@
 import * as CartData from '../data/carts';
 import { AppContext } from '../../utils/context';
 import { LogicError, LogicErrorCode } from './errors';
+import logger from '../../utils/logger';
 
 export const getCartById = async (ctx: AppContext, cartId: string) => {
 	const cart = await CartData.getCartById(ctx.prisma, cartId);
@@ -64,6 +65,8 @@ export const addProductToCart = async (
 	input: AddProductToCartInput
 ) => {
 	const { storeId, productId, quantity, cartId } = input;
+
+	logger.info(`User id: ${ctx.user?.id}`);
 
 	if (quantity <= 0) {
 		throw new LogicError(LogicErrorCode.InvalidQuantity);
