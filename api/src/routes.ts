@@ -24,7 +24,8 @@ import {
 	getRelatedProducts,
 	getProducts,
 	updateProduct,
-	createProduct
+	createProduct,
+	deleteProduct
 } from './controllers/products';
 import { createProductSchema } from './core/validations/products';
 import {
@@ -139,6 +140,7 @@ router.put('/products/:id', isAdmin, updateProduct);
 router.get('/products/:id/reviews', optionalAuth, getProductReviews);
 router.post('/products/:id/reviews', authenticate, createProductReview);
 router.get('/products/:id/related', optionalAuth, getRelatedProducts);
+router.delete('/products/:id', authenticate, deleteProduct);
 
 // Users
 router.get('/users/current', authenticate, getCurrentUser);

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import { APIException } from '../types/errors';
 import { LogicError, logicErrorToApiException } from '../core/logic/errors';
+import logger from '../utils/logger';
 
 /**
  * Global error handler middleware for Express.

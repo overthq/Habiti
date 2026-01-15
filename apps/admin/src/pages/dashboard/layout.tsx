@@ -6,7 +6,7 @@ const DashboardLayout = () => {
 	return (
 		<SidebarProvider>
 			<AppSidebar />
-			<SidebarInset>
+			<SidebarInset className='md:peer-data-[variant=inset]:rounded-sm'>
 				<main className='flex-1 p-8'>
 					<Outlet />
 				</main>
