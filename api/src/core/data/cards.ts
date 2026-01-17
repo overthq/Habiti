@@ -83,7 +83,7 @@ export const getCardsByUserId = async (
 };
 
 export const getCardById = async (
-	prisma: PrismaClient | TransactionClient,
+	prisma: TransactionClient,
 	cardId: string
 ) => {
 	const card = await prisma.card.findUnique({
