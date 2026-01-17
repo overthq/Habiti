@@ -6,22 +6,6 @@ import {
 import { OrderFilters, orderFiltersToPrismaClause } from '../../utils/queries';
 import { chargeAuthorization } from '../payments';
 
-interface CreateOrderParams {
-	userId: string;
-	storeId: string;
-	total: number;
-	transactionFee?: number;
-	serviceFee?: number;
-	status?: OrderStatus;
-}
-
-interface UpdateOrderParams {
-	status?: OrderStatus;
-	total?: number;
-	transactionFee?: number;
-	serviceFee?: number;
-}
-
 interface SaveOrderDataParams {
 	cardId?: string | undefined | null;
 	storeId: string;
@@ -124,6 +108,15 @@ const getOrderData = (
 	return { orderData, total };
 };
 
+interface CreateOrderParams {
+	userId: string;
+	storeId: string;
+	total: number;
+	transactionFee?: number;
+	serviceFee?: number;
+	status?: OrderStatus;
+}
+
 export const createOrder = async (
 	prisma: PrismaClient,
 	params: CreateOrderParams
@@ -149,6 +142,13 @@ export const createOrder = async (
 
 	return order;
 };
+
+interface UpdateOrderParams {
+	status?: OrderStatus;
+	total?: number;
+	transactionFee?: number;
+	serviceFee?: number;
+}
 
 export const updateOrder = async (
 	prisma: PrismaClient,

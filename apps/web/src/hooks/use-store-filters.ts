@@ -10,8 +10,10 @@ export type StoreProductsSortOption =
 interface UseStoreFiltersReturn {
 	sortBy: StoreProductsSortOption;
 	categoryId: string | null;
+	inStock: boolean;
 	setSortBy: (value: StoreProductsSortOption) => void;
 	setCategoryId: (value: string | null) => void;
+	setInStock: (value: boolean) => void;
 	queryParams: URLSearchParams;
 }
 
@@ -23,6 +25,7 @@ export function useStoreFilters(): UseStoreFiltersReturn {
 	const sortBy =
 		(searchParams.get('sortBy') as StoreProductsSortOption) || 'default';
 	const categoryId = searchParams.get('categoryId');
+	const inStock = searchParams.get('inStock') === 'true';
 
 	const updateParams = useCallback(
 		(updates: Record<string, string | null>) => {
@@ -58,6 +61,13 @@ export function useStoreFilters(): UseStoreFiltersReturn {
 		[updateParams]
 	);
 
+	const setInStock = useCallback(
+		(value: boolean) => {
+			updateParams({ inStock: value ? 'true' : null });
+		},
+		[updateParams]
+	);
+
 	const queryParams = useMemo(() => {
 		const params = new URLSearchParams();
 
@@ -77,14 +87,20 @@ export function useStoreFilters(): UseStoreFiltersReturn {
 			params.set('categoryId', categoryId);
 		}
 
+		if (inStock) {
+			params.set('inStock', 'true');
+		}
+
 		return params;
-	}, [sortBy, categoryId]);
+	}, [sortBy, categoryId, inStock]);
 
 	return {
 		sortBy,
 		categoryId,
+		inStock,
 		setSortBy,
 		setCategoryId,
+		setInStock,
 		queryParams
 	};
 }

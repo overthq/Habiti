@@ -26,7 +26,7 @@ const StoreCategories: React.FC<StoreCategoriesProps> = ({
 				<button
 					onClick={() => onCategoryChange(null)}
 					className={cn(
-						'transition-colors shrink-0',
+						'transition-colors shrink-0 cursor-pointer',
 						selectedCategory === null
 							? 'text-foreground'
 							: 'text-muted-foreground hover:text-foreground'
@@ -40,7 +40,7 @@ const StoreCategories: React.FC<StoreCategoriesProps> = ({
 						key={category.id}
 						onClick={() => onCategoryChange(category.id)}
 						className={cn(
-							'transition-colors shrink-0',
+							'transition-colors shrink-0 cursor-pointer',
 							selectedCategory === category.id
 								? 'text-foreground'
 								: 'text-muted-foreground hover:text-foreground'

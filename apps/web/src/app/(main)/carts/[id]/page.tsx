@@ -111,13 +111,13 @@ const CartMain = () => {
 
 			<h2 className='font-medium my-2'>Summary</h2>
 
-			<div className='border rounded-lg'>
+			<div>
 				{cart.products.map(cartProduct => (
 					<div
 						key={`${cartProduct.cartId}-${cartProduct.productId}`}
-						className='flex items-center gap-2.5 p-2.5 not-last:border-b'
+						className='flex items-center gap-3'
 					>
-						<div className='size-14 bg-muted rounded flex items-center justify-center overflow-hidden'>
+						<div className='size-14 bg-muted rounded-md flex items-center justify-center overflow-hidden'>
 							{cartProduct.product.images[0] && (
 								<img
 									src={cartProduct.product.images[0].path}
@@ -129,7 +129,7 @@ const CartMain = () => {
 						</div>
 						<div className='flex-1'>
 							<p>{cartProduct.product.name}</p>
-							<p
+							{/* <p
 								className={cn(
 									'text-muted-foreground',
 									cartProduct.quantity > cartProduct.product.quantity &&
@@ -138,7 +138,7 @@ const CartMain = () => {
 							>
 								{cartProduct.quantity}{' '}
 								{cartProduct.quantity === 1 ? 'unit' : 'units'}
-							</p>
+							</p> */}
 						</div>
 
 						<div>

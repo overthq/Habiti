@@ -52,17 +52,12 @@ const ProfilePage = () => {
 		<div className='space-y-6'>
 			<h1 className='text-2xl font-medium'>Profile</h1>
 
-			{/* User Details Section */}
 			<div className='space-y-4'>
 				<h2 className='text-lg font-medium'>Your Details</h2>
 				<div className='space-y-2'>
 					<div>
-						<p className='text-sm text-muted-foreground'>Name</p>
-						<p className='font-medium'>{user.name}</p>
-					</div>
-					<div>
-						<p className='text-sm text-muted-foreground'>Email</p>
-						<p className='font-medium'>{user.email}</p>
+						<p>{user.name}</p>
+						<p className='text-muted-foreground text-sm'>{user.email}</p>
 					</div>
 					<div className='pt-2'>
 						<Link
@@ -75,9 +70,8 @@ const ProfilePage = () => {
 				</div>
 			</div>
 
-			{/* Followed Stores Section */}
 			<div className='space-y-4'>
-				<h2 className='text-lg font-medium'>Followed Stores</h2>
+				<h2 className='text-lg font-medium'>Followed stores</h2>
 				{isLoadingStores ? (
 					<div className='text-sm text-muted-foreground'>Loading...</div>
 				) : followedStoresData?.stores.length ? (
@@ -114,7 +108,6 @@ const ProfilePage = () => {
 				)}
 			</div>
 
-			{/* Previous Orders Section */}
 			<div className='space-y-4'>
 				<h2 className='text-lg font-medium'>Previous Orders</h2>
 				{isLoadingOrders ? (
@@ -171,7 +164,6 @@ const ProfilePage = () => {
 				)}
 			</div>
 
-			{/* Watchlist Section - Placeholder */}
 			<div className='space-y-4'>
 				<h2 className='text-lg font-medium'>Watchlist</h2>
 				<div className='text-center py-8'>

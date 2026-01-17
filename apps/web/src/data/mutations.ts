@@ -2,6 +2,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 import {
 	addToCart,
@@ -25,9 +26,9 @@ import type {
 	UpdateCurrentUserBody,
 	VerifyCodeBody
 } from './types';
-import { toast } from 'sonner';
 import { useAuthStore } from '@/state/auth-store';
 import { useGuestCartStore } from '@/state/guest-cart-store';
+import { openPaystackPopup } from '@/lib/payments';
 
 export const useAddToCartMutation = () => {
 	const queryClient = useQueryClient();
@@ -124,10 +125,7 @@ export const useCreateOrderMutation = () => {
 			createOrder({ ...body, cardId: undefined }),
 		onSuccess: data => {
 			if (data.cardAuthorizationData) {
-				const Paystack = require('@paystack/inline-js');
-
-				const popup = new Paystack();
-				popup.resumeTransaction(data.cardAuthorizationData.access_code);
+				openPaystackPopup(data.cardAuthorizationData.access_code);
 			}
 
 			router.push(`/orders/${data.order.id}`);

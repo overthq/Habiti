@@ -29,7 +29,7 @@ export const getCartById = async (prisma: PrismaClient, cartId: string) => {
 	});
 
 	if (!cart) {
-		throw new Error('Cart not found');
+		return null;
 	}
 
 	const cartTotal = cart.products.reduce((acc, p) => {
@@ -153,7 +153,7 @@ export const removeProductFromCart = async (
 	});
 
 	if (!cart) {
-		throw new Error('Cart not found');
+		return null;
 	}
 
 	const cartProduct = await prisma.cartProduct.delete({
@@ -198,11 +198,7 @@ export const deleteCart = async (
 	const cart = await prisma.cart.findUnique({ where: { id: args.cartId } });
 
 	if (!cart) {
-		throw new Error('Specified cart does not exist');
-	}
-
-	if (cart?.userId !== args.userId) {
-		throw new Error('User unauthorized to delete this cart');
+		return null;
 	}
 
 	await prisma.cart.delete({ where: { id: args.cartId } });
