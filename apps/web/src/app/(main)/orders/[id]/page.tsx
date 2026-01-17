@@ -6,7 +6,9 @@ import { ArrowLeft } from 'lucide-react';
 
 import SignInPrompt from '@/components/SignInPrompt';
 import { useOrderQuery } from '@/data/queries';
+import { useCompleteOrderPaymentMutation } from '@/data/mutations';
 import { useAuthStore } from '@/state/auth-store';
+import { OrderStatus } from '@/data/types';
 
 import { formatNaira } from '@/utils/currency';
 import { formatDate } from '@/utils/date';
@@ -18,6 +20,11 @@ const OrderPage = () => {
 	const { data, isLoading } = useOrderQuery(id, {
 		enabled: isAuthenticated && Boolean(id)
 	});
+	const completePaymentMutation = useCompleteOrderPaymentMutation();
+
+	const handleCompletePayment = () => {
+		completePaymentMutation.mutate(id);
+	};
 
 	if (!isAuthenticated) {
 		return (
@@ -113,6 +120,25 @@ const OrderPage = () => {
 					<p>{formatNaira(order.total)}</p>
 				</div>
 			</div>
+
+			{order.status === OrderStatus.PaymentPending && (
+				<div className='border border-yellow-500 bg-yellow-50 rounded-md p-4 my-4'>
+					<p className='font-medium text-yellow-800'>Payment Pending</p>
+					<p className='text-sm text-yellow-700 mt-1'>
+						This order is awaiting payment. Complete your payment to process the
+						order.
+					</p>
+					<button
+						onClick={handleCompletePayment}
+						disabled={completePaymentMutation.isPending}
+						className='mt-3 w-full bg-yellow-600 hover:bg-yellow-700 disabled:bg-yellow-400 text-white font-medium py-2 px-4 rounded-md transition-colors'
+					>
+						{completePaymentMutation.isPending
+							? 'Loading...'
+							: 'Complete Payment'}
+					</button>
+				</div>
+			)}
 		</div>
 	);
 };

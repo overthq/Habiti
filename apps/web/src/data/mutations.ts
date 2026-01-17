@@ -14,7 +14,8 @@ import {
 	updateCartProductQuantity,
 	updateCurrentUser,
 	verifyCode,
-	deleteCurrentUser
+	deleteCurrentUser,
+	getCardAuthorization
 } from './requests';
 
 import type {
@@ -156,6 +157,21 @@ export const useDeleteCurrentUserMutation = () => {
 		},
 		onError: () => {
 			toast.error('Failed to delete user');
+		}
+	});
+};
+
+export const useCompleteOrderPaymentMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (orderId: string) => getCardAuthorization(orderId),
+		onSuccess: data => {
+			openPaystackPopup(data.access_code);
+			queryClient.invalidateQueries({ queryKey: ['orders'] });
+		},
+		onError: () => {
+			toast.error('Failed to initiate payment');
 		}
 	});
 };

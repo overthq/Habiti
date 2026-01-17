@@ -260,3 +260,9 @@ export interface VerifyCodeResponse {
 	accessToken: string;
 	refreshToken: string;
 }
+
+export interface CardAuthorizationResponse {
+	authorization_url: string;
+	access_code: string;
+	reference: string;
+}

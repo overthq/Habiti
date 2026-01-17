@@ -23,7 +23,8 @@ import type {
 	CartProduct,
 	LandingHighlightsResponse,
 	VerifyCodeBody,
-	VerifyCodeResponse
+	VerifyCodeResponse,
+	CardAuthorizationResponse
 } from './types';
 import { useAuthStore } from '@/state/auth-store';
 
@@ -237,6 +238,14 @@ export const getOrder = async (orderId: string) => {
 
 export const createOrder = async (body: CreateOrderBody) => {
 	const response = await api.post<CreateOrderResponse>('/orders', body);
+	return response.data;
+};
+
+export const getCardAuthorization = async (orderId: string) => {
+	const response = await api.post<CardAuthorizationResponse>(
+		'/cards/authorize',
+		{ orderId }
+	);
 	return response.data;
 };
 
