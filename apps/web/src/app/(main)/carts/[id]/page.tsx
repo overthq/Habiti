@@ -4,7 +4,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import CartContextWrapper, { useCart } from '@/contexts/CartContext';
 import { formatNaira } from '@/utils/currency';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { AlertCircleIcon, ArrowLeft, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
 	Select,
@@ -19,7 +19,7 @@ import {
 	FieldLegend,
 	FieldSet
 } from '@/components/ui/field';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import Link from 'next/link';
 import { Separator } from '@/components/ui/separator';
 import { formatDate } from '@/utils/date';
@@ -35,16 +35,26 @@ const CardSelector = () => {
 			<FieldGroup>
 				<FieldSet>
 					<FieldLegend className='text-lg'>Payment Method</FieldLegend>
-					<FieldDescription>
-						Choose how you want to pay for this order.
-					</FieldDescription>
-					{hasNoCards ? (
-						<Select disabled value=''>
-							<SelectTrigger className='w-full'>
-								<SelectValue placeholder='No cards available' />
-							</SelectTrigger>
-						</Select>
-					) : (
+
+					{!hasNoCards && (
+						<FieldDescription>
+							Choose how you want to pay for this order.
+						</FieldDescription>
+					)}
+
+					{(hasNoCards || hasNoSelection) && (
+						<Alert>
+							<AlertCircleIcon className='size-4' />
+							<AlertTitle>No saved payment methods</AlertTitle>
+							<AlertDescription>
+								{hasNoCards
+									? 'You do not currently have any cards added to your account. Clicking the "Place order" button below will give you the opportunity to add one while you pay.'
+									: 'You have not selected a payment method. Clicking the "Place order" button below will give you the opportunity to add one while you pay.'}
+							</AlertDescription>
+						</Alert>
+					)}
+
+					{!hasNoCards && (
 						<Select value={selectedCard || ''} onValueChange={setSelectedCard}>
 							<SelectTrigger className='w-[200px]'>
 								<SelectValue placeholder='Select a payment method' />
@@ -59,15 +69,6 @@ const CardSelector = () => {
 								))}
 							</SelectContent>
 						</Select>
-					)}
-					{(hasNoCards || hasNoSelection) && (
-						<Alert className='mt-4'>
-							<AlertDescription>
-								{hasNoCards
-									? 'You do not currently have any cards added to your account. Clicking the "Place order" button below will give you the opportunity to add one while you pay.'
-									: 'You have not selected a payment method. Clicking the "Place order" button below will give you the opportunity to add one while you pay.'}
-							</AlertDescription>
-						</Alert>
 					)}
 				</FieldSet>
 			</FieldGroup>
@@ -110,13 +111,13 @@ const CartMain = () => {
 
 			<h2 className='font-medium my-2'>Summary</h2>
 
-			<div className='border rounded-lg'>
+			<div>
 				{cart.products.map(cartProduct => (
 					<div
 						key={`${cartProduct.cartId}-${cartProduct.productId}`}
-						className='flex items-center gap-2.5 p-2.5 not-last:border-b'
+						className='flex items-center gap-3'
 					>
-						<div className='size-14 bg-muted rounded flex items-center justify-center overflow-hidden'>
+						<div className='size-14 bg-muted rounded-md flex items-center justify-center overflow-hidden'>
 							{cartProduct.product.images[0] && (
 								<img
 									src={cartProduct.product.images[0].path}
@@ -128,7 +129,7 @@ const CartMain = () => {
 						</div>
 						<div className='flex-1'>
 							<p>{cartProduct.product.name}</p>
-							<p
+							{/* <p
 								className={cn(
 									'text-muted-foreground',
 									cartProduct.quantity > cartProduct.product.quantity &&
@@ -137,7 +138,7 @@ const CartMain = () => {
 							>
 								{cartProduct.quantity}{' '}
 								{cartProduct.quantity === 1 ? 'unit' : 'units'}
-							</p>
+							</p> */}
 						</div>
 
 						<div>

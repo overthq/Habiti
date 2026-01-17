@@ -1,36 +1,18 @@
 'use client';
 
 import React from 'react';
-import { refreshToken } from '@/data/requests';
 import MainNavigation from '@/components/main/MainNavigation';
-import { useAuthStore } from '@/state/auth-store';
 import AuthDrawer from '@/components/AuthDrawer';
+import { useAuthRefreshQuery } from '@/data/queries';
 
 interface MainLayoutProps {
 	children: React.ReactNode;
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
-	const { accessToken } = useAuthStore();
-	const [loading, setLoading] = React.useState(true);
+	const { isFetched } = useAuthRefreshQuery();
 
-	// TODO: Find a way to handle this cleanly without depending on the `useEffect` crutch.
-	React.useEffect(() => {
-		const initAuth = async () => {
-			if (!accessToken) {
-				try {
-					await refreshToken();
-				} catch (error) {
-					// Failed to refresh, user is not logged in
-				}
-			}
-			setLoading(false);
-		};
-
-		initAuth();
-	}, [accessToken]);
-
-	if (loading) {
+	if (!isFetched) {
 		return null;
 	}
 

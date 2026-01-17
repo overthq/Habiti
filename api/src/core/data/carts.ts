@@ -1,4 +1,5 @@
 import { Prisma, PrismaClient, Cart } from '../../generated/prisma/client';
+import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
 
 interface UpdateCartQuantityParams {
 	cartId: string;
@@ -29,7 +30,7 @@ export const getCartById = async (prisma: PrismaClient, cartId: string) => {
 	});
 
 	if (!cart) {
-		throw new Error('Cart not found');
+		return null;
 	}
 
 	const cartTotal = cart.products.reduce((acc, p) => {
@@ -153,7 +154,7 @@ export const removeProductFromCart = async (
 	});
 
 	if (!cart) {
-		throw new Error('Cart not found');
+		return null;
 	}
 
 	const cartProduct = await prisma.cartProduct.delete({
@@ -186,26 +187,11 @@ export const updateCartProductQuantity = async (
 	}
 };
 
-interface DeleteCartArgs {
-	userId: string;
-	cartId: string;
-}
-
-export const deleteCart = async (
-	prisma: PrismaClient,
-	args: DeleteCartArgs
+export const deleteCartById = async (
+	prisma: TransactionClient,
+	cartId: string
 ) => {
-	const cart = await prisma.cart.findUnique({ where: { id: args.cartId } });
-
-	if (!cart) {
-		throw new Error('Specified cart does not exist');
-	}
-
-	if (cart?.userId !== args.userId) {
-		throw new Error('User unauthorized to delete this cart');
-	}
-
-	await prisma.cart.delete({ where: { id: args.cartId } });
+	await prisma.cart.delete({ where: { id: cartId } });
 };
 
 interface ClaimCartsArgs {

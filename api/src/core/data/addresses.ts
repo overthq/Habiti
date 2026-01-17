@@ -5,10 +5,6 @@ interface CreateDeliveryAddressParams {
 	name: string;
 }
 
-interface UpdateDeliveryAddressParams {
-	name?: string;
-}
-
 export const createDeliveryAddress = async (
 	prisma: PrismaClient,
 	params: CreateDeliveryAddressParams
@@ -19,6 +15,10 @@ export const createDeliveryAddress = async (
 
 	return address;
 };
+
+interface UpdateDeliveryAddressParams {
+	name?: string;
+}
 
 export const updateDeliveryAddress = async (
 	prisma: PrismaClient,

@@ -13,7 +13,8 @@ import {
 	getStoreProducts,
 	globalSearch,
 	getLandingHighlights,
-	getGuestCarts
+	getGuestCarts,
+	refreshToken
 } from './requests';
 import { useGuestCartStore } from '@/state/guest-cart-store';
 
@@ -154,5 +155,14 @@ export const useLandingHighlightsQuery = () => {
 		queryKey: ['landing-highlights'],
 		queryFn: () => getLandingHighlights(),
 		staleTime: 5 * 60 * 1000
+	});
+};
+
+export const useAuthRefreshQuery = () => {
+	return useQuery({
+		queryKey: ['auth', 'refresh'],
+		queryFn: () => refreshToken(),
+		retry: false,
+		staleTime: Infinity
 	});
 };

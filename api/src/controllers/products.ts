@@ -151,3 +151,17 @@ export const createProduct = async (
 		return next(error);
 	}
 };
+
+export const deleteProduct = async (
+	req: Request<{ id: string }>,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const ctx = getAppContext(req);
+		await ProductLogic.deleteProduct(ctx, { productId: req.params.id });
+		return res.status(204).json({ message: 'Product deleted' });
+	} catch (error) {
+		return next(error);
+	}
+};

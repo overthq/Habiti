@@ -34,6 +34,7 @@ import {
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { useTableFilters } from '@/hooks/use-table-filters';
+import OrderStatusPill from '@/components/order-status-pill';
 
 const columns: ColumnDef<Order>[] = [
 	{
@@ -91,14 +92,7 @@ const columns: ColumnDef<Order>[] = [
 		accessorKey: 'status',
 		header: 'Status',
 		cell: ({ row }) => {
-			const status = row.original.status;
-			const statusColors: Record<OrderStatus, string> = {
-				[OrderStatus.Pending]: 'text-yellow-600',
-				[OrderStatus.PaymentPending]: 'text-orange-600',
-				[OrderStatus.Completed]: 'text-green-600',
-				[OrderStatus.Cancelled]: 'text-destructive'
-			};
-			return <span className={statusColors[status]}>{status}</span>;
+			return <OrderStatusPill status={row.original.status} />;
 		},
 		enableSorting: false
 	},

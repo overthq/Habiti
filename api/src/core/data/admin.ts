@@ -3,11 +3,7 @@ import {
 	OrderStatus,
 	ProductStatus
 } from '../../generated/prisma/client';
-
-type TransactionClient = Omit<
-	PrismaClient,
-	'$connect' | '$disconnect' | '$on' | '$transaction' | '$extends'
->;
+import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
 
 export const getAdminByEmail = async (prisma: PrismaClient, email: string) => {
 	const admin = await prisma.admin.findUnique({ where: { email } });

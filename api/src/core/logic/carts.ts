@@ -118,14 +118,13 @@ export const removeProductFromCart = async (
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	let cartProduct: Awaited<ReturnType<typeof CartData.removeProductFromCart>>;
-	try {
-		cartProduct = await CartData.removeProductFromCart(ctx.prisma, {
-			userId: ctx.user.id,
-			cartId,
-			productId
-		});
-	} catch {
+	const cartProduct = await CartData.removeProductFromCart(ctx.prisma, {
+		userId: ctx.user.id,
+		cartId,
+		productId
+	});
+
+	if (!cartProduct) {
 		throw new LogicError(LogicErrorCode.NotFound);
 	}
 
@@ -213,10 +212,7 @@ export const deleteCart = async (ctx: AppContext, input: DeleteCartInput) => {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	await CartData.deleteCart(ctx.prisma, {
-		userId: ctx.user.id,
-		cartId
-	});
+	await CartData.deleteCartById(ctx.prisma, cartId);
 
 	ctx.services.analytics.track({
 		event: 'cart_deleted',

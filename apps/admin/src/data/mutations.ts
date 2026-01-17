@@ -156,11 +156,13 @@ export const useUpdateProductMutation = (id: string) => {
 
 export const useDeleteProductMutation = (id: string) => {
 	const queryClient = useQueryClient();
+	const navigate = useNavigate();
 
 	return useMutation({
 		mutationFn: () => deleteProduct(id),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['products'], exact: true });
+			navigate('/products');
 			toast.success('Product deleted successfully');
 		},
 		onError: () => {

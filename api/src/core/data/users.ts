@@ -1,17 +1,10 @@
-import { Prisma, PrismaClient } from '../../generated/prisma/client';
+import { PrismaClient } from '../../generated/prisma/client';
 import { UserFilters, userFiltersToPrismaClause } from '../../utils/queries';
 
 export interface CreateUserParams {
 	name: string;
 	email: string;
 	passwordHash?: string;
-}
-
-interface UpdateUserParams {
-	name?: string;
-	email?: string;
-	passwordHash?: string;
-	suspended?: boolean;
 }
 
 export const createUser = async (
@@ -24,6 +17,13 @@ export const createUser = async (
 
 	return user;
 };
+
+interface UpdateUserParams {
+	name?: string;
+	email?: string;
+	passwordHash?: string;
+	suspended?: boolean;
+}
 
 export const updateUser = async (
 	prisma: PrismaClient,

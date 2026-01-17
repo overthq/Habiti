@@ -173,6 +173,9 @@ interface DeleteProductInput {
 	productId: string;
 }
 
+// TODO: Make this "archive", you cannot delete a product since there may be
+// orders associated with it
+
 export const deleteProduct = async (
 	ctx: AppContext,
 	input: DeleteProductInput
@@ -189,7 +192,9 @@ export const deleteProduct = async (
 		throw new LogicError(LogicErrorCode.ProductNotFound);
 	}
 
-	if (ctx.storeId && ctx.storeId !== product.storeId) {
+	const userIsAdmin = await ctx.isAdmin();
+
+	if (ctx.storeId && ctx.storeId !== product.storeId && !userIsAdmin) {
 		throw new LogicError(LogicErrorCode.ProductStoreMismatch);
 	}
 

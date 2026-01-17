@@ -7,11 +7,6 @@ interface CreateImageParams {
 	storeId: string | null;
 }
 
-interface UpdateImageParams {
-	publicId?: string;
-	path?: string;
-}
-
 export const createImage = async (
 	prisma: PrismaClient,
 	params: CreateImageParams
@@ -22,6 +17,11 @@ export const createImage = async (
 
 	return image;
 };
+
+interface UpdateImageParams {
+	publicId?: string;
+	path?: string;
+}
 
 export const updateImage = async (
 	prisma: PrismaClient,

@@ -18,14 +18,21 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 	storeId,
 	categories
 }) => {
-	const { sortBy, categoryId, setSortBy, setCategoryId, queryParams } =
-		useStoreFilters();
+	const {
+		sortBy,
+		categoryId,
+		inStock,
+		setSortBy,
+		setCategoryId,
+		setInStock,
+		queryParams
+	} = useStoreFilters();
 
 	const { data, isLoading } = useStoreProductsQuery(storeId, queryParams);
 
 	return (
-		<div className='mt-4 space-y-3'>
-			<h2 className='text-lg font-medium mb-4'>Products</h2>
+		<div className='mt-4 space-y-5'>
+			<h2 className='text-lg font-medium'>Products</h2>
 
 			<StoreCategories
 				categories={categories}
@@ -33,7 +40,12 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 				onCategoryChange={setCategoryId}
 			/>
 
-			<StoreProductFilters sortBy={sortBy} onSortChange={setSortBy} />
+			<StoreProductFilters
+				sortBy={sortBy}
+				onSortChange={setSortBy}
+				inStock={inStock}
+				onInStockChange={setInStock}
+			/>
 
 			<div className='mt-6 grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4'>
 				{isLoading

@@ -14,11 +14,15 @@ import { StoreProductsSortOption } from '@/hooks/use-store-filters';
 interface StoreProductFiltersProps {
 	sortBy: StoreProductsSortOption;
 	onSortChange: (value: StoreProductsSortOption) => void;
+	inStock: boolean;
+	onInStockChange: (value: boolean) => void;
 }
 
 const StoreProductFilters: React.FC<StoreProductFiltersProps> = ({
 	sortBy,
-	onSortChange
+	onSortChange,
+	inStock,
+	onInStockChange
 }) => {
 	return (
 		<div className='flex gap-2'>
@@ -56,7 +60,11 @@ const StoreProductFilters: React.FC<StoreProductFiltersProps> = ({
 				</DropdownMenuContent>
 			</DropdownMenu>
 
-			<Button variant='outline' size='sm'>
+			<Button
+				variant={inStock ? 'default' : 'outline'}
+				size='sm'
+				onClick={() => onInStockChange(!inStock)}
+			>
 				In stock
 			</Button>
 		</div>
