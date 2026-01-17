@@ -4,11 +4,7 @@ import {
 	PrismaClient
 } from '../../generated/prisma/client';
 import { OrderFilters, orderFiltersToPrismaClause } from '../../utils/queries';
-
-type TransactionClient = Omit<
-	PrismaClient,
-	'$connect' | '$disconnect' | '$on' | '$transaction' | '$extends'
->;
+import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
 
 // Utility function to calculate order data from cart products
 export const getOrderData = (

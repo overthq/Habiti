@@ -1,10 +1,6 @@
 import prismaClient from '../../config/prisma';
 import { PrismaClient } from '../../generated/prisma/client';
-
-type TransactionClient = Omit<
-	PrismaClient,
-	'$connect' | '$disconnect' | '$on' | '$transaction' | '$extends'
->;
+import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
 
 interface StoreCardData {
 	email: string;

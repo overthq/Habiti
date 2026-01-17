@@ -1,15 +1,11 @@
 import { Prisma, PrismaClient, Cart } from '../../generated/prisma/client';
+import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
 
 interface UpdateCartQuantityParams {
 	cartId: string;
 	productId: string;
 	quantity: number;
 }
-
-type TransactionClient = Omit<
-	PrismaClient,
-	'$connect' | '$disconnect' | '$on' | '$transaction' | '$extends'
->;
 
 // TODO: Make sure that if a regular user is accessing this,
 // they must be the cart owner (or otherwise have provable access to it)
