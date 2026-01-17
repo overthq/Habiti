@@ -4,91 +4,14 @@ import {
 	PrismaClient
 } from '../../generated/prisma/client';
 import { OrderFilters, orderFiltersToPrismaClause } from '../../utils/queries';
-import { chargeAuthorization } from '../payments';
 
-interface SaveOrderDataParams {
-	cardId?: string | undefined | null;
-	storeId: string;
-	cart: Prisma.CartGetPayload<{
-		include: { products: { include: { product: true } } };
-	}>;
-	transactionFee: number;
-	serviceFee: number;
-}
+type TransactionClient = Omit<
+	PrismaClient,
+	'$connect' | '$disconnect' | '$on' | '$transaction' | '$extends'
+>;
 
-export const saveOrderData = async (
-	prismaClient: PrismaClient,
-	userId: string,
-	params: SaveOrderDataParams
-) => {
-	const { cardId, storeId, cart, transactionFee, serviceFee } = params;
-	const { orderData, total } = getOrderData(cart.products);
-
-	const order = await prismaClient.$transaction(async prisma => {
-		const store = await prisma.store.update({
-			where: { id: storeId },
-			data: {
-				orderCount: { increment: 1 },
-				...(cardId ? { unrealizedRevenue: { increment: total } } : {})
-			}
-		});
-
-		const newOrder = await prisma.order.create({
-			data: {
-				userId,
-				storeId,
-				serialNumber: store.orderCount,
-				products: { createMany: { data: orderData } },
-				total,
-				transactionFee,
-				serviceFee,
-				status: cardId ? OrderStatus.Pending : OrderStatus.PaymentPending
-			},
-			include: {
-				user: { include: { pushTokens: true } }
-			}
-		});
-
-		await prisma.cart.delete({ where: { id: cart.id } });
-
-		// Since this is a transaction, it should be fast. Right? right?
-		for (const product of cart.products) {
-			await prisma.product.update({
-				where: { id: product.productId },
-				data: {
-					quantity: { decrement: product.quantity }
-				}
-			});
-		}
-
-		if (cardId) {
-			const card = await prisma.card.findUnique({
-				where: { id: cardId }
-			});
-
-			if (!card) {
-				throw new Error(`No card found with the provided id: ${cardId}`);
-			}
-
-			try {
-				await chargeAuthorization({
-					email: card.email,
-					amount: String(total + transactionFee + serviceFee),
-					authorizationCode: card.authorizationCode
-				});
-			} catch (error) {
-				console.error(error);
-				throw new Error('Failed to charge card');
-			}
-		}
-
-		return newOrder;
-	});
-
-	return order;
-};
-
-const getOrderData = (
+// Utility function to calculate order data from cart products
+export const getOrderData = (
 	products: Prisma.CartProductGetPayload<{
 		include: { product: true };
 	}>[]
@@ -106,6 +29,82 @@ const getOrderData = (
 	});
 
 	return { orderData, total };
+};
+
+interface IncrementStoreOrderCountParams {
+	storeId: string;
+	incrementUnrealizedRevenue?: number | undefined;
+}
+
+export const incrementStoreOrderCount = async (
+	prisma: TransactionClient,
+	params: IncrementStoreOrderCountParams
+) => {
+	const { storeId, incrementUnrealizedRevenue } = params;
+
+	const store = await prisma.store.update({
+		where: { id: storeId },
+		data: {
+			orderCount: { increment: 1 },
+			...(incrementUnrealizedRevenue
+				? { unrealizedRevenue: { increment: incrementUnrealizedRevenue } }
+				: {})
+		}
+	});
+
+	return store;
+};
+
+interface CreateOrderWithProductsParams {
+	userId: string;
+	storeId: string;
+	serialNumber: number;
+	orderData: { productId: string; unitPrice: number; quantity: number }[];
+	total: number;
+	transactionFee: number;
+	serviceFee: number;
+	status: OrderStatus;
+}
+
+export const createOrderWithProducts = async (
+	prisma: TransactionClient,
+	params: CreateOrderWithProductsParams
+) => {
+	const order = await prisma.order.create({
+		data: {
+			userId: params.userId,
+			storeId: params.storeId,
+			serialNumber: params.serialNumber,
+			products: { createMany: { data: params.orderData } },
+			total: params.total,
+			transactionFee: params.transactionFee,
+			serviceFee: params.serviceFee,
+			status: params.status
+		},
+		include: {
+			user: { include: { pushTokens: true } }
+		}
+	});
+
+	return order;
+};
+
+interface DecrementProductQuantitiesParams {
+	products: { productId: string; quantity: number }[];
+}
+
+export const decrementProductQuantities = async (
+	prisma: TransactionClient,
+	params: DecrementProductQuantitiesParams
+) => {
+	for (const product of params.products) {
+		await prisma.product.update({
+			where: { id: product.productId },
+			data: {
+				quantity: { decrement: product.quantity }
+			}
+		});
+	}
 };
 
 interface CreateOrderParams {

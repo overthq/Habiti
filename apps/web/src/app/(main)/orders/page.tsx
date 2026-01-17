@@ -49,9 +49,6 @@ const OrdersPage = () => {
 									</div>
 									<div>
 										<p className='font-medium'>{order.store.name}</p>
-										{/* <p className='text-sm text-muted-foreground'>
-											{order.products.length} items
-										</p> */}
 										<p>{formatNaira(order.total)}</p>
 									</div>
 								</div>

@@ -6,6 +6,11 @@ interface UpdateCartQuantityParams {
 	quantity: number;
 }
 
+type TransactionClient = Omit<
+	PrismaClient,
+	'$connect' | '$disconnect' | '$on' | '$transaction' | '$extends'
+>;
+
 // TODO: Make sure that if a regular user is accessing this,
 // they must be the cart owner (or otherwise have provable access to it)
 // Admins should be able to get the data without restriction.
@@ -186,22 +191,11 @@ export const updateCartProductQuantity = async (
 	}
 };
 
-interface DeleteCartArgs {
-	userId: string;
-	cartId: string;
-}
-
-export const deleteCart = async (
-	prisma: PrismaClient,
-	args: DeleteCartArgs
+export const deleteCartById = async (
+	prisma: TransactionClient,
+	cartId: string
 ) => {
-	const cart = await prisma.cart.findUnique({ where: { id: args.cartId } });
-
-	if (!cart) {
-		return null;
-	}
-
-	await prisma.cart.delete({ where: { id: args.cartId } });
+	await prisma.cart.delete({ where: { id: cartId } });
 };
 
 interface ClaimCartsArgs {

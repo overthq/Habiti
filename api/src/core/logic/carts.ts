@@ -215,10 +215,7 @@ export const deleteCart = async (ctx: AppContext, input: DeleteCartInput) => {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	await CartData.deleteCart(ctx.prisma, {
-		userId: ctx.user.id,
-		cartId
-	});
+	await CartData.deleteCartById(ctx.prisma, cartId);
 
 	ctx.services.analytics.track({
 		event: 'cart_deleted',

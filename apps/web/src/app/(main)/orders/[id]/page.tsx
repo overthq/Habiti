@@ -2,12 +2,14 @@
 
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { formatNaira } from '@/utils/currency';
-import { useOrderQuery } from '@/data/queries';
-import { formatDate } from '@/utils/date';
 import { ArrowLeft } from 'lucide-react';
+
 import SignInPrompt from '@/components/SignInPrompt';
+import { useOrderQuery } from '@/data/queries';
 import { useAuthStore } from '@/state/auth-store';
+
+import { formatNaira } from '@/utils/currency';
+import { formatDate } from '@/utils/date';
 
 const OrderPage = () => {
 	const { id } = useParams<{ id: string }>();
@@ -67,12 +69,9 @@ const OrderPage = () => {
 				</Link>
 			</div>
 
-			<div className='border rounded-lg mt-4'>
+			<div className='my-6'>
 				{order.products.map(({ product, productId, unitPrice, quantity }) => (
-					<div
-						key={productId}
-						className='flex items-center p-2.5 gap-2.5 not-last:border-b'
-					>
+					<div key={productId} className='flex items-center gap-3'>
 						<div className='size-14 bg-muted rounded-md flex items-center justify-center overflow-hidden'>
 							{product.images?.[0] && (
 								<img

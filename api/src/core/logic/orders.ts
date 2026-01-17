@@ -4,6 +4,7 @@ import * as CardLogic from './cards';
 
 import * as OrderData from '../data/orders';
 import * as CartData from '../data/carts';
+import * as CardData from '../data/cards';
 
 import { CreateOrderInput, UpdateOrderStatusInput } from './types';
 import { createOrderHooks, updateOrderHooks } from './hooks';
@@ -11,6 +12,7 @@ import { validateCart } from '../validations/carts';
 import { createOrderSchema, updateOrderSchema } from '../validations/orders';
 import { AppContext } from '../../utils/context';
 import { InitializeTransactionResponse } from '../payments/paystack';
+import { chargeAuthorization } from '../payments';
 import { LogicError, LogicErrorCode } from './errors';
 import { OrderFilters } from '../../utils/queries';
 
@@ -30,17 +32,61 @@ export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 	const cart = await CartData.getCartById(ctx.prisma, cartId);
 
 	if (!cart) {
-		throw new LogicError(LogicErrorCode.OrderNotFound);
+		throw new LogicError(LogicErrorCode.CartNotFound);
 	}
 
 	await validateCart(cart, ctx.user.id);
 
-	const order = await OrderData.saveOrderData(ctx.prisma, ctx.user.id, {
-		cardId,
-		transactionFee,
-		serviceFee,
-		cart,
-		storeId: cart.storeId
+	const { orderData, total } = OrderData.getOrderData(cart.products);
+	const userId = ctx.user.id;
+	const storeId = cart.storeId;
+
+	const order = await ctx.prisma.$transaction(async prisma => {
+		const store = await OrderData.incrementStoreOrderCount(prisma, {
+			storeId,
+			incrementUnrealizedRevenue: cardId ? total : undefined
+		});
+
+		const newOrder = await OrderData.createOrderWithProducts(prisma, {
+			userId,
+			storeId,
+			serialNumber: store.orderCount,
+			orderData,
+			total,
+			transactionFee,
+			serviceFee,
+			status: cardId ? OrderStatus.Pending : OrderStatus.PaymentPending
+		});
+
+		await CartData.deleteCartById(prisma, cart.id);
+
+		await OrderData.decrementProductQuantities(prisma, {
+			products: cart.products.map(p => ({
+				productId: p.productId,
+				quantity: p.quantity
+			}))
+		});
+
+		if (cardId) {
+			const card = await CardData.getCardById(prisma, cardId);
+
+			if (!card) {
+				throw new LogicError(LogicErrorCode.CardNotFound);
+			}
+
+			try {
+				await chargeAuthorization({
+					email: card.email,
+					amount: String(total + transactionFee + serviceFee),
+					authorizationCode: card.authorizationCode
+				});
+			} catch (error) {
+				console.error(error);
+				throw new LogicError(LogicErrorCode.PaymentFailed);
+			}
+		}
+
+		return newOrder;
 	});
 
 	// FIXME: Incredibly hacky (inconsistent response)

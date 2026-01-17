@@ -1,6 +1,11 @@
 import prismaClient from '../../config/prisma';
 import { PrismaClient } from '../../generated/prisma/client';
 
+type TransactionClient = Omit<
+	PrismaClient,
+	'$connect' | '$disconnect' | '$on' | '$transaction' | '$extends'
+>;
+
 interface StoreCardData {
 	email: string;
 	signature: string;
@@ -81,7 +86,10 @@ export const getCardsByUserId = async (
 	return cards;
 };
 
-export const getCardById = async (prisma: PrismaClient, cardId: string) => {
+export const getCardById = async (
+	prisma: PrismaClient | TransactionClient,
+	cardId: string
+) => {
 	const card = await prisma.card.findUnique({
 		where: { id: cardId }
 	});
