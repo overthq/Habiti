@@ -36,7 +36,7 @@ const HomeMain = () => {
 		>
 			<Spacer y={16} />
 			<FollowedStores followed={data.currentUser.followed} />
-			<Spacer y={16} />
+			<Spacer y={32} />
 			<RecentOrders orders={data.currentUser.orders} />
 		</ScrollableScreen>
 	);
