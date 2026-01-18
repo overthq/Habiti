@@ -251,10 +251,9 @@ const CartPage = () => {
 	if (!carts || carts.length === 0) {
 		return (
 			<div className='max-w-3xl mx-auto'>
-				<h1 className='text-2xl font-medium mb-4'>Your Cart</h1>
+				<h1 className='text-2xl font-medium mb-4'>Cart</h1>
 				<div className='flex flex-col items-center justify-center min-h-[60vh] text-center'>
-					<div className='text-6xl mb-4'>🛒</div>
-					<h2 className='text-xl font-semibold mb-2'>Your cart is empty</h2>
+					<h2 className='text-xl font-medium mb-2'>Your cart is empty</h2>
 					<p className='text-muted-foreground mb-6'>
 						Start shopping to add items to your cart
 					</p>
