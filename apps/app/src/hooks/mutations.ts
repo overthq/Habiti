@@ -10,7 +10,6 @@ import env from '../../env';
 interface RegisterArgs {
 	email: string;
 	name: string;
-	password: string;
 }
 
 export const useRegisterMutation = () => {
@@ -28,23 +27,48 @@ export const useRegisterMutation = () => {
 
 			return response.json();
 		},
-		onSuccess: () => {
-			navigate('Authenticate');
+		onSuccess: (_, variables) => {
+			navigate('Verify', { email: variables.email });
 		}
 	});
 };
 
 interface AuthenticateArgs {
 	email: string;
-	password: string;
 }
 
 export const useAuthenticateMutation = () => {
-	const logIn = useStore(useShallow(state => state.logIn));
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	return useMutation({
 		mutationFn: async (input: AuthenticateArgs) => {
 			const response = await fetch(`${env.apiUrl}/auth/login`, {
+				method: 'POST',
+				body: JSON.stringify(input),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+
+			return response.json();
+		},
+		onSuccess: (_, variables) => {
+			navigate('Verify', { email: variables.email });
+		}
+	});
+};
+
+interface VerifyCodeArgs {
+	email: string;
+	code: string;
+}
+
+export const useVerifyCodeMutation = () => {
+	const logIn = useStore(useShallow(state => state.logIn));
+
+	return useMutation({
+		mutationFn: async (input: VerifyCodeArgs) => {
+			const response = await fetch(`${env.apiUrl}/auth/verify-code`, {
 				method: 'POST',
 				body: JSON.stringify(input),
 				headers: {

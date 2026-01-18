@@ -18,8 +18,7 @@ import { useRegisterMutation } from '../data/mutations';
 
 const registerSchema = z.object({
 	name: z.string().min(2, 'Name must be at least 2 characters'),
-	email: z.string().email('Invalid email address'),
-	password: z.string().min(8, 'Password must be at least 8 characters')
+	email: z.string().email('Invalid email address')
 });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
@@ -28,15 +27,14 @@ const Register: React.FC = () => {
 	const { goBack } = useNavigation();
 	const registerMutation = useRegisterMutation();
 	const methods = useForm<RegisterFormValues>({
-		defaultValues: { name: '', email: '', password: '' },
+		defaultValues: { name: '', email: '' },
 		resolver: zodResolver(registerSchema)
 	});
 
 	const onSubmit = (values: RegisterFormValues) => {
 		registerMutation.mutate({
 			email: values.email,
-			name: values.name,
-			password: values.password
+			name: values.name
 		});
 	};
 
@@ -53,7 +51,7 @@ const Register: React.FC = () => {
 				>{`Let's meet you.`}</Typography>
 				<Spacer y={4} />
 				<Typography variant='secondary'>
-					This helps us in personalizing your experience.
+					Enter your details to receive a verification code.
 				</Typography>
 				<Spacer y={16} />
 				<FormInput
@@ -69,14 +67,6 @@ const Register: React.FC = () => {
 					placeholder='john.doe@gmail.com'
 					control={methods.control}
 					autoCapitalize='none'
-				/>
-				<Spacer y={8} />
-				<FormInput
-					name='password'
-					label='Password'
-					placeholder='Password'
-					control={methods.control}
-					secureTextEntry
 				/>
 				<Spacer y={16} />
 				<Button
