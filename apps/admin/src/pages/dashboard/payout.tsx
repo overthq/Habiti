@@ -1,29 +1,43 @@
+import { ChevronDown, RefreshCw } from 'lucide-react';
 import { useParams } from 'react-router';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import CopyableText from '@/components/ui/copy';
 import { Button } from '@/components/ui/button';
 import InlineMeta from '@/components/ui/inline-meta';
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from '@/components/ui/select';
+	DropdownMenu,
+	DropdownMenuCheckboxItem,
+	DropdownMenuContent,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
+	DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
+import { ConfirmDialog } from '@/components/confirm-dialog';
 import { usePayoutQuery } from '@/data/queries';
 import { Link } from 'react-router';
 import { useUpdatePayoutMutation } from '@/data/mutations';
 import { PayoutStatus } from '@/data/types';
 import { formatNaira } from '@/utils/format';
-import { useState } from 'react';
+
+const getStatusChangeMessage = (targetStatus: PayoutStatus): string => {
+	switch (targetStatus) {
+		case PayoutStatus.Success:
+			return "This will update the store's paid out amount. This action should only be taken after the funds have been transferred.";
+		case PayoutStatus.Failure:
+			return "This will mark the payout as failed. The store's unrealized revenue will remain unchanged.";
+		case PayoutStatus.Pending:
+			return 'This will reset the payout to pending status.';
+		default:
+			return 'Are you sure you want to update this payout status?';
+	}
+};
 
 const PayoutPage = () => {
 	const { id } = useParams();
 	const { data: payoutData, isLoading } = usePayoutQuery(id as string);
 	const updatePayoutMutation = useUpdatePayoutMutation(id as string);
-	const [selectedStatus, setSelectedStatus] = useState<PayoutStatus | ''>('');
 
 	if (isLoading || !id) {
 		return <div>Loading...</div>;
@@ -45,12 +59,6 @@ const PayoutPage = () => {
 				return <Badge variant='destructive'>Failure</Badge>;
 			default:
 				return <Badge variant='outline'>{status}</Badge>;
-		}
-	};
-
-	const handleStatusUpdate = () => {
-		if (selectedStatus && selectedStatus !== payout.status) {
-			updatePayoutMutation.mutate({ status: selectedStatus });
 		}
 	};
 
@@ -83,48 +91,46 @@ const PayoutPage = () => {
 						]}
 					/>
 				</div>
-			</div>
-
-			<Card>
-				<CardHeader>
-					<CardTitle>Update Status</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div className='flex items-center gap-4'>
-						<div className='flex-1'>
-							<Select
-								value={selectedStatus}
-								onValueChange={value =>
-									setSelectedStatus(value as PayoutStatus)
-								}
-							>
-								<SelectTrigger>
-									<SelectValue placeholder={`Current: ${payout.status}`} />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value={PayoutStatus.Pending}>Pending</SelectItem>
-									<SelectItem value={PayoutStatus.Success}>Success</SelectItem>
-									<SelectItem value={PayoutStatus.Failure}>Failure</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
-						<Button
-							onClick={handleStatusUpdate}
-							disabled={
-								!selectedStatus ||
-								selectedStatus === payout.status ||
-								updatePayoutMutation.isPending
-							}
-						>
-							{updatePayoutMutation.isPending ? 'Updating...' : 'Update Status'}
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button variant='outline'>
+							Actions
+							<ChevronDown className='ml-2 h-4 w-4' />
 						</Button>
-					</div>
-					<p className='text-sm text-gray-500 mt-2'>
-						Note: Changing status to "Success" will update the store's paid out
-						amount.
-					</p>
-				</CardContent>
-			</Card>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align='end'>
+						<DropdownMenuSub>
+							<DropdownMenuSubTrigger>
+								<RefreshCw className='mr-2 h-4 w-4' />
+								Update status
+							</DropdownMenuSubTrigger>
+							<DropdownMenuSubContent>
+								{Object.values(PayoutStatus).map(statusOption => (
+									<ConfirmDialog
+										key={statusOption}
+										title='Update Payout Status'
+										description={getStatusChangeMessage(statusOption)}
+										confirmLabel='Update'
+										variant='default'
+										isLoading={updatePayoutMutation.isPending}
+										onConfirm={() =>
+											updatePayoutMutation.mutate({ status: statusOption })
+										}
+										trigger={
+											<DropdownMenuCheckboxItem
+												onSelect={e => e.preventDefault()}
+												checked={statusOption === payout.status}
+											>
+												{statusOption}
+											</DropdownMenuCheckboxItem>
+										}
+									/>
+								))}
+							</DropdownMenuSubContent>
+						</DropdownMenuSub>
+					</DropdownMenuContent>
+				</DropdownMenu>
+			</div>
 		</div>
 	);
 };
