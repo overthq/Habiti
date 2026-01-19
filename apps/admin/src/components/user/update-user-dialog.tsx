@@ -21,7 +21,6 @@ import {
 	FormMessage
 } from '../ui/form';
 import { Input } from '../ui/input';
-import { Switch } from '../ui/switch';
 
 interface UpdateUserDialogProps {
 	user: User;
@@ -31,8 +30,7 @@ interface UpdateUserDialogProps {
 
 const updateUserFormSchema = z.object({
 	name: z.string().min(1),
-	email: z.string().email(),
-	suspended: z.boolean()
+	email: z.string().email()
 });
 
 const UpdateUserDialog = ({
@@ -46,8 +44,7 @@ const UpdateUserDialog = ({
 		resolver: zodResolver(updateUserFormSchema),
 		defaultValues: {
 			name: user.name,
-			email: user.email,
-			suspended: user.suspended
+			email: user.email
 		}
 	});
 
@@ -89,22 +86,6 @@ const UpdateUserDialog = ({
 											<FormLabel>Email</FormLabel>
 											<FormControl>
 												<Input {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name='suspended'
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Suspended</FormLabel>
-											<FormControl>
-												<Switch
-													checked={field.value}
-													onCheckedChange={field.onChange}
-												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
