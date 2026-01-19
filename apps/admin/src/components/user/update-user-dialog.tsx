@@ -4,8 +4,7 @@ import {
 	DialogDescription,
 	DialogFooter,
 	DialogHeader,
-	DialogTitle,
-	DialogTrigger
+	DialogTitle
 } from '@/components/ui/dialog';
 import { Button } from '../ui/button';
 import { type User } from '@/data/types';
@@ -26,6 +25,8 @@ import { Switch } from '../ui/switch';
 
 interface UpdateUserDialogProps {
 	user: User;
+	open?: boolean;
+	onOpenChange?: (open: boolean) => void;
 }
 
 const updateUserFormSchema = z.object({
@@ -34,7 +35,11 @@ const updateUserFormSchema = z.object({
 	suspended: z.boolean()
 });
 
-const UpdateUserDialog = ({ user }: UpdateUserDialogProps) => {
+const UpdateUserDialog = ({
+	user,
+	open,
+	onOpenChange
+}: UpdateUserDialogProps) => {
 	const updateUserMutation = useUpdateUserMutation(user.id);
 
 	const form = useForm<z.infer<typeof updateUserFormSchema>>({
@@ -51,13 +56,10 @@ const UpdateUserDialog = ({ user }: UpdateUserDialogProps) => {
 	};
 
 	return (
-		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)}>
-				<Dialog>
-					<DialogTrigger asChild>
-						<Button>Update User</Button>
-					</DialogTrigger>
-					<DialogContent>
+		<Dialog open={open} onOpenChange={onOpenChange}>
+			<DialogContent>
+				<Form {...form}>
+					<form onSubmit={form.handleSubmit(onSubmit)}>
 						<DialogHeader>
 							<DialogTitle>Update User</DialogTitle>
 							<DialogDescription>
@@ -115,10 +117,10 @@ const UpdateUserDialog = ({ user }: UpdateUserDialogProps) => {
 								{updateUserMutation.isPending ? 'Updating...' : 'Update User'}
 							</Button>
 						</DialogFooter>
-					</DialogContent>
-				</Dialog>
-			</form>
-		</Form>
+					</form>
+				</Form>
+			</DialogContent>
+		</Dialog>
 	);
 };
 

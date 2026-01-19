@@ -1,4 +1,4 @@
-import UpdateUserDialog from '@/components/user/update-user-dialog';
+import UserActionsDropdown from '@/components/user/user-actions-dropdown';
 import UserOrders from '@/components/user/user-orders';
 import { useUserQuery } from '@/data/queries';
 import { useParams } from 'react-router';
@@ -30,14 +30,11 @@ const User = () => {
 								<Badge variant={user.suspended ? 'secondary' : 'default'}>
 									{user.suspended ? 'Suspended' : 'Active'}
 								</Badge>
-							</span>,
-							<span key='id'>
-								<CopyableText value={user.id} />
 							</span>
 						]}
 					/>
 				</div>
-				<UpdateUserDialog user={user} />
+				<UserActionsDropdown user={user} />
 			</div>
 			<UserOrders user={user} />
 		</div>
