@@ -1,9 +1,9 @@
 import { ProductStatus } from '../../generated/prisma/client';
 import * as ProductData from '../data/products';
+
 import { AppContext } from '../../utils/context';
-import { canManageStore } from './permissions';
-import { LogicError, LogicErrorCode } from './errors';
 import { ProductFilters } from '../../utils/queries';
+import { LogicError, LogicErrorCode } from './errors';
 
 export interface CreateProductInput {
 	name: string;
@@ -89,15 +89,13 @@ export const updateProduct = async (
 		throw new LogicError(LogicErrorCode.ProductNotFound);
 	}
 
-	const isManager = await canManageStore(ctx);
+	// TODO: To simplify store manager actions, it might make sense
+	// to not have the /stores/current concept, and just pass in the
+	// store we are referring to explicitly every time.
 
-	if (!isManager) {
-		throw new LogicError(LogicErrorCode.Forbidden);
-	}
+	const isUserAdmin = await ctx.isAdmin();
 
-	const userIsAdmin = await ctx.isAdmin();
-
-	if (ctx.storeId && ctx.storeId !== existingProduct.storeId && !userIsAdmin) {
+	if (!isUserAdmin && ctx.storeId && ctx.storeId !== existingProduct.storeId) {
 		throw new LogicError(LogicErrorCode.ProductStoreMismatch);
 	}
 
