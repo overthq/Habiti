@@ -10,7 +10,7 @@ import StoreManagers from '@/components/stores/store-managers';
 import StoreProducts from '@/components/stores/store-products';
 import StoreOrders from '@/components/stores/store-orders';
 import StorePayouts from '@/components/stores/store-payouts';
-import UpdateStoreDialog from '@/components/store/update-store-dialog';
+import StoreActionsDropdown from '@/components/store/store-actions-dropdown';
 
 interface StoreMainProps {
 	store: StoreType;
@@ -41,7 +41,7 @@ const StoreMain = ({ store }: StoreMainProps) => {
 						]}
 					/>
 				</div>
-				<UpdateStoreDialog store={store} />
+				<StoreActionsDropdown store={store} />
 			</div>
 
 			<div>
