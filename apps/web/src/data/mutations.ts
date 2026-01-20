@@ -38,6 +38,10 @@ export const useAddToCartMutation = () => {
 		mutationFn: (body: AddToCartBody) => addToCart(body),
 		onSuccess: data => {
 			queryClient.invalidateQueries({
+				queryKey: ['carts'],
+				exact: true
+			});
+			queryClient.invalidateQueries({
 				queryKey: ['carts', data.cartProduct.cartId]
 			});
 			queryClient.invalidateQueries({
