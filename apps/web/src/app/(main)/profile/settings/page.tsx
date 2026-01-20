@@ -137,7 +137,7 @@ const PaymentsTab = () => {
 				{data.cards.map(card => (
 					<div key={card.id}>
 						<p className='capitalize'>
-							{card.cardType} {`\u2022\u2022\u2022\u2022${card.last4}`}
+							{card.cardType} {`*${card.last4}`}
 						</p>
 					</div>
 				))}
