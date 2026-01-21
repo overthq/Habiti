@@ -14,8 +14,8 @@ import * as AdminController from './controllers/admin';
 import * as PaymentController from './controllers/payments';
 import * as SearchController from './controllers/search';
 import * as WebhooksController from './controllers/webhooks';
+import * as CardController from './controllers/cards';
 
-import { authorizeCard } from './controllers/cards';
 import { getLandingHighlights } from './controllers/highlights';
 import { checkHealth } from './controllers/health';
 
@@ -166,7 +166,8 @@ router.delete(
 );
 
 // Cards
-router.post('/cards/authorize', authenticate, authorizeCard);
+router.post('/cards/authorize', authenticate, CardController.authorizeCard);
+router.delete('/cards/:cardId', authenticate, CardController.deleteCard);
 
 // Admin
 router.post(

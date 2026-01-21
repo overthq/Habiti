@@ -15,7 +15,8 @@ import {
 	updateCurrentUser,
 	verifyCode,
 	deleteCurrentUser,
-	getCardAuthorization
+	getCardAuthorization,
+	deleteCard
 } from './requests';
 
 import type {
@@ -174,6 +175,16 @@ export const useCompleteOrderPaymentMutation = () => {
 			openPaystackPopup(data.access_code);
 			queryClient.invalidateQueries({ queryKey: ['orders'] });
 		},
+		onError: () => {
+			toast.error('Failed to initiate payment');
+		}
+	});
+};
+
+export const useDeleteCardMutation = () => {
+	return useMutation({
+		mutationFn: (cardId: string) => deleteCard(cardId),
+		onSuccess: () => {},
 		onError: () => {
 			toast.error('Failed to initiate payment');
 		}
