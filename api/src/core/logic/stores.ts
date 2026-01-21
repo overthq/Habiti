@@ -4,6 +4,7 @@ import { getStorePushTokens, NotificationType } from '../notifications';
 import * as PayoutData from '../data/payouts';
 import { ProductFilters } from '../../utils/queries';
 import { LogicError, LogicErrorCode } from './errors';
+import { canManageStore } from './permissions';
 
 interface CreateStoreInput {
 	name: string;
@@ -72,13 +73,10 @@ export const updateStore = async (ctx: AppContext, input: UpdateStoreInput) => {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const userId = ctx.user.id;
+	const isAuthorized = await canManageStore(ctx);
 
-	// FIXME: For some reason, using ctx.user.id directly does not work
-	const isManager = existingStore.managers.some(m => m.managerId === userId);
-
-	if (!isManager) {
-		throw new LogicError(LogicErrorCode.CannotManageStore);
+	if (!isAuthorized) {
+		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
 	const store = await StoreData.updateStore(ctx.prisma, storeId, updateData);

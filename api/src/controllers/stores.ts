@@ -52,7 +52,7 @@ export const updateStore = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const { name, description, website, twitter, instagram } = req.body;
+	const { name, description, website, twitter, instagram, unlisted } = req.body;
 	const storeId = req.params.id;
 
 	if (!storeId) {
@@ -68,7 +68,8 @@ export const updateStore = async (
 			description,
 			website,
 			twitter,
-			instagram
+			instagram,
+			unlisted
 		});
 		return res.status(200).json({ store });
 	} catch (error) {
