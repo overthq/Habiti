@@ -47,6 +47,35 @@ export const createStore = async (
 	}
 };
 
+export const updateStore = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const { name, description, website, twitter, instagram } = req.body;
+	const storeId = req.params.id;
+
+	if (!storeId) {
+		return res.status(400).json({ message: 'Store ID is required' });
+	}
+
+	const ctx = getAppContext(req);
+
+	try {
+		const store = await StoreLogic.updateStore(ctx, {
+			storeId,
+			name,
+			description,
+			website,
+			twitter,
+			instagram
+		});
+		return res.status(200).json({ store });
+	} catch (error) {
+		return next(error);
+	}
+};
+
 export const getCurrentStore = async (
 	req: Request,
 	res: Response,
