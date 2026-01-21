@@ -127,8 +127,7 @@ export const useVerifyCodeMutation = () => {
 export const useCreateOrderMutation = () => {
 	const router = useRouter();
 	return useMutation({
-		mutationFn: (body: CreateOrderBody) =>
-			createOrder({ ...body, cardId: undefined }),
+		mutationFn: (body: CreateOrderBody) => createOrder(body),
 		onSuccess: data => {
 			if (data.cardAuthorizationData) {
 				openPaystackPopup(data.cardAuthorizationData.access_code);
