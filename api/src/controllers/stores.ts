@@ -1,20 +1,33 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 import { hydrateQuery, productFiltersSchema } from '../utils/queries';
 import { getAppContext } from '../utils/context';
 import * as StoreLogic from '../core/logic/stores';
 import * as ProductLogic from '../core/logic/products';
 
-export const getStores = async (req: Request, res: Response) => {
+export const getStores = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	const query = hydrateQuery(req.query);
-	const ctx = getAppContext(req);
 
-	const stores = await StoreLogic.getStores(ctx, query);
+	try {
+		const ctx = getAppContext(req);
 
-	return res.json({ stores });
+		const stores = await StoreLogic.getStores(ctx, query);
+
+		return res.json({ stores });
+	} catch (error) {
+		return next(error);
+	}
 };
 
-export const createStore = async (req: Request, res: Response) => {
+export const createStore = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	const { name, description, website, twitter, instagram } = req.body;
 
 	const ctx = getAppContext(req);
@@ -30,73 +43,107 @@ export const createStore = async (req: Request, res: Response) => {
 
 		return res.status(201).json({ store });
 	} catch (error) {
-		return res.status(500).json({ error: (error as Error)?.message });
+		return next(error);
 	}
 };
 
-export const getCurrentStore = async (req: Request, res: Response) => {
+export const getCurrentStore = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	const ctx = getAppContext(req);
 
 	if (!ctx.storeId) {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
 
-	const store = await StoreLogic.getStoreById(ctx, ctx.storeId);
+	try {
+		const store = await StoreLogic.getStoreById(ctx, ctx.storeId);
 
-	return res.json({ store });
+		return res.json({ store });
+	} catch (error) {
+		return next(error);
+	}
 };
 
-export const getStorePayouts = async (req: Request, res: Response) => {
+export const getStorePayouts = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	const ctx = getAppContext(req);
 
 	let storeId = ctx.storeId;
 
-	const isAdmin = await ctx.isAdmin();
+	try {
+		const isAdmin = await ctx.isAdmin();
 
-	if (isAdmin) {
-		storeId = req.params.id;
+		if (isAdmin) {
+			storeId = req.params.id;
+		}
+
+		if (!storeId) {
+			return res.status(400).json({ error: 'Store ID is required' });
+		}
+
+		const payouts = await StoreLogic.getStorePayouts(ctx, storeId);
+
+		return res.json({ payouts });
+	} catch (error) {
+		return next(error);
 	}
-
-	if (!storeId) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
-	const payouts = await StoreLogic.getStorePayouts(ctx, storeId);
-
-	return res.json({ payouts });
 };
 
 export const getStoreById = async (
 	req: Request<{ id: string }>,
-	res: Response
+	res: Response,
+	next: NextFunction
 ) => {
 	const ctx = getAppContext(req);
-	const storeWithContext = await StoreLogic.getStoreById(ctx, req.params.id);
 
-	if (!storeWithContext) {
-		return res.status(404).json({ error: 'Store not found' });
+	try {
+		const storeWithContext = await StoreLogic.getStoreById(ctx, req.params.id);
+
+		if (!storeWithContext) {
+			return res.status(404).json({ error: 'Store not found' });
+		}
+
+		return res.json(storeWithContext);
+	} catch (error) {
+		return next(error);
 	}
-
-	return res.json(storeWithContext);
 };
 
-export const getStoreProducts = async (req: Request, res: Response) => {
+export const getStoreProducts = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	if (!req.params.id) {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
 
 	const ctx = getAppContext(req);
 
-	const products = await StoreLogic.getStoreProducts(
-		ctx,
-		req.params.id,
-		productFiltersSchema.parse(req.query)
-	);
+	try {
+		const products = await StoreLogic.getStoreProducts(
+			ctx,
+			req.params.id,
+			productFiltersSchema.parse(req.query)
+		);
 
-	return res.json({ products });
+		return res.json({ products });
+	} catch (error) {
+		return next(error);
+	}
 };
 
-export const createStoreProduct = async (req: Request, res: Response) => {
+export const createStoreProduct = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	const { name, description, unitPrice, quantity } = req.body;
 
 	const ctx = getAppContext(req);
@@ -105,85 +152,121 @@ export const createStoreProduct = async (req: Request, res: Response) => {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
 
-	const product = await ProductLogic.createProduct(ctx, {
-		name,
-		description,
-		unitPrice,
-		quantity,
-		storeId: ctx.storeId
-	});
+	try {
+		const product = await ProductLogic.createProduct(ctx, {
+			name,
+			description,
+			unitPrice,
+			quantity,
+			storeId: ctx.storeId
+		});
 
-	return res.json({ product });
+		return res.json({ product });
+	} catch (error) {
+		return next(error);
+	}
 };
 
-export const getStoreOrders = async (req: Request, res: Response) => {
+export const getStoreOrders = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	const ctx = getAppContext(req);
 
 	let storeId = ctx.storeId;
 
-	const isAdmin = await ctx.isAdmin();
+	try {
+		const isAdmin = await ctx.isAdmin();
 
-	if (isAdmin) {
-		storeId = req.params.id;
+		if (isAdmin) {
+			storeId = req.params.id;
+		}
+
+		if (!storeId) {
+			return res.status(400).json({ error: 'Store ID is required' });
+		}
+
+		const query = hydrateQuery(req.query);
+
+		const orders = await StoreLogic.getStoreOrders(ctx, storeId, query);
+
+		return res.json({ orders });
+	} catch (error) {
+		return next(error);
 	}
-
-	if (!storeId) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
-	const query = hydrateQuery(req.query);
-
-	const orders = await StoreLogic.getStoreOrders(ctx, storeId, query);
-
-	return res.json({ orders });
 };
 
-export const getStoreManagers = async (req: Request, res: Response) => {
+export const getStoreManagers = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	const ctx = getAppContext(req);
 
 	let storeId = ctx.storeId;
 
-	const isAdmin = await ctx.isAdmin();
+	try {
+		const isAdmin = await ctx.isAdmin();
 
-	if (isAdmin) {
-		storeId = req.params.id;
+		if (isAdmin) {
+			storeId = req.params.id;
+		}
+
+		if (!storeId) {
+			return res.status(400).json({ error: 'Store ID is required' });
+		}
+
+		const query = hydrateQuery(req.query);
+
+		const managers = await StoreLogic.getStoreManagers(ctx, storeId, query);
+
+		return res.json({ managers });
+	} catch (error) {
+		return next(error);
 	}
-
-	if (!storeId) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
-	const query = hydrateQuery(req.query);
-
-	const managers = await StoreLogic.getStoreManagers(ctx, storeId, query);
-
-	return res.json({ managers });
 };
 
-export const followStore = async (req: Request, res: Response) => {
+export const followStore = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	if (!req.params.id) {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
 
 	const ctx = getAppContext(req);
 
-	const follower = await StoreLogic.followStore(ctx, {
-		storeId: req.params.id
-	});
+	try {
+		const follower = await StoreLogic.followStore(ctx, {
+			storeId: req.params.id
+		});
 
-	return res.status(200).json({ follower });
+		return res.status(200).json({ follower });
+	} catch (error) {
+		return next(error);
+	}
 };
 
-export const unfollowStore = async (req: Request, res: Response) => {
+export const unfollowStore = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	if (!req.params.id) {
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
 
 	const ctx = getAppContext(req);
 
-	const follower = await StoreLogic.unfollowStore(ctx, {
-		storeId: req.params.id
-	});
+	try {
+		const follower = await StoreLogic.unfollowStore(ctx, {
+			storeId: req.params.id
+		});
 
-	return res.status(200).json({ follower });
+		return res.status(200).json({ follower });
+	} catch (error) {
+		return next(error);
+	}
 };
