@@ -18,23 +18,24 @@ export const BulkActionsToolbar = ({
 	}
 
 	return (
-		<div className='flex items-center gap-4 p-3 bg-muted/50 border rounded-lg'>
-			<div className='flex items-center gap-2'>
-				<span className='text-sm font-medium'>
-					{selectedCount} item{selectedCount !== 1 ? 's' : ''} selected
-				</span>
-				<Button
-					variant='ghost'
-					size='sm'
-					onClick={onClearSelection}
-					className='h-7 px-2'
-				>
-					<X className='h-4 w-4' />
-					<span className='sr-only'>Clear selection</span>
-				</Button>
+		<div className='absolute w-full bottom-2'>
+			<div className='flex gap-4 px-3 py-2 bg-muted/50 border rounded-md w-fit mx-auto'>
+				<div className='flex items-center gap-2'>
+					<span className='text-sm font-medium'>
+						{selectedCount} item{selectedCount !== 1 ? 's' : ''} selected
+					</span>
+					<Button
+						variant='ghost'
+						size='sm'
+						onClick={onClearSelection}
+						className='h-7 px-2'
+					>
+						<X className='h-4 w-4' />
+						<span className='sr-only'>Clear selection</span>
+					</Button>
+				</div>
+				<div className='flex items-center gap-2'>{children}</div>
 			</div>
-			<div className='h-4 w-px bg-border' />
-			<div className='flex items-center gap-2'>{children}</div>
 		</div>
 	);
 };

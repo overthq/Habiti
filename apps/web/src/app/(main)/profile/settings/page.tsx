@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
+	useDeleteCardMutation,
 	useDeleteCurrentUserMutation,
 	useUpdateCurrentUserMutation
 } from '@/data/mutations';
@@ -25,6 +26,7 @@ import { useCardsQuery, useCurrentUserQuery } from '@/data/queries';
 import { User } from '@/data/types';
 import { useAuthStore } from '@/state/auth-store';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { PlusIcon, Trash2Icon } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -120,6 +122,11 @@ const AccountTab: React.FC<AccountTabProps> = ({ user }) => {
 
 const PaymentsTab = () => {
 	const { isLoading, data } = useCardsQuery();
+	const deleteCardMutation = useDeleteCardMutation();
+
+	const handleDeleteCard = (cardId: string) => {
+		deleteCardMutation.mutate(cardId);
+	};
 
 	if (isLoading || !data) {
 		return <div />; // TODO: Skeleton
@@ -127,21 +134,34 @@ const PaymentsTab = () => {
 
 	return (
 		<div>
-			<div>
-				<h2 className='font-medium mt-4 mb-1'>Payment Methods</h2>
+			<h2 className='font-medium mt-4 mb-1'>Payment Methods</h2>
 
-				<p className='text-sm text-muted-foreground mb-4'>
-					Your payment methods are stored securely by Paystack.
-				</p>
+			<p className='text-sm text-muted-foreground mb-4'>
+				Your payment methods are stored securely by Paystack.
+			</p>
 
-				{data.cards.map(card => (
-					<div key={card.id}>
-						<p className='capitalize'>
-							{card.cardType} {`\u2022\u2022\u2022\u2022${card.last4}`}
-						</p>
-					</div>
-				))}
-			</div>
+			{data.cards.map(card => (
+				<div
+					key={card.id}
+					className='flex items-center justify-between py-3 border rounded-md p-2 px-3'
+				>
+					<p className='capitalize'>
+						{card.cardType} {`*${card.last4}`}
+					</p>
+
+					<Button
+						onClick={() => handleDeleteCard(card.id)}
+						variant='outline'
+						size='icon'
+					>
+						<Trash2Icon />
+					</Button>
+				</div>
+			))}
+
+			<Button className='mt-4'>
+				<PlusIcon /> Add card
+			</Button>
 		</div>
 	);
 };

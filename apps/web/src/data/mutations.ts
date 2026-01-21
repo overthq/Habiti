@@ -15,7 +15,8 @@ import {
 	updateCurrentUser,
 	verifyCode,
 	deleteCurrentUser,
-	getCardAuthorization
+	getCardAuthorization,
+	deleteCard
 } from './requests';
 
 import type {
@@ -37,6 +38,10 @@ export const useAddToCartMutation = () => {
 	return useMutation({
 		mutationFn: (body: AddToCartBody) => addToCart(body),
 		onSuccess: data => {
+			queryClient.invalidateQueries({
+				queryKey: ['carts'],
+				exact: true
+			});
 			queryClient.invalidateQueries({
 				queryKey: ['carts', data.cartProduct.cartId]
 			});
@@ -122,8 +127,7 @@ export const useVerifyCodeMutation = () => {
 export const useCreateOrderMutation = () => {
 	const router = useRouter();
 	return useMutation({
-		mutationFn: (body: CreateOrderBody) =>
-			createOrder({ ...body, cardId: undefined }),
+		mutationFn: (body: CreateOrderBody) => createOrder(body),
 		onSuccess: data => {
 			if (data.cardAuthorizationData) {
 				openPaystackPopup(data.cardAuthorizationData.access_code);
@@ -170,6 +174,16 @@ export const useCompleteOrderPaymentMutation = () => {
 			openPaystackPopup(data.access_code);
 			queryClient.invalidateQueries({ queryKey: ['orders'] });
 		},
+		onError: () => {
+			toast.error('Failed to initiate payment');
+		}
+	});
+};
+
+export const useDeleteCardMutation = () => {
+	return useMutation({
+		mutationFn: (cardId: string) => deleteCard(cardId),
+		onSuccess: () => {},
 		onError: () => {
 			toast.error('Failed to initiate payment');
 		}

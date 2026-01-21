@@ -4,8 +4,7 @@ import {
 	DialogDescription,
 	DialogFooter,
 	DialogHeader,
-	DialogTitle,
-	DialogTrigger
+	DialogTitle
 } from '@/components/ui/dialog';
 import { Button } from '../ui/button';
 import { type User } from '@/data/types';
@@ -22,27 +21,30 @@ import {
 	FormMessage
 } from '../ui/form';
 import { Input } from '../ui/input';
-import { Switch } from '../ui/switch';
 
 interface UpdateUserDialogProps {
 	user: User;
+	open?: boolean;
+	onOpenChange?: (open: boolean) => void;
 }
 
 const updateUserFormSchema = z.object({
 	name: z.string().min(1),
-	email: z.string().email(),
-	suspended: z.boolean()
+	email: z.string().email()
 });
 
-const UpdateUserDialog = ({ user }: UpdateUserDialogProps) => {
+const UpdateUserDialog = ({
+	user,
+	open,
+	onOpenChange
+}: UpdateUserDialogProps) => {
 	const updateUserMutation = useUpdateUserMutation(user.id);
 
 	const form = useForm<z.infer<typeof updateUserFormSchema>>({
 		resolver: zodResolver(updateUserFormSchema),
 		defaultValues: {
 			name: user.name,
-			email: user.email,
-			suspended: user.suspended
+			email: user.email
 		}
 	});
 
@@ -51,13 +53,10 @@ const UpdateUserDialog = ({ user }: UpdateUserDialogProps) => {
 	};
 
 	return (
-		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)}>
-				<Dialog>
-					<DialogTrigger asChild>
-						<Button>Update User</Button>
-					</DialogTrigger>
-					<DialogContent>
+		<Dialog open={open} onOpenChange={onOpenChange}>
+			<DialogContent>
+				<Form {...form}>
+					<form onSubmit={form.handleSubmit(onSubmit)}>
 						<DialogHeader>
 							<DialogTitle>Update User</DialogTitle>
 							<DialogDescription>
@@ -92,22 +91,6 @@ const UpdateUserDialog = ({ user }: UpdateUserDialogProps) => {
 										</FormItem>
 									)}
 								/>
-								<FormField
-									control={form.control}
-									name='suspended'
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Suspended</FormLabel>
-											<FormControl>
-												<Switch
-													checked={field.value}
-													onCheckedChange={field.onChange}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
 							</div>
 						</div>
 						<DialogFooter>
@@ -115,10 +98,10 @@ const UpdateUserDialog = ({ user }: UpdateUserDialogProps) => {
 								{updateUserMutation.isPending ? 'Updating...' : 'Update User'}
 							</Button>
 						</DialogFooter>
-					</DialogContent>
-				</Dialog>
-			</form>
-		</Form>
+					</form>
+				</Form>
+			</DialogContent>
+		</Dialog>
 	);
 };
 

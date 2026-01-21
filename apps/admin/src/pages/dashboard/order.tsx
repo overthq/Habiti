@@ -1,16 +1,17 @@
-import React from 'react';
-import { Check } from 'lucide-react';
+import { ChevronDown, RefreshCw } from 'lucide-react';
 import { useParams } from 'react-router';
 
 import CopyableText from '@/components/ui/copy';
 import { Button } from '@/components/ui/button';
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from '@/components/ui/select';
+	DropdownMenu,
+	DropdownMenuCheckboxItem,
+	DropdownMenuContent,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
+	DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
 import {
 	Table,
 	TableBody,
@@ -19,6 +20,7 @@ import {
 	TableHeader,
 	TableRow
 } from '@/components/ui/table';
+import { ConfirmDialog } from '@/components/confirm-dialog';
 import { useUpdateOrderMutation } from '@/data/mutations';
 import { useOrderQuery } from '@/data/queries';
 import { Link } from 'react-router';
@@ -30,19 +32,15 @@ import InlineMeta from '@/components/ui/inline-meta';
 const OrderDetailPage = () => {
 	const { id } = useParams();
 	const { data: orderData, isLoading } = useOrderQuery(id as string);
-	const { mutateAsync: updateOrder } = useUpdateOrderMutation(id as string);
-	const [status, setStatus] = React.useState<OrderStatus>();
+	const { mutateAsync: updateOrder, isPending } = useUpdateOrderMutation(
+		id as string
+	);
 
 	if (isLoading || !id) {
 		return <div>Loading...</div>;
 	}
 
 	const order = orderData?.order;
-
-	const handleStatusUpdate = async () => {
-		if (!status) return;
-		await updateOrder({ status });
-	};
 
 	return (
 		<div className='space-y-6'>
@@ -65,27 +63,43 @@ const OrderDetailPage = () => {
 						]}
 					/>
 				</div>
-				<div className='flex items-center gap-2'>
-					<Select
-						value={status}
-						onValueChange={value => setStatus(value as OrderStatus)}
-					>
-						<SelectTrigger className='w-[180px]'>
-							<SelectValue placeholder='Update status' />
-						</SelectTrigger>
-						<SelectContent>
-							{Object.values(OrderStatus).map(status => (
-								<SelectItem key={status} value={status}>
-									{status}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-					<Button size='sm' onClick={handleStatusUpdate} disabled={!status}>
-						<Check className='h-4 w-4 mr-2' />
-						Update
-					</Button>
-				</div>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button variant='outline'>
+							Actions
+							<ChevronDown className='ml-2 h-4 w-4' />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align='end'>
+						<DropdownMenuSub>
+							<DropdownMenuSubTrigger>
+								<RefreshCw className='mr-2 h-4 w-4' />
+								Update status
+							</DropdownMenuSubTrigger>
+							<DropdownMenuSubContent>
+								{Object.values(OrderStatus).map(statusOption => (
+									<ConfirmDialog
+										key={statusOption}
+										title='Update Order Status'
+										description={`Change order status from "${order?.status}" to "${statusOption}"?`}
+										confirmLabel='Update'
+										variant='default'
+										isLoading={isPending}
+										onConfirm={() => updateOrder({ status: statusOption })}
+										trigger={
+											<DropdownMenuCheckboxItem
+												onSelect={e => e.preventDefault()}
+												checked={statusOption === order?.status}
+											>
+												{statusOption}
+											</DropdownMenuCheckboxItem>
+										}
+									/>
+								))}
+							</DropdownMenuSubContent>
+						</DropdownMenuSub>
+					</DropdownMenuContent>
+				</DropdownMenu>
 			</div>
 
 			<InlineMeta

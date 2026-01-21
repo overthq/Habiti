@@ -16,20 +16,18 @@ import { useAuthenticateMutation } from '../hooks/mutations';
 
 interface AuthenticateFormValues {
 	email: string;
-	password: string;
 }
 
 const Authenticate = () => {
 	const authenticateMutation = useAuthenticateMutation();
 	const { control, handleSubmit } = useForm<AuthenticateFormValues>({
-		defaultValues: { email: '', password: '' }
+		defaultValues: { email: '' }
 	});
 	const { goBack } = useNavigation();
 
 	const onSubmit = (values: AuthenticateFormValues) => {
 		authenticateMutation.mutate({
-			email: values.email,
-			password: values.password
+			email: values.email
 		});
 	};
 
@@ -45,7 +43,9 @@ const Authenticate = () => {
 				<Typography weight='bold' size='xxxlarge'>
 					Welcome back.
 				</Typography>
-				<Typography variant='secondary'>Log in to your account.</Typography>
+				<Typography variant='secondary'>
+					Enter your email to receive a verification code.
+				</Typography>
 
 				<Spacer y={16} />
 
@@ -59,22 +59,10 @@ const Authenticate = () => {
 					autoCapitalize='none'
 				/>
 
-				<Spacer y={8} />
-
-				<FormInput
-					name='password'
-					control={control}
-					label='Password'
-					placeholder='Your password'
-					secureTextEntry
-					autoCapitalize='none'
-					autoCorrect={false}
-				/>
-
 				<Spacer y={16} />
 
 				<Button
-					text='Submit'
+					text='Send verification code'
 					onPress={handleSubmit(onSubmit)}
 					loading={authenticateMutation.isPending}
 				/>

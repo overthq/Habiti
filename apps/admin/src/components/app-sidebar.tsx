@@ -5,8 +5,7 @@ import {
 	Home,
 	Package,
 	DollarSign,
-	LogOut,
-	User
+	LogOut
 } from 'lucide-react';
 import { Link, NavLink, useLocation } from 'react-router';
 import { useState, useEffect } from 'react';
@@ -31,6 +30,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { getCurrentAdmin } from '@/lib/utils';
 import { useLogoutMutation } from '@/data/mutations';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 const items = [
 	{
@@ -120,8 +120,13 @@ export function AppSidebar() {
 						<SidebarMenuItem>
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
-									<SidebarMenuButton className='w-full'>
-										<User className='size-4' />
+									<SidebarMenuButton size='lg' className='w-full'>
+										<Avatar className='size-8 rounded-lg'>
+											<AvatarFallback className='rounded-lg'>
+												{admin.name?.[0]}
+											</AvatarFallback>
+										</Avatar>
+
 										<span className='truncate'>{admin.name}</span>
 									</SidebarMenuButton>
 								</DropdownMenuTrigger>

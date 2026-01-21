@@ -282,6 +282,14 @@ export const getLandingHighlights = async () => {
 	return response.data;
 };
 
+// Cards
+
+export const deleteCard = async (cardId: string) => {
+	const response = await api.delete(`/cards/${cardId}`);
+
+	return response.data;
+};
+
 interface RefreshTokenResponse {
 	accessToken: string;
 	refreshToken: string;

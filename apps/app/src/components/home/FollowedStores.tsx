@@ -31,7 +31,7 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 					onPress: () => navigate('Home.FollowedStores')
 				}}
 			/>
-			<Spacer y={4} />
+			<Spacer y={8} />
 			<FollowedStoresMain followed={followed} />
 		</View>
 	);

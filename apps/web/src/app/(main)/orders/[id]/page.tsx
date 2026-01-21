@@ -76,7 +76,7 @@ const OrderPage = () => {
 				</Link>
 			</div>
 
-			<div className='my-6'>
+			<div className='my-6 space-y-2'>
 				{order.products.map(({ product, productId, unitPrice, quantity }) => (
 					<div key={productId} className='flex items-center gap-3'>
 						<div className='size-14 bg-muted rounded-md flex items-center justify-center overflow-hidden'>
@@ -101,11 +101,7 @@ const OrderPage = () => {
 			<div className='border rounded-md p-4 bg-muted my-4'>
 				<div className='flex justify-between'>
 					<p>Subtotal</p>
-					<p>
-						{formatNaira(
-							order.total - (order.transactionFee + order.serviceFee)
-						)}
-					</p>
+					<p>{formatNaira(order.total)}</p>
 				</div>
 				<div className='flex justify-between'>
 					<p>Transaction Fee</p>
@@ -117,7 +113,9 @@ const OrderPage = () => {
 				</div>
 				<div className='flex font-medium justify-between'>
 					<p>Total</p>
-					<p>{formatNaira(order.total)}</p>
+					<p>
+						{formatNaira(order.total + order.transactionFee + order.serviceFee)}
+					</p>
 				</div>
 			</div>
 

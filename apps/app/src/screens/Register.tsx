@@ -12,25 +12,16 @@ import { z } from 'zod';
 
 import { useRegisterMutation } from '../hooks/mutations';
 
-const registerFormSchema = z
-	.object({
-		name: z.string().min(1),
-		email: z.string().email(),
-		password: z.string().min(8),
-		confirmPassword: z.string().min(8)
-	})
-	.refine(data => data.password === data.confirmPassword, {
-		message: 'Passwords do not match',
-		path: ['confirmPassword']
-	});
+const registerFormSchema = z.object({
+	name: z.string().min(1),
+	email: z.string().email()
+});
 
 const Register = () => {
 	const methods = useForm<z.infer<typeof registerFormSchema>>({
 		defaultValues: {
 			name: '',
-			email: '',
-			password: '',
-			confirmPassword: ''
+			email: ''
 		}
 	});
 	const registerMutation = useRegisterMutation();
@@ -38,8 +29,7 @@ const Register = () => {
 	const onSubmit = (values: z.infer<typeof registerFormSchema>) => {
 		registerMutation.mutate({
 			name: values.name,
-			email: values.email,
-			password: values.password
+			email: values.email
 		});
 	};
 
@@ -51,7 +41,9 @@ const Register = () => {
 					<Typography weight='bold' size='xxxlarge'>
 						Create your account
 					</Typography>
-					<Typography variant='secondary'>Let's get you started.</Typography>
+					<Typography variant='secondary'>
+						Enter your details to receive a verification code.
+					</Typography>
 					<Spacer y={16} />
 					<FormInput
 						name='name'
@@ -69,24 +61,6 @@ const Register = () => {
 						keyboardType='email-address'
 						autoCapitalize='none'
 						autoCorrect={false}
-					/>
-					<Spacer y={8} />
-					<FormInput
-						name='password'
-						control={methods.control}
-						label='Password'
-						placeholder='Password'
-						secureTextEntry
-						autoCapitalize='none'
-					/>
-					<Spacer y={8} />
-					<FormInput
-						name='confirmPassword'
-						control={methods.control}
-						label='Confirm password'
-						placeholder='Confirm password'
-						secureTextEntry
-						autoCapitalize='none'
 					/>
 					<Spacer y={16} />
 					<Button

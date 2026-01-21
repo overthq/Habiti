@@ -14,6 +14,10 @@ export const canManageStore = async (ctx: AppContext) => {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
+	const isUserAdmin = await ctx.isAdmin();
+
+	if (isUserAdmin) return true;
+
 	if (!ctx.storeId) {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}

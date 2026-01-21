@@ -17,8 +17,7 @@ import { z } from 'zod';
 import { useAuthenticateMutation } from '../data/mutations';
 
 const authenticateSchema = z.object({
-	email: z.string().email('Invalid email address'),
-	password: z.string().min(8, 'Password must be at least 8 characters long')
+	email: z.string().email('Invalid email address')
 });
 
 type AuthenticateFormValues = z.infer<typeof authenticateSchema>;
@@ -28,15 +27,14 @@ const Authenticate: React.FC = () => {
 
 	const methods = useForm<AuthenticateFormValues>({
 		resolver: zodResolver(authenticateSchema),
-		defaultValues: { email: '', password: '' }
+		defaultValues: { email: '' }
 	});
 
 	const authenticateMutation = useAuthenticateMutation();
 
 	const onSubmit = (values: AuthenticateFormValues) => {
 		authenticateMutation.mutate({
-			email: values.email,
-			password: values.password
+			email: values.email
 		});
 	};
 
@@ -52,7 +50,7 @@ const Authenticate: React.FC = () => {
 				</Typography>
 				<Spacer y={4} />
 				<Typography variant='secondary'>
-					Log back in with your details.
+					Enter your email to receive a verification code.
 				</Typography>
 				<Spacer y={16} />
 				<FormInput
@@ -64,19 +62,10 @@ const Authenticate: React.FC = () => {
 					autoCapitalize='none'
 					autoCorrect={false}
 				/>
-				<Spacer y={8} />
-				<FormInput
-					name='password'
-					control={methods.control}
-					label='Password'
-					placeholder='Password'
-					secureTextEntry
-					autoCapitalize='none'
-				/>
 				<Spacer y={16} />
 				<Button
 					loading={authenticateMutation.isPending}
-					text='Next'
+					text='Send verification code'
 					onPress={methods.handleSubmit(onSubmit)}
 					disabled={!methods.formState.isValid}
 				/>

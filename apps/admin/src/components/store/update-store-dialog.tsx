@@ -4,8 +4,7 @@ import {
 	DialogContent,
 	DialogFooter,
 	DialogHeader,
-	DialogTitle,
-	DialogTrigger
+	DialogTitle
 } from '@/components/ui/dialog';
 import { Button } from '../ui/button';
 import { useForm } from 'react-hook-form';
@@ -25,6 +24,8 @@ import { type Store } from '@/data/types';
 
 interface UpdateStoreDialogProps {
 	store: Store;
+	open: boolean;
+	onOpenChange: (open: boolean) => void;
 }
 
 const updateStoreFormSchema = z.object({
@@ -32,7 +33,11 @@ const updateStoreFormSchema = z.object({
 	description: z.string().min(1)
 });
 
-const UpdateStoreDialog = ({ store }: UpdateStoreDialogProps) => {
+const UpdateStoreDialog = ({
+	store,
+	open,
+	onOpenChange
+}: UpdateStoreDialogProps) => {
 	const form = useForm<z.infer<typeof updateStoreFormSchema>>({
 		resolver: zodResolver(updateStoreFormSchema),
 		defaultValues: {
@@ -43,17 +48,21 @@ const UpdateStoreDialog = ({ store }: UpdateStoreDialogProps) => {
 	const updateStoreMutation = useUpdateStoreMutation(store.id);
 
 	const onSubmit = (data: z.infer<typeof updateStoreFormSchema>) => {
-		updateStoreMutation.mutate({
-			name: data.name,
-			description: data.description
-		});
+		updateStoreMutation.mutate(
+			{
+				name: data.name,
+				description: data.description
+			},
+			{
+				onSuccess: () => {
+					onOpenChange(false);
+				}
+			}
+		);
 	};
 
 	return (
-		<Dialog>
-			<DialogTrigger asChild>
-				<Button>Update Store</Button>
-			</DialogTrigger>
+		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent>
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)}>
