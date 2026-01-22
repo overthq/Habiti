@@ -14,9 +14,7 @@ export const canManageStore = async (ctx: AppContext) => {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const isUserAdmin = await ctx.isAdmin();
-
-	if (isUserAdmin) return true;
+	if (ctx.isAdmin) return true;
 
 	if (!ctx.storeId) {
 		throw new LogicError(LogicErrorCode.Forbidden);
@@ -32,4 +30,4 @@ export const canManageStore = async (ctx: AppContext) => {
 };
 
 // TODO: Move the meat of the functionality here
-export const isHabitiAdmin = async (ctx: AppContext) => ctx.isAdmin();
+export const isHabitiAdmin = async (ctx: AppContext) => ctx.isAdmin;

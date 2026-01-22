@@ -9,14 +9,6 @@ interface CreatePayoutInput {
 	amount: number;
 }
 
-interface MarkPayoutSuccessfulInput {
-	reference: string;
-}
-
-interface MarkPayoutFailedInput {
-	reference: string;
-}
-
 export const createPayout = async (
 	ctx: AppContext,
 	input: CreatePayoutInput
@@ -149,6 +141,10 @@ export const getStorePayouts = async (ctx: AppContext, storeId: string) => {
 	return PayoutData.getStorePayouts(ctx.prisma, storeId);
 };
 
+interface MarkPayoutSuccessfulInput {
+	reference: string;
+}
+
 export const markPayoutAsSuccessful = async (
 	ctx: AppContext,
 	input: MarkPayoutSuccessfulInput
@@ -171,6 +167,10 @@ export const markPayoutAsSuccessful = async (
 
 	return { success: true };
 };
+
+interface MarkPayoutFailedInput {
+	reference: string;
+}
 
 export const markPayoutAsFailed = async (
 	ctx: AppContext,

@@ -6,7 +6,6 @@ import * as OrderData from '../data/orders';
 import * as CartData from '../data/carts';
 import * as CardData from '../data/cards';
 
-import { CreateOrderInput, UpdateOrderStatusInput } from './types';
 import { createOrderHooks, updateOrderHooks } from './hooks';
 import { validateCart } from '../validations/carts';
 import { createOrderSchema, updateOrderSchema } from '../validations/orders';
@@ -15,6 +14,13 @@ import { InitializeTransactionResponse } from '../payments/paystack';
 import { chargeAuthorization } from '../payments';
 import { LogicError, LogicErrorCode } from './errors';
 import { OrderFilters } from '../../utils/queries';
+
+interface CreateOrderInput {
+	cartId: string;
+	cardId?: string;
+	transactionFee: number;
+	serviceFee: number;
+}
 
 export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 	const { data: validatedInput, success } = createOrderSchema.safeParse(input);
@@ -101,7 +107,7 @@ export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 		});
 	}
 
-	createOrderHooks(ctx.prisma, ctx.services, {
+	createOrderHooks(ctx, {
 		orderId: order.id,
 		userId: ctx.user.id,
 		storeId: cart.storeId,
@@ -122,6 +128,11 @@ export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 	};
 };
 
+export interface UpdateOrderStatusInput {
+	orderId: string;
+	status: OrderStatus;
+}
+
 export const updateOrderStatus = async (
 	ctx: AppContext,
 	input: UpdateOrderStatusInput
@@ -138,10 +149,10 @@ export const updateOrderStatus = async (
 
 	const { orderId, status } = validatedInput;
 
-	const currentOrder = await ctx.prisma.order.findUnique({
-		where: { id: orderId },
-		include: { store: true }
-	});
+	const currentOrder = await OrderData.getOrderByIdWithStore(
+		ctx.prisma,
+		orderId
+	);
 
 	if (!currentOrder) {
 		throw new LogicError(LogicErrorCode.OrderNotFound);
@@ -153,7 +164,7 @@ export const updateOrderStatus = async (
 		status
 	});
 
-	updateOrderHooks(ctx.prisma, ctx.services, {
+	updateOrderHooks(ctx, {
 		customerName: ctx.user.name,
 		pushToken: updatedOrder.user.pushTokens[0] ?? undefined,
 		orderId: updatedOrder.id,
@@ -195,9 +206,7 @@ export const getOrderById = async (ctx: AppContext, orderId: string) => {
 	}
 
 	if (order.userId !== ctx.user.id) {
-		const isUserAdmin = await ctx.isAdmin();
-
-		if (!isUserAdmin) {
+		if (!ctx.isAdmin) {
 			throw new LogicError(LogicErrorCode.Forbidden);
 		}
 	}

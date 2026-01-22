@@ -107,9 +107,7 @@ export const getStorePayouts = async (
 	let storeId = ctx.storeId;
 
 	try {
-		const isAdmin = await ctx.isAdmin();
-
-		if (isAdmin) {
+		if (ctx.isAdmin) {
 			storeId = req.params.id;
 		}
 
@@ -207,9 +205,7 @@ export const getStoreOrders = async (
 	let storeId = ctx.storeId;
 
 	try {
-		const isAdmin = await ctx.isAdmin();
-
-		if (isAdmin) {
+		if (ctx.isAdmin) {
 			storeId = req.params.id;
 		}
 
@@ -237,9 +233,7 @@ export const getStoreManagers = async (
 	let storeId = ctx.storeId;
 
 	try {
-		const isAdmin = await ctx.isAdmin();
-
-		if (isAdmin) {
+		if (ctx.isAdmin) {
 			storeId = req.params.id;
 		}
 
