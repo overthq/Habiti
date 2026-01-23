@@ -97,9 +97,7 @@ interface UpdateUserInput {
 export const updateUser = async (ctx: AppContext, input: UpdateUserInput) => {
 	const { userId, ...rest } = input;
 
-	const userIsAdmin = await ctx.isAdmin();
-
-	if (!ctx.user?.id || (userId !== ctx.user.id && !userIsAdmin)) {
+	if (!ctx.user?.id || (userId !== ctx.user.id && !ctx.isAdmin)) {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
@@ -132,9 +130,7 @@ interface DeleteUserInput {
 export const deleteUser = async (ctx: AppContext, input: DeleteUserInput) => {
 	const { userId } = input;
 
-	const userIsAdmin = await ctx.isAdmin();
-
-	if (!ctx.user?.id || (userId !== ctx.user.id && !userIsAdmin)) {
+	if (!ctx.user?.id || (userId !== ctx.user.id && !ctx.isAdmin)) {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 

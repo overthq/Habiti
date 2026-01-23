@@ -1,34 +1,24 @@
-import { PushTokenType } from '../generated/prisma/client';
+export enum NotificationType {
+	NewOrder = 'NEW_ORDER',
+	PayoutConfirmed = 'PAYOUT_CONFIRMED',
+	NewFollower = 'NEW_FOLLOWER',
+	OrderFulfilled = 'ORDER_FULFILLED',
+	DeliveryConfirmed = 'DELIVERY_CONFIRMED',
+	OrderCancelled = 'ORDER_CANCELLED',
+	OrderCompleted = 'ORDER_COMPLETED',
+	OrderStatusChanged = 'ORDER_STATUS_CHANGED'
+}
 
-import prismaClient from '../config/prisma';
+export interface NotificationTemplate {
+	title: string;
+	body: (data: any) => string;
+}
 
-// TODO: These should be cached in redis.
-
-export const getUserPushTokens = async (userId: string) => {
-	const user = await prismaClient.user.findUnique({
-		where: { id: userId },
-		include: { pushTokens: { where: { type: PushTokenType.Shopper } } }
-	});
-
-	return user?.pushTokens.map(token => token.token) ?? [];
-};
-
-export const getStorePushTokens = async (storeId: string) => {
-	const managers = await prismaClient.storeManager.findMany({
-		where: { storeId },
-		include: {
-			manager: {
-				include: {
-					pushTokens: { where: { type: PushTokenType.Merchant } }
-				}
-			}
-		}
-	});
-
-	return managers
-		.map(m => m.manager.pushTokens[0]?.token)
-		.filter(Boolean) as string[];
-};
+export interface NotificationPayload {
+	type: NotificationType;
+	data: any;
+	recipientTokens: string[];
+}
 
 export const notificationTemplates: Record<
 	NotificationType,
@@ -68,25 +58,3 @@ export const notificationTemplates: Record<
 			`Your order #${data.orderId}'s status has been updated to ${data.status}`
 	}
 };
-
-export enum NotificationType {
-	NewOrder = 'NEW_ORDER',
-	PayoutConfirmed = 'PAYOUT_CONFIRMED',
-	NewFollower = 'NEW_FOLLOWER',
-	OrderFulfilled = 'ORDER_FULFILLED',
-	DeliveryConfirmed = 'DELIVERY_CONFIRMED',
-	OrderCancelled = 'ORDER_CANCELLED',
-	OrderCompleted = 'ORDER_COMPLETED',
-	OrderStatusChanged = 'ORDER_STATUS_CHANGED'
-}
-
-export interface NotificationTemplate {
-	title: string;
-	body: (data: any) => string;
-}
-
-export interface NotificationPayload {
-	type: NotificationType;
-	data: any;
-	recipientTokens: string[];
-}

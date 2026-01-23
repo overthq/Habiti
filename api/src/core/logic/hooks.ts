@@ -35,25 +35,23 @@ export const createOrderHooks = (
 	if (args.status === OrderStatus.Completed) {
 		updateStoreRevenue(ctx.prisma, {
 			storeId: args.storeId,
-			status: args.status,
 			total: args.amount
 		});
 	}
 
-	if (args.pushToken) {
-		if (
-			args.status === OrderStatus.Completed ||
-			args.status === OrderStatus.Cancelled
-		) {
-			ctx.services.notifications.queueNotification({
-				type: NotificationTypeByOrderStatus[args.status],
-				data: {
-					orderId: args.orderId,
-					customerName: args.customerName
-				},
-				recipientTokens: [args.pushToken.token]
-			});
-		}
+	if (
+		args.pushToken &&
+		(args.status === OrderStatus.Completed ||
+			args.status === OrderStatus.Cancelled)
+	) {
+		ctx.services.notifications.queueNotification({
+			type: NotificationTypeByOrderStatus[args.status],
+			data: {
+				orderId: args.orderId,
+				customerName: args.customerName
+			},
+			recipientTokens: [args.pushToken.token]
+		});
 	}
 
 	ctx.services.analytics.track({
@@ -87,7 +85,6 @@ export const updateOrderHooks = (
 	if (args.status === OrderStatus.Completed) {
 		updateStoreRevenue(ctx.prisma, {
 			storeId: args.storeId,
-			status: args.status,
 			total: args.amount
 		});
 	}
@@ -103,19 +100,18 @@ export const updateOrderHooks = (
 		groups: { store: args.storeId }
 	});
 
-	if (args.pushToken) {
-		if (
-			args.status === OrderStatus.Completed ||
-			args.status === OrderStatus.Cancelled
-		) {
-			ctx.services.notifications.queueNotification({
-				type: NotificationTypeByOrderStatus[args.status],
-				data: {
-					orderId: args.orderId,
-					customerName: args.customerName
-				},
-				recipientTokens: [args.pushToken.token]
-			});
-		}
+	if (
+		args.pushToken &&
+		(args.status === OrderStatus.Completed ||
+			args.status === OrderStatus.Cancelled)
+	) {
+		ctx.services.notifications.queueNotification({
+			type: NotificationTypeByOrderStatus[args.status],
+			data: {
+				orderId: args.orderId,
+				customerName: args.customerName
+			},
+			recipientTokens: [args.pushToken.token]
+		});
 	}
 };

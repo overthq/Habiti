@@ -1,10 +1,15 @@
-import * as StoreData from '../data/stores';
 import { AppContext } from '../../utils/context';
-import { getStorePushTokens, NotificationType } from '../notifications';
+
+import * as PushTokenData from '../data/pushTokens';
+import * as StoreData from '../data/stores';
 import * as PayoutData from '../data/payouts';
+
+import { NotificationType } from '../notifications';
+
 import { ProductFilters } from '../../utils/queries';
-import { LogicError, LogicErrorCode } from './errors';
 import { canManageStore } from './permissions';
+
+import { LogicError, LogicErrorCode } from './errors';
 
 interface CreateStoreInput {
 	name: string;
@@ -296,7 +301,10 @@ export const followStore = async (ctx: AppContext, input: FollowStoreInput) => {
 		userId: ctx.user.id
 	});
 
-	const pushTokens = await getStorePushTokens(storeId);
+	const pushTokens = await PushTokenData.getStorePushTokens(
+		ctx.prisma,
+		storeId
+	);
 
 	for (const pushToken of pushTokens) {
 		if (pushToken) {

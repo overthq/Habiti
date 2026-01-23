@@ -15,12 +15,11 @@ const products: Resolver<ProductsArgs & PaginationArgs> = async (
 	ctx
 ) => {
 	const { filter, orderBy, ...paginationArgs } = args;
-	const isAdmin = await ctx.isAdmin();
 
 	// Filter out products from unlisted stores for non-admins
 	const where = {
 		...filter,
-		...(isAdmin ? {} : { store: { unlisted: false } })
+		...(!ctx.isAdmin ? {} : { store: { unlisted: false } })
 	};
 
 	return paginateQuery(

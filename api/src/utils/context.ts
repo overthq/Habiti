@@ -1,6 +1,6 @@
 import { Request } from 'express';
-import { PrismaClient } from '../generated/prisma/client';
 import { RedisClient } from 'bun';
+import { PrismaClient } from '../generated/prisma/client';
 
 import prismaClient from '../config/prisma';
 import redisClient from '../config/redis';
@@ -18,14 +18,18 @@ export interface ContextUser {
 	role: ContextUserRole;
 }
 
-export interface AppContext {
-	user?: ContextUser;
-	storeId?: string;
+export interface BaseAppContext {
 	prisma: PrismaClient;
-	redisClient: RedisClient;
+	redis: RedisClient;
 	services: Services;
 	isAdmin: boolean;
 }
+
+export type AppContext<T extends 'user' | 'store' | undefined = undefined> =
+	BaseAppContext & {
+		user: T extends 'user' | 'store' ? ContextUser : ContextUser | undefined;
+		storeId: T extends 'store' ? string : string | undefined;
+	};
 
 const services = new Services();
 
@@ -33,7 +37,7 @@ export const getAppContext = (req: Request): AppContext => ({
 	user: req.auth as ContextUser,
 	storeId: req.headers['x-market-store-id'] as string,
 	prisma: prismaClient,
-	redisClient: redisClient,
+	redis: redisClient,
 	services,
 	isAdmin: req.auth?.role === ContextUserRole.Admin
 });

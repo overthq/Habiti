@@ -308,7 +308,6 @@ export const getTrendingStores = async (
 
 interface UpdateStoreRevenueArgs {
 	storeId: string;
-	status: OrderStatus;
 	total: number;
 }
 

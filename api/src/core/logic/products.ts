@@ -29,9 +29,7 @@ export const createProduct = async (
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const userIsAdmin = await ctx.isAdmin();
-
-	if (ctx.storeId && ctx.storeId !== storeId && !userIsAdmin) {
+	if (ctx.storeId && ctx.storeId !== storeId && !ctx.isAdmin) {
 		throw new LogicError(LogicErrorCode.ProductStoreMismatch);
 	}
 
@@ -93,9 +91,7 @@ export const updateProduct = async (
 	// to not have the /stores/current concept, and just pass in the
 	// store we are referring to explicitly every time.
 
-	const isUserAdmin = await ctx.isAdmin();
-
-	if (!isUserAdmin && ctx.storeId && ctx.storeId !== existingProduct.storeId) {
+	if (!ctx.isAdmin && ctx.storeId && ctx.storeId !== existingProduct.storeId) {
 		throw new LogicError(LogicErrorCode.ProductStoreMismatch);
 	}
 
@@ -190,9 +186,7 @@ export const deleteProduct = async (
 		throw new LogicError(LogicErrorCode.ProductNotFound);
 	}
 
-	const userIsAdmin = await ctx.isAdmin();
-
-	if (ctx.storeId && ctx.storeId !== product.storeId && !userIsAdmin) {
+	if (ctx.storeId && ctx.storeId !== product.storeId && !ctx.isAdmin) {
 		throw new LogicError(LogicErrorCode.ProductStoreMismatch);
 	}
 
