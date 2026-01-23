@@ -83,6 +83,7 @@ router.post(
 
 router.get('/stores/current', authenticate, StoreController.getCurrentStore);
 router.get('/stores/:id', optionalAuth, StoreController.getStoreById);
+router.put('/stores/:id', authenticate, StoreController.updateStore);
 router.get(
 	'/stores/:id/products',
 	optionalAuth,

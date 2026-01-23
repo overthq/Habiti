@@ -184,6 +184,18 @@ export const getOrderById = async (prisma: PrismaClient, orderId: string) => {
 	return order;
 };
 
+export const getOrderByIdWithStore = async (
+	prisma: PrismaClient,
+	orderId: string
+) => {
+	const order = await prisma.order.findUnique({
+		where: { id: orderId },
+		include: { store: true }
+	});
+
+	return order;
+};
+
 export const getOrdersByUserId = async (
 	prisma: PrismaClient,
 	userId: string,

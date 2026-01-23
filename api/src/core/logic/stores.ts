@@ -1,8 +1,14 @@
-import * as StoreData from '../data/stores';
 import { AppContext } from '../../utils/context';
-import { getStorePushTokens, NotificationType } from '../notifications';
+
+import * as PushTokenData from '../data/pushTokens';
+import * as StoreData from '../data/stores';
 import * as PayoutData from '../data/payouts';
+
+import { NotificationType } from '../notifications';
+
 import { ProductFilters } from '../../utils/queries';
+import { canManageStore } from './permissions';
+
 import { LogicError, LogicErrorCode } from './errors';
 
 interface CreateStoreInput {
@@ -72,13 +78,10 @@ export const updateStore = async (ctx: AppContext, input: UpdateStoreInput) => {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const userId = ctx.user.id;
+	const isAuthorized = await canManageStore(ctx);
 
-	// FIXME: For some reason, using ctx.user.id directly does not work
-	const isManager = existingStore.managers.some(m => m.managerId === userId);
-
-	if (!isManager) {
-		throw new LogicError(LogicErrorCode.CannotManageStore);
+	if (!isAuthorized) {
+		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
 	const store = await StoreData.updateStore(ctx.prisma, storeId, updateData);
@@ -298,7 +301,10 @@ export const followStore = async (ctx: AppContext, input: FollowStoreInput) => {
 		userId: ctx.user.id
 	});
 
-	const pushTokens = await getStorePushTokens(storeId);
+	const pushTokens = await PushTokenData.getStorePushTokens(
+		ctx.prisma,
+		storeId
+	);
 
 	for (const pushToken of pushTokens) {
 		if (pushToken) {

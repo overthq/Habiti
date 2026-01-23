@@ -7,7 +7,7 @@ export const checkHealth = async (req: Request, res: Response) => {
 
 	try {
 		await ctx.prisma.$queryRaw`SELECT 1`;
-		await ctx.redisClient.ping();
+		await ctx.redis.ping();
 
 		return res.status(200).json({
 			status: 'healthy',

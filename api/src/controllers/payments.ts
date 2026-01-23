@@ -1,5 +1,9 @@
 import { Request, Response } from 'express';
+
 import * as CorePayments from '../core/payments';
+import * as PaymentLogic from '../core/logic/payments';
+
+import { getAppContext } from '../utils/context';
 
 export const verifyTransaction = async (req: Request, res: Response) => {
 	const { reference } = req.body;
@@ -29,10 +33,10 @@ export const verifyTransfer = async (req: Request, res: Response) => {
 // Any latency in our DB calls here will cause the payout to fail.
 
 export const approvePayment = async (req: Request, res: Response) => {
-	const { body } = req;
+	const ctx = getAppContext(req);
 
 	try {
-		const payout = await CorePayments.approvePayment(body);
+		const payout = await PaymentLogic.approvePayment(ctx, req.body);
 
 		if (!payout) {
 			return res.status(400).json({

@@ -3,7 +3,12 @@ import { User } from '../generated/prisma/client';
 declare global {
 	namespace Express {
 		interface Request {
-			auth?: User;
+			auth?: {
+				id: string;
+				name: string;
+				email: string;
+				role: 'admin' | 'user';
+			};
 		}
 	}
 }

@@ -1,5 +1,6 @@
 import * as PayoutData from '../data/payouts';
 import * as StoreData from '../data/stores';
+
 import { AppContext } from '../../utils/context';
 import { payAccount } from '../payments';
 import { PayoutStatus } from '../../generated/prisma/client';
@@ -7,14 +8,6 @@ import { LogicError, LogicErrorCode } from './errors';
 
 interface CreatePayoutInput {
 	amount: number;
-}
-
-interface MarkPayoutSuccessfulInput {
-	reference: string;
-}
-
-interface MarkPayoutFailedInput {
-	reference: string;
 }
 
 export const createPayout = async (
@@ -149,6 +142,10 @@ export const getStorePayouts = async (ctx: AppContext, storeId: string) => {
 	return PayoutData.getStorePayouts(ctx.prisma, storeId);
 };
 
+interface MarkPayoutSuccessfulInput {
+	reference: string;
+}
+
 export const markPayoutAsSuccessful = async (
 	ctx: AppContext,
 	input: MarkPayoutSuccessfulInput
@@ -171,6 +168,10 @@ export const markPayoutAsSuccessful = async (
 
 	return { success: true };
 };
+
+interface MarkPayoutFailedInput {
+	reference: string;
+}
 
 export const markPayoutAsFailed = async (
 	ctx: AppContext,

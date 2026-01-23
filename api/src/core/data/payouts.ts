@@ -108,9 +108,13 @@ export const getPayouts = async (prisma: PrismaClient, query: any) => {
 	return payouts;
 };
 
-export const getPayoutById = async (prisma: PrismaClient, payoutId: string) => {
+export const getPayoutById = async (
+	prisma: PrismaClient,
+	payoutId: string,
+	args?: { status: PayoutStatus; amount: number }
+) => {
 	const payout = await prisma.payout.findUnique({
-		where: { id: payoutId },
+		where: { id: payoutId, ...args },
 		include: { store: true }
 	});
 

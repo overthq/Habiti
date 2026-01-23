@@ -26,10 +26,9 @@ export interface StoresArgs {
 }
 
 const stores: Resolver<StoresArgs> = async (_, { filter }, ctx) => {
-	const isAdmin = await ctx.isAdmin();
 	const where = {
 		...filter,
-		...(isAdmin ? {} : { unlisted: false })
+		...(ctx.isAdmin ? {} : { unlisted: false })
 	};
 
 	return ctx.prisma.store.findMany({ where });

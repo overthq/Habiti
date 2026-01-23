@@ -1,4 +1,4 @@
-import { PrismaClient } from '../../generated/prisma/client';
+import { OrderStatus, PrismaClient } from '../../generated/prisma/client';
 import {
 	productFiltersToPrismaClause,
 	ProductFilters
@@ -304,4 +304,22 @@ export const getTrendingStores = async (
 	});
 
 	return stores;
+};
+
+interface UpdateStoreRevenueArgs {
+	storeId: string;
+	total: number;
+}
+
+export const updateStoreRevenue = async (
+	prisma: PrismaClient,
+	args: UpdateStoreRevenueArgs
+) => {
+	await prisma.store.update({
+		where: { id: args.storeId },
+		data: {
+			realizedRevenue: { increment: args.total },
+			unrealizedRevenue: { decrement: args.total }
+		}
+	});
 };
