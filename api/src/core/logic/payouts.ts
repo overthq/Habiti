@@ -12,7 +12,7 @@ interface CreatePayoutInput {
 }
 
 export const createPayout = async (
-	ctx: AppContext<'store'>,
+	ctx: AppContext,
 	input: CreatePayoutInput
 ) => {
 	const { amount } = input;

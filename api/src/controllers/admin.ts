@@ -114,30 +114,15 @@ export const createStore = async (
 };
 
 // Bulk User Operations
-export const bulkSuspendUsers = async (
-	req: Request<{}, {}, { ids: string[] }>,
+export const bulkUpdateUsers = async (
+	req: Request<{}, {}, { ids: string[]; field: 'suspended'; value: boolean }>,
 	res: Response,
 	next: NextFunction
 ) => {
 	try {
-		const { ids } = req.body;
+		const { ids, field, value } = req.body;
 		const ctx = getAppContext(req);
-		const result = await AdminLogic.bulkSuspendUsers(ctx, ids);
-		return res.json(result);
-	} catch (error) {
-		return next(error);
-	}
-};
-
-export const bulkUnsuspendUsers = async (
-	req: Request<{}, {}, { ids: string[] }>,
-	res: Response,
-	next: NextFunction
-) => {
-	try {
-		const { ids } = req.body;
-		const ctx = getAppContext(req);
-		const result = await AdminLogic.bulkUnsuspendUsers(ctx, ids);
+		const result = await AdminLogic.bulkUpdateUsers(ctx, ids, field, value);
 		return res.json(result);
 	} catch (error) {
 		return next(error);
@@ -160,7 +145,22 @@ export const bulkDeleteUsers = async (
 };
 
 // Bulk Order Operations
-export const bulkCancelOrders = async (
+export const bulkUpdateOrders = async (
+	req: Request<{}, {}, { ids: string[]; field: 'status'; value: OrderStatus }>,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const { ids, field, value } = req.body;
+		const ctx = getAppContext(req);
+		const result = await AdminLogic.bulkUpdateOrders(ctx, ids, field, value);
+		return res.json(result);
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const bulkDeleteOrders = async (
 	req: Request<{}, {}, { ids: string[] }>,
 	res: Response,
 	next: NextFunction
@@ -168,22 +168,7 @@ export const bulkCancelOrders = async (
 	try {
 		const { ids } = req.body;
 		const ctx = getAppContext(req);
-		const result = await AdminLogic.bulkCancelOrders(ctx, ids);
-		return res.json(result);
-	} catch (error) {
-		return next(error);
-	}
-};
-
-export const bulkUpdateOrderStatus = async (
-	req: Request<{}, {}, { ids: string[]; status: OrderStatus }>,
-	res: Response,
-	next: NextFunction
-) => {
-	try {
-		const { ids, status } = req.body;
-		const ctx = getAppContext(req);
-		const result = await AdminLogic.bulkUpdateOrderStatus(ctx, ids, status);
+		const result = await AdminLogic.bulkDeleteOrders(ctx, ids);
 		return res.json(result);
 	} catch (error) {
 		return next(error);
@@ -191,6 +176,25 @@ export const bulkUpdateOrderStatus = async (
 };
 
 // Bulk Product Operations
+export const bulkUpdateProducts = async (
+	req: Request<
+		{},
+		{},
+		{ ids: string[]; field: 'status'; value: ProductStatus }
+	>,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const { ids, field, value } = req.body;
+		const ctx = getAppContext(req);
+		const result = await AdminLogic.bulkUpdateProducts(ctx, ids, field, value);
+		return res.json(result);
+	} catch (error) {
+		return next(error);
+	}
+};
+
 export const bulkDeleteProducts = async (
 	req: Request<{}, {}, { ids: string[] }>,
 	res: Response,
@@ -200,21 +204,6 @@ export const bulkDeleteProducts = async (
 		const { ids } = req.body;
 		const ctx = getAppContext(req);
 		const result = await AdminLogic.bulkDeleteProducts(ctx, ids);
-		return res.json(result);
-	} catch (error) {
-		return next(error);
-	}
-};
-
-export const bulkUpdateProductStatus = async (
-	req: Request<{}, {}, { ids: string[]; status: ProductStatus }>,
-	res: Response,
-	next: NextFunction
-) => {
-	try {
-		const { ids, status } = req.body;
-		const ctx = getAppContext(req);
-		const result = await AdminLogic.bulkUpdateProductStatus(ctx, ids, status);
 		return res.json(result);
 	} catch (error) {
 		return next(error);

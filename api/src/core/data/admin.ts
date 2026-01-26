@@ -84,6 +84,15 @@ export const bulkUpdateOrders = async (
 	});
 };
 
+export const bulkDeleteOrders = async (
+	prisma: TransactionClient,
+	ids: string[]
+) => {
+	return prisma.order.deleteMany({
+		where: { id: { in: ids } }
+	});
+};
+
 // Bulk Product Operations
 export const bulkUpdateProducts = async (
 	prisma: TransactionClient,

@@ -168,12 +168,16 @@ export const updatePayout = (id: string, body: UpdatePayoutBody) => {
 };
 
 // Bulk User Operations
-export const bulkSuspendUsers = (ids: string[]) => {
-	return api.post<BulkActionResponse>('/admin/users/bulk-suspend', { ids });
-};
-
-export const bulkUnsuspendUsers = (ids: string[]) => {
-	return api.post<BulkActionResponse>('/admin/users/bulk-unsuspend', { ids });
+export const bulkUpdateUsers = (
+	ids: string[],
+	field: 'suspended',
+	value: boolean
+) => {
+	return api.post<BulkActionResponse>('/admin/users/bulk', {
+		ids,
+		field,
+		value
+	});
 };
 
 export const bulkDeleteUsers = (ids: string[]) => {
@@ -181,28 +185,35 @@ export const bulkDeleteUsers = (ids: string[]) => {
 };
 
 // Bulk Order Operations
-export const bulkCancelOrders = (ids: string[]) => {
-	return api.post<BulkActionResponse>('/admin/orders/bulk-cancel', { ids });
+export const bulkUpdateOrders = (
+	ids: string[],
+	field: 'status',
+	value: OrderStatus
+) => {
+	return api.post<BulkActionResponse>('/admin/orders/bulk', {
+		ids,
+		field,
+		value
+	});
 };
 
-export const bulkUpdateOrderStatus = (ids: string[], status: OrderStatus) => {
-	return api.post<BulkActionResponse>('/admin/orders/bulk-status', {
-		ids,
-		status
-	});
+export const bulkDeleteOrders = (ids: string[]) => {
+	return api.delete<BulkActionResponse>('/admin/orders/bulk', { ids });
 };
 
 // Bulk Product Operations
-export const bulkDeleteProducts = (ids: string[]) => {
-	return api.delete<BulkActionResponse>('/admin/products/bulk', { ids });
+export const bulkUpdateProducts = (
+	ids: string[],
+	field: 'status',
+	value: ProductStatus
+) => {
+	return api.post<BulkActionResponse>('/admin/products/bulk', {
+		ids,
+		field,
+		value
+	});
 };
 
-export const bulkUpdateProductStatus = (
-	ids: string[],
-	status: ProductStatus
-) => {
-	return api.post<BulkActionResponse>('/admin/products/bulk-status', {
-		ids,
-		status
-	});
+export const bulkDeleteProducts = (ids: string[]) => {
+	return api.delete<BulkActionResponse>('/admin/products/bulk', { ids });
 };

@@ -28,8 +28,9 @@ import {
 } from './core/validations/auth';
 import {
 	bulkIdsSchema,
-	bulkOrderStatusSchema,
-	bulkProductStatusSchema
+	bulkUserUpdateSchema,
+	bulkOrderUpdateSchema,
+	bulkProductUpdateSchema
 } from './core/validations/admin';
 import { adminCreateStoreSchema } from './core/validations/stores';
 
@@ -146,6 +147,7 @@ router.post(
 	validateBody(createOrderSchema),
 	OrderController.createOrder
 );
+
 // Cards
 router.post(
 	'/users/current/cards/authorize',
@@ -223,16 +225,10 @@ router.get('/admin/orders', isAdmin, OrderController.getOrders);
 
 // Admin Bulk Operations - Users
 router.post(
-	'/admin/users/bulk-suspend',
+	'/admin/users/bulk',
 	isAdmin,
-	validateBody(bulkIdsSchema),
-	AdminController.bulkSuspendUsers
-);
-router.post(
-	'/admin/users/bulk-unsuspend',
-	isAdmin,
-	validateBody(bulkIdsSchema),
-	AdminController.bulkUnsuspendUsers
+	validateBody(bulkUserUpdateSchema),
+	AdminController.bulkUpdateUsers
 );
 router.delete(
 	'/admin/users/bulk',
@@ -243,30 +239,30 @@ router.delete(
 
 // Admin Bulk Operations - Orders
 router.post(
-	'/admin/orders/bulk-cancel',
+	'/admin/orders/bulk',
+	isAdmin,
+	validateBody(bulkOrderUpdateSchema),
+	AdminController.bulkUpdateOrders
+);
+router.delete(
+	'/admin/orders/bulk',
 	isAdmin,
 	validateBody(bulkIdsSchema),
-	AdminController.bulkCancelOrders
-);
-router.post(
-	'/admin/orders/bulk-status',
-	isAdmin,
-	validateBody(bulkOrderStatusSchema),
-	AdminController.bulkUpdateOrderStatus
+	AdminController.bulkDeleteOrders
 );
 
 // Admin Bulk Operations - Products
+router.post(
+	'/admin/products/bulk',
+	isAdmin,
+	validateBody(bulkProductUpdateSchema),
+	AdminController.bulkUpdateProducts
+);
 router.delete(
 	'/admin/products/bulk',
 	isAdmin,
 	validateBody(bulkIdsSchema),
 	AdminController.bulkDeleteProducts
-);
-router.post(
-	'/admin/products/bulk-status',
-	isAdmin,
-	validateBody(bulkProductStatusSchema),
-	AdminController.bulkUpdateProductStatus
 );
 
 // Health

@@ -8,10 +8,7 @@ import { ListFilter, MoreVertical } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 
 import { useOrdersQuery } from '@/data/queries';
-import {
-	useBulkCancelOrdersMutation,
-	useBulkUpdateOrderStatusMutation
-} from '@/data/mutations';
+import { useBulkUpdateOrdersMutation } from '@/data/mutations';
 import { type Order, type OrderFilters, OrderStatus } from '@/data/types';
 import { formatNaira } from '@/utils/format';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -151,8 +148,7 @@ const OrdersPage = () => {
 	const { data, isLoading } = useOrdersQuery(filters);
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-	const bulkCancelMutation = useBulkCancelOrdersMutation();
-	const bulkUpdateStatusMutation = useBulkUpdateOrderStatusMutation();
+	const bulkUpdateMutation = useBulkUpdateOrdersMutation();
 
 	const selectedIds = Object.keys(rowSelection);
 	const selectedCount = selectedIds.length;
@@ -160,21 +156,22 @@ const OrdersPage = () => {
 	const clearSelection = () => setRowSelection({});
 
 	const handleBulkCancel = () => {
-		bulkCancelMutation.mutate(selectedIds, {
-			onSuccess: () => clearSelection()
-		});
+		bulkUpdateMutation.mutate(
+			{ ids: selectedIds, field: 'status', value: OrderStatus.Cancelled },
+			{ onSuccess: () => clearSelection() }
+		);
 	};
 
 	const handleBulkMarkCompleted = () => {
-		bulkUpdateStatusMutation.mutate(
-			{ ids: selectedIds, status: OrderStatus.Completed },
+		bulkUpdateMutation.mutate(
+			{ ids: selectedIds, field: 'status', value: OrderStatus.Completed },
 			{ onSuccess: () => clearSelection() }
 		);
 	};
 
 	const handleBulkMarkPending = () => {
-		bulkUpdateStatusMutation.mutate(
-			{ ids: selectedIds, status: OrderStatus.Pending },
+		bulkUpdateMutation.mutate(
+			{ ids: selectedIds, field: 'status', value: OrderStatus.Pending },
 			{ onSuccess: () => clearSelection() }
 		);
 	};
@@ -215,7 +212,7 @@ const OrdersPage = () => {
 					size='sm'
 					variant='outline'
 					onClick={handleBulkMarkCompleted}
-					disabled={bulkUpdateStatusMutation.isPending}
+					disabled={bulkUpdateMutation.isPending}
 				>
 					Mark Completed
 				</Button>
@@ -223,7 +220,7 @@ const OrdersPage = () => {
 					size='sm'
 					variant='outline'
 					onClick={handleBulkMarkPending}
-					disabled={bulkUpdateStatusMutation.isPending}
+					disabled={bulkUpdateMutation.isPending}
 				>
 					Mark Pending
 				</Button>
@@ -232,7 +229,7 @@ const OrdersPage = () => {
 					description={`Are you sure you want to cancel ${selectedCount} order(s)? This action cannot be undone.`}
 					confirmLabel='Cancel Orders'
 					variant='destructive'
-					isLoading={bulkCancelMutation.isPending}
+					isLoading={bulkUpdateMutation.isPending}
 					onConfirm={handleBulkCancel}
 					trigger={
 						<Button size='sm' variant='destructive'>
