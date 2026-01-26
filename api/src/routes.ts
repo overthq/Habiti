@@ -55,19 +55,7 @@ router.post('/auth/apple-callback', AuthController.appleCallback);
 router.post('/auth/refresh', AuthController.refresh);
 router.post('/auth/logout', AuthController.logout);
 
-// Orders
-router.get('/orders', isAdmin, OrderController.getOrders);
-router.get('/orders/:id', authenticate, OrderController.getOrderById);
-router.post(
-	'/orders',
-	authenticate,
-	validateBody(createOrderSchema),
-	OrderController.createOrder
-);
-
 // Stores
-router.get('/stores', isAdmin, StoreController.getStores);
-
 router.post('/stores', authenticate, StoreController.createStore);
 router.post('/stores/:id/follow', authenticate, StoreController.followStore);
 router.post(
@@ -75,34 +63,16 @@ router.post(
 	authenticate,
 	StoreController.unfollowStore
 );
-router.post(
-	'/stores/:id/products',
-	authenticate,
-	StoreController.createStoreProduct
-);
 
-router.get('/stores/current', authenticate, StoreController.getCurrentStore);
 router.get('/stores/:id', optionalAuth, StoreController.getStoreById);
-router.put('/stores/:id', authenticate, StoreController.updateStore);
 router.get(
 	'/stores/:id/products',
 	optionalAuth,
 	StoreController.getStoreProducts
 );
-router.get('/stores/:id/managers', isAdmin, StoreController.getStoreManagers);
-router.get('/stores/:id/payouts', isAdmin, StoreController.getStorePayouts);
-router.get('/stores/:id/orders', optionalAuth, StoreController.getStoreOrders);
 
 // Products
-router.get('/products', isAdmin, ProductController.getProducts);
-router.post(
-	'/products',
-	isAdmin,
-	validateBody(createProductSchema),
-	ProductController.createProduct
-);
 router.get('/products/:id', optionalAuth, ProductController.getProductById);
-router.put('/products/:id', isAdmin, ProductController.updateProduct);
 router.get(
 	'/products/:id/reviews',
 	optionalAuth,
@@ -118,9 +88,32 @@ router.get(
 	optionalAuth,
 	ProductController.getRelatedProducts
 );
-router.delete('/products/:id', authenticate, ProductController.deleteProduct);
 
-// Users
+// Current Store
+router.get('/stores/current', authenticate, StoreController.getCurrentStore);
+router.put('/stores/current', authenticate, StoreController.updateStore);
+router.get(
+	'/stores/current/products',
+	authenticate,
+	StoreController.getStoreProducts
+);
+router.get(
+	'/stores/current/products/:id',
+	authenticate,
+	ProductController.getProductById
+);
+router.get(
+	'/stores/current/products/:id/reviews',
+	authenticate,
+	ProductController.getProductReviews
+);
+router.delete(
+	'/stores/current/products/:id',
+	authenticate,
+	ProductController.deleteProduct
+);
+
+// Current User
 router.get('/users/current', authenticate, UserController.getCurrentUser);
 router.put('/users/current', authenticate, UserController.updateCurrentUser);
 
@@ -142,17 +135,31 @@ router.get(
 	authenticate,
 	UserController.getDeliveryAddresses
 );
-
-router.get('/users', isAdmin, UserController.getUsers);
-router.get('/users/:id', isAdmin, UserController.getUser);
-
-// Payouts
-router.get('/payouts', isAdmin, PayoutController.getPayouts);
-router.get('/payouts/:id', isAdmin, PayoutController.getPayout);
-router.patch('/payouts/:id', isAdmin, PayoutController.updatePayout);
+router.get(
+	'/users/current/orders/:id',
+	authenticate,
+	OrderController.getOrderById
+);
+router.post(
+	'/users/current/orders',
+	authenticate,
+	validateBody(createOrderSchema),
+	OrderController.createOrder
+);
+// Cards
+router.post(
+	'/users/current/cards/authorize',
+	authenticate,
+	CardController.authorizeCard
+);
+router.delete(
+	'/users/current/cards/:cardId',
+	authenticate,
+	CardController.deleteCard
+);
 
 // Carts
-router.get('/carts/', optionalAuth, CartController.getCartsFromList);
+router.get('/carts', optionalAuth, CartController.getCartsFromList);
 router.get('/carts/:id', optionalAuth, CartController.getCartById);
 router.post('/carts/products', optionalAuth, CartController.addProductToCart);
 router.put(
@@ -166,10 +173,6 @@ router.delete(
 	CartController.removeProductFromCart
 );
 
-// Cards
-router.post('/cards/authorize', authenticate, CardController.authorizeCard);
-router.delete('/cards/:cardId', authenticate, CardController.deleteCard);
-
 // Admin
 router.post(
 	'/admin/login',
@@ -179,12 +182,44 @@ router.post(
 router.post('/admin/refresh', AdminController.refresh);
 router.post('/admin/logout', AdminController.logout);
 router.get('/admin/overview', isAdmin, AdminController.getOverview);
+
+router.get('/admin/stores', isAdmin, StoreController.getStores);
 router.post(
 	'/admin/stores',
 	isAdmin,
 	validateBody(adminCreateStoreSchema),
 	AdminController.createStore
 );
+router.get(
+	'/admin/stores/:id/managers',
+	isAdmin,
+	StoreController.getStoreManagers
+);
+router.get(
+	'/admin/stores/:id/payouts',
+	isAdmin,
+	StoreController.getStorePayouts
+);
+router.get('/admin/stores/:id/orders', isAdmin, StoreController.getStoreOrders);
+router.get('/admin/products', isAdmin, ProductController.getProducts);
+router.post(
+	'/admin/products',
+	isAdmin,
+	validateBody(createProductSchema),
+	ProductController.createProduct
+);
+router.delete('/admin/products/:id', isAdmin, ProductController.deleteProduct);
+router.get(
+	'/admin/products/:id/reviews',
+	isAdmin,
+	ProductController.getProductReviews
+);
+router.get('/admin/users', isAdmin, UserController.getUsers);
+router.get('/admin/users/:id', isAdmin, UserController.getUser);
+router.get('/admin/payouts', isAdmin, PayoutController.getPayouts);
+router.get('/admin/payouts/:id', isAdmin, PayoutController.getPayout);
+router.patch('/admin/payouts/:id', isAdmin, PayoutController.updatePayout);
+router.get('/admin/orders', isAdmin, OrderController.getOrders);
 
 // Admin Bulk Operations - Users
 router.post(
