@@ -170,12 +170,15 @@ export const updateDeliveryAddress = async (
 	addressId: string,
 	body: UpdateDeliveryAddressBody
 ) => {
-	const response = await api.put(`/delivery-addresses/${addressId}`, body);
+	const response = await api.put(
+		`/users/current/delivery-addresses/${addressId}`,
+		body
+	);
 	return response.data;
 };
 
 export const deleteDeliveryAddress = (addressId: string) => {
-	return api.delete(`/delivery-addresses/${addressId}`);
+	return api.delete(`/users/current/delivery-addresses/${addressId}`);
 };
 
 export const getCards = async () => {
@@ -183,15 +186,12 @@ export const getCards = async () => {
 	return response.data;
 };
 
-export const getUser = async (userId: string) => {
-	const response = await api.get<{ user: User }>(`/users/${userId}`);
-	return response.data;
-};
-
 // Carts
 
 export const getCart = async (cartId: string) => {
-	const response = await api.get<GetCartResponse>(`/carts/${cartId}`);
+	const response = await api.get<GetCartResponse>(
+		`/users/current/carts/${cartId}`
+	);
 	return response.data;
 };
 
@@ -232,18 +232,23 @@ export const updateCartProductQuantity = async ({
 // Orders
 
 export const getOrder = async (orderId: string) => {
-	const response = await api.get<{ order: Order }>(`/orders/${orderId}`);
+	const response = await api.get<{ order: Order }>(
+		`/users/current/orders/${orderId}`
+	);
 	return response.data;
 };
 
 export const createOrder = async (body: CreateOrderBody) => {
-	const response = await api.post<CreateOrderResponse>('/orders', body);
+	const response = await api.post<CreateOrderResponse>(
+		'/users/current/orders',
+		body
+	);
 	return response.data;
 };
 
 export const getCardAuthorization = async (orderId: string) => {
 	const response = await api.post<CardAuthorizationResponse>(
-		'/cards/authorize',
+		'/users/current/cards/authorize',
 		{ orderId }
 	);
 	return response.data;
@@ -285,7 +290,7 @@ export const getLandingHighlights = async () => {
 // Cards
 
 export const deleteCard = async (cardId: string) => {
-	const response = await api.delete(`/cards/${cardId}`);
+	const response = await api.delete(`/users/current/cards/${cardId}`);
 
 	return response.data;
 };

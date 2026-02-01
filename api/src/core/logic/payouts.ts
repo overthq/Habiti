@@ -5,6 +5,7 @@ import { AppContext } from '../../utils/context';
 import { payAccount } from '../payments';
 import { PayoutStatus } from '../../generated/prisma/client';
 import { LogicError, LogicErrorCode } from './errors';
+import { canManageStore } from './permissions';
 
 interface CreatePayoutInput {
 	amount: number;
@@ -15,6 +16,10 @@ export const createPayout = async (
 	input: CreatePayoutInput
 ) => {
 	const { amount } = input;
+
+	if (!ctx.user?.id) {
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
+	}
 
 	if (!ctx.storeId) {
 		throw new LogicError(LogicErrorCode.StoreContextRequired);
@@ -33,17 +38,7 @@ export const createPayout = async (
 		throw new LogicError(LogicErrorCode.StoreNotFound);
 	}
 
-	if (!ctx.user?.id) {
-		throw new LogicError(LogicErrorCode.NotAuthenticated);
-	}
-
-	const currentUserId = ctx.user.id;
-
-	const isCurrentUserManager = store.managers.some(
-		m => m.managerId === currentUserId
-	);
-
-	if (!isCurrentUserManager) {
+	if (!canManageStore(ctx)) {
 		throw new LogicError(LogicErrorCode.CannotManageStore);
 	}
 

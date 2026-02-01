@@ -31,7 +31,7 @@ import { ConfirmDialog } from '@/components/confirm-dialog';
 import { useProductsQuery } from '@/data/queries';
 import {
 	useBulkDeleteProductsMutation,
-	useBulkUpdateProductStatusMutation
+	useBulkUpdateProductsMutation
 } from '@/data/mutations';
 import { type Product, type ProductFilters, ProductStatus } from '@/data/types';
 import { formatNaira } from '@/utils/format';
@@ -147,7 +147,7 @@ const ProductsPage = () => {
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
 	const bulkDeleteMutation = useBulkDeleteProductsMutation();
-	const bulkUpdateStatusMutation = useBulkUpdateProductStatusMutation();
+	const bulkUpdateMutation = useBulkUpdateProductsMutation();
 
 	const selectedIds = Object.keys(rowSelection);
 	const selectedCount = selectedIds.length;
@@ -161,15 +161,15 @@ const ProductsPage = () => {
 	};
 
 	const handleBulkSetActive = () => {
-		bulkUpdateStatusMutation.mutate(
-			{ ids: selectedIds, status: ProductStatus.Active },
+		bulkUpdateMutation.mutate(
+			{ ids: selectedIds, field: 'status', value: ProductStatus.Active },
 			{ onSuccess: () => clearSelection() }
 		);
 	};
 
 	const handleBulkSetDraft = () => {
-		bulkUpdateStatusMutation.mutate(
-			{ ids: selectedIds, status: ProductStatus.Draft },
+		bulkUpdateMutation.mutate(
+			{ ids: selectedIds, field: 'status', value: ProductStatus.Draft },
 			{ onSuccess: () => clearSelection() }
 		);
 	};
@@ -210,7 +210,7 @@ const ProductsPage = () => {
 					size='sm'
 					variant='outline'
 					onClick={handleBulkSetActive}
-					disabled={bulkUpdateStatusMutation.isPending}
+					disabled={bulkUpdateMutation.isPending}
 				>
 					Set Active
 				</Button>
@@ -218,7 +218,7 @@ const ProductsPage = () => {
 					size='sm'
 					variant='outline'
 					onClick={handleBulkSetDraft}
-					disabled={bulkUpdateStatusMutation.isPending}
+					disabled={bulkUpdateMutation.isPending}
 				>
 					Set Draft
 				</Button>

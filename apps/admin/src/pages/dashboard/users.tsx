@@ -29,8 +29,7 @@ import { BulkActionsToolbar } from '@/components/bulk-actions-toolbar';
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import { useUsersQuery } from '@/data/queries';
 import {
-	useBulkSuspendUsersMutation,
-	useBulkUnsuspendUsersMutation,
+	useBulkUpdateUsersMutation,
 	useBulkDeleteUsersMutation
 } from '@/data/mutations';
 import { type User, type UserFilters } from '@/data/types';
@@ -112,8 +111,7 @@ const Users = () => {
 	const { data, isLoading } = useUsersQuery(filters);
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-	const bulkSuspendMutation = useBulkSuspendUsersMutation();
-	const bulkUnsuspendMutation = useBulkUnsuspendUsersMutation();
+	const bulkUpdateMutation = useBulkUpdateUsersMutation();
 	const bulkDeleteMutation = useBulkDeleteUsersMutation();
 
 	const selectedIds = Object.keys(rowSelection);
@@ -122,15 +120,17 @@ const Users = () => {
 	const clearSelection = () => setRowSelection({});
 
 	const handleBulkSuspend = () => {
-		bulkSuspendMutation.mutate(selectedIds, {
-			onSuccess: () => clearSelection()
-		});
+		bulkUpdateMutation.mutate(
+			{ ids: selectedIds, field: 'suspended', value: true },
+			{ onSuccess: () => clearSelection() }
+		);
 	};
 
 	const handleBulkUnsuspend = () => {
-		bulkUnsuspendMutation.mutate(selectedIds, {
-			onSuccess: () => clearSelection()
-		});
+		bulkUpdateMutation.mutate(
+			{ ids: selectedIds, field: 'suspended', value: false },
+			{ onSuccess: () => clearSelection() }
+		);
 	};
 
 	const handleBulkDelete = () => {
@@ -175,7 +175,7 @@ const Users = () => {
 					size='sm'
 					variant='outline'
 					onClick={handleBulkSuspend}
-					disabled={bulkSuspendMutation.isPending}
+					disabled={bulkUpdateMutation.isPending}
 				>
 					Suspend
 				</Button>
@@ -183,7 +183,7 @@ const Users = () => {
 					size='sm'
 					variant='outline'
 					onClick={handleBulkUnsuspend}
-					disabled={bulkUnsuspendMutation.isPending}
+					disabled={bulkUpdateMutation.isPending}
 				>
 					Unsuspend
 				</Button>

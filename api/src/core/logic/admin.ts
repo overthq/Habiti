@@ -36,19 +36,15 @@ export const getAdminOverview = async (ctx: AppContext) => {
 };
 
 // Bulk User Operations
-export const bulkSuspendUsers = async (ctx: AppContext, ids: string[]) => {
+export const bulkUpdateUsers = async (
+	ctx: AppContext,
+	ids: string[],
+	field: 'suspended',
+	value: boolean
+) => {
 	return ctx.prisma.$transaction(async prisma => {
 		const result = await AdminData.bulkUpdateUsers(prisma, ids, {
-			suspended: true
-		});
-		return { count: result.count };
-	});
-};
-
-export const bulkUnsuspendUsers = async (ctx: AppContext, ids: string[]) => {
-	return ctx.prisma.$transaction(async prisma => {
-		const result = await AdminData.bulkUpdateUsers(prisma, ids, {
-			suspended: false
+			[field]: value
 		});
 		return { count: result.count };
 	});
@@ -62,41 +58,45 @@ export const bulkDeleteUsers = async (ctx: AppContext, ids: string[]) => {
 };
 
 // Bulk Order Operations
-export const bulkCancelOrders = async (ctx: AppContext, ids: string[]) => {
+export const bulkUpdateOrders = async (
+	ctx: AppContext,
+	ids: string[],
+	field: 'status',
+	value: OrderStatus
+) => {
 	return ctx.prisma.$transaction(async prisma => {
 		const result = await AdminData.bulkUpdateOrders(prisma, ids, {
-			status: OrderStatus.Cancelled
+			[field]: value
 		});
 		return { count: result.count };
 	});
 };
 
-export const bulkUpdateOrderStatus = async (
-	ctx: AppContext,
-	ids: string[],
-	status: OrderStatus
-) => {
+export const bulkDeleteOrders = async (ctx: AppContext, ids: string[]) => {
 	return ctx.prisma.$transaction(async prisma => {
-		const result = await AdminData.bulkUpdateOrders(prisma, ids, { status });
+		const result = await AdminData.bulkDeleteOrders(prisma, ids);
 		return { count: result.count };
 	});
 };
 
 // Bulk Product Operations
-export const bulkDeleteProducts = async (ctx: AppContext, ids: string[]) => {
+export const bulkUpdateProducts = async (
+	ctx: AppContext,
+	ids: string[],
+	field: 'status',
+	value: ProductStatus
+) => {
 	return ctx.prisma.$transaction(async prisma => {
-		const result = await AdminData.bulkDeleteProducts(prisma, ids);
+		const result = await AdminData.bulkUpdateProducts(prisma, ids, {
+			[field]: value
+		});
 		return { count: result.count };
 	});
 };
 
-export const bulkUpdateProductStatus = async (
-	ctx: AppContext,
-	ids: string[],
-	status: ProductStatus
-) => {
+export const bulkDeleteProducts = async (ctx: AppContext, ids: string[]) => {
 	return ctx.prisma.$transaction(async prisma => {
-		const result = await AdminData.bulkUpdateProducts(prisma, ids, { status });
+		const result = await AdminData.bulkDeleteProducts(prisma, ids);
 		return { count: result.count };
 	});
 };

@@ -53,61 +53,61 @@ export const createAdmin = (body: CreateAdminBody) => {
 };
 
 export const getOrders = (params?: OrderFilters) => {
-	return api.get<GetOrdersResponse>('/orders', params);
+	return api.get<GetOrdersResponse>('/admin/orders', params);
 };
 
 export const getOrder = (id: string) => {
-	return api.get<GetOrderResponse>(`/orders/${id}`);
+	return api.get<GetOrderResponse>(`/admin/orders/${id}`);
 };
 
 export const updateOrder = (id: string, body: UpdateOrderBody) => {
-	return api.put<UpdateOrderResponse>(`/orders/${id}`, body);
+	return api.put<UpdateOrderResponse>(`/admin/orders/${id}`, body);
 };
 
 export const cancelOrder = (id: string) => {
-	return api.put<UpdateOrderResponse>(`/orders/${id}`, {
+	return api.put<UpdateOrderResponse>(`/admin/orders/${id}`, {
 		status: OrderStatus.Cancelled
 	});
 };
 
 export const getProducts = (params?: ProductFilters) => {
-	return api.get<GetProductsResponse>('/products', params);
+	return api.get<GetProductsResponse>('/admin/products', params);
 };
 
 export const getProduct = (id: string) => {
-	return api.get<GetProductResponse>(`/products/${id}`);
+	return api.get<GetProductResponse>(`/admin/products/${id}`);
 };
 
 export const createProduct = (body: CreateProductBody) => {
-	return api.post<Product>('/products', body);
+	return api.post<Product>('/admin/products', body);
 };
 
 export const updateProduct = (id: string, body: UpdateProductBody) => {
-	return api.put<Product>(`/products/${id}`, body);
+	return api.put<Product>(`/admin/products/${id}`, body);
 };
 
 export const deleteProduct = (id: string) => {
-	return api.delete<void>(`/products/${id}`);
+	return api.delete<void>(`/admin/products/${id}`);
 };
 
 export const getProductReviews = (id: string) => {
-	return api.get(`/products/${id}/reviews`);
+	return api.get(`/admin/products/${id}/reviews`);
 };
 
 export const getUsers = (params?: UserFilters) => {
-	return api.get<GetUsersResponse>('/users', params);
+	return api.get<GetUsersResponse>('/admin/users', params);
 };
 
 export const getUser = (id: string) => {
-	return api.get<GetUserResponse>(`/users/${id}`);
+	return api.get<GetUserResponse>(`/admin/users/${id}`);
 };
 
 export const updateUser = (id: string, body: UpdateUserBody) => {
-	return api.put<GetUserResponse>(`/users/${id}`, body);
+	return api.put<GetUserResponse>(`/admin/users/${id}`, body);
 };
 
 export const updateStore = (id: string, body: UpdateStoreBody) => {
-	return api.put<Store>(`/stores/${id}`, body);
+	return api.put<Store>(`/admin/stores/${id}`, body);
 };
 
 export const createStore = (body: CreateStoreBody) => {
@@ -115,31 +115,40 @@ export const createStore = (body: CreateStoreBody) => {
 };
 
 export const deleteStore = (id: string) => {
-	return api.delete<void>(`/stores/${id}`);
+	return api.delete<void>(`/admin/stores/${id}`);
 };
 
 export const getStores = (params?: StoreFilters) => {
-	return api.get<GetStoresResponse>('/stores', params);
+	return api.get<GetStoresResponse>('/admin/stores', params);
 };
 
 export const getStore = (id: string) => {
-	return api.get<GetStoreResponse>(`/stores/${id}`);
+	return api.get<GetStoreResponse>(`/admin/stores/${id}`);
 };
 
 export const getStoreProducts = (id: string, params?: StoreFilters) => {
-	return api.get<GetStoreProductsResponse>(`/stores/${id}/products`, params);
+	return api.get<GetStoreProductsResponse>(
+		`/admin/stores/${id}/products`,
+		params
+	);
 };
 
 export const getStoreOrders = (id: string, params?: StoreFilters) => {
-	return api.get<GetStoreOrdersResponse>(`/stores/${id}/orders`, params);
+	return api.get<GetStoreOrdersResponse>(`/admin/stores/${id}/orders`, params);
 };
 
 export const getStorePayouts = (id: string, params?: StoreFilters) => {
-	return api.get<GetStorePayoutsResponse>(`/stores/${id}/payouts`, params);
+	return api.get<GetStorePayoutsResponse>(
+		`/admin/stores/${id}/payouts`,
+		params
+	);
 };
 
 export const getStoreManagers = (id: string, params?: StoreFilters) => {
-	return api.get<GetStoreManagersResponse>(`/stores/${id}/managers`, params);
+	return api.get<GetStoreManagersResponse>(
+		`/admin/stores/${id}/managers`,
+		params
+	);
 };
 
 export const getOverview = () => {
@@ -147,24 +156,28 @@ export const getOverview = () => {
 };
 
 export const getPayouts = (params?: PayoutFilters) => {
-	return api.get<GetPayoutsResponse>('/payouts', params);
+	return api.get<GetPayoutsResponse>('/admin/payouts', params);
 };
 
 export const getPayout = (id: string) => {
-	return api.get<GetPayoutResponse>(`/payouts/${id}`);
+	return api.get<GetPayoutResponse>(`/admin/payouts/${id}`);
 };
 
 export const updatePayout = (id: string, body: UpdatePayoutBody) => {
-	return api.patch<UpdatePayoutResponse>(`/payouts/${id}`, body);
+	return api.patch<UpdatePayoutResponse>(`/admin/payouts/${id}`, body);
 };
 
 // Bulk User Operations
-export const bulkSuspendUsers = (ids: string[]) => {
-	return api.post<BulkActionResponse>('/admin/users/bulk-suspend', { ids });
-};
-
-export const bulkUnsuspendUsers = (ids: string[]) => {
-	return api.post<BulkActionResponse>('/admin/users/bulk-unsuspend', { ids });
+export const bulkUpdateUsers = (
+	ids: string[],
+	field: 'suspended',
+	value: boolean
+) => {
+	return api.post<BulkActionResponse>('/admin/users/bulk', {
+		ids,
+		field,
+		value
+	});
 };
 
 export const bulkDeleteUsers = (ids: string[]) => {
@@ -172,28 +185,35 @@ export const bulkDeleteUsers = (ids: string[]) => {
 };
 
 // Bulk Order Operations
-export const bulkCancelOrders = (ids: string[]) => {
-	return api.post<BulkActionResponse>('/admin/orders/bulk-cancel', { ids });
+export const bulkUpdateOrders = (
+	ids: string[],
+	field: 'status',
+	value: OrderStatus
+) => {
+	return api.post<BulkActionResponse>('/admin/orders/bulk', {
+		ids,
+		field,
+		value
+	});
 };
 
-export const bulkUpdateOrderStatus = (ids: string[], status: OrderStatus) => {
-	return api.post<BulkActionResponse>('/admin/orders/bulk-status', {
-		ids,
-		status
-	});
+export const bulkDeleteOrders = (ids: string[]) => {
+	return api.delete<BulkActionResponse>('/admin/orders/bulk', { ids });
 };
 
 // Bulk Product Operations
-export const bulkDeleteProducts = (ids: string[]) => {
-	return api.delete<BulkActionResponse>('/admin/products/bulk', { ids });
+export const bulkUpdateProducts = (
+	ids: string[],
+	field: 'status',
+	value: ProductStatus
+) => {
+	return api.post<BulkActionResponse>('/admin/products/bulk', {
+		ids,
+		field,
+		value
+	});
 };
 
-export const bulkUpdateProductStatus = (
-	ids: string[],
-	status: ProductStatus
-) => {
-	return api.post<BulkActionResponse>('/admin/products/bulk-status', {
-		ids,
-		status
-	});
+export const bulkDeleteProducts = (ids: string[]) => {
+	return api.delete<BulkActionResponse>('/admin/products/bulk', { ids });
 };
