@@ -3,7 +3,6 @@
 import React from 'react';
 import { StoreProductCategory } from '@/data/types';
 import { cn } from '@/lib/utils';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 interface StoreCategoriesProps {
 	categories: StoreProductCategory[];
@@ -21,37 +20,34 @@ const StoreCategories: React.FC<StoreCategoriesProps> = ({
 	}
 
 	return (
-		<ScrollArea className='w-full whitespace-nowrap'>
-			<div className='flex gap-4'>
+		<div className='flex gap-4'>
+			<button
+				onClick={() => onCategoryChange(null)}
+				className={cn(
+					'transition-colors shrink-0 cursor-pointer',
+					selectedCategory === null
+						? 'text-foreground'
+						: 'text-muted-foreground hover:text-foreground'
+				)}
+			>
+				All
+			</button>
+
+			{categories.map(category => (
 				<button
-					onClick={() => onCategoryChange(null)}
+					key={category.id}
+					onClick={() => onCategoryChange(category.id)}
 					className={cn(
 						'transition-colors shrink-0 cursor-pointer',
-						selectedCategory === null
+						selectedCategory === category.id
 							? 'text-foreground'
 							: 'text-muted-foreground hover:text-foreground'
 					)}
 				>
-					All
+					{category.name}
 				</button>
-
-				{categories.map(category => (
-					<button
-						key={category.id}
-						onClick={() => onCategoryChange(category.id)}
-						className={cn(
-							'transition-colors shrink-0 cursor-pointer',
-							selectedCategory === category.id
-								? 'text-foreground'
-								: 'text-muted-foreground hover:text-foreground'
-						)}
-					>
-						{category.name}
-					</button>
-				))}
-			</div>
-			<ScrollBar orientation='horizontal' className='invisible' />
-		</ScrollArea>
+			))}
+		</div>
 	);
 };
 

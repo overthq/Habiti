@@ -32,7 +32,7 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store, viewerContext }) => {
 					<StoreAvatar store={store} />
 
 					<div className='flex items-center gap-2'>
-						<h1 className='text-xl font-medium'>{store.name}</h1>
+						<h1 className='text-xl font-medium truncate'>{store.name}</h1>
 						{store.unlisted && <Badge variant='warning'>Unlisted</Badge>}
 					</div>
 				</div>
