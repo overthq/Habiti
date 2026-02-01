@@ -37,7 +37,7 @@ const FollowButton: React.FC<FollowButtonProps> = ({
 			size='sm'
 			className={cn(
 				isFollowing &&
-					'bg-transparent *:[svg]:fill-red-500 *:[svg]:stroke-red-500'
+					'bg-transparent *:[svg]:fill-red-500 *:[svg]:stroke-red-500 w-full sm:w-fit'
 			)}
 		>
 			<HeartIcon />

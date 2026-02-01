@@ -223,7 +223,6 @@ router.get('/admin/payouts/:id', isAdmin, PayoutController.getPayout);
 router.patch('/admin/payouts/:id', isAdmin, PayoutController.updatePayout);
 router.get('/admin/orders', isAdmin, OrderController.getOrders);
 
-// Admin Bulk Operations - Users
 router.post(
 	'/admin/users/bulk',
 	isAdmin,
@@ -237,7 +236,6 @@ router.delete(
 	AdminController.bulkDeleteUsers
 );
 
-// Admin Bulk Operations - Orders
 router.post(
 	'/admin/orders/bulk',
 	isAdmin,
@@ -251,7 +249,6 @@ router.delete(
 	AdminController.bulkDeleteOrders
 );
 
-// Admin Bulk Operations - Products
 router.post(
 	'/admin/products/bulk',
 	isAdmin,
