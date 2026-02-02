@@ -66,7 +66,7 @@ export const generateAccessToken = async (
 	return jwt.sign(
 		{ id: user.id, name: user.name, email: user.email, role },
 		env.JWT_SECRET,
-		{ expiresIn: '10m' }
+		{ expiresIn: '10s' }
 	);
 };
 

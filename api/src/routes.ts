@@ -130,6 +130,11 @@ router.get(
 );
 router.get('/users/current/orders', authenticate, UserController.getOrders);
 router.get('/users/current/carts', authenticate, UserController.getCarts);
+router.get(
+	'/users/current/carts/:id',
+	authenticate,
+	CartController.getCartById
+);
 router.get('/users/current/cards', authenticate, UserController.getCards);
 router.get(
 	'/users/current/delivery-addresses',
