@@ -104,9 +104,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ store }) => {
 					)}
 				</div>
 				<div className='mt-2'>
-					<p className='text-center font-medium text-sm truncate'>
-						{store.name}
-					</p>
+					<p className='text-center text-sm truncate'>{store.name}</p>
 				</div>
 			</div>
 		</Link>
