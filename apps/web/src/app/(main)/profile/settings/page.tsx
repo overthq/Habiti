@@ -16,7 +16,6 @@ import { Button } from '@/components/ui/button';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
 	useDeleteCardMutation,
 	useDeleteCurrentUserMutation,
@@ -87,6 +86,10 @@ const AccountTab: React.FC<AccountTabProps> = ({ user }) => {
 
 			<Separator className='my-4' />
 
+			<PaymentsTab />
+
+			<Separator className='my-4' />
+
 			<div className='space-y-2'>
 				<h2 className='font-medium'>Delete Account</h2>
 
@@ -140,6 +143,12 @@ const PaymentsTab = () => {
 				Your payment methods are stored securely by Paystack.
 			</p>
 
+			{data.cards.length === 0 && (
+				<div>
+					<p>You do not have any payment methods set up.</p>
+				</div>
+			)}
+
 			{data.cards.map(card => (
 				<div
 					key={card.id}
@@ -190,20 +199,7 @@ const SettingsPage = () => {
 		<div>
 			<h1 className='text-2xl font-medium mb-4'>Settings</h1>
 
-			<div className='w-full'>
-				<Tabs defaultValue='account'>
-					<TabsList>
-						<TabsTrigger value='account'>Account</TabsTrigger>
-						<TabsTrigger value='payments'>Payments</TabsTrigger>
-					</TabsList>
-					<TabsContent value='account'>
-						<AccountTab user={data.user} />
-					</TabsContent>
-					<TabsContent value='payments'>
-						<PaymentsTab />
-					</TabsContent>
-				</Tabs>
-			</div>
+			<AccountTab user={data.user} />
 		</div>
 	);
 };
