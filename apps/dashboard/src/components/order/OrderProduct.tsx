@@ -1,12 +1,12 @@
-import { formatNaira } from '@habiti/common';
-import { CustomImage, Typography, Row } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import { formatNaira } from '@habiti/common';
+import { CustomImage, Typography, Row } from '@habiti/components';
 
-import { OrderQuery } from '../../types/api';
+import { OrderProduct as OrderProductType } from '../../data/types';
 
 interface OrderProductProps {
-	orderProduct: OrderQuery['order']['products'][number];
+	orderProduct: OrderProductType;
 	onPress(): void;
 }
 

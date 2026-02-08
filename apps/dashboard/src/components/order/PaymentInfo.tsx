@@ -2,11 +2,10 @@ import { formatNaira } from '@habiti/common';
 import { Typography } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-
-import { OrderQuery } from '../../types/api';
+import { Order } from '../../data/types';
 
 interface PaymentInfoProps {
-	order: OrderQuery['order'];
+	order: Order;
 }
 
 // This should show the payment details for the order.

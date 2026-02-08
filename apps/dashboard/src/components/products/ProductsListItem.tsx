@@ -9,10 +9,10 @@ import {
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
-import { ProductsQuery } from '../../types/api';
+import { Product } from '../../data/types';
 
 interface ProductsListItemProps {
-	product: ProductsQuery['currentStore']['products']['edges'][number]['node'];
+	product: Product;
 	onPress(): void;
 	onLongPress?(): void;
 }

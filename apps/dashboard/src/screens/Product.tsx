@@ -8,7 +8,7 @@ import {
 } from '@react-navigation/native';
 
 import useGoBack from '../hooks/useGoBack';
-import { useProductQuery } from '../types/api';
+import { useProductQuery } from '../data/queries';
 import { ProductStackParamList } from '../types/navigation';
 import { Spacer, TextButton, useTheme } from '@habiti/components';
 import ProductDetails from '../components/product/ProductDetails';
@@ -25,11 +25,9 @@ const Product: React.FC = () => {
 	const { setOptions, navigate } =
 		useNavigation<NavigationProp<ProductStackParamList>>();
 
-	const [{ data, fetching }, refetch] = useProductQuery({
-		variables: { id: productId }
-	});
+	const { data, isLoading, refetch } = useProductQuery(productId);
 
-	const { refreshing, refresh } = useRefresh({ fetching, refetch });
+	const { refreshing, refresh } = useRefresh({ fetching: isLoading, refetch });
 	const { theme } = useTheme();
 
 	useGoBack();

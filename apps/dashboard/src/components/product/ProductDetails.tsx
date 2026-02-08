@@ -1,10 +1,10 @@
 import { View, StyleSheet } from 'react-native';
 
 import { Spacer, Typography } from '@habiti/components';
-import { ProductQuery } from '../../types/api';
+import { Product } from '../../data/types';
 
 interface ProductDetailsProps {
-	product: ProductQuery['product'];
+	product: Product;
 }
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {

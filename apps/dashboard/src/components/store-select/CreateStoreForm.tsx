@@ -11,7 +11,7 @@ import {
 
 import useGoBack from '../../hooks/useGoBack';
 import useStore from '../../state';
-import { useCreateStoreMutation } from '../../types/api';
+import { useCreateStoreMutation } from '../../data/mutations';
 
 export interface CreateStoreFormValues {
 	name: string;
@@ -30,7 +30,7 @@ const CreateStoreForm: React.FC<CreateStoreFormProps> = ({
 	hasTitle,
 	onCancel
 }) => {
-	const [{ fetching }, createStore] = useCreateStoreMutation();
+	const createStoreMutation = useCreateStoreMutation();
 	const { setPreference } = useStore();
 	const methods = useForm<CreateStoreFormValues>();
 
@@ -38,15 +38,11 @@ const CreateStoreForm: React.FC<CreateStoreFormProps> = ({
 
 	const onSubmit = React.useCallback(
 		async (values: CreateStoreFormValues) => {
-			const { data, error } = await createStore({ input: values });
+			const { store } = await createStoreMutation.mutateAsync(values);
 
-			if (data?.createStore?.id) {
-				setPreference({ activeStore: data.createStore.id });
-			} else if (error) {
-				console.log('Error while creating store:', error);
-			}
+			setPreference({ activeStore: store.id });
 		},
-		[setPreference, createStore]
+		[setPreference, createStoreMutation]
 	);
 
 	return (
@@ -86,7 +82,7 @@ const CreateStoreForm: React.FC<CreateStoreFormProps> = ({
 			/>
 			<Spacer y={32} />
 			<Button
-				loading={fetching}
+				loading={createStoreMutation.isPending}
 				text='Submit'
 				onPress={methods.handleSubmit(onSubmit)}
 			/>

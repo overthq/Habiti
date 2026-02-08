@@ -5,7 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import useGoBack from '../hooks/useGoBack';
-import { useCreateProductMutation } from '../types/api';
+import { useCreateProductMutation } from '../data/mutations';
 
 export interface ProductFormData {
 	name: string;
@@ -23,7 +23,7 @@ const addProductSchema = z.object({
 
 const AddProduct: React.FC = () => {
 	const { goBack, setOptions } = useNavigation();
-	const [{ fetching }, createProduct] = useCreateProductMutation();
+	const createProductMutation = useCreateProductMutation();
 	useGoBack('x');
 
 	const formMethods = useForm<z.infer<typeof addProductSchema>>({
@@ -37,45 +37,34 @@ const AddProduct: React.FC = () => {
 
 	const onSubmit = React.useCallback(
 		async (values: z.infer<typeof addProductSchema>) => {
-			const { error } = await createProduct({
-				input: {
-					name: values.name,
-					description: values.description,
-					unitPrice: Number(values.unitPrice) * 100,
-					quantity: Number(values.quantity)
-				}
+			const { error } = await createProductMutation.mutateAsync({
+				name: values.name,
+				description: values.description,
+				unitPrice: Number(values.unitPrice) * 100,
+				quantity: Number(values.quantity)
 			});
 
 			// We want to preserve state when an error occurs.
 			// For retries (if it's just a network thing), or for observing
 			// the state that led to the error.
 
-			if (error) {
-				console.log('Error while creating product');
-				console.log(error);
-			} else {
-				goBack();
-
-				// if (data) {
-				// 	params.onClose?.(data.createProduct.id);
-				// }
-			}
+			goBack();
 		},
-		[createProduct, goBack]
+		[createProductMutation, goBack]
 	);
 
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
 				<TextButton
-					disabled={fetching}
+					disabled={createProductMutation.isPending}
 					onPress={formMethods.handleSubmit(onSubmit)}
 				>
 					Save
 				</TextButton>
 			)
 		});
-	}, [fetching]);
+	}, [createProductMutation.isPending]);
 
 	return (
 		<Screen style={{ padding: 16 }}>

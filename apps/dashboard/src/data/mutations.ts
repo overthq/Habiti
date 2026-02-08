@@ -1,11 +1,38 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useShallow } from 'zustand/react/shallow';
 import * as SecureStore from 'expo-secure-store';
 
 import useStore from '../state';
 import { AppStackParamList } from '../types/navigation';
+import {
+	updateCurrentStore,
+	deleteProduct,
+	createProduct,
+	deleteStore,
+	updateProduct,
+	createPayout,
+	createStore,
+	createProductCategory,
+	updateOrder,
+	deleteProductCategory,
+	updateProductCategory,
+	updateProductCategories,
+	verifyBankAccount
+} from './requests';
 import env from '../../env';
+import {
+	CreatePayoutBody,
+	CreateProductBody,
+	CreateProductCategoryBody,
+	CreateStoreBody,
+	UpdateCurrentStoreBody,
+	UpdateOrderArgs,
+	UpdateProductArgs,
+	UpdateProductCategoriesArgs,
+	UpdateProductCategoryArgs,
+	VerifyBankAccountBody
+} from './types';
 
 interface RegisterArgs {
 	email: string;
@@ -82,5 +109,178 @@ export const useVerifyCodeMutation = () => {
 			logIn(data.accessToken);
 			await SecureStore.setItemAsync('refreshToken', data.refreshToken);
 		}
+	});
+};
+
+export const useUpdateCurrentStoreMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (body: UpdateCurrentStoreBody) => updateCurrentStore(body),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['stores', 'current'] });
+		}
+	});
+};
+
+export const useUpdateProductMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (args: UpdateProductArgs) => {
+			return updateProduct(args.productId, args.body);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['stores', 'current', 'products']
+			});
+		}
+	});
+};
+
+export const useCreateProductMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (input: CreateProductBody) => createProduct(input),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['stores', 'current', 'products']
+			});
+		}
+	});
+};
+
+export const useUpdateOrderMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (args: UpdateOrderArgs) => {
+			return updateOrder(args.orderId, args.body);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['orders']
+			});
+		},
+		onError: error => {
+			console.log(error);
+		}
+	});
+};
+
+export const useDeleteProductMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (productId: string) => deleteProduct(productId),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['stores', 'current', 'products']
+			});
+		}
+	});
+};
+
+export const useCreateProductCategoryMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (body: CreateProductCategoryBody) => {
+			return createProductCategory(body);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['stores', 'current', 'categories']
+			});
+		}
+	});
+};
+
+export const useCreateStoreMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (body: CreateStoreBody) => createStore(body),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['stores']
+			});
+		}
+	});
+};
+
+export const useDeleteStoreMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (storeId: string) => deleteStore(storeId),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['stores']
+			});
+		}
+	});
+};
+
+export const useUpdateProductCategoryMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (args: UpdateProductCategoryArgs) => {
+			return updateProductCategory(args.categoryId, args.body);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['stores', 'current', 'categories']
+			});
+		}
+	});
+};
+
+export const useDeleteProductCategoryMutation = (categoryId: string) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: () => deleteProductCategory(categoryId),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['stores', 'current', 'categories']
+			});
+		}
+	});
+};
+
+export const useUpdateProductCategoriesMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (args: UpdateProductCategoriesArgs) => {
+			return updateProductCategories(args.productId, args.body);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['stores', 'current', 'categories']
+			});
+		}
+	});
+};
+
+export const useCreatePayoutMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (body: CreatePayoutBody) => createPayout(body),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['stores', 'current', 'payouts']
+			});
+		}
+	});
+};
+
+export const useVerifyBankAccountMutation = () => {
+	return useMutation({
+		mutationFn: (body: VerifyBankAccountBody) => verifyBankAccount(body)
 	});
 };

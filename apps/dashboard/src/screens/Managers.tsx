@@ -5,11 +5,11 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import ManagerRow from '../components/managers/ManagerRow';
 import useGoBack from '../hooks/useGoBack';
-import { useManagersQuery } from '../types/api';
+import { useStoreManagersQuery } from '../data/queries';
 import { AppStackParamList } from '../types/navigation';
 
 const Managers = () => {
-	const [{ data, fetching }, refetch] = useManagersQuery();
+	const { data, isLoading, refetch } = useStoreManagersQuery();
 	const [refreshing, setRefreshing] = React.useState(false);
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
@@ -22,8 +22,8 @@ const Managers = () => {
 	}, [refetch]);
 
 	React.useEffect(() => {
-		if (!fetching && refreshing) setRefreshing(false);
-	}, [fetching, refreshing]);
+		if (!isLoading && refreshing) setRefreshing(false);
+	}, [isLoading, refreshing]);
 
 	React.useLayoutEffect(() => {
 		setOptions({
@@ -35,7 +35,7 @@ const Managers = () => {
 		});
 	}, []);
 
-	if (fetching || !data) {
+	if (isLoading || !data) {
 		return <View />;
 	}
 
@@ -51,7 +51,7 @@ const Managers = () => {
 					/>
 				}
 			>
-				{data.currentStore.managers.map(({ manager }) => (
+				{data.managers.map(manager => (
 					<ManagerRow key={manager.id} manager={manager} you={false} />
 				))}
 			</ScrollableScreen>

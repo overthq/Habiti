@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
-import { useCreateStoreMutation } from '../types/api';
+import { useCreateStoreMutation } from '../data/mutations';
 import { useShallow } from 'zustand/react/shallow';
 
 export interface CreateStoreFormValues {
@@ -17,7 +17,7 @@ export interface CreateStoreFormValues {
 }
 
 const CreateStore: React.FC = () => {
-	const [, createStore] = useCreateStoreMutation();
+	const createStoreMutation = useCreateStoreMutation();
 	const setPreference = useStore(useShallow(state => state.setPreference));
 	const methods = useForm<CreateStoreFormValues>();
 	const { bottom } = useSafeAreaInsets();
@@ -26,15 +26,11 @@ const CreateStore: React.FC = () => {
 
 	const onSubmit = React.useCallback(
 		async (values: CreateStoreFormValues) => {
-			const { data, error } = await createStore({ input: values });
+			const { store } = await createStoreMutation.mutateAsync(values);
 
-			if (data?.createStore?.id) {
-				setPreference({ activeStore: data.createStore.id });
-			} else if (error) {
-				console.log('Error while creating store:', error);
-			}
+			setPreference({ activeStore: store.id });
 		},
-		[setPreference, createStore]
+		[setPreference, createStoreMutation]
 	);
 
 	return (

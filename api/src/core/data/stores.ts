@@ -306,6 +306,36 @@ export const getTrendingStores = async (
 	return stores;
 };
 
+export const getStoreCustomer = async (
+	prisma: PrismaClient,
+	storeId: string,
+	userId: string
+) => {
+	const user = await prisma.user.findUnique({
+		where: { id: userId },
+		select: {
+			id: true,
+			name: true,
+			email: true,
+			orders: {
+				where: { storeId },
+				include: {
+					products: {
+						include: {
+							product: {
+								include: { images: true }
+							}
+						}
+					}
+				},
+				orderBy: { createdAt: 'desc' }
+			}
+		}
+	});
+
+	return user;
+};
+
 interface UpdateStoreRevenueArgs {
 	storeId: string;
 	total: number;

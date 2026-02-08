@@ -1,28 +1,19 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 
 import EditStoreMain from '../components/edit-store/EditStoreMain';
 import useGoBack from '../hooks/useGoBack';
-import { useStoreQuery } from '../types/api';
+import { useCurrentStoreQuery } from '../data/queries';
 
 const EditStore: React.FC = () => {
-	const [{ data, fetching }] = useStoreQuery();
+	const { isFetching, data } = useCurrentStoreQuery();
 	useGoBack();
 
-	if (fetching || !data?.currentStore) {
-		return <View style={styles.loading} />;
+	if (isFetching || !data?.store) {
+		return <View />;
 	}
 
-	return <EditStoreMain store={data.currentStore} />;
+	return <EditStoreMain store={data.store} />;
 };
-
-const styles = StyleSheet.create({
-	loading: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: '#FFFFFF'
-	}
-});
 
 export default EditStore;

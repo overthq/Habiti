@@ -3,11 +3,11 @@ import { View, StyleSheet } from 'react-native';
 import { Spacer, Typography } from '@habiti/components';
 
 import StatusPill from './StatusPill';
-import { OrderQuery } from '../../types/api';
 import { parseTimestamp } from '../../utils/date';
+import { Order } from '../../data/types';
 
 interface OrderOverviewProps {
-	order: OrderQuery['order'];
+	order: Order;
 }
 
 // TODO:
@@ -15,6 +15,8 @@ interface OrderOverviewProps {
 // - Something like "Today at **:** AM/PM".
 
 const OrderOverview: React.FC<OrderOverviewProps> = ({ order }) => {
+	console.log({ order });
+
 	return (
 		<View style={styles.container}>
 			<StatusPill status={order.status} />

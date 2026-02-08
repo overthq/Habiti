@@ -1,21 +1,21 @@
 import React from 'react';
 import { Alert, Linking, View } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { Separator } from '@habiti/components';
 
 import StoreMenuRow from './StoreMenuRow';
 import useStore from '../../state';
 import type { StoreStackParamList } from '../../types/navigation';
 import StoreSelectModal from './StoreSelectModal';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import { Separator } from '@habiti/components';
-import { StoreQuery } from '../../types/api';
+import { Store } from '../../data/types';
 
 const PRIVACY_POLICY_URL = 'https://habiti.app/privacy-policy';
 const SUPPORT_URL = 'https://habiti.app/support';
 const ACCEPTABLE_USE_URL = 'https://habiti.app/acceptable-use';
 
 interface StoreMenuProps {
-	store: StoreQuery['currentStore'];
+	store: Store;
 }
 
 const StoreMenu: React.FC<StoreMenuProps> = ({ store }) => {

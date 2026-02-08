@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import { authenticate, isAdmin, optionalAuth } from './middleware/auth';
 import { validateBody } from './middleware/validation';
+import { uploadImages } from './middleware/upload';
 
 import * as OrderController from './controllers/orders';
 import * as StoreController from './controllers/stores';
@@ -15,7 +16,7 @@ import * as PaymentController from './controllers/payments';
 import * as SearchController from './controllers/search';
 import * as WebhooksController from './controllers/webhooks';
 import * as CardController from './controllers/cards';
-
+import * as UploadController from './controllers/uploads';
 import { getLandingHighlights } from './controllers/highlights';
 import { checkHealth } from './controllers/health';
 
@@ -34,7 +35,7 @@ import {
 } from './core/validations/admin';
 import { adminCreateStoreSchema } from './core/validations/stores';
 
-const router: Router = Router();
+const router = Router();
 
 // Auth
 router.post(
@@ -55,22 +56,6 @@ router.post(
 router.post('/auth/apple-callback', AuthController.appleCallback);
 router.post('/auth/refresh', AuthController.refresh);
 router.post('/auth/logout', AuthController.logout);
-
-// Stores
-router.post('/stores', authenticate, StoreController.createStore);
-router.post('/stores/:id/follow', authenticate, StoreController.followStore);
-router.post(
-	'/stores/:id/unfollow',
-	authenticate,
-	StoreController.unfollowStore
-);
-
-router.get('/stores/:id', optionalAuth, StoreController.getStoreById);
-router.get(
-	'/stores/:id/products',
-	optionalAuth,
-	StoreController.getStoreProducts
-);
 
 // Products
 router.get('/products/:id', optionalAuth, ProductController.getProductById);
@@ -96,7 +81,7 @@ router.put('/stores/current', authenticate, StoreController.updateStore);
 router.get(
 	'/stores/current/products',
 	authenticate,
-	StoreController.getStoreProducts
+	StoreController.getCurrentStoreProducts
 );
 router.get(
 	'/stores/current/products/:id',
@@ -112,6 +97,108 @@ router.delete(
 	'/stores/current/products/:id',
 	authenticate,
 	ProductController.deleteProduct
+);
+router.get(
+	'/stores/current/payouts',
+	authenticate,
+	StoreController.getCurrentStorePayouts
+);
+router.get(
+	'/stores/current/payouts/:id',
+	authenticate,
+	StoreController.getCurrentStorePayoutById
+);
+router.get(
+	'/stores/current/overview',
+	authenticate,
+	StoreController.getStoreOverview
+);
+router.get(
+	'/stores/current/orders',
+	authenticate,
+	StoreController.getCurrentStoreOrders
+);
+router.get(
+	'/stores/current/orders/:id',
+	authenticate,
+	OrderController.getOrderById
+);
+router.get(
+	'/stores/current/managers',
+	authenticate,
+	StoreController.getStoreManagers
+);
+router.get(
+	'/stores/current/customers/:id',
+	authenticate,
+	StoreController.getStoreCustomer
+);
+router.post(
+	'/stores/current/products',
+	authenticate,
+	StoreController.createStoreProduct
+);
+router.put(
+	'/stores/current/products/:id',
+	authenticate,
+	ProductController.updateProduct
+);
+router.put(
+	'/stores/current/products/:id/categories',
+	authenticate,
+	ProductController.updateProductCategories
+);
+router.put(
+	'/stores/current/orders/:id',
+	authenticate,
+	OrderController.updateOrder
+);
+router.post(
+	'/stores/current/payouts',
+	authenticate,
+	PayoutController.createPayout
+);
+router.post(
+	'/stores/current/verify-bank-account',
+	authenticate,
+	PayoutController.verifyBankAccount
+);
+router.get(
+	'/stores/current/categories',
+	authenticate,
+	ProductController.getStoreCategories
+);
+router.post(
+	'/stores/current/categories',
+	authenticate,
+	ProductController.createStoreCategory
+);
+router.put(
+	'/stores/current/categories/:id',
+	authenticate,
+	ProductController.updateStoreCategory
+);
+router.delete(
+	'/stores/current/categories/:id',
+	authenticate,
+	ProductController.deleteStoreCategory
+);
+
+// Stores
+router.post('/stores', authenticate, StoreController.createStore);
+router.delete('/stores/:id', authenticate, StoreController.deleteStore);
+router.post('/stores/:id/follow', authenticate, StoreController.followStore);
+router.post(
+	'/stores/:id/unfollow',
+	authenticate,
+	StoreController.unfollowStore
+);
+
+router.get('/stores/:id', optionalAuth, StoreController.getStoreById);
+router.get(
+	'/stores/:id/products',
+	optionalAuth,
+	StoreController.getStoreProducts
 );
 
 // Current User
@@ -152,8 +239,6 @@ router.post(
 	validateBody(createOrderSchema),
 	OrderController.createOrder
 );
-
-// Cards
 router.post(
 	'/users/current/cards/authorize',
 	authenticate,
@@ -265,6 +350,14 @@ router.delete(
 	isAdmin,
 	validateBody(bulkIdsSchema),
 	AdminController.bulkDeleteProducts
+);
+
+// Uploads
+router.post(
+	'/uploads/images',
+	authenticate,
+	uploadImages.array('images', 10),
+	UploadController.uploadImages
 );
 
 // Health

@@ -1,8 +1,7 @@
 import React from 'react';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import useRefresh from '../../hooks/useRefresh';
-import { ProductsStackParamList } from '../../types/navigation';
-import { ProductsQuery, Sort, useProductsQuery } from '../../types/api';
+import { useProductsQuery } from '../../data/queries';
+import { Product, ProductFilters } from '../../data/types';
 import ProductsFilterModal from './ProductsFilterModal';
 
 // TODO:
@@ -14,8 +13,8 @@ import ProductsFilterModal from './ProductsFilterModal';
 // - Use zustand to handle filters.
 
 interface ProductsContextType {
-	data: ProductsQuery;
-	fetching: boolean;
+	products: Product[];
+	isLoading: boolean;
 	refreshing: boolean;
 	refresh: () => void;
 	openFilterModal: () => void;
@@ -39,11 +38,13 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 		{} as ProductsFilters
 	);
 
-	const [{ data, fetching }, refetch] = useProductsQuery({
-		variables: buildVariablesFromFilters(filters)
-	});
+	const queryFilters = buildFiltersFromState(filters);
+	const { data, isLoading, isRefetching, refetch, error } =
+		useProductsQuery(queryFilters);
 
-	const { refreshing, refresh } = useRefresh({ fetching, refetch });
+	const refresh = React.useCallback(() => {
+		refetch();
+	}, [refetch]);
 
 	const clearFilters = React.useCallback(() => {
 		setFilters({
@@ -59,9 +60,9 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 	return (
 		<ProductsContext.Provider
 			value={{
-				data,
-				fetching,
-				refreshing,
+				products: data?.products ?? [],
+				isLoading,
+				refreshing: isRefetching,
 				refresh,
 				openFilterModal,
 				clearFilters
@@ -78,33 +79,28 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 	);
 };
 
-const buildVariablesFromFilters = (filters: ProductsFilters) => {
-	let params: ProductsStackParamList['ProductsList'] = {};
+const buildFiltersFromState = (filters: ProductsFilters): ProductFilters => {
+	const result: ProductFilters = {};
 
 	if (filters.categoryId) {
-		params = {
-			...params,
-			filter: {
-				...params.filter,
-				categories: {
-					some: { categoryId: { equals: filters.categoryId } }
-				}
-			}
-		};
+		result.categoryId = filters.categoryId;
 	}
 
 	if (filters.sortBy) {
-		params.orderBy = [sortByMap[filters.sortBy]];
+		result.orderBy = sortByMap[filters.sortBy];
 	}
 
-	return params;
+	return result;
 };
 
-const sortByMap = {
-	'created-at-desc': { createdAt: Sort.Desc },
-	'unit-price-desc': { unitPrice: Sort.Desc },
-	'unit-price-asc': { unitPrice: Sort.Asc }
-} as const;
+const sortByMap: Record<
+	NonNullable<ProductsFilters['sortBy']>,
+	ProductFilters['orderBy']
+> = {
+	'created-at-desc': { createdAt: 'desc' },
+	'unit-price-desc': { unitPrice: 'desc' },
+	'unit-price-asc': { unitPrice: 'asc' }
+};
 
 export const useProductsContext = () => {
 	const context = React.useContext(ProductsContext);

@@ -4,8 +4,7 @@ import { FullWindowOverlay } from 'react-native-screens';
 import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { Button, Typography, BottomModal, Spacer } from '@habiti/components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import { useEditStoreMutation } from '../../types/api';
+import { useUpdateCurrentStoreMutation } from '../../data/mutations';
 
 interface ConfirmationModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
@@ -21,7 +20,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 	modalRef,
 	accountName
 }) => {
-	const [{ fetching }, editStore] = useEditStoreMutation();
+	const updateStoreMutation = useUpdateCurrentStoreMutation();
 	const methods = useFormContext<EditPayoutInfoValues>();
 	const { bottom } = useSafeAreaInsets();
 
@@ -35,15 +34,12 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 	const handleSubmit = React.useCallback(async () => {
 		const { accountNumber, bank } = methods.getValues();
 
-		const { error } = await editStore({
-			input: { bankAccountNumber: accountNumber, bankCode: bank }
+		await updateStoreMutation.mutateAsync({
+			bankAccountNumber: accountNumber,
+			bankCode: bank
 		});
 
-		if (error) {
-			console.log('error', error);
-		} else {
-			modalRef.current?.close();
-		}
+		modalRef.current?.close();
 	}, []);
 
 	return (
@@ -62,7 +58,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 				<Button
 					text='Confirm details'
 					onPress={handleSubmit}
-					loading={fetching}
+					loading={updateStoreMutation.isPending}
 				/>
 			</BottomSheetView>
 		</BottomModal>

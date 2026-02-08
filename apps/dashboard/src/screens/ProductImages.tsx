@@ -6,9 +6,9 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import useGoBack from '../hooks/useGoBack';
 import { ProductStackParamList } from '../types/navigation';
-import { useEditProductMutation } from '../types/api';
+import { useUpdateProductMutation } from '../data/mutations';
+import { uploadImage } from '../data/requests';
 import FAB from '../components/products/FAB';
-import { generateUploadFile } from '../utils/images';
 
 // TODO: Run a query here for this purpose
 // Or use a context
@@ -17,7 +17,7 @@ const ProductImages: React.FC = () => {
 	const [imagesToUpload, setImagesToUpload] = React.useState<
 		ImagePicker.ImagePickerAsset[]
 	>([]);
-	const [, editProduct] = useEditProductMutation();
+	const updateProductMutation = useUpdateProductMutation();
 
 	const {
 		params: { productId, images }
@@ -29,20 +29,23 @@ const ProductImages: React.FC = () => {
 
 	const handleSaveImages = React.useCallback(async () => {
 		try {
-			const { error } = await editProduct({
-				id: productId,
-				input: { imageFiles: imagesToUpload.map(generateUploadFile) }
+			const uploaded = await Promise.all(
+				imagesToUpload.map(a => uploadImage(a.uri))
+			);
+
+			const existingUrls = images?.map(i => i.path) ?? [];
+			const newUrls = uploaded.map(u => u.url);
+
+			await updateProductMutation.mutateAsync({
+				productId,
+				body: { images: [...existingUrls, ...newUrls] }
 			});
 
-			if (error) {
-				console.log(error);
-			} else {
-				goBack();
-			}
+			goBack();
 		} catch (error) {
 			console.log({ error });
 		}
-	}, [editProduct, goBack, imagesToUpload, productId]);
+	}, [updateProductMutation, goBack, imagesToUpload, productId, images]);
 
 	React.useLayoutEffect(() => {
 		setOptions({

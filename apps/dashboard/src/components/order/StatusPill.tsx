@@ -1,12 +1,13 @@
 import { Badge } from '@habiti/components';
 import React from 'react';
 
-import { OrderStatus } from '../../types/api';
+import { OrderStatus } from '../../data/types';
 
 const StatusColorMap = {
 	[OrderStatus.Cancelled]: 'danger',
 	[OrderStatus.Completed]: 'success',
-	[OrderStatus.Pending]: 'warning'
+	[OrderStatus.Pending]: 'warning',
+	[OrderStatus.PaymentPending]: 'warning'
 } as const;
 
 interface StatusPillProps {

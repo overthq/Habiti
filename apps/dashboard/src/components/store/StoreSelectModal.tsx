@@ -12,7 +12,7 @@ import {
 	useTheme
 } from '@habiti/components';
 
-import { useManagedStoresQuery } from '../../types/api';
+import { useManagedStoresQuery } from '../../data/queries';
 
 interface StoreSelectModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
@@ -20,7 +20,7 @@ interface StoreSelectModalProps {
 
 const StoreSelectModal: React.FC<StoreSelectModalProps> = ({ modalRef }) => {
 	const { bottom } = useSafeAreaInsets();
-	const [{ data }] = useManagedStoresQuery();
+	const { data } = useManagedStoresQuery();
 	const { theme } = useTheme();
 
 	const handleCreateStore = () => {
@@ -35,7 +35,7 @@ const StoreSelectModal: React.FC<StoreSelectModalProps> = ({ modalRef }) => {
 					Select store
 				</Typography>
 				<Spacer y={8} />
-				{data?.currentUser.managed.map(({ store }) => (
+				{data?.stores.map(store => (
 					<Row
 						key={store.id}
 						style={{

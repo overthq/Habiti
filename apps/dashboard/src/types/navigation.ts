@@ -1,5 +1,5 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
-import { IntWhere, ProductQuery, Sort, CategoriesWhere } from './api';
+import { Image, ProductCategory } from '../data/types';
 
 export type AppStackParamList = {
 	Main: undefined;
@@ -41,13 +41,15 @@ export type HomeStackParamList = {
 };
 
 export type OrdersStackParamList = {
-	OrdersList: OrdersParams;
+	// OrdersList: OrdersParams;
+	OrdersList: undefined;
 	Order: { orderId: string };
 	Product: NavigatorScreenParams<ProductStackParamList>;
 };
 
 export type ProductsStackParamList = {
-	ProductsList: ProductsParams;
+	// ProductsList: ProductsParams;
+	ProductsList: undefined;
 	'Products.Search': undefined;
 	Product: NavigatorScreenParams<ProductStackParamList>;
 };
@@ -73,30 +75,30 @@ export type ProductStackParamList = {
 	'Product.Main': { productId: string };
 	'Product.Images': {
 		productId: string;
-		images: ProductQuery['product']['images'];
+		images: Image[];
 	};
 	'Product.Categories': {
 		productId: string;
-		categories: ProductQuery['product']['categories'];
+		categories: ProductCategory[];
 	};
 	'Product.Details': { productId: string; name: string; description: string };
 };
 
-type ProductsParams = {
-	filter?: {
-		unitPrice?: IntWhere;
-		categories?: CategoriesWhere;
-	};
-	orderBy?: {
-		createdAt?: Sort;
-		updatedAt?: Sort;
-		unitPrice?: Sort;
-	}[];
-};
+// type ProductsParams = {
+// 	filter?: {
+// 		unitPrice?: IntWhere;
+// 		categories?: CategoriesWhere;
+// 	};
+// 	orderBy?: {
+// 		createdAt?: Sort;
+// 		updatedAt?: Sort;
+// 		unitPrice?: Sort;
+// 	}[];
+// };
 
-type OrdersParams = {
-	orderBy?: {
-		createdAt?: Sort;
-		updatedAt?: Sort;
-	}[];
-};
+// type OrdersParams = {
+// 	orderBy?: {
+// 		createdAt?: Sort;
+// 		updatedAt?: Sort;
+// 	}[];
+// };

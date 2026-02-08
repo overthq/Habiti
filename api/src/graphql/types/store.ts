@@ -81,6 +81,8 @@ const StoreTypes = gql`
 		twitter: String
 		instagram: String
 		imageFile: Upload
+		imageUrl: String
+		imagePublicId: String
 		bankAccountNumber: String
 		bankCode: String
 	}

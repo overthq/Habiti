@@ -16,10 +16,10 @@ import { FlashList } from '@shopify/flash-list';
 import PayoutRow from '../components/payouts/PayoutRow';
 import RevenueBar from '../components/payouts/RevenueBar';
 import useGoBack from '../hooks/useGoBack';
-import { useStorePayoutsQuery } from '../types/api';
 import { AppStackParamList, MainTabParamList } from '../types/navigation';
 import useRefresh from '../hooks/useRefresh';
 import RevenueBarLegend from '../components/payouts/RevenueBarLegend';
+import { useCurrentStoreQuery, usePayoutsQuery } from '../data/queries';
 
 interface NoPayoutsProps {
 	action(): void;
@@ -53,11 +53,12 @@ const NoPayouts: React.FC<NoPayoutsProps> = ({ action }) => {
 };
 
 const Payouts = () => {
-	const [{ data, fetching }, refetch] = useStorePayoutsQuery();
+	const { data, isLoading, refetch } = useCurrentStoreQuery();
+	const { data: payoutData } = usePayoutsQuery();
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList & MainTabParamList>>();
 	const { theme } = useTheme();
-	const { refreshing, refresh } = useRefresh({ fetching, refetch });
+	const { refreshing, refresh } = useRefresh({ fetching: isLoading, refetch });
 
 	useGoBack();
 
@@ -79,7 +80,7 @@ const Payouts = () => {
 		});
 	}, []);
 
-	if (!data?.currentStore) {
+	if (!data || !payoutData) {
 		return <View />;
 	}
 
@@ -100,16 +101,16 @@ const Payouts = () => {
 						<Spacer y={16} />
 						<SectionHeader title='Available' padded={false} />
 						<Typography size='xxxlarge' weight='bold' style={styles.available}>
-							{formatNaira(data?.currentStore.realizedRevenue ?? 0)}
+							{formatNaira(data?.store.realizedRevenue ?? 0)}
 						</Typography>
 						<RevenueBar
-							realizedRevenue={data?.currentStore.realizedRevenue}
-							unrealizedRevenue={data?.currentStore.unrealizedRevenue}
-							paidOut={data?.currentStore.paidOut}
+							realizedRevenue={data?.store.realizedRevenue}
+							unrealizedRevenue={data?.store.unrealizedRevenue}
+							paidOut={data?.store.paidOut}
 						/>
 						<Spacer y={12} />
 						<RevenueBarLegend />
-						{!data?.currentStore.bankAccountNumber && (
+						{!data?.store.bankAccountNumber && (
 							<View
 								style={{
 									marginTop: 16,
@@ -129,7 +130,7 @@ const Payouts = () => {
 						<SectionHeader title='Payout History' padded={false} />
 					</>
 				}
-				data={data.currentStore.payouts}
+				data={payoutData.payouts}
 				keyExtractor={p => p.id}
 				renderItem={({ item }) => <PayoutRow key={item.id} payout={item} />}
 				ListEmptyComponent={<NoPayouts action={handleNewPayout} />}

@@ -55,3 +55,24 @@ export const getOrderById = async (
 		return next(error);
 	}
 };
+
+export const updateOrder = async (
+	req: Request<{ id: string }>,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const { id } = req.params;
+		const { status } = req.body;
+		const ctx = getAppContext(req);
+
+		const order = await OrderLogic.updateOrderStatus(ctx, {
+			orderId: id,
+			status
+		});
+
+		return res.json({ order });
+	} catch (error) {
+		return next(error);
+	}
+};

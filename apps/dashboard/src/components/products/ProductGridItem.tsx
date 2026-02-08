@@ -3,10 +3,10 @@ import { Typography } from '@habiti/components';
 import React from 'react';
 import { Pressable, View, Image, StyleSheet } from 'react-native';
 
-import { ProductsQuery } from '../../types/api';
+import { Product } from '../../data/types';
 
 interface ProductGridItemProps {
-	product: ProductsQuery['currentStore']['products']['edges'][number]['node'];
+	product: Product;
 	onPress(): void;
 }
 

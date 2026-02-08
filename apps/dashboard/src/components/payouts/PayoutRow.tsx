@@ -3,11 +3,11 @@ import { View, StyleSheet } from 'react-native';
 import { Spacer, Typography, useTheme } from '@habiti/components';
 import { formatNaira } from '@habiti/common';
 
-import { StorePayoutsQuery, PayoutStatus } from '../../types/api';
 import { parseTimestamp } from '../../utils/date';
+import { Payout, PayoutStatus } from '../../data/types';
 
 interface PayoutRowProps {
-	payout: StorePayoutsQuery['currentStore']['payouts'][number];
+	payout: Payout;
 }
 
 const PayoutRow: React.FC<PayoutRowProps> = ({ payout }) => {

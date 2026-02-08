@@ -4,14 +4,14 @@ import { useTheme } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import ProductsListItem from './ProductsListItem';
-import { ProductsQuery } from '../../types/api';
+import { Product } from '../../data/types';
 import { ProductsStackParamList } from '../../types/navigation';
 import { useProductsContext } from './ProductsContext';
 
 const ProductList: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<ProductsStackParamList>>();
 	const { theme } = useTheme();
-	const { data, refreshing, refresh } = useProductsContext();
+	const { products, refreshing, refresh } = useProductsContext();
 	const [editMode, setEditMode] = React.useState(false);
 	const [selectedProducts, setSelectedProducts] = React.useState<string[]>([]);
 
@@ -36,23 +36,24 @@ const ProductList: React.FC = () => {
 		setSelectedProducts([]);
 	}, []);
 
-	const renderProduct: ListRenderItem<
-		ProductsQuery['currentStore']['products']['edges'][number]
-	> = React.useCallback(({ item }) => {
-		return (
-			<ProductsListItem
-				product={item.node}
-				onPress={handlePress(item.node.id)}
-				onLongPress={handleLongPress(item.node.id)}
-			/>
-		);
-	}, []);
+	const renderProduct: ListRenderItem<Product> = React.useCallback(
+		({ item }) => {
+			return (
+				<ProductsListItem
+					product={item}
+					onPress={handlePress(item.id)}
+					onLongPress={handleLongPress(item.id)}
+				/>
+			);
+		},
+		[]
+	);
 
 	return (
 		<View style={{ flex: 1 }}>
 			<FlashList
-				keyExtractor={i => i.node.id}
-				data={data?.currentStore.products.edges}
+				keyExtractor={i => i.id}
+				data={products}
 				renderItem={renderProduct}
 				estimatedItemSize={60}
 				refreshControl={

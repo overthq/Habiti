@@ -556,6 +556,13 @@ export const deleteStoreProductCategory = async (
 	return category;
 };
 
+export const getStoreProductCategories = async (
+	ctx: AppContext,
+	storeId: string
+) => {
+	return ProductData.getStoreProductCategories(ctx.prisma, storeId);
+};
+
 export const getProducts = async (
 	ctx: AppContext,
 	filters?: ProductFilters

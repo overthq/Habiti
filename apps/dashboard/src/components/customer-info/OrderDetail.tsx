@@ -3,12 +3,12 @@ import { View, Pressable, StyleSheet } from 'react-native';
 import { formatNaira } from '@habiti/common';
 import { CustomImage, Spacer, Typography, useTheme } from '@habiti/components';
 
-import { CustomerInfoQuery } from '../../types/api';
 import { parseTimestamp } from '../../utils/date';
 import { plural } from '../../utils/strings';
+import { Order } from '../../data/types';
 
 interface OrderDetailProps {
-	order: CustomerInfoQuery['user']['orders'][number];
+	order: Order;
 	onPress(): void;
 }
 

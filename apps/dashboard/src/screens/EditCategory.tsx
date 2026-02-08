@@ -3,7 +3,7 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import useGoBack from '../hooks/useGoBack';
-import { useEditProductCategoryMutation } from '../types/api';
+import { useUpdateProductCategoryMutation } from '../data/mutations';
 import { AppStackParamList } from '../types/navigation';
 
 interface EditCategoryFormValues {
@@ -15,20 +15,16 @@ const EditCategory = () => {
 	const { params } =
 		useRoute<RouteProp<AppStackParamList, 'Modals.EditCategory'>>();
 	const { goBack } = useNavigation();
-	const [{ fetching }, editCategory] = useEditProductCategoryMutation();
+	const updateCategoryMutation = useUpdateProductCategoryMutation();
 	useGoBack('x');
 
 	const onSubmit = async (values: EditCategoryFormValues) => {
-		const { error } = await editCategory({
+		await updateCategoryMutation.mutateAsync({
 			categoryId: params.categoryId,
-			input: values
+			body: values
 		});
 
-		if (error) {
-			console.log(error);
-		} else {
-			goBack();
-		}
+		goBack();
 	};
 
 	const methods = useForm<EditCategoryFormValues>({
@@ -54,7 +50,7 @@ const EditCategory = () => {
 				<Button
 					text='Edit Category'
 					onPress={methods.handleSubmit(onSubmit)}
-					loading={fetching}
+					loading={updateCategoryMutation.isPending}
 				/>
 			</FormProvider>
 		</Screen>

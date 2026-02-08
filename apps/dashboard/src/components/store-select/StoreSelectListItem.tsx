@@ -1,11 +1,11 @@
 import React from 'react';
 import { Avatar, Spacer, Typography, useTheme } from '@habiti/components';
 import { Pressable, StyleSheet } from 'react-native';
-import { ManagedStoresQuery } from '../../types/api';
+import { Store } from '../../data/types';
 
 interface StoresListItemProps {
 	selected: boolean;
-	store: ManagedStoresQuery['currentUser']['managed'][number]['store'];
+	store: Store;
 	onPress(): void;
 }
 

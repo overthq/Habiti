@@ -7,12 +7,10 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useShallow } from 'zustand/react/shallow';
-import { Provider } from 'urql';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { ConfirmationModalProvider } from './src/components/ConfirmationModal';
 import Routes from './src/navigation/Routes';
-import useClient from './src/hooks/useClient';
 import useStore from './src/state';
 import { useAuthRefreshQuery } from './src/data/queries';
 
@@ -32,7 +30,6 @@ const App: React.FC = () => {
 
 const AppInner = () => {
 	const theme = useStore(useShallow(({ theme }) => theme));
-	const client = useClient();
 
 	const { isFetched } = useAuthRefreshQuery();
 
@@ -47,19 +44,17 @@ const AppInner = () => {
 	}
 
 	return (
-		<Provider value={client}>
-			<SafeAreaProvider>
-				<ThemeProvider theme={theme}>
-					<GestureHandlerRootView style={{ flex: 1 }}>
-						<BottomSheetModalProvider>
-							<ConfirmationModalProvider>
-								<Routes />
-							</ConfirmationModalProvider>
-						</BottomSheetModalProvider>
-					</GestureHandlerRootView>
-				</ThemeProvider>
-			</SafeAreaProvider>
-		</Provider>
+		<SafeAreaProvider>
+			<ThemeProvider theme={theme}>
+				<GestureHandlerRootView style={{ flex: 1 }}>
+					<BottomSheetModalProvider>
+						<ConfirmationModalProvider>
+							<Routes />
+						</ConfirmationModalProvider>
+					</BottomSheetModalProvider>
+				</GestureHandlerRootView>
+			</ThemeProvider>
+		</SafeAreaProvider>
 	);
 };
 

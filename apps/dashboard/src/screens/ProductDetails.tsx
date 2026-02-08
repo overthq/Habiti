@@ -4,13 +4,13 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import useGoBack from '../hooks/useGoBack';
-import { useEditProductMutation } from '../types/api';
+import { useUpdateProductMutation } from '../data/mutations';
 import { ProductStackParamList } from '../types/navigation';
 
 const ProductDetails = () => {
 	const { params } =
 		useRoute<RouteProp<ProductStackParamList, 'Product.Details'>>();
-	const [{ fetching }, editProduct] = useEditProductMutation();
+	const updateProductMutation = useUpdateProductMutation();
 	const { goBack } = useNavigation();
 
 	useGoBack();
@@ -24,7 +24,10 @@ const ProductDetails = () => {
 
 	const onSubmit = async (data: { name: string; description: string }) => {
 		try {
-			await editProduct({ id: params.productId, input: data });
+			await updateProductMutation.mutateAsync({
+				productId: params.productId,
+				body: data
+			});
 			goBack();
 		} catch (error) {
 			console.error(error);
@@ -52,7 +55,7 @@ const ProductDetails = () => {
 					<Spacer y={12} />
 					<Button
 						text='Save'
-						loading={fetching}
+						loading={updateProductMutation.isPending}
 						onPress={methods.handleSubmit(onSubmit)}
 					/>
 				</View>

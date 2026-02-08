@@ -12,8 +12,8 @@ import {
 	BottomSheetView
 } from '@gorhom/bottom-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useEditProductMutation } from '../../types/api';
 import { StyleSheet } from 'react-native';
+import { useUpdateProductMutation } from '../../data/mutations';
 
 interface ProductPriceModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
@@ -27,9 +27,9 @@ const ProductPriceModal: React.FC<ProductPriceModalProps> = ({
 	initialPrice
 }) => {
 	const { bottom } = useSafeAreaInsets();
-	const [{ fetching }, editProduct] = useEditProductMutation();
 	const [price, setPrice] = React.useState(String(initialPrice / 100));
 	const { name, theme } = useTheme();
+	const updateProductMutation = useUpdateProductMutation();
 
 	const isInitialPrice = React.useMemo(
 		() => price === String(initialPrice / 100),
@@ -37,9 +37,9 @@ const ProductPriceModal: React.FC<ProductPriceModalProps> = ({
 	);
 
 	const handleSubmit = async () => {
-		await editProduct({
-			id: productId,
-			input: { unitPrice: Number(price) * 100 }
+		await updateProductMutation.mutateAsync({
+			productId,
+			body: { unitPrice: Number(price) * 100 }
 		});
 
 		modalRef.current.close();
@@ -64,8 +64,8 @@ const ProductPriceModal: React.FC<ProductPriceModalProps> = ({
 				<Button
 					text='Save'
 					onPress={handleSubmit}
-					loading={fetching}
-					// disabled={fetching || isInitialPrice}
+					loading={updateProductMutation.isPending}
+					disabled={updateProductMutation.isPending || isInitialPrice}
 				/>
 			</BottomSheetView>
 		</BottomModal>

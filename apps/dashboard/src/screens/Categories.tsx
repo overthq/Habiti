@@ -14,11 +14,12 @@ import { View, Pressable, RefreshControl } from 'react-native';
 
 import FAB from '../components/products/FAB';
 import useGoBack from '../hooks/useGoBack';
-import { CategoriesQuery, useCategoriesQuery } from '../types/api';
+import { useCategoriesQuery } from '../data/queries';
 import { AppStackParamList } from '../types/navigation';
+import { StoreProductCategory } from '../data/types';
 
 interface CategoriesListItemProps {
-	category: CategoriesQuery['currentStore']['categories'][number];
+	category: StoreProductCategory;
 	onPress: () => void;
 }
 
@@ -34,7 +35,7 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
 };
 
 const Categories = () => {
-	const [{ data, fetching }, refetch] = useCategoriesQuery();
+	const { data, isLoading, refetch } = useCategoriesQuery();
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
@@ -46,10 +47,10 @@ const Categories = () => {
 	}, [refetch]);
 
 	React.useEffect(() => {
-		if (!fetching && refreshing) {
+		if (!isLoading && refreshing) {
 			setRefreshing(false);
 		}
-	}, [fetching, refreshing]);
+	}, [isLoading, refreshing]);
 
 	useGoBack();
 
@@ -67,20 +68,19 @@ const Categories = () => {
 		});
 	}, []);
 
-	const handleCategoryPress =
-		(category: CategoriesQuery['currentStore']['categories'][number]) => () => {
-			navigate('Modals.EditCategory', {
-				categoryId: category.id,
-				name: category.name,
-				description: category.description
-			});
-		};
+	const handleCategoryPress = (category: StoreProductCategory) => () => {
+		navigate('Modals.EditCategory', {
+			categoryId: category.id,
+			name: category.name,
+			description: category.description
+		});
+	};
 
-	if (fetching) {
+	if (isLoading) {
 		return <View />;
 	}
 
-	if (data?.currentStore.categories.length === 0) {
+	if (data?.categories.length === 0) {
 		return (
 			<EmptyState
 				title='No categories found'
@@ -102,7 +102,7 @@ const Categories = () => {
 				}
 			>
 				<Spacer y={16} />
-				{data?.currentStore.categories.map(category => (
+				{data?.categories.map(category => (
 					<CategoriesListItem
 						key={category.id}
 						category={category}

@@ -206,7 +206,7 @@ export const getOrderById = async (ctx: AppContext, orderId: string) => {
 	}
 
 	if (order.userId !== ctx.user.id) {
-		if (!ctx.isAdmin) {
+		if (!ctx.isAdmin && order.storeId !== ctx.storeId) {
 			throw new LogicError(LogicErrorCode.Forbidden);
 		}
 	}

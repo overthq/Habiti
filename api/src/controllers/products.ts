@@ -165,3 +165,85 @@ export const deleteProduct = async (
 		return next(error);
 	}
 };
+
+export const getStoreCategories = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const ctx = getAppContext(req);
+
+		if (!ctx.storeId) {
+			return res.status(400).json({ error: 'Store ID is required' });
+		}
+
+		const categories = await ProductLogic.getStoreProductCategories(
+			ctx,
+			ctx.storeId
+		);
+
+		return res.json({ categories });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const createStoreCategory = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const ctx = getAppContext(req);
+		const { name, description } = req.body;
+
+		const category = await ProductLogic.createStoreProductCategory(ctx, {
+			name,
+			description
+		});
+
+		return res.status(201).json({ category });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const updateStoreCategory = async (
+	req: Request<{ id: string }>,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const ctx = getAppContext(req);
+		const { name, description } = req.body;
+
+		const category = await ProductLogic.updateStoreProductCategory(ctx, {
+			categoryId: req.params.id,
+			name,
+			description
+		});
+
+		return res.json({ category });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const deleteStoreCategory = async (
+	req: Request<{ id: string }>,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const ctx = getAppContext(req);
+
+		await ProductLogic.deleteStoreProductCategory(ctx, {
+			categoryId: req.params.id
+		});
+
+		return res.status(204).send();
+	} catch (error) {
+		return next(error);
+	}
+};

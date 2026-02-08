@@ -416,6 +416,18 @@ export const deleteStoreProductCategory = async (
 	return category;
 };
 
+export const getStoreProductCategories = async (
+	prisma: PrismaClient,
+	storeId: string
+) => {
+	const categories = await prisma.storeProductCategory.findMany({
+		where: { storeId },
+		orderBy: { createdAt: 'desc' }
+	});
+
+	return categories;
+};
+
 export const getProductViewerContext = async (
 	prisma: PrismaClient,
 	userId: string,

@@ -23,8 +23,9 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import ProductsListItem from '../components/products/ProductsListItem';
-import { ProductsQuery, StringWhereMode, useProductsQuery } from '../types/api';
 import { ProductsStackParamList } from '../types/navigation';
+import { useProductsQuery } from '../data/queries';
+import { Product } from '../data/types';
 
 interface SearchProductsHeaderProps {
 	searchTerm: string;
@@ -78,13 +79,7 @@ const SearchProductsHeader: React.FC<SearchProductsHeaderProps> = ({
 const SearchProducts = () => {
 	const [term, setTerm] = React.useState('');
 	const { navigate } = useNavigation<NavigationProp<ProductsStackParamList>>();
-	const [{ data, fetching }] = useProductsQuery({
-		variables: {
-			filter: {
-				name: { contains: term, mode: StringWhereMode.Insensitive }
-			}
-		}
-	});
+	const { data, isLoading } = useProductsQuery({ search: term });
 
 	const handlePress = React.useCallback(
 		(productId: string) => () =>
@@ -92,26 +87,22 @@ const SearchProducts = () => {
 		[]
 	);
 
-	const renderProduct: ListRenderItem<
-		ProductsQuery['currentStore']['products']['edges'][number]
-	> = React.useCallback(({ item }) => {
-		return (
-			<ProductsListItem
-				product={item.node}
-				onPress={handlePress(item.node.id)}
-			/>
-		);
-	}, []);
+	const renderProduct: ListRenderItem<Product> = React.useCallback(
+		({ item }) => {
+			return <ProductsListItem product={item} onPress={handlePress(item.id)} />;
+		},
+		[]
+	);
 
 	return (
 		<Screen>
 			<SearchProductsHeader searchTerm={term} setSearchTerm={setTerm} />
-			{fetching || !data?.currentStore ? (
+			{isLoading || !data ? (
 				<ActivityIndicator />
 			) : (
 				<FlashList
-					data={data.currentStore.products.edges}
-					keyExtractor={p => p.node.id}
+					data={data.products}
+					keyExtractor={p => p.id}
 					showsVerticalScrollIndicator={false}
 					renderItem={renderProduct}
 					estimatedItemSize={60}
