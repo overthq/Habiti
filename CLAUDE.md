@@ -9,6 +9,7 @@ Habiti is an open-source mobile-first e-commerce platform for small-to-medium re
 ## Common Development Commands
 
 ### Setup and Installation
+
 ```bash
 # Install all dependencies
 bun i && bun i --cwd api
@@ -22,6 +23,7 @@ bun start:dashboard  # Merchant dashboard
 ```
 
 ### Individual Application Commands
+
 ```bash
 # API (GraphQL + REST)
 cd api && bun dev              # Development server
@@ -42,6 +44,7 @@ cd apps/admin && bun run build && bun start  # Production
 ```
 
 ### Database Operations
+
 ```bash
 cd api && npx prisma generate   # Generate Prisma client
 cd api && npx prisma db push    # Push schema changes
@@ -52,6 +55,7 @@ cd api && npx prisma studio     # Database GUI
 ## Architecture Overview
 
 ### Monorepo Structure
+
 - `api/` - GraphQL API with Express, Prisma, PostgreSQL, Redis
 - `apps/app/` - Consumer mobile app (React Native + Expo)
 - `apps/dashboard/` - Merchant mobile app (React Native + Expo)
@@ -60,23 +64,27 @@ cd api && npx prisma studio     # Database GUI
 - `packages/` - Shared code (utilities, components)
 
 ### Key Technologies
+
 - **Backend**: Node.js, Express, Apollo GraphQL, Prisma, PostgreSQL, Redis
 - **Mobile**: React Native 0.79.2, Expo 53, React 19
 - **Web**: Next.js 15.2.4, React Router 7, Tailwind CSS
-- **State**: Zustand, GraphQL client: urql with graphcache
+- **State**: Zustand
 - **Auth**: JWT tokens with express-jwt middleware
 - **Storage**: Cloudinary for images/media
 - **Monitoring**: Sentry, PostHog analytics
 - **Payments**: Paystack integration
 
 ### Multi-Tenant Architecture
+
 - Store-scoped data access via `x-market-store-id` header
 - Store managers can only access their assigned stores
 - Separate admin entity with elevated permissions
 - All GraphQL context includes current user and store scope
 
 ### Database Design
+
 Core entities: User, Store, Product, Order, Cart with comprehensive relationships:
+
 - Multi-tenant stores with manager permissions
 - Products with categories, options, reviews, inventory tracking
 - Full order lifecycle with payment integration
@@ -84,19 +92,23 @@ Core entities: User, Store, Product, Order, Cart with comprehensive relationship
 - Push notifications across multiple devices
 
 ### API Patterns
+
 - **Primary**: GraphQL for complex queries and mutations
 - **REST**: Webhooks (`/webhooks`), payments (`/payments`), health checks (`/health`)
 - **Authentication**: JWT-based with optional auth support
 - **Authorization**: Role-based access control with store-scoped permissions
 
 ### Code Generation
+
 All frontend apps use GraphQL code generation:
+
 ```bash
 # Generate types from GraphQL schema
 bun generate-types  # In any app directory
 ```
 
 ### Development Workflow
+
 1. Start Redis and PostgreSQL
 2. Run API in development mode
 3. Start desired frontend app(s)
@@ -104,6 +116,7 @@ bun generate-types  # In any app directory
 5. Generate GraphQL types after schema changes
 
 ### Multi-Platform Support
+
 - **iOS/Android**: React Native apps via Expo
 - **Web**: Next.js with responsive design
 - **Admin**: React Router SPA for platform administration
