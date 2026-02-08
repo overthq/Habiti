@@ -258,9 +258,9 @@ export const useUpdateProductCategoriesMutation = () => {
 		mutationFn: (args: UpdateProductCategoriesArgs) => {
 			return updateProductCategories(args.productId, args.body);
 		},
-		onSuccess: () => {
+		onSuccess: ({ product }) => {
 			queryClient.invalidateQueries({
-				queryKey: ['stores', 'current', 'categories']
+				queryKey: ['stores', 'current', 'products', product.id]
 			});
 		}
 	});

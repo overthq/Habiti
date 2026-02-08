@@ -1,10 +1,10 @@
 import cloudinary from 'cloudinary';
-import { ReadStream } from 'fs-capacitor';
+import { Readable } from 'stream';
 import { FileUpload } from 'graphql-upload';
 
 // Thank you KeystoneJS and Sourcegraph!
 export const uploadStream = (
-	stream: ReadStream
+	stream: Readable
 ): Promise<cloudinary.UploadApiResponse> => {
 	return new Promise((resolve, reject) => {
 		const cloudinaryStream = cloudinary.v2.uploader.upload_stream(
@@ -16,6 +16,24 @@ export const uploadStream = (
 			}
 		);
 		stream.pipe(cloudinaryStream);
+	});
+};
+
+export const uploadBuffer = (
+	buffer: Buffer
+): Promise<cloudinary.UploadApiResponse> => {
+	return uploadStream(Readable.from(buffer));
+};
+
+// Workaround for Bun: upload_stream doesn't pass credentials properly.
+// Use uploader.upload with a base64 data URI instead.
+
+export const uploadBase64 = (
+	buffer: Buffer
+): Promise<cloudinary.UploadApiResponse> => {
+	const base64 = `data:image/jpeg;base64,${buffer.toString('base64')}`;
+	return cloudinary.v2.uploader.upload(base64, {
+		resource_type: 'image'
 	});
 };
 

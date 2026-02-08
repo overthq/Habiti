@@ -15,8 +15,6 @@ interface OrderOverviewProps {
 // - Something like "Today at **:** AM/PM".
 
 const OrderOverview: React.FC<OrderOverviewProps> = ({ order }) => {
-	console.log({ order });
-
 	return (
 		<View style={styles.container}>
 			<StatusPill status={order.status} />

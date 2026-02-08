@@ -56,8 +56,9 @@ interface RemoveFromCartArgs {
 export const useRemoveFromCartMutation = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (args: RemoveFromCartArgs) =>
-			removeFromCart(args.cartId, args.productId),
+		mutationFn: (args: RemoveFromCartArgs) => {
+			return removeFromCart(args.cartId, args.productId);
+		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['cart'] });
 		}

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import cloudinary from 'cloudinary';
 
+import { uploadBase64 } from '../utils/upload';
 import { APIException } from '../types/errors';
 
 export const uploadImages = async (
@@ -16,7 +16,7 @@ export const uploadImages = async (
 		}
 
 		const uploads = await Promise.all(
-			files.map(file => uploadBuffer(file.buffer))
+			files.map(file => uploadBase64(file.buffer))
 		);
 
 		const images = uploads.map(result => ({
@@ -28,18 +28,4 @@ export const uploadImages = async (
 	} catch (error) {
 		return next(error);
 	}
-};
-
-const uploadBuffer = (
-	buffer: Buffer
-): Promise<cloudinary.UploadApiResponse> => {
-	return new Promise((resolve, reject) => {
-		const stream = cloudinary.v2.uploader.upload_stream((error, result) => {
-			if (error || !result) {
-				return reject(error);
-			}
-			resolve(result);
-		});
-		stream.end(buffer);
-	});
 };

@@ -263,7 +263,7 @@ export const updateProductCategories = async (
 	productId: string,
 	body: UpdateProductCategoriesArgs['body']
 ) => {
-	const response = await api.put(
+	const response = await api.put<{ product: Product }>(
 		`/stores/current/products/${productId}/categories`,
 		body
 	);

@@ -20,7 +20,7 @@
 		"@sentry/cli": "^2.41.1",
 		"argon2": "^0.41.1",
 		"axios": "^1.10.0",
-		"cloudinary": "^2.5.1",
+		"cloudinary": "^2.9.0",
 		"compression": "^1.7.4",
 		"cookie-parser": "^1.4.7",
 		"cors": "^2.8.5",

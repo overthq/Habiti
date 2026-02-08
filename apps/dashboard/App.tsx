@@ -18,6 +18,12 @@ Sentry.init({ dsn: process.env.EXPO_PUBLIC_SENTRY_DSN });
 
 const queryClient = new QueryClient();
 
+useStore.subscribe((state, prevState) => {
+	if (state.activeStore && state.activeStore !== prevState.activeStore) {
+		queryClient.invalidateQueries({ queryKey: ['stores', 'current'] });
+	}
+});
+
 SplashScreen.preventAutoHideAsync();
 
 const App: React.FC = () => {

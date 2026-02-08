@@ -17,7 +17,7 @@ const Order: React.FC = () => {
 	const {
 		params: { orderId }
 	} = useRoute<RouteProp<OrdersStackParamList, 'Order'>>();
-	const { data, isLoading, error, refetch } = useOrderQuery(orderId);
+	const { data, isLoading, refetch } = useOrderQuery(orderId);
 	const { refreshing, refresh } = useRefresh({ fetching: isLoading, refetch });
 	const { theme } = useTheme();
 	useGoBack();
