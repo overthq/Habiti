@@ -2,10 +2,10 @@ import { Typography } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
-import { ManagersQuery } from '../../types/api';
+import { User } from '../../data/types';
 
 interface ManagerRowProps {
-	manager: ManagersQuery['currentStore']['managers'][number]['manager'];
+	manager: User;
 	you: boolean;
 }
 

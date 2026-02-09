@@ -2,10 +2,6 @@ import { Request } from 'express';
 import { z } from 'zod';
 import { OrderStatus, ProductStatus } from '../generated/prisma/client';
 
-// ============================================================================
-// User Filters
-// ============================================================================
-
 export const userFiltersSchema = z.object({
 	search: z.string().optional(),
 	suspended: z
@@ -45,10 +41,6 @@ export const userFiltersToPrismaClause = (filters?: UserFilters) => {
 
 	return { where, orderBy };
 };
-
-// ============================================================================
-// Product Filters
-// ============================================================================
 
 export const productFiltersSchema = z.object({
 	search: z.string().optional(),
@@ -119,10 +111,6 @@ export const productFiltersToPrismaClause = (filters?: ProductFilters) => {
 	return { where, orderBy };
 };
 
-// ============================================================================
-// Order Filters
-// ============================================================================
-
 export const orderFiltersSchema = z.object({
 	status: z.nativeEnum(OrderStatus).optional(),
 	storeId: z.string().optional(),
@@ -189,10 +177,6 @@ export const orderFiltersToPrismaClause = (filters?: OrderFilters) => {
 
 	return { where, orderBy };
 };
-
-// ============================================================================
-// Query Hydration (for generic REST query params)
-// ============================================================================
 
 type FilterOperators = {
 	equals?: any;

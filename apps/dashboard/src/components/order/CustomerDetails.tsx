@@ -3,11 +3,11 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 
-import { OrderQuery } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
+import { User } from '../../data/types';
 
 interface CustomerDetailProps {
-	user: OrderQuery['order']['user'];
+	user: User;
 }
 
 const CustomerDetails: React.FC<CustomerDetailProps> = ({ user }) => {

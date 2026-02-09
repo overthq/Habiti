@@ -1,12 +1,12 @@
 import { Spacer, TextButton, Typography, useTheme } from '@habiti/components';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
-import { ProductQuery } from '../../types/api';
 import { NavigationProp } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import { ProductStackParamList } from '../../types/navigation';
+import { Image as ImageType } from '../../data/types';
 
 interface ProductMediaProps {
-	images: ProductQuery['product']['images'];
+	images: ImageType[];
 	productId: string;
 }
 

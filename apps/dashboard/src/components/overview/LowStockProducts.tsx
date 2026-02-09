@@ -5,10 +5,10 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 import LowStockProduct from './LowStockProduct';
 import { HomeStackParamList, MainTabParamList } from '../../types/navigation';
-import { OverviewQuery } from '../../types/api';
+import { Product } from '../../data/types';
 
 interface LowStockProductsProps {
-	products: OverviewQuery['currentStore']['products']['edges'];
+	products: Product[];
 }
 
 const LowStockProducts: React.FC<LowStockProductsProps> = ({ products }) => {
@@ -33,11 +33,11 @@ const LowStockProducts: React.FC<LowStockProductsProps> = ({ products }) => {
 			<Spacer y={4} />
 			<FlatList
 				data={products}
-				keyExtractor={i => i.node.id}
+				keyExtractor={i => i.id}
 				renderItem={({ item }) => (
 					<LowStockProduct
-						onPress={navigateToProduct(item.node.id)}
-						product={item.node}
+						onPress={navigateToProduct(item.id)}
+						product={item}
 					/>
 				)}
 				horizontal

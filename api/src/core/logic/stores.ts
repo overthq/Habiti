@@ -10,6 +10,7 @@ import { ProductFilters } from '../../utils/queries';
 import { canManageStore } from './permissions';
 
 import { LogicError, LogicErrorCode } from './errors';
+import logger from '../../utils/logger';
 
 interface CreateStoreInput {
 	name: string;
@@ -56,6 +57,8 @@ interface UpdateStoreInput {
 	bankCode?: string;
 	bankAccountReference?: string;
 	unlisted?: boolean;
+	imageUrl?: string;
+	imagePublicId?: string;
 }
 
 export const updateStore = async (ctx: AppContext, input: UpdateStoreInput) => {
@@ -421,6 +424,26 @@ export const getStoreOrders = async (
 	query: any
 ) => {
 	return StoreData.getStoreOrders(ctx.prisma, storeId, query);
+};
+
+export const getStoreCustomer = async (
+	ctx: AppContext,
+	storeId: string,
+	userId: string
+) => {
+	await canManageStore(ctx);
+
+	const customer = await StoreData.getStoreCustomer(
+		ctx.prisma,
+		storeId,
+		userId
+	);
+
+	if (!customer) {
+		throw new LogicError(LogicErrorCode.UserNotFound, 'Customer not found');
+	}
+
+	return customer;
 };
 
 export const getTrendingStores = async (

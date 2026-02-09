@@ -10,8 +10,10 @@ import {
 } from '@habiti/components';
 
 import useGoBack from '../hooks/useGoBack';
-import { useEditStoreMutation, useStoreQuery } from '../types/api';
 import { AppStackParamList } from '../types/navigation';
+
+import { useCurrentStoreQuery } from '../data/queries';
+import { useUpdateCurrentStoreMutation } from '../data/mutations';
 
 const NoPayoutAccount = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
@@ -36,8 +38,8 @@ const NoPayoutAccount = () => {
 };
 
 const StorePayouts = () => {
-	const [{ data, fetching }, refetch] = useStoreQuery();
-	const [{ fetching: editing }, editStore] = useEditStoreMutation();
+	const { data, isLoading, refetch } = useCurrentStoreQuery();
+	const updateStoreMutation = useUpdateCurrentStoreMutation();
 	const { theme } = useTheme();
 	useGoBack();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
@@ -57,28 +59,22 @@ const StorePayouts = () => {
 	}, []);
 
 	const removePayoutAccount = React.useCallback(async () => {
-		const { error } = await editStore({
-			input: {
-				bankAccountNumber: undefined,
-				bankCode: undefined
-				// bankAccountReference: undefined
-			}
+		await updateStoreMutation.mutateAsync({
+			bankAccountNumber: undefined,
+			bankCode: undefined
+			// bankAccountReference: undefined
 		});
 
-		if (error) {
-			console.log('error', error);
-		} else {
-			refetch();
-		}
+		refetch();
 	}, []);
 
 	const handleAddPayoutAccount = React.useCallback(() => {
 		navigate('Modal.AddPayoutAccount');
 	}, []);
 
-	if (fetching) return <View />;
+	if (isLoading) return <View />;
 
-	if (!data?.currentStore.bankAccountNumber) {
+	if (!data?.store.bankAccountNumber) {
 		return <NoPayoutAccount />;
 	}
 
@@ -98,7 +94,7 @@ const StorePayouts = () => {
 				</Typography>
 				<Spacer y={8} />
 				<Typography size='xxxlarge' weight='semibold'>
-					{data?.currentStore.bankAccountNumber}
+					{data?.store.bankAccountNumber}
 				</Typography>
 				<Spacer y={12} />
 				<View style={{ flexDirection: 'row', gap: 12 }}>

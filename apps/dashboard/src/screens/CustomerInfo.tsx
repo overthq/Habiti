@@ -10,14 +10,12 @@ import {
 
 import OrderDetail from '../components/customer-info/OrderDetail';
 import useGoBack from '../hooks/useGoBack';
-import { useCustomerInfoQuery } from '../types/api';
+import { useCustomerInfoQuery } from '../data/queries';
 import type { AppStackParamList } from '../types/navigation';
 
 const CustomerInfo: React.FC = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'CustomerInfo'>>();
-	const [{ data, fetching }] = useCustomerInfoQuery({
-		variables: { userId: params.userId }
-	});
+	const { data, isLoading } = useCustomerInfoQuery(params.userId);
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	useGoBack('x');
@@ -26,7 +24,7 @@ const CustomerInfo: React.FC = () => {
 		navigate('Modal.Order', { orderId: id });
 	};
 
-	if (fetching || !data) {
+	if (isLoading || !data) {
 		return <View />;
 	}
 

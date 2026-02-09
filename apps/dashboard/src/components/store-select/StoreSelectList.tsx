@@ -6,10 +6,10 @@ import { Icon, Spacer, Typography, useTheme } from '@habiti/components';
 
 import StoreSelectListItem from './StoreSelectListItem';
 import useStore from '../../state';
-import { ManagedStoresQuery } from '../../types/api';
+import { Store } from '../../data/types';
 
 interface StoreSelectListProps {
-	stores: ManagedStoresQuery['currentUser']['managed'][number]['store'][];
+	stores: Store[];
 	onAddStore(): void;
 }
 

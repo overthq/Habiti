@@ -2,7 +2,8 @@ import React from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 import { Button, Spacer } from '@habiti/components';
 
-import { useUpdateOrderMutation, OrderStatus } from '../../types/api';
+import { useUpdateOrderMutation } from '../../data/mutations';
+import { OrderStatus } from '../../data/types';
 
 interface OrderActionsProps {
 	orderId: string;
@@ -10,7 +11,7 @@ interface OrderActionsProps {
 }
 
 const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
-	const [{ fetching }, updateOrder] = useUpdateOrderMutation();
+	const updateOrderMutation = useUpdateOrderMutation();
 
 	const onConfirmFulfill = () => {
 		Alert.alert(
@@ -38,12 +39,11 @@ const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 	};
 
 	const updateOrderStatus = React.useCallback(
-		(status: OrderStatus) => async () => {
-			const { error } = await updateOrder({ orderId, input: { status } });
-
-			if (error) {
-				console.log(error);
-			}
+		(status: OrderStatus) => () => {
+			updateOrderMutation.mutate({
+				orderId,
+				body: { status }
+			});
 		},
 		[orderId, status]
 	);
@@ -53,14 +53,14 @@ const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 			{status !== OrderStatus.Completed && (
 				<Button
 					text='Mark as fulfilled'
-					loading={fetching}
+					loading={updateOrderMutation.isPending}
 					onPress={onConfirmFulfill}
 				/>
 			)}
 			<Spacer y={8} />
 			{status !== OrderStatus.Cancelled && (
 				<Button
-					loading={fetching}
+					loading={updateOrderMutation.isPending}
 					variant='destructive'
 					onPress={confirmCancel}
 					text='Cancel Order'

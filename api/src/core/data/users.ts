@@ -69,7 +69,7 @@ export const getManagedStores = async (
 		include: { store: true }
 	});
 
-	return managedStores;
+	return managedStores.map(({ store }) => store);
 };
 
 export const getUsers = async (prisma: PrismaClient, filters?: UserFilters) => {

@@ -6,13 +6,14 @@ import { Screen, Spacer, Typography } from '@habiti/components';
 
 import CreateStoreForm from '../components/store-select/CreateStoreForm';
 import StoreSelectList from '../components/store-select/StoreSelectList';
-import { useManagedStoresQuery } from '../types/api';
+
+import { useManagedStoresQuery } from '../data/queries';
 
 const StoreSelect: React.FC = () => {
-	const [{ fetching, data }] = useManagedStoresQuery();
+	const { isLoading, data } = useManagedStoresQuery();
 	const [showCreateStore, setShowCreateStore] = React.useState(false);
 
-	if (fetching || !data) {
+	if (isLoading || !data) {
 		return <View />;
 	}
 
@@ -20,15 +21,13 @@ const StoreSelect: React.FC = () => {
 		<Screen style={styles.container}>
 			<SafeAreaView style={{ flex: 1 }}>
 				<Typography size='xxlarge' weight='bold'>
-					{data?.currentUser.managed.length
-						? 'Select store'
-						: 'Create a new store'}
+					{data?.stores.length ? 'Select store' : 'Create a new store'}
 				</Typography>
 
 				<Spacer y={2} />
 
 				<Typography variant='secondary'>
-					{data?.currentUser.managed.length
+					{data?.stores.length
 						? 'Select the store you want to manage.'
 						: 'Enter the details of your store to get started.'}
 				</Typography>
@@ -38,12 +37,12 @@ const StoreSelect: React.FC = () => {
 				<Animated.View style={{ flex: 1 }}>
 					{showCreateStore ? (
 						<CreateStoreForm
-							hasTitle={!!data?.currentUser.managed.length}
+							hasTitle={!!data?.stores.length}
 							onCancel={() => setShowCreateStore(false)}
 						/>
 					) : (
 						<StoreSelectList
-							stores={data?.currentUser.managed.map(({ store }) => store) ?? []}
+							stores={data?.stores}
 							onAddStore={() => setShowCreateStore(true)}
 						/>
 					)}

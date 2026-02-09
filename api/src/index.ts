@@ -46,9 +46,9 @@ const main = async () => {
 
 	await apolloServer.start();
 
-	app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
 	app.use(
 		'/graphql',
+		graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
 		express.json(),
 		authenticateProd,
 		expressMiddleware(apolloServer, {

@@ -66,6 +66,8 @@ export interface EditStoreArgs {
 		twitter?: string;
 		instagram?: string;
 		imageFile?: Promise<FileUpload>;
+		imageUrl?: string;
+		imagePublicId?: string;
 		bankAccountNumber?: string;
 		bankCode?: string;
 	};
@@ -81,7 +83,7 @@ export const editStore = storeAuthorizedResolver<EditStoreArgs>(
 			throw new Error('No storeId specified');
 		}
 
-		const { imageFile, ...rest } = input;
+		const { imageFile, imageUrl, imagePublicId, ...rest } = input;
 
 		let storeUpdateData: Prisma.StoreUpdateInput = {
 			...rest
@@ -91,10 +93,20 @@ export const editStore = storeAuthorizedResolver<EditStoreArgs>(
 			const { createReadStream } = await imageFile;
 			const stream = createReadStream();
 
-			const { url } = await uploadStream(stream);
+			const { url, public_id } = await uploadStream(stream);
 
 			storeUpdateData.image = {
-				update: { path: url }
+				upsert: {
+					create: { path: url, publicId: public_id },
+					update: { path: url, publicId: public_id }
+				}
+			};
+		} else if (imageUrl && imagePublicId) {
+			storeUpdateData.image = {
+				upsert: {
+					create: { path: imageUrl, publicId: imagePublicId },
+					update: { path: imageUrl, publicId: imagePublicId }
+				}
 			};
 		}
 

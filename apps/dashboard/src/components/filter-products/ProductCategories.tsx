@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { SelectGroup } from '@habiti/components';
 
-import { useCategoriesQuery } from '../../types/api';
+import { useCategoriesQuery } from '../../data/queries';
 
 interface ProductCategoriesProps {
 	selectedCategory?: string;
@@ -13,13 +13,13 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
 	selectedCategory,
 	onSelectCategory
 }) => {
-	const [{ data, fetching }] = useCategoriesQuery();
+	const { data, isLoading } = useCategoriesQuery();
 
 	const handleSelectCategory = (categoryId: string) => {
 		onSelectCategory(categoryId);
 	};
 
-	if (fetching || !data) {
+	if (isLoading || !data) {
 		return <View />;
 	}
 
@@ -27,7 +27,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
 		<SelectGroup
 			selected={selectedCategory}
 			onSelect={handleSelectCategory}
-			options={data.currentStore.categories.map(c => ({
+			options={data.categories.map(c => ({
 				title: c.name,
 				value: c.id
 			}))}

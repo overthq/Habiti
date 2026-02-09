@@ -1,12 +1,12 @@
 import { View, StyleSheet } from 'react-native';
 
 import { Spacer, TextButton, Typography, useTheme } from '@habiti/components';
-import { ProductQuery } from '../../types/api';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { ProductStackParamList } from '../../types/navigation';
+import { ProductCategory } from '../../data/types';
 
 interface ProductCategoriesProps {
-	categories: ProductQuery['product']['categories'];
+	categories: ProductCategory[];
 	productId: string;
 }
 

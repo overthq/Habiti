@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import CartContextWrapper, { useCart } from '@/contexts/CartContext';
 import { formatNaira } from '@/utils/currency';
 import { AlertCircleIcon, ArrowLeft, Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import {
 	Select,
 	SelectContent,
@@ -111,7 +110,7 @@ const CartMain = () => {
 
 			<h2 className='font-medium my-2'>Summary</h2>
 
-			<div>
+			<div className='space-y-2'>
 				{cart.products.map(cartProduct => (
 					<div
 						key={`${cartProduct.cartId}-${cartProduct.productId}`}
@@ -177,7 +176,7 @@ const CartMain = () => {
 				</div>
 			</div>
 
-			<Button disabled={disabled} onClick={handleSubmit}>
+			<Button className='w-full' disabled={disabled} onClick={handleSubmit}>
 				{isPlacingOrder ? <Loader2 className='size-4 animate-spin' /> : null}
 				Place Order
 			</Button>

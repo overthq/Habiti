@@ -13,8 +13,8 @@ import {
 	useTheme
 } from '@habiti/components';
 import { View, StyleSheet, Pressable } from 'react-native';
-import { useEditProductMutation } from '../../types/api';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useUpdateProductMutation } from '../../data/mutations';
 
 interface ProductInventoryModalProps {
 	productId: string;
@@ -28,7 +28,7 @@ const ProductInventoryModal: React.FC<ProductInventoryModalProps> = ({
 	modalRef
 }) => {
 	const [quantity, setQuantity] = React.useState(initialQuantity);
-	const [{ fetching }, editProduct] = useEditProductMutation();
+	const updateProductMutation = useUpdateProductMutation();
 	const { bottom } = useSafeAreaInsets();
 	const { name, theme } = useTheme();
 
@@ -44,9 +44,9 @@ const ProductInventoryModal: React.FC<ProductInventoryModalProps> = ({
 
 	// TODO: Add error handling
 	const handleSubmit = async () => {
-		await editProduct({
-			id: productId,
-			input: { quantity }
+		await updateProductMutation.mutateAsync({
+			productId,
+			body: { quantity }
 		});
 
 		modalRef.current?.close();
@@ -83,8 +83,8 @@ const ProductInventoryModal: React.FC<ProductInventoryModalProps> = ({
 				<Button
 					text='Save'
 					onPress={handleSubmit}
-					loading={fetching}
-					disabled={fetching || !hasQuantityChanged}
+					loading={updateProductMutation.isPending}
+					disabled={updateProductMutation.isPending || !hasQuantityChanged}
 				/>
 			</BottomSheetView>
 		</BottomModal>

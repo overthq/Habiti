@@ -4,11 +4,11 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import OrderProduct from './OrderProduct';
-import { OrderQuery } from '../../types/api';
 import { ProductsStackParamList } from '../../types/navigation';
+import { OrderProduct as OrderProductType } from '../../data/types';
 
 interface OrderProductsProps {
-	products: OrderQuery['order']['products'];
+	products: OrderProductType[];
 }
 
 const OrderProducts: React.FC<OrderProductsProps> = ({ products }) => {

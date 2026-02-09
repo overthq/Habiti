@@ -5,13 +5,13 @@ import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import { View, RefreshControl, StyleSheet } from 'react-native';
 
 import OrdersListItem from '../../components/orders/OrdersListItem';
-import { OrdersQuery } from '../../types/api';
 import { OrdersStackParamList } from '../../types/navigation';
 import { useOrdersContext } from './OrdersContext';
+import { Order } from '../../data/types';
 
 const OrdersList = () => {
 	const { navigate } = useNavigation<NavigationProp<OrdersStackParamList>>();
-	const { data, refreshing, refresh } = useOrdersContext();
+	const { orders, refreshing, refresh } = useOrdersContext();
 	const { theme } = useTheme();
 
 	const handleOrderPress = React.useCallback(
@@ -21,9 +21,7 @@ const OrdersList = () => {
 		[]
 	);
 
-	const renderOrder: ListRenderItem<
-		OrdersQuery['currentStore']['orders'][number]
-	> = React.useCallback(({ item }) => {
+	const renderOrder: ListRenderItem<Order> = React.useCallback(({ item }) => {
 		return <OrdersListItem onPress={handleOrderPress(item.id)} order={item} />;
 	}, []);
 
@@ -31,7 +29,7 @@ const OrdersList = () => {
 		<View style={{ flex: 1 }}>
 			<FlashList
 				keyExtractor={i => i.id}
-				data={data?.currentStore.orders}
+				data={orders}
 				renderItem={renderOrder}
 				estimatedItemSize={60}
 				contentContainerStyle={{ backgroundColor: theme.screen.background }}

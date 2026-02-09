@@ -3,11 +3,11 @@ import { View, StyleSheet } from 'react-native';
 import { Typography, Row, Spacer } from '@habiti/components';
 import { formatNaira } from '@habiti/common';
 
-import { OrdersQuery } from '../../types/api';
 import { parseTimestamp } from '../../utils/date';
+import { Order } from '../../data/types';
 
 interface OrdersListItemProps {
-	order: OrdersQuery['currentStore']['orders'][number];
+	order: Order;
 	onPress(): void;
 }
 

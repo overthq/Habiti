@@ -6,11 +6,11 @@ import { useNavigation } from '@react-navigation/native';
 import AmountDisplay from '../components/add-payout/AmountDisplay';
 import PayoutNumpad from '../components/add-payout/PayoutNumpad';
 import useGoBack from '../hooks/useGoBack';
-import { useCreatePayoutMutation } from '../types/api';
+import { useCreatePayoutMutation } from '../data/mutations';
 
 const AddPayout: React.FC = () => {
 	const [amount, setAmount] = React.useState('');
-	const [{ fetching }, createPayout] = useCreatePayoutMutation();
+	const createPayoutMutation = useCreatePayoutMutation();
 	const { goBack } = useNavigation();
 	useGoBack('x');
 
@@ -26,15 +26,11 @@ const AddPayout: React.FC = () => {
 	};
 
 	const handleAddPayout = React.useCallback(async () => {
-		const { error } = await createPayout({
-			input: { amount: Number(amount) * 100 }
+		await createPayoutMutation.mutateAsync({
+			amount: Number(amount) * 100
 		});
 
-		if (error) {
-			console.log(error);
-		} else {
-			goBack();
-		}
+		goBack();
 	}, [amount]);
 
 	const lastCharIsDot = React.useMemo(() => {
@@ -70,7 +66,7 @@ const AddPayout: React.FC = () => {
 				<Button
 					disabled={!amount}
 					text='Add Payout'
-					loading={fetching}
+					loading={createPayoutMutation.isPending}
 					onPress={confirmAddPayout}
 				/>
 			</View>

@@ -2,7 +2,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { BottomModal, Typography } from '@habiti/components';
 
-import { useDeleteProductMutation } from '../../types/api';
+import { useDeleteProductMutation } from '../../data/mutations';
 
 interface ProductSettingsModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
@@ -13,11 +13,12 @@ const ProductSettingsModal: React.FC<ProductSettingsModalProps> = ({
 	modalRef,
 	productId
 }) => {
-	const [, deleteProduct] = useDeleteProductMutation();
+	const deleteProductMutation = useDeleteProductMutation();
 	const { bottom } = useSafeAreaInsets();
 
 	const handleDelete = async () => {
-		await deleteProduct({ id: productId });
+		await deleteProductMutation.mutateAsync(productId);
+
 		modalRef.current?.close();
 	};
 

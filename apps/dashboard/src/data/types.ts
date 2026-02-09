@@ -15,9 +15,17 @@ export interface Store {
 	id: string;
 	name: string;
 	description: string;
+	website?: string;
+	twitter?: string;
+	instagram?: string;
+	unlisted: boolean;
+	bankAccountNumber?: string;
+	realizedRevenue: number;
+	unrealizedRevenue: number;
+	paidOut: number;
 	image?: Image;
 	products: Product[];
-	categories: Category[];
+	categories: StoreProductCategory[];
 	createdAt: string;
 	updatedAt: string;
 }
@@ -26,10 +34,32 @@ export interface Product {
 	id: string;
 	name: string;
 	description: string;
+	quantity: number;
 	images: Image[];
+	categories: ProductCategory[];
 	unitPrice: number;
 	createdAt: string;
 	updatedAt: string;
+}
+
+enum ProductStatus {
+	Active = 'active'
+}
+
+export interface ProductFilters {
+	search?: string;
+	categoryId?: string;
+	storeId?: string;
+	status?: ProductStatus;
+	inStock?: string;
+	minPrice?: number;
+	maxPrice?: number;
+	orderBy?: Partial<
+		Record<
+			'unitPrice' | 'quantity' | 'name' | 'createdAt' | 'updatedAt',
+			'asc' | 'desc'
+		>
+	>;
 }
 
 export interface Cart {
@@ -62,21 +92,40 @@ export interface Category {
 
 export interface Order {
 	id: string;
+	userId: string;
+	user: User;
 	store: Store;
 	products: OrderProduct[];
 	total: number;
-	status: string;
+	serviceFee: number;
+	transactionFee: number;
+	status: OrderStatus;
 	createdAt: string;
 	updatedAt: string;
 }
 
 export interface OrderProduct {
 	id: string;
+	orderId: string;
+	productId: string;
 	product: Product;
 	quantity: number;
 	unitPrice: number;
 	createdAt: string;
 	updatedAt: string;
+}
+
+export interface OrderFilters {
+	status?: OrderStatus;
+	storeId?: string;
+	userId?: string;
+	minTotal?: number;
+	maxTotal?: number;
+	dateFrom?: string;
+	dateTo?: string;
+	orderBy?: Partial<
+		Record<'total' | 'createdAt' | 'updatedAt', 'asc' | 'desc'>
+	>;
 }
 
 export interface PaymentMethod {
@@ -138,9 +187,15 @@ export interface Payout {
 	id: string;
 	storeId: string;
 	amount: number;
-	status: string;
+	status: PayoutStatus;
 	createdAt: string;
 	updatedAt: string;
+}
+
+export enum PayoutStatus {
+	Success = 'Success',
+	Pending = 'Pending',
+	Failure = 'Failure'
 }
 
 export interface StoreProductCategory {
@@ -199,6 +254,28 @@ export enum OrderStatus {
 	Completed = 'Completed'
 }
 
+export interface ProductCategory {
+	productId: string;
+	categoryId: string;
+	product: Product;
+	category: Category;
+}
+
+export interface CustomerInfo {
+	id: string;
+	name: string;
+	email: string;
+	orders: Order[];
+}
+
+export interface StoreOverview {
+	lowStockProducts: Product[];
+}
+
+export interface GetManagedStoresResponse {
+	stores: Store[];
+}
+
 export interface AuthenticateBody {
 	email: string;
 	password: string;
@@ -208,4 +285,77 @@ export interface RegisterBody {
 	name: string;
 	email: string;
 	password: string;
+}
+
+export interface CreateProductBody {
+	name: string;
+	description: string;
+	unitPrice: number;
+	quantity: number;
+}
+
+export interface UpdateProductArgs {
+	productId: string;
+	body: UpdateProductBody;
+}
+
+export interface UpdateProductBody {
+	name?: string;
+	description?: string;
+	quantity?: number;
+	unitPrice?: number;
+	stock?: number;
+	images?: string[];
+}
+
+export interface CreateStoreBody {
+	name: string;
+	description: string;
+}
+
+export interface UpdateCurrentStoreBody {
+	name?: string;
+	bankAccountNumber?: string;
+	bankCode?: string;
+	imageUrl?: string;
+	imagePublicId?: string;
+}
+
+export interface CreatePayoutBody {
+	amount: number;
+}
+
+export interface CreateProductCategoryBody {
+	name: string;
+	description: string;
+}
+
+export interface UpdateOrderArgs {
+	orderId: string;
+	body: {
+		status?: OrderStatus;
+	};
+}
+
+export interface UpdateProductCategoriesArgs {
+	productId: string;
+	body: UpdateProductCategoriesBody;
+}
+
+export interface UpdateProductCategoriesBody {
+	add: string[];
+	remove: string[];
+}
+
+export interface UpdateProductCategoryArgs {
+	categoryId: string;
+	body: {
+		name?: string;
+		description?: string;
+	};
+}
+
+export interface VerifyBankAccountBody {
+	bankAccountNumber: string;
+	bankCode: string;
 }

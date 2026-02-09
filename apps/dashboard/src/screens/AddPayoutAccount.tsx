@@ -4,7 +4,7 @@ import { Screen, Spacer, FormInput, Button } from '@habiti/components';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useForm, FormProvider } from 'react-hook-form';
 
-import { useVerifyBankAccountMutation } from '../types/api';
+import { useVerifyBankAccountMutation } from '../data/mutations';
 import { EditPayoutInfoFormValues } from '../types/forms';
 import BankSelectButton from '../components/store-payouts/BankSelectButton';
 import BankSelectModal from '../components/store-payouts/BankSelectModal';
@@ -12,7 +12,7 @@ import ConfirmationModal from '../components/store-payouts/ConfirmationModal';
 import useGoBack from '../hooks/useGoBack';
 
 const AddPayoutAccount = () => {
-	const [{ data }, verifyBankAccount] = useVerifyBankAccountMutation();
+	const verifyBankAccountMutation = useVerifyBankAccountMutation();
 
 	const selectModalRef = React.useRef<BottomSheetModal>(null);
 	const confirmationModalRef = React.useRef<BottomSheetModal>(null);
@@ -28,18 +28,12 @@ const AddPayoutAccount = () => {
 
 	const onSubmit = React.useCallback(
 		async (values: EditPayoutInfoFormValues) => {
-			const { error } = await verifyBankAccount({
-				input: {
-					bankAccountNumber: values.accountNumber,
-					bankCode: values.bank
-				}
+			await verifyBankAccountMutation.mutateAsync({
+				bankAccountNumber: values.accountNumber,
+				bankCode: values.bank
 			});
 
-			if (error) {
-				console.log('error', error);
-			} else {
-				confirmationModalRef.current?.present();
-			}
+			confirmationModalRef.current?.present();
 		},
 		[]
 	);
@@ -69,7 +63,7 @@ const AddPayoutAccount = () => {
 				<BankSelectModal modalRef={selectModalRef} />
 				<ConfirmationModal
 					modalRef={confirmationModalRef}
-					accountName={data?.verifyBankAccount?.accountName}
+					accountName={verifyBankAccountMutation.data?.accountName}
 				/>
 			</FormProvider>
 		</Screen>

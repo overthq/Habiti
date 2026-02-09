@@ -1,18 +1,12 @@
 import React from 'react';
-import useRefresh from '../../hooks/useRefresh';
-import {
-	OrdersQuery,
-	OrdersQueryVariables,
-	OrderStatus,
-	Sort,
-	useOrdersQuery
-} from '../../types/api';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import OrdersFilterModal from './OrdersFilterModal';
+import { useOrdersQuery } from '../../data/queries';
+import { Order, OrderFilters, OrderStatus } from '../../data/types';
 
 interface OrdersContextType {
-	data: OrdersQuery;
-	fetching: boolean;
+	orders: Order[];
+	isLoading: boolean;
 	status: OrderStatus | undefined;
 	setStatus: (status: OrderStatus) => void;
 	refreshing: boolean;
@@ -48,10 +42,13 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 		setFilters({ status });
 	}, []);
 
-	const [{ data, fetching }, refetch] = useOrdersQuery({
-		variables: buildVariablesFromFilters(filters)
-	});
-	const { refreshing, refresh } = useRefresh({ fetching, refetch });
+	const queryFilters = buildFiltersFromState(filters);
+	const { data, isLoading, isRefetching, refetch } =
+		useOrdersQuery(queryFilters);
+
+	const refresh = React.useCallback(() => {
+		refetch();
+	}, [refetch]);
 
 	const openFilterModal = React.useCallback(() => {
 		filterModalRef.current?.present();
@@ -70,11 +67,11 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 	return (
 		<OrdersContext.Provider
 			value={{
-				data,
-				fetching,
+				orders: data?.orders ?? [],
+				isLoading,
 				status: filters.status,
 				setStatus,
-				refreshing,
+				refreshing: isRefetching,
 				refresh,
 				openFilterModal,
 				clearFilters
@@ -91,25 +88,28 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 	);
 };
 
-const buildVariablesFromFilters = (filters: OrdersFilters) => {
-	let params: OrdersQueryVariables = {};
+const buildFiltersFromState = (filters: OrdersFilters): OrderFilters => {
+	const result: OrderFilters = {};
 
 	if (filters.status) {
-		params.status = filters.status;
+		result.status = filters.status;
 	}
 
 	if (filters.sortBy) {
-		params.orderBy = [sortByMap[filters.sortBy]];
+		result.orderBy = sortByMap[filters.sortBy];
 	}
 
-	return params;
+	return result;
 };
 
-const sortByMap = {
-	'created-at-desc': { createdAt: Sort.Desc },
-	'total-desc': { total: Sort.Desc },
-	'total-asc': { total: Sort.Asc }
-} as const;
+const sortByMap: Record<
+	NonNullable<OrdersFilters['sortBy']>,
+	OrderFilters['orderBy']
+> = {
+	'created-at-desc': { createdAt: 'desc' },
+	'total-desc': { total: 'desc' },
+	'total-asc': { total: 'asc' }
+};
 
 export const useOrdersContext = () => {
 	const context = React.useContext(OrdersContext);

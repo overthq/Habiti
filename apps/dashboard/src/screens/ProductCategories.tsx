@@ -1,10 +1,8 @@
 import React from 'react';
 import { Screen, Checkbox, Typography, TextButton } from '@habiti/components';
 import { View, StyleSheet } from 'react-native';
-import {
-	useCategoriesQuery,
-	useUpdateProductCategoriesMutation
-} from '../types/api';
+import { useCategoriesQuery } from '../data/queries';
+import { useUpdateProductCategoriesMutation } from '../data/mutations';
 import { AppStackParamList, ProductStackParamList } from '../types/navigation';
 import {
 	NavigationProp,
@@ -21,11 +19,11 @@ const ProductCategories: React.FC = () => {
 	} = useRoute<RouteProp<ProductStackParamList, 'Product.Categories'>>();
 	const { navigate, goBack, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
-	const [{ data }] = useCategoriesQuery();
+	const { data } = useCategoriesQuery();
 	const [selectedCategories, setSelectedCategories] = React.useState<string[]>(
 		categories.map(({ categoryId }) => categoryId)
 	);
-	const [, updateProductCategories] = useUpdateProductCategoriesMutation();
+	const updateProductCategoriesMutation = useUpdateProductCategoriesMutation();
 	useGoBack();
 
 	const handleAddCategory = React.useCallback(() => {
@@ -59,20 +57,16 @@ const ProductCategories: React.FC = () => {
 			.filter(category => !selectedCategories.includes(category.categoryId))
 			.map(({ categoryId }) => categoryId);
 
-		const { error } = await updateProductCategories({
-			id: productId,
-			input: { add, remove }
+		await updateProductCategoriesMutation.mutateAsync({
+			productId,
+			body: { add, remove }
 		});
 
-		if (error) {
-			console.log(error);
-		} else {
-			goBack();
-		}
+		goBack();
 	}, [
 		selectedCategories,
 		categories,
-		updateProductCategories,
+		updateProductCategoriesMutation,
 		goBack,
 		productId
 	]);
@@ -90,7 +84,7 @@ const ProductCategories: React.FC = () => {
 	return (
 		<Screen style={styles.container}>
 			<View style={{ flex: 1 }}>
-				{data?.currentStore.categories.map(({ id, name }) => (
+				{data?.categories.map(({ id, name }) => (
 					<View key={id} style={styles.row}>
 						<Typography>{name}</Typography>
 						<Checkbox

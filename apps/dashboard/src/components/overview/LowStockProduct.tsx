@@ -3,11 +3,11 @@ import { Pressable } from 'react-native';
 import { CustomImage, Spacer, Typography } from '@habiti/components';
 import { formatNaira } from '@habiti/common';
 
-import { OverviewQuery } from '../../types/api';
+import { Product } from '../../data/types';
 
 interface LowStockProductProps {
 	onPress(): void;
-	product: OverviewQuery['currentStore']['products']['edges'][number]['node'];
+	product: Product;
 }
 
 const LowStockProduct: React.FC<LowStockProductProps> = ({

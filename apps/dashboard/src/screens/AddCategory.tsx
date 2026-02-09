@@ -1,11 +1,11 @@
-import { Button, FormInput, Screen } from '@habiti/components';
-import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { Button, FormInput, Screen } from '@habiti/components';
 
 import useGoBack from '../hooks/useGoBack';
-import { useCreateProductCategoryMutation } from '../types/api';
+import { useCreateProductCategoryMutation } from '../data/mutations';
 
 interface AddCategoryValues {
 	name: string;
@@ -13,7 +13,7 @@ interface AddCategoryValues {
 }
 
 const AddCategory = () => {
-	const [{ fetching }, addCategory] = useCreateProductCategoryMutation();
+	const createProductCategoryMutation = useCreateProductCategoryMutation();
 	const { goBack } = useNavigation();
 	useGoBack('x');
 
@@ -25,11 +25,7 @@ const AddCategory = () => {
 	});
 
 	const onSubmit = React.useCallback(async (values: AddCategoryValues) => {
-		const { error } = await addCategory({ input: values });
-
-		if (error) {
-			console.log(error);
-		}
+		await createProductCategoryMutation.mutateAsync(values);
 
 		goBack();
 	}, []);
@@ -55,7 +51,7 @@ const AddCategory = () => {
 				text='Add Category'
 				onPress={handleSubmit(onSubmit)}
 				style={styles.button}
-				loading={fetching}
+				loading={createProductCategoryMutation.isPending}
 			/>
 		</Screen>
 	);

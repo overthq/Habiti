@@ -1,14 +1,14 @@
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
-import { ProductQuery } from '../../types/api';
 import ProductPriceModal from '../modals/ProductPriceModal';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import ProductInventoryModal from '../modals/ProductInventoryModal';
 import { Typography, useTheme, Spacer, Icon } from '@habiti/components';
 import { formatNaira } from '@habiti/common';
+import { Product } from '../../data/types';
 
 interface EditButtonsProps {
-	product: ProductQuery['product'];
+	product: Product;
 }
 
 const EditButtons: React.FC<EditButtonsProps> = ({ product }) => {

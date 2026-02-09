@@ -4,18 +4,18 @@ import { Button, Screen, ScreenHeader } from '@habiti/components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import StoreMenu from '../components/store/StoreMenu';
-import { useStoreQuery } from '../types/api';
+import { useCurrentStoreQuery } from '../data/queries';
 import useStore from '../state';
 import { useShallow } from 'zustand/react/shallow';
 
 const Store: React.FC = () => {
-	const [{ data, fetching, error }] = useStoreQuery();
+	const { data, isLoading, error } = useCurrentStoreQuery();
 	const { top } = useSafeAreaInsets();
 	const { logOut } = useStore(useShallow(({ logOut }) => ({ logOut })));
 
-	const store = data?.currentStore;
+	const store = data?.store;
 
-	if (fetching || !store) {
+	if (isLoading || !store) {
 		return <View />;
 	}
 

@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { hydrateQuery } from '../utils/queries';
 import { getAppContext } from '../utils/context';
 import * as PayoutLogic from '../core/logic/payouts';
+import { resolveAccountNumber } from '../core/payments';
 import { LogicError, LogicErrorCode } from '../core/logic/errors';
 
 export const getPayouts = async (
@@ -45,6 +46,44 @@ export const getPayout = async (
 const updatePayoutSchema = z.object({
 	status: z.nativeEnum(PayoutStatus)
 });
+
+export const createPayout = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const { amount } = req.body;
+
+	try {
+		const ctx = getAppContext(req);
+		const payout = await PayoutLogic.createPayout(ctx, { amount });
+		return res.status(201).json({ payout });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const verifyBankAccount = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const { bankAccountNumber, bankCode } = req.body;
+
+	try {
+		const { data } = await resolveAccountNumber({
+			accountNumber: bankAccountNumber,
+			bankCode
+		});
+
+		return res.json({
+			accountNumber: data.account_number,
+			accountName: data.account_name
+		});
+	} catch (error) {
+		return next(error);
+	}
+};
 
 export const updatePayout = async (
 	req: Request,

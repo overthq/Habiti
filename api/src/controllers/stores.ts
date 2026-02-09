@@ -3,7 +3,6 @@ import { NextFunction, Request, Response } from 'express';
 import { hydrateQuery, productFiltersSchema } from '../utils/queries';
 import { getAppContext } from '../utils/context';
 import * as StoreLogic from '../core/logic/stores';
-import * as ProductLogic from '../core/logic/products';
 
 export const getStores = async (
 	req: Request,
@@ -42,56 +41,6 @@ export const createStore = async (
 		});
 
 		return res.status(201).json({ store });
-	} catch (error) {
-		return next(error);
-	}
-};
-
-export const updateStore = async (
-	req: Request,
-	res: Response,
-	next: NextFunction
-) => {
-	const { name, description, website, twitter, instagram, unlisted } = req.body;
-	const storeId = req.params.id;
-
-	if (!storeId) {
-		return res.status(400).json({ message: 'Store ID is required' });
-	}
-
-	const ctx = getAppContext(req);
-
-	try {
-		const store = await StoreLogic.updateStore(ctx, {
-			storeId,
-			name,
-			description,
-			website,
-			twitter,
-			instagram,
-			unlisted
-		});
-		return res.status(200).json({ store });
-	} catch (error) {
-		return next(error);
-	}
-};
-
-export const getCurrentStore = async (
-	req: Request,
-	res: Response,
-	next: NextFunction
-) => {
-	const ctx = getAppContext(req);
-
-	if (!ctx.storeId) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
-	try {
-		const store = await StoreLogic.getStoreById(ctx, ctx.storeId);
-
-		return res.json({ store });
 	} catch (error) {
 		return next(error);
 	}
@@ -162,34 +111,6 @@ export const getStoreProducts = async (
 		);
 
 		return res.json({ products });
-	} catch (error) {
-		return next(error);
-	}
-};
-
-export const createStoreProduct = async (
-	req: Request,
-	res: Response,
-	next: NextFunction
-) => {
-	const { name, description, unitPrice, quantity } = req.body;
-
-	const ctx = getAppContext(req);
-
-	if (!ctx.storeId) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
-	try {
-		const product = await ProductLogic.createProduct(ctx, {
-			name,
-			description,
-			unitPrice,
-			quantity,
-			storeId: ctx.storeId
-		});
-
-		return res.json({ product });
 	} catch (error) {
 		return next(error);
 	}
@@ -290,6 +211,25 @@ export const unfollowStore = async (
 		});
 
 		return res.status(200).json({ follower });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const deleteStore = async (
+	req: Request<{ id: string }>,
+	res: Response,
+	next: NextFunction
+) => {
+	if (!req.params.id) {
+		return res.status(400).json({ error: 'Store ID is required' });
+	}
+
+	const ctx = getAppContext(req);
+
+	try {
+		await StoreLogic.deleteStore(ctx, { storeId: req.params.id });
+		return res.status(204).send();
 	} catch (error) {
 		return next(error);
 	}

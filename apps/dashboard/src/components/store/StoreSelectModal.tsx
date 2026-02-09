@@ -12,7 +12,9 @@ import {
 	useTheme
 } from '@habiti/components';
 
-import { useManagedStoresQuery } from '../../types/api';
+import { useManagedStoresQuery } from '../../data/queries';
+import useStore from '../../state';
+import { useShallow } from 'zustand/react/shallow';
 
 interface StoreSelectModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
@@ -20,12 +22,17 @@ interface StoreSelectModalProps {
 
 const StoreSelectModal: React.FC<StoreSelectModalProps> = ({ modalRef }) => {
 	const { bottom } = useSafeAreaInsets();
-	const [{ data }] = useManagedStoresQuery();
+	const { data } = useManagedStoresQuery();
 	const { theme } = useTheme();
-
+	const setPreference = useStore(useShallow(state => state.setPreference));
 	const handleCreateStore = () => {
 		modalRef.current?.dismiss();
 		// TODO: Allow the ability to create a new store, or just log the user out.
+	};
+
+	const handleSelectStore = (storeId: string) => () => {
+		setPreference({ activeStore: storeId });
+		modalRef.current?.dismiss();
 	};
 
 	return (
@@ -35,13 +42,14 @@ const StoreSelectModal: React.FC<StoreSelectModalProps> = ({ modalRef }) => {
 					Select store
 				</Typography>
 				<Spacer y={8} />
-				{data?.currentUser.managed.map(({ store }) => (
+				{data?.stores.map(store => (
 					<Row
 						key={store.id}
 						style={{
 							backgroundColor: theme.modal.background,
 							alignItems: 'center'
 						}}
+						onPress={handleSelectStore(store.id)}
 					>
 						<Avatar
 							uri={store.image?.path}

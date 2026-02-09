@@ -1,12 +1,12 @@
-import { Button, Screen } from '@habiti/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View } from 'react-native';
+import { Button, Screen } from '@habiti/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import SettingSelectRow from './SettingSelectRow';
 import useGoBack from '../../hooks/useGoBack';
 import useStore from '../../state';
-import { useManagedStoresQuery } from '../../types/api';
+import { useManagedStoresQuery } from '../../data/queries';
 import { AppStackParamList } from '../../types/navigation';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -18,11 +18,11 @@ const SettingsActiveStore: React.FC = () => {
 		}))
 	);
 
-	const [{ data }] = useManagedStoresQuery();
+	const { data } = useManagedStoresQuery();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	useGoBack();
 
-	const stores = data?.currentUser.managed.map(({ store }) => store);
+	const stores = data?.stores;
 
 	const handleRowSelect = (id: string) => () => {
 		setPreference({ activeStore: id });
