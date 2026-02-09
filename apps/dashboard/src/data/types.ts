@@ -317,6 +317,8 @@ export interface UpdateCurrentStoreBody {
 	name?: string;
 	bankAccountNumber?: string;
 	bankCode?: string;
+	imageUrl?: string;
+	imagePublicId?: string;
 }
 
 export interface CreatePayoutBody {

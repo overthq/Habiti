@@ -1,4 +1,8 @@
-import { OrderStatus, PrismaClient } from '../../generated/prisma/client';
+import {
+	OrderStatus,
+	Prisma,
+	PrismaClient
+} from '../../generated/prisma/client';
 import {
 	productFiltersToPrismaClause,
 	ProductFilters
@@ -36,6 +40,8 @@ interface UpdateStoreParams {
 	bankCode?: string;
 	bankAccountReference?: string;
 	unlisted?: boolean;
+	imageUrl?: string;
+	imagePublicId?: string;
 }
 
 export const updateStore = async (
@@ -43,9 +49,23 @@ export const updateStore = async (
 	storeId: string,
 	params: UpdateStoreParams
 ) => {
+	const { imageUrl, imagePublicId, ...rest } = params;
+
+	let data: Prisma.StoreUpdateInput = { ...rest };
+
+	if (imageUrl && imagePublicId) {
+		data.image = {
+			upsert: {
+				create: { path: imageUrl, publicId: imagePublicId },
+				update: { path: imageUrl, publicId: imagePublicId }
+			}
+		};
+	}
+
 	const store = await prisma.store.update({
 		where: { id: storeId },
-		data: params
+		data,
+		include: { image: true }
 	});
 
 	return store;
@@ -98,6 +118,7 @@ export const getStoreByIdWithProducts = async (
 	const store = await prisma.store.findUnique({
 		where: { id: storeId },
 		include: {
+			image: true,
 			products: {
 				include: { images: true },
 				...productFiltersToPrismaClause(filters)

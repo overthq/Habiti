@@ -57,6 +57,8 @@ interface UpdateStoreInput {
 	bankCode?: string;
 	bankAccountReference?: string;
 	unlisted?: boolean;
+	imageUrl?: string;
+	imagePublicId?: string;
 }
 
 export const updateStore = async (ctx: AppContext, input: UpdateStoreInput) => {
