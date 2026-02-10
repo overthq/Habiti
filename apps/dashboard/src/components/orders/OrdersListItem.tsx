@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Typography, Row, Spacer } from '@habiti/components';
 import { formatNaira } from '@habiti/common';
 
-import { parseTimestamp } from '../../utils/date';
+import { relativeDate } from '../../utils/date';
 import { Order } from '../../data/types';
 
 interface OrdersListItemProps {
@@ -18,7 +18,7 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
 				<Typography>{order.user.name}</Typography>
 				<Spacer y={2} />
 				<Typography size='small' variant='secondary' style={styles.date}>
-					{order.status} · {parseTimestamp(order.createdAt)}
+					{order.status} · {relativeDate(order.createdAt)}
 				</Typography>
 			</View>
 			<Typography style={styles.total}>{formatNaira(order.total)}</Typography>

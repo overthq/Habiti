@@ -7,6 +7,7 @@ import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useCreateStoreMutation } from '../data/mutations';
 import { useShallow } from 'zustand/react/shallow';
+import { useNavigation } from '@react-navigation/native';
 
 export interface CreateStoreFormValues {
 	name: string;
@@ -21,20 +22,24 @@ const CreateStore: React.FC = () => {
 	const setPreference = useStore(useShallow(state => state.setPreference));
 	const methods = useForm<CreateStoreFormValues>();
 	const { bottom } = useSafeAreaInsets();
+	const { goBack } = useNavigation();
 
 	useGoBack('x');
 
 	const onSubmit = React.useCallback(
 		async (values: CreateStoreFormValues) => {
+			console.log('values', values);
 			const { store } = await createStoreMutation.mutateAsync(values);
+			console.log('store', store);
 
 			setPreference({ activeStore: store.id });
+			goBack();
 		},
 		[setPreference, createStoreMutation]
 	);
 
 	return (
-		<Screen style={{ padding: 16, paddingTop: 64, paddingBottom: bottom }}>
+		<Screen style={{ padding: 16, paddingBottom: bottom }}>
 			<FormInput
 				control={methods.control}
 				name='name'

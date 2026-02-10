@@ -9,6 +9,7 @@ import {
 } from '../../utils/queries';
 
 interface CreateStoreParams {
+	userId: string;
 	name: string;
 	description?: string;
 	website?: string;
@@ -23,8 +24,14 @@ export const createStore = async (
 	prisma: PrismaClient,
 	params: CreateStoreParams
 ) => {
+	const { userId, ...rest } = params;
+
 	const store = await prisma.store.create({
-		data: params
+		data: {
+			...rest,
+			managers: { create: { managerId: userId } }
+		},
+		include: { managers: true }
 	});
 
 	return store;
