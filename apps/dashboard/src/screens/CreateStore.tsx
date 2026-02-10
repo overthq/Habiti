@@ -28,9 +28,7 @@ const CreateStore: React.FC = () => {
 
 	const onSubmit = React.useCallback(
 		async (values: CreateStoreFormValues) => {
-			console.log('values', values);
 			const { store } = await createStoreMutation.mutateAsync(values);
-			console.log('store', store);
 
 			setPreference({ activeStore: store.id });
 			goBack();
