@@ -1,7 +1,7 @@
-import { Button, FormInput, Screen, Spacer } from '@habiti/components';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Button, FormInput, Screen, Spacer } from '@habiti/components';
 
 import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';

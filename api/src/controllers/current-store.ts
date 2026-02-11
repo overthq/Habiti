@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { hydrateQuery, productFiltersSchema } from '../utils/queries';
+import {
+	hydrateQuery,
+	orderFiltersSchema,
+	productFiltersSchema
+} from '../utils/queries';
 import { getAppContext } from '../utils/context';
 import * as StoreLogic from '../core/logic/stores';
 import * as ProductLogic from '../core/logic/products';
@@ -178,8 +182,11 @@ export const getOrders = async (
 	}
 
 	try {
-		const query = hydrateQuery(req.query);
-		const orders = await StoreLogic.getStoreOrders(ctx, ctx.storeId, query);
+		const orders = await StoreLogic.getStoreOrders(
+			ctx,
+			ctx.storeId,
+			orderFiltersSchema.parse(req.query)
+		);
 		return res.json({ orders });
 	} catch (error) {
 		return next(error);

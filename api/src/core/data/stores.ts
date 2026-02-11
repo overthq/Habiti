@@ -1,11 +1,13 @@
 import { Prisma, PrismaClient } from '../../generated/prisma/client';
 import {
 	productFiltersToPrismaClause,
-	ProductFilters
+	ProductFilters,
+	OrderFilters,
+	orderFiltersToPrismaClause
 } from '../../utils/queries';
 
 interface CreateStoreParams {
-	userId: string;
+	userId?: string;
 	name: string;
 	description?: string;
 	website?: string;
@@ -25,7 +27,7 @@ export const createStore = async (
 	const store = await prisma.store.create({
 		data: {
 			...rest,
-			managers: { create: { managerId: userId } }
+			...(userId ? { managers: { create: { managerId: userId } } } : {})
 		},
 		include: { managers: true }
 	});
@@ -175,10 +177,13 @@ export const getStoreManagers = async (
 export const getStoreOrders = async (
 	prisma: PrismaClient,
 	storeId: string,
-	query: any
+	filters?: OrderFilters
 ) => {
+	const { where, orderBy } = orderFiltersToPrismaClause(filters);
+
 	const storeOrders = await prisma.order.findMany({
-		where: { storeId, ...query },
+		where: { storeId, ...where },
+		orderBy: orderBy ?? { createdAt: 'desc' },
 		include: { user: true }
 	});
 

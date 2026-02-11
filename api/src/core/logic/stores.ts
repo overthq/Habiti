@@ -6,7 +6,7 @@ import * as PayoutData from '../data/payouts';
 
 import { NotificationType } from '../notifications';
 
-import { ProductFilters } from '../../utils/queries';
+import { OrderFilters, ProductFilters } from '../../utils/queries';
 import { canManageStore } from './permissions';
 
 import { LogicError, LogicErrorCode } from './errors';
@@ -423,9 +423,9 @@ export const getStoreProducts = async (
 export const getStoreOrders = async (
 	ctx: AppContext,
 	storeId: string,
-	query: any
+	filters?: OrderFilters
 ) => {
-	return StoreData.getStoreOrders(ctx.prisma, storeId, query);
+	return StoreData.getStoreOrders(ctx.prisma, storeId, filters);
 };
 
 export const getStoreCustomer = async (
