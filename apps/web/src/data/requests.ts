@@ -26,6 +26,9 @@ import type {
 	VerifyCodeResponse,
 	CardAuthorizationResponse
 } from './types';
+import { OrderStatus } from './types';
+import { openPaystackPopup } from '@/lib/payments';
+import { pollUntil } from '@/lib/poll';
 import { useAuthStore } from '@/state/auth-store';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
@@ -246,12 +249,37 @@ export const createOrder = async (body: CreateOrderBody) => {
 	return response.data;
 };
 
+export const createOrderWithPayment = async (body: CreateOrderBody) => {
+	const data = await createOrder(body);
+
+	if (data.cardAuthorizationData) {
+		openPaystackPopup(data.cardAuthorizationData.access_code);
+
+		await pollUntil(
+			() => getOrder(data.order.id),
+			result => result.order.status !== OrderStatus.PaymentPending
+		);
+	}
+
+	return data;
+};
+
 export const getCardAuthorization = async (orderId: string) => {
 	const response = await api.post<CardAuthorizationResponse>(
 		'/users/current/cards/authorize',
 		{ orderId }
 	);
 	return response.data;
+};
+
+export const completeOrderPayment = async (orderId: string) => {
+	const data = await getCardAuthorization(orderId);
+	openPaystackPopup(data.access_code);
+
+	return pollUntil(
+		() => getOrder(orderId),
+		result => result.order.status !== OrderStatus.PaymentPending
+	);
 };
 
 // Products

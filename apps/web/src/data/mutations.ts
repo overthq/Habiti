@@ -10,12 +10,12 @@ import {
 	unfollowStore,
 	authenticate,
 	register,
-	createOrder,
+	createOrderWithPayment,
 	updateCartProductQuantity,
 	updateCurrentUser,
 	verifyCode,
 	deleteCurrentUser,
-	getCardAuthorization,
+	completeOrderPayment,
 	deleteCard
 } from './requests';
 
@@ -30,7 +30,6 @@ import type {
 } from './types';
 import { useAuthStore } from '@/state/auth-store';
 import { useGuestCartStore } from '@/state/guest-cart-store';
-import { openPaystackPopup } from '@/lib/payments';
 
 export const useAddToCartMutation = () => {
 	const queryClient = useQueryClient();
@@ -126,13 +125,15 @@ export const useVerifyCodeMutation = () => {
 
 export const useCreateOrderMutation = () => {
 	const router = useRouter();
-	return useMutation({
-		mutationFn: (body: CreateOrderBody) => createOrder(body),
-		onSuccess: data => {
-			if (data.cardAuthorizationData) {
-				openPaystackPopup(data.cardAuthorizationData.access_code);
-			}
+	const queryClient = useQueryClient();
 
+	return useMutation({
+		mutationFn: (body: CreateOrderBody) => createOrderWithPayment(body),
+		onSuccess: data => {
+			queryClient.invalidateQueries({ queryKey: ['orders'] });
+			queryClient.setQueryData(['orders', data.order.id], {
+				order: data.order
+			});
 			router.push(`/orders/${data.order.id}`);
 		},
 		onError: () => {
@@ -169,10 +170,10 @@ export const useCompleteOrderPaymentMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (orderId: string) => getCardAuthorization(orderId),
+		mutationFn: (orderId: string) => completeOrderPayment(orderId),
 		onSuccess: data => {
-			openPaystackPopup(data.access_code);
 			queryClient.invalidateQueries({ queryKey: ['orders'] });
+			queryClient.setQueryData(['orders', data.order.id], data);
 		},
 		onError: () => {
 			toast.error('Failed to initiate payment');

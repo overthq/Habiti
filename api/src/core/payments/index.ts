@@ -1,4 +1,3 @@
-import { storeCard } from '../data/cards';
 import {
 	ChargeAuthorizationOptions,
 	CreateTransferReceipientOptions,
@@ -13,12 +12,22 @@ import * as Paystack from './paystack';
 
 import * as PayoutData from '../data/payouts';
 
-import { transitionOrderToPending } from './webhooks';
+import { env } from '../../config/env';
+
+import { processCardCharge } from '../logic/payments';
+import { pollUntil } from '../../utils/poll';
 
 export const chargeAuthorization = async (
 	options: ChargeAuthorizationOptions
 ) => {
 	const data = await Paystack.chargeAuthorization(options);
+
+	if (env.NODE_ENV !== 'production') {
+		pollUntil(() => verifyTransaction(data.data.reference), {
+			intervalMs: 5_000,
+			maxAttempts: 12
+		});
+	}
 
 	return data;
 };
@@ -29,6 +38,13 @@ export const initialCharge = async (options: InitialChargeOptions) => {
 		amount: options.amount,
 		...(options.orderId && { metadata: { orderId: options.orderId } })
 	});
+
+	if (env.NODE_ENV !== 'production') {
+		pollUntil(() => verifyTransaction(data.data.reference), {
+			intervalMs: 5_000,
+			maxAttempts: 24
+		});
+	}
 
 	return data;
 };
@@ -82,25 +98,6 @@ export const verifyTransaction = async (reference: string) => {
 	const { data, status } = await Paystack.verifyTransaction(reference);
 
 	if (status === true && data.status === 'success') {
-		const card = await storeCard({
-			email: data.customer.email,
-			signature: data.authorization.signature,
-			authorizationCode: data.authorization.authorization_code,
-			bin: data.authorization.bin,
-			last4: data.authorization.last4,
-			expMonth: data.authorization.exp_month,
-			expYear: data.authorization.exp_year,
-			bank: data.authorization.bank,
-			cardType: data.authorization.card_type,
-			countryCode: data.authorization.country_code
-		});
-
-		if (typeof data.metadata === 'object' && data.metadata?.orderId) {
-			console.log('Transitioning order to pending', data.metadata.orderId);
-
-			await transitionOrderToPending(data.metadata.orderId);
-		}
-
-		return card;
+		return await processCardCharge(data);
 	}
 };
