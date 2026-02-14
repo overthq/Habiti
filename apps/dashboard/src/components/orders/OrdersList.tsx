@@ -1,8 +1,8 @@
 import React from 'react';
+import { View, RefreshControl, StyleSheet } from 'react-native';
 import { Typography, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
-import { View, RefreshControl, StyleSheet } from 'react-native';
 
 import OrdersListItem from '../../components/orders/OrdersListItem';
 import { OrdersStackParamList } from '../../types/navigation';

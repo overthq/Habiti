@@ -1,5 +1,8 @@
-import { PayoutStatus } from '../../generated/prisma/client';
+import { OrderStatus, PayoutStatus } from '../../generated/prisma/client';
 import { AppContext } from '../../utils/context';
+import { storeCard } from '../data/cards';
+import * as OrderData from '../data/orders';
+import prismaClient from '../../config/prisma';
 
 // `body` here comes directly from Paystack.
 export const approvePayment = async (ctx: AppContext, body: any) => {
@@ -32,4 +35,63 @@ const extractParameters = (body: any) => {
 	}
 
 	return { reference, amount: Number(amount) };
+};
+
+// Common interface for the fields needed to process a card charge.
+// Both the webhook payload and the verify-transaction response satisfy this shape.
+export interface CardChargeData {
+	customer: { email: string };
+	authorization: {
+		authorization_code: string;
+		signature: string;
+		bin: string;
+		last4: string;
+		exp_month: string;
+		exp_year: string;
+		bank: string;
+		card_type: string;
+		country_code: string;
+	};
+	metadata?: { orderId?: string | null | undefined } | string | null;
+}
+
+export const processCardCharge = async (data: CardChargeData) => {
+	const card = await storeCard({
+		email: data.customer.email,
+		signature: data.authorization.signature,
+		authorizationCode: data.authorization.authorization_code,
+		bin: data.authorization.bin,
+		last4: data.authorization.last4,
+		expMonth: data.authorization.exp_month,
+		expYear: data.authorization.exp_year,
+		bank: data.authorization.bank,
+		cardType: data.authorization.card_type,
+		countryCode: data.authorization.country_code
+	});
+
+	if (typeof data.metadata === 'object' && data.metadata?.orderId) {
+		await transitionOrderToPending(data.metadata.orderId);
+	}
+
+	return card;
+};
+
+export const transitionOrderToPending = async (orderId: string) => {
+	try {
+		const order = await OrderData.getOrderById(prismaClient, orderId);
+
+		if (!order) {
+			console.warn(`Order not found for charge: ${orderId}`);
+		} else if (order.status !== OrderStatus.PaymentPending) {
+			console.warn(
+				`Order ${order.id} is not in the PaymentPending state. It is in the ${order.status} state.`
+			);
+		} else {
+			await OrderData.updateOrder(prismaClient, order.id, {
+				status: OrderStatus.Pending
+			});
+		}
+	} catch (error) {
+		console.error(error);
+	}
 };

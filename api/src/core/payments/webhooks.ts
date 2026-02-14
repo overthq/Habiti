@@ -1,15 +1,11 @@
-import { OrderStatus } from '../../generated/prisma/client';
-
-import { storeCard } from '../data/cards';
 import { markPayoutAsFailed, markPayoutAsSuccessful } from '../data/payouts';
-import { getOrderById, updateOrder } from '../data/orders';
-import prismaClient from '../../config/prisma';
 import {
 	ChargeSuccessPayload,
 	isTransferCharge,
 	TransferFailurePayload,
 	TransferSuccessPayload
 } from './validation';
+import { processCardCharge } from '../logic/payments';
 
 const SUPPORTED_EVENTS = [
 	'charge.success',
@@ -44,45 +40,9 @@ export const handleChargeSuccess = async (data: ChargeSuccessPayload) => {
 	if (isTransferCharge(data)) {
 		// TODO: Implement DVAs and regular transfer payments here
 		return;
-	} else {
-		await storeCard({
-			email: data.customer.email,
-			signature: data.authorization.signature,
-			authorizationCode: data.authorization.authorization_code,
-			bin: data.authorization.bin,
-			last4: data.authorization.last4,
-			expMonth: data.authorization.exp_month,
-			expYear: data.authorization.exp_year,
-			bank: data.authorization.bank,
-			cardType: data.authorization.card_type,
-			countryCode: data.authorization.country_code
-		});
 	}
-	// In both cases, we want to check if `orderId` is set in the metadata.
 
-	if (typeof data.metadata === 'object' && data.metadata?.orderId) {
-		await transitionOrderToPending(data.metadata.orderId);
-	}
-};
-
-export const transitionOrderToPending = async (orderId: string) => {
-	try {
-		const order = await getOrderById(prismaClient, orderId);
-
-		if (!order) {
-			console.warn(`Order not found for charge: ${orderId}`);
-		} else if (order.status !== OrderStatus.PaymentPending) {
-			console.warn(
-				`Order ${order.id} is not in the PaymentPending state. It is in the ${order.status} state.`
-			);
-		} else {
-			await updateOrder(prismaClient, order.id, {
-				status: OrderStatus.Pending
-			});
-		}
-	} catch (error) {
-		console.error(error);
-	}
+	await processCardCharge(data);
 };
 
 export const handleTransferSuccess = async (data: TransferSuccessPayload) => {

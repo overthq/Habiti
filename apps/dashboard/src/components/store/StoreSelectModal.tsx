@@ -11,10 +11,12 @@ import {
 	Typography,
 	useTheme
 } from '@habiti/components';
+import { useShallow } from 'zustand/react/shallow';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { useManagedStoresQuery } from '../../data/queries';
 import useStore from '../../state';
-import { useShallow } from 'zustand/react/shallow';
+import { AppStackParamList } from '../../types/navigation';
 
 interface StoreSelectModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
@@ -25,9 +27,12 @@ const StoreSelectModal: React.FC<StoreSelectModalProps> = ({ modalRef }) => {
 	const { data } = useManagedStoresQuery();
 	const { theme } = useTheme();
 	const setPreference = useStore(useShallow(state => state.setPreference));
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+
 	const handleCreateStore = () => {
 		modalRef.current?.dismiss();
-		// TODO: Allow the ability to create a new store, or just log the user out.
+
+		navigate('Modal.CreateStore');
 	};
 
 	const handleSelectStore = (storeId: string) => () => {

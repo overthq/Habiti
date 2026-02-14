@@ -1,12 +1,13 @@
-import { Button, FormInput, Screen, Spacer } from '@habiti/components';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Button, FormInput, Screen, Spacer } from '@habiti/components';
 
 import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useCreateStoreMutation } from '../data/mutations';
 import { useShallow } from 'zustand/react/shallow';
+import { useNavigation } from '@react-navigation/native';
 
 export interface CreateStoreFormValues {
 	name: string;
@@ -21,6 +22,7 @@ const CreateStore: React.FC = () => {
 	const setPreference = useStore(useShallow(state => state.setPreference));
 	const methods = useForm<CreateStoreFormValues>();
 	const { bottom } = useSafeAreaInsets();
+	const { goBack } = useNavigation();
 
 	useGoBack('x');
 
@@ -29,12 +31,13 @@ const CreateStore: React.FC = () => {
 			const { store } = await createStoreMutation.mutateAsync(values);
 
 			setPreference({ activeStore: store.id });
+			goBack();
 		},
 		[setPreference, createStoreMutation]
 	);
 
 	return (
-		<Screen style={{ padding: 16, paddingTop: 64, paddingBottom: bottom }}>
+		<Screen style={{ padding: 16, paddingBottom: bottom }}>
 			<FormInput
 				control={methods.control}
 				name='name'

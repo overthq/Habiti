@@ -6,11 +6,10 @@ import * as PayoutData from '../data/payouts';
 
 import { NotificationType } from '../notifications';
 
-import { ProductFilters } from '../../utils/queries';
+import { OrderFilters, ProductFilters } from '../../utils/queries';
 import { canManageStore } from './permissions';
 
 import { LogicError, LogicErrorCode } from './errors';
-import logger from '../../utils/logger';
 
 interface CreateStoreInput {
 	name: string;
@@ -28,7 +27,10 @@ export const createStore = async (ctx: AppContext, input: CreateStoreInput) => {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const store = await StoreData.createStore(ctx.prisma, input);
+	const store = await StoreData.createStore(ctx.prisma, {
+		...input,
+		userId: ctx.user.id
+	});
 
 	ctx.services.analytics.track({
 		event: 'store_created',
@@ -421,9 +423,9 @@ export const getStoreProducts = async (
 export const getStoreOrders = async (
 	ctx: AppContext,
 	storeId: string,
-	query: any
+	filters?: OrderFilters
 ) => {
-	return StoreData.getStoreOrders(ctx.prisma, storeId, query);
+	return StoreData.getStoreOrders(ctx.prisma, storeId, filters);
 };
 
 export const getStoreCustomer = async (
