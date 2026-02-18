@@ -241,6 +241,13 @@ export const getOrder = async (orderId: string) => {
 	return response.data;
 };
 
+export const confirmPickup = async (orderId: string) => {
+	const response = await api.post<{ order: Order }>(
+		`/users/current/orders/${orderId}/confirm-pickup`
+	);
+	return response.data;
+};
+
 export const createOrder = async (body: CreateOrderBody) => {
 	const response = await api.post<CreateOrderResponse>(
 		'/users/current/orders',

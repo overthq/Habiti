@@ -6,7 +6,10 @@ import { ArrowLeft } from 'lucide-react';
 
 import SignInPrompt from '@/components/SignInPrompt';
 import { useOrderQuery } from '@/data/queries';
-import { useCompleteOrderPaymentMutation } from '@/data/mutations';
+import {
+	useCompleteOrderPaymentMutation,
+	useConfirmPickupMutation
+} from '@/data/mutations';
 import { useAuthStore } from '@/state/auth-store';
 import { OrderStatus } from '@/data/types';
 
@@ -21,9 +24,14 @@ const OrderPage = () => {
 		enabled: isAuthenticated && Boolean(id)
 	});
 	const completePaymentMutation = useCompleteOrderPaymentMutation();
+	const confirmPickupMutation = useConfirmPickupMutation();
 
 	const handleCompletePayment = () => {
 		completePaymentMutation.mutate(id);
+	};
+
+	const handleConfirmPickup = () => {
+		confirmPickupMutation.mutate(id);
 	};
 
 	if (!isAuthenticated) {
@@ -134,6 +142,36 @@ const OrderPage = () => {
 						{completePaymentMutation.isPending
 							? 'Loading...'
 							: 'Complete Payment'}
+					</button>
+				</div>
+			)}
+
+			{order.status === OrderStatus.ReadyForPickup && (
+				<div className='border border-blue-500 bg-blue-50 rounded-md p-4 my-4'>
+					<p className='font-medium text-blue-800'>Ready for Pickup</p>
+					<p className='text-sm text-blue-700 mt-1'>
+						Your order is ready for pickup.
+					</p>
+					{order.store.addresses?.[0] && (
+						<div className='mt-2 text-sm text-blue-700'>
+							<p className='font-medium'>Pickup at:</p>
+							<p>{order.store.addresses[0].name}</p>
+							<p>{order.store.addresses[0].line1}</p>
+							{order.store.addresses[0].line2 && (
+								<p>{order.store.addresses[0].line2}</p>
+							)}
+							<p>
+								{order.store.addresses[0].city},{' '}
+								{order.store.addresses[0].state}
+							</p>
+						</div>
+					)}
+					<button
+						onClick={handleConfirmPickup}
+						disabled={confirmPickupMutation.isPending}
+						className='mt-3 w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-2 px-4 rounded-md transition-colors'
+					>
+						{confirmPickupMutation.isPending ? 'Loading...' : 'Confirm Pickup'}
 					</button>
 				</div>
 			)}

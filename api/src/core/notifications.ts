@@ -6,6 +6,7 @@ export enum NotificationType {
 	DeliveryConfirmed = 'DELIVERY_CONFIRMED',
 	OrderCancelled = 'ORDER_CANCELLED',
 	OrderCompleted = 'ORDER_COMPLETED',
+	ReadyForPickup = 'READY_FOR_PICKUP',
 	OrderStatusChanged = 'ORDER_STATUS_CHANGED'
 }
 
@@ -51,6 +52,10 @@ export const notificationTemplates: Record<
 	ORDER_COMPLETED: {
 		title: 'Order Completed',
 		body: data => `Your order #${data.orderId} has been completed`
+	},
+	READY_FOR_PICKUP: {
+		title: 'Order Ready for Pickup',
+		body: (data: any) => `Your order #${data.orderId} is ready for pickup`
 	},
 	ORDER_STATUS_CHANGED: {
 		title: 'Order Status Changed',

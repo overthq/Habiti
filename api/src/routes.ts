@@ -121,6 +121,13 @@ currentStoreRouter.delete(
 	'/categories/:id',
 	CurrentStoreController.deleteCategory
 );
+currentStoreRouter.get('/addresses', CurrentStoreController.getAddresses);
+currentStoreRouter.post('/addresses', CurrentStoreController.createAddress);
+currentStoreRouter.put('/addresses/:id', CurrentStoreController.updateAddress);
+currentStoreRouter.delete(
+	'/addresses/:id',
+	CurrentStoreController.deleteAddress
+);
 
 router.use('/stores/current', currentStoreRouter);
 
@@ -167,6 +174,10 @@ currentUserRouter.post(
 	'/orders',
 	validateBody(createOrderSchema),
 	CurrentUserController.createOrder
+);
+currentUserRouter.post(
+	'/orders/:id/confirm-pickup',
+	CurrentUserController.confirmPickup
 );
 currentUserRouter.post('/cards/authorize', CurrentUserController.authorizeCard);
 currentUserRouter.delete('/cards/:cardId', CurrentUserController.deleteCard);

@@ -8,7 +8,8 @@
 		"dev": "bun --watch src/index.ts",
 		"build": "tsc && bun sentry:sourcemaps",
 		"start": "bun dist/index",
-		"sentry:sourcemaps": "sentry-cli sourcemaps inject --org habiti --project habiti-api ./dist && sentry-cli sourcemaps upload --org habiti --project habiti-api ./dist"
+		"sentry:sourcemaps": "sentry-cli sourcemaps inject --org habiti --project habiti-api ./dist && sentry-cli sourcemaps upload --org habiti --project habiti-api ./dist",
+		"complete-stale-pickups": "bun src/scripts/complete-stale-pickups.ts"
 	},
 	"dependencies": {
 		"@apollo/server": "^4.11.3",

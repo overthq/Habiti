@@ -18,7 +18,10 @@ import {
 	deleteProductCategory,
 	updateProductCategory,
 	updateProductCategories,
-	verifyBankAccount
+	verifyBankAccount,
+	createAddress,
+	updateAddress,
+	deleteAddress
 } from './requests';
 import env from '../../env';
 import {
@@ -26,11 +29,13 @@ import {
 	CreateProductBody,
 	CreateProductCategoryBody,
 	CreateStoreBody,
+	CreateAddressBody,
 	UpdateCurrentStoreBody,
 	UpdateOrderArgs,
 	UpdateProductArgs,
 	UpdateProductCategoriesArgs,
 	UpdateProductCategoryArgs,
+	UpdateAddressArgs,
 	VerifyBankAccountBody
 } from './types';
 
@@ -282,5 +287,46 @@ export const useCreatePayoutMutation = () => {
 export const useVerifyBankAccountMutation = () => {
 	return useMutation({
 		mutationFn: (body: VerifyBankAccountBody) => verifyBankAccount(body)
+	});
+};
+
+export const useCreateAddressMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (body: CreateAddressBody) => createAddress(body),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['stores', 'current', 'addresses']
+			});
+		}
+	});
+};
+
+export const useUpdateAddressMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (args: UpdateAddressArgs) => {
+			return updateAddress(args.addressId, args.body);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['stores', 'current', 'addresses']
+			});
+		}
+	});
+};
+
+export const useDeleteAddressMutation = (addressId: string) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: () => deleteAddress(addressId),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['stores', 'current', 'addresses']
+			});
+		}
 	});
 };

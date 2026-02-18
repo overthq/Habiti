@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
-import { Button, Spacer } from '@habiti/components';
+import { Button, Spacer, Typography } from '@habiti/components';
 
 import { useUpdateOrderMutation } from '../../data/mutations';
 import { OrderStatus } from '../../data/types';
@@ -13,14 +13,14 @@ interface OrderActionsProps {
 const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 	const updateOrderMutation = useUpdateOrderMutation();
 
-	const onConfirmFulfill = () => {
+	const onConfirmReadyForPickup = () => {
 		Alert.alert(
-			'Fulfill order',
-			'Are you sure you want to fulfill this order',
+			'Ready for pickup',
+			'Mark this order as ready for customer pickup?',
 			[
 				{
-					text: 'Fulfill',
-					onPress: updateOrderStatus(OrderStatus.Completed)
+					text: 'Confirm',
+					onPress: updateOrderStatus(OrderStatus.ReadyForPickup)
 				},
 				{ text: 'Cancel', style: 'cancel' }
 			]
@@ -50,15 +50,20 @@ const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 
 	return (
 		<View style={styles.container}>
-			{status !== OrderStatus.Completed && (
+			{status === OrderStatus.Pending && (
 				<Button
-					text='Mark as fulfilled'
+					text='Mark as ready for pickup'
 					loading={updateOrderMutation.isPending}
-					onPress={onConfirmFulfill}
+					onPress={onConfirmReadyForPickup}
 				/>
 			)}
+			{status === OrderStatus.ReadyForPickup && (
+				<Typography variant='secondary' style={styles.awaitingText}>
+					Awaiting customer pickup
+				</Typography>
+			)}
 			<Spacer y={8} />
-			{status !== OrderStatus.Cancelled && (
+			{status !== OrderStatus.Cancelled && status !== OrderStatus.Completed && (
 				<Button
 					loading={updateOrderMutation.isPending}
 					variant='destructive'
@@ -76,6 +81,10 @@ const styles = StyleSheet.create({
 	},
 	button: {
 		marginBottom: 8
+	},
+	awaitingText: {
+		textAlign: 'center',
+		paddingVertical: 8
 	}
 });
 

@@ -9,6 +9,7 @@ import { AppContext } from '../../utils/context';
 import { updateStoreRevenue } from '../data/stores';
 
 const NotificationTypeByOrderStatus = {
+	[OrderStatus.ReadyForPickup]: NotificationType.ReadyForPickup,
 	[OrderStatus.Cancelled]: NotificationType.OrderCancelled,
 	[OrderStatus.Completed]: NotificationType.OrderCompleted
 } as const;
@@ -103,7 +104,8 @@ export const updateOrderHooks = (
 	if (
 		args.pushToken &&
 		(args.status === OrderStatus.Completed ||
-			args.status === OrderStatus.Cancelled)
+			args.status === OrderStatus.Cancelled ||
+			args.status === OrderStatus.ReadyForPickup)
 	) {
 		ctx.services.notifications.queueNotification({
 			type: NotificationTypeByOrderStatus[args.status],

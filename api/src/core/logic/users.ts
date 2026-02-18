@@ -186,7 +186,7 @@ export const getDeliveryAddresses = (ctx: AppContext) => {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	return AddressData.getDeliveryAddressesByUserId(ctx.prisma, ctx.user.id);
+	return AddressData.getUserAddresses(ctx.prisma, ctx.user.id);
 };
 
 export const getUserByEmail = (ctx: AppContext, email: string) => {

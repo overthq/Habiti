@@ -25,7 +25,9 @@ import {
 	StoreProductCategory,
 	VerifyBankAccountBody,
 	StoreOverview,
-	CustomerInfo
+	CustomerInfo,
+	Address,
+	CreateAddressBody
 } from './types';
 
 const api = axios.create({
@@ -293,4 +295,33 @@ export const getCustomer = async (userId: string) => {
 		`/stores/current/customers/${userId}`
 	);
 	return response.data;
+};
+
+// Addresses
+
+export const getAddresses = async () => {
+	const response = await api.get<{ addresses: Address[] }>(
+		'/stores/current/addresses'
+	);
+	return response.data;
+};
+
+export const createAddress = async (body: CreateAddressBody) => {
+	const response = await api.post('/stores/current/addresses', body);
+	return response.data;
+};
+
+export const updateAddress = async (
+	addressId: string,
+	body: Partial<CreateAddressBody>
+) => {
+	const response = await api.put(
+		`/stores/current/addresses/${addressId}`,
+		body
+	);
+	return response.data;
+};
+
+export const deleteAddress = async (addressId: string) => {
+	await api.delete(`/stores/current/addresses/${addressId}`);
 };

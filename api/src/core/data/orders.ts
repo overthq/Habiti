@@ -168,7 +168,7 @@ export const getOrderById = async (prisma: PrismaClient, orderId: string) => {
 		where: { id: orderId },
 		include: {
 			store: {
-				include: { image: true }
+				include: { image: true, addresses: { take: 1 } }
 			},
 			user: true,
 			products: {
@@ -204,7 +204,7 @@ export const getOrdersByUserId = async (
 	const orders = await prisma.order.findMany({
 		where: { userId },
 		include: {
-			store: { include: { image: true } },
+			store: { include: { image: true, addresses: { take: 1 } } },
 			products: {
 				include: {
 					product: { include: { images: true } }

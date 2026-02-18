@@ -7,7 +7,8 @@ const StatusColorMap = {
 	[OrderStatus.Cancelled]: 'danger',
 	[OrderStatus.Completed]: 'success',
 	[OrderStatus.Pending]: 'warning',
-	[OrderStatus.PaymentPending]: 'warning'
+	[OrderStatus.PaymentPending]: 'warning',
+	[OrderStatus.ReadyForPickup]: 'warning'
 } as const;
 
 interface StatusPillProps {

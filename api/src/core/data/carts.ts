@@ -24,7 +24,7 @@ export const getCartById = async (prisma: PrismaClient, cartId: string) => {
 				include: { product: { include: { images: true } } },
 				orderBy: { product: { name: 'asc' } }
 			},
-			store: { include: { image: true } },
+			store: { include: { image: true, addresses: { take: 1 } } },
 			user: { include: { cards: true } }
 		}
 	});

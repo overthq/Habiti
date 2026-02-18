@@ -1,66 +1,82 @@
 import { PrismaClient } from '../../generated/prisma/client';
 
-interface CreateDeliveryAddressParams {
-	userId: string;
+interface AddressFields {
 	name: string;
+	line1: string;
+	line2?: string;
+	city: string;
+	state: string;
+	country: string;
+	postcode?: string;
+	latitude?: number;
+	longitude?: number;
 }
 
-export const createDeliveryAddress = async (
-	prisma: PrismaClient,
-	params: CreateDeliveryAddressParams
-) => {
-	const address = await prisma.deliveryAddress.create({
-		data: params
-	});
+interface CreateUserAddressParams extends AddressFields {
+	userId: string;
+}
 
-	return address;
+export const createUserAddress = async (
+	prisma: PrismaClient,
+	params: CreateUserAddressParams
+) => {
+	return prisma.address.create({ data: params });
 };
 
-interface UpdateDeliveryAddressParams {
-	name?: string;
-}
-
-export const updateDeliveryAddress = async (
+export const updateAddress = async (
 	prisma: PrismaClient,
 	addressId: string,
-	params: UpdateDeliveryAddressParams
+	params: Partial<AddressFields>
 ) => {
-	const address = await prisma.deliveryAddress.update({
+	return prisma.address.update({
 		where: { id: addressId },
 		data: params
 	});
-
-	return address;
 };
 
-export const getDeliveryAddressById = async (
+export const getAddressById = async (
 	prisma: PrismaClient,
 	addressId: string
 ) => {
-	const address = await prisma.deliveryAddress.findUnique({
-		where: { id: addressId }
-	});
-
-	return address;
+	return prisma.address.findUnique({ where: { id: addressId } });
 };
 
-export const getDeliveryAddressesByUserId = async (
+export const getUserAddresses = async (
 	prisma: PrismaClient,
 	userId: string
 ) => {
-	const addresses = await prisma.deliveryAddress.findMany({
+	return prisma.address.findMany({
 		where: { userId },
 		orderBy: { createdAt: 'desc' }
 	});
-
-	return addresses;
 };
 
-export const deleteDeliveryAddress = async (
+export const deleteAddress = async (
 	prisma: PrismaClient,
 	addressId: string
 ) => {
-	await prisma.deliveryAddress.delete({
-		where: { id: addressId }
+	await prisma.address.delete({ where: { id: addressId } });
+};
+
+// Store address functions
+
+interface CreateStoreAddressParams extends AddressFields {
+	storeId: string;
+}
+
+export const createStoreAddress = async (
+	prisma: PrismaClient,
+	params: CreateStoreAddressParams
+) => {
+	return prisma.address.create({ data: params });
+};
+
+export const getStoreAddresses = async (
+	prisma: PrismaClient,
+	storeId: string
+) => {
+	return prisma.address.findMany({
+		where: { storeId },
+		orderBy: { createdAt: 'desc' }
 	});
 };

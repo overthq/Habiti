@@ -16,6 +16,7 @@ import {
 	verifyCode,
 	deleteCurrentUser,
 	completeOrderPayment,
+	confirmPickup,
 	deleteCard
 } from './requests';
 
@@ -177,6 +178,22 @@ export const useCompleteOrderPaymentMutation = () => {
 		},
 		onError: () => {
 			toast.error('Failed to initiate payment');
+		}
+	});
+};
+
+export const useConfirmPickupMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (orderId: string) => confirmPickup(orderId),
+		onSuccess: data => {
+			queryClient.invalidateQueries({ queryKey: ['orders'] });
+			queryClient.setQueryData(['orders', data.order.id], data);
+			toast.success('Pickup confirmed');
+		},
+		onError: () => {
+			toast.error('Failed to confirm pickup');
 		}
 	});
 };
