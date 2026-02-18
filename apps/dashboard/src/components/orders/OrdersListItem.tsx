@@ -4,15 +4,8 @@ import { Typography, Row, Spacer } from '@habiti/components';
 import { formatNaira } from '@habiti/common';
 
 import { relativeDate } from '../../utils/date';
-import { Order, OrderStatus } from '../../data/types';
-
-const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
-	[OrderStatus.Pending]: 'Pending',
-	[OrderStatus.PaymentPending]: 'Payment Pending',
-	[OrderStatus.ReadyForPickup]: 'Ready for Pickup',
-	[OrderStatus.Completed]: 'Completed',
-	[OrderStatus.Cancelled]: 'Cancelled'
-};
+import { Order } from '../../data/types';
+import { ORDER_STATUS_LABELS } from '../../utils/orderStatus';
 
 interface OrdersListItemProps {
 	order: Order;
