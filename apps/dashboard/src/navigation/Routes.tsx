@@ -27,6 +27,9 @@ import AddProduct from '../screens/AddProduct';
 import CreateStore from '../screens/CreateStore';
 import CustomerInfo from '../screens/CustomerInfo';
 import EditCategory from '../screens/EditCategory';
+import Addresses from '../screens/Addresses';
+import AddAddress from '../screens/AddAddress';
+import EditAddress from '../screens/EditAddress';
 import AddPayoutAccount from '../screens/AddPayoutAccount';
 import Appearance from '../screens/Appearance';
 import Categories from '../screens/Categories';
@@ -217,6 +220,16 @@ const ModalGroup = (
 			options={{ headerTitle: 'Edit Category' }}
 		/>
 		<AppStack.Screen
+			name='AddAddress'
+			component={AddAddress}
+			options={{ headerTitle: 'Add Address' }}
+		/>
+		<AppStack.Screen
+			name='Modals.EditAddress'
+			component={EditAddress}
+			options={{ headerTitle: 'Edit Address' }}
+		/>
+		<AppStack.Screen
 			name='AddManager'
 			component={AddManager}
 			options={{ headerTitle: 'Add Manager' }}
@@ -251,6 +264,7 @@ const StoreStackNavigator = () => {
 			<StoreStack.Screen name='Managers' component={Managers} />
 			<StoreStack.Screen name='Payouts' component={StorePayouts} />
 			<StoreStack.Screen name='Categories' component={Categories} />
+			<StoreStack.Screen name='Addresses' component={Addresses} />
 			<StoreStack.Screen name='Settings' component={StoreSettings} />
 			<StoreStack.Screen name='Appearance' component={Appearance} />
 		</StoreStack.Navigator>

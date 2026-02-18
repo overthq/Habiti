@@ -15,6 +15,7 @@ export interface Store {
 	followedByUser: boolean;
 	categories: StoreProductCategory[];
 	unlisted: boolean;
+	addresses?: Address[];
 }
 
 export interface Image {
@@ -119,6 +120,17 @@ export interface ProductReview {
 	product: Product;
 }
 
+export interface Address {
+	id: string;
+	name: string;
+	line1: string;
+	line2?: string;
+	city: string;
+	state: string;
+	country: string;
+	postcode?: string;
+}
+
 export interface DeliveryAddress {
 	id: string;
 	name: string;
@@ -155,6 +167,7 @@ export interface ProductCategory {
 
 export enum OrderStatus {
 	Pending = 'Pending',
+	ReadyForPickup = 'ReadyForPickup',
 	Cancelled = 'Cancelled',
 	Completed = 'Completed',
 	PaymentPending = 'PaymentPending'

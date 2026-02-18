@@ -5,7 +5,7 @@ import { hydrateQuery } from '../utils/queries';
 import { getAppContext } from '../utils/context';
 
 // Re-exports from other controllers (handlers that only use req.params/req.body)
-export { getOrderById, createOrder } from './orders';
+export { getOrderById, createOrder, confirmPickup } from './orders';
 export { getCartById } from './carts';
 export { authorizeCard, deleteCard } from './cards';
 

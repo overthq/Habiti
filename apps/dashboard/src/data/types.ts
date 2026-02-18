@@ -250,6 +250,7 @@ export interface ProductReview {
 export enum OrderStatus {
 	Cancelled = 'Cancelled',
 	Pending = 'Pending',
+	ReadyForPickup = 'ReadyForPickup',
 	PaymentPending = 'PaymentPending',
 	Completed = 'Completed'
 }
@@ -353,6 +354,39 @@ export interface UpdateProductCategoryArgs {
 		name?: string;
 		description?: string;
 	};
+}
+
+export interface Address {
+	id: string;
+	name: string;
+	line1: string;
+	line2?: string;
+	city: string;
+	state: string;
+	country: string;
+	postcode?: string;
+	latitude?: number;
+	longitude?: number;
+	storeId: string;
+	createdAt: string;
+	updatedAt: string;
+}
+
+export interface CreateAddressBody {
+	name: string;
+	line1: string;
+	line2?: string;
+	city: string;
+	state: string;
+	country: string;
+	postcode?: string;
+	latitude?: number;
+	longitude?: number;
+}
+
+export interface UpdateAddressArgs {
+	addressId: string;
+	body: Partial<CreateAddressBody>;
 }
 
 export interface VerifyBankAccountBody {

@@ -153,6 +153,30 @@ const CartMain = () => {
 
 			<Separator className='my-4' />
 
+			{cart.store.addresses?.[0] && (
+				<>
+					<div className='my-4'>
+						<h2 className='font-medium mb-2'>Pickup Location</h2>
+						<div className='border rounded-md p-4 bg-muted'>
+							<p className='font-medium'>{cart.store.addresses[0].name}</p>
+							<p className='text-muted-foreground text-sm'>
+								{cart.store.addresses[0].line1}
+							</p>
+							{cart.store.addresses[0].line2 && (
+								<p className='text-muted-foreground text-sm'>
+									{cart.store.addresses[0].line2}
+								</p>
+							)}
+							<p className='text-muted-foreground text-sm'>
+								{cart.store.addresses[0].city}, {cart.store.addresses[0].state}
+							</p>
+						</div>
+					</div>
+
+					<Separator className='my-4' />
+				</>
+			)}
+
 			<CardSelector />
 
 			<Separator className='my-4' />

@@ -9,6 +9,7 @@ import { getAppContext } from '../utils/context';
 import * as StoreLogic from '../core/logic/stores';
 import * as ProductLogic from '../core/logic/products';
 import * as PayoutLogic from '../core/logic/payouts';
+import * as AddressLogic from '../core/logic/addresses';
 
 // Re-exports from other controllers (handlers that only use req.params/req.body)
 export {
@@ -279,6 +280,108 @@ export const getCategories = async (
 			ctx.storeId
 		);
 		return res.json({ categories });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const getAddresses = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const ctx = getAppContext(req);
+
+	try {
+		const addresses = await AddressLogic.getStoreAddresses(ctx);
+		return res.json({ addresses });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const createAddress = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const ctx = getAppContext(req);
+	const {
+		name,
+		line1,
+		line2,
+		city,
+		state,
+		country,
+		postcode,
+		latitude,
+		longitude
+	} = req.body;
+
+	try {
+		const address = await AddressLogic.createStoreAddress(ctx, {
+			name,
+			line1,
+			line2,
+			city,
+			state,
+			country,
+			postcode,
+			latitude,
+			longitude
+		});
+		return res.status(201).json({ address });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const updateAddress = async (
+	req: Request<{ id: string }>,
+	res: Response,
+	next: NextFunction
+) => {
+	const ctx = getAppContext(req);
+	const {
+		name,
+		line1,
+		line2,
+		city,
+		state,
+		country,
+		postcode,
+		latitude,
+		longitude
+	} = req.body;
+
+	try {
+		const address = await AddressLogic.editStoreAddress(ctx, req.params.id, {
+			name,
+			line1,
+			line2,
+			city,
+			state,
+			country,
+			postcode,
+			latitude,
+			longitude
+		});
+		return res.json({ address });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const deleteAddress = async (
+	req: Request<{ id: string }>,
+	res: Response,
+	next: NextFunction
+) => {
+	const ctx = getAppContext(req);
+
+	try {
+		await AddressLogic.deleteStoreAddress(ctx, req.params.id);
+		return res.status(204).end();
 	} catch (error) {
 		return next(error);
 	}

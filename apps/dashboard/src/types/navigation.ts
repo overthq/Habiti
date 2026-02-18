@@ -20,6 +20,17 @@ export type AppStackParamList = {
 		name: string;
 		description: string;
 	};
+	AddAddress: undefined;
+	'Modals.EditAddress': {
+		addressId: string;
+		name: string;
+		line1: string;
+		line2?: string;
+		city: string;
+		state: string;
+		country: string;
+		postcode?: string;
+	};
 	AddManager: undefined;
 	'Modal.CreateStore': undefined;
 	'Modal.AddPayoutAccount': undefined;
@@ -66,6 +77,7 @@ export type StoreStackParamList = {
 	Payouts: undefined;
 	Managers: undefined;
 	Categories: undefined;
+	Addresses: undefined;
 	Settings: undefined;
 	Appearance: undefined;
 };

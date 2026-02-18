@@ -56,6 +56,21 @@ export const getOrderById = async (
 	}
 };
 
+export const confirmPickup = async (
+	req: Request<{ id: string }>,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const { id } = req.params;
+		const ctx = getAppContext(req);
+		const order = await OrderLogic.confirmPickup(ctx, id);
+		return res.json({ order });
+	} catch (error) {
+		return next(error);
+	}
+};
+
 export const updateOrder = async (
 	req: Request<{ id: string }>,
 	res: Response,

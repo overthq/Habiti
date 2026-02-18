@@ -55,6 +55,7 @@ const StoreMenu: React.FC<StoreMenuProps> = ({ store }) => {
 			<StoreMenuRow title='Edit Store' onPress={handleNavigate('Edit Store')} />
 			<StoreMenuRow title='Payouts' onPress={handleNavigate('Payouts')} />
 			<StoreMenuRow title='Categories' onPress={handleNavigate('Categories')} />
+			<StoreMenuRow title='Addresses' onPress={handleNavigate('Addresses')} />
 			<StoreMenuRow title='Settings' onPress={handleNavigate('Settings')} />
 			<StoreMenuRow title='Appearance' onPress={handleNavigate('Appearance')} />
 			<Separator style={{ marginHorizontal: 16, marginVertical: 8 }} />

@@ -13,7 +13,8 @@ import {
 	getCategories,
 	getStoreManagers,
 	getStoreOverview,
-	getCustomer
+	getCustomer,
+	getAddresses
 } from './requests';
 import { OrderFilters, ProductFilters } from './types';
 
@@ -118,5 +119,12 @@ export const useCustomerInfoQuery = (userId: string) => {
 		queryKey: ['stores', 'current', 'customers', userId],
 		queryFn: () => getCustomer(userId),
 		enabled: !!userId
+	});
+};
+
+export const useAddressesQuery = () => {
+	return useQuery({
+		queryKey: ['stores', 'current', 'addresses'],
+		queryFn: () => getAddresses()
 	});
 };

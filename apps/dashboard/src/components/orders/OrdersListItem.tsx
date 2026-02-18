@@ -4,7 +4,15 @@ import { Typography, Row, Spacer } from '@habiti/components';
 import { formatNaira } from '@habiti/common';
 
 import { relativeDate } from '../../utils/date';
-import { Order } from '../../data/types';
+import { Order, OrderStatus } from '../../data/types';
+
+const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
+	[OrderStatus.Pending]: 'Pending',
+	[OrderStatus.PaymentPending]: 'Payment Pending',
+	[OrderStatus.ReadyForPickup]: 'Ready for Pickup',
+	[OrderStatus.Completed]: 'Completed',
+	[OrderStatus.Cancelled]: 'Cancelled'
+};
 
 interface OrdersListItemProps {
 	order: Order;
@@ -18,7 +26,7 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
 				<Typography>{order.user.name}</Typography>
 				<Spacer y={2} />
 				<Typography size='small' variant='secondary' style={styles.date}>
-					{order.status} · {relativeDate(order.createdAt)}
+					{ORDER_STATUS_LABELS[order.status]} · {relativeDate(order.createdAt)}
 				</Typography>
 			</View>
 			<Typography style={styles.total}>{formatNaira(order.total)}</Typography>

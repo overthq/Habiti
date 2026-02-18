@@ -183,7 +183,11 @@ const validateStatusTransition = (
 ): void => {
 	const validTransitions: Record<OrderStatus, OrderStatus[]> = {
 		[OrderStatus.PaymentPending]: [OrderStatus.Pending, OrderStatus.Cancelled],
-		[OrderStatus.Pending]: [OrderStatus.Completed, OrderStatus.Cancelled],
+		[OrderStatus.Pending]: [OrderStatus.ReadyForPickup, OrderStatus.Cancelled],
+		[OrderStatus.ReadyForPickup]: [
+			OrderStatus.Completed,
+			OrderStatus.Cancelled
+		],
 		[OrderStatus.Completed]: [],
 		[OrderStatus.Cancelled]: []
 	} as const;
@@ -221,6 +225,43 @@ export const getOrderById = async (ctx: AppContext, orderId: string) => {
 	});
 
 	return order;
+};
+
+export const confirmPickup = async (ctx: AppContext, orderId: string) => {
+	if (!ctx.user?.id) {
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
+	}
+
+	const currentOrder = await OrderData.getOrderByIdWithStore(
+		ctx.prisma,
+		orderId
+	);
+
+	if (!currentOrder) {
+		throw new LogicError(LogicErrorCode.OrderNotFound);
+	}
+
+	if (currentOrder.userId !== ctx.user.id) {
+		throw new LogicError(LogicErrorCode.Forbidden);
+	}
+
+	validateStatusTransition(currentOrder.status, OrderStatus.Completed);
+
+	const updatedOrder = await OrderData.updateOrder(ctx.prisma, orderId, {
+		status: OrderStatus.Completed
+	});
+
+	updateOrderHooks(ctx, {
+		customerName: ctx.user.name,
+		pushToken: updatedOrder.user.pushTokens[0] ?? undefined,
+		orderId: updatedOrder.id,
+		userId: ctx.user.id,
+		storeId: currentOrder.storeId,
+		amount: updatedOrder.total,
+		status: OrderStatus.Completed
+	});
+
+	return updatedOrder;
 };
 
 export const getOrders = async (ctx: AppContext, filters?: OrderFilters) => {
