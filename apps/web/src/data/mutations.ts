@@ -132,9 +132,6 @@ export const useCreateOrderMutation = () => {
 		mutationFn: (body: CreateOrderBody) => createOrderWithPayment(body),
 		onSuccess: data => {
 			queryClient.invalidateQueries({ queryKey: ['orders'] });
-			queryClient.setQueryData(['orders', data.order.id], {
-				order: data.order
-			});
 			router.push(`/orders/${data.order.id}`);
 		},
 		onError: () => {
@@ -172,9 +169,8 @@ export const useCompleteOrderPaymentMutation = () => {
 
 	return useMutation({
 		mutationFn: (orderId: string) => completeOrderPayment(orderId),
-		onSuccess: data => {
+		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['orders'] });
-			queryClient.setQueryData(['orders', data.order.id], data);
 		},
 		onError: () => {
 			toast.error('Failed to initiate payment');
@@ -189,7 +185,6 @@ export const useConfirmPickupMutation = () => {
 		mutationFn: (orderId: string) => confirmPickup(orderId),
 		onSuccess: data => {
 			queryClient.invalidateQueries({ queryKey: ['orders'] });
-			queryClient.setQueryData(['orders', data.order.id], data);
 			toast.success('Pickup confirmed');
 		},
 		onError: () => {
