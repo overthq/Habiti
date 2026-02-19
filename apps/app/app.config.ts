@@ -63,5 +63,17 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 			projectId: 'f09782f6-8048-4ad4-8ff1-3fb7a65fbe48'
 		}
 	},
-	plugins: ['expo-notifications']
+	plugins: [
+		'expo-notifications',
+		[
+			'@sentry/react-native',
+			{
+				url: 'https://sentry.io/',
+				note: 'Use SENTRY_AUTH_TOKEN env to authenticate with Sentry.',
+				project: 'habiti-app',
+				organization: 'habiti'
+			}
+		],
+		'expo-secure-store'
+	]
 });

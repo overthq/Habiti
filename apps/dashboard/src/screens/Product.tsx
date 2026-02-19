@@ -6,11 +6,11 @@ import {
 	useNavigation,
 	NavigationProp
 } from '@react-navigation/native';
+import { HeaderButton } from '@react-navigation/elements';
 
-import useGoBack from '../hooks/useGoBack';
 import { useProductQuery } from '../data/queries';
 import { ProductStackParamList } from '../types/navigation';
-import { Spacer, TextButton, useTheme } from '@habiti/components';
+import { Spacer, Typography, useTheme } from '@habiti/components';
 import ProductDetails from '../components/product/ProductDetails';
 import ProductMedia from '../components/product/ProductMedia';
 import { ScrollableScreen } from '@habiti/components';
@@ -30,13 +30,10 @@ const Product: React.FC = () => {
 	const { refreshing, refresh } = useRefresh({ fetching: isLoading, refetch });
 	const { theme } = useTheme();
 
-	useGoBack();
-
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<TextButton
-					variant='secondary'
+				<HeaderButton
 					onPress={() =>
 						navigate('Product.Details', {
 							productId,
@@ -45,8 +42,8 @@ const Product: React.FC = () => {
 						})
 					}
 				>
-					Edit
-				</TextButton>
+					<Typography>Edit</Typography>
+				</HeaderButton>
 			)
 		});
 	}, [data?.product?.name, data?.product?.description, productId, navigate]);

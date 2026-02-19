@@ -264,7 +264,13 @@ const StoreStackNavigator = () => {
 			<StoreStack.Screen name='Managers' component={Managers} />
 			<StoreStack.Screen name='Payouts' component={StorePayouts} />
 			<StoreStack.Screen name='Categories' component={Categories} />
-			<StoreStack.Screen name='Addresses' component={Addresses} />
+			<StoreStack.Screen
+				name='Addresses'
+				component={Addresses}
+				options={{
+					headerBackButtonDisplayMode: 'minimal'
+				}}
+			/>
 			<StoreStack.Screen name='Settings' component={StoreSettings} />
 			<StoreStack.Screen name='Appearance' component={Appearance} />
 		</StoreStack.Navigator>
