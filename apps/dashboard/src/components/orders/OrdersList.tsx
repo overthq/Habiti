@@ -31,7 +31,6 @@ const OrdersList = () => {
 				keyExtractor={i => i.id}
 				data={orders}
 				renderItem={renderOrder}
-				estimatedItemSize={60}
 				contentContainerStyle={{ backgroundColor: theme.screen.background }}
 				ListEmptyComponent={
 					<View style={styles.empty}>

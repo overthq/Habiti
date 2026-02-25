@@ -30,7 +30,6 @@ const StoresView: React.FC = () => {
 			renderItem={({ item }) => (
 				<StoreResultRow store={item} onPress={handleStorePress(item.id)} />
 			)}
-			estimatedItemSize={100}
 			keyboardShouldPersistTaps='handled'
 		/>
 	);
@@ -58,7 +57,6 @@ const ProductsView: React.FC = () => {
 					onPress={handleProductPress(item.node.id)}
 				/>
 			)}
-			estimatedItemSize={100}
 		/>
 	);
 };

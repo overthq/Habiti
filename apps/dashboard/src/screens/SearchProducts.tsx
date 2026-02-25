@@ -105,7 +105,6 @@ const SearchProducts = () => {
 					keyExtractor={p => p.id}
 					showsVerticalScrollIndicator={false}
 					renderItem={renderProduct}
-					estimatedItemSize={60}
 				/>
 			)}
 		</Screen>

@@ -88,7 +88,6 @@ const Payouts = () => {
 		<Screen style={styles.container}>
 			<FlashList
 				contentContainerStyle={{ backgroundColor: theme.screen.background }}
-				estimatedItemSize={100}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}
