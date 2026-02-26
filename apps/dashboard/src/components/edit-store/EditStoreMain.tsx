@@ -1,9 +1,16 @@
 import React from 'react';
-import { StyleSheet, View, ActivityIndicator, Pressable } from 'react-native';
+import { StyleSheet, Pressable } from 'react-native';
 import { useForm } from 'react-hook-form';
-import { Avatar, FormInput, Screen, TextButton } from '@habiti/components';
+import {
+	Avatar,
+	FormInput,
+	Screen,
+	TextButton,
+	Typography
+} from '@habiti/components';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
+import { HeaderButton } from '@react-navigation/elements';
 
 import { uploadImage } from '../../data/requests';
 import { Store } from '../../data/types';
@@ -44,18 +51,14 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<View>
-					{updateStoreMutation.isPending ? (
-						<ActivityIndicator />
-					) : (
-						<TextButton
-							onPress={formMethods.handleSubmit(onSubmit)}
-							disabled={!formMethods.formState.isDirty}
-						>
-							Save
-						</TextButton>
-					)}
-				</View>
+				<HeaderButton
+					onPress={formMethods.handleSubmit(onSubmit)}
+					disabled={
+						!formMethods.formState.isDirty || updateStoreMutation.isPending
+					}
+				>
+					<Typography>Save</Typography>
+				</HeaderButton>
 			)
 		});
 	}, [updateStoreMutation.isPending, formMethods.formState.isDirty]);

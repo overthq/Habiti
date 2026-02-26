@@ -12,6 +12,7 @@ import {
 } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
+import { HeaderButton } from '@react-navigation/elements';
 
 import PayoutRow from '../components/payouts/PayoutRow';
 import RevenueBar from '../components/payouts/RevenueBar';
@@ -73,9 +74,9 @@ const Payouts = () => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<Pressable onPress={handleNewPayout}>
+				<HeaderButton onPress={handleNewPayout}>
 					<Icon name='plus' />
-				</Pressable>
+				</HeaderButton>
 			)
 		});
 	}, []);

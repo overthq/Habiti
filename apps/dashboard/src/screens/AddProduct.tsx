@@ -1,7 +1,8 @@
 import React from 'react';
-import { FormInput, Screen, Spacer, TextButton } from '@habiti/components';
+import { FormInput, Screen, Spacer, Typography } from '@habiti/components';
 import { useNavigation } from '@react-navigation/native';
 import { FormProvider, useForm } from 'react-hook-form';
+import { HeaderButton } from '@react-navigation/elements';
 import { z } from 'zod';
 
 import useGoBack from '../hooks/useGoBack';
@@ -56,12 +57,12 @@ const AddProduct: React.FC = () => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<TextButton
+				<HeaderButton
 					disabled={createProductMutation.isPending}
 					onPress={formMethods.handleSubmit(onSubmit)}
 				>
-					Save
-				</TextButton>
+					<Typography>Save</Typography>
+				</HeaderButton>
 			)
 		});
 	}, [createProductMutation.isPending]);

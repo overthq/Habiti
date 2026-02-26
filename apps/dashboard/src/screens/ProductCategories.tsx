@@ -1,17 +1,20 @@
 import React from 'react';
 import { Screen, Checkbox, Typography, TextButton } from '@habiti/components';
 import { View, StyleSheet } from 'react-native';
-import { useCategoriesQuery } from '../data/queries';
-import { useUpdateProductCategoriesMutation } from '../data/mutations';
-import { AppStackParamList, ProductStackParamList } from '../types/navigation';
+import { HeaderButton } from '@react-navigation/elements';
 import {
 	NavigationProp,
 	RouteProp,
 	useNavigation,
 	useRoute
 } from '@react-navigation/native';
-import useGoBack from '../hooks/useGoBack';
+
 import FAB from '../components/products/FAB';
+
+import { useCategoriesQuery } from '../data/queries';
+import { useUpdateProductCategoriesMutation } from '../data/mutations';
+import { AppStackParamList, ProductStackParamList } from '../types/navigation';
+import useGoBack from '../hooks/useGoBack';
 
 const ProductCategories: React.FC = () => {
 	const {
@@ -74,9 +77,9 @@ const ProductCategories: React.FC = () => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<TextButton disabled={disabled} onPress={handleUpdateCategories}>
+				<HeaderButton disabled={disabled} onPress={handleUpdateCategories}>
 					Save
-				</TextButton>
+				</HeaderButton>
 			)
 		});
 	}, [disabled, handleUpdateCategories]);

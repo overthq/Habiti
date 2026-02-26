@@ -1,8 +1,9 @@
-import { FormInput, Screen, TextButton } from '@habiti/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
+import { FormInput, Screen, Typography } from '@habiti/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { HeaderButton } from '@react-navigation/elements';
 
 import { CurrentUserQuery, useEditProfileMutation } from '../../types/api';
 import { ProfileStackParamList } from '../../types/navigation';
@@ -34,12 +35,12 @@ const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
 			headerRight: () => (
-				<TextButton
+				<HeaderButton
 					onPress={handleSubmit(onSubmit)}
 					disabled={!formState.isDirty}
 				>
-					Save
-				</TextButton>
+					<Typography>Save</Typography>
+				</HeaderButton>
 			)
 		});
 	}, [formState.isDirty]);

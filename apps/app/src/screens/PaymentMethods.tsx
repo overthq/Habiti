@@ -1,13 +1,8 @@
 import React from 'react';
-import {
-	View,
-	StyleSheet,
-	ActivityIndicator,
-	Pressable,
-	Alert
-} from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { Icon, Screen } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { HeaderButton } from '@react-navigation/elements';
 
 import useGoBack from '../hooks/useGoBack';
 import CardRow from '../components/payment-methods/CardRow';
@@ -69,11 +64,11 @@ const PaymentMethods: React.FC = () => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<Pressable
+				<HeaderButton
 					onPress={() => navigate('Modal.AddCard', { orderId: undefined })}
 				>
 					<Icon name='plus' />
-				</Pressable>
+				</HeaderButton>
 			)
 		});
 	}, []);
