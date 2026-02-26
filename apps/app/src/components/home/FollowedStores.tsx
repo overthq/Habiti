@@ -65,7 +65,6 @@ const FollowedStoresMain: React.FC<FollowedStoresMainProps> = ({
 					onPress={handleStorePress(item.store.id)}
 				/>
 			)}
-			estimatedItemSize={108}
 		/>
 	);
 };

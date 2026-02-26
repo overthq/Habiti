@@ -59,7 +59,6 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 				data={products.edges}
 				keyExtractor={({ node }) => node.id}
 				showsVerticalScrollIndicator={false}
-				estimatedItemSize={240}
 				renderItem={({ item, index }) => (
 					<StoreListItem
 						item={item.node}

@@ -51,4 +51,4 @@ const AppInner = () => {
 	);
 };
 
-export default App;
+export default Sentry.wrap(App);

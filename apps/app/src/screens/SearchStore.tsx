@@ -54,7 +54,6 @@ const SearchStore: React.FC<SearchStoreProps> = ({ searchTerm }) => {
 				data={data.store.products.edges}
 				keyExtractor={({ node }) => node.id}
 				showsVerticalScrollIndicator={false}
-				estimatedItemSize={240}
 				renderItem={({ item, index }) => (
 					<StoreListItem
 						item={item.node}

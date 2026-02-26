@@ -52,6 +52,7 @@ import {
 	OrdersStackParamList,
 	ProductsStackParamList
 } from '../types/navigation';
+import { HeaderButton } from '@react-navigation/elements';
 
 const AppStack = createNativeStackNavigator<AppStackParamList, 'AppStack'>();
 const HomeStack = createNativeStackNavigator<HomeStackParamList, 'HomeStack'>();
@@ -81,8 +82,16 @@ const HomeStackNavigator = () => {
 				component={Overview}
 				options={{ headerShown: false }}
 			/>
-			<HomeStack.Screen name='Payouts' component={Payouts} />
-			<HomeStack.Screen name='Order' component={Order} />
+			<HomeStack.Screen
+				name='Payouts'
+				component={Payouts}
+				options={{ headerBackButtonDisplayMode: 'minimal' }}
+			/>
+			<HomeStack.Screen
+				name='Order'
+				component={Order}
+				options={{ headerBackButtonDisplayMode: 'minimal' }}
+			/>
 			<HomeStack.Screen
 				name='Product'
 				component={ProductStackNavigator}
@@ -137,24 +146,39 @@ const ProductStackNavigator = () => {
 			<ProductStack.Screen
 				name='Product.Main'
 				component={Product}
-				options={{
-					headerTitle: 'Product'
-				}}
+				options={({ navigation }) => ({
+					headerTitle: 'Product',
+					headerBackButtonDisplayMode: 'minimal',
+					headerLeft: () => (
+						<HeaderButton onPress={() => navigation.getParent()?.goBack()}>
+							<Icon name='chevron-left' />
+						</HeaderButton>
+					)
+				})}
 			/>
 			<ProductStack.Screen
 				name='Product.Images'
 				component={ProductImages}
-				options={{ headerTitle: 'Media' }}
+				options={{
+					headerTitle: 'Media',
+					headerBackButtonDisplayMode: 'minimal'
+				}}
 			/>
 			<ProductStack.Screen
 				name='Product.Categories'
 				component={ProductCategories}
-				options={{ headerTitle: 'Categories' }}
+				options={{
+					headerTitle: 'Categories',
+					headerBackButtonDisplayMode: 'minimal'
+				}}
 			/>
 			<ProductStack.Screen
 				name='Product.Details'
 				component={ProductDetails}
-				options={{ headerTitle: 'Product Details' }}
+				options={{
+					headerTitle: 'Product Details',
+					headerBackButtonDisplayMode: 'minimal'
+				}}
 			/>
 		</ProductStack.Navigator>
 	);
@@ -187,69 +211,17 @@ const OrdersStackNavigator = () => (
 			component={Orders}
 			options={{ headerShown: false }}
 		/>
-		<OrdersStack.Screen name='Order' component={Order} />
+		<OrdersStack.Screen
+			name='Order'
+			component={Order}
+			options={{ headerBackButtonDisplayMode: 'minimal' }}
+		/>
 		<OrdersStack.Screen
 			name='Product'
 			component={ProductStackNavigator}
 			options={{ headerShown: false }}
 		/>
 	</OrdersStack.Navigator>
-);
-
-const ModalGroup = (
-	<AppStack.Group screenOptions={{ presentation: 'modal', headerShown: true }}>
-		<AppStack.Screen name='Add Product' component={AddProduct} />
-		<AppStack.Screen
-			name='CustomerInfo'
-			component={CustomerInfo}
-			options={{ headerTitle: 'Customer Information' }}
-		/>
-		<AppStack.Screen
-			name='AddPayout'
-			component={AddPayout}
-			options={{ headerTitle: 'Add Payout' }}
-		/>
-		<AppStack.Screen
-			name='AddCategory'
-			component={AddCategory}
-			options={{ headerTitle: 'Add Category' }}
-		/>
-		<AppStack.Screen
-			name='Modals.EditCategory'
-			component={EditCategory}
-			options={{ headerTitle: 'Edit Category' }}
-		/>
-		<AppStack.Screen
-			name='AddAddress'
-			component={AddAddress}
-			options={{ headerTitle: 'Add Address' }}
-		/>
-		<AppStack.Screen
-			name='Modals.EditAddress'
-			component={EditAddress}
-			options={{ headerTitle: 'Edit Address' }}
-		/>
-		<AppStack.Screen
-			name='AddManager'
-			component={AddManager}
-			options={{ headerTitle: 'Add Manager' }}
-		/>
-		<AppStack.Screen
-			name='Modal.CreateStore'
-			component={CreateStore}
-			options={{ headerTitle: 'Create Store' }}
-		/>
-		<AppStack.Screen
-			name='Modal.AddPayoutAccount'
-			component={AddPayoutAccount}
-			options={{ headerTitle: 'Add Payout Account' }}
-		/>
-		<AppStack.Screen
-			name='Modal.Order'
-			component={Order}
-			options={{ headerTitle: 'Order' }}
-		/>
-	</AppStack.Group>
 );
 
 const StoreStackNavigator = () => {
@@ -260,13 +232,41 @@ const StoreStackNavigator = () => {
 				component={Store}
 				options={{ headerShown: false }}
 			/>
-			<StoreStack.Screen name='Edit Store' component={EditStore} />
-			<StoreStack.Screen name='Managers' component={Managers} />
-			<StoreStack.Screen name='Payouts' component={StorePayouts} />
-			<StoreStack.Screen name='Categories' component={Categories} />
-			<StoreStack.Screen name='Addresses' component={Addresses} />
-			<StoreStack.Screen name='Settings' component={StoreSettings} />
-			<StoreStack.Screen name='Appearance' component={Appearance} />
+			<StoreStack.Screen
+				name='Edit Store'
+				component={EditStore}
+				options={{ headerBackButtonDisplayMode: 'minimal' }}
+			/>
+			<StoreStack.Screen
+				name='Managers'
+				component={Managers}
+				options={{ headerBackButtonDisplayMode: 'minimal' }}
+			/>
+			<StoreStack.Screen
+				name='Payouts'
+				component={StorePayouts}
+				options={{ headerBackButtonDisplayMode: 'minimal' }}
+			/>
+			<StoreStack.Screen
+				name='Categories'
+				component={Categories}
+				options={{ headerBackButtonDisplayMode: 'minimal' }}
+			/>
+			<StoreStack.Screen
+				name='Addresses'
+				component={Addresses}
+				options={{ headerBackButtonDisplayMode: 'minimal' }}
+			/>
+			<StoreStack.Screen
+				name='Settings'
+				component={StoreSettings}
+				options={{ headerBackButtonDisplayMode: 'minimal' }}
+			/>
+			<StoreStack.Screen
+				name='Appearance'
+				component={Appearance}
+				options={{ headerBackButtonDisplayMode: 'minimal' }}
+			/>
 		</StoreStack.Navigator>
 	);
 };
@@ -306,7 +306,69 @@ const Routes: React.FC = () => {
 					) : (
 						<>
 							<AppStack.Screen name='Main' component={MainTabNavigator} />
-							{ModalGroup}
+							<AppStack.Group
+								screenOptions={({ navigation }) => ({
+									presentation: 'modal',
+									headerShown: true,
+									headerLeft: () => (
+										<HeaderButton onPress={navigation.goBack}>
+											<Icon name='x' />
+										</HeaderButton>
+									)
+								})}
+							>
+								<AppStack.Screen name='Add Product' component={AddProduct} />
+								<AppStack.Screen
+									name='CustomerInfo'
+									component={CustomerInfo}
+									options={{ headerTitle: 'Customer Information' }}
+								/>
+								<AppStack.Screen
+									name='AddPayout'
+									component={AddPayout}
+									options={{ headerTitle: 'Add Payout' }}
+								/>
+								<AppStack.Screen
+									name='AddCategory'
+									component={AddCategory}
+									options={{ headerTitle: 'Add Category' }}
+								/>
+								<AppStack.Screen
+									name='Modals.EditCategory'
+									component={EditCategory}
+									options={{ headerTitle: 'Edit Category' }}
+								/>
+								<AppStack.Screen
+									name='AddAddress'
+									component={AddAddress}
+									options={{ headerTitle: 'Add Address' }}
+								/>
+								<AppStack.Screen
+									name='Modals.EditAddress'
+									component={EditAddress}
+									options={{ headerTitle: 'Edit Address' }}
+								/>
+								<AppStack.Screen
+									name='AddManager'
+									component={AddManager}
+									options={{ headerTitle: 'Add Manager' }}
+								/>
+								<AppStack.Screen
+									name='Modal.CreateStore'
+									component={CreateStore}
+									options={{ headerTitle: 'Create Store' }}
+								/>
+								<AppStack.Screen
+									name='Modal.AddPayoutAccount'
+									component={AddPayoutAccount}
+									options={{ headerTitle: 'Add Payout Account' }}
+								/>
+								<AppStack.Screen
+									name='Modal.Order'
+									component={Order}
+									options={{ headerTitle: 'Order' }}
+								/>
+							</AppStack.Group>
 						</>
 					)
 				) : (

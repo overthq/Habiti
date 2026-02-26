@@ -1,3 +1,6 @@
+import React from 'react';
+import { View, Pressable, RefreshControl } from 'react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import {
 	EmptyState,
 	Icon,
@@ -8,11 +11,10 @@ import {
 	Typography,
 	useTheme
 } from '@habiti/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { View, Pressable, RefreshControl } from 'react-native';
+import { HeaderButton } from '@react-navigation/elements';
 
 import FAB from '../components/products/FAB';
+
 import useGoBack from '../hooks/useGoBack';
 import { useCategoriesQuery } from '../data/queries';
 import { AppStackParamList } from '../types/navigation';
@@ -61,9 +63,9 @@ const Categories = () => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<Pressable onPress={handleAddCategory}>
+				<HeaderButton onPress={handleAddCategory}>
 					<Icon name='plus' />
-				</Pressable>
+				</HeaderButton>
 			)
 		});
 	}, []);

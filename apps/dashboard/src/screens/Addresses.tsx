@@ -1,3 +1,5 @@
+import React from 'react';
+import { View, RefreshControl } from 'react-native';
 import {
 	EmptyState,
 	Icon,
@@ -9,8 +11,7 @@ import {
 	useTheme
 } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { View, Pressable, RefreshControl } from 'react-native';
+import { HeaderButton } from '@react-navigation/elements';
 
 import FAB from '../components/products/FAB';
 import useGoBack from '../hooks/useGoBack';
@@ -66,9 +67,9 @@ const Addresses = () => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<Pressable onPress={handleAddAddress}>
+				<HeaderButton onPress={handleAddAddress}>
 					<Icon name='plus' />
-				</Pressable>
+				</HeaderButton>
 			)
 		});
 	}, []);

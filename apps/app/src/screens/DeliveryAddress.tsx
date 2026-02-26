@@ -1,7 +1,8 @@
+import React from 'react';
+import { ActivityIndicator } from 'react-native';
+import { HeaderButton } from '@react-navigation/elements';
 import { Icon, Screen, Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { ActivityIndicator, Pressable } from 'react-native';
 
 import useGoBack from '../hooks/useGoBack';
 import { useDeliveryAddressesQuery } from '../types/api';
@@ -16,13 +17,13 @@ const DeliveryAddress = () => {
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
 			headerRight: () => (
-				<Pressable
+				<HeaderButton
 					onPress={() => {
 						navigation.navigate('Modal.AddDeliveryAddress');
 					}}
 				>
 					<Icon name='plus' size={24} />
-				</Pressable>
+				</HeaderButton>
 			)
 		});
 	}, []);

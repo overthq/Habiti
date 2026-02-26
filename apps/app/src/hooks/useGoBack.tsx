@@ -1,25 +1,17 @@
+import React from 'react';
 import { Icon, IconType } from '@habiti/components';
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { Pressable } from 'react-native';
+import { HeaderButton } from '@react-navigation/elements';
 
-const useGoBack = (icon?: IconType, margin?: number) => {
+const useGoBack = (icon?: IconType) => {
 	const navigation = useNavigation();
 
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
 			headerLeft: () => (
-				<Pressable
-					style={{ marginRight: 4 }}
-					onPress={navigation.goBack}
-					accessibilityLabel='Back'
-				>
-					<Icon
-						name={icon ?? 'chevron-left'}
-						size={28}
-						style={{ marginLeft: margin ?? -8 }}
-					/>
-				</Pressable>
+				<HeaderButton onPress={navigation.goBack} accessibilityLabel='Back'>
+					<Icon name={icon ?? 'chevron-left'} size={28} />
+				</HeaderButton>
 			)
 		});
 	}, [navigation, icon]);

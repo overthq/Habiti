@@ -1,4 +1,4 @@
-import 'core-js/full/symbol/async-iterator';
+// import 'core-js/full/symbol/async-iterator';
 import React from 'react';
 import { ThemeProvider } from '@habiti/components';
 import * as Sentry from '@sentry/react-native';
@@ -64,4 +64,4 @@ const AppInner = () => {
 	);
 };
 
-export default App;
+export default Sentry.wrap(App);

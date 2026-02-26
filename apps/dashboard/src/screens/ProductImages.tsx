@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Image } from 'react-native';
-import { Screen, TextButton } from '@habiti/components';
+import { HeaderButton } from '@react-navigation/elements';
+import { Screen, Typography } from '@habiti/components';
 import * as ImagePicker from 'expo-image-picker';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
@@ -50,12 +51,12 @@ const ProductImages: React.FC = () => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<TextButton
+				<HeaderButton
 					disabled={imagesToUpload.length === 0}
 					onPress={handleSaveImages}
 				>
-					Save
-				</TextButton>
+					<Typography>Save</Typography>
+				</HeaderButton>
 			)
 		});
 	}, [imagesToUpload]);

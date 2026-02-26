@@ -55,7 +55,6 @@ const ProductList: React.FC = () => {
 				keyExtractor={i => i.id}
 				data={products}
 				renderItem={renderProduct}
-				estimatedItemSize={60}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}
