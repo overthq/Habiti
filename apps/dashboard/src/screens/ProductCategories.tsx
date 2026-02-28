@@ -78,7 +78,7 @@ const ProductCategories: React.FC = () => {
 		setOptions({
 			headerRight: () => (
 				<HeaderButton disabled={disabled} onPress={handleUpdateCategories}>
-					Save
+					<Typography>Save</Typography>
 				</HeaderButton>
 			)
 		});
