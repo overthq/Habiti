@@ -3,6 +3,7 @@ import { View, RefreshControl } from 'react-native';
 import { ScrollableScreen, useTheme } from '@habiti/components';
 import { useRoute, RouteProp } from '@react-navigation/native';
 
+import AwaitingPickupBanner from '../components/order/AwaitingPickupBanner';
 import CustomerDetails from '../components/order/CustomerDetails';
 import OrderActions from '../components/order/OrderActions';
 import OrderOverview from '../components/order/OrderOverview';
@@ -37,6 +38,7 @@ const Order: React.FC = () => {
 			}
 		>
 			<OrderOverview order={data.order} />
+			<AwaitingPickupBanner status={data.order.status} />
 			<CustomerDetails user={data.order.user} />
 			<OrderProducts products={data.order.products} />
 			<PaymentInfo order={data.order} />

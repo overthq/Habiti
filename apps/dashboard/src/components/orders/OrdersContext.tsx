@@ -67,7 +67,9 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 	return (
 		<OrdersContext.Provider
 			value={{
-				orders: data?.orders ?? [],
+				orders: (data?.orders ?? []).filter(
+					o => o.status !== OrderStatus.PaymentPending
+				),
 				isLoading,
 				status: filters.status,
 				setStatus,

@@ -52,7 +52,7 @@ import {
 	OrdersStackParamList,
 	ProductsStackParamList
 } from '../types/navigation';
-import { HeaderBackButton, HeaderButton } from '@react-navigation/elements';
+import { HeaderBackButton } from '@react-navigation/elements';
 
 const AppStack = createNativeStackNavigator<AppStackParamList, 'AppStack'>();
 const HomeStack = createNativeStackNavigator<HomeStackParamList, 'HomeStack'>();
