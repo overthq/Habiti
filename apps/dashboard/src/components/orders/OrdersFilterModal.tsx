@@ -6,6 +6,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AccordionRow from '../filter-products/AccordionRow';
 import { OrdersFilters } from './OrdersContext';
 import SortOrders from '../filter-orders/SortOrders';
+import FilterOrdersByStatus from '../filter-orders/FilterOrdersByStatus';
+import { OrderStatus } from '../../data/types';
 import { Pressable, View } from 'react-native';
 
 interface OrdersFilterModalProps {
@@ -15,7 +17,7 @@ interface OrdersFilterModalProps {
 	onClearFilters: () => void;
 }
 
-type AccordionKey = 'sort-by' | 'price';
+type AccordionKey = 'sort-by' | 'status';
 
 const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({
 	modalRef,
@@ -37,6 +39,13 @@ const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({
 	const handleUpdateSortBy = React.useCallback(
 		(sortBy: 'created-at-desc' | 'total-desc' | 'total-asc') => {
 			onUpdateFilters({ sortBy });
+		},
+		[onUpdateFilters]
+	);
+
+	const handleSelectStatus = React.useCallback(
+		(status: OrderStatus | undefined) => {
+			onUpdateFilters({ status });
 		},
 		[onUpdateFilters]
 	);
@@ -76,6 +85,16 @@ const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({
 					<SortOrders
 						sortBy={filters.sortBy}
 						onUpdateSortBy={handleUpdateSortBy}
+					/>
+				</AccordionRow>
+				<AccordionRow
+					title='Status'
+					open={open === 'status'}
+					onPress={handleExpandSection('status')}
+				>
+					<FilterOrdersByStatus
+						selectedStatus={filters.status}
+						onSelectStatus={handleSelectStatus}
 					/>
 				</AccordionRow>
 			</BottomSheetView>
