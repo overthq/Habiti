@@ -8,7 +8,7 @@ import { useCurrentStoreQuery } from '../data/queries';
 import useStore from '../state';
 import { useShallow } from 'zustand/react/shallow';
 
-const Store: React.FC = () => {
+const Store = () => {
 	const { data, isLoading, error } = useCurrentStoreQuery();
 	const { top } = useSafeAreaInsets();
 	const { logOut } = useStore(useShallow(({ logOut }) => ({ logOut })));

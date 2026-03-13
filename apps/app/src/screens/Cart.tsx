@@ -77,7 +77,7 @@ const Cart: React.FC = () => {
 	);
 };
 
-const CartWrapper: React.FC = () => {
+const CartWrapper = () => {
 	return (
 		<CartProvider>
 			<Cart />

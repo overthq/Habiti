@@ -16,7 +16,7 @@ import { useUpdateProductCategoriesMutation } from '../data/mutations';
 import { AppStackParamList, ProductStackParamList } from '../types/navigation';
 import useGoBack from '../hooks/useGoBack';
 
-const ProductCategories: React.FC = () => {
+const ProductCategories = () => {
 	const {
 		params: { productId, categories }
 	} = useRoute<RouteProp<ProductStackParamList, 'Product.Categories'>>();

@@ -18,7 +18,6 @@ import PayoutRow from '../components/payouts/PayoutRow';
 import RevenueBar from '../components/payouts/RevenueBar';
 import useGoBack from '../hooks/useGoBack';
 import { AppStackParamList, MainTabParamList } from '../types/navigation';
-import useRefresh from '../hooks/useRefresh';
 import RevenueBarLegend from '../components/payouts/RevenueBarLegend';
 import { useCurrentStoreQuery, usePayoutsQuery } from '../data/queries';
 
@@ -54,12 +53,11 @@ const NoPayouts: React.FC<NoPayoutsProps> = ({ action }) => {
 };
 
 const Payouts = () => {
-	const { data, isLoading, refetch } = useCurrentStoreQuery();
+	const { data, refetch, isRefetching } = useCurrentStoreQuery();
 	const { data: payoutData } = usePayoutsQuery();
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList & MainTabParamList>>();
 	const { theme } = useTheme();
-	const { refreshing, refresh } = useRefresh({ fetching: isLoading, refetch });
 
 	useGoBack();
 
@@ -91,8 +89,8 @@ const Payouts = () => {
 				contentContainerStyle={{ backgroundColor: theme.screen.background }}
 				refreshControl={
 					<RefreshControl
-						refreshing={refreshing}
-						onRefresh={refresh}
+						refreshing={isRefetching}
+						onRefresh={refetch}
 						tintColor={theme.text.secondary}
 					/>
 				}

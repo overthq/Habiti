@@ -7,7 +7,7 @@ import HomeMain from '../components/home/HomeMain';
 import HomeHeader from '../components/home/HomeHeader';
 import HomeSearch from '../components/home/HomeSearch';
 
-const Home: React.FC = () => {
+const Home = () => {
 	const [searchOpen, setSearchOpen] = React.useState(false);
 	const [searchTerm, setSearchTerm] = React.useState('');
 	const { top } = useSafeAreaInsets();

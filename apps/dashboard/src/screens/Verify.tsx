@@ -7,7 +7,7 @@ import CodeInput from '../components/verify/CodeInput';
 import { useVerifyCodeMutation } from '../data/mutations';
 import { AppStackParamList } from '../types/navigation';
 
-const Verify: React.FC = () => {
+const Verify = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Verify'>>();
 	const [code, setCode] = React.useState('');
 	const verifyCodeMutation = useVerifyCodeMutation();

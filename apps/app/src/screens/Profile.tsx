@@ -31,7 +31,7 @@ const ACCEPTABLE_USE_URL = 'https://habiti.app/acceptable-use';
 * Support
 * Set up your own store*/
 
-const Profile: React.FC = () => {
+const Profile = () => {
 	const logOut = useStore(useShallow(state => state.logOut));
 	const { navigate } = useNavigation<NavigationProp<ProfileStackParamList>>();
 	useGoBack('x');

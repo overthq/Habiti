@@ -9,7 +9,7 @@ import RelatedProducts from '../components/product/RelatedProducts';
 import useGoBack from '../hooks/useGoBack';
 import { ProductProvider } from '../components/product/ProductContext';
 
-const Product: React.FC = () => {
+const Product = () => {
 	useGoBack('x');
 
 	return (

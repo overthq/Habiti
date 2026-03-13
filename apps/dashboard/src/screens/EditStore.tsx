@@ -5,7 +5,7 @@ import EditStoreMain from '../components/edit-store/EditStoreMain';
 import useGoBack from '../hooks/useGoBack';
 import { useCurrentStoreQuery } from '../data/queries';
 
-const EditStore: React.FC = () => {
+const EditStore = () => {
 	const { isFetching, data } = useCurrentStoreQuery();
 	useGoBack();
 

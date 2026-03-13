@@ -10,7 +10,7 @@ import { AppStackParamList } from '../types/navigation';
 import { CardsQuery, useCardsQuery, useDeleteCardMutation } from '../types/api';
 import useStore from '../state';
 
-const PaymentMethods: React.FC = () => {
+const PaymentMethods = () => {
 	const [{ data, fetching }] = useCardsQuery();
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();

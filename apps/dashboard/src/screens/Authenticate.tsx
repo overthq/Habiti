@@ -22,7 +22,7 @@ const authenticateSchema = z.object({
 
 type AuthenticateFormValues = z.infer<typeof authenticateSchema>;
 
-const Authenticate: React.FC = () => {
+const Authenticate = () => {
 	const { goBack } = useNavigation();
 
 	const methods = useForm<AuthenticateFormValues>({

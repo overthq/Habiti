@@ -27,7 +27,7 @@ const OverviewMain = () => {
 	);
 };
 
-const Overview: React.FC = () => {
+const Overview = () => {
 	const { top } = useSafeAreaInsets();
 
 	return (

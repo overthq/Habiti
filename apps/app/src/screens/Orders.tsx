@@ -12,7 +12,7 @@ import useGoBack from '../hooks/useGoBack';
 import useRefresh from '../hooks/useRefresh';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const Orders: React.FC = () => {
+const Orders = () => {
 	const [{ data, fetching }, refetch] = useUserOrdersQuery();
 	const { navigate } = useNavigation<StackNavigationProp<HomeStackParamList>>();
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });

@@ -4,14 +4,14 @@
 	"main": "src/index.ts",
 	"license": "GPL-3.0-or-later",
 	"devDependencies": {
-		"@types/react": "~19.0.14"
+		"@types/react": "~19.2.10"
 	},
-	"dependencies": {
+	"peerDependencies": {
 		"@gorhom/bottom-sheet": "^5.2.8",
-		"react": "19.1.0",
+		"react": "19.2.0",
 		"react-hook-form": "^7.56.1",
-		"react-native": "0.81.5",
-		"react-native-svg": "15.12.1",
-		"react-native-reanimated": "~4.1.1"
+		"react-native": "0.83.2",
+		"react-native-svg": "15.15.3",
+		"react-native-reanimated": "4.2.1"
 	}
 }

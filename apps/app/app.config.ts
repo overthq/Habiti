@@ -9,7 +9,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	scheme: 'habiti',
 	orientation: 'portrait',
 	icon: './assets/icon.png',
-	newArchEnabled: true,
 	splash: {
 		image: './assets/splash.png',
 		resizeMode: 'contain',
@@ -38,7 +37,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 			foregroundImage: './assets/adaptive-icon.png',
 			backgroundColor: '#FFFFFF'
 		},
-		edgeToEdgeEnabled: true,
 		softwareKeyboardLayoutMode: 'pan',
 		intentFilters: [
 			{

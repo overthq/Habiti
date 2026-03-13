@@ -17,7 +17,7 @@ import { AppStackParamList } from '../types/navigation';
 // Or we can just create "Habiti cash" and load the money there, and it can
 // be added to their transaction.
 
-const AddCardWebview: React.FC = () => {
+const AddCardWebview = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Modal.AddCard'>>();
 
 	const [{ fetching, data }] = useCardAuthorizationQuery({

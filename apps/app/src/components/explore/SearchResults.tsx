@@ -11,7 +11,7 @@ import { SearchProvider, useSearchContext } from './SearchContext';
 import StoreResultRow from './StoreResultRow';
 import { AppStackParamList, HomeStackParamList } from '../../types/navigation';
 
-const StoresView: React.FC = () => {
+const StoresView = () => {
 	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();
 	const { stores } = useSearchContext();
 
@@ -35,7 +35,7 @@ const StoresView: React.FC = () => {
 	);
 };
 
-const ProductsView: React.FC = () => {
+const ProductsView = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const { products } = useSearchContext();
 
