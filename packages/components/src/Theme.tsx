@@ -22,7 +22,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 	const autoTheme = useColorScheme();
 
 	const parsed = React.useMemo(() => {
-		return theme === 'auto' ? (autoTheme ?? 'light') : theme;
+		if (theme === 'auto') {
+			return autoTheme !== 'unspecified' ? autoTheme : 'light';
+		}
+
+		return theme;
 	}, [theme]);
 
 	const context = React.useMemo(

@@ -19,7 +19,7 @@ import PaymentPendingWarning from '../components/order/PaymentPendingWarning';
 
 // What actions should users be able to carry out on their orders on this screen?
 
-const Order: React.FC = () => {
+const Order = () => {
 	const {
 		params: { orderId }
 	} = useRoute<RouteProp<HomeStackParamList, 'Home.Order'>>();

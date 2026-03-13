@@ -3,6 +3,7 @@ import { RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Screen, ScreenHeader, ScrollableScreen } from '@habiti/components';
 
+import AwaitingPickupOrders from '../components/overview/AwaitingPickupOrders';
 import LowStockProducts from '../components/overview/LowStockProducts';
 import ManagePayouts from '../components/overview/ManagePayouts';
 import { useOverviewQuery, useCurrentStoreQuery } from '../data/queries';
@@ -20,12 +21,13 @@ const OverviewMain = () => {
 			}
 		>
 			<ManagePayouts realizedRevenue={storeData?.store?.realizedRevenue ?? 0} />
+			<AwaitingPickupOrders />
 			<LowStockProducts products={data?.lowStockProducts ?? []} />
 		</ScrollableScreen>
 	);
 };
 
-const Overview: React.FC = () => {
+const Overview = () => {
 	const { top } = useSafeAreaInsets();
 
 	return (

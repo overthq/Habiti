@@ -9,7 +9,7 @@ import StoreSelectList from '../components/store-select/StoreSelectList';
 
 import { useManagedStoresQuery } from '../data/queries';
 
-const StoreSelect: React.FC = () => {
+const StoreSelect = () => {
 	const { isLoading, data } = useManagedStoresQuery();
 	const [showCreateStore, setShowCreateStore] = React.useState(false);
 

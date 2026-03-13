@@ -14,7 +14,7 @@ import FAB from '../components/products/FAB';
 // TODO: Run a query here for this purpose
 // Or use a context
 
-const ProductImages: React.FC = () => {
+const ProductImages = () => {
 	const [imagesToUpload, setImagesToUpload] = React.useState<
 		ImagePicker.ImagePickerAsset[]
 	>([]);

@@ -26,7 +26,7 @@ useStore.subscribe((state, prevState) => {
 
 SplashScreen.preventAutoHideAsync();
 
-const App: React.FC = () => {
+const App = () => {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<AppInner />

@@ -22,7 +22,7 @@ const addProductSchema = z.object({
 	quantity: z.string().min(1)
 });
 
-const AddProduct: React.FC = () => {
+const AddProduct = () => {
 	const { goBack, setOptions } = useNavigation();
 	const createProductMutation = useCreateProductMutation();
 	useGoBack('x');

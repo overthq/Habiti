@@ -15,19 +15,17 @@ import ProductDetails from '../components/product/ProductDetails';
 import ProductMedia from '../components/product/ProductMedia';
 import { ScrollableScreen } from '@habiti/components';
 import ProductCategories from '../components/product/ProductCategories';
-import useRefresh from '../hooks/useRefresh';
 import EditButtons from '../components/product/EditButtons';
 
-const Product: React.FC = () => {
+const Product = () => {
 	const {
 		params: { productId }
 	} = useRoute<RouteProp<ProductStackParamList, 'Product.Main'>>();
 	const { setOptions, navigate } =
 		useNavigation<NavigationProp<ProductStackParamList>>();
 
-	const { data, isLoading, refetch } = useProductQuery(productId);
+	const { data, isRefetching, refetch } = useProductQuery(productId);
 
-	const { refreshing, refresh } = useRefresh({ fetching: isLoading, refetch });
 	const { theme } = useTheme();
 
 	React.useLayoutEffect(() => {
@@ -57,8 +55,8 @@ const Product: React.FC = () => {
 			<ScrollableScreen
 				refreshControl={
 					<RefreshControl
-						refreshing={refreshing}
-						onRefresh={refresh}
+						refreshing={isRefetching}
+						onRefresh={refetch}
 						tintColor={theme.text.secondary}
 					/>
 				}

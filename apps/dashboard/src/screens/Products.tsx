@@ -38,7 +38,7 @@ const Products: React.FC = () => {
 	);
 };
 
-const ProductsWrapper: React.FC = () => {
+const ProductsWrapper = () => {
 	return (
 		<ProductsProvider>
 			<Products />

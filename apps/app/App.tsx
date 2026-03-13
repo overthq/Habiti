@@ -18,7 +18,7 @@ const queryClient = new QueryClient();
 
 SplashScreen.preventAutoHideAsync();
 
-const App: React.FC = () => {
+const App = () => {
 	return (
 		<QueryClientProvider client={queryClient}>
 			<AppInner />

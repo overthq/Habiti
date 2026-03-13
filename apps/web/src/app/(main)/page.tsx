@@ -2,14 +2,21 @@
 
 import Link from 'next/link';
 import React from 'react';
+import { formatNaira } from '@/utils/currency';
 
 import { Skeleton } from '@/components/ui/skeleton';
-import { useLandingHighlightsQuery } from '@/data/queries';
-import { Product as ProductType, Store } from '@/data/types';
+import { useLandingHighlightsQuery, useOrdersQuery } from '@/data/queries';
+import {
+	Order,
+	OrderStatus,
+	Product as ProductType,
+	Store
+} from '@/data/types';
 import {
 	useRecentlyViewedStore,
 	RecentlyViewedProduct
 } from '@/state/recently-viewed-store';
+import { useAuthStore } from '@/state/auth-store';
 import Product from '@/components/store/Product';
 
 const HomePage = () => {
@@ -20,6 +27,7 @@ const HomePage = () => {
 
 	return (
 		<div className='space-y-8'>
+			<ReadyForPickupSection />
 			<TrendingStoresSection
 				stores={data?.trendingStores ?? []}
 				isLoading={isLoading}
@@ -32,6 +40,60 @@ const HomePage = () => {
 
 			<RecentlyViewedSection products={recentlyViewedProducts} />
 		</div>
+	);
+};
+
+const ReadyForPickupSection: React.FC = () => {
+	const { accessToken } = useAuthStore();
+	const isAuthenticated = Boolean(accessToken);
+	const { data } = useOrdersQuery({ enabled: isAuthenticated });
+
+	const pickupOrders = (data?.orders ?? []).filter(
+		o => o.status === OrderStatus.ReadyForPickup
+	);
+
+	if (!isAuthenticated || pickupOrders.length === 0) {
+		return null;
+	}
+
+	return (
+		<Section title='Ready for Pickup'>
+			<div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
+				{pickupOrders.map(order => (
+					<PickupOrderCard key={order.id} order={order} />
+				))}
+			</div>
+		</Section>
+	);
+};
+
+interface PickupOrderCardProps {
+	order: Order;
+}
+
+const PickupOrderCard: React.FC<PickupOrderCardProps> = ({ order }) => {
+	return (
+		<Link className='block' href={`/orders/${order.id}`}>
+			<div className='p-4 rounded-lg border border-yellow-300 bg-yellow-50 space-y-2'>
+				<div className='flex gap-4 items-center'>
+					<div className='size-14 rounded-full overflow-hidden bg-muted-foreground/20 flex-shrink-0'>
+						{order.store.image && (
+							<img
+								src={order.store.image?.path}
+								alt={order.store.name}
+								className='size-full object-cover'
+							/>
+						)}
+					</div>
+					<div>
+						<p className='font-medium'>{order.store.name}</p>
+						<p className='text-sm text-muted-foreground'>
+							{formatNaira(order.total)}
+						</p>
+					</div>
+				</div>
+			</div>
+		</Link>
 	);
 };
 

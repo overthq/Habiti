@@ -13,7 +13,7 @@ import useGoBack from '../hooks/useGoBack';
 import { useCustomerInfoQuery } from '../data/queries';
 import type { AppStackParamList } from '../types/navigation';
 
-const CustomerInfo: React.FC = () => {
+const CustomerInfo = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'CustomerInfo'>>();
 	const { data, isLoading } = useCustomerInfoQuery(params.userId);
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();

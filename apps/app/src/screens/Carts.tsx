@@ -9,7 +9,7 @@ import { AppStackParamList, MainTabParamList } from '../types/navigation';
 import { useCartsQuery } from '../types/api';
 import useRefresh from '../hooks/useRefresh';
 
-const Carts: React.FC = () => {
+const Carts = () => {
 	const [{ data, fetching }, refetch] = useCartsQuery();
 	const { refreshing, refresh } = useRefresh({ fetching, refetch });
 	const { navigate, goBack } =

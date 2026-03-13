@@ -11,7 +11,7 @@ import StoreHeader from '../components/store/StoreHeader';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 import SearchStore from './SearchStore';
 
-const Store: React.FC = () => {
+const Store = () => {
 	const { params } = useRoute<RouteProp<StoreStackParamList, 'Store.Main'>>();
 	const [{ data, fetching }] = useStoreQuery({
 		variables: { storeId: params.storeId }

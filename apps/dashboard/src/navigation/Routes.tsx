@@ -52,7 +52,7 @@ import {
 	OrdersStackParamList,
 	ProductsStackParamList
 } from '../types/navigation';
-import { HeaderButton } from '@react-navigation/elements';
+import { HeaderBackButton } from '@react-navigation/elements';
 
 const AppStack = createNativeStackNavigator<AppStackParamList, 'AppStack'>();
 const HomeStack = createNativeStackNavigator<HomeStackParamList, 'HomeStack'>();
@@ -148,11 +148,11 @@ const ProductStackNavigator = () => {
 				component={Product}
 				options={({ navigation }) => ({
 					headerTitle: 'Product',
-					headerBackButtonDisplayMode: 'minimal',
 					headerLeft: () => (
-						<HeaderButton onPress={() => navigation.getParent()?.goBack()}>
-							<Icon name='chevron-left' />
-						</HeaderButton>
+						<HeaderBackButton
+							onPress={() => navigation.getParent()?.goBack()}
+							tintColor='#FFFFFF'
+						/>
 					)
 				})}
 			/>
@@ -310,10 +310,12 @@ const Routes: React.FC = () => {
 								screenOptions={({ navigation }) => ({
 									presentation: 'modal',
 									headerShown: true,
+									headerBackButtonDisplayMode: 'minimal',
 									headerLeft: () => (
-										<HeaderButton onPress={navigation.goBack}>
-											<Icon name='x' />
-										</HeaderButton>
+										<HeaderBackButton
+											onPress={navigation.goBack}
+											tintColor={theme.icon.default.color}
+										/>
 									)
 								})}
 							>

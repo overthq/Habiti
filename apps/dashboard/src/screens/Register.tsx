@@ -23,7 +23,7 @@ const registerSchema = z.object({
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
-const Register: React.FC = () => {
+const Register = () => {
 	const { goBack } = useNavigation();
 	const registerMutation = useRegisterMutation();
 	const methods = useForm<RegisterFormValues>({

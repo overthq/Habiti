@@ -30,7 +30,7 @@ const Orders: React.FC = () => {
 	);
 };
 
-const OrdersWrapper: React.FC = () => {
+const OrdersWrapper = () => {
 	return (
 		<OrdersProvider>
 			<Orders />

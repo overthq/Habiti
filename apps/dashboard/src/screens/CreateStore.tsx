@@ -17,7 +17,7 @@ export interface CreateStoreFormValues {
 	website: string;
 }
 
-const CreateStore: React.FC = () => {
+const CreateStore = () => {
 	const createStoreMutation = useCreateStoreMutation();
 	const setPreference = useStore(useShallow(state => state.setPreference));
 	const methods = useForm<CreateStoreFormValues>();

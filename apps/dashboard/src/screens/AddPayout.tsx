@@ -8,7 +8,7 @@ import PayoutNumpad from '../components/add-payout/PayoutNumpad';
 import useGoBack from '../hooks/useGoBack';
 import { useCreatePayoutMutation } from '../data/mutations';
 
-const AddPayout: React.FC = () => {
+const AddPayout = () => {
 	const [amount, setAmount] = React.useState('');
 	const createPayoutMutation = useCreatePayoutMutation();
 	const { goBack } = useNavigation();

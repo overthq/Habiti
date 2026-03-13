@@ -8,7 +8,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	version: '1.0.0',
 	orientation: 'portrait',
 	icon: './assets/icon.png',
-	newArchEnabled: true,
 	splash: {
 		image: './assets/splash.png',
 		resizeMode: 'contain',
@@ -31,7 +30,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	},
 	android: {
 		package: 'app.habiti.dashboard',
-		edgeToEdgeEnabled: true,
 		adaptiveIcon: {
 			foregroundImage: './assets/adaptive-icon.png',
 			backgroundColor: '#000000'

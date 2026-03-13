@@ -25,10 +25,6 @@
 		"packages/*",
 		"apps/*"
 	],
-	"overrides": {
-		"react": "19.1.0",
-		"react-dom": "19.1.0"
-	},
 	"devDependencies": {
 		"@types/node": "^20",
 		"husky": "^9.1.7",

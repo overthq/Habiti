@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
-import { Button, Spacer, Typography } from '@habiti/components';
+import { Button, Spacer } from '@habiti/components';
 
 import { useUpdateOrderMutation } from '../../data/mutations';
 import { OrderStatus } from '../../data/types';
@@ -57,11 +57,6 @@ const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 					onPress={onConfirmReadyForPickup}
 				/>
 			)}
-			{status === OrderStatus.ReadyForPickup && (
-				<Typography variant='secondary' style={styles.awaitingText}>
-					Awaiting customer pickup
-				</Typography>
-			)}
 			<Spacer y={8} />
 			{status !== OrderStatus.Cancelled && status !== OrderStatus.Completed && (
 				<Button
@@ -78,13 +73,6 @@ const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 const styles = StyleSheet.create({
 	container: {
 		padding: 16
-	},
-	button: {
-		marginBottom: 8
-	},
-	awaitingText: {
-		textAlign: 'center',
-		paddingVertical: 8
 	}
 });
 
