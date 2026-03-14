@@ -35,7 +35,7 @@ const StoreSelectList: React.FC<StoreSelectListProps> = ({
 		<Animated.View
 			entering={FadeInDown}
 			exiting={FadeOutDown}
-			style={{ flexDirection: 'row', flexWrap: 'wrap' }}
+			style={{ gap: 12 }}
 		>
 			{stores.map(store => (
 				<StoreSelectListItem
@@ -58,13 +58,19 @@ const CreateStoreButton: React.FC<CreateStoreButtonProps> = ({ onPress }) => {
 	const { theme } = useTheme();
 
 	return (
-		<Pressable onPress={onPress}>
+		<Pressable
+			style={{
+				flexDirection: 'row',
+				alignItems: 'center'
+			}}
+			onPress={onPress}
+		>
 			<View style={[styles.add, { backgroundColor: theme.image.placeholder }]}>
 				<Icon name='plus' size={24} />
 			</View>
-			<Spacer y={2} />
-			<Typography size='small' style={{ textAlign: 'center' }}>
-				New
+			<Spacer x={12} />
+			<Typography size='large' style={{ textAlign: 'center' }}>
+				Create a new store
 			</Typography>
 		</Pressable>
 	);
@@ -74,8 +80,8 @@ const styles = StyleSheet.create({
 	add: {
 		justifyContent: 'center',
 		alignItems: 'center',
-		width: 72,
-		height: 72,
+		width: 56,
+		height: 56,
 		borderRadius: 50
 	}
 });

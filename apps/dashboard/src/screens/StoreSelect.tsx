@@ -1,17 +1,19 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import Animated from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Screen, Spacer, Typography } from '@habiti/components';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import CreateStoreForm from '../components/store-select/CreateStoreForm';
 import StoreSelectList from '../components/store-select/StoreSelectList';
 
 import { useManagedStoresQuery } from '../data/queries';
+import { AppStackParamList } from '../types/navigation';
 
 const StoreSelect = () => {
 	const { isLoading, data } = useManagedStoresQuery();
-	const [showCreateStore, setShowCreateStore] = React.useState(false);
+	const navigation =
+		useNavigation<NativeStackNavigationProp<AppStackParamList>>();
 
 	if (isLoading || !data) {
 		return <View />;
@@ -34,19 +36,10 @@ const StoreSelect = () => {
 
 				<Spacer y={16} />
 
-				<Animated.View style={{ flex: 1 }}>
-					{showCreateStore ? (
-						<CreateStoreForm
-							hasTitle={!!data?.stores.length}
-							onCancel={() => setShowCreateStore(false)}
-						/>
-					) : (
-						<StoreSelectList
-							stores={data?.stores}
-							onAddStore={() => setShowCreateStore(true)}
-						/>
-					)}
-				</Animated.View>
+				<StoreSelectList
+					stores={data?.stores}
+					onAddStore={() => navigation.navigate('Modal.CreateStore')}
+				/>
 			</SafeAreaView>
 		</Screen>
 	);

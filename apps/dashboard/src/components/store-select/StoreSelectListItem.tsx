@@ -27,12 +27,12 @@ const StoreSelectListItem: React.FC<StoresListItemProps> = ({
 			<Avatar
 				uri={store.image?.path}
 				fallbackText={store.name}
-				size={72}
+				size={56}
 				circle
 			/>
-			<Spacer y={2} />
+			<Spacer x={12} />
 			<Typography
-				size='small'
+				size='large'
 				weight={selected ? 'medium' : undefined}
 				style={{ textAlign: 'center' }}
 			>
@@ -44,8 +44,8 @@ const StoreSelectListItem: React.FC<StoresListItemProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		marginRight: 12,
-		marginBottom: 8
+		flexDirection: 'row',
+		alignItems: 'center'
 	}
 });
 

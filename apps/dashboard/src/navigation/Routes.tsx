@@ -299,80 +299,78 @@ const Routes: React.FC = () => {
 				screenOptions={{ headerShown: false }}
 			>
 				{accessToken ? (
-					!activeStore ? (
-						<AppStack.Group>
-							<AppStack.Screen name='StoreSelect' component={StoreSelect} />
-						</AppStack.Group>
-					) : (
-						<>
+					<>
+						{activeStore ? (
 							<AppStack.Screen name='Main' component={MainTabNavigator} />
-							<AppStack.Group
-								screenOptions={({ navigation }) => ({
-									presentation: 'modal',
-									headerShown: true,
-									headerBackButtonDisplayMode: 'minimal',
-									headerLeft: () => (
-										<HeaderBackButton
-											onPress={navigation.goBack}
-											tintColor={theme.icon.default.color}
-										/>
-									)
-								})}
-							>
-								<AppStack.Screen name='Add Product' component={AddProduct} />
-								<AppStack.Screen
-									name='CustomerInfo'
-									component={CustomerInfo}
-									options={{ headerTitle: 'Customer Information' }}
-								/>
-								<AppStack.Screen
-									name='AddPayout'
-									component={AddPayout}
-									options={{ headerTitle: 'Add Payout' }}
-								/>
-								<AppStack.Screen
-									name='AddCategory'
-									component={AddCategory}
-									options={{ headerTitle: 'Add Category' }}
-								/>
-								<AppStack.Screen
-									name='Modals.EditCategory'
-									component={EditCategory}
-									options={{ headerTitle: 'Edit Category' }}
-								/>
-								<AppStack.Screen
-									name='AddAddress'
-									component={AddAddress}
-									options={{ headerTitle: 'Add Address' }}
-								/>
-								<AppStack.Screen
-									name='Modals.EditAddress'
-									component={EditAddress}
-									options={{ headerTitle: 'Edit Address' }}
-								/>
-								<AppStack.Screen
-									name='AddManager'
-									component={AddManager}
-									options={{ headerTitle: 'Add Manager' }}
-								/>
-								<AppStack.Screen
-									name='Modal.CreateStore'
-									component={CreateStore}
-									options={{ headerTitle: 'Create Store' }}
-								/>
-								<AppStack.Screen
-									name='Modal.AddPayoutAccount'
-									component={AddPayoutAccount}
-									options={{ headerTitle: 'Add Payout Account' }}
-								/>
-								<AppStack.Screen
-									name='Modal.Order'
-									component={Order}
-									options={{ headerTitle: 'Order' }}
-								/>
-							</AppStack.Group>
-						</>
-					)
+						) : (
+							<AppStack.Screen name='StoreSelect' component={StoreSelect} />
+						)}
+						<AppStack.Group
+							screenOptions={({ navigation }) => ({
+								presentation: 'modal',
+								headerShown: true,
+								headerBackButtonDisplayMode: 'minimal',
+								headerLeft: () => (
+									<HeaderBackButton
+										onPress={navigation.goBack}
+										tintColor={theme.icon.default.color}
+									/>
+								)
+							})}
+						>
+							<AppStack.Screen name='Add Product' component={AddProduct} />
+							<AppStack.Screen
+								name='CustomerInfo'
+								component={CustomerInfo}
+								options={{ headerTitle: 'Customer Information' }}
+							/>
+							<AppStack.Screen
+								name='AddPayout'
+								component={AddPayout}
+								options={{ headerTitle: 'Add Payout' }}
+							/>
+							<AppStack.Screen
+								name='AddCategory'
+								component={AddCategory}
+								options={{ headerTitle: 'Add Category' }}
+							/>
+							<AppStack.Screen
+								name='Modals.EditCategory'
+								component={EditCategory}
+								options={{ headerTitle: 'Edit Category' }}
+							/>
+							<AppStack.Screen
+								name='AddAddress'
+								component={AddAddress}
+								options={{ headerTitle: 'Add Address' }}
+							/>
+							<AppStack.Screen
+								name='Modals.EditAddress'
+								component={EditAddress}
+								options={{ headerTitle: 'Edit Address' }}
+							/>
+							<AppStack.Screen
+								name='AddManager'
+								component={AddManager}
+								options={{ headerTitle: 'Add Manager' }}
+							/>
+							<AppStack.Screen
+								name='Modal.CreateStore'
+								component={CreateStore}
+								options={{ headerTitle: 'Create Store' }}
+							/>
+							<AppStack.Screen
+								name='Modal.AddPayoutAccount'
+								component={AddPayoutAccount}
+								options={{ headerTitle: 'Add Payout Account' }}
+							/>
+							<AppStack.Screen
+								name='Modal.Order'
+								component={Order}
+								options={{ headerTitle: 'Order' }}
+							/>
+						</AppStack.Group>
+					</>
 				) : (
 					<AppStack.Group>
 						<AppStack.Screen name='Landing' component={Landing} />
