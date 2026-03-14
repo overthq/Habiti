@@ -1,13 +1,13 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import { Button, FormInput, Screen, Spacer } from '@habiti/components';
 
 import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useCreateStoreMutation } from '../data/mutations';
 import { useShallow } from 'zustand/react/shallow';
-import { useNavigation } from '@react-navigation/native';
 
 export interface CreateStoreFormValues {
 	name: string;
