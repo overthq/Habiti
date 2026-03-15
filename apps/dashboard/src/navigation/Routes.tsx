@@ -148,6 +148,7 @@ const ProductStackNavigator = () => {
 				component={Product}
 				options={({ navigation }) => ({
 					headerTitle: 'Product',
+					headerBackButtonDisplayMode: 'minimal',
 					headerLeft: () => (
 						<HeaderBackButton
 							onPress={() => navigation.getParent()?.goBack()}
