@@ -2,7 +2,7 @@ import { Spacer, TextButton, Typography, useTheme } from '@habiti/components';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
-import { ProductStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../types/navigation';
 import { Image as ImageType } from '../../data/types';
 
 interface ProductMediaProps {
@@ -40,7 +40,7 @@ const NoImages: React.FC<NoImagesProps> = ({ action }) => {
 };
 
 const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
-	const { navigate } = useNavigation<NavigationProp<ProductStackParamList>>();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	return (
 		<View>
@@ -49,7 +49,9 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 					Media
 				</Typography>
 				<TextButton
-					onPress={() => navigate('Product.Images', { productId, images })}
+					onPress={() =>
+						navigate('Modals.EditProductImages', { productId, images })
+					}
 					size={15}
 				>
 					Manage
@@ -58,7 +60,9 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 			<Spacer y={8} />
 			{images?.length === 0 ? (
 				<NoImages
-					action={() => navigate('Product.Images', { productId, images })}
+					action={() =>
+						navigate('Modals.EditProductImages', { productId, images })
+					}
 				/>
 			) : (
 				<ScrollView

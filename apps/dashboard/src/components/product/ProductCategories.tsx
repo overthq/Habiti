@@ -2,7 +2,7 @@ import { View, StyleSheet } from 'react-native';
 
 import { Spacer, TextButton, Typography, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { ProductStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../types/navigation';
 import { ProductCategory } from '../../data/types';
 
 interface ProductCategoriesProps {
@@ -43,7 +43,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
 	productId
 }) => {
 	const { theme } = useTheme();
-	const { navigate } = useNavigation<NavigationProp<ProductStackParamList>>();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	return (
 		<View style={styles.container}>
@@ -54,7 +54,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
 				<TextButton
 					variant='secondary'
 					onPress={() =>
-						navigate('Product.Categories', { productId, categories })
+						navigate('Modals.EditProductCategories', { productId, categories })
 					}
 					size={15}
 				>
@@ -65,7 +65,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
 			{categories?.length === 0 ? (
 				<NoCategories
 					action={() =>
-						navigate('Product.Categories', { productId, categories })
+						navigate('Modals.EditProductCategories', { productId, categories })
 					}
 				/>
 			) : (

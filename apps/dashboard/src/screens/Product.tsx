@@ -9,7 +9,7 @@ import {
 import { HeaderButton } from '@react-navigation/elements';
 
 import { useProductQuery } from '../data/queries';
-import { ProductStackParamList } from '../types/navigation';
+import { AppStackParamList, ProductStackParamList } from '../types/navigation';
 import { Spacer, Typography, useTheme } from '@habiti/components';
 import ProductDetails from '../components/product/ProductDetails';
 import ProductMedia from '../components/product/ProductMedia';
@@ -22,7 +22,7 @@ const Product = () => {
 		params: { productId }
 	} = useRoute<RouteProp<ProductStackParamList, 'Product.Main'>>();
 	const { setOptions, navigate } =
-		useNavigation<NavigationProp<ProductStackParamList>>();
+		useNavigation<NavigationProp<AppStackParamList>>();
 
 	const { data, isRefetching, refetch } = useProductQuery(productId);
 
@@ -33,7 +33,7 @@ const Product = () => {
 			headerRight: () => (
 				<HeaderButton
 					onPress={() =>
-						navigate('Product.Details', {
+						navigate('Modals.EditProductDetails', {
 							productId,
 							name: data?.product?.name,
 							description: data?.product?.description

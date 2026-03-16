@@ -5,11 +5,11 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import useGoBack from '../hooks/useGoBack';
 import { useUpdateProductMutation } from '../data/mutations';
-import { ProductStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../types/navigation';
 
 const ProductDetails = () => {
 	const { params } =
-		useRoute<RouteProp<ProductStackParamList, 'Product.Details'>>();
+		useRoute<RouteProp<AppStackParamList, 'Modals.EditProductDetails'>>();
 	const updateProductMutation = useUpdateProductMutation();
 	const { goBack } = useNavigation();
 

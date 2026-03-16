@@ -35,6 +35,16 @@ export type AppStackParamList = {
 	'Modal.CreateStore': undefined;
 	'Modal.AddPayoutAccount': undefined;
 	'Modal.Order': { orderId: string };
+	'Modals.EditProductDetails': {
+		productId: string;
+		name: string;
+		description: string;
+	};
+	'Modals.EditProductImages': { productId: string; images: Image[] };
+	'Modals.EditProductCategories': {
+		productId: string;
+		categories: ProductCategory[];
+	};
 };
 
 export type MainTabParamList = {
@@ -85,15 +95,6 @@ export type StoreStackParamList = {
 // TODO: Use context for productId and other shared details if needed.
 export type ProductStackParamList = {
 	'Product.Main': { productId: string };
-	'Product.Images': {
-		productId: string;
-		images: Image[];
-	};
-	'Product.Categories': {
-		productId: string;
-		categories: ProductCategory[];
-	};
-	'Product.Details': { productId: string; name: string; description: string };
 };
 
 // type ProductsParams = {

@@ -157,30 +157,6 @@ const ProductStackNavigator = () => {
 					)
 				})}
 			/>
-			<ProductStack.Screen
-				name='Product.Images'
-				component={ProductImages}
-				options={{
-					headerTitle: 'Media',
-					headerBackButtonDisplayMode: 'minimal'
-				}}
-			/>
-			<ProductStack.Screen
-				name='Product.Categories'
-				component={ProductCategories}
-				options={{
-					headerTitle: 'Categories',
-					headerBackButtonDisplayMode: 'minimal'
-				}}
-			/>
-			<ProductStack.Screen
-				name='Product.Details'
-				component={ProductDetails}
-				options={{
-					headerTitle: 'Product Details',
-					headerBackButtonDisplayMode: 'minimal'
-				}}
-			/>
 		</ProductStack.Navigator>
 	);
 };
@@ -369,6 +345,21 @@ const Routes: React.FC = () => {
 								name='Modal.Order'
 								component={Order}
 								options={{ headerTitle: 'Order' }}
+							/>
+							<AppStack.Screen
+								name='Modals.EditProductDetails'
+								component={ProductDetails}
+								options={{ headerTitle: 'Product Details' }}
+							/>
+							<AppStack.Screen
+								name='Modals.EditProductImages'
+								component={ProductImages}
+								options={{ headerTitle: 'Media' }}
+							/>
+							<AppStack.Screen
+								name='Modals.EditProductCategories'
+								component={ProductCategories}
+								options={{ headerTitle: 'Categories' }}
 							/>
 						</AppStack.Group>
 					</>

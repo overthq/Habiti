@@ -13,13 +13,13 @@ import FAB from '../components/products/FAB';
 
 import { useCategoriesQuery } from '../data/queries';
 import { useUpdateProductCategoriesMutation } from '../data/mutations';
-import { AppStackParamList, ProductStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../types/navigation';
 import useGoBack from '../hooks/useGoBack';
 
 const ProductCategories = () => {
 	const {
 		params: { productId, categories }
-	} = useRoute<RouteProp<ProductStackParamList, 'Product.Categories'>>();
+	} = useRoute<RouteProp<AppStackParamList, 'Modals.EditProductCategories'>>();
 	const { navigate, goBack, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const { data } = useCategoriesQuery();
