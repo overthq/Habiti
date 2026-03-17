@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Pressable, RefreshControl } from 'react-native';
+import { View, StyleSheet, RefreshControl } from 'react-native';
 import { formatNaira } from '@habiti/common';
 import {
 	Icon,
@@ -75,7 +75,18 @@ const Payouts = () => {
 				<HeaderButton onPress={handleNewPayout}>
 					<Icon name='plus' />
 				</HeaderButton>
-			)
+			),
+			unstable_headerRightItems: () => [
+				{
+					type: 'button',
+					label: 'Add',
+					icon: {
+						type: 'sfSymbol',
+						name: 'plus'
+					},
+					onPress: handleNewPayout
+				}
+			]
 		});
 	}, []);
 

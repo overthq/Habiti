@@ -154,7 +154,20 @@ const ProductStackNavigator = () => {
 							onPress={() => navigation.getParent()?.goBack()}
 							tintColor='#FFFFFF'
 						/>
-					)
+					),
+					unstable_headerLeftItems: () => [
+						{
+							type: 'button',
+							label: 'Back',
+							icon: {
+								type: 'sfSymbol',
+								name: 'chevron.left'
+							},
+							onPress: () => {
+								navigation.getParent()?.goBack();
+							}
+						}
+					]
 				})}
 			/>
 		</ProductStack.Navigator>
@@ -292,7 +305,18 @@ const Routes: React.FC = () => {
 										onPress={navigation.goBack}
 										tintColor={theme.icon.default.color}
 									/>
-								)
+								),
+								unstable_headerLeftItems: () => [
+									{
+										type: 'button',
+										label: 'Back',
+										icon: {
+											type: 'sfSymbol',
+											name: 'xmark'
+										},
+										onPress: navigation.goBack
+									}
+								]
 							})}
 						>
 							<AppStack.Screen name='Add Product' component={AddProduct} />

@@ -70,7 +70,18 @@ const Addresses = () => {
 				<HeaderButton onPress={handleAddAddress}>
 					<Icon name='plus' />
 				</HeaderButton>
-			)
+			),
+			unstable_headerRightItems: () => [
+				{
+					type: 'button',
+					label: 'Add',
+					icon: {
+						type: 'sfSymbol',
+						name: 'plus'
+					},
+					onPress: handleAddAddress
+				}
+			]
 		});
 	}, []);
 
