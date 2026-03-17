@@ -148,37 +148,27 @@ const ProductStackNavigator = () => {
 				component={Product}
 				options={({ navigation }) => ({
 					headerTitle: 'Product',
+					headerBackButtonDisplayMode: 'minimal',
 					headerLeft: () => (
 						<HeaderBackButton
 							onPress={() => navigation.getParent()?.goBack()}
 							tintColor='#FFFFFF'
 						/>
-					)
+					),
+					unstable_headerLeftItems: () => [
+						{
+							type: 'button',
+							label: 'Back',
+							icon: {
+								type: 'sfSymbol',
+								name: 'chevron.left'
+							},
+							onPress: () => {
+								navigation.getParent()?.goBack();
+							}
+						}
+					]
 				})}
-			/>
-			<ProductStack.Screen
-				name='Product.Images'
-				component={ProductImages}
-				options={{
-					headerTitle: 'Media',
-					headerBackButtonDisplayMode: 'minimal'
-				}}
-			/>
-			<ProductStack.Screen
-				name='Product.Categories'
-				component={ProductCategories}
-				options={{
-					headerTitle: 'Categories',
-					headerBackButtonDisplayMode: 'minimal'
-				}}
-			/>
-			<ProductStack.Screen
-				name='Product.Details'
-				component={ProductDetails}
-				options={{
-					headerTitle: 'Product Details',
-					headerBackButtonDisplayMode: 'minimal'
-				}}
 			/>
 		</ProductStack.Navigator>
 	);
@@ -315,7 +305,18 @@ const Routes: React.FC = () => {
 										onPress={navigation.goBack}
 										tintColor={theme.icon.default.color}
 									/>
-								)
+								),
+								unstable_headerLeftItems: () => [
+									{
+										type: 'button',
+										label: 'Back',
+										icon: {
+											type: 'sfSymbol',
+											name: 'xmark'
+										},
+										onPress: navigation.goBack
+									}
+								]
 							})}
 						>
 							<AppStack.Screen name='Add Product' component={AddProduct} />
@@ -368,6 +369,21 @@ const Routes: React.FC = () => {
 								name='Modal.Order'
 								component={Order}
 								options={{ headerTitle: 'Order' }}
+							/>
+							<AppStack.Screen
+								name='Modals.EditProductDetails'
+								component={ProductDetails}
+								options={{ headerTitle: 'Product Details' }}
+							/>
+							<AppStack.Screen
+								name='Modals.EditProductImages'
+								component={ProductImages}
+								options={{ headerTitle: 'Media' }}
+							/>
+							<AppStack.Screen
+								name='Modals.EditProductCategories'
+								component={ProductCategories}
+								options={{ headerTitle: 'Categories' }}
 							/>
 						</AppStack.Group>
 					</>

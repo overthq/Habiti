@@ -66,7 +66,18 @@ const Categories = () => {
 				<HeaderButton onPress={handleAddCategory}>
 					<Icon name='plus' />
 				</HeaderButton>
-			)
+			),
+			unstable_headerRightItems: () => [
+				{
+					type: 'button',
+					label: 'Add',
+					icon: {
+						type: 'sfSymbol',
+						name: 'plus'
+					},
+					onPress: handleAddCategory
+				}
+			]
 		});
 	}, []);
 

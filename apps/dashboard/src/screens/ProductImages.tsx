@@ -6,7 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import useGoBack from '../hooks/useGoBack';
-import { ProductStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../types/navigation';
 import { useUpdateProductMutation } from '../data/mutations';
 import { uploadImage } from '../data/requests';
 import FAB from '../components/products/FAB';
@@ -22,7 +22,7 @@ const ProductImages = () => {
 
 	const {
 		params: { productId, images }
-	} = useRoute<RouteProp<ProductStackParamList, 'Product.Images'>>();
+	} = useRoute<RouteProp<AppStackParamList, 'Modals.EditProductImages'>>();
 
 	const { goBack, setOptions } = useNavigation();
 
