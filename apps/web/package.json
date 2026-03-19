@@ -4,7 +4,7 @@
 	"private": true,
 	"license": "GPL-3.0-or-later",
 	"scripts": {
-		"dev": "next dev --turbopack",
+		"dev": "next dev",
 		"build": "next build",
 		"start": "next start"
 	},
