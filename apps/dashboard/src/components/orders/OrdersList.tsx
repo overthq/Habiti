@@ -31,7 +31,10 @@ const OrdersList = () => {
 				keyExtractor={i => i.id}
 				data={orders}
 				renderItem={renderOrder}
-				contentContainerStyle={{ backgroundColor: theme.screen.background }}
+				contentContainerStyle={{
+					flexGrow: 1,
+					backgroundColor: theme.screen.background
+				}}
 				ListEmptyComponent={
 					<View style={styles.empty}>
 						<Typography variant='secondary' style={styles.emptyText}>
