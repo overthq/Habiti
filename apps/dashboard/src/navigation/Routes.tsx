@@ -102,9 +102,9 @@ const HomeStackNavigator = () => {
 };
 
 const icons: Record<keyof MainTabParamList, IconType> = {
-	Home: 'home',
 	Products: 'tag',
 	Orders: 'inbox',
+	Payouts: 'credit-card',
 	Store: 'shopping-bag'
 };
 
@@ -130,11 +130,11 @@ const MainTabNavigator = () => {
 		<MainTab.Navigator
 			id='MainTab'
 			screenOptions={tabScreenOptions(name)}
-			initialRouteName='Home'
+			initialRouteName='Orders'
 		>
-			<MainTab.Screen name='Home' component={HomeStackNavigator} />
 			<MainTab.Screen name='Orders' component={OrdersStackNavigator} />
 			<MainTab.Screen name='Products' component={ProductsStackNavigator} />
+			<MainTab.Screen name='Payouts' component={Payouts} />
 			<MainTab.Screen name='Store' component={StoreStackNavigator} />
 		</MainTab.Navigator>
 	);
