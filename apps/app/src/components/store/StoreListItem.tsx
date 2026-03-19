@@ -1,7 +1,7 @@
-import { formatNaira } from '@habiti/common';
-import { CustomImage, Spacer, Typography } from '@habiti/components';
 import React from 'react';
 import { StyleSheet, Pressable } from 'react-native';
+import { formatNaira } from '@habiti/common';
+import { CustomImage, Spacer, Typography } from '@habiti/components';
 
 import { StoreProductsQuery } from '../../types/api';
 
