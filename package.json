@@ -25,6 +25,9 @@
 		"packages/*",
 		"apps/*"
 	],
+	"resolutions": {
+		"@types/react": "~19.2.14"
+	},
 	"devDependencies": {
 		"@types/node": "^20",
 		"husky": "^9.1.7",
