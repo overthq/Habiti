@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, RefreshControl } from 'react-native';
+import { View, StyleSheet, RefreshControl, Pressable } from 'react-native';
 import { formatNaira } from '@habiti/common';
 import {
 	Icon,
 	Screen,
+	ScreenHeader,
 	SectionHeader,
 	Spacer,
 	TextButton,
@@ -20,6 +21,7 @@ import useGoBack from '../hooks/useGoBack';
 import { AppStackParamList, MainTabParamList } from '../types/navigation';
 import RevenueBarLegend from '../components/payouts/RevenueBarLegend';
 import { useCurrentStoreQuery, usePayoutsQuery } from '../data/queries';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface NoPayoutsProps {
 	action(): void;
@@ -58,6 +60,7 @@ const Payouts = () => {
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList & MainTabParamList>>();
 	const { theme } = useTheme();
+	const { top } = useSafeAreaInsets();
 
 	useGoBack();
 
@@ -95,61 +98,80 @@ const Payouts = () => {
 	}
 
 	return (
-		<Screen style={styles.container}>
-			<FlashList
-				contentContainerStyle={{ backgroundColor: theme.screen.background }}
-				refreshControl={
-					<RefreshControl
-						refreshing={isRefetching}
-						onRefresh={refetch}
-						tintColor={theme.text.secondary}
-					/>
+		<Screen style={{ paddingTop: top }}>
+			<ScreenHeader
+				title='Payouts'
+				right={
+					<Pressable onPress={handleNewPayout}>
+						<Icon name='plus' />
+					</Pressable>
 				}
-				ListHeaderComponent={
-					<>
-						<Spacer y={16} />
-						<SectionHeader title='Available' padded={false} />
-						<Typography size='xxxlarge' weight='bold' style={styles.available}>
-							{formatNaira(data?.store.realizedRevenue ?? 0)}
-						</Typography>
-						<RevenueBar
-							realizedRevenue={data?.store.realizedRevenue}
-							unrealizedRevenue={data?.store.unrealizedRevenue}
-							paidOut={data?.store.paidOut}
-						/>
-						<Spacer y={12} />
-						<RevenueBarLegend />
-						{!data?.store.bankAccountNumber && (
-							<View
-								style={{
-									marginTop: 16,
-									backgroundColor: theme.input.background,
-									padding: 12,
-									borderRadius: 6
-								}}
-							>
-								<Typography>You haven't added a bank account yet.</Typography>
-								<Spacer y={8} />
-								<TextButton onPress={handleAddPayoutAccount}>
-									Add bank account
-								</TextButton>
-							</View>
-						)}
-						<Spacer y={16} />
-						<SectionHeader title='Payout History' padded={false} />
-					</>
-				}
-				data={payoutData.payouts}
-				keyExtractor={p => p.id}
-				renderItem={({ item }) => <PayoutRow key={item.id} payout={item} />}
-				ListEmptyComponent={<NoPayouts action={handleNewPayout} />}
+				hasBottomBorder
 			/>
+			<View style={styles.container}>
+				<FlashList
+					contentContainerStyle={{
+						flexGrow: 1,
+						backgroundColor: theme.screen.background
+					}}
+					refreshControl={
+						<RefreshControl
+							refreshing={isRefetching}
+							onRefresh={refetch}
+							tintColor={theme.text.secondary}
+						/>
+					}
+					ListHeaderComponent={
+						<>
+							<Spacer y={16} />
+							<SectionHeader title='Available' padded={false} />
+							<Typography
+								size='xxxlarge'
+								weight='bold'
+								style={styles.available}
+							>
+								{formatNaira(data?.store.realizedRevenue ?? 0)}
+							</Typography>
+							<RevenueBar
+								realizedRevenue={data?.store.realizedRevenue}
+								unrealizedRevenue={data?.store.unrealizedRevenue}
+								paidOut={data?.store.paidOut}
+							/>
+							<Spacer y={12} />
+							<RevenueBarLegend />
+							{!data?.store.bankAccountNumber && (
+								<View
+									style={{
+										marginTop: 16,
+										backgroundColor: theme.input.background,
+										padding: 12,
+										borderRadius: 6
+									}}
+								>
+									<Typography>You haven't added a bank account yet.</Typography>
+									<Spacer y={8} />
+									<TextButton onPress={handleAddPayoutAccount}>
+										Add bank account
+									</TextButton>
+								</View>
+							)}
+							<Spacer y={16} />
+							<SectionHeader title='Payout History' padded={false} />
+						</>
+					}
+					data={payoutData.payouts}
+					keyExtractor={p => p.id}
+					renderItem={({ item }) => <PayoutRow key={item.id} payout={item} />}
+					ListEmptyComponent={<NoPayouts action={handleNewPayout} />}
+				/>
+			</View>
 		</Screen>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
+		flex: 1,
 		paddingHorizontal: 16
 	},
 	available: {
