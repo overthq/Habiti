@@ -6,10 +6,11 @@ import { Spacer, useTheme } from '@habiti/components';
 import { FlashList } from '@shopify/flash-list';
 
 import StoreListItem from './StoreListItem';
+import ViewCart from './ViewCart';
+
 import { StoreQuery, useStoreProductsQuery } from '../../types/api';
 import { AppStackParamList } from '../../types/navigation';
 import useRefresh from '../../hooks/useRefresh';
-import ViewCart from './ViewCart';
 
 interface StoreProductsProps {
 	store: StoreQuery['store'];

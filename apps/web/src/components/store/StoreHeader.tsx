@@ -26,14 +26,14 @@ const StoreAvatar = ({ store }: { store: Store }) => {
 
 const StoreHeader: React.FC<StoreHeaderProps> = ({ store, viewerContext }) => {
 	return (
-		<div className='w-full md:grow-1 md:mx-auto flex flex-col justify-center space-y-4 mb-8'>
+		<div className='w-full md:grow md:mx-auto flex flex-col justify-center space-y-4 mb-8'>
 			<div className='flex items-center justify-between'>
 				<div className='flex items-center gap-4'>
 					<StoreAvatar store={store} />
 
 					<div className='flex items-center gap-2'>
 						<h1 className='text-xl font-medium truncate'>{store.name}</h1>
-						{store.unlisted && <Badge variant='warning'>Unlisted</Badge>}
+						{store.unlisted && <Badge variant='secondary'>Unlisted</Badge>}
 					</div>
 				</div>
 

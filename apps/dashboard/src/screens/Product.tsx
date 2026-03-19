@@ -51,37 +51,35 @@ const Product = () => {
 	}
 
 	return (
-		<>
-			<ScrollableScreen
-				refreshControl={
-					<RefreshControl
-						refreshing={isRefetching}
-						onRefresh={refetch}
-						tintColor={theme.text.secondary}
-					/>
-				}
-				showsVerticalScrollIndicator={false}
-			>
-				<Spacer y={16} />
-
-				<ProductDetails product={data.product} />
-
-				<Spacer y={16} />
-
-				<EditButtons product={data.product} />
-
-				<Spacer y={16} />
-
-				<ProductMedia images={data.product.images} productId={productId} />
-
-				<Spacer y={16} />
-
-				<ProductCategories
-					categories={data.product.categories}
-					productId={productId}
+		<ScrollableScreen
+			refreshControl={
+				<RefreshControl
+					refreshing={isRefetching}
+					onRefresh={refetch}
+					tintColor={theme.text.secondary}
 				/>
-			</ScrollableScreen>
-		</>
+			}
+			showsVerticalScrollIndicator={true}
+		>
+			<Spacer y={16} />
+
+			<ProductDetails product={data.product} />
+
+			<Spacer y={16} />
+
+			<EditButtons product={data.product} />
+
+			<Spacer y={16} />
+
+			<ProductMedia images={data.product.images} productId={productId} />
+
+			<Spacer y={16} />
+
+			<ProductCategories
+				categories={data.product.categories}
+				productId={productId}
+			/>
+		</ScrollableScreen>
 	);
 };
 

@@ -48,9 +48,9 @@ export type AppStackParamList = {
 };
 
 export type MainTabParamList = {
-	Home: undefined;
 	Orders: undefined;
-	Products?: undefined;
+	Products: undefined;
+	Payouts: undefined;
 	Store: undefined;
 };
 
@@ -62,14 +62,12 @@ export type HomeStackParamList = {
 };
 
 export type OrdersStackParamList = {
-	// OrdersList: OrdersParams;
 	OrdersList: undefined;
 	Order: { orderId: string };
 	Product: NavigatorScreenParams<ProductStackParamList>;
 };
 
 export type ProductsStackParamList = {
-	// ProductsList: ProductsParams;
 	ProductsList: undefined;
 	'Products.Search': undefined;
 	Product: NavigatorScreenParams<ProductStackParamList>;
@@ -96,22 +94,3 @@ export type StoreStackParamList = {
 export type ProductStackParamList = {
 	'Product.Main': { productId: string };
 };
-
-// type ProductsParams = {
-// 	filter?: {
-// 		unitPrice?: IntWhere;
-// 		categories?: CategoriesWhere;
-// 	};
-// 	orderBy?: {
-// 		createdAt?: Sort;
-// 		updatedAt?: Sort;
-// 		unitPrice?: Sort;
-// 	}[];
-// };
-
-// type OrdersParams = {
-// 	orderBy?: {
-// 		createdAt?: Sort;
-// 		updatedAt?: Sort;
-// 	}[];
-// };

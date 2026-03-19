@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Pressable, RefreshControl } from 'react-native';
+import { View, RefreshControl } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import {
 	EmptyState,

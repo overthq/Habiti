@@ -5,11 +5,7 @@ import MainNavigation from '@/components/main/MainNavigation';
 import AuthDrawer from '@/components/AuthDrawer';
 import { useAuthRefreshQuery } from '@/data/queries';
 
-interface MainLayoutProps {
-	children: React.ReactNode;
-}
-
-const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+const MainLayout = ({ children }: React.PropsWithChildren) => {
 	const { isFetched } = useAuthRefreshQuery();
 
 	if (!isFetched) {
