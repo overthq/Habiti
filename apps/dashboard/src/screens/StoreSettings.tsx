@@ -37,7 +37,7 @@ const StoreSettings = () => {
 				You can delete the store using the button below. Please note that this
 				will also delete all products, orders and payout information.
 			</Typography>
-			<Spacer y={8} />
+			<Spacer y={16} />
 			<Button
 				text='Delete store'
 				onPress={confirmDeleteStore}
