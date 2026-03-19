@@ -6,7 +6,7 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	turbopack: {
-		root: path.join(__dirname, '../../../..')
+		root: path.join(__dirname, '../..')
 	},
 	images: {
 		remotePatterns: [
