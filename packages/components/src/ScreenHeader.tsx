@@ -5,7 +5,7 @@ import { Icon } from './Icon';
 import { useTheme } from './Theme';
 import Typography from './Typography';
 
-interface ScreenHeaderProps {
+interface ScreenHeaderProps extends React.PropsWithChildren {
 	title: string;
 	hasBottomBorder?: boolean;
 	search?: {
@@ -21,7 +21,8 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 	hasBottomBorder = false,
 	search,
 	right,
-	goBack
+	goBack,
+	children
 }) => {
 	const { theme } = useTheme();
 
@@ -58,6 +59,7 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 					</Typography>
 				</Pressable>
 			)}
+			{children}
 		</View>
 	);
 };

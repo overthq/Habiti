@@ -16,6 +16,12 @@ const icons = {
 	'chevron-right': <Path d='M9 18l6-6-6-6' />,
 	'chevron-down': <Path d='m6 9 6 6 6-6' />,
 	'chevrons-up-down': <Path d='m7 15 5 5 5-5M7 9l5-5 5 5' />,
+	'credit-card': (
+		<>
+			<Rect width={20} height={14} x={2} y={5} rx={2} />
+			<Path d='M2 10h20' />
+		</>
+	),
 	filter: <Path d='M22 3H2l8 9.46V19l4 2v-8.54L22 3z' />,
 	heart: (
 		<Path d='M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z' />
