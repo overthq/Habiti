@@ -5,9 +5,7 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-	experimental: {
-		outputFileTracingRoot: path.join(__dirname, '../../')
-	},
+	outputFileTracingRoot: path.join(__dirname, '../../'),
 	images: {
 		remotePatterns: [
 			{
