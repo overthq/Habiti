@@ -4,6 +4,7 @@ import { Icon, Screen, ScreenHeader } from '@habiti/components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import OrdersList from '../components/orders/OrdersList';
+import OrderStatusPills from '../components/orders/OrderStatusPills';
 import {
 	OrdersProvider,
 	useOrdersContext
@@ -24,7 +25,9 @@ const Orders: React.FC = () => {
 					</Pressable>
 				}
 				hasBottomBorder
-			/>
+			>
+				<OrderStatusPills />
+			</ScreenHeader>
 			<OrdersList />
 		</Screen>
 	);
