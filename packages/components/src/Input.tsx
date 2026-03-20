@@ -5,7 +5,7 @@ import { useTheme } from './Theme';
 import Typography from './Typography';
 
 export interface InputProps extends TextInputProps {
-	ref: React.Ref<TextInput>;
+	ref?: React.Ref<TextInput>;
 	label?: string;
 	textArea?: boolean;
 }
