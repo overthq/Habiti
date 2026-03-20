@@ -55,6 +55,7 @@
 	"devDependencies": {
 		"@babel/core": "^7.20.0",
 		"@expo/metro-config": "~55.0.9",
+		"@sentry/cli": "^3.3.3",
 		"@types/cors": "^2.8.17",
 		"@types/extract-files": "^8.1.1",
 		"@types/react": "~19.2.10",
