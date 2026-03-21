@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { ArrowRight, Package, Settings, Store } from 'lucide-react';
 import { formatNaira } from '@/utils/currency';
 import { formatDate } from '@/utils/date';
 import SignInPrompt from '@/components/SignInPrompt';
@@ -11,10 +12,18 @@ import {
 	useFollowedStoresQuery,
 	useOrdersQuery
 } from '@/data/queries';
-
-const spanFallback = (label: string) => (
-	<span className='text-muted-foreground uppercase'>{label.charAt(0)}</span>
-);
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+	Card,
+	CardAction,
+	CardContent,
+	CardHeader,
+	CardTitle
+} from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const ProfilePage = () => {
 	const { accessToken } = useAuthStore();
@@ -43,135 +52,185 @@ const ProfilePage = () => {
 	}
 
 	if (isLoadingUser || !userData) {
-		return <div />;
+		return (
+			<div className='space-y-6'>
+				<div className='flex items-center gap-4'>
+					<Skeleton className='size-16 rounded-full' />
+					<div className='space-y-2'>
+						<Skeleton className='h-5 w-32' />
+						<Skeleton className='h-4 w-48' />
+					</div>
+				</div>
+				<Skeleton className='h-40 w-full rounded-xl' />
+				<Skeleton className='h-40 w-full rounded-xl' />
+			</div>
+		);
 	}
 
 	const { user } = userData;
+	const initials = user.name
+		.split(' ')
+		.map((n: string) => n[0])
+		.join('')
+		.toUpperCase()
+		.slice(0, 2);
 
 	return (
-		<div className='space-y-6'>
-			<h1 className='text-2xl font-medium'>Profile</h1>
-
-			<div className='space-y-4'>
-				<h2 className='text-lg font-medium'>Your Details</h2>
-				<div className='space-y-2'>
+		<div className='max-w-3xl mx-auto space-y-6 pb-8'>
+			{/* Profile Header */}
+			<div className='flex items-center justify-between gap-4'>
+				<div className='flex items-center gap-4'>
+					<Avatar className='size-16 text-3xl font-semibold'>
+						<AvatarImage src={undefined} alt={user.name} />
+						<AvatarFallback className='bg-primary/10 text-primary'>
+							{initials}
+						</AvatarFallback>
+					</Avatar>
 					<div>
-						<p>{user.name}</p>
-						<p className='text-muted-foreground text-sm'>{user.email}</p>
-					</div>
-					<div className='pt-2'>
-						<Link
-							href='/profile/settings'
-							className='text-sm text-primary hover:underline'
-						>
-							Edit profile →
-						</Link>
+						<h1 className='text-xl font-semibold leading-tight'>{user.name}</h1>
+						<p className='text-sm text-muted-foreground'>{user.email}</p>
 					</div>
 				</div>
+				<Button variant='outline' size='sm' asChild>
+					<Link href='/profile/settings'>
+						<Settings />
+						Edit
+					</Link>
+				</Button>
 			</div>
 
-			<div className='space-y-4'>
-				<h2 className='text-lg font-medium'>Followed stores</h2>
-				{isLoadingStores ? (
-					<div className='text-sm text-muted-foreground'>Loading...</div>
-				) : followedStoresData?.stores.length ? (
-					<div className='flex gap-4 overflow-x-auto pb-2'>
-						{followedStoresData.stores.map(store => (
-							<Link
-								key={store.id}
-								href={`/store/${store.id}`}
-								className='flex-shrink-0 rounded-2xl hover:border-foreground/40 transition-colors'
-							>
-								<div className='items-center justify-center gap-4 w-24 overflow-hidden'>
-									<div className='size-24 rounded-full bg-muted flex items-center justify-center overflow-hidden text-3xl font-medium'>
-										{store.image?.path ? (
-											<img
-												src={store.image.path}
-												alt={store.name}
-												className='size-full object-cover'
-											/>
-										) : (
-											spanFallback(store.name)
-										)}
-									</div>
-									<div className='mt-2'>
-										<p className='text-center text-sm truncate'>{store.name}</p>
-									</div>
+			<Separator />
+
+			{/* Followed Stores */}
+			<Card className='shadow-none border-none'>
+				<CardHeader>
+					<CardTitle className='flex items-center gap-2'>
+						Followed stores
+					</CardTitle>
+					{followedStoresData?.stores.length ? (
+						<CardAction>
+							<Badge variant='secondary'>
+								{followedStoresData.stores.length}
+							</Badge>
+						</CardAction>
+					) : null}
+				</CardHeader>
+				<CardContent>
+					{isLoadingStores ? (
+						<div className='flex gap-4'>
+							{[...Array(3)].map((_, i) => (
+								<div key={i} className='flex flex-col items-center gap-2'>
+									<Skeleton className='size-16 rounded-full' />
+									<Skeleton className='h-3 w-14' />
 								</div>
-							</Link>
-						))}
-					</div>
-				) : (
-					<p className='text-sm text-muted-foreground'>
-						You haven't followed any stores yet.
-					</p>
-				)}
-			</div>
-
-			<div className='space-y-4'>
-				<h2 className='text-lg font-medium'>Previous Orders</h2>
-				{isLoadingOrders ? (
-					<div className='text-sm text-muted-foreground'>Loading...</div>
-				) : ordersData?.orders.length ? (
-					<>
-						<div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
-							{ordersData.orders.slice(0, 6).map(order => (
+							))}
+						</div>
+					) : followedStoresData?.stores.length ? (
+						<div className='flex gap-5 overflow-x-auto pb-1'>
+							{followedStoresData.stores.map(store => (
 								<Link
-									className='block'
-									href={`/orders/${order.id}`}
-									key={order.id}
+									key={store.id}
+									href={`/store/${store.id}`}
+									className='flex flex-col items-center gap-2 shrink-0 group'
 								>
-									<div className='p-4 rounded-lg border space-y-2 hover:bg-muted/50 transition-colors'>
-										<p className='text-sm text-muted-foreground leading-none'>
-											{formatDate(order.createdAt)}
-										</p>
-										<div className='flex flex-1 justify-between items-center'>
-											<div className='flex gap-4 items-center'>
-												<div className='size-14 rounded-full overflow-hidden bg-muted-foreground/20 flex-shrink-0'>
-													{order.store.image && (
-														<img
-															src={order.store.image?.path}
-															alt={order.store.name}
-															className='size-full object-cover'
-														/>
-													)}
-												</div>
-												<div>
-													<p className='font-medium'>{order.store.name}</p>
-													<p>{formatNaira(order.total)}</p>
-												</div>
-											</div>
-										</div>
-									</div>
+									<Avatar className='size-16 ring-2 ring-transparent group-hover:ring-primary/30 transition-all'>
+										<AvatarImage
+											src={store.image?.path}
+											alt={store.name}
+											className='object-cover'
+										/>
+										<AvatarFallback className='text-base font-medium bg-muted'>
+											{store.name.charAt(0).toUpperCase()}
+										</AvatarFallback>
+									</Avatar>
+									<p className='text-xs text-center w-16 truncate text-muted-foreground group-hover:text-foreground transition-colors'>
+										{store.name}
+									</p>
 								</Link>
 							))}
 						</div>
-						{ordersData.orders.length > 6 && (
-							<div className='mt-4'>
-								<Link
-									href='/orders'
-									className='text-sm text-primary hover:underline'
-								>
-									View all orders →
-								</Link>
-							</div>
-						)}
-					</>
-				) : (
-					<p className='text-sm text-muted-foreground'>
-						You haven't placed any orders yet.
-					</p>
-				)}
-			</div>
+					) : (
+						<p className='text-sm text-muted-foreground'>
+							You haven't followed any stores yet.
+						</p>
+					)}
+				</CardContent>
+			</Card>
 
-			<div className='space-y-4'>
-				<h2 className='text-lg font-medium'>Watchlist</h2>
-				<div className='text-center py-8'>
-					<p className='text-sm text-muted-foreground'>
-						Your watchlist will appear here once you start saving products.
-					</p>
-				</div>
-			</div>
+			{/* Recent Orders */}
+			<Card className='shadow-none border-none'>
+				<CardHeader>
+					<CardTitle className='flex items-center gap-2'>
+						Recent orders
+					</CardTitle>
+					{ordersData?.orders.length ? (
+						<CardAction>
+							<Button variant='ghost' size='xs' asChild>
+								<Link href='/orders'>
+									View all
+									<ArrowRight />
+								</Link>
+							</Button>
+						</CardAction>
+					) : null}
+				</CardHeader>
+				<CardContent>
+					{isLoadingOrders ? (
+						<div className='space-y-3'>
+							{[...Array(3)].map((_, i) => (
+								<div key={i} className='flex items-center gap-3'>
+									<Skeleton className='size-10 rounded-full shrink-0' />
+									<div className='flex-1 space-y-1.5'>
+										<Skeleton className='h-4 w-32' />
+										<Skeleton className='h-3 w-20' />
+									</div>
+									<Skeleton className='h-4 w-16' />
+								</div>
+							))}
+						</div>
+					) : ordersData?.orders.length ? (
+						<div className='space-y-1'>
+							{ordersData.orders.slice(0, 6).map((order, index) => (
+								<React.Fragment key={order.id}>
+									{index > 0 && <Separator className='my-1' />}
+									<Link
+										href={`/orders/${order.id}`}
+										className='flex items-center gap-3 py-2 rounded-lg hover:bg-muted/50 transition-colors px-2 -mx-2 group'
+									>
+										<Avatar className='size-10 shrink-0'>
+											<AvatarImage
+												src={order.store.image?.path}
+												alt={order.store.name}
+												className='object-cover'
+											/>
+											<AvatarFallback className='text-xs font-medium'>
+												{order.store.name.charAt(0).toUpperCase()}
+											</AvatarFallback>
+										</Avatar>
+										<div className='flex-1 min-w-0'>
+											<p className='font-medium text-sm truncate'>
+												{order.store.name}
+											</p>
+											<p className='text-xs text-muted-foreground'>
+												{formatDate(order.createdAt)}
+											</p>
+										</div>
+										<div className='text-right shrink-0'>
+											<p className='text-sm font-medium'>
+												{formatNaira(order.total)}
+											</p>
+										</div>
+									</Link>
+								</React.Fragment>
+							))}
+						</div>
+					) : (
+						<p className='text-sm text-muted-foreground'>
+							You haven't placed any orders yet.
+						</p>
+					)}
+				</CardContent>
+			</Card>
 		</div>
 	);
 };

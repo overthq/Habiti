@@ -57,7 +57,7 @@ const ReadyForPickupSection: React.FC = () => {
 	}
 
 	return (
-		<Section title='Ready for Pickup'>
+		<Section title='Ready for pickup'>
 			<div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
 				{pickupOrders.map(order => (
 					<PickupOrderCard key={order.id} order={order} />
@@ -76,7 +76,7 @@ const PickupOrderCard: React.FC<PickupOrderCardProps> = ({ order }) => {
 		<Link className='block' href={`/orders/${order.id}`}>
 			<div className='p-4 rounded-lg border border-yellow-300 bg-yellow-50 space-y-2'>
 				<div className='flex gap-4 items-center'>
-					<div className='size-14 rounded-full overflow-hidden bg-muted-foreground/20 flex-shrink-0'>
+					<div className='size-14 rounded-full overflow-hidden bg-muted-foreground/20 shrink-0'>
 						{order.store.image && (
 							<img
 								src={order.store.image?.path}
@@ -109,7 +109,7 @@ const Section: React.FC<React.PropsWithChildren<SectionProps>> = ({
 		<section className='space-y-4'>
 			<div className='flex flex-wrap items-end justify-between gap-4'>
 				<div>
-					<h2 className='text-xl font-medium'>{title}</h2>
+					<h2 className='text-lg font-medium'>{title}</h2>
 				</div>
 			</div>
 			{children}

@@ -100,7 +100,7 @@ const Product = () => {
 								label: 'View in browser',
 								icon: {
 									type: 'sfSymbol',
-									name: 'browser'
+									name: 'safari'
 								},
 								onPress: () => {
 									viewProductInBrowser(productId);

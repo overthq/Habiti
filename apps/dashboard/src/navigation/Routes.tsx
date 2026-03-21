@@ -167,21 +167,6 @@ const ProductStackNavigator = () => {
 								navigation.getParent()?.goBack();
 							}
 						}
-					],
-					unstable_headerRightItems: () => [
-						{
-							type: 'menu',
-							label: '',
-							menu: {
-								title: '',
-								label: '',
-								icon: {
-									type: 'sfSymbol',
-									name: 'ellipsis'
-								},
-								items: []
-							}
-						}
 					]
 				})}
 			/>

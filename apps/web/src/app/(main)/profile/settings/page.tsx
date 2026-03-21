@@ -196,7 +196,7 @@ const SettingsPage = () => {
 	}
 
 	return (
-		<div>
+		<div className='max-w-3xl mx-auto'>
 			<h1 className='text-2xl font-medium mb-4'>Settings</h1>
 
 			<AccountTab user={data.user} />
