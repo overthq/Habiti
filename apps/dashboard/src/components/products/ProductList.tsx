@@ -55,6 +55,10 @@ const ProductList: React.FC = () => {
 				keyExtractor={i => i.id}
 				data={products}
 				renderItem={renderProduct}
+				contentContainerStyle={{
+					flexGrow: 1,
+					backgroundColor: theme.screen.background
+				}}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}

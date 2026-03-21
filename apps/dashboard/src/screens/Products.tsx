@@ -15,7 +15,7 @@ import {
 const Products: React.FC = () => {
 	const { top } = useSafeAreaInsets();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const { openFilterModal } = useProductsContext();
+	const { openFilterModal, search, setSearch } = useProductsContext();
 
 	const handleOpenAddProduct = () => {
 		navigate('Add Product');
@@ -25,6 +25,11 @@ const Products: React.FC = () => {
 		<Screen style={{ paddingTop: top }}>
 			<ScreenHeader
 				title='Products'
+				search={{
+					placeholder: 'Search products',
+					value: search,
+					onChangeText: setSearch
+				}}
 				right={
 					<Pressable onPress={openFilterModal}>
 						<Icon name='sliders-horizontal' size={20} />
