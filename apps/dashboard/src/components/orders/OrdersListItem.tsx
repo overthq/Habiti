@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Typography, Row, Spacer } from '@habiti/components';
+import { Typography, Row, Spacer, Icon } from '@habiti/components';
 import { formatNaira } from '@habiti/common';
 
 import { relativeDate } from '../../utils/date';
@@ -22,7 +22,10 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
 					{ORDER_STATUS_LABELS[order.status]} · {relativeDate(order.createdAt)}
 				</Typography>
 			</View>
-			<Typography style={styles.total}>{formatNaira(order.total)}</Typography>
+			<View style={styles.right}>
+				<Typography style={styles.total}>{formatNaira(order.total)}</Typography>
+				<Icon name='chevron-right' size={20} color='#999' />
+			</View>
 		</Row>
 	);
 };
@@ -39,9 +42,12 @@ const styles = StyleSheet.create({
 	date: {
 		marginTop: 2
 	},
-	total: {
-		marginRight: 4
-	}
+	right: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 4
+	},
+	total: {}
 });
 
 export default OrdersListItem;

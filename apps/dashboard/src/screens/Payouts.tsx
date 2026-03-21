@@ -124,6 +124,24 @@ const Payouts = () => {
 					ListHeaderComponent={
 						<>
 							<Spacer y={16} />
+							{!data?.store.bankAccountNumber && (
+								<View
+									style={{
+										backgroundColor: theme.input.background,
+										padding: 12,
+										borderRadius: 6
+									}}
+								>
+									<Typography weight='medium' size='large'>
+										You haven't added a bank account yet.
+									</Typography>
+									<Spacer y={8} />
+									<TextButton onPress={handleAddPayoutAccount}>
+										Add bank account
+									</TextButton>
+								</View>
+							)}
+							<Spacer y={16} />
 							<SectionHeader title='Available' padded={false} />
 							<Typography
 								size='xxxlarge'
@@ -139,22 +157,6 @@ const Payouts = () => {
 							/>
 							<Spacer y={12} />
 							<RevenueBarLegend />
-							{!data?.store.bankAccountNumber && (
-								<View
-									style={{
-										marginTop: 16,
-										backgroundColor: theme.input.background,
-										padding: 12,
-										borderRadius: 6
-									}}
-								>
-									<Typography>You haven't added a bank account yet.</Typography>
-									<Spacer y={8} />
-									<TextButton onPress={handleAddPayoutAccount}>
-										Add bank account
-									</TextButton>
-								</View>
-							)}
 							<Spacer y={16} />
 							<SectionHeader title='Payout History' padded={false} />
 						</>

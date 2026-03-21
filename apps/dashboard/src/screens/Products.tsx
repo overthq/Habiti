@@ -11,6 +11,7 @@ import {
 	ProductsProvider,
 	useProductsContext
 } from '../components/products/ProductsContext';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 
 const Products: React.FC = () => {
 	const { top } = useSafeAreaInsets();
@@ -37,7 +38,9 @@ const Products: React.FC = () => {
 				}
 				hasBottomBorder
 			/>
-			<ProductList />
+			<Animated.View style={{ flex: 1 }} layout={LinearTransition}>
+				<ProductList />
+			</Animated.View>
 			<FAB onPress={handleOpenAddProduct} text='New Product' />
 		</Screen>
 	);

@@ -137,9 +137,10 @@ export const deleteProduct = async (
 	prisma: PrismaClient,
 	productId: string
 ) => {
-	await prisma.product.delete({
-		where: { id: productId }
-	});
+	await prisma.$transaction([
+		prisma.orderProduct.deleteMany({ where: { productId } }),
+		prisma.product.delete({ where: { id: productId } })
+	]);
 };
 
 export const updateProductQuantity = async (
