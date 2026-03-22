@@ -7,21 +7,30 @@ import {
 	NavigationProp
 } from '@react-navigation/native';
 import { HeaderButton } from '@react-navigation/elements';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import {
+	Spacer,
+	Typography,
+	useTheme,
+	ScrollableScreen
+} from '@habiti/components';
+
+import ProductDetails from '../components/product/ProductDetails';
+import ProductMedia from '../components/product/ProductMedia';
+import ProductCategories from '../components/product/ProductCategories';
+import EditButtons from '../components/product/EditButtons';
+import ProductMenuModal from '../components/product/ProductMenuModal';
 
 import { useProductQuery } from '../data/queries';
 import { useDeleteProductMutation } from '../data/mutations';
+
 import { shareProduct, viewProductInBrowser } from '../utils/share';
+
 import {
 	AppStackParamList,
 	ProductsStackParamList,
 	ProductStackParamList
 } from '../types/navigation';
-import { Spacer, Typography, useTheme } from '@habiti/components';
-import ProductDetails from '../components/product/ProductDetails';
-import ProductMedia from '../components/product/ProductMedia';
-import { ScrollableScreen } from '@habiti/components';
-import ProductCategories from '../components/product/ProductCategories';
-import EditButtons from '../components/product/EditButtons';
 
 const Product = () => {
 	const {
@@ -34,6 +43,7 @@ const Product = () => {
 	const deleteProductMutation = useDeleteProductMutation();
 
 	const { theme } = useTheme();
+	const optionsModalRef = React.useRef<BottomSheetModal>(null);
 
 	const handleDeleteProduct = React.useCallback(() => {
 		Alert.alert(
@@ -54,19 +64,27 @@ const Product = () => {
 		);
 	}, [productId, deleteProductMutation, navigate]);
 
+	const handleEditProduct = React.useCallback(() => {
+		navigate('Modals.EditProductDetails', {
+			productId,
+			name: data?.product?.name,
+			description: data?.product?.description
+		});
+	}, [productId, data?.product]);
+
+	const handleShareProduct = React.useCallback(() => {
+		shareProduct(productId, data?.product?.name ?? '');
+	}, [productId, data?.product?.name]);
+
+	const handleOpenInBrowser = React.useCallback(() => {
+		viewProductInBrowser(productId);
+	}, [productId]);
+
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<HeaderButton
-					onPress={() =>
-						navigate('Modals.EditProductDetails', {
-							productId,
-							name: data?.product?.name,
-							description: data?.product?.description
-						})
-					}
-				>
-					<Typography>Edit</Typography>
+				<HeaderButton onPress={() => optionsModalRef.current?.present()}>
+					<Typography>Options</Typography>
 				</HeaderButton>
 			),
 			unstable_headerRightItems: () => [
@@ -77,53 +95,36 @@ const Product = () => {
 						type: 'sfSymbol',
 						name: 'ellipsis'
 					},
-					changesSelectionAsPrimaryAction: false,
 					menu: {
 						items: [
 							{
 								type: 'action',
 								label: 'Edit',
-								icon: {
-									type: 'sfSymbol',
-									name: 'pencil'
-								},
+								icon: { type: 'sfSymbol', name: 'pencil' },
 								onPress: () => {
-									navigate('Modals.EditProductDetails', {
-										productId,
-										name: data?.product?.name,
-										description: data?.product?.description
-									});
+									handleEditProduct();
 								}
 							},
 							{
 								type: 'action',
 								label: 'View in browser',
-								icon: {
-									type: 'sfSymbol',
-									name: 'safari'
-								},
+								icon: { type: 'sfSymbol', name: 'safari' },
 								onPress: () => {
-									viewProductInBrowser(productId);
+									handleOpenInBrowser();
 								}
 							},
 							{
 								type: 'action',
 								label: 'Share',
-								icon: {
-									type: 'sfSymbol',
-									name: 'square.and.arrow.up'
-								},
+								icon: { type: 'sfSymbol', name: 'square.and.arrow.up' },
 								onPress: () => {
-									shareProduct(productId, data?.product?.name ?? '');
+									handleShareProduct();
 								}
 							},
 							{
 								type: 'action',
 								label: 'Delete product',
-								icon: {
-									type: 'sfSymbol',
-									name: 'trash'
-								},
+								icon: { type: 'sfSymbol', name: 'trash' },
 								destructive: true,
 								onPress: () => {
 									handleDeleteProduct();
@@ -139,7 +140,10 @@ const Product = () => {
 		data?.product?.description,
 		productId,
 		navigate,
-		handleDeleteProduct
+		handleDeleteProduct,
+		handleShareProduct,
+		handleOpenInBrowser,
+		handleEditProduct
 	]);
 
 	if (!data?.product) {
@@ -174,6 +178,14 @@ const Product = () => {
 			<ProductCategories
 				categories={data.product.categories}
 				productId={productId}
+			/>
+
+			<ProductMenuModal
+				modalRef={optionsModalRef}
+				onEditProduct={handleEditProduct}
+				onDeleteProduct={handleDeleteProduct}
+				onShareProduct={handleShareProduct}
+				onViewInBrowser={handleOpenInBrowser}
 			/>
 		</ScrollableScreen>
 	);
