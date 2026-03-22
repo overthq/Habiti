@@ -8,12 +8,7 @@ import {
 } from '@react-navigation/native';
 import { HeaderButton } from '@react-navigation/elements';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import {
-	Spacer,
-	Typography,
-	useTheme,
-	ScrollableScreen
-} from '@habiti/components';
+import { Spacer, useTheme, ScrollableScreen, Icon } from '@habiti/components';
 
 import ProductDetails from '../components/product/ProductDetails';
 import ProductMedia from '../components/product/ProductMedia';
@@ -84,7 +79,7 @@ const Product = () => {
 		setOptions({
 			headerRight: () => (
 				<HeaderButton onPress={() => optionsModalRef.current?.present()}>
-					<Typography>Options</Typography>
+					<Icon name='more-vertical' />
 				</HeaderButton>
 			),
 			unstable_headerRightItems: () => [
