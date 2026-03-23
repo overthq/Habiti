@@ -18,7 +18,7 @@ interface EditAddressFormValues {
 
 const EditAddress = () => {
 	const { params } =
-		useRoute<RouteProp<AppStackParamList, 'Modals.EditAddress'>>();
+		useRoute<RouteProp<AppStackParamList, 'Modal.EditAddress'>>();
 	const { goBack } = useNavigation();
 	const updateAddressMutation = useUpdateAddressMutation();
 	useGoBack('x');

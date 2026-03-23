@@ -61,7 +61,7 @@ const Addresses = () => {
 	useGoBack();
 
 	const handleAddAddress = React.useCallback(() => {
-		navigate('AddAddress');
+		navigate('Modal.AddAddress');
 	}, []);
 
 	React.useLayoutEffect(() => {
@@ -86,7 +86,7 @@ const Addresses = () => {
 	}, []);
 
 	const handleAddressPress = (address: Address) => () => {
-		navigate('Modals.EditAddress', {
+		navigate('Modal.EditAddress', {
 			addressId: address.id,
 			name: address.name,
 			line1: address.line1,

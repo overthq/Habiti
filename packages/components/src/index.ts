@@ -20,6 +20,7 @@ export { default as SearchInput } from './SearchInput';
 export { default as SelectGroup } from './SelectGroup';
 export { default as ScrollableScreen } from './ScrollableScreen';
 export { default as SectionHeader } from './SectionHeader';
+export { default as PillButton } from './PillButton';
 export { default as SmallButton } from './SmallButton';
 export { default as Spacer } from './Spacer';
 export { default as TextButton } from './TextButton';

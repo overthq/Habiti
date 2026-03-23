@@ -1,41 +1,76 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { formatNaira } from '@habiti/common';
-import { CustomImage, Typography, Row } from '@habiti/components';
+import {
+	CustomImage,
+	Typography,
+	Row,
+	Icon,
+	useTheme,
+	Spacer
+} from '@habiti/components';
 
 import { OrderProduct as OrderProductType } from '../../data/types';
 
 interface OrderProductProps {
 	orderProduct: OrderProductType;
 	onPress(): void;
+	isLast?: boolean;
 }
 
 const OrderProduct: React.FC<OrderProductProps> = ({
 	orderProduct: { product, quantity, unitPrice },
-	onPress
-}) => (
-	<Row key={product.id} onPress={onPress} style={styles.container}>
-		<View style={styles.image}>
-			<CustomImage uri={product.images[0]?.path} height={40} width={40} />
-		</View>
-		<View>
-			<Typography>{product.name}</Typography>
-			<Typography size='small' variant='label'>
-				{formatNaira(unitPrice * quantity)}
-			</Typography>
-		</View>
-	</Row>
-);
+	onPress,
+	isLast
+}) => {
+	const { theme } = useTheme();
+
+	return (
+		<Row
+			onPress={onPress}
+			style={[
+				styles.container,
+				{ backgroundColor: 'transparent' },
+				!isLast && {
+					borderBottomWidth: 0.5,
+					borderBottomColor: theme.border.color
+				}
+			]}
+		>
+			<View style={styles.left}>
+				<CustomImage
+					uri={product.images[0]?.path}
+					height={44}
+					width={44}
+					style={styles.image}
+				/>
+				<View>
+					<Typography>{product.name}</Typography>
+					<Spacer y={2} />
+					<Typography size='regular' variant='secondary'>
+						{formatNaira(unitPrice * quantity)}
+					</Typography>
+				</View>
+			</View>
+			<Icon name='chevron-right' color={theme.text.secondary} size={20} />
+		</Row>
+	);
+};
 
 const styles = StyleSheet.create({
 	container: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		paddingHorizontal: 16,
-		paddingVertical: 6
+		justifyContent: 'space-between',
+		paddingHorizontal: 12,
+		paddingVertical: 10
+	},
+	left: {
+		flexDirection: 'row',
+		alignItems: 'center'
 	},
 	image: {
-		marginRight: 8
+		marginRight: 10
 	}
 });
 

@@ -110,7 +110,7 @@ const MainNavigation = () => {
 				</div>
 			</div>
 
-			<div className='w-full md:grow-1 md:max-w-3xl md:mx-auto'>
+			<div className='w-full md:grow md:max-w-3xl md:mx-auto'>
 				<SearchInput />
 			</div>
 

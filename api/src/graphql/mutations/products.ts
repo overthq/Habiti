@@ -83,7 +83,7 @@ export interface DeleteProductArgs {
 
 export const deleteProduct = storeAuthorizedResolver<DeleteProductArgs>(
 	async (_, { id }, ctx) => {
-		return ProductLogic.deleteProduct(ctx, { productId: id });
+		return ProductLogic.archiveProduct(ctx, { productId: id });
 	}
 );
 

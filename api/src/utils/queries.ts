@@ -90,6 +90,8 @@ export const productFiltersToPrismaClause = (filters?: ProductFilters) => {
 
 	if (filters?.status) {
 		where.status = filters.status;
+	} else {
+		where.status = { not: ProductStatus.Archived };
 	}
 
 	if (filters?.inStock) {

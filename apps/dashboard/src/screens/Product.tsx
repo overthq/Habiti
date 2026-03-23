@@ -1,50 +1,26 @@
 import React from 'react';
 import { RefreshControl, View } from 'react-native';
-import {
-	useRoute,
-	RouteProp,
-	useNavigation,
-	NavigationProp
-} from '@react-navigation/native';
-import { HeaderButton } from '@react-navigation/elements';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { Spacer, useTheme, ScrollableScreen } from '@habiti/components';
 
-import { useProductQuery } from '../data/queries';
-import { AppStackParamList, ProductStackParamList } from '../types/navigation';
-import { Spacer, Typography, useTheme } from '@habiti/components';
 import ProductDetails from '../components/product/ProductDetails';
 import ProductMedia from '../components/product/ProductMedia';
-import { ScrollableScreen } from '@habiti/components';
 import ProductCategories from '../components/product/ProductCategories';
 import EditButtons from '../components/product/EditButtons';
+import ProductMenu from '../components/product/ProductMenu';
+
+import { useProductQuery } from '../data/queries';
+
+import { ProductStackParamList } from '../types/navigation';
 
 const Product = () => {
 	const {
 		params: { productId }
 	} = useRoute<RouteProp<ProductStackParamList, 'Product.Main'>>();
-	const { setOptions, navigate } =
-		useNavigation<NavigationProp<AppStackParamList>>();
 
 	const { data, isRefetching, refetch } = useProductQuery(productId);
 
 	const { theme } = useTheme();
-
-	React.useLayoutEffect(() => {
-		setOptions({
-			headerRight: () => (
-				<HeaderButton
-					onPress={() =>
-						navigate('Modals.EditProductDetails', {
-							productId,
-							name: data?.product?.name,
-							description: data?.product?.description
-						})
-					}
-				>
-					<Typography>Edit</Typography>
-				</HeaderButton>
-			)
-		});
-	}, [data?.product?.name, data?.product?.description, productId, navigate]);
 
 	if (!data?.product) {
 		return <View />;
@@ -79,6 +55,8 @@ const Product = () => {
 				categories={data.product.categories}
 				productId={productId}
 			/>
+
+			<ProductMenu product={data.product} productId={productId} />
 		</ScrollableScreen>
 	);
 };

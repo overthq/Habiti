@@ -146,7 +146,8 @@ export const useStoreProductsQuery = (
 
 	return useQuery({
 		queryKey: ['stores', storeId, 'products', queryString],
-		queryFn: () => getStoreProducts(storeId, queryParams)
+		queryFn: () => getStoreProducts(storeId, queryParams),
+		placeholderData: keepPreviousData
 	});
 };
 

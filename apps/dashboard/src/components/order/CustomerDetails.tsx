@@ -1,7 +1,7 @@
-import { Avatar, Typography } from '@habiti/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
+import { Avatar, Spacer, Typography, useTheme } from '@habiti/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { AppStackParamList } from '../../types/navigation';
 import { User } from '../../data/types';
@@ -12,22 +12,29 @@ interface CustomerDetailProps {
 
 const CustomerDetails: React.FC<CustomerDetailProps> = ({ user }) => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { theme } = useTheme();
 
 	const handlePress = React.useCallback(() => {
-		navigate('CustomerInfo', { userId: user.id });
+		navigate('Modal.CustomerInfo', { userId: user.id });
 	}, [user.id]);
 
 	return (
 		<View style={styles.container}>
-			<Typography weight='medium' style={styles.title}>
-				Customer Details
-			</Typography>
+			<Typography weight='medium'>Customer</Typography>
+			<Spacer y={8} />
 			<Pressable
 				onPress={handlePress}
-				style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}
+				style={[styles.button, { backgroundColor: theme.input.background }]}
 			>
-				<Avatar fallbackText={user.name} />
-				<Typography>{user.name}</Typography>
+				<View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
+					<Avatar fallbackText={user.name} />
+					<Typography>{user.name}</Typography>
+				</View>
+				{/*<Separator
+					style={{ marginVertical: 8, marginHorizontal: -12 }}
+					inset={false}
+				/>
+				<TextButton onPress={() => {}}>View order history</TextButton>*/}
 			</Pressable>
 		</View>
 	);
@@ -37,8 +44,10 @@ const styles = StyleSheet.create({
 	container: {
 		paddingHorizontal: 16
 	},
-	title: {
-		marginBottom: 4
+	button: {
+		paddingHorizontal: 12,
+		paddingVertical: 10,
+		borderRadius: 12
 	}
 });
 

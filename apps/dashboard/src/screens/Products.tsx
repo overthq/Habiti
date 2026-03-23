@@ -11,11 +11,12 @@ import {
 	ProductsProvider,
 	useProductsContext
 } from '../components/products/ProductsContext';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 
 const Products: React.FC = () => {
 	const { top } = useSafeAreaInsets();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const { openFilterModal } = useProductsContext();
+	const { openFilterModal, search, setSearch } = useProductsContext();
 
 	const handleOpenAddProduct = () => {
 		navigate('Add Product');
@@ -25,6 +26,11 @@ const Products: React.FC = () => {
 		<Screen style={{ paddingTop: top }}>
 			<ScreenHeader
 				title='Products'
+				search={{
+					placeholder: 'Search products',
+					value: search,
+					onChangeText: setSearch
+				}}
 				right={
 					<Pressable onPress={openFilterModal}>
 						<Icon name='sliders-horizontal' size={20} />
@@ -32,7 +38,9 @@ const Products: React.FC = () => {
 				}
 				hasBottomBorder
 			/>
-			<ProductList />
+			<Animated.View style={{ flex: 1 }} layout={LinearTransition}>
+				<ProductList />
+			</Animated.View>
 			<FAB onPress={handleOpenAddProduct} text='New Product' />
 		</Screen>
 	);

@@ -57,7 +57,7 @@ const Categories = () => {
 	useGoBack();
 
 	const handleAddCategory = React.useCallback(() => {
-		navigate('AddCategory');
+		navigate('Modal.AddCategory');
 	}, []);
 
 	React.useLayoutEffect(() => {
@@ -82,7 +82,7 @@ const Categories = () => {
 	}, []);
 
 	const handleCategoryPress = (category: StoreProductCategory) => () => {
-		navigate('Modals.EditCategory', {
+		navigate('Modal.EditCategory', {
 			categoryId: category.id,
 			name: category.name,
 			description: category.description

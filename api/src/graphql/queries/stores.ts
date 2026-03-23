@@ -3,7 +3,11 @@ import { PaginationArgs } from '../../types/pagination';
 import { Resolver } from '../../types/resolvers';
 import { decodeCursor, paginateQuery } from '../../utils/pagination';
 import { storeAuthorizedResolver } from '../permissions';
-import { OrderStatus, Prisma } from '../../generated/prisma/client';
+import {
+	OrderStatus,
+	Prisma,
+	ProductStatus
+} from '../../generated/prisma/client';
 
 export interface StoreArgs {
 	id: string;
@@ -41,10 +45,19 @@ const products: Resolver<ProductsArgs & PaginationArgs> = (
 ) => {
 	const { filter, orderBy, ...paginationArgs } = args;
 
+	const archivedFilter =
+		!ctx.isAdmin && !filter?.status
+			? { status: { not: ProductStatus.Archived } }
+			: {};
+
 	return paginateQuery(
 		paginationArgs,
 		async (take, cursor) => {
-			let query: Prisma.ProductFindManyArgs = { where: filter, orderBy, take };
+			let query: Prisma.ProductFindManyArgs = {
+				where: { ...filter, ...archivedFilter },
+				orderBy,
+				take
+			};
 
 			if (cursor) {
 				query.cursor = { id: decodeCursor(cursor) };
@@ -57,7 +70,10 @@ const products: Resolver<ProductsArgs & PaginationArgs> = (
 
 			return result ?? [];
 		},
-		() => ctx.prisma.product.count({ where: { ...filter, storeId: parent.id } })
+		() =>
+			ctx.prisma.product.count({
+				where: { ...filter, ...archivedFilter, storeId: parent.id }
+			})
 	);
 };
 

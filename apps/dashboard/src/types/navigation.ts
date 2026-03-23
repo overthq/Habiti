@@ -8,20 +8,20 @@ export type AppStackParamList = {
 	Register: undefined;
 	Verify: { email: string };
 	StoreSelect: undefined;
-	CreateStore: undefined;
+	'Modal.CreateStore': undefined;
 	Root: undefined;
 	'Add Product': undefined;
 	Settings: undefined;
-	CustomerInfo: { userId: string };
-	AddPayout: undefined;
-	AddCategory: undefined;
-	'Modals.EditCategory': {
+	'Modal.CustomerInfo': { userId: string };
+	'Modal.AddPayout': undefined;
+	'Modal.AddCategory': undefined;
+	'Modal.EditCategory': {
 		categoryId: string;
 		name: string;
 		description: string;
 	};
-	AddAddress: undefined;
-	'Modals.EditAddress': {
+	'Modal.AddAddress': undefined;
+	'Modal.EditAddress': {
 		addressId: string;
 		name: string;
 		line1: string;
@@ -31,17 +31,16 @@ export type AppStackParamList = {
 		country: string;
 		postcode?: string;
 	};
-	AddManager: undefined;
-	'Modal.CreateStore': undefined;
+	'Modal.AddManager': undefined;
 	'Modal.AddPayoutAccount': undefined;
 	'Modal.Order': { orderId: string };
-	'Modals.EditProductDetails': {
+	'Modal.EditProductDetails': {
 		productId: string;
 		name: string;
 		description: string;
 	};
-	'Modals.EditProductImages': { productId: string; images: Image[] };
-	'Modals.EditProductCategories': {
+	'Modal.EditProductImages': { productId: string; images: Image[] };
+	'Modal.EditProductCategories': {
 		productId: string;
 		categories: ProductCategory[];
 	};

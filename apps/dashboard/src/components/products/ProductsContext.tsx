@@ -19,11 +19,14 @@ interface ProductsContextType {
 	refresh: () => void;
 	openFilterModal: () => void;
 	clearFilters: () => void;
+	search: string;
+	setSearch: (value: string) => void;
 }
 
 export interface ProductsFilters {
 	categoryId?: string;
 	sortBy?: 'created-at-desc' | 'unit-price-desc' | 'unit-price-asc';
+	search?: string;
 }
 
 const ProductsContext = React.createContext<ProductsContextType | null>(null);
@@ -37,8 +40,9 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 		(s, p) => ({ ...s, ...p }),
 		{} as ProductsFilters
 	);
+	const [search, setSearch] = React.useState('');
 
-	const queryFilters = buildFiltersFromState(filters);
+	const queryFilters = buildFiltersFromState({ ...filters, search });
 	const { data, isLoading, isRefetching, refetch, error } =
 		useProductsQuery(queryFilters);
 
@@ -65,7 +69,9 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 				refreshing: isRefetching,
 				refresh,
 				openFilterModal,
-				clearFilters
+				clearFilters,
+				search,
+				setSearch
 			}}
 		>
 			{children}
@@ -88,6 +94,10 @@ const buildFiltersFromState = (filters: ProductsFilters): ProductFilters => {
 
 	if (filters.sortBy) {
 		result.orderBy = sortByMap[filters.sortBy];
+	}
+
+	if (filters.search) {
+		result.search = filters.search;
 	}
 
 	return result;

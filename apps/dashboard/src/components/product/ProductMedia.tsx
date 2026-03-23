@@ -41,6 +41,7 @@ const NoImages: React.FC<NoImagesProps> = ({ action }) => {
 
 const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { theme } = useTheme();
 
 	return (
 		<View>
@@ -50,7 +51,7 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 				</Typography>
 				<TextButton
 					onPress={() =>
-						navigate('Modals.EditProductImages', { productId, images })
+						navigate('Modal.EditProductImages', { productId, images })
 					}
 					size={15}
 				>
@@ -61,21 +62,25 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 			{images?.length === 0 ? (
 				<NoImages
 					action={() =>
-						navigate('Modals.EditProductImages', { productId, images })
+						navigate('Modal.EditProductImages', { productId, images })
 					}
 				/>
 			) : (
 				<ScrollView
 					horizontal
 					showsHorizontalScrollIndicator={false}
-					contentContainerStyle={{ paddingLeft: 16 }}
+					contentContainerStyle={[{ paddingLeft: 16, gap: 8 }]}
 				>
 					{images.map(image => (
-						<Image
+						<View
 							key={image.id}
-							source={{ uri: image.path }}
-							style={styles.image}
-						/>
+							style={[
+								styles.imageContainer,
+								{ borderColor: theme.border.color }
+							]}
+						>
+							<Image source={{ uri: image.path }} style={styles.image} />
+						</View>
 					))}
 				</ScrollView>
 			)}
@@ -84,6 +89,10 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 };
 
 const styles = StyleSheet.create({
+	imageContainer: {
+		borderWidth: 1,
+		borderRadius: 8
+	},
 	image: {
 		width: 100,
 		height: 100,

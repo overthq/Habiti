@@ -13,7 +13,7 @@ interface EditCategoryFormValues {
 
 const EditCategory = () => {
 	const { params } =
-		useRoute<RouteProp<AppStackParamList, 'Modals.EditCategory'>>();
+		useRoute<RouteProp<AppStackParamList, 'Modal.EditCategory'>>();
 	const { goBack } = useNavigation();
 	const updateCategoryMutation = useUpdateProductCategoryMutation();
 	useGoBack('x');

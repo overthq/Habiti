@@ -1,4 +1,4 @@
-import { Typography } from '@habiti/components';
+import { Typography, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
@@ -13,6 +13,7 @@ interface OrderProductsProps {
 
 const OrderProducts: React.FC<OrderProductsProps> = ({ products }) => {
 	const { navigate } = useNavigation<NavigationProp<ProductsStackParamList>>();
+	const { theme } = useTheme();
 
 	const handlePress = React.useCallback(
 		(productId: string) => () => {
@@ -27,24 +28,31 @@ const OrderProducts: React.FC<OrderProductsProps> = ({ products }) => {
 				Products
 			</Typography>
 
-			{products.map(p => (
-				<OrderProduct
-					key={p.productId}
-					onPress={handlePress(p.productId)}
-					orderProduct={p}
-				/>
-			))}
+			<View style={[styles.list, { backgroundColor: theme.input.background }]}>
+				{products.map((p, index) => (
+					<OrderProduct
+						key={p.productId}
+						onPress={handlePress(p.productId)}
+						orderProduct={p}
+						isLast={index === products.length - 1}
+					/>
+				))}
+			</View>
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		marginVertical: 16
+		marginVertical: 16,
+		paddingHorizontal: 16
 	},
 	sectionHeader: {
-		marginLeft: 16,
-		marginBottom: 4
+		marginBottom: 8
+	},
+	list: {
+		borderRadius: 12,
+		overflow: 'hidden'
 	}
 });
 

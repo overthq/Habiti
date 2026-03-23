@@ -22,7 +22,7 @@ const ProductImages = () => {
 
 	const {
 		params: { productId, images }
-	} = useRoute<RouteProp<AppStackParamList, 'Modals.EditProductImages'>>();
+	} = useRoute<RouteProp<AppStackParamList, 'Modal.EditProductImages'>>();
 
 	const { goBack, setOptions } = useNavigation();
 

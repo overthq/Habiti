@@ -122,6 +122,10 @@ export const getProductById = async (ctx: AppContext, productId: string) => {
 		throw new LogicError(LogicErrorCode.ProductNotFound);
 	}
 
+	if (product.status === ProductStatus.Archived && !ctx.isAdmin) {
+		throw new LogicError(LogicErrorCode.ProductNotFound);
+	}
+
 	const productViewerContext = ctx.user?.id
 		? await ProductData.getProductViewerContext(
 				ctx.prisma,
@@ -163,16 +167,13 @@ export const getProductsByStoreId = async (
 	return ProductData.getProductsByStoreId(ctx.prisma, storeId);
 };
 
-interface DeleteProductInput {
+interface ArchiveProductInput {
 	productId: string;
 }
 
-// TODO: Make this "archive", you cannot delete a product since there may be
-// orders associated with it
-
-export const deleteProduct = async (
+export const archiveProduct = async (
 	ctx: AppContext,
-	input: DeleteProductInput
+	input: ArchiveProductInput
 ) => {
 	const { productId } = input;
 
@@ -190,10 +191,10 @@ export const deleteProduct = async (
 		throw new LogicError(LogicErrorCode.ProductStoreMismatch);
 	}
 
-	await ProductData.deleteProduct(ctx.prisma, productId);
+	await ProductData.archiveProduct(ctx.prisma, productId);
 
 	ctx.services.analytics.track({
-		event: 'product_deleted',
+		event: 'product_archived',
 		distinctId: ctx.user.id,
 		properties: {
 			productId: product.id,
