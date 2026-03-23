@@ -1,4 +1,4 @@
-import { Prisma } from '../../generated/prisma/client';
+import { Prisma, ProductStatus } from '../../generated/prisma/client';
 
 import { ProductsArgs } from '../../types/filters';
 import { PaginationArgs } from '../../types/pagination';
@@ -16,10 +16,13 @@ const products: Resolver<ProductsArgs & PaginationArgs> = async (
 ) => {
 	const { filter, orderBy, ...paginationArgs } = args;
 
-	// Filter out products from unlisted stores for non-admins
+	// Filter out archived products and products from unlisted stores for non-admins
 	const where = {
 		...filter,
-		...(!ctx.isAdmin ? {} : { store: { unlisted: false } })
+		...(!ctx.isAdmin ? { store: { unlisted: false } } : {}),
+		...(!ctx.isAdmin && !filter?.status
+			? { status: { not: ProductStatus.Archived } }
+			: {})
 	};
 
 	return paginateQuery(
@@ -119,6 +122,7 @@ const relatedProducts: Resolver = async (parent, _, ctx) => {
 				AND: [
 					{ id: { not: parent.id } }, // Exclude current product
 					{ storeId: parent.storeId }, // Same store
+					{ status: { not: ProductStatus.Archived } },
 					{
 						categories: {
 							some: {
@@ -135,7 +139,11 @@ const relatedProducts: Resolver = async (parent, _, ctx) => {
 	// Fallback: if no categories, return other products from same store
 	return ctx.prisma.product.findMany({
 		where: {
-			AND: [{ id: { not: parent.id } }, { storeId: parent.storeId }]
+			AND: [
+				{ id: { not: parent.id } },
+				{ storeId: parent.storeId },
+				{ status: { not: ProductStatus.Archived } }
+			]
 		},
 		take: 5
 	});

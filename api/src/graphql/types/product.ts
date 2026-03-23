@@ -1,6 +1,12 @@
 import gql from 'graphql-tag';
 
 const ProductTypes = gql`
+	enum ProductStatus {
+		Active
+		Draft
+		Archived
+	}
+
 	type Product {
 		id: ID!
 		name: String!
@@ -8,6 +14,7 @@ const ProductTypes = gql`
 		unitPrice: Int!
 		quantity: Int!
 		storeId: ID!
+		status: ProductStatus!
 		createdAt: String!
 		updatedAt: String!
 
@@ -129,6 +136,7 @@ const ProductTypes = gql`
 		unitPrice: IntWhere
 		quantity: IntWhere
 		categories: CategoriesWhere
+		status: ProductStatus
 	}
 
 	input UpdateProductImagesInput {

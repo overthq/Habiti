@@ -10,6 +10,7 @@ import * as StoreLogic from '../core/logic/stores';
 import * as ProductLogic from '../core/logic/products';
 import * as PayoutLogic from '../core/logic/payouts';
 import * as AddressLogic from '../core/logic/addresses';
+import { ProductStatus } from '../generated/prisma/client';
 
 // Re-exports from other controllers (handlers that only use req.params/req.body)
 export {
@@ -161,7 +162,11 @@ export const getOverview = async (
 
 	try {
 		const lowStockProducts = await ctx.prisma.product.findMany({
-			where: { storeId: ctx.storeId, quantity: { lt: 5 } },
+			where: {
+				storeId: ctx.storeId,
+				quantity: { lt: 5 },
+				status: { not: ProductStatus.Archived }
+			},
 			include: { images: true, categories: { include: { category: true } } }
 		});
 

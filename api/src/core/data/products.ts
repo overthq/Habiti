@@ -119,10 +119,14 @@ export const getProductReviews = async (
 
 export const getProductsByStoreId = async (
 	prisma: PrismaClient,
-	storeId: string
+	storeId: string,
+	{ includeArchived = false }: { includeArchived?: boolean } = {}
 ) => {
 	const products = await prisma.product.findMany({
-		where: { storeId },
+		where: {
+			storeId,
+			...(includeArchived ? {} : { status: { not: ProductStatus.Archived } })
+		},
 		include: {
 			images: true,
 			categories: { include: { category: true } }
@@ -133,14 +137,19 @@ export const getProductsByStoreId = async (
 	return products;
 };
 
-export const deleteProduct = async (
+export const archiveProduct = async (
 	prisma: PrismaClient,
 	productId: string
 ) => {
-	await prisma.$transaction([
-		prisma.orderProduct.deleteMany({ where: { productId } }),
-		prisma.product.delete({ where: { id: productId } })
+	const [product] = await prisma.$transaction([
+		prisma.product.update({
+			where: { id: productId },
+			data: { status: ProductStatus.Archived }
+		}),
+		prisma.cartProduct.deleteMany({ where: { productId } }),
+		prisma.watchlistProduct.deleteMany({ where: { productId } })
 	]);
+	return product;
 };
 
 export const updateProductQuantity = async (
@@ -250,6 +259,7 @@ export const getRelatedProducts = async (
 	let relatedProducts = await prisma.product.findMany({
 		where: {
 			storeId: product.storeId,
+			status: { not: ProductStatus.Archived },
 			categories: {
 				some: { categoryId: { in: product.categories.map(c => c.categoryId) } }
 			}
@@ -262,7 +272,10 @@ export const getRelatedProducts = async (
 
 	if (relatedProducts.length === 0) {
 		relatedProducts = await prisma.product.findMany({
-			where: { storeId: product.storeId },
+			where: {
+				storeId: product.storeId,
+				status: { not: ProductStatus.Archived }
+			},
 			include: {
 				images: true
 			},

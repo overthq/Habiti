@@ -1,4 +1,4 @@
-import { PrismaClient } from '../../generated/prisma/client';
+import { PrismaClient, ProductStatus } from '../../generated/prisma/client';
 
 export interface GlobalSearchOptions {
 	includeUnlisted?: boolean;
@@ -15,6 +15,7 @@ export const globalSearch = async (
 		prisma.product.findMany({
 			where: {
 				name: { contains: query, mode: 'insensitive' },
+				status: { not: ProductStatus.Archived },
 				...(includeUnlisted ? {} : { store: { unlisted: false } })
 			},
 			include: {

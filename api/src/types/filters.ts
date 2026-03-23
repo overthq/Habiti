@@ -1,3 +1,5 @@
+import { ProductStatus } from '../generated/prisma/client';
+
 export type StringWhere = {
 	contains?: string;
 	search?: string;
@@ -21,6 +23,7 @@ export interface ProductsArgs {
 		unitPrice?: IntWhere;
 		quantity?: IntWhere;
 		categories?: CategoriesWhere;
+		status?: ProductStatus;
 	};
 	orderBy: {
 		createdAt?: 'asc' | 'desc';

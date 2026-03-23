@@ -159,7 +159,7 @@ export const deleteProduct = async (
 ) => {
 	try {
 		const ctx = getAppContext(req);
-		await ProductLogic.deleteProduct(ctx, { productId: req.params.id });
+		await ProductLogic.archiveProduct(ctx, { productId: req.params.id });
 		return res.status(204).json({ message: 'Product deleted' });
 	} catch (error) {
 		return next(error);
