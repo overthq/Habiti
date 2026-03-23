@@ -14,7 +14,8 @@ import { useCustomerInfoQuery } from '../data/queries';
 import type { AppStackParamList } from '../types/navigation';
 
 const CustomerInfo = () => {
-	const { params } = useRoute<RouteProp<AppStackParamList, 'CustomerInfo'>>();
+	const { params } =
+		useRoute<RouteProp<AppStackParamList, 'Modal.CustomerInfo'>>();
 	const { data, isLoading } = useCustomerInfoQuery(params.userId);
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 

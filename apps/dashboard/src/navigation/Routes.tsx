@@ -321,37 +321,37 @@ const Routes: React.FC = () => {
 						>
 							<AppStack.Screen name='Add Product' component={AddProduct} />
 							<AppStack.Screen
-								name='CustomerInfo'
+								name='Modal.CustomerInfo'
 								component={CustomerInfo}
 								options={{ headerTitle: 'Customer Information' }}
 							/>
 							<AppStack.Screen
-								name='AddPayout'
+								name='Modal.AddPayout'
 								component={AddPayout}
 								options={{ headerTitle: 'Add Payout' }}
 							/>
 							<AppStack.Screen
-								name='AddCategory'
+								name='Modal.AddCategory'
 								component={AddCategory}
 								options={{ headerTitle: 'Add Category' }}
 							/>
 							<AppStack.Screen
-								name='Modals.EditCategory'
+								name='Modal.EditCategory'
 								component={EditCategory}
 								options={{ headerTitle: 'Edit Category' }}
 							/>
 							<AppStack.Screen
-								name='AddAddress'
+								name='Modal.AddAddress'
 								component={AddAddress}
 								options={{ headerTitle: 'Add Address' }}
 							/>
 							<AppStack.Screen
-								name='Modals.EditAddress'
+								name='Modal.EditAddress'
 								component={EditAddress}
 								options={{ headerTitle: 'Edit Address' }}
 							/>
 							<AppStack.Screen
-								name='AddManager'
+								name='Modal.AddManager'
 								component={AddManager}
 								options={{ headerTitle: 'Add Manager' }}
 							/>
@@ -371,17 +371,17 @@ const Routes: React.FC = () => {
 								options={{ headerTitle: 'Order' }}
 							/>
 							<AppStack.Screen
-								name='Modals.EditProductDetails'
+								name='Modal.EditProductDetails'
 								component={ProductDetails}
 								options={{ headerTitle: 'Product Details' }}
 							/>
 							<AppStack.Screen
-								name='Modals.EditProductImages'
+								name='Modal.EditProductImages'
 								component={ProductImages}
 								options={{ headerTitle: 'Media' }}
 							/>
 							<AppStack.Screen
-								name='Modals.EditProductCategories'
+								name='Modal.EditProductCategories'
 								component={ProductCategories}
 								options={{ headerTitle: 'Categories' }}
 							/>

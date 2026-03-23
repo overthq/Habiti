@@ -1,7 +1,7 @@
-import { Avatar, Spacer, Typography, useTheme } from '@habiti/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
+import { Avatar, Spacer, Typography, useTheme } from '@habiti/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { AppStackParamList } from '../../types/navigation';
 import { User } from '../../data/types';
@@ -15,7 +15,7 @@ const CustomerDetails: React.FC<CustomerDetailProps> = ({ user }) => {
 	const { theme } = useTheme();
 
 	const handlePress = React.useCallback(() => {
-		navigate('CustomerInfo', { userId: user.id });
+		navigate('Modal.CustomerInfo', { userId: user.id });
 	}, [user.id]);
 
 	return (

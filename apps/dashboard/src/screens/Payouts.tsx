@@ -1,64 +1,25 @@
 import React from 'react';
 import { View, StyleSheet, RefreshControl, Pressable } from 'react-native';
-import { formatNaira } from '@habiti/common';
-import {
-	Icon,
-	Screen,
-	ScreenHeader,
-	SectionHeader,
-	Spacer,
-	TextButton,
-	Typography,
-	useTheme
-} from '@habiti/components';
+import { Icon, Screen, ScreenHeader, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import { HeaderButton } from '@react-navigation/elements';
-
-import PayoutRow from '../components/payouts/PayoutRow';
-import RevenueBar from '../components/payouts/RevenueBar';
-import useGoBack from '../hooks/useGoBack';
-import { AppStackParamList, MainTabParamList } from '../types/navigation';
-import RevenueBarLegend from '../components/payouts/RevenueBarLegend';
-import { useCurrentStoreQuery, usePayoutsQuery } from '../data/queries';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-interface NoPayoutsProps {
-	action(): void;
-}
+import PayoutRow from '../components/payouts/PayoutRow';
+import PayoutsHeader from '../components/payouts/PayoutsHeader';
+import NoPayouts from '../components/payouts/NoPayouts';
 
-const NoPayouts: React.FC<NoPayoutsProps> = ({ action }) => {
-	const { theme } = useTheme();
+import useGoBack from '../hooks/useGoBack';
+import { useCurrentStoreQuery, usePayoutsQuery } from '../data/queries';
 
-	return (
-		<View
-			style={{
-				backgroundColor: theme.input.background,
-				padding: 12,
-				borderRadius: 6,
-				marginVertical: 8
-			}}
-		>
-			<Typography weight='medium' size='large'>
-				No payouts
-			</Typography>
-			<Spacer y={4} />
-			<Typography variant='secondary'>
-				Created payouts will appear here.
-			</Typography>
-			<Spacer y={8} />
-			<View style={{ backgroundColor: theme.border.color, height: 1 }} />
-			<Spacer y={8} />
-			<TextButton onPress={action}>Add payout</TextButton>
-		</View>
-	);
-};
+import type { AppStackParamList } from '../types/navigation';
 
 const Payouts = () => {
 	const { data, refetch, isRefetching } = useCurrentStoreQuery();
 	const { data: payoutData } = usePayoutsQuery();
 	const { navigate, setOptions } =
-		useNavigation<NavigationProp<AppStackParamList & MainTabParamList>>();
+		useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
 	const { top } = useSafeAreaInsets();
 
@@ -69,7 +30,7 @@ const Payouts = () => {
 	}, []);
 
 	const handleNewPayout = React.useCallback(() => {
-		navigate('AddPayout');
+		navigate('Modal.AddPayout');
 	}, []);
 
 	React.useLayoutEffect(() => {
@@ -83,10 +44,7 @@ const Payouts = () => {
 				{
 					type: 'button',
 					label: 'Add',
-					icon: {
-						type: 'sfSymbol',
-						name: 'plus'
-					},
+					icon: { type: 'sfSymbol', name: 'plus' },
 					onPress: handleNewPayout
 				}
 			]
@@ -122,44 +80,13 @@ const Payouts = () => {
 						/>
 					}
 					ListHeaderComponent={
-						<>
-							<Spacer y={16} />
-							{!data?.store.bankAccountNumber && (
-								<View
-									style={{
-										backgroundColor: theme.input.background,
-										padding: 12,
-										borderRadius: 6
-									}}
-								>
-									<Typography weight='medium' size='large'>
-										You haven't added a bank account yet.
-									</Typography>
-									<Spacer y={8} />
-									<TextButton onPress={handleAddPayoutAccount}>
-										Add bank account
-									</TextButton>
-								</View>
-							)}
-							<Spacer y={16} />
-							<SectionHeader title='Available' padded={false} />
-							<Typography
-								size='xxxlarge'
-								weight='bold'
-								style={styles.available}
-							>
-								{formatNaira(data?.store.realizedRevenue ?? 0)}
-							</Typography>
-							<RevenueBar
-								realizedRevenue={data?.store.realizedRevenue}
-								unrealizedRevenue={data?.store.unrealizedRevenue}
-								paidOut={data?.store.paidOut}
-							/>
-							<Spacer y={12} />
-							<RevenueBarLegend />
-							<Spacer y={16} />
-							<SectionHeader title='Payout History' padded={false} />
-						</>
+						<PayoutsHeader
+							hasLinkedBankAccount={!!data.store.bankAccountNumber}
+							realizedRevenue={data.store.realizedRevenue ?? 0}
+							unrealizedRevenue={data.store.unrealizedRevenue ?? 0}
+							paidOut={data.store.paidOut ?? 0}
+							onAddPayoutAccount={handleAddPayoutAccount}
+						/>
 					}
 					data={payoutData.payouts}
 					keyExtractor={p => p.id}
@@ -175,9 +102,6 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		paddingHorizontal: 16
-	},
-	available: {
-		marginBottom: 8
 	}
 });
 

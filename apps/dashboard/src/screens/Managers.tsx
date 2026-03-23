@@ -28,7 +28,7 @@ const Managers = () => {
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<Pressable onPress={() => navigate('AddManager')}>
+				<Pressable onPress={() => navigate('Modal.AddManager')}>
 					<Icon name='plus' />
 				</Pressable>
 			)

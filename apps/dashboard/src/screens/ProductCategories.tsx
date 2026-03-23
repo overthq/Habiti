@@ -1,5 +1,5 @@
 import React from 'react';
-import { Screen, Checkbox, Typography, TextButton } from '@habiti/components';
+import { Screen, Checkbox, Typography } from '@habiti/components';
 import { View, StyleSheet } from 'react-native';
 import { HeaderButton } from '@react-navigation/elements';
 import {
@@ -19,7 +19,7 @@ import useGoBack from '../hooks/useGoBack';
 const ProductCategories = () => {
 	const {
 		params: { productId, categories }
-	} = useRoute<RouteProp<AppStackParamList, 'Modals.EditProductCategories'>>();
+	} = useRoute<RouteProp<AppStackParamList, 'Modal.EditProductCategories'>>();
 	const { navigate, goBack, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const { data } = useCategoriesQuery();
@@ -30,7 +30,7 @@ const ProductCategories = () => {
 	useGoBack();
 
 	const handleAddCategory = React.useCallback(() => {
-		navigate('AddCategory');
+		navigate('Modal.AddCategory');
 	}, [navigate]);
 
 	const disabled = React.useMemo(() => {

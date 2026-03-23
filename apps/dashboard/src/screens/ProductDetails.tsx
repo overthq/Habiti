@@ -9,7 +9,7 @@ import { AppStackParamList } from '../types/navigation';
 
 const ProductDetails = () => {
 	const { params } =
-		useRoute<RouteProp<AppStackParamList, 'Modals.EditProductDetails'>>();
+		useRoute<RouteProp<AppStackParamList, 'Modal.EditProductDetails'>>();
 	const updateProductMutation = useUpdateProductMutation();
 	const { goBack } = useNavigation();
 

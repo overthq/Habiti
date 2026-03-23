@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { refreshAuthTokens } from '../utils/refreshManager';
 import {
 	getCurrentStore,
@@ -73,7 +73,8 @@ export const useCategoriesQuery = () => {
 export const useOrdersQuery = (filters?: OrderFilters) => {
 	return useQuery({
 		queryKey: ['stores', 'current', 'orders', filters],
-		queryFn: () => getOrders(filters)
+		queryFn: () => getOrders(filters),
+		placeholderData: keepPreviousData
 	});
 };
 

@@ -54,7 +54,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
 				<TextButton
 					variant='secondary'
 					onPress={() =>
-						navigate('Modals.EditProductCategories', { productId, categories })
+						navigate('Modal.EditProductCategories', { productId, categories })
 					}
 					size={15}
 				>
@@ -65,7 +65,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
 			{categories?.length === 0 ? (
 				<NoCategories
 					action={() =>
-						navigate('Modals.EditProductCategories', { productId, categories })
+						navigate('Modal.EditProductCategories', { productId, categories })
 					}
 				/>
 			) : (

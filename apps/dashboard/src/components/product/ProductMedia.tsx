@@ -51,7 +51,7 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 				</Typography>
 				<TextButton
 					onPress={() =>
-						navigate('Modals.EditProductImages', { productId, images })
+						navigate('Modal.EditProductImages', { productId, images })
 					}
 					size={15}
 				>
@@ -62,7 +62,7 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 			{images?.length === 0 ? (
 				<NoImages
 					action={() =>
-						navigate('Modals.EditProductImages', { productId, images })
+						navigate('Modal.EditProductImages', { productId, images })
 					}
 				/>
 			) : (

@@ -45,7 +45,7 @@ const ProductMenu: React.FC<ProductMenuProps> = ({ productId, product }) => {
 	}, [productId, deleteProductMutation, navigate]);
 
 	const handleEditProduct = React.useCallback(() => {
-		navigate('Modals.EditProductDetails', {
+		navigate('Modal.EditProductDetails', {
 			productId,
 			name: product.name,
 			description: product.description
@@ -81,34 +81,26 @@ const ProductMenu: React.FC<ProductMenuProps> = ({ productId, product }) => {
 								type: 'action',
 								label: 'Edit',
 								icon: { type: 'sfSymbol', name: 'pencil' },
-								onPress: () => {
-									handleEditProduct();
-								}
+								onPress: handleEditProduct
 							},
 							{
 								type: 'action',
 								label: 'View in browser',
 								icon: { type: 'sfSymbol', name: 'safari' },
-								onPress: () => {
-									handleOpenInBrowser();
-								}
+								onPress: handleOpenInBrowser
 							},
 							{
 								type: 'action',
 								label: 'Share',
 								icon: { type: 'sfSymbol', name: 'square.and.arrow.up' },
-								onPress: () => {
-									handleShareProduct();
-								}
+								onPress: handleShareProduct
 							},
 							{
 								type: 'action',
 								label: 'Delete product',
 								icon: { type: 'sfSymbol', name: 'trash' },
 								destructive: true,
-								onPress: () => {
-									handleDeleteProduct();
-								}
+								onPress: handleDeleteProduct
 							}
 						]
 					}
