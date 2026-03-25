@@ -52,6 +52,15 @@ const OrderStatusPill: React.FC<OrderStatusPillProps> = ({
 	);
 };
 
+const styles = StyleSheet.create({
+	pill: {
+		borderWidth: 1,
+		borderRadius: 50,
+		paddingHorizontal: 12,
+		paddingVertical: 4
+	}
+});
+
 const OrderStatusPills = () => {
 	const { status: selectedStatus, setStatus } = useOrdersContext();
 
@@ -84,12 +93,3 @@ const OrderStatusPills = () => {
 };
 
 export default OrderStatusPills;
-
-const styles = StyleSheet.create({
-	pill: {
-		borderWidth: 1,
-		borderRadius: 50,
-		paddingHorizontal: 8,
-		paddingVertical: 4
-	}
-});

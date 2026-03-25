@@ -1,21 +1,55 @@
 import React from 'react';
-import { View } from 'react-native';
-import { Button, Screen, ScreenHeader } from '@habiti/components';
+import { View, Pressable, RefreshControl } from 'react-native';
+import {
+	Avatar,
+	Button,
+	Icon,
+	Screen,
+	ScrollableScreen,
+	Spacer,
+	Typography,
+	useTheme
+} from '@habiti/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import StoreMenu from '../components/store/StoreMenu';
+import PayoutsHeader from '../components/payouts/PayoutsHeader';
+import RecentTransactions from '../components/store/RecentTransactions';
+import StoreSelectModal from '../components/store/StoreSelectModal';
+
 import { useCurrentStoreQuery } from '../data/queries';
 import useStore from '../state';
 import { useShallow } from 'zustand/react/shallow';
 
+import type {
+	AppStackParamList,
+	StoreStackParamList
+} from '../types/navigation';
+
 const Store = () => {
-	const { data, isLoading, error } = useCurrentStoreQuery();
+	const { data, refetch, isRefetching, isLoading, error } =
+		useCurrentStoreQuery();
+	const { navigate } =
+		useNavigation<NavigationProp<AppStackParamList & StoreStackParamList>>();
+	const { theme } = useTheme();
 	const { top } = useSafeAreaInsets();
 	const { logOut } = useStore(useShallow(({ logOut }) => ({ logOut })));
+	const modalRef = React.useRef<BottomSheetModal>(null);
 
-	const store = data?.store;
+	const handleOpenSettings = React.useCallback(() => {
+		navigate('StoreSettings');
+	}, []);
 
-	if (isLoading || !store) {
+	const handleViewBalanceDetails = React.useCallback(() => {
+		navigate('BalanceDetails');
+	}, []);
+
+	const handleSwitchStore = React.useCallback(() => {
+		modalRef.current?.present();
+	}, []);
+
+	if (isLoading || !data?.store) {
 		return <View />;
 	}
 
@@ -27,10 +61,62 @@ const Store = () => {
 		);
 	}
 
+	const store = data.store;
+
 	return (
 		<Screen style={{ paddingTop: top }}>
-			<ScreenHeader title='Store' />
-			<StoreMenu store={store} />
+			<View
+				style={{
+					flexDirection: 'row',
+					alignItems: 'center',
+					justifyContent: 'space-between',
+					paddingHorizontal: 16,
+					paddingVertical: 12,
+					borderBottomWidth: 0.5,
+					borderBottomColor: theme.border.color
+				}}
+			>
+				<Pressable
+					onPress={handleSwitchStore}
+					style={{ flexDirection: 'row', alignItems: 'center' }}
+				>
+					<Avatar
+						uri={store.image?.path}
+						fallbackText={store.name}
+						size={32}
+						circle
+					/>
+					<Spacer x={10} />
+					<Typography size='xxlarge' weight='bold'>
+						{store.name}
+					</Typography>
+					<Spacer x={4} />
+					<Icon name='chevron-down' size={24} />
+				</Pressable>
+
+				<Pressable onPress={handleOpenSettings}>
+					<Icon name='settings' />
+				</Pressable>
+			</View>
+			<ScrollableScreen
+				style={{ paddingHorizontal: 16 }}
+				refreshControl={
+					<RefreshControl
+						refreshing={isRefetching}
+						onRefresh={refetch}
+						tintColor={theme.text.secondary}
+					/>
+				}
+			>
+				<PayoutsHeader
+					realizedRevenue={store.realizedRevenue ?? 0}
+					paidOut={store.paidOut ?? 0}
+					onViewDetails={handleViewBalanceDetails}
+				/>
+				<Spacer y={16} />
+				<RecentTransactions />
+			</ScrollableScreen>
+			<StoreSelectModal modalRef={modalRef} />
 		</Screen>
 	);
 };

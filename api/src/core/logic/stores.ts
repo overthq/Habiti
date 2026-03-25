@@ -2,7 +2,6 @@ import { AppContext } from '../../utils/context';
 
 import * as PushTokenData from '../data/pushTokens';
 import * as StoreData from '../data/stores';
-import * as PayoutData from '../data/payouts';
 
 import { NotificationType } from '../notifications';
 
@@ -398,10 +397,6 @@ export const getFollowedStores = async (ctx: AppContext, userId: string) => {
 
 export const getStores = async (ctx: AppContext, query: any) => {
 	return StoreData.getStores(ctx.prisma, query);
-};
-
-export const getStorePayouts = async (ctx: AppContext, storeId: string) => {
-	return PayoutData.getStorePayouts(ctx.prisma, storeId);
 };
 
 export const getStoreManagers = async (

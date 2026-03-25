@@ -368,17 +368,31 @@ export const getStoreCustomer = async (
 interface UpdateStoreRevenueArgs {
 	storeId: string;
 	total: number;
+	orderId: string;
 }
 
 export const updateStoreRevenue = async (
 	prisma: PrismaClient,
 	args: UpdateStoreRevenueArgs
 ) => {
-	await prisma.store.update({
-		where: { id: args.storeId },
-		data: {
-			realizedRevenue: { increment: args.total },
-			unrealizedRevenue: { decrement: args.total }
-		}
+	const { createTransaction } = await import('./transactions');
+	const { TransactionType } = await import('../../generated/prisma/client');
+
+	await prisma.$transaction(async tx => {
+		await tx.store.update({
+			where: { id: args.storeId },
+			data: {
+				realizedRevenue: { increment: args.total },
+				unrealizedRevenue: { decrement: args.total }
+			}
+		});
+
+		await createTransaction(tx, {
+			storeId: args.storeId,
+			type: TransactionType.Revenue,
+			amount: args.total,
+			orderId: args.orderId,
+			description: 'Payment confirmed'
+		});
 	});
 };

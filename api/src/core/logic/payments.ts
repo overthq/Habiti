@@ -1,4 +1,4 @@
-import { OrderStatus, PayoutStatus } from '../../generated/prisma/client';
+import { OrderStatus } from '../../generated/prisma/client';
 import { AppContext } from '../../utils/context';
 import { storeCard } from '../data/cards';
 import * as OrderData from '../data/orders';
@@ -8,15 +8,15 @@ import prismaClient from '../../config/prisma';
 export const approvePayment = async (ctx: AppContext, body: any) => {
 	const { reference, amount } = extractParameters(body);
 
-	const payout = await ctx.prisma.payout.findUnique({
+	const transaction = await ctx.prisma.transaction.findFirst({
 		where: {
 			id: reference,
-			status: PayoutStatus.Pending,
+			status: 'Processing',
 			amount
 		}
 	});
 
-	return payout;
+	return transaction;
 };
 
 // It's currently hard to know what the shape of the information from Paystack

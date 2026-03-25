@@ -4,8 +4,8 @@ import {
 	type OrderFilters,
 	type ProductFilters,
 	type StoreFilters,
-	type PayoutFilters,
-	type UserFilters
+	type UserFilters,
+	type TransactionFilters
 } from './types';
 import {
 	getOrders,
@@ -17,13 +17,11 @@ import {
 	getStore,
 	getStoreProducts,
 	getStoreOrders,
-	getStorePayouts,
 	getStoreManagers,
+	getStoreTransactions,
 	getUsers,
 	getUser,
-	getOverview,
-	getPayouts,
-	getPayout
+	getOverview
 } from './requests';
 
 export const useOrdersQuery = (params?: OrderFilters) => {
@@ -99,15 +97,6 @@ export const useStoreOrdersQuery = (id: string, params?: StoreFilters) => {
 	});
 };
 
-export const useStorePayoutsQuery = (id: string, params?: StoreFilters) => {
-	return useQuery({
-		queryKey: ['stores', id, 'payouts', params],
-		queryFn: () => getStorePayouts(id, params),
-		enabled: !!id,
-		placeholderData: keepPreviousData
-	});
-};
-
 export const useStoreManagersQuery = (id: string, params?: StoreFilters) => {
 	return useQuery({
 		queryKey: ['stores', id, 'managers', params],
@@ -140,18 +129,14 @@ export const useOverviewQuery = () => {
 	});
 };
 
-export const usePayoutsQuery = (params?: PayoutFilters) => {
+export const useStoreTransactionsQuery = (
+	id: string,
+	params?: TransactionFilters
+) => {
 	return useQuery({
-		queryKey: ['payouts', params],
-		queryFn: () => getPayouts(params),
+		queryKey: ['stores', id, 'transactions', params],
+		queryFn: () => getStoreTransactions(id, params),
+		enabled: !!id,
 		placeholderData: keepPreviousData
-	});
-};
-
-export const usePayoutQuery = (id: string) => {
-	return useQuery({
-		queryKey: ['payouts', id],
-		queryFn: () => getPayout(id),
-		enabled: !!id
 	});
 };

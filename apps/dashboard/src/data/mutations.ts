@@ -21,7 +21,8 @@ import {
 	verifyBankAccount,
 	createAddress,
 	updateAddress,
-	deleteAddress
+	deleteAddress,
+	deleteAccount
 } from './requests';
 import env from '../../env';
 import {
@@ -278,7 +279,10 @@ export const useCreatePayoutMutation = () => {
 		mutationFn: (body: CreatePayoutBody) => createPayout(body),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
-				queryKey: ['stores', 'current', 'payouts']
+				queryKey: ['stores', 'current', 'transactions']
+			});
+			queryClient.invalidateQueries({
+				queryKey: ['stores', 'current']
 			});
 		}
 	});
@@ -327,6 +331,18 @@ export const useDeleteAddressMutation = (addressId: string) => {
 			queryClient.invalidateQueries({
 				queryKey: ['stores', 'current', 'addresses']
 			});
+		}
+	});
+};
+
+export const useDeleteAccountMutation = () => {
+	const logOut = useStore(useShallow(state => state.logOut));
+
+	return useMutation({
+		mutationFn: () => deleteAccount(),
+		onSuccess: async () => {
+			await SecureStore.deleteItemAsync('refreshToken');
+			logOut();
 		}
 	});
 };

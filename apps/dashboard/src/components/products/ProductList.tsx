@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, RefreshControl } from 'react-native';
-import { useTheme } from '@habiti/components';
+import { View, RefreshControl, StyleSheet } from 'react-native';
+import { Typography, useTheme } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import ProductsListItem from './ProductsListItem';
@@ -11,7 +11,7 @@ import { useProductsContext } from './ProductsContext';
 const ProductList: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<ProductsStackParamList>>();
 	const { theme } = useTheme();
-	const { products, refreshing, refresh } = useProductsContext();
+	const { products, search, refreshing, refresh } = useProductsContext();
 	const [editMode, setEditMode] = React.useState(false);
 	const [selectedProducts, setSelectedProducts] = React.useState<string[]>([]);
 
@@ -59,6 +59,15 @@ const ProductList: React.FC = () => {
 					flexGrow: 1,
 					backgroundColor: theme.screen.background
 				}}
+				ListEmptyComponent={
+					<View style={styles.empty}>
+						<Typography variant='secondary' style={styles.emptyText}>
+							{search
+								? 'No products match your search.'
+								: "You don't have any products yet."}
+						</Typography>
+					</View>
+				}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}
@@ -70,5 +79,17 @@ const ProductList: React.FC = () => {
 		</View>
 	);
 };
+
+const styles = StyleSheet.create({
+	empty: {
+		paddingTop: 32,
+		justifyContent: 'center',
+		alignItems: 'center',
+		paddingHorizontal: 16
+	},
+	emptyText: {
+		textAlign: 'center'
+	}
+});
 
 export default ProductList;

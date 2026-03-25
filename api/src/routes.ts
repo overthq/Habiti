@@ -8,7 +8,6 @@ import * as OrderController from './controllers/orders';
 import * as StoreController from './controllers/stores';
 import * as ProductController from './controllers/products';
 import * as UserController from './controllers/users';
-import * as PayoutController from './controllers/payouts';
 import * as CartController from './controllers/carts';
 import * as AuthController from './controllers/auth';
 import * as AdminController from './controllers/admin';
@@ -18,6 +17,7 @@ import * as WebhooksController from './controllers/webhooks';
 import * as UploadController from './controllers/uploads';
 import * as CurrentStoreController from './controllers/current-store';
 import * as CurrentUserController from './controllers/current-user';
+import * as TransactionController from './controllers/transactions';
 import { getLandingHighlights } from './controllers/highlights';
 import { checkHealth } from './controllers/health';
 
@@ -92,8 +92,6 @@ currentStoreRouter.delete(
 	'/products/:id',
 	CurrentStoreController.deleteProduct
 );
-currentStoreRouter.get('/payouts', CurrentStoreController.getPayouts);
-currentStoreRouter.get('/payouts/:id', CurrentStoreController.getPayoutById);
 currentStoreRouter.get('/overview', CurrentStoreController.getOverview);
 currentStoreRouter.get('/orders', CurrentStoreController.getOrders);
 currentStoreRouter.get('/orders/:id', CurrentStoreController.getOrderById);
@@ -110,6 +108,14 @@ currentStoreRouter.post('/payouts', CurrentStoreController.createPayout);
 currentStoreRouter.post(
 	'/verify-bank-account',
 	CurrentStoreController.verifyBankAccount
+);
+currentStoreRouter.get(
+	'/transactions',
+	TransactionController.getStoreTransactions
+);
+currentStoreRouter.get(
+	'/transactions/:id',
+	TransactionController.getTransaction
 );
 currentStoreRouter.get('/categories', CurrentStoreController.getCategories);
 currentStoreRouter.post('/categories', CurrentStoreController.createCategory);
@@ -153,6 +159,7 @@ currentUserRouter.use(authenticate);
 
 currentUserRouter.get('/', CurrentUserController.getUser);
 currentUserRouter.put('/', CurrentUserController.updateUser);
+currentUserRouter.delete('/', CurrentUserController.deleteUser);
 currentUserRouter.get(
 	'/followed-stores',
 	CurrentUserController.getFollowedStores
@@ -221,7 +228,10 @@ adminRouter.post(
 	AdminController.createStore
 );
 adminRouter.get('/stores/:id/managers', StoreController.getStoreManagers);
-adminRouter.get('/stores/:id/payouts', StoreController.getStorePayouts);
+adminRouter.get(
+	'/stores/:id/transactions',
+	TransactionController.getAdminStoreTransactions
+);
 adminRouter.get('/stores/:id/orders', StoreController.getStoreOrders);
 adminRouter.get('/products', ProductController.getProducts);
 adminRouter.post(
@@ -233,9 +243,7 @@ adminRouter.delete('/products/:id', ProductController.deleteProduct);
 adminRouter.get('/products/:id/reviews', ProductController.getProductReviews);
 adminRouter.get('/users', UserController.getUsers);
 adminRouter.get('/users/:id', UserController.getUser);
-adminRouter.get('/payouts', PayoutController.getPayouts);
-adminRouter.get('/payouts/:id', PayoutController.getPayout);
-adminRouter.patch('/payouts/:id', PayoutController.updatePayout);
+adminRouter.patch('/transactions/:id', TransactionController.updateTransaction);
 adminRouter.get('/orders', OrderController.getOrders);
 adminRouter.post(
 	'/users/bulk',

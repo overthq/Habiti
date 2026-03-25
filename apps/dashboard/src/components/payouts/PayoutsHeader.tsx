@@ -1,46 +1,34 @@
 import React from 'react';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { formatNaira } from '@habiti/common';
-import { SectionHeader, Spacer, Typography } from '@habiti/components';
-
-import LinkBankAccountBanner from './LinkBankAccountBanner';
-import RevenueBar from './RevenueBar';
-import RevenueBarLegend from './RevenueBarLegend';
+import { Icon, SectionHeader, Spacer, Typography } from '@habiti/components';
 
 interface PayoutsHeaderProps {
-	hasLinkedBankAccount: boolean;
 	realizedRevenue: number;
-	unrealizedRevenue: number;
 	paidOut: number;
-	onAddPayoutAccount(): void;
+	onViewDetails(): void;
 }
 
 const PayoutsHeader: React.FC<PayoutsHeaderProps> = ({
-	hasLinkedBankAccount,
 	realizedRevenue,
-	unrealizedRevenue,
 	paidOut,
-	onAddPayoutAccount
+	onViewDetails
 }) => {
+	const available = realizedRevenue - paidOut;
+
 	return (
 		<View style={{ paddingTop: 16 }}>
-			{!hasLinkedBankAccount && (
-				<LinkBankAccountBanner onAddPayoutAccount={onAddPayoutAccount} />
-			)}
-			<Spacer y={16} />
 			<SectionHeader title='Available' padded={false} />
-			<Typography size='xxxlarge' weight='bold' style={{ marginBottom: 8 }}>
-				{formatNaira(realizedRevenue)}
-			</Typography>
-			<RevenueBar
-				realizedRevenue={realizedRevenue}
-				unrealizedRevenue={unrealizedRevenue}
-				paidOut={paidOut}
-			/>
-			<Spacer y={12} />
-			<RevenueBarLegend />
-			<Spacer y={16} />
-			<SectionHeader title='Payout History' padded={false} />
+			<Pressable
+				onPress={onViewDetails}
+				style={{ flexDirection: 'row', alignItems: 'center' }}
+			>
+				<Typography size='xxxlarge' weight='bold'>
+					{formatNaira(available)}
+				</Typography>
+				<Spacer x={4} />
+				<Icon name='chevron-right' size={20} />
+			</Pressable>
 		</View>
 	);
 };

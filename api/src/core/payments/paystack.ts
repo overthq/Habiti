@@ -67,7 +67,7 @@ interface TransferOptions {
 	reference: string;
 	recipient: string;
 	metadata?: {
-		payoutId?: string;
+		transactionId?: string;
 	};
 }
 

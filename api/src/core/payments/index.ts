@@ -10,7 +10,10 @@ import {
 
 import * as Paystack from './paystack';
 
-import * as PayoutData from '../data/payouts';
+import {
+	markTransferSuccessful,
+	markTransferFailed
+} from '../data/transactions';
 
 import { env } from '../../config/env';
 
@@ -62,9 +65,9 @@ export const verifyTransfer = async (options: VerifyTransferOptions) => {
 	const { data, status } = await Paystack.verifyTransfer(options.transferId);
 
 	if (status === true && data.status === 'success') {
-		await PayoutData.markPayoutAsSuccessful(options.transferId);
+		await markTransferSuccessful(options.transferId);
 	} else {
-		await PayoutData.markPayoutAsFailed(options.transferId);
+		await markTransferFailed(options.transferId);
 	}
 
 	return data;
@@ -74,7 +77,7 @@ export const finalizeTransfer = async (options: FinalizeTransferOptions) => {
 	const { data, status } = await Paystack.finalizeTransfer(options);
 
 	if (status === true && data.status === 'success') {
-		await PayoutData.markPayoutAsSuccessful(options.transferCode);
+		await markTransferSuccessful(options.transferCode);
 	}
 };
 

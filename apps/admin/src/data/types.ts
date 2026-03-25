@@ -167,27 +167,6 @@ export interface Store {
 	updatedAt: string;
 }
 
-export enum PayoutStatus {
-	Pending = 'Pending',
-	Success = 'Success',
-	Failure = 'Failure'
-}
-
-export interface Payout {
-	id: string;
-	storeId: string;
-	amount: number;
-	status: PayoutStatus;
-	createdAt: string;
-	updatedAt: string;
-	store: {
-		id: string;
-		name: string;
-		description: string;
-		unlisted: boolean;
-	};
-}
-
 export interface GetStoresResponse {
 	stores: Store[];
 }
@@ -227,10 +206,6 @@ export interface GetStoreManagersResponse {
 	managers: StoreManager[];
 }
 
-export interface GetStorePayoutsResponse {
-	payouts: Payout[];
-}
-
 export interface GetStoreOrdersResponse {
 	orders: Order[];
 }
@@ -259,25 +234,54 @@ export interface GetOverviewResponse {
 	totalRevenue: number;
 }
 
-export interface PayoutFilters {
-	filter?: Record<string, Record<string, string | number>>;
-	orderBy?: Record<string, 'asc' | 'desc'>;
+// Transactions
+
+export enum TransactionType {
+	Revenue = 'Revenue',
+	Payout = 'Payout',
+	SubscriptionFee = 'SubscriptionFee',
+	Adjustment = 'Adjustment',
+	Refund = 'Refund'
 }
 
-export interface GetPayoutsResponse {
-	payouts: Payout[];
+export enum TransactionStatus {
+	Processing = 'Processing',
+	Success = 'Success',
+	Failure = 'Failure'
 }
 
-export interface GetPayoutResponse {
-	payout: Payout;
+export interface Transaction {
+	id: string;
+	storeId: string;
+	type: TransactionType;
+	status: TransactionStatus;
+	amount: number;
+	description?: string;
+	orderId?: string;
+	balanceAfter: number;
+	createdAt: string;
+	updatedAt: string;
+	order?: Order;
 }
 
-export interface UpdatePayoutBody {
-	status: PayoutStatus;
+export interface TransactionFilters {
+	type?: TransactionType;
+	from?: string;
+	to?: string;
+	limit?: number;
+	offset?: number;
 }
 
-export interface UpdatePayoutResponse {
-	payout: Payout;
+export interface GetStoreTransactionsResponse {
+	transactions: Transaction[];
+}
+
+export interface UpdateTransactionBody {
+	status: TransactionStatus;
+}
+
+export interface UpdateTransactionResponse {
+	transaction: Transaction;
 }
 
 // Bulk Action Types

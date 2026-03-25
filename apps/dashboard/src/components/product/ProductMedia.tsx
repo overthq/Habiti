@@ -43,6 +43,8 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
 
+	console.log({ images });
+
 	return (
 		<View>
 			<View style={styles.header}>
@@ -79,7 +81,10 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 								{ borderColor: theme.border.color }
 							]}
 						>
-							<Image source={{ uri: image.path }} style={styles.image} />
+							<Image
+								source={{ uri: image.path.replace('http://', 'https://') }}
+								style={styles.image}
+							/>
 						</View>
 					))}
 				</ScrollView>
@@ -91,13 +96,17 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 const styles = StyleSheet.create({
 	imageContainer: {
 		borderWidth: 1,
-		borderRadius: 8
-	},
-	image: {
+		borderRadius: 8,
 		width: 100,
 		height: 100,
-		borderRadius: 8,
-		marginRight: 8
+		marginRight: 8,
+		overflow: 'hidden'
+	},
+	image: {
+		// width: '100%',
+		// height: '100%'
+		width: 100,
+		height: 100
 	},
 	header: {
 		flexDirection: 'row',

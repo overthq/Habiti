@@ -36,7 +36,8 @@ export const createOrderHooks = (
 	if (args.status === OrderStatus.Completed) {
 		updateStoreRevenue(ctx.prisma, {
 			storeId: args.storeId,
-			total: args.amount
+			total: args.amount,
+			orderId: args.orderId
 		});
 	}
 
@@ -86,7 +87,8 @@ export const updateOrderHooks = (
 	if (args.status === OrderStatus.Completed) {
 		updateStoreRevenue(ctx.prisma, {
 			storeId: args.storeId,
-			total: args.amount
+			total: args.amount,
+			orderId: args.orderId
 		});
 	}
 

@@ -1,28 +1,36 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { refreshAuthTokens } from '../utils/refreshManager';
 import {
+	getCurrentUser,
 	getCurrentStore,
 	getProducts,
 	getProduct,
 	getProductReviews,
 	getManagedStores,
-	getPayouts,
-	getPayout,
 	getOrders,
 	getOrder,
 	getCategories,
 	getStoreManagers,
 	getStoreOverview,
 	getCustomer,
-	getAddresses
+	getAddresses,
+	getTransactions,
+	getTransaction
 } from './requests';
-import { OrderFilters, ProductFilters } from './types';
+import { OrderFilters, ProductFilters, TransactionFilters } from './types';
 
 export const useAuthRefreshQuery = () => {
 	return useQuery({
 		queryKey: ['auth', 'refresh'],
 		queryFn: () => refreshAuthTokens(),
 		retry: false
+	});
+};
+
+export const useCurrentUserQuery = () => {
+	return useQuery({
+		queryKey: ['users', 'current'],
+		queryFn: getCurrentUser
 	});
 };
 
@@ -93,25 +101,10 @@ export const useManagedStoresQuery = () => {
 	});
 };
 
-export const usePayoutsQuery = () => {
-	return useQuery({
-		queryKey: ['stores', 'current', 'payouts'],
-		queryFn: () => getPayouts()
-	});
-};
-
 export const useOverviewQuery = () => {
 	return useQuery({
 		queryKey: ['stores', 'current', 'overview'],
 		queryFn: getStoreOverview
-	});
-};
-
-export const usePayoutQuery = (payoutId: string) => {
-	return useQuery({
-		queryKey: ['stores', 'current', 'payouts', payoutId],
-		queryFn: () => getPayout(payoutId),
-		enabled: !!payoutId
 	});
 };
 
@@ -127,5 +120,21 @@ export const useAddressesQuery = () => {
 	return useQuery({
 		queryKey: ['stores', 'current', 'addresses'],
 		queryFn: () => getAddresses()
+	});
+};
+
+export const useTransactionsQuery = (filters?: TransactionFilters) => {
+	return useQuery({
+		queryKey: ['stores', 'current', 'transactions', filters],
+		queryFn: () => getTransactions(filters),
+		placeholderData: keepPreviousData
+	});
+};
+
+export const useTransactionQuery = (transactionId: string) => {
+	return useQuery({
+		queryKey: ['stores', 'current', 'transactions', transactionId],
+		queryFn: () => getTransaction(transactionId),
+		enabled: !!transactionId
 	});
 };

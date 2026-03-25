@@ -4,7 +4,6 @@ import {
 	Users,
 	Home,
 	Package,
-	DollarSign,
 	LogOut
 } from 'lucide-react';
 import { Link, NavLink, useLocation } from 'react-router';
@@ -57,11 +56,6 @@ const items = [
 		title: 'Products',
 		url: '/products',
 		icon: Package
-	},
-	{
-		title: 'Payouts',
-		url: '/payouts',
-		icon: DollarSign
 	}
 ];
 

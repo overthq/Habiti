@@ -1,4 +1,7 @@
-import { markPayoutAsFailed, markPayoutAsSuccessful } from '../data/payouts';
+import {
+	markTransferFailed,
+	markTransferSuccessful
+} from '../data/transactions';
 import {
 	ChargeSuccessPayload,
 	isTransferCharge,
@@ -51,7 +54,7 @@ export const handleTransferSuccess = async (data: TransferSuccessPayload) => {
 			`Found non-payout transfer. Reason: ${data.reason}. Reference: ${data.reference}`
 		);
 	} else {
-		await markPayoutAsSuccessful(data.reference);
+		await markTransferSuccessful(data.reference);
 	}
 };
 
@@ -61,6 +64,6 @@ export const handleTransferFailure = async (data: TransferFailurePayload) => {
 			`Found non-payout transfer. Reason: ${data.reason}. Reference: ${data.reference}`
 		);
 	} else {
-		await markPayoutAsFailed(data.reference);
+		await markTransferFailed(data.reference);
 	}
 };

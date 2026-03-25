@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import StoreManagers from '@/components/stores/store-managers';
 import StoreProducts from '@/components/stores/store-products';
 import StoreOrders from '@/components/stores/store-orders';
-import StorePayouts from '@/components/stores/store-payouts';
+import StoreTransactions from '@/components/stores/store-transactions';
 import StoreActionsDropdown from '@/components/store/store-actions-dropdown';
 
 interface StoreMainProps {
@@ -55,7 +55,7 @@ const StoreMain = ({ store }: StoreMainProps) => {
 				<TabsList>
 					<TabsTrigger value='products'>Products</TabsTrigger>
 					<TabsTrigger value='orders'>Orders</TabsTrigger>
-					<TabsTrigger value='payouts'>Payouts</TabsTrigger>
+					<TabsTrigger value='transactions'>Transactions</TabsTrigger>
 					<TabsTrigger value='managers'>Managers</TabsTrigger>
 				</TabsList>
 				<TabsContent value='products'>
@@ -64,8 +64,8 @@ const StoreMain = ({ store }: StoreMainProps) => {
 				<TabsContent value='orders'>
 					<StoreOrders storeId={store.id} />
 				</TabsContent>
-				<TabsContent value='payouts'>
-					<StorePayouts storeId={store.id} />
+				<TabsContent value='transactions'>
+					<StoreTransactions storeId={store.id} />
 				</TabsContent>
 				<TabsContent value='managers'>
 					<StoreManagers storeId={store.id} />

@@ -47,15 +47,15 @@ model Store {
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 
-  image      Image?
-  products   Product[]
-  orders     Order[]
-  managers   StoreManager[]
-  followers  StoreFollower[]
-  carts      Cart[]
-  payouts    Payout[]
-  categories StoreProductCategory[]
-  addresses  Address[]
+  image        Image?
+  products     Product[]
+  orders       Order[]
+  managers     StoreManager[]
+  followers    StoreFollower[]
+  carts        Cart[]
+  transactions Transaction[]
+  categories   StoreProductCategory[]
+  addresses    Address[]
 }
 
 model Product {
@@ -93,8 +93,9 @@ model Order {
   updatedAt      DateTime       @updatedAt
   products       OrderProduct[]
 
-  user  User  @relation(fields: [userId], references: [id])
-  store Store @relation(fields: [storeId], references: [id])
+  user         User          @relation(fields: [userId], references: [id])
+  store        Store         @relation(fields: [storeId], references: [id])
+  transactions Transaction[]
 
   @@unique([storeId, serialNumber])
 }
@@ -196,15 +197,6 @@ model Card {
   @@unique([userId, signature])
 }
 
-model Payout {
-  id        String       @id @default(uuid())
-  storeId   String
-  amount    Int
-  status    PayoutStatus @default(Pending)
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
-  store     Store        @relation(fields: [storeId], references: [id], onDelete: Cascade)
-}
 
 model ProductCategory {
   productId  String
@@ -259,10 +251,10 @@ model Address {
   updatedAt DateTime @updatedAt
 
   userId String?
-  user   User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   storeId String?
-  store   Store? @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  store   Store?  @relation(fields: [storeId], references: [id], onDelete: Cascade)
 }
 
 model UserPushToken {
@@ -328,10 +320,40 @@ enum OrderStatus {
   PaymentPending
 }
 
-enum PayoutStatus {
-  Pending
+
+enum TransactionType {
+  Revenue
+  Payout
+  SubscriptionFee
+  Adjustment
+  Refund
+}
+
+enum TransactionStatus {
+  Processing
   Success
   Failure
+}
+
+model Transaction {
+  id           String            @id @default(uuid())
+  storeId      String
+  type         TransactionType
+  status       TransactionStatus @default(Success)
+  amount       Int
+  description  String?
+  orderId      String?
+  balanceAfter Int
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  order Order? @relation(fields: [orderId], references: [id])
+
+  @@index([storeId, createdAt])
+  @@index([storeId, type])
+  @@index([storeId, status])
+  @@index([orderId])
 }
 
 enum PushTokenType {

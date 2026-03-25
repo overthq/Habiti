@@ -117,6 +117,21 @@ export const getCards = async (
 	}
 };
 
+export const deleteUser = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const ctx = getAppContext(req);
+
+	try {
+		await UserLogic.deleteCurrentUser(ctx);
+		return res.status(204).end();
+	} catch (error) {
+		return next(error);
+	}
+};
+
 export const getDeliveryAddresses = async (
 	req: Request,
 	res: Response,

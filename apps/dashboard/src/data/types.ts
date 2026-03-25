@@ -183,19 +183,40 @@ export interface StoreFollower {
 	updatedAt: string;
 }
 
-export interface Payout {
-	id: string;
-	storeId: string;
-	amount: number;
-	status: PayoutStatus;
-	createdAt: string;
-	updatedAt: string;
+export enum TransactionType {
+	Revenue = 'Revenue',
+	Payout = 'Payout',
+	SubscriptionFee = 'SubscriptionFee',
+	Adjustment = 'Adjustment',
+	Refund = 'Refund'
 }
 
-export enum PayoutStatus {
+export enum TransactionStatus {
+	Processing = 'Processing',
 	Success = 'Success',
-	Pending = 'Pending',
 	Failure = 'Failure'
+}
+
+export interface Transaction {
+	id: string;
+	storeId: string;
+	type: TransactionType;
+	status: TransactionStatus;
+	amount: number;
+	description?: string;
+	orderId?: string;
+	balanceAfter: number;
+	createdAt: string;
+	updatedAt: string;
+	order?: Order;
+}
+
+export interface TransactionFilters {
+	type?: TransactionType;
+	from?: string;
+	to?: string;
+	limit?: number;
+	offset?: number;
 }
 
 export interface StoreProductCategory {

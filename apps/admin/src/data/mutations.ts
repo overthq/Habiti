@@ -10,7 +10,7 @@ import {
 	type CreateStoreBody,
 	type UpdateStoreBody,
 	type UpdateUserBody,
-	type UpdatePayoutBody,
+	type UpdateTransactionBody,
 	OrderStatus,
 	ProductStatus
 } from './types';
@@ -27,7 +27,7 @@ import {
 	updateStore,
 	deleteStore,
 	updateUser,
-	updatePayout,
+	updateTransaction,
 	bulkUpdateUsers,
 	bulkDeleteUsers,
 	bulkUpdateOrders,
@@ -230,18 +230,21 @@ export const useUpdateUserMutation = (id: string) => {
 	});
 };
 
-export const useUpdatePayoutMutation = (id: string) => {
+export const useUpdateTransactionMutation = (id: string, storeId?: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (body: UpdatePayoutBody) => updatePayout(id, body),
+		mutationFn: (body: UpdateTransactionBody) => updateTransaction(id, body),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['payouts'] });
-			queryClient.invalidateQueries({ queryKey: ['payouts', id] });
-			toast.success('Payout updated successfully');
+			if (storeId) {
+				queryClient.invalidateQueries({
+					queryKey: ['stores', storeId, 'transactions']
+				});
+			}
+			toast.success('Transaction updated successfully');
 		},
 		onError: () => {
-			toast.error('Failed to update payout');
+			toast.error('Failed to update transaction');
 		}
 	});
 };
