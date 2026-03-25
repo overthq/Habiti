@@ -1,18 +1,23 @@
 import React from 'react';
 import { Alert, View } from 'react-native';
 import { Button, Screen } from '@habiti/components';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 
 import AmountDisplay from '../components/add-payout/AmountDisplay';
 import PayoutNumpad from '../components/add-payout/PayoutNumpad';
 import useGoBack from '../hooks/useGoBack';
 import { useCreatePayoutMutation } from '../data/mutations';
+import { AppStackParamList } from '../types/navigation';
 
 const AddPayout = () => {
 	const [amount, setAmount] = React.useState('');
 	const createPayoutMutation = useCreatePayoutMutation();
 	const { goBack } = useNavigation();
+	const { params } =
+		useRoute<RouteProp<AppStackParamList, 'Modal.AddPayout'>>();
 	useGoBack('x');
+
+	const availableBalance = (params.realizedRevenue - params.paidOut) / 100;
 
 	const confirmAddPayout = () => {
 		Alert.alert(
@@ -64,8 +69,18 @@ const AddPayout = () => {
 			/>
 			<View style={{ marginBottom: 56, paddingHorizontal: 16 }}>
 				<Button
-					disabled={!amount}
-					text='Add Payout'
+					disabled={
+						availableBalance === 0 ||
+						!amount ||
+						Number(amount) > availableBalance
+					}
+					text={
+						availableBalance === 0
+							? 'No available balance'
+							: Number(amount) > availableBalance
+								? 'Insufficient balance'
+								: 'Add Payout'
+					}
 					loading={createPayoutMutation.isPending}
 					onPress={confirmAddPayout}
 				/>

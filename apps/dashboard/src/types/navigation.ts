@@ -13,7 +13,7 @@ export type AppStackParamList = {
 	'Add Product': undefined;
 	Settings: undefined;
 	'Modal.CustomerInfo': { userId: string };
-	'Modal.AddPayout': undefined;
+	'Modal.AddPayout': { realizedRevenue: number; paidOut: number };
 	'Modal.AddCategory': undefined;
 	'Modal.EditCategory': {
 		categoryId: string;

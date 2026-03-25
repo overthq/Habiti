@@ -38,7 +38,10 @@ const Store = () => {
 	const modalRef = React.useRef<BottomSheetModal>(null);
 
 	const handleNewPayout = () => {
-		navigate('Modal.AddPayout');
+		navigate('Modal.AddPayout', {
+			realizedRevenue: data?.store.realizedRevenue ?? 0,
+			paidOut: data?.store.paidOut ?? 0
+		});
 	};
 
 	const handleOpenSettings = React.useCallback(() => {

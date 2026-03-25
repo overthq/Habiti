@@ -25,7 +25,10 @@ const Transactions = () => {
 	useGoBack();
 
 	const handleAddPayout = () => {
-		navigate('Modal.AddPayout');
+		navigate('Modal.AddPayout', {
+			realizedRevenue: storeData?.store.realizedRevenue ?? 0,
+			paidOut: storeData?.store.paidOut ?? 0
+		});
 	};
 
 	React.useLayoutEffect(() => {
