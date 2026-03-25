@@ -396,3 +396,37 @@ export const updateStoreRevenue = async (
 		});
 	});
 };
+
+interface IncrementUnrealizedRevenueArgs {
+	storeId: string;
+	total: number;
+}
+
+export const incrementUnrealizedRevenue = async (
+	prisma: PrismaClient,
+	args: IncrementUnrealizedRevenueArgs
+) => {
+	await prisma.store.update({
+		where: { id: args.storeId },
+		data: {
+			unrealizedRevenue: { increment: args.total }
+		}
+	});
+};
+
+interface DecrementUnrealizedRevenueArgs {
+	storeId: string;
+	total: number;
+}
+
+export const decrementUnrealizedRevenue = async (
+	prisma: PrismaClient,
+	args: DecrementUnrealizedRevenueArgs
+) => {
+	await prisma.store.update({
+		where: { id: args.storeId },
+		data: {
+			unrealizedRevenue: { decrement: args.total }
+		}
+	});
+};

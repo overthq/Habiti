@@ -15,6 +15,7 @@ interface ChargeAuthorizationOptions {
 	authorizationCode: string;
 	email: string;
 	amount: string;
+	metadata?: { orderId?: string };
 }
 
 export const chargeAuthorization = async (
@@ -23,7 +24,8 @@ export const chargeAuthorization = async (
 	const response = await client.post('/transaction/charge_authorization', {
 		authorization_code: options.authorizationCode,
 		email: options.email,
-		amount: options.amount
+		amount: options.amount,
+		...(options.metadata && { metadata: options.metadata })
 	});
 
 	return response.data;

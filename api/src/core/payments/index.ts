@@ -23,7 +23,10 @@ import { pollUntil } from '../../utils/poll';
 export const chargeAuthorization = async (
 	options: ChargeAuthorizationOptions
 ) => {
-	const data = await Paystack.chargeAuthorization(options);
+	const data = await Paystack.chargeAuthorization({
+		...options,
+		...(options.metadata && { metadata: options.metadata })
+	});
 
 	if (env.NODE_ENV !== 'production') {
 		pollUntil(() => verifyTransaction(data.data.reference), {

@@ -2,6 +2,7 @@ export interface ChargeAuthorizationOptions {
 	authorizationCode: string;
 	email: string;
 	amount: string;
+	metadata?: { orderId?: string };
 }
 
 export interface InitialChargeOptions {

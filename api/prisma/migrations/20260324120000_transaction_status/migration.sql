@@ -10,20 +10,28 @@ UPDATE "Transaction" SET "status" = 'Failure' WHERE "type" = 'PayoutReversed';
 
 -- Migrate TransactionType values: collapse payout variants into 'Payout'
 -- and rename 'RevenueRealization' to 'Revenue'
+-- Recreate enum in one shot to avoid "unsafe use of new value" in transactions
 
--- Step 1: Add new enum values
-ALTER TYPE "TransactionType" ADD VALUE IF NOT EXISTS 'Revenue';
-ALTER TYPE "TransactionType" ADD VALUE IF NOT EXISTS 'Payout';
-
--- Step 2: Update rows to use new values
-UPDATE "Transaction" SET "type" = 'Revenue' WHERE "type" = 'RevenueRealization';
-UPDATE "Transaction" SET "type" = 'Payout' WHERE "type" IN ('PayoutInitiated', 'PayoutCompleted', 'PayoutReversed');
-
--- Step 3: Recreate enum without old values
--- PostgreSQL doesn't support DROP VALUE from enums, so we recreate
+-- Step 1: Rename old enum
 ALTER TYPE "TransactionType" RENAME TO "TransactionType_old";
+
+-- Step 2: Create new enum with final values
 CREATE TYPE "TransactionType" AS ENUM ('Revenue', 'Payout', 'SubscriptionFee', 'Adjustment', 'Refund');
-ALTER TABLE "Transaction" ALTER COLUMN "type" TYPE "TransactionType" USING "type"::text::"TransactionType";
+
+-- Step 3: Migrate column, mapping old values to new ones via text conversion
+ALTER TABLE "Transaction"
+  ALTER COLUMN "type" TYPE "TransactionType"
+  USING (
+    CASE "type"::text
+      WHEN 'RevenueRealization' THEN 'Revenue'
+      WHEN 'PayoutInitiated' THEN 'Payout'
+      WHEN 'PayoutCompleted' THEN 'Payout'
+      WHEN 'PayoutReversed' THEN 'Payout'
+      ELSE "type"::text
+    END
+  )::"TransactionType";
+
+-- Step 4: Drop old enum
 DROP TYPE "TransactionType_old";
 
 -- CreateIndex

@@ -2,6 +2,7 @@ import { OrderStatus } from '../../generated/prisma/client';
 import { AppContext } from '../../utils/context';
 import { storeCard } from '../data/cards';
 import * as OrderData from '../data/orders';
+import { incrementUnrealizedRevenue } from '../data/stores';
 import prismaClient from '../../config/prisma';
 
 // `body` here comes directly from Paystack.
@@ -89,6 +90,11 @@ export const transitionOrderToPending = async (orderId: string) => {
 		} else {
 			await OrderData.updateOrder(prismaClient, order.id, {
 				status: OrderStatus.Pending
+			});
+
+			await incrementUnrealizedRevenue(prismaClient, {
+				storeId: order.storeId,
+				total: order.total
 			});
 		}
 	} catch (error) {
