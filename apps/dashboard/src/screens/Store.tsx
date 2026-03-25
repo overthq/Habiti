@@ -37,6 +37,10 @@ const Store = () => {
 	const { logOut } = useStore(useShallow(({ logOut }) => ({ logOut })));
 	const modalRef = React.useRef<BottomSheetModal>(null);
 
+	const handleNewPayout = () => {
+		navigate('Modal.AddPayout');
+	};
+
 	const handleOpenSettings = React.useCallback(() => {
 		navigate('StoreSettings');
 	}, []);
@@ -91,13 +95,16 @@ const Store = () => {
 						{store.name}
 					</Typography>
 					<Spacer x={4} />
-					<Icon name='chevron-down' size={24} />
+					<Icon name='chevron-down' size={20} />
 				</Pressable>
 
-				<Pressable onPress={handleOpenSettings}>
-					<Icon name='settings' />
-				</Pressable>
+				<View style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
+					<Pressable onPress={handleOpenSettings}>
+						<Icon name='menu' size={22} />
+					</Pressable>
+				</View>
 			</View>
+
 			<ScrollableScreen
 				style={{ paddingHorizontal: 16 }}
 				refreshControl={

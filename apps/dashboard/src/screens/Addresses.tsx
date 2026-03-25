@@ -75,10 +75,7 @@ const Addresses = () => {
 				{
 					type: 'button',
 					label: 'Add',
-					icon: {
-						type: 'sfSymbol',
-						name: 'plus'
-					},
+					icon: { type: 'sfSymbol', name: 'plus' },
 					onPress: handleAddAddress
 				}
 			]

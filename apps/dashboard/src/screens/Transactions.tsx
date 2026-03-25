@@ -1,31 +1,50 @@
 import React from 'react';
 import { View, StyleSheet, RefreshControl } from 'react-native';
-import {
-	Screen,
-	ScreenHeader,
-	Typography,
-	Spacer,
-	useTheme
-} from '@habiti/components';
+import { Screen, Typography, Spacer, useTheme, Icon } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import { formatNaira } from '@habiti/common';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import TransactionRow from '../components/transactions/TransactionRow';
 import useGoBack from '../hooks/useGoBack';
 import { useCurrentStoreQuery, useTransactionsQuery } from '../data/queries';
 import { Transaction } from '../data/types';
-import type { StoreStackParamList } from '../types/navigation';
+import {
+	AppStackParamList,
+	type StoreStackParamList
+} from '../types/navigation';
+import { HeaderButton } from '@react-navigation/elements';
 
 const Transactions = () => {
 	const { data: storeData } = useCurrentStoreQuery();
 	const { data, refetch, isRefetching } = useTransactionsQuery();
-	const { navigate } = useNavigation<NavigationProp<StoreStackParamList>>();
+	const { navigate, setOptions } =
+		useNavigation<NavigationProp<AppStackParamList & StoreStackParamList>>();
 	const { theme } = useTheme();
-	const { top } = useSafeAreaInsets();
 
 	useGoBack();
+
+	const handleAddPayout = () => {
+		navigate('Modal.AddPayout');
+	};
+
+	React.useLayoutEffect(() => {
+		setOptions({
+			headerRight: () => (
+				<HeaderButton onPress={handleAddPayout}>
+					<Icon name='plus' />
+				</HeaderButton>
+			),
+			unstable_headerRightItems: () => [
+				{
+					type: 'button',
+					label: 'Add',
+					icon: { type: 'sfSymbol', name: 'plus' },
+					onPress: handleAddPayout
+				}
+			]
+		});
+	}, []);
 
 	const handleTransactionPress = React.useCallback(
 		(transaction: Transaction) => {
