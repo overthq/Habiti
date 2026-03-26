@@ -102,9 +102,11 @@ export const updateStore = async (ctx: AppContext, input: UpdateStoreInput) => {
 			updateData.bankAccountReference = data.recipient_code;
 		}
 	} else {
-		updateData.bankAccountNumber = undefined;
-		updateData.bankCode = undefined;
-		updateData.bankAccountReference = undefined;
+		// FIXME: If (and only if) the user explicitly unset bank details, set them to
+		// undefined.
+		// updateData.bankAccountNumber = undefined;
+		// updateData.bankCode = undefined;
+		// updateData.bankAccountReference = undefined;
 	}
 
 	const store = await StoreData.updateStore(ctx.prisma, storeId, updateData);
