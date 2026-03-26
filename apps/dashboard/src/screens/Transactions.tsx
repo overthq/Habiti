@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, RefreshControl } from 'react-native';
+import { View, StyleSheet, RefreshControl, Alert } from 'react-native';
 import { Screen, Typography, Spacer, useTheme, Icon } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
@@ -24,12 +24,23 @@ const Transactions = () => {
 
 	useGoBack();
 
-	const handleAddPayout = () => {
+	const handleAddPayout = React.useCallback(() => {
+		if (!storeData.store) return;
+
+		if (!storeData.store.bankAccountNumber) {
+			Alert.alert(
+				'No bank account linked',
+				'You must link a bank account before requesting a payout'
+			);
+
+			return;
+		}
+
 		navigate('Modal.AddPayout', {
 			realizedRevenue: storeData?.store.realizedRevenue ?? 0,
 			paidOut: storeData?.store.paidOut ?? 0
 		});
-	};
+	}, []);
 
 	React.useLayoutEffect(() => {
 		setOptions({
@@ -47,7 +58,7 @@ const Transactions = () => {
 				}
 			]
 		});
-	}, []);
+	}, [handleAddPayout]);
 
 	const handleTransactionPress = React.useCallback(
 		(transaction: Transaction) => {

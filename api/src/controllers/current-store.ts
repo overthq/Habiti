@@ -98,7 +98,9 @@ export const updateStore = async (
 		instagram,
 		unlisted,
 		imageUrl,
-		imagePublicId
+		imagePublicId,
+		bankAccountNumber,
+		bankCode
 	} = req.body;
 	const ctx = getAppContext(req);
 
@@ -116,7 +118,9 @@ export const updateStore = async (
 			instagram,
 			unlisted,
 			imageUrl,
-			imagePublicId
+			imagePublicId,
+			bankAccountNumber,
+			bankCode
 		});
 		return res.status(200).json({ store });
 	} catch (error) {

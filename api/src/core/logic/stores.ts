@@ -2,6 +2,7 @@ import { AppContext } from '../../utils/context';
 
 import * as PushTokenData from '../data/pushTokens';
 import * as StoreData from '../data/stores';
+import { createTransferReceipient } from '../payments';
 
 import { NotificationType } from '../notifications';
 
@@ -86,6 +87,24 @@ export const updateStore = async (ctx: AppContext, input: UpdateStoreInput) => {
 
 	if (!isAuthorized) {
 		throw new LogicError(LogicErrorCode.Forbidden);
+	}
+
+	if (updateData.bankAccountNumber && updateData.bankCode) {
+		const { data, status } = await createTransferReceipient({
+			name: ctx.user.name,
+			accountNumber: updateData.bankAccountNumber,
+			bankCode: updateData.bankCode
+		});
+
+		if (status) {
+			updateData.bankAccountNumber = data.details.account_number;
+			updateData.bankCode = data.details.bank_code;
+			updateData.bankAccountReference = data.recipient_code;
+		}
+	} else {
+		updateData.bankAccountNumber = undefined;
+		updateData.bankCode = undefined;
+		updateData.bankAccountReference = undefined;
 	}
 
 	const store = await StoreData.updateStore(ctx.prisma, storeId, updateData);
