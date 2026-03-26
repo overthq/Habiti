@@ -56,12 +56,21 @@ export const initialCharge = async (options: InitialChargeOptions) => {
 };
 
 export const payAccount = async (options: PayAccountOptions) => {
-	return await Paystack.transfer({
+	const data = await Paystack.transfer({
 		amount: options.amount,
 		reference: options.reference,
 		recipient: options.recipient,
 		...(options.metadata && { metadata: options.metadata })
 	});
+
+	if (env.NODE_ENV !== 'production') {
+		pollUntil(() => verifyTransfer({ transferId: data.data.reference }), {
+			intervalMs: 5_000,
+			maxAttempts: 24
+		});
+	}
+
+	return data;
 };
 
 export const verifyTransfer = async (options: VerifyTransferOptions) => {

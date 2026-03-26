@@ -179,9 +179,9 @@ interface VerifyTransferResponse {
 	};
 }
 
-export const verifyTransfer = async (transferId: string) => {
+export const verifyTransfer = async (reference: string) => {
 	const response = await client.get<VerifyTransferResponse>(
-		`/transfer/verify/${transferId}`
+		`/transfer/verify/${reference}`
 	);
 
 	return response.data;
