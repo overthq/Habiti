@@ -101,10 +101,11 @@ const Transactions = () => {
 					}
 					data={data?.transactions ?? []}
 					keyExtractor={t => t.id}
-					renderItem={({ item }) => (
+					renderItem={({ item, index }) => (
 						<TransactionRow
 							transaction={item}
 							onPress={handleTransactionPress}
+							isLast={index === data?.transactions.length - 1}
 						/>
 					)}
 					ListEmptyComponent={
