@@ -28,7 +28,7 @@ const RecentTransactions = () => {
 
 	const handleTransactionPress = React.useCallback(
 		(transaction: Transaction) => {
-			navigate('TransactionDetail', { transactionId: transaction.id });
+			navigate('Transaction', { transactionId: transaction.id });
 		},
 		[]
 	);
@@ -46,10 +46,11 @@ const RecentTransactions = () => {
 						<Typography variant='secondary'>No transactions yet</Typography>
 					</View>
 				) : (
-					recentTransactions.map(transaction => (
+					recentTransactions.map((transaction, index) => (
 						<TransactionRow
 							key={transaction.id}
 							transaction={transaction}
+							isLast={index === recentTransactions.length - 1}
 							onPress={handleTransactionPress}
 						/>
 					))

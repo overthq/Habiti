@@ -62,7 +62,7 @@ const Transactions = () => {
 
 	const handleTransactionPress = React.useCallback(
 		(transaction: Transaction) => {
-			navigate('TransactionDetail', {
+			navigate('Transaction', {
 				transactionId: transaction.id
 			});
 		},

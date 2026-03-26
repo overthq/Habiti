@@ -89,7 +89,7 @@ export type StoreStackParamList = {
 	Addresses: undefined;
 	Settings: undefined;
 	Transactions: undefined;
-	TransactionDetail: { transactionId: string };
+	Transaction: { transactionId: string };
 };
 
 export type ProfileStackParamList = {

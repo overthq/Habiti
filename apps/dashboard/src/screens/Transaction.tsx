@@ -6,7 +6,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 
 import { parseTimestamp } from '../utils/date';
 import { useTransactionQuery } from '../data/queries';
-import { TransactionStatus, TransactionType } from '../data/types';
+import { TransactionType } from '../data/types';
 import type { StoreStackParamList } from '../types/navigation';
 
 const CREDIT_TYPES: TransactionType[] = [
@@ -23,16 +23,10 @@ const transactionLabel: Record<TransactionType, string> = {
 	[TransactionType.Refund]: 'Refund'
 };
 
-const statusColor: Record<TransactionStatus, string> = {
-	[TransactionStatus.Processing]: '#F59E0B',
-	[TransactionStatus.Success]: '#10B981',
-	[TransactionStatus.Failure]: '#EF4444'
-};
-
-const TransactionDetail = () => {
+const Transaction = () => {
 	const {
 		params: { transactionId }
-	} = useRoute<RouteProp<StoreStackParamList, 'TransactionDetail'>>();
+	} = useRoute<RouteProp<StoreStackParamList, 'Transaction'>>();
 	const { data } = useTransactionQuery(transactionId);
 	const { theme } = useTheme();
 
@@ -112,4 +106,4 @@ const styles = StyleSheet.create({
 	detailRow: {}
 });
 
-export default TransactionDetail;
+export default Transaction;

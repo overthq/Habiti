@@ -12,6 +12,7 @@ import {
 
 interface TransactionRowProps {
 	transaction: Transaction;
+	isLast: boolean;
 	onPress?: (transaction: Transaction) => void;
 }
 
@@ -39,13 +40,25 @@ const statusColor: Record<TransactionStatus, string> = {
 
 const TransactionRow: React.FC<TransactionRowProps> = ({
 	transaction,
+	isLast,
 	onPress
 }) => {
 	const { theme } = useTheme();
 	const credit = isCredit(transaction.type);
 
 	return (
-		<Pressable style={styles.container} onPress={() => onPress?.(transaction)}>
+		<Pressable
+			style={[
+				styles.container,
+				!isLast
+					? {
+							borderColor: theme.border.color,
+							borderBottomWidth: StyleSheet.hairlineWidth
+						}
+					: {}
+			]}
+			onPress={() => onPress?.(transaction)}
+		>
 			<View style={styles.left}>
 				<Typography weight='medium' size='small'>
 					{transaction.description ?? transactionLabel[transaction.type]}
@@ -67,6 +80,7 @@ const TransactionRow: React.FC<TransactionRowProps> = ({
 				</View>
 			</View>
 			<Typography
+				size='small'
 				weight='medium'
 				style={{
 					color: credit ? theme.badge.success.color : theme.text.primary

@@ -38,7 +38,7 @@ import Managers from '../screens/Managers';
 import Store from '../screens/Store';
 import StorePayouts from '../screens/StorePayouts';
 import Transactions from '../screens/Transactions';
-import TransactionDetail from '../screens/TransactionDetail';
+import Transaction from '../screens/Transaction';
 import BalanceDetails from '../screens/BalanceDetails';
 import StoreSettings from '../screens/StoreSettings';
 import StoreSettingsMenu from '../screens/StoreSettingsMenu';
@@ -279,8 +279,8 @@ const StoreStackNavigator = () => {
 				options={{ headerBackButtonDisplayMode: 'minimal' }}
 			/>
 			<StoreStack.Screen
-				name='TransactionDetail'
-				component={TransactionDetail}
+				name='Transaction'
+				component={Transaction}
 				options={{
 					headerBackButtonDisplayMode: 'minimal',
 					headerTitle: 'Transaction'
