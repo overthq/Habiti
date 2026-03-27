@@ -2,7 +2,7 @@ import { AppContext } from '../../utils/context';
 
 import * as PushTokenData from '../data/pushTokens';
 import * as StoreData from '../data/stores';
-import * as PayoutData from '../data/payouts';
+import { createTransferReceipient } from '../payments';
 
 import { NotificationType } from '../notifications';
 
@@ -87,6 +87,26 @@ export const updateStore = async (ctx: AppContext, input: UpdateStoreInput) => {
 
 	if (!isAuthorized) {
 		throw new LogicError(LogicErrorCode.Forbidden);
+	}
+
+	if (updateData.bankAccountNumber && updateData.bankCode) {
+		const { data, status } = await createTransferReceipient({
+			name: ctx.user.name,
+			accountNumber: updateData.bankAccountNumber,
+			bankCode: updateData.bankCode
+		});
+
+		if (status) {
+			updateData.bankAccountNumber = data.details.account_number;
+			updateData.bankCode = data.details.bank_code;
+			updateData.bankAccountReference = data.recipient_code;
+		}
+	} else {
+		// FIXME: If (and only if) the user explicitly unset bank details, set them to
+		// undefined.
+		// updateData.bankAccountNumber = undefined;
+		// updateData.bankCode = undefined;
+		// updateData.bankAccountReference = undefined;
 	}
 
 	const store = await StoreData.updateStore(ctx.prisma, storeId, updateData);
@@ -398,10 +418,6 @@ export const getFollowedStores = async (ctx: AppContext, userId: string) => {
 
 export const getStores = async (ctx: AppContext, query: any) => {
 	return StoreData.getStores(ctx.prisma, query);
-};
-
-export const getStorePayouts = async (ctx: AppContext, storeId: string) => {
-	return PayoutData.getStorePayouts(ctx.prisma, storeId);
 };
 
 export const getStoreManagers = async (

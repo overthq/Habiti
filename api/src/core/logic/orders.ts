@@ -47,10 +47,11 @@ export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 	const userId = ctx.user.id;
 	const storeId = cart.storeId;
 
+	// All orders start as PaymentPending. Revenue is only tracked
+	// once payment is confirmed and the order transitions to Pending.
 	const order = await ctx.prisma.$transaction(async prisma => {
 		const store = await OrderData.incrementStoreOrderCount(prisma, {
-			storeId,
-			incrementUnrealizedRevenue: cardId ? total : undefined
+			storeId
 		});
 
 		const newOrder = await OrderData.createOrderWithProducts(prisma, {
@@ -61,7 +62,7 @@ export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 			total,
 			transactionFee,
 			serviceFee,
-			status: cardId ? OrderStatus.Pending : OrderStatus.PaymentPending
+			status: OrderStatus.PaymentPending
 		});
 
 		await CartData.deleteCartById(prisma, cart.id);
@@ -73,35 +74,33 @@ export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 			}))
 		});
 
-		if (cardId) {
-			const card = await CardData.getCardById(prisma, cardId);
-
-			if (!card) {
-				throw new LogicError(LogicErrorCode.CardNotFound);
-			}
-
-			try {
-				await chargeAuthorization({
-					email: card.email,
-					amount: String(total + transactionFee + serviceFee),
-					authorizationCode: card.authorizationCode
-				});
-			} catch (error) {
-				console.error(error);
-				throw new LogicError(LogicErrorCode.PaymentFailed);
-			}
-		}
-
 		return newOrder;
 	});
 
-	// FIXME: Incredibly hacky (inconsistent response)
-	// To prevent having dealing with multiple requests for the
-	// "create card with this order" flow.
+	// Initiate payment after the order is persisted so the orderId
+	// can be passed as metadata for webhook identification.
 	let cardAuthorizationData: InitializeTransactionResponse['data'] | undefined =
 		undefined;
 
-	if (!cardId) {
+	if (cardId) {
+		const card = await CardData.getCardById(ctx.prisma, cardId);
+
+		if (!card) {
+			throw new LogicError(LogicErrorCode.CardNotFound);
+		}
+
+		try {
+			await chargeAuthorization({
+				email: card.email,
+				amount: String(total + transactionFee + serviceFee),
+				authorizationCode: card.authorizationCode,
+				metadata: { orderId: order.id }
+			});
+		} catch (error) {
+			console.error(error);
+			throw new LogicError(LogicErrorCode.PaymentFailed);
+		}
+	} else {
 		cardAuthorizationData = await CardLogic.authorizeCard(ctx, {
 			orderId: order.id
 		});
@@ -119,7 +118,7 @@ export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 		products: cart.products.map(p => p.product),
 		customerName: ctx.user.name,
 		pushToken: order.user.pushTokens[0] ?? undefined,
-		status: cardId ? OrderStatus.PaymentPending : OrderStatus.Pending
+		status: OrderStatus.PaymentPending
 	});
 
 	return {
@@ -164,7 +163,7 @@ export const updateOrderStatus = async (
 		status
 	});
 
-	updateOrderHooks(ctx, {
+	await updateOrderHooks(ctx, {
 		customerName: ctx.user.name,
 		pushToken: updatedOrder.user.pushTokens[0] ?? undefined,
 		orderId: updatedOrder.id,
@@ -251,15 +250,19 @@ export const confirmPickup = async (ctx: AppContext, orderId: string) => {
 		status: OrderStatus.Completed
 	});
 
-	updateOrderHooks(ctx, {
-		customerName: ctx.user.name,
-		pushToken: updatedOrder.user.pushTokens[0] ?? undefined,
-		orderId: updatedOrder.id,
-		userId: ctx.user.id,
-		storeId: currentOrder.storeId,
-		amount: updatedOrder.total,
-		status: OrderStatus.Completed
-	});
+	try {
+		await updateOrderHooks(ctx, {
+			customerName: ctx.user.name,
+			pushToken: updatedOrder.user.pushTokens[0] ?? undefined,
+			orderId: updatedOrder.id,
+			userId: ctx.user.id,
+			storeId: currentOrder.storeId,
+			amount: updatedOrder.total,
+			status: OrderStatus.Completed
+		});
+	} catch (error) {
+		console.log(error);
+	}
 
 	return updatedOrder;
 };

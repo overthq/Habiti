@@ -35,7 +35,7 @@ const PayoutNumpad: React.FC<PayoutNumpadProps> = ({
 				<NumpadButton value='.' onPress={() => onUpdate('.')} />
 				<NumpadButton value='0' onPress={() => onUpdate('0')} />
 				<Pressable style={styles.back} onPress={onDelete} onLongPress={onClear}>
-					<Icon size={24} name='chevron-left' />
+					<Icon size={24} name='delete' />
 				</Pressable>
 			</View>
 		</View>

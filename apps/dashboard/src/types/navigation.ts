@@ -13,7 +13,7 @@ export type AppStackParamList = {
 	'Add Product': undefined;
 	Settings: undefined;
 	'Modal.CustomerInfo': { userId: string };
-	'Modal.AddPayout': undefined;
+	'Modal.AddPayout': { realizedRevenue: number; paidOut: number };
 	'Modal.AddCategory': undefined;
 	'Modal.EditCategory': {
 		categoryId: string;
@@ -44,18 +44,18 @@ export type AppStackParamList = {
 		productId: string;
 		categories: ProductCategory[];
 	};
+	'Modal.Transactions': undefined;
 };
 
 export type MainTabParamList = {
 	Orders: undefined;
 	Products: undefined;
-	Payouts: undefined;
 	Store: undefined;
+	Profile: undefined;
 };
 
 export type HomeStackParamList = {
 	Overview: undefined;
-	Payouts: undefined;
 	Order: { orderId: string };
 	Product: NavigatorScreenParams<ProductStackParamList>;
 };
@@ -80,13 +80,22 @@ export type SettingsStackParamList = {
 
 export type StoreStackParamList = {
 	StoreHome: undefined;
+	StoreSettings: undefined;
 	'Edit Store': undefined;
+	BalanceDetails: undefined;
 	Payouts: undefined;
 	Managers: undefined;
 	Categories: undefined;
 	Addresses: undefined;
 	Settings: undefined;
+	Transactions: undefined;
+	Transaction: { transactionId: string };
+};
+
+export type ProfileStackParamList = {
+	ProfileHome: undefined;
 	Appearance: undefined;
+	ManageAccount: undefined;
 };
 
 // TODO: Use context for productId and other shared details if needed.

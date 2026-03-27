@@ -15,6 +15,7 @@ interface ChargeAuthorizationOptions {
 	authorizationCode: string;
 	email: string;
 	amount: string;
+	metadata?: { orderId?: string };
 }
 
 export const chargeAuthorization = async (
@@ -23,7 +24,8 @@ export const chargeAuthorization = async (
 	const response = await client.post('/transaction/charge_authorization', {
 		authorization_code: options.authorizationCode,
 		email: options.email,
-		amount: options.amount
+		amount: options.amount,
+		...(options.metadata && { metadata: options.metadata })
 	});
 
 	return response.data;
@@ -67,7 +69,7 @@ interface TransferOptions {
 	reference: string;
 	recipient: string;
 	metadata?: {
-		payoutId?: string;
+		transactionId?: string;
 	};
 }
 
@@ -177,9 +179,9 @@ interface VerifyTransferResponse {
 	};
 }
 
-export const verifyTransfer = async (transferId: string) => {
+export const verifyTransfer = async (reference: string) => {
 	const response = await client.get<VerifyTransferResponse>(
-		`/transfer/verify/${transferId}`
+		`/transfer/verify/${reference}`
 	);
 
 	return response.data;

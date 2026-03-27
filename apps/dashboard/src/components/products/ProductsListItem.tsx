@@ -1,3 +1,5 @@
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
 import { formatNaira } from '@habiti/common';
 import {
 	useTheme,
@@ -6,8 +8,6 @@ import {
 	Typography,
 	Row
 } from '@habiti/components';
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
 
 import { Product } from '../../data/types';
 
@@ -28,7 +28,7 @@ const ProductsListItem: React.FC<ProductsListItemProps> = ({
 		<Row onPress={onPress} onLongPress={onLongPress} style={styles.container}>
 			<View style={styles.left}>
 				<CustomImage
-					uri={product.images[0]?.path}
+					uri={product.images[0]?.path.replace('http://', 'https://')}
 					style={styles.image}
 					height={44}
 					width={44}

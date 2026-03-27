@@ -8,9 +8,10 @@ import {
 import { getAppContext } from '../utils/context';
 import * as StoreLogic from '../core/logic/stores';
 import * as ProductLogic from '../core/logic/products';
-import * as PayoutLogic from '../core/logic/payouts';
+import * as TransactionLogic from '../core/logic/transactions';
 import * as AddressLogic from '../core/logic/addresses';
 import { ProductStatus } from '../generated/prisma/client';
+import { resolveAccountNumber } from '../core/payments';
 
 // Re-exports from other controllers (handlers that only use req.params/req.body)
 export {
@@ -24,7 +25,46 @@ export {
 	deleteStoreCategory as deleteCategory
 } from './products';
 export { getOrderById, updateOrder } from './orders';
-export { createPayout, verifyBankAccount } from './payouts';
+
+export const verifyBankAccount = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const { bankAccountNumber, bankCode } = req.body;
+
+	try {
+		const { data } = await resolveAccountNumber({
+			accountNumber: bankAccountNumber,
+			bankCode
+		});
+
+		return res.json({
+			accountNumber: data.account_number,
+			accountName: data.account_name
+		});
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const createPayout = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const { amount } = req.body;
+
+	try {
+		const ctx = getAppContext(req);
+		const transaction = await TransactionLogic.createPayoutTransaction(ctx, {
+			amount
+		});
+		return res.status(201).json({ transaction });
+	} catch (error) {
+		return next(error);
+	}
+};
 
 export const getStore = async (
 	req: Request,
@@ -58,7 +98,9 @@ export const updateStore = async (
 		instagram,
 		unlisted,
 		imageUrl,
-		imagePublicId
+		imagePublicId,
+		bankAccountNumber,
+		bankCode
 	} = req.body;
 	const ctx = getAppContext(req);
 
@@ -76,7 +118,9 @@ export const updateStore = async (
 			instagram,
 			unlisted,
 			imageUrl,
-			imagePublicId
+			imagePublicId,
+			bankAccountNumber,
+			bankCode
 		});
 		return res.status(200).json({ store });
 	} catch (error) {
@@ -102,48 +146,6 @@ export const getProducts = async (
 			productFiltersSchema.parse(req.query)
 		);
 		return res.json({ products });
-	} catch (error) {
-		return next(error);
-	}
-};
-
-export const getPayouts = async (
-	req: Request,
-	res: Response,
-	next: NextFunction
-) => {
-	const ctx = getAppContext(req);
-
-	if (!ctx.storeId) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
-	try {
-		const payouts = await StoreLogic.getStorePayouts(ctx, ctx.storeId);
-		return res.json({ payouts });
-	} catch (error) {
-		return next(error);
-	}
-};
-
-export const getPayoutById = async (
-	req: Request<{ id: string }>,
-	res: Response,
-	next: NextFunction
-) => {
-	const ctx = getAppContext(req);
-
-	if (!ctx.storeId) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
-	if (!req.params.id) {
-		return res.status(400).json({ error: 'Payout ID is required' });
-	}
-
-	try {
-		const payout = await PayoutLogic.getPayoutById(ctx, req.params.id);
-		return res.json({ payout });
 	} catch (error) {
 		return next(error);
 	}

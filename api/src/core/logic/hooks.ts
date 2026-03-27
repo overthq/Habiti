@@ -6,7 +6,7 @@ import {
 
 import { NotificationType } from '../notifications';
 import { AppContext } from '../../utils/context';
-import { updateStoreRevenue } from '../data/stores';
+import { updateStoreRevenue, decrementUnrealizedRevenue } from '../data/stores';
 
 const NotificationTypeByOrderStatus = {
 	[OrderStatus.ReadyForPickup]: NotificationType.ReadyForPickup,
@@ -36,7 +36,8 @@ export const createOrderHooks = (
 	if (args.status === OrderStatus.Completed) {
 		updateStoreRevenue(ctx.prisma, {
 			storeId: args.storeId,
-			total: args.amount
+			total: args.amount,
+			orderId: args.orderId
 		});
 	}
 
@@ -79,12 +80,18 @@ interface UpdateOrderHooksArgs {
 	status: OrderStatus;
 }
 
-export const updateOrderHooks = (
+export const updateOrderHooks = async (
 	ctx: AppContext,
 	args: UpdateOrderHooksArgs
 ) => {
 	if (args.status === OrderStatus.Completed) {
-		updateStoreRevenue(ctx.prisma, {
+		await updateStoreRevenue(ctx.prisma, {
+			storeId: args.storeId,
+			total: args.amount,
+			orderId: args.orderId
+		});
+	} else if (args.status === OrderStatus.Cancelled) {
+		await decrementUnrealizedRevenue(ctx.prisma, {
 			storeId: args.storeId,
 			total: args.amount
 		});

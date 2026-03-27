@@ -4,18 +4,18 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
 
-import { HomeStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../types/navigation';
 
 interface ManagePayoutsProps {
 	realizedRevenue: number;
 }
 
 const ManagePayouts: React.FC<ManagePayoutsProps> = ({ realizedRevenue }) => {
-	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
 
 	const navigateToPayouts = React.useCallback(() => {
-		navigate('Payouts');
+		navigate('Modal.Transactions');
 	}, []);
 
 	return (

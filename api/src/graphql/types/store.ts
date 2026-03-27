@@ -30,7 +30,6 @@ const StoreTypes = gql`
 		managers: [StoreManager!]!
 		followers: [StoreFollower!]!
 		carts: [Cart!]!
-		payouts: [Payout!]!
 		image: Image
 		categories(
 			filter: StoreProductCategoryFilterInput

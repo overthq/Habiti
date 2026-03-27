@@ -11,7 +11,7 @@ import { Order } from '../../data/types';
 
 const OrdersList = () => {
 	const { navigate } = useNavigation<NavigationProp<OrdersStackParamList>>();
-	const { orders, refreshing, refresh } = useOrdersContext();
+	const { orders, status, refreshing, refresh } = useOrdersContext();
 	const { theme } = useTheme();
 
 	const handleOrderPress = React.useCallback(
@@ -38,8 +38,9 @@ const OrdersList = () => {
 				ListEmptyComponent={
 					<View style={styles.empty}>
 						<Typography variant='secondary' style={styles.emptyText}>
-							There are currently no orders. While you wait, you can customize
-							your store.
+							{status
+								? 'No orders match the selected status.'
+								: 'There are currently no orders. While you wait, you can customize your store.'}
 						</Typography>
 					</View>
 				}

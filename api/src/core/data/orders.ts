@@ -29,22 +29,18 @@ export const getOrderData = (
 
 interface IncrementStoreOrderCountParams {
 	storeId: string;
-	incrementUnrealizedRevenue?: number | undefined;
 }
 
 export const incrementStoreOrderCount = async (
 	prisma: TransactionClient,
 	params: IncrementStoreOrderCountParams
 ) => {
-	const { storeId, incrementUnrealizedRevenue } = params;
+	const { storeId } = params;
 
 	const store = await prisma.store.update({
 		where: { id: storeId },
 		data: {
-			orderCount: { increment: 1 },
-			...(incrementUnrealizedRevenue
-				? { unrealizedRevenue: { increment: incrementUnrealizedRevenue } }
-				: {})
+			orderCount: { increment: 1 }
 		}
 	});
 

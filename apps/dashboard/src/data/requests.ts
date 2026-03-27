@@ -11,7 +11,6 @@ import {
 	ProductFilters,
 	CreateProductBody,
 	GetManagedStoresResponse,
-	Payout,
 	Order,
 	OrderFilters,
 	User,
@@ -27,7 +26,9 @@ import {
 	StoreOverview,
 	CustomerInfo,
 	Address,
-	CreateAddressBody
+	CreateAddressBody,
+	Transaction,
+	TransactionFilters
 } from './types';
 
 const api = axios.create({
@@ -111,6 +112,11 @@ export const createStore = async (body: CreateStoreBody) => {
 
 export const updateCurrentStore = async (body: UpdateCurrentStoreBody) => {
 	const response = await api.put<{ store: Store }>('/stores/current', body);
+	return response.data;
+};
+
+export const getCurrentUser = async () => {
+	const response = await api.get<{ user: User }>('/users/current');
 	return response.data;
 };
 
@@ -220,20 +226,6 @@ export const createProduct = async (body: CreateProductBody) => {
 	return response.data;
 };
 
-export const getPayouts = async () => {
-	const response = await api.get<{ payouts: Payout[] }>(
-		'/stores/current/payouts'
-	);
-	return response.data;
-};
-
-export const getPayout = async (payoutId: string) => {
-	const response = await api.get<{ payout: Payout }>(
-		'/stores/current/payouts/' + payoutId
-	);
-	return response.data;
-};
-
 export const createPayout = async (body: CreatePayoutBody) => {
 	const response = await api.post('/stores/current/payouts', body);
 	return response.data;
@@ -324,4 +316,25 @@ export const updateAddress = async (
 
 export const deleteAddress = async (addressId: string) => {
 	await api.delete(`/stores/current/addresses/${addressId}`);
+};
+
+// Transactions
+
+export const getTransactions = async (filters?: TransactionFilters) => {
+	const response = await api.get<{ transactions: Transaction[] }>(
+		'/stores/current/transactions',
+		{ params: filters }
+	);
+	return response.data;
+};
+
+export const getTransaction = async (transactionId: string) => {
+	const response = await api.get<{ transaction: Transaction }>(
+		`/stores/current/transactions/${transactionId}`
+	);
+	return response.data;
+};
+
+export const deleteAccount = async (): Promise<void> => {
+	await api.delete('/users/current');
 };

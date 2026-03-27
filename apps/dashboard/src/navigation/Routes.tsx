@@ -15,7 +15,6 @@ import StoreSelect from '../screens/StoreSelect';
 import Verify from '../screens/Verify';
 import Product from '../screens/Product';
 import Overview from '../screens/Overview';
-import Payouts from '../screens/Payouts';
 import ProductCategories from '../screens/ProductCategories';
 import ProductImages from '../screens/ProductImages';
 import ProductDetails from '../screens/ProductDetails';
@@ -32,12 +31,18 @@ import AddAddress from '../screens/AddAddress';
 import EditAddress from '../screens/EditAddress';
 import AddPayoutAccount from '../screens/AddPayoutAccount';
 import Appearance from '../screens/Appearance';
+import ManageAccount from '../screens/ManageAccount';
 import Categories from '../screens/Categories';
 import EditStore from '../screens/EditStore';
 import Managers from '../screens/Managers';
 import Store from '../screens/Store';
 import StorePayouts from '../screens/StorePayouts';
+import Transactions from '../screens/Transactions';
+import Transaction from '../screens/Transaction';
+import BalanceDetails from '../screens/BalanceDetails';
 import StoreSettings from '../screens/StoreSettings';
+import StoreSettingsMenu from '../screens/StoreSettingsMenu';
+import Profile from '../screens/Profile';
 import Products from '../screens/Products';
 import SearchProducts from '../screens/SearchProducts';
 
@@ -50,7 +55,8 @@ import {
 	StoreStackParamList,
 	MainTabParamList,
 	OrdersStackParamList,
-	ProductsStackParamList
+	ProductsStackParamList,
+	ProfileStackParamList
 } from '../types/navigation';
 import { HeaderBackButton } from '@react-navigation/elements';
 
@@ -73,6 +79,10 @@ const StoreStack = createNativeStackNavigator<
 	StoreStackParamList,
 	'StoreStack'
 >();
+const ProfileStack = createNativeStackNavigator<
+	ProfileStackParamList,
+	'ProfileStack'
+>();
 
 const HomeStackNavigator = () => {
 	return (
@@ -81,11 +91,6 @@ const HomeStackNavigator = () => {
 				name='Overview'
 				component={Overview}
 				options={{ headerShown: false }}
-			/>
-			<HomeStack.Screen
-				name='Payouts'
-				component={Payouts}
-				options={{ headerBackButtonDisplayMode: 'minimal' }}
 			/>
 			<HomeStack.Screen
 				name='Order'
@@ -104,8 +109,8 @@ const HomeStackNavigator = () => {
 const icons: Record<keyof MainTabParamList, IconType> = {
 	Products: 'tag',
 	Orders: 'inbox',
-	Payouts: 'credit-card',
-	Store: 'shopping-bag'
+	Store: 'shopping-bag',
+	Profile: 'user'
 };
 
 export const tabScreenOptions =
@@ -134,8 +139,8 @@ const MainTabNavigator = () => {
 		>
 			<MainTab.Screen name='Orders' component={OrdersStackNavigator} />
 			<MainTab.Screen name='Products' component={ProductsStackNavigator} />
-			<MainTab.Screen name='Payouts' component={Payouts} />
 			<MainTab.Screen name='Store' component={StoreStackNavigator} />
+			<MainTab.Screen name='Profile' component={ProfileStackNavigator} />
 		</MainTab.Navigator>
 	);
 };
@@ -223,6 +228,22 @@ const StoreStackNavigator = () => {
 				options={{ headerShown: false }}
 			/>
 			<StoreStack.Screen
+				name='StoreSettings'
+				component={StoreSettingsMenu}
+				options={{
+					headerBackButtonDisplayMode: 'minimal',
+					headerTitle: 'Store Settings'
+				}}
+			/>
+			<StoreStack.Screen
+				name='BalanceDetails'
+				component={BalanceDetails}
+				options={{
+					headerBackButtonDisplayMode: 'minimal',
+					headerTitle: 'Balance Details'
+				}}
+			/>
+			<StoreStack.Screen
 				name='Edit Store'
 				component={EditStore}
 				options={{ headerBackButtonDisplayMode: 'minimal' }}
@@ -253,13 +274,44 @@ const StoreStackNavigator = () => {
 				options={{ headerBackButtonDisplayMode: 'minimal' }}
 			/>
 			<StoreStack.Screen
-				name='Appearance'
-				component={Appearance}
+				name='Transactions'
+				component={Transactions}
 				options={{ headerBackButtonDisplayMode: 'minimal' }}
+			/>
+			<StoreStack.Screen
+				name='Transaction'
+				component={Transaction}
+				options={{
+					headerBackButtonDisplayMode: 'minimal',
+					headerTitle: 'Transaction'
+				}}
 			/>
 		</StoreStack.Navigator>
 	);
 };
+
+const ProfileStackNavigator = () => (
+	<ProfileStack.Navigator id='ProfileStack' initialRouteName='ProfileHome'>
+		<ProfileStack.Screen
+			name='ProfileHome'
+			component={Profile}
+			options={{ headerShown: false }}
+		/>
+		<ProfileStack.Screen
+			name='Appearance'
+			component={Appearance}
+			options={{ headerBackButtonDisplayMode: 'minimal' }}
+		/>
+		<ProfileStack.Screen
+			name='ManageAccount'
+			component={ManageAccount}
+			options={{
+				headerBackButtonDisplayMode: 'minimal',
+				headerTitle: 'Manage Account'
+			}}
+		/>
+	</ProfileStack.Navigator>
+);
 
 const Routes: React.FC = () => {
 	const { isUpdatePending } = Updates.useUpdates();
@@ -384,6 +436,11 @@ const Routes: React.FC = () => {
 								name='Modal.EditProductCategories'
 								component={ProductCategories}
 								options={{ headerTitle: 'Categories' }}
+							/>
+							<AppStack.Screen
+								name='Modal.Transactions'
+								component={Transactions}
+								options={{ headerTitle: 'Transactions' }}
 							/>
 						</AppStack.Group>
 					</>

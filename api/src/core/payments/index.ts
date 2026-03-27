@@ -10,7 +10,10 @@ import {
 
 import * as Paystack from './paystack';
 
-import * as PayoutData from '../data/payouts';
+import {
+	markTransferSuccessful,
+	markTransferFailed
+} from '../data/transactions';
 
 import { env } from '../../config/env';
 
@@ -20,7 +23,10 @@ import { pollUntil } from '../../utils/poll';
 export const chargeAuthorization = async (
 	options: ChargeAuthorizationOptions
 ) => {
-	const data = await Paystack.chargeAuthorization(options);
+	const data = await Paystack.chargeAuthorization({
+		...options,
+		...(options.metadata && { metadata: options.metadata })
+	});
 
 	if (env.NODE_ENV !== 'production') {
 		pollUntil(() => verifyTransaction(data.data.reference), {
@@ -50,21 +56,30 @@ export const initialCharge = async (options: InitialChargeOptions) => {
 };
 
 export const payAccount = async (options: PayAccountOptions) => {
-	return await Paystack.transfer({
+	const data = await Paystack.transfer({
 		amount: options.amount,
 		reference: options.reference,
 		recipient: options.recipient,
 		...(options.metadata && { metadata: options.metadata })
 	});
+
+	if (env.NODE_ENV !== 'production') {
+		pollUntil(() => verifyTransfer({ transferId: data.data.reference }), {
+			intervalMs: 5_000,
+			maxAttempts: 24
+		});
+	}
+
+	return data;
 };
 
 export const verifyTransfer = async (options: VerifyTransferOptions) => {
 	const { data, status } = await Paystack.verifyTransfer(options.transferId);
 
 	if (status === true && data.status === 'success') {
-		await PayoutData.markPayoutAsSuccessful(options.transferId);
+		await markTransferSuccessful(options.transferId);
 	} else {
-		await PayoutData.markPayoutAsFailed(options.transferId);
+		await markTransferFailed(options.transferId);
 	}
 
 	return data;
@@ -74,7 +89,7 @@ export const finalizeTransfer = async (options: FinalizeTransferOptions) => {
 	const { data, status } = await Paystack.finalizeTransfer(options);
 
 	if (status === true && data.status === 'success') {
-		await PayoutData.markPayoutAsSuccessful(options.transferCode);
+		await markTransferSuccessful(options.transferCode);
 	}
 };
 

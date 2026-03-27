@@ -30,7 +30,8 @@ async function completeStalePickups() {
 
 		await updateStoreRevenue(prisma, {
 			storeId: order.storeId,
-			total: order.total
+			total: order.total,
+			orderId: order.id
 		});
 
 		console.log(`Completed order ${order.id} (store: ${order.storeId})`);

@@ -35,10 +35,17 @@ const RevenueBar: React.FC<RevenueBarProps> = ({
 	);
 
 	const realizedPercent = React.useMemo(() => {
+		if (totalRevenue === 0) return '0%' as const;
 		return `${Math.floor((realizedRevenue / totalRevenue) * 100)}%` as const;
 	}, [realizedRevenue, totalRevenue]);
 
+	const unrealizedPercent = React.useMemo(() => {
+		if (totalRevenue === 0) return '0%' as const;
+		return `${Math.floor((unrealizedRevenue / totalRevenue) * 100)}%` as const;
+	}, [unrealizedRevenue, totalRevenue]);
+
 	const availablePercent = React.useMemo(() => {
+		if (realizedRevenue === 0) return '0%' as const;
 		return `${Math.floor((available / realizedRevenue) * 100)}%` as const;
 	}, [available, realizedRevenue]);
 
@@ -57,6 +64,12 @@ const RevenueBar: React.FC<RevenueBarProps> = ({
 					]}
 				/>
 			</View>
+			<View
+				style={[
+					styles.unrealized,
+					{ backgroundColor: palette.yellow.y200, width: unrealizedPercent }
+				]}
+			/>
 		</View>
 	);
 };
@@ -71,6 +84,9 @@ const styles = StyleSheet.create({
 	},
 	realized: {
 		flexDirection: 'row'
+	},
+	unrealized: {
+		height: '100%'
 	},
 	available: {
 		height: '100%'

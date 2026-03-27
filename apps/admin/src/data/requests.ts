@@ -24,19 +24,17 @@ import {
 	type CreateStoreBody,
 	type Store,
 	type GetStoreManagersResponse,
-	type GetStorePayoutsResponse,
 	type GetStoreOrdersResponse,
 	type GetStoreProductsResponse,
 	type GetStoreResponse,
 	type GetStoresResponse,
 	type StoreFilters,
 	type GetOverviewResponse,
-	type PayoutFilters,
-	type GetPayoutsResponse,
-	type GetPayoutResponse,
-	type UpdatePayoutBody,
-	type UpdatePayoutResponse,
+	type UpdateTransactionBody,
+	type UpdateTransactionResponse,
 	type BulkActionResponse,
+	type GetStoreTransactionsResponse,
+	type TransactionFilters,
 	ProductStatus
 } from './types';
 
@@ -137,9 +135,12 @@ export const getStoreOrders = (id: string, params?: StoreFilters) => {
 	return api.get<GetStoreOrdersResponse>(`/admin/stores/${id}/orders`, params);
 };
 
-export const getStorePayouts = (id: string, params?: StoreFilters) => {
-	return api.get<GetStorePayoutsResponse>(
-		`/admin/stores/${id}/payouts`,
+export const getStoreTransactions = (
+	id: string,
+	params?: TransactionFilters
+) => {
+	return api.get<GetStoreTransactionsResponse>(
+		`/admin/stores/${id}/transactions`,
 		params
 	);
 };
@@ -155,16 +156,11 @@ export const getOverview = () => {
 	return api.get<GetOverviewResponse>('/admin/overview');
 };
 
-export const getPayouts = (params?: PayoutFilters) => {
-	return api.get<GetPayoutsResponse>('/admin/payouts', params);
-};
-
-export const getPayout = (id: string) => {
-	return api.get<GetPayoutResponse>(`/admin/payouts/${id}`);
-};
-
-export const updatePayout = (id: string, body: UpdatePayoutBody) => {
-	return api.patch<UpdatePayoutResponse>(`/admin/payouts/${id}`, body);
+export const updateTransaction = (id: string, body: UpdateTransactionBody) => {
+	return api.patch<UpdateTransactionResponse>(
+		`/admin/transactions/${id}`,
+		body
+	);
 };
 
 // Bulk User Operations

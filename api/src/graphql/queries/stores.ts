@@ -121,10 +121,6 @@ const image: Resolver = (parent, _, ctx) => {
 	return ctx.prisma.store.findUnique({ where: { id: parent.id } }).image();
 };
 
-const payouts: Resolver = (parent, _, ctx) => {
-	return ctx.prisma.store.findUnique({ where: { id: parent.id } }).payouts();
-};
-
 export interface CategoriesArgs {
 	filter?: {
 		id?: StringWhere;
@@ -179,7 +175,6 @@ export default {
 		followers,
 		carts,
 		image,
-		payouts,
 		followedByUser,
 		userCart,
 		categories

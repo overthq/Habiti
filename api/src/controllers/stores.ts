@@ -46,32 +46,6 @@ export const createStore = async (
 	}
 };
 
-export const getStorePayouts = async (
-	req: Request,
-	res: Response,
-	next: NextFunction
-) => {
-	const ctx = getAppContext(req);
-
-	let storeId = ctx.storeId;
-
-	try {
-		if (ctx.isAdmin) {
-			storeId = req.params.id;
-		}
-
-		if (!storeId) {
-			return res.status(400).json({ error: 'Store ID is required' });
-		}
-
-		const payouts = await StoreLogic.getStorePayouts(ctx, storeId);
-
-		return res.json({ payouts });
-	} catch (error) {
-		return next(error);
-	}
-};
-
 export const getStoreById = async (
 	req: Request<{ id: string }>,
 	res: Response,

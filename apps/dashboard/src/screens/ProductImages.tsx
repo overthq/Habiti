@@ -84,7 +84,11 @@ const ProductImages = () => {
 		<Screen style={styles.container}>
 			<View style={styles.images}>
 				{images?.map(({ id, path }) => (
-					<Image key={id} source={{ uri: path }} style={styles.image} />
+					<Image
+						key={id}
+						source={{ uri: path.replace('http://', 'https://') }}
+						style={styles.image}
+					/>
 				))}
 				{imagesToUpload.map(asset => (
 					<Image
