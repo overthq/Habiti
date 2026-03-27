@@ -1,8 +1,14 @@
-import { NavigatorScreenParams } from '@react-navigation/native';
+import type {
+	CompositeScreenProps,
+	NavigatorScreenParams
+} from '@react-navigation/native';
+import type { StackScreenProps } from '@react-navigation/stack';
+import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+
 import { Image, ProductCategory } from '../data/types';
 
 export type AppStackParamList = {
-	Main: undefined;
+	Main: NavigatorScreenParams<MainTabParamList>;
 	Authenticate: undefined;
 	Landing: undefined;
 	Register: undefined;
@@ -47,12 +53,21 @@ export type AppStackParamList = {
 	'Modal.Transactions': undefined;
 };
 
+export type AppStackScreenProps<T extends keyof AppStackParamList> =
+	StackScreenProps<AppStackParamList, T>;
+
 export type MainTabParamList = {
 	Orders: undefined;
 	Products: undefined;
 	Store: undefined;
 	Profile: undefined;
 };
+
+export type MainTabScreenProps<T extends keyof MainTabParamList> =
+	CompositeScreenProps<
+		BottomTabScreenProps<MainTabParamList, T>,
+		AppStackScreenProps<'Main'>
+	>;
 
 export type HomeStackParamList = {
 	Overview: undefined;

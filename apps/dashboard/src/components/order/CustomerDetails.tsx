@@ -3,7 +3,7 @@ import { View, Pressable, StyleSheet } from 'react-native';
 import { Avatar, Spacer, Typography, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
-import { AppStackParamList } from '../../types/navigation';
+import { OrdersStackParamList } from '../../types/navigation';
 import { User } from '../../data/types';
 
 interface CustomerDetailProps {
@@ -11,11 +11,11 @@ interface CustomerDetailProps {
 }
 
 const CustomerDetails: React.FC<CustomerDetailProps> = ({ user }) => {
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { navigate } = useNavigation<NavigationProp<OrdersStackParamList>>();
 	const { theme } = useTheme();
 
 	const handlePress = React.useCallback(() => {
-		navigate('Modal.CustomerInfo', { userId: user.id });
+		navigate('CustomerInfo', { userId: user.id });
 	}, [user.id]);
 
 	return (

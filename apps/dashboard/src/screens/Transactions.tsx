@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, RefreshControl, Alert } from 'react-native';
 import { Screen, Typography, Spacer, useTheme, Icon } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { HeaderButton } from '@react-navigation/elements';
 import { FlashList } from '@shopify/flash-list';
 import { formatNaira } from '@habiti/common';
 
@@ -14,7 +15,6 @@ import {
 	AppStackParamList,
 	type StoreStackParamList
 } from '../types/navigation';
-import { HeaderButton } from '@react-navigation/elements';
 
 const Transactions = () => {
 	const { data: storeData } = useCurrentStoreQuery();

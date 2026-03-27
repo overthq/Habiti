@@ -212,6 +212,14 @@ const OrdersStackNavigator = () => (
 			options={{ headerBackButtonDisplayMode: 'minimal' }}
 		/>
 		<OrdersStack.Screen
+			name='CustomerInfo'
+			component={CustomerInfo}
+			options={{
+				headerTitle: 'Customer Information',
+				headerBackButtonDisplayMode: 'minimal'
+			}}
+		/>
+		<OrdersStack.Screen
 			name='Product'
 			component={ProductStackNavigator}
 			options={{ headerShown: false }}
@@ -372,11 +380,6 @@ const Routes: React.FC = () => {
 							})}
 						>
 							<AppStack.Screen name='Add Product' component={AddProduct} />
-							<AppStack.Screen
-								name='Modal.CustomerInfo'
-								component={CustomerInfo}
-								options={{ headerTitle: 'Customer Information' }}
-							/>
 							<AppStack.Screen
 								name='Modal.AddPayout'
 								component={AddPayout}
