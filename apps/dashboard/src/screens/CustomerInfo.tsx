@@ -10,7 +10,7 @@ import {
 
 import OrderDetail from '../components/customer-info/OrderDetail';
 import { useCustomerInfoQuery } from '../data/queries';
-import type { OrdersStackParamList } from '../types/navigation';
+import type { OrdersStackParamList } from '../navigation/types';
 
 const CustomerInfo = () => {
 	const { params } =

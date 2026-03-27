@@ -17,7 +17,7 @@ import FAB from '../components/products/FAB';
 import useGoBack from '../hooks/useGoBack';
 import useRefresh from '../hooks/useRefresh';
 import { useAddressesQuery } from '../data/queries';
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../navigation/types';
 import { Address } from '../data/types';
 
 interface AddressListItemProps {

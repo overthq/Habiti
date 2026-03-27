@@ -4,7 +4,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 import useGoBack from '../hooks/useGoBack';
 import { useUpdateProductCategoryMutation } from '../data/mutations';
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../navigation/types';
 
 interface EditCategoryFormValues {
 	name: string;

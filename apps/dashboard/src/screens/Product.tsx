@@ -12,7 +12,7 @@ import ProductMenu from '../components/product/ProductMenu';
 import { useProductQuery } from '../data/queries';
 import useRefresh from '../hooks/useRefresh';
 
-import { ProductStackParamList } from '../types/navigation';
+import { ProductStackParamList } from '../navigation/types';
 
 const Product = () => {
 	const {

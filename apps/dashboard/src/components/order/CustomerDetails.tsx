@@ -3,7 +3,7 @@ import { View, Pressable, StyleSheet } from 'react-native';
 import { Avatar, Spacer, Typography, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
-import { OrdersStackParamList } from '../../types/navigation';
+import { OrdersStackParamList } from '../../navigation/types';
 import { User } from '../../data/types';
 
 interface CustomerDetailProps {

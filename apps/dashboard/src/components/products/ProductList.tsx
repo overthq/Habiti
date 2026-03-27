@@ -5,7 +5,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 import ProductsListItem from './ProductsListItem';
 import { Product } from '../../data/types';
-import { ProductsStackParamList } from '../../types/navigation';
+import { ProductsStackParamList } from '../../navigation/types';
 import { useProductsContext } from './ProductsContext';
 
 const ProductList: React.FC = () => {

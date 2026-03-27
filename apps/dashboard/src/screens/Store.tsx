@@ -26,7 +26,7 @@ import { useShallow } from 'zustand/react/shallow';
 import type {
 	AppStackParamList,
 	StoreStackParamList
-} from '../types/navigation';
+} from '../navigation/types';
 
 const Store = () => {
 	const { data, refetch, isLoading, error } = useCurrentStoreQuery();

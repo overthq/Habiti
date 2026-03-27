@@ -7,7 +7,7 @@ import ManagerRow from '../components/managers/ManagerRow';
 import useGoBack from '../hooks/useGoBack';
 import useRefresh from '../hooks/useRefresh';
 import { useStoreManagersQuery } from '../data/queries';
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../navigation/types';
 
 const Managers = () => {
 	const { data, isLoading, refetch } = useStoreManagersQuery();

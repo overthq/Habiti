@@ -7,7 +7,7 @@ import AmountDisplay from '../components/add-payout/AmountDisplay';
 import PayoutNumpad from '../components/add-payout/PayoutNumpad';
 import useGoBack from '../hooks/useGoBack';
 import { useCreatePayoutMutation } from '../data/mutations';
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../navigation/types';
 
 const AddPayout = () => {
 	const [amount, setAmount] = React.useState('');

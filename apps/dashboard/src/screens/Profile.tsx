@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import StoreMenuRow from '../components/store/StoreMenuRow';
 import { useCurrentUserQuery } from '../data/queries';
 import useStore from '../state';
-import type { ProfileStackParamList } from '../types/navigation';
+import type { ProfileStackParamList } from '../navigation/types';
 
 const PRIVACY_POLICY_URL = 'https://habiti.app/privacy-policy';
 const SUPPORT_URL = 'https://habiti.app/support';

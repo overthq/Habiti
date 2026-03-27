@@ -57,7 +57,7 @@ import {
 	OrdersStackParamList,
 	ProductsStackParamList,
 	ProfileStackParamList
-} from '../types/navigation';
+} from '../navigation/types';
 import { HeaderBackButton } from '@react-navigation/elements';
 
 const AppStack = createNativeStackNavigator<AppStackParamList, 'AppStack'>();

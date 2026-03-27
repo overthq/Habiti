@@ -10,7 +10,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../navigation/types';
 
 const Landing = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();

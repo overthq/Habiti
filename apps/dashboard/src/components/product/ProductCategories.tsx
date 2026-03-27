@@ -2,7 +2,7 @@ import { View, StyleSheet } from 'react-native';
 
 import { Spacer, TextButton, Typography, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { AppStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../navigation/types';
 import { ProductCategory } from '../../data/types';
 
 interface ProductCategoriesProps {

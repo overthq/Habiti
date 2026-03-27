@@ -10,7 +10,7 @@ import {
 } from '@habiti/components';
 
 import useGoBack from '../hooks/useGoBack';
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../navigation/types';
 
 import { useCurrentStoreQuery } from '../data/queries';
 import { useUpdateCurrentStoreMutation } from '../data/mutations';

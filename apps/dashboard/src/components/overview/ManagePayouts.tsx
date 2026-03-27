@@ -4,7 +4,7 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
 
-import { AppStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../navigation/types';
 
 interface ManagePayoutsProps {
 	realizedRevenue: number;

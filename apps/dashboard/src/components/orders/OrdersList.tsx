@@ -5,7 +5,7 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
 
 import OrdersListItem from '../../components/orders/OrdersListItem';
-import { OrdersStackParamList } from '../../types/navigation';
+import { OrdersStackParamList } from '../../navigation/types';
 import { useOrdersContext } from './OrdersContext';
 import { Order } from '../../data/types';
 

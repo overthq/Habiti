@@ -8,7 +8,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import StoreSelectList from '../components/store-select/StoreSelectList';
 
 import { useManagedStoresQuery } from '../data/queries';
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../navigation/types';
 
 const StoreSelect = () => {
 	const { isLoading, data } = useManagedStoresQuery();

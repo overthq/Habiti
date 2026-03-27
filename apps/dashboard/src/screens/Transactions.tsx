@@ -14,7 +14,7 @@ import { Transaction } from '../data/types';
 import {
 	AppStackParamList,
 	type StoreStackParamList
-} from '../types/navigation';
+} from '../navigation/types';
 
 const Transactions = () => {
 	const { data: storeData } = useCurrentStoreQuery();

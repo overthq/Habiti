@@ -4,7 +4,7 @@ import { useShallow } from 'zustand/react/shallow';
 import * as SecureStore from 'expo-secure-store';
 
 import useStore from '../state';
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../navigation/types';
 import {
 	updateCurrentStore,
 	deleteProduct,

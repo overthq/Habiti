@@ -2,7 +2,7 @@ import { Spacer, TextButton, Typography, useTheme } from '@habiti/components';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
-import { AppStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../navigation/types';
 import { Image as ImageType } from '../../data/types';
 
 interface ProductMediaProps {
