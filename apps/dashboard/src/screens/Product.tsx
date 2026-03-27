@@ -10,6 +10,7 @@ import EditButtons from '../components/product/EditButtons';
 import ProductMenu from '../components/product/ProductMenu';
 
 import { useProductQuery } from '../data/queries';
+import useRefresh from '../hooks/useRefresh';
 
 import { ProductStackParamList } from '../types/navigation';
 
@@ -18,7 +19,8 @@ const Product = () => {
 		params: { productId }
 	} = useRoute<RouteProp<ProductStackParamList, 'Product.Main'>>();
 
-	const { data, isRefetching, refetch } = useProductQuery(productId);
+	const { data, refetch } = useProductQuery(productId);
+	const { isRefreshing, onRefresh } = useRefresh({ refetch });
 
 	const { theme } = useTheme();
 
@@ -30,8 +32,8 @@ const Product = () => {
 		<ScrollableScreen
 			refreshControl={
 				<RefreshControl
-					refreshing={isRefetching}
-					onRefresh={refetch}
+					refreshing={isRefreshing}
+					onRefresh={onRefresh}
 					tintColor={theme.text.secondary}
 				/>
 			}

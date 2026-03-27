@@ -19,6 +19,7 @@ import RecentTransactions from '../components/store/RecentTransactions';
 import StoreSelectModal from '../components/store/StoreSelectModal';
 
 import { useCurrentStoreQuery } from '../data/queries';
+import useRefresh from '../hooks/useRefresh';
 import useStore from '../state';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -28,8 +29,8 @@ import type {
 } from '../types/navigation';
 
 const Store = () => {
-	const { data, refetch, isRefetching, isLoading, error } =
-		useCurrentStoreQuery();
+	const { data, refetch, isLoading, error } = useCurrentStoreQuery();
+	const { isRefreshing, onRefresh } = useRefresh({ refetch });
 	const { navigate } =
 		useNavigation<NavigationProp<AppStackParamList & StoreStackParamList>>();
 	const { theme } = useTheme();
@@ -112,8 +113,8 @@ const Store = () => {
 				style={{ paddingHorizontal: 16 }}
 				refreshControl={
 					<RefreshControl
-						refreshing={isRefetching}
-						onRefresh={refetch}
+						refreshing={isRefreshing}
+						onRefresh={onRefresh}
 						tintColor={theme.text.secondary}
 					/>
 				}

@@ -5,25 +5,17 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import ManagerRow from '../components/managers/ManagerRow';
 import useGoBack from '../hooks/useGoBack';
+import useRefresh from '../hooks/useRefresh';
 import { useStoreManagersQuery } from '../data/queries';
 import { AppStackParamList } from '../types/navigation';
 
 const Managers = () => {
 	const { data, isLoading, refetch } = useStoreManagersQuery();
-	const [refreshing, setRefreshing] = React.useState(false);
+	const { isRefreshing, onRefresh } = useRefresh({ refetch });
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
 	useGoBack();
-
-	const refresh = React.useCallback(() => {
-		setRefreshing(true);
-		refetch();
-	}, [refetch]);
-
-	React.useEffect(() => {
-		if (!isLoading && refreshing) setRefreshing(false);
-	}, [isLoading, refreshing]);
 
 	React.useLayoutEffect(() => {
 		setOptions({
@@ -45,8 +37,8 @@ const Managers = () => {
 				style={styles.container}
 				refreshControl={
 					<RefreshControl
-						refreshing={refreshing}
-						onRefresh={refresh}
+						refreshing={isRefreshing}
+						onRefresh={onRefresh}
 						tintColor={theme.text.secondary}
 					/>
 				}

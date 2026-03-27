@@ -7,9 +7,11 @@ import AwaitingPickupOrders from '../components/overview/AwaitingPickupOrders';
 import LowStockProducts from '../components/overview/LowStockProducts';
 import ManagePayouts from '../components/overview/ManagePayouts';
 import { useOverviewQuery, useCurrentStoreQuery } from '../data/queries';
+import useRefresh from '../hooks/useRefresh';
 
 const OverviewMain = () => {
-	const { data, isLoading, refetch, isRefetching } = useOverviewQuery();
+	const { data, isLoading, refetch } = useOverviewQuery();
+	const { isRefreshing, onRefresh } = useRefresh({ refetch });
 	const { data: storeData } = useCurrentStoreQuery();
 
 	if (isLoading && !data) return null;
@@ -17,7 +19,7 @@ const OverviewMain = () => {
 	return (
 		<ScrollableScreen
 			refreshControl={
-				<RefreshControl refreshing={isRefetching} onRefresh={refetch} />
+				<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
 			}
 		>
 			<ManagePayouts realizedRevenue={storeData?.store?.realizedRevenue ?? 0} />

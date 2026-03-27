@@ -10,6 +10,7 @@ import OrderOverview from '../components/order/OrderOverview';
 import OrderProducts from '../components/order/OrderProducts';
 import PaymentInfo from '../components/order/PaymentInfo';
 import useGoBack from '../hooks/useGoBack';
+import useRefresh from '../hooks/useRefresh';
 import { useOrderQuery } from '../data/queries';
 import { OrdersStackParamList } from '../types/navigation';
 
@@ -17,7 +18,8 @@ const Order = () => {
 	const {
 		params: { orderId }
 	} = useRoute<RouteProp<OrdersStackParamList, 'Order'>>();
-	const { data, isRefetching, refetch } = useOrderQuery(orderId);
+	const { data, refetch } = useOrderQuery(orderId);
+	const { isRefreshing, onRefresh } = useRefresh({ refetch });
 	const { theme } = useTheme();
 	useGoBack();
 
@@ -29,8 +31,8 @@ const Order = () => {
 		<ScrollableScreen
 			refreshControl={
 				<RefreshControl
-					refreshing={isRefetching}
-					onRefresh={refetch}
+					refreshing={isRefreshing}
+					onRefresh={onRefresh}
 					tintColor={theme.text.secondary}
 				/>
 			}

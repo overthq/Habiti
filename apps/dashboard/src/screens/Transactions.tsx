@@ -7,6 +7,7 @@ import { formatNaira } from '@habiti/common';
 
 import TransactionRow from '../components/transactions/TransactionRow';
 import useGoBack from '../hooks/useGoBack';
+import useRefresh from '../hooks/useRefresh';
 import { useCurrentStoreQuery, useTransactionsQuery } from '../data/queries';
 import { Transaction } from '../data/types';
 import {
@@ -17,7 +18,8 @@ import { HeaderButton } from '@react-navigation/elements';
 
 const Transactions = () => {
 	const { data: storeData } = useCurrentStoreQuery();
-	const { data, refetch, isRefetching } = useTransactionsQuery();
+	const { data, refetch } = useTransactionsQuery();
+	const { isRefreshing, onRefresh } = useRefresh({ refetch });
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList & StoreStackParamList>>();
 	const { theme } = useTheme();
@@ -83,8 +85,8 @@ const Transactions = () => {
 					}}
 					refreshControl={
 						<RefreshControl
-							refreshing={isRefetching}
-							onRefresh={refetch}
+							refreshing={isRefreshing}
+							onRefresh={onRefresh}
 							tintColor={theme.text.secondary}
 						/>
 					}

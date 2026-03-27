@@ -16,6 +16,7 @@ import { HeaderButton } from '@react-navigation/elements';
 import FAB from '../components/products/FAB';
 
 import useGoBack from '../hooks/useGoBack';
+import useRefresh from '../hooks/useRefresh';
 import { useCategoriesQuery } from '../data/queries';
 import { AppStackParamList } from '../types/navigation';
 import { StoreProductCategory } from '../data/types';
@@ -38,21 +39,10 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
 
 const Categories = () => {
 	const { data, isLoading, refetch } = useCategoriesQuery();
+	const { isRefreshing, onRefresh } = useRefresh({ refetch });
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
-	const [refreshing, setRefreshing] = React.useState(false);
-
-	const handleRefresh = React.useCallback(() => {
-		setRefreshing(true);
-		refetch();
-	}, [refetch]);
-
-	React.useEffect(() => {
-		if (!isLoading && refreshing) {
-			setRefreshing(false);
-		}
-	}, [isLoading, refreshing]);
 
 	useGoBack();
 
@@ -108,8 +98,8 @@ const Categories = () => {
 			<ScrollableScreen
 				refreshControl={
 					<RefreshControl
-						refreshing={refreshing}
-						onRefresh={handleRefresh}
+						refreshing={isRefreshing}
+						onRefresh={onRefresh}
 						tintColor={theme.text.secondary}
 					/>
 				}
