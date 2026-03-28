@@ -8,23 +8,21 @@ import {
 	Typography,
 	useTheme
 } from '@habiti/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import StoreMenuRow from '../components/store/StoreMenuRow';
 import { useCurrentUserQuery } from '../data/queries';
 import useStore from '../state';
-import type { ProfileStackParamList } from '../navigation/types';
+import type { ProfileStackScreenProps } from '../navigation/types';
 
 const PRIVACY_POLICY_URL = 'https://habiti.app/privacy-policy';
 const SUPPORT_URL = 'https://habiti.app/support';
 const ACCEPTABLE_USE_URL = 'https://habiti.app/acceptable-use';
 
-const Profile = () => {
+const Profile = ({ navigation }: ProfileStackScreenProps<'ProfileHome'>) => {
 	const { top } = useSafeAreaInsets();
 	const { theme } = useTheme();
 	const { logOut } = useStore();
-	const { navigate } = useNavigation<NavigationProp<ProfileStackParamList>>();
 	const { data } = useCurrentUserQuery();
 
 	const user = data?.user;
@@ -55,11 +53,11 @@ const Profile = () => {
 			<View>
 				<StoreMenuRow
 					title='Manage Account'
-					onPress={() => navigate('ManageAccount')}
+					onPress={() => navigation.navigate('ManageAccount')}
 				/>
 				<StoreMenuRow
 					title='Appearance'
-					onPress={() => navigate('Appearance')}
+					onPress={() => navigation.navigate('Appearance')}
 				/>
 				<Separator style={{ marginHorizontal: 16, marginVertical: 8 }} />
 				<StoreMenuRow

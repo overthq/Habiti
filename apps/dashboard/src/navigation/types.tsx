@@ -60,13 +60,19 @@ export type MainTabParamList = {
 	Orders: undefined;
 	Products: undefined;
 	Store: undefined;
-	Profile: undefined;
+	Profile: NavigatorScreenParams<ProfileStackParamList>;
 };
 
 export type MainTabScreenProps<T extends keyof MainTabParamList> =
 	CompositeScreenProps<
 		BottomTabScreenProps<MainTabParamList, T>,
 		AppStackScreenProps<'Main'>
+	>;
+
+export type ProfileStackScreenProps<T extends keyof ProfileStackParamList> =
+	CompositeScreenProps<
+		StackScreenProps<ProfileStackParamList, T>,
+		MainTabScreenProps<'Profile'>
 	>;
 
 export type HomeStackParamList = {
