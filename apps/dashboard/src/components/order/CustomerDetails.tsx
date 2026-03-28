@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
-import { Avatar, Spacer, Typography, useTheme } from '@habiti/components';
+import { Avatar, Icon, Spacer, Typography, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { OrdersStackParamList } from '../../navigation/types';
@@ -30,11 +30,7 @@ const CustomerDetails: React.FC<CustomerDetailProps> = ({ user }) => {
 					<Avatar fallbackText={user.name} />
 					<Typography>{user.name}</Typography>
 				</View>
-				{/*<Separator
-					style={{ marginVertical: 8, marginHorizontal: -12 }}
-					inset={false}
-				/>
-				<TextButton onPress={() => {}}>View order history</TextButton>*/}
+				<Icon name='chevron-right' size={20} />
 			</Pressable>
 		</View>
 	);
@@ -47,7 +43,10 @@ const styles = StyleSheet.create({
 	button: {
 		paddingHorizontal: 12,
 		paddingVertical: 10,
-		borderRadius: 12
+		borderRadius: 12,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center'
 	}
 });
 
