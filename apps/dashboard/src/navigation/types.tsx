@@ -75,12 +75,6 @@ export type ProfileStackScreenProps<T extends keyof ProfileStackParamList> =
 		MainTabScreenProps<'Profile'>
 	>;
 
-export type HomeStackParamList = {
-	Overview: undefined;
-	Order: { orderId: string };
-	Product: NavigatorScreenParams<ProductStackParamList>;
-};
-
 export type OrdersStackParamList = {
 	OrdersList: undefined;
 	Order: { orderId: string };

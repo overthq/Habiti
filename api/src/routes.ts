@@ -233,12 +233,14 @@ adminRouter.get(
 	TransactionController.getAdminStoreTransactions
 );
 adminRouter.get('/stores/:id/orders', StoreController.getStoreOrders);
+adminRouter.get('/stores/:id', StoreController.getStoreById);
 adminRouter.get('/products', ProductController.getProducts);
 adminRouter.post(
 	'/products',
 	validateBody(createProductSchema),
 	ProductController.createProduct
 );
+adminRouter.get('/products/:id', ProductController.getProductById);
 adminRouter.delete('/products/:id', ProductController.deleteProduct);
 adminRouter.get('/products/:id/reviews', ProductController.getProductReviews);
 adminRouter.get('/users', UserController.getUsers);

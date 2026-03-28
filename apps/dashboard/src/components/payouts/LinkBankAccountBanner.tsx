@@ -37,7 +37,7 @@ const LinkBankAccountBanner: React.FC<LinkBankAccountBannerProps> = ({
 					text='Dismiss'
 					size='small'
 					variant='secondary'
-					onPress={onAddPayoutAccount}
+					onPress={() => {}}
 				/>
 			</View>
 		</View>

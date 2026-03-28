@@ -14,7 +14,6 @@ import Order from '../screens/Order';
 import StoreSelect from '../screens/StoreSelect';
 import Verify from '../screens/Verify';
 import Product from '../screens/Product';
-import Overview from '../screens/Overview';
 import ProductCategories from '../screens/ProductCategories';
 import ProductImages from '../screens/ProductImages';
 import ProductDetails from '../screens/ProductDetails';
@@ -44,24 +43,20 @@ import StoreSettings from '../screens/StoreSettings';
 import StoreSettingsMenu from '../screens/StoreSettingsMenu';
 import Profile from '../screens/Profile';
 import Products from '../screens/Products';
-import SearchProducts from '../screens/SearchProducts';
 
 import useStore from '../state';
 
 import {
 	AppStackParamList,
 	ProductStackParamList,
-	HomeStackParamList,
 	StoreStackParamList,
 	MainTabParamList,
 	OrdersStackParamList,
 	ProductsStackParamList,
 	ProfileStackParamList
 } from '../navigation/types';
-import { HeaderBackButton } from '@react-navigation/elements';
 
 const AppStack = createNativeStackNavigator<AppStackParamList, 'AppStack'>();
-const HomeStack = createNativeStackNavigator<HomeStackParamList, 'HomeStack'>();
 const MainTab = createBottomTabNavigator<MainTabParamList, 'MainTab'>();
 const ProductStack = createNativeStackNavigator<
 	ProductStackParamList,
@@ -83,28 +78,6 @@ const ProfileStack = createNativeStackNavigator<
 	ProfileStackParamList,
 	'ProfileStack'
 >();
-
-const HomeStackNavigator = () => {
-	return (
-		<HomeStack.Navigator initialRouteName='Overview' id='HomeStack'>
-			<HomeStack.Screen
-				name='Overview'
-				component={Overview}
-				options={{ headerShown: false }}
-			/>
-			<HomeStack.Screen
-				name='Order'
-				component={Order}
-				options={{ headerBackButtonDisplayMode: 'minimal' }}
-			/>
-			<HomeStack.Screen
-				name='Product'
-				component={ProductStackNavigator}
-				options={{ headerShown: false }}
-			/>
-		</HomeStack.Navigator>
-	);
-};
 
 const icons: Record<keyof MainTabParamList, IconType> = {
 	Products: 'tag',
@@ -154,20 +127,11 @@ const ProductStackNavigator = () => {
 				options={({ navigation }) => ({
 					headerTitle: 'Product',
 					headerBackButtonDisplayMode: 'minimal',
-					headerLeft: () => (
-						<HeaderBackButton
-							onPress={() => navigation.getParent()?.goBack()}
-							tintColor='#FFFFFF'
-						/>
-					),
 					unstable_headerLeftItems: () => [
 						{
 							type: 'button',
 							label: 'Back',
-							icon: {
-								type: 'sfSymbol',
-								name: 'chevron.left'
-							},
+							icon: { type: 'sfSymbol', name: 'chevron.left' },
 							onPress: () => {
 								navigation.getParent()?.goBack();
 							}
@@ -189,11 +153,6 @@ const ProductsStackNavigator = () => (
 		<ProductsStack.Screen
 			name='Product'
 			component={ProductStackNavigator}
-			options={{ headerShown: false }}
-		/>
-		<ProductsStack.Screen
-			name='Products.Search'
-			component={SearchProducts}
 			options={{ headerShown: false }}
 		/>
 	</ProductsStack.Navigator>
@@ -360,20 +319,11 @@ const Routes: React.FC = () => {
 								presentation: 'modal',
 								headerShown: true,
 								headerBackButtonDisplayMode: 'minimal',
-								headerLeft: () => (
-									<HeaderBackButton
-										onPress={navigation.goBack}
-										tintColor={theme.icon.default.color}
-									/>
-								),
 								unstable_headerLeftItems: () => [
 									{
 										type: 'button',
 										label: 'Back',
-										icon: {
-											type: 'sfSymbol',
-											name: 'xmark'
-										},
+										icon: { type: 'sfSymbol', name: 'xmark' },
 										onPress: navigation.goBack
 									}
 								]
