@@ -13,7 +13,7 @@ import FAB from '../components/products/FAB';
 
 import { useCategoriesQuery } from '../data/queries';
 import { useUpdateProductCategoriesMutation } from '../data/mutations';
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../navigation/types';
 import useGoBack from '../hooks/useGoBack';
 
 const ProductCategories = () => {

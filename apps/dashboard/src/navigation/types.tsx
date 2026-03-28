@@ -1,8 +1,14 @@
-import { NavigatorScreenParams } from '@react-navigation/native';
+import type {
+	CompositeScreenProps,
+	NavigatorScreenParams
+} from '@react-navigation/native';
+import type { StackScreenProps } from '@react-navigation/stack';
+import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+
 import { Image, ProductCategory } from '../data/types';
 
 export type AppStackParamList = {
-	Main: undefined;
+	Main: NavigatorScreenParams<MainTabParamList>;
 	Authenticate: undefined;
 	Landing: undefined;
 	Register: undefined;
@@ -12,7 +18,7 @@ export type AppStackParamList = {
 	Root: undefined;
 	'Add Product': undefined;
 	Settings: undefined;
-	'Modal.CustomerInfo': { userId: string };
+
 	'Modal.AddPayout': { realizedRevenue: number; paidOut: number };
 	'Modal.AddCategory': undefined;
 	'Modal.EditCategory': {
@@ -47,12 +53,27 @@ export type AppStackParamList = {
 	'Modal.Transactions': undefined;
 };
 
+export type AppStackScreenProps<T extends keyof AppStackParamList> =
+	StackScreenProps<AppStackParamList, T>;
+
 export type MainTabParamList = {
 	Orders: undefined;
 	Products: undefined;
 	Store: undefined;
-	Profile: undefined;
+	Profile: NavigatorScreenParams<ProfileStackParamList>;
 };
+
+export type MainTabScreenProps<T extends keyof MainTabParamList> =
+	CompositeScreenProps<
+		BottomTabScreenProps<MainTabParamList, T>,
+		AppStackScreenProps<'Main'>
+	>;
+
+export type ProfileStackScreenProps<T extends keyof ProfileStackParamList> =
+	CompositeScreenProps<
+		StackScreenProps<ProfileStackParamList, T>,
+		MainTabScreenProps<'Profile'>
+	>;
 
 export type HomeStackParamList = {
 	Overview: undefined;
@@ -63,6 +84,7 @@ export type HomeStackParamList = {
 export type OrdersStackParamList = {
 	OrdersList: undefined;
 	Order: { orderId: string };
+	CustomerInfo: { userId: string };
 	Product: NavigatorScreenParams<ProductStackParamList>;
 };
 
@@ -102,3 +124,9 @@ export type ProfileStackParamList = {
 export type ProductStackParamList = {
 	'Product.Main': { productId: string };
 };
+
+declare global {
+	namespace ReactNavigation {
+		interface RootParamList extends AppStackParamList {}
+	}
+}

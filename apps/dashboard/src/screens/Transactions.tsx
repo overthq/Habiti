@@ -2,22 +2,24 @@ import React from 'react';
 import { View, StyleSheet, RefreshControl, Alert } from 'react-native';
 import { Screen, Typography, Spacer, useTheme, Icon } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { HeaderButton } from '@react-navigation/elements';
 import { FlashList } from '@shopify/flash-list';
 import { formatNaira } from '@habiti/common';
 
 import TransactionRow from '../components/transactions/TransactionRow';
 import useGoBack from '../hooks/useGoBack';
+import useRefresh from '../hooks/useRefresh';
 import { useCurrentStoreQuery, useTransactionsQuery } from '../data/queries';
 import { Transaction } from '../data/types';
 import {
 	AppStackParamList,
 	type StoreStackParamList
-} from '../types/navigation';
-import { HeaderButton } from '@react-navigation/elements';
+} from '../navigation/types';
 
 const Transactions = () => {
 	const { data: storeData } = useCurrentStoreQuery();
-	const { data, refetch, isRefetching } = useTransactionsQuery();
+	const { data, refetch } = useTransactionsQuery();
+	const { isRefreshing, onRefresh } = useRefresh({ refetch });
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList & StoreStackParamList>>();
 	const { theme } = useTheme();
@@ -83,8 +85,8 @@ const Transactions = () => {
 					}}
 					refreshControl={
 						<RefreshControl
-							refreshing={isRefetching}
-							onRefresh={refetch}
+							refreshing={isRefreshing}
+							onRefresh={onRefresh}
 							tintColor={theme.text.secondary}
 						/>
 					}

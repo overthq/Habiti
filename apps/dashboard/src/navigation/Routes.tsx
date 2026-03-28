@@ -57,7 +57,7 @@ import {
 	OrdersStackParamList,
 	ProductsStackParamList,
 	ProfileStackParamList
-} from '../types/navigation';
+} from '../navigation/types';
 import { HeaderBackButton } from '@react-navigation/elements';
 
 const AppStack = createNativeStackNavigator<AppStackParamList, 'AppStack'>();
@@ -210,6 +210,14 @@ const OrdersStackNavigator = () => (
 			name='Order'
 			component={Order}
 			options={{ headerBackButtonDisplayMode: 'minimal' }}
+		/>
+		<OrdersStack.Screen
+			name='CustomerInfo'
+			component={CustomerInfo}
+			options={{
+				headerTitle: 'Customer Information',
+				headerBackButtonDisplayMode: 'minimal'
+			}}
 		/>
 		<OrdersStack.Screen
 			name='Product'
@@ -372,11 +380,6 @@ const Routes: React.FC = () => {
 							})}
 						>
 							<AppStack.Screen name='Add Product' component={AddProduct} />
-							<AppStack.Screen
-								name='Modal.CustomerInfo'
-								component={CustomerInfo}
-								options={{ headerTitle: 'Customer Information' }}
-							/>
 							<AppStack.Screen
 								name='Modal.AddPayout'
 								component={AddPayout}

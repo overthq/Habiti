@@ -4,7 +4,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import OrderProduct from './OrderProduct';
-import { ProductsStackParamList } from '../../types/navigation';
+import { ProductsStackParamList } from '../../navigation/types';
 import { OrderProduct as OrderProductType } from '../../data/types';
 
 interface OrderProductsProps {

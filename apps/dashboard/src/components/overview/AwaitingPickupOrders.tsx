@@ -11,7 +11,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 import { useOrdersQuery } from '../../data/queries';
 import { OrderStatus } from '../../data/types';
-import { HomeStackParamList, MainTabParamList } from '../../types/navigation';
+import { HomeStackParamList, MainTabParamList } from '../../navigation/types';
 
 const AwaitingPickupOrders: React.FC = () => {
 	const { data } = useOrdersQuery({ status: OrderStatus.ReadyForPickup });

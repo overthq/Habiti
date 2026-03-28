@@ -17,7 +17,7 @@ import RevenueBarLegend from '../components/payouts/RevenueBarLegend';
 import { useCurrentStoreQuery } from '../data/queries';
 import useGoBack from '../hooks/useGoBack';
 
-import type { AppStackParamList } from '../types/navigation';
+import type { AppStackParamList } from '../navigation/types';
 
 const BalanceDetails = () => {
 	const { data } = useCurrentStoreQuery();

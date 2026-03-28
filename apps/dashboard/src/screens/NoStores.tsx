@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Button, Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../navigation/types';
 
 const NoStores: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();

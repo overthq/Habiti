@@ -16,7 +16,7 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { useManagedStoresQuery } from '../../data/queries';
 import useStore from '../../state';
-import { AppStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../navigation/types';
 
 interface StoreSelectModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;

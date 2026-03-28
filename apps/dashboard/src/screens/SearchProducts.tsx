@@ -23,7 +23,7 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import ProductsListItem from '../components/products/ProductsListItem';
-import { ProductsStackParamList } from '../types/navigation';
+import { ProductsStackParamList } from '../navigation/types';
 import { useProductsQuery } from '../data/queries';
 import { Product } from '../data/types';
 

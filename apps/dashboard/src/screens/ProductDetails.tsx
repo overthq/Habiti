@@ -5,7 +5,7 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import useGoBack from '../hooks/useGoBack';
 import { useUpdateProductMutation } from '../data/mutations';
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../navigation/types';
 
 const ProductDetails = () => {
 	const { params } =

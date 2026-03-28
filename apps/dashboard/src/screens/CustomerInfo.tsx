@@ -9,20 +9,17 @@ import {
 } from '@react-navigation/native';
 
 import OrderDetail from '../components/customer-info/OrderDetail';
-import useGoBack from '../hooks/useGoBack';
 import { useCustomerInfoQuery } from '../data/queries';
-import type { AppStackParamList } from '../types/navigation';
+import type { OrdersStackParamList } from '../navigation/types';
 
 const CustomerInfo = () => {
 	const { params } =
-		useRoute<RouteProp<AppStackParamList, 'Modal.CustomerInfo'>>();
+		useRoute<RouteProp<OrdersStackParamList, 'CustomerInfo'>>();
 	const { data, isLoading } = useCustomerInfoQuery(params.userId);
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-
-	useGoBack('x');
+	const { navigate } = useNavigation<NavigationProp<OrdersStackParamList>>();
 
 	const handleOrderPress = (id: string) => {
-		navigate('Modal.Order', { orderId: id });
+		navigate('Order', { orderId: id });
 	};
 
 	if (isLoading || !data) {

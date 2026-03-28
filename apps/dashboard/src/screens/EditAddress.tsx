@@ -4,7 +4,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 import useGoBack from '../hooks/useGoBack';
 import { useUpdateAddressMutation } from '../data/mutations';
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../navigation/types';
 
 interface EditAddressFormValues {
 	name: string;

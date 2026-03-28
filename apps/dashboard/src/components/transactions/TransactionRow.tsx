@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
-import { Spacer, Typography, useTheme } from '@habiti/components';
+import { Icon, Spacer, Typography, useTheme } from '@habiti/components';
 import { formatNaira } from '@habiti/common';
 
 import { parseTimestamp } from '../../utils/date';
@@ -79,16 +79,19 @@ const TransactionRow: React.FC<TransactionRowProps> = ({
 					)}
 				</View>
 			</View>
-			<Typography
-				size='small'
-				weight='medium'
-				style={{
-					color: credit ? theme.badge.success.color : theme.text.primary
-				}}
-			>
-				{credit ? '+' : '-'}
-				{formatNaira(transaction.amount)}
-			</Typography>
+			<View style={styles.right}>
+				<Typography
+					size='small'
+					weight='medium'
+					style={{
+						color: credit ? theme.badge.success.color : theme.text.primary
+					}}
+				>
+					{credit ? '+' : '-'}
+					{formatNaira(transaction.amount)}
+				</Typography>
+				<Icon name='chevron-right' size={16} color={theme.text.secondary} />
+			</View>
 		</Pressable>
 	);
 };
@@ -107,6 +110,11 @@ const styles = StyleSheet.create({
 	meta: {
 		flexDirection: 'row',
 		alignItems: 'center'
+	},
+	right: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 4
 	}
 });
 

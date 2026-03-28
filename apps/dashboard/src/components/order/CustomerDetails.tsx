@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
-import { Avatar, Spacer, Typography, useTheme } from '@habiti/components';
+import { Avatar, Icon, Spacer, Typography, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
-import { AppStackParamList } from '../../types/navigation';
+import { OrdersStackParamList } from '../../navigation/types';
 import { User } from '../../data/types';
 
 interface CustomerDetailProps {
@@ -11,11 +11,11 @@ interface CustomerDetailProps {
 }
 
 const CustomerDetails: React.FC<CustomerDetailProps> = ({ user }) => {
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { navigate } = useNavigation<NavigationProp<OrdersStackParamList>>();
 	const { theme } = useTheme();
 
 	const handlePress = React.useCallback(() => {
-		navigate('Modal.CustomerInfo', { userId: user.id });
+		navigate('CustomerInfo', { userId: user.id });
 	}, [user.id]);
 
 	return (
@@ -30,11 +30,7 @@ const CustomerDetails: React.FC<CustomerDetailProps> = ({ user }) => {
 					<Avatar fallbackText={user.name} />
 					<Typography>{user.name}</Typography>
 				</View>
-				{/*<Separator
-					style={{ marginVertical: 8, marginHorizontal: -12 }}
-					inset={false}
-				/>
-				<TextButton onPress={() => {}}>View order history</TextButton>*/}
+				<Icon name='chevron-right' size={20} />
 			</Pressable>
 		</View>
 	);
@@ -47,7 +43,10 @@ const styles = StyleSheet.create({
 	button: {
 		paddingHorizontal: 12,
 		paddingVertical: 10,
-		borderRadius: 12
+		borderRadius: 12,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center'
 	}
 });
 

@@ -6,7 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import useGoBack from '../hooks/useGoBack';
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../navigation/types';
 import { useUpdateProductMutation } from '../data/mutations';
 import { uploadImage } from '../data/requests';
 import FAB from '../components/products/FAB';

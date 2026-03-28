@@ -4,7 +4,7 @@ import { SectionHeader, Spacer } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 import LowStockProduct from './LowStockProduct';
-import { HomeStackParamList, MainTabParamList } from '../../types/navigation';
+import { HomeStackParamList, MainTabParamList } from '../../navigation/types';
 import { Product } from '../../data/types';
 
 interface LowStockProductsProps {

@@ -11,7 +11,7 @@ import { useDeleteProductMutation } from '../../data/mutations';
 
 import { shareProduct, viewProductInBrowser } from '../../utils/share';
 
-import type { AppStackParamList } from '../../types/navigation';
+import type { AppStackParamList } from '../../navigation/types';
 import type { Product } from '../../data/types';
 
 interface ProductMenuProps {

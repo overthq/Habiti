@@ -7,7 +7,7 @@ import SettingSelectRow from './SettingSelectRow';
 import useGoBack from '../../hooks/useGoBack';
 import useStore from '../../state';
 import { useManagedStoresQuery } from '../../data/queries';
-import { AppStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../navigation/types';
 import { useShallow } from 'zustand/react/shallow';
 
 const SettingsActiveStore: React.FC = () => {

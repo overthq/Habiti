@@ -5,7 +5,7 @@ import { StyleSheet, TextInput, View } from 'react-native';
 
 import CodeInput from '../components/verify/CodeInput';
 import { useVerifyCodeMutation } from '../data/mutations';
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../navigation/types';
 
 const Verify = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Verify'>>();

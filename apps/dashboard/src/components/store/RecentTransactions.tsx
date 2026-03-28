@@ -9,7 +9,7 @@ import { Transaction } from '../../data/types';
 import type {
 	AppStackParamList,
 	StoreStackParamList
-} from '../../types/navigation';
+} from '../../navigation/types';
 
 const RecentTransactions = () => {
 	const { data } = useTransactionsQuery();
