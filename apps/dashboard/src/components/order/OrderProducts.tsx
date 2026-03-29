@@ -1,10 +1,10 @@
-import { Typography, useTheme } from '@habiti/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import { Typography, useTheme } from '@habiti/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import OrderProduct from './OrderProduct';
-import { ProductsStackParamList } from '../../navigation/types';
+import { OrdersStackParamList } from '../../navigation/types';
 import { OrderProduct as OrderProductType } from '../../data/types';
 
 interface OrderProductsProps {
@@ -12,7 +12,7 @@ interface OrderProductsProps {
 }
 
 const OrderProducts: React.FC<OrderProductsProps> = ({ products }) => {
-	const { navigate } = useNavigation<NavigationProp<ProductsStackParamList>>();
+	const { navigate } = useNavigation<NavigationProp<OrdersStackParamList>>();
 	const { theme } = useTheme();
 
 	const handlePress = React.useCallback(
