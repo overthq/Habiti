@@ -190,6 +190,50 @@ export const unfollowStore = async (
 	}
 };
 
+export const updateStore = async (
+	req: Request<{ id: string }>,
+	res: Response,
+	next: NextFunction
+) => {
+	if (!req.params.id) {
+		return res.status(400).json({ error: 'Store ID is required' });
+	}
+
+	const {
+		name,
+		description,
+		website,
+		twitter,
+		instagram,
+		unlisted,
+		imageUrl,
+		imagePublicId,
+		bankAccountNumber,
+		bankCode
+	} = req.body;
+
+	const ctx = getAppContext(req);
+
+	try {
+		const store = await StoreLogic.updateStore(ctx, {
+			storeId: req.params.id,
+			name,
+			description,
+			website,
+			twitter,
+			instagram,
+			unlisted,
+			imageUrl,
+			imagePublicId,
+			bankAccountNumber,
+			bankCode
+		});
+		return res.status(200).json({ store });
+	} catch (error) {
+		return next(error);
+	}
+};
+
 export const deleteStore = async (
 	req: Request<{ id: string }>,
 	res: Response,
