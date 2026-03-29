@@ -43,8 +43,6 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
 
-	console.log({ images });
-
 	return (
 		<View>
 			<View style={styles.header}>

@@ -27,11 +27,11 @@ interface ScreenHeaderProps extends React.PropsWithChildren {
 
 const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 	title,
-	hasBottomBorder = false,
 	search,
 	right,
 	goBack,
-	children
+	children,
+	hasBottomBorder = false
 }) => {
 	const { name, theme } = useTheme();
 	const [searchOpen, setSearchOpen] = React.useState(false);
@@ -63,7 +63,10 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 			style={[
 				styles.container,
 				hasBottomBorder
-					? { borderBottomWidth: 0.5, borderBottomColor: theme.border.color }
+					? {
+							borderBottomWidth: StyleSheet.hairlineWidth,
+							borderBottomColor: theme.border.color
+						}
 					: {}
 			]}
 		>

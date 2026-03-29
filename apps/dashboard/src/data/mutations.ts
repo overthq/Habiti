@@ -39,6 +39,7 @@ import {
 	UpdateAddressArgs,
 	VerifyBankAccountBody
 } from './types';
+import { Alert } from 'react-native';
 
 interface RegisterArgs {
 	email: string;
@@ -58,10 +59,20 @@ export const useRegisterMutation = () => {
 				}
 			});
 
+			if (!response.ok) {
+				throw new Error('Unable to create account');
+			}
+
 			return response.json();
 		},
 		onSuccess: (_, variables) => {
 			navigate('Verify', { email: variables.email });
+		},
+		onError: () => {
+			Alert.alert(
+				'Unable to register',
+				'An error occurred while trying to create your account'
+			);
 		}
 	});
 };

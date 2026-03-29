@@ -17,7 +17,7 @@ import { ProductStackParamList } from '../navigation/types';
 const Product = () => {
 	const {
 		params: { productId }
-	} = useRoute<RouteProp<ProductStackParamList, 'Product.Main'>>();
+	} = useRoute<RouteProp<ProductStackParamList>>();
 
 	const { data, refetch } = useProductQuery(productId);
 	const { isRefreshing, onRefresh } = useRefresh({ refetch });
