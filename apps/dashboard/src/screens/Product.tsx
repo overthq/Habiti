@@ -12,12 +12,12 @@ import ProductMenu from '../components/product/ProductMenu';
 import { useProductQuery } from '../data/queries';
 import useRefresh from '../hooks/useRefresh';
 
-import { ProductsStackParamList } from '../navigation/types';
+import { ProductStackParamList } from '../navigation/types';
 
 const Product = () => {
 	const {
 		params: { productId }
-	} = useRoute<RouteProp<ProductsStackParamList, 'Product'>>();
+	} = useRoute<RouteProp<ProductStackParamList>>();
 
 	const { data, refetch } = useProductQuery(productId);
 	const { isRefreshing, onRefresh } = useRefresh({ refetch });
