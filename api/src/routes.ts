@@ -247,6 +247,7 @@ adminRouter.get('/users', UserController.getUsers);
 adminRouter.get('/users/:id', UserController.getUser);
 adminRouter.patch('/transactions/:id', TransactionController.updateTransaction);
 adminRouter.get('/orders', OrderController.getOrders);
+adminRouter.get('/orders/:id', OrderController.getOrderById);
 adminRouter.post(
 	'/users/bulk',
 	validateBody(bulkUserUpdateSchema),
