@@ -234,6 +234,7 @@ adminRouter.get(
 );
 adminRouter.get('/stores/:id/orders', StoreController.getStoreOrders);
 adminRouter.get('/stores/:id', StoreController.getStoreById);
+adminRouter.put('/stores/:id', StoreController.updateStore);
 adminRouter.get('/products', ProductController.getProducts);
 adminRouter.post(
 	'/products',
@@ -241,13 +242,16 @@ adminRouter.post(
 	ProductController.createProduct
 );
 adminRouter.get('/products/:id', ProductController.getProductById);
+adminRouter.put('/products/:id', ProductController.updateProduct);
 adminRouter.delete('/products/:id', ProductController.deleteProduct);
 adminRouter.get('/products/:id/reviews', ProductController.getProductReviews);
 adminRouter.get('/users', UserController.getUsers);
 adminRouter.get('/users/:id', UserController.getUser);
+adminRouter.put('/users/:id', UserController.updateUser);
 adminRouter.patch('/transactions/:id', TransactionController.updateTransaction);
 adminRouter.get('/orders', OrderController.getOrders);
 adminRouter.get('/orders/:id', OrderController.getOrderById);
+adminRouter.put('/orders/:id', OrderController.updateOrder);
 adminRouter.post(
 	'/users/bulk',
 	validateBody(bulkUserUpdateSchema),

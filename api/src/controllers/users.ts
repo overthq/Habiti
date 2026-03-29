@@ -39,3 +39,22 @@ export const getUser = async (
 		return next(error);
 	}
 };
+
+export const updateUser = async (
+	req: Request<{ id: string }>,
+	res: Response,
+	next: NextFunction
+) => {
+	const { id } = req.params;
+	const { name, email } = req.body;
+
+	const ctx = getAppContext(req);
+
+	try {
+		const user = await UserLogic.updateUser(ctx, { userId: id, name, email });
+
+		return res.json({ user });
+	} catch (error) {
+		return next(error);
+	}
+};
