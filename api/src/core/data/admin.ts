@@ -113,3 +113,24 @@ export const bulkDeleteProducts = async (
 		where: { id: { in: ids } }
 	});
 };
+
+// Bulk Store Operations
+export const bulkUpdateStores = async (
+	prisma: TransactionClient,
+	ids: string[],
+	data: { unlisted: boolean }
+) => {
+	return prisma.store.updateMany({
+		where: { id: { in: ids } },
+		data
+	});
+};
+
+export const bulkDeleteStores = async (
+	prisma: TransactionClient,
+	ids: string[]
+) => {
+	return prisma.store.deleteMany({
+		where: { id: { in: ids } }
+	});
+};

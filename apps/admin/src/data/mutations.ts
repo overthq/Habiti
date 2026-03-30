@@ -33,7 +33,9 @@ import {
 	bulkUpdateOrders,
 	bulkDeleteOrders,
 	bulkUpdateProducts,
-	bulkDeleteProducts
+	bulkDeleteProducts,
+	bulkUpdateStores,
+	bulkDeleteStores
 } from './requests';
 import { useNavigate } from 'react-router';
 
@@ -362,6 +364,45 @@ export const useBulkDeleteProductsMutation = () => {
 		},
 		onError: () => {
 			toast.error('Failed to delete products');
+		}
+	});
+};
+
+// Bulk Store Mutations
+export const useBulkUpdateStoresMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({
+			ids,
+			field,
+			value
+		}: {
+			ids: string[];
+			field: 'unlisted';
+			value: boolean;
+		}) => bulkUpdateStores(ids, field, value),
+		onSuccess: data => {
+			queryClient.invalidateQueries({ queryKey: ['stores'] });
+			toast.success(`${data.count} store(s) updated successfully`);
+		},
+		onError: () => {
+			toast.error('Failed to update stores');
+		}
+	});
+};
+
+export const useBulkDeleteStoresMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (ids: string[]) => bulkDeleteStores(ids),
+		onSuccess: data => {
+			queryClient.invalidateQueries({ queryKey: ['stores'] });
+			toast.success(`${data.count} store(s) deleted successfully`);
+		},
+		onError: () => {
+			toast.error('Failed to delete stores');
 		}
 	});
 };

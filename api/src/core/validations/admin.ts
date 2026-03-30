@@ -21,3 +21,9 @@ export const bulkProductUpdateSchema = z.object({
 	field: z.literal('status'),
 	value: z.enum(['Active', 'Draft'])
 });
+
+export const bulkStoreUpdateSchema = z.object({
+	ids: z.array(z.string().uuid()).min(1, 'At least one ID required'),
+	field: z.literal('unlisted'),
+	value: z.boolean()
+});

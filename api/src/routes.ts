@@ -32,7 +32,8 @@ import {
 	bulkIdsSchema,
 	bulkUserUpdateSchema,
 	bulkOrderUpdateSchema,
-	bulkProductUpdateSchema
+	bulkProductUpdateSchema,
+	bulkStoreUpdateSchema
 } from './core/validations/admin';
 import { adminCreateStoreSchema } from './core/validations/stores';
 
@@ -281,6 +282,16 @@ adminRouter.delete(
 	'/products/bulk',
 	validateBody(bulkIdsSchema),
 	AdminController.bulkDeleteProducts
+);
+adminRouter.post(
+	'/stores/bulk',
+	validateBody(bulkStoreUpdateSchema),
+	AdminController.bulkUpdateStores
+);
+adminRouter.delete(
+	'/stores/bulk',
+	validateBody(bulkIdsSchema),
+	AdminController.bulkDeleteStores
 );
 
 router.use('/admin', adminRouter);

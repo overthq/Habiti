@@ -209,3 +209,34 @@ export const bulkDeleteProducts = async (
 		return next(error);
 	}
 };
+
+// Bulk Store Operations
+export const bulkUpdateStores = async (
+	req: Request<{}, {}, { ids: string[]; field: 'unlisted'; value: boolean }>,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const { ids, field, value } = req.body;
+		const ctx = getAppContext(req);
+		const result = await AdminLogic.bulkUpdateStores(ctx, ids, field, value);
+		return res.json(result);
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const bulkDeleteStores = async (
+	req: Request<{}, {}, { ids: string[] }>,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const { ids } = req.body;
+		const ctx = getAppContext(req);
+		const result = await AdminLogic.bulkDeleteStores(ctx, ids);
+		return res.json(result);
+	} catch (error) {
+		return next(error);
+	}
+};
