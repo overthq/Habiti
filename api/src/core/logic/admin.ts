@@ -100,3 +100,25 @@ export const bulkDeleteProducts = async (ctx: AppContext, ids: string[]) => {
 		return { count: result.count };
 	});
 };
+
+// Bulk Store Operations
+export const bulkUpdateStores = async (
+	ctx: AppContext,
+	ids: string[],
+	field: 'unlisted',
+	value: boolean
+) => {
+	return ctx.prisma.$transaction(async prisma => {
+		const result = await AdminData.bulkUpdateStores(prisma, ids, {
+			[field]: value
+		});
+		return { count: result.count };
+	});
+};
+
+export const bulkDeleteStores = async (ctx: AppContext, ids: string[]) => {
+	return ctx.prisma.$transaction(async prisma => {
+		const result = await AdminData.bulkDeleteStores(prisma, ids);
+		return { count: result.count };
+	});
+};

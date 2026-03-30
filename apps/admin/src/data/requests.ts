@@ -213,3 +213,20 @@ export const bulkUpdateProducts = (
 export const bulkDeleteProducts = (ids: string[]) => {
 	return api.delete<BulkActionResponse>('/admin/products/bulk', { ids });
 };
+
+// Bulk Store Operations
+export const bulkUpdateStores = (
+	ids: string[],
+	field: 'unlisted',
+	value: boolean
+) => {
+	return api.post<BulkActionResponse>('/admin/stores/bulk', {
+		ids,
+		field,
+		value
+	});
+};
+
+export const bulkDeleteStores = (ids: string[]) => {
+	return api.delete<BulkActionResponse>('/admin/stores/bulk', { ids });
+};
