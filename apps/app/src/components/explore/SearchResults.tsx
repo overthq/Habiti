@@ -1,9 +1,9 @@
-import { Screen, useTheme } from '@habiti/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { FlashList } from '@shopify/flash-list';
 import React from 'react';
 import { View } from 'react-native';
 import { TabBar, TabView, SceneMap } from 'react-native-tab-view';
+import { Screen, useTheme } from '@habiti/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { FlashList } from '@shopify/flash-list';
 
 import ProductResultRow from './ProductResultRow';
 import RecentSearches from './RecentSearches';
@@ -49,12 +49,12 @@ const ProductsView = () => {
 	return (
 		<FlashList
 			keyboardShouldPersistTaps='handled'
-			keyExtractor={p => p.node.id}
-			data={products.edges}
+			keyExtractor={p => p.id}
+			data={products}
 			renderItem={({ item }) => (
 				<ProductResultRow
-					product={item.node}
-					onPress={handleProductPress(item.node.id)}
+					product={item}
+					onPress={handleProductPress(item.id)}
 				/>
 			)}
 		/>

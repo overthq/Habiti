@@ -13,7 +13,8 @@ const statusToBadgeVariant: Record<OrderStatus, keyof ThemeObject['badge']> = {
 	[OrderStatus.Cancelled]: 'danger',
 	[OrderStatus.Pending]: 'warning',
 	[OrderStatus.Completed]: 'success',
-	[OrderStatus.PaymentPending]: 'warning'
+	[OrderStatus.PaymentPending]: 'warning',
+	[OrderStatus.ReadyForPickup]: 'warning'
 };
 
 const OrderStatusPill: React.FC<OrderStatusPillProps> = ({ status }) => {
