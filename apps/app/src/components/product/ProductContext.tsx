@@ -1,5 +1,5 @@
 import React from 'react';
-import { useProductQuery } from '../../data/queries';
+import { useProductQuery, useRelatedProductsQuery } from '../../data/queries';
 import {
 	useAddToCartMutation,
 	useUpdateCartProductMutation
@@ -11,6 +11,7 @@ import { View } from 'react-native';
 
 interface ProductContextType {
 	product: Product;
+	relatedProducts: Product[];
 	cartCommitFetching: boolean;
 	onCartCommit: () => void;
 	cartCommitDisabled: boolean;
@@ -26,6 +27,7 @@ const ProductContext = React.createContext<ProductContextType | null>(null);
 interface ProductProviderProps {
 	children: React.ReactNode;
 	product: Product;
+	relatedProducts: Product[];
 	viewerContext?: ProductViewerContext;
 }
 
@@ -37,6 +39,7 @@ interface ProductProviderProps {
 const ProductProviderInner: React.FC<ProductProviderProps> = ({
 	children,
 	product,
+	relatedProducts,
 	viewerContext
 }) => {
 	const { goBack } = useNavigation();
@@ -105,6 +108,7 @@ const ProductProviderInner: React.FC<ProductProviderProps> = ({
 		<ProductContext.Provider
 			value={{
 				product,
+				relatedProducts,
 				cartCommitFetching,
 				onCartCommit,
 				cartCommitDisabled,
@@ -127,15 +131,22 @@ export const ProductProvider = ({
 }) => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Product'>>();
 	const { data, isLoading } = useProductQuery(params.productId);
+	const { data: relatedProductsData, isLoading: isRelatedProductsLoading } =
+		useRelatedProductsQuery(params.productId);
 
 	const product = data?.product;
+	const relatedProducts = relatedProductsData?.products;
 
 	if (isLoading || !product) {
 		return <View />;
 	}
 
 	return (
-		<ProductProviderInner product={product} viewerContext={data?.viewerContext}>
+		<ProductProviderInner
+			product={product}
+			relatedProducts={relatedProducts}
+			viewerContext={data?.viewerContext}
+		>
 			{children}
 		</ProductProviderInner>
 	);
