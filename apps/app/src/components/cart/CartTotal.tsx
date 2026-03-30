@@ -3,10 +3,10 @@ import { StyleSheet, View } from 'react-native';
 import { Typography } from '@habiti/components';
 import { formatNaira } from '@habiti/common';
 
-import { CartQuery } from '../../types/api';
+import type { Cart } from '../../data/types';
 
 interface CartTotalProps {
-	cart: CartQuery['cart'];
+	cart: Cart;
 }
 
 const CartTotal: React.FC<CartTotalProps> = ({ cart }) => {

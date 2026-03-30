@@ -2,10 +2,10 @@ import { Typography, SectionHeader } from '@habiti/components';
 import React from 'react';
 import { View } from 'react-native';
 
-import { ProductQuery } from '../../types/api';
+import type { ProductReview } from '../../data/types';
 
 interface ProductReviewsProps {
-	reviews: ProductQuery['product']['reviews'];
+	reviews: ProductReview[];
 }
 
 const ProductReviews: React.FC<ProductReviewsProps> = ({ reviews }) => {

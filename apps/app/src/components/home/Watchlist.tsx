@@ -5,13 +5,13 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import WatchlistProduct from './WatchlistProduct';
-import { HomeQuery } from '../../types/api';
+import type { WatchlistProduct as WatchlistProductType } from '../../data/types';
 import { AppStackParamList } from '../../types/navigation';
 
 // Consider not displaying anything when the watchlist is empty.
 
 interface WatchlistProps {
-	watchlist: HomeQuery['currentUser']['watchlist'];
+	watchlist: WatchlistProductType[];
 }
 
 const Watchlist: React.FC<WatchlistProps> = ({ watchlist }) => {
@@ -24,7 +24,7 @@ const Watchlist: React.FC<WatchlistProps> = ({ watchlist }) => {
 };
 
 interface WatchlistMainProps {
-	watchlist: HomeQuery['currentUser']['watchlist'];
+	watchlist: WatchlistProductType[];
 }
 
 const WatchlistMain: React.FC<WatchlistMainProps> = ({ watchlist }) => {

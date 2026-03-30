@@ -188,6 +188,14 @@ currentUserRouter.post(
 );
 currentUserRouter.post('/cards/authorize', CurrentUserController.authorizeCard);
 currentUserRouter.delete('/cards/:cardId', CurrentUserController.deleteCard);
+currentUserRouter.get('/watchlist', CurrentUserController.getWatchlist);
+currentUserRouter.post('/watchlist', CurrentUserController.addToWatchlist);
+currentUserRouter.get('/push-tokens', CurrentUserController.getPushTokens);
+currentUserRouter.post('/push-tokens', CurrentUserController.savePushToken);
+currentUserRouter.delete(
+	'/push-tokens/:token',
+	CurrentUserController.deletePushToken
+);
 
 router.use('/users/current', currentUserRouter);
 

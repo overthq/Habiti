@@ -10,11 +10,11 @@ import {
 } from '@habiti/components';
 import { View, StyleSheet, Pressable } from 'react-native';
 
-import { CartQuery } from '../../types/api';
+import type { CartProduct as CartProductType } from '../../data/types';
 import { useCart } from './CartContext';
 
 interface CartProductProps {
-	cartProduct: CartQuery['cart']['products'][number];
+	cartProduct: CartProductType;
 	onPress(): void;
 }
 
@@ -52,7 +52,7 @@ const CartProduct: React.FC<CartProductProps> = ({ cartProduct, onPress }) => {
 };
 
 interface CartProductQuantityProps {
-	cartProduct: CartQuery['cart']['products'][number];
+	cartProduct: CartProductType;
 	quantity: number;
 	maxQuantity: number;
 }

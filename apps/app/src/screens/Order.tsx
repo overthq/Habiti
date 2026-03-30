@@ -12,7 +12,8 @@ import OrderMeta from '../components/order/OrderMeta';
 import OrderProduct from '../components/order/OrderProduct';
 import StoreMeta from '../components/order/StoreMeta';
 import useGoBack from '../hooks/useGoBack';
-import { OrderStatus, useOrderQuery } from '../types/api';
+import { useOrderQuery } from '../data/queries';
+import { OrderStatus } from '../data/types';
 import { AppStackParamList, HomeStackParamList } from '../types/navigation';
 import useRefresh from '../hooks/useRefresh';
 import PaymentPendingWarning from '../components/order/PaymentPendingWarning';
@@ -24,13 +25,11 @@ const Order = () => {
 		params: { orderId }
 	} = useRoute<RouteProp<HomeStackParamList, 'Home.Order'>>();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const [{ data, fetching }, refetch] = useOrderQuery({
-		variables: { orderId }
-	});
+	const { data, isLoading, refetch } = useOrderQuery(orderId);
 	useGoBack();
 	const order = data?.order;
 	const { theme } = useTheme();
-	const { refreshing, refresh } = useRefresh({ fetching, refetch });
+	const { refreshing, refresh } = useRefresh({ refetch });
 
 	const handleOrderProductPress = React.useCallback(
 		(productId: string) => () => {
@@ -39,7 +38,7 @@ const Order = () => {
 		[]
 	);
 
-	if (fetching && !order) {
+	if (isLoading && !order) {
 		return <View style={styles.container} />;
 	}
 

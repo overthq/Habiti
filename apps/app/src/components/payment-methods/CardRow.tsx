@@ -2,11 +2,11 @@ import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Icon, Typography, useTheme } from '@habiti/components';
 
-import { CardsQuery } from '../../types/api';
+import { Card } from '../../data/types';
 import { CardIconMap } from '../cart/CardIcons';
 
 interface CardRowProps {
-	card: CardsQuery['currentUser']['cards'][number];
+	card: Card;
 	onLongPress: () => void;
 	onPress: () => void;
 	focused: boolean;

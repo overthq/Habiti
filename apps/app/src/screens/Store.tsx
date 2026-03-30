@@ -5,7 +5,7 @@ import { ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import StoreProducts from '../components/store/StoreProducts';
-import { useStoreQuery } from '../types/api';
+import { useStoreQuery } from '../data/queries';
 import { StoreStackParamList } from '../types/navigation';
 import StoreHeader from '../components/store/StoreHeader';
 import Animated, { LinearTransition } from 'react-native-reanimated';
@@ -13,14 +13,12 @@ import SearchStore from './SearchStore';
 
 const Store = () => {
 	const { params } = useRoute<RouteProp<StoreStackParamList, 'Store.Main'>>();
-	const [{ data, fetching }] = useStoreQuery({
-		variables: { storeId: params.storeId }
-	});
+	const { data, isLoading } = useStoreQuery(params.storeId);
 	const [searchTerm, setSearchTerm] = React.useState<string>();
 	const [activeCategory, setActiveCategory] = React.useState<string>();
 	const { top } = useSafeAreaInsets();
 
-	if (fetching || !data?.store) return <ActivityIndicator />;
+	if (isLoading || !data?.store) return <ActivityIndicator />;
 
 	return (
 		<Screen style={{ paddingTop: top }}>

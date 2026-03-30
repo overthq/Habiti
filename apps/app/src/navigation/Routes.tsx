@@ -4,7 +4,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // import * as Linking from 'expo-linking';
 import { StatusBar } from 'expo-status-bar';
-import { Provider } from 'urql';
 import { useShallow } from 'zustand/react/shallow';
 import * as Updates from 'expo-updates';
 
@@ -32,7 +31,6 @@ import Orders from '../screens/Orders';
 import FollowedStores from '../screens/FollowedStores';
 
 import useStore from '../state';
-import useClient from '../hooks/useClient';
 
 import {
 	HomeStackParamList,
@@ -149,14 +147,12 @@ const Routes: React.FC = () => {
 		}))
 	);
 
-	const client = useClient(accessToken);
-
 	// const linking = {
 	// 	prefixes: [prefix, 'https://habiti.app']
 	// };
 
 	return (
-		<Provider value={client}>
+		<>
 			<StatusBar style={theme.statusBar} />
 			<NavigationContainer theme={theme.navigation} /*linking={linking}*/>
 				<AppStack.Navigator
@@ -207,7 +203,7 @@ const Routes: React.FC = () => {
 					)}
 				</AppStack.Navigator>
 			</NavigationContainer>
-		</Provider>
+		</>
 	);
 };
 

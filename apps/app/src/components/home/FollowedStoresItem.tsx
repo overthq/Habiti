@@ -2,10 +2,10 @@ import React from 'react';
 import { StyleSheet, Pressable } from 'react-native';
 import { Avatar, Typography } from '@habiti/components';
 
-import { HomeQuery } from '../../types/api';
+import type { Store } from '../../data/types';
 
 interface FollowedStoresItemProps {
-	store: HomeQuery['currentUser']['followed'][number]['store'];
+	store: Store;
 	onPress(): void;
 }
 

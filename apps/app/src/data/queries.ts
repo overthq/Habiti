@@ -5,6 +5,7 @@ import {
 	getCart,
 	getCarts,
 	getCurrentUser,
+	getDeliveryAddresses,
 	getFollowedStores,
 	getOrder,
 	getOrders,
@@ -12,6 +13,9 @@ import {
 	getRelatedProducts,
 	getStore,
 	getStoreProducts,
+	getWatchlist,
+	getCardAuthorization,
+	getPushTokens,
 	globalSearch
 } from './requests';
 import { refreshAuthTokens } from '../utils/refreshManager';
@@ -111,6 +115,53 @@ export const useSearchQuery = (searchTerm: string) => {
 	return useQuery({
 		queryKey: ['search', searchTerm],
 		queryFn: () => globalSearch(searchTerm)
+	});
+};
+
+export const useDeliveryAddressesQuery = () => {
+	return useQuery({
+		queryKey: ['deliveryAddresses'],
+		queryFn: () => getDeliveryAddresses()
+	});
+};
+
+export const useWatchlistQuery = () => {
+	return useQuery({
+		queryKey: ['watchlist'],
+		queryFn: () => getWatchlist()
+	});
+};
+
+export const usePushTokensQuery = () => {
+	return useQuery({
+		queryKey: ['pushTokens'],
+		queryFn: () => getPushTokens()
+	});
+};
+
+export const useCardAuthorizationQuery = (orderId: string) => {
+	return useQuery({
+		queryKey: ['cardAuthorization', orderId],
+		queryFn: () => getCardAuthorization(orderId),
+		enabled: !!orderId
+	});
+};
+
+export const useHomeQuery = () => {
+	return useQuery({
+		queryKey: ['home'],
+		queryFn: async () => {
+			const [ordersData, followedData, watchlistData] = await Promise.all([
+				getOrders(),
+				getFollowedStores(),
+				getWatchlist()
+			]);
+			return {
+				orders: ordersData.orders,
+				followed: followedData.stores,
+				watchlist: watchlistData.watchlist
+			};
+		}
 	});
 };
 

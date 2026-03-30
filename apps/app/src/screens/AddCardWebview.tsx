@@ -5,7 +5,7 @@ import { WebView } from 'react-native-webview';
 import { RouteProp, useRoute } from '@react-navigation/native';
 
 import useGoBack from '../hooks/useGoBack';
-import { useCardAuthorizationQuery } from '../types/api';
+import { useCardAuthorizationQuery } from '../data/queries';
 import { AppStackParamList } from '../types/navigation';
 
 // Before opening this screen, we should probably explain to users why we have
@@ -20,15 +20,11 @@ import { AppStackParamList } from '../types/navigation';
 const AddCardWebview = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Modal.AddCard'>>();
 
-	const [{ fetching, data }] = useCardAuthorizationQuery({
-		variables: {
-			...(params?.orderId && { orderId: params.orderId })
-		}
-	});
+	const { isLoading, data } = useCardAuthorizationQuery(params?.orderId ?? '');
 
 	useGoBack('x');
 
-	if (fetching || !data) {
+	if (isLoading || !data) {
 		return (
 			<View style={{ flex: 1, paddingTop: 16 }}>
 				<ActivityIndicator />
@@ -38,10 +34,7 @@ const AddCardWebview = () => {
 
 	return (
 		<Screen>
-			<WebView
-				style={{ flex: 1 }}
-				source={{ uri: data.cardAuthorization.authorization_url }}
-			/>
+			<WebView style={{ flex: 1 }} source={{ uri: data.authorization_url }} />
 		</Screen>
 	);
 };

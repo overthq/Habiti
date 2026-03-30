@@ -5,7 +5,7 @@ import { Pressable } from 'react-native';
 import {
 	useFollowStoreMutation,
 	useUnfollowStoreMutation
-} from '../../types/api';
+} from '../../data/mutations';
 import { palette } from '@habiti/components/src/styles/theme';
 
 interface FollowButtonProps {
@@ -14,15 +14,15 @@ interface FollowButtonProps {
 }
 
 const FollowButton: React.FC<FollowButtonProps> = ({ storeId, followed }) => {
-	const [, followStore] = useFollowStoreMutation();
-	const [, unfollowStore] = useUnfollowStoreMutation();
+	const followStore = useFollowStoreMutation(storeId);
+	const unfollowStore = useUnfollowStoreMutation(storeId);
 	const { theme } = useTheme();
 
 	const handlePress = React.useCallback(async () => {
 		if (followed) {
-			await unfollowStore({ storeId });
+			unfollowStore.mutate();
 		} else {
-			await followStore({ storeId });
+			followStore.mutate();
 		}
 	}, [followed]);
 

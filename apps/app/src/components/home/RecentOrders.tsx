@@ -4,11 +4,11 @@ import { SectionHeader, Spacer } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 import RecentOrder from './RecentOrder';
-import { HomeQuery } from '../../types/api';
+import type { Order } from '../../data/types';
 import { HomeStackParamList, MainTabParamList } from '../../types/navigation';
 
 interface RecentOrdersProps {
-	orders: HomeQuery['currentUser']['orders'];
+	orders: Order[];
 }
 
 const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {

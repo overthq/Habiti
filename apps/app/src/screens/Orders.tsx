@@ -6,16 +6,16 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { FlashList } from '@shopify/flash-list';
 
 import OrdersListItem from '../components/orders/OrdersListItem';
-import { useUserOrdersQuery } from '../types/api';
+import { useOrdersQuery } from '../data/queries';
 import { HomeStackParamList } from '../types/navigation';
 import useGoBack from '../hooks/useGoBack';
 import useRefresh from '../hooks/useRefresh';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Orders = () => {
-	const [{ data, fetching }, refetch] = useUserOrdersQuery();
+	const { data, isLoading, refetch } = useOrdersQuery();
 	const { navigate } = useNavigation<StackNavigationProp<HomeStackParamList>>();
-	const { refreshing, refresh } = useRefresh({ fetching, refetch });
+	const { refreshing, refresh } = useRefresh({ refetch });
 	const { theme } = useTheme();
 	const { bottom } = useSafeAreaInsets();
 
@@ -28,7 +28,7 @@ const Orders = () => {
 		[]
 	);
 
-	if (fetching && !data) return <View />;
+	if (isLoading && !data) return <View />;
 
 	return (
 		<Screen>
@@ -42,7 +42,7 @@ const Orders = () => {
 				}
 				keyExtractor={item => item.id}
 				contentContainerStyle={{ backgroundColor: theme.screen.background }}
-				data={data?.currentUser.orders}
+				data={data?.orders}
 				renderItem={({ item }) => (
 					<OrdersListItem order={item} onPress={handleOrderPress(item.id)} />
 				)}

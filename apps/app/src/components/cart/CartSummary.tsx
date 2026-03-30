@@ -4,12 +4,12 @@ import React from 'react';
 import { View } from 'react-native';
 
 import CartProduct from './CartProduct';
-import { CartQuery } from '../../types/api';
+import type { CartProduct as CartProductType } from '../../data/types';
 import { AppStackParamList } from '../../types/navigation';
 import { useCart } from './CartContext';
 
 interface CartSummaryProps {
-	products: CartQuery['cart']['products'];
+	products: CartProductType[];
 }
 
 const CartSummary: React.FC<CartSummaryProps> = () => {

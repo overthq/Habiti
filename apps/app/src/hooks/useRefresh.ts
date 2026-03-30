@@ -1,25 +1,28 @@
+import { useFocusEffect } from '@react-navigation/native';
 import React from 'react';
-import { OperationContext } from 'urql';
 
-const useRefresh = ({
-	fetching,
-	refetch
-}: {
-	fetching: boolean;
-	refetch: (options: Partial<OperationContext>) => void;
-}) => {
+interface UseRefreshOptions {
+	refetch(): Promise<unknown>;
+}
+
+const useRefresh = ({ refetch }: UseRefreshOptions) => {
 	const [refreshing, setRefreshing] = React.useState(false);
 
-	const refresh = React.useCallback(() => {
+	const refresh = React.useCallback(async () => {
 		setRefreshing(true);
-		refetch({ requestPolicy: 'network-only' });
-	}, [refetch]);
 
-	React.useEffect(() => {
-		if (!fetching && refreshing) {
+		try {
+			await refetch();
+		} finally {
 			setRefreshing(false);
 		}
-	}, [fetching, refreshing]);
+	}, [refetch]);
+
+	useFocusEffect(
+		React.useCallback(() => {
+			setRefreshing(false);
+		}, [])
+	);
 
 	return { refreshing, refresh };
 };

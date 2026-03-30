@@ -4,7 +4,7 @@ import { Icon, TextButton, Typography, useTheme } from '@habiti/components';
 
 import CategorySelector from './CategorySelector';
 import FollowButton from './FollowButton';
-import { StoreQuery } from '../../types/api';
+import type { Store } from '../../data/types';
 import { useNavigation } from '@react-navigation/native';
 import Animated, {
 	FadeInDown,
@@ -18,7 +18,7 @@ import Animated, {
 import useFirstRender from '../../hooks/useFirstRender';
 
 interface StoreHeaderProps {
-	store: StoreQuery['store'];
+	store: Store;
 	activeCategory: string;
 	setActiveCategory: (category: string) => void;
 	searchTerm: string;

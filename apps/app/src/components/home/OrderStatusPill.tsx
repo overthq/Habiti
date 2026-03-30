@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Typography, useTheme } from '@habiti/components';
 import { ThemeObject } from '@habiti/components/src/styles/theme';
 
-import { OrderStatus } from '../../types/api';
+import { OrderStatus } from '../../data/types';
 
 interface OrderStatusPillProps {
 	status: OrderStatus;

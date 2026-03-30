@@ -2,11 +2,11 @@ import { Avatar, Icon, Row, Typography, useTheme } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
-import { CartsQuery } from '../../types/api';
+import type { Cart } from '../../data/types';
 import { plural } from '../../utils/strings';
 
 interface CartListItemProps {
-	cart: CartsQuery['currentUser']['carts'][number];
+	cart: Cart;
 	onPress(): void;
 }
 

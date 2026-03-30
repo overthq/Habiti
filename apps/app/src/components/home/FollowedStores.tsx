@@ -5,11 +5,11 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import FollowedStoresItem from './FollowedStoresItem';
-import { HomeQuery } from '../../types/api';
+import type { Store } from '../../data/types';
 import { HomeStackParamList } from '../../types/navigation';
 
 interface FollowedStoresProps {
-	followed: HomeQuery['currentUser']['followed'];
+	followed: Store[];
 }
 
 const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
@@ -38,7 +38,7 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 };
 
 interface FollowedStoresMainProps {
-	followed: HomeQuery['currentUser']['followed'];
+	followed: Store[];
 }
 
 const FollowedStoresMain: React.FC<FollowedStoresMainProps> = ({
@@ -57,13 +57,10 @@ const FollowedStoresMain: React.FC<FollowedStoresMainProps> = ({
 		<FlashList
 			horizontal
 			data={followed.slice(0, 8)}
-			keyExtractor={item => item.store.id}
+			keyExtractor={item => item.id}
 			contentContainerStyle={{ paddingLeft: 16 }}
 			renderItem={({ item }) => (
-				<FollowedStoresItem
-					store={item.store}
-					onPress={handleStorePress(item.store.id)}
-				/>
+				<FollowedStoresItem store={item} onPress={handleStorePress(item.id)} />
 			)}
 		/>
 	);

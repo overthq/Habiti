@@ -5,40 +5,37 @@ import * as Device from 'expo-device';
 import { Screen, Typography, useTheme } from '@habiti/components';
 
 import useGoBack from '../hooks/useGoBack';
+import { usePushTokensQuery } from '../data/queries';
 import {
-	useCurrentUserQuery,
-	CurrentUserQuery,
-	PushTokenType,
 	useSavePushTokenMutation,
 	useDeletePushTokenMutation
-} from '../types/api';
+} from '../data/mutations';
+import { PushTokenType, UserPushToken } from '../data/types';
 import { useMutation } from '@tanstack/react-query';
 import { requestPushPermission } from '../utils/notifications';
 
-const getUserPushToken = (user: CurrentUserQuery['currentUser']) => {
-	return user.pushTokens.find(token => token.type === PushTokenType.Shopper);
+const getUserPushToken = (pushTokens: UserPushToken[]) => {
+	return pushTokens.find(token => token.type === PushTokenType.Shopper);
 };
 
 const NotificationSettings = () => {
-	const [{ data }] = useCurrentUserQuery();
-	const [, savePushToken] = useSavePushTokenMutation();
-	const [, deletePushToken] = useDeletePushTokenMutation();
+	const { data } = usePushTokensQuery();
+	const savePushToken = useSavePushTokenMutation();
+	const deletePushToken = useDeletePushTokenMutation();
 	const { theme } = useTheme();
 
 	useGoBack();
 
-	if (!data?.currentUser) return null;
-
-	const user = data.currentUser;
-
-	const pushToken = getUserPushToken(user);
+	const pushTokens = data?.pushTokens ?? [];
+	const pushToken = getUserPushToken(pushTokens);
 	const isPushEnabled = !!pushToken;
 
 	const requestPushTokenMutation = useMutation({
 		mutationFn: async () => {
 			const pushTokenString = await requestPushPermission();
-			await savePushToken({
-				input: { token: pushTokenString, type: PushTokenType.Shopper }
+			await savePushToken.mutateAsync({
+				token: pushTokenString,
+				type: PushTokenType.Shopper
 			});
 		},
 		onError: error => {
@@ -53,8 +50,9 @@ const NotificationSettings = () => {
 	const switchDisabled = requestPushTokenMutation.isPending || !Device.isDevice;
 
 	const handleDeletePushToken = async () => {
-		await deletePushToken({
-			input: { token: pushToken.token, type: PushTokenType.Shopper }
+		await deletePushToken.mutateAsync({
+			token: pushToken!.token,
+			type: PushTokenType.Shopper
 		});
 	};
 

@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 
+import { PushTokenType } from '../generated/prisma/client';
 import * as UserLogic from '../core/logic/users';
+import * as ProductLogic from '../core/logic/products';
 import { hydrateQuery } from '../utils/queries';
 import { getAppContext } from '../utils/context';
 
@@ -142,6 +144,107 @@ export const getDeliveryAddresses = async (
 	try {
 		const addresses = await UserLogic.getDeliveryAddresses(ctx);
 		return res.json({ addresses });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const getWatchlist = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const ctx = getAppContext(req);
+
+	try {
+		const user = await ctx.prisma.user
+			.findUnique({ where: { id: ctx.user!.id } })
+			.watchlist({
+				include: {
+					product: {
+						include: { store: true, images: true }
+					}
+				}
+			});
+		return res.json({ watchlist: user ?? [] });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const addToWatchlist = async (
+	req: Request<{}, {}, { productId: string }>,
+	res: Response,
+	next: NextFunction
+) => {
+	const ctx = getAppContext(req);
+
+	try {
+		const item = await ProductLogic.addToWatchlist(ctx, {
+			productId: req.body.productId
+		});
+		return res.json({ watchlistProduct: item });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const getPushTokens = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const ctx = getAppContext(req);
+
+	try {
+		const pushTokens = await ctx.prisma.userPushToken.findMany({
+			where: { userId: ctx.user!.id }
+		});
+		return res.json({ pushTokens });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const savePushToken = async (
+	req: Request<{}, {}, { token: string; type: PushTokenType }>,
+	res: Response,
+	next: NextFunction
+) => {
+	const ctx = getAppContext(req);
+
+	try {
+		const pushToken = await ctx.prisma.userPushToken.create({
+			data: {
+				token: req.body.token,
+				type: req.body.type,
+				user: { connect: { id: ctx.user!.id } }
+			}
+		});
+		return res.json({ pushToken });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const deletePushToken = async (
+	req: Request<{ token: string }, {}, { type: PushTokenType }>,
+	res: Response,
+	next: NextFunction
+) => {
+	const ctx = getAppContext(req);
+
+	try {
+		const pushToken = await ctx.prisma.userPushToken.delete({
+			where: {
+				userId_token: {
+					userId: ctx.user!.id,
+					token: req.params.token
+				},
+				type: req.body.type
+			}
+		});
+		return res.json({ pushToken });
 	} catch (error) {
 		return next(error);
 	}

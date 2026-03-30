@@ -6,12 +6,12 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import CartsListItem from '../components/carts/CartsListItem';
 import { AppStackParamList, MainTabParamList } from '../types/navigation';
-import { useCartsQuery } from '../types/api';
+import { useCartsQuery } from '../data/queries';
 import useRefresh from '../hooks/useRefresh';
 
 const Carts = () => {
-	const [{ data, fetching }, refetch] = useCartsQuery();
-	const { refreshing, refresh } = useRefresh({ fetching, refetch });
+	const { data, isLoading, refetch } = useCartsQuery();
+	const { refreshing, refresh } = useRefresh({ refetch });
 	const { navigate, goBack } =
 		useNavigation<NavigationProp<MainTabParamList & AppStackParamList>>();
 	const { theme } = useTheme();
@@ -34,7 +34,7 @@ const Carts = () => {
 				renderItem={({ item }) => (
 					<CartsListItem cart={item} onPress={handleCartPress(item.id)} />
 				)}
-				data={data?.currentUser.carts}
+				data={data?.carts}
 				contentContainerStyle={{ flexGrow: 1 }}
 				ListEmptyComponent={() => (
 					<ListEmpty

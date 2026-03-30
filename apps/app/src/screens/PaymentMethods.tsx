@@ -7,28 +7,27 @@ import { HeaderButton } from '@react-navigation/elements';
 import useGoBack from '../hooks/useGoBack';
 import CardRow from '../components/payment-methods/CardRow';
 import { AppStackParamList } from '../types/navigation';
-import { CardsQuery, useCardsQuery, useDeleteCardMutation } from '../types/api';
+import { useCardsQuery } from '../data/queries';
+import { useDeleteCardMutation } from '../data/mutations';
+import { Card } from '../data/types';
 import useStore from '../state';
 
 const PaymentMethods = () => {
-	const [{ data, fetching }] = useCardsQuery();
+	const { data, isLoading } = useCardsQuery();
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const [focusedCardId, setFocusedCardId] = React.useState<string>();
-	const [, deleteCard] = useDeleteCardMutation();
+	const deleteCard = useDeleteCardMutation();
 	const { defaultCard, setPreference } = useStore();
 
 	useGoBack();
 
-	const handleLongPress = React.useCallback(
-		(card: CardsQuery['currentUser']['cards'][number]) => {
-			setFocusedCardId(card.id);
-		},
-		[]
-	);
+	const handleLongPress = React.useCallback((card: Card) => {
+		setFocusedCardId(card.id);
+	}, []);
 
 	const handleCardPress = React.useCallback(
-		(card: CardsQuery['currentUser']['cards'][number]) => {
+		(card: Card) => {
 			if (focusedCardId === card.id) {
 				setFocusedCardId(undefined);
 			}
@@ -42,13 +41,13 @@ const PaymentMethods = () => {
 				setPreference({ defaultCard: null });
 			}
 
-			deleteCard({ id: cardId });
+			deleteCard.mutate(cardId);
 		},
 		[defaultCard, deleteCard, setPreference]
 	);
 
 	const handleDeleteCard = React.useCallback(
-		(card: CardsQuery['currentUser']['cards'][number]) => {
+		(card: Card) => {
 			Alert.alert('Delete Card', 'Are you sure you want to delete this card?', [
 				{ text: 'Cancel', style: 'cancel' },
 				{
@@ -73,9 +72,9 @@ const PaymentMethods = () => {
 		});
 	}, []);
 
-	const cards = data?.currentUser.cards;
+	const cards = data?.cards;
 
-	if (fetching || !cards) {
+	if (isLoading || !cards) {
 		return (
 			<View style={styles.loading}>
 				<ActivityIndicator />

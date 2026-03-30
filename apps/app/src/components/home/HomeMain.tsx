@@ -4,22 +4,18 @@ import { RefreshControl, View } from 'react-native';
 import FollowedStores from './FollowedStores';
 import RecentOrders from './RecentOrders';
 
-import { useHomeQuery } from '../../types/api';
+import { useHomeQuery } from '../../data/queries';
 import useRefresh from '../../hooks/useRefresh';
 import HomeEmpty from './HomeEmpty';
 
 const HomeMain = () => {
-	const [{ fetching, data }, refetch] = useHomeQuery();
-	const { refreshing, refresh } = useRefresh({ fetching, refetch });
+	const { data, isLoading, refetch } = useHomeQuery();
+	const { refreshing, refresh } = useRefresh({ refetch });
 	const { theme } = useTheme();
 
-	if (fetching && !data) return <View />;
+	if (isLoading && !data) return <View />;
 
-	if (
-		!data ||
-		(data.currentUser.orders.length === 0 &&
-			data.currentUser.followed.length === 0)
-	) {
+	if (!data || (data.orders.length === 0 && data.followed.length === 0)) {
 		return <HomeEmpty />;
 	}
 
@@ -35,9 +31,9 @@ const HomeMain = () => {
 			}
 		>
 			<Spacer y={16} />
-			<FollowedStores followed={data.currentUser.followed} />
+			<FollowedStores followed={data.followed} />
 			<Spacer y={32} />
-			<RecentOrders orders={data.currentUser.orders} />
+			<RecentOrders orders={data.orders} />
 		</ScrollableScreen>
 	);
 };

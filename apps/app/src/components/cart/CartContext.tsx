@@ -7,20 +7,20 @@ import {
 	useRoute
 } from '@react-navigation/native';
 
+import { useCartQuery } from '../../data/queries';
 import {
-	CartQuery,
-	useCartQuery,
 	useCreateOrderMutation,
 	useUpdateCartProductMutation
-} from '../../types/api';
+} from '../../data/mutations';
+import type { Cart, CartProduct } from '../../data/types';
 import useStore from '../../state';
 import { AppStackParamList } from '../../types/navigation';
 import useRefresh from '../../hooks/useRefresh';
 import useDebounce from '../../hooks/useDebounce';
 
 interface CartContextType {
-	cart: CartQuery['cart'];
-	products: CartQuery['cart']['products'];
+	cart: Cart;
+	products: CartProduct[];
 	disabled: boolean;
 	handleSubmit: () => Promise<void>;
 	refreshing: boolean;
@@ -36,7 +36,8 @@ const CartContext = React.createContext<CartContextType | null>(null);
 
 interface CartProviderProps {
 	children: React.ReactNode;
-	cart: CartQuery['cart'];
+	cart: Cart;
+	cards: import('../../data/types').Card[];
 	refreshing: boolean;
 	refresh: () => void;
 }
@@ -44,13 +45,12 @@ interface CartProviderProps {
 export const CartProvider: React.FC<CartProviderProps> = ({
 	children,
 	cart,
+	cards,
 	refreshing,
 	refresh
 }) => {
-	const [{ fetching: isUpdatingCartProduct }, updateCartProduct] =
-		useUpdateCartProductMutation();
-	const [{ fetching: isCreatingOrder, data: orderData }, createOrder] =
-		useCreateOrderMutation();
+	const updateCartProductMutation = useUpdateCartProductMutation();
+	const createOrderMutation = useCreateOrderMutation();
 
 	const { navigate, goBack } =
 		useNavigation<NavigationProp<AppStackParamList>>();
@@ -64,12 +64,12 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 	}, [cart.products, dispatch]);
 
 	React.useEffect(() => {
-		const firstCard = cart.user.cards[0];
+		const firstCard = cards[0];
 
 		if (firstCard && !defaultCard && !selectedCard) {
 			setSelectedCard(firstCard.id);
 		}
-	}, [cart.user.cards, defaultCard, selectedCard]);
+	}, [cards, defaultCard, selectedCard]);
 
 	const anyCartProductIsOverQuantity = React.useMemo(() => {
 		return state.some(product => product.quantity > product.product.quantity);
@@ -79,14 +79,14 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 
 	const disabled = React.useMemo(() => {
 		return (
-			isUpdatingCartProduct ||
-			isCreatingOrder ||
+			updateCartProductMutation.isPending ||
+			createOrderMutation.isPending ||
 			pendingUpdatesRef.current.size > 0 ||
 			anyCartProductIsOverQuantity
 		);
 	}, [
-		isUpdatingCartProduct,
-		isCreatingOrder,
+		updateCartProductMutation.isPending,
+		createOrderMutation.isPending,
 		pendingUpdatesRef.current.size,
 		anyCartProductIsOverQuantity
 	]);
@@ -96,17 +96,17 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 		if (updates.length === 0) return;
 
 		updates.forEach(([productId, quantity]) => {
-			updateCartProduct({
-				input: {
+			updateCartProductMutation.mutate({
+				productId,
+				body: {
 					cartId: cart.id,
-					productId,
 					quantity
 				}
 			});
 		});
 
 		pendingUpdatesRef.current.clear();
-	}, [cart.id, updateCartProduct]);
+	}, [cart.id, updateCartProductMutation]);
 
 	const debouncedProcessBatchedUpdates = useDebounce(
 		processBatchedUpdates,
@@ -134,33 +134,31 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 	// up better, we should not need to do this.
 	useFocusEffect(
 		React.useCallback(() => {
-			if (orderData?.createOrder.id) {
+			if (createOrderMutation.data?.order.id) {
 				goBack();
 			}
-		}, [goBack, orderData])
+		}, [goBack, createOrderMutation.data])
 	);
 
 	const handleSubmit = React.useCallback(async () => {
-		const { error, data: orderData } = await createOrder({
-			input: {
+		try {
+			const orderData = await createOrderMutation.mutateAsync({
 				cartId: cart.id,
 				cardId: selectedCard,
 				transactionFee: cart.fees.total ?? 0,
 				serviceFee: cart.fees.service ?? 0
-			}
-		});
+			});
 
-		// TODO: Consider not doing this
-		setPreference({ defaultCard: selectedCard });
+			// TODO: Consider not doing this
+			setPreference({ defaultCard: selectedCard });
 
-		if (error) {
-			console.log('Error while creating order:', error);
-		} else {
-			if (!selectedCard && orderData?.createOrder.total) {
-				navigate('Modal.AddCard', { orderId: orderData.createOrder.id });
+			if (!selectedCard && orderData?.order.total) {
+				navigate('Modal.AddCard', { orderId: orderData.order.id });
 			} else {
 				goBack();
 			}
+		} catch (error) {
+			console.log('Error while creating order:', error);
 		}
 	}, [
 		cart.id,
@@ -169,7 +167,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 		selectedCard,
 		navigate,
 		goBack,
-		createOrder,
+		createOrderMutation,
 		setPreference
 	]);
 
@@ -196,7 +194,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 
 type AddAction = {
 	type: 'add';
-	product: CartQuery['cart']['products'][number];
+	product: CartProduct;
 };
 
 type RemoveAction = {
@@ -212,14 +210,14 @@ type UpdateAction = {
 
 type ResetAction = {
 	type: 'reset';
-	products: CartQuery['cart']['products'];
+	products: CartProduct[];
 };
 
 type Action = AddAction | RemoveAction | UpdateAction | ResetAction;
 
-const useCartReducer = (initialState: CartQuery['cart']['products']) => {
+const useCartReducer = (initialState: CartProduct[]) => {
 	const [state, dispatch] = React.useReducer(
-		(state: CartQuery['cart']['products'], action: Action) => {
+		(state: CartProduct[], action: Action) => {
 			switch (action.type) {
 				case 'add':
 					return [...state, action.product];
@@ -256,16 +254,19 @@ const CartContextWrapper: React.FC<CartContextWrapperProps> = ({
 	const {
 		params: { cartId }
 	} = useRoute<RouteProp<AppStackParamList, 'Cart'>>();
-	const [{ data, fetching }, refetch] = useCartQuery({
-		variables: { cartId }
-	});
+	const { data, isLoading, refetch } = useCartQuery(cartId);
 
-	const { refreshing, refresh } = useRefresh({ fetching, refetch });
+	const { refreshing, refresh } = useRefresh({ refetch });
 
 	if (!data?.cart) return null;
 
 	return (
-		<CartProvider cart={data.cart} refreshing={refreshing} refresh={refresh}>
+		<CartProvider
+			cart={data.cart}
+			cards={data.viewerContext?.cards ?? []}
+			refreshing={refreshing}
+			refresh={refresh}
+		>
 			{children}
 		</CartProvider>
 	);

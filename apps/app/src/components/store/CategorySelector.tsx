@@ -2,10 +2,10 @@ import React from 'react';
 import { StyleSheet, ScrollView } from 'react-native';
 
 import CategorySelectorItem from './CategorySelectorItem';
-import { StoreQuery } from '../../types/api';
+import type { StoreProductCategory } from '../../data/types';
 
 interface CategorySelectorProps {
-	categories: StoreQuery['store']['categories'];
+	categories: StoreProductCategory[];
 	selected?: string;
 	selectCategory(categoryId: string): void;
 }
