@@ -48,7 +48,7 @@
 		"react-native-pager": "^0.0.3",
 		"react-native-pager-view": "8.0.0",
 		"react-native-reanimated": "4.2.1",
-		"react-native-safe-area-context": "~5.6.0",
+		"react-native-safe-area-context": "~5.7.0",
 		"react-native-screens": "~4.23.0",
 		"react-native-svg": "15.15.3",
 		"react-native-tab-view": "^4.0.10",
