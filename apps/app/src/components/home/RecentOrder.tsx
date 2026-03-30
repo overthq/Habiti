@@ -3,12 +3,12 @@ import { View, StyleSheet } from 'react-native';
 import { Avatar, Row, Spacer, Typography } from '@habiti/components';
 import { formatNaira } from '@habiti/common';
 
-import { HomeQuery } from '../../types/api';
+import type { Order } from '../../data/types';
 import { relativeTimestamp } from '../../utils/date';
 import { plural } from '../../utils/strings';
 
 interface RecentOrderProps {
-	order: HomeQuery['currentUser']['orders'][number];
+	order: Order;
 	onPress(): void;
 }
 

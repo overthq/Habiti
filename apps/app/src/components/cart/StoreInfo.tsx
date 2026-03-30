@@ -2,10 +2,10 @@ import { Typography } from '@habiti/components';
 import React from 'react';
 import { View } from 'react-native';
 
-import { CartQuery } from '../../types/api';
+import type { Store } from '../../data/types';
 
 interface StoreInfoProps {
-	store: CartQuery['cart']['store'];
+	store: Store;
 }
 
 const StoreInfo: React.FC<StoreInfoProps> = ({ store }) => {

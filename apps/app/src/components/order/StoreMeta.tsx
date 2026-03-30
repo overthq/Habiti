@@ -3,11 +3,11 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Pressable, View } from 'react-native';
 
-import { OrderQuery } from '../../types/api';
+import { Store } from '../../data/types';
 import { HomeStackParamList } from '../../types/navigation';
 
 interface StoreMetaProps {
-	store: OrderQuery['order']['store'];
+	store: Store;
 }
 
 const StoreMeta: React.FC<StoreMetaProps> = ({ store }) => {

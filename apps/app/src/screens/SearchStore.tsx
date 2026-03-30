@@ -7,11 +7,10 @@ import {
 } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { View } from 'react-native';
 
 import StoreListItem from '../components/store/StoreListItem';
-// import StoreProducts from '../components/store/StoreProducts';
-import { StringWhereMode, useStoreProductsQuery } from '../types/api';
+import { useStoreProductsQuery } from '../data/queries';
 import { AppStackParamList, StoreStackParamList } from '../types/navigation';
 import useDebounced from '../hooks/useDebounced';
 
@@ -24,17 +23,12 @@ const SearchStore: React.FC<SearchStoreProps> = ({ searchTerm }) => {
 
 	const { params } = useRoute<RouteProp<StoreStackParamList, 'Store.Search'>>();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const [{ data, fetching }] = useStoreProductsQuery({
-		variables: {
-			storeId: params.storeId,
-			filter: {
-				name: {
-					contains: debouncedSearchTerm,
-					mode: StringWhereMode.Insensitive
-				}
-			}
-		}
-	});
+
+	const filter = debouncedSearchTerm
+		? { name: { contains: debouncedSearchTerm, mode: 'insensitive' } }
+		: undefined;
+
+	const { data, isLoading } = useStoreProductsQuery(params.storeId, filter);
 
 	const handleProductPress = React.useCallback(
 		(productId: string) => () => {
@@ -43,7 +37,7 @@ const SearchStore: React.FC<SearchStoreProps> = ({ searchTerm }) => {
 		[]
 	);
 
-	if (fetching || !data?.store) {
+	if (isLoading || !data?.products) {
 		return <View />;
 	}
 
@@ -51,13 +45,13 @@ const SearchStore: React.FC<SearchStoreProps> = ({ searchTerm }) => {
 		<Screen style={{ display: !!searchTerm ? 'flex' : 'none' }}>
 			<FlashList
 				keyboardShouldPersistTaps='handled'
-				data={data.store.products.edges}
-				keyExtractor={({ node }) => node.id}
+				data={data.products}
+				keyExtractor={item => item.id}
 				showsVerticalScrollIndicator={false}
 				renderItem={({ item, index }) => (
 					<StoreListItem
-						item={item.node}
-						onPress={handleProductPress(item.node.id)}
+						item={item}
+						onPress={handleProductPress(item.id)}
 						side={index % 2 === 0 ? 'left' : 'right'}
 					/>
 				)}

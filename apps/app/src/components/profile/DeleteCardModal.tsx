@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { BottomModal, Button, Typography } from '@habiti/components';
-import { useDeleteCardMutation } from '../../types/api';
+import { useDeleteCardMutation } from '../../data/mutations';
 
 interface DeleteCardModalProps {
 	cardId: string;
@@ -13,14 +13,14 @@ const DeleteCardModal: React.FC<DeleteCardModalProps> = ({
 	cardId,
 	modalRef
 }) => {
-	const [, deleteCard] = useDeleteCardMutation();
+	const deleteCard = useDeleteCardMutation();
 
 	const handleCancel = React.useCallback(() => {
 		modalRef.current?.close();
 	}, []);
 
 	const handleDeleteCard = React.useCallback(async () => {
-		await deleteCard({ id: cardId });
+		await deleteCard.mutateAsync(cardId);
 		modalRef.current?.close();
 	}, [cardId, deleteCard]);
 

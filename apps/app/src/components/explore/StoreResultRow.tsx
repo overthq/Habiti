@@ -2,10 +2,10 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Avatar, Row, Spacer, Typography } from '@habiti/components';
 
-import { SearchQuery } from '../../types/api';
+import { Store } from '../../data/types';
 
 interface StoreResultRowProps {
-	store: SearchQuery['stores'][number];
+	store: Store;
 	onPress(): void;
 }
 

@@ -1,5 +1,6 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { OrderStatus, useUpdateOrderMutation } from '../../types/api';
+import { OrderStatus } from '../../data/types';
+import { useUpdateOrderMutation } from '../../data/mutations';
 import { AppStackParamList } from '../../types/navigation';
 import { StyleSheet, View } from 'react-native';
 import { Button, Spacer, Typography, useTheme } from '@habiti/components';
@@ -13,16 +14,16 @@ const PaymentPendingWarning: React.FC<PaymentPendingWarningProps> = ({
 }) => {
 	const { theme } = useTheme();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const [, updateOrder] = useUpdateOrderMutation();
+	const updateOrder = useUpdateOrderMutation();
 
 	const handleMakePayment = () => {
 		navigate('Modal.AddCard', { orderId });
 	};
 
 	const handleCancelOrder = () => {
-		updateOrder({
+		updateOrder.mutate({
 			orderId,
-			input: { status: OrderStatus.Cancelled }
+			body: { status: OrderStatus.Cancelled }
 		});
 	};
 

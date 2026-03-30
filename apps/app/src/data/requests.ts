@@ -19,7 +19,14 @@ import type {
 	GetCartResponse,
 	GetRelatedProductsResponse,
 	Product,
-	UpdateCurrentUserBody
+	UpdateCurrentUserBody,
+	WatchlistProduct,
+	UserPushToken,
+	SavePushTokenBody,
+	DeletePushTokenBody,
+	CardAuthorizationResponse,
+	DeliveryAddress,
+	UpdateOrderBody
 } from './types';
 import useStore from '../state';
 import env from '../../env';
@@ -219,6 +226,86 @@ export const getRelatedProducts = async (productId: string) => {
 		`/products/${productId}/related`
 	);
 
+	return response.data;
+};
+
+// Delivery Addresses
+
+export const getDeliveryAddresses = async () => {
+	const response = await api.get<{ addresses: DeliveryAddress[] }>(
+		'/users/current/delivery-addresses'
+	);
+	return response.data;
+};
+
+// Watchlist
+
+export const getWatchlist = async () => {
+	const response = await api.get<{ watchlist: WatchlistProduct[] }>(
+		'/users/current/watchlist'
+	);
+	return response.data;
+};
+
+export const addToWatchlist = async (productId: string) => {
+	const response = await api.post<{ watchlistProduct: WatchlistProduct }>(
+		'/users/current/watchlist',
+		{ productId }
+	);
+	return response.data;
+};
+
+// Push Tokens
+
+export const getPushTokens = async () => {
+	const response = await api.get<{ pushTokens: UserPushToken[] }>(
+		'/users/current/push-tokens'
+	);
+	return response.data;
+};
+
+export const savePushToken = async (body: SavePushTokenBody) => {
+	const response = await api.post<{ pushToken: UserPushToken }>(
+		'/users/current/push-tokens',
+		body
+	);
+	return response.data;
+};
+
+export const deletePushToken = async (body: DeletePushTokenBody) => {
+	const response = await api.delete<{ pushToken: UserPushToken }>(
+		`/users/current/push-tokens/${encodeURIComponent(body.token)}`,
+		{ data: { type: body.type } }
+	);
+	return response.data;
+};
+
+// Cards
+
+export const deleteCard = async (cardId: string) => {
+	const response = await api.delete(`/users/current/cards/${cardId}`);
+	return response.data;
+};
+
+export const getCardAuthorization = async (orderId: string) => {
+	const response = await api.post<CardAuthorizationResponse>(
+		'/users/current/cards/authorize',
+		{ orderId }
+	);
+	return response.data;
+};
+
+// Account
+
+export const deleteAccount = async () => {
+	const response = await api.delete('/users/current');
+	return response.data;
+};
+
+// Orders (additional)
+
+export const updateOrder = async (orderId: string, body: UpdateOrderBody) => {
+	const response = await api.put<{ order: Order }>(`/orders/${orderId}`, body);
 	return response.data;
 };
 

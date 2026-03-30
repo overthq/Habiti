@@ -1,13 +1,13 @@
 import React from 'react';
-import { CombinedError } from 'urql';
 
-import { SearchQuery, useSearchQuery } from '../../types/api';
+import { useSearchQuery } from '../../data/queries';
+import { Product, Store } from '../../data/types';
 import useDebounced from '../../hooks/useDebounced';
 interface SearchContextValue {
 	fetching: boolean;
-	products: SearchQuery['products'];
-	stores: SearchQuery['stores'];
-	error: CombinedError;
+	products: Product[];
+	stores: Store[];
+	error: Error | null;
 }
 
 const SearchContext = React.createContext<SearchContextValue | null>(null);
@@ -23,17 +23,15 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
 }) => {
 	const debouncedSearchTerm = useDebounced(searchTerm);
 
-	const [{ fetching, error, data }] = useSearchQuery({
-		variables: { searchTerm: debouncedSearchTerm }
-	});
+	const { isLoading, error, data } = useSearchQuery(debouncedSearchTerm);
 
 	return (
 		<SearchContext.Provider
 			value={{
-				fetching,
-				error,
+				fetching: isLoading,
+				error: error ?? null,
 				stores: data?.stores ?? [],
-				products: data?.products
+				products: data?.products ?? []
 			}}
 		>
 			{children}

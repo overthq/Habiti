@@ -8,12 +8,13 @@ import { FlashList } from '@shopify/flash-list';
 import StoreListItem from './StoreListItem';
 import ViewCart from './ViewCart';
 
-import { StoreQuery, useStoreProductsQuery } from '../../types/api';
+import { useStoreProductsQuery } from '../../data/queries';
+import type { Store } from '../../data/types';
 import { AppStackParamList } from '../../types/navigation';
 import useRefresh from '../../hooks/useRefresh';
 
 interface StoreProductsProps {
-	store: StoreQuery['store'];
+	store: Store;
 	activeCategory: string;
 	searchTerm: string;
 }
@@ -23,22 +24,16 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 	activeCategory,
 	searchTerm
 }) => {
-	const [{ data, fetching }, refetch] = useStoreProductsQuery({
-		variables: {
-			storeId: store.id,
-			...(activeCategory && {
-				filter: {
-					categories: { some: { categoryId: { equals: activeCategory } } }
-				}
-			})
-		}
-	});
-	const { refreshing, refresh } = useRefresh({ fetching, refetch });
+	const filter = activeCategory
+		? { categories: { some: { categoryId: { equals: activeCategory } } } }
+		: undefined;
+	const { data, isLoading, refetch } = useStoreProductsQuery(store.id, filter);
+	const { refreshing, refresh } = useRefresh({ refetch });
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
 	const { bottom } = useSafeAreaInsets();
 
-	const products = data?.store.products;
+	const products = data?.products;
 
 	const handleProductPress = React.useCallback(
 		(productId: string) => () => {
@@ -47,7 +42,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 		[]
 	);
 
-	if (fetching && !products) return <View />;
+	if (isLoading && !products) return <View />;
 
 	return (
 		<View style={{ flex: 1, display: !searchTerm ? 'flex' : 'none' }}>
@@ -57,13 +52,13 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 					backgroundColor: theme.screen.background,
 					paddingTop: 8
 				}}
-				data={products.edges}
-				keyExtractor={({ node }) => node.id}
+				data={products}
+				keyExtractor={p => p.id}
 				showsVerticalScrollIndicator={false}
 				renderItem={({ item, index }) => (
 					<StoreListItem
-						item={item.node}
-						onPress={handleProductPress(item.node.id)}
+						item={item}
+						onPress={handleProductPress(item.id)}
 						side={index % 2 === 0 ? 'left' : 'right'}
 					/>
 				)}

@@ -5,13 +5,11 @@
 	"main": "index.ts",
 	"license": "GPL-3.0-or-later",
 	"scripts": {
-		"generate-types": "graphql-codegen --config codegen.yml",
 		"start": "expo start",
 		"android": "expo run:android",
 		"ios": "expo run:ios",
 		"web": "expo start --web",
-		"eject": "expo eject",
-		"codegen": "graphql-codegen"
+		"eject": "expo eject"
 	},
 	"dependencies": {
 		"@gorhom/bottom-sheet": "^5.2.8",
@@ -28,7 +26,6 @@
 		"@sentry/react-native": "~7.11.0",
 		"@shopify/flash-list": "2.0.2",
 		"@tanstack/react-query": "^5.75.0",
-		"@urql/exchange-graphcache": "^7.2.3",
 		"axios": "^1.13.2",
 		"core-js": "^3.30.1",
 		"date-fns": "^2.30.0",
@@ -42,7 +39,6 @@
 		"expo-splash-screen": "~55.0.10",
 		"expo-status-bar": "~55.0.4",
 		"expo-updates": "~55.0.13",
-		"graphql": "^16.11.0",
 		"lodash.debounce": "^4.0.8",
 		"react": "19.2.0",
 		"react-dom": "19.2.0",
@@ -59,7 +55,6 @@
 		"react-native-web": "^0.21.0",
 		"react-native-webview": "13.16.0",
 		"react-native-worklets": "0.7.2",
-		"urql": "^4.2.2",
 		"zod": "^3.24.3",
 		"zustand": "^5.0.3"
 	},
@@ -67,10 +62,6 @@
 		"@babel/core": "^7.20.0",
 		"@babel/preset-typescript": "^7.17.12",
 		"@expo/metro-config": "~55.0.9",
-		"@graphql-codegen/cli": "^5.0.2",
-		"@graphql-codegen/typescript": "^4.0.9",
-		"@graphql-codegen/typescript-operations": "^4.2.3",
-		"@graphql-codegen/typescript-urql": "^4.0.0",
 		"@sentry/cli": "^3.3.3",
 		"@types/lodash.debounce": "^4.0.9",
 		"@types/node": "^20",

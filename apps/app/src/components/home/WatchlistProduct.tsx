@@ -3,11 +3,11 @@ import { CustomImage, Typography } from '@habiti/components';
 import React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 
-import { WatchlistQuery } from '../../types/api';
+import type { Product } from '../../data/types';
 
 interface WatchlistProductProps {
 	onPress(): void;
-	product: WatchlistQuery['currentUser']['watchlist'][-1]['product'];
+	product: Product;
 }
 
 const WatchlistProduct: React.FC<WatchlistProductProps> = ({

@@ -1,16 +1,17 @@
 import React from 'react';
+import { useProductQuery, useRelatedProductsQuery } from '../../data/queries';
 import {
-	ProductQuery,
 	useAddToCartMutation,
-	useProductQuery,
 	useUpdateCartProductMutation
-} from '../../types/api';
+} from '../../data/mutations';
+import type { Product, ProductViewerContext } from '../../data/types';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { AppStackParamList } from '../../types/navigation';
 import { View } from 'react-native';
 
 interface ProductContextType {
-	product: ProductQuery['product'];
+	product: Product;
+	relatedProducts: Product[];
 	cartCommitFetching: boolean;
 	onCartCommit: () => void;
 	cartCommitDisabled: boolean;
@@ -25,7 +26,9 @@ const ProductContext = React.createContext<ProductContextType | null>(null);
 
 interface ProductProviderProps {
 	children: React.ReactNode;
-	product: ProductQuery['product'];
+	product: Product;
+	relatedProducts: Product[];
+	viewerContext?: ProductViewerContext;
 }
 
 // FIXME: I'm aware that this is in need of a major refactor,
@@ -35,36 +38,28 @@ interface ProductProviderProps {
 
 const ProductProviderInner: React.FC<ProductProviderProps> = ({
 	children,
-	product
+	product,
+	relatedProducts,
+	viewerContext
 }) => {
 	const { goBack } = useNavigation();
 
-	const [{ fetching: addFetching }, addToCart] = useAddToCartMutation();
-	const [{ fetching: updateFetching }, updateCartProduct] =
-		useUpdateCartProductMutation();
+	const addToCart = useAddToCartMutation();
+	const updateCartProduct = useUpdateCartProductMutation();
 
-	const cartId = React.useMemo(
-		() => product.store.userCart?.id,
-		[product.store.userCart?.id]
-	);
+	const cartProduct = viewerContext?.cartProduct;
+	const inCart = !!cartProduct;
 
 	const initialQuantity = React.useMemo(
-		() =>
-			product.store.userCart?.products.find(p => p.productId === product.id)
-				?.quantity,
-		[product.store.userCart?.products, product.id]
+		() => cartProduct?.quantity,
+		[cartProduct?.quantity]
 	);
 
 	const [quantity, setQuantity] = React.useState(initialQuantity ?? 1);
 
-	const isNotInCart = React.useMemo(
-		() => !cartId || (cartId && !product.inCart),
-		[cartId, product.inCart]
-	);
-
 	const cartCommitFetching = React.useMemo(
-		() => addFetching || updateFetching,
-		[addFetching, updateFetching]
+		() => addToCart.isPending || updateCartProduct.isPending,
+		[addToCart.isPending, updateCartProduct.isPending]
 	);
 
 	const quantityChanged = React.useMemo(
@@ -74,28 +69,38 @@ const ProductProviderInner: React.FC<ProductProviderProps> = ({
 
 	const cartCommitText = React.useMemo(
 		() =>
-			isNotInCart ? 'Add to cart' : quantityChanged ? 'Update cart' : 'In cart',
-		[isNotInCart, quantityChanged]
+			!inCart ? 'Add to cart' : quantityChanged ? 'Update cart' : 'In cart',
+		[inCart, quantityChanged]
 	);
 
 	const cartCommitDisabled = React.useMemo(
-		() => (product.inCart && !quantityChanged) || cartCommitFetching,
-		[product.inCart, quantityChanged, cartCommitFetching]
+		() => (inCart && !quantityChanged) || cartCommitFetching,
+		[inCart, quantityChanged, cartCommitFetching]
 	);
 
 	const onCartCommit = React.useCallback(async () => {
-		if (isNotInCart) {
-			await addToCart({
-				input: { storeId: product.storeId, productId: product.id, quantity }
+		if (!inCart) {
+			await addToCart.mutateAsync({
+				storeId: product.storeId,
+				productId: product.id,
+				quantity
 			});
 		} else {
-			await updateCartProduct({
-				input: { cartId, productId: product.id, quantity }
+			await updateCartProduct.mutateAsync({
+				productId: product.id,
+				body: { cartId: cartProduct.cartId, quantity }
 			});
 		}
 
 		goBack();
-	}, [product.storeId, product.id, quantity, isNotInCart, cartId, goBack]);
+	}, [
+		product.storeId,
+		product.id,
+		quantity,
+		inCart,
+		cartProduct?.cartId,
+		goBack
+	]);
 
 	if (!product) return <View />;
 
@@ -103,11 +108,12 @@ const ProductProviderInner: React.FC<ProductProviderProps> = ({
 		<ProductContext.Provider
 			value={{
 				product,
+				relatedProducts,
 				cartCommitFetching,
 				onCartCommit,
 				cartCommitDisabled,
 				cartCommitText,
-				inCart: product.inCart,
+				inCart,
 				initialQuantity,
 				quantity,
 				setQuantity
@@ -124,18 +130,25 @@ export const ProductProvider = ({
 	children: React.ReactNode;
 }) => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Product'>>();
-	const [{ data, fetching }] = useProductQuery({
-		variables: { productId: params.productId }
-	});
+	const { data, isLoading } = useProductQuery(params.productId);
+	const { data: relatedProductsData, isLoading: isRelatedProductsLoading } =
+		useRelatedProductsQuery(params.productId);
 
 	const product = data?.product;
+	const relatedProducts = relatedProductsData?.products;
 
-	if (fetching || !product) {
+	if (isLoading || !product) {
 		return <View />;
 	}
 
 	return (
-		<ProductProviderInner product={product}>{children}</ProductProviderInner>
+		<ProductProviderInner
+			product={product}
+			relatedProducts={relatedProducts}
+			viewerContext={data?.viewerContext}
+		>
+			{children}
+		</ProductProviderInner>
 	);
 };
 

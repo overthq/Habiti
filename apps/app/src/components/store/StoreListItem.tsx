@@ -3,10 +3,10 @@ import { StyleSheet, Pressable } from 'react-native';
 import { formatNaira } from '@habiti/common';
 import { CustomImage, Spacer, Typography } from '@habiti/components';
 
-import { StoreProductsQuery } from '../../types/api';
+import type { Product } from '../../data/types';
 
 interface StoreListItemProps {
-	item: StoreProductsQuery['store']['products']['edges'][number]['node'];
+	item: Product;
 	onPress(): void;
 	side: 'left' | 'right';
 }

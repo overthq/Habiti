@@ -3,16 +3,16 @@ import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import useGoBack from '../hooks/useGoBack';
-import { useAddDeliveryAddressMutation } from '../types/api';
+import { useAddDeliveryAddressMutation } from '../data/mutations';
 
 const AddDeliveryAddress = () => {
 	const methods = useForm();
-	const [, addDeliveryAddress] = useAddDeliveryAddressMutation();
+	const addDeliveryAddress = useAddDeliveryAddressMutation();
 	useGoBack('x');
 
 	const onSubmit = React.useCallback(
 		async (data: any) => {
-			await addDeliveryAddress({ input: data });
+			await addDeliveryAddress.mutateAsync(data);
 		},
 		[addDeliveryAddress]
 	);

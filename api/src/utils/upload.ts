@@ -1,6 +1,5 @@
 import cloudinary from 'cloudinary';
 import { Readable } from 'stream';
-import { FileUpload } from 'graphql-upload';
 
 // Thank you KeystoneJS and Sourcegraph!
 export const uploadStream = (
@@ -35,14 +34,6 @@ export const uploadBase64 = (
 	return cloudinary.v2.uploader.upload(base64, {
 		resource_type: 'image'
 	});
-};
-
-export const uploadImages = async (imageFiles: Promise<FileUpload>[]) => {
-	return await Promise.all(imageFiles.map(uploadImage));
-};
-
-export const uploadImage = async (imageFile: Promise<FileUpload>) => {
-	return uploadStream((await imageFile).createReadStream());
 };
 
 // const { createReadStream } = await imageFile;

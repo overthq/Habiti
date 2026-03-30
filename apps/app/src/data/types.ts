@@ -11,9 +11,14 @@ export interface Store {
 	description?: string;
 	imageId?: string;
 	image?: Image;
+	unlisted?: boolean;
 	products: Product[];
 	followedByUser: boolean;
 	categories: StoreProductCategory[];
+	userCart?: {
+		id: string;
+		products: CartProduct[];
+	};
 }
 
 export interface Image {
@@ -115,6 +120,31 @@ export interface ProductReview {
 export interface DeliveryAddress {
 	id: string;
 	name: string;
+	userId: string;
+}
+
+export interface WatchlistProduct {
+	userId: string;
+	productId: string;
+	product: Product;
+}
+
+export enum PushTokenType {
+	Merchant = 'Merchant',
+	Shopper = 'Shopper'
+}
+
+export interface UserPushToken {
+	id: string;
+	token: string;
+	type: PushTokenType;
+	userId: string;
+}
+
+export interface HomeResponse {
+	orders: Order[];
+	followed: Store[];
+	watchlist: WatchlistProduct[];
 }
 
 export interface StoreFollower {
@@ -148,6 +178,7 @@ export interface ProductCategory {
 
 export enum OrderStatus {
 	Pending = 'Pending',
+	ReadyForPickup = 'ReadyForPickup',
 	Cancelled = 'Cancelled',
 	Completed = 'Completed',
 	PaymentPending = 'PaymentPending'
@@ -237,4 +268,24 @@ export interface UpdateCartProductQuantityBody {
 
 export interface GetRelatedProductsResponse {
 	products: Product[];
+}
+
+export interface CardAuthorizationResponse {
+	authorization_url: string;
+	access_code: string;
+	reference: string;
+}
+
+export interface UpdateOrderBody {
+	status: OrderStatus;
+}
+
+export interface SavePushTokenBody {
+	token: string;
+	type: PushTokenType;
+}
+
+export interface DeletePushTokenBody {
+	token: string;
+	type: PushTokenType;
 }

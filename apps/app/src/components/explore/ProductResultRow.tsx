@@ -2,10 +2,10 @@ import { CustomImage, Row, Spacer, Typography } from '@habiti/components';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
-import { SearchQuery } from '../../types/api';
+import { Product } from '../../data/types';
 
 interface ProductResultRowProps {
-	product: SearchQuery['products']['edges'][number]['node'];
+	product: Product;
 	onPress(): void;
 }
 

@@ -5,11 +5,12 @@ import { FormInput, Screen, Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { HeaderButton } from '@react-navigation/elements';
 
-import { CurrentUserQuery, useEditProfileMutation } from '../../types/api';
+import { useEditProfileMutation } from '../../data/mutations';
+import { User } from '../../data/types';
 import { ProfileStackParamList } from '../../types/navigation';
 
 interface EditProfileMainProps {
-	currentUser: CurrentUserQuery['currentUser'];
+	currentUser: User;
 }
 
 interface EditProfileFormValues {
@@ -19,7 +20,7 @@ interface EditProfileFormValues {
 
 const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
 	const navigation = useNavigation<NavigationProp<ProfileStackParamList>>();
-	const [, editProfile] = useEditProfileMutation();
+	const editProfile = useEditProfileMutation();
 
 	const { control, handleSubmit, formState } = useForm<EditProfileFormValues>({
 		defaultValues: {
@@ -29,7 +30,7 @@ const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
 	});
 
 	const onSubmit = async (values: EditProfileFormValues) => {
-		editProfile({ input: values });
+		editProfile.mutate(values);
 	};
 
 	React.useLayoutEffect(() => {

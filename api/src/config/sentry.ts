@@ -11,8 +11,7 @@ if (env.SENTRY_DSN) {
 			Sentry.expressIntegration(),
 			Sentry.prismaIntegration({
 				prismaInstrumentation: new PrismaInstrumentation()
-			}),
-			Sentry.graphqlIntegration()
+			})
 		],
 		tracesSampleRate: 1.0
 	});

@@ -10,19 +10,17 @@ import {
 	View
 } from 'react-native';
 
-import {
-	StoresFollowedQuery,
-	useUnfollowStoreMutation,
-	useStoresFollowedQuery
-} from '../types/api';
+import { useUnfollowStoreMutation } from '../data/mutations';
+import { useStoresFollowedQuery } from '../data/queries';
+import type { Store } from '../data/types';
 import { HomeStackParamList } from '../types/navigation';
 import useGoBack from '../hooks/useGoBack';
 import useRefresh from '../hooks/useRefresh';
 
 const FollowedStores = () => {
 	const { theme } = useTheme();
-	const [{ data, fetching }, refetch] = useStoresFollowedQuery();
-	const { refreshing, refresh } = useRefresh({ fetching, refetch });
+	const { data, isLoading, refetch } = useStoresFollowedQuery();
+	const { refreshing, refresh } = useRefresh({ refetch });
 	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();
 	useGoBack();
 
@@ -30,7 +28,7 @@ const FollowedStores = () => {
 		navigate('Home.Store', { storeId });
 	};
 
-	if (fetching && !data) {
+	if (isLoading && !data) {
 		return (
 			<View>
 				<ActivityIndicator />
@@ -48,21 +46,21 @@ const FollowedStores = () => {
 						tintColor={theme.text.secondary}
 					/>
 				}
-				data={data.currentUser.followed}
+				data={data.stores}
 				renderItem={({ item }) => (
 					<FollowedStoreItem
-						store={item.store}
-						onPress={handleStoreItemPress(item.store.id)}
+						store={item}
+						onPress={handleStoreItemPress(item.id)}
 					/>
 				)}
-				keyExtractor={f => f.storeId}
+				keyExtractor={s => s.id}
 			/>
 		</Screen>
 	);
 };
 
 interface FollowedStoreItemProps {
-	store: StoresFollowedQuery['currentUser']['followed'][number]['store'];
+	store: Store;
 	onPress(): void;
 }
 
@@ -71,10 +69,10 @@ const FollowedStoreItem: React.FC<FollowedStoreItemProps> = ({
 	onPress
 }) => {
 	const { theme } = useTheme();
-	const [, unfollowStore] = useUnfollowStoreMutation();
+	const unfollowStore = useUnfollowStoreMutation(store.id);
 
 	const handleFollowPress = async () => {
-		await unfollowStore({ storeId: store.id });
+		unfollowStore.mutate();
 	};
 
 	return (

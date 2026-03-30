@@ -3,11 +3,11 @@ import { CustomImage, Row, Typography } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
-import { OrderQuery } from '../../types/api';
+import { OrderProduct as OrderProductType } from '../../data/types';
 import { plural } from '../../utils/strings';
 
 interface OrderProductProps {
-	orderProduct: OrderQuery['order']['products'][number];
+	orderProduct: OrderProductType;
 	onPress(): void;
 }
 

@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Typography, useTheme } from '@habiti/components';
 import { ThemeObject } from '@habiti/components/src/styles/theme';
 
-import { OrderStatus } from '../../types/api';
+import { OrderStatus } from '../../data/types';
 
 interface OrderStatusPillProps {
 	status: OrderStatus;
@@ -13,7 +13,8 @@ const statusToBadgeVariant: Record<OrderStatus, keyof ThemeObject['badge']> = {
 	[OrderStatus.Cancelled]: 'danger',
 	[OrderStatus.Pending]: 'warning',
 	[OrderStatus.Completed]: 'success',
-	[OrderStatus.PaymentPending]: 'warning'
+	[OrderStatus.PaymentPending]: 'warning',
+	[OrderStatus.ReadyForPickup]: 'warning'
 };
 
 const OrderStatusPill: React.FC<OrderStatusPillProps> = ({ status }) => {

@@ -3,11 +3,11 @@ import { View, StyleSheet } from 'react-native';
 import { formatNaira } from '@habiti/common';
 import { Typography } from '@habiti/components';
 
-import { OrderQuery } from '../../types/api';
+import { Order } from '../../data/types';
 import { relativeTimestamp } from '../../utils/date';
 
 interface OrderMetaProps {
-	order: OrderQuery['order'];
+	order: Order;
 }
 
 const OrderMeta: React.FC<OrderMetaProps> = ({ order }) => {

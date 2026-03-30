@@ -8,9 +8,7 @@ import { AppStackParamList } from '../../types/navigation';
 import { useProductContext } from './ProductContext';
 
 const RelatedProducts: React.FC = () => {
-	const {
-		product: { relatedProducts }
-	} = useProductContext();
+	const { relatedProducts } = useProductContext();
 	// @ts-expect-error - push is a valid navigation prop
 	const { push } = useNavigation<NavigationProp<AppStackParamList>>();
 

@@ -1,23 +1,14 @@
 import './config/sentry';
 
-import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import express from 'express';
-import { graphqlUploadExpress } from 'graphql-upload';
 import { createServer } from 'http';
 import * as Sentry from '@sentry/node';
 
-import { authenticateProd } from './middleware/auth';
 import { errorHandler } from './middleware/errorHandler';
 
 import routes from './routes';
-
-import { getAppContext } from './utils/context';
-
-import schema from './graphql/schema';
 
 import { env } from './config/env';
 import redisClient from './config/redis';
@@ -37,24 +28,6 @@ const main = async () => {
 	app.use(logsMiddleware);
 
 	const httpServer = createServer(app);
-	const apolloServer = new ApolloServer({
-		schema,
-		plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-		cache: 'bounded',
-		csrfPrevention: false
-	});
-
-	await apolloServer.start();
-
-	app.use(
-		'/graphql',
-		graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),
-		express.json(),
-		authenticateProd,
-		expressMiddleware(apolloServer, {
-			context: async ({ req }) => getAppContext(req)
-		})
-	);
 
 	app.use('/', routes);
 

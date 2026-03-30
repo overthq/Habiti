@@ -5,11 +5,11 @@ import { Icon, Screen, Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import useGoBack from '../hooks/useGoBack';
-import { useDeliveryAddressesQuery } from '../types/api';
+import { useDeliveryAddressesQuery } from '../data/queries';
 import { AppStackParamList } from '../types/navigation';
 
 const DeliveryAddress = () => {
-	const [{ data, fetching }] = useDeliveryAddressesQuery();
+	const { data, isLoading } = useDeliveryAddressesQuery();
 	const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
 	useGoBack();
@@ -28,13 +28,13 @@ const DeliveryAddress = () => {
 		});
 	}, []);
 
-	if (fetching) {
+	if (isLoading) {
 		return <ActivityIndicator />;
 	}
 
 	return (
 		<Screen style={{ paddingTop: 16, paddingHorizontal: 16 }}>
-			{data?.currentUser.addresses.map(address => (
+			{data?.addresses.map(address => (
 				<Typography key={address.id}>{address.name}</Typography>
 			))}
 		</Screen>
