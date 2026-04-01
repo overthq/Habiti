@@ -1,4 +1,9 @@
-import { Button, FormInput, Screen, Spacer } from '@habiti/components';
+import {
+	Button,
+	FormInput,
+	ScrollableScreen,
+	Spacer
+} from '@habiti/components';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FormProvider, useForm } from 'react-hook-form';
 
@@ -50,7 +55,7 @@ const EditAddress = () => {
 	});
 
 	return (
-		<Screen style={{ padding: 16 }}>
+		<ScrollableScreen style={{ padding: 16 }}>
 			<FormProvider {...methods}>
 				<FormInput label='Name' name='name' control={methods.control} />
 				<Spacer y={8} />
@@ -80,7 +85,7 @@ const EditAddress = () => {
 					loading={updateAddressMutation.isPending}
 				/>
 			</FormProvider>
-		</Screen>
+		</ScrollableScreen>
 	);
 };
 

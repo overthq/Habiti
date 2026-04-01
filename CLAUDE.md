@@ -25,14 +25,12 @@ bun start:dashboard  # Merchant dashboard
 ### Individual Application Commands
 
 ```bash
-# API (GraphQL + REST)
 cd api && bun dev              # Development server
 cd api && bun build && bun start  # Production build
 
 # Mobile Apps (React Native + Expo)
 cd apps/app && bun start       # Consumer app dev server
 cd apps/dashboard && bun start # Dashboard dev server
-cd apps/app && bun generate-types  # Generate GraphQL types
 
 # Web (Next.js)
 cd apps/web && bun dev --turbopack  # Development with Turbopack
@@ -56,7 +54,7 @@ cd api && npx prisma studio     # Database GUI
 
 ### Monorepo Structure
 
-- `api/` - GraphQL API with Express, Prisma, PostgreSQL, Redis
+- `api/` - REST API with Express, Prisma, PostgreSQL, Redis
 - `apps/app/` - Consumer mobile app (React Native + Expo)
 - `apps/dashboard/` - Merchant mobile app (React Native + Expo)
 - `apps/web/` - Web frontend (Next.js + Tailwind)
@@ -65,8 +63,8 @@ cd api && npx prisma studio     # Database GUI
 
 ### Key Technologies
 
-- **Backend**: Node.js, Express, Apollo GraphQL, Prisma, PostgreSQL, Redis
-- **Mobile**: React Native 0.79.2, Expo 53, React 19
+- **Backend**: Node.js, Express, Prisma, PostgreSQL, Redis
+- **Mobile**: React Native, Expo 55, React 19
 - **Web**: Next.js 15.2.4, React Router 7, Tailwind CSS
 - **State**: Zustand
 - **Auth**: JWT tokens with express-jwt middleware
@@ -79,7 +77,6 @@ cd api && npx prisma studio     # Database GUI
 - Store-scoped data access via `x-market-store-id` header
 - Store managers can only access their assigned stores
 - Separate admin entity with elevated permissions
-- All GraphQL context includes current user and store scope
 
 ### Database Design
 
@@ -93,19 +90,9 @@ Core entities: User, Store, Product, Order, Cart with comprehensive relationship
 
 ### API Patterns
 
-- **Primary**: GraphQL for complex queries and mutations
-- **REST**: Webhooks (`/webhooks`), payments (`/payments`), health checks (`/health`)
+- **REST**: Data access/mutation, Webhooks (`/webhooks`), payments (`/payments`), health checks (`/health`)
 - **Authentication**: JWT-based with optional auth support
 - **Authorization**: Role-based access control with store-scoped permissions
-
-### Code Generation
-
-All frontend apps use GraphQL code generation:
-
-```bash
-# Generate types from GraphQL schema
-bun generate-types  # In any app directory
-```
 
 ### Development Workflow
 
@@ -113,7 +100,6 @@ bun generate-types  # In any app directory
 2. Run API in development mode
 3. Start desired frontend app(s)
 4. Use Prisma Studio for database inspection
-5. Generate GraphQL types after schema changes
 
 ### Multi-Platform Support
 

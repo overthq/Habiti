@@ -228,18 +228,18 @@ const CartContextWrapper: React.FC<CartContextWrapperProps> = ({
 		enabled: Boolean(cartId)
 	});
 
-	if (isLoading || !data) {
-		return (
-			<div className='flex items-center justify-center min-h-[60vh]'>
-				<div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary'></div>
-			</div>
-		);
-	}
-
 	if (error) {
 		return (
 			<div className='flex items-center justify-center min-h-[60vh] text-center px-4 text-destructive'>
 				Unable to load this cart. Please refresh and try again.
+			</div>
+		);
+	}
+
+	if (isLoading || !data) {
+		return (
+			<div className='flex items-center justify-center min-h-[60vh]'>
+				<div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary'></div>
 			</div>
 		);
 	}

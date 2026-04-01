@@ -2,7 +2,12 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { Button, FormInput, Screen, Spacer } from '@habiti/components';
+import {
+	Button,
+	FormInput,
+	ScrollableScreen,
+	Spacer
+} from '@habiti/components';
 
 import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
@@ -12,9 +17,6 @@ import { useShallow } from 'zustand/react/shallow';
 export interface CreateStoreFormValues {
 	name: string;
 	description: string;
-	twitter: string;
-	instagram: string;
-	website: string;
 }
 
 const CreateStore = () => {
@@ -37,7 +39,7 @@ const CreateStore = () => {
 	);
 
 	return (
-		<Screen style={{ padding: 16, paddingBottom: bottom }}>
+		<ScrollableScreen style={{ padding: 16, paddingBottom: bottom }}>
 			<FormInput
 				control={methods.control}
 				name='name'
@@ -53,36 +55,12 @@ const CreateStore = () => {
 				textArea
 			/>
 			<Spacer y={16} />
-			<FormInput
-				control={methods.control}
-				label='Twitter username'
-				name='twitter'
-				placeholder='@nike'
-				autoCapitalize='none'
-				autoCorrect={false}
+			<Button
+				text='Submit'
+				loading={createStoreMutation.isPending}
+				onPress={methods.handleSubmit(onSubmit)}
 			/>
-			<Spacer y={16} />
-			<FormInput
-				control={methods.control}
-				label='Instagram username'
-				name='instagram'
-				placeholder='@nike'
-				autoCapitalize='none'
-				autoCorrect={false}
-			/>
-			<Spacer y={16} />
-			<FormInput
-				control={methods.control}
-				label='Website'
-				name='website'
-				placeholder='https://nike.com'
-				keyboardType='url'
-				autoCorrect={false}
-				autoCapitalize='none'
-			/>
-			<Spacer y={16} />
-			<Button text='Submit' onPress={methods.handleSubmit(onSubmit)} />
-		</Screen>
+		</ScrollableScreen>
 	);
 };
 

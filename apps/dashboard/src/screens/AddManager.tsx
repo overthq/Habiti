@@ -1,4 +1,4 @@
-import { Button, Input, Screen, Spacer } from '@habiti/components';
+import { Button, Input, ScrollableScreen, Spacer } from '@habiti/components';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
@@ -15,7 +15,7 @@ const AddManager = () => {
 	}, []);
 
 	return (
-		<Screen style={styles.container}>
+		<ScrollableScreen style={styles.container}>
 			<Input
 				label='E-mail address'
 				placeholder='john@doe.com'
@@ -24,7 +24,7 @@ const AddManager = () => {
 			/>
 			<Spacer y={16} />
 			<Button text='Submit' onPress={handleSubmit(onSubmit)} />
-		</Screen>
+		</ScrollableScreen>
 	);
 };
 

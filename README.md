@@ -52,10 +52,9 @@ Habiti is a TypeScript-based application. It is built with popular JS libraries/
 - Front-End
   - Framework: [React Native](https://reactnative.dev) and [Expo](https://expo.io)
   - State Management: [Zustand](https://github.com/pmndrs/zustand)
-  - GraphQL Client: [urql](https://github.com/urql-graphql/urql)
 - Back-End
   - Database: [PostgresQL](https://postgresql.com)
-  - Server: [Express](https://expressjs.com), [GraphQL](https://graphql.org) and [Prisma](https://prisma.io)
+  - Server: [Express](https://expressjs.com) and [Prisma](https://prisma.io)
   - Caching: [Redis](https://redis.io)
   - Storage: [Cloudinary](https://cloudinary.com)
 
