@@ -205,7 +205,7 @@ interface UpdateProductInput {
 	name?: string;
 	description?: string;
 	price?: number;
-	images?: string[];
+	images?: { path: string; publicId: string }[];
 	categoryId?: string;
 }
 

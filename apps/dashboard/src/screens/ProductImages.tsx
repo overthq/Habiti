@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import { HeaderButton } from '@react-navigation/elements';
 import { Screen, Typography } from '@habiti/components';
 import * as ImagePicker from 'expo-image-picker';
@@ -11,13 +11,17 @@ import { useUpdateProductMutation } from '../data/mutations';
 import { uploadImage } from '../data/requests';
 import FAB from '../components/products/FAB';
 
-// TODO: Run a query here for this purpose
-// Or use a context
+interface UploadedImage {
+	url: string;
+	publicId: string;
+	previewUri: string;
+}
 
 const ProductImages = () => {
-	const [imagesToUpload, setImagesToUpload] = React.useState<
-		ImagePicker.ImagePickerAsset[]
-	>([]);
+	const [uploadedImages, setUploadedImages] = React.useState<UploadedImage[]>(
+		[]
+	);
+	const [uploading, setUploading] = React.useState(false);
 	const updateProductMutation = useUpdateProductMutation();
 
 	const {
@@ -30,53 +34,68 @@ const ProductImages = () => {
 
 	const handleSaveImages = React.useCallback(async () => {
 		try {
-			const uploaded = await Promise.all(
-				imagesToUpload.map(a => uploadImage(a.uri))
-			);
-
-			const existingUrls = images?.map(i => i.path) ?? [];
-			const newUrls = uploaded.map(u => u.url);
+			const existingImages =
+				images?.map(i => ({ path: i.path, publicId: i.publicId })) ?? [];
+			const newImages = uploadedImages.map(u => ({
+				path: u.url,
+				publicId: u.publicId
+			}));
 
 			await updateProductMutation.mutateAsync({
 				productId,
-				body: { images: [...existingUrls, ...newUrls] }
+				body: { images: [...existingImages, ...newImages] }
 			});
 
 			goBack();
 		} catch (error) {
 			console.log({ error });
 		}
-	}, [updateProductMutation, goBack, imagesToUpload, productId, images]);
+	}, [updateProductMutation, goBack, uploadedImages, productId, images]);
 
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
 				<HeaderButton
-					disabled={imagesToUpload.length === 0}
+					disabled={
+						uploadedImages.length === 0 ||
+						uploading ||
+						updateProductMutation.isPending
+					}
 					onPress={handleSaveImages}
 				>
-					<Typography>Save</Typography>
+					{updateProductMutation.isPending ? (
+						<ActivityIndicator />
+					) : (
+						<Typography>Save</Typography>
+					)}
 				</HeaderButton>
 			)
 		});
-	}, [imagesToUpload]);
+	}, [uploadedImages, uploading, updateProductMutation.isPending]);
 
 	const handlePickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ['images'],
 			allowsEditing: true,
 			aspect: [1, 1],
-			quality: 1
+			quality: 0.8
 		});
 
-		if (!result.canceled) {
-			setImagesToUpload(prev => {
-				const existingUris = new Set(prev.map(p => p.uri));
-				const updatedAssets = result.assets.filter(
-					a => !existingUris.has(a.uri)
-				);
-				return [...prev, ...updatedAssets];
-			});
+		if (result.canceled) return;
+
+		const asset = result.assets[0];
+
+		try {
+			setUploading(true);
+			const { url, publicId } = await uploadImage(asset.uri);
+			setUploadedImages(prev => [
+				...prev,
+				{ url, publicId, previewUri: asset.uri }
+			]);
+		} catch (error) {
+			console.log('Image upload failed:', error);
+		} finally {
+			setUploading(false);
 		}
 	};
 
@@ -90,13 +109,18 @@ const ProductImages = () => {
 						style={styles.image}
 					/>
 				))}
-				{imagesToUpload.map(asset => (
+				{uploadedImages.map(img => (
 					<Image
-						key={asset.uri}
-						source={{ uri: asset.uri }}
+						key={img.publicId}
+						source={{ uri: img.previewUri }}
 						style={styles.image}
 					/>
 				))}
+				{uploading && (
+					<View style={[styles.image, styles.uploadingPlaceholder]}>
+						<ActivityIndicator />
+					</View>
+				)}
 			</View>
 			<FAB onPress={handlePickImage} text='Add new image' />
 		</Screen>
@@ -116,6 +140,11 @@ const styles = StyleSheet.create({
 		width: 80,
 		borderRadius: 4,
 		marginRight: 8
+	},
+	uploadingPlaceholder: {
+		backgroundColor: '#f0f0f0',
+		justifyContent: 'center',
+		alignItems: 'center'
 	}
 });
 

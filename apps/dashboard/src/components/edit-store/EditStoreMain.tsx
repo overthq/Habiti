@@ -139,24 +139,6 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 				textArea
 				control={formMethods.control}
 			/>
-			<FormInput
-				name='twitter'
-				label='Twitter username'
-				style={styles.input}
-				placeholder='@acme_inc'
-				autoCorrect={false}
-				autoCapitalize='none'
-				control={formMethods.control}
-			/>
-			<FormInput
-				name='instagram'
-				label='Instagram username'
-				style={styles.input}
-				placeholder='@acme'
-				autoCorrect={false}
-				autoCapitalize='none'
-				control={formMethods.control}
-			/>
 		</Screen>
 	);
 };

@@ -161,6 +161,7 @@ export interface Image {
 	storeId: string;
 	productId: string;
 	path: string;
+	publicId: string;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -327,7 +328,7 @@ export interface UpdateProductBody {
 	quantity?: number;
 	unitPrice?: number;
 	stock?: number;
-	images?: string[];
+	images?: { path: string; publicId: string }[];
 }
 
 export interface CreateStoreBody {
