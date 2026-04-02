@@ -1,6 +1,11 @@
 import React from 'react';
 import { StyleSheet, TextInput } from 'react-native';
-import { Screen, Spacer, FormInput, Button } from '@habiti/components';
+import {
+	ScrollableScreen,
+	Spacer,
+	FormInput,
+	Button
+} from '@habiti/components';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useForm, FormProvider } from 'react-hook-form';
 
@@ -47,7 +52,7 @@ const AddPayoutAccount = () => {
 	}, []);
 
 	return (
-		<Screen style={{ paddingHorizontal: 16, paddingTop: 16 }}>
+		<ScrollableScreen style={{ paddingHorizontal: 16, paddingTop: 16 }}>
 			<FormProvider {...methods}>
 				<FormInput
 					ref={inputRef}
@@ -71,7 +76,7 @@ const AddPayoutAccount = () => {
 					accountName={verifyBankAccountMutation.data?.accountName}
 				/>
 			</FormProvider>
-		</Screen>
+		</ScrollableScreen>
 	);
 };
 

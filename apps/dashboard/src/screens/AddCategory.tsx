@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Button, FormInput, Screen } from '@habiti/components';
+import { Button, FormInput, ScrollableScreen } from '@habiti/components';
 
 import useGoBack from '../hooks/useGoBack';
 import { useCreateProductCategoryMutation } from '../data/mutations';
@@ -31,7 +31,7 @@ const AddCategory = () => {
 	}, []);
 
 	return (
-		<Screen style={styles.container}>
+		<ScrollableScreen style={styles.container}>
 			<FormInput
 				name='name'
 				label='Category name'
@@ -53,7 +53,7 @@ const AddCategory = () => {
 				style={styles.button}
 				loading={createProductCategoryMutation.isPending}
 			/>
-		</Screen>
+		</ScrollableScreen>
 	);
 };
 

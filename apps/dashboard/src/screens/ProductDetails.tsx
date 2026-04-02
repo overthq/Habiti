@@ -1,5 +1,9 @@
-import { View } from 'react-native';
-import { FormInput, Screen, Spacer, Button } from '@habiti/components';
+import {
+	FormInput,
+	ScrollableScreen,
+	Spacer,
+	Button
+} from '@habiti/components';
 import { FormProvider, useForm } from 'react-hook-form';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
@@ -35,32 +39,30 @@ const ProductDetails = () => {
 	};
 
 	return (
-		<Screen style={{ padding: 16 }}>
+		<ScrollableScreen style={{ padding: 16 }}>
 			<FormProvider {...methods}>
-				<View>
-					<FormInput
-						label='Name'
-						name='name'
-						placeholder='Name'
-						control={methods.control}
-					/>
-					<Spacer y={12} />
-					<FormInput
-						label='Description'
-						name='description'
-						placeholder='Description'
-						control={methods.control}
-						textArea
-					/>
-					<Spacer y={12} />
-					<Button
-						text='Save'
-						loading={updateProductMutation.isPending}
-						onPress={methods.handleSubmit(onSubmit)}
-					/>
-				</View>
+				<FormInput
+					label='Name'
+					name='name'
+					placeholder='Name'
+					control={methods.control}
+				/>
+				<Spacer y={12} />
+				<FormInput
+					label='Description'
+					name='description'
+					placeholder='Description'
+					control={methods.control}
+					textArea
+				/>
+				<Spacer y={12} />
+				<Button
+					text='Save'
+					loading={updateProductMutation.isPending}
+					onPress={methods.handleSubmit(onSubmit)}
+				/>
 			</FormProvider>
-		</Screen>
+		</ScrollableScreen>
 	);
 };
 

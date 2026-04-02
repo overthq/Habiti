@@ -13,6 +13,8 @@ const ScrollableScreen: React.FC<ScrollableScreenProps> = props => {
 
 	return (
 		<ScrollView
+			keyboardShouldPersistTaps='handled'
+			keyboardDismissMode='on-drag'
 			{...props}
 			contentContainerStyle={{
 				flexGrow: 1,

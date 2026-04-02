@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Button, FormInput, Screen } from '@habiti/components';
+import { Button, FormInput, ScrollableScreen } from '@habiti/components';
 
 import useGoBack from '../hooks/useGoBack';
 import { useCreateAddressMutation } from '../data/mutations';
@@ -46,7 +46,7 @@ const AddAddress = () => {
 	}, []);
 
 	return (
-		<Screen style={styles.container}>
+		<ScrollableScreen style={styles.container}>
 			<FormInput
 				name='name'
 				label='Address name'
@@ -102,7 +102,7 @@ const AddAddress = () => {
 				style={styles.button}
 				loading={createAddressMutation.isPending}
 			/>
-		</Screen>
+		</ScrollableScreen>
 	);
 };
 

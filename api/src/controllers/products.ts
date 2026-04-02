@@ -92,14 +92,15 @@ export const updateProduct = async (
 ) => {
 	try {
 		const ctx = getAppContext(req);
-		const { name, description, unitPrice, quantity } = req.body;
+		const { name, description, unitPrice, quantity, images } = req.body;
 
 		const product = await ProductLogic.updateProduct(ctx, {
 			productId: req.params.id,
 			name,
 			description,
 			unitPrice,
-			quantity
+			quantity,
+			images
 		});
 
 		return res.json({ product });

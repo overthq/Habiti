@@ -192,9 +192,7 @@ export const getCards = async () => {
 // Carts
 
 export const getCart = async (cartId: string) => {
-	const response = await api.get<GetCartResponse>(
-		`/users/current/carts/${cartId}`
-	);
+	const response = await api.get<GetCartResponse>(`/carts/${cartId}`);
 	return response.data;
 };
 

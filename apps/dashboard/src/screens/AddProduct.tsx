@@ -1,5 +1,10 @@
 import React from 'react';
-import { FormInput, Screen, Spacer, Typography } from '@habiti/components';
+import {
+	FormInput,
+	ScrollableScreen,
+	Spacer,
+	Typography
+} from '@habiti/components';
 import { useNavigation } from '@react-navigation/native';
 import { FormProvider, useForm } from 'react-hook-form';
 import { HeaderButton } from '@react-navigation/elements';
@@ -68,7 +73,7 @@ const AddProduct = () => {
 	}, [createProductMutation.isPending]);
 
 	return (
-		<Screen style={{ padding: 16 }}>
+		<ScrollableScreen style={{ padding: 16 }}>
 			<FormProvider {...formMethods}>
 				<FormInput
 					name='name'
@@ -101,7 +106,7 @@ const AddProduct = () => {
 					keyboardType='number-pad'
 				/>
 			</FormProvider>
-		</Screen>
+		</ScrollableScreen>
 	);
 };
 
