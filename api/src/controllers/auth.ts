@@ -75,7 +75,7 @@ export const verify = async (
 			// FIXME: A session-id based approach is way better for handling this, but
 			// suffer it to be so for now.
 			if (cartIds && cartIds.length > 0) {
-				await CartLogic.claimCarts(ctx, { cartIds });
+				await CartLogic.claimCarts(ctx, { cartIds, userId: user.id });
 			}
 
 			res.cookie('refreshToken', refreshToken, {
