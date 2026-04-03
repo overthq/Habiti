@@ -230,23 +230,20 @@ export const deleteCart = async (ctx: AppContext, input: DeleteCartInput) => {
 
 interface ClaimCartsInput {
 	cartIds: string[];
+	userId: string;
 }
 
 export const claimCarts = async (ctx: AppContext, input: ClaimCartsInput) => {
-	const { cartIds } = input;
-
-	if (!ctx.user?.id) {
-		throw new LogicError(LogicErrorCode.NotAuthenticated);
-	}
+	const { cartIds, userId } = input;
 
 	const claimedCarts = await CartData.claimCarts(ctx.prisma, {
-		userId: ctx.user.id,
+		userId,
 		cartIds
 	});
 
 	ctx.services.analytics.track({
 		event: 'carts_claimed',
-		distinctId: ctx.user.id,
+		distinctId: userId,
 		properties: {
 			cartIds,
 			claimedCount: claimedCarts.length
