@@ -2,9 +2,10 @@ import { NextFunction, Request, Response } from 'express';
 
 import { getAppContext } from '../utils/context';
 import * as CardLogic from '../core/logic/cards';
+import type { AuthorizeCardBody } from '../core/validations/rest';
 
 export const authorizeCard = async (
-	req: Request<{}, {}, { orderId: string }>,
+	req: Request<{}, {}, AuthorizeCardBody>,
 	res: Response,
 	next: NextFunction
 ) => {

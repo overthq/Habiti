@@ -1,6 +1,5 @@
 import { PrismaClient } from '../../generated/prisma/client';
 import { UserFilters, userFiltersToPrismaClause } from '../../utils/queries';
-
 export interface CreateUserParams {
 	name: string;
 	email: string;

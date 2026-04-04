@@ -1,10 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { PushTokenType } from '../generated/prisma/client';
 import * as UserLogic from '../core/logic/users';
 import * as ProductLogic from '../core/logic/products';
 import { hydrateQuery } from '../utils/queries';
 import { getAppContext } from '../utils/context';
+import type {
+	UpdateUserBody,
+	AddToWatchlistBody,
+	SavePushTokenBody,
+	DeletePushTokenBody
+} from '../core/validations/rest';
 
 // Re-exports from other controllers (handlers that only use req.params/req.body)
 export { getOrderById, createOrder, confirmPickup } from './orders';
@@ -27,7 +32,7 @@ export const getUser = async (
 };
 
 export const updateUser = async (
-	req: Request<{}, {}, { name: string; email: string }>,
+	req: Request<{}, {}, UpdateUserBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -173,7 +178,7 @@ export const getWatchlist = async (
 };
 
 export const addToWatchlist = async (
-	req: Request<{}, {}, { productId: string }>,
+	req: Request<{}, {}, AddToWatchlistBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -207,7 +212,7 @@ export const getPushTokens = async (
 };
 
 export const savePushToken = async (
-	req: Request<{}, {}, { token: string; type: PushTokenType }>,
+	req: Request<{}, {}, SavePushTokenBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -228,7 +233,7 @@ export const savePushToken = async (
 };
 
 export const deletePushToken = async (
-	req: Request<{ token: string }, {}, { type: PushTokenType }>,
+	req: Request<{ token: string }, {}, DeletePushTokenBody>,
 	res: Response,
 	next: NextFunction
 ) => {

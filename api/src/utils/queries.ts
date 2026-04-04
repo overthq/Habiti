@@ -1,24 +1,18 @@
 import { Request } from 'express';
-import { z } from 'zod';
-import { OrderStatus, ProductStatus } from '../generated/prisma/client';
 
-export const userFiltersSchema = z.object({
-	search: z.string().optional(),
-	suspended: z
-		.union([z.boolean(), z.enum(['true', 'false'])])
-		.transform(val => (typeof val === 'string' ? val === 'true' : val))
-		.optional(),
-	orderBy: z
-		.object({
-			name: z.enum(['asc', 'desc']).optional(),
-			email: z.enum(['asc', 'desc']).optional(),
-			createdAt: z.enum(['asc', 'desc']).optional(),
-			updatedAt: z.enum(['asc', 'desc']).optional()
-		})
-		.optional()
-});
+import {
+	userFiltersSchema,
+	productFiltersSchema,
+	orderFiltersSchema
+} from '../core/validations/rest';
+import type {
+	UserFilters,
+	ProductFilters,
+	OrderFilters
+} from '../core/validations/rest';
 
-export type UserFilters = z.infer<typeof userFiltersSchema>;
+export { userFiltersSchema, productFiltersSchema, orderFiltersSchema };
+export type { UserFilters, ProductFilters, OrderFilters };
 
 export const userFiltersToPrismaClause = (filters?: UserFilters) => {
 	const where: any = {};
@@ -42,36 +36,6 @@ export const userFiltersToPrismaClause = (filters?: UserFilters) => {
 	return { where, orderBy };
 };
 
-export const productFiltersSchema = z.object({
-	search: z.string().optional(),
-	categoryId: z.string().optional(),
-	storeId: z.string().optional(),
-	status: z.nativeEnum(ProductStatus).optional(),
-	inStock: z
-		.union([z.boolean(), z.enum(['true', 'false'])])
-		.transform(val => (typeof val === 'string' ? val === 'true' : val))
-		.optional(),
-	minPrice: z
-		.union([z.number(), z.string()])
-		.transform(val => (typeof val === 'string' ? parseInt(val, 10) : val))
-		.optional(),
-	maxPrice: z
-		.union([z.number(), z.string()])
-		.transform(val => (typeof val === 'string' ? parseInt(val, 10) : val))
-		.optional(),
-	orderBy: z
-		.object({
-			unitPrice: z.enum(['asc', 'desc']).optional(),
-			quantity: z.enum(['asc', 'desc']).optional(),
-			name: z.enum(['asc', 'desc']).optional(),
-			createdAt: z.enum(['asc', 'desc']).optional(),
-			updatedAt: z.enum(['asc', 'desc']).optional()
-		})
-		.optional()
-});
-
-export type ProductFilters = z.infer<typeof productFiltersSchema>;
-
 export const productFiltersToPrismaClause = (filters?: ProductFilters) => {
 	const where: any = {};
 	let orderBy: any = undefined;
@@ -91,7 +55,7 @@ export const productFiltersToPrismaClause = (filters?: ProductFilters) => {
 	if (filters?.status) {
 		where.status = filters.status;
 	} else {
-		where.status = { not: ProductStatus.Archived };
+		where.status = { not: 'Archived' };
 	}
 
 	if (filters?.inStock) {
@@ -112,31 +76,6 @@ export const productFiltersToPrismaClause = (filters?: ProductFilters) => {
 
 	return { where, orderBy };
 };
-
-export const orderFiltersSchema = z.object({
-	status: z.nativeEnum(OrderStatus).optional(),
-	storeId: z.string().optional(),
-	userId: z.string().optional(),
-	minTotal: z
-		.union([z.number(), z.string()])
-		.transform(val => (typeof val === 'string' ? parseInt(val, 10) : val))
-		.optional(),
-	maxTotal: z
-		.union([z.number(), z.string()])
-		.transform(val => (typeof val === 'string' ? parseInt(val, 10) : val))
-		.optional(),
-	dateFrom: z.string().optional(),
-	dateTo: z.string().optional(),
-	orderBy: z
-		.object({
-			total: z.enum(['asc', 'desc']).optional(),
-			createdAt: z.enum(['asc', 'desc']).optional(),
-			updatedAt: z.enum(['asc', 'desc']).optional()
-		})
-		.optional()
-});
-
-export type OrderFilters = z.infer<typeof orderFiltersSchema>;
 
 export const orderFiltersToPrismaClause = (filters?: OrderFilters) => {
 	const where: any = {};

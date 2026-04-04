@@ -8,16 +8,24 @@ import * as CartLogic from '../core/logic/carts';
 import { env } from '../config/env';
 import { getAppContext } from '../utils/context';
 import { LogicError, LogicErrorCode } from '../core/logic/errors';
+import type {
+	RegisterBody,
+	AuthenticateBody,
+	VerifyCodeBody,
+	AppleCallbackBody,
+	RefreshBody,
+	LogoutBody
+} from '../core/validations/rest';
 
 export const register = async (
-	req: Request,
+	req: Request<{}, {}, RegisterBody>,
 	res: Response,
 	next: NextFunction
 ) => {
 	try {
-		const { name, email, password } = req.body;
+		const { name, email } = req.body;
 		const ctx = getAppContext(req);
-		const user = await UserLogic.register(ctx, { name, email, password });
+		const user = await UserLogic.register(ctx, { name, email });
 		return res.status(201).json({ user });
 	} catch (error) {
 		return next(error);
@@ -25,7 +33,7 @@ export const register = async (
 };
 
 export const login = async (
-	req: Request,
+	req: Request<{}, {}, AuthenticateBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -42,7 +50,7 @@ export const login = async (
 };
 
 export const verify = async (
-	req: Request,
+	req: Request<{}, {}, VerifyCodeBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -61,43 +69,41 @@ export const verify = async (
 			throw new LogicError(LogicErrorCode.NotFound);
 		}
 
-		if (cachedCode === code) {
-			const ctx = getAppContext(req);
-			const user = await UserLogic.getUserByEmail(ctx, email);
-
-			if (!user) {
-				throw new LogicError(LogicErrorCode.UserNotFound);
-			}
-
-			const accessToken = await AuthLogic.generateAccessToken(user);
-			const refreshToken = await AuthLogic.generateRefreshToken(ctx, user.id);
-
-			// FIXME: A session-id based approach is way better for handling this, but
-			// suffer it to be so for now.
-			if (cartIds && cartIds.length > 0) {
-				await CartLogic.claimCarts(ctx, { cartIds, userId: user.id });
-			}
-
-			res.cookie('refreshToken', refreshToken, {
-				httpOnly: true,
-				secure: env.NODE_ENV === 'production',
-				sameSite: 'strict',
-				path: '/'
-			});
-
-			return res
-				.status(200)
-				.json({ accessToken, refreshToken, userId: user.id });
-		} else {
+		if (cachedCode !== code) {
 			return res.status(400).json({ error: 'Invalid code' });
 		}
+
+		const ctx = getAppContext(req);
+		const user = await UserLogic.getUserByEmail(ctx, email);
+
+		if (!user) {
+			throw new LogicError(LogicErrorCode.UserNotFound);
+		}
+
+		const accessToken = await AuthLogic.generateAccessToken(user);
+		const refreshToken = await AuthLogic.generateRefreshToken(ctx, user.id);
+
+		// FIXME: A session-id based approach is way better for handling this, but
+		// suffer it to be so for now.
+		if (cartIds && cartIds.length > 0) {
+			await CartLogic.claimCarts(ctx, { cartIds, userId: user.id });
+		}
+
+		res.cookie('refreshToken', refreshToken, {
+			httpOnly: true,
+			secure: env.NODE_ENV === 'production',
+			sameSite: 'strict',
+			path: '/'
+		});
+
+		return res.status(200).json({ accessToken, refreshToken, userId: user.id });
 	} catch (error) {
 		return next(error);
 	}
 };
 
 export const appleCallback = async (
-	req: Request,
+	req: Request<{}, {}, AppleCallbackBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -161,7 +167,7 @@ export const appleCallback = async (
 };
 
 export const refresh = async (
-	req: Request,
+	req: Request<{}, {}, RefreshBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -189,7 +195,7 @@ export const refresh = async (
 };
 
 export const logout = async (
-	req: Request,
+	req: Request<{}, {}, LogoutBody>,
 	res: Response,
 	next: NextFunction
 ) => {

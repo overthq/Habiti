@@ -1,4 +1,5 @@
 import { ProductStatus } from '../../generated/prisma/client';
+import type { StripUndefined } from '../../utils/objects';
 import * as ProductData from '../data/products';
 
 import { AppContext } from '../../utils/context';
@@ -56,16 +57,18 @@ export const createProduct = async (
 
 export interface UpdateProductInput {
 	productId: string;
-	name?: string;
-	description?: string;
-	unitPrice?: number;
-	quantity?: number;
-	categoryId?: string;
-	status?: ProductStatus;
-	images?: {
-		path: string;
-		publicId: string;
-	}[];
+	name?: string | undefined;
+	description?: string | undefined;
+	unitPrice?: number | undefined;
+	quantity?: number | undefined;
+	categoryId?: string | undefined;
+	status?: ProductStatus | undefined;
+	images?:
+		| {
+				path: string;
+				publicId: string;
+		  }[]
+		| undefined;
 }
 
 export const updateProduct = async (
@@ -98,7 +101,7 @@ export const updateProduct = async (
 	const product = await ProductData.updateProduct(
 		ctx.prisma,
 		productId,
-		updateData
+		updateData as StripUndefined<typeof updateData>
 	);
 
 	ctx.services.analytics.track({

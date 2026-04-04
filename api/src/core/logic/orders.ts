@@ -8,7 +8,7 @@ import * as CardData from '../data/cards';
 
 import { createOrderHooks, updateOrderHooks } from './hooks';
 import { validateCart } from '../validations/carts';
-import { createOrderSchema, updateOrderSchema } from '../validations/orders';
+import { createOrderSchema, updateOrderSchema } from '../validations/rest';
 import { AppContext } from '../../utils/context';
 import { InitializeTransactionResponse } from '../payments/paystack';
 import { chargeAuthorization } from '../payments';
@@ -17,7 +17,7 @@ import { OrderFilters } from '../../utils/queries';
 
 interface CreateOrderInput {
 	cartId: string;
-	cardId?: string;
+	cardId?: string | undefined;
 	transactionFee: number;
 	serviceFee: number;
 }

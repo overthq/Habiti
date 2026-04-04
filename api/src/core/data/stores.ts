@@ -5,7 +5,6 @@ import {
 	OrderFilters,
 	orderFiltersToPrismaClause
 } from '../../utils/queries';
-
 interface CreateStoreParams {
 	userId?: string;
 	name: string;

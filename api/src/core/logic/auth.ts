@@ -7,7 +7,7 @@ import * as AdminAuthData from '../data/adminAuth';
 import {
 	registerBodySchema,
 	authenticateBodySchema
-} from '../validations/auth';
+} from '../validations/rest';
 import redisClient from '../../config/redis';
 import { env } from '../../config/env';
 import { AppContext } from '../../utils/context';
@@ -221,26 +221,26 @@ export const revokeAdminRefreshToken = async (
 	await AdminAuthData.revokeAdminRefreshToken(ctx.prisma, decoded.id);
 };
 
+type DecodedAdminToken = {
+	id: string;
+	adminId: string;
+	sessionId?: string;
+	role?: string;
+};
+
+const decodeAdminToken = (token: string) => {
+	try {
+		return jwt.verify(token, env.JWT_SECRET) as DecodedAdminToken;
+	} catch {
+		throw new LogicError(LogicErrorCode.InvalidToken);
+	}
+};
+
 export const rotateAdminRefreshToken = async (
 	ctx: AppContext,
 	token: string
 ) => {
-	let decoded: {
-		id: string;
-		adminId: string;
-		sessionId?: string;
-		role?: string;
-	};
-	try {
-		decoded = jwt.verify(token, env.JWT_SECRET) as {
-			id: string;
-			adminId: string;
-			sessionId?: string;
-			role?: string;
-		};
-	} catch {
-		throw new LogicError(LogicErrorCode.InvalidToken);
-	}
+	const decoded = decodeAdminToken(token);
 
 	if (decoded.role !== 'admin') {
 		throw new LogicError(LogicErrorCode.InvalidToken);

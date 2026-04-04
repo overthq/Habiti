@@ -4,8 +4,15 @@ import * as CorePayments from '../core/payments';
 import * as PaymentLogic from '../core/logic/payments';
 
 import { getAppContext } from '../utils/context';
+import type {
+	VerifyTransactionBody,
+	VerifyTransferBody
+} from '../core/validations/rest';
 
-export const verifyTransaction = async (req: Request, res: Response) => {
+export const verifyTransaction = async (
+	req: Request<{}, {}, VerifyTransactionBody>,
+	res: Response
+) => {
 	const { reference } = req.body;
 
 	try {
@@ -17,7 +24,10 @@ export const verifyTransaction = async (req: Request, res: Response) => {
 	}
 };
 
-export const verifyTransfer = async (req: Request, res: Response) => {
+export const verifyTransfer = async (
+	req: Request<{}, {}, VerifyTransferBody>,
+	res: Response
+) => {
 	const { transferId } = req.body;
 
 	try {

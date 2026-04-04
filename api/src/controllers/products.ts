@@ -3,6 +3,14 @@ import { Request, Response, NextFunction } from 'express';
 import * as ProductLogic from '../core/logic/products';
 import { productFiltersSchema } from '../utils/queries';
 import { getAppContext } from '../utils/context';
+import type {
+	CreateReviewBody,
+	StoreUpdateProductBody,
+	UpdateProductCategoriesBody,
+	CreateProductBody,
+	CreateCategoryBody,
+	UpdateCategoryBody
+} from '../core/validations/rest';
 
 export const getProducts = async (
 	req: Request,
@@ -65,7 +73,7 @@ export const getProductReviews = async (
 };
 
 export const createProductReview = async (
-	req: Request<{ id: string }>,
+	req: Request<{ id: string }, {}, CreateReviewBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -86,21 +94,16 @@ export const createProductReview = async (
 };
 
 export const updateProduct = async (
-	req: Request<{ id: string }>,
+	req: Request<{ id: string }, {}, StoreUpdateProductBody>,
 	res: Response,
 	next: NextFunction
 ) => {
 	try {
 		const ctx = getAppContext(req);
-		const { name, description, unitPrice, quantity, images } = req.body;
 
 		const product = await ProductLogic.updateProduct(ctx, {
 			productId: req.params.id,
-			name,
-			description,
-			unitPrice,
-			quantity,
-			images
+			...req.body
 		});
 
 		return res.json({ product });
@@ -110,7 +113,7 @@ export const updateProduct = async (
 };
 
 export const updateProductCategories = async (
-	req: Request<{ id: string }, {}, { add: string[]; remove: string[] }>,
+	req: Request<{ id: string }, {}, UpdateProductCategoriesBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -131,7 +134,7 @@ export const updateProductCategories = async (
 };
 
 export const createProduct = async (
-	req: Request,
+	req: Request<{}, {}, CreateProductBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -191,7 +194,7 @@ export const getStoreCategories = async (
 };
 
 export const createStoreCategory = async (
-	req: Request,
+	req: Request<{}, {}, CreateCategoryBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -211,7 +214,7 @@ export const createStoreCategory = async (
 };
 
 export const updateStoreCategory = async (
-	req: Request<{ id: string }>,
+	req: Request<{ id: string }, {}, UpdateCategoryBody>,
 	res: Response,
 	next: NextFunction
 ) => {

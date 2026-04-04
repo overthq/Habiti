@@ -1,5 +1,6 @@
 import * as AddressData from '../data/addresses';
 import { AppContext } from '../../utils/context';
+import type { StripUndefined } from '../../utils/objects';
 import { LogicError, LogicErrorCode } from './errors';
 import { canManageStore } from './permissions';
 
@@ -36,13 +37,13 @@ export const createUserAddress = async (
 interface StoreAddressArgs {
 	name: string;
 	line1: string;
-	line2?: string;
+	line2?: string | undefined;
 	city: string;
 	state: string;
 	country: string;
-	postcode?: string;
-	latitude?: number;
-	longitude?: number;
+	postcode?: string | undefined;
+	latitude?: number | undefined;
+	longitude?: number | undefined;
 }
 
 export const getStoreAddresses = async (ctx: AppContext) => {
@@ -80,7 +81,7 @@ export const createStoreAddress = async (
 	}
 
 	return AddressData.createStoreAddress(ctx.prisma, {
-		...args,
+		...(args as StripUndefined<StoreAddressArgs>),
 		storeId: ctx.storeId
 	});
 };
@@ -108,7 +109,11 @@ export const editStoreAddress = async (
 		throw new LogicError(LogicErrorCode.NotFound);
 	}
 
-	return AddressData.updateAddress(ctx.prisma, addressId, args);
+	return AddressData.updateAddress(
+		ctx.prisma,
+		addressId,
+		args as StripUndefined<typeof args>
+	);
 };
 
 export const deleteStoreAddress = async (
