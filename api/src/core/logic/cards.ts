@@ -26,7 +26,7 @@ export const storeCard = async (ctx: AppContext, input: StoreCardInput) => {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	const card = await CardData.storeCard(input);
+	const card = await CardData.storeCard(ctx.prisma, input);
 
 	ctx.services.analytics.track({
 		event: 'card_stored',
