@@ -127,7 +127,6 @@ export const createStore = async (
 	}
 };
 
-// Bulk User Operations
 export const bulkUpdateUsers = async (
 	req: Request<{}, {}, BulkUserUpdateBody>,
 	res: Response,
@@ -158,7 +157,6 @@ export const bulkDeleteUsers = async (
 	}
 };
 
-// Bulk Order Operations
 export const bulkUpdateOrders = async (
 	req: Request<{}, {}, BulkOrderUpdateBody>,
 	res: Response,
@@ -189,7 +187,6 @@ export const bulkDeleteOrders = async (
 	}
 };
 
-// Bulk Product Operations
 export const bulkUpdateProducts = async (
 	req: Request<{}, {}, BulkProductUpdateBody>,
 	res: Response,
@@ -220,7 +217,6 @@ export const bulkDeleteProducts = async (
 	}
 };
 
-// Bulk Store Operations
 export const bulkUpdateStores = async (
 	req: Request<{}, {}, BulkStoreUpdateBody>,
 	res: Response,

@@ -1,4 +1,3 @@
-import prismaClient from '../../config/prisma';
 import { PrismaClient } from '../../generated/prisma/client';
 import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
 
@@ -15,8 +14,8 @@ interface StoreCardData {
 	countryCode: string;
 }
 
-export const storeCard = async (data: StoreCardData) => {
-	const user = await prismaClient.user.findUnique({
+export const storeCard = async (prisma: PrismaClient, data: StoreCardData) => {
+	const user = await prisma.user.findUnique({
 		where: { email: data.email }
 	});
 
@@ -24,7 +23,7 @@ export const storeCard = async (data: StoreCardData) => {
 		throw new Error('User not found');
 	}
 
-	return prismaClient.card.upsert({
+	return prisma.card.upsert({
 		where: {
 			userId_signature: { userId: user.id, signature: data.signature }
 		},

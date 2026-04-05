@@ -1,13 +1,13 @@
 import { OrderStatus } from '../../generated/prisma/client';
-import { AppContext } from '../../utils/context';
 import { env } from '../../config/env';
-import { pollUntil } from '../../utils/poll';
-import { storeCard } from '../data/cards';
+
+import * as CardData from '../data/cards';
 import * as OrderData from '../data/orders';
 import * as TransactionData from '../data/transactions';
-import { incrementUnrealizedRevenue } from '../data/stores';
-import logger from '../../utils/logger';
+import * as StoreData from '../data/stores';
+
 import * as CorePayments from '../payments';
+
 import {
 	ChargeSuccessPayload,
 	isTransferCharge,
@@ -20,6 +20,10 @@ import type {
 	PayAccountOptions,
 	VerifyTransferOptions
 } from '../payments/types';
+
+import type { AppContext } from '../../utils/context';
+import { pollUntil } from '../../utils/poll';
+import logger from '../../utils/logger';
 
 // --- Payment approval ---
 
@@ -80,7 +84,7 @@ export const processCardCharge = async (
 	ctx: AppContext,
 	data: CardChargeData
 ) => {
-	const card = await storeCard({
+	const card = await CardData.storeCard(ctx.prisma, {
 		email: data.customer.email,
 		signature: data.authorization.signature,
 		authorizationCode: data.authorization.authorization_code,
@@ -120,7 +124,7 @@ export const transitionOrderToPending = async (
 				status: OrderStatus.Pending
 			});
 
-			await incrementUnrealizedRevenue(ctx.prisma, {
+			await StoreData.incrementUnrealizedRevenue(ctx.prisma, {
 				storeId: order.storeId,
 				total: order.total
 			});
@@ -173,6 +177,8 @@ export const handleChargeSuccess = async (
 ) => {
 	if (typeof data.metadata === 'object' && data.metadata?.orderId) {
 		await onChargeSuccessful(ctx, data.metadata.orderId);
+	} else {
+		logger.warn('Successful charge without any order attached!');
 	}
 
 	if (isTransferCharge(data)) {

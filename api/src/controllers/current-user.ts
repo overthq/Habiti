@@ -2,10 +2,12 @@ import { NextFunction, Request, Response } from 'express';
 
 import * as UserLogic from '../core/logic/users';
 import * as ProductLogic from '../core/logic/products';
+import * as CardLogic from '../core/logic/cards';
 import * as SessionData from '../core/data/sessions';
 import { hydrateQuery } from '../utils/queries';
 import { getAppContext } from '../utils/context';
 import type {
+	AuthorizeCardBody,
 	UpdateUserBody,
 	AddToWatchlistBody,
 	SavePushTokenBody,
@@ -15,7 +17,6 @@ import type {
 // Re-exports from other controllers (handlers that only use req.params/req.body)
 export { getOrderById, createOrder, confirmPickup } from './orders';
 export { getCartById } from './carts';
-export { authorizeCard, deleteCard } from './cards';
 
 export const getUser = async (
 	req: Request,
@@ -307,5 +308,49 @@ export const revokeAllSessions = async (
 		return res.json({ message: 'All sessions revoked' });
 	} catch (error) {
 		return next(error);
+	}
+};
+
+export const authorizeCard = async (
+	req: Request<{}, {}, AuthorizeCardBody>,
+	res: Response,
+	next: NextFunction
+) => {
+	const { orderId } = req.body;
+
+	if (!orderId) {
+		return res.status(400).json({ error: 'Order ID is required' });
+	}
+
+	try {
+		const ctx = getAppContext(req);
+
+		const result = await CardLogic.authorizeCard(ctx, { orderId });
+
+		return res.json(result);
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const deleteCard = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const { cardId } = req.params;
+
+	if (!cardId) {
+		return res.status(400).json({ error: 'Card ID is required' });
+	}
+
+	try {
+		const ctx = getAppContext(req);
+
+		await CardLogic.deleteCard(ctx, { cardId });
+
+		return res.status(204).json({ message: 'Card deleted successfully' });
+	} catch (error) {
+		next(error);
 	}
 };

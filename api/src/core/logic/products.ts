@@ -63,12 +63,7 @@ export interface UpdateProductInput {
 	quantity?: number | undefined;
 	categoryId?: string | undefined;
 	status?: ProductStatus | undefined;
-	images?:
-		| {
-				path: string;
-				publicId: string;
-		  }[]
-		| undefined;
+	images?: { path: string; publicId: string }[] | undefined;
 }
 
 export const updateProduct = async (
