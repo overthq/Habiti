@@ -3,6 +3,7 @@ import * as UserLogic from '../core/logic/users';
 
 import { userFiltersSchema } from '../utils/queries';
 import { getAppContext } from '../utils/context';
+import type { AdminUpdateUserBody } from '../core/validations/rest';
 
 export const getUsers = async (
 	req: Request,
@@ -41,17 +42,16 @@ export const getUser = async (
 };
 
 export const updateUser = async (
-	req: Request<{ id: string }>,
+	req: Request<{ id: string }, {}, AdminUpdateUserBody>,
 	res: Response,
 	next: NextFunction
 ) => {
 	const { id } = req.params;
-	const { name, email } = req.body;
 
 	const ctx = getAppContext(req);
 
 	try {
-		const user = await UserLogic.updateUser(ctx, { userId: id, name, email });
+		const user = await UserLogic.updateUser(ctx, { userId: id, ...req.body });
 
 		return res.json({ user });
 	} catch (error) {

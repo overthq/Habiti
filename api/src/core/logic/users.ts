@@ -1,4 +1,5 @@
 import { Prisma } from '../../generated/prisma/client';
+import type { StripUndefined } from '../../utils/objects';
 
 import * as UserData from '../data/users';
 import * as StoreData from '../data/stores';
@@ -8,7 +9,7 @@ import * as CardData from '../data/cards';
 import * as AddressData from '../data/addresses';
 
 import { cacheVerificationCode } from './auth';
-import { registerBodySchema } from '../validations/auth';
+import { registerBodySchema } from '../validations/rest';
 
 import { EmailType } from '../../services/email';
 
@@ -90,8 +91,8 @@ export const getCurrentUser = (ctx: AppContext) => {
 
 interface UpdateUserInput {
 	userId: string;
-	name?: string;
-	email?: string;
+	name?: string | undefined;
+	email?: string | undefined;
 }
 
 export const updateUser = async (ctx: AppContext, input: UpdateUserInput) => {
@@ -101,7 +102,11 @@ export const updateUser = async (ctx: AppContext, input: UpdateUserInput) => {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	return UserData.updateUser(ctx.prisma, userId, rest);
+	return UserData.updateUser(
+		ctx.prisma,
+		userId,
+		rest as StripUndefined<typeof rest>
+	);
 };
 
 export const updateCurrentUser = (

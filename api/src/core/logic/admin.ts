@@ -7,6 +7,8 @@ import { OrderStatus, ProductStatus } from '../../generated/prisma/client';
 interface AdminLoginInput {
 	email: string;
 	password: string;
+	userAgent?: string | undefined;
+	ipAddress?: string | undefined;
 }
 
 export const adminLogin = async (ctx: AppContext, input: AdminLoginInput) => {
@@ -25,17 +27,28 @@ export const adminLogin = async (ctx: AppContext, input: AdminLoginInput) => {
 		throw new LogicError(LogicErrorCode.InvalidCredentials);
 	}
 
-	const accessToken = await AuthLogic.generateAccessToken(admin, 'admin');
-	const refreshToken = await AuthLogic.generateAdminRefreshToken(ctx, admin.id);
+	const refreshResult = await AuthLogic.generateAdminRefreshToken(
+		ctx,
+		admin.id,
+		undefined,
+		{
+			userAgent: input.userAgent,
+			ipAddress: input.ipAddress
+		}
+	);
+	const accessToken = await AuthLogic.generateAccessToken(
+		admin,
+		'admin',
+		refreshResult.sessionId
+	);
 
-	return { accessToken, refreshToken, adminId: admin.id };
+	return { accessToken, refreshToken: refreshResult.token, adminId: admin.id };
 };
 
 export const getAdminOverview = async (ctx: AppContext) => {
 	return AdminData.getAdminOverview(ctx.prisma);
 };
 
-// Bulk User Operations
 export const bulkUpdateUsers = async (
 	ctx: AppContext,
 	ids: string[],
@@ -57,7 +70,6 @@ export const bulkDeleteUsers = async (ctx: AppContext, ids: string[]) => {
 	});
 };
 
-// Bulk Order Operations
 export const bulkUpdateOrders = async (
 	ctx: AppContext,
 	ids: string[],
@@ -79,7 +91,6 @@ export const bulkDeleteOrders = async (ctx: AppContext, ids: string[]) => {
 	});
 };
 
-// Bulk Product Operations
 export const bulkUpdateProducts = async (
 	ctx: AppContext,
 	ids: string[],
@@ -101,7 +112,6 @@ export const bulkDeleteProducts = async (ctx: AppContext, ids: string[]) => {
 	});
 };
 
-// Bulk Store Operations
 export const bulkUpdateStores = async (
 	ctx: AppContext,
 	ids: string[],

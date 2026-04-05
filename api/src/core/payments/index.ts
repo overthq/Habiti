@@ -10,16 +10,6 @@ import {
 
 import * as Paystack from './paystack';
 
-import {
-	markTransferSuccessful,
-	markTransferFailed
-} from '../data/transactions';
-
-import { env } from '../../config/env';
-
-import { processCardCharge } from '../logic/payments';
-import { pollUntil } from '../../utils/poll';
-
 export const chargeAuthorization = async (
 	options: ChargeAuthorizationOptions
 ) => {
@@ -27,13 +17,6 @@ export const chargeAuthorization = async (
 		...options,
 		...(options.metadata && { metadata: options.metadata })
 	});
-
-	if (env.NODE_ENV !== 'production') {
-		pollUntil(() => verifyTransaction(data.data.reference), {
-			intervalMs: 5_000,
-			maxAttempts: 12
-		});
-	}
 
 	return data;
 };
@@ -44,13 +27,6 @@ export const initialCharge = async (options: InitialChargeOptions) => {
 		amount: options.amount,
 		...(options.orderId && { metadata: { orderId: options.orderId } })
 	});
-
-	if (env.NODE_ENV !== 'production') {
-		pollUntil(() => verifyTransaction(data.data.reference), {
-			intervalMs: 5_000,
-			maxAttempts: 24
-		});
-	}
 
 	return data;
 };
@@ -63,34 +39,17 @@ export const payAccount = async (options: PayAccountOptions) => {
 		...(options.metadata && { metadata: options.metadata })
 	});
 
-	if (env.NODE_ENV !== 'production') {
-		pollUntil(() => verifyTransfer({ transferId: data.data.reference }), {
-			intervalMs: 5_000,
-			maxAttempts: 24
-		});
-	}
-
 	return data;
 };
 
 export const verifyTransfer = async (options: VerifyTransferOptions) => {
-	const { data, status } = await Paystack.verifyTransfer(options.transferId);
-
-	if (status === true && data.status === 'success') {
-		await markTransferSuccessful(options.transferId);
-	} else {
-		await markTransferFailed(options.transferId);
-	}
-
+	const data = await Paystack.verifyTransfer(options.transferId);
 	return data;
 };
 
 export const finalizeTransfer = async (options: FinalizeTransferOptions) => {
-	const { data, status } = await Paystack.finalizeTransfer(options);
-
-	if (status === true && data.status === 'success') {
-		await markTransferSuccessful(options.transferCode);
-	}
+	const data = await Paystack.finalizeTransfer(options);
+	return data;
 };
 
 export const resolveAccountNumber = async (
@@ -110,9 +69,6 @@ export const listBanks = async () => {
 };
 
 export const verifyTransaction = async (reference: string) => {
-	const { data, status } = await Paystack.verifyTransaction(reference);
-
-	if (status === true && data.status === 'success') {
-		return await processCardCharge(data);
-	}
+	const data = await Paystack.verifyTransaction(reference);
+	return data;
 };

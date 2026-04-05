@@ -56,7 +56,7 @@ interface AddProductToCartInput {
 	storeId: string;
 	productId: string;
 	quantity: number;
-	cartId?: string; // For guest carts
+	cartId?: string | undefined; // For guest carts
 }
 
 export const addProductToCart = async (

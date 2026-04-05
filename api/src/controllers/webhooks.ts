@@ -1,7 +1,8 @@
 import { createHmac } from 'crypto';
 import { Request, Response } from 'express';
 import { env } from '../config/env';
-import { handlePaystackWebhookEvent } from '../core/payments/webhooks';
+import { handlePaystackWebhookEvent } from '../core/logic/payments';
+import { getAppContext } from '../utils/context';
 
 export const paystackWebhook = async (req: Request, res: Response) => {
 	const hash = createHmac('sha512', env.PAYSTACK_SECRET_KEY)
@@ -9,10 +10,11 @@ export const paystackWebhook = async (req: Request, res: Response) => {
 		.digest('hex');
 
 	if (hash === req.headers['x-paystack-signature']) {
+		const ctx = getAppContext(req);
 		const { event, data } = req.body;
 
 		Promise.resolve().then(async () => {
-			handlePaystackWebhookEvent(event, data);
+			handlePaystackWebhookEvent(ctx, event, data);
 		});
 
 		return res.status(200).json({

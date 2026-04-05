@@ -3,6 +3,10 @@ import { NextFunction, Request, Response } from 'express';
 import { hydrateQuery, productFiltersSchema } from '../utils/queries';
 import { getAppContext } from '../utils/context';
 import * as StoreLogic from '../core/logic/stores';
+import type {
+	CreateStoreBody,
+	AdminUpdateStoreBody
+} from '../core/validations/rest';
 
 export const getStores = async (
 	req: Request,
@@ -23,22 +27,14 @@ export const getStores = async (
 };
 
 export const createStore = async (
-	req: Request,
+	req: Request<{}, {}, CreateStoreBody>,
 	res: Response,
 	next: NextFunction
 ) => {
-	const { name, description, website, twitter, instagram } = req.body;
-
 	const ctx = getAppContext(req);
 
 	try {
-		const store = await StoreLogic.createStore(ctx, {
-			name,
-			description,
-			website,
-			twitter,
-			instagram
-		});
+		const store = await StoreLogic.createStore(ctx, req.body);
 
 		return res.status(201).json({ store });
 	} catch (error) {
@@ -191,7 +187,7 @@ export const unfollowStore = async (
 };
 
 export const updateStore = async (
-	req: Request<{ id: string }>,
+	req: Request<{ id: string }, {}, AdminUpdateStoreBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -199,34 +195,12 @@ export const updateStore = async (
 		return res.status(400).json({ error: 'Store ID is required' });
 	}
 
-	const {
-		name,
-		description,
-		website,
-		twitter,
-		instagram,
-		unlisted,
-		imageUrl,
-		imagePublicId,
-		bankAccountNumber,
-		bankCode
-	} = req.body;
-
 	const ctx = getAppContext(req);
 
 	try {
 		const store = await StoreLogic.updateStore(ctx, {
 			storeId: req.params.id,
-			name,
-			description,
-			website,
-			twitter,
-			instagram,
-			unlisted,
-			imageUrl,
-			imagePublicId,
-			bankAccountNumber,
-			bankCode
+			...req.body
 		});
 		return res.status(200).json({ store });
 	} catch (error) {

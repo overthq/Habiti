@@ -3,19 +3,34 @@ import { Request, Response, NextFunction } from 'express';
 import * as AdminLogic from '../core/logic/admin';
 import * as AuthLogic from '../core/logic/auth';
 import * as StoreData from '../core/data/stores';
+import * as AdminSessionData from '../core/data/adminSessions';
 import { getAppContext } from '../utils/context';
-import { OrderStatus, ProductStatus } from '../generated/prisma/client';
+import type { StripUndefined } from '../utils/objects';
 import { env } from '../config/env';
+import type {
+	AdminLoginBody,
+	AdminCreateStoreBody,
+	BulkUserUpdateBody,
+	BulkIdsBody,
+	BulkOrderUpdateBody,
+	BulkProductUpdateBody,
+	BulkStoreUpdateBody
+} from '../core/validations/rest';
 
 export const login = async (
-	req: Request<{}, { email: string; password: string }>,
+	req: Request<{}, {}, AdminLoginBody>,
 	res: Response,
 	next: NextFunction
 ) => {
 	try {
 		const { email, password } = req.body;
 		const ctx = getAppContext(req);
-		const result = await AdminLogic.adminLogin(ctx, { email, password });
+		const result = await AdminLogic.adminLogin(ctx, {
+			email,
+			password,
+			userAgent: req.headers['user-agent'],
+			ipAddress: req.ip
+		});
 
 		res.cookie('adminRefreshToken', result.refreshToken, {
 			httpOnly: true,
@@ -96,26 +111,24 @@ export const getOverview = async (
 };
 
 export const createStore = async (
-	req: Request,
+	req: Request<{}, {}, AdminCreateStoreBody>,
 	res: Response,
 	next: NextFunction
 ) => {
 	try {
-		const { name, description } = req.body;
 		const ctx = getAppContext(req);
-		const store = await StoreData.createStore(ctx.prisma, {
-			name,
-			description
-		});
+		const store = await StoreData.createStore(
+			ctx.prisma,
+			req.body as StripUndefined<AdminCreateStoreBody>
+		);
 		return res.status(201).json({ store });
 	} catch (error) {
 		return next(error);
 	}
 };
 
-// Bulk User Operations
 export const bulkUpdateUsers = async (
-	req: Request<{}, {}, { ids: string[]; field: 'suspended'; value: boolean }>,
+	req: Request<{}, {}, BulkUserUpdateBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -130,7 +143,7 @@ export const bulkUpdateUsers = async (
 };
 
 export const bulkDeleteUsers = async (
-	req: Request<{}, {}, { ids: string[] }>,
+	req: Request<{}, {}, BulkIdsBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -144,9 +157,8 @@ export const bulkDeleteUsers = async (
 	}
 };
 
-// Bulk Order Operations
 export const bulkUpdateOrders = async (
-	req: Request<{}, {}, { ids: string[]; field: 'status'; value: OrderStatus }>,
+	req: Request<{}, {}, BulkOrderUpdateBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -161,7 +173,7 @@ export const bulkUpdateOrders = async (
 };
 
 export const bulkDeleteOrders = async (
-	req: Request<{}, {}, { ids: string[] }>,
+	req: Request<{}, {}, BulkIdsBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -175,13 +187,8 @@ export const bulkDeleteOrders = async (
 	}
 };
 
-// Bulk Product Operations
 export const bulkUpdateProducts = async (
-	req: Request<
-		{},
-		{},
-		{ ids: string[]; field: 'status'; value: ProductStatus }
-	>,
+	req: Request<{}, {}, BulkProductUpdateBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -196,7 +203,7 @@ export const bulkUpdateProducts = async (
 };
 
 export const bulkDeleteProducts = async (
-	req: Request<{}, {}, { ids: string[] }>,
+	req: Request<{}, {}, BulkIdsBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -210,9 +217,8 @@ export const bulkDeleteProducts = async (
 	}
 };
 
-// Bulk Store Operations
 export const bulkUpdateStores = async (
-	req: Request<{}, {}, { ids: string[]; field: 'unlisted'; value: boolean }>,
+	req: Request<{}, {}, BulkStoreUpdateBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -227,7 +233,7 @@ export const bulkUpdateStores = async (
 };
 
 export const bulkDeleteStores = async (
-	req: Request<{}, {}, { ids: string[] }>,
+	req: Request<{}, {}, BulkIdsBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -236,6 +242,48 @@ export const bulkDeleteStores = async (
 		const ctx = getAppContext(req);
 		const result = await AdminLogic.bulkDeleteStores(ctx, ids);
 		return res.json(result);
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const getSessions = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const ctx = getAppContext(req);
+
+	try {
+		const sessions = await AdminSessionData.getAdminSessions(
+			ctx.prisma,
+			ctx.user!.id
+		);
+		return res.json({ sessions });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const revokeSession = async (
+	req: Request<{ id: string }>,
+	res: Response,
+	next: NextFunction
+) => {
+	const ctx = getAppContext(req);
+
+	try {
+		const session = await AdminSessionData.getAdminSessionById(
+			ctx.prisma,
+			req.params.id
+		);
+
+		if (!session || session.adminId !== ctx.user!.id) {
+			return res.status(404).json({ error: 'Session not found' });
+		}
+
+		await AdminSessionData.revokeAdminSession(ctx.prisma, req.params.id);
+		return res.json({ message: 'Session revoked' });
 	} catch (error) {
 		return next(error);
 	}

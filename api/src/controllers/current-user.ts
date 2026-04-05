@@ -1,15 +1,22 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { PushTokenType } from '../generated/prisma/client';
 import * as UserLogic from '../core/logic/users';
 import * as ProductLogic from '../core/logic/products';
+import * as CardLogic from '../core/logic/cards';
+import * as SessionData from '../core/data/sessions';
 import { hydrateQuery } from '../utils/queries';
 import { getAppContext } from '../utils/context';
+import type {
+	AuthorizeCardBody,
+	UpdateUserBody,
+	AddToWatchlistBody,
+	SavePushTokenBody,
+	DeletePushTokenBody
+} from '../core/validations/rest';
 
 // Re-exports from other controllers (handlers that only use req.params/req.body)
 export { getOrderById, createOrder, confirmPickup } from './orders';
 export { getCartById } from './carts';
-export { authorizeCard, deleteCard } from './cards';
 
 export const getUser = async (
 	req: Request,
@@ -27,7 +34,7 @@ export const getUser = async (
 };
 
 export const updateUser = async (
-	req: Request<{}, {}, { name: string; email: string }>,
+	req: Request<{}, {}, UpdateUserBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -173,7 +180,7 @@ export const getWatchlist = async (
 };
 
 export const addToWatchlist = async (
-	req: Request<{}, {}, { productId: string }>,
+	req: Request<{}, {}, AddToWatchlistBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -207,7 +214,7 @@ export const getPushTokens = async (
 };
 
 export const savePushToken = async (
-	req: Request<{}, {}, { token: string; type: PushTokenType }>,
+	req: Request<{}, {}, SavePushTokenBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -228,7 +235,7 @@ export const savePushToken = async (
 };
 
 export const deletePushToken = async (
-	req: Request<{ token: string }, {}, { type: PushTokenType }>,
+	req: Request<{ token: string }, {}, DeletePushTokenBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -247,5 +254,103 @@ export const deletePushToken = async (
 		return res.json({ pushToken });
 	} catch (error) {
 		return next(error);
+	}
+};
+
+export const getSessions = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const ctx = getAppContext(req);
+
+	try {
+		const sessions = await SessionData.getUserSessions(
+			ctx.prisma,
+			ctx.user!.id
+		);
+		return res.json({ sessions });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const revokeSession = async (
+	req: Request<{ id: string }>,
+	res: Response,
+	next: NextFunction
+) => {
+	const ctx = getAppContext(req);
+
+	try {
+		const session = await SessionData.getSessionById(ctx.prisma, req.params.id);
+
+		if (!session || session.userId !== ctx.user!.id) {
+			return res.status(404).json({ error: 'Session not found' });
+		}
+
+		await SessionData.revokeSession(ctx.prisma, req.params.id);
+		return res.json({ message: 'Session revoked' });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const revokeAllSessions = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const ctx = getAppContext(req);
+
+	try {
+		await SessionData.revokeUserSessions(ctx.prisma, ctx.user!.id);
+		return res.json({ message: 'All sessions revoked' });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const authorizeCard = async (
+	req: Request<{}, {}, AuthorizeCardBody>,
+	res: Response,
+	next: NextFunction
+) => {
+	const { orderId } = req.body;
+
+	if (!orderId) {
+		return res.status(400).json({ error: 'Order ID is required' });
+	}
+
+	try {
+		const ctx = getAppContext(req);
+
+		const result = await CardLogic.authorizeCard(ctx, { orderId });
+
+		return res.json(result);
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const deleteCard = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const { cardId } = req.params;
+
+	if (!cardId) {
+		return res.status(400).json({ error: 'Card ID is required' });
+	}
+
+	try {
+		const ctx = getAppContext(req);
+
+		await CardLogic.deleteCard(ctx, { cardId });
+
+		return res.status(204).json({ message: 'Card deleted successfully' });
+	} catch (error) {
+		next(error);
 	}
 };

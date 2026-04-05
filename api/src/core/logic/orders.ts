@@ -1,6 +1,7 @@
 import { OrderStatus } from '../../generated/prisma/client';
 
 import * as CardLogic from './cards';
+import * as PaymentLogic from './payments';
 
 import * as OrderData from '../data/orders';
 import * as CartData from '../data/carts';
@@ -8,16 +9,15 @@ import * as CardData from '../data/cards';
 
 import { createOrderHooks, updateOrderHooks } from './hooks';
 import { validateCart } from '../validations/carts';
-import { createOrderSchema, updateOrderSchema } from '../validations/orders';
+import { createOrderSchema, updateOrderSchema } from '../validations/rest';
 import { AppContext } from '../../utils/context';
 import { InitializeTransactionResponse } from '../payments/paystack';
-import { chargeAuthorization } from '../payments';
 import { LogicError, LogicErrorCode } from './errors';
 import { OrderFilters } from '../../utils/queries';
 
 interface CreateOrderInput {
 	cartId: string;
-	cardId?: string;
+	cardId?: string | undefined;
 	transactionFee: number;
 	serviceFee: number;
 }
@@ -90,7 +90,7 @@ export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 		}
 
 		try {
-			await chargeAuthorization({
+			await PaymentLogic.chargeAuthorization(ctx, {
 				email: card.email,
 				amount: String(total + transactionFee + serviceFee),
 				authorizationCode: card.authorizationCode,
@@ -208,10 +208,11 @@ export const getOrderById = async (ctx: AppContext, orderId: string) => {
 		throw new LogicError(LogicErrorCode.OrderNotFound);
 	}
 
-	if (order.userId !== ctx.user.id) {
-		if (!ctx.isAdmin && order.storeId !== ctx.storeId) {
-			throw new LogicError(LogicErrorCode.Forbidden);
-		}
+	const userOwnsOrder = order.userId === ctx.user.id;
+	const storeOwnsOrder = order.storeId === ctx.storeId;
+
+	if (!ctx.isAdmin && !userOwnsOrder && !storeOwnsOrder) {
+		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
 	ctx.services.analytics.track({

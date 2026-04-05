@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { TransactionStatus, TransactionType } from '../generated/prisma/client';
-import { z } from 'zod';
 
 import { getAppContext } from '../utils/context';
 import * as TransactionLogic from '../core/logic/transactions';
-import { LogicError, LogicErrorCode } from '../core/logic/errors';
+import type { AdminUpdateTransactionBody } from '../core/validations/rest';
 
 export const getStoreTransactions = async (
 	req: Request,
@@ -89,12 +88,8 @@ export const getAdminStoreTransactions = async (
 	}
 };
 
-const updateTransactionSchema = z.object({
-	status: z.nativeEnum(TransactionStatus)
-});
-
 export const updateTransaction = async (
-	req: Request,
+	req: Request<{ id: string }, {}, AdminUpdateTransactionBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -104,16 +99,11 @@ export const updateTransaction = async (
 		return res.status(400).json({ error: 'Transaction ID is required' });
 	}
 
-	const parsed = updateTransactionSchema.safeParse(req.body);
-	if (!parsed.success) {
-		return next(new LogicError(LogicErrorCode.ValidationFailed));
-	}
-
 	try {
 		const ctx = getAppContext(req);
 		const transaction = await TransactionLogic.updatePayoutTransactionStatus(
 			ctx,
-			{ transactionId: id, status: parsed.data.status }
+			{ transactionId: id, status: req.body.status }
 		);
 		return res.json({ transaction });
 	} catch (error) {

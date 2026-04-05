@@ -1,15 +1,22 @@
 import { Request, Response } from 'express';
 
-import * as CorePayments from '../core/payments';
 import * as PaymentLogic from '../core/logic/payments';
 
 import { getAppContext } from '../utils/context';
+import type {
+	VerifyTransactionBody,
+	VerifyTransferBody
+} from '../core/validations/rest';
 
-export const verifyTransaction = async (req: Request, res: Response) => {
+export const verifyTransaction = async (
+	req: Request<{}, {}, VerifyTransactionBody>,
+	res: Response
+) => {
+	const ctx = getAppContext(req);
 	const { reference } = req.body;
 
 	try {
-		const data = await CorePayments.verifyTransaction(reference);
+		const data = await PaymentLogic.verifyTransaction(ctx, reference);
 
 		return res.status(200).json({ success: true, data });
 	} catch (error) {
@@ -17,11 +24,15 @@ export const verifyTransaction = async (req: Request, res: Response) => {
 	}
 };
 
-export const verifyTransfer = async (req: Request, res: Response) => {
+export const verifyTransfer = async (
+	req: Request<{}, {}, VerifyTransferBody>,
+	res: Response
+) => {
+	const ctx = getAppContext(req);
 	const { transferId } = req.body;
 
 	try {
-		const data = await CorePayments.verifyTransfer({ transferId });
+		const data = await PaymentLogic.verifyTransfer(ctx, { transferId });
 
 		return res.status(200).json({ success: true, data });
 	} catch (error) {

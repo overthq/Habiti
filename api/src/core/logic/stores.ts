@@ -1,4 +1,5 @@
 import { AppContext } from '../../utils/context';
+import type { StripUndefined } from '../../utils/objects';
 
 import * as PushTokenData from '../data/pushTokens';
 import * as StoreData from '../data/stores';
@@ -13,13 +14,13 @@ import { LogicError, LogicErrorCode } from './errors';
 
 interface CreateStoreInput {
 	name: string;
-	description?: string;
-	website?: string;
-	twitter?: string;
-	instagram?: string;
-	bankAccountNumber?: string;
-	bankCode?: string;
-	bankAccountReference?: string;
+	description?: string | undefined;
+	website?: string | undefined;
+	twitter?: string | undefined;
+	instagram?: string | undefined;
+	bankAccountNumber?: string | undefined;
+	bankCode?: string | undefined;
+	bankAccountReference?: string | undefined;
 }
 
 export const createStore = async (ctx: AppContext, input: CreateStoreInput) => {
@@ -28,7 +29,7 @@ export const createStore = async (ctx: AppContext, input: CreateStoreInput) => {
 	}
 
 	const store = await StoreData.createStore(ctx.prisma, {
-		...input,
+		...(input as StripUndefined<CreateStoreInput>),
 		userId: ctx.user.id
 	});
 
@@ -50,17 +51,17 @@ export const createStore = async (ctx: AppContext, input: CreateStoreInput) => {
 
 interface UpdateStoreInput {
 	storeId: string;
-	name?: string;
-	description?: string;
-	website?: string;
-	twitter?: string;
-	instagram?: string;
-	bankAccountNumber?: string;
-	bankCode?: string;
-	bankAccountReference?: string;
-	unlisted?: boolean;
-	imageUrl?: string;
-	imagePublicId?: string;
+	name?: string | undefined;
+	description?: string | undefined;
+	website?: string | undefined;
+	twitter?: string | undefined;
+	instagram?: string | undefined;
+	bankAccountNumber?: string | undefined;
+	bankCode?: string | undefined;
+	bankAccountReference?: string | undefined;
+	unlisted?: boolean | undefined;
+	imageUrl?: string | undefined;
+	imagePublicId?: string | undefined;
 }
 
 export const updateStore = async (ctx: AppContext, input: UpdateStoreInput) => {
@@ -109,7 +110,11 @@ export const updateStore = async (ctx: AppContext, input: UpdateStoreInput) => {
 		// updateData.bankAccountReference = undefined;
 	}
 
-	const store = await StoreData.updateStore(ctx.prisma, storeId, updateData);
+	const store = await StoreData.updateStore(
+		ctx.prisma,
+		storeId,
+		updateData as StripUndefined<typeof updateData>
+	);
 
 	ctx.services.analytics.track({
 		event: 'store_updated',

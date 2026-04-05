@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { authenticate, isAdmin, optionalAuth } from './middleware/auth';
-import { validateBody } from './middleware/validation';
+import { validateBody, validateQuery } from './middleware/validation';
 import { uploadImages } from './middleware/upload';
 
 import * as OrderController from './controllers/orders';
@@ -21,43 +21,41 @@ import * as TransactionController from './controllers/transactions';
 import { getLandingHighlights } from './controllers/highlights';
 import { checkHealth } from './controllers/health';
 
-import { createOrderSchema } from './core/validations/orders';
-import { createProductSchema } from './core/validations/products';
-import {
-	registerBodySchema,
-	authenticateBodySchema,
-	verifyCodeBodySchema
-} from './core/validations/auth';
-import {
-	bulkIdsSchema,
-	bulkUserUpdateSchema,
-	bulkOrderUpdateSchema,
-	bulkProductUpdateSchema,
-	bulkStoreUpdateSchema
-} from './core/validations/admin';
-import { adminCreateStoreSchema } from './core/validations/stores';
+import * as Schemas from './core/validations/rest';
 
 const router = Router();
 
 // Auth
 router.post(
 	'/auth/register',
-	validateBody(registerBodySchema),
+	validateBody(Schemas.registerBodySchema),
 	AuthController.register
 );
 router.post(
 	'/auth/login',
-	validateBody(authenticateBodySchema),
+	validateBody(Schemas.authenticateBodySchema),
 	AuthController.login
 );
 router.post(
 	'/auth/verify-code',
-	validateBody(verifyCodeBodySchema),
+	validateBody(Schemas.verifyCodeBodySchema),
 	AuthController.verify
 );
-router.post('/auth/apple-callback', AuthController.appleCallback);
-router.post('/auth/refresh', AuthController.refresh);
-router.post('/auth/logout', AuthController.logout);
+router.post(
+	'/auth/apple-callback',
+	validateBody(Schemas.appleCallbackBodySchema),
+	AuthController.appleCallback
+);
+router.post(
+	'/auth/refresh',
+	validateBody(Schemas.refreshBodySchema),
+	AuthController.refresh
+);
+router.post(
+	'/auth/logout',
+	validateBody(Schemas.logoutBodySchema),
+	AuthController.logout
+);
 
 // Products
 router.get('/products/:id', optionalAuth, ProductController.getProductById);
@@ -69,6 +67,7 @@ router.get(
 router.post(
 	'/products/:id/reviews',
 	authenticate,
+	validateBody(Schemas.createReviewBodySchema),
 	ProductController.createProductReview
 );
 router.get(
@@ -82,7 +81,11 @@ const currentStoreRouter = Router();
 currentStoreRouter.use(authenticate);
 
 currentStoreRouter.get('/', CurrentStoreController.getStore);
-currentStoreRouter.put('/', CurrentStoreController.updateStore);
+currentStoreRouter.put(
+	'/',
+	validateBody(Schemas.updateStoreBodySchema),
+	CurrentStoreController.updateStore
+);
 currentStoreRouter.get('/products', CurrentStoreController.getProducts);
 currentStoreRouter.get('/products/:id', CurrentStoreController.getProductById);
 currentStoreRouter.get(
@@ -98,16 +101,34 @@ currentStoreRouter.get('/orders', CurrentStoreController.getOrders);
 currentStoreRouter.get('/orders/:id', CurrentStoreController.getOrderById);
 currentStoreRouter.get('/managers', CurrentStoreController.getManagers);
 currentStoreRouter.get('/customers/:id', CurrentStoreController.getCustomer);
-currentStoreRouter.post('/products', CurrentStoreController.createProduct);
-currentStoreRouter.put('/products/:id', CurrentStoreController.updateProduct);
+currentStoreRouter.post(
+	'/products',
+	validateBody(Schemas.storeCreateProductBodySchema),
+	CurrentStoreController.createProduct
+);
+currentStoreRouter.put(
+	'/products/:id',
+	validateBody(Schemas.storeUpdateProductBodySchema),
+	CurrentStoreController.updateProduct
+);
 currentStoreRouter.put(
 	'/products/:id/categories',
+	validateBody(Schemas.updateProductCategoriesBodySchema),
 	CurrentStoreController.updateProductCategories
 );
-currentStoreRouter.put('/orders/:id', CurrentStoreController.updateOrder);
-currentStoreRouter.post('/payouts', CurrentStoreController.createPayout);
+currentStoreRouter.put(
+	'/orders/:id',
+	validateBody(Schemas.updateOrderStatusBodySchema),
+	CurrentStoreController.updateOrder
+);
+currentStoreRouter.post(
+	'/payouts',
+	validateBody(Schemas.createPayoutBodySchema),
+	CurrentStoreController.createPayout
+);
 currentStoreRouter.post(
 	'/verify-bank-account',
+	validateBody(Schemas.verifyBankAccountBodySchema),
 	CurrentStoreController.verifyBankAccount
 );
 currentStoreRouter.get(
@@ -119,9 +140,14 @@ currentStoreRouter.get(
 	TransactionController.getTransaction
 );
 currentStoreRouter.get('/categories', CurrentStoreController.getCategories);
-currentStoreRouter.post('/categories', CurrentStoreController.createCategory);
+currentStoreRouter.post(
+	'/categories',
+	validateBody(Schemas.createCategoryBodySchema),
+	CurrentStoreController.createCategory
+);
 currentStoreRouter.put(
 	'/categories/:id',
+	validateBody(Schemas.updateCategoryBodySchema),
 	CurrentStoreController.updateCategory
 );
 currentStoreRouter.delete(
@@ -129,8 +155,16 @@ currentStoreRouter.delete(
 	CurrentStoreController.deleteCategory
 );
 currentStoreRouter.get('/addresses', CurrentStoreController.getAddresses);
-currentStoreRouter.post('/addresses', CurrentStoreController.createAddress);
-currentStoreRouter.put('/addresses/:id', CurrentStoreController.updateAddress);
+currentStoreRouter.post(
+	'/addresses',
+	validateBody(Schemas.createAddressBodySchema),
+	CurrentStoreController.createAddress
+);
+currentStoreRouter.put(
+	'/addresses/:id',
+	validateBody(Schemas.updateAddressBodySchema),
+	CurrentStoreController.updateAddress
+);
 currentStoreRouter.delete(
 	'/addresses/:id',
 	CurrentStoreController.deleteAddress
@@ -139,7 +173,12 @@ currentStoreRouter.delete(
 router.use('/stores/current', currentStoreRouter);
 
 // Stores (must come after /stores/current mount)
-router.post('/stores', authenticate, StoreController.createStore);
+router.post(
+	'/stores',
+	authenticate,
+	validateBody(Schemas.createStoreBodySchema),
+	StoreController.createStore
+);
 router.delete('/stores/:id', authenticate, StoreController.deleteStore);
 router.post('/stores/:id/follow', authenticate, StoreController.followStore);
 router.post(
@@ -159,7 +198,11 @@ const currentUserRouter = Router();
 currentUserRouter.use(authenticate);
 
 currentUserRouter.get('/', CurrentUserController.getUser);
-currentUserRouter.put('/', CurrentUserController.updateUser);
+currentUserRouter.put(
+	'/',
+	validateBody(Schemas.updateUserBodySchema),
+	CurrentUserController.updateUser
+);
 currentUserRouter.delete('/', CurrentUserController.deleteUser);
 currentUserRouter.get(
 	'/followed-stores',
@@ -180,33 +223,60 @@ currentUserRouter.get(
 currentUserRouter.get('/orders/:id', CurrentUserController.getOrderById);
 currentUserRouter.post(
 	'/orders',
-	validateBody(createOrderSchema),
+	validateBody(Schemas.createOrderSchema),
 	CurrentUserController.createOrder
 );
 currentUserRouter.post(
 	'/orders/:id/confirm-pickup',
 	CurrentUserController.confirmPickup
 );
-currentUserRouter.post('/cards/authorize', CurrentUserController.authorizeCard);
+currentUserRouter.post(
+	'/cards/authorize',
+	validateBody(Schemas.authorizeCardBodySchema),
+	CurrentUserController.authorizeCard
+);
 currentUserRouter.delete('/cards/:cardId', CurrentUserController.deleteCard);
 currentUserRouter.get('/watchlist', CurrentUserController.getWatchlist);
-currentUserRouter.post('/watchlist', CurrentUserController.addToWatchlist);
+currentUserRouter.post(
+	'/watchlist',
+	validateBody(Schemas.addToWatchlistBodySchema),
+	CurrentUserController.addToWatchlist
+);
 currentUserRouter.get('/push-tokens', CurrentUserController.getPushTokens);
-currentUserRouter.post('/push-tokens', CurrentUserController.savePushToken);
+currentUserRouter.post(
+	'/push-tokens',
+	validateBody(Schemas.savePushTokenBodySchema),
+	CurrentUserController.savePushToken
+);
 currentUserRouter.delete(
 	'/push-tokens/:token',
+	validateBody(Schemas.deletePushTokenBodySchema),
 	CurrentUserController.deletePushToken
 );
+currentUserRouter.get('/sessions', CurrentUserController.getSessions);
+currentUserRouter.delete('/sessions', CurrentUserController.revokeAllSessions);
+currentUserRouter.delete('/sessions/:id', CurrentUserController.revokeSession);
 
 router.use('/users/current', currentUserRouter);
 
 // Carts
-router.get('/carts', optionalAuth, CartController.getCartsFromList);
+router.get(
+	'/carts',
+	optionalAuth,
+	validateQuery(Schemas.getCartsQuerySchema),
+	CartController.getCartsFromList
+);
 router.get('/carts/:id', optionalAuth, CartController.getCartById);
-router.post('/carts/products', optionalAuth, CartController.addProductToCart);
+router.post(
+	'/carts/products',
+	optionalAuth,
+	validateBody(Schemas.addProductToCartBodySchema),
+	CartController.addProductToCart
+);
 router.put(
 	'/carts/:id/products/:productId',
 	authenticate,
+	validateBody(Schemas.updateCartProductBodySchema),
 	CartController.updateCartProductQuantity
 );
 router.delete(
@@ -221,7 +291,7 @@ const adminRouter = Router();
 // Public admin routes (no auth)
 adminRouter.post(
 	'/login',
-	validateBody(authenticateBodySchema),
+	validateBody(Schemas.adminLoginBodySchema),
 	AdminController.login
 );
 adminRouter.post('/refresh', AdminController.refresh);
@@ -229,11 +299,13 @@ adminRouter.post('/logout', AdminController.logout);
 
 // Protected admin routes (all require isAdmin)
 adminRouter.use(isAdmin);
+adminRouter.get('/sessions', AdminController.getSessions);
+adminRouter.delete('/sessions/:id', AdminController.revokeSession);
 adminRouter.get('/overview', AdminController.getOverview);
 adminRouter.get('/stores', StoreController.getStores);
 adminRouter.post(
 	'/stores',
-	validateBody(adminCreateStoreSchema),
+	validateBody(Schemas.adminCreateStoreSchema),
 	AdminController.createStore
 );
 adminRouter.get('/stores/:id/managers', StoreController.getStoreManagers);
@@ -243,62 +315,82 @@ adminRouter.get(
 );
 adminRouter.get('/stores/:id/orders', StoreController.getStoreOrders);
 adminRouter.get('/stores/:id', StoreController.getStoreById);
-adminRouter.put('/stores/:id', StoreController.updateStore);
+adminRouter.put(
+	'/stores/:id',
+	validateBody(Schemas.adminUpdateStoreBodySchema),
+	StoreController.updateStore
+);
 adminRouter.get('/products', ProductController.getProducts);
 adminRouter.post(
 	'/products',
-	validateBody(createProductSchema),
+	validateBody(Schemas.createProductSchema),
 	ProductController.createProduct
 );
 adminRouter.get('/products/:id', ProductController.getProductById);
-adminRouter.put('/products/:id', ProductController.updateProduct);
+adminRouter.put(
+	'/products/:id',
+	validateBody(Schemas.adminUpdateProductBodySchema),
+	ProductController.updateProduct
+);
 adminRouter.delete('/products/:id', ProductController.deleteProduct);
 adminRouter.get('/products/:id/reviews', ProductController.getProductReviews);
 adminRouter.get('/users', UserController.getUsers);
 adminRouter.get('/users/:id', UserController.getUser);
-adminRouter.put('/users/:id', UserController.updateUser);
-adminRouter.patch('/transactions/:id', TransactionController.updateTransaction);
+adminRouter.put(
+	'/users/:id',
+	validateBody(Schemas.adminUpdateUserBodySchema),
+	UserController.updateUser
+);
+adminRouter.patch(
+	'/transactions/:id',
+	validateBody(Schemas.adminUpdateTransactionBodySchema),
+	TransactionController.updateTransaction
+);
 adminRouter.get('/orders', OrderController.getOrders);
 adminRouter.get('/orders/:id', OrderController.getOrderById);
-adminRouter.put('/orders/:id', OrderController.updateOrder);
+adminRouter.put(
+	'/orders/:id',
+	validateBody(Schemas.adminUpdateOrderBodySchema),
+	OrderController.updateOrder
+);
 adminRouter.post(
 	'/users/bulk',
-	validateBody(bulkUserUpdateSchema),
+	validateBody(Schemas.bulkUserUpdateSchema),
 	AdminController.bulkUpdateUsers
 );
 adminRouter.delete(
 	'/users/bulk',
-	validateBody(bulkIdsSchema),
+	validateBody(Schemas.bulkIdsSchema),
 	AdminController.bulkDeleteUsers
 );
 adminRouter.post(
 	'/orders/bulk',
-	validateBody(bulkOrderUpdateSchema),
+	validateBody(Schemas.bulkOrderUpdateSchema),
 	AdminController.bulkUpdateOrders
 );
 adminRouter.delete(
 	'/orders/bulk',
-	validateBody(bulkIdsSchema),
+	validateBody(Schemas.bulkIdsSchema),
 	AdminController.bulkDeleteOrders
 );
 adminRouter.post(
 	'/products/bulk',
-	validateBody(bulkProductUpdateSchema),
+	validateBody(Schemas.bulkProductUpdateSchema),
 	AdminController.bulkUpdateProducts
 );
 adminRouter.delete(
 	'/products/bulk',
-	validateBody(bulkIdsSchema),
+	validateBody(Schemas.bulkIdsSchema),
 	AdminController.bulkDeleteProducts
 );
 adminRouter.post(
 	'/stores/bulk',
-	validateBody(bulkStoreUpdateSchema),
+	validateBody(Schemas.bulkStoreUpdateSchema),
 	AdminController.bulkUpdateStores
 );
 adminRouter.delete(
 	'/stores/bulk',
-	validateBody(bulkIdsSchema),
+	validateBody(Schemas.bulkIdsSchema),
 	AdminController.bulkDeleteStores
 );
 
@@ -318,13 +410,23 @@ router.get('/health', checkHealth);
 // Payments
 router.post(
 	'/payments/verify-transaction',
+	validateBody(Schemas.verifyTransactionBodySchema),
 	PaymentController.verifyTransaction
 );
-router.post('/payments/verify-transfer', PaymentController.verifyTransfer);
+router.post(
+	'/payments/verify-transfer',
+	validateBody(Schemas.verifyTransferBodySchema),
+	PaymentController.verifyTransfer
+);
 router.post('/payments/approve-payment', PaymentController.approvePayment);
 
 // Search
-router.get('/search', SearchController.globalSearch);
+router.get(
+	'/search',
+	optionalAuth,
+	validateQuery(Schemas.searchQuerySchema),
+	SearchController.globalSearch
+);
 
 // Landing
 router.get('/landing/highlights', optionalAuth, getLandingHighlights);

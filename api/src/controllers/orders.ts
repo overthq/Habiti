@@ -2,6 +2,10 @@ import { orderFiltersSchema } from '../utils/queries';
 import * as OrderLogic from '../core/logic/orders';
 import { getAppContext } from '../utils/context';
 import { Request, Response, NextFunction } from 'express';
+import type {
+	CreateOrderBody,
+	UpdateOrderStatusBody
+} from '../core/validations/rest';
 
 export const getOrders = async (
 	req: Request,
@@ -19,18 +23,12 @@ export const getOrders = async (
 };
 
 export const createOrder = async (
-	req: Request,
+	req: Request<{}, {}, CreateOrderBody>,
 	res: Response,
 	next: NextFunction
 ) => {
 	try {
-		const { cartId, cardId, transactionFee, serviceFee } = req.body;
-		const result = await OrderLogic.createOrder(getAppContext(req), {
-			cartId,
-			cardId,
-			transactionFee,
-			serviceFee
-		});
+		const result = await OrderLogic.createOrder(getAppContext(req), req.body);
 
 		return res.json({
 			order: result.order,
@@ -72,7 +70,7 @@ export const confirmPickup = async (
 };
 
 export const updateOrder = async (
-	req: Request<{ id: string }>,
+	req: Request<{ id: string }, {}, UpdateOrderStatusBody>,
 	res: Response,
 	next: NextFunction
 ) => {

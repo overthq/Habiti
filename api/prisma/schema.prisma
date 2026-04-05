@@ -27,6 +27,7 @@ model User {
   pushTokens    UserPushToken[]
   ProductReview ProductReview[]
   refreshTokens RefreshToken[]
+  sessions      Session[]
 }
 
 model Store {
@@ -304,6 +305,7 @@ model Admin {
   updatedAt    DateTime @updatedAt
 
   refreshTokens AdminRefreshToken[]
+  sessions      AdminSession[]
 }
 
 enum ProductStatus {
@@ -361,6 +363,36 @@ enum PushTokenType {
   Merchant
 }
 
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  userAgent    String?
+  ipAddress    String?
+  lastActiveAt DateTime @default(now())
+  revoked      Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshTokens RefreshToken[]
+
+  @@index([userId])
+}
+
+model AdminSession {
+  id           String   @id @default(uuid())
+  adminId      String
+  userAgent    String?
+  ipAddress    String?
+  lastActiveAt DateTime @default(now())
+  revoked      Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  admin         Admin              @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  refreshTokens AdminRefreshToken[]
+
+  @@index([adminId])
+}
+
 model RefreshToken {
   id          String   @id @default(uuid())
   hashedToken String
@@ -371,7 +403,8 @@ model RefreshToken {
   expiresAt   DateTime
   sessionId   String
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
   @@index([sessionId])
 }
@@ -386,7 +419,8 @@ model AdminRefreshToken {
   expiresAt   DateTime
   sessionId   String
 
-  admin Admin @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  admin   Admin        @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  session AdminSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
   @@index([sessionId])
 }

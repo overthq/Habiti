@@ -4,10 +4,12 @@ import crypto from 'crypto';
 import { Admin, User } from '../../generated/prisma/client';
 import * as AuthData from '../data/auth';
 import * as AdminAuthData from '../data/adminAuth';
+import * as SessionData from '../data/sessions';
+import * as AdminSessionData from '../data/adminSessions';
 import {
 	registerBodySchema,
 	authenticateBodySchema
-} from '../validations/auth';
+} from '../validations/rest';
 import redisClient from '../../config/redis';
 import { env } from '../../config/env';
 import { AppContext } from '../../utils/context';
@@ -61,22 +63,39 @@ export const retrieveVerificationCode = async (email: string) => {
 
 export const generateAccessToken = async (
 	user: User | Admin,
-	role: 'admin' | 'user' = 'user'
+	role: 'admin' | 'user' = 'user',
+	sessionId?: string
 ) => {
 	return jwt.sign(
-		{ id: user.id, name: user.name, email: user.email, role },
+		{ id: user.id, name: user.name, email: user.email, role, sessionId },
 		env.JWT_SECRET,
 		{ expiresIn: '10m' }
 	);
 };
 
+interface SessionMetadata {
+	userAgent?: string | undefined;
+	ipAddress?: string | undefined;
+}
+
 export const generateRefreshToken = async (
 	ctx: AppContext,
 	userId: string,
-	sessionId?: string
+	sessionId?: string,
+	metadata?: SessionMetadata
 ) => {
+	let resolvedSessionId = sessionId;
+
+	if (!resolvedSessionId) {
+		const session = await SessionData.createSession(ctx.prisma, {
+			userId,
+			userAgent: metadata?.userAgent,
+			ipAddress: metadata?.ipAddress
+		});
+		resolvedSessionId = session.id;
+	}
+
 	const id = crypto.randomUUID();
-	const resolvedSessionId = sessionId ?? crypto.randomUUID();
 	const token = jwt.sign(
 		{ id, userId, sessionId: resolvedSessionId },
 		env.JWT_SECRET,
@@ -85,7 +104,7 @@ export const generateRefreshToken = async (
 	const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
 	const expiresAt = new Date();
-	expiresAt.setDate(expiresAt.getDate() + 30); // 30 days
+	expiresAt.setDate(expiresAt.getDate() + 30);
 
 	await AuthData.createRefreshToken(ctx.prisma, {
 		id,
@@ -95,19 +114,26 @@ export const generateRefreshToken = async (
 		sessionId: resolvedSessionId
 	});
 
-	return token;
+	return { token, sessionId: resolvedSessionId };
 };
 
 export const revokeRefreshToken = async (ctx: AppContext, token: string) => {
-	let decoded: { id: string };
+	let decoded: { id: string; sessionId?: string };
 	try {
-		decoded = jwt.verify(token, env.JWT_SECRET) as { id: string };
+		decoded = jwt.verify(token, env.JWT_SECRET) as {
+			id: string;
+			sessionId?: string;
+		};
 	} catch {
 		// Token invalid or expired, nothing to revoke or already invalid
 		return;
 	}
 
-	await AuthData.revokeRefreshToken(ctx.prisma, decoded.id);
+	if (decoded.sessionId) {
+		await SessionData.revokeSession(ctx.prisma, decoded.sessionId);
+	} else {
+		await AuthData.revokeRefreshToken(ctx.prisma, decoded.id);
+	}
 };
 
 export const rotateRefreshToken = async (ctx: AppContext, token: string) => {
@@ -136,11 +162,19 @@ export const rotateRefreshToken = async (ctx: AppContext, token: string) => {
 		throw new LogicError(LogicErrorCode.InvalidToken);
 	}
 
-	if (storedToken.revoked) {
-		await AuthData.revokeSessionRefreshTokens(
+	// Check if the session has been revoked
+	if (storedToken.sessionId) {
+		const session = await SessionData.getSessionById(
 			ctx.prisma,
 			storedToken.sessionId
 		);
+		if (session?.revoked) {
+			throw new LogicError(LogicErrorCode.TokenReused);
+		}
+	}
+
+	if (storedToken.revoked) {
+		await SessionData.revokeSession(ctx.prisma, storedToken.sessionId);
 		throw new LogicError(LogicErrorCode.TokenReused);
 	}
 
@@ -151,17 +185,26 @@ export const rotateRefreshToken = async (ctx: AppContext, token: string) => {
 
 	await AuthData.revokeRefreshToken(ctx.prisma, storedToken.id);
 
-	const newRefreshToken = await generateRefreshToken(
+	const result = await generateRefreshToken(
 		ctx,
 		storedToken.userId,
 		storedToken.sessionId
 	);
 
-	const newAccessToken = await generateAccessToken(storedToken.user);
+	// Bump session activity
+	if (storedToken.sessionId) {
+		await SessionData.updateSessionActivity(ctx.prisma, storedToken.sessionId);
+	}
+
+	const newAccessToken = await generateAccessToken(
+		storedToken.user,
+		'user',
+		storedToken.sessionId
+	);
 
 	return {
 		accessToken: newAccessToken,
-		refreshToken: newRefreshToken
+		refreshToken: result.token
 	};
 };
 
@@ -182,10 +225,21 @@ export const verifyAccessToken = async (token: string) => {
 export const generateAdminRefreshToken = async (
 	ctx: AppContext,
 	adminId: string,
-	sessionId?: string
+	sessionId?: string,
+	metadata?: SessionMetadata
 ) => {
+	let resolvedSessionId = sessionId;
+
+	if (!resolvedSessionId) {
+		const session = await AdminSessionData.createAdminSession(ctx.prisma, {
+			adminId,
+			userAgent: metadata?.userAgent,
+			ipAddress: metadata?.ipAddress
+		});
+		resolvedSessionId = session.id;
+	}
+
 	const id = crypto.randomUUID();
-	const resolvedSessionId = sessionId ?? crypto.randomUUID();
 	const token = jwt.sign(
 		{ id, adminId, sessionId: resolvedSessionId, role: 'admin' },
 		env.JWT_SECRET,
@@ -204,43 +258,50 @@ export const generateAdminRefreshToken = async (
 		sessionId: resolvedSessionId
 	});
 
-	return token;
+	return { token, sessionId: resolvedSessionId };
 };
 
 export const revokeAdminRefreshToken = async (
 	ctx: AppContext,
 	token: string
 ) => {
-	let decoded: { id: string };
+	let decoded: { id: string; sessionId?: string };
 	try {
-		decoded = jwt.verify(token, env.JWT_SECRET) as { id: string };
+		decoded = jwt.verify(token, env.JWT_SECRET) as {
+			id: string;
+			sessionId?: string;
+		};
 	} catch {
 		return;
 	}
 
-	await AdminAuthData.revokeAdminRefreshToken(ctx.prisma, decoded.id);
+	if (decoded.sessionId) {
+		await AdminSessionData.revokeAdminSession(ctx.prisma, decoded.sessionId);
+	} else {
+		await AdminAuthData.revokeAdminRefreshToken(ctx.prisma, decoded.id);
+	}
+};
+
+type DecodedAdminToken = {
+	id: string;
+	adminId: string;
+	sessionId?: string;
+	role?: string;
+};
+
+const decodeAdminToken = (token: string) => {
+	try {
+		return jwt.verify(token, env.JWT_SECRET) as DecodedAdminToken;
+	} catch {
+		throw new LogicError(LogicErrorCode.InvalidToken);
+	}
 };
 
 export const rotateAdminRefreshToken = async (
 	ctx: AppContext,
 	token: string
 ) => {
-	let decoded: {
-		id: string;
-		adminId: string;
-		sessionId?: string;
-		role?: string;
-	};
-	try {
-		decoded = jwt.verify(token, env.JWT_SECRET) as {
-			id: string;
-			adminId: string;
-			sessionId?: string;
-			role?: string;
-		};
-	} catch {
-		throw new LogicError(LogicErrorCode.InvalidToken);
-	}
+	const decoded = decodeAdminToken(token);
 
 	if (decoded.role !== 'admin') {
 		throw new LogicError(LogicErrorCode.InvalidToken);
@@ -260,8 +321,19 @@ export const rotateAdminRefreshToken = async (
 		throw new LogicError(LogicErrorCode.InvalidToken);
 	}
 
+	// Check if the session has been revoked
+	if (storedToken.sessionId) {
+		const session = await AdminSessionData.getAdminSessionById(
+			ctx.prisma,
+			storedToken.sessionId
+		);
+		if (session?.revoked) {
+			throw new LogicError(LogicErrorCode.TokenReused);
+		}
+	}
+
 	if (storedToken.revoked) {
-		await AdminAuthData.revokeAdminSessionRefreshTokens(
+		await AdminSessionData.revokeAdminSession(
 			ctx.prisma,
 			storedToken.sessionId
 		);
@@ -274,17 +346,29 @@ export const rotateAdminRefreshToken = async (
 
 	await AdminAuthData.revokeAdminRefreshToken(ctx.prisma, storedToken.id);
 
-	const newRefreshToken = await generateAdminRefreshToken(
+	const result = await generateAdminRefreshToken(
 		ctx,
 		storedToken.adminId,
 		storedToken.sessionId
 	);
 
-	const newAccessToken = await generateAccessToken(storedToken.admin, 'admin');
+	// Bump session activity
+	if (storedToken.sessionId) {
+		await AdminSessionData.updateAdminSessionActivity(
+			ctx.prisma,
+			storedToken.sessionId
+		);
+	}
+
+	const newAccessToken = await generateAccessToken(
+		storedToken.admin,
+		'admin',
+		storedToken.sessionId
+	);
 
 	return {
 		accessToken: newAccessToken,
-		refreshToken: newRefreshToken
+		refreshToken: result.token
 	};
 };
 

@@ -12,6 +12,14 @@ import * as TransactionLogic from '../core/logic/transactions';
 import * as AddressLogic from '../core/logic/addresses';
 import { ProductStatus } from '../generated/prisma/client';
 import { resolveAccountNumber } from '../core/payments';
+import type {
+	UpdateStoreBody,
+	StoreCreateProductBody,
+	CreatePayoutBody,
+	VerifyBankAccountBody,
+	CreateAddressBody,
+	UpdateAddressBody
+} from '../core/validations/rest';
 
 // Re-exports from other controllers (handlers that only use req.params/req.body)
 export {
@@ -27,7 +35,7 @@ export {
 export { getOrderById, updateOrder } from './orders';
 
 export const verifyBankAccount = async (
-	req: Request,
+	req: Request<{}, {}, VerifyBankAccountBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -49,7 +57,7 @@ export const verifyBankAccount = async (
 };
 
 export const createPayout = async (
-	req: Request,
+	req: Request<{}, {}, CreatePayoutBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -86,22 +94,10 @@ export const getStore = async (
 };
 
 export const updateStore = async (
-	req: Request,
+	req: Request<{}, {}, UpdateStoreBody>,
 	res: Response,
 	next: NextFunction
 ) => {
-	const {
-		name,
-		description,
-		website,
-		twitter,
-		instagram,
-		unlisted,
-		imageUrl,
-		imagePublicId,
-		bankAccountNumber,
-		bankCode
-	} = req.body;
 	const ctx = getAppContext(req);
 
 	if (!ctx.storeId) {
@@ -111,16 +107,7 @@ export const updateStore = async (
 	try {
 		const store = await StoreLogic.updateStore(ctx, {
 			storeId: ctx.storeId,
-			name,
-			description,
-			website,
-			twitter,
-			instagram,
-			unlisted,
-			imageUrl,
-			imagePublicId,
-			bankAccountNumber,
-			bankCode
+			...req.body
 		});
 		return res.status(200).json({ store });
 	} catch (error) {
@@ -245,7 +232,7 @@ export const getCustomer = async (
 };
 
 export const createProduct = async (
-	req: Request,
+	req: Request<{}, {}, StoreCreateProductBody>,
 	res: Response,
 	next: NextFunction
 ) => {
@@ -308,35 +295,14 @@ export const getAddresses = async (
 };
 
 export const createAddress = async (
-	req: Request,
+	req: Request<{}, {}, CreateAddressBody>,
 	res: Response,
 	next: NextFunction
 ) => {
 	const ctx = getAppContext(req);
-	const {
-		name,
-		line1,
-		line2,
-		city,
-		state,
-		country,
-		postcode,
-		latitude,
-		longitude
-	} = req.body;
 
 	try {
-		const address = await AddressLogic.createStoreAddress(ctx, {
-			name,
-			line1,
-			line2,
-			city,
-			state,
-			country,
-			postcode,
-			latitude,
-			longitude
-		});
+		const address = await AddressLogic.createStoreAddress(ctx, req.body);
 		return res.status(201).json({ address });
 	} catch (error) {
 		return next(error);
@@ -344,35 +310,18 @@ export const createAddress = async (
 };
 
 export const updateAddress = async (
-	req: Request<{ id: string }>,
+	req: Request<{ id: string }, {}, UpdateAddressBody>,
 	res: Response,
 	next: NextFunction
 ) => {
 	const ctx = getAppContext(req);
-	const {
-		name,
-		line1,
-		line2,
-		city,
-		state,
-		country,
-		postcode,
-		latitude,
-		longitude
-	} = req.body;
 
 	try {
-		const address = await AddressLogic.editStoreAddress(ctx, req.params.id, {
-			name,
-			line1,
-			line2,
-			city,
-			state,
-			country,
-			postcode,
-			latitude,
-			longitude
-		});
+		const address = await AddressLogic.editStoreAddress(
+			ctx,
+			req.params.id,
+			req.body
+		);
 		return res.json({ address });
 	} catch (error) {
 		return next(error);

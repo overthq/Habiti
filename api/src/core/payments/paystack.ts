@@ -86,7 +86,7 @@ export const transfer = async (options: TransferOptions) => {
 	return response.data;
 };
 
-interface VerifyTransactionResponse {
+export interface VerifyTransactionResponse {
 	status: boolean;
 	message: string;
 	data: {
@@ -169,7 +169,7 @@ export const verifyTransaction = async (reference: string) => {
 //   }
 // }
 
-interface VerifyTransferResponse {
+export interface VerifyTransferResponse {
 	status: boolean;
 	message: string;
 	data: {
@@ -216,7 +216,7 @@ interface FinalizeTransferOptions {
 	otp: string;
 }
 
-interface FinalizeTransferResponse {
+export interface FinalizeTransferResponse {
 	status: boolean;
 	message: string;
 	data: {
