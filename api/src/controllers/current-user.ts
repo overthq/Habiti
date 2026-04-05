@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import * as UserLogic from '../core/logic/users';
 import * as ProductLogic from '../core/logic/products';
+import * as SessionData from '../core/data/sessions';
 import { hydrateQuery } from '../utils/queries';
 import { getAppContext } from '../utils/context';
 import type {
@@ -250,6 +251,60 @@ export const deletePushToken = async (
 			}
 		});
 		return res.json({ pushToken });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const getSessions = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const ctx = getAppContext(req);
+
+	try {
+		const sessions = await SessionData.getUserSessions(
+			ctx.prisma,
+			ctx.user!.id
+		);
+		return res.json({ sessions });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const revokeSession = async (
+	req: Request<{ id: string }>,
+	res: Response,
+	next: NextFunction
+) => {
+	const ctx = getAppContext(req);
+
+	try {
+		const session = await SessionData.getSessionById(ctx.prisma, req.params.id);
+
+		if (!session || session.userId !== ctx.user!.id) {
+			return res.status(404).json({ error: 'Session not found' });
+		}
+
+		await SessionData.revokeSession(ctx.prisma, req.params.id);
+		return res.json({ message: 'Session revoked' });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const revokeAllSessions = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const ctx = getAppContext(req);
+
+	try {
+		await SessionData.revokeUserSessions(ctx.prisma, ctx.user!.id);
+		return res.json({ message: 'All sessions revoked' });
 	} catch (error) {
 		return next(error);
 	}

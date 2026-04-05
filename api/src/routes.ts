@@ -253,6 +253,9 @@ currentUserRouter.delete(
 	validateBody(Schemas.deletePushTokenBodySchema),
 	CurrentUserController.deletePushToken
 );
+currentUserRouter.get('/sessions', CurrentUserController.getSessions);
+currentUserRouter.delete('/sessions', CurrentUserController.revokeAllSessions);
+currentUserRouter.delete('/sessions/:id', CurrentUserController.revokeSession);
 
 router.use('/users/current', currentUserRouter);
 
@@ -296,6 +299,8 @@ adminRouter.post('/logout', AdminController.logout);
 
 // Protected admin routes (all require isAdmin)
 adminRouter.use(isAdmin);
+adminRouter.get('/sessions', AdminController.getSessions);
+adminRouter.delete('/sessions/:id', AdminController.revokeSession);
 adminRouter.get('/overview', AdminController.getOverview);
 adminRouter.get('/stores', StoreController.getStores);
 adminRouter.post(

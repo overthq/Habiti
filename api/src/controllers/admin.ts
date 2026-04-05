@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import * as AdminLogic from '../core/logic/admin';
 import * as AuthLogic from '../core/logic/auth';
 import * as StoreData from '../core/data/stores';
+import * as AdminSessionData from '../core/data/adminSessions';
 import { getAppContext } from '../utils/context';
 import type { StripUndefined } from '../utils/objects';
 import { env } from '../config/env';
@@ -24,7 +25,12 @@ export const login = async (
 	try {
 		const { email, password } = req.body;
 		const ctx = getAppContext(req);
-		const result = await AdminLogic.adminLogin(ctx, { email, password });
+		const result = await AdminLogic.adminLogin(ctx, {
+			email,
+			password,
+			userAgent: req.headers['user-agent'],
+			ipAddress: req.ip
+		});
 
 		res.cookie('adminRefreshToken', result.refreshToken, {
 			httpOnly: true,
@@ -240,6 +246,48 @@ export const bulkDeleteStores = async (
 		const ctx = getAppContext(req);
 		const result = await AdminLogic.bulkDeleteStores(ctx, ids);
 		return res.json(result);
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const getSessions = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const ctx = getAppContext(req);
+
+	try {
+		const sessions = await AdminSessionData.getAdminSessions(
+			ctx.prisma,
+			ctx.user!.id
+		);
+		return res.json({ sessions });
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const revokeSession = async (
+	req: Request<{ id: string }>,
+	res: Response,
+	next: NextFunction
+) => {
+	const ctx = getAppContext(req);
+
+	try {
+		const session = await AdminSessionData.getAdminSessionById(
+			ctx.prisma,
+			req.params.id
+		);
+
+		if (!session || session.adminId !== ctx.user!.id) {
+			return res.status(404).json({ error: 'Session not found' });
+		}
+
+		await AdminSessionData.revokeAdminSession(ctx.prisma, req.params.id);
+		return res.json({ message: 'Session revoked' });
 	} catch (error) {
 		return next(error);
 	}

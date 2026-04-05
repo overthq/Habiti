@@ -208,10 +208,11 @@ export const getOrderById = async (ctx: AppContext, orderId: string) => {
 		throw new LogicError(LogicErrorCode.OrderNotFound);
 	}
 
-	if (order.userId !== ctx.user.id) {
-		if (!ctx.isAdmin && order.storeId !== ctx.storeId) {
-			throw new LogicError(LogicErrorCode.Forbidden);
-		}
+	const userOwnsOrder = order.userId === ctx.user.id;
+	const storeOwnsOrder = order.storeId === ctx.storeId;
+
+	if (!ctx.isAdmin && !userOwnsOrder && !storeOwnsOrder) {
+		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
 	ctx.services.analytics.track({

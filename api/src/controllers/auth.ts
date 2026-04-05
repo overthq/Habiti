@@ -80,23 +80,39 @@ export const verify = async (
 			throw new LogicError(LogicErrorCode.UserNotFound);
 		}
 
-		const accessToken = await AuthLogic.generateAccessToken(user);
-		const refreshToken = await AuthLogic.generateRefreshToken(ctx, user.id);
+		const refreshResult = await AuthLogic.generateRefreshToken(
+			ctx,
+			user.id,
+			undefined,
+			{
+				userAgent: req.headers['user-agent'],
+				ipAddress: req.ip
+			}
+		);
+		const accessToken = await AuthLogic.generateAccessToken(
+			user,
+			'user',
+			refreshResult.sessionId
+		);
 
-		// FIXME: A session-id based approach is way better for handling this, but
-		// suffer it to be so for now.
 		if (cartIds && cartIds.length > 0) {
 			await CartLogic.claimCarts(ctx, { cartIds, userId: user.id });
 		}
 
-		res.cookie('refreshToken', refreshToken, {
+		res.cookie('refreshToken', refreshResult.token, {
 			httpOnly: true,
 			secure: env.NODE_ENV === 'production',
 			sameSite: 'strict',
 			path: '/'
 		});
 
-		return res.status(200).json({ accessToken, refreshToken, userId: user.id });
+		return res
+			.status(200)
+			.json({
+				accessToken,
+				refreshToken: refreshResult.token,
+				userId: user.id
+			});
 	} catch (error) {
 		return next(error);
 	}
@@ -150,17 +166,35 @@ export const appleCallback = async (
 			});
 		}
 
-		const accessToken = await AuthLogic.generateAccessToken(user);
-		const refreshToken = await AuthLogic.generateRefreshToken(ctx, user.id);
+		const refreshResult = await AuthLogic.generateRefreshToken(
+			ctx,
+			user.id,
+			undefined,
+			{
+				userAgent: req.headers['user-agent'],
+				ipAddress: req.ip
+			}
+		);
+		const accessToken = await AuthLogic.generateAccessToken(
+			user,
+			'user',
+			refreshResult.sessionId
+		);
 
-		res.cookie('refreshToken', refreshToken, {
+		res.cookie('refreshToken', refreshResult.token, {
 			httpOnly: true,
 			secure: env.NODE_ENV === 'production',
 			sameSite: 'strict',
 			path: '/'
 		});
 
-		return res.status(200).json({ accessToken, refreshToken, userId: user.id });
+		return res
+			.status(200)
+			.json({
+				accessToken,
+				refreshToken: refreshResult.token,
+				userId: user.id
+			});
 	} catch (error) {
 		return next(error);
 	}
