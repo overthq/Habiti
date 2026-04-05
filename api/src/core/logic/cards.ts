@@ -1,7 +1,7 @@
 import * as CardData from '../data/cards';
 import * as OrderData from '../data/orders';
 import { AppContext } from '../../utils/context';
-import { initialCharge } from '../payments';
+import { initialCharge } from './payments';
 import { OrderStatus } from '../../generated/prisma/client';
 import { LogicError, LogicErrorCode } from './errors';
 
@@ -111,7 +111,7 @@ export const authorizeCard = async (
 		amount = order.total;
 	}
 
-	const { data } = await initialCharge({
+	const { data } = await initialCharge(ctx, {
 		email: ctx.user.email,
 		amount,
 		orderId: input.orderId

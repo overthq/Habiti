@@ -8,7 +8,7 @@ import {
 } from '../../generated/prisma/client';
 import { LogicError, LogicErrorCode } from './errors';
 import { canManageStore } from './permissions';
-import { payAccount } from '../payments';
+import { payAccount } from './payments';
 import { createTransaction } from '../data/transactions';
 
 export const getStoreTransactions = async (
@@ -123,7 +123,7 @@ export const createPayoutTransaction = async (
 		});
 	});
 
-	await payAccount({
+	await payAccount(ctx, {
 		amount: amount.toString(),
 		reference: transaction.id,
 		recipient: store.bankAccountReference,
