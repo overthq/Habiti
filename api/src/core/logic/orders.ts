@@ -7,6 +7,7 @@ import * as OrderData from '../data/orders';
 import * as CartData from '../data/carts';
 import * as CardData from '../data/cards';
 
+import { calculatePaystackFee, calculateHabitiFee } from './carts';
 import { createOrderHooks, updateOrderHooks } from './hooks';
 import { validateCart } from '../validations/carts';
 import { createOrderSchema, updateOrderSchema } from '../validations/rest';
@@ -18,8 +19,6 @@ import { OrderFilters } from '../../utils/queries';
 interface CreateOrderInput {
 	cartId: string;
 	cardId?: string | undefined;
-	transactionFee: number;
-	serviceFee: number;
 }
 
 export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
@@ -33,7 +32,7 @@ export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 		throw new LogicError(LogicErrorCode.ValidationFailed);
 	}
 
-	const { cartId, cardId, transactionFee, serviceFee } = validatedInput;
+	const { cartId, cardId } = validatedInput;
 
 	const cart = await CartData.getCartById(ctx.prisma, cartId);
 
@@ -44,6 +43,8 @@ export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 	await validateCart(cart, ctx.user.id);
 
 	const { orderData, total } = OrderData.getOrderData(cart.products);
+	const transactionFee = calculatePaystackFee(total);
+	const serviceFee = calculateHabitiFee();
 	const userId = ctx.user.id;
 	const storeId = cart.storeId;
 
@@ -113,8 +114,6 @@ export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 		amount: order.total,
 		serviceFee: order.serviceFee,
 		transactionFee: order.transactionFee,
-		paymentMethod: 'card',
-		productCount: cart.products.length,
 		products: cart.products.map(p => p.product),
 		customerName: ctx.user.name,
 		pushToken: order.user.pushTokens[0] ?? undefined,

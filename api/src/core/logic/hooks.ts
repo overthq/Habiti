@@ -21,8 +21,6 @@ interface CreateOrderHooksArgs {
 	amount: number;
 	serviceFee: number;
 	transactionFee: number;
-	paymentMethod: string;
-	productCount: number;
 	products: Product[];
 	customerName: string;
 	pushToken: UserPushToken | undefined;
@@ -62,8 +60,7 @@ export const createOrderHooks = (
 		properties: {
 			orderId: args.orderId,
 			amount: args.amount,
-			paymentMethod: args.paymentMethod,
-			productCount: args.productCount,
+			productCount: args.products.length,
 			products: args.products
 		},
 		groups: { store: args.storeId }

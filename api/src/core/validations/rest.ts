@@ -197,9 +197,7 @@ export const createOrderSchema = z.object({
 		.string()
 		.nullable()
 		.optional()
-		.transform(val => val ?? undefined),
-	transactionFee: z.number(),
-	serviceFee: z.number()
+		.transform(val => val ?? undefined)
 });
 export type CreateOrderBody = z.infer<typeof createOrderSchema>;
 

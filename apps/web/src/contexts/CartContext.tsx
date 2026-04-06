@@ -123,16 +123,12 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 
 		createOrderMutation.mutate({
 			cartId: cart.id,
-			cardId: selectedCard,
-			transactionFee: cart.fees.total ?? 0,
-			serviceFee: cart.fees.service ?? 0
+			cardId: selectedCard
 		});
 
 		setPreference({ defaultCard: selectedCard });
 	}, [
 		cart.id,
-		cart.fees.total,
-		cart.fees.service,
 		selectedCard,
 		createOrderMutation,
 		setPreference,

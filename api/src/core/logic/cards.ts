@@ -1,7 +1,8 @@
 import * as CardData from '../data/cards';
 import * as OrderData from '../data/orders';
+import * as PaymentLogic from './payments';
+
 import { AppContext } from '../../utils/context';
-import { initialCharge } from './payments';
 import { OrderStatus } from '../../generated/prisma/client';
 import { LogicError, LogicErrorCode } from './errors';
 
@@ -108,10 +109,10 @@ export const authorizeCard = async (
 			throw new LogicError(LogicErrorCode.OrderNotPayable);
 		}
 
-		amount = order.total;
+		amount = order.total + order.transactionFee + order.serviceFee;
 	}
 
-	const { data } = await initialCharge(ctx, {
+	const { data } = await PaymentLogic.initialCharge(ctx, {
 		email: ctx.user.email,
 		amount,
 		orderId: input.orderId

@@ -246,9 +246,6 @@ export interface RegisterBody {
 export interface CreateOrderBody {
 	cartId: string;
 	cardId?: string | null;
-	// FIXME: We shouldn't be passing these from the frontend
-	transactionFee: number;
-	serviceFee: number;
 }
 
 export interface CreateOrderResponse {

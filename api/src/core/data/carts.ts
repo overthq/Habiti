@@ -256,9 +256,3 @@ export const claimCarts = async (
 
 	return claimedCarts;
 };
-
-export const calculatePaystackFee = (subTotal: number) => {
-	return Math.min(200000, 0.015 * subTotal + 10000);
-};
-
-export const calculateHabitiFee = () => 100000;
