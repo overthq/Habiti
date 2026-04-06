@@ -59,7 +59,7 @@ export const CardChargeMetadataSchema = z.union([
 export const CardChargeSuccessSchema = z.object({
 	customer: z.object({ email: z.string() }), // I don't know if this is actually supplied.
 	authorization: CardAuthorizationSchema,
-	metadata: CardChargeMetadataSchema
+	metadata: CardChargeMetadataSchema.nullable()
 });
 
 export const TransferChargeSuccessSchema = z.object({

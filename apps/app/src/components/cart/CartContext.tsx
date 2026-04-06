@@ -144,9 +144,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 		try {
 			const orderData = await createOrderMutation.mutateAsync({
 				cartId: cart.id,
-				cardId: selectedCard,
-				transactionFee: cart.fees.total ?? 0,
-				serviceFee: cart.fees.service ?? 0
+				cardId: selectedCard
 			});
 
 			// TODO: Consider not doing this

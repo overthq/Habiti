@@ -215,7 +215,7 @@ export const verifyTransaction = async (ctx: AppContext, reference: string) => {
 	const { data, status } = await CorePayments.verifyTransaction(reference);
 
 	if (status === true && data.status === 'success') {
-		return await processCardCharge(ctx, data);
+		return await handleChargeSuccess(ctx, data);
 	}
 };
 

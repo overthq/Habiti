@@ -95,7 +95,7 @@ export interface VerifyTransactionResponse {
 		reference: string;
 		channel: string;
 		currency: string;
-		metadata?: { orderId?: string } | string | null;
+		metadata: { orderId?: string } | string | null;
 		authorization: {
 			authorization_code: string;
 			bin: string;

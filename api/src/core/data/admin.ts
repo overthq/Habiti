@@ -51,7 +51,6 @@ export const getAdminOverview = async (prisma: PrismaClient) => {
 	};
 };
 
-// Bulk User Operations
 export const bulkUpdateUsers = async (
 	prisma: TransactionClient,
 	ids: string[],
@@ -72,7 +71,6 @@ export const bulkDeleteUsers = async (
 	});
 };
 
-// Bulk Order Operations
 export const bulkUpdateOrders = async (
 	prisma: TransactionClient,
 	ids: string[],
@@ -93,7 +91,6 @@ export const bulkDeleteOrders = async (
 	});
 };
 
-// Bulk Product Operations
 export const bulkUpdateProducts = async (
 	prisma: TransactionClient,
 	ids: string[],
@@ -114,7 +111,6 @@ export const bulkDeleteProducts = async (
 	});
 };
 
-// Bulk Store Operations
 export const bulkUpdateStores = async (
 	prisma: TransactionClient,
 	ids: string[],
