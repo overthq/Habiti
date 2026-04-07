@@ -8,6 +8,8 @@ declare global {
 				name: string;
 				email: string;
 				role: 'admin' | 'user';
+				sessionId?: string;
+				storeId?: string;
 			};
 		}
 	}

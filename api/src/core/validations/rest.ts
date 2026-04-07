@@ -33,7 +33,8 @@ export const appleCallbackBodySchema = z.object({
 export type AppleCallbackBody = z.infer<typeof appleCallbackBodySchema>;
 
 export const refreshBodySchema = z.object({
-	refreshToken: z.string().optional()
+	refreshToken: z.string().optional(),
+	storeId: z.string().uuid().optional()
 });
 export type RefreshBody = z.infer<typeof refreshBodySchema>;
 
@@ -41,6 +42,11 @@ export const logoutBodySchema = z.object({
 	refreshToken: z.string().optional()
 });
 export type LogoutBody = z.infer<typeof logoutBodySchema>;
+
+export const switchStoreBodySchema = z.object({
+	storeId: z.string().uuid()
+});
+export type SwitchStoreBody = z.infer<typeof switchStoreBodySchema>;
 
 // ─── Products ───────────────────────────────────────────────────────────────
 

@@ -81,12 +81,8 @@ export const getStore = async (
 ) => {
 	const ctx = getAppContext(req);
 
-	if (!ctx.storeId) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
 	try {
-		const store = await StoreLogic.getStoreById(ctx, ctx.storeId);
+		const store = await StoreLogic.getStoreById(ctx, ctx.storeId!);
 		return res.json(store);
 	} catch (error) {
 		return next(error);
@@ -100,13 +96,9 @@ export const updateStore = async (
 ) => {
 	const ctx = getAppContext(req);
 
-	if (!ctx.storeId) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
 	try {
 		const store = await StoreLogic.updateStore(ctx, {
-			storeId: ctx.storeId,
+			storeId: ctx.storeId!,
 			...req.body
 		});
 		return res.status(200).json({ store });
@@ -122,14 +114,10 @@ export const getProducts = async (
 ) => {
 	const ctx = getAppContext(req);
 
-	if (!ctx.storeId) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
 	try {
 		const products = await StoreLogic.getStoreProducts(
 			ctx,
-			ctx.storeId,
+			ctx.storeId!,
 			productFiltersSchema.parse(req.query)
 		);
 		return res.json({ products });
@@ -145,14 +133,10 @@ export const getOverview = async (
 ) => {
 	const ctx = getAppContext(req);
 
-	if (!ctx.storeId) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
 	try {
 		const lowStockProducts = await ctx.prisma.product.findMany({
 			where: {
-				storeId: ctx.storeId,
+				storeId: ctx.storeId!,
 				quantity: { lt: 5 },
 				status: { not: ProductStatus.Archived }
 			},
@@ -172,14 +156,10 @@ export const getOrders = async (
 ) => {
 	const ctx = getAppContext(req);
 
-	if (!ctx.storeId) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
 	try {
 		const orders = await StoreLogic.getStoreOrders(
 			ctx,
-			ctx.storeId,
+			ctx.storeId!,
 			orderFiltersSchema.parse(req.query)
 		);
 		return res.json({ orders });
@@ -195,13 +175,13 @@ export const getManagers = async (
 ) => {
 	const ctx = getAppContext(req);
 
-	if (!ctx.storeId) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
 	try {
 		const query = hydrateQuery(req.query);
-		const managers = await StoreLogic.getStoreManagers(ctx, ctx.storeId, query);
+		const managers = await StoreLogic.getStoreManagers(
+			ctx,
+			ctx.storeId!,
+			query
+		);
 		return res.json({ managers });
 	} catch (error) {
 		return next(error);
@@ -215,14 +195,10 @@ export const getCustomer = async (
 ) => {
 	const ctx = getAppContext(req);
 
-	if (!ctx.storeId) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
 	try {
 		const customer = await StoreLogic.getStoreCustomer(
 			ctx,
-			ctx.storeId,
+			ctx.storeId!,
 			req.params.id
 		);
 		return res.json({ user: customer });
@@ -239,17 +215,13 @@ export const createProduct = async (
 	const { name, description, unitPrice, quantity } = req.body;
 	const ctx = getAppContext(req);
 
-	if (!ctx.storeId) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
 	try {
 		const product = await ProductLogic.createProduct(ctx, {
 			name,
 			description,
 			unitPrice,
 			quantity,
-			storeId: ctx.storeId
+			storeId: ctx.storeId!
 		});
 		return res.json({ product });
 	} catch (error) {
@@ -264,14 +236,10 @@ export const getCategories = async (
 ) => {
 	const ctx = getAppContext(req);
 
-	if (!ctx.storeId) {
-		return res.status(400).json({ error: 'Store ID is required' });
-	}
-
 	try {
 		const categories = await ProductLogic.getStoreProductCategories(
 			ctx,
-			ctx.storeId
+			ctx.storeId!
 		);
 		return res.json({ categories });
 	} catch (error) {

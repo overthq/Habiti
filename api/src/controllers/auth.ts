@@ -14,7 +14,8 @@ import type {
 	VerifyCodeBody,
 	AppleCallbackBody,
 	RefreshBody,
-	LogoutBody
+	LogoutBody,
+	SwitchStoreBody
 } from '../core/validations/rest';
 
 export const register = async (
@@ -106,13 +107,11 @@ export const verify = async (
 			path: '/'
 		});
 
-		return res
-			.status(200)
-			.json({
-				accessToken,
-				refreshToken: refreshResult.token,
-				userId: user.id
-			});
+		return res.status(200).json({
+			accessToken,
+			refreshToken: refreshResult.token,
+			userId: user.id
+		});
 	} catch (error) {
 		return next(error);
 	}
@@ -188,13 +187,11 @@ export const appleCallback = async (
 			path: '/'
 		});
 
-		return res
-			.status(200)
-			.json({
-				accessToken,
-				refreshToken: refreshResult.token,
-				userId: user.id
-			});
+		return res.status(200).json({
+			accessToken,
+			refreshToken: refreshResult.token,
+			userId: user.id
+		});
 	} catch (error) {
 		return next(error);
 	}
@@ -213,7 +210,11 @@ export const refresh = async (
 		}
 
 		const ctx = getAppContext(req);
-		const tokens = await AuthLogic.rotateRefreshToken(ctx, refreshToken);
+		const tokens = await AuthLogic.rotateRefreshToken(
+			ctx,
+			refreshToken,
+			req.body.storeId
+		);
 
 		res.cookie('refreshToken', tokens.refreshToken, {
 			httpOnly: true,
@@ -223,6 +224,45 @@ export const refresh = async (
 		});
 
 		return res.status(200).json(tokens);
+	} catch (error) {
+		return next(error);
+	}
+};
+
+export const switchStore = async (
+	req: Request<{}, {}, SwitchStoreBody>,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const ctx = getAppContext(req);
+		const { storeId } = req.body;
+
+		if (!ctx.user?.id) {
+			return res.status(401).json({ error: 'Authentication required' });
+		}
+
+		const storeManager = await ctx.prisma.storeManager.findUnique({
+			where: {
+				storeId_managerId: {
+					managerId: ctx.user.id,
+					storeId
+				}
+			}
+		});
+
+		if (!storeManager) {
+			return res.status(403).json({ error: 'Not a manager of this store' });
+		}
+
+		const accessToken = await AuthLogic.generateAccessToken(
+			{ id: ctx.user.id, name: ctx.user.name, email: ctx.user.email } as any,
+			'user',
+			req.auth?.sessionId,
+			storeId
+		);
+
+		return res.status(200).json({ accessToken });
 	} catch (error) {
 		return next(error);
 	}

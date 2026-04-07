@@ -17,12 +17,17 @@ const performRefresh = async (): Promise<RefreshTokenResponse> => {
 		throw new Error('No refresh token available');
 	}
 
+	const { activeStore } = useStore.getState();
+
 	const response = await fetch(`${env.apiUrl}/auth/refresh`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify({ refreshToken: storedRefreshToken })
+		body: JSON.stringify({
+			refreshToken: storedRefreshToken,
+			storeId: activeStore ?? undefined
+		})
 	});
 
 	const data = (await response.json()) as Partial<RefreshTokenResponse> & {

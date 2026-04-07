@@ -7,14 +7,16 @@ import SettingSelectRow from './SettingSelectRow';
 import useGoBack from '../../hooks/useGoBack';
 import useStore from '../../state';
 import { useManagedStoresQuery } from '../../data/queries';
+import { switchStore } from '../../data/requests';
 import { AppStackParamList } from '../../navigation/types';
 import { useShallow } from 'zustand/react/shallow';
 
 const SettingsActiveStore: React.FC = () => {
-	const { activeStore, setPreference } = useStore(
+	const { activeStore, setPreference, logIn } = useStore(
 		useShallow(state => ({
 			activeStore: state.activeStore,
-			setPreference: state.setPreference
+			setPreference: state.setPreference,
+			logIn: state.logIn
 		}))
 	);
 
@@ -24,8 +26,14 @@ const SettingsActiveStore: React.FC = () => {
 
 	const stores = data?.stores;
 
-	const handleRowSelect = (id: string) => () => {
-		setPreference({ activeStore: id });
+	const handleRowSelect = (id: string) => async () => {
+		try {
+			const { accessToken } = await switchStore(id);
+			logIn(accessToken);
+			setPreference({ activeStore: id });
+		} catch {
+			// TODO: Handle error (show toast, etc.)
+		}
 	};
 
 	return (
