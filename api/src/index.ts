@@ -4,7 +4,7 @@ import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import { createServer } from 'http';
-import * as Sentry from '@sentry/node';
+import * as Sentry from '@sentry/bun';
 
 import { errorHandler } from './middleware/errorHandler';
 

@@ -1,5 +1,7 @@
+import * as PaymentLogic from './payments';
 import * as TransactionData from '../data/transactions';
 import * as StoreData from '../data/stores';
+
 import { TransactionFilters } from '../data/transactions';
 import { AppContext } from '../../utils/context';
 import {
@@ -8,8 +10,6 @@ import {
 } from '../../generated/prisma/client';
 import { LogicError, LogicErrorCode } from './errors';
 import { canManageStore } from './permissions';
-import { payAccount } from './payments';
-import { createTransaction } from '../data/transactions';
 
 export const getStoreTransactions = async (
 	ctx: AppContext,
@@ -114,7 +114,7 @@ export const createPayoutTransaction = async (
 	const storeId = ctx.storeId as string;
 
 	const transaction = await ctx.prisma.$transaction(async tx => {
-		return createTransaction(tx, {
+		return TransactionData.createTransaction(tx, {
 			storeId,
 			type: TransactionType.Payout,
 			status: TransactionStatus.Processing,
@@ -123,12 +123,22 @@ export const createPayoutTransaction = async (
 		});
 	});
 
-	await payAccount(ctx, {
-		amount: amount.toString(),
-		reference: transaction.id,
-		recipient: store.bankAccountReference,
-		metadata: { transactionId: transaction.id }
-	});
+	try {
+		await PaymentLogic.payAccount(ctx, {
+			amount: amount.toString(),
+			reference: transaction.id,
+			recipient: store.bankAccountReference,
+			metadata: { transactionId: transaction.id }
+		});
+	} catch (error) {
+		await TransactionData.updateTransactionStatus(
+			ctx.prisma,
+			transaction.id,
+			TransactionStatus.Failure
+		);
+
+		throw new LogicError(LogicErrorCode.PayoutFailed);
+	}
 
 	ctx.services.analytics.track({
 		event: 'payout_created',

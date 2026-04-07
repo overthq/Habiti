@@ -51,6 +51,7 @@ export enum LogicErrorCode {
 	ProductStoreNotFound = 'ProductStoreNotFound',
 
 	PayoutInsufficientFunds = 'PayoutInsufficientFunds',
+	PayoutFailed = 'PayoutFailed',
 
 	PaymentFailed = 'PaymentFailed',
 
@@ -133,6 +134,11 @@ export const logicErrorToApiException = (
 			return new APIException(400, 'Product rating must be between 1 and 5');
 		case LogicErrorCode.ProductStoreNotFound:
 			return new APIException(404, 'Store not found');
+
+		case LogicErrorCode.PayoutInsufficientFunds:
+			return new APIException(400, 'Insufficient funds for requested payout');
+		case LogicErrorCode.PayoutFailed:
+			return new APIException(500, 'Payout failed');
 
 		case LogicErrorCode.PaymentFailed:
 			return new APIException(402, 'Payment failed');
