@@ -12,6 +12,7 @@ import {
 	ChargeSuccessPayload,
 	isTransferCharge,
 	TransferFailurePayload,
+	TransferReversedPayload,
 	TransferSuccessPayload
 } from '../payments/validation';
 import type {
@@ -162,6 +163,8 @@ export const handlePaystackWebhookEvent = async (
 			await handleTransferSuccess(data);
 		} else if (event === 'transfer.failure') {
 			await handleTransferFailure(data);
+		} else if (event === 'transfer.reversed') {
+			await handleTransferReversed(ctx, data);
 		}
 	} catch (error) {
 		logger.error(error);
@@ -189,7 +192,7 @@ export const handleChargeSuccess = async (
 	await processCardCharge(ctx, data);
 };
 
-export const handleTransferSuccess = async (data: TransferSuccessPayload) => {
+const handleTransferSuccess = async (data: TransferSuccessPayload) => {
 	if (data.reason !== 'Payout') {
 		logger.warn(
 			`Found non-payout transfer. Reason: ${data.reason}. Reference: ${data.reference}`
@@ -199,7 +202,7 @@ export const handleTransferSuccess = async (data: TransferSuccessPayload) => {
 	}
 };
 
-export const handleTransferFailure = async (data: TransferFailurePayload) => {
+const handleTransferFailure = async (data: TransferFailurePayload) => {
 	if (data.reason !== 'Payout') {
 		logger.warn(
 			`Found non-payout transfer. Reason: ${data.reason}. Reference: ${data.reference}`
@@ -208,6 +211,11 @@ export const handleTransferFailure = async (data: TransferFailurePayload) => {
 		await TransactionData.markTransferFailed(data.reference);
 	}
 };
+
+export const handleTransferReversed = async (
+	ctx: AppContext,
+	data: TransferReversedPayload
+) => {};
 
 // --- Verification with side effects ---
 
