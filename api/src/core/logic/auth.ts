@@ -64,13 +64,18 @@ export const retrieveVerificationCode = async (email: string) => {
 export const generateAccessToken = async (
 	user: User | Admin,
 	role: 'admin' | 'user' = 'user',
-	sessionId?: string
+	sessionId?: string,
+	storeId?: string
 ) => {
-	return jwt.sign(
-		{ id: user.id, name: user.name, email: user.email, role, sessionId },
-		env.JWT_SECRET,
-		{ expiresIn: '10m' }
-	);
+	const claims: Record<string, unknown> = {
+		id: user.id,
+		name: user.name,
+		email: user.email,
+		role,
+		sessionId
+	};
+	if (storeId) claims.storeId = storeId;
+	return jwt.sign(claims, env.JWT_SECRET, { expiresIn: '10m' });
 };
 
 interface SessionMetadata {
@@ -136,7 +141,11 @@ export const revokeRefreshToken = async (ctx: AppContext, token: string) => {
 	}
 };
 
-export const rotateRefreshToken = async (ctx: AppContext, token: string) => {
+export const rotateRefreshToken = async (
+	ctx: AppContext,
+	token: string,
+	storeId?: string
+) => {
 	let decoded: { id: string; userId: string; sessionId?: string };
 	try {
 		decoded = jwt.verify(token, env.JWT_SECRET) as {
@@ -196,10 +205,27 @@ export const rotateRefreshToken = async (ctx: AppContext, token: string) => {
 		await SessionData.updateSessionActivity(ctx.prisma, storedToken.sessionId);
 	}
 
+	// If storeId was requested, verify the user is still a manager
+	let resolvedStoreId: string | undefined;
+	if (storeId) {
+		const storeManager = await ctx.prisma.storeManager.findUnique({
+			where: {
+				storeId_managerId: {
+					managerId: storedToken.userId,
+					storeId
+				}
+			}
+		});
+		if (storeManager) {
+			resolvedStoreId = storeId;
+		}
+	}
+
 	const newAccessToken = await generateAccessToken(
 		storedToken.user,
 		'user',
-		storedToken.sessionId
+		storedToken.sessionId,
+		resolvedStoreId
 	);
 
 	return {

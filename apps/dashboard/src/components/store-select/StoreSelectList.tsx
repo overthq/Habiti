@@ -6,6 +6,7 @@ import { Icon, Spacer, Typography, useTheme } from '@habiti/components';
 
 import StoreSelectListItem from './StoreSelectListItem';
 import useStore from '../../state';
+import { switchStore } from '../../data/requests';
 import { Store } from '../../data/types';
 
 interface StoreSelectListProps {
@@ -17,16 +18,23 @@ const StoreSelectList: React.FC<StoreSelectListProps> = ({
 	stores,
 	onAddStore
 }) => {
-	const { setPreference, activeStore } = useStore(
+	const { setPreference, activeStore, logIn } = useStore(
 		useShallow(state => ({
 			setPreference: state.setPreference,
-			activeStore: state.activeStore
+			activeStore: state.activeStore,
+			logIn: state.logIn
 		}))
 	);
 
 	const handleStoreSelect = React.useCallback(
-		(storeId: string) => () => {
-			setPreference({ activeStore: storeId });
+		(storeId: string) => async () => {
+			try {
+				const { accessToken } = await switchStore(storeId);
+				logIn(accessToken);
+				setPreference({ activeStore: storeId });
+			} catch {
+				// TODO: Handle error (show toast, etc.)
+			}
 		},
 		[]
 	);

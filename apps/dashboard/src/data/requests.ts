@@ -37,14 +37,10 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(config => {
-	const { accessToken, activeStore } = useStore.getState();
+	const { accessToken } = useStore.getState();
 
 	if (accessToken) {
 		config.headers.Authorization = `Bearer ${accessToken}`;
-	}
-
-	if (activeStore) {
-		config.headers['x-market-store-id'] = activeStore;
 	}
 
 	return config;
@@ -80,6 +76,13 @@ export const authenticate = async (input: AuthenticateBody) => {
 
 export const register = async (input: RegisterBody) => {
 	const response = await api.post('/auth/register', input);
+	return response.data;
+};
+
+export const switchStore = async (
+	storeId: string
+): Promise<{ accessToken: string }> => {
+	const response = await api.post('/auth/switch-store', { storeId });
 	return response.data;
 };
 

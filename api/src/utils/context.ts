@@ -35,7 +35,7 @@ const services = new Services();
 
 export const getAppContext = (req: Request): AppContext => ({
 	user: req.auth as ContextUser,
-	storeId: req.headers['x-market-store-id'] as string,
+	storeId: req.auth?.storeId ?? (req.headers['x-market-store-id'] as string),
 	prisma: prismaClient,
 	redis: redisClient,
 	services,

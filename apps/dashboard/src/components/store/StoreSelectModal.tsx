@@ -15,6 +15,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { useManagedStoresQuery } from '../../data/queries';
+import { switchStore } from '../../data/requests';
 import useStore from '../../state';
 import { AppStackParamList } from '../../navigation/types';
 
@@ -26,7 +27,12 @@ const StoreSelectModal: React.FC<StoreSelectModalProps> = ({ modalRef }) => {
 	const { bottom } = useSafeAreaInsets();
 	const { data } = useManagedStoresQuery();
 	const { theme } = useTheme();
-	const setPreference = useStore(useShallow(state => state.setPreference));
+	const { setPreference, logIn } = useStore(
+		useShallow(state => ({
+			setPreference: state.setPreference,
+			logIn: state.logIn
+		}))
+	);
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	const handleCreateStore = () => {
@@ -35,9 +41,15 @@ const StoreSelectModal: React.FC<StoreSelectModalProps> = ({ modalRef }) => {
 		navigate('Modal.CreateStore');
 	};
 
-	const handleSelectStore = (storeId: string) => () => {
-		setPreference({ activeStore: storeId });
-		modalRef.current?.dismiss();
+	const handleSelectStore = (storeId: string) => async () => {
+		try {
+			const { accessToken } = await switchStore(storeId);
+			logIn(accessToken);
+			setPreference({ activeStore: storeId });
+			modalRef.current?.dismiss();
+		} catch {
+			// TODO: Handle error (show toast, etc.)
+		}
 	};
 
 	return (

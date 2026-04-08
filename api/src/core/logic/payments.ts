@@ -112,9 +112,7 @@ export const transitionOrderToPending = async (
 	}
 };
 
-// --- Webhook handling ---
-
-const SUPPORTED_EVENTS = [
+const PAYSTACK_SUPPORTED_WEBHOOK_EVENTS = [
 	'charge.success',
 	'transfer.success',
 	'transfer.failure',
@@ -129,7 +127,7 @@ export const handlePaystackWebhookEvent = async (
 	try {
 		logger.info(`Handling event: ${event}`);
 
-		if (!SUPPORTED_EVENTS.includes(event)) {
+		if (!PAYSTACK_SUPPORTED_WEBHOOK_EVENTS.includes(event)) {
 			logger.warn(`Unsupported event: ${event}`);
 			return;
 		}
@@ -194,8 +192,6 @@ export const handleTransferReversed = async (
 	data: TransferReversedPayload
 ) => {};
 
-// --- Verification with side effects ---
-
 export const verifyTransaction = async (ctx: AppContext, reference: string) => {
 	const { data, status } = await CorePayments.verifyTransaction(reference);
 
@@ -218,8 +214,6 @@ export const verifyTransfer = async (
 
 	return data;
 };
-
-// --- Payment operations with non-prod polling ---
 
 export const chargeAuthorization = async (
 	ctx: AppContext,

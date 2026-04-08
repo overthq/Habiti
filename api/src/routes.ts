@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import { authenticate, isAdmin, optionalAuth } from './middleware/auth';
+import { requireStoreContext } from './middleware/storeContext';
 import { validateBody, validateQuery } from './middleware/validation';
 import { uploadImages } from './middleware/upload';
 
@@ -52,6 +53,12 @@ router.post(
 	AuthController.refresh
 );
 router.post(
+	'/auth/switch-store',
+	authenticate,
+	validateBody(Schemas.switchStoreBodySchema),
+	AuthController.switchStore
+);
+router.post(
 	'/auth/logout',
 	validateBody(Schemas.logoutBodySchema),
 	AuthController.logout
@@ -79,6 +86,7 @@ router.get(
 // Current Store (all routes require authenticate)
 const currentStoreRouter = Router();
 currentStoreRouter.use(authenticate);
+currentStoreRouter.use(requireStoreContext);
 
 currentStoreRouter.get('/', CurrentStoreController.getStore);
 currentStoreRouter.put(
