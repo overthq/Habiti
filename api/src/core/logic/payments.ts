@@ -1,3 +1,5 @@
+import type { Context } from 'hono';
+
 import { OrderStatus } from '../../generated/prisma/client';
 import { env } from '../../config/env';
 
@@ -23,14 +25,13 @@ import type {
 	VerifyTransferOptions
 } from '../payments/types';
 
-import type { AppContext } from '../../utils/context';
+import type { AppEnv } from '../../types/hono';
 import { pollUntil } from '../../utils/poll';
-import logger from '../../utils/logger';
 
 // --- Payment approval ---
 
 // `body` here comes directly from Paystack.
-export const approvePayment = async (ctx: AppContext, body: any) => {
+export const approvePayment = async (c: Context<AppEnv>, body: any) => {
 	// It's currently hard to know what the shape of the information from Paystack
 	// looks like here, so I'm checking all the _reasonable_ places.
 	// It would be good to be sure where this information should be, so we can
@@ -45,7 +46,7 @@ export const approvePayment = async (ctx: AppContext, body: any) => {
 		throw new Error('Unable to extract amount parameter');
 	}
 
-	const transaction = await ctx.prisma.transaction.findFirst({
+	const transaction = await c.var.prisma.transaction.findFirst({
 		where: {
 			id: reference,
 			status: 'Processing',
@@ -59,10 +60,10 @@ export const approvePayment = async (ctx: AppContext, body: any) => {
 // --- Card charge processing ---
 
 export const processCardCharge = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	data: CardChargeSuccessPayload
 ) => {
-	const card = await CardData.storeCard(ctx.prisma, {
+	const card = await CardData.storeCard(c.var.prisma, {
 		email: data.customer.email,
 		signature: data.authorization.signature,
 		authorizationCode: data.authorization.authorization_code,
@@ -80,35 +81,38 @@ export const processCardCharge = async (
 
 // --- Order transitions ---
 
-export const onChargeSuccessful = async (ctx: AppContext, orderId: string) => {
-	await transitionOrderToPending(ctx, orderId);
+export const onChargeSuccessful = async (
+	c: Context<AppEnv>,
+	orderId: string
+) => {
+	await transitionOrderToPending(c, orderId);
 };
 
 export const transitionOrderToPending = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	orderId: string
 ) => {
 	try {
-		const order = await OrderData.getOrderById(ctx.prisma, orderId);
+		const order = await OrderData.getOrderById(c.var.prisma, orderId);
 
 		if (!order) {
-			logger.warn(`Order not found for charge: ${orderId}`);
+			console.warn(`Order not found for charge: ${orderId}`);
 		} else if (order.status !== OrderStatus.PaymentPending) {
-			logger.warn(
+			console.warn(
 				`Order ${order.id} is not in the PaymentPending state. It is in the ${order.status} state.`
 			);
 		} else {
-			await OrderData.updateOrder(ctx.prisma, order.id, {
+			await OrderData.updateOrder(c.var.prisma, order.id, {
 				status: OrderStatus.Pending
 			});
 
-			await StoreData.incrementUnrealizedRevenue(ctx.prisma, {
+			await StoreData.incrementUnrealizedRevenue(c.var.prisma, {
 				storeId: order.storeId,
 				total: order.total
 			});
 		}
 	} catch (error) {
-		logger.error(error);
+		console.error(error);
 	}
 };
 
@@ -120,29 +124,29 @@ const PAYSTACK_SUPPORTED_WEBHOOK_EVENTS = [
 ];
 
 export const handlePaystackWebhookEvent = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	event: string,
 	data: any
 ) => {
 	try {
-		logger.info(`Handling event: ${event}`);
+		console.log(`Handling event: ${event}`);
 
 		if (!PAYSTACK_SUPPORTED_WEBHOOK_EVENTS.includes(event)) {
-			logger.warn(`Unsupported event: ${event}`);
+			console.warn(`Unsupported event: ${event}`);
 			return;
 		}
 
 		if (event === 'charge.success') {
-			await handleChargeSuccess(ctx, data);
+			await handleChargeSuccess(c, data);
 		} else if (event === 'transfer.success') {
 			await handleTransferSuccess(data);
 		} else if (event === 'transfer.failure') {
 			await handleTransferFailure(data);
 		} else if (event === 'transfer.reversed') {
-			await handleTransferReversed(ctx, data);
+			await handleTransferReversed(c, data);
 		}
 	} catch (error) {
-		logger.error(error);
+		console.error(error);
 	}
 };
 
@@ -150,13 +154,13 @@ export const handlePaystackWebhookEvent = async (
 // update the schema without warning.
 
 export const handleChargeSuccess = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	data: ChargeSuccessPayload
 ) => {
 	if (typeof data.metadata === 'object' && data.metadata?.orderId) {
-		await onChargeSuccessful(ctx, data.metadata.orderId);
+		await onChargeSuccessful(c, data.metadata.orderId);
 	} else {
-		logger.warn('Successful charge without any order attached!');
+		console.warn('Successful charge without any order attached!');
 	}
 
 	if (isTransferCharge(data)) {
@@ -164,12 +168,12 @@ export const handleChargeSuccess = async (
 		return;
 	}
 
-	await processCardCharge(ctx, data);
+	await processCardCharge(c, data);
 };
 
 const handleTransferSuccess = async (data: TransferSuccessPayload) => {
 	if (data.reason !== 'Payout') {
-		logger.warn(
+		console.warn(
 			`Found non-payout transfer. Reason: ${data.reason}. Reference: ${data.reference}`
 		);
 	} else {
@@ -179,7 +183,7 @@ const handleTransferSuccess = async (data: TransferSuccessPayload) => {
 
 const handleTransferFailure = async (data: TransferFailurePayload) => {
 	if (data.reason !== 'Payout') {
-		logger.warn(
+		console.warn(
 			`Found non-payout transfer. Reason: ${data.reason}. Reference: ${data.reference}`
 		);
 	} else {
@@ -188,20 +192,23 @@ const handleTransferFailure = async (data: TransferFailurePayload) => {
 };
 
 export const handleTransferReversed = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	data: TransferReversedPayload
 ) => {};
 
-export const verifyTransaction = async (ctx: AppContext, reference: string) => {
+export const verifyTransaction = async (
+	c: Context<AppEnv>,
+	reference: string
+) => {
 	const { data, status } = await CorePayments.verifyTransaction(reference);
 
 	if (status === true && data.status === 'success') {
-		return await handleChargeSuccess(ctx, data);
+		return await handleChargeSuccess(c, data);
 	}
 };
 
 export const verifyTransfer = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	options: VerifyTransferOptions
 ) => {
 	const { data, status } = await CorePayments.verifyTransfer(options);
@@ -216,13 +223,13 @@ export const verifyTransfer = async (
 };
 
 export const chargeAuthorization = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	options: ChargeAuthorizationOptions
 ) => {
 	const data = await CorePayments.chargeAuthorization(options);
 
 	if (env.NODE_ENV !== 'production') {
-		pollUntil(() => verifyTransaction(ctx, data.data.reference), {
+		pollUntil(() => verifyTransaction(c, data.data.reference), {
 			intervalMs: 5_000,
 			maxAttempts: 12
 		});
@@ -232,13 +239,13 @@ export const chargeAuthorization = async (
 };
 
 export const initialCharge = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	options: InitialChargeOptions
 ) => {
 	const data = await CorePayments.initialCharge(options);
 
 	if (env.NODE_ENV !== 'production') {
-		pollUntil(() => verifyTransaction(ctx, data.data.reference), {
+		pollUntil(() => verifyTransaction(c, data.data.reference), {
 			intervalMs: 5_000,
 			maxAttempts: 24
 		});
@@ -248,13 +255,13 @@ export const initialCharge = async (
 };
 
 export const payAccount = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	options: PayAccountOptions
 ) => {
 	const data = await CorePayments.payAccount(options);
 
 	if (env.NODE_ENV !== 'production') {
-		pollUntil(() => verifyTransfer(ctx, { transferId: data.data.reference }), {
+		pollUntil(() => verifyTransfer(c, { transferId: data.data.reference }), {
 			intervalMs: 5_000,
 			maxAttempts: 24
 		});

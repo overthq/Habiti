@@ -1,5 +1,4 @@
 import { APIException } from '../../types/errors';
-import logger from '../../utils/logger';
 
 export class LogicError extends Error {
 	public readonly code: LogicErrorCode;

@@ -1,8 +1,10 @@
+import type { Context } from 'hono';
+
 import { ProductStatus } from '../../generated/prisma/client';
 import type { StripUndefined } from '../../utils/objects';
 import * as ProductData from '../data/products';
 
-import { AppContext } from '../../utils/context';
+import type { AppEnv } from '../../types/hono';
 import { ProductFilters } from '../../utils/queries';
 import { LogicError, LogicErrorCode } from './errors';
 
@@ -21,27 +23,27 @@ export interface CreateProductInput {
 }
 
 export const createProduct = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: CreateProductInput
 ) => {
 	const { storeId, ...productData } = input;
 
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	if (ctx.storeId && ctx.storeId !== storeId && !ctx.isAdmin) {
+	if (c.var.storeId && c.var.storeId !== storeId && !c.var.isAdmin) {
 		throw new LogicError(LogicErrorCode.ProductStoreMismatch);
 	}
 
-	const product = await ProductData.createProduct(ctx.prisma, {
+	const product = await ProductData.createProduct(c.var.prisma, {
 		...productData,
 		storeId
 	});
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'product_created',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			productId: product.id,
 			productName: product.name,
@@ -67,17 +69,17 @@ export interface UpdateProductInput {
 }
 
 export const updateProduct = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: UpdateProductInput
 ) => {
 	const { productId, ...updateData } = input;
 
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	const existingProduct = await ProductData.getProductById(
-		ctx.prisma,
+		c.var.prisma,
 		productId
 	);
 
@@ -89,19 +91,23 @@ export const updateProduct = async (
 	// to not have the /stores/current concept, and just pass in the
 	// store we are referring to explicitly every time.
 
-	if (!ctx.isAdmin && ctx.storeId && ctx.storeId !== existingProduct.storeId) {
+	if (
+		!c.var.isAdmin &&
+		c.var.storeId &&
+		c.var.storeId !== existingProduct.storeId
+	) {
 		throw new LogicError(LogicErrorCode.ProductStoreMismatch);
 	}
 
 	const product = await ProductData.updateProduct(
-		ctx.prisma,
+		c.var.prisma,
 		productId,
 		updateData as StripUndefined<typeof updateData>
 	);
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'product_updated',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			productId: product.id,
 			productName: product.name,
@@ -113,29 +119,29 @@ export const updateProduct = async (
 	return product;
 };
 
-export const getProductById = async (ctx: AppContext, productId: string) => {
-	const product = await ProductData.getProductById(ctx.prisma, productId);
+export const getProductById = async (c: Context<AppEnv>, productId: string) => {
+	const product = await ProductData.getProductById(c.var.prisma, productId);
 
 	if (!product) {
 		throw new LogicError(LogicErrorCode.ProductNotFound);
 	}
 
-	if (product.status === ProductStatus.Archived && !ctx.isAdmin) {
+	if (product.status === ProductStatus.Archived && !c.var.isAdmin) {
 		throw new LogicError(LogicErrorCode.ProductNotFound);
 	}
 
-	const productViewerContext = ctx.user?.id
+	const productViewerContext = c.var.auth?.id
 		? await ProductData.getProductViewerContext(
-				ctx.prisma,
-				ctx.user.id,
+				c.var.prisma,
+				c.var.auth.id,
 				product.id
 			)
 		: null;
 
-	if (ctx.user?.id) {
-		ctx.services.analytics.track({
+	if (c.var.auth?.id) {
+		c.var.services.analytics.track({
 			event: 'product_viewed',
-			distinctId: ctx.user?.id,
+			distinctId: c.var.auth?.id,
 			properties: {
 				productId: product.id,
 				productName: product.name,
@@ -148,21 +154,24 @@ export const getProductById = async (ctx: AppContext, productId: string) => {
 	return { product, viewerContext: productViewerContext };
 };
 
-export const getProductReviews = async (ctx: AppContext, productId: string) => {
-	const product = await ProductData.getProductById(ctx.prisma, productId);
+export const getProductReviews = async (
+	c: Context<AppEnv>,
+	productId: string
+) => {
+	const product = await ProductData.getProductById(c.var.prisma, productId);
 
 	if (!product) {
 		throw new LogicError(LogicErrorCode.ProductNotFound);
 	}
 
-	return ProductData.getProductReviews(ctx.prisma, productId);
+	return ProductData.getProductReviews(c.var.prisma, productId);
 };
 
 export const getProductsByStoreId = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	storeId: string
 ) => {
-	return ProductData.getProductsByStoreId(ctx.prisma, storeId);
+	return ProductData.getProductsByStoreId(c.var.prisma, storeId);
 };
 
 interface ArchiveProductInput {
@@ -170,30 +179,30 @@ interface ArchiveProductInput {
 }
 
 export const archiveProduct = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: ArchiveProductInput
 ) => {
 	const { productId } = input;
 
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const product = await ProductData.getProductById(ctx.prisma, productId);
+	const product = await ProductData.getProductById(c.var.prisma, productId);
 
 	if (!product) {
 		throw new LogicError(LogicErrorCode.ProductNotFound);
 	}
 
-	if (ctx.storeId && ctx.storeId !== product.storeId && !ctx.isAdmin) {
+	if (c.var.storeId && c.var.storeId !== product.storeId && !c.var.isAdmin) {
 		throw new LogicError(LogicErrorCode.ProductStoreMismatch);
 	}
 
-	await ProductData.archiveProduct(ctx.prisma, productId);
+	await ProductData.archiveProduct(c.var.prisma, productId);
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'product_archived',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			productId: product.id,
 			productName: product.name,
@@ -213,7 +222,7 @@ interface CreateProductReviewInput {
 }
 
 export const createProductReview = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: CreateProductReviewInput
 ) => {
 	const { productId, rating, body } = input;
@@ -222,26 +231,26 @@ export const createProductReview = async (
 		throw new LogicError(LogicErrorCode.ProductInvalidRating);
 	}
 
-	const product = await ProductData.getProductById(ctx.prisma, productId);
+	const product = await ProductData.getProductById(c.var.prisma, productId);
 
 	if (!product) {
 		throw new LogicError(LogicErrorCode.ProductNotFound);
 	}
 
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const review = await ProductData.createProductReview(ctx.prisma, {
+	const review = await ProductData.createProductReview(c.var.prisma, {
 		productId,
-		userId: ctx.user.id,
+		userId: c.var.auth.id,
 		rating,
 		...(body && { body })
 	});
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'product_review_created',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			productId,
 			rating,
@@ -254,10 +263,10 @@ export const createProductReview = async (
 };
 
 export const getFeaturedProducts = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	options: ProductData.GetFeaturedProductsOptions = {}
 ) => {
-	return ProductData.getFeaturedProducts(ctx.prisma, options);
+	return ProductData.getFeaturedProducts(c.var.prisma, options);
 };
 
 interface AddToWatchlistInput {
@@ -265,30 +274,30 @@ interface AddToWatchlistInput {
 }
 
 export const addToWatchlist = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: AddToWatchlistInput
 ) => {
 	const { productId } = input;
 
-	const product = await ProductData.getProductById(ctx.prisma, productId);
+	const product = await ProductData.getProductById(c.var.prisma, productId);
 
 	if (!product) {
 		throw new LogicError(LogicErrorCode.ProductNotFound);
 	}
 
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	const watchlistItem = await ProductData.addToWatchlist(
-		ctx.prisma,
-		ctx.user.id,
+		c.var.prisma,
+		c.var.auth.id,
 		productId
 	);
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'product_added_to_watchlist',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			productId,
 			productName: product.name
@@ -304,26 +313,26 @@ interface RemoveFromWatchlistInput {
 }
 
 export const removeFromWatchlist = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: RemoveFromWatchlistInput
 ) => {
 	const { productId } = input;
 
-	const product = await ProductData.getProductById(ctx.prisma, productId);
+	const product = await ProductData.getProductById(c.var.prisma, productId);
 
 	if (!product) {
 		throw new LogicError(LogicErrorCode.ProductNotFound);
 	}
 
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	await ProductData.removeFromWatchlist(ctx.prisma, ctx.user.id, productId);
+	await ProductData.removeFromWatchlist(c.var.prisma, c.var.auth.id, productId);
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'product_removed_from_watchlist',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			productId,
 			productName: product.name
@@ -335,16 +344,16 @@ export const removeFromWatchlist = async (
 };
 
 export const getRelatedProducts = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	productId: string
 ) => {
-	const product = await ProductData.getProductById(ctx.prisma, productId);
+	const product = await ProductData.getProductById(c.var.prisma, productId);
 
 	if (!product) {
 		throw new LogicError(LogicErrorCode.ProductNotFound);
 	}
 
-	return ProductData.getRelatedProducts(ctx.prisma, productId);
+	return ProductData.getRelatedProducts(c.var.prisma, productId);
 };
 
 interface CreateProductOptionInput {
@@ -354,14 +363,14 @@ interface CreateProductOptionInput {
 }
 
 export const createProductOption = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: CreateProductOptionInput
 ) => {
 	const { productId, name, description } = input;
 
-	const product = await ProductData.getProductById(ctx.prisma, productId);
+	const product = await ProductData.getProductById(c.var.prisma, productId);
 
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
@@ -369,19 +378,19 @@ export const createProductOption = async (
 		throw new LogicError(LogicErrorCode.ProductNotFound);
 	}
 
-	if (ctx.storeId && ctx.storeId !== product.storeId) {
+	if (c.var.storeId && c.var.storeId !== product.storeId) {
 		throw new LogicError(LogicErrorCode.ProductStoreMismatch);
 	}
 
-	const productOption = await ProductData.createProductOption(ctx.prisma, {
+	const productOption = await ProductData.createProductOption(c.var.prisma, {
 		productId,
 		name,
 		description
 	});
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'product_option_created',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			productId,
 			optionName: name,
@@ -400,17 +409,17 @@ interface UpdateProductCategoriesInput {
 }
 
 export const updateProductCategories = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: UpdateProductCategoriesInput
 ) => {
 	const { productId, addCategoryIds, removeCategoryIds } = input;
 
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	const existingProduct = await ProductData.getProductById(
-		ctx.prisma,
+		c.var.prisma,
 		productId
 	);
 
@@ -418,19 +427,19 @@ export const updateProductCategories = async (
 		throw new LogicError(LogicErrorCode.ProductNotFound);
 	}
 
-	if (ctx.storeId && ctx.storeId !== existingProduct.storeId) {
+	if (c.var.storeId && c.var.storeId !== existingProduct.storeId) {
 		throw new LogicError(LogicErrorCode.ProductStoreMismatch);
 	}
 
-	const product = await ProductData.updateProductCategories(ctx.prisma, {
+	const product = await ProductData.updateProductCategories(c.var.prisma, {
 		productId,
 		addCategoryIds,
 		removeCategoryIds
 	});
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'product_categories_updated',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			productId,
 			categoriesAdded: addCategoryIds.length,
@@ -448,32 +457,32 @@ interface CreateStoreProductCategoryInput {
 }
 
 export const createStoreProductCategory = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: CreateStoreProductCategoryInput
 ) => {
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	if (!ctx.storeId) {
+	if (!c.var.storeId) {
 		throw new LogicError(LogicErrorCode.ProductStoreNotFound);
 	}
 
-	const category = await ProductData.createStoreProductCategory(ctx.prisma, {
-		storeId: ctx.storeId,
+	const category = await ProductData.createStoreProductCategory(c.var.prisma, {
+		storeId: c.var.storeId,
 		name: input.name,
 		description: input.description
 	});
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'store_category_created',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			categoryId: category.id,
 			categoryName: category.name,
 			hasDescription: !!category.description
 		},
-		groups: { store: ctx.storeId }
+		groups: { store: c.var.storeId }
 	});
 
 	return category;
@@ -486,34 +495,34 @@ interface UpdateStoreProductCategoryInput {
 }
 
 export const updateStoreProductCategory = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: UpdateStoreProductCategoryInput
 ) => {
 	const { categoryId, ...updateData } = input;
 
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	if (!ctx.storeId) {
+	if (!c.var.storeId) {
 		throw new LogicError(LogicErrorCode.ProductStoreNotFound);
 	}
 
 	const category = await ProductData.updateStoreProductCategory(
-		ctx.prisma,
+		c.var.prisma,
 		categoryId,
 		updateData
 	);
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'store_category_updated',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			categoryId: category.id,
 			categoryName: category.name,
 			updatedFields: Object.keys(updateData)
 		},
-		groups: { store: ctx.storeId }
+		groups: { store: c.var.storeId }
 	});
 
 	return category;
@@ -524,47 +533,47 @@ interface DeleteStoreProductCategoryInput {
 }
 
 export const deleteStoreProductCategory = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: DeleteStoreProductCategoryInput
 ) => {
 	const { categoryId } = input;
 
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	if (!ctx.storeId) {
+	if (!c.var.storeId) {
 		throw new LogicError(LogicErrorCode.ProductStoreNotFound);
 	}
 
 	const category = await ProductData.deleteStoreProductCategory(
-		ctx.prisma,
+		c.var.prisma,
 		categoryId
 	);
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'store_category_deleted',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			categoryId: category.id,
 			categoryName: category.name
 		},
-		groups: { store: ctx.storeId }
+		groups: { store: c.var.storeId }
 	});
 
 	return category;
 };
 
 export const getStoreProductCategories = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	storeId: string
 ) => {
-	return ProductData.getStoreProductCategories(ctx.prisma, storeId);
+	return ProductData.getStoreProductCategories(c.var.prisma, storeId);
 };
 
 export const getProducts = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	filters?: ProductFilters
 ) => {
-	return ProductData.getProducts(ctx.prisma, filters);
+	return ProductData.getProducts(c.var.prisma, filters);
 };

@@ -1,3 +1,5 @@
+import type { Context } from 'hono';
+
 import { OrderStatus } from '../../generated/prisma/client';
 
 import * as CardLogic from './cards';
@@ -11,7 +13,7 @@ import { calculatePaystackFee, calculateHabitiFee } from './carts';
 import { createOrderHooks, updateOrderHooks } from './hooks';
 import { validateCart } from '../validations/carts';
 import { createOrderSchema, updateOrderSchema } from '../validations/rest';
-import { AppContext } from '../../utils/context';
+import type { AppEnv } from '../../types/hono';
 import { InitializeTransactionResponse } from '../payments/paystack';
 import { LogicError, LogicErrorCode } from './errors';
 import { OrderFilters } from '../../utils/queries';
@@ -21,10 +23,13 @@ interface CreateOrderInput {
 	cardId?: string | undefined;
 }
 
-export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
+export const createOrder = async (
+	c: Context<AppEnv>,
+	input: CreateOrderInput
+) => {
 	const { data: validatedInput, success } = createOrderSchema.safeParse(input);
 
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
@@ -34,23 +39,23 @@ export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 
 	const { cartId, cardId } = validatedInput;
 
-	const cart = await CartData.getCartById(ctx.prisma, cartId);
+	const cart = await CartData.getCartById(c.var.prisma, cartId);
 
 	if (!cart) {
 		throw new LogicError(LogicErrorCode.CartNotFound);
 	}
 
-	await validateCart(cart, ctx.user.id);
+	await validateCart(cart, c.var.auth.id);
 
 	const { orderData, total } = OrderData.getOrderData(cart.products);
 	const transactionFee = calculatePaystackFee(total);
 	const serviceFee = calculateHabitiFee();
-	const userId = ctx.user.id;
+	const userId = c.var.auth.id;
 	const storeId = cart.storeId;
 
 	// All orders start as PaymentPending. Revenue is only tracked
 	// once payment is confirmed and the order transitions to Pending.
-	const order = await ctx.prisma.$transaction(async prisma => {
+	const order = await c.var.prisma.$transaction(async prisma => {
 		const store = await OrderData.incrementStoreOrderCount(prisma, {
 			storeId
 		});
@@ -84,14 +89,14 @@ export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 		undefined;
 
 	if (cardId) {
-		const card = await CardData.getCardById(ctx.prisma, cardId);
+		const card = await CardData.getCardById(c.var.prisma, cardId);
 
 		if (!card) {
 			throw new LogicError(LogicErrorCode.CardNotFound);
 		}
 
 		try {
-			await PaymentLogic.chargeAuthorization(ctx, {
+			await PaymentLogic.chargeAuthorization(c, {
 				email: card.email,
 				amount: String(total + transactionFee + serviceFee),
 				authorizationCode: card.authorizationCode,
@@ -102,20 +107,20 @@ export const createOrder = async (ctx: AppContext, input: CreateOrderInput) => {
 			throw new LogicError(LogicErrorCode.PaymentFailed);
 		}
 	} else {
-		cardAuthorizationData = await CardLogic.authorizeCard(ctx, {
+		cardAuthorizationData = await CardLogic.authorizeCard(c, {
 			orderId: order.id
 		});
 	}
 
-	createOrderHooks(ctx, {
+	createOrderHooks(c, {
 		orderId: order.id,
-		userId: ctx.user.id,
+		userId: c.var.auth.id,
 		storeId: cart.storeId,
 		amount: order.total,
 		serviceFee: order.serviceFee,
 		transactionFee: order.transactionFee,
 		products: cart.products.map(p => p.product),
-		customerName: ctx.user.name,
+		customerName: c.var.auth.name,
 		pushToken: order.user.pushTokens[0] ?? undefined,
 		status: OrderStatus.PaymentPending
 	});
@@ -132,12 +137,12 @@ export interface UpdateOrderStatusInput {
 }
 
 export const updateOrderStatus = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: UpdateOrderStatusInput
 ) => {
 	const { data: validatedInput, success } = updateOrderSchema.safeParse(input);
 
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
@@ -148,7 +153,7 @@ export const updateOrderStatus = async (
 	const { orderId, status } = validatedInput;
 
 	const currentOrder = await OrderData.getOrderByIdWithStore(
-		ctx.prisma,
+		c.var.prisma,
 		orderId
 	);
 
@@ -158,15 +163,15 @@ export const updateOrderStatus = async (
 
 	validateStatusTransition(currentOrder.status, status);
 
-	const updatedOrder = await OrderData.updateOrder(ctx.prisma, orderId, {
+	const updatedOrder = await OrderData.updateOrder(c.var.prisma, orderId, {
 		status
 	});
 
-	await updateOrderHooks(ctx, {
-		customerName: ctx.user.name,
+	await updateOrderHooks(c, {
+		customerName: c.var.auth.name,
 		pushToken: updatedOrder.user.pushTokens[0] ?? undefined,
 		orderId: updatedOrder.id,
-		userId: ctx.user.id,
+		userId: c.var.auth.id,
 		storeId: currentOrder.storeId,
 		amount: updatedOrder.total,
 		status
@@ -196,27 +201,27 @@ const validateStatusTransition = (
 	}
 };
 
-export const getOrderById = async (ctx: AppContext, orderId: string) => {
-	if (!ctx.user?.id) {
+export const getOrderById = async (c: Context<AppEnv>, orderId: string) => {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const order = await OrderData.getOrderById(ctx.prisma, orderId);
+	const order = await OrderData.getOrderById(c.var.prisma, orderId);
 
 	if (!order) {
 		throw new LogicError(LogicErrorCode.OrderNotFound);
 	}
 
-	const userOwnsOrder = order.userId === ctx.user.id;
-	const storeOwnsOrder = order.storeId === ctx.storeId;
+	const userOwnsOrder = order.userId === c.var.auth.id;
+	const storeOwnsOrder = order.storeId === c.var.storeId;
 
-	if (!ctx.isAdmin && !userOwnsOrder && !storeOwnsOrder) {
+	if (!c.var.isAdmin && !userOwnsOrder && !storeOwnsOrder) {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'order_viewed',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			orderId: order.id
 		},
@@ -226,13 +231,13 @@ export const getOrderById = async (ctx: AppContext, orderId: string) => {
 	return order;
 };
 
-export const confirmPickup = async (ctx: AppContext, orderId: string) => {
-	if (!ctx.user?.id) {
+export const confirmPickup = async (c: Context<AppEnv>, orderId: string) => {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	const currentOrder = await OrderData.getOrderByIdWithStore(
-		ctx.prisma,
+		c.var.prisma,
 		orderId
 	);
 
@@ -240,22 +245,22 @@ export const confirmPickup = async (ctx: AppContext, orderId: string) => {
 		throw new LogicError(LogicErrorCode.OrderNotFound);
 	}
 
-	if (currentOrder.userId !== ctx.user.id) {
+	if (currentOrder.userId !== c.var.auth.id) {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
 	validateStatusTransition(currentOrder.status, OrderStatus.Completed);
 
-	const updatedOrder = await OrderData.updateOrder(ctx.prisma, orderId, {
+	const updatedOrder = await OrderData.updateOrder(c.var.prisma, orderId, {
 		status: OrderStatus.Completed
 	});
 
 	try {
-		await updateOrderHooks(ctx, {
-			customerName: ctx.user.name,
+		await updateOrderHooks(c, {
+			customerName: c.var.auth.name,
 			pushToken: updatedOrder.user.pushTokens[0] ?? undefined,
 			orderId: updatedOrder.id,
-			userId: ctx.user.id,
+			userId: c.var.auth.id,
 			storeId: currentOrder.storeId,
 			amount: updatedOrder.total,
 			status: OrderStatus.Completed
@@ -267,6 +272,6 @@ export const confirmPickup = async (ctx: AppContext, orderId: string) => {
 	return updatedOrder;
 };
 
-export const getOrders = async (ctx: AppContext, filters?: OrderFilters) => {
-	return OrderData.getOrders(ctx.prisma, filters);
+export const getOrders = async (c: Context<AppEnv>, filters?: OrderFilters) => {
+	return OrderData.getOrders(c.var.prisma, filters);
 };

@@ -1,4 +1,4 @@
-import cors from 'cors';
+import { cors } from 'hono/cors';
 import { env } from '../config/env';
 
 export const ALLOWED_ORIGINS =
@@ -7,13 +7,9 @@ export const ALLOWED_ORIGINS =
 		: ['http://localhost:3000', 'http://localhost:5173'];
 
 export const corsConfig = cors({
-	origin: (origin, callback) => {
-		if ((origin && ALLOWED_ORIGINS.includes(origin)) || !origin) {
-			callback(null, true);
-		} else {
-			callback(new Error('Not allowed by CORS'));
-		}
+	origin: origin => {
+		if (ALLOWED_ORIGINS.includes(origin)) return origin;
+		return '';
 	},
-	preflightContinue: false,
 	credentials: true
 });
