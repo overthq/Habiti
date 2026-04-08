@@ -1,3 +1,5 @@
+import type { Context } from 'hono';
+
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
@@ -12,7 +14,7 @@ import {
 } from '../validations/rest';
 import redisClient from '../../config/redis';
 import { env } from '../../config/env';
-import { AppContext } from '../../utils/context';
+import type { AppEnv } from '../../types/hono';
 import { LogicError, LogicErrorCode } from './errors';
 
 export const validateRegisterBody = (body: any) => {
@@ -84,7 +86,7 @@ interface SessionMetadata {
 }
 
 export const generateRefreshToken = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	userId: string,
 	sessionId?: string,
 	metadata?: SessionMetadata
@@ -92,7 +94,7 @@ export const generateRefreshToken = async (
 	let resolvedSessionId = sessionId;
 
 	if (!resolvedSessionId) {
-		const session = await SessionData.createSession(ctx.prisma, {
+		const session = await SessionData.createSession(c.var.prisma, {
 			userId,
 			userAgent: metadata?.userAgent,
 			ipAddress: metadata?.ipAddress
@@ -111,7 +113,7 @@ export const generateRefreshToken = async (
 	const expiresAt = new Date();
 	expiresAt.setDate(expiresAt.getDate() + 30);
 
-	await AuthData.createRefreshToken(ctx.prisma, {
+	await AuthData.createRefreshToken(c.var.prisma, {
 		id,
 		userId,
 		hashedToken,
@@ -122,7 +124,7 @@ export const generateRefreshToken = async (
 	return { token, sessionId: resolvedSessionId };
 };
 
-export const revokeRefreshToken = async (ctx: AppContext, token: string) => {
+export const revokeRefreshToken = async (c: Context<AppEnv>, token: string) => {
 	let decoded: { id: string; sessionId?: string };
 	try {
 		decoded = jwt.verify(token, env.JWT_SECRET) as {
@@ -135,14 +137,14 @@ export const revokeRefreshToken = async (ctx: AppContext, token: string) => {
 	}
 
 	if (decoded.sessionId) {
-		await SessionData.revokeSession(ctx.prisma, decoded.sessionId);
+		await SessionData.revokeSession(c.var.prisma, decoded.sessionId);
 	} else {
-		await AuthData.revokeRefreshToken(ctx.prisma, decoded.id);
+		await AuthData.revokeRefreshToken(c.var.prisma, decoded.id);
 	}
 };
 
 export const rotateRefreshToken = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	token: string,
 	storeId?: string
 ) => {
@@ -158,7 +160,7 @@ export const rotateRefreshToken = async (
 	}
 
 	const storedToken = await AuthData.getRefreshTokenById(
-		ctx.prisma,
+		c.var.prisma,
 		decoded.id
 	);
 
@@ -174,7 +176,7 @@ export const rotateRefreshToken = async (
 	// Check if the session has been revoked
 	if (storedToken.sessionId) {
 		const session = await SessionData.getSessionById(
-			ctx.prisma,
+			c.var.prisma,
 			storedToken.sessionId
 		);
 		if (session?.revoked) {
@@ -183,7 +185,7 @@ export const rotateRefreshToken = async (
 	}
 
 	if (storedToken.revoked) {
-		await SessionData.revokeSession(ctx.prisma, storedToken.sessionId);
+		await SessionData.revokeSession(c.var.prisma, storedToken.sessionId);
 		throw new LogicError(LogicErrorCode.TokenReused);
 	}
 
@@ -192,23 +194,26 @@ export const rotateRefreshToken = async (
 		throw new LogicError(LogicErrorCode.TokenExpired);
 	}
 
-	await AuthData.revokeRefreshToken(ctx.prisma, storedToken.id);
+	await AuthData.revokeRefreshToken(c.var.prisma, storedToken.id);
 
 	const result = await generateRefreshToken(
-		ctx,
+		c,
 		storedToken.userId,
 		storedToken.sessionId
 	);
 
 	// Bump session activity
 	if (storedToken.sessionId) {
-		await SessionData.updateSessionActivity(ctx.prisma, storedToken.sessionId);
+		await SessionData.updateSessionActivity(
+			c.var.prisma,
+			storedToken.sessionId
+		);
 	}
 
 	// If storeId was requested, verify the user is still a manager
 	let resolvedStoreId: string | undefined;
 	if (storeId) {
-		const storeManager = await ctx.prisma.storeManager.findUnique({
+		const storeManager = await c.var.prisma.storeManager.findUnique({
 			where: {
 				storeId_managerId: {
 					managerId: storedToken.userId,
@@ -249,7 +254,7 @@ export const verifyAccessToken = async (token: string) => {
 // Admin Refresh Token Functions
 
 export const generateAdminRefreshToken = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	adminId: string,
 	sessionId?: string,
 	metadata?: SessionMetadata
@@ -257,7 +262,7 @@ export const generateAdminRefreshToken = async (
 	let resolvedSessionId = sessionId;
 
 	if (!resolvedSessionId) {
-		const session = await AdminSessionData.createAdminSession(ctx.prisma, {
+		const session = await AdminSessionData.createAdminSession(c.var.prisma, {
 			adminId,
 			userAgent: metadata?.userAgent,
 			ipAddress: metadata?.ipAddress
@@ -276,7 +281,7 @@ export const generateAdminRefreshToken = async (
 	const expiresAt = new Date();
 	expiresAt.setDate(expiresAt.getDate() + 30);
 
-	await AdminAuthData.createAdminRefreshToken(ctx.prisma, {
+	await AdminAuthData.createAdminRefreshToken(c.var.prisma, {
 		id,
 		adminId,
 		hashedToken,
@@ -288,7 +293,7 @@ export const generateAdminRefreshToken = async (
 };
 
 export const revokeAdminRefreshToken = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	token: string
 ) => {
 	let decoded: { id: string; sessionId?: string };
@@ -302,9 +307,9 @@ export const revokeAdminRefreshToken = async (
 	}
 
 	if (decoded.sessionId) {
-		await AdminSessionData.revokeAdminSession(ctx.prisma, decoded.sessionId);
+		await AdminSessionData.revokeAdminSession(c.var.prisma, decoded.sessionId);
 	} else {
-		await AdminAuthData.revokeAdminRefreshToken(ctx.prisma, decoded.id);
+		await AdminAuthData.revokeAdminRefreshToken(c.var.prisma, decoded.id);
 	}
 };
 
@@ -324,7 +329,7 @@ const decodeAdminToken = (token: string) => {
 };
 
 export const rotateAdminRefreshToken = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	token: string
 ) => {
 	const decoded = decodeAdminToken(token);
@@ -334,7 +339,7 @@ export const rotateAdminRefreshToken = async (
 	}
 
 	const storedToken = await AdminAuthData.getAdminRefreshTokenById(
-		ctx.prisma,
+		c.var.prisma,
 		decoded.id
 	);
 
@@ -350,7 +355,7 @@ export const rotateAdminRefreshToken = async (
 	// Check if the session has been revoked
 	if (storedToken.sessionId) {
 		const session = await AdminSessionData.getAdminSessionById(
-			ctx.prisma,
+			c.var.prisma,
 			storedToken.sessionId
 		);
 		if (session?.revoked) {
@@ -360,7 +365,7 @@ export const rotateAdminRefreshToken = async (
 
 	if (storedToken.revoked) {
 		await AdminSessionData.revokeAdminSession(
-			ctx.prisma,
+			c.var.prisma,
 			storedToken.sessionId
 		);
 		throw new LogicError(LogicErrorCode.TokenReused);
@@ -370,10 +375,10 @@ export const rotateAdminRefreshToken = async (
 		throw new LogicError(LogicErrorCode.TokenExpired);
 	}
 
-	await AdminAuthData.revokeAdminRefreshToken(ctx.prisma, storedToken.id);
+	await AdminAuthData.revokeAdminRefreshToken(c.var.prisma, storedToken.id);
 
 	const result = await generateAdminRefreshToken(
-		ctx,
+		c,
 		storedToken.adminId,
 		storedToken.sessionId
 	);
@@ -381,7 +386,7 @@ export const rotateAdminRefreshToken = async (
 	// Bump session activity
 	if (storedToken.sessionId) {
 		await AdminSessionData.updateAdminSessionActivity(
-			ctx.prisma,
+			c.var.prisma,
 			storedToken.sessionId
 		);
 	}

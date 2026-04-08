@@ -1,5 +1,7 @@
+import type { Context } from 'hono';
+
 import * as AddressData from '../data/addresses';
-import { AppContext } from '../../utils/context';
+import type { AppEnv } from '../../types/hono';
 import type { StripUndefined } from '../../utils/objects';
 import { LogicError, LogicErrorCode } from './errors';
 import { canManageStore } from './permissions';
@@ -18,18 +20,18 @@ interface CreateUserAddressArgs {
 }
 
 export const createUserAddress = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	args: CreateUserAddressArgs
 ) => {
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	if (args.userId !== ctx.user.id) {
+	if (args.userId !== c.var.auth.id) {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	return AddressData.createUserAddress(ctx.prisma, args);
+	return AddressData.createUserAddress(c.var.prisma, args);
 };
 
 // Store address logic
@@ -46,97 +48,97 @@ interface StoreAddressArgs {
 	longitude?: number | undefined;
 }
 
-export const getStoreAddresses = async (ctx: AppContext) => {
-	if (!ctx.user?.id) {
+export const getStoreAddresses = async (c: Context<AppEnv>) => {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	if (!ctx.storeId) {
+	if (!c.var.storeId) {
 		throw new LogicError(LogicErrorCode.StoreContextRequired);
 	}
 
-	const isAuthorized = await canManageStore(ctx);
+	const isAuthorized = await canManageStore(c);
 	if (!isAuthorized) {
 		throw new LogicError(LogicErrorCode.CannotManageStore);
 	}
 
-	return AddressData.getStoreAddresses(ctx.prisma, ctx.storeId);
+	return AddressData.getStoreAddresses(c.var.prisma, c.var.storeId);
 };
 
 export const createStoreAddress = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	args: StoreAddressArgs
 ) => {
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	if (!ctx.storeId) {
+	if (!c.var.storeId) {
 		throw new LogicError(LogicErrorCode.StoreContextRequired);
 	}
 
-	const isAuthorized = await canManageStore(ctx);
+	const isAuthorized = await canManageStore(c);
 	if (!isAuthorized) {
 		throw new LogicError(LogicErrorCode.CannotManageStore);
 	}
 
-	return AddressData.createStoreAddress(ctx.prisma, {
+	return AddressData.createStoreAddress(c.var.prisma, {
 		...(args as StripUndefined<StoreAddressArgs>),
-		storeId: ctx.storeId
+		storeId: c.var.storeId
 	});
 };
 
 export const editStoreAddress = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	addressId: string,
 	args: Partial<StoreAddressArgs>
 ) => {
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	if (!ctx.storeId) {
+	if (!c.var.storeId) {
 		throw new LogicError(LogicErrorCode.StoreContextRequired);
 	}
 
-	const isAuthorized = await canManageStore(ctx);
+	const isAuthorized = await canManageStore(c);
 	if (!isAuthorized) {
 		throw new LogicError(LogicErrorCode.CannotManageStore);
 	}
 
-	const address = await AddressData.getAddressById(ctx.prisma, addressId);
-	if (!address || address.storeId !== ctx.storeId) {
+	const address = await AddressData.getAddressById(c.var.prisma, addressId);
+	if (!address || address.storeId !== c.var.storeId) {
 		throw new LogicError(LogicErrorCode.NotFound);
 	}
 
 	return AddressData.updateAddress(
-		ctx.prisma,
+		c.var.prisma,
 		addressId,
 		args as StripUndefined<typeof args>
 	);
 };
 
 export const deleteStoreAddress = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	addressId: string
 ) => {
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	if (!ctx.storeId) {
+	if (!c.var.storeId) {
 		throw new LogicError(LogicErrorCode.StoreContextRequired);
 	}
 
-	const isAuthorized = await canManageStore(ctx);
+	const isAuthorized = await canManageStore(c);
 	if (!isAuthorized) {
 		throw new LogicError(LogicErrorCode.CannotManageStore);
 	}
 
-	const address = await AddressData.getAddressById(ctx.prisma, addressId);
-	if (!address || address.storeId !== ctx.storeId) {
+	const address = await AddressData.getAddressById(c.var.prisma, addressId);
+	if (!address || address.storeId !== c.var.storeId) {
 		throw new LogicError(LogicErrorCode.NotFound);
 	}
 
-	await AddressData.deleteAddress(ctx.prisma, addressId);
+	await AddressData.deleteAddress(c.var.prisma, addressId);
 };

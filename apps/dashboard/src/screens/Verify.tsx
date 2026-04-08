@@ -1,11 +1,12 @@
-import { Button, Screen, Spacer, Typography } from '@habiti/components';
-import { RouteProp, useRoute } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { Button, Screen, Spacer, Typography } from '@habiti/components';
+import { RouteProp, useRoute } from '@react-navigation/native';
 
 import CodeInput from '../components/verify/CodeInput';
 import { useVerifyCodeMutation } from '../data/mutations';
 import { AppStackParamList } from '../navigation/types';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Verify = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Verify'>>();
@@ -20,34 +21,36 @@ const Verify = () => {
 	};
 
 	return (
-		<Screen style={{ justifyContent: 'center', paddingHorizontal: 16 }}>
-			<Typography size='xxxlarge' weight='bold'>
-				Enter verification code
-			</Typography>
-			<Typography variant='secondary'>
-				A verification code was sent to your email.
-			</Typography>
-			<TextInput
-				autoFocus
-				style={styles.hidden}
-				onChangeText={setCode}
-				keyboardType='number-pad'
-				maxLength={6}
-			/>
-			<Spacer y={16} />
-			<View style={styles.inputs}>
-				{Array(6)
-					.fill(0)
-					.map((_, index) => (
-						<CodeInput key={index} value={code[index]} />
-					))}
-			</View>
-			<Spacer y={32} />
-			<Button
-				text='Verify'
-				onPress={handleSubmit}
-				loading={verifyCodeMutation.isPending}
-			/>
+		<Screen style={{ padding: 16 }}>
+			<SafeAreaView>
+				<Typography size='xxxlarge' weight='bold'>
+					Enter verification code
+				</Typography>
+				<Typography variant='secondary'>
+					A verification code was sent to your email.
+				</Typography>
+				<TextInput
+					autoFocus
+					style={styles.hidden}
+					onChangeText={setCode}
+					keyboardType='number-pad'
+					maxLength={6}
+				/>
+				<Spacer y={16} />
+				<View style={styles.inputs}>
+					{Array(6)
+						.fill(0)
+						.map((_, index) => (
+							<CodeInput key={index} value={code[index]} />
+						))}
+				</View>
+				<Spacer y={32} />
+				<Button
+					text='Verify'
+					onPress={handleSubmit}
+					loading={verifyCodeMutation.isPending}
+				/>
+			</SafeAreaView>
 		</Screen>
 	);
 };

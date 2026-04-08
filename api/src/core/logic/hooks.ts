@@ -1,3 +1,5 @@
+import type { Context } from 'hono';
+
 import {
 	OrderStatus,
 	Product,
@@ -5,7 +7,7 @@ import {
 } from '../../generated/prisma/client';
 
 import { NotificationType } from '../notifications';
-import { AppContext } from '../../utils/context';
+import type { AppEnv } from '../../types/hono';
 import { updateStoreRevenue, decrementUnrealizedRevenue } from '../data/stores';
 
 const NotificationTypeByOrderStatus = {
@@ -28,11 +30,11 @@ interface CreateOrderHooksArgs {
 }
 
 export const createOrderHooks = (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	args: CreateOrderHooksArgs
 ) => {
 	if (args.status === OrderStatus.Completed) {
-		updateStoreRevenue(ctx.prisma, {
+		updateStoreRevenue(c.var.prisma, {
 			storeId: args.storeId,
 			total: args.amount,
 			orderId: args.orderId
@@ -44,7 +46,7 @@ export const createOrderHooks = (
 		(args.status === OrderStatus.Completed ||
 			args.status === OrderStatus.Cancelled)
 	) {
-		ctx.services.notifications.queueNotification({
+		c.var.services.notifications.queueNotification({
 			type: NotificationTypeByOrderStatus[args.status],
 			data: {
 				orderId: args.orderId,
@@ -54,7 +56,7 @@ export const createOrderHooks = (
 		});
 	}
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'order_created',
 		distinctId: args.userId,
 		properties: {
@@ -78,23 +80,23 @@ interface UpdateOrderHooksArgs {
 }
 
 export const updateOrderHooks = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	args: UpdateOrderHooksArgs
 ) => {
 	if (args.status === OrderStatus.Completed) {
-		await updateStoreRevenue(ctx.prisma, {
+		await updateStoreRevenue(c.var.prisma, {
 			storeId: args.storeId,
 			total: args.amount,
 			orderId: args.orderId
 		});
 	} else if (args.status === OrderStatus.Cancelled) {
-		await decrementUnrealizedRevenue(ctx.prisma, {
+		await decrementUnrealizedRevenue(c.var.prisma, {
 			storeId: args.storeId,
 			total: args.amount
 		});
 	}
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'order_status_updated',
 		distinctId: args.userId,
 		properties: {
@@ -111,7 +113,7 @@ export const updateOrderHooks = async (
 			args.status === OrderStatus.Cancelled ||
 			args.status === OrderStatus.ReadyForPickup)
 	) {
-		ctx.services.notifications.queueNotification({
+		c.var.services.notifications.queueNotification({
 			type: NotificationTypeByOrderStatus[args.status],
 			data: {
 				orderId: args.orderId,

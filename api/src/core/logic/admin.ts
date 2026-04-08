@@ -1,6 +1,8 @@
+import type { Context } from 'hono';
+
 import * as AdminData from '../data/admin';
 import * as AuthLogic from './auth';
-import type { AppContext } from '../../utils/context';
+import type { AppEnv } from '../../types/hono';
 import { LogicError, LogicErrorCode } from './errors';
 import { OrderStatus, ProductStatus } from '../../generated/prisma/client';
 
@@ -11,8 +13,11 @@ interface AdminLoginInput {
 	ipAddress?: string | undefined;
 }
 
-export const adminLogin = async (ctx: AppContext, input: AdminLoginInput) => {
-	const admin = await AdminData.getAdminByEmail(ctx.prisma, input.email);
+export const adminLogin = async (
+	c: Context<AppEnv>,
+	input: AdminLoginInput
+) => {
+	const admin = await AdminData.getAdminByEmail(c.var.prisma, input.email);
 
 	if (!admin) {
 		throw new LogicError(LogicErrorCode.AdminNotFound);
@@ -28,7 +33,7 @@ export const adminLogin = async (ctx: AppContext, input: AdminLoginInput) => {
 	}
 
 	const refreshResult = await AuthLogic.generateAdminRefreshToken(
-		ctx,
+		c,
 		admin.id,
 		undefined,
 		{
@@ -45,17 +50,17 @@ export const adminLogin = async (ctx: AppContext, input: AdminLoginInput) => {
 	return { accessToken, refreshToken: refreshResult.token, adminId: admin.id };
 };
 
-export const getAdminOverview = async (ctx: AppContext) => {
-	return AdminData.getAdminOverview(ctx.prisma);
+export const getAdminOverview = async (c: Context<AppEnv>) => {
+	return AdminData.getAdminOverview(c.var.prisma);
 };
 
 export const bulkUpdateUsers = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	ids: string[],
 	field: 'suspended',
 	value: boolean
 ) => {
-	return ctx.prisma.$transaction(async prisma => {
+	return c.var.prisma.$transaction(async prisma => {
 		const result = await AdminData.bulkUpdateUsers(prisma, ids, {
 			[field]: value
 		});
@@ -63,20 +68,20 @@ export const bulkUpdateUsers = async (
 	});
 };
 
-export const bulkDeleteUsers = async (ctx: AppContext, ids: string[]) => {
-	return ctx.prisma.$transaction(async prisma => {
+export const bulkDeleteUsers = async (c: Context<AppEnv>, ids: string[]) => {
+	return c.var.prisma.$transaction(async prisma => {
 		const result = await AdminData.bulkDeleteUsers(prisma, ids);
 		return { count: result.count };
 	});
 };
 
 export const bulkUpdateOrders = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	ids: string[],
 	field: 'status',
 	value: OrderStatus
 ) => {
-	return ctx.prisma.$transaction(async prisma => {
+	return c.var.prisma.$transaction(async prisma => {
 		const result = await AdminData.bulkUpdateOrders(prisma, ids, {
 			[field]: value
 		});
@@ -84,20 +89,20 @@ export const bulkUpdateOrders = async (
 	});
 };
 
-export const bulkDeleteOrders = async (ctx: AppContext, ids: string[]) => {
-	return ctx.prisma.$transaction(async prisma => {
+export const bulkDeleteOrders = async (c: Context<AppEnv>, ids: string[]) => {
+	return c.var.prisma.$transaction(async prisma => {
 		const result = await AdminData.bulkDeleteOrders(prisma, ids);
 		return { count: result.count };
 	});
 };
 
 export const bulkUpdateProducts = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	ids: string[],
 	field: 'status',
 	value: ProductStatus
 ) => {
-	return ctx.prisma.$transaction(async prisma => {
+	return c.var.prisma.$transaction(async prisma => {
 		const result = await AdminData.bulkUpdateProducts(prisma, ids, {
 			[field]: value
 		});
@@ -105,20 +110,20 @@ export const bulkUpdateProducts = async (
 	});
 };
 
-export const bulkDeleteProducts = async (ctx: AppContext, ids: string[]) => {
-	return ctx.prisma.$transaction(async prisma => {
+export const bulkDeleteProducts = async (c: Context<AppEnv>, ids: string[]) => {
+	return c.var.prisma.$transaction(async prisma => {
 		const result = await AdminData.bulkDeleteProducts(prisma, ids);
 		return { count: result.count };
 	});
 };
 
 export const bulkUpdateStores = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	ids: string[],
 	field: 'unlisted',
 	value: boolean
 ) => {
-	return ctx.prisma.$transaction(async prisma => {
+	return c.var.prisma.$transaction(async prisma => {
 		const result = await AdminData.bulkUpdateStores(prisma, ids, {
 			[field]: value
 		});
@@ -126,8 +131,8 @@ export const bulkUpdateStores = async (
 	});
 };
 
-export const bulkDeleteStores = async (ctx: AppContext, ids: string[]) => {
-	return ctx.prisma.$transaction(async prisma => {
+export const bulkDeleteStores = async (c: Context<AppEnv>, ids: string[]) => {
+	return c.var.prisma.$transaction(async prisma => {
 		const result = await AdminData.bulkDeleteStores(prisma, ids);
 		return { count: result.count };
 	});

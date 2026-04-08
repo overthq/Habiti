@@ -1,6 +1,5 @@
 import { RedisClient } from 'bun';
 
-import logger from '../utils/logger';
 import { env } from './env';
 
 const clientURL = env.REDIS_TLS_URL || env.REDIS_URL;
@@ -12,11 +11,11 @@ if (!clientURL) {
 const redisClient = new RedisClient(clientURL, { tls: !!env.REDIS_TLS_URL });
 
 redisClient.onconnect = () => {
-	logger.info('Connected to Redis!');
+	console.log('Connected to Redis!');
 };
 
 redisClient.onclose = error => {
-	logger.error('Redis connection closed', error);
+	console.error('Redis connection closed', error);
 };
 
 export default redisClient;

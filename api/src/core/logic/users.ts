@@ -1,3 +1,5 @@
+import type { Context } from 'hono';
+
 import { Prisma } from '../../generated/prisma/client';
 import type { StripUndefined } from '../../utils/objects';
 
@@ -13,12 +15,12 @@ import { registerBodySchema } from '../validations/rest';
 
 import { EmailType } from '../../services/email';
 
-import type { AppContext } from '../../utils/context';
+import type { AppEnv } from '../../types/hono';
 import type { CreateUserParams } from '../data/users';
 import { LogicError, LogicErrorCode } from './errors';
 import { UserFilters } from '../../utils/queries';
 
-export const register = async (ctx: AppContext, args: unknown) => {
+export const register = async (c: Context<AppEnv>, args: unknown) => {
 	const { data, error } = registerBodySchema.safeParse(args);
 
 	if (error) {
@@ -28,7 +30,7 @@ export const register = async (ctx: AppContext, args: unknown) => {
 		);
 	}
 
-	const existingUser = await UserData.getUserByEmail(ctx.prisma, data.email);
+	const existingUser = await UserData.getUserByEmail(c.var.prisma, data.email);
 
 	if (existingUser) {
 		throw new LogicError(
@@ -37,14 +39,14 @@ export const register = async (ctx: AppContext, args: unknown) => {
 		);
 	}
 
-	const user = await UserData.createUser(ctx.prisma, {
+	const user = await UserData.createUser(c.var.prisma, {
 		name: data.name,
 		email: data.email
 	});
 
 	const code = await cacheVerificationCode(data.email);
 
-	ctx.services.email.sendMail({
+	c.var.services.email.sendMail({
 		emailType: EmailType.NewAccount,
 		email: data.email,
 		code
@@ -57,8 +59,8 @@ interface LoginInput {
 	email: string;
 }
 
-export const login = async (ctx: AppContext, input: LoginInput) => {
-	const user = await UserData.getUserByEmail(ctx.prisma, input.email);
+export const login = async (c: Context<AppEnv>, input: LoginInput) => {
+	const user = await UserData.getUserByEmail(c.var.prisma, input.email);
 
 	if (!user) {
 		throw new LogicError(
@@ -69,7 +71,7 @@ export const login = async (ctx: AppContext, input: LoginInput) => {
 
 	const code = await cacheVerificationCode(input.email);
 
-	ctx.services.email.sendMail({
+	c.var.services.email.sendMail({
 		emailType: EmailType.NewAccount,
 		email: input.email,
 		code
@@ -78,15 +80,15 @@ export const login = async (ctx: AppContext, input: LoginInput) => {
 	return user;
 };
 
-export const getUsers = (ctx: AppContext, filters?: UserFilters) => {
-	return UserData.getUsers(ctx.prisma, filters);
+export const getUsers = (c: Context<AppEnv>, filters?: UserFilters) => {
+	return UserData.getUsers(c.var.prisma, filters);
 };
 
-export const getCurrentUser = (ctx: AppContext) => {
-	if (!ctx.user) {
+export const getCurrentUser = (c: Context<AppEnv>) => {
+	if (!c.var.auth) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
-	return UserData.getUserById(ctx.prisma, ctx.user.id);
+	return UserData.getUserById(c.var.prisma, c.var.auth.id);
 };
 
 interface UpdateUserInput {
@@ -95,109 +97,121 @@ interface UpdateUserInput {
 	email?: string | undefined;
 }
 
-export const updateUser = async (ctx: AppContext, input: UpdateUserInput) => {
+export const updateUser = async (
+	c: Context<AppEnv>,
+	input: UpdateUserInput
+) => {
 	const { userId, ...rest } = input;
 
-	if (!ctx.user?.id || (userId !== ctx.user.id && !ctx.isAdmin)) {
+	if (!c.var.auth?.id || (userId !== c.var.auth.id && !c.var.isAdmin)) {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
 	return UserData.updateUser(
-		ctx.prisma,
+		c.var.prisma,
 		userId,
 		rest as StripUndefined<typeof rest>
 	);
 };
 
 export const updateCurrentUser = (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: Omit<UpdateUserInput, 'userId'>
 ) => {
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	return updateUser(ctx, { ...input, userId: ctx.user.id });
+	return updateUser(c, { ...input, userId: c.var.auth.id });
 };
 
-export const deleteCurrentUser = (ctx: AppContext) => {
-	if (!ctx.user?.id) {
+export const deleteCurrentUser = (c: Context<AppEnv>) => {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	return deleteUser(ctx, { userId: ctx.user.id });
+	return deleteUser(c, { userId: c.var.auth.id });
 };
 
 interface DeleteUserInput {
 	userId: string;
 }
 
-export const deleteUser = async (ctx: AppContext, input: DeleteUserInput) => {
+export const deleteUser = async (
+	c: Context<AppEnv>,
+	input: DeleteUserInput
+) => {
 	const { userId } = input;
 
-	if (!ctx.user?.id || (userId !== ctx.user.id && !ctx.isAdmin)) {
+	if (!c.var.auth?.id || (userId !== c.var.auth.id && !c.var.isAdmin)) {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	return UserData.deleteUser(ctx.prisma, userId);
+	return UserData.deleteUser(c.var.prisma, userId);
 };
 
-export const getFollowedStores = (ctx: AppContext) => {
-	if (!ctx.user?.id) {
+export const getFollowedStores = (c: Context<AppEnv>) => {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	return StoreData.getFollowedStores(ctx.prisma, ctx.user.id);
+	return StoreData.getFollowedStores(c.var.prisma, c.var.auth.id);
 };
 
-export const getManagedStores = (ctx: AppContext) => {
-	if (!ctx.user?.id) {
+export const getManagedStores = (c: Context<AppEnv>) => {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	return UserData.getManagedStores(ctx.prisma, ctx.user.id);
+	return UserData.getManagedStores(c.var.prisma, c.var.auth.id);
 };
 
-export const getUserById = (ctx: AppContext, userId: string) => {
-	return UserData.getUserById(ctx.prisma, userId);
+export const getUserById = (c: Context<AppEnv>, userId: string) => {
+	return UserData.getUserById(c.var.prisma, userId);
 };
 
-export const getOrders = (ctx: AppContext, query: Prisma.OrderFindManyArgs) => {
-	if (!ctx.user?.id) {
+export const getOrders = (
+	c: Context<AppEnv>,
+	query: Prisma.OrderFindManyArgs
+) => {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	return OrderData.getOrdersByUserId(ctx.prisma, ctx.user.id, query);
+	return OrderData.getOrdersByUserId(c.var.prisma, c.var.auth.id, query);
 };
 
-export const getCarts = (ctx: AppContext, query: Prisma.CartFindManyArgs) => {
-	if (!ctx.user?.id) {
+export const getCarts = (
+	c: Context<AppEnv>,
+	query: Prisma.CartFindManyArgs
+) => {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	return CartData.getCartsByUserId(ctx.prisma, ctx.user.id, query);
+	return CartData.getCartsByUserId(c.var.prisma, c.var.auth.id, query);
 };
 
-export const getCards = (ctx: AppContext) => {
-	if (!ctx.user?.id) {
+export const getCards = (c: Context<AppEnv>) => {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	return CardData.getCardsByUserId(ctx.prisma, ctx.user.id);
+	return CardData.getCardsByUserId(c.var.prisma, c.var.auth.id);
 };
 
-export const getDeliveryAddresses = (ctx: AppContext) => {
-	if (!ctx.user?.id) {
+export const getDeliveryAddresses = (c: Context<AppEnv>) => {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	return AddressData.getUserAddresses(ctx.prisma, ctx.user.id);
+	return AddressData.getUserAddresses(c.var.prisma, c.var.auth.id);
 };
 
-export const getUserByEmail = (ctx: AppContext, email: string) => {
-	return UserData.getUserByEmail(ctx.prisma, email);
+export const getUserByEmail = (c: Context<AppEnv>, email: string) => {
+	return UserData.getUserByEmail(c.var.prisma, email);
 };
 
-export const createUser = (ctx: AppContext, input: CreateUserParams) => {
-	return UserData.createUser(ctx.prisma, input);
+export const createUser = (c: Context<AppEnv>, input: CreateUserParams) => {
+	return UserData.createUser(c.var.prisma, input);
 };

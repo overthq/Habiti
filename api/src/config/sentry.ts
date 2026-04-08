@@ -8,7 +8,6 @@ if (env.SENTRY_DSN) {
 		dsn: env.SENTRY_DSN,
 		integrations: [
 			Sentry.httpIntegration(),
-			Sentry.expressIntegration(),
 			Sentry.prismaIntegration({
 				prismaInstrumentation: new PrismaInstrumentation()
 			})

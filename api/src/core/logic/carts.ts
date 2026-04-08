@@ -1,9 +1,11 @@
+import type { Context } from 'hono';
+
 import * as CartData from '../data/carts';
-import { AppContext } from '../../utils/context';
+import type { AppEnv } from '../../types/hono';
 import { LogicError, LogicErrorCode } from './errors';
 
-export const getCartById = async (ctx: AppContext, cartId: string) => {
-	const cart = await CartData.getCartById(ctx.prisma, cartId);
+export const getCartById = async (c: Context<AppEnv>, cartId: string) => {
+	const cart = await CartData.getCartById(c.var.prisma, cartId);
 
 	if (!cart) {
 		throw new LogicError(LogicErrorCode.CartNotFound);
@@ -12,19 +14,19 @@ export const getCartById = async (ctx: AppContext, cartId: string) => {
 	// Allow access if:
 	// 1. Cart belongs to current user
 	// 2. Cart is a guest cart (no userId) - anyone with the cart ID can view it
-	const isOwner = cart.userId !== null && cart.userId === ctx.user?.id;
+	const isOwner = cart.userId !== null && cart.userId === c.var.auth?.id;
 	const isGuestCart = cart.userId === null;
 
 	if (!isOwner && !isGuestCart) {
-		if (!ctx.user?.id) {
+		if (!c.var.auth?.id) {
 			throw new LogicError(LogicErrorCode.NotAuthenticated);
 		}
 
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	const cartViewerContext = ctx.user?.id
-		? await CartData.getCartViewerContext(ctx.prisma, ctx.user.id)
+	const cartViewerContext = c.var.auth?.id
+		? await CartData.getCartViewerContext(c.var.prisma, c.var.auth.id)
 		: null;
 
 	const transaction = calculatePaystackFee(cart.total);
@@ -37,19 +39,22 @@ export const getCartById = async (ctx: AppContext, cartId: string) => {
 	};
 };
 
-export const getCartsByUserId = async (ctx: AppContext, userId: string) => {
-	if (!ctx.user?.id) {
+export const getCartsByUserId = async (c: Context<AppEnv>, userId: string) => {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
-	if (userId !== ctx.user.id) {
+	if (userId !== c.var.auth.id) {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	return CartData.getCartsByUserId(ctx.prisma, userId);
+	return CartData.getCartsByUserId(c.var.prisma, userId);
 };
 
-export const getCartsFromList = async (ctx: AppContext, cartIds: string[]) => {
-	return CartData.getCartsFromList(ctx.prisma, cartIds);
+export const getCartsFromList = async (
+	c: Context<AppEnv>,
+	cartIds: string[]
+) => {
+	return CartData.getCartsFromList(c.var.prisma, cartIds);
 };
 
 interface AddProductToCartInput {
@@ -60,7 +65,7 @@ interface AddProductToCartInput {
 }
 
 export const addProductToCart = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: AddProductToCartInput
 ) => {
 	const { storeId, productId, quantity, cartId } = input;
@@ -69,19 +74,19 @@ export const addProductToCart = async (
 		throw new LogicError(LogicErrorCode.InvalidQuantity);
 	}
 
-	const cartProduct = await CartData.addProductToCart(ctx.prisma, {
+	const cartProduct = await CartData.addProductToCart(c.var.prisma, {
 		storeId,
 		productId,
 		quantity,
-		...(ctx.user?.id && { userId: ctx.user.id }),
+		...(c.var.auth?.id && { userId: c.var.auth.id }),
 		...(cartId && { cartId })
 	});
 
 	// Only track analytics if user is authenticated
-	if (ctx.user?.id) {
-		ctx.services.analytics.track({
+	if (c.var.auth?.id) {
+		c.var.services.analytics.track({
 			event: 'product_added_to_cart',
-			distinctId: ctx.user.id,
+			distinctId: c.var.auth.id,
 			properties: {
 				productId,
 				quantity
@@ -99,27 +104,27 @@ interface RemoveProductFromCartInput {
 }
 
 export const removeProductFromCart = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: RemoveProductFromCartInput
 ) => {
 	const { cartId, productId } = input;
 
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const cart = await CartData.getCartById(ctx.prisma, cartId);
+	const cart = await CartData.getCartById(c.var.prisma, cartId);
 
 	if (!cart) {
 		throw new LogicError(LogicErrorCode.CartNotFound);
 	}
 
-	if (cart.userId !== ctx.user.id) {
+	if (cart.userId !== c.var.auth.id) {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	const cartProduct = await CartData.removeProductFromCart(ctx.prisma, {
-		userId: ctx.user.id,
+	const cartProduct = await CartData.removeProductFromCart(c.var.prisma, {
+		userId: c.var.auth.id,
 		cartId,
 		productId
 	});
@@ -128,9 +133,9 @@ export const removeProductFromCart = async (
 		throw new LogicError(LogicErrorCode.NotFound);
 	}
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'product_removed_from_cart',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			productId,
 			cartId
@@ -148,12 +153,12 @@ interface UpdateCartQuantityInput {
 }
 
 export const updateCartProductQuantity = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: UpdateCartQuantityInput
 ) => {
 	const { cartId, productId, quantity } = input;
 
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
@@ -161,25 +166,25 @@ export const updateCartProductQuantity = async (
 		throw new LogicError(LogicErrorCode.NegativeQuantity);
 	}
 
-	const cart = await CartData.getCartById(ctx.prisma, cartId);
+	const cart = await CartData.getCartById(c.var.prisma, cartId);
 
 	if (!cart) {
 		throw new LogicError(LogicErrorCode.CartNotFound);
 	}
 
-	if (cart.userId !== ctx.user.id) {
+	if (cart.userId !== c.var.auth.id) {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	const cartProduct = await CartData.updateCartProductQuantity(ctx.prisma, {
+	const cartProduct = await CartData.updateCartProductQuantity(c.var.prisma, {
 		cartId,
 		productId,
 		quantity
 	});
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'cart_quantity_updated',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			productId,
 			cartId,
@@ -195,28 +200,31 @@ interface DeleteCartInput {
 	cartId: string;
 }
 
-export const deleteCart = async (ctx: AppContext, input: DeleteCartInput) => {
+export const deleteCart = async (
+	c: Context<AppEnv>,
+	input: DeleteCartInput
+) => {
 	const { cartId } = input;
 
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const cart = await CartData.getCartById(ctx.prisma, cartId);
+	const cart = await CartData.getCartById(c.var.prisma, cartId);
 
 	if (!cart) {
 		throw new LogicError(LogicErrorCode.CartNotFound);
 	}
 
-	if (cart.userId !== ctx.user.id) {
+	if (cart.userId !== c.var.auth.id) {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	await CartData.deleteCartById(ctx.prisma, cartId);
+	await CartData.deleteCartById(c.var.prisma, cartId);
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'cart_deleted',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			cartId,
 			productCount: cart.products.length,
@@ -233,15 +241,18 @@ interface ClaimCartsInput {
 	userId: string;
 }
 
-export const claimCarts = async (ctx: AppContext, input: ClaimCartsInput) => {
+export const claimCarts = async (
+	c: Context<AppEnv>,
+	input: ClaimCartsInput
+) => {
 	const { cartIds, userId } = input;
 
-	const claimedCarts = await CartData.claimCarts(ctx.prisma, {
+	const claimedCarts = await CartData.claimCarts(c.var.prisma, {
 		userId,
 		cartIds
 	});
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'carts_claimed',
 		distinctId: userId,
 		properties: {

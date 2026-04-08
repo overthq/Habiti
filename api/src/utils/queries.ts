@@ -1,5 +1,3 @@
-import { Request } from 'express';
-
 import {
 	userFiltersSchema,
 	productFiltersSchema,
@@ -133,20 +131,20 @@ type FilterOperators = {
 	gte?: number;
 };
 
-// NOTE: This depends on Express properly parsing query parameters into objects
-// If we move away from Express, we might need to write a custom parser for
-// query parameters (or just use `qs`), before passing them to this function.
+// NOTE: Hono does not parse nested query parameters into objects like Express does.
+// If complex nested query parsing is needed, consider using `qs` to parse
+// `c.req.url` query string before passing to this function.
 
-export const hydrateQuery = (query: Request['query']) => {
+export const hydrateQuery = (query: Record<string, string | string[]>) => {
 	let filter: Record<string, FilterOperators> = {};
 	let orderBy: Record<string, 'asc' | 'desc'> = {};
 
 	if (query.filter) {
-		filter = query.filter as Record<string, FilterOperators>;
+		filter = query.filter as unknown as Record<string, FilterOperators>;
 	}
 
 	if (query.orderBy) {
-		orderBy = query.orderBy as Record<string, 'asc' | 'desc'>;
+		orderBy = query.orderBy as unknown as Record<string, 'asc' | 'desc'>;
 	}
 
 	return {

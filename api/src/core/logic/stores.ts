@@ -1,4 +1,6 @@
-import { AppContext } from '../../utils/context';
+import type { Context } from 'hono';
+
+import type { AppEnv } from '../../types/hono';
 import type { StripUndefined } from '../../utils/objects';
 
 import * as PushTokenData from '../data/pushTokens';
@@ -23,19 +25,22 @@ interface CreateStoreInput {
 	bankAccountReference?: string | undefined;
 }
 
-export const createStore = async (ctx: AppContext, input: CreateStoreInput) => {
-	if (!ctx.user?.id) {
+export const createStore = async (
+	c: Context<AppEnv>,
+	input: CreateStoreInput
+) => {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const store = await StoreData.createStore(ctx.prisma, {
+	const store = await StoreData.createStore(c.var.prisma, {
 		...(input as StripUndefined<CreateStoreInput>),
-		userId: ctx.user.id
+		userId: c.var.auth.id
 	});
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'store_created',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			storeId: store.id,
 			storeName: store.name,
@@ -64,15 +69,18 @@ interface UpdateStoreInput {
 	imagePublicId?: string | undefined;
 }
 
-export const updateStore = async (ctx: AppContext, input: UpdateStoreInput) => {
+export const updateStore = async (
+	c: Context<AppEnv>,
+	input: UpdateStoreInput
+) => {
 	const { storeId, ...updateData } = input;
 
-	if (ctx.storeId && ctx.storeId !== storeId) {
+	if (c.var.storeId && c.var.storeId !== storeId) {
 		throw new LogicError(LogicErrorCode.CannotManageStore);
 	}
 
 	const existingStore = await StoreData.getStoreByIdWithManagers(
-		ctx.prisma,
+		c.var.prisma,
 		storeId
 	);
 
@@ -80,11 +88,11 @@ export const updateStore = async (ctx: AppContext, input: UpdateStoreInput) => {
 		throw new LogicError(LogicErrorCode.StoreNotFound);
 	}
 
-	if (!ctx.user) {
+	if (!c.var.auth) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const isAuthorized = await canManageStore(ctx);
+	const isAuthorized = await canManageStore(c);
 
 	if (!isAuthorized) {
 		throw new LogicError(LogicErrorCode.Forbidden);
@@ -92,7 +100,7 @@ export const updateStore = async (ctx: AppContext, input: UpdateStoreInput) => {
 
 	if (updateData.bankAccountNumber && updateData.bankCode) {
 		const { data, status } = await createTransferReceipient({
-			name: ctx.user.name,
+			name: c.var.auth.name,
 			accountNumber: updateData.bankAccountNumber,
 			bankCode: updateData.bankCode
 		});
@@ -111,14 +119,14 @@ export const updateStore = async (ctx: AppContext, input: UpdateStoreInput) => {
 	}
 
 	const store = await StoreData.updateStore(
-		ctx.prisma,
+		c.var.prisma,
 		storeId,
 		updateData as StripUndefined<typeof updateData>
 	);
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'store_updated',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			storeId: store.id,
 			storeName: store.name,
@@ -130,21 +138,25 @@ export const updateStore = async (ctx: AppContext, input: UpdateStoreInput) => {
 	return store;
 };
 
-export const getStoreById = async (ctx: AppContext, storeId: string) => {
-	const store = await StoreData.getStoreByIdWithProducts(ctx.prisma, storeId);
+export const getStoreById = async (c: Context<AppEnv>, storeId: string) => {
+	const store = await StoreData.getStoreByIdWithProducts(c.var.prisma, storeId);
 
 	if (!store) {
 		throw new LogicError(LogicErrorCode.StoreNotFound);
 	}
 
-	const storeViewerContext = ctx.user?.id
-		? await StoreData.getStoreViewerContext(ctx.prisma, ctx.user.id, store.id)
+	const storeViewerContext = c.var.auth?.id
+		? await StoreData.getStoreViewerContext(
+				c.var.prisma,
+				c.var.auth.id,
+				store.id
+			)
 		: null;
 
-	if (ctx.user?.id) {
-		ctx.services.analytics.track({
+	if (c.var.auth?.id) {
+		c.var.services.analytics.track({
 			event: 'store_viewed',
-			distinctId: ctx.user.id,
+			distinctId: c.var.auth.id,
 			properties: {
 				storeId: store.id,
 				storeName: store.name
@@ -160,20 +172,23 @@ interface DeleteStoreInput {
 	storeId: string;
 }
 
-export const deleteStore = async (ctx: AppContext, input: DeleteStoreInput) => {
+export const deleteStore = async (
+	c: Context<AppEnv>,
+	input: DeleteStoreInput
+) => {
 	const { storeId } = input;
 
-	const store = await StoreData.getStoreByIdWithManagers(ctx.prisma, storeId);
+	const store = await StoreData.getStoreByIdWithManagers(c.var.prisma, storeId);
 
 	if (!store) {
 		throw new LogicError(LogicErrorCode.StoreNotFound);
 	}
 
-	if (!ctx.user) {
+	if (!c.var.auth) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const currentUserId = ctx.user.id;
+	const currentUserId = c.var.auth.id;
 
 	const isCurrentUserManager = store.managers.some(
 		m => m.managerId === currentUserId
@@ -183,11 +198,11 @@ export const deleteStore = async (ctx: AppContext, input: DeleteStoreInput) => {
 		throw new LogicError(LogicErrorCode.CannotManageStore);
 	}
 
-	await StoreData.deleteStore(ctx.prisma, storeId);
+	await StoreData.deleteStore(c.var.prisma, storeId);
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'store_deleted',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			storeId: store.id,
 			storeName: store.name
@@ -204,22 +219,22 @@ interface CreateStoreManagerInput {
 }
 
 export const createStoreManager = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: CreateStoreManagerInput
 ) => {
 	const { storeId, userId } = input;
 
-	const store = await StoreData.getStoreByIdWithManagers(ctx.prisma, storeId);
+	const store = await StoreData.getStoreByIdWithManagers(c.var.prisma, storeId);
 
 	if (!store) {
 		throw new LogicError(LogicErrorCode.StoreNotFound);
 	}
 
-	if (!ctx.user) {
+	if (!c.var.auth) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const currentUserId = ctx.user.id;
+	const currentUserId = c.var.auth.id;
 
 	const isCurrentUserManager = store.managers.some(
 		m => m.managerId === currentUserId
@@ -229,14 +244,14 @@ export const createStoreManager = async (
 		throw new LogicError(LogicErrorCode.CannotManageStore);
 	}
 
-	const manager = await StoreData.createStoreManager(ctx.prisma, {
+	const manager = await StoreData.createStoreManager(c.var.prisma, {
 		storeId,
 		userId
 	});
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'store_manager_added',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			storeId,
 			managerId: userId,
@@ -254,22 +269,22 @@ interface RemoveStoreManagerInput {
 }
 
 export const removeStoreManager = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: RemoveStoreManagerInput
 ) => {
 	const { storeId, userId } = input;
 
-	const store = await StoreData.getStoreByIdWithManagers(ctx.prisma, storeId);
+	const store = await StoreData.getStoreByIdWithManagers(c.var.prisma, storeId);
 
 	if (!store) {
 		throw new LogicError(LogicErrorCode.StoreNotFound);
 	}
 
-	if (!ctx.user) {
+	if (!c.var.auth) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const currentUserId = ctx.user.id;
+	const currentUserId = c.var.auth.id;
 
 	const isCurrentUserManager = store.managers.some(
 		m => m.managerId === currentUserId
@@ -283,11 +298,11 @@ export const removeStoreManager = async (
 		throw new LogicError(LogicErrorCode.CannotRemoveLastManager);
 	}
 
-	await StoreData.removeStoreManager(ctx.prisma, storeId, userId);
+	await StoreData.removeStoreManager(c.var.prisma, storeId, userId);
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'store_manager_removed',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			storeId,
 			removedManagerId: userId,
@@ -303,20 +318,26 @@ interface FollowStoreInput {
 	storeId: string;
 }
 
-export const followStore = async (ctx: AppContext, input: FollowStoreInput) => {
+export const followStore = async (
+	c: Context<AppEnv>,
+	input: FollowStoreInput
+) => {
 	const { storeId } = input;
 
-	const store = await StoreData.getStoreByIdWithFollowers(ctx.prisma, storeId);
+	const store = await StoreData.getStoreByIdWithFollowers(
+		c.var.prisma,
+		storeId
+	);
 
 	if (!store) {
 		throw new LogicError(LogicErrorCode.StoreNotFound);
 	}
 
-	if (!ctx.user) {
+	if (!c.var.auth) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const currentUserId = ctx.user.id;
+	const currentUserId = c.var.auth.id;
 
 	const isAlreadyFollowing = store.followers.some(
 		f => f.followerId === currentUserId
@@ -326,29 +347,29 @@ export const followStore = async (ctx: AppContext, input: FollowStoreInput) => {
 		throw new LogicError(LogicErrorCode.AlreadyFollowing);
 	}
 
-	const follower = await StoreData.followStore(ctx.prisma, {
+	const follower = await StoreData.followStore(c.var.prisma, {
 		storeId,
-		userId: ctx.user.id
+		userId: c.var.auth.id
 	});
 
 	const pushTokens = await PushTokenData.getStorePushTokens(
-		ctx.prisma,
+		c.var.prisma,
 		storeId
 	);
 
 	for (const pushToken of pushTokens) {
 		if (pushToken) {
-			ctx.services.notifications.queueNotification({
+			c.var.services.notifications.queueNotification({
 				type: NotificationType.NewFollower,
-				data: { followerName: ctx.user.name },
+				data: { followerName: c.var.auth.name },
 				recipientTokens: [pushToken]
 			});
 		}
 	}
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'store_followed',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			storeId,
 			storeName: store.name
@@ -364,22 +385,25 @@ interface UnfollowStoreInput {
 }
 
 export const unfollowStore = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: UnfollowStoreInput
 ) => {
 	const { storeId } = input;
 
-	const store = await StoreData.getStoreByIdWithFollowers(ctx.prisma, storeId);
+	const store = await StoreData.getStoreByIdWithFollowers(
+		c.var.prisma,
+		storeId
+	);
 
 	if (!store) {
 		throw new LogicError(LogicErrorCode.StoreNotFound);
 	}
 
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const currentUserId = ctx.user.id;
+	const currentUserId = c.var.auth.id;
 
 	const isFollowing = store.followers.some(f => f.followerId === currentUserId);
 
@@ -387,14 +411,14 @@ export const unfollowStore = async (
 		throw new LogicError(LogicErrorCode.NotFollowing);
 	}
 
-	const follower = await StoreData.unfollowStore(ctx.prisma, {
+	const follower = await StoreData.unfollowStore(c.var.prisma, {
 		storeId,
-		userId: ctx.user.id
+		userId: c.var.auth.id
 	});
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'store_unfollowed',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			storeId,
 			storeName: store.name
@@ -405,59 +429,59 @@ export const unfollowStore = async (
 	return follower;
 };
 
-export const getStoresByUserId = async (ctx: AppContext, userId: string) => {
-	if (!ctx.user?.id || userId !== ctx.user.id) {
+export const getStoresByUserId = async (c: Context<AppEnv>, userId: string) => {
+	if (!c.var.auth?.id || userId !== c.var.auth.id) {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	return StoreData.getStoresByUserId(ctx.prisma, userId);
+	return StoreData.getStoresByUserId(c.var.prisma, userId);
 };
 
-export const getFollowedStores = async (ctx: AppContext, userId: string) => {
-	if (!ctx.user?.id || userId !== ctx.user.id) {
+export const getFollowedStores = async (c: Context<AppEnv>, userId: string) => {
+	if (!c.var.auth?.id || userId !== c.var.auth.id) {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	return StoreData.getFollowedStores(ctx.prisma, userId);
+	return StoreData.getFollowedStores(c.var.prisma, userId);
 };
 
-export const getStores = async (ctx: AppContext, query: any) => {
-	return StoreData.getStores(ctx.prisma, query);
+export const getStores = async (c: Context<AppEnv>, query: any) => {
+	return StoreData.getStores(c.var.prisma, query);
 };
 
 export const getStoreManagers = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	storeId: string,
 	query: any
 ) => {
-	return StoreData.getStoreManagers(ctx.prisma, storeId, query);
+	return StoreData.getStoreManagers(c.var.prisma, storeId, query);
 };
 
 export const getStoreProducts = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	storeId: string,
 	filters?: ProductFilters
 ) => {
-	return StoreData.getStoreProducts(ctx.prisma, storeId, filters);
+	return StoreData.getStoreProducts(c.var.prisma, storeId, filters);
 };
 
 export const getStoreOrders = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	storeId: string,
 	filters?: OrderFilters
 ) => {
-	return StoreData.getStoreOrders(ctx.prisma, storeId, filters);
+	return StoreData.getStoreOrders(c.var.prisma, storeId, filters);
 };
 
 export const getStoreCustomer = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	storeId: string,
 	userId: string
 ) => {
-	await canManageStore(ctx);
+	await canManageStore(c);
 
 	const customer = await StoreData.getStoreCustomer(
-		ctx.prisma,
+		c.var.prisma,
 		storeId,
 		userId
 	);
@@ -470,8 +494,8 @@ export const getStoreCustomer = async (
 };
 
 export const getTrendingStores = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	options: StoreData.GetTrendingStoresOptions = {}
 ) => {
-	return StoreData.getTrendingStores(ctx.prisma, options);
+	return StoreData.getTrendingStores(c.var.prisma, options);
 };

@@ -1,9 +1,11 @@
+import type { Context } from 'hono';
+
 import * as PaymentLogic from './payments';
 import * as TransactionData from '../data/transactions';
 import * as StoreData from '../data/stores';
 
 import { TransactionFilters } from '../data/transactions';
-import { AppContext } from '../../utils/context';
+import type { AppEnv } from '../../types/hono';
 import {
 	TransactionStatus,
 	TransactionType
@@ -12,38 +14,42 @@ import { LogicError, LogicErrorCode } from './errors';
 import { canManageStore } from './permissions';
 
 export const getStoreTransactions = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	storeId: string,
 	filters?: TransactionFilters
 ) => {
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	if (ctx.storeId && ctx.storeId !== storeId && !ctx.isAdmin) {
+	if (c.var.storeId && c.var.storeId !== storeId && !c.var.isAdmin) {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	if (!ctx.isAdmin) {
-		const canManage = await canManageStore(ctx);
+	if (!c.var.isAdmin) {
+		const canManage = await canManageStore(c);
 		if (!canManage) {
 			throw new LogicError(LogicErrorCode.CannotManageStore);
 		}
 	}
 
-	return TransactionData.getTransactionsByStoreId(ctx.prisma, storeId, filters);
+	return TransactionData.getTransactionsByStoreId(
+		c.var.prisma,
+		storeId,
+		filters
+	);
 };
 
 export const getTransactionById = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	transactionId: string
 ) => {
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	const transaction = await TransactionData.getTransactionById(
-		ctx.prisma,
+		c.var.prisma,
 		transactionId
 	);
 
@@ -52,12 +58,12 @@ export const getTransactionById = async (
 	}
 
 	// Verify the user can access this store's transactions
-	if (!ctx.isAdmin) {
-		if (ctx.storeId !== transaction.storeId) {
+	if (!c.var.isAdmin) {
+		if (c.var.storeId !== transaction.storeId) {
 			throw new LogicError(LogicErrorCode.Forbidden);
 		}
 
-		const canManage = await canManageStore(ctx);
+		const canManage = await canManageStore(c);
 		if (!canManage) {
 			throw new LogicError(LogicErrorCode.CannotManageStore);
 		}
@@ -71,16 +77,16 @@ interface CreatePayoutTransactionInput {
 }
 
 export const createPayoutTransaction = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: CreatePayoutTransactionInput
 ) => {
 	const { amount } = input;
 
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	if (!ctx.storeId) {
+	if (!c.var.storeId) {
 		throw new LogicError(LogicErrorCode.StoreContextRequired);
 	}
 
@@ -89,15 +95,15 @@ export const createPayoutTransaction = async (
 	}
 
 	const store = await StoreData.getStoreByIdWithManagers(
-		ctx.prisma,
-		ctx.storeId
+		c.var.prisma,
+		c.var.storeId
 	);
 
 	if (!store) {
 		throw new LogicError(LogicErrorCode.StoreNotFound);
 	}
 
-	if (!canManageStore(ctx)) {
+	if (!canManageStore(c)) {
 		throw new LogicError(LogicErrorCode.CannotManageStore);
 	}
 
@@ -111,9 +117,9 @@ export const createPayoutTransaction = async (
 		throw new LogicError(LogicErrorCode.NoAccountDetails);
 	}
 
-	const storeId = ctx.storeId as string;
+	const storeId = c.var.storeId as string;
 
-	const transaction = await ctx.prisma.$transaction(async tx => {
+	const transaction = await c.var.prisma.$transaction(async tx => {
 		return TransactionData.createTransaction(tx, {
 			storeId,
 			type: TransactionType.Payout,
@@ -124,7 +130,7 @@ export const createPayoutTransaction = async (
 	});
 
 	try {
-		await PaymentLogic.payAccount(ctx, {
+		await PaymentLogic.payAccount(c, {
 			amount: amount.toString(),
 			reference: transaction.id,
 			recipient: store.bankAccountReference,
@@ -132,7 +138,7 @@ export const createPayoutTransaction = async (
 		});
 	} catch (error) {
 		await TransactionData.updateTransactionStatus(
-			ctx.prisma,
+			c.var.prisma,
 			transaction.id,
 			TransactionStatus.Failure
 		);
@@ -140,9 +146,9 @@ export const createPayoutTransaction = async (
 		throw new LogicError(LogicErrorCode.PayoutFailed);
 	}
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'payout_created',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			storeId,
 			amount,
@@ -162,22 +168,22 @@ interface UpdatePayoutTransactionStatusInput {
 }
 
 export const updatePayoutTransactionStatus = async (
-	ctx: AppContext,
+	c: Context<AppEnv>,
 	input: UpdatePayoutTransactionStatusInput
 ) => {
-	if (!ctx.user?.id) {
+	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
 	const updated = await TransactionData.adminUpdatePayoutTransaction(
-		ctx.prisma,
+		c.var.prisma,
 		input.transactionId,
 		input.status
 	);
 
-	ctx.services.analytics.track({
+	c.var.services.analytics.track({
 		event: 'payout_transaction_updated',
-		distinctId: ctx.user.id,
+		distinctId: c.var.auth.id,
 		properties: {
 			transactionId: input.transactionId,
 			status: input.status,

@@ -1,45 +1,48 @@
-import { Request, Response, NextFunction } from 'express';
+import { jwt } from 'hono/jwt';
+import { createMiddleware } from 'hono/factory';
 
 import { APIException } from '../types/errors';
 import { env } from '../config/env';
-import * as AuthLogic from '../core/logic/auth';
+import type { AppEnv } from '../types/hono';
 
 type AuthOptions = {
 	required?: boolean;
 	adminOnly?: boolean;
 };
 
+const jwtMiddleware = jwt({ secret: env.JWT_SECRET, alg: 'HS256' });
+
 export const auth = (options: AuthOptions = {}) => {
 	const { required = true, adminOnly = false } = options;
 
-	return async (req: Request, _: Response, next: NextFunction) => {
-		const token = req.headers.authorization?.split(' ')[1];
+	return createMiddleware<AppEnv>(async (c, next) => {
+		const token = c.req.header('authorization')?.split(' ')[1];
 
-		// No token provided
 		if (!token) {
 			if (required) {
-				return next(new APIException(401, 'Authentication required'));
+				throw new APIException(401, 'Authentication required');
 			}
-			// Optional auth with no token - proceed as anonymous
+			c.set('storeId', c.req.header('x-market-store-id'));
 			return next();
 		}
 
-		// Token was provided - must be valid (regardless of `required`)
 		try {
-			const decoded = await AuthLogic.verifyAccessToken(token);
+			await jwtMiddleware(c, async () => {});
+			const payload = c.get('jwtPayload');
 
-			if (adminOnly && (decoded as any).role !== 'admin') {
-				return next(new APIException(403, 'Forbidden'));
+			if (adminOnly && payload.role !== 'admin') {
+				throw new APIException(403, 'Forbidden');
 			}
 
-			req.auth = decoded as any;
+			c.set('auth', payload);
+			c.set('storeId', payload.storeId ?? c.req.header('x-market-store-id'));
+			c.set('isAdmin', payload.role === 'admin');
 			return next();
 		} catch (error) {
-			// Token provided but invalid/expired - always return 401
-			// This allows the client to refresh the token and retry
-			return next(new APIException(401, 'Invalid or expired token'));
+			if (error instanceof APIException) throw error;
+			throw new APIException(401, 'Invalid or expired token');
 		}
-	};
+	});
 };
 
 export const authenticate = auth({ required: true });
