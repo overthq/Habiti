@@ -4,6 +4,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	...config,
 	name: 'Habiti Dashboard',
 	slug: 'habiti-dashboard',
+	scheme: 'habiti-dashboard',
 	owner: 'overthq',
 	version: '1.0.0',
 	orientation: 'portrait',

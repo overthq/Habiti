@@ -22,6 +22,26 @@ export interface NotificationPayload {
 	recipientTokens: string[];
 }
 
+const DASHBOARD_SCHEME = 'habiti-dashboard';
+
+export function getNotificationUrl(
+	type: NotificationType,
+	data: Record<string, any>
+): string | undefined {
+	switch (type) {
+		case NotificationType.NewOrder:
+			return `${DASHBOARD_SCHEME}://orders/${data.orderId}`;
+		case NotificationType.PayoutConfirmed:
+			return data.transactionId
+				? `${DASHBOARD_SCHEME}://store/transactions/${data.transactionId}`
+				: `${DASHBOARD_SCHEME}://store/payouts`;
+		case NotificationType.LowStock:
+			return `${DASHBOARD_SCHEME}://products/${data.productId}`;
+		default:
+			return undefined;
+	}
+}
+
 export const notificationTemplates: Record<
 	NotificationType,
 	NotificationTemplate

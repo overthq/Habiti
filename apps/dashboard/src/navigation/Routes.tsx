@@ -1,9 +1,9 @@
 import React from 'react';
 import { Icon, type IconType, themes, useTheme } from '@habiti/components';
 import {
+	LinkingOptions,
 	NavigationContainer,
-	RouteProp,
-	createNavigationContainerRef
+	RouteProp
 } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { useShallow } from 'zustand/react/shallow';
@@ -60,6 +60,7 @@ import {
 	ProductsStackParamList,
 	ProfileStackParamList
 } from '../navigation/types';
+import { Linking } from 'react-native';
 
 Notifications.setNotificationHandler({
 	handleNotification: async () => ({
@@ -71,9 +72,7 @@ Notifications.setNotificationHandler({
 	})
 });
 
-const navigationRef = createNavigationContainerRef<AppStackParamList>();
-
-const linking = {
+const linking: LinkingOptions<AppStackParamList> = {
 	prefixes: ['habiti-dashboard://'],
 	config: {
 		screens: {
@@ -106,59 +105,42 @@ const linking = {
 				}
 			}
 		}
-	}
-};
+	},
+	async getInitialURL() {
+		const url = await Linking.getInitialURL();
 
-interface NotificationData {
-	type: string;
-	orderId?: string;
-	transactionId?: string;
-	productId?: string;
-	[key: string]: unknown;
-}
+		if (url != null) {
+			return url;
+		}
 
-const handleNotificationResponse = (
-	response: Notifications.NotificationResponse
-) => {
-	const data = response.notification.request.content.data as NotificationData;
+		const response = Notifications.getLastNotificationResponse();
 
-	if (!navigationRef.isReady()) return;
+		return (
+			(response?.notification.request.content.data.url as string) ?? undefined
+		);
+	},
+	subscribe(listener) {
+		const onReceiveURL = ({ url }: { url: string }) => listener(url);
 
-	switch (data.type) {
-		case 'NEW_ORDER':
-			navigationRef.navigate('Main', {
-				screen: 'Orders',
-				params: { screen: 'Order', params: { orderId: data.orderId } }
-			});
-			break;
-		case 'PAYOUT_CONFIRMED':
-			if (data.transactionId) {
-				navigationRef.navigate('Main', {
-					screen: 'Store',
-					params: {
-						screen: 'Transaction',
-						params: { transactionId: data.transactionId }
-					}
-				});
-			} else {
-				navigationRef.navigate('Main', {
-					screen: 'Store',
-					params: { screen: 'Payouts' }
-				});
-			}
-			break;
-		case 'LOW_STOCK':
-			navigationRef.navigate('Main', {
-				screen: 'Products',
-				params: {
-					screen: 'Product',
-					params: {
-						screen: 'Product.Main',
-						params: { productId: data.productId }
-					}
+		const eventListenerSubscription = Linking.addEventListener(
+			'url',
+			onReceiveURL
+		);
+
+		const subscription = Notifications.addNotificationResponseReceivedListener(
+			response => {
+				const url = response.notification.request.content.data.url;
+
+				if (typeof url === 'string') {
+					listener(url);
 				}
-			});
-			break;
+			}
+		);
+
+		return () => {
+			eventListenerSubscription.remove();
+			subscription.remove();
+		};
 	}
 };
 
@@ -395,22 +377,6 @@ const Routes: React.FC = () => {
 		}
 	}, [isUpdatePending]);
 
-	React.useEffect(() => {
-		const subscription = Notifications.addNotificationResponseReceivedListener(
-			handleNotificationResponse
-		);
-
-		return () => subscription.remove();
-	}, []);
-
-	React.useEffect(() => {
-		const response = Notifications.getLastNotificationResponse();
-
-		if (response) {
-			handleNotificationResponse(response);
-		}
-	}, []);
-
 	const { theme } = useTheme();
 	const { accessToken, activeStore } = useStore(
 		useShallow(state => ({
@@ -420,11 +386,7 @@ const Routes: React.FC = () => {
 	);
 
 	return (
-		<NavigationContainer
-			ref={navigationRef}
-			theme={theme.navigation}
-			linking={linking}
-		>
+		<NavigationContainer theme={theme.navigation} linking={linking}>
 			<StatusBar style={theme.statusBar} />
 			<AppStack.Navigator
 				id='AppStack'

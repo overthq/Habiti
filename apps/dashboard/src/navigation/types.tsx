@@ -69,6 +69,24 @@ export type MainTabScreenProps<T extends keyof MainTabParamList> =
 		AppStackScreenProps<'Main'>
 	>;
 
+export type OrdersStackScreenProps<T extends keyof OrdersStackParamList> =
+	CompositeScreenProps<
+		StackScreenProps<OrdersStackParamList, T>,
+		MainTabScreenProps<'Orders'>
+	>;
+
+export type ProductsStackScreenProps<T extends keyof ProductsStackParamList> =
+	CompositeScreenProps<
+		StackScreenProps<ProductsStackParamList, T>,
+		MainTabScreenProps<'Products'>
+	>;
+
+export type StoreStackScreenProps<T extends keyof StoreStackParamList> =
+	CompositeScreenProps<
+		StackScreenProps<StoreStackParamList, T>,
+		MainTabScreenProps<'Store'>
+	>;
+
 export type ProfileStackScreenProps<T extends keyof ProfileStackParamList> =
 	CompositeScreenProps<
 		StackScreenProps<ProfileStackParamList, T>,
