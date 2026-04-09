@@ -29,6 +29,20 @@ export interface GetUserResponse {
 	user: User;
 }
 
+export interface Session {
+	id: string;
+	userId: string;
+	userAgent: string | null;
+	ipAddress: string | null;
+	lastActiveAt: string;
+	revoked: boolean;
+	createdAt: string;
+}
+
+export interface GetUserSessionsResponse {
+	sessions: Session[];
+}
+
 export interface Admin {
 	id: string;
 	name: string;
@@ -61,7 +75,8 @@ export enum OrderStatus {
 	Pending = 'Pending',
 	PaymentPending = 'PaymentPending',
 	Completed = 'Completed',
-	Cancelled = 'Cancelled'
+	Cancelled = 'Cancelled',
+	ReadyForPickup = 'ReadyForPickup'
 }
 
 export interface OrderProduct {

@@ -1,5 +1,6 @@
 import UserActionsDropdown from '@/components/user/user-actions-dropdown';
 import UserOrders from '@/components/user/user-orders';
+import UserSessions from '@/components/user/user-sessions';
 import { useUserQuery } from '@/data/queries';
 import { useParams } from 'react-router';
 import { Badge } from '@/components/ui/badge';
@@ -37,6 +38,7 @@ const User = () => {
 				<UserActionsDropdown user={user} />
 			</div>
 			<UserOrders user={user} />
+			<UserSessions user={user} />
 		</div>
 	);
 };

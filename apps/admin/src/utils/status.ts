@@ -16,6 +16,10 @@ const statusMap = {
 	[OrderStatus.PaymentPending]: {
 		label: 'Payment Pending',
 		variant: 'outline'
+	},
+	[OrderStatus.ReadyForPickup]: {
+		label: 'Ready for pickup',
+		variant: 'outline'
 	}
 } as const;
 
