@@ -2,14 +2,12 @@ import React from 'react';
 import { Alert } from 'react-native';
 import { Button, Screen, Spacer, Typography } from '@habiti/components';
 
-import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useDeleteStoreMutation } from '../data/mutations';
 
 const StoreSettings = () => {
 	const deleteStoreMutation = useDeleteStoreMutation();
 	const { activeStore, setPreference } = useStore();
-	useGoBack();
 
 	const handleDeleteStore = async () => {
 		try {

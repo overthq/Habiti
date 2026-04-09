@@ -7,7 +7,8 @@ export enum NotificationType {
 	OrderCancelled = 'ORDER_CANCELLED',
 	OrderCompleted = 'ORDER_COMPLETED',
 	ReadyForPickup = 'READY_FOR_PICKUP',
-	OrderStatusChanged = 'ORDER_STATUS_CHANGED'
+	OrderStatusChanged = 'ORDER_STATUS_CHANGED',
+	LowStock = 'LOW_STOCK'
 }
 
 export interface NotificationTemplate {
@@ -19,6 +20,26 @@ export interface NotificationPayload {
 	type: NotificationType;
 	data: any;
 	recipientTokens: string[];
+}
+
+const DASHBOARD_SCHEME = 'habiti-dashboard';
+
+export function getNotificationUrl(
+	type: NotificationType,
+	data: Record<string, any>
+): string | undefined {
+	switch (type) {
+		case NotificationType.NewOrder:
+			return `${DASHBOARD_SCHEME}://orders/${data.orderId}`;
+		case NotificationType.PayoutConfirmed:
+			return data.transactionId
+				? `${DASHBOARD_SCHEME}://store/transactions/${data.transactionId}`
+				: `${DASHBOARD_SCHEME}://store/payouts`;
+		case NotificationType.LowStock:
+			return `${DASHBOARD_SCHEME}://products/${data.productId}`;
+		default:
+			return undefined;
+	}
 }
 
 export const notificationTemplates: Record<
@@ -61,5 +82,10 @@ export const notificationTemplates: Record<
 		title: 'Order Status Changed',
 		body: data =>
 			`Your order #${data.orderId}'s status has been updated to ${data.status}`
+	},
+	LOW_STOCK: {
+		title: 'Low Stock Alert',
+		body: data =>
+			`${data.productName} is running low (${data.quantity} remaining)`
 	}
 };

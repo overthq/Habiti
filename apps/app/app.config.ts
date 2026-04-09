@@ -9,11 +9,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	scheme: 'habiti',
 	orientation: 'portrait',
 	icon: './assets/icon.png',
-	splash: {
-		image: './assets/splash.png',
-		resizeMode: 'contain',
-		backgroundColor: '#ffffff'
-	},
 	updates: {
 		url: 'https://u.expo.dev/f09782f6-8048-4ad4-8ff1-3fb7a65fbe48',
 		fallbackToCacheTimeout: 0
@@ -72,6 +67,18 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 				organization: 'habiti'
 			}
 		],
-		'expo-secure-store'
+		'expo-secure-store',
+		[
+			'expo-splash-screen',
+			{
+				backgroundColor: '#000000',
+				image: './assets/habiti-logo-white.png',
+				dark: {
+					image: './assets/habiti-logo-black.png',
+					backgroundColor: '#FFFFFF'
+				},
+				imageWidth: 200
+			}
+		]
 	]
 });

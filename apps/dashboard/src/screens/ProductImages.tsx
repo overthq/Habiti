@@ -5,7 +5,6 @@ import { Screen, Typography } from '@habiti/components';
 import * as ImagePicker from 'expo-image-picker';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import useGoBack from '../hooks/useGoBack';
 import { AppStackParamList } from '../navigation/types';
 import { useUpdateProductMutation } from '../data/mutations';
 import { uploadImage } from '../data/requests';
@@ -29,8 +28,6 @@ const ProductImages = () => {
 	} = useRoute<RouteProp<AppStackParamList, 'Modal.EditProductImages'>>();
 
 	const { goBack, setOptions } = useNavigation();
-
-	useGoBack();
 
 	const handleSaveImages = React.useCallback(async () => {
 		try {

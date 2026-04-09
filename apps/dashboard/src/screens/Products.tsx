@@ -14,7 +14,7 @@ const Products = ({ navigation }: MainTabScreenProps<'Products'>) => {
 	const { top } = useSafeAreaInsets();
 
 	const handleOpenAddProduct = () => {
-		navigation.navigate('Add Product');
+		navigation.navigate('Modal.AddProduct');
 	};
 
 	return (

@@ -2,7 +2,8 @@ import { Expo, ExpoPushMessage } from 'expo-server-sdk';
 
 import {
 	type NotificationPayload,
-	notificationTemplates
+	notificationTemplates,
+	getNotificationUrl
 } from '../core/notifications';
 
 const expo = new Expo();
@@ -28,13 +29,16 @@ export default class NotificationsService {
 			return;
 		}
 
+		const url = getNotificationUrl(payload.type, payload.data);
+
 		const messages: ExpoPushMessage[] = payload.recipientTokens.map(token => ({
 			to: token,
 			title: template.title,
 			body: template.body(payload.data),
 			data: {
 				type: payload.type,
-				...payload.data
+				...payload.data,
+				...(url ? { url } : {})
 			}
 		}));
 

@@ -24,6 +24,7 @@ import * as UserLogic from '../core/logic/users';
 import * as OrderLogic from '../core/logic/orders';
 import * as TransactionLogic from '../core/logic/transactions';
 import * as AdminSessionData from '../core/data/adminSessions';
+import * as SessionData from '../core/data/sessions';
 import * as Schemas from '../core/validations/rest';
 
 const admin = new Hono<AppEnv>();
@@ -264,6 +265,12 @@ admin.get('/users/:id', async c => {
 
 	const user = await UserLogic.getUserById(c, id);
 	return c.json({ user });
+});
+
+admin.get('/users/:id/sessions', async c => {
+	const { id } = c.req.param();
+	const sessions = await SessionData.getUserSessions(c.var.prisma, id);
+	return c.json({ sessions });
 });
 
 admin.put(

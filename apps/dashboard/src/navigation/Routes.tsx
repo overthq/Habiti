@@ -1,9 +1,14 @@
 import React from 'react';
 import { Icon, type IconType, themes, useTheme } from '@habiti/components';
-import { NavigationContainer, RouteProp } from '@react-navigation/native';
+import {
+	LinkingOptions,
+	NavigationContainer,
+	RouteProp
+} from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { useShallow } from 'zustand/react/shallow';
 import * as Updates from 'expo-updates';
+import * as Notifications from 'expo-notifications';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -55,6 +60,89 @@ import {
 	ProductsStackParamList,
 	ProfileStackParamList
 } from '../navigation/types';
+import { Linking } from 'react-native';
+
+Notifications.setNotificationHandler({
+	handleNotification: async () => ({
+		shouldShowAlert: true,
+		shouldPlaySound: true,
+		shouldSetBadge: false,
+		shouldShowBanner: true,
+		shouldShowList: true
+	})
+});
+
+const linking: LinkingOptions<AppStackParamList> = {
+	prefixes: ['habiti-dashboard://'],
+	config: {
+		screens: {
+			Main: {
+				screens: {
+					Orders: {
+						screens: {
+							OrdersList: 'orders',
+							Order: 'orders/:orderId'
+						}
+					},
+					Products: {
+						screens: {
+							ProductsList: 'products',
+							Product: {
+								screens: {
+									'Product.Main': 'products/:productId'
+								}
+							}
+						}
+					},
+					Store: {
+						screens: {
+							StoreHome: 'store',
+							Payouts: 'store/payouts',
+							Transactions: 'store/transactions',
+							Transaction: 'store/transactions/:transactionId'
+						}
+					}
+				}
+			}
+		}
+	},
+	async getInitialURL() {
+		const url = await Linking.getInitialURL();
+
+		if (url != null) {
+			return url;
+		}
+
+		const response = Notifications.getLastNotificationResponse();
+
+		return (
+			(response?.notification.request.content.data.url as string) ?? undefined
+		);
+	},
+	subscribe(listener) {
+		const onReceiveURL = ({ url }: { url: string }) => listener(url);
+
+		const eventListenerSubscription = Linking.addEventListener(
+			'url',
+			onReceiveURL
+		);
+
+		const subscription = Notifications.addNotificationResponseReceivedListener(
+			response => {
+				const url = response.notification.request.content.data.url;
+
+				if (typeof url === 'string') {
+					listener(url);
+				}
+			}
+		);
+
+		return () => {
+			eventListenerSubscription.remove();
+			subscription.remove();
+		};
+	}
+};
 
 const AppStack = createNativeStackNavigator<AppStackParamList, 'AppStack'>();
 const MainTab = createBottomTabNavigator<MainTabParamList, 'MainTab'>();
@@ -298,7 +386,7 @@ const Routes: React.FC = () => {
 	);
 
 	return (
-		<NavigationContainer theme={theme.navigation}>
+		<NavigationContainer theme={theme.navigation} linking={linking}>
 			<StatusBar style={theme.statusBar} />
 			<AppStack.Navigator
 				id='AppStack'
@@ -329,7 +417,7 @@ const Routes: React.FC = () => {
 								]
 							})}
 						>
-							<AppStack.Screen name='Add Product' component={AddProduct} />
+							<AppStack.Screen name='Modal.AddProduct' component={AddProduct} />
 							<AppStack.Screen
 								name='Modal.AddPayout'
 								component={AddPayout}

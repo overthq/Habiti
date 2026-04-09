@@ -1,7 +1,6 @@
 import { Screen, SelectGroup, Spacer, Typography } from '@habiti/components';
 import React from 'react';
 
-import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -21,8 +20,6 @@ const Appearance = () => {
 		},
 		[setPreference]
 	);
-
-	useGoBack();
 
 	return (
 		<Screen style={{ padding: 16 }}>

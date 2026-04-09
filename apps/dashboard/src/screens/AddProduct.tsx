@@ -10,7 +10,6 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { HeaderButton } from '@react-navigation/elements';
 import { z } from 'zod';
 
-import useGoBack from '../hooks/useGoBack';
 import { useCreateProductMutation } from '../data/mutations';
 
 export interface ProductFormData {
@@ -30,7 +29,6 @@ const addProductSchema = z.object({
 const AddProduct = () => {
 	const { goBack, setOptions } = useNavigation();
 	const createProductMutation = useCreateProductMutation();
-	useGoBack('x');
 
 	const formMethods = useForm<z.infer<typeof addProductSchema>>({
 		defaultValues: {

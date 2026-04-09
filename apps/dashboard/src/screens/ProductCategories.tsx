@@ -14,7 +14,6 @@ import FAB from '../components/products/FAB';
 import { useCategoriesQuery } from '../data/queries';
 import { useUpdateProductCategoriesMutation } from '../data/mutations';
 import { AppStackParamList } from '../navigation/types';
-import useGoBack from '../hooks/useGoBack';
 
 const ProductCategories = () => {
 	const {
@@ -27,7 +26,6 @@ const ProductCategories = () => {
 		categories.map(({ categoryId }) => categoryId)
 	);
 	const updateProductCategoriesMutation = useUpdateProductCategoriesMutation();
-	useGoBack();
 
 	const handleAddCategory = React.useCallback(() => {
 		navigate('Modal.AddCategory');

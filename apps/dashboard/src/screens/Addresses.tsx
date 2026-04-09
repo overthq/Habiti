@@ -14,7 +14,6 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { HeaderButton } from '@react-navigation/elements';
 
 import FAB from '../components/products/FAB';
-import useGoBack from '../hooks/useGoBack';
 import useRefresh from '../hooks/useRefresh';
 import { useAddressesQuery } from '../data/queries';
 import { AppStackParamList } from '../navigation/types';
@@ -47,8 +46,6 @@ const Addresses = () => {
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
-
-	useGoBack();
 
 	const handleAddAddress = React.useCallback(() => {
 		navigate('Modal.AddAddress');

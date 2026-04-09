@@ -4,7 +4,6 @@ import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Button, FormInput, ScrollableScreen } from '@habiti/components';
 
-import useGoBack from '../hooks/useGoBack';
 import { useCreateProductCategoryMutation } from '../data/mutations';
 
 interface AddCategoryValues {
@@ -15,7 +14,6 @@ interface AddCategoryValues {
 const AddCategory = () => {
 	const createProductCategoryMutation = useCreateProductCategoryMutation();
 	const { goBack } = useNavigation();
-	useGoBack('x');
 
 	const { control, handleSubmit } = useForm<AddCategoryValues>({
 		defaultValues: {

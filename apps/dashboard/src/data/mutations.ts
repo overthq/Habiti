@@ -22,8 +22,10 @@ import {
 	createAddress,
 	updateAddress,
 	deleteAddress,
-	deleteAccount
+	deleteAccount,
+	savePushToken
 } from './requests';
+import { requestPushPermission } from '../utils/notifications';
 import env from '../../env';
 import {
 	CreatePayoutBody,
@@ -125,6 +127,14 @@ export const useVerifyCodeMutation = () => {
 		onSuccess: async data => {
 			logIn(data.accessToken);
 			await SecureStore.setItemAsync('refreshToken', data.refreshToken);
+
+			requestPushPermission()
+				.then(pushToken => {
+					if (pushToken) {
+						savePushToken({ token: pushToken, type: 'Merchant' });
+					}
+				})
+				.catch(err => console.warn('Push token registration failed:', err));
 		}
 	});
 };

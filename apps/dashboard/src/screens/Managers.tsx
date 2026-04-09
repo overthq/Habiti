@@ -4,7 +4,6 @@ import { Icon, ScrollableScreen, Screen, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import ManagerRow from '../components/managers/ManagerRow';
-import useGoBack from '../hooks/useGoBack';
 import useRefresh from '../hooks/useRefresh';
 import { useStoreManagersQuery } from '../data/queries';
 import { AppStackParamList } from '../navigation/types';
@@ -15,7 +14,6 @@ const Managers = () => {
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
-	useGoBack();
 
 	React.useLayoutEffect(() => {
 		setOptions({

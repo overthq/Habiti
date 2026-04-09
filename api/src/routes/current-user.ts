@@ -161,13 +161,19 @@ currentUser.post(
 	zValidator('json', Schemas.savePushTokenBodySchema, zodHook),
 	async c => {
 		const { token, type } = c.req.valid('json');
-		const pushToken = await c.var.prisma.userPushToken.create({
-			data: {
+
+		const pushToken = await c.var.prisma.userPushToken.upsert({
+			where: {
+				userId_token: { userId: c.var.auth!.id, token }
+			},
+			update: { type },
+			create: {
 				token,
 				type,
 				user: { connect: { id: c.var.auth!.id } }
 			}
 		});
+
 		return c.json({ pushToken });
 	}
 );

@@ -7,7 +7,6 @@ import {
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import useGoBack from '../hooks/useGoBack';
 import { useUpdateAddressMutation } from '../data/mutations';
 import { AppStackParamList } from '../navigation/types';
 
@@ -26,7 +25,6 @@ const EditAddress = () => {
 		useRoute<RouteProp<AppStackParamList, 'Modal.EditAddress'>>();
 	const { goBack } = useNavigation();
 	const updateAddressMutation = useUpdateAddressMutation();
-	useGoBack('x');
 
 	const onSubmit = async (values: EditAddressFormValues) => {
 		const { line2, postcode, ...rest } = values;

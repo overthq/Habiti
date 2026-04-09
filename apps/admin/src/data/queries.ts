@@ -21,6 +21,7 @@ import {
 	getStoreTransactions,
 	getUsers,
 	getUser,
+	getUserSessions,
 	getOverview
 } from './requests';
 
@@ -119,6 +120,14 @@ export const useUserQuery = (id: string) => {
 		queryKey: ['users', id],
 		queryFn: () => getUser(id),
 		enabled: !!id
+	});
+};
+
+export const useUserSessionsQuery = (userId: string) => {
+	return useQuery({
+		queryKey: ['users', userId, 'sessions'],
+		queryFn: () => getUserSessions(userId),
+		enabled: !!userId
 	});
 };
 

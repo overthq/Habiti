@@ -7,6 +7,9 @@ import * as CardData from '../data/cards';
 import * as OrderData from '../data/orders';
 import * as TransactionData from '../data/transactions';
 import * as StoreData from '../data/stores';
+import * as PushTokenData from '../data/pushTokens';
+
+import { NotificationType } from '../notifications';
 
 import * as CorePayments from '../payments';
 
@@ -110,6 +113,23 @@ export const transitionOrderToPending = async (
 				storeId: order.storeId,
 				total: order.total
 			});
+
+			const pushTokens = await PushTokenData.getStorePushTokens(
+				c.var.prisma,
+				order.storeId
+			);
+
+			if (pushTokens.length > 0) {
+				c.var.services.notifications.queueNotification({
+					type: NotificationType.NewOrder,
+					data: {
+						orderId: order.id,
+						customerName: order.user.name,
+						amount: order.total
+					},
+					recipientTokens: pushTokens
+				});
+			}
 		}
 	} catch (error) {
 		console.error(error);
@@ -139,9 +159,9 @@ export const handlePaystackWebhookEvent = async (
 		if (event === 'charge.success') {
 			await handleChargeSuccess(c, data);
 		} else if (event === 'transfer.success') {
-			await handleTransferSuccess(data);
+			await handleTransferSuccess(c, data);
 		} else if (event === 'transfer.failure') {
-			await handleTransferFailure(data);
+			await handleTransferFailure(c, data);
 		} else if (event === 'transfer.reversed') {
 			await handleTransferReversed(c, data);
 		}
@@ -171,17 +191,46 @@ export const handleChargeSuccess = async (
 	await processCardCharge(c, data);
 };
 
-const handleTransferSuccess = async (data: TransferSuccessPayload) => {
+const handleTransferSuccess = async (
+	c: Context<AppEnv>,
+	data: TransferSuccessPayload
+) => {
 	if (data.reason !== 'Payout') {
 		console.warn(
 			`Found non-payout transfer. Reason: ${data.reason}. Reference: ${data.reference}`
 		);
 	} else {
 		await TransactionData.markTransferSuccessful(data.reference);
+
+		const transaction = await TransactionData.getTransactionById(
+			c.var.prisma,
+			data.reference
+		);
+
+		if (transaction) {
+			const pushTokens = await PushTokenData.getStorePushTokens(
+				c.var.prisma,
+				transaction.storeId
+			);
+
+			if (pushTokens.length > 0) {
+				c.var.services.notifications.queueNotification({
+					type: NotificationType.PayoutConfirmed,
+					data: {
+						amount: transaction.amount,
+						transactionId: transaction.id
+					},
+					recipientTokens: pushTokens
+				});
+			}
+		}
 	}
 };
 
-const handleTransferFailure = async (data: TransferFailurePayload) => {
+const handleTransferFailure = async (
+	_c: Context<AppEnv>,
+	data: TransferFailurePayload
+) => {
 	if (data.reason !== 'Payout') {
 		console.warn(
 			`Found non-payout transfer. Reason: ${data.reason}. Reference: ${data.reference}`
