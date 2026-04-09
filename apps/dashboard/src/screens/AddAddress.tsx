@@ -4,7 +4,6 @@ import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Button, FormInput, ScrollableScreen } from '@habiti/components';
 
-import useGoBack from '../hooks/useGoBack';
 import { useCreateAddressMutation } from '../data/mutations';
 
 interface AddAddressValues {
@@ -20,7 +19,6 @@ interface AddAddressValues {
 const AddAddress = () => {
 	const createAddressMutation = useCreateAddressMutation();
 	const { goBack } = useNavigation();
-	useGoBack('x');
 
 	const { control, handleSubmit } = useForm<AddAddressValues>({
 		defaultValues: {

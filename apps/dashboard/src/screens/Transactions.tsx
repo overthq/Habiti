@@ -7,7 +7,6 @@ import { FlashList } from '@shopify/flash-list';
 import { formatNaira } from '@habiti/common';
 
 import TransactionRow from '../components/transactions/TransactionRow';
-import useGoBack from '../hooks/useGoBack';
 import useRefresh from '../hooks/useRefresh';
 import { useCurrentStoreQuery, useTransactionsQuery } from '../data/queries';
 import { Transaction } from '../data/types';
@@ -23,8 +22,6 @@ const Transactions = () => {
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList & StoreStackParamList>>();
 	const { theme } = useTheme();
-
-	useGoBack();
 
 	const handleAddPayout = React.useCallback(() => {
 		if (!storeData.store) return;

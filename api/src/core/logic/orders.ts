@@ -8,6 +8,7 @@ import * as PaymentLogic from './payments';
 import * as OrderData from '../data/orders';
 import * as CartData from '../data/carts';
 import * as CardData from '../data/cards';
+import * as PushTokenData from '../data/pushTokens';
 
 import { calculatePaystackFee, calculateHabitiFee } from './carts';
 import { createOrderHooks, updateOrderHooks } from './hooks';
@@ -17,6 +18,7 @@ import type { AppEnv } from '../../types/hono';
 import { InitializeTransactionResponse } from '../payments/paystack';
 import { LogicError, LogicErrorCode } from './errors';
 import { OrderFilters } from '../../utils/queries';
+import { NotificationType } from '../notifications';
 
 interface CreateOrderInput {
 	cartId: string;
@@ -55,33 +57,69 @@ export const createOrder = async (
 
 	// All orders start as PaymentPending. Revenue is only tracked
 	// once payment is confirmed and the order transitions to Pending.
-	const order = await c.var.prisma.$transaction(async prisma => {
-		const store = await OrderData.incrementStoreOrderCount(prisma, {
-			storeId
-		});
+	const { order, updatedProducts } = await c.var.prisma.$transaction(
+		async prisma => {
+			const store = await OrderData.incrementStoreOrderCount(prisma, {
+				storeId
+			});
 
-		const newOrder = await OrderData.createOrderWithProducts(prisma, {
-			userId,
-			storeId,
-			serialNumber: store.orderCount,
-			orderData,
-			total,
-			transactionFee,
-			serviceFee,
-			status: OrderStatus.PaymentPending
-		});
+			const newOrder = await OrderData.createOrderWithProducts(prisma, {
+				userId,
+				storeId,
+				serialNumber: store.orderCount,
+				orderData,
+				total,
+				transactionFee,
+				serviceFee,
+				status: OrderStatus.PaymentPending
+			});
 
-		await CartData.deleteCartById(prisma, cart.id);
+			await CartData.deleteCartById(prisma, cart.id);
 
-		await OrderData.decrementProductQuantities(prisma, {
-			products: cart.products.map(p => ({
-				productId: p.productId,
-				quantity: p.quantity
-			}))
-		});
+			const updated = await OrderData.decrementProductQuantities(prisma, {
+				products: cart.products.map(p => ({
+					productId: p.productId,
+					quantity: p.quantity
+				}))
+			});
 
-		return newOrder;
+			return { order: newOrder, updatedProducts: updated };
+		}
+	);
+
+	// Notify merchants about products that just crossed the low stock threshold
+	const LOW_STOCK_THRESHOLD = 5;
+	const cartQuantities = new Map(
+		cart.products.map(p => [p.productId, p.quantity])
+	);
+	const lowStockProducts = updatedProducts.filter(p => {
+		const orderedQty = cartQuantities.get(p.id) ?? 0;
+		return (
+			p.quantity < LOW_STOCK_THRESHOLD &&
+			p.quantity + orderedQty >= LOW_STOCK_THRESHOLD
+		);
 	});
+
+	if (lowStockProducts.length > 0) {
+		const pushTokens = await PushTokenData.getStorePushTokens(
+			c.var.prisma,
+			storeId
+		);
+
+		if (pushTokens.length > 0) {
+			for (const product of lowStockProducts) {
+				c.var.services.notifications.queueNotification({
+					type: NotificationType.LowStock,
+					data: {
+						productId: product.id,
+						productName: product.name,
+						quantity: product.quantity
+					},
+					recipientTokens: pushTokens
+				});
+			}
+		}
+	}
 
 	// Initiate payment after the order is persisted so the orderId
 	// can be passed as metadata for webhook identification.

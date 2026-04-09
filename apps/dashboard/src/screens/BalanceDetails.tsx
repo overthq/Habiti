@@ -15,15 +15,12 @@ import RevenueBar from '../components/payouts/RevenueBar';
 import RevenueBarLegend from '../components/payouts/RevenueBarLegend';
 
 import { useCurrentStoreQuery } from '../data/queries';
-import useGoBack from '../hooks/useGoBack';
 
 import type { AppStackParamList } from '../navigation/types';
 
 const BalanceDetails = () => {
 	const { data } = useCurrentStoreQuery();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-
-	useGoBack();
 
 	const handleAddPayoutAccount = React.useCallback(() => {
 		navigate('Modal.AddPayoutAccount');

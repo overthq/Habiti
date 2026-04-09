@@ -341,3 +341,10 @@ export const getTransaction = async (transactionId: string) => {
 export const deleteAccount = async (): Promise<void> => {
 	await api.delete('/users/current');
 };
+
+// Push Tokens
+
+export const savePushToken = async (body: { token: string; type: string }) => {
+	const response = await api.post('/users/current/push-tokens', body);
+	return response.data;
+};

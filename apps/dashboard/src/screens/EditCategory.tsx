@@ -7,7 +7,6 @@ import {
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import useGoBack from '../hooks/useGoBack';
 import { useUpdateProductCategoryMutation } from '../data/mutations';
 import { AppStackParamList } from '../navigation/types';
 
@@ -21,7 +20,6 @@ const EditCategory = () => {
 		useRoute<RouteProp<AppStackParamList, 'Modal.EditCategory'>>();
 	const { goBack } = useNavigation();
 	const updateCategoryMutation = useUpdateProductCategoryMutation();
-	useGoBack('x');
 
 	const onSubmit = async (values: EditCategoryFormValues) => {
 		await updateCategoryMutation.mutateAsync({

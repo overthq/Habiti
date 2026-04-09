@@ -9,7 +9,6 @@ import {
 	useTheme
 } from '@habiti/components';
 
-import useGoBack from '../hooks/useGoBack';
 import { AppStackParamList } from '../navigation/types';
 
 import { useCurrentStoreQuery } from '../data/queries';
@@ -41,7 +40,6 @@ const StorePayouts = () => {
 	const { data, isLoading, refetch } = useCurrentStoreQuery();
 	const updateStoreMutation = useUpdateCurrentStoreMutation();
 	const { theme } = useTheme();
-	useGoBack();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	const handleRemovePayoutAccount = React.useCallback(() => {

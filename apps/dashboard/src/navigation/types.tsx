@@ -14,11 +14,11 @@ export type AppStackParamList = {
 	Register: undefined;
 	Verify: { email: string };
 	StoreSelect: undefined;
-	'Modal.CreateStore': undefined;
 	Root: undefined;
-	'Add Product': undefined;
 	Settings: undefined;
 
+	'Modal.CreateStore': undefined;
+	'Modal.AddProduct': undefined;
 	'Modal.AddPayout': { realizedRevenue: number; paidOut: number };
 	'Modal.AddCategory': undefined;
 	'Modal.EditCategory': {
@@ -57,9 +57,9 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> =
 	StackScreenProps<AppStackParamList, T>;
 
 export type MainTabParamList = {
-	Orders: undefined;
-	Products: undefined;
-	Store: undefined;
+	Orders: NavigatorScreenParams<OrdersStackParamList>;
+	Products: NavigatorScreenParams<ProductsStackParamList>;
+	Store: NavigatorScreenParams<StoreStackParamList>;
 	Profile: NavigatorScreenParams<ProfileStackParamList>;
 };
 
@@ -84,14 +84,7 @@ export type OrdersStackParamList = {
 
 export type ProductsStackParamList = {
 	ProductsList: undefined;
-	'Products.Search': undefined;
 	Product: NavigatorScreenParams<ProductStackParamList>;
-};
-
-export type SettingsStackParamList = {
-	SettingsList: undefined;
-	SettingsActiveStore: undefined;
-	SettingsTheme: undefined;
 };
 
 export type StoreStackParamList = {
@@ -114,7 +107,6 @@ export type ProfileStackParamList = {
 	ManageAccount: undefined;
 };
 
-// TODO: Use context for productId and other shared details if needed.
 export type ProductStackParamList = {
 	'Product.Main': { productId: string };
 };

@@ -3,11 +3,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
 
-import useGoBack from '../hooks/useGoBack';
-
 const AddManager = () => {
-	useGoBack('x');
-
 	const { handleSubmit } = useForm();
 
 	const onSubmit = React.useCallback(() => {

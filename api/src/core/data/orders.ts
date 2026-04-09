@@ -89,14 +89,17 @@ export const decrementProductQuantities = async (
 	prisma: TransactionClient,
 	params: DecrementProductQuantitiesParams
 ) => {
+	const updatedProducts = [];
 	for (const product of params.products) {
-		await prisma.product.update({
+		const updated = await prisma.product.update({
 			where: { id: product.productId },
 			data: {
 				quantity: { decrement: product.quantity }
 			}
 		});
+		updatedProducts.push(updated);
 	}
+	return updatedProducts;
 };
 
 interface CreateOrderParams {

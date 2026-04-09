@@ -9,7 +9,6 @@ import {
 	Spacer
 } from '@habiti/components';
 
-import useGoBack from '../hooks/useGoBack';
 import useStore from '../state';
 import { useCreateStoreMutation } from '../data/mutations';
 import { useShallow } from 'zustand/react/shallow';
@@ -25,8 +24,6 @@ const CreateStore = () => {
 	const methods = useForm<CreateStoreFormValues>();
 	const { bottom } = useSafeAreaInsets();
 	const { goBack } = useNavigation();
-
-	useGoBack('x');
 
 	const onSubmit = React.useCallback(
 		async (values: CreateStoreFormValues) => {

@@ -7,7 +7,6 @@ import {
 import { FormProvider, useForm } from 'react-hook-form';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import useGoBack from '../hooks/useGoBack';
 import { useUpdateProductMutation } from '../data/mutations';
 import { AppStackParamList } from '../navigation/types';
 
@@ -16,8 +15,6 @@ const ProductDetails = () => {
 		useRoute<RouteProp<AppStackParamList, 'Modal.EditProductDetails'>>();
 	const updateProductMutation = useUpdateProductMutation();
 	const { goBack } = useNavigation();
-
-	useGoBack();
 
 	const methods = useForm({
 		defaultValues: {

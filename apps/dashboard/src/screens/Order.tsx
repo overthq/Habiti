@@ -9,7 +9,6 @@ import OrderActions from '../components/order/OrderActions';
 import OrderOverview from '../components/order/OrderOverview';
 import OrderProducts from '../components/order/OrderProducts';
 import PaymentInfo from '../components/order/PaymentInfo';
-import useGoBack from '../hooks/useGoBack';
 import useRefresh from '../hooks/useRefresh';
 import { useOrderQuery } from '../data/queries';
 import { OrdersStackParamList } from '../navigation/types';
@@ -21,7 +20,6 @@ const Order = () => {
 	const { data, refetch } = useOrderQuery(orderId);
 	const { isRefreshing, onRefresh } = useRefresh({ refetch });
 	const { theme } = useTheme();
-	useGoBack();
 
 	if (!data?.order) {
 		return <View />;

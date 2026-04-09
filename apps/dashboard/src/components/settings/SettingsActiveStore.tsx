@@ -4,7 +4,6 @@ import { Button, Screen } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import SettingSelectRow from './SettingSelectRow';
-import useGoBack from '../../hooks/useGoBack';
 import useStore from '../../state';
 import { useManagedStoresQuery } from '../../data/queries';
 import { switchStore } from '../../data/requests';
@@ -22,7 +21,6 @@ const SettingsActiveStore: React.FC = () => {
 
 	const { data } = useManagedStoresQuery();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	useGoBack();
 
 	const stores = data?.stores;
 

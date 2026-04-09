@@ -14,7 +14,6 @@ import { EditPayoutInfoFormValues } from '../types/forms';
 import BankSelectButton from '../components/store-payouts/BankSelectButton';
 import BankSelectModal from '../components/store-payouts/BankSelectModal';
 import ConfirmationModal from '../components/store-payouts/ConfirmationModal';
-import useGoBack from '../hooks/useGoBack';
 
 const AddPayoutAccount = () => {
 	const verifyBankAccountMutation = useVerifyBankAccountMutation();
@@ -22,8 +21,6 @@ const AddPayoutAccount = () => {
 	const inputRef = React.useRef<TextInput>(null);
 	const selectModalRef = React.useRef<BottomSheetModal>(null);
 	const confirmationModalRef = React.useRef<BottomSheetModal>(null);
-
-	useGoBack('x');
 
 	const methods = useForm<EditPayoutInfoFormValues>({
 		defaultValues: {

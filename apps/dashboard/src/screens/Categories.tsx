@@ -15,7 +15,6 @@ import { HeaderButton } from '@react-navigation/elements';
 
 import FAB from '../components/products/FAB';
 
-import useGoBack from '../hooks/useGoBack';
 import useRefresh from '../hooks/useRefresh';
 import { useCategoriesQuery } from '../data/queries';
 import { AppStackParamList } from '../navigation/types';
@@ -43,8 +42,6 @@ const Categories = () => {
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
-
-	useGoBack();
 
 	const handleAddCategory = React.useCallback(() => {
 		navigate('Modal.AddCategory');

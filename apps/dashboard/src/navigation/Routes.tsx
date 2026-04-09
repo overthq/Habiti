@@ -1,9 +1,14 @@
 import React from 'react';
 import { Icon, type IconType, themes, useTheme } from '@habiti/components';
-import { NavigationContainer, RouteProp } from '@react-navigation/native';
+import {
+	NavigationContainer,
+	RouteProp,
+	createNavigationContainerRef
+} from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { useShallow } from 'zustand/react/shallow';
 import * as Updates from 'expo-updates';
+import * as Notifications from 'expo-notifications';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -55,6 +60,107 @@ import {
 	ProductsStackParamList,
 	ProfileStackParamList
 } from '../navigation/types';
+
+Notifications.setNotificationHandler({
+	handleNotification: async () => ({
+		shouldShowAlert: true,
+		shouldPlaySound: true,
+		shouldSetBadge: false,
+		shouldShowBanner: true,
+		shouldShowList: true
+	})
+});
+
+const navigationRef = createNavigationContainerRef<AppStackParamList>();
+
+const linking = {
+	prefixes: ['habiti-dashboard://'],
+	config: {
+		screens: {
+			Main: {
+				screens: {
+					Orders: {
+						screens: {
+							OrdersList: 'orders',
+							Order: 'orders/:orderId'
+						}
+					},
+					Products: {
+						screens: {
+							ProductsList: 'products',
+							Product: {
+								screens: {
+									'Product.Main': 'products/:productId'
+								}
+							}
+						}
+					},
+					Store: {
+						screens: {
+							StoreHome: 'store',
+							Payouts: 'store/payouts',
+							Transactions: 'store/transactions',
+							Transaction: 'store/transactions/:transactionId'
+						}
+					}
+				}
+			}
+		}
+	}
+};
+
+interface NotificationData {
+	type: string;
+	orderId?: string;
+	transactionId?: string;
+	productId?: string;
+	[key: string]: unknown;
+}
+
+const handleNotificationResponse = (
+	response: Notifications.NotificationResponse
+) => {
+	const data = response.notification.request.content.data as NotificationData;
+
+	if (!navigationRef.isReady()) return;
+
+	switch (data.type) {
+		case 'NEW_ORDER':
+			navigationRef.navigate('Main', {
+				screen: 'Orders',
+				params: { screen: 'Order', params: { orderId: data.orderId } }
+			});
+			break;
+		case 'PAYOUT_CONFIRMED':
+			if (data.transactionId) {
+				navigationRef.navigate('Main', {
+					screen: 'Store',
+					params: {
+						screen: 'Transaction',
+						params: { transactionId: data.transactionId }
+					}
+				});
+			} else {
+				navigationRef.navigate('Main', {
+					screen: 'Store',
+					params: { screen: 'Payouts' }
+				});
+			}
+			break;
+		case 'LOW_STOCK':
+			navigationRef.navigate('Main', {
+				screen: 'Products',
+				params: {
+					screen: 'Product',
+					params: {
+						screen: 'Product.Main',
+						params: { productId: data.productId }
+					}
+				}
+			});
+			break;
+	}
+};
 
 const AppStack = createNativeStackNavigator<AppStackParamList, 'AppStack'>();
 const MainTab = createBottomTabNavigator<MainTabParamList, 'MainTab'>();
@@ -289,6 +395,22 @@ const Routes: React.FC = () => {
 		}
 	}, [isUpdatePending]);
 
+	React.useEffect(() => {
+		const subscription = Notifications.addNotificationResponseReceivedListener(
+			handleNotificationResponse
+		);
+
+		return () => subscription.remove();
+	}, []);
+
+	React.useEffect(() => {
+		const response = Notifications.getLastNotificationResponse();
+
+		if (response) {
+			handleNotificationResponse(response);
+		}
+	}, []);
+
 	const { theme } = useTheme();
 	const { accessToken, activeStore } = useStore(
 		useShallow(state => ({
@@ -298,7 +420,11 @@ const Routes: React.FC = () => {
 	);
 
 	return (
-		<NavigationContainer theme={theme.navigation}>
+		<NavigationContainer
+			ref={navigationRef}
+			theme={theme.navigation}
+			linking={linking}
+		>
 			<StatusBar style={theme.statusBar} />
 			<AppStack.Navigator
 				id='AppStack'
@@ -329,7 +455,7 @@ const Routes: React.FC = () => {
 								]
 							})}
 						>
-							<AppStack.Screen name='Add Product' component={AddProduct} />
+							<AppStack.Screen name='Modal.AddProduct' component={AddProduct} />
 							<AppStack.Screen
 								name='Modal.AddPayout'
 								component={AddPayout}

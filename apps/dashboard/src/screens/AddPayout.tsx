@@ -5,7 +5,6 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 
 import AmountDisplay from '../components/add-payout/AmountDisplay';
 import PayoutNumpad from '../components/add-payout/PayoutNumpad';
-import useGoBack from '../hooks/useGoBack';
 import { useCreatePayoutMutation } from '../data/mutations';
 import { AppStackParamList } from '../navigation/types';
 
@@ -15,7 +14,6 @@ const AddPayout = () => {
 	const { goBack } = useNavigation();
 	const { params } =
 		useRoute<RouteProp<AppStackParamList, 'Modal.AddPayout'>>();
-	useGoBack('x');
 
 	const availableBalance = (params.realizedRevenue - params.paidOut) / 100;
 
