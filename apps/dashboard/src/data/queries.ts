@@ -51,7 +51,8 @@ export const useStoreManagersQuery = () => {
 export const useProductsQuery = (filters?: ProductFilters) => {
 	return useQuery({
 		queryKey: ['stores', 'current', 'products', filters],
-		queryFn: () => getProducts(filters)
+		queryFn: () => getProducts(filters),
+		placeholderData: keepPreviousData
 	});
 };
 
