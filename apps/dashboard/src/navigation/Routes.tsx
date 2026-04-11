@@ -44,7 +44,7 @@ import StorePayouts from '../screens/StorePayouts';
 import Transactions from '../screens/Transactions';
 import Transaction from '../screens/Transaction';
 import BalanceDetails from '../screens/BalanceDetails';
-import StoreSettings from '../screens/StoreSettings';
+import DeleteStore from '../screens/DeleteStore';
 import StoreSettingsMenu from '../screens/StoreSettingsMenu';
 import Profile from '../screens/Profile';
 import Products from '../screens/Products';
@@ -324,9 +324,12 @@ const StoreStackNavigator = () => {
 				options={{ headerBackButtonDisplayMode: 'minimal' }}
 			/>
 			<StoreStack.Screen
-				name='Settings'
-				component={StoreSettings}
-				options={{ headerBackButtonDisplayMode: 'minimal' }}
+				name='DeleteStore'
+				component={DeleteStore}
+				options={{
+					headerBackButtonDisplayMode: 'minimal',
+					headerTitle: 'Delete Store'
+				}}
 			/>
 			<StoreStack.Screen
 				name='Transactions'
@@ -417,7 +420,11 @@ const Routes: React.FC = () => {
 								]
 							})}
 						>
-							<AppStack.Screen name='Modal.AddProduct' component={AddProduct} />
+							<AppStack.Screen
+								name='Modal.AddProduct'
+								component={AddProduct}
+								options={{ headerTitle: 'Add Product' }}
+							/>
 							<AppStack.Screen
 								name='Modal.AddPayout'
 								component={AddPayout}

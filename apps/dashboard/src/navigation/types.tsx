@@ -114,7 +114,7 @@ export type StoreStackParamList = {
 	Managers: undefined;
 	Categories: undefined;
 	Addresses: undefined;
-	Settings: undefined;
+	DeleteStore: undefined;
 	Transactions: undefined;
 	Transaction: { transactionId: string };
 };

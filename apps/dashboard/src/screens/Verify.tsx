@@ -1,38 +1,73 @@
 import React from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
-import { Button, Screen, Spacer, Typography } from '@habiti/components';
+import { Pressable, View, StyleSheet } from 'react-native';
+import {
+	Button,
+	FormInput,
+	Icon,
+	Screen,
+	Spacer,
+	Typography
+} from '@habiti/components';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { RouteProp, useRoute } from '@react-navigation/native';
-
-import CodeInput from '../components/verify/CodeInput';
-import { useVerifyCodeMutation } from '../data/mutations';
-import { AppStackParamList } from '../navigation/types';
+import { useForm } from 'react-hook-form';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { z } from 'zod';
 
-const Verify = () => {
+import { useVerifyCodeMutation } from '../data/mutations';
+import { AppStackParamList, AppStackScreenProps } from '../navigation/types';
+import CodeInput from '../components/verify/CodeInput';
+
+const verifySchema = z.object({
+	code: z
+		.string()
+		.length(6)
+		.regex(/^\d{6}$/)
+});
+
+type VerifyFormValues = z.infer<typeof verifySchema>;
+
+const Verify = ({ navigation }: AppStackScreenProps<'Verify'>) => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Verify'>>();
-	const [code, setCode] = React.useState('');
 	const verifyCodeMutation = useVerifyCodeMutation();
 
-	const handleSubmit = () => {
+	const methods = useForm<VerifyFormValues>({
+		resolver: zodResolver(verifySchema),
+		defaultValues: { code: '' },
+		mode: 'onChange'
+	});
+
+	const code = methods.watch('code');
+
+	const onSubmit = (values: VerifyFormValues) => {
 		verifyCodeMutation.mutate({
 			email: params.email,
-			code
+			code: values.code
 		});
+	};
+
+	const handleBack = () => {
+		navigation.goBack();
 	};
 
 	return (
 		<Screen style={{ padding: 16 }}>
+			<Pressable onPress={handleBack}>
+				<Icon name='arrow-left' />
+			</Pressable>
+
 			<SafeAreaView>
 				<Typography size='xxxlarge' weight='bold'>
 					Enter verification code
 				</Typography>
 				<Typography variant='secondary'>
-					A verification code was sent to your email.
+					A verification code was sent to {params.email}.
 				</Typography>
-				<TextInput
+				<FormInput
+					name='code'
+					control={methods.control}
 					autoFocus
 					style={styles.hidden}
-					onChangeText={setCode}
 					keyboardType='number-pad'
 					maxLength={6}
 				/>
@@ -47,8 +82,9 @@ const Verify = () => {
 				<Spacer y={32} />
 				<Button
 					text='Verify'
-					onPress={handleSubmit}
+					onPress={methods.handleSubmit(onSubmit)}
 					loading={verifyCodeMutation.isPending}
+					disabled={!methods.formState.isValid}
 				/>
 			</SafeAreaView>
 		</Screen>

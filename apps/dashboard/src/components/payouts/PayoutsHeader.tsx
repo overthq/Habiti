@@ -1,7 +1,12 @@
 import React from 'react';
-import { Pressable, View } from 'react-native';
-import { formatNaira } from '@habiti/common';
-import { Icon, SectionHeader, Spacer, Typography } from '@habiti/components';
+import { View } from 'react-native';
+import { formatNairaAbbreviated } from '@habiti/common';
+import {
+	PillButton,
+	SectionHeader,
+	Spacer,
+	Typography
+} from '@habiti/components';
 
 interface PayoutsHeaderProps {
 	realizedRevenue: number;
@@ -19,16 +24,13 @@ const PayoutsHeader: React.FC<PayoutsHeaderProps> = ({
 	return (
 		<View style={{ paddingTop: 16 }}>
 			<SectionHeader title='Available' padded={false} />
-			<Pressable
-				onPress={onViewDetails}
-				style={{ flexDirection: 'row', alignItems: 'center' }}
-			>
-				<Typography size='xxxlarge' weight='bold'>
-					{formatNaira(available)}
-				</Typography>
-				<Spacer x={4} />
-				<Icon name='chevron-right' size={20} />
-			</Pressable>
+			<Typography size='xxxlarge' weight='bold'>
+				{formatNairaAbbreviated(available)}
+			</Typography>
+
+			<Spacer y={8} />
+
+			<PillButton text='View details' onPress={onViewDetails} />
 		</View>
 	);
 };

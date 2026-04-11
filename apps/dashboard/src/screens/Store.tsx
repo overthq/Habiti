@@ -1,35 +1,38 @@
 import React from 'react';
-import { View, Pressable, RefreshControl } from 'react-native';
+import { View, RefreshControl, StyleSheet, Linking } from 'react-native';
 import {
-	Avatar,
 	Button,
-	Icon,
+	PillButton,
 	Screen,
 	ScrollableScreen,
+	Separator,
 	Spacer,
 	Typography,
 	useTheme
 } from '@habiti/components';
+import { formatNaira } from '@habiti/common';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import PayoutsHeader from '../components/payouts/PayoutsHeader';
-import RecentTransactions from '../components/store/RecentTransactions';
+import OnboardingChecklist from '../components/store/OnboardingChecklist';
 import StoreSelectModal from '../components/store/StoreSelectModal';
 
-import { useCurrentStoreQuery } from '../data/queries';
+import { useAddressesQuery, useCurrentStoreQuery } from '../data/queries';
 import useRefresh from '../hooks/useRefresh';
 import useStore from '../state';
 import { useShallow } from 'zustand/react/shallow';
+import { getFrontendUrl } from '../utils/share';
 
 import type {
 	AppStackParamList,
 	StoreStackParamList
 } from '../navigation/types';
+import StoreHeader from '../components/store/StoreHeader';
 
 const Store = () => {
 	const { data, refetch, isLoading, error } = useCurrentStoreQuery();
+	const { data: addressesData } = useAddressesQuery();
 	const { isRefreshing, onRefresh } = useRefresh({ refetch });
 	const { navigate } =
 		useNavigation<NavigationProp<AppStackParamList & StoreStackParamList>>();
@@ -45,17 +48,23 @@ const Store = () => {
 		});
 	};
 
+	const handleSwitchStore = React.useCallback(() => {
+		modalRef.current?.present();
+	}, []);
+
+	const handleOpenBalanceDetails = React.useCallback(() => {
+		navigate('BalanceDetails');
+	}, []);
+
 	const handleOpenSettings = React.useCallback(() => {
 		navigate('StoreSettings');
 	}, []);
 
-	const handleViewBalanceDetails = React.useCallback(() => {
-		navigate('BalanceDetails');
-	}, []);
-
-	const handleSwitchStore = React.useCallback(() => {
-		modalRef.current?.present();
-	}, []);
+	const handleOpenWebPage = React.useCallback(() => {
+		if (data?.store) {
+			Linking.openURL(getFrontendUrl(`/store/${data.store.id}`));
+		}
+	}, [data?.store?.id]);
 
 	if (isLoading || !data?.store) {
 		return <View />;
@@ -70,44 +79,16 @@ const Store = () => {
 	}
 
 	const store = data.store;
+	const available = (store.realizedRevenue ?? 0) - (store.paidOut ?? 0);
 
 	return (
 		<Screen style={{ paddingTop: top }}>
-			<View
-				style={{
-					flexDirection: 'row',
-					alignItems: 'center',
-					justifyContent: 'space-between',
-					paddingHorizontal: 16,
-					paddingVertical: 12,
-					borderBottomWidth: 0.5,
-					borderBottomColor: theme.border.color
-				}}
-			>
-				<Pressable
-					onPress={handleSwitchStore}
-					style={{ flexDirection: 'row', alignItems: 'center' }}
-				>
-					<Avatar
-						uri={store.image?.path}
-						fallbackText={store.name}
-						size={32}
-						circle
-					/>
-					<Spacer x={10} />
-					<Typography size='xxlarge' weight='bold'>
-						{store.name}
-					</Typography>
-					<Spacer x={4} />
-					<Icon name='chevron-down' size={20} />
-				</Pressable>
-
-				<View style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
-					<Pressable onPress={handleOpenSettings}>
-						<Icon name='menu' size={22} />
-					</Pressable>
-				</View>
-			</View>
+			<StoreHeader
+				store={store}
+				onOpenSettings={handleOpenSettings}
+				onOpenWebPage={handleOpenWebPage}
+				onSwitchStore={handleSwitchStore}
+			/>
 
 			<ScrollableScreen
 				style={{ paddingHorizontal: 16 }}
@@ -119,17 +100,66 @@ const Store = () => {
 					/>
 				}
 			>
-				<PayoutsHeader
-					realizedRevenue={store.realizedRevenue ?? 0}
-					paidOut={store.paidOut ?? 0}
-					onViewDetails={handleViewBalanceDetails}
-				/>
 				<Spacer y={16} />
-				<RecentTransactions />
+
+				<View>
+					<Typography variant='secondary' size='small'>
+						Available
+					</Typography>
+
+					<Spacer y={8} />
+
+					<Typography size='xxxlarge' weight='bold'>
+						{formatNaira(available)}
+					</Typography>
+				</View>
+
+				<Spacer y={16} />
+
+				<View style={styles.actions}>
+					<PillButton
+						text='Request payout'
+						onPress={handleNewPayout}
+						style={{ flex: 1 }}
+					/>
+
+					<Spacer x={8} />
+
+					<PillButton
+						text='Manage'
+						variant='secondary'
+						onPress={handleOpenBalanceDetails}
+						style={{ flex: 1 }}
+					/>
+				</View>
+
+				<Spacer y={16} />
+
+				<Separator />
+
+				<Spacer y={16} />
+
+				<OnboardingChecklist
+					store={store}
+					addresses={addressesData?.addresses ?? []}
+				/>
+
+				<Spacer y={16} />
 			</ScrollableScreen>
 			<StoreSelectModal modalRef={modalRef} />
 		</Screen>
 	);
 };
+
+const styles = StyleSheet.create({
+	storeInfo: {
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
+
+	actions: {
+		flexDirection: 'row'
+	}
+});
 
 export default Store;

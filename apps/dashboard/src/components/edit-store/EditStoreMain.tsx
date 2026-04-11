@@ -1,10 +1,12 @@
 import React from 'react';
-import { StyleSheet, Pressable } from 'react-native';
+import { StyleSheet, Pressable, View } from 'react-native';
 import { useForm } from 'react-hook-form';
 import {
 	Avatar,
 	FormInput,
+	PillButton,
 	Screen,
+	Spacer,
 	TextButton,
 	Typography
 } from '@habiti/components';
@@ -104,16 +106,20 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 
 	return (
 		<Screen style={styles.container}>
-			<Pressable
-				style={styles.avatarSection}
-				onPress={handlePickImage}
-				disabled={uploading}
-			>
-				<Avatar uri={imagePreview} size={80} fallbackText={store.name} />
-				<TextButton onPress={handlePickImage} disabled={uploading}>
-					{uploading ? 'Uploading...' : 'Edit Photo'}
-				</TextButton>
-			</Pressable>
+			<View style={styles.avatarSection}>
+				<Avatar uri={imagePreview} size={96} fallbackText={store.name} />
+
+				<Spacer y={4} />
+
+				<PillButton
+					size='small'
+					text={uploading ? 'Uploading...' : 'Edit Photo'}
+					onPress={handlePickImage}
+					disabled={uploading}
+					style={{ alignSelf: 'auto' }}
+				/>
+			</View>
+
 			<FormInput
 				name='name'
 				label='Name'

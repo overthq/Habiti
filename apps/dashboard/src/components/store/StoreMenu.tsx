@@ -20,7 +20,10 @@ const StoreMenu = () => {
 			<StoreMenuRow title='Edit Store' onPress={handleNavigate('Edit Store')} />
 			<StoreMenuRow title='Categories' onPress={handleNavigate('Categories')} />
 			<StoreMenuRow title='Addresses' onPress={handleNavigate('Addresses')} />
-			<StoreMenuRow title='Settings' onPress={handleNavigate('Settings')} />
+			<StoreMenuRow
+				title='Delete Store'
+				onPress={handleNavigate('DeleteStore')}
+			/>
 		</View>
 	);
 };

@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
 	container: {
 		flexGrow: 1,
 		height: 48,
-		borderRadius: 6,
+		borderRadius: 8,
 		padding: 2,
 		justifyContent: 'center',
 		alignItems: 'center',
