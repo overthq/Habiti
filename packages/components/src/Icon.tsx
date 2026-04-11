@@ -12,6 +12,13 @@ const icons = {
 	),
 	bookmark: <Path d='m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z' />,
 	check: <Path d='M20 6L9 17l-5-5' />,
+	check2: (
+		<Path
+			// strokeLinecap='round'
+			// strokeLinejoin='round'
+			d='m4.5 12.75 6 6 9-13.5'
+		/>
+	),
 	'chevron-left': <Path d='M15 18l-6-6 6-6' />,
 	'chevron-right': <Path d='M9 18l6-6-6-6' />,
 	'chevron-down': <Path d='m6 9 6 6 6-6' />,
@@ -25,7 +32,14 @@ const icons = {
 	delete: (
 		<Path d='M10 5a2 2 0 0 0-1.344.519l-6.328 5.74a1 1 0 0 0 0 1.481l6.328 5.741A2 2 0 0 0 10 19h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zM12 9l6 6M18 9l-6 6' />
 	),
+	circle: <Circle cx={12} cy={12} r={10} />,
 	filter: <Path d='M22 3H2l8 9.46V19l4 2v-8.54L22 3z' />,
+	globe: (
+		<>
+			<Circle cx={12} cy={12} r={10} />
+			<Path d='M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20' />
+		</>
+	),
 	heart: (
 		<Path d='M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z' />
 	),
@@ -124,12 +138,14 @@ export interface IconProps extends SvgProps {
 	color?: string;
 	name: keyof typeof icons;
 	style?: StyleProp<ViewStyle>;
+	strokeWidth?: number;
 }
 
 export type IconType = keyof typeof icons;
 
 export const Icon: React.FC<IconProps> = ({
 	size = 24,
+	strokeWidth = 2,
 	color,
 	name,
 	style,
@@ -144,7 +160,7 @@ export const Icon: React.FC<IconProps> = ({
 			height={size}
 			viewBox='0 0 24 24'
 			stroke={color ?? theme.icon.default.color}
-			strokeWidth={2}
+			strokeWidth={strokeWidth}
 			strokeLinecap='round'
 			strokeLinejoin='round'
 			fill={fill ?? 'none'}

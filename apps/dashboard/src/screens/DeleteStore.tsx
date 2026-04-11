@@ -5,7 +5,7 @@ import { Button, Screen, Spacer, Typography } from '@habiti/components';
 import useStore from '../state';
 import { useDeleteStoreMutation } from '../data/mutations';
 
-const StoreSettings = () => {
+const DeleteStore = () => {
 	const deleteStoreMutation = useDeleteStoreMutation();
 	const { activeStore, setPreference } = useStore();
 
@@ -45,4 +45,4 @@ const StoreSettings = () => {
 	);
 };
 
-export default StoreSettings;
+export default DeleteStore;

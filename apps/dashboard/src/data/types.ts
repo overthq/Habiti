@@ -26,6 +26,7 @@ export interface Store {
 	image?: Image;
 	products: Product[];
 	categories: StoreProductCategory[];
+	_count?: { followers: number };
 	createdAt: string;
 	updatedAt: string;
 }

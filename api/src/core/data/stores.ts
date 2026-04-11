@@ -127,7 +127,8 @@ export const getStoreByIdWithProducts = async (
 				include: { images: true },
 				...productFiltersToPrismaClause(filters)
 			},
-			categories: true
+			categories: true,
+			_count: { select: { followers: true } }
 		}
 	});
 

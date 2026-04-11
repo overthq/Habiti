@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
 import { Icon, Spacer, Typography, useTheme } from '@habiti/components';
-import { formatNaira } from '@habiti/common';
+import { formatNairaAbbreviated } from '@habiti/common';
 
 import { parseTimestamp } from '../../utils/date';
 import {
@@ -60,7 +60,7 @@ const TransactionRow: React.FC<TransactionRowProps> = ({
 			onPress={() => onPress?.(transaction)}
 		>
 			<View style={styles.left}>
-				<Typography weight='medium' size='small'>
+				<Typography weight='medium' size='small' numberOfLines={1}>
 					{transaction.description ?? transactionLabel[transaction.type]}
 				</Typography>
 				<Spacer y={2} />
@@ -83,12 +83,12 @@ const TransactionRow: React.FC<TransactionRowProps> = ({
 				<Typography
 					size='small'
 					weight='medium'
-					style={{
-						color: credit ? theme.badge.success.color : theme.text.primary
-					}}
+					// style={{
+					// 	color: credit ? theme.badge.success.color : theme.text.primary
+					// }}
 				>
 					{credit ? '+' : '-'}
-					{formatNaira(transaction.amount)}
+					{formatNairaAbbreviated(transaction.amount)}
 				</Typography>
 				<Icon name='chevron-right' size={16} color={theme.text.secondary} />
 			</View>
@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
 	container: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems: 'center',
 		paddingVertical: 12
 	},
 	left: {
@@ -113,7 +112,8 @@ const styles = StyleSheet.create({
 	},
 	right: {
 		flexDirection: 'row',
-		alignItems: 'center',
+		// justifyContent: 'center',
+		// alignItems: 'center',
 		gap: 4
 	}
 });

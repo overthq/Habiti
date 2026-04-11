@@ -1,6 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
-import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useShallow } from 'zustand/react/shallow';
 import { Icon, Spacer, Typography, useTheme } from '@habiti/components';
 
@@ -40,21 +39,19 @@ const StoreSelectList: React.FC<StoreSelectListProps> = ({
 	);
 
 	return (
-		<Animated.View
-			entering={FadeInDown}
-			exiting={FadeOutDown}
-			style={{ gap: 12 }}
-		>
-			{stores.map(store => (
-				<StoreSelectListItem
-					key={store.id}
-					store={store}
-					onPress={handleStoreSelect(store.id)}
-					selected={store.id === activeStore}
-				/>
-			))}
-			<CreateStoreButton onPress={onAddStore} />
-		</Animated.View>
+		<View style={{ flex: 1, gap: 12 }}>
+			<ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 12 }}>
+				{stores.map(store => (
+					<StoreSelectListItem
+						key={store.id}
+						store={store}
+						onPress={handleStoreSelect(store.id)}
+						selected={store.id === activeStore}
+					/>
+				))}
+				<CreateStoreButton onPress={onAddStore} />
+			</ScrollView>
+		</View>
 	);
 };
 

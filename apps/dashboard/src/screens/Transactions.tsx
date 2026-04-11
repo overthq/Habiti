@@ -1,11 +1,9 @@
 import React from 'react';
 import { View, StyleSheet, RefreshControl, Alert } from 'react-native';
-import { Screen, Typography, Spacer, useTheme, Icon } from '@habiti/components';
+import { Screen, Typography, useTheme, Icon } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { HeaderButton } from '@react-navigation/elements';
 import { FlashList } from '@shopify/flash-list';
-import { formatNaira } from '@habiti/common';
-
 import TransactionRow from '../components/transactions/TransactionRow';
 import useRefresh from '../hooks/useRefresh';
 import { useCurrentStoreQuery, useTransactionsQuery } from '../data/queries';
@@ -68,10 +66,6 @@ const Transactions = () => {
 		[]
 	);
 
-	const availableBalance = storeData
-		? storeData.store.realizedRevenue - storeData.store.paidOut
-		: 0;
-
 	return (
 		<Screen>
 			<View style={styles.container}>
@@ -86,17 +80,6 @@ const Transactions = () => {
 							onRefresh={onRefresh}
 							tintColor={theme.text.secondary}
 						/>
-					}
-					ListHeaderComponent={
-						<View style={styles.header}>
-							<Typography variant='secondary' size='small'>
-								Available Balance
-							</Typography>
-							<Spacer y={4} />
-							<Typography size='xxxlarge' weight='bold'>
-								{formatNaira(availableBalance)}
-							</Typography>
-						</View>
 					}
 					data={data?.transactions ?? []}
 					keyExtractor={t => t.id}
@@ -122,9 +105,6 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		paddingHorizontal: 16
-	},
-	header: {
-		paddingVertical: 16
 	},
 	empty: {
 		paddingVertical: 32,
