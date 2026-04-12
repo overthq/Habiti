@@ -187,7 +187,7 @@ export const useUpdateOrderMutation = () => {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({
-				queryKey: ['orders']
+				queryKey: ['stores', 'current', 'orders']
 			});
 		},
 		onError: error => {
