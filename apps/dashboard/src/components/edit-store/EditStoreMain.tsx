@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Pressable, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useForm } from 'react-hook-form';
 import {
 	Avatar,
@@ -7,7 +7,6 @@ import {
 	PillButton,
 	Screen,
 	Spacer,
-	TextButton,
 	Typography
 } from '@habiti/components';
 import { useNavigation } from '@react-navigation/native';
@@ -120,27 +119,33 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 				/>
 			</View>
 
+			<Spacer y={16} />
+
 			<FormInput
 				name='name'
 				label='Name'
-				style={styles.input}
 				placeholder='Name'
 				control={formMethods.control}
 			/>
+
+			<Spacer y={8} />
+
 			<FormInput
 				name='website'
 				label='Website'
-				style={styles.input}
 				placeholder='https://acme.com'
 				autoCorrect={false}
 				autoCapitalize='none'
 				keyboardType='url'
 				control={formMethods.control}
 			/>
+
+			<Spacer y={8} />
+
 			<FormInput
 				name='description'
 				label='Description'
-				style={[styles.input, { height: 80 }]}
+				style={{ height: 80 }}
 				placeholder='Description'
 				textArea
 				control={formMethods.control}
@@ -163,9 +168,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center'
-	},
-	input: {
-		marginBottom: 8
 	},
 	button: {
 		marginTop: 8
