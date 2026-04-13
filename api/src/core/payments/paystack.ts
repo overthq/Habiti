@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+import * as Sentry from '@sentry/bun';
 import { env } from '../../config/env';
 
 const API_URL = 'https://api.paystack.co';
@@ -11,6 +12,60 @@ const client = axios.create({
 	}
 });
 
+const REDACTED_KEYS = new Set([
+	'authorization_code',
+	'authorizationCode',
+	'otp'
+]);
+
+const redact = (value: unknown): unknown => {
+	if (Array.isArray(value)) {
+		return value.map(redact);
+	}
+	if (value && typeof value === 'object') {
+		const out: Record<string, unknown> = {};
+		for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+			out[k] = REDACTED_KEYS.has(k) ? '[redacted]' : redact(v);
+		}
+		return out;
+	}
+	return value;
+};
+
+const withLogging = async <T>(
+	operation: string,
+	payload: unknown,
+	fn: () => Promise<T>
+): Promise<T> => {
+	try {
+		const result = await fn();
+		if (env.NODE_ENV !== 'production') {
+			console.log(`[paystack] ${operation} ok`);
+		}
+		return result;
+	} catch (error) {
+		const axiosError = error as AxiosError;
+		const logEntry = {
+			operation,
+			request: redact(payload),
+			status: axiosError.response?.status,
+			statusText: axiosError.response?.statusText,
+			responseData: axiosError.response?.data,
+			code: axiosError.code,
+			message: axiosError.message
+		};
+
+		console.error(`[paystack] ${operation} failed`, logEntry);
+
+		Sentry.captureException(error, {
+			tags: { integration: 'paystack', operation },
+			extra: logEntry
+		});
+
+		throw error;
+	}
+};
+
 interface ChargeAuthorizationOptions {
 	authorizationCode: string;
 	email: string;
@@ -21,14 +76,20 @@ interface ChargeAuthorizationOptions {
 export const chargeAuthorization = async (
 	options: ChargeAuthorizationOptions
 ) => {
-	const response = await client.post('/transaction/charge_authorization', {
+	const body = {
 		authorization_code: options.authorizationCode,
 		email: options.email,
 		amount: options.amount,
 		...(options.metadata && { metadata: options.metadata })
-	});
+	};
 
-	return response.data;
+	return withLogging('chargeAuthorization', body, async () => {
+		const response = await client.post(
+			'/transaction/charge_authorization',
+			body
+		);
+		return response.data;
+	});
 };
 
 interface InitializeTransactionOptions {
@@ -52,16 +113,19 @@ export interface InitializeTransactionResponse {
 export const initializeTransaction = async (
 	options: InitializeTransactionOptions
 ) => {
-	const response = await client.post<InitializeTransactionResponse>(
-		'/transaction/initialize',
-		{
-			email: options.email,
-			amount: options.amount,
-			...(options.metadata && { metadata: options.metadata })
-		}
-	);
+	const body = {
+		email: options.email,
+		amount: options.amount,
+		...(options.metadata && { metadata: options.metadata })
+	};
 
-	return response.data;
+	return withLogging('initializeTransaction', body, async () => {
+		const response = await client.post<InitializeTransactionResponse>(
+			'/transaction/initialize',
+			body
+		);
+		return response.data;
+	});
 };
 
 interface TransferOptions {
@@ -74,16 +138,19 @@ interface TransferOptions {
 }
 
 export const transfer = async (options: TransferOptions) => {
-	const response = await client.post('/transfer', {
+	const body = {
 		source: 'balance',
 		amount: options.amount,
 		reference: options.reference,
 		recipient: options.recipient,
 		reason: 'Payout',
 		...(options.metadata && { metadata: options.metadata })
-	});
+	};
 
-	return response.data;
+	return withLogging('transfer', body, async () => {
+		const response = await client.post('/transfer', body);
+		return response.data;
+	});
 };
 
 export interface VerifyTransactionResponse {
@@ -116,11 +183,12 @@ export interface VerifyTransactionResponse {
 }
 
 export const verifyTransaction = async (reference: string) => {
-	const response = await client.get<VerifyTransactionResponse>(
-		`/transaction/verify/${reference}`
-	);
-
-	return response.data;
+	return withLogging('verifyTransaction', { reference }, async () => {
+		const response = await client.get<VerifyTransactionResponse>(
+			`/transaction/verify/${reference}`
+		);
+		return response.data;
+	});
 };
 
 // {
@@ -180,11 +248,12 @@ export interface VerifyTransferResponse {
 }
 
 export const verifyTransfer = async (reference: string) => {
-	const response = await client.get<VerifyTransferResponse>(
-		`/transfer/verify/${reference}`
-	);
-
-	return response.data;
+	return withLogging('verifyTransfer', { reference }, async () => {
+		const response = await client.get<VerifyTransferResponse>(
+			`/transfer/verify/${reference}`
+		);
+		return response.data;
+	});
 };
 
 // {
@@ -227,15 +296,18 @@ export interface FinalizeTransferResponse {
 }
 
 export const finalizeTransfer = async (options: FinalizeTransferOptions) => {
-	const response = await client.post<FinalizeTransferResponse>(
-		'/transfer/finalize_transfer',
-		{
-			transfer_code: options.transferCode,
-			otp: options.otp
-		}
-	);
+	const body = {
+		transfer_code: options.transferCode,
+		otp: options.otp
+	};
 
-	return response.data;
+	return withLogging('finalizeTransfer', body, async () => {
+		const response = await client.post<FinalizeTransferResponse>(
+			'/transfer/finalize_transfer',
+			body
+		);
+		return response.data;
+	});
 };
 
 interface ResolveAccountNumberOptions {
@@ -246,11 +318,12 @@ interface ResolveAccountNumberOptions {
 export const resolveAccountNumber = async (
 	options: ResolveAccountNumberOptions
 ) => {
-	const response = await client.get(
-		`/bank/resolve?account_number=${options.accountNumber}&bank_code=${options.bankCode}`
-	);
-
-	return response.data;
+	return withLogging('resolveAccountNumber', options, async () => {
+		const response = await client.get(
+			`/bank/resolve?account_number=${options.accountNumber}&bank_code=${options.bankCode}`
+		);
+		return response.data;
+	});
 };
 
 interface CreateTransferReceipientOptions {
@@ -289,22 +362,26 @@ export interface CreateTransferReceipientResponse {
 export const createTransferReceipient = async (
 	options: CreateTransferReceipientOptions
 ) => {
-	const response = await client.post<CreateTransferReceipientResponse>(
-		'/transferrecipient',
-		{
-			type: 'nuban',
-			name: options.name,
-			account_number: options.accountNumber,
-			bank_code: options.bankCode,
-			currency: 'NGN'
-		}
-	);
+	const body = {
+		type: 'nuban',
+		name: options.name,
+		account_number: options.accountNumber,
+		bank_code: options.bankCode,
+		currency: 'NGN'
+	};
 
-	return response.data;
+	return withLogging('createTransferReceipient', body, async () => {
+		const response = await client.post<CreateTransferReceipientResponse>(
+			'/transferrecipient',
+			body
+		);
+		return response.data;
+	});
 };
 
 export const listBanks = async () => {
-	const response = await client.get('/bank?currency=NGN');
-
-	return response.data;
+	return withLogging('listBanks', {}, async () => {
+		const response = await client.get('/bank?currency=NGN');
+		return response.data;
+	});
 };
