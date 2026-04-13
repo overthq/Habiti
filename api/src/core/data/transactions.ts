@@ -4,7 +4,6 @@ import {
 	TransactionType
 } from '../../generated/prisma/client';
 import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
-import prismaClient from '../../config/prisma';
 
 // Credit types increase the available balance; debit types decrease it.
 const CREDIT_TYPES: TransactionType[] = [
@@ -137,8 +136,11 @@ export const getTransactionById = async (
  * Called by Paystack webhook on transfer.success.
  * The reference is the Transaction ID used as the Paystack transfer reference.
  */
-export const markTransferSuccessful = async (reference: string) => {
-	await prismaClient.$transaction(async tx => {
+export const markTransferSuccessful = async (
+	prisma: PrismaClient,
+	reference: string
+) => {
+	await prisma.$transaction(async tx => {
 		const transaction = await tx.transaction.findUnique({
 			where: { id: reference }
 		});
@@ -170,8 +172,11 @@ export const markTransferSuccessful = async (reference: string) => {
  * Called by Paystack webhook on transfer.failure.
  * Marks the payout transaction as failed and creates a reversal adjustment.
  */
-export const markTransferFailed = async (reference: string) => {
-	await prismaClient.$transaction(async tx => {
+export const markTransferFailed = async (
+	prisma: PrismaClient,
+	reference: string
+) => {
+	await prisma.$transaction(async tx => {
 		const transaction = await tx.transaction.findUnique({
 			where: { id: reference }
 		});

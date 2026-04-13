@@ -202,7 +202,7 @@ const handleTransferSuccess = async (
 			`Found non-payout transfer. Reason: ${data.reason}. Reference: ${data.reference}`
 		);
 	} else {
-		await TransactionData.markTransferSuccessful(data.reference);
+		await TransactionData.markTransferSuccessful(c.var.prisma, data.reference);
 
 		const transaction = await TransactionData.getTransactionById(
 			c.var.prisma,
@@ -230,7 +230,7 @@ const handleTransferSuccess = async (
 };
 
 const handleTransferFailure = async (
-	_c: Context<AppEnv>,
+	ctx: Context<AppEnv>,
 	data: TransferFailurePayload
 ) => {
 	if (data.reason !== 'Payout') {
@@ -238,14 +238,16 @@ const handleTransferFailure = async (
 			`Found non-payout transfer. Reason: ${data.reason}. Reference: ${data.reference}`
 		);
 	} else {
-		await TransactionData.markTransferFailed(data.reference);
+		await TransactionData.markTransferFailed(ctx.var.prisma, data.reference);
 	}
 };
 
 export const handleTransferReversed = async (
-	c: Context<AppEnv>,
+	ctx: Context<AppEnv>,
 	data: TransferReversedPayload
-) => {};
+) => {
+	await TransactionData.markTransferFailed(ctx.var.prisma, data.reference);
+};
 
 export const verifyTransaction = async (
 	c: Context<AppEnv>,
@@ -265,9 +267,12 @@ export const verifyTransfer = async (
 	const { data, status } = await CorePayments.verifyTransfer(options);
 
 	if (status === true && data.status === 'success') {
-		await TransactionData.markTransferSuccessful(options.transferId);
+		await TransactionData.markTransferSuccessful(
+			c.var.prisma,
+			options.transferId
+		);
 	} else {
-		await TransactionData.markTransferFailed(options.transferId);
+		await TransactionData.markTransferFailed(c.var.prisma, options.transferId);
 	}
 
 	return data;
