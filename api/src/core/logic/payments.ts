@@ -31,19 +31,41 @@ import type {
 import type { AppEnv } from '../../types/hono';
 import { pollUntil } from '../../utils/poll';
 
-// --- Payment approval ---
-
 // `body` here comes directly from Paystack.
+// It's currently hard to know what the shape of the information from Paystack
+// looks like here, so I'm checking all the _reasonable_ places.
+// It would be good to be sure where this information should be, so we can
+// validate with Zod, but this should work for now.
+// 	{
+//   event: "transferrequest.approval-required",
+//   data: {
+//     integration: 720234,
+//     domain: "live",
+//     user: null,
+//     source_ip: "74.220.50.254",
+//     details: {
+//       headers: [Object ...],
+//       body: [Object ...],
+//       query: [Object ...],
+//       endpoint: "/transfer",
+//     },
+//     transfers: [
+//       [Object ...]
+//     ],
+//   },
+// }
+
 export const approvePayment = async (c: Context<AppEnv>, body: any) => {
-	// It's currently hard to know what the shape of the information from Paystack
-	// looks like here, so I'm checking all the _reasonable_ places.
-	// It would be good to be sure where this information should be, so we can
-	// validate with Zod, but this should work for now.
-
-	console.log(body);
-
 	const reference = body?.reference || body?.data?.reference;
 	const amount = body?.amount || body?.data?.amount;
+
+	console.log(JSON.stringify(body));
+	console.log('body.data', body?.data);
+	console.log('body.data.details', body?.data?.details);
+	console.log('body.data.details.body', body?.data?.details?.body);
+	console.log('body.data.details.query', body?.data?.details?.query);
+	console.log('body.data.transfers', body?.data?.transfers);
+	console.log(JSON.stringify(body?.data?.transfers));
 
 	if (!reference) {
 		throw new Error('Unable to extract reference parameter');
