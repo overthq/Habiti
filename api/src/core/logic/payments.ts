@@ -32,56 +32,32 @@ import type { AppEnv } from '../../types/hono';
 import { pollUntil } from '../../utils/poll';
 
 // `body` here comes directly from Paystack.
-// It's currently hard to know what the shape of the information from Paystack
-// looks like here, so I'm checking all the _reasonable_ places.
-// It would be good to be sure where this information should be, so we can
-// validate with Zod, but this should work for now.
-// 	{
-//   event: "transferrequest.approval-required",
-//   data: {
-//     integration: 720234,
-//     domain: "live",
-//     user: null,
-//     source_ip: "xx.xxx.xx.xxx",
-//     details: {
-//       headers: [Object ...],
-//       body: [Object ...],
-//       query: [Object ...],
-//       endpoint: "/transfer",
-//     },
-//     transfers: [
-//       [Object ...]
-//     ],
-//   },
-// }
 
 export const approvePayment = async (c: Context<AppEnv>, body: any) => {
-	const reference = body?.reference || body?.data?.reference;
-	const amount = body?.amount || body?.data?.amount;
+	const transfers: Array<{ reference: string; amount: number }> =
+		body?.data?.transfers;
 
-	console.log(JSON.stringify(body));
-	console.log('body.data', body?.data);
-	console.log('body.data.details', body?.data?.details);
-	console.log('body.data.details.body', body?.data?.details?.body);
-	console.log('body.data.details.query', body?.data?.details?.query);
-	console.log('body.data.transfers', body?.data?.transfers);
-	console.log(JSON.stringify(body?.data?.transfers));
-
-	if (!reference) {
-		throw new Error('Unable to extract reference parameter');
-	} else if (!amount) {
-		throw new Error('Unable to extract amount parameter');
+	if (!Array.isArray(transfers) || transfers.length === 0) {
+		throw new Error('Unable to extract transfers from approve-payment body');
 	}
 
-	const transaction = await c.var.prisma.transaction.findFirst({
-		where: {
-			id: reference,
-			status: 'Processing',
-			amount
-		}
-	});
+	const transactions = await Promise.all(
+		transfers.map(transfer =>
+			c.var.prisma.transaction.findFirst({
+				where: {
+					id: transfer.reference,
+					status: 'Processing',
+					amount: transfer.amount
+				}
+			})
+		)
+	);
 
-	return transaction;
+	if (transactions.some(t => t === null)) {
+		return null;
+	}
+
+	return transactions;
 };
 
 // --- Card charge processing ---
