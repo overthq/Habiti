@@ -202,7 +202,7 @@ const handleTransferSuccess = async (
 			`Found non-payout transfer. Reason: ${data.reason}. Reference: ${data.reference}`
 		);
 	} else {
-		await TransactionData.markTransferSuccessful(data.reference);
+		await TransactionData.markTransferSuccessful(c.var.prisma, data.reference);
 
 		const transaction = await TransactionData.getTransactionById(
 			c.var.prisma,
@@ -267,9 +267,12 @@ export const verifyTransfer = async (
 	const { data, status } = await CorePayments.verifyTransfer(options);
 
 	if (status === true && data.status === 'success') {
-		await TransactionData.markTransferSuccessful(options.transferId);
+		await TransactionData.markTransferSuccessful(
+			c.var.prisma,
+			options.transferId
+		);
 	} else {
-		await TransactionData.markTransferFailed(options.transferId);
+		await TransactionData.markTransferFailed(c.var.prisma, options.transferId);
 	}
 
 	return data;
