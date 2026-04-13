@@ -1,4 +1,5 @@
 import type { Context } from 'hono';
+import * as Sentry from '@sentry/bun';
 
 import * as PaymentLogic from './payments';
 import * as TransactionData from '../data/transactions';
@@ -137,7 +138,29 @@ export const createPayoutTransaction = async (
 			metadata: { transactionId: transaction.id }
 		});
 	} catch (error) {
-		console.log({ error });
+		const axiosError = error as {
+			response?: { status?: number; data?: unknown };
+			code?: string;
+			message?: string;
+		};
+
+		const context = {
+			storeId,
+			transactionId: transaction.id,
+			amount,
+			recipient: store.bankAccountReference,
+			paystackStatus: axiosError.response?.status,
+			paystackResponse: axiosError.response?.data,
+			errorCode: axiosError.code,
+			errorMessage: axiosError.message
+		};
+
+		console.error('[payout] payAccount failed', context);
+
+		Sentry.captureException(error, {
+			tags: { feature: 'payout', storeId },
+			extra: context
+		});
 
 		await TransactionData.updateTransactionStatus(
 			c.var.prisma,
