@@ -40,6 +40,8 @@ export const approvePayment = async (c: Context<AppEnv>, body: any) => {
 	// It would be good to be sure where this information should be, so we can
 	// validate with Zod, but this should work for now.
 
+	console.log(body);
+
 	const reference = body?.reference || body?.data?.reference;
 	const amount = body?.amount || body?.data?.amount;
 
