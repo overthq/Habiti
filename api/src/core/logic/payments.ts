@@ -230,7 +230,7 @@ const handleTransferSuccess = async (
 };
 
 const handleTransferFailure = async (
-	_c: Context<AppEnv>,
+	ctx: Context<AppEnv>,
 	data: TransferFailurePayload
 ) => {
 	if (data.reason !== 'Payout') {
@@ -238,14 +238,16 @@ const handleTransferFailure = async (
 			`Found non-payout transfer. Reason: ${data.reason}. Reference: ${data.reference}`
 		);
 	} else {
-		await TransactionData.markTransferFailed(data.reference);
+		await TransactionData.markTransferFailed(ctx.var.prisma, data.reference);
 	}
 };
 
 export const handleTransferReversed = async (
-	c: Context<AppEnv>,
+	ctx: Context<AppEnv>,
 	data: TransferReversedPayload
-) => {};
+) => {
+	await TransactionData.markTransferFailed(ctx.var.prisma, data.reference);
+};
 
 export const verifyTransaction = async (
 	c: Context<AppEnv>,

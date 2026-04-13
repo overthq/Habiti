@@ -137,6 +137,8 @@ export const createPayoutTransaction = async (
 			metadata: { transactionId: transaction.id }
 		});
 	} catch (error) {
+		console.log({ error });
+
 		await TransactionData.updateTransactionStatus(
 			c.var.prisma,
 			transaction.id,
