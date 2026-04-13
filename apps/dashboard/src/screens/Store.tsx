@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, RefreshControl, StyleSheet, Linking } from 'react-native';
+import { View, RefreshControl, StyleSheet, Linking, Alert } from 'react-native';
 import {
 	Button,
 	PillButton,
@@ -42,9 +42,20 @@ const Store = () => {
 	const modalRef = React.useRef<BottomSheetModal>(null);
 
 	const handleNewPayout = () => {
+		if (!data?.store) return;
+
+		if (!data.store.bankAccountNumber) {
+			Alert.alert(
+				'No bank account linked',
+				'You must link a bank account before requesting a payout'
+			);
+
+			return;
+		}
+
 		navigate('Modal.AddPayout', {
-			realizedRevenue: data?.store.realizedRevenue ?? 0,
-			paidOut: data?.store.paidOut ?? 0
+			realizedRevenue: data.store.realizedRevenue ?? 0,
+			paidOut: data.store.paidOut ?? 0
 		});
 	};
 

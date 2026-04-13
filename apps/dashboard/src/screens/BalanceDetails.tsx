@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { formatNaira } from '@habiti/common';
 import {
 	ScrollableScreen,
+	Separator,
 	Spacer,
 	Typography,
 	useTheme
@@ -63,6 +64,10 @@ const BalanceDetails = () => {
 					isLast
 				/>
 			</View>
+
+			<Spacer y={16} />
+
+			<Separator />
 
 			<Spacer y={16} />
 
