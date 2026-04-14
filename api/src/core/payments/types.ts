@@ -34,7 +34,7 @@ export interface ResolveAccountNumberOptions {
 	bankCode: string;
 }
 
-export interface CreateTransferReceipientOptions {
+export interface CreateTransferRecipientOptions {
 	name: string;
 	accountNumber: string;
 	bankCode: string;

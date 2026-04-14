@@ -326,7 +326,7 @@ export const resolveAccountNumber = async (
 	});
 };
 
-interface CreateTransferReceipientOptions {
+interface CreateTransferRecipientOptions {
 	name: string;
 	accountNumber: string;
 	bankCode: string;
@@ -335,7 +335,7 @@ interface CreateTransferReceipientOptions {
 // FIXME: Find out what the error shape looks like.
 // For now, we're just checking that "status" is true, which doesn't really
 // mean anything.
-export interface CreateTransferReceipientResponse {
+export interface CreateTransferRecipientResponse {
 	status: boolean;
 	message: string;
 	data: {
@@ -359,8 +359,8 @@ export interface CreateTransferReceipientResponse {
 	};
 }
 
-export const createTransferReceipient = async (
-	options: CreateTransferReceipientOptions
+export const createTransferRecipient = async (
+	options: CreateTransferRecipientOptions
 ) => {
 	const body = {
 		type: 'nuban',
@@ -370,8 +370,8 @@ export const createTransferReceipient = async (
 		currency: 'NGN'
 	};
 
-	return withLogging('createTransferReceipient', body, async () => {
-		const response = await client.post<CreateTransferReceipientResponse>(
+	return withLogging('createTransferRecipient', body, async () => {
+		const response = await client.post<CreateTransferRecipientResponse>(
 			'/transferrecipient',
 			body
 		);
