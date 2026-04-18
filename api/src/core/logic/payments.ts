@@ -258,21 +258,36 @@ export const verifyTransaction = async (
 	}
 };
 
+const TERMINAL_TRANSFER_FAILURE_STATUSES = new Set([
+	'failed',
+	'reversed',
+	'abandoned'
+]);
+
 export const verifyTransfer = async (
 	c: Context<AppEnv>,
 	options: VerifyTransferOptions
 ) => {
 	const { data, status } = await CorePayments.verifyTransfer(options);
 
-	if (status === true && data.status === 'success') {
+	if (status !== true) {
+		return data;
+	}
+
+	if (data.status === 'success') {
 		await TransactionData.markTransferSuccessful(
 			c.var.prisma,
 			options.transferId
 		);
-	} else {
-		await TransactionData.markTransferFailed(c.var.prisma, options.transferId);
+		return data;
 	}
 
+	if (TERMINAL_TRANSFER_FAILURE_STATUSES.has(data.status)) {
+		await TransactionData.markTransferFailed(c.var.prisma, options.transferId);
+		return data;
+	}
+
+	// Non-terminal statuses (pending, otp, etc.): keep the row Processing.
 	return data;
 };
 
@@ -315,9 +330,16 @@ export const payAccount = async (
 	const data = await CorePayments.payAccount(options);
 
 	if (env.NODE_ENV !== 'production') {
-		pollUntil(() => verifyTransfer(c, { transferId: data.data.reference }), {
-			intervalMs: 5_000,
-			maxAttempts: 24
+		pollUntil(
+			async () => {
+				const verifyResult = await verifyTransfer(c, {
+					transferId: data.data.reference
+				});
+				return verifyResult.status === 'success';
+			},
+			{ intervalMs: 5_000, maxAttempts: 24 }
+		).catch(error => {
+			console.error('[payAccount] verifyTransfer polling failed', error);
 		});
 	}
 

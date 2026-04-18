@@ -13,6 +13,7 @@ import {
 	updateProduct,
 	createPayout,
 	createStore,
+	switchStore,
 	createProductCategory,
 	updateOrder,
 	deleteProductCategory,
@@ -226,10 +227,19 @@ export const useCreateProductCategoryMutation = () => {
 
 export const useCreateStoreMutation = () => {
 	const queryClient = useQueryClient();
+	const { logIn, setPreference } = useStore(
+		useShallow(state => ({
+			logIn: state.logIn,
+			setPreference: state.setPreference
+		}))
+	);
 
 	return useMutation({
 		mutationFn: (body: CreateStoreBody) => createStore(body),
-		onSuccess: () => {
+		onSuccess: async ({ store }) => {
+			const { accessToken } = await switchStore(store.id);
+			logIn(accessToken);
+			setPreference({ activeStore: store.id });
 			queryClient.invalidateQueries({
 				queryKey: ['stores']
 			});

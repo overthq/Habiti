@@ -17,7 +17,9 @@ const envSchema = z.object({
 	PAYSTACK_SECRET_KEY: z.string(),
 	REDIS_URL: z.string().optional(),
 	REDIS_TLS_URL: z.string().optional(),
-	DATABASE_URL: z.string().optional()
+	DATABASE_URL: z.string().optional(),
+	TEST_ACCOUNT_EMAIL: z.string().optional(),
+	TEST_ACCOUNT_OTP: z.string().optional()
 });
 
 export const env = envSchema.parse(Bun.env);

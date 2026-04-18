@@ -5,7 +5,7 @@ import type { StripUndefined } from '../../utils/objects';
 
 import * as PushTokenData from '../data/pushTokens';
 import * as StoreData from '../data/stores';
-import { createTransferReceipient } from '../payments';
+import { createTransferRecipient } from '../payments';
 
 import { NotificationType } from '../notifications';
 
@@ -99,7 +99,7 @@ export const updateStore = async (
 	}
 
 	if (updateData.bankAccountNumber && updateData.bankCode) {
-		const { data, status } = await createTransferReceipient({
+		const { data, status } = await createTransferRecipient({
 			name: c.var.auth.name,
 			accountNumber: updateData.bankAccountNumber,
 			bankCode: updateData.bankCode

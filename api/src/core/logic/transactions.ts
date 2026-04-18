@@ -13,6 +13,7 @@ import {
 } from '../../generated/prisma/client';
 import { LogicError, LogicErrorCode } from './errors';
 import { canManageStore } from './permissions';
+import { runSerializable } from '../../utils/prisma';
 
 export const getStoreTransactions = async (
 	c: Context<AppEnv>,
@@ -104,14 +105,8 @@ export const createPayoutTransaction = async (
 		throw new LogicError(LogicErrorCode.StoreNotFound);
 	}
 
-	if (!canManageStore(c)) {
+	if (!(await canManageStore(c))) {
 		throw new LogicError(LogicErrorCode.CannotManageStore);
-	}
-
-	const availableForPayout = store.realizedRevenue - store.paidOut;
-
-	if (amount > availableForPayout) {
-		throw new LogicError(LogicErrorCode.InsufficientFunds);
 	}
 
 	if (!store.bankAccountReference || !store.bankAccountNumber) {
@@ -119,22 +114,43 @@ export const createPayoutTransaction = async (
 	}
 
 	const storeId = c.var.storeId as string;
+	const bankAccountReference = store.bankAccountReference;
 
-	const transaction = await c.var.prisma.$transaction(async tx => {
-		return TransactionData.createTransaction(tx, {
-			storeId,
-			type: TransactionType.Payout,
-			status: TransactionStatus.Processing,
-			amount,
-			description: 'Payout requested'
-		});
-	});
+	const { transaction, availableForPayout } = await runSerializable(
+		c.var.prisma,
+		async tx => {
+			const lockedStore = await tx.store.findUnique({
+				where: { id: storeId },
+				select: { realizedRevenue: true, paidOut: true }
+			});
+
+			if (!lockedStore) {
+				throw new LogicError(LogicErrorCode.StoreNotFound);
+			}
+
+			const available = lockedStore.realizedRevenue - lockedStore.paidOut;
+
+			if (amount > available) {
+				throw new LogicError(LogicErrorCode.InsufficientFunds);
+			}
+
+			const created = await TransactionData.createTransaction(tx, {
+				storeId,
+				type: TransactionType.Payout,
+				status: TransactionStatus.Processing,
+				amount,
+				description: 'Payout requested'
+			});
+
+			return { transaction: created, availableForPayout: available };
+		}
+	);
 
 	try {
 		await PaymentLogic.payAccount(c, {
 			amount: amount.toString(),
 			reference: transaction.id,
-			recipient: store.bankAccountReference,
+			recipient: bankAccountReference,
 			metadata: { transactionId: transaction.id }
 		});
 	} catch (error) {
@@ -148,7 +164,7 @@ export const createPayoutTransaction = async (
 			storeId,
 			transactionId: transaction.id,
 			amount,
-			recipient: store.bankAccountReference,
+			recipient: bankAccountReference,
 			paystackStatus: axiosError.response?.status,
 			paystackResponse: axiosError.response?.data,
 			errorCode: axiosError.code,
@@ -162,11 +178,38 @@ export const createPayoutTransaction = async (
 			extra: context
 		});
 
-		await TransactionData.updateTransactionStatus(
-			c.var.prisma,
-			transaction.id,
-			TransactionStatus.Failure
-		);
+		try {
+			await runSerializable(c.var.prisma, async tx => {
+				const current = await tx.transaction.findUnique({
+					where: { id: transaction.id }
+				});
+
+				if (!current || current.status !== TransactionStatus.Processing) {
+					return;
+				}
+
+				await tx.transaction.update({
+					where: { id: transaction.id },
+					data: { status: TransactionStatus.Failure }
+				});
+
+				await TransactionData.createTransaction(tx, {
+					storeId,
+					type: TransactionType.Adjustment,
+					amount,
+					description: 'Payout request failed — reversal'
+				});
+			});
+		} catch (reversalError) {
+			console.error('[payout] reversal failed', {
+				...context,
+				reversalError
+			});
+			Sentry.captureException(reversalError, {
+				tags: { feature: 'payout', storeId, phase: 'reversal' },
+				extra: context
+			});
+		}
 
 		throw new LogicError(LogicErrorCode.PayoutFailed);
 	}

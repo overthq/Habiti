@@ -377,8 +377,9 @@ export const updateStoreRevenue = async (
 ) => {
 	const { createTransaction } = await import('./transactions');
 	const { TransactionType } = await import('../../generated/prisma/client');
+	const { runSerializable } = await import('../../utils/prisma');
 
-	await prisma.$transaction(async tx => {
+	await runSerializable(prisma, async tx => {
 		await tx.store.update({
 			where: { id: args.storeId },
 			data: {

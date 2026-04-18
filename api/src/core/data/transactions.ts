@@ -4,6 +4,7 @@ import {
 	TransactionType
 } from '../../generated/prisma/client';
 import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
+import { runSerializable } from '../../utils/prisma';
 
 // Credit types increase the available balance; debit types decrease it.
 const CREDIT_TYPES: TransactionType[] = [
@@ -135,12 +136,13 @@ export const getTransactionById = async (
 /**
  * Called by Paystack webhook on transfer.success.
  * The reference is the Transaction ID used as the Paystack transfer reference.
+ * Idempotent: a no-op if the row has already been marked Success.
  */
 export const markTransferSuccessful = async (
 	prisma: PrismaClient,
 	reference: string
 ) => {
-	await prisma.$transaction(async tx => {
+	await runSerializable(prisma, async tx => {
 		const transaction = await tx.transaction.findUnique({
 			where: { id: reference }
 		});
@@ -149,11 +151,18 @@ export const markTransferSuccessful = async (
 			throw new Error(`Transaction not found: ${reference}`);
 		}
 
-		if (
-			transaction.type !== TransactionType.Payout ||
-			transaction.status !== TransactionStatus.Processing
-		) {
-			throw new Error(`Transaction ${reference} is not a processing payout`);
+		if (transaction.type !== TransactionType.Payout) {
+			throw new Error(`Transaction ${reference} is not a payout`);
+		}
+
+		if (transaction.status === TransactionStatus.Success) {
+			return;
+		}
+
+		if (transaction.status !== TransactionStatus.Processing) {
+			throw new Error(
+				`Transaction ${reference} cannot transition from ${transaction.status} to Success`
+			);
 		}
 
 		await tx.transaction.update({
@@ -169,14 +178,15 @@ export const markTransferSuccessful = async (
 };
 
 /**
- * Called by Paystack webhook on transfer.failure.
+ * Called by Paystack webhook on transfer.failure and transfer.reversed.
  * Marks the payout transaction as failed and creates a reversal adjustment.
+ * Idempotent: a no-op if the row has already been marked Failure.
  */
 export const markTransferFailed = async (
 	prisma: PrismaClient,
 	reference: string
 ) => {
-	await prisma.$transaction(async tx => {
+	await runSerializable(prisma, async tx => {
 		const transaction = await tx.transaction.findUnique({
 			where: { id: reference }
 		});
@@ -185,11 +195,18 @@ export const markTransferFailed = async (
 			throw new Error(`Transaction not found: ${reference}`);
 		}
 
-		if (
-			transaction.type !== TransactionType.Payout ||
-			transaction.status !== TransactionStatus.Processing
-		) {
-			throw new Error(`Transaction ${reference} is not a processing payout`);
+		if (transaction.type !== TransactionType.Payout) {
+			throw new Error(`Transaction ${reference} is not a payout`);
+		}
+
+		if (transaction.status === TransactionStatus.Failure) {
+			return;
+		}
+
+		if (transaction.status !== TransactionStatus.Processing) {
+			throw new Error(
+				`Transaction ${reference} cannot transition from ${transaction.status} to Failure`
+			);
 		}
 
 		await tx.transaction.update({
@@ -197,7 +214,6 @@ export const markTransferFailed = async (
 			data: { status: TransactionStatus.Failure }
 		});
 
-		// Create a reversal adjustment to credit the balance back
 		await createTransaction(tx, {
 			storeId: transaction.storeId,
 			type: TransactionType.Adjustment,
@@ -215,7 +231,7 @@ export const adminUpdatePayoutTransaction = async (
 	transactionId: string,
 	status: TransactionStatus
 ) => {
-	return prisma.$transaction(async tx => {
+	return runSerializable(prisma, async tx => {
 		const transaction = await tx.transaction.findUnique({
 			where: { id: transactionId }
 		});

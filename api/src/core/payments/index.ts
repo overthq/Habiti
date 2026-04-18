@@ -1,6 +1,6 @@
 import {
 	ChargeAuthorizationOptions,
-	CreateTransferReceipientOptions,
+	CreateTransferRecipientOptions,
 	FinalizeTransferOptions,
 	InitialChargeOptions,
 	PayAccountOptions,
@@ -58,10 +58,10 @@ export const resolveAccountNumber = async (
 	return await Paystack.resolveAccountNumber(options);
 };
 
-export const createTransferReceipient = async (
-	options: CreateTransferReceipientOptions
+export const createTransferRecipient = async (
+	options: CreateTransferRecipientOptions
 ) => {
-	return await Paystack.createTransferReceipient(options);
+	return await Paystack.createTransferRecipient(options);
 };
 
 export const listBanks = async () => {

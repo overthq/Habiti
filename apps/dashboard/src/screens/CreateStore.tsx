@@ -9,9 +9,7 @@ import {
 	Spacer
 } from '@habiti/components';
 
-import useStore from '../state';
 import { useCreateStoreMutation } from '../data/mutations';
-import { useShallow } from 'zustand/react/shallow';
 
 export interface CreateStoreFormValues {
 	name: string;
@@ -20,19 +18,16 @@ export interface CreateStoreFormValues {
 
 const CreateStore = () => {
 	const createStoreMutation = useCreateStoreMutation();
-	const setPreference = useStore(useShallow(state => state.setPreference));
 	const methods = useForm<CreateStoreFormValues>();
 	const { bottom } = useSafeAreaInsets();
 	const { goBack } = useNavigation();
 
 	const onSubmit = React.useCallback(
 		async (values: CreateStoreFormValues) => {
-			const { store } = await createStoreMutation.mutateAsync(values);
-
-			setPreference({ activeStore: store.id });
+			await createStoreMutation.mutateAsync(values);
 			goBack();
 		},
-		[setPreference, createStoreMutation]
+		[createStoreMutation, goBack]
 	);
 
 	return (
