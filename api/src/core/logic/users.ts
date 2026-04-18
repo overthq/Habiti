@@ -12,6 +12,7 @@ import * as AddressData from '../data/addresses';
 
 import { cacheVerificationCode } from './auth';
 import { registerBodySchema } from '../validations/rest';
+import { env } from '../../config/env';
 
 import { EmailType } from '../../services/email';
 
@@ -46,11 +47,16 @@ export const register = async (c: Context<AppEnv>, args: unknown) => {
 
 	const code = await cacheVerificationCode(data.email);
 
-	c.var.services.email.sendMail({
-		emailType: EmailType.NewAccount,
-		email: data.email,
-		code
-	});
+	const isTestAccount =
+		env.TEST_ACCOUNT_EMAIL && data.email === env.TEST_ACCOUNT_EMAIL;
+
+	if (!isTestAccount) {
+		c.var.services.email.sendMail({
+			emailType: EmailType.NewAccount,
+			email: data.email,
+			code
+		});
+	}
 
 	return user;
 };
@@ -71,11 +77,16 @@ export const login = async (c: Context<AppEnv>, input: LoginInput) => {
 
 	const code = await cacheVerificationCode(input.email);
 
-	c.var.services.email.sendMail({
-		emailType: EmailType.NewAccount,
-		email: input.email,
-		code
-	});
+	const isTestAccount =
+		env.TEST_ACCOUNT_EMAIL && input.email === env.TEST_ACCOUNT_EMAIL;
+
+	if (!isTestAccount) {
+		c.var.services.email.sendMail({
+			emailType: EmailType.NewAccount,
+			email: input.email,
+			code
+		});
+	}
 
 	return user;
 };

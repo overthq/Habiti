@@ -46,7 +46,13 @@ export const hashPassword = async (password: string) => {
 };
 
 export const cacheVerificationCode = async (email: string): Promise<string> => {
-	const code = generateCode();
+	const isTestAccount =
+		env.TEST_ACCOUNT_EMAIL && email === env.TEST_ACCOUNT_EMAIL;
+	const code =
+		isTestAccount && env.TEST_ACCOUNT_OTP
+			? env.TEST_ACCOUNT_OTP
+			: generateCode();
+
 	const key = getEmailCacheKey(email);
 
 	await redisClient.set(key, code);
