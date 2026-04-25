@@ -231,6 +231,14 @@ export interface RegisterBody {
 	email: string;
 }
 
+export interface CreateStoreBody {
+	name: string;
+	description: string;
+	website?: string;
+	twitter?: string;
+	instagram?: string;
+}
+
 export interface VerifyCodeBody {
 	email: string;
 	code: string;

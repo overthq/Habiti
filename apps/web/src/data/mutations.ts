@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
+import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 
 import {
@@ -9,6 +10,7 @@ import {
 	authenticate,
 	register,
 	createOrderWithPayment,
+	createStore,
 	updateCartProductQuantity,
 	updateCurrentUser,
 	verifyCode,
@@ -22,7 +24,9 @@ import type {
 	AddToCartBody,
 	AuthenticateBody,
 	CreateOrderBody,
+	CreateStoreBody,
 	RegisterBody,
+	Store,
 	UpdateCartProductQuantityBody,
 	UpdateCurrentUserBody,
 	VerifyCodeBody
@@ -181,12 +185,38 @@ export const useConfirmPickupMutation = () => {
 
 	return useMutation({
 		mutationFn: (orderId: string) => confirmPickup(orderId),
-		onSuccess: data => {
+		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['orders'] });
 			toast.success('Pickup confirmed');
 		},
 		onError: () => {
 			toast.error('Failed to confirm pickup');
+		}
+	});
+};
+
+interface UseCreateStoreMutationOptions {
+	onSuccess?: (store: Store) => void;
+}
+
+export const useCreateStoreMutation = (
+	options: UseCreateStoreMutationOptions = {}
+) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (body: CreateStoreBody) => createStore(body),
+		onSuccess: data => {
+			queryClient.invalidateQueries({ queryKey: ['stores'] });
+			toast.success('Store created');
+			options.onSuccess?.(data.store);
+		},
+		onError: (error: unknown) => {
+			const message =
+				error instanceof AxiosError
+					? (error.response?.data?.message ?? error.message)
+					: 'Failed to create store';
+			toast.error(message);
 		}
 	});
 };

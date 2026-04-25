@@ -9,6 +9,7 @@ import { useManagedStoresQuery } from '../../data/queries';
 import { switchStore } from '../../data/requests';
 import { AppStackParamList } from '../../navigation/types';
 import { useShallow } from 'zustand/react/shallow';
+import { STORE_CREATION_ENABLED } from '../../utils/constants';
 
 const SettingsActiveStore: React.FC = () => {
 	const { activeStore, setPreference, logIn } = useStore(
@@ -44,12 +45,14 @@ const SettingsActiveStore: React.FC = () => {
 					onSelectRow={handleRowSelect(store.id)}
 				/>
 			))}
-			<View style={{ padding: 16 }}>
-				<Button
-					text='Create new store'
-					onPress={() => navigate('Modal.CreateStore')}
-				/>
-			</View>
+			{STORE_CREATION_ENABLED && (
+				<View style={{ padding: 16 }}>
+					<Button
+						text='Create new store'
+						onPress={() => navigate('Modal.CreateStore')}
+					/>
+				</View>
+			)}
 		</Screen>
 	);
 };
