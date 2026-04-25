@@ -3,7 +3,7 @@ import { useStoreProductsQuery } from '@/data/queries';
 import { type ColumnDef } from '@tanstack/react-table';
 import { type Product } from '@/data/types';
 import { formatNaira } from '@/utils/format';
-import { Link } from 'react-router';
+import { Link } from '@tanstack/react-router';
 import { Button } from '../ui/button';
 import CreateProductDialog from './create-product-dialog';
 
@@ -13,7 +13,9 @@ const columns: ColumnDef<Product>[] = [
 		accessorKey: 'name',
 		cell: ({ row }) => (
 			<Button variant='link' asChild className='px-0 w-fit'>
-				<Link to={`/products/${row.original.id}`}>{row.original.name}</Link>
+				<Link to='/products/$id' params={{ id: row.original.id }}>
+					{row.original.name}
+				</Link>
 			</Button>
 		)
 	},

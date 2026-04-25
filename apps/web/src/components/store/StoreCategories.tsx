@@ -1,7 +1,5 @@
-'use client';
-
 import React from 'react';
-import { StoreProductCategory } from '@/data/types';
+import type { StoreProductCategory } from '@/data/types';
 import { cn } from '@/lib/utils';
 
 interface StoreCategoriesProps {

@@ -47,7 +47,7 @@ Contributions are welcome. Be sure to check out the [contribution guidelines](.g
 
 ## Tech Stack
 
-Habiti is a TypeScript-based application. It is built with popular JS libraries/frameworks like React, React Native and Express. Here's what the stack looks like:
+Habiti is a TypeScript-based application. It is built with popular JS libraries/frameworks like React, React Native and Hono. Here's what the stack looks like:
 
 - Front-End
   - Framework: [React Native](https://reactnative.dev) and [Expo](https://expo.io)

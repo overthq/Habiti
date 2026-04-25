@@ -1,7 +1,4 @@
-'use client';
-
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { Link, useNavigate } from '@tanstack/react-router';
 
 import {
 	CircleUserIcon,
@@ -27,12 +24,12 @@ import { useCartsQuery } from '@/data/queries';
 
 const ProfileDropdown = () => {
 	const { logOut } = useAuthStore();
-	const router = useRouter();
+	const navigate = useNavigate();
 
 	const handleLogOut = async () => {
 		await logout();
 		logOut();
-		router.push('/');
+		navigate({ to: '/' });
 	};
 
 	return (
@@ -44,13 +41,13 @@ const ProfileDropdown = () => {
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align='end'>
 				<DropdownMenuItem asChild>
-					<Link href='/profile'>
+					<Link to='/profile'>
 						<UserIcon className='w-4 h-4' />
 						Profile
 					</Link>
 				</DropdownMenuItem>
 				<DropdownMenuItem asChild>
-					<Link href='/profile/settings'>
+					<Link to='/profile/settings'>
 						<SettingsIcon className='w-4 h-4' />
 						Settings
 					</Link>
@@ -80,7 +77,7 @@ const MainNavigation = () => {
 				<nav className='flex gap-4 items-center'>
 					<Link
 						className='text-muted-foreground hover:text-foreground transition-colors duration-200'
-						href='/'
+						to='/'
 					>
 						<Logo width={20} height={20} />
 					</Link>
@@ -88,7 +85,7 @@ const MainNavigation = () => {
 
 				<div className='flex items-center gap-3 md:hidden'>
 					<Button asChild variant='ghost' size='icon'>
-						<Link href='/cart'>
+						<Link to='/cart'>
 							<span className='relative inline-flex'>
 								<ShoppingCartIcon className='size-5' />
 								{showCartBadge ? (
@@ -116,7 +113,7 @@ const MainNavigation = () => {
 
 			<div className='hidden md:flex flex-1 justify-end items-center gap-3'>
 				<Button asChild variant='ghost' size='icon'>
-					<Link href='/cart'>
+					<Link to='/cart'>
 						<span className='relative inline-flex'>
 							<ShoppingCartIcon className='size-5' />
 							{showCartBadge ? (

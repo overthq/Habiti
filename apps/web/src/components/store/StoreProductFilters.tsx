@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronDown } from 'lucide-react';
@@ -9,7 +7,7 @@ import {
 	DropdownMenuContent,
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { StoreProductsSortOption } from '@/hooks/use-store-filters';
+import type { StoreProductsSortOption } from '@/hooks/use-store-filters';
 
 interface StoreProductFiltersProps {
 	sortBy: StoreProductsSortOption;

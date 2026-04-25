@@ -8,8 +8,8 @@ import { useCartQuery } from '@/data/queries';
 
 import { usePreferenceStore } from '@/state/preference-store';
 import useDebounce from '@/hooks/use-debounce';
-import { Card, Cart, CartProduct, CartViewerContext } from '@/data/types';
-import { useParams } from 'next/navigation';
+import type { Card, Cart, CartProduct, CartViewerContext } from '@/data/types';
+import { useParams } from '@tanstack/react-router';
 import { useAuthStore } from '@/state/auth-store';
 
 interface CartContextType {
@@ -216,7 +216,7 @@ interface CartContextWrapperProps {
 const CartContextWrapper: React.FC<CartContextWrapperProps> = ({
 	children
 }) => {
-	const { id: cartId } = useParams<{ id: string }>();
+	const { id: cartId } = useParams({ strict: false }) as { id: string };
 	const { accessToken } = useAuthStore();
 	const isAuthenticated = Boolean(accessToken);
 	// Allow fetching cart for both authenticated users and guests (by cart ID)

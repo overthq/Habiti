@@ -1,5 +1,3 @@
-'use client';
-
 import { LockIcon } from 'lucide-react';
 
 import { Button } from './ui/button';

@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from '@tanstack/react-router';
 
 const Footer = () => {
 	return (
@@ -15,22 +15,22 @@ const Footer = () => {
 						<h3 className='text-base font-semibold'>Links</h3>
 						<ul className='mt-2 space-y-2 text-sm text-muted-foreground'>
 							<li>
-								<Link href='/about' className='hover:text-foreground'>
+								<Link to='/about' className='hover:text-foreground'>
 									About
 								</Link>
 							</li>
 							<li>
-								<Link href='/privacy-policy' className='hover:text-foreground'>
+								<Link to='/privacy-policy' className='hover:text-foreground'>
 									Privacy Policy
 								</Link>
 							</li>
 							<li>
-								<Link href='/acceptable-use' className='hover:text-foreground'>
+								<Link to='/acceptable-use' className='hover:text-foreground'>
 									Acceptable Use
 								</Link>
 							</li>
 							<li>
-								<Link href='/support' className='hover:text-foreground'>
+								<Link to='/support' className='hover:text-foreground'>
 									Support
 								</Link>
 							</li>

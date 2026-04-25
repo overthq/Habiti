@@ -27,7 +27,7 @@ const isCredit = (type: TransactionType) => CREDIT_TYPES.includes(type);
 const transactionLabel: Record<TransactionType, string> = {
 	[TransactionType.Revenue]: 'Payment received',
 	[TransactionType.Payout]: 'Payout',
-	[TransactionType.SubscriptionFee]: 'Subscription fee',
+	[TransactionType.SubscriptionFee]: 'Platform fee',
 	[TransactionType.Adjustment]: 'Adjustment',
 	[TransactionType.Refund]: 'Refund'
 };

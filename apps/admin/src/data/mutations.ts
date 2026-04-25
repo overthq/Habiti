@@ -37,7 +37,7 @@ import {
 	bulkUpdateStores,
 	bulkDeleteStores
 } from './requests';
-import { useNavigate } from 'react-router';
+import { useNavigate } from '@tanstack/react-router';
 
 export const useLoginMutation = () => {
 	const navigate = useNavigate();
@@ -47,7 +47,7 @@ export const useLoginMutation = () => {
 		onSuccess: data => {
 			localStorage.setItem('accessToken', data.accessToken);
 			toast.success('Successfully logged in');
-			navigate('/stores');
+			navigate({ to: '/stores' });
 		},
 		onError: () => {
 			toast.error('Failed to log in');
@@ -65,13 +65,13 @@ export const useLogoutMutation = () => {
 		},
 		onSuccess: () => {
 			toast.success('Successfully logged out');
-			navigate('/login');
+			navigate({ to: '/login' });
 		},
 		onError: () => {
 			// Still clear local state even if server call fails
 			localStorage.removeItem('accessToken');
 			toast.error('Logged out (session may not be fully revoked)');
-			navigate('/login');
+			navigate({ to: '/login' });
 		}
 	});
 };
@@ -163,7 +163,7 @@ export const useDeleteProductMutation = (id: string) => {
 		mutationFn: () => deleteProduct(id),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['products'], exact: true });
-			navigate('/products');
+			navigate({ to: '/products' });
 			toast.success('Product deleted successfully');
 		},
 		onError: () => {

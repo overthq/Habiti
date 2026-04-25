@@ -6,7 +6,7 @@ import {
 	Package,
 	LogOut
 } from 'lucide-react';
-import { Link, NavLink, useLocation } from 'react-router';
+import { Link, useRouterState } from '@tanstack/react-router';
 import { useState, useEffect } from 'react';
 
 import {
@@ -60,7 +60,7 @@ const items = [
 ];
 
 export function AppSidebar() {
-	const { pathname } = useLocation();
+	const pathname = useRouterState({ select: s => s.location.pathname });
 	const [admin, setAdmin] = useState(getCurrentAdmin());
 	const logoutMutation = useLogoutMutation();
 
@@ -81,7 +81,7 @@ export function AppSidebar() {
 							asChild
 							className='data-[slot=sidebar-menu-button]:!p-1.5'
 						>
-							<Link to='/'>
+							<Link to='/home'>
 								<span className='text-base font-semibold'>
 									Habiti Dashboard
 								</span>
@@ -97,10 +97,10 @@ export function AppSidebar() {
 							{items.map(item => (
 								<SidebarMenuItem key={item.title}>
 									<SidebarMenuButton isActive={pathname === item.url} asChild>
-										<NavLink to={item.url}>
+										<Link to={item.url}>
 											<item.icon />
 											<span>{item.title}</span>
-										</NavLink>
+										</Link>
 									</SidebarMenuButton>
 								</SidebarMenuItem>
 							))}

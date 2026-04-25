@@ -1,8 +1,6 @@
-'use client';
-
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import { useCartsQuery } from '@/data/queries';
-import { Cart } from '@/data/types';
+import type { Cart } from '@/data/types';
 
 const CartSheet = () => {
 	return (
