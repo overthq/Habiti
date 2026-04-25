@@ -127,7 +127,8 @@ export const useGlobalSearchQuery = (query: string) => {
 	return useQuery({
 		queryKey: ['search', query],
 		queryFn: () => globalSearch(query),
-		placeholderData: keepPreviousData
+		placeholderData: keepPreviousData,
+		enabled: !!query
 	});
 };
 

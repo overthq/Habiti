@@ -39,7 +39,9 @@ export const useRecentlyViewedStore = create<RecentlyViewedStoreSlice>()(
 		}),
 		{
 			name: 'recently-viewed-products',
-			storage: createJSONStorage(() => window.localStorage)
+			storage: createJSONStorage(() =>
+				typeof window !== 'undefined' ? window.localStorage : (undefined as any)
+			)
 		}
 	)
 );

@@ -54,7 +54,7 @@ cd api && npx prisma studio     # Database GUI
 
 ### Monorepo Structure
 
-- `api/` - REST API with Express, Prisma, PostgreSQL, Redis
+- `api/` - REST API with Hono, Prisma, PostgreSQL, Redis
 - `apps/app/` - Consumer mobile app (React Native + Expo)
 - `apps/dashboard/` - Merchant mobile app (React Native + Expo)
 - `apps/web/` - Web frontend (Next.js + Tailwind)
@@ -63,7 +63,7 @@ cd api && npx prisma studio     # Database GUI
 
 ### Key Technologies
 
-- **Backend**: Node.js, Express, Prisma, PostgreSQL, Redis
+- **Backend**: Bun, Hono, Prisma, PostgreSQL, Redis
 - **Mobile**: React Native, Expo 55, React 19
 - **Web**: Next.js 15.2.4, React Router 7, Tailwind CSS
 - **State**: Zustand

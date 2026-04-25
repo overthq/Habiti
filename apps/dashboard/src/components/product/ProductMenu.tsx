@@ -76,6 +76,7 @@ const ProductMenu: React.FC<ProductMenuProps> = ({ productId, product }) => {
 						name: 'ellipsis'
 					},
 					menu: {
+						singleSelection: false,
 						items: [
 							{
 								type: 'action',

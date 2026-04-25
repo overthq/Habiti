@@ -1,7 +1,6 @@
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import { useNavigate } from '@tanstack/react-router';
 import { useGlobalSearchQuery } from '@/data/queries';
-import Image from 'next/image';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -13,7 +12,7 @@ const SearchInput = () => {
 	const [query, setQuery] = React.useState('');
 	const [debouncedQuery, setDebouncedQuery] = React.useState(query);
 	const { data } = useGlobalSearchQuery(debouncedQuery);
-	const router = useRouter();
+	const navigate = useNavigate();
 
 	React.useEffect(() => {
 		const handler = setTimeout(() => {
@@ -55,9 +54,9 @@ const SearchInput = () => {
 			onQueryChange={setQuery}
 			onResultClick={result => {
 				if (result.type === 'product') {
-					router.push(`/product/${result.id}`);
+					navigate({ to: '/product/$id', params: { id: result.id } });
 				} else {
-					router.push(`/store/${result.id}`);
+					navigate({ to: '/store/$id', params: { id: result.id } });
 				}
 			}}
 		/>
@@ -159,7 +158,7 @@ export function SearchBar({
 							>
 								<div className='size-10 rounded-md bg-muted overflow-hidden'>
 									{result.image && (
-										<Image
+										<img
 											src={result.image}
 											alt={result.title}
 											className='size-full object-cover'

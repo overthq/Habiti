@@ -1,12 +1,33 @@
 import { useCallback, useMemo } from 'react';
-import { useSearchParams } from 'react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 
 /**
  * Hook for managing table filter state with URL persistence.
  * Filters are stored in URL search params for shareability and refresh persistence.
  */
 export function useTableFilters<T extends object>(config: { defaults: T }) {
-	const [searchParams, setSearchParams] = useSearchParams();
+	const navigate = useNavigate();
+	const search = useSearch({ strict: false }) as Record<string, unknown>;
+
+	// Convert search to URLSearchParams equivalent for processing
+	const searchParams = useMemo(() => {
+		const params = new URLSearchParams();
+		for (const [key, value] of Object.entries(search ?? {})) {
+			if (value === undefined || value === null) continue;
+			if (typeof value === 'object') {
+				if (key === 'orderBy') {
+					for (const [field, direction] of Object.entries(
+						value as Record<string, string>
+					)) {
+						params.set(`orderBy.${field}`, direction);
+					}
+				}
+				continue;
+			}
+			params.set(key, String(value));
+		}
+		return params;
+	}, [search]);
 
 	// Deserialize filters from URL
 	const filters = useMemo(() => {
@@ -26,7 +47,6 @@ export function useTableFilters<T extends object>(config: { defaults: T }) {
 						(result as Record<string, unknown>)[String(key)] = parsed;
 					}
 				} else if (defaultValue === undefined) {
-					// For undefined defaults, keep as string
 					(result as Record<string, unknown>)[String(key)] = value;
 				} else {
 					(result as Record<string, unknown>)[String(key)] = value;
@@ -51,76 +71,86 @@ export function useTableFilters<T extends object>(config: { defaults: T }) {
 		return result;
 	}, [searchParams, config.defaults]);
 
+	const updateSearch = useCallback(
+		(transform: (params: URLSearchParams) => URLSearchParams) => {
+			const next = transform(new URLSearchParams(searchParams));
+			const newSearch: Record<string, unknown> = {};
+			const orderBy: Record<string, string> = {};
+			next.forEach((value, key) => {
+				if (key.startsWith('orderBy.')) {
+					orderBy[key.replace('orderBy.', '')] = value;
+				} else {
+					newSearch[key] = value;
+				}
+			});
+			if (Object.keys(orderBy).length > 0) {
+				newSearch.orderBy = orderBy;
+			}
+			navigate({ to: '.', search: newSearch as never, replace: true });
+		},
+		[navigate, searchParams]
+	);
+
 	// Update a single filter value
 	const setFilter = useCallback(
 		<K extends keyof T>(key: K, value: T[K]) => {
-			setSearchParams(
-				prev => {
-					const newParams = new URLSearchParams(prev);
+			updateSearch(prev => {
+				const newParams = new URLSearchParams(prev);
 
-					if (value === undefined || value === '' || value === null) {
-						newParams.delete(String(key));
-					} else if (typeof value === 'object' && String(key) === 'orderBy') {
-						// Clear existing orderBy params
-						Array.from(newParams.keys())
-							.filter(k => k.startsWith('orderBy.'))
-							.forEach(k => newParams.delete(k));
+				if (value === undefined || value === '' || value === null) {
+					newParams.delete(String(key));
+				} else if (typeof value === 'object' && String(key) === 'orderBy') {
+					Array.from(newParams.keys())
+						.filter(k => k.startsWith('orderBy.'))
+						.forEach(k => newParams.delete(k));
 
-						// Set new orderBy params
-						const orderByValue = value as Record<string, 'asc' | 'desc'>;
-						for (const [field, direction] of Object.entries(orderByValue)) {
-							newParams.set(`orderBy.${field}`, direction);
-						}
-					} else {
-						newParams.set(String(key), String(value));
+					const orderByValue = value as Record<string, 'asc' | 'desc'>;
+					for (const [field, direction] of Object.entries(orderByValue)) {
+						newParams.set(`orderBy.${field}`, direction);
 					}
+				} else {
+					newParams.set(String(key), String(value));
+				}
 
-					return newParams;
-				},
-				{ replace: true }
-			);
+				return newParams;
+			});
 		},
-		[setSearchParams]
+		[updateSearch]
 	);
 
 	// Update multiple filters at once
 	const setFilters = useCallback(
 		(newFilters: Partial<T>) => {
-			setSearchParams(
-				prev => {
-					const newParams = new URLSearchParams(prev);
+			updateSearch(prev => {
+				const newParams = new URLSearchParams(prev);
 
-					for (const [key, value] of Object.entries(newFilters)) {
-						if (value === undefined || value === '' || value === null) {
-							newParams.delete(key);
-						} else if (typeof value === 'object' && key === 'orderBy') {
-							// Clear existing orderBy params
-							Array.from(newParams.keys())
-								.filter(k => k.startsWith('orderBy.'))
-								.forEach(k => newParams.delete(k));
+				for (const [key, value] of Object.entries(newFilters)) {
+					if (value === undefined || value === '' || value === null) {
+						newParams.delete(key);
+					} else if (typeof value === 'object' && key === 'orderBy') {
+						Array.from(newParams.keys())
+							.filter(k => k.startsWith('orderBy.'))
+							.forEach(k => newParams.delete(k));
 
-							// Set new orderBy params
-							const orderByValue = value as Record<string, 'asc' | 'desc'>;
-							for (const [field, direction] of Object.entries(orderByValue)) {
-								newParams.set(`orderBy.${field}`, direction);
-							}
-						} else {
-							newParams.set(key, String(value));
+						const orderByValue = value as Record<string, 'asc' | 'desc'>;
+						for (const [field, direction] of Object.entries(orderByValue)) {
+							newParams.set(`orderBy.${field}`, direction);
 						}
+					} else {
+						newParams.set(key, String(value));
 					}
+				}
 
-					return newParams;
-				},
-				{ replace: true }
-			);
+				return newParams;
+			});
 		},
-		[setSearchParams]
+		[updateSearch]
 	);
 
 	// Clear all filters
 	const clearFilters = useCallback(() => {
-		setSearchParams(new URLSearchParams(), { replace: true });
-	}, [setSearchParams]);
+		navigate({ to: '.', search: {} as never, replace: true });
+	}, [navigate]);
 
 	// Check if any filters are active (different from defaults)
 	const hasActiveFilters = useMemo(() => {
@@ -133,7 +163,6 @@ export function useTableFilters<T extends object>(config: { defaults: T }) {
 			}
 		}
 
-		// Check for orderBy in URL
 		for (const key of searchParams.keys()) {
 			if (key.startsWith('orderBy.')) {
 				return true;

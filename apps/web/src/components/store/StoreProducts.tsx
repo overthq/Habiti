@@ -1,9 +1,7 @@
-'use client';
-
 import React from 'react';
 import Product from './Product';
 import { useStoreProductsQuery } from '@/data/queries';
-import { StoreProductCategory } from '@/data/types';
+import type { StoreProductCategory } from '@/data/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useStoreFilters } from '@/hooks/use-store-filters';
 import StoreProductFilters from './StoreProductFilters';

@@ -5,7 +5,7 @@ import { type Order } from '@/data/types';
 import { formatNaira } from '@/utils/format';
 import OrderStatusPill from '../order-status-pill';
 import { Button } from '../ui/button';
-import { Link } from 'react-router';
+import { Link } from '@tanstack/react-router';
 
 const columns: ColumnDef<Order>[] = [
 	{
@@ -13,7 +13,7 @@ const columns: ColumnDef<Order>[] = [
 		header: 'Customer',
 		cell: ({ row }) => (
 			<Button variant='link' asChild className='px-0 w-fit'>
-				<Link to={`/users/${row.original.user.id}`}>
+				<Link to='/users/$id' params={{ id: row.original.user.id }}>
 					{row.original.user.name}
 				</Link>
 			</Button>

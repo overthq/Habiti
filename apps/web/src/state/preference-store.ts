@@ -18,7 +18,9 @@ export const usePreferenceStore = create<PreferencesSlice>()(
 		}),
 		{
 			name: 'preference-store',
-			storage: createJSONStorage(() => window.localStorage)
+			storage: createJSONStorage(() =>
+				typeof window !== 'undefined' ? window.localStorage : (undefined as any)
+			)
 		}
 	)
 );

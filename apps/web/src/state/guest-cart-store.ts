@@ -25,7 +25,9 @@ export const useGuestCartStore = create<GuestCartStore>()(
 		}),
 		{
 			name: 'guest-cart-store',
-			storage: createJSONStorage(() => window.localStorage)
+			storage: createJSONStorage(() =>
+				typeof window !== 'undefined' ? window.localStorage : (undefined as any)
+			)
 		}
 	)
 );

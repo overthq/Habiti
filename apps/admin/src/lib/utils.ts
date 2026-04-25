@@ -29,6 +29,7 @@ export function decodeToken(token: string): DecodedToken | null {
 }
 
 export function getCurrentAdmin(): DecodedToken | null {
+	if (typeof window === 'undefined') return null;
 	const token = localStorage.getItem('accessToken');
 	if (!token) return null;
 	return decodeToken(token);

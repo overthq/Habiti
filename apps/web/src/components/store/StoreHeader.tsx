@@ -1,7 +1,5 @@
-'use client';
-
 import React from 'react';
-import { Store, GetStoreResponse } from '@/data/types';
+import type { Store, GetStoreResponse } from '@/data/types';
 import FollowButton from './FollowButton';
 import { Badge } from '@/components/ui/badge';
 

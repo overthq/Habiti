@@ -1,6 +1,4 @@
-'use client';
-
-import Link from 'next/link';
+import { Link } from '@tanstack/react-router';
 import React from 'react';
 
 import { formatNaira } from '@/utils/currency';
@@ -22,7 +20,7 @@ const Product: React.FC<ProductProps> = ({
 	inGrid = false
 }) => {
 	return (
-		<Link href={`/product/${id}`}>
+		<Link to='/product/$id' params={{ id }}>
 			<div key={id} className={cn(!inGrid && 'w-[150px] md:w-[200px]')}>
 				<div className='bg-muted aspect-square rounded-lg overflow-hidden'>
 					{imagePath && (
@@ -41,7 +39,5 @@ const Product: React.FC<ProductProps> = ({
 		</Link>
 	);
 };
-
-export const runtime = 'edge';
 
 export default Product;

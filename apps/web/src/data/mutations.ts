@@ -1,7 +1,5 @@
-'use client';
-
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
+import { useNavigate } from '@tanstack/react-router';
 import { toast } from 'sonner';
 
 import {
@@ -125,14 +123,14 @@ export const useVerifyCodeMutation = () => {
 };
 
 export const useCreateOrderMutation = () => {
-	const router = useRouter();
+	const navigate = useNavigate();
 	const queryClient = useQueryClient();
 
 	return useMutation({
 		mutationFn: (body: CreateOrderBody) => createOrderWithPayment(body),
 		onSuccess: data => {
 			queryClient.invalidateQueries({ queryKey: ['orders'] });
-			router.push(`/orders/${data.order.id}`);
+			navigate({ to: '/orders/$id', params: { id: data.order.id } });
 		},
 		onError: () => {
 			toast.error('Failed to create order');

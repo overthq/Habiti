@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { View, StyleSheet } from 'react-native';
 import { Screen, Typography, Spacer, useTheme } from '@habiti/components';
 import { formatNaira } from '@habiti/common';
@@ -18,7 +19,7 @@ const CREDIT_TYPES: TransactionType[] = [
 const transactionLabel: Record<TransactionType, string> = {
 	[TransactionType.Revenue]: 'Payment received',
 	[TransactionType.Payout]: 'Payout',
-	[TransactionType.SubscriptionFee]: 'Subscription fee',
+	[TransactionType.SubscriptionFee]: 'Platform fee',
 	[TransactionType.Adjustment]: 'Adjustment',
 	[TransactionType.Refund]: 'Refund'
 };

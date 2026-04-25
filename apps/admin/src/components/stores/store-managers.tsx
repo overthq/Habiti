@@ -1,5 +1,5 @@
 import { type ColumnDef } from '@tanstack/react-table';
-import { Link } from 'react-router';
+import { Link } from '@tanstack/react-router';
 
 import { DataTable } from '../ui/data-table';
 import { useStoreManagersQuery } from '@/data/queries';
@@ -13,7 +13,7 @@ const columns: ColumnDef<StoreManager>[] = [
 		accessorKey: 'manager.name',
 		cell: ({ row }) => (
 			<Button variant='link' asChild className='px-0 w-fit'>
-				<Link to={`/users/${row.original.manager.id}`}>
+				<Link to='/users/$id' params={{ id: row.original.manager.id }}>
 					{row.original.manager.name}
 				</Link>
 			</Button>

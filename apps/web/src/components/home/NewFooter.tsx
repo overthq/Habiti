@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from '@tanstack/react-router';
 
 export const NewFooter = () => {
 	return (
@@ -6,19 +6,13 @@ export const NewFooter = () => {
 			<div className='max-w-200 w-full flex justify-between p-4 text-sm'>
 				<p>&copy; Habiti {new Date().getFullYear()}</p>
 				<div className='flex gap-4'>
-					<Link
-						href='/acceptable-use'
-						className='text-sm text-muted-foreground'
-					>
+					<Link to='/acceptable-use' className='text-sm text-muted-foreground'>
 						Acceptable Use
 					</Link>
-					<Link
-						href='/privacy-policy'
-						className='text-sm text-muted-foreground'
-					>
+					<Link to='/privacy-policy' className='text-sm text-muted-foreground'>
 						Privacy
 					</Link>
-					<Link href='/support' className='text-sm text-muted-foreground'>
+					<Link to='/support' className='text-sm text-muted-foreground'>
 						Contact
 					</Link>
 				</div>

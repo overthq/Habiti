@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link } from '@tanstack/react-router';
 
 import { type Product } from '@/data/types';
 import {
@@ -37,7 +37,11 @@ const ProductBreadcrumbs: React.FC<ProductBreadcrumbsProps> = ({ product }) => {
 
 			<ChevronRightIcon className='size-4' />
 
-			<Link to={`/products/${product.id}`} className='font-medium'>
+			<Link
+				to='/products/$id'
+				params={{ id: product.id }}
+				className='font-medium'
+			>
 				{product.name}
 			</Link>
 

@@ -1,4 +1,4 @@
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import { useLocation, useNavigate } from '@tanstack/react-router';
 import { useCallback, useMemo } from 'react';
 
 export type StoreProductsSortOption =
@@ -18,9 +18,16 @@ interface UseStoreFiltersReturn {
 }
 
 export function useStoreFilters(): UseStoreFiltersReturn {
-	const searchParams = useSearchParams();
-	const router = useRouter();
-	const pathname = usePathname();
+	const location = useLocation();
+	const navigate = useNavigate();
+
+	const searchParams = useMemo(() => {
+		// location.searchStr is available at runtime; fallback to window.location for SSR-less cases
+		const raw =
+			(location as any).searchStr ??
+			(typeof window !== 'undefined' ? window.location.search : '');
+		return new URLSearchParams(raw || '');
+	}, [location]);
 
 	const sortBy =
 		(searchParams.get('sortBy') as StoreProductsSortOption) || 'default';
@@ -40,11 +47,13 @@ export function useStoreFilters(): UseStoreFiltersReturn {
 			});
 
 			const queryString = params.toString();
-			const newUrl = queryString ? `${pathname}?${queryString}` : pathname;
+			const newUrl = queryString
+				? `${location.pathname}?${queryString}`
+				: location.pathname;
 
-			router.replace(newUrl, { scroll: false });
+			navigate({ to: newUrl, replace: true, resetScroll: false });
 		},
-		[searchParams, pathname, router]
+		[searchParams, location.pathname, navigate]
 	);
 
 	const setSortBy = useCallback(
