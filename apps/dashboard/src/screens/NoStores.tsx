@@ -1,11 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, Linking } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Button, Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { AppStackParamList } from '../navigation/types';
 import { STORE_CREATION_ENABLED } from '../utils/constants';
-import env from '../../env';
 
 const NoStores: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
@@ -13,11 +12,7 @@ const NoStores: React.FC = () => {
 	if (!STORE_CREATION_ENABLED) {
 		return (
 			<View style={styles.container}>
-				<Typography>{`Looks like you don't have access to any stores. Create one on habiti.com/sell.`}</Typography>
-				<Button
-					text='Open habiti.com/sell'
-					onPress={() => Linking.openURL(`${env.webFrontendUrl}/sell`)}
-				/>
+				<Typography>{`Looks like you don't have access to any stores.`}</Typography>
 			</View>
 		);
 	}

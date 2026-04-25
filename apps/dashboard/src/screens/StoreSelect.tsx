@@ -1,7 +1,7 @@
 import React from 'react';
-import { Linking, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, Screen, Spacer, Typography } from '@habiti/components';
+import { Screen, Spacer, Typography } from '@habiti/components';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -10,7 +10,6 @@ import StoreSelectList from '../components/store-select/StoreSelectList';
 import { useManagedStoresQuery } from '../data/queries';
 import { AppStackParamList } from '../navigation/types';
 import { STORE_CREATION_ENABLED } from '../utils/constants';
-import env from '../../env';
 
 const StoreSelect = () => {
 	const { isLoading, data } = useManagedStoresQuery();
@@ -22,11 +21,6 @@ const StoreSelect = () => {
 	}
 
 	const hasStores = data.stores.length > 0;
-	const sellUrl = `${env.webFrontendUrl}/sell`;
-
-	const handleOpenSellWeb = React.useCallback(() => {
-		Linking.openURL(sellUrl);
-	}, [sellUrl]);
 
 	const handleAddStore = React.useCallback(() => {
 		navigation.navigate('Modal.CreateStore');
@@ -37,19 +31,14 @@ const StoreSelect = () => {
 			<Screen style={styles.container}>
 				<SafeAreaView style={{ flex: 1 }}>
 					<Typography size='xxlarge' weight='bold'>
-						Create a new store
+						No stores
 					</Typography>
 
 					<Spacer y={2} />
 
 					<Typography variant='secondary'>
-						Store creation has moved to the web. Visit habiti.com/sell to set up
-						your store, then come back here to manage it.
+						You do not have access to any stores.
 					</Typography>
-
-					<Spacer y={24} />
-
-					<Button text='Open habiti.com/sell' onPress={handleOpenSellWeb} />
 				</SafeAreaView>
 			</Screen>
 		);
