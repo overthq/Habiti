@@ -8,7 +8,7 @@
 	},
 	"scripts": {
 		"dev": "dotenv -e .env.local -- sh -c \"export PATH=$(echo \\\"$PATH\\\" | sed -E 's|/private/tmp/bun-node-[^:]+:||g'); NODE_OPTIONS='--import ./instrument.server.mjs' node ./node_modules/vite/bin/vite.js dev --port 3000\"",
-		"build": "vite build && cp instrument.server.mjs .output/server",
+		"build": "vite build",
 		"preview": "vite preview",
 		"deploy": "npm run build && wrangler deploy",
 		"cf-typegen": "wrangler types",
