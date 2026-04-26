@@ -50,6 +50,10 @@ import Profile from '../screens/Profile';
 import Products from '../screens/Products';
 
 import useStore from '../state';
+import {
+	ACCOUNT_CREATION_ENABLED,
+	STORE_CREATION_ENABLED
+} from '../utils/constants';
 
 import {
 	AppStackParamList,
@@ -455,11 +459,13 @@ const Routes: React.FC = () => {
 								component={AddManager}
 								options={{ headerTitle: 'Add Manager' }}
 							/>
-							<AppStack.Screen
-								name='Modal.CreateStore'
-								component={CreateStore}
-								options={{ headerTitle: 'Create Store' }}
-							/>
+							{STORE_CREATION_ENABLED && (
+								<AppStack.Screen
+									name='Modal.CreateStore'
+									component={CreateStore}
+									options={{ headerTitle: 'Create Store' }}
+								/>
+							)}
 							<AppStack.Screen
 								name='Modal.AddPayoutAccount'
 								component={AddPayoutAccount}
@@ -495,7 +501,9 @@ const Routes: React.FC = () => {
 				) : (
 					<AppStack.Group>
 						<AppStack.Screen name='Landing' component={Landing} />
-						<AppStack.Screen name='Register' component={Register} />
+						{ACCOUNT_CREATION_ENABLED && (
+							<AppStack.Screen name='Register' component={Register} />
+						)}
 						<AppStack.Screen name='Authenticate' component={Authenticate} />
 						<AppStack.Screen name='Verify' component={Verify} />
 					</AppStack.Group>

@@ -10,7 +10,7 @@ import { Store } from '../../data/types';
 
 interface StoreSelectListProps {
 	stores: Store[];
-	onAddStore(): void;
+	onAddStore?: () => void;
 }
 
 const StoreSelectList: React.FC<StoreSelectListProps> = ({
@@ -49,7 +49,7 @@ const StoreSelectList: React.FC<StoreSelectListProps> = ({
 						selected={store.id === activeStore}
 					/>
 				))}
-				<CreateStoreButton onPress={onAddStore} />
+				{onAddStore && <CreateStoreButton onPress={onAddStore} />}
 			</ScrollView>
 		</View>
 	);

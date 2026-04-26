@@ -41,7 +41,7 @@
 		"expo-updates": "~55.0.13",
 		"react": "19.2.0",
 		"react-dom": "19.2.0",
-		"react-hook-form": "^7.56.1",
+		"react-hook-form": "^7.72.1",
 		"react-native": "0.83.2",
 		"react-native-gesture-handler": "~2.30.0",
 		"react-native-reanimated": "4.2.1",

@@ -24,7 +24,8 @@ import type {
 	LandingHighlightsResponse,
 	VerifyCodeBody,
 	VerifyCodeResponse,
-	CardAuthorizationResponse
+	CardAuthorizationResponse,
+	CreateStoreBody
 } from './types';
 import { OrderStatus } from './types';
 import { openPaystackPopup } from '@/lib/payments';
@@ -139,6 +140,11 @@ export const getCarts = async () => {
 };
 
 // Stores
+
+export const createStore = async (body: CreateStoreBody) => {
+	const response = await api.post<{ store: Store }>('/stores', body);
+	return response.data;
+};
 
 export const getStore = async (storeId: string) => {
 	const response = await api.get<GetStoreResponse>(`/stores/${storeId}`);

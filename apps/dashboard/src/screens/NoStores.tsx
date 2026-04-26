@@ -4,9 +4,18 @@ import { Button, Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { AppStackParamList } from '../navigation/types';
+import { STORE_CREATION_ENABLED } from '../utils/constants';
 
 const NoStores: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+
+	if (!STORE_CREATION_ENABLED) {
+		return (
+			<View style={styles.container}>
+				<Typography>{`Looks like you don't have access to any stores.`}</Typography>
+			</View>
+		);
+	}
 
 	return (
 		<View style={styles.container}>

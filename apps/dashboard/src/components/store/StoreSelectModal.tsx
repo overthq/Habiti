@@ -18,6 +18,7 @@ import { useManagedStoresQuery } from '../../data/queries';
 import { switchStore } from '../../data/requests';
 import useStore from '../../state';
 import { AppStackParamList } from '../../navigation/types';
+import { STORE_CREATION_ENABLED } from '../../utils/constants';
 
 interface StoreSelectModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
@@ -79,11 +80,15 @@ const StoreSelectModal: React.FC<StoreSelectModalProps> = ({ modalRef }) => {
 					</Row>
 				))}
 
-				<Spacer y={16} />
+				{STORE_CREATION_ENABLED && (
+					<>
+						<Spacer y={16} />
 
-				<View style={{ paddingHorizontal: 16 }}>
-					<Button onPress={handleCreateStore} text='Create new store' />
-				</View>
+						<View style={{ paddingHorizontal: 16 }}>
+							<Button onPress={handleCreateStore} text='Create new store' />
+						</View>
+					</>
+				)}
 			</BottomSheetView>
 		</BottomModal>
 	);

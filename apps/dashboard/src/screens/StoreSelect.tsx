@@ -9,6 +9,7 @@ import StoreSelectList from '../components/store-select/StoreSelectList';
 
 import { useManagedStoresQuery } from '../data/queries';
 import { AppStackParamList } from '../navigation/types';
+import { STORE_CREATION_ENABLED } from '../utils/constants';
 
 const StoreSelect = () => {
 	const { isLoading, data } = useManagedStoresQuery();
@@ -19,17 +20,41 @@ const StoreSelect = () => {
 		return <View />;
 	}
 
+	const hasStores = data.stores.length > 0;
+
+	const handleAddStore = React.useCallback(() => {
+		navigation.navigate('Modal.CreateStore');
+	}, [navigation]);
+
+	if (!STORE_CREATION_ENABLED && !hasStores) {
+		return (
+			<Screen style={styles.container}>
+				<SafeAreaView style={{ flex: 1 }}>
+					<Typography size='xxlarge' weight='bold'>
+						No stores
+					</Typography>
+
+					<Spacer y={2} />
+
+					<Typography variant='secondary'>
+						You do not have access to any stores.
+					</Typography>
+				</SafeAreaView>
+			</Screen>
+		);
+	}
+
 	return (
 		<Screen style={styles.container}>
 			<SafeAreaView style={{ flex: 1 }}>
 				<Typography size='xxlarge' weight='bold'>
-					{data?.stores.length ? 'Select store' : 'Create a new store'}
+					{hasStores ? 'Select store' : 'Create a new store'}
 				</Typography>
 
 				<Spacer y={2} />
 
 				<Typography variant='secondary'>
-					{data?.stores.length
+					{hasStores
 						? 'Select the store you want to manage.'
 						: 'Enter the details of your store to get started.'}
 				</Typography>
@@ -37,8 +62,8 @@ const StoreSelect = () => {
 				<Spacer y={16} />
 
 				<StoreSelectList
-					stores={data?.stores}
-					onAddStore={() => navigation.navigate('Modal.CreateStore')}
+					stores={data.stores}
+					onAddStore={STORE_CREATION_ENABLED ? handleAddStore : undefined}
 				/>
 			</SafeAreaView>
 		</Screen>

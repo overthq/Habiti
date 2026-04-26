@@ -1,3 +1,7 @@
+import React from 'react';
+import { View } from 'react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
 	Button,
 	Screen,
@@ -5,12 +9,9 @@ import {
 	TextButton,
 	Typography
 } from '@habiti/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppStackParamList } from '../navigation/types';
+import { ACCOUNT_CREATION_ENABLED } from '../utils/constants';
 
 const Landing = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
@@ -29,15 +30,29 @@ const Landing = () => {
 					</Typography>
 				</View>
 				<View style={{ flex: 1, justifyContent: 'flex-end' }}>
-					<Button text='Create account' onPress={() => navigate('Register')} />
-					<Spacer y={12} />
-					<TextButton
-						weight='medium'
-						style={{ alignSelf: 'center' }}
-						onPress={() => navigate('Authenticate')}
-					>
-						Already have an account? Log in.
-					</TextButton>
+					{ACCOUNT_CREATION_ENABLED ? (
+						<>
+							<Button
+								text='Create account'
+								onPress={() => navigate('Register')}
+							/>
+							<Spacer y={12} />
+							<TextButton
+								weight='medium'
+								style={{ alignSelf: 'center' }}
+								onPress={() => navigate('Authenticate')}
+							>
+								Already have an account? Log in.
+							</TextButton>
+						</>
+					) : (
+						<>
+							<Button
+								text='Continue'
+								onPress={() => navigate('Authenticate')}
+							/>
+						</>
+					)}
 					<Spacer y={24} />
 				</View>
 			</SafeAreaView>

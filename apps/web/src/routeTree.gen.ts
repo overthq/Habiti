@@ -17,6 +17,7 @@ import { Route as MarketingPrivacyPolicyRouteImport } from './routes/_marketing.
 import { Route as MarketingAcceptableUseRouteImport } from './routes/_marketing.acceptable-use';
 import { Route as MarketingAboutRouteImport } from './routes/_marketing.about';
 import { Route as MainCartRouteImport } from './routes/_main.cart';
+import { Route as MainSellIndexRouteImport } from './routes/_main.sell.index';
 import { Route as MainProfileIndexRouteImport } from './routes/_main.profile.index';
 import { Route as MainOrdersIndexRouteImport } from './routes/_main.orders.index';
 import { Route as MainStoreIdRouteImport } from './routes/_main.store.$id';
@@ -61,6 +62,11 @@ const MarketingAboutRoute = MarketingAboutRouteImport.update({
 const MainCartRoute = MainCartRouteImport.update({
 	id: '/cart',
 	path: '/cart',
+	getParentRoute: () => MainRoute
+} as any);
+const MainSellIndexRoute = MainSellIndexRouteImport.update({
+	id: '/sell/',
+	path: '/sell/',
 	getParentRoute: () => MainRoute
 } as any);
 const MainProfileIndexRoute = MainProfileIndexRouteImport.update({
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
 	'/store/$id': typeof MainStoreIdRoute;
 	'/orders/': typeof MainOrdersIndexRoute;
 	'/profile/': typeof MainProfileIndexRoute;
+	'/sell/': typeof MainSellIndexRoute;
 }
 export interface FileRoutesByTo {
 	'/': typeof MainIndexRoute;
@@ -128,6 +135,7 @@ export interface FileRoutesByTo {
 	'/store/$id': typeof MainStoreIdRoute;
 	'/orders': typeof MainOrdersIndexRoute;
 	'/profile': typeof MainProfileIndexRoute;
+	'/sell': typeof MainSellIndexRoute;
 }
 export interface FileRoutesById {
 	__root__: typeof rootRouteImport;
@@ -146,6 +154,7 @@ export interface FileRoutesById {
 	'/_main/store/$id': typeof MainStoreIdRoute;
 	'/_main/orders/': typeof MainOrdersIndexRoute;
 	'/_main/profile/': typeof MainProfileIndexRoute;
+	'/_main/sell/': typeof MainSellIndexRoute;
 }
 export interface FileRouteTypes {
 	fileRoutesByFullPath: FileRoutesByFullPath;
@@ -162,7 +171,8 @@ export interface FileRouteTypes {
 		| '/profile/settings'
 		| '/store/$id'
 		| '/orders/'
-		| '/profile/';
+		| '/profile/'
+		| '/sell/';
 	fileRoutesByTo: FileRoutesByTo;
 	to:
 		| '/'
@@ -177,7 +187,8 @@ export interface FileRouteTypes {
 		| '/profile/settings'
 		| '/store/$id'
 		| '/orders'
-		| '/profile';
+		| '/profile'
+		| '/sell';
 	id:
 		| '__root__'
 		| '/_main'
@@ -194,7 +205,8 @@ export interface FileRouteTypes {
 		| '/_main/profile/settings'
 		| '/_main/store/$id'
 		| '/_main/orders/'
-		| '/_main/profile/';
+		| '/_main/profile/'
+		| '/_main/sell/';
 	fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
@@ -260,6 +272,13 @@ declare module '@tanstack/react-router' {
 			preLoaderRoute: typeof MainCartRouteImport;
 			parentRoute: typeof MainRoute;
 		};
+		'/_main/sell/': {
+			id: '/_main/sell/';
+			path: '/sell';
+			fullPath: '/sell/';
+			preLoaderRoute: typeof MainSellIndexRouteImport;
+			parentRoute: typeof MainRoute;
+		};
 		'/_main/profile/': {
 			id: '/_main/profile/';
 			path: '/profile';
@@ -322,6 +341,7 @@ interface MainRouteChildren {
 	MainStoreIdRoute: typeof MainStoreIdRoute;
 	MainOrdersIndexRoute: typeof MainOrdersIndexRoute;
 	MainProfileIndexRoute: typeof MainProfileIndexRoute;
+	MainSellIndexRoute: typeof MainSellIndexRoute;
 }
 
 const MainRouteChildren: MainRouteChildren = {
@@ -333,7 +353,8 @@ const MainRouteChildren: MainRouteChildren = {
 	MainProfileSettingsRoute: MainProfileSettingsRoute,
 	MainStoreIdRoute: MainStoreIdRoute,
 	MainOrdersIndexRoute: MainOrdersIndexRoute,
-	MainProfileIndexRoute: MainProfileIndexRoute
+	MainProfileIndexRoute: MainProfileIndexRoute,
+	MainSellIndexRoute: MainSellIndexRoute
 };
 
 const MainRouteWithChildren = MainRoute._addFileChildren(MainRouteChildren);
