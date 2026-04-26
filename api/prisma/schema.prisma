@@ -79,6 +79,10 @@ model Product {
 
   reviews ProductReview[]
   options ProductOption[]
+
+  @@index([storeId])
+  @@index([storeId, status])
+  @@index([status])
 }
 
 model Order {
@@ -99,6 +103,9 @@ model Order {
   transactions Transaction[]
 
   @@unique([storeId, serialNumber])
+  @@index([userId, createdAt])
+  @@index([storeId, createdAt])
+  @@index([storeId, status])
 }
 
 model OrderProduct {
@@ -110,6 +117,7 @@ model OrderProduct {
   product   Product @relation(fields: [productId], references: [id])
 
   @@unique([orderId, productId])
+  @@index([productId])
 }
 
 model Cart {
@@ -133,6 +141,7 @@ model CartProduct {
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([cartId, productId])
+  @@index([productId])
 }
 
 model WatchlistProduct {
@@ -142,6 +151,7 @@ model WatchlistProduct {
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
+  @@index([productId])
 }
 
 model Image {
@@ -154,6 +164,8 @@ model Image {
   updatedAt DateTime @updatedAt
   store     Store?   @relation(fields: [storeId], references: [id], onDelete: Cascade)
   product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
 }
 
 model StoreManager {
@@ -165,6 +177,7 @@ model StoreManager {
   manager   User     @relation(fields: [managerId], references: [id], onDelete: Cascade)
 
   @@unique([storeId, managerId])
+  @@index([managerId])
 }
 
 model StoreFollower {
@@ -176,6 +189,7 @@ model StoreFollower {
   follower   User     @relation(fields: [followerId], references: [id], onDelete: Cascade)
 
   @@unique([storeId, followerId])
+  @@index([followerId])
 }
 
 model Card {
@@ -196,8 +210,8 @@ model Card {
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, signature])
+  @@index([userId])
 }
-
 
 model ProductCategory {
   productId  String
@@ -209,6 +223,7 @@ model ProductCategory {
   category StoreProductCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@unique([categoryId, productId])
+  @@index([productId])
 }
 
 model StoreProductCategory {
@@ -235,6 +250,9 @@ model ProductReview {
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([userId])
 }
 
 model Address {
@@ -256,6 +274,9 @@ model Address {
 
   storeId String?
   store   Store?  @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([storeId])
 }
 
 model UserPushToken {
@@ -322,7 +343,6 @@ enum OrderStatus {
   PaymentPending
 }
 
-
 enum TransactionType {
   Revenue
   Payout
@@ -349,7 +369,7 @@ model Transaction {
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
 
-  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  store Store  @relation(fields: [storeId], references: [id], onDelete: Cascade)
   order Order? @relation(fields: [orderId], references: [id])
 
   @@index([storeId, createdAt])
@@ -387,7 +407,7 @@ model AdminSession {
   revoked      Boolean  @default(false)
   createdAt    DateTime @default(now())
 
-  admin         Admin              @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  admin         Admin               @relation(fields: [adminId], references: [id], onDelete: Cascade)
   refreshTokens AdminRefreshToken[]
 
   @@index([adminId])

@@ -57,7 +57,8 @@ export enum LogicErrorCode {
 	Unexpected = 'Unexpected',
 
 	CartEmpty = 'CartEmpty',
-	InsufficientStock = 'InsufficientStock'
+	InsufficientStock = 'InsufficientStock',
+	ProductInsufficientStock = 'ProductInsufficientStock'
 }
 
 export const logicErrorToApiException = (
@@ -133,6 +134,13 @@ export const logicErrorToApiException = (
 			return new APIException(400, 'Product rating must be between 1 and 5');
 		case LogicErrorCode.ProductStoreNotFound:
 			return new APIException(404, 'Store not found');
+		case LogicErrorCode.ProductInsufficientStock:
+			return new APIException(
+				409,
+				'Insufficient stock for one or more products'
+			);
+		case LogicErrorCode.InsufficientStock:
+			return new APIException(409, 'Insufficient stock');
 
 		case LogicErrorCode.PayoutInsufficientFunds:
 			return new APIException(400, 'Insufficient funds for requested payout');

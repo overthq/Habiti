@@ -13,6 +13,7 @@ import {
 import { ProductStatus } from '../generated/prisma/client';
 import { TransactionStatus, TransactionType } from '../generated/prisma/client';
 import { resolveAccountNumber } from '../core/payments';
+import { APIException } from '../types/errors';
 import * as StoreLogic from '../core/logic/stores';
 import * as ProductLogic from '../core/logic/products';
 import * as OrderLogic from '../core/logic/orders';
@@ -99,7 +100,10 @@ currentStore.get('/orders/:id', async c => {
 });
 
 currentStore.get('/managers', async c => {
-	const query = hydrateQuery(c.req.query());
+	const query = hydrateQuery(c.req.query(), {
+		allowedFields: ['createdAt', 'managerId'],
+		allowedOrderBy: ['createdAt']
+	});
 	const managers = await StoreLogic.getStoreManagers(c, c.var.storeId!, query);
 	return c.json({ managers });
 });
@@ -210,7 +214,7 @@ currentStore.post(
 
 currentStore.get('/transactions', async c => {
 	if (!c.var.storeId) {
-		return c.json({ error: 'Store context required' }, 400);
+		throw new APIException(400, 'Store context required');
 	}
 
 	const query = c.req.query();

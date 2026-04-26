@@ -1,3 +1,4 @@
+import { timingSafeEqual } from 'crypto';
 import { Hono } from 'hono';
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie';
 import { zValidator } from '@hono/zod-validator';
@@ -6,17 +7,48 @@ import jwt from 'jsonwebtoken';
 import type { AppEnv } from '../types/hono';
 import { zodHook } from '../utils/validation';
 import { authenticate } from '../middleware/auth';
+import { rateLimit, composeRateLimits } from '../middleware/rateLimit';
 import { env } from '../config/env';
+import { APIException } from '../types/errors';
 import { LogicError, LogicErrorCode } from '../core/logic/errors';
 import * as AuthLogic from '../core/logic/auth';
 import * as UserLogic from '../core/logic/users';
 import * as CartLogic from '../core/logic/carts';
 import * as Schemas from '../core/validations/rest';
 
+// Per-IP fallback for unauthenticated routes — protects the service.
+const ipLimiter = rateLimit({
+	prefix: 'auth:ip',
+	windowSec: 60,
+	limit: 20
+});
+
+// Per-email/identity limiter — protects individual accounts. Falls back to
+// the IP-derived key if no body or no email is present.
+const identityLimiter = (prefix: string) =>
+	rateLimit({
+		prefix,
+		windowSec: 60,
+		limit: 5,
+		keyGenerator: async c => {
+			try {
+				const body = await c.req.raw.clone().json();
+				const email =
+					typeof body?.email === 'string' ? body.email.toLowerCase() : null;
+				if (email) return `email:${email}`;
+			} catch {
+				// fall through
+			}
+			const forwarded = c.req.header('x-forwarded-for');
+			return forwarded ? forwarded.split(',')[0]!.trim() : 'anon';
+		}
+	});
+
 const auth = new Hono<AppEnv>();
 
 auth.post(
 	'/register',
+	composeRateLimits(ipLimiter, identityLimiter('auth:register')),
 	zValidator('json', Schemas.registerBodySchema, zodHook),
 	async c => {
 		const { name, email } = c.req.valid('json');
@@ -28,6 +60,7 @@ auth.post(
 
 auth.post(
 	'/login',
+	composeRateLimits(ipLimiter, identityLimiter('auth:login')),
 	zValidator('json', Schemas.authenticateBodySchema, zodHook),
 	async c => {
 		const { email } = c.req.valid('json');
@@ -39,15 +72,13 @@ auth.post(
 
 auth.post(
 	'/verify-code',
+	composeRateLimits(ipLimiter, identityLimiter('auth:verify-code')),
 	zValidator('json', Schemas.verifyCodeBodySchema, zodHook),
 	async c => {
 		const { email, code, cartIds } = c.req.valid('json');
 
 		if (!email || !code) {
-			return c.json(
-				{ error: 'Email and verification code are required.' },
-				400
-			);
+			throw new APIException(400, 'Email and verification code are required.');
 		}
 
 		const cachedCode = await AuthLogic.retrieveVerificationCode(email);
@@ -56,8 +87,11 @@ auth.post(
 			throw new LogicError(LogicErrorCode.NotFound);
 		}
 
-		if (cachedCode !== code) {
-			return c.json({ error: 'Invalid code' }, 400);
+		// Constant-time compare to prevent timing-based code recovery.
+		const a = Buffer.from(cachedCode, 'utf8');
+		const b = Buffer.from(code, 'utf8');
+		if (a.length !== b.length || !timingSafeEqual(a, b)) {
+			throw new APIException(400, 'Invalid code');
 		}
 
 		const user = await UserLogic.getUserByEmail(c, email);
@@ -102,6 +136,7 @@ auth.post(
 
 auth.post(
 	'/apple-callback',
+	ipLimiter,
 	zValidator('json', Schemas.appleCallbackBodySchema, zodHook),
 	async c => {
 		if (
@@ -132,7 +167,7 @@ auth.post(
 		const decodedToken = jwt.decode(data.id_token) as any;
 
 		if (!decodedToken?.email) {
-			return c.json({ message: 'Invalid Apple ID token' }, 400);
+			throw new APIException(400, 'Invalid Apple ID token');
 		}
 
 		let user = await UserLogic.getUserByEmail(c, decodedToken.email);
@@ -182,7 +217,7 @@ auth.post(
 		const refreshToken = getCookie(c, 'refreshToken') || body.refreshToken;
 
 		if (!refreshToken) {
-			return c.json({ error: 'Refresh token required' }, 401);
+			throw new APIException(401, 'Refresh token required');
 		}
 
 		const tokens = await AuthLogic.rotateRefreshToken(
@@ -210,7 +245,7 @@ auth.post(
 		const { storeId } = c.req.valid('json');
 
 		if (!c.var.auth?.id) {
-			return c.json({ error: 'Authentication required' }, 401);
+			throw new APIException(401, 'Authentication required');
 		}
 
 		const storeManager = await c.var.prisma.storeManager.findUnique({
@@ -223,7 +258,7 @@ auth.post(
 		});
 
 		if (!storeManager) {
-			return c.json({ error: 'Not a manager of this store' }, 403);
+			throw new APIException(403, 'Not a manager of this store');
 		}
 
 		const accessToken = await AuthLogic.generateAccessToken(

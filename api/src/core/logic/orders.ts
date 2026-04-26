@@ -150,7 +150,7 @@ export const createOrder = async (
 		});
 	}
 
-	createOrderHooks(c, {
+	await createOrderHooks(c, {
 		orderId: order.id,
 		userId: c.var.auth.id,
 		storeId: cart.storeId,
@@ -190,29 +190,53 @@ export const updateOrderStatus = async (
 
 	const { orderId, status } = validatedInput;
 
-	const currentOrder = await OrderData.getOrderByIdWithStore(
-		c.var.prisma,
-		orderId
+	// Read-validate-update-restore must be atomic so a cancellation can't
+	// run the status update without restoring stock if the worker dies between.
+	const { updatedOrder, priorStatus } = await c.var.prisma.$transaction(
+		async tx => {
+			const currentOrder = await OrderData.getOrderByIdWithProducts(
+				tx,
+				orderId
+			);
+
+			if (!currentOrder) {
+				throw new LogicError(LogicErrorCode.OrderNotFound);
+			}
+
+			validateStatusTransition(currentOrder.status, status);
+
+			if (status === OrderStatus.Cancelled) {
+				await OrderData.restoreProductQuantities(tx, {
+					products: currentOrder.products.map(p => ({
+						productId: p.productId,
+						quantity: p.quantity
+					}))
+				});
+			}
+
+			const updated = await tx.order.update({
+				where: { id: orderId },
+				data: { status },
+				include: {
+					products: { include: { product: true } },
+					store: true,
+					user: { include: { pushTokens: true } }
+				}
+			});
+
+			return { updatedOrder: updated, priorStatus: currentOrder.status };
+		}
 	);
-
-	if (!currentOrder) {
-		throw new LogicError(LogicErrorCode.OrderNotFound);
-	}
-
-	validateStatusTransition(currentOrder.status, status);
-
-	const updatedOrder = await OrderData.updateOrder(c.var.prisma, orderId, {
-		status
-	});
 
 	await updateOrderHooks(c, {
 		customerName: c.var.auth.name,
 		pushToken: updatedOrder.user.pushTokens[0] ?? undefined,
 		orderId: updatedOrder.id,
 		userId: c.var.auth.id,
-		storeId: currentOrder.storeId,
+		storeId: updatedOrder.storeId,
 		amount: updatedOrder.total,
-		status
+		status,
+		priorStatus
 	});
 
 	return updatedOrder;
@@ -301,7 +325,8 @@ export const confirmPickup = async (c: Context<AppEnv>, orderId: string) => {
 			userId: c.var.auth.id,
 			storeId: currentOrder.storeId,
 			amount: updatedOrder.total,
-			status: OrderStatus.Completed
+			status: OrderStatus.Completed,
+			priorStatus: currentOrder.status
 		});
 	} catch (error) {
 		console.log(error);

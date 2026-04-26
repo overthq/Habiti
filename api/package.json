@@ -26,6 +26,7 @@
 		"expo-server-sdk": "^3.15.0",
 		"fs-capacitor": "^8.0.0",
 		"hono": "^4.12.12",
+		"hono-rate-limiter": "^0.5.3",
 		"jsonwebtoken": "^9.0.2",
 		"loops": "^4.1.0",
 		"nodemailer": "^6.10.0",

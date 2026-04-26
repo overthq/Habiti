@@ -28,9 +28,10 @@ export const uploadBuffer = (
 // Use uploader.upload with a base64 data URI instead.
 
 export const uploadBase64 = (
-	buffer: Buffer
+	buffer: Buffer,
+	mime = 'image/jpeg'
 ): Promise<cloudinary.UploadApiResponse> => {
-	const base64 = `data:image/jpeg;base64,${buffer.toString('base64')}`;
+	const base64 = `data:${mime};base64,${buffer.toString('base64')}`;
 	return cloudinary.v2.uploader.upload(base64, {
 		resource_type: 'image'
 	});

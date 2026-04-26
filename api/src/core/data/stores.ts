@@ -1,10 +1,17 @@
-import { Prisma, PrismaClient } from '../../generated/prisma/client';
+import {
+	Prisma,
+	PrismaClient,
+	TransactionType
+} from '../../generated/prisma/client';
 import {
 	productFiltersToPrismaClause,
 	ProductFilters,
 	OrderFilters,
 	orderFiltersToPrismaClause
 } from '../../utils/queries';
+import { runSerializable } from '../../utils/prisma';
+import { createTransaction } from './transactions';
+
 interface CreateStoreParams {
 	userId?: string;
 	name: string;
@@ -375,10 +382,6 @@ export const updateStoreRevenue = async (
 	prisma: PrismaClient,
 	args: UpdateStoreRevenueArgs
 ) => {
-	const { createTransaction } = await import('./transactions');
-	const { TransactionType } = await import('../../generated/prisma/client');
-	const { runSerializable } = await import('../../utils/prisma');
-
 	await runSerializable(prisma, async tx => {
 		await tx.store.update({
 			where: { id: args.storeId },
@@ -395,6 +398,44 @@ export const updateStoreRevenue = async (
 			orderId: args.orderId,
 			description: 'Payment confirmed'
 		});
+	});
+};
+
+interface ReverseOrderRevenueArgs {
+	storeId: string;
+	total: number;
+	orderId: string;
+	wasRealized: boolean;
+}
+
+export const reverseOrderRevenue = async (
+	prisma: PrismaClient,
+	args: ReverseOrderRevenueArgs
+) => {
+	await runSerializable(prisma, async tx => {
+		if (args.wasRealized) {
+			await tx.store.update({
+				where: { id: args.storeId },
+				data: {
+					realizedRevenue: { decrement: args.total }
+				}
+			});
+
+			await createTransaction(tx, {
+				storeId: args.storeId,
+				type: TransactionType.Refund,
+				amount: args.total,
+				orderId: args.orderId,
+				description: 'Order cancelled — refund'
+			});
+		} else {
+			await tx.store.update({
+				where: { id: args.storeId },
+				data: {
+					unrealizedRevenue: { decrement: args.total }
+				}
+			});
+		}
 	});
 };
 

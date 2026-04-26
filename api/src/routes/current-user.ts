@@ -5,6 +5,7 @@ import type { AppEnv } from '../types/hono';
 import { zodHook } from '../utils/validation';
 import { authenticate } from '../middleware/auth';
 import { hydrateQuery } from '../utils/queries';
+import { APIException } from '../types/errors';
 import * as UserLogic from '../core/logic/users';
 import * as ProductLogic from '../core/logic/products';
 import * as CartLogic from '../core/logic/carts';
@@ -48,15 +49,26 @@ currentUser.get('/managed-stores', async c => {
 	return c.json({ stores });
 });
 
+const orderQueryFields = ['status', 'storeId', 'total', 'createdAt'] as const;
+const orderQueryOrderBy = ['total', 'createdAt'] as const;
+const cartQueryFields = ['storeId', 'createdAt'] as const;
+const cartQueryOrderBy = ['createdAt'] as const;
+
 currentUser.get('/orders', async c => {
-	const query = hydrateQuery(c.req.query());
+	const query = hydrateQuery(c.req.query(), {
+		allowedFields: orderQueryFields,
+		allowedOrderBy: orderQueryOrderBy
+	});
 
 	const orders = await UserLogic.getOrders(c, query);
 	return c.json({ orders });
 });
 
 currentUser.get('/carts', async c => {
-	const query = hydrateQuery(c.req.query());
+	const query = hydrateQuery(c.req.query(), {
+		allowedFields: cartQueryFields,
+		allowedOrderBy: cartQueryOrderBy
+	});
 
 	const carts = await UserLogic.getCarts(c, query);
 	return c.json({ carts });
@@ -111,7 +123,7 @@ currentUser.post(
 		const { orderId } = c.req.valid('json');
 
 		if (!orderId) {
-			return c.json({ error: 'Order ID is required' }, 400);
+			throw new APIException(400, 'Order ID is required');
 		}
 
 		const result = await CardLogic.authorizeCard(c, { orderId });
@@ -215,7 +227,7 @@ currentUser.delete('/sessions/:id', async c => {
 	const session = await SessionData.getSessionById(c.var.prisma, id);
 
 	if (!session || session.userId !== c.var.auth!.id) {
-		return c.json({ error: 'Session not found' }, 404);
+		throw new APIException(404, 'Session not found');
 	}
 
 	await SessionData.revokeSession(c.var.prisma, id);

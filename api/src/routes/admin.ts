@@ -15,6 +15,7 @@ import { env } from '../config/env';
 import { TransactionStatus, TransactionType } from '../generated/prisma/client';
 import type { StripUndefined } from '../utils/objects';
 import type { AdminCreateStoreBody } from '../core/validations/rest';
+import { APIException } from '../types/errors';
 import * as AdminLogic from '../core/logic/admin';
 import * as AuthLogic from '../core/logic/auth';
 import * as StoreLogic from '../core/logic/stores';
@@ -62,7 +63,7 @@ admin.post('/refresh', async c => {
 	const refreshToken = getCookie(c, 'adminRefreshToken') || body.refreshToken;
 
 	if (!refreshToken) {
-		return c.json({ error: 'Refresh token required' }, 401);
+		throw new APIException(401, 'Refresh token required');
 	}
 
 	const tokens = await AuthLogic.rotateAdminRefreshToken(c, refreshToken);
@@ -106,7 +107,7 @@ admin.delete('/sessions/:id', async c => {
 	const session = await AdminSessionData.getAdminSessionById(c.var.prisma, id);
 
 	if (!session || session.adminId !== c.var.auth!.id) {
-		return c.json({ error: 'Session not found' }, 404);
+		throw new APIException(404, 'Session not found');
 	}
 
 	await AdminSessionData.revokeAdminSession(c.var.prisma, id);
@@ -118,8 +119,27 @@ admin.get('/overview', async c => {
 	return c.json(overview);
 });
 
+const adminStoreFields = [
+	'unlisted',
+	'createdAt',
+	'orderCount',
+	'realizedRevenue',
+	'unrealizedRevenue',
+	'paidOut'
+] as const;
+const adminStoreOrderBy = [
+	'createdAt',
+	'orderCount',
+	'realizedRevenue',
+	'unrealizedRevenue',
+	'paidOut'
+] as const;
+
 admin.get('/stores', async c => {
-	const query = hydrateQuery(c.req.query());
+	const query = hydrateQuery(c.req.query(), {
+		allowedFields: adminStoreFields,
+		allowedOrderBy: adminStoreOrderBy
+	});
 
 	const stores = await StoreLogic.getStores(c, query);
 	return c.json({ stores });
@@ -140,7 +160,10 @@ admin.post(
 
 admin.get('/stores/:id/managers', async c => {
 	const storeId = c.req.param('id');
-	const query = hydrateQuery(c.req.query());
+	const query = hydrateQuery(c.req.query(), {
+		allowedFields: ['createdAt', 'managerId'],
+		allowedOrderBy: ['createdAt']
+	});
 	const managers = await StoreLogic.getStoreManagers(c, storeId, query);
 	return c.json({ managers });
 });
@@ -164,8 +187,8 @@ admin.get('/stores/:id/transactions', async c => {
 
 admin.get('/stores/:id/orders', async c => {
 	const storeId = c.req.param('id');
-	const query = hydrateQuery(c.req.query());
-	const orders = await StoreLogic.getStoreOrders(c, storeId, query);
+	const filters = orderFiltersSchema.parse(c.req.query());
+	const orders = await StoreLogic.getStoreOrders(c, storeId, filters);
 	return c.json({ orders });
 });
 
@@ -173,7 +196,7 @@ admin.get('/stores/:id', async c => {
 	const storeWithContext = await StoreLogic.getStoreById(c, c.req.param('id'));
 
 	if (!storeWithContext) {
-		return c.json({ error: 'Store not found' }, 404);
+		throw new APIException(404, 'Store not found');
 	}
 
 	return c.json(storeWithContext);

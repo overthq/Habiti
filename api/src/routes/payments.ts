@@ -3,10 +3,14 @@ import { zValidator } from '@hono/zod-validator';
 
 import type { AppEnv } from '../types/hono';
 import { zodHook } from '../utils/validation';
+import { rateLimit } from '../middleware/rateLimit';
+import { APIException } from '../types/errors';
 import * as PaymentLogic from '../core/logic/payments';
 import * as Schemas from '../core/validations/rest';
 
 const payments = new Hono<AppEnv>();
+
+payments.use('*', rateLimit({ prefix: 'payments', windowSec: 60, limit: 30 }));
 
 payments.post(
 	'/verify-transaction',
@@ -14,12 +18,8 @@ payments.post(
 	async c => {
 		const { reference } = c.req.valid('json');
 
-		try {
-			const data = await PaymentLogic.verifyTransaction(c, reference);
-			return c.json({ success: true, data });
-		} catch (error) {
-			return c.json({ success: false, error }, 400);
-		}
+		const data = await PaymentLogic.verifyTransaction(c, reference);
+		return c.json({ data });
 	}
 );
 
@@ -29,37 +29,30 @@ payments.post(
 	async c => {
 		const { transferId } = c.req.valid('json');
 
-		try {
-			const data = await PaymentLogic.verifyTransfer(c, { transferId });
-			return c.json({ success: true, data });
-		} catch (error) {
-			return c.json({ success: false, error }, 400);
-		}
+		const data = await PaymentLogic.verifyTransfer(c, { transferId });
+		return c.json({ data });
 	}
 );
 
-// IMPORTANT: We have to ensure that this action stays as fast as possible.
-// Any latency in our DB calls here will cause the payout to fail.
-payments.post('/approve-payment', async c => {
-	const body = await c.req.json();
+// IMPORTANT: This endpoint must respond quickly. Any latency in our DB calls
+// here will cause the payout approval flow to fail.
+payments.post(
+	'/approve-payment',
+	zValidator('json', Schemas.approvePaymentBodySchema, zodHook),
+	async c => {
+		const body = c.req.valid('json');
 
-	try {
 		const payout = await PaymentLogic.approvePayment(c, body);
 
 		if (!payout) {
-			return c.json(
-				{
-					success: false,
-					message: 'Payout not found or has already been resolved'
-				},
-				400
+			throw new APIException(
+				400,
+				'Payout not found or has already been resolved'
 			);
 		}
 
-		return c.json({ sucess: true, message: 'Payment approved' });
-	} catch (error) {
-		return c.json({ success: false, error }, 400);
+		return c.json({ message: 'Payment approved' });
 	}
-});
+);
 
 export default payments;

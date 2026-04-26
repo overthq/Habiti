@@ -1,6 +1,6 @@
 import type { Context } from 'hono';
 
-import { OrderStatus } from '../../generated/prisma/client';
+import { OrderStatus, TransactionStatus } from '../../generated/prisma/client';
 import { env } from '../../config/env';
 
 import * as CardData from '../data/cards';
@@ -30,34 +30,36 @@ import type {
 
 import type { AppEnv } from '../../types/hono';
 import { pollUntil } from '../../utils/poll';
+import { runSerializable } from '../../utils/prisma';
+import type { ApprovePaymentBody } from '../validations/rest';
 
-// `body` here comes directly from Paystack.
+export const approvePayment = async (
+	c: Context<AppEnv>,
+	body: ApprovePaymentBody
+) => {
+	const { transfers } = body.data;
 
-export const approvePayment = async (c: Context<AppEnv>, body: any) => {
-	const transfers: Array<{ reference: string; amount: number }> =
-		body?.data?.transfers;
+	return runSerializable(c.var.prisma, async tx => {
+		const rows: Awaited<ReturnType<typeof tx.transaction.findUnique>>[] = [];
 
-	if (!Array.isArray(transfers) || transfers.length === 0) {
-		throw new Error('Unable to extract transfers from approve-payment body');
-	}
+		for (const transfer of transfers) {
+			const row = await tx.transaction.findUnique({
+				where: { id: transfer.reference }
+			});
 
-	const transactions = await Promise.all(
-		transfers.map(transfer =>
-			c.var.prisma.transaction.findFirst({
-				where: {
-					id: transfer.reference,
-					status: 'Processing',
-					amount: transfer.amount
-				}
-			})
-		)
-	);
+			if (
+				!row ||
+				row.status !== TransactionStatus.Processing ||
+				row.amount !== transfer.amount
+			) {
+				return null;
+			}
 
-	if (transactions.some(t => t === null)) {
-		return null;
-	}
+			rows.push(row);
+		}
 
-	return transactions;
+		return rows;
+	});
 };
 
 // --- Card charge processing ---
