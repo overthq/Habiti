@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie';
 import { zValidator } from '@hono/zod-validator';
+import { HTTPException } from 'hono/http-exception';
 
 import type { AppEnv } from '../types/hono';
 import { zodHook } from '../utils/validation';
@@ -15,7 +16,6 @@ import { env } from '../config/env';
 import { TransactionStatus, TransactionType } from '../generated/prisma/client';
 import type { StripUndefined } from '../utils/objects';
 import type { AdminCreateStoreBody } from '../core/validations/rest';
-import { APIException } from '../types/errors';
 import * as AdminLogic from '../core/logic/admin';
 import * as AuthLogic from '../core/logic/auth';
 import * as StoreLogic from '../core/logic/stores';
@@ -63,7 +63,7 @@ admin.post('/refresh', async c => {
 	const refreshToken = getCookie(c, 'adminRefreshToken') || body.refreshToken;
 
 	if (!refreshToken) {
-		throw new APIException(401, 'Refresh token required');
+		throw new HTTPException(401, { message: 'Refresh token required' });
 	}
 
 	const tokens = await AuthLogic.rotateAdminRefreshToken(c, refreshToken);
@@ -107,7 +107,7 @@ admin.delete('/sessions/:id', async c => {
 	const session = await AdminSessionData.getAdminSessionById(c.var.prisma, id);
 
 	if (!session || session.adminId !== c.var.auth!.id) {
-		throw new APIException(404, 'Session not found');
+		throw new HTTPException(404, { message: 'Session not found' });
 	}
 
 	await AdminSessionData.revokeAdminSession(c.var.prisma, id);
@@ -196,7 +196,7 @@ admin.get('/stores/:id', async c => {
 	const storeWithContext = await StoreLogic.getStoreById(c, c.req.param('id'));
 
 	if (!storeWithContext) {
-		throw new APIException(404, 'Store not found');
+		throw new HTTPException(404, { message: 'Store not found' });
 	}
 
 	return c.json(storeWithContext);

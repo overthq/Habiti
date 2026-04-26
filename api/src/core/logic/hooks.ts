@@ -38,8 +38,6 @@ export const createOrderHooks = async (
 	args: CreateOrderHooksArgs
 ) => {
 	if (args.status === OrderStatus.Completed) {
-		// Awaited — leaving this fire-and-forget previously dropped ledger
-		// rows on errors and made the `updateStoreRevenue` call unobservable.
 		await updateStoreRevenue(c.var.prisma, {
 			storeId: args.storeId,
 			total: args.amount,

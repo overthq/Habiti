@@ -7,20 +7,10 @@ import {
 	type ClientRateLimitInfo,
 	type HonoConfigType
 } from 'hono-rate-limiter';
+import { routePath } from 'hono/route';
 
 import type { AppEnv } from '../types/hono';
-
-/**
- * `hono-rate-limiter` ships a Redis store, but its `RedisClient` interface
- * targets ioredis / node-redis (uses `scriptLoad` / `evalsha`). The API uses
- * Bun's built-in `RedisClient`, exposed on `c.var.redis` by `contextMiddleware`.
- * This thin store wraps Bun's client with the methods the limiter needs.
- *
- * The store is bound to the request-scoped redis client by a tiny `_bind` shim
- * called from the wrapper middleware before each request — that keeps the
- * "pull redis from context" pattern consistent with the rest of the codebase
- * and makes swapping the client in tests trivial.
- */
+import { metrics, MetricNames } from '../services/metrics';
 
 interface BunRedisStore<
 	E extends Env = Env,
@@ -99,7 +89,16 @@ export const rateLimit = (opts: RateLimitOpts): MiddlewareHandler<AppEnv> => {
 		limit: opts.limit,
 		standardHeaders: 'draft-7',
 		keyGenerator: opts.keyGenerator ?? defaultKeyGenerator,
-		handler: c => c.json({ message: 'Too many requests' }, 429),
+		handler: c => {
+			metrics.inc(MetricNames.RateLimitBlocked, { prefix: opts.prefix });
+
+			c.var.logger?.warn(
+				{ prefix: opts.prefix, route: routePath(c) ?? c.req.path },
+				'rate_limit_blocked'
+			);
+
+			return c.json({ message: 'Too many requests' }, 429);
+		},
 		store
 	});
 
@@ -109,22 +108,18 @@ export const rateLimit = (opts: RateLimitOpts): MiddlewareHandler<AppEnv> => {
 	};
 };
 
-/**
- * Convenience: combine an identity-based limiter with a coarser IP-based
- * limiter. Both must allow the request to proceed. Used for auth endpoints
- * where the per-email cap protects accounts and the per-IP cap protects the
- * service.
- */
 export const composeRateLimits = (
 	...middlewares: MiddlewareHandler<AppEnv>[]
 ): MiddlewareHandler<AppEnv> => {
 	return async (c, next) => {
 		let i = 0;
+
 		const run = async (): Promise<void> => {
 			if (i >= middlewares.length) return next();
 			const mw = middlewares[i++]!;
 			await mw(c, run);
 		};
+
 		return run();
 	};
 };

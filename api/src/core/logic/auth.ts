@@ -1,41 +1,16 @@
-import type { Context } from 'hono';
-
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import { Admin, User } from '../../generated/prisma/client';
+import type { Context } from 'hono';
+
 import * as AuthData from '../data/auth';
 import * as AdminAuthData from '../data/adminAuth';
 import * as SessionData from '../data/sessions';
 import * as AdminSessionData from '../data/adminSessions';
-import {
-	registerBodySchema,
-	authenticateBodySchema
-} from '../validations/rest';
-import redisClient from '../../config/redis';
 import { env } from '../../config/env';
-import type { AppEnv } from '../../types/hono';
 import { LogicError, LogicErrorCode } from './errors';
-
-export const validateRegisterBody = (body: any) => {
-	const { success, data, error } = registerBodySchema.safeParse(body);
-
-	if (!success) {
-		throw new LogicError(LogicErrorCode.ValidationFailed, error.message);
-	}
-
-	return data;
-};
-
-export const validateAuthenticateBody = (body: any) => {
-	const { success, data, error } = authenticateBodySchema.safeParse(body);
-
-	if (!success) {
-		throw new LogicError(LogicErrorCode.ValidationFailed, error.message);
-	}
-
-	return data;
-};
+import type { Admin, User } from '../../generated/prisma/client';
+import type { AppEnv } from '../../types/hono';
 
 export const verifyPassword = async (password: string, hash: string) => {
 	return argon2.verify(hash, password);
@@ -45,7 +20,10 @@ export const hashPassword = async (password: string) => {
 	return argon2.hash(password);
 };
 
-export const cacheVerificationCode = async (email: string): Promise<string> => {
+export const cacheVerificationCode = async (
+	c: Context<AppEnv>,
+	email: string
+): Promise<string> => {
 	const isTestAccount =
 		env.TEST_ACCOUNT_EMAIL && email === env.TEST_ACCOUNT_EMAIL;
 	const code =
@@ -55,18 +33,22 @@ export const cacheVerificationCode = async (email: string): Promise<string> => {
 
 	const key = getEmailCacheKey(email);
 
-	await redisClient.set(key, code);
-	await redisClient.expire(key, 600);
+	await c.var.redis.set(key, code);
+	await c.var.redis.expire(key, 600);
 
 	if (env.NODE_ENV !== 'production') {
-		console.log({ email, code });
+		// Use devOtp so code is not redacted on dev.
+		c.var.logger.info({ email, devOtp: code }, 'auth.dev_verification_code');
 	}
 
 	return code;
 };
 
-export const retrieveVerificationCode = async (email: string) => {
-	return redisClient.get(getEmailCacheKey(email));
+export const retrieveVerificationCode = async (
+	c: Context<AppEnv>,
+	email: string
+) => {
+	return c.var.redis.get(getEmailCacheKey(email));
 };
 
 export const generateAccessToken = async (
@@ -82,7 +64,9 @@ export const generateAccessToken = async (
 		role,
 		sessionId
 	};
+
 	if (storeId) claims.storeId = storeId;
+
 	return jwt.sign(claims, env.JWT_SECRET, { expiresIn: '10m' });
 };
 
@@ -175,6 +159,7 @@ export const rotateRefreshToken = async (
 	}
 
 	const hash = crypto.createHash('sha256').update(token).digest('hex');
+
 	if (hash !== storedToken.hashedToken) {
 		throw new LogicError(LogicErrorCode.InvalidToken);
 	}
@@ -185,6 +170,7 @@ export const rotateRefreshToken = async (
 			c.var.prisma,
 			storedToken.sessionId
 		);
+
 		if (session?.revoked) {
 			throw new LogicError(LogicErrorCode.TokenReused);
 		}
@@ -250,9 +236,11 @@ export const verifyAccessToken = async (token: string) => {
 		return jwt.verify(token, env.JWT_SECRET);
 	} catch (e) {
 		const name = (e as any)?.name;
+
 		if (name === 'TokenExpiredError') {
 			throw new LogicError(LogicErrorCode.TokenExpired);
 		}
+
 		throw new LogicError(LogicErrorCode.InvalidToken);
 	}
 };
@@ -273,6 +261,7 @@ export const generateAdminRefreshToken = async (
 			userAgent: metadata?.userAgent,
 			ipAddress: metadata?.ipAddress
 		});
+
 		resolvedSessionId = session.id;
 	}
 
@@ -354,6 +343,7 @@ export const rotateAdminRefreshToken = async (
 	}
 
 	const hash = crypto.createHash('sha256').update(token).digest('hex');
+
 	if (hash !== storedToken.hashedToken) {
 		throw new LogicError(LogicErrorCode.InvalidToken);
 	}
@@ -364,6 +354,7 @@ export const rotateAdminRefreshToken = async (
 			c.var.prisma,
 			storedToken.sessionId
 		);
+
 		if (session?.revoked) {
 			throw new LogicError(LogicErrorCode.TokenReused);
 		}
@@ -374,6 +365,7 @@ export const rotateAdminRefreshToken = async (
 			c.var.prisma,
 			storedToken.sessionId
 		);
+
 		throw new LogicError(LogicErrorCode.TokenReused);
 	}
 

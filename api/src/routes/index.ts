@@ -15,6 +15,7 @@ import searchRoutes from './search';
 import landingRoutes from './landing';
 import webhookRoutes from './webhooks';
 import healthRoutes from './health';
+import metricsRoutes from './metrics';
 
 const app = new Hono<AppEnv>();
 
@@ -31,5 +32,6 @@ app.route('/search', searchRoutes);
 app.route('/landing', landingRoutes);
 app.route('/webhooks', webhookRoutes);
 app.route('/', healthRoutes);
+app.route('/', metricsRoutes);
 
 export default app;

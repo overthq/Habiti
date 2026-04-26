@@ -45,7 +45,7 @@ export const register = async (c: Context<AppEnv>, args: unknown) => {
 		email: data.email
 	});
 
-	const code = await cacheVerificationCode(data.email);
+	const code = await cacheVerificationCode(c, data.email);
 
 	const isTestAccount =
 		env.TEST_ACCOUNT_EMAIL && data.email === env.TEST_ACCOUNT_EMAIL;
@@ -75,7 +75,7 @@ export const login = async (c: Context<AppEnv>, input: LoginInput) => {
 		);
 	}
 
-	const code = await cacheVerificationCode(input.email);
+	const code = await cacheVerificationCode(c, input.email);
 
 	const isTestAccount =
 		env.TEST_ACCOUNT_EMAIL && input.email === env.TEST_ACCOUNT_EMAIL;

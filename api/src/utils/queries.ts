@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { HTTPException } from 'hono/http-exception';
 
 import {
 	userFiltersSchema,
@@ -10,7 +11,6 @@ import type {
 	ProductFilters,
 	OrderFilters
 } from '../core/validations/rest';
-import { APIException } from '../types/errors';
 
 export { userFiltersSchema, productFiltersSchema, orderFiltersSchema };
 export type { UserFilters, ProductFilters, OrderFilters };
@@ -152,7 +152,7 @@ interface HydrateQueryOptions {
  * filter/sort on any column (and any operator) the underlying Prisma model
  * exposes.
  *
- * Throws `APIException(400)` on invalid input so the central errorHandler
+ * Throws `HTTPException(400)` on invalid input so the central errorHandler
  * shapes the response.
  */
 export const hydrateQuery = (
@@ -191,7 +191,8 @@ export const hydrateQuery = (
 						code: e.code
 					})))
 		];
-		throw new APIException(400, 'Invalid query', errors);
+
+		throw new HTTPException(400, { message: 'Invalid query', cause: errors });
 	}
 
 	const filter = filterParse.data ?? {};

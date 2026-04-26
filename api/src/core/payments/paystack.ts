@@ -1,6 +1,9 @@
 import axios, { AxiosError } from 'axios';
 import * as Sentry from '@sentry/bun';
+
 import { env } from '../../config/env';
+import { rootLogger } from '../../services/logger';
+import { instrument } from '../../utils/instrument';
 
 const API_URL = 'https://api.paystack.co';
 
@@ -22,13 +25,17 @@ const redact = (value: unknown): unknown => {
 	if (Array.isArray(value)) {
 		return value.map(redact);
 	}
+
 	if (value && typeof value === 'object') {
 		const out: Record<string, unknown> = {};
+
 		for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
 			out[k] = REDACTED_KEYS.has(k) ? '[redacted]' : redact(v);
 		}
+
 		return out;
 	}
+
 	return value;
 };
 
@@ -37,33 +44,38 @@ const withLogging = async <T>(
 	payload: unknown,
 	fn: () => Promise<T>
 ): Promise<T> => {
-	try {
-		const result = await fn();
-		if (env.NODE_ENV !== 'production') {
-			console.log(`[paystack] ${operation} ok`);
-		}
-		return result;
-	} catch (error) {
-		const axiosError = error as AxiosError;
-		const logEntry = {
-			operation,
-			request: redact(payload),
-			status: axiosError.response?.status,
-			statusText: axiosError.response?.statusText,
-			responseData: axiosError.response?.data,
-			code: axiosError.code,
-			message: axiosError.message
-		};
+	return instrument(
+		'paystack',
+		async () => {
+			try {
+				const result = await fn();
+				rootLogger.debug({ operation }, 'paystack.ok');
+				return result;
+			} catch (error) {
+				const axiosError = error as AxiosError;
 
-		console.error(`[paystack] ${operation} failed`, logEntry);
+				const logEntry = {
+					operation,
+					request: redact(payload),
+					status: axiosError.response?.status,
+					statusText: axiosError.response?.statusText,
+					responseData: axiosError.response?.data,
+					code: axiosError.code,
+					message: axiosError.message
+				};
 
-		Sentry.captureException(error, {
-			tags: { integration: 'paystack', operation },
-			extra: logEntry
-		});
+				rootLogger.error(logEntry, 'paystack.failed');
 
-		throw error;
-	}
+				Sentry.captureException(error, {
+					tags: { integration: 'paystack', operation },
+					extra: logEntry
+				});
+
+				throw error;
+			}
+		},
+		{ op: operation }
+	);
 };
 
 interface ChargeAuthorizationOptions {

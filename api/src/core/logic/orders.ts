@@ -28,7 +28,10 @@ interface CreateOrderInput {
 export const createOrder = async (
 	c: Context<AppEnv>,
 	input: CreateOrderInput
-) => {
+) =>
+	c.var.tracer.startSpan('order.create', async () => createOrderImpl(c, input));
+
+const createOrderImpl = async (c: Context<AppEnv>, input: CreateOrderInput) => {
 	const { data: validatedInput, success } = createOrderSchema.safeParse(input);
 
 	if (!c.var.auth?.id) {
@@ -141,7 +144,11 @@ export const createOrder = async (
 				metadata: { orderId: order.id }
 			});
 		} catch (error) {
-			console.error(error);
+			c.var.logger.error(
+				{ err: error, orderId: order.id },
+				'order.charge_authorization_failed'
+			);
+
 			throw new LogicError(LogicErrorCode.PaymentFailed);
 		}
 	} else {
@@ -177,6 +184,16 @@ export interface UpdateOrderStatusInput {
 export const updateOrderStatus = async (
 	c: Context<AppEnv>,
 	input: UpdateOrderStatusInput
+) =>
+	c.var.tracer.startSpan(
+		'order.updateStatus',
+		async () => updateOrderStatusImpl(c, input),
+		{ status: input.status }
+	);
+
+const updateOrderStatusImpl = async (
+	c: Context<AppEnv>,
+	input: UpdateOrderStatusInput
 ) => {
 	const { data: validatedInput, success } = updateOrderSchema.safeParse(input);
 
@@ -190,8 +207,6 @@ export const updateOrderStatus = async (
 
 	const { orderId, status } = validatedInput;
 
-	// Read-validate-update-restore must be atomic so a cancellation can't
-	// run the status update without restoring stock if the worker dies between.
 	const { updatedOrder, priorStatus } = await c.var.prisma.$transaction(
 		async tx => {
 			const currentOrder = await OrderData.getOrderByIdWithProducts(
@@ -258,6 +273,7 @@ const validateStatusTransition = (
 	} as const;
 
 	const allowedTransitions = validTransitions[currentStatus] || [];
+
 	if (!allowedTransitions.includes(newStatus)) {
 		throw new LogicError(LogicErrorCode.OrderInvalidStatusTransition);
 	}
@@ -329,7 +345,10 @@ export const confirmPickup = async (c: Context<AppEnv>, orderId: string) => {
 			priorStatus: currentOrder.status
 		});
 	} catch (error) {
-		console.log(error);
+		c.var.logger.error(
+			{ err: error, orderId: updatedOrder.id },
+			'confirm_pickup.hook_failed'
+		);
 	}
 
 	return updatedOrder;

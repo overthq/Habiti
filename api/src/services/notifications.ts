@@ -5,6 +5,7 @@ import {
 	notificationTemplates,
 	getNotificationUrl
 } from '../core/notifications';
+import { rootLogger } from './logger';
 
 const expo = new Expo();
 
@@ -25,7 +26,10 @@ export default class NotificationsService {
 		const template = notificationTemplates[payload.type];
 
 		if (!template) {
-			console.error(`No template found for notification type: ${payload.type}`);
+			rootLogger.error(
+				{ type: payload.type },
+				'notifications.template_missing'
+			);
 			return;
 		}
 
@@ -64,11 +68,14 @@ export default class NotificationsService {
 			for (const chunk of chunks) {
 				try {
 					const tickets = await expo.sendPushNotificationsAsync(chunk);
-					console.log({ tickets });
+					rootLogger.debug(
+						{ ticketCount: tickets.length },
+						'notifications.sent'
+					);
 				} catch (error) {
 					// If sending fails, add back to pending messages
 					this.pendingMessages.push(...chunk);
-					console.error('Failed to send notifications:', error);
+					rootLogger.error({ err: error }, 'notifications.send_failed');
 				}
 			}
 

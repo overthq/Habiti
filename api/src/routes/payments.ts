@@ -1,12 +1,12 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
+import { HTTPException } from 'hono/http-exception';
 
-import type { AppEnv } from '../types/hono';
-import { zodHook } from '../utils/validation';
-import { rateLimit } from '../middleware/rateLimit';
-import { APIException } from '../types/errors';
 import * as PaymentLogic from '../core/logic/payments';
 import * as Schemas from '../core/validations/rest';
+import { zodHook } from '../utils/validation';
+import { rateLimit } from '../middleware/rateLimit';
+import type { AppEnv } from '../types/hono';
 
 const payments = new Hono<AppEnv>();
 
@@ -45,10 +45,9 @@ payments.post(
 		const payout = await PaymentLogic.approvePayment(c, body);
 
 		if (!payout) {
-			throw new APIException(
-				400,
-				'Payout not found or has already been resolved'
-			);
+			throw new HTTPException(400, {
+				message: 'Payout not found or has already been resolved'
+			});
 		}
 
 		return c.json({ message: 'Payment approved' });

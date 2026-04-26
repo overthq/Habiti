@@ -1,11 +1,11 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
+import { HTTPException } from 'hono/http-exception';
 
 import type { AppEnv } from '../types/hono';
 import { zodHook } from '../utils/validation';
 import { authenticate, optionalAuth } from '../middleware/auth';
 import { productFiltersSchema } from '../utils/queries';
-import { APIException } from '../types/errors';
 import * as StoreLogic from '../core/logic/stores';
 import * as Schemas from '../core/validations/rest';
 
@@ -45,7 +45,9 @@ stores.get('/:id', optionalAuth, async c => {
 	const storeWithContext = await StoreLogic.getStoreById(c, c.req.param('id'));
 
 	if (!storeWithContext) {
-		throw new APIException(404, 'Store not found');
+		throw new HTTPException(404, {
+			message: 'Store not found'
+		});
 	}
 
 	return c.json(storeWithContext);

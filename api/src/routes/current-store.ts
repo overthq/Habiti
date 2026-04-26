@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
+import { HTTPException } from 'hono/http-exception';
 
 import type { AppEnv } from '../types/hono';
 import { zodHook } from '../utils/validation';
@@ -13,7 +14,6 @@ import {
 import { ProductStatus } from '../generated/prisma/client';
 import { TransactionStatus, TransactionType } from '../generated/prisma/client';
 import { resolveAccountNumber } from '../core/payments';
-import { APIException } from '../types/errors';
 import * as StoreLogic from '../core/logic/stores';
 import * as ProductLogic from '../core/logic/products';
 import * as OrderLogic from '../core/logic/orders';
@@ -214,7 +214,7 @@ currentStore.post(
 
 currentStore.get('/transactions', async c => {
 	if (!c.var.storeId) {
-		throw new APIException(400, 'Store context required');
+		throw new HTTPException(400, { message: 'Store context required' });
 	}
 
 	const query = c.req.query();

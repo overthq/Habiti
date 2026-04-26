@@ -19,7 +19,17 @@ const envSchema = z.object({
 	REDIS_TLS_URL: z.string().optional(),
 	DATABASE_URL: z.string().optional(),
 	TEST_ACCOUNT_EMAIL: z.string().optional(),
-	TEST_ACCOUNT_OTP: z.string().optional()
+	TEST_ACCOUNT_OTP: z.string().optional(),
+	LOG_LEVEL: z
+		.enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal'])
+		.default('info'),
+	SLOW_QUERY_THRESHOLD_MS: z
+		.string()
+		.default('250')
+		.transform(v => parseInt(v, 10)),
+	INTERNAL_TOKEN: z.string().optional(),
+	OTEL_SERVICE_NAME: z.string().default('habiti-api'),
+	OTEL_EXPORTER_OTLP_ENDPOINT: z.string().optional()
 });
 
 export const env = envSchema.parse(Bun.env);

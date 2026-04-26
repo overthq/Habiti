@@ -171,7 +171,7 @@ export const createPayoutTransaction = async (
 			errorMessage: axiosError.message
 		};
 
-		console.error('[payout] payAccount failed', context);
+		c.var.logger.error({ ...context }, 'payout.payAccount_failed');
 
 		Sentry.captureException(error, {
 			tags: { feature: 'payout', storeId },
@@ -201,10 +201,11 @@ export const createPayoutTransaction = async (
 				});
 			});
 		} catch (reversalError) {
-			console.error('[payout] reversal failed', {
-				...context,
-				reversalError
-			});
+			c.var.logger.error(
+				{ ...context, err: reversalError },
+				'payout.reversal_failed'
+			);
+
 			Sentry.captureException(reversalError, {
 				tags: { feature: 'payout', storeId, phase: 'reversal' },
 				extra: context

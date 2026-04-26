@@ -1,6 +1,8 @@
 import type { PrismaClient } from '../generated/prisma/client';
 import type { RedisClient } from 'bun';
 import type Services from '../services';
+import type { Logger } from '../services/logger';
+import type { Tracer } from '../services/tracer';
 
 export type AuthPayload = {
 	id: string;
@@ -19,6 +21,10 @@ export type AppVariables = {
 	services: Services;
 	storeId: string | undefined;
 	isAdmin: boolean;
+	logger: Logger;
+	tracer: Tracer;
+	requestId: string;
+	traceId: string;
 };
 
 export type AppEnv = {

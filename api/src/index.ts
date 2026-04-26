@@ -3,16 +3,18 @@ import './config/sentry';
 import { Hono } from 'hono';
 import { secureHeaders } from 'hono/secure-headers';
 import { bodyLimit } from 'hono/body-limit';
+import { timing } from 'hono/timing';
 
 import { errorHandler } from './middleware/errorHandler';
 import { contextMiddleware } from './middleware/context';
+import logsMiddleware from './middleware/logs';
 import routes from './routes';
 
+import { rootLogger } from './services/logger';
+import { corsConfig } from './utils/cors';
 import { env } from './config/env';
 import redisClient from './config/redis';
 import './config/cloudinary';
-import { corsConfig } from './utils/cors';
-import logsMiddleware from './middleware/logs';
 
 const app = new Hono();
 
@@ -26,7 +28,6 @@ app.use(
 		xContentTypeOptions: 'nosniff',
 		referrerPolicy: 'no-referrer',
 		crossOriginResourcePolicy: 'same-site'
-		// No CSP — API only serves JSON. Default config also strips X-Powered-By.
 	})
 );
 
@@ -38,6 +39,7 @@ app.use('*', async (c, next) => {
 	})(c, next);
 });
 
+app.use('*', timing());
 app.use('*', logsMiddleware);
 app.use('*', contextMiddleware);
 
@@ -47,7 +49,7 @@ app.onError(errorHandler);
 
 const main = async () => {
 	await redisClient.connect();
-	console.log(`Server running on port ${env.PORT}`);
+	rootLogger.info({ port: env.PORT }, 'server_started');
 };
 
 main();

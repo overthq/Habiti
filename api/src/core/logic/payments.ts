@@ -31,36 +31,43 @@ import type {
 import type { AppEnv } from '../../types/hono';
 import { pollUntil } from '../../utils/poll';
 import { runSerializable } from '../../utils/prisma';
+import { rootLogger } from '../../services/logger';
 import type { ApprovePaymentBody } from '../validations/rest';
 
 export const approvePayment = async (
 	c: Context<AppEnv>,
 	body: ApprovePaymentBody
-) => {
-	const { transfers } = body.data;
+) =>
+	c.var.tracer.startSpan(
+		'paystack.approvePayment',
+		async () => {
+			const { transfers } = body.data;
 
-	return runSerializable(c.var.prisma, async tx => {
-		const rows: Awaited<ReturnType<typeof tx.transaction.findUnique>>[] = [];
+			return runSerializable(c.var.prisma, async tx => {
+				const rows: Awaited<ReturnType<typeof tx.transaction.findUnique>>[] =
+					[];
 
-		for (const transfer of transfers) {
-			const row = await tx.transaction.findUnique({
-				where: { id: transfer.reference }
+				for (const transfer of transfers) {
+					const row = await tx.transaction.findUnique({
+						where: { id: transfer.reference }
+					});
+
+					if (
+						!row ||
+						row.status !== TransactionStatus.Processing ||
+						row.amount !== transfer.amount
+					) {
+						return null;
+					}
+
+					rows.push(row);
+				}
+
+				return rows;
 			});
-
-			if (
-				!row ||
-				row.status !== TransactionStatus.Processing ||
-				row.amount !== transfer.amount
-			) {
-				return null;
-			}
-
-			rows.push(row);
-		}
-
-		return rows;
-	});
-};
+		},
+		{ transferCount: body.data.transfers.length }
+	);
 
 // --- Card charge processing ---
 
@@ -101,10 +108,11 @@ export const transitionOrderToPending = async (
 		const order = await OrderData.getOrderById(c.var.prisma, orderId);
 
 		if (!order) {
-			console.warn(`Order not found for charge: ${orderId}`);
+			c.var.logger.warn({ orderId }, 'order_not_found_for_charge');
 		} else if (order.status !== OrderStatus.PaymentPending) {
-			console.warn(
-				`Order ${order.id} is not in the PaymentPending state. It is in the ${order.status} state.`
+			c.var.logger.warn(
+				{ orderId: order.id, status: order.status },
+				'order_not_in_payment_pending'
 			);
 		} else {
 			await OrderData.updateOrder(c.var.prisma, order.id, {
@@ -134,7 +142,7 @@ export const transitionOrderToPending = async (
 			}
 		}
 	} catch (error) {
-		console.error(error);
+		c.var.logger.error({ err: error, orderId }, 'transition_order_failed');
 	}
 };
 
@@ -149,12 +157,23 @@ export const handlePaystackWebhookEvent = async (
 	c: Context<AppEnv>,
 	event: string,
 	data: any
+) =>
+	c.var.tracer.startSpan(
+		'paystack.webhook',
+		async () => handlePaystackWebhookEventImpl(c, event, data),
+		{ event }
+	);
+
+const handlePaystackWebhookEventImpl = async (
+	c: Context<AppEnv>,
+	event: string,
+	data: any
 ) => {
 	try {
-		console.log(`Handling event: ${event}`);
+		c.var.logger.info({ event }, 'paystack.webhook.received');
 
 		if (!PAYSTACK_SUPPORTED_WEBHOOK_EVENTS.includes(event)) {
-			console.warn(`Unsupported event: ${event}`);
+			c.var.logger.warn({ event }, 'paystack.webhook.unsupported');
 			return;
 		}
 
@@ -168,7 +187,7 @@ export const handlePaystackWebhookEvent = async (
 			await handleTransferReversed(c, data);
 		}
 	} catch (error) {
-		console.error(error);
+		c.var.logger.error({ err: error, event }, 'paystack.webhook.failed');
 	}
 };
 
@@ -182,7 +201,10 @@ export const handleChargeSuccess = async (
 	if (typeof data.metadata === 'object' && data.metadata?.orderId) {
 		await onChargeSuccessful(c, data.metadata.orderId);
 	} else {
-		console.warn('Successful charge without any order attached!');
+		c.var.logger.warn(
+			{ cardType: data.authorization.card_type },
+			'charge.success_without_order'
+		);
 	}
 
 	if (isTransferCharge(data)) {
@@ -198,8 +220,9 @@ const handleTransferSuccess = async (
 	data: TransferSuccessPayload
 ) => {
 	if (data.reason !== 'Payout') {
-		console.warn(
-			`Found non-payout transfer. Reason: ${data.reason}. Reference: ${data.reference}`
+		c.var.logger.warn(
+			{ reason: data.reason, reference: data.reference },
+			'paystack.non_payout_transfer'
 		);
 	} else {
 		await TransactionData.markTransferSuccessful(c.var.prisma, data.reference);
@@ -234,8 +257,9 @@ const handleTransferFailure = async (
 	data: TransferFailurePayload
 ) => {
 	if (data.reason !== 'Payout') {
-		console.warn(
-			`Found non-payout transfer. Reason: ${data.reason}. Reference: ${data.reference}`
+		ctx.var.logger.warn(
+			{ reason: data.reason, reference: data.reference },
+			'paystack.non_payout_transfer'
 		);
 	} else {
 		await TransactionData.markTransferFailed(ctx.var.prisma, data.reference);
@@ -281,6 +305,7 @@ export const verifyTransfer = async (
 			c.var.prisma,
 			options.transferId
 		);
+
 		return data;
 	}
 
@@ -337,11 +362,15 @@ export const payAccount = async (
 				const verifyResult = await verifyTransfer(c, {
 					transferId: data.data.reference
 				});
+
 				return verifyResult.status === 'success';
 			},
 			{ intervalMs: 5_000, maxAttempts: 24 }
 		).catch(error => {
-			console.error('[payAccount] verifyTransfer polling failed', error);
+			rootLogger.error(
+				{ err: error, reference: data.data.reference },
+				'payAccount.verifyTransfer_poll_failed'
+			);
 		});
 	}
 

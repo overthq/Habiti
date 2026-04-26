@@ -3,28 +3,26 @@ import { Hono } from 'hono';
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie';
 import { zValidator } from '@hono/zod-validator';
 import jwt from 'jsonwebtoken';
+import { HTTPException } from 'hono/http-exception';
 
-import type { AppEnv } from '../types/hono';
 import { zodHook } from '../utils/validation';
 import { authenticate } from '../middleware/auth';
 import { rateLimit, composeRateLimits } from '../middleware/rateLimit';
 import { env } from '../config/env';
-import { APIException } from '../types/errors';
 import { LogicError, LogicErrorCode } from '../core/logic/errors';
 import * as AuthLogic from '../core/logic/auth';
 import * as UserLogic from '../core/logic/users';
 import * as CartLogic from '../core/logic/carts';
 import * as Schemas from '../core/validations/rest';
 
-// Per-IP fallback for unauthenticated routes — protects the service.
+import type { AppEnv } from '../types/hono';
+
 const ipLimiter = rateLimit({
 	prefix: 'auth:ip',
 	windowSec: 60,
 	limit: 20
 });
 
-// Per-email/identity limiter — protects individual accounts. Falls back to
-// the IP-derived key if no body or no email is present.
 const identityLimiter = (prefix: string) =>
 	rateLimit({
 		prefix,
@@ -78,10 +76,12 @@ auth.post(
 		const { email, code, cartIds } = c.req.valid('json');
 
 		if (!email || !code) {
-			throw new APIException(400, 'Email and verification code are required.');
+			throw new HTTPException(400, {
+				message: 'Email and verification code are required.'
+			});
 		}
 
-		const cachedCode = await AuthLogic.retrieveVerificationCode(email);
+		const cachedCode = await AuthLogic.retrieveVerificationCode(c, email);
 
 		if (!cachedCode) {
 			throw new LogicError(LogicErrorCode.NotFound);
@@ -91,7 +91,7 @@ auth.post(
 		const a = Buffer.from(cachedCode, 'utf8');
 		const b = Buffer.from(code, 'utf8');
 		if (a.length !== b.length || !timingSafeEqual(a, b)) {
-			throw new APIException(400, 'Invalid code');
+			throw new HTTPException(400, { message: 'Invalid code' });
 		}
 
 		const user = await UserLogic.getUserByEmail(c, email);
@@ -167,7 +167,7 @@ auth.post(
 		const decodedToken = jwt.decode(data.id_token) as any;
 
 		if (!decodedToken?.email) {
-			throw new APIException(400, 'Invalid Apple ID token');
+			throw new HTTPException(400, { message: 'Invalid Apple ID token' });
 		}
 
 		let user = await UserLogic.getUserByEmail(c, decodedToken.email);
@@ -217,7 +217,7 @@ auth.post(
 		const refreshToken = getCookie(c, 'refreshToken') || body.refreshToken;
 
 		if (!refreshToken) {
-			throw new APIException(401, 'Refresh token required');
+			throw new HTTPException(401, { message: 'Refresh token required' });
 		}
 
 		const tokens = await AuthLogic.rotateRefreshToken(
@@ -245,7 +245,7 @@ auth.post(
 		const { storeId } = c.req.valid('json');
 
 		if (!c.var.auth?.id) {
-			throw new APIException(401, 'Authentication required');
+			throw new HTTPException(401, { message: 'Authentication required' });
 		}
 
 		const storeManager = await c.var.prisma.storeManager.findUnique({
@@ -258,7 +258,7 @@ auth.post(
 		});
 
 		if (!storeManager) {
-			throw new APIException(403, 'Not a manager of this store');
+			throw new HTTPException(403, { message: 'Not a manager of this store' });
 		}
 
 		const accessToken = await AuthLogic.generateAccessToken(

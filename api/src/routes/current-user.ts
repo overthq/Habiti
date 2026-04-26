@@ -1,11 +1,11 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
+import { HTTPException } from 'hono/http-exception';
 
 import type { AppEnv } from '../types/hono';
 import { zodHook } from '../utils/validation';
 import { authenticate } from '../middleware/auth';
 import { hydrateQuery } from '../utils/queries';
-import { APIException } from '../types/errors';
 import * as UserLogic from '../core/logic/users';
 import * as ProductLogic from '../core/logic/products';
 import * as CartLogic from '../core/logic/carts';
@@ -123,7 +123,7 @@ currentUser.post(
 		const { orderId } = c.req.valid('json');
 
 		if (!orderId) {
-			throw new APIException(400, 'Order ID is required');
+			throw new HTTPException(400, { message: 'Order ID is required' });
 		}
 
 		const result = await CardLogic.authorizeCard(c, { orderId });
@@ -227,7 +227,7 @@ currentUser.delete('/sessions/:id', async c => {
 	const session = await SessionData.getSessionById(c.var.prisma, id);
 
 	if (!session || session.userId !== c.var.auth!.id) {
-		throw new APIException(404, 'Session not found');
+		throw new HTTPException(404, { message: 'Session not found' });
 	}
 
 	await SessionData.revokeSession(c.var.prisma, id);
