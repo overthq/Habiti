@@ -67,7 +67,9 @@ export const createOrderHooks = async (
 			orderId: args.orderId,
 			amount: args.amount,
 			productCount: args.products.length,
-			products: args.products
+			// Send only product IDs — full Product objects bloat the payload
+			// and ship descriptions/prices that PostHog has no business with.
+			productIds: args.products.map(p => p.id)
 		},
 		groups: { store: args.storeId }
 	});

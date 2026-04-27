@@ -3,6 +3,7 @@ import { createMiddleware } from 'hono/factory';
 import { HTTPException } from 'hono/http-exception';
 
 import { env } from '../config/env';
+import { isSessionDenied } from '../core/data/sessionRevocation';
 import type { AppEnv } from '../types/hono';
 
 type AuthOptions = {
@@ -32,6 +33,15 @@ export const auth = (options: AuthOptions = {}) => {
 
 			if (adminOnly && payload.role !== 'admin') {
 				throw new HTTPException(403, { message: 'Forbidden' });
+			}
+
+			// Check if session is still valid
+			if (payload.sessionId) {
+				const denied = await isSessionDenied(c.var.redis, payload.sessionId);
+
+				if (denied) {
+					throw new HTTPException(401, { message: 'Session revoked' });
+				}
 			}
 
 			c.set('auth', payload);

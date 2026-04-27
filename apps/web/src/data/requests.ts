@@ -31,6 +31,7 @@ import { OrderStatus } from './types';
 import { openPaystackPopup } from '@/lib/payments';
 import { pollUntil } from '@/lib/poll';
 import { useAuthStore } from '@/state/auth-store';
+import { AUTO_RETRY_MAX_SEC, extractRetryAfterSec, sleep } from './rateLimit';
 
 const API_URL =
 	(import.meta as any).env?.VITE_API_URL || 'http://localhost:4000';
@@ -55,12 +56,29 @@ api.interceptors.response.use(
 	async error => {
 		const originalRequest = error.config;
 		const isAuthRoute = originalRequest?.url?.startsWith('/auth/');
+		const status = error.response?.status;
 
+		// 429: respect Retry-After / RateLimit-Reset. Auto-retry only for
+		// short waits — anything longer surfaces to the UI.
 		if (
-			error.response?.status === 401 &&
-			!originalRequest._retry &&
-			!isAuthRoute
+			status === 429 &&
+			!originalRequest._rateLimitRetry &&
+			error.response?.headers
 		) {
+			const delaySec = extractRetryAfterSec(error.response.headers);
+			if (
+				delaySec !== null &&
+				delaySec >= 0 &&
+				delaySec <= AUTO_RETRY_MAX_SEC
+			) {
+				originalRequest._rateLimitRetry = true;
+				await sleep(delaySec * 1000);
+				return api(originalRequest);
+			}
+			(error as any).retryAfterSeconds = delaySec ?? undefined;
+		}
+
+		if (status === 401 && !originalRequest._retry && !isAuthRoute) {
 			originalRequest._retry = true;
 
 			try {

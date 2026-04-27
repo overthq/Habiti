@@ -26,11 +26,11 @@ const performRefresh = async (): Promise<RefreshTokenResponse> => {
 	});
 
 	const data = (await response.json()) as Partial<RefreshTokenResponse> & {
-		error?: string;
+		message?: string;
 	};
 
 	if (!response.ok) {
-		throw new Error(data?.error ?? 'Refresh failed');
+		throw new Error(data?.message ?? 'Refresh failed');
 	}
 
 	if (!data.accessToken || !data.refreshToken) {

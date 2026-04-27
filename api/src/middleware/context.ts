@@ -7,7 +7,7 @@ import { tracer } from '../services/tracer';
 
 import type { AppEnv } from '../types/hono';
 
-const services = new Services();
+export const services = new Services(redisClient);
 
 export const contextMiddleware = createMiddleware<AppEnv>(async (c, next) => {
 	c.set('prisma', prismaClient);

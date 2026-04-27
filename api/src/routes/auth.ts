@@ -1,4 +1,3 @@
-import { timingSafeEqual } from 'crypto';
 import { Hono } from 'hono';
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie';
 import { zValidator } from '@hono/zod-validator';
@@ -8,6 +7,7 @@ import { HTTPException } from 'hono/http-exception';
 import { zodHook } from '../utils/validation';
 import { authenticate } from '../middleware/auth';
 import { rateLimit, composeRateLimits } from '../middleware/rateLimit';
+import { timingSafeEqualString } from '../utils/timingSafe';
 import { env } from '../config/env';
 import { LogicError, LogicErrorCode } from '../core/logic/errors';
 import * as AuthLogic from '../core/logic/auth';
@@ -88,9 +88,7 @@ auth.post(
 		}
 
 		// Constant-time compare to prevent timing-based code recovery.
-		const a = Buffer.from(cachedCode, 'utf8');
-		const b = Buffer.from(code, 'utf8');
-		if (a.length !== b.length || !timingSafeEqual(a, b)) {
+		if (!timingSafeEqualString(cachedCode, code)) {
 			throw new HTTPException(400, { message: 'Invalid code' });
 		}
 

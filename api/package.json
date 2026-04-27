@@ -9,7 +9,8 @@
 		"build": "tsc && bun sentry:sourcemaps",
 		"start": "bun dist/index",
 		"sentry:sourcemaps": "sentry-cli sourcemaps inject --org habiti --project habiti-api ./dist && sentry-cli sourcemaps upload --org habiti --project habiti-api ./dist",
-		"complete-stale-pickups": "bun src/scripts/complete-stale-pickups.ts"
+		"complete-stale-pickups": "bun src/scripts/complete-stale-pickups.ts",
+		"prune-sessions": "bun src/scripts/prune-sessions.ts"
 	},
 	"dependencies": {
 		"@hono/sentry": "^1.2.2",

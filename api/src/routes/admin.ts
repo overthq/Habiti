@@ -6,6 +6,7 @@ import { HTTPException } from 'hono/http-exception';
 import type { AppEnv } from '../types/hono';
 import { zodHook } from '../utils/validation';
 import { isAdmin } from '../middleware/auth';
+import { rateLimit, composeRateLimits } from '../middleware/rateLimit';
 import {
 	hydrateQuery,
 	orderFiltersSchema,
@@ -27,12 +28,44 @@ import * as TransactionLogic from '../core/logic/transactions';
 import * as AdminSessionData from '../core/data/adminSessions';
 import * as SessionData from '../core/data/sessions';
 import * as Schemas from '../core/validations/rest';
+import { denySession } from '../core/data/sessionRevocation';
 
 const admin = new Hono<AppEnv>();
+
+// Per-IP fallback for admin auth — protects the service. Tighter than the
+// shopper auth limiter (admins are a small set; bursts of /login from one IP
+// are almost always credential-stuffing).
+const adminIpLimiter = rateLimit({
+	prefix: 'admin:ip',
+	windowSec: 60,
+	limit: 10
+});
+
+// Per-email identity limiter — protects individual admin accounts. Falls
+// back to the IP-derived key if no body is present (e.g. /refresh).
+const adminIdentityLimiter = (prefix: string) =>
+	rateLimit({
+		prefix,
+		windowSec: 60,
+		limit: 5,
+		keyGenerator: async c => {
+			try {
+				const body = await c.req.raw.clone().json();
+				const email =
+					typeof body?.email === 'string' ? body.email.toLowerCase() : null;
+				if (email) return `email:${email}`;
+			} catch {
+				// fall through
+			}
+			const forwarded = c.req.header('x-forwarded-for');
+			return forwarded ? forwarded.split(',')[0]!.trim() : 'anon';
+		}
+	});
 
 // Public admin routes (no auth)
 admin.post(
 	'/login',
+	composeRateLimits(adminIpLimiter, adminIdentityLimiter('admin:login')),
 	zValidator('json', Schemas.adminLoginBodySchema, zodHook),
 	async c => {
 		const { email, password } = c.req.valid('json');
@@ -58,7 +91,7 @@ admin.post(
 	}
 );
 
-admin.post('/refresh', async c => {
+admin.post('/refresh', adminIpLimiter, async c => {
 	const body = await c.req.json().catch(() => ({}));
 	const refreshToken = getCookie(c, 'adminRefreshToken') || body.refreshToken;
 
@@ -111,6 +144,7 @@ admin.delete('/sessions/:id', async c => {
 	}
 
 	await AdminSessionData.revokeAdminSession(c.var.prisma, id);
+	await denySession(c.var.redis, id);
 	return c.json({ message: 'Session revoked' });
 });
 

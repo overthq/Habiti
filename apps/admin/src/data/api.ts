@@ -4,6 +4,8 @@ import axios, {
 	type InternalAxiosRequestConfig
 } from 'axios';
 
+import { AUTO_RETRY_MAX_SEC, extractRetryAfterSec, sleep } from './rateLimit';
+
 interface QueuedRequest {
 	resolve: (value: unknown) => void;
 	reject: (reason?: unknown) => void;
@@ -39,9 +41,33 @@ export class APIService {
 			async (error: AxiosError) => {
 				const originalRequest = error.config as InternalAxiosRequestConfig & {
 					_retry?: boolean;
+					_rateLimitRetry?: boolean;
 				};
+				const status = error.response?.status;
 
-				if (error.response?.status === 401 && !originalRequest._retry) {
+				// 429: respect Retry-After / RateLimit-Reset. Auto-retry only
+				// for short waits — anything longer surfaces to the UI.
+				if (
+					status === 429 &&
+					!originalRequest._rateLimitRetry &&
+					error.response?.headers
+				) {
+					const delaySec = extractRetryAfterSec(
+						error.response.headers as Record<string, string>
+					);
+					if (
+						delaySec !== null &&
+						delaySec >= 0 &&
+						delaySec <= AUTO_RETRY_MAX_SEC
+					) {
+						originalRequest._rateLimitRetry = true;
+						await sleep(delaySec * 1000);
+						return this.api(originalRequest);
+					}
+					(error as any).retryAfterSeconds = delaySec ?? undefined;
+				}
+
+				if (status === 401 && !originalRequest._retry) {
 					// Don't retry refresh or login requests
 					if (
 						originalRequest.url?.includes('/admin/refresh') ||

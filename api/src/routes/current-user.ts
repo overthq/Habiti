@@ -13,6 +13,7 @@ import * as CardLogic from '../core/logic/cards';
 import * as OrderLogic from '../core/logic/orders';
 import * as SessionData from '../core/data/sessions';
 import * as Schemas from '../core/validations/rest';
+import { denySession } from '../core/data/sessionRevocation';
 
 const currentUser = new Hono<AppEnv>();
 
@@ -93,6 +94,7 @@ currentUser.get('/orders/:id', async c => {
 	const id = c.req.param('id');
 
 	const order = await OrderLogic.getOrderById(c, id);
+
 	return c.json({ order });
 });
 
@@ -102,6 +104,7 @@ currentUser.post(
 	async c => {
 		const body = c.req.valid('json');
 		const result = await OrderLogic.createOrder(c, body);
+
 		return c.json({
 			order: result.order,
 			cardAuthorizationData: result.cardAuthorizationData
@@ -195,6 +198,7 @@ currentUser.delete(
 	zValidator('json', Schemas.deletePushTokenBodySchema, zodHook),
 	async c => {
 		const { type } = c.req.valid('json');
+
 		const pushToken = await c.var.prisma.userPushToken.delete({
 			where: {
 				userId_token: {
@@ -204,6 +208,7 @@ currentUser.delete(
 				type
 			}
 		});
+
 		return c.json({ pushToken });
 	}
 );
@@ -213,11 +218,19 @@ currentUser.get('/sessions', async c => {
 		c.var.prisma,
 		c.var.auth!.id
 	);
+
 	return c.json({ sessions });
 });
 
 currentUser.delete('/sessions', async c => {
+	const sessions = await SessionData.getUserSessions(
+		c.var.prisma,
+		c.var.auth!.id
+	);
+
 	await SessionData.revokeUserSessions(c.var.prisma, c.var.auth!.id);
+	await Promise.all(sessions.map(s => denySession(c.var.redis, s.id)));
+
 	return c.json({ message: 'All sessions revoked' });
 });
 
@@ -231,6 +244,8 @@ currentUser.delete('/sessions/:id', async c => {
 	}
 
 	await SessionData.revokeSession(c.var.prisma, id);
+	await denySession(c.var.redis, id);
+
 	return c.json({ message: 'Session revoked' });
 });
 
