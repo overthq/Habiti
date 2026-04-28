@@ -1,5 +1,7 @@
 import { PostHog } from 'posthog-node';
+
 import { env } from '../config/env';
+import { rootLogger } from './logger';
 
 export interface AnalyticsEvent {
 	event: string;
@@ -36,9 +38,9 @@ export default class AnalyticsService {
 
 	track(event: AnalyticsEvent) {
 		if (!this.client) {
-			console.warn(
-				'PostHog is not configured - skipping analytics event:',
-				event.event
+			rootLogger.debug(
+				{ event: event.event },
+				'analytics.posthog_not_configured'
 			);
 			return;
 		}
@@ -52,7 +54,10 @@ export default class AnalyticsService {
 				timestamp: event.timestamp ?? new Date()
 			});
 		} catch (error) {
-			console.error('Failed to track analytics event:', error);
+			rootLogger.error(
+				{ err: error, event: event.event },
+				'analytics.track_failed'
+			);
 		}
 	}
 
@@ -63,7 +68,7 @@ export default class AnalyticsService {
 				properties: data.properties || {}
 			});
 		} catch (error) {
-			console.error('Failed to identify user:', error);
+			rootLogger.error({ err: error }, 'analytics.identify_failed');
 		}
 	}
 
@@ -75,7 +80,7 @@ export default class AnalyticsService {
 				properties: data.properties || {}
 			});
 		} catch (error) {
-			console.error('Failed to update group:', error);
+			rootLogger.error({ err: error }, 'analytics.group_failed');
 		}
 	}
 
@@ -86,18 +91,15 @@ export default class AnalyticsService {
 				alias: data.alias
 			});
 		} catch (error) {
-			console.error('Failed to create alias:', error);
+			rootLogger.error({ err: error }, 'analytics.alias_failed');
 		}
 	}
 
-	/**
-	 * Flush any pending events (useful for serverless functions)
-	 */
 	async flush() {
 		try {
 			await this.client?.flush();
 		} catch (error) {
-			console.error('Failed to flush analytics events:', error);
+			rootLogger.error({ err: error }, 'analytics.flush_failed');
 		}
 	}
 
@@ -105,7 +107,7 @@ export default class AnalyticsService {
 		try {
 			await this.client?.shutdown();
 		} catch (error) {
-			console.error('Failed to shutdown analytics client:', error);
+			rootLogger.error({ err: error }, 'analytics.shutdown_failed');
 		}
 	}
 

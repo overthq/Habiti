@@ -1,8 +1,9 @@
 import { jwt } from 'hono/jwt';
 import { createMiddleware } from 'hono/factory';
+import { HTTPException } from 'hono/http-exception';
 
-import { APIException } from '../types/errors';
 import { env } from '../config/env';
+import { isSessionDenied } from '../core/data/sessionRevocation';
 import type { AppEnv } from '../types/hono';
 
 type AuthOptions = {
@@ -20,7 +21,7 @@ export const auth = (options: AuthOptions = {}) => {
 
 		if (!token) {
 			if (required) {
-				throw new APIException(401, 'Authentication required');
+				throw new HTTPException(401, { message: 'Authentication required' });
 			}
 			c.set('storeId', c.req.header('x-market-store-id'));
 			return next();
@@ -31,7 +32,16 @@ export const auth = (options: AuthOptions = {}) => {
 			const payload = c.get('jwtPayload');
 
 			if (adminOnly && payload.role !== 'admin') {
-				throw new APIException(403, 'Forbidden');
+				throw new HTTPException(403, { message: 'Forbidden' });
+			}
+
+			// Check if session is still valid
+			if (payload.sessionId) {
+				const denied = await isSessionDenied(c.var.redis, payload.sessionId);
+
+				if (denied) {
+					throw new HTTPException(401, { message: 'Session revoked' });
+				}
 			}
 
 			c.set('auth', payload);
@@ -39,8 +49,8 @@ export const auth = (options: AuthOptions = {}) => {
 			c.set('isAdmin', payload.role === 'admin');
 			return next();
 		} catch (error) {
-			if (error instanceof APIException) throw error;
-			throw new APIException(401, 'Invalid or expired token');
+			if (error instanceof HTTPException) throw error;
+			throw new HTTPException(401, { message: 'Invalid or expired token' });
 		}
 	});
 };

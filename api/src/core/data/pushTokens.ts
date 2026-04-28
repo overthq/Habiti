@@ -1,7 +1,5 @@
 import { PrismaClient, PushTokenType } from '../../generated/prisma/client';
 
-// TODO: These should be cached in redis.
-
 export const getUserPushTokens = async (
 	prisma: PrismaClient,
 	userId: string

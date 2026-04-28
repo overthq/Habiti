@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
+import { HTTPException } from 'hono/http-exception';
 
 import type { AppEnv } from '../types/hono';
 import { zodHook } from '../utils/validation';
@@ -99,7 +100,10 @@ currentStore.get('/orders/:id', async c => {
 });
 
 currentStore.get('/managers', async c => {
-	const query = hydrateQuery(c.req.query());
+	const query = hydrateQuery(c.req.query(), {
+		allowedFields: ['createdAt', 'managerId'],
+		allowedOrderBy: ['createdAt']
+	});
 	const managers = await StoreLogic.getStoreManagers(c, c.var.storeId!, query);
 	return c.json({ managers });
 });
@@ -210,7 +214,7 @@ currentStore.post(
 
 currentStore.get('/transactions', async c => {
 	if (!c.var.storeId) {
-		return c.json({ error: 'Store context required' }, 400);
+		throw new HTTPException(400, { message: 'Store context required' });
 	}
 
 	const query = c.req.query();

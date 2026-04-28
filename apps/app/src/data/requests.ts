@@ -31,6 +31,12 @@ import type {
 import useStore from '../state';
 import env from '../../env';
 import { refreshAuthTokens } from '../utils/refreshManager';
+import {
+	computeRetryDelayMs,
+	extractRetryAfterSec,
+	shouldAutoRetry,
+	sleep
+} from './rateLimit';
 
 const api = axios.create({
 	baseURL: env.apiUrl,
@@ -51,8 +57,26 @@ api.interceptors.response.use(
 	response => response,
 	async error => {
 		const originalRequest = error.config;
+		const status = error.response?.status;
 
-		if (error.response?.status === 401 && !originalRequest._retry) {
+		// 429: respect Retry-After / RateLimit-Reset. Auto-retry only for
+		// short waits with full jitter — anything longer surfaces to the
+		// UI. Pinned to one auto-retry per request via `_rateLimitRetry`.
+		if (
+			status === 429 &&
+			!originalRequest._rateLimitRetry &&
+			error.response?.headers
+		) {
+			const delaySec = extractRetryAfterSec(error.response.headers);
+			if (shouldAutoRetry(delaySec)) {
+				originalRequest._rateLimitRetry = true;
+				await sleep(computeRetryDelayMs(delaySec!));
+				return api(originalRequest);
+			}
+			(error as any).retryAfterSeconds = delaySec ?? undefined;
+		}
+
+		if (status === 401 && !originalRequest._retry) {
 			originalRequest._retry = true;
 
 			try {

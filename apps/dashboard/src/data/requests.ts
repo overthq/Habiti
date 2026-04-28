@@ -3,6 +3,12 @@ import env from '../../env';
 import useStore from '../state';
 import { refreshAuthTokens } from '../utils/refreshManager';
 import {
+	computeRetryDelayMs,
+	extractRetryAfterSec,
+	shouldAutoRetry,
+	sleep
+} from './rateLimit';
+import {
 	AuthenticateBody,
 	RegisterBody,
 	Store,
@@ -50,8 +56,30 @@ api.interceptors.response.use(
 	response => response,
 	async error => {
 		const originalRequest = error.config;
+		const status = error.response?.status;
 
-		if (error.response?.status === 401 && !originalRequest._retry) {
+		// 429: respect Retry-After / RateLimit-Reset. Auto-retry only for
+		// short waits (≤ AUTO_RETRY_MAX_SEC) with full jitter — anything
+		// longer surfaces to the UI so we don't hang the app on a
+		// minute-long auth-rate window. The `_rateLimitRetry` flag pins
+		// us to at most one auto-retry per request (no loops).
+		if (
+			status === 429 &&
+			!originalRequest._rateLimitRetry &&
+			error.response?.headers
+		) {
+			const delaySec = extractRetryAfterSec(error.response.headers);
+			if (shouldAutoRetry(delaySec)) {
+				originalRequest._rateLimitRetry = true;
+				await sleep(computeRetryDelayMs(delaySec!));
+				return api(originalRequest);
+			}
+			// Surface the wait-time on the error so the UI can show
+			// "Try again in N seconds".
+			(error as any).retryAfterSeconds = delaySec ?? undefined;
+		}
+
+		if (status === 401 && !originalRequest._retry) {
 			originalRequest._retry = true;
 
 			try {

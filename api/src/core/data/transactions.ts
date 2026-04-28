@@ -33,11 +33,6 @@ interface CreateTransactionParams {
 	orderId?: string;
 }
 
-/**
- * Creates a Transaction record inside an existing Prisma transaction.
- * Computes `balanceAfter` from the most recent transaction for the store.
- * Must be called within a `prisma.$transaction` block.
- */
 export const createTransaction = async (
 	tx: TransactionClient,
 	params: CreateTransactionParams
@@ -68,10 +63,6 @@ export const createTransaction = async (
 	});
 };
 
-/**
- * Updates the status of an existing transaction.
- * Must be called within a `prisma.$transaction` block.
- */
 export const updateTransactionStatus = async (
 	tx: TransactionClient,
 	transactionId: string,

@@ -16,15 +16,15 @@ const StoreSelect = () => {
 	const navigation =
 		useNavigation<NativeStackNavigationProp<AppStackParamList>>();
 
+	const handleAddStore = React.useCallback(() => {
+		navigation.navigate('Modal.CreateStore');
+	}, [navigation]);
+
 	if (isLoading || !data) {
 		return <View />;
 	}
 
 	const hasStores = data.stores.length > 0;
-
-	const handleAddStore = React.useCallback(() => {
-		navigation.navigate('Modal.CreateStore');
-	}, [navigation]);
 
 	if (!STORE_CREATION_ENABLED && !hasStores) {
 		return (

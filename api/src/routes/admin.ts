@@ -1,10 +1,12 @@
 import { Hono } from 'hono';
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie';
 import { zValidator } from '@hono/zod-validator';
+import { HTTPException } from 'hono/http-exception';
 
 import type { AppEnv } from '../types/hono';
 import { zodHook } from '../utils/validation';
 import { isAdmin } from '../middleware/auth';
+import { rateLimit, composeRateLimits } from '../middleware/rateLimit';
 import {
 	hydrateQuery,
 	orderFiltersSchema,
@@ -26,12 +28,44 @@ import * as TransactionLogic from '../core/logic/transactions';
 import * as AdminSessionData from '../core/data/adminSessions';
 import * as SessionData from '../core/data/sessions';
 import * as Schemas from '../core/validations/rest';
+import { denySession } from '../core/data/sessionRevocation';
 
 const admin = new Hono<AppEnv>();
+
+// Per-IP fallback for admin auth — protects the service. Tighter than the
+// shopper auth limiter (admins are a small set; bursts of /login from one IP
+// are almost always credential-stuffing).
+const adminIpLimiter = rateLimit({
+	prefix: 'admin:ip',
+	windowSec: 60,
+	limit: 10
+});
+
+// Per-email identity limiter — protects individual admin accounts. Falls
+// back to the IP-derived key if no body is present (e.g. /refresh).
+const adminIdentityLimiter = (prefix: string) =>
+	rateLimit({
+		prefix,
+		windowSec: 60,
+		limit: 5,
+		keyGenerator: async c => {
+			try {
+				const body = await c.req.raw.clone().json();
+				const email =
+					typeof body?.email === 'string' ? body.email.toLowerCase() : null;
+				if (email) return `email:${email}`;
+			} catch {
+				// fall through
+			}
+			const forwarded = c.req.header('x-forwarded-for');
+			return forwarded ? forwarded.split(',')[0]!.trim() : 'anon';
+		}
+	});
 
 // Public admin routes (no auth)
 admin.post(
 	'/login',
+	composeRateLimits(adminIpLimiter, adminIdentityLimiter('admin:login')),
 	zValidator('json', Schemas.adminLoginBodySchema, zodHook),
 	async c => {
 		const { email, password } = c.req.valid('json');
@@ -57,12 +91,12 @@ admin.post(
 	}
 );
 
-admin.post('/refresh', async c => {
+admin.post('/refresh', adminIpLimiter, async c => {
 	const body = await c.req.json().catch(() => ({}));
 	const refreshToken = getCookie(c, 'adminRefreshToken') || body.refreshToken;
 
 	if (!refreshToken) {
-		return c.json({ error: 'Refresh token required' }, 401);
+		throw new HTTPException(401, { message: 'Refresh token required' });
 	}
 
 	const tokens = await AuthLogic.rotateAdminRefreshToken(c, refreshToken);
@@ -106,10 +140,11 @@ admin.delete('/sessions/:id', async c => {
 	const session = await AdminSessionData.getAdminSessionById(c.var.prisma, id);
 
 	if (!session || session.adminId !== c.var.auth!.id) {
-		return c.json({ error: 'Session not found' }, 404);
+		throw new HTTPException(404, { message: 'Session not found' });
 	}
 
 	await AdminSessionData.revokeAdminSession(c.var.prisma, id);
+	await denySession(c.var.redis, id);
 	return c.json({ message: 'Session revoked' });
 });
 
@@ -118,8 +153,27 @@ admin.get('/overview', async c => {
 	return c.json(overview);
 });
 
+const adminStoreFields = [
+	'unlisted',
+	'createdAt',
+	'orderCount',
+	'realizedRevenue',
+	'unrealizedRevenue',
+	'paidOut'
+] as const;
+const adminStoreOrderBy = [
+	'createdAt',
+	'orderCount',
+	'realizedRevenue',
+	'unrealizedRevenue',
+	'paidOut'
+] as const;
+
 admin.get('/stores', async c => {
-	const query = hydrateQuery(c.req.query());
+	const query = hydrateQuery(c.req.query(), {
+		allowedFields: adminStoreFields,
+		allowedOrderBy: adminStoreOrderBy
+	});
 
 	const stores = await StoreLogic.getStores(c, query);
 	return c.json({ stores });
@@ -140,7 +194,10 @@ admin.post(
 
 admin.get('/stores/:id/managers', async c => {
 	const storeId = c.req.param('id');
-	const query = hydrateQuery(c.req.query());
+	const query = hydrateQuery(c.req.query(), {
+		allowedFields: ['createdAt', 'managerId'],
+		allowedOrderBy: ['createdAt']
+	});
 	const managers = await StoreLogic.getStoreManagers(c, storeId, query);
 	return c.json({ managers });
 });
@@ -164,8 +221,8 @@ admin.get('/stores/:id/transactions', async c => {
 
 admin.get('/stores/:id/orders', async c => {
 	const storeId = c.req.param('id');
-	const query = hydrateQuery(c.req.query());
-	const orders = await StoreLogic.getStoreOrders(c, storeId, query);
+	const filters = orderFiltersSchema.parse(c.req.query());
+	const orders = await StoreLogic.getStoreOrders(c, storeId, filters);
 	return c.json({ orders });
 });
 
@@ -173,7 +230,7 @@ admin.get('/stores/:id', async c => {
 	const storeWithContext = await StoreLogic.getStoreById(c, c.req.param('id'));
 
 	if (!storeWithContext) {
-		return c.json({ error: 'Store not found' }, 404);
+		throw new HTTPException(404, { message: 'Store not found' });
 	}
 
 	return c.json(storeWithContext);

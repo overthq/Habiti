@@ -8,7 +8,11 @@ import {
 
 import { NotificationType } from '../notifications';
 import type { AppEnv } from '../../types/hono';
-import { updateStoreRevenue, decrementUnrealizedRevenue } from '../data/stores';
+import {
+	updateStoreRevenue,
+	decrementUnrealizedRevenue,
+	reverseOrderRevenue
+} from '../data/stores';
 
 const NotificationTypeByOrderStatus = {
 	[OrderStatus.ReadyForPickup]: NotificationType.ReadyForPickup,
@@ -29,12 +33,12 @@ interface CreateOrderHooksArgs {
 	status: OrderStatus;
 }
 
-export const createOrderHooks = (
+export const createOrderHooks = async (
 	c: Context<AppEnv>,
 	args: CreateOrderHooksArgs
 ) => {
 	if (args.status === OrderStatus.Completed) {
-		updateStoreRevenue(c.var.prisma, {
+		await updateStoreRevenue(c.var.prisma, {
 			storeId: args.storeId,
 			total: args.amount,
 			orderId: args.orderId
@@ -63,7 +67,9 @@ export const createOrderHooks = (
 			orderId: args.orderId,
 			amount: args.amount,
 			productCount: args.products.length,
-			products: args.products
+			// Send only product IDs — full Product objects bloat the payload
+			// and ship descriptions/prices that PostHog has no business with.
+			productIds: args.products.map(p => p.id)
 		},
 		groups: { store: args.storeId }
 	});
@@ -77,6 +83,7 @@ interface UpdateOrderHooksArgs {
 	storeId: string;
 	amount: number;
 	status: OrderStatus;
+	priorStatus: OrderStatus;
 }
 
 export const updateOrderHooks = async (
@@ -90,10 +97,21 @@ export const updateOrderHooks = async (
 			orderId: args.orderId
 		});
 	} else if (args.status === OrderStatus.Cancelled) {
-		await decrementUnrealizedRevenue(c.var.prisma, {
-			storeId: args.storeId,
-			total: args.amount
-		});
+		if (args.priorStatus === OrderStatus.Completed) {
+			await reverseOrderRevenue(c.var.prisma, {
+				storeId: args.storeId,
+				total: args.amount,
+				orderId: args.orderId,
+				wasRealized: true
+			});
+		} else if (args.priorStatus !== OrderStatus.PaymentPending) {
+			// PaymentPending never credits the unrealized revenue.
+
+			await decrementUnrealizedRevenue(c.var.prisma, {
+				storeId: args.storeId,
+				total: args.amount
+			});
+		}
 	}
 
 	c.var.services.analytics.track({

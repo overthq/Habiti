@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
+import { HTTPException } from 'hono/http-exception';
 
 import type { AppEnv } from '../types/hono';
 import { zodHook } from '../utils/validation';
@@ -12,6 +13,7 @@ import * as CardLogic from '../core/logic/cards';
 import * as OrderLogic from '../core/logic/orders';
 import * as SessionData from '../core/data/sessions';
 import * as Schemas from '../core/validations/rest';
+import { denySession } from '../core/data/sessionRevocation';
 
 const currentUser = new Hono<AppEnv>();
 
@@ -48,15 +50,26 @@ currentUser.get('/managed-stores', async c => {
 	return c.json({ stores });
 });
 
+const orderQueryFields = ['status', 'storeId', 'total', 'createdAt'] as const;
+const orderQueryOrderBy = ['total', 'createdAt'] as const;
+const cartQueryFields = ['storeId', 'createdAt'] as const;
+const cartQueryOrderBy = ['createdAt'] as const;
+
 currentUser.get('/orders', async c => {
-	const query = hydrateQuery(c.req.query());
+	const query = hydrateQuery(c.req.query(), {
+		allowedFields: orderQueryFields,
+		allowedOrderBy: orderQueryOrderBy
+	});
 
 	const orders = await UserLogic.getOrders(c, query);
 	return c.json({ orders });
 });
 
 currentUser.get('/carts', async c => {
-	const query = hydrateQuery(c.req.query());
+	const query = hydrateQuery(c.req.query(), {
+		allowedFields: cartQueryFields,
+		allowedOrderBy: cartQueryOrderBy
+	});
 
 	const carts = await UserLogic.getCarts(c, query);
 	return c.json({ carts });
@@ -81,6 +94,7 @@ currentUser.get('/orders/:id', async c => {
 	const id = c.req.param('id');
 
 	const order = await OrderLogic.getOrderById(c, id);
+
 	return c.json({ order });
 });
 
@@ -90,6 +104,7 @@ currentUser.post(
 	async c => {
 		const body = c.req.valid('json');
 		const result = await OrderLogic.createOrder(c, body);
+
 		return c.json({
 			order: result.order,
 			cardAuthorizationData: result.cardAuthorizationData
@@ -111,7 +126,7 @@ currentUser.post(
 		const { orderId } = c.req.valid('json');
 
 		if (!orderId) {
-			return c.json({ error: 'Order ID is required' }, 400);
+			throw new HTTPException(400, { message: 'Order ID is required' });
 		}
 
 		const result = await CardLogic.authorizeCard(c, { orderId });
@@ -183,6 +198,7 @@ currentUser.delete(
 	zValidator('json', Schemas.deletePushTokenBodySchema, zodHook),
 	async c => {
 		const { type } = c.req.valid('json');
+
 		const pushToken = await c.var.prisma.userPushToken.delete({
 			where: {
 				userId_token: {
@@ -192,6 +208,7 @@ currentUser.delete(
 				type
 			}
 		});
+
 		return c.json({ pushToken });
 	}
 );
@@ -201,11 +218,19 @@ currentUser.get('/sessions', async c => {
 		c.var.prisma,
 		c.var.auth!.id
 	);
+
 	return c.json({ sessions });
 });
 
 currentUser.delete('/sessions', async c => {
+	const sessions = await SessionData.getUserSessions(
+		c.var.prisma,
+		c.var.auth!.id
+	);
+
 	await SessionData.revokeUserSessions(c.var.prisma, c.var.auth!.id);
+	await Promise.all(sessions.map(s => denySession(c.var.redis, s.id)));
+
 	return c.json({ message: 'All sessions revoked' });
 });
 
@@ -215,10 +240,12 @@ currentUser.delete('/sessions/:id', async c => {
 	const session = await SessionData.getSessionById(c.var.prisma, id);
 
 	if (!session || session.userId !== c.var.auth!.id) {
-		return c.json({ error: 'Session not found' }, 404);
+		throw new HTTPException(404, { message: 'Session not found' });
 	}
 
 	await SessionData.revokeSession(c.var.prisma, id);
+	await denySession(c.var.redis, id);
+
 	return c.json({ message: 'Session revoked' });
 });
 

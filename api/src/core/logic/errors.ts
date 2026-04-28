@@ -1,4 +1,4 @@
-import { APIException } from '../../types/errors';
+import { HTTPException } from 'hono/http-exception';
 
 export class LogicError extends Error {
 	public readonly code: LogicErrorCode;
@@ -57,93 +57,117 @@ export enum LogicErrorCode {
 	Unexpected = 'Unexpected',
 
 	CartEmpty = 'CartEmpty',
-	InsufficientStock = 'InsufficientStock'
+	InsufficientStock = 'InsufficientStock',
+	ProductInsufficientStock = 'ProductInsufficientStock'
 }
 
 export const logicErrorToApiException = (
 	error: LogicErrorCode
-): APIException => {
+): HTTPException => {
 	switch (error) {
 		case LogicErrorCode.NotAuthenticated:
-			return new APIException(401, 'Authentication required');
+			return new HTTPException(401, { message: 'Authentication required' });
 		case LogicErrorCode.Forbidden:
-			return new APIException(403, 'Forbidden');
+			return new HTTPException(403, { message: 'Forbidden' });
 
 		case LogicErrorCode.CannotManageStore:
-			return new APIException(403, 'Unauthorized: Cannot manage store');
+			return new HTTPException(403, {
+				message: 'Unauthorized: Cannot manage store'
+			});
 
 		case LogicErrorCode.UserNotFound:
-			return new APIException(404, 'User not found');
+			return new HTTPException(404, { message: 'User not found' });
 		case LogicErrorCode.StoreNotFound:
-			return new APIException(404, 'Store not found');
+			return new HTTPException(404, { message: 'Store not found' });
 		case LogicErrorCode.OrderNotFound:
-			return new APIException(404, 'Order not found');
+			return new HTTPException(404, { message: 'Order not found' });
 		case LogicErrorCode.CardNotFound:
-			return new APIException(404, 'Card not found');
+			return new HTTPException(404, { message: 'Card not found' });
 		case LogicErrorCode.AdminNotFound:
-			return new APIException(404, 'Admin not found');
+			return new HTTPException(404, { message: 'Admin not found' });
 		case LogicErrorCode.NotFound:
-			return new APIException(404, 'Not found');
+			return new HTTPException(404, { message: 'Not found' });
 
 		case LogicErrorCode.InvalidCredentials:
-			return new APIException(401, 'Invalid credentials');
+			return new HTTPException(401, { message: 'Invalid credentials' });
 		case LogicErrorCode.InvalidToken:
-			return new APIException(401, 'Invalid token');
+			return new HTTPException(401, { message: 'Invalid token' });
 		case LogicErrorCode.TokenExpired:
-			return new APIException(401, 'Token expired');
+			return new HTTPException(401, { message: 'Token expired' });
 		case LogicErrorCode.TokenReused:
-			return new APIException(401, 'Token reused');
+			return new HTTPException(401, { message: 'Token reused' });
 
 		case LogicErrorCode.InvalidInput:
 		case LogicErrorCode.ValidationFailed:
-			return new APIException(400, 'Invalid request');
+			return new HTTPException(400, { message: 'Invalid request' });
 
 		case LogicErrorCode.InvalidQuantity:
-			return new APIException(400, 'Quantity must be greater than 0');
+			return new HTTPException(400, {
+				message: 'Quantity must be greater than 0'
+			});
 		case LogicErrorCode.NegativeQuantity:
-			return new APIException(400, 'Quantity cannot be negative');
+			return new HTTPException(400, { message: 'Quantity cannot be negative' });
 
 		case LogicErrorCode.AlreadyFollowing:
-			return new APIException(409, 'Already following this store');
+			return new HTTPException(409, {
+				message: 'Already following this store'
+			});
 		case LogicErrorCode.NotFollowing:
-			return new APIException(409, 'Not following this store');
+			return new HTTPException(409, { message: 'Not following this store' });
 		case LogicErrorCode.CannotRemoveLastManager:
-			return new APIException(400, 'Cannot remove the last manager from store');
+			return new HTTPException(400, {
+				message: 'Cannot remove the last manager from store'
+			});
 
 		case LogicErrorCode.InsufficientFunds:
-			return new APIException(400, 'Insufficient funds');
+			return new HTTPException(400, { message: 'Insufficient funds' });
 		case LogicErrorCode.NoAccountDetails:
-			return new APIException(400, 'No account details provided');
+			return new HTTPException(400, { message: 'No account details provided' });
 		case LogicErrorCode.StoreContextRequired:
-			return new APIException(400, 'Only a store can carry out this action');
+			return new HTTPException(400, {
+				message: 'Only a store can carry out this action'
+			});
 
 		case LogicErrorCode.OrderInvalidStatusTransition:
-			return new APIException(400, 'Order invalid status transition');
+			return new HTTPException(400, {
+				message: 'Order invalid status transition'
+			});
 		case LogicErrorCode.OrderNotPayable:
-			return new APIException(400, 'Order is not in payment pending state');
+			return new HTTPException(400, {
+				message: 'Order is not in payment pending state'
+			});
 
 		case LogicErrorCode.ProductNotFound:
-			return new APIException(404, 'Product not found');
+			return new HTTPException(404, { message: 'Product not found' });
 		case LogicErrorCode.ProductStoreMismatch:
-			return new APIException(
-				403,
-				'Unauthorized: Cannot act on products from a different store'
-			);
+			return new HTTPException(403, {
+				message: 'Unauthorized: Cannot act on products from a different store'
+			});
 		case LogicErrorCode.ProductInvalidRating:
-			return new APIException(400, 'Product rating must be between 1 and 5');
+			return new HTTPException(400, {
+				message: 'Product rating must be between 1 and 5'
+			});
 		case LogicErrorCode.ProductStoreNotFound:
-			return new APIException(404, 'Store not found');
+			return new HTTPException(404, { message: 'Store not found' });
+		case LogicErrorCode.ProductInsufficientStock:
+			return new HTTPException(409, {
+				message: 'Insufficient stock for one or more products'
+			});
+		case LogicErrorCode.InsufficientStock:
+			return new HTTPException(409, { message: 'Insufficient stock' });
 
 		case LogicErrorCode.PayoutInsufficientFunds:
-			return new APIException(400, 'Insufficient funds for requested payout');
+			return new HTTPException(400, {
+				message: 'Insufficient funds for requested payout'
+			});
 		case LogicErrorCode.PayoutFailed:
-			return new APIException(500, 'Payout failed');
+			return new HTTPException(500, { message: 'Payout failed' });
 
 		case LogicErrorCode.PaymentFailed:
-			return new APIException(402, 'Payment failed');
+			return new HTTPException(402, { message: 'Payment failed' });
 
 		case LogicErrorCode.Unexpected:
 		default:
-			return new APIException(500, 'Internal server error');
+			return new HTTPException(500, { message: 'Internal server error' });
 	}
 };

@@ -1,3 +1,6 @@
+import { z } from 'zod';
+import { HTTPException } from 'hono/http-exception';
+
 import {
 	userFiltersSchema,
 	productFiltersSchema,
@@ -117,38 +120,86 @@ export const orderFiltersToPrismaClause = (filters?: OrderFilters) => {
 	return { where, orderBy };
 };
 
-type FilterOperators = {
-	equals?: any;
-	in?: any[];
-	notIn?: any[];
-	contains?: string;
-	startsWith?: string;
-	endsWith?: string;
-	mode?: 'insensitive';
-	lt?: number;
-	lte?: number;
-	gt?: number;
-	gte?: number;
-};
-
 // NOTE: Hono does not parse nested query parameters into objects like Express does.
 // If complex nested query parsing is needed, consider using `qs` to parse
 // `c.req.url` query string before passing to this function.
 
-export const hydrateQuery = (query: Record<string, string | string[]>) => {
-	let filter: Record<string, FilterOperators> = {};
-	let orderBy: Record<string, 'asc' | 'desc'> = {};
+const filterOpsSchema = z
+	.object({
+		equals: z.any().optional(),
+		in: z.array(z.any()).optional(),
+		notIn: z.array(z.any()).optional(),
+		contains: z.string().optional(),
+		startsWith: z.string().optional(),
+		endsWith: z.string().optional(),
+		mode: z.literal('insensitive').optional(),
+		lt: z.number().optional(),
+		lte: z.number().optional(),
+		gt: z.number().optional(),
+		gte: z.number().optional()
+	})
+	.strict();
 
-	if (query.filter) {
-		filter = query.filter as unknown as Record<string, FilterOperators>;
+interface HydrateQueryOptions {
+	allowedFields: readonly string[];
+	allowedOrderBy?: readonly string[];
+}
+
+/**
+ * Validates and shapes a `?filter[…]=…&orderBy[…]=…` query into a Prisma
+ * `{ where, orderBy }` clause. The caller MUST pass an allowlist of fields
+ * for both filtering and ordering — without it, callers leak the ability to
+ * filter/sort on any column (and any operator) the underlying Prisma model
+ * exposes.
+ *
+ * Throws `HTTPException(400)` on invalid input so the central errorHandler
+ * shapes the response.
+ */
+export const hydrateQuery = (
+	query: Record<string, unknown>,
+	opts: HydrateQueryOptions
+) => {
+	const { allowedFields, allowedOrderBy = allowedFields } = opts;
+
+	if (allowedFields.length === 0) {
+		throw new Error('hydrateQuery requires a non-empty allowedFields list');
 	}
 
-	if (query.orderBy) {
-		orderBy = query.orderBy as unknown as Record<string, 'asc' | 'desc'>;
+	const fieldEnum = z.enum(allowedFields as [string, ...string[]]);
+	const orderEnum = z.enum(allowedOrderBy as [string, ...string[]]);
+
+	const filterSchema = z.record(fieldEnum, filterOpsSchema).optional();
+	const orderBySchema = z.record(orderEnum, z.enum(['asc', 'desc'])).optional();
+
+	const filterParse = filterSchema.safeParse(query.filter);
+	const orderByParse = orderBySchema.safeParse(query.orderBy);
+
+	if (!filterParse.success || !orderByParse.success) {
+		const errors = [
+			...(filterParse.success
+				? []
+				: filterParse.error.errors.map(e => ({
+						field: ['filter', ...e.path].join('.'),
+						message: e.message,
+						code: e.code
+					}))),
+			...(orderByParse.success
+				? []
+				: orderByParse.error.errors.map(e => ({
+						field: ['orderBy', ...e.path].join('.'),
+						message: e.message,
+						code: e.code
+					})))
+		];
+
+		throw new HTTPException(400, { message: 'Invalid query', cause: errors });
 	}
+
+	const filter = filterParse.data ?? {};
+	const orderBy = orderByParse.data ?? {};
 
 	return {
-		...(Object.keys(filter).length && { where: filter }),
-		...(Object.keys(orderBy).length && { orderBy })
+		...(Object.keys(filter).length ? { where: filter } : {}),
+		...(Object.keys(orderBy).length ? { orderBy } : {})
 	};
 };

@@ -43,6 +43,7 @@ export const getCartsByUserId = async (c: Context<AppEnv>, userId: string) => {
 	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
+
 	if (userId !== c.var.auth.id) {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}

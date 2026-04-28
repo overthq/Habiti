@@ -4,9 +4,9 @@ import {
 	PrismaClient
 } from '../../generated/prisma/client';
 import { OrderFilters, orderFiltersToPrismaClause } from '../../utils/queries';
+import { LogicError, LogicErrorCode } from '../logic/errors';
 import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
 
-// Utility function to calculate order data from cart products
 export const getOrderData = (
 	products: Prisma.CartProductGetPayload<{
 		include: { product: true };
@@ -85,21 +85,49 @@ interface DecrementProductQuantitiesParams {
 	products: { productId: string; quantity: number }[];
 }
 
+/**
+ * Atomic check-and-decrement: a single `updateMany` with `quantity >= q`
+ * means concurrent orders for the last unit can't both succeed — the loser
+ * matches 0 rows and we throw. Must run inside a `prisma.$transaction` block.
+ */
 export const decrementProductQuantities = async (
 	prisma: TransactionClient,
 	params: DecrementProductQuantitiesParams
 ) => {
-	const updatedProducts = [];
-	for (const product of params.products) {
-		const updated = await prisma.product.update({
-			where: { id: product.productId },
-			data: {
-				quantity: { decrement: product.quantity }
-			}
+	for (const { productId, quantity } of params.products) {
+		const res = await prisma.product.updateMany({
+			where: { id: productId, quantity: { gte: quantity } },
+			data: { quantity: { decrement: quantity } }
 		});
-		updatedProducts.push(updated);
+
+		if (res.count === 0) {
+			throw new LogicError(LogicErrorCode.ProductInsufficientStock);
+		}
 	}
-	return updatedProducts;
+
+	const productIds = params.products.map(p => p.productId);
+
+	const updated = await prisma.product.findMany({
+		where: { id: { in: productIds } }
+	});
+
+	return updated;
+};
+
+interface RestoreProductQuantitiesParams {
+	products: { productId: string; quantity: number }[];
+}
+
+export const restoreProductQuantities = async (
+	prisma: TransactionClient,
+	params: RestoreProductQuantitiesParams
+) => {
+	for (const { productId, quantity } of params.products) {
+		await prisma.product.update({
+			where: { id: productId },
+			data: { quantity: { increment: quantity } }
+		});
+	}
 };
 
 interface CreateOrderParams {
@@ -190,6 +218,21 @@ export const getOrderByIdWithStore = async (
 	const order = await prisma.order.findUnique({
 		where: { id: orderId },
 		include: { store: true }
+	});
+
+	return order;
+};
+
+export const getOrderByIdWithProducts = async (
+	prisma: TransactionClient,
+	orderId: string
+) => {
+	const order = await prisma.order.findUnique({
+		where: { id: orderId },
+		include: {
+			store: true,
+			products: true
+		}
 	});
 
 	return order;

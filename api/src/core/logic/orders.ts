@@ -28,7 +28,10 @@ interface CreateOrderInput {
 export const createOrder = async (
 	c: Context<AppEnv>,
 	input: CreateOrderInput
-) => {
+) =>
+	c.var.tracer.startSpan('order.create', async () => createOrderImpl(c, input));
+
+const createOrderImpl = async (c: Context<AppEnv>, input: CreateOrderInput) => {
 	const { data: validatedInput, success } = createOrderSchema.safeParse(input);
 
 	if (!c.var.auth?.id) {
@@ -141,7 +144,11 @@ export const createOrder = async (
 				metadata: { orderId: order.id }
 			});
 		} catch (error) {
-			console.error(error);
+			c.var.logger.error(
+				{ err: error, orderId: order.id },
+				'order.charge_authorization_failed'
+			);
+
 			throw new LogicError(LogicErrorCode.PaymentFailed);
 		}
 	} else {
@@ -150,7 +157,7 @@ export const createOrder = async (
 		});
 	}
 
-	createOrderHooks(c, {
+	await createOrderHooks(c, {
 		orderId: order.id,
 		userId: c.var.auth.id,
 		storeId: cart.storeId,
@@ -177,6 +184,16 @@ export interface UpdateOrderStatusInput {
 export const updateOrderStatus = async (
 	c: Context<AppEnv>,
 	input: UpdateOrderStatusInput
+) =>
+	c.var.tracer.startSpan(
+		'order.updateStatus',
+		async () => updateOrderStatusImpl(c, input),
+		{ status: input.status }
+	);
+
+const updateOrderStatusImpl = async (
+	c: Context<AppEnv>,
+	input: UpdateOrderStatusInput
 ) => {
 	const { data: validatedInput, success } = updateOrderSchema.safeParse(input);
 
@@ -190,29 +207,51 @@ export const updateOrderStatus = async (
 
 	const { orderId, status } = validatedInput;
 
-	const currentOrder = await OrderData.getOrderByIdWithStore(
-		c.var.prisma,
-		orderId
+	const { updatedOrder, priorStatus } = await c.var.prisma.$transaction(
+		async tx => {
+			const currentOrder = await OrderData.getOrderByIdWithProducts(
+				tx,
+				orderId
+			);
+
+			if (!currentOrder) {
+				throw new LogicError(LogicErrorCode.OrderNotFound);
+			}
+
+			validateStatusTransition(currentOrder.status, status);
+
+			if (status === OrderStatus.Cancelled) {
+				await OrderData.restoreProductQuantities(tx, {
+					products: currentOrder.products.map(p => ({
+						productId: p.productId,
+						quantity: p.quantity
+					}))
+				});
+			}
+
+			const updated = await tx.order.update({
+				where: { id: orderId },
+				data: { status },
+				include: {
+					products: { include: { product: true } },
+					store: true,
+					user: { include: { pushTokens: true } }
+				}
+			});
+
+			return { updatedOrder: updated, priorStatus: currentOrder.status };
+		}
 	);
-
-	if (!currentOrder) {
-		throw new LogicError(LogicErrorCode.OrderNotFound);
-	}
-
-	validateStatusTransition(currentOrder.status, status);
-
-	const updatedOrder = await OrderData.updateOrder(c.var.prisma, orderId, {
-		status
-	});
 
 	await updateOrderHooks(c, {
 		customerName: c.var.auth.name,
 		pushToken: updatedOrder.user.pushTokens[0] ?? undefined,
 		orderId: updatedOrder.id,
 		userId: c.var.auth.id,
-		storeId: currentOrder.storeId,
+		storeId: updatedOrder.storeId,
 		amount: updatedOrder.total,
-		status
+		status,
+		priorStatus
 	});
 
 	return updatedOrder;
@@ -234,6 +273,7 @@ const validateStatusTransition = (
 	} as const;
 
 	const allowedTransitions = validTransitions[currentStatus] || [];
+
 	if (!allowedTransitions.includes(newStatus)) {
 		throw new LogicError(LogicErrorCode.OrderInvalidStatusTransition);
 	}
@@ -301,10 +341,14 @@ export const confirmPickup = async (c: Context<AppEnv>, orderId: string) => {
 			userId: c.var.auth.id,
 			storeId: currentOrder.storeId,
 			amount: updatedOrder.total,
-			status: OrderStatus.Completed
+			status: OrderStatus.Completed,
+			priorStatus: currentOrder.status
 		});
 	} catch (error) {
-		console.log(error);
+		c.var.logger.error(
+			{ err: error, orderId: updatedOrder.id },
+			'confirm_pickup.hook_failed'
+		);
 	}
 
 	return updatedOrder;
