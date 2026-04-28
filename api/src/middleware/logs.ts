@@ -19,12 +19,6 @@ const parseTraceparent = (tp: string | undefined) => {
 	return { traceId: match[1]!, spanId: match[2]! };
 };
 
-/**
- * Per-request logger + W3C trace context. Runs before `contextMiddleware`
- * so route code can rely on `c.var.logger` everywhere. Emits exactly one
- * `request_finished` line per request — the `pino` `child` carries
- * `requestId` / `traceId` / `method` / `path` on every line in between.
- */
 const logsMiddleware = createMiddleware<AppEnv>(async (c, next) => {
 	const requestId = c.req.header('x-request-id') ?? randomUUID();
 	const incoming = c.req.header('traceparent');

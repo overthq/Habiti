@@ -18,8 +18,14 @@ payments.post(
 	async c => {
 		const { reference } = c.req.valid('json');
 
-		const data = await PaymentLogic.verifyTransaction(c, reference);
-		return c.json({ data });
+		// Paystack enforces that we return a 200 for successful verifications
+		// and a 400 for all failures.
+		try {
+			const data = await PaymentLogic.verifyTransaction(c, reference);
+			return c.json({ success: true, data });
+		} catch (error) {
+			return c.json({ success: false, error }, 400);
+		}
 	}
 );
 
@@ -29,8 +35,12 @@ payments.post(
 	async c => {
 		const { transferId } = c.req.valid('json');
 
-		const data = await PaymentLogic.verifyTransfer(c, { transferId });
-		return c.json({ data });
+		try {
+			const data = await PaymentLogic.verifyTransfer(c, { transferId });
+			return c.json({ success: true, data });
+		} catch (error) {
+			return c.json({ success: false, error }, 400);
+		}
 	}
 );
 
@@ -42,15 +52,21 @@ payments.post(
 	async c => {
 		const body = c.req.valid('json');
 
-		const payout = await PaymentLogic.approvePayment(c, body);
+		// Paystack enforces that we return a 200 for successful verifications
+		// and a 400 for all failures.
+		try {
+			const payout = await PaymentLogic.approvePayment(c, body);
 
-		if (!payout) {
-			throw new HTTPException(400, {
-				message: 'Payout not found or has already been resolved'
-			});
+			if (!payout) {
+				throw new HTTPException(400, {
+					message: 'Payout not found or has already been resolved'
+				});
+			}
+
+			return c.json({ message: 'Payment approved' });
+		} catch (error) {
+			return c.json({ success: false, error }, 400);
 		}
-
-		return c.json({ message: 'Payment approved' });
 	}
 );
 

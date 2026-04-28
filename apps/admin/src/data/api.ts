@@ -4,7 +4,12 @@ import axios, {
 	type InternalAxiosRequestConfig
 } from 'axios';
 
-import { AUTO_RETRY_MAX_SEC, extractRetryAfterSec, sleep } from './rateLimit';
+import {
+	computeRetryDelayMs,
+	extractRetryAfterSec,
+	shouldAutoRetry,
+	sleep
+} from './rateLimit';
 
 interface QueuedRequest {
 	resolve: (value: unknown) => void;
@@ -46,7 +51,8 @@ export class APIService {
 				const status = error.response?.status;
 
 				// 429: respect Retry-After / RateLimit-Reset. Auto-retry only
-				// for short waits — anything longer surfaces to the UI.
+				// for short waits with full jitter — anything longer
+				// surfaces to the UI. Pinned to one auto-retry per request.
 				if (
 					status === 429 &&
 					!originalRequest._rateLimitRetry &&
@@ -55,13 +61,9 @@ export class APIService {
 					const delaySec = extractRetryAfterSec(
 						error.response.headers as Record<string, string>
 					);
-					if (
-						delaySec !== null &&
-						delaySec >= 0 &&
-						delaySec <= AUTO_RETRY_MAX_SEC
-					) {
+					if (shouldAutoRetry(delaySec)) {
 						originalRequest._rateLimitRetry = true;
-						await sleep(delaySec * 1000);
+						await sleep(computeRetryDelayMs(delaySec!));
 						return this.api(originalRequest);
 					}
 					(error as any).retryAfterSeconds = delaySec ?? undefined;

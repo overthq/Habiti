@@ -29,7 +29,6 @@ prismaClient.$on('query', e => {
 			{
 				duration_ms: e.duration,
 				target: e.target,
-				// Only log the SQL itself outside production — params can leak PII.
 				query: env.NODE_ENV === 'production' ? undefined : e.query,
 				params: env.NODE_ENV === 'production' ? undefined : e.params
 			},

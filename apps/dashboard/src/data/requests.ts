@@ -2,7 +2,12 @@ import axios from 'axios';
 import env from '../../env';
 import useStore from '../state';
 import { refreshAuthTokens } from '../utils/refreshManager';
-import { AUTO_RETRY_MAX_SEC, extractRetryAfterSec, sleep } from './rateLimit';
+import {
+	computeRetryDelayMs,
+	extractRetryAfterSec,
+	shouldAutoRetry,
+	sleep
+} from './rateLimit';
 import {
 	AuthenticateBody,
 	RegisterBody,
@@ -54,21 +59,19 @@ api.interceptors.response.use(
 		const status = error.response?.status;
 
 		// 429: respect Retry-After / RateLimit-Reset. Auto-retry only for
-		// short waits (≤ AUTO_RETRY_MAX_SEC) — anything longer surfaces to
-		// the UI so we don't hang the app on a minute-long auth-rate window.
+		// short waits (≤ AUTO_RETRY_MAX_SEC) with full jitter — anything
+		// longer surfaces to the UI so we don't hang the app on a
+		// minute-long auth-rate window. The `_rateLimitRetry` flag pins
+		// us to at most one auto-retry per request (no loops).
 		if (
 			status === 429 &&
 			!originalRequest._rateLimitRetry &&
 			error.response?.headers
 		) {
 			const delaySec = extractRetryAfterSec(error.response.headers);
-			if (
-				delaySec !== null &&
-				delaySec >= 0 &&
-				delaySec <= AUTO_RETRY_MAX_SEC
-			) {
+			if (shouldAutoRetry(delaySec)) {
 				originalRequest._rateLimitRetry = true;
-				await sleep(delaySec * 1000);
+				await sleep(computeRetryDelayMs(delaySec!));
 				return api(originalRequest);
 			}
 			// Surface the wait-time on the error so the UI can show

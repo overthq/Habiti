@@ -58,5 +58,37 @@ export const extractRetryAfterSec = (headers: {
  */
 export const AUTO_RETRY_MAX_SEC = 2;
 
+/**
+ * Whether to auto-retry a 429 given the parsed delay.
+ *
+ * Rules:
+ *   - `null` or negative delay  → don't retry (we don't know how long).
+ *   - `0` seconds               → retry with a small jittered floor (the
+ *                                 server may be at the boundary).
+ *   - `(0, AUTO_RETRY_MAX_SEC]` → retry.
+ *   - Anything larger           → surface to UI.
+ *
+ * Surfaced 429s end up with `error.retryAfterSeconds` set so a toast can
+ * read it. The interceptor is responsible for tagging only one retry per
+ * request via a `_rateLimitRetry` flag.
+ */
+export const shouldAutoRetry = (delaySec: number | null): boolean => {
+	if (delaySec === null) return false;
+	if (delaySec < 0) return false;
+	return delaySec <= AUTO_RETRY_MAX_SEC;
+};
+
+/**
+ * Compute the actual delay before retrying. Adds full jitter on top of
+ * the server-suggested value to spread out a thundering herd of clients
+ * that all received the same `Retry-After`. Min floor of 50ms so we
+ * don't burn the CPU on `0`-second responses.
+ */
+export const computeRetryDelayMs = (delaySec: number): number => {
+	const baseMs = Math.max(0, delaySec) * 1000;
+	const jitterMs = Math.floor(Math.random() * 250);
+	return Math.max(50, baseMs + jitterMs);
+};
+
 export const sleep = (ms: number) =>
 	new Promise<void>(resolve => setTimeout(resolve, ms));

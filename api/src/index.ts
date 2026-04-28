@@ -10,18 +10,18 @@ import { errorHandler } from './middleware/errorHandler';
 import { contextMiddleware, services } from './middleware/context';
 import logsMiddleware from './middleware/logs';
 import {
+	inFlightCount,
 	inflightMiddleware,
-	whenIdle,
-	inFlightCount
+	whenIdle
 } from './middleware/inflight';
 import routes from './routes';
 
 import { rootLogger } from './services/logger';
 import { corsConfig } from './utils/cors';
 import { env } from './config/env';
-import prismaClient from './config/prisma';
 import redisClient from './config/redis';
 import './config/cloudinary';
+import prismaClient from './config/prisma';
 
 const app = new Hono();
 
@@ -54,6 +54,13 @@ app.use('*', inflightMiddleware);
 app.route('/', routes);
 
 app.onError(errorHandler);
+
+process.on('SIGTERM', () => {
+	void shutdown('SIGTERM');
+});
+process.on('SIGINT', () => {
+	void shutdown('SIGINT');
+});
 
 // ─── Process-level safety nets ──────────────────────────────────────────────
 //
@@ -125,12 +132,14 @@ const withTimeout = async <T>(
 	label: string
 ): Promise<T | undefined> => {
 	let timer: ReturnType<typeof setTimeout> | undefined;
+
 	const timeout = new Promise<undefined>(resolve => {
 		timer = setTimeout(() => {
 			rootLogger.warn({ label, ms }, 'shutdown.timeout');
 			resolve(undefined);
 		}, ms);
 	});
+
 	try {
 		return await Promise.race([p, timeout]);
 	} finally {
@@ -138,7 +147,7 @@ const withTimeout = async <T>(
 	}
 };
 
-const shutdown = async (signal: string) => {
+export const shutdown = async (signal: string) => {
 	if (shuttingDown) return;
 	shuttingDown = true;
 	isExiting = true;
@@ -149,6 +158,7 @@ const shutdown = async (signal: string) => {
 		rootLogger.error({ signal }, 'shutdown.forced');
 		process.exit(1);
 	}, SHUTDOWN_TIMEOUT_MS);
+
 	force.unref();
 
 	try {
@@ -215,15 +225,6 @@ const shutdown = async (signal: string) => {
 		process.exit(0);
 	}
 };
-
-process.on('SIGTERM', () => {
-	void shutdown('SIGTERM');
-});
-process.on('SIGINT', () => {
-	void shutdown('SIGINT');
-});
-
-// ─── Boot ──────────────────────────────────────────────────────────────────
 
 const main = async () => {
 	await redisClient.connect();
