@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Image, StyleSheet } from 'react-native';
-import type { ViewStyle } from 'react-native';
+import { View, Image, StyleSheet, type ViewStyle } from 'react-native';
 
 import { useTheme } from './Theme';
 import Typography from './Typography';

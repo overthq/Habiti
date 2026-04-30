@@ -2,13 +2,12 @@ import React from 'react';
 import { Pressable, PressableProps } from 'react-native';
 
 import { useTheme } from './Theme';
-import Typography from './Typography';
-import { typography } from './styles/typography';
+import Typography, { TypographyProps } from './Typography';
 
 interface TextButtonProps extends PressableProps {
 	children: React.ReactNode;
 	size?: number;
-	weight?: keyof typeof typography.weight;
+	weight?: TypographyProps['weight'];
 	variant?: 'primary' | 'secondary' | 'label';
 	active?: boolean;
 }

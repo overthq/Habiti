@@ -20,7 +20,9 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
 }) => {
 	return (
 		<View style={[styles.container, padded ? { paddingHorizontal: 16 } : {}]}>
-			<Typography preset='sectionHeader'>{title}</Typography>
+			<Typography size='large' weight='medium' variant='primary'>
+				{title}
+			</Typography>
 			{action ? (
 				<TextButton size={15} onPress={action.onPress}>
 					{action.text}

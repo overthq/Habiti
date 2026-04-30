@@ -11,6 +11,7 @@ interface CheckBoxProps {
 
 const Checkbox: React.FC<CheckBoxProps> = ({ active, onPress }) => {
 	const { theme } = useTheme();
+
 	return (
 		<Pressable onPress={() => onPress(!active)}>
 			<View
