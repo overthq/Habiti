@@ -1,5 +1,5 @@
-import { Pressable, ScrollView, StyleSheet } from 'react-native';
-import { Typography, useTheme } from '@habiti/components';
+import { ScrollView, StyleSheet } from 'react-native';
+import { PillButton } from '@habiti/components';
 
 import { useOrdersContext } from './OrdersContext';
 
@@ -35,27 +35,19 @@ const OrderStatusPill: React.FC<OrderStatusPillProps> = ({
 	active,
 	onPress
 }) => {
-	const { theme } = useTheme();
-
 	return (
-		<Pressable
-			disabled={active}
+		<PillButton
+			size='small'
+			style={styles.pill}
+			variant={active ? 'primary' : 'secondary'}
 			onPress={onPress}
-			style={[
-				styles.pill,
-				{ borderColor: theme.border.color },
-				active ? { backgroundColor: theme.border.color } : {}
-			]}
-		>
-			<Typography size='small'>{label}</Typography>
-		</Pressable>
+			text={label}
+		/>
 	);
 };
 
 const styles = StyleSheet.create({
 	pill: {
-		borderWidth: 1,
-		borderRadius: 50,
 		paddingHorizontal: 12,
 		paddingVertical: 4
 	}

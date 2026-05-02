@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
-import TextButton from './TextButton';
+import { TextButton } from './Button';
 import Typography from './Typography';
 
 interface SectionHeaderProps {

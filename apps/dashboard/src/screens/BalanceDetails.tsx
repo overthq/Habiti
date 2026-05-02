@@ -32,10 +32,8 @@ const BalanceRow: React.FC<BalanceRowProps> = ({ label, amount, isLast }) => {
 					: {}
 			]}
 		>
-			<Typography size='small'>{label}</Typography>
-			<Typography size='small' weight='medium'>
-				{formatNaira(amount)}
-			</Typography>
+			<Typography variant='secondary'>{label}</Typography>
+			<Typography>{formatNaira(amount)}</Typography>
 		</View>
 	);
 };

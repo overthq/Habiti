@@ -22,9 +22,21 @@ export interface TypographyProps extends TextProps {
 	italic?: boolean;
 }
 
+// Only apply custom font on Android for now
+const USE_DEFAULT_FONT = Platform.OS === 'ios';
+
 const Typography: React.FC<TypographyProps> = props => {
-	const { children, variant, size, weight, style, ellipsize, number, ...rest } =
-		props;
+	const {
+		children,
+		variant = 'primary',
+		size = 'regular',
+		weight = 'regular',
+		style,
+		ellipsize,
+		number,
+		italic,
+		...rest
+	} = props;
 	const { theme } = useTheme();
 
 	return (
@@ -32,7 +44,13 @@ const Typography: React.FC<TypographyProps> = props => {
 			{...(ellipsize ? { numberOfLines: 1 } : {})}
 			{...rest}
 			style={[
-				generateTextStyles({ size, weight, variant, number, theme }),
+				{ color: theme.text[variant] },
+				applyFontStyles({
+					fontSize: normalizeFontSize(sizes[size]),
+					fontWeight: weightMap[weight],
+					fontStyle: italic ? 'italic' : 'normal',
+					...(number ? { fontVariant: ['tabular-nums'] } : {})
+				}),
 				style
 			]}
 		>
@@ -41,66 +59,63 @@ const Typography: React.FC<TypographyProps> = props => {
 	);
 };
 
-const generateTextStyles = ({
-	size = 'regular',
-	weight = 'regular',
-	variant = 'primary',
-	italic = false,
-	number,
-	theme
-}: Pick<
-	TypographyProps,
-	'size' | 'weight' | 'variant' | 'number' | 'italic'
-> & { theme: ThemeObject }): TextStyle => {
-	let fontFamily: string;
+// H/T: Bluesky social-app
+export const applyFontStyles = (style: TextStyle = {}) => {
+	if (USE_DEFAULT_FONT) return style;
 
 	if (Platform.OS === 'android') {
-		fontFamily =
+		style.fontFamily =
 			{
-				regular: 'Inter-Regular',
-				medium: 'Inter-Medium',
-				semibold: 'Inter-SemiBold',
-				bold: 'Inter-Bold'
-			}[weight] || 'Inter-Regular';
+				400: 'Inter-Regular',
+				500: 'Inter-Medium',
+				600: 'Inter-SemiBold',
+				700: 'Inter-Bold',
+				800: 'Inter-Bold',
+				900: 'Inter-Bold'
+			}[String(style.fontWeight || '400')] || 'Inter-Regular';
 
-		if (italic) {
-			if (fontFamily === 'Inter-Regular') {
-				fontFamily = 'Inter-Italic';
+		style.fontVariant = ['no-contextual'];
+
+		if (style.fontStyle === 'italic') {
+			if (style.fontFamily === 'Inter-Regular') {
+				style.fontFamily = 'Inter-Italic';
 			} else {
-				fontFamily += 'Italic';
+				style.fontFamily += 'Italic';
 			}
 		}
-	} else {
-		fontFamily = 'InterVariable';
 
-		if (italic) {
-			fontFamily += 'Italic';
+		delete style.fontWeight;
+		delete style.fontStyle;
+	} else {
+		style.fontFamily = 'InterVariable';
+
+		if (style.fontStyle === 'italic') {
+			style.fontFamily += 'Italic';
 		}
 	}
 
-	return {
-		color: theme.text[variant],
-		fontFamily,
-		fontSize: sizes[size],
-		// fontWeight: typography.weight[weight],
-		...(number ? { fontVariant: ['tabular-nums'] } : {})
-	};
+	return style;
 };
+
+const weightMap = {
+	regular: '400',
+	medium: '500',
+	semibold: '600',
+	bold: '700'
+} as const;
 
 const FONT_SCALE = PixelRatio.getFontScale();
 
 const normalizeFontSize = (size: number) => size / FONT_SCALE;
 
 const sizes = {
-	xsmall: normalizeFontSize(12),
-	small: normalizeFontSize(14),
-	regular: normalizeFontSize(
-		Platform.select({ ios: 17, android: 16, default: 15 })
-	),
-	large: normalizeFontSize(17),
-	xlarge: normalizeFontSize(20),
-	xxlarge: normalizeFontSize(24),
-	xxxlarge: normalizeFontSize(32)
+	xsmall: 12,
+	small: 14,
+	regular: Platform.select({ ios: 17, android: 16, default: 15 }),
+	large: 17,
+	xlarge: 20,
+	xxlarge: 24,
+	xxxlarge: 32
 } as const;
 
 const iOSFontSizes = {

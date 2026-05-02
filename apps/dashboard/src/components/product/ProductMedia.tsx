@@ -69,7 +69,7 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 				<ScrollView
 					horizontal
 					showsHorizontalScrollIndicator={false}
-					contentContainerStyle={[{ paddingLeft: 16, gap: 8 }]}
+					contentContainerStyle={[{ flexGrow: 1, paddingLeft: 16, gap: 8 }]}
 				>
 					{images.map(image => (
 						<View
@@ -101,10 +101,8 @@ const styles = StyleSheet.create({
 		overflow: 'hidden'
 	},
 	image: {
-		// width: '100%',
-		// height: '100%'
-		width: 100,
-		height: 100
+		width: '100%',
+		height: '100%'
 	},
 	header: {
 		flexDirection: 'row',

@@ -8,8 +8,8 @@ import Animated, {
 
 import { Icon } from './Icon';
 import { useTheme } from './Theme';
-import Typography from './Typography';
-import TextButton from './TextButton';
+import Typography, { applyFontStyles } from './Typography';
+import { TextButton } from './Button';
 
 interface SearchProps {
 	placeholder: string;
@@ -105,7 +105,11 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 							placeholder={search.placeholder}
 							placeholderTextColor={theme.text.secondary}
 							inputMode='search'
-							style={[styles.inputText, { color: theme.input.text }]}
+							style={[
+								styles.inputText,
+								{ color: theme.input.text },
+								applyFontStyles()
+							]}
 							onChangeText={search.onChangeText}
 							autoCapitalize='none'
 							autoCorrect={false}
@@ -158,7 +162,9 @@ const styles = StyleSheet.create({
 	inputText: {
 		flex: 1,
 		fontSize: 16,
-		height: '100%'
+		height: '100%',
+		textAlignVertical: 'top',
+		includeFontPadding: false
 	}
 });
 
