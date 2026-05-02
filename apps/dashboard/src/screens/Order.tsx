@@ -12,6 +12,7 @@ import PaymentInfo from '../components/order/PaymentInfo';
 import useRefresh from '../hooks/useRefresh';
 import { useOrderQuery } from '../data/queries';
 import { OrdersStackParamList } from '../navigation/types';
+import AndroidHeader from '../components/AndroidHeader';
 
 const Order = () => {
 	const {
@@ -35,6 +36,8 @@ const Order = () => {
 				/>
 			}
 		>
+			<AndroidHeader title='Order' hasBackButton screenPadded={false} />
+
 			<OrderOverview order={data.order} />
 			<AwaitingPickupBanner status={data.order.status} />
 			<CustomerDetails user={data.order.user} />

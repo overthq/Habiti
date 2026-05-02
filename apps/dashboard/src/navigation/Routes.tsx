@@ -64,7 +64,9 @@ import {
 	ProductsStackParamList,
 	ProfileStackParamList
 } from '../navigation/types';
-import { Linking } from 'react-native';
+import { Linking, Platform } from 'react-native';
+
+const USE_CUSTOM_HEADER = Platform.OS === 'android';
 
 Notifications.setNotificationHandler({
 	handleNotification: async () => ({
@@ -213,24 +215,26 @@ const MainTabNavigator = () => {
 const ProductStackNavigator = () => {
 	return (
 		<ProductStack.Navigator id='ProductStack'>
-			<ProductStack.Screen
-				name='Product.Main'
-				component={Product}
-				options={({ navigation }) => ({
-					headerTitle: 'Product',
-					headerBackButtonDisplayMode: 'minimal',
-					unstable_headerLeftItems: () => [
-						{
-							type: 'button',
-							label: 'Back',
-							icon: { type: 'sfSymbol', name: 'chevron.left' },
-							onPress: () => {
-								navigation.getParent()?.goBack();
+			<ProductStack.Group screenOptions={{ headerShown: !USE_CUSTOM_HEADER }}>
+				<ProductStack.Screen
+					name='Product.Main'
+					component={Product}
+					options={({ navigation }) => ({
+						headerTitle: 'Product',
+						headerBackButtonDisplayMode: 'minimal',
+						unstable_headerLeftItems: () => [
+							{
+								type: 'button',
+								label: 'Back',
+								icon: { type: 'sfSymbol', name: 'chevron.left' },
+								onPress: () => {
+									navigation.getParent()?.goBack();
+								}
 							}
-						}
-					]
-				})}
-			/>
+						]
+					})}
+				/>
+			</ProductStack.Group>
 		</ProductStack.Navigator>
 	);
 };
@@ -257,24 +261,27 @@ const OrdersStackNavigator = () => (
 			component={Orders}
 			options={{ headerShown: false }}
 		/>
-		<OrdersStack.Screen
-			name='Order'
-			component={Order}
-			options={{ headerBackButtonDisplayMode: 'minimal' }}
-		/>
-		<OrdersStack.Screen
-			name='CustomerInfo'
-			component={CustomerInfo}
-			options={{
-				headerTitle: 'Customer Information',
-				headerBackButtonDisplayMode: 'minimal'
-			}}
-		/>
-		<OrdersStack.Screen
-			name='Product'
-			component={ProductStackNavigator}
-			options={{ headerShown: false }}
-		/>
+
+		<OrdersStack.Group screenOptions={{ headerShown: !USE_CUSTOM_HEADER }}>
+			<OrdersStack.Screen
+				name='Order'
+				component={Order}
+				options={{ headerBackButtonDisplayMode: 'minimal' }}
+			/>
+			<OrdersStack.Screen
+				name='CustomerInfo'
+				component={CustomerInfo}
+				options={{
+					headerTitle: 'Customer Information',
+					headerBackButtonDisplayMode: 'minimal'
+				}}
+			/>
+			<OrdersStack.Screen
+				name='Product'
+				component={ProductStackNavigator}
+				options={{ headerShown: false }}
+			/>
+		</OrdersStack.Group>
 	</OrdersStack.Navigator>
 );
 
@@ -286,68 +293,71 @@ const StoreStackNavigator = () => {
 				component={Store}
 				options={{ headerShown: false }}
 			/>
-			<StoreStack.Screen
-				name='StoreSettings'
-				component={StoreSettingsMenu}
-				options={{
-					headerBackButtonDisplayMode: 'minimal',
-					headerTitle: 'Store Settings'
-				}}
-			/>
-			<StoreStack.Screen
-				name='BalanceDetails'
-				component={BalanceDetails}
-				options={{
-					headerBackButtonDisplayMode: 'minimal',
-					headerTitle: 'Balance Details'
-				}}
-			/>
-			<StoreStack.Screen
-				name='Edit Store'
-				component={EditStore}
-				options={{ headerBackButtonDisplayMode: 'minimal' }}
-			/>
-			<StoreStack.Screen
-				name='Managers'
-				component={Managers}
-				options={{ headerBackButtonDisplayMode: 'minimal' }}
-			/>
-			<StoreStack.Screen
-				name='Payouts'
-				component={StorePayouts}
-				options={{ headerBackButtonDisplayMode: 'minimal' }}
-			/>
-			<StoreStack.Screen
-				name='Categories'
-				component={Categories}
-				options={{ headerBackButtonDisplayMode: 'minimal' }}
-			/>
-			<StoreStack.Screen
-				name='Addresses'
-				component={Addresses}
-				options={{ headerBackButtonDisplayMode: 'minimal' }}
-			/>
-			<StoreStack.Screen
-				name='DeleteStore'
-				component={DeleteStore}
-				options={{
-					headerBackButtonDisplayMode: 'minimal',
-					headerTitle: 'Delete Store'
-				}}
-			/>
-			<StoreStack.Screen
-				name='Transactions'
-				component={Transactions}
-				options={{ headerBackButtonDisplayMode: 'minimal' }}
-			/>
-			<StoreStack.Screen
-				name='Transaction'
-				component={Transaction}
-				options={{
-					headerBackButtonDisplayMode: 'minimal',
-					headerTitle: 'Transaction'
-				}}
-			/>
+
+			<StoreStack.Group screenOptions={{ headerShown: !USE_CUSTOM_HEADER }}>
+				<StoreStack.Screen
+					name='StoreSettings'
+					component={StoreSettingsMenu}
+					options={{
+						headerBackButtonDisplayMode: 'minimal',
+						headerTitle: 'Store Settings'
+					}}
+				/>
+				<StoreStack.Screen
+					name='BalanceDetails'
+					component={BalanceDetails}
+					options={{
+						headerBackButtonDisplayMode: 'minimal',
+						headerTitle: 'Balance Details'
+					}}
+				/>
+				<StoreStack.Screen
+					name='Edit Store'
+					component={EditStore}
+					options={{ headerBackButtonDisplayMode: 'minimal' }}
+				/>
+				<StoreStack.Screen
+					name='Managers'
+					component={Managers}
+					options={{ headerBackButtonDisplayMode: 'minimal' }}
+				/>
+				<StoreStack.Screen
+					name='Payouts'
+					component={StorePayouts}
+					options={{ headerBackButtonDisplayMode: 'minimal' }}
+				/>
+				<StoreStack.Screen
+					name='Categories'
+					component={Categories}
+					options={{ headerBackButtonDisplayMode: 'minimal' }}
+				/>
+				<StoreStack.Screen
+					name='Addresses'
+					component={Addresses}
+					options={{ headerBackButtonDisplayMode: 'minimal' }}
+				/>
+				<StoreStack.Screen
+					name='DeleteStore'
+					component={DeleteStore}
+					options={{
+						headerBackButtonDisplayMode: 'minimal',
+						headerTitle: 'Delete Store'
+					}}
+				/>
+				<StoreStack.Screen
+					name='Transactions'
+					component={Transactions}
+					options={{ headerBackButtonDisplayMode: 'minimal' }}
+				/>
+				<StoreStack.Screen
+					name='Transaction'
+					component={Transaction}
+					options={{
+						headerBackButtonDisplayMode: 'minimal',
+						headerTitle: 'Transaction'
+					}}
+				/>
+			</StoreStack.Group>
 		</StoreStack.Navigator>
 	);
 };
@@ -359,19 +369,22 @@ const ProfileStackNavigator = () => (
 			component={Profile}
 			options={{ headerShown: false }}
 		/>
-		<ProfileStack.Screen
-			name='Appearance'
-			component={Appearance}
-			options={{ headerBackButtonDisplayMode: 'minimal' }}
-		/>
-		<ProfileStack.Screen
-			name='ManageAccount'
-			component={ManageAccount}
-			options={{
-				headerBackButtonDisplayMode: 'minimal',
-				headerTitle: 'Manage Account'
-			}}
-		/>
+
+		<ProfileStack.Group screenOptions={{ headerShown: !USE_CUSTOM_HEADER }}>
+			<ProfileStack.Screen
+				name='Appearance'
+				component={Appearance}
+				options={{ headerBackButtonDisplayMode: 'minimal' }}
+			/>
+			<ProfileStack.Screen
+				name='ManageAccount'
+				component={ManageAccount}
+				options={{
+					headerBackButtonDisplayMode: 'minimal',
+					headerTitle: 'Manage Account'
+				}}
+			/>
+		</ProfileStack.Group>
 	</ProfileStack.Navigator>
 );
 
@@ -412,7 +425,7 @@ const Routes: React.FC = () => {
 						<AppStack.Group
 							screenOptions={({ navigation }) => ({
 								presentation: 'modal',
-								headerShown: true,
+								headerShown: !USE_CUSTOM_HEADER,
 								headerBackButtonDisplayMode: 'minimal',
 								unstable_headerLeftItems: () => [
 									{

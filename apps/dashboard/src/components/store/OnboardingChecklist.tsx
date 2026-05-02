@@ -62,7 +62,7 @@ const ChecklistItem: React.FC<ChecklistItemProps> = ({
 			</View>
 
 			<Spacer x={12} />
-			<Typography size='small'>{label}</Typography>
+			<Typography>{label}</Typography>
 		</Pressable>
 	);
 };

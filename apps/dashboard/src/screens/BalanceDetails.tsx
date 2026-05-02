@@ -10,6 +10,7 @@ import {
 } from '@habiti/components';
 import RecentTransactions from '../components/store/RecentTransactions';
 import { useCurrentStoreQuery } from '../data/queries';
+import AndroidHeader from '../components/AndroidHeader';
 
 interface BalanceRowProps {
 	label: string;
@@ -51,6 +52,12 @@ const BalanceDetails = () => {
 
 	return (
 		<ScrollableScreen style={{ paddingHorizontal: 16 }}>
+			<AndroidHeader
+				title='Balance Details'
+				hasBackButton
+				// screenPadded={false}
+			/>
+
 			<Spacer y={16} />
 
 			<View style={[styles.list, { backgroundColor: theme.input.background }]}>

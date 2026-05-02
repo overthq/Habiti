@@ -11,6 +11,7 @@ import {
 import OrderDetail from '../components/customer-info/OrderDetail';
 import { useCustomerInfoQuery } from '../data/queries';
 import type { OrdersStackParamList } from '../navigation/types';
+import AndroidHeader from '../components/AndroidHeader';
 
 const CustomerInfo = () => {
 	const { params } =
@@ -28,6 +29,12 @@ const CustomerInfo = () => {
 
 	return (
 		<ScrollableScreen style={styles.container}>
+			<AndroidHeader
+				title='Customer Details'
+				hasBackButton
+				screenPadded={false}
+			/>
+
 			<Typography weight='medium' size='xlarge'>
 				{data.user.name}
 			</Typography>

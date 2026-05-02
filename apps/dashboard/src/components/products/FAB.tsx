@@ -1,18 +1,24 @@
 import { Icon, Typography, useTheme } from '@habiti/components';
 import { Pressable, StyleSheet, PressableProps } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface FABProps extends PressableProps {
 	text: string;
+	safeAreaPadding?: boolean;
 }
 
-const FAB: React.FC<FABProps> = ({ text, ...props }) => {
+const FAB: React.FC<FABProps> = ({ text, safeAreaPadding, ...props }) => {
 	const { theme } = useTheme();
+	const { bottom } = useSafeAreaInsets();
 
 	return (
 		<Pressable
 			style={[
 				styles.container,
-				{ backgroundColor: theme.button.primary.background }
+				{
+					backgroundColor: theme.button.primary.background,
+					bottom: safeAreaPadding ? bottom : 16
+				}
 			]}
 			{...props}
 		>
@@ -31,7 +37,6 @@ const FAB: React.FC<FABProps> = ({ text, ...props }) => {
 const styles = StyleSheet.create({
 	container: {
 		position: 'absolute',
-		bottom: 16,
 		flexDirection: 'row',
 		gap: 8,
 		alignItems: 'center',

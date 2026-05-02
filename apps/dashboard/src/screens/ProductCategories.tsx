@@ -10,6 +10,7 @@ import {
 } from '@react-navigation/native';
 
 import FAB from '../components/products/FAB';
+import AndroidHeader from '../components/AndroidHeader';
 
 import { useCategoriesQuery } from '../data/queries';
 import { useUpdateProductCategoriesMutation } from '../data/mutations';
@@ -84,6 +85,12 @@ const ProductCategories = () => {
 
 	return (
 		<Screen style={styles.container}>
+			<AndroidHeader
+				title='Product Categories'
+				hasBackButton
+				screenPadded={false}
+			/>
+
 			<View style={{ flex: 1 }}>
 				{data?.categories.map(({ id, name }) => (
 					<View key={id} style={styles.row}>
