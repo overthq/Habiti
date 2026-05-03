@@ -17,7 +17,7 @@ const Landing = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	return (
-		<Screen style={{ paddingHorizontal: 16, justifyContent: 'center' }}>
+		<Screen style={{ justifyContent: 'center' }}>
 			<SafeAreaView style={{ flex: 1 }}>
 				<View style={{ flex: 1 }} />
 				<View style={{ flex: 1 }}>

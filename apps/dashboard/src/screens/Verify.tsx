@@ -51,7 +51,7 @@ const Verify = ({ navigation }: AppStackScreenProps<'Verify'>) => {
 	};
 
 	return (
-		<Screen style={{ padding: 16 }}>
+		<Screen>
 			<SafeAreaView>
 				<Pressable onPress={handleBack}>
 					<Icon name='chevron-left' />

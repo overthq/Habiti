@@ -2,8 +2,6 @@ import React from 'react';
 import { Alert, View } from 'react-native';
 import { Screen, Typography, Spacer, Button } from '@habiti/components';
 
-import AndroidHeader from '../components/AndroidHeader';
-
 import { useDeleteAccountMutation } from '../data/mutations';
 
 const ManageAccount = () => {
@@ -25,9 +23,7 @@ const ManageAccount = () => {
 	}, [deleteAccount]);
 
 	return (
-		<Screen style={{ padding: 16 }}>
-			<AndroidHeader title='Manage Account' hasBackButton />
-
+		<Screen>
 			<View>
 				<Typography weight='medium'>Danger Zone</Typography>
 				<Spacer y={8} />

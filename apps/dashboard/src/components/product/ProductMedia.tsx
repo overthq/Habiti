@@ -22,7 +22,6 @@ const NoImages: React.FC<NoImagesProps> = ({ action }) => {
 			style={{
 				backgroundColor: theme.input.background,
 				padding: 12,
-				marginHorizontal: 16,
 				borderRadius: 6
 			}}
 		>
@@ -107,8 +106,7 @@ const styles = StyleSheet.create({
 	header: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems: 'center',
-		paddingHorizontal: 16
+		alignItems: 'center'
 	}
 });
 

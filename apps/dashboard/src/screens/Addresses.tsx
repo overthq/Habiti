@@ -4,7 +4,6 @@ import {
 	EmptyState,
 	Icon,
 	Row,
-	Screen,
 	ScrollableScreen,
 	Spacer,
 	Typography,
@@ -97,8 +96,9 @@ const Addresses = () => {
 	}
 
 	return (
-		<Screen>
+		<>
 			<ScrollableScreen
+				contentContainerStyle={{ padding: 0 }}
 				refreshControl={
 					<RefreshControl
 						refreshing={isRefreshing}
@@ -107,7 +107,6 @@ const Addresses = () => {
 					/>
 				}
 			>
-				<Spacer y={16} />
 				{data?.addresses.map(address => (
 					<AddressListItem
 						key={address.id}
@@ -117,7 +116,7 @@ const Addresses = () => {
 				))}
 			</ScrollableScreen>
 			<FAB onPress={handleAddAddress} text='Add Address' />
-		</Screen>
+		</>
 	);
 };
 

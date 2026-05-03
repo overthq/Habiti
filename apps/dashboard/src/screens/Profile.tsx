@@ -35,7 +35,7 @@ const Profile = ({ navigation }: ProfileStackScreenProps<'ProfileHome'>) => {
 	}, [logOut]);
 
 	return (
-		<Screen style={{ paddingTop: top }}>
+		<Screen style={{ padding: 0, paddingTop: top }}>
 			<ScreenHeader title='Profile' />
 			{user && (
 				<View

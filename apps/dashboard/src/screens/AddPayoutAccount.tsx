@@ -49,7 +49,7 @@ const AddPayoutAccount = () => {
 	}, []);
 
 	return (
-		<ScrollableScreen style={{ paddingHorizontal: 16, paddingTop: 16 }}>
+		<ScrollableScreen>
 			<FormProvider {...methods}>
 				<FormInput
 					ref={inputRef}

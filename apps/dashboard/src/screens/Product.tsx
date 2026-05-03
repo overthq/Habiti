@@ -13,7 +13,6 @@ import { useProductQuery } from '../data/queries';
 import useRefresh from '../hooks/useRefresh';
 
 import { ProductStackParamList } from '../navigation/types';
-import AndroidHeader from '../components/AndroidHeader';
 
 const Product = () => {
 	const {
@@ -40,10 +39,6 @@ const Product = () => {
 			}
 			showsVerticalScrollIndicator={true}
 		>
-			<AndroidHeader title='Product' hasBackButton screenPadded={false} />
-
-			<Spacer y={16} />
-
 			<ProductDetails product={data.product} />
 
 			<Spacer y={16} />

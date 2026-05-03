@@ -19,7 +19,7 @@ const Products = ({ navigation }: MainTabScreenProps<'Products'>) => {
 
 	return (
 		<ProductsProvider>
-			<Screen style={{ paddingTop: top }}>
+			<Screen style={{ padding: 0, paddingTop: top }}>
 				<ProductsScreenHeader />
 				<Animated.View style={{ flex: 1 }} layout={LinearTransition}>
 					<ProductList />

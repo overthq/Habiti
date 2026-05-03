@@ -85,8 +85,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		gap: 12,
-		paddingHorizontal: 16
+		gap: 12
 	},
 	button: {
 		flex: 1,

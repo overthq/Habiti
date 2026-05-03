@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Screen, Spacer, Typography } from '@habiti/components';
 import { useNavigation } from '@react-navigation/native';
@@ -28,7 +28,7 @@ const StoreSelect = () => {
 
 	if (!STORE_CREATION_ENABLED && !hasStores) {
 		return (
-			<Screen style={styles.container}>
+			<Screen>
 				<SafeAreaView style={{ flex: 1 }}>
 					<Typography size='xxlarge' weight='bold'>
 						No stores
@@ -45,7 +45,7 @@ const StoreSelect = () => {
 	}
 
 	return (
-		<Screen style={styles.container}>
+		<Screen>
 			<SafeAreaView style={{ flex: 1 }}>
 				<Typography size='xxlarge' weight='bold'>
 					{hasStores ? 'Select store' : 'Create a new store'}
@@ -69,12 +69,5 @@ const StoreSelect = () => {
 		</Screen>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		paddingHorizontal: 16,
-		paddingTop: 16
-	}
-});
 
 export default StoreSelect;

@@ -104,7 +104,7 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 	}, []);
 
 	return (
-		<Screen style={styles.container}>
+		<Screen>
 			<View style={styles.avatarSection}>
 				<Avatar uri={imagePreview} size={96} fallbackText={store.name} />
 
@@ -155,10 +155,6 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		paddingTop: 16,
-		paddingHorizontal: 16
-	},
 	avatarSection: {
 		alignItems: 'center',
 		marginBottom: 16,

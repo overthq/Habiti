@@ -5,9 +5,7 @@ import {
 	EmptyState,
 	Icon,
 	Row,
-	Screen,
 	ScrollableScreen,
-	Spacer,
 	Typography,
 	useTheme
 } from '@habiti/components';
@@ -91,8 +89,9 @@ const Categories = () => {
 	}
 
 	return (
-		<Screen>
+		<>
 			<ScrollableScreen
+				contentContainerStyle={{ padding: 0 }}
 				refreshControl={
 					<RefreshControl
 						refreshing={isRefreshing}
@@ -101,7 +100,6 @@ const Categories = () => {
 					/>
 				}
 			>
-				<Spacer y={16} />
 				{data?.categories.map(category => (
 					<CategoriesListItem
 						key={category.id}
@@ -111,7 +109,7 @@ const Categories = () => {
 				))}
 			</ScrollableScreen>
 			<FAB onPress={handleAddCategory} text='Add Category' />
-		</Screen>
+		</>
 	);
 };
 

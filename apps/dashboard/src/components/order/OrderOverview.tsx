@@ -33,7 +33,7 @@ const OrderOverview: React.FC<OrderOverviewProps> = ({ order }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		padding: 16
+		paddingBottom: 16
 	}
 });
 

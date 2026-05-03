@@ -39,7 +39,7 @@ const Register = () => {
 	};
 
 	return (
-		<Screen style={{ padding: 16 }}>
+		<Screen>
 			<SafeAreaView style={{ flex: 1 }}>
 				<Pressable onPress={goBack}>
 					<Icon name='chevron-left' />

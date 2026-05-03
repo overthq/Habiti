@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { ScrollableScreen, Spacer, Typography } from '@habiti/components';
 import {
 	NavigationProp,
@@ -11,7 +11,6 @@ import {
 import OrderDetail from '../components/customer-info/OrderDetail';
 import { useCustomerInfoQuery } from '../data/queries';
 import type { OrdersStackParamList } from '../navigation/types';
-import AndroidHeader from '../components/AndroidHeader';
 
 const CustomerInfo = () => {
 	const { params } =
@@ -28,13 +27,7 @@ const CustomerInfo = () => {
 	}
 
 	return (
-		<ScrollableScreen style={styles.container}>
-			<AndroidHeader
-				title='Customer Details'
-				hasBackButton
-				screenPadded={false}
-			/>
-
+		<ScrollableScreen>
 			<Typography weight='medium' size='xlarge'>
 				{data.user.name}
 			</Typography>
@@ -52,11 +45,5 @@ const CustomerInfo = () => {
 		</ScrollableScreen>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		padding: 16
-	}
-});
 
 export default CustomerInfo;

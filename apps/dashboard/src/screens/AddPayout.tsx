@@ -65,7 +65,7 @@ const AddPayout = () => {
 				onClear={handleClear}
 				onDelete={handleDelete}
 			/>
-			<View style={{ marginBottom: 56, paddingHorizontal: 16 }}>
+			<View style={{ marginBottom: 56 }}>
 				<Button
 					disabled={
 						availableBalance === 0 ||

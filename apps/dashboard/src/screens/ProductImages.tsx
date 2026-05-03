@@ -9,7 +9,6 @@ import { AppStackParamList } from '../navigation/types';
 import { useUpdateProductMutation } from '../data/mutations';
 import { uploadImage } from '../data/requests';
 import FAB from '../components/products/FAB';
-import AndroidHeader from '../components/AndroidHeader';
 
 interface UploadedImage {
 	url: string;
@@ -98,13 +97,7 @@ const ProductImages = () => {
 	};
 
 	return (
-		<Screen style={styles.container}>
-			<AndroidHeader
-				title='Product Images'
-				hasBackButton
-				screenPadded={false}
-			/>
-
+		<Screen>
 			<View style={styles.images}>
 				{images?.map(({ id, path }) => (
 					<Image
@@ -132,9 +125,6 @@ const ProductImages = () => {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		padding: 16
-	},
 	images: {
 		width: '100%',
 		flexDirection: 'row'

@@ -9,12 +9,7 @@ import {
 
 import { useTheme } from './Theme';
 
-interface ScreenProps extends ViewProps {
-	paddingType?: 'sides' | 'all';
-	paddingSize?: 'small' | 'medium' | 'large';
-}
-
-export const Screen: React.FC<ScreenProps> = props => {
+export const Screen: React.FC<ViewProps> = props => {
 	const { theme } = useTheme();
 
 	return (
@@ -29,12 +24,7 @@ export const Screen: React.FC<ScreenProps> = props => {
 	);
 };
 
-interface ScrollableScreenProps extends ScrollViewProps {
-	paddingType?: 'sides' | 'all';
-	paddingSize?: 'small' | 'medium' | 'large';
-}
-
-export const ScrollableScreen: React.FC<ScrollableScreenProps> = props => {
+export const ScrollableScreen: React.FC<ScrollViewProps> = props => {
 	const { theme } = useTheme();
 
 	return (
@@ -42,13 +32,14 @@ export const ScrollableScreen: React.FC<ScrollableScreenProps> = props => {
 			keyboardShouldPersistTaps='handled'
 			keyboardDismissMode='on-drag'
 			{...props}
-			contentContainerStyle={{
-				flexGrow: 1,
-				backgroundColor: theme.screen.background
-			}}
+			contentContainerStyle={[
+				styles.contentContainer,
+				{ backgroundColor: theme.screen.background },
+				props.contentContainerStyle
+			]}
 			style={[
 				{ backgroundColor: theme.screen.background },
-				styles.container,
+				styles.scrollContainer,
 				props.style
 			]}
 		/>
@@ -57,6 +48,14 @@ export const ScrollableScreen: React.FC<ScrollableScreenProps> = props => {
 
 const styles = StyleSheet.create({
 	container: {
+		flex: 1,
+		padding: 16
+	},
+	scrollContainer: {
 		flex: 1
+	},
+	contentContainer: {
+		flexGrow: 1,
+		padding: 16
 	}
 });

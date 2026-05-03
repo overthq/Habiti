@@ -1,18 +1,15 @@
 import { View, Pressable, StyleSheet, Platform } from 'react-native';
 import { Icon, Typography, useTheme } from '@habiti/components';
 import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface AndroidHeaderProps {
 	title: string;
 	hasBackButton?: boolean;
-	screenPadded?: boolean;
 }
 
-const AndroidHeader = ({
-	title,
-	hasBackButton = true,
-	screenPadded = true
-}: AndroidHeaderProps) => {
+const AndroidHeader = ({ title, hasBackButton = true }: AndroidHeaderProps) => {
+	const { top } = useSafeAreaInsets();
 	const { theme } = useTheme();
 	const { goBack } = useNavigation();
 
@@ -21,14 +18,13 @@ const AndroidHeader = ({
 	return (
 		<View
 			style={{
-				marginHorizontal: screenPadded ? -16 : 0,
-				paddingVertical: 16,
+				paddingTop: top + 16,
+				paddingBottom: 16,
 				paddingHorizontal: 16,
 				flexDirection: 'row',
 				borderColor: theme.border.color,
 				borderBottomWidth: StyleSheet.hairlineWidth,
 				gap: 12,
-				marginBottom: 8,
 				alignItems: 'center',
 				justifyContent: 'space-between'
 			}}

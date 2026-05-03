@@ -10,7 +10,6 @@ import {
 } from '@react-navigation/native';
 
 import FAB from '../components/products/FAB';
-import AndroidHeader from '../components/AndroidHeader';
 
 import { useCategoriesQuery } from '../data/queries';
 import { useUpdateProductCategoriesMutation } from '../data/mutations';
@@ -84,13 +83,7 @@ const ProductCategories = () => {
 	}, [disabled, handleUpdateCategories]);
 
 	return (
-		<Screen style={styles.container}>
-			<AndroidHeader
-				title='Product Categories'
-				hasBackButton
-				screenPadded={false}
-			/>
-
+		<Screen>
 			<View style={{ flex: 1 }}>
 				{data?.categories.map(({ id, name }) => (
 					<View key={id} style={styles.row}>
@@ -108,10 +101,6 @@ const ProductCategories = () => {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		paddingVertical: 8,
-		paddingHorizontal: 16
-	},
 	row: {
 		flexDirection: 'row',
 		alignItems: 'center',

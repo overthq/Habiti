@@ -44,7 +44,7 @@ const AddAddress = () => {
 	}, []);
 
 	return (
-		<ScrollableScreen style={styles.container}>
+		<ScrollableScreen>
 			<FormInput
 				name='name'
 				label='Address name'
@@ -105,10 +105,6 @@ const AddAddress = () => {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		paddingTop: 16,
-		paddingHorizontal: 16
-	},
 	input: {
 		marginBottom: 8
 	},

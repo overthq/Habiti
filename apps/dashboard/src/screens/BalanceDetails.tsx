@@ -10,7 +10,6 @@ import {
 } from '@habiti/components';
 import RecentTransactions from '../components/store/RecentTransactions';
 import { useCurrentStoreQuery } from '../data/queries';
-import AndroidHeader from '../components/AndroidHeader';
 
 interface BalanceRowProps {
 	label: string;
@@ -51,15 +50,7 @@ const BalanceDetails = () => {
 	const available = (realizedRevenue ?? 0) - (paidOut ?? 0);
 
 	return (
-		<ScrollableScreen style={{ paddingHorizontal: 16 }}>
-			<AndroidHeader
-				title='Balance Details'
-				hasBackButton
-				// screenPadded={false}
-			/>
-
-			<Spacer y={16} />
-
+		<ScrollableScreen>
 			<View style={[styles.list, { backgroundColor: theme.input.background }]}>
 				<BalanceRow label='Available' amount={available} />
 				<BalanceRow label='Realized revenue' amount={realizedRevenue ?? 0} />
