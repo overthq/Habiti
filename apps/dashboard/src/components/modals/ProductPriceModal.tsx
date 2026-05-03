@@ -1,4 +1,5 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import {
 	BottomModal,
 	Button,
@@ -12,8 +13,8 @@ import {
 	BottomSheetView
 } from '@gorhom/bottom-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { StyleSheet } from 'react-native';
 import { useUpdateProductMutation } from '../../data/mutations';
+import { applyFontStyles } from '@habiti/components/src/Typography';
 
 interface ProductPriceModalProps {
 	modalRef: React.RefObject<BottomSheetModal>;
@@ -51,16 +52,28 @@ const ProductPriceModal: React.FC<ProductPriceModalProps> = ({
 				<Typography size='xlarge' weight='semibold'>
 					Price
 				</Typography>
+
 				<Spacer y={16} />
+
 				<BottomSheetTextInput
-					style={[styles.input, { color: theme.input.text }]}
+					style={[
+						styles.input,
+						{
+							color: theme.input.text,
+							textAlignVertical: 'top',
+							includeFontPadding: false
+						},
+						applyFontStyles()
+					]}
 					value={price}
 					onChangeText={setPrice}
 					autoFocus
 					keyboardAppearance={name === 'dark' ? 'dark' : 'light'}
 					keyboardType='numeric'
 				/>
+
 				<Spacer y={16} />
+
 				<Button
 					text='Save'
 					onPress={handleSubmit}
@@ -76,7 +89,7 @@ const styles = StyleSheet.create({
 	input: {
 		fontSize: 32,
 		fontWeight: 'medium',
-		height: 36,
+		padding: 12,
 		alignSelf: 'center'
 	}
 });
