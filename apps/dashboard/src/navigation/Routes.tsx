@@ -64,58 +64,10 @@ import {
 	ProductsStackParamList,
 	ProfileStackParamList
 } from '../navigation/types';
-import { Linking, Platform, View } from 'react-native';
-import AndroidHeader from '../components/AndroidHeader';
+import { Linking, Platform } from 'react-native';
+import CustomHeader from '../components/CustomHeader';
 
 const USE_CUSTOM_HEADER = Platform.OS === 'android';
-
-// FIXME: We should do away with this map if we can.
-const SCREEN_TITLES: Record<string, string> = {
-	'Product.Main': 'Product',
-	Order: 'Order',
-	CustomerInfo: 'Customer Information',
-	StoreSettings: 'Store Settings',
-	BalanceDetails: 'Balance Details',
-	'Edit Store': 'Edit Store',
-	Managers: 'Managers',
-	Payouts: 'Payouts',
-	Categories: 'Categories',
-	Addresses: 'Addresses',
-	DeleteStore: 'Delete Store',
-	Transactions: 'Transactions',
-	Transaction: 'Transaction',
-	Appearance: 'Appearance',
-	ManageAccount: 'Manage Account',
-	'Modal.AddProduct': 'Add Product',
-	'Modal.AddPayout': 'Add Payout',
-	'Modal.AddCategory': 'Add Category',
-	'Modal.EditCategory': 'Edit Category',
-	'Modal.AddAddress': 'Add Address',
-	'Modal.EditAddress': 'Edit Address',
-	'Modal.AddManager': 'Add Manager',
-	'Modal.CreateStore': 'Create Store',
-	'Modal.AddPayoutAccount': 'Add Payout Account',
-	'Modal.Order': 'Order',
-	'Modal.EditProductDetails': 'Product Details',
-	'Modal.EditProductImages': 'Media',
-	'Modal.EditProductCategories': 'Categories',
-	'Modal.Transactions': 'Transactions'
-};
-
-const customScreenLayout = ({
-	route,
-	children
-}: {
-	route: { name: string };
-	children: React.ReactNode;
-}) => (
-	<View style={{ flex: 1 }}>
-		{USE_CUSTOM_HEADER && (
-			<AndroidHeader title={SCREEN_TITLES[route.name] ?? route.name} />
-		)}
-		{children}
-	</View>
-);
 
 Notifications.setNotificationHandler({
 	handleNotification: async () => ({
@@ -265,8 +217,9 @@ const ProductStackNavigator = () => {
 	return (
 		<ProductStack.Navigator id='ProductStack'>
 			<ProductStack.Group
-				screenOptions={{ headerShown: !USE_CUSTOM_HEADER }}
-				screenLayout={customScreenLayout}
+				screenOptions={{
+					header: USE_CUSTOM_HEADER ? CustomHeader : undefined
+				}}
 			>
 				<ProductStack.Screen
 					name='Product.Main'
@@ -315,8 +268,7 @@ const OrdersStackNavigator = () => (
 		/>
 
 		<OrdersStack.Group
-			screenOptions={{ headerShown: !USE_CUSTOM_HEADER }}
-			screenLayout={customScreenLayout}
+			screenOptions={{ header: USE_CUSTOM_HEADER ? CustomHeader : undefined }}
 		>
 			<OrdersStack.Screen
 				name='Order'
@@ -350,8 +302,7 @@ const StoreStackNavigator = () => {
 			/>
 
 			<StoreStack.Group
-				screenOptions={{ headerShown: !USE_CUSTOM_HEADER }}
-				screenLayout={customScreenLayout}
+				screenOptions={{ header: USE_CUSTOM_HEADER ? CustomHeader : undefined }}
 			>
 				<StoreStack.Screen
 					name='StoreSettings'
@@ -429,8 +380,7 @@ const ProfileStackNavigator = () => (
 		/>
 
 		<ProfileStack.Group
-			screenOptions={{ headerShown: !USE_CUSTOM_HEADER }}
-			screenLayout={customScreenLayout}
+			screenOptions={{ header: USE_CUSTOM_HEADER ? CustomHeader : undefined }}
 		>
 			<ProfileStack.Screen
 				name='Appearance'
@@ -484,10 +434,10 @@ const Routes: React.FC = () => {
 							<AppStack.Screen name='StoreSelect' component={StoreSelect} />
 						)}
 						<AppStack.Group
-							screenLayout={customScreenLayout}
 							screenOptions={({ navigation }) => ({
 								presentation: 'modal',
-								headerShown: !USE_CUSTOM_HEADER,
+								headerShown: true,
+								header: USE_CUSTOM_HEADER ? CustomHeader : undefined,
 								headerBackButtonDisplayMode: 'minimal',
 								unstable_headerLeftItems: () => [
 									{

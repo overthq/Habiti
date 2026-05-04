@@ -1,6 +1,6 @@
-import { Button, Input, ScrollableScreen, Spacer } from '@habiti/components';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { Button, Input, ScrollableScreen, Spacer } from '@habiti/components';
 
 const AddManager = () => {
 	const { handleSubmit } = useForm();
