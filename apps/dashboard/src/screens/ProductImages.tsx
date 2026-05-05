@@ -97,7 +97,7 @@ const ProductImages = () => {
 	};
 
 	return (
-		<Screen style={styles.container}>
+		<Screen>
 			<View style={styles.images}>
 				{images?.map(({ id, path }) => (
 					<Image
@@ -125,9 +125,6 @@ const ProductImages = () => {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		padding: 16
-	},
 	images: {
 		width: '100%',
 		flexDirection: 'row'

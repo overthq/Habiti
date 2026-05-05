@@ -14,6 +14,7 @@ const performRefresh = async (): Promise<RefreshTokenResponse> => {
 	const storedRefreshToken = await SecureStore.getItemAsync('refreshToken');
 
 	if (!storedRefreshToken) {
+		useStore.getState().logOut();
 		throw new Error('No refresh token available');
 	}
 
@@ -35,10 +36,13 @@ const performRefresh = async (): Promise<RefreshTokenResponse> => {
 	};
 
 	if (!response.ok) {
+		useStore.getState().logOut();
+		await SecureStore.deleteItemAsync('refreshToken');
 		throw new Error(data?.message ?? 'Refresh failed');
 	}
 
 	if (!data.accessToken || !data.refreshToken) {
+		useStore.getState().logOut();
 		throw new Error('Invalid refresh response');
 	}
 

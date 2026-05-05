@@ -53,7 +53,7 @@ const EditAddress = () => {
 	});
 
 	return (
-		<ScrollableScreen style={{ padding: 16 }}>
+		<ScrollableScreen>
 			<FormProvider {...methods}>
 				<FormInput label='Name' name='name' control={methods.control} />
 				<Spacer y={8} />

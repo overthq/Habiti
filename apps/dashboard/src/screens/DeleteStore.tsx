@@ -30,7 +30,7 @@ const DeleteStore = () => {
 	};
 
 	return (
-		<Screen style={{ padding: 16 }}>
+		<Screen>
 			<Typography variant='secondary' size='small'>
 				You can delete the store using the button below. Please note that this
 				will also delete all products, orders and payout information.

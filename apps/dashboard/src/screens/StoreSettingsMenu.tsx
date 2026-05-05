@@ -5,7 +5,7 @@ import { Screen } from '@habiti/components';
 
 const StoreSettingsMenu = () => {
 	return (
-		<Screen>
+		<Screen style={{ padding: 0 }}>
 			<StoreMenu />
 		</Screen>
 	);

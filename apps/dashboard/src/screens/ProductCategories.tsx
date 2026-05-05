@@ -83,7 +83,7 @@ const ProductCategories = () => {
 	}, [disabled, handleUpdateCategories]);
 
 	return (
-		<Screen style={styles.container}>
+		<Screen>
 			<View style={{ flex: 1 }}>
 				{data?.categories.map(({ id, name }) => (
 					<View key={id} style={styles.row}>
@@ -101,10 +101,6 @@ const ProductCategories = () => {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		paddingVertical: 8,
-		paddingHorizontal: 16
-	},
 	row: {
 		flexDirection: 'row',
 		alignItems: 'center',

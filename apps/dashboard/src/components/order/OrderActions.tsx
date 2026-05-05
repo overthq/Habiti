@@ -57,7 +57,9 @@ const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 					onPress={onConfirmReadyForPickup}
 				/>
 			)}
+
 			<Spacer y={8} />
+
 			{status !== OrderStatus.Cancelled && status !== OrderStatus.Completed && (
 				<Button
 					loading={updateOrderMutation.isPending}
@@ -72,7 +74,7 @@ const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		padding: 16
+		paddingVertical: 16
 	}
 });
 

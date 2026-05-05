@@ -19,7 +19,7 @@ const CustomerDetails: React.FC<CustomerDetailProps> = ({ user }) => {
 	}, [user.id]);
 
 	return (
-		<View style={styles.container}>
+		<View>
 			<Typography weight='medium'>Customer</Typography>
 			<Spacer y={8} />
 			<Pressable
@@ -37,9 +37,6 @@ const CustomerDetails: React.FC<CustomerDetailProps> = ({ user }) => {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		paddingHorizontal: 16
-	},
 	button: {
 		paddingHorizontal: 12,
 		paddingVertical: 10,

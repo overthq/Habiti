@@ -9,7 +9,7 @@ interface ProductDetailsProps {
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 	return (
-		<View style={styles.container}>
+		<View>
 			<Typography size='xlarge' weight='medium'>
 				{product.name}
 			</Typography>
@@ -18,11 +18,5 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 		</View>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		marginHorizontal: 16
-	}
-});
 
 export default ProductDetails;

@@ -23,7 +23,7 @@ const ManageAccount = () => {
 	}, [deleteAccount]);
 
 	return (
-		<Screen style={{ padding: 16 }}>
+		<Screen>
 			<View>
 				<Typography weight='medium'>Danger Zone</Typography>
 				<Spacer y={8} />

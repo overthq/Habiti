@@ -32,10 +32,8 @@ const BalanceRow: React.FC<BalanceRowProps> = ({ label, amount, isLast }) => {
 					: {}
 			]}
 		>
-			<Typography size='small'>{label}</Typography>
-			<Typography size='small' weight='medium'>
-				{formatNaira(amount)}
-			</Typography>
+			<Typography variant='secondary'>{label}</Typography>
+			<Typography>{formatNaira(amount)}</Typography>
 		</View>
 	);
 };
@@ -52,9 +50,7 @@ const BalanceDetails = () => {
 	const available = (realizedRevenue ?? 0) - (paidOut ?? 0);
 
 	return (
-		<ScrollableScreen style={{ paddingHorizontal: 16 }}>
-			<Spacer y={16} />
-
+		<ScrollableScreen>
 			<View style={[styles.list, { backgroundColor: theme.input.background }]}>
 				<BalanceRow label='Available' amount={available} />
 				<BalanceRow label='Realized revenue' amount={realizedRevenue ?? 0} />

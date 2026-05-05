@@ -22,7 +22,7 @@ const NoPayoutAccount = () => {
 	}, []);
 
 	return (
-		<View style={{ padding: 16 }}>
+		<Screen>
 			<Typography weight='medium' size='large'>
 				No payout account set up
 			</Typography>
@@ -32,7 +32,7 @@ const NoPayoutAccount = () => {
 			</Typography>
 			<Spacer y={16} />
 			<Button onPress={handleAddPayoutAccount} text='Add payout account' />
-		</View>
+		</Screen>
 	);
 };
 
@@ -80,8 +80,6 @@ const StorePayouts = () => {
 		<Screen>
 			<View
 				style={{
-					marginTop: 16,
-					marginHorizontal: 16,
 					padding: 12,
 					backgroundColor: theme.input.background,
 					borderRadius: 6

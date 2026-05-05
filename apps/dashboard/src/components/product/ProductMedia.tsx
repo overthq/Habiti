@@ -22,7 +22,6 @@ const NoImages: React.FC<NoImagesProps> = ({ action }) => {
 			style={{
 				backgroundColor: theme.input.background,
 				padding: 12,
-				marginHorizontal: 16,
 				borderRadius: 6
 			}}
 		>
@@ -69,7 +68,7 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 				<ScrollView
 					horizontal
 					showsHorizontalScrollIndicator={false}
-					contentContainerStyle={[{ paddingLeft: 16, gap: 8 }]}
+					contentContainerStyle={[{ flexGrow: 1, gap: 8 }]}
 				>
 					{images.map(image => (
 						<View
@@ -97,20 +96,16 @@ const styles = StyleSheet.create({
 		borderRadius: 8,
 		width: 100,
 		height: 100,
-		marginRight: 8,
 		overflow: 'hidden'
 	},
 	image: {
-		// width: '100%',
-		// height: '100%'
-		width: 100,
-		height: 100
+		width: '100%',
+		height: '100%'
 	},
 	header: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems: 'center',
-		paddingHorizontal: 16
+		alignItems: 'center'
 	}
 });
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
-import TextButton from './TextButton';
+import { TextButton } from './Button';
 import Typography from './Typography';
 
 interface SectionHeaderProps {
@@ -20,7 +20,9 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
 }) => {
 	return (
 		<View style={[styles.container, padded ? { paddingHorizontal: 16 } : {}]}>
-			<Typography preset='sectionHeader'>{title}</Typography>
+			<Typography size='large' weight='medium' variant='primary'>
+				{title}
+			</Typography>
 			{action ? (
 				<TextButton size={15} onPress={action.onPress}>
 					{action.text}

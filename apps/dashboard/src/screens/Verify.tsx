@@ -51,7 +51,7 @@ const Verify = ({ navigation }: AppStackScreenProps<'Verify'>) => {
 	};
 
 	return (
-		<Screen style={{ padding: 16 }}>
+		<Screen>
 			<SafeAreaView>
 				<Pressable onPress={handleBack}>
 					<Icon name='chevron-left' />
@@ -60,7 +60,7 @@ const Verify = ({ navigation }: AppStackScreenProps<'Verify'>) => {
 				<Typography size='xxxlarge' weight='bold'>
 					Enter verification code
 				</Typography>
-				<Typography variant='secondary' size='small'>
+				<Typography variant='secondary'>
 					A verification code was sent to {params.email}
 				</Typography>
 				<FormInput

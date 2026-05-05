@@ -1,13 +1,15 @@
 import React from 'react';
-import { StyleSheet, ViewProps, View } from 'react-native';
+import {
+	View,
+	ScrollView,
+	StyleSheet,
+	type ViewProps,
+	type ScrollViewProps
+} from 'react-native';
 
 import { useTheme } from './Theme';
-interface ScreenProps extends ViewProps {
-	paddingType?: 'sides' | 'all';
-	paddingSize?: 'small' | 'medium' | 'large';
-}
 
-const Screen: React.FC<ScreenProps> = props => {
+export const Screen: React.FC<ViewProps> = props => {
 	const { theme } = useTheme();
 
 	return (
@@ -22,10 +24,38 @@ const Screen: React.FC<ScreenProps> = props => {
 	);
 };
 
+export const ScrollableScreen: React.FC<ScrollViewProps> = props => {
+	const { theme } = useTheme();
+
+	return (
+		<ScrollView
+			keyboardShouldPersistTaps='handled'
+			keyboardDismissMode='on-drag'
+			{...props}
+			contentContainerStyle={[
+				styles.contentContainer,
+				{ backgroundColor: theme.screen.background },
+				props.contentContainerStyle
+			]}
+			style={[
+				{ backgroundColor: theme.screen.background },
+				styles.scrollContainer,
+				props.style
+			]}
+		/>
+	);
+};
+
 const styles = StyleSheet.create({
 	container: {
+		flex: 1,
+		padding: 16
+	},
+	scrollContainer: {
 		flex: 1
+	},
+	contentContainer: {
+		flexGrow: 1,
+		padding: 16
 	}
 });
-
-export default Screen;

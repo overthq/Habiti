@@ -1,7 +1,6 @@
-import { Button, Input, ScrollableScreen, Spacer } from '@habiti/components';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { StyleSheet } from 'react-native';
+import { Button, Input, ScrollableScreen, Spacer } from '@habiti/components';
 
 const AddManager = () => {
 	const { handleSubmit } = useForm();
@@ -11,7 +10,7 @@ const AddManager = () => {
 	}, []);
 
 	return (
-		<ScrollableScreen style={styles.container}>
+		<ScrollableScreen>
 			<Input
 				label='E-mail address'
 				placeholder='john@doe.com'
@@ -23,11 +22,5 @@ const AddManager = () => {
 		</ScrollableScreen>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		padding: 16
-	}
-});
 
 export default AddManager;

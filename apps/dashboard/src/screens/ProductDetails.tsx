@@ -36,7 +36,7 @@ const ProductDetails = () => {
 	};
 
 	return (
-		<ScrollableScreen style={{ padding: 16 }}>
+		<ScrollableScreen>
 			<FormProvider {...methods}>
 				<FormInput
 					label='Name'

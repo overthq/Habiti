@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, Pressable, RefreshControl } from 'react-native';
-import { Icon, ScrollableScreen, Screen, useTheme } from '@habiti/components';
+import { View, Pressable, RefreshControl } from 'react-native';
+import { Icon, ScrollableScreen, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import ManagerRow from '../components/managers/ManagerRow';
@@ -30,29 +30,20 @@ const Managers = () => {
 	}
 
 	return (
-		<Screen>
-			<ScrollableScreen
-				style={styles.container}
-				refreshControl={
-					<RefreshControl
-						refreshing={isRefreshing}
-						onRefresh={onRefresh}
-						tintColor={theme.text.secondary}
-					/>
-				}
-			>
-				{data.managers.map(manager => (
-					<ManagerRow key={manager.id} manager={manager} you={false} />
-				))}
-			</ScrollableScreen>
-		</Screen>
+		<ScrollableScreen
+			refreshControl={
+				<RefreshControl
+					refreshing={isRefreshing}
+					onRefresh={onRefresh}
+					tintColor={theme.text.secondary}
+				/>
+			}
+		>
+			{data.managers.map(manager => (
+				<ManagerRow key={manager.id} manager={manager} you={false} />
+			))}
+		</ScrollableScreen>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		padding: 16
-	}
-});
 
 export default Managers;

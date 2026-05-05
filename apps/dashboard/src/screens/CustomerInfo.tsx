@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { ScrollableScreen, Spacer, Typography } from '@habiti/components';
 import {
 	NavigationProp,
@@ -27,7 +27,7 @@ const CustomerInfo = () => {
 	}
 
 	return (
-		<ScrollableScreen style={styles.container}>
+		<ScrollableScreen>
 			<Typography weight='medium' size='xlarge'>
 				{data.user.name}
 			</Typography>
@@ -45,11 +45,5 @@ const CustomerInfo = () => {
 		</ScrollableScreen>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		padding: 16
-	}
-});
 
 export default CustomerInfo;

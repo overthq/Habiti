@@ -71,7 +71,7 @@ const AddProduct = () => {
 	}, [createProductMutation.isPending]);
 
 	return (
-		<ScrollableScreen style={{ padding: 16 }}>
+		<ScrollableScreen>
 			<FormProvider {...formMethods}>
 				<FormInput
 					name='name'

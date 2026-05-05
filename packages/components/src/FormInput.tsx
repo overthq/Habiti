@@ -1,4 +1,3 @@
-import React from 'react';
 import { Control, FieldValues, Path, useController } from 'react-hook-form';
 
 import Input from './Input';

@@ -44,7 +44,6 @@ const AwaitingPickupBanner: React.FC<AwaitingPickupBannerProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		marginHorizontal: 16,
 		marginBottom: 16,
 		padding: 12,
 		borderRadius: 8

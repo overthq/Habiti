@@ -1,12 +1,6 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
-import Animated, {
-	LinearTransition,
-	FadeInDown,
-	FadeOutUp
-} from 'react-native-reanimated';
+import { View, StyleSheet, ViewStyle } from 'react-native';
 
-import { Icon } from './Icon';
 import Spacer from './Spacer';
 import { useTheme } from './Theme';
 import Typography from './Typography';

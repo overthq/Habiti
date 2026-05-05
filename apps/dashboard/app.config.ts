@@ -6,7 +6,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	slug: 'habiti-dashboard',
 	scheme: 'habiti-dashboard',
 	owner: 'overthq',
-	version: '1.0.0',
+	version: '1.0.1',
 	orientation: 'portrait',
 	icon: './assets/icon.png',
 	updates: {
@@ -62,6 +62,26 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 					backgroundColor: '#000000'
 				},
 				imageWidth: 200
+			}
+		],
+		'expo-image',
+		[
+			// Basically the Bluesky social-app setup (except ttf)
+			'expo-font',
+			{
+				fonts: [
+					'./assets/fonts/inter/InterVariable.ttf',
+					'./assets/fonts/inter/InterVariable-Italic.ttf',
+					// Android only
+					'./assets/fonts/inter/Inter-Regular.otf',
+					'./assets/fonts/inter/Inter-Italic.otf',
+					'./assets/fonts/inter/Inter-Medium.otf',
+					'./assets/fonts/inter/Inter-MediumItalic.otf',
+					'./assets/fonts/inter/Inter-SemiBold.otf',
+					'./assets/fonts/inter/Inter-SemiBoldItalic.otf',
+					'./assets/fonts/inter/Inter-Bold.otf',
+					'./assets/fonts/inter/Inter-BoldItalic.otf'
+				]
 			}
 		]
 	]

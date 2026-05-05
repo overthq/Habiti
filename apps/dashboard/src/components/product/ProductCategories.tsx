@@ -46,7 +46,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	return (
-		<View style={styles.container}>
+		<View>
 			<View style={styles.header}>
 				<Typography size='large' weight='medium'>
 					Categories
@@ -90,9 +90,6 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
 };
 
 const styles = StyleSheet.create({
-	container: {
-		paddingHorizontal: 16
-	},
 	header: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',

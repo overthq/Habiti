@@ -2,7 +2,7 @@ import React from 'react';
 import { View, TextInput, TextInputProps, StyleSheet } from 'react-native';
 
 import { useTheme } from './Theme';
-import Typography from './Typography';
+import Typography, { applyFontStyles } from './Typography';
 
 export interface InputProps extends TextInputProps {
 	ref?: React.Ref<TextInput>;
@@ -43,11 +43,10 @@ const Input: React.FC<InputProps> = ({ label, textArea, ...props }) => {
 			<TextInput
 				placeholderTextColor={theme.input.placeholder}
 				multiline={textArea}
-				textAlignVertical={textArea ? 'top' : undefined}
 				selectionColor={theme.text.primary}
 				keyboardAppearance={name === 'dark' ? 'dark' : 'light'}
 				{...props}
-				style={style}
+				style={[style, applyFontStyles()]}
 			/>
 		</View>
 	);
@@ -61,7 +60,9 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		paddingLeft: 8,
 		height: 40,
-		borderRadius: 6
+		borderRadius: 6,
+		textAlignVertical: 'top',
+		includeFontPadding: false
 	},
 	textArea: {
 		paddingTop: 8,

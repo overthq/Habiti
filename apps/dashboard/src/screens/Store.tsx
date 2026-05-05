@@ -93,7 +93,7 @@ const Store = () => {
 	const available = (store.realizedRevenue ?? 0) - (store.paidOut ?? 0);
 
 	return (
-		<Screen style={{ paddingTop: top }}>
+		<Screen style={{ padding: 0, paddingTop: top }}>
 			<StoreHeader
 				store={store}
 				onOpenSettings={handleOpenSettings}
@@ -102,7 +102,6 @@ const Store = () => {
 			/>
 
 			<ScrollableScreen
-				style={{ paddingHorizontal: 16 }}
 				refreshControl={
 					<RefreshControl
 						refreshing={isRefreshing}
@@ -111,8 +110,6 @@ const Store = () => {
 					/>
 				}
 			>
-				<Spacer y={16} />
-
 				<View>
 					<Typography variant='secondary' size='small'>
 						Available

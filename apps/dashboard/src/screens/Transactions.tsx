@@ -103,8 +103,7 @@ const Transactions = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		paddingHorizontal: 16
+		flex: 1
 	},
 	empty: {
 		paddingVertical: 32,

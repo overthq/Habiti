@@ -29,7 +29,7 @@ const AddCategory = () => {
 	}, []);
 
 	return (
-		<ScrollableScreen style={styles.container}>
+		<ScrollableScreen>
 			<FormInput
 				name='name'
 				label='Category name'
@@ -56,10 +56,6 @@ const AddCategory = () => {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		paddingTop: 16,
-		paddingHorizontal: 16
-	},
 	input: {
 		marginBottom: 8
 	},

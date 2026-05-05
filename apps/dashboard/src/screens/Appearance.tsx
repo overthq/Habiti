@@ -1,5 +1,5 @@
-import { Screen, SelectGroup, Spacer, Typography } from '@habiti/components';
 import React from 'react';
+import { Screen, SelectGroup, Spacer, Typography } from '@habiti/components';
 
 import useStore from '../state';
 import { useShallow } from 'zustand/react/shallow';
@@ -22,7 +22,7 @@ const Appearance = () => {
 	);
 
 	return (
-		<Screen style={{ padding: 16 }}>
+		<Screen>
 			<Typography weight='medium'>Theme</Typography>
 			<Spacer y={8} />
 			<SelectGroup
