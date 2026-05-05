@@ -40,7 +40,7 @@ const CustomHeader = ({
 			<View
 				pointerEvents='none'
 				style={{
-					...StyleSheet.absoluteFillObject,
+					...StyleSheet.absoluteFill,
 					paddingTop: top + 16,
 					paddingBottom: 16,
 					alignItems: 'center',
