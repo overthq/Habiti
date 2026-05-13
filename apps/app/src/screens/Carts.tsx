@@ -26,7 +26,7 @@ const Carts = () => {
 	const { top } = useSafeAreaInsets();
 
 	return (
-		<Screen style={{ paddingTop: top }}>
+		<Screen style={{ padding: 0, paddingTop: top }}>
 			<ScreenHeader title='Carts' hasBottomBorder goBack={goBack} />
 			<FlatList
 				style={{ flex: 1 }}

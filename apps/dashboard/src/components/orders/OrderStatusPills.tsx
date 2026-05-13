@@ -37,7 +37,6 @@ const OrderStatusPill: React.FC<OrderStatusPillProps> = ({
 }) => {
 	return (
 		<PillButton
-			size='small'
 			style={styles.pill}
 			variant={active ? 'primary' : 'secondary'}
 			onPress={onPress}

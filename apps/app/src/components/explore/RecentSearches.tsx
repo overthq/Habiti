@@ -30,7 +30,8 @@ const RecentSearches: React.FC<RecentSearchesProps> = ({ display }) => {
 const styles = StyleSheet.create({
 	container: {
 		borderTopWidth: 0.5,
-		paddingTop: 12
+		paddingTop: 12,
+		padding: 0
 	},
 	header: {
 		marginLeft: 16,

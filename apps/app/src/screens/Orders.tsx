@@ -31,7 +31,7 @@ const Orders = () => {
 	if (isLoading && !data) return <View />;
 
 	return (
-		<Screen>
+		<Screen style={{ padding: 0 }}>
 			<FlashList
 				refreshControl={
 					<RefreshControl

@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		paddingBottom: 8,
 		borderBottomColor: '#D3D3D3',
-		borderBottomWidth: 1
+		borderBottomWidth: StyleSheet.hairlineWidth
 	},
 	placeholder: {
 		height: 36,

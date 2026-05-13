@@ -66,7 +66,7 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 				styles.container,
 				{
 					backgroundColor: theme.screen.background,
-					borderBottomWidth: 1,
+					borderBottomWidth: StyleSheet.hairlineWidth,
 					borderColor: theme.border.color
 				}
 			]}

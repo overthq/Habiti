@@ -13,7 +13,7 @@ const Home = () => {
 	const { top } = useSafeAreaInsets();
 
 	return (
-		<Screen style={{ paddingTop: top }}>
+		<Screen style={{ padding: 0, paddingTop: top }}>
 			<HomeHeader
 				searchOpen={searchOpen}
 				setSearchOpen={setSearchOpen}

@@ -37,7 +37,7 @@ const FollowedStores = () => {
 	}
 
 	return (
-		<Screen style={{ paddingTop: 8 }}>
+		<Screen style={{ padding: 0, paddingTop: 8 }}>
 			<FlashList
 				refreshControl={
 					<RefreshControl

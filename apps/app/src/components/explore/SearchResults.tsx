@@ -67,10 +67,10 @@ interface SearchResultsProps {
 
 const SearchResults: React.FC<SearchResultsProps> = ({ searchTerm }) => {
 	return (
-		<Screen>
+		<View style={{ flex: 1 }}>
 			<RecentSearches display={!searchTerm} />
 			<SearchResultsMain searchTerm={searchTerm} />
-		</Screen>
+		</View>
 	);
 };
 

@@ -25,7 +25,7 @@ const Order = () => {
 		params: { orderId }
 	} = useRoute<RouteProp<HomeStackParamList, 'Home.Order'>>();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const { data, isLoading, refetch } = useOrderQuery(orderId);
+	const { data, isLoading, refetch, error } = useOrderQuery(orderId);
 	useGoBack();
 	const order = data?.order;
 	const { theme } = useTheme();
@@ -45,6 +45,7 @@ const Order = () => {
 	return (
 		<ScrollableScreen
 			style={styles.container}
+			contentContainerStyle={{ padding: 0 }}
 			refreshControl={
 				<RefreshControl
 					refreshing={refreshing}

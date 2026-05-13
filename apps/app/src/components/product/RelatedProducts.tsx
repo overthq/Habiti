@@ -28,24 +28,22 @@ const RelatedProducts: React.FC = () => {
 						key={product.id}
 						onPress={() => push('Product', { productId: product.id })}
 					>
-						<View style={{ marginLeft: 8 }}>
-							<CustomImage
-								uri={product.images[0]?.path}
-								height={120}
-								width={120}
-							/>
-							<Spacer y={4} />
-							<Typography weight='medium' style={{ fontSize: 14 }}>
-								{product.name}
-							</Typography>
-							<Typography
-								weight='medium'
-								variant='secondary'
-								style={{ fontSize: 14 }}
-							>
-								{formatNaira(product.unitPrice)}
-							</Typography>
-						</View>
+						<CustomImage
+							uri={product.images[0]?.path}
+							height={120}
+							width={120}
+						/>
+						<Spacer y={4} />
+						<Typography weight='medium' style={{ fontSize: 14 }}>
+							{product.name}
+						</Typography>
+						<Typography
+							weight='medium'
+							variant='secondary'
+							style={{ fontSize: 14 }}
+						>
+							{formatNaira(product.unitPrice)}
+						</Typography>
 					</Pressable>
 				))}
 			</ScrollView>
@@ -58,8 +56,8 @@ const styles = StyleSheet.create({
 		flex: 1
 	},
 	scroll: {
-		paddingLeft: 8,
-		paddingRight: 16
+		paddingHorizontal: 16,
+		gap: 12
 	}
 });
 

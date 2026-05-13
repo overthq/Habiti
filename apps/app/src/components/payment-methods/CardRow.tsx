@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
 	card: {
 		paddingVertical: 4,
 		paddingHorizontal: 16,
-		borderBottomWidth: 0.5
+		borderBottomWidth: StyleSheet.hairlineWidth
 	},
 	capitalize: {
 		textTransform: 'capitalize'

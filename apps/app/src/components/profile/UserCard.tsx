@@ -21,11 +21,11 @@ const UserCard: React.FC = () => {
 
 	return (
 		<Pressable onPress={() => navigate('Profile.Edit')} style={styles.card}>
-			<Avatar size={52} circle fallbackText={data.name} />
+			<Avatar size={52} circle fallbackText={data.user.name} />
 			<View style={{ marginLeft: 12 }}>
-				<Typography weight='medium'>{data.name}</Typography>
+				<Typography weight='medium'>{data.user.name}</Typography>
 				<Spacer y={2} />
-				<Typography variant='secondary'>{data.email}</Typography>
+				<Typography variant='secondary'>{data.user.email}</Typography>
 			</View>
 		</Pressable>
 	);

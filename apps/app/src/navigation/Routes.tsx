@@ -54,7 +54,10 @@ const HomeNavigator = createNativeStackNavigator<
 
 const HomeStack = () => {
 	return (
-		<HomeNavigator.Navigator id='HomeStack'>
+		<HomeNavigator.Navigator
+			id='HomeStack'
+			screenOptions={{ headerBackButtonDisplayMode: 'minimal' }}
+		>
 			<HomeNavigator.Screen
 				name='Home.Main'
 				component={Home}

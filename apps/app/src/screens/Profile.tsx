@@ -44,7 +44,7 @@ const Profile = () => {
 	}, [logOut]);
 
 	return (
-		<Screen>
+		<Screen style={{ padding: 0 }}>
 			<UserCard />
 			<Separator style={{ marginHorizontal: 16 }} />
 			<ProfileRow

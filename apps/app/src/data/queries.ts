@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 import {
 	getCards,
@@ -77,7 +77,8 @@ export const useStoreProductsQuery = (
 	return useQuery({
 		queryKey: ['stores', storeId, 'products', filter, orderBy],
 		queryFn: () => getStoreProducts(storeId, new URLSearchParams()),
-		enabled: !!storeId
+		enabled: !!storeId,
+		placeholderData: keepPreviousData
 	});
 };
 

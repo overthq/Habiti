@@ -21,7 +21,7 @@ const Store = () => {
 	if (isLoading || !data?.store) return <ActivityIndicator />;
 
 	return (
-		<Screen style={{ paddingTop: top }}>
+		<Screen style={{ padding: 0, paddingTop: top }}>
 			<StoreHeader
 				store={data.store}
 				activeCategory={activeCategory}

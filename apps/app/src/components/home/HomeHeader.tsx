@@ -50,7 +50,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 			style={[
 				styles.container,
 				{
-					borderBottomWidth: 0.5,
+					borderBottomWidth: StyleSheet.hairlineWidth,
 					borderBottomColor: theme.border.color
 				}
 			]}
@@ -120,8 +120,8 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		paddingHorizontal: 16,
 		paddingTop: 4,
+		paddingHorizontal: 16,
 		paddingBottom: 12
 	},
 	title: {

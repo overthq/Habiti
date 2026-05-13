@@ -15,7 +15,10 @@ const Product = () => {
 	return (
 		<ProductProvider>
 			<View style={{ flex: 1 }}>
-				<ScrollableScreen showsVerticalScrollIndicator={false}>
+				<ScrollableScreen
+					contentContainerStyle={{ padding: 0 }}
+					showsVerticalScrollIndicator={false}
+				>
 					<ImageCarousel />
 					<Spacer y={16} />
 					<ProductDetails />

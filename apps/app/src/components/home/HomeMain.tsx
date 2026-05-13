@@ -8,7 +8,11 @@ import { useHomeQuery } from '../../data/queries';
 import useRefresh from '../../hooks/useRefresh';
 import HomeEmpty from './HomeEmpty';
 
-const HomeMain = () => {
+interface HomeMainProps {
+	searchOpen: boolean;
+}
+
+const HomeMain = ({ searchOpen }: HomeMainProps) => {
 	const { data, isLoading, refetch } = useHomeQuery();
 	const { refreshing, refresh } = useRefresh({ refetch });
 	const { theme } = useTheme();
@@ -21,7 +25,14 @@ const HomeMain = () => {
 
 	return (
 		<ScrollableScreen
-			contentContainerStyle={{ backgroundColor: theme.screen.background }}
+			style={{
+				display: searchOpen ? 'none' : 'flex'
+			}}
+			contentContainerStyle={{
+				flex: 1,
+				padding: 0,
+				backgroundColor: theme.screen.background
+			}}
 			refreshControl={
 				<RefreshControl
 					refreshing={refreshing}
@@ -38,16 +49,4 @@ const HomeMain = () => {
 	);
 };
 
-interface HomeMainWrapperProps {
-	searchOpen: boolean;
-}
-
-const HomeMainWrapper: React.FC<HomeMainWrapperProps> = ({ searchOpen }) => {
-	return (
-		<Screen style={{ display: searchOpen ? 'none' : 'flex' }}>
-			<HomeMain />
-		</Screen>
-	);
-};
-
-export default HomeMainWrapper;
+export default HomeMain;
