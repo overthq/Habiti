@@ -6,7 +6,7 @@ import {
 } from '../../data/mutations';
 import type { Product, ProductViewerContext } from '../../data/types';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { AppStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../navigation/types';
 import { View } from 'react-native';
 
 interface ProductContextType {

@@ -6,7 +6,7 @@ import { View, StyleSheet } from 'react-native';
 
 import FollowedStoresItem from './FollowedStoresItem';
 import type { Store } from '../../data/types';
-import { HomeStackParamList } from '../../types/navigation';
+import { HomeStackParamList } from '../../navigation/types';
 
 interface FollowedStoresProps {
 	followed: Store[];

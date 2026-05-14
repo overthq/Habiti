@@ -1,16 +1,28 @@
 import React from 'react';
-import { FlatList, RefreshControl } from 'react-native';
+import { View, StyleSheet, FlatList, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ListEmpty, Screen, ScreenHeader, useTheme } from '@habiti/components';
+import {
+	Avatar,
+	Icon,
+	Row,
+	Typography,
+	ListEmpty,
+	Screen,
+	ScreenHeader,
+	useTheme
+} from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
-import CartsListItem from '../components/carts/CartsListItem';
-import { AppStackParamList, MainTabParamList } from '../types/navigation';
 import { useCartsQuery } from '../data/queries';
 import useRefresh from '../hooks/useRefresh';
 
+import { plural } from '../utils/strings';
+
+import type { Cart } from '../data/types';
+import type { AppStackParamList, MainTabParamList } from '../navigation/types';
+
 const Carts = () => {
-	const { data, isLoading, refetch } = useCartsQuery();
+	const { data, refetch } = useCartsQuery();
 	const { refreshing, refresh } = useRefresh({ refetch });
 	const { navigate, goBack } =
 		useNavigation<NavigationProp<MainTabParamList & AppStackParamList>>();
@@ -54,5 +66,53 @@ const Carts = () => {
 		</Screen>
 	);
 };
+
+interface CartListItemProps {
+	cart: Cart;
+	onPress(): void;
+}
+
+const CartsListItem: React.FC<CartListItemProps> = ({ cart, onPress }) => {
+	const { theme } = useTheme();
+
+	return (
+		<Row onPress={onPress} style={styles.container}>
+			<View style={styles.main}>
+				<Avatar
+					uri={cart.store.image?.path}
+					style={styles.image}
+					fallbackText={cart.store.name}
+					size={48}
+				/>
+				<View>
+					<Typography weight='medium'>{cart.store.name}</Typography>
+					<Typography size='small' variant='secondary'>
+						{plural('product', cart.products.length)}
+					</Typography>
+				</View>
+			</View>
+			<Icon name='chevron-right' size={24} color={theme.text.secondary} />
+		</Row>
+	);
+};
+
+const styles = StyleSheet.create({
+	container: {
+		width: '100%',
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		paddingVertical: 8,
+		paddingHorizontal: 16
+	},
+	main: {
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
+	image: {
+		marginRight: 10,
+		borderRadius: 30
+	}
+});
 
 export default Carts;

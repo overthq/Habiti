@@ -13,7 +13,7 @@ import {
 import { useUnfollowStoreMutation } from '../data/mutations';
 import { useStoresFollowedQuery } from '../data/queries';
 import type { Store } from '../data/types';
-import { HomeStackParamList } from '../types/navigation';
+import { HomeStackParamList } from '../navigation/types';
 import useRefresh from '../hooks/useRefresh';
 
 const FollowedStores = () => {

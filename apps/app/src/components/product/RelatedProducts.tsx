@@ -4,7 +4,7 @@ import { CustomImage, Spacer, Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { formatNaira } from '@habiti/common';
 
-import { AppStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../navigation/types';
 import { useProductContext } from './ProductContext';
 
 const RelatedProducts: React.FC = () => {

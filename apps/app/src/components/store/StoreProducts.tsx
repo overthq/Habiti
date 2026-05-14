@@ -10,7 +10,7 @@ import ViewCart from './ViewCart';
 
 import { useStoreProductsQuery } from '../../data/queries';
 import type { Store } from '../../data/types';
-import { AppStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../navigation/types';
 import useRefresh from '../../hooks/useRefresh';
 
 interface StoreProductsProps {

@@ -5,7 +5,7 @@ import { WebView } from 'react-native-webview';
 import { RouteProp, useRoute } from '@react-navigation/native';
 
 import { useCardAuthorizationQuery } from '../data/queries';
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../navigation/types';
 
 // Before opening this screen, we should probably explain to users why we have
 // to charge them a small amount of money. I should probably also figure out a

@@ -6,7 +6,7 @@ import { FlashList } from '@shopify/flash-list';
 
 import WatchlistProduct from './WatchlistProduct';
 import type { WatchlistProduct as WatchlistProductType } from '../../data/types';
-import { AppStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../navigation/types';
 
 // Consider not displaying anything when the watchlist is empty.
 

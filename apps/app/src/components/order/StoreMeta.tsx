@@ -4,7 +4,7 @@ import React from 'react';
 import { Pressable, View } from 'react-native';
 
 import { Store } from '../../data/types';
-import { HomeStackParamList } from '../../types/navigation';
+import { HomeStackParamList } from '../../navigation/types';
 
 interface StoreMetaProps {
 	store: Store;

@@ -9,7 +9,7 @@ import UserCard from '../components/profile/UserCard';
 
 import useStore from '../state';
 
-import { ProfileStackParamList } from '../types/navigation';
+import { ProfileStackParamList } from '../navigation/types';
 
 const PRIVACY_POLICY_URL = 'https://habiti.app/privacy-policy';
 const SUPPORT_URL = 'https://habiti.app/support';

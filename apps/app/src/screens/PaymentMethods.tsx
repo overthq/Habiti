@@ -5,7 +5,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { HeaderButton } from '@react-navigation/elements';
 
 import CardRow from '../components/payment-methods/CardRow';
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../navigation/types';
 import { useCardsQuery } from '../data/queries';
 import { useDeleteCardMutation } from '../data/mutations';
 import { Card } from '../data/types';

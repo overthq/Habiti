@@ -11,7 +11,7 @@ import { View } from 'react-native';
 
 import StoreListItem from '../components/store/StoreListItem';
 import { useStoreProductsQuery } from '../data/queries';
-import { AppStackParamList, StoreStackParamList } from '../types/navigation';
+import { AppStackParamList, StoreStackParamList } from '../navigation/types';
 import useDebounced from '../hooks/useDebounced';
 
 interface SearchStoreProps {

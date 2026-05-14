@@ -5,7 +5,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 import RecentOrder from './RecentOrder';
 import type { Order } from '../../data/types';
-import { HomeStackParamList, MainTabParamList } from '../../types/navigation';
+import { HomeStackParamList, MainTabParamList } from '../../navigation/types';
 
 interface RecentOrdersProps {
 	orders: Order[];

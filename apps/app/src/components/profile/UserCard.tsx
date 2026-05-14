@@ -4,7 +4,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { Avatar, Spacer, Typography } from '@habiti/components';
 
 import { useCurrentUserQuery } from '../../data/queries';
-import { ProfileStackParamList } from '../../types/navigation';
+import { ProfileStackParamList } from '../../navigation/types';
 
 const UserCard: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<ProfileStackParamList>>();

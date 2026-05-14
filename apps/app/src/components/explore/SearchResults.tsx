@@ -9,7 +9,7 @@ import ProductResultRow from './ProductResultRow';
 import RecentSearches from './RecentSearches';
 import { SearchProvider, useSearchContext } from './SearchContext';
 import StoreResultRow from './StoreResultRow';
-import { AppStackParamList, HomeStackParamList } from '../../types/navigation';
+import { AppStackParamList, HomeStackParamList } from '../../navigation/types';
 
 const StoresView = () => {
 	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();

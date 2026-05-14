@@ -6,7 +6,7 @@ import {
 	Spacer,
 	useTheme
 } from '@habiti/components';
-import { View, StyleSheet, RefreshControl } from 'react-native';
+import { View, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import CartSummary from '../components/cart/CartSummary';
@@ -35,7 +35,7 @@ const Cart: React.FC = () => {
 
 	return (
 		<ScrollableScreen
-			style={[styles.container, { paddingBottom: bottom }]}
+			style={{ paddingBottom: bottom }}
 			contentContainerStyle={{ backgroundColor: theme.screen.background }}
 			refreshControl={
 				<RefreshControl
@@ -45,6 +45,8 @@ const Cart: React.FC = () => {
 				/>
 			}
 		>
+			<Spacer y={16} />
+
 			<StoreInfo store={cart.store} />
 
 			<Spacer y={4} />
@@ -81,14 +83,5 @@ const CartWrapper = () => {
 		</CartProvider>
 	);
 };
-
-const styles = StyleSheet.create({
-	loading: {
-		flex: 1
-	},
-	container: {
-		paddingTop: 16
-	}
-});
 
 export default CartWrapper;

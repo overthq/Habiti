@@ -10,7 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import useFirstRender from '../../hooks/useFirstRender';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { AppStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../navigation/types';
 
 interface HomeHeaderProps {
 	searchOpen: boolean;

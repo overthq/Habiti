@@ -5,7 +5,7 @@ import { Icon, Screen, Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { useDeliveryAddressesQuery } from '../data/queries';
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../navigation/types';
 
 const DeliveryAddress = () => {
 	const { data, isLoading } = useDeliveryAddressesQuery();

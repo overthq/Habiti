@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import StoreProducts from '../components/store/StoreProducts';
 import { useStoreQuery } from '../data/queries';
-import { StoreStackParamList } from '../types/navigation';
+import { StoreStackParamList } from '../navigation/types';
 import StoreHeader from '../components/store/StoreHeader';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 import SearchStore from './SearchStore';

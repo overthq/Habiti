@@ -36,7 +36,7 @@ import {
 	HomeStackParamList,
 	AppStackParamList,
 	ProfileStackParamList
-} from '../types/navigation';
+} from '../navigation/types';
 
 // const prefix = Linking.createURL('/');
 

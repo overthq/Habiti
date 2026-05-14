@@ -14,7 +14,7 @@ import {
 } from '../../data/mutations';
 import type { Cart, CartProduct } from '../../data/types';
 import useStore from '../../state';
-import { AppStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../navigation/types';
 import useRefresh from '../../hooks/useRefresh';
 import useDebounce from '../../hooks/useDebounce';
 

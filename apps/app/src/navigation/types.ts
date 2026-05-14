@@ -1,4 +1,5 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
+import { StackScreenProps } from '@react-navigation/stack';
 
 export type AppStackParamList = {
 	Landing: undefined;
@@ -56,3 +57,6 @@ export type MainTabParamList = {
 	'Main.Carts': undefined;
 	'Main.Profile': undefined;
 };
+
+export type AppStackScreenProps<T extends keyof AppStackParamList> =
+	StackScreenProps<AppStackParamList, T>;

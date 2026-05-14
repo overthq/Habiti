@@ -5,7 +5,7 @@ import { View } from 'react-native';
 
 import CartProduct from './CartProduct';
 import type { CartProduct as CartProductType } from '../../data/types';
-import { AppStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../navigation/types';
 import { useCart } from './CartContext';
 
 interface CartSummaryProps {

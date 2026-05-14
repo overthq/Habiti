@@ -13,7 +13,7 @@ import OrderProduct from '../components/order/OrderProduct';
 import StoreMeta from '../components/order/StoreMeta';
 import { useOrderQuery } from '../data/queries';
 import { OrderStatus } from '../data/types';
-import { AppStackParamList, HomeStackParamList } from '../types/navigation';
+import { AppStackParamList, HomeStackParamList } from '../navigation/types';
 import useRefresh from '../hooks/useRefresh';
 import PaymentPendingWarning from '../components/order/PaymentPendingWarning';
 
