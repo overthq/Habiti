@@ -4,15 +4,12 @@ import { HeaderButton } from '@react-navigation/elements';
 import { Icon, Screen, Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
-import useGoBack from '../hooks/useGoBack';
 import { useDeliveryAddressesQuery } from '../data/queries';
 import { AppStackParamList } from '../types/navigation';
 
 const DeliveryAddress = () => {
 	const { data, isLoading } = useDeliveryAddressesQuery();
 	const navigation = useNavigation<NavigationProp<AppStackParamList>>();
-
-	useGoBack();
 
 	React.useLayoutEffect(() => {
 		const handleAddAddress = () =>

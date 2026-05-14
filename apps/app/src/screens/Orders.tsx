@@ -8,7 +8,6 @@ import { FlashList } from '@shopify/flash-list';
 import OrdersListItem from '../components/orders/OrdersListItem';
 import { useOrdersQuery } from '../data/queries';
 import { HomeStackParamList } from '../types/navigation';
-import useGoBack from '../hooks/useGoBack';
 import useRefresh from '../hooks/useRefresh';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -18,8 +17,6 @@ const Orders = () => {
 	const { refreshing, refresh } = useRefresh({ refetch });
 	const { theme } = useTheme();
 	const { bottom } = useSafeAreaInsets();
-
-	useGoBack();
 
 	const handleOrderPress = React.useCallback(
 		(orderId: string) => () => {

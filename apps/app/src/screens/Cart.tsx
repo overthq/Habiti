@@ -13,7 +13,6 @@ import CartSummary from '../components/cart/CartSummary';
 import CartTotal from '../components/cart/CartTotal';
 import SelectCard from '../components/cart/SelectCard';
 import StoreInfo from '../components/cart/StoreInfo';
-import useGoBack from '../hooks/useGoBack';
 import CartProvider, { useCart } from '../components/cart/CartContext';
 
 // There is a need to master optimistic updates on this screen,
@@ -21,8 +20,6 @@ import CartProvider, { useCart } from '../components/cart/CartContext';
 // it feel slick.
 
 const Cart: React.FC = () => {
-	useGoBack('x');
-
 	const { bottom } = useSafeAreaInsets();
 	const { theme } = useTheme();
 

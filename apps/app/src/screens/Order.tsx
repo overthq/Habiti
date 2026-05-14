@@ -11,7 +11,6 @@ import { View, StyleSheet, RefreshControl } from 'react-native';
 import OrderMeta from '../components/order/OrderMeta';
 import OrderProduct from '../components/order/OrderProduct';
 import StoreMeta from '../components/order/StoreMeta';
-import useGoBack from '../hooks/useGoBack';
 import { useOrderQuery } from '../data/queries';
 import { OrderStatus } from '../data/types';
 import { AppStackParamList, HomeStackParamList } from '../types/navigation';
@@ -25,8 +24,7 @@ const Order = () => {
 		params: { orderId }
 	} = useRoute<RouteProp<HomeStackParamList, 'Home.Order'>>();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const { data, isLoading, refetch, error } = useOrderQuery(orderId);
-	useGoBack();
+	const { data, isLoading, refetch } = useOrderQuery(orderId);
 	const order = data?.order;
 	const { theme } = useTheme();
 	const { refreshing, refresh } = useRefresh({ refetch });

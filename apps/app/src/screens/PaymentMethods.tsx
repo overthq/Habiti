@@ -4,7 +4,6 @@ import { Icon, Screen } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { HeaderButton } from '@react-navigation/elements';
 
-import useGoBack from '../hooks/useGoBack';
 import CardRow from '../components/payment-methods/CardRow';
 import { AppStackParamList } from '../types/navigation';
 import { useCardsQuery } from '../data/queries';
@@ -19,8 +18,6 @@ const PaymentMethods = () => {
 	const [focusedCardId, setFocusedCardId] = React.useState<string>();
 	const deleteCard = useDeleteCardMutation();
 	const { defaultCard, setPreference } = useStore();
-
-	useGoBack();
 
 	const handleLongPress = React.useCallback((card: Card) => {
 		setFocusedCardId(card.id);

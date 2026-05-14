@@ -4,7 +4,6 @@ import { ActivityIndicator, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { RouteProp, useRoute } from '@react-navigation/native';
 
-import useGoBack from '../hooks/useGoBack';
 import { useCardAuthorizationQuery } from '../data/queries';
 import { AppStackParamList } from '../types/navigation';
 
@@ -21,8 +20,6 @@ const AddCardWebview = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Modal.AddCard'>>();
 
 	const { isLoading, data } = useCardAuthorizationQuery(params?.orderId ?? '');
-
-	useGoBack('x');
 
 	if (isLoading || !data) {
 		return (

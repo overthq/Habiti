@@ -14,7 +14,6 @@ import { useUnfollowStoreMutation } from '../data/mutations';
 import { useStoresFollowedQuery } from '../data/queries';
 import type { Store } from '../data/types';
 import { HomeStackParamList } from '../types/navigation';
-import useGoBack from '../hooks/useGoBack';
 import useRefresh from '../hooks/useRefresh';
 
 const FollowedStores = () => {
@@ -22,7 +21,6 @@ const FollowedStores = () => {
 	const { data, isLoading, refetch } = useStoresFollowedQuery();
 	const { refreshing, refresh } = useRefresh({ refetch });
 	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();
-	useGoBack();
 
 	const handleStoreItemPress = (storeId: string) => () => {
 		navigate('Home.Store', { storeId });
