@@ -4,7 +4,6 @@ import { Icon, TextButton, Typography, useTheme } from '@habiti/components';
 
 import CategorySelector from './CategorySelector';
 import FollowButton from './FollowButton';
-import type { Store } from '../../data/types';
 import { useNavigation } from '@react-navigation/native';
 import Animated, {
 	FadeInDown,
@@ -16,6 +15,8 @@ import Animated, {
 	LinearTransition
 } from 'react-native-reanimated';
 import useFirstRender from '../../hooks/useFirstRender';
+
+import type { Store } from '../../data/types';
 
 interface StoreHeaderProps {
 	store: Store;

@@ -1,4 +1,4 @@
-import { Screen, useTheme } from '@habiti/components';
+import { useTheme } from '@habiti/components';
 import SearchResults from '../explore/SearchResults';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 

@@ -1,4 +1,4 @@
-import { Screen, ScrollableScreen, Spacer, useTheme } from '@habiti/components';
+import { ScrollableScreen, Spacer, useTheme } from '@habiti/components';
 import { RefreshControl, View } from 'react-native';
 
 import FollowedStores from './FollowedStores';

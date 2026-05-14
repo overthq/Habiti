@@ -1,10 +1,17 @@
 import React from 'react';
-import { View, StyleSheet, ActivityIndicator, Alert } from 'react-native';
-import { Icon, Screen } from '@habiti/components';
+import {
+	View,
+	StyleSheet,
+	ActivityIndicator,
+	Alert,
+	Pressable
+} from 'react-native';
+import { Icon, Screen, Typography, useTheme } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { HeaderButton } from '@react-navigation/elements';
 
-import CardRow from '../components/payment-methods/CardRow';
+import { CardIconMap } from '../components/cart/CardIcons';
+
 import { AppStackParamList } from '../navigation/types';
 import { useCardsQuery } from '../data/queries';
 import { useDeleteCardMutation } from '../data/mutations';
@@ -104,6 +111,63 @@ const PaymentMethods = () => {
 	);
 };
 
+interface CardRowProps {
+	card: Card;
+	onLongPress: () => void;
+	onPress: () => void;
+	focused: boolean;
+	onDelete: () => void;
+}
+
+const CardRow: React.FC<CardRowProps> = ({
+	card,
+	onLongPress,
+	onPress,
+	focused,
+	onDelete
+}) => {
+	const { theme } = useTheme();
+
+	return (
+		<Pressable
+			style={[
+				styles.card,
+				{
+					borderBottomColor: theme.border.color,
+					backgroundColor: focused ? theme.row.focus : 'transparent'
+				}
+			]}
+			onLongPress={onLongPress}
+			onPress={onPress}
+		>
+			<View
+				style={{
+					flexDirection: 'row',
+					alignItems: 'center',
+					justifyContent: 'space-between'
+				}}
+			>
+				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+					<View style={{ marginLeft: -10 }}>
+						{CardIconMap[card.cardType.trim()]}
+					</View>
+					<Typography
+						style={styles.capitalize}
+					>{`\u2022\u2022\u2022\u2022${card.last4}`}</Typography>
+				</View>
+				{focused && (
+					<Pressable
+						style={{ flexDirection: 'row', alignItems: 'center' }}
+						onPress={() => onDelete()}
+					>
+						<Icon name='trash' size={20} />
+					</Pressable>
+				)}
+			</View>
+		</Pressable>
+	);
+};
+
 const styles = StyleSheet.create({
 	sectionHeader: {
 		marginTop: 16,
@@ -114,6 +178,14 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center'
+	},
+	card: {
+		paddingVertical: 4,
+		paddingHorizontal: 16,
+		borderBottomWidth: StyleSheet.hairlineWidth
+	},
+	capitalize: {
+		textTransform: 'capitalize'
 	}
 });
 

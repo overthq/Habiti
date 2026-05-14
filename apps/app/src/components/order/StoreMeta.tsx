@@ -1,4 +1,4 @@
-import { Avatar, CustomImage, Typography } from '@habiti/components';
+import { Avatar, Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Pressable, View } from 'react-native';

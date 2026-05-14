@@ -1,6 +1,6 @@
-import { Icon, useTheme } from '@habiti/components';
 import React from 'react';
 import { Pressable } from 'react-native';
+import { Icon } from '@habiti/components';
 
 import {
 	useFollowStoreMutation,
@@ -16,7 +16,6 @@ interface FollowButtonProps {
 const FollowButton: React.FC<FollowButtonProps> = ({ storeId, followed }) => {
 	const followStore = useFollowStoreMutation(storeId);
 	const unfollowStore = useUnfollowStoreMutation(storeId);
-	const { theme } = useTheme();
 
 	const handlePress = React.useCallback(async () => {
 		if (followed) {

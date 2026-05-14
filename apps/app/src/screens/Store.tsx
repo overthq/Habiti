@@ -1,15 +1,28 @@
 import React from 'react';
+import { View, ActivityIndicator } from 'react-native';
 import { Screen } from '@habiti/components';
-import { useRoute, RouteProp } from '@react-navigation/native';
-import { ActivityIndicator } from 'react-native';
+import {
+	useRoute,
+	RouteProp,
+	useNavigation,
+	NavigationProp
+} from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import StoreProducts from '../components/store/StoreProducts';
-import { useStoreQuery } from '../data/queries';
-import { StoreStackParamList } from '../navigation/types';
-import StoreHeader from '../components/store/StoreHeader';
 import Animated, { LinearTransition } from 'react-native-reanimated';
-import SearchStore from './SearchStore';
+import { FlashList } from '@shopify/flash-list';
+
+import StoreHeader from '../components/store/StoreHeader';
+import StoreProducts, {
+	StoreListItem
+} from '../components/store/StoreProducts';
+
+import { useStoreQuery, useStoreProductsQuery } from '../data/queries';
+import useDebounced from '../hooks/useDebounced';
+
+import type {
+	AppStackParamList,
+	StoreStackParamList
+} from '../navigation/types';
 
 const Store = () => {
 	const { params } = useRoute<RouteProp<StoreStackParamList, 'Store.Main'>>();
@@ -37,6 +50,54 @@ const Store = () => {
 				/>
 				<SearchStore searchTerm={searchTerm} />
 			</Animated.View>
+		</Screen>
+	);
+};
+
+interface SearchStoreProps {
+	searchTerm: string;
+}
+
+const SearchStore: React.FC<SearchStoreProps> = ({ searchTerm }) => {
+	const debouncedSearchTerm = useDebounced(searchTerm);
+
+	const { params } = useRoute<RouteProp<StoreStackParamList, 'Store.Search'>>();
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+
+	const filter = debouncedSearchTerm
+		? { name: { contains: debouncedSearchTerm, mode: 'insensitive' } }
+		: undefined;
+
+	const { data, isLoading } = useStoreProductsQuery(params.storeId, filter);
+
+	const handleProductPress = React.useCallback(
+		(productId: string) => () => {
+			navigate('Product', { productId });
+		},
+		[]
+	);
+
+	if (isLoading || !data?.products) {
+		return <View />;
+	}
+
+	return (
+		<Screen style={{ display: !!searchTerm ? 'flex' : 'none' }}>
+			<FlashList
+				keyboardShouldPersistTaps='handled'
+				data={data.products}
+				keyExtractor={item => item.id}
+				showsVerticalScrollIndicator={false}
+				renderItem={({ item, index }) => (
+					<StoreListItem
+						item={item}
+						onPress={handleProductPress(item.id)}
+						side={index % 2 === 0 ? 'left' : 'right'}
+					/>
+				)}
+				numColumns={2}
+				contentContainerStyle={{ paddingTop: 8 }}
+			/>
 		</Screen>
 	);
 };

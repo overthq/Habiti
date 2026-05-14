@@ -1,9 +1,11 @@
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { OrderStatus } from '../../data/types';
-import { useUpdateOrderMutation } from '../../data/mutations';
-import { AppStackParamList } from '../../navigation/types';
 import { StyleSheet, View } from 'react-native';
 import { Button, Spacer, Typography, useTheme } from '@habiti/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+
+import { useUpdateOrderMutation } from '../../data/mutations';
+import { OrderStatus } from '../../data/types';
+
+import type { AppStackParamList } from '../../navigation/types';
 
 interface PaymentPendingWarningProps {
 	orderId: string;

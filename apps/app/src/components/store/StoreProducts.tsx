@@ -1,17 +1,18 @@
 import React from 'react';
-import { RefreshControl, View } from 'react-native';
+import { Pressable, RefreshControl, View, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { Spacer, useTheme } from '@habiti/components';
+import { CustomImage, Spacer, Typography, useTheme } from '@habiti/components';
 import { FlashList } from '@shopify/flash-list';
+import { formatNaira } from '@habiti/common';
 
-import StoreListItem from './StoreListItem';
 import ViewCart from './ViewCart';
 
 import { useStoreProductsQuery } from '../../data/queries';
-import type { Store } from '../../data/types';
-import { AppStackParamList } from '../../navigation/types';
 import useRefresh from '../../hooks/useRefresh';
+
+import type { Product, Store } from '../../data/types';
+import type { AppStackParamList } from '../../navigation/types';
 
 interface StoreProductsProps {
 	store: Store;
@@ -79,5 +80,42 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 		</View>
 	);
 };
+
+interface StoreListItemProps {
+	item: Product;
+	onPress(): void;
+	side: 'left' | 'right';
+}
+
+export const StoreListItem: React.FC<StoreListItemProps> = ({
+	item,
+	onPress,
+	side
+}) => (
+	<Pressable
+		key={item.id}
+		style={[
+			styles.pressable,
+			{ [side === 'left' ? 'marginLeft' : 'marginRight']: 16 }
+		]}
+		onPress={onPress}
+	>
+		<CustomImage height={200} style={styles.image} uri={item.images[0]?.path} />
+		<Typography weight='medium'>{item.name}</Typography>
+		<Spacer y={2} />
+		<Typography variant='secondary'>{formatNaira(item.unitPrice)}</Typography>
+	</Pressable>
+);
+
+const styles = StyleSheet.create({
+	pressable: {
+		flex: 1,
+		margin: 8
+	},
+	image: {
+		width: '100%',
+		marginBottom: 8
+	}
+});
 
 export default StoreProducts;

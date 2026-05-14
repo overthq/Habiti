@@ -1,7 +1,7 @@
-import { formatNaira } from '@habiti/common';
-import { CustomImage, Row, Typography } from '@habiti/components';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import { CustomImage, Row, Typography } from '@habiti/components';
+import { formatNaira } from '@habiti/common';
 
 import { OrderProduct as OrderProductType } from '../../data/types';
 import { plural } from '../../utils/strings';

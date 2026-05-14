@@ -11,12 +11,6 @@ interface OrderMetaProps {
 }
 
 const OrderMeta: React.FC<OrderMetaProps> = ({ order }) => {
-	// const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-
-	// const handleStorePress = React.useCallback(() => {
-	// 	navigate('Store', { storeId: order.store.id });
-	// }, [order]);
-
 	return (
 		<View style={styles.container}>
 			<View style={styles.row}>
@@ -45,23 +39,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		marginBottom: 4
-	},
-	store: {
-		width: '100%',
-		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'space-between',
-		paddingBottom: 8,
-		borderBottomColor: '#D3D3D3',
-		borderBottomWidth: StyleSheet.hairlineWidth
-	},
-	placeholder: {
-		height: 36,
-		width: 36,
-		borderRadius: 18,
-		justifyContent: 'center',
-		alignItems: 'center',
-		marginRight: 8
 	}
 });
 

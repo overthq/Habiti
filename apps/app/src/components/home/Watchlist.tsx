@@ -1,12 +1,15 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { SectionHeader } from '@habiti/components';
+import { View, StyleSheet, Pressable } from 'react-native';
+import { CustomImage, SectionHeader, Typography } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
-import WatchlistProduct from './WatchlistProduct';
-import type { WatchlistProduct as WatchlistProductType } from '../../data/types';
+import type {
+	WatchlistProduct as WatchlistProductType,
+	Product
+} from '../../data/types';
 import { AppStackParamList } from '../../navigation/types';
+import { formatNaira } from '@habiti/common';
 
 // Consider not displaying anything when the watchlist is empty.
 
@@ -45,6 +48,7 @@ const WatchlistMain: React.FC<WatchlistMainProps> = ({ watchlist }) => {
 			horizontal
 			showsHorizontalScrollIndicator={false}
 			data={products}
+			contentContainerStyle={{ gap: 16 }}
 			renderItem={({ item }) => (
 				<WatchlistProduct
 					product={item}
@@ -56,6 +60,33 @@ const WatchlistMain: React.FC<WatchlistMainProps> = ({ watchlist }) => {
 	);
 };
 
+interface WatchlistProductProps {
+	onPress(): void;
+	product: Product;
+}
+
+const WatchlistProduct: React.FC<WatchlistProductProps> = ({
+	product,
+	onPress
+}) => {
+	return (
+		<Pressable style={styles.container} onPress={onPress}>
+			<CustomImage
+				uri={product.images[0]?.path}
+				width={160}
+				height={160}
+				style={styles.image}
+			/>
+			<Typography weight='medium' numberOfLines={1}>
+				{product.name}
+			</Typography>
+			<Typography variant='secondary'>
+				{formatNaira(product.unitPrice)}
+			</Typography>
+		</Pressable>
+	);
+};
+
 const styles = StyleSheet.create({
 	container: {
 		paddingTop: 16
@@ -63,6 +94,9 @@ const styles = StyleSheet.create({
 	sectionHeader: {
 		marginVertical: 8,
 		marginLeft: 16
+	},
+	image: {
+		marginBottom: 8
 	}
 });
 
