@@ -42,7 +42,15 @@ const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
 				>
 					<Typography>Save</Typography>
 				</HeaderButton>
-			)
+			),
+			unstable_headerRightItems: () => [
+				{
+					type: 'button',
+					label: 'Save',
+					onPress: handleSubmit(onSubmit),
+					disabled: !formState.isDirty
+				}
+			]
 		});
 	}, [formState.isDirty]);
 

@@ -11,7 +11,7 @@ const EditProfile = () => {
 
 	if (isLoading || !data) return <View />;
 
-	return <EditProfileMain currentUser={data} />;
+	return <EditProfileMain currentUser={data.user} />;
 };
 
 export default EditProfile;

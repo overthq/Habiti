@@ -15,16 +15,23 @@ const DeliveryAddress = () => {
 	useGoBack();
 
 	React.useLayoutEffect(() => {
+		const handleAddAddress = () =>
+			navigation.navigate('Modal.AddDeliveryAddress');
+
 		navigation.setOptions({
 			headerRight: () => (
-				<HeaderButton
-					onPress={() => {
-						navigation.navigate('Modal.AddDeliveryAddress');
-					}}
-				>
+				<HeaderButton onPress={handleAddAddress}>
 					<Icon name='plus' size={24} />
 				</HeaderButton>
-			)
+			),
+			unstable_headerRightItems: () => [
+				{
+					type: 'button',
+					label: 'Add',
+					icon: { type: 'sfSymbol', name: 'plus' },
+					onPress: handleAddAddress
+				}
+			]
 		});
 	}, []);
 

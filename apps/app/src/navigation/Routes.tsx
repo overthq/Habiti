@@ -98,7 +98,18 @@ const ProfileStack = () => {
 			<ProfileNavigator.Screen
 				name='Profile.Main'
 				component={Profile}
-				options={{ headerTitle: 'Profile' }}
+				options={({ navigation }) => ({
+					headerTitle: 'Profile',
+					headerBackButtonDisplayMode: 'minimal',
+					unstable_headerLeftItems: () => [
+						{
+							type: 'button',
+							label: 'Close',
+							icon: { type: 'sfSymbol', name: 'xmark' },
+							onPress: navigation.goBack
+						}
+					]
+				})}
 			/>
 			<ProfileNavigator.Screen
 				name='Profile.Edit'
@@ -171,7 +182,19 @@ const Routes: React.FC = () => {
 								options={{ headerTitle: 'Carts' }}
 							/>
 							<AppStack.Group
-								screenOptions={{ headerShown: true, presentation: 'modal' }}
+								screenOptions={({ navigation }) => ({
+									headerShown: true,
+									presentation: 'modal',
+									headerBackButtonDisplayMode: 'minimal',
+									unstable_headerLeftItems: () => [
+										{
+											type: 'button',
+											label: 'Close',
+											icon: { type: 'sfSymbol', name: 'xmark' },
+											onPress: navigation.goBack
+										}
+									]
+								})}
 							>
 								<AppStack.Screen
 									name='App.Profile'

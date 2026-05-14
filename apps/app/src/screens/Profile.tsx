@@ -8,7 +8,6 @@ import ProfileRow from '../components/profile/ProfileRow';
 import UserCard from '../components/profile/UserCard';
 
 import useStore from '../state';
-import useGoBack from '../hooks/useGoBack';
 
 import { ProfileStackParamList } from '../types/navigation';
 
@@ -34,7 +33,6 @@ const ACCEPTABLE_USE_URL = 'https://habiti.app/acceptable-use';
 const Profile = () => {
 	const logOut = useStore(useShallow(state => state.logOut));
 	const { navigate } = useNavigation<NavigationProp<ProfileStackParamList>>();
-	useGoBack('x');
 
 	const confirmLogOut = React.useCallback(() => {
 		Alert.alert('Log Out', 'Are you sure you want to log out?', [

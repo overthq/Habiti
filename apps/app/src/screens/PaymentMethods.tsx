@@ -61,14 +61,23 @@ const PaymentMethods = () => {
 	);
 
 	React.useLayoutEffect(() => {
+		const handleAddCard = () =>
+			navigate('Modal.AddCard', { orderId: undefined });
+
 		setOptions({
 			headerRight: () => (
-				<HeaderButton
-					onPress={() => navigate('Modal.AddCard', { orderId: undefined })}
-				>
+				<HeaderButton onPress={handleAddCard}>
 					<Icon name='plus' />
 				</HeaderButton>
-			)
+			),
+			unstable_headerRightItems: () => [
+				{
+					type: 'button',
+					label: 'Add',
+					icon: { type: 'sfSymbol', name: 'plus' },
+					onPress: handleAddCard
+				}
+			]
 		});
 	}, []);
 

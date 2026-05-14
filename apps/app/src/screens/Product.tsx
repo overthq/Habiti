@@ -6,12 +6,9 @@ import AddToCart from '../components/product/AddToCart';
 import ImageCarousel from '../components/product/ImageCarousel';
 import ProductDetails from '../components/product/ProductDetails';
 import RelatedProducts from '../components/product/RelatedProducts';
-import useGoBack from '../hooks/useGoBack';
 import { ProductProvider } from '../components/product/ProductContext';
 
 const Product = () => {
-	useGoBack('x');
-
 	return (
 		<ProductProvider>
 			<View style={{ flex: 1 }}>
