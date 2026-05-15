@@ -46,10 +46,9 @@ export type ProfileStackParamList = {
 	'Profile.AccountSettings': undefined;
 };
 
-// TODO: Create context for storeId (and store name) in this case.
 export type StoreStackParamList = {
 	'Store.Main': { storeId: string };
-	'Store.Search': { storeId: string }; // Store name goes here
+	'Store.Search': { storeId: string };
 };
 
 export type MainTabParamList = {

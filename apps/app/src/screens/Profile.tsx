@@ -1,13 +1,29 @@
 import React from 'react';
-import { Alert, Linking } from 'react-native';
+import {
+	ActivityIndicator,
+	Alert,
+	Linking,
+	Pressable,
+	StyleSheet,
+	View
+} from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { Screen, Separator } from '@habiti/components';
+import {
+	Avatar,
+	Icon,
+	IconType,
+	Row,
+	Screen,
+	Separator,
+	Spacer,
+	Typography,
+	useTheme
+} from '@habiti/components';
 import { useShallow } from 'zustand/react/shallow';
 
-import ProfileRow from '../components/profile/ProfileRow';
-import UserCard from '../components/profile/UserCard';
-
 import useStore from '../state';
+
+import { useCurrentUserQuery } from '../data/queries';
 
 import { ProfileStackParamList } from '../navigation/types';
 
@@ -92,5 +108,75 @@ const Profile = () => {
 		</Screen>
 	);
 };
+
+interface ProfileRowProps {
+	title: string;
+	onPress(): void;
+	icon?: IconType;
+	destructive?: boolean;
+}
+
+const ProfileRow: React.FC<ProfileRowProps> = ({
+	title,
+	onPress,
+	icon = 'chevron-right',
+	destructive = false
+}) => {
+	const { theme } = useTheme();
+
+	return (
+		<Row style={styles.row} onPress={onPress}>
+			<Typography variant={destructive ? 'error' : 'primary'}>
+				{title}
+			</Typography>
+			<Icon
+				name={icon}
+				color={destructive ? theme.text.error : theme.text.secondary}
+				size={20}
+			/>
+		</Row>
+	);
+};
+
+const UserCard: React.FC = () => {
+	const { navigate } = useNavigation<NavigationProp<ProfileStackParamList>>();
+
+	const { data, isLoading } = useCurrentUserQuery();
+
+	if (isLoading || !data) {
+		return (
+			<View>
+				<ActivityIndicator />
+			</View>
+		);
+	}
+
+	return (
+		<Pressable onPress={() => navigate('Profile.Edit')} style={styles.card}>
+			<Avatar size={52} circle fallbackText={data.user.name} />
+			<View style={{ marginLeft: 12 }}>
+				<Typography weight='medium'>{data.user.name}</Typography>
+				<Spacer y={2} />
+				<Typography variant='secondary'>{data.user.email}</Typography>
+			</View>
+		</Pressable>
+	);
+};
+
+const styles = StyleSheet.create({
+	row: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		paddingVertical: 12
+	},
+	card: {
+		marginHorizontal: 16,
+		marginTop: 16,
+		marginBottom: 8,
+		flexDirection: 'row',
+		alignItems: 'center'
+	}
+});
 
 export default Profile;

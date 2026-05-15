@@ -1,6 +1,6 @@
-import { Screen, SectionHeader, useTheme } from '@habiti/components';
 import React from 'react';
 import { StyleSheet } from 'react-native';
+import { Screen, SectionHeader, useTheme } from '@habiti/components';
 
 // Where do we want to store recent searches?
 // There is a strong case for putting it on the server,
@@ -29,7 +29,6 @@ const RecentSearches: React.FC<RecentSearchesProps> = ({ display }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		borderTopWidth: 0.5,
 		paddingTop: 12,
 		padding: 0
 	},

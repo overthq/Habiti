@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
+import { View, Pressable, StyleSheet, FlatList } from 'react-native';
 import {
 	Avatar,
 	Dialog,
@@ -8,7 +8,6 @@ import {
 	Typography
 } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { FlashList } from '@shopify/flash-list';
 
 import type { Store } from '../../data/types';
 import type { HomeStackParamList } from '../../navigation/types';
@@ -59,11 +58,11 @@ const FollowedStoresMain: React.FC<FollowedStoresMainProps> = ({
 	);
 
 	return (
-		<FlashList
+		<FlatList
 			horizontal
 			data={followed.slice(0, 8)}
 			keyExtractor={item => item.id}
-			contentContainerStyle={{ paddingLeft: 16, gap: 16 }}
+			contentContainerStyle={{ paddingLeft: 16, gap: 12 }}
 			renderItem={({ item }) => (
 				<FollowedStoresItem store={item} onPress={handleStorePress(item.id)} />
 			)}

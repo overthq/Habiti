@@ -1,15 +1,25 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { TabBar, TabView, SceneMap } from 'react-native-tab-view';
-import { Screen, useTheme } from '@habiti/components';
+import {
+	Avatar,
+	CustomImage,
+	Row,
+	Spacer,
+	Typography,
+	useTheme
+} from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
-import ProductResultRow from './ProductResultRow';
 import RecentSearches from './RecentSearches';
 import { SearchProvider, useSearchContext } from './SearchContext';
-import StoreResultRow from './StoreResultRow';
-import { AppStackParamList, HomeStackParamList } from '../../navigation/types';
+
+import type {
+	AppStackParamList,
+	HomeStackParamList
+} from '../../navigation/types';
+import type { Product, Store } from '../../data/types';
 
 const StoresView = () => {
 	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();
@@ -114,5 +124,57 @@ const SearchResultsMain: React.FC<SearchResultsMainProps> = ({
 		</SearchProvider>
 	);
 };
+
+interface ProductResultRowProps {
+	product: Product;
+	onPress(): void;
+}
+
+const ProductResultRow: React.FC<ProductResultRowProps> = ({
+	product,
+	onPress
+}) => {
+	return (
+		<Row onPress={onPress} style={styles.productContainer}>
+			<CustomImage uri={product.images[0]?.path} height={35} width={35} />
+			<Spacer x={8} />
+			<Typography>{product.name}</Typography>
+		</Row>
+	);
+};
+
+interface StoreResultRowProps {
+	store: Store;
+	onPress(): void;
+}
+
+const StoreResultRow: React.FC<StoreResultRowProps> = ({ store, onPress }) => {
+	return (
+		<Row onPress={onPress} style={styles.storeContainer}>
+			<Avatar
+				uri={store.image?.path}
+				circle
+				size={44}
+				fallbackText={store.name}
+			/>
+			<Spacer x={8} />
+			<Typography>{store.name}</Typography>
+		</Row>
+	);
+};
+
+const styles = StyleSheet.create({
+	productContainer: {
+		flexDirection: 'row',
+		padding: 4,
+		alignItems: 'center'
+	},
+	storeContainer: {
+		flexDirection: 'row',
+		padding: 8,
+		paddingHorizontal: 16,
+		alignItems: 'center'
+	}
+});
 
 export default SearchResults;

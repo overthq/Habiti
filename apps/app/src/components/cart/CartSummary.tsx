@@ -1,12 +1,13 @@
-import { Spacer, Typography } from '@habiti/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View } from 'react-native';
+import { Spacer, Typography } from '@habiti/components';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import CartProduct from './CartProduct';
-import type { CartProduct as CartProductType } from '../../data/types';
 import { AppStackParamList } from '../../navigation/types';
 import { useCart } from './CartContext';
+
+import type { CartProduct as CartProductType } from '../../data/types';
 
 interface CartSummaryProps {
 	products: CartProductType[];
@@ -14,7 +15,7 @@ interface CartSummaryProps {
 
 const CartSummary: React.FC<CartSummaryProps> = () => {
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const { products, dispatch } = useCart();
+	const { products } = useCart();
 
 	const handleCartProductPress = React.useCallback(
 		(productId: string) => () => {

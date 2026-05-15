@@ -54,7 +54,7 @@ const ImageCarousel: React.FC = () => {
 				{images.map(image => (
 					<Image
 						key={image.id}
-						source={{ uri: image.path }}
+						source={{ uri: image.path.replace('http://', 'https://') }}
 						style={styles.image}
 					/>
 				))}

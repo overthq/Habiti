@@ -30,15 +30,12 @@ const OrderMeta: React.FC<OrderMetaProps> = ({ order }) => {
 const styles = StyleSheet.create({
 	container: {
 		paddingTop: 8,
-		paddingBottom: 4,
 		paddingHorizontal: 16,
-		borderRadius: 4,
 		marginVertical: 16
 	},
 	row: {
 		flexDirection: 'row',
-		justifyContent: 'space-between',
-		marginBottom: 4
+		justifyContent: 'space-between'
 	}
 });
 

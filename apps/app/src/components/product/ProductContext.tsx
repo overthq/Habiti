@@ -131,11 +131,8 @@ export const ProductProvider = ({
 }) => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Product'>>();
 	const { data, isLoading } = useProductQuery(params.productId);
-	const {
-		data: relatedProductsData,
-		error,
-		isLoading: isRelatedProductsLoading
-	} = useRelatedProductsQuery(params.productId);
+	const { data: relatedProductsData, isLoading: isRelatedProductsLoading } =
+		useRelatedProductsQuery(params.productId);
 
 	const product = data?.product;
 	const relatedProducts = relatedProductsData?.products;

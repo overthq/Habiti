@@ -17,7 +17,7 @@ const FollowButton: React.FC<FollowButtonProps> = ({ storeId, followed }) => {
 	const followStore = useFollowStoreMutation(storeId);
 	const unfollowStore = useUnfollowStoreMutation(storeId);
 
-	const handlePress = React.useCallback(async () => {
+	const handlePress = React.useCallback(() => {
 		if (followed) {
 			unfollowStore.mutate();
 		} else {

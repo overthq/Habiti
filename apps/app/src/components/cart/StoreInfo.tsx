@@ -1,6 +1,6 @@
-import { Typography } from '@habiti/components';
 import React from 'react';
 import { View } from 'react-native';
+import { Typography } from '@habiti/components';
 
 import type { Store } from '../../data/types';
 
