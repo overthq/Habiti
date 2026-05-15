@@ -52,10 +52,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 		activeCategory
 	});
 
-	const { data, isLoading, refetch, error } = useStoreProductsQuery(
-		store.id,
-		filter
-	);
+	const { data, isLoading, refetch } = useStoreProductsQuery(store.id, filter);
 	const { refreshing, refresh } = useRefresh({ refetch });
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
