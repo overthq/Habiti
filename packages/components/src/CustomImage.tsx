@@ -34,7 +34,10 @@ const CustomImage: React.FC<CustomImageProps> = ({
 				style
 			]}
 		>
-			<Image style={styles.image} source={{ uri }} />
+			<Image
+				style={styles.image}
+				source={{ uri: uri?.replace('http://', 'https://') }}
+			/>
 		</View>
 	);
 };

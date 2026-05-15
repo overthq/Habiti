@@ -1,7 +1,12 @@
-import { useTheme } from '@habiti/components';
 import React from 'react';
-import { View, Image, StyleSheet, Dimensions } from 'react-native';
-import { useWindowDimensions } from 'react-native';
+import {
+	View,
+	Image,
+	StyleSheet,
+	Dimensions,
+	useWindowDimensions
+} from 'react-native';
+import { useTheme } from '@habiti/components';
 import Animated, {
 	interpolate,
 	SharedValue,
@@ -33,7 +38,10 @@ const ImageCarousel: React.FC = () => {
 			<View
 				style={[styles.container, { backgroundColor: theme.input.background }]}
 			>
-				<Image source={{ uri: images[0]?.path }} style={styles.image} />
+				<Image
+					source={{ uri: images[0]?.path.replace('http://', 'https://') }}
+					style={styles.image}
+				/>
 			</View>
 		);
 	}
@@ -137,7 +145,8 @@ const styles = StyleSheet.create({
 		width: '100%'
 	},
 	image: {
-		width
+		width,
+		height: '100%'
 	}
 });
 
