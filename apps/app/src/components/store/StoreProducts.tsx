@@ -9,6 +9,7 @@ import { formatNaira } from '@habiti/common';
 import ViewCart from './ViewCart';
 
 import { useStoreProductsQuery } from '../../data/queries';
+import useDebounced from '../../hooks/useDebounced';
 import useRefresh from '../../hooks/useRefresh';
 
 import type { Product, Store } from '../../data/types';
@@ -20,15 +21,41 @@ interface StoreProductsProps {
 	searchTerm: string;
 }
 
+const buildFilter = ({
+	searchTerm,
+	activeCategory
+}: {
+	searchTerm: string;
+	activeCategory: string;
+}) => {
+	const filters = new URLSearchParams();
+
+	if (searchTerm) {
+		filters.set('search', searchTerm);
+	}
+
+	if (activeCategory) {
+		filters.set('categoryId', activeCategory);
+	}
+
+	return filters;
+};
+
 const StoreProducts: React.FC<StoreProductsProps> = ({
 	store,
 	activeCategory,
 	searchTerm
 }) => {
-	const filter = activeCategory
-		? { categories: { some: { categoryId: { equals: activeCategory } } } }
-		: undefined;
-	const { data, isLoading, refetch } = useStoreProductsQuery(store.id, filter);
+	const debouncedSearchTerm = useDebounced(searchTerm, 300);
+	const filter = buildFilter({
+		searchTerm: debouncedSearchTerm,
+		activeCategory
+	});
+
+	const { data, isLoading, refetch, error } = useStoreProductsQuery(
+		store.id,
+		filter
+	);
 	const { refreshing, refresh } = useRefresh({ refetch });
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
@@ -46,7 +73,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 	if (isLoading && !products) return <View />;
 
 	return (
-		<View style={{ flex: 1, display: !searchTerm ? 'flex' : 'none' }}>
+		<View style={{ flex: 1 }}>
 			<FlashList
 				keyboardShouldPersistTaps='handled'
 				contentContainerStyle={{
@@ -57,7 +84,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 				keyExtractor={p => p.id}
 				showsVerticalScrollIndicator={false}
 				renderItem={({ item, index }) => (
-					<StoreListItem
+					<StoreProductListItem
 						item={item}
 						onPress={handleProductPress(item.id)}
 						side={index % 2 === 0 ? 'left' : 'right'}
@@ -87,7 +114,7 @@ interface StoreListItemProps {
 	side: 'left' | 'right';
 }
 
-export const StoreListItem: React.FC<StoreListItemProps> = ({
+export const StoreProductListItem: React.FC<StoreListItemProps> = ({
 	item,
 	onPress,
 	side
@@ -100,7 +127,8 @@ export const StoreListItem: React.FC<StoreListItemProps> = ({
 		]}
 		onPress={onPress}
 	>
-		<CustomImage height={200} style={styles.image} uri={item.images[0]?.path} />
+		<CustomImage height={200} uri={item.images[0]?.path} />
+		<Spacer y={8} />
 		<Typography weight='medium'>{item.name}</Typography>
 		<Spacer y={2} />
 		<Typography variant='secondary'>{formatNaira(item.unitPrice)}</Typography>
@@ -111,10 +139,6 @@ const styles = StyleSheet.create({
 	pressable: {
 		flex: 1,
 		margin: 8
-	},
-	image: {
-		width: '100%',
-		marginBottom: 8
 	}
 });
 

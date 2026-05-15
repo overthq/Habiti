@@ -162,9 +162,9 @@ export const getStoreProducts = async (
 	queryParams: URLSearchParams
 ) => {
 	const response = await api.get<{ products: Product[] }>(
-		`/stores/${storeId}/products`,
-		{ params: queryParams }
+		`/stores/${storeId}/products${queryParams.toString() ? `?${queryParams}` : ''}`
 	);
+
 	return response.data;
 };
 

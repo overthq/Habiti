@@ -71,12 +71,13 @@ export const useStoreQuery = (storeId: string) => {
 
 export const useStoreProductsQuery = (
 	storeId: string,
-	filter?: any,
-	orderBy?: any
+	params: URLSearchParams
 ) => {
+	console.log(params.toString());
+
 	return useQuery({
-		queryKey: ['stores', storeId, 'products', filter, orderBy],
-		queryFn: () => getStoreProducts(storeId, new URLSearchParams()),
+		queryKey: ['stores', storeId, 'products', params.toString()],
+		queryFn: () => getStoreProducts(storeId, params),
 		enabled: !!storeId,
 		placeholderData: keepPreviousData
 	});
@@ -115,7 +116,8 @@ export const useStoresFollowedQuery = () => {
 export const useSearchQuery = (searchTerm: string) => {
 	return useQuery({
 		queryKey: ['search', searchTerm],
-		queryFn: () => globalSearch(searchTerm)
+		queryFn: () => globalSearch(searchTerm),
+		enabled: !!searchTerm
 	});
 };
 
