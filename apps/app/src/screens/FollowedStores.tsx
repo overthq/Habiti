@@ -35,7 +35,7 @@ const FollowedStores = () => {
 	}
 
 	return (
-		<Screen style={{ padding: 0, paddingTop: 8 }}>
+		<Screen style={{ padding: 0 }}>
 			<FlashList
 				refreshControl={
 					<RefreshControl
@@ -108,7 +108,8 @@ const styles = StyleSheet.create({
 	item: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems: 'center'
+		alignItems: 'center',
+		paddingVertical: 8
 	},
 	left: {
 		flexDirection: 'row',
