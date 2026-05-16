@@ -10,6 +10,7 @@ import {
 	getOrder,
 	getOrders,
 	getProduct,
+	getProductReviews,
 	getRelatedProducts,
 	getStore,
 	getStoreProducts,
@@ -49,6 +50,14 @@ export const useProductQuery = (productId: string) => {
 	return useQuery({
 		queryKey: ['products', productId],
 		queryFn: () => getProduct(productId),
+		enabled: !!productId
+	});
+};
+
+export const useProductReviewsQuery = (productId: string) => {
+	return useQuery({
+		queryKey: ['products', productId, 'reviews'],
+		queryFn: () => getProductReviews(productId),
 		enabled: !!productId
 	});
 };

@@ -10,6 +10,7 @@ export type AppStackParamList = {
 	Authenticate: undefined;
 	Verify: { email: string };
 	Product: { productId: string };
+	Reviews: { productId: string };
 	Cart: { cartId: string };
 	'Modal.AddCard': { orderId?: string };
 	'Modal.AddDeliveryAddress': undefined;
