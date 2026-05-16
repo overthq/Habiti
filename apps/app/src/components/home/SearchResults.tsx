@@ -5,6 +5,8 @@ import {
 	Avatar,
 	CustomImage,
 	Row,
+	Screen,
+	SectionHeader,
 	Spacer,
 	Typography,
 	useTheme
@@ -12,7 +14,6 @@ import {
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
-import RecentSearches from './RecentSearches';
 import { SearchProvider, useSearchContext } from './SearchContext';
 
 import type {
@@ -160,6 +161,27 @@ const StoreResultRow: React.FC<StoreResultRowProps> = ({ store, onPress }) => {
 			<Spacer x={8} />
 			<Typography>{store.name}</Typography>
 		</Row>
+	);
+};
+
+interface RecentSearchesProps {
+	display: boolean;
+}
+
+const RecentSearches: React.FC<RecentSearchesProps> = ({ display }) => {
+	const { theme } = useTheme();
+
+	return (
+		<Screen
+			style={{
+				display: display ? 'flex' : 'none',
+				padding: 0,
+				paddingTop: 12,
+				borderTopColor: theme.border.color
+			}}
+		>
+			<SectionHeader title='Recent searches' />
+		</Screen>
 	);
 };
 

@@ -10,7 +10,7 @@ import { Icon, Screen, Typography, useTheme } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { HeaderButton } from '@react-navigation/elements';
 
-import { CardIconMap } from '../components/cart/CardIcons';
+import { CardIconMap } from '../components/CardIcons';
 
 import { AppStackParamList } from '../navigation/types';
 import { useCardsQuery } from '../data/queries';
