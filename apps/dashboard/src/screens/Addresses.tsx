@@ -98,6 +98,7 @@ const Addresses = () => {
 	return (
 		<>
 			<ScrollableScreen
+				style={{ marginHorizontal: -16 }}
 				contentContainerStyle={{ padding: 0 }}
 				refreshControl={
 					<RefreshControl

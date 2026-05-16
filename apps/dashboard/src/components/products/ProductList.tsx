@@ -55,6 +55,7 @@ const ProductList: React.FC = () => {
 				keyExtractor={i => i.id}
 				data={products}
 				renderItem={renderProduct}
+				style={{ marginHorizontal: -16 }}
 				contentContainerStyle={{
 					flexGrow: 1,
 					backgroundColor: theme.screen.background

@@ -6,7 +6,8 @@ import {
 	Dimensions,
 	useWindowDimensions,
 	Pressable,
-	ScrollView
+	ScrollView,
+	Share
 } from 'react-native';
 import {
 	Button,
@@ -17,6 +18,7 @@ import {
 	Typography,
 	useTheme
 } from '@habiti/components';
+import { HeaderButton } from '@react-navigation/elements';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { formatNaira } from '@habiti/common';
@@ -63,7 +65,7 @@ const Dot = ({
 		<Animated.View
 			style={[
 				{
-					height: 4,
+					height: 6,
 					borderRadius: 100,
 					backgroundColor: '#FFFFFF'
 				},
@@ -164,36 +166,51 @@ const ProductDetails: React.FC = () => {
 
 	return (
 		<View style={styles.detailsContainer}>
-			<Typography size='xxlarge' weight='bold'>
+			<Typography size='xxlarge' weight='medium'>
 				{product.name}
 			</Typography>
+
 			<Spacer y={2} />
+
 			<Typography size='xlarge' weight='medium' variant='secondary'>
 				{formatNaira(product.unitPrice)}
 			</Typography>
+
 			<Spacer y={12} />
+
 			<Typography variant='label' weight='medium'>
 				Description
 			</Typography>
+
 			<Spacer y={4} />
 			<Typography>{product?.description}</Typography>
 		</View>
 	);
 };
 
+const RELATED_GAP = 16;
+const RELATED_SLIVER = 12;
+const RELATED_PADDING = 16;
+
 const RelatedProducts: React.FC = () => {
 	const { relatedProducts } = useProductContext();
+	const { width: windowWidth } = useWindowDimensions();
 	// @ts-expect-error - push is a valid navigation prop
 	const { push } = useNavigation<NavigationProp<AppStackParamList>>();
+
+	const imageSize =
+		(windowWidth - RELATED_PADDING - RELATED_GAP - RELATED_SLIVER) / 2;
 
 	return (
 		<View style={styles.relatedContainer}>
 			<Typography variant='label' weight='medium' style={{ marginLeft: 16 }}>
 				Related products
 			</Typography>
+
 			<Spacer y={8} />
+
 			<ScrollView
-				contentContainerStyle={styles.relatedScroll}
+				contentContainerStyle={[styles.relatedScroll, { gap: RELATED_GAP }]}
 				horizontal
 				showsHorizontalScrollIndicator={false}
 			>
@@ -204,18 +221,17 @@ const RelatedProducts: React.FC = () => {
 					>
 						<CustomImage
 							uri={product.images[0]?.path}
-							height={120}
-							width={120}
+							height={imageSize}
+							width={imageSize}
 						/>
+
 						<Spacer y={4} />
-						<Typography weight='medium' style={{ fontSize: 14 }}>
-							{product.name}
-						</Typography>
-						<Typography
-							weight='medium'
-							variant='secondary'
-							style={{ fontSize: 14 }}
-						>
+
+						<Typography weight='medium'>{product.name}</Typography>
+
+						<Spacer y={2} />
+
+						<Typography variant='secondary'>
 							{formatNaira(product.unitPrice)}
 						</Typography>
 					</Pressable>
@@ -297,9 +313,42 @@ const AddToCart: React.FC = () => {
 	);
 };
 
+const ShareHeader: React.FC = () => {
+	const navigation = useNavigation();
+	const { product } = useProductContext();
+
+	React.useLayoutEffect(() => {
+		const handleShare = () => {
+			Share.share({
+				message: `Check out ${product.name} on Habiti: https://habiti.app/product/${product.id}`,
+				url: `https://habiti.app/product/${product.id}`
+			});
+		};
+
+		navigation.setOptions({
+			headerRight: () => (
+				<HeaderButton onPress={handleShare}>
+					<Icon name='share' size={24} />
+				</HeaderButton>
+			),
+			unstable_headerRightItems: () => [
+				{
+					type: 'button',
+					label: 'Share',
+					icon: { type: 'sfSymbol', name: 'square.and.arrow.up' },
+					onPress: handleShare
+				}
+			]
+		});
+	}, [navigation, product.id, product.name]);
+
+	return null;
+};
+
 const Product = () => {
 	return (
 		<ProductProvider>
+			<ShareHeader />
 			<ScrollableScreen
 				style={{ marginHorizontal: -16 }}
 				showsVerticalScrollIndicator={false}
@@ -332,8 +381,7 @@ const styles = StyleSheet.create({
 		flex: 1
 	},
 	relatedScroll: {
-		paddingHorizontal: 16,
-		gap: 12
+		paddingHorizontal: 16
 	},
 	addToCartContainer: {
 		flexDirection: 'row',

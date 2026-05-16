@@ -1,5 +1,5 @@
 import React from 'react';
-import { Screen, Checkbox, Typography } from '@habiti/components';
+import { Screen, Checkbox, Typography, Spacer } from '@habiti/components';
 import { View, StyleSheet } from 'react-native';
 import { HeaderButton } from '@react-navigation/elements';
 import {
@@ -84,7 +84,9 @@ const ProductCategories = () => {
 
 	return (
 		<Screen>
-			<View style={{ flex: 1 }}>
+			<Spacer y={16} />
+
+			<View>
 				{data?.categories.map(({ id, name }) => (
 					<View key={id} style={styles.row}>
 						<Typography>{name}</Typography>
@@ -95,6 +97,7 @@ const ProductCategories = () => {
 					</View>
 				))}
 			</View>
+
 			<FAB onPress={handleAddCategory} text='Add Category' />
 		</Screen>
 	);

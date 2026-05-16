@@ -31,6 +31,7 @@ const OrdersList = () => {
 				keyExtractor={i => i.id}
 				data={orders}
 				renderItem={renderOrder}
+				style={{ marginHorizontal: -16 }}
 				contentContainerStyle={{
 					flexGrow: 1,
 					backgroundColor: theme.screen.background

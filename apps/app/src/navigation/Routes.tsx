@@ -205,7 +205,11 @@ const Routes: React.FC = () => {
 								<AppStack.Screen
 									name='Product'
 									component={Product}
-									options={{ headerTitle: '', gestureDirection: 'vertical' }}
+									options={{
+										headerTitle: '',
+										gestureDirection: 'vertical',
+										headerTransparent: true
+									}}
 								/>
 								<AppStack.Screen
 									name='Modal.AddCard'
