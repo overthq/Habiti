@@ -4,27 +4,31 @@ import { HeaderButton } from '@react-navigation/elements';
 import { Icon, Screen, Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
-import useGoBack from '../hooks/useGoBack';
 import { useDeliveryAddressesQuery } from '../data/queries';
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../navigation/types';
 
 const DeliveryAddress = () => {
 	const { data, isLoading } = useDeliveryAddressesQuery();
 	const navigation = useNavigation<NavigationProp<AppStackParamList>>();
 
-	useGoBack();
-
 	React.useLayoutEffect(() => {
+		const handleAddAddress = () =>
+			navigation.navigate('Modal.AddDeliveryAddress');
+
 		navigation.setOptions({
 			headerRight: () => (
-				<HeaderButton
-					onPress={() => {
-						navigation.navigate('Modal.AddDeliveryAddress');
-					}}
-				>
+				<HeaderButton onPress={handleAddAddress}>
 					<Icon name='plus' size={24} />
 				</HeaderButton>
-			)
+			),
+			unstable_headerRightItems: () => [
+				{
+					type: 'button',
+					label: 'Add',
+					icon: { type: 'sfSymbol', name: 'plus' },
+					onPress: handleAddAddress
+				}
+			]
 		});
 	}, []);
 

@@ -7,16 +7,16 @@ import {
 	useRoute
 } from '@react-navigation/native';
 
-import { useCartQuery } from '../../data/queries';
+import { useCartQuery } from '../data/queries';
 import {
 	useCreateOrderMutation,
 	useUpdateCartProductMutation
-} from '../../data/mutations';
-import type { Cart, CartProduct } from '../../data/types';
-import useStore from '../../state';
-import { AppStackParamList } from '../../types/navigation';
-import useRefresh from '../../hooks/useRefresh';
-import useDebounce from '../../hooks/useDebounce';
+} from '../data/mutations';
+import type { Cart, CartProduct } from '../data/types';
+import useStore from '../state';
+import { AppStackParamList } from '../navigation/types';
+import useRefresh from '../hooks/useRefresh';
+import useDebounce from '../hooks/useDebounce';
 
 interface CartContextType {
 	cart: Cart;
@@ -37,7 +37,7 @@ const CartContext = React.createContext<CartContextType | null>(null);
 interface CartProviderProps {
 	children: React.ReactNode;
 	cart: Cart;
-	cards: import('../../data/types').Card[];
+	cards: import('../data/types').Card[];
 	refreshing: boolean;
 	refresh: () => void;
 }

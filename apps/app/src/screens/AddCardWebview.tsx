@@ -4,9 +4,8 @@ import { ActivityIndicator, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { RouteProp, useRoute } from '@react-navigation/native';
 
-import useGoBack from '../hooks/useGoBack';
 import { useCardAuthorizationQuery } from '../data/queries';
-import { AppStackParamList } from '../types/navigation';
+import { AppStackParamList } from '../navigation/types';
 
 // Before opening this screen, we should probably explain to users why we have
 // to charge them a small amount of money. I should probably also figure out a
@@ -21,8 +20,6 @@ const AddCardWebview = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Modal.AddCard'>>();
 
 	const { isLoading, data } = useCardAuthorizationQuery(params?.orderId ?? '');
-
-	useGoBack('x');
 
 	if (isLoading || !data) {
 		return (

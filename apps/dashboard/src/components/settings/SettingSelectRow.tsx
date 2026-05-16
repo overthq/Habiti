@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
 		paddingVertical: 12,
 		paddingHorizontal: 16,
 		backgroundColor: 'transparent',
-		borderBottomWidth: 0.5
+		borderBottomWidth: StyleSheet.hairlineWidth
 	}
 });
 

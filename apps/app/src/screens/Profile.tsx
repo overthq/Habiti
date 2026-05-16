@@ -1,16 +1,32 @@
 import React from 'react';
-import { Alert, Linking } from 'react-native';
+import {
+	ActivityIndicator,
+	Alert,
+	Linking,
+	Pressable,
+	StyleSheet,
+	View
+} from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { Screen, Separator } from '@habiti/components';
+import {
+	Avatar,
+	Icon,
+	IconType,
+	Row,
+	Screen,
+	Separator,
+	Spacer,
+	Typography,
+	useTheme
+} from '@habiti/components';
 import { useShallow } from 'zustand/react/shallow';
 
-import ProfileRow from '../components/profile/ProfileRow';
-import UserCard from '../components/profile/UserCard';
-
 import useStore from '../state';
-import useGoBack from '../hooks/useGoBack';
 
-import { ProfileStackParamList } from '../types/navigation';
+import { useCurrentUserQuery } from '../data/queries';
+
+import { ProfileStackParamList } from '../navigation/types';
+import { useHeaderHeight } from '@react-navigation/elements';
 
 const PRIVACY_POLICY_URL = 'https://habiti.app/privacy-policy';
 const SUPPORT_URL = 'https://habiti.app/support';
@@ -32,9 +48,9 @@ const ACCEPTABLE_USE_URL = 'https://habiti.app/acceptable-use';
 * Set up your own store*/
 
 const Profile = () => {
+	const headerHeight = useHeaderHeight();
 	const logOut = useStore(useShallow(state => state.logOut));
 	const { navigate } = useNavigation<NavigationProp<ProfileStackParamList>>();
-	useGoBack('x');
 
 	const confirmLogOut = React.useCallback(() => {
 		Alert.alert('Log Out', 'Are you sure you want to log out?', [
@@ -45,8 +61,12 @@ const Profile = () => {
 
 	return (
 		<Screen>
+			<Spacer y={headerHeight} />
+
 			<UserCard />
-			<Separator style={{ marginHorizontal: 16 }} />
+
+			<Spacer y={12} />
+
 			<ProfileRow
 				title='Manage Account'
 				onPress={() => navigate('Profile.AccountSettings')}
@@ -94,5 +114,79 @@ const Profile = () => {
 		</Screen>
 	);
 };
+
+interface ProfileRowProps {
+	title: string;
+	onPress(): void;
+	icon?: IconType;
+	destructive?: boolean;
+}
+
+const ProfileRow: React.FC<ProfileRowProps> = ({
+	title,
+	onPress,
+	icon = 'chevron-right',
+	destructive = false
+}) => {
+	const { theme } = useTheme();
+
+	return (
+		<Row style={styles.row} onPress={onPress}>
+			<Typography variant={destructive ? 'error' : 'primary'}>
+				{title}
+			</Typography>
+			<Icon
+				name={icon}
+				color={destructive ? theme.text.error : theme.text.secondary}
+				size={20}
+			/>
+		</Row>
+	);
+};
+
+const UserCard: React.FC = () => {
+	const { navigate } = useNavigation<NavigationProp<ProfileStackParamList>>();
+
+	const { theme } = useTheme();
+	const { data, isLoading } = useCurrentUserQuery();
+
+	if (isLoading || !data) {
+		return (
+			<View>
+				<ActivityIndicator />
+			</View>
+		);
+	}
+
+	return (
+		<Pressable
+			onPress={() => navigate('Profile.Edit')}
+			style={[styles.card, { backgroundColor: theme.input.background }]}
+		>
+			<Avatar size={56} circle fallbackText={data.user.name} />
+			<View style={{ marginLeft: 12 }}>
+				<Typography weight='medium'>{data.user.name}</Typography>
+				<Spacer y={2} />
+				<Typography variant='secondary'>{data.user.email}</Typography>
+			</View>
+		</Pressable>
+	);
+};
+
+const styles = StyleSheet.create({
+	row: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		paddingVertical: 12,
+		marginHorizontal: -16
+	},
+	card: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		padding: 16,
+		borderRadius: 12
+	}
+});
 
 export default Profile;

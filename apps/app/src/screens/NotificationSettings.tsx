@@ -4,7 +4,6 @@ import * as Device from 'expo-device';
 
 import { Screen, Typography, useTheme } from '@habiti/components';
 
-import useGoBack from '../hooks/useGoBack';
 import { usePushTokensQuery } from '../data/queries';
 import {
 	useSavePushTokenMutation,
@@ -23,8 +22,6 @@ const NotificationSettings = () => {
 	const savePushToken = useSavePushTokenMutation();
 	const deletePushToken = useDeletePushTokenMutation();
 	const { theme } = useTheme();
-
-	useGoBack();
 
 	const pushTokens = data?.pushTokens ?? [];
 	const pushToken = getUserPushToken(pushTokens);

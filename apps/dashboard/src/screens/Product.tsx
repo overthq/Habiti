@@ -39,6 +39,8 @@ const Product = () => {
 			}
 			showsVerticalScrollIndicator={true}
 		>
+			<Spacer y={16} />
+
 			<ProductDetails product={data.product} />
 
 			<Spacer y={16} />

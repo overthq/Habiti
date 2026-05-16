@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
 		width: '100%',
 		height: 45,
 		paddingHorizontal: 16,
-		borderBottomWidth: 0.5,
+		borderBottomWidth: StyleSheet.hairlineWidth,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center'

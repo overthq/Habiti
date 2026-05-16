@@ -3,6 +3,7 @@ import React from 'react';
 import { useSearchQuery } from '../../data/queries';
 import { Product, Store } from '../../data/types';
 import useDebounced from '../../hooks/useDebounced';
+
 interface SearchContextValue {
 	fetching: boolean;
 	products: Product[];

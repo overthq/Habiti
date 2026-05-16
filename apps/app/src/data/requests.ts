@@ -109,7 +109,7 @@ export const register = async (input: RegisterBody) => {
 // Current User
 
 export const getCurrentUser = async () => {
-	const response = await api.get('/users/current');
+	const response = await api.get<{ user: User }>('/users/current');
 	return response.data;
 };
 
@@ -162,9 +162,9 @@ export const getStoreProducts = async (
 	queryParams: URLSearchParams
 ) => {
 	const response = await api.get<{ products: Product[] }>(
-		`/stores/${storeId}/products`,
-		{ params: queryParams }
+		`/stores/${storeId}/products${queryParams.toString() ? `?${queryParams}` : ''}`
 	);
+
 	return response.data;
 };
 
@@ -229,7 +229,9 @@ export const updateCartProductQuantity = async ({
 // Orders
 
 export const getOrder = async (orderId: string) => {
-	const response = await api.get<{ order: Order }>(`/orders/${orderId}`);
+	const response = await api.get<{ order: Order }>(
+		`/users/current/orders/${orderId}`
+	);
 	return response.data;
 };
 

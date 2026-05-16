@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Pressable, StyleSheet } from 'react-native';
-import { AppStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../navigation/types';
 import { Icon, Typography, useTheme } from '@habiti/components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { LinearTransition } from 'react-native-reanimated';

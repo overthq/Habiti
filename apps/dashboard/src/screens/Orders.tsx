@@ -11,7 +11,7 @@ const Orders: React.FC = () => {
 
 	return (
 		<OrdersProvider>
-			<Screen style={{ padding: 0, paddingTop: top }}>
+			<Screen style={{ paddingTop: top }}>
 				<OrdersScreenHeader />
 				<OrdersList />
 			</Screen>

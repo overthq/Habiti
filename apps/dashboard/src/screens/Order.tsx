@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, RefreshControl } from 'react-native';
-import { ScrollableScreen, useTheme } from '@habiti/components';
+import { ScrollableScreen, Spacer, useTheme } from '@habiti/components';
 import { useRoute, RouteProp } from '@react-navigation/native';
 
 import AwaitingPickupBanner from '../components/order/AwaitingPickupBanner';
@@ -35,6 +35,7 @@ const Order = () => {
 				/>
 			}
 		>
+			<Spacer y={16} />
 			<OrderOverview order={data.order} />
 			<AwaitingPickupBanner status={data.order.status} />
 			<CustomerDetails user={data.order.user} />

@@ -4,7 +4,6 @@ import { Icon, TextButton, Typography, useTheme } from '@habiti/components';
 
 import CategorySelector from './CategorySelector';
 import FollowButton from './FollowButton';
-import type { Store } from '../../data/types';
 import { useNavigation } from '@react-navigation/native';
 import Animated, {
 	FadeInDown,
@@ -16,6 +15,8 @@ import Animated, {
 	LinearTransition
 } from 'react-native-reanimated';
 import useFirstRender from '../../hooks/useFirstRender';
+
+import type { Store } from '../../data/types';
 
 interface StoreHeaderProps {
 	store: Store;
@@ -66,7 +67,7 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 				styles.container,
 				{
 					backgroundColor: theme.screen.background,
-					borderBottomWidth: 1,
+					borderBottomWidth: StyleSheet.hairlineWidth,
 					borderColor: theme.border.color
 				}
 			]}
@@ -166,8 +167,8 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		width: '100%',
-		paddingTop: 16
+		paddingTop: 16,
+		marginHorizontal: -16
 	},
 	header: {
 		paddingHorizontal: 12,

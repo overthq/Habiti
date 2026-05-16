@@ -36,7 +36,7 @@ import {
 	HomeStackParamList,
 	AppStackParamList,
 	ProfileStackParamList
-} from '../types/navigation';
+} from '../navigation/types';
 
 // const prefix = Linking.createURL('/');
 
@@ -54,7 +54,10 @@ const HomeNavigator = createNativeStackNavigator<
 
 const HomeStack = () => {
 	return (
-		<HomeNavigator.Navigator id='HomeStack'>
+		<HomeNavigator.Navigator
+			id='HomeStack'
+			screenOptions={{ headerBackButtonDisplayMode: 'minimal' }}
+		>
 			<HomeNavigator.Screen
 				name='Home.Main'
 				component={Home}
@@ -91,11 +94,25 @@ const HomeStack = () => {
 
 const ProfileStack = () => {
 	return (
-		<ProfileNavigator.Navigator id='ProfileStack'>
+		<ProfileNavigator.Navigator
+			id='ProfileStack'
+			screenOptions={{ headerBackButtonDisplayMode: 'minimal' }}
+		>
 			<ProfileNavigator.Screen
 				name='Profile.Main'
 				component={Profile}
-				options={{ headerTitle: 'Profile' }}
+				options={({ navigation }) => ({
+					headerTransparent: true,
+					headerTitle: 'Profile',
+					unstable_headerLeftItems: () => [
+						{
+							type: 'button',
+							label: 'Close',
+							icon: { type: 'sfSymbol', name: 'xmark' },
+							onPress: navigation.goBack
+						}
+					]
+				})}
 			/>
 			<ProfileNavigator.Screen
 				name='Profile.Edit'
@@ -168,7 +185,19 @@ const Routes: React.FC = () => {
 								options={{ headerTitle: 'Carts' }}
 							/>
 							<AppStack.Group
-								screenOptions={{ headerShown: true, presentation: 'modal' }}
+								screenOptions={({ navigation }) => ({
+									headerShown: true,
+									presentation: 'containedModal',
+									headerBackButtonDisplayMode: 'minimal',
+									unstable_headerLeftItems: () => [
+										{
+											type: 'button',
+											label: 'Close',
+											icon: { type: 'sfSymbol', name: 'xmark' },
+											onPress: navigation.goBack
+										}
+									]
+								})}
 							>
 								<AppStack.Screen
 									name='App.Profile'
@@ -179,7 +208,11 @@ const Routes: React.FC = () => {
 								<AppStack.Screen
 									name='Product'
 									component={Product}
-									options={{ headerTitle: '', gestureDirection: 'vertical' }}
+									options={{
+										headerTitle: '',
+										gestureDirection: 'vertical',
+										headerTransparent: true
+									}}
 								/>
 								<AppStack.Screen
 									name='Modal.AddCard'

@@ -1,12 +1,12 @@
 import React from 'react';
-import { useProductQuery, useRelatedProductsQuery } from '../../data/queries';
+import { useProductQuery, useRelatedProductsQuery } from '../data/queries';
 import {
 	useAddToCartMutation,
 	useUpdateCartProductMutation
-} from '../../data/mutations';
-import type { Product, ProductViewerContext } from '../../data/types';
+} from '../data/mutations';
+import type { Product, ProductViewerContext } from '../data/types';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { AppStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../navigation/types';
 import { View } from 'react-native';
 
 interface ProductContextType {
@@ -137,7 +137,7 @@ export const ProductProvider = ({
 	const product = data?.product;
 	const relatedProducts = relatedProductsData?.products;
 
-	if (isLoading || !product) {
+	if (isLoading || isRelatedProductsLoading || !product) {
 		return <View />;
 	}
 

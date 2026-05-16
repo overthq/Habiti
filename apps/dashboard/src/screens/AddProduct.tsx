@@ -66,7 +66,15 @@ const AddProduct = () => {
 				>
 					<Typography>Save</Typography>
 				</HeaderButton>
-			)
+			),
+			unstable_headerRightItems: () => [
+				{
+					type: 'button',
+					label: 'Save',
+					onPress: formMethods.handleSubmit(onSubmit),
+					disabled: createProductMutation.isPending
+				}
+			]
 		});
 	}, [createProductMutation.isPending]);
 

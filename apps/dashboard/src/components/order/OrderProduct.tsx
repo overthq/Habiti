@@ -32,7 +32,7 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 				styles.container,
 				{ backgroundColor: 'transparent' },
 				!isLast && {
-					borderBottomWidth: 0.5,
+					borderBottomWidth: StyleSheet.hairlineWidth,
 					borderBottomColor: theme.border.color
 				}
 			]}

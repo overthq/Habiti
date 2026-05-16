@@ -1,16 +1,26 @@
 import React from 'react';
-import { RefreshControl, View } from 'react-native';
-import { Screen, Spacer, useTheme } from '@habiti/components';
+import { RefreshControl, View, StyleSheet } from 'react-native';
+import {
+	Avatar,
+	Row,
+	Screen,
+	Spacer,
+	Typography,
+	useTheme
+} from '@habiti/components';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { FlashList } from '@shopify/flash-list';
-
-import OrdersListItem from '../components/orders/OrdersListItem';
-import { useOrdersQuery } from '../data/queries';
-import { HomeStackParamList } from '../types/navigation';
-import useGoBack from '../hooks/useGoBack';
-import useRefresh from '../hooks/useRefresh';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { FlashList } from '@shopify/flash-list';
+import { formatNaira } from '@habiti/common';
+
+import { useOrdersQuery } from '../data/queries';
+import useRefresh from '../hooks/useRefresh';
+import { plural } from '../utils/strings';
+import { relativeTimestamp } from '../utils/date';
+
+import type { Order } from '../data/types';
+import type { HomeStackParamList } from '../navigation/types';
 
 const Orders = () => {
 	const { data, isLoading, refetch } = useOrdersQuery();
@@ -18,8 +28,6 @@ const Orders = () => {
 	const { refreshing, refresh } = useRefresh({ refetch });
 	const { theme } = useTheme();
 	const { bottom } = useSafeAreaInsets();
-
-	useGoBack();
 
 	const handleOrderPress = React.useCallback(
 		(orderId: string) => () => {
@@ -40,6 +48,7 @@ const Orders = () => {
 						tintColor={theme.text.secondary}
 					/>
 				}
+				style={{ marginHorizontal: -16 }}
 				keyExtractor={item => item.id}
 				contentContainerStyle={{ backgroundColor: theme.screen.background }}
 				data={data?.orders}
@@ -51,5 +60,49 @@ const Orders = () => {
 		</Screen>
 	);
 };
+
+interface OrdersListItemProps {
+	order: Order;
+	onPress(): void;
+}
+
+const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
+	return (
+		<Row key={order.id} style={styles.container} onPress={onPress}>
+			<Avatar
+				uri={order.store.image?.path}
+				size={48}
+				circle
+				fallbackText={order.store.name}
+			/>
+			<View style={styles.info}>
+				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+					<Typography weight='medium' size='large'>
+						{order.store.name}
+					</Typography>
+					<Typography size='small' variant='secondary'>
+						{` · ${relativeTimestamp(order.createdAt)}`}
+					</Typography>
+				</View>
+				<Spacer y={4} />
+				<Typography size='small' variant='secondary'>
+					{formatNaira(order.total)} ·{' '}
+					{plural('product', order.products.length)}
+				</Typography>
+			</View>
+		</Row>
+	);
+};
+
+const styles = StyleSheet.create({
+	container: {
+		width: '100%',
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
+	info: {
+		marginLeft: 8
+	}
+});
 
 export default Orders;

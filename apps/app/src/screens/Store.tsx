@@ -1,15 +1,16 @@
 import React from 'react';
+import { ActivityIndicator } from 'react-native';
 import { Screen } from '@habiti/components';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-import StoreProducts from '../components/store/StoreProducts';
-import { useStoreQuery } from '../data/queries';
-import { StoreStackParamList } from '../types/navigation';
-import StoreHeader from '../components/store/StoreHeader';
 import Animated, { LinearTransition } from 'react-native-reanimated';
-import SearchStore from './SearchStore';
+
+import StoreHeader from '../components/store/StoreHeader';
+import StoreProducts from '../components/store/StoreProducts';
+
+import { useStoreQuery } from '../data/queries';
+
+import type { StoreStackParamList } from '../navigation/types';
 
 const Store = () => {
 	const { params } = useRoute<RouteProp<StoreStackParamList, 'Store.Main'>>();
@@ -29,13 +30,15 @@ const Store = () => {
 				searchTerm={searchTerm}
 				setSearchTerm={setSearchTerm}
 			/>
-			<Animated.View style={{ flex: 1 }} layout={LinearTransition}>
+			<Animated.View
+				style={{ flex: 1, marginHorizontal: -16 }}
+				layout={LinearTransition}
+			>
 				<StoreProducts
 					store={data.store}
 					activeCategory={activeCategory}
 					searchTerm={searchTerm}
 				/>
-				<SearchStore searchTerm={searchTerm} />
 			</Animated.View>
 		</Screen>
 	);

@@ -51,6 +51,7 @@ const BalanceDetails = () => {
 
 	return (
 		<ScrollableScreen>
+			<Spacer y={16} />
 			<View style={[styles.list, { backgroundColor: theme.input.background }]}>
 				<BalanceRow label='Available' amount={available} />
 				<BalanceRow label='Realized revenue' amount={realizedRevenue ?? 0} />

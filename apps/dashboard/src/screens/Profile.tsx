@@ -35,8 +35,9 @@ const Profile = ({ navigation }: ProfileStackScreenProps<'ProfileHome'>) => {
 	}, [logOut]);
 
 	return (
-		<Screen style={{ padding: 0, paddingTop: top }}>
+		<Screen style={{ paddingTop: top }}>
 			<ScreenHeader title='Profile' />
+
 			{user && (
 				<View
 					style={[styles.userCard, { backgroundColor: theme.input.background }]}
@@ -50,6 +51,7 @@ const Profile = ({ navigation }: ProfileStackScreenProps<'ProfileHome'>) => {
 					</View>
 				</View>
 			)}
+
 			<View>
 				<StoreMenuRow
 					title='Manage Account'
@@ -92,7 +94,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		padding: 16,
-		marginHorizontal: 16,
 		marginBottom: 12,
 		borderRadius: 12
 	},

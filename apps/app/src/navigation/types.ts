@@ -1,4 +1,5 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
+import { StackScreenProps } from '@react-navigation/stack';
 
 export type AppStackParamList = {
 	Landing: undefined;
@@ -45,10 +46,9 @@ export type ProfileStackParamList = {
 	'Profile.AccountSettings': undefined;
 };
 
-// TODO: Create context for storeId (and store name) in this case.
 export type StoreStackParamList = {
 	'Store.Main': { storeId: string };
-	'Store.Search': { storeId: string }; // Store name goes here
+	'Store.Search': { storeId: string };
 };
 
 export type MainTabParamList = {
@@ -56,3 +56,6 @@ export type MainTabParamList = {
 	'Main.Carts': undefined;
 	'Main.Profile': undefined;
 };
+
+export type AppStackScreenProps<T extends keyof AppStackParamList> =
+	StackScreenProps<AppStackParamList, T>;

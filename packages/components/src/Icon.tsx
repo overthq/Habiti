@@ -124,6 +124,9 @@ const icons = {
 	upload: (
 		<Path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12' />
 	),
+	share: (
+		<Path d='M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13' />
+	),
 	'user-round': (
 		<>
 			<Circle cx={12} cy={8} r={5} />

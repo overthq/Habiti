@@ -91,7 +91,7 @@ const Categories = () => {
 	return (
 		<>
 			<ScrollableScreen
-				contentContainerStyle={{ padding: 0 }}
+				style={{ marginHorizontal: -16 }}
 				refreshControl={
 					<RefreshControl
 						refreshing={isRefreshing}

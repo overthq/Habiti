@@ -10,7 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import useFirstRender from '../../hooks/useFirstRender';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { AppStackParamList } from '../../types/navigation';
+import { AppStackParamList } from '../../navigation/types';
 
 interface HomeHeaderProps {
 	searchOpen: boolean;
@@ -50,7 +50,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 			style={[
 				styles.container,
 				{
-					borderBottomWidth: 0.5,
+					borderBottomWidth: StyleSheet.hairlineWidth,
 					borderBottomColor: theme.border.color
 				}
 			]}
@@ -120,8 +120,8 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		paddingHorizontal: 16,
 		paddingTop: 4,
+		paddingHorizontal: 16,
 		paddingBottom: 12
 	},
 	title: {

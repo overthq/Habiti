@@ -2,12 +2,10 @@ import React from 'react';
 import { Alert } from 'react-native';
 import { Button, Screen, Spacer, Typography } from '@habiti/components';
 
-import useGoBack from '../hooks/useGoBack';
 import { useDeleteAccountMutation } from '../data/mutations';
 
 const AccountSettings = () => {
 	const deleteAccount = useDeleteAccountMutation();
-	useGoBack();
 
 	const handleDeleteAccount = async () => {
 		await deleteAccount.mutateAsync();

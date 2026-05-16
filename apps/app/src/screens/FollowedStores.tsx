@@ -13,8 +13,7 @@ import {
 import { useUnfollowStoreMutation } from '../data/mutations';
 import { useStoresFollowedQuery } from '../data/queries';
 import type { Store } from '../data/types';
-import { HomeStackParamList } from '../types/navigation';
-import useGoBack from '../hooks/useGoBack';
+import { HomeStackParamList } from '../navigation/types';
 import useRefresh from '../hooks/useRefresh';
 
 const FollowedStores = () => {
@@ -22,7 +21,6 @@ const FollowedStores = () => {
 	const { data, isLoading, refetch } = useStoresFollowedQuery();
 	const { refreshing, refresh } = useRefresh({ refetch });
 	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();
-	useGoBack();
 
 	const handleStoreItemPress = (storeId: string) => () => {
 		navigate('Home.Store', { storeId });
@@ -37,8 +35,9 @@ const FollowedStores = () => {
 	}
 
 	return (
-		<Screen style={{ paddingTop: 8 }}>
+		<Screen>
 			<FlashList
+				style={{ marginHorizontal: -16 }}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}
@@ -110,7 +109,8 @@ const styles = StyleSheet.create({
 	item: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		alignItems: 'center'
+		alignItems: 'center',
+		paddingVertical: 8
 	},
 	left: {
 		flexDirection: 'row',

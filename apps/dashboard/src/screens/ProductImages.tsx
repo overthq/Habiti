@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import { HeaderButton } from '@react-navigation/elements';
-import { Screen, Typography } from '@habiti/components';
+import { Screen, Spacer, Typography } from '@habiti/components';
 import * as ImagePicker from 'expo-image-picker';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
@@ -98,6 +98,8 @@ const ProductImages = () => {
 
 	return (
 		<Screen>
+			<Spacer y={16} />
+
 			<View style={styles.images}>
 				{images?.map(({ id, path }) => (
 					<Image
@@ -106,6 +108,7 @@ const ProductImages = () => {
 						style={styles.image}
 					/>
 				))}
+
 				{uploadedImages.map(img => (
 					<Image
 						key={img.publicId}
@@ -113,12 +116,14 @@ const ProductImages = () => {
 						style={styles.image}
 					/>
 				))}
+
 				{uploading && (
 					<View style={[styles.image, styles.uploadingPlaceholder]}>
 						<ActivityIndicator />
 					</View>
 				)}
 			</View>
+
 			<FAB onPress={handlePickImage} text='Add new image' />
 		</Screen>
 	);

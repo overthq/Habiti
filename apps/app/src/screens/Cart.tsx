@@ -1,28 +1,259 @@
 import React from 'react';
 import {
 	Button,
+	CustomImage,
+	Icon,
+	Row,
 	ScrollableScreen,
+	SelectGroup,
 	Separator,
 	Spacer,
+	Typography,
 	useTheme
 } from '@habiti/components';
-import { View, StyleSheet, RefreshControl } from 'react-native';
+import { formatNaira } from '@habiti/common';
+import { View, RefreshControl, StyleSheet, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
-import CartSummary from '../components/cart/CartSummary';
-import CartTotal from '../components/cart/CartTotal';
-import SelectCard from '../components/cart/SelectCard';
-import StoreInfo from '../components/cart/StoreInfo';
-import useGoBack from '../hooks/useGoBack';
-import CartProvider, { useCart } from '../components/cart/CartContext';
+import CartProvider, { useCart } from '../components/CartContext';
+import { AppStackParamList } from '../navigation/types';
+import type {
+	Cart as CartType,
+	CartProduct as CartProductType,
+	Card,
+	Store
+} from '../data/types';
 
-// There is a need to master optimistic updates on this screen,
-// It is also important to make use of tasteful animations to make
-// it feel slick.
+interface StoreInfoProps {
+	store: Store;
+}
+
+const StoreInfo: React.FC<StoreInfoProps> = ({ store }) => {
+	return (
+		<View>
+			<Typography size='xlarge' weight='semibold'>
+				{store.name}
+			</Typography>
+		</View>
+	);
+};
+
+interface CartProductQuantityProps {
+	cartProduct: CartProductType;
+	quantity: number;
+	maxQuantity: number;
+}
+
+const CartProductQuantity: React.FC<CartProductQuantityProps> = ({
+	cartProduct,
+	quantity
+}) => {
+	const { theme } = useTheme();
+	const { updateProductQuantity } = useCart();
+
+	const incrementProductQuantity = React.useCallback(() => {
+		updateProductQuantity(cartProduct.productId, quantity + 1);
+	}, [cartProduct.productId, quantity, updateProductQuantity]);
+
+	const decrementProductQuantity = React.useCallback(() => {
+		updateProductQuantity(cartProduct.productId, Math.max(quantity - 1, 0));
+	}, [cartProduct.productId, quantity, updateProductQuantity]);
+
+	return (
+		<View
+			style={[
+				styles.quantityInput,
+				{ backgroundColor: theme.input.background }
+			]}
+		>
+			<Pressable onPress={decrementProductQuantity} hitSlop={12}>
+				<Icon name='minus' size={20} color={theme.text.primary} />
+			</Pressable>
+			<Typography weight='medium' style={{ width: 24, textAlign: 'center' }}>
+				{quantity}
+			</Typography>
+			<Pressable onPress={incrementProductQuantity} hitSlop={12}>
+				<Icon name='plus' size={20} color={theme.text.primary} />
+			</Pressable>
+		</View>
+	);
+};
+
+interface CartProductProps {
+	cartProduct: CartProductType;
+	onPress(): void;
+}
+
+const CartProduct: React.FC<CartProductProps> = ({ cartProduct, onPress }) => {
+	const { product, quantity } = cartProduct;
+
+	const hasExceededMaxQuantity = quantity > product.quantity;
+
+	return (
+		<Row style={styles.cartProductContainer} onPress={onPress}>
+			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+				<CustomImage uri={product.images[0]?.path} height={48} width={48} />
+				<Spacer x={12} />
+				<View>
+					<Typography>{product.name}</Typography>
+					<Spacer y={2} />
+					<Typography
+						weight='medium'
+						variant={hasExceededMaxQuantity ? 'error' : 'secondary'}
+					>
+						{formatNaira(product.unitPrice * quantity)}
+					</Typography>
+				</View>
+			</View>
+			<View>
+				<CartProductQuantity
+					cartProduct={cartProduct}
+					quantity={quantity}
+					maxQuantity={product.quantity}
+				/>
+				<Spacer y={4} />
+			</View>
+		</Row>
+	);
+};
+
+interface CartSummaryProps {
+	products: CartProductType[];
+}
+
+const CartSummary: React.FC<CartSummaryProps> = () => {
+	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { products } = useCart();
+
+	const handleCartProductPress = React.useCallback(
+		(productId: string) => () => {
+			navigate('Product', { productId });
+		},
+		[navigate]
+	);
+
+	return (
+		<View>
+			<Typography weight='medium' variant='secondary'>
+				Order Summary
+			</Typography>
+
+			<Spacer y={4} />
+
+			{products.map(cartProduct => (
+				<CartProduct
+					key={`${cartProduct.cartId}-${cartProduct.productId}`}
+					cartProduct={cartProduct}
+					onPress={handleCartProductPress(cartProduct.productId)}
+				/>
+			))}
+		</View>
+	);
+};
+
+interface SelectCardProps {
+	cards: Card[];
+	selectedCard?: string;
+	onCardSelect(cardId: string): void;
+}
+
+const SelectCard: React.FC<SelectCardProps> = ({
+	cards,
+	selectedCard,
+	onCardSelect
+}) => {
+	const { theme } = useTheme();
+
+	return (
+		<View>
+			<Typography weight='medium' variant='secondary'>
+				Payment Method
+			</Typography>
+			<Spacer y={8} />
+			{cards.length === 0 ? (
+				<View
+					style={{
+						backgroundColor: theme.input.background,
+						padding: 12,
+						borderRadius: 6
+					}}
+				>
+					<Typography weight='medium' size='large'>
+						No payment methods
+					</Typography>
+					<Spacer y={4} />
+					<Typography variant='secondary'>
+						You will be prompted to add a payment method when you place this
+						order.
+					</Typography>
+				</View>
+			) : (
+				<SelectGroup
+					selected={selectedCard}
+					options={cards.map(card => ({
+						title: `${card.cardType} ••••${card.last4}`,
+						value: card.id
+					}))}
+					onSelect={onCardSelect}
+					capitalize
+				/>
+			)}
+		</View>
+	);
+};
+
+interface CartTotalRowProps {
+	title: string;
+	value: string;
+	total?: boolean;
+}
+
+const CartTotalRow: React.FC<CartTotalRowProps> = ({ title, value, total }) => {
+	return (
+		<View style={styles.totalRow}>
+			<Typography
+				variant={total ? 'primary' : 'secondary'}
+				weight={total ? 'medium' : 'regular'}
+			>
+				{title}
+			</Typography>
+			<Typography
+				variant={total ? 'primary' : 'secondary'}
+				weight={total ? 'medium' : 'regular'}
+			>
+				{value}
+			</Typography>
+		</View>
+	);
+};
+
+interface CartTotalProps {
+	cart: CartType;
+}
+
+const CartTotal: React.FC<CartTotalProps> = ({ cart }) => {
+	return (
+		<View>
+			<CartTotalRow title='Subtotal' value={formatNaira(cart.total)} />
+			<CartTotalRow
+				title='Transaction Fee'
+				value={formatNaira(cart.fees.transaction)}
+			/>
+			<CartTotalRow
+				title='Service Fee'
+				value={formatNaira(cart.fees.service)}
+			/>
+			<CartTotalRow
+				title='Total'
+				value={formatNaira(cart.fees.total + cart.total)}
+				total
+			/>
+		</View>
+	);
+};
 
 const Cart: React.FC = () => {
-	useGoBack('x');
-
 	const { bottom } = useSafeAreaInsets();
 	const { theme } = useTheme();
 
@@ -38,7 +269,7 @@ const Cart: React.FC = () => {
 
 	return (
 		<ScrollableScreen
-			style={[styles.container, { paddingBottom: bottom }]}
+			style={{ paddingBottom: bottom }}
 			contentContainerStyle={{ backgroundColor: theme.screen.background }}
 			refreshControl={
 				<RefreshControl
@@ -48,6 +279,8 @@ const Cart: React.FC = () => {
 				/>
 			}
 		>
+			<Spacer y={16} />
+
 			<StoreInfo store={cart.store} />
 
 			<Spacer y={4} />
@@ -70,12 +303,36 @@ const Cart: React.FC = () => {
 
 			<CartTotal cart={cart} />
 
-			<View style={{ paddingTop: 16, paddingHorizontal: 16 }}>
-				<Button text='Place Order' onPress={handleSubmit} disabled={disabled} />
-			</View>
+			<Spacer y={16} />
+
+			<Button text='Place Order' onPress={handleSubmit} disabled={disabled} />
 		</ScrollableScreen>
 	);
 };
+
+const styles = StyleSheet.create({
+	cartProductContainer: {
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		paddingVertical: 6,
+		marginHorizontal: -16
+	},
+	quantityInput: {
+		borderRadius: 8,
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 8,
+		paddingHorizontal: 12,
+		paddingVertical: 8,
+		alignSelf: 'flex-start'
+	},
+	totalRow: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		marginBottom: 8
+	}
+});
 
 const CartWrapper = () => {
 	return (
@@ -84,14 +341,5 @@ const CartWrapper = () => {
 		</CartProvider>
 	);
 };
-
-const styles = StyleSheet.create({
-	loading: {
-		flex: 1
-	},
-	container: {
-		paddingTop: 16
-	}
-});
 
 export default CartWrapper;

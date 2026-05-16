@@ -23,6 +23,7 @@ const Appearance = () => {
 
 	return (
 		<Screen>
+			<Spacer y={16} />
 			<Typography weight='medium'>Theme</Typography>
 			<Spacer y={8} />
 			<SelectGroup
