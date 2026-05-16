@@ -26,6 +26,7 @@ import useStore from '../state';
 import { useCurrentUserQuery } from '../data/queries';
 
 import { ProfileStackParamList } from '../navigation/types';
+import { useHeaderHeight } from '@react-navigation/elements';
 
 const PRIVACY_POLICY_URL = 'https://habiti.app/privacy-policy';
 const SUPPORT_URL = 'https://habiti.app/support';
@@ -47,6 +48,7 @@ const ACCEPTABLE_USE_URL = 'https://habiti.app/acceptable-use';
 * Set up your own store*/
 
 const Profile = () => {
+	const headerHeight = useHeaderHeight();
 	const logOut = useStore(useShallow(state => state.logOut));
 	const { navigate } = useNavigation<NavigationProp<ProfileStackParamList>>();
 
@@ -59,7 +61,7 @@ const Profile = () => {
 
 	return (
 		<Screen>
-			<Spacer y={16} />
+			<Spacer y={headerHeight} />
 
 			<UserCard />
 

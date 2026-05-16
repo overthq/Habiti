@@ -94,13 +94,16 @@ const HomeStack = () => {
 
 const ProfileStack = () => {
 	return (
-		<ProfileNavigator.Navigator id='ProfileStack'>
+		<ProfileNavigator.Navigator
+			id='ProfileStack'
+			screenOptions={{ headerBackButtonDisplayMode: 'minimal' }}
+		>
 			<ProfileNavigator.Screen
 				name='Profile.Main'
 				component={Profile}
 				options={({ navigation }) => ({
+					headerTransparent: true,
 					headerTitle: 'Profile',
-					headerBackButtonDisplayMode: 'minimal',
 					unstable_headerLeftItems: () => [
 						{
 							type: 'button',
