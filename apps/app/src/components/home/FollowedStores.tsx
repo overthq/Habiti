@@ -28,7 +28,6 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 
 	return followed.length === 0 ? (
 		<Dialog
-			style={styles.dialog}
 			title={`You haven't followed any stores yet`}
 			description='Discover and follow stores to get started.'
 		/>
@@ -36,7 +35,7 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 		<View>
 			<SectionHeader
 				title='Followed stores'
-				padded
+				padded={false}
 				action={{
 					text: 'View all',
 					onPress: () => navigate('Home.FollowedStores')
@@ -49,7 +48,7 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 				horizontal
 				data={followed.slice(0, 8)}
 				keyExtractor={item => item.id}
-				contentContainerStyle={{ paddingLeft: 16, gap: 12 }}
+				contentContainerStyle={{ gap: 12, paddingRight: 16 }}
 				renderItem={({ item }) => (
 					<FollowedStoresItem
 						store={item}
@@ -87,9 +86,6 @@ const FollowedStoresItem: React.FC<FollowedStoresItemProps> = ({
 );
 
 const styles = StyleSheet.create({
-	dialog: {
-		marginHorizontal: 16
-	},
 	name: {
 		textAlign: 'center'
 	}

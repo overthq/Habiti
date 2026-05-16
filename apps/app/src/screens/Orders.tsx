@@ -39,7 +39,7 @@ const Orders = () => {
 	if (isLoading && !data) return <View />;
 
 	return (
-		<Screen style={{ padding: 0 }}>
+		<Screen>
 			<FlashList
 				refreshControl={
 					<RefreshControl
@@ -48,6 +48,7 @@ const Orders = () => {
 						tintColor={theme.text.secondary}
 					/>
 				}
+				style={{ marginHorizontal: -16 }}
 				keyExtractor={item => item.id}
 				contentContainerStyle={{ backgroundColor: theme.screen.background }}
 				data={data?.orders}

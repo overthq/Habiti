@@ -38,10 +38,10 @@ const Carts = () => {
 	const { top } = useSafeAreaInsets();
 
 	return (
-		<Screen style={{ padding: 0, paddingTop: top }}>
+		<Screen style={{ paddingTop: top }}>
 			<ScreenHeader title='Carts' hasBottomBorder goBack={goBack} />
 			<FlatList
-				style={{ flex: 1 }}
+				style={{ flex: 1, marginHorizontal: -16 }}
 				keyExtractor={c => c.id}
 				renderItem={({ item }) => (
 					<CartsListItem cart={item} onPress={handleCartPress(item.id)} />

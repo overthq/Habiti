@@ -73,8 +73,6 @@ export const useStoreProductsQuery = (
 	storeId: string,
 	params: URLSearchParams
 ) => {
-	console.log(params.toString());
-
 	return useQuery({
 		queryKey: ['stores', storeId, 'products', params.toString()],
 		queryFn: () => getStoreProducts(storeId, params),

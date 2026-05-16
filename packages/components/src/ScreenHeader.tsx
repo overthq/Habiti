@@ -137,6 +137,7 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
+		marginHorizontal: -16,
 		paddingHorizontal: 16,
 		paddingVertical: 12
 	},

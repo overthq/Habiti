@@ -172,16 +172,17 @@ const RecentSearches: React.FC<RecentSearchesProps> = ({ display }) => {
 	const { theme } = useTheme();
 
 	return (
-		<Screen
+		<View
 			style={{
 				display: display ? 'flex' : 'none',
+				flex: 1,
 				padding: 0,
 				paddingTop: 12,
 				borderTopColor: theme.border.color
 			}}
 		>
 			<SectionHeader title='Recent searches' />
-		</Screen>
+		</View>
 	);
 };
 

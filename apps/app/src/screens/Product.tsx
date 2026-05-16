@@ -301,7 +301,7 @@ const Product = () => {
 	return (
 		<ProductProvider>
 			<ScrollableScreen
-				contentContainerStyle={{ padding: 0 }}
+				style={{ marginHorizontal: -16 }}
 				showsVerticalScrollIndicator={false}
 			>
 				<ImageCarousel />

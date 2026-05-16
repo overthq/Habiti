@@ -184,7 +184,7 @@ const Routes: React.FC = () => {
 							<AppStack.Group
 								screenOptions={({ navigation }) => ({
 									headerShown: true,
-									presentation: 'modal',
+									presentation: 'containedModal',
 									headerBackButtonDisplayMode: 'minimal',
 									unstable_headerLeftItems: () => [
 										{

@@ -40,20 +40,24 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 		<View>
 			<SectionHeader
 				title='Recent orders'
-				padded
+				padded={false}
 				action={{
 					text: 'View all',
 					onPress: () => navigate('Home.Orders')
 				}}
 			/>
+
 			<Spacer y={4} />
-			{orders.slice(0, 3).map(order => (
-				<RecentOrder
-					key={order.id}
-					order={order}
-					onPress={handleOrderPress(order.id)}
-				/>
-			))}
+
+			<View style={{ marginHorizontal: -16 }}>
+				{orders.slice(0, 3).map(order => (
+					<RecentOrder
+						key={order.id}
+						order={order}
+						onPress={handleOrderPress(order.id)}
+					/>
+				))}
+			</View>
 		</View>
 	);
 };

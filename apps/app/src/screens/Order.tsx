@@ -42,7 +42,7 @@ const StoreMeta: React.FC<StoreMetaProps> = ({ store }) => {
 
 	return (
 		<Pressable
-			style={{ marginHorizontal: 16, paddingVertical: 12 }}
+			style={{ paddingVertical: 12 }}
 			onPress={() => {
 				navigate('Home.Store', { storeId: store.id });
 			}}
@@ -92,11 +92,11 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 						size='small'
 						style={styles.productPrice}
 					>
-						{`${plural('unit', quantity)} · `}
-						{formatNaira(quantity * unitPrice)}
+						{plural('unit', quantity)}
 					</Typography>
 				</View>
 			</View>
+			<Typography>{formatNaira(quantity * unitPrice)}</Typography>
 		</Row>
 	);
 };
@@ -202,7 +202,6 @@ const Order = () => {
 	return (
 		<ScrollableScreen
 			style={styles.screenContainer}
-			contentContainerStyle={{ padding: 0 }}
 			refreshControl={
 				<RefreshControl
 					refreshing={refreshing}
@@ -213,7 +212,7 @@ const Order = () => {
 		>
 			<StoreMeta store={order.store} />
 			<Spacer y={12} />
-			<View>
+			<View style={{ marginHorizontal: -16 }}>
 				{order.products.map(orderProduct => (
 					<OrderProduct
 						key={orderProduct.productId}
@@ -252,7 +251,6 @@ const styles = StyleSheet.create({
 	},
 	metaContainer: {
 		paddingTop: 8,
-		paddingHorizontal: 16,
 		marginVertical: 16
 	},
 	metaRow: {
@@ -261,7 +259,6 @@ const styles = StyleSheet.create({
 	},
 	warningContainer: {
 		marginBottom: 12,
-		marginHorizontal: 16,
 		padding: 12,
 		borderRadius: 8
 	}

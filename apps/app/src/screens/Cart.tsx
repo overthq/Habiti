@@ -318,12 +318,12 @@ const styles = StyleSheet.create({
 		marginHorizontal: -16
 	},
 	quantityInput: {
-		borderRadius: 6,
+		borderRadius: 8,
 		flexDirection: 'row',
 		alignItems: 'center',
 		gap: 8,
-		paddingHorizontal: 8,
-		paddingVertical: 4,
+		paddingHorizontal: 12,
+		paddingVertical: 8,
 		alignSelf: 'flex-start'
 	},
 	totalRow: {

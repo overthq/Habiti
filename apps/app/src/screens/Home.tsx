@@ -24,7 +24,7 @@ const Home = () => {
 	const { top } = useSafeAreaInsets();
 
 	return (
-		<Screen style={{ padding: 0, paddingTop: top }}>
+		<Screen style={{ paddingTop: top, marginHorizontal: -16 }}>
 			<HomeHeader
 				searchOpen={searchOpen}
 				setSearchOpen={setSearchOpen}
@@ -86,7 +86,6 @@ const HomeMain = ({ searchOpen }: HomeMainProps) => {
 			}}
 			contentContainerStyle={{
 				flex: 1,
-				padding: 0,
 				backgroundColor: theme.screen.background
 			}}
 			refreshControl={

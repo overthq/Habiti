@@ -169,11 +169,6 @@ const CardRow: React.FC<CardRowProps> = ({
 };
 
 const styles = StyleSheet.create({
-	sectionHeader: {
-		marginTop: 16,
-		marginBottom: 8,
-		marginLeft: 16
-	},
 	loading: {
 		flex: 1,
 		justifyContent: 'center',
@@ -182,6 +177,7 @@ const styles = StyleSheet.create({
 	card: {
 		paddingVertical: 4,
 		paddingHorizontal: 16,
+		marginHorizontal: -16,
 		borderBottomWidth: StyleSheet.hairlineWidth
 	},
 	capitalize: {

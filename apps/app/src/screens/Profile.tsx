@@ -58,9 +58,13 @@ const Profile = () => {
 	}, [logOut]);
 
 	return (
-		<Screen style={{ padding: 0 }}>
+		<Screen>
+			<Spacer y={16} />
+
 			<UserCard />
-			<Separator style={{ marginHorizontal: 16 }} />
+
+			<Spacer y={12} />
+
 			<ProfileRow
 				title='Manage Account'
 				onPress={() => navigate('Profile.AccountSettings')}
@@ -141,6 +145,7 @@ const ProfileRow: React.FC<ProfileRowProps> = ({
 const UserCard: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<ProfileStackParamList>>();
 
+	const { theme } = useTheme();
 	const { data, isLoading } = useCurrentUserQuery();
 
 	if (isLoading || !data) {
@@ -152,8 +157,11 @@ const UserCard: React.FC = () => {
 	}
 
 	return (
-		<Pressable onPress={() => navigate('Profile.Edit')} style={styles.card}>
-			<Avatar size={52} circle fallbackText={data.user.name} />
+		<Pressable
+			onPress={() => navigate('Profile.Edit')}
+			style={[styles.card, { backgroundColor: theme.input.background }]}
+		>
+			<Avatar size={56} circle fallbackText={data.user.name} />
 			<View style={{ marginLeft: 12 }}>
 				<Typography weight='medium'>{data.user.name}</Typography>
 				<Spacer y={2} />
@@ -168,14 +176,14 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingVertical: 12
+		paddingVertical: 12,
+		marginHorizontal: -16
 	},
 	card: {
-		marginHorizontal: 16,
-		marginTop: 16,
-		marginBottom: 8,
 		flexDirection: 'row',
-		alignItems: 'center'
+		alignItems: 'center',
+		padding: 16,
+		borderRadius: 12
 	}
 });
 

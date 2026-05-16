@@ -49,13 +49,13 @@ export const ScrollableScreen: React.FC<ScrollViewProps> = props => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		padding: 16
+		paddingHorizontal: 16
 	},
 	scrollContainer: {
 		flex: 1
 	},
 	contentContainer: {
 		flexGrow: 1,
-		padding: 16
+		paddingHorizontal: 16
 	}
 });

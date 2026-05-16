@@ -22,7 +22,7 @@ const Store = () => {
 	if (isLoading || !data?.store) return <ActivityIndicator />;
 
 	return (
-		<Screen style={{ padding: 0, paddingTop: top }}>
+		<Screen style={{ paddingTop: top }}>
 			<StoreHeader
 				store={data.store}
 				activeCategory={activeCategory}
@@ -30,7 +30,10 @@ const Store = () => {
 				searchTerm={searchTerm}
 				setSearchTerm={setSearchTerm}
 			/>
-			<Animated.View style={{ flex: 1 }} layout={LinearTransition}>
+			<Animated.View
+				style={{ flex: 1, marginHorizontal: -16 }}
+				layout={LinearTransition}
+			>
 				<StoreProducts
 					store={data.store}
 					activeCategory={activeCategory}

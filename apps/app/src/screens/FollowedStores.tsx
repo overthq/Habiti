@@ -35,8 +35,9 @@ const FollowedStores = () => {
 	}
 
 	return (
-		<Screen style={{ padding: 0 }}>
+		<Screen>
 			<FlashList
+				style={{ marginHorizontal: -16 }}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}

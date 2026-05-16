@@ -167,8 +167,8 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		width: '100%',
-		paddingTop: 16
+		paddingTop: 16,
+		marginHorizontal: -16
 	},
 	header: {
 		paddingHorizontal: 12,
