@@ -125,9 +125,9 @@ const ProfileStack = () => {
 				options={{ headerTitle: 'Payment Methods' }}
 			/>
 			<ProfileNavigator.Screen
-				name='Profile.DeliveryAddress'
-				component={DeliveryAddress}
-				options={{ headerTitle: 'Delivery Address' }}
+				name='Profile.Addresses'
+				component={Addresses}
+				options={{ headerTitle: 'Addresses' }}
 			/>
 			<ProfileNavigator.Screen
 				name='Profile.NotificationSettings'
@@ -220,9 +220,14 @@ const Routes: React.FC = () => {
 									options={{ headerTitle: 'Add Card' }}
 								/>
 								<AppStack.Screen
-									name='Modal.AddDeliveryAddress'
-									component={AddDeliveryAddress}
-									options={{ headerTitle: 'Add Delivery Address' }}
+									name='Modal.AddAddress'
+									component={AddAddress}
+									options={{ headerTitle: 'Add Address' }}
+								/>
+								<AppStack.Screen
+									name='Modal.EditAddress'
+									component={EditAddress}
+									options={{ headerTitle: 'Edit Address' }}
 								/>
 							</AppStack.Group>
 						</>

@@ -120,7 +120,17 @@ export interface ProductReview {
 export interface DeliveryAddress {
 	id: string;
 	name: string;
+	line1: string;
+	line2?: string;
+	city: string;
+	state: string;
+	country: string;
+	postcode?: string;
+	latitude?: number;
+	longitude?: number;
 	userId: string;
+	createdAt: string;
+	updatedAt: string;
 }
 
 export interface WatchlistProduct {
@@ -225,10 +235,21 @@ export interface UpdateCurrentUserBody {
 
 export interface AddDeliveryAddressBody {
 	name: string;
+	line1: string;
+	line2?: string;
+	city: string;
+	state: string;
+	country: string;
+	postcode?: string;
+	latitude?: number;
+	longitude?: number;
 }
 
-export interface UpdateDeliveryAddressBody {
-	name?: string;
+export type UpdateDeliveryAddressBody = Partial<AddDeliveryAddressBody>;
+
+export interface UpdateDeliveryAddressArgs {
+	addressId: string;
+	body: UpdateDeliveryAddressBody;
 }
 
 export interface AddToCartBody {
