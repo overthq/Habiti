@@ -12,11 +12,12 @@ import { useStoreProductsQuery } from '../../data/queries';
 import useDebounced from '../../hooks/useDebounced';
 import useRefresh from '../../hooks/useRefresh';
 
-import type { Product, Store } from '../../data/types';
+import type { Product, Store, StoreViewerContext } from '../../data/types';
 import type { AppStackParamList } from '../../navigation/types';
 
 interface StoreProductsProps {
 	store: Store;
+	viewerContext: StoreViewerContext | null;
 	activeCategory: string;
 	searchTerm: string;
 }
@@ -43,6 +44,7 @@ const buildFilter = ({
 
 const StoreProducts: React.FC<StoreProductsProps> = ({
 	store,
+	viewerContext,
 	activeCategory,
 	searchTerm
 }) => {
@@ -98,8 +100,8 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 				ListFooterComponent={() => <Spacer y={bottom} />}
 			/>
 			<ViewCart
-				cartId={store.userCart?.id}
-				count={store.userCart?.products.length}
+				cartId={viewerContext?.cart?.id}
+				count={viewerContext?.cart?.products.length}
 			/>
 		</View>
 	);

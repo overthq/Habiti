@@ -313,7 +313,8 @@ export const getStoreViewerContext = async (
 	});
 
 	const cart = await prisma.cart.findUnique({
-		where: { userId_storeId: { storeId, userId } }
+		where: { userId_storeId: { storeId, userId } },
+		include: { products: true }
 	});
 
 	return {
