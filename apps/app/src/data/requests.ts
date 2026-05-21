@@ -169,7 +169,10 @@ export const getStoreProducts = async (
 };
 
 export const addDeliveryAddress = async (body: AddDeliveryAddressBody) => {
-	const response = await api.post('/users/current/delivery-addresses', body);
+	const response = await api.post<{ address: DeliveryAddress }>(
+		'/users/current/delivery-addresses',
+		body
+	);
 	return response.data;
 };
 
@@ -177,12 +180,15 @@ export const updateDeliveryAddress = async (
 	addressId: string,
 	body: UpdateDeliveryAddressBody
 ) => {
-	const response = await api.put(`/delivery-addresses/${addressId}`, body);
+	const response = await api.put<{ address: DeliveryAddress }>(
+		`/users/current/delivery-addresses/${addressId}`,
+		body
+	);
 	return response.data;
 };
 
 export const deleteDeliveryAddress = (addressId: string) => {
-	return api.delete(`/delivery-addresses/${addressId}`);
+	return api.delete(`/users/current/delivery-addresses/${addressId}`);
 };
 
 export const getCards = async () => {

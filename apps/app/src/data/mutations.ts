@@ -24,11 +24,13 @@ import {
 	unfollowStore,
 	updateCartProductQuantity,
 	updateCurrentUser,
+	updateDeliveryAddress,
 	updateOrder
 } from './requests';
 import type {
 	SavePushTokenBody,
 	DeletePushTokenBody,
+	UpdateDeliveryAddressArgs,
 	UpdateOrderBody
 } from './types';
 
@@ -133,7 +135,18 @@ export const useAddDeliveryAddressMutation = () => {
 	return useMutation({
 		mutationFn: addDeliveryAddress,
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['user'] });
+			queryClient.invalidateQueries({ queryKey: ['deliveryAddresses'] });
+		}
+	});
+};
+
+export const useUpdateDeliveryAddressMutation = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (args: UpdateDeliveryAddressArgs) =>
+			updateDeliveryAddress(args.addressId, args.body),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['deliveryAddresses'] });
 		}
 	});
 };
@@ -143,7 +156,7 @@ export const useDeleteDeliveryAddressMutation = () => {
 	return useMutation({
 		mutationFn: (id: string) => deleteDeliveryAddress(id),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['user'] });
+			queryClient.invalidateQueries({ queryKey: ['deliveryAddresses'] });
 		}
 	});
 };

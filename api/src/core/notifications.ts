@@ -23,6 +23,7 @@ export interface NotificationPayload {
 }
 
 const DASHBOARD_SCHEME = 'habiti-dashboard';
+const CONSUMER_SCHEME = 'habiti';
 
 export function getNotificationUrl(
 	type: NotificationType,
@@ -37,6 +38,15 @@ export function getNotificationUrl(
 				: `${DASHBOARD_SCHEME}://store/payouts`;
 		case NotificationType.LowStock:
 			return `${DASHBOARD_SCHEME}://products/${data.productId}`;
+		case NotificationType.OrderFulfilled:
+		case NotificationType.DeliveryConfirmed:
+		case NotificationType.OrderCancelled:
+		case NotificationType.OrderCompleted:
+		case NotificationType.ReadyForPickup:
+		case NotificationType.OrderStatusChanged:
+			return data.orderId
+				? `${CONSUMER_SCHEME}://orders/${data.orderId}`
+				: undefined;
 		default:
 			return undefined;
 	}

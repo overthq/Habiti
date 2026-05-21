@@ -6,32 +6,67 @@ import type { StripUndefined } from '../../utils/objects';
 import { LogicError, LogicErrorCode } from './errors';
 import { canManageStore } from './permissions';
 
-interface CreateUserAddressArgs {
-	userId: string;
+interface UserAddressArgs {
 	name: string;
 	line1: string;
-	line2?: string;
+	line2?: string | undefined;
 	city: string;
 	state: string;
 	country: string;
-	postcode?: string;
-	latitude?: number;
-	longitude?: number;
+	postcode?: string | undefined;
+	latitude?: number | undefined;
+	longitude?: number | undefined;
 }
 
 export const createUserAddress = async (
 	c: Context<AppEnv>,
-	args: CreateUserAddressArgs
+	args: UserAddressArgs
 ) => {
 	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	if (args.userId !== c.var.auth.id) {
-		throw new LogicError(LogicErrorCode.Forbidden);
+	return AddressData.createUserAddress(c.var.prisma, {
+		...(args as StripUndefined<UserAddressArgs>),
+		userId: c.var.auth.id
+	});
+};
+
+export const editUserAddress = async (
+	c: Context<AppEnv>,
+	addressId: string,
+	args: Partial<UserAddressArgs>
+) => {
+	if (!c.var.auth?.id) {
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	return AddressData.createUserAddress(c.var.prisma, args);
+	const address = await AddressData.getAddressById(c.var.prisma, addressId);
+	if (!address || address.userId !== c.var.auth.id) {
+		throw new LogicError(LogicErrorCode.NotFound);
+	}
+
+	return AddressData.updateAddress(
+		c.var.prisma,
+		addressId,
+		args as StripUndefined<typeof args>
+	);
+};
+
+export const deleteUserAddress = async (
+	c: Context<AppEnv>,
+	addressId: string
+) => {
+	if (!c.var.auth?.id) {
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
+	}
+
+	const address = await AddressData.getAddressById(c.var.prisma, addressId);
+	if (!address || address.userId !== c.var.auth.id) {
+		throw new LogicError(LogicErrorCode.NotFound);
+	}
+
+	await AddressData.deleteAddress(c.var.prisma, addressId);
 };
 
 // Store address logic

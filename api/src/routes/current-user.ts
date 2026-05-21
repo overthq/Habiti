@@ -11,6 +11,7 @@ import * as ProductLogic from '../core/logic/products';
 import * as CartLogic from '../core/logic/carts';
 import * as CardLogic from '../core/logic/cards';
 import * as OrderLogic from '../core/logic/orders';
+import * as AddressLogic from '../core/logic/addresses';
 import * as SessionData from '../core/data/sessions';
 import * as Schemas from '../core/validations/rest';
 import { denySession } from '../core/data/sessionRevocation';
@@ -88,6 +89,35 @@ currentUser.get('/cards', async c => {
 currentUser.get('/delivery-addresses', async c => {
 	const addresses = await UserLogic.getDeliveryAddresses(c);
 	return c.json({ addresses });
+});
+
+currentUser.post(
+	'/delivery-addresses',
+	zValidator('json', Schemas.createAddressBodySchema, zodHook),
+	async c => {
+		const body = c.req.valid('json');
+		const address = await AddressLogic.createUserAddress(c, body);
+		return c.json({ address }, 201);
+	}
+);
+
+currentUser.put(
+	'/delivery-addresses/:id',
+	zValidator('json', Schemas.updateAddressBodySchema, zodHook),
+	async c => {
+		const body = c.req.valid('json');
+		const address = await AddressLogic.editUserAddress(
+			c,
+			c.req.param('id'),
+			body
+		);
+		return c.json({ address });
+	}
+);
+
+currentUser.delete('/delivery-addresses/:id', async c => {
+	await AddressLogic.deleteUserAddress(c, c.req.param('id'));
+	return c.body(null, 204);
 });
 
 currentUser.get('/orders/:id', async c => {
