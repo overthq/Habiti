@@ -175,7 +175,7 @@ export enum OrderStatus {
 
 export interface StoreViewerContext {
 	isFollowing: boolean;
-	hasCart: boolean;
+	cart: { id: string; products: CartProduct[] } | null;
 }
 
 export interface GetStoreResponse {

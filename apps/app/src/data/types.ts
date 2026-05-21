@@ -15,10 +15,6 @@ export interface Store {
 	products: Product[];
 	followedByUser: boolean;
 	categories: StoreProductCategory[];
-	userCart?: {
-		id: string;
-		products: CartProduct[];
-	};
 }
 
 export interface Image {
@@ -196,7 +192,7 @@ export enum OrderStatus {
 
 export interface StoreViewerContext {
 	isFollowing: boolean;
-	hasCart: boolean;
+	cart: { id: string; products: CartProduct[] } | null;
 }
 
 export interface GetStoreResponse {

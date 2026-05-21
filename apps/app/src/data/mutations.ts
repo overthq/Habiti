@@ -57,6 +57,7 @@ export const useAddToCartMutation = () => {
 		mutationFn: (body: AddToCartBody) => addToCart(body),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['cart'] });
+			queryClient.invalidateQueries({ queryKey: ['stores'] });
 		}
 	});
 };
@@ -74,6 +75,7 @@ export const useRemoveFromCartMutation = () => {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['cart'] });
+			queryClient.invalidateQueries({ queryKey: ['stores'] });
 		}
 	});
 };
@@ -85,6 +87,7 @@ export const useUpdateCartProductMutation = () => {
 			updateCartProductQuantity({ productId, ...body }),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['cart'] });
+			queryClient.invalidateQueries({ queryKey: ['stores'] });
 		}
 	});
 };
@@ -96,6 +99,7 @@ export const useCreateOrderMutation = () => {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['orders'] });
 			queryClient.invalidateQueries({ queryKey: ['cart'] });
+			queryClient.invalidateQueries({ queryKey: ['stores'] });
 		}
 	});
 };

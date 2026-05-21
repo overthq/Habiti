@@ -36,6 +36,7 @@ const Store = () => {
 			>
 				<StoreProducts
 					store={data.store}
+					viewerContext={data.viewerContext}
 					activeCategory={activeCategory}
 					searchTerm={searchTerm}
 				/>
