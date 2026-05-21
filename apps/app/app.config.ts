@@ -42,6 +42,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 						scheme: 'https',
 						host: 'habiti.app',
 						pathPrefix: '/store'
+					},
+					{
+						scheme: 'https',
+						host: 'habiti.app',
+						pathPrefix: '/products'
 					}
 				],
 				category: ['BROWSABLE', 'DEFAULT']

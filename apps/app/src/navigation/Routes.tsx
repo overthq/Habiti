@@ -1,14 +1,15 @@
 import React from 'react';
 import { useTheme } from '@habiti/components';
-import { NavigationContainer } from '@react-navigation/native';
+import { LinkingOptions, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-// import * as Linking from 'expo-linking';
+import { Linking } from 'react-native';
+import * as ExpoNotifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
 import { useShallow } from 'zustand/react/shallow';
 import * as Updates from 'expo-updates';
 
 import AddCardWebview from '../screens/AddCardWebview';
-import AddDeliveryAddress from '../screens/AddDeliveryAddress';
+import AddAddress from '../screens/AddAddress';
 import Authenticate from '../screens/Authenticate';
 import Cart from '../screens/Cart';
 import Landing from '../screens/Landing';
@@ -17,7 +18,8 @@ import Product from '../screens/Product';
 import Verify from '../screens/Verify';
 import Carts from '../screens/Carts';
 import AccountSettings from '../screens/AccountSettings';
-import DeliveryAddress from '../screens/DeliveryAddress';
+import Addresses from '../screens/Addresses';
+import EditAddress from '../screens/EditAddress';
 import EditProfile from '../screens/EditProfile';
 import NotificationSettings from '../screens/NotificationSettings';
 import PaymentMethods from '../screens/PaymentMethods';
@@ -38,7 +40,71 @@ import {
 	ProfileStackParamList
 } from '../navigation/types';
 
-// const prefix = Linking.createURL('/');
+ExpoNotifications.setNotificationHandler({
+	handleNotification: async () => ({
+		shouldShowAlert: true,
+		shouldPlaySound: true,
+		shouldSetBadge: false,
+		shouldShowBanner: true,
+		shouldShowList: true
+	})
+});
+
+const linking: LinkingOptions<AppStackParamList> = {
+	prefixes: ['habiti://', 'https://habiti.app'],
+	config: {
+		screens: {
+			'App.Home': {
+				screens: {
+					'Home.Main': 'home',
+					'Home.Order': 'orders/:orderId',
+					'Home.Orders': 'orders',
+					'Home.Store': 'store/:storeId',
+					'Home.Notifications': 'notifications',
+					'Home.FollowedStores': 'followed-stores'
+				}
+			},
+			'App.Carts': 'carts',
+			Cart: 'carts/:cartId',
+			Product: 'products/:productId'
+		}
+	},
+	async getInitialURL() {
+		const url = await Linking.getInitialURL();
+
+		if (url != null) {
+			return url;
+		}
+
+		const response = ExpoNotifications.getLastNotificationResponse();
+
+		return (
+			(response?.notification.request.content.data.url as string) ?? undefined
+		);
+	},
+	subscribe(listener) {
+		const onReceiveURL = ({ url }: { url: string }) => listener(url);
+
+		const eventListenerSubscription = Linking.addEventListener(
+			'url',
+			onReceiveURL
+		);
+
+		const subscription =
+			ExpoNotifications.addNotificationResponseReceivedListener(response => {
+				const url = response.notification.request.content.data.url;
+
+				if (typeof url === 'string') {
+					listener(url);
+				}
+			});
+
+		return () => {
+			eventListenerSubscription.remove();
+			subscription.remove();
+		};
+	}
+};
 
 const AppStack = createNativeStackNavigator<AppStackParamList, 'AppStack'>();
 
@@ -164,14 +230,10 @@ const Routes: React.FC = () => {
 		}))
 	);
 
-	// const linking = {
-	// 	prefixes: [prefix, 'https://habiti.app']
-	// };
-
 	return (
 		<>
 			<StatusBar style={theme.statusBar} />
-			<NavigationContainer theme={theme.navigation} /*linking={linking}*/>
+			<NavigationContainer theme={theme.navigation} linking={linking}>
 				<AppStack.Navigator
 					id='AppStack'
 					screenOptions={{ headerShown: false }}
