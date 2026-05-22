@@ -7,7 +7,8 @@ import {
 	useWindowDimensions,
 	Pressable,
 	ScrollView,
-	Share
+	Share,
+	Platform
 } from 'react-native';
 import {
 	Button,
@@ -319,10 +320,16 @@ const ShareHeader: React.FC = () => {
 
 	React.useLayoutEffect(() => {
 		const handleShare = () => {
-			Share.share({
-				message: `Check out ${product.name} on Habiti: https://habiti.app/product/${product.id}`,
-				url: `https://habiti.app/product/${product.id}`
-			});
+			const url = `https://habiti.app/product/${product.id}`;
+
+			// On iOS, passing both `message` and `url` causes the link to appear
+			// twice. iOS handles `url` separately, while Android only includes
+			// the `message`, so the URL must be embedded in the message there.
+			Share.share(
+				Platform.OS === 'ios'
+					? { message: `Check out ${product.name} on Habiti`, url }
+					: { message: `Check out ${product.name} on Habiti: ${url}` }
+			);
 		};
 
 		navigation.setOptions({

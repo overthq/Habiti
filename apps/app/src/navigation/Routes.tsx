@@ -66,7 +66,7 @@ const linking: LinkingOptions<AppStackParamList> = {
 			},
 			'App.Carts': 'carts',
 			Cart: 'carts/:cartId',
-			Product: 'products/:productId'
+			Product: 'product/:productId'
 		}
 	},
 	async getInitialURL() {
