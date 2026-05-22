@@ -4,8 +4,12 @@ import { Suspense } from 'react';
 import { StoreHeader, StoreProducts } from '@/components/store';
 import { useStoreQuery } from '@/data/queries';
 import { getStore } from '@/data/requests';
+import { smartAppBannerMeta } from '@/utils/smart-app-banner';
 
 export const Route = createFileRoute('/_main/store/$id')({
+	head: ({ params }) => ({
+		meta: [smartAppBannerMeta(`/store/${params.id}`)]
+	}),
 	loader: ({ context, params }) =>
 		context.queryClient.ensureQueryData({
 			queryKey: ['stores', params.id],

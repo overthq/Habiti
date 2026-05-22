@@ -19,8 +19,12 @@ import { useAuthStore } from '@/state/auth-store';
 import Product from '@/components/store/Product';
 import QuantityControl from '@/components/QuantityControl';
 import { getProduct } from '@/data/requests';
+import { smartAppBannerMeta } from '@/utils/smart-app-banner';
 
 export const Route = createFileRoute('/_main/product/$id')({
+	head: ({ params }) => ({
+		meta: [smartAppBannerMeta(`/product/${params.id}`)]
+	}),
 	loader: ({ context, params }) =>
 		context.queryClient.ensureQueryData({
 			queryKey: ['products', params.id],
