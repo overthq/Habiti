@@ -15,6 +15,7 @@ import Cart from '../screens/Cart';
 import Landing from '../screens/Landing';
 import Register from '../screens/Register';
 import Product from '../screens/Product';
+import Reviews from '../screens/Reviews';
 import Verify from '../screens/Verify';
 import Carts from '../screens/Carts';
 import AccountSettings from '../screens/AccountSettings';
@@ -275,6 +276,11 @@ const Routes: React.FC = () => {
 										gestureDirection: 'vertical',
 										headerTransparent: true
 									}}
+								/>
+								<AppStack.Screen
+									name='Reviews'
+									component={Reviews}
+									options={{ headerTitle: 'Reviews' }}
 								/>
 								<AppStack.Screen
 									name='Modal.AddCard'

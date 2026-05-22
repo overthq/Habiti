@@ -1,10 +1,18 @@
 import React from 'react';
-import { useProductQuery, useRelatedProductsQuery } from '../data/queries';
+import {
+	useProductQuery,
+	useProductReviewsQuery,
+	useRelatedProductsQuery
+} from '../data/queries';
 import {
 	useAddToCartMutation,
 	useUpdateCartProductMutation
 } from '../data/mutations';
-import type { Product, ProductViewerContext } from '../data/types';
+import type {
+	Product,
+	ProductReview,
+	ProductViewerContext
+} from '../data/types';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { AppStackParamList } from '../navigation/types';
 import { View } from 'react-native';
@@ -12,6 +20,8 @@ import { View } from 'react-native';
 interface ProductContextType {
 	product: Product;
 	relatedProducts: Product[];
+	reviews: ProductReview[];
+	reviewsLoading: boolean;
 	cartCommitFetching: boolean;
 	onCartCommit: () => void;
 	cartCommitDisabled: boolean;
@@ -28,6 +38,8 @@ interface ProductProviderProps {
 	children: React.ReactNode;
 	product: Product;
 	relatedProducts: Product[];
+	reviews: ProductReview[];
+	reviewsLoading: boolean;
 	viewerContext?: ProductViewerContext;
 }
 
@@ -40,6 +52,8 @@ const ProductProviderInner: React.FC<ProductProviderProps> = ({
 	children,
 	product,
 	relatedProducts,
+	reviews,
+	reviewsLoading,
 	viewerContext
 }) => {
 	const { goBack } = useNavigation();
@@ -109,6 +123,8 @@ const ProductProviderInner: React.FC<ProductProviderProps> = ({
 			value={{
 				product,
 				relatedProducts,
+				reviews,
+				reviewsLoading,
 				cartCommitFetching,
 				onCartCommit,
 				cartCommitDisabled,
@@ -133,9 +149,12 @@ export const ProductProvider = ({
 	const { data, isLoading } = useProductQuery(params.productId);
 	const { data: relatedProductsData, isLoading: isRelatedProductsLoading } =
 		useRelatedProductsQuery(params.productId);
+	const { data: reviewsData, isLoading: isReviewsLoading } =
+		useProductReviewsQuery(params.productId);
 
 	const product = data?.product;
 	const relatedProducts = relatedProductsData?.products;
+	const reviews = reviewsData?.reviews ?? [];
 
 	if (isLoading || isRelatedProductsLoading || !product) {
 		return <View />;
@@ -145,6 +164,8 @@ export const ProductProvider = ({
 		<ProductProviderInner
 			product={product}
 			relatedProducts={relatedProducts}
+			reviews={reviews}
+			reviewsLoading={isReviewsLoading}
 			viewerContext={data?.viewerContext}
 		>
 			{children}

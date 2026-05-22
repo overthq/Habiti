@@ -26,7 +26,8 @@ import type {
 	DeletePushTokenBody,
 	CardAuthorizationResponse,
 	DeliveryAddress,
-	UpdateOrderBody
+	UpdateOrderBody,
+	ProductReview
 } from './types';
 import useStore from '../state';
 import env from '../../env';
@@ -250,6 +251,14 @@ export const createOrder = async (body: CreateOrderBody) => {
 
 export const getProduct = async (productId: string) => {
 	const response = await api.get<GetProductResponse>(`/products/${productId}`);
+	return response.data;
+};
+
+export const getProductReviews = async (productId: string) => {
+	const response = await api.get<{ reviews: ProductReview[] }>(
+		`/products/${productId}/reviews`
+	);
+
 	return response.data;
 };
 

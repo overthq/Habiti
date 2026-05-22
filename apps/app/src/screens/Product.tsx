@@ -36,6 +36,8 @@ import {
 	useProductContext
 } from '../components/ProductContext';
 import { AppStackParamList } from '../navigation/types';
+import type { ProductReview } from '../data/types';
+import { relativeTimestamp } from '../utils/date';
 
 const { width } = Dimensions.get('window');
 
@@ -184,6 +186,162 @@ const ProductDetails: React.FC = () => {
 
 			<Spacer y={4} />
 			<Typography>{product?.description}</Typography>
+		</View>
+	);
+};
+
+const REVIEW_GAP = 12;
+const REVIEW_SLIVER = 24;
+const REVIEW_PADDING = 16;
+
+interface ReviewCardProps {
+	review: ProductReview;
+	width?: number;
+	clampBody?: number;
+}
+
+const Stars: React.FC<{ rating: number; size?: number }> = ({
+	rating,
+	size = 14
+}) => {
+	const { theme } = useTheme();
+	const rounded = Math.round(rating);
+
+	return (
+		<View style={styles.stars}>
+			{[1, 2, 3, 4, 5].map(i => (
+				<Typography
+					key={i}
+					style={{
+						fontSize: size,
+						color: i <= rounded ? '#F5A623' : theme.text.secondary
+					}}
+				>
+					{i <= rounded ? '★' : '☆'}
+				</Typography>
+			))}
+		</View>
+	);
+};
+
+const ReviewCard: React.FC<ReviewCardProps> = ({
+	review,
+	width,
+	clampBody
+}) => {
+	const { theme } = useTheme();
+
+	return (
+		<View
+			style={[
+				styles.reviewCard,
+				{ backgroundColor: theme.input.background },
+				width != null ? { width } : null
+			]}
+		>
+			<Stars rating={review.rating} />
+			<Spacer y={8} />
+			{review.body ? (
+				<Typography numberOfLines={clampBody}>{review.body}</Typography>
+			) : (
+				<Typography variant='secondary'>No written review.</Typography>
+			)}
+			<Spacer y={8} />
+			<Typography variant='secondary' size='small'>
+				{review.user?.name ?? 'Anonymous'} ·{' '}
+				{relativeTimestamp(review.createdAt)}
+			</Typography>
+		</View>
+	);
+};
+
+interface ReviewsProps {
+	limit?: number;
+}
+
+const Reviews: React.FC<ReviewsProps> = ({ limit = 3 }) => {
+	const { product, reviews, reviewsLoading } = useProductContext();
+	const { theme } = useTheme();
+	const { width: windowWidth } = useWindowDimensions();
+	// @ts-expect-error - push is a valid navigation prop
+	const { push } = useNavigation<NavigationProp<AppStackParamList>>();
+
+	const cardWidth = windowWidth - REVIEW_PADDING * 2 - REVIEW_SLIVER;
+
+	const average = React.useMemo(() => {
+		if (!reviews || reviews.length === 0) return null;
+		const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+		return sum / reviews.length;
+	}, [reviews]);
+
+	const preview = (reviews ?? []).slice(0, limit);
+	const hasReviews = (reviews ?? []).length > 0;
+
+	return (
+		<View style={styles.reviewsContainer}>
+			<View style={styles.reviewsHeader}>
+				<Typography variant='label' weight='medium'>
+					Reviews
+				</Typography>
+				{average != null ? (
+					<View style={styles.reviewsHeaderRight}>
+						<Stars rating={average} />
+						<Typography variant='secondary'>
+							{average.toFixed(1)} · {reviews!.length}{' '}
+							{reviews!.length === 1 ? 'review' : 'reviews'}
+						</Typography>
+					</View>
+				) : null}
+			</View>
+
+			<Spacer y={8} />
+
+			{hasReviews ? (
+				<>
+					<ScrollView
+						horizontal
+						showsHorizontalScrollIndicator={false}
+						contentContainerStyle={[styles.reviewsScroll, { gap: REVIEW_GAP }]}
+					>
+						{preview.map(review => (
+							<ReviewCard
+								key={review.id}
+								review={review}
+								width={cardWidth}
+								clampBody={5}
+							/>
+						))}
+					</ScrollView>
+
+					<Spacer y={12} />
+
+					<Pressable
+						onPress={() => push('Reviews', { productId: product.id })}
+						style={styles.viewAll}
+					>
+						<Typography weight='medium'>View all reviews</Typography>
+					</Pressable>
+				</>
+			) : (
+				<View
+					style={[
+						styles.reviewsPlaceholder,
+						{ backgroundColor: theme.input.background }
+					]}
+				>
+					<Typography weight='medium'>
+						{reviewsLoading ? 'Loading reviews…' : 'No reviews yet'}
+					</Typography>
+					{!reviewsLoading ? (
+						<>
+							<Spacer y={4} />
+							<Typography variant='secondary'>
+								Be the first to share your thoughts on this product.
+							</Typography>
+						</>
+					) : null}
+				</View>
+			)}
 		</View>
 	);
 };
@@ -357,6 +515,8 @@ const Product = () => {
 				<Spacer y={16} />
 				<ProductDetails />
 				<Spacer y={16} />
+				<Reviews />
+				<Spacer y={16} />
 				<RelatedProducts />
 				<Spacer y={16} />
 			</ScrollableScreen>
@@ -379,6 +539,37 @@ const styles = StyleSheet.create({
 	},
 	relatedContainer: {
 		flex: 1
+	},
+	reviewsContainer: {
+		paddingHorizontal: REVIEW_PADDING
+	},
+	reviewsHeader: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between'
+	},
+	reviewsHeaderRight: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 6
+	},
+	reviewsScroll: {
+		paddingRight: REVIEW_SLIVER
+	},
+	reviewsPlaceholder: {
+		borderRadius: 8,
+		padding: 16
+	},
+	reviewCard: {
+		borderRadius: 8,
+		padding: 12
+	},
+	stars: {
+		flexDirection: 'row',
+		gap: 2
+	},
+	viewAll: {
+		alignSelf: 'flex-start'
 	},
 	relatedScroll: {
 		paddingHorizontal: 16
