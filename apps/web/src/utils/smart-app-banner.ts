@@ -1,5 +1,4 @@
-// iOS Smart App Banner ("Open in Habiti app").
-// Shown by Safari on iOS only — there is no Android/Chrome equivalent.
+// iOS Smart App Banner
 // Docs: https://developer.apple.com/documentation/webkit/promoting-apps-with-smart-app-banners
 
 // TODO: replace with the consumer app's real numeric App Store ID once published.

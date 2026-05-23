@@ -110,7 +110,9 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 						entering={FadeInRight}
 						exiting={FadeOutRight}
 					>
-						<TextButton onPress={cancel}>Cancel</TextButton>
+						<TextButton hitSlop={16} onPress={cancel}>
+							Cancel
+						</TextButton>
 					</Animated.View>
 				)}
 			</Animated.View>
