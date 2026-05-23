@@ -9,12 +9,16 @@
 			"channel": "development",
 			"ios": {
 				"image": "latest"
+			},
+			"env": {
+				"APP_VARIANT": "development"
 			}
 		},
 		"simulator": {
 			"developmentClient": true,
 			"channel": "development",
 			"ios": {
+				"image": "latest",
 				"simulator": true
 			}
 		},
@@ -28,6 +32,7 @@
 				"image": "latest"
 			},
 			"env": {
+				"APP_VARIANT": "preview",
 				"EXPO_PUBLIC_API_URL": "https://market-api-d47w.onrender.com",
 				"EXPO_PUBLIC_SENTRY_DSN": "https://5bed064f57bf09d2b706b4ab455d1f32@o4507042729099264.ingest.us.sentry.io/4507449710280704"
 			}

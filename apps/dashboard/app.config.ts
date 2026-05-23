@@ -1,8 +1,35 @@
 import { ExpoConfig, ConfigContext } from 'expo/config';
 
+const IS_DEV = process.env.APP_VARIANT === 'development';
+const IS_PREVIEW = process.env.APP_VARIANT === 'preview';
+
+const getUniqueIdentifier = () => {
+	if (IS_DEV) {
+		return 'app.habiti.dashboard.dev';
+	}
+
+	if (IS_PREVIEW) {
+		return 'app.habiti.dashboard.preview';
+	}
+
+	return 'app.habiti.dashboard';
+};
+
+const getAppName = () => {
+	if (IS_DEV) {
+		return 'Habiti Dashboard (Dev)';
+	}
+
+	if (IS_PREVIEW) {
+		return 'Habiti Dashboard (Preview)';
+	}
+
+	return 'Habiti Dashboard';
+};
+
 export default ({ config }: ConfigContext): ExpoConfig => ({
 	...config,
-	name: 'Habiti Dashboard',
+	name: getAppName(),
 	slug: 'habiti-dashboard',
 	scheme: 'habiti-dashboard',
 	owner: 'overthq',
@@ -18,14 +45,16 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	},
 	assetBundlePatterns: ['**/*'],
 	ios: {
+		...config.ios,
 		supportsTablet: true,
-		bundleIdentifier: 'app.habiti.dashboard',
+		bundleIdentifier: getUniqueIdentifier(),
 		config: {
 			usesNonExemptEncryption: false
 		}
 	},
 	android: {
-		package: 'app.habiti.dashboard',
+		...config.android,
+		package: getUniqueIdentifier(),
 		adaptiveIcon: {
 			foregroundImage: './assets/adaptive-icon.png',
 			backgroundColor: '#000000'
