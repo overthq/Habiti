@@ -1,8 +1,35 @@
 import type { ExpoConfig, ConfigContext } from 'expo/config';
 
+const IS_DEV = process.env.APP_VARIANT === 'development';
+const IS_PREVIEW = process.env.APP_VARIANT === 'preview';
+
+const getUniqueIdentifier = () => {
+	if (IS_DEV) {
+		return 'app.habiti.app.dev';
+	}
+
+	if (IS_PREVIEW) {
+		return 'app.habiti.app.preview';
+	}
+
+	return 'app.habiti.app';
+};
+
+const getAppName = () => {
+	if (IS_DEV) {
+		return 'Habiti (Dev)';
+	}
+
+	if (IS_PREVIEW) {
+		return 'Habiti (Preview)';
+	}
+
+	return 'Habiti';
+};
+
 export default ({ config }: ConfigContext): ExpoConfig => ({
 	...config,
-	name: 'Habiti',
+	name: getAppName(),
 	slug: 'habiti',
 	owner: 'overthq',
 	version: '1.0.0',
@@ -18,15 +45,17 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	},
 	assetBundlePatterns: ['**/*'],
 	ios: {
+		...config.ios,
 		supportsTablet: true,
-		bundleIdentifier: 'app.habiti.app',
+		bundleIdentifier: getUniqueIdentifier(),
 		associatedDomains: ['applinks:habiti.app'],
 		config: {
 			usesNonExemptEncryption: false
 		}
 	},
 	android: {
-		package: 'app.habiti.app',
+		...config.android,
+		package: getUniqueIdentifier(),
 		googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
 		adaptiveIcon: {
 			foregroundImage: './assets/adaptive-icon.png',
