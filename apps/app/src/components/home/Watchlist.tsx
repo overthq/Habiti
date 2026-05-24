@@ -47,7 +47,6 @@ const Watchlist: React.FC<WatchlistProps> = ({ watchlist }) => {
 						onPress={handleProductPress(item.id)}
 					/>
 				)}
-				ListFooterComponent={<View style={{ width: 16 }} />}
 			/>
 		</View>
 	);
