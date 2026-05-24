@@ -29,6 +29,7 @@ import Home from '../screens/Home';
 import Notifications from '../screens/Notifications';
 import Order from '../screens/Order';
 import Store from '../screens/Store';
+import StoreInfo from '../screens/StoreInfo';
 import Orders from '../screens/Orders';
 import FollowedStores from '../screens/FollowedStores';
 
@@ -290,6 +291,11 @@ const Routes: React.FC = () => {
 									name='Modal.EditAddress'
 									component={EditAddress}
 									options={{ headerTitle: 'Edit Address' }}
+								/>
+								<AppStack.Screen
+									name='Modal.StoreInfo'
+									component={StoreInfo}
+									options={{ headerTitle: 'Store Info' }}
 								/>
 							</AppStack.Group>
 						</>
