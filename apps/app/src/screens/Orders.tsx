@@ -55,7 +55,6 @@ const Orders = () => {
 				renderItem={({ item }) => (
 					<OrdersListItem order={item} onPress={handleOrderPress(item.id)} />
 				)}
-				ListFooterComponent={() => <Spacer y={bottom} />}
 			/>
 		</Screen>
 	);

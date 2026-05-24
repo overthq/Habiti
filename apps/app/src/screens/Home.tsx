@@ -13,10 +13,12 @@ import Animated, { LinearTransition } from 'react-native-reanimated';
 import HomeHeader from '../components/home/HomeHeader';
 import FollowedStores from '../components/home/FollowedStores';
 import RecentOrders from '../components/home/RecentOrders';
+import RecentlyViewed from '../components/home/RecentlyViewed';
 
 import { useHomeQuery } from '../data/queries';
 import useRefresh from '../hooks/useRefresh';
 import SearchResults from '../components/home/SearchResults';
+import { useRecentlyViewedStore } from '../state/recentlyViewed';
 
 const Home = () => {
 	const [searchOpen, setSearchOpen] = React.useState(false);
@@ -72,18 +74,24 @@ const HomeMain = ({ searchOpen }: HomeMainProps) => {
 	const { data, isLoading, refetch } = useHomeQuery();
 	const { refreshing, refresh } = useRefresh({ refetch });
 	const { theme } = useTheme();
+	const recentlyViewedCount = useRecentlyViewedStore(
+		state => state.products.length
+	);
 
 	if (isLoading && !data) return <View />;
 
-	if (!data || (data.orders.length === 0 && data.followed.length === 0)) {
+	if (
+		!data ||
+		(data.orders.length === 0 &&
+			data.followed.length === 0 &&
+			recentlyViewedCount === 0)
+	) {
 		return <HomeEmpty />;
 	}
 
 	return (
 		<ScrollableScreen
-			style={{
-				display: searchOpen ? 'none' : 'flex'
-			}}
+			style={{ display: searchOpen ? 'none' : 'flex' }}
 			contentContainerStyle={{
 				flex: 1,
 				backgroundColor: theme.screen.background
@@ -100,6 +108,8 @@ const HomeMain = ({ searchOpen }: HomeMainProps) => {
 			<FollowedStores followed={data.followed} />
 			<Spacer y={32} />
 			<RecentOrders orders={data.orders} />
+			<Spacer y={32} />
+			<RecentlyViewed />
 		</ScrollableScreen>
 	);
 };

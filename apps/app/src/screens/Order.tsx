@@ -3,6 +3,7 @@ import {
 	Avatar,
 	Button,
 	CustomImage,
+	PillButton,
 	Row,
 	ScrollableScreen,
 	Spacer,
@@ -38,32 +39,38 @@ interface StoreMetaProps {
 }
 
 const StoreMeta: React.FC<StoreMetaProps> = ({ store }) => {
+	const { theme } = useTheme();
 	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();
 
 	return (
-		<Pressable
-			style={{ paddingVertical: 12 }}
-			onPress={() => {
-				navigate('Home.Store', { storeId: store.id });
+		<View
+			style={{
+				flexDirection: 'row',
+				justifyContent: 'space-between',
+				alignItems: 'flex-start'
 			}}
 		>
 			<View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
 				<Avatar
-					size={40}
+					size={48}
 					uri={store.image?.path}
 					circle
 					fallbackText={store.name}
 				/>
-				<View>
-					<Typography weight='medium' size='large'>
-						{store.name}
-					</Typography>
-					<Typography size='small' variant='secondary'>
-						Visit store
-					</Typography>
-				</View>
+
+				<Typography weight='medium' size='large'>
+					{store.name}
+				</Typography>
 			</View>
-		</Pressable>
+
+			<PillButton
+				style={{ alignSelf: 'center' }}
+				text='Visit store'
+				onPress={() => {
+					navigate('Home.Store', { storeId: store.id });
+				}}
+			/>
+		</View>
 	);
 };
 
@@ -80,13 +87,14 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 		<Row style={styles.productContainer} onPress={onPress}>
 			<View style={styles.productLeft}>
 				<CustomImage
-					height={40}
-					width={40}
+					height={48}
+					width={48}
 					uri={product.images[0]?.path}
 					style={styles.productImage}
 				/>
+
 				<View>
-					<Typography>{product.name}</Typography>
+					<Typography weight='medium'>{product.name}</Typography>
 					<Typography
 						variant='secondary'
 						size='small'
@@ -96,6 +104,7 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 					</Typography>
 				</View>
 			</View>
+
 			<Typography>{formatNaira(quantity * unitPrice)}</Typography>
 		</Row>
 	);
@@ -114,6 +123,7 @@ const OrderMeta: React.FC<OrderMetaProps> = ({ order }) => {
 					{relativeTimestamp(order.createdAt)}
 				</Typography>
 			</View>
+
 			<View style={styles.metaRow}>
 				<Typography>Total</Typography>
 				<Typography variant='secondary'>{formatNaira(order.total)}</Typography>
@@ -211,7 +221,9 @@ const Order = () => {
 			}
 		>
 			<StoreMeta store={order.store} />
-			<Spacer y={12} />
+
+			<Spacer y={16} />
+
 			<View style={{ marginHorizontal: -16 }}>
 				{order.products.map(orderProduct => (
 					<OrderProduct
@@ -221,7 +233,9 @@ const Order = () => {
 					/>
 				))}
 			</View>
+
 			<OrderMeta order={order} />
+
 			{order.status === OrderStatus.PaymentPending && (
 				<PaymentPendingWarning orderId={orderId} />
 			)}
