@@ -77,12 +77,17 @@ const StoreInfo = () => {
 
 	return (
 		<ScrollableScreen>
+			<Spacer y={16} />
+
 			<View style={styles.header}>
-				<Avatar size={72} uri={store.image?.path} fallbackText={store.name} />
+				<Avatar size={80} uri={store.image?.path} fallbackText={store.name} />
+
 				<Spacer y={12} />
+
 				<Typography size='xlarge' weight='medium'>
 					{store.name}
 				</Typography>
+
 				{store.unlisted && (
 					<>
 						<Spacer y={4} />
@@ -104,15 +109,24 @@ const StoreInfo = () => {
 
 			{store.description ? (
 				<>
-					<SectionHeader title='About' padded={false} />
+					<Typography variant='label' weight='medium' size='small'>
+						About
+					</Typography>
+
 					<Spacer y={4} />
+
 					<Typography variant='secondary'>{store.description}</Typography>
+
 					<Spacer y={24} />
 				</>
 			) : null}
 
-			<SectionHeader title='Reviews' padded={false} />
+			<Typography variant='label' weight='medium' size='small'>
+				Reviews
+			</Typography>
+
 			<Spacer y={4} />
+
 			<Typography variant='secondary'>No reviews yet.</Typography>
 
 			<Spacer y={24} />
