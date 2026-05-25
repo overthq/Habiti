@@ -16,7 +16,7 @@ import {
 	useNavigation,
 	useRoute
 } from '@react-navigation/native';
-import { View, StyleSheet, RefreshControl, Pressable } from 'react-native';
+import { View, StyleSheet, RefreshControl } from 'react-native';
 import { formatNaira } from '@habiti/common';
 
 import { useOrderQuery } from '../data/queries';
@@ -39,7 +39,6 @@ interface StoreMetaProps {
 }
 
 const StoreMeta: React.FC<StoreMetaProps> = ({ store }) => {
-	const { theme } = useTheme();
 	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();
 
 	return (
