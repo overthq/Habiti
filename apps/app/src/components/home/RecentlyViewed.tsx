@@ -67,11 +67,11 @@ const RecentlyViewedItem: React.FC<RecentlyViewedItemProps> = ({
 
 			<Spacer y={8} />
 
-			<Typography weight='medium' numberOfLines={1}>
+			<Typography size='small' weight='medium' numberOfLines={1}>
 				{product.name}
 			</Typography>
 
-			<Typography variant='secondary'>
+			<Typography size='small' variant='secondary'>
 				{formatNaira(product.unitPrice)}
 			</Typography>
 		</Pressable>
