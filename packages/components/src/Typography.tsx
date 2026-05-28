@@ -110,12 +110,12 @@ const normalizeFontSize = (size: number) => size / FONT_SCALE;
 
 const sizes = {
 	xsmall: 12,
-	small: 14,
+	small: Platform.select({ ios: 15, android: 14, default: 14 }),
 	regular: Platform.select({ ios: 17, android: 16, default: 15 }),
 	large: 17,
 	xlarge: 20,
-	xxlarge: 24,
-	xxxlarge: 32
+	xxlarge: 22,
+	xxxlarge: 28
 } as const;
 
 const iOSFontSizes = {

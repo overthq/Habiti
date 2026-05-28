@@ -22,7 +22,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
 		contentContainerStyle={styles.content}
 	>
 		<CategorySelectorItem
-			name='All Products'
+			name='All'
 			active={selected === undefined}
 			onPress={() => selectCategory(undefined)}
 		/>
@@ -53,11 +53,17 @@ const CategorySelectorItem: React.FC<CategorySelectorItemProps> = ({
 	return (
 		<Pressable onPress={onPress}>
 			<View style={{ paddingHorizontal: 16 }}>
-				<Typography weight='medium' variant={active ? 'primary' : 'secondary'}>
+				<Typography
+					size='small'
+					weight='medium'
+					variant={active ? 'primary' : 'secondary'}
+				>
 					{name}
 				</Typography>
 			</View>
+
 			<Spacer y={8} />
+
 			<View style={{ alignItems: 'center' }}>
 				<View
 					style={{

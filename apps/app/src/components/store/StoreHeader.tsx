@@ -1,10 +1,15 @@
 import React from 'react';
 import { View, StyleSheet, Pressable, TextInput } from 'react-native';
-import { Icon, TextButton, Typography, useTheme } from '@habiti/components';
+import {
+	BottomModal,
+	Icon,
+	TextButton,
+	Typography,
+	useTheme
+} from '@habiti/components';
 
 import CategorySelector from './CategorySelector';
-import FollowButton from './FollowButton';
-import { useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import Animated, {
 	FadeInDown,
 	FadeInRight,
@@ -16,7 +21,15 @@ import Animated, {
 } from 'react-native-reanimated';
 import useFirstRender from '../../hooks/useFirstRender';
 
+import {
+	useFollowStoreMutation,
+	useUnfollowStoreMutation
+} from '../../data/mutations';
+import { palette } from '@habiti/components/src/styles/theme';
+
 import type { Store } from '../../data/types';
+import type { AppStackParamList } from '../../navigation/types';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 interface StoreHeaderProps {
 	store: Store;
@@ -36,8 +49,13 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 	const [searchOpen, setSearchOpen] = React.useState(false);
 	const isFirstRender = useFirstRender();
 
-	const { goBack } = useNavigation();
+	const { goBack, navigate } =
+		useNavigation<NavigationProp<AppStackParamList>>();
 	const { name, theme } = useTheme();
+
+	const handleOpenStoreInfo = React.useCallback(() => {
+		navigate('Modal.StoreInfo', { storeId: store.id });
+	}, [navigate, store.id]);
 
 	const inputRef = React.useRef(null);
 
@@ -85,7 +103,7 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 						</View>
 						<View style={styles.center}>
 							<Typography
-								size='xlarge'
+								size='large'
 								weight='medium'
 								style={{ textAlign: 'center' }}
 							>
@@ -108,13 +126,18 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 							)}
 						</View>
 						<View style={styles.right}>
-							<Pressable onPress={handleOpenSearch}>
+							<Pressable hitSlop={16} onPress={handleOpenSearch}>
 								<Icon name='search' size={22} color={theme.text.primary} />
 							</Pressable>
-							<FollowButton
+
+							<Pressable hitSlop={16} onPress={handleOpenStoreInfo}>
+								<Icon name='more-vertical' size={22} />
+							</Pressable>
+
+							{/*<FollowButton
 								storeId={store.id}
 								followed={store.followedByUser}
-							/>
+							/>*/}
 						</View>
 					</View>
 					<CategorySelector
@@ -162,6 +185,58 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 				</Animated.View>
 			)}
 		</Animated.View>
+	);
+};
+
+interface FollowButtonProps {
+	storeId: string;
+	followed: boolean;
+}
+
+const FollowButton: React.FC<FollowButtonProps> = ({ storeId, followed }) => {
+	const followStore = useFollowStoreMutation(storeId);
+	const unfollowStore = useUnfollowStoreMutation(storeId);
+
+	const handlePress = React.useCallback(() => {
+		if (followed) {
+			unfollowStore.mutate();
+		} else {
+			followStore.mutate();
+		}
+	}, [followed]);
+
+	return (
+		<Pressable onPress={handlePress}>
+			<Icon
+				size={22}
+				name='heart'
+				fill={followed ? palette.red.r500 : undefined}
+				color={followed ? palette.red.r500 : undefined}
+			/>
+		</Pressable>
+	);
+};
+
+interface StoreMenuModalProps {
+	modalRef: React.RefObject<BottomSheetModal>;
+}
+
+const StoreMenuModal = ({ modalRef }: StoreMenuModalProps) => {
+	return (
+		<BottomModal modalRef={modalRef}>
+			<Pressable>
+				<Typography>Search store</Typography>
+			</Pressable>
+			<Pressable>
+				<Typography>Follow store</Typography>
+			</Pressable>
+			<Pressable>
+				<Typography>Store details</Typography>
+			</Pressable>
+			<Pressable>
+				<Typography>Share</Typography>
+			</Pressable>
+		</BottomModal>
 	);
 };
 

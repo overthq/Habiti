@@ -17,7 +17,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import CartProvider, { useCart } from '../components/CartContext';
-import { AppStackParamList } from '../navigation/types';
+import type { AppStackParamList } from '../navigation/types';
 import type {
 	Cart as CartType,
 	CartProduct as CartProductType,
@@ -68,13 +68,17 @@ const CartProductQuantity: React.FC<CartProductQuantityProps> = ({
 			]}
 		>
 			<Pressable onPress={decrementProductQuantity} hitSlop={12}>
-				<Icon name='minus' size={20} color={theme.text.primary} />
+				<Icon name='minus' size={18} color={theme.text.primary} />
 			</Pressable>
-			<Typography weight='medium' style={{ width: 24, textAlign: 'center' }}>
+			<Typography
+				size='small'
+				weight='medium'
+				style={{ width: 24, textAlign: 'center' }}
+			>
 				{quantity}
 			</Typography>
 			<Pressable onPress={incrementProductQuantity} hitSlop={12}>
-				<Icon name='plus' size={20} color={theme.text.primary} />
+				<Icon name='plus' size={18} color={theme.text.primary} />
 			</Pressable>
 		</View>
 	);
@@ -94,24 +98,32 @@ const CartProduct: React.FC<CartProductProps> = ({ cartProduct, onPress }) => {
 		<Row style={styles.cartProductContainer} onPress={onPress}>
 			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 				<CustomImage uri={product.images[0]?.path} height={48} width={48} />
+
 				<Spacer x={12} />
+
 				<View>
-					<Typography>{product.name}</Typography>
+					<Typography weight='medium' size='small'>
+						{product.name}
+					</Typography>
+
 					<Spacer y={2} />
+
 					<Typography
-						weight='medium'
+						size='small'
 						variant={hasExceededMaxQuantity ? 'error' : 'secondary'}
 					>
 						{formatNaira(product.unitPrice * quantity)}
 					</Typography>
 				</View>
 			</View>
+
 			<View>
 				<CartProductQuantity
 					cartProduct={cartProduct}
 					quantity={quantity}
 					maxQuantity={product.quantity}
 				/>
+
 				<Spacer y={4} />
 			</View>
 		</Row>
@@ -135,12 +147,6 @@ const CartSummary: React.FC<CartSummaryProps> = () => {
 
 	return (
 		<View>
-			<Typography weight='medium' variant='secondary'>
-				Order Summary
-			</Typography>
-
-			<Spacer y={4} />
-
 			{products.map(cartProduct => (
 				<CartProduct
 					key={`${cartProduct.cartId}-${cartProduct.productId}`}
@@ -283,7 +289,7 @@ const Cart: React.FC = () => {
 
 			<StoreInfo store={cart.store} />
 
-			<Spacer y={4} />
+			<Spacer y={12} />
 
 			<CartSummary products={cart.products} />
 
@@ -322,8 +328,8 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		gap: 8,
-		paddingHorizontal: 12,
-		paddingVertical: 8,
+		paddingHorizontal: 10,
+		paddingVertical: 6,
 		alignSelf: 'flex-start'
 	},
 	totalRow: {

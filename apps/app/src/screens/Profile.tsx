@@ -71,19 +71,24 @@ const Profile = () => {
 				title='Manage Account'
 				onPress={() => navigate('Profile.AccountSettings')}
 			/>
+
 			<ProfileRow
 				title='Payment Methods'
 				onPress={() => navigate('Profile.PaymentMethods')}
 			/>
+
 			<ProfileRow
 				title='Notifications'
 				onPress={() => navigate('Profile.NotificationSettings')}
 			/>
+
 			<ProfileRow
 				title='Appearance'
 				onPress={() => navigate('Profile.Appearance')}
 			/>
-			<Separator inset />
+
+			<Separator />
+
 			<ProfileRow
 				title='Privacy Policy'
 				onPress={() => {
@@ -91,6 +96,7 @@ const Profile = () => {
 				}}
 				icon='arrow-up-right'
 			/>
+
 			<ProfileRow
 				title='Support'
 				onPress={() => {
@@ -98,6 +104,7 @@ const Profile = () => {
 				}}
 				icon='arrow-up-right'
 			/>
+
 			<ProfileRow
 				title='Acceptable Use'
 				onPress={() => {
@@ -105,6 +112,7 @@ const Profile = () => {
 				}}
 				icon='arrow-up-right'
 			/>
+
 			<ProfileRow
 				title='Log Out'
 				onPress={confirmLogOut}

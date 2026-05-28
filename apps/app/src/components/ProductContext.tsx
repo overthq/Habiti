@@ -8,6 +8,10 @@ import type { Product, ProductViewerContext } from '../data/types';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { AppStackParamList } from '../navigation/types';
 import { View } from 'react-native';
+import {
+	RecentlyViewedProduct,
+	useRecentlyViewedStore
+} from '../state/recentlyViewed';
 
 interface ProductContextType {
 	product: Product;
@@ -36,6 +40,17 @@ interface ProductProviderProps {
 // (The refactor may include server-side changes as well, so updating the
 // client-side adapters is easier this way).
 
+const getRecentProductPayload = (
+	product: Product
+): Omit<RecentlyViewedProduct, 'viewedAt'> => ({
+	id: product.id,
+	name: product.name,
+	storeId: product.storeId,
+	storeName: product.store.name,
+	unitPrice: product.unitPrice,
+	image: product.images[0]?.path ?? null
+});
+
 const ProductProviderInner: React.FC<ProductProviderProps> = ({
 	children,
 	product,
@@ -46,6 +61,13 @@ const ProductProviderInner: React.FC<ProductProviderProps> = ({
 
 	const addToCart = useAddToCartMutation();
 	const updateCartProduct = useUpdateCartProductMutation();
+	const addRecentlyViewedProduct = useRecentlyViewedStore(
+		state => state.addProduct
+	);
+
+	React.useEffect(() => {
+		addRecentlyViewedProduct(getRecentProductPayload(product));
+	}, [addRecentlyViewedProduct, product]);
 
 	const cartProduct = viewerContext?.cartProduct;
 	const inCart = !!cartProduct;

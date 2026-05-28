@@ -17,6 +17,7 @@ export type AppStackParamList = {
 	Cart: { cartId: string };
 	'Modal.AddCard': { orderId?: string };
 	'Modal.AddAddress': undefined;
+	'Modal.StoreInfo': { storeId: string };
 	'Modal.EditAddress': {
 		addressId: string;
 		name: string;

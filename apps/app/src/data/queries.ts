@@ -32,7 +32,8 @@ export const useCurrentUserQuery = () => {
 export const useOrdersQuery = (filter?: any, orderBy?: any) => {
 	return useQuery({
 		queryKey: ['orders', filter, orderBy],
-		queryFn: () => getOrders()
+		queryFn: () => getOrders(),
+		placeholderData: keepPreviousData
 	});
 };
 
@@ -92,7 +93,8 @@ export const useCardsQuery = () => {
 export const useCartsQuery = () => {
 	return useQuery({
 		queryKey: ['carts'],
-		queryFn: () => getCarts()
+		queryFn: () => getCarts(),
+		placeholderData: keepPreviousData
 	});
 };
 
@@ -115,7 +117,8 @@ export const useSearchQuery = (searchTerm: string) => {
 	return useQuery({
 		queryKey: ['search', searchTerm],
 		queryFn: () => globalSearch(searchTerm),
-		enabled: !!searchTerm
+		enabled: !!searchTerm,
+		placeholderData: keepPreviousData
 	});
 };
 

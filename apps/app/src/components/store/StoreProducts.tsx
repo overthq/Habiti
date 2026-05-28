@@ -127,10 +127,18 @@ export const StoreProductListItem: React.FC<StoreListItemProps> = ({
 		onPress={onPress}
 	>
 		<CustomImage height={200} uri={item.images[0]?.path} />
+
 		<Spacer y={8} />
-		<Typography weight='medium'>{item.name}</Typography>
+
+		<Typography size='small' weight='medium'>
+			{item.name}
+		</Typography>
+
 		<Spacer y={2} />
-		<Typography variant='secondary'>{formatNaira(item.unitPrice)}</Typography>
+
+		<Typography size='small' variant='secondary'>
+			{formatNaira(item.unitPrice)}
+		</Typography>
 	</Pressable>
 );
 
