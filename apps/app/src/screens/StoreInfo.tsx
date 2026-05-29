@@ -13,7 +13,6 @@ import {
 	IconType,
 	Row,
 	ScrollableScreen,
-	SectionHeader,
 	Separator,
 	Spacer,
 	Typography,
