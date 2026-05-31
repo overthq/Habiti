@@ -13,7 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 interface ProductMenuRowProps {
 	title: string;
 	onPress(): void;
-	icon?: IconType;
+	icon: IconType;
 	destructive?: boolean;
 }
 
