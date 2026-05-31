@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
 });
 
 interface ProductMenuModalProps {
-	modalRef: React.RefObject<BottomSheetModal>;
+	modalRef: React.RefObject<BottomSheetModal | null>;
 	onEditProduct(): void;
 	onDeleteProduct(): void;
 	onViewInBrowser(): void;

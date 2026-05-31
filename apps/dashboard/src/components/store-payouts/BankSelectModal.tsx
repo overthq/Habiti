@@ -13,7 +13,7 @@ import { BANKS } from '../../utils/banks';
 import { FullWindowOverlay } from 'react-native-screens';
 
 interface BankSelectModalProps {
-	modalRef: React.RefObject<BottomSheetModal>;
+	modalRef: React.RefObject<BottomSheetModal | null>;
 }
 
 const BankSelectModal: React.FC<BankSelectModalProps> = ({ modalRef }) => {
@@ -24,7 +24,9 @@ const BankSelectModal: React.FC<BankSelectModalProps> = ({ modalRef }) => {
 	}, [modalRef.current]);
 
 	const renderContainerComponent = React.useCallback(
-		({ children }) => <FullWindowOverlay>{children}</FullWindowOverlay>,
+		({ children }: { children?: React.ReactNode }) => (
+			<FullWindowOverlay>{children}</FullWindowOverlay>
+		),
 		[]
 	);
 
