@@ -136,7 +136,7 @@ const ProductProviderInner: React.FC<ProductProviderProps> = ({
 				cartCommitDisabled,
 				cartCommitText,
 				inCart,
-				initialQuantity,
+				initialQuantity: initialQuantity ?? 1,
 				quantity,
 				setQuantity
 			}}
@@ -166,7 +166,7 @@ export const ProductProvider = ({
 	return (
 		<ProductProviderInner
 			product={product}
-			relatedProducts={relatedProducts}
+			relatedProducts={relatedProducts ?? []}
 			viewerContext={data?.viewerContext}
 		>
 			{children}

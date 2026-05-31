@@ -11,7 +11,7 @@ import { OrderStatus } from '../../data/types';
 import { Pressable, View } from 'react-native';
 
 interface OrdersFilterModalProps {
-	modalRef: React.RefObject<BottomSheetModal>;
+	modalRef: React.RefObject<BottomSheetModal | null>;
 	filters: OrdersFilters;
 	onUpdateFilters: (filters: OrdersFilters) => void;
 	onClearFilters: () => void;

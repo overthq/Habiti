@@ -204,7 +204,7 @@ const Order = () => {
 		[]
 	);
 
-	if (isLoading && !order) {
+	if (!order) {
 		return <View style={styles.screenContainer} />;
 	}
 

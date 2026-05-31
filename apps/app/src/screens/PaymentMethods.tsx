@@ -149,7 +149,7 @@ const CardRow: React.FC<CardRowProps> = ({
 			>
 				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 					<View style={{ marginLeft: -10 }}>
-						{CardIconMap[card.cardType.trim()]}
+						{CardIconMap[card.cardType.trim() as keyof typeof CardIconMap]}
 					</View>
 					<Typography
 						style={styles.capitalize}

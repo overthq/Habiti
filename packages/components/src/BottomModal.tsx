@@ -10,7 +10,7 @@ import { useTheme } from './Theme';
 
 interface BottomModalProps extends BottomSheetModalProps {
 	children: React.ReactNode;
-	modalRef: React.RefObject<BottomSheetModal>;
+	modalRef: React.RefObject<BottomSheetModal | null>;
 }
 
 const BottomModal: React.FC<BottomModalProps> = ({ modalRef, ...props }) => {

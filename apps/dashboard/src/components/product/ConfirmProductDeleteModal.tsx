@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useDeleteProductMutation } from '../../data/mutations';
 
 interface ConfirmProductDeleteModalProps {
-	modalRef: React.RefObject<BottomSheetModal>;
+	modalRef: React.RefObject<BottomSheetModal | null>;
 	productId: string;
 }
 

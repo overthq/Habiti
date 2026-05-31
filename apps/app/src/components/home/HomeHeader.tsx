@@ -28,7 +28,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const isFirstRender = useFirstRender();
 
-	const inputRef = React.useRef(null);
+	const inputRef = React.useRef<TextInput>(null);
 	const { name, theme } = useTheme();
 
 	const handleFocus = React.useCallback(() => {
@@ -70,7 +70,11 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 						Home
 					</Typography>
 					<View style={{ gap: 16, flexDirection: 'row' }}>
-						<Pressable onPress={() => navigate('App.Profile')}>
+						<Pressable
+							onPress={() =>
+								navigate('App.Profile', { screen: 'Profile.Main' })
+							}
+						>
 							<Icon name='user-round' />
 						</Pressable>
 						<Pressable onPress={() => navigate('App.Carts')}>

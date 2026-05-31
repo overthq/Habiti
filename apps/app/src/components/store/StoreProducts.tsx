@@ -18,16 +18,16 @@ import type { AppStackParamList } from '../../navigation/types';
 interface StoreProductsProps {
 	store: Store;
 	viewerContext: StoreViewerContext | null;
-	activeCategory: string;
-	searchTerm: string;
+	activeCategory?: string;
+	searchTerm?: string;
 }
 
 const buildFilter = ({
 	searchTerm,
 	activeCategory
 }: {
-	searchTerm: string;
-	activeCategory: string;
+	searchTerm?: string;
+	activeCategory?: string;
 }) => {
 	const filters = new URLSearchParams();
 

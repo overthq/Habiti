@@ -160,7 +160,7 @@ const CartSummary: React.FC<CartSummaryProps> = () => {
 
 interface SelectCardProps {
 	cards: Card[];
-	selectedCard?: string;
+	selectedCard?: string | null;
 	onCardSelect(cardId: string): void;
 }
 
@@ -196,7 +196,7 @@ const SelectCard: React.FC<SelectCardProps> = ({
 				</View>
 			) : (
 				<SelectGroup
-					selected={selectedCard}
+					selected={selectedCard ?? undefined}
 					options={cards.map(card => ({
 						title: `${card.cardType} ••••${card.last4}`,
 						value: card.id
