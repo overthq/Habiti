@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUpdateCurrentStoreMutation } from '../../data/mutations';
 
 interface ConfirmationModalProps {
-	modalRef: React.RefObject<BottomSheetModal>;
+	modalRef: React.RefObject<BottomSheetModal | null>;
 	accountName?: string;
 }
 
@@ -27,7 +27,9 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 	const snapPoints = React.useMemo(() => ['25%'], []);
 
 	const renderContainerComponent = React.useCallback(
-		({ children }) => <FullWindowOverlay>{children}</FullWindowOverlay>,
+		({ children }: { children?: React.ReactNode }) => (
+			<FullWindowOverlay>{children}</FullWindowOverlay>
+		),
 		[]
 	);
 

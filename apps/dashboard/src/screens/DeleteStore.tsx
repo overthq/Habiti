@@ -10,6 +10,8 @@ const DeleteStore = () => {
 	const { activeStore, setPreference } = useStore();
 
 	const handleDeleteStore = async () => {
+		if (!activeStore) return;
+
 		try {
 			await deleteStoreMutation.mutateAsync(activeStore);
 			setPreference({ activeStore: null });
