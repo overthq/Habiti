@@ -9,7 +9,7 @@ import { ProductsFilters } from './ProductsContext';
 import SortProducts from '../filter-products/SortProducts';
 
 interface ProductsFilterModalProps {
-	modalRef: React.RefObject<BottomSheetModal>;
+	modalRef: React.RefObject<BottomSheetModal | null>;
 	filters: ProductsFilters;
 	onUpdateFilters: (filters: ProductsFilters) => void;
 	onClearFilters: () => void;

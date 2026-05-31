@@ -21,7 +21,7 @@ import { AppStackParamList } from '../../navigation/types';
 import { STORE_CREATION_ENABLED } from '../../utils/constants';
 
 interface StoreSelectModalProps {
-	modalRef: React.RefObject<BottomSheetModal>;
+	modalRef: React.RefObject<BottomSheetModal | null>;
 }
 
 const StoreSelectModal: React.FC<StoreSelectModalProps> = ({ modalRef }) => {

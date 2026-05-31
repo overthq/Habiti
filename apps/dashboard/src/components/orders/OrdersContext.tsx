@@ -8,7 +8,7 @@ interface OrdersContextType {
 	orders: Order[];
 	isLoading: boolean;
 	status: OrderStatus | undefined;
-	setStatus: (status: OrderStatus) => void;
+	setStatus: (status: OrderStatus | undefined) => void;
 	refreshing: boolean;
 	refresh: () => void;
 	openFilterModal: () => void;
@@ -38,7 +38,7 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 	);
 
 	// TODO: Don't make this a special case.
-	const setStatus = React.useCallback((status: OrderStatus) => {
+	const setStatus = React.useCallback((status: OrderStatus | undefined) => {
 		setFilters({ status });
 	}, []);
 

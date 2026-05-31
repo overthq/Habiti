@@ -20,7 +20,7 @@ import { applyFontStyles } from '@habiti/components/src/Typography';
 interface ProductInventoryModalProps {
 	productId: string;
 	initialQuantity: number;
-	modalRef: React.RefObject<BottomSheetModal>;
+	modalRef: React.RefObject<BottomSheetModal | null>;
 }
 
 const ProductInventoryModal: React.FC<ProductInventoryModalProps> = ({

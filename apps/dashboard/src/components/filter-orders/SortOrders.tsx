@@ -2,7 +2,7 @@ import React from 'react';
 import { SelectGroup, Spacer } from '@habiti/components';
 
 interface SortOrdersProps {
-	sortBy: 'created-at-desc' | 'total-desc' | 'total-asc';
+	sortBy?: 'created-at-desc' | 'total-desc' | 'total-asc';
 	onUpdateSortBy: (
 		sortBy: 'created-at-desc' | 'total-desc' | 'total-asc'
 	) => void;

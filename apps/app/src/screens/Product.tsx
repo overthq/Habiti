@@ -28,6 +28,7 @@ import {
 	useProductContext
 } from '../components/ProductContext';
 import { AppStackParamList } from '../navigation/types';
+import { getFrontendUrl } from '../utils/links';
 
 const { width } = Dimensions.get('window');
 
@@ -256,9 +257,10 @@ const ShareHeader: React.FC = () => {
 
 	React.useLayoutEffect(() => {
 		const handleShare = () => {
+			const productUrl = getFrontendUrl(`/product/${product.id}`);
 			Share.share({
-				message: `Check out ${product.name} on Habiti: https://habiti.app/product/${product.id}`,
-				url: `https://habiti.app/product/${product.id}`
+				message: `Check out ${product.name} on Habiti: ${productUrl}`,
+				url: productUrl
 			});
 		};
 

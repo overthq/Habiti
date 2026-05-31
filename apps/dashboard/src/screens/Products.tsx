@@ -8,9 +8,9 @@ import FAB from '../components/products/FAB';
 import ProductList from '../components/products/ProductList';
 import ProductsScreenHeader from '../components/products/ProductsScreenHeader';
 
-import { MainTabScreenProps } from '../navigation/types';
+import { ProductsStackScreenProps } from '../navigation/types';
 
-const Products = ({ navigation }: MainTabScreenProps<'Products'>) => {
+const Products = ({ navigation }: ProductsStackScreenProps<'ProductsList'>) => {
 	const { top } = useSafeAreaInsets();
 
 	const handleOpenAddProduct = () => {

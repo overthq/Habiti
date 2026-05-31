@@ -13,7 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 interface ProductMenuRowProps {
 	title: string;
 	onPress(): void;
-	icon?: IconType;
+	icon: IconType;
 	destructive?: boolean;
 }
 
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
 });
 
 interface ProductMenuModalProps {
-	modalRef: React.RefObject<BottomSheetModal>;
+	modalRef: React.RefObject<BottomSheetModal | null>;
 	onEditProduct(): void;
 	onDeleteProduct(): void;
 	onViewInBrowser(): void;

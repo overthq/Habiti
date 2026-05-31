@@ -17,7 +17,7 @@ import { useUpdateProductMutation } from '../../data/mutations';
 import { applyFontStyles } from '@habiti/components/src/Typography';
 
 interface ProductPriceModalProps {
-	modalRef: React.RefObject<BottomSheetModal>;
+	modalRef: React.RefObject<BottomSheetModal | null>;
 	productId: string;
 	initialPrice: number;
 }
@@ -43,7 +43,7 @@ const ProductPriceModal: React.FC<ProductPriceModalProps> = ({
 			body: { unitPrice: Number(price) * 100 }
 		});
 
-		modalRef.current.close();
+		modalRef.current?.close();
 	};
 
 	return (

@@ -33,9 +33,9 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 interface StoreHeaderProps {
 	store: Store;
-	activeCategory: string;
-	setActiveCategory: (category: string) => void;
-	searchTerm: string;
+	activeCategory?: string;
+	setActiveCategory: (category: string | undefined) => void;
+	searchTerm?: string;
 	setSearchTerm: (term: string) => void;
 }
 
@@ -57,14 +57,14 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 		navigate('Modal.StoreInfo', { storeId: store.id });
 	}, [navigate, store.id]);
 
-	const inputRef = React.useRef(null);
+	const inputRef = React.useRef<TextInput>(null);
 
 	const handleFocus = React.useCallback(() => {
 		setSearchOpen(true);
 	}, []);
 
 	const handleBlur = React.useCallback(() => {
-		setSearchOpen(searchTerm.length > 0);
+		setSearchOpen((searchTerm?.length ?? 0) > 0);
 	}, [searchTerm]);
 
 	const handleOpenSearch = React.useCallback(() => {

@@ -107,9 +107,9 @@ const HomeMain = ({ searchOpen }: HomeMainProps) => {
 			<Spacer y={16} />
 			<FollowedStores followed={data.followed} />
 			<Spacer y={32} />
-			<RecentOrders orders={data.orders} />
-			<Spacer y={32} />
 			<RecentlyViewed />
+			<Spacer y={32} />
+			<RecentOrders orders={data.orders} />
 		</ScrollableScreen>
 	);
 };

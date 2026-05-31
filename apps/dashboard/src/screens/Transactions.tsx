@@ -22,7 +22,7 @@ const Transactions = () => {
 	const { theme } = useTheme();
 
 	const handleAddPayout = React.useCallback(() => {
-		if (!storeData.store) return;
+		if (!storeData?.store) return;
 
 		if (!storeData.store.bankAccountNumber) {
 			Alert.alert(
@@ -87,7 +87,7 @@ const Transactions = () => {
 						<TransactionRow
 							transaction={item}
 							onPress={handleTransactionPress}
-							isLast={index === data?.transactions.length - 1}
+							isLast={index === (data?.transactions.length ?? 0) - 1}
 						/>
 					)}
 					ListEmptyComponent={

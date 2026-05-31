@@ -26,7 +26,7 @@ const FollowedStores = () => {
 		navigate('Home.Store', { storeId });
 	};
 
-	if (isLoading && !data) {
+	if (!data) {
 		return (
 			<View>
 				<ActivityIndicator />

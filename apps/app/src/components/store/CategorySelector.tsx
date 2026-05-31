@@ -7,7 +7,7 @@ import type { StoreProductCategory } from '../../data/types';
 interface CategorySelectorProps {
 	categories: StoreProductCategory[];
 	selected?: string;
-	selectCategory(categoryId: string): void;
+	selectCategory(categoryId: string | undefined): void;
 }
 
 const CategorySelector: React.FC<CategorySelectorProps> = ({

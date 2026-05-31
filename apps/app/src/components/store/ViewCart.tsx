@@ -17,6 +17,7 @@ const ViewCart: React.FC<ViewCartProps> = ({ cartId, count }) => {
 	const { bottom } = useSafeAreaInsets();
 
 	const handlePress = () => {
+		if (!cartId) return;
 		navigate('Cart', { cartId });
 	};
 

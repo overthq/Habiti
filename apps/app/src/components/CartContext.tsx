@@ -25,8 +25,8 @@ interface CartContextType {
 	handleSubmit: () => Promise<void>;
 	refreshing: boolean;
 	refresh: () => void;
-	selectedCard: string;
-	setSelectedCard: (cardId: string) => void;
+	selectedCard: string | null;
+	setSelectedCard: (cardId: string | null) => void;
 	updateProductQuantity: (productId: string, quantity: number) => void;
 	removeProductFromCart: (productId: string) => void;
 	dispatch: React.Dispatch<Action>;
