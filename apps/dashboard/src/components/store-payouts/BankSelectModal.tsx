@@ -48,8 +48,8 @@ const BankSelectModal: React.FC<BankSelectModalProps> = ({ modalRef }) => {
 					<Spacer y={8} />
 					<BottomSheetFlatList
 						data={BANKS}
-						keyExtractor={b => b.id.toString()}
-						renderItem={({ item }) => (
+						keyExtractor={(b: (typeof BANKS)[number]) => b.id.toString()}
+						renderItem={({ item }: { item: (typeof BANKS)[number] }) => (
 							<Row
 								style={{ backgroundColor: theme.modal.background }}
 								onPress={() => {
