@@ -31,7 +31,7 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 		(orderId: string) => () => {
 			navigate('Home.Order', { orderId });
 		},
-		[]
+		[navigate]
 	);
 
 	if (!orders || orders.length === 0) return null;

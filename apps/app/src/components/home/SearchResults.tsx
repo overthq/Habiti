@@ -53,7 +53,7 @@ const ProductsView = () => {
 		(productId: string) => () => {
 			navigate('Product', { productId });
 		},
-		[]
+		[navigate]
 	);
 
 	return (

@@ -66,7 +66,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 		(productId: string) => () => {
 			navigate('Product', { productId });
 		},
-		[]
+		[navigate]
 	);
 
 	if (isLoading && !products) return <View />;
@@ -113,7 +113,7 @@ interface StoreListItemProps {
 	side: 'left' | 'right';
 }
 
-export const StoreProductListItem: React.FC<StoreListItemProps> = ({
+const StoreProductListItem: React.FC<StoreListItemProps> = ({
 	item,
 	onPress,
 	side

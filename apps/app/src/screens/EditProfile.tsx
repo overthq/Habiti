@@ -39,9 +39,12 @@ const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
 		}
 	});
 
-	const onSubmit = async (values: EditProfileFormValues) => {
-		editProfile.mutate(values);
-	};
+	const onSubmit = React.useCallback(
+		async (values: EditProfileFormValues) => {
+			editProfile.mutate(values);
+		},
+		[editProfile]
+	);
 
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
@@ -62,7 +65,7 @@ const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
 				}
 			]
 		});
-	}, [formState.isDirty]);
+	}, [navigation, handleSubmit, onSubmit, formState.isDirty]);
 
 	return (
 		<Screen>

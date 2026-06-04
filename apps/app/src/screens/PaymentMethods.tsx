@@ -10,7 +10,12 @@ import { Icon, Screen, Typography, useTheme } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { HeaderButton } from '@react-navigation/elements';
 
-import { CardIconMap } from '../components/CardIcons';
+import { VisaIcon, MastercardIcon } from '../components/CardIcons';
+
+const CardIconMap = {
+	visa: <VisaIcon />,
+	mastercard: <MastercardIcon />
+} as const;
 
 import { AppStackParamList } from '../navigation/types';
 import { useCardsQuery } from '../data/queries';
@@ -61,7 +66,7 @@ const PaymentMethods = () => {
 				}
 			]);
 		},
-		[deleteCard]
+		[onDeleteCard]
 	);
 
 	React.useLayoutEffect(() => {
@@ -83,7 +88,7 @@ const PaymentMethods = () => {
 				}
 			]
 		});
-	}, []);
+	}, [navigate, setOptions]);
 
 	const cards = data?.cards;
 

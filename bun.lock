@@ -153,7 +153,6 @@
       "devDependencies": {
         "@babel/core": "^7.20.0",
         "@babel/preset-typescript": "^7.17.12",
-        "@expo/metro-config": "~56.0.0",
         "@sentry/cli": "^3.3.3",
         "@types/lodash.debounce": "^4.0.9",
         "@types/node": "^20",

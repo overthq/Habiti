@@ -31,18 +31,18 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 	const inputRef = React.useRef<TextInput>(null);
 	const { name, theme } = useTheme();
 
-	const handleFocus = React.useCallback(() => {
+	const expandSearch = React.useCallback(() => {
 		setSearchOpen(true);
-	}, []);
+	}, [setSearchOpen]);
 
-	const handleBlur = React.useCallback(() => {
+	const collapseSearchIfEmpty = React.useCallback(() => {
 		setSearchOpen(searchTerm.length > 0);
-	}, [searchTerm]);
+	}, [searchTerm, setSearchOpen]);
 
 	const cancel = React.useCallback(() => {
 		inputRef.current?.blur();
 		setSearchTerm('');
-	}, [inputRef.current]);
+	}, [setSearchTerm]);
 
 	return (
 		<Animated.View
@@ -103,8 +103,8 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 						autoCapitalize='none'
 						autoCorrect={false}
 						selectionColor={theme.text.primary}
-						onFocus={handleFocus}
-						onBlur={handleBlur}
+						onFocus={expandSearch}
+						onBlur={collapseSearchIfEmpty}
 						keyboardAppearance={name === 'dark' ? 'dark' : 'light'}
 					/>
 				</Animated.View>

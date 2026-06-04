@@ -31,7 +31,7 @@ const Orders = () => {
 		(orderId: string) => () => {
 			navigate('Home.Order', { orderId });
 		},
-		[]
+		[navigate]
 	);
 
 	if (isLoading && !data) return <View />;

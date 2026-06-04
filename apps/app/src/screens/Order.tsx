@@ -201,7 +201,7 @@ const Order = () => {
 		(productId: string) => () => {
 			navigate('Product', { productId });
 		},
-		[]
+		[navigate]
 	);
 
 	if (!order) {
