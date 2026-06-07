@@ -22,11 +22,14 @@ const AddCategory = () => {
 		}
 	});
 
-	const onSubmit = React.useCallback(async (values: AddCategoryValues) => {
-		await createProductCategoryMutation.mutateAsync(values);
+	const onSubmit = React.useCallback(
+		async (values: AddCategoryValues) => {
+			await createProductCategoryMutation.mutateAsync(values);
 
-		goBack();
-	}, []);
+			goBack();
+		},
+		[createProductCategoryMutation, goBack]
+	);
 
 	return (
 		<ScrollableScreen>

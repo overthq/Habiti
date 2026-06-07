@@ -16,6 +16,27 @@ interface BankSelectModalProps {
 	modalRef: React.RefObject<BottomSheetModal | null>;
 }
 
+interface BankRowProps {
+	item: (typeof BANKS)[number];
+	backgroundColor: string;
+	onChange: (code: string) => void;
+	onDismiss: () => void;
+}
+
+const BankRow = React.memo(
+	({ item, backgroundColor, onChange, onDismiss }: BankRowProps) => (
+		<Row
+			style={{ backgroundColor }}
+			onPress={() => {
+				onChange(item.code);
+				onDismiss();
+			}}
+		>
+			<Typography>{item.name}</Typography>
+		</Row>
+	)
+);
+
 const BankSelectModal: React.FC<BankSelectModalProps> = ({ modalRef }) => {
 	const { theme } = useTheme();
 
@@ -50,15 +71,12 @@ const BankSelectModal: React.FC<BankSelectModalProps> = ({ modalRef }) => {
 						data={BANKS}
 						keyExtractor={(b: (typeof BANKS)[number]) => b.id.toString()}
 						renderItem={({ item }: { item: (typeof BANKS)[number] }) => (
-							<Row
-								style={{ backgroundColor: theme.modal.background }}
-								onPress={() => {
-									field.onChange(item.code);
-									dismissModal();
-								}}
-							>
-								<Typography>{item.name}</Typography>
-							</Row>
+							<BankRow
+								item={item}
+								backgroundColor={theme.modal.background}
+								onChange={field.onChange}
+								onDismiss={dismissModal}
+							/>
 						)}
 					/>
 				</BottomModal>

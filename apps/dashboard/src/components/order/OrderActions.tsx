@@ -45,7 +45,7 @@ const OrderActions: React.FC<OrderActionsProps> = ({ orderId, status }) => {
 				body: { status }
 			});
 		},
-		[orderId, status]
+		[orderId, updateOrderMutation]
 	);
 
 	return (

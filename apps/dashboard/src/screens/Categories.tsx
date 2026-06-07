@@ -1,17 +1,17 @@
 import React from 'react';
-import { View, RefreshControl } from 'react-native';
+import { View } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import {
 	EmptyState,
 	Icon,
 	Row,
 	ScrollableScreen,
-	Typography,
-	useTheme
+	Typography
 } from '@habiti/components';
 import { HeaderButton } from '@react-navigation/elements';
 
 import FAB from '../components/products/FAB';
+import Refresher from '../components/Refresher';
 
 import useRefresh from '../hooks/useRefresh';
 import { useCategoriesQuery } from '../data/queries';
@@ -39,11 +39,10 @@ const Categories = () => {
 	const { isRefreshing, onRefresh } = useRefresh({ refetch });
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
-	const { theme } = useTheme();
 
 	const handleAddCategory = React.useCallback(() => {
 		navigate('Modal.AddCategory');
-	}, []);
+	}, [navigate]);
 
 	React.useLayoutEffect(() => {
 		setOptions({
@@ -64,7 +63,7 @@ const Categories = () => {
 				}
 			]
 		});
-	}, []);
+	}, [setOptions, handleAddCategory]);
 
 	const handleCategoryPress = (category: StoreProductCategory) => () => {
 		navigate('Modal.EditCategory', {
@@ -93,11 +92,7 @@ const Categories = () => {
 			<ScrollableScreen
 				style={{ marginHorizontal: -16 }}
 				refreshControl={
-					<RefreshControl
-						refreshing={isRefreshing}
-						onRefresh={onRefresh}
-						tintColor={theme.text.secondary}
-					/>
+					<Refresher refreshing={isRefreshing} onRefresh={onRefresh} />
 				}
 			>
 				{data?.categories.map(category => (

@@ -22,12 +22,28 @@ const OrdersList = () => {
 		(orderId: string) => () => {
 			navigate('Order', { orderId });
 		},
-		[]
+		[navigate]
 	);
 
-	const renderOrder: ListRenderItem<Order> = React.useCallback(({ item }) => {
-		return <OrdersListItem onPress={handleOrderPress(item.id)} order={item} />;
-	}, []);
+	const renderOrder: ListRenderItem<Order> = React.useCallback(
+		({ item }) => {
+			return (
+				<OrdersListItem onPress={handleOrderPress(item.id)} order={item} />
+			);
+		},
+		[handleOrderPress]
+	);
+
+	const refreshControl = React.useMemo(
+		() => (
+			<RefreshControl
+				refreshing={refreshing}
+				onRefresh={refresh}
+				tintColor={theme.text.secondary}
+			/>
+		),
+		[refreshing, refresh, theme.text.secondary]
+	);
 
 	return (
 		<View style={{ flex: 1 }}>
@@ -49,13 +65,7 @@ const OrdersList = () => {
 						</Typography>
 					</View>
 				}
-				refreshControl={
-					<RefreshControl
-						refreshing={refreshing}
-						onRefresh={refresh}
-						tintColor={theme.text.secondary}
-					/>
-				}
+				refreshControl={refreshControl}
 			/>
 		</View>
 	);

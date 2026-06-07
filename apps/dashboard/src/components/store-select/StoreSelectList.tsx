@@ -35,7 +35,7 @@ const StoreSelectList: React.FC<StoreSelectListProps> = ({
 				// TODO: Handle error (show toast, etc.)
 			}
 		},
-		[]
+		[logIn, setPreference]
 	);
 
 	return (

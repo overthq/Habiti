@@ -20,7 +20,7 @@ const StoreSettingsMenu = () => {
 		(screen: ParamlessStoreRoute) => () => {
 			navigate(screen);
 		},
-		[]
+		[navigate]
 	);
 
 	return (

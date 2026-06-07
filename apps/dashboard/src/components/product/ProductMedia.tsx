@@ -1,5 +1,6 @@
 import { Spacer, TextButton, Typography, useTheme } from '@habiti/components';
-import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { Image } from 'expo-image';
 import { NavigationProp } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import { AppStackParamList } from '../../navigation/types';
@@ -68,7 +69,7 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 				<ScrollView
 					horizontal
 					showsHorizontalScrollIndicator={false}
-					contentContainerStyle={[{ flexGrow: 1, gap: 8 }]}
+					contentContainerStyle={{ flexGrow: 1, gap: 8 }}
 				>
 					{images.map(image => (
 						<View

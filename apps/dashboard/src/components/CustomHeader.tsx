@@ -17,17 +17,10 @@ const CustomHeader = ({
 
 	return (
 		<View
-			style={{
-				paddingTop: top + 16,
-				paddingBottom: 16,
-				paddingHorizontal: 16,
-				flexDirection: 'row',
-				borderColor: theme.border.color,
-				borderBottomWidth: StyleSheet.hairlineWidth,
-				gap: 12,
-				alignItems: 'center',
-				justifyContent: 'space-between'
-			}}
+			style={[
+				styles.container,
+				{ paddingTop: top + 16, borderColor: theme.border.color }
+			]}
 		>
 			<View style={{ minWidth: 24, height: 24, zIndex: 1 }}>
 				{navigation.canGoBack() && (
@@ -58,5 +51,17 @@ const CustomHeader = ({
 		</View>
 	);
 };
+
+const styles = StyleSheet.create({
+	container: {
+		paddingBottom: 16,
+		paddingHorizontal: 16,
+		flexDirection: 'row',
+		borderBottomWidth: StyleSheet.hairlineWidth,
+		gap: 12,
+		alignItems: 'center',
+		justifyContent: 'space-between'
+	}
+});
 
 export default CustomHeader;

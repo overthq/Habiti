@@ -3,6 +3,7 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import OrdersFilterModal from './OrdersFilterModal';
 import { useOrdersQuery } from '../../data/queries';
 import { Order, OrderFilters, OrderStatus } from '../../data/types';
+import { OrdersFilters } from './types';
 
 interface OrdersContextType {
 	orders: Order[];
@@ -18,14 +19,6 @@ interface OrdersContextType {
 const OrdersContext = React.createContext<OrdersContextType | null>(null);
 
 // Search implementation should also be a little easier with this approach
-
-export interface OrdersFilters {
-	status?: OrderStatus;
-	minPrice?: number;
-	maxPrice?: number;
-	categories?: string[];
-	sortBy?: 'created-at-desc' | 'total-desc' | 'total-asc';
-}
 
 export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 	children
@@ -64,21 +57,33 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 		});
 	}, []);
 
+	const value = React.useMemo<OrdersContextType>(
+		() => ({
+			orders: (data?.orders ?? []).filter(
+				o => o.status !== OrderStatus.PaymentPending
+			),
+			isLoading,
+			status: filters.status,
+			setStatus,
+			refreshing: isRefetching,
+			refresh,
+			openFilterModal,
+			clearFilters
+		}),
+		[
+			data,
+			isLoading,
+			filters.status,
+			setStatus,
+			isRefetching,
+			refresh,
+			openFilterModal,
+			clearFilters
+		]
+	);
+
 	return (
-		<OrdersContext.Provider
-			value={{
-				orders: (data?.orders ?? []).filter(
-					o => o.status !== OrderStatus.PaymentPending
-				),
-				isLoading,
-				status: filters.status,
-				setStatus,
-				refreshing: isRefetching,
-				refresh,
-				openFilterModal,
-				clearFilters
-			}}
-		>
+		<OrdersContext.Provider value={value}>
 			{children}
 			<OrdersFilterModal
 				modalRef={filterModalRef}
@@ -114,7 +119,7 @@ const sortByMap: Record<
 };
 
 export const useOrdersContext = () => {
-	const context = React.useContext(OrdersContext);
+	const context = React.use(OrdersContext);
 
 	if (!context) {
 		throw new Error('useOrdersContext must be used within an OrdersProvider');

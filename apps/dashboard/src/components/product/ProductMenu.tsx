@@ -42,7 +42,7 @@ const ProductMenu: React.FC<ProductMenuProps> = ({ productId, product }) => {
 				}
 			]
 		);
-	}, [productId, deleteProductMutation, navigate]);
+	}, [productId, deleteProductMutation, goBack]);
 
 	const handleEditProduct = React.useCallback(() => {
 		navigate('Modal.EditProductDetails', {
@@ -50,7 +50,7 @@ const ProductMenu: React.FC<ProductMenuProps> = ({ productId, product }) => {
 			name: product.name,
 			description: product.description
 		});
-	}, [productId, product]);
+	}, [navigate, productId, product]);
 
 	const handleShareProduct = React.useCallback(() => {
 		shareProduct(productId, product.name);
@@ -109,10 +109,7 @@ const ProductMenu: React.FC<ProductMenuProps> = ({ productId, product }) => {
 			]
 		});
 	}, [
-		product.name,
-		product.description,
-		productId,
-		navigate,
+		setOptions,
 		handleDeleteProduct,
 		handleShareProduct,
 		handleOpenInBrowser,

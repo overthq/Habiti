@@ -40,16 +40,13 @@ const ChecklistItem: React.FC<ChecklistItemProps> = ({
 			disabled={completed}
 		>
 			<View
-				style={{
-					width: 20,
-					height: 20,
-					borderWidth: 2,
-					borderRadius: 20,
-					justifyContent: 'center',
-					alignItems: 'center',
-					borderColor: completed ? theme.text.secondary : theme.border.color,
-					backgroundColor: completed ? theme.text.secondary : undefined
-				}}
+				style={[
+					styles.checkCircle,
+					{
+						borderColor: completed ? theme.text.secondary : theme.border.color,
+						backgroundColor: completed ? theme.text.secondary : undefined
+					}
+				]}
 			>
 				{completed && (
 					<Icon
@@ -144,6 +141,14 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		paddingVertical: 10,
 		paddingHorizontal: 12
+	},
+	checkCircle: {
+		width: 20,
+		height: 20,
+		borderWidth: 2,
+		borderRadius: 20,
+		justifyContent: 'center',
+		alignItems: 'center'
 	}
 });
 

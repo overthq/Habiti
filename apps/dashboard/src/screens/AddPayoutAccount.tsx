@@ -40,7 +40,7 @@ const AddPayoutAccount = () => {
 
 			confirmationModalRef.current?.present();
 		},
-		[]
+		[verifyBankAccountMutation]
 	);
 
 	const toggleSelect = React.useCallback(() => {
