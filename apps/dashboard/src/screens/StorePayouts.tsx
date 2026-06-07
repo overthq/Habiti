@@ -19,7 +19,7 @@ const NoPayoutAccount = () => {
 
 	const handleAddPayoutAccount = React.useCallback(() => {
 		navigate('Modal.AddPayoutAccount');
-	}, []);
+	}, [navigate]);
 
 	return (
 		<Screen>
@@ -42,6 +42,16 @@ const StorePayouts = () => {
 	const { theme } = useTheme();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
+	const removePayoutAccount = React.useCallback(async () => {
+		await updateStoreMutation.mutateAsync({
+			bankAccountNumber: undefined,
+			bankCode: undefined
+			// bankAccountReference: undefined
+		});
+
+		refetch();
+	}, [updateStoreMutation, refetch]);
+
 	const handleRemovePayoutAccount = React.useCallback(() => {
 		Alert.alert(
 			'Remove account',
@@ -54,21 +64,11 @@ const StorePayouts = () => {
 				{ text: 'Remove', onPress: removePayoutAccount, style: 'destructive' }
 			]
 		);
-	}, []);
-
-	const removePayoutAccount = React.useCallback(async () => {
-		await updateStoreMutation.mutateAsync({
-			bankAccountNumber: undefined,
-			bankCode: undefined
-			// bankAccountReference: undefined
-		});
-
-		refetch();
-	}, []);
+	}, [removePayoutAccount]);
 
 	const handleAddPayoutAccount = React.useCallback(() => {
 		navigate('Modal.AddPayoutAccount');
-	}, []);
+	}, [navigate]);
 
 	if (isLoading) return <View />;
 

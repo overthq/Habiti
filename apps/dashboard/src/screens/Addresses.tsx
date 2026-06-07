@@ -1,18 +1,18 @@
 import React from 'react';
-import { View, RefreshControl } from 'react-native';
+import { View } from 'react-native';
 import {
 	EmptyState,
 	Icon,
 	Row,
 	ScrollableScreen,
 	Spacer,
-	Typography,
-	useTheme
+	Typography
 } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { HeaderButton } from '@react-navigation/elements';
 
 import FAB from '../components/products/FAB';
+import Refresher from '../components/Refresher';
 import useRefresh from '../hooks/useRefresh';
 import { useAddressesQuery } from '../data/queries';
 import { AppStackParamList } from '../navigation/types';
@@ -44,11 +44,10 @@ const Addresses = () => {
 	const { isRefreshing, onRefresh } = useRefresh({ refetch });
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
-	const { theme } = useTheme();
 
 	const handleAddAddress = React.useCallback(() => {
 		navigate('Modal.AddAddress');
-	}, []);
+	}, [navigate]);
 
 	React.useLayoutEffect(() => {
 		setOptions({
@@ -66,7 +65,7 @@ const Addresses = () => {
 				}
 			]
 		});
-	}, []);
+	}, [setOptions, handleAddAddress]);
 
 	const handleAddressPress = (address: Address) => () => {
 		navigate('Modal.EditAddress', {
@@ -101,11 +100,7 @@ const Addresses = () => {
 				style={{ marginHorizontal: -16 }}
 				contentContainerStyle={{ padding: 0 }}
 				refreshControl={
-					<RefreshControl
-						refreshing={isRefreshing}
-						onRefresh={onRefresh}
-						tintColor={theme.text.secondary}
-					/>
+					<Refresher refreshing={isRefreshing} onRefresh={onRefresh} />
 				}
 			>
 				{data?.addresses.map(address => (

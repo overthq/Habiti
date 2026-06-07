@@ -23,7 +23,7 @@ const ProductCategories = () => {
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const { data } = useCategoriesQuery();
 	const [selectedCategories, setSelectedCategories] = React.useState<string[]>(
-		categories.map(({ categoryId }) => categoryId)
+		() => categories.map(({ categoryId }) => categoryId)
 	);
 	const updateProductCategoriesMutation = useUpdateProductCategoriesMutation();
 
@@ -39,7 +39,7 @@ const ProductCategories = () => {
 		return (
 			JSON.stringify(originalCategoryIds) === JSON.stringify(currentCategoryIds)
 		);
-	}, [selectedCategories]);
+	}, [selectedCategories, categories]);
 
 	const handleSelectCategory = (id: string) => {
 		setSelectedCategories(prev =>
@@ -54,9 +54,12 @@ const ProductCategories = () => {
 			id => !categories.some(category => category.categoryId === id)
 		);
 
-		const remove = categories
-			.filter(category => !selectedCategories.includes(category.categoryId))
-			.map(({ categoryId }) => categoryId);
+		const remove = categories.reduce<string[]>((ids, category) => {
+			if (!selectedCategories.includes(category.categoryId)) {
+				ids.push(category.categoryId);
+			}
+			return ids;
+		}, []);
 
 		await updateProductCategoriesMutation.mutateAsync({
 			productId,
@@ -80,7 +83,7 @@ const ProductCategories = () => {
 				</HeaderButton>
 			)
 		});
-	}, [disabled, handleUpdateCategories]);
+	}, [disabled, handleUpdateCategories, setOptions]);
 
 	return (
 		<Screen>

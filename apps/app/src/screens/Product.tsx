@@ -183,13 +183,19 @@ const QuantityControl: React.FC = () => {
 	const { quantity, setQuantity } = useProductContext();
 	const { theme } = useTheme();
 
-	const decrementDisabled = React.useMemo(() => quantity === 1, [quantity]);
+	const decrementDisabled = quantity === 1;
 
 	// TODO: We want this to be disabled when the product is out of stock.
 	const incrementDisabled = false;
 
-	const increment = React.useCallback(() => setQuantity(q => q + 1), []);
-	const decrement = React.useCallback(() => setQuantity(q => q - 1), []);
+	const increment = React.useCallback(
+		() => setQuantity(q => q + 1),
+		[setQuantity]
+	);
+	const decrement = React.useCallback(
+		() => setQuantity(q => q - 1),
+		[setQuantity]
+	);
 
 	return (
 		<View

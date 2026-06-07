@@ -59,11 +59,11 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 
 	const inputRef = React.useRef<TextInput>(null);
 
-	const handleFocus = React.useCallback(() => {
+	const expandSearch = React.useCallback(() => {
 		setSearchOpen(true);
 	}, []);
 
-	const handleBlur = React.useCallback(() => {
+	const collapseSearchIfEmpty = React.useCallback(() => {
 		setSearchOpen((searchTerm?.length ?? 0) > 0);
 	}, [searchTerm]);
 
@@ -76,7 +76,7 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 		inputRef.current?.blur();
 		setSearchOpen(false);
 		setSearchTerm('');
-	}, []);
+	}, [setSearchTerm]);
 
 	return (
 		<Animated.View
@@ -170,8 +170,8 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 							autoCorrect={false}
 							autoFocus
 							selectionColor={theme.text.primary}
-							onFocus={handleFocus}
-							onBlur={handleBlur}
+							onFocus={expandSearch}
+							onBlur={collapseSearchIfEmpty}
 							keyboardAppearance={name === 'dark' ? 'dark' : 'light'}
 						/>
 					</Animated.View>
@@ -203,7 +203,7 @@ const FollowButton: React.FC<FollowButtonProps> = ({ storeId, followed }) => {
 		} else {
 			followStore.mutate();
 		}
-	}, [followed]);
+	}, [followed, followStore, unfollowStore]);
 
 	return (
 		<Pressable onPress={handlePress}>

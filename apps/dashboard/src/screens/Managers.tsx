@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Pressable, RefreshControl } from 'react-native';
-import { Icon, ScrollableScreen, useTheme } from '@habiti/components';
+import { View, Pressable } from 'react-native';
+import { Icon, ScrollableScreen } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import ManagerRow from '../components/managers/ManagerRow';
+import Refresher from '../components/Refresher';
 import useRefresh from '../hooks/useRefresh';
 import { useStoreManagersQuery } from '../data/queries';
 import { AppStackParamList } from '../navigation/types';
@@ -13,7 +14,6 @@ const Managers = () => {
 	const { isRefreshing, onRefresh } = useRefresh({ refetch });
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList>>();
-	const { theme } = useTheme();
 
 	React.useLayoutEffect(() => {
 		setOptions({
@@ -23,7 +23,7 @@ const Managers = () => {
 				</Pressable>
 			)
 		});
-	}, []);
+	}, [setOptions, navigate]);
 
 	if (isLoading || !data) {
 		return <View />;
@@ -32,11 +32,7 @@ const Managers = () => {
 	return (
 		<ScrollableScreen
 			refreshControl={
-				<RefreshControl
-					refreshing={isRefreshing}
-					onRefresh={onRefresh}
-					tintColor={theme.text.secondary}
-				/>
+				<Refresher refreshing={isRefreshing} onRefresh={onRefresh} />
 			}
 		>
 			{data.managers.map(manager => (

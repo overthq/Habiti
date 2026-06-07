@@ -1,7 +1,7 @@
 import React from 'react';
-import { RefreshControl, View } from 'react-native';
+import { View } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { Spacer, useTheme, ScrollableScreen } from '@habiti/components';
+import { Spacer, ScrollableScreen } from '@habiti/components';
 
 import ProductDetails from '../components/product/ProductDetails';
 import ProductMedia from '../components/product/ProductMedia';
@@ -11,6 +11,7 @@ import ProductMenu from '../components/product/ProductMenu';
 
 import { useProductQuery } from '../data/queries';
 import useRefresh from '../hooks/useRefresh';
+import Refresher from '../components/Refresher';
 
 import { ProductStackParamList } from '../navigation/types';
 
@@ -22,8 +23,6 @@ const Product = () => {
 	const { data, refetch } = useProductQuery(productId);
 	const { isRefreshing, onRefresh } = useRefresh({ refetch });
 
-	const { theme } = useTheme();
-
 	if (!data?.product) {
 		return <View />;
 	}
@@ -31,11 +30,7 @@ const Product = () => {
 	return (
 		<ScrollableScreen
 			refreshControl={
-				<RefreshControl
-					refreshing={isRefreshing}
-					onRefresh={onRefresh}
-					tintColor={theme.text.secondary}
-				/>
+				<Refresher refreshing={isRefreshing} onRefresh={onRefresh} />
 			}
 			showsVerticalScrollIndicator={true}
 		>

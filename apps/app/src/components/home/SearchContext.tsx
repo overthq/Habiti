@@ -26,22 +26,23 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
 
 	const { isLoading, error, data } = useSearchQuery(debouncedSearchTerm);
 
+	const value = React.useMemo(
+		() => ({
+			fetching: isLoading,
+			error: error ?? null,
+			stores: data?.stores ?? [],
+			products: data?.products ?? []
+		}),
+		[isLoading, error, data?.stores, data?.products]
+	);
+
 	return (
-		<SearchContext.Provider
-			value={{
-				fetching: isLoading,
-				error: error ?? null,
-				stores: data?.stores ?? [],
-				products: data?.products ?? []
-			}}
-		>
-			{children}
-		</SearchContext.Provider>
+		<SearchContext.Provider value={value}>{children}</SearchContext.Provider>
 	);
 };
 
 export const useSearchContext = () => {
-	const searchContext = React.useContext(SearchContext);
+	const searchContext = React.use(SearchContext);
 
 	if (!searchContext) {
 		throw new Error('useSearchContext must be used in a SearchProvider');
@@ -49,5 +50,3 @@ export const useSearchContext = () => {
 
 	return searchContext;
 };
-
-export default SearchContext;

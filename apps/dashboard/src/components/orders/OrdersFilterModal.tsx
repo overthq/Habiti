@@ -4,7 +4,7 @@ import { BottomModal, Spacer, Typography, useTheme } from '@habiti/components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import AccordionRow from '../filter-products/AccordionRow';
-import { OrdersFilters } from './OrdersContext';
+import { OrdersFilters } from './types';
 import SortOrders from '../filter-orders/SortOrders';
 import FilterOrdersByStatus from '../filter-orders/FilterOrdersByStatus';
 import { OrderStatus } from '../../data/types';

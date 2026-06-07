@@ -10,9 +10,7 @@
  * `RateLimit-Reset` per the IETF draft is a non-negative integer (seconds
  * until the rate-limit window resets). Our API emits it via `hono-rate-limiter`.
  */
-export const parseRetryAfter = (
-	headerValue: string | undefined
-): number | null => {
+const parseRetryAfter = (headerValue: string | undefined): number | null => {
 	if (!headerValue) return null;
 
 	const trimmed = String(headerValue).trim();
@@ -56,7 +54,7 @@ export const extractRetryAfterSec = (headers: {
  * UI instead of silently blocking. Auth endpoints typically have 60s
  * windows; we don't want to hang the app for a minute.
  */
-export const AUTO_RETRY_MAX_SEC = 2;
+const AUTO_RETRY_MAX_SEC = 2;
 
 /**
  * Whether to auto-retry a 429 given the parsed delay.

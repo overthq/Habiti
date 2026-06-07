@@ -14,9 +14,12 @@ const SettingsTheme = () => {
 		}))
 	);
 
-	const handleThemeSelect = React.useCallback((theme: Theme) => {
-		setPreference({ theme });
-	}, []);
+	const handleThemeSelect = React.useCallback(
+		(theme: Theme) => {
+			setPreference({ theme });
+		},
+		[setPreference]
+	);
 
 	return (
 		<Screen style={{ padding: 16 }}>

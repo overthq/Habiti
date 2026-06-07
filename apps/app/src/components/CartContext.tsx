@@ -42,7 +42,7 @@ interface CartProviderProps {
 	refresh: () => void;
 }
 
-export const CartProvider: React.FC<CartProviderProps> = ({
+const CartProvider: React.FC<CartProviderProps> = ({
 	children,
 	cart,
 	cards,
@@ -160,8 +160,6 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 		}
 	}, [
 		cart.id,
-		cart.fees.total,
-		cart.fees.service,
 		selectedCard,
 		navigate,
 		goBack,
@@ -271,7 +269,7 @@ const CartContextWrapper: React.FC<CartContextWrapperProps> = ({
 };
 
 export const useCart = () => {
-	const context = React.useContext(CartContext);
+	const context = React.use(CartContext);
 
 	if (!context) {
 		throw new Error('useCart must be used within a CartProvider');

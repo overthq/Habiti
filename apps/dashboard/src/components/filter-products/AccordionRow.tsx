@@ -36,7 +36,7 @@ const AccordionRow: React.FC<AccordionRowProps> = ({
 
 	React.useEffect(() => {
 		offset.value = withTiming(open ? 1 : 0);
-	}, [open]);
+	}, [open, offset]);
 
 	const rotate = useDerivedValue(() => {
 		return `${interpolate(offset.value, [0, 1], [0, -180])}deg`;

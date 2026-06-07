@@ -42,7 +42,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 		});
 
 		modalRef.current?.close();
-	}, []);
+	}, [methods, updateStoreMutation, modalRef]);
 
 	return (
 		<BottomModal

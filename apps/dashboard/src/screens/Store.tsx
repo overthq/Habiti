@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, RefreshControl, StyleSheet, Linking, Alert } from 'react-native';
+import { View, StyleSheet, Linking, Alert } from 'react-native';
 import {
 	Button,
 	PillButton,
@@ -7,8 +7,7 @@ import {
 	ScrollableScreen,
 	Separator,
 	Spacer,
-	Typography,
-	useTheme
+	Typography
 } from '@habiti/components';
 import { formatNaira } from '@habiti/common';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
@@ -29,6 +28,7 @@ import type {
 	StoreStackParamList
 } from '../navigation/types';
 import StoreHeader from '../components/store/StoreHeader';
+import Refresher from '../components/Refresher';
 
 const Store = () => {
 	const { data, refetch, isLoading, error } = useCurrentStoreQuery();
@@ -36,7 +36,6 @@ const Store = () => {
 	const { isRefreshing, onRefresh } = useRefresh({ refetch });
 	const { navigate } =
 		useNavigation<NavigationProp<AppStackParamList & StoreStackParamList>>();
-	const { theme } = useTheme();
 	const { top } = useSafeAreaInsets();
 	const { logOut } = useStore(useShallow(({ logOut }) => ({ logOut })));
 	const modalRef = React.useRef<BottomSheetModal>(null);
@@ -65,17 +64,17 @@ const Store = () => {
 
 	const handleOpenBalanceDetails = React.useCallback(() => {
 		navigate('BalanceDetails');
-	}, []);
+	}, [navigate]);
 
 	const handleOpenSettings = React.useCallback(() => {
 		navigate('StoreSettings');
-	}, []);
+	}, [navigate]);
 
 	const handleOpenWebPage = React.useCallback(() => {
 		if (data?.store) {
 			Linking.openURL(getFrontendUrl(`/store/${data.store.id}`));
 		}
-	}, [data?.store?.id]);
+	}, [data?.store]);
 
 	if (isLoading || !data?.store) {
 		return <View />;
@@ -104,11 +103,7 @@ const Store = () => {
 			<ScrollableScreen
 				style={{ marginHorizontal: -16 }}
 				refreshControl={
-					<RefreshControl
-						refreshing={isRefreshing}
-						onRefresh={onRefresh}
-						tintColor={theme.text.secondary}
-					/>
+					<Refresher refreshing={isRefreshing} onRefresh={onRefresh} />
 				}
 			>
 				<Spacer y={16} />

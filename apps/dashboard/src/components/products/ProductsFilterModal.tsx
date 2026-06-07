@@ -5,7 +5,7 @@ import { BottomModal, Spacer, Typography, useTheme } from '@habiti/components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AccordionRow from '../filter-products/AccordionRow';
 import ProductCategories from '../filter-products/ProductCategories';
-import { ProductsFilters } from './ProductsContext';
+import { ProductsFilters } from './types';
 import SortProducts from '../filter-products/SortProducts';
 
 interface ProductsFilterModalProps {

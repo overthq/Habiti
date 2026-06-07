@@ -23,7 +23,7 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 		(storeId: string) => () => {
 			navigate('Home.Store', { storeId });
 		},
-		[]
+		[navigate]
 	);
 
 	return followed.length === 0 ? (

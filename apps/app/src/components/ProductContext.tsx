@@ -84,16 +84,13 @@ const ProductProviderInner: React.FC<ProductProviderProps> = ({
 		[addToCart.isPending, updateCartProduct.isPending]
 	);
 
-	const quantityChanged = React.useMemo(
-		() => initialQuantity !== quantity,
-		[initialQuantity, quantity]
-	);
+	const quantityChanged = initialQuantity !== quantity;
 
-	const cartCommitText = React.useMemo(
-		() =>
-			!inCart ? 'Add to cart' : quantityChanged ? 'Update cart' : 'In cart',
-		[inCart, quantityChanged]
-	);
+	const cartCommitText = !inCart
+		? 'Add to cart'
+		: quantityChanged
+			? 'Update cart'
+			: 'In cart';
 
 	const cartCommitDisabled = React.useMemo(
 		() => (inCart && !quantityChanged) || cartCommitFetching,
@@ -121,28 +118,42 @@ const ProductProviderInner: React.FC<ProductProviderProps> = ({
 		quantity,
 		inCart,
 		cartProduct?.cartId,
-		goBack
+		goBack,
+		addToCart,
+		updateCartProduct
 	]);
+
+	const value = React.useMemo(
+		() => ({
+			product,
+			relatedProducts,
+			cartCommitFetching,
+			onCartCommit,
+			cartCommitDisabled,
+			cartCommitText,
+			inCart,
+			initialQuantity: initialQuantity ?? 1,
+			quantity,
+			setQuantity
+		}),
+		[
+			product,
+			relatedProducts,
+			cartCommitFetching,
+			onCartCommit,
+			cartCommitDisabled,
+			cartCommitText,
+			inCart,
+			initialQuantity,
+			quantity,
+			setQuantity
+		]
+	);
 
 	if (!product) return <View />;
 
 	return (
-		<ProductContext.Provider
-			value={{
-				product,
-				relatedProducts,
-				cartCommitFetching,
-				onCartCommit,
-				cartCommitDisabled,
-				cartCommitText,
-				inCart,
-				initialQuantity: initialQuantity ?? 1,
-				quantity,
-				setQuantity
-			}}
-		>
-			{children}
-		</ProductContext.Provider>
+		<ProductContext.Provider value={value}>{children}</ProductContext.Provider>
 	);
 };
 
@@ -175,7 +186,7 @@ export const ProductProvider = ({
 };
 
 export const useProductContext = () => {
-	const context = React.useContext(ProductContext);
+	const context = React.use(ProductContext);
 
 	if (!context) {
 		throw new Error('useProductContext must be used within a ProductProvider');

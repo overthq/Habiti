@@ -27,7 +27,7 @@ const Settings: React.FC = () => {
 		(screen: string) => () => {
 			navigate(screen);
 		},
-		[]
+		[navigate]
 	);
 
 	return (

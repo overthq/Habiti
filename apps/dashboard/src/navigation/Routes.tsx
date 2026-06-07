@@ -181,7 +181,7 @@ const icons: Record<keyof MainTabParamList, IconType> = {
 	Profile: 'user'
 };
 
-export const tabScreenOptions =
+const tabScreenOptions =
 	(themeName: 'light' | 'dark') =>
 	({ route }: { route: RouteProp<MainTabParamList> }) => ({
 		headerShown: false,

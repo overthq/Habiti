@@ -49,21 +49,6 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 		}
 	});
 
-	React.useLayoutEffect(() => {
-		setOptions({
-			headerRight: () => (
-				<HeaderButton
-					onPress={formMethods.handleSubmit(onSubmit)}
-					disabled={
-						!formMethods.formState.isDirty || updateStoreMutation.isPending
-					}
-				>
-					<Typography>Save</Typography>
-				</HeaderButton>
-			)
-		});
-	}, [updateStoreMutation.isPending, formMethods.formState.isDirty]);
-
 	const handlePickImage = React.useCallback(async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ['images'],
@@ -88,20 +73,38 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 		} finally {
 			setUploading(false);
 		}
-	}, [store.image?.path]);
+	}, [store.image?.path, formMethods]);
 
-	const onSubmit = React.useCallback(async (values: EditStoreFormData) => {
-		try {
-			const { imageUrl, imagePublicId, ...rest } = values;
-			await updateStoreMutation.mutateAsync({
-				...rest,
-				...(imageUrl ? { imageUrl, imagePublicId } : {})
-			});
-			goBack();
-		} catch (error) {
-			console.log(error);
-		}
-	}, []);
+	const onSubmit = React.useCallback(
+		async (values: EditStoreFormData) => {
+			try {
+				const { imageUrl, imagePublicId, ...rest } = values;
+				await updateStoreMutation.mutateAsync({
+					...rest,
+					...(imageUrl ? { imageUrl, imagePublicId } : {})
+				});
+				goBack();
+			} catch (error) {
+				console.log(error);
+			}
+		},
+		[updateStoreMutation, goBack]
+	);
+
+	React.useLayoutEffect(() => {
+		setOptions({
+			headerRight: () => (
+				<HeaderButton
+					onPress={formMethods.handleSubmit(onSubmit)}
+					disabled={
+						!formMethods.formState.isDirty || updateStoreMutation.isPending
+					}
+				>
+					<Typography>Save</Typography>
+				</HeaderButton>
+			)
+		});
+	}, [setOptions, formMethods, onSubmit, updateStoreMutation.isPending]);
 
 	return (
 		<Screen>
