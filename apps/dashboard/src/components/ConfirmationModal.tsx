@@ -37,7 +37,7 @@ export const ConfirmationModalProvider: React.FC<ConfirmationModalProps> = ({
 	const modalRef = React.useRef<BottomSheetModal>(null);
 	const { bottom } = useSafeAreaInsets();
 
-	const openModal = (options: OpenModalOptions) => {
+	const openModal = React.useCallback((options: OpenModalOptions) => {
 		setTitle(options.title);
 		setDescription(options.description);
 		setConfirmText(options.confirmText || 'Confirm');
@@ -45,29 +45,40 @@ export const ConfirmationModalProvider: React.FC<ConfirmationModalProps> = ({
 		onConfirmCallbackRef.current = options.onConfirm;
 
 		modalRef.current?.present();
-	};
+	}, []);
 
-	const onConfirm = () => {
+	const onConfirm = React.useCallback(() => {
 		onConfirmCallbackRef.current?.();
 		modalRef.current?.dismiss();
-	};
+	}, []);
 
-	const onCancel = () => {
+	const onCancel = React.useCallback(() => {
 		modalRef.current?.dismiss();
-	};
+	}, []);
+
+	const value = React.useMemo(
+		() => ({
+			title,
+			description,
+			confirmText,
+			cancelText,
+			onConfirm,
+			onCancel,
+			openModal
+		}),
+		[
+			title,
+			description,
+			confirmText,
+			cancelText,
+			onConfirm,
+			onCancel,
+			openModal
+		]
+	);
 
 	return (
-		<ConfirmationModalContext.Provider
-			value={{
-				title,
-				description,
-				confirmText,
-				cancelText,
-				onConfirm,
-				onCancel,
-				openModal
-			}}
-		>
+		<ConfirmationModalContext.Provider value={value}>
 			{children}
 			<BottomModal modalRef={modalRef} enableDynamicSizing>
 				<BottomSheetView
@@ -99,7 +110,7 @@ export const ConfirmationModalProvider: React.FC<ConfirmationModalProps> = ({
 };
 
 export const useConfirmationModal = () => {
-	const context = React.useContext(ConfirmationModalContext);
+	const context = React.use(ConfirmationModalContext);
 
 	if (!context) {
 		throw new Error(

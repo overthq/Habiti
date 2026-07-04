@@ -1,4 +1,9 @@
 import { Linking } from 'react-native';
+import env from '../../env';
+
+export const getFrontendUrl = (route: string) => {
+	return `${env.webFrontendUrl}${route.startsWith('/') ? route : `/${route}`}`;
+};
 
 export const openLink = async (link?: string | null) => {
 	if (link) {

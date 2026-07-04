@@ -7,14 +7,20 @@ import StoreMenuRow from '../components/store/StoreMenuRow';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import type { StoreStackParamList } from '../navigation/types';
 
+type ParamlessStoreRoute = {
+	[K in keyof StoreStackParamList]: StoreStackParamList[K] extends undefined
+		? K
+		: never;
+}[keyof StoreStackParamList];
+
 const StoreSettingsMenu = () => {
 	const { navigate } = useNavigation<NavigationProp<StoreStackParamList>>();
 
 	const handleNavigate = React.useCallback(
-		(screen: keyof StoreStackParamList) => () => {
+		(screen: ParamlessStoreRoute) => () => {
 			navigate(screen);
 		},
-		[]
+		[navigate]
 	);
 
 	return (

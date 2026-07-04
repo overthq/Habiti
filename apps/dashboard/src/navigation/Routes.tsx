@@ -123,7 +123,7 @@ const linking: LinkingOptions<AppStackParamList> = {
 		const response = Notifications.getLastNotificationResponse();
 
 		return (
-			(response?.notification.request.content.data.url as string) ?? undefined
+			(response?.notification.request.content.data?.url as string) ?? undefined
 		);
 	},
 	subscribe(listener) {
@@ -136,7 +136,7 @@ const linking: LinkingOptions<AppStackParamList> = {
 
 		const subscription = Notifications.addNotificationResponseReceivedListener(
 			response => {
-				const url = response.notification.request.content.data.url;
+				const url = response.notification.request.content.data?.url;
 
 				if (typeof url === 'string') {
 					listener(url);
@@ -181,7 +181,7 @@ const icons: Record<keyof MainTabParamList, IconType> = {
 	Profile: 'user'
 };
 
-export const tabScreenOptions =
+const tabScreenOptions =
 	(themeName: 'light' | 'dark') =>
 	({ route }: { route: RouteProp<MainTabParamList> }) => ({
 		headerShown: false,

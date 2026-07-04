@@ -18,16 +18,16 @@ import type { AppStackParamList } from '../../navigation/types';
 interface StoreProductsProps {
 	store: Store;
 	viewerContext: StoreViewerContext | null;
-	activeCategory: string;
-	searchTerm: string;
+	activeCategory?: string;
+	searchTerm?: string;
 }
 
 const buildFilter = ({
 	searchTerm,
 	activeCategory
 }: {
-	searchTerm: string;
-	activeCategory: string;
+	searchTerm?: string;
+	activeCategory?: string;
 }) => {
 	const filters = new URLSearchParams();
 
@@ -66,7 +66,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 		(productId: string) => () => {
 			navigate('Product', { productId });
 		},
-		[]
+		[navigate]
 	);
 
 	if (isLoading && !products) return <View />;
@@ -113,7 +113,7 @@ interface StoreListItemProps {
 	side: 'left' | 'right';
 }
 
-export const StoreProductListItem: React.FC<StoreListItemProps> = ({
+const StoreProductListItem: React.FC<StoreListItemProps> = ({
 	item,
 	onPress,
 	side
@@ -127,10 +127,18 @@ export const StoreProductListItem: React.FC<StoreListItemProps> = ({
 		onPress={onPress}
 	>
 		<CustomImage height={200} uri={item.images[0]?.path} />
+
 		<Spacer y={8} />
-		<Typography weight='medium'>{item.name}</Typography>
+
+		<Typography size='small' weight='medium'>
+			{item.name}
+		</Typography>
+
 		<Spacer y={2} />
-		<Typography variant='secondary'>{formatNaira(item.unitPrice)}</Typography>
+
+		<Typography size='small' variant='secondary'>
+			{formatNaira(item.unitPrice)}
+		</Typography>
 	</Pressable>
 );
 

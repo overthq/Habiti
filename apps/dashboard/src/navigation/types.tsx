@@ -2,7 +2,7 @@ import type {
 	CompositeScreenProps,
 	NavigatorScreenParams
 } from '@react-navigation/native';
-import type { StackScreenProps } from '@react-navigation/stack';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 
 import { Image, ProductCategory } from '../data/types';
@@ -54,7 +54,7 @@ export type AppStackParamList = {
 };
 
 export type AppStackScreenProps<T extends keyof AppStackParamList> =
-	StackScreenProps<AppStackParamList, T>;
+	NativeStackScreenProps<AppStackParamList, T>;
 
 export type MainTabParamList = {
 	Orders: NavigatorScreenParams<OrdersStackParamList>;
@@ -71,25 +71,25 @@ export type MainTabScreenProps<T extends keyof MainTabParamList> =
 
 export type OrdersStackScreenProps<T extends keyof OrdersStackParamList> =
 	CompositeScreenProps<
-		StackScreenProps<OrdersStackParamList, T>,
+		NativeStackScreenProps<OrdersStackParamList, T>,
 		MainTabScreenProps<'Orders'>
 	>;
 
 export type ProductsStackScreenProps<T extends keyof ProductsStackParamList> =
 	CompositeScreenProps<
-		StackScreenProps<ProductsStackParamList, T>,
+		NativeStackScreenProps<ProductsStackParamList, T>,
 		MainTabScreenProps<'Products'>
 	>;
 
 export type StoreStackScreenProps<T extends keyof StoreStackParamList> =
 	CompositeScreenProps<
-		StackScreenProps<StoreStackParamList, T>,
+		NativeStackScreenProps<StoreStackParamList, T>,
 		MainTabScreenProps<'Store'>
 	>;
 
 export type ProfileStackScreenProps<T extends keyof ProfileStackParamList> =
 	CompositeScreenProps<
-		StackScreenProps<ProfileStackParamList, T>,
+		NativeStackScreenProps<ProfileStackParamList, T>,
 		MainTabScreenProps<'Profile'>
 	>;
 

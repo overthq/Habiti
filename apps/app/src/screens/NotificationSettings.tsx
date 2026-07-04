@@ -46,20 +46,16 @@ const NotificationSettings = () => {
 		requestPushTokenMutation.isSuccess;
 	const switchDisabled = requestPushTokenMutation.isPending || !Device.isDevice;
 
-	const handleDeletePushToken = async () => {
-		await deletePushToken.mutateAsync({
-			token: pushToken!.token,
-			type: PushTokenType.Shopper
-		});
-	};
-
 	const handleTogglePush = React.useCallback(async () => {
 		if (isPushEnabled) {
-			await handleDeletePushToken();
+			await deletePushToken.mutateAsync({
+				token: pushToken!.token,
+				type: PushTokenType.Shopper
+			});
 		} else {
 			await requestPushTokenMutation.mutateAsync();
 		}
-	}, [isPushEnabled, handleDeletePushToken, requestPushTokenMutation]);
+	}, [isPushEnabled, deletePushToken, pushToken, requestPushTokenMutation]);
 
 	return (
 		<Screen style={{ padding: 16 }}>

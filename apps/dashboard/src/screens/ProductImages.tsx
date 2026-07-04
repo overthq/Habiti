@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, Image, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { Image } from 'expo-image';
 import { HeaderButton } from '@react-navigation/elements';
 import { Screen, Spacer, Typography } from '@habiti/components';
 import * as ImagePicker from 'expo-image-picker';
@@ -68,7 +69,13 @@ const ProductImages = () => {
 				</HeaderButton>
 			)
 		});
-	}, [uploadedImages, uploading, updateProductMutation.isPending]);
+	}, [
+		setOptions,
+		handleSaveImages,
+		uploadedImages.length,
+		uploading,
+		updateProductMutation.isPending
+	]);
 
 	const handlePickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({

@@ -18,7 +18,7 @@ const ProductList: React.FC = () => {
 	const handlePress = React.useCallback(
 		(productId: string) => () =>
 			navigate('Product', { screen: 'Product.Main', params: { productId } }),
-		[]
+		[navigate]
 	);
 
 	const handleLongPress = React.useCallback(
@@ -46,7 +46,18 @@ const ProductList: React.FC = () => {
 				/>
 			);
 		},
-		[]
+		[handlePress, handleLongPress]
+	);
+
+	const refreshControl = React.useMemo(
+		() => (
+			<RefreshControl
+				refreshing={refreshing}
+				onRefresh={refresh}
+				tintColor={theme.text.secondary}
+			/>
+		),
+		[refreshing, refresh, theme.text.secondary]
 	);
 
 	return (
@@ -69,13 +80,7 @@ const ProductList: React.FC = () => {
 						</Typography>
 					</View>
 				}
-				refreshControl={
-					<RefreshControl
-						refreshing={refreshing}
-						onRefresh={refresh}
-						tintColor={theme.text.secondary}
-					/>
-				}
+				refreshControl={refreshControl}
 			/>
 		</View>
 	);

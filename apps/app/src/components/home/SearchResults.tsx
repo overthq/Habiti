@@ -5,7 +5,6 @@ import {
 	Avatar,
 	CustomImage,
 	Row,
-	Screen,
 	SectionHeader,
 	Spacer,
 	Typography,
@@ -54,7 +53,7 @@ const ProductsView = () => {
 		(productId: string) => () => {
 			navigate('Product', { productId });
 		},
-		[]
+		[navigate]
 	);
 
 	return (
@@ -137,9 +136,11 @@ const ProductResultRow: React.FC<ProductResultRowProps> = ({
 }) => {
 	return (
 		<Row onPress={onPress} style={styles.productContainer}>
-			<CustomImage uri={product.images[0]?.path} height={35} width={35} />
+			<CustomImage uri={product.images[0]?.path} height={48} width={48} />
+
 			<Spacer x={8} />
-			<Typography>{product.name}</Typography>
+
+			<Typography size='small'>{product.name}</Typography>
 		</Row>
 	);
 };

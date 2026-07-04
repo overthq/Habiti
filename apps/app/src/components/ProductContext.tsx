@@ -8,6 +8,10 @@ import type { Product, ProductViewerContext } from '../data/types';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { AppStackParamList } from '../navigation/types';
 import { View } from 'react-native';
+import {
+	RecentlyViewedProduct,
+	useRecentlyViewedStore
+} from '../state/recentlyViewed';
 
 interface ProductContextType {
 	product: Product;
@@ -36,6 +40,17 @@ interface ProductProviderProps {
 // (The refactor may include server-side changes as well, so updating the
 // client-side adapters is easier this way).
 
+const getRecentProductPayload = (
+	product: Product
+): Omit<RecentlyViewedProduct, 'viewedAt'> => ({
+	id: product.id,
+	name: product.name,
+	storeId: product.storeId,
+	storeName: product.store.name,
+	unitPrice: product.unitPrice,
+	image: product.images[0]?.path ?? null
+});
+
 const ProductProviderInner: React.FC<ProductProviderProps> = ({
 	children,
 	product,
@@ -46,6 +61,13 @@ const ProductProviderInner: React.FC<ProductProviderProps> = ({
 
 	const addToCart = useAddToCartMutation();
 	const updateCartProduct = useUpdateCartProductMutation();
+	const addRecentlyViewedProduct = useRecentlyViewedStore(
+		state => state.addProduct
+	);
+
+	React.useEffect(() => {
+		addRecentlyViewedProduct(getRecentProductPayload(product));
+	}, [addRecentlyViewedProduct, product]);
 
 	const cartProduct = viewerContext?.cartProduct;
 	const inCart = !!cartProduct;
@@ -62,16 +84,13 @@ const ProductProviderInner: React.FC<ProductProviderProps> = ({
 		[addToCart.isPending, updateCartProduct.isPending]
 	);
 
-	const quantityChanged = React.useMemo(
-		() => initialQuantity !== quantity,
-		[initialQuantity, quantity]
-	);
+	const quantityChanged = initialQuantity !== quantity;
 
-	const cartCommitText = React.useMemo(
-		() =>
-			!inCart ? 'Add to cart' : quantityChanged ? 'Update cart' : 'In cart',
-		[inCart, quantityChanged]
-	);
+	const cartCommitText = !inCart
+		? 'Add to cart'
+		: quantityChanged
+			? 'Update cart'
+			: 'In cart';
 
 	const cartCommitDisabled = React.useMemo(
 		() => (inCart && !quantityChanged) || cartCommitFetching,
@@ -99,28 +118,42 @@ const ProductProviderInner: React.FC<ProductProviderProps> = ({
 		quantity,
 		inCart,
 		cartProduct?.cartId,
-		goBack
+		goBack,
+		addToCart,
+		updateCartProduct
 	]);
+
+	const value = React.useMemo(
+		() => ({
+			product,
+			relatedProducts,
+			cartCommitFetching,
+			onCartCommit,
+			cartCommitDisabled,
+			cartCommitText,
+			inCart,
+			initialQuantity: initialQuantity ?? 1,
+			quantity,
+			setQuantity
+		}),
+		[
+			product,
+			relatedProducts,
+			cartCommitFetching,
+			onCartCommit,
+			cartCommitDisabled,
+			cartCommitText,
+			inCart,
+			initialQuantity,
+			quantity,
+			setQuantity
+		]
+	);
 
 	if (!product) return <View />;
 
 	return (
-		<ProductContext.Provider
-			value={{
-				product,
-				relatedProducts,
-				cartCommitFetching,
-				onCartCommit,
-				cartCommitDisabled,
-				cartCommitText,
-				inCart,
-				initialQuantity,
-				quantity,
-				setQuantity
-			}}
-		>
-			{children}
-		</ProductContext.Provider>
+		<ProductContext.Provider value={value}>{children}</ProductContext.Provider>
 	);
 };
 
@@ -144,7 +177,7 @@ export const ProductProvider = ({
 	return (
 		<ProductProviderInner
 			product={product}
-			relatedProducts={relatedProducts}
+			relatedProducts={relatedProducts ?? []}
 			viewerContext={data?.viewerContext}
 		>
 			{children}
@@ -153,7 +186,7 @@ export const ProductProvider = ({
 };
 
 export const useProductContext = () => {
-	const context = React.useContext(ProductContext);
+	const context = React.use(ProductContext);
 
 	if (!context) {
 		throw new Error('useProductContext must be used within a ProductProvider');

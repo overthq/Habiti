@@ -19,7 +19,7 @@ const OrderProducts: React.FC<OrderProductsProps> = ({ products }) => {
 		(productId: string) => () => {
 			navigate('Product', { screen: 'Product.Main', params: { productId } });
 		},
-		[]
+		[navigate]
 	);
 
 	return (

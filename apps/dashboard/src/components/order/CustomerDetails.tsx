@@ -16,7 +16,7 @@ const CustomerDetails: React.FC<CustomerDetailProps> = ({ user }) => {
 
 	const handlePress = React.useCallback(() => {
 		navigate('CustomerInfo', { userId: user.id });
-	}, [user.id]);
+	}, [navigate, user.id]);
 
 	return (
 		<View>

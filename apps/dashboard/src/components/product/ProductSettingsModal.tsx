@@ -5,7 +5,7 @@ import { BottomModal, Typography } from '@habiti/components';
 import { useDeleteProductMutation } from '../../data/mutations';
 
 interface ProductSettingsModalProps {
-	modalRef: React.RefObject<BottomSheetModal>;
+	modalRef: React.RefObject<BottomSheetModal | null>;
 	productId: string;
 }
 

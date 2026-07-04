@@ -24,13 +24,13 @@ const RecentTransactions = () => {
 
 	const handleViewAll = React.useCallback(() => {
 		navigate('Transactions');
-	}, []);
+	}, [navigate]);
 
 	const handleTransactionPress = React.useCallback(
 		(transaction: Transaction) => {
 			navigate('Transaction', { transactionId: transaction.id });
 		},
-		[]
+		[navigate]
 	);
 
 	return (

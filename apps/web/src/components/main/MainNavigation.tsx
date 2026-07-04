@@ -72,7 +72,7 @@ const MainNavigation = () => {
 	const showCartBadge = isAuthenticated ? hasUserCarts : hasGuestCarts;
 
 	return (
-		<div className='border-b bg-background py-3 px-4 mb-4 fixed top-0 w-full flex flex-col md:flex-row md:justify-between gap-3'>
+		<div className='border-b bg-background py-3 px-4 mb-4 fixed top-0 w-full z-40 flex flex-col md:flex-row md:justify-between gap-3'>
 			<div className='flex flex-1 gap-4 items-center justify-between md:justify-start'>
 				<nav className='flex gap-4 items-center'>
 					<Link

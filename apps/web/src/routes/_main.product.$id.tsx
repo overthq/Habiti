@@ -30,6 +30,40 @@ export const Route = createFileRoute('/_main/product/$id')({
 			queryKey: ['products', params.id],
 			queryFn: () => getProduct(params.id)
 		}),
+	head: ({ loaderData }) => {
+		const product = loaderData?.product;
+
+		if (!product) return {};
+
+		const title = `${product.name} | ${product.store.name}`;
+		const description =
+			product.description ??
+			`${product.name} from ${product.store.name}, available on Habiti.`;
+		const image = product.images[0]?.path;
+
+		return {
+			meta: [
+				{ title },
+				{ name: 'description', content: description },
+				{ property: 'og:type', content: 'product' },
+				{ property: 'og:title', content: title },
+				{ property: 'og:description', content: description },
+				...(image ? [{ property: 'og:image', content: image }] : []),
+				{
+					property: 'product:price:amount',
+					content: String(product.unitPrice)
+				},
+				{ property: 'product:price:currency', content: 'NGN' },
+				{
+					name: 'twitter:card',
+					content: image ? 'summary_large_image' : 'summary'
+				},
+				{ name: 'twitter:title', content: title },
+				{ name: 'twitter:description', content: description },
+				...(image ? [{ name: 'twitter:image', content: image }] : [])
+			]
+		};
+	},
 	component: ProductPage
 });
 

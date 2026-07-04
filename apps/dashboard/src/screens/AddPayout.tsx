@@ -34,7 +34,7 @@ const AddPayout = () => {
 		});
 
 		goBack();
-	}, [amount]);
+	}, [amount, createPayoutMutation, goBack]);
 
 	const lastCharIsDot = React.useMemo(() => {
 		return amount.charAt(amount.length - 1) === '.';

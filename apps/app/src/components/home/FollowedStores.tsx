@@ -23,7 +23,7 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 		(storeId: string) => () => {
 			navigate('Home.Store', { storeId });
 		},
-		[]
+		[navigate]
 	);
 
 	return followed.length === 0 ? (
@@ -45,10 +45,11 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 			<Spacer y={8} />
 
 			<FlatList
+				style={{ marginHorizontal: -16 }}
 				horizontal
 				data={followed.slice(0, 8)}
 				keyExtractor={item => item.id}
-				contentContainerStyle={{ gap: 12, paddingRight: 16 }}
+				contentContainerStyle={{ flexGrow: 1, gap: 12, paddingHorizontal: 16 }}
 				renderItem={({ item }) => (
 					<FollowedStoresItem
 						store={item}
@@ -72,7 +73,7 @@ const FollowedStoresItem: React.FC<FollowedStoresItemProps> = ({
 	<Pressable onPress={onPress}>
 		<Avatar
 			uri={store.image?.path}
-			size={68}
+			size={72}
 			fallbackText={store.name}
 			circle
 		/>

@@ -26,7 +26,7 @@ const AwaitingPickupBanner: React.FC<AwaitingPickupBannerProps> = ({
 			<Typography
 				weight='semibold'
 				size='small'
-				style={[{ color: theme.badge.warning.color }]}
+				style={{ color: theme.badge.warning.color }}
 			>
 				Awaiting Customer Pickup
 			</Typography>

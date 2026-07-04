@@ -22,7 +22,7 @@ const Transactions = () => {
 	const { theme } = useTheme();
 
 	const handleAddPayout = React.useCallback(() => {
-		if (!storeData.store) return;
+		if (!storeData?.store) return;
 
 		if (!storeData.store.bankAccountNumber) {
 			Alert.alert(
@@ -37,7 +37,7 @@ const Transactions = () => {
 			realizedRevenue: storeData?.store.realizedRevenue ?? 0,
 			paidOut: storeData?.store.paidOut ?? 0
 		});
-	}, []);
+	}, [storeData, navigate]);
 
 	React.useLayoutEffect(() => {
 		setOptions({
@@ -55,7 +55,7 @@ const Transactions = () => {
 				}
 			]
 		});
-	}, [handleAddPayout]);
+	}, [setOptions, handleAddPayout]);
 
 	const handleTransactionPress = React.useCallback(
 		(transaction: Transaction) => {
@@ -63,7 +63,29 @@ const Transactions = () => {
 				transactionId: transaction.id
 			});
 		},
-		[]
+		[navigate]
+	);
+
+	const renderTransaction = React.useCallback(
+		({ item, index }: { item: Transaction; index: number }) => (
+			<TransactionRow
+				transaction={item}
+				onPress={handleTransactionPress}
+				isLast={index === (data?.transactions.length ?? 0) - 1}
+			/>
+		),
+		[handleTransactionPress, data?.transactions.length]
+	);
+
+	const refreshControl = React.useMemo(
+		() => (
+			<RefreshControl
+				refreshing={isRefreshing}
+				onRefresh={onRefresh}
+				tintColor={theme.text.secondary}
+			/>
+		),
+		[isRefreshing, onRefresh, theme.text.secondary]
 	);
 
 	return (
@@ -74,22 +96,10 @@ const Transactions = () => {
 						flexGrow: 1,
 						backgroundColor: theme.screen.background
 					}}
-					refreshControl={
-						<RefreshControl
-							refreshing={isRefreshing}
-							onRefresh={onRefresh}
-							tintColor={theme.text.secondary}
-						/>
-					}
+					refreshControl={refreshControl}
 					data={data?.transactions ?? []}
 					keyExtractor={t => t.id}
-					renderItem={({ item, index }) => (
-						<TransactionRow
-							transaction={item}
-							onPress={handleTransactionPress}
-							isLast={index === data?.transactions.length - 1}
-						/>
-					)}
+					renderItem={renderTransaction}
 					ListEmptyComponent={
 						<View style={styles.empty}>
 							<Typography variant='secondary'>No transactions yet</Typography>

@@ -1,13 +1,17 @@
 import React from 'react';
 import { View, RefreshControl, StyleSheet } from 'react-native';
-import { Typography, useTheme } from '@habiti/components';
+import { Row, Spacer, Icon, Typography, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
+import { formatNaira } from '@habiti/common';
 
-import OrdersListItem from '../../components/orders/OrdersListItem';
-import { OrdersStackParamList } from '../../navigation/types';
 import { useOrdersContext } from './OrdersContext';
-import { Order } from '../../data/types';
+
+import { relativeDate } from '../../utils/date';
+import { ORDER_STATUS_LABELS } from '../../utils/orderStatus';
+
+import type { OrdersStackParamList } from '../../navigation/types';
+import type { Order } from '../../data/types';
 
 const OrdersList = () => {
 	const { navigate } = useNavigation<NavigationProp<OrdersStackParamList>>();
@@ -18,12 +22,28 @@ const OrdersList = () => {
 		(orderId: string) => () => {
 			navigate('Order', { orderId });
 		},
-		[]
+		[navigate]
 	);
 
-	const renderOrder: ListRenderItem<Order> = React.useCallback(({ item }) => {
-		return <OrdersListItem onPress={handleOrderPress(item.id)} order={item} />;
-	}, []);
+	const renderOrder: ListRenderItem<Order> = React.useCallback(
+		({ item }) => {
+			return (
+				<OrdersListItem onPress={handleOrderPress(item.id)} order={item} />
+			);
+		},
+		[handleOrderPress]
+	);
+
+	const refreshControl = React.useMemo(
+		() => (
+			<RefreshControl
+				refreshing={refreshing}
+				onRefresh={refresh}
+				tintColor={theme.text.secondary}
+			/>
+		),
+		[refreshing, refresh, theme.text.secondary]
+	);
 
 	return (
 		<View style={{ flex: 1 }}>
@@ -45,15 +65,32 @@ const OrdersList = () => {
 						</Typography>
 					</View>
 				}
-				refreshControl={
-					<RefreshControl
-						refreshing={refreshing}
-						onRefresh={refresh}
-						tintColor={theme.text.secondary}
-					/>
-				}
+				refreshControl={refreshControl}
 			/>
 		</View>
+	);
+};
+
+interface OrdersListItemProps {
+	order: Order;
+	onPress(): void;
+}
+
+const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
+	return (
+		<Row onPress={onPress} style={styles.container}>
+			<View>
+				<Typography>{order.user.name}</Typography>
+				<Spacer y={2} />
+				<Typography size='small' variant='secondary' style={styles.date}>
+					{ORDER_STATUS_LABELS[order.status]} · {relativeDate(order.createdAt)}
+				</Typography>
+			</View>
+			<View style={styles.right}>
+				<Typography>{formatNaira(order.total)}</Typography>
+				<Icon name='chevron-right' size={20} color='#999' />
+			</View>
+		</Row>
 	);
 };
 
@@ -66,6 +103,22 @@ const styles = StyleSheet.create({
 	},
 	emptyText: {
 		textAlign: 'center'
+	},
+	container: {
+		paddingVertical: 8,
+		paddingLeft: 16,
+		paddingRight: 8,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center'
+	},
+	date: {
+		marginTop: 2
+	},
+	right: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 4
 	}
 });
 

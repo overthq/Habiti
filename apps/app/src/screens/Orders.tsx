@@ -10,7 +10,6 @@ import {
 } from '@habiti/components';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FlashList } from '@shopify/flash-list';
 import { formatNaira } from '@habiti/common';
 
@@ -27,13 +26,12 @@ const Orders = () => {
 	const { navigate } = useNavigation<StackNavigationProp<HomeStackParamList>>();
 	const { refreshing, refresh } = useRefresh({ refetch });
 	const { theme } = useTheme();
-	const { bottom } = useSafeAreaInsets();
 
 	const handleOrderPress = React.useCallback(
 		(orderId: string) => () => {
 			navigate('Home.Order', { orderId });
 		},
-		[]
+		[navigate]
 	);
 
 	if (isLoading && !data) return <View />;
@@ -55,7 +53,6 @@ const Orders = () => {
 				renderItem={({ item }) => (
 					<OrdersListItem order={item} onPress={handleOrderPress(item.id)} />
 				)}
-				ListFooterComponent={() => <Spacer y={bottom} />}
 			/>
 		</Screen>
 	);

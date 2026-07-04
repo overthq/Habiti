@@ -230,7 +230,7 @@ const light = {
 		tertiary: palette.neutral.n400,
 		disabled: palette.neutral.n400,
 		error: palette.red.r700,
-		label: palette.neutral.n600,
+		label: palette.neutral.n500,
 		invert: palette.neutral.n50,
 		inactive: palette.neutral.n500
 	},

@@ -3,6 +3,7 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useProductsQuery } from '../../data/queries';
 import { Product, ProductFilters } from '../../data/types';
 import ProductsFilterModal from './ProductsFilterModal';
+import { ProductsFilters } from './types';
 
 // TODO:
 // - Break types up properly to prevent circular dependencies
@@ -21,12 +22,6 @@ interface ProductsContextType {
 	clearFilters: () => void;
 	search: string;
 	setSearch: (value: string) => void;
-}
-
-export interface ProductsFilters {
-	categoryId?: string;
-	sortBy?: 'created-at-desc' | 'unit-price-desc' | 'unit-price-asc';
-	search?: string;
 }
 
 const ProductsContext = React.createContext<ProductsContextType | null>(null);
@@ -61,19 +56,30 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 		filterModalRef.current?.present();
 	}, []);
 
+	const value = React.useMemo<ProductsContextType>(
+		() => ({
+			products: data?.products ?? [],
+			isLoading,
+			refreshing: isRefetching,
+			refresh,
+			openFilterModal,
+			clearFilters,
+			search,
+			setSearch
+		}),
+		[
+			data,
+			isLoading,
+			isRefetching,
+			refresh,
+			openFilterModal,
+			clearFilters,
+			search
+		]
+	);
+
 	return (
-		<ProductsContext.Provider
-			value={{
-				products: data?.products ?? [],
-				isLoading,
-				refreshing: isRefetching,
-				refresh,
-				openFilterModal,
-				clearFilters,
-				search,
-				setSearch
-			}}
-		>
+		<ProductsContext.Provider value={value}>
 			{children}
 			<ProductsFilterModal
 				modalRef={filterModalRef}
@@ -113,7 +119,7 @@ const sortByMap: Record<
 };
 
 export const useProductsContext = () => {
-	const context = React.useContext(ProductsContext);
+	const context = React.use(ProductsContext);
 
 	if (!context) {
 		throw new Error(

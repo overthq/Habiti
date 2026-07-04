@@ -19,145 +19,81 @@ import {
 	Typography,
 	useTheme
 } from '@habiti/components';
-import { HeaderButton } from '@react-navigation/elements';
+import { HeaderButton, useHeaderHeight } from '@react-navigation/elements';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { formatNaira } from '@habiti/common';
-import Animated, {
-	interpolate,
-	SharedValue,
-	useAnimatedScrollHandler,
-	useAnimatedStyle,
-	useDerivedValue,
-	useSharedValue
-} from 'react-native-reanimated';
 
 import {
 	ProductProvider,
 	useProductContext
 } from '../components/ProductContext';
 import { AppStackParamList } from '../navigation/types';
+import { getFrontendUrl } from '../utils/links';
 
 const { width } = Dimensions.get('window');
 
-const Dot = ({
-	index,
-	position
-}: {
-	index: number;
-	position: SharedValue<number>;
-}) => {
-	const style = useAnimatedStyle(() => {
-		return {
-			width: interpolate(
-				position.value,
-				[index - 1, index, index + 1],
-				[10, 30, 10]
-			),
-			opacity: interpolate(
-				position.value,
-				[index - 1, index, index + 1],
-				[0.5, 1, 0.5]
-			)
-		};
-	});
-
-	return (
-		<Animated.View
-			style={[
-				{
-					height: 6,
-					borderRadius: 100,
-					backgroundColor: '#FFFFFF'
-				},
-				style
-			]}
-		/>
-	);
-};
-
-interface ImageCarouselDotsProps {
-	scrollX: SharedValue<number>;
-	length: number;
-}
-
-const ImageCarouselDots: React.FC<ImageCarouselDotsProps> = ({
-	scrollX,
-	length
-}) => {
-	const { width } = useWindowDimensions();
-	const thing = new Array(length).fill(0);
-	const position = useDerivedValue(() => scrollX.value / width);
-
-	return (
-		<View
-			style={{
-				flexDirection: 'row',
-				gap: 4,
-				alignItems: 'center',
-				position: 'absolute',
-				bottom: 16,
-				alignSelf: 'center'
-			}}
-		>
-			{thing.map((_, index) => {
-				return <Dot key={index} index={index} position={position} />;
-			})}
-		</View>
-	);
-};
+const SCREEN_PADDING = 16;
+const CAROUSEL_GAP = 12;
+const CAROUSEL_SLIVER = 8;
+const CAROUSEL_RADIUS = 8;
 
 const ImageCarousel: React.FC = () => {
-	const scrollX = useSharedValue(0);
 	const { theme } = useTheme();
 	const {
 		product: { images }
 	} = useProductContext();
+	const { width: screenWidth } = useWindowDimensions();
 
-	const handleScroll = useAnimatedScrollHandler({
-		onScroll: ({ contentOffset: { x } }) => {
-			scrollX.value = x;
-		}
-	});
-
-	if (images.length === 0 || images.length === 1) {
+	if (images.length <= 1) {
 		return (
 			<View
 				style={[
-					styles.carouselContainer,
+					styles.carouselSingle,
 					{ backgroundColor: theme.input.background }
 				]}
 			>
-				<Image
-					source={{ uri: images[0]?.path.replace('http://', 'https://') }}
-					style={styles.carouselImage}
-				/>
+				{images[0] && (
+					<Image
+						source={{ uri: images[0].path.replace('http://', 'https://') }}
+						style={styles.carouselSingleImage}
+					/>
+				)}
 			</View>
 		);
 	}
 
+	const itemWidth =
+		screenWidth - SCREEN_PADDING - CAROUSEL_GAP - CAROUSEL_SLIVER;
+
 	return (
-		<View style={styles.carouselContainer}>
-			<Animated.ScrollView
+		<View
+			style={[styles.carouselContainer, { marginHorizontal: -SCREEN_PADDING }]}
+		>
+			<ScrollView
 				horizontal
-				onScroll={handleScroll}
 				decelerationRate='fast'
-				scrollEventThrottle={16}
-				snapToInterval={width}
-				snapToAlignment='center'
+				snapToInterval={itemWidth + CAROUSEL_GAP}
+				snapToAlignment='start'
 				showsHorizontalScrollIndicator={false}
-				contentContainerStyle={{ flexGrow: 1 }}
-				style={{ backgroundColor: theme.input.background }}
+				contentContainerStyle={{
+					paddingHorizontal: SCREEN_PADDING,
+					gap: CAROUSEL_GAP
+				}}
 			>
 				{images.map(image => (
 					<Image
 						key={image.id}
 						source={{ uri: image.path.replace('http://', 'https://') }}
-						style={styles.carouselImage}
+						style={{
+							width: itemWidth,
+							height: '100%',
+							borderRadius: CAROUSEL_RADIUS,
+							backgroundColor: theme.input.background
+						}}
 					/>
 				))}
-			</Animated.ScrollView>
-			<ImageCarouselDots scrollX={scrollX} length={images.length} />
+			</ScrollView>
 		</View>
 	);
 };
@@ -166,7 +102,7 @@ const ProductDetails: React.FC = () => {
 	const { product } = useProductContext();
 
 	return (
-		<View style={styles.detailsContainer}>
+		<View>
 			<Typography size='xxlarge' weight='medium'>
 				{product.name}
 			</Typography>
@@ -179,17 +115,18 @@ const ProductDetails: React.FC = () => {
 
 			<Spacer y={12} />
 
-			<Typography variant='label' weight='medium'>
+			<Typography size='small' variant='label' weight='medium'>
 				Description
 			</Typography>
 
 			<Spacer y={4} />
+
 			<Typography>{product?.description}</Typography>
 		</View>
 	);
 };
 
-const RELATED_GAP = 16;
+const RELATED_GAP = 12;
 const RELATED_SLIVER = 12;
 const RELATED_PADDING = 16;
 
@@ -203,14 +140,15 @@ const RelatedProducts: React.FC = () => {
 		(windowWidth - RELATED_PADDING - RELATED_GAP - RELATED_SLIVER) / 2;
 
 	return (
-		<View style={styles.relatedContainer}>
-			<Typography variant='label' weight='medium' style={{ marginLeft: 16 }}>
+		<View>
+			<Typography size='small' variant='label' weight='medium'>
 				Related products
 			</Typography>
 
 			<Spacer y={8} />
 
 			<ScrollView
+				style={{ marginHorizontal: -16 }}
 				contentContainerStyle={[styles.relatedScroll, { gap: RELATED_GAP }]}
 				horizontal
 				showsHorizontalScrollIndicator={false}
@@ -246,13 +184,19 @@ const QuantityControl: React.FC = () => {
 	const { quantity, setQuantity } = useProductContext();
 	const { theme } = useTheme();
 
-	const decrementDisabled = React.useMemo(() => quantity === 1, [quantity]);
+	const decrementDisabled = quantity === 1;
 
 	// TODO: We want this to be disabled when the product is out of stock.
 	const incrementDisabled = false;
 
-	const increment = React.useCallback(() => setQuantity(q => q + 1), []);
-	const decrement = React.useCallback(() => setQuantity(q => q - 1), []);
+	const increment = React.useCallback(
+		() => setQuantity(q => q + 1),
+		[setQuantity]
+	);
+	const decrement = React.useCallback(
+		() => setQuantity(q => q - 1),
+		[setQuantity]
+	);
 
 	return (
 		<View
@@ -320,15 +264,12 @@ const ShareHeader: React.FC = () => {
 
 	React.useLayoutEffect(() => {
 		const handleShare = () => {
-			const url = `https://habiti.app/product/${product.id}`;
+			const productUrl = getFrontendUrl(`/product/${product.id}`);
 
-			// On iOS, passing both `message` and `url` causes the link to appear
-			// twice. iOS handles `url` separately, while Android only includes
-			// the `message`, so the URL must be embedded in the message there.
 			Share.share(
 				Platform.OS === 'ios'
-					? { message: `Check out ${product.name} on Habiti`, url }
-					: { message: `Check out ${product.name} on Habiti: ${url}` }
+					? { message: `Check out ${product.name} on Habiti`, url: productUrl }
+					: { message: `Check out ${product.name} on Habiti: ${productUrl}` }
 			);
 		};
 
@@ -353,20 +294,29 @@ const ShareHeader: React.FC = () => {
 };
 
 const Product = () => {
+	const headerHeight = useHeaderHeight();
+
 	return (
 		<ProductProvider>
 			<ShareHeader />
+
 			<ScrollableScreen
-				style={{ marginHorizontal: -16 }}
+				style={{ paddingTop: headerHeight }}
 				showsVerticalScrollIndicator={false}
 			>
 				<ImageCarousel />
+
 				<Spacer y={16} />
+
 				<ProductDetails />
+
 				<Spacer y={16} />
+
 				<RelatedProducts />
+
 				<Spacer y={16} />
 			</ScrollableScreen>
+
 			<AddToCart />
 		</ProductProvider>
 	);
@@ -374,18 +324,17 @@ const Product = () => {
 
 const styles = StyleSheet.create({
 	carouselContainer: {
+		height: width
+	},
+	carouselSingle: {
 		height: width,
-		width: '100%'
+		width: '100%',
+		borderRadius: CAROUSEL_RADIUS,
+		overflow: 'hidden'
 	},
-	carouselImage: {
-		width,
+	carouselSingleImage: {
+		width: '100%',
 		height: '100%'
-	},
-	detailsContainer: {
-		paddingHorizontal: 16
-	},
-	relatedContainer: {
-		flex: 1
 	},
 	relatedScroll: {
 		paddingHorizontal: 16
@@ -395,7 +344,7 @@ const styles = StyleSheet.create({
 		gap: 16,
 		padding: 16,
 		paddingBottom: 8,
-		borderTopWidth: 0.5,
+		borderTopWidth: StyleSheet.hairlineWidth,
 		bottom: 0
 	},
 	quantityControls: {

@@ -76,7 +76,7 @@ const AddProduct = () => {
 				}
 			]
 		});
-	}, [createProductMutation.isPending]);
+	}, [setOptions, formMethods, onSubmit, createProductMutation.isPending]);
 
 	return (
 		<ScrollableScreen>

@@ -32,16 +32,19 @@ const AddAddress = () => {
 		}
 	});
 
-	const onSubmit = React.useCallback(async (values: AddAddressValues) => {
-		const { line2, postcode, ...rest } = values;
-		await createAddressMutation.mutateAsync({
-			...rest,
-			...(line2 ? { line2 } : {}),
-			...(postcode ? { postcode } : {})
-		});
+	const onSubmit = React.useCallback(
+		async (values: AddAddressValues) => {
+			const { line2, postcode, ...rest } = values;
+			await createAddressMutation.mutateAsync({
+				...rest,
+				...(line2 ? { line2 } : {}),
+				...(postcode ? { postcode } : {})
+			});
 
-		goBack();
-	}, []);
+			goBack();
+		},
+		[createAddressMutation, goBack]
+	);
 
 	return (
 		<ScrollableScreen>

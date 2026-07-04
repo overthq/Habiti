@@ -28,8 +28,3 @@ export const VisaIcon = () => {
 		</Svg>
 	);
 };
-
-export const CardIconMap = {
-	visa: <VisaIcon />,
-	mastercard: <MastercardIcon />
-} as const;

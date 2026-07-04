@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, RefreshControl } from 'react-native';
-import { ScrollableScreen, Spacer, useTheme } from '@habiti/components';
+import { View } from 'react-native';
+import { ScrollableScreen, Spacer } from '@habiti/components';
 import { useRoute, RouteProp } from '@react-navigation/native';
 
 import AwaitingPickupBanner from '../components/order/AwaitingPickupBanner';
@@ -10,6 +10,7 @@ import OrderOverview from '../components/order/OrderOverview';
 import OrderProducts from '../components/order/OrderProducts';
 import PaymentInfo from '../components/order/PaymentInfo';
 import useRefresh from '../hooks/useRefresh';
+import Refresher from '../components/Refresher';
 import { useOrderQuery } from '../data/queries';
 import { OrdersStackParamList } from '../navigation/types';
 
@@ -19,7 +20,6 @@ const Order = () => {
 	} = useRoute<RouteProp<OrdersStackParamList, 'Order'>>();
 	const { data, refetch } = useOrderQuery(orderId);
 	const { isRefreshing, onRefresh } = useRefresh({ refetch });
-	const { theme } = useTheme();
 
 	if (!data?.order) {
 		return <View />;
@@ -28,11 +28,7 @@ const Order = () => {
 	return (
 		<ScrollableScreen
 			refreshControl={
-				<RefreshControl
-					refreshing={isRefreshing}
-					onRefresh={onRefresh}
-					tintColor={theme.text.secondary}
-				/>
+				<Refresher refreshing={isRefreshing} onRefresh={onRefresh} />
 			}
 		>
 			<Spacer y={16} />
