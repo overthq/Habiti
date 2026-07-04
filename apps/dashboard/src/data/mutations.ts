@@ -27,6 +27,7 @@ import {
 	savePushToken
 } from './requests';
 import { requestPushPermission } from '../utils/notifications';
+import { ACCOUNT_CREATION_ENABLED } from '../utils/constants';
 import env from '../../env';
 import {
 	CreatePayoutBody,
@@ -97,10 +98,45 @@ export const useAuthenticateMutation = () => {
 				}
 			});
 
+			if (!response.ok) {
+				const error = new Error('Unable to log in') as Error & {
+					status?: number;
+				};
+				error.status = response.status;
+				throw error;
+			}
+
 			return response.json();
 		},
 		onSuccess: (_, variables) => {
 			navigate('Verify', { email: variables.email });
+		},
+		onError: (error: Error & { status?: number }, variables) => {
+			// No account exists for this email. Steer the user toward creating one
+			// rather than dropping them on a Verify screen with no code coming.
+			if (error.status === 404) {
+				if (ACCOUNT_CREATION_ENABLED) {
+					Alert.alert(
+						'No account found',
+						`We couldn't find an account for ${variables.email}. Would you like to create one?`,
+						[
+							{ text: 'Cancel', style: 'cancel' },
+							{ text: 'Create account', onPress: () => navigate('Register') }
+						]
+					);
+				} else {
+					Alert.alert(
+						'No account found',
+						`We couldn't find an account for ${variables.email}. Create an account on the web to get started.`
+					);
+				}
+				return;
+			}
+
+			Alert.alert(
+				'Unable to log in',
+				'An error occurred while trying to log you in. Please try again.'
+			);
 		}
 	});
 };
