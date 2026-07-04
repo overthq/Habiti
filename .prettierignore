@@ -1,0 +1,2 @@
+# Generated files (e.g. TanStack Router route trees)
+*.gen.ts

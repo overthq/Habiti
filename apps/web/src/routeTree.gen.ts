@@ -8,388 +8,388 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root';
-import { Route as MarketingRouteImport } from './routes/_marketing';
-import { Route as MainRouteImport } from './routes/_main';
-import { Route as MainIndexRouteImport } from './routes/_main.index';
-import { Route as MarketingSupportRouteImport } from './routes/_marketing.support';
-import { Route as MarketingPrivacyPolicyRouteImport } from './routes/_marketing.privacy-policy';
-import { Route as MarketingAcceptableUseRouteImport } from './routes/_marketing.acceptable-use';
-import { Route as MarketingAboutRouteImport } from './routes/_marketing.about';
-import { Route as MainCartRouteImport } from './routes/_main.cart';
-import { Route as MainSellIndexRouteImport } from './routes/_main.sell.index';
-import { Route as MainProfileIndexRouteImport } from './routes/_main.profile.index';
-import { Route as MainOrdersIndexRouteImport } from './routes/_main.orders.index';
-import { Route as MainStoreIdRouteImport } from './routes/_main.store.$id';
-import { Route as MainProfileSettingsRouteImport } from './routes/_main.profile.settings';
-import { Route as MainProductIdRouteImport } from './routes/_main.product.$id';
-import { Route as MainOrdersIdRouteImport } from './routes/_main.orders.$id';
-import { Route as MainCartsIdRouteImport } from './routes/_main.carts.$id';
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as MarketingRouteImport } from './routes/_marketing'
+import { Route as MainRouteImport } from './routes/_main'
+import { Route as MainIndexRouteImport } from './routes/_main.index'
+import { Route as MarketingSupportRouteImport } from './routes/_marketing.support'
+import { Route as MarketingPrivacyPolicyRouteImport } from './routes/_marketing.privacy-policy'
+import { Route as MarketingAcceptableUseRouteImport } from './routes/_marketing.acceptable-use'
+import { Route as MarketingAboutRouteImport } from './routes/_marketing.about'
+import { Route as MainCartRouteImport } from './routes/_main.cart'
+import { Route as MainSellIndexRouteImport } from './routes/_main.sell.index'
+import { Route as MainProfileIndexRouteImport } from './routes/_main.profile.index'
+import { Route as MainOrdersIndexRouteImport } from './routes/_main.orders.index'
+import { Route as MainStoreIdRouteImport } from './routes/_main.store.$id'
+import { Route as MainProfileSettingsRouteImport } from './routes/_main.profile.settings'
+import { Route as MainProductIdRouteImport } from './routes/_main.product.$id'
+import { Route as MainOrdersIdRouteImport } from './routes/_main.orders.$id'
+import { Route as MainCartsIdRouteImport } from './routes/_main.carts.$id'
 
 const MarketingRoute = MarketingRouteImport.update({
-	id: '/_marketing',
-	getParentRoute: () => rootRouteImport
-} as any);
+  id: '/_marketing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MainRoute = MainRouteImport.update({
-	id: '/_main',
-	getParentRoute: () => rootRouteImport
-} as any);
+  id: '/_main',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MainIndexRoute = MainIndexRouteImport.update({
-	id: '/',
-	path: '/',
-	getParentRoute: () => MainRoute
-} as any);
+  id: '/',
+  path: '/',
+  getParentRoute: () => MainRoute,
+} as any)
 const MarketingSupportRoute = MarketingSupportRouteImport.update({
-	id: '/support',
-	path: '/support',
-	getParentRoute: () => MarketingRoute
-} as any);
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => MarketingRoute,
+} as any)
 const MarketingPrivacyPolicyRoute = MarketingPrivacyPolicyRouteImport.update({
-	id: '/privacy-policy',
-	path: '/privacy-policy',
-	getParentRoute: () => MarketingRoute
-} as any);
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => MarketingRoute,
+} as any)
 const MarketingAcceptableUseRoute = MarketingAcceptableUseRouteImport.update({
-	id: '/acceptable-use',
-	path: '/acceptable-use',
-	getParentRoute: () => MarketingRoute
-} as any);
+  id: '/acceptable-use',
+  path: '/acceptable-use',
+  getParentRoute: () => MarketingRoute,
+} as any)
 const MarketingAboutRoute = MarketingAboutRouteImport.update({
-	id: '/about',
-	path: '/about',
-	getParentRoute: () => MarketingRoute
-} as any);
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => MarketingRoute,
+} as any)
 const MainCartRoute = MainCartRouteImport.update({
-	id: '/cart',
-	path: '/cart',
-	getParentRoute: () => MainRoute
-} as any);
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => MainRoute,
+} as any)
 const MainSellIndexRoute = MainSellIndexRouteImport.update({
-	id: '/sell/',
-	path: '/sell/',
-	getParentRoute: () => MainRoute
-} as any);
+  id: '/sell/',
+  path: '/sell/',
+  getParentRoute: () => MainRoute,
+} as any)
 const MainProfileIndexRoute = MainProfileIndexRouteImport.update({
-	id: '/profile/',
-	path: '/profile/',
-	getParentRoute: () => MainRoute
-} as any);
+  id: '/profile/',
+  path: '/profile/',
+  getParentRoute: () => MainRoute,
+} as any)
 const MainOrdersIndexRoute = MainOrdersIndexRouteImport.update({
-	id: '/orders/',
-	path: '/orders/',
-	getParentRoute: () => MainRoute
-} as any);
+  id: '/orders/',
+  path: '/orders/',
+  getParentRoute: () => MainRoute,
+} as any)
 const MainStoreIdRoute = MainStoreIdRouteImport.update({
-	id: '/store/$id',
-	path: '/store/$id',
-	getParentRoute: () => MainRoute
-} as any);
+  id: '/store/$id',
+  path: '/store/$id',
+  getParentRoute: () => MainRoute,
+} as any)
 const MainProfileSettingsRoute = MainProfileSettingsRouteImport.update({
-	id: '/profile/settings',
-	path: '/profile/settings',
-	getParentRoute: () => MainRoute
-} as any);
+  id: '/profile/settings',
+  path: '/profile/settings',
+  getParentRoute: () => MainRoute,
+} as any)
 const MainProductIdRoute = MainProductIdRouteImport.update({
-	id: '/product/$id',
-	path: '/product/$id',
-	getParentRoute: () => MainRoute
-} as any);
+  id: '/product/$id',
+  path: '/product/$id',
+  getParentRoute: () => MainRoute,
+} as any)
 const MainOrdersIdRoute = MainOrdersIdRouteImport.update({
-	id: '/orders/$id',
-	path: '/orders/$id',
-	getParentRoute: () => MainRoute
-} as any);
+  id: '/orders/$id',
+  path: '/orders/$id',
+  getParentRoute: () => MainRoute,
+} as any)
 const MainCartsIdRoute = MainCartsIdRouteImport.update({
-	id: '/carts/$id',
-	path: '/carts/$id',
-	getParentRoute: () => MainRoute
-} as any);
+  id: '/carts/$id',
+  path: '/carts/$id',
+  getParentRoute: () => MainRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
-	'/': typeof MainIndexRoute;
-	'/cart': typeof MainCartRoute;
-	'/about': typeof MarketingAboutRoute;
-	'/acceptable-use': typeof MarketingAcceptableUseRoute;
-	'/privacy-policy': typeof MarketingPrivacyPolicyRoute;
-	'/support': typeof MarketingSupportRoute;
-	'/carts/$id': typeof MainCartsIdRoute;
-	'/orders/$id': typeof MainOrdersIdRoute;
-	'/product/$id': typeof MainProductIdRoute;
-	'/profile/settings': typeof MainProfileSettingsRoute;
-	'/store/$id': typeof MainStoreIdRoute;
-	'/orders/': typeof MainOrdersIndexRoute;
-	'/profile/': typeof MainProfileIndexRoute;
-	'/sell/': typeof MainSellIndexRoute;
+  '/': typeof MainIndexRoute
+  '/cart': typeof MainCartRoute
+  '/about': typeof MarketingAboutRoute
+  '/acceptable-use': typeof MarketingAcceptableUseRoute
+  '/privacy-policy': typeof MarketingPrivacyPolicyRoute
+  '/support': typeof MarketingSupportRoute
+  '/carts/$id': typeof MainCartsIdRoute
+  '/orders/$id': typeof MainOrdersIdRoute
+  '/product/$id': typeof MainProductIdRoute
+  '/profile/settings': typeof MainProfileSettingsRoute
+  '/store/$id': typeof MainStoreIdRoute
+  '/orders/': typeof MainOrdersIndexRoute
+  '/profile/': typeof MainProfileIndexRoute
+  '/sell/': typeof MainSellIndexRoute
 }
 export interface FileRoutesByTo {
-	'/': typeof MainIndexRoute;
-	'/cart': typeof MainCartRoute;
-	'/about': typeof MarketingAboutRoute;
-	'/acceptable-use': typeof MarketingAcceptableUseRoute;
-	'/privacy-policy': typeof MarketingPrivacyPolicyRoute;
-	'/support': typeof MarketingSupportRoute;
-	'/carts/$id': typeof MainCartsIdRoute;
-	'/orders/$id': typeof MainOrdersIdRoute;
-	'/product/$id': typeof MainProductIdRoute;
-	'/profile/settings': typeof MainProfileSettingsRoute;
-	'/store/$id': typeof MainStoreIdRoute;
-	'/orders': typeof MainOrdersIndexRoute;
-	'/profile': typeof MainProfileIndexRoute;
-	'/sell': typeof MainSellIndexRoute;
+  '/': typeof MainIndexRoute
+  '/cart': typeof MainCartRoute
+  '/about': typeof MarketingAboutRoute
+  '/acceptable-use': typeof MarketingAcceptableUseRoute
+  '/privacy-policy': typeof MarketingPrivacyPolicyRoute
+  '/support': typeof MarketingSupportRoute
+  '/carts/$id': typeof MainCartsIdRoute
+  '/orders/$id': typeof MainOrdersIdRoute
+  '/product/$id': typeof MainProductIdRoute
+  '/profile/settings': typeof MainProfileSettingsRoute
+  '/store/$id': typeof MainStoreIdRoute
+  '/orders': typeof MainOrdersIndexRoute
+  '/profile': typeof MainProfileIndexRoute
+  '/sell': typeof MainSellIndexRoute
 }
 export interface FileRoutesById {
-	__root__: typeof rootRouteImport;
-	'/_main': typeof MainRouteWithChildren;
-	'/_marketing': typeof MarketingRouteWithChildren;
-	'/_main/cart': typeof MainCartRoute;
-	'/_marketing/about': typeof MarketingAboutRoute;
-	'/_marketing/acceptable-use': typeof MarketingAcceptableUseRoute;
-	'/_marketing/privacy-policy': typeof MarketingPrivacyPolicyRoute;
-	'/_marketing/support': typeof MarketingSupportRoute;
-	'/_main/': typeof MainIndexRoute;
-	'/_main/carts/$id': typeof MainCartsIdRoute;
-	'/_main/orders/$id': typeof MainOrdersIdRoute;
-	'/_main/product/$id': typeof MainProductIdRoute;
-	'/_main/profile/settings': typeof MainProfileSettingsRoute;
-	'/_main/store/$id': typeof MainStoreIdRoute;
-	'/_main/orders/': typeof MainOrdersIndexRoute;
-	'/_main/profile/': typeof MainProfileIndexRoute;
-	'/_main/sell/': typeof MainSellIndexRoute;
+  __root__: typeof rootRouteImport
+  '/_main': typeof MainRouteWithChildren
+  '/_marketing': typeof MarketingRouteWithChildren
+  '/_main/cart': typeof MainCartRoute
+  '/_marketing/about': typeof MarketingAboutRoute
+  '/_marketing/acceptable-use': typeof MarketingAcceptableUseRoute
+  '/_marketing/privacy-policy': typeof MarketingPrivacyPolicyRoute
+  '/_marketing/support': typeof MarketingSupportRoute
+  '/_main/': typeof MainIndexRoute
+  '/_main/carts/$id': typeof MainCartsIdRoute
+  '/_main/orders/$id': typeof MainOrdersIdRoute
+  '/_main/product/$id': typeof MainProductIdRoute
+  '/_main/profile/settings': typeof MainProfileSettingsRoute
+  '/_main/store/$id': typeof MainStoreIdRoute
+  '/_main/orders/': typeof MainOrdersIndexRoute
+  '/_main/profile/': typeof MainProfileIndexRoute
+  '/_main/sell/': typeof MainSellIndexRoute
 }
 export interface FileRouteTypes {
-	fileRoutesByFullPath: FileRoutesByFullPath;
-	fullPaths:
-		| '/'
-		| '/cart'
-		| '/about'
-		| '/acceptable-use'
-		| '/privacy-policy'
-		| '/support'
-		| '/carts/$id'
-		| '/orders/$id'
-		| '/product/$id'
-		| '/profile/settings'
-		| '/store/$id'
-		| '/orders/'
-		| '/profile/'
-		| '/sell/';
-	fileRoutesByTo: FileRoutesByTo;
-	to:
-		| '/'
-		| '/cart'
-		| '/about'
-		| '/acceptable-use'
-		| '/privacy-policy'
-		| '/support'
-		| '/carts/$id'
-		| '/orders/$id'
-		| '/product/$id'
-		| '/profile/settings'
-		| '/store/$id'
-		| '/orders'
-		| '/profile'
-		| '/sell';
-	id:
-		| '__root__'
-		| '/_main'
-		| '/_marketing'
-		| '/_main/cart'
-		| '/_marketing/about'
-		| '/_marketing/acceptable-use'
-		| '/_marketing/privacy-policy'
-		| '/_marketing/support'
-		| '/_main/'
-		| '/_main/carts/$id'
-		| '/_main/orders/$id'
-		| '/_main/product/$id'
-		| '/_main/profile/settings'
-		| '/_main/store/$id'
-		| '/_main/orders/'
-		| '/_main/profile/'
-		| '/_main/sell/';
-	fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/cart'
+    | '/about'
+    | '/acceptable-use'
+    | '/privacy-policy'
+    | '/support'
+    | '/carts/$id'
+    | '/orders/$id'
+    | '/product/$id'
+    | '/profile/settings'
+    | '/store/$id'
+    | '/orders/'
+    | '/profile/'
+    | '/sell/'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/cart'
+    | '/about'
+    | '/acceptable-use'
+    | '/privacy-policy'
+    | '/support'
+    | '/carts/$id'
+    | '/orders/$id'
+    | '/product/$id'
+    | '/profile/settings'
+    | '/store/$id'
+    | '/orders'
+    | '/profile'
+    | '/sell'
+  id:
+    | '__root__'
+    | '/_main'
+    | '/_marketing'
+    | '/_main/cart'
+    | '/_marketing/about'
+    | '/_marketing/acceptable-use'
+    | '/_marketing/privacy-policy'
+    | '/_marketing/support'
+    | '/_main/'
+    | '/_main/carts/$id'
+    | '/_main/orders/$id'
+    | '/_main/product/$id'
+    | '/_main/profile/settings'
+    | '/_main/store/$id'
+    | '/_main/orders/'
+    | '/_main/profile/'
+    | '/_main/sell/'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-	MainRoute: typeof MainRouteWithChildren;
-	MarketingRoute: typeof MarketingRouteWithChildren;
+  MainRoute: typeof MainRouteWithChildren
+  MarketingRoute: typeof MarketingRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
-	interface FileRoutesByPath {
-		'/_marketing': {
-			id: '/_marketing';
-			path: '';
-			fullPath: '/';
-			preLoaderRoute: typeof MarketingRouteImport;
-			parentRoute: typeof rootRouteImport;
-		};
-		'/_main': {
-			id: '/_main';
-			path: '';
-			fullPath: '/';
-			preLoaderRoute: typeof MainRouteImport;
-			parentRoute: typeof rootRouteImport;
-		};
-		'/_main/': {
-			id: '/_main/';
-			path: '/';
-			fullPath: '/';
-			preLoaderRoute: typeof MainIndexRouteImport;
-			parentRoute: typeof MainRoute;
-		};
-		'/_marketing/support': {
-			id: '/_marketing/support';
-			path: '/support';
-			fullPath: '/support';
-			preLoaderRoute: typeof MarketingSupportRouteImport;
-			parentRoute: typeof MarketingRoute;
-		};
-		'/_marketing/privacy-policy': {
-			id: '/_marketing/privacy-policy';
-			path: '/privacy-policy';
-			fullPath: '/privacy-policy';
-			preLoaderRoute: typeof MarketingPrivacyPolicyRouteImport;
-			parentRoute: typeof MarketingRoute;
-		};
-		'/_marketing/acceptable-use': {
-			id: '/_marketing/acceptable-use';
-			path: '/acceptable-use';
-			fullPath: '/acceptable-use';
-			preLoaderRoute: typeof MarketingAcceptableUseRouteImport;
-			parentRoute: typeof MarketingRoute;
-		};
-		'/_marketing/about': {
-			id: '/_marketing/about';
-			path: '/about';
-			fullPath: '/about';
-			preLoaderRoute: typeof MarketingAboutRouteImport;
-			parentRoute: typeof MarketingRoute;
-		};
-		'/_main/cart': {
-			id: '/_main/cart';
-			path: '/cart';
-			fullPath: '/cart';
-			preLoaderRoute: typeof MainCartRouteImport;
-			parentRoute: typeof MainRoute;
-		};
-		'/_main/sell/': {
-			id: '/_main/sell/';
-			path: '/sell';
-			fullPath: '/sell/';
-			preLoaderRoute: typeof MainSellIndexRouteImport;
-			parentRoute: typeof MainRoute;
-		};
-		'/_main/profile/': {
-			id: '/_main/profile/';
-			path: '/profile';
-			fullPath: '/profile/';
-			preLoaderRoute: typeof MainProfileIndexRouteImport;
-			parentRoute: typeof MainRoute;
-		};
-		'/_main/orders/': {
-			id: '/_main/orders/';
-			path: '/orders';
-			fullPath: '/orders/';
-			preLoaderRoute: typeof MainOrdersIndexRouteImport;
-			parentRoute: typeof MainRoute;
-		};
-		'/_main/store/$id': {
-			id: '/_main/store/$id';
-			path: '/store/$id';
-			fullPath: '/store/$id';
-			preLoaderRoute: typeof MainStoreIdRouteImport;
-			parentRoute: typeof MainRoute;
-		};
-		'/_main/profile/settings': {
-			id: '/_main/profile/settings';
-			path: '/profile/settings';
-			fullPath: '/profile/settings';
-			preLoaderRoute: typeof MainProfileSettingsRouteImport;
-			parentRoute: typeof MainRoute;
-		};
-		'/_main/product/$id': {
-			id: '/_main/product/$id';
-			path: '/product/$id';
-			fullPath: '/product/$id';
-			preLoaderRoute: typeof MainProductIdRouteImport;
-			parentRoute: typeof MainRoute;
-		};
-		'/_main/orders/$id': {
-			id: '/_main/orders/$id';
-			path: '/orders/$id';
-			fullPath: '/orders/$id';
-			preLoaderRoute: typeof MainOrdersIdRouteImport;
-			parentRoute: typeof MainRoute;
-		};
-		'/_main/carts/$id': {
-			id: '/_main/carts/$id';
-			path: '/carts/$id';
-			fullPath: '/carts/$id';
-			preLoaderRoute: typeof MainCartsIdRouteImport;
-			parentRoute: typeof MainRoute;
-		};
-	}
+  interface FileRoutesByPath {
+    '/_marketing': {
+      id: '/_marketing'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof MarketingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_main': {
+      id: '/_main'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof MainRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_main/': {
+      id: '/_main/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof MainIndexRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/_marketing/support': {
+      id: '/_marketing/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof MarketingSupportRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+    '/_marketing/privacy-policy': {
+      id: '/_marketing/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof MarketingPrivacyPolicyRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+    '/_marketing/acceptable-use': {
+      id: '/_marketing/acceptable-use'
+      path: '/acceptable-use'
+      fullPath: '/acceptable-use'
+      preLoaderRoute: typeof MarketingAcceptableUseRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+    '/_marketing/about': {
+      id: '/_marketing/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof MarketingAboutRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+    '/_main/cart': {
+      id: '/_main/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof MainCartRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/_main/sell/': {
+      id: '/_main/sell/'
+      path: '/sell'
+      fullPath: '/sell/'
+      preLoaderRoute: typeof MainSellIndexRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/_main/profile/': {
+      id: '/_main/profile/'
+      path: '/profile'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof MainProfileIndexRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/_main/orders/': {
+      id: '/_main/orders/'
+      path: '/orders'
+      fullPath: '/orders/'
+      preLoaderRoute: typeof MainOrdersIndexRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/_main/store/$id': {
+      id: '/_main/store/$id'
+      path: '/store/$id'
+      fullPath: '/store/$id'
+      preLoaderRoute: typeof MainStoreIdRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/_main/profile/settings': {
+      id: '/_main/profile/settings'
+      path: '/profile/settings'
+      fullPath: '/profile/settings'
+      preLoaderRoute: typeof MainProfileSettingsRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/_main/product/$id': {
+      id: '/_main/product/$id'
+      path: '/product/$id'
+      fullPath: '/product/$id'
+      preLoaderRoute: typeof MainProductIdRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/_main/orders/$id': {
+      id: '/_main/orders/$id'
+      path: '/orders/$id'
+      fullPath: '/orders/$id'
+      preLoaderRoute: typeof MainOrdersIdRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/_main/carts/$id': {
+      id: '/_main/carts/$id'
+      path: '/carts/$id'
+      fullPath: '/carts/$id'
+      preLoaderRoute: typeof MainCartsIdRouteImport
+      parentRoute: typeof MainRoute
+    }
+  }
 }
 
 interface MainRouteChildren {
-	MainCartRoute: typeof MainCartRoute;
-	MainIndexRoute: typeof MainIndexRoute;
-	MainCartsIdRoute: typeof MainCartsIdRoute;
-	MainOrdersIdRoute: typeof MainOrdersIdRoute;
-	MainProductIdRoute: typeof MainProductIdRoute;
-	MainProfileSettingsRoute: typeof MainProfileSettingsRoute;
-	MainStoreIdRoute: typeof MainStoreIdRoute;
-	MainOrdersIndexRoute: typeof MainOrdersIndexRoute;
-	MainProfileIndexRoute: typeof MainProfileIndexRoute;
-	MainSellIndexRoute: typeof MainSellIndexRoute;
+  MainCartRoute: typeof MainCartRoute
+  MainIndexRoute: typeof MainIndexRoute
+  MainCartsIdRoute: typeof MainCartsIdRoute
+  MainOrdersIdRoute: typeof MainOrdersIdRoute
+  MainProductIdRoute: typeof MainProductIdRoute
+  MainProfileSettingsRoute: typeof MainProfileSettingsRoute
+  MainStoreIdRoute: typeof MainStoreIdRoute
+  MainOrdersIndexRoute: typeof MainOrdersIndexRoute
+  MainProfileIndexRoute: typeof MainProfileIndexRoute
+  MainSellIndexRoute: typeof MainSellIndexRoute
 }
 
 const MainRouteChildren: MainRouteChildren = {
-	MainCartRoute: MainCartRoute,
-	MainIndexRoute: MainIndexRoute,
-	MainCartsIdRoute: MainCartsIdRoute,
-	MainOrdersIdRoute: MainOrdersIdRoute,
-	MainProductIdRoute: MainProductIdRoute,
-	MainProfileSettingsRoute: MainProfileSettingsRoute,
-	MainStoreIdRoute: MainStoreIdRoute,
-	MainOrdersIndexRoute: MainOrdersIndexRoute,
-	MainProfileIndexRoute: MainProfileIndexRoute,
-	MainSellIndexRoute: MainSellIndexRoute
-};
+  MainCartRoute: MainCartRoute,
+  MainIndexRoute: MainIndexRoute,
+  MainCartsIdRoute: MainCartsIdRoute,
+  MainOrdersIdRoute: MainOrdersIdRoute,
+  MainProductIdRoute: MainProductIdRoute,
+  MainProfileSettingsRoute: MainProfileSettingsRoute,
+  MainStoreIdRoute: MainStoreIdRoute,
+  MainOrdersIndexRoute: MainOrdersIndexRoute,
+  MainProfileIndexRoute: MainProfileIndexRoute,
+  MainSellIndexRoute: MainSellIndexRoute,
+}
 
-const MainRouteWithChildren = MainRoute._addFileChildren(MainRouteChildren);
+const MainRouteWithChildren = MainRoute._addFileChildren(MainRouteChildren)
 
 interface MarketingRouteChildren {
-	MarketingAboutRoute: typeof MarketingAboutRoute;
-	MarketingAcceptableUseRoute: typeof MarketingAcceptableUseRoute;
-	MarketingPrivacyPolicyRoute: typeof MarketingPrivacyPolicyRoute;
-	MarketingSupportRoute: typeof MarketingSupportRoute;
+  MarketingAboutRoute: typeof MarketingAboutRoute
+  MarketingAcceptableUseRoute: typeof MarketingAcceptableUseRoute
+  MarketingPrivacyPolicyRoute: typeof MarketingPrivacyPolicyRoute
+  MarketingSupportRoute: typeof MarketingSupportRoute
 }
 
 const MarketingRouteChildren: MarketingRouteChildren = {
-	MarketingAboutRoute: MarketingAboutRoute,
-	MarketingAcceptableUseRoute: MarketingAcceptableUseRoute,
-	MarketingPrivacyPolicyRoute: MarketingPrivacyPolicyRoute,
-	MarketingSupportRoute: MarketingSupportRoute
-};
+  MarketingAboutRoute: MarketingAboutRoute,
+  MarketingAcceptableUseRoute: MarketingAcceptableUseRoute,
+  MarketingPrivacyPolicyRoute: MarketingPrivacyPolicyRoute,
+  MarketingSupportRoute: MarketingSupportRoute,
+}
 
 const MarketingRouteWithChildren = MarketingRoute._addFileChildren(
-	MarketingRouteChildren
-);
+  MarketingRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
-	MainRoute: MainRouteWithChildren,
-	MarketingRoute: MarketingRouteWithChildren
-};
+  MainRoute: MainRouteWithChildren,
+  MarketingRoute: MarketingRouteWithChildren,
+}
 export const routeTree = rootRouteImport
-	._addFileChildren(rootRouteChildren)
-	._addFileTypes<FileRouteTypes>();
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
 
-import type { getRouter } from './router.tsx';
-import type { createStart } from '@tanstack/react-start';
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
 declare module '@tanstack/react-start' {
-	interface Register {
-		ssr: true;
-		router: Awaited<ReturnType<typeof getRouter>>;
-	}
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
 }
