@@ -11,7 +11,7 @@ const tabRoutes = [
 const MobileTabBar = () => {
 	const pathname = useLocation({ select: loc => loc.pathname });
 	return (
-		<div className='fixed bottom-0 left-0 right-0 bg-background border-t sm:hidden'>
+		<div className='fixed bottom-0 left-0 right-0 z-40 bg-background border-t sm:hidden'>
 			<div className='flex justify-between items-center px-4 py-4'>
 				{tabRoutes.map(route => (
 					<Link
