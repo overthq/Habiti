@@ -104,7 +104,7 @@
       "name": "@habiti/app",
       "version": "1.0.0",
       "dependencies": {
-        "@gorhom/bottom-sheet": "^5.2.8",
+        "@gorhom/bottom-sheet": "^5.2.14",
         "@habiti/common": "workspace:*",
         "@habiti/components": "workspace:*",
         "@hookform/resolvers": "^5.0.1",
@@ -166,7 +166,7 @@
       "name": "@habiti/dashboard",
       "version": "1.0.0",
       "dependencies": {
-        "@gorhom/bottom-sheet": "^5.2.8",
+        "@gorhom/bottom-sheet": "^5.2.14",
         "@habiti/common": "workspace:*",
         "@habiti/components": "workspace:*",
         "@hookform/resolvers": "^5.0.1",
@@ -317,7 +317,7 @@
         "@types/react": "~19.2.10",
       },
       "peerDependencies": {
-        "@gorhom/bottom-sheet": "^5.2.8",
+        "@gorhom/bottom-sheet": "^5.2.14",
         "react": "19.2.3",
         "react-hook-form": "^7.72.1",
         "react-native": "0.85.3",
@@ -653,7 +653,7 @@
 
     "@floating-ui/utils": ["@floating-ui/utils@0.2.11", "", {}, "sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg=="],
 
-    "@gorhom/bottom-sheet": ["@gorhom/bottom-sheet@5.2.8", "", { "dependencies": { "@gorhom/portal": "1.0.14", "invariant": "^2.2.4" }, "peerDependencies": { "@types/react": "*", "@types/react-native": "*", "react": "*", "react-native": "*", "react-native-gesture-handler": ">=2.16.1", "react-native-reanimated": ">=3.16.0 || >=4.0.0-" }, "optionalPeers": ["@types/react", "@types/react-native"] }, "sha512-+N27SMpbBxXZQ/IA2nlEV6RGxL/qSFHKfdFKcygvW+HqPG5jVNb1OqehLQsGfBP+Up42i0gW5ppI+DhpB7UCzA=="],
+    "@gorhom/bottom-sheet": ["@gorhom/bottom-sheet@5.2.14", "", { "dependencies": { "@gorhom/portal": "1.0.14", "invariant": "^2.2.4" }, "peerDependencies": { "@types/react": "*", "@types/react-native": "*", "react": "*", "react-native": "*", "react-native-gesture-handler": ">=2.16.1", "react-native-reanimated": ">=3.16.0 || >=4.0.0-" }, "optionalPeers": ["@types/react", "@types/react-native"] }, "sha512-uLQFlDjp9z+jrOFcMSEldPqL5JdaXL3vXOh+juhwoNvXgTsEorJLjHTugXu+YccAG/0KJnShzKCrb71MHBsvJg=="],
 
     "@gorhom/portal": ["@gorhom/portal@1.0.14", "", { "dependencies": { "nanoid": "^3.3.1" }, "peerDependencies": { "react": "*", "react-native": "*" } }, "sha512-MXyL4xvCjmgaORr/rtryDNFy3kU4qUbKlwtQqqsygd0xX3mhKjOLn6mQK8wfu0RkoE0pBE0nAasRoHua+/QZ7A=="],
 

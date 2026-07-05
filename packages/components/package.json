@@ -7,7 +7,7 @@
 		"@types/react": "~19.2.10"
 	},
 	"peerDependencies": {
-		"@gorhom/bottom-sheet": "^5.2.8",
+		"@gorhom/bottom-sheet": "^5.2.14",
 		"react": "19.2.3",
 		"react-hook-form": "^7.72.1",
 		"react-native": "0.85.3",
