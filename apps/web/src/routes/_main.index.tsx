@@ -17,8 +17,13 @@ import {
 import { useAuthStore } from '@/state/auth-store';
 import Product from '@/components/store/Product';
 import { getLandingHighlights } from '@/data/requests';
+import { smartAppBannerMeta } from '@/utils/smart-app-banner';
 
 export const Route = createFileRoute('/_main/')({
+	head: () => {
+		const banner = smartAppBannerMeta('/');
+		return { meta: banner ? [banner] : [] };
+	},
 	loader: ({ context }) =>
 		context.queryClient.ensureQueryData({
 			queryKey: ['landing-highlights'],

@@ -7,7 +7,8 @@ import {
 	useWindowDimensions,
 	Pressable,
 	ScrollView,
-	Share
+	Share,
+	Platform
 } from 'react-native';
 import {
 	Button,
@@ -264,10 +265,12 @@ const ShareHeader: React.FC = () => {
 	React.useLayoutEffect(() => {
 		const handleShare = () => {
 			const productUrl = getFrontendUrl(`/product/${product.id}`);
-			Share.share({
-				message: `Check out ${product.name} on Habiti: ${productUrl}`,
-				url: productUrl
-			});
+
+			Share.share(
+				Platform.OS === 'ios'
+					? { message: `Check out ${product.name} on Habiti`, url: productUrl }
+					: { message: `Check out ${product.name} on Habiti: ${productUrl}` }
+			);
 		};
 
 		navigation.setOptions({
