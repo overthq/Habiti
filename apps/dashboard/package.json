@@ -12,7 +12,7 @@
 		"eject": "expo eject"
 	},
 	"dependencies": {
-		"@gorhom/bottom-sheet": "^5.2.8",
+		"@gorhom/bottom-sheet": "^5.2.14",
 		"@habiti/common": "workspace:*",
 		"@habiti/components": "workspace:*",
 		"@hookform/resolvers": "^5.0.1",

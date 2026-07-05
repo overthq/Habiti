@@ -4,6 +4,7 @@ import * as Sentry from '@sentry/react-native';
 import React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as SplashScreen from 'expo-splash-screen';
 
@@ -44,7 +45,9 @@ const AppInner = () => {
 		<SafeAreaProvider>
 			<ThemeProvider theme={theme}>
 				<GestureHandlerRootView style={{ flex: 1 }}>
-					<Routes />
+					<BottomSheetModalProvider>
+						<Routes />
+					</BottomSheetModalProvider>
 				</GestureHandlerRootView>
 			</ThemeProvider>
 		</SafeAreaProvider>
