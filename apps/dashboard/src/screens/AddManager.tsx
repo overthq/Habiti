@@ -11,6 +11,7 @@ const AddManager = () => {
 
 	return (
 		<ScrollableScreen>
+			<Spacer y={16} />
 			<Input
 				label='E-mail address'
 				placeholder='john@doe.com'

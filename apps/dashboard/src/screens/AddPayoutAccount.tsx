@@ -50,6 +50,7 @@ const AddPayoutAccount = () => {
 
 	return (
 		<ScrollableScreen>
+			<Spacer y={16} />
 			<FormProvider {...methods}>
 				<FormInput
 					ref={inputRef}

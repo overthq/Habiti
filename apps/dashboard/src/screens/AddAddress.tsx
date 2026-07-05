@@ -2,7 +2,12 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Button, FormInput, ScrollableScreen } from '@habiti/components';
+import {
+	Button,
+	FormInput,
+	ScrollableScreen,
+	Spacer
+} from '@habiti/components';
 
 import { useCreateAddressMutation } from '../data/mutations';
 
@@ -48,6 +53,7 @@ const AddAddress = () => {
 
 	return (
 		<ScrollableScreen>
+			<Spacer y={16} />
 			<FormInput
 				name='name'
 				label='Address name'

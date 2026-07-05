@@ -37,6 +37,7 @@ const ProductDetails = () => {
 
 	return (
 		<ScrollableScreen>
+			<Spacer y={16} />
 			<FormProvider {...methods}>
 				<FormInput
 					label='Name'

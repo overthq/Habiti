@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert, View } from 'react-native';
-import { Button, Screen } from '@habiti/components';
+import { Button, Screen, Spacer } from '@habiti/components';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 
 import AmountDisplay from '../components/add-payout/AmountDisplay';
@@ -59,6 +59,7 @@ const AddPayout = () => {
 
 	return (
 		<Screen>
+			<Spacer y={16} />
 			<AmountDisplay amount={amount} />
 			<PayoutNumpad
 				onUpdate={handleUpdate}

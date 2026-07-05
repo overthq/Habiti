@@ -108,6 +108,7 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 
 	return (
 		<Screen>
+			<Spacer y={16} />
 			<View style={styles.avatarSection}>
 				<Avatar uri={imagePreview} size={96} fallbackText={store.name} />
 

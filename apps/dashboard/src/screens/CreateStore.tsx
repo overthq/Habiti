@@ -32,6 +32,7 @@ const CreateStore = () => {
 
 	return (
 		<ScrollableScreen contentContainerStyle={{ paddingBottom: bottom + 16 }}>
+			<Spacer y={16} />
 			<FormInput
 				control={methods.control}
 				name='name'

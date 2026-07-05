@@ -80,6 +80,7 @@ const AddProduct = () => {
 
 	return (
 		<ScrollableScreen>
+			<Spacer y={16} />
 			<FormProvider {...formMethods}>
 				<FormInput
 					name='name'

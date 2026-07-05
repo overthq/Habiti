@@ -39,6 +39,7 @@ const EditCategory = () => {
 
 	return (
 		<ScrollableScreen>
+			<Spacer y={16} />
 			<FormProvider {...methods}>
 				<FormInput label='Name' name='name' control={methods.control} />
 				<Spacer y={8} />
