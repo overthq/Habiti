@@ -7,8 +7,10 @@ import type { Tracer } from '../services/tracer';
 export type AuthPayload = {
 	id: string;
 	name: string;
-	email: string;
+	email: string | null;
 	role: 'admin' | 'user';
+	typ?: 'access' | 'refresh';
+	anonymous?: boolean;
 	sessionId?: string;
 	storeId?: string;
 };

@@ -35,7 +35,7 @@ const EditProfileMain: React.FC<EditProfileMainProps> = ({ currentUser }) => {
 	const { control, handleSubmit, formState } = useForm<EditProfileFormValues>({
 		defaultValues: {
 			name: currentUser.name,
-			email: currentUser.email
+			email: currentUser.email ?? ''
 		}
 	});
 

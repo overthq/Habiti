@@ -4,7 +4,7 @@ import { HTTPException } from 'hono/http-exception';
 
 import type { AppEnv } from '../types/hono';
 import { zodHook } from '../utils/validation';
-import { authenticate } from '../middleware/auth';
+import { authenticate, requireFullAccount } from '../middleware/auth';
 import { hydrateQuery } from '../utils/queries';
 import * as UserLogic from '../core/logic/users';
 import * as ProductLogic from '../core/logic/products';
@@ -130,6 +130,10 @@ currentUser.get('/orders/:id', async c => {
 
 currentUser.post(
 	'/orders',
+	// Guests browse and build carts freely, but placing an order requires a
+	// full account (payment needs an email, and the order needs a durable
+	// owner). The client prompts sign-in before hitting this.
+	requireFullAccount,
 	zValidator('json', Schemas.createOrderSchema, zodHook),
 	async c => {
 		const body = c.req.valid('json');

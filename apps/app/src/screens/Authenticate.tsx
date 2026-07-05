@@ -4,6 +4,7 @@ import {
 	Icon,
 	Screen,
 	Spacer,
+	TextButton,
 	Typography
 } from '@habiti/components';
 import React from 'react';
@@ -67,6 +68,16 @@ const Authenticate: React.FC<AppStackScreenProps<'Authenticate'>> = ({
 					onPress={handleSubmit(onSubmit)}
 					loading={authenticateMutation.isPending}
 				/>
+
+				<Spacer y={16} />
+
+				<TextButton
+					weight='medium'
+					style={{ alignSelf: 'center' }}
+					onPress={() => navigation.navigate('Register')}
+				>
+					New here? Create an account.
+				</TextButton>
 			</SafeAreaView>
 		</Screen>
 	);

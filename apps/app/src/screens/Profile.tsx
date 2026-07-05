@@ -19,13 +19,11 @@ import {
 	Typography,
 	useTheme
 } from '@habiti/components';
-import { useShallow } from 'zustand/react/shallow';
-
-import useStore from '../state';
-
 import { useCurrentUserQuery } from '../data/queries';
+import { useLogoutMutation } from '../hooks/mutations';
 
 import {
+	AppStackParamList,
 	ProfileStackParamList,
 	ProfileStackScreenProps
 } from '../navigation/types';
@@ -54,14 +52,21 @@ const Profile: React.FC<ProfileStackScreenProps<'Profile.Main'>> = ({
 	navigation
 }) => {
 	const headerHeight = useHeaderHeight();
-	const logOut = useStore(useShallow(state => state.logOut));
+	const rootNavigation = useNavigation<NavigationProp<AppStackParamList>>();
+	const logoutMutation = useLogoutMutation();
+	const { data } = useCurrentUserQuery();
+	const isGuest = data?.user?.isAnonymous ?? false;
 
 	const confirmLogOut = React.useCallback(() => {
 		Alert.alert('Log Out', 'Are you sure you want to log out?', [
 			{ text: 'Cancel', style: 'cancel' },
-			{ text: 'Log Out', style: 'destructive', onPress: logOut }
+			{
+				text: 'Log Out',
+				style: 'destructive',
+				onPress: () => logoutMutation.mutate()
+			}
 		]);
-	}, [logOut]);
+	}, [logoutMutation]);
 
 	return (
 		<Screen>
@@ -70,6 +75,13 @@ const Profile: React.FC<ProfileStackScreenProps<'Profile.Main'>> = ({
 			<UserCard />
 
 			<Spacer y={12} />
+
+			{isGuest && (
+				<ProfileRow
+					title='Sign in or create an account'
+					onPress={() => rootNavigation.navigate('Authenticate')}
+				/>
+			)}
 
 			<ProfileRow
 				title='Manage Account'
@@ -179,7 +191,9 @@ const UserCard: React.FC = () => {
 			<View style={{ marginLeft: 12 }}>
 				<Typography weight='medium'>{data.user.name}</Typography>
 				<Spacer y={2} />
-				<Typography variant='secondary'>{data.user.email}</Typography>
+				<Typography variant='secondary'>
+					{data.user.email ?? 'Guest session'}
+				</Typography>
 			</View>
 		</Pressable>
 	);

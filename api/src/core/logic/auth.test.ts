@@ -84,6 +84,11 @@ const fakeContext = (tokens: RefreshRow[], sessions: SessionRow[]) => {
 		}
 	};
 
+	const redis = {
+		set: mock(async () => {}),
+		expire: mock(async () => {})
+	};
+
 	return {
 		var: {
 			prisma: {
@@ -91,9 +96,10 @@ const fakeContext = (tokens: RefreshRow[], sessions: SessionRow[]) => {
 				storeManager: {
 					findUnique: mock(async () => null)
 				}
-			}
+			},
+			redis
 		},
-		_state: { tokens, sessions, tx }
+		_state: { tokens, sessions, tx, redis }
 	} as any;
 };
 

@@ -56,7 +56,9 @@ export const errorHandler: ErrorHandler = (err, c) => {
 		const auth = ctx.var?.auth;
 
 		if (auth?.id) {
-			scope.setUser({ id: auth.id, email: auth.email });
+			scope.setUser(
+				auth.email ? { id: auth.id, email: auth.email } : { id: auth.id }
+			);
 		}
 
 		return scope;

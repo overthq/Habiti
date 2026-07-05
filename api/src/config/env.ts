@@ -14,6 +14,9 @@ const envSchema = z.object({
 	APPLE_CLIENT_ID: z.string().optional(),
 	APPLE_CLIENT_SECRET: z.string().optional(),
 	APPLE_REDIRECT_URI: z.string().optional(),
+	APPLE_BUNDLE_IDS: z
+		.string()
+		.default('app.habiti.app,app.habiti.app.dev,app.habiti.app.preview'),
 	PAYSTACK_SECRET_KEY: z.string(),
 	REDIS_URL: z.string().optional(),
 	REDIS_TLS_URL: z.string().optional(),

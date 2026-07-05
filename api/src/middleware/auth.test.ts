@@ -67,7 +67,14 @@ const buildApp = (redis: any) => {
 
 const signAccessToken = (sessionId: string, userId = randomUUID()) =>
 	jwt.sign(
-		{ id: userId, name: 'T', email: 't@example.com', role: 'user', sessionId },
+		{
+			id: userId,
+			name: 'T',
+			email: 't@example.com',
+			role: 'user',
+			typ: 'access',
+			sessionId
+		},
 		env.JWT_SECRET,
 		{ algorithm: 'HS256', expiresIn: '10m' }
 	);
@@ -143,7 +150,13 @@ describe('authenticate + session deny-list', () => {
 		const redis = fakeRedis();
 		const app = buildApp(redis);
 		const tokenNoSession = jwt.sign(
-			{ id: randomUUID(), name: 'T', email: 't@x', role: 'user' },
+			{
+				id: randomUUID(),
+				name: 'T',
+				email: 't@x',
+				role: 'user',
+				typ: 'access'
+			},
 			env.JWT_SECRET,
 			{ algorithm: 'HS256', expiresIn: '10m' }
 		);
@@ -151,5 +164,46 @@ describe('authenticate + session deny-list', () => {
 		const res = await app.request(authedRequest(tokenNoSession));
 		expect(res.status).toBe(200);
 		expect(redis.get).not.toHaveBeenCalled();
+	});
+
+	test('refresh token presented as a bearer token → 401', async () => {
+		// Refresh tokens share the signing secret; without the `typ` check a
+		// 30-day refresh token would double as an access token.
+		const redis = fakeRedis();
+		const app = buildApp(redis);
+		const refreshToken = jwt.sign(
+			{
+				id: randomUUID(),
+				userId: randomUUID(),
+				sessionId: randomUUID(),
+				typ: 'refresh'
+			},
+			env.JWT_SECRET,
+			{ algorithm: 'HS256', expiresIn: '30d' }
+		);
+
+		const res = await app.request(authedRequest(refreshToken));
+		expect(res.status).toBe(401);
+	});
+
+	test('admin refresh token presented as a bearer token → 401', async () => {
+		// Admin refresh tokens carry role: 'admin'; before the `typ` check
+		// they satisfied even adminOnly routes.
+		const redis = fakeRedis();
+		const app = buildApp(redis);
+		const adminRefreshToken = jwt.sign(
+			{
+				id: randomUUID(),
+				adminId: randomUUID(),
+				sessionId: randomUUID(),
+				role: 'admin',
+				typ: 'refresh'
+			},
+			env.JWT_SECRET,
+			{ algorithm: 'HS256', expiresIn: '30d' }
+		);
+
+		const res = await app.request(authedRequest(adminRefreshToken));
+		expect(res.status).toBe(401);
 	});
 });

@@ -47,10 +47,20 @@ const Verify = ({ navigation }: AppStackScreenProps<'Verify'>) => {
 	const code = methods.watch('code');
 
 	const onSubmit = (values: VerifyFormValues) => {
-		verifyCodeMutation.mutate({
-			email: params.email,
-			code: values.code
-		});
+		verifyCodeMutation.mutate(
+			{
+				email: params.email,
+				code: values.code
+			},
+			{
+				onSuccess: () => {
+					// Guest upgrades keep the same navigator mounted (the token
+					// stays truthy), so leave the auth screens explicitly. For a
+					// fresh login the stack flip unmounts them and this is a no-op.
+					navigation.popToTop();
+				}
+			}
+		);
 	};
 
 	const handleBack = () => {

@@ -30,7 +30,7 @@ import type {
 } from './types';
 import useStore from '../state';
 import env from '../../env';
-import { refreshAuthTokens } from '../utils/refreshManager';
+import { refreshAuthTokens, startGuestSession } from '../utils/refreshManager';
 import {
 	computeRetryDelayMs,
 	extractRetryAfterSec,
@@ -85,8 +85,17 @@ api.interceptors.response.use(
 				originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 				return api(originalRequest);
 			} catch (refreshError) {
-				useStore.getState().logOut();
-				return Promise.reject(refreshError);
+				// Session is unrecoverable (revoked/expired). Degrade to a
+				// fresh guest session so the app stays usable; only log out
+				// to the Landing screen if even that fails (offline).
+				try {
+					const { accessToken } = await startGuestSession();
+					originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+					return api(originalRequest);
+				} catch {
+					useStore.getState().logOut();
+					return Promise.reject(refreshError);
+				}
 			}
 		}
 
@@ -242,7 +251,10 @@ export const getOrder = async (orderId: string) => {
 };
 
 export const createOrder = async (body: CreateOrderBody) => {
-	const response = await api.post<CreateOrderResponse>('/orders', body);
+	const response = await api.post<CreateOrderResponse>(
+		'/users/current/orders',
+		body
+	);
 	return response.data;
 };
 

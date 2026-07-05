@@ -31,6 +31,13 @@ export const auth = (options: AuthOptions = {}) => {
 			await jwtMiddleware(c, async () => {});
 			const payload = c.get('jwtPayload');
 
+			// Refresh tokens are signed with the same secret; without this
+			// check a (30-day) refresh token — including admin ones carrying
+			// role: 'admin' — would be accepted as a bearer access token.
+			if (payload.typ !== 'access') {
+				throw new HTTPException(401, { message: 'Invalid or expired token' });
+			}
+
 			if (adminOnly && payload.role !== 'admin') {
 				throw new HTTPException(403, { message: 'Forbidden' });
 			}
@@ -58,6 +65,17 @@ export const auth = (options: AuthOptions = {}) => {
 export const authenticate = auth({ required: true });
 export const optionalAuth = auth({ required: false });
 export const isAdmin = auth({ required: true, adminOnly: true });
+
+// Blocks anonymous (guest) sessions from endpoints that require a full
+// account, e.g. moving money. Compose after an auth middleware.
+export const requireFullAccount = createMiddleware<AppEnv>(async (c, next) => {
+	if (c.var.auth?.anonymous) {
+		throw new HTTPException(403, {
+			message: 'A full account is required for this action'
+		});
+	}
+	return next();
+});
 export const authenticateProd = auth({
 	required: env.NODE_ENV === 'production'
 });

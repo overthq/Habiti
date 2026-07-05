@@ -7,7 +7,9 @@ import {
 	useRoute
 } from '@react-navigation/native';
 
-import { useCartQuery } from '../data/queries';
+import { Alert } from 'react-native';
+
+import { useCartQuery, useCurrentUserQuery } from '../data/queries';
 import {
 	useCreateOrderMutation,
 	useUpdateCartProductMutation
@@ -51,6 +53,7 @@ const CartProvider: React.FC<CartProviderProps> = ({
 }) => {
 	const updateCartProductMutation = useUpdateCartProductMutation();
 	const createOrderMutation = useCreateOrderMutation();
+	const currentUserQuery = useCurrentUserQuery();
 
 	const { navigate, goBack } =
 		useNavigation<NavigationProp<AppStackParamList>>();
@@ -141,6 +144,18 @@ const CartProvider: React.FC<CartProviderProps> = ({
 	);
 
 	const handleSubmit = React.useCallback(async () => {
+		if (currentUserQuery.data?.user?.isAnonymous) {
+			Alert.alert(
+				'Sign in to order',
+				'Create an account or sign in to complete your order. Your cart will be saved.',
+				[
+					{ text: 'Cancel', style: 'cancel' },
+					{ text: 'Sign in', onPress: () => navigate('Authenticate') }
+				]
+			);
+			return;
+		}
+
 		try {
 			const orderData = await createOrderMutation.mutateAsync({
 				cartId: cart.id,
@@ -164,6 +179,7 @@ const CartProvider: React.FC<CartProviderProps> = ({
 		navigate,
 		goBack,
 		createOrderMutation,
+		currentUserQuery.data,
 		setPreference
 	]);
 

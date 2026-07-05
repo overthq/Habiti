@@ -103,6 +103,13 @@ export const authorizeCard = async (
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
+	if (!c.var.auth.email) {
+		throw new LogicError(
+			LogicErrorCode.Forbidden,
+			'A full account is required to make payments'
+		);
+	}
+
 	let amount = 5000;
 
 	if (input.orderId) {

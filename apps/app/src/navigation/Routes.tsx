@@ -300,13 +300,11 @@ const Routes: React.FC = () => {
 							</AppStack.Group>
 						</>
 					) : (
-						<>
-							<AppStack.Screen name='Landing' component={Landing} />
-							<AppStack.Screen name='Register' component={Register} />
-							<AppStack.Screen name='Authenticate' component={Authenticate} />
-							<AppStack.Screen name='Verify' component={Verify} />
-						</>
+						<AppStack.Screen name='Landing' component={Landing} />
 					)}
+					<AppStack.Screen name='Register' component={Register} />
+					<AppStack.Screen name='Authenticate' component={Authenticate} />
+					<AppStack.Screen name='Verify' component={Verify} />
 				</AppStack.Navigator>
 			</NavigationContainer>
 		</>
