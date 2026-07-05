@@ -6,24 +6,25 @@ import {
 	Spacer,
 	Typography
 } from '@habiti/components';
-import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuthenticateMutation } from '../hooks/mutations';
+import type { AppStackScreenProps } from '../navigation/types';
 
 interface AuthenticateFormValues {
 	email: string;
 }
 
-const Authenticate = () => {
+const Authenticate: React.FC<AppStackScreenProps<'Authenticate'>> = ({
+	navigation
+}) => {
 	const authenticateMutation = useAuthenticateMutation();
 	const { control, handleSubmit } = useForm<AuthenticateFormValues>({
 		defaultValues: { email: '' }
 	});
-	const { goBack } = useNavigation();
 
 	const onSubmit = (values: AuthenticateFormValues) => {
 		authenticateMutation.mutate({
@@ -34,7 +35,7 @@ const Authenticate = () => {
 	return (
 		<Screen style={{ padding: 16 }}>
 			<SafeAreaView style={{ flex: 1 }}>
-				<Pressable onPress={goBack}>
+				<Pressable onPress={navigation.goBack}>
 					<Icon name='chevron-left' />
 				</Pressable>
 

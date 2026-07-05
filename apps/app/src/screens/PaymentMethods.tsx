@@ -7,7 +7,6 @@ import {
 	Pressable
 } from 'react-native';
 import { Icon, Screen, Typography, useTheme } from '@habiti/components';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { HeaderButton } from '@react-navigation/elements';
 
 import { VisaIcon, MastercardIcon } from '../components/CardIcons';
@@ -17,16 +16,16 @@ const CardIconMap = {
 	mastercard: <MastercardIcon />
 } as const;
 
-import { AppStackParamList } from '../navigation/types';
+import type { ProfileStackScreenProps } from '../navigation/types';
 import { useCardsQuery } from '../data/queries';
 import { useDeleteCardMutation } from '../data/mutations';
 import { Card } from '../data/types';
 import useStore from '../state';
 
-const PaymentMethods = () => {
+const PaymentMethods: React.FC<
+	ProfileStackScreenProps<'Profile.PaymentMethods'>
+> = ({ navigation }) => {
 	const { data, isLoading } = useCardsQuery();
-	const { navigate, setOptions } =
-		useNavigation<NavigationProp<AppStackParamList>>();
 	const [focusedCardId, setFocusedCardId] = React.useState<string>();
 	const deleteCard = useDeleteCardMutation();
 	const { defaultCard, setPreference } = useStore();
@@ -71,9 +70,9 @@ const PaymentMethods = () => {
 
 	React.useLayoutEffect(() => {
 		const handleAddCard = () =>
-			navigate('Modal.AddCard', { orderId: undefined });
+			navigation.navigate('Modal.AddCard', { orderId: undefined });
 
-		setOptions({
+		navigation.setOptions({
 			headerRight: () => (
 				<HeaderButton onPress={handleAddCard}>
 					<Icon name='plus' />
@@ -88,7 +87,7 @@ const PaymentMethods = () => {
 				}
 			]
 		});
-	}, [navigate, setOptions]);
+	}, [navigation]);
 
 	const cards = data?.cards;
 

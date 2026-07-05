@@ -5,12 +5,12 @@ import {
 	Spacer,
 	Typography
 } from '@habiti/components';
-import { useNavigation } from '@react-navigation/native';
 import { FormProvider, useForm } from 'react-hook-form';
 import { HeaderButton } from '@react-navigation/elements';
 import { z } from 'zod';
 
 import { useCreateProductMutation } from '../data/mutations';
+import type { AppStackScreenProps } from '../navigation/types';
 
 export interface ProductFormData {
 	name: string;
@@ -26,8 +26,9 @@ const addProductSchema = z.object({
 	quantity: z.string().min(1)
 });
 
-const AddProduct = () => {
-	const { goBack, setOptions } = useNavigation();
+const AddProduct: React.FC<AppStackScreenProps<'Modal.AddProduct'>> = ({
+	navigation
+}) => {
 	const createProductMutation = useCreateProductMutation();
 
 	const formMethods = useForm<z.infer<typeof addProductSchema>>({
@@ -52,13 +53,13 @@ const AddProduct = () => {
 			// For retries (if it's just a network thing), or for observing
 			// the state that led to the error.
 
-			goBack();
+			navigation.goBack();
 		},
-		[createProductMutation, goBack]
+		[createProductMutation, navigation]
 	);
 
 	React.useLayoutEffect(() => {
-		setOptions({
+		navigation.setOptions({
 			headerRight: () => (
 				<HeaderButton
 					disabled={createProductMutation.isPending}
@@ -76,10 +77,11 @@ const AddProduct = () => {
 				}
 			]
 		});
-	}, [setOptions, formMethods, onSubmit, createProductMutation.isPending]);
+	}, [navigation, formMethods, onSubmit, createProductMutation.isPending]);
 
 	return (
 		<ScrollableScreen>
+			<Spacer y={16} />
 			<FormProvider {...formMethods}>
 				<FormInput
 					name='name'

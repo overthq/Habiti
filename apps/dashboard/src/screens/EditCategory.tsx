@@ -4,21 +4,21 @@ import {
 	ScrollableScreen,
 	Spacer
 } from '@habiti/components';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { useUpdateProductCategoryMutation } from '../data/mutations';
-import { AppStackParamList } from '../navigation/types';
+import type { AppStackScreenProps } from '../navigation/types';
 
 interface EditCategoryFormValues {
 	name: string;
 	description: string;
 }
 
-const EditCategory = () => {
-	const { params } =
-		useRoute<RouteProp<AppStackParamList, 'Modal.EditCategory'>>();
-	const { goBack } = useNavigation();
+const EditCategory: React.FC<AppStackScreenProps<'Modal.EditCategory'>> = ({
+	navigation,
+	route
+}) => {
+	const { params } = route;
 	const updateCategoryMutation = useUpdateProductCategoryMutation();
 
 	const onSubmit = async (values: EditCategoryFormValues) => {
@@ -27,7 +27,7 @@ const EditCategory = () => {
 			body: values
 		});
 
-		goBack();
+		navigation.goBack();
 	};
 
 	const methods = useForm<EditCategoryFormValues>({
@@ -39,6 +39,7 @@ const EditCategory = () => {
 
 	return (
 		<ScrollableScreen>
+			<Spacer y={16} />
 			<FormProvider {...methods}>
 				<FormInput label='Name' name='name' control={methods.control} />
 				<Spacer y={8} />

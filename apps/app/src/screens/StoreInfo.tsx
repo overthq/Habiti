@@ -18,16 +18,15 @@ import {
 	Typography,
 	useTheme
 } from '@habiti/components';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-
 import { useStoreQuery } from '../data/queries';
-import { AppStackParamList } from '../navigation/types';
+import type { AppStackScreenProps } from '../navigation/types';
 import { getFrontendUrl } from '../utils/links';
 
-const StoreInfo = () => {
-	const { params } =
-		useRoute<RouteProp<AppStackParamList, 'Modal.StoreInfo'>>();
-	const { goBack } = useNavigation();
+const StoreInfo: React.FC<AppStackScreenProps<'Modal.StoreInfo'>> = ({
+	navigation,
+	route
+}) => {
+	const { params } = route;
 	const { data, isLoading } = useStoreQuery(params.storeId);
 	const { theme } = useTheme();
 
@@ -66,7 +65,7 @@ const StoreInfo = () => {
 						Alert.alert(
 							'Report submitted',
 							'Thanks for letting us know. Our team will review this store.',
-							[{ text: 'OK', onPress: goBack }]
+							[{ text: 'OK', onPress: navigation.goBack }]
 						);
 					}
 				}

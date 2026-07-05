@@ -10,7 +10,6 @@ import {
 	Typography
 } from '@habiti/components';
 import { formatNaira } from '@habiti/common';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -23,19 +22,16 @@ import useStore from '../state';
 import { useShallow } from 'zustand/react/shallow';
 import { getFrontendUrl } from '../utils/share';
 
-import type {
-	AppStackParamList,
-	StoreStackParamList
-} from '../navigation/types';
+import type { StoreStackScreenProps } from '../navigation/types';
 import StoreHeader from '../components/store/StoreHeader';
 import Refresher from '../components/Refresher';
 
-const Store = () => {
+const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
+	navigation
+}) => {
 	const { data, refetch, isLoading, error } = useCurrentStoreQuery();
 	const { data: addressesData } = useAddressesQuery();
 	const { isRefreshing, onRefresh } = useRefresh({ refetch });
-	const { navigate } =
-		useNavigation<NavigationProp<AppStackParamList & StoreStackParamList>>();
 	const { top } = useSafeAreaInsets();
 	const { logOut } = useStore(useShallow(({ logOut }) => ({ logOut })));
 	const modalRef = React.useRef<BottomSheetModal>(null);
@@ -52,7 +48,7 @@ const Store = () => {
 			return;
 		}
 
-		navigate('Modal.AddPayout', {
+		navigation.navigate('Modal.AddPayout', {
 			realizedRevenue: data.store.realizedRevenue ?? 0,
 			paidOut: data.store.paidOut ?? 0
 		});
@@ -63,12 +59,12 @@ const Store = () => {
 	}, []);
 
 	const handleOpenBalanceDetails = React.useCallback(() => {
-		navigate('BalanceDetails');
-	}, [navigate]);
+		navigation.navigate('BalanceDetails');
+	}, [navigation]);
 
 	const handleOpenSettings = React.useCallback(() => {
-		navigate('StoreSettings');
-	}, [navigate]);
+		navigation.navigate('StoreSettings');
+	}, [navigation]);
 
 	const handleOpenWebPage = React.useCallback(() => {
 		if (data?.store) {

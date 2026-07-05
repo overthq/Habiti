@@ -8,14 +8,13 @@ import {
 	Spacer,
 	Typography
 } from '@habiti/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { HeaderButton } from '@react-navigation/elements';
 
 import FAB from '../components/products/FAB';
 import Refresher from '../components/Refresher';
 import useRefresh from '../hooks/useRefresh';
 import { useAddressesQuery } from '../data/queries';
-import { AppStackParamList } from '../navigation/types';
+import type { StoreStackScreenProps } from '../navigation/types';
 import { Address } from '../data/types';
 
 interface AddressListItemProps {
@@ -39,18 +38,18 @@ const AddressListItem: React.FC<AddressListItemProps> = ({
 	);
 };
 
-const Addresses = () => {
+const Addresses: React.FC<StoreStackScreenProps<'Addresses'>> = ({
+	navigation
+}) => {
 	const { data, isLoading, refetch } = useAddressesQuery();
 	const { isRefreshing, onRefresh } = useRefresh({ refetch });
-	const { navigate, setOptions } =
-		useNavigation<NavigationProp<AppStackParamList>>();
 
 	const handleAddAddress = React.useCallback(() => {
-		navigate('Modal.AddAddress');
-	}, [navigate]);
+		navigation.navigate('Modal.AddAddress');
+	}, [navigation]);
 
 	React.useLayoutEffect(() => {
-		setOptions({
+		navigation.setOptions({
 			headerRight: () => (
 				<HeaderButton onPress={handleAddAddress}>
 					<Icon name='plus' />
@@ -65,10 +64,10 @@ const Addresses = () => {
 				}
 			]
 		});
-	}, [setOptions, handleAddAddress]);
+	}, [navigation, handleAddAddress]);
 
 	const handleAddressPress = (address: Address) => () => {
-		navigate('Modal.EditAddress', {
+		navigation.navigate('Modal.EditAddress', {
 			addressId: address.id,
 			name: address.name,
 			line1: address.line1,

@@ -2,25 +2,17 @@ import React from 'react';
 import { Screen, Checkbox, Typography, Spacer } from '@habiti/components';
 import { View, StyleSheet } from 'react-native';
 import { HeaderButton } from '@react-navigation/elements';
-import {
-	NavigationProp,
-	RouteProp,
-	useNavigation,
-	useRoute
-} from '@react-navigation/native';
 
 import FAB from '../components/products/FAB';
 
 import { useCategoriesQuery } from '../data/queries';
 import { useUpdateProductCategoriesMutation } from '../data/mutations';
-import { AppStackParamList } from '../navigation/types';
+import type { AppStackScreenProps } from '../navigation/types';
 
-const ProductCategories = () => {
-	const {
-		params: { productId, categories }
-	} = useRoute<RouteProp<AppStackParamList, 'Modal.EditProductCategories'>>();
-	const { navigate, goBack, setOptions } =
-		useNavigation<NavigationProp<AppStackParamList>>();
+const ProductCategories: React.FC<
+	AppStackScreenProps<'Modal.EditProductCategories'>
+> = ({ navigation, route }) => {
+	const { productId, categories } = route.params;
 	const { data } = useCategoriesQuery();
 	const [selectedCategories, setSelectedCategories] = React.useState<string[]>(
 		() => categories.map(({ categoryId }) => categoryId)
@@ -28,8 +20,8 @@ const ProductCategories = () => {
 	const updateProductCategoriesMutation = useUpdateProductCategoriesMutation();
 
 	const handleAddCategory = React.useCallback(() => {
-		navigate('Modal.AddCategory');
-	}, [navigate]);
+		navigation.navigate('Modal.AddCategory');
+	}, [navigation]);
 
 	const disabled = React.useMemo(() => {
 		const originalCategoryIds = categories
@@ -66,24 +58,24 @@ const ProductCategories = () => {
 			body: { add, remove }
 		});
 
-		goBack();
+		navigation.goBack();
 	}, [
 		selectedCategories,
 		categories,
 		updateProductCategoriesMutation,
-		goBack,
+		navigation,
 		productId
 	]);
 
 	React.useLayoutEffect(() => {
-		setOptions({
+		navigation.setOptions({
 			headerRight: () => (
 				<HeaderButton disabled={disabled} onPress={handleUpdateCategories}>
 					<Typography>Save</Typography>
 				</HeaderButton>
 			)
 		});
-	}, [disabled, handleUpdateCategories, setOptions]);
+	}, [disabled, handleUpdateCategories, navigation]);
 
 	return (
 		<Screen>

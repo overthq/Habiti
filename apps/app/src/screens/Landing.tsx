@@ -5,16 +5,13 @@ import {
 	TextButton,
 	Typography
 } from '@habiti/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AppStackParamList } from '../navigation/types';
+import type { AppStackScreenProps } from '../navigation/types';
 
-const Landing = () => {
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-
+const Landing: React.FC<AppStackScreenProps<'Landing'>> = ({ navigation }) => {
 	return (
 		<Screen style={{ paddingHorizontal: 16, justifyContent: 'center' }}>
 			<SafeAreaView style={{ flex: 1 }}>
@@ -29,12 +26,15 @@ const Landing = () => {
 					</Typography>
 				</View>
 				<View style={{ flex: 1, justifyContent: 'flex-end' }}>
-					<Button text='Sign up' onPress={() => navigate('Register')} />
+					<Button
+						text='Sign up'
+						onPress={() => navigation.navigate('Register')}
+					/>
 					<Spacer y={12} />
 					<TextButton
 						weight='medium'
 						style={{ alignSelf: 'center' }}
-						onPress={() => navigate('Authenticate')}
+						onPress={() => navigation.navigate('Authenticate')}
 					>
 						Already have an account? Log in.
 					</TextButton>
