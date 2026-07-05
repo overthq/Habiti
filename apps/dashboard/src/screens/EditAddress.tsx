@@ -4,11 +4,10 @@ import {
 	ScrollableScreen,
 	Spacer
 } from '@habiti/components';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { useUpdateAddressMutation } from '../data/mutations';
-import { AppStackParamList } from '../navigation/types';
+import type { AppStackScreenProps } from '../navigation/types';
 
 interface EditAddressFormValues {
 	name: string;
@@ -20,10 +19,11 @@ interface EditAddressFormValues {
 	postcode: string;
 }
 
-const EditAddress = () => {
-	const { params } =
-		useRoute<RouteProp<AppStackParamList, 'Modal.EditAddress'>>();
-	const { goBack } = useNavigation();
+const EditAddress: React.FC<AppStackScreenProps<'Modal.EditAddress'>> = ({
+	navigation,
+	route
+}) => {
+	const { params } = route;
 	const updateAddressMutation = useUpdateAddressMutation();
 
 	const onSubmit = async (values: EditAddressFormValues) => {
@@ -37,7 +37,7 @@ const EditAddress = () => {
 			}
 		});
 
-		goBack();
+		navigation.goBack();
 	};
 
 	const methods = useForm<EditAddressFormValues>({

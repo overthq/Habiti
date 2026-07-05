@@ -8,8 +8,6 @@ import {
 	Typography,
 	useTheme
 } from '@habiti/components';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { FlashList } from '@shopify/flash-list';
 import { formatNaira } from '@habiti/common';
 
@@ -19,19 +17,20 @@ import { plural } from '../utils/strings';
 import { relativeTimestamp } from '../utils/date';
 
 import type { Order } from '../data/types';
-import type { HomeStackParamList } from '../navigation/types';
+import type { HomeStackScreenProps } from '../navigation/types';
 
-const Orders = () => {
+const Orders: React.FC<HomeStackScreenProps<'Home.Orders'>> = ({
+	navigation
+}) => {
 	const { data, isLoading, refetch } = useOrdersQuery();
-	const { navigate } = useNavigation<StackNavigationProp<HomeStackParamList>>();
 	const { refreshing, refresh } = useRefresh({ refetch });
 	const { theme } = useTheme();
 
 	const handleOrderPress = React.useCallback(
 		(orderId: string) => () => {
-			navigate('Home.Order', { orderId });
+			navigation.navigate('Home.Order', { orderId });
 		},
-		[navigate]
+		[navigation]
 	);
 
 	if (isLoading && !data) return <View />;

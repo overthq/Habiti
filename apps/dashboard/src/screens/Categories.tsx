@@ -1,6 +1,5 @@
 import React from 'react';
 import { View } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import {
 	EmptyState,
 	Icon,
@@ -15,7 +14,7 @@ import Refresher from '../components/Refresher';
 
 import useRefresh from '../hooks/useRefresh';
 import { useCategoriesQuery } from '../data/queries';
-import { AppStackParamList } from '../navigation/types';
+import type { StoreStackScreenProps } from '../navigation/types';
 import { StoreProductCategory } from '../data/types';
 
 interface CategoriesListItemProps {
@@ -34,18 +33,18 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
 	);
 };
 
-const Categories = () => {
+const Categories: React.FC<StoreStackScreenProps<'Categories'>> = ({
+	navigation
+}) => {
 	const { data, isLoading, refetch } = useCategoriesQuery();
 	const { isRefreshing, onRefresh } = useRefresh({ refetch });
-	const { navigate, setOptions } =
-		useNavigation<NavigationProp<AppStackParamList>>();
 
 	const handleAddCategory = React.useCallback(() => {
-		navigate('Modal.AddCategory');
-	}, [navigate]);
+		navigation.navigate('Modal.AddCategory');
+	}, [navigation]);
 
 	React.useLayoutEffect(() => {
-		setOptions({
+		navigation.setOptions({
 			headerRight: () => (
 				<HeaderButton onPress={handleAddCategory}>
 					<Icon name='plus' />
@@ -63,10 +62,10 @@ const Categories = () => {
 				}
 			]
 		});
-	}, [setOptions, handleAddCategory]);
+	}, [navigation, handleAddCategory]);
 
 	const handleCategoryPress = (category: StoreProductCategory) => () => {
-		navigate('Modal.EditCategory', {
+		navigation.navigate('Modal.EditCategory', {
 			categoryId: category.id,
 			name: category.name,
 			description: category.description

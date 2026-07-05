@@ -1,5 +1,4 @@
 import { Avatar, Row, Screen, Typography, useTheme } from '@habiti/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
 import {
@@ -13,17 +12,18 @@ import {
 import { useUnfollowStoreMutation } from '../data/mutations';
 import { useStoresFollowedQuery } from '../data/queries';
 import type { Store } from '../data/types';
-import { HomeStackParamList } from '../navigation/types';
+import type { HomeStackScreenProps } from '../navigation/types';
 import useRefresh from '../hooks/useRefresh';
 
-const FollowedStores = () => {
+const FollowedStores: React.FC<HomeStackScreenProps<'Home.FollowedStores'>> = ({
+	navigation
+}) => {
 	const { theme } = useTheme();
 	const { data, isLoading, refetch } = useStoresFollowedQuery();
 	const { refreshing, refresh } = useRefresh({ refetch });
-	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();
 
 	const handleStoreItemPress = (storeId: string) => () => {
-		navigate('Home.Store', { storeId });
+		navigation.navigate('Home.Store', { storeId });
 	};
 
 	if (!data) {

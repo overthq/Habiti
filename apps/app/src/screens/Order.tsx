@@ -10,12 +10,7 @@ import {
 	Typography,
 	useTheme
 } from '@habiti/components';
-import {
-	NavigationProp,
-	RouteProp,
-	useNavigation,
-	useRoute
-} from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { View, StyleSheet, RefreshControl } from 'react-native';
 import { formatNaira } from '@habiti/common';
 
@@ -27,7 +22,11 @@ import {
 	OrderStatus,
 	Store
 } from '../data/types';
-import { AppStackParamList, HomeStackParamList } from '../navigation/types';
+import {
+	AppStackParamList,
+	HomeStackParamList,
+	HomeStackScreenProps
+} from '../navigation/types';
 import useRefresh from '../hooks/useRefresh';
 import { relativeTimestamp } from '../utils/date';
 import { plural } from '../utils/strings';
@@ -187,11 +186,11 @@ const PaymentPendingWarning: React.FC<PaymentPendingWarningProps> = ({
 	);
 };
 
-const Order = () => {
-	const {
-		params: { orderId }
-	} = useRoute<RouteProp<HomeStackParamList, 'Home.Order'>>();
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+const Order: React.FC<HomeStackScreenProps<'Home.Order'>> = ({
+	navigation,
+	route
+}) => {
+	const { orderId } = route.params;
 	const { data, isLoading, refetch } = useOrderQuery(orderId);
 	const order = data?.order;
 	const { theme } = useTheme();
@@ -199,9 +198,9 @@ const Order = () => {
 
 	const handleOrderProductPress = React.useCallback(
 		(productId: string) => () => {
-			navigate('Product', { productId });
+			navigation.navigate('Product', { productId });
 		},
-		[navigate]
+		[navigation]
 	);
 
 	if (!order) {

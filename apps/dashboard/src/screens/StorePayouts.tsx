@@ -9,7 +9,7 @@ import {
 	useTheme
 } from '@habiti/components';
 
-import { AppStackParamList } from '../navigation/types';
+import { AppStackParamList, StoreStackScreenProps } from '../navigation/types';
 
 import { useCurrentStoreQuery } from '../data/queries';
 import { useUpdateCurrentStoreMutation } from '../data/mutations';
@@ -36,11 +36,12 @@ const NoPayoutAccount = () => {
 	);
 };
 
-const StorePayouts = () => {
+const StorePayouts: React.FC<StoreStackScreenProps<'Payouts'>> = ({
+	navigation
+}) => {
 	const { data, isLoading, refetch } = useCurrentStoreQuery();
 	const updateStoreMutation = useUpdateCurrentStoreMutation();
 	const { theme } = useTheme();
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 
 	const removePayoutAccount = React.useCallback(async () => {
 		await updateStoreMutation.mutateAsync({
@@ -67,8 +68,8 @@ const StorePayouts = () => {
 	}, [removePayoutAccount]);
 
 	const handleAddPayoutAccount = React.useCallback(() => {
-		navigate('Modal.AddPayoutAccount');
-	}, [navigate]);
+		navigation.navigate('Modal.AddPayoutAccount');
+	}, [navigation]);
 
 	if (isLoading) return <View />;
 

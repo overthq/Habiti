@@ -1,7 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import {
 	Button,
 	FormInput,
@@ -10,6 +9,7 @@ import {
 } from '@habiti/components';
 
 import { useCreateAddressMutation } from '../data/mutations';
+import type { AppStackScreenProps } from '../navigation/types';
 
 interface AddAddressValues {
 	name: string;
@@ -21,9 +21,10 @@ interface AddAddressValues {
 	postcode: string;
 }
 
-const AddAddress = () => {
+const AddAddress: React.FC<AppStackScreenProps<'Modal.AddAddress'>> = ({
+	navigation
+}) => {
 	const createAddressMutation = useCreateAddressMutation();
-	const { goBack } = useNavigation();
 
 	const { control, handleSubmit } = useForm<AddAddressValues>({
 		defaultValues: {
@@ -46,9 +47,9 @@ const AddAddress = () => {
 				...(postcode ? { postcode } : {})
 			});
 
-			goBack();
+			navigation.goBack();
 		},
-		[createAddressMutation, goBack]
+		[createAddressMutation, navigation]
 	);
 
 	return (

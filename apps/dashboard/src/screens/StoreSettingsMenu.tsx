@@ -4,8 +4,10 @@ import { Screen } from '@habiti/components';
 
 import StoreMenuRow from '../components/store/StoreMenuRow';
 
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import type { StoreStackParamList } from '../navigation/types';
+import type {
+	StoreStackParamList,
+	StoreStackScreenProps
+} from '../navigation/types';
 
 type ParamlessStoreRoute = {
 	[K in keyof StoreStackParamList]: StoreStackParamList[K] extends undefined
@@ -13,14 +15,14 @@ type ParamlessStoreRoute = {
 		: never;
 }[keyof StoreStackParamList];
 
-const StoreSettingsMenu = () => {
-	const { navigate } = useNavigation<NavigationProp<StoreStackParamList>>();
-
+const StoreSettingsMenu: React.FC<StoreStackScreenProps<'StoreSettings'>> = ({
+	navigation
+}) => {
 	const handleNavigate = React.useCallback(
 		(screen: ParamlessStoreRoute) => () => {
-			navigate(screen);
+			navigation.navigate(screen);
 		},
-		[navigate]
+		[navigation]
 	);
 
 	return (

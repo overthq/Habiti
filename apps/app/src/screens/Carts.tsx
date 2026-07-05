@@ -11,35 +11,31 @@ import {
 	ScreenHeader,
 	useTheme
 } from '@habiti/components';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-
 import { useCartsQuery } from '../data/queries';
 import useRefresh from '../hooks/useRefresh';
 
 import { plural } from '../utils/strings';
 
 import type { Cart } from '../data/types';
-import type { AppStackParamList, MainTabParamList } from '../navigation/types';
+import type { AppStackScreenProps } from '../navigation/types';
 
-const Carts = () => {
+const Carts: React.FC<AppStackScreenProps<'App.Carts'>> = ({ navigation }) => {
 	const { data, refetch } = useCartsQuery();
 	const { refreshing, refresh } = useRefresh({ refetch });
-	const { navigate, goBack } =
-		useNavigation<NavigationProp<MainTabParamList & AppStackParamList>>();
 	const { theme } = useTheme();
 
 	const handleCartPress = React.useCallback(
 		(cartId: string) => () => {
-			navigate('Cart', { cartId });
+			navigation.navigate('Cart', { cartId });
 		},
-		[navigate]
+		[navigation]
 	);
 
 	const { top } = useSafeAreaInsets();
 
 	return (
 		<Screen style={{ paddingTop: top }}>
-			<ScreenHeader title='Carts' hasBottomBorder goBack={goBack} />
+			<ScreenHeader title='Carts' hasBottomBorder goBack={navigation.goBack} />
 			<FlatList
 				style={{ flex: 1, marginHorizontal: -16 }}
 				keyExtractor={c => c.id}

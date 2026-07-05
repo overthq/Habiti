@@ -4,9 +4,8 @@ import { Image } from 'expo-image';
 import { HeaderButton } from '@react-navigation/elements';
 import { Screen, Spacer, Typography } from '@habiti/components';
 import * as ImagePicker from 'expo-image-picker';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { AppStackParamList } from '../navigation/types';
+import type { AppStackScreenProps } from '../navigation/types';
 import { useUpdateProductMutation } from '../data/mutations';
 import { uploadImage } from '../data/requests';
 import FAB from '../components/products/FAB';
@@ -17,18 +16,16 @@ interface UploadedImage {
 	previewUri: string;
 }
 
-const ProductImages = () => {
+const ProductImages: React.FC<
+	AppStackScreenProps<'Modal.EditProductImages'>
+> = ({ navigation, route }) => {
 	const [uploadedImages, setUploadedImages] = React.useState<UploadedImage[]>(
 		[]
 	);
 	const [uploading, setUploading] = React.useState(false);
 	const updateProductMutation = useUpdateProductMutation();
 
-	const {
-		params: { productId, images }
-	} = useRoute<RouteProp<AppStackParamList, 'Modal.EditProductImages'>>();
-
-	const { goBack, setOptions } = useNavigation();
+	const { productId, images } = route.params;
 
 	const handleSaveImages = React.useCallback(async () => {
 		try {
@@ -44,14 +41,14 @@ const ProductImages = () => {
 				body: { images: [...existingImages, ...newImages] }
 			});
 
-			goBack();
+			navigation.goBack();
 		} catch (error) {
 			console.log({ error });
 		}
-	}, [updateProductMutation, goBack, uploadedImages, productId, images]);
+	}, [updateProductMutation, navigation, uploadedImages, productId, images]);
 
 	React.useLayoutEffect(() => {
-		setOptions({
+		navigation.setOptions({
 			headerRight: () => (
 				<HeaderButton
 					disabled={
@@ -70,7 +67,7 @@ const ProductImages = () => {
 			)
 		});
 	}, [
-		setOptions,
+		navigation,
 		handleSaveImages,
 		uploadedImages.length,
 		uploading,

@@ -1,7 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import {
 	Button,
 	FormInput,
@@ -10,15 +9,17 @@ import {
 } from '@habiti/components';
 
 import { useCreateProductCategoryMutation } from '../data/mutations';
+import type { AppStackScreenProps } from '../navigation/types';
 
 interface AddCategoryValues {
 	name: string;
 	description: string;
 }
 
-const AddCategory = () => {
+const AddCategory: React.FC<AppStackScreenProps<'Modal.AddCategory'>> = ({
+	navigation
+}) => {
 	const createProductCategoryMutation = useCreateProductCategoryMutation();
-	const { goBack } = useNavigation();
 
 	const { control, handleSubmit } = useForm<AddCategoryValues>({
 		defaultValues: {
@@ -31,9 +32,9 @@ const AddCategory = () => {
 		async (values: AddCategoryValues) => {
 			await createProductCategoryMutation.mutateAsync(values);
 
-			goBack();
+			navigation.goBack();
 		},
-		[createProductCategoryMutation, goBack]
+		[createProductCategoryMutation, navigation]
 	);
 
 	return (

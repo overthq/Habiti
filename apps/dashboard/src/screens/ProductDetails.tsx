@@ -5,16 +5,15 @@ import {
 	Button
 } from '@habiti/components';
 import { FormProvider, useForm } from 'react-hook-form';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { useUpdateProductMutation } from '../data/mutations';
-import { AppStackParamList } from '../navigation/types';
+import type { AppStackScreenProps } from '../navigation/types';
 
-const ProductDetails = () => {
-	const { params } =
-		useRoute<RouteProp<AppStackParamList, 'Modal.EditProductDetails'>>();
+const ProductDetails: React.FC<
+	AppStackScreenProps<'Modal.EditProductDetails'>
+> = ({ navigation, route }) => {
+	const { params } = route;
 	const updateProductMutation = useUpdateProductMutation();
-	const { goBack } = useNavigation();
 
 	const methods = useForm({
 		defaultValues: {
@@ -29,7 +28,7 @@ const ProductDetails = () => {
 				productId: params.productId,
 				body: data
 			});
-			goBack();
+			navigation.goBack();
 		} catch (error) {
 			console.error(error);
 		}

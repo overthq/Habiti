@@ -8,13 +8,13 @@ import {
 	Typography
 } from '@habiti/components';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 import { Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { z } from 'zod';
 
 import { useAuthenticateMutation } from '../data/mutations';
+import type { AppStackScreenProps } from '../navigation/types';
 
 const authenticateSchema = z.object({
 	email: z.string().email('Invalid email address')
@@ -22,9 +22,9 @@ const authenticateSchema = z.object({
 
 type AuthenticateFormValues = z.infer<typeof authenticateSchema>;
 
-const Authenticate = () => {
-	const { goBack } = useNavigation();
-
+const Authenticate: React.FC<AppStackScreenProps<'Authenticate'>> = ({
+	navigation
+}) => {
 	const methods = useForm<AuthenticateFormValues>({
 		resolver: zodResolver(authenticateSchema),
 		defaultValues: { email: '' }
@@ -41,7 +41,7 @@ const Authenticate = () => {
 	return (
 		<Screen>
 			<SafeAreaView style={{ flex: 1 }}>
-				<Pressable onPress={goBack}>
+				<Pressable onPress={navigation.goBack}>
 					<Icon name='chevron-left' />
 				</Pressable>
 				<Spacer y={8} />

@@ -1,7 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
 import {
 	Button,
 	FormInput,
@@ -10,24 +9,26 @@ import {
 } from '@habiti/components';
 
 import { useCreateStoreMutation } from '../data/mutations';
+import type { AppStackScreenProps } from '../navigation/types';
 
 export interface CreateStoreFormValues {
 	name: string;
 	description: string;
 }
 
-const CreateStore = () => {
+const CreateStore: React.FC<AppStackScreenProps<'Modal.CreateStore'>> = ({
+	navigation
+}) => {
 	const createStoreMutation = useCreateStoreMutation();
 	const methods = useForm<CreateStoreFormValues>();
 	const { bottom } = useSafeAreaInsets();
-	const { goBack } = useNavigation();
 
 	const onSubmit = React.useCallback(
 		async (values: CreateStoreFormValues) => {
 			await createStoreMutation.mutateAsync(values);
-			goBack();
+			navigation.goBack();
 		},
-		[createStoreMutation, goBack]
+		[createStoreMutation, navigation]
 	);
 
 	return (

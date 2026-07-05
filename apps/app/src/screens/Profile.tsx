@@ -25,7 +25,10 @@ import useStore from '../state';
 
 import { useCurrentUserQuery } from '../data/queries';
 
-import { ProfileStackParamList } from '../navigation/types';
+import {
+	ProfileStackParamList,
+	ProfileStackScreenProps
+} from '../navigation/types';
 import { useHeaderHeight } from '@react-navigation/elements';
 
 const PRIVACY_POLICY_URL = 'https://habiti.app/privacy-policy';
@@ -47,10 +50,11 @@ const ACCEPTABLE_USE_URL = 'https://habiti.app/acceptable-use';
 * Support
 * Set up your own store*/
 
-const Profile = () => {
+const Profile: React.FC<ProfileStackScreenProps<'Profile.Main'>> = ({
+	navigation
+}) => {
 	const headerHeight = useHeaderHeight();
 	const logOut = useStore(useShallow(state => state.logOut));
-	const { navigate } = useNavigation<NavigationProp<ProfileStackParamList>>();
 
 	const confirmLogOut = React.useCallback(() => {
 		Alert.alert('Log Out', 'Are you sure you want to log out?', [
@@ -69,22 +73,22 @@ const Profile = () => {
 
 			<ProfileRow
 				title='Manage Account'
-				onPress={() => navigate('Profile.AccountSettings')}
+				onPress={() => navigation.navigate('Profile.AccountSettings')}
 			/>
 
 			<ProfileRow
 				title='Payment Methods'
-				onPress={() => navigate('Profile.PaymentMethods')}
+				onPress={() => navigation.navigate('Profile.PaymentMethods')}
 			/>
 
 			<ProfileRow
 				title='Notifications'
-				onPress={() => navigate('Profile.NotificationSettings')}
+				onPress={() => navigation.navigate('Profile.NotificationSettings')}
 			/>
 
 			<ProfileRow
 				title='Appearance'
-				onPress={() => navigate('Profile.Appearance')}
+				onPress={() => navigation.navigate('Profile.Appearance')}
 			/>
 
 			<Separator />

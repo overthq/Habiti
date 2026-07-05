@@ -7,7 +7,6 @@ import {
 	Icon
 } from '@habiti/components';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Pressable } from 'react-native';
@@ -15,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { z } from 'zod';
 
 import { useRegisterMutation } from '../data/mutations';
+import type { AppStackScreenProps } from '../navigation/types';
 
 const registerSchema = z.object({
 	name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -23,8 +23,9 @@ const registerSchema = z.object({
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
-const Register = () => {
-	const { goBack } = useNavigation();
+const Register: React.FC<AppStackScreenProps<'Register'>> = ({
+	navigation
+}) => {
 	const registerMutation = useRegisterMutation();
 	const methods = useForm<RegisterFormValues>({
 		defaultValues: { name: '', email: '' },
@@ -41,7 +42,7 @@ const Register = () => {
 	return (
 		<Screen>
 			<SafeAreaView style={{ flex: 1 }}>
-				<Pressable onPress={goBack}>
+				<Pressable onPress={navigation.goBack}>
 					<Icon name='chevron-left' />
 				</Pressable>
 				<Spacer y={8} />

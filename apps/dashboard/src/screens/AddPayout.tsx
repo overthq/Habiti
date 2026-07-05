@@ -1,19 +1,19 @@
 import React from 'react';
 import { Alert, View } from 'react-native';
 import { Button, Screen, Spacer } from '@habiti/components';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 
 import AmountDisplay from '../components/add-payout/AmountDisplay';
 import PayoutNumpad from '../components/add-payout/PayoutNumpad';
 import { useCreatePayoutMutation } from '../data/mutations';
-import { AppStackParamList } from '../navigation/types';
+import type { AppStackScreenProps } from '../navigation/types';
 
-const AddPayout = () => {
+const AddPayout: React.FC<AppStackScreenProps<'Modal.AddPayout'>> = ({
+	navigation,
+	route
+}) => {
 	const [amount, setAmount] = React.useState('');
 	const createPayoutMutation = useCreatePayoutMutation();
-	const { goBack } = useNavigation();
-	const { params } =
-		useRoute<RouteProp<AppStackParamList, 'Modal.AddPayout'>>();
+	const { params } = route;
 
 	const availableBalance = (params.realizedRevenue - params.paidOut) / 100;
 
@@ -33,8 +33,8 @@ const AddPayout = () => {
 			amount: Number(amount) * 100
 		});
 
-		goBack();
-	}, [amount, createPayoutMutation, goBack]);
+		navigation.goBack();
+	}, [amount, createPayoutMutation, navigation]);
 
 	const lastCharIsDot = React.useMemo(() => {
 		return amount.charAt(amount.length - 1) === '.';

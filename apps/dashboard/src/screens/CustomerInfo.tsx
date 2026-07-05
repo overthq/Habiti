@@ -1,25 +1,20 @@
 import React from 'react';
 import { View } from 'react-native';
 import { ScrollableScreen, Spacer, Typography } from '@habiti/components';
-import {
-	NavigationProp,
-	RouteProp,
-	useNavigation,
-	useRoute
-} from '@react-navigation/native';
 
 import OrderDetail from '../components/customer-info/OrderDetail';
 import { useCustomerInfoQuery } from '../data/queries';
-import type { OrdersStackParamList } from '../navigation/types';
+import type { OrdersStackScreenProps } from '../navigation/types';
 
-const CustomerInfo = () => {
-	const { params } =
-		useRoute<RouteProp<OrdersStackParamList, 'CustomerInfo'>>();
+const CustomerInfo: React.FC<OrdersStackScreenProps<'CustomerInfo'>> = ({
+	navigation,
+	route
+}) => {
+	const { params } = route;
 	const { data, isLoading } = useCustomerInfoQuery(params.userId);
-	const { navigate } = useNavigation<NavigationProp<OrdersStackParamList>>();
 
 	const handleOrderPress = (id: string) => {
-		navigate('Order', { orderId: id });
+		navigation.navigate('Order', { orderId: id });
 	};
 
 	if (isLoading || !data) {
@@ -28,6 +23,7 @@ const CustomerInfo = () => {
 
 	return (
 		<ScrollableScreen>
+			<Spacer y={16} />
 			<Typography weight='medium' size='xlarge'>
 				{data.user.name}
 			</Typography>

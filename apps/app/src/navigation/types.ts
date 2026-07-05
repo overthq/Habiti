@@ -2,7 +2,7 @@ import type {
 	CompositeScreenProps,
 	NavigatorScreenParams
 } from '@react-navigation/native';
-import type { StackScreenProps } from '@react-navigation/stack';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 
 export type AppStackParamList = {
@@ -31,7 +31,7 @@ export type AppStackParamList = {
 };
 
 export type AppStackScreenProps<T extends keyof AppStackParamList> =
-	StackScreenProps<AppStackParamList, T>;
+	NativeStackScreenProps<AppStackParamList, T>;
 
 export type HomeStackParamList = {
 	'Home.Main': undefined;
@@ -47,7 +47,7 @@ export type HomeStackParamList = {
 
 export type HomeStackScreenProps<T extends keyof HomeStackParamList> =
 	CompositeScreenProps<
-		StackScreenProps<HomeStackParamList, T>,
+		NativeStackScreenProps<HomeStackParamList, T>,
 		AppStackScreenProps<'App.Home'>
 	>;
 
@@ -63,7 +63,7 @@ export type ProfileStackParamList = {
 
 export type ProfileStackScreenProps<T extends keyof ProfileStackParamList> =
 	CompositeScreenProps<
-		StackScreenProps<ProfileStackParamList, T>,
+		NativeStackScreenProps<ProfileStackParamList, T>,
 		AppStackScreenProps<'App.Profile'>
 	>;
 
@@ -73,14 +73,14 @@ export type ExploreStackParamList = {
 };
 
 export type ExploreStackScreenProps<T extends keyof ExploreStackParamList> =
-	StackScreenProps<ExploreStackParamList, T>;
+	NativeStackScreenProps<ExploreStackParamList, T>;
 
 export type CartStackParamList = {
 	'Carts.Main': undefined;
 };
 
 export type CartStackScreenProps<T extends keyof CartStackParamList> =
-	StackScreenProps<CartStackParamList, T>;
+	NativeStackScreenProps<CartStackParamList, T>;
 
 export type StoreStackParamList = {
 	'Store.Main': { storeId: string };
@@ -88,7 +88,7 @@ export type StoreStackParamList = {
 };
 
 export type StoreStackScreenProps<T extends keyof StoreStackParamList> =
-	StackScreenProps<StoreStackParamList, T>;
+	NativeStackScreenProps<StoreStackParamList, T>;
 
 export type MainTabParamList = {
 	'Main.ForYou': undefined;
