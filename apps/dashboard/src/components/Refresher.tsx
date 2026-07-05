@@ -1,26 +1,34 @@
 import React from 'react';
-import { RefreshControl } from 'react-native';
+import { RefreshControl, RefreshControlProps } from 'react-native';
 import { useTheme } from '@habiti/components';
 
-interface RefresherProps {
+interface RefresherProps extends Omit<
+	RefreshControlProps,
+	'refreshing' | 'onRefresh'
+> {
 	refreshing: boolean;
 	onRefresh: () => void;
 }
 
-// Module-scope memoized RefreshControl. Rendered as `<Refresher />` inside the
-// main return (after any early returns) so the element isn't constructed on the
-// loading/bail-out path, while prop-equality memoization keeps it stable.
-const Refresher = React.memo(({ refreshing, onRefresh }: RefresherProps) => {
-	const { theme } = useTheme();
+// Thin wrapper around RefreshControl. IMPORTANT: on Android, ScrollView clones
+// the element passed to its `refreshControl` prop and injects the scroll content
+// as `children` (plus a `style`) — see RN's ScrollView.render. We must forward
+// those injected props to the underlying RefreshControl, otherwise the entire
+// scroll content is dropped and the screen renders empty on Android.
+const Refresher = React.memo(
+	({ refreshing, onRefresh, ...rest }: RefresherProps) => {
+		const { theme } = useTheme();
 
-	return (
-		<RefreshControl
-			refreshing={refreshing}
-			onRefresh={onRefresh}
-			tintColor={theme.text.secondary}
-		/>
-	);
-});
+		return (
+			<RefreshControl
+				refreshing={refreshing}
+				onRefresh={onRefresh}
+				tintColor={theme.text.secondary}
+				{...rest}
+			/>
+		);
+	}
+);
 
 Refresher.displayName = 'Refresher';
 
