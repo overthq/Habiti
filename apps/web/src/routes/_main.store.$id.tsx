@@ -7,18 +7,16 @@ import { getStore } from '@/data/requests';
 import { smartAppBannerMeta } from '@/utils/smart-app-banner';
 
 export const Route = createFileRoute('/_main/store/$id')({
-	head: ({ params }) => ({
-		meta: [smartAppBannerMeta(`/store/${params.id}`)]
-	}),
 	loader: ({ context, params }) =>
 		context.queryClient.ensureQueryData({
 			queryKey: ['stores', params.id],
 			queryFn: () => getStore(params.id)
 		}),
-	head: ({ loaderData }) => {
+	head: ({ params, loaderData }) => {
+		const banner = smartAppBannerMeta(`/store/${params.id}`);
 		const store = loaderData?.store;
 
-		if (!store) return {};
+		if (!store) return { meta: banner ? [banner] : [] };
 
 		const title = `${store.name} | Habiti`;
 		const description = store.description ?? `Shop ${store.name} on Habiti.`;
@@ -26,6 +24,7 @@ export const Route = createFileRoute('/_main/store/$id')({
 
 		return {
 			meta: [
+				...(banner ? [banner] : []),
 				{ title },
 				{ name: 'description', content: description },
 				{ property: 'og:type', content: 'website' },

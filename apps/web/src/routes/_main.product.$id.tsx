@@ -22,18 +22,16 @@ import { getProduct } from '@/data/requests';
 import { smartAppBannerMeta } from '@/utils/smart-app-banner';
 
 export const Route = createFileRoute('/_main/product/$id')({
-	head: ({ params }) => ({
-		meta: [smartAppBannerMeta(`/product/${params.id}`)]
-	}),
 	loader: ({ context, params }) =>
 		context.queryClient.ensureQueryData({
 			queryKey: ['products', params.id],
 			queryFn: () => getProduct(params.id)
 		}),
-	head: ({ loaderData }) => {
+	head: ({ params, loaderData }) => {
+		const banner = smartAppBannerMeta(`/product/${params.id}`);
 		const product = loaderData?.product;
 
-		if (!product) return {};
+		if (!product) return { meta: banner ? [banner] : [] };
 
 		const title = `${product.name} | ${product.store.name}`;
 		const description =
@@ -43,6 +41,7 @@ export const Route = createFileRoute('/_main/product/$id')({
 
 		return {
 			meta: [
+				...(banner ? [banner] : []),
 				{ title },
 				{ name: 'description', content: description },
 				{ property: 'og:type', content: 'product' },
