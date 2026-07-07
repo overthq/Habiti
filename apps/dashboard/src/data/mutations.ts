@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useShallow } from 'zustand/react/shallow';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import * as SecureStore from 'expo-secure-store';
 
 import useStore from '../state';
@@ -172,6 +173,85 @@ export const useVerifyCodeMutation = () => {
 					}
 				})
 				.catch(err => console.warn('Push token registration failed:', err));
+		}
+	});
+};
+
+export const useAppleSignInMutation = () => {
+	const logIn = useStore(useShallow(state => state.logIn));
+
+	return useMutation({
+		mutationFn: async () => {
+			const credential = await AppleAuthentication.signInAsync({
+				requestedScopes: [
+					AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+					AppleAuthentication.AppleAuthenticationScope.EMAIL
+				]
+			});
+
+			if (!credential.identityToken) {
+				throw new Error('Apple sign-in failed');
+			}
+
+			const response = await fetch(`${env.apiUrl}/auth/apple`, {
+				method: 'POST',
+				body: JSON.stringify({
+					identityToken: credential.identityToken,
+					// Merchant accounts are only created through the gated
+					// flows — Apple here signs in to an existing account.
+					createIfMissing: ACCOUNT_CREATION_ENABLED
+				}),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+
+			const data = await response.json();
+
+			if (!response.ok) {
+				const error = new Error(
+					data?.message ?? 'Apple sign-in failed'
+				) as Error & { status?: number };
+				error.status = response.status;
+				throw error;
+			}
+
+			return data as {
+				accessToken: string;
+				refreshToken: string;
+				userId: string;
+			};
+		},
+		onSuccess: async data => {
+			logIn(data.accessToken);
+			await SecureStore.setItemAsync('refreshToken', data.refreshToken);
+
+			requestPushPermission()
+				.then(pushToken => {
+					if (pushToken) {
+						savePushToken({ token: pushToken, type: 'Merchant' });
+					}
+				})
+				.catch(err => console.warn('Push token registration failed:', err));
+		},
+		onError: (error: Error & { status?: number; code?: string }) => {
+			// User dismissed the native Apple sheet — not an error.
+			if (error.code === 'ERR_REQUEST_CANCELED') {
+				return;
+			}
+
+			if (error.status === 404) {
+				Alert.alert(
+					'No account found',
+					'No Habiti account is linked to this Apple ID. Log in with your email, or create an account on the web to get started.'
+				);
+				return;
+			}
+
+			Alert.alert(
+				'Unable to log in',
+				'An error occurred while trying to log you in. Please try again.'
+			);
 		}
 	});
 };

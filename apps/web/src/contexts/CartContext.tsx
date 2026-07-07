@@ -11,6 +11,7 @@ import useDebounce from '@/hooks/use-debounce';
 import type { Card, Cart, CartProduct, CartViewerContext } from '@/data/types';
 import { useParams } from '@tanstack/react-router';
 import { useAuthStore } from '@/state/auth-store';
+import { useViewer } from '@/hooks/use-viewer';
 
 interface CartContextType {
 	cart: Cart;
@@ -217,9 +218,7 @@ const CartContextWrapper: React.FC<CartContextWrapperProps> = ({
 	children
 }) => {
 	const { id: cartId } = useParams({ strict: false }) as { id: string };
-	const { accessToken } = useAuthStore();
-	const isAuthenticated = Boolean(accessToken);
-	// Allow fetching cart for both authenticated users and guests (by cart ID)
+	const { isSignedIn } = useViewer();
 	const { data, isLoading, error } = useCartQuery(cartId, {
 		enabled: Boolean(cartId)
 	});
@@ -246,7 +245,7 @@ const CartContextWrapper: React.FC<CartContextWrapperProps> = ({
 		<CartProvider
 			cart={data.cart}
 			viewerContext={data.viewerContext}
-			isAuthenticated={isAuthenticated}
+			isAuthenticated={isSignedIn}
 		>
 			{children}
 		</CartProvider>

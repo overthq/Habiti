@@ -7,7 +7,7 @@ import {
 	useCompleteOrderPaymentMutation,
 	useConfirmPickupMutation
 } from '@/data/mutations';
-import { useAuthStore } from '@/state/auth-store';
+import { useViewer } from '@/hooks/use-viewer';
 import { OrderStatus } from '@/data/types';
 
 import { formatNaira } from '@/utils/currency';
@@ -20,10 +20,9 @@ export const Route = createFileRoute('/_main/orders/$id')({
 
 function OrderPage() {
 	const { id } = Route.useParams();
-	const { accessToken } = useAuthStore();
-	const isAuthenticated = Boolean(accessToken);
+	const { isSignedIn, isLoading: isViewerLoading } = useViewer();
 	const { data, isLoading } = useOrderQuery(id, {
-		enabled: isAuthenticated && Boolean(id)
+		enabled: isSignedIn && Boolean(id)
 	});
 	const completePaymentMutation = useCompleteOrderPaymentMutation();
 	const confirmPickupMutation = useConfirmPickupMutation();
@@ -36,7 +35,11 @@ function OrderPage() {
 		confirmPickupMutation.mutate(id);
 	};
 
-	if (!isAuthenticated) {
+	if (isViewerLoading) {
+		return <div />;
+	}
+
+	if (!isSignedIn) {
 		return (
 			<SignInPrompt
 				title='Sign in to view this order'

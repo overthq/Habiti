@@ -17,7 +17,8 @@ import {
 	deleteCurrentUser,
 	completeOrderPayment,
 	confirmPickup,
-	deleteCard
+	deleteCard,
+	performLogout
 } from './requests';
 
 import type {
@@ -32,7 +33,6 @@ import type {
 	VerifyCodeBody
 } from './types';
 import { useAuthStore } from '@/state/auth-store';
-import { useGuestCartStore } from '@/state/guest-cart-store';
 
 export const useAddToCartMutation = () => {
 	const queryClient = useQueryClient();
@@ -113,15 +113,30 @@ export const useAuthenticateMutation = () => {
 };
 
 export const useVerifyCodeMutation = () => {
+	const queryClient = useQueryClient();
 	const { logIn, toggleAuthModal } = useAuthStore();
-	const { clear } = useGuestCartStore();
 
 	return useMutation({
 		mutationFn: (input: VerifyCodeBody) => verifyCode(input),
-		onSuccess: ({ accessToken }) => {
+		onSuccess: async ({ accessToken }) => {
 			logIn({ accessToken });
-			clear();
 			toggleAuthModal();
+			// The guest's anonymous data was merged into the account
+			// server-side; refetch everything under the new identity.
+			await queryClient.invalidateQueries();
+		}
+	});
+};
+
+export const useLogoutMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: performLogout,
+		onSettled: () => {
+			queryClient.removeQueries({
+				predicate: query => query.queryKey[0] !== 'auth'
+			});
 		}
 	});
 };

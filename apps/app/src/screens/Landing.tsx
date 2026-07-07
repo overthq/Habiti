@@ -3,28 +3,21 @@ import {
 	Screen,
 	Spacer,
 	TextButton,
-	Typography
+	Typography,
+	useTheme
 } from '@habiti/components';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import React from 'react';
-import { Platform, useColorScheme, View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useShallow } from 'zustand/react/shallow';
 
 import { useAppleSignInMutation } from '../hooks/mutations';
-import useStore from '../state';
 import type { AppStackScreenProps } from '../navigation/types';
 
-// Normally never seen: the app silently starts a guest session on launch
-// (see useSessionQuery). This screen only appears when that fails — e.g. an
-// offline first launch — or when logging out while offline.
 const Landing: React.FC<AppStackScreenProps<'Landing'>> = ({ navigation }) => {
 	const [appleAvailable, setAppleAvailable] = React.useState(false);
 	const appleSignInMutation = useAppleSignInMutation();
-
-	const theme = useStore(useShallow(({ theme }) => theme));
-	const colorScheme = useColorScheme();
-	const dark = theme === 'dark' || (theme === 'auto' && colorScheme === 'dark');
+	const { name } = useTheme();
 
 	React.useEffect(() => {
 		if (Platform.OS === 'ios') {
@@ -53,7 +46,7 @@ const Landing: React.FC<AppStackScreenProps<'Landing'>> = ({ navigation }) => {
 									AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
 								}
 								buttonStyle={
-									dark
+									name === 'dark'
 										? AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
 										: AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
 								}

@@ -48,6 +48,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		...config.ios,
 		supportsTablet: true,
 		bundleIdentifier: getUniqueIdentifier(),
+		usesAppleSignIn: true,
 		config: {
 			usesNonExemptEncryption: false
 		}
@@ -70,6 +71,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		}
 	},
 	plugins: [
+		'expo-apple-authentication',
 		'expo-notifications',
 		[
 			'@sentry/react-native',

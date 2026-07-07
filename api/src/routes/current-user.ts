@@ -130,9 +130,6 @@ currentUser.get('/orders/:id', async c => {
 
 currentUser.post(
 	'/orders',
-	// Guests browse and build carts freely, but placing an order requires a
-	// full account (payment needs an email, and the order needs a durable
-	// owner). The client prompts sign-in before hitting this.
 	requireFullAccount,
 	zValidator('json', Schemas.createOrderSchema, zodHook),
 	async c => {

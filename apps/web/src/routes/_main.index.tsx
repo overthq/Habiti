@@ -14,7 +14,7 @@ import {
 	useRecentlyViewedStore,
 	type RecentlyViewedProduct
 } from '@/state/recently-viewed-store';
-import { useAuthStore } from '@/state/auth-store';
+import { useViewer } from '@/hooks/use-viewer';
 import Product from '@/components/store/Product';
 import { getLandingHighlights } from '@/data/requests';
 import { smartAppBannerMeta } from '@/utils/smart-app-banner';
@@ -58,15 +58,14 @@ function HomePage() {
 }
 
 const ReadyForPickupSection: React.FC = () => {
-	const { accessToken } = useAuthStore();
-	const isAuthenticated = Boolean(accessToken);
-	const { data } = useOrdersQuery({ enabled: isAuthenticated });
+	const { isSignedIn } = useViewer();
+	const { data } = useOrdersQuery({ enabled: isSignedIn });
 
 	const pickupOrders = (data?.orders ?? []).filter(
 		o => o.status === OrderStatus.ReadyForPickup
 	);
 
-	if (!isAuthenticated || pickupOrders.length === 0) {
+	if (!isSignedIn || pickupOrders.length === 0) {
 		return null;
 	}
 

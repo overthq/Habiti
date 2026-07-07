@@ -270,6 +270,12 @@ export const getAnonymousCaller = async (c: Context<AppEnv>) => {
 interface SignInWithAppleInput {
 	identity: AppleIdentity;
 	name?: string | undefined;
+	/**
+	 * When false, only resolves to an *existing* account — no user creation
+	 * or anonymous promotion. Used by the dashboard on iOS, where account
+	 * creation is gated to the web flow.
+	 */
+	createIfMissing?: boolean | undefined;
 }
 
 /**
@@ -286,7 +292,7 @@ export const signInWithApple = async (
 	c: Context<AppEnv>,
 	input: SignInWithAppleInput
 ) => {
-	const { identity, name } = input;
+	const { identity, name, createIfMissing = true } = input;
 
 	const anonymousCaller = await getAnonymousCaller(c);
 
@@ -318,6 +324,13 @@ export const signInWithApple = async (
 		}
 
 		return user;
+	}
+
+	if (!createIfMissing) {
+		throw new LogicError(
+			LogicErrorCode.UserNotFound,
+			'No account is linked to this Apple ID'
+		);
 	}
 
 	const email = identity.emailVerified ? identity.email : null;

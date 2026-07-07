@@ -183,12 +183,14 @@ auth.post(
 	optionalAuth,
 	zValidator('json', Schemas.appleSignInBodySchema, zodHook),
 	async c => {
-		const { identityToken, fullName, cartIds } = c.req.valid('json');
+		const { identityToken, fullName, cartIds, createIfMissing } =
+			c.req.valid('json');
 
 		const identity = await AppleLogic.verifyAppleIdentityToken(identityToken);
 		const user = await UserLogic.signInWithApple(c, {
 			identity,
-			name: fullName
+			name: fullName,
+			createIfMissing
 		});
 
 		const refreshResult = await AuthLogic.generateRefreshToken(

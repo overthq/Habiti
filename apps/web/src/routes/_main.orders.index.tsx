@@ -3,7 +3,7 @@ import { formatNaira } from '@/utils/currency';
 import { useOrdersQuery } from '@/data/queries';
 import { formatDate } from '@/utils/date';
 import SignInPrompt from '@/components/SignInPrompt';
-import { useAuthStore } from '@/state/auth-store';
+import { useViewer } from '@/hooks/use-viewer';
 
 export const Route = createFileRoute('/_main/orders/')({
 	ssr: false,
@@ -11,11 +11,14 @@ export const Route = createFileRoute('/_main/orders/')({
 });
 
 function OrdersPage() {
-	const { accessToken } = useAuthStore();
-	const isAuthenticated = Boolean(accessToken);
-	const { data, isLoading } = useOrdersQuery({ enabled: isAuthenticated });
+	const { isSignedIn, isLoading: isViewerLoading } = useViewer();
+	const { data, isLoading } = useOrdersQuery({ enabled: isSignedIn });
 
-	if (!isAuthenticated) {
+	if (isViewerLoading) {
+		return <div />;
+	}
+
+	if (!isSignedIn) {
 		return (
 			<SignInPrompt
 				title='Sign in to see your orders'

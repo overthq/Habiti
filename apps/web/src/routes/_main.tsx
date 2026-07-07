@@ -1,14 +1,14 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router';
 import MainNavigation from '@/components/main/MainNavigation';
 import AuthDrawer from '@/components/AuthDrawer';
-import { useAuthRefreshQuery } from '@/data/queries';
+import { useSessionQuery } from '@/data/queries';
 
 export const Route = createFileRoute('/_main')({
 	component: MainLayout
 });
 
 function MainLayout() {
-	const { isFetched } = useAuthRefreshQuery();
+	const { isFetched } = useSessionQuery();
 
 	if (!isFetched) {
 		return null;

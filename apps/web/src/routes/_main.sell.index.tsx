@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useCreateStoreMutation } from '@/data/mutations';
 import type { CreateStoreBody, Store } from '@/data/types';
 import { useAuthStore } from '@/state/auth-store';
+import { useViewer } from '@/hooks/use-viewer';
 
 export const Route = createFileRoute('/_main/sell/')({
 	component: SellPage
@@ -239,11 +240,14 @@ const SuccessView: React.FC<SuccessViewProps> = ({
 };
 
 function SellPage() {
-	const { accessToken } = useAuthStore();
-	const isAuthenticated = Boolean(accessToken);
+	const { isSignedIn, isLoading } = useViewer();
 	const [createdStore, setCreatedStore] = React.useState<Store | null>(null);
 
-	if (!isAuthenticated) {
+	if (isLoading) {
+		return <div />;
+	}
+
+	if (!isSignedIn) {
 		return <UnauthenticatedView />;
 	}
 
