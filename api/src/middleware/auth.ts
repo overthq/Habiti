@@ -3,7 +3,7 @@ import { createMiddleware } from 'hono/factory';
 import { HTTPException } from 'hono/http-exception';
 
 import { env } from '../config/env';
-import { isSessionDenied } from '../core/data/sessionRevocation';
+import { isSessionDenied } from '../core/data/sessions';
 import type { AppEnv } from '../types/hono';
 
 type AuthOptions = {
@@ -31,9 +31,7 @@ export const auth = (options: AuthOptions = {}) => {
 			await jwtMiddleware(c, async () => {});
 			const payload = c.get('jwtPayload');
 
-			// Refresh tokens are signed with the same secret; without this
-			// check a (30-day) refresh token — including admin ones carrying
-			// role: 'admin' — would be accepted as a bearer access token.
+			// Ensure only access tokens are accepted.
 			if (payload.typ !== 'access') {
 				throw new HTTPException(401, { message: 'Invalid or expired token' });
 			}
@@ -54,6 +52,7 @@ export const auth = (options: AuthOptions = {}) => {
 			c.set('auth', payload);
 			c.set('storeId', payload.storeId ?? c.req.header('x-market-store-id'));
 			c.set('isAdmin', payload.role === 'admin');
+
 			return next();
 		} catch (error) {
 			if (error instanceof HTTPException) throw error;
@@ -66,16 +65,16 @@ export const authenticate = auth({ required: true });
 export const optionalAuth = auth({ required: false });
 export const isAdmin = auth({ required: true, adminOnly: true });
 
-// Blocks anonymous (guest) sessions from endpoints that require a full
-// account, e.g. moving money. Compose after an auth middleware.
 export const requireFullAccount = createMiddleware<AppEnv>(async (c, next) => {
 	if (c.var.auth?.anonymous) {
 		throw new HTTPException(403, {
 			message: 'A full account is required for this action'
 		});
 	}
+
 	return next();
 });
+
 export const authenticateProd = auth({
 	required: env.NODE_ENV === 'production'
 });

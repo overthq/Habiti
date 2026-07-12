@@ -7,12 +7,10 @@ import * as AuthData from '../data/auth';
 import * as AdminAuthData from '../data/adminAuth';
 import * as SessionData from '../data/sessions';
 import * as AdminSessionData from '../data/adminSessions';
-import { denySession } from '../data/sessionRevocation';
 import { env } from '../../config/env';
 import { LogicError, LogicErrorCode } from './errors';
 import { runSerializable } from '../../utils/prisma';
 import { timingSafeEqualString } from '../../utils/timingSafe';
-import type { Admin, User } from '../../generated/prisma/client';
 import type { AppEnv } from '../../types/hono';
 
 const sha256 = (input: string) =>
@@ -64,23 +62,42 @@ export const deleteVerificationCode = async (
 	await c.var.redis.del(getEmailCacheKey(email));
 };
 
-export const generateAccessToken = async (
-	user: User | Admin,
-	role: 'admin' | 'user' = 'user',
-	sessionId?: string,
-	storeId?: string
-) => {
+export enum AccessTokenRole {
+	User = 'user',
+	Admin = 'admin'
+}
+
+type AccessTokenOwner = {
+	id: string;
+	name: string;
+	email: string | null;
+	isAnonymous?: boolean | undefined;
+};
+
+type GenerateAccessTokenPayload = {
+	owner: AccessTokenOwner;
+	role?: AccessTokenRole | undefined;
+	sessionId?: string | undefined;
+	storeId?: string | undefined;
+};
+
+export const generateAccessToken = async ({
+	owner,
+	role = AccessTokenRole.User,
+	sessionId,
+	storeId
+}: GenerateAccessTokenPayload) => {
 	const claims: Record<string, unknown> = {
-		id: user.id,
-		name: user.name,
-		email: user.email,
+		id: owner.id,
+		name: owner.name,
+		email: owner.email,
 		role,
 		typ: 'access',
 		sessionId
 	};
 
 	if (storeId) claims.storeId = storeId;
-	if ('isAnonymous' in user && user.isAnonymous) claims.anonymous = true;
+	if (owner.isAnonymous) claims.anonymous = true;
 
 	return jwt.sign(claims, env.JWT_SECRET, { expiresIn: '10m' });
 };
@@ -104,6 +121,7 @@ export const generateRefreshToken = async (
 			userAgent: metadata?.userAgent,
 			ipAddress: metadata?.ipAddress
 		});
+
 		resolvedSessionId = session.id;
 	}
 
@@ -143,7 +161,7 @@ export const revokeRefreshToken = async (c: Context<AppEnv>, token: string) => {
 
 	if (decoded.sessionId) {
 		await SessionData.revokeSession(c.var.prisma, decoded.sessionId);
-		await denySession(c.var.redis, decoded.sessionId);
+		await SessionData.denySession(c.var.redis, decoded.sessionId);
 	} else {
 		await AuthData.revokeRefreshToken(c.var.prisma, decoded.id);
 	}
@@ -272,17 +290,19 @@ export const rotateRefreshToken = async (
 			error.code === LogicErrorCode.TokenReused &&
 			decoded.sessionId
 		) {
-			await denySession(c.var.redis, decoded.sessionId);
+			await SessionData.denySession(c.var.redis, decoded.sessionId);
 		}
+
 		throw error;
 	});
 
 	const { userId, sessionId, newRefreshTokenJwt, user } = rotation;
 
-	// If storeId was requested, verify the user is still a manager. This
-	// happens *outside* the serializable tx — store-manager membership is
-	// not part of the rotation invariant.
+	// Verify the user is still a manager. This happens strictly after
+	// rotation and only if needed.
+
 	let resolvedStoreId: string | undefined;
+
 	if (storeId) {
 		const storeManager = await c.var.prisma.storeManager.findUnique({
 			where: {
@@ -298,12 +318,12 @@ export const rotateRefreshToken = async (
 		}
 	}
 
-	const newAccessToken = await generateAccessToken(
-		user,
-		'user',
+	const newAccessToken = await generateAccessToken({
+		owner: user,
+		role: AccessTokenRole.User,
 		sessionId,
-		resolvedStoreId
-	);
+		storeId: resolvedStoreId
+	});
 
 	return {
 		accessToken: newAccessToken,
@@ -324,8 +344,6 @@ export const verifyAccessToken = async (token: string) => {
 		throw new LogicError(LogicErrorCode.InvalidToken);
 	}
 };
-
-// Admin Refresh Token Functions
 
 export const generateAdminRefreshToken = async (
 	c: Context<AppEnv>,
@@ -389,7 +407,7 @@ export const revokeAdminRefreshToken = async (
 
 	if (decoded.sessionId) {
 		await AdminSessionData.revokeAdminSession(c.var.prisma, decoded.sessionId);
-		await denySession(c.var.redis, decoded.sessionId);
+		await SessionData.denySession(c.var.redis, decoded.sessionId);
 	} else {
 		await AdminAuthData.revokeAdminRefreshToken(c.var.prisma, decoded.id);
 	}
@@ -423,7 +441,6 @@ export const rotateAdminRefreshToken = async (
 
 	const hash = sha256(token);
 
-	// Same RFC 6819 atomic rotation pattern as the user-side flow.
 	const result = await runSerializable(c.var.prisma, async tx => {
 		const stored = await tx.adminRefreshToken.findUnique({
 			where: { id: decoded.id }
@@ -441,6 +458,7 @@ export const rotateAdminRefreshToken = async (
 			const session = await tx.adminSession.findUnique({
 				where: { id: stored.sessionId }
 			});
+
 			if (session?.revoked) {
 				throw new LogicError(LogicErrorCode.TokenReused);
 			}
@@ -451,10 +469,12 @@ export const rotateAdminRefreshToken = async (
 				where: { id: stored.sessionId },
 				data: { revoked: true }
 			});
+
 			await tx.adminRefreshToken.updateMany({
 				where: { sessionId: stored.sessionId },
 				data: { revoked: true }
 			});
+
 			throw new LogicError(LogicErrorCode.TokenReused);
 		}
 
@@ -503,21 +523,17 @@ export const rotateAdminRefreshToken = async (
 			refreshToken: newJwt
 		};
 	}).catch(async (error: unknown) => {
-		// Same as the user-side flow: reuse detection also deny-lists the
-		// session so outstanding access tokens die immediately.
 		if (
 			error instanceof LogicError &&
 			error.code === LogicErrorCode.TokenReused &&
 			decoded.sessionId
 		) {
-			await denySession(c.var.redis, decoded.sessionId);
+			await SessionData.denySession(c.var.redis, decoded.sessionId);
 		}
+
 		throw error;
 	});
 
-	// Look up the admin record (rotation tx kept the user-side `include` on
-	// the ref-token row; for admins we read separately to avoid bloating the
-	// serializable transaction).
 	const admin = await c.var.prisma.admin.findUnique({
 		where: { id: result.adminId }
 	});
@@ -526,11 +542,11 @@ export const rotateAdminRefreshToken = async (
 		throw new LogicError(LogicErrorCode.AdminNotFound);
 	}
 
-	const newAccessToken = await generateAccessToken(
-		admin,
-		'admin',
-		result.sessionId
-	);
+	const newAccessToken = await generateAccessToken({
+		owner: admin,
+		role: AccessTokenRole.Admin,
+		sessionId: result.sessionId
+	});
 
 	return {
 		accessToken: newAccessToken,

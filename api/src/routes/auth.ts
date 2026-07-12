@@ -103,7 +103,6 @@ auth.post(
 			throw new LogicError(LogicErrorCode.NotFound);
 		}
 
-		// Constant-time compare to prevent timing-based code recovery.
 		if (!timingSafeEqualString(cachedCode, code)) {
 			throw new HTTPException(400, { message: 'Invalid code' });
 		}
@@ -130,11 +129,11 @@ auth.post(
 			undefined,
 			sessionMetadata(c)
 		);
-		const accessToken = await AuthLogic.generateAccessToken(
-			user,
-			'user',
-			refreshResult.sessionId
-		);
+
+		const accessToken = await AuthLogic.generateAccessToken({
+			owner: user,
+			sessionId: refreshResult.sessionId
+		});
 
 		if (cartIds && cartIds.length > 0) {
 			await CartLogic.claimCarts(c, { cartIds, userId: user.id });
@@ -159,11 +158,11 @@ auth.post('/anonymous', ipLimiter, async c => {
 		undefined,
 		sessionMetadata(c)
 	);
-	const accessToken = await AuthLogic.generateAccessToken(
-		user,
-		'user',
-		refreshResult.sessionId
-	);
+
+	const accessToken = await AuthLogic.generateAccessToken({
+		owner: user,
+		sessionId: refreshResult.sessionId
+	});
 
 	setRefreshCookie(c, refreshResult.token);
 
@@ -199,11 +198,11 @@ auth.post(
 			undefined,
 			sessionMetadata(c)
 		);
-		const accessToken = await AuthLogic.generateAccessToken(
-			user,
-			'user',
-			refreshResult.sessionId
-		);
+
+		const accessToken = await AuthLogic.generateAccessToken({
+			owner: user,
+			sessionId: refreshResult.sessionId
+		});
 
 		if (cartIds && cartIds.length > 0) {
 			await CartLogic.claimCarts(c, { cartIds, userId: user.id });
@@ -268,11 +267,11 @@ auth.post(
 			undefined,
 			sessionMetadata(c)
 		);
-		const accessToken = await AuthLogic.generateAccessToken(
-			user,
-			'user',
-			refreshResult.sessionId
-		);
+
+		const accessToken = await AuthLogic.generateAccessToken({
+			owner: user,
+			sessionId: refreshResult.sessionId
+		});
 
 		setRefreshCookie(c, refreshResult.token);
 
@@ -332,16 +331,16 @@ auth.post(
 			throw new HTTPException(403, { message: 'Not a manager of this store' });
 		}
 
-		const accessToken = await AuthLogic.generateAccessToken(
-			{
+		const accessToken = await AuthLogic.generateAccessToken({
+			owner: {
 				id: c.var.auth.id,
 				name: c.var.auth.name,
-				email: c.var.auth.email
-			} as any,
-			'user',
-			c.get('auth')?.sessionId,
+				email: c.var.auth.email,
+				isAnonymous: c.var.auth.anonymous
+			},
+			sessionId: c.var.auth.sessionId,
 			storeId
-		);
+		});
 
 		return c.json({ accessToken });
 	}

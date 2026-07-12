@@ -9,9 +9,9 @@ import * as OrderData from '../data/orders';
 import * as CartData from '../data/carts';
 import * as CardData from '../data/cards';
 import * as AddressData from '../data/addresses';
+import * as SessionData from '../data/sessions';
 
 import { cacheVerificationCode } from './auth';
-import { denySession } from '../data/sessionRevocation';
 import { registerBodySchema } from '../validations/rest';
 import { env } from '../../config/env';
 import type { AppleIdentity } from './apple';
@@ -248,7 +248,7 @@ export const mergeAnonymousUser = async (
 	);
 
 	for (const sessionId of sessionIds) {
-		await denySession(c.var.redis, sessionId);
+		await SessionData.denySession(c.var.redis, sessionId);
 	}
 
 	c.var.services.analytics.track({
@@ -270,11 +270,6 @@ export const getAnonymousCaller = async (c: Context<AppEnv>) => {
 interface SignInWithAppleInput {
 	identity: AppleIdentity;
 	name?: string | undefined;
-	/**
-	 * When false, only resolves to an *existing* account — no user creation
-	 * or anonymous promotion. Used by the dashboard on iOS, where account
-	 * creation is gated to the web flow.
-	 */
 	createIfMissing?: boolean | undefined;
 }
 

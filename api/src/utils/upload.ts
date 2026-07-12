@@ -1,6 +1,7 @@
-import cloudinary from 'cloudinary';
+import type cloudinary from 'cloudinary';
 import { Readable } from 'stream';
 
+import { getCloudinary } from '../config/cloudinary';
 import { instrument } from './instrument';
 
 export type AllowedMime =
@@ -25,7 +26,7 @@ export const uploadStream = (
 	stream: Readable
 ): Promise<cloudinary.UploadApiResponse> => {
 	return new Promise((resolve, reject) => {
-		const cloudinaryStream = cloudinary.v2.uploader.upload_stream(
+		const cloudinaryStream = getCloudinary().uploader.upload_stream(
 			(error, result) => {
 				if (error || !result) {
 					return reject(error);
@@ -55,7 +56,7 @@ export const uploadBase64 = (
 	return instrument(
 		'cloudinary',
 		() =>
-			cloudinary.v2.uploader.upload(base64, {
+			getCloudinary().uploader.upload(base64, {
 				resource_type: 'image'
 			}),
 		{ op: 'upload', mime, bytes: buffer.length }

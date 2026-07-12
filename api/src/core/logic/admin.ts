@@ -41,11 +41,12 @@ export const adminLogin = async (
 			ipAddress: input.ipAddress
 		}
 	);
-	const accessToken = await AuthLogic.generateAccessToken(
-		admin,
-		'admin',
-		refreshResult.sessionId
-	);
+
+	const accessToken = await AuthLogic.generateAccessToken({
+		owner: admin,
+		role: AuthLogic.AccessTokenRole.Admin,
+		sessionId: refreshResult.sessionId
+	});
 
 	return { accessToken, refreshToken: refreshResult.token, adminId: admin.id };
 };
