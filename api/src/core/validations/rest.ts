@@ -36,6 +36,16 @@ export const appleCallbackBodySchema = z.object({
 
 export type AppleCallbackBody = z.infer<typeof appleCallbackBodySchema>;
 
+export const appleSignInBodySchema = z.object({
+	identityToken: z.string(),
+	fullName: z.string().optional(),
+	cartIds: z.array(z.string()).optional(),
+	// false = sign-in only (no account creation); used by the dashboard app.
+	createIfMissing: z.boolean().optional()
+});
+
+export type AppleSignInBody = z.infer<typeof appleSignInBodySchema>;
+
 export const refreshBodySchema = z.object({
 	refreshToken: z.string().optional(),
 	storeId: z.string().uuid().optional()

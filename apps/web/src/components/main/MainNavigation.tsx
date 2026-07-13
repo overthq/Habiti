@@ -16,19 +16,18 @@ import {
 } from '../ui/dropdown-menu';
 import { Badge } from '../ui/badge';
 import { useAuthStore } from '@/state/auth-store';
-import { useGuestCartStore } from '@/state/guest-cart-store';
+import { useViewer } from '@/hooks/use-viewer';
 import Logo from './Logo';
 import SearchInput from '../SearchInput';
-import { logout } from '@/data/requests';
+import { useLogoutMutation } from '@/data/mutations';
 import { useCartsQuery } from '@/data/queries';
 
 const ProfileDropdown = () => {
-	const { logOut } = useAuthStore();
+	const logoutMutation = useLogoutMutation();
 	const navigate = useNavigate();
 
 	const handleLogOut = async () => {
-		await logout();
-		logOut();
+		await logoutMutation.mutateAsync();
 		navigate({ to: '/' });
 	};
 
@@ -62,14 +61,11 @@ const ProfileDropdown = () => {
 };
 
 const MainNavigation = () => {
-	const { accessToken, toggleAuthModal } = useAuthStore();
-	const isAuthenticated = Boolean(accessToken);
-	const { cartIds } = useGuestCartStore();
-	const { data: cartsData } = useCartsQuery({ enabled: isAuthenticated });
+	const { toggleAuthModal } = useAuthStore();
+	const { isSignedIn } = useViewer();
+	const { data: cartsData } = useCartsQuery();
 
-	const hasGuestCarts = cartIds.length > 0;
-	const hasUserCarts = (cartsData?.carts?.length ?? 0) > 0;
-	const showCartBadge = isAuthenticated ? hasUserCarts : hasGuestCarts;
+	const showCartBadge = (cartsData?.carts?.length ?? 0) > 0;
 
 	return (
 		<div className='border-b bg-background py-3 px-4 mb-4 fixed top-0 w-full z-40 flex flex-col md:flex-row md:justify-between gap-3'>
@@ -97,7 +93,7 @@ const MainNavigation = () => {
 							</span>
 						</Link>
 					</Button>
-					{accessToken ? (
+					{isSignedIn ? (
 						<ProfileDropdown />
 					) : (
 						<Button variant='outline' onClick={toggleAuthModal}>
@@ -125,7 +121,7 @@ const MainNavigation = () => {
 						</span>
 					</Link>
 				</Button>
-				{accessToken ? (
+				{isSignedIn ? (
 					<ProfileDropdown />
 				) : (
 					<Button variant='outline' onClick={toggleAuthModal}>

@@ -18,9 +18,8 @@ import {
 	getPushTokens,
 	globalSearch
 } from './requests';
-import { refreshAuthTokens } from '../utils/refreshManager';
+import { ensureSession } from '../utils/refreshManager';
 
-// User Queries
 export const useCurrentUserQuery = () => {
 	return useQuery({
 		queryKey: ['user'],
@@ -28,7 +27,6 @@ export const useCurrentUserQuery = () => {
 	});
 };
 
-// Order Queries
 export const useOrdersQuery = (filter?: any, orderBy?: any) => {
 	return useQuery({
 		queryKey: ['orders', filter, orderBy],
@@ -45,7 +43,6 @@ export const useOrderQuery = (orderId: string) => {
 	});
 };
 
-// Product Queries
 export const useProductQuery = (productId: string) => {
 	return useQuery({
 		queryKey: ['products', productId],
@@ -89,7 +86,6 @@ export const useCardsQuery = () => {
 	});
 };
 
-// Cart Queries
 export const useCartsQuery = () => {
 	return useQuery({
 		queryKey: ['carts'],
@@ -169,10 +165,12 @@ export const useHomeQuery = () => {
 	});
 };
 
-export const useAuthRefreshQuery = () => {
+// Landing only appears if guest authentication fails (offline first launch).
+export const useSessionQuery = () => {
 	return useQuery({
-		queryKey: ['auth', 'refresh'],
-		queryFn: () => refreshAuthTokens(),
-		retry: false
+		queryKey: ['auth', 'session'],
+		queryFn: () => ensureSession(),
+		retry: 2,
+		staleTime: Infinity
 	});
 };

@@ -7,27 +7,14 @@ import * as AuthData from '../data/auth';
 import * as AdminAuthData from '../data/adminAuth';
 import * as SessionData from '../data/sessions';
 import * as AdminSessionData from '../data/adminSessions';
-import { denySession } from '../data/sessionRevocation';
 import { env } from '../../config/env';
 import { LogicError, LogicErrorCode } from './errors';
 import { runSerializable } from '../../utils/prisma';
-import type { Admin, User } from '../../generated/prisma/client';
+import { timingSafeEqualString } from '../../utils/timingSafe';
 import type { AppEnv } from '../../types/hono';
 
 const sha256 = (input: string) =>
 	crypto.createHash('sha256').update(input).digest('hex');
-
-/**
- * Constant-time hex string compare. Refresh-token JWT signature is the first
- * line of defense against forgery; this is belt-and-suspenders for the
- * stored-hash check.
- */
-const safeEqualHex = (a: string, b: string): boolean => {
-	if (a.length !== b.length) return false;
-	const ab = Buffer.from(a, 'utf8');
-	const bb = Buffer.from(b, 'utf8');
-	return crypto.timingSafeEqual(ab, bb);
-};
 
 export const verifyPassword = async (password: string, hash: string) => {
 	return argon2.verify(hash, password);
@@ -68,21 +55,49 @@ export const retrieveVerificationCode = async (
 	return c.var.redis.get(getEmailCacheKey(email));
 };
 
-export const generateAccessToken = async (
-	user: User | Admin,
-	role: 'admin' | 'user' = 'user',
-	sessionId?: string,
-	storeId?: string
+export const deleteVerificationCode = async (
+	c: Context<AppEnv>,
+	email: string
 ) => {
+	await c.var.redis.del(getEmailCacheKey(email));
+};
+
+export enum AccessTokenRole {
+	User = 'user',
+	Admin = 'admin'
+}
+
+type AccessTokenOwner = {
+	id: string;
+	name: string;
+	email: string | null;
+	isAnonymous?: boolean | undefined;
+};
+
+type GenerateAccessTokenPayload = {
+	owner: AccessTokenOwner;
+	role?: AccessTokenRole | undefined;
+	sessionId?: string | undefined;
+	storeId?: string | undefined;
+};
+
+export const generateAccessToken = async ({
+	owner,
+	role = AccessTokenRole.User,
+	sessionId,
+	storeId
+}: GenerateAccessTokenPayload) => {
 	const claims: Record<string, unknown> = {
-		id: user.id,
-		name: user.name,
-		email: user.email,
+		id: owner.id,
+		name: owner.name,
+		email: owner.email,
 		role,
+		typ: 'access',
 		sessionId
 	};
 
 	if (storeId) claims.storeId = storeId;
+	if (owner.isAnonymous) claims.anonymous = true;
 
 	return jwt.sign(claims, env.JWT_SECRET, { expiresIn: '10m' });
 };
@@ -106,12 +121,13 @@ export const generateRefreshToken = async (
 			userAgent: metadata?.userAgent,
 			ipAddress: metadata?.ipAddress
 		});
+
 		resolvedSessionId = session.id;
 	}
 
 	const id = crypto.randomUUID();
 	const token = jwt.sign(
-		{ id, userId, sessionId: resolvedSessionId },
+		{ id, userId, sessionId: resolvedSessionId, typ: 'refresh' },
 		env.JWT_SECRET,
 		{ expiresIn: '30d' }
 	);
@@ -145,10 +161,7 @@ export const revokeRefreshToken = async (c: Context<AppEnv>, token: string) => {
 
 	if (decoded.sessionId) {
 		await SessionData.revokeSession(c.var.prisma, decoded.sessionId);
-		// Deny-list the session so any access tokens issued under it are
-		// rejected immediately by the auth middleware (instead of staying
-		// usable for the remainder of their 10-minute TTL).
-		await denySession(c.var.redis, decoded.sessionId);
+		await SessionData.denySession(c.var.redis, decoded.sessionId);
 	} else {
 		await AuthData.revokeRefreshToken(c.var.prisma, decoded.id);
 	}
@@ -159,14 +172,19 @@ export const rotateRefreshToken = async (
 	token: string,
 	storeId?: string
 ) => {
-	let decoded: { id: string; userId: string; sessionId?: string };
+	let decoded: { id: string; userId: string; sessionId?: string; typ?: string };
 	try {
 		decoded = jwt.verify(token, env.JWT_SECRET) as {
 			id: string;
 			userId: string;
 			sessionId?: string;
+			typ?: string;
 		};
 	} catch {
+		throw new LogicError(LogicErrorCode.InvalidToken);
+	}
+
+	if (decoded.typ === 'access') {
 		throw new LogicError(LogicErrorCode.InvalidToken);
 	}
 
@@ -178,93 +196,113 @@ export const rotateRefreshToken = async (
 	//     user out spuriously with a half-applied state.
 	//   - Reuse detection: presenting an already-revoked token kills the
 	//     entire session, blasting every live refresh token bound to it.
-	const { userId, sessionId, newRefreshTokenJwt, user } = await runSerializable(
-		c.var.prisma,
-		async tx => {
-			const stored = await tx.refreshToken.findUnique({
-				where: { id: decoded.id },
-				include: { user: true }
+	const rotation = await runSerializable(c.var.prisma, async tx => {
+		const stored = await tx.refreshToken.findUnique({
+			where: { id: decoded.id },
+			include: { user: true }
+		});
+
+		if (!stored) {
+			throw new LogicError(LogicErrorCode.InvalidToken);
+		}
+
+		if (!timingSafeEqualString(hash, stored.hashedToken)) {
+			throw new LogicError(LogicErrorCode.InvalidToken);
+		}
+
+		if (stored.sessionId) {
+			const session = await tx.session.findUnique({
+				where: { id: stored.sessionId }
 			});
-
-			if (!stored) {
-				throw new LogicError(LogicErrorCode.InvalidToken);
-			}
-
-			if (!safeEqualHex(hash, stored.hashedToken)) {
-				throw new LogicError(LogicErrorCode.InvalidToken);
-			}
-
-			if (stored.sessionId) {
-				const session = await tx.session.findUnique({
-					where: { id: stored.sessionId }
-				});
-				if (session?.revoked) {
-					throw new LogicError(LogicErrorCode.TokenReused);
-				}
-			}
-
-			if (stored.revoked) {
-				// RFC 6819 — presenting a previously-rotated token is the canonical
-				// signal that an attacker stole the cookie. Kill the session.
-				await tx.session.update({
-					where: { id: stored.sessionId },
-					data: { revoked: true }
-				});
-				await tx.refreshToken.updateMany({
-					where: { sessionId: stored.sessionId },
-					data: { revoked: true }
-				});
+			if (session?.revoked) {
 				throw new LogicError(LogicErrorCode.TokenReused);
 			}
+		}
 
-			if (new Date() > stored.expiresAt) {
-				throw new LogicError(LogicErrorCode.TokenExpired);
-			}
-
-			// Mark the old token revoked first.
-			await tx.refreshToken.update({
-				where: { id: stored.id },
+		if (stored.revoked) {
+			// RFC 6819 — presenting a previously-rotated token is the canonical
+			// signal that an attacker stole the cookie. Kill the session.
+			await tx.session.update({
+				where: { id: stored.sessionId },
 				data: { revoked: true }
 			});
 
-			// Issue the replacement under the same session.
-			const newId = crypto.randomUUID();
-			const newJwt = jwt.sign(
-				{ id: newId, userId: stored.userId, sessionId: stored.sessionId },
-				env.JWT_SECRET,
-				{ expiresIn: '30d' }
-			);
-			const expiresAt = new Date();
-			expiresAt.setDate(expiresAt.getDate() + 30);
-
-			await tx.refreshToken.create({
-				data: {
-					id: newId,
-					userId: stored.userId,
-					hashedToken: sha256(newJwt),
-					expiresAt,
-					sessionId: stored.sessionId
-				}
+			await tx.refreshToken.updateMany({
+				where: { sessionId: stored.sessionId },
+				data: { revoked: true }
 			});
 
-			await tx.session.update({
-				where: { id: stored.sessionId },
-				data: { lastActiveAt: new Date() }
-			});
+			throw new LogicError(LogicErrorCode.TokenReused);
+		}
 
-			return {
+		if (new Date() > stored.expiresAt) {
+			throw new LogicError(LogicErrorCode.TokenExpired);
+		}
+
+		// Mark the old token revoked first.
+		await tx.refreshToken.update({
+			where: { id: stored.id },
+			data: { revoked: true }
+		});
+
+		// Issue the replacement under the same session.
+		const newId = crypto.randomUUID();
+		const newJwt = jwt.sign(
+			{
+				id: newId,
 				userId: stored.userId,
 				sessionId: stored.sessionId,
-				newRefreshTokenJwt: newJwt,
-				user: stored.user
-			};
-		}
-	);
+				typ: 'refresh'
+			},
+			env.JWT_SECRET,
+			{ expiresIn: '30d' }
+		);
+		const expiresAt = new Date();
+		expiresAt.setDate(expiresAt.getDate() + 30);
 
-	// If storeId was requested, verify the user is still a manager. This
-	// happens *outside* the serializable tx — store-manager membership is
-	// not part of the rotation invariant.
+		await tx.refreshToken.create({
+			data: {
+				id: newId,
+				userId: stored.userId,
+				hashedToken: sha256(newJwt),
+				expiresAt,
+				sessionId: stored.sessionId
+			}
+		});
+
+		await tx.session.update({
+			where: { id: stored.sessionId },
+			data: { lastActiveAt: new Date() }
+		});
+
+		return {
+			userId: stored.userId,
+			sessionId: stored.sessionId,
+			newRefreshTokenJwt: newJwt,
+			user: stored.user
+		};
+	}).catch(async (error: unknown) => {
+		// Reuse detection revokes the session in the DB; deny-list it too so
+		// access tokens already issued under it die now instead of living out
+		// their 10-minute TTL.
+		if (
+			error instanceof LogicError &&
+			error.code === LogicErrorCode.TokenReused &&
+			decoded.sessionId
+		) {
+			await SessionData.denySession(c.var.redis, decoded.sessionId);
+		}
+
+		throw error;
+	});
+
+	const { userId, sessionId, newRefreshTokenJwt, user } = rotation;
+
+	// Verify the user is still a manager. This happens strictly after
+	// rotation and only if needed.
+
 	let resolvedStoreId: string | undefined;
+
 	if (storeId) {
 		const storeManager = await c.var.prisma.storeManager.findUnique({
 			where: {
@@ -274,17 +312,18 @@ export const rotateRefreshToken = async (
 				}
 			}
 		});
+
 		if (storeManager) {
 			resolvedStoreId = storeId;
 		}
 	}
 
-	const newAccessToken = await generateAccessToken(
-		user,
-		'user',
+	const newAccessToken = await generateAccessToken({
+		owner: user,
+		role: AccessTokenRole.User,
 		sessionId,
-		resolvedStoreId
-	);
+		storeId: resolvedStoreId
+	});
 
 	return {
 		accessToken: newAccessToken,
@@ -306,8 +345,6 @@ export const verifyAccessToken = async (token: string) => {
 	}
 };
 
-// Admin Refresh Token Functions
-
 export const generateAdminRefreshToken = async (
 	c: Context<AppEnv>,
 	adminId: string,
@@ -328,7 +365,13 @@ export const generateAdminRefreshToken = async (
 
 	const id = crypto.randomUUID();
 	const token = jwt.sign(
-		{ id, adminId, sessionId: resolvedSessionId, role: 'admin' },
+		{
+			id,
+			adminId,
+			sessionId: resolvedSessionId,
+			role: 'admin',
+			typ: 'refresh'
+		},
 		env.JWT_SECRET,
 		{ expiresIn: '30d' }
 	);
@@ -364,8 +407,7 @@ export const revokeAdminRefreshToken = async (
 
 	if (decoded.sessionId) {
 		await AdminSessionData.revokeAdminSession(c.var.prisma, decoded.sessionId);
-		// Same as the user-side flow: shut down active access tokens now.
-		await denySession(c.var.redis, decoded.sessionId);
+		await SessionData.denySession(c.var.redis, decoded.sessionId);
 	} else {
 		await AdminAuthData.revokeAdminRefreshToken(c.var.prisma, decoded.id);
 	}
@@ -376,6 +418,7 @@ type DecodedAdminToken = {
 	adminId: string;
 	sessionId?: string;
 	role?: string;
+	typ?: string;
 };
 
 const decodeAdminToken = (token: string) => {
@@ -392,13 +435,12 @@ export const rotateAdminRefreshToken = async (
 ) => {
 	const decoded = decodeAdminToken(token);
 
-	if (decoded.role !== 'admin') {
+	if (decoded.role !== 'admin' || decoded.typ === 'access') {
 		throw new LogicError(LogicErrorCode.InvalidToken);
 	}
 
 	const hash = sha256(token);
 
-	// Same RFC 6819 atomic rotation pattern as the user-side flow.
 	const result = await runSerializable(c.var.prisma, async tx => {
 		const stored = await tx.adminRefreshToken.findUnique({
 			where: { id: decoded.id }
@@ -408,7 +450,7 @@ export const rotateAdminRefreshToken = async (
 			throw new LogicError(LogicErrorCode.InvalidToken);
 		}
 
-		if (!safeEqualHex(hash, stored.hashedToken)) {
+		if (!timingSafeEqualString(hash, stored.hashedToken)) {
 			throw new LogicError(LogicErrorCode.InvalidToken);
 		}
 
@@ -416,6 +458,7 @@ export const rotateAdminRefreshToken = async (
 			const session = await tx.adminSession.findUnique({
 				where: { id: stored.sessionId }
 			});
+
 			if (session?.revoked) {
 				throw new LogicError(LogicErrorCode.TokenReused);
 			}
@@ -426,10 +469,12 @@ export const rotateAdminRefreshToken = async (
 				where: { id: stored.sessionId },
 				data: { revoked: true }
 			});
+
 			await tx.adminRefreshToken.updateMany({
 				where: { sessionId: stored.sessionId },
 				data: { revoked: true }
 			});
+
 			throw new LogicError(LogicErrorCode.TokenReused);
 		}
 
@@ -448,7 +493,8 @@ export const rotateAdminRefreshToken = async (
 				id: newId,
 				adminId: stored.adminId,
 				sessionId: stored.sessionId,
-				role: 'admin'
+				role: 'admin',
+				typ: 'refresh'
 			},
 			env.JWT_SECRET,
 			{ expiresIn: '30d' }
@@ -476,11 +522,18 @@ export const rotateAdminRefreshToken = async (
 			sessionId: stored.sessionId,
 			refreshToken: newJwt
 		};
+	}).catch(async (error: unknown) => {
+		if (
+			error instanceof LogicError &&
+			error.code === LogicErrorCode.TokenReused &&
+			decoded.sessionId
+		) {
+			await SessionData.denySession(c.var.redis, decoded.sessionId);
+		}
+
+		throw error;
 	});
 
-	// Look up the admin record (rotation tx kept the user-side `include` on
-	// the ref-token row; for admins we read separately to avoid bloating the
-	// serializable transaction).
 	const admin = await c.var.prisma.admin.findUnique({
 		where: { id: result.adminId }
 	});
@@ -489,11 +542,11 @@ export const rotateAdminRefreshToken = async (
 		throw new LogicError(LogicErrorCode.AdminNotFound);
 	}
 
-	const newAccessToken = await generateAccessToken(
-		admin,
-		'admin',
-		result.sessionId
-	);
+	const newAccessToken = await generateAccessToken({
+		owner: admin,
+		role: AccessTokenRole.Admin,
+		sessionId: result.sessionId
+	});
 
 	return {
 		accessToken: newAccessToken,

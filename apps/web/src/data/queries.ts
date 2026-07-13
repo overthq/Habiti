@@ -13,10 +13,8 @@ import {
 	getStoreProducts,
 	globalSearch,
 	getLandingHighlights,
-	getGuestCarts,
-	refreshToken
+	ensureSession
 } from './requests';
-import { useGuestCartStore } from '@/state/guest-cart-store';
 
 type QueryEnabledOptions = {
 	enabled?: boolean;
@@ -49,17 +47,6 @@ export const useCartQuery = (
 		queryKey: ['carts', cartId],
 		queryFn: () => getCart(cartId),
 		enabled: Boolean(cartId) && isEnabled
-	});
-};
-
-export const useGuestCartsQuery = (options: QueryEnabledOptions = {}) => {
-	const isEnabled = options.enabled ?? true;
-	const { cartIds } = useGuestCartStore();
-
-	return useQuery({
-		queryKey: ['carts', 'guest'],
-		queryFn: () => getGuestCarts(cartIds),
-		enabled: isEnabled && cartIds.length > 0
 	});
 };
 
@@ -160,11 +147,13 @@ export const useLandingHighlightsQuery = () => {
 	});
 };
 
-export const useAuthRefreshQuery = () => {
+// Visitors without a resumable session are given a fresh anonymous one, so
+// the app is only ever tokenless if even guest authentication fails (offline).
+export const useSessionQuery = () => {
 	return useQuery({
-		queryKey: ['auth', 'refresh'],
-		queryFn: () => refreshToken(),
-		retry: false,
+		queryKey: ['auth', 'session'],
+		queryFn: () => ensureSession(),
+		retry: 2,
 		staleTime: Infinity
 	});
 };

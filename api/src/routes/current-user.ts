@@ -4,7 +4,7 @@ import { HTTPException } from 'hono/http-exception';
 
 import type { AppEnv } from '../types/hono';
 import { zodHook } from '../utils/validation';
-import { authenticate } from '../middleware/auth';
+import { authenticate, requireFullAccount } from '../middleware/auth';
 import { hydrateQuery } from '../utils/queries';
 import * as UserLogic from '../core/logic/users';
 import * as ProductLogic from '../core/logic/products';
@@ -14,7 +14,6 @@ import * as OrderLogic from '../core/logic/orders';
 import * as AddressLogic from '../core/logic/addresses';
 import * as SessionData from '../core/data/sessions';
 import * as Schemas from '../core/validations/rest';
-import { denySession } from '../core/data/sessionRevocation';
 
 const currentUser = new Hono<AppEnv>();
 
@@ -130,6 +129,7 @@ currentUser.get('/orders/:id', async c => {
 
 currentUser.post(
 	'/orders',
+	requireFullAccount,
 	zValidator('json', Schemas.createOrderSchema, zodHook),
 	async c => {
 		const body = c.req.valid('json');
@@ -259,7 +259,9 @@ currentUser.delete('/sessions', async c => {
 	);
 
 	await SessionData.revokeUserSessions(c.var.prisma, c.var.auth!.id);
-	await Promise.all(sessions.map(s => denySession(c.var.redis, s.id)));
+	await Promise.all(
+		sessions.map(s => SessionData.denySession(c.var.redis, s.id))
+	);
 
 	return c.json({ message: 'All sessions revoked' });
 });
@@ -274,7 +276,7 @@ currentUser.delete('/sessions/:id', async c => {
 	}
 
 	await SessionData.revokeSession(c.var.prisma, id);
-	await denySession(c.var.redis, id);
+	await SessionData.denySession(c.var.redis, id);
 
 	return c.json({ message: 'Session revoked' });
 });

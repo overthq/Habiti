@@ -28,21 +28,15 @@ import * as TransactionLogic from '../core/logic/transactions';
 import * as AdminSessionData from '../core/data/adminSessions';
 import * as SessionData from '../core/data/sessions';
 import * as Schemas from '../core/validations/rest';
-import { denySession } from '../core/data/sessionRevocation';
 
 const admin = new Hono<AppEnv>();
 
-// Per-IP fallback for admin auth — protects the service. Tighter than the
-// shopper auth limiter (admins are a small set; bursts of /login from one IP
-// are almost always credential-stuffing).
 const adminIpLimiter = rateLimit({
 	prefix: 'admin:ip',
 	windowSec: 60,
 	limit: 10
 });
 
-// Per-email identity limiter — protects individual admin accounts. Falls
-// back to the IP-derived key if no body is present (e.g. /refresh).
 const adminIdentityLimiter = (prefix: string) =>
 	rateLimit({
 		prefix,
@@ -62,7 +56,6 @@ const adminIdentityLimiter = (prefix: string) =>
 		}
 	});
 
-// Public admin routes (no auth)
 admin.post(
 	'/login',
 	composeRateLimits(adminIpLimiter, adminIdentityLimiter('admin:login')),
@@ -144,7 +137,7 @@ admin.delete('/sessions/:id', async c => {
 	}
 
 	await AdminSessionData.revokeAdminSession(c.var.prisma, id);
-	await denySession(c.var.redis, id);
+	await SessionData.denySession(c.var.redis, id);
 	return c.json({ message: 'Session revoked' });
 });
 

@@ -5,17 +5,7 @@ import jwt from 'jsonwebtoken';
 import { rotateRefreshToken } from './auth';
 import { LogicError, LogicErrorCode } from './errors';
 import { env } from '../../config/env';
-
-/**
- * Behaviour tests for `rotateRefreshToken`. We give it a fake Prisma whose
- * `$transaction` proxies straight to the inner closure with a fake `tx`
- * client backed by tiny in-memory tables — exercising the contract
- * (lookups, writes, reuse-detection cascade) without touching Postgres.
- *
- * Concurrency is left to integration tests: modelling serializable-isolation
- * race conditions in a unit test is brittle and tests the mock more than
- * the code.
- */
+import { createFakeRedis } from '../../test/helpers';
 
 interface RefreshRow {
 	id: string;
@@ -84,6 +74,8 @@ const fakeContext = (tokens: RefreshRow[], sessions: SessionRow[]) => {
 		}
 	};
 
+	const redis = createFakeRedis();
+
 	return {
 		var: {
 			prisma: {
@@ -91,9 +83,10 @@ const fakeContext = (tokens: RefreshRow[], sessions: SessionRow[]) => {
 				storeManager: {
 					findUnique: mock(async () => null)
 				}
-			}
+			},
+			redis
 		},
-		_state: { tokens, sessions, tx }
+		_state: { tokens, sessions, tx, redis }
 	} as any;
 };
 
@@ -162,9 +155,7 @@ describe('rotateRefreshToken', () => {
 		const session = aliveSession({ id: row1.sessionId, userId: row1.userId });
 		const c = fakeContext([row1, row2], [session]);
 
-		await expect(rotateRefreshToken(c, token1)).rejects.toBeInstanceOf(
-			LogicError
-		);
+		expect(rotateRefreshToken(c, token1)).rejects.toBeInstanceOf(LogicError);
 
 		try {
 			await rotateRefreshToken(c, token1);

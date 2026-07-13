@@ -1,20 +1,21 @@
 import { Hono } from 'hono';
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie';
 import { zValidator } from '@hono/zod-validator';
-import jwt from 'jsonwebtoken';
 import { HTTPException } from 'hono/http-exception';
 
 import { zodHook } from '../utils/validation';
-import { authenticate } from '../middleware/auth';
+import { authenticate, optionalAuth } from '../middleware/auth';
 import { rateLimit, composeRateLimits } from '../middleware/rateLimit';
 import { timingSafeEqualString } from '../utils/timingSafe';
 import { env } from '../config/env';
 import { LogicError, LogicErrorCode } from '../core/logic/errors';
+import * as AppleLogic from '../core/logic/apple';
 import * as AuthLogic from '../core/logic/auth';
 import * as UserLogic from '../core/logic/users';
 import * as CartLogic from '../core/logic/carts';
 import * as Schemas from '../core/validations/rest';
 
+import type { Context } from 'hono';
 import type { AppEnv } from '../types/hono';
 
 const ipLimiter = rateLimit({
@@ -44,6 +45,20 @@ const identityLimiter = (prefix: string) =>
 
 const auth = new Hono<AppEnv>();
 
+const setRefreshCookie = (c: Context<AppEnv>, token: string) => {
+	setCookie(c, 'refreshToken', token, {
+		httpOnly: true,
+		secure: env.NODE_ENV === 'production',
+		sameSite: 'Strict',
+		path: '/'
+	});
+};
+
+const sessionMetadata = (c: Context<AppEnv>) => ({
+	userAgent: c.req.header('user-agent'),
+	ipAddress: c.req.header('x-forwarded-for') ?? undefined
+});
+
 auth.post(
 	'/register',
 	composeRateLimits(ipLimiter, identityLimiter('auth:register')),
@@ -71,6 +86,7 @@ auth.post(
 auth.post(
 	'/verify-code',
 	composeRateLimits(ipLimiter, identityLimiter('auth:verify-code')),
+	optionalAuth,
 	zValidator('json', Schemas.verifyCodeBodySchema, zodHook),
 	async c => {
 		const { email, code, cartIds } = c.req.valid('json');
@@ -87,10 +103,12 @@ auth.post(
 			throw new LogicError(LogicErrorCode.NotFound);
 		}
 
-		// Constant-time compare to prevent timing-based code recovery.
 		if (!timingSafeEqualString(cachedCode, code)) {
 			throw new HTTPException(400, { message: 'Invalid code' });
 		}
+
+		// Single-use: a code that has authenticated once must not work again.
+		await AuthLogic.deleteVerificationCode(c, email);
 
 		const user = await UserLogic.getUserByEmail(c, email);
 
@@ -98,31 +116,99 @@ auth.post(
 			throw new LogicError(LogicErrorCode.UserNotFound);
 		}
 
+		// A guest signing in to an account adopts their anonymous data.
+		const anonymousCaller = await UserLogic.getAnonymousCaller(c);
+
+		if (anonymousCaller && anonymousCaller.id !== user.id) {
+			await UserLogic.mergeAnonymousUser(c, anonymousCaller.id, user.id);
+		}
+
 		const refreshResult = await AuthLogic.generateRefreshToken(
 			c,
 			user.id,
 			undefined,
-			{
-				userAgent: c.req.header('user-agent'),
-				ipAddress: c.req.header('x-forwarded-for') ?? undefined
-			}
+			sessionMetadata(c)
 		);
-		const accessToken = await AuthLogic.generateAccessToken(
-			user,
-			'user',
-			refreshResult.sessionId
-		);
+
+		const accessToken = await AuthLogic.generateAccessToken({
+			owner: user,
+			sessionId: refreshResult.sessionId
+		});
 
 		if (cartIds && cartIds.length > 0) {
 			await CartLogic.claimCarts(c, { cartIds, userId: user.id });
 		}
 
-		setCookie(c, 'refreshToken', refreshResult.token, {
-			httpOnly: true,
-			secure: env.NODE_ENV === 'production',
-			sameSite: 'Strict',
-			path: '/'
+		setRefreshCookie(c, refreshResult.token);
+
+		return c.json({
+			accessToken,
+			refreshToken: refreshResult.token,
+			userId: user.id
 		});
+	}
+);
+
+auth.post('/anonymous', ipLimiter, async c => {
+	const user = await UserLogic.createAnonymousUser(c);
+
+	const refreshResult = await AuthLogic.generateRefreshToken(
+		c,
+		user.id,
+		undefined,
+		sessionMetadata(c)
+	);
+
+	const accessToken = await AuthLogic.generateAccessToken({
+		owner: user,
+		sessionId: refreshResult.sessionId
+	});
+
+	setRefreshCookie(c, refreshResult.token);
+
+	return c.json(
+		{
+			accessToken,
+			refreshToken: refreshResult.token,
+			userId: user.id
+		},
+		201
+	);
+});
+
+auth.post(
+	'/apple',
+	ipLimiter,
+	optionalAuth,
+	zValidator('json', Schemas.appleSignInBodySchema, zodHook),
+	async c => {
+		const { identityToken, fullName, cartIds, createIfMissing } =
+			c.req.valid('json');
+
+		const identity = await AppleLogic.verifyAppleIdentityToken(identityToken);
+		const user = await UserLogic.signInWithApple(c, {
+			identity,
+			name: fullName,
+			createIfMissing
+		});
+
+		const refreshResult = await AuthLogic.generateRefreshToken(
+			c,
+			user.id,
+			undefined,
+			sessionMetadata(c)
+		);
+
+		const accessToken = await AuthLogic.generateAccessToken({
+			owner: user,
+			sessionId: refreshResult.sessionId
+		});
+
+		if (cartIds && cartIds.length > 0) {
+			await CartLogic.claimCarts(c, { cartIds, userId: user.id });
+		}
+
+		setRefreshCookie(c, refreshResult.token);
 
 		return c.json({
 			accessToken,
@@ -161,43 +247,33 @@ auth.post(
 			})
 		});
 
-		const data = await response.json();
-		const decodedToken = jwt.decode(data.id_token) as any;
+		if (!response.ok) {
+			throw new HTTPException(400, { message: 'Apple sign-in failed' });
+		}
 
-		if (!decodedToken?.email) {
+		const data = (await response.json()) as { id_token?: unknown };
+
+		if (typeof data.id_token !== 'string') {
 			throw new HTTPException(400, { message: 'Invalid Apple ID token' });
 		}
 
-		let user = await UserLogic.getUserByEmail(c, decodedToken.email);
-
-		if (!user) {
-			user = await UserLogic.createUser(c, {
-				name: decodedToken.name || '',
-				email: decodedToken.email
-			});
-		}
+		// Verified (signature, iss, aud, exp) — not just decoded.
+		const identity = await AppleLogic.verifyAppleIdentityToken(data.id_token);
+		const user = await UserLogic.signInWithApple(c, { identity });
 
 		const refreshResult = await AuthLogic.generateRefreshToken(
 			c,
 			user.id,
 			undefined,
-			{
-				userAgent: c.req.header('user-agent'),
-				ipAddress: c.req.header('x-forwarded-for') ?? undefined
-			}
-		);
-		const accessToken = await AuthLogic.generateAccessToken(
-			user,
-			'user',
-			refreshResult.sessionId
+			sessionMetadata(c)
 		);
 
-		setCookie(c, 'refreshToken', refreshResult.token, {
-			httpOnly: true,
-			secure: env.NODE_ENV === 'production',
-			sameSite: 'Strict',
-			path: '/'
+		const accessToken = await AuthLogic.generateAccessToken({
+			owner: user,
+			sessionId: refreshResult.sessionId
 		});
+
+		setRefreshCookie(c, refreshResult.token);
 
 		return c.json({
 			accessToken,
@@ -209,6 +285,7 @@ auth.post(
 
 auth.post(
 	'/refresh',
+	ipLimiter,
 	zValidator('json', Schemas.refreshBodySchema, zodHook),
 	async c => {
 		const body = c.req.valid('json');
@@ -224,12 +301,7 @@ auth.post(
 			body.storeId
 		);
 
-		setCookie(c, 'refreshToken', tokens.refreshToken, {
-			httpOnly: true,
-			secure: env.NODE_ENV === 'production',
-			sameSite: 'Strict',
-			path: '/'
-		});
+		setRefreshCookie(c, tokens.refreshToken);
 
 		return c.json(tokens);
 	}
@@ -259,16 +331,16 @@ auth.post(
 			throw new HTTPException(403, { message: 'Not a manager of this store' });
 		}
 
-		const accessToken = await AuthLogic.generateAccessToken(
-			{
+		const accessToken = await AuthLogic.generateAccessToken({
+			owner: {
 				id: c.var.auth.id,
 				name: c.var.auth.name,
-				email: c.var.auth.email
-			} as any,
-			'user',
-			c.get('auth')?.sessionId,
+				email: c.var.auth.email,
+				isAnonymous: c.var.auth.anonymous
+			},
+			sessionId: c.var.auth.sessionId,
 			storeId
-		);
+		});
 
 		return c.json({ accessToken });
 	}
@@ -276,6 +348,7 @@ auth.post(
 
 auth.post(
 	'/logout',
+	ipLimiter,
 	zValidator('json', Schemas.logoutBodySchema, zodHook),
 	async c => {
 		const body = c.req.valid('json');

@@ -49,6 +49,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		supportsTablet: true,
 		bundleIdentifier: getUniqueIdentifier(),
 		associatedDomains: ['applinks:habiti.app'],
+		usesAppleSignIn: true,
 		config: {
 			usesNonExemptEncryption: false
 		}
@@ -91,6 +92,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 		}
 	},
 	plugins: [
+		'expo-apple-authentication',
 		'expo-notifications',
 		[
 			'@sentry/react-native',

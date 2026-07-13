@@ -90,8 +90,17 @@ api.interceptors.response.use(
 				originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 				return api(originalRequest);
 			} catch (refreshError) {
-				useAuthStore.getState().logOut();
-				return Promise.reject(refreshError);
+				// Session is unrecoverable (revoked/expired). Degrade to a
+				// fresh guest session so browsing stays usable; only log out
+				// if even that fails (offline).
+				try {
+					const { accessToken } = await startGuestSession();
+					originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+					return api(originalRequest);
+				} catch {
+					useAuthStore.getState().logOut();
+					return Promise.reject(refreshError);
+				}
 			}
 		}
 
@@ -225,13 +234,6 @@ export const getCards = async () => {
 
 export const getCart = async (cartId: string) => {
 	const response = await api.get<GetCartResponse>(`/carts/${cartId}`);
-	return response.data;
-};
-
-export const getGuestCarts = async (cartIds: string[]) => {
-	const response = await api.get<{ carts: Cart[] }>('/carts', {
-		params: { cartIds }
-	});
 	return response.data;
 };
 
@@ -397,4 +399,60 @@ export const refreshToken = async () => {
 		});
 
 	return inflightRefresh;
+};
+
+export const startGuestSession = async (): Promise<RefreshTokenResponse> => {
+	const response = await axios.post<RefreshTokenResponse>(
+		`${API_URL}/auth/anonymous`,
+		{},
+		{ withCredentials: true }
+	);
+
+	const data = response.data;
+
+	if (!data.accessToken || !data.refreshToken) {
+		throw new Error('Could not start a guest session');
+	}
+
+	useAuthStore.getState().logIn({ accessToken: data.accessToken });
+
+	return {
+		accessToken: data.accessToken,
+		refreshToken: data.refreshToken
+	};
+};
+
+/**
+ * Guarantee a usable session: resume the stored one if possible, otherwise
+ * start a fresh anonymous (guest) session. The web app never requires the
+ * user to authenticate just to browse — auth is only prompted in-context
+ * (viewing orders, placing an order).
+ */
+export const ensureSession = async (): Promise<RefreshTokenResponse> => {
+	try {
+		return await refreshToken();
+	} catch {
+		return startGuestSession();
+	}
+};
+
+/**
+ * Log out: revoke the session server-side (best effort, via the refresh
+ * cookie), then roll straight into a new guest session so the app stays
+ * usable. Only falls back to the logged-out state if the guest session
+ * cannot be created (e.g. offline).
+ */
+export const performLogout = async (): Promise<void> => {
+	try {
+		await logout();
+	} catch {
+		// Best effort — the cookie is replaced by the new guest session
+		// below either way, and the server prunes expired sessions.
+	}
+
+	try {
+		await startGuestSession();
+	} catch {
+		useAuthStore.getState().logOut();
+	}
 };

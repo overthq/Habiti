@@ -3,7 +3,7 @@ import { createMiddleware } from 'hono/factory';
 import { HTTPException } from 'hono/http-exception';
 
 import { env } from '../config/env';
-import { isSessionDenied } from '../core/data/sessionRevocation';
+import { isSessionDenied } from '../core/data/sessions';
 import type { AppEnv } from '../types/hono';
 
 type AuthOptions = {
@@ -31,6 +31,11 @@ export const auth = (options: AuthOptions = {}) => {
 			await jwtMiddleware(c, async () => {});
 			const payload = c.get('jwtPayload');
 
+			// Ensure only access tokens are accepted.
+			if (payload.typ !== 'access') {
+				throw new HTTPException(401, { message: 'Invalid or expired token' });
+			}
+
 			if (adminOnly && payload.role !== 'admin') {
 				throw new HTTPException(403, { message: 'Forbidden' });
 			}
@@ -47,6 +52,7 @@ export const auth = (options: AuthOptions = {}) => {
 			c.set('auth', payload);
 			c.set('storeId', payload.storeId ?? c.req.header('x-market-store-id'));
 			c.set('isAdmin', payload.role === 'admin');
+
 			return next();
 		} catch (error) {
 			if (error instanceof HTTPException) throw error;
@@ -58,6 +64,17 @@ export const auth = (options: AuthOptions = {}) => {
 export const authenticate = auth({ required: true });
 export const optionalAuth = auth({ required: false });
 export const isAdmin = auth({ required: true, adminOnly: true });
+
+export const requireFullAccount = createMiddleware<AppEnv>(async (c, next) => {
+	if (c.var.auth?.anonymous) {
+		throw new HTTPException(403, {
+			message: 'A full account is required for this action'
+		});
+	}
+
+	return next();
+});
+
 export const authenticateProd = auth({
 	required: env.NODE_ENV === 'production'
 });

@@ -9,10 +9,12 @@ import * as OrderData from '../data/orders';
 import * as CartData from '../data/carts';
 import * as CardData from '../data/cards';
 import * as AddressData from '../data/addresses';
+import * as SessionData from '../data/sessions';
 
 import { cacheVerificationCode } from './auth';
 import { registerBodySchema } from '../validations/rest';
 import { env } from '../../config/env';
+import type { AppleIdentity } from './apple';
 
 import { EmailType } from '../../services/email';
 
@@ -225,4 +227,122 @@ export const getUserByEmail = (c: Context<AppEnv>, email: string) => {
 
 export const createUser = (c: Context<AppEnv>, input: CreateUserParams) => {
 	return UserData.createUser(c.var.prisma, input);
+};
+
+export const createAnonymousUser = (c: Context<AppEnv>) => {
+	return UserData.createUser(c.var.prisma, {
+		name: 'Guest',
+		isAnonymous: true
+	});
+};
+
+export const mergeAnonymousUser = async (
+	c: Context<AppEnv>,
+	anonymousUserId: string,
+	targetUserId: string
+) => {
+	const { sessionIds } = await UserData.mergeUsers(
+		c.var.prisma,
+		anonymousUserId,
+		targetUserId
+	);
+
+	for (const sessionId of sessionIds) {
+		await SessionData.denySession(c.var.redis, sessionId);
+	}
+
+	c.var.services.analytics.track({
+		event: 'anonymous_user_merged',
+		distinctId: targetUserId,
+		properties: { anonymousUserId }
+	});
+};
+
+export const getAnonymousCaller = async (c: Context<AppEnv>) => {
+	if (!c.var.auth?.id || c.var.isAdmin) {
+		return null;
+	}
+
+	const caller = await UserData.getUserById(c.var.prisma, c.var.auth.id);
+	return caller?.isAnonymous ? caller : null;
+};
+
+interface SignInWithAppleInput {
+	identity: AppleIdentity;
+	name?: string | undefined;
+	createIfMissing?: boolean | undefined;
+}
+
+/**
+ * Resolve an Apple identity to a Habiti user:
+ * 1. by `appleId` (the stable identifier),
+ * 2. by verified email — linking `appleId` onto the existing account,
+ * 3. by promoting the caller's anonymous user in place,
+ * 4. by creating a fresh user.
+ *
+ * When the caller is anonymous and the identity resolves to a different
+ * existing account, the anonymous user's data is merged into it.
+ */
+export const signInWithApple = async (
+	c: Context<AppEnv>,
+	input: SignInWithAppleInput
+) => {
+	const { identity, name, createIfMissing = true } = input;
+
+	const anonymousCaller = await getAnonymousCaller(c);
+
+	let user = await UserData.getUserByAppleId(c.var.prisma, identity.appleId);
+
+	// Only link by email when Apple attests the address is verified —
+	// otherwise an attacker-controlled Apple ID with someone else's email
+	// could take over their account.
+	if (!user && identity.email && identity.emailVerified) {
+		const byEmail = await UserData.getUserByEmail(c.var.prisma, identity.email);
+
+		if (byEmail) {
+			if (byEmail.appleId && byEmail.appleId !== identity.appleId) {
+				throw new LogicError(
+					LogicErrorCode.InvalidCredentials,
+					'This email is already linked to a different Apple ID'
+				);
+			}
+
+			user = await UserData.updateUser(c.var.prisma, byEmail.id, {
+				appleId: identity.appleId
+			});
+		}
+	}
+
+	if (user) {
+		if (anonymousCaller && anonymousCaller.id !== user.id) {
+			await mergeAnonymousUser(c, anonymousCaller.id, user.id);
+		}
+
+		return user;
+	}
+
+	if (!createIfMissing) {
+		throw new LogicError(
+			LogicErrorCode.UserNotFound,
+			'No account is linked to this Apple ID'
+		);
+	}
+
+	const email = identity.emailVerified ? identity.email : null;
+	const resolvedName = name?.trim() || '';
+
+	if (anonymousCaller) {
+		return UserData.updateUser(c.var.prisma, anonymousCaller.id, {
+			appleId: identity.appleId,
+			...(email ? { email } : {}),
+			...(resolvedName ? { name: resolvedName } : {}),
+			isAnonymous: false
+		});
+	}
+
+	return UserData.createUser(c.var.prisma, {
+		name: resolvedName,
+		email,
+		appleId: identity.appleId
+	});
 };

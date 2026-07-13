@@ -22,7 +22,6 @@ import {
 } from '@/data/mutations';
 import { useCardsQuery, useCurrentUserQuery } from '@/data/queries';
 import type { User } from '@/data/types';
-import { useAuthStore } from '@/state/auth-store';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusIcon, Trash2Icon } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
@@ -180,13 +179,10 @@ const PaymentsTab = () => {
 };
 
 function SettingsPage() {
-	const { accessToken } = useAuthStore();
-	const isAuthenticated = Boolean(accessToken);
-	const { data, isLoading } = useCurrentUserQuery({
-		enabled: isAuthenticated
-	});
+	const { data, isLoading } = useCurrentUserQuery();
+	const isSignedIn = Boolean(data?.user && !data.user.isAnonymous);
 
-	if (!isAuthenticated) {
+	if (!isLoading && !isSignedIn) {
 		return (
 			<SignInPrompt
 				title='Sign in to manage your profile'

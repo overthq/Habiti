@@ -12,15 +12,12 @@ import { StackNavigationProp } from '@react-navigation/stack';
 
 import { useShallow } from 'zustand/react/shallow';
 import useStore from '../state';
+import { useLogoutMutation } from '../hooks/mutations';
 import { ThemeMap } from '../utils/theme';
 
 const Settings: React.FC = () => {
-	const { theme, logOut } = useStore(
-		useShallow(state => ({
-			theme: state.theme,
-			logOut: state.logOut
-		}))
-	);
+	const theme = useStore(useShallow(state => state.theme));
+	const logoutMutation = useLogoutMutation();
 	const { navigate } = useNavigation<StackNavigationProp<any>>();
 
 	const handleRowNavigate = React.useCallback(
@@ -38,7 +35,12 @@ const Settings: React.FC = () => {
 				displayValue={ThemeMap[theme]}
 			/>
 
-			<Button text='Log Out' onPress={logOut} style={styles.logOut} />
+			<Button
+				text='Log Out'
+				onPress={() => logoutMutation.mutate()}
+				loading={logoutMutation.isPending}
+				style={styles.logOut}
+			/>
 		</ScrollableScreen>
 	);
 };

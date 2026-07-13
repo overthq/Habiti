@@ -7,11 +7,11 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as SplashScreen from 'expo-splash-screen';
+import { useShallow } from 'zustand/react/shallow';
 
 import Routes from './src/navigation/Routes';
 import useStore from './src/state';
-import { useShallow } from 'zustand/react/shallow';
-import { useAuthRefreshQuery } from './src/data/queries';
+import { useSessionQuery } from './src/data/queries';
 
 Sentry.init({ dsn: process.env.EXPO_PUBLIC_SENTRY_DSN });
 
@@ -29,7 +29,7 @@ const App = () => {
 
 const AppInner = () => {
 	const theme = useStore(useShallow(({ theme }) => theme));
-	const { isFetched } = useAuthRefreshQuery();
+	const { isFetched } = useSessionQuery();
 
 	React.useEffect(() => {
 		if (isFetched) {

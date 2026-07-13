@@ -4,7 +4,6 @@ import { ArrowRight, Settings } from 'lucide-react';
 import { formatNaira } from '@/utils/currency';
 import { formatDate } from '@/utils/date';
 import SignInPrompt from '@/components/SignInPrompt';
-import { useAuthStore } from '@/state/auth-store';
 import {
 	useCurrentUserQuery,
 	useFollowedStoresQuery,
@@ -29,23 +28,19 @@ export const Route = createFileRoute('/_main/profile/')({
 });
 
 function ProfilePage() {
-	const { accessToken } = useAuthStore();
-	const isAuthenticated = Boolean(accessToken);
-
-	const { data: userData, isLoading: isLoadingUser } = useCurrentUserQuery({
-		enabled: isAuthenticated
-	});
+	const { data: userData, isLoading: isLoadingUser } = useCurrentUserQuery();
+	const isSignedIn = Boolean(userData?.user && !userData.user.isAnonymous);
 
 	const { data: followedStoresData, isLoading: isLoadingStores } =
 		useFollowedStoresQuery({
-			enabled: isAuthenticated
+			enabled: isSignedIn
 		});
 
 	const { data: ordersData, isLoading: isLoadingOrders } = useOrdersQuery({
-		enabled: isAuthenticated
+		enabled: isSignedIn
 	});
 
-	if (!isAuthenticated) {
+	if (!isLoadingUser && !isSignedIn) {
 		return (
 			<SignInPrompt
 				title='Sign in to view your profile'

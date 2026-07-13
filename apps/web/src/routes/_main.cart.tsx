@@ -1,11 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import React from 'react';
-import { useCartsQuery, useGuestCartsQuery } from '@/data/queries';
+import { useCartsQuery } from '@/data/queries';
 import { useUpdateCartProductQuantityMutation } from '@/data/mutations';
 import { Button } from '@/components/ui/button';
-import SignInPrompt from '@/components/SignInPrompt';
-import { useAuthStore } from '@/state/auth-store';
-import { useGuestCartStore } from '@/state/guest-cart-store';
 import type { Cart, CartProduct } from '@/data/types';
 import { formatNaira } from '@/utils/currency';
 import { cn } from '@/lib/utils';
@@ -203,34 +200,9 @@ const CartItem: React.FC<CartItemProps> = ({ cart: initialCart }) => {
 };
 
 function CartPage() {
-	const { accessToken } = useAuthStore();
-	const { cartIds: guestCartIds } = useGuestCartStore();
-	const isAuthenticated = Boolean(accessToken);
+	const { data, isLoading: isCartLoading, error: cartError } = useCartsQuery();
 
-	const { data, isLoading, error } = useCartsQuery({
-		enabled: isAuthenticated
-	});
-
-	const {
-		data: guestCartsData,
-		isLoading: isGuestCartLoading,
-		error: guestCartsError
-	} = useGuestCartsQuery({
-		enabled: !isAuthenticated
-	});
-
-	const carts = data?.carts || guestCartsData?.carts;
-	const isCartLoading = isLoading || isGuestCartLoading;
-	const cartError = error || guestCartsError;
-
-	if (!isAuthenticated && guestCartIds.length === 0) {
-		return (
-			<SignInPrompt
-				title='Sign in to view your cart'
-				description='Your cart lives in your Habiti account. Sign in to continue shopping or pick up where you left off.'
-			/>
-		);
-	}
+	const carts = data?.carts;
 
 	if (isCartLoading) {
 		return (
