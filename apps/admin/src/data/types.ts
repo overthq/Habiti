@@ -102,6 +102,7 @@ export interface Order {
 }
 
 export interface OrderFilters {
+	search?: string;
 	status?: OrderStatus;
 	storeId?: string;
 	userId?: string;
@@ -187,6 +188,7 @@ export interface GetStoresResponse {
 }
 
 export interface StoreFilters {
+	search?: string;
 	filter?: Record<string, string | number>;
 	orderBy?: Record<string, 'asc' | 'desc'>;
 }

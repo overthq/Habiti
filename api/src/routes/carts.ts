@@ -9,18 +9,6 @@ import * as Schemas from '../core/validations/rest';
 
 const carts = new Hono<AppEnv>();
 
-carts.get(
-	'/',
-	optionalAuth,
-	zValidator('query', Schemas.getCartsQuerySchema, zodHook),
-	async c => {
-		const { cartIds } = c.req.valid('query');
-
-		const carts = await CartLogic.getCartsFromList(c, cartIds);
-		return c.json({ carts });
-	}
-);
-
 carts.get('/:id', optionalAuth, async c => {
 	const cartWithContext = await CartLogic.getCartById(c, c.req.param('id'));
 	return c.json(cartWithContext);

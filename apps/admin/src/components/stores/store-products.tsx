@@ -45,11 +45,7 @@ const StoreProducts = ({ storeId }: { storeId: string }) => {
 			<div className='flex justify-end'>
 				<CreateProductDialog storeId={storeId} />
 			</div>
-			<DataTable
-				columns={columns}
-				data={data.products}
-				hasColumnDropdown={false}
-			/>
+			<DataTable columns={columns} data={data.products} />
 		</div>
 	);
 };

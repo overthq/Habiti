@@ -1,18 +1,20 @@
 import React from 'react';
-import { useTheme } from '@habiti/components';
-import { LinkingOptions, NavigationContainer } from '@react-navigation/native';
+import { Icon, IconType, themes, useTheme } from '@habiti/components';
+import {
+	LinkingOptions,
+	NavigationContainer,
+	RouteProp
+} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Linking } from 'react-native';
 import * as ExpoNotifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
-import { useShallow } from 'zustand/react/shallow';
 import * as Updates from 'expo-updates';
 
 import AddCardWebview from '../screens/AddCardWebview';
 import AddAddress from '../screens/AddAddress';
-import Authenticate from '../screens/Authenticate';
 import Cart from '../screens/Cart';
-import Landing from '../screens/Landing';
 import Register from '../screens/Register';
 import Product from '../screens/Product';
 import Verify from '../screens/Verify';
@@ -32,12 +34,13 @@ import Store from '../screens/Store';
 import StoreInfo from '../screens/StoreInfo';
 import Orders from '../screens/Orders';
 import FollowedStores from '../screens/FollowedStores';
-
-import useStore from '../state';
+import SignIn from '../screens/SignIn';
 
 import {
 	HomeStackParamList,
 	AppStackParamList,
+	AuthStackParamList,
+	MainTabParamList,
 	ProfileStackParamList
 } from '../navigation/types';
 
@@ -55,17 +58,26 @@ const linking: LinkingOptions<AppStackParamList> = {
 	prefixes: ['habiti://', 'https://habiti.app'],
 	config: {
 		screens: {
-			'App.Home': {
+			'App.Main': {
 				screens: {
-					'Home.Main': 'home',
-					'Home.Order': 'orders/:orderId',
-					'Home.Orders': 'orders',
-					'Home.Store': 'store/:storeId',
-					'Home.Notifications': 'notifications',
-					'Home.FollowedStores': 'followed-stores'
+					'Main.Home': {
+						screens: {
+							'Home.Main': 'home',
+							'Home.Order': 'orders/:orderId',
+							'Home.Orders': 'orders',
+							'Home.Store': 'store/:storeId',
+							'Home.Notifications': 'notifications',
+							'Home.FollowedStores': 'followed-stores'
+						}
+					},
+					'Main.Carts': 'carts',
+					'Main.Profile': {
+						screens: {
+							'Profile.Main': 'profile'
+						}
+					}
 				}
 			},
-			'App.Carts': 'carts',
 			Cart: 'carts/:cartId',
 			Product: 'product/:productId'
 		}
@@ -109,6 +121,8 @@ const linking: LinkingOptions<AppStackParamList> = {
 
 const AppStack = createNativeStackNavigator<AppStackParamList, 'AppStack'>();
 
+const MainTab = createBottomTabNavigator<MainTabParamList, 'MainTab'>();
+
 const ProfileNavigator = createNativeStackNavigator<
 	ProfileStackParamList,
 	'ProfileStack'
@@ -118,6 +132,40 @@ const HomeNavigator = createNativeStackNavigator<
 	HomeStackParamList,
 	'HomeStack'
 >();
+
+const AuthNavigator = createNativeStackNavigator<
+	AuthStackParamList,
+	'AuthStack'
+>();
+
+const AuthStack = () => {
+	return (
+		<AuthNavigator.Navigator
+			id='AuthStack'
+			screenOptions={{
+				headerTitle: '',
+				headerBackButtonDisplayMode: 'minimal'
+			}}
+		>
+			<AuthNavigator.Screen
+				name='Auth.Main'
+				component={SignIn}
+				options={({ navigation }) => ({
+					unstable_headerLeftItems: () => [
+						{
+							type: 'button',
+							label: 'Close',
+							icon: { type: 'sfSymbol', name: 'xmark' },
+							onPress: navigation.goBack
+						}
+					]
+				})}
+			/>
+			<AuthNavigator.Screen name='Auth.Register' component={Register} />
+			<AuthNavigator.Screen name='Auth.Verify' component={Verify} />
+		</AuthNavigator.Navigator>
+	);
+};
 
 const HomeStack = () => {
 	return (
@@ -168,18 +216,7 @@ const ProfileStack = () => {
 			<ProfileNavigator.Screen
 				name='Profile.Main'
 				component={Profile}
-				options={({ navigation }) => ({
-					headerTransparent: true,
-					headerTitle: 'Profile',
-					unstable_headerLeftItems: () => [
-						{
-							type: 'button',
-							label: 'Close',
-							icon: { type: 'sfSymbol', name: 'xmark' },
-							onPress: navigation.goBack
-						}
-					]
-				})}
+				options={{ headerTransparent: true, headerTitle: 'Profile' }}
 			/>
 			<ProfileNavigator.Screen
 				name='Profile.Edit'
@@ -215,6 +252,48 @@ const ProfileStack = () => {
 	);
 };
 
+const tabIcons: Record<keyof MainTabParamList, IconType> = {
+	'Main.Home': 'home',
+	'Main.Carts': 'shopping-basket',
+	'Main.Profile': 'user-round'
+};
+
+const tabLabels: Record<keyof MainTabParamList, string> = {
+	'Main.Home': 'Home',
+	'Main.Carts': 'Carts',
+	'Main.Profile': 'Profile'
+};
+
+const tabScreenOptions =
+	(themeName: 'light' | 'dark') =>
+	({ route }: { route: RouteProp<MainTabParamList> }) => ({
+		headerShown: false,
+		title: tabLabels[route.name],
+		tabBarActiveTintColor: themes[themeName].text.primary,
+		tabBarInactiveTintColor: themes[themeName].text.tertiary,
+		tabBarShowLabel: false,
+		tabBarIcon: ({ color }: { color: string }) => (
+			<Icon name={tabIcons[route.name]} color={color} size={28} />
+		),
+		tabBarStyle: { paddingTop: 8 }
+	});
+
+const MainTabs = () => {
+	const { name } = useTheme();
+
+	return (
+		<MainTab.Navigator
+			id='MainTab'
+			initialRouteName='Main.Home'
+			screenOptions={tabScreenOptions(name)}
+		>
+			<MainTab.Screen name='Main.Home' component={HomeStack} />
+			<MainTab.Screen name='Main.Carts' component={Carts} />
+			<MainTab.Screen name='Main.Profile' component={ProfileStack} />
+		</MainTab.Navigator>
+	);
+};
+
 const Routes: React.FC = () => {
 	const { isUpdatePending } = Updates.useUpdates();
 
@@ -225,11 +304,6 @@ const Routes: React.FC = () => {
 	}, [isUpdatePending]);
 
 	const { theme } = useTheme();
-	const { accessToken } = useStore(
-		useShallow(state => ({
-			accessToken: state.accessToken
-		}))
-	);
 
 	return (
 		<>
@@ -239,72 +313,58 @@ const Routes: React.FC = () => {
 					id='AppStack'
 					screenOptions={{ headerShown: false }}
 				>
-					{accessToken ? (
-						<>
-							<AppStack.Screen name='App.Home' component={HomeStack} />
-							<AppStack.Screen
-								name='App.Carts'
-								component={Carts}
-								options={{ headerTitle: 'Carts' }}
-							/>
-							<AppStack.Group
-								screenOptions={({ navigation }) => ({
-									headerShown: true,
-									presentation: 'containedModal',
-									headerBackButtonDisplayMode: 'minimal',
-									unstable_headerLeftItems: () => [
-										{
-											type: 'button',
-											label: 'Close',
-											icon: { type: 'sfSymbol', name: 'xmark' },
-											onPress: navigation.goBack
-										}
-									]
-								})}
-							>
-								<AppStack.Screen
-									name='App.Profile'
-									component={ProfileStack}
-									options={{ headerShown: false, headerTitle: 'Profile' }}
-								/>
-								<AppStack.Screen name='Cart' component={Cart} />
-								<AppStack.Screen
-									name='Product'
-									component={Product}
-									options={{
-										headerTitle: '',
-										gestureDirection: 'vertical',
-										headerTransparent: true
-									}}
-								/>
-								<AppStack.Screen
-									name='Modal.AddCard'
-									component={AddCardWebview}
-									options={{ headerTitle: 'Add Card' }}
-								/>
-								<AppStack.Screen
-									name='Modal.AddAddress'
-									component={AddAddress}
-									options={{ headerTitle: 'Add Address' }}
-								/>
-								<AppStack.Screen
-									name='Modal.EditAddress'
-									component={EditAddress}
-									options={{ headerTitle: 'Edit Address' }}
-								/>
-								<AppStack.Screen
-									name='Modal.StoreInfo'
-									component={StoreInfo}
-									options={{ headerTitle: 'Store Info' }}
-								/>
-							</AppStack.Group>
-						</>
-					) : (
-						<AppStack.Screen name='Landing' component={Landing} />
-					)}
-					<AppStack.Screen name='Register' component={Register} />
-					<AppStack.Screen name='Authenticate' component={Authenticate} />
-					<AppStack.Screen name='Verify' component={Verify} />
+					<AppStack.Screen name='App.Main' component={MainTabs} />
+					<AppStack.Group
+						screenOptions={({ navigation }) => ({
+							headerShown: true,
+							presentation: 'containedModal',
+							headerBackButtonDisplayMode: 'minimal',
+							unstable_headerLeftItems: () => [
+								{
+									type: 'button',
+									label: 'Close',
+									icon: { type: 'sfSymbol', name: 'xmark' },
+									onPress: navigation.goBack
+								}
+							]
+						})}
+					>
+						<AppStack.Screen name='Cart' component={Cart} />
+						<AppStack.Screen
+							name='Product'
+							component={Product}
+							options={{
+								headerTitle: '',
+								gestureDirection: 'vertical',
+								headerTransparent: true
+							}}
+						/>
+						<AppStack.Screen
+							name='Modal.AddCard'
+							component={AddCardWebview}
+							options={{ headerTitle: 'Add Card' }}
+						/>
+						<AppStack.Screen
+							name='Modal.AddAddress'
+							component={AddAddress}
+							options={{ headerTitle: 'Add Address' }}
+						/>
+						<AppStack.Screen
+							name='Modal.EditAddress'
+							component={EditAddress}
+							options={{ headerTitle: 'Edit Address' }}
+						/>
+						<AppStack.Screen
+							name='Modal.StoreInfo'
+							component={StoreInfo}
+							options={{ headerTitle: 'Store Info' }}
+						/>
+					</AppStack.Group>
+					<AppStack.Screen
+						name='Modal.Auth'
+						component={AuthStack}
+						options={{ presentation: 'modal' }}
+					/>
 				</AppStack.Navigator>
 			</NavigationContainer>
 		</>

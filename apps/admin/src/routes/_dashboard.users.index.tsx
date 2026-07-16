@@ -9,8 +9,6 @@ import { ListFilter } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
@@ -27,6 +25,7 @@ import { DataTable } from '@/components/ui/data-table';
 import { DataTableColumnHeader } from '@/components/data-table-column-header';
 import { BulkActionsToolbar } from '@/components/bulk-actions-toolbar';
 import { ConfirmDialog } from '@/components/confirm-dialog';
+import StatusPill from '@/components/status-pill';
 import { useUsersQuery } from '@/data/queries';
 import {
 	useBulkUpdateUsersMutation,
@@ -85,13 +84,10 @@ const columns: ColumnDef<User>[] = [
 		accessorKey: 'suspended',
 		header: 'Status',
 		cell: ({ row }) => (
-			<span
-				className={
-					row.original.suspended ? 'text-destructive' : 'text-green-600'
-				}
-			>
-				{row.original.suspended ? 'Suspended' : 'Active'}
-			</span>
+			<StatusPill
+				tone={row.original.suspended ? 'red' : 'green'}
+				label={row.original.suspended ? 'Suspended' : 'Active'}
+			/>
 		),
 		enableSorting: false
 	},
@@ -214,6 +210,10 @@ function Users() {
 				getRowId={row => row.id}
 				sorting={sorting}
 				onSortingChange={handleSortingChange}
+				defaultPageSize={20}
+				searchValue={filters.search ?? ''}
+				onSearchChange={value => setFilter('search', value || undefined)}
+				searchPlaceholder='Filter by name...'
 				filterButtons={
 					<div className='flex items-center gap-2'>
 						<DropdownMenu>
@@ -224,24 +224,6 @@ function Users() {
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align='start' className='w-56'>
-								<DropdownMenuSub>
-									<DropdownMenuSubTrigger>Search</DropdownMenuSubTrigger>
-									<DropdownMenuPortal>
-										<DropdownMenuSubContent className='p-4'>
-											<div className='space-y-2'>
-												<Label>Search Users</Label>
-												<Input
-													placeholder='Search users...'
-													value={filters.search ?? ''}
-													onChange={e =>
-														setFilter('search', e.target.value || undefined)
-													}
-												/>
-											</div>
-										</DropdownMenuSubContent>
-									</DropdownMenuPortal>
-								</DropdownMenuSub>
-
 								<DropdownMenuSub>
 									<DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
 									<DropdownMenuPortal>

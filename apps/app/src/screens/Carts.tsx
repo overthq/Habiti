@@ -17,9 +17,9 @@ import useRefresh from '../hooks/useRefresh';
 import { plural } from '../utils/strings';
 
 import type { Cart } from '../data/types';
-import type { AppStackScreenProps } from '../navigation/types';
+import type { MainTabScreenProps } from '../navigation/types';
 
-const Carts: React.FC<AppStackScreenProps<'App.Carts'>> = ({ navigation }) => {
+const Carts: React.FC<MainTabScreenProps<'Main.Carts'>> = ({ navigation }) => {
 	const { data, refetch } = useCartsQuery();
 	const { refreshing, refresh } = useRefresh({ refetch });
 	const { theme } = useTheme();
@@ -35,7 +35,7 @@ const Carts: React.FC<AppStackScreenProps<'App.Carts'>> = ({ navigation }) => {
 
 	return (
 		<Screen style={{ paddingTop: top }}>
-			<ScreenHeader title='Carts' hasBottomBorder goBack={navigation.goBack} />
+			<ScreenHeader title='Carts' hasBottomBorder />
 			<FlatList
 				style={{ flex: 1, marginHorizontal: -16 }}
 				keyExtractor={c => c.id}

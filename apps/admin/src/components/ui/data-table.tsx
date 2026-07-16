@@ -3,7 +3,6 @@ import {
 	type ColumnDef,
 	type ColumnFiltersState,
 	type SortingState,
-	type VisibilityState,
 	type RowSelectionState,
 	flexRender,
 	getCoreRowModel,
@@ -14,12 +13,7 @@ import {
 } from '@tanstack/react-table';
 
 import { Button } from '@/components/ui/button';
-import {
-	DropdownMenu,
-	DropdownMenuCheckboxItem,
-	DropdownMenuContent,
-	DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
+import { SearchInput } from '@/components/table-filters';
 import {
 	Table,
 	TableBody,
@@ -29,7 +23,6 @@ import {
 	TableRow
 } from './table';
 import {
-	ChevronDown,
 	ChevronsRight,
 	ChevronRight,
 	ChevronLeft,
@@ -47,8 +40,11 @@ import {
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
-	hasColumnDropdown?: boolean;
 	filterButtons?: React.ReactNode;
+	searchValue?: string;
+	onSearchChange?: (value: string) => void;
+	searchPlaceholder?: string;
+	defaultPageSize?: number;
 	rowSelection?: RowSelectionState;
 	onRowSelectionChange?: (selection: RowSelectionState) => void;
 	getRowId?: (row: TData) => string;
@@ -60,7 +56,10 @@ export function DataTable<TData, TValue>({
 	columns,
 	data,
 	filterButtons,
-	hasColumnDropdown = true,
+	searchValue,
+	onSearchChange,
+	searchPlaceholder,
+	defaultPageSize = 10,
 	rowSelection,
 	onRowSelectionChange,
 	getRowId,
@@ -73,8 +72,6 @@ export function DataTable<TData, TValue>({
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
 		[]
 	);
-	const [columnVisibility, setColumnVisibility] =
-		React.useState<VisibilityState>({});
 	const [internalRowSelection, setInternalRowSelection] =
 		React.useState<RowSelectionState>({});
 
@@ -119,51 +116,30 @@ export function DataTable<TData, TValue>({
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
-		onColumnVisibilityChange: setColumnVisibility,
 		onRowSelectionChange: handleRowSelectionChange,
 		getRowId,
+		initialState: {
+			pagination: { pageSize: defaultPageSize }
+		},
 		state: {
 			sorting,
 			columnFilters,
-			columnVisibility,
 			rowSelection: effectiveRowSelection
 		}
 	});
 
 	return (
 		<div className='space-y-4'>
-			{(filterButtons || hasColumnDropdown) && (
+			{(onSearchChange || filterButtons) && (
 				<div className='flex items-center gap-2'>
-					{filterButtons}
-
-					{hasColumnDropdown && (
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<Button variant='outline' size='sm' className='ml-auto h-8'>
-									Columns <ChevronDown className='ml-2 h-4 w-4' />
-								</Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align='end'>
-								{table
-									.getAllColumns()
-									.filter(column => column.getCanHide())
-									.map(column => {
-										return (
-											<DropdownMenuCheckboxItem
-												key={column.id}
-												className='capitalize'
-												checked={column.getIsVisible()}
-												onCheckedChange={value =>
-													column.toggleVisibility(!!value)
-												}
-											>
-												{column.id}
-											</DropdownMenuCheckboxItem>
-										);
-									})}
-							</DropdownMenuContent>
-						</DropdownMenu>
+					{onSearchChange && (
+						<SearchInput
+							value={searchValue ?? ''}
+							onChange={onSearchChange}
+							placeholder={searchPlaceholder}
+						/>
 					)}
+					{filterButtons}
 				</div>
 			)}
 

@@ -243,7 +243,6 @@ export interface CreateStoreBody {
 export interface VerifyCodeBody {
 	email: string;
 	code: string;
-	cartIds?: string[]; // Guest carts ready to claim
 }
 
 export interface CreateOrderBody {

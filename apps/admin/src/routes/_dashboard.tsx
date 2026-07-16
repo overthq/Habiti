@@ -8,10 +8,10 @@ export const Route = createFileRoute('/_dashboard')({
 
 function DashboardLayout() {
 	return (
-		<SidebarProvider>
+		<SidebarProvider className='h-svh overflow-hidden'>
 			<AppSidebar />
-			<SidebarInset className='md:peer-data-[variant=inset]:rounded-sm'>
-				<main className='flex-1 p-8'>
+			<SidebarInset className='min-h-0 overflow-hidden md:peer-data-[variant=inset]:rounded-sm'>
+				<main className='flex-1 overflow-y-auto p-8'>
 					<Outlet />
 				</main>
 			</SidebarInset>

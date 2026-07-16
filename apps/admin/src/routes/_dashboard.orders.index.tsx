@@ -106,7 +106,7 @@ const columns: ColumnDef<Order>[] = [
 	},
 	{
 		id: 'actions',
-		header: 'Actions',
+		header: () => <span className='sr-only'>Actions</span>,
 		cell: ({ row }) => {
 			// eslint-disable-next-line react-hooks/rules-of-hooks
 			const navigate = useNavigate();
@@ -143,6 +143,7 @@ const columns: ColumnDef<Order>[] = [
 ];
 
 const defaultFilters: OrderFilters = {
+	search: undefined,
 	status: undefined,
 	storeId: undefined,
 	userId: undefined,
@@ -254,6 +255,10 @@ function OrdersPage() {
 				getRowId={row => row.id}
 				sorting={sorting}
 				onSortingChange={handleSortingChange}
+				defaultPageSize={20}
+				searchValue={filters.search ?? ''}
+				onSearchChange={value => setFilter('search', value || undefined)}
+				searchPlaceholder='Filter by name...'
 				filterButtons={
 					<div className='flex items-center gap-2'>
 						<DropdownMenu>

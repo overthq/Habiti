@@ -7,14 +7,10 @@ import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 
 export type AppStackParamList = {
 	Landing: undefined;
-	'App.Home': NavigatorScreenParams<HomeStackParamList>;
-	'App.Profile': NavigatorScreenParams<ProfileStackParamList>;
-	'App.Carts': undefined;
-	Register: undefined;
-	Authenticate: undefined;
-	Verify: { email: string };
+	'App.Main': NavigatorScreenParams<MainTabParamList>;
 	Product: { productId: string };
 	Cart: { cartId: string };
+	'Modal.Auth': NavigatorScreenParams<AuthStackParamList> | undefined;
 	'Modal.AddCard': { orderId?: string };
 	'Modal.AddAddress': undefined;
 	'Modal.StoreInfo': { storeId: string };
@@ -33,6 +29,24 @@ export type AppStackParamList = {
 export type AppStackScreenProps<T extends keyof AppStackParamList> =
 	NativeStackScreenProps<AppStackParamList, T>;
 
+export type AuthStackParamList = {
+	'Auth.Main': undefined;
+	'Auth.Register': undefined;
+	'Auth.Verify': { email: string };
+};
+
+/**
+ * The screens the auth modal can be opened at. Verification is only reachable
+ * from within the flow, since it needs an email to verify.
+ */
+export type AuthEntryScreen = Exclude<keyof AuthStackParamList, 'Auth.Verify'>;
+
+export type AuthStackScreenProps<T extends keyof AuthStackParamList> =
+	CompositeScreenProps<
+		NativeStackScreenProps<AuthStackParamList, T>,
+		AppStackScreenProps<'Modal.Auth'>
+	>;
+
 export type HomeStackParamList = {
 	'Home.Main': undefined;
 	'Home.Order': { orderId: string };
@@ -48,7 +62,7 @@ export type HomeStackParamList = {
 export type HomeStackScreenProps<T extends keyof HomeStackParamList> =
 	CompositeScreenProps<
 		NativeStackScreenProps<HomeStackParamList, T>,
-		AppStackScreenProps<'App.Home'>
+		MainTabScreenProps<'Main.Home'>
 	>;
 
 export type ProfileStackParamList = {
@@ -64,7 +78,7 @@ export type ProfileStackParamList = {
 export type ProfileStackScreenProps<T extends keyof ProfileStackParamList> =
 	CompositeScreenProps<
 		NativeStackScreenProps<ProfileStackParamList, T>,
-		AppStackScreenProps<'App.Profile'>
+		MainTabScreenProps<'Main.Profile'>
 	>;
 
 export type ExploreStackParamList = {
@@ -91,13 +105,16 @@ export type StoreStackScreenProps<T extends keyof StoreStackParamList> =
 	NativeStackScreenProps<StoreStackParamList, T>;
 
 export type MainTabParamList = {
-	'Main.ForYou': undefined;
+	'Main.Home': NavigatorScreenParams<HomeStackParamList>;
 	'Main.Carts': undefined;
-	'Main.Profile': undefined;
+	'Main.Profile': NavigatorScreenParams<ProfileStackParamList>;
 };
 
 export type MainTabScreenProps<T extends keyof MainTabParamList> =
-	BottomTabScreenProps<MainTabParamList, T>;
+	CompositeScreenProps<
+		BottomTabScreenProps<MainTabParamList, T>,
+		AppStackScreenProps<'App.Main'>
+	>;
 
 declare global {
 	namespace ReactNavigation {

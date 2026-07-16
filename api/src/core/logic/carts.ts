@@ -51,13 +51,6 @@ export const getCartsByUserId = async (c: Context<AppEnv>, userId: string) => {
 	return CartData.getCartsByUserId(c.var.prisma, userId);
 };
 
-export const getCartsFromList = async (
-	c: Context<AppEnv>,
-	cartIds: string[]
-) => {
-	return CartData.getCartsFromList(c.var.prisma, cartIds);
-};
-
 interface AddProductToCartInput {
 	storeId: string;
 	productId: string;
@@ -235,34 +228,6 @@ export const deleteCart = async (
 	});
 
 	return cart;
-};
-
-interface ClaimCartsInput {
-	cartIds: string[];
-	userId: string;
-}
-
-export const claimCarts = async (
-	c: Context<AppEnv>,
-	input: ClaimCartsInput
-) => {
-	const { cartIds, userId } = input;
-
-	const claimedCarts = await CartData.claimCarts(c.var.prisma, {
-		userId,
-		cartIds
-	});
-
-	c.var.services.analytics.track({
-		event: 'carts_claimed',
-		distinctId: userId,
-		properties: {
-			cartIds,
-			claimedCount: claimedCarts.length
-		}
-	});
-
-	return claimedCarts;
 };
 
 export const calculatePaystackFee = (subTotal: number) => {

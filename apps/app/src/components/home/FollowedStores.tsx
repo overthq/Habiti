@@ -1,12 +1,6 @@
 import React from 'react';
 import { View, Pressable, StyleSheet, FlatList } from 'react-native';
-import {
-	Avatar,
-	Dialog,
-	SectionHeader,
-	Spacer,
-	Typography
-} from '@habiti/components';
+import { Avatar, SectionHeader, Spacer, Typography } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 import type { Store } from '../../data/types';
@@ -26,12 +20,11 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 		[navigate]
 	);
 
-	return followed.length === 0 ? (
-		<Dialog
-			title={`You haven't followed any stores yet`}
-			description='Discover and follow stores to get started.'
-		/>
-	) : (
+	// Discovery sections further down the home screen now cover the
+	// "nothing to show yet" case, so this stays out of the way when empty.
+	if (followed.length === 0) return null;
+
+	return (
 		<View>
 			<SectionHeader
 				title='Followed stores'

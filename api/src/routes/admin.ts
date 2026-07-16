@@ -168,7 +168,20 @@ admin.get('/stores', async c => {
 		allowedOrderBy: adminStoreOrderBy
 	});
 
-	const stores = await StoreLogic.getStores(c, query);
+	const search = c.req.query('search');
+
+	const stores = await StoreLogic.getStores(c, {
+		...query,
+		...(search
+			? {
+					where: {
+						...query.where,
+						name: { contains: search, mode: 'insensitive' }
+					}
+				}
+			: {})
+	});
+
 	return c.json({ stores });
 });
 

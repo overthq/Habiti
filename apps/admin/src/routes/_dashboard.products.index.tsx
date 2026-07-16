@@ -9,8 +9,6 @@ import { ListFilter, MoreHorizontal } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
@@ -103,7 +101,7 @@ const columns: ColumnDef<Product>[] = [
 	},
 	{
 		id: 'actions',
-		header: 'Actions',
+		header: () => <span className='sr-only'>Actions</span>,
 		cell: ({ row }) => {
 			// eslint-disable-next-line react-hooks/rules-of-hooks
 			const navigate = useNavigate();
@@ -251,6 +249,10 @@ function ProductsPage() {
 				getRowId={row => row.id}
 				sorting={sorting}
 				onSortingChange={handleSortingChange}
+				defaultPageSize={20}
+				searchValue={filters.search ?? ''}
+				onSearchChange={value => setFilter('search', value || undefined)}
+				searchPlaceholder='Filter by name...'
 				filterButtons={
 					<div className='flex items-center gap-2'>
 						<DropdownMenu>
@@ -261,24 +263,6 @@ function ProductsPage() {
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align='start' className='w-56'>
-								<DropdownMenuSub>
-									<DropdownMenuSubTrigger>Search</DropdownMenuSubTrigger>
-									<DropdownMenuPortal>
-										<DropdownMenuSubContent className='p-4'>
-											<div className='space-y-2'>
-												<Label>Search Products</Label>
-												<Input
-													placeholder='Search products...'
-													value={filters.search ?? ''}
-													onChange={e =>
-														setFilter('search', e.target.value || undefined)
-													}
-												/>
-											</div>
-										</DropdownMenuSubContent>
-									</DropdownMenuPortal>
-								</DropdownMenuSub>
-
 								<DropdownMenuSub>
 									<DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
 									<DropdownMenuPortal>
