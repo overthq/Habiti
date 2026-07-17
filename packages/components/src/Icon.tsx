@@ -12,17 +12,12 @@ const icons = {
 	),
 	bookmark: <Path d='m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z' />,
 	check: <Path d='M20 6L9 17l-5-5' />,
-	check2: (
-		<Path
-			// strokeLinecap='round'
-			// strokeLinejoin='round'
-			d='m4.5 12.75 6 6 9-13.5'
-		/>
-	),
+	check2: <Path d='m4.5 12.75 6 6 9-13.5' />,
 	'chevron-left': <Path d='M15 18l-6-6 6-6' />,
 	'chevron-right': <Path d='M9 18l6-6-6-6' />,
 	'chevron-down': <Path d='m6 9 6 6 6-6' />,
 	'chevrons-up-down': <Path d='m7 15 5 5 5-5M7 9l5-5 5 5' />,
+	circle: <Circle cx={12} cy={12} r={10} />,
 	'credit-card': (
 		<>
 			<Rect width={20} height={14} x={2} y={5} rx={2} />
@@ -32,7 +27,12 @@ const icons = {
 	delete: (
 		<Path d='M10 5a2 2 0 0 0-1.344.519l-6.328 5.74a1 1 0 0 0 0 1.481l6.328 5.741A2 2 0 0 0 10 19h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zM12 9l6 6M18 9l-6 6' />
 	),
-	circle: <Circle cx={12} cy={12} r={10} />,
+	'eye-off': (
+		<>
+			<Path d='M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49M14.084 14.158a3 3 0 0 1-4.242-4.242' />
+			<Path d='M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143M2 2l20 20' />
+		</>
+	),
 	filter: <Path d='M22 3H2l8 9.46V19l4 2v-8.54L22 3z' />,
 	globe: (
 		<>
