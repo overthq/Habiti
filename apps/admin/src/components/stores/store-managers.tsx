@@ -32,11 +32,7 @@ const StoreManagers = ({ storeId }: { storeId: string }) => {
 
 	return (
 		<div>
-			<DataTable
-				columns={columns}
-				data={data.managers}
-				hasColumnDropdown={false}
-			/>
+			<DataTable columns={columns} data={data.managers} />
 		</div>
 	);
 };

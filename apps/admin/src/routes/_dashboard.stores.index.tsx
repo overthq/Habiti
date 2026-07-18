@@ -2,16 +2,17 @@ import { useState } from 'react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { type ColumnDef, type RowSelectionState } from '@tanstack/react-table';
 
-import { type Store } from '@/data/types';
+import { type Store, type StoreFilters } from '@/data/types';
 import { useStoresQuery } from '@/data/queries';
+import { useTableFilters } from '@/hooks/use-table-filters';
 import {
 	useBulkUpdateStoresMutation,
 	useBulkDeleteStoresMutation
 } from '@/data/mutations';
 import { DataTable } from '@/components/ui/data-table';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
+import StatusPill from '@/components/status-pill';
 import { BulkActionsToolbar } from '@/components/bulk-actions-toolbar';
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import CreateStoreDialog from '@/components/stores/create-store-dialog';
@@ -58,9 +59,10 @@ const columns: ColumnDef<Store>[] = [
 		accessorKey: 'unlisted',
 		header: 'Status',
 		cell: ({ row }) => (
-			<Badge variant={row.original.unlisted ? 'secondary' : 'default'}>
-				{row.original.unlisted ? 'Unlisted' : 'Listed'}
-			</Badge>
+			<StatusPill
+				tone={row.original.unlisted ? 'gray' : 'green'}
+				label={row.original.unlisted ? 'Unlisted' : 'Listed'}
+			/>
 		)
 	},
 	{
@@ -70,8 +72,14 @@ const columns: ColumnDef<Store>[] = [
 	}
 ];
 
+const defaultFilters: StoreFilters = {
+	search: undefined
+};
+
 function Stores() {
-	const { data, isLoading } = useStoresQuery();
+	const { filters, setFilter } = useTableFilters({ defaults: defaultFilters });
+
+	const { data, isLoading } = useStoresQuery(filters);
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
 	const bulkUpdateMutation = useBulkUpdateStoresMutation();
@@ -154,6 +162,10 @@ function Stores() {
 				rowSelection={rowSelection}
 				onRowSelectionChange={setRowSelection}
 				getRowId={row => row.id}
+				defaultPageSize={20}
+				searchValue={filters.search ?? ''}
+				onSearchChange={value => setFilter('search', value || undefined)}
+				searchPlaceholder='Filter by name...'
 			/>
 		</div>
 	);

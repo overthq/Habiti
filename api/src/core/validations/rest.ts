@@ -24,8 +24,7 @@ export type AuthenticateBody = z.infer<typeof authenticateBodySchema>;
 
 export const verifyCodeBodySchema = z.object({
 	email: z.string().email(),
-	code: z.string(),
-	cartIds: z.array(z.string()).optional()
+	code: z.string()
 });
 
 export type VerifyCodeBody = z.infer<typeof verifyCodeBodySchema>;
@@ -39,7 +38,6 @@ export type AppleCallbackBody = z.infer<typeof appleCallbackBodySchema>;
 export const appleSignInBodySchema = z.object({
 	identityToken: z.string(),
 	fullName: z.string().optional(),
-	cartIds: z.array(z.string()).optional(),
 	// false = sign-in only (no account creation); used by the dashboard app.
 	createIfMissing: z.boolean().optional()
 });
@@ -285,14 +283,6 @@ export type DeletePushTokenBody = z.infer<typeof deletePushTokenBodySchema>;
 
 // ─── Carts ──────────────────────────────────────────────────────────────────
 
-export const getCartsQuerySchema = z.object({
-	cartIds: z
-		.union([z.string(), z.array(z.string())])
-		.transform(val => (Array.isArray(val) ? val : [val]))
-});
-
-export type GetCartsQuery = z.infer<typeof getCartsQuerySchema>;
-
 export const addProductToCartBodySchema = z.object({
 	storeId: z.string(),
 	productId: z.string(),
@@ -499,6 +489,7 @@ export const productFiltersSchema = z.object({
 export type ProductFilters = z.infer<typeof productFiltersSchema>;
 
 export const orderFiltersSchema = z.object({
+	search: z.string().optional(),
 	status: z.nativeEnum(OrderStatus).optional(),
 	storeId: z.string().optional(),
 	userId: z.string().optional(),

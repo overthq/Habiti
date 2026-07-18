@@ -16,6 +16,7 @@ import {
 	getWatchlist,
 	getCardAuthorization,
 	getPushTokens,
+	getLandingHighlights,
 	globalSearch
 } from './requests';
 import { ensureSession } from '../utils/refreshManager';
@@ -162,6 +163,16 @@ export const useHomeQuery = () => {
 				watchlist: watchlistData.watchlist
 			};
 		}
+	});
+};
+
+// Kept separate from `useHomeQuery` so that discovery content still renders
+// when the personalized sections fail, and vice versa.
+export const useLandingHighlightsQuery = () => {
+	return useQuery({
+		queryKey: ['landingHighlights'],
+		queryFn: () => getLandingHighlights(),
+		staleTime: 5 * 60 * 1000
 	});
 };
 

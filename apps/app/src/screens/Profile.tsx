@@ -10,10 +10,12 @@ import {
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import {
 	Avatar,
+	Button,
 	Icon,
 	IconType,
 	Row,
 	Screen,
+	ScrollableScreen,
 	Separator,
 	Spacer,
 	Typography,
@@ -21,9 +23,9 @@ import {
 } from '@habiti/components';
 import { useCurrentUserQuery } from '../data/queries';
 import { useLogoutMutation } from '../hooks/mutations';
+import { useIsGuest, useOpenAuthModal } from '../hooks/useAuth';
 
 import {
-	AppStackParamList,
 	ProfileStackParamList,
 	ProfileStackScreenProps
 } from '../navigation/types';
@@ -52,10 +54,9 @@ const Profile: React.FC<ProfileStackScreenProps<'Profile.Main'>> = ({
 	navigation
 }) => {
 	const headerHeight = useHeaderHeight();
-	const rootNavigation = useNavigation<NavigationProp<AppStackParamList>>();
+	const openAuthModal = useOpenAuthModal();
 	const logoutMutation = useLogoutMutation();
-	const { data } = useCurrentUserQuery();
-	const isGuest = data?.user?.isAnonymous ?? false;
+	const isGuest = useIsGuest();
 
 	const confirmLogOut = React.useCallback(() => {
 		Alert.alert('Log Out', 'Are you sure you want to log out?', [
@@ -69,34 +70,31 @@ const Profile: React.FC<ProfileStackScreenProps<'Profile.Main'>> = ({
 	}, [logoutMutation]);
 
 	return (
-		<Screen>
+		<ScrollableScreen>
 			<Spacer y={headerHeight} />
 
-			<UserCard />
+			{isGuest ? <SignInCard onPress={() => openAuthModal()} /> : <UserCard />}
 
 			<Spacer y={12} />
 
-			{isGuest && (
-				<ProfileRow
-					title='Sign in or create an account'
-					onPress={() => rootNavigation.navigate('Authenticate')}
-				/>
+			{!isGuest && (
+				<>
+					<ProfileRow
+						title='Manage Account'
+						onPress={() => navigation.navigate('Profile.AccountSettings')}
+					/>
+
+					<ProfileRow
+						title='Payment Methods'
+						onPress={() => navigation.navigate('Profile.PaymentMethods')}
+					/>
+
+					<ProfileRow
+						title='Notifications'
+						onPress={() => navigation.navigate('Profile.NotificationSettings')}
+					/>
+				</>
 			)}
-
-			<ProfileRow
-				title='Manage Account'
-				onPress={() => navigation.navigate('Profile.AccountSettings')}
-			/>
-
-			<ProfileRow
-				title='Payment Methods'
-				onPress={() => navigation.navigate('Profile.PaymentMethods')}
-			/>
-
-			<ProfileRow
-				title='Notifications'
-				onPress={() => navigation.navigate('Profile.NotificationSettings')}
-			/>
 
 			<ProfileRow
 				title='Appearance'
@@ -129,13 +127,15 @@ const Profile: React.FC<ProfileStackScreenProps<'Profile.Main'>> = ({
 				icon='arrow-up-right'
 			/>
 
-			<ProfileRow
-				title='Log Out'
-				onPress={confirmLogOut}
-				icon='log-out'
-				destructive
-			/>
-		</Screen>
+			{!isGuest && (
+				<ProfileRow
+					title='Log Out'
+					onPress={confirmLogOut}
+					icon='log-out'
+					destructive
+				/>
+			)}
+		</ScrollableScreen>
 	);
 };
 
@@ -168,6 +168,34 @@ const ProfileRow: React.FC<ProfileRowProps> = ({
 	);
 };
 
+interface SignInCardProps {
+	onPress(): void;
+}
+
+const SignInCard: React.FC<SignInCardProps> = ({ onPress }) => {
+	const { theme } = useTheme();
+
+	return (
+		<View
+			style={[styles.signInCard, { backgroundColor: theme.input.background }]}
+		>
+			<Typography weight='medium' size='large'>
+				Create an account or sign in
+			</Typography>
+
+			<Spacer y={4} />
+
+			<Typography variant='secondary' size='small'>
+				Place orders, track deliveries and keep your carts across devices.
+			</Typography>
+
+			<Spacer y={16} />
+
+			<Button text='Sign in' onPress={onPress} />
+		</View>
+	);
+};
+
 const UserCard: React.FC = () => {
 	const { navigate } = useNavigation<NavigationProp<ProfileStackParamList>>();
 
@@ -190,10 +218,12 @@ const UserCard: React.FC = () => {
 			<Avatar size={56} circle fallbackText={data.user.name} />
 			<View style={{ marginLeft: 12 }}>
 				<Typography weight='medium'>{data.user.name}</Typography>
-				<Spacer y={2} />
-				<Typography variant='secondary'>
-					{data.user.email ?? 'Guest session'}
-				</Typography>
+				{data.user.email ? (
+					<>
+						<Spacer y={2} />
+						<Typography variant='secondary'>{data.user.email}</Typography>
+					</>
+				) : null}
 			</View>
 		</Pressable>
 	);
@@ -210,6 +240,10 @@ const styles = StyleSheet.create({
 	card: {
 		flexDirection: 'row',
 		alignItems: 'center',
+		padding: 16,
+		borderRadius: 12
+	},
+	signInCard: {
 		padding: 16,
 		borderRadius: 12
 	}

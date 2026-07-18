@@ -1,12 +1,6 @@
 import React from 'react';
 import { View, RefreshControl } from 'react-native';
-import {
-	Screen,
-	ScrollableScreen,
-	Spacer,
-	Typography,
-	useTheme
-} from '@habiti/components';
+import { Screen, ScrollableScreen, useTheme } from '@habiti/components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 
@@ -14,11 +8,12 @@ import HomeHeader from '../components/home/HomeHeader';
 import FollowedStores from '../components/home/FollowedStores';
 import RecentOrders from '../components/home/RecentOrders';
 import RecentlyViewed from '../components/home/RecentlyViewed';
+import TrendingStores from '../components/home/TrendingStores';
+import FeaturedProducts from '../components/home/FeaturedProducts';
 
-import { useHomeQuery } from '../data/queries';
+import { useHomeQuery, useLandingHighlightsQuery } from '../data/queries';
 import useRefresh from '../hooks/useRefresh';
 import SearchResults from '../components/home/SearchResults';
-import { useRecentlyViewedStore } from '../state/recentlyViewed';
 
 const Home = () => {
 	const [searchOpen, setSearchOpen] = React.useState(false);
@@ -42,58 +37,34 @@ const Home = () => {
 	);
 };
 
-const HomeEmpty = () => {
-	const { theme } = useTheme();
-
-	return (
-		<View style={{ flex: 1, padding: 16, alignItems: 'center' }}>
-			<View
-				style={{
-					borderRadius: 8,
-					backgroundColor: theme.modal.background,
-					padding: 16
-				}}
-			>
-				<Typography weight='medium' size='xlarge'>
-					Welcome to Habiti
-				</Typography>
-				<Spacer y={4} />
-				<Typography variant='secondary'>
-					You can get started by searching for stores or products above.
-				</Typography>
-			</View>
-		</View>
-	);
-};
-
 interface HomeMainProps {
 	searchOpen: boolean;
 }
 
 const HomeMain = ({ searchOpen }: HomeMainProps) => {
 	const { data, isLoading, refetch } = useHomeQuery();
-	const { refreshing, refresh } = useRefresh({ refetch });
+	const highlights = useLandingHighlightsQuery();
 	const { theme } = useTheme();
-	const recentlyViewedCount = useRecentlyViewedStore(
-		state => state.products.length
+
+	const refetchAll = React.useCallback(
+		() => Promise.all([refetch(), highlights.refetch()]),
+		[refetch, highlights.refetch]
 	);
 
-	if (isLoading && !data) return <View />;
+	const { refreshing, refresh } = useRefresh({ refetch: refetchAll });
 
-	if (
-		!data ||
-		(data.orders.length === 0 &&
-			data.followed.length === 0 &&
-			recentlyViewedCount === 0)
-	) {
-		return <HomeEmpty />;
+	if (isLoading && highlights.isLoading && !data && !highlights.data) {
+		return <View />;
 	}
 
 	return (
 		<ScrollableScreen
 			style={{ display: searchOpen ? 'none' : 'flex' }}
 			contentContainerStyle={{
-				flex: 1,
+				flexGrow: 1,
+				gap: 32,
+				paddingTop: 16,
+				paddingBottom: 32,
 				backgroundColor: theme.screen.background
 			}}
 			refreshControl={
@@ -104,12 +75,19 @@ const HomeMain = ({ searchOpen }: HomeMainProps) => {
 				/>
 			}
 		>
-			<Spacer y={16} />
-			<FollowedStores followed={data.followed} />
-			<Spacer y={32} />
+			{data ? <FollowedStores followed={data.followed} /> : null}
+
 			<RecentlyViewed />
-			<Spacer y={32} />
-			<RecentOrders orders={data.orders} />
+
+			{data ? <RecentOrders orders={data.orders} /> : null}
+
+			{highlights.data ? (
+				<TrendingStores stores={highlights.data.trendingStores} />
+			) : null}
+
+			{highlights.data ? (
+				<FeaturedProducts products={highlights.data.featuredProducts} />
+			) : null}
 		</ScrollableScreen>
 	);
 };

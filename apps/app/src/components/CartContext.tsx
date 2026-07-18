@@ -9,7 +9,7 @@ import {
 
 import { Alert } from 'react-native';
 
-import { useCartQuery, useCurrentUserQuery } from '../data/queries';
+import { useCartQuery } from '../data/queries';
 import {
 	useCreateOrderMutation,
 	useUpdateCartProductMutation
@@ -17,6 +17,7 @@ import {
 import type { Cart, CartProduct } from '../data/types';
 import useStore from '../state';
 import { AppStackParamList } from '../navigation/types';
+import { useIsGuest, useOpenAuthModal } from '../hooks/useAuth';
 import useRefresh from '../hooks/useRefresh';
 import useDebounce from '../hooks/useDebounce';
 
@@ -53,7 +54,8 @@ const CartProvider: React.FC<CartProviderProps> = ({
 }) => {
 	const updateCartProductMutation = useUpdateCartProductMutation();
 	const createOrderMutation = useCreateOrderMutation();
-	const currentUserQuery = useCurrentUserQuery();
+	const openAuthModal = useOpenAuthModal();
+	const isGuest = useIsGuest();
 
 	const { navigate, goBack } =
 		useNavigation<NavigationProp<AppStackParamList>>();
@@ -144,13 +146,13 @@ const CartProvider: React.FC<CartProviderProps> = ({
 	);
 
 	const handleSubmit = React.useCallback(async () => {
-		if (currentUserQuery.data?.user?.isAnonymous) {
+		if (isGuest) {
 			Alert.alert(
 				'Sign in to order',
 				'Create an account or sign in to complete your order. Your cart will be saved.',
 				[
 					{ text: 'Cancel', style: 'cancel' },
-					{ text: 'Sign in', onPress: () => navigate('Authenticate') }
+					{ text: 'Sign in', onPress: () => openAuthModal() }
 				]
 			);
 			return;
@@ -179,7 +181,8 @@ const CartProvider: React.FC<CartProviderProps> = ({
 		navigate,
 		goBack,
 		createOrderMutation,
-		currentUserQuery.data,
+		isGuest,
+		openAuthModal,
 		setPreference
 	]);
 

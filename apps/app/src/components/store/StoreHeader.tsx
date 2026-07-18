@@ -25,14 +25,13 @@ import {
 	useFollowStoreMutation,
 	useUnfollowStoreMutation
 } from '../../data/mutations';
-import { palette } from '@habiti/components/src/styles/theme';
-
 import type { Store } from '../../data/types';
 import type { AppStackParamList } from '../../navigation/types';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 interface StoreHeaderProps {
 	store: Store;
+	followed: boolean;
 	activeCategory?: string;
 	setActiveCategory: (category: string | undefined) => void;
 	searchTerm?: string;
@@ -41,6 +40,7 @@ interface StoreHeaderProps {
 
 const StoreHeader: React.FC<StoreHeaderProps> = ({
 	store,
+	followed,
 	activeCategory,
 	setActiveCategory,
 	searchTerm,
@@ -100,32 +100,21 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 							<Pressable style={styles.back} onPress={goBack}>
 								<Icon name='chevron-left' size={28} />
 							</Pressable>
-						</View>
-						<View style={styles.center}>
 							<Typography
 								size='large'
 								weight='medium'
-								style={{ textAlign: 'center' }}
+								ellipsize
+								style={styles.storeName}
 							>
 								{store.name}
 							</Typography>
 							{store.unlisted && (
-								<View
-									style={[
-										styles.unlistedBadge,
-										{ backgroundColor: theme.input.background }
-									]}
-								>
-									<Typography
-										size='xsmall'
-										style={{ color: theme.text.secondary }}
-									>
-										Unlisted
-									</Typography>
-								</View>
+								<Icon name='eye-off' size={18} color={theme.text.secondary} />
 							)}
 						</View>
 						<View style={styles.right}>
+							<FollowButton storeId={store.id} followed={followed} />
+
 							<Pressable hitSlop={16} onPress={handleOpenSearch}>
 								<Icon name='search' size={22} color={theme.text.primary} />
 							</Pressable>
@@ -133,11 +122,6 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 							<Pressable hitSlop={16} onPress={handleOpenStoreInfo}>
 								<Icon name='more-vertical' size={22} />
 							</Pressable>
-
-							{/*<FollowButton
-								storeId={store.id}
-								followed={store.followedByUser}
-							/>*/}
 						</View>
 					</View>
 					<CategorySelector
@@ -194,6 +178,7 @@ interface FollowButtonProps {
 }
 
 const FollowButton: React.FC<FollowButtonProps> = ({ storeId, followed }) => {
+	const { theme } = useTheme();
 	const followStore = useFollowStoreMutation(storeId);
 	const unfollowStore = useUnfollowStoreMutation(storeId);
 
@@ -206,13 +191,27 @@ const FollowButton: React.FC<FollowButtonProps> = ({ storeId, followed }) => {
 	}, [followed, followStore, unfollowStore]);
 
 	return (
-		<Pressable onPress={handlePress}>
-			<Icon
-				size={22}
-				name='heart'
-				fill={followed ? palette.red.r500 : undefined}
-				color={followed ? palette.red.r500 : undefined}
-			/>
+		<Pressable
+			hitSlop={8}
+			onPress={handlePress}
+			style={[
+				styles.followPill,
+				{
+					backgroundColor: followed
+						? theme.input.background
+						: theme.button.primary.background
+				}
+			]}
+		>
+			<Typography
+				size='small'
+				weight='medium'
+				style={{
+					color: followed ? theme.text.secondary : theme.button.primary.text
+				}}
+			>
+				{followed ? 'Following' : 'Follow'}
+			</Typography>
 		</Pressable>
 	);
 };
@@ -252,14 +251,13 @@ const styles = StyleSheet.create({
 		width: '100%'
 	},
 	left: {
-		width: '33.33%',
+		flex: 1,
 		flexDirection: 'row',
-		alignItems: 'center'
+		alignItems: 'center',
+		gap: 8
 	},
-	center: {
-		width: '33.33%',
-		justifyContent: 'center',
-		alignItems: 'center'
+	storeName: {
+		flexShrink: 1
 	},
 	back: {
 		justifyContent: 'center',
@@ -267,11 +265,11 @@ const styles = StyleSheet.create({
 		marginLeft: -4
 	},
 	right: {
-		width: '33.33%',
 		flexDirection: 'row',
 		justifyContent: 'flex-end',
 		alignItems: 'center',
-		gap: 12
+		gap: 12,
+		marginLeft: 12
 	},
 	input: {
 		flex: 1,
@@ -293,11 +291,10 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 16,
 		paddingBottom: 12
 	},
-	unlistedBadge: {
-		marginTop: 4,
-		paddingHorizontal: 8,
-		paddingVertical: 2,
-		borderRadius: 4
+	followPill: {
+		paddingHorizontal: 14,
+		paddingVertical: 6,
+		borderRadius: 999
 	}
 });
 

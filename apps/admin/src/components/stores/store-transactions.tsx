@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { DataTable } from '../ui/data-table';
 import { useStoreTransactionsQuery } from '@/data/queries';
 import { useUpdateTransactionMutation } from '@/data/mutations';
@@ -16,6 +15,7 @@ import {
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import StatusPill, { type StatusTone } from '@/components/status-pill';
 import { MoreHorizontal } from 'lucide-react';
 
 const CREDIT_TYPES: TransactionType[] = [
@@ -32,13 +32,10 @@ const transactionLabel: Record<TransactionType, string> = {
 	[TransactionType.Refund]: 'Refund'
 };
 
-const statusStyle: Record<TransactionStatus, string> = {
-	[TransactionStatus.Processing]:
-		'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
-	[TransactionStatus.Success]:
-		'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-	[TransactionStatus.Failure]:
-		'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+const statusTones: Record<TransactionStatus, StatusTone> = {
+	[TransactionStatus.Processing]: 'yellow',
+	[TransactionStatus.Success]: 'green',
+	[TransactionStatus.Failure]: 'red'
 };
 
 const PayoutActions = ({
@@ -95,13 +92,7 @@ const StoreTransactions = ({ storeId }: { storeId: string }) => {
 			accessorKey: 'status',
 			cell: ({ row }) => {
 				const status = row.original.status;
-				return (
-					<span
-						className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${statusStyle[status]}`}
-					>
-						{status}
-					</span>
-				);
+				return <StatusPill tone={statusTones[status]} label={status} />;
 			}
 		},
 		{
@@ -140,11 +131,7 @@ const StoreTransactions = ({ storeId }: { storeId: string }) => {
 
 	return (
 		<div>
-			<DataTable
-				columns={columns}
-				data={data.transactions}
-				hasColumnDropdown={false}
-			/>
+			<DataTable columns={columns} data={data.transactions} />
 		</div>
 	);
 };

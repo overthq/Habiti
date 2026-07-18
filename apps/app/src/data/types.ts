@@ -304,3 +304,27 @@ export interface DeletePushTokenBody {
 	token: string;
 	type: PushTokenType;
 }
+
+export interface TrendingStore {
+	id: string;
+	name: string;
+	description?: string;
+	image?: Image;
+}
+
+export interface FeaturedProduct {
+	id: string;
+	name: string;
+	unitPrice: number;
+	images: Image[];
+	store: {
+		id: string;
+		name: string;
+		image?: Image;
+	};
+}
+
+export interface LandingHighlightsResponse {
+	trendingStores: TrendingStore[];
+	featuredProducts: FeaturedProduct[];
+}

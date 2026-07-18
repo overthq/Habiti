@@ -5,8 +5,8 @@ import UserOrders from '@/components/user/user-orders';
 import UserSessions from '@/components/user/user-sessions';
 import { useUserQuery } from '@/data/queries';
 import { Badge } from '@/components/ui/badge';
-import CopyableText from '@/components/ui/copy';
 import InlineMeta from '@/components/ui/inline-meta';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export const Route = createFileRoute('/_dashboard/users/$id')({
 	component: User
@@ -42,8 +42,18 @@ function User() {
 				</div>
 				<UserActionsDropdown user={user} />
 			</div>
-			<UserOrders user={user} />
-			<UserSessions user={user} />
+			<Tabs defaultValue='orders'>
+				<TabsList>
+					<TabsTrigger value='orders'>Orders</TabsTrigger>
+					<TabsTrigger value='sessions'>Sessions</TabsTrigger>
+				</TabsList>
+				<TabsContent value='orders'>
+					<UserOrders user={user} />
+				</TabsContent>
+				<TabsContent value='sessions'>
+					<UserSessions user={user} />
+				</TabsContent>
+			</Tabs>
 		</div>
 	);
 }

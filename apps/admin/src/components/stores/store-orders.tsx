@@ -43,11 +43,7 @@ const StoreOrders = ({ storeId }: { storeId: string }) => {
 
 	return (
 		<div>
-			<DataTable
-				columns={columns}
-				data={data.orders}
-				hasColumnDropdown={false}
-			/>
+			<DataTable columns={columns} data={data.orders} />
 		</div>
 	);
 };

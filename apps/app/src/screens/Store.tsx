@@ -25,6 +25,7 @@ const Store = () => {
 		<Screen style={{ paddingTop: top }}>
 			<StoreHeader
 				store={data.store}
+				followed={data.viewerContext?.isFollowing ?? false}
 				activeCategory={activeCategory}
 				setActiveCategory={setActiveCategory}
 				searchTerm={searchTerm}

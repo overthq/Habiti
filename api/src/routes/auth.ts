@@ -12,7 +12,6 @@ import { LogicError, LogicErrorCode } from '../core/logic/errors';
 import * as AppleLogic from '../core/logic/apple';
 import * as AuthLogic from '../core/logic/auth';
 import * as UserLogic from '../core/logic/users';
-import * as CartLogic from '../core/logic/carts';
 import * as Schemas from '../core/validations/rest';
 
 import type { Context } from 'hono';
@@ -89,7 +88,7 @@ auth.post(
 	optionalAuth,
 	zValidator('json', Schemas.verifyCodeBodySchema, zodHook),
 	async c => {
-		const { email, code, cartIds } = c.req.valid('json');
+		const { email, code } = c.req.valid('json');
 
 		if (!email || !code) {
 			throw new HTTPException(400, {
@@ -135,10 +134,6 @@ auth.post(
 			sessionId: refreshResult.sessionId
 		});
 
-		if (cartIds && cartIds.length > 0) {
-			await CartLogic.claimCarts(c, { cartIds, userId: user.id });
-		}
-
 		setRefreshCookie(c, refreshResult.token);
 
 		return c.json({
@@ -182,8 +177,7 @@ auth.post(
 	optionalAuth,
 	zValidator('json', Schemas.appleSignInBodySchema, zodHook),
 	async c => {
-		const { identityToken, fullName, cartIds, createIfMissing } =
-			c.req.valid('json');
+		const { identityToken, fullName, createIfMissing } = c.req.valid('json');
 
 		const identity = await AppleLogic.verifyAppleIdentityToken(identityToken);
 		const user = await UserLogic.signInWithApple(c, {
@@ -203,10 +197,6 @@ auth.post(
 			owner: user,
 			sessionId: refreshResult.sessionId
 		});
-
-		if (cartIds && cartIds.length > 0) {
-			await CartLogic.claimCarts(c, { cartIds, userId: user.id });
-		}
 
 		setRefreshCookie(c, refreshResult.token);
 

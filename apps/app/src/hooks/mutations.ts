@@ -1,11 +1,12 @@
+import React from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { useShallow } from 'zustand/react/shallow';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import * as SecureStore from 'expo-secure-store';
 
 import useStore from '../state';
-import { AppStackParamList } from '../navigation/types';
+import { AuthStackParamList } from '../navigation/types';
+import { useDismissAuthModal } from './useAuth';
 import { performLogout, refreshAuthTokens } from '../utils/refreshManager';
 import env from '../../env';
 
@@ -14,6 +15,24 @@ interface AuthTokensResponse {
 	refreshToken: string;
 	userId: string;
 }
+
+const useAuthSuccess = () => {
+	const queryClient = useQueryClient();
+	const logIn = useStore(state => state.logIn);
+	const dismissAuthModal = useDismissAuthModal();
+
+	return React.useCallback(
+		async (data: AuthTokensResponse) => {
+			logIn(data.accessToken);
+			await SecureStore.setItemAsync('refreshToken', data.refreshToken);
+
+			dismissAuthModal();
+
+			await queryClient.invalidateQueries();
+		},
+		[logIn, dismissAuthModal, queryClient]
+	);
+};
 
 const upgradeHeaders = async (
 	accessToken: string | null
@@ -43,7 +62,7 @@ interface RegisterArgs {
 }
 
 export const useRegisterMutation = () => {
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { navigate } = useNavigation<NavigationProp<AuthStackParamList>>();
 
 	return useMutation({
 		mutationFn: async (input: RegisterArgs) => {
@@ -58,7 +77,7 @@ export const useRegisterMutation = () => {
 			return response.json();
 		},
 		onSuccess: (_, variables) => {
-			navigate('Verify', { email: variables.email });
+			navigate('Auth.Verify', { email: variables.email });
 		}
 	});
 };
@@ -68,7 +87,7 @@ interface AuthenticateArgs {
 }
 
 export const useAuthenticateMutation = () => {
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
+	const { navigate } = useNavigation<NavigationProp<AuthStackParamList>>();
 
 	return useMutation({
 		mutationFn: async (input: AuthenticateArgs) => {
@@ -83,7 +102,7 @@ export const useAuthenticateMutation = () => {
 			return response.json();
 		},
 		onSuccess: (_, variables) => {
-			navigate('Verify', { email: variables.email });
+			navigate('Auth.Verify', { email: variables.email });
 		}
 	});
 };
@@ -94,13 +113,8 @@ interface VerifyCodeArgs {
 }
 
 export const useVerifyCodeMutation = () => {
-	const queryClient = useQueryClient();
-	const { logIn, accessToken } = useStore(
-		useShallow(state => ({
-			logIn: state.logIn,
-			accessToken: state.accessToken
-		}))
-	);
+	const accessToken = useStore(state => state.accessToken);
+	const onAuthSuccess = useAuthSuccess();
 
 	return useMutation({
 		mutationFn: async (input: VerifyCodeArgs) => {
@@ -118,22 +132,13 @@ export const useVerifyCodeMutation = () => {
 
 			return data as AuthTokensResponse;
 		},
-		onSuccess: async data => {
-			logIn(data.accessToken);
-			await SecureStore.setItemAsync('refreshToken', data.refreshToken);
-			await queryClient.invalidateQueries();
-		}
+		onSuccess: onAuthSuccess
 	});
 };
 
 export const useAppleSignInMutation = () => {
-	const queryClient = useQueryClient();
-	const { logIn, accessToken } = useStore(
-		useShallow(state => ({
-			logIn: state.logIn,
-			accessToken: state.accessToken
-		}))
-	);
+	const accessToken = useStore(state => state.accessToken);
+	const onAuthSuccess = useAuthSuccess();
 
 	return useMutation({
 		mutationFn: async () => {
@@ -172,11 +177,7 @@ export const useAppleSignInMutation = () => {
 
 			return data as AuthTokensResponse;
 		},
-		onSuccess: async data => {
-			logIn(data.accessToken);
-			await SecureStore.setItemAsync('refreshToken', data.refreshToken);
-			await queryClient.invalidateQueries();
-		}
+		onSuccess: onAuthSuccess
 	});
 };
 

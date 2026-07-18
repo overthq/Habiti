@@ -82,6 +82,13 @@ export const orderFiltersToPrismaClause = (filters?: OrderFilters) => {
 	const where: any = {};
 	let orderBy: any = undefined;
 
+	if (filters?.search) {
+		where.OR = [
+			{ user: { name: { contains: filters.search, mode: 'insensitive' } } },
+			{ store: { name: { contains: filters.search, mode: 'insensitive' } } }
+		];
+	}
+
 	if (filters?.status) {
 		where.status = filters.status;
 	}

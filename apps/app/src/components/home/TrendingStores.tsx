@@ -3,14 +3,14 @@ import { View, Pressable, StyleSheet, FlatList } from 'react-native';
 import { Avatar, SectionHeader, Spacer, Typography } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 
-import type { Store } from '../../data/types';
+import type { TrendingStore } from '../../data/types';
 import type { HomeStackParamList } from '../../navigation/types';
 
-interface FollowedStoresProps {
-	followed: Store[];
+interface TrendingStoresProps {
+	stores: TrendingStore[];
 }
 
-const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
+const TrendingStores: React.FC<TrendingStoresProps> = ({ stores }) => {
 	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();
 
 	const handleStorePress = React.useCallback(
@@ -20,31 +20,23 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 		[navigate]
 	);
 
-	// Discovery sections further down the home screen now cover the
-	// "nothing to show yet" case, so this stays out of the way when empty.
-	if (followed.length === 0) return null;
+	if (stores.length === 0) return null;
 
 	return (
 		<View>
-			<SectionHeader
-				title='Followed stores'
-				padded={false}
-				action={{
-					text: 'View all',
-					onPress: () => navigate('Home.FollowedStores')
-				}}
-			/>
+			<SectionHeader title='Trending stores' padded={false} />
 
 			<Spacer y={8} />
 
 			<FlatList
 				style={{ marginHorizontal: -16 }}
 				horizontal
-				data={followed.slice(0, 8)}
-				keyExtractor={item => item.id}
+				showsHorizontalScrollIndicator={false}
+				data={stores}
+				keyExtractor={store => store.id}
 				contentContainerStyle={{ flexGrow: 1, gap: 12, paddingHorizontal: 16 }}
 				renderItem={({ item }) => (
-					<FollowedStoresItem
+					<TrendingStoresItem
 						store={item}
 						onPress={handleStorePress(item.id)}
 					/>
@@ -54,16 +46,16 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 	);
 };
 
-interface FollowedStoresItemProps {
-	store: Store;
+interface TrendingStoresItemProps {
+	store: TrendingStore;
 	onPress(): void;
 }
 
-const FollowedStoresItem: React.FC<FollowedStoresItemProps> = ({
+const TrendingStoresItem: React.FC<TrendingStoresItemProps> = ({
 	store,
 	onPress
 }) => (
-	<Pressable onPress={onPress}>
+	<Pressable onPress={onPress} style={styles.item}>
 		<Avatar
 			uri={store.image?.path}
 			size={72}
@@ -73,16 +65,24 @@ const FollowedStoresItem: React.FC<FollowedStoresItemProps> = ({
 
 		<Spacer y={4} />
 
-		<Typography size='small' weight='medium' style={styles.name}>
+		<Typography
+			size='small'
+			weight='medium'
+			numberOfLines={1}
+			style={styles.name}
+		>
 			{store.name}
 		</Typography>
 	</Pressable>
 );
 
 const styles = StyleSheet.create({
+	item: {
+		width: 72
+	},
 	name: {
 		textAlign: 'center'
 	}
 });
 
-export default FollowedStores;
+export default TrendingStores;

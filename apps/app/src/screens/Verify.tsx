@@ -1,9 +1,8 @@
 import React from 'react';
-import { Pressable, View, StyleSheet } from 'react-native';
+import { AppState, Pressable, TextInput, StyleSheet } from 'react-native';
 import {
 	Button,
 	FormInput,
-	Icon,
 	Screen,
 	Spacer,
 	Typography,
@@ -16,14 +15,10 @@ import Animated, {
 	useAnimatedStyle,
 	withTiming
 } from 'react-native-reanimated';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { z } from 'zod';
 
 import { useVerifyCodeMutation } from '../hooks/mutations';
-import type {
-	AppStackParamList,
-	AppStackScreenProps
-} from '../navigation/types';
+import type { AuthStackParamList } from '../navigation/types';
 
 const verifySchema = z.object({
 	code: z
@@ -34,9 +29,11 @@ const verifySchema = z.object({
 
 type VerifyFormValues = z.infer<typeof verifySchema>;
 
-const Verify = ({ navigation }: AppStackScreenProps<'Verify'>) => {
-	const { params } = useRoute<RouteProp<AppStackParamList, 'Verify'>>();
+const Verify = () => {
+	const { params } = useRoute<RouteProp<AuthStackParamList, 'Auth.Verify'>>();
 	const verifyCodeMutation = useVerifyCodeMutation();
+
+	const inputRef = React.useRef<TextInput>(null);
 
 	const methods = useForm<VerifyFormValues>({
 		resolver: zodResolver(verifySchema),
@@ -46,64 +43,60 @@ const Verify = ({ navigation }: AppStackScreenProps<'Verify'>) => {
 
 	const code = methods.watch('code');
 
-	const onSubmit = (values: VerifyFormValues) => {
-		verifyCodeMutation.mutate(
-			{
-				email: params.email,
-				code: values.code
-			},
-			{
-				onSuccess: () => {
-					// Guest upgrades keep the same navigator mounted (the token
-					// stays truthy), so leave the auth screens explicitly. For a
-					// fresh login the stack flip unmounts them and this is a no-op.
-					navigation.popToTop();
-				}
+	React.useEffect(() => {
+		const subscription = AppState.addEventListener('change', nextState => {
+			if (nextState === 'active') {
+				inputRef.current?.focus();
 			}
-		);
-	};
+		});
 
-	const handleBack = () => {
-		navigation.goBack();
+		return () => subscription.remove();
+	}, []);
+
+	const focusInput = () => inputRef.current?.focus();
+
+	const onSubmit = (values: VerifyFormValues) => {
+		verifyCodeMutation.mutate({
+			email: params.email,
+			code: values.code
+		});
 	};
 
 	return (
 		<Screen>
-			<SafeAreaView>
-				<Pressable onPress={handleBack}>
-					<Icon name='chevron-left' />
-				</Pressable>
-				<Spacer y={16} />
-				<Typography size='xxxlarge' weight='bold'>
-					Enter verification code
-				</Typography>
-				<Typography variant='secondary'>
-					A verification code was sent to {params.email}
-				</Typography>
-				<FormInput
-					name='code'
-					control={methods.control}
-					autoFocus
-					style={styles.hidden}
-					keyboardType='number-pad'
-					maxLength={6}
-				/>
-				<Spacer y={16} />
-				<View style={styles.inputs}>
-					{Array(6)
-						.fill(0)
-						.map((_, index) => (
-							<CodeInput key={index} value={code[index]} />
-						))}
-				</View>
-				<Spacer y={32} />
-				<Button
-					text='Verify'
-					onPress={methods.handleSubmit(onSubmit)}
-					loading={verifyCodeMutation.isPending}
-					disabled={!methods.formState.isValid}
-				/>
-			</SafeAreaView>
+			<Spacer y={16} />
+			<Typography size='xxxlarge' weight='bold'>
+				Enter verification code
+			</Typography>
+			<Typography variant='secondary'>
+				A verification code was sent to {params.email}
+			</Typography>
+			<FormInput
+				ref={inputRef}
+				name='code'
+				control={methods.control}
+				autoFocus
+				style={styles.hidden}
+				keyboardType='number-pad'
+				maxLength={6}
+				textContentType='oneTimeCode'
+				autoComplete='sms-otp'
+			/>
+			<Spacer y={16} />
+			<Pressable style={styles.inputs} onPress={focusInput}>
+				{Array(6)
+					.fill(0)
+					.map((_, index) => (
+						<CodeInput key={index} value={code[index]} />
+					))}
+			</Pressable>
+			<Spacer y={32} />
+			<Button
+				text='Verify'
+				onPress={methods.handleSubmit(onSubmit)}
+				loading={verifyCodeMutation.isPending}
+				disabled={!methods.formState.isValid}
+			/>
 		</Screen>
 	);
 };

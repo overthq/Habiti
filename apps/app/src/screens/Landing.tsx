@@ -3,30 +3,20 @@ import {
 	Screen,
 	Spacer,
 	TextButton,
-	Typography,
-	useTheme
+	Typography
 } from '@habiti/components';
-import * as AppleAuthentication from 'expo-apple-authentication';
 import React from 'react';
-import { Platform, View } from 'react-native';
+import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useAppleSignInMutation } from '../hooks/mutations';
-import type { AppStackScreenProps } from '../navigation/types';
+import AppleSignInButton from '../components/AppleSignInButton';
+import { useOpenAuthModal } from '../hooks/useAuth';
 
-const Landing: React.FC<AppStackScreenProps<'Landing'>> = ({ navigation }) => {
-	const [appleAvailable, setAppleAvailable] = React.useState(false);
-	const appleSignInMutation = useAppleSignInMutation();
-	const { name } = useTheme();
-
-	React.useEffect(() => {
-		if (Platform.OS === 'ios') {
-			AppleAuthentication.isAvailableAsync().then(setAppleAvailable);
-		}
-	}, []);
+const Landing: React.FC = () => {
+	const openAuthModal = useOpenAuthModal();
 
 	return (
-		<Screen style={{ paddingHorizontal: 16, justifyContent: 'center' }}>
+		<Screen style={{ justifyContent: 'center' }}>
 			<SafeAreaView style={{ flex: 1 }}>
 				<View style={{ flex: 1 }} />
 				<View style={{ flex: 1 }}>
@@ -39,33 +29,17 @@ const Landing: React.FC<AppStackScreenProps<'Landing'>> = ({ navigation }) => {
 					</Typography>
 				</View>
 				<View style={{ flex: 1, justifyContent: 'flex-end' }}>
-					{appleAvailable && (
-						<>
-							<AppleAuthentication.AppleAuthenticationButton
-								buttonType={
-									AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
-								}
-								buttonStyle={
-									name === 'dark'
-										? AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
-										: AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
-								}
-								cornerRadius={4}
-								style={{ height: 44 }}
-								onPress={() => appleSignInMutation.mutate()}
-							/>
-							<Spacer y={12} />
-						</>
-					)}
 					<Button
 						text='Sign up'
-						onPress={() => navigation.navigate('Register')}
+						onPress={() => openAuthModal('Auth.Register')}
 					/>
+					<Spacer y={12} />
+					<AppleSignInButton />
 					<Spacer y={12} />
 					<TextButton
 						weight='medium'
 						style={{ alignSelf: 'center' }}
-						onPress={() => navigation.navigate('Authenticate')}
+						onPress={() => openAuthModal()}
 					>
 						Already have an account? Log in.
 					</TextButton>

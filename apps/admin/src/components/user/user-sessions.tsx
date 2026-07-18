@@ -2,7 +2,7 @@ import { useUserSessionsQuery } from '@/data/queries';
 import { type Session, type User } from '@/data/types';
 import { DataTable } from '../ui/data-table';
 import { type ColumnDef } from '@tanstack/react-table';
-import { Badge } from '../ui/badge';
+import StatusPill from '../status-pill';
 
 interface UserSessionsProps {
 	user: User;
@@ -31,9 +31,10 @@ const columns: ColumnDef<Session>[] = [
 		header: 'Status',
 		accessorKey: 'revoked',
 		cell: ({ row }) => (
-			<Badge variant={row.original.revoked ? 'secondary' : 'default'}>
-				{row.original.revoked ? 'Revoked' : 'Active'}
-			</Badge>
+			<StatusPill
+				tone={row.original.revoked ? 'gray' : 'green'}
+				label={row.original.revoked ? 'Revoked' : 'Active'}
+			/>
 		)
 	},
 	{

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, TextButton, Typography, useTheme } from '@habiti/components';
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, TextInput } from 'react-native';
 import Animated, {
 	FadeInRight,
 	FadeInUp,
@@ -9,8 +9,6 @@ import Animated, {
 	LinearTransition
 } from 'react-native-reanimated';
 import useFirstRender from '../../hooks/useFirstRender';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { AppStackParamList } from '../../navigation/types';
 
 interface HomeHeaderProps {
 	searchOpen: boolean;
@@ -25,7 +23,6 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 	searchTerm,
 	setSearchTerm
 }) => {
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const isFirstRender = useFirstRender();
 
 	const inputRef = React.useRef<TextInput>(null);
@@ -59,28 +56,11 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 				<Animated.View
 					entering={isFirstRender ? undefined : FadeInUp}
 					exiting={FadeOutUp}
-					style={{
-						paddingBottom: 8,
-						flexDirection: 'row',
-						alignItems: 'center',
-						justifyContent: 'space-between'
-					}}
+					style={{ paddingBottom: 8 }}
 				>
 					<Typography size='xxlarge' weight='bold'>
 						Home
 					</Typography>
-					<View style={{ gap: 16, flexDirection: 'row' }}>
-						<Pressable
-							onPress={() =>
-								navigate('App.Profile', { screen: 'Profile.Main' })
-							}
-						>
-							<Icon name='user-round' />
-						</Pressable>
-						<Pressable onPress={() => navigate('App.Carts')}>
-							<Icon name='shopping-basket' />
-						</Pressable>
-					</View>
 				</Animated.View>
 			)}
 			<Animated.View

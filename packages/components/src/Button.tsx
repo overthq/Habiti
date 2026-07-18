@@ -86,7 +86,7 @@ const buttonStyles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		height: 44,
-		borderRadius: 6
+		borderRadius: 8
 	},
 	text: {
 		fontSize: 17
