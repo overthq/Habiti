@@ -65,7 +65,7 @@ const SignIn: React.FC<AuthStackScreenProps<'Auth.Main'>> = ({
 			<Spacer y={16} />
 
 			<Button
-				text='Send verification code'
+				text='Continue'
 				onPress={handleSubmit(onSubmit)}
 				loading={authenticateMutation.isPending}
 				disabled={!formState.isValid}

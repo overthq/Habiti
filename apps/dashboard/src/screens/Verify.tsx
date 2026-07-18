@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, View, StyleSheet } from 'react-native';
+import { AppState, Pressable, TextInput, StyleSheet } from 'react-native';
 import {
 	Button,
 	FormInput,
@@ -31,6 +31,8 @@ const Verify = ({ navigation }: AppStackScreenProps<'Verify'>) => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Verify'>>();
 	const verifyCodeMutation = useVerifyCodeMutation();
 
+	const inputRef = React.useRef<TextInput>(null);
+
 	const methods = useForm<VerifyFormValues>({
 		resolver: zodResolver(verifySchema),
 		defaultValues: { code: '' },
@@ -38,6 +40,18 @@ const Verify = ({ navigation }: AppStackScreenProps<'Verify'>) => {
 	});
 
 	const code = methods.watch('code');
+
+	React.useEffect(() => {
+		const subscription = AppState.addEventListener('change', nextState => {
+			if (nextState === 'active') {
+				inputRef.current?.focus();
+			}
+		});
+
+		return () => subscription.remove();
+	}, []);
+
+	const focusInput = () => inputRef.current?.focus();
 
 	const onSubmit = (values: VerifyFormValues) => {
 		verifyCodeMutation.mutate({
@@ -64,21 +78,24 @@ const Verify = ({ navigation }: AppStackScreenProps<'Verify'>) => {
 					A verification code was sent to {params.email}
 				</Typography>
 				<FormInput
+					ref={inputRef}
 					name='code'
 					control={methods.control}
 					autoFocus
 					style={styles.hidden}
 					keyboardType='number-pad'
 					maxLength={6}
+					textContentType='oneTimeCode'
+					autoComplete='sms-otp'
 				/>
 				<Spacer y={16} />
-				<View style={styles.inputs}>
+				<Pressable style={styles.inputs} onPress={focusInput}>
 					{Array(6)
 						.fill(0)
 						.map((_, index) => (
 							<CodeInput key={index} value={code[index]} />
 						))}
-				</View>
+				</Pressable>
 				<Spacer y={32} />
 				<Button
 					text='Verify'
