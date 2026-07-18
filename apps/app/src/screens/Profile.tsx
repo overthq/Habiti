@@ -15,6 +15,7 @@ import {
 	IconType,
 	Row,
 	Screen,
+	ScrollableScreen,
 	Separator,
 	Spacer,
 	Typography,
@@ -69,15 +70,13 @@ const Profile: React.FC<ProfileStackScreenProps<'Profile.Main'>> = ({
 	}, [logoutMutation]);
 
 	return (
-		<Screen>
+		<ScrollableScreen>
 			<Spacer y={headerHeight} />
 
 			{isGuest ? <SignInCard onPress={() => openAuthModal()} /> : <UserCard />}
 
 			<Spacer y={12} />
 
-			{/* Everything here needs an account behind it, so it stays hidden
-			    until the user has one. */}
 			{!isGuest && (
 				<>
 					<ProfileRow
@@ -136,7 +135,7 @@ const Profile: React.FC<ProfileStackScreenProps<'Profile.Main'>> = ({
 					destructive
 				/>
 			)}
-		</Screen>
+		</ScrollableScreen>
 	);
 };
 
@@ -181,14 +180,13 @@ const SignInCard: React.FC<SignInCardProps> = ({ onPress }) => {
 			style={[styles.signInCard, { backgroundColor: theme.input.background }]}
 		>
 			<Typography weight='medium' size='large'>
-				{`You're browsing as a guest`}
+				Create an account or sign in
 			</Typography>
 
 			<Spacer y={4} />
 
 			<Typography variant='secondary' size='small'>
-				Sign in to place orders, track deliveries and keep your carts across
-				devices.
+				Place orders, track deliveries and keep your carts across devices.
 			</Typography>
 
 			<Spacer y={16} />
