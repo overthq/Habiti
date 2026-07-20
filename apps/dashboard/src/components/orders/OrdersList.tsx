@@ -1,5 +1,10 @@
 import React from 'react';
-import { View, RefreshControl, StyleSheet } from 'react-native';
+import {
+	ActivityIndicator,
+	View,
+	RefreshControl,
+	StyleSheet
+} from 'react-native';
 import { Row, Spacer, Icon, Typography, useTheme } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList, ListRenderItem } from '@shopify/flash-list';
@@ -15,7 +20,7 @@ import type { Order } from '../../data/types';
 
 const OrdersList = () => {
 	const { navigate } = useNavigation<NavigationProp<OrdersStackParamList>>();
-	const { orders, status, refreshing, refresh } = useOrdersContext();
+	const { orders, status, isLoading, refreshing, refresh } = useOrdersContext();
 	const { theme } = useTheme();
 
 	const handleOrderPress = React.useCallback(
@@ -57,13 +62,19 @@ const OrdersList = () => {
 					backgroundColor: theme.screen.background
 				}}
 				ListEmptyComponent={
-					<View style={styles.empty}>
-						<Typography variant='secondary' style={styles.emptyText}>
-							{status
-								? 'No orders match the selected status.'
-								: 'There are currently no orders. While you wait, you can customize your store.'}
-						</Typography>
-					</View>
+					isLoading ? (
+						<View style={styles.empty}>
+							<ActivityIndicator color={theme.text.secondary} />
+						</View>
+					) : (
+						<View style={styles.empty}>
+							<Typography variant='secondary' style={styles.emptyText}>
+								{status
+									? 'No orders match the selected status.'
+									: 'There are currently no orders. While you wait, you can customize your store.'}
+							</Typography>
+						</View>
+					)
 				}
 				refreshControl={refreshControl}
 			/>

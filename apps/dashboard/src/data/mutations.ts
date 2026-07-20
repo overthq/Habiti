@@ -25,6 +25,7 @@ import {
 	updateAddress,
 	deleteAddress,
 	deleteAccount,
+	updateCurrentUser,
 	savePushToken
 } from './requests';
 import { requestPushPermission } from '../utils/notifications';
@@ -37,6 +38,7 @@ import {
 	CreateStoreBody,
 	CreateAddressBody,
 	UpdateCurrentStoreBody,
+	UpdateCurrentUserBody,
 	UpdateOrderArgs,
 	UpdateProductArgs,
 	UpdateProductCategoriesArgs,
@@ -266,6 +268,19 @@ export const useUpdateCurrentStoreMutation = () => {
 		}
 	});
 };
+
+export const useUpdateCurrentUserMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (body: UpdateCurrentUserBody) => updateCurrentUser(body),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['users', 'current'] });
+		}
+	});
+};
+
+export const useEditProfileMutation = useUpdateCurrentUserMutation;
 
 export const useUpdateProductMutation = () => {
 	const queryClient = useQueryClient();

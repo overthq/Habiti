@@ -345,6 +345,11 @@ export interface UpdateCurrentStoreBody {
 	imagePublicId?: string;
 }
 
+export interface UpdateCurrentUserBody {
+	name?: string;
+	email?: string;
+}
+
 export interface CreatePayoutBody {
 	amount: number;
 }

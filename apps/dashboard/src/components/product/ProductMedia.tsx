@@ -1,4 +1,10 @@
-import { Spacer, TextButton, Typography, useTheme } from '@habiti/components';
+import {
+	PillButton,
+	Spacer,
+	TextButton,
+	Typography,
+	useTheme
+} from '@habiti/components';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Image } from 'expo-image';
 import { NavigationProp } from '@react-navigation/native';
@@ -23,18 +29,25 @@ const NoImages: React.FC<NoImagesProps> = ({ action }) => {
 			style={{
 				backgroundColor: theme.input.background,
 				padding: 12,
-				borderRadius: 6
+				borderRadius: 6,
+				alignItems: 'center'
 			}}
 		>
 			<Typography weight='medium' size='large'>
 				No images
 			</Typography>
+
 			<Spacer y={4} />
+
 			<Typography variant='secondary'>Images will appear here.</Typography>
-			<Spacer y={8} />
-			<View style={{ backgroundColor: theme.border.color, height: 1 }} />
-			<Spacer y={8} />
-			<TextButton onPress={action}>Add image</TextButton>
+
+			<Spacer y={12} />
+
+			<PillButton
+				style={{ alignSelf: 'center' }}
+				onPress={action}
+				text='Add image'
+			/>
 		</View>
 	);
 };
@@ -69,7 +82,8 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 				<ScrollView
 					horizontal
 					showsHorizontalScrollIndicator={false}
-					contentContainerStyle={{ flexGrow: 1, gap: 8 }}
+					style={styles.scroll}
+					contentContainerStyle={styles.scrollContent}
 				>
 					{images.map(image => (
 						<View
@@ -92,6 +106,14 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 };
 
 const styles = StyleSheet.create({
+	scroll: {
+		marginHorizontal: -16
+	},
+	scrollContent: {
+		flexGrow: 1,
+		gap: 8,
+		paddingHorizontal: 16
+	},
 	imageContainer: {
 		borderWidth: 1,
 		borderRadius: 8,

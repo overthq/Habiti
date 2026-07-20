@@ -121,6 +121,7 @@ export type StoreStackParamList = {
 
 export type ProfileStackParamList = {
 	ProfileHome: undefined;
+	EditProfile: undefined;
 	Appearance: undefined;
 	ManageAccount: undefined;
 };

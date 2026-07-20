@@ -36,11 +36,19 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 	}, []);
 
 	const queryFilters = buildFiltersFromState(filters);
-	const { data, isLoading, isRefetching, refetch } =
-		useOrdersQuery(queryFilters);
+	const { data, isLoading, refetch } = useOrdersQuery(queryFilters);
 
-	const refresh = React.useCallback(() => {
-		refetch();
+	// Track the pull-to-refresh gesture separately from React Query's fetch
+	// state, so switching status filters doesn't trigger the refresh spinner.
+	const [refreshing, setRefreshing] = React.useState(false);
+
+	const refresh = React.useCallback(async () => {
+		setRefreshing(true);
+		try {
+			await refetch();
+		} finally {
+			setRefreshing(false);
+		}
 	}, [refetch]);
 
 	const openFilterModal = React.useCallback(() => {
@@ -65,7 +73,7 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 			isLoading,
 			status: filters.status,
 			setStatus,
-			refreshing: isRefetching,
+			refreshing,
 			refresh,
 			openFilterModal,
 			clearFilters
@@ -75,7 +83,7 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 			isLoading,
 			filters.status,
 			setStatus,
-			isRefetching,
+			refreshing,
 			refresh,
 			openFilterModal,
 			clearFilters

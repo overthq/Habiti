@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Linking, StyleSheet, View } from 'react-native';
+import { Alert, Linking, Pressable, StyleSheet, View } from 'react-native';
 import {
 	Avatar,
 	Screen,
@@ -39,7 +39,8 @@ const Profile = ({ navigation }: ProfileStackScreenProps<'ProfileHome'>) => {
 			<ScreenHeader title='Profile' />
 
 			{user && (
-				<View
+				<Pressable
+					onPress={() => navigation.navigate('EditProfile')}
 					style={[styles.userCard, { backgroundColor: theme.input.background }]}
 				>
 					<Avatar size={56} fallbackText={user.name} />
@@ -49,7 +50,7 @@ const Profile = ({ navigation }: ProfileStackScreenProps<'ProfileHome'>) => {
 						</Typography>
 						<Typography variant='secondary'>{user.email}</Typography>
 					</View>
-				</View>
+				</Pressable>
 			)}
 
 			<View>

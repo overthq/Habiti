@@ -35,6 +35,7 @@ import AddAddress from '../screens/AddAddress';
 import EditAddress from '../screens/EditAddress';
 import AddPayoutAccount from '../screens/AddPayoutAccount';
 import Appearance from '../screens/Appearance';
+import EditProfile from '../screens/EditProfile';
 import ManageAccount from '../screens/ManageAccount';
 import Categories from '../screens/Categories';
 import EditStore from '../screens/EditStore';
@@ -382,6 +383,14 @@ const ProfileStackNavigator = () => (
 		<ProfileStack.Group
 			screenOptions={{ header: USE_CUSTOM_HEADER ? CustomHeader : undefined }}
 		>
+			<ProfileStack.Screen
+				name='EditProfile'
+				component={EditProfile}
+				options={{
+					headerBackButtonDisplayMode: 'minimal',
+					headerTitle: 'Edit Profile'
+				}}
+			/>
 			<ProfileStack.Screen
 				name='Appearance'
 				component={Appearance}

@@ -14,7 +14,6 @@ import {
 	Icon,
 	IconType,
 	Row,
-	Screen,
 	ScrollableScreen,
 	Separator,
 	Spacer,

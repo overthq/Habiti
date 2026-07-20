@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Typography, useTheme } from '@habiti/components';
+import { Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import OrderProduct from './OrderProduct';
@@ -13,7 +13,6 @@ interface OrderProductsProps {
 
 const OrderProducts: React.FC<OrderProductsProps> = ({ products }) => {
 	const { navigate } = useNavigation<NavigationProp<OrdersStackParamList>>();
-	const { theme } = useTheme();
 
 	const handlePress = React.useCallback(
 		(productId: string) => () => {
@@ -28,7 +27,7 @@ const OrderProducts: React.FC<OrderProductsProps> = ({ products }) => {
 				Products
 			</Typography>
 
-			<View style={[styles.list, { backgroundColor: theme.input.background }]}>
+			<View style={styles.list}>
 				{products.map((p, index) => (
 					<OrderProduct
 						key={p.productId}
@@ -50,8 +49,7 @@ const styles = StyleSheet.create({
 		marginBottom: 8
 	},
 	list: {
-		borderRadius: 12,
-		overflow: 'hidden'
+		marginHorizontal: -16
 	}
 });
 
