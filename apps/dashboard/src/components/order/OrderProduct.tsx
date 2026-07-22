@@ -30,7 +30,6 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 			onPress={onPress}
 			style={[
 				styles.container,
-				{ backgroundColor: 'transparent' },
 				!isLast && {
 					borderBottomWidth: StyleSheet.hairlineWidth,
 					borderBottomColor: theme.border.color
