@@ -87,7 +87,8 @@ currentStore.get('/orders', async c => {
 	const orders = await StoreLogic.getStoreOrders(
 		c,
 		c.var.storeId!,
-		orderFiltersSchema.parse(c.req.query())
+		orderFiltersSchema.parse(c.req.query()),
+		{ excludePaymentPending: true }
 	);
 	return c.json({ orders });
 });

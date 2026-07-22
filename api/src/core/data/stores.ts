@@ -1,4 +1,5 @@
 import {
+	OrderStatus,
 	Prisma,
 	PrismaClient,
 	TransactionType
@@ -181,15 +182,26 @@ export const getStoreManagers = async (
 	return storeManagers;
 };
 
+interface GetStoreOrdersOptions {
+	excludePaymentPending?: boolean;
+}
+
 export const getStoreOrders = async (
 	prisma: PrismaClient,
 	storeId: string,
-	filters?: OrderFilters
+	filters?: OrderFilters,
+	options?: GetStoreOrdersOptions
 ) => {
 	const { where, orderBy } = orderFiltersToPrismaClause(filters);
 
 	const storeOrders = await prisma.order.findMany({
-		where: { storeId, ...where },
+		where: {
+			storeId,
+			...(options?.excludePaymentPending && {
+				status: { not: OrderStatus.PaymentPending }
+			}),
+			...where
+		},
 		orderBy: orderBy ?? { createdAt: 'desc' },
 		include: { user: true }
 	});
