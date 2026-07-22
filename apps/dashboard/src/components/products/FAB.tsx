@@ -1,52 +1,35 @@
-import { Icon, Typography, useTheme } from '@habiti/components';
-import { Pressable, StyleSheet, PressableProps } from 'react-native';
+import { PillButton } from '@habiti/components';
+import { PressableProps, ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-interface FABProps extends PressableProps {
+interface FABProps extends Omit<PressableProps, 'style'> {
 	text: string;
 	safeAreaPadding?: boolean;
+	style?: ViewStyle;
 }
 
-const FAB: React.FC<FABProps> = ({ text, safeAreaPadding, ...props }) => {
-	const { theme } = useTheme();
+const FAB: React.FC<FABProps> = ({
+	text,
+	safeAreaPadding,
+	style,
+	...props
+}) => {
 	const { bottom } = useSafeAreaInsets();
 
 	return (
-		<Pressable
-			style={[
-				styles.container,
-				{
-					backgroundColor: theme.button.primary.background,
-					bottom: safeAreaPadding ? bottom : 16
-				}
-			]}
+		<PillButton
+			text={text}
+			icon='plus'
+			size='large'
+			style={{
+				position: 'absolute',
+				alignSelf: 'center',
+				bottom: safeAreaPadding ? bottom : 16,
+				...style
+			}}
 			{...props}
-		>
-			<Icon name='plus' size={24} color={theme.button.primary.text} />
-			<Typography
-				weight='medium'
-				size='large'
-				style={{ color: theme.button.primary.text }}
-			>
-				{text}
-			</Typography>
-		</Pressable>
+		/>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		position: 'absolute',
-		flexDirection: 'row',
-		gap: 8,
-		alignItems: 'center',
-		justifyContent: 'space-between',
-		alignSelf: 'center',
-		borderRadius: 48,
-		paddingVertical: 12,
-		paddingLeft: 16,
-		paddingRight: 20
-	}
-});
 
 export default FAB;

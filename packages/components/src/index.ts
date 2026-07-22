@@ -8,6 +8,7 @@ export { default as Dialog } from './Dialog';
 export { default as EmptyState } from './EmptyState';
 export { default as FormInput } from './FormInput';
 export { Icon, IconType } from './Icon';
+export { IconButton } from './Button';
 export { default as Input } from './Input';
 export { default as ListEmpty } from './ListEmpty';
 export { PillButton } from './Button';

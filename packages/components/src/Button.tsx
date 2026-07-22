@@ -6,10 +6,44 @@ import {
 	ViewStyle,
 	PressableProps
 } from 'react-native';
+import Animated, {
+	useAnimatedStyle,
+	useSharedValue,
+	withTiming
+} from 'react-native-reanimated';
 
 import { useTheme } from './Theme';
+import { Icon, IconType } from './Icon';
 import Typography, { TypographyProps } from './Typography';
 import { palette } from './styles/theme';
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+const PRESS_TIMING = { duration: 120 };
+
+const usePressAnimation = (disabled?: boolean | null) => {
+	const pressed = useSharedValue(0);
+
+	const animatedStyle = useAnimatedStyle(
+		() => ({
+			opacity: disabled
+				? 0.4
+				: withTiming(pressed.value ? 0.85 : 1, PRESS_TIMING),
+			transform: [{ scale: withTiming(pressed.value ? 0.97 : 1, PRESS_TIMING) }]
+		}),
+		[disabled]
+	);
+
+	const onPressIn = () => {
+		pressed.value = 1;
+	};
+
+	const onPressOut = () => {
+		pressed.value = 0;
+	};
+
+	return { animatedStyle, onPressIn, onPressOut };
+};
 
 type ButtonVariant = keyof (typeof colors)['light']['button'];
 
@@ -46,18 +80,22 @@ const Button: React.FC<ButtonProps> = ({
 	...props
 }) => {
 	const { name } = useTheme();
-	const variantColors = colors[name].button[disabled ? 'disabled' : variant];
+	const variantColors = colors[name].button[variant];
+	const { animatedStyle, onPressIn, onPressOut } = usePressAnimation(disabled);
 
 	return (
-		<Pressable
+		<AnimatedPressable
 			style={[
 				buttonStyles.container,
 				{
 					backgroundColor: variantColors.background,
 					height: buttonSizeMap[size].height
 				},
+				animatedStyle,
 				style
 			]}
+			onPressIn={onPressIn}
+			onPressOut={onPressOut}
 			disabled={loading || disabled}
 			{...props}
 		>
@@ -77,7 +115,7 @@ const Button: React.FC<ButtonProps> = ({
 					{text}
 				</Typography>
 			)}
-		</Pressable>
+		</AnimatedPressable>
 	);
 };
 
@@ -96,6 +134,7 @@ const buttonStyles = StyleSheet.create({
 interface PillButtonProps extends PressableProps {
 	variant?: ButtonVariant;
 	text: string;
+	icon?: IconType;
 	loading?: boolean;
 	style?: ViewStyle;
 	size?: 'small' | 'regular' | 'large';
@@ -105,22 +144,26 @@ const pillSizeMap = {
 	small: {
 		paddingVertical: 6,
 		paddingHorizontal: 14,
-		fontSize: 13
+		fontSize: 13,
+		iconSize: 16
 	},
 	regular: {
 		paddingVertical: 9,
 		paddingHorizontal: 18,
-		fontSize: 15
+		fontSize: 15,
+		iconSize: 18
 	},
 	large: {
 		paddingVertical: 12,
 		paddingHorizontal: 22,
-		fontSize: 15
+		fontSize: 17,
+		iconSize: 24
 	}
 } as const;
 
 export const PillButton: React.FC<PillButtonProps> = ({
 	text,
+	icon,
 	loading,
 	style,
 	variant = 'primary',
@@ -129,11 +172,12 @@ export const PillButton: React.FC<PillButtonProps> = ({
 	...props
 }) => {
 	const { name } = useTheme();
-	const variantColors = colors[name].button[disabled ? 'disabled' : variant];
+	const variantColors = colors[name].button[variant];
 	const sizing = pillSizeMap[size];
+	const { animatedStyle, onPressIn, onPressOut } = usePressAnimation(disabled);
 
 	return (
-		<Pressable
+		<AnimatedPressable
 			style={[
 				pillStyles.container,
 				{
@@ -141,25 +185,37 @@ export const PillButton: React.FC<PillButtonProps> = ({
 					paddingVertical: sizing.paddingVertical,
 					paddingHorizontal: sizing.paddingHorizontal
 				},
+				animatedStyle,
 				style
 			]}
+			onPressIn={onPressIn}
+			onPressOut={onPressOut}
 			disabled={loading || disabled}
 			{...props}
 		>
 			{loading ? (
 				<ActivityIndicator />
 			) : (
-				<Typography
-					weight='medium'
-					style={[
-						pillStyles.text,
-						{ color: variantColors.text, fontSize: sizing.fontSize }
-					]}
-				>
-					{text}
-				</Typography>
+				<>
+					{icon && (
+						<Icon
+							name={icon}
+							size={sizing.iconSize}
+							color={variantColors.text}
+						/>
+					)}
+					<Typography
+						weight='medium'
+						style={[
+							pillStyles.text,
+							{ color: variantColors.text, fontSize: sizing.fontSize }
+						]}
+					>
+						{text}
+					</Typography>
+				</>
 			)}
-		</Pressable>
+		</AnimatedPressable>
 	);
 };
 
@@ -168,6 +224,7 @@ const pillStyles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
+		gap: 8,
 		borderRadius: 999,
 		alignSelf: 'flex-start'
 	},
@@ -216,6 +273,52 @@ export const TextButton: React.FC<TextButtonProps> = ({
 		</Pressable>
 	);
 };
+
+const MIN_TOUCH_TARGET = 44;
+
+interface IconButtonProps extends Omit<PressableProps, 'children' | 'style'> {
+	name: IconType;
+	size?: number;
+	color?: string;
+	inset?: boolean;
+	style?: ViewStyle;
+}
+
+export const IconButton: React.FC<IconButtonProps> = ({
+	name,
+	size = 24,
+	color,
+	disabled,
+	inset = false,
+	style,
+	...props
+}) => {
+	return (
+		<Pressable
+			disabled={disabled}
+			style={({ pressed }) => [
+				iconButtonStyles.container,
+				!inset && iconButtonStyles.standalone,
+				{ opacity: disabled ? 0.4 : pressed ? 0.5 : 1 },
+				style
+			]}
+			{...props}
+		>
+			<Icon name={name} size={size} color={color} />
+		</Pressable>
+	);
+};
+
+const iconButtonStyles = StyleSheet.create({
+	container: {
+		minHeight: MIN_TOUCH_TARGET,
+		alignItems: 'center',
+		justifyContent: 'center'
+	},
+	standalone: {
+		minWidth: MIN_TOUCH_TARGET
+	}
+});
 
 const colors = {
 	dark: {

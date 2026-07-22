@@ -133,7 +133,7 @@ export const fonts = Platform.select({
 const dark = {
 	text: {
 		primary: palette.neutral.n50,
-		secondary: palette.neutral.n200,
+		secondary: palette.neutral.n300,
 		tertiary: palette.neutral.n500,
 		disabled: palette.neutral.n500,
 		error: palette.red.r500,
