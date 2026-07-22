@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
 		marginVertical: 16
 	},
 	sectionHeader: {
-		marginBottom: 8
+		marginBottom: 4
 	},
 	list: {
 		marginHorizontal: -16
