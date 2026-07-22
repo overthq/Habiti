@@ -3,6 +3,7 @@ import { View, StyleSheet, Pressable, TextInput } from 'react-native';
 import {
 	BottomModal,
 	Icon,
+	IconButton,
 	TextButton,
 	Typography,
 	useTheme
@@ -115,13 +116,20 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 						<View style={styles.right}>
 							<FollowButton storeId={store.id} followed={followed} />
 
-							<Pressable hitSlop={16} onPress={handleOpenSearch}>
-								<Icon name='search' size={22} color={theme.text.primary} />
-							</Pressable>
+							<IconButton
+								name='search'
+								size={22}
+								color={theme.text.primary}
+								onPress={handleOpenSearch}
+								inset
+							/>
 
-							<Pressable hitSlop={16} onPress={handleOpenStoreInfo}>
-								<Icon name='more-vertical' size={22} />
-							</Pressable>
+							<IconButton
+								name='more-vertical'
+								size={22}
+								onPress={handleOpenStoreInfo}
+								inset
+							/>
 						</View>
 					</View>
 					<CategorySelector
