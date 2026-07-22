@@ -1,5 +1,4 @@
-import { Pressable } from 'react-native';
-import { Icon, ScreenHeader } from '@habiti/components';
+import { IconButton, ScreenHeader } from '@habiti/components';
 
 import { useProductsContext } from './ProductsContext';
 
@@ -15,9 +14,12 @@ const ProductsScreenHeader = () => {
 				onChangeText: setSearch
 			}}
 			right={
-				<Pressable onPress={openFilterModal}>
-					<Icon name='sliders-horizontal' size={20} />
-				</Pressable>
+				<IconButton
+					name='sliders-horizontal'
+					size={20}
+					onPress={openFilterModal}
+					style={{ marginVertical: -10, marginRight: -12 }}
+				/>
 			}
 			hasBottomBorder
 		/>

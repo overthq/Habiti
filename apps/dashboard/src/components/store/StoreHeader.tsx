@@ -1,5 +1,12 @@
 import { View, Pressable, StyleSheet } from 'react-native';
-import { Avatar, Typography, Icon, Spacer, useTheme } from '@habiti/components';
+import {
+	Avatar,
+	Typography,
+	Icon,
+	IconButton,
+	Spacer,
+	useTheme
+} from '@habiti/components';
 import { Store } from '../../data/types';
 
 interface StoreHeaderProps {
@@ -38,12 +45,8 @@ const StoreHeader = ({
 			</Pressable>
 
 			<View style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
-				<Pressable onPress={onOpenWebPage}>
-					<Icon name='globe' size={22} />
-				</Pressable>
-				<Pressable onPress={onOpenSettings}>
-					<Icon name='menu' size={22} />
-				</Pressable>
+				<IconButton name='globe' size={22} onPress={onOpenWebPage} inset />
+				<IconButton name='menu' size={22} onPress={onOpenSettings} inset />
 			</View>
 		</View>
 	);
