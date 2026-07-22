@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, RefreshControl, Alert } from 'react-native';
-import { Screen, Spacer, Typography, useTheme, Icon } from '@habiti/components';
+import { Screen, Typography, useTheme, Icon } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { HeaderButton } from '@react-navigation/elements';
 import { FlashList } from '@shopify/flash-list';
@@ -90,11 +90,11 @@ const Transactions = () => {
 
 	return (
 		<Screen>
-			<Spacer y={16} />
 			<View style={styles.container}>
 				<FlashList
 					contentContainerStyle={{
 						flexGrow: 1,
+						paddingTop: 16,
 						backgroundColor: theme.screen.background
 					}}
 					refreshControl={refreshControl}
