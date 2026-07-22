@@ -5,15 +5,8 @@ import { BottomModal, Spacer, Typography, useTheme } from '@habiti/components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AccordionRow from '../filter-products/AccordionRow';
 import ProductCategories from '../filter-products/ProductCategories';
-import { ProductsFilters } from './types';
 import SortProducts from '../filter-products/SortProducts';
-
-interface ProductsFilterModalProps {
-	modalRef: React.RefObject<BottomSheetModal | null>;
-	filters: ProductsFilters;
-	onUpdateFilters: (filters: ProductsFilters) => void;
-	onClearFilters: () => void;
-}
+import { useProductsFilterStore } from '../../state/filters';
 
 type AccordionKey = 'sort-by' | 'category';
 
@@ -26,6 +19,9 @@ const ProductsFilterModal: React.FC<ProductsFilterModalProps> = ({
 	const { bottom } = useSafeAreaInsets();
 	const [open, setOpen] = React.useState<AccordionKey>();
 	const { theme } = useTheme();
+	const filters = useProductsFilterStore(state => state.filters);
+	const setFilters = useProductsFilterStore(state => state.setFilters);
+	const clearFilters = useProductsFilterStore(state => state.clearFilters);
 
 	const handleExpandSection = React.useCallback(
 		(key: AccordionKey) => () => {
@@ -35,14 +31,14 @@ const ProductsFilterModal: React.FC<ProductsFilterModalProps> = ({
 	);
 
 	const handleSelectCategory = (categoryId: string) => {
-		onUpdateFilters({ categoryId });
+		setFilters({ categoryId });
 	};
 
 	const handleUpdateSortBy = React.useCallback(
 		(sortBy: 'created-at-desc' | 'unit-price-desc' | 'unit-price-asc') => {
-			onUpdateFilters({ sortBy });
+			setFilters({ sortBy });
 		},
-		[onUpdateFilters]
+		[setFilters]
 	);
 
 	return (
