@@ -96,7 +96,8 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		padding: 16,
 		marginBottom: 12,
-		borderRadius: 12
+		borderRadius: 12,
+		borderCurve: 'continuous'
 	},
 	userInfo: {
 		marginLeft: 12,

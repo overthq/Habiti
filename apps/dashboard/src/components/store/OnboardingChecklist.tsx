@@ -53,13 +53,13 @@ const ChecklistItem: React.FC<ChecklistItemProps> = ({
 						name={'check2'}
 						size={12}
 						strokeWidth={3}
-						color={theme.text.tertiary}
+						color={theme.text.invert}
 					/>
 				)}
 			</View>
 
 			<Spacer x={12} />
-			<Typography>{label}</Typography>
+			<Typography style={{ fontSize: 15 }}>{label}</Typography>
 		</Pressable>
 	);
 };
