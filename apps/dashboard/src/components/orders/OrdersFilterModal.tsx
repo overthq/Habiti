@@ -28,6 +28,9 @@ const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({
 	const { bottom } = useSafeAreaInsets();
 	const [open, setOpen] = React.useState<AccordionKey>();
 	const { theme } = useTheme();
+	const filters = useOrdersFilterStore(state => state.filters);
+	const setFilters = useOrdersFilterStore(state => state.setFilters);
+	const clearFilters = useOrdersFilterStore(state => state.clearFilters);
 
 	const handleExpandSection = React.useCallback(
 		(key: AccordionKey) => () => {
@@ -38,16 +41,16 @@ const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({
 
 	const handleUpdateSortBy = React.useCallback(
 		(sortBy: 'created-at-desc' | 'total-desc' | 'total-asc') => {
-			onUpdateFilters({ sortBy });
+			setFilters({ sortBy });
 		},
-		[onUpdateFilters]
+		[setFilters]
 	);
 
 	const handleSelectStatus = React.useCallback(
 		(status: OrderStatus | undefined) => {
-			onUpdateFilters({ status });
+			setFilters({ status });
 		},
-		[onUpdateFilters]
+		[setFilters]
 	);
 
 	return (

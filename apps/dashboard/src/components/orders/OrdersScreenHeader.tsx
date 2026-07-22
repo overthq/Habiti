@@ -1,10 +1,11 @@
-import { Pressable, ScrollView, StyleSheet } from 'react-native';
-import { Icon, ScreenHeader } from '@habiti/components';
+import { ScrollView, StyleSheet } from 'react-native';
+import { IconButton, ScreenHeader } from '@habiti/components';
 
 import { useOrdersContext } from './OrdersContext';
 import { PillButton } from '@habiti/components';
 
 import { OrderStatus } from '../../data/types';
+import { useOrdersFilterStore } from '../../state/filters';
 
 const ORDER_STATUSES = [
 	{
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
 });
 
 const OrderStatusPills = () => {
-	const { status: selectedStatus, setStatus } = useOrdersContext();
+	const { filters, setFilters } = useOrdersFilterStore();
 
 	return (
 		<ScrollView
@@ -65,17 +66,17 @@ const OrderStatusPills = () => {
 		>
 			<OrderStatusPill
 				label='All'
-				active={selectedStatus === undefined}
+				active={filters.status === undefined}
 				onPress={() => {
-					setStatus(undefined);
+					setFilters({ status: undefined });
 				}}
 			/>
 			{ORDER_STATUSES.map(status => (
 				<OrderStatusPill
 					key={status.label}
-					active={status.value === selectedStatus}
+					active={status.value === filters.status}
 					onPress={() => {
-						setStatus(status.value);
+						setFilters({ status: status.value });
 					}}
 					label={status.label}
 				/>
@@ -91,9 +92,12 @@ const OrdersScreenHeader = () => {
 		<ScreenHeader
 			title='Orders'
 			right={
-				<Pressable onPress={openFilterModal}>
-					<Icon name='sliders-horizontal' size={20} />
-				</Pressable>
+				<IconButton
+					name='sliders-horizontal'
+					size={20}
+					onPress={openFilterModal}
+					style={{ marginVertical: -10, marginRight: -12 }}
+				/>
 			}
 			hasBottomBorder
 		>

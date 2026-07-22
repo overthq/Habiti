@@ -17,10 +17,12 @@ import { ORDER_STATUS_LABELS } from '../../utils/orderStatus';
 
 import type { OrdersStackParamList } from '../../navigation/types';
 import type { Order } from '../../data/types';
+import { useOrdersFilterStore } from '../../state/filters';
 
 const OrdersList = () => {
 	const { navigate } = useNavigation<NavigationProp<OrdersStackParamList>>();
-	const { orders, status, isLoading, refreshing, refresh } = useOrdersContext();
+	const { orders, isLoading, refreshing, refresh } = useOrdersContext();
+	const { filters } = useOrdersFilterStore();
 	const { theme } = useTheme();
 
 	const handleOrderPress = React.useCallback(
@@ -69,7 +71,7 @@ const OrdersList = () => {
 					) : (
 						<View style={styles.empty}>
 							<Typography variant='secondary' style={styles.emptyText}>
-								{status
+								{filters.status
 									? 'No orders match the selected status.'
 									: 'There are currently no orders. While you wait, you can customize your store.'}
 							</Typography>

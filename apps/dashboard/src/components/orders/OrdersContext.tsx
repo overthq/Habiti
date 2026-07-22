@@ -2,23 +2,18 @@ import React from 'react';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import OrdersFilterModal from './OrdersFilterModal';
 import { useOrdersQuery } from '../../data/queries';
-import { Order, OrderFilters, OrderStatus } from '../../data/types';
+import { Order, OrderFilters } from '../../data/types';
 import { OrdersFilters } from './types';
 
 interface OrdersContextType {
 	orders: Order[];
 	isLoading: boolean;
-	status: OrderStatus | undefined;
-	setStatus: (status: OrderStatus | undefined) => void;
 	refreshing: boolean;
 	refresh: () => void;
 	openFilterModal: () => void;
-	clearFilters: () => void;
 }
 
 const OrdersContext = React.createContext<OrdersContextType | null>(null);
-
-// Search implementation should also be a little easier with this approach
 
 export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 	children
@@ -37,19 +32,7 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const queryFilters = buildFiltersFromState(filters);
 	const { data, isLoading, refetch } = useOrdersQuery(queryFilters);
-
-	// Track the pull-to-refresh gesture separately from React Query's fetch
-	// state, so switching status filters doesn't trigger the refresh spinner.
-	const [refreshing, setRefreshing] = React.useState(false);
-
-	const refresh = React.useCallback(async () => {
-		setRefreshing(true);
-		try {
-			await refetch();
-		} finally {
-			setRefreshing(false);
-		}
-	}, [refetch]);
+	const { isRefreshing, onRefresh } = useRefresh({ refetch });
 
 	const openFilterModal = React.useCallback(() => {
 		filterModalRef.current?.present();
@@ -67,27 +50,14 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	const value = React.useMemo<OrdersContextType>(
 		() => ({
-			orders: (data?.orders ?? []).filter(
-				o => o.status !== OrderStatus.PaymentPending
-			),
+			orders: data?.orders ?? [],
 			isLoading,
-			status: filters.status,
-			setStatus,
-			refreshing,
-			refresh,
+			refreshing: isRefreshing,
+			refresh: onRefresh,
 			openFilterModal,
 			clearFilters
 		}),
-		[
-			data,
-			isLoading,
-			filters.status,
-			setStatus,
-			refreshing,
-			refresh,
-			openFilterModal,
-			clearFilters
-		]
+		[data, isLoading, isRefreshing, onRefresh, openFilterModal]
 	);
 
 	return (
