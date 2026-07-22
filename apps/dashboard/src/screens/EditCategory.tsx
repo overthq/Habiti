@@ -41,7 +41,12 @@ const EditCategory: React.FC<AppStackScreenProps<'Modal.EditCategory'>> = ({
 		<ScrollableScreen>
 			<Spacer y={16} />
 			<FormProvider {...methods}>
-				<FormInput label='Name' name='name' control={methods.control} />
+				<FormInput
+					autoFocus
+					label='Name'
+					name='name'
+					control={methods.control}
+				/>
 				<Spacer y={8} />
 				<FormInput
 					label='Description'

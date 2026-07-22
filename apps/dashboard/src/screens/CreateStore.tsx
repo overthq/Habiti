@@ -35,6 +35,7 @@ const CreateStore: React.FC<AppStackScreenProps<'Modal.CreateStore'>> = ({
 		<ScrollableScreen contentContainerStyle={{ paddingBottom: bottom + 16 }}>
 			<Spacer y={16} />
 			<FormInput
+				autoFocus
 				control={methods.control}
 				name='name'
 				label='Store name'

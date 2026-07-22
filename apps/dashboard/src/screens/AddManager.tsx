@@ -13,6 +13,7 @@ const AddManager = () => {
 		<ScrollableScreen>
 			<Spacer y={16} />
 			<Input
+				autoFocus
 				label='E-mail address'
 				placeholder='john@doe.com'
 				keyboardType='email-address'
