@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
-import { Avatar, Icon, Spacer, Typography, useTheme } from '@habiti/components';
+import { View } from 'react-native';
+import { Button, Spacer, Typography } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { OrdersStackParamList } from '../../navigation/types';
@@ -12,7 +12,6 @@ interface CustomerDetailProps {
 
 const CustomerDetails: React.FC<CustomerDetailProps> = ({ user }) => {
 	const { navigate } = useNavigation<NavigationProp<OrdersStackParamList>>();
-	const { theme } = useTheme();
 
 	const handlePress = React.useCallback(() => {
 		navigate('CustomerInfo', { userId: user.id });
@@ -22,29 +21,11 @@ const CustomerDetails: React.FC<CustomerDetailProps> = ({ user }) => {
 		<View>
 			<Typography weight='medium'>Customer</Typography>
 			<Spacer y={8} />
-			<Pressable
-				onPress={handlePress}
-				style={[styles.button, { backgroundColor: theme.input.background }]}
-			>
-				<View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
-					<Avatar fallbackText={user.name} />
-					<Typography>{user.name}</Typography>
-				</View>
-				<Icon name='chevron-right' size={20} />
-			</Pressable>
+			<Typography>{user.name}</Typography>
+			<Spacer y={12} />
+			<Button text='View order history' onPress={handlePress} />
 		</View>
 	);
 };
-
-const styles = StyleSheet.create({
-	button: {
-		paddingHorizontal: 12,
-		paddingVertical: 10,
-		borderRadius: 12,
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center'
-	}
-});
 
 export default CustomerDetails;
