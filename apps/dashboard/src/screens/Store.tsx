@@ -10,21 +10,20 @@ import {
 	Typography
 } from '@habiti/components';
 import { formatNaira } from '@habiti/common';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useShallow } from 'zustand/react/shallow';
 
 import OnboardingChecklist from '../components/store/OnboardingChecklist';
-import StoreSelectModal from '../components/store/StoreSelectModal';
+import StoreHeader from '../components/store/StoreHeader';
+import Refresher from '../components/Refresher';
+import { useSheet } from '../navigation/Sheets';
 
 import { useAddressesQuery, useCurrentStoreQuery } from '../data/queries';
 import useRefresh from '../hooks/useRefresh';
 import useStore from '../state';
-import { useShallow } from 'zustand/react/shallow';
 import { getFrontendUrl } from '../utils/share';
 
 import type { StoreStackScreenProps } from '../navigation/types';
-import StoreHeader from '../components/store/StoreHeader';
-import Refresher from '../components/Refresher';
 
 const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 	navigation
@@ -34,7 +33,7 @@ const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 	const { isRefreshing, onRefresh } = useRefresh({ refetch });
 	const { top } = useSafeAreaInsets();
 	const { logOut } = useStore(useShallow(({ logOut }) => ({ logOut })));
-	const modalRef = React.useRef<BottomSheetModal>(null);
+	const { openSheet } = useSheet();
 
 	const handleNewPayout = () => {
 		if (!data?.store) return;
@@ -55,8 +54,8 @@ const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 	};
 
 	const handleSwitchStore = React.useCallback(() => {
-		modalRef.current?.present();
-	}, []);
+		openSheet('storeSelect');
+	}, [openSheet]);
 
 	const handleOpenBalanceDetails = React.useCallback(() => {
 		navigation.navigate('BalanceDetails');
@@ -148,7 +147,6 @@ const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 
 				<Spacer y={16} />
 			</ScrollableScreen>
-			<StoreSelectModal modalRef={modalRef} />
 		</Screen>
 	);
 };

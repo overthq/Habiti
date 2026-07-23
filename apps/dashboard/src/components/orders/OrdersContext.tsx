@@ -1,9 +1,10 @@
 import React from 'react';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import OrdersFilterModal from './OrdersFilterModal';
 import { useOrdersQuery } from '../../data/queries';
 import { Order, OrderFilters } from '../../data/types';
 import { OrdersFilters } from './types';
+import { useOrdersFilterStore } from '../../state/filters';
+import { useSheet } from '../../navigation/Sheets';
+import useRefresh from '../../hooks/useRefresh';
 
 interface OrdersContextType {
 	orders: Order[];
@@ -18,35 +19,16 @@ const OrdersContext = React.createContext<OrdersContextType | null>(null);
 export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 	children
 }) => {
-	const filterModalRef = React.useRef<BottomSheetModal>(null);
-
-	const [filters, setFilters] = React.useReducer(
-		(s, p) => ({ ...s, ...p }),
-		{} as OrdersFilters
-	);
-
-	// TODO: Don't make this a special case.
-	const setStatus = React.useCallback((status: OrderStatus | undefined) => {
-		setFilters({ status });
-	}, []);
+	const { openSheet } = useSheet();
+	const filters = useOrdersFilterStore(state => state.filters);
 
 	const queryFilters = buildFiltersFromState(filters);
 	const { data, isLoading, refetch } = useOrdersQuery(queryFilters);
 	const { isRefreshing, onRefresh } = useRefresh({ refetch });
 
 	const openFilterModal = React.useCallback(() => {
-		filterModalRef.current?.present();
-	}, []);
-
-	const clearFilters = React.useCallback(() => {
-		setFilters({
-			status: undefined,
-			minPrice: undefined,
-			maxPrice: undefined,
-			categories: undefined,
-			sortBy: undefined
-		});
-	}, []);
+		openSheet('ordersFilter');
+	}, [openSheet]);
 
 	const value = React.useMemo<OrdersContextType>(
 		() => ({
@@ -54,22 +36,13 @@ export const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 			isLoading,
 			refreshing: isRefreshing,
 			refresh: onRefresh,
-			openFilterModal,
-			clearFilters
+			openFilterModal
 		}),
 		[data, isLoading, isRefreshing, onRefresh, openFilterModal]
 	);
 
 	return (
-		<OrdersContext.Provider value={value}>
-			{children}
-			<OrdersFilterModal
-				modalRef={filterModalRef}
-				filters={filters}
-				onUpdateFilters={setFilters}
-				onClearFilters={clearFilters}
-			/>
-		</OrdersContext.Provider>
+		<OrdersContext.Provider value={value}>{children}</OrdersContext.Provider>
 	);
 };
 

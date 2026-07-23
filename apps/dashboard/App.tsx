@@ -1,4 +1,5 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import { ThemeProvider } from '@habiti/components';
 import * as Sentry from '@sentry/react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -8,7 +9,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useShallow } from 'zustand/react/shallow';
 import * as SplashScreen from 'expo-splash-screen';
 
-import { ConfirmationModalProvider } from './src/components/ConfirmationModal';
+import { SheetHost } from './src/navigation/Sheets';
 import Routes from './src/navigation/Routes';
 import useStore from './src/state';
 import { useAuthRefreshQuery } from './src/data/queries';
@@ -53,9 +54,8 @@ const AppInner = () => {
 			<ThemeProvider theme={theme}>
 				<GestureHandlerRootView style={{ flex: 1 }}>
 					<BottomSheetModalProvider>
-						<ConfirmationModalProvider>
-							<Routes />
-						</ConfirmationModalProvider>
+						<Routes />
+						{Platform.OS === 'android' && <SheetHost />}
 					</BottomSheetModalProvider>
 				</GestureHandlerRootView>
 			</ThemeProvider>

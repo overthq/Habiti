@@ -1,36 +1,23 @@
 import React from 'react';
 import {
-	BottomSheetModal,
-	BottomSheetTextInput,
-	BottomSheetView
-} from '@gorhom/bottom-sheet';
-import {
-	BottomModal,
 	Button,
 	Icon,
+	SheetTextInput,
+	SheetView,
 	Spacer,
 	Typography,
 	useTheme
 } from '@habiti/components';
-import { View, StyleSheet, Pressable } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useUpdateProductMutation } from '../../data/mutations';
 import { applyFontStyles } from '@habiti/components/src/Typography';
+import { useSheet, useSheetParams } from '../../navigation/Sheets';
 
-interface ProductInventoryModalProps {
-	productId: string;
-	initialQuantity: number;
-	modalRef: React.RefObject<BottomSheetModal | null>;
-}
-
-const ProductInventoryModal: React.FC<ProductInventoryModalProps> = ({
-	productId,
-	initialQuantity,
-	modalRef
-}) => {
+const ProductInventoryModal = () => {
+	const { productId, initialQuantity } = useSheetParams<'productInventory'>();
+	const { closeSheet } = useSheet();
 	const [quantity, setQuantity] = React.useState(initialQuantity);
 	const updateProductMutation = useUpdateProductMutation();
-	const { bottom } = useSafeAreaInsets();
 	const { name, theme } = useTheme();
 
 	const hasQuantityChanged = quantity !== initialQuantity;
@@ -50,52 +37,50 @@ const ProductInventoryModal: React.FC<ProductInventoryModalProps> = ({
 			body: { quantity }
 		});
 
-		modalRef.current?.close();
+		closeSheet();
 	};
 
 	return (
-		<BottomModal modalRef={modalRef} enableDynamicSizing>
-			<BottomSheetView style={{ paddingHorizontal: 16, paddingBottom: bottom }}>
-				<Typography size='xlarge' weight='semibold'>
-					Inventory
-				</Typography>
+		<SheetView style={{ paddingHorizontal: 16 }}>
+			<Typography size='xlarge' weight='semibold'>
+				Inventory
+			</Typography>
 
-				<Spacer y={16} />
+			<Spacer y={16} />
 
-				<View style={styles.quantityContainer}>
-					<Pressable onPress={decrementQuantity}>
-						<Icon name='minus' size={24} />
-					</Pressable>
+			<View style={styles.quantityContainer}>
+				<Pressable onPress={decrementQuantity}>
+					<Icon name='minus' size={24} />
+				</Pressable>
 
-					<BottomSheetTextInput
-						autoFocus
-						value={quantity.toString()}
-						onChangeText={handleQuantityChange}
-						keyboardType='numeric'
-						style={[
-							styles.quantityInput,
-							{ color: theme.input.text, borderColor: theme.border.color },
-							applyFontStyles()
-						]}
-						textAlign='center'
-						keyboardAppearance={name === 'dark' ? 'dark' : 'light'}
-					/>
-
-					<Pressable onPress={incrementQuantity}>
-						<Icon name='plus' size={24} />
-					</Pressable>
-				</View>
-
-				<Spacer y={16} />
-
-				<Button
-					text='Save'
-					onPress={handleSubmit}
-					loading={updateProductMutation.isPending}
-					disabled={updateProductMutation.isPending || !hasQuantityChanged}
+				<SheetTextInput
+					autoFocus
+					value={quantity.toString()}
+					onChangeText={handleQuantityChange}
+					keyboardType='numeric'
+					style={[
+						styles.quantityInput,
+						{ color: theme.input.text, borderColor: theme.border.color },
+						applyFontStyles()
+					]}
+					textAlign='center'
+					keyboardAppearance={name === 'dark' ? 'dark' : 'light'}
 				/>
-			</BottomSheetView>
-		</BottomModal>
+
+				<Pressable onPress={incrementQuantity}>
+					<Icon name='plus' size={24} />
+				</Pressable>
+			</View>
+
+			<Spacer y={16} />
+
+			<Button
+				text='Save'
+				onPress={handleSubmit}
+				loading={updateProductMutation.isPending}
+				disabled={updateProductMutation.isPending || !hasQuantityChanged}
+			/>
+		</SheetView>
 	);
 };
 

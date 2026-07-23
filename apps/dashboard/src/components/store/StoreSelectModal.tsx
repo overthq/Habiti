@@ -1,45 +1,39 @@
 import React from 'react';
 import { View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import {
 	Avatar,
-	BottomModal,
 	Button,
+	Icon,
 	Row,
+	SheetView,
 	Spacer,
 	Typography,
 	useTheme
 } from '@habiti/components';
 import { useShallow } from 'zustand/react/shallow';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { useManagedStoresQuery } from '../../data/queries';
 import { switchStore } from '../../data/requests';
 import useStore from '../../state';
-import { AppStackParamList } from '../../navigation/types';
+import { navigationRef } from '../../navigation/utils';
 import { STORE_CREATION_ENABLED } from '../../utils/constants';
+import { useSheet } from '../../navigation/Sheets';
 
-interface StoreSelectModalProps {
-	modalRef: React.RefObject<BottomSheetModal | null>;
-}
-
-const StoreSelectModal: React.FC<StoreSelectModalProps> = ({ modalRef }) => {
-	const { bottom } = useSafeAreaInsets();
+const StoreSelectModal = () => {
 	const { data } = useManagedStoresQuery();
 	const { theme } = useTheme();
-	const { setPreference, logIn } = useStore(
+	const { closeSheet } = useSheet();
+	const { setPreference, logIn, activeStore } = useStore(
 		useShallow(state => ({
 			setPreference: state.setPreference,
-			logIn: state.logIn
+			logIn: state.logIn,
+			activeStore: state.activeStore
 		}))
 	);
-	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-
 	const handleCreateStore = () => {
-		modalRef.current?.dismiss();
+		closeSheet();
 
-		navigate('Modal.CreateStore');
+		navigationRef.navigate('Modal.CreateStore');
 	};
 
 	const handleSelectStore = (storeId: string) => async () => {
@@ -47,50 +41,70 @@ const StoreSelectModal: React.FC<StoreSelectModalProps> = ({ modalRef }) => {
 			const { accessToken } = await switchStore(storeId);
 			logIn(accessToken);
 			setPreference({ activeStore: storeId });
-			modalRef.current?.dismiss();
+			closeSheet();
 		} catch {
 			// TODO: Handle error (show toast, etc.)
 		}
 	};
 
 	return (
-		<BottomModal modalRef={modalRef} enableDynamicSizing>
-			<BottomSheetView style={{ paddingBottom: bottom }}>
-				<Typography size='xlarge' weight='bold' style={{ marginLeft: 16 }}>
-					Select store
-				</Typography>
-				<Spacer y={8} />
-				{data?.stores.map(store => (
+		<SheetView>
+			<Typography size='xlarge' weight='bold' style={{ marginLeft: 16 }}>
+				Select store
+			</Typography>
+			<Spacer y={8} />
+			{data?.stores.map(store => {
+				const selected = store.id === activeStore;
+
+				return (
 					<Row
 						key={store.id}
 						style={{
-							backgroundColor: theme.modal.background,
-							alignItems: 'center'
+							backgroundColor: selected
+								? theme.border.color
+								: theme.modal.background,
+							borderRadius: 12,
+							marginHorizontal: 8,
+							paddingHorizontal: 8,
+							paddingVertical: 10,
+							alignItems: 'center',
+							justifyContent: 'space-between'
 						}}
 						onPress={handleSelectStore(store.id)}
 					>
-						<Avatar
-							uri={store.image?.path}
-							fallbackText={store.name}
-							size={40}
-							circle
-							style={{ marginRight: 8 }}
-						/>
-						<Typography>{store.name}</Typography>
-					</Row>
-				))}
-
-				{STORE_CREATION_ENABLED && (
-					<>
-						<Spacer y={16} />
-
-						<View style={{ paddingHorizontal: 16 }}>
-							<Button onPress={handleCreateStore} text='Create new store' />
+						<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+							<Avatar
+								uri={store.image?.path}
+								fallbackText={store.name}
+								size={40}
+								circle
+								bordered
+								style={{ marginRight: 8 }}
+							/>
+							<Typography>{store.name}</Typography>
 						</View>
-					</>
-				)}
-			</BottomSheetView>
-		</BottomModal>
+						{selected && (
+							<Icon
+								name='check'
+								size={20}
+								color={theme.text.primary}
+								style={{ marginRight: 4 }}
+							/>
+						)}
+					</Row>
+				);
+			})}
+
+			{STORE_CREATION_ENABLED && (
+				<>
+					<Spacer y={16} />
+
+					<View style={{ paddingHorizontal: 16 }}>
+						<Button onPress={handleCreateStore} text='Create new store' />
+					</View>
+				</>
+			)}
+		</SheetView>
 	);
 };
 

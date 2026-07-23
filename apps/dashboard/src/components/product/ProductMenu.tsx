@@ -2,14 +2,12 @@ import React from 'react';
 import { Alert } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { HeaderButton } from '@react-navigation/elements';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { Icon } from '@habiti/components';
-
-import ProductMenuModal from './ProductMenuModal';
 
 import { useDeleteProductMutation } from '../../data/mutations';
 
 import { shareProduct, viewProductInBrowser } from '../../utils/share';
+import { useSheet } from '../../navigation/Sheets';
 
 import type { AppStackParamList } from '../../navigation/types';
 import type { Product } from '../../data/types';
@@ -23,7 +21,7 @@ const ProductMenu: React.FC<ProductMenuProps> = ({ productId, product }) => {
 	const { setOptions, navigate, goBack } =
 		useNavigation<NavigationProp<AppStackParamList>>();
 	const deleteProductMutation = useDeleteProductMutation();
-	const optionsModalRef = React.useRef<BottomSheetModal>(null);
+	const { openSheet } = useSheet();
 
 	const handleDeleteProduct = React.useCallback(() => {
 		Alert.alert(
@@ -60,10 +58,25 @@ const ProductMenu: React.FC<ProductMenuProps> = ({ productId, product }) => {
 		viewProductInBrowser(productId);
 	}, [productId]);
 
+	const handleOpenMenu = React.useCallback(() => {
+		openSheet('productMenu', {
+			onEditProduct: handleEditProduct,
+			onDeleteProduct: handleDeleteProduct,
+			onShareProduct: handleShareProduct,
+			onViewInBrowser: handleOpenInBrowser
+		});
+	}, [
+		openSheet,
+		handleEditProduct,
+		handleDeleteProduct,
+		handleShareProduct,
+		handleOpenInBrowser
+	]);
+
 	React.useLayoutEffect(() => {
 		setOptions({
 			headerRight: () => (
-				<HeaderButton onPress={() => optionsModalRef.current?.present()}>
+				<HeaderButton onPress={handleOpenMenu}>
 					<Icon name='more-vertical' />
 				</HeaderButton>
 			),
@@ -110,21 +123,14 @@ const ProductMenu: React.FC<ProductMenuProps> = ({ productId, product }) => {
 		});
 	}, [
 		setOptions,
+		handleOpenMenu,
 		handleDeleteProduct,
 		handleShareProduct,
 		handleOpenInBrowser,
 		handleEditProduct
 	]);
 
-	return (
-		<ProductMenuModal
-			modalRef={optionsModalRef}
-			onEditProduct={handleEditProduct}
-			onDeleteProduct={handleDeleteProduct}
-			onShareProduct={handleShareProduct}
-			onViewInBrowser={handleOpenInBrowser}
-		/>
-	);
+	return null;
 };
 
 export default ProductMenu;

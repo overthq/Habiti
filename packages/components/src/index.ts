@@ -20,6 +20,7 @@ export { default as Separator } from './Separator';
 export { default as SearchInput } from './SearchInput';
 export { default as SelectGroup } from './SelectGroup';
 export { default as SectionHeader } from './SectionHeader';
+export * from './Sheet';
 export { default as Spacer } from './Spacer';
 export { TextButton } from './Button';
 export { useTheme, ThemeProvider } from './Theme';

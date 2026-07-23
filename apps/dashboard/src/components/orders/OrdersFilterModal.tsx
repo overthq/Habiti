@@ -1,31 +1,16 @@
 import React from 'react';
-import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
-import { BottomModal, Spacer, Typography, useTheme } from '@habiti/components';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SheetView, Spacer, Typography, useTheme } from '@habiti/components';
 
 import AccordionRow from '../filter-products/AccordionRow';
-import { OrdersFilters } from './types';
 import SortOrders from '../filter-orders/SortOrders';
 import FilterOrdersByStatus from '../filter-orders/FilterOrdersByStatus';
 import { OrderStatus } from '../../data/types';
 import { Pressable, View } from 'react-native';
-
-interface OrdersFilterModalProps {
-	modalRef: React.RefObject<BottomSheetModal | null>;
-	filters: OrdersFilters;
-	onUpdateFilters: (filters: OrdersFilters) => void;
-	onClearFilters: () => void;
-}
+import { useOrdersFilterStore } from '../../state/filters';
 
 type AccordionKey = 'sort-by' | 'status';
 
-const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({
-	modalRef,
-	filters,
-	onUpdateFilters,
-	onClearFilters
-}) => {
-	const { bottom } = useSafeAreaInsets();
+const OrdersFilterModal = () => {
 	const [open, setOpen] = React.useState<AccordionKey>();
 	const { theme } = useTheme();
 	const filters = useOrdersFilterStore(state => state.filters);
@@ -54,54 +39,52 @@ const OrdersFilterModal: React.FC<OrdersFilterModalProps> = ({
 	);
 
 	return (
-		<BottomModal modalRef={modalRef} enableDynamicSizing>
-			<BottomSheetView style={{ paddingBottom: bottom, paddingHorizontal: 16 }}>
-				<View
+		<SheetView style={{ paddingHorizontal: 16 }}>
+			<View
+				style={{
+					flexDirection: 'row',
+					justifyContent: 'space-between',
+					alignItems: 'center'
+				}}
+			>
+				<Typography weight='semibold' size='xlarge'>
+					Filter
+				</Typography>
+				<Pressable
+					onPress={clearFilters}
 					style={{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						alignItems: 'center'
+						paddingHorizontal: 12,
+						paddingVertical: 4,
+						borderRadius: 100,
+						borderWidth: 1,
+						borderColor: theme.border.color
 					}}
 				>
-					<Typography weight='semibold' size='xlarge'>
-						Filter
-					</Typography>
-					<Pressable
-						onPress={onClearFilters}
-						style={{
-							paddingHorizontal: 12,
-							paddingVertical: 4,
-							borderRadius: 100,
-							borderWidth: 1,
-							borderColor: theme.border.color
-						}}
-					>
-						<Typography size='small'>Clear</Typography>
-					</Pressable>
-				</View>
-				<Spacer y={12} />
-				<AccordionRow
-					title='Sort by'
-					open={open === 'sort-by'}
-					onPress={handleExpandSection('sort-by')}
-				>
-					<SortOrders
-						sortBy={filters.sortBy}
-						onUpdateSortBy={handleUpdateSortBy}
-					/>
-				</AccordionRow>
-				<AccordionRow
-					title='Status'
-					open={open === 'status'}
-					onPress={handleExpandSection('status')}
-				>
-					<FilterOrdersByStatus
-						selectedStatus={filters.status}
-						onSelectStatus={handleSelectStatus}
-					/>
-				</AccordionRow>
-			</BottomSheetView>
-		</BottomModal>
+					<Typography size='small'>Clear</Typography>
+				</Pressable>
+			</View>
+			<Spacer y={12} />
+			<AccordionRow
+				title='Sort by'
+				open={open === 'sort-by'}
+				onPress={handleExpandSection('sort-by')}
+			>
+				<SortOrders
+					sortBy={filters.sortBy}
+					onUpdateSortBy={handleUpdateSortBy}
+				/>
+			</AccordionRow>
+			<AccordionRow
+				title='Status'
+				open={open === 'status'}
+				onPress={handleExpandSection('status')}
+			>
+				<FilterOrdersByStatus
+					selectedStatus={filters.status}
+					onSelectStatus={handleSelectStatus}
+				/>
+			</AccordionRow>
+		</SheetView>
 	);
 };
 

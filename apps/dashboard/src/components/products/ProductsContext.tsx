@@ -1,17 +1,9 @@
 import React from 'react';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useProductsQuery } from '../../data/queries';
 import { Product, ProductFilters } from '../../data/types';
-import ProductsFilterModal from './ProductsFilterModal';
 import { ProductsFilters } from './types';
-
-// TODO:
-// - Break types up properly to prevent circular dependencies
-// - In the future, it might make sense to have the initial params
-//   build the first filter state. But just passing the params to the query
-//   is probably the cleanest solution. I'm trying to avoid a major backend
-//   refactor for now.
-// - Use zustand to handle filters.
+import { useProductsFilterStore } from '../../state/filters';
+import { useSheet } from '../../navigation/Sheets';
 
 interface ProductsContextType {
 	products: Product[];
@@ -29,32 +21,22 @@ const ProductsContext = React.createContext<ProductsContextType | null>(null);
 export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 	children
 }) => {
-	const filterModalRef = React.useRef<BottomSheetModal>(null);
-
-	const [filters, setFilters] = React.useReducer(
-		(s, p) => ({ ...s, ...p }),
-		{} as ProductsFilters
-	);
+	const { openSheet } = useSheet();
+	const filters = useProductsFilterStore(state => state.filters);
+	const clearFilters = useProductsFilterStore(state => state.clearFilters);
 	const [search, setSearch] = React.useState('');
 
 	const queryFilters = buildFiltersFromState({ ...filters, search });
-	const { data, isLoading, isRefetching, refetch, error } =
+	const { data, isLoading, isRefetching, refetch } =
 		useProductsQuery(queryFilters);
 
 	const refresh = React.useCallback(() => {
 		refetch();
 	}, [refetch]);
 
-	const clearFilters = React.useCallback(() => {
-		setFilters({
-			categoryId: undefined,
-			sortBy: undefined
-		});
-	}, []);
-
 	const openFilterModal = React.useCallback(() => {
-		filterModalRef.current?.present();
-	}, []);
+		openSheet('productsFilter');
+	}, [openSheet]);
 
 	const value = React.useMemo<ProductsContextType>(
 		() => ({
@@ -81,12 +63,6 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 	return (
 		<ProductsContext.Provider value={value}>
 			{children}
-			<ProductsFilterModal
-				modalRef={filterModalRef}
-				filters={filters}
-				onUpdateFilters={setFilters}
-				onClearFilters={clearFilters}
-			/>
 		</ProductsContext.Provider>
 	);
 };

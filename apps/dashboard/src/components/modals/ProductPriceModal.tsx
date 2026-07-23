@@ -1,41 +1,25 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import {
-	BottomModal,
 	Button,
+	SheetTextInput,
+	SheetView,
 	Spacer,
 	Typography,
 	useTheme
 } from '@habiti/components';
-import {
-	BottomSheetModal,
-	BottomSheetTextInput,
-	BottomSheetView
-} from '@gorhom/bottom-sheet';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUpdateProductMutation } from '../../data/mutations';
 import { applyFontStyles } from '@habiti/components/src/Typography';
+import { useSheet, useSheetParams } from '../../navigation/Sheets';
 
-interface ProductPriceModalProps {
-	modalRef: React.RefObject<BottomSheetModal | null>;
-	productId: string;
-	initialPrice: number;
-}
-
-const ProductPriceModal: React.FC<ProductPriceModalProps> = ({
-	modalRef,
-	productId,
-	initialPrice
-}) => {
-	const { bottom } = useSafeAreaInsets();
+const ProductPriceModal = () => {
+	const { productId, initialPrice } = useSheetParams<'productPrice'>();
+	const { closeSheet } = useSheet();
 	const [price, setPrice] = React.useState(String(initialPrice / 100));
 	const { name, theme } = useTheme();
 	const updateProductMutation = useUpdateProductMutation();
 
-	const isInitialPrice = React.useMemo(
-		() => price === String(initialPrice / 100),
-		[price, initialPrice]
-	);
+	const isInitialPrice = price === String(initialPrice / 100);
 
 	const handleSubmit = async () => {
 		await updateProductMutation.mutateAsync({
@@ -43,45 +27,43 @@ const ProductPriceModal: React.FC<ProductPriceModalProps> = ({
 			body: { unitPrice: Number(price) * 100 }
 		});
 
-		modalRef.current?.close();
+		closeSheet();
 	};
 
 	return (
-		<BottomModal modalRef={modalRef} enableDynamicSizing>
-			<BottomSheetView style={{ paddingHorizontal: 16, paddingBottom: bottom }}>
-				<Typography size='xlarge' weight='semibold'>
-					Price
-				</Typography>
+		<SheetView style={{ paddingHorizontal: 16 }}>
+			<Typography size='xlarge' weight='semibold'>
+				Price
+			</Typography>
 
-				<Spacer y={16} />
+			<Spacer y={16} />
 
-				<BottomSheetTextInput
-					style={[
-						styles.input,
-						{
-							color: theme.input.text,
-							textAlignVertical: 'top',
-							includeFontPadding: false
-						},
-						applyFontStyles()
-					]}
-					value={price}
-					onChangeText={setPrice}
-					autoFocus
-					keyboardAppearance={name === 'dark' ? 'dark' : 'light'}
-					keyboardType='numeric'
-				/>
+			<SheetTextInput
+				autoFocus
+				style={[
+					styles.input,
+					{
+						color: theme.input.text,
+						textAlignVertical: 'top',
+						includeFontPadding: false
+					},
+					applyFontStyles()
+				]}
+				value={price}
+				onChangeText={setPrice}
+				keyboardAppearance={name === 'dark' ? 'dark' : 'light'}
+				keyboardType='numeric'
+			/>
 
-				<Spacer y={16} />
+			<Spacer y={16} />
 
-				<Button
-					text='Save'
-					onPress={handleSubmit}
-					loading={updateProductMutation.isPending}
-					disabled={updateProductMutation.isPending || isInitialPrice}
-				/>
-			</BottomSheetView>
-		</BottomModal>
+			<Button
+				text='Save'
+				onPress={handleSubmit}
+				loading={updateProductMutation.isPending}
+				disabled={updateProductMutation.isPending || isInitialPrice}
+			/>
+		</SheetView>
 	);
 };
 

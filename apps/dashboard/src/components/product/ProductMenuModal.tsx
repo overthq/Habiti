@@ -1,14 +1,14 @@
-import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import {
-	BottomModal,
 	Icon,
 	IconType,
 	Row,
+	SheetView,
 	Typography,
 	useTheme
 } from '@habiti/components';
 import { View, StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { useSheet, useSheetParams } from '../../navigation/Sheets';
 
 interface ProductMenuRowProps {
 	title: string;
@@ -53,65 +53,40 @@ const styles = StyleSheet.create({
 	}
 });
 
-interface ProductMenuModalProps {
-	modalRef: React.RefObject<BottomSheetModal | null>;
-	onEditProduct(): void;
-	onDeleteProduct(): void;
-	onViewInBrowser(): void;
-	onShareProduct(): void;
-}
+const ProductMenuModal = () => {
+	const { onEditProduct, onDeleteProduct, onShareProduct, onViewInBrowser } =
+		useSheetParams<'productMenu'>();
+	const { closeSheet } = useSheet();
 
-const ProductMenuModal: React.FC<ProductMenuModalProps> = ({
-	modalRef,
-	onEditProduct,
-	onDeleteProduct,
-	onShareProduct,
-	onViewInBrowser
-}) => {
-	const { bottom } = useSafeAreaInsets();
-
-	const handleRowPress = () => {
-		modalRef.current?.close();
+	const handle = (action: () => void) => () => {
+		closeSheet();
+		action();
 	};
 
 	return (
-		<BottomModal modalRef={modalRef} enableDynamicSizing>
-			<BottomSheetView style={{ paddingBottom: bottom }}>
-				<ProductMenuRow
-					title='Edit'
-					icon='pencil'
-					onPress={() => {
-						handleRowPress();
-						onEditProduct();
-					}}
-				/>
-				<ProductMenuRow
-					title='View in browser'
-					icon='arrow-up-right'
-					onPress={() => {
-						handleRowPress();
-						onViewInBrowser();
-					}}
-				/>
-				<ProductMenuRow
-					title='Share'
-					icon='upload'
-					onPress={() => {
-						handleRowPress();
-						onShareProduct();
-					}}
-				/>
-				<ProductMenuRow
-					title='Delete product'
-					icon='trash'
-					destructive
-					onPress={() => {
-						handleRowPress();
-						onDeleteProduct();
-					}}
-				/>
-			</BottomSheetView>
-		</BottomModal>
+		<SheetView>
+			<ProductMenuRow
+				title='Edit'
+				icon='pencil'
+				onPress={handle(onEditProduct)}
+			/>
+			<ProductMenuRow
+				title='View in browser'
+				icon='arrow-up-right'
+				onPress={handle(onViewInBrowser)}
+			/>
+			<ProductMenuRow
+				title='Share'
+				icon='upload'
+				onPress={handle(onShareProduct)}
+			/>
+			<ProductMenuRow
+				title='Delete product'
+				icon='trash'
+				destructive
+				onPress={handle(onDeleteProduct)}
+			/>
+		</SheetView>
 	);
 };
 

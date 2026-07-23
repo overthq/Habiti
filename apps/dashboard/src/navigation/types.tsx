@@ -51,6 +51,12 @@ export type AppStackParamList = {
 		categories: ProductCategory[];
 	};
 	'Modal.Transactions': undefined;
+	'Sheet.ProductMenu': undefined;
+	'Sheet.ProductPrice': undefined;
+	'Sheet.ProductInventory': undefined;
+	'Sheet.StoreSelect': undefined;
+	'Sheet.ProductsFilter': undefined;
+	'Sheet.OrdersFilter': undefined;
 };
 
 export type AppStackScreenProps<T extends keyof AppStackParamList> =

@@ -67,6 +67,8 @@ import {
 } from '../navigation/types';
 import { Linking, Platform } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
+import { navigationRef } from './utils';
+import { createSheetScreens } from './Sheets';
 
 const USE_CUSTOM_HEADER = Platform.OS === 'android';
 
@@ -426,7 +428,11 @@ const Routes: React.FC = () => {
 	);
 
 	return (
-		<NavigationContainer theme={theme.navigation} linking={linking}>
+		<NavigationContainer
+			ref={navigationRef}
+			theme={theme.navigation}
+			linking={linking}
+		>
 			<StatusBar style={theme.statusBar} />
 			<AppStack.Navigator
 				id='AppStack'
@@ -531,6 +537,7 @@ const Routes: React.FC = () => {
 								options={{ headerTitle: 'Transactions' }}
 							/>
 						</AppStack.Group>
+						{Platform.OS === 'ios' && createSheetScreens(AppStack, theme)}
 					</>
 				) : (
 					<AppStack.Group>

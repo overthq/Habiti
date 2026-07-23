@@ -1,53 +1,44 @@
 import React from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
-import ProductPriceModal from '../modals/ProductPriceModal';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import ProductInventoryModal from '../modals/ProductInventoryModal';
 import { Typography, useTheme, Spacer, Icon } from '@habiti/components';
 import { formatNaira } from '@habiti/common';
 import { Product } from '../../data/types';
+import { useSheet } from '../../navigation/Sheets';
 
 interface EditButtonsProps {
 	product: Product;
 }
 
 const EditButtons: React.FC<EditButtonsProps> = ({ product }) => {
-	const priceModalRef = React.useRef<BottomSheetModal>(null);
-	const inventoryModalRef = React.useRef<BottomSheetModal>(null);
+	const { openSheet } = useSheet();
 
 	const openPriceModal = () => {
-		priceModalRef.current?.present();
+		openSheet('productPrice', {
+			productId: product.id,
+			initialPrice: product.unitPrice
+		});
 	};
 
 	const openInventoryModal = () => {
-		inventoryModalRef.current?.present();
+		openSheet('productInventory', {
+			productId: product.id,
+			initialQuantity: product.quantity
+		});
 	};
 
 	return (
-		<>
-			<View style={styles.container}>
-				<EditButton
-					label='Price'
-					onPress={openPriceModal}
-					value={formatNaira(product.unitPrice)}
-				/>
-				<EditButton
-					label='Inventory'
-					onPress={openInventoryModal}
-					value={product.quantity.toString()}
-				/>
-			</View>
-			<ProductPriceModal
-				modalRef={priceModalRef}
-				productId={product.id}
-				initialPrice={product.unitPrice}
+		<View style={styles.container}>
+			<EditButton
+				label='Price'
+				onPress={openPriceModal}
+				value={formatNaira(product.unitPrice)}
 			/>
-			<ProductInventoryModal
-				modalRef={inventoryModalRef}
-				productId={product.id}
-				initialQuantity={product.quantity}
+			<EditButton
+				label='Inventory'
+				onPress={openInventoryModal}
+				value={product.quantity.toString()}
 			/>
-		</>
+		</View>
 	);
 };
 
