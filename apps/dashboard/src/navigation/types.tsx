@@ -116,7 +116,7 @@ export type StoreStackParamList = {
 	StoreSettings: undefined;
 	'Edit Store': undefined;
 	BalanceDetails: undefined;
-	Payouts: undefined;
+	PayoutAccount: undefined;
 	Managers: undefined;
 	Categories: undefined;
 	Addresses: undefined;
@@ -135,6 +135,23 @@ export type ProfileStackParamList = {
 export type ProductStackParamList = {
 	'Product.Main': { productId: string };
 };
+
+export type PayoutAccountStackParamList = {
+	'PayoutAccount.SelectBank': undefined;
+	'PayoutAccount.EnterAccount': { bankCode: string };
+	'PayoutAccount.Confirm': {
+		bankCode: string;
+		accountNumber: string;
+		accountName?: string;
+	};
+};
+
+export type PayoutAccountStackScreenProps<
+	T extends keyof PayoutAccountStackParamList
+> = CompositeScreenProps<
+	NativeStackScreenProps<PayoutAccountStackParamList, T>,
+	AppStackScreenProps<'Modal.AddPayoutAccount'>
+>;
 
 declare global {
 	namespace ReactNavigation {

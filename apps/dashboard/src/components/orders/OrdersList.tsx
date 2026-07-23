@@ -93,7 +93,7 @@ const OrdersListItem: React.FC<OrdersListItemProps> = ({ order, onPress }) => {
 	return (
 		<Row onPress={onPress} style={styles.container}>
 			<View>
-				<Typography>{order.user.name}</Typography>
+				<Typography weight='medium'>{order.user.name}</Typography>
 				<Spacer y={2} />
 				<Typography size='small' variant='secondary' style={styles.date}>
 					{ORDER_STATUS_LABELS[order.status]} · {relativeDate(order.createdAt)}

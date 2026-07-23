@@ -33,7 +33,9 @@ import EditCategory from '../screens/EditCategory';
 import Addresses from '../screens/Addresses';
 import AddAddress from '../screens/AddAddress';
 import EditAddress from '../screens/EditAddress';
-import AddPayoutAccount from '../screens/AddPayoutAccount';
+import SelectBank from '../screens/SelectBank';
+import EnterAccountNumber from '../screens/EnterAccountNumber';
+import ConfirmPayoutAccount from '../screens/ConfirmPayoutAccount';
 import Appearance from '../screens/Appearance';
 import EditProfile from '../screens/EditProfile';
 import ManageAccount from '../screens/ManageAccount';
@@ -41,7 +43,7 @@ import Categories from '../screens/Categories';
 import EditStore from '../screens/EditStore';
 import Managers from '../screens/Managers';
 import Store from '../screens/Store';
-import StorePayouts from '../screens/StorePayouts';
+import PayoutAccount from '../screens/PayoutAccount';
 import Transactions from '../screens/Transactions';
 import Transaction from '../screens/Transaction';
 import BalanceDetails from '../screens/BalanceDetails';
@@ -59,6 +61,7 @@ import {
 import {
 	AppStackParamList,
 	ProductStackParamList,
+	PayoutAccountStackParamList,
 	StoreStackParamList,
 	MainTabParamList,
 	OrdersStackParamList,
@@ -107,7 +110,6 @@ const linking: LinkingOptions<AppStackParamList> = {
 					Store: {
 						screens: {
 							StoreHome: 'store',
-							Payouts: 'store/payouts',
 							Transactions: 'store/transactions',
 							Transaction: 'store/transactions/:transactionId'
 						}
@@ -175,6 +177,10 @@ const StoreStack = createNativeStackNavigator<
 const ProfileStack = createNativeStackNavigator<
 	ProfileStackParamList,
 	'ProfileStack'
+>();
+const PayoutAccountStack = createNativeStackNavigator<
+	PayoutAccountStackParamList,
+	'PayoutAccountStack'
 >();
 
 const icons: Record<keyof MainTabParamList, IconType> = {
@@ -329,13 +335,16 @@ const StoreStackNavigator = () => {
 					options={{ headerBackButtonDisplayMode: 'minimal' }}
 				/>
 				<StoreStack.Screen
-					name='Managers'
-					component={Managers}
-					options={{ headerBackButtonDisplayMode: 'minimal' }}
+					name='PayoutAccount'
+					component={PayoutAccount}
+					options={{
+						headerBackButtonDisplayMode: 'minimal',
+						headerTitle: 'Payout Account'
+					}}
 				/>
 				<StoreStack.Screen
-					name='Payouts'
-					component={StorePayouts}
+					name='Managers'
+					component={Managers}
 					options={{ headerBackButtonDisplayMode: 'minimal' }}
 				/>
 				<StoreStack.Screen
@@ -408,6 +417,43 @@ const ProfileStackNavigator = () => (
 			/>
 		</ProfileStack.Group>
 	</ProfileStack.Navigator>
+);
+
+const AddPayoutAccountNavigator = () => (
+	<PayoutAccountStack.Navigator
+		id='PayoutAccountStack'
+		initialRouteName='PayoutAccount.SelectBank'
+		screenOptions={{
+			header: USE_CUSTOM_HEADER ? CustomHeader : undefined,
+			headerBackButtonDisplayMode: 'minimal'
+		}}
+	>
+		<PayoutAccountStack.Screen
+			name='PayoutAccount.SelectBank'
+			component={SelectBank}
+			options={({ navigation }) => ({
+				headerTitle: 'Select Bank',
+				unstable_headerLeftItems: () => [
+					{
+						type: 'button',
+						label: 'Close',
+						icon: { type: 'sfSymbol', name: 'xmark' },
+						onPress: () => navigation.getParent()?.goBack()
+					}
+				]
+			})}
+		/>
+		<PayoutAccountStack.Screen
+			name='PayoutAccount.EnterAccount'
+			component={EnterAccountNumber}
+			options={{ headerTitle: 'Account Number' }}
+		/>
+		<PayoutAccountStack.Screen
+			name='PayoutAccount.Confirm'
+			component={ConfirmPayoutAccount}
+			options={{ headerTitle: 'Confirm Details' }}
+		/>
+	</PayoutAccountStack.Navigator>
 );
 
 const Routes: React.FC = () => {
@@ -508,8 +554,8 @@ const Routes: React.FC = () => {
 							)}
 							<AppStack.Screen
 								name='Modal.AddPayoutAccount'
-								component={AddPayoutAccount}
-								options={{ headerTitle: 'Add Payout Account' }}
+								component={AddPayoutAccountNavigator}
+								options={{ headerShown: false }}
 							/>
 							<AppStack.Screen
 								name='Modal.Order'

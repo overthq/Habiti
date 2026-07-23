@@ -28,6 +28,10 @@ const StoreSettingsMenu: React.FC<StoreStackScreenProps<'StoreSettings'>> = ({
 	return (
 		<Screen>
 			<StoreMenuRow title='Edit Store' onPress={handleNavigate('Edit Store')} />
+			<StoreMenuRow
+				title='Payout Account'
+				onPress={handleNavigate('PayoutAccount')}
+			/>
 			<StoreMenuRow title='Categories' onPress={handleNavigate('Categories')} />
 			<StoreMenuRow title='Addresses' onPress={handleNavigate('Addresses')} />
 			<StoreMenuRow

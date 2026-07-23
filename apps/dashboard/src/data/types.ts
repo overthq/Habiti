@@ -20,6 +20,7 @@ export interface Store {
 	instagram?: string;
 	unlisted: boolean;
 	bankAccountNumber?: string;
+	bankCode?: string;
 	realizedRevenue: number;
 	unrealizedRevenue: number;
 	paidOut: number;
