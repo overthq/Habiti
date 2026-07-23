@@ -88,7 +88,7 @@ const PayoutAccount: React.FC<StoreStackScreenProps<'PayoutAccount'>> = ({
 			<Spacer y={12} />
 			<Button
 				text='Remove account'
-				variant='secondary'
+				variant='destructive'
 				onPress={handleRemove}
 				loading={updateStoreMutation.isPending}
 			/>
