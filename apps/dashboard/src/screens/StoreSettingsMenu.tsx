@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Screen } from '@habiti/components';
 
-import StoreMenuRow from '../components/store/StoreMenuRow';
+import StoreMenuRow from '../components/StoreMenuRow';
 
 import type {
 	StoreStackParamList,

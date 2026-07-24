@@ -1,7 +1,20 @@
 import { create } from 'zustand';
 
-import { OrdersFilters } from '../components/orders/types';
-import { ProductsFilters } from '../components/products/types';
+import { OrderStatus } from '../data/types';
+
+export interface OrdersFilters {
+	status?: OrderStatus;
+	minPrice?: number;
+	maxPrice?: number;
+	categories?: string[];
+	sortBy?: 'created-at-desc' | 'total-desc' | 'total-asc';
+}
+
+export interface ProductsFilters {
+	categoryId?: string;
+	sortBy?: 'created-at-desc' | 'unit-price-desc' | 'unit-price-asc';
+	search?: string;
+}
 
 interface OrdersFilterState {
 	filters: OrdersFilters;

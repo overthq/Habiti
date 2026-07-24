@@ -3,6 +3,7 @@ import { Icon, type IconType, themes, useTheme } from '@habiti/components';
 import {
 	LinkingOptions,
 	NavigationContainer,
+	PathConfigMap,
 	RouteProp
 } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
@@ -37,7 +38,6 @@ import SelectBank from '../screens/SelectBank';
 import EnterAccountNumber from '../screens/EnterAccountNumber';
 import ConfirmPayoutAccount from '../screens/ConfirmPayoutAccount';
 import Appearance from '../screens/Appearance';
-import EditProfile from '../screens/EditProfile';
 import ManageAccount from '../screens/ManageAccount';
 import Categories from '../screens/Categories';
 import EditStore from '../screens/EditStore';
@@ -85,37 +85,41 @@ Notifications.setNotificationHandler({
 	})
 });
 
+// Pulled out to ensure type inference does not break.
+const mainScreens: PathConfigMap<MainTabParamList> = {
+	Orders: {
+		initialRouteName: 'OrdersList',
+		screens: {
+			OrdersList: 'orders',
+			Order: 'orders/:orderId'
+		}
+	},
+	Products: {
+		initialRouteName: 'ProductsList',
+		screens: {
+			ProductsList: 'products',
+			Product: {
+				screens: {
+					'Product.Main': 'products/:productId'
+				}
+			}
+		}
+	},
+	Store: {
+		initialRouteName: 'StoreHome',
+		screens: {
+			StoreHome: 'store',
+			Transactions: 'store/transactions',
+			Transaction: 'store/transactions/:transactionId'
+		}
+	}
+};
+
 const linking: LinkingOptions<AppStackParamList> = {
 	prefixes: ['habiti-dashboard://'],
 	config: {
 		screens: {
-			Main: {
-				screens: {
-					Orders: {
-						screens: {
-							OrdersList: 'orders',
-							Order: 'orders/:orderId'
-						}
-					},
-					Products: {
-						screens: {
-							ProductsList: 'products',
-							Product: {
-								screens: {
-									'Product.Main': 'products/:productId'
-								}
-							}
-						}
-					},
-					Store: {
-						screens: {
-							StoreHome: 'store',
-							Transactions: 'store/transactions',
-							Transaction: 'store/transactions/:transactionId'
-						}
-					}
-				}
-			}
+			Main: { screens: mainScreens }
 		}
 	},
 	async getInitialURL() {
@@ -394,14 +398,6 @@ const ProfileStackNavigator = () => (
 		<ProfileStack.Group
 			screenOptions={{ header: USE_CUSTOM_HEADER ? CustomHeader : undefined }}
 		>
-			<ProfileStack.Screen
-				name='EditProfile'
-				component={EditProfile}
-				options={{
-					headerBackButtonDisplayMode: 'minimal',
-					headerTitle: 'Edit Profile'
-				}}
-			/>
 			<ProfileStack.Screen
 				name='Appearance'
 				component={Appearance}

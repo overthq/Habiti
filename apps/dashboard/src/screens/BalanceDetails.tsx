@@ -3,42 +3,21 @@ import { View, StyleSheet } from 'react-native';
 import { formatNaira } from '@habiti/common';
 import {
 	ScrollableScreen,
+	SectionHeader,
 	Separator,
 	Spacer,
 	Typography,
 	useTheme
 } from '@habiti/components';
-import RecentTransactions from '../components/store/RecentTransactions';
-import { useCurrentStoreQuery } from '../data/queries';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
-interface BalanceRowProps {
-	label: string;
-	amount: number;
-	isLast?: boolean;
-}
-
-const BalanceRow: React.FC<BalanceRowProps> = ({ label, amount, isLast }) => {
-	const { theme } = useTheme();
-
-	return (
-		<View
-			style={[
-				styles.row,
-				!isLast
-					? {
-							borderBottomWidth: StyleSheet.hairlineWidth,
-							borderColor: theme.border.color
-						}
-					: {}
-			]}
-		>
-			<Typography style={{ fontSize: 15 }}>{label}</Typography>
-			<Typography weight='medium' style={{ fontSize: 15 }}>
-				{formatNaira(amount)}
-			</Typography>
-		</View>
-	);
-};
+import TransactionRow from '../components/TransactionRow';
+import { useCurrentStoreQuery, useTransactionsQuery } from '../data/queries';
+import { Transaction } from '../data/types';
+import type {
+	AppStackParamList,
+	StoreStackParamList
+} from '../navigation/types';
 
 const BalanceDetails = () => {
 	const { data } = useCurrentStoreQuery();
@@ -75,6 +54,35 @@ const BalanceDetails = () => {
 	);
 };
 
+interface BalanceRowProps {
+	label: string;
+	amount: number;
+	isLast?: boolean;
+}
+
+const BalanceRow: React.FC<BalanceRowProps> = ({ label, amount, isLast }) => {
+	const { theme } = useTheme();
+
+	return (
+		<View
+			style={[
+				styles.row,
+				!isLast
+					? {
+							borderBottomWidth: StyleSheet.hairlineWidth,
+							borderColor: theme.border.color
+						}
+					: {}
+			]}
+		>
+			<Typography style={{ fontSize: 15 }}>{label}</Typography>
+			<Typography weight='medium' style={{ fontSize: 15 }}>
+				{formatNaira(amount)}
+			</Typography>
+		</View>
+	);
+};
+
 const styles = StyleSheet.create({
 	list: {
 		borderRadius: 12,
@@ -85,6 +93,70 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		paddingVertical: 12
+	}
+});
+
+const RecentTransactions = () => {
+	const { data } = useTransactionsQuery();
+	const { navigate } =
+		useNavigation<NavigationProp<AppStackParamList & StoreStackParamList>>();
+	const { theme } = useTheme();
+
+	const recentTransactions = React.useMemo(
+		() => (data?.transactions ?? []).slice(0, 3),
+		[data?.transactions]
+	);
+
+	const handleViewAll = React.useCallback(() => {
+		navigate('Transactions');
+	}, [navigate]);
+
+	const handleTransactionPress = React.useCallback(
+		(transaction: Transaction) => {
+			navigate('Transaction', { transactionId: transaction.id });
+		},
+		[navigate]
+	);
+
+	return (
+		<View>
+			<SectionHeader
+				title='Recent Transactions'
+				padded={false}
+				action={{ text: 'View all', onPress: handleViewAll }}
+			/>
+			<View
+				style={[recentStyles.list, { backgroundColor: theme.input.background }]}
+			>
+				{recentTransactions.length === 0 ? (
+					<View style={recentStyles.empty}>
+						<Typography variant='secondary'>No transactions yet</Typography>
+					</View>
+				) : (
+					recentTransactions.map((transaction, index) => (
+						<TransactionRow
+							key={transaction.id}
+							transaction={transaction}
+							isLast={index === recentTransactions.length - 1}
+							onPress={handleTransactionPress}
+						/>
+					))
+				)}
+			</View>
+		</View>
+	);
+};
+
+const recentStyles = StyleSheet.create({
+	list: {
+		borderRadius: 12,
+		overflow: 'hidden',
+		marginTop: 8,
+		paddingHorizontal: 12
+	},
+	empty: {
+		paddingVertical: 16,
+		alignItems: 'center'
 	}
 });
 

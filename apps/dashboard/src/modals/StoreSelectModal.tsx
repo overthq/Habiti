@@ -12,12 +12,12 @@ import {
 } from '@habiti/components';
 import { useShallow } from 'zustand/react/shallow';
 
-import { useManagedStoresQuery } from '../../data/queries';
-import { switchStore } from '../../data/requests';
-import useStore from '../../state';
-import { navigationRef } from '../../navigation/utils';
-import { STORE_CREATION_ENABLED } from '../../utils/constants';
-import { useSheet } from '../../navigation/useSheet';
+import { useManagedStoresQuery } from '../data/queries';
+import { switchStore } from '../data/requests';
+import useStore from '../state';
+import { navigationRef } from '../navigation/utils';
+import { STORE_CREATION_ENABLED } from '../utils/constants';
+import { useSheet } from '../navigation/useSheet';
 
 const StoreSelectModal = () => {
 	const { data } = useManagedStoresQuery();

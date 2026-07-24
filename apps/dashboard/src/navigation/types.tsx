@@ -127,7 +127,6 @@ export type StoreStackParamList = {
 
 export type ProfileStackParamList = {
 	ProfileHome: undefined;
-	EditProfile: undefined;
 	Appearance: undefined;
 	ManageAccount: undefined;
 };
@@ -135,6 +134,9 @@ export type ProfileStackParamList = {
 export type ProductStackParamList = {
 	'Product.Main': { productId: string };
 };
+
+export type ProductStackScreenProps<T extends keyof ProductStackParamList> =
+	NativeStackScreenProps<ProductStackParamList, T>;
 
 export type PayoutAccountStackParamList = {
 	'PayoutAccount.SelectBank': undefined;

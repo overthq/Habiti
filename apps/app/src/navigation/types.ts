@@ -67,7 +67,6 @@ export type HomeStackScreenProps<T extends keyof HomeStackParamList> =
 
 export type ProfileStackParamList = {
 	'Profile.Main': undefined;
-	'Profile.Edit': undefined;
 	'Profile.PaymentMethods': undefined;
 	'Profile.Addresses': undefined;
 	'Profile.NotificationSettings': undefined;

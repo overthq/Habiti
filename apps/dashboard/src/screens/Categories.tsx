@@ -9,7 +9,7 @@ import {
 } from '@habiti/components';
 import { HeaderButton } from '@react-navigation/elements';
 
-import FAB from '../components/products/FAB';
+import FAB from '../components/FAB';
 import Refresher from '../components/Refresher';
 
 import useRefresh from '../hooks/useRefresh';

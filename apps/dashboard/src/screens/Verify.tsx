@@ -6,17 +6,21 @@ import {
 	Icon,
 	Screen,
 	Spacer,
-	Typography
+	Typography,
+	useTheme
 } from '@habiti/components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Animated, {
+	useAnimatedStyle,
+	withTiming
+} from 'react-native-reanimated';
 import { z } from 'zod';
 
 import { useVerifyCodeMutation } from '../data/mutations';
 import { AppStackParamList, AppStackScreenProps } from '../navigation/types';
-import CodeInput from '../components/verify/CodeInput';
 
 const verifySchema = z.object({
 	code: z
@@ -119,6 +123,40 @@ const styles = StyleSheet.create({
 		height: 1,
 		width: 1,
 		opacity: 0
+	}
+});
+
+interface CodeInputProps {
+	value: string;
+}
+
+const CodeInput: React.FC<CodeInputProps> = ({ value }) => {
+	const { theme } = useTheme();
+
+	const style = useAnimatedStyle(() => ({
+		borderColor: withTiming(theme.text[value ? 'primary' : 'tertiary'])
+	}));
+
+	return (
+		<Pressable style={{ flex: 1 }}>
+			<Animated.View style={[codeInputStyles.container, style]}>
+				<Typography weight='medium' size='xlarge'>
+					{value}
+				</Typography>
+			</Animated.View>
+		</Pressable>
+	);
+};
+
+const codeInputStyles = StyleSheet.create({
+	container: {
+		flexGrow: 1,
+		height: 48,
+		borderRadius: 8,
+		padding: 2,
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderWidth: 1
 	}
 });
 

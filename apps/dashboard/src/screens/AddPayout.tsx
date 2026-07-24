@@ -1,9 +1,8 @@
 import React from 'react';
-import { Alert, View } from 'react-native';
-import { Button, Screen, Spacer } from '@habiti/components';
+import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import { formatNaira } from '@habiti/common';
+import { Button, Icon, Screen, Spacer, Typography } from '@habiti/components';
 
-import AmountDisplay from '../components/add-payout/AmountDisplay';
-import PayoutNumpad from '../components/add-payout/PayoutNumpad';
 import { useCreatePayoutMutation } from '../data/mutations';
 import type { AppStackScreenProps } from '../navigation/types';
 
@@ -87,5 +86,132 @@ const AddPayout: React.FC<AppStackScreenProps<'Modal.AddPayout'>> = ({
 		</Screen>
 	);
 };
+
+interface AmountDisplayProps {
+	amount: string;
+}
+
+const AmountDisplay: React.FC<AmountDisplayProps> = ({ amount }) => {
+	const display = React.useMemo(() => {
+		return formatNaira(Number(amount) * 100);
+	}, [amount]);
+
+	return (
+		<View style={amountStyles.container}>
+			<Typography
+				style={amountStyles.amount}
+				weight='bold'
+				size='xxxlarge'
+				number
+			>
+				{display}
+			</Typography>
+		</View>
+	);
+};
+
+const amountStyles = StyleSheet.create({
+	container: {
+		flexGrow: 1,
+		paddingVertical: 56,
+		justifyContent: 'center'
+	},
+	amount: {
+		textAlign: 'center',
+		fontSize: 52
+	}
+});
+
+interface PayoutNumpadProps {
+	onUpdate(text: string): void;
+	onDelete(): void;
+	onClear(): void;
+}
+
+// FIXME: Some weird styling issues here still mean that
+// the '0' button is slightly skewed to the left.
+// (It's visible with a border around the numpad buttons).
+
+const PayoutNumpad: React.FC<PayoutNumpadProps> = ({
+	onUpdate,
+	onDelete,
+	onClear
+}) => {
+	return (
+		<View>
+			<View style={numpadStyles.row}>
+				<NumpadButton value='1' onPress={() => onUpdate('1')} />
+				<NumpadButton value='2' onPress={() => onUpdate('2')} />
+				<NumpadButton value='3' onPress={() => onUpdate('3')} />
+			</View>
+			<View style={numpadStyles.row}>
+				<NumpadButton value='4' onPress={() => onUpdate('4')} />
+				<NumpadButton value='5' onPress={() => onUpdate('5')} />
+				<NumpadButton value='6' onPress={() => onUpdate('6')} />
+			</View>
+			<View style={numpadStyles.row}>
+				<NumpadButton value='.' onPress={() => onUpdate('.')} />
+				<NumpadButton value='0' onPress={() => onUpdate('0')} />
+				<Pressable
+					style={numpadStyles.back}
+					onPress={onDelete}
+					onLongPress={onClear}
+				>
+					<Icon size={24} name='delete' />
+				</Pressable>
+			</View>
+		</View>
+	);
+};
+
+const numpadStyles = StyleSheet.create({
+	cell: {
+		flexGrow: 1,
+		padding: 8
+	},
+	back: {
+		flexGrow: 1,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	row: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		marginBottom: 56
+	}
+});
+
+interface NumpadButtonProps {
+	value: string;
+	onPress(): void;
+}
+
+const NumpadButton: React.FC<NumpadButtonProps> = ({ value, onPress }) => {
+	return (
+		<Pressable style={numpadButtonStyles.container} onPress={onPress}>
+			<Typography
+				size='xxxlarge'
+				weight='medium'
+				style={numpadButtonStyles.text}
+				number
+			>
+				{value}
+			</Typography>
+		</Pressable>
+	);
+};
+
+const numpadButtonStyles = StyleSheet.create({
+	container: {
+		padding: 8,
+		flexGrow: 1,
+		justifyContent: 'center',
+		alignContent: 'center'
+	},
+	text: {
+		textAlign: 'center'
+	}
+});
 
 export default AddPayout;

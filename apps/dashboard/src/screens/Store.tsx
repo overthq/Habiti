@@ -1,29 +1,35 @@
 import React from 'react';
-import { View, StyleSheet, Linking, Alert } from 'react-native';
+import { Alert, Linking, Pressable, StyleSheet, View } from 'react-native';
 import {
+	Avatar,
 	Button,
+	Icon,
+	IconButton,
 	PillButton,
 	Screen,
 	ScrollableScreen,
 	Separator,
 	Spacer,
-	Typography
+	Typography,
+	useTheme
 } from '@habiti/components';
 import { formatNaira } from '@habiti/common';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
 
-import OnboardingChecklist from '../components/store/OnboardingChecklist';
-import StoreHeader from '../components/store/StoreHeader';
 import Refresher from '../components/Refresher';
 import { useSheet } from '../navigation/useSheet';
-
 import { useAddressesQuery, useCurrentStoreQuery } from '../data/queries';
 import useRefresh from '../hooks/useRefresh';
 import useStore from '../state';
 import { getFrontendUrl } from '../utils/share';
-
-import type { StoreStackScreenProps } from '../navigation/types';
+import { Store as StoreType, Address } from '../data/types';
+import type {
+	AppStackParamList,
+	StoreStackParamList,
+	StoreStackScreenProps
+} from '../navigation/types';
 
 const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 	navigation
@@ -104,7 +110,7 @@ const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 				<Spacer y={16} />
 
 				<View>
-					<Typography variant='secondary' size='small'>
+					<Typography variant='secondary' size='small' weight='medium'>
 						Available
 					</Typography>
 
@@ -159,6 +165,203 @@ const styles = StyleSheet.create({
 
 	actions: {
 		flexDirection: 'row'
+	}
+});
+
+interface StoreHeaderProps {
+	store: StoreType;
+	onSwitchStore: () => void;
+	onOpenWebPage: () => void;
+	onOpenSettings: () => void;
+}
+
+const StoreHeader = ({
+	store,
+	onSwitchStore,
+	onOpenWebPage,
+	onOpenSettings
+}: StoreHeaderProps) => {
+	const { theme } = useTheme();
+
+	return (
+		<View
+			style={[headerStyles.header, { borderBottomColor: theme.border.color }]}
+		>
+			<Pressable
+				onPress={onSwitchStore}
+				style={{ flexDirection: 'row', alignItems: 'center' }}
+			>
+				<Avatar
+					uri={store.image?.path}
+					fallbackText={store.name}
+					size={32}
+					circle
+				/>
+				<Spacer x={10} />
+				<Typography size='xxlarge' weight='bold'>
+					{store.name}
+				</Typography>
+				<Spacer x={4} />
+				<Icon name='chevron-down' size={20} />
+			</Pressable>
+
+			<View style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
+				<IconButton name='globe' size={22} onPress={onOpenWebPage} inset />
+				<IconButton name='menu' size={22} onPress={onOpenSettings} inset />
+			</View>
+		</View>
+	);
+};
+
+const headerStyles = StyleSheet.create({
+	header: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		marginHorizontal: -16,
+		paddingHorizontal: 16,
+		paddingVertical: 12,
+		borderBottomWidth: StyleSheet.hairlineWidth
+	}
+});
+
+interface OnboardingChecklistProps {
+	store: StoreType;
+	addresses: Address[];
+}
+
+const OnboardingChecklist: React.FC<OnboardingChecklistProps> = ({
+	store,
+	addresses
+}) => {
+	const { theme } = useTheme();
+	const { navigate } =
+		useNavigation<NavigationProp<AppStackParamList & StoreStackParamList>>();
+
+	const items = [
+		{
+			label: 'Upload a store image',
+			completed: !!store.image,
+			onPress: () => navigate('Edit Store')
+		},
+		{
+			label: 'Add at least one product',
+			completed: store.products.length > 0,
+			onPress: () => navigate('Modal.AddProduct')
+		},
+		{
+			label: 'Add at least one address',
+			completed: addresses.length > 0,
+			onPress: () => navigate('Modal.AddAddress')
+		},
+		{
+			label: 'Link a bank account',
+			completed: !!store.bankAccountNumber,
+			onPress: () => navigate('Modal.AddPayoutAccount')
+		}
+	];
+
+	const completedCount = items.filter(i => i.completed).length;
+
+	if (completedCount === items.length) {
+		return null;
+	}
+
+	return (
+		<View>
+			<Typography weight='medium'>Finish setting up your store</Typography>
+
+			<Spacer y={4} />
+
+			<Typography variant='secondary' size='small'>
+				{completedCount} of {items.length} completed
+			</Typography>
+
+			<Spacer y={8} />
+
+			<View
+				style={[
+					checklistStyles.container,
+					{ backgroundColor: theme.input.background }
+				]}
+			>
+				{items.map((item, index) => (
+					<React.Fragment key={item.label}>
+						<ChecklistItem
+							label={item.label}
+							completed={item.completed}
+							onPress={item.onPress}
+						/>
+						{index !== items.length - 1 && <Separator />}
+					</React.Fragment>
+				))}
+			</View>
+		</View>
+	);
+};
+
+interface ChecklistItemProps {
+	label: string;
+	completed: boolean;
+	onPress?: () => void;
+}
+
+const ChecklistItem: React.FC<ChecklistItemProps> = ({
+	label,
+	completed,
+	onPress
+}) => {
+	const { theme } = useTheme();
+
+	return (
+		<Pressable
+			style={checklistStyles.item}
+			onPress={completed ? undefined : onPress}
+			disabled={completed}
+		>
+			<View
+				style={[
+					checklistStyles.checkCircle,
+					{
+						borderColor: completed ? theme.text.secondary : theme.border.color,
+						backgroundColor: completed ? theme.text.secondary : undefined
+					}
+				]}
+			>
+				{completed && (
+					<Icon
+						name={'check2'}
+						size={12}
+						strokeWidth={3}
+						color={theme.text.invert}
+					/>
+				)}
+			</View>
+
+			<Spacer x={12} />
+			<Typography style={{ fontSize: 15 }}>{label}</Typography>
+		</Pressable>
+	);
+};
+
+const checklistStyles = StyleSheet.create({
+	container: {
+		borderRadius: 12,
+		paddingVertical: 4
+	},
+	item: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		paddingVertical: 10,
+		paddingHorizontal: 12
+	},
+	checkCircle: {
+		width: 20,
+		height: 20,
+		borderWidth: 2,
+		borderRadius: 20,
+		justifyContent: 'center',
+		alignItems: 'center'
 	}
 });
 

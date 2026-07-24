@@ -332,7 +332,7 @@ export const deleteCard = async (cardId: string) => {
 	return response.data;
 };
 
-export const getCardAuthorization = async (orderId: string) => {
+export const getCardAuthorization = async (orderId?: string) => {
 	const response = await api.post<CardAuthorizationResponse>(
 		'/users/current/cards/authorize',
 		{ orderId }

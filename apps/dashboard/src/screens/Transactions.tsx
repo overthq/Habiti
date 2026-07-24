@@ -4,7 +4,8 @@ import { Screen, Typography, useTheme, Icon } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { HeaderButton } from '@react-navigation/elements';
 import { FlashList } from '@shopify/flash-list';
-import TransactionRow from '../components/transactions/TransactionRow';
+
+import TransactionRow from '../components/TransactionRow';
 import useRefresh from '../hooks/useRefresh';
 import { useCurrentStoreQuery, useTransactionsQuery } from '../data/queries';
 import { Transaction } from '../data/types';

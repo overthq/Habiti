@@ -7,12 +7,12 @@ import type { ThemeObject } from '@habiti/components/src/styles/theme';
 
 import { resolveRequest, useSheetStore } from '../state/sheet';
 import { SHEET_ROUTE_NAMES, type SheetName } from './useSheet';
-import ProductMenuModal from '../components/product/ProductMenuModal';
-import ProductPriceModal from '../components/modals/ProductPriceModal';
-import ProductInventoryModal from '../components/modals/ProductInventoryModal';
-import StoreSelectModal from '../components/store/StoreSelectModal';
-import ProductsFilterModal from '../components/products/ProductsFilterModal';
-import OrdersFilterModal from '../components/orders/OrdersFilterModal';
+import ProductMenuModal from '../modals/ProductMenuModal';
+import ProductPriceModal from '../modals/ProductPriceModal';
+import ProductInventoryModal from '../modals/ProductInventoryModal';
+import StoreSelectModal from '../modals/StoreSelectModal';
+import ProductsFilterModal from '../modals/ProductsFilterModal';
+import OrdersFilterModal from '../modals/OrdersFilterModal';
 
 import type { AppStackParamList } from './types';
 

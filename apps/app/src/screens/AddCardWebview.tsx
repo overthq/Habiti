@@ -19,7 +19,9 @@ import { AppStackParamList } from '../navigation/types';
 const AddCardWebview = () => {
 	const { params } = useRoute<RouteProp<AppStackParamList, 'Modal.AddCard'>>();
 
-	const { isLoading, data } = useCardAuthorizationQuery(params?.orderId ?? '');
+	const { isLoading, data, error } = useCardAuthorizationQuery(
+		params?.orderId ?? ''
+	);
 
 	if (isLoading || !data) {
 		return (
@@ -30,7 +32,7 @@ const AddCardWebview = () => {
 	}
 
 	return (
-		<Screen>
+		<Screen style={{ paddingHorizontal: -16 }}>
 			<WebView style={{ flex: 1 }} source={{ uri: data.authorization_url }} />
 		</Screen>
 	);

@@ -3,12 +3,8 @@ import { View, StyleSheet, Pressable } from 'react-native';
 import { Icon, Spacer, Typography, useTheme } from '@habiti/components';
 import { formatNairaAbbreviated } from '@habiti/common';
 
-import { parseTimestamp } from '../../utils/date';
-import {
-	Transaction,
-	TransactionStatus,
-	TransactionType
-} from '../../data/types';
+import { parseTimestamp } from '../utils/date';
+import { Transaction, TransactionStatus, TransactionType } from '../data/types';
 
 interface TransactionRowProps {
 	transaction: Transaction;

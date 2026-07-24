@@ -8,9 +8,9 @@ import {
 	Typography,
 	useTheme
 } from '@habiti/components';
-import { useUpdateProductMutation } from '../../data/mutations';
+import { useUpdateProductMutation } from '../data/mutations';
 import { applyFontStyles } from '@habiti/components/src/Typography';
-import { useSheet, useSheetParams } from '../../navigation/useSheet';
+import { useSheet, useSheetParams } from '../navigation/useSheet';
 
 const ProductPriceModal = () => {
 	const { productId, initialPrice } = useSheetParams<'productPrice'>();

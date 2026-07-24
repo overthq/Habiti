@@ -8,7 +8,7 @@ import * as ImagePicker from 'expo-image-picker';
 import type { AppStackScreenProps } from '../navigation/types';
 import { useUpdateProductMutation } from '../data/mutations';
 import { uploadImage } from '../data/requests';
-import FAB from '../components/products/FAB';
+import FAB from '../components/FAB';
 
 interface UploadedImage {
 	url: string;
@@ -128,7 +128,7 @@ const ProductImages: React.FC<
 				)}
 			</View>
 
-			<FAB onPress={handlePickImage} text='Add new image' />
+			<FAB onPress={handlePickImage} text='Add new image' safeAreaPadding />
 		</Screen>
 	);
 };

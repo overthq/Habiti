@@ -1,24 +1,28 @@
 import React from 'react';
-import { SheetView, Spacer, Typography, useTheme } from '@habiti/components';
-
-import AccordionRow from '../filter-products/AccordionRow';
-import SortOrders from '../filter-orders/SortOrders';
-import FilterOrdersByStatus from '../filter-orders/FilterOrdersByStatus';
-import { OrderStatus } from '../../data/types';
 import { Pressable, View } from 'react-native';
-import { useOrdersFilterStore } from '../../state/filters';
+import {
+	SelectGroup,
+	SheetView,
+	Spacer,
+	Typography,
+	useTheme
+} from '@habiti/components';
 
-type AccordionKey = 'sort-by' | 'status';
+import AccordionRow from '../components/AccordionRow';
+import { OrderStatus } from '../data/types';
+import { useOrdersFilterStore } from '../state/filters';
+
+type FilterAccordionKey = 'sort-by' | 'status';
 
 const OrdersFilterModal = () => {
-	const [open, setOpen] = React.useState<AccordionKey>();
+	const [open, setOpen] = React.useState<FilterAccordionKey>();
 	const { theme } = useTheme();
 	const filters = useOrdersFilterStore(state => state.filters);
 	const setFilters = useOrdersFilterStore(state => state.setFilters);
 	const clearFilters = useOrdersFilterStore(state => state.clearFilters);
 
 	const handleExpandSection = React.useCallback(
-		(key: AccordionKey) => () => {
+		(key: FilterAccordionKey) => () => {
 			setOpen(o => (o === key ? undefined : key));
 		},
 		[]
@@ -85,6 +89,60 @@ const OrdersFilterModal = () => {
 				/>
 			</AccordionRow>
 		</SheetView>
+	);
+};
+
+interface SortOrdersProps {
+	sortBy?: 'created-at-desc' | 'total-desc' | 'total-asc';
+	onUpdateSortBy: (
+		sortBy: 'created-at-desc' | 'total-desc' | 'total-asc'
+	) => void;
+}
+
+const SortOrders = ({ sortBy, onUpdateSortBy }: SortOrdersProps) => {
+	return (
+		<>
+			<Spacer y={8} />
+			<SelectGroup
+				selected={sortBy}
+				options={[
+					{ title: 'Default', value: undefined },
+					{ title: 'Newest to oldest', value: 'created-at-desc' },
+					{ title: 'Total (highest to lowest)', value: 'total-desc' },
+					{ title: 'Total (lowest to highest)', value: 'total-asc' }
+				]}
+				onSelect={onUpdateSortBy}
+			/>
+			<Spacer y={4} />
+		</>
+	);
+};
+
+interface FilterOrdersByStatusProps {
+	selectedStatus?: OrderStatus;
+	onSelectStatus: (status: OrderStatus | undefined) => void;
+}
+
+const FilterOrdersByStatus = ({
+	selectedStatus,
+	onSelectStatus
+}: FilterOrdersByStatusProps) => {
+	return (
+		<>
+			<Spacer y={8} />
+			<SelectGroup
+				selected={selectedStatus}
+				options={[
+					{ title: 'All', value: undefined },
+					{ title: 'Pending', value: OrderStatus.Pending },
+					{ title: 'Ready for Pickup', value: OrderStatus.ReadyForPickup },
+					{ title: 'Completed', value: OrderStatus.Completed },
+					{ title: 'Cancelled', value: OrderStatus.Cancelled }
+				]}
+				onSelect={onSelectStatus}
+			/>
+			<Spacer y={4} />
+		</>
 	);
 };
 

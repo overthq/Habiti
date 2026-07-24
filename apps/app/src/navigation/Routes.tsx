@@ -22,7 +22,6 @@ import Carts from '../screens/Carts';
 import AccountSettings from '../screens/AccountSettings';
 import Addresses from '../screens/Addresses';
 import EditAddress from '../screens/EditAddress';
-import EditProfile from '../screens/EditProfile';
 import NotificationSettings from '../screens/NotificationSettings';
 import PaymentMethods from '../screens/PaymentMethods';
 import Profile from '../screens/Profile';
@@ -219,11 +218,6 @@ const ProfileStack = () => {
 				options={{ headerTransparent: true, headerTitle: 'Profile' }}
 			/>
 			<ProfileNavigator.Screen
-				name='Profile.Edit'
-				component={EditProfile}
-				options={{ headerTitle: 'Edit Profile' }}
-			/>
-			<ProfileNavigator.Screen
 				name='Profile.PaymentMethods'
 				component={PaymentMethods}
 				options={{ headerTitle: 'Payment Methods' }}
@@ -246,7 +240,7 @@ const ProfileStack = () => {
 			<ProfileNavigator.Screen
 				name='Profile.AccountSettings'
 				component={AccountSettings}
-				options={{ headerTitle: 'Account Settings' }}
+				options={{ headerTitle: 'Manage Account' }}
 			/>
 		</ProfileNavigator.Navigator>
 	);
@@ -317,7 +311,7 @@ const Routes: React.FC = () => {
 					<AppStack.Group
 						screenOptions={({ navigation }) => ({
 							headerShown: true,
-							presentation: 'containedModal',
+							presentation: 'modal',
 							headerBackButtonDisplayMode: 'minimal',
 							unstable_headerLeftItems: () => [
 								{
@@ -336,7 +330,8 @@ const Routes: React.FC = () => {
 							options={{
 								headerTitle: '',
 								gestureDirection: 'vertical',
-								headerTransparent: true
+								headerTransparent: true,
+								presentation: 'containedModal'
 							}}
 						/>
 						<AppStack.Screen

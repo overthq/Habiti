@@ -1,11 +1,16 @@
 import React from 'react';
 import { Pressable, View } from 'react-native';
-import { SheetView, Spacer, Typography, useTheme } from '@habiti/components';
-import AccordionRow from '../filter-products/AccordionRow';
-import ProductCategories from '../filter-products/ProductCategories';
-import SortProducts from '../filter-products/SortProducts';
-import { useProductsFilterStore } from '../../state/filters';
-import { ProductsFilters } from './types';
+import {
+	SelectGroup,
+	SheetView,
+	Spacer,
+	Typography,
+	useTheme
+} from '@habiti/components';
+
+import AccordionRow from '../components/AccordionRow';
+import { useCategoriesQuery } from '../data/queries';
+import { useProductsFilterStore, ProductsFilters } from '../state/filters';
 
 type AccordionKey = 'sort-by' | 'category';
 
@@ -83,6 +88,63 @@ const ProductsFilterModal = () => {
 				<Spacer y={4} />
 			</AccordionRow>
 		</SheetView>
+	);
+};
+
+interface SortProductsProps {
+	sortBy?: 'created-at-desc' | 'unit-price-desc' | 'unit-price-asc';
+	onUpdateSortBy: (
+		sortBy: 'created-at-desc' | 'unit-price-desc' | 'unit-price-asc'
+	) => void;
+}
+
+const SortProducts = ({ sortBy, onUpdateSortBy }: SortProductsProps) => {
+	return (
+		<>
+			<Spacer y={8} />
+			<SelectGroup
+				selected={sortBy}
+				options={[
+					{ title: 'Default', value: undefined },
+					{ title: 'Newest to oldest', value: 'created-at-desc' },
+					{ title: 'Highest to lowest price', value: 'unit-price-desc' },
+					{ title: 'Lowest to highest price', value: 'unit-price-asc' }
+				]}
+				onSelect={onUpdateSortBy}
+			/>
+			<Spacer y={4} />
+		</>
+	);
+};
+
+interface ProductCategoriesProps {
+	selectedCategory?: string;
+	onSelectCategory: (categoryId: string) => void;
+}
+
+const ProductCategories: React.FC<ProductCategoriesProps> = ({
+	selectedCategory,
+	onSelectCategory
+}) => {
+	const { data, isLoading } = useCategoriesQuery();
+
+	const handleSelectCategory = (categoryId: string) => {
+		onSelectCategory(categoryId);
+	};
+
+	if (isLoading || !data) {
+		return <View />;
+	}
+
+	return (
+		<SelectGroup
+			selected={selectedCategory}
+			onSelect={handleSelectCategory}
+			options={data.categories.map(c => ({
+				title: c.name,
+				value: c.id
+			}))}
+		/>
 	);
 };
 

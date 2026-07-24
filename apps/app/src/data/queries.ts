@@ -140,11 +140,10 @@ export const usePushTokensQuery = () => {
 	});
 };
 
-export const useCardAuthorizationQuery = (orderId: string) => {
+export const useCardAuthorizationQuery = (orderId?: string) => {
 	return useQuery({
 		queryKey: ['cardAuthorization', orderId],
-		queryFn: () => getCardAuthorization(orderId),
-		enabled: !!orderId
+		queryFn: () => getCardAuthorization(orderId)
 	});
 };
 
