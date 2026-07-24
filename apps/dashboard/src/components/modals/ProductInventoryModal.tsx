@@ -11,7 +11,7 @@ import {
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useUpdateProductMutation } from '../../data/mutations';
 import { applyFontStyles } from '@habiti/components/src/Typography';
-import { useSheet, useSheetParams } from '../../navigation/Sheets';
+import { useSheet, useSheetParams } from '../../navigation/useSheet';
 
 const ProductInventoryModal = () => {
 	const { productId, initialQuantity } = useSheetParams<'productInventory'>();

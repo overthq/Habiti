@@ -3,7 +3,7 @@ import { useProductsQuery } from '../../data/queries';
 import { Product, ProductFilters } from '../../data/types';
 import { ProductsFilters } from './types';
 import { useProductsFilterStore } from '../../state/filters';
-import { useSheet } from '../../navigation/Sheets';
+import { useSheet } from '../../navigation/useSheet';
 
 interface ProductsContextType {
 	products: Product[];

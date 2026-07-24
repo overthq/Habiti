@@ -17,7 +17,7 @@ import { switchStore } from '../../data/requests';
 import useStore from '../../state';
 import { navigationRef } from '../../navigation/utils';
 import { STORE_CREATION_ENABLED } from '../../utils/constants';
-import { useSheet } from '../../navigation/Sheets';
+import { useSheet } from '../../navigation/useSheet';
 
 const StoreSelectModal = () => {
 	const { data } = useManagedStoresQuery();

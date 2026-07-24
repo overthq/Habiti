@@ -16,7 +16,7 @@ import { useShallow } from 'zustand/react/shallow';
 import OnboardingChecklist from '../components/store/OnboardingChecklist';
 import StoreHeader from '../components/store/StoreHeader';
 import Refresher from '../components/Refresher';
-import { useSheet } from '../navigation/Sheets';
+import { useSheet } from '../navigation/useSheet';
 
 import { useAddressesQuery, useCurrentStoreQuery } from '../data/queries';
 import useRefresh from '../hooks/useRefresh';

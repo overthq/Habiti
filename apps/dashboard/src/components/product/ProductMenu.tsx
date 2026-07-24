@@ -7,7 +7,7 @@ import { Icon } from '@habiti/components';
 import { useDeleteProductMutation } from '../../data/mutations';
 
 import { shareProduct, viewProductInBrowser } from '../../utils/share';
-import { useSheet } from '../../navigation/Sheets';
+import { useSheet } from '../../navigation/useSheet';
 
 import type { AppStackParamList } from '../../navigation/types';
 import type { Product } from '../../data/types';

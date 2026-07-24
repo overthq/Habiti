@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import type { SheetName, SheetParams } from '../navigation/Sheets';
+import type { SheetName, SheetParams } from '../navigation/useSheet';
 
 interface SheetState {
 	activeName: SheetName | null;

@@ -8,7 +8,7 @@ import {
 } from '@habiti/components';
 import { View, StyleSheet } from 'react-native';
 
-import { useSheet, useSheetParams } from '../../navigation/Sheets';
+import { useSheet, useSheetParams } from '../../navigation/useSheet';
 
 interface ProductMenuRowProps {
 	title: string;

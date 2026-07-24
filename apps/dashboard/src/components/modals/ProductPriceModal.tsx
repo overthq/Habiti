@@ -10,7 +10,7 @@ import {
 } from '@habiti/components';
 import { useUpdateProductMutation } from '../../data/mutations';
 import { applyFontStyles } from '@habiti/components/src/Typography';
-import { useSheet, useSheetParams } from '../../navigation/Sheets';
+import { useSheet, useSheetParams } from '../../navigation/useSheet';
 
 const ProductPriceModal = () => {
 	const { productId, initialPrice } = useSheetParams<'productPrice'>();
