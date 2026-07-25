@@ -1,5 +1,5 @@
 import React from 'react';
-import { RefreshControl, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { formatNaira } from '@habiti/common';
 import {
 	CustomImage,
@@ -14,9 +14,12 @@ import {
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { LinearTransition } from 'react-native-reanimated';
-import { FlashList, ListRenderItem } from '@shopify/flash-list';
+import { FlashList, FlashListRef, ListRenderItem } from '@shopify/flash-list';
 
 import FAB from '../components/FAB';
+import Refresher from '../components/Refresher';
+import useDebounced from '../hooks/useDebounced';
+import useRefresh from '../hooks/useRefresh';
 import { useProductsQuery } from '../data/queries';
 import { useProductsFilterStore, ProductsFilters } from '../state/filters';
 import { useSheet } from '../navigation/useSheet';
@@ -67,13 +70,15 @@ const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 	const clearFilters = useProductsFilterStore(state => state.clearFilters);
 	const [search, setSearch] = React.useState('');
 
-	const queryFilters = buildFiltersFromState({ ...filters, search });
-	const { data, isLoading, isRefetching, refetch } =
-		useProductsQuery(queryFilters);
+	const debouncedSearch = useDebounced(search, 300);
 
-	const refresh = React.useCallback(() => {
-		refetch();
-	}, [refetch]);
+	const queryFilters = buildFiltersFromState({
+		...filters,
+		search: debouncedSearch
+	});
+	const { data, isLoading, refetch } = useProductsQuery(queryFilters);
+
+	const { isRefreshing, onRefresh } = useRefresh({ refetch });
 
 	const openFilterModal = React.useCallback(() => {
 		openSheet('productsFilter');
@@ -83,8 +88,8 @@ const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 		() => ({
 			products: data?.products ?? [],
 			isLoading,
-			refreshing: isRefetching,
-			refresh,
+			refreshing: isRefreshing,
+			refresh: onRefresh,
 			openFilterModal,
 			clearFilters,
 			search,
@@ -93,8 +98,8 @@ const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 		[
 			data,
 			isLoading,
-			isRefetching,
-			refresh,
+			isRefreshing,
+			onRefresh,
 			openFilterModal,
 			clearFilters,
 			search
@@ -177,6 +182,17 @@ const ProductList: React.FC = () => {
 	const { products, search, refreshing, refresh } = useProductsContext();
 	const [editMode, setEditMode] = React.useState(false);
 	const [selectedProducts, setSelectedProducts] = React.useState<string[]>([]);
+	const listRef = React.useRef<FlashListRef<Product>>(null);
+	const categoryId = useProductsFilterStore(state => state.filters.categoryId);
+	const sortBy = useProductsFilterStore(state => state.filters.sortBy);
+
+	// Changing any filter rebuilds the list from a different slice of the
+	// catalogue, so the offset we were scrolled to no longer means anything
+	// against the new results. Send it back to the top rather than leaving it
+	// parked wherever the previous results happened to put it.
+	React.useEffect(() => {
+		listRef.current?.scrollToOffset({ offset: 0, animated: false });
+	}, [search, categoryId, sortBy]);
 
 	const handlePress = React.useCallback(
 		(productId: string) => () =>
@@ -213,22 +229,18 @@ const ProductList: React.FC = () => {
 	);
 
 	const refreshControl = React.useMemo(
-		() => (
-			<RefreshControl
-				refreshing={refreshing}
-				onRefresh={refresh}
-				tintColor={theme.text.secondary}
-			/>
-		),
-		[refreshing, refresh, theme.text.secondary]
+		() => <Refresher refreshing={refreshing} onRefresh={refresh} />,
+		[refreshing, refresh]
 	);
 
 	return (
 		<View style={{ flex: 1 }}>
 			<FlashList
+				ref={listRef}
 				keyExtractor={i => i.id}
 				data={products}
 				renderItem={renderProduct}
+				maintainVisibleContentPosition={{ disabled: true }}
 				style={{ marginHorizontal: -16 }}
 				contentContainerStyle={{
 					flexGrow: 1,

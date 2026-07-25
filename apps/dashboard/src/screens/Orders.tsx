@@ -20,7 +20,7 @@ import {
 	useTheme
 } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { FlashList, ListRenderItem } from '@shopify/flash-list';
+import { FlashList, FlashListRef, ListRenderItem } from '@shopify/flash-list';
 
 import { useOrdersQuery } from '../data/queries';
 import { Order, OrderFilters, OrderStatus } from '../data/types';
@@ -221,6 +221,15 @@ const OrdersList = () => {
 	const { orders, isLoading, refreshing, refresh } = useOrdersContext();
 	const { filters } = useOrdersFilterStore();
 	const { theme } = useTheme();
+	const listRef = React.useRef<FlashListRef<Order>>(null);
+
+	// Changing any filter rebuilds the list from a different slice of the
+	// orders, so the offset we were scrolled to no longer means anything
+	// against the new results. Send it back to the top rather than leaving it
+	// parked wherever the previous results happened to put it.
+	React.useEffect(() => {
+		listRef.current?.scrollToOffset({ offset: 0, animated: false });
+	}, [filters.status, filters.sortBy]);
 
 	const handleOrderPress = React.useCallback(
 		(orderId: string) => () => {
@@ -252,9 +261,11 @@ const OrdersList = () => {
 	return (
 		<View style={{ flex: 1 }}>
 			<FlashList
+				ref={listRef}
 				keyExtractor={i => i.id}
 				data={orders}
 				renderItem={renderOrder}
+				maintainVisibleContentPosition={{ disabled: true }}
 				style={{ marginHorizontal: -16 }}
 				contentContainerStyle={{
 					flexGrow: 1,

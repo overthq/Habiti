@@ -27,7 +27,7 @@ const Input: React.FC<InputProps> = ({ label, textArea, ...props }) => {
 		} else {
 			return [inputColors, styles.input, props.style];
 		}
-	}, [textArea, props.style]);
+	}, [inputColors, textArea, props.style]);
 
 	return (
 		<View>
@@ -42,10 +42,10 @@ const Input: React.FC<InputProps> = ({ label, textArea, ...props }) => {
 			)}
 			<TextInput
 				placeholderTextColor={theme.input.placeholder}
-				multiline={textArea}
-				selectionColor={theme.text.primary}
 				keyboardAppearance={name === 'dark' ? 'dark' : 'light'}
 				{...props}
+				multiline={textArea}
+				selectionColor={theme.text.primary}
 				style={[style, applyFontStyles()]}
 			/>
 		</View>
