@@ -34,25 +34,26 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 	hasBottomBorder = false
 }) => {
 	const { name, theme } = useTheme();
-	const [searchOpen, setSearchOpen] = React.useState(false);
+	const [focused, setFocused] = React.useState(false);
 	const inputRef = React.useRef<TextInput>(null);
 	const isFirstRender = React.useRef(true);
+
+	const searchOpen = focused || (search?.value.length ?? 0) > 0;
 
 	React.useEffect(() => {
 		isFirstRender.current = false;
 	}, []);
 
 	const handleFocus = React.useCallback(() => {
-		setSearchOpen(true);
+		setFocused(true);
 	}, []);
 
 	const handleBlur = React.useCallback(() => {
-		if (search) {
-			setSearchOpen(search.value.length > 0);
-		}
-	}, [search?.value]);
+		setFocused(false);
+	}, []);
 
 	const cancel = React.useCallback(() => {
+		setFocused(false);
 		inputRef.current?.blur();
 		search?.onChangeText('');
 	}, [search?.onChangeText]);

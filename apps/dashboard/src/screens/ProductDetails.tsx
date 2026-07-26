@@ -39,6 +39,7 @@ const ProductDetails: React.FC<
 			<Spacer y={16} />
 			<FormProvider {...methods}>
 				<FormInput
+					autoFocus
 					label='Name'
 					name='name'
 					placeholder='Name'

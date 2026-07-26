@@ -468,9 +468,10 @@ export const getStoreProducts = async (
 export const getStoreOrders = async (
 	c: Context<AppEnv>,
 	storeId: string,
-	filters?: OrderFilters
+	filters?: OrderFilters,
+	options?: { excludePaymentPending?: boolean }
 ) => {
-	return StoreData.getStoreOrders(c.var.prisma, storeId, filters);
+	return StoreData.getStoreOrders(c.var.prisma, storeId, filters, options);
 };
 
 export const getStoreCustomer = async (

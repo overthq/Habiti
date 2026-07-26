@@ -20,6 +20,7 @@ export interface Store {
 	instagram?: string;
 	unlisted: boolean;
 	bankAccountNumber?: string;
+	bankCode?: string;
 	realizedRevenue: number;
 	unrealizedRevenue: number;
 	paidOut: number;
@@ -343,6 +344,11 @@ export interface UpdateCurrentStoreBody {
 	bankCode?: string;
 	imageUrl?: string;
 	imagePublicId?: string;
+}
+
+export interface UpdateCurrentUserBody {
+	name?: string;
+	email?: string;
 }
 
 export interface CreatePayoutBody {

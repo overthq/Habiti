@@ -3,7 +3,7 @@ import { Screen, Checkbox, Typography, Spacer } from '@habiti/components';
 import { View, StyleSheet } from 'react-native';
 import { HeaderButton } from '@react-navigation/elements';
 
-import FAB from '../components/products/FAB';
+import FAB from '../components/FAB';
 
 import { useCategoriesQuery } from '../data/queries';
 import { useUpdateProductCategoriesMutation } from '../data/mutations';
@@ -93,7 +93,7 @@ const ProductCategories: React.FC<
 				))}
 			</View>
 
-			<FAB onPress={handleAddCategory} text='Add Category' />
+			<FAB onPress={handleAddCategory} text='Add Category' safeAreaPadding />
 		</Screen>
 	);
 };

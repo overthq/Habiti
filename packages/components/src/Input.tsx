@@ -4,30 +4,43 @@ import { View, TextInput, TextInputProps, StyleSheet } from 'react-native';
 import { useTheme } from './Theme';
 import Typography, { applyFontStyles } from './Typography';
 
-export interface InputProps extends TextInputProps {
+export interface BaseInputProps extends TextInputProps {
 	ref?: React.Ref<TextInput>;
+	as?: React.ComponentType<TextInputProps & React.RefAttributes<TextInput>>;
+	number?: boolean;
+}
+
+export const BaseInput: React.FC<BaseInputProps> = ({
+	as: Component = TextInput,
+	style,
+	number,
+	...props
+}) => {
+	const { name, theme } = useTheme();
+
+	return (
+		<Component
+			placeholderTextColor={theme.input.placeholder}
+			keyboardAppearance={name === 'dark' ? 'dark' : 'light'}
+			selectionColor={theme.text.primary}
+			{...props}
+			style={[
+				styles.base,
+				{ color: theme.input.text },
+				style,
+				applyFontStyles(number ? { fontVariant: ['tabular-nums'] } : {})
+			]}
+		/>
+	);
+};
+
+export interface InputProps extends BaseInputProps {
 	label?: string;
 	textArea?: boolean;
 }
 
-const Input: React.FC<InputProps> = ({ label, textArea, ...props }) => {
-	const { name, theme } = useTheme();
-
-	const inputColors = React.useMemo(
-		() => ({
-			backgroundColor: theme.input.background,
-			color: theme.input.text
-		}),
-		[theme.input.background, theme.input.text]
-	);
-
-	const style = React.useMemo(() => {
-		if (textArea) {
-			return [inputColors, styles.input, styles.textArea, props.style];
-		} else {
-			return [inputColors, styles.input, props.style];
-		}
-	}, [textArea, props.style]);
+const Input: React.FC<InputProps> = ({ label, textArea, style, ...props }) => {
+	const { theme } = useTheme();
 
 	return (
 		<View>
@@ -40,19 +53,24 @@ const Input: React.FC<InputProps> = ({ label, textArea, ...props }) => {
 					{label}
 				</Typography>
 			)}
-			<TextInput
-				placeholderTextColor={theme.input.placeholder}
-				multiline={textArea}
-				selectionColor={theme.text.primary}
-				keyboardAppearance={name === 'dark' ? 'dark' : 'light'}
+			<BaseInput
 				{...props}
-				style={[style, applyFontStyles()]}
+				multiline={textArea}
+				style={[
+					{ backgroundColor: theme.input.background },
+					styles.input,
+					textArea && styles.textArea,
+					style
+				]}
 			/>
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
+	base: {
+		includeFontPadding: false
+	},
 	label: {
 		marginBottom: 4
 	},
@@ -61,8 +79,7 @@ const styles = StyleSheet.create({
 		paddingLeft: 8,
 		height: 40,
 		borderRadius: 6,
-		textAlignVertical: 'top',
-		includeFontPadding: false
+		textAlignVertical: 'top'
 	},
 	textArea: {
 		paddingTop: 8,

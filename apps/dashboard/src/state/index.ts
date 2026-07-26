@@ -4,15 +4,13 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 import { createAuthSlice } from './auth';
 import { createPreferencesSlice } from './preferences';
-import { createProductFiltersSlice } from './productFilters';
 import { AppState } from './types';
 
 const useStore = create<AppState>()(
 	persist(
 		(...a) => ({
 			...createAuthSlice(...a),
-			...createPreferencesSlice(...a),
-			...createProductFiltersSlice(...a)
+			...createPreferencesSlice(...a)
 		}),
 		{
 			name: 'root-store',

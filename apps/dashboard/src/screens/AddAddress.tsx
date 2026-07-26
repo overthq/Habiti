@@ -56,6 +56,7 @@ const AddAddress: React.FC<AppStackScreenProps<'Modal.AddAddress'>> = ({
 		<ScrollableScreen>
 			<Spacer y={16} />
 			<FormInput
+				autoFocus
 				name='name'
 				label='Address name'
 				placeholder='Main store'

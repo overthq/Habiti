@@ -155,9 +155,11 @@ currentUser.post(
 	async c => {
 		const { orderId } = c.req.valid('json');
 
-		if (!orderId) {
-			throw new HTTPException(400, { message: 'Order ID is required' });
-		}
+		// orderId is optional again, to ensure that users can add a payment method
+		// without placing an order first. Sadly this means that we still have to
+		// find a way to inform them of the unrefundable 50 naira tokenization
+		// charge. In the future, we may consider permanently disabling this
+		// flow. - Korede
 
 		const result = await CardLogic.authorizeCard(c, { orderId });
 		return c.json(result);

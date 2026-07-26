@@ -1,0 +1,161 @@
+import React from 'react';
+import { View } from 'react-native';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { BottomModal } from '@habiti/components';
+import type { ThemeObject } from '@habiti/components/src/styles/theme';
+
+import { resolveRequest, useSheetStore } from '../state/sheet';
+import { SHEET_ROUTE_NAMES, type SheetName } from './useSheet';
+import ProductMenuModal from '../modals/ProductMenuModal';
+import ProductPriceModal from '../modals/ProductPriceModal';
+import ProductInventoryModal from '../modals/ProductInventoryModal';
+import StoreSelectModal from '../modals/StoreSelectModal';
+import ProductsFilterModal from '../modals/ProductsFilterModal';
+import OrdersFilterModal from '../modals/OrdersFilterModal';
+
+import type { AppStackParamList } from './types';
+
+interface SheetConfig {
+	Content: React.ComponentType;
+	ios: {
+		detents: number[] | 'fitToContents';
+		initialIndex?: number;
+	};
+	android: {
+		snapPoints?: (string | number)[];
+	};
+}
+
+const sheetRegistry: Record<SheetName, SheetConfig> = {
+	productMenu: {
+		Content: ProductMenuModal,
+		ios: { detents: 'fitToContents' },
+		android: {}
+	},
+	productPrice: {
+		Content: ProductPriceModal,
+		ios: { detents: 'fitToContents' },
+		android: {}
+	},
+	productInventory: {
+		Content: ProductInventoryModal,
+		ios: { detents: 'fitToContents' },
+		android: {}
+	},
+	storeSelect: {
+		Content: StoreSelectModal,
+		ios: { detents: 'fitToContents' },
+		android: {}
+	},
+	productsFilter: {
+		Content: ProductsFilterModal,
+		ios: { detents: 'fitToContents' },
+		android: {}
+	},
+	ordersFilter: {
+		Content: OrdersFilterModal,
+		ios: { detents: 'fitToContents' },
+		android: {}
+	}
+};
+
+export const SheetHost = () => {
+	const modalRef = React.useRef<BottomSheetModal>(null);
+	const activeName = useSheetStore(state => state.activeName);
+	const rendered = useSheetStore(state => state.rendered);
+	const requestId = useSheetStore(state => state.requestId);
+	const requestIdRef = React.useRef<number | null>(null);
+
+	React.useEffect(() => {
+		if (rendered) {
+			requestIdRef.current = requestId;
+			modalRef.current?.present();
+		}
+	}, [requestId, rendered]);
+
+	React.useEffect(() => {
+		if (!activeName && rendered) {
+			modalRef.current?.dismiss();
+		}
+	}, [activeName, rendered]);
+
+	const handleDismiss = React.useCallback(() => {
+		if (requestIdRef.current !== null) {
+			resolveRequest(requestIdRef.current, undefined);
+			requestIdRef.current = null;
+		}
+
+		useSheetStore.getState().finishDismiss();
+	}, []);
+
+	const config = rendered ? sheetRegistry[rendered] : null;
+	const Content = config?.Content;
+
+	return (
+		<BottomModal
+			modalRef={modalRef}
+			onDismiss={handleDismiss}
+			{...(config?.android.snapPoints
+				? { snapPoints: config.android.snapPoints }
+				: { enableDynamicSizing: true })}
+		>
+			{Content ? <Content /> : null}
+		</BottomModal>
+	);
+};
+
+type AppStackNavigator = ReturnType<
+	typeof createNativeStackNavigator<AppStackParamList, 'AppStack'>
+>;
+
+const SheetScreenContainer: React.FC<{ name: SheetName }> = ({ name }) => {
+	const requestId = React.useRef(useSheetStore.getState().requestId).current;
+
+	React.useEffect(() => {
+		return () => {
+			resolveRequest(requestId, undefined);
+		};
+	}, [requestId]);
+
+	const { Content, ios } = sheetRegistry[name];
+	// Top padding clears the native grabber (Android's gorhom handle already
+	// reserves this space). Kept inside the measured content so it counts toward
+	// fitToContents. flex:1 only for detent-sized sheets so their scroll lists
+	// fill the sheet — a flex:1 root would defeat fitToContents measurement.
+	const fill = ios.detents !== 'fitToContents';
+
+	return (
+		<View style={{ paddingTop: 16, flex: fill ? 1 : undefined }}>
+			<Content />
+		</View>
+	);
+};
+
+const SHEET_NAMES = Object.keys(sheetRegistry) as SheetName[];
+
+export const createSheetScreens = (
+	Stack: AppStackNavigator,
+	theme: ThemeObject
+) =>
+	SHEET_NAMES.map(name => {
+		const { ios } = sheetRegistry[name];
+
+		return (
+			<Stack.Screen
+				key={name}
+				name={SHEET_ROUTE_NAMES[name]}
+				options={{
+					presentation: 'formSheet',
+					headerShown: false,
+					contentStyle: { backgroundColor: theme.modal.background },
+					sheetAllowedDetents: ios.detents,
+					sheetInitialDetentIndex: ios.initialIndex,
+					sheetGrabberVisible: true,
+					sheetCornerRadius: 16
+				}}
+			>
+				{() => <SheetScreenContainer name={name} />}
+			</Stack.Screen>
+		);
+	});

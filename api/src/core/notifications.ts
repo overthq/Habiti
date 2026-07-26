@@ -1,3 +1,5 @@
+import { formatNaira } from '../utils/currency';
+
 export enum NotificationType {
 	NewOrder = 'NEW_ORDER',
 	PayoutConfirmed = 'PAYOUT_CONFIRMED',
@@ -58,11 +60,13 @@ export const notificationTemplates: Record<
 > = {
 	NEW_ORDER: {
 		title: 'New Order Received',
-		body: data => `${data.customerName} placed an order for ${data.amount}`
+		body: data =>
+			`${data.customerName} placed an order worth ${formatNaira(data.amount)}`
 	},
 	PAYOUT_CONFIRMED: {
 		title: 'Payout Successful',
-		body: data => `Your payout of ${data.amount} has been processed`
+		body: data =>
+			`Your payout of ${formatNaira(data.amount)} has been processed`
 	},
 	NEW_FOLLOWER: {
 		title: 'New Store Follower',

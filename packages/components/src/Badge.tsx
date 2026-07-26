@@ -34,9 +34,9 @@ const Badge: React.FC<BadgeProps> = ({ text, variant }) => {
 const styles = StyleSheet.create({
 	container: {
 		alignSelf: 'flex-start',
-		paddingHorizontal: 8,
+		paddingHorizontal: 10,
 		paddingVertical: 4,
-		borderRadius: 4
+		borderRadius: 9999
 	}
 });
 

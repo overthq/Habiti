@@ -51,6 +51,12 @@ export type AppStackParamList = {
 		categories: ProductCategory[];
 	};
 	'Modal.Transactions': undefined;
+	'Sheet.ProductMenu': undefined;
+	'Sheet.ProductPrice': undefined;
+	'Sheet.ProductInventory': undefined;
+	'Sheet.StoreSelect': undefined;
+	'Sheet.ProductsFilter': undefined;
+	'Sheet.OrdersFilter': undefined;
 };
 
 export type AppStackScreenProps<T extends keyof AppStackParamList> =
@@ -110,7 +116,7 @@ export type StoreStackParamList = {
 	StoreSettings: undefined;
 	'Edit Store': undefined;
 	BalanceDetails: undefined;
-	Payouts: undefined;
+	PayoutAccount: undefined;
 	Managers: undefined;
 	Categories: undefined;
 	Addresses: undefined;
@@ -128,6 +134,26 @@ export type ProfileStackParamList = {
 export type ProductStackParamList = {
 	'Product.Main': { productId: string };
 };
+
+export type ProductStackScreenProps<T extends keyof ProductStackParamList> =
+	NativeStackScreenProps<ProductStackParamList, T>;
+
+export type PayoutAccountStackParamList = {
+	'PayoutAccount.SelectBank': undefined;
+	'PayoutAccount.EnterAccount': { bankCode: string };
+	'PayoutAccount.Confirm': {
+		bankCode: string;
+		accountNumber: string;
+		accountName?: string;
+	};
+};
+
+export type PayoutAccountStackScreenProps<
+	T extends keyof PayoutAccountStackParamList
+> = CompositeScreenProps<
+	NativeStackScreenProps<PayoutAccountStackParamList, T>,
+	AppStackScreenProps<'Modal.AddPayoutAccount'>
+>;
 
 declare global {
 	namespace ReactNavigation {

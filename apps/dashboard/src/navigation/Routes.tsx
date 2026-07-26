@@ -3,6 +3,7 @@ import { Icon, type IconType, themes, useTheme } from '@habiti/components';
 import {
 	LinkingOptions,
 	NavigationContainer,
+	PathConfigMap,
 	RouteProp
 } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
@@ -33,14 +34,16 @@ import EditCategory from '../screens/EditCategory';
 import Addresses from '../screens/Addresses';
 import AddAddress from '../screens/AddAddress';
 import EditAddress from '../screens/EditAddress';
-import AddPayoutAccount from '../screens/AddPayoutAccount';
+import SelectBank from '../screens/SelectBank';
+import EnterAccountNumber from '../screens/EnterAccountNumber';
+import ConfirmPayoutAccount from '../screens/ConfirmPayoutAccount';
 import Appearance from '../screens/Appearance';
 import ManageAccount from '../screens/ManageAccount';
 import Categories from '../screens/Categories';
 import EditStore from '../screens/EditStore';
 import Managers from '../screens/Managers';
 import Store from '../screens/Store';
-import StorePayouts from '../screens/StorePayouts';
+import PayoutAccount from '../screens/PayoutAccount';
 import Transactions from '../screens/Transactions';
 import Transaction from '../screens/Transaction';
 import BalanceDetails from '../screens/BalanceDetails';
@@ -58,6 +61,7 @@ import {
 import {
 	AppStackParamList,
 	ProductStackParamList,
+	PayoutAccountStackParamList,
 	StoreStackParamList,
 	MainTabParamList,
 	OrdersStackParamList,
@@ -66,6 +70,8 @@ import {
 } from '../navigation/types';
 import { Linking, Platform } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
+import { navigationRef } from './utils';
+import { createSheetScreens } from './Sheets';
 
 const USE_CUSTOM_HEADER = Platform.OS === 'android';
 
@@ -79,38 +85,41 @@ Notifications.setNotificationHandler({
 	})
 });
 
+// Pulled out to ensure type inference does not break.
+const mainScreens: PathConfigMap<MainTabParamList> = {
+	Orders: {
+		initialRouteName: 'OrdersList',
+		screens: {
+			OrdersList: 'orders',
+			Order: 'orders/:orderId'
+		}
+	},
+	Products: {
+		initialRouteName: 'ProductsList',
+		screens: {
+			ProductsList: 'products',
+			Product: {
+				screens: {
+					'Product.Main': 'products/:productId'
+				}
+			}
+		}
+	},
+	Store: {
+		initialRouteName: 'StoreHome',
+		screens: {
+			StoreHome: 'store',
+			Transactions: 'store/transactions',
+			Transaction: 'store/transactions/:transactionId'
+		}
+	}
+};
+
 const linking: LinkingOptions<AppStackParamList> = {
 	prefixes: ['habiti-dashboard://'],
 	config: {
 		screens: {
-			Main: {
-				screens: {
-					Orders: {
-						screens: {
-							OrdersList: 'orders',
-							Order: 'orders/:orderId'
-						}
-					},
-					Products: {
-						screens: {
-							ProductsList: 'products',
-							Product: {
-								screens: {
-									'Product.Main': 'products/:productId'
-								}
-							}
-						}
-					},
-					Store: {
-						screens: {
-							StoreHome: 'store',
-							Payouts: 'store/payouts',
-							Transactions: 'store/transactions',
-							Transaction: 'store/transactions/:transactionId'
-						}
-					}
-				}
-			}
+			Main: { screens: mainScreens }
 		}
 	},
 	async getInitialURL() {
@@ -172,6 +181,10 @@ const StoreStack = createNativeStackNavigator<
 const ProfileStack = createNativeStackNavigator<
 	ProfileStackParamList,
 	'ProfileStack'
+>();
+const PayoutAccountStack = createNativeStackNavigator<
+	PayoutAccountStackParamList,
+	'PayoutAccountStack'
 >();
 
 const icons: Record<keyof MainTabParamList, IconType> = {
@@ -326,13 +339,16 @@ const StoreStackNavigator = () => {
 					options={{ headerBackButtonDisplayMode: 'minimal' }}
 				/>
 				<StoreStack.Screen
-					name='Managers'
-					component={Managers}
-					options={{ headerBackButtonDisplayMode: 'minimal' }}
+					name='PayoutAccount'
+					component={PayoutAccount}
+					options={{
+						headerBackButtonDisplayMode: 'minimal',
+						headerTitle: 'Payout Account'
+					}}
 				/>
 				<StoreStack.Screen
-					name='Payouts'
-					component={StorePayouts}
+					name='Managers'
+					component={Managers}
 					options={{ headerBackButtonDisplayMode: 'minimal' }}
 				/>
 				<StoreStack.Screen
@@ -399,6 +415,43 @@ const ProfileStackNavigator = () => (
 	</ProfileStack.Navigator>
 );
 
+const AddPayoutAccountNavigator = () => (
+	<PayoutAccountStack.Navigator
+		id='PayoutAccountStack'
+		initialRouteName='PayoutAccount.SelectBank'
+		screenOptions={{
+			header: USE_CUSTOM_HEADER ? CustomHeader : undefined,
+			headerBackButtonDisplayMode: 'minimal'
+		}}
+	>
+		<PayoutAccountStack.Screen
+			name='PayoutAccount.SelectBank'
+			component={SelectBank}
+			options={({ navigation }) => ({
+				headerTitle: 'Select Bank',
+				unstable_headerLeftItems: () => [
+					{
+						type: 'button',
+						label: 'Close',
+						icon: { type: 'sfSymbol', name: 'xmark' },
+						onPress: () => navigation.getParent()?.goBack()
+					}
+				]
+			})}
+		/>
+		<PayoutAccountStack.Screen
+			name='PayoutAccount.EnterAccount'
+			component={EnterAccountNumber}
+			options={{ headerTitle: 'Account Number' }}
+		/>
+		<PayoutAccountStack.Screen
+			name='PayoutAccount.Confirm'
+			component={ConfirmPayoutAccount}
+			options={{ headerTitle: 'Confirm Details' }}
+		/>
+	</PayoutAccountStack.Navigator>
+);
+
 const Routes: React.FC = () => {
 	const { isUpdatePending } = Updates.useUpdates();
 
@@ -417,7 +470,11 @@ const Routes: React.FC = () => {
 	);
 
 	return (
-		<NavigationContainer theme={theme.navigation} linking={linking}>
+		<NavigationContainer
+			ref={navigationRef}
+			theme={theme.navigation}
+			linking={linking}
+		>
 			<StatusBar style={theme.statusBar} />
 			<AppStack.Navigator
 				id='AppStack'
@@ -493,8 +550,8 @@ const Routes: React.FC = () => {
 							)}
 							<AppStack.Screen
 								name='Modal.AddPayoutAccount'
-								component={AddPayoutAccount}
-								options={{ headerTitle: 'Add Payout Account' }}
+								component={AddPayoutAccountNavigator}
+								options={{ headerShown: false }}
 							/>
 							<AppStack.Screen
 								name='Modal.Order'
@@ -522,6 +579,7 @@ const Routes: React.FC = () => {
 								options={{ headerTitle: 'Transactions' }}
 							/>
 						</AppStack.Group>
+						{Platform.OS === 'ios' && createSheetScreens(AppStack, theme)}
 					</>
 				) : (
 					<AppStack.Group>

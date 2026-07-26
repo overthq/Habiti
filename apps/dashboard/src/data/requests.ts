@@ -24,6 +24,7 @@ import {
 	CreatePayoutBody,
 	UpdateOrderArgs,
 	UpdateCurrentStoreBody,
+	UpdateCurrentUserBody,
 	UpdateProductCategoriesArgs,
 	CreateProductCategoryBody,
 	UpdateProductCategoryArgs,
@@ -148,6 +149,11 @@ export const updateCurrentStore = async (body: UpdateCurrentStoreBody) => {
 
 export const getCurrentUser = async () => {
 	const response = await api.get<{ user: User }>('/users/current');
+	return response.data;
+};
+
+export const updateCurrentUser = async (body: UpdateCurrentUserBody) => {
+	const response = await api.put('/users/current', body);
 	return response.data;
 };
 

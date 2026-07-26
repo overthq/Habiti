@@ -5,7 +5,7 @@ import { HTTPException } from 'hono/http-exception';
 import type { AppEnv } from '../types/hono';
 import { zodHook } from '../utils/validation';
 import { authenticate, optionalAuth } from '../middleware/auth';
-import { productFiltersSchema } from '../utils/queries';
+import { parseNestedQuery, productFiltersSchema } from '../utils/queries';
 import * as StoreLogic from '../core/logic/stores';
 import * as Schemas from '../core/validations/rest';
 
@@ -59,7 +59,7 @@ stores.get('/:id/products', optionalAuth, async c => {
 	const products = await StoreLogic.getStoreProducts(
 		c,
 		id,
-		productFiltersSchema.parse(c.req.query())
+		productFiltersSchema.parse(parseNestedQuery(c.req.query()))
 	);
 	return c.json({ products });
 });

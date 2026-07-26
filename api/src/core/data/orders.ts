@@ -190,6 +190,22 @@ export const updateOrder = async (
 	return order;
 };
 
+export const markOrderPending = async (
+	prisma: PrismaClient,
+	orderId: string
+) => {
+	// Regular `update` throws when the condition does not match,
+	// updateMany gives us nicer semantics.
+	// - Korede
+
+	const { count } = await prisma.order.updateMany({
+		where: { id: orderId, status: OrderStatus.PaymentPending },
+		data: { status: OrderStatus.Pending }
+	});
+
+	return count > 0;
+};
+
 export const getOrderById = async (prisma: PrismaClient, orderId: string) => {
 	const order = await prisma.order.findUnique({
 		where: { id: orderId },

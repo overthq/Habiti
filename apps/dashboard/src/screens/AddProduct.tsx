@@ -84,6 +84,7 @@ const AddProduct: React.FC<AppStackScreenProps<'Modal.AddProduct'>> = ({
 			<Spacer y={16} />
 			<FormProvider {...formMethods}>
 				<FormInput
+					autoFocus
 					name='name'
 					label='Name'
 					placeholder='Enter product name'

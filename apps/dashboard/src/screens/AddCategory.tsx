@@ -41,6 +41,7 @@ const AddCategory: React.FC<AppStackScreenProps<'Modal.AddCategory'>> = ({
 		<ScrollableScreen>
 			<Spacer y={16} />
 			<FormInput
+				autoFocus
 				name='name'
 				label='Category name'
 				placeholder='First category'

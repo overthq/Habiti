@@ -10,6 +10,7 @@ interface AvatarProps {
 	size?: number;
 	fallbackText?: string;
 	circle?: boolean;
+	bordered?: boolean;
 }
 
 const Avatar: React.FC<AvatarProps> = ({
@@ -17,7 +18,8 @@ const Avatar: React.FC<AvatarProps> = ({
 	size = 40,
 	style,
 	fallbackText,
-	circle = true
+	circle = true,
+	bordered = false
 }) => {
 	const { theme } = useTheme();
 	const [imageError, setImageError] = React.useState(false);
@@ -49,7 +51,11 @@ const Avatar: React.FC<AvatarProps> = ({
 					width: size,
 					height: size,
 					backgroundColor: theme.image.placeholder,
-					borderRadius: circle ? size / 2 : 4
+					borderRadius: circle ? size / 2 : 4,
+					...(bordered && {
+						borderWidth: StyleSheet.hairlineWidth,
+						borderColor: theme.text.tertiary
+					})
 				},
 				style
 			]}

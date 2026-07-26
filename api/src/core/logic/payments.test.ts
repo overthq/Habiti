@@ -1,7 +1,7 @@
 import { describe, expect, test, mock } from 'bun:test';
 
-import { approvePayment } from './payments';
-import { TransactionStatus } from '../../generated/prisma/client';
+import { approvePayment, transitionOrderToPending } from './payments';
+import { OrderStatus, TransactionStatus } from '../../generated/prisma/client';
 
 /**
  * `approvePayment` wraps the lookup in `runSerializable`. We give it a fake
@@ -103,5 +103,93 @@ describe('approvePayment', () => {
 		);
 
 		expect(result).toBeNull();
+	});
+});
+
+/**
+ * A charge can be delivered more than once (webhook retries, and the
+ * verification poll in development), so the fake Prisma below models the
+ * conditional update: `updateMany` only reports a row when the stored status
+ * still matches the `where` clause.
+ */
+
+const fakeOrderContext = (order: { total: number; status: OrderStatus }) => {
+	const state = { status: order.status };
+
+	const storeUpdate = mock(async () => ({}));
+	const queueNotification = mock((_payload: any) => {});
+
+	const c = {
+		var: {
+			prisma: {
+				order: {
+					findUnique: mock(async () => ({
+						id: 'order-1',
+						storeId: 'store-1',
+						total: order.total,
+						status: state.status,
+						user: { name: 'Ada' }
+					})),
+					updateMany: mock(async ({ where }: any) => {
+						if (state.status !== where.status) return { count: 0 };
+						state.status = OrderStatus.Pending;
+						return { count: 1 };
+					})
+				},
+				store: { update: storeUpdate },
+				storeManager: {
+					findMany: mock(async () => [
+						{ manager: { pushTokens: [{ token: 'ExponentPushToken[x]' }] } }
+					])
+				}
+			},
+			logger: { warn: mock(() => {}), error: mock(() => {}) },
+			services: { notifications: { queueNotification } }
+		}
+	} as any;
+
+	return { c, storeUpdate, queueNotification };
+};
+
+describe('transitionOrderToPending', () => {
+	test('transitions the order once and notifies the store', async () => {
+		const { c, storeUpdate, queueNotification } = fakeOrderContext({
+			total: 150_000,
+			status: OrderStatus.PaymentPending
+		});
+
+		await transitionOrderToPending(c, 'order-1');
+
+		expect(storeUpdate).toHaveBeenCalledTimes(1);
+		expect(queueNotification).toHaveBeenCalledTimes(1);
+		expect(queueNotification.mock.calls[0]?.[0]).toMatchObject({
+			data: { amount: 150_000, customerName: 'Ada' }
+		});
+	});
+
+	test('is idempotent across duplicate charge deliveries', async () => {
+		const { c, storeUpdate, queueNotification } = fakeOrderContext({
+			total: 150_000,
+			status: OrderStatus.PaymentPending
+		});
+
+		await transitionOrderToPending(c, 'order-1');
+		await transitionOrderToPending(c, 'order-1');
+		await transitionOrderToPending(c, 'order-1');
+
+		expect(storeUpdate).toHaveBeenCalledTimes(1);
+		expect(queueNotification).toHaveBeenCalledTimes(1);
+	});
+
+	test('does not transition an order that is no longer payment pending', async () => {
+		const { c, storeUpdate, queueNotification } = fakeOrderContext({
+			total: 150_000,
+			status: OrderStatus.Cancelled
+		});
+
+		await transitionOrderToPending(c, 'order-1');
+
+		expect(storeUpdate).not.toHaveBeenCalled();
+		expect(queueNotification).not.toHaveBeenCalled();
 	});
 });

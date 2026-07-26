@@ -1,6 +1,6 @@
 import type { Context } from 'hono';
 
-import { OrderStatus, TransactionStatus } from '../../generated/prisma/client';
+import { TransactionStatus } from '../../generated/prisma/client';
 import { env } from '../../config/env';
 
 import * as CardData from '../data/cards';
@@ -109,37 +109,42 @@ export const transitionOrderToPending = async (
 
 		if (!order) {
 			c.var.logger.warn({ orderId }, 'order_not_found_for_charge');
-		} else if (order.status !== OrderStatus.PaymentPending) {
+			return;
+		}
+
+		const transitioned = await OrderData.markOrderPending(
+			c.var.prisma,
+			order.id
+		);
+
+		if (!transitioned) {
 			c.var.logger.warn(
 				{ orderId: order.id, status: order.status },
 				'order_not_in_payment_pending'
 			);
-		} else {
-			await OrderData.updateOrder(c.var.prisma, order.id, {
-				status: OrderStatus.Pending
+			return;
+		}
+
+		await StoreData.incrementUnrealizedRevenue(c.var.prisma, {
+			storeId: order.storeId,
+			total: order.total
+		});
+
+		const pushTokens = await PushTokenData.getStorePushTokens(
+			c.var.prisma,
+			order.storeId
+		);
+
+		if (pushTokens.length > 0) {
+			c.var.services.notifications.queueNotification({
+				type: NotificationType.NewOrder,
+				data: {
+					orderId: order.id,
+					customerName: order.user.name,
+					amount: order.total
+				},
+				recipientTokens: pushTokens
 			});
-
-			await StoreData.incrementUnrealizedRevenue(c.var.prisma, {
-				storeId: order.storeId,
-				total: order.total
-			});
-
-			const pushTokens = await PushTokenData.getStorePushTokens(
-				c.var.prisma,
-				order.storeId
-			);
-
-			if (pushTokens.length > 0) {
-				c.var.services.notifications.queueNotification({
-					type: NotificationType.NewOrder,
-					data: {
-						orderId: order.id,
-						customerName: order.user.name,
-						amount: order.total
-					},
-					recipientTokens: pushTokens
-				});
-			}
 		}
 	} catch (error) {
 		c.var.logger.error({ err: error, orderId }, 'transition_order_failed');
@@ -209,10 +214,12 @@ export const handleChargeSuccess = async (
 
 	if (isTransferCharge(data)) {
 		// TODO: Implement DVAs and regular transfer payments here
-		return;
+		return true;
 	}
 
 	await processCardCharge(c, data);
+
+	return true;
 };
 
 const handleTransferSuccess = async (

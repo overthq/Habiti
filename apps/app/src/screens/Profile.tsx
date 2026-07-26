@@ -14,7 +14,6 @@ import {
 	Icon,
 	IconType,
 	Row,
-	Screen,
 	ScrollableScreen,
 	Separator,
 	Spacer,
@@ -79,11 +78,6 @@ const Profile: React.FC<ProfileStackScreenProps<'Profile.Main'>> = ({
 
 			{!isGuest && (
 				<>
-					<ProfileRow
-						title='Manage Account'
-						onPress={() => navigation.navigate('Profile.AccountSettings')}
-					/>
-
 					<ProfileRow
 						title='Payment Methods'
 						onPress={() => navigation.navigate('Profile.PaymentMethods')}
@@ -212,19 +206,19 @@ const UserCard: React.FC = () => {
 
 	return (
 		<Pressable
-			onPress={() => navigate('Profile.Edit')}
+			onPress={() => navigate('Profile.AccountSettings')}
 			style={[styles.card, { backgroundColor: theme.input.background }]}
 		>
 			<Avatar size={56} circle fallbackText={data.user.name} />
-			<View style={{ marginLeft: 12 }}>
-				<Typography weight='medium'>{data.user.name}</Typography>
-				{data.user.email ? (
-					<>
-						<Spacer y={2} />
-						<Typography variant='secondary'>{data.user.email}</Typography>
-					</>
-				) : null}
+			<View style={styles.cardInfo}>
+				<Typography weight='medium' size='large'>
+					{data.user.name}
+				</Typography>
+				<Typography variant='secondary' style={{ fontSize: 15 }}>
+					Manage account
+				</Typography>
 			</View>
+			<Icon name='chevron-right' color={theme.text.secondary} size={20} />
 		</Pressable>
 	);
 };
@@ -242,6 +236,11 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		padding: 16,
 		borderRadius: 12
+	},
+	cardInfo: {
+		marginLeft: 12,
+		gap: 4,
+		flex: 1
 	},
 	signInCard: {
 		padding: 16,

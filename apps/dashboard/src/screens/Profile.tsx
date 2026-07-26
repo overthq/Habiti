@@ -1,7 +1,8 @@
 import React from 'react';
-import { Alert, Linking, StyleSheet, View } from 'react-native';
+import { Alert, Linking, Pressable, StyleSheet, View } from 'react-native';
 import {
 	Avatar,
+	Icon,
 	Screen,
 	ScreenHeader,
 	Separator,
@@ -10,7 +11,7 @@ import {
 } from '@habiti/components';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import StoreMenuRow from '../components/store/StoreMenuRow';
+import StoreMenuRow from '../components/StoreMenuRow';
 import { useCurrentUserQuery } from '../data/queries';
 import useStore from '../state';
 import type { ProfileStackScreenProps } from '../navigation/types';
@@ -39,7 +40,8 @@ const Profile = ({ navigation }: ProfileStackScreenProps<'ProfileHome'>) => {
 			<ScreenHeader title='Profile' />
 
 			{user && (
-				<View
+				<Pressable
+					onPress={() => navigation.navigate('ManageAccount')}
 					style={[styles.userCard, { backgroundColor: theme.input.background }]}
 				>
 					<Avatar size={56} fallbackText={user.name} />
@@ -47,21 +49,20 @@ const Profile = ({ navigation }: ProfileStackScreenProps<'ProfileHome'>) => {
 						<Typography weight='medium' size='large'>
 							{user.name}
 						</Typography>
-						<Typography variant='secondary'>{user.email}</Typography>
+						<Typography variant='secondary' style={{ fontSize: 15 }}>
+							Manage account
+						</Typography>
 					</View>
-				</View>
+					<Icon name='chevron-right' color={theme.text.secondary} size={20} />
+				</Pressable>
 			)}
 
 			<View>
 				<StoreMenuRow
-					title='Manage Account'
-					onPress={() => navigation.navigate('ManageAccount')}
-				/>
-				<StoreMenuRow
 					title='Appearance'
 					onPress={() => navigation.navigate('Appearance')}
 				/>
-				<Separator style={{ marginHorizontal: 16, marginVertical: 8 }} />
+				<Separator style={{ marginVertical: 8 }} />
 				<StoreMenuRow
 					title='Privacy'
 					onPress={() => Linking.openURL(PRIVACY_POLICY_URL)}
@@ -77,7 +78,7 @@ const Profile = ({ navigation }: ProfileStackScreenProps<'ProfileHome'>) => {
 					onPress={() => Linking.openURL(ACCEPTABLE_USE_URL)}
 					icon='arrow-up-right'
 				/>
-				<Separator style={{ marginHorizontal: 16, marginVertical: 8 }} />
+				<Separator style={{ marginVertical: 8 }} />
 				<StoreMenuRow
 					title='Log out'
 					onPress={handleLogOut}
@@ -93,12 +94,15 @@ const styles = StyleSheet.create({
 	userCard: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		padding: 16,
+		paddingVertical: 12,
+		paddingHorizontal: 16,
 		marginBottom: 12,
-		borderRadius: 12
+		borderRadius: 24,
+		borderCurve: 'continuous'
 	},
 	userInfo: {
 		marginLeft: 12,
+		gap: 4,
 		flex: 1
 	}
 });

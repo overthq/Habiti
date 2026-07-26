@@ -1,4 +1,4 @@
-import 'core-js/full/symbol/async-iterator';
+// import 'core-js/full/symbol/async-iterator';
 import { ThemeProvider } from '@habiti/components';
 import * as Sentry from '@sentry/react-native';
 import React from 'react';

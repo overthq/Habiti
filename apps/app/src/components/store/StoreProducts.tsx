@@ -3,7 +3,7 @@ import { Pressable, RefreshControl, View, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { CustomImage, Spacer, Typography, useTheme } from '@habiti/components';
-import { FlashList } from '@shopify/flash-list';
+import { FlashList, FlashListRef } from '@shopify/flash-list';
 import { formatNaira } from '@habiti/common';
 
 import ViewCart from './ViewCart';
@@ -59,8 +59,17 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
 	const { bottom } = useSafeAreaInsets();
+	const listRef = React.useRef<FlashListRef<Product>>(null);
 
 	const products = data?.products;
+
+	// Changing the search or category rebuilds the list from a different slice
+	// of the store's catalogue, so the offset we were scrolled to no longer
+	// means anything against the new results. Send it back to the top rather
+	// than leaving it parked wherever the previous results happened to put it.
+	React.useEffect(() => {
+		listRef.current?.scrollToOffset({ offset: 0, animated: false });
+	}, [searchTerm, activeCategory]);
 
 	const handleProductPress = React.useCallback(
 		(productId: string) => () => {
@@ -79,8 +88,10 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 					backgroundColor: theme.screen.background,
 					paddingTop: 8
 				}}
+				ref={listRef}
 				data={products}
 				keyExtractor={p => p.id}
+				maintainVisibleContentPosition={{ disabled: true }}
 				showsVerticalScrollIndicator={false}
 				renderItem={({ item, index }) => (
 					<StoreProductListItem
