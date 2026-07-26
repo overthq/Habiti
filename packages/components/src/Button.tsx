@@ -248,13 +248,21 @@ export const TextButton: React.FC<TextButtonProps> = ({
 	weight = 'regular',
 	active = true,
 	variant = 'primary',
+	style,
 	...props
 }) => {
 	const { name } = useTheme();
 	const textColors = colors[name].text;
 
 	return (
-		<Pressable disabled={disabled} {...props}>
+		<Pressable
+			disabled={disabled}
+			style={state => [
+				{ opacity: state.pressed ? 0.5 : 1 },
+				typeof style === 'function' ? style(state) : style
+			]}
+			{...props}
+		>
 			<Typography
 				variant={variant}
 				weight={weight}
@@ -264,7 +272,7 @@ export const TextButton: React.FC<TextButtonProps> = ({
 							textColors[
 								disabled ? 'disabled' : active ? 'primary' : 'inactive'
 							],
-						fontSize: size ?? 16
+						fontSize: size ?? 17
 					}
 				]}
 			>

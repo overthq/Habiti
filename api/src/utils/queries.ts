@@ -127,9 +127,37 @@ export const orderFiltersToPrismaClause = (filters?: OrderFilters) => {
 	return { where, orderBy };
 };
 
-// NOTE: Hono does not parse nested query parameters into objects like Express does.
-// If complex nested query parsing is needed, consider using `qs` to parse
-// `c.req.url` query string before passing to this function.
+/**
+ * Hono's `c.req.query()` returns a flat record, so a bracketed parameter like
+ * `orderBy[unitPrice]=desc` — which is what axios sends for a nested object —
+ * arrives as the literal key `orderBy[unitPrice]`. The filter schemas expect
+ * `orderBy` to be an object, so without this the whole clause is stripped as
+ * an unknown key and the sort silently does nothing.
+ *
+ * Rebuilds the one level of nesting the filter schemas need. Keys without
+ * brackets are passed through untouched.
+ */
+export const parseNestedQuery = (query: Record<string, string>) => {
+	const result: Record<string, unknown> = {};
+
+	for (const [key, value] of Object.entries(query)) {
+		const match = key.match(/^([^[\]]+)\[([^[\]]+)\]$/);
+		const parent = match?.[1];
+		const child = match?.[2];
+
+		if (!parent || !child) {
+			result[key] = value;
+			continue;
+		}
+
+		const nested = (result[parent] ?? {}) as Record<string, string>;
+
+		nested[child] = value;
+		result[parent] = nested;
+	}
+
+	return result;
+};
 
 const filterOpsSchema = z
 	.object({

@@ -1,16 +1,16 @@
 import React from 'react';
 import {
+	BaseInput,
 	Button,
-	Icon,
+	IconButton,
 	SheetTextInput,
 	SheetView,
 	Spacer,
 	Typography,
 	useTheme
 } from '@habiti/components';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useUpdateProductMutation } from '../data/mutations';
-import { applyFontStyles } from '@habiti/components/src/Typography';
 import { useSheet, useSheetParams } from '../navigation/useSheet';
 
 const ProductInventoryModal = () => {
@@ -18,7 +18,7 @@ const ProductInventoryModal = () => {
 	const { closeSheet } = useSheet();
 	const [quantity, setQuantity] = React.useState(initialQuantity);
 	const updateProductMutation = useUpdateProductMutation();
-	const { name, theme } = useTheme();
+	const { theme } = useTheme();
 
 	const hasQuantityChanged = quantity !== initialQuantity;
 
@@ -49,27 +49,28 @@ const ProductInventoryModal = () => {
 			<Spacer y={16} />
 
 			<View style={styles.quantityContainer}>
-				<Pressable onPress={decrementQuantity}>
-					<Icon name='minus' size={24} />
-				</Pressable>
+				<IconButton
+					name='minus'
+					onPress={decrementQuantity}
+					accessibilityLabel='Decrease quantity'
+				/>
 
-				<SheetTextInput
+				<BaseInput
+					as={SheetTextInput}
 					autoFocus
+					number
 					value={quantity.toString()}
 					onChangeText={handleQuantityChange}
 					keyboardType='numeric'
-					style={[
-						styles.quantityInput,
-						{ color: theme.input.text, borderColor: theme.border.color },
-						applyFontStyles()
-					]}
+					style={[styles.quantityInput, { borderColor: theme.border.color }]}
 					textAlign='center'
-					keyboardAppearance={name === 'dark' ? 'dark' : 'light'}
 				/>
 
-				<Pressable onPress={incrementQuantity}>
-					<Icon name='plus' size={24} />
-				</Pressable>
+				<IconButton
+					name='plus'
+					onPress={incrementQuantity}
+					accessibilityLabel='Increase quantity'
+				/>
 			</View>
 
 			<Spacer y={16} />
@@ -89,10 +90,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'center',
-		gap: 8
-	},
-	quantityButton: {
-		minWidth: 48
+		gap: 12
 	},
 	quantityInput: {
 		borderWidth: 1,

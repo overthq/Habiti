@@ -9,6 +9,7 @@ import { requireStoreContext } from '../middleware/storeContext';
 import {
 	hydrateQuery,
 	orderFiltersSchema,
+	parseNestedQuery,
 	productFiltersSchema
 } from '../utils/queries';
 import { ProductStatus } from '../generated/prisma/client';
@@ -47,7 +48,7 @@ currentStore.get('/products', async c => {
 	const products = await StoreLogic.getStoreProducts(
 		c,
 		c.var.storeId!,
-		productFiltersSchema.parse(c.req.query())
+		productFiltersSchema.parse(parseNestedQuery(c.req.query()))
 	);
 	return c.json({ products });
 });
@@ -87,7 +88,7 @@ currentStore.get('/orders', async c => {
 	const orders = await StoreLogic.getStoreOrders(
 		c,
 		c.var.storeId!,
-		orderFiltersSchema.parse(c.req.query()),
+		orderFiltersSchema.parse(parseNestedQuery(c.req.query())),
 		{ excludePaymentPending: true }
 	);
 	return c.json({ orders });

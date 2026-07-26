@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { formatNaira } from '@habiti/common';
+import { View, StyleSheet, Pressable } from 'react-native';
+import { formatNaira, formatNairaAbbreviated } from '@habiti/common';
 import {
+	Icon,
 	ScrollableScreen,
 	SectionHeader,
 	Separator,
@@ -11,9 +12,9 @@ import {
 } from '@habiti/components';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
-import TransactionRow from '../components/TransactionRow';
+import { parseTimestamp } from '../utils/date';
 import { useCurrentStoreQuery, useTransactionsQuery } from '../data/queries';
-import { Transaction } from '../data/types';
+import { Transaction, TransactionStatus, TransactionType } from '../data/types';
 import type {
 	AppStackParamList,
 	StoreStackParamList
@@ -147,6 +148,82 @@ const RecentTransactions = () => {
 	);
 };
 
+interface TransactionRowProps {
+	transaction: Transaction;
+	isLast: boolean;
+	onPress(transaction: Transaction): void;
+}
+
+const CREDIT_TYPES: TransactionType[] = [
+	TransactionType.Revenue,
+	TransactionType.Adjustment,
+	TransactionType.Refund
+];
+
+const transactionLabel: Record<TransactionType, string> = {
+	[TransactionType.Revenue]: 'Payment received',
+	[TransactionType.Payout]: 'Payout',
+	[TransactionType.SubscriptionFee]: 'Platform fee',
+	[TransactionType.Adjustment]: 'Adjustment',
+	[TransactionType.Refund]: 'Refund'
+};
+
+const statusColor: Record<TransactionStatus, string> = {
+	[TransactionStatus.Processing]: '#F59E0B',
+	[TransactionStatus.Success]: '#10B981',
+	[TransactionStatus.Failure]: '#EF4444'
+};
+
+const TransactionRow: React.FC<TransactionRowProps> = ({
+	transaction,
+	isLast,
+	onPress
+}) => {
+	const { theme } = useTheme();
+	const credit = CREDIT_TYPES.includes(transaction.type);
+
+	return (
+		<Pressable
+			style={[
+				recentStyles.row,
+				!isLast && {
+					borderColor: theme.border.color,
+					borderBottomWidth: StyleSheet.hairlineWidth
+				}
+			]}
+			onPress={() => onPress(transaction)}
+		>
+			<View style={recentStyles.left}>
+				<Typography weight='medium' style={{ fontSize: 15 }} numberOfLines={1}>
+					{transaction.description ?? transactionLabel[transaction.type]}
+				</Typography>
+				<Spacer y={2} />
+				<View style={recentStyles.meta}>
+					<Typography variant='secondary' size='small'>
+						{parseTimestamp(transaction.createdAt)}
+					</Typography>
+					{transaction.status !== TransactionStatus.Success && (
+						<Typography
+							size='small'
+							weight='medium'
+							style={{ color: statusColor[transaction.status], marginLeft: 8 }}
+						>
+							{transaction.status}
+						</Typography>
+					)}
+				</View>
+			</View>
+			<View style={recentStyles.right}>
+				<Typography size='small' weight='medium'>
+					{credit ? '+' : '-'}
+					{formatNairaAbbreviated(transaction.amount)}
+				</Typography>
+				<Icon name='chevron-right' size={16} color={theme.text.secondary} />
+			</View>
+		</Pressable>
+	);
+};
+
 const recentStyles = StyleSheet.create({
 	list: {
 		borderRadius: 12,
@@ -157,6 +234,23 @@ const recentStyles = StyleSheet.create({
 	empty: {
 		paddingVertical: 16,
 		alignItems: 'center'
+	},
+	row: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		paddingVertical: 12
+	},
+	left: {
+		flex: 1,
+		marginRight: 12
+	},
+	meta: {
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
+	right: {
+		flexDirection: 'row',
+		gap: 4
 	}
 });
 

@@ -1,14 +1,22 @@
 import React from 'react';
 import { View, StyleSheet, RefreshControl, Alert } from 'react-native';
-import { Screen, Typography, useTheme, Icon } from '@habiti/components';
+import {
+	Icon,
+	Row,
+	Screen,
+	Spacer,
+	Typography,
+	useTheme
+} from '@habiti/components';
+import { formatNairaAbbreviated } from '@habiti/common';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { HeaderButton } from '@react-navigation/elements';
 import { FlashList } from '@shopify/flash-list';
 
-import TransactionRow from '../components/TransactionRow';
 import useRefresh from '../hooks/useRefresh';
+import { parseTimestamp } from '../utils/date';
 import { useCurrentStoreQuery, useTransactionsQuery } from '../data/queries';
-import { Transaction } from '../data/types';
+import { Transaction, TransactionStatus, TransactionType } from '../data/types';
 import {
 	AppStackParamList,
 	type StoreStackParamList
@@ -90,12 +98,11 @@ const Transactions = () => {
 	);
 
 	return (
-		<Screen>
+		<Screen style={styles.screen}>
 			<View style={styles.container}>
 				<FlashList
 					contentContainerStyle={{
 						flexGrow: 1,
-						paddingTop: 16,
 						backgroundColor: theme.screen.background
 					}}
 					refreshControl={refreshControl}
@@ -113,13 +120,111 @@ const Transactions = () => {
 	);
 };
 
+interface TransactionRowProps {
+	transaction: Transaction;
+	isLast: boolean;
+	onPress(transaction: Transaction): void;
+}
+
+const CREDIT_TYPES: TransactionType[] = [
+	TransactionType.Revenue,
+	TransactionType.Adjustment,
+	TransactionType.Refund
+];
+
+const transactionLabel: Record<TransactionType, string> = {
+	[TransactionType.Revenue]: 'Payment received',
+	[TransactionType.Payout]: 'Payout',
+	[TransactionType.SubscriptionFee]: 'Platform fee',
+	[TransactionType.Adjustment]: 'Adjustment',
+	[TransactionType.Refund]: 'Refund'
+};
+
+const statusColor: Record<TransactionStatus, string> = {
+	[TransactionStatus.Processing]: '#F59E0B',
+	[TransactionStatus.Success]: '#10B981',
+	[TransactionStatus.Failure]: '#EF4444'
+};
+
+const TransactionRow: React.FC<TransactionRowProps> = ({
+	transaction,
+	isLast,
+	onPress
+}) => {
+	const { theme } = useTheme();
+	const credit = CREDIT_TYPES.includes(transaction.type);
+
+	return (
+		<Row
+			style={[
+				styles.row,
+				!isLast && {
+					borderColor: theme.border.color,
+					borderBottomWidth: StyleSheet.hairlineWidth
+				}
+			]}
+			onPress={() => onPress(transaction)}
+		>
+			<View style={styles.left}>
+				<Typography weight='medium' style={{ fontSize: 15 }} numberOfLines={1}>
+					{transaction.description ?? transactionLabel[transaction.type]}
+				</Typography>
+				<Spacer y={2} />
+				<View style={styles.meta}>
+					<Typography variant='secondary' size='small'>
+						{parseTimestamp(transaction.createdAt)}
+					</Typography>
+					{transaction.status !== TransactionStatus.Success && (
+						<Typography
+							size='small'
+							weight='medium'
+							style={{ color: statusColor[transaction.status], marginLeft: 8 }}
+						>
+							{transaction.status}
+						</Typography>
+					)}
+				</View>
+			</View>
+			<View style={styles.right}>
+				<Typography size='small' weight='medium'>
+					{credit ? '+' : '-'}
+					{formatNairaAbbreviated(transaction.amount)}
+				</Typography>
+				<Icon name='chevron-right' size={16} color={theme.text.secondary} />
+			</View>
+		</Row>
+	);
+};
+
 const styles = StyleSheet.create({
+	screen: {
+		// Rows carry their own horizontal padding, so the pressed state and the
+		// separators run the full width of the screen.
+		paddingHorizontal: 0
+	},
 	container: {
 		flex: 1
 	},
 	empty: {
 		paddingVertical: 32,
+		paddingHorizontal: 16,
 		alignItems: 'center'
+	},
+	row: {
+		justifyContent: 'space-between',
+		paddingVertical: 12
+	},
+	left: {
+		flex: 1,
+		marginRight: 12
+	},
+	meta: {
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
+	right: {
+		flexDirection: 'row',
+		gap: 4
 	}
 });
 

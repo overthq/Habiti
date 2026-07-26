@@ -1,30 +1,37 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import {
+	BaseInput,
 	Button,
 	SheetTextInput,
 	SheetView,
 	Spacer,
-	Typography,
-	useTheme
+	Typography
 } from '@habiti/components';
 import { useUpdateProductMutation } from '../data/mutations';
-import { applyFontStyles } from '@habiti/components/src/Typography';
 import { useSheet, useSheetParams } from '../navigation/useSheet';
+
+const KOBO_PER_NAIRA = 100;
 
 const ProductPriceModal = () => {
 	const { productId, initialPrice } = useSheetParams<'productPrice'>();
 	const { closeSheet } = useSheet();
-	const [price, setPrice] = React.useState(String(initialPrice / 100));
-	const { name, theme } = useTheme();
+	const [price, setPrice] = React.useState(
+		String(Math.round(initialPrice / KOBO_PER_NAIRA))
+	);
 	const updateProductMutation = useUpdateProductMutation();
 
-	const isInitialPrice = price === String(initialPrice / 100);
+	const priceInKobo = Number(price || 0) * KOBO_PER_NAIRA;
+	const isInitialPrice = priceInKobo === initialPrice;
+
+	const handlePriceChange = (text: string) => {
+		setPrice(text.replace(/[^0-9]/g, ''));
+	};
 
 	const handleSubmit = async () => {
 		await updateProductMutation.mutateAsync({
 			productId,
-			body: { unitPrice: Number(price) * 100 }
+			body: { unitPrice: priceInKobo }
 		});
 
 		closeSheet();
@@ -38,22 +45,20 @@ const ProductPriceModal = () => {
 
 			<Spacer y={16} />
 
-			<SheetTextInput
-				autoFocus
-				style={[
-					styles.input,
-					{
-						color: theme.input.text,
-						textAlignVertical: 'top',
-						includeFontPadding: false
-					},
-					applyFontStyles()
-				]}
-				value={price}
-				onChangeText={setPrice}
-				keyboardAppearance={name === 'dark' ? 'dark' : 'light'}
-				keyboardType='numeric'
-			/>
+			<View style={styles.inputRow}>
+				<Typography style={styles.currency}>₦</Typography>
+
+				<BaseInput
+					as={SheetTextInput}
+					autoFocus
+					number
+					style={styles.input}
+					value={price}
+					onChangeText={handlePriceChange}
+					keyboardType='number-pad'
+					placeholder='0'
+				/>
+			</View>
 
 			<Spacer y={16} />
 
@@ -61,18 +66,31 @@ const ProductPriceModal = () => {
 				text='Save'
 				onPress={handleSubmit}
 				loading={updateProductMutation.isPending}
-				disabled={updateProductMutation.isPending || isInitialPrice}
+				disabled={
+					updateProductMutation.isPending ||
+					isInitialPrice ||
+					price.length === 0
+				}
 			/>
 		</SheetView>
 	);
 };
 
 const styles = StyleSheet.create({
+	inputRow: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'center'
+	},
+	currency: {
+		fontSize: 32,
+		fontWeight: 'medium'
+	},
 	input: {
 		fontSize: 32,
 		fontWeight: 'medium',
-		padding: 12,
-		alignSelf: 'center'
+		paddingVertical: 12,
+		textAlignVertical: 'top'
 	}
 });
 

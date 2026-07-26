@@ -10,6 +10,7 @@ import { rateLimit, composeRateLimits } from '../middleware/rateLimit';
 import {
 	hydrateQuery,
 	orderFiltersSchema,
+	parseNestedQuery,
 	productFiltersSchema,
 	userFiltersSchema
 } from '../utils/queries';
@@ -227,7 +228,7 @@ admin.get('/stores/:id/transactions', async c => {
 
 admin.get('/stores/:id/orders', async c => {
 	const storeId = c.req.param('id');
-	const filters = orderFiltersSchema.parse(c.req.query());
+	const filters = orderFiltersSchema.parse(parseNestedQuery(c.req.query()));
 	const orders = await StoreLogic.getStoreOrders(c, storeId, filters);
 	return c.json({ orders });
 });
@@ -258,7 +259,7 @@ admin.put(
 );
 
 admin.get('/products', async c => {
-	const filters = productFiltersSchema.parse(c.req.query());
+	const filters = productFiltersSchema.parse(parseNestedQuery(c.req.query()));
 
 	const products = await ProductLogic.getProducts(c, filters);
 	return c.json({ products });
@@ -317,7 +318,7 @@ admin.get('/products/:id/reviews', async c => {
 });
 
 admin.get('/users', async c => {
-	const filters = userFiltersSchema.parse(c.req.query());
+	const filters = userFiltersSchema.parse(parseNestedQuery(c.req.query()));
 
 	const users = await UserLogic.getUsers(c, filters);
 	return c.json({ users });
@@ -364,7 +365,7 @@ admin.patch(
 );
 
 admin.get('/orders', async c => {
-	const filters = orderFiltersSchema.parse(c.req.query());
+	const filters = orderFiltersSchema.parse(parseNestedQuery(c.req.query()));
 
 	const orders = await OrderLogic.getOrders(c, filters);
 	return c.json({ orders });

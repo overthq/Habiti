@@ -91,10 +91,10 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 			<Typography size='xlarge' weight='medium'>
 				{product.name}
 			</Typography>
-			<Spacer y={4} />
-			<Typography variant='secondary' style={{ fontSize: 15 }}>
-				{product.description}
-			</Typography>
+
+			<Spacer y={8} />
+
+			<Typography variant='secondary'>{product.description}</Typography>
 		</View>
 	);
 };
@@ -188,15 +188,25 @@ interface EditRowProps {
 const EditRow: React.FC<EditRowProps> = ({ label, value, onPress }) => {
 	return (
 		<View>
-			<Typography size='small' variant='secondary' weight='semibold'>
+			<Typography size='large' weight='medium'>
 				{label}
 			</Typography>
+
 			<Spacer y={4} />
+
 			<View style={styles.editRow}>
-				<Typography size='xlarge' weight='medium'>
-					{value}
+				<Typography size='xlarge'>{value}</Typography>
+
+				<Typography size='large' weight='medium' variant='secondary'>
+					·
 				</Typography>
-				<TextButton onPress={onPress} size={15}>
+
+				<TextButton
+					onPress={onPress}
+					size={16}
+					weight='medium'
+					variant='secondary'
+				>
 					Update
 				</TextButton>
 			</View>
@@ -457,7 +467,7 @@ const styles = StyleSheet.create({
 	editRow: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		gap: 12
+		gap: 8
 	},
 	scroll: {
 		marginHorizontal: -16
