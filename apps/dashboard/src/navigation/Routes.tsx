@@ -317,14 +317,6 @@ const StoreStackNavigator = () => {
 				screenOptions={{ header: USE_CUSTOM_HEADER ? CustomHeader : undefined }}
 			>
 				<StoreStack.Screen
-					name='StoreSettings'
-					component={StoreSettingsMenu}
-					options={{
-						headerBackButtonDisplayMode: 'minimal',
-						headerTitle: 'Store Settings'
-					}}
-				/>
-				<StoreStack.Screen
 					name='BalanceDetails'
 					component={BalanceDetails}
 					options={{
