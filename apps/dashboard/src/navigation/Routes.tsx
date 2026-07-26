@@ -47,8 +47,7 @@ import PayoutAccount from '../screens/PayoutAccount';
 import Transactions from '../screens/Transactions';
 import Transaction from '../screens/Transaction';
 import BalanceDetails from '../screens/BalanceDetails';
-import DeleteStore from '../screens/DeleteStore';
-import StoreSettingsMenu from '../screens/StoreSettingsMenu';
+import ManageStore from '../screens/ManageStore';
 import Profile from '../screens/Profile';
 import Products from '../screens/Products';
 
@@ -362,11 +361,11 @@ const StoreStackNavigator = () => {
 					options={{ headerBackButtonDisplayMode: 'minimal' }}
 				/>
 				<StoreStack.Screen
-					name='DeleteStore'
-					component={DeleteStore}
+					name='ManageStore'
+					component={ManageStore}
 					options={{
 						headerBackButtonDisplayMode: 'minimal',
-						headerTitle: 'Delete Store'
+						headerTitle: 'Manage Store'
 					}}
 				/>
 				<StoreStack.Screen

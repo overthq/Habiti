@@ -19,6 +19,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
 
 import Refresher from '../components/Refresher';
+import StoreMenuRow from '../components/StoreMenuRow';
 import { useSheet } from '../navigation/useSheet';
 import { useAddressesQuery, useCurrentStoreQuery } from '../data/queries';
 import useRefresh from '../hooks/useRefresh';
@@ -30,6 +31,12 @@ import type {
 	StoreStackParamList,
 	StoreStackScreenProps
 } from '../navigation/types';
+
+type ParamlessStoreRoute = {
+	[K in keyof StoreStackParamList]: StoreStackParamList[K] extends undefined
+		? K
+		: never;
+}[keyof StoreStackParamList];
 
 const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 	navigation
@@ -67,9 +74,12 @@ const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 		navigation.navigate('BalanceDetails');
 	}, [navigation]);
 
-	const handleOpenSettings = React.useCallback(() => {
-		navigation.navigate('StoreSettings');
-	}, [navigation]);
+	const handleNavigate = React.useCallback(
+		(screen: ParamlessStoreRoute) => () => {
+			navigation.navigate(screen);
+		},
+		[navigation]
+	);
 
 	const handleOpenWebPage = React.useCallback(() => {
 		if (data?.store) {
@@ -96,7 +106,6 @@ const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 		<Screen style={{ paddingTop: top }}>
 			<StoreHeader
 				store={store}
-				onOpenSettings={handleOpenSettings}
 				onOpenWebPage={handleOpenWebPage}
 				onSwitchStore={handleSwitchStore}
 			/>
@@ -152,6 +161,31 @@ const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 				/>
 
 				<Spacer y={16} />
+
+				<View>
+					<StoreMenuRow
+						title='Edit Store'
+						onPress={handleNavigate('Edit Store')}
+					/>
+					<StoreMenuRow
+						title='Payout Account'
+						onPress={handleNavigate('PayoutAccount')}
+					/>
+					<StoreMenuRow
+						title='Categories'
+						onPress={handleNavigate('Categories')}
+					/>
+					<StoreMenuRow
+						title='Addresses'
+						onPress={handleNavigate('Addresses')}
+					/>
+					<StoreMenuRow
+						title='Manage Store'
+						onPress={handleNavigate('ManageStore')}
+					/>
+				</View>
+
+				<Spacer y={16} />
 			</ScrollableScreen>
 		</Screen>
 	);
@@ -172,14 +206,12 @@ interface StoreHeaderProps {
 	store: StoreType;
 	onSwitchStore: () => void;
 	onOpenWebPage: () => void;
-	onOpenSettings: () => void;
 }
 
 const StoreHeader = ({
 	store,
 	onSwitchStore,
-	onOpenWebPage,
-	onOpenSettings
+	onOpenWebPage
 }: StoreHeaderProps) => {
 	const { theme } = useTheme();
 
@@ -205,10 +237,7 @@ const StoreHeader = ({
 				<Icon name='chevron-down' size={20} />
 			</Pressable>
 
-			<View style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
-				<IconButton name='globe' size={22} onPress={onOpenWebPage} inset />
-				<IconButton name='menu' size={22} onPress={onOpenSettings} inset />
-			</View>
+			<IconButton name='globe' size={22} onPress={onOpenWebPage} inset />
 		</View>
 	);
 };
