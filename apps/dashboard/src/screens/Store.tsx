@@ -19,17 +19,24 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
 
 import Refresher from '../components/Refresher';
+import StoreMenuRow from '../components/StoreMenuRow';
 import { useSheet } from '../navigation/useSheet';
 import { useAddressesQuery, useCurrentStoreQuery } from '../data/queries';
 import useRefresh from '../hooks/useRefresh';
 import useStore from '../state';
 import { getFrontendUrl } from '../utils/share';
-import { Store as StoreType, Address } from '../data/types';
+import type { Store as StoreType, Address } from '../data/types';
 import type {
 	AppStackParamList,
 	StoreStackParamList,
 	StoreStackScreenProps
 } from '../navigation/types';
+
+type ParamlessStoreRoute = {
+	[K in keyof StoreStackParamList]: StoreStackParamList[K] extends undefined
+		? K
+		: never;
+}[keyof StoreStackParamList];
 
 const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 	navigation
@@ -67,9 +74,12 @@ const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 		navigation.navigate('BalanceDetails');
 	}, [navigation]);
 
-	const handleOpenSettings = React.useCallback(() => {
-		navigation.navigate('StoreSettings');
-	}, [navigation]);
+	const handleNavigate = React.useCallback(
+		(screen: ParamlessStoreRoute) => () => {
+			navigation.navigate(screen);
+		},
+		[navigation]
+	);
 
 	const handleOpenWebPage = React.useCallback(() => {
 		if (data?.store) {
@@ -96,7 +106,6 @@ const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 		<Screen style={{ paddingTop: top }}>
 			<StoreHeader
 				store={store}
-				onOpenSettings={handleOpenSettings}
 				onOpenWebPage={handleOpenWebPage}
 				onSwitchStore={handleSwitchStore}
 			/>
@@ -142,14 +151,37 @@ const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 
 				<Spacer y={16} />
 
-				<Separator />
-
-				<Spacer y={16} />
-
 				<OnboardingChecklist
 					store={store}
 					addresses={addressesData?.addresses ?? []}
 				/>
+
+				<Separator />
+
+				<Spacer y={8} />
+
+				<View>
+					<StoreMenuRow
+						title='Edit Store'
+						onPress={handleNavigate('EditStore')}
+					/>
+					<StoreMenuRow
+						title='Payout Account'
+						onPress={handleNavigate('PayoutAccount')}
+					/>
+					<StoreMenuRow
+						title='Categories'
+						onPress={handleNavigate('Categories')}
+					/>
+					<StoreMenuRow
+						title='Addresses'
+						onPress={handleNavigate('Addresses')}
+					/>
+					<StoreMenuRow
+						title='Manage Store'
+						onPress={handleNavigate('ManageStore')}
+					/>
+				</View>
 
 				<Spacer y={16} />
 			</ScrollableScreen>
@@ -172,14 +204,12 @@ interface StoreHeaderProps {
 	store: StoreType;
 	onSwitchStore: () => void;
 	onOpenWebPage: () => void;
-	onOpenSettings: () => void;
 }
 
 const StoreHeader = ({
 	store,
 	onSwitchStore,
-	onOpenWebPage,
-	onOpenSettings
+	onOpenWebPage
 }: StoreHeaderProps) => {
 	const { theme } = useTheme();
 
@@ -205,10 +235,7 @@ const StoreHeader = ({
 				<Icon name='chevron-down' size={20} />
 			</Pressable>
 
-			<View style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
-				<IconButton name='globe' size={22} onPress={onOpenWebPage} inset />
-				<IconButton name='menu' size={22} onPress={onOpenSettings} inset />
-			</View>
+			<IconButton name='globe' size={22} onPress={onOpenWebPage} inset />
 		</View>
 	);
 };
@@ -225,6 +252,53 @@ const headerStyles = StyleSheet.create({
 	}
 });
 
+enum OnboardingRequirement {
+	UploadStoreImage = 'UploadStoreImage',
+	AtLeastOneProduct = 'AtLeastOneProduct',
+	AtLeastOneAddress = 'AtLeastOneAddress',
+	LinkBankAccount = 'LinkBankAccount'
+}
+
+const onboardingRequirementsConfig = ({
+	store,
+	addresses
+}: {
+	store: StoreType;
+	addresses: Address[];
+}) =>
+	[
+		{
+			id: OnboardingRequirement.UploadStoreImage,
+			label: 'Upload a store image',
+			condition: !!store.image,
+			targetScreen: 'EditStore'
+		},
+		{
+			id: OnboardingRequirement.AtLeastOneProduct,
+			label: 'Add at least one product',
+			condition: store.products.length > 0,
+			targetScreen: 'Modal.AddProduct'
+		},
+		{
+			id: OnboardingRequirement.AtLeastOneAddress,
+			label: 'Add at least one address',
+			condition: addresses.length > 0,
+			targetScreen: 'Modal.AddAddress'
+		},
+		{
+			id: OnboardingRequirement.LinkBankAccount,
+			label: 'Link a bank account',
+			condition: !!store.bankAccountNumber,
+			targetScreen: 'Modal.AddPayoutAccount'
+		}
+	] as const;
+
+const getOnboardingCompletionCount = (
+	items: ReturnType<typeof onboardingRequirementsConfig>
+) => {
+	return items.filter(x => x.condition).length;
+};
+
 interface OnboardingChecklistProps {
 	store: StoreType;
 	addresses: Address[];
@@ -238,37 +312,18 @@ const OnboardingChecklist: React.FC<OnboardingChecklistProps> = ({
 	const { navigate } =
 		useNavigation<NavigationProp<AppStackParamList & StoreStackParamList>>();
 
-	const items = [
-		{
-			label: 'Upload a store image',
-			completed: !!store.image,
-			onPress: () => navigate('Edit Store')
-		},
-		{
-			label: 'Add at least one product',
-			completed: store.products.length > 0,
-			onPress: () => navigate('Modal.AddProduct')
-		},
-		{
-			label: 'Add at least one address',
-			completed: addresses.length > 0,
-			onPress: () => navigate('Modal.AddAddress')
-		},
-		{
-			label: 'Link a bank account',
-			completed: !!store.bankAccountNumber,
-			onPress: () => navigate('Modal.AddPayoutAccount')
-		}
-	];
+	const items = onboardingRequirementsConfig({ store, addresses });
 
-	const completedCount = items.filter(i => i.completed).length;
+	const completedCount = getOnboardingCompletionCount(items);
 
-	if (completedCount === items.length) {
-		return null;
-	}
+	if (completedCount === items.length) return null;
 
 	return (
 		<View>
+			<Separator />
+
+			<Spacer y={16} />
+
 			<Typography weight='medium'>Finish setting up your store</Typography>
 
 			<Spacer y={4} />
@@ -289,13 +344,17 @@ const OnboardingChecklist: React.FC<OnboardingChecklistProps> = ({
 					<React.Fragment key={item.label}>
 						<ChecklistItem
 							label={item.label}
-							completed={item.completed}
-							onPress={item.onPress}
+							completed={item.condition}
+							onPress={() => {
+								navigate(item.targetScreen);
+							}}
 						/>
 						{index !== items.length - 1 && <Separator />}
 					</React.Fragment>
 				))}
 			</View>
+
+			<Spacer y={16} />
 		</View>
 	);
 };
