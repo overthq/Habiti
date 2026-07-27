@@ -47,8 +47,7 @@ import PayoutAccount from '../screens/PayoutAccount';
 import Transactions from '../screens/Transactions';
 import Transaction from '../screens/Transaction';
 import BalanceDetails from '../screens/BalanceDetails';
-import DeleteStore from '../screens/DeleteStore';
-import StoreSettingsMenu from '../screens/StoreSettingsMenu';
+import ManageStore from '../screens/ManageStore';
 import Profile from '../screens/Profile';
 import Products from '../screens/Products';
 
@@ -318,14 +317,6 @@ const StoreStackNavigator = () => {
 				screenOptions={{ header: USE_CUSTOM_HEADER ? CustomHeader : undefined }}
 			>
 				<StoreStack.Screen
-					name='StoreSettings'
-					component={StoreSettingsMenu}
-					options={{
-						headerBackButtonDisplayMode: 'minimal',
-						headerTitle: 'Store Settings'
-					}}
-				/>
-				<StoreStack.Screen
 					name='BalanceDetails'
 					component={BalanceDetails}
 					options={{
@@ -334,7 +325,7 @@ const StoreStackNavigator = () => {
 					}}
 				/>
 				<StoreStack.Screen
-					name='Edit Store'
+					name='EditStore'
 					component={EditStore}
 					options={{ headerBackButtonDisplayMode: 'minimal' }}
 				/>
@@ -362,11 +353,11 @@ const StoreStackNavigator = () => {
 					options={{ headerBackButtonDisplayMode: 'minimal' }}
 				/>
 				<StoreStack.Screen
-					name='DeleteStore'
-					component={DeleteStore}
+					name='ManageStore'
+					component={ManageStore}
 					options={{
 						headerBackButtonDisplayMode: 'minimal',
-						headerTitle: 'Delete Store'
+						headerTitle: 'Manage Store'
 					}}
 				/>
 				<StoreStack.Screen
