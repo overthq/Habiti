@@ -113,7 +113,7 @@ export type ProductsStackParamList = {
 
 export type StoreStackParamList = {
 	StoreHome: undefined;
-	'Edit Store': undefined;
+	EditStore: undefined;
 	BalanceDetails: undefined;
 	PayoutAccount: undefined;
 	Managers: undefined;
