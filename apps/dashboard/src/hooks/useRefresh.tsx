@@ -1,30 +1,24 @@
-import { useFocusEffect } from '@react-navigation/native';
 import React from 'react';
 
 interface UseRefreshOptions {
 	refetch(): Promise<unknown>;
+	isRefetching: boolean;
 }
 
-const useRefresh = ({ refetch }: UseRefreshOptions) => {
-	const [isRefreshing, setRefreshing] = React.useState(false);
+const useRefresh = ({ refetch, isRefetching }: UseRefreshOptions) => {
+	const [pulled, setPulled] = React.useState(false);
 
 	const onRefresh = React.useCallback(async () => {
-		setRefreshing(true);
+		setPulled(true);
 
 		try {
 			await refetch();
 		} finally {
-			setRefreshing(false);
+			setPulled(false);
 		}
 	}, [refetch]);
 
-	useFocusEffect(
-		React.useCallback(() => {
-			setRefreshing(false);
-		}, [])
-	);
-
-	return { isRefreshing, onRefresh };
+	return { isRefreshing: pulled && isRefetching, onRefresh };
 };
 
 export default useRefresh;

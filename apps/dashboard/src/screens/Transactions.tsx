@@ -24,8 +24,8 @@ import {
 
 const Transactions = () => {
 	const { data: storeData } = useCurrentStoreQuery();
-	const { data, refetch } = useTransactionsQuery();
-	const { isRefreshing, onRefresh } = useRefresh({ refetch });
+	const { data, refetch, isRefetching } = useTransactionsQuery();
+	const { isRefreshing, onRefresh } = useRefresh({ refetch, isRefetching });
 	const { navigate, setOptions } =
 		useNavigation<NavigationProp<AppStackParamList & StoreStackParamList>>();
 	const { theme } = useTheme();
