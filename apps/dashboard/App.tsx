@@ -4,6 +4,7 @@ import { ThemeProvider } from '@habiti/components';
 import * as Sentry from '@sentry/react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useShallow } from 'zustand/react/shallow';
@@ -51,14 +52,16 @@ const AppInner = () => {
 
 	return (
 		<SafeAreaProvider>
-			<ThemeProvider theme={theme}>
-				<GestureHandlerRootView style={{ flex: 1 }}>
-					<BottomSheetModalProvider>
-						<Routes />
-						{Platform.OS === 'android' && <SheetHost />}
-					</BottomSheetModalProvider>
-				</GestureHandlerRootView>
-			</ThemeProvider>
+			<KeyboardProvider>
+				<ThemeProvider theme={theme}>
+					<GestureHandlerRootView style={{ flex: 1 }}>
+						<BottomSheetModalProvider>
+							<Routes />
+							{Platform.OS === 'android' && <SheetHost />}
+						</BottomSheetModalProvider>
+					</GestureHandlerRootView>
+				</ThemeProvider>
+			</KeyboardProvider>
 		</SafeAreaProvider>
 	);
 };
