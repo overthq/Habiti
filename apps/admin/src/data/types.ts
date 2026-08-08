@@ -43,6 +43,10 @@ export interface GetUserSessionsResponse {
 	sessions: Session[];
 }
 
+export interface GetUserStoresResponse {
+	stores: Store[];
+}
+
 export interface Admin {
 	id: string;
 	name: string;

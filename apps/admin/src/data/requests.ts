@@ -21,6 +21,7 @@ import {
 	type GetUserResponse,
 	type UpdateUserBody,
 	type GetUserSessionsResponse,
+	type GetUserStoresResponse,
 	type UpdateStoreBody,
 	type CreateStoreBody,
 	type Store,
@@ -103,6 +104,10 @@ export const getUser = (id: string) => {
 
 export const getUserSessions = (userId: string) => {
 	return api.get<GetUserSessionsResponse>(`/admin/users/${userId}/sessions`);
+};
+
+export const getUserStores = (userId: string) => {
+	return api.get<GetUserStoresResponse>(`/admin/users/${userId}/stores`);
 };
 
 export const updateUser = (id: string, body: UpdateUserBody) => {

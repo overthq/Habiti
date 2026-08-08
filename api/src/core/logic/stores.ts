@@ -430,7 +430,7 @@ export const unfollowStore = async (
 };
 
 export const getStoresByUserId = async (c: Context<AppEnv>, userId: string) => {
-	if (!c.var.auth?.id || userId !== c.var.auth.id) {
+	if (!c.var.auth?.id || (userId !== c.var.auth.id && !c.var.isAdmin)) {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 

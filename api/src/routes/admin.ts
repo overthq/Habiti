@@ -337,6 +337,12 @@ admin.get('/users/:id/sessions', async c => {
 	return c.json({ sessions });
 });
 
+admin.get('/users/:id/stores', async c => {
+	const { id } = c.req.param();
+	const stores = await StoreLogic.getStoresByUserId(c, id);
+	return c.json({ stores });
+});
+
 admin.put(
 	'/users/:id',
 	zValidator('json', Schemas.adminUpdateUserBodySchema, zodHook),
