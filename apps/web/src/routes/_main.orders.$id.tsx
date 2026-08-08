@@ -71,7 +71,7 @@ function OrderPage() {
 								<img
 									src={order.store.image.path}
 									alt={order.store.name}
-									className='size-14 object-cover rounded-md'
+									className='size-full object-cover'
 								/>
 							) : (
 								<p className='text-muted-foreground uppercase font-medium text-xl'>
