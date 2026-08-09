@@ -339,7 +339,7 @@ admin.get('/users/:id/sessions', async c => {
 
 admin.get('/users/:id/stores', async c => {
 	const { id } = c.req.param();
-	const stores = await StoreLogic.getStoresByUserId(c, id);
+	const stores = await StoreLogic.getStoresByManagerId(c, id);
 	return c.json({ stores });
 });
 

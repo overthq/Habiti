@@ -44,7 +44,7 @@ export interface GetUserSessionsResponse {
 }
 
 export interface GetUserStoresResponse {
-	stores: Store[];
+	stores: StoreManager[];
 }
 
 export interface Admin {
@@ -221,6 +221,7 @@ export interface StoreManager {
 	manager: User;
 	storeId: string;
 	store: Store;
+	createdAt: string;
 }
 
 export interface GetStoreManagersResponse {

@@ -22,6 +22,11 @@ const columns: ColumnDef<StoreManager>[] = [
 	{
 		header: 'Email',
 		accessorKey: 'manager.email'
+	},
+	{
+		header: 'Manager Since',
+		accessorKey: 'createdAt',
+		cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString()
 	}
 ];
 

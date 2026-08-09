@@ -430,7 +430,7 @@ export const unfollowStore = async (
 };
 
 export const getStoresByUserId = async (c: Context<AppEnv>, userId: string) => {
-	if (!c.var.auth?.id || (userId !== c.var.auth.id && !c.var.isAdmin)) {
+	if (!c.var.auth?.id || userId !== c.var.auth.id) {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
@@ -455,6 +455,13 @@ export const getStoreManagers = async (
 	query: any
 ) => {
 	return StoreData.getStoreManagers(c.var.prisma, storeId, query);
+};
+
+export const getStoresByManagerId = async (
+	c: Context<AppEnv>,
+	userId: string
+) => {
+	return StoreData.getStoresByManagerId(c.var.prisma, userId);
 };
 
 export const getStoreProducts = async (

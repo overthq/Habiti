@@ -2,7 +2,7 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { Link } from '@tanstack/react-router';
 
 import { useUserStoresQuery } from '@/data/queries';
-import { type Store, type User } from '@/data/types';
+import { type StoreManager, type User } from '@/data/types';
 import { DataTable } from '../ui/data-table';
 import { Button } from '../ui/button';
 import StatusPill from '../status-pill';
@@ -11,32 +11,38 @@ interface UserStoresProps {
 	user: User;
 }
 
-const columns: ColumnDef<Store>[] = [
+const columns: ColumnDef<StoreManager>[] = [
 	{
 		header: 'Name',
-		accessorKey: 'name',
+		accessorKey: 'store.name',
 		cell: ({ row }) => (
 			<Button variant='link' asChild className='px-0 w-fit'>
-				<Link to='/stores/$id' params={{ id: row.original.id }}>
-					{row.original.name}
+				<Link to='/stores/$id' params={{ id: row.original.store.id }}>
+					{row.original.store.name}
 				</Link>
 			</Button>
 		)
 	},
 	{
 		header: 'Status',
-		accessorKey: 'unlisted',
+		accessorKey: 'store.unlisted',
 		cell: ({ row }) => (
 			<StatusPill
-				tone={row.original.unlisted ? 'gray' : 'green'}
-				label={row.original.unlisted ? 'Unlisted' : 'Listed'}
+				tone={row.original.store.unlisted ? 'gray' : 'green'}
+				label={row.original.store.unlisted ? 'Unlisted' : 'Listed'}
 			/>
 		)
 	},
 	{
-		header: 'Created At',
+		header: 'Manager Since',
 		accessorKey: 'createdAt',
 		cell: ({ row }) => new Date(row.original.createdAt).toLocaleDateString()
+	},
+	{
+		header: 'Created At',
+		accessorKey: 'store.createdAt',
+		cell: ({ row }) =>
+			new Date(row.original.store.createdAt).toLocaleDateString()
 	}
 ];
 
