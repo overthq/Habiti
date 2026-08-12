@@ -258,6 +258,7 @@ export const getRelatedProducts = async (
 
 	let relatedProducts = await prisma.product.findMany({
 		where: {
+			id: { not: productId },
 			storeId: product.storeId,
 			status: { not: ProductStatus.Archived },
 			categories: {
@@ -273,6 +274,7 @@ export const getRelatedProducts = async (
 	if (relatedProducts.length === 0) {
 		relatedProducts = await prisma.product.findMany({
 			where: {
+				id: { not: productId },
 				storeId: product.storeId,
 				status: { not: ProductStatus.Archived }
 			},
