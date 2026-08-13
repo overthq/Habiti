@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<style>
+.bg { fill: #09090b; }
+.mark { fill: #fafafa; }
+@media (prefers-color-scheme: dark) {
+.bg { fill: #fafafa; }
+.mark { fill: #09090b; }
+}
+</style>
+<rect class="bg" width="512" height="512" rx="112" ry="112"/>
+<g class="mark" transform="translate(81.92 81.92) scale(0.68)">
+<rect x="448" width="90.5097" height="633.568" transform="rotate(45 448 0)"/>
+<rect x="191.88" y="255.881" width="90.5097" height="362.039" transform="rotate(-45 191.88 255.881)"/>
+</g>
+</svg>
