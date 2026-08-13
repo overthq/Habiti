@@ -22,6 +22,7 @@ import {
 	getUsers,
 	getUser,
 	getUserSessions,
+	getUserStores,
 	getOverview
 } from './requests';
 
@@ -127,6 +128,14 @@ export const useUserSessionsQuery = (userId: string) => {
 	return useQuery({
 		queryKey: ['users', userId, 'sessions'],
 		queryFn: () => getUserSessions(userId),
+		enabled: !!userId
+	});
+};
+
+export const useUserStoresQuery = (userId: string) => {
+	return useQuery({
+		queryKey: ['users', userId, 'stores'],
+		queryFn: () => getUserStores(userId),
 		enabled: !!userId
 	});
 };

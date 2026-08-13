@@ -91,7 +91,7 @@ const CartMain = () => {
 			</Link>
 
 			<div className='flex items-center gap-3 mb-6'>
-				<div className='size-14 rounded-full bg-muted flex items-center justify-center'>
+				<div className='size-14 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0'>
 					{cart.store.image ? (
 						<img
 							src={cart.store.image.path}

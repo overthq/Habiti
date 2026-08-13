@@ -5,6 +5,6 @@ import * as SearchData from '../data/search';
 
 export const globalSearch = async (c: Context<AppEnv>, query: string) => {
 	return SearchData.globalSearch(c.var.prisma, query, {
-		includeUnlisted: !c.var.isAdmin
+		includeUnlisted: c.var.isAdmin
 	});
 };

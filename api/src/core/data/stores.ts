@@ -182,6 +182,18 @@ export const getStoreManagers = async (
 	return storeManagers;
 };
 
+export const getStoresByManagerId = async (
+	prisma: PrismaClient,
+	userId: string
+) => {
+	const storeManagers = await prisma.storeManager.findMany({
+		where: { managerId: userId },
+		include: { store: { include: { image: true } } }
+	});
+
+	return storeManagers;
+};
+
 interface GetStoreOrdersOptions {
 	excludePaymentPending?: boolean;
 }

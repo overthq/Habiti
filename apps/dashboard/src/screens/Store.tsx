@@ -41,9 +41,10 @@ type ParamlessStoreRoute = {
 const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 	navigation
 }) => {
-	const { data, refetch, isLoading, error } = useCurrentStoreQuery();
+	const { data, refetch, isLoading, isRefetching, error } =
+		useCurrentStoreQuery();
 	const { data: addressesData } = useAddressesQuery();
-	const { isRefreshing, onRefresh } = useRefresh({ refetch });
+	const { isRefreshing, onRefresh } = useRefresh({ refetch, isRefetching });
 	const { top } = useSafeAreaInsets();
 	const { logOut } = useStore(useShallow(({ logOut }) => ({ logOut })));
 	const { openSheet } = useSheet();

@@ -40,8 +40,8 @@ const Order = () => {
 	const {
 		params: { orderId }
 	} = useRoute<RouteProp<OrdersStackParamList, 'Order'>>();
-	const { data, refetch } = useOrderQuery(orderId);
-	const { isRefreshing, onRefresh } = useRefresh({ refetch });
+	const { data, refetch, isRefetching } = useOrderQuery(orderId);
+	const { isRefreshing, onRefresh } = useRefresh({ refetch, isRefetching });
 
 	if (!data?.order) {
 		return <View />;

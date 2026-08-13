@@ -327,7 +327,10 @@ const StoreStackNavigator = () => {
 				<StoreStack.Screen
 					name='EditStore'
 					component={EditStore}
-					options={{ headerBackButtonDisplayMode: 'minimal' }}
+					options={{
+						headerBackButtonDisplayMode: 'minimal',
+						headerTitle: 'Edit Store'
+					}}
 				/>
 				<StoreStack.Screen
 					name='PayoutAccount'

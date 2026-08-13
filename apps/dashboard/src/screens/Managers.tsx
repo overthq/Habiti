@@ -11,8 +11,8 @@ import type { User } from '../data/types';
 const Managers: React.FC<StoreStackScreenProps<'Managers'>> = ({
 	navigation
 }) => {
-	const { data, isLoading, refetch } = useStoreManagersQuery();
-	const { isRefreshing, onRefresh } = useRefresh({ refetch });
+	const { data, isLoading, refetch, isRefetching } = useStoreManagersQuery();
+	const { isRefreshing, onRefresh } = useRefresh({ refetch, isRefetching });
 
 	React.useLayoutEffect(() => {
 		navigation.setOptions({

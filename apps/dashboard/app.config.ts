@@ -60,7 +60,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 			foregroundImage: './assets/adaptive-icon.png',
 			backgroundColor: '#000000'
 		},
-		softwareKeyboardLayoutMode: 'pan'
+		softwareKeyboardLayoutMode: 'resize'
 	},
 	web: {
 		favicon: './assets/favicon.png'

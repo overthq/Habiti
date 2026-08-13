@@ -36,8 +36,8 @@ const CategoriesListItem: React.FC<CategoriesListItemProps> = ({
 const Categories: React.FC<StoreStackScreenProps<'Categories'>> = ({
 	navigation
 }) => {
-	const { data, isLoading, refetch } = useCategoriesQuery();
-	const { isRefreshing, onRefresh } = useRefresh({ refetch });
+	const { data, isLoading, refetch, isRefetching } = useCategoriesQuery();
+	const { isRefreshing, onRefresh } = useRefresh({ refetch, isRefetching });
 
 	const handleAddCategory = React.useCallback(() => {
 		navigation.navigate('Modal.AddCategory');

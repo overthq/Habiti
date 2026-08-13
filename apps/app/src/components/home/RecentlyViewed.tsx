@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Pressable, FlatList } from 'react-native';
+import { View, Pressable, FlatList, StyleSheet } from 'react-native';
 import {
 	CustomImage,
 	SectionHeader,
@@ -62,8 +62,12 @@ const RecentlyViewedItem: React.FC<RecentlyViewedItemProps> = ({
 	onPress
 }) => {
 	return (
-		<Pressable onPress={onPress}>
-			<CustomImage uri={product.image ?? undefined} width={160} height={160} />
+		<Pressable onPress={onPress} style={styles.item}>
+			<CustomImage
+				uri={product.image ?? undefined}
+				width={ITEM_WIDTH}
+				height={ITEM_WIDTH}
+			/>
 
 			<Spacer y={8} />
 
@@ -77,5 +81,13 @@ const RecentlyViewedItem: React.FC<RecentlyViewedItemProps> = ({
 		</Pressable>
 	);
 };
+
+const ITEM_WIDTH = 160;
+
+const styles = StyleSheet.create({
+	item: {
+		width: ITEM_WIDTH
+	}
+});
 
 export default RecentlyViewed;

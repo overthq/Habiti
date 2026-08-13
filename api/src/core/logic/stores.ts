@@ -457,6 +457,13 @@ export const getStoreManagers = async (
 	return StoreData.getStoreManagers(c.var.prisma, storeId, query);
 };
 
+export const getStoresByManagerId = async (
+	c: Context<AppEnv>,
+	userId: string
+) => {
+	return StoreData.getStoresByManagerId(c.var.prisma, userId);
+};
+
 export const getStoreProducts = async (
 	c: Context<AppEnv>,
 	storeId: string,

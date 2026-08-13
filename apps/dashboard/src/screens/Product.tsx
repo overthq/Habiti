@@ -37,8 +37,8 @@ const Product: React.FC<ProductStackScreenProps<'Product.Main'>> = ({
 }) => {
 	const { productId } = route.params;
 
-	const { data, refetch } = useProductQuery(productId);
-	const { isRefreshing, onRefresh } = useRefresh({ refetch });
+	const { data, refetch, isRefetching } = useProductQuery(productId);
+	const { isRefreshing, onRefresh } = useRefresh({ refetch, isRefetching });
 
 	React.useLayoutEffect(() => {
 		if (data?.product?.name) {
