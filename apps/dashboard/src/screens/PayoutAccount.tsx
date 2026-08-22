@@ -21,12 +21,6 @@ const Detail: React.FC<DetailProps> = ({ label, value }) => (
 	</View>
 );
 
-/**
- * A store may only hold one payout account today, so this renders the first
- * one the API returns and says nothing about defaults -- with a single account
- * the designation is noise. Lifting the cap turns this into a list; the query
- * already returns an array.
- */
 const PayoutAccount: React.FC<StoreStackScreenProps<'PayoutAccount'>> = ({
 	navigation
 }) => {
@@ -39,9 +33,6 @@ const PayoutAccount: React.FC<StoreStackScreenProps<'PayoutAccount'>> = ({
 		navigation.navigate('Modal.AddPayoutAccount');
 	}, [navigation]);
 
-	// With one account allowed, adding another replaces this one. Saying so up
-	// front is better than letting the merchant finish the flow and discover it
-	// at the confirmation step.
 	const handleUpdate = React.useCallback(() => {
 		Alert.alert(
 			'Replace payout account',
@@ -60,9 +51,6 @@ const PayoutAccount: React.FC<StoreStackScreenProps<'PayoutAccount'>> = ({
 			await deletePayoutAccountMutation.mutateAsync(account.id);
 			refetch();
 		} catch {
-			// The API refuses to detach an account with a payout still awaiting
-			// confirmation from Paystack, which is worth saying out loud rather
-			// than leaving the row on screen with no explanation.
 			Alert.alert(
 				'Could not remove account',
 				'This account may have a payout awaiting confirmation. Please try again once it has settled.'

@@ -37,9 +37,6 @@ const ConfirmPayoutAccount: React.FC<
 
 	const bankName = BANKS_BY_CODE[bankCode]?.name;
 
-	// A store may only hold one account for now, so attaching a second one is
-	// a replacement. The API will not detach anything unless it is asked to,
-	// and the merchant has already agreed to that on the previous screen.
 	const isReplacement = (payoutAccountsData?.payoutAccounts?.length ?? 0) > 0;
 
 	const [error, setError] = React.useState<string | null>(null);

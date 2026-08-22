@@ -23,8 +23,6 @@ const AddPayout: React.FC<AppStackScreenProps<'Modal.AddPayout'>> = ({
 	const createPayoutMutation = useCreatePayoutMutation();
 	const { data: balanceData } = useStoreBalanceQuery();
 
-	// Server-computed, and already net of payouts still awaiting confirmation
-	// from Paystack — the store columns alone would over-report here.
 	const balance = balanceData?.balance;
 	const availableBalance = (balance?.available ?? 0) / 100;
 	const pendingPayouts = balance?.pendingPayouts ?? 0;
@@ -48,9 +46,6 @@ const AddPayout: React.FC<AppStackScreenProps<'Modal.AddPayout'>> = ({
 				amount: Number(amount) * 100
 			});
 		} catch (error) {
-			// The server is the authority on the balance: a request can still be
-			// rejected if it raced another one, so surface that instead of
-			// silently dismissing the screen.
 			Alert.alert(
 				'Payout failed',
 				getPayoutErrorMessage(error) ??

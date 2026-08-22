@@ -45,8 +45,6 @@ export const getTransactionById = async (
 		throw new LogicError(LogicErrorCode.NotFound);
 	}
 
-	// Scoped against the row's own store, since the caller named a transaction
-	// rather than a store.
 	assertStoreScope(c, transaction.storeId);
 
 	return transaction;
@@ -88,8 +86,6 @@ export const getStoreBalance = async (c: Context<AppEnv>, storeId: string) => {
 
 interface CreatePayoutTransactionInput {
 	amount: number;
-	/// Which account to pay out to. Defaults to the store's default account,
-	/// which is the only one a store can have today.
 	payoutAccountId?: string | undefined;
 }
 

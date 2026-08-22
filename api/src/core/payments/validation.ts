@@ -1,15 +1,5 @@
 import z from 'zod';
 
-/**
- * Paystack stamps a numeric `id` on both charge and transfer events. It is the
- * stable per-event identifier we deduplicate deliveries on -- `reference` is
- * not usable for that, since a retried delivery and a genuinely new event for
- * the same transfer share it.
- *
- * Kept optional: Paystack has changed payload shapes without warning before,
- * and a missing id degrades to hashing the raw body rather than dropping the
- * event.
- */
 export const eventIdSchema = z.union([z.number(), z.string()]).optional();
 
 export const TransferSuccessSchema = z.object({

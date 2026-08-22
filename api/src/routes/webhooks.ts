@@ -47,10 +47,6 @@ webhooks.post('/paystack', async c => {
 
 	const externalId = deriveExternalId(rawBody, data?.id);
 
-	// Claim the delivery before doing any work. Two things fall out of the
-	// ordering: a retry is recognised without reprocessing, and a crash
-	// mid-handler leaves a `Received` row that can be replayed rather than an
-	// event that vanished.
 	const claim = await recordWebhookEvent(c.var.prisma, {
 		provider: PAYSTACK_WEBHOOK_PROVIDER,
 		eventType: event,
