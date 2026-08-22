@@ -30,12 +30,6 @@ export interface Store {
 	updatedAt: string;
 }
 
-/**
- * Server-computed balance. `available` already accounts for payouts that have
- * been requested but not yet settled, so it is the only figure that agrees
- * with what the payout endpoint will accept — never recompute it from
- * `realizedRevenue - paidOut`.
- */
 export interface StoreBalance {
 	realizedRevenue: number;
 	unrealizedRevenue: number;
@@ -363,19 +357,9 @@ export interface UpdateCurrentUserBody {
 
 export interface CreatePayoutBody {
 	amount: number;
-	/**
-	 * Left unset while a store has a single account: the API then pays out to
-	 * its default. Send it once the account list becomes selectable.
-	 */
 	payoutAccountId?: string;
 }
 
-/**
- * A bank account the store can be paid out to. The API caps stores at one for
- * now, so the dashboard renders `payoutAccounts[0]` and never mentions the
- * `isDefault` flag -- with one account it is always true and means nothing to
- * a merchant.
- */
 export interface PayoutAccount {
 	id: string;
 	accountNumber: string;
@@ -391,10 +375,6 @@ export interface CreatePayoutAccountBody {
 	bankAccountNumber: string;
 	bankCode: string;
 	label?: string;
-	/**
-	 * Set when the merchant has confirmed that this account replaces the one
-	 * already attached. Nothing is detached without it.
-	 */
 	replaceExisting?: boolean;
 }
 
