@@ -57,32 +57,16 @@ interface AddPayoutAccountInput {
 	label?: string | undefined;
 	/**
 	 * Detach the store's current account(s) and put this one in their place.
-	 *
-	 * While the cap is one account, changing where a store gets paid *is* a
-	 * replacement, and the merchant confirms it in the dashboard before this is
-	 * set. It is opt-in so that nothing is ever detached implicitly, and it
-	 * stops being sent once a store can hold more than one account.
 	 */
 	replaceExisting?: boolean | undefined;
 }
 
-/**
- * Verifies a bank account with the provider and attaches it to the store.
- *
- * Everything persisted here comes back from the provider rather than from the
- * request body, so the stored details cannot disagree with the recipient that
- * transfers are actually sent to.
- */
 export const addPayoutAccount = async (
 	c: Context<AppEnv>,
 	input: AddPayoutAccountInput
 ) => {
 	const { storeId } = assertStoreScope(c);
 
-	// Resolving first is what lets the recipient carry the real account
-	// holder's name. Creating the recipient is the only call that has to
-	// happen, but it takes `name` as an input and would otherwise be given
-	// whichever manager happened to be signed in.
 	const resolved = await resolveAccountNumber({
 		accountNumber: input.accountNumber,
 		bankCode: input.bankCode
@@ -101,21 +85,10 @@ export const addPayoutAccount = async (
 		{ provider: PAYSTACK_PROVIDER, bankCode: input.bankCode, accountNumber }
 	);
 
-	// Re-adding the account a store already uses is a no-op rather than an
-	// error: the dashboard's "update details" button lands here whenever a
-	// merchant re-enters the same number.
 	if (existing && existing.status === PayoutAccountStatus.Active) {
 		return toPayoutAccountView(existing);
 	}
 
-	// The cap is checked before the provider call so a rejected request does
-	// not leave an unused transfer recipient behind at Paystack. Two
-	// simultaneous adds can still both get past this check; the partial unique
-	// index on the default account is what actually stops the second one.
-	// Reached for a brand new account and for one being brought back after
-	// removal alike: both end with one more active account than the store has
-	// now, so both have to clear the cap. Checking only the new-account case
-	// would let a store exceed it by re-adding an account it had detached.
 	const activeCount = await PayoutAccountData.countActivePayoutAccounts(
 		c.var.prisma,
 		storeId
@@ -128,9 +101,7 @@ export const addPayoutAccount = async (
 			throw new LogicError(LogicErrorCode.PayoutAccountLimitReached);
 		}
 
-		// Same rule as removing an account outright: a payout still awaiting
-		// confirmation has to be matched back to the account it was sent to when
-		// the webhook lands.
+		// Ensure there are no pending payouts.
 		const inFlight = await PayoutAccountData.countProcessingPayoutsForStore(
 			c.var.prisma,
 			storeId
@@ -248,10 +219,6 @@ export const removePayoutAccount = async (
 		throw new LogicError(LogicErrorCode.PayoutAccountNotFound);
 	}
 
-	// A `Processing` payout still has to be matched to this account when
-	// Paystack confirms or fails it, and the FK is `Restrict`, so removing it
-	// underneath an in-flight transfer would either fail loudly here or strand
-	// the settlement webhook.
 	const inFlight = await PayoutAccountData.countProcessingPayouts(
 		c.var.prisma,
 		account.id

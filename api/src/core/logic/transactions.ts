@@ -107,9 +107,6 @@ export const createPayoutTransaction = async (
 		throw new LogicError(LogicErrorCode.StoreNotFound);
 	}
 
-	// Throws `NoAccountDetails` when the store has no default account, and
-	// `PayoutAccountNotFound` when a request names an account that is not this
-	// store's or is no longer active.
 	const payoutAccount = await PayoutAccountLogic.resolvePayoutAccount(
 		c,
 		storeId,
@@ -193,10 +190,6 @@ export const createPayoutTransaction = async (
 		});
 
 		try {
-			// Reverses through the same path the webhook uses, so a failure
-			// here and a `transfer.failure` webhook cannot double-reverse:
-			// whichever arrives second finds the request already Failed and
-			// short-circuits, and the journal's idempotency key backstops it.
 			await TransactionData.markTransferFailed(
 				c.var.prisma,
 				payoutRequest.id,
@@ -231,8 +224,6 @@ export const createPayoutTransaction = async (
 		groups: { store: storeId }
 	});
 
-	// The dashboard expects a `Transaction`-shaped body here, so hand back the
-	// statement row the payout produced rather than the raw request.
 	return (
 		(await TransactionData.getPayoutStatementEntry(
 			c.var.prisma,
@@ -271,9 +262,6 @@ export const updatePayoutTransactionStatus = async (
 		groups: { store: updated.storeId }
 	});
 
-	// Hand back the statement row rather than the raw request: it is the shape
-	// the admin client already expects, and it carries no bigint for
-	// JSON.stringify to choke on.
 	const statementEntry = await TransactionData.getPayoutStatementEntry(
 		c.var.prisma,
 		updated.id

@@ -101,20 +101,6 @@ export const onChargeSuccessful = async (
 	await transitionOrderToPending(c, orderId, webhookEventId);
 };
 
-/**
- * Deliberately lets failures propagate.
- *
- * This used to catch and log, which meant a charge whose journal failed to
- * post still left the delivery marked `Processed`: the order sat in `Pending`
- * with no revenue recorded against the store, `replay-webhooks` had nothing to
- * pick up, and reconciliation could not see it either -- the ledger and the
- * projection agree perfectly about money that was never recorded. Throwing
- * puts the delivery in `Failed`, where replay can retry it; the postings are
- * idempotent, so a retry after a partial success is a no-op.
- *
- * An order that is missing or no longer payment-pending is not a failure --
- * those return quietly, as before.
- */
 export const transitionOrderToPending = async (
 	c: Context<AppEnv>,
 	orderId: string,
@@ -129,20 +115,15 @@ export const transitionOrderToPending = async (
 
 	const transitioned = await OrderData.markOrderPending(c.var.prisma, order.id);
 
-	// An order already sitting in `Pending` is not a reason to stop: the status
-	// moves in its own statement, so a retry of a delivery that failed *after*
-	// the transition has to be able to finish the posting it never got to. Any
-	// other status means the payment does not belong to an order awaiting one.
 	if (!transitioned && order.status !== OrderStatus.Pending) {
 		c.var.logger.warn(
 			{ orderId: order.id, status: order.status },
 			'order_not_in_payment_pending'
 		);
+
 		return;
 	}
 
-	// Idempotent on `order:<id>:paid`, so the duplicate-delivery case above
-	// posts nothing and the retry case completes.
 	await StoreData.recordOrderPayment(c.var.prisma, {
 		storeId: order.storeId,
 		orderId: order.id,
@@ -151,8 +132,7 @@ export const transitionOrderToPending = async (
 		webhookEventId: webhookEventId ?? null
 	});
 
-	// Only whoever actually moved the order announces it, so a retry does not
-	// notify the store about the same order twice.
+	// Stop if the transition had happened previously.
 	if (!transitioned) return;
 
 	const pushTokens = await PushTokenData.getStorePushTokens(

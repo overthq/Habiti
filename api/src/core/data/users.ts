@@ -200,13 +200,6 @@ export const mergeUsers = async (
 	return { sessionIds: sessions.map(({ id }) => id) };
 };
 
-/**
- * Deletes a user, detaching any ledger accounts first.
- *
- * Throws `OutstandingCreditError` when the user is still owed money -- their
- * account cannot be dropped while we hold a liability to them, and silently
- * writing that off is exactly the failure this ledger exists to prevent.
- */
 export const deleteUser = async (prisma: PrismaClient, userId: string) => {
 	await runSerializable(prisma, async tx => {
 		await detachCustomerAccounts(tx, userId);

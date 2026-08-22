@@ -367,9 +367,7 @@ interface UpdateOrderHooksArgs {
 	customerName: string;
 	pushToken: UserPushToken | undefined;
 	orderId: string;
-	/** Who performed the transition -- may be the merchant, not the customer. */
 	userId: string;
-	/** The order's customer. A refund is owed to them, whoever cancelled. */
 	customerId: string;
 	storeId: string;
 	amount: number;

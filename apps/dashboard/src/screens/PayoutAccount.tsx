@@ -88,9 +88,6 @@ const PayoutAccount: React.FC<StoreStackScreenProps<'PayoutAccount'>> = ({
 		);
 	}
 
-	// Accounts added since the payout-account table exists carry the bank name
-	// the provider resolved. Rows backfilled from the old store columns do not,
-	// so fall back to the local code lookup.
 	const bankName = account.bankName ?? BANKS_BY_CODE[account.bankCode]?.name;
 
 	return (

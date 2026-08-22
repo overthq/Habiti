@@ -428,10 +428,6 @@ interface UpdateStoreRevenueArgs {
 
 /**
  * Order completed: the store's money becomes withdrawable.
- *
- * This used to increment `realizedRevenue` and decrement `unrealizedRevenue`
- * directly, alongside a separate ledger row whose direction was decided by an
- * enum lookup in another file. Both records now come out of the same journal.
  */
 export const updateStoreRevenue = async (
 	prisma: PrismaClient,
@@ -476,7 +472,6 @@ export const recordOrderPayment = async (
 
 interface ReverseOrderRevenueArgs {
 	storeId: string;
-	/** The order's customer -- who the refund is owed to, not who cancelled. */
 	customerId: string;
 	total: number;
 	orderId: string;

@@ -17,12 +17,6 @@ import { recordPayoutFailed, recordPayoutSettled } from './postings';
  * replaying the journals -- see `ledger.replayStore`.
  */
 
-/**
- * The `Transaction` shape the dashboard consumes. Amounts are `number` because
- * that is what the existing client contract says; the ledger stores `BigInt`,
- * so the conversion happens here rather than leaking a JS `bigint` into
- * `JSON.stringify`, which throws on it.
- */
 export interface TransactionView {
 	id: string;
 	storeId: string;
@@ -65,27 +59,12 @@ const toTransactionView = (row: StatementRowRecord): TransactionView => ({
 	...(row.order === undefined ? {} : { order: row.order })
 });
 
-/**
- * What a store can actually withdraw.
- *
- * Unchanged from the pre-ledger implementation, and still the single
- * definition shared by the payout authorization check and the balance
- * endpoint, so the merchant is never shown a figure the API would reject.
- */
 export const computeAvailableBalance = (params: {
 	realizedRevenue: number;
 	paidOut: number;
 	pendingPayouts: number;
 }) => params.realizedRevenue - params.paidOut - params.pendingPayouts;
 
-/**
- * Payouts requested but not yet resolved.
- *
- * This used to aggregate the transaction table on every call. Payouts now
- * debit `StoreAvailable` the moment they are requested, so the figure is a
- * maintained projection -- but it stays exposed separately because the
- * dashboard shows it as its own line.
- */
 export const getPendingPayoutTotal = async (
 	tx: TransactionClient,
 	storeId: string
@@ -184,8 +163,6 @@ export const createPayoutRequest = async (
 		}
 	});
 
-	// The Paystack transfer reference is the request id, exactly as it was
-	// before the ledger existed, so nothing changes on Paystack's side.
 	return tx.payoutRequest.update({
 		where: { id: request.id },
 		data: { providerRef: request.id }
@@ -237,10 +214,6 @@ export const markTransferSuccessful = async (
 	});
 };
 
-/**
- * Advances a payout to Failed and posts the reversing journal that returns the
- * money to the store's withdrawable balance.
- */
 export const markTransferFailed = async (
 	prisma: PrismaClient,
 	reference: string,
@@ -322,11 +295,6 @@ export const resolvePayoutRequestId = async (
 	return request?.id ?? null;
 };
 
-/**
- * Admin override of a payout's outcome. Routes through the same two functions
- * as the webhook, so there is no second, subtly different code path that moves
- * money.
- */
 export const adminUpdatePayoutTransaction = async (
 	prisma: PrismaClient,
 	transactionId: string,
