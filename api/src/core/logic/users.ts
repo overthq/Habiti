@@ -4,6 +4,12 @@ import { Prisma } from '../../generated/prisma/client';
 import type { StripUndefined } from '../../utils/objects';
 
 import * as UserData from '../data/users';
+import {
+	getCreditBalance,
+	OutstandingCreditError,
+	withdrawCustomerCredit
+} from '../data/customerCredit';
+import { runSerializable } from '../../utils/prisma';
 import * as StoreData from '../data/stores';
 import * as OrderData from '../data/orders';
 import * as CartData from '../data/carts';
@@ -160,7 +166,72 @@ export const deleteUser = async (
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	return UserData.deleteUser(c.var.prisma, userId);
+	try {
+		return await UserData.deleteUser(c.var.prisma, userId);
+	} catch (error) {
+		if (error instanceof OutstandingCreditError) {
+			throw new LogicError(LogicErrorCode.OutstandingCredit);
+		}
+
+		throw error;
+	}
+};
+
+export const getCurrentUserCredit = async (c: Context<AppEnv>) => {
+	if (!c.var.auth?.id) {
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
+	}
+
+	const balance = await getCreditBalance(c.var.prisma, c.var.auth.id);
+
+	return { balance: Number(balance) };
+};
+
+export const getUserCredit = async (c: Context<AppEnv>, userId: string) => {
+	if (!c.var.isAdmin) {
+		throw new LogicError(LogicErrorCode.Forbidden);
+	}
+
+	const balance = await getCreditBalance(c.var.prisma, userId);
+
+	return { balance: Number(balance) };
+};
+
+interface WithdrawUserCreditInput {
+	userId: string;
+	amount: number;
+	reference: string;
+}
+
+export const withdrawUserCredit = async (
+	c: Context<AppEnv>,
+	input: WithdrawUserCreditInput
+) => {
+	if (!c.var.isAdmin) {
+		throw new LogicError(LogicErrorCode.Forbidden);
+	}
+
+	await runSerializable(c.var.prisma, async tx => {
+		await withdrawCustomerCredit(tx, {
+			userId: input.userId,
+			amount: BigInt(input.amount),
+			reference: input.reference
+		});
+	});
+
+	const balance = await getCreditBalance(c.var.prisma, input.userId);
+
+	c.var.services.analytics.track({
+		event: 'customer_credit_withdrawn',
+		distinctId: c.var.auth?.id ?? 'system',
+		properties: {
+			userId: input.userId,
+			amount: input.amount,
+			reference: input.reference
+		}
+	});
+
+	return { balance: Number(balance) };
 };
 
 export const getFollowedStores = (c: Context<AppEnv>) => {

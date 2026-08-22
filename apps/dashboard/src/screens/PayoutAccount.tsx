@@ -2,14 +2,14 @@ import React from 'react';
 import { Alert, View, StyleSheet } from 'react-native';
 import { Button, Screen, Spacer, Typography } from '@habiti/components';
 
-import { useCurrentStoreQuery } from '../data/queries';
-import { useUpdateCurrentStoreMutation } from '../data/mutations';
+import { usePayoutAccountsQuery } from '../data/queries';
+import { useDeletePayoutAccountMutation } from '../data/mutations';
 import { BANKS_BY_CODE } from '../utils/transform';
 import { StoreStackScreenProps } from '../navigation/types';
 
 interface DetailProps {
 	label: string;
-	value?: string;
+	value?: string | null;
 }
 
 const Detail: React.FC<DetailProps> = ({ label, value }) => (
@@ -21,26 +21,54 @@ const Detail: React.FC<DetailProps> = ({ label, value }) => (
 	</View>
 );
 
+/**
+ * A store may only hold one payout account today, so this renders the first
+ * one the API returns and says nothing about defaults -- with a single account
+ * the designation is noise. Lifting the cap turns this into a list; the query
+ * already returns an array.
+ */
 const PayoutAccount: React.FC<StoreStackScreenProps<'PayoutAccount'>> = ({
 	navigation
 }) => {
-	const { data, isLoading, refetch } = useCurrentStoreQuery();
-	const updateStoreMutation = useUpdateCurrentStoreMutation();
+	const { data, isLoading, refetch } = usePayoutAccountsQuery();
+	const deletePayoutAccountMutation = useDeletePayoutAccountMutation();
 
-	const store = data?.store;
+	const account = data?.payoutAccounts?.[0];
 
-	const handleUpdate = React.useCallback(() => {
+	const handleAdd = React.useCallback(() => {
 		navigation.navigate('Modal.AddPayoutAccount');
 	}, [navigation]);
 
-	const removeAccount = React.useCallback(async () => {
-		await updateStoreMutation.mutateAsync({
-			bankAccountNumber: undefined,
-			bankCode: undefined
-		});
+	// With one account allowed, adding another replaces this one. Saying so up
+	// front is better than letting the merchant finish the flow and discover it
+	// at the confirmation step.
+	const handleUpdate = React.useCallback(() => {
+		Alert.alert(
+			'Replace payout account',
+			'Adding a new account will replace the one you have now. Future payouts will go to the new account.',
+			[
+				{ text: 'Cancel', style: 'cancel' },
+				{ text: 'Continue', onPress: handleAdd }
+			]
+		);
+	}, [handleAdd]);
 
-		refetch();
-	}, [updateStoreMutation, refetch]);
+	const removeAccount = React.useCallback(async () => {
+		if (!account) return;
+
+		try {
+			await deletePayoutAccountMutation.mutateAsync(account.id);
+			refetch();
+		} catch {
+			// The API refuses to detach an account with a payout still awaiting
+			// confirmation from Paystack, which is worth saying out loud rather
+			// than leaving the row on screen with no explanation.
+			Alert.alert(
+				'Could not remove account',
+				'This account may have a payout awaiting confirmation. Please try again once it has settled.'
+			);
+		}
+	}, [account, deletePayoutAccountMutation, refetch]);
 
 	const handleRemove = React.useCallback(() => {
 		Alert.alert(
@@ -55,7 +83,7 @@ const PayoutAccount: React.FC<StoreStackScreenProps<'PayoutAccount'>> = ({
 
 	if (isLoading) return <Screen />;
 
-	if (!store?.bankAccountNumber) {
+	if (!account) {
 		return (
 			<Screen>
 				<Spacer y={16} />
@@ -67,30 +95,32 @@ const PayoutAccount: React.FC<StoreStackScreenProps<'PayoutAccount'>> = ({
 					Add a bank account so you can withdraw your earnings.
 				</Typography>
 				<Spacer y={16} />
-				<Button text='Add payout account' onPress={handleUpdate} />
+				<Button text='Add payout account' onPress={handleAdd} />
 			</Screen>
 		);
 	}
 
-	const bankName = store.bankCode
-		? BANKS_BY_CODE[store.bankCode]?.name
-		: undefined;
+	// Accounts added since the payout-account table exists carry the bank name
+	// the provider resolved. Rows backfilled from the old store columns do not,
+	// so fall back to the local code lookup.
+	const bankName = account.bankName ?? BANKS_BY_CODE[account.bankCode]?.name;
 
 	return (
 		<Screen>
 			<Spacer y={16} />
 			<View style={styles.details}>
+				<Detail label='Account Name' value={account.accountName} />
 				<Detail label='Bank' value={bankName} />
-				<Detail label='Account Number' value={store.bankAccountNumber} />
+				<Detail label='Account Number' value={account.accountNumber} />
 			</View>
 			<Spacer y={24} />
-			<Button text='Update details' onPress={handleUpdate} />
+			<Button text='Replace account' onPress={handleUpdate} />
 			<Spacer y={12} />
 			<Button
 				text='Remove account'
 				variant='destructive'
 				onPress={handleRemove}
-				loading={updateStoreMutation.isPending}
+				loading={deletePayoutAccountMutation.isPending}
 			/>
 		</Screen>
 	);

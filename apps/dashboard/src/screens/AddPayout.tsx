@@ -4,22 +4,37 @@ import { formatNaira } from '@habiti/common';
 import { Button, Icon, Screen, Spacer, Typography } from '@habiti/components';
 
 import { useCreatePayoutMutation } from '../data/mutations';
+import { useStoreBalanceQuery } from '../data/queries';
 import type { AppStackScreenProps } from '../navigation/types';
 
+/** The API reports failures as `{ message }` (see the central errorHandler). */
+const getPayoutErrorMessage = (error: unknown): string | undefined => {
+	const message = (
+		error as { response?: { data?: { message?: unknown } } } | undefined
+	)?.response?.data?.message;
+
+	return typeof message === 'string' ? message : undefined;
+};
+
 const AddPayout: React.FC<AppStackScreenProps<'Modal.AddPayout'>> = ({
-	navigation,
-	route
+	navigation
 }) => {
 	const [amount, setAmount] = React.useState('');
 	const createPayoutMutation = useCreatePayoutMutation();
-	const { params } = route;
+	const { data: balanceData } = useStoreBalanceQuery();
 
-	const availableBalance = (params.realizedRevenue - params.paidOut) / 100;
+	// Server-computed, and already net of payouts still awaiting confirmation
+	// from Paystack — the store columns alone would over-report here.
+	const balance = balanceData?.balance;
+	const availableBalance = (balance?.available ?? 0) / 100;
+	const pendingPayouts = balance?.pendingPayouts ?? 0;
 
 	const confirmAddPayout = () => {
 		Alert.alert(
 			'Confirm payout',
-			'This will send the specified amount to the configured bank account',
+			pendingPayouts > 0
+				? `You already have ${formatNaira(pendingPayouts)} awaiting confirmation. This will send an additional ${formatNaira(Number(amount) * 100)} to the configured bank account.`
+				: 'This will send the specified amount to the configured bank account',
 			[
 				{ text: 'Cancel', style: 'cancel' },
 				{ text: 'Confirm', onPress: handleAddPayout }
@@ -28,9 +43,22 @@ const AddPayout: React.FC<AppStackScreenProps<'Modal.AddPayout'>> = ({
 	};
 
 	const handleAddPayout = React.useCallback(async () => {
-		await createPayoutMutation.mutateAsync({
-			amount: Number(amount) * 100
-		});
+		try {
+			await createPayoutMutation.mutateAsync({
+				amount: Number(amount) * 100
+			});
+		} catch (error) {
+			// The server is the authority on the balance: a request can still be
+			// rejected if it raced another one, so surface that instead of
+			// silently dismissing the screen.
+			Alert.alert(
+				'Payout failed',
+				getPayoutErrorMessage(error) ??
+					'We could not complete this payout. Please try again.'
+			);
+
+			return;
+		}
 
 		navigation.goBack();
 	}, [amount, createPayoutMutation, navigation]);

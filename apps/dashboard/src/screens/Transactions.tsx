@@ -15,7 +15,11 @@ import { FlashList } from '@shopify/flash-list';
 
 import useRefresh from '../hooks/useRefresh';
 import { parseTimestamp } from '../utils/date';
-import { useCurrentStoreQuery, useTransactionsQuery } from '../data/queries';
+import {
+	useCurrentStoreQuery,
+	usePayoutAccountsQuery,
+	useTransactionsQuery
+} from '../data/queries';
 import { Transaction, TransactionStatus, TransactionType } from '../data/types';
 import {
 	AppStackParamList,
@@ -24,6 +28,7 @@ import {
 
 const Transactions = () => {
 	const { data: storeData } = useCurrentStoreQuery();
+	const { data: payoutAccountsData } = usePayoutAccountsQuery();
 	const { data, refetch, isRefetching } = useTransactionsQuery();
 	const { isRefreshing, onRefresh } = useRefresh({ refetch, isRefetching });
 	const { navigate, setOptions } =
@@ -33,7 +38,7 @@ const Transactions = () => {
 	const handleAddPayout = React.useCallback(() => {
 		if (!storeData?.store) return;
 
-		if (!storeData.store.bankAccountNumber) {
+		if ((payoutAccountsData?.payoutAccounts?.length ?? 0) === 0) {
 			Alert.alert(
 				'No bank account linked',
 				'You must link a bank account before requesting a payout'
@@ -42,11 +47,8 @@ const Transactions = () => {
 			return;
 		}
 
-		navigate('Modal.AddPayout', {
-			realizedRevenue: storeData?.store.realizedRevenue ?? 0,
-			paidOut: storeData?.store.paidOut ?? 0
-		});
-	}, [storeData, navigate]);
+		navigate('Modal.AddPayout');
+	}, [storeData, payoutAccountsData, navigate]);
 
 	React.useLayoutEffect(() => {
 		setOptions({
