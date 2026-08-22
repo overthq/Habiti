@@ -19,7 +19,9 @@ export type AppStackParamList = {
 
 	'Modal.CreateStore': undefined;
 	'Modal.AddProduct': undefined;
-	'Modal.AddPayout': { realizedRevenue: number; paidOut: number };
+	// The available balance is read from the server rather than passed in, so a
+	// stale snapshot can't be used to authorize a payout.
+	'Modal.AddPayout': undefined;
 	'Modal.AddCategory': undefined;
 	'Modal.EditCategory': {
 		categoryId: string;

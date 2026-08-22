@@ -45,7 +45,11 @@ async function pruneAnonymousUsers() {
 				isAnonymous: true,
 				createdAt: { lt: before },
 				sessions: { none: { lastActiveAt: { gte: before } } },
-				orders: { none: {} }
+				orders: { none: {} },
+				// A guest who was refunded has a credit account and may still be
+				// owed money. Financial history outlives the convenience of
+				// pruning an idle anonymous row.
+				ledgerAccounts: { none: {} }
 			},
 			take: BATCH_SIZE,
 			select: { id: true }

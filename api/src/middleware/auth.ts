@@ -50,7 +50,14 @@ export const auth = (options: AuthOptions = {}) => {
 			}
 
 			c.set('auth', payload);
-			c.set('storeId', payload.storeId ?? c.req.header('x-market-store-id'));
+			// Store context for an authenticated caller comes from the token
+			// claim only. The claim is set exclusively by `/auth/switch-store`,
+			// which verifies management first, and is re-verified (and dropped)
+			// on every refresh rotation -- so it cannot name a store the caller
+			// does not manage. Honouring `x-market-store-id` here would have let
+			// any authenticated user borrow another store's context on the
+			// handlers that trust `c.var.storeId` without a further check.
+			c.set('storeId', payload.storeId);
 			c.set('isAdmin', payload.role === 'admin');
 
 			return next();

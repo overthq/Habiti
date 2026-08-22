@@ -370,6 +370,27 @@ admin.patch(
 	}
 );
 
+admin.get('/users/:id/credit', async c => {
+	const credit = await UserLogic.getUserCredit(c, c.req.param('id'));
+	return c.json({ credit });
+});
+
+admin.post(
+	'/users/:id/credit-payouts',
+	zValidator('json', Schemas.adminWithdrawCustomerCreditBodySchema, zodHook),
+	async c => {
+		const { amount, reference } = c.req.valid('json');
+
+		const credit = await UserLogic.withdrawUserCredit(c, {
+			userId: c.req.param('id'),
+			amount,
+			reference
+		});
+
+		return c.json({ credit }, 201);
+	}
+);
+
 admin.get('/orders', async c => {
 	const filters = orderFiltersSchema.parse(parseNestedQuery(c.req.query()));
 

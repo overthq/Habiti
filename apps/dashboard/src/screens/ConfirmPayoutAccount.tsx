@@ -4,10 +4,12 @@ import {
 	Button,
 	ScrollableScreen,
 	Spacer,
-	Typography
+	Typography,
+	useTheme
 } from '@habiti/components';
 
-import { useUpdateCurrentStoreMutation } from '../data/mutations';
+import { useCreatePayoutAccountMutation } from '../data/mutations';
+import { usePayoutAccountsQuery } from '../data/queries';
 import { BANKS_BY_CODE } from '../utils/transform';
 import { PayoutAccountStackScreenProps } from '../navigation/types';
 
@@ -28,19 +30,43 @@ const Detail: React.FC<DetailProps> = ({ label, value }) => (
 const ConfirmPayoutAccount: React.FC<
 	PayoutAccountStackScreenProps<'PayoutAccount.Confirm'>
 > = ({ navigation, route }) => {
+	const { theme } = useTheme();
 	const { bankCode, accountNumber, accountName } = route.params;
-	const updateStoreMutation = useUpdateCurrentStoreMutation();
+	const createPayoutAccountMutation = useCreatePayoutAccountMutation();
+	const { data: payoutAccountsData } = usePayoutAccountsQuery();
 
 	const bankName = BANKS_BY_CODE[bankCode]?.name;
 
-	const onConfirm = React.useCallback(async () => {
-		await updateStoreMutation.mutateAsync({
-			bankAccountNumber: accountNumber,
-			bankCode
-		});
+	// A store may only hold one account for now, so attaching a second one is
+	// a replacement. The API will not detach anything unless it is asked to,
+	// and the merchant has already agreed to that on the previous screen.
+	const isReplacement = (payoutAccountsData?.payoutAccounts?.length ?? 0) > 0;
 
-		navigation.getParent()?.goBack();
-	}, [accountNumber, bankCode, updateStoreMutation, navigation]);
+	const [error, setError] = React.useState<string | null>(null);
+
+	const onConfirm = React.useCallback(async () => {
+		setError(null);
+
+		try {
+			await createPayoutAccountMutation.mutateAsync({
+				bankAccountNumber: accountNumber,
+				bankCode,
+				...(isReplacement ? { replaceExisting: true } : {})
+			});
+
+			navigation.getParent()?.goBack();
+		} catch {
+			setError(
+				'We could not save this payout account. Please try again, or check whether you have a payout awaiting confirmation.'
+			);
+		}
+	}, [
+		accountNumber,
+		bankCode,
+		isReplacement,
+		createPayoutAccountMutation,
+		navigation
+	]);
 
 	return (
 		<ScrollableScreen>
@@ -54,11 +80,19 @@ const ConfirmPayoutAccount: React.FC<
 				<Detail label='Account Number' value={accountNumber} />
 				<Detail label='Bank' value={bankName} />
 			</View>
+			{error && (
+				<>
+					<Spacer y={16} />
+					<Typography size='small' style={{ color: theme.text.error }}>
+						{error}
+					</Typography>
+				</>
+			)}
 			<Spacer y={16} />
 			<Button
 				text='Confirm details'
 				onPress={onConfirm}
-				loading={updateStoreMutation.isPending}
+				loading={createPayoutAccountMutation.isPending}
 			/>
 		</ScrollableScreen>
 	);
