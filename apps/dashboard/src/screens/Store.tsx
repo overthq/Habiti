@@ -21,7 +21,12 @@ import { useShallow } from 'zustand/react/shallow';
 import Refresher from '../components/Refresher';
 import StoreMenuRow from '../components/StoreMenuRow';
 import { useSheet } from '../navigation/useSheet';
-import { useAddressesQuery, useCurrentStoreQuery } from '../data/queries';
+import {
+	useAddressesQuery,
+	useCurrentStoreQuery,
+	usePayoutAccountsQuery,
+	useStoreBalanceQuery
+} from '../data/queries';
 import useRefresh from '../hooks/useRefresh';
 import useStore from '../state';
 import { getFrontendUrl } from '../utils/share';
@@ -43,16 +48,21 @@ const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 }) => {
 	const { data, refetch, isLoading, isRefetching, error } =
 		useCurrentStoreQuery();
+	const { data: balanceData } = useStoreBalanceQuery();
+	const { data: payoutAccountsData } = usePayoutAccountsQuery();
 	const { data: addressesData } = useAddressesQuery();
 	const { isRefreshing, onRefresh } = useRefresh({ refetch, isRefetching });
 	const { top } = useSafeAreaInsets();
 	const { logOut } = useStore(useShallow(({ logOut }) => ({ logOut })));
 	const { openSheet } = useSheet();
 
+	const hasPayoutAccount =
+		(payoutAccountsData?.payoutAccounts?.length ?? 0) > 0;
+
 	const handleNewPayout = () => {
 		if (!data?.store) return;
 
-		if (!data.store.bankAccountNumber) {
+		if (!hasPayoutAccount) {
 			Alert.alert(
 				'No bank account linked',
 				'You must link a bank account before requesting a payout'
@@ -61,10 +71,7 @@ const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 			return;
 		}
 
-		navigation.navigate('Modal.AddPayout', {
-			realizedRevenue: data.store.realizedRevenue ?? 0,
-			paidOut: data.store.paidOut ?? 0
-		});
+		navigation.navigate('Modal.AddPayout');
 	};
 
 	const handleSwitchStore = React.useCallback(() => {
@@ -101,7 +108,8 @@ const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 	}
 
 	const store = data.store;
-	const available = (store.realizedRevenue ?? 0) - (store.paidOut ?? 0);
+	const available = balanceData?.balance.available ?? 0;
+	const pendingPayouts = balanceData?.balance.pendingPayouts ?? 0;
 
 	return (
 		<Screen style={{ paddingTop: top }}>
@@ -129,6 +137,15 @@ const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 					<Typography size='xxxlarge' weight='bold'>
 						{formatNaira(available)}
 					</Typography>
+
+					{pendingPayouts > 0 && (
+						<>
+							<Spacer y={4} />
+							<Typography variant='secondary' size='small'>
+								{formatNaira(pendingPayouts)} payout pending
+							</Typography>
+						</>
+					)}
 				</View>
 
 				<Spacer y={16} />
@@ -155,6 +172,7 @@ const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 				<OnboardingChecklist
 					store={store}
 					addresses={addressesData?.addresses ?? []}
+					hasPayoutAccount={hasPayoutAccount}
 				/>
 
 				<Separator />
@@ -262,10 +280,12 @@ enum OnboardingRequirement {
 
 const onboardingRequirementsConfig = ({
 	store,
-	addresses
+	addresses,
+	hasPayoutAccount
 }: {
 	store: StoreType;
 	addresses: Address[];
+	hasPayoutAccount: boolean;
 }) =>
 	[
 		{
@@ -289,7 +309,7 @@ const onboardingRequirementsConfig = ({
 		{
 			id: OnboardingRequirement.LinkBankAccount,
 			label: 'Link a bank account',
-			condition: !!store.bankAccountNumber,
+			condition: hasPayoutAccount,
 			targetScreen: 'Modal.AddPayoutAccount'
 		}
 	] as const;
@@ -303,17 +323,23 @@ const getOnboardingCompletionCount = (
 interface OnboardingChecklistProps {
 	store: StoreType;
 	addresses: Address[];
+	hasPayoutAccount: boolean;
 }
 
 const OnboardingChecklist: React.FC<OnboardingChecklistProps> = ({
 	store,
-	addresses
+	addresses,
+	hasPayoutAccount
 }) => {
 	const { theme } = useTheme();
 	const { navigate } =
 		useNavigation<NavigationProp<AppStackParamList & StoreStackParamList>>();
 
-	const items = onboardingRequirementsConfig({ store, addresses });
+	const items = onboardingRequirementsConfig({
+		store,
+		addresses,
+		hasPayoutAccount
+	});
 
 	const completedCount = getOnboardingCompletionCount(items);
 

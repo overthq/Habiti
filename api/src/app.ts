@@ -1,3 +1,5 @@
+import './config/json';
+
 import { Hono } from 'hono';
 import { secureHeaders } from 'hono/secure-headers';
 import { bodyLimit } from 'hono/body-limit';

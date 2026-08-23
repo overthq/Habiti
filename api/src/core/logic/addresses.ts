@@ -4,7 +4,7 @@ import * as AddressData from '../data/addresses';
 import type { AppEnv } from '../../types/hono';
 import type { StripUndefined } from '../../utils/objects';
 import { LogicError, LogicErrorCode } from './errors';
-import { canManageStore } from './permissions';
+import { assertStoreScope } from './permissions';
 
 interface UserAddressArgs {
 	name: string;
@@ -84,42 +84,20 @@ interface StoreAddressArgs {
 }
 
 export const getStoreAddresses = async (c: Context<AppEnv>) => {
-	if (!c.var.auth?.id) {
-		throw new LogicError(LogicErrorCode.NotAuthenticated);
-	}
+	const { storeId } = assertStoreScope(c);
 
-	if (!c.var.storeId) {
-		throw new LogicError(LogicErrorCode.StoreContextRequired);
-	}
-
-	const isAuthorized = await canManageStore(c);
-	if (!isAuthorized) {
-		throw new LogicError(LogicErrorCode.CannotManageStore);
-	}
-
-	return AddressData.getStoreAddresses(c.var.prisma, c.var.storeId);
+	return AddressData.getStoreAddresses(c.var.prisma, storeId);
 };
 
 export const createStoreAddress = async (
 	c: Context<AppEnv>,
 	args: StoreAddressArgs
 ) => {
-	if (!c.var.auth?.id) {
-		throw new LogicError(LogicErrorCode.NotAuthenticated);
-	}
-
-	if (!c.var.storeId) {
-		throw new LogicError(LogicErrorCode.StoreContextRequired);
-	}
-
-	const isAuthorized = await canManageStore(c);
-	if (!isAuthorized) {
-		throw new LogicError(LogicErrorCode.CannotManageStore);
-	}
+	const { storeId } = assertStoreScope(c);
 
 	return AddressData.createStoreAddress(c.var.prisma, {
 		...(args as StripUndefined<StoreAddressArgs>),
-		storeId: c.var.storeId
+		storeId
 	});
 };
 
@@ -128,21 +106,10 @@ export const editStoreAddress = async (
 	addressId: string,
 	args: Partial<StoreAddressArgs>
 ) => {
-	if (!c.var.auth?.id) {
-		throw new LogicError(LogicErrorCode.NotAuthenticated);
-	}
-
-	if (!c.var.storeId) {
-		throw new LogicError(LogicErrorCode.StoreContextRequired);
-	}
-
-	const isAuthorized = await canManageStore(c);
-	if (!isAuthorized) {
-		throw new LogicError(LogicErrorCode.CannotManageStore);
-	}
+	const { storeId } = assertStoreScope(c);
 
 	const address = await AddressData.getAddressById(c.var.prisma, addressId);
-	if (!address || address.storeId !== c.var.storeId) {
+	if (!address || address.storeId !== storeId) {
 		throw new LogicError(LogicErrorCode.NotFound);
 	}
 
@@ -157,21 +124,10 @@ export const deleteStoreAddress = async (
 	c: Context<AppEnv>,
 	addressId: string
 ) => {
-	if (!c.var.auth?.id) {
-		throw new LogicError(LogicErrorCode.NotAuthenticated);
-	}
-
-	if (!c.var.storeId) {
-		throw new LogicError(LogicErrorCode.StoreContextRequired);
-	}
-
-	const isAuthorized = await canManageStore(c);
-	if (!isAuthorized) {
-		throw new LogicError(LogicErrorCode.CannotManageStore);
-	}
+	const { storeId } = assertStoreScope(c);
 
 	const address = await AddressData.getAddressById(c.var.prisma, addressId);
-	if (!address || address.storeId !== c.var.storeId) {
+	if (!address || address.storeId !== storeId) {
 		throw new LogicError(LogicErrorCode.NotFound);
 	}
 

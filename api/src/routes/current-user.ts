@@ -40,6 +40,11 @@ currentUser.delete('/', async c => {
 	return c.body(null, 204);
 });
 
+currentUser.get('/credit', async c => {
+	const credit = await UserLogic.getCurrentUserCredit(c);
+	return c.json({ credit });
+});
+
 currentUser.get('/followed-stores', async c => {
 	const stores = await UserLogic.getFollowedStores(c);
 	return c.json({ stores });

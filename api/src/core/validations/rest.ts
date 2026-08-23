@@ -136,9 +136,7 @@ export const updateStoreBodySchema = z.object({
 	instagram: z.string().optional(),
 	unlisted: z.boolean().optional(),
 	imageUrl: z.string().optional(),
-	imagePublicId: z.string().optional(),
-	bankAccountNumber: z.string().optional(),
-	bankCode: z.string().optional()
+	imagePublicId: z.string().optional()
 });
 
 export type UpdateStoreBody = z.infer<typeof updateStoreBodySchema>;
@@ -184,10 +182,31 @@ export const updateOrderStatusBodySchema = z.object({
 export type UpdateOrderStatusBody = z.infer<typeof updateOrderStatusBodySchema>;
 
 export const createPayoutBodySchema = z.object({
-	amount: z.number().min(0)
+	amount: z.number().min(0),
+	payoutAccountId: z.string().uuid().optional()
 });
 
 export type CreatePayoutBody = z.infer<typeof createPayoutBodySchema>;
+
+export const createPayoutAccountBodySchema = z.object({
+	bankAccountNumber: z.string().min(1),
+	bankCode: z.string().min(1),
+	label: z.string().min(1).max(64).optional(),
+	replaceExisting: z.boolean().optional()
+});
+
+export type CreatePayoutAccountBody = z.infer<
+	typeof createPayoutAccountBodySchema
+>;
+
+export const adminWithdrawCustomerCreditBodySchema = z.object({
+	amount: z.number().int().positive(),
+	reference: z.string().min(1).max(200)
+});
+
+export type AdminWithdrawCustomerCreditBody = z.infer<
+	typeof adminWithdrawCustomerCreditBodySchema
+>;
 
 export const verifyBankAccountBodySchema = z.object({
 	bankAccountNumber: z.string(),
@@ -322,9 +341,7 @@ export const adminUpdateStoreBodySchema = z.object({
 	instagram: z.string().optional(),
 	unlisted: z.boolean().optional(),
 	imageUrl: z.string().optional(),
-	imagePublicId: z.string().optional(),
-	bankAccountNumber: z.string().optional(),
-	bankCode: z.string().optional()
+	imagePublicId: z.string().optional()
 });
 
 export type AdminUpdateStoreBody = z.infer<typeof adminUpdateStoreBodySchema>;

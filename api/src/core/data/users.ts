@@ -1,5 +1,11 @@
 import { PrismaClient } from '../../generated/prisma/client';
 import { UserFilters, userFiltersToPrismaClause } from '../../utils/queries';
+import { runSerializable } from '../../utils/prisma';
+import {
+	detachCustomerAccounts,
+	transferCustomerCredit
+} from './customerCredit';
+
 export interface CreateUserParams {
 	name: string;
 	email?: string | null;
@@ -182,6 +188,11 @@ export const mergeUsers = async (
 			data: { userId: toUserId }
 		});
 
+		// Ledger accounts are deliberately not repointed: re-owning an account
+		// would silently rewrite the history of every entry in it. The balance
+		// moves as a journal, then the empty account is detached.
+		await transferCustomerCredit(tx, fromUserId, toUserId);
+
 		// Cascades clean up sessions, refresh tokens and any remaining rows.
 		await tx.user.delete({ where: { id: fromUserId } });
 	});
@@ -190,8 +201,9 @@ export const mergeUsers = async (
 };
 
 export const deleteUser = async (prisma: PrismaClient, userId: string) => {
-	await prisma.user.delete({
-		where: { id: userId }
+	await runSerializable(prisma, async tx => {
+		await detachCustomerAccounts(tx, userId);
+		await tx.user.delete({ where: { id: userId } });
 	});
 };
 

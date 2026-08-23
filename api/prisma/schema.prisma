@@ -30,6 +30,8 @@ model User {
   ProductReview ProductReview[]
   refreshTokens RefreshToken[]
   sessions      Session[]
+
+  ledgerAccounts LedgerAccount[]
 }
 
 model Store {
@@ -39,13 +41,12 @@ model Store {
   website              String?
   twitter              String?  @db.VarChar(15)
   instagram            String?  @db.VarChar(30)
-  unrealizedRevenue    Int      @default(0)
-  realizedRevenue      Int      @default(0)
-  paidOut              Int      @default(0)
+  unrealizedRevenue    BigInt   @default(0)
+  realizedRevenue      BigInt   @default(0)
+  paidOut              BigInt   @default(0)
+  pendingPayouts       BigInt   @default(0)
+  ledgerSequence       BigInt   @default(0)
   orderCount           Int      @default(0)
-  bankAccountNumber    String?
-  bankCode             String?
-  bankAccountReference String?
   unlisted             Boolean  @default(false)
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
@@ -59,6 +60,11 @@ model Store {
   transactions Transaction[]
   categories   StoreProductCategory[]
   addresses    Address[]
+
+  ledgerAccounts   LedgerAccount[]
+  statementEntries StoreStatementEntry[]
+  payoutRequests   PayoutRequest[]
+  payoutAccounts   StorePayoutAccount[]
 }
 
 model Product {
@@ -103,6 +109,9 @@ model Order {
   user         User          @relation(fields: [userId], references: [id])
   store        Store         @relation(fields: [storeId], references: [id])
   transactions Transaction[]
+
+  ledgerTransactions LedgerTransaction[]
+  statementEntries   StoreStatementEntry[]
 
   @@unique([storeId, serialNumber])
   @@index([userId, createdAt])
@@ -445,4 +454,209 @@ model AdminRefreshToken {
   session AdminSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
   @@index([sessionId])
+}
+
+enum AccountType {
+  Asset
+  Liability
+  Revenue
+  Expense
+}
+
+enum AccountKind {
+  PlatformCash // Asset     - funds held at Paystack / settled to our bank
+  PlatformFeeRevenue // Revenue   - Habiti service fees
+  StorePending // Liability - collected, order not yet complete
+  StoreAvailable // Liability - complete, withdrawable
+  StorePayoutInTransit // Liability - payout requested, not yet settled
+  CustomerCredit // Liability - refunds owed to a customer
+}
+
+enum EntryDirection {
+  Debit
+  Credit
+}
+
+enum LedgerReason {
+  OpeningBalance
+  OrderPaid
+  OrderCompleted
+  OrderCancelledBeforeCompletion
+  RefundIssued
+  CustomerCreditWithdrawn
+  PayoutRequested
+  PayoutSettled
+  PayoutFailed
+  SubscriptionFee
+  ManualAdjustment
+}
+
+model LedgerAccount {
+  id      String      @id @default(uuid())
+  kind    AccountKind
+  type    AccountType
+  storeId String?
+  userId  String?
+
+  formerUserId String?
+  detachedAt   DateTime?
+
+  createdAt DateTime @default(now())
+
+  store Store? @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  user  User?  @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  entries LedgerEntry[]
+
+  @@index([storeId])
+  @@index([userId])
+}
+
+model LedgerTransaction {
+  id String @id @default(uuid())
+
+  sequence BigInt @default(autoincrement())
+
+  reason      LedgerReason
+  description String?
+
+  idempotencyKey String @unique
+
+  orderId         String?
+  payoutRequestId String?
+  webhookEventId  String?
+  createdAt       DateTime @default(now())
+
+  order         Order?         @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  payoutRequest PayoutRequest? @relation(fields: [payoutRequestId], references: [id], onDelete: Restrict)
+  webhookEvent  WebhookEvent?  @relation(fields: [webhookEventId], references: [id], onDelete: Restrict)
+
+  entries        LedgerEntry[]
+  statementEntry StoreStatementEntry?
+
+  @@index([orderId])
+  @@index([payoutRequestId])
+  @@index([sequence])
+}
+
+model LedgerEntry {
+  id            String         @id @default(uuid())
+  transactionId String
+  accountId     String
+  direction     EntryDirection
+  amount        BigInt
+
+  transaction LedgerTransaction @relation(fields: [transactionId], references: [id], onDelete: Restrict)
+  account     LedgerAccount     @relation(fields: [accountId], references: [id], onDelete: Restrict)
+
+  @@index([transactionId])
+  @@index([accountId, id])
+}
+
+model StoreStatementEntry {
+  id            String            @id @default(uuid())
+  storeId       String
+  transactionId String            @unique
+  sequence      BigInt
+  type          TransactionType
+  status        TransactionStatus @default(Success)
+  amount        BigInt
+  balanceAfter  BigInt
+  description   String?
+  orderId       String?
+  createdAt     DateTime
+  updatedAt     DateTime          @updatedAt
+
+  store       Store             @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  transaction LedgerTransaction @relation(fields: [transactionId], references: [id], onDelete: Restrict)
+  order       Order?            @relation(fields: [orderId], references: [id], onDelete: Restrict)
+
+  @@index([storeId, sequence])
+  @@index([storeId, type])
+  @@index([storeId, createdAt])
+  @@index([orderId])
+}
+
+enum PayoutStatus {
+  Processing
+  Settled
+  Failed
+}
+
+model PayoutRequest {
+  id            String       @id @default(uuid())
+  storeId       String
+  amount        BigInt
+  status        PayoutStatus @default(Processing)
+  providerRef   String?      @unique
+  failureReason String?
+  payoutAccountId String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  store              Store               @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  payoutAccount      StorePayoutAccount? @relation(fields: [payoutAccountId], references: [id], onDelete: Restrict)
+  ledgerTransactions LedgerTransaction[]
+
+  @@index([storeId, status])
+  @@index([storeId, createdAt])
+  @@index([payoutAccountId])
+}
+
+enum PayoutAccountStatus {
+  Active
+  Inactive
+}
+
+model StorePayoutAccount {
+  id       String @id @default(uuid())
+  storeId  String
+  provider String @default("paystack")
+
+  accountNumber String
+  bankCode      String
+  accountName   String?
+  bankName      String?
+  recipientRef  String
+
+  label      String?
+  isDefault  Boolean             @default(false)
+  status     PayoutAccountStatus @default(Active)
+  verifiedAt DateTime?
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deactivatedAt DateTime?
+
+  store   Store           @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  payouts PayoutRequest[]
+
+  @@unique([storeId, provider, recipientRef])
+  @@unique([storeId, provider, bankCode, accountNumber])
+  @@index([storeId, status])
+}
+
+enum WebhookEventStatus {
+  Received
+  Processed
+  Failed
+  Skipped
+}
+
+model WebhookEvent {
+  id          String             @id @default(uuid())
+  provider    String
+  eventType   String
+  externalId  String
+  payload     Json
+  status      WebhookEventStatus @default(Received)
+  attempts    Int                @default(0)
+  error       String?
+  receivedAt  DateTime           @default(now())
+  processedAt DateTime?
+
+  ledgerTransactions LedgerTransaction[]
+
+  @@unique([provider, externalId])
+  @@index([status, receivedAt])
 }

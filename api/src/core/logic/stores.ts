@@ -4,13 +4,13 @@ import type { AppEnv } from '../../types/hono';
 import type { StripUndefined } from '../../utils/objects';
 
 import * as PushTokenData from '../data/pushTokens';
+import * as SessionData from '../data/sessions';
 import * as StoreData from '../data/stores';
-import { createTransferRecipient } from '../payments';
 
 import { NotificationType } from '../notifications';
 
 import { OrderFilters, ProductFilters } from '../../utils/queries';
-import { canManageStore } from './permissions';
+import { assertStoreScope } from './permissions';
 
 import { LogicError, LogicErrorCode } from './errors';
 
@@ -20,9 +20,6 @@ interface CreateStoreInput {
 	website?: string | undefined;
 	twitter?: string | undefined;
 	instagram?: string | undefined;
-	bankAccountNumber?: string | undefined;
-	bankCode?: string | undefined;
-	bankAccountReference?: string | undefined;
 }
 
 export const createStore = async (
@@ -61,9 +58,6 @@ interface UpdateStoreInput {
 	website?: string | undefined;
 	twitter?: string | undefined;
 	instagram?: string | undefined;
-	bankAccountNumber?: string | undefined;
-	bankCode?: string | undefined;
-	bankAccountReference?: string | undefined;
 	unlisted?: boolean | undefined;
 	imageUrl?: string | undefined;
 	imagePublicId?: string | undefined;
@@ -75,9 +69,7 @@ export const updateStore = async (
 ) => {
 	const { storeId, ...updateData } = input;
 
-	if (c.var.storeId && c.var.storeId !== storeId) {
-		throw new LogicError(LogicErrorCode.CannotManageStore);
-	}
+	assertStoreScope(c, storeId);
 
 	const existingStore = await StoreData.getStoreByIdWithManagers(
 		c.var.prisma,
@@ -90,32 +82,6 @@ export const updateStore = async (
 
 	if (!c.var.auth) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
-	}
-
-	const isAuthorized = await canManageStore(c);
-
-	if (!isAuthorized) {
-		throw new LogicError(LogicErrorCode.Forbidden);
-	}
-
-	if (updateData.bankAccountNumber && updateData.bankCode) {
-		const { data, status } = await createTransferRecipient({
-			name: c.var.auth.name,
-			accountNumber: updateData.bankAccountNumber,
-			bankCode: updateData.bankCode
-		});
-
-		if (status) {
-			updateData.bankAccountNumber = data.details.account_number;
-			updateData.bankCode = data.details.bank_code;
-			updateData.bankAccountReference = data.recipient_code;
-		}
-	} else {
-		// FIXME: If (and only if) the user explicitly unset bank details, set them to
-		// undefined.
-		// updateData.bankAccountNumber = undefined;
-		// updateData.bankCode = undefined;
-		// updateData.bankAccountReference = undefined;
 	}
 
 	const store = await StoreData.updateStore(
@@ -196,6 +162,17 @@ export const deleteStore = async (
 
 	if (!isCurrentUserManager) {
 		throw new LogicError(LogicErrorCode.CannotManageStore);
+	}
+
+	// Ledger accounts are Restrict-linked to the store, so this would otherwise
+	// surface as an opaque foreign-key error. A store that has handled money
+	// keeps its journals; `unlisted` is the way to take it out of circulation.
+	const ledgerAccounts = await c.var.prisma.ledgerAccount.count({
+		where: { storeId }
+	});
+
+	if (ledgerAccounts > 0) {
+		throw new LogicError(LogicErrorCode.HasLedgerHistory);
 	}
 
 	await StoreData.deleteStore(c.var.prisma, storeId);
@@ -299,6 +276,12 @@ export const removeStoreManager = async (
 	}
 
 	await StoreData.removeStoreManager(c.var.prisma, storeId, userId);
+
+	const sessions = await SessionData.getUserSessions(c.var.prisma, userId);
+
+	await Promise.all(
+		sessions.map(session => SessionData.denySession(c.var.redis, session.id))
+	);
 
 	c.var.services.analytics.track({
 		event: 'store_manager_removed',
@@ -486,7 +469,7 @@ export const getStoreCustomer = async (
 	storeId: string,
 	userId: string
 ) => {
-	await canManageStore(c);
+	assertStoreScope(c, storeId);
 
 	const customer = await StoreData.getStoreCustomer(
 		c.var.prisma,

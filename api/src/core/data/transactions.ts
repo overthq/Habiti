@@ -1,77 +1,80 @@
 import {
+	LedgerReason,
+	PayoutStatus,
 	PrismaClient,
 	TransactionStatus,
 	TransactionType
 } from '../../generated/prisma/client';
 import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
 import { runSerializable } from '../../utils/prisma';
+import { recordPayoutFailed, recordPayoutSettled } from './postings';
 
-// Credit types increase the available balance; debit types decrease it.
-const CREDIT_TYPES: TransactionType[] = [
-	TransactionType.Revenue,
-	TransactionType.Adjustment,
-	TransactionType.Refund
-];
+/**
+ * Merchant-facing reads over the ledger.
+ *
+ * Nothing here moves money on its own. Balances come from the projections that
+ * `ledger.postJournal` maintains, and every figure is reproducible by
+ * replaying the journals -- see `ledger.replayStore`.
+ */
 
-const DEBIT_TYPES: TransactionType[] = [
-	TransactionType.Payout,
-	TransactionType.SubscriptionFee
-];
-
-export const isCredit = (type: TransactionType): boolean =>
-	CREDIT_TYPES.includes(type);
-
-export const isDebit = (type: TransactionType): boolean =>
-	DEBIT_TYPES.includes(type);
-
-interface CreateTransactionParams {
+export interface TransactionView {
+	id: string;
 	storeId: string;
 	type: TransactionType;
-	status?: TransactionStatus;
+	status: TransactionStatus;
 	amount: number;
-	description?: string;
-	orderId?: string;
+	description: string | null;
+	orderId: string | null;
+	balanceAfter: number;
+	createdAt: Date;
+	updatedAt: Date;
+	order?: unknown;
 }
 
-export const createTransaction = async (
+interface StatementRowRecord {
+	id: string;
+	storeId: string;
+	type: TransactionType;
+	status: TransactionStatus;
+	amount: bigint;
+	description: string | null;
+	orderId: string | null;
+	balanceAfter: bigint;
+	createdAt: Date;
+	updatedAt: Date;
+	order?: unknown;
+}
+
+const toTransactionView = (row: StatementRowRecord): TransactionView => ({
+	id: row.id,
+	storeId: row.storeId,
+	type: row.type,
+	status: row.status,
+	amount: Number(row.amount),
+	description: row.description,
+	orderId: row.orderId,
+	balanceAfter: Number(row.balanceAfter),
+	createdAt: row.createdAt,
+	updatedAt: row.updatedAt,
+	...(row.order === undefined ? {} : { order: row.order })
+});
+
+export const computeAvailableBalance = (params: {
+	realizedRevenue: number;
+	paidOut: number;
+	pendingPayouts: number;
+}) => params.realizedRevenue - params.paidOut - params.pendingPayouts;
+
+export const getPendingPayoutTotal = async (
 	tx: TransactionClient,
-	params: CreateTransactionParams
-) => {
-	const { storeId, type, status, amount, description, orderId } = params;
-
-	const lastTx = await tx.transaction.findFirst({
-		where: { storeId },
-		orderBy: { createdAt: 'desc' },
-		select: { balanceAfter: true }
+	storeId: string
+): Promise<number> => {
+	const store = await tx.store.findUnique({
+		where: { id: storeId },
+		select: { pendingPayouts: true }
 	});
 
-	const previousBalance = lastTx?.balanceAfter ?? 0;
-	const balanceAfter = isCredit(type)
-		? previousBalance + amount
-		: previousBalance - amount;
-
-	return tx.transaction.create({
-		data: {
-			storeId,
-			type,
-			status: status ?? TransactionStatus.Success,
-			amount,
-			description: description ?? null,
-			orderId: orderId ?? null,
-			balanceAfter
-		}
-	});
-};
-
-export const updateTransactionStatus = async (
-	tx: TransactionClient,
-	transactionId: string,
-	status: TransactionStatus
-) => {
-	return tx.transaction.update({
-		where: { id: transactionId },
-		data: { status }
-	});
+	return Number(store?.pendingPayouts ?? 0n);
 };
 
 export interface TransactionFilters {
@@ -87,7 +90,7 @@ export const getTransactionsByStoreId = async (
 	prisma: PrismaClient,
 	storeId: string,
 	filters?: TransactionFilters
-) => {
+): Promise<TransactionView[]> => {
 	const where: Record<string, unknown> = { storeId };
 
 	if (filters?.type) {
@@ -105,168 +108,241 @@ export const getTransactionsByStoreId = async (
 		};
 	}
 
-	return prisma.transaction.findMany({
+	const rows = await prisma.storeStatementEntry.findMany({
 		where,
-		orderBy: { createdAt: 'desc' },
+		orderBy: { sequence: 'desc' },
 		take: filters?.limit ?? 50,
 		skip: filters?.offset ?? 0,
 		include: { order: true }
 	});
+
+	return rows.map(toTransactionView);
 };
 
 export const getTransactionById = async (
 	prisma: PrismaClient,
 	transactionId: string
-) => {
-	return prisma.transaction.findUnique({
+): Promise<(TransactionView & { store: unknown }) | null> => {
+	const row = await prisma.storeStatementEntry.findUnique({
 		where: { id: transactionId },
 		include: { order: true, store: true }
 	});
+
+	if (!row) return null;
+
+	return { ...toTransactionView(row), store: row.store };
+};
+
+// --- Payout lifecycle -----------------------------------------------------
+
+export const getPayoutRequestById = async (
+	prisma: PrismaClient | TransactionClient,
+	payoutRequestId: string
+) => prisma.payoutRequest.findUnique({ where: { id: payoutRequestId } });
+
+interface CreatePayoutRequestParams {
+	storeId: string;
+	amount: bigint;
+	/// Optional so the fake ledger and any pre-account caller still work;
+	/// `createPayoutTransaction` always supplies it.
+	payoutAccountId?: string | undefined;
+}
+
+export const createPayoutRequest = async (
+	tx: TransactionClient,
+	params: CreatePayoutRequestParams
+) => {
+	const request = await tx.payoutRequest.create({
+		data: {
+			storeId: params.storeId,
+			amount: params.amount,
+			status: PayoutStatus.Processing,
+			...(params.payoutAccountId
+				? { payoutAccountId: params.payoutAccountId }
+				: {})
+		}
+	});
+
+	return tx.payoutRequest.update({
+		where: { id: request.id },
+		data: { providerRef: request.id }
+	});
 };
 
 /**
- * Called by Paystack webhook on transfer.success.
- * The reference is the Transaction ID used as the Paystack transfer reference.
- * Idempotent: a no-op if the row has already been marked Success.
+ * Advances a payout to Settled and posts the journal that moves the money out
+ * of the platform.
+ *
+ * Idempotent twice over: the status guard short-circuits a replay, and the
+ * journal's idempotency key would reject a second posting even if it did not.
  */
 export const markTransferSuccessful = async (
 	prisma: PrismaClient,
-	reference: string
+	reference: string,
+	webhookEventId?: string | null
 ) => {
 	await runSerializable(prisma, async tx => {
-		const transaction = await tx.transaction.findUnique({
+		const request = await tx.payoutRequest.findUnique({
 			where: { id: reference }
 		});
 
-		if (!transaction) {
-			throw new Error(`Transaction not found: ${reference}`);
+		if (!request) {
+			throw new Error(`Payout request not found: ${reference}`);
 		}
 
-		if (transaction.type !== TransactionType.Payout) {
-			throw new Error(`Transaction ${reference} is not a payout`);
-		}
-
-		if (transaction.status === TransactionStatus.Success) {
+		if (request.status === PayoutStatus.Settled) {
 			return;
 		}
 
-		if (transaction.status !== TransactionStatus.Processing) {
+		if (request.status !== PayoutStatus.Processing) {
 			throw new Error(
-				`Transaction ${reference} cannot transition from ${transaction.status} to Success`
+				`Payout ${reference} cannot transition from ${request.status} to Settled`
 			);
 		}
 
-		await tx.transaction.update({
+		await tx.payoutRequest.update({
 			where: { id: reference },
-			data: { status: TransactionStatus.Success }
+			data: { status: PayoutStatus.Settled }
 		});
 
-		await tx.store.update({
-			where: { id: transaction.storeId },
-			data: { paidOut: { increment: transaction.amount } }
+		await recordPayoutSettled(tx, {
+			storeId: request.storeId,
+			payoutRequestId: request.id,
+			amount: request.amount,
+			webhookEventId: webhookEventId ?? null
 		});
 	});
 };
 
-/**
- * Called by Paystack webhook on transfer.failure and transfer.reversed.
- * Marks the payout transaction as failed and creates a reversal adjustment.
- * Idempotent: a no-op if the row has already been marked Failure.
- */
 export const markTransferFailed = async (
 	prisma: PrismaClient,
-	reference: string
+	reference: string,
+	failureReason?: string | null,
+	webhookEventId?: string | null
 ) => {
 	await runSerializable(prisma, async tx => {
-		const transaction = await tx.transaction.findUnique({
+		const request = await tx.payoutRequest.findUnique({
 			where: { id: reference }
 		});
 
-		if (!transaction) {
-			throw new Error(`Transaction not found: ${reference}`);
+		if (!request) {
+			throw new Error(`Payout request not found: ${reference}`);
 		}
 
-		if (transaction.type !== TransactionType.Payout) {
-			throw new Error(`Transaction ${reference} is not a payout`);
-		}
-
-		if (transaction.status === TransactionStatus.Failure) {
+		if (request.status === PayoutStatus.Failed) {
 			return;
 		}
 
-		if (transaction.status !== TransactionStatus.Processing) {
+		if (request.status !== PayoutStatus.Processing) {
 			throw new Error(
-				`Transaction ${reference} cannot transition from ${transaction.status} to Failure`
+				`Payout ${reference} cannot transition from ${request.status} to Failed`
 			);
 		}
 
-		await tx.transaction.update({
+		await tx.payoutRequest.update({
 			where: { id: reference },
-			data: { status: TransactionStatus.Failure }
+			data: {
+				status: PayoutStatus.Failed,
+				failureReason: failureReason ?? null
+			}
 		});
 
-		await createTransaction(tx, {
-			storeId: transaction.storeId,
-			type: TransactionType.Adjustment,
-			amount: transaction.amount,
-			description: 'Payout transfer failed — reversal'
+		await recordPayoutFailed(tx, {
+			storeId: request.storeId,
+			payoutRequestId: request.id,
+			amount: request.amount,
+			webhookEventId: webhookEventId ?? null
 		});
 	});
 };
 
 /**
- * Admin action: update the status of a payout-type transaction.
+ * Finds the payout behind whichever id an admin is holding.
+ *
+ * Payouts are listed through `getTransactionsByStoreId`, which returns
+ * `StoreStatementEntry` rows -- so the id in an admin's hand is a statement
+ * entry's, not the `PayoutRequest` id that the settlement functions key on.
+ * Resolving here rather than at the route means the admin client keeps sending
+ * exactly what it always sent.
+ *
+ * A `PayoutRequest` id is accepted too: that is what the Paystack webhook
+ * carries as its transfer reference, and refusing it would make the same
+ * action work or not depending on where the id came from.
  */
+export const resolvePayoutRequestId = async (
+	prisma: PrismaClient,
+	id: string
+): Promise<string | null> => {
+	const entry = await prisma.storeStatementEntry.findUnique({
+		where: { id },
+		select: { transactionId: true }
+	});
+
+	if (entry) {
+		const journal = await prisma.ledgerTransaction.findUnique({
+			where: { id: entry.transactionId },
+			select: { payoutRequestId: true }
+		});
+
+		return journal?.payoutRequestId ?? null;
+	}
+
+	const request = await prisma.payoutRequest.findUnique({
+		where: { id },
+		select: { id: true }
+	});
+
+	return request?.id ?? null;
+};
+
 export const adminUpdatePayoutTransaction = async (
 	prisma: PrismaClient,
 	transactionId: string,
 	status: TransactionStatus
 ) => {
-	return runSerializable(prisma, async tx => {
-		const transaction = await tx.transaction.findUnique({
-			where: { id: transactionId }
-		});
+	const payoutRequestId = await resolvePayoutRequestId(prisma, transactionId);
 
-		if (!transaction) {
-			throw new Error('Transaction not found');
-		}
+	if (!payoutRequestId) {
+		throw new Error(`Payout request not found: ${transactionId}`);
+	}
 
-		if (transaction.type !== TransactionType.Payout) {
-			throw new Error('Only payout transactions can be status-updated');
-		}
+	if (status === TransactionStatus.Success) {
+		await markTransferSuccessful(prisma, payoutRequestId);
+	} else if (status === TransactionStatus.Failure) {
+		await markTransferFailed(prisma, payoutRequestId, 'Marked failed by admin');
+	} else {
+		throw new Error(`Cannot set a payout to ${status}`);
+	}
 
-		if (transaction.status === status) {
-			return transaction;
-		}
-
-		const updated = await tx.transaction.update({
-			where: { id: transactionId },
-			data: { status },
-			include: { store: true }
-		});
-
-		if (
-			status === TransactionStatus.Success &&
-			transaction.status !== TransactionStatus.Success
-		) {
-			await tx.store.update({
-				where: { id: transaction.storeId },
-				data: { paidOut: { increment: transaction.amount } }
-			});
-		}
-
-		if (
-			status === TransactionStatus.Failure &&
-			transaction.status !== TransactionStatus.Failure
-		) {
-			await createTransaction(tx, {
-				storeId: transaction.storeId,
-				type: TransactionType.Adjustment,
-				amount: transaction.amount,
-				description: 'Payout failed — reversal (admin)'
-			});
-		}
-
-		return updated;
+	const request = await prisma.payoutRequest.findUnique({
+		where: { id: payoutRequestId }
 	});
+
+	if (!request) {
+		throw new Error(`Payout request not found: ${payoutRequestId}`);
+	}
+
+	return request;
+};
+
+/**
+ * The statement row a payout produced, in the shape the dashboard expects.
+ * Used by the payout endpoint so its response keeps the pre-ledger contract.
+ */
+export const getPayoutStatementEntry = async (
+	prisma: PrismaClient | TransactionClient,
+	payoutRequestId: string
+): Promise<TransactionView | null> => {
+	const journal = await prisma.ledgerTransaction.findFirst({
+		where: { payoutRequestId, reason: LedgerReason.PayoutRequested },
+		select: { id: true }
+	});
+
+	if (!journal) return null;
+
+	const row = await prisma.storeStatementEntry.findUnique({
+		where: { transactionId: journal.id }
+	});
+
+	return row ? toTransactionView(row) : null;
 };

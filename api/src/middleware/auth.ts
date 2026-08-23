@@ -50,7 +50,7 @@ export const auth = (options: AuthOptions = {}) => {
 			}
 
 			c.set('auth', payload);
-			c.set('storeId', payload.storeId ?? c.req.header('x-market-store-id'));
+			c.set('storeId', payload.storeId);
 			c.set('isAdmin', payload.role === 'admin');
 
 			return next();

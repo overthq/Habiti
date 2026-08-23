@@ -19,8 +19,6 @@ export interface Store {
 	twitter?: string;
 	instagram?: string;
 	unlisted: boolean;
-	bankAccountNumber?: string;
-	bankCode?: string;
 	realizedRevenue: number;
 	unrealizedRevenue: number;
 	paidOut: number;
@@ -30,6 +28,14 @@ export interface Store {
 	_count?: { followers: number };
 	createdAt: string;
 	updatedAt: string;
+}
+
+export interface StoreBalance {
+	realizedRevenue: number;
+	unrealizedRevenue: number;
+	paidOut: number;
+	pendingPayouts: number;
+	available: number;
 }
 
 export interface Product {
@@ -340,8 +346,6 @@ export interface CreateStoreBody {
 
 export interface UpdateCurrentStoreBody {
 	name?: string;
-	bankAccountNumber?: string;
-	bankCode?: string;
 	imageUrl?: string;
 	imagePublicId?: string;
 }
@@ -353,6 +357,25 @@ export interface UpdateCurrentUserBody {
 
 export interface CreatePayoutBody {
 	amount: number;
+	payoutAccountId?: string;
+}
+
+export interface PayoutAccount {
+	id: string;
+	accountNumber: string;
+	accountName: string | null;
+	bankCode: string;
+	bankName: string | null;
+	label: string | null;
+	isDefault: boolean;
+	createdAt: string;
+}
+
+export interface CreatePayoutAccountBody {
+	bankAccountNumber: string;
+	bankCode: string;
+	label?: string;
+	replaceExisting?: boolean;
 }
 
 export interface CreateProductCategoryBody {

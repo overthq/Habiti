@@ -1,6 +1,6 @@
 import type { Context } from 'hono';
 
-import { OrderStatus } from '../../generated/prisma/client';
+import { OrderStatus, UserPushToken } from '../../generated/prisma/client';
 
 import * as CardLogic from './cards';
 import * as PaymentLogic from './payments';
@@ -9,9 +9,9 @@ import * as OrderData from '../data/orders';
 import * as CartData from '../data/carts';
 import * as CardData from '../data/cards';
 import * as PushTokenData from '../data/pushTokens';
+import * as StoreData from '../data/stores';
 
 import { calculatePaystackFee, calculateHabitiFee } from './carts';
-import { createOrderHooks, updateOrderHooks } from './hooks';
 import { validateCart } from '../validations/carts';
 import { createOrderSchema, updateOrderSchema } from '../validations/rest';
 import type { AppEnv } from '../../types/hono';
@@ -157,17 +157,16 @@ const createOrderImpl = async (c: Context<AppEnv>, input: CreateOrderInput) => {
 		});
 	}
 
-	await createOrderHooks(c, {
-		orderId: order.id,
-		userId: c.var.auth.id,
-		storeId: cart.storeId,
-		amount: order.total,
-		serviceFee: order.serviceFee,
-		transactionFee: order.transactionFee,
-		products: cart.products.map(p => p.product),
-		customerName: c.var.auth.name,
-		pushToken: order.user.pushTokens[0] ?? undefined,
-		status: OrderStatus.PaymentPending
+	c.var.services.analytics.track({
+		event: 'order_created',
+		distinctId: userId,
+		properties: {
+			orderId: order.id,
+			amount: order.total,
+			productCount: cart.products.length,
+			productIds: cart.products.map(p => p.productId)
+		},
+		groups: { store: storeId }
 	});
 
 	return {
@@ -248,6 +247,7 @@ const updateOrderStatusImpl = async (
 		pushToken: updatedOrder.user.pushTokens[0] ?? undefined,
 		orderId: updatedOrder.id,
 		userId: c.var.auth.id,
+		customerId: updatedOrder.userId,
 		storeId: updatedOrder.storeId,
 		amount: updatedOrder.total,
 		status,
@@ -257,22 +257,20 @@ const updateOrderStatusImpl = async (
 	return updatedOrder;
 };
 
+const VALID_ORDER_STATUS_TRANSITIONS_MAP: Record<OrderStatus, OrderStatus[]> = {
+	[OrderStatus.PaymentPending]: [OrderStatus.Pending, OrderStatus.Cancelled],
+	[OrderStatus.Pending]: [OrderStatus.ReadyForPickup, OrderStatus.Cancelled],
+	[OrderStatus.ReadyForPickup]: [OrderStatus.Completed, OrderStatus.Cancelled],
+	[OrderStatus.Completed]: [],
+	[OrderStatus.Cancelled]: []
+} as const;
+
 const validateStatusTransition = (
 	currentStatus: OrderStatus,
 	newStatus: OrderStatus
 ): void => {
-	const validTransitions: Record<OrderStatus, OrderStatus[]> = {
-		[OrderStatus.PaymentPending]: [OrderStatus.Pending, OrderStatus.Cancelled],
-		[OrderStatus.Pending]: [OrderStatus.ReadyForPickup, OrderStatus.Cancelled],
-		[OrderStatus.ReadyForPickup]: [
-			OrderStatus.Completed,
-			OrderStatus.Cancelled
-		],
-		[OrderStatus.Completed]: [],
-		[OrderStatus.Cancelled]: []
-	} as const;
-
-	const allowedTransitions = validTransitions[currentStatus] || [];
+	const allowedTransitions =
+		VALID_ORDER_STATUS_TRANSITIONS_MAP[currentStatus] || [];
 
 	if (!allowedTransitions.includes(newStatus)) {
 		throw new LogicError(LogicErrorCode.OrderInvalidStatusTransition);
@@ -339,6 +337,7 @@ export const confirmPickup = async (c: Context<AppEnv>, orderId: string) => {
 			pushToken: updatedOrder.user.pushTokens[0] ?? undefined,
 			orderId: updatedOrder.id,
 			userId: c.var.auth.id,
+			customerId: currentOrder.userId,
 			storeId: currentOrder.storeId,
 			amount: updatedOrder.total,
 			status: OrderStatus.Completed,
@@ -356,4 +355,75 @@ export const confirmPickup = async (c: Context<AppEnv>, orderId: string) => {
 
 export const getOrders = async (c: Context<AppEnv>, filters?: OrderFilters) => {
 	return OrderData.getOrders(c.var.prisma, filters);
+};
+
+const NotificationTypeByOrderStatus = {
+	[OrderStatus.ReadyForPickup]: NotificationType.ReadyForPickup,
+	[OrderStatus.Cancelled]: NotificationType.OrderCancelled,
+	[OrderStatus.Completed]: NotificationType.OrderCompleted
+} as const;
+
+interface UpdateOrderHooksArgs {
+	customerName: string;
+	pushToken: UserPushToken | undefined;
+	orderId: string;
+	userId: string;
+	customerId: string;
+	storeId: string;
+	amount: number;
+	status: OrderStatus;
+	priorStatus: OrderStatus;
+}
+
+export const updateOrderHooks = async (
+	c: Context<AppEnv>,
+	args: UpdateOrderHooksArgs
+) => {
+	if (args.status === OrderStatus.Completed) {
+		await StoreData.updateStoreRevenue(c.var.prisma, {
+			storeId: args.storeId,
+			total: args.amount,
+			orderId: args.orderId
+		});
+	} else if (args.status === OrderStatus.Cancelled) {
+		// PaymentPending never credited the store, so there is nothing to
+		// reverse. Any other prior status means the money was collected, and
+		// which bucket it sits in decides where the refund comes from.
+		if (args.priorStatus !== OrderStatus.PaymentPending) {
+			await StoreData.reverseOrderRevenue(c.var.prisma, {
+				storeId: args.storeId,
+				customerId: args.customerId,
+				total: args.amount,
+				orderId: args.orderId,
+				wasRealized: args.priorStatus === OrderStatus.Completed
+			});
+		}
+	}
+
+	c.var.services.analytics.track({
+		event: 'order_status_updated',
+		distinctId: args.userId,
+		properties: {
+			orderId: args.orderId,
+			amount: args.amount,
+			status: args.status
+		},
+		groups: { store: args.storeId }
+	});
+
+	if (
+		args.pushToken &&
+		(args.status === OrderStatus.Completed ||
+			args.status === OrderStatus.Cancelled ||
+			args.status === OrderStatus.ReadyForPickup)
+	) {
+		c.var.services.notifications.queueNotification({
+			type: NotificationTypeByOrderStatus[args.status],
+			data: {
+				orderId: args.orderId,
+				customerName: args.customerName
+			},
+			recipientTokens: [args.pushToken.token]
+		});
+	}
 };
