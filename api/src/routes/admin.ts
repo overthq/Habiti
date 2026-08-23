@@ -16,18 +16,13 @@ import {
 } from '../utils/queries';
 import { env } from '../config/env';
 import { TransactionStatus, TransactionType } from '../generated/prisma/client';
-import type { StripUndefined } from '../utils/objects';
-import type { AdminCreateStoreBody } from '../core/validations/rest';
 import * as AdminLogic from '../core/logic/admin';
 import * as AuthLogic from '../core/logic/auth';
 import * as StoreLogic from '../core/logic/stores';
-import * as StoreData from '../core/data/stores';
 import * as ProductLogic from '../core/logic/products';
 import * as UserLogic from '../core/logic/users';
 import * as OrderLogic from '../core/logic/orders';
 import * as TransactionLogic from '../core/logic/transactions';
-import * as AdminSessionData from '../core/data/adminSessions';
-import * as SessionData from '../core/data/sessions';
 import * as Schemas from '../core/validations/rest';
 
 const admin = new Hono<AppEnv>();
@@ -121,24 +116,12 @@ admin.post('/logout', async c => {
 admin.use('*', isAdmin);
 
 admin.get('/sessions', async c => {
-	const sessions = await AdminSessionData.getAdminSessions(
-		c.var.prisma,
-		c.var.auth!.id
-	);
+	const sessions = await AdminLogic.getAdminSessions(c);
 	return c.json({ sessions });
 });
 
 admin.delete('/sessions/:id', async c => {
-	const id = c.req.param('id');
-
-	const session = await AdminSessionData.getAdminSessionById(c.var.prisma, id);
-
-	if (!session || session.adminId !== c.var.auth!.id) {
-		throw new HTTPException(404, { message: 'Session not found' });
-	}
-
-	await AdminSessionData.revokeAdminSession(c.var.prisma, id);
-	await SessionData.denySession(c.var.redis, id);
+	await AdminLogic.revokeAdminSession(c, c.req.param('id'));
 	return c.json({ message: 'Session revoked' });
 });
 
@@ -191,10 +174,7 @@ admin.post(
 	zValidator('json', Schemas.adminCreateStoreSchema, zodHook),
 	async c => {
 		const body = c.req.valid('json');
-		const store = await StoreData.createStore(
-			c.var.prisma,
-			body as StripUndefined<AdminCreateStoreBody>
-		);
+		const store = await StoreLogic.adminCreateStore(c, body);
 		return c.json({ store }, 201);
 	}
 );
@@ -333,7 +313,7 @@ admin.get('/users/:id', async c => {
 
 admin.get('/users/:id/sessions', async c => {
 	const { id } = c.req.param();
-	const sessions = await SessionData.getUserSessions(c.var.prisma, id);
+	const sessions = await AdminLogic.getUserSessions(c, id);
 	return c.json({ sessions });
 });
 

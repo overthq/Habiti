@@ -14,7 +14,6 @@ import * as StoreData from '../data/stores';
 import * as OrderData from '../data/orders';
 import * as CartData from '../data/carts';
 import * as CardData from '../data/cards';
-import * as AddressData from '../data/addresses';
 import * as SessionData from '../data/sessions';
 
 import { cacheVerificationCode } from './auth';
@@ -289,7 +288,10 @@ export const getDeliveryAddresses = (c: Context<AppEnv>) => {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	return AddressData.getUserAddresses(c.var.prisma, c.var.auth.id);
+	return c.var.prisma.address.findMany({
+		where: { userId: c.var.auth.id },
+		orderBy: { createdAt: 'desc' }
+	});
 };
 
 export const getUserByEmail = (c: Context<AppEnv>, email: string) => {
@@ -362,7 +364,9 @@ export const signInWithApple = async (
 
 	const anonymousCaller = await getAnonymousCaller(c);
 
-	let user = await UserData.getUserByAppleId(c.var.prisma, identity.appleId);
+	let user = await c.var.prisma.user.findUnique({
+		where: { appleId: identity.appleId }
+	});
 
 	// Only link by email when Apple attests the address is verified —
 	// otherwise an attacker-controlled Apple ID with someone else's email
@@ -416,4 +420,46 @@ export const signInWithApple = async (
 		email,
 		appleId: identity.appleId
 	});
+};
+
+export const getCurrentUserSessions = (c: Context<AppEnv>) => {
+	if (!c.var.auth?.id) {
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
+	}
+
+	return SessionData.getUserSessions(c.var.prisma, c.var.auth.id);
+};
+
+export const revokeCurrentUserSessions = async (c: Context<AppEnv>) => {
+	if (!c.var.auth?.id) {
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
+	}
+
+	const sessions = await SessionData.getUserSessions(
+		c.var.prisma,
+		c.var.auth.id
+	);
+
+	await SessionData.revokeUserSessions(c.var.prisma, c.var.auth.id);
+	await Promise.all(
+		sessions.map(s => SessionData.denySession(c.var.redis, s.id))
+	);
+};
+
+export const revokeCurrentUserSession = async (
+	c: Context<AppEnv>,
+	sessionId: string
+) => {
+	if (!c.var.auth?.id) {
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
+	}
+
+	const session = await SessionData.getSessionById(c.var.prisma, sessionId);
+
+	if (!session || session.userId !== c.var.auth.id) {
+		throw new LogicError(LogicErrorCode.SessionNotFound);
+	}
+
+	await SessionData.revokeSession(c.var.prisma, sessionId);
+	await SessionData.denySession(c.var.redis, sessionId);
 };

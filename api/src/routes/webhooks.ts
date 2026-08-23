@@ -3,14 +3,7 @@ import { Hono } from 'hono';
 
 import type { AppEnv } from '../types/hono';
 import { env } from '../config/env';
-import { handlePaystackWebhookEvent } from '../core/logic/payments';
-import {
-	deriveExternalId,
-	markWebhookEventFailed,
-	markWebhookEventProcessed,
-	PAYSTACK_WEBHOOK_PROVIDER,
-	recordWebhookEvent
-} from '../core/data/webhookEvents';
+import * as PaymentLogic from '../core/logic/payments';
 import { rateLimit } from '../middleware/rateLimit';
 import { timingSafeEqualString } from '../utils/timingSafe';
 
@@ -45,44 +38,28 @@ webhooks.post('/paystack', async c => {
 		return c.json({ message: 'Webhook received.' });
 	}
 
-	const externalId = deriveExternalId(rawBody, data?.id);
-
-	const claim = await recordWebhookEvent(c.var.prisma, {
-		provider: PAYSTACK_WEBHOOK_PROVIDER,
+	const claim = await PaymentLogic.claimPaystackWebhookEvent(c, {
+		rawBody,
 		eventType: event,
-		externalId,
+		externalRef: data?.id,
 		payload: parsed
 	});
 
 	if (claim.duplicate) {
 		c.var.logger.info(
-			{ event, externalId },
+			{ event, externalId: claim.externalId },
 			'paystack.webhook.duplicate_ignored'
 		);
 
 		return c.json({ message: 'Webhook already processed.' });
 	}
 
-	void (async () => {
-		try {
-			await handlePaystackWebhookEvent(c, event, data, claim.id);
-			await markWebhookEventProcessed(c.var.prisma, claim.id);
-		} catch (error) {
-			c.var.logger.error(
-				{ err: error, event, externalId },
-				'paystack.webhook.processing_failed'
-			);
-
-			try {
-				await markWebhookEventFailed(c.var.prisma, claim.id, error);
-			} catch (markError) {
-				c.var.logger.error(
-					{ err: markError, event, externalId },
-					'paystack.webhook.mark_failed_errored'
-				);
-			}
-		}
-	})();
+	void PaymentLogic.processPaystackWebhookEvent(c, {
+		claimId: claim.id,
+		event,
+		data,
+		externalId: claim.externalId
+	});
 
 	return c.json({ message: 'Webhook received and processing.' });
 });

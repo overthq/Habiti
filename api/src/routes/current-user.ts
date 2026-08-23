@@ -1,6 +1,5 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
-import { HTTPException } from 'hono/http-exception';
 
 import type { AppEnv } from '../types/hono';
 import { zodHook } from '../utils/validation';
@@ -12,7 +11,6 @@ import * as CartLogic from '../core/logic/carts';
 import * as CardLogic from '../core/logic/cards';
 import * as OrderLogic from '../core/logic/orders';
 import * as AddressLogic from '../core/logic/addresses';
-import * as SessionData from '../core/data/sessions';
 import * as Schemas from '../core/validations/rest';
 
 const currentUser = new Hono<AppEnv>();
@@ -251,39 +249,19 @@ currentUser.delete(
 );
 
 currentUser.get('/sessions', async c => {
-	const sessions = await SessionData.getUserSessions(
-		c.var.prisma,
-		c.var.auth!.id
-	);
+	const sessions = await UserLogic.getCurrentUserSessions(c);
 
 	return c.json({ sessions });
 });
 
 currentUser.delete('/sessions', async c => {
-	const sessions = await SessionData.getUserSessions(
-		c.var.prisma,
-		c.var.auth!.id
-	);
-
-	await SessionData.revokeUserSessions(c.var.prisma, c.var.auth!.id);
-	await Promise.all(
-		sessions.map(s => SessionData.denySession(c.var.redis, s.id))
-	);
+	await UserLogic.revokeCurrentUserSessions(c);
 
 	return c.json({ message: 'All sessions revoked' });
 });
 
 currentUser.delete('/sessions/:id', async c => {
-	const id = c.req.param('id');
-
-	const session = await SessionData.getSessionById(c.var.prisma, id);
-
-	if (!session || session.userId !== c.var.auth!.id) {
-		throw new HTTPException(404, { message: 'Session not found' });
-	}
-
-	await SessionData.revokeSession(c.var.prisma, id);
-	await SessionData.denySession(c.var.redis, id);
+	await UserLogic.revokeCurrentUserSession(c, c.req.param('id'));
 
 	return c.json({ message: 'Session revoked' });
 });

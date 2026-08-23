@@ -8,6 +8,13 @@ import * as OrderData from '../data/orders';
 import * as TransactionData from '../data/transactions';
 import * as StoreData from '../data/stores';
 import * as PushTokenData from '../data/pushTokens';
+import {
+	deriveExternalId,
+	markWebhookEventFailed,
+	markWebhookEventProcessed,
+	PAYSTACK_WEBHOOK_PROVIDER,
+	recordWebhookEvent
+} from '../data/webhookEvents';
 
 import { NotificationType } from '../notifications';
 
@@ -424,4 +431,70 @@ export const payAccount = async (
 	}
 
 	return data;
+};
+
+interface ClaimWebhookEventInput {
+	rawBody: string;
+	eventType: string;
+	externalRef?: string | number | undefined;
+	payload: unknown;
+}
+
+/**
+ * Claims a Paystack delivery so a retry of the same event is a no-op. The
+ * caller must stop when `duplicate` is set -- this is the outer of the two
+ * idempotency layers, the inner being the journal's idempotency key.
+ */
+export const claimPaystackWebhookEvent = async (
+	c: Context<AppEnv>,
+	input: ClaimWebhookEventInput
+) => {
+	const externalId = deriveExternalId(input.rawBody, input.externalRef);
+
+	const claim = await recordWebhookEvent(c.var.prisma, {
+		provider: PAYSTACK_WEBHOOK_PROVIDER,
+		eventType: input.eventType,
+		externalId,
+		payload: input.payload
+	});
+
+	return { ...claim, externalId };
+};
+
+interface ProcessWebhookEventInput {
+	claimId: string;
+	event: string;
+	data: unknown;
+	externalId: string;
+}
+
+/**
+ * Runs a claimed delivery to completion and records the outcome. Never
+ * throws: the HTTP response has already gone out by the time this runs, so a
+ * failure is recorded on the claim rather than surfaced to Paystack.
+ */
+export const processPaystackWebhookEvent = async (
+	c: Context<AppEnv>,
+	input: ProcessWebhookEventInput
+) => {
+	const { claimId, event, data, externalId } = input;
+
+	try {
+		await handlePaystackWebhookEvent(c, event, data, claimId);
+		await markWebhookEventProcessed(c.var.prisma, claimId);
+	} catch (error) {
+		c.var.logger.error(
+			{ err: error, event, externalId },
+			'paystack.webhook.processing_failed'
+		);
+
+		try {
+			await markWebhookEventFailed(c.var.prisma, claimId, error);
+		} catch (markError) {
+			c.var.logger.error(
+				{ err: markError, event, externalId },
+				'paystack.webhook.mark_failed_errored'
+			);
+		}
+	}
 };

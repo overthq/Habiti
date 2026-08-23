@@ -26,7 +26,11 @@ export const getCartById = async (c: Context<AppEnv>, cartId: string) => {
 	}
 
 	const cartViewerContext = c.var.auth?.id
-		? await CartData.getCartViewerContext(c.var.prisma, c.var.auth.id)
+		? {
+				cards: await c.var.prisma.card.findMany({
+					where: { userId: c.var.auth.id }
+				})
+			}
 		: null;
 
 	const transaction = calculatePaystackFee(cart.total);
@@ -234,4 +238,4 @@ export const calculatePaystackFee = (subTotal: number) => {
 	return Math.min(200000, 0.015 * subTotal + 10000);
 };
 
-export const calculateHabitiFee = () => 100000;
+export const calculateHabitiFee = () => 100_00;

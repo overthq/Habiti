@@ -1,6 +1,5 @@
 import type { Context } from 'hono';
 
-import * as AddressData from '../data/addresses';
 import type { AppEnv } from '../../types/hono';
 import type { StripUndefined } from '../../utils/objects';
 import { LogicError, LogicErrorCode } from './errors';
@@ -26,9 +25,11 @@ export const createUserAddress = async (
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	return AddressData.createUserAddress(c.var.prisma, {
-		...(args as StripUndefined<UserAddressArgs>),
-		userId: c.var.auth.id
+	return c.var.prisma.address.create({
+		data: {
+			...(args as StripUndefined<UserAddressArgs>),
+			userId: c.var.auth.id
+		}
 	});
 };
 
@@ -41,16 +42,18 @@ export const editUserAddress = async (
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const address = await AddressData.getAddressById(c.var.prisma, addressId);
+	const address = await c.var.prisma.address.findUnique({
+		where: { id: addressId }
+	});
+
 	if (!address || address.userId !== c.var.auth.id) {
 		throw new LogicError(LogicErrorCode.NotFound);
 	}
 
-	return AddressData.updateAddress(
-		c.var.prisma,
-		addressId,
-		args as StripUndefined<typeof args>
-	);
+	return c.var.prisma.address.update({
+		where: { id: addressId },
+		data: args as StripUndefined<typeof args>
+	});
 };
 
 export const deleteUserAddress = async (
@@ -61,12 +64,15 @@ export const deleteUserAddress = async (
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const address = await AddressData.getAddressById(c.var.prisma, addressId);
+	const address = await c.var.prisma.address.findUnique({
+		where: { id: addressId }
+	});
+
 	if (!address || address.userId !== c.var.auth.id) {
 		throw new LogicError(LogicErrorCode.NotFound);
 	}
 
-	await AddressData.deleteAddress(c.var.prisma, addressId);
+	await c.var.prisma.address.delete({ where: { id: addressId } });
 };
 
 // Store address logic
@@ -86,7 +92,10 @@ interface StoreAddressArgs {
 export const getStoreAddresses = async (c: Context<AppEnv>) => {
 	const { storeId } = assertStoreScope(c);
 
-	return AddressData.getStoreAddresses(c.var.prisma, storeId);
+	return c.var.prisma.address.findMany({
+		where: { storeId },
+		orderBy: { createdAt: 'desc' }
+	});
 };
 
 export const createStoreAddress = async (
@@ -95,9 +104,11 @@ export const createStoreAddress = async (
 ) => {
 	const { storeId } = assertStoreScope(c);
 
-	return AddressData.createStoreAddress(c.var.prisma, {
-		...(args as StripUndefined<StoreAddressArgs>),
-		storeId
+	return c.var.prisma.address.create({
+		data: {
+			...(args as StripUndefined<StoreAddressArgs>),
+			storeId
+		}
 	});
 };
 
@@ -108,16 +119,18 @@ export const editStoreAddress = async (
 ) => {
 	const { storeId } = assertStoreScope(c);
 
-	const address = await AddressData.getAddressById(c.var.prisma, addressId);
+	const address = await c.var.prisma.address.findUnique({
+		where: { id: addressId }
+	});
+
 	if (!address || address.storeId !== storeId) {
 		throw new LogicError(LogicErrorCode.NotFound);
 	}
 
-	return AddressData.updateAddress(
-		c.var.prisma,
-		addressId,
-		args as StripUndefined<typeof args>
-	);
+	return c.var.prisma.address.update({
+		where: { id: addressId },
+		data: args as StripUndefined<typeof args>
+	});
 };
 
 export const deleteStoreAddress = async (
@@ -126,10 +139,13 @@ export const deleteStoreAddress = async (
 ) => {
 	const { storeId } = assertStoreScope(c);
 
-	const address = await AddressData.getAddressById(c.var.prisma, addressId);
+	const address = await c.var.prisma.address.findUnique({
+		where: { id: addressId }
+	});
+
 	if (!address || address.storeId !== storeId) {
 		throw new LogicError(LogicErrorCode.NotFound);
 	}
 
-	await AddressData.deleteAddress(c.var.prisma, addressId);
+	await c.var.prisma.address.delete({ where: { id: addressId } });
 };

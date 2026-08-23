@@ -71,9 +71,11 @@ export const createCard = async (
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	const card = await CardData.createCard(c.var.prisma, {
-		...input,
-		userId: c.var.auth.id
+	const card = await c.var.prisma.card.create({
+		data: {
+			...input,
+			userId: c.var.auth.id
+		}
 	});
 
 	c.var.services.analytics.track({
@@ -187,7 +189,7 @@ export const deleteCard = async (
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	await CardData.deleteCard(c.var.prisma, cardId);
+	await c.var.prisma.card.delete({ where: { id: cardId } });
 
 	c.var.services.analytics.track({
 		event: 'card_deleted',

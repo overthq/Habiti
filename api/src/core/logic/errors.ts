@@ -22,6 +22,7 @@ export enum LogicErrorCode {
 	CardNotFound = 'CardNotFound',
 	CartNotFound = 'CartNotFound',
 	AdminNotFound = 'AdminNotFound',
+	SessionNotFound = 'SessionNotFound',
 
 	InvalidInput = 'InvalidInput',
 	ValidationFailed = 'ValidationFailed',
@@ -92,6 +93,8 @@ export const logicErrorToApiException = (
 			return new HTTPException(404, { message: 'Card not found' });
 		case LogicErrorCode.AdminNotFound:
 			return new HTTPException(404, { message: 'Admin not found' });
+		case LogicErrorCode.SessionNotFound:
+			return new HTTPException(404, { message: 'Session not found' });
 		case LogicErrorCode.NotFound:
 			return new HTTPException(404, { message: 'Not found' });
 

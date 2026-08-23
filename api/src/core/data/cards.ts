@@ -44,31 +44,6 @@ export const storeCard = async (prisma: PrismaClient, data: StoreCardData) => {
 	});
 };
 
-interface CreateCardParams {
-	email: string;
-	authorizationCode: string;
-	bin: string;
-	last4: string;
-	expMonth: string;
-	expYear: string;
-	bank: string;
-	signature: string;
-	cardType: string;
-	countryCode: string;
-	userId: string;
-}
-
-export const createCard = async (
-	prisma: PrismaClient,
-	params: CreateCardParams
-) => {
-	const card = await prisma.card.create({
-		data: params
-	});
-
-	return card;
-};
-
 export const getCardsByUserId = async (
 	prisma: PrismaClient,
 	userId: string
@@ -90,10 +65,4 @@ export const getCardById = async (
 	});
 
 	return card;
-};
-
-export const deleteCard = async (prisma: PrismaClient, cardId: string) => {
-	await prisma.card.delete({
-		where: { id: cardId }
-	});
 };
