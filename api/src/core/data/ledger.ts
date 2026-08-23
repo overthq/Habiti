@@ -120,11 +120,12 @@ export const applyJournal = (
 				next.pendingPayouts += signedDelta(entry);
 				// `paidOut` is a lifetime counter, not a position: it only moves
 				// when a payout actually settles, never when one is reversed.
-				if (
-					journal.reason === LedgerReason.PayoutSettled &&
-					entry.direction === EntryDirection.Debit
-				) {
-					next.paidOut += entry.amount;
+				//
+				// Read from the signed delta rather than the direction, so a
+				// mirrored settlement (which is how a negative opening balance
+				// gets stated) decrements it instead of being ignored.
+				if (journal.reason === LedgerReason.PayoutSettled) {
+					next.paidOut -= signedDelta(entry);
 				}
 				break;
 			default:
@@ -340,6 +341,43 @@ export interface PostJournalResult {
 	/** False when the idempotency key had already been used -- a no-op. */
 	posted: boolean;
 }
+
+export const oppositeDirection = (direction: EntryDirection) =>
+	direction === EntryDirection.Debit
+		? EntryDirection.Credit
+		: EntryDirection.Debit;
+
+/**
+ * Builds an entry from a *signed* amount.
+ *
+ * Stored amounts are always magnitudes, with `direction` carrying the sign --
+ * but callers sometimes hold a signed figure, and a position is not guaranteed
+ * to be positive. A store paid out more than it earned carries a negative
+ * available balance; that is a real economic state (the store owes us) and the
+ * ledger has to be able to state it.
+ *
+ * A negative amount in one direction is the same as a positive amount in the
+ * other, so flipping both preserves the journal's arithmetic while keeping
+ * every stored amount positive.
+ *
+ * Returns null for zero, which callers drop: an absent balance is a legitimate
+ * journal, not a malformed one.
+ */
+export const signedEntry = (
+	account: AccountRef,
+	amount: bigint,
+	direction: EntryDirection
+): PostJournalEntry | null => {
+	if (amount === 0n) return null;
+
+	return amount < 0n
+		? { account, direction: oppositeDirection(direction), amount: -amount }
+		: { account, direction, amount };
+};
+
+/** Drops the nulls `signedEntry` returns for zero amounts. */
+export const presentEntries = (entries: (PostJournalEntry | null)[]) =>
+	entries.filter((entry): entry is PostJournalEntry => entry !== null);
 
 const assertBalanced = (entries: PostJournalEntry[], reason: LedgerReason) => {
 	if (entries.length < 2) {

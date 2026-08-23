@@ -10,10 +10,11 @@ import {
 import {
 	getOrCreateAccount,
 	postJournal,
+	presentEntries,
 	realizedRevenueOf,
 	rebuildStoreProjections,
 	replayStore,
-	type PostJournalEntry
+	signedEntry
 } from '../core/data/ledger';
 import { recordPayoutRequested } from '../core/data/postings';
 import { runSerializable } from '../utils/prisma';
@@ -51,10 +52,35 @@ interface StoreSnapshot {
 	paidOut: bigint;
 }
 
-const nonZero = (entries: PostJournalEntry[]) =>
-	entries.filter(entry => entry.amount !== 0n);
-
 const backfillStore = async (store: StoreSnapshot) => {
+	// Already migrated? Stop here.
+	//
+	// This is a one-time migration per store, and its expectations come from
+	// the frozen legacy tables. Once the store is live on the ledger those
+	// expectations go stale -- a payout that has since settled still reads as
+	// Processing in the old table -- so re-deriving them would compare today's
+	// correct state against yesterday's inputs and fail. Skipping is both
+	// correct and what makes re-running the script safe.
+	const existing = await prisma.ledgerTransaction.findUnique({
+		where: { idempotencyKey: `opening:${store.id}:positions` },
+		select: { id: true }
+	});
+
+	const alreadySeeded =
+		existing ??
+		(await prisma.ledgerTransaction.findUnique({
+			where: { idempotencyKey: `opening:${store.id}:paid-out-seed` },
+			select: { id: true }
+		}));
+
+	if (alreadySeeded) {
+		rootLogger.debug(
+			{ storeId: store.id, store: store.name },
+			'backfill.already_seeded'
+		);
+		return { outcome: 'already-seeded' as const };
+	}
+
 	// In-flight payouts, which the old schema tracked as Processing rows rather
 	// than a column.
 	const inFlight = await prisma.transaction.findMany({
@@ -77,20 +103,59 @@ const backfillStore = async (store: StoreSnapshot) => {
 	// PayoutRequested journals below move that portion into transit.
 	const availableGross = store.realizedRevenue - paidOut;
 
+	// A negative position means the store was paid out more than it earned --
+	// the old refund path decremented `realizedRevenue` while `paidOut` only
+	// ever rose, so the two could cross. The ledger states it faithfully, but
+	// it is an operational problem someone has to look at, so name the stores.
+	const negatives = Object.entries({ unrealized, availableGross, paidOut })
+		.filter(([, value]) => value < 0n)
+		.map(([field]) => field);
+
+	if (negatives.length > 0) {
+		overdrawn.push({
+			storeId: store.id,
+			storeName: store.name,
+			fields: negatives.join(', '),
+			unrealized: unrealized.toString(),
+			availableGross: availableGross.toString(),
+			paidOut: paidOut.toString()
+		});
+
+		rootLogger.warn(
+			{
+				storeId: store.id,
+				store: store.name,
+				fields: negatives.join(', '),
+				unrealized: unrealized.toString(),
+				availableGross: availableGross.toString(),
+				paidOut: paidOut.toString()
+			},
+			'backfill.negative_position'
+		);
+	}
+
 	if (DRY_RUN) {
 		rootLogger.info(
 			{
 				store: store.name,
-				unrealized,
-				availableGross,
-				paidOut,
-				pendingPayouts,
+				unrealized: unrealized.toString(),
+				availableGross: availableGross.toString(),
+				paidOut: paidOut.toString(),
+				pendingPayouts: pendingPayouts.toString(),
 				inFlightCount: inFlight.length
 			},
 			'backfill.plan'
 		);
-		return { skipped: false };
+		return { outcome: 'planned' as const };
 	}
+
+	// A store that has never taken money needs no opening balance. Its columns
+	// are already zero and the rebuild below confirms it.
+	const hasNothingToSeed =
+		unrealized === 0n &&
+		availableGross === 0n &&
+		paidOut === 0n &&
+		inFlight.length === 0;
 
 	await runSerializable(prisma, async tx => {
 		const cash = await getOrCreateAccount(tx, {
@@ -110,22 +175,11 @@ const backfillStore = async (store: StoreSnapshot) => {
 		});
 
 		// 1. Current positions: what we are holding for this store right now.
-		const positionEntries = nonZero([
-			{
-				account: cash,
-				direction: EntryDirection.Debit,
-				amount: unrealized + availableGross
-			},
-			{
-				account: pending,
-				direction: EntryDirection.Credit,
-				amount: unrealized
-			},
-			{
-				account: available,
-				direction: EntryDirection.Credit,
-				amount: availableGross
-			}
+		//    Any of these can be negative -- see `signedEntry`.
+		const positionEntries = presentEntries([
+			signedEntry(cash, unrealized + availableGross, EntryDirection.Debit),
+			signedEntry(pending, unrealized, EntryDirection.Credit),
+			signedEntry(available, availableGross, EntryDirection.Credit)
 		]);
 
 		if (positionEntries.length >= 2) {
@@ -140,33 +194,25 @@ const backfillStore = async (store: StoreSnapshot) => {
 		// 2. Historical `paidOut` is a lifetime counter, not a position, so it
 		//    cannot be expressed as a balance. Reproduce it with a settled
 		//    payout whose net effect on every position is zero.
-		if (paidOut > 0n) {
+		if (paidOut !== 0n) {
 			await postJournal(tx, {
 				reason: LedgerReason.OpeningBalance,
 				idempotencyKey: `opening:${store.id}:paid-out-seed`,
 				description: 'Opening balance — historical payouts',
-				entries: [
-					{ account: cash, direction: EntryDirection.Debit, amount: paidOut },
-					{
-						account: inTransit,
-						direction: EntryDirection.Credit,
-						amount: paidOut
-					}
-				]
+				entries: presentEntries([
+					signedEntry(cash, paidOut, EntryDirection.Debit),
+					signedEntry(inTransit, paidOut, EntryDirection.Credit)
+				])
 			});
 
 			await postJournal(tx, {
 				reason: LedgerReason.PayoutSettled,
 				idempotencyKey: `opening:${store.id}:paid-out-settled`,
 				description: 'Opening balance — historical payouts settled',
-				entries: [
-					{
-						account: inTransit,
-						direction: EntryDirection.Debit,
-						amount: paidOut
-					},
-					{ account: cash, direction: EntryDirection.Credit, amount: paidOut }
-				]
+				entries: presentEntries([
+					signedEntry(inTransit, paidOut, EntryDirection.Debit),
+					signedEntry(cash, paidOut, EntryDirection.Credit)
+				])
 			});
 		}
 
@@ -234,11 +280,25 @@ const backfillStore = async (store: StoreSnapshot) => {
 		);
 	}
 
-	return { skipped: false };
+	return {
+		outcome: hasNothingToSeed ? ('empty' as const) : ('seeded' as const)
+	};
 };
 
 const bigintReplacer = (_key: string, value: unknown) =>
 	typeof value === 'bigint' ? value.toString() : value;
+
+interface OverdrawnStore {
+	storeId: string;
+	storeName: string;
+	fields: string;
+	unrealized: string;
+	availableGross: string;
+	paidOut: string;
+}
+
+/** Stores whose opening position is negative. Reported at the end. */
+const overdrawn: OverdrawnStore[] = [];
 
 async function backfillLedger() {
 	const stores = await prisma.store.findMany({
@@ -256,14 +316,38 @@ async function backfillLedger() {
 		'backfill.start'
 	);
 
-	let done = 0;
+	const counts = {
+		seeded: 0,
+		empty: 0,
+		'already-seeded': 0,
+		planned: 0
+	};
 
 	for (const store of stores) {
-		await backfillStore(store);
-		done++;
+		const { outcome } = await backfillStore(store);
+		counts[outcome]++;
 	}
 
-	rootLogger.info({ backfilled: done, dryRun: DRY_RUN }, 'backfill.complete');
+	if (overdrawn.length > 0) {
+		rootLogger.warn(
+			{ count: overdrawn.length, stores: overdrawn },
+			'backfill.negative_positions_summary'
+		);
+	}
+
+	rootLogger.info(
+		{
+			// `seeded` is the only number that represents work done. `empty` is
+			// a store that has never handled money, and `alreadySeeded` is one
+			// migrated by an earlier run -- both are expected on a re-run.
+			seeded: counts.seeded,
+			empty: counts.empty,
+			alreadySeeded: counts['already-seeded'],
+			overdrawn: overdrawn.length,
+			dryRun: DRY_RUN
+		},
+		'backfill.complete'
+	);
 }
 
 backfillLedger()
