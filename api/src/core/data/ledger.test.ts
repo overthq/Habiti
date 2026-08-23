@@ -11,7 +11,10 @@ import {
 import {
 	emptyProjection,
 	foldJournals,
+	oppositeDirection,
+	presentEntries,
 	realizedRevenueOf,
+	signedEntry,
 	type JournalEffect,
 	type StoreProjection
 } from './ledger';
@@ -479,5 +482,124 @@ describe('fold invariants under arbitrary histories', () => {
 				expect(row.balanceAfter).toBe(projection.available);
 			}
 		}
+	});
+});
+
+/**
+ * Regression cover for the production backfill failure.
+ *
+ * A store that was paid out and then had orders refunded can end up with
+ * `paidOut` exceeding `realizedRevenue` -- the old refund path decremented
+ * realized revenue while paid-out only ever rose. The opening balance for such
+ * a store is negative, which the first version of the backfill could not
+ * express: it tried to post a credit of -350,000 and was rejected by the
+ * "amounts are always positive" rule.
+ */
+describe('signed entries', () => {
+	const account = {
+		id: 'acct-1',
+		kind: AccountKind.StoreAvailable,
+		storeId: STORE,
+		userId: null
+	};
+
+	test('a positive amount keeps its direction', () => {
+		const entry = signedEntry(account, 500n, EntryDirection.Credit);
+
+		expect(entry).toEqual({
+			account,
+			direction: EntryDirection.Credit,
+			amount: 500n
+		});
+	});
+
+	test('a negative amount flips direction and keeps the amount positive', () => {
+		const entry = signedEntry(account, -350_000n, EntryDirection.Credit);
+
+		expect(entry).toEqual({
+			account,
+			direction: EntryDirection.Debit,
+			amount: 350_000n
+		});
+	});
+
+	test('a zero amount produces nothing', () => {
+		expect(signedEntry(account, 0n, EntryDirection.Debit)).toBeNull();
+		expect(
+			presentEntries([signedEntry(account, 0n, EntryDirection.Debit)])
+		).toEqual([]);
+	});
+
+	test('flipping preserves the journal arithmetic', () => {
+		// Intent: debit cash by (U + A), credit available by A, with A negative.
+		const cash = {
+			id: 'acct-cash',
+			kind: AccountKind.PlatformCash,
+			storeId: null,
+			userId: null
+		};
+
+		const entries = presentEntries([
+			signedEntry(cash, -350_000n, EntryDirection.Debit),
+			signedEntry(account, -350_000n, EntryDirection.Credit)
+		]);
+
+		const total = (direction: EntryDirection) =>
+			entries
+				.filter(e => e.direction === direction)
+				.reduce((sum, e) => sum + e.amount, 0n);
+
+		expect(total(EntryDirection.Debit)).toBe(total(EntryDirection.Credit));
+		expect(entries.every(e => e.amount > 0n)).toBe(true);
+	});
+
+	test('oppositeDirection is an involution', () => {
+		expect(oppositeDirection(EntryDirection.Debit)).toBe(EntryDirection.Credit);
+		expect(oppositeDirection(oppositeDirection(EntryDirection.Debit))).toBe(
+			EntryDirection.Debit
+		);
+	});
+});
+
+describe('overdrawn opening balance', () => {
+	/** The mirrored opening balance the backfill posts for such a store. */
+	const overdrawnOpening = (paidOut: bigint) => [
+		journal(LedgerReason.OpeningBalance, [
+			credit(AccountKind.PlatformCash, paidOut, null),
+			debit(AccountKind.StoreAvailable, paidOut)
+		]),
+		journal(LedgerReason.OpeningBalance, [
+			debit(AccountKind.PlatformCash, paidOut, null),
+			credit(AccountKind.StorePayoutInTransit, paidOut)
+		]),
+		journal(LedgerReason.PayoutSettled, [
+			debit(AccountKind.StorePayoutInTransit, paidOut),
+			credit(AccountKind.PlatformCash, paidOut, null)
+		])
+	];
+
+	test('reproduces a store that was paid out more than it earned', () => {
+		const { projection } = fold(overdrawnOpening(350_000n));
+
+		expect(projection.available).toBe(-350_000n);
+		expect(projection.paidOut).toBe(350_000n);
+		expect(projection.pendingPayouts).toBe(0n);
+		// realizedRevenue = available + paidOut + pendingPayouts = 0, which is
+		// exactly what the legacy columns said.
+		expect(realizedRevenueOf(projection)).toBe(0n);
+		expectIdentity(projection);
+	});
+
+	test('the store can trade back out of the hole', () => {
+		const { projection } = fold([
+			...overdrawnOpening(350_000n),
+			orderPaid(500_000n, 1_000n),
+			orderCompleted(500_000n)
+		]);
+
+		expect(projection.available).toBe(150_000n);
+		expect(projection.paidOut).toBe(350_000n);
+		expect(realizedRevenueOf(projection)).toBe(500_000n);
+		expectIdentity(projection);
 	});
 });

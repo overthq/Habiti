@@ -12,16 +12,6 @@ import {
 } from './ledger';
 
 /**
- * The business-event vocabulary of the ledger. Every movement of money in the
- * system goes through exactly one of these, so the postings table lives in one
- * readable place rather than being spread across the call sites that trigger
- * it.
- *
- * Each function derives its own idempotency key from the event, so replaying a
- * webhook or retrying a request is a no-op rather than a double-count.
- */
-
-/**
  * Entries of zero are dropped rather than rejected: a store with no service
  * fee is a legitimate order, not a malformed journal. The remaining entries
  * still have to balance.
@@ -32,20 +22,11 @@ const nonZero = (entries: PostJournalEntry[]) =>
 interface OrderPaidParams {
 	storeId: string;
 	orderId: string;
-	/** Order total, owed to the store. */
 	total: bigint;
-	/** Habiti's service fee, kept by the platform. */
 	serviceFee: bigint;
 	webhookEventId?: string | null;
 }
 
-/**
- * Customer's payment cleared.
- *
- * The Paystack processing fee is deliberately not booked: Paystack deducts it
- * before settling, so we never receive it. We record only the `total +
- * serviceFee` that actually reaches us.
- */
 export const recordOrderPaid = async (
 	tx: TransactionClient,
 	params: OrderPaidParams
@@ -91,7 +72,6 @@ interface OrderCompletedParams {
 	total: bigint;
 }
 
-/** Order fulfilled: the store's money becomes withdrawable. */
 export const recordOrderCompleted = async (
 	tx: TransactionClient,
 	params: OrderCompletedParams
@@ -130,17 +110,9 @@ interface RefundParams {
 	userId: string;
 	orderId: string;
 	total: bigint;
-	/** Whether the order had already completed, i.e. the money was withdrawable. */
 	wasRealized: boolean;
 }
 
-/**
- * Order cancelled: the customer is made whole out of the store's balance.
- *
- * Which store bucket the money comes from depends on whether the order had
- * completed. Both cases credit the customer the same way -- the refund lands
- * in their credit account, which an admin can later cash out.
- */
 export const recordRefund = async (
 	tx: TransactionClient,
 	params: RefundParams
@@ -188,11 +160,6 @@ interface PayoutRequestedParams {
 	amount: bigint;
 }
 
-/**
- * Payout requested. The money leaves the withdrawable balance immediately, so
- * a second request in the same window sees the reduced figure -- there is no
- * period where requested-but-unsettled money looks spendable.
- */
 export const recordPayoutRequested = async (
 	tx: TransactionClient,
 	params: PayoutRequestedParams
@@ -233,7 +200,6 @@ interface PayoutResolutionParams {
 	webhookEventId?: string | null;
 }
 
-/** Paystack confirmed the transfer: the money has left the platform. */
 export const recordPayoutSettled = async (
 	tx: TransactionClient,
 	params: PayoutResolutionParams
@@ -261,12 +227,6 @@ export const recordPayoutSettled = async (
 	});
 };
 
-/**
- * Transfer failed or was reversed: the money comes back to the store.
- *
- * This is a real reversing journal, not a compensating "adjustment" whose
- * direction had to be inferred.
- */
 export const recordPayoutFailed = async (
 	tx: TransactionClient,
 	params: PayoutResolutionParams
@@ -304,11 +264,9 @@ export const recordPayoutFailed = async (
 interface CustomerCreditWithdrawnParams {
 	userId: string;
 	amount: bigint;
-	/** Distinguishes repeat withdrawals by the same customer. */
 	reference: string;
 }
 
-/** Admin cashed a customer's refund credit out to them. */
 export const recordCustomerCreditWithdrawn = async (
 	tx: TransactionClient,
 	params: CustomerCreditWithdrawnParams

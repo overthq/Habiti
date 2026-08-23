@@ -9,14 +9,6 @@ import type { TransactionClient } from '../../generated/prisma/internal/prismaNa
 import { runSerializable } from '../../utils/prisma';
 import { recordPayoutFailed, recordPayoutSettled } from './postings';
 
-/**
- * Merchant-facing reads over the ledger.
- *
- * Nothing here moves money on its own. Balances come from the projections that
- * `ledger.postJournal` maintains, and every figure is reproducible by
- * replaying the journals -- see `ledger.replayStore`.
- */
-
 export interface TransactionView {
 	id: string;
 	storeId: string;
@@ -256,19 +248,6 @@ export const markTransferFailed = async (
 	});
 };
 
-/**
- * Finds the payout behind whichever id an admin is holding.
- *
- * Payouts are listed through `getTransactionsByStoreId`, which returns
- * `StoreStatementEntry` rows -- so the id in an admin's hand is a statement
- * entry's, not the `PayoutRequest` id that the settlement functions key on.
- * Resolving here rather than at the route means the admin client keeps sending
- * exactly what it always sent.
- *
- * A `PayoutRequest` id is accepted too: that is what the Paystack webhook
- * carries as its transfer reference, and refusing it would make the same
- * action work or not depending on where the id came from.
- */
 export const resolvePayoutRequestId = async (
 	prisma: PrismaClient,
 	id: string
@@ -325,10 +304,6 @@ export const adminUpdatePayoutTransaction = async (
 	return request;
 };
 
-/**
- * The statement row a payout produced, in the shape the dashboard expects.
- * Used by the payout endpoint so its response keeps the pre-ledger contract.
- */
 export const getPayoutStatementEntry = async (
 	prisma: PrismaClient | TransactionClient,
 	payoutRequestId: string
