@@ -3,7 +3,6 @@ import {
 	OrderStatus,
 	ProductStatus,
 	TransactionStatus,
-	TransactionType,
 	PushTokenType
 } from '../../generated/prisma/client';
 
@@ -530,20 +529,3 @@ export const orderFiltersSchema = z.object({
 });
 
 export type OrderFilters = z.infer<typeof orderFiltersSchema>;
-
-export const transactionFiltersQuerySchema = z.object({
-	type: z.nativeEnum(TransactionType).optional(),
-	status: z.nativeEnum(TransactionStatus).optional(),
-	from: z.string().optional(),
-	to: z.string().optional(),
-	limit: z
-		.union([z.number(), z.string()])
-		.transform(val => (typeof val === 'string' ? parseInt(val, 10) : val))
-		.optional(),
-	offset: z
-		.union([z.number(), z.string()])
-		.transform(val => (typeof val === 'string' ? parseInt(val, 10) : val))
-		.optional()
-});
-
-export type TransactionFilters = z.infer<typeof transactionFiltersQuerySchema>;

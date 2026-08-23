@@ -1,18 +1,22 @@
 import type { Context } from 'hono';
 
-import { OrderStatus, UserPushToken } from '../../generated/prisma/client';
+import {
+	OrderStatus,
+	UserPushToken,
+	Cart,
+	CartProduct,
+	Product
+} from '../../generated/prisma/client';
 
 import * as CardLogic from './cards';
 import * as PaymentLogic from './payments';
 
 import * as OrderData from '../data/orders';
 import * as CartData from '../data/carts';
-import * as CardData from '../data/cards';
 import * as PushTokenData from '../data/pushTokens';
 import * as StoreData from '../data/stores';
 
 import { calculatePaystackFee, calculateHabitiFee } from './carts';
-import { validateCart } from '../validations/carts';
 import { createOrderSchema, updateOrderSchema } from '../validations/rest';
 import type { AppEnv } from '../../types/hono';
 import { InitializeTransactionResponse } from '../payments/paystack';
@@ -50,7 +54,7 @@ const createOrderImpl = async (c: Context<AppEnv>, input: CreateOrderInput) => {
 		throw new LogicError(LogicErrorCode.CartNotFound);
 	}
 
-	await validateCart(cart, c.var.auth.id);
+	validateCart(cart, c.var.auth.id);
 
 	const { orderData, total } = OrderData.getOrderData(cart.products);
 	const transactionFee = calculatePaystackFee(total);
@@ -175,6 +179,29 @@ const createOrderImpl = async (c: Context<AppEnv>, input: CreateOrderInput) => {
 		order,
 		...(cardAuthorizationData ? { cardAuthorizationData } : {})
 	};
+};
+
+const validateCart = (
+	cart: Cart & { products: (CartProduct & { product: Product })[] },
+	userId: string
+) => {
+	if (!cart) {
+		throw new LogicError(LogicErrorCode.CartNotFound);
+	}
+
+	if (cart.products.length === 0) {
+		throw new Error(LogicErrorCode.CartEmpty);
+	}
+
+	if (cart.userId !== null && cart.userId !== userId) {
+		throw new LogicError(LogicErrorCode.Forbidden);
+	}
+
+	for (const { product, quantity } of cart.products) {
+		if (product.quantity < quantity) {
+			throw new LogicError(LogicErrorCode.InsufficientStock);
+		}
+	}
 };
 
 export interface UpdateOrderStatusInput {
