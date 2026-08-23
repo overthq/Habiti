@@ -1,5 +1,4 @@
 import { PrismaClient } from '../../generated/prisma/client';
-import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
 
 interface StoreCardData {
 	email: string;
@@ -54,15 +53,4 @@ export const getCardsByUserId = async (
 	});
 
 	return cards;
-};
-
-export const getCardById = async (
-	prisma: TransactionClient,
-	cardId: string
-) => {
-	const card = await prisma.card.findUnique({
-		where: { id: cardId }
-	});
-
-	return card;
 };

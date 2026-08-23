@@ -148,7 +148,9 @@ export const getCardsByUserId = async (c: Context<AppEnv>, userId: string) => {
 };
 
 export const getCardById = async (c: Context<AppEnv>, cardId: string) => {
-	const card = await CardData.getCardById(c.var.prisma, cardId);
+	const card = await c.var.prisma.card.findUnique({
+		where: { id: cardId }
+	});
 
 	if (!c.var.auth) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
@@ -179,7 +181,9 @@ export const deleteCard = async (
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const card = await CardData.getCardById(c.var.prisma, cardId);
+	const card = await c.var.prisma.card.findUnique({
+		where: { id: cardId }
+	});
 
 	if (!card) {
 		throw new LogicError(LogicErrorCode.CardNotFound);

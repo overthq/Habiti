@@ -130,7 +130,9 @@ const createOrderImpl = async (c: Context<AppEnv>, input: CreateOrderInput) => {
 		undefined;
 
 	if (cardId) {
-		const card = await CardData.getCardById(c.var.prisma, cardId);
+		const card = await c.var.prisma.card.findUnique({
+			where: { id: cardId }
+		});
 
 		if (!card) {
 			throw new LogicError(LogicErrorCode.CardNotFound);
