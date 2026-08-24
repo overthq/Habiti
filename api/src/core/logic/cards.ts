@@ -71,9 +71,11 @@ export const createCard = async (
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	const card = await CardData.createCard(c.var.prisma, {
-		...input,
-		userId: c.var.auth.id
+	const card = await c.var.prisma.card.create({
+		data: {
+			...input,
+			userId: c.var.auth.id
+		}
 	});
 
 	c.var.services.analytics.track({
@@ -146,7 +148,9 @@ export const getCardsByUserId = async (c: Context<AppEnv>, userId: string) => {
 };
 
 export const getCardById = async (c: Context<AppEnv>, cardId: string) => {
-	const card = await CardData.getCardById(c.var.prisma, cardId);
+	const card = await c.var.prisma.card.findUnique({
+		where: { id: cardId }
+	});
 
 	if (!c.var.auth) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
@@ -177,7 +181,9 @@ export const deleteCard = async (
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const card = await CardData.getCardById(c.var.prisma, cardId);
+	const card = await c.var.prisma.card.findUnique({
+		where: { id: cardId }
+	});
 
 	if (!card) {
 		throw new LogicError(LogicErrorCode.CardNotFound);
@@ -187,7 +193,7 @@ export const deleteCard = async (
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	await CardData.deleteCard(c.var.prisma, cardId);
+	await c.var.prisma.card.delete({ where: { id: cardId } });
 
 	c.var.services.analytics.track({
 		event: 'card_deleted',

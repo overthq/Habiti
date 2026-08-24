@@ -20,7 +20,7 @@ import type { TransactionClient } from '../../generated/prisma/internal/prismaNa
  * that reject UPDATE and DELETE. Corrections are reversing journals.
  */
 
-export const ACCOUNT_TYPE_BY_KIND: Record<AccountKind, AccountType> = {
+const ACCOUNT_TYPE_BY_KIND: Record<AccountKind, AccountType> = {
 	[AccountKind.PlatformCash]: AccountType.Asset,
 	[AccountKind.PlatformFeeRevenue]: AccountType.Revenue,
 	[AccountKind.StorePending]: AccountType.Liability,
@@ -31,7 +31,7 @@ export const ACCOUNT_TYPE_BY_KIND: Record<AccountKind, AccountType> = {
 
 type OwnerScope = 'store' | 'user' | 'platform';
 
-export const OWNER_SCOPE_BY_KIND: Record<AccountKind, OwnerScope> = {
+const OWNER_SCOPE_BY_KIND: Record<AccountKind, OwnerScope> = {
 	[AccountKind.PlatformCash]: 'platform',
 	[AccountKind.PlatformFeeRevenue]: 'platform',
 	[AccountKind.StorePending]: 'store',
@@ -72,7 +72,7 @@ export const emptyProjection = (): StoreProjection => ({
 export const realizedRevenueOf = (p: StoreProjection): bigint =>
 	p.available + p.paidOut + p.pendingPayouts;
 
-export interface JournalEntryEffect {
+interface JournalEntryEffect {
 	kind: AccountKind;
 	direction: EntryDirection;
 	amount: bigint;
@@ -99,7 +99,7 @@ export interface JournalEffect {
 const signedDelta = (entry: JournalEntryEffect): bigint =>
 	entry.direction === EntryDirection.Credit ? entry.amount : -entry.amount;
 
-export const applyJournal = (
+const applyJournal = (
 	projection: StoreProjection,
 	journal: JournalEffect,
 	storeId: string
@@ -156,7 +156,7 @@ const STATEMENT_STATUS_BY_PAYOUT: Record<PayoutStatus, TransactionStatus> = {
 	[PayoutStatus.Failed]: TransactionStatus.Failure
 };
 
-export interface StatementRow {
+interface StatementRow {
 	transactionId: string;
 	storeId: string;
 	sequence: bigint;
@@ -177,7 +177,7 @@ export interface StatementRow {
  * `StorePending`, which the merchant could not have withdrawn anyway). That
  * matches what the pre-ledger code showed, so the dashboard is unaffected.
  */
-export const statementRowFor = (
+const statementRowFor = (
 	journal: JournalEffect,
 	storeId: string,
 	availableBefore: bigint,
@@ -248,7 +248,7 @@ export const foldJournals = (
 
 // --- Writes ---------------------------------------------------------------
 
-export interface AccountRef {
+interface AccountRef {
 	id: string;
 	kind: AccountKind;
 	storeId: string | null;
@@ -325,7 +325,7 @@ export interface PostJournalEntry {
 	amount: bigint;
 }
 
-export interface PostJournalParams {
+interface PostJournalParams {
 	reason: LedgerReason;
 	/** Deterministic key for the business event, e.g. `order:<id>:completed`. */
 	idempotencyKey: string;
@@ -621,7 +621,7 @@ const syncPayoutStatementStatus = async (
  * Every journal that touched a store's accounts, in ledger order, reduced to
  * what the projection fold needs.
  */
-export const readStoreJournals = async (
+const readStoreJournals = async (
 	tx: TransactionClient,
 	storeId: string
 ): Promise<JournalEffect[]> => {
@@ -657,7 +657,7 @@ export const readStoreJournals = async (
 	}));
 };
 
-export interface ReplayResult {
+interface ReplayResult {
 	projection: StoreProjection;
 	statement: StatementRow[];
 	ledgerSequence: bigint;

@@ -69,7 +69,7 @@ describe('removeStoreManager', () => {
 			managers: [{ managerId: 'owner' }]
 		})) as any;
 
-		await expect(
+		expect(
 			removeStoreManager(c, { storeId: 'store-1', userId: 'owner' })
 		).rejects.toThrow();
 

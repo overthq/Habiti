@@ -63,17 +63,6 @@ export const getUserByEmail = async (prisma: PrismaClient, email: string) => {
 	return user;
 };
 
-export const getUserByAppleId = async (
-	prisma: PrismaClient,
-	appleId: string
-) => {
-	const user = await prisma.user.findUnique({
-		where: { appleId }
-	});
-
-	return user;
-};
-
 export const mergeUsers = async (
 	prisma: PrismaClient,
 	fromUserId: string,

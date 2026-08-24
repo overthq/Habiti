@@ -28,7 +28,7 @@ export const deriveExternalId = (
 	return `sha256:${createHash('sha256').update(rawBody).digest('hex')}`;
 };
 
-export interface RecordedWebhookEvent {
+interface RecordedWebhookEvent {
 	id: string;
 	duplicate: boolean;
 }

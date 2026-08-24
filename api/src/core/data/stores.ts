@@ -166,17 +166,6 @@ export const getStoreByIdWithProducts = async (
 	return store;
 };
 
-export const getStoreFollowers = async (
-	prisma: PrismaClient,
-	storeId: string
-) => {
-	const storeFollowers = await prisma.store
-		.findUnique({ where: { id: storeId } })
-		.followers();
-
-	return storeFollowers;
-};
-
 export const getStoreProducts = async (
 	prisma: PrismaClient,
 	storeId: string,

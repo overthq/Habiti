@@ -276,44 +276,6 @@ export const getOrdersByUserId = async (
 	return orders;
 };
 
-export const getOrdersByStoreId = async (
-	prisma: PrismaClient,
-	storeId: string
-) => {
-	const orders = await prisma.order.findMany({
-		where: { storeId },
-		include: {
-			user: true,
-			products: {
-				include: {
-					product: { include: { images: true } }
-				}
-			}
-		},
-		orderBy: { createdAt: 'desc' }
-	});
-
-	return orders;
-};
-
-export const cancelOrder = async (prisma: PrismaClient, orderId: string) => {
-	const order = await prisma.order.update({
-		where: { id: orderId },
-		data: { status: OrderStatus.Cancelled }
-	});
-
-	return order;
-};
-
-export const fulfillOrder = async (prisma: PrismaClient, orderId: string) => {
-	const order = await prisma.order.update({
-		where: { id: orderId },
-		data: { status: OrderStatus.Completed }
-	});
-
-	return order;
-};
-
 export const getOrders = async (
 	prisma: PrismaClient,
 	filters?: OrderFilters

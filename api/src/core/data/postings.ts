@@ -260,34 +260,3 @@ export const recordPayoutFailed = async (
 		]
 	});
 };
-
-interface CustomerCreditWithdrawnParams {
-	userId: string;
-	amount: bigint;
-	reference: string;
-}
-
-export const recordCustomerCreditWithdrawn = async (
-	tx: TransactionClient,
-	params: CustomerCreditWithdrawnParams
-): Promise<PostJournalResult> => {
-	const customerCredit = await getOrCreateAccount(tx, {
-		kind: AccountKind.CustomerCredit,
-		userId: params.userId
-	});
-	const cash = await getOrCreateAccount(tx, { kind: AccountKind.PlatformCash });
-
-	return postJournal(tx, {
-		reason: LedgerReason.CustomerCreditWithdrawn,
-		idempotencyKey: `credit:${params.userId}:withdrawn:${params.reference}`,
-		description: 'Refund paid out to customer',
-		entries: [
-			{
-				account: customerCredit,
-				direction: EntryDirection.Debit,
-				amount: params.amount
-			},
-			{ account: cash, direction: EntryDirection.Credit, amount: params.amount }
-		]
-	});
-};

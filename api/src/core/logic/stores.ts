@@ -51,6 +51,29 @@ export const createStore = async (
 	return store;
 };
 
+interface AdminCreateStoreInput {
+	name: string;
+	description?: string | undefined;
+}
+
+/**
+ * Admin-created stores start with no manager: the admin is provisioning the
+ * store, not claiming it. `createStore` above attaches its caller instead.
+ */
+export const adminCreateStore = async (
+	c: Context<AppEnv>,
+	input: AdminCreateStoreInput
+) => {
+	if (!c.var.isAdmin) {
+		throw new LogicError(LogicErrorCode.Forbidden);
+	}
+
+	return StoreData.createStore(
+		c.var.prisma,
+		input as StripUndefined<AdminCreateStoreInput>
+	);
+};
+
 interface UpdateStoreInput {
 	storeId: string;
 	name?: string | undefined;

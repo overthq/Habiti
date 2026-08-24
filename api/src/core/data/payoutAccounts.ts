@@ -16,13 +16,13 @@ import type { TransactionClient } from '../../generated/prisma/internal/prismaNa
 
 export const PAYSTACK_PROVIDER = 'paystack';
 
-export interface PayoutAccountIdentity {
+interface PayoutAccountIdentity {
 	provider: string;
 	bankCode: string;
 	accountNumber: string;
 }
 
-export interface CreatePayoutAccountParams extends PayoutAccountIdentity {
+interface CreatePayoutAccountParams extends PayoutAccountIdentity {
 	storeId: string;
 	accountName: string;
 	bankName: string;
@@ -170,7 +170,7 @@ export const reactivatePayoutAccount = async (
  * unique index backing "one active default per store" cannot be deferred, so
  * setting the new default first collides with the outgoing one.
  */
-export const clearDefaultPayoutAccount = async (
+const clearDefaultPayoutAccount = async (
 	tx: TransactionClient,
 	storeId: string
 ) => {

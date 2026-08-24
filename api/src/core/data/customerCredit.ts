@@ -1,8 +1,7 @@
 import {
 	AccountKind,
 	EntryDirection,
-	LedgerReason,
-	PrismaClient
+	LedgerReason
 } from '../../generated/prisma/client';
 import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
 import {
@@ -167,24 +166,4 @@ export const detachCustomerAccounts = async (
 	});
 
 	return count;
-};
-
-/**
- * Users who cannot be pruned because they still hold ledger accounts. The
- * anonymous-user prune uses this to skip them rather than fail the batch.
- */
-export const filterUsersWithoutLedgerHistory = async (
-	prisma: PrismaClient,
-	userIds: string[]
-): Promise<string[]> => {
-	if (userIds.length === 0) return [];
-
-	const withAccounts = await prisma.ledgerAccount.findMany({
-		where: { userId: { in: userIds } },
-		select: { userId: true }
-	});
-
-	const excluded = new Set(withAccounts.map(a => a.userId));
-
-	return userIds.filter(id => !excluded.has(id));
 };
