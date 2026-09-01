@@ -2,8 +2,6 @@ import { api } from './api';
 import {
 	type LoginBody,
 	type LoginResponse,
-	type CreateAdminBody,
-	type CreateAdminResponse,
 	type OrderFilters,
 	type GetOrdersResponse,
 	type GetOrderResponse,
@@ -46,10 +44,6 @@ export const login = (body: LoginBody) => {
 
 export const logout = () => {
 	return api.post<{ message: string }>('/admin/logout', {});
-};
-
-export const createAdmin = (body: CreateAdminBody) => {
-	return api.post<CreateAdminResponse>('/admin/register', body);
 };
 
 export const getOrders = (params?: OrderFilters) => {
