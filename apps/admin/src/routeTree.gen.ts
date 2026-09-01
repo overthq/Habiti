@@ -13,7 +13,6 @@ import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardHomeRouteImport } from './routes/_dashboard.home'
-import { Route as AuthRegisterRouteImport } from './routes/_auth.register'
 import { Route as AuthLoginRouteImport } from './routes/_auth.login'
 import { Route as DashboardUsersIndexRouteImport } from './routes/_dashboard.users.index'
 import { Route as DashboardStoresIndexRouteImport } from './routes/_dashboard.stores.index'
@@ -41,11 +40,6 @@ const DashboardHomeRoute = DashboardHomeRouteImport.update({
   id: '/home',
   path: '/home',
   getParentRoute: () => DashboardRoute,
-} as any)
-const AuthRegisterRoute = AuthRegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
-  getParentRoute: () => AuthRoute,
 } as any)
 const AuthLoginRoute = AuthLoginRouteImport.update({
   id: '/login',
@@ -96,7 +90,6 @@ const DashboardOrdersIdRoute = DashboardOrdersIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof AuthLoginRoute
-  '/register': typeof AuthRegisterRoute
   '/home': typeof DashboardHomeRoute
   '/orders/$id': typeof DashboardOrdersIdRoute
   '/products/$id': typeof DashboardProductsIdRoute
@@ -110,7 +103,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof AuthLoginRoute
-  '/register': typeof AuthRegisterRoute
   '/home': typeof DashboardHomeRoute
   '/orders/$id': typeof DashboardOrdersIdRoute
   '/products/$id': typeof DashboardProductsIdRoute
@@ -127,7 +119,6 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/_dashboard': typeof DashboardRouteWithChildren
   '/_auth/login': typeof AuthLoginRoute
-  '/_auth/register': typeof AuthRegisterRoute
   '/_dashboard/home': typeof DashboardHomeRoute
   '/_dashboard/orders/$id': typeof DashboardOrdersIdRoute
   '/_dashboard/products/$id': typeof DashboardProductsIdRoute
@@ -143,7 +134,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
-    | '/register'
     | '/home'
     | '/orders/$id'
     | '/products/$id'
@@ -157,7 +147,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
-    | '/register'
     | '/home'
     | '/orders/$id'
     | '/products/$id'
@@ -173,7 +162,6 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/_dashboard'
     | '/_auth/login'
-    | '/_auth/register'
     | '/_dashboard/home'
     | '/_dashboard/orders/$id'
     | '/_dashboard/products/$id'
@@ -220,13 +208,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/home'
       preLoaderRoute: typeof DashboardHomeRouteImport
       parentRoute: typeof DashboardRoute
-    }
-    '/_auth/register': {
-      id: '/_auth/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof AuthRegisterRouteImport
-      parentRoute: typeof AuthRoute
     }
     '/_auth/login': {
       id: '/_auth/login'
@@ -296,12 +277,10 @@ declare module '@tanstack/react-router' {
 
 interface AuthRouteChildren {
   AuthLoginRoute: typeof AuthLoginRoute
-  AuthRegisterRoute: typeof AuthRegisterRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthLoginRoute: AuthLoginRoute,
-  AuthRegisterRoute: AuthRegisterRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
