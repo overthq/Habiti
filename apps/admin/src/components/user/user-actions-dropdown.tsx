@@ -39,7 +39,7 @@ const UserActionsDropdown = ({ user }: UserActionsDropdownProps) => {
 						<ChevronDown className='ml-2 h-4 w-4' />
 					</Button>
 				</DropdownMenuTrigger>
-				<DropdownMenuContent align='end'>
+				<DropdownMenuContent align='end' className='w-auto'>
 					<DropdownMenuItem onSelect={() => setUpdateDialogOpen(true)}>
 						<Pencil className='mr-2 h-4 w-4' />
 						Update User

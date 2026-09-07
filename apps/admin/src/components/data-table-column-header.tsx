@@ -11,8 +11,10 @@ import {
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 
-interface DataTableColumnHeaderProps<TData, TValue>
-	extends React.HTMLAttributes<HTMLDivElement> {
+interface DataTableColumnHeaderProps<
+	TData,
+	TValue
+> extends React.HTMLAttributes<HTMLDivElement> {
 	column: Column<TData, TValue>;
 	title: string;
 }
@@ -45,7 +47,7 @@ export function DataTableColumnHeader<TData, TValue>({
 						)}
 					</Button>
 				</DropdownMenuTrigger>
-				<DropdownMenuContent align='start'>
+				<DropdownMenuContent align='start' className='w-auto'>
 					<DropdownMenuItem onClick={() => column.toggleSorting(false)}>
 						<ArrowUp />
 						Asc
