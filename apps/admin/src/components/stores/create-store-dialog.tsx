@@ -60,53 +60,49 @@ const CreateStoreDialog = () => {
 			<DialogTrigger asChild>
 				<Button>Create Store</Button>
 			</DialogTrigger>
-			<DialogContent>
+			<DialogContent className='sm:max-w-sm'>
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)}>
+					<form className='grid gap-4' onSubmit={form.handleSubmit(onSubmit)}>
 						<DialogHeader>
 							<DialogTitle>Create Store</DialogTitle>
 						</DialogHeader>
 
-						<div className='grid gap-4 py-4'>
-							<div className='grid gap-2'>
-								<FormField
-									control={form.control}
-									name='name'
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Name</FormLabel>
-											<FormControl>
-												<Input placeholder='Store name' {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
+						<FormField
+							control={form.control}
+							name='name'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Name</FormLabel>
+									<FormControl>
+										<Input placeholder='Store name' {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
-								<FormField
-									control={form.control}
-									name='description'
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Description</FormLabel>
-											<FormControl>
-												<Textarea
-													placeholder='Store description (optional)'
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							</div>
+						<FormField
+							control={form.control}
+							name='description'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Description</FormLabel>
+									<FormControl>
+										<Textarea
+											placeholder='Store description (optional)'
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
-							<DialogFooter>
-								<Button type='submit' disabled={!form.formState.isValid}>
-									Create Store
-								</Button>
-							</DialogFooter>
-						</div>
+						<DialogFooter>
+							<Button type='submit' disabled={!form.formState.isValid}>
+								Create Store
+							</Button>
+						</DialogFooter>
 					</form>
 				</Form>
 			</DialogContent>
