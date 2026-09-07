@@ -130,9 +130,18 @@ export const signRawToken = (
 	expiresIn: jwt.SignOptions['expiresIn'] = '10m'
 ) => jwt.sign(claims, env.JWT_SECRET, { algorithm: 'HS256', expiresIn });
 
-export const authedRequest = (path: string, token: string) =>
+export const authedRequest = (
+	path: string,
+	token: string,
+	init: RequestInit = {}
+) =>
 	new Request(`http://test.local${path}`, {
-		headers: { authorization: `Bearer ${token}` }
+		...init,
+		headers: {
+			authorization: `Bearer ${token}`,
+			...(init.body ? { 'content-type': 'application/json' } : {}),
+			...init.headers
+		}
 	});
 
 export const anonymousRequest = (path: string) =>

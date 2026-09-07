@@ -27,9 +27,9 @@ import {
 	DropdownMenuTrigger,
 	DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
-import { getCurrentAdmin } from '@/lib/utils';
+import { getCurrentAdmin, type DecodedToken } from '@/lib/utils';
 import { useLogoutMutation } from '@/data/mutations';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Avatar, AvatarFallback } from './ui/avatar';
 
 const items = [
 	{
@@ -61,7 +61,7 @@ const items = [
 
 export function AppSidebar() {
 	const pathname = useRouterState({ select: s => s.location.pathname });
-	const [admin, setAdmin] = useState(getCurrentAdmin());
+	const [admin, setAdmin] = useState<DecodedToken | null>(null);
 	const logoutMutation = useLogoutMutation();
 
 	useEffect(() => {

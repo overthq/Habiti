@@ -71,10 +71,16 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 	component: RootComponent
 });
 
+const THEME_STORAGE_KEY = 'admin-theme';
+const DEFAULT_THEME = 'dark';
+
 function RootComponent() {
 	return (
 		<RootDocument>
-			<ThemeProvider defaultTheme='dark' storageKey='admin-theme'>
+			<ThemeProvider
+				defaultTheme={DEFAULT_THEME}
+				storageKey={THEME_STORAGE_KEY}
+			>
 				<Outlet />
 				<Toaster richColors position='top-right' />
 			</ThemeProvider>
@@ -84,7 +90,7 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang='en'>
+		<html lang='en' suppressHydrationWarning>
 			<head>
 				<HeadContent />
 			</head>

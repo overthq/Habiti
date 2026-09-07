@@ -213,6 +213,43 @@ export const deleteStore = async (
 	return store;
 };
 
+export const adminDeleteStore = async (c: Context<AppEnv>, storeId: string) => {
+	if (!c.var.isAdmin) {
+		throw new LogicError(LogicErrorCode.Forbidden);
+	}
+
+	const store = await StoreData.getStoreById(c.var.prisma, storeId);
+
+	if (!store) {
+		throw new LogicError(LogicErrorCode.StoreNotFound);
+	}
+
+	// Same Restrict-linked ledger accounts as `deleteStore`: being an admin does
+	// not make the foreign key go away.
+	const ledgerAccounts = await c.var.prisma.ledgerAccount.count({
+		where: { storeId }
+	});
+
+	if (ledgerAccounts > 0) {
+		throw new LogicError(LogicErrorCode.HasLedgerHistory);
+	}
+
+	await StoreData.deleteStore(c.var.prisma, storeId);
+
+	c.var.services.analytics.track({
+		event: 'store_deleted',
+		distinctId: c.var.auth?.id ?? 'admin',
+		properties: {
+			storeId: store.id,
+			storeName: store.name,
+			adminInitiated: true
+		},
+		groups: { store: storeId }
+	});
+
+	return store;
+};
+
 interface CreateStoreManagerInput {
 	storeId: string;
 	userId: string;

@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 import {
-	type CreateAdminBody,
 	type LoginBody,
 	type UpdateOrderBody,
 	type CreateProductBody,
@@ -17,7 +16,6 @@ import {
 import {
 	login,
 	logout,
-	createAdmin,
 	updateOrder,
 	cancelOrder,
 	createProduct,
@@ -72,18 +70,6 @@ export const useLogoutMutation = () => {
 			localStorage.removeItem('accessToken');
 			toast.error('Logged out (session may not be fully revoked)');
 			navigate({ to: '/login' });
-		}
-	});
-};
-
-export const useCreateAdminMutation = () => {
-	return useMutation({
-		mutationFn: (body: CreateAdminBody) => createAdmin(body),
-		onSuccess: () => {
-			toast.success('Admin created successfully');
-		},
-		onError: () => {
-			toast.error('Failed to create admin');
 		}
 	});
 };

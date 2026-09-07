@@ -18,7 +18,7 @@ export const BulkActionsToolbar = ({
 	}
 
 	return (
-		<div className='absolute w-full bottom-2'>
+		<div className='absolute z-10 w-full bottom-2'>
 			<div className='flex gap-4 px-3 py-2 bg-muted/50 border rounded-md w-fit mx-auto'>
 				<div className='flex items-center gap-2'>
 					<span className='text-sm font-medium'>

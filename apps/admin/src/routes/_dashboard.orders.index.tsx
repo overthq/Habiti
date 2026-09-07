@@ -120,7 +120,7 @@ const columns: ColumnDef<Order>[] = [
 							<MoreVertical />
 						</Button>
 					</DropdownMenuTrigger>
-					<DropdownMenuContent align='end'>
+					<DropdownMenuContent align='end' className='w-auto'>
 						<DropdownMenuLabel>Actions</DropdownMenuLabel>
 						<DropdownMenuItem
 							onClick={() => navigator.clipboard.writeText(order.id)}

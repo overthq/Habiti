@@ -146,6 +146,97 @@ const adminStoreOrderBy = [
 	'paidOut'
 ] as const;
 
+// Bulk routes are registered before the `/:id` routes below: this router
+// matches in registration order, so `/stores/:id` would otherwise swallow
+// `/stores/bulk`.
+admin.post(
+	'/users/bulk',
+	zValidator('json', Schemas.bulkUserUpdateSchema, zodHook),
+	async c => {
+		const { ids, field, value } = c.req.valid('json');
+
+		const result = await AdminLogic.bulkUpdateUsers(c, ids, field, value);
+		return c.json(result);
+	}
+);
+
+admin.delete(
+	'/users/bulk',
+	zValidator('json', Schemas.bulkIdsSchema, zodHook),
+	async c => {
+		const { ids } = c.req.valid('json');
+
+		const result = await AdminLogic.bulkDeleteUsers(c, ids);
+		return c.json(result);
+	}
+);
+
+admin.post(
+	'/orders/bulk',
+	zValidator('json', Schemas.bulkOrderUpdateSchema, zodHook),
+	async c => {
+		const { ids, field, value } = c.req.valid('json');
+
+		const result = await AdminLogic.bulkUpdateOrders(c, ids, field, value);
+		return c.json(result);
+	}
+);
+
+admin.delete(
+	'/orders/bulk',
+	zValidator('json', Schemas.bulkIdsSchema, zodHook),
+	async c => {
+		const { ids } = c.req.valid('json');
+
+		const result = await AdminLogic.bulkDeleteOrders(c, ids);
+		return c.json(result);
+	}
+);
+
+admin.post(
+	'/products/bulk',
+	zValidator('json', Schemas.bulkProductUpdateSchema, zodHook),
+	async c => {
+		const { ids, field, value } = c.req.valid('json');
+
+		const result = await AdminLogic.bulkUpdateProducts(c, ids, field, value);
+		return c.json(result);
+	}
+);
+
+admin.delete(
+	'/products/bulk',
+	zValidator('json', Schemas.bulkIdsSchema, zodHook),
+	async c => {
+		const { ids } = c.req.valid('json');
+
+		const result = await AdminLogic.bulkDeleteProducts(c, ids);
+		return c.json(result);
+	}
+);
+
+admin.post(
+	'/stores/bulk',
+	zValidator('json', Schemas.bulkStoreUpdateSchema, zodHook),
+	async c => {
+		const { ids, field, value } = c.req.valid('json');
+
+		const result = await AdminLogic.bulkUpdateStores(c, ids, field, value);
+		return c.json(result);
+	}
+);
+
+admin.delete(
+	'/stores/bulk',
+	zValidator('json', Schemas.bulkIdsSchema, zodHook),
+	async c => {
+		const { ids } = c.req.valid('json');
+
+		const result = await AdminLogic.bulkDeleteStores(c, ids);
+		return c.json(result);
+	}
+);
+
 admin.get('/stores', async c => {
 	const query = hydrateQuery(c.req.query(), {
 		allowedFields: adminStoreFields,
@@ -213,6 +304,13 @@ admin.get('/stores/:id/orders', async c => {
 	return c.json({ orders });
 });
 
+admin.get('/stores/:id/products', async c => {
+	const storeId = c.req.param('id');
+	const filters = productFiltersSchema.parse(parseNestedQuery(c.req.query()));
+	const products = await StoreLogic.getStoreProducts(c, storeId, filters);
+	return c.json({ products });
+});
+
 admin.get('/stores/:id', async c => {
 	const storeWithContext = await StoreLogic.getStoreById(c, c.req.param('id'));
 
@@ -237,6 +335,11 @@ admin.put(
 		return c.json({ store });
 	}
 );
+
+admin.delete('/stores/:id', async c => {
+	await StoreLogic.adminDeleteStore(c, c.req.param('id'));
+	return c.json({ message: 'Store deleted' });
+});
 
 admin.get('/products', async c => {
 	const filters = productFiltersSchema.parse(parseNestedQuery(c.req.query()));
@@ -398,94 +501,6 @@ admin.put(
 		});
 
 		return c.json({ order });
-	}
-);
-
-admin.post(
-	'/users/bulk',
-	zValidator('json', Schemas.bulkUserUpdateSchema, zodHook),
-	async c => {
-		const { ids, field, value } = c.req.valid('json');
-
-		const result = await AdminLogic.bulkUpdateUsers(c, ids, field, value);
-		return c.json(result);
-	}
-);
-
-admin.delete(
-	'/users/bulk',
-	zValidator('json', Schemas.bulkIdsSchema, zodHook),
-	async c => {
-		const { ids } = c.req.valid('json');
-
-		const result = await AdminLogic.bulkDeleteUsers(c, ids);
-		return c.json(result);
-	}
-);
-
-admin.post(
-	'/orders/bulk',
-	zValidator('json', Schemas.bulkOrderUpdateSchema, zodHook),
-	async c => {
-		const { ids, field, value } = c.req.valid('json');
-
-		const result = await AdminLogic.bulkUpdateOrders(c, ids, field, value);
-		return c.json(result);
-	}
-);
-
-admin.delete(
-	'/orders/bulk',
-	zValidator('json', Schemas.bulkIdsSchema, zodHook),
-	async c => {
-		const { ids } = c.req.valid('json');
-
-		const result = await AdminLogic.bulkDeleteOrders(c, ids);
-		return c.json(result);
-	}
-);
-
-admin.post(
-	'/products/bulk',
-	zValidator('json', Schemas.bulkProductUpdateSchema, zodHook),
-	async c => {
-		const { ids, field, value } = c.req.valid('json');
-
-		const result = await AdminLogic.bulkUpdateProducts(c, ids, field, value);
-		return c.json(result);
-	}
-);
-
-admin.delete(
-	'/products/bulk',
-	zValidator('json', Schemas.bulkIdsSchema, zodHook),
-	async c => {
-		const { ids } = c.req.valid('json');
-
-		const result = await AdminLogic.bulkDeleteProducts(c, ids);
-		return c.json(result);
-	}
-);
-
-admin.post(
-	'/stores/bulk',
-	zValidator('json', Schemas.bulkStoreUpdateSchema, zodHook),
-	async c => {
-		const { ids, field, value } = c.req.valid('json');
-
-		const result = await AdminLogic.bulkUpdateStores(c, ids, field, value);
-		return c.json(result);
-	}
-);
-
-admin.delete(
-	'/stores/bulk',
-	zValidator('json', Schemas.bulkIdsSchema, zodHook),
-	async c => {
-		const { ids } = c.req.valid('json');
-
-		const result = await AdminLogic.bulkDeleteStores(c, ids);
-		return c.json(result);
 	}
 );
 
