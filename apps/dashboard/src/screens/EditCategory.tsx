@@ -38,7 +38,7 @@ const EditCategory: React.FC<AppStackScreenProps<'Modal.EditCategory'>> = ({
 	});
 
 	return (
-		<ScrollableScreen>
+		<ScrollableScreen withToolbar>
 			<Spacer y={16} />
 			<FormProvider {...methods}>
 				<FormInput

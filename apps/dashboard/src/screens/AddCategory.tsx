@@ -38,7 +38,7 @@ const AddCategory: React.FC<AppStackScreenProps<'Modal.AddCategory'>> = ({
 	);
 
 	return (
-		<ScrollableScreen>
+		<ScrollableScreen withToolbar>
 			<Spacer y={16} />
 			<FormInput
 				autoFocus

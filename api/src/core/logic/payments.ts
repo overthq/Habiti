@@ -1,6 +1,6 @@
 import type { Context } from 'hono';
 
-import { TransactionStatus } from '../../generated/prisma/client';
+import { OrderStatus, PayoutStatus } from '../../generated/prisma/client';
 import { env } from '../../config/env';
 
 import * as CardData from '../data/cards';
@@ -8,6 +8,13 @@ import * as OrderData from '../data/orders';
 import * as TransactionData from '../data/transactions';
 import * as StoreData from '../data/stores';
 import * as PushTokenData from '../data/pushTokens';
+import {
+	deriveExternalId,
+	markWebhookEventFailed,
+	markWebhookEventProcessed,
+	PAYSTACK_WEBHOOK_PROVIDER,
+	recordWebhookEvent
+} from '../data/webhookEvents';
 
 import { NotificationType } from '../notifications';
 
@@ -44,18 +51,18 @@ export const approvePayment = async (
 			const { transfers } = body.data;
 
 			return runSerializable(c.var.prisma, async tx => {
-				const rows: Awaited<ReturnType<typeof tx.transaction.findUnique>>[] =
+				const rows: Awaited<ReturnType<typeof tx.payoutRequest.findUnique>>[] =
 					[];
 
 				for (const transfer of transfers) {
-					const row = await tx.transaction.findUnique({
+					const row = await tx.payoutRequest.findUnique({
 						where: { id: transfer.reference }
 					});
 
 					if (
 						!row ||
-						row.status !== TransactionStatus.Processing ||
-						row.amount !== transfer.amount
+						row.status !== PayoutStatus.Processing ||
+						Number(row.amount) !== transfer.amount
 					) {
 						return null;
 					}
@@ -95,104 +102,113 @@ export const processCardCharge = async (
 
 export const onChargeSuccessful = async (
 	c: Context<AppEnv>,
-	orderId: string
+	orderId: string,
+	webhookEventId?: string | null
 ) => {
-	await transitionOrderToPending(c, orderId);
+	await transitionOrderToPending(c, orderId, webhookEventId);
 };
 
 export const transitionOrderToPending = async (
 	c: Context<AppEnv>,
-	orderId: string
+	orderId: string,
+	webhookEventId?: string | null
 ) => {
-	try {
-		const order = await OrderData.getOrderById(c.var.prisma, orderId);
+	const order = await OrderData.getOrderById(c.var.prisma, orderId);
 
-		if (!order) {
-			c.var.logger.warn({ orderId }, 'order_not_found_for_charge');
-			return;
-		}
+	if (!order) {
+		c.var.logger.warn({ orderId }, 'order_not_found_for_charge');
+		return;
+	}
 
-		const transitioned = await OrderData.markOrderPending(
-			c.var.prisma,
-			order.id
+	const transitioned = await OrderData.markOrderPending(c.var.prisma, order.id);
+
+	if (!transitioned && order.status !== OrderStatus.Pending) {
+		c.var.logger.warn(
+			{ orderId: order.id, status: order.status },
+			'order_not_in_payment_pending'
 		);
 
-		if (!transitioned) {
-			c.var.logger.warn(
-				{ orderId: order.id, status: order.status },
-				'order_not_in_payment_pending'
-			);
-			return;
-		}
+		return;
+	}
 
-		await StoreData.incrementUnrealizedRevenue(c.var.prisma, {
-			storeId: order.storeId,
-			total: order.total
+	await StoreData.recordOrderPayment(c.var.prisma, {
+		storeId: order.storeId,
+		orderId: order.id,
+		total: order.total,
+		serviceFee: order.serviceFee,
+		webhookEventId: webhookEventId ?? null
+	});
+
+	// Stop if the transition had happened previously.
+	if (!transitioned) return;
+
+	const pushTokens = await PushTokenData.getStorePushTokens(
+		c.var.prisma,
+		order.storeId
+	);
+
+	if (pushTokens.length > 0) {
+		c.var.services.notifications.queueNotification({
+			type: NotificationType.NewOrder,
+			data: {
+				orderId: order.id,
+				customerName: order.user.name,
+				amount: order.total
+			},
+			recipientTokens: pushTokens
 		});
-
-		const pushTokens = await PushTokenData.getStorePushTokens(
-			c.var.prisma,
-			order.storeId
-		);
-
-		if (pushTokens.length > 0) {
-			c.var.services.notifications.queueNotification({
-				type: NotificationType.NewOrder,
-				data: {
-					orderId: order.id,
-					customerName: order.user.name,
-					amount: order.total
-				},
-				recipientTokens: pushTokens
-			});
-		}
-	} catch (error) {
-		c.var.logger.error({ err: error, orderId }, 'transition_order_failed');
 	}
 };
 
+enum PaystackWebhookEvent {
+	ChargeSuccess = 'charge.success',
+	TransferSuccess = 'transfer.success',
+	TransferFailure = 'transfer.failure',
+	TransferReversed = 'transfer.reversed'
+}
+
 const PAYSTACK_SUPPORTED_WEBHOOK_EVENTS = [
-	'charge.success',
-	'transfer.success',
-	'transfer.failure',
-	'transfer.reversed'
+	PaystackWebhookEvent.ChargeSuccess,
+	PaystackWebhookEvent.TransferSuccess,
+	PaystackWebhookEvent.TransferFailure,
+	PaystackWebhookEvent.TransferReversed
 ];
 
 export const handlePaystackWebhookEvent = async (
 	c: Context<AppEnv>,
 	event: string,
-	data: any
+	data: any,
+	webhookEventId?: string | null
 ) =>
 	c.var.tracer.startSpan(
 		'paystack.webhook',
-		async () => handlePaystackWebhookEventImpl(c, event, data),
+		async () => handlePaystackWebhookEventImpl(c, event, data, webhookEventId),
 		{ event }
 	);
 
 const handlePaystackWebhookEventImpl = async (
 	c: Context<AppEnv>,
 	event: string,
-	data: any
+	data: any,
+	webhookEventId?: string | null
 ) => {
-	try {
-		c.var.logger.info({ event }, 'paystack.webhook.received');
+	c.var.logger.info({ event }, 'paystack.webhook.received');
 
-		if (!PAYSTACK_SUPPORTED_WEBHOOK_EVENTS.includes(event)) {
-			c.var.logger.warn({ event }, 'paystack.webhook.unsupported');
-			return;
-		}
+	if (
+		!PAYSTACK_SUPPORTED_WEBHOOK_EVENTS.includes(event as PaystackWebhookEvent)
+	) {
+		c.var.logger.warn({ event }, 'paystack.webhook.unsupported');
+		return;
+	}
 
-		if (event === 'charge.success') {
-			await handleChargeSuccess(c, data);
-		} else if (event === 'transfer.success') {
-			await handleTransferSuccess(c, data);
-		} else if (event === 'transfer.failure') {
-			await handleTransferFailure(c, data);
-		} else if (event === 'transfer.reversed') {
-			await handleTransferReversed(c, data);
-		}
-	} catch (error) {
-		c.var.logger.error({ err: error, event }, 'paystack.webhook.failed');
+	if (event === PaystackWebhookEvent.ChargeSuccess) {
+		await handleChargeSuccess(c, data, webhookEventId);
+	} else if (event === PaystackWebhookEvent.TransferSuccess) {
+		await handleTransferSuccess(c, data, webhookEventId);
+	} else if (event === PaystackWebhookEvent.TransferFailure) {
+		await handleTransferFailure(c, data, webhookEventId);
+	} else if (event === PaystackWebhookEvent.TransferReversed) {
+		await handleTransferReversed(c, data, webhookEventId);
 	}
 };
 
@@ -201,10 +217,11 @@ const handlePaystackWebhookEventImpl = async (
 
 export const handleChargeSuccess = async (
 	c: Context<AppEnv>,
-	data: ChargeSuccessPayload
+	data: ChargeSuccessPayload,
+	webhookEventId?: string | null
 ) => {
 	if (typeof data.metadata === 'object' && data.metadata?.orderId) {
-		await onChargeSuccessful(c, data.metadata.orderId);
+		await onChargeSuccessful(c, data.metadata.orderId, webhookEventId);
 	} else {
 		c.var.logger.warn(
 			{ cardType: data.authorization.card_type },
@@ -224,7 +241,8 @@ export const handleChargeSuccess = async (
 
 const handleTransferSuccess = async (
 	c: Context<AppEnv>,
-	data: TransferSuccessPayload
+	data: TransferSuccessPayload,
+	webhookEventId?: string | null
 ) => {
 	if (data.reason !== 'Payout') {
 		c.var.logger.warn(
@@ -232,25 +250,39 @@ const handleTransferSuccess = async (
 			'paystack.non_payout_transfer'
 		);
 	} else {
-		await TransactionData.markTransferSuccessful(c.var.prisma, data.reference);
+		await TransactionData.markTransferSuccessful(
+			c.var.prisma,
+			data.reference,
+			webhookEventId
+		);
 
-		const transaction = await TransactionData.getTransactionById(
+		const payoutRequest = await TransactionData.getPayoutRequestById(
 			c.var.prisma,
 			data.reference
 		);
 
-		if (transaction) {
+		if (payoutRequest) {
 			const pushTokens = await PushTokenData.getStorePushTokens(
 				c.var.prisma,
-				transaction.storeId
+				payoutRequest.storeId
 			);
 
 			if (pushTokens.length > 0) {
+				// The notification deep-links to the dashboard's transaction
+				// screen, which reads statement entries -- so it needs the id of
+				// the statement row this payout produced, not the payout
+				// request's own id. `getNotificationUrl` falls back to the
+				// payouts list when it is absent, which beats a link to nothing.
+				const statementEntry = await TransactionData.getPayoutStatementEntry(
+					c.var.prisma,
+					payoutRequest.id
+				);
+
 				c.var.services.notifications.queueNotification({
 					type: NotificationType.PayoutConfirmed,
 					data: {
-						amount: transaction.amount,
-						transactionId: transaction.id
+						amount: Number(payoutRequest.amount),
+						...(statementEntry ? { transactionId: statementEntry.id } : {})
 					},
 					recipientTokens: pushTokens
 				});
@@ -261,7 +293,8 @@ const handleTransferSuccess = async (
 
 const handleTransferFailure = async (
 	ctx: Context<AppEnv>,
-	data: TransferFailurePayload
+	data: TransferFailurePayload,
+	webhookEventId?: string | null
 ) => {
 	if (data.reason !== 'Payout') {
 		ctx.var.logger.warn(
@@ -269,15 +302,26 @@ const handleTransferFailure = async (
 			'paystack.non_payout_transfer'
 		);
 	} else {
-		await TransactionData.markTransferFailed(ctx.var.prisma, data.reference);
+		await TransactionData.markTransferFailed(
+			ctx.var.prisma,
+			data.reference,
+			'Paystack reported transfer failure',
+			webhookEventId
+		);
 	}
 };
 
 export const handleTransferReversed = async (
 	ctx: Context<AppEnv>,
-	data: TransferReversedPayload
+	data: TransferReversedPayload,
+	webhookEventId?: string | null
 ) => {
-	await TransactionData.markTransferFailed(ctx.var.prisma, data.reference);
+	await TransactionData.markTransferFailed(
+		ctx.var.prisma,
+		data.reference,
+		'Paystack reported transfer reversal',
+		webhookEventId
+	);
 };
 
 export const verifyTransaction = async (
@@ -317,11 +361,16 @@ export const verifyTransfer = async (
 	}
 
 	if (TERMINAL_TRANSFER_FAILURE_STATUSES.has(data.status)) {
-		await TransactionData.markTransferFailed(c.var.prisma, options.transferId);
+		await TransactionData.markTransferFailed(
+			c.var.prisma,
+			options.transferId,
+			`Paystack transfer status: ${data.status}`
+		);
+
 		return data;
 	}
 
-	// Non-terminal statuses (pending, otp, etc.): keep the row Processing.
+	// Non-terminal statuses (pending, otp, etc.): leave the request Processing.
 	return data;
 };
 
@@ -382,4 +431,70 @@ export const payAccount = async (
 	}
 
 	return data;
+};
+
+interface ClaimWebhookEventInput {
+	rawBody: string;
+	eventType: string;
+	externalRef?: string | number | undefined;
+	payload: unknown;
+}
+
+/**
+ * Claims a Paystack delivery so a retry of the same event is a no-op. The
+ * caller must stop when `duplicate` is set -- this is the outer of the two
+ * idempotency layers, the inner being the journal's idempotency key.
+ */
+export const claimPaystackWebhookEvent = async (
+	c: Context<AppEnv>,
+	input: ClaimWebhookEventInput
+) => {
+	const externalId = deriveExternalId(input.rawBody, input.externalRef);
+
+	const claim = await recordWebhookEvent(c.var.prisma, {
+		provider: PAYSTACK_WEBHOOK_PROVIDER,
+		eventType: input.eventType,
+		externalId,
+		payload: input.payload
+	});
+
+	return { ...claim, externalId };
+};
+
+interface ProcessWebhookEventInput {
+	claimId: string;
+	event: string;
+	data: unknown;
+	externalId: string;
+}
+
+/**
+ * Runs a claimed delivery to completion and records the outcome. Never
+ * throws: the HTTP response has already gone out by the time this runs, so a
+ * failure is recorded on the claim rather than surfaced to Paystack.
+ */
+export const processPaystackWebhookEvent = async (
+	c: Context<AppEnv>,
+	input: ProcessWebhookEventInput
+) => {
+	const { claimId, event, data, externalId } = input;
+
+	try {
+		await handlePaystackWebhookEvent(c, event, data, claimId);
+		await markWebhookEventProcessed(c.var.prisma, claimId);
+	} catch (error) {
+		c.var.logger.error(
+			{ err: error, event, externalId },
+			'paystack.webhook.processing_failed'
+		);
+
+		try {
+			await markWebhookEventFailed(c.var.prisma, claimId, error);
+		} catch (markError) {
+			c.var.logger.error(
+				{ err: markError, event, externalId },
+				'paystack.webhook.mark_failed_errored'
+			);
+		}
+	}
 };

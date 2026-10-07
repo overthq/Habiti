@@ -8,6 +8,7 @@ export { default as CustomImage } from './CustomImage';
 export { default as Dialog } from './Dialog';
 export { default as EmptyState } from './EmptyState';
 export { default as FormInput } from './FormInput';
+export { default as FormToolbar } from './FormToolbar';
 export { Icon, IconType } from './Icon';
 export { IconButton } from './Button';
 export { default as Input } from './Input';

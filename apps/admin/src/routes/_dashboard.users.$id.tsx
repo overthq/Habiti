@@ -3,6 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import UserActionsDropdown from '@/components/user/user-actions-dropdown';
 import UserOrders from '@/components/user/user-orders';
 import UserSessions from '@/components/user/user-sessions';
+import UserStores from '@/components/user/user-stores';
 import { useUserQuery } from '@/data/queries';
 import { Badge } from '@/components/ui/badge';
 import InlineMeta from '@/components/ui/inline-meta';
@@ -45,10 +46,14 @@ function User() {
 			<Tabs defaultValue='orders'>
 				<TabsList>
 					<TabsTrigger value='orders'>Orders</TabsTrigger>
+					<TabsTrigger value='stores'>Stores</TabsTrigger>
 					<TabsTrigger value='sessions'>Sessions</TabsTrigger>
 				</TabsList>
 				<TabsContent value='orders'>
 					<UserOrders user={user} />
+				</TabsContent>
+				<TabsContent value='stores'>
+					<UserStores user={user} />
 				</TabsContent>
 				<TabsContent value='sessions'>
 					<UserSessions user={user} />

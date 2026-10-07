@@ -1,17 +1,5 @@
 import { PrismaClient, PushTokenType } from '../../generated/prisma/client';
 
-export const getUserPushTokens = async (
-	prisma: PrismaClient,
-	userId: string
-) => {
-	const user = await prisma.user.findUnique({
-		where: { id: userId },
-		include: { pushTokens: { where: { type: PushTokenType.Shopper } } }
-	});
-
-	return user?.pushTokens.map(token => token.token) ?? [];
-};
-
 export const getStorePushTokens = async (
 	prisma: PrismaClient,
 	storeId: string

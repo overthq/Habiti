@@ -1,4 +1,8 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+	QueryClient,
+	useMutation,
+	useQueryClient
+} from '@tanstack/react-query';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useShallow } from 'zustand/react/shallow';
 import * as AppleAuthentication from 'expo-apple-authentication';
@@ -13,6 +17,8 @@ import {
 	deleteStore,
 	updateProduct,
 	createPayout,
+	createPayoutAccount,
+	deletePayoutAccount,
 	createStore,
 	switchStore,
 	createProductCategory,
@@ -33,6 +39,7 @@ import { ACCOUNT_CREATION_ENABLED } from '../utils/constants';
 import env from '../../env';
 import {
 	CreatePayoutBody,
+	CreatePayoutAccountBody,
 	CreateProductBody,
 	CreateProductCategoryBody,
 	CreateStoreBody,
@@ -453,6 +460,32 @@ export const useCreatePayoutMutation = () => {
 export const useVerifyBankAccountMutation = () => {
 	return useMutation({
 		mutationFn: (body: VerifyBankAccountBody) => verifyBankAccount(body)
+	});
+};
+
+const invalidatePayoutAccounts = (queryClient: QueryClient) => {
+	queryClient.invalidateQueries({
+		queryKey: ['stores', 'current', 'payout-accounts']
+	});
+	queryClient.invalidateQueries({ queryKey: ['stores', 'current'] });
+};
+
+export const useCreatePayoutAccountMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (body: CreatePayoutAccountBody) => createPayoutAccount(body),
+		onSuccess: () => invalidatePayoutAccounts(queryClient)
+	});
+};
+
+export const useDeletePayoutAccountMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (payoutAccountId: string) =>
+			deletePayoutAccount(payoutAccountId),
+		onSuccess: () => invalidatePayoutAccounts(queryClient)
 	});
 };
 

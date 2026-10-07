@@ -2,8 +2,6 @@ import { api } from './api';
 import {
 	type LoginBody,
 	type LoginResponse,
-	type CreateAdminBody,
-	type CreateAdminResponse,
 	type OrderFilters,
 	type GetOrdersResponse,
 	type GetOrderResponse,
@@ -21,6 +19,7 @@ import {
 	type GetUserResponse,
 	type UpdateUserBody,
 	type GetUserSessionsResponse,
+	type GetUserStoresResponse,
 	type UpdateStoreBody,
 	type CreateStoreBody,
 	type Store,
@@ -45,10 +44,6 @@ export const login = (body: LoginBody) => {
 
 export const logout = () => {
 	return api.post<{ message: string }>('/admin/logout', {});
-};
-
-export const createAdmin = (body: CreateAdminBody) => {
-	return api.post<CreateAdminResponse>('/admin/register', body);
 };
 
 export const getOrders = (params?: OrderFilters) => {
@@ -103,6 +98,10 @@ export const getUser = (id: string) => {
 
 export const getUserSessions = (userId: string) => {
 	return api.get<GetUserSessionsResponse>(`/admin/users/${userId}/sessions`);
+};
+
+export const getUserStores = (userId: string) => {
+	return api.get<GetUserStoresResponse>(`/admin/users/${userId}/stores`);
 };
 
 export const updateUser = (id: string, body: UpdateUserBody) => {

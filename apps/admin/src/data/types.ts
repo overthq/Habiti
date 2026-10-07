@@ -43,12 +43,8 @@ export interface GetUserSessionsResponse {
 	sessions: Session[];
 }
 
-export interface Admin {
-	id: string;
-	name: string;
-	email: string;
-	createdAt: string;
-	updatedAt: string;
+export interface GetUserStoresResponse {
+	stores: StoreManager[];
 }
 
 export interface LoginBody {
@@ -59,16 +55,6 @@ export interface LoginBody {
 export interface LoginResponse {
 	accessToken: string;
 	adminId: string;
-}
-
-export interface CreateAdminBody {
-	name: string;
-	email: string;
-	password: string;
-}
-
-export interface CreateAdminResponse {
-	admin: Admin;
 }
 
 export enum OrderStatus {
@@ -217,6 +203,7 @@ export interface StoreManager {
 	manager: User;
 	storeId: string;
 	store: Store;
+	createdAt: string;
 }
 
 export interface GetStoreManagersResponse {

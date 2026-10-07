@@ -62,7 +62,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 			foregroundImage: './assets/adaptive-icon.png',
 			backgroundColor: '#FFFFFF'
 		},
-		softwareKeyboardLayoutMode: 'pan',
+		softwareKeyboardLayoutMode: 'resize',
 		intentFilters: [
 			{
 				action: 'VIEW',

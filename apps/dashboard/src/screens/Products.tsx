@@ -76,9 +76,10 @@ const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({
 		...filters,
 		search: debouncedSearch
 	});
-	const { data, isLoading, refetch } = useProductsQuery(queryFilters);
+	const { data, isLoading, refetch, isRefetching } =
+		useProductsQuery(queryFilters);
 
-	const { isRefreshing, onRefresh } = useRefresh({ refetch });
+	const { isRefreshing, onRefresh } = useRefresh({ refetch, isRefetching });
 
 	const openFilterModal = React.useCallback(() => {
 		openSheet('productsFilter');

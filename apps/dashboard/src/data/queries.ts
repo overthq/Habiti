@@ -3,6 +3,8 @@ import { refreshAuthTokens } from '../utils/refreshManager';
 import {
 	getCurrentUser,
 	getCurrentStore,
+	getStoreBalance,
+	getPayoutAccounts,
 	getProducts,
 	getProduct,
 	getProductReviews,
@@ -38,6 +40,20 @@ export const useCurrentStoreQuery = () => {
 	return useQuery({
 		queryKey: ['stores', 'current'],
 		queryFn: getCurrentStore
+	});
+};
+
+export const useStoreBalanceQuery = () => {
+	return useQuery({
+		queryKey: ['stores', 'current', 'balance'],
+		queryFn: getStoreBalance
+	});
+};
+
+export const usePayoutAccountsQuery = () => {
+	return useQuery({
+		queryKey: ['stores', 'current', 'payout-accounts'],
+		queryFn: getPayoutAccounts
 	});
 };
 

@@ -68,97 +68,81 @@ const CreateProductDialog = ({ storeId }: CreateProductDialogProps) => {
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger asChild>
-				<Button>Create Product</Button>
-			</DialogTrigger>
-			<DialogContent>
-				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)}>
+			<Form {...form}>
+				<form onSubmit={form.handleSubmit(onSubmit)}>
+					<DialogTrigger asChild>
+						<Button>Create Product</Button>
+					</DialogTrigger>
+
+					<DialogContent className='sm:max-w-sm'>
 						<DialogHeader>
 							<DialogTitle>Create Product</DialogTitle>
 						</DialogHeader>
 
-						<div className='grid gap-4 py-4'>
-							<div className='grid gap-2'>
-								<FormField
-									control={form.control}
-									name='name'
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Name</FormLabel>
-											<FormControl>
-												<Input placeholder='Product name' {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
+						<FormField
+							control={form.control}
+							name='name'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Name</FormLabel>
+									<FormControl>
+										<Input placeholder='Product name' {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
-								<FormField
-									control={form.control}
-									name='description'
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Description</FormLabel>
-											<FormControl>
-												<Textarea
-													placeholder='Product description'
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
+						<FormField
+							control={form.control}
+							name='description'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Description</FormLabel>
+									<FormControl>
+										<Textarea placeholder='Product description' {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
-								<FormField
-									control={form.control}
-									name='unitPrice'
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Unit Price (Naira)</FormLabel>
-											<FormControl>
-												<Input
-													type='number'
-													placeholder='0'
-													min='0'
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
+						<FormField
+							control={form.control}
+							name='unitPrice'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Unit Price (Naira)</FormLabel>
+									<FormControl>
+										<Input type='number' placeholder='0' min='0' {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
-								<FormField
-									control={form.control}
-									name='quantity'
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Quantity</FormLabel>
-											<FormControl>
-												<Input
-													type='number'
-													placeholder='0'
-													min='0'
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							</div>
+						<FormField
+							control={form.control}
+							name='quantity'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Quantity</FormLabel>
+									<FormControl>
+										<Input type='number' placeholder='0' min='0' {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
-							<DialogFooter>
-								<Button type='submit' disabled={!form.formState.isValid}>
-									Create Product
-								</Button>
-							</DialogFooter>
-						</div>
-					</form>
-				</Form>
-			</DialogContent>
+						<DialogFooter>
+							<Button type='submit' disabled={!form.formState.isValid}>
+								Create Product
+							</Button>
+						</DialogFooter>
+					</DialogContent>
+				</form>
+			</Form>
 		</Dialog>
 	);
 };

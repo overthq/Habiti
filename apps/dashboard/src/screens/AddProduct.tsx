@@ -80,7 +80,7 @@ const AddProduct: React.FC<AppStackScreenProps<'Modal.AddProduct'>> = ({
 	}, [navigation, formMethods, onSubmit, createProductMutation.isPending]);
 
 	return (
-		<ScrollableScreen>
+		<ScrollableScreen withToolbar>
 			<Spacer y={16} />
 			<FormProvider {...formMethods}>
 				<FormInput

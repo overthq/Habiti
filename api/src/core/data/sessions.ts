@@ -64,16 +64,6 @@ export const getUserSessions = async (prisma: PrismaClient, userId: string) => {
 	});
 };
 
-export const updateSessionActivity = async (
-	prisma: PrismaClient,
-	id: string
-) => {
-	return prisma.session.update({
-		where: { id },
-		data: { lastActiveAt: new Date() }
-	});
-};
-
 /**
  * Session-level access-token deny list.
  *

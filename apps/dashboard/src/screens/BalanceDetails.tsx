@@ -13,7 +13,7 @@ import {
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { parseTimestamp } from '../utils/date';
-import { useCurrentStoreQuery, useTransactionsQuery } from '../data/queries';
+import { useStoreBalanceQuery, useTransactionsQuery } from '../data/queries';
 import { Transaction, TransactionStatus, TransactionType } from '../data/types';
 import type {
 	AppStackParamList,
@@ -21,25 +21,28 @@ import type {
 } from '../navigation/types';
 
 const BalanceDetails = () => {
-	const { data } = useCurrentStoreQuery();
+	const { data } = useStoreBalanceQuery();
 	const { theme } = useTheme();
 
-	if (!data?.store) {
+	if (!data?.balance) {
 		return <View />;
 	}
 
-	const { realizedRevenue, unrealizedRevenue, paidOut } = data.store;
-	const available = (realizedRevenue ?? 0) - (paidOut ?? 0);
+	const { realizedRevenue, unrealizedRevenue, pendingPayouts, available } =
+		data.balance;
 
 	return (
 		<ScrollableScreen>
 			<Spacer y={16} />
 			<View style={[styles.list, { backgroundColor: theme.input.background }]}>
 				<BalanceRow label='Available' amount={available} />
-				<BalanceRow label='Realized revenue' amount={realizedRevenue ?? 0} />
+				{pendingPayouts > 0 && (
+					<BalanceRow label='Pending payouts' amount={pendingPayouts} />
+				)}
+				<BalanceRow label='Realized revenue' amount={realizedRevenue} />
 				<BalanceRow
 					label='Unrealized revenue'
-					amount={unrealizedRevenue ?? 0}
+					amount={unrealizedRevenue}
 					isLast
 				/>
 			</View>

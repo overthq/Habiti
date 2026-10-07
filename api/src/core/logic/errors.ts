@@ -22,6 +22,7 @@ export enum LogicErrorCode {
 	CardNotFound = 'CardNotFound',
 	CartNotFound = 'CartNotFound',
 	AdminNotFound = 'AdminNotFound',
+	SessionNotFound = 'SessionNotFound',
 
 	InvalidInput = 'InvalidInput',
 	ValidationFailed = 'ValidationFailed',
@@ -38,6 +39,8 @@ export enum LogicErrorCode {
 	CannotRemoveLastManager = 'CannotRemoveLastManager',
 
 	InsufficientFunds = 'InsufficientFunds',
+	HasLedgerHistory = 'HasLedgerHistory',
+	OutstandingCredit = 'OutstandingCredit',
 	NoAccountDetails = 'NoAccountDetails',
 	StoreContextRequired = 'StoreContextRequired',
 
@@ -51,6 +54,11 @@ export enum LogicErrorCode {
 
 	PayoutInsufficientFunds = 'PayoutInsufficientFunds',
 	PayoutFailed = 'PayoutFailed',
+
+	PayoutAccountNotFound = 'PayoutAccountNotFound',
+	PayoutAccountLimitReached = 'PayoutAccountLimitReached',
+	PayoutAccountInUse = 'PayoutAccountInUse',
+	BankAccountVerificationFailed = 'BankAccountVerificationFailed',
 
 	PaymentFailed = 'PaymentFailed',
 
@@ -85,6 +93,8 @@ export const logicErrorToApiException = (
 			return new HTTPException(404, { message: 'Card not found' });
 		case LogicErrorCode.AdminNotFound:
 			return new HTTPException(404, { message: 'Admin not found' });
+		case LogicErrorCode.SessionNotFound:
+			return new HTTPException(404, { message: 'Session not found' });
 		case LogicErrorCode.NotFound:
 			return new HTTPException(404, { message: 'Not found' });
 
@@ -121,6 +131,18 @@ export const logicErrorToApiException = (
 
 		case LogicErrorCode.InsufficientFunds:
 			return new HTTPException(400, { message: 'Insufficient funds' });
+		case LogicErrorCode.HasLedgerHistory:
+			return new HTTPException(409, {
+				message:
+					'This record has financial history and cannot be deleted. ' +
+					'Archive it instead.'
+			});
+		case LogicErrorCode.OutstandingCredit:
+			return new HTTPException(409, {
+				message:
+					'This account still has an unpaid refund balance. ' +
+					'Pay it out before deleting.'
+			});
 		case LogicErrorCode.NoAccountDetails:
 			return new HTTPException(400, { message: 'No account details provided' });
 		case LogicErrorCode.StoreContextRequired:
@@ -162,6 +184,25 @@ export const logicErrorToApiException = (
 			});
 		case LogicErrorCode.PayoutFailed:
 			return new HTTPException(500, { message: 'Payout failed' });
+
+		case LogicErrorCode.PayoutAccountNotFound:
+			return new HTTPException(404, { message: 'Payout account not found' });
+		case LogicErrorCode.PayoutAccountLimitReached:
+			return new HTTPException(409, {
+				message:
+					'This store already has a payout account. ' +
+					'Remove it before adding another.'
+			});
+		case LogicErrorCode.PayoutAccountInUse:
+			return new HTTPException(409, {
+				message:
+					'This account has a payout awaiting confirmation. ' +
+					'Try again once it has settled.'
+			});
+		case LogicErrorCode.BankAccountVerificationFailed:
+			return new HTTPException(400, {
+				message: 'We could not verify this bank account'
+			});
 
 		case LogicErrorCode.PaymentFailed:
 			return new HTTPException(402, { message: 'Payment failed' });

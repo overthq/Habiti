@@ -61,7 +61,7 @@ const PayoutActions = ({
 					<MoreHorizontal className='size-4' />
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent align='end'>
+			<DropdownMenuContent align='end' className='w-auto'>
 				<DropdownMenuItem
 					onClick={() => mutation.mutate({ status: TransactionStatus.Success })}
 				>

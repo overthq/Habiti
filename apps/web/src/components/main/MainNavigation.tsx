@@ -38,7 +38,7 @@ const ProfileDropdown = () => {
 					<CircleUserIcon className='size-5' />
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent align='end'>
+			<DropdownMenuContent align='end' className='w-auto'>
 				<DropdownMenuItem asChild>
 					<Link to='/profile'>
 						<UserIcon className='w-4 h-4' />

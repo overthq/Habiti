@@ -156,7 +156,12 @@ export function SearchBar({
 								onClick={() => handleResultClick(result)}
 								className='flex w-full items-center gap-2 rounded-md px-3 py-2 text-left transition-colors hover:bg-accent hover:text-accent-foreground'
 							>
-								<div className='size-10 rounded-md bg-muted overflow-hidden'>
+								<div
+									className={cn(
+										'size-10 bg-muted overflow-hidden shrink-0',
+										result.type === 'store' ? 'rounded-full' : 'rounded-md'
+									)}
+								>
 									{result.image && (
 										<img
 											src={result.image}

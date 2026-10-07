@@ -61,8 +61,9 @@ const OrdersProvider: React.FC<{ children: React.ReactNode }> = ({
 	const filters = useOrdersFilterStore(state => state.filters);
 
 	const queryFilters = buildFiltersFromState(filters);
-	const { data, isLoading, refetch } = useOrdersQuery(queryFilters);
-	const { isRefreshing, onRefresh } = useRefresh({ refetch });
+	const { data, isLoading, refetch, isRefetching } =
+		useOrdersQuery(queryFilters);
+	const { isRefreshing, onRefresh } = useRefresh({ refetch, isRefetching });
 
 	const openFilterModal = React.useCallback(() => {
 		openSheet('ordersFilter');

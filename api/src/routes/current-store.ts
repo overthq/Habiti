@@ -5,6 +5,7 @@ import { HTTPException } from 'hono/http-exception';
 import type { AppEnv } from '../types/hono';
 import { zodHook } from '../utils/validation';
 import { authenticate } from '../middleware/auth';
+import { rateLimit } from '../middleware/rateLimit';
 import { requireStoreContext } from '../middleware/storeContext';
 import {
 	hydrateQuery,
@@ -19,6 +20,7 @@ import * as StoreLogic from '../core/logic/stores';
 import * as ProductLogic from '../core/logic/products';
 import * as OrderLogic from '../core/logic/orders';
 import * as TransactionLogic from '../core/logic/transactions';
+import * as PayoutAccountLogic from '../core/logic/payoutAccounts';
 import * as AddressLogic from '../core/logic/addresses';
 import * as Schemas from '../core/validations/rest';
 
@@ -183,18 +185,82 @@ currentStore.put(
 	}
 );
 
+currentStore.get('/balance', async c => {
+	const balance = await TransactionLogic.getStoreBalance(c, c.var.storeId!);
+	return c.json({ balance });
+});
+
+const payoutLimiter = rateLimit({
+	prefix: 'payouts',
+	windowSec: 60,
+	limit: 5,
+	keyGenerator: c => c.var.storeId ?? c.var.auth?.id ?? 'anon'
+});
+
 currentStore.post(
 	'/payouts',
+	payoutLimiter,
 	zValidator('json', Schemas.createPayoutBodySchema, zodHook),
 	async c => {
-		const { amount } = c.req.valid('json');
+		const { amount, payoutAccountId } = c.req.valid('json');
 
 		const transaction = await TransactionLogic.createPayoutTransaction(c, {
-			amount
+			amount,
+			payoutAccountId
 		});
+
 		return c.json({ transaction }, 201);
 	}
 );
+
+const payoutAccountLimiter = rateLimit({
+	prefix: 'payout-accounts',
+	windowSec: 60,
+	limit: 10,
+	keyGenerator: c => c.var.storeId ?? c.var.auth?.id ?? 'anon'
+});
+
+currentStore.get('/payout-accounts', async c => {
+	const payoutAccounts = await PayoutAccountLogic.listPayoutAccounts(c);
+	return c.json({ payoutAccounts });
+});
+
+currentStore.post(
+	'/payout-accounts',
+	payoutAccountLimiter,
+	zValidator('json', Schemas.createPayoutAccountBodySchema, zodHook),
+	async c => {
+		const { bankAccountNumber, bankCode, label, replaceExisting } =
+			c.req.valid('json');
+
+		const payoutAccount = await PayoutAccountLogic.addPayoutAccount(c, {
+			accountNumber: bankAccountNumber,
+			bankCode,
+			label,
+			replaceExisting
+		});
+
+		return c.json({ payoutAccount }, 201);
+	}
+);
+
+currentStore.post('/payout-accounts/:id/default', async c => {
+	const payoutAccount = await PayoutAccountLogic.setDefaultPayoutAccount(
+		c,
+		c.req.param('id')
+	);
+
+	return c.json({ payoutAccount });
+});
+
+currentStore.delete('/payout-accounts/:id', async c => {
+	const removed = await PayoutAccountLogic.removePayoutAccount(
+		c,
+		c.req.param('id')
+	);
+
+	return c.json(removed);
+});
 
 currentStore.post(
 	'/verify-bank-account',

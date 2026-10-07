@@ -12,6 +12,7 @@ import {
 	AuthenticateBody,
 	RegisterBody,
 	Store,
+	StoreBalance,
 	Product,
 	ProductReview,
 	ProductFilters,
@@ -30,6 +31,8 @@ import {
 	UpdateProductCategoryArgs,
 	StoreProductCategory,
 	VerifyBankAccountBody,
+	PayoutAccount,
+	CreatePayoutAccountBody,
 	StoreOverview,
 	CustomerInfo,
 	Address,
@@ -134,6 +137,13 @@ export const uploadImage = async (uri: string) => {
 
 export const getCurrentStore = async (): Promise<{ store: Store }> => {
 	const response = await api.get('/stores/current');
+	return response.data;
+};
+
+export const getStoreBalance = async () => {
+	const response = await api.get<{ balance: StoreBalance }>(
+		'/stores/current/balance'
+	);
 	return response.data;
 };
 
@@ -265,6 +275,28 @@ export const createProduct = async (body: CreateProductBody) => {
 
 export const createPayout = async (body: CreatePayoutBody) => {
 	const response = await api.post('/stores/current/payouts', body);
+	return response.data;
+};
+
+export const getPayoutAccounts = async () => {
+	const response = await api.get<{ payoutAccounts: PayoutAccount[] }>(
+		'/stores/current/payout-accounts'
+	);
+	return response.data;
+};
+
+export const createPayoutAccount = async (body: CreatePayoutAccountBody) => {
+	const response = await api.post<{ payoutAccount: PayoutAccount }>(
+		'/stores/current/payout-accounts',
+		body
+	);
+	return response.data;
+};
+
+export const deletePayoutAccount = async (payoutAccountId: string) => {
+	const response = await api.delete(
+		`/stores/current/payout-accounts/${payoutAccountId}`
+	);
 	return response.data;
 };
 

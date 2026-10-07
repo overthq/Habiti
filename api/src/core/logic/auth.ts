@@ -3,8 +3,6 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import type { Context } from 'hono';
 
-import * as AuthData from '../data/auth';
-import * as AdminAuthData from '../data/adminAuth';
 import * as SessionData from '../data/sessions';
 import * as AdminSessionData from '../data/adminSessions';
 import { env } from '../../config/env';
@@ -136,12 +134,14 @@ export const generateRefreshToken = async (
 	const expiresAt = new Date();
 	expiresAt.setDate(expiresAt.getDate() + 30);
 
-	await AuthData.createRefreshToken(c.var.prisma, {
-		id,
-		userId,
-		hashedToken,
-		expiresAt,
-		sessionId: resolvedSessionId
+	await c.var.prisma.refreshToken.create({
+		data: {
+			id,
+			userId,
+			hashedToken,
+			expiresAt,
+			sessionId: resolvedSessionId
+		}
 	});
 
 	return { token, sessionId: resolvedSessionId };
@@ -163,7 +163,10 @@ export const revokeRefreshToken = async (c: Context<AppEnv>, token: string) => {
 		await SessionData.revokeSession(c.var.prisma, decoded.sessionId);
 		await SessionData.denySession(c.var.redis, decoded.sessionId);
 	} else {
-		await AuthData.revokeRefreshToken(c.var.prisma, decoded.id);
+		await c.var.prisma.refreshToken.update({
+			where: { id: decoded.id },
+			data: { revoked: true }
+		});
 	}
 };
 
@@ -380,12 +383,14 @@ export const generateAdminRefreshToken = async (
 	const expiresAt = new Date();
 	expiresAt.setDate(expiresAt.getDate() + 30);
 
-	await AdminAuthData.createAdminRefreshToken(c.var.prisma, {
-		id,
-		adminId,
-		hashedToken,
-		expiresAt,
-		sessionId: resolvedSessionId
+	await c.var.prisma.adminRefreshToken.create({
+		data: {
+			id,
+			adminId,
+			hashedToken,
+			expiresAt,
+			sessionId: resolvedSessionId
+		}
 	});
 
 	return { token, sessionId: resolvedSessionId };
@@ -409,7 +414,10 @@ export const revokeAdminRefreshToken = async (
 		await AdminSessionData.revokeAdminSession(c.var.prisma, decoded.sessionId);
 		await SessionData.denySession(c.var.redis, decoded.sessionId);
 	} else {
-		await AdminAuthData.revokeAdminRefreshToken(c.var.prisma, decoded.id);
+		await c.var.prisma.adminRefreshToken.update({
+			where: { id: decoded.id },
+			data: { revoked: true }
+		});
 	}
 };
 

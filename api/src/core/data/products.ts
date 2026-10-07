@@ -152,45 +152,6 @@ export const archiveProduct = async (
 	return product;
 };
 
-export const updateProductQuantity = async (
-	prisma: PrismaClient,
-	productId: string,
-	quantity: number
-) => {
-	const product = await prisma.product.update({
-		where: { id: productId },
-		data: { quantity }
-	});
-
-	return product;
-};
-
-export const incrementProductQuantity = async (
-	prisma: PrismaClient,
-	productId: string,
-	increment: number
-) => {
-	const product = await prisma.product.update({
-		where: { id: productId },
-		data: { quantity: { increment } }
-	});
-
-	return product;
-};
-
-export const decrementProductQuantity = async (
-	prisma: PrismaClient,
-	productId: string,
-	decrement: number
-) => {
-	const product = await prisma.product.update({
-		where: { id: productId },
-		data: { quantity: { decrement } }
-	});
-
-	return product;
-};
-
 interface CreateProductReviewParams {
 	productId: string;
 	userId: string;
@@ -258,6 +219,7 @@ export const getRelatedProducts = async (
 
 	let relatedProducts = await prisma.product.findMany({
 		where: {
+			id: { not: productId },
 			storeId: product.storeId,
 			status: { not: ProductStatus.Archived },
 			categories: {
@@ -273,6 +235,7 @@ export const getRelatedProducts = async (
 	if (relatedProducts.length === 0) {
 		relatedProducts = await prisma.product.findMany({
 			where: {
+				id: { not: productId },
 				storeId: product.storeId,
 				status: { not: ProductStatus.Archived }
 			},

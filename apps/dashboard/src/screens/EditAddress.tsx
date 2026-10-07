@@ -53,7 +53,7 @@ const EditAddress: React.FC<AppStackScreenProps<'Modal.EditAddress'>> = ({
 	});
 
 	return (
-		<ScrollableScreen>
+		<ScrollableScreen withToolbar>
 			<Spacer y={16} />
 			<FormProvider {...methods}>
 				<FormInput

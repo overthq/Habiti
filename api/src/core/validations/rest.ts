@@ -3,7 +3,6 @@ import {
 	OrderStatus,
 	ProductStatus,
 	TransactionStatus,
-	TransactionType,
 	PushTokenType
 } from '../../generated/prisma/client';
 
@@ -136,9 +135,7 @@ export const updateStoreBodySchema = z.object({
 	instagram: z.string().optional(),
 	unlisted: z.boolean().optional(),
 	imageUrl: z.string().optional(),
-	imagePublicId: z.string().optional(),
-	bankAccountNumber: z.string().optional(),
-	bankCode: z.string().optional()
+	imagePublicId: z.string().optional()
 });
 
 export type UpdateStoreBody = z.infer<typeof updateStoreBodySchema>;
@@ -184,10 +181,31 @@ export const updateOrderStatusBodySchema = z.object({
 export type UpdateOrderStatusBody = z.infer<typeof updateOrderStatusBodySchema>;
 
 export const createPayoutBodySchema = z.object({
-	amount: z.number().min(0)
+	amount: z.number().min(0),
+	payoutAccountId: z.string().uuid().optional()
 });
 
 export type CreatePayoutBody = z.infer<typeof createPayoutBodySchema>;
+
+export const createPayoutAccountBodySchema = z.object({
+	bankAccountNumber: z.string().min(1),
+	bankCode: z.string().min(1),
+	label: z.string().min(1).max(64).optional(),
+	replaceExisting: z.boolean().optional()
+});
+
+export type CreatePayoutAccountBody = z.infer<
+	typeof createPayoutAccountBodySchema
+>;
+
+export const adminWithdrawCustomerCreditBodySchema = z.object({
+	amount: z.number().int().positive(),
+	reference: z.string().min(1).max(200)
+});
+
+export type AdminWithdrawCustomerCreditBody = z.infer<
+	typeof adminWithdrawCustomerCreditBodySchema
+>;
 
 export const verifyBankAccountBodySchema = z.object({
 	bankAccountNumber: z.string(),
@@ -322,9 +340,7 @@ export const adminUpdateStoreBodySchema = z.object({
 	instagram: z.string().optional(),
 	unlisted: z.boolean().optional(),
 	imageUrl: z.string().optional(),
-	imagePublicId: z.string().optional(),
-	bankAccountNumber: z.string().optional(),
-	bankCode: z.string().optional()
+	imagePublicId: z.string().optional()
 });
 
 export type AdminUpdateStoreBody = z.infer<typeof adminUpdateStoreBodySchema>;
@@ -513,20 +529,3 @@ export const orderFiltersSchema = z.object({
 });
 
 export type OrderFilters = z.infer<typeof orderFiltersSchema>;
-
-export const transactionFiltersQuerySchema = z.object({
-	type: z.nativeEnum(TransactionType).optional(),
-	status: z.nativeEnum(TransactionStatus).optional(),
-	from: z.string().optional(),
-	to: z.string().optional(),
-	limit: z
-		.union([z.number(), z.string()])
-		.transform(val => (typeof val === 'string' ? parseInt(val, 10) : val))
-		.optional(),
-	offset: z
-		.union([z.number(), z.string()])
-		.transform(val => (typeof val === 'string' ? parseInt(val, 10) : val))
-		.optional()
-});
-
-export type TransactionFilters = z.infer<typeof transactionFiltersQuerySchema>;

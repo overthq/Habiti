@@ -40,8 +40,8 @@ const AddressListItem: React.FC<AddressListItemProps> = ({
 const Addresses: React.FC<StoreStackScreenProps<'Addresses'>> = ({
 	navigation
 }) => {
-	const { data, isLoading, refetch } = useAddressesQuery();
-	const { isRefreshing, onRefresh } = useRefresh({ refetch });
+	const { data, isLoading, refetch, isRefetching } = useAddressesQuery();
+	const { isRefreshing, onRefresh } = useRefresh({ refetch, isRefetching });
 
 	const handleAddAddress = React.useCallback(() => {
 		navigation.navigate('Modal.AddAddress');

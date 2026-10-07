@@ -71,7 +71,7 @@ function OrderDetailPage() {
 							<ChevronDown className='ml-2 h-4 w-4' />
 						</Button>
 					</DropdownMenuTrigger>
-					<DropdownMenuContent align='end'>
+					<DropdownMenuContent align='end' className='w-auto'>
 						<DropdownMenuSub>
 							<DropdownMenuSubTrigger>
 								<RefreshCw className='mr-2 h-4 w-4' />

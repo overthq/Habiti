@@ -30,7 +30,7 @@ const StoreProductFilters: React.FC<StoreProductFiltersProps> = ({
 						Sort by <ChevronDown />
 					</Button>
 				</DropdownMenuTrigger>
-				<DropdownMenuContent align='start'>
+				<DropdownMenuContent align='start' className='w-auto'>
 					<DropdownMenuCheckboxItem
 						checked={sortBy === 'default'}
 						onCheckedChange={() => onSortChange('default')}

@@ -61,81 +61,77 @@ const UpdateProductDialog = ({ product }: UpdateProductDialogProps) => {
 			<DialogTrigger asChild>
 				<Button>Update Product</Button>
 			</DialogTrigger>
-			<DialogContent>
+			<DialogContent className='sm:max-w-sm'>
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)}>
+					<form className='grid gap-4' onSubmit={form.handleSubmit(onSubmit)}>
 						<DialogHeader>
 							<DialogTitle>Update Product</DialogTitle>
 						</DialogHeader>
 
-						<div className='grid gap-4 py-4'>
-							<div className='grid gap-2'>
-								<FormField
-									control={form.control}
-									name='name'
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Name</FormLabel>
-											<FormControl>
-												<Input {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
+						<FormField
+							control={form.control}
+							name='name'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Name</FormLabel>
+									<FormControl>
+										<Input {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
-								<FormField
-									control={form.control}
-									name='description'
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Description</FormLabel>
-											<FormControl>
-												<Textarea {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
+						<FormField
+							control={form.control}
+							name='description'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Description</FormLabel>
+									<FormControl>
+										<Textarea {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
-								<FormField
-									control={form.control}
-									name='unitPrice'
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Unit Price</FormLabel>
-											<FormControl>
-												<Input {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
+						<FormField
+							control={form.control}
+							name='unitPrice'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Unit Price</FormLabel>
+									<FormControl>
+										<Input {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
-								<FormField
-									control={form.control}
-									name='quantity'
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Quantity</FormLabel>
-											<FormControl>
-												<Input type='number' {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							</div>
+						<FormField
+							control={form.control}
+							name='quantity'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Quantity</FormLabel>
+									<FormControl>
+										<Input type='number' {...field} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
-							<DialogFooter>
-								<Button
-									type='submit'
-									disabled={!form.formState.isValid || !form.formState.isDirty}
-								>
-									Save changes
-								</Button>
-							</DialogFooter>
-						</div>
+						<DialogFooter>
+							<Button
+								type='submit'
+								disabled={!form.formState.isValid || !form.formState.isDirty}
+							>
+								Save changes
+							</Button>
+						</DialogFooter>
 					</form>
 				</Form>
 			</DialogContent>

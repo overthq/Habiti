@@ -3,13 +3,41 @@ import type { Context } from 'hono';
 import type { AppEnv } from '../../types/hono';
 import { LogicError, LogicErrorCode } from './errors';
 
-// It makes sense to check this on a per-request basis, until:
-// - We scope access tokens to a single store (for store mangement)
-// - Ensure that the associated tokens are invalidated once the user is removed
-//   as a manager for that store.
-//
-// All in all, this should remain until we can build a robust authentication
-// system.
+interface StoreScope {
+	storeId: string;
+	userId: string;
+}
+
+export const assertStoreScope = (
+	c: Context<AppEnv>,
+	storeId?: string
+): StoreScope => {
+	const userId = c.var.auth?.id;
+
+	if (!userId) {
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
+	}
+
+	if (c.var.isAdmin) {
+		const target = storeId ?? c.var.storeId;
+
+		if (!target) {
+			throw new LogicError(LogicErrorCode.StoreContextRequired);
+		}
+
+		return { storeId: target, userId };
+	}
+
+	if (!c.var.storeId) {
+		throw new LogicError(LogicErrorCode.StoreContextRequired);
+	}
+
+	if (storeId && storeId !== c.var.storeId) {
+		throw new LogicError(LogicErrorCode.Forbidden);
+	}
+
+	return { storeId: c.var.storeId, userId };
+};
 
 export const canManageStore = async (c: Context<AppEnv>) => {
 	if (!c.var.auth?.id) {
@@ -28,6 +56,3 @@ export const canManageStore = async (c: Context<AppEnv>) => {
 
 	return !!storeManager;
 };
-
-// TODO: Move the meat of the functionality here
-export const isHabitiAdmin = async (c: Context<AppEnv>) => c.var.isAdmin;

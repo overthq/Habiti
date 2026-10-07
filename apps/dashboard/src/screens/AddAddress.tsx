@@ -53,7 +53,7 @@ const AddAddress: React.FC<AppStackScreenProps<'Modal.AddAddress'>> = ({
 	);
 
 	return (
-		<ScrollableScreen>
+		<ScrollableScreen withToolbar>
 			<Spacer y={16} />
 			<FormInput
 				autoFocus
