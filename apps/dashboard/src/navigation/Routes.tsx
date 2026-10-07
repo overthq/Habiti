@@ -188,27 +188,41 @@ const PayoutAccountStack = createNativeStackNavigator<
 	'PayoutAccountStack'
 >();
 
-// The native tab bar renders icons natively, so it takes SF Symbols on iOS and
-// image resources elsewhere rather than our `Icon` component. The PNGs in
-// assets/tabs are rendered from the same glyphs `Icon` uses.
-const tabIcons: Record<keyof MainTabParamList, NativeBottomTabIcon> =
-	Platform.select({
-		ios: {
-			Orders: { type: 'sfSymbol', name: 'tray' },
-			Products: { type: 'sfSymbol', name: 'tag' },
-			Store: { type: 'sfSymbol', name: 'bag' },
-			Profile: { type: 'sfSymbol', name: 'person' }
+type TabIcon =
+	| NativeBottomTabIcon
+	| ((props: { focused: boolean }) => NativeBottomTabIcon);
+
+const tabIcons: Record<keyof MainTabParamList, TabIcon> = Platform.select<
+	Record<keyof MainTabParamList, TabIcon>
+>({
+	ios: {
+		Orders: ({ focused }) => ({
+			type: 'sfSymbol',
+			name: focused ? 'tray.fill' : 'tray'
+		}),
+		Products: ({ focused }) => ({
+			type: 'sfSymbol',
+			name: focused ? 'tag.fill' : 'tag'
+		}),
+		Store: ({ focused }) => ({
+			type: 'sfSymbol',
+			name: focused ? 'bag.fill' : 'bag'
+		}),
+		Profile: ({ focused }) => ({
+			type: 'sfSymbol',
+			name: focused ? 'person.fill' : 'person'
+		})
+	},
+	default: {
+		Orders: { type: 'image', source: require('../../assets/tabs/inbox.png') },
+		Products: { type: 'image', source: require('../../assets/tabs/tag.png') },
+		Store: {
+			type: 'image',
+			source: require('../../assets/tabs/shopping-bag.png')
 		},
-		default: {
-			Orders: { type: 'image', source: require('../../assets/tabs/inbox.png') },
-			Products: { type: 'image', source: require('../../assets/tabs/tag.png') },
-			Store: {
-				type: 'image',
-				source: require('../../assets/tabs/shopping-bag.png')
-			},
-			Profile: { type: 'image', source: require('../../assets/tabs/user.png') }
-		}
-	});
+		Profile: { type: 'image', source: require('../../assets/tabs/user.png') }
+	}
+});
 
 const ProductStackNavigator = () => {
 	return (
