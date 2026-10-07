@@ -1,14 +1,9 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import {
-	Button,
-	FormInput,
-	ScrollableScreen,
-	Spacer
-} from '@habiti/components';
+import { FormInput, ScrollableScreen, Spacer } from '@habiti/components';
 
 import { useCreateStoreMutation } from '../data/mutations';
+import useHeaderSubmit from '../hooks/useHeaderSubmit';
 import type { AppStackScreenProps } from '../navigation/types';
 
 export interface CreateStoreFormValues {
@@ -21,7 +16,6 @@ const CreateStore: React.FC<AppStackScreenProps<'Modal.CreateStore'>> = ({
 }) => {
 	const createStoreMutation = useCreateStoreMutation();
 	const methods = useForm<CreateStoreFormValues>();
-	const { bottom } = useSafeAreaInsets();
 
 	const onSubmit = React.useCallback(
 		async (values: CreateStoreFormValues) => {
@@ -31,8 +25,13 @@ const CreateStore: React.FC<AppStackScreenProps<'Modal.CreateStore'>> = ({
 		[createStoreMutation, navigation]
 	);
 
+	useHeaderSubmit({
+		onSubmit: methods.handleSubmit(onSubmit),
+		loading: createStoreMutation.isPending
+	});
+
 	return (
-		<ScrollableScreen contentContainerStyle={{ paddingBottom: bottom + 16 }}>
+		<ScrollableScreen withToolbar>
 			<Spacer y={16} />
 			<FormInput
 				autoFocus
@@ -48,12 +47,6 @@ const CreateStore: React.FC<AppStackScreenProps<'Modal.CreateStore'>> = ({
 				label='Store description'
 				placeholder='Brief description of your store'
 				textArea
-			/>
-			<Spacer y={16} />
-			<Button
-				text='Submit'
-				loading={createStoreMutation.isPending}
-				onPress={methods.handleSubmit(onSubmit)}
 			/>
 		</ScrollableScreen>
 	);

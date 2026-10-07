@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { Image } from 'expo-image';
-import { HeaderButton } from '@react-navigation/elements';
-import { Screen, Spacer, Typography } from '@habiti/components';
+import { Screen, Spacer } from '@habiti/components';
 import * as ImagePicker from 'expo-image-picker';
 
 import type { AppStackScreenProps } from '../navigation/types';
 import { useUpdateProductMutation } from '../data/mutations';
 import { uploadImage } from '../data/requests';
+import useHeaderSubmit from '../hooks/useHeaderSubmit';
 import FAB from '../components/FAB';
 
 interface UploadedImage {
@@ -47,32 +47,11 @@ const ProductImages: React.FC<
 		}
 	}, [updateProductMutation, navigation, uploadedImages, productId, images]);
 
-	React.useLayoutEffect(() => {
-		navigation.setOptions({
-			headerRight: () => (
-				<HeaderButton
-					disabled={
-						uploadedImages.length === 0 ||
-						uploading ||
-						updateProductMutation.isPending
-					}
-					onPress={handleSaveImages}
-				>
-					{updateProductMutation.isPending ? (
-						<ActivityIndicator />
-					) : (
-						<Typography>Save</Typography>
-					)}
-				</HeaderButton>
-			)
-		});
-	}, [
-		navigation,
-		handleSaveImages,
-		uploadedImages.length,
-		uploading,
-		updateProductMutation.isPending
-	]);
+	useHeaderSubmit({
+		onSubmit: handleSaveImages,
+		disabled: uploadedImages.length === 0 || uploading,
+		loading: updateProductMutation.isPending
+	});
 
 	const handlePickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({

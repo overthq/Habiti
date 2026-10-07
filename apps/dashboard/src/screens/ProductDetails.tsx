@@ -1,12 +1,8 @@
-import {
-	FormInput,
-	ScrollableScreen,
-	Spacer,
-	Button
-} from '@habiti/components';
+import { FormInput, ScrollableScreen, Spacer } from '@habiti/components';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { useUpdateProductMutation } from '../data/mutations';
+import useHeaderSubmit from '../hooks/useHeaderSubmit';
 import type { AppStackScreenProps } from '../navigation/types';
 
 const ProductDetails: React.FC<
@@ -34,8 +30,13 @@ const ProductDetails: React.FC<
 		}
 	};
 
+	useHeaderSubmit({
+		onSubmit: methods.handleSubmit(onSubmit),
+		loading: updateProductMutation.isPending
+	});
+
 	return (
-		<ScrollableScreen>
+		<ScrollableScreen withToolbar>
 			<Spacer y={16} />
 			<FormProvider {...methods}>
 				<FormInput
@@ -52,12 +53,6 @@ const ProductDetails: React.FC<
 					placeholder='Description'
 					control={methods.control}
 					textArea
-				/>
-				<Spacer y={12} />
-				<Button
-					text='Save'
-					loading={updateProductMutation.isPending}
-					onPress={methods.handleSubmit(onSubmit)}
 				/>
 			</FormProvider>
 		</ScrollableScreen>

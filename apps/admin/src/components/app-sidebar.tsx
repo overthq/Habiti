@@ -114,7 +114,10 @@ export function AppSidebar() {
 						<SidebarMenuItem>
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
-									<SidebarMenuButton size='lg' className='w-full'>
+									<SidebarMenuButton
+										size='lg'
+										className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
+									>
 										<Avatar className='size-8 rounded-lg'>
 											<AvatarFallback className='rounded-lg'>
 												{admin.name?.[0]}
