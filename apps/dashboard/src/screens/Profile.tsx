@@ -13,7 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import StoreMenuRow from '../components/StoreMenuRow';
 import { useCurrentUserQuery } from '../data/queries';
-import useStore from '../state';
+import { useLogoutMutation } from '../data/mutations';
 import type { ProfileStackScreenProps } from '../navigation/types';
 
 const PRIVACY_POLICY_URL = 'https://habiti.app/privacy-policy';
@@ -23,7 +23,7 @@ const ACCEPTABLE_USE_URL = 'https://habiti.app/acceptable-use';
 const Profile = ({ navigation }: ProfileStackScreenProps<'ProfileHome'>) => {
 	const { top } = useSafeAreaInsets();
 	const { theme } = useTheme();
-	const { logOut } = useStore();
+	const logoutMutation = useLogoutMutation();
 	const { data } = useCurrentUserQuery();
 
 	const user = data?.user;
@@ -31,9 +31,9 @@ const Profile = ({ navigation }: ProfileStackScreenProps<'ProfileHome'>) => {
 	const handleLogOut = React.useCallback(() => {
 		Alert.alert('Log out', 'Are you sure you want to log out?', [
 			{ text: 'Cancel', style: 'cancel' },
-			{ text: 'Log out', onPress: logOut }
+			{ text: 'Log out', onPress: () => logoutMutation.mutate() }
 		]);
-	}, [logOut]);
+	}, [logoutMutation]);
 
 	return (
 		<Screen style={{ paddingTop: top }}>

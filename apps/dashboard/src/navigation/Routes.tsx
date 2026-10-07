@@ -16,7 +16,6 @@ import {
 } from '@react-navigation/bottom-tabs/unstable';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import Authenticate from '../screens/Authenticate';
 import Landing from '../screens/Landing';
 import Register from '../screens/Register';
 import Order from '../screens/Order';
@@ -615,7 +614,6 @@ const Routes: React.FC = () => {
 						{ACCOUNT_CREATION_ENABLED && (
 							<AppStack.Screen name='Register' component={Register} />
 						)}
-						<AppStack.Screen name='Authenticate' component={Authenticate} />
 						<AppStack.Screen name='Verify' component={Verify} />
 					</AppStack.Group>
 				)}

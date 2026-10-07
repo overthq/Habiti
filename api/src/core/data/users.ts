@@ -202,7 +202,7 @@ export const getManagedStores = async (
 ) => {
 	const managedStores = await prisma.storeManager.findMany({
 		where: { managerId: userId },
-		include: { store: true }
+		include: { store: { include: { image: true } } }
 	});
 
 	return managedStores.map(({ store }) => store);

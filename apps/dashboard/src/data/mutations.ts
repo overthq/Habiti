@@ -35,6 +35,7 @@ import {
 	savePushToken
 } from './requests';
 import { requestPushPermission } from '../utils/notifications';
+import { performLogout } from '../utils/refreshManager';
 import { ACCOUNT_CREATION_ENABLED } from '../utils/constants';
 import env from '../../env';
 import {
@@ -525,6 +526,19 @@ export const useDeleteAddressMutation = (addressId: string) => {
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: ['stores', 'current', 'addresses']
+			});
+		}
+	});
+};
+
+export const useLogoutMutation = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: performLogout,
+		onSettled: () => {
+			queryClient.removeQueries({
+				predicate: query => query.queryKey[0] !== 'auth'
 			});
 		}
 	});

@@ -9,7 +9,6 @@ import { Image, ProductCategory } from '../data/types';
 
 export type AppStackParamList = {
 	Main: NavigatorScreenParams<MainTabParamList>;
-	Authenticate: undefined;
 	Landing: undefined;
 	Register: undefined;
 	Verify: { email: string };

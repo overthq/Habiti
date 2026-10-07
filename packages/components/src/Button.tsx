@@ -365,7 +365,7 @@ const colors = {
 				text: palette.neutral.n50
 			},
 			secondary: {
-				background: palette.neutral.n200,
+				background: palette.neutral.n300,
 				text: palette.neutral.n700
 			},
 			tertiary: {
