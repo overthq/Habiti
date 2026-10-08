@@ -1,19 +1,21 @@
 import React from 'react';
-import { Icon, type IconType, themes, useTheme } from '@habiti/components';
+import { themes, useTheme } from '@habiti/components';
 import {
 	LinkingOptions,
 	NavigationContainer,
-	PathConfigMap,
-	RouteProp
+	PathConfigMap
 } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { useShallow } from 'zustand/react/shallow';
 import * as Updates from 'expo-updates';
 import * as Notifications from 'expo-notifications';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {
+	createNativeBottomTabNavigator,
+	createNativeBottomTabScreen,
+	type NativeBottomTabIcon
+} from '@react-navigation/bottom-tabs/unstable';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import Authenticate from '../screens/Authenticate';
 import Landing from '../screens/Landing';
 import Register from '../screens/Register';
 import Order from '../screens/Order';
@@ -160,7 +162,6 @@ const linking: LinkingOptions<AppStackParamList> = {
 };
 
 const AppStack = createNativeStackNavigator<AppStackParamList, 'AppStack'>();
-const MainTab = createBottomTabNavigator<MainTabParamList, 'MainTab'>();
 const ProductStack = createNativeStackNavigator<
 	ProductStackParamList,
 	'ProductStack'
@@ -186,44 +187,41 @@ const PayoutAccountStack = createNativeStackNavigator<
 	'PayoutAccountStack'
 >();
 
-const icons: Record<keyof MainTabParamList, IconType> = {
-	Products: 'tag',
-	Orders: 'inbox',
-	Store: 'shopping-bag',
-	Profile: 'user'
-};
+type TabIcon =
+	| NativeBottomTabIcon
+	| ((props: { focused: boolean }) => NativeBottomTabIcon);
 
-const tabScreenOptions =
-	(themeName: 'light' | 'dark') =>
-	({ route }: { route: RouteProp<MainTabParamList> }) => ({
-		headerShown: false,
-		tabBarActiveTintColor: themes[themeName].text.primary,
-		tabBarInactiveTintColor: themes[themeName].text.tertiary,
-		tabBarShowLabel: false,
-		tabBarIcon: ({ color }: { color: string }) => (
-			<Icon name={icons[route.name]} color={color} size={28} />
-		),
-		tabBarStyle: {
-			paddingTop: 8
-		}
-	});
-
-const MainTabNavigator = () => {
-	const { name } = useTheme();
-
-	return (
-		<MainTab.Navigator
-			id='MainTab'
-			screenOptions={tabScreenOptions(name)}
-			initialRouteName='Orders'
-		>
-			<MainTab.Screen name='Orders' component={OrdersStackNavigator} />
-			<MainTab.Screen name='Products' component={ProductsStackNavigator} />
-			<MainTab.Screen name='Store' component={StoreStackNavigator} />
-			<MainTab.Screen name='Profile' component={ProfileStackNavigator} />
-		</MainTab.Navigator>
-	);
-};
+const tabIcons: Record<keyof MainTabParamList, TabIcon> = Platform.select<
+	Record<keyof MainTabParamList, TabIcon>
+>({
+	ios: {
+		Orders: ({ focused }) => ({
+			type: 'sfSymbol',
+			name: focused ? 'tray.fill' : 'tray'
+		}),
+		Products: ({ focused }) => ({
+			type: 'sfSymbol',
+			name: focused ? 'tag.fill' : 'tag'
+		}),
+		Store: ({ focused }) => ({
+			type: 'sfSymbol',
+			name: focused ? 'bag.fill' : 'bag'
+		}),
+		Profile: ({ focused }) => ({
+			type: 'sfSymbol',
+			name: focused ? 'person.fill' : 'person'
+		})
+	},
+	default: {
+		Orders: { type: 'image', source: require('../../assets/tabs/inbox.png') },
+		Products: { type: 'image', source: require('../../assets/tabs/tag.png') },
+		Store: {
+			type: 'image',
+			source: require('../../assets/tabs/shopping-bag.png')
+		},
+		Profile: { type: 'image', source: require('../../assets/tabs/user.png') }
+	}
+});
 
 const ProductStackNavigator = () => {
 	return (
@@ -409,6 +407,42 @@ const ProfileStackNavigator = () => (
 	</ProfileStack.Navigator>
 );
 
+const MainTabs = createNativeBottomTabNavigator<MainTabParamList, 'MainTab'>({
+	id: 'MainTab',
+	initialRouteName: 'Orders',
+	screenOptions: ({ theme }) => {
+		const { text } = themes[theme.dark ? 'dark' : 'light'];
+
+		return {
+			headerShown: false,
+			tabBarActiveTintColor: text.primary,
+			tabBarInactiveTintColor: text.tertiary,
+			tabBarLabelVisibilityMode:
+				Platform.OS === 'android' ? 'labeled' : 'unlabeled'
+		};
+	},
+	screens: {
+		Orders: createNativeBottomTabScreen({
+			screen: OrdersStackNavigator,
+			options: { tabBarIcon: tabIcons.Orders }
+		}),
+		Products: createNativeBottomTabScreen({
+			screen: ProductsStackNavigator,
+			options: { tabBarIcon: tabIcons.Products }
+		}),
+		Store: createNativeBottomTabScreen({
+			screen: StoreStackNavigator,
+			options: { tabBarIcon: tabIcons.Store }
+		}),
+		Profile: createNativeBottomTabScreen({
+			screen: ProfileStackNavigator,
+			options: { tabBarIcon: tabIcons.Profile }
+		})
+	}
+});
+
+const MainTabNavigator = MainTabs.getComponent();
+
 const AddPayoutAccountNavigator = () => (
 	<PayoutAccountStack.Navigator
 		id='PayoutAccountStack'
@@ -581,7 +615,6 @@ const Routes: React.FC = () => {
 						{ACCOUNT_CREATION_ENABLED && (
 							<AppStack.Screen name='Register' component={Register} />
 						)}
-						<AppStack.Screen name='Authenticate' component={Authenticate} />
 						<AppStack.Screen name='Verify' component={Verify} />
 					</AppStack.Group>
 				)}

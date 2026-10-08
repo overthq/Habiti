@@ -55,6 +55,23 @@ const performRefresh = async (): Promise<RefreshTokenResponse> => {
 	};
 };
 
+export const performLogout = async (): Promise<void> => {
+	const storedRefreshToken = await SecureStore.getItemAsync('refreshToken');
+	await SecureStore.deleteItemAsync('refreshToken');
+
+	if (storedRefreshToken) {
+		try {
+			await fetch(`${env.apiUrl}/auth/logout`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ refreshToken: storedRefreshToken })
+			});
+		} catch {}
+	}
+
+	useStore.getState().logOut();
+};
+
 export const refreshAuthTokens = async () => {
 	if (!inflightRefresh) {
 		inflightRefresh = performRefresh().finally(() => {

@@ -1,6 +1,15 @@
 import React from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+	Pressable,
+	ScrollView,
+	StyleSheet,
+	View,
+	useWindowDimensions
+} from 'react-native';
+import {
+	SafeAreaView,
+	useSafeAreaInsets
+} from 'react-native-safe-area-context';
 import { useShallow } from 'zustand/react/shallow';
 import {
 	Avatar,
@@ -22,6 +31,7 @@ const StoreSelect: React.FC<AppStackScreenProps<'StoreSelect'>> = ({
 	navigation
 }) => {
 	const { isLoading, data } = useManagedStoresQuery();
+	const { top, bottom } = useSafeAreaInsets();
 
 	const handleAddStore = React.useCallback(() => {
 		navigation.navigate('Modal.CreateStore');
@@ -53,26 +63,31 @@ const StoreSelect: React.FC<AppStackScreenProps<'StoreSelect'>> = ({
 
 	return (
 		<Screen>
-			<SafeAreaView style={{ flex: 1 }}>
-				<Typography size='xxlarge' weight='bold'>
-					{hasStores ? 'Select store' : 'Create a new store'}
-				</Typography>
+			<ScrollView
+				showsVerticalScrollIndicator={false}
+				contentContainerStyle={{ paddingTop: top, paddingBottom: bottom + 16 }}
+			>
+				<View style={styles.header}>
+					<Typography size='xxxlarge' weight='bold'>
+						{hasStores ? 'Select store' : 'Create a new store'}
+					</Typography>
 
-				<Spacer y={2} />
+					<Spacer y={2} />
 
-				<Typography variant='secondary'>
-					{hasStores
-						? 'Select the store you want to manage.'
-						: 'Enter the details of your store to get started.'}
-				</Typography>
+					<Typography variant='secondary'>
+						{hasStores
+							? `${STORE_CREATION_ENABLED ? 'Select or create a store' : 'Select a store'} to manage. You can always switch between stores later.`
+							: 'Enter the details of your store to get started.'}
+					</Typography>
+				</View>
 
-				<Spacer y={16} />
+				<Spacer y={8} />
 
 				<StoreSelectList
 					stores={data.stores}
 					onAddStore={STORE_CREATION_ENABLED ? handleAddStore : undefined}
 				/>
-			</SafeAreaView>
+			</ScrollView>
 		</Screen>
 	);
 };
@@ -93,6 +108,13 @@ const StoreSelectList: React.FC<StoreSelectListProps> = ({
 			logIn: state.logIn
 		}))
 	);
+	const { width } = useWindowDimensions();
+
+	// Size the cells so that three columns exactly fill the screen's content
+	// width. The avatars sit inside each cell's padding.
+	const itemSize = Math.floor(
+		(width - SCREEN_PADDING * 2 - COLUMN_GAP * (COLUMNS - 1)) / COLUMNS
+	);
 
 	const handleStoreSelect = React.useCallback(
 		(storeId: string) => async () => {
@@ -108,54 +130,59 @@ const StoreSelectList: React.FC<StoreSelectListProps> = ({
 	);
 
 	return (
-		<View style={{ flex: 1, gap: 12 }}>
-			<ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: 12 }}>
-				{stores.map(store => (
-					<StoreSelectListItem
-						key={store.id}
-						store={store}
-						onPress={handleStoreSelect(store.id)}
-						selected={store.id === activeStore}
-					/>
-				))}
-				{onAddStore && <CreateStoreButton onPress={onAddStore} />}
-			</ScrollView>
+		<View style={styles.grid}>
+			{stores.map(store => (
+				<StoreSelectItem
+					key={store.id}
+					store={store}
+					size={itemSize}
+					onPress={handleStoreSelect(store.id)}
+					selected={store.id === activeStore}
+				/>
+			))}
+			{onAddStore && <CreateStoreButton size={itemSize} onPress={onAddStore} />}
 		</View>
 	);
 };
 
-interface StoresListItemProps {
+const COLUMNS = 3;
+const COLUMN_GAP = 4;
+const CELL_PADDING = 12;
+const SCREEN_PADDING = 16;
+
+interface StoreSelectItemProps {
+	size: number;
 	selected: boolean;
 	store: Store;
 	onPress(): void;
 }
 
-const StoreSelectListItem: React.FC<StoresListItemProps> = ({
+const StoreSelectItem: React.FC<StoreSelectItemProps> = ({
+	size,
 	selected,
 	onPress,
 	store
 }) => {
-	const { theme } = useTheme();
-
 	return (
 		<Pressable
 			onPress={onPress}
-			style={[
-				itemStyles.container,
-				{ borderColor: selected ? theme.text.primary : theme.border.color }
+			style={({ pressed }) => [
+				styles.item,
+				{ width: size },
+				{ opacity: pressed ? 0.7 : 1 }
 			]}
 		>
 			<Avatar
 				uri={store.image?.path}
 				fallbackText={store.name}
-				size={56}
+				size={size - CELL_PADDING * 2}
 				circle
 			/>
-			<Spacer x={12} />
+			<Spacer y={8} />
 			<Typography
-				size='large'
 				weight={selected ? 'medium' : undefined}
-				style={{ textAlign: 'center' }}
+				numberOfLines={1}
+				style={styles.name}
 			>
 				{store.name}
 			</Typography>
@@ -164,47 +191,67 @@ const StoreSelectListItem: React.FC<StoresListItemProps> = ({
 };
 
 interface CreateStoreButtonProps {
+	size: number;
 	onPress(): void;
 }
 
-const CreateStoreButton: React.FC<CreateStoreButtonProps> = ({ onPress }) => {
+const CreateStoreButton: React.FC<CreateStoreButtonProps> = ({
+	size,
+	onPress
+}) => {
 	const { theme } = useTheme();
 
 	return (
 		<Pressable
-			style={{
-				flexDirection: 'row',
-				alignItems: 'center'
-			}}
 			onPress={onPress}
+			style={({ pressed }) => [
+				styles.item,
+				{ width: size },
+				{ opacity: pressed ? 0.7 : 1 }
+			]}
 		>
 			<View
-				style={[listStyles.add, { backgroundColor: theme.image.placeholder }]}
+				style={[
+					styles.add,
+					{
+						width: size - CELL_PADDING * 2,
+						height: size - CELL_PADDING * 2,
+						borderRadius: size / 2,
+						backgroundColor: theme.image.placeholder
+					}
+				]}
 			>
 				<Icon name='plus' size={24} />
 			</View>
-			<Spacer x={12} />
-			<Typography size='large' style={{ textAlign: 'center' }}>
-				Create a new store
+			<Spacer y={8} />
+			<Typography numberOfLines={1} style={styles.name}>
+				New store
 			</Typography>
 		</Pressable>
 	);
 };
 
-const itemStyles = StyleSheet.create({
-	container: {
+const styles = StyleSheet.create({
+	header: {
+		paddingVertical: 12
+	},
+	grid: {
 		flexDirection: 'row',
-		alignItems: 'center'
-	}
-});
-
-const listStyles = StyleSheet.create({
+		flexWrap: 'wrap',
+		justifyContent: 'center',
+		columnGap: COLUMN_GAP,
+		rowGap: 4
+	},
+	item: {
+		alignItems: 'center',
+		padding: CELL_PADDING
+	},
+	name: {
+		textAlign: 'center'
+	},
 	add: {
 		justifyContent: 'center',
-		alignItems: 'center',
-		width: 56,
-		height: 56,
-		borderRadius: 50
+		alignItems: 'center'
 	}
 });
 

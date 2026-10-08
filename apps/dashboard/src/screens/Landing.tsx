@@ -1,91 +1,128 @@
 import React from 'react';
-import { Platform, View } from 'react-native';
+import { Keyboard, Pressable, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import * as AppleAuthentication from 'expo-apple-authentication';
 import {
 	Button,
+	FormInput,
 	Screen,
+	Separator,
 	Spacer,
 	TextButton,
-	Typography,
-	useTheme
+	Typography
 } from '@habiti/components';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-import { useAppleSignInMutation } from '../data/mutations';
+import AppleSignInButton, {
+	useAppleSignInAvailable
+} from '../components/AppleSignInButton';
+import { useAuthenticateMutation } from '../data/mutations';
 import type { AppStackScreenProps } from '../navigation/types';
 import { ACCOUNT_CREATION_ENABLED } from '../utils/constants';
 
-const Landing: React.FC<AppStackScreenProps<'Landing'>> = ({ navigation }) => {
-	const [appleAvailable, setAppleAvailable] = React.useState(false);
-	const appleSignInMutation = useAppleSignInMutation();
-	const { name: themeName } = useTheme();
+const landingSchema = z.object({
+	email: z.string().email('Invalid email address')
+});
 
-	React.useEffect(() => {
-		if (Platform.OS === 'ios') {
-			AppleAuthentication.isAvailableAsync().then(setAppleAvailable);
-		}
-	}, []);
+type LandingFormValues = z.infer<typeof landingSchema>;
+
+const Landing: React.FC<AppStackScreenProps<'Landing'>> = ({ navigation }) => {
+	const methods = useForm<LandingFormValues>({
+		resolver: zodResolver(landingSchema),
+		defaultValues: { email: '' },
+		mode: 'onChange'
+	});
+
+	const authenticateMutation = useAuthenticateMutation();
+	const appleAvailable = useAppleSignInAvailable();
+
+	const onSubmit = (values: LandingFormValues) => {
+		authenticateMutation.mutate({ email: values.email });
+	};
 
 	return (
-		<Screen style={{ justifyContent: 'center' }}>
-			<SafeAreaView style={{ flex: 1 }}>
-				<View style={{ flex: 1 }} />
-				<View style={{ flex: 1 }}>
-					<Typography
-						size='xxxlarge'
-						weight='bold'
-						style={{ textAlign: 'center' }}
+		<Screen>
+			<SafeAreaView style={styles.fill}>
+				<KeyboardAvoidingView behavior='padding' style={styles.fill}>
+					<Pressable
+						style={styles.fill}
+						onPress={Keyboard.dismiss}
+						accessible={false}
 					>
-						Habiti Dashboard
-					</Typography>
-				</View>
-				<View style={{ flex: 1, justifyContent: 'flex-end' }}>
-					{appleAvailable && (
-						<>
-							<AppleAuthentication.AppleAuthenticationButton
-								buttonType={
-									AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
-								}
-								buttonStyle={
-									themeName === 'dark'
-										? AppleAuthentication.AppleAuthenticationButtonStyle.WHITE
-										: AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
-								}
-								cornerRadius={4}
-								style={{ height: 44 }}
-								onPress={() => appleSignInMutation.mutate()}
-							/>
-							<Spacer y={12} />
-						</>
-					)}
-					{ACCOUNT_CREATION_ENABLED ? (
-						<>
-							<Button
-								text='Create account'
-								onPress={() => navigation.navigate('Register')}
-							/>
-							<Spacer y={12} />
-							<TextButton
-								weight='medium'
-								style={{ alignSelf: 'center' }}
-								onPress={() => navigation.navigate('Authenticate')}
+						<View style={styles.title}>
+							<Typography
+								size='xxxlarge'
+								weight='bold'
+								style={{ textAlign: 'center' }}
 							>
-								Already have an account? Log in.
-							</TextButton>
-						</>
-					) : (
-						<>
-							<Button
-								text='Continue'
-								onPress={() => navigation.navigate('Authenticate')}
-							/>
-						</>
-					)}
-					<Spacer y={24} />
-				</View>
+								Habiti Dashboard
+							</Typography>
+						</View>
+						<FormInput
+							name='email'
+							control={methods.control}
+							label='Email address'
+							placeholder='john.doe@gmail.com'
+							keyboardType='email-address'
+							autoCapitalize='none'
+							autoCorrect={false}
+						/>
+						<Spacer y={16} />
+						<Button
+							text='Continue'
+							onPress={methods.handleSubmit(onSubmit)}
+							loading={authenticateMutation.isPending}
+							disabled={!methods.formState.isValid}
+						/>
+						{appleAvailable && (
+							<>
+								<Spacer y={16} />
+								<View style={styles.divider}>
+									<Separator style={styles.fill} />
+									<Typography size='small' variant='secondary'>
+										OR
+									</Typography>
+									<Separator style={styles.fill} />
+								</View>
+								<Spacer y={16} />
+								<AppleSignInButton />
+							</>
+						)}
+						{ACCOUNT_CREATION_ENABLED && (
+							<>
+								<Spacer y={16} />
+								<TextButton
+									weight='medium'
+									style={{ alignSelf: 'center' }}
+									onPress={() => navigation.navigate('Register')}
+								>
+									Don't have an account? Create one.
+								</TextButton>
+							</>
+						)}
+						<Spacer y={24} />
+					</Pressable>
+				</KeyboardAvoidingView>
 			</SafeAreaView>
 		</Screen>
 	);
 };
+
+const styles = StyleSheet.create({
+	fill: {
+		flex: 1
+	},
+	title: {
+		flex: 1,
+		justifyContent: 'center'
+	},
+	divider: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 12
+	}
+});
 
 export default Landing;

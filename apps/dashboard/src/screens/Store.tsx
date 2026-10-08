@@ -16,7 +16,6 @@ import {
 import { formatNaira } from '@habiti/common';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useShallow } from 'zustand/react/shallow';
 
 import Refresher from '../components/Refresher';
 import StoreMenuRow from '../components/StoreMenuRow';
@@ -27,8 +26,8 @@ import {
 	usePayoutAccountsQuery,
 	useStoreBalanceQuery
 } from '../data/queries';
+import { useLogoutMutation } from '../data/mutations';
 import useRefresh from '../hooks/useRefresh';
-import useStore from '../state';
 import { getFrontendUrl } from '../utils/share';
 import type { Store as StoreType, Address } from '../data/types';
 import type {
@@ -53,7 +52,7 @@ const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 	const { data: addressesData } = useAddressesQuery();
 	const { isRefreshing, onRefresh } = useRefresh({ refetch, isRefetching });
 	const { top } = useSafeAreaInsets();
-	const { logOut } = useStore(useShallow(({ logOut }) => ({ logOut })));
+	const logoutMutation = useLogoutMutation();
 	const { openSheet } = useSheet();
 
 	const hasPayoutAccount =
@@ -102,7 +101,11 @@ const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 	if (error) {
 		return (
 			<View>
-				<Button text='Log Out' onPress={logOut} />
+				<Button
+					text='Log Out'
+					onPress={() => logoutMutation.mutate()}
+					loading={logoutMutation.isPending}
+				/>
 			</View>
 		);
 	}

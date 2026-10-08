@@ -1,6 +1,6 @@
 import { PillButton } from '@habiti/components';
-import { PressableProps, ViewStyle } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { PressableProps, StyleSheet, ViewStyle } from 'react-native';
+import { SafeAreaView } from 'react-native-screens/experimental';
 
 interface FABProps extends Omit<PressableProps, 'style'> {
 	text: string;
@@ -14,22 +14,28 @@ const FAB: React.FC<FABProps> = ({
 	style,
 	...props
 }) => {
-	const { bottom } = useSafeAreaInsets();
-
 	return (
-		<PillButton
-			text={text}
-			icon='plus'
-			size='large'
-			style={{
-				position: 'absolute',
-				alignSelf: 'center',
-				bottom: safeAreaPadding ? bottom : 16,
-				...style
-			}}
-			{...props}
-		/>
+		<SafeAreaView edges={{ bottom: true }} style={styles.container}>
+			<PillButton
+				text={text}
+				icon='plus'
+				size='large'
+				style={{
+					marginBottom: safeAreaPadding ? 0 : 16,
+					...style
+				}}
+				{...props}
+			/>
+		</SafeAreaView>
 	);
 };
+
+const styles = StyleSheet.create({
+	container: {
+		position: 'absolute',
+		bottom: 0,
+		alignSelf: 'center'
+	}
+});
 
 export default FAB;
