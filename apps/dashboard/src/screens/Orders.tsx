@@ -267,6 +267,7 @@ const OrdersList = () => {
 				data={orders}
 				renderItem={renderOrder}
 				maintainVisibleContentPosition={{ disabled: true }}
+				contentInsetAdjustmentBehavior='automatic'
 				style={{ marginHorizontal: -16 }}
 				contentContainerStyle={{
 					flexGrow: 1,
