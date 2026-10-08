@@ -417,7 +417,8 @@ const MainTabs = createNativeBottomTabNavigator<MainTabParamList, 'MainTab'>({
 			headerShown: false,
 			tabBarActiveTintColor: text.primary,
 			tabBarInactiveTintColor: text.tertiary,
-			tabBarLabelVisibilityMode: 'unlabeled'
+			tabBarLabelVisibilityMode:
+				Platform.OS === 'android' ? 'labeled' : 'unlabeled'
 		};
 	},
 	screens: {
