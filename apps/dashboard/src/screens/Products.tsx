@@ -242,6 +242,7 @@ const ProductList: React.FC = () => {
 				data={products}
 				renderItem={renderProduct}
 				maintainVisibleContentPosition={{ disabled: true }}
+				contentInsetAdjustmentBehavior='automatic'
 				style={{ marginHorizontal: -16 }}
 				contentContainerStyle={{
 					flexGrow: 1,
