@@ -1,12 +1,12 @@
 import React from 'react';
 import { Screen, Checkbox, Typography, Spacer } from '@habiti/components';
 import { View, StyleSheet } from 'react-native';
-import { HeaderButton } from '@react-navigation/elements';
 
 import FAB from '../components/FAB';
 
 import { useCategoriesQuery } from '../data/queries';
 import { useUpdateProductCategoriesMutation } from '../data/mutations';
+import useHeaderSubmit from '../hooks/useHeaderSubmit';
 import type { AppStackScreenProps } from '../navigation/types';
 
 const ProductCategories: React.FC<
@@ -67,15 +67,11 @@ const ProductCategories: React.FC<
 		productId
 	]);
 
-	React.useLayoutEffect(() => {
-		navigation.setOptions({
-			headerRight: () => (
-				<HeaderButton disabled={disabled} onPress={handleUpdateCategories}>
-					<Typography>Save</Typography>
-				</HeaderButton>
-			)
-		});
-	}, [disabled, handleUpdateCategories, navigation]);
+	useHeaderSubmit({
+		onSubmit: handleUpdateCategories,
+		disabled,
+		loading: updateProductCategoriesMutation.isPending
+	});
 
 	return (
 		<Screen>

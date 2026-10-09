@@ -1,12 +1,8 @@
-import {
-	Button,
-	FormInput,
-	ScrollableScreen,
-	Spacer
-} from '@habiti/components';
+import { FormInput, ScrollableScreen, Spacer } from '@habiti/components';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { useUpdateProductCategoryMutation } from '../data/mutations';
+import useHeaderSubmit from '../hooks/useHeaderSubmit';
 import type { AppStackScreenProps } from '../navigation/types';
 
 interface EditCategoryFormValues {
@@ -37,6 +33,11 @@ const EditCategory: React.FC<AppStackScreenProps<'Modal.EditCategory'>> = ({
 		}
 	});
 
+	useHeaderSubmit({
+		onSubmit: methods.handleSubmit(onSubmit),
+		loading: updateCategoryMutation.isPending
+	});
+
 	return (
 		<ScrollableScreen withToolbar>
 			<Spacer y={16} />
@@ -54,12 +55,6 @@ const EditCategory: React.FC<AppStackScreenProps<'Modal.EditCategory'>> = ({
 					placeholder='Describe your category'
 					control={methods.control}
 					textArea
-				/>
-				<Spacer y={16} />
-				<Button
-					text='Edit Category'
-					onPress={methods.handleSubmit(onSubmit)}
-					loading={updateCategoryMutation.isPending}
 				/>
 			</FormProvider>
 		</ScrollableScreen>

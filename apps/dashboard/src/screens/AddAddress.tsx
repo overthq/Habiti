@@ -1,14 +1,10 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
-import {
-	Button,
-	FormInput,
-	ScrollableScreen,
-	Spacer
-} from '@habiti/components';
+import { FormInput, ScrollableScreen, Spacer } from '@habiti/components';
 
 import { useCreateAddressMutation } from '../data/mutations';
+import useHeaderSubmit from '../hooks/useHeaderSubmit';
 import type { AppStackScreenProps } from '../navigation/types';
 
 interface AddAddressValues {
@@ -51,6 +47,11 @@ const AddAddress: React.FC<AppStackScreenProps<'Modal.AddAddress'>> = ({
 		},
 		[createAddressMutation, navigation]
 	);
+
+	useHeaderSubmit({
+		onSubmit: handleSubmit(onSubmit),
+		loading: createAddressMutation.isPending
+	});
 
 	return (
 		<ScrollableScreen withToolbar>
@@ -105,12 +106,6 @@ const AddAddress: React.FC<AppStackScreenProps<'Modal.AddAddress'>> = ({
 				style={styles.input}
 				control={control}
 			/>
-			<Button
-				text='Add Address'
-				onPress={handleSubmit(onSubmit)}
-				style={styles.button}
-				loading={createAddressMutation.isPending}
-			/>
 		</ScrollableScreen>
 	);
 };
@@ -118,9 +113,6 @@ const AddAddress: React.FC<AppStackScreenProps<'Modal.AddAddress'>> = ({
 const styles = StyleSheet.create({
 	input: {
 		marginBottom: 8
-	},
-	button: {
-		marginTop: 8
 	}
 });
 

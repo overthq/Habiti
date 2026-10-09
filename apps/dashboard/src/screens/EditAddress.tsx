@@ -1,12 +1,8 @@
-import {
-	Button,
-	FormInput,
-	ScrollableScreen,
-	Spacer
-} from '@habiti/components';
+import { FormInput, ScrollableScreen, Spacer } from '@habiti/components';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { useUpdateAddressMutation } from '../data/mutations';
+import useHeaderSubmit from '../hooks/useHeaderSubmit';
 import type { AppStackScreenProps } from '../navigation/types';
 
 interface EditAddressFormValues {
@@ -52,6 +48,11 @@ const EditAddress: React.FC<AppStackScreenProps<'Modal.EditAddress'>> = ({
 		}
 	});
 
+	useHeaderSubmit({
+		onSubmit: methods.handleSubmit(onSubmit),
+		loading: updateAddressMutation.isPending
+	});
+
 	return (
 		<ScrollableScreen withToolbar>
 			<Spacer y={16} />
@@ -82,12 +83,6 @@ const EditAddress: React.FC<AppStackScreenProps<'Modal.EditAddress'>> = ({
 				<FormInput label='Country' name='country' control={methods.control} />
 				<Spacer y={8} />
 				<FormInput label='Postcode' name='postcode' control={methods.control} />
-				<Spacer y={16} />
-				<Button
-					text='Edit Address'
-					onPress={methods.handleSubmit(onSubmit)}
-					loading={updateAddressMutation.isPending}
-				/>
 			</FormProvider>
 		</ScrollableScreen>
 	);
