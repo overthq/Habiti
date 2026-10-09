@@ -1,10 +1,12 @@
-import { PrismaClient } from '../../generated/prisma/client';
+import {
+	AccountKind,
+	LedgerReason,
+	PrismaClient
+} from '../../generated/prisma/client';
+import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
 import { UserFilters, userFiltersToPrismaClause } from '../../utils/queries';
 import { runSerializable } from '../../utils/prisma';
-import {
-	detachCustomerAccounts,
-	transferCustomerCredit
-} from './customerCredit';
+import { getCustomerCredit, moveMoney } from './ledger';
 
 export interface CreateUserParams {
 	name: string;
@@ -177,10 +179,22 @@ export const mergeUsers = async (
 			data: { userId: toUserId }
 		});
 
-		// Ledger accounts are deliberately not repointed: re-owning an account
-		// would silently rewrite the history of every entry in it. The balance
-		// moves as a journal, then the empty account is detached.
-		await transferCustomerCredit(tx, fromUserId, toUserId);
+		// The credit is moved rather than the account re-owned, which would
+		// rewrite the history of every entry in it.
+		const credit = await getCustomerCredit(tx, fromUserId);
+
+		if (credit > 0n) {
+			await moveMoney(tx, {
+				key: `credit:merge:${fromUserId}:${toUserId}`,
+				reason: LedgerReason.ManualAdjustment,
+				amount: credit,
+				from: { kind: AccountKind.CustomerCredit, userId: fromUserId },
+				to: { kind: AccountKind.CustomerCredit, userId: toUserId },
+				description: 'Credit moved on account merge'
+			});
+		}
+
+		await detachLedgerAccounts(tx, fromUserId);
 
 		// Cascades clean up sessions, refresh tokens and any remaining rows.
 		await tx.user.delete({ where: { id: fromUserId } });
@@ -189,9 +203,26 @@ export const mergeUsers = async (
 	return { sessionIds: sessions.map(({ id }) => id) };
 };
 
+export class OutstandingCreditError extends Error {}
+
+// A user row can only be deleted once its ledger accounts no longer point at
+// it. The accounts and their entries stay, and remember who they belonged to.
+const detachLedgerAccounts = async (tx: TransactionClient, userId: string) => {
+	if ((await getCustomerCredit(tx, userId)) !== 0n) {
+		throw new OutstandingCreditError(
+			`User ${userId} still has an outstanding credit balance`
+		);
+	}
+
+	await tx.ledgerAccount.updateMany({
+		where: { userId },
+		data: { userId: null, formerUserId: userId, detachedAt: new Date() }
+	});
+};
+
 export const deleteUser = async (prisma: PrismaClient, userId: string) => {
 	await runSerializable(prisma, async tx => {
-		await detachCustomerAccounts(tx, userId);
+		await detachLedgerAccounts(tx, userId);
 		await tx.user.delete({ where: { id: userId } });
 	});
 };

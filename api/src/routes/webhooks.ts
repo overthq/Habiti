@@ -45,7 +45,7 @@ webhooks.post('/paystack', async c => {
 		payload: parsed
 	});
 
-	if (claim.duplicate) {
+	if (claim.done) {
 		c.var.logger.info(
 			{ event, externalId: claim.externalId },
 			'paystack.webhook.duplicate_ignored'
@@ -54,14 +54,18 @@ webhooks.post('/paystack', async c => {
 		return c.json({ message: 'Webhook already processed.' });
 	}
 
-	void PaymentLogic.processPaystackWebhookEvent(c, {
+	const processed = await PaymentLogic.processPaystackWebhookEvent(c, {
 		claimId: claim.id,
 		event,
 		data,
 		externalId: claim.externalId
 	});
 
-	return c.json({ message: 'Webhook received and processing.' });
+	if (!processed) {
+		return c.json({ message: 'Webhook processing failed.' }, 500);
+	}
+
+	return c.json({ message: 'Webhook processed.' });
 });
 
 export default webhooks;

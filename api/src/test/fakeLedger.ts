@@ -1,15 +1,8 @@
 import { mock } from 'bun:test';
 
-/**
- * A small in-memory stand-in for the tables the ledger writes.
- *
- * The point is that tests exercise the *real* posting code -- `postJournal`,
- * `getOrCreateAccount`, the projection fold -- rather than a mock of it. Only
- * the storage is fake, so a mistake in the accounting still fails the test.
- *
- * It is deliberately not a general Prisma emulator: it implements exactly the
- * operations the ledger path performs.
- */
+// An in-memory stand-in for the tables the ledger writes, so tests run the
+// real `moveMoney` rather than a mock of it. It implements only the operations
+// the ledger path performs.
 
 export interface FakeStoreRow {
 	id: string;
@@ -18,7 +11,6 @@ export interface FakeStoreRow {
 	unrealizedRevenue: bigint;
 	paidOut: bigint;
 	pendingPayouts: bigint;
-	ledgerSequence: bigint;
 }
 
 /**
@@ -71,14 +63,67 @@ export const createFakeLedgerDb = (
 			]
 		: [];
 	const accounts: Row[] = [];
-	const journals: Row[] = [];
+	const ledgerTransactions: Row[] = [];
 	const entries: Row[] = [];
-	const statement: Row[] = [];
+	const transactions: Row[] = [];
 	const payouts: Row[] = [];
 
-	let sequence = 0n;
 	let ids = 0;
 	const nextId = (prefix: string) => `${prefix}-${++ids}`;
+
+	const balanceOf = (kind: string, reason?: string) =>
+		entries
+			.filter(entry => {
+				const account = accounts.find(a => a.id === entry.accountId)!;
+				const ledgerTransaction = ledgerTransactions.find(
+					t => t.id === entry.transactionId
+				)!;
+
+				return (
+					account.storeId === store.id &&
+					account.kind === kind &&
+					(!reason || ledgerTransaction.reason === reason)
+				);
+			})
+			.reduce(
+				(sum, entry) =>
+					entry.direction === 'Credit'
+						? sum + entry.amount
+						: sum - entry.amount,
+				0n
+			);
+
+	// The store's columns are recalculated from the ledger on every write, so
+	// the balances a test asks for have to exist as entries.
+	const seed = (kind: string, amount: bigint, reason = 'OpeningBalance') => {
+		if (amount === 0n) return;
+
+		let account = accounts.find(a => a.kind === kind);
+
+		if (!account) {
+			account = { id: nextId('acct'), kind, storeId: store.id, userId: null };
+			accounts.push(account);
+		}
+
+		const ledgerTransaction = { id: nextId('ltx'), reason };
+		ledgerTransactions.push(ledgerTransaction);
+
+		entries.push({
+			id: nextId('entry'),
+			transactionId: ledgerTransaction.id,
+			accountId: account.id,
+			direction: amount > 0n ? 'Credit' : 'Debit',
+			amount: amount > 0n ? amount : -amount
+		});
+	};
+
+	seed('Unrealized', store.unrealizedRevenue);
+	seed(
+		'Available',
+		store.realizedRevenue - store.paidOut - store.pendingPayouts
+	);
+	seed('PendingPayouts', store.pendingPayouts + store.paidOut);
+	seed('PendingPayouts', -store.paidOut, 'PayoutSettled');
 
 	const client = {
 		store: {
@@ -88,12 +133,6 @@ export const createFakeLedgerDb = (
 				return include?.managers
 					? { ...found, managers: [{ managerId: 'user-1', storeId: found.id }] }
 					: { ...found };
-			}),
-			update: mock(async ({ where, data }: any) => {
-				const found = stores.get(where.id);
-				if (!found) throw new Error(`no store ${where.id}`);
-				Object.assign(found, data);
-				return { ...found };
 			})
 		},
 
@@ -116,75 +155,88 @@ export const createFakeLedgerDb = (
 		},
 
 		ledgerTransaction: {
-			create: mock(async ({ data }: any) => {
-				if (journals.some(j => j.idempotencyKey === data.idempotencyKey)) {
-					throw Object.assign(new Error('unique violation'), {
-						code: 'P2002'
+			create: mock(async ({ data: { entries: nested, ...data } }: any) => {
+				const row = { id: nextId('ltx'), createdAt: new Date(), ...data };
+				ledgerTransactions.push(row);
+
+				for (const entry of nested.create) {
+					entries.push({
+						id: nextId('entry'),
+						transactionId: row.id,
+						...entry
 					});
 				}
-				sequence += 1n;
-				const row = {
-					id: nextId('jrnl'),
-					sequence,
-					createdAt: new Date(),
-					description: null,
-					orderId: null,
-					payoutRequestId: null,
-					webhookEventId: null,
-					...data
-				};
-				journals.push(row);
+
 				return { ...row };
 			}),
 			findUnique: mock(
-				async ({ where }: any) => journals.find(j => matches(j, where)) ?? null
-			),
-			findFirst: mock(
-				async ({ where }: any) => journals.find(j => matches(j, where)) ?? null
+				async ({ where }: any) =>
+					ledgerTransactions.find(t => matches(t, where)) ?? null
 			)
 		},
 
 		ledgerEntry: {
-			createMany: mock(async ({ data }: any) => {
-				for (const entry of data) {
-					entries.push({ id: nextId('entry'), ...entry });
-				}
-				return { count: data.length };
-			})
+			groupBy: mock(async ({ where }: any) =>
+				['Debit', 'Credit'].map(direction => ({
+					direction,
+					_sum: {
+						amount: entries
+							.filter(
+								e =>
+									e.accountId === where.accountId && e.direction === direction
+							)
+							.reduce((sum, e) => sum + e.amount, 0n)
+					}
+				}))
+			)
 		},
 
-		storeStatementEntry: {
+		transaction: {
 			create: mock(async ({ data }: any) => {
-				const row = { id: nextId('stmt'), updatedAt: new Date(), ...data };
-				statement.push(row);
+				const row = {
+					id: nextId('txn'),
+					createdAt: new Date(),
+					updatedAt: new Date(),
+					...data
+				};
+				transactions.push(row);
 				return { ...row };
 			}),
 			findUnique: mock(
-				async ({ where }: any) => statement.find(s => matches(s, where)) ?? null
+				async ({ where }: any) =>
+					transactions.find(t => matches(t, where)) ?? null
+			),
+			findFirst: mock(
+				async ({ where }: any) =>
+					transactions.find(t => matches(t, where)) ?? null
 			),
 			updateMany: mock(async ({ where, data }: any) => {
-				const hits = statement.filter(s => matches(s, where));
+				const hits = transactions.filter(t => matches(t, where));
 				hits.forEach(row => Object.assign(row, data));
 				return { count: hits.length };
 			})
 		},
 
-		payoutRequest: {
+		payout: {
 			create: mock(async ({ data }: any) => {
 				const row = {
-					id: nextId('payout'),
 					createdAt: new Date(),
 					updatedAt: new Date(),
-					providerRef: null,
 					failureReason: null,
 					...data
 				};
 				payouts.push(row);
 				return { ...row };
 			}),
-			findUnique: mock(
-				async ({ where }: any) => payouts.find(p => matches(p, where)) ?? null
-			),
+			findUnique: mock(async ({ where }: any) => {
+				const found = payouts.find(p => matches(p, where));
+				return found ? { ...found } : null;
+			}),
+			findUniqueOrThrow: mock(async ({ where }: any) => {
+				const found = payouts.find(p => matches(p, where));
+				if (!found) throw new Error(`no payout ${JSON.stringify(where)}`);
+				return { ...found };
+			}),
 			update: mock(async ({ where, data }: any) => {
 				const found = payouts.find(p => matches(p, where));
 				if (!found) throw new Error(`no payout ${JSON.stringify(where)}`);
@@ -233,8 +285,27 @@ export const createFakeLedgerDb = (
 		$queryRaw: mock(async (..._args: unknown[]) => {
 			const found = stores.get(store.id)!;
 			return [
-				{ realizedRevenue: found.realizedRevenue, paidOut: found.paidOut }
+				{
+					realizedRevenue: found.realizedRevenue,
+					paidOut: found.paidOut,
+					pendingPayouts: found.pendingPayouts
+				}
 			];
+		}),
+
+		// Stands in for `recalculateStoreBalance`.
+		$executeRaw: mock(async (..._args: unknown[]) => {
+			const pendingPayouts = balanceOf('PendingPayouts');
+			const paidOut = -balanceOf('PendingPayouts', 'PayoutSettled');
+
+			Object.assign(stores.get(store.id)!, {
+				unrealizedRevenue: balanceOf('Unrealized'),
+				pendingPayouts,
+				paidOut,
+				realizedRevenue: balanceOf('Available') + pendingPayouts + paidOut
+			});
+
+			return 1;
 		}),
 
 		$transaction: mock(async (fn: any) => fn(client))
@@ -245,9 +316,9 @@ export const createFakeLedgerDb = (
 		tables: {
 			stores,
 			accounts,
-			journals,
+			ledgerTransactions,
 			entries,
-			statement,
+			transactions,
 			payouts,
 			payoutAccounts
 		}

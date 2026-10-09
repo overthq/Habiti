@@ -187,9 +187,9 @@ export const deleteStore = async (
 		throw new LogicError(LogicErrorCode.CannotManageStore);
 	}
 
-	// Ledger accounts are Restrict-linked to the store, so this would otherwise
-	// surface as an opaque foreign-key error. A store that has handled money
-	// keeps its journals; `unlisted` is the way to take it out of circulation.
+	// A store that has handled money keeps its ledger; `unlisted` is the way to
+	// take it out of circulation. Without this check the delete fails on the
+	// foreign key instead.
 	const ledgerAccounts = await c.var.prisma.ledgerAccount.count({
 		where: { storeId }
 	});

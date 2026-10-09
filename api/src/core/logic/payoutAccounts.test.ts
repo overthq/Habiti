@@ -93,7 +93,7 @@ const fakeContext = (accounts: AccountRow[], processingPayouts = 0) => {
 				return { count: hits.length };
 			})
 		},
-		payoutRequest: {
+		payout: {
 			count: mock(async () => processingPayouts)
 		},
 		$transaction: mock(async (fn: any) => fn(client))

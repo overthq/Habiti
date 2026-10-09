@@ -10,7 +10,7 @@ import type { TransactionClient } from '../../generated/prisma/internal/prismaNa
  *
  * Rows are append-only in spirit: the only fields that change after creation
  * are `isDefault`, `status` and `deactivatedAt`. The bank details themselves
- * are never rewritten, so a `PayoutRequest` pointing at a row always resolves
+ * are never rewritten, so a `Payout` pointing at a row always resolves
  * to the account the money was actually sent to.
  */
 
@@ -223,7 +223,7 @@ export const getNextDefaultCandidate = async (
 };
 
 export const countProcessingPayouts = async (prisma: Client, id: string) => {
-	return prisma.payoutRequest.count({
+	return prisma.payout.count({
 		where: { payoutAccountId: id, status: PayoutStatus.Processing }
 	});
 };
@@ -233,7 +233,7 @@ export const countProcessingPayoutsForStore = async (
 	prisma: Client,
 	storeId: string
 ) => {
-	return prisma.payoutRequest.count({
+	return prisma.payout.count({
 		where: { storeId, status: PayoutStatus.Processing }
 	});
 };

@@ -1,14 +1,14 @@
 import type { Context } from 'hono';
 
-import { Prisma } from '../../generated/prisma/client';
+import {
+	AccountKind,
+	LedgerReason,
+	Prisma
+} from '../../generated/prisma/client';
 import type { StripUndefined } from '../../utils/objects';
 
 import * as UserData from '../data/users';
-import {
-	getCreditBalance,
-	OutstandingCreditError,
-	withdrawCustomerCredit
-} from '../data/customerCredit';
+import { getCustomerCredit, moveMoney } from '../data/ledger';
 import { runSerializable } from '../../utils/prisma';
 import * as StoreData from '../data/stores';
 import * as OrderData from '../data/orders';
@@ -168,7 +168,7 @@ export const deleteUser = async (
 	try {
 		return await UserData.deleteUser(c.var.prisma, userId);
 	} catch (error) {
-		if (error instanceof OutstandingCreditError) {
+		if (error instanceof UserData.OutstandingCreditError) {
 			throw new LogicError(LogicErrorCode.OutstandingCredit);
 		}
 
@@ -181,7 +181,7 @@ export const getCurrentUserCredit = async (c: Context<AppEnv>) => {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const balance = await getCreditBalance(c.var.prisma, c.var.auth.id);
+	const balance = await getCustomerCredit(c.var.prisma, c.var.auth.id);
 
 	return { balance: Number(balance) };
 };
@@ -191,7 +191,7 @@ export const getUserCredit = async (c: Context<AppEnv>, userId: string) => {
 		throw new LogicError(LogicErrorCode.Forbidden);
 	}
 
-	const balance = await getCreditBalance(c.var.prisma, userId);
+	const balance = await getCustomerCredit(c.var.prisma, userId);
 
 	return { balance: Number(balance) };
 };
@@ -211,14 +211,17 @@ export const withdrawUserCredit = async (
 	}
 
 	await runSerializable(c.var.prisma, async tx => {
-		await withdrawCustomerCredit(tx, {
-			userId: input.userId,
+		await moveMoney(tx, {
+			key: `credit:${input.userId}:withdrawn:${input.reference}`,
+			reason: LedgerReason.CustomerCreditWithdrawn,
 			amount: BigInt(input.amount),
-			reference: input.reference
+			from: { kind: AccountKind.CustomerCredit, userId: input.userId },
+			to: { kind: AccountKind.PlatformCash },
+			description: 'Refund paid out to customer'
 		});
 	});
 
-	const balance = await getCreditBalance(c.var.prisma, input.userId);
+	const balance = await getCustomerCredit(c.var.prisma, input.userId);
 
 	c.var.services.analytics.track({
 		event: 'customer_credit_withdrawn',

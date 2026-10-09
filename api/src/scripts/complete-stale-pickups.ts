@@ -1,6 +1,7 @@
 import prisma from '../config/prisma';
 import { OrderStatus } from '../generated/prisma/client';
-import { updateStoreRevenue } from '../core/data/stores';
+import { updateOrderStatus } from '../core/data/orders';
+import { runSerializable } from '../utils/prisma';
 
 const PICKUP_CONFIRMATION_WINDOW_DAYS = parseInt(
 	process.env.PICKUP_CONFIRMATION_WINDOW_DAYS || '5',
@@ -23,16 +24,9 @@ async function completeStalePickups() {
 	);
 
 	for (const order of staleOrders) {
-		await prisma.order.update({
-			where: { id: order.id },
-			data: { status: OrderStatus.Completed }
-		});
-
-		await updateStoreRevenue(prisma, {
-			storeId: order.storeId,
-			total: order.total,
-			orderId: order.id
-		});
+		await runSerializable(prisma, tx =>
+			updateOrderStatus(tx, order, OrderStatus.Completed)
+		);
 
 		console.log(`Completed order ${order.id} (store: ${order.storeId})`);
 	}

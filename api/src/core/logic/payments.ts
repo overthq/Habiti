@@ -1,12 +1,17 @@
 import type { Context } from 'hono';
 
-import { OrderStatus, PayoutStatus } from '../../generated/prisma/client';
+import {
+	AccountKind,
+	LedgerReason,
+	OrderStatus,
+	PayoutStatus
+} from '../../generated/prisma/client';
 import { env } from '../../config/env';
 
 import * as CardData from '../data/cards';
 import * as OrderData from '../data/orders';
 import * as TransactionData from '../data/transactions';
-import * as StoreData from '../data/stores';
+import { moveMoney } from '../data/ledger';
 import * as PushTokenData from '../data/pushTokens';
 import {
 	deriveExternalId,
@@ -51,11 +56,10 @@ export const approvePayment = async (
 			const { transfers } = body.data;
 
 			return runSerializable(c.var.prisma, async tx => {
-				const rows: Awaited<ReturnType<typeof tx.payoutRequest.findUnique>>[] =
-					[];
+				const rows: Awaited<ReturnType<typeof tx.payout.findUnique>>[] = [];
 
 				for (const transfer of transfers) {
-					const row = await tx.payoutRequest.findUnique({
+					const row = await tx.payout.findUnique({
 						where: { id: transfer.reference }
 					});
 
@@ -100,29 +104,59 @@ export const processCardCharge = async (
 
 // --- Order transitions ---
 
-export const onChargeSuccessful = async (
-	c: Context<AppEnv>,
-	orderId: string,
-	webhookEventId?: string | null
-) => {
-	await transitionOrderToPending(c, orderId, webhookEventId);
-};
-
 export const transitionOrderToPending = async (
 	c: Context<AppEnv>,
 	orderId: string,
 	webhookEventId?: string | null
 ) => {
-	const order = await OrderData.getOrderById(c.var.prisma, orderId);
+	const order = await runSerializable(c.var.prisma, async tx => {
+		const order = await OrderData.getOrderById(tx, orderId);
+
+		if (!order || order.status === OrderStatus.Cancelled) return order;
+
+		if (order.status === OrderStatus.PaymentPending) {
+			await tx.order.update({
+				where: { id: order.id },
+				data: { status: OrderStatus.Pending }
+			});
+		}
+
+		// Recorded for any paid order, not just one that was PaymentPending:
+		// replaying a charge is how an order that advanced without its payment
+		// gets repaired.
+		const payment = await moveMoney(tx, {
+			key: `order:${order.id}:paid`,
+			reason: LedgerReason.OrderPaid,
+			amount: BigInt(order.total),
+			from: { kind: AccountKind.PlatformCash },
+			to: { kind: AccountKind.Unrealized, storeId: order.storeId },
+			description: 'Payment confirmed',
+			orderId: order.id,
+			webhookEventId
+		});
+
+		if (payment && order.serviceFee > 0) {
+			await moveMoney(tx, {
+				key: `order:${order.id}:paid:fee`,
+				reason: LedgerReason.OrderPaid,
+				amount: BigInt(order.serviceFee),
+				from: { kind: AccountKind.PlatformCash },
+				to: { kind: AccountKind.PlatformFeeRevenue },
+				description: 'Service fee',
+				orderId: order.id,
+				webhookEventId
+			});
+		}
+
+		return order;
+	});
 
 	if (!order) {
 		c.var.logger.warn({ orderId }, 'order_not_found_for_charge');
 		return;
 	}
 
-	const transitioned = await OrderData.markOrderPending(c.var.prisma, order.id);
-
-	if (!transitioned && order.status !== OrderStatus.Pending) {
+	if (order.status !== OrderStatus.PaymentPending) {
 		c.var.logger.warn(
 			{ orderId: order.id, status: order.status },
 			'order_not_in_payment_pending'
@@ -130,17 +164,6 @@ export const transitionOrderToPending = async (
 
 		return;
 	}
-
-	await StoreData.recordOrderPayment(c.var.prisma, {
-		storeId: order.storeId,
-		orderId: order.id,
-		total: order.total,
-		serviceFee: order.serviceFee,
-		webhookEventId: webhookEventId ?? null
-	});
-
-	// Stop if the transition had happened previously.
-	if (!transitioned) return;
 
 	const pushTokens = await PushTokenData.getStorePushTokens(
 		c.var.prisma,
@@ -221,7 +244,7 @@ export const handleChargeSuccess = async (
 	webhookEventId?: string | null
 ) => {
 	if (typeof data.metadata === 'object' && data.metadata?.orderId) {
-		await onChargeSuccessful(c, data.metadata.orderId, webhookEventId);
+		await transitionOrderToPending(c, data.metadata.orderId, webhookEventId);
 	} else {
 		c.var.logger.warn(
 			{ cardType: data.authorization.card_type },
@@ -256,33 +279,30 @@ const handleTransferSuccess = async (
 			webhookEventId
 		);
 
-		const payoutRequest = await TransactionData.getPayoutRequestById(
+		const payout = await TransactionData.getPayoutById(
 			c.var.prisma,
 			data.reference
 		);
 
-		if (payoutRequest) {
+		if (payout) {
 			const pushTokens = await PushTokenData.getStorePushTokens(
 				c.var.prisma,
-				payoutRequest.storeId
+				payout.storeId
 			);
 
 			if (pushTokens.length > 0) {
-				// The notification deep-links to the dashboard's transaction
-				// screen, which reads statement entries -- so it needs the id of
-				// the statement row this payout produced, not the payout
-				// request's own id. `getNotificationUrl` falls back to the
-				// payouts list when it is absent, which beats a link to nothing.
-				const statementEntry = await TransactionData.getPayoutStatementEntry(
+				// The notification links to the dashboard's transaction screen,
+				// which needs the transaction's id, not the payout's.
+				const transaction = await TransactionData.getPayoutTransaction(
 					c.var.prisma,
-					payoutRequest.id
+					payout.id
 				);
 
 				c.var.services.notifications.queueNotification({
 					type: NotificationType.PayoutConfirmed,
 					data: {
-						amount: Number(payoutRequest.amount),
-						...(statementEntry ? { transactionId: statementEntry.id } : {})
+						amount: Number(payout.amount),
+						...(transaction ? { transactionId: transaction.id } : {})
 					},
 					recipientTokens: pushTokens
 				});
@@ -302,12 +322,10 @@ const handleTransferFailure = async (
 			'paystack.non_payout_transfer'
 		);
 	} else {
-		await TransactionData.markTransferFailed(
-			ctx.var.prisma,
-			data.reference,
-			'Paystack reported transfer failure',
+		await TransactionData.markTransferFailed(ctx.var.prisma, data.reference, {
+			failureReason: 'Paystack reported transfer failure',
 			webhookEventId
-		);
+		});
 	}
 };
 
@@ -316,12 +334,11 @@ export const handleTransferReversed = async (
 	data: TransferReversedPayload,
 	webhookEventId?: string | null
 ) => {
-	await TransactionData.markTransferFailed(
-		ctx.var.prisma,
-		data.reference,
-		'Paystack reported transfer reversal',
-		webhookEventId
-	);
+	await TransactionData.markTransferFailed(ctx.var.prisma, data.reference, {
+		failureReason: 'Paystack reported transfer reversal',
+		webhookEventId,
+		allowSettled: true
+	});
 };
 
 export const verifyTransaction = async (
@@ -361,11 +378,9 @@ export const verifyTransfer = async (
 	}
 
 	if (TERMINAL_TRANSFER_FAILURE_STATUSES.has(data.status)) {
-		await TransactionData.markTransferFailed(
-			c.var.prisma,
-			options.transferId,
-			`Paystack transfer status: ${data.status}`
-		);
+		await TransactionData.markTransferFailed(c.var.prisma, options.transferId, {
+			failureReason: `Paystack transfer status: ${data.status}`
+		});
 
 		return data;
 	}
@@ -440,11 +455,6 @@ interface ClaimWebhookEventInput {
 	payload: unknown;
 }
 
-/**
- * Claims a Paystack delivery so a retry of the same event is a no-op. The
- * caller must stop when `duplicate` is set -- this is the outer of the two
- * idempotency layers, the inner being the journal's idempotency key.
- */
 export const claimPaystackWebhookEvent = async (
 	c: Context<AppEnv>,
 	input: ClaimWebhookEventInput
@@ -468,11 +478,8 @@ interface ProcessWebhookEventInput {
 	externalId: string;
 }
 
-/**
- * Runs a claimed delivery to completion and records the outcome. Never
- * throws: the HTTP response has already gone out by the time this runs, so a
- * failure is recorded on the claim rather than surfaced to Paystack.
- */
+// Returns whether the delivery was processed. The route answers Paystack with
+// a failure when it was not, so Paystack sends it again.
 export const processPaystackWebhookEvent = async (
 	c: Context<AppEnv>,
 	input: ProcessWebhookEventInput
@@ -482,6 +489,8 @@ export const processPaystackWebhookEvent = async (
 	try {
 		await handlePaystackWebhookEvent(c, event, data, claimId);
 		await markWebhookEventProcessed(c.var.prisma, claimId);
+
+		return true;
 	} catch (error) {
 		c.var.logger.error(
 			{ err: error, event, externalId },
@@ -496,5 +505,7 @@ export const processPaystackWebhookEvent = async (
 				'paystack.webhook.mark_failed_errored'
 			);
 		}
+
+		return false;
 	}
 };
