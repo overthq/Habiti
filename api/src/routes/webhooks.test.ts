@@ -5,16 +5,6 @@ import { env } from '../config/env';
 import { createFakePrisma, createTestApp } from '../test/helpers';
 import { WebhookEventStatus } from '../generated/prisma/client';
 
-/**
- * Paystack retries deliveries, and the old handler had no record of what it
- * had already seen -- a replayed `charge.success` was safe only because the
- * downstream status guard happened to be conditional.
- *
- * These tests cover the outer of the two idempotency layers: the claim on
- * `WebhookEvent`. The inner layer (`LedgerTransaction.idempotencyKey`) is
- * covered in the ledger tests.
- */
-
 const sign = (body: string) =>
 	createHmac('sha512', env.PAYSTACK_SECRET_KEY).update(body).digest('hex');
 
@@ -35,21 +25,24 @@ const webhookPrisma = () => {
 			rows.push(row);
 			return { id: row.id };
 		}),
-		findUnique: mock(async ({ where }: any) => {
-			const { provider, externalId } = where.provider_externalId;
-			const found = rows.find(
-				r => r.provider === provider && r.externalId === externalId
+		update: mock(async ({ where, data: { attempts, ...data } }: any) => {
+			const key = where.provider_externalId;
+			const found = rows.find(r =>
+				key
+					? r.provider === key.provider && r.externalId === key.externalId
+					: r.id === where.id
 			);
-			return found ? { id: found.id } : null;
-		}),
-		update: mock(async ({ where, data }: any) => {
-			const found = rows.find(r => r.id === where.id);
-			if (found) Object.assign(found, data);
+
+			Object.assign(found, data);
+			if (attempts) found.attempts += attempts.increment;
+
 			return found;
 		})
 	};
 
-	return { prisma: createFakePrisma({ webhookEvent }), webhookEvent, rows };
+	const models: Record<string, unknown> = { webhookEvent };
+
+	return { prisma: createFakePrisma(models), models, webhookEvent, rows };
 };
 
 const post = (app: any, body: unknown, signature?: string) => {
@@ -65,7 +58,7 @@ const post = (app: any, body: unknown, signature?: string) => {
 	});
 };
 
-/** Processing is fire-and-forget so the ack is fast; let it settle. */
+// Processing happens after the response; let it finish.
 const settle = () => new Promise(resolve => setTimeout(resolve, 10));
 
 // A transfer charge with no order metadata: the handler recognises it and
@@ -121,10 +114,6 @@ describe('POST /webhooks/paystack', () => {
 		});
 	});
 
-	/**
-	 * The old handler swallowed errors, so a charge that failed to process was
-	 * indistinguishable from one that never arrived. Now it leaves a row.
-	 */
 	test('records a delivery whose handler throws as Failed', async () => {
 		const { prisma, rows } = webhookPrisma();
 		const { app } = createTestApp({ prisma });
@@ -140,6 +129,28 @@ describe('POST /webhooks/paystack', () => {
 		expect(rows[0].error).toBeTruthy();
 	});
 
+	test('processes a redelivery of an event that failed the first time', async () => {
+		const { prisma, models, rows } = webhookPrisma();
+		const { app } = createTestApp({ prisma });
+
+		await post(app, failingEvent(999));
+		await settle();
+
+		// The models whose absence made the first attempt fail.
+		models.user = { findUnique: mock(async () => ({ id: 'user-1' })) };
+		models.card = { upsert: mock(async () => ({})) };
+
+		const retry = await post(app, failingEvent(999));
+		await settle();
+
+		expect(retry.status).toBe(200);
+		expect(rows).toHaveLength(1);
+		expect(rows[0]).toMatchObject({
+			attempts: 2,
+			status: WebhookEventStatus.Processed
+		});
+	});
+
 	test('ignores a redelivery of the same event', async () => {
 		const { prisma, rows } = webhookPrisma();
 		const { app } = createTestApp({ prisma });
@@ -147,6 +158,7 @@ describe('POST /webhooks/paystack', () => {
 		const payload = event(37272792);
 
 		const first = await post(app, payload);
+		await settle();
 		const second = await post(app, payload);
 		const third = await post(app, payload);
 

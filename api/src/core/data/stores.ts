@@ -10,12 +10,6 @@ import {
 	OrderFilters,
 	orderFiltersToPrismaClause
 } from '../../utils/queries';
-import { runSerializable } from '../../utils/prisma';
-import {
-	recordOrderCompleted,
-	recordOrderPaid,
-	recordRefund
-} from './postings';
 
 interface CreateStoreParams {
 	userId?: string;
@@ -120,23 +114,17 @@ export const getStoreByIdWithManagers = async (
 	return store;
 };
 
-/**
- * Reads the revenue columns and holds a row lock on the store for the rest of
- * the surrounding transaction.
- *
- * The payout path never writes the store row (`paidOut` only moves later, when
- * Paystack confirms the transfer), so concurrent payout requests have no write
- * conflict to collide on and `findUnique` takes no lock of its own. Without
- * this, two requests can both read the same balance and both be approved.
- */
+// Nothing in the payout request writes the store row before the balance
+// check, so without this lock two concurrent requests can both read the same
+// balance and both be approved.
 export const lockStoreBalance = async (
 	tx: TransactionClient,
 	storeId: string
 ) => {
 	const rows = await tx.$queryRaw<
-		{ realizedRevenue: number; paidOut: number }[]
+		{ realizedRevenue: bigint; paidOut: bigint; pendingPayouts: bigint }[]
 	>`
-		SELECT "realizedRevenue", "paidOut"
+		SELECT "realizedRevenue", "paidOut", "pendingPayouts"
 		FROM "Store"
 		WHERE "id" = ${storeId}
 		FOR UPDATE
@@ -407,81 +395,4 @@ export const getStoreCustomer = async (
 	});
 
 	return user;
-};
-
-interface UpdateStoreRevenueArgs {
-	storeId: string;
-	total: number;
-	orderId: string;
-}
-
-/**
- * Order completed: the store's money becomes withdrawable.
- */
-export const updateStoreRevenue = async (
-	prisma: PrismaClient,
-	args: UpdateStoreRevenueArgs
-) => {
-	await runSerializable(prisma, async tx => {
-		await recordOrderCompleted(tx, {
-			storeId: args.storeId,
-			orderId: args.orderId,
-			total: BigInt(args.total)
-		});
-	});
-};
-
-interface RecordOrderPaymentArgs {
-	storeId: string;
-	orderId: string;
-	total: number;
-	serviceFee: number;
-	webhookEventId?: string | null;
-}
-
-/**
- * Payment cleared. Replaces `incrementUnrealizedRevenue`, which moved a store
- * column without writing any ledger row at all -- the gap that made the two
- * records impossible to reconcile.
- */
-export const recordOrderPayment = async (
-	prisma: PrismaClient,
-	args: RecordOrderPaymentArgs
-) => {
-	await runSerializable(prisma, async tx => {
-		await recordOrderPaid(tx, {
-			storeId: args.storeId,
-			orderId: args.orderId,
-			total: BigInt(args.total),
-			serviceFee: BigInt(args.serviceFee),
-			webhookEventId: args.webhookEventId ?? null
-		});
-	});
-};
-
-interface ReverseOrderRevenueArgs {
-	storeId: string;
-	customerId: string;
-	total: number;
-	orderId: string;
-	wasRealized: boolean;
-}
-
-/**
- * Order cancelled. The money comes out of whichever bucket it was sitting in
- * and lands in the customer's credit account.
- */
-export const reverseOrderRevenue = async (
-	prisma: PrismaClient,
-	args: ReverseOrderRevenueArgs
-) => {
-	await runSerializable(prisma, async tx => {
-		await recordRefund(tx, {
-			storeId: args.storeId,
-			userId: args.customerId,
-			orderId: args.orderId,
-			total: BigInt(args.total),
-			wasRealized: args.wasRealized
-		});
-	});
 };

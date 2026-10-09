@@ -2,24 +2,12 @@ import { describe, expect, test } from 'bun:test';
 
 import {
 	adminUpdatePayoutTransaction,
-	createPayoutRequest,
-	resolvePayoutRequestId
+	createPayout,
+	markTransferFailed,
+	markTransferSuccessful
 } from './transactions';
-import { recordPayoutRequested } from './postings';
 import { PayoutStatus, TransactionStatus } from '../../generated/prisma/client';
 import { createFakeLedgerDb } from '../../test/fakeLedger';
-
-/**
- * Payouts are addressed by two different ids, and which one a caller holds
- * depends on where they got it.
- *
- * `PayoutRequest.id` is the Paystack transfer reference, so it is what the
- * settlement webhook carries. But everything a *person* looks at comes from
- * the statement, whose rows have ids of their own -- the admin panel lists
- * payouts through `getTransactionsByStoreId` and hands back the id of the row
- * that was clicked. Sending that to the settlement path used to fail with
- * "Payout request not found", which made the admin override dead on arrival.
- */
 
 const seedPayout = async () => {
 	const { client, tables } = createFakeLedgerDb({
@@ -28,79 +16,86 @@ const seedPayout = async () => {
 		realizedRevenue: 100_000n,
 		unrealizedRevenue: 0n,
 		paidOut: 0n,
-		pendingPayouts: 0n,
-		ledgerSequence: 0n
+		pendingPayouts: 0n
 	});
 
-	const request = await createPayoutRequest(client as never, {
+	const payout = await createPayout(client as never, {
 		storeId: 'store-1',
 		amount: 40_000n
 	});
 
-	await recordPayoutRequested(client as never, {
-		storeId: 'store-1',
-		payoutRequestId: request.id,
-		amount: request.amount
-	});
-
-	const statementEntry = tables.statement.find(
+	const transaction = tables.transactions.find(
 		row => row.type === 'Payout'
-	) as { id: string };
+	) as { id: string; status: string; balanceAfter: bigint };
 
-	return { client, tables, request, statementEntry };
+	return { client, tables, payout, transaction };
 };
 
-describe('resolvePayoutRequestId', () => {
-	test('resolves the statement row id the admin panel actually holds', async () => {
-		const { client, request, statementEntry } = await seedPayout();
+describe('createPayout', () => {
+	test('takes the amount out of the available balance straight away', async () => {
+		const { tables, transaction } = await seedPayout();
 
-		expect(statementEntry.id).not.toBe(request.id);
-		expect(
-			await resolvePayoutRequestId(client as never, statementEntry.id)
-		).toBe(request.id);
-	});
+		const store = tables.stores.get('store-1')!;
 
-	test('accepts a payout request id, as the webhook reference is', async () => {
-		const { client, request } = await seedPayout();
-
-		expect(await resolvePayoutRequestId(client as never, request.id)).toBe(
-			request.id
+		expect(store.pendingPayouts).toBe(40_000n);
+		expect(store.realizedRevenue - store.paidOut - store.pendingPayouts).toBe(
+			60_000n
 		);
+		expect(transaction).toMatchObject({
+			status: TransactionStatus.Processing,
+			amount: 40_000n,
+			balanceAfter: 60_000n
+		});
 	});
 
-	test('resolves nothing for an id that is neither', async () => {
+	test('refuses a payout larger than the available balance', async () => {
 		const { client } = await seedPayout();
 
-		expect(
-			await resolvePayoutRequestId(client as never, 'not-an-id')
-		).toBeNull();
+		await expect(
+			createPayout(client as never, { storeId: 'store-1', amount: 60_001n })
+		).rejects.toThrow('Insufficient Available balance');
 	});
 });
 
 describe('adminUpdatePayoutTransaction', () => {
-	test('settles a payout addressed by its statement row id', async () => {
-		const { client, tables, request, statementEntry } = await seedPayout();
+	test('settles a payout addressed by its transaction id', async () => {
+		const { client, tables, payout, transaction } = await seedPayout();
+
+		expect(transaction.id).not.toBe(payout.id);
 
 		const updated = await adminUpdatePayoutTransaction(
 			client as never,
-			statementEntry.id,
+			transaction.id,
 			TransactionStatus.Success
 		);
 
-		expect(updated.id).toBe(request.id);
+		expect(updated.id).toBe(payout.id);
 		expect(updated.status).toBe(PayoutStatus.Settled);
 
 		const store = tables.stores.get('store-1')!;
 		expect(store.paidOut).toBe(40_000n);
 		expect(store.pendingPayouts).toBe(0n);
+		expect(tables.transactions[0]!.status).toBe(TransactionStatus.Success);
 	});
 
-	test('reverses a payout addressed by its statement row id', async () => {
-		const { client, tables, statementEntry } = await seedPayout();
+	test('accepts the payout id, as the webhook reference is', async () => {
+		const { client, payout } = await seedPayout();
 
 		const updated = await adminUpdatePayoutTransaction(
 			client as never,
-			statementEntry.id,
+			payout.id,
+			TransactionStatus.Success
+		);
+
+		expect(updated.status).toBe(PayoutStatus.Settled);
+	});
+
+	test('fails a payout and makes the money withdrawable again', async () => {
+		const { client, tables, transaction } = await seedPayout();
+
+		const updated = await adminUpdatePayoutTransaction(
+			client as never,
+			transaction.id,
 			TransactionStatus.Failure
 		);
 
@@ -109,8 +104,8 @@ describe('adminUpdatePayoutTransaction', () => {
 		const store = tables.stores.get('store-1')!;
 		expect(store.paidOut).toBe(0n);
 		expect(store.pendingPayouts).toBe(0n);
-		// The money is withdrawable again.
 		expect(store.realizedRevenue).toBe(100_000n);
+		expect(tables.transactions[0]!.status).toBe(TransactionStatus.Failure);
 	});
 
 	test('refuses an id that names no payout', async () => {
@@ -122,6 +117,51 @@ describe('adminUpdatePayoutTransaction', () => {
 				'not-an-id',
 				TransactionStatus.Success
 			)
-		).rejects.toThrow('Payout request not found');
+		).rejects.toThrow('Payout not found');
+	});
+});
+
+describe('markTransferFailed', () => {
+	test('refuses to fail a settled payout', async () => {
+		const { client, payout } = await seedPayout();
+
+		await markTransferSuccessful(client as never, payout.id);
+
+		await expect(
+			markTransferFailed(client as never, payout.id, {
+				failureReason: 'Marked failed by admin'
+			})
+		).rejects.toThrow('cannot transition from Settled to Failed');
+	});
+
+	test('returns the money when Paystack reverses a settled transfer', async () => {
+		const { client, tables, payout } = await seedPayout();
+
+		await markTransferSuccessful(client as never, payout.id);
+
+		await markTransferFailed(client as never, payout.id, {
+			failureReason: 'Paystack reported transfer reversal',
+			allowSettled: true
+		});
+
+		const store = tables.stores.get('store-1')!;
+		expect(store.paidOut).toBe(0n);
+		expect(store.pendingPayouts).toBe(0n);
+		expect(store.realizedRevenue).toBe(100_000n);
+		expect(tables.payouts[0]!.status).toBe(PayoutStatus.Failed);
+	});
+
+	test('is a no-op for a payout that already failed', async () => {
+		const { client, tables, payout } = await seedPayout();
+
+		const fail = () =>
+			markTransferFailed(client as never, payout.id, {
+				failureReason: 'Paystack reported transfer failure'
+			});
+
+		await fail();
+		await fail();
+
+		expect(tables.stores.get('store-1')!.realizedRevenue).toBe(100_000n);
 	});
 });

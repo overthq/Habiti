@@ -10,8 +10,7 @@ import {
 	OrderStatus,
 	PayoutStatus
 } from '../../generated/prisma/client';
-import { createPayoutRequest } from '../data/transactions';
-import { recordPayoutRequested } from '../data/postings';
+import { createPayout } from '../data/transactions';
 import { createFakeLedgerDb } from '../../test/fakeLedger';
 
 /**
@@ -22,7 +21,7 @@ import { createFakeLedgerDb } from '../../test/fakeLedger';
 
 const fakeContext = (payoutRequests: any[]) => {
 	const tx = {
-		payoutRequest: {
+		payout: {
 			findUnique: mock(
 				async ({ where: { id } }: any) =>
 					payoutRequests.find(t => t.id === id) ?? null
@@ -129,16 +128,13 @@ const fakeOrderContext = (order: { total: number; status: OrderStatus }) => {
 
 	const queueNotification = mock((_payload: any) => {});
 
-	// Real ledger storage behind a fake order table, so the assertions below
-	// are about journals actually posted rather than a column write.
 	const { client, tables } = createFakeLedgerDb({
 		id: 'store-1',
 		name: 'Ada Stores',
 		realizedRevenue: 0n,
 		unrealizedRevenue: 0n,
 		paidOut: 0n,
-		pendingPayouts: 0n,
-		ledgerSequence: 0n
+		pendingPayouts: 0n
 	});
 
 	Object.assign(client, {
@@ -151,10 +147,8 @@ const fakeOrderContext = (order: { total: number; status: OrderStatus }) => {
 				status: state.status,
 				user: { name: 'Ada' }
 			})),
-			updateMany: mock(async ({ where }: any) => {
-				if (state.status !== where.status) return { count: 0 };
-				state.status = OrderStatus.Pending;
-				return { count: 1 };
+			update: mock(async ({ data }: any) => {
+				state.status = data.status;
 			})
 		},
 		storeManager: {
@@ -176,24 +170,22 @@ const fakeOrderContext = (order: { total: number; status: OrderStatus }) => {
 		}
 	} as any;
 
-	const paidJournals = () =>
-		tables.journals.filter(j => j.reason === LedgerReason.OrderPaid);
+	const payments = () =>
+		tables.ledgerTransactions.filter(t => t.reason === LedgerReason.OrderPaid);
 
-	return { c, queueNotification, tables, paidJournals };
+	return { c, queueNotification, tables, payments };
 };
 
 describe('transitionOrderToPending', () => {
 	test('transitions the order once and notifies the store', async () => {
-		const { c, queueNotification, tables, paidJournals } = fakeOrderContext({
+		const { c, queueNotification, tables, payments } = fakeOrderContext({
 			total: 150_000,
 			status: OrderStatus.PaymentPending
 		});
 
 		await transitionOrderToPending(c, 'order-1');
 
-		expect(paidJournals()).toHaveLength(1);
-		// The money is collected but the order is not complete, so it lands in
-		// pending -- not in the balance the merchant can withdraw.
+		expect(payments()).toHaveLength(1);
 		expect(tables.stores.get('store-1')!.unrealizedRevenue).toBe(150_000n);
 		expect(tables.stores.get('store-1')!.realizedRevenue).toBe(0n);
 		expect(queueNotification).toHaveBeenCalledTimes(1);
@@ -203,7 +195,7 @@ describe('transitionOrderToPending', () => {
 	});
 
 	test('is idempotent across duplicate charge deliveries', async () => {
-		const { c, queueNotification, tables, paidJournals } = fakeOrderContext({
+		const { c, queueNotification, tables, payments } = fakeOrderContext({
 			total: 150_000,
 			status: OrderStatus.PaymentPending
 		});
@@ -212,45 +204,39 @@ describe('transitionOrderToPending', () => {
 		await transitionOrderToPending(c, 'order-1');
 		await transitionOrderToPending(c, 'order-1');
 
-		expect(paidJournals()).toHaveLength(1);
+		expect(payments()).toHaveLength(1);
 		expect(tables.stores.get('store-1')!.unrealizedRevenue).toBe(150_000n);
 		expect(queueNotification).toHaveBeenCalledTimes(1);
 	});
 
 	test('does not transition an order that is no longer payment pending', async () => {
-		const { c, queueNotification, paidJournals } = fakeOrderContext({
+		const { c, queueNotification, payments } = fakeOrderContext({
 			total: 150_000,
 			status: OrderStatus.Cancelled
 		});
 
 		await transitionOrderToPending(c, 'order-1');
 
-		expect(paidJournals()).toHaveLength(0);
+		expect(payments()).toHaveLength(0);
 		expect(queueNotification).not.toHaveBeenCalled();
 	});
 
-	/**
-	 * The gap a swallowed error used to leave: the order moved, the posting did
-	 * not, and the status guard then refused to let a replay finish the job --
-	 * revenue the store never got credited for, invisible to reconciliation
-	 * because the ledger and the projection agreed about nothing.
-	 */
-	test('completes the posting for an order already moved to pending', async () => {
-		const { c, queueNotification, tables, paidJournals } = fakeOrderContext({
+	test('records the payment for an order that advanced without it', async () => {
+		const { c, queueNotification, tables, payments } = fakeOrderContext({
 			total: 150_000,
 			status: OrderStatus.Pending
 		});
 
 		await transitionOrderToPending(c, 'order-1');
 
-		expect(paidJournals()).toHaveLength(1);
+		expect(payments()).toHaveLength(1);
 		expect(tables.stores.get('store-1')!.unrealizedRevenue).toBe(150_000n);
 		// The store was told about this order when it first moved.
 		expect(queueNotification).not.toHaveBeenCalled();
 	});
 
-	test('propagates a posting failure so the delivery can be replayed', async () => {
-		const { c, paidJournals } = fakeOrderContext({
+	test('propagates a failure so the delivery can be retried', async () => {
+		const { c, payments } = fakeOrderContext({
 			total: 150_000,
 			status: OrderStatus.PaymentPending
 		});
@@ -263,16 +249,10 @@ describe('transitionOrderToPending', () => {
 			'serialization failure'
 		);
 
-		expect(paidJournals()).toHaveLength(0);
+		expect(payments()).toHaveLength(0);
 	});
 });
 
-/**
- * The payout-confirmed push deep-links into the dashboard's transaction
- * screen, which resolves ids against the *statement* -- so the notification
- * has to carry the statement row's id. Sending `PayoutRequest.id`, which is
- * the Paystack transfer reference, gave the merchant a link to nothing.
- */
 const fakePayoutContext = async () => {
 	const queueNotification = mock((_payload: any) => {});
 
@@ -282,8 +262,7 @@ const fakePayoutContext = async () => {
 		realizedRevenue: 100_000n,
 		unrealizedRevenue: 0n,
 		paidOut: 0n,
-		pendingPayouts: 0n,
-		ledgerSequence: 0n
+		pendingPayouts: 0n
 	});
 
 	Object.assign(client.storeManager, {
@@ -292,15 +271,9 @@ const fakePayoutContext = async () => {
 		])
 	});
 
-	const request = await createPayoutRequest(client as never, {
+	const payout = await createPayout(client as never, {
 		storeId: 'store-1',
 		amount: 40_000n
-	});
-
-	await recordPayoutRequested(client as never, {
-		storeId: 'store-1',
-		payoutRequestId: request.id,
-		amount: request.amount
 	});
 
 	const c = {
@@ -316,24 +289,24 @@ const fakePayoutContext = async () => {
 		}
 	} as any;
 
-	return { c, client, tables, request, queueNotification };
+	return { c, client, tables, payout, queueNotification };
 };
 
 describe('transfer.success', () => {
-	test('notifies with the statement row id, not the payout request id', async () => {
-		const { c, tables, request, queueNotification } = await fakePayoutContext();
+	test("notifies with the transaction's id, not the payout's", async () => {
+		const { c, tables, payout, queueNotification } = await fakePayoutContext();
 
 		await handlePaystackWebhookEvent(c, 'transfer.success', {
 			reason: 'Payout',
-			reference: request.id
+			reference: payout.id
 		});
 
-		const statementEntry = tables.statement.find(row => row.type === 'Payout')!;
+		const transaction = tables.transactions.find(row => row.type === 'Payout')!;
 
 		expect(queueNotification).toHaveBeenCalledTimes(1);
 		expect(queueNotification.mock.calls[0]?.[0]).toMatchObject({
-			data: { amount: 40_000, transactionId: statementEntry.id }
+			data: { amount: 40_000, transactionId: transaction.id }
 		});
-		expect(statementEntry.id).not.toBe(request.id);
+		expect(transaction.id).not.toBe(payout.id);
 	});
 });

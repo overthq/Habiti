@@ -27,8 +27,7 @@ describe('GET /admin/orders', () => {
 			realizedRevenue: 1500000n,
 			unrealizedRevenue: 0n,
 			paidOut: 500000n,
-			pendingPayouts: 0n,
-			ledgerSequence: 12n
+			pendingPayouts: 0n
 		},
 		user: { id: 'user-1', name: 'Test User' }
 	};
@@ -50,8 +49,7 @@ describe('GET /admin/orders', () => {
 
 		expect(body.orders[0].store).toMatchObject({
 			realizedRevenue: 1500000,
-			paidOut: 500000,
-			ledgerSequence: 12
+			paidOut: 500000
 		});
 	});
 });

@@ -129,32 +129,37 @@ web/
 
 ```
 api/
-├── prisma/                # Prisma schema and migrations
+├── prisma/                   # Prisma schema and migrations
 ├── src/
-│   ├── core/              # Domain layer
-│   │   ├── data/          # Prisma access, one module per entity
-│   │   ├── logic/         # Business logic, orchestrates data modules
-│   │   ├── payments/      # Paystack client, types and payload validation
-│   │   ├── validations/   # Request/response schemas
+│   ├── core/                 # Domain layer
+│   │   ├── data/             # Prisma access, one module per entity
+│   │   ├── logic/            # Business logic, orchestrates data modules
+│   │   ├── payments/         # Paystack client, types and payload validation
+│   │   ├── validations/      # Request/response schemas
 │   │   └── notifications.ts  # Push notification helpers
-│   ├── routes/            # Hono route handlers, mounted in routes/index.ts
-│   ├── middleware/        # Auth, context, error handling, rate limiting, logging
-│   ├── services/          # Cross-cutting services (logger, email, analytics, metrics, tracing)
-│   ├── config/            # Client/env setup (Prisma, Redis, Sentry, Cloudinary, env)
-│   ├── scripts/           # Operational scripts (backfills, reconciliation, pruning)
-│   ├── generated/         # Generated Prisma client, do not edit
-│   ├── test/              # Test helpers and fakes
-│   ├── types/             # Shared types (Hono env bindings)
-│   ├── utils/             # Helpers (currency, queries, uploads, polling, CORS)
-│   ├── app.ts             # Builds the Hono app with injectable dependencies
-│   ├── dependencies.ts    # Dependency container (Prisma, Redis, services, tracer)
-│   ├── index.ts           # Server entry point
-│   └── lifecycle.ts       # Graceful shutdown stages and process safety nets
+│   ├── routes/               # Hono route handlers, mounted in routes/index.ts
+│   ├── middleware/           # Auth, context, error handling, rate limiting, logging
+│   ├── services/             # Cross-cutting services (logger, email, analytics, metrics, tracing)
+│   ├── config/               # Client/env setup (Prisma, Redis, Sentry, Cloudinary, env)
+│   ├── scripts/              # Operational scripts (backfills, reconciliation, pruning)
+│   ├── generated/            # Generated Prisma client, do not edit
+│   ├── test/                 # Test helpers and fakes
+│   ├── types/                # Shared types (Hono env bindings)
+│   ├── utils/                # Helpers (currency, queries, uploads, polling, CORS)
+│   ├── app.ts                # Builds the Hono app with injectable dependencies
+│   ├── dependencies.ts       # Dependency container (Prisma, Redis, services, tracer)
+│   ├── index.ts              # Server entry point
+│   └── lifecycle.ts          # Graceful shutdown stages and process safety nets
 └── package.json
 ```
+
+## Workflow
+- Never stage changes, create a commit or push changes up automatically.
 
 ### Philosophy
 
 - Modularity: Avoid tangling separate concerns too tightly. This however, is not a recommendation of extreme OOP (particularly inheritance). Make features composable and independently testable.
 - Files over folders: Avoid creating new files for everything. Scope related functions in the same file, especially when they are not imported elsewhere. For example, screen files should contain everything that is needed to render the screen, except components that are reused elsewhere.
-- Comments: Avoid plastering comments everywhere and on everything. Only use comments when behaviour is potentially unclear or tricky.
+- Comments: Avoid plastering comments everywhere and on everything. Only use comments when behaviour is potentially unclear or tricky. If unsure, do not write a comment.
+- Justify the existence of a function: Don't just write helpers or utils for small issues.
+- Keep functions large, until there is a reason to break it up. It is easier to read logic functions when all the moving parts are in plain sight.

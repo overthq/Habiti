@@ -35,21 +35,20 @@ model User {
 }
 
 model Store {
-  id                   String   @id @default(uuid())
-  name                 String
-  description          String?
-  website              String?
-  twitter              String?  @db.VarChar(15)
-  instagram            String?  @db.VarChar(30)
-  unrealizedRevenue    BigInt   @default(0)
-  realizedRevenue      BigInt   @default(0)
-  paidOut              BigInt   @default(0)
-  pendingPayouts       BigInt   @default(0)
-  ledgerSequence       BigInt   @default(0)
-  orderCount           Int      @default(0)
-  unlisted             Boolean  @default(false)
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  id                String   @id @default(uuid())
+  name              String
+  description       String?
+  website           String?
+  twitter           String?  @db.VarChar(15)
+  instagram         String?  @db.VarChar(30)
+  unrealizedRevenue BigInt   @default(0)
+  realizedRevenue   BigInt   @default(0)
+  paidOut           BigInt   @default(0)
+  pendingPayouts    BigInt   @default(0)
+  orderCount        Int      @default(0)
+  unlisted          Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   image        Image?
   products     Product[]
@@ -61,10 +60,9 @@ model Store {
   categories   StoreProductCategory[]
   addresses    Address[]
 
-  ledgerAccounts   LedgerAccount[]
-  statementEntries StoreStatementEntry[]
-  payoutRequests   PayoutRequest[]
-  payoutAccounts   StorePayoutAccount[]
+  ledgerAccounts LedgerAccount[]
+  payouts        Payout[]
+  payoutAccounts StorePayoutAccount[]
 }
 
 model Product {
@@ -111,7 +109,6 @@ model Order {
   transactions Transaction[]
 
   ledgerTransactions LedgerTransaction[]
-  statementEntries   StoreStatementEntry[]
 
   @@unique([storeId, serialNumber])
   @@index([userId, createdAt])
@@ -373,20 +370,23 @@ model Transaction {
   storeId      String
   type         TransactionType
   status       TransactionStatus @default(Success)
-  amount       Int
+  amount       BigInt
   description  String?
   orderId      String?
-  balanceAfter Int
+  payoutId     String?
+  balanceAfter BigInt
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
 
-  store Store  @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  order Order? @relation(fields: [orderId], references: [id])
+  store  Store   @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  order  Order?  @relation(fields: [orderId], references: [id])
+  payout Payout? @relation(fields: [payoutId], references: [id], onDelete: Restrict)
 
   @@index([storeId, createdAt])
   @@index([storeId, type])
   @@index([storeId, status])
   @@index([orderId])
+  @@index([payoutId])
 }
 
 enum PushTokenType {
@@ -456,20 +456,13 @@ model AdminRefreshToken {
   @@index([sessionId])
 }
 
-enum AccountType {
-  Asset
-  Liability
-  Revenue
-  Expense
-}
-
 enum AccountKind {
-  PlatformCash // Asset     - funds held at Paystack / settled to our bank
-  PlatformFeeRevenue // Revenue   - Habiti service fees
-  StorePending // Liability - collected, order not yet complete
-  StoreAvailable // Liability - complete, withdrawable
-  StorePayoutInTransit // Liability - payout requested, not yet settled
-  CustomerCredit // Liability - refunds owed to a customer
+  PlatformCash // money held at Paystack or settled to our bank
+  PlatformFeeRevenue // Habiti service fees
+  Unrealized // paid for, order not yet completed
+  Available // completed, withdrawable
+  PendingPayouts // payout requested, not yet settled
+  CustomerCredit // refunds owed to a customer
 }
 
 enum EntryDirection {
@@ -494,7 +487,6 @@ enum LedgerReason {
 model LedgerAccount {
   id      String      @id @default(uuid())
   kind    AccountKind
-  type    AccountType
   storeId String?
   userId  String?
 
@@ -522,20 +514,19 @@ model LedgerTransaction {
 
   idempotencyKey String @unique
 
-  orderId         String?
-  payoutRequestId String?
-  webhookEventId  String?
-  createdAt       DateTime @default(now())
+  orderId        String?
+  payoutId       String?
+  webhookEventId String?
+  createdAt      DateTime @default(now())
 
-  order         Order?         @relation(fields: [orderId], references: [id], onDelete: Restrict)
-  payoutRequest PayoutRequest? @relation(fields: [payoutRequestId], references: [id], onDelete: Restrict)
-  webhookEvent  WebhookEvent?  @relation(fields: [webhookEventId], references: [id], onDelete: Restrict)
+  order        Order?        @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  payout       Payout?       @relation(fields: [payoutId], references: [id], onDelete: Restrict)
+  webhookEvent WebhookEvent? @relation(fields: [webhookEventId], references: [id], onDelete: Restrict)
 
-  entries        LedgerEntry[]
-  statementEntry StoreStatementEntry?
+  entries LedgerEntry[]
 
   @@index([orderId])
-  @@index([payoutRequestId])
+  @@index([payoutId])
   @@index([sequence])
 }
 
@@ -553,50 +544,27 @@ model LedgerEntry {
   @@index([accountId, id])
 }
 
-model StoreStatementEntry {
-  id            String            @id @default(uuid())
-  storeId       String
-  transactionId String            @unique
-  sequence      BigInt
-  type          TransactionType
-  status        TransactionStatus @default(Success)
-  amount        BigInt
-  balanceAfter  BigInt
-  description   String?
-  orderId       String?
-  createdAt     DateTime
-  updatedAt     DateTime          @updatedAt
-
-  store       Store             @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  transaction LedgerTransaction @relation(fields: [transactionId], references: [id], onDelete: Restrict)
-  order       Order?            @relation(fields: [orderId], references: [id], onDelete: Restrict)
-
-  @@index([storeId, sequence])
-  @@index([storeId, type])
-  @@index([storeId, createdAt])
-  @@index([orderId])
-}
-
 enum PayoutStatus {
   Processing
   Settled
   Failed
 }
 
-model PayoutRequest {
-  id            String       @id @default(uuid())
-  storeId       String
-  amount        BigInt
-  status        PayoutStatus @default(Processing)
-  providerRef   String?      @unique
-  failureReason String?
+model Payout {
+  id              String       @id @default(uuid())
+  storeId         String
+  amount          BigInt
+  status          PayoutStatus @default(Processing)
+  providerRef     String?      @unique
+  failureReason   String?
   payoutAccountId String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
 
   store              Store               @relation(fields: [storeId], references: [id], onDelete: Restrict)
   payoutAccount      StorePayoutAccount? @relation(fields: [payoutAccountId], references: [id], onDelete: Restrict)
   ledgerTransactions LedgerTransaction[]
+  transactions       Transaction[]
 
   @@index([storeId, status])
   @@index([storeId, createdAt])
@@ -628,8 +596,8 @@ model StorePayoutAccount {
   updatedAt     DateTime  @updatedAt
   deactivatedAt DateTime?
 
-  store   Store           @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  payouts PayoutRequest[]
+  store   Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  payouts Payout[]
 
   @@unique([storeId, provider, recipientRef])
   @@unique([storeId, provider, bankCode, accountNumber])

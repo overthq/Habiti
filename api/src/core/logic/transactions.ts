@@ -11,7 +11,6 @@ import type { AppEnv } from '../../types/hono';
 import { TransactionStatus } from '../../generated/prisma/client';
 import { LogicError, LogicErrorCode } from './errors';
 import { assertStoreScope } from './permissions';
-import { recordPayoutRequested } from '../data/postings';
 import { runSerializable } from '../../utils/prisma';
 
 export const getStoreTransactions = async (
@@ -115,7 +114,7 @@ export const createPayoutTransaction = async (
 
 	const recipientRef = payoutAccount.recipientRef;
 
-	const { payoutRequest, availableForPayout } = await runSerializable(
+	const { payout, availableForPayout } = await runSerializable(
 		c.var.prisma,
 		async tx => {
 			const lockedStore = await StoreData.lockStoreBalance(tx, storeId);
@@ -124,45 +123,32 @@ export const createPayoutTransaction = async (
 				throw new LogicError(LogicErrorCode.StoreNotFound);
 			}
 
-			const pendingPayouts = await TransactionData.getPendingPayoutTotal(
-				tx,
-				storeId
-			);
-
 			const available = TransactionData.computeAvailableBalance({
 				realizedRevenue: Number(lockedStore.realizedRevenue),
 				paidOut: Number(lockedStore.paidOut),
-				pendingPayouts
+				pendingPayouts: Number(lockedStore.pendingPayouts)
 			});
 
 			if (amount > available) {
 				throw new LogicError(LogicErrorCode.InsufficientFunds);
 			}
 
-			const created = await TransactionData.createPayoutRequest(tx, {
+			const created = await TransactionData.createPayout(tx, {
 				storeId,
 				amount: BigInt(amount),
 				payoutAccountId: payoutAccount.id
 			});
 
-			// Debits StoreAvailable immediately, so a second request in this
-			// window sees the reduced balance rather than the full one.
-			await recordPayoutRequested(tx, {
-				storeId,
-				payoutRequestId: created.id,
-				amount: created.amount
-			});
-
-			return { payoutRequest: created, availableForPayout: available };
+			return { payout: created, availableForPayout: available };
 		}
 	);
 
 	try {
 		await PaymentLogic.payAccount(c, {
 			amount: amount.toString(),
-			reference: payoutRequest.id,
+			reference: payout.id,
 			recipient: recipientRef,
-			metadata: { transactionId: payoutRequest.id }
+			metadata: { transactionId: payout.id }
 		});
 	} catch (error) {
 		const axiosError = error as {
@@ -173,7 +159,7 @@ export const createPayoutTransaction = async (
 
 		const context = {
 			storeId,
-			transactionId: payoutRequest.id,
+			transactionId: payout.id,
 			amount,
 			recipient: recipientRef,
 			paystackStatus: axiosError.response?.status,
@@ -190,11 +176,9 @@ export const createPayoutTransaction = async (
 		});
 
 		try {
-			await TransactionData.markTransferFailed(
-				c.var.prisma,
-				payoutRequest.id,
-				axiosError.message ?? 'Payout request failed'
-			);
+			await TransactionData.markTransferFailed(c.var.prisma, payout.id, {
+				failureReason: axiosError.message ?? 'Payout request failed'
+			});
 		} catch (reversalError) {
 			c.var.logger.error(
 				{ ...context, err: reversalError },
@@ -216,7 +200,7 @@ export const createPayoutTransaction = async (
 		properties: {
 			storeId,
 			amount,
-			transactionId: payoutRequest.id,
+			transactionId: payout.id,
 			storeName: store.name,
 			payoutAccountId: payoutAccount.id,
 			availableBeforePayout: availableForPayout
@@ -225,10 +209,8 @@ export const createPayoutTransaction = async (
 	});
 
 	return (
-		(await TransactionData.getPayoutStatementEntry(
-			c.var.prisma,
-			payoutRequest.id
-		)) ?? payoutRequest
+		(await TransactionData.getPayoutTransaction(c.var.prisma, payout.id)) ??
+		payout
 	);
 };
 
@@ -262,10 +244,8 @@ export const updatePayoutTransactionStatus = async (
 		groups: { store: updated.storeId }
 	});
 
-	const statementEntry = await TransactionData.getPayoutStatementEntry(
-		c.var.prisma,
-		updated.id
+	return (
+		(await TransactionData.getPayoutTransaction(c.var.prisma, updated.id)) ??
+		updated
 	);
-
-	return statementEntry ?? { ...updated, amount: Number(updated.amount) };
 };

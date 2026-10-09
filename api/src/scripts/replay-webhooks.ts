@@ -13,14 +13,8 @@ import services from '../services';
 
 /**
  * Reprocesses webhook deliveries that were received but never completed.
- *
- * This is the payoff for persisting the event before dispatching it: a crash
- * or a handler error leaves a `Received`/`Failed` row rather than an event
- * that silently vanished.
- *
- * Safe to run repeatedly. Handlers are individually idempotent, and the
- * journals' idempotency keys mean a replay that has already had its effect
- * posts nothing.
+ * Safe to run repeatedly: a delivery that already had its effect changes
+ * nothing.
  *
  * Run: cd api && bun run src/scripts/replay-webhooks.ts [--dry-run]
  */

@@ -14,9 +14,8 @@ import { createFakeLedgerDb } from '../../test/fakeLedger';
  * columns. Before the fix, a second request placed in that window re-read the
  * untouched columns, saw the full balance and was approved — paying out twice.
  *
- * The fake Prisma below models the two reads the check now depends on: the
- * locked store row (`$queryRaw ... FOR UPDATE`) and the sum of payouts still
- * in `Processing`.
+ * The check now reads the store row under a lock (`$queryRaw ... FOR UPDATE`),
+ * and that row counts payouts still in `Processing`.
  */
 
 interface FakeStoreState {
@@ -32,13 +31,10 @@ const fakeContext = (state: FakeStoreState) => {
 		{
 			id: 'store-1',
 			name: 'Ada Stores',
-			// `realizedRevenue` is the identity available + paidOut + pendingPayouts,
-			// so seeding it directly is the same as replaying journals to this point.
 			realizedRevenue: BigInt(state.realizedRevenue),
 			unrealizedRevenue: 0n,
 			paidOut: BigInt(state.paidOut),
-			pendingPayouts: BigInt(state.pendingPayouts),
-			ledgerSequence: 0n
+			pendingPayouts: BigInt(state.pendingPayouts)
 		},
 		state.hasPayoutAccount === false ? undefined : { storeId: 'store-1' }
 	);
@@ -57,7 +53,7 @@ const fakeContext = (state: FakeStoreState) => {
 	return {
 		c,
 		queryRaw: client.$queryRaw,
-		createPayout: client.payoutRequest.create,
+		createPayout: client.payout.create,
 		tables
 	};
 };

@@ -45,7 +45,7 @@ webhooks.post('/paystack', async c => {
 		payload: parsed
 	});
 
-	if (claim.duplicate) {
+	if (claim.done) {
 		c.var.logger.info(
 			{ event, externalId: claim.externalId },
 			'paystack.webhook.duplicate_ignored'

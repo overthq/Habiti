@@ -14,7 +14,6 @@ import * as PaymentLogic from './payments';
 import * as OrderData from '../data/orders';
 import * as CartData from '../data/carts';
 import * as PushTokenData from '../data/pushTokens';
-import * as StoreData from '../data/stores';
 
 import { calculatePaystackFee, calculateHabitiFee } from './carts';
 import { createOrderSchema, updateOrderSchema } from '../validations/rest';
@@ -23,6 +22,7 @@ import { InitializeTransactionResponse } from '../payments/paystack';
 import { LogicError, LogicErrorCode } from './errors';
 import { OrderFilters } from '../../utils/queries';
 import { NotificationType } from '../notifications';
+import { runSerializable } from '../../utils/prisma';
 
 interface CreateOrderInput {
 	cartId: string;
@@ -235,52 +235,35 @@ const updateOrderStatusImpl = async (
 
 	const { orderId, status } = validatedInput;
 
-	const { updatedOrder, priorStatus } = await c.var.prisma.$transaction(
-		async tx => {
-			const currentOrder = await OrderData.getOrderByIdWithProducts(
-				tx,
-				orderId
-			);
+	const updatedOrder = await runSerializable(c.var.prisma, async tx => {
+		const currentOrder = await OrderData.getOrderByIdWithProducts(tx, orderId);
 
-			if (!currentOrder) {
-				throw new LogicError(LogicErrorCode.OrderNotFound);
-			}
-
-			validateStatusTransition(currentOrder.status, status);
-
-			if (status === OrderStatus.Cancelled) {
-				await OrderData.restoreProductQuantities(tx, {
-					products: currentOrder.products.map(p => ({
-						productId: p.productId,
-						quantity: p.quantity
-					}))
-				});
-			}
-
-			const updated = await tx.order.update({
-				where: { id: orderId },
-				data: { status },
-				include: {
-					products: { include: { product: true } },
-					store: true,
-					user: { include: { pushTokens: true } }
-				}
-			});
-
-			return { updatedOrder: updated, priorStatus: currentOrder.status };
+		if (!currentOrder) {
+			throw new LogicError(LogicErrorCode.OrderNotFound);
 		}
-	);
 
-	await updateOrderHooks(c, {
+		validateStatusTransition(currentOrder.status, status);
+
+		if (status === OrderStatus.Cancelled) {
+			await OrderData.restoreProductQuantities(tx, {
+				products: currentOrder.products.map(p => ({
+					productId: p.productId,
+					quantity: p.quantity
+				}))
+			});
+		}
+
+		return OrderData.updateOrderStatus(tx, currentOrder, status);
+	});
+
+	updateOrderHooks(c, {
 		customerName: c.var.auth.name,
 		pushToken: updatedOrder.user.pushTokens[0] ?? undefined,
 		orderId: updatedOrder.id,
 		userId: c.var.auth.id,
-		customerId: updatedOrder.userId,
 		storeId: updatedOrder.storeId,
 		amount: updatedOrder.total,
-		status,
-		priorStatus
+		status
 	});
 
 	return updatedOrder;
@@ -356,28 +339,19 @@ export const confirmPickup = async (c: Context<AppEnv>, orderId: string) => {
 
 	validateStatusTransition(currentOrder.status, OrderStatus.Completed);
 
-	const updatedOrder = await OrderData.updateOrder(c.var.prisma, orderId, {
+	const updatedOrder = await runSerializable(c.var.prisma, tx =>
+		OrderData.updateOrderStatus(tx, currentOrder, OrderStatus.Completed)
+	);
+
+	updateOrderHooks(c, {
+		customerName: c.var.auth.name,
+		pushToken: updatedOrder.user.pushTokens[0] ?? undefined,
+		orderId: updatedOrder.id,
+		userId: c.var.auth.id,
+		storeId: currentOrder.storeId,
+		amount: updatedOrder.total,
 		status: OrderStatus.Completed
 	});
-
-	try {
-		await updateOrderHooks(c, {
-			customerName: c.var.auth.name,
-			pushToken: updatedOrder.user.pushTokens[0] ?? undefined,
-			orderId: updatedOrder.id,
-			userId: c.var.auth.id,
-			customerId: currentOrder.userId,
-			storeId: currentOrder.storeId,
-			amount: updatedOrder.total,
-			status: OrderStatus.Completed,
-			priorStatus: currentOrder.status
-		});
-	} catch (error) {
-		c.var.logger.error(
-			{ err: error, orderId: updatedOrder.id },
-			'confirm_pickup.hook_failed'
-		);
-	}
 
 	return updatedOrder;
 };
@@ -397,38 +371,15 @@ interface UpdateOrderHooksArgs {
 	pushToken: UserPushToken | undefined;
 	orderId: string;
 	userId: string;
-	customerId: string;
 	storeId: string;
 	amount: number;
 	status: OrderStatus;
-	priorStatus: OrderStatus;
 }
 
-export const updateOrderHooks = async (
+export const updateOrderHooks = (
 	c: Context<AppEnv>,
 	args: UpdateOrderHooksArgs
 ) => {
-	if (args.status === OrderStatus.Completed) {
-		await StoreData.updateStoreRevenue(c.var.prisma, {
-			storeId: args.storeId,
-			total: args.amount,
-			orderId: args.orderId
-		});
-	} else if (args.status === OrderStatus.Cancelled) {
-		// PaymentPending never credited the store, so there is nothing to
-		// reverse. Any other prior status means the money was collected, and
-		// which bucket it sits in decides where the refund comes from.
-		if (args.priorStatus !== OrderStatus.PaymentPending) {
-			await StoreData.reverseOrderRevenue(c.var.prisma, {
-				storeId: args.storeId,
-				customerId: args.customerId,
-				total: args.amount,
-				orderId: args.orderId,
-				wasRealized: args.priorStatus === OrderStatus.Completed
-			});
-		}
-	}
-
 	c.var.services.analytics.track({
 		event: 'order_status_updated',
 		distinctId: args.userId,

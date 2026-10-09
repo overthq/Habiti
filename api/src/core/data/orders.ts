@@ -1,4 +1,6 @@
 import {
+	AccountKind,
+	LedgerReason,
 	Prisma,
 	OrderStatus,
 	PrismaClient
@@ -6,6 +8,7 @@ import {
 import { OrderFilters, orderFiltersToPrismaClause } from '../../utils/queries';
 import { LogicError, LogicErrorCode } from '../logic/errors';
 import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
+import { moveMoney } from './ledger';
 
 export const getOrderData = (
 	products: Prisma.CartProductGetPayload<{
@@ -165,21 +168,24 @@ export const createOrder = async (
 	return order;
 };
 
-interface UpdateOrderParams {
-	status?: OrderStatus;
-	total?: number;
-	transactionFee?: number;
-	serviceFee?: number;
+interface OrderBeforeUpdate {
+	id: string;
+	storeId: string;
+	userId: string;
+	total: number;
+	status: OrderStatus;
 }
 
-export const updateOrder = async (
-	prisma: PrismaClient,
-	orderId: string,
-	params: UpdateOrderParams
+// Changes an order's status and moves the store's money to match, in the
+// caller's transaction, so an order can never advance without its money.
+export const updateOrderStatus = async (
+	tx: TransactionClient,
+	order: OrderBeforeUpdate,
+	status: OrderStatus
 ) => {
-	const order = await prisma.order.update({
-		where: { id: orderId },
-		data: params,
+	const updated = await tx.order.update({
+		where: { id: order.id },
+		data: { status },
 		include: {
 			products: { include: { product: true } },
 			store: true,
@@ -187,26 +193,40 @@ export const updateOrder = async (
 		}
 	});
 
-	return order;
+	const unrealized = { kind: AccountKind.Unrealized, storeId: order.storeId };
+
+	if (status === OrderStatus.Completed) {
+		await moveMoney(tx, {
+			key: `order:${order.id}:completed`,
+			reason: LedgerReason.OrderCompleted,
+			amount: BigInt(order.total),
+			from: unrealized,
+			to: { kind: AccountKind.Available, storeId: order.storeId },
+			description: 'Order completed',
+			orderId: order.id
+		});
+	} else if (
+		status === OrderStatus.Cancelled &&
+		order.status !== OrderStatus.PaymentPending
+	) {
+		await moveMoney(tx, {
+			key: `order:${order.id}:refunded`,
+			reason: LedgerReason.OrderCancelledBeforeCompletion,
+			amount: BigInt(order.total),
+			from: unrealized,
+			to: { kind: AccountKind.CustomerCredit, userId: order.userId },
+			description: 'Order cancelled — refund',
+			orderId: order.id
+		});
+	}
+
+	return updated;
 };
 
-export const markOrderPending = async (
-	prisma: PrismaClient,
+export const getOrderById = async (
+	prisma: PrismaClient | TransactionClient,
 	orderId: string
 ) => {
-	// Regular `update` throws when the condition does not match,
-	// updateMany gives us nicer semantics.
-	// - Korede
-
-	const { count } = await prisma.order.updateMany({
-		where: { id: orderId, status: OrderStatus.PaymentPending },
-		data: { status: OrderStatus.Pending }
-	});
-
-	return count > 0;
-};
-
-export const getOrderById = async (prisma: PrismaClient, orderId: string) => {
 	const order = await prisma.order.findUnique({
 		where: { id: orderId },
 		include: {

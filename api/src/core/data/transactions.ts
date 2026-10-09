@@ -1,4 +1,7 @@
+import { randomUUID } from 'crypto';
+
 import {
+	AccountKind,
 	LedgerReason,
 	PayoutStatus,
 	PrismaClient,
@@ -7,67 +10,13 @@ import {
 } from '../../generated/prisma/client';
 import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
 import { runSerializable } from '../../utils/prisma';
-import { recordPayoutFailed, recordPayoutSettled } from './postings';
-
-export interface TransactionView {
-	id: string;
-	storeId: string;
-	type: TransactionType;
-	status: TransactionStatus;
-	amount: number;
-	description: string | null;
-	orderId: string | null;
-	balanceAfter: number;
-	createdAt: Date;
-	updatedAt: Date;
-	order?: unknown;
-}
-
-interface StatementRowRecord {
-	id: string;
-	storeId: string;
-	type: TransactionType;
-	status: TransactionStatus;
-	amount: bigint;
-	description: string | null;
-	orderId: string | null;
-	balanceAfter: bigint;
-	createdAt: Date;
-	updatedAt: Date;
-	order?: unknown;
-}
-
-const toTransactionView = (row: StatementRowRecord): TransactionView => ({
-	id: row.id,
-	storeId: row.storeId,
-	type: row.type,
-	status: row.status,
-	amount: Number(row.amount),
-	description: row.description,
-	orderId: row.orderId,
-	balanceAfter: Number(row.balanceAfter),
-	createdAt: row.createdAt,
-	updatedAt: row.updatedAt,
-	...(row.order === undefined ? {} : { order: row.order })
-});
+import { moveMoney } from './ledger';
 
 export const computeAvailableBalance = (params: {
 	realizedRevenue: number;
 	paidOut: number;
 	pendingPayouts: number;
 }) => params.realizedRevenue - params.paidOut - params.pendingPayouts;
-
-export const getPendingPayoutTotal = async (
-	tx: TransactionClient,
-	storeId: string
-): Promise<number> => {
-	const store = await tx.store.findUnique({
-		where: { id: storeId },
-		select: { pendingPayouts: true }
-	});
-
-	return Number(store?.pendingPayouts ?? 0n);
-};
 
 export interface TransactionFilters {
 	type?: TransactionType | undefined;
@@ -82,7 +31,7 @@ export const getTransactionsByStoreId = async (
 	prisma: PrismaClient,
 	storeId: string,
 	filters?: TransactionFilters
-): Promise<TransactionView[]> => {
+) => {
 	const where: Record<string, unknown> = { storeId };
 
 	if (filters?.type) {
@@ -100,52 +49,53 @@ export const getTransactionsByStoreId = async (
 		};
 	}
 
-	const rows = await prisma.storeStatementEntry.findMany({
+	return prisma.transaction.findMany({
 		where,
-		orderBy: { sequence: 'desc' },
+		orderBy: { createdAt: 'desc' },
 		take: filters?.limit ?? 50,
 		skip: filters?.offset ?? 0,
 		include: { order: true }
 	});
-
-	return rows.map(toTransactionView);
 };
 
 export const getTransactionById = async (
 	prisma: PrismaClient,
 	transactionId: string
-): Promise<(TransactionView & { store: unknown }) | null> => {
-	const row = await prisma.storeStatementEntry.findUnique({
+) =>
+	prisma.transaction.findUnique({
 		where: { id: transactionId },
 		include: { order: true, store: true }
 	});
 
-	if (!row) return null;
+export const getPayoutById = async (prisma: PrismaClient, payoutId: string) =>
+	prisma.payout.findUnique({ where: { id: payoutId } });
 
-	return { ...toTransactionView(row), store: row.store };
-};
+// The transaction a merchant sees for a payout. Its id is not the payout's id.
+export const getPayoutTransaction = async (
+	prisma: PrismaClient,
+	payoutId: string
+) =>
+	prisma.transaction.findFirst({
+		where: { payoutId, type: TransactionType.Payout }
+	});
 
-// --- Payout lifecycle -----------------------------------------------------
-
-export const getPayoutRequestById = async (
-	prisma: PrismaClient | TransactionClient,
-	payoutRequestId: string
-) => prisma.payoutRequest.findUnique({ where: { id: payoutRequestId } });
-
-interface CreatePayoutRequestParams {
+interface CreatePayoutParams {
 	storeId: string;
 	amount: bigint;
-	/// Optional so the fake ledger and any pre-account caller still work;
-	/// `createPayoutTransaction` always supplies it.
 	payoutAccountId?: string | undefined;
 }
 
-export const createPayoutRequest = async (
+// The payout's id doubles as the Paystack transfer reference.
+export const createPayout = async (
 	tx: TransactionClient,
-	params: CreatePayoutRequestParams
+	params: CreatePayoutParams
 ) => {
-	const request = await tx.payoutRequest.create({
+	const id = randomUUID();
+
+	const payout = await tx.payout.create({
 		data: {
+			id,
+			providerRef: id,
 			storeId: params.storeId,
 			amount: params.amount,
 			status: PayoutStatus.Processing,
@@ -155,169 +105,168 @@ export const createPayoutRequest = async (
 		}
 	});
 
-	return tx.payoutRequest.update({
-		where: { id: request.id },
-		data: { providerRef: request.id }
+	await moveMoney(tx, {
+		key: `payout:${id}:requested`,
+		reason: LedgerReason.PayoutRequested,
+		amount: params.amount,
+		from: { kind: AccountKind.Available, storeId: params.storeId },
+		to: { kind: AccountKind.PendingPayouts, storeId: params.storeId },
+		description: 'Payout requested',
+		payoutId: id
 	});
+
+	return payout;
 };
 
-/**
- * Advances a payout to Settled and posts the journal that moves the money out
- * of the platform.
- *
- * Idempotent twice over: the status guard short-circuits a replay, and the
- * journal's idempotency key would reject a second posting even if it did not.
- */
 export const markTransferSuccessful = async (
 	prisma: PrismaClient,
-	reference: string,
+	payoutId: string,
 	webhookEventId?: string | null
 ) => {
 	await runSerializable(prisma, async tx => {
-		const request = await tx.payoutRequest.findUnique({
-			where: { id: reference }
-		});
+		const payout = await tx.payout.findUnique({ where: { id: payoutId } });
 
-		if (!request) {
-			throw new Error(`Payout request not found: ${reference}`);
+		if (!payout) {
+			throw new Error(`Payout not found: ${payoutId}`);
 		}
 
-		if (request.status === PayoutStatus.Settled) {
+		if (payout.status === PayoutStatus.Settled) {
 			return;
 		}
 
-		if (request.status !== PayoutStatus.Processing) {
+		if (payout.status !== PayoutStatus.Processing) {
 			throw new Error(
-				`Payout ${reference} cannot transition from ${request.status} to Settled`
+				`Payout ${payoutId} cannot transition from ${payout.status} to Settled`
 			);
 		}
 
-		await tx.payoutRequest.update({
-			where: { id: reference },
+		await tx.payout.update({
+			where: { id: payoutId },
 			data: { status: PayoutStatus.Settled }
 		});
 
-		await recordPayoutSettled(tx, {
-			storeId: request.storeId,
-			payoutRequestId: request.id,
-			amount: request.amount,
-			webhookEventId: webhookEventId ?? null
+		await tx.transaction.updateMany({
+			where: { payoutId, type: TransactionType.Payout },
+			data: { status: TransactionStatus.Success }
+		});
+
+		await moveMoney(tx, {
+			key: `payout:${payoutId}:settled`,
+			reason: LedgerReason.PayoutSettled,
+			amount: payout.amount,
+			from: { kind: AccountKind.PendingPayouts, storeId: payout.storeId },
+			to: { kind: AccountKind.PlatformCash },
+			description: 'Payout settled',
+			payoutId,
+			webhookEventId
 		});
 	});
 };
+
+interface MarkTransferFailedParams {
+	failureReason: string;
+	webhookEventId?: string | null | undefined;
+	// Paystack can reverse a transfer it already reported as successful.
+	allowSettled?: boolean;
+}
 
 export const markTransferFailed = async (
 	prisma: PrismaClient,
-	reference: string,
-	failureReason?: string | null,
-	webhookEventId?: string | null
+	payoutId: string,
+	params: MarkTransferFailedParams
 ) => {
 	await runSerializable(prisma, async tx => {
-		const request = await tx.payoutRequest.findUnique({
-			where: { id: reference }
-		});
+		const payout = await tx.payout.findUnique({ where: { id: payoutId } });
 
-		if (!request) {
-			throw new Error(`Payout request not found: ${reference}`);
+		if (!payout) {
+			throw new Error(`Payout not found: ${payoutId}`);
 		}
 
-		if (request.status === PayoutStatus.Failed) {
+		if (payout.status === PayoutStatus.Failed) {
 			return;
 		}
 
-		if (request.status !== PayoutStatus.Processing) {
+		if (payout.status === PayoutStatus.Settled && !params.allowSettled) {
 			throw new Error(
-				`Payout ${reference} cannot transition from ${request.status} to Failed`
+				`Payout ${payoutId} cannot transition from Settled to Failed`
 			);
 		}
 
-		await tx.payoutRequest.update({
-			where: { id: reference },
+		await tx.payout.update({
+			where: { id: payoutId },
 			data: {
 				status: PayoutStatus.Failed,
-				failureReason: failureReason ?? null
+				failureReason: params.failureReason
 			}
 		});
 
-		await recordPayoutFailed(tx, {
-			storeId: request.storeId,
-			payoutRequestId: request.id,
-			amount: request.amount,
-			webhookEventId: webhookEventId ?? null
+		await tx.transaction.updateMany({
+			where: { payoutId, type: TransactionType.Payout },
+			data: { status: TransactionStatus.Failure }
+		});
+
+		const pendingPayouts = {
+			kind: AccountKind.PendingPayouts,
+			storeId: payout.storeId
+		};
+
+		if (payout.status === PayoutStatus.Settled) {
+			// The settlement run backwards. It keeps the PayoutSettled reason
+			// because that is what `paidOut` is summed from, so this takes the
+			// amount back out of it.
+			await moveMoney(tx, {
+				key: `payout:${payoutId}:settlement-reversed`,
+				reason: LedgerReason.PayoutSettled,
+				amount: payout.amount,
+				from: { kind: AccountKind.PlatformCash },
+				to: pendingPayouts,
+				description: 'Payout settlement reversed',
+				payoutId,
+				webhookEventId: params.webhookEventId
+			});
+		}
+
+		await moveMoney(tx, {
+			key: `payout:${payoutId}:failed`,
+			reason: LedgerReason.PayoutFailed,
+			amount: payout.amount,
+			from: pendingPayouts,
+			to: { kind: AccountKind.Available, storeId: payout.storeId },
+			description: 'Payout failed — reversed',
+			payoutId,
+			webhookEventId: params.webhookEventId
 		});
 	});
 };
 
-export const resolvePayoutRequestId = async (
-	prisma: PrismaClient,
-	id: string
-): Promise<string | null> => {
-	const entry = await prisma.storeStatementEntry.findUnique({
-		where: { id },
-		select: { transactionId: true }
-	});
-
-	if (entry) {
-		const journal = await prisma.ledgerTransaction.findUnique({
-			where: { id: entry.transactionId },
-			select: { payoutRequestId: true }
-		});
-
-		return journal?.payoutRequestId ?? null;
-	}
-
-	const request = await prisma.payoutRequest.findUnique({
-		where: { id },
-		select: { id: true }
-	});
-
-	return request?.id ?? null;
-};
-
+// The admin panel holds the id of the transaction it listed; the payout's own
+// id is accepted too.
 export const adminUpdatePayoutTransaction = async (
 	prisma: PrismaClient,
 	transactionId: string,
 	status: TransactionStatus
 ) => {
-	const payoutRequestId = await resolvePayoutRequestId(prisma, transactionId);
+	const transaction = await prisma.transaction.findUnique({
+		where: { id: transactionId },
+		select: { payoutId: true }
+	});
 
-	if (!payoutRequestId) {
-		throw new Error(`Payout request not found: ${transactionId}`);
+	const payoutId = transaction ? transaction.payoutId : transactionId;
+	const payout = payoutId ? await getPayoutById(prisma, payoutId) : null;
+
+	if (!payout) {
+		throw new Error(`Payout not found: ${transactionId}`);
 	}
 
 	if (status === TransactionStatus.Success) {
-		await markTransferSuccessful(prisma, payoutRequestId);
+		await markTransferSuccessful(prisma, payout.id);
 	} else if (status === TransactionStatus.Failure) {
-		await markTransferFailed(prisma, payoutRequestId, 'Marked failed by admin');
+		await markTransferFailed(prisma, payout.id, {
+			failureReason: 'Marked failed by admin'
+		});
 	} else {
 		throw new Error(`Cannot set a payout to ${status}`);
 	}
 
-	const request = await prisma.payoutRequest.findUnique({
-		where: { id: payoutRequestId }
-	});
-
-	if (!request) {
-		throw new Error(`Payout request not found: ${payoutRequestId}`);
-	}
-
-	return request;
-};
-
-export const getPayoutStatementEntry = async (
-	prisma: PrismaClient | TransactionClient,
-	payoutRequestId: string
-): Promise<TransactionView | null> => {
-	const journal = await prisma.ledgerTransaction.findFirst({
-		where: { payoutRequestId, reason: LedgerReason.PayoutRequested },
-		select: { id: true }
-	});
-
-	if (!journal) return null;
-
-	const row = await prisma.storeStatementEntry.findUnique({
-		where: { transactionId: journal.id }
-	});
-
-	return row ? toTransactionView(row) : null;
+	return prisma.payout.findUniqueOrThrow({ where: { id: payout.id } });
 };

@@ -5,14 +5,6 @@ import {
 	WebhookEventStatus
 } from '../../generated/prisma/client';
 
-/**
- * Delivery-level idempotency for provider webhooks.
- *
- * This is the outer of two layers. The inner one is
- * `LedgerTransaction.idempotencyKey`, which stops a double *posting* even if a
- * delivery somehow gets processed twice.
- */
-
 export const PAYSTACK_WEBHOOK_PROVIDER = 'paystack';
 
 const UNIQUE_VIOLATION = 'P2002';
@@ -28,11 +20,6 @@ export const deriveExternalId = (
 	return `sha256:${createHash('sha256').update(rawBody).digest('hex')}`;
 };
 
-interface RecordedWebhookEvent {
-	id: string;
-	duplicate: boolean;
-}
-
 interface RecordWebhookEventParams {
 	provider: string;
 	eventType: string;
@@ -40,15 +27,13 @@ interface RecordWebhookEventParams {
 	payload: unknown;
 }
 
-/**
- * Claims a delivery for processing.
- *
- * Returns `duplicate: true` when this event has been seen before.
- */
+// Stores a delivery before it is handled, so a crash or a handler error leaves
+// a row that can be retried. `done` is set when an earlier delivery of the same
+// event already finished; one that failed or never completed is handled again.
 export const recordWebhookEvent = async (
 	prisma: PrismaClient,
 	params: RecordWebhookEventParams
-): Promise<RecordedWebhookEvent> => {
+) => {
 	try {
 		const created = await prisma.webhookEvent.create({
 			data: {
@@ -62,25 +47,29 @@ export const recordWebhookEvent = async (
 			select: { id: true }
 		});
 
-		return { id: created.id, duplicate: false };
+		return { id: created.id, done: false };
 	} catch (error) {
 		if ((error as { code?: string } | null)?.code !== UNIQUE_VIOLATION) {
 			throw error;
 		}
 
-		const existing = await prisma.webhookEvent.findUnique({
+		const existing = await prisma.webhookEvent.update({
 			where: {
 				provider_externalId: {
 					provider: params.provider,
 					externalId: params.externalId
 				}
 			},
-			select: { id: true }
+			data: { attempts: { increment: 1 } },
+			select: { id: true, status: true }
 		});
 
-		if (!existing) throw error;
-
-		return { id: existing.id, duplicate: true };
+		return {
+			id: existing.id,
+			done:
+				existing.status === WebhookEventStatus.Processed ||
+				existing.status === WebhookEventStatus.Skipped
+		};
 	}
 };
 
@@ -103,7 +92,6 @@ export const markWebhookEventFailed = async (
 		where: { id },
 		data: {
 			status: WebhookEventStatus.Failed,
-			// Kept short: this column is for triage, not a stack trace store.
 			error: String(
 				(error as { message?: string } | null)?.message ?? error
 			).slice(0, 1000)
