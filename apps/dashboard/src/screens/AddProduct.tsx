@@ -1,15 +1,10 @@
 import React from 'react';
-import {
-	FormInput,
-	ScrollableScreen,
-	Spacer,
-	Typography
-} from '@habiti/components';
+import { FormInput, ScrollableScreen, Spacer } from '@habiti/components';
 import { FormProvider, useForm } from 'react-hook-form';
-import { HeaderButton } from '@react-navigation/elements';
 import { z } from 'zod';
 
 import { useCreateProductMutation } from '../data/mutations';
+import useHeaderSubmit from '../hooks/useHeaderSubmit';
 import type { AppStackScreenProps } from '../navigation/types';
 
 export interface ProductFormData {
@@ -58,26 +53,10 @@ const AddProduct: React.FC<AppStackScreenProps<'Modal.AddProduct'>> = ({
 		[createProductMutation, navigation]
 	);
 
-	React.useLayoutEffect(() => {
-		navigation.setOptions({
-			headerRight: () => (
-				<HeaderButton
-					disabled={createProductMutation.isPending}
-					onPress={formMethods.handleSubmit(onSubmit)}
-				>
-					<Typography>Save</Typography>
-				</HeaderButton>
-			),
-			unstable_headerRightItems: () => [
-				{
-					type: 'button',
-					label: 'Save',
-					onPress: formMethods.handleSubmit(onSubmit),
-					disabled: createProductMutation.isPending
-				}
-			]
-		});
-	}, [navigation, formMethods, onSubmit, createProductMutation.isPending]);
+	useHeaderSubmit({
+		onSubmit: formMethods.handleSubmit(onSubmit),
+		loading: createProductMutation.isPending
+	});
 
 	return (
 		<ScrollableScreen withToolbar>

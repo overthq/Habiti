@@ -1,6 +1,8 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Button, Input, ScrollableScreen, Spacer } from '@habiti/components';
+import { Input, ScrollableScreen, Spacer } from '@habiti/components';
+
+import useHeaderSubmit from '../hooks/useHeaderSubmit';
 
 const AddManager = () => {
 	const { handleSubmit } = useForm();
@@ -9,8 +11,10 @@ const AddManager = () => {
 		// Things
 	}, []);
 
+	useHeaderSubmit({ onSubmit: handleSubmit(onSubmit) });
+
 	return (
-		<ScrollableScreen>
+		<ScrollableScreen withToolbar>
 			<Spacer y={16} />
 			<Input
 				autoFocus
@@ -19,8 +23,6 @@ const AddManager = () => {
 				keyboardType='email-address'
 				autoCapitalize='none'
 			/>
-			<Spacer y={16} />
-			<Button text='Submit' onPress={handleSubmit(onSubmit)} />
 		</ScrollableScreen>
 	);
 };

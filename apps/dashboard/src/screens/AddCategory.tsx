@@ -1,14 +1,10 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
-import {
-	Button,
-	FormInput,
-	ScrollableScreen,
-	Spacer
-} from '@habiti/components';
+import { FormInput, ScrollableScreen, Spacer } from '@habiti/components';
 
 import { useCreateProductCategoryMutation } from '../data/mutations';
+import useHeaderSubmit from '../hooks/useHeaderSubmit';
 import type { AppStackScreenProps } from '../navigation/types';
 
 interface AddCategoryValues {
@@ -37,6 +33,11 @@ const AddCategory: React.FC<AppStackScreenProps<'Modal.AddCategory'>> = ({
 		[createProductCategoryMutation, navigation]
 	);
 
+	useHeaderSubmit({
+		onSubmit: handleSubmit(onSubmit),
+		loading: createProductCategoryMutation.isPending
+	});
+
 	return (
 		<ScrollableScreen withToolbar>
 			<Spacer y={16} />
@@ -56,12 +57,6 @@ const AddCategory: React.FC<AppStackScreenProps<'Modal.AddCategory'>> = ({
 				textArea
 				style={styles.input}
 			/>
-			<Button
-				text='Add Category'
-				onPress={handleSubmit(onSubmit)}
-				style={styles.button}
-				loading={createProductCategoryMutation.isPending}
-			/>
 		</ScrollableScreen>
 	);
 };
@@ -69,9 +64,6 @@ const AddCategory: React.FC<AppStackScreenProps<'Modal.AddCategory'>> = ({
 const styles = StyleSheet.create({
 	input: {
 		marginBottom: 8
-	},
-	button: {
-		marginTop: 8
 	}
 });
 
