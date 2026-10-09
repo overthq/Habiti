@@ -117,37 +117,40 @@ suite('ledger against postgres', () => {
 			'ALTER TABLE "LedgerTransaction" DISABLE TRIGGER "LedgerTransaction_immutable"'
 		);
 
-		// Whole ledger transactions, including the platform's side of each.
-		const ledgerTransactions = await prisma.ledgerTransaction.findMany({
-			where: {
-				OR: [
-					{ orderId: { contains: SUFFIX } },
-					{ entries: { some: { account: { storeId: STORE_ID } } } }
-				]
-			},
-			select: { id: true }
-		});
-		const ids = ledgerTransactions.map(t => t.id);
+		// The triggers must come back on even if the cleanup fails.
+		try {
+			// Whole ledger transactions, including the platform's side of each.
+			const ledgerTransactions = await prisma.ledgerTransaction.findMany({
+				where: {
+					OR: [
+						{ orderId: { contains: SUFFIX } },
+						{ entries: { some: { account: { storeId: STORE_ID } } } }
+					]
+				},
+				select: { id: true }
+			});
+			const ids = ledgerTransactions.map(t => t.id);
 
-		await prisma.transaction.deleteMany({ where: { storeId: STORE_ID } });
-		await prisma.ledgerEntry.deleteMany({
-			where: { transactionId: { in: ids } }
-		});
-		await prisma.ledgerTransaction.deleteMany({
-			where: { id: { in: ids } }
-		});
-		await prisma.ledgerAccount.deleteMany({
-			where: { OR: [{ storeId: STORE_ID }, { userId: USER_ID }] }
-		});
-		await prisma.payout.deleteMany({ where: { storeId: STORE_ID } });
-		await prisma.order.deleteMany({ where: { storeId: STORE_ID } });
-
-		await prisma.$executeRawUnsafe(
-			'ALTER TABLE "LedgerEntry" ENABLE TRIGGER "LedgerEntry_immutable"'
-		);
-		await prisma.$executeRawUnsafe(
-			'ALTER TABLE "LedgerTransaction" ENABLE TRIGGER "LedgerTransaction_immutable"'
-		);
+			await prisma.transaction.deleteMany({ where: { storeId: STORE_ID } });
+			await prisma.ledgerEntry.deleteMany({
+				where: { transactionId: { in: ids } }
+			});
+			await prisma.ledgerTransaction.deleteMany({
+				where: { id: { in: ids } }
+			});
+			await prisma.ledgerAccount.deleteMany({
+				where: { OR: [{ storeId: STORE_ID }, { userId: USER_ID }] }
+			});
+			await prisma.payout.deleteMany({ where: { storeId: STORE_ID } });
+			await prisma.order.deleteMany({ where: { storeId: STORE_ID } });
+		} finally {
+			await prisma.$executeRawUnsafe(
+				'ALTER TABLE "LedgerEntry" ENABLE TRIGGER "LedgerEntry_immutable"'
+			);
+			await prisma.$executeRawUnsafe(
+				'ALTER TABLE "LedgerTransaction" ENABLE TRIGGER "LedgerTransaction_immutable"'
+			);
+		}
 
 		await prisma.store.deleteMany({ where: { id: STORE_ID } });
 		await prisma.user.deleteMany({ where: { id: USER_ID } });
