@@ -478,8 +478,8 @@ interface ProcessWebhookEventInput {
 	externalId: string;
 }
 
-// Returns whether the delivery was processed. The route answers Paystack with
-// a failure when it was not, so Paystack sends it again.
+// Never throws: the response has already gone out by the time this runs, so
+// a failure is recorded on the event for `replay-webhooks` to pick up.
 export const processPaystackWebhookEvent = async (
 	c: Context<AppEnv>,
 	input: ProcessWebhookEventInput
@@ -489,8 +489,6 @@ export const processPaystackWebhookEvent = async (
 	try {
 		await handlePaystackWebhookEvent(c, event, data, claimId);
 		await markWebhookEventProcessed(c.var.prisma, claimId);
-
-		return true;
 	} catch (error) {
 		c.var.logger.error(
 			{ err: error, event, externalId },
@@ -505,7 +503,5 @@ export const processPaystackWebhookEvent = async (
 				'paystack.webhook.mark_failed_errored'
 			);
 		}
-
-		return false;
 	}
 };

@@ -54,18 +54,14 @@ webhooks.post('/paystack', async c => {
 		return c.json({ message: 'Webhook already processed.' });
 	}
 
-	const processed = await PaymentLogic.processPaystackWebhookEvent(c, {
+	void PaymentLogic.processPaystackWebhookEvent(c, {
 		claimId: claim.id,
 		event,
 		data,
 		externalId: claim.externalId
 	});
 
-	if (!processed) {
-		return c.json({ message: 'Webhook processing failed.' }, 500);
-	}
-
-	return c.json({ message: 'Webhook processed.' });
+	return c.json({ message: 'Webhook received and processing.' });
 });
 
 export default webhooks;

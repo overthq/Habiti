@@ -58,6 +58,9 @@ const post = (app: any, body: unknown, signature?: string) => {
 	});
 };
 
+// Processing happens after the response; let it finish.
+const settle = () => new Promise(resolve => setTimeout(resolve, 10));
+
 // A transfer charge with no order metadata: the handler recognises it and
 // returns early, so the delivery completes without touching another model.
 const event = (id: number | undefined, type = 'charge.success') => ({
@@ -99,6 +102,7 @@ describe('POST /webhooks/paystack', () => {
 		const { app } = createTestApp({ prisma });
 
 		const response = await post(app, event(37272792));
+		await settle();
 
 		expect(response.status).toBe(200);
 		expect(webhookEvent.create).toHaveBeenCalledTimes(1);
@@ -110,13 +114,14 @@ describe('POST /webhooks/paystack', () => {
 		});
 	});
 
-	test('answers a delivery whose handler throws with a failure, so Paystack retries', async () => {
+	test('records a delivery whose handler throws as Failed', async () => {
 		const { prisma, rows } = webhookPrisma();
 		const { app } = createTestApp({ prisma });
 
 		const response = await post(app, failingEvent(999));
+		await settle();
 
-		expect(response.status).toBe(500);
+		expect(response.status).toBe(200);
 		expect(rows[0]).toMatchObject({
 			externalId: '999',
 			status: WebhookEventStatus.Failed
@@ -129,12 +134,14 @@ describe('POST /webhooks/paystack', () => {
 		const { app } = createTestApp({ prisma });
 
 		await post(app, failingEvent(999));
+		await settle();
 
 		// The models whose absence made the first attempt fail.
 		models.user = { findUnique: mock(async () => ({ id: 'user-1' })) };
 		models.card = { upsert: mock(async () => ({})) };
 
 		const retry = await post(app, failingEvent(999));
+		await settle();
 
 		expect(retry.status).toBe(200);
 		expect(rows).toHaveLength(1);
@@ -151,6 +158,7 @@ describe('POST /webhooks/paystack', () => {
 		const payload = event(37272792);
 
 		const first = await post(app, payload);
+		await settle();
 		const second = await post(app, payload);
 		const third = await post(app, payload);
 
