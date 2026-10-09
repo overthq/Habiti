@@ -14,9 +14,6 @@ interface UseHeaderSubmitOptions {
 	loading?: boolean;
 }
 
-// Places a form's submit action in the header, on the right.
-// `headerRight` covers Android (via CustomHeader) and older iOS, while
-// `unstable_headerRightItems` renders natively on iOS 26.
 const useHeaderSubmit = ({
 	onSubmit,
 	label = 'Save',
@@ -26,8 +23,6 @@ const useHeaderSubmit = ({
 	const navigation =
 		useNavigation<NativeStackNavigationProp<AppStackParamList>>();
 
-	// `handleSubmit` returns a fresh callback on every render, so we read it
-	// through a ref to keep `setOptions` from running on each one.
 	const submitRef = React.useRef(onSubmit);
 
 	React.useLayoutEffect(() => {

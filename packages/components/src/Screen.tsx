@@ -24,8 +24,6 @@ export const Screen: React.FC<ViewProps> = props => {
 };
 
 interface ScrollableScreenProps extends KeyboardAwareScrollViewProps {
-	// Renders a FormToolbar above the keyboard, and insets the content so the
-	// focused input and the end of the content clear it.
 	withToolbar?: boolean;
 }
 

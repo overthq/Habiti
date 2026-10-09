@@ -6,7 +6,7 @@ import {
 
 import { themes } from './styles/theme';
 
-export const KEYBOARD_TOOLBAR_HEIGHT = 42;
+export const KEYBOARD_TOOLBAR_HEIGHT = 66;
 
 const toolbarTheme = {
 	light: {
