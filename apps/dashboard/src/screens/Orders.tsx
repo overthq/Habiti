@@ -16,6 +16,7 @@ import {
 	Screen,
 	ScreenHeader,
 	Spacer,
+	TabBarSpacer,
 	Typography,
 	useTheme
 } from '@habiti/components';
@@ -223,6 +224,7 @@ const OrdersList = () => {
 	const { filters } = useOrdersFilterStore();
 	const { theme } = useTheme();
 	const listRef = React.useRef<FlashListRef<Order>>(null);
+	const [tabBarHeight, setTabBarHeight] = React.useState(0);
 
 	// Changing any filter rebuilds the list from a different slice of the
 	// orders, so the offset we were scrolled to no longer means anything
@@ -267,12 +269,14 @@ const OrdersList = () => {
 				data={orders}
 				renderItem={renderOrder}
 				maintainVisibleContentPosition={{ disabled: true }}
-				contentInsetAdjustmentBehavior='automatic'
+				automaticallyAdjustsScrollIndicatorInsets={false}
+				scrollIndicatorInsets={{ bottom: tabBarHeight }}
 				style={{ marginHorizontal: -16 }}
 				contentContainerStyle={{
 					flexGrow: 1,
 					backgroundColor: theme.screen.background
 				}}
+				ListFooterComponent={<TabBarSpacer onHeightChange={setTabBarHeight} />}
 				ListEmptyComponent={
 					isLoading ? (
 						<View style={listStyles.empty}>

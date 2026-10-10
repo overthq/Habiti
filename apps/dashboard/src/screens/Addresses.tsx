@@ -95,11 +95,13 @@ const Addresses: React.FC<StoreStackScreenProps<'Addresses'>> = ({
 	return (
 		<>
 			<ScrollableScreen
+				nativeInsets
 				style={{ marginHorizontal: -16 }}
 				contentContainerStyle={{ padding: 0 }}
 				refreshControl={
 					<Refresher refreshing={isRefreshing} onRefresh={onRefresh} />
 				}
+				showsVerticalScrollIndicator
 			>
 				{data?.addresses.map(address => (
 					<AddressListItem

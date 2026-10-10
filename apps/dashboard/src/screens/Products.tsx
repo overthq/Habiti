@@ -8,6 +8,7 @@ import {
 	Row,
 	Screen,
 	ScreenHeader,
+	TabBarSpacer,
 	Typography,
 	useTheme
 } from '@habiti/components';
@@ -184,6 +185,7 @@ const ProductList: React.FC = () => {
 	const [editMode, setEditMode] = React.useState(false);
 	const [selectedProducts, setSelectedProducts] = React.useState<string[]>([]);
 	const listRef = React.useRef<FlashListRef<Product>>(null);
+	const [tabBarHeight, setTabBarHeight] = React.useState(0);
 	const categoryId = useProductsFilterStore(state => state.filters.categoryId);
 	const sortBy = useProductsFilterStore(state => state.filters.sortBy);
 
@@ -242,12 +244,14 @@ const ProductList: React.FC = () => {
 				data={products}
 				renderItem={renderProduct}
 				maintainVisibleContentPosition={{ disabled: true }}
-				contentInsetAdjustmentBehavior='automatic'
+				automaticallyAdjustsScrollIndicatorInsets={false}
+				scrollIndicatorInsets={{ bottom: tabBarHeight }}
 				style={{ marginHorizontal: -16 }}
 				contentContainerStyle={{
 					flexGrow: 1,
 					backgroundColor: theme.screen.background
 				}}
+				ListFooterComponent={<TabBarSpacer onHeightChange={setTabBarHeight} />}
 				ListEmptyComponent={
 					<View style={listStyles.empty}>
 						<Typography variant='secondary' style={listStyles.emptyText}>

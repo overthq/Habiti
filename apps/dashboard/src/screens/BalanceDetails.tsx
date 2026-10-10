@@ -32,7 +32,7 @@ const BalanceDetails = () => {
 		data.balance;
 
 	return (
-		<ScrollableScreen>
+		<ScrollableScreen nativeInsets>
 			<Spacer y={16} />
 			<View style={[styles.list, { backgroundColor: theme.input.background }]}>
 				<BalanceRow label='Available' amount={available} />
