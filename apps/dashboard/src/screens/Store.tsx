@@ -123,7 +123,7 @@ const Store: React.FC<StoreStackScreenProps<'StoreHome'>> = ({
 			/>
 
 			<ScrollableScreen
-				contentInsetAdjustmentBehavior='automatic'
+				avoidTabBar
 				style={{ marginHorizontal: -16 }}
 				refreshControl={
 					<Refresher refreshing={isRefreshing} onRefresh={onRefresh} />

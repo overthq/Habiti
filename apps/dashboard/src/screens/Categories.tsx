@@ -89,6 +89,7 @@ const Categories: React.FC<StoreStackScreenProps<'Categories'>> = ({
 	return (
 		<>
 			<ScrollableScreen
+				nativeInsets
 				style={{ marginHorizontal: -16 }}
 				refreshControl={
 					<Refresher refreshing={isRefreshing} onRefresh={onRefresh} />

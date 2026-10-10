@@ -16,7 +16,7 @@ export { default as ListEmpty } from './ListEmpty';
 export { PillButton } from './Button';
 export { default as Radio } from './Radio';
 export { default as Row } from './Row';
-export { Screen, ScrollableScreen } from './Screen';
+export { Screen, ScrollableScreen, TabBarSpacer } from './Screen';
 export { default as ScreenHeader } from './ScreenHeader';
 export { default as Separator } from './Separator';
 export { default as SearchInput } from './SearchInput';
