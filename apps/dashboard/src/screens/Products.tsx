@@ -246,6 +246,7 @@ const ProductList: React.FC = () => {
 				maintainVisibleContentPosition={{ disabled: true }}
 				automaticallyAdjustsScrollIndicatorInsets={false}
 				scrollIndicatorInsets={{ bottom: tabBarHeight }}
+				showsVerticalScrollIndicator={false}
 				style={{ marginHorizontal: -16 }}
 				contentContainerStyle={{
 					flexGrow: 1,

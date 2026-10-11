@@ -31,13 +31,11 @@ const CustomerInfo: React.FC<OrdersStackScreenProps<'CustomerInfo'>> = ({
 	}
 
 	return (
-		<ScrollableScreen>
+		<ScrollableScreen nativeInsets avoidTabBar>
 			<Spacer y={16} />
 			<Typography weight='medium' size='xlarge'>
 				{data.user.name}
 			</Typography>
-			<Spacer y={2} />
-			<Typography variant='secondary'>{data.user.email}</Typography>
 			<Spacer y={12} />
 			<Typography weight='medium'>Previous Orders</Typography>
 			{data.user.orders.map(order => (
