@@ -8,10 +8,7 @@ import {
 	transitionOrderToPending
 } from './payments';
 import { NotificationType } from '../notifications';
-import {
-	orderIdFromPaystackMetadata,
-	paystackAmountKobo
-} from '../payments/validation';
+import type { IncomingCharge, StoredCardCharge } from '../payments';
 import {
 	LedgerReason,
 	OrderStatus,
@@ -347,87 +344,35 @@ const pricedOrder = (status: OrderStatus = OrderStatus.PaymentPending) => ({
 	pushTokens: [{ token: 'ExponentPushToken[shopper]', type: 'Shopper' }]
 });
 
-const asCharge = (data: Record<string, unknown>) => data as any;
-
-const transferCharge = (overrides: Record<string, unknown> = {}) =>
-	asCharge({
-		amount: EXPECTED_CHARGE,
-		reference: 'ref_transfer',
-		currency: 'NGN',
-		channel: 'bank_transfer',
-		metadata: { orderId: 'order-1' },
-		customer: { email: 'ada@example.com' },
-		authorization: { card_type: 'transfer', channel: 'bank_transfer' },
-		...overrides
-	});
-
-const cardAuthorization = {
-	authorization_code: 'AUTH_card',
-	card_type: 'visa',
-	last4: '4081',
-	exp_month: '12',
-	exp_year: '2030',
-	bin: '408408',
-	bank: 'Test Bank',
-	channel: 'card',
-	signature: 'SIG_card',
-	country_code: 'NG',
-	account_name: null
-};
-
-const cardCharge = (overrides: Record<string, unknown> = {}) =>
-	asCharge({
-		amount: EXPECTED_CHARGE,
-		reference: 'ref_card',
-		currency: 'NGN',
-		channel: 'card',
-		metadata: { orderId: 'order-1' },
-		customer: { email: 'ada@example.com' },
-		authorization: cardAuthorization,
-		...overrides
-	});
-
-describe('paystack metadata', () => {
-	test('reads orderId from an object or a JSON string', () => {
-		expect(orderIdFromPaystackMetadata({ orderId: 'order-1' })).toBe('order-1');
-		expect(
-			orderIdFromPaystackMetadata(JSON.stringify({ orderId: 'order-1' }))
-		).toBe('order-1');
-		expect(
-			orderIdFromPaystackMetadata(
-				JSON.stringify(JSON.stringify({ orderId: ' order-1 ' }))
-			)
-		).toBe('order-1');
-	});
-
-	test('ignores empty, invalid, and non-object metadata', () => {
-		expect(orderIdFromPaystackMetadata('')).toBeNull();
-		expect(orderIdFromPaystackMetadata('not-json')).toBeNull();
-		expect(orderIdFromPaystackMetadata(0)).toBeNull();
-		expect(orderIdFromPaystackMetadata(null)).toBeNull();
-		expect(orderIdFromPaystackMetadata([])).toBeNull();
-		expect(orderIdFromPaystackMetadata({ orderId: '' })).toBeNull();
-	});
-
-	test('accepts integer kobo amounts only', () => {
-		expect(paystackAmountKobo(162_250)).toBe(162_250);
-		expect(paystackAmountKobo('162250')).toBe(162_250);
-		expect(paystackAmountKobo(162_250.5)).toBeNull();
-		expect(paystackAmountKobo(-1)).toBeNull();
-	});
+const incoming = (overrides: Partial<IncomingCharge> = {}): IncomingCharge => ({
+	orderId: 'order-1',
+	amount: EXPECTED_CHARGE,
+	currency: 'NGN',
+	reference: 'ref_transfer',
+	instrument: 'transfer',
+	card: null,
+	...overrides
 });
 
+const storedCard: StoredCardCharge = {
+	email: 'ada@example.com',
+	signature: 'SIG_card',
+	authorizationCode: 'AUTH_card',
+	bin: '408408',
+	last4: '4081',
+	expMonth: '12',
+	expYear: '2030',
+	bank: 'Test Bank',
+	cardType: 'visa',
+	countryCode: 'NG'
+};
+
 describe('charge.success', () => {
-	test('pays an order when bank-transfer metadata is a JSON string', async () => {
+	test('pays an order from a translated transfer charge', async () => {
 		const { c, queueNotification, tables, payments } =
 			fakeOrderContext(pricedOrder());
 
-		await handleChargeSuccess(
-			c,
-			transferCharge({
-				metadata: JSON.stringify({ orderId: 'order-1', custom: true })
-			})
-		);
+		await handleChargeSuccess(c, incoming());
 
 		expect(payments()).toHaveLength(2);
 		expect(tables.stores.get('store-1')!.unrealizedRevenue).toBe(
@@ -437,13 +382,17 @@ describe('charge.success', () => {
 		expect(c.var.prisma.order.update).toHaveBeenCalledTimes(1);
 	});
 
-	test('accepts a numeric-string amount for an object metadata charge', async () => {
+	test('pays an order when the webhook metadata is a JSON string', async () => {
 		const { c, payments } = fakeOrderContext(pricedOrder());
 
-		await handleChargeSuccess(
-			c,
-			transferCharge({ amount: String(EXPECTED_CHARGE) })
-		);
+		await handlePaystackWebhookEvent(c, 'charge.success', {
+			amount: EXPECTED_CHARGE,
+			reference: 'ref_transfer',
+			currency: 'NGN',
+			channel: 'bank_transfer',
+			metadata: JSON.stringify({ orderId: 'order-1' }),
+			authorization: { card_type: 'transfer', channel: 'bank_transfer' }
+		});
 
 		expect(payments()).toHaveLength(2);
 	});
@@ -451,7 +400,7 @@ describe('charge.success', () => {
 	test('does not mark the order paid when the amount mismatches', async () => {
 		const { c, queueNotification, payments } = fakeOrderContext(pricedOrder());
 
-		await handleChargeSuccess(c, transferCharge({ amount: ORDER_TOTAL }));
+		await handleChargeSuccess(c, incoming({ amount: ORDER_TOTAL }));
 
 		expect(payments()).toHaveLength(0);
 		expect(queueNotification).not.toHaveBeenCalled();
@@ -464,33 +413,31 @@ describe('charge.success', () => {
 				reference: 'ref_transfer',
 				handling: 'left_unpaid'
 			}),
-			'paystack.charge.amount_mismatch'
+			'payment.charge_amount_mismatch'
 		);
 	});
 
 	test('does not mark the order paid when the amount is missing', async () => {
 		const { c, payments } = fakeOrderContext(pricedOrder());
-		const payload = transferCharge();
-		delete payload.amount;
 
-		await handleChargeSuccess(c, payload);
+		await handleChargeSuccess(c, incoming({ amount: null }));
 
 		expect(payments()).toHaveLength(0);
 		expect(c.var.logger.error).toHaveBeenCalledWith(
 			expect.objectContaining({ orderId: 'order-1', handling: 'left_unpaid' }),
-			'paystack.charge.amount_missing'
+			'payment.charge_amount_missing'
 		);
 	});
 
 	test('does not mark the order paid when the currency is not NGN', async () => {
 		const { c, payments } = fakeOrderContext(pricedOrder());
 
-		await handleChargeSuccess(c, transferCharge({ currency: 'USD' }));
+		await handleChargeSuccess(c, incoming({ currency: 'USD' }));
 
 		expect(payments()).toHaveLength(0);
 		expect(c.var.logger.error).toHaveBeenCalledWith(
 			expect.objectContaining({ currency: 'USD', handling: 'left_unpaid' }),
-			'paystack.charge.amount_mismatch'
+			'payment.charge_amount_mismatch'
 		);
 	});
 
@@ -499,7 +446,7 @@ describe('charge.success', () => {
 			pricedOrder(OrderStatus.Cancelled)
 		);
 
-		await handleChargeSuccess(c, transferCharge());
+		await handleChargeSuccess(c, incoming());
 
 		expect(payments()).toHaveLength(0);
 		expect(c.var.logger.error).toHaveBeenCalledWith(
@@ -507,7 +454,7 @@ describe('charge.success', () => {
 				orderId: 'order-1',
 				reference: 'ref_transfer'
 			}),
-			'paystack.charge.received_for_closed_order'
+			'payment.charge_for_closed_order'
 		);
 	});
 
@@ -517,10 +464,24 @@ describe('charge.success', () => {
 		c.var.prisma.user = { findUnique: mock(async () => ({ id: 'user-1' })) };
 		c.var.prisma.card = { upsert };
 
-		await handleChargeSuccess(c, cardCharge());
+		await handleChargeSuccess(
+			c,
+			incoming({
+				instrument: 'card',
+				reference: 'ref_card',
+				card: storedCard
+			})
+		);
 
 		expect(payments()).toHaveLength(2);
-		expect(upsert).toHaveBeenCalledTimes(1);
+		expect(upsert).toHaveBeenCalledWith(
+			expect.objectContaining({
+				create: expect.objectContaining({
+					authorizationCode: 'AUTH_card',
+					signature: 'SIG_card'
+				})
+			})
+		);
 		expect(queueNotification).toHaveBeenCalledTimes(1);
 		expect(queueNotification.mock.calls[0]?.[0].type).toBe(
 			NotificationType.NewOrder
@@ -533,29 +494,32 @@ describe('charge.success', () => {
 		c.var.prisma.user = { findUnique: mock(async () => ({ id: 'user-1' })) };
 		c.var.prisma.card = { upsert };
 
-		await handleChargeSuccess(c, cardCharge({ amount: 1 }));
+		await handleChargeSuccess(
+			c,
+			incoming({ instrument: 'card', amount: 1, card: storedCard })
+		);
 
 		expect(payments()).toHaveLength(0);
 		expect(queueNotification).not.toHaveBeenCalled();
 		expect(upsert).toHaveBeenCalledTimes(1);
 	});
 
-	test('ignores a dedicated virtual account charge with no order', async () => {
+	test('ignores a dedicated-account charge with no order', async () => {
 		const { c, payments } = fakeOrderContext(pricedOrder());
 
 		await handleChargeSuccess(
 			c,
-			transferCharge({
-				metadata: '',
-				channel: 'dedicated_nuban',
-				authorization: { card_type: 'transfer', channel: 'dedicated_nuban' }
+			incoming({
+				orderId: null,
+				instrument: 'dedicated_account',
+				reference: 'dva_ref'
 			})
 		);
 
 		expect(payments()).toHaveLength(0);
 		expect(c.var.logger.warn).toHaveBeenCalledWith(
-			expect.objectContaining({ channel: 'dedicated_nuban' }),
-			'paystack.dedicated_nuban_ignored'
+			expect.objectContaining({ reference: 'dva_ref' }),
+			'payment.unsolicited_transfer_ignored'
 		);
 	});
 });
@@ -594,7 +558,7 @@ describe('bank.transfer.rejected', () => {
 				reference: 'ref_rejected',
 				reason: 'Incorrect amount'
 			}),
-			'paystack.bank_transfer.rejected'
+			'payment.transfer_rejected'
 		);
 	});
 
@@ -606,7 +570,7 @@ describe('bank.transfer.rejected', () => {
 		expect(queueNotification).not.toHaveBeenCalled();
 		expect(c.var.logger.error).toHaveBeenCalledWith(
 			expect.objectContaining({ orderId: null, reference: 'ref_rejected' }),
-			'paystack.bank_transfer.rejected'
+			'payment.transfer_rejected'
 		);
 	});
 
@@ -621,8 +585,8 @@ describe('bank.transfer.rejected', () => {
 
 		expect(queueNotification).not.toHaveBeenCalled();
 		expect(c.var.logger.warn).toHaveBeenCalledWith(
-			expect.objectContaining({ channel: 'dedicated_nuban' }),
-			'paystack.bank_transfer.rejected_dedicated_nuban_ignored'
+			expect.objectContaining({ reference: 'ref_rejected' }),
+			'payment.transfer_rejected_ignored'
 		);
 	});
 
@@ -634,7 +598,7 @@ describe('bank.transfer.rejected', () => {
 			'bank.transfer.rejected',
 			rejected({ orderId: 'order-1' })
 		);
-		await handleChargeSuccess(c, transferCharge());
+		await handleChargeSuccess(c, incoming());
 
 		expect(payments()).toHaveLength(2);
 		expect(queueNotification).toHaveBeenCalledTimes(2);

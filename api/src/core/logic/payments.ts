@@ -26,20 +26,13 @@ import {
 import { NotificationType } from '../notifications';
 
 import * as CorePayments from '../payments';
+import type {
+	IncomingCharge,
+	IncomingTransferRejection,
+	StoredCardCharge
+} from '../payments';
 
 import {
-	CardChargeSuccessPayload,
-	CHECKOUT_BANK_TRANSFER_CHANNEL,
-	DEDICATED_NUBAN_CHANNEL,
-	isDedicatedNubanCharge,
-	isNonCardCharge,
-	orderIdFromPaystackMetadata,
-	PaystackChargeData,
-	paystackAmountKobo,
-	paystackChargeChannel,
-	paystackCurrency,
-	paystackFailureReason,
-	paystackReference,
 	TransferFailurePayload,
 	TransferReversedPayload,
 	TransferSuccessPayload
@@ -59,21 +52,11 @@ import type { ApprovePaymentBody } from '../validations/rest';
 import type { Logger } from '../../services/logger';
 
 /**
- * Paystack Checkout keeps a Pay with Transfer account open for about 30
- * minutes. Habiti opens that checkout with `initializeTransaction` and does
- * not send a `bank_transfer` object, so the Charge API's
- * `account_expires_at` window (15 minutes to 8 hours) does not apply.
+ * How long an unpaid order holds stock. The checkout transfer account lasts
+ * about 30 minutes; the extra 5 minutes lets a transfer sent at the end of
+ * that window arrive before the stock is released.
  */
-export const PAYSTACK_CHECKOUT_TRANSFER_WINDOW_MS = 30 * 60 * 1000;
-
-/**
- * Extra wait after the checkout window so a transfer sent near the deadline
- * can still arrive as `charge.success` before stock is released.
- */
-export const PAYMENT_PENDING_EXPIRY_GRACE_MS = 5 * 60 * 1000;
-
-export const DEFAULT_PAYMENT_PENDING_EXPIRY_MS =
-	PAYSTACK_CHECKOUT_TRANSFER_WINDOW_MS + PAYMENT_PENDING_EXPIRY_GRACE_MS;
+export const DEFAULT_PAYMENT_PENDING_EXPIRY_MS = 35 * 60 * 1000;
 
 /** Whole-window override in minutes. Non-positive values use the default. */
 export const paymentPendingExpiryMs = (overrideMinutes?: number) => {
@@ -88,7 +71,7 @@ export const paymentPendingExpiryMs = (overrideMinutes?: number) => {
 	return DEFAULT_PAYMENT_PENDING_EXPIRY_MS;
 };
 
-/** What the shopper is charged: goods plus the fees sent to Paystack. */
+/** What the shopper is charged: goods plus the transaction and service fees. */
 export const expectedOrderChargeAmount = (order: {
 	total: number;
 	transactionFee: number;
@@ -133,22 +116,9 @@ export const approvePayment = async (
 
 export const processCardCharge = async (
 	c: Context<AppEnv>,
-	data: CardChargeSuccessPayload
+	card: StoredCardCharge
 ) => {
-	const card = await CardData.storeCard(c.var.prisma, {
-		email: data.customer.email,
-		signature: data.authorization.signature,
-		authorizationCode: data.authorization.authorization_code,
-		bin: data.authorization.bin,
-		last4: data.authorization.last4,
-		expMonth: data.authorization.exp_month,
-		expYear: data.authorization.exp_year,
-		bank: data.authorization.bank,
-		cardType: data.authorization.card_type,
-		countryCode: data.authorization.country_code
-	});
-
-	return card;
+	return CardData.storeCard(c.var.prisma, card);
 };
 
 // --- Order transitions ---
@@ -157,7 +127,6 @@ interface ChargeAcceptance {
 	amount: number;
 	reference: string | null;
 	currency: string | null;
-	channel: string | null;
 }
 
 export const transitionOrderToPending = async (
@@ -171,7 +140,7 @@ export const transitionOrderToPending = async (
 
 		if (!order) return { kind: 'missing' as const };
 
-		// Order has no Paystack reference column, so `charge.reference` is
+		// Orders do not store a provider reference, so `charge.reference` is
 		// logged for reconciliation and not compared to a stored value.
 		if (charge) {
 			const expectedAmount = expectedOrderChargeAmount(order);
@@ -235,9 +204,8 @@ export const transitionOrderToPending = async (
 	if (result.kind === 'amount_mismatch') {
 		// Leave the order unpaid. Stock stays held until expiry or a later
 		// charge for the expected amount. Reconcile from this log and the
-		// stored webhook payload — a captured Paystack charge that does not
-		// match the order must not be marked paid and must not be silently
-		// dropped.
+		// stored webhook payload — a captured charge that does not match the
+		// order must not be marked paid and must not be silently dropped.
 		c.var.logger.error(
 			{
 				orderId: result.order.id,
@@ -246,10 +214,9 @@ export const transitionOrderToPending = async (
 				expectedAmount: result.expectedAmount,
 				currency: charge?.currency,
 				reference: charge?.reference,
-				channel: charge?.channel,
 				handling: 'left_unpaid'
 			},
-			'paystack.charge.amount_mismatch'
+			'payment.charge_amount_mismatch'
 		);
 		return;
 	}
@@ -258,12 +225,11 @@ export const transitionOrderToPending = async (
 		const fields = {
 			orderId: result.order.id,
 			status: result.order.status,
-			reference: charge?.reference,
-			channel: charge?.channel
+			reference: charge?.reference
 		};
 
 		if (charge) {
-			c.var.logger.error(fields, 'paystack.charge.received_for_closed_order');
+			c.var.logger.error(fields, 'payment.charge_for_closed_order');
 		} else {
 			c.var.logger.warn(fields, 'order_not_in_payment_pending');
 		}
@@ -345,7 +311,11 @@ const handlePaystackWebhookEventImpl = async (
 	}
 
 	if (event === PaystackWebhookEvent.ChargeSuccess) {
-		await handleChargeSuccess(c, data, webhookEventId);
+		await handleChargeSuccess(
+			c,
+			CorePayments.readIncomingCharge(data),
+			webhookEventId
+		);
 	} else if (event === PaystackWebhookEvent.TransferSuccess) {
 		await handleTransferSuccess(c, data, webhookEventId);
 	} else if (event === PaystackWebhookEvent.TransferFailure) {
@@ -353,7 +323,7 @@ const handlePaystackWebhookEventImpl = async (
 	} else if (event === PaystackWebhookEvent.TransferReversed) {
 		await handleTransferReversed(c, data, webhookEventId);
 	} else if (event === PaystackWebhookEvent.BankTransferRejected) {
-		await handleBankTransferRejected(c, data);
+		await handleTransferRejection(c, CorePayments.readTransferRejection(data));
 	}
 };
 
@@ -362,104 +332,96 @@ const handlePaystackWebhookEventImpl = async (
 
 export const handleChargeSuccess = async (
 	c: Context<AppEnv>,
-	data: PaystackChargeData,
+	charge: IncomingCharge,
 	webhookEventId?: string | null
 ) => {
-	const orderId = orderIdFromPaystackMetadata(data?.metadata);
-	const channel = paystackChargeChannel(data);
-	const reference = paystackReference(data);
-
-	if (orderId) {
-		const amount = paystackAmountKobo(data?.amount);
-
-		if (amount == null) {
+	if (charge.instrument === 'dedicated_account' && !charge.orderId) {
+		c.var.logger.warn(
+			{ reference: charge.reference },
+			'payment.unsolicited_transfer_ignored'
+		);
+	} else if (charge.orderId) {
+		if (charge.amount == null) {
 			// Cannot prove the shopper paid the order total. Leave it unpaid.
 			c.var.logger.error(
-				{ orderId, reference, channel, handling: 'left_unpaid' },
-				'paystack.charge.amount_missing'
+				{
+					orderId: charge.orderId,
+					reference: charge.reference,
+					handling: 'left_unpaid'
+				},
+				'payment.charge_amount_missing'
 			);
 		} else {
-			await transitionOrderToPending(c, orderId, webhookEventId, {
-				amount,
-				reference,
-				currency: paystackCurrency(data),
-				channel
+			await transitionOrderToPending(c, charge.orderId, webhookEventId, {
+				amount: charge.amount,
+				reference: charge.reference,
+				currency: charge.currency
 			});
 		}
 	} else {
 		c.var.logger.warn(
-			{
-				cardType: data?.authorization?.card_type,
-				channel,
-				reference
-			},
-			isDedicatedNubanCharge(data)
-				? 'paystack.dedicated_nuban_ignored'
-				: 'charge.success_without_order'
+			{ reference: charge.reference, instrument: charge.instrument },
+			'charge.success_without_order'
 		);
 	}
 
-	// Checkout bank_transfer is applied above when metadata carries an orderId.
-	// dedicated_nuban is not stored as a card and is not fulfilled here.
-	if (isNonCardCharge(data)) {
-		return true;
+	if (charge.card) {
+		await processCardCharge(c, charge.card);
 	}
-
-	await processCardCharge(c, data as CardChargeSuccessPayload);
 
 	return true;
 };
 
-const handleBankTransferRejected = async (
+const handleTransferRejection = async (
 	c: Context<AppEnv>,
-	data: PaystackChargeData | null | undefined
+	rejection: IncomingTransferRejection
 ) => {
-	const orderId = orderIdFromPaystackMetadata(data?.metadata);
-	const reference = paystackReference(data);
-	const channel = paystackChargeChannel(data);
-	const reason = paystackFailureReason(data);
-
-	// A DVA rejection is not a checkout payment. Do not cancel or notify
-	// against an order from this event.
-	if (channel === DEDICATED_NUBAN_CHANNEL) {
+	// A dedicated-account rejection is not a checkout payment.
+	if (rejection.instrument === 'dedicated_account') {
 		c.var.logger.warn(
-			{ orderId, reference, reason, channel },
-			'paystack.bank_transfer.rejected_dedicated_nuban_ignored'
+			{
+				orderId: rejection.orderId,
+				reference: rejection.reference,
+				reason: rejection.reason
+			},
+			'payment.transfer_rejected_ignored'
 		);
 		return;
 	}
 
 	c.var.logger.error(
 		{
-			orderId,
-			reference,
-			amount: paystackAmountKobo(data?.amount),
-			reason,
-			channel: channel ?? CHECKOUT_BANK_TRANSFER_CHANNEL
+			orderId: rejection.orderId,
+			reference: rejection.reference,
+			amount: rejection.amount,
+			reason: rejection.reason
 		},
-		'paystack.bank_transfer.rejected'
+		'payment.transfer_rejected'
 	);
 
-	if (!orderId) return;
+	if (!rejection.orderId) return;
 
-	const order = await OrderData.getOrderById(c.var.prisma, orderId);
+	const order = await OrderData.getOrderById(c.var.prisma, rejection.orderId);
 
 	if (!order) {
 		c.var.logger.warn(
-			{ orderId, reference },
-			'paystack.bank_transfer.rejected_order_missing'
+			{ orderId: rejection.orderId, reference: rejection.reference },
+			'payment.transfer_rejected_order_missing'
 		);
 		return;
 	}
 
-	// Paystack refunds the bad transfer and the checkout account can still
-	// accept the correct amount until it expires. Cancelling here would drop
-	// a later charge.success. The expiry job closes the order if they never
-	// pay.
+	// The provider refunds the rejected transfer, and checkout can still take
+	// the correct amount. Cancelling here would drop a later successful charge.
+	// The expiry job closes the order if they never pay.
 	if (order.status !== OrderStatus.PaymentPending) {
 		c.var.logger.warn(
-			{ orderId: order.id, status: order.status, reference },
-			'paystack.bank_transfer.rejected_order_not_pending'
+			{
+				orderId: order.id,
+				status: order.status,
+				reference: rejection.reference
+			},
+			'payment.transfer_rejected_order_not_pending'
 		);
 		return;
 	}
@@ -563,7 +525,7 @@ export const verifyTransaction = async (
 	const { data, status } = await CorePayments.verifyTransaction(reference);
 
 	if (status === true && data.status === 'success') {
-		return await handleChargeSuccess(c, data);
+		return await handleChargeSuccess(c, CorePayments.readIncomingCharge(data));
 	}
 };
 

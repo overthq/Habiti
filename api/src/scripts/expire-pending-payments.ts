@@ -11,11 +11,9 @@ import { rootLogger } from '../services/logger';
  * Cancels orders still awaiting payment after Paystack Checkout's transfer
  * window and releases the stock they hold.
  *
- * Checkout keeps a Pay with Transfer account open for about 30 minutes
- * (`PAYSTACK_CHECKOUT_TRANSFER_WINDOW_MS`). This waits that long plus
- * `PAYMENT_PENDING_EXPIRY_GRACE_MS` so a transfer sent near the deadline can
- * still settle as `charge.success`. Set `PAYMENT_PENDING_EXPIRY_MINUTES` to
- * replace that whole window.
+ * The default wait is 35 minutes: about 30 minutes for the checkout transfer
+ * account, plus a short grace so a transfer sent near the deadline can still
+ * settle. Set `PAYMENT_PENDING_EXPIRY_MINUTES` to replace that whole window.
  *
  * There is no in-process scheduler. Run every few minutes:
  *   cd api && bun run expire-pending-payments
