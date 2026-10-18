@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 const envSchema = z.object({
 	PORT: z.string().default('4000'),
+	// Leave unset locally. Production deploys set NODE_ENV=production explicitly.
 	NODE_ENV: z.string().optional(),
 	APP_VERSION: z.string().default('1.0.0'),
 	JWT_SECRET: z.string(),
@@ -35,6 +36,7 @@ const envSchema = z.object({
 	LOG_LEVEL: z
 		.enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal'])
 		.default('info'),
+	LOG_FORMAT: z.enum(['json', 'pretty']).optional(),
 	SLOW_QUERY_THRESHOLD_MS: z
 		.string()
 		.default('250')
