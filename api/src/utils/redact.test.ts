@@ -1,6 +1,12 @@
 import { describe, expect, test } from 'bun:test';
 
-import { maskEmail, paystackErrorCode, REDACTED, redactSensitive } from './redact';
+import {
+	errorForLog,
+	maskEmail,
+	paystackErrorCode,
+	REDACTED,
+	redactSensitive
+} from './redact';
 
 describe('redactSensitive', () => {
 	test('redacts a nested snake_case account number inside responseData', () => {
@@ -239,6 +245,40 @@ describe('maskEmail', () => {
 		expect(maskEmail('ada')).toBe(REDACTED);
 		expect(maskEmail(null)).toBe(REDACTED);
 		expect(maskEmail({ address: 'ada@example.com' })).toBe(REDACTED);
+	});
+});
+
+describe('errorForLog', () => {
+	test('keeps message, name, code, and status and drops Axios config', () => {
+		const error = {
+			name: 'AxiosError',
+			message: 'Request failed with status code 400',
+			code: 'ERR_BAD_REQUEST',
+			stack: 'AxiosError: Request failed',
+			status: 400,
+			config: {
+				headers: { Authorization: 'Bearer sk_live_paystack_secret' },
+				data: { authorization_code: 'AUTH_secret', email: 'ada@example.com' }
+			},
+			response: {
+				status: 422,
+				data: { account_number: '0123456789' }
+			}
+		};
+
+		expect(errorForLog(error)).toEqual({
+			errorName: 'AxiosError',
+			message: 'Request failed with status code 400',
+			code: 'ERR_BAD_REQUEST',
+			status: 422,
+			stack: 'AxiosError: Request failed'
+		});
+		expect(JSON.stringify(errorForLog(error))).not.toContain(
+			'sk_live_paystack_secret'
+		);
+		expect(error.config.headers.Authorization).toBe(
+			'Bearer sk_live_paystack_secret'
+		);
 	});
 });
 

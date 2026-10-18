@@ -21,6 +21,7 @@ import type { AppEnv } from '../../types/hono';
 import { InitializeTransactionResponse } from '../../lib/paystack';
 import { LogicError, LogicErrorCode } from './errors';
 import { OrderFilters } from '../../utils/queries';
+import { errorForLog } from '../../utils/redact';
 import { NotificationType } from '../notifications';
 import { runSerializable } from '../../utils/prisma';
 
@@ -151,7 +152,7 @@ const createOrderImpl = async (c: Context<AppEnv>, input: CreateOrderInput) => {
 			});
 		} catch (error) {
 			c.var.logger.error(
-				{ err: error, orderId: order.id },
+				{ ...errorForLog(error), orderId: order.id },
 				'order.charge_authorization_failed'
 			);
 

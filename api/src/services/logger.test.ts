@@ -1,10 +1,18 @@
 import { describe, expect, test } from 'bun:test';
 import { Writable } from 'node:stream';
+import axios, {
+	type AxiosResponse,
+	type InternalAxiosRequestConfig
+} from 'axios';
 import pino from 'pino';
 
+import { errorForLog } from '../utils/redact';
 import { REDACT_PATHS } from './logger';
 
-const logLine = (fields: Record<string, unknown>) => {
+const logLine = (
+	fields: Record<string, unknown>,
+	level: 'info' | 'error' = 'info'
+) => {
 	let line = '';
 	const stream = new Writable({
 		write(chunk, _encoding, callback) {
@@ -17,7 +25,7 @@ const logLine = (fields: Record<string, unknown>) => {
 		stream
 	);
 
-	logger.info(fields, 'probe');
+	logger[level](fields, 'probe');
 
 	return JSON.parse(line) as Record<string, any>;
 };
@@ -70,6 +78,57 @@ describe('REDACT_PATHS', () => {
 		expect(line.code).toBe('ERR_BAD_REQUEST');
 		expect(line.responseData.code).toBe('[REDACTED]');
 		expect(line.responseData.message).toBe('Email is invalid');
+	});
+
+	test('an order charge failure does not emit the Paystack secret', () => {
+		const secret = 'sk_live_paystack_secret';
+		const error = new axios.AxiosError(
+			'Request failed with status code 400',
+			'ERR_BAD_REQUEST',
+			{
+				headers: {
+					Authorization: `Bearer ${secret}`,
+					'Content-Type': 'application/json'
+				},
+				data: {
+					authorization_code: 'AUTH_secret',
+					email: 'ada@example.com',
+					account_number: '0123456789'
+				}
+			} as InternalAxiosRequestConfig,
+			{},
+			{
+				status: 400,
+				statusText: 'Bad Request',
+				headers: {},
+				config: {},
+				data: {
+					message: 'Email is invalid',
+					account_number: '0123456789',
+					authorization: { authorization_code: 'AUTH_from_body' }
+				}
+			} as AxiosResponse
+		);
+
+		const line = logLine(
+			{ ...errorForLog(error), orderId: 'order-1' },
+			'error'
+		);
+		const serialized = JSON.stringify(line);
+
+		expect(serialized).not.toContain(secret);
+		expect(serialized).not.toContain('Bearer');
+		expect(serialized).not.toContain('AUTH_secret');
+		expect(serialized).not.toContain('AUTH_from_body');
+		expect(serialized).not.toContain('ada@example.com');
+		expect(serialized).not.toContain('0123456789');
+		expect(line.msg).toBe('probe');
+		expect(line.errorName).toBe('AxiosError');
+		expect(line.message).toBe('Request failed with status code 400');
+		expect(line.code).toBe('ERR_BAD_REQUEST');
+		expect(line.status).toBe(400);
+		expect(line.orderId).toBe('order-1');
+		expect(error.config?.headers?.Authorization).toBe(`Bearer ${secret}`);
 	});
 
 	test('treats an array index as a segment, and stops after four', () => {

@@ -128,3 +128,52 @@ export const paystackErrorCode = (body: unknown): string | undefined => {
 
 	return typeof code === 'string' ? code : undefined;
 };
+
+/**
+ * Fields safe to log from a thrown error. Pino's err serializer copies every
+ * enumerable property, and Axios `toJSON` then includes `config.headers`
+ * (the Paystack bearer token) and `config.data`. Pass this object to the
+ * logger instead of `{ err }`.
+ */
+export const errorForLog = (
+	error: unknown
+): {
+	errorName?: string;
+	message?: string;
+	code?: string;
+	status?: number;
+	stack?: string;
+} => {
+	if (!error || typeof error !== 'object') {
+		return typeof error === 'string' ? { message: error } : {};
+	}
+
+	const record = error as Record<string, unknown>;
+	const response = record.response;
+	const responseStatus =
+		response && typeof response === 'object'
+			? (response as { status?: unknown }).status
+			: undefined;
+	const status =
+		typeof responseStatus === 'number'
+			? responseStatus
+			: typeof record.status === 'number'
+				? record.status
+				: undefined;
+
+	const out: {
+		errorName?: string;
+		message?: string;
+		code?: string;
+		status?: number;
+		stack?: string;
+	} = {};
+
+	if (typeof record.name === 'string') out.errorName = record.name;
+	if (typeof record.message === 'string') out.message = record.message;
+	if (typeof record.code === 'string') out.code = record.code;
+	if (typeof record.stack === 'string') out.stack = record.stack;
+	if (status !== undefined) out.status = status;
+
+	return out;
+};
