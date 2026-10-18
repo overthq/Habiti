@@ -1,3 +1,5 @@
+import { randomUUID } from 'crypto';
+
 import prisma from '../config/prisma';
 import { WebhookEventStatus } from '../generated/prisma/client';
 import {
@@ -36,10 +38,12 @@ async function replayWebhooks() {
 	let failed = 0;
 
 	for (const event of events) {
+		const requestId = randomUUID();
+		const logger = rootLogger.child({ requestId });
 		const payload = event.payload as { event?: string; data?: unknown };
 
 		if (!payload?.event) {
-			rootLogger.warn(
+			logger.warn(
 				{ id: event.id, externalId: event.externalId },
 				'replay_webhooks.malformed_payload'
 			);
@@ -53,7 +57,7 @@ async function replayWebhooks() {
 		}
 
 		if (DRY_RUN) {
-			rootLogger.info(
+			logger.info(
 				{
 					id: event.id,
 					eventType: event.eventType,
@@ -68,7 +72,7 @@ async function replayWebhooks() {
 		// The handlers reach for a Hono context, but only for prisma, the
 		// logger, the tracer and the notification service.
 		const c = {
-			var: { prisma, logger: rootLogger, tracer, services }
+			var: { prisma, logger, tracer, services }
 		} as never;
 
 		try {
@@ -87,7 +91,7 @@ async function replayWebhooks() {
 			await markWebhookEventProcessed(prisma, event.id);
 			replayed++;
 		} catch (error) {
-			rootLogger.error(
+			logger.error(
 				{ err: error, id: event.id, eventType: event.eventType },
 				'replay_webhooks.failed'
 			);

@@ -9,6 +9,7 @@ import {
 } from '../generated/prisma/client';
 import { moveMoney } from '../core/data/ledger';
 import { runSerializable } from '../utils/prisma';
+import { rootLogger } from '../services/logger';
 
 /**
  * Reports what is wrong with store balances and, with --write-off, zeroes the
@@ -18,6 +19,9 @@ import { runSerializable } from '../utils/prisma';
  * (`replay-webhooks`) before writing off, so payments that really happened are
  * credited rather than absorbed.
  *
+ * Counts log at info. Each reported row logs at debug, with the same fields
+ * the table used to print.
+ *
  * Run: cd api && bun run src/scripts/repair-store-balances.ts [--write-off]
  */
 
@@ -26,6 +30,8 @@ const WRITE_OFF = process.argv.includes('--write-off');
 type StoreBalanceKind = 'Unrealized' | 'Available' | 'PendingPayouts';
 
 async function repairStoreBalances() {
+	rootLogger.info({ writeOff: WRITE_OFF }, 'repair_store_balances.start');
+
 	const negativeBalances = await prisma.$queryRaw<
 		{
 			storeId: string;
@@ -58,15 +64,24 @@ async function repairStoreBalances() {
 		ORDER BY s."name"
 	`;
 
-	console.log(`\nNegative balances: ${negativeBalances.length}`);
-	console.table(
-		negativeBalances.map(row => ({
-			...row,
-			balance: Number(row.balance),
-			openingBalance: Number(row.openingBalance),
-			cause: row.openingBalance < 0n ? 'opening balance' : 'later activity'
-		}))
+	rootLogger.info(
+		{ count: negativeBalances.length },
+		'repair_store_balances.negative_balances'
 	);
+
+	for (const row of negativeBalances) {
+		rootLogger.debug(
+			{
+				storeId: row.storeId,
+				store: row.store,
+				kind: row.kind,
+				balance: Number(row.balance),
+				openingBalance: Number(row.openingBalance),
+				cause: row.openingBalance < 0n ? 'opening balance' : 'later activity'
+			},
+			'repair_store_balances.negative_balance'
+		);
+	}
 
 	const unprocessedWebhooks = await prisma.webhookEvent.findMany({
 		where: {
@@ -83,8 +98,24 @@ async function repairStoreBalances() {
 		orderBy: { receivedAt: 'asc' }
 	});
 
-	console.log(`\nUnprocessed webhooks: ${unprocessedWebhooks.length}`);
-	console.table(unprocessedWebhooks);
+	rootLogger.info(
+		{ count: unprocessedWebhooks.length },
+		'repair_store_balances.unprocessed_webhooks'
+	);
+
+	for (const webhook of unprocessedWebhooks) {
+		rootLogger.debug(
+			{
+				id: webhook.id,
+				eventType: webhook.eventType,
+				status: webhook.status,
+				attempts: webhook.attempts,
+				error: webhook.error,
+				receivedAt: webhook.receivedAt.toISOString()
+			},
+			'repair_store_balances.unprocessed_webhook'
+		);
+	}
 
 	// Orders from before the ledger existed have no payment in it; their money
 	// came in through the opening balance.
@@ -117,15 +148,43 @@ async function repairStoreBalances() {
 			})
 		: [];
 
-	console.log(
-		`\nPaid orders with no recorded payment: ${ordersWithoutPayment.length}`
+	rootLogger.info(
+		{ count: ordersWithoutPayment.length },
+		'repair_store_balances.orders_without_payment'
 	);
-	console.table(ordersWithoutPayment);
+
+	for (const order of ordersWithoutPayment) {
+		rootLogger.debug(
+			{
+				id: order.id,
+				storeId: order.storeId,
+				status: order.status,
+				total: order.total,
+				createdAt: order.createdAt.toISOString()
+			},
+			'repair_store_balances.order_without_payment'
+		);
+	}
+
+	const summary = {
+		negativeBalances: negativeBalances.length,
+		unprocessedWebhooks: unprocessedWebhooks.length,
+		ordersWithoutPayment: ordersWithoutPayment.length
+	};
 
 	if (!WRITE_OFF) {
-		console.log('\nNothing written. Pass --write-off to zero the negatives.');
+		rootLogger.info(
+			{ writeOff: false },
+			'repair_store_balances.nothing_written'
+		);
+		rootLogger.info(
+			{ writeOff: false, writtenOff: 0, ...summary },
+			'repair_store_balances.complete'
+		);
 		return;
 	}
+
+	let writtenOff = 0;
 
 	for (const { storeId, store, kind, balance } of negativeBalances) {
 		await runSerializable(prisma, tx =>
@@ -139,13 +198,27 @@ async function repairStoreBalances() {
 			})
 		);
 
-		console.log(`Wrote off ${-balance} of ${kind} for ${store} (${storeId})`);
+		rootLogger.info(
+			{
+				storeId,
+				store,
+				kind,
+				amount: Number(-balance)
+			},
+			'repair_store_balances.wrote_off'
+		);
+		writtenOff++;
 	}
+
+	rootLogger.info(
+		{ writeOff: true, writtenOff, ...summary },
+		'repair_store_balances.complete'
+	);
 }
 
 repairStoreBalances()
-	.catch(error => {
-		console.error('Failed to repair store balances:', error);
+	.catch(err => {
+		rootLogger.error({ err }, 'repair_store_balances.failed');
 		process.exit(1);
 	})
 	.finally(() => {
