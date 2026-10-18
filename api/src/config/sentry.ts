@@ -5,6 +5,17 @@ import { HTTPException } from 'hono/http-exception';
 import { env } from './env';
 import { LogicError } from '../core/logic/errors';
 
+/**
+ * Sentry is the only trace backend. With `SENTRY_DSN` set, the default
+ * `bunServerIntegration` records a span per `Bun.serve` request (it
+ * continues `sentry-trace` / `baggage`, not W3C `traceparent`) and
+ * `prismaIntegration` records Prisma spans. `httpIntegration` covers
+ * outbound HTTP. No OpenTelemetry SDK or OTLP exporter is registered.
+ *
+ * `middleware/logs.ts` copies the active Sentry span's trace id onto the
+ * request log when a span exists. `beforeSend` still drops `LogicError`
+ * and HTTP status < 500, matching `errorHandler`.
+ */
 if (env.SENTRY_DSN) {
 	Sentry.init({
 		dsn: env.SENTRY_DSN,

@@ -1,12 +1,11 @@
 import { metrics, MetricNames, type Tags } from '../services/metrics';
-import { tracer } from '../services/tracer';
 
 /**
- * Wraps an external/network call with a span + duration histogram + error
- * counter. Use for Paystack, Cloudinary, Loops, and any other outbound
- * service call so every hop becomes observable.
+ * Records a duration histogram and, on failure, an error counter around an
+ * outbound call (Paystack, Cloudinary, Loops). Pass `op` (for example
+ * `chargeAuth`). `target` is set from `name`.
  *
- * Tag with at least `target` (e.g. `paystack`) and `op` (e.g. `chargeAuth`).
+ * This does not open a trace span. Sentry is the trace backend.
  */
 export const instrument = async <T>(
 	name: string,
@@ -14,37 +13,32 @@ export const instrument = async <T>(
 	tags: Tags = {}
 ): Promise<T> => {
 	const start = performance.now();
-	return tracer.startSpan(
-		`external.${name}`,
-		async () => {
-			try {
-				const result = await fn();
-				const duration = performance.now() - start;
 
-				metrics.observe(MetricNames.ExternalCallDuration, duration, {
-					...tags,
-					target: name,
-					ok: 1
-				});
+	try {
+		const result = await fn();
+		const duration = performance.now() - start;
 
-				return result;
-			} catch (err) {
-				const duration = performance.now() - start;
+		metrics.observe(MetricNames.ExternalCallDuration, duration, {
+			...tags,
+			target: name,
+			ok: 1
+		});
 
-				metrics.observe(MetricNames.ExternalCallDuration, duration, {
-					...tags,
-					target: name,
-					ok: 0
-				});
+		return result;
+	} catch (err) {
+		const duration = performance.now() - start;
 
-				metrics.inc(MetricNames.ExternalCallErrors, {
-					...tags,
-					target: name
-				});
+		metrics.observe(MetricNames.ExternalCallDuration, duration, {
+			...tags,
+			target: name,
+			ok: 0
+		});
 
-				throw err;
-			}
-		},
-		{ ...tags, target: name }
-	);
+		metrics.inc(MetricNames.ExternalCallErrors, {
+			...tags,
+			target: name
+		});
+
+		throw err;
+	}
 };

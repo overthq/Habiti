@@ -40,8 +40,10 @@ const envSchema = z.object({
 		.default('250')
 		.transform(v => parseInt(v, 10)),
 	INTERNAL_TOKEN: z.string().optional(),
-	OTEL_SERVICE_NAME: z.string().default('habiti-api'),
-	OTEL_EXPORTER_OTLP_ENDPOINT: z.string().optional()
+	// Log `service` field (services/logger.ts). The name is unchanged so
+	// existing deploys keep working. There is no OpenTelemetry SDK and
+	// `OTEL_EXPORTER_OTLP_ENDPOINT` is not read.
+	OTEL_SERVICE_NAME: z.string().default('habiti-api')
 });
 
 export const env = envSchema.parse(Bun.env);
