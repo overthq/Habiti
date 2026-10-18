@@ -10,6 +10,7 @@ import * as ProductLogic from '../core/logic/products';
 import * as CartLogic from '../core/logic/carts';
 import * as CardLogic from '../core/logic/cards';
 import * as OrderLogic from '../core/logic/orders';
+import * as BankTransferLogic from '../core/logic/bankTransfers';
 import * as AddressLogic from '../core/logic/addresses';
 import * as Schemas from '../core/validations/rest';
 
@@ -144,6 +145,24 @@ currentUser.post(
 		});
 	}
 );
+
+currentUser.post('/orders/:id/bank-transfer', requireFullAccount, async c => {
+	const bankTransfer = await BankTransferLogic.initiateBankTransfer(
+		c,
+		c.req.param('id')
+	);
+
+	return c.json({ bankTransfer });
+});
+
+currentUser.get('/orders/:id/bank-transfer', requireFullAccount, async c => {
+	const bankTransfer = await BankTransferLogic.syncBankTransfer(
+		c,
+		c.req.param('id')
+	);
+
+	return c.json({ bankTransfer });
+});
 
 currentUser.post('/orders/:id/confirm-pickup', async c => {
 	const id = c.req.param('id');

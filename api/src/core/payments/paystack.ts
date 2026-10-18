@@ -172,9 +172,10 @@ export interface VerifyTransactionResponse {
 		id: number;
 		status: string;
 		reference: string;
+		amount: number;
 		channel: string;
 		currency: string;
-		metadata: { orderId?: string } | string | null;
+		metadata: { orderId?: string; bankTransfer?: boolean } | string | null;
 		authorization: {
 			authorization_code: string;
 			bin: string;
@@ -193,6 +194,54 @@ export interface VerifyTransactionResponse {
 		customer: { email: string };
 	};
 }
+
+interface CreateBankTransferChargeOptions {
+	email: string;
+	amount: string;
+	reference: string;
+	accountExpiresAt: string;
+	metadata?: { orderId: string; bankTransfer: true };
+}
+
+// POST /charge with `bank_transfer` returns the temporary account a shopper
+// transfers to. This is Paystack Pay with Transfer, not a dedicated virtual account.
+export interface BankTransferChargeResponse {
+	status: boolean;
+	message: string;
+	data: {
+		reference?: string;
+		status?: string;
+		display_text?: string;
+		account_name?: string | null;
+		account_number?: string | null;
+		bank?: { slug?: string; name?: string; id?: number } | null;
+		account_expires_at?: string | null;
+		amount?: number;
+		currency?: string;
+	};
+}
+
+export const createBankTransferCharge = async (
+	options: CreateBankTransferChargeOptions
+) => {
+	const body = {
+		email: options.email,
+		amount: options.amount,
+		reference: options.reference,
+		bank_transfer: {
+			account_expires_at: options.accountExpiresAt
+		},
+		...(options.metadata && { metadata: options.metadata })
+	};
+
+	return withLogging('createBankTransferCharge', body, async () => {
+		const response = await client.post<BankTransferChargeResponse>(
+			'/charge',
+			body
+		);
+		return response.data;
+	});
+};
 
 export const verifyTransaction = async (reference: string) => {
 	return withLogging('verifyTransaction', { reference }, async () => {

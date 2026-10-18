@@ -173,10 +173,6 @@ const SelectCard: React.FC<SelectCardProps> = ({
 
 	return (
 		<View>
-			<Typography weight='medium' variant='secondary'>
-				Payment Method
-			</Typography>
-			<Spacer y={8} />
 			{cards.length === 0 ? (
 				<View
 					style={{
@@ -186,12 +182,11 @@ const SelectCard: React.FC<SelectCardProps> = ({
 					}}
 				>
 					<Typography weight='medium' size='large'>
-						No payment methods
+						No saved cards
 					</Typography>
 					<Spacer y={4} />
 					<Typography variant='secondary'>
-						You will be prompted to add a payment method when you place this
-						order.
+						You'll add a card when you place this order.
 					</Typography>
 				</View>
 			) : (
@@ -270,7 +265,9 @@ const Cart: React.FC = () => {
 		refreshing,
 		refresh,
 		selectedCard,
-		setSelectedCard
+		setSelectedCard,
+		paymentMethod,
+		setPaymentMethod
 	} = useCart();
 
 	return (
@@ -295,11 +292,36 @@ const Cart: React.FC = () => {
 
 			<Spacer y={16} />
 
-			<SelectCard
-				cards={cart.user.cards}
-				selectedCard={selectedCard}
-				onCardSelect={setSelectedCard}
+			<Typography weight='medium' variant='secondary'>
+				Payment method
+			</Typography>
+			<Spacer y={8} />
+			<SelectGroup
+				selected={paymentMethod}
+				options={[
+					{ title: 'Card', value: 'card' },
+					{ title: 'Bank transfer', value: 'bank_transfer' }
+				]}
+				onSelect={value => {
+					if (value === 'card' || value === 'bank_transfer') {
+						setPaymentMethod(value);
+					}
+				}}
 			/>
+			<Spacer y={12} />
+			{paymentMethod === 'bank_transfer' ? (
+				<Typography variant='secondary'>
+					Pay from your bank app. You'll get a temporary account number and the
+					exact amount to transfer. A different amount is not applied to this
+					order, and the account expires.
+				</Typography>
+			) : (
+				<SelectCard
+					cards={cart.user.cards}
+					selectedCard={selectedCard}
+					onCardSelect={setSelectedCard}
+				/>
+			)}
 
 			<Spacer y={16} />
 

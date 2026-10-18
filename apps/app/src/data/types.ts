@@ -261,9 +261,32 @@ export interface RegisterBody {
 	password: string;
 }
 
+export type CheckoutPaymentMethod = 'card' | 'bank_transfer';
+
 export interface CreateOrderBody {
 	cartId: string;
 	cardId?: string | null;
+	paymentMethod?: CheckoutPaymentMethod;
+}
+
+export type BankTransferStatus =
+	| 'Pending'
+	| 'Succeeded'
+	| 'Rejected'
+	| 'Expired'
+	| 'Failed';
+
+export interface BankTransfer {
+	id: string;
+	orderId: string;
+	reference: string;
+	amount: number;
+	currency: string;
+	accountName: string;
+	accountNumber: string;
+	bankName: string;
+	expiresAt: string;
+	status: BankTransferStatus;
 }
 
 export interface CreateOrderResponse {

@@ -145,6 +145,10 @@ const PaymentPendingWarning: React.FC<PaymentPendingWarningProps> = ({
 		navigate('Modal.AddCard', { orderId });
 	};
 
+	const handleBankTransfer = () => {
+		navigate('Modal.BankTransfer', { orderId });
+	};
+
 	const handleCancelOrder = () => {
 		updateOrderMutation.mutate({
 			orderId,
@@ -166,22 +170,26 @@ const PaymentPendingWarning: React.FC<PaymentPendingWarningProps> = ({
 				your order.
 			</Typography>
 			<Spacer y={12} />
-			<View style={{ flexDirection: 'row', gap: 8 }}>
-				<Button
-					style={{ flex: 1 }}
-					text='Make Payment'
-					variant='primary'
-					size='small'
-					onPress={handleMakePayment}
-				/>
-				<Button
-					style={{ flex: 1 }}
-					text='Cancel Order'
-					variant='destructive'
-					size='small'
-					onPress={handleCancelOrder}
-				/>
-			</View>
+			<Button
+				text='Pay with card'
+				variant='primary'
+				size='small'
+				onPress={handleMakePayment}
+			/>
+			<Spacer y={8} />
+			<Button
+				text='Bank transfer'
+				variant='secondary'
+				size='small'
+				onPress={handleBankTransfer}
+			/>
+			<Spacer y={8} />
+			<Button
+				text='Cancel order'
+				variant='destructive'
+				size='small'
+				onPress={handleCancelOrder}
+			/>
 		</View>
 	);
 };

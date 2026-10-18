@@ -61,7 +61,8 @@ export const TransferAuthorizationSchema = z.object({
 export const CardChargeMetadataSchema = z.union([
 	z.object({
 		userId: z.string().optional().nullable(),
-		orderId: z.string().optional().nullable()
+		orderId: z.string().optional().nullable(),
+		bankTransfer: z.boolean().optional()
 	}),
 	z.string()
 ]);

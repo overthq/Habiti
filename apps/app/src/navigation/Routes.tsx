@@ -13,6 +13,7 @@ import { StatusBar } from 'expo-status-bar';
 import * as Updates from 'expo-updates';
 
 import AddCardWebview from '../screens/AddCardWebview';
+import BankTransfer from '../screens/BankTransfer';
 import AddAddress from '../screens/AddAddress';
 import Cart from '../screens/Cart';
 import Register from '../screens/Register';
@@ -338,6 +339,11 @@ const Routes: React.FC = () => {
 							name='Modal.AddCard'
 							component={AddCardWebview}
 							options={{ headerTitle: 'Add Card' }}
+						/>
+						<AppStack.Screen
+							name='Modal.BankTransfer'
+							component={BankTransfer}
+							options={{ headerTitle: 'Bank transfer' }}
 						/>
 						<AppStack.Screen
 							name='Modal.AddAddress'

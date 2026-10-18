@@ -45,6 +45,10 @@ import { pollUntil } from '../../utils/poll';
 import { runSerializable } from '../../utils/prisma';
 import { rootLogger } from '../../services/logger';
 import type { ApprovePaymentBody } from '../validations/rest';
+import {
+	assessBankTransferCharge,
+	rejectBankTransferCharge
+} from './bankTransfers';
 
 export const approvePayment = async (
 	c: Context<AppEnv>,
@@ -185,6 +189,7 @@ export const transitionOrderToPending = async (
 
 enum PaystackWebhookEvent {
 	ChargeSuccess = 'charge.success',
+	BankTransferRejected = 'bank.transfer.rejected',
 	TransferSuccess = 'transfer.success',
 	TransferFailure = 'transfer.failure',
 	TransferReversed = 'transfer.reversed'
@@ -192,6 +197,7 @@ enum PaystackWebhookEvent {
 
 const PAYSTACK_SUPPORTED_WEBHOOK_EVENTS = [
 	PaystackWebhookEvent.ChargeSuccess,
+	PaystackWebhookEvent.BankTransferRejected,
 	PaystackWebhookEvent.TransferSuccess,
 	PaystackWebhookEvent.TransferFailure,
 	PaystackWebhookEvent.TransferReversed
@@ -226,6 +232,8 @@ const handlePaystackWebhookEventImpl = async (
 
 	if (event === PaystackWebhookEvent.ChargeSuccess) {
 		await handleChargeSuccess(c, data, webhookEventId);
+	} else if (event === PaystackWebhookEvent.BankTransferRejected) {
+		await handleBankTransferRejected(c, data);
 	} else if (event === PaystackWebhookEvent.TransferSuccess) {
 		await handleTransferSuccess(c, data, webhookEventId);
 	} else if (event === PaystackWebhookEvent.TransferFailure) {
@@ -238,11 +246,56 @@ const handlePaystackWebhookEventImpl = async (
 // TODO: We should validate the data input, but I'm worried that Paystack might
 // update the schema without warning.
 
+const finishBankTransferDecision = async (
+	c: Context<AppEnv>,
+	decision: Awaited<ReturnType<typeof assessBankTransferCharge>>,
+	webhookEventId?: string | null
+) => {
+	if (decision.kind === 'reject') {
+		const log =
+			decision.reason === 'untracked' ? c.var.logger.error : c.var.logger.warn;
+
+		log(
+			{
+				reference: decision.reference,
+				orderId: decision.orderId,
+				reason: decision.reason
+			},
+			'bank_transfer.not_applied'
+		);
+
+		return true;
+	}
+
+	if (decision.kind === 'pay') {
+		await transitionOrderToPending(c, decision.orderId, webhookEventId);
+		return true;
+	}
+
+	return false;
+};
+
 export const handleChargeSuccess = async (
 	c: Context<AppEnv>,
 	data: ChargeSuccessPayload,
 	webhookEventId?: string | null
 ) => {
+	let decision = await assessBankTransferCharge(c.var.prisma, data);
+
+	if (decision.kind === 'unverified') {
+		const verified = await CorePayments.verifyTransaction(decision.reference);
+		decision = await assessBankTransferCharge(c.var.prisma, verified.data);
+
+		if (decision.kind === 'unverified') {
+			throw new Error('bank_transfer.amount_unverified');
+		}
+	}
+
+	if (decision.kind !== 'unrelated') {
+		await finishBankTransferDecision(c, decision, webhookEventId);
+		return true;
+	}
+
 	if (typeof data.metadata === 'object' && data.metadata?.orderId) {
 		await transitionOrderToPending(c, data.metadata.orderId, webhookEventId);
 	} else {
@@ -253,13 +306,38 @@ export const handleChargeSuccess = async (
 	}
 
 	if (isTransferCharge(data)) {
-		// TODO: Implement DVAs and regular transfer payments here
+		// Checkout bank transfers have no native-transfer row. DVAs are not handled here.
 		return true;
 	}
 
 	await processCardCharge(c, data);
 
 	return true;
+};
+
+const handleBankTransferRejected = async (
+	c: Context<AppEnv>,
+	data: unknown
+) => {
+	const reference =
+		data &&
+		typeof data === 'object' &&
+		typeof (data as { reference?: unknown }).reference === 'string'
+			? (data as { reference: string }).reference
+			: undefined;
+	const outcome = await rejectBankTransferCharge(c.var.prisma, reference);
+
+	if (outcome === 'rejected') {
+		c.var.logger.warn({ reference }, 'bank_transfer.rejected');
+		return;
+	}
+
+	if (outcome === 'ignored') {
+		c.var.logger.info({ reference }, 'bank_transfer.rejection_after_success');
+		return;
+	}
+
+	c.var.logger.warn({ reference }, 'bank_transfer.rejection_untracked');
 };
 
 const handleTransferSuccess = async (

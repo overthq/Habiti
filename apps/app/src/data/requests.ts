@@ -11,6 +11,7 @@ import type {
 	Card,
 	AuthenticateBody,
 	CreateOrderBody,
+	BankTransfer,
 	UpdateCartProductQuantityBody,
 	CreateOrderResponse,
 	GetProductResponse,
@@ -255,6 +256,20 @@ export const createOrder = async (body: CreateOrderBody) => {
 	const response = await api.post<CreateOrderResponse>(
 		'/users/current/orders',
 		body
+	);
+	return response.data;
+};
+
+export const initiateBankTransfer = async (orderId: string) => {
+	const response = await api.post<{ bankTransfer: BankTransfer }>(
+		`/users/current/orders/${orderId}/bank-transfer`
+	);
+	return response.data;
+};
+
+export const getBankTransfer = async (orderId: string) => {
+	const response = await api.get<{ bankTransfer: BankTransfer }>(
+		`/users/current/orders/${orderId}/bank-transfer`
 	);
 	return response.data;
 };

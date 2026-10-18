@@ -109,6 +109,7 @@ model Order {
   transactions Transaction[]
 
   ledgerTransactions LedgerTransaction[]
+  bankTransfers      BankTransferPayment[]
 
   @@unique([storeId, serialNumber])
   @@index([userId, createdAt])
@@ -349,6 +350,34 @@ enum OrderStatus {
   Cancelled
   Completed
   PaymentPending
+}
+
+enum BankTransferStatus {
+  Pending
+  Succeeded
+  Rejected
+  Expired
+  Failed
+}
+
+model BankTransferPayment {
+  id            String             @id @default(uuid())
+  orderId       String
+  reference     String             @unique
+  amount        Int
+  currency      String             @default("NGN")
+  accountName   String
+  accountNumber String
+  bankName      String
+  bankSlug      String?
+  expiresAt     DateTime
+  status        BankTransferStatus @default(Pending)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@index([orderId, createdAt])
 }
 
 enum TransactionType {

@@ -46,6 +46,7 @@ export enum LogicErrorCode {
 
 	OrderInvalidStatusTransition = 'OrderInvalidStatusTransition',
 	OrderNotPayable = 'OrderNotPayable',
+	BankTransferNotFound = 'BankTransferNotFound',
 
 	ProductNotFound = 'ProductNotFound',
 	ProductStoreMismatch = 'ProductStoreMismatch',
@@ -157,6 +158,10 @@ export const logicErrorToApiException = (
 		case LogicErrorCode.OrderNotPayable:
 			return new HTTPException(400, {
 				message: 'Order is not in payment pending state'
+			});
+		case LogicErrorCode.BankTransferNotFound:
+			return new HTTPException(404, {
+				message: 'No bank transfer for this order'
 			});
 
 		case LogicErrorCode.ProductNotFound:

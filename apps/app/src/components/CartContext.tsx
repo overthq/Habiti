@@ -30,6 +30,8 @@ interface CartContextType {
 	refresh: () => void;
 	selectedCard: string | null;
 	setSelectedCard: (cardId: string | null) => void;
+	paymentMethod: 'card' | 'bank_transfer';
+	setPaymentMethod: (method: 'card' | 'bank_transfer') => void;
 	updateProductQuantity: (productId: string, quantity: number) => void;
 	removeProductFromCart: (productId: string) => void;
 	dispatch: React.Dispatch<Action>;
@@ -62,6 +64,9 @@ const CartProvider: React.FC<CartProviderProps> = ({
 
 	const { defaultCard, setPreference } = useStore();
 	const [selectedCard, setSelectedCard] = React.useState(defaultCard);
+	const [paymentMethod, setPaymentMethod] = React.useState<
+		'card' | 'bank_transfer'
+	>('card');
 	const { state, dispatch } = useCartReducer(cart.products);
 
 	React.useEffect(() => {
@@ -159,6 +164,16 @@ const CartProvider: React.FC<CartProviderProps> = ({
 		}
 
 		try {
+			if (paymentMethod === 'bank_transfer') {
+				const orderData = await createOrderMutation.mutateAsync({
+					cartId: cart.id,
+					paymentMethod: 'bank_transfer'
+				});
+
+				navigate('Modal.BankTransfer', { orderId: orderData.order.id });
+				return;
+			}
+
 			const orderData = await createOrderMutation.mutateAsync({
 				cartId: cart.id,
 				cardId: selectedCard
@@ -178,6 +193,7 @@ const CartProvider: React.FC<CartProviderProps> = ({
 	}, [
 		cart.id,
 		selectedCard,
+		paymentMethod,
 		navigate,
 		goBack,
 		createOrderMutation,
@@ -197,6 +213,8 @@ const CartProvider: React.FC<CartProviderProps> = ({
 				refresh,
 				selectedCard,
 				setSelectedCard,
+				paymentMethod,
+				setPaymentMethod,
 				updateProductQuantity,
 				removeProductFromCart,
 				dispatch

@@ -72,3 +72,9 @@ export const verifyTransaction = async (reference: string) => {
 	const data = await Paystack.verifyTransaction(reference);
 	return data;
 };
+
+export const createBankTransferCharge = async (
+	options: Parameters<typeof Paystack.createBankTransferCharge>[0]
+) => {
+	return Paystack.createBankTransferCharge(options);
+};

@@ -27,6 +27,7 @@ import { runSerializable } from '../../utils/prisma';
 interface CreateOrderInput {
 	cartId: string;
 	cardId?: string | undefined;
+	paymentMethod?: 'card' | 'bank_transfer' | undefined;
 }
 
 export const createOrder = async (
@@ -46,7 +47,7 @@ const createOrderImpl = async (c: Context<AppEnv>, input: CreateOrderInput) => {
 		throw new LogicError(LogicErrorCode.ValidationFailed);
 	}
 
-	const { cartId, cardId } = validatedInput;
+	const { cartId, cardId, paymentMethod } = validatedInput;
 
 	const cart = await CartData.getCartById(c.var.prisma, cartId);
 
@@ -133,34 +134,39 @@ const createOrderImpl = async (c: Context<AppEnv>, input: CreateOrderInput) => {
 	let cardAuthorizationData: InitializeTransactionResponse['data'] | undefined =
 		undefined;
 
-	if (cardId) {
-		const card = await c.var.prisma.card.findUnique({
-			where: { id: cardId }
-		});
-
-		if (!card) {
-			throw new LogicError(LogicErrorCode.CardNotFound);
-		}
-
-		try {
-			await PaymentLogic.chargeAuthorization(c, {
-				email: card.email,
-				amount: String(total + transactionFee + serviceFee),
-				authorizationCode: card.authorizationCode,
-				metadata: { orderId: order.id }
+	// Bank transfer stays PaymentPending. The app starts a native Pay with Transfer
+	// charge and shows the account Paystack returns. Card keeps the saved-card
+	// charge or the Checkout WebView.
+	if (paymentMethod !== 'bank_transfer') {
+		if (cardId) {
+			const card = await c.var.prisma.card.findUnique({
+				where: { id: cardId }
 			});
-		} catch (error) {
-			c.var.logger.error(
-				{ err: error, orderId: order.id },
-				'order.charge_authorization_failed'
-			);
 
-			throw new LogicError(LogicErrorCode.PaymentFailed);
+			if (!card) {
+				throw new LogicError(LogicErrorCode.CardNotFound);
+			}
+
+			try {
+				await PaymentLogic.chargeAuthorization(c, {
+					email: card.email,
+					amount: String(total + transactionFee + serviceFee),
+					authorizationCode: card.authorizationCode,
+					metadata: { orderId: order.id }
+				});
+			} catch (error) {
+				c.var.logger.error(
+					{ err: error, orderId: order.id },
+					'order.charge_authorization_failed'
+				);
+
+				throw new LogicError(LogicErrorCode.PaymentFailed);
+			}
+		} else {
+			cardAuthorizationData = await CardLogic.authorizeCard(c, {
+				orderId: order.id
+			});
 		}
-	} else {
-		cardAuthorizationData = await CardLogic.authorizeCard(c, {
-			orderId: order.id
-		});
 	}
 
 	c.var.services.analytics.track({
@@ -170,7 +176,8 @@ const createOrderImpl = async (c: Context<AppEnv>, input: CreateOrderInput) => {
 			orderId: order.id,
 			amount: order.total,
 			productCount: cart.products.length,
-			productIds: cart.products.map(p => p.productId)
+			productIds: cart.products.map(p => p.productId),
+			paymentMethod: paymentMethod ?? 'card'
 		},
 		groups: { store: storeId }
 	});

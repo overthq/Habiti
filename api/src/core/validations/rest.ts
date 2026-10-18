@@ -253,7 +253,8 @@ export const createOrderSchema = z.object({
 		.string()
 		.nullable()
 		.optional()
-		.transform(val => val ?? undefined)
+		.transform(val => val ?? undefined),
+	paymentMethod: z.enum(['card', 'bank_transfer']).optional()
 });
 
 export type CreateOrderBody = z.infer<typeof createOrderSchema>;

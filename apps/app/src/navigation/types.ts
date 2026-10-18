@@ -12,6 +12,7 @@ export type AppStackParamList = {
 	Cart: { cartId: string };
 	'Modal.Auth': NavigatorScreenParams<AuthStackParamList> | undefined;
 	'Modal.AddCard': { orderId?: string };
+	'Modal.BankTransfer': { orderId: string };
 	'Modal.AddAddress': undefined;
 	'Modal.StoreInfo': { storeId: string };
 	'Modal.EditAddress': {
