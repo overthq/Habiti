@@ -18,7 +18,7 @@ import * as PushTokenData from '../data/pushTokens';
 import { calculatePaystackFee, calculateHabitiFee } from './carts';
 import { createOrderSchema, updateOrderSchema } from '../validations/rest';
 import type { AppEnv } from '../../types/hono';
-import { InitializeTransactionResponse } from '../payments/paystack';
+import { InitializeTransactionResponse } from '../../lib/paystack';
 import { LogicError, LogicErrorCode } from './errors';
 import { OrderFilters } from '../../utils/queries';
 import { NotificationType } from '../notifications';
