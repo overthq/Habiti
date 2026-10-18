@@ -9,7 +9,7 @@ import {
 } from '../../generated/prisma/client';
 import type { AppEnv } from '../../types/hono';
 import * as CorePayments from '../payments';
-import type { BankTransferChargeResponse } from '../payments/paystack';
+import type { BankTransferChargeResponse } from '../../lib/paystack';
 import { LogicError, LogicErrorCode } from './errors';
 
 // Inside Paystack's 15 minute–8 hour window for `account_expires_at`.
