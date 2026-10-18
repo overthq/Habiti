@@ -16,7 +16,6 @@
 		"replay-webhooks": "bun src/scripts/replay-webhooks.ts"
 	},
 	"dependencies": {
-		"@hono/sentry": "^1.2.2",
 		"@hono/zod-validator": "^0.7.6",
 		"@opentelemetry/api": "^1.9.1",
 		"@prisma/adapter-pg": "^7.1.0",

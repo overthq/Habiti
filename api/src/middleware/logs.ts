@@ -65,6 +65,7 @@ const logsMiddleware = createMiddleware<AppEnv>(async (c, next) => {
 		const fields = {
 			status,
 			duration_ms,
+			route,
 			userId: c.var.auth?.id,
 			storeId: c.var.storeId
 		};
