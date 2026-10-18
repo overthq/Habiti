@@ -1,9 +1,9 @@
 import axios, { AxiosError } from 'axios';
 import * as Sentry from '@sentry/bun';
 
-import { env } from '../../config/env';
-import { rootLogger } from '../../services/logger';
-import { instrument } from '../../utils/instrument';
+import { env } from '../config/env';
+import { rootLogger } from '../services/logger';
+import { instrument } from '../utils/instrument';
 
 const API_URL = 'https://api.paystack.co';
 
