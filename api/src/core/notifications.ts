@@ -8,6 +8,7 @@ export enum NotificationType {
 	DeliveryConfirmed = 'DELIVERY_CONFIRMED',
 	OrderCancelled = 'ORDER_CANCELLED',
 	OrderCompleted = 'ORDER_COMPLETED',
+	PaymentRejected = 'PAYMENT_REJECTED',
 	ReadyForPickup = 'READY_FOR_PICKUP',
 	OrderStatusChanged = 'ORDER_STATUS_CHANGED',
 	LowStock = 'LOW_STOCK'
@@ -43,6 +44,7 @@ export function getNotificationUrl(
 		case NotificationType.OrderFulfilled:
 		case NotificationType.DeliveryConfirmed:
 		case NotificationType.OrderCancelled:
+		case NotificationType.PaymentRejected:
 		case NotificationType.OrderCompleted:
 		case NotificationType.ReadyForPickup:
 		case NotificationType.OrderStatusChanged:
@@ -83,6 +85,11 @@ export const notificationTemplates: Record<
 	ORDER_CANCELLED: {
 		title: 'Order Cancelled',
 		body: data => `Your order #${data.orderId} has been cancelled`
+	},
+	PAYMENT_REJECTED: {
+		title: 'Transfer not accepted',
+		body: () =>
+			'Your bank transfer was not accepted. Please try again with the exact amount.'
 	},
 	ORDER_COMPLETED: {
 		title: 'Order Completed',

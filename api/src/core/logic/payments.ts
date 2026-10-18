@@ -4,7 +4,9 @@ import {
 	AccountKind,
 	LedgerReason,
 	OrderStatus,
-	PayoutStatus
+	PayoutStatus,
+	PrismaClient,
+	PushTokenType
 } from '../../generated/prisma/client';
 import { env } from '../../config/env';
 
@@ -27,8 +29,17 @@ import * as CorePayments from '../payments';
 
 import {
 	CardChargeSuccessPayload,
-	ChargeSuccessPayload,
-	isTransferCharge,
+	CHECKOUT_BANK_TRANSFER_CHANNEL,
+	DEDICATED_NUBAN_CHANNEL,
+	isDedicatedNubanCharge,
+	isNonCardCharge,
+	orderIdFromPaystackMetadata,
+	PaystackChargeData,
+	paystackAmountKobo,
+	paystackChargeChannel,
+	paystackCurrency,
+	paystackFailureReason,
+	paystackReference,
 	TransferFailurePayload,
 	TransferReversedPayload,
 	TransferSuccessPayload
@@ -45,6 +56,44 @@ import { pollUntil } from '../../utils/poll';
 import { runSerializable } from '../../utils/prisma';
 import { rootLogger } from '../../services/logger';
 import type { ApprovePaymentBody } from '../validations/rest';
+import type { Logger } from '../../services/logger';
+
+/**
+ * Paystack Checkout keeps a Pay with Transfer account open for about 30
+ * minutes. Habiti opens that checkout with `initializeTransaction` and does
+ * not send a `bank_transfer` object, so the Charge API's
+ * `account_expires_at` window (15 minutes to 8 hours) does not apply.
+ */
+export const PAYSTACK_CHECKOUT_TRANSFER_WINDOW_MS = 30 * 60 * 1000;
+
+/**
+ * Extra wait after the checkout window so a transfer sent near the deadline
+ * can still arrive as `charge.success` before stock is released.
+ */
+export const PAYMENT_PENDING_EXPIRY_GRACE_MS = 5 * 60 * 1000;
+
+export const DEFAULT_PAYMENT_PENDING_EXPIRY_MS =
+	PAYSTACK_CHECKOUT_TRANSFER_WINDOW_MS + PAYMENT_PENDING_EXPIRY_GRACE_MS;
+
+/** Whole-window override in minutes. Non-positive values use the default. */
+export const paymentPendingExpiryMs = (overrideMinutes?: number) => {
+	if (
+		typeof overrideMinutes === 'number' &&
+		Number.isFinite(overrideMinutes) &&
+		overrideMinutes > 0
+	) {
+		return overrideMinutes * 60 * 1000;
+	}
+
+	return DEFAULT_PAYMENT_PENDING_EXPIRY_MS;
+};
+
+/** What the shopper is charged: goods plus the fees sent to Paystack. */
+export const expectedOrderChargeAmount = (order: {
+	total: number;
+	transactionFee: number;
+	serviceFee: number;
+}) => order.total + order.transactionFee + order.serviceFee;
 
 export const approvePayment = async (
 	c: Context<AppEnv>,
@@ -104,15 +153,42 @@ export const processCardCharge = async (
 
 // --- Order transitions ---
 
+interface ChargeAcceptance {
+	amount: number;
+	reference: string | null;
+	currency: string | null;
+	channel: string | null;
+}
+
 export const transitionOrderToPending = async (
 	c: Context<AppEnv>,
 	orderId: string,
-	webhookEventId?: string | null
+	webhookEventId?: string | null,
+	charge?: ChargeAcceptance
 ) => {
-	const order = await runSerializable(c.var.prisma, async tx => {
+	const result = await runSerializable(c.var.prisma, async tx => {
 		const order = await OrderData.getOrderById(tx, orderId);
 
-		if (!order || order.status === OrderStatus.Cancelled) return order;
+		if (!order) return { kind: 'missing' as const };
+
+		// Order has no Paystack reference column, so `charge.reference` is
+		// logged for reconciliation and not compared to a stored value.
+		if (charge) {
+			const expectedAmount = expectedOrderChargeAmount(order);
+			const currencyOk = charge.currency == null || charge.currency === 'NGN';
+
+			if (!currencyOk || charge.amount !== expectedAmount) {
+				return {
+					kind: 'amount_mismatch' as const,
+					order,
+					expectedAmount
+				};
+			}
+		}
+
+		if (order.status === OrderStatus.Cancelled) {
+			return { kind: 'closed' as const, order };
+		}
 
 		if (order.status === OrderStatus.PaymentPending) {
 			await tx.order.update({
@@ -148,17 +224,56 @@ export const transitionOrderToPending = async (
 			});
 		}
 
-		return order;
+		return { kind: 'recorded' as const, order };
 	});
 
-	if (!order) {
+	if (result.kind === 'missing') {
 		c.var.logger.warn({ orderId }, 'order_not_found_for_charge');
 		return;
 	}
 
-	if (order.status !== OrderStatus.PaymentPending) {
+	if (result.kind === 'amount_mismatch') {
+		// Leave the order unpaid. Stock stays held until expiry or a later
+		// charge for the expected amount. Reconcile from this log and the
+		// stored webhook payload — a captured Paystack charge that does not
+		// match the order must not be marked paid and must not be silently
+		// dropped.
+		c.var.logger.error(
+			{
+				orderId: result.order.id,
+				status: result.order.status,
+				paidAmount: charge?.amount,
+				expectedAmount: result.expectedAmount,
+				currency: charge?.currency,
+				reference: charge?.reference,
+				channel: charge?.channel,
+				handling: 'left_unpaid'
+			},
+			'paystack.charge.amount_mismatch'
+		);
+		return;
+	}
+
+	if (result.kind === 'closed') {
+		const fields = {
+			orderId: result.order.id,
+			status: result.order.status,
+			reference: charge?.reference,
+			channel: charge?.channel
+		};
+
+		if (charge) {
+			c.var.logger.error(fields, 'paystack.charge.received_for_closed_order');
+		} else {
+			c.var.logger.warn(fields, 'order_not_in_payment_pending');
+		}
+
+		return;
+	}
+
+	if (result.order.status !== OrderStatus.PaymentPending) {
 		c.var.logger.warn(
-			{ orderId: order.id, status: order.status },
+			{ orderId: result.order.id, status: result.order.status },
 			'order_not_in_payment_pending'
 		);
 
@@ -167,16 +282,16 @@ export const transitionOrderToPending = async (
 
 	const pushTokens = await PushTokenData.getStorePushTokens(
 		c.var.prisma,
-		order.storeId
+		result.order.storeId
 	);
 
 	if (pushTokens.length > 0) {
 		c.var.services.notifications.queueNotification({
 			type: NotificationType.NewOrder,
 			data: {
-				orderId: order.id,
-				customerName: order.user.name,
-				amount: order.total
+				orderId: result.order.id,
+				customerName: result.order.user.name,
+				amount: result.order.total
 			},
 			recipientTokens: pushTokens
 		});
@@ -187,14 +302,19 @@ enum PaystackWebhookEvent {
 	ChargeSuccess = 'charge.success',
 	TransferSuccess = 'transfer.success',
 	TransferFailure = 'transfer.failure',
-	TransferReversed = 'transfer.reversed'
+	TransferReversed = 'transfer.reversed',
+	// Documented for Pay with Transfer: wrong amount, or the customer was
+	// flagged. Paystack does not publish a separate sample for this event.
+	// `transfer.failed` / `transfer.reversed` are merchant payouts, not this.
+	BankTransferRejected = 'bank.transfer.rejected'
 }
 
 const PAYSTACK_SUPPORTED_WEBHOOK_EVENTS = [
 	PaystackWebhookEvent.ChargeSuccess,
 	PaystackWebhookEvent.TransferSuccess,
 	PaystackWebhookEvent.TransferFailure,
-	PaystackWebhookEvent.TransferReversed
+	PaystackWebhookEvent.TransferReversed,
+	PaystackWebhookEvent.BankTransferRejected
 ];
 
 export const handlePaystackWebhookEvent = async (
@@ -232,6 +352,8 @@ const handlePaystackWebhookEventImpl = async (
 		await handleTransferFailure(c, data, webhookEventId);
 	} else if (event === PaystackWebhookEvent.TransferReversed) {
 		await handleTransferReversed(c, data, webhookEventId);
+	} else if (event === PaystackWebhookEvent.BankTransferRejected) {
+		await handleBankTransferRejected(c, data);
 	}
 };
 
@@ -240,26 +362,119 @@ const handlePaystackWebhookEventImpl = async (
 
 export const handleChargeSuccess = async (
 	c: Context<AppEnv>,
-	data: ChargeSuccessPayload,
+	data: PaystackChargeData,
 	webhookEventId?: string | null
 ) => {
-	if (typeof data.metadata === 'object' && data.metadata?.orderId) {
-		await transitionOrderToPending(c, data.metadata.orderId, webhookEventId);
+	const orderId = orderIdFromPaystackMetadata(data?.metadata);
+	const channel = paystackChargeChannel(data);
+	const reference = paystackReference(data);
+
+	if (orderId) {
+		const amount = paystackAmountKobo(data?.amount);
+
+		if (amount == null) {
+			// Cannot prove the shopper paid the order total. Leave it unpaid.
+			c.var.logger.error(
+				{ orderId, reference, channel, handling: 'left_unpaid' },
+				'paystack.charge.amount_missing'
+			);
+		} else {
+			await transitionOrderToPending(c, orderId, webhookEventId, {
+				amount,
+				reference,
+				currency: paystackCurrency(data),
+				channel
+			});
+		}
 	} else {
 		c.var.logger.warn(
-			{ cardType: data.authorization.card_type },
-			'charge.success_without_order'
+			{
+				cardType: data?.authorization?.card_type,
+				channel,
+				reference
+			},
+			isDedicatedNubanCharge(data)
+				? 'paystack.dedicated_nuban_ignored'
+				: 'charge.success_without_order'
 		);
 	}
 
-	if (isTransferCharge(data)) {
-		// TODO: Implement DVAs and regular transfer payments here
+	// Checkout bank_transfer is applied above when metadata carries an orderId.
+	// dedicated_nuban is not stored as a card and is not fulfilled here.
+	if (isNonCardCharge(data)) {
 		return true;
 	}
 
-	await processCardCharge(c, data);
+	await processCardCharge(c, data as CardChargeSuccessPayload);
 
 	return true;
+};
+
+const handleBankTransferRejected = async (
+	c: Context<AppEnv>,
+	data: PaystackChargeData | null | undefined
+) => {
+	const orderId = orderIdFromPaystackMetadata(data?.metadata);
+	const reference = paystackReference(data);
+	const channel = paystackChargeChannel(data);
+	const reason = paystackFailureReason(data);
+
+	// A DVA rejection is not a checkout payment. Do not cancel or notify
+	// against an order from this event.
+	if (channel === DEDICATED_NUBAN_CHANNEL) {
+		c.var.logger.warn(
+			{ orderId, reference, reason, channel },
+			'paystack.bank_transfer.rejected_dedicated_nuban_ignored'
+		);
+		return;
+	}
+
+	c.var.logger.error(
+		{
+			orderId,
+			reference,
+			amount: paystackAmountKobo(data?.amount),
+			reason,
+			channel: channel ?? CHECKOUT_BANK_TRANSFER_CHANNEL
+		},
+		'paystack.bank_transfer.rejected'
+	);
+
+	if (!orderId) return;
+
+	const order = await OrderData.getOrderById(c.var.prisma, orderId);
+
+	if (!order) {
+		c.var.logger.warn(
+			{ orderId, reference },
+			'paystack.bank_transfer.rejected_order_missing'
+		);
+		return;
+	}
+
+	// Paystack refunds the bad transfer and the checkout account can still
+	// accept the correct amount until it expires. Cancelling here would drop
+	// a later charge.success. The expiry job closes the order if they never
+	// pay.
+	if (order.status !== OrderStatus.PaymentPending) {
+		c.var.logger.warn(
+			{ orderId: order.id, status: order.status, reference },
+			'paystack.bank_transfer.rejected_order_not_pending'
+		);
+		return;
+	}
+
+	const tokens = await c.var.prisma.userPushToken.findMany({
+		where: { userId: order.userId, type: PushTokenType.Shopper }
+	});
+
+	if (tokens.length === 0) return;
+
+	c.var.services.notifications.queueNotification({
+		type: NotificationType.PaymentRejected,
+		data: { orderId: order.id },
+		recipientTokens: tokens.map(token => token.token)
+	});
 };
 
 const handleTransferSuccess = async (
@@ -504,4 +719,99 @@ export const processPaystackWebhookEvent = async (
 			);
 		}
 	}
+};
+
+export interface ExpiredPaymentPendingOrder {
+	id: string;
+	userId: string;
+	storeId: string;
+	total: number;
+	pushTokens: string[];
+}
+
+/**
+ * Cancels PaymentPending orders older than the checkout transfer window and
+ * puts their stock back. A charge that lands first moves the order to Pending
+ * inside its own transaction, and this re-reads status before restoring.
+ */
+export const expirePaymentPendingOrders = async (
+	prisma: PrismaClient,
+	options: {
+		now?: Date;
+		expiryMs?: number;
+		logger?: Pick<Logger, 'info' | 'warn' | 'error'>;
+	} = {}
+): Promise<ExpiredPaymentPendingOrder[]> => {
+	const now = options.now ?? new Date();
+	const expiryMs = options.expiryMs ?? DEFAULT_PAYMENT_PENDING_EXPIRY_MS;
+	const logger = options.logger ?? rootLogger;
+	const cutoff = new Date(now.getTime() - expiryMs);
+
+	const staleOrders = await prisma.order.findMany({
+		where: {
+			status: OrderStatus.PaymentPending,
+			createdAt: { lt: cutoff }
+		},
+		include: {
+			products: true,
+			user: { include: { pushTokens: true } }
+		}
+	});
+
+	const expired: ExpiredPaymentPendingOrder[] = [];
+
+	for (const order of staleOrders) {
+		try {
+			const cancelled = await runSerializable(prisma, async tx => {
+				const current = await tx.order.findUnique({
+					where: { id: order.id }
+				});
+
+				if (!current || current.status !== OrderStatus.PaymentPending) {
+					return false;
+				}
+
+				await OrderData.restoreProductQuantities(tx, {
+					products: order.products.map(product => ({
+						productId: product.productId,
+						quantity: product.quantity
+					}))
+				});
+
+				await OrderData.updateOrderStatus(tx, current, OrderStatus.Cancelled);
+
+				return true;
+			});
+
+			if (!cancelled) continue;
+
+			const pushTokens = order.user.pushTokens
+				.filter(token => token.type === PushTokenType.Shopper)
+				.map(token => token.token);
+
+			expired.push({
+				id: order.id,
+				userId: order.userId,
+				storeId: order.storeId,
+				total: order.total,
+				pushTokens
+			});
+
+			logger.info(
+				{
+					orderId: order.id,
+					storeId: order.storeId,
+					createdAt: order.createdAt
+				},
+				'payment_pending.expired'
+			);
+		} catch (error) {
+			logger.error(
+				{ err: error, orderId: order.id },
+				'payment_pending.expire_failed'
+			);
+		}
+	}
+
+	return expired;
 };

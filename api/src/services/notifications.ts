@@ -51,7 +51,7 @@ export default class NotificationsService {
 		this.timer?.unref?.();
 	}
 
-	queueNotification(payload: NotificationPayload) {
+	queueNotification(payload: NotificationPayload): Promise<void> {
 		const template = notificationTemplates[payload.type];
 
 		if (!template) {
@@ -59,7 +59,7 @@ export default class NotificationsService {
 				{ type: payload.type },
 				'notifications.template_missing'
 			);
-			return;
+			return Promise.resolve();
 		}
 
 		const url = getNotificationUrl(payload.type, payload.data);
@@ -75,9 +75,10 @@ export default class NotificationsService {
 			}
 		}));
 
-		// Fire-and-forget: notifications are non-critical. If Redis is down
-		// we log and drop rather than block the request that triggered this.
-		void this.push(messages);
+		// Callers in the request path ignore the promise: a Redis outage must
+		// not fail the request. Scripts that exit immediately should await it
+		// so the push lands before the process ends.
+		return this.push(messages);
 	}
 
 	/** Drain the queue immediately — called from graceful shutdown. */

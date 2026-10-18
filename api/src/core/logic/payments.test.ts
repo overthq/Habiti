@@ -2,9 +2,16 @@ import { describe, expect, test, mock } from 'bun:test';
 
 import {
 	approvePayment,
+	expirePaymentPendingOrders,
+	handleChargeSuccess,
 	handlePaystackWebhookEvent,
 	transitionOrderToPending
 } from './payments';
+import { NotificationType } from '../notifications';
+import {
+	orderIdFromPaystackMetadata,
+	paystackAmountKobo
+} from '../payments/validation';
 import {
 	LedgerReason,
 	OrderStatus,
@@ -123,7 +130,13 @@ describe('approvePayment', () => {
  * still matches the `where` clause.
  */
 
-const fakeOrderContext = (order: { total: number; status: OrderStatus }) => {
+const fakeOrderContext = (order: {
+	total: number;
+	status: OrderStatus;
+	transactionFee?: number;
+	serviceFee?: number;
+	pushTokens?: { token: string; type: string }[];
+}) => {
 	const state = { status: order.status };
 
 	const queueNotification = mock((_payload: any) => {});
@@ -142,8 +155,10 @@ const fakeOrderContext = (order: { total: number; status: OrderStatus }) => {
 			findUnique: mock(async () => ({
 				id: 'order-1',
 				storeId: 'store-1',
+				userId: 'user-1',
 				total: order.total,
-				serviceFee: 0,
+				transactionFee: order.transactionFee ?? 0,
+				serviceFee: order.serviceFee ?? 0,
 				status: state.status,
 				user: { name: 'Ada' }
 			})),
@@ -159,14 +174,22 @@ const fakeOrderContext = (order: { total: number; status: OrderStatus }) => {
 				managerId: 'user-1',
 				storeId: 'store-1'
 			}))
+		},
+		userPushToken: {
+			findMany: mock(async () => order.pushTokens ?? [])
 		}
 	});
 
 	const c = {
 		var: {
 			prisma: client,
-			logger: { warn: mock(() => {}), error: mock(() => {}) },
-			services: { notifications: { queueNotification } }
+			logger: {
+				warn: mock(() => {}),
+				error: mock(() => {}),
+				info: mock(() => {})
+			},
+			services: { notifications: { queueNotification } },
+			tracer: { startSpan: async (_name: string, fn: any) => fn({}) }
 		}
 	} as any;
 
@@ -308,5 +331,478 @@ describe('transfer.success', () => {
 			data: { amount: 40_000, transactionId: transaction.id }
 		});
 		expect(transaction.id).not.toBe(payout.id);
+	});
+});
+
+const ORDER_TOTAL = 150_000;
+const TRANSACTION_FEE = 2_250;
+const SERVICE_FEE = 10_000;
+const EXPECTED_CHARGE = ORDER_TOTAL + TRANSACTION_FEE + SERVICE_FEE;
+
+const pricedOrder = (status: OrderStatus = OrderStatus.PaymentPending) => ({
+	total: ORDER_TOTAL,
+	transactionFee: TRANSACTION_FEE,
+	serviceFee: SERVICE_FEE,
+	status,
+	pushTokens: [{ token: 'ExponentPushToken[shopper]', type: 'Shopper' }]
+});
+
+const asCharge = (data: Record<string, unknown>) => data as any;
+
+const transferCharge = (overrides: Record<string, unknown> = {}) =>
+	asCharge({
+		amount: EXPECTED_CHARGE,
+		reference: 'ref_transfer',
+		currency: 'NGN',
+		channel: 'bank_transfer',
+		metadata: { orderId: 'order-1' },
+		customer: { email: 'ada@example.com' },
+		authorization: { card_type: 'transfer', channel: 'bank_transfer' },
+		...overrides
+	});
+
+const cardAuthorization = {
+	authorization_code: 'AUTH_card',
+	card_type: 'visa',
+	last4: '4081',
+	exp_month: '12',
+	exp_year: '2030',
+	bin: '408408',
+	bank: 'Test Bank',
+	channel: 'card',
+	signature: 'SIG_card',
+	country_code: 'NG',
+	account_name: null
+};
+
+const cardCharge = (overrides: Record<string, unknown> = {}) =>
+	asCharge({
+		amount: EXPECTED_CHARGE,
+		reference: 'ref_card',
+		currency: 'NGN',
+		channel: 'card',
+		metadata: { orderId: 'order-1' },
+		customer: { email: 'ada@example.com' },
+		authorization: cardAuthorization,
+		...overrides
+	});
+
+describe('paystack metadata', () => {
+	test('reads orderId from an object or a JSON string', () => {
+		expect(orderIdFromPaystackMetadata({ orderId: 'order-1' })).toBe('order-1');
+		expect(
+			orderIdFromPaystackMetadata(JSON.stringify({ orderId: 'order-1' }))
+		).toBe('order-1');
+		expect(
+			orderIdFromPaystackMetadata(
+				JSON.stringify(JSON.stringify({ orderId: ' order-1 ' }))
+			)
+		).toBe('order-1');
+	});
+
+	test('ignores empty, invalid, and non-object metadata', () => {
+		expect(orderIdFromPaystackMetadata('')).toBeNull();
+		expect(orderIdFromPaystackMetadata('not-json')).toBeNull();
+		expect(orderIdFromPaystackMetadata(0)).toBeNull();
+		expect(orderIdFromPaystackMetadata(null)).toBeNull();
+		expect(orderIdFromPaystackMetadata([])).toBeNull();
+		expect(orderIdFromPaystackMetadata({ orderId: '' })).toBeNull();
+	});
+
+	test('accepts integer kobo amounts only', () => {
+		expect(paystackAmountKobo(162_250)).toBe(162_250);
+		expect(paystackAmountKobo('162250')).toBe(162_250);
+		expect(paystackAmountKobo(162_250.5)).toBeNull();
+		expect(paystackAmountKobo(-1)).toBeNull();
+	});
+});
+
+describe('charge.success', () => {
+	test('pays an order when bank-transfer metadata is a JSON string', async () => {
+		const { c, queueNotification, tables, payments } =
+			fakeOrderContext(pricedOrder());
+
+		await handleChargeSuccess(
+			c,
+			transferCharge({
+				metadata: JSON.stringify({ orderId: 'order-1', custom: true })
+			})
+		);
+
+		expect(payments()).toHaveLength(2);
+		expect(tables.stores.get('store-1')!.unrealizedRevenue).toBe(
+			BigInt(ORDER_TOTAL)
+		);
+		expect(queueNotification).toHaveBeenCalledTimes(1);
+		expect(c.var.prisma.order.update).toHaveBeenCalledTimes(1);
+	});
+
+	test('accepts a numeric-string amount for an object metadata charge', async () => {
+		const { c, payments } = fakeOrderContext(pricedOrder());
+
+		await handleChargeSuccess(
+			c,
+			transferCharge({ amount: String(EXPECTED_CHARGE) })
+		);
+
+		expect(payments()).toHaveLength(2);
+	});
+
+	test('does not mark the order paid when the amount mismatches', async () => {
+		const { c, queueNotification, payments } = fakeOrderContext(pricedOrder());
+
+		await handleChargeSuccess(c, transferCharge({ amount: ORDER_TOTAL }));
+
+		expect(payments()).toHaveLength(0);
+		expect(queueNotification).not.toHaveBeenCalled();
+		expect(c.var.prisma.order.update).not.toHaveBeenCalled();
+		expect(c.var.logger.error).toHaveBeenCalledWith(
+			expect.objectContaining({
+				orderId: 'order-1',
+				paidAmount: ORDER_TOTAL,
+				expectedAmount: EXPECTED_CHARGE,
+				reference: 'ref_transfer',
+				handling: 'left_unpaid'
+			}),
+			'paystack.charge.amount_mismatch'
+		);
+	});
+
+	test('does not mark the order paid when the amount is missing', async () => {
+		const { c, payments } = fakeOrderContext(pricedOrder());
+		const payload = transferCharge();
+		delete payload.amount;
+
+		await handleChargeSuccess(c, payload);
+
+		expect(payments()).toHaveLength(0);
+		expect(c.var.logger.error).toHaveBeenCalledWith(
+			expect.objectContaining({ orderId: 'order-1', handling: 'left_unpaid' }),
+			'paystack.charge.amount_missing'
+		);
+	});
+
+	test('does not mark the order paid when the currency is not NGN', async () => {
+		const { c, payments } = fakeOrderContext(pricedOrder());
+
+		await handleChargeSuccess(c, transferCharge({ currency: 'USD' }));
+
+		expect(payments()).toHaveLength(0);
+		expect(c.var.logger.error).toHaveBeenCalledWith(
+			expect.objectContaining({ currency: 'USD', handling: 'left_unpaid' }),
+			'paystack.charge.amount_mismatch'
+		);
+	});
+
+	test('does not apply a matching charge to an order that is already closed', async () => {
+		const { c, payments } = fakeOrderContext(
+			pricedOrder(OrderStatus.Cancelled)
+		);
+
+		await handleChargeSuccess(c, transferCharge());
+
+		expect(payments()).toHaveLength(0);
+		expect(c.var.logger.error).toHaveBeenCalledWith(
+			expect.objectContaining({
+				orderId: 'order-1',
+				reference: 'ref_transfer'
+			}),
+			'paystack.charge.received_for_closed_order'
+		);
+	});
+
+	test('stores a card when a matching card charge pays the order', async () => {
+		const { c, queueNotification, payments } = fakeOrderContext(pricedOrder());
+		const upsert = mock(async () => ({ id: 'card-1' }));
+		c.var.prisma.user = { findUnique: mock(async () => ({ id: 'user-1' })) };
+		c.var.prisma.card = { upsert };
+
+		await handleChargeSuccess(c, cardCharge());
+
+		expect(payments()).toHaveLength(2);
+		expect(upsert).toHaveBeenCalledTimes(1);
+		expect(queueNotification).toHaveBeenCalledTimes(1);
+		expect(queueNotification.mock.calls[0]?.[0].type).toBe(
+			NotificationType.NewOrder
+		);
+	});
+
+	test('still stores the card when a card charge amount mismatches', async () => {
+		const { c, queueNotification, payments } = fakeOrderContext(pricedOrder());
+		const upsert = mock(async () => ({ id: 'card-1' }));
+		c.var.prisma.user = { findUnique: mock(async () => ({ id: 'user-1' })) };
+		c.var.prisma.card = { upsert };
+
+		await handleChargeSuccess(c, cardCharge({ amount: 1 }));
+
+		expect(payments()).toHaveLength(0);
+		expect(queueNotification).not.toHaveBeenCalled();
+		expect(upsert).toHaveBeenCalledTimes(1);
+	});
+
+	test('ignores a dedicated virtual account charge with no order', async () => {
+		const { c, payments } = fakeOrderContext(pricedOrder());
+
+		await handleChargeSuccess(
+			c,
+			transferCharge({
+				metadata: '',
+				channel: 'dedicated_nuban',
+				authorization: { card_type: 'transfer', channel: 'dedicated_nuban' }
+			})
+		);
+
+		expect(payments()).toHaveLength(0);
+		expect(c.var.logger.warn).toHaveBeenCalledWith(
+			expect.objectContaining({ channel: 'dedicated_nuban' }),
+			'paystack.dedicated_nuban_ignored'
+		);
+	});
+});
+
+describe('bank.transfer.rejected', () => {
+	const rejected = (metadata: unknown) => ({
+		amount: 100,
+		reference: 'ref_rejected',
+		currency: 'NGN',
+		channel: 'bank_transfer',
+		gateway_response: 'Incorrect amount',
+		metadata,
+		authorization: { card_type: 'transfer', channel: 'bank_transfer' }
+	});
+
+	test('notifies the shopper and leaves the order unpaid', async () => {
+		const { c, queueNotification, payments } = fakeOrderContext(pricedOrder());
+
+		await handlePaystackWebhookEvent(
+			c,
+			'bank.transfer.rejected',
+			rejected(JSON.stringify({ orderId: 'order-1' }))
+		);
+
+		expect(payments()).toHaveLength(0);
+		expect(c.var.prisma.order.update).not.toHaveBeenCalled();
+		expect(queueNotification).toHaveBeenCalledTimes(1);
+		expect(queueNotification.mock.calls[0]?.[0]).toMatchObject({
+			type: NotificationType.PaymentRejected,
+			data: { orderId: 'order-1' },
+			recipientTokens: ['ExponentPushToken[shopper]']
+		});
+		expect(c.var.logger.error).toHaveBeenCalledWith(
+			expect.objectContaining({
+				orderId: 'order-1',
+				reference: 'ref_rejected',
+				reason: 'Incorrect amount'
+			}),
+			'paystack.bank_transfer.rejected'
+		);
+	});
+
+	test('records a rejection that cannot be tied to an order', async () => {
+		const { c, queueNotification } = fakeOrderContext(pricedOrder());
+
+		await handlePaystackWebhookEvent(c, 'bank.transfer.rejected', rejected(''));
+
+		expect(queueNotification).not.toHaveBeenCalled();
+		expect(c.var.logger.error).toHaveBeenCalledWith(
+			expect.objectContaining({ orderId: null, reference: 'ref_rejected' }),
+			'paystack.bank_transfer.rejected'
+		);
+	});
+
+	test('does not notify for a dedicated virtual account rejection', async () => {
+		const { c, queueNotification } = fakeOrderContext(pricedOrder());
+
+		await handlePaystackWebhookEvent(c, 'bank.transfer.rejected', {
+			...rejected({ orderId: 'order-1' }),
+			channel: 'dedicated_nuban',
+			authorization: { card_type: 'transfer', channel: 'dedicated_nuban' }
+		});
+
+		expect(queueNotification).not.toHaveBeenCalled();
+		expect(c.var.logger.warn).toHaveBeenCalledWith(
+			expect.objectContaining({ channel: 'dedicated_nuban' }),
+			'paystack.bank_transfer.rejected_dedicated_nuban_ignored'
+		);
+	});
+
+	test('a later matching charge can still pay the order', async () => {
+		const { c, queueNotification, payments } = fakeOrderContext(pricedOrder());
+
+		await handlePaystackWebhookEvent(
+			c,
+			'bank.transfer.rejected',
+			rejected({ orderId: 'order-1' })
+		);
+		await handleChargeSuccess(c, transferCharge());
+
+		expect(payments()).toHaveLength(2);
+		expect(queueNotification).toHaveBeenCalledTimes(2);
+		expect(queueNotification.mock.calls[1]?.[0].type).toBe(
+			NotificationType.NewOrder
+		);
+	});
+});
+
+describe('expirePaymentPendingOrders', () => {
+	const NOW = new Date('2026-01-01T00:45:00.000Z');
+	const EXPIRY_MS = 35 * 60 * 1000;
+	const CUTOFF = new Date(NOW.getTime() - EXPIRY_MS);
+
+	const build = () => {
+		const quantities = new Map([
+			['p1', 4],
+			['p2', 1]
+		]);
+		const status = new Map<string, OrderStatus>([
+			['stale', OrderStatus.PaymentPending],
+			['boundary', OrderStatus.PaymentPending],
+			['fresh', OrderStatus.PaymentPending],
+			['racing', OrderStatus.Pending]
+		]);
+
+		const orders = [
+			{
+				id: 'stale',
+				userId: 'user-1',
+				storeId: 'store-1',
+				total: 10_000,
+				status: OrderStatus.PaymentPending,
+				createdAt: new Date('2026-01-01T00:00:00.000Z'),
+				products: [
+					{ productId: 'p1', quantity: 2 },
+					{ productId: 'p2', quantity: 1 }
+				],
+				user: {
+					pushTokens: [
+						{ token: 'ExponentPushToken[shopper]', type: 'Shopper' },
+						{ token: 'ExponentPushToken[merchant]', type: 'Merchant' }
+					]
+				}
+			},
+			{
+				id: 'boundary',
+				userId: 'user-1',
+				storeId: 'store-1',
+				total: 5_000,
+				status: OrderStatus.PaymentPending,
+				createdAt: CUTOFF,
+				products: [{ productId: 'p1', quantity: 9 }],
+				user: { pushTokens: [] }
+			},
+			{
+				id: 'fresh',
+				userId: 'user-1',
+				storeId: 'store-1',
+				total: 5_000,
+				status: OrderStatus.PaymentPending,
+				createdAt: new Date('2026-01-01T00:40:00.000Z'),
+				products: [{ productId: 'p2', quantity: 4 }],
+				user: { pushTokens: [] }
+			},
+			{
+				id: 'racing',
+				userId: 'user-1',
+				storeId: 'store-1',
+				total: 5_000,
+				status: OrderStatus.PaymentPending,
+				createdAt: new Date('2026-01-01T00:00:00.000Z'),
+				products: [{ productId: 'p1', quantity: 5 }],
+				user: { pushTokens: [] }
+			}
+		];
+
+		const client = {
+			order: {
+				findMany: mock(async ({ where }: any) =>
+					orders
+						.filter(order => {
+							// `racing` is still PaymentPending in the query snapshot
+							// and Pending once the row is locked, so a missing
+							// re-read would release its stock.
+							const visible =
+								order.id === 'racing'
+									? OrderStatus.PaymentPending
+									: status.get(order.id);
+							if (visible !== where.status) return false;
+							if (
+								where.createdAt?.lt &&
+								!(order.createdAt < where.createdAt.lt)
+							) {
+								return false;
+							}
+							return true;
+						})
+						.map(order => ({
+							...order,
+							status:
+								order.id === 'racing'
+									? OrderStatus.PaymentPending
+									: status.get(order.id)
+						}))
+				),
+				findUnique: mock(async ({ where }: any) => {
+					const order = orders.find(row => row.id === where.id);
+					if (!order) return null;
+					return { ...order, status: status.get(order.id) };
+				}),
+				update: mock(async ({ where, data }: any) => {
+					status.set(where.id, data.status);
+					return { id: where.id, status: data.status };
+				})
+			},
+			product: {
+				update: mock(async ({ where, data }: any) => {
+					const next =
+						(quantities.get(where.id) ?? 0) + data.quantity.increment;
+					quantities.set(where.id, next);
+					return { id: where.id, quantity: next };
+				})
+			},
+			$transaction: async (fn: any) => fn(client)
+		};
+
+		return { client, quantities, status };
+	};
+
+	test('cancels stale unpaid orders and releases their stock', async () => {
+		const { client, quantities, status } = build();
+		const info = mock(() => {});
+
+		const expired = await expirePaymentPendingOrders(client as any, {
+			now: NOW,
+			expiryMs: EXPIRY_MS,
+			logger: { info, warn: mock(() => {}), error: mock(() => {}) } as any
+		});
+
+		expect(expired).toEqual([
+			{
+				id: 'stale',
+				userId: 'user-1',
+				storeId: 'store-1',
+				total: 10_000,
+				pushTokens: ['ExponentPushToken[shopper]']
+			}
+		]);
+		expect(status.get('stale')).toBe(OrderStatus.Cancelled);
+		expect(status.get('boundary')).toBe(OrderStatus.PaymentPending);
+		expect(status.get('fresh')).toBe(OrderStatus.PaymentPending);
+		expect(status.get('racing')).toBe(OrderStatus.Pending);
+		expect(quantities.get('p1')).toBe(6);
+		expect(quantities.get('p2')).toBe(2);
+		expect(info).toHaveBeenCalledWith(
+			expect.objectContaining({ orderId: 'stale' }),
+			'payment_pending.expired'
+		);
+
+		const again = await expirePaymentPendingOrders(client as any, {
+			now: NOW,
+			expiryMs: EXPIRY_MS,
+			logger: { info, warn: mock(() => {}), error: mock(() => {}) } as any
+		});
+
+		expect(again).toEqual([]);
+		expect(quantities.get('p1')).toBe(6);
+		expect(quantities.get('p2')).toBe(2);
 	});
 });

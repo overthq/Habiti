@@ -172,6 +172,7 @@ export interface VerifyTransactionResponse {
 		id: number;
 		status: string;
 		reference: string;
+		amount: number;
 		channel: string;
 		currency: string;
 		metadata: { orderId?: string } | string | null;
