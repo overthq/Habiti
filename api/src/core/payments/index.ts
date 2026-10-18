@@ -8,7 +8,7 @@ import {
 	VerifyTransferOptions
 } from './types';
 
-import * as Paystack from './paystack';
+import * as Paystack from '../../lib/paystack';
 
 export const chargeAuthorization = async (
 	options: ChargeAuthorizationOptions
