@@ -1,24 +1,24 @@
 import { describe, expect, test } from 'bun:test';
 
-import { readIncomingCharge, readTransferRejection } from './incoming';
+import { ChargeEventSchema } from './validation';
 
 const transferAuthorization = {
 	card_type: 'transfer',
 	channel: 'bank_transfer'
 };
 
-describe('readIncomingCharge', () => {
+describe('ChargeEventSchema', () => {
 	test('reads orderId from an object or a JSON string', () => {
 		expect(
-			readIncomingCharge({ metadata: { orderId: 'order-1' } }).orderId
+			ChargeEventSchema.parse({ metadata: { orderId: 'order-1' } }).orderId
 		).toBe('order-1');
 		expect(
-			readIncomingCharge({
+			ChargeEventSchema.parse({
 				metadata: JSON.stringify({ orderId: 'order-1' })
 			}).orderId
 		).toBe('order-1');
 		expect(
-			readIncomingCharge({
+			ChargeEventSchema.parse({
 				metadata: JSON.stringify(JSON.stringify({ orderId: ' order-1 ' }))
 			}).orderId
 		).toBe('order-1');
@@ -26,27 +26,27 @@ describe('readIncomingCharge', () => {
 
 	test('ignores empty, invalid, and non-object metadata', () => {
 		for (const metadata of ['', 'not-json', 0, null, [], { orderId: '' }]) {
-			expect(readIncomingCharge({ metadata }).orderId).toBeNull();
+			expect(ChargeEventSchema.parse({ metadata }).orderId).toBeNull();
 		}
 	});
 
 	test('accepts integer subunit amounts only', () => {
-		expect(readIncomingCharge({ amount: 162_250 }).amount).toBe(162_250);
-		expect(readIncomingCharge({ amount: '162250' }).amount).toBe(162_250);
-		expect(readIncomingCharge({ amount: 162_250.5 }).amount).toBeNull();
-		expect(readIncomingCharge({ amount: -1 }).amount).toBeNull();
+		expect(ChargeEventSchema.parse({ amount: 162_250 }).amount).toBe(162_250);
+		expect(ChargeEventSchema.parse({ amount: '162250' }).amount).toBe(162_250);
+		expect(ChargeEventSchema.parse({ amount: 162_250.5 }).amount).toBeNull();
+		expect(ChargeEventSchema.parse({ amount: -1 }).amount).toBeNull();
 	});
 
 	test('classifies checkout transfer separately from a dedicated account', () => {
 		expect(
-			readIncomingCharge({
+			ChargeEventSchema.parse({
 				channel: 'bank_transfer',
 				authorization: transferAuthorization
 			}).instrument
 		).toBe('transfer');
 
 		expect(
-			readIncomingCharge({
+			ChargeEventSchema.parse({
 				channel: 'dedicated_nuban',
 				authorization: { card_type: 'transfer', channel: 'dedicated_nuban' }
 			})
@@ -54,7 +54,7 @@ describe('readIncomingCharge', () => {
 	});
 
 	test('maps a card authorization into stored-card fields', () => {
-		const charge = readIncomingCharge({
+		const charge = ChargeEventSchema.parse({
 			channel: 'card',
 			customer: { email: 'ada@example.com' },
 			authorization: {
@@ -85,12 +85,10 @@ describe('readIncomingCharge', () => {
 			countryCode: 'NG'
 		});
 	});
-});
 
-describe('readTransferRejection', () => {
-	test('reads a checkout rejection, including string metadata', () => {
+	test('reads a rejection reason from the first present field', () => {
 		expect(
-			readTransferRejection({
+			ChargeEventSchema.parse({
 				amount: 100,
 				reference: 'ref_rejected',
 				gateway_response: 'Incorrect amount',
@@ -98,23 +96,13 @@ describe('readTransferRejection', () => {
 				metadata: JSON.stringify({ orderId: 'order-1' }),
 				authorization: transferAuthorization
 			})
-		).toEqual({
+		).toMatchObject({
 			orderId: 'order-1',
 			amount: 100,
 			reference: 'ref_rejected',
 			reason: 'Incorrect amount',
-			instrument: 'transfer'
+			instrument: 'transfer',
+			card: null
 		});
-	});
-
-	test('classifies a dedicated-account rejection', () => {
-		expect(
-			readTransferRejection({
-				reference: 'dva_ref',
-				message: 'Rejected',
-				channel: 'dedicated_nuban',
-				authorization: { card_type: 'transfer', channel: 'dedicated_nuban' }
-			}).instrument
-		).toBe('dedicated_account');
 	});
 });

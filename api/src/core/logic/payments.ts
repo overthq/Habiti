@@ -26,16 +26,13 @@ import {
 import { NotificationType } from '../notifications';
 
 import * as CorePayments from '../payments';
-import type {
-	IncomingCharge,
-	IncomingTransferRejection,
-	StoredCardCharge
-} from '../payments';
 
 import {
+	ChargeEventSchema,
 	TransferFailurePayload,
 	TransferReversedPayload,
-	TransferSuccessPayload
+	TransferSuccessPayload,
+	type ChargeEvent
 } from '../payments/validation';
 import type {
 	ChargeAuthorizationOptions,
@@ -116,7 +113,7 @@ export const approvePayment = async (
 
 export const processCardCharge = async (
 	c: Context<AppEnv>,
-	card: StoredCardCharge
+	card: NonNullable<ChargeEvent['card']>
 ) => {
 	return CardData.storeCard(c.var.prisma, card);
 };
@@ -311,11 +308,7 @@ const handlePaystackWebhookEventImpl = async (
 	}
 
 	if (event === PaystackWebhookEvent.ChargeSuccess) {
-		await handleChargeSuccess(
-			c,
-			CorePayments.readIncomingCharge(data),
-			webhookEventId
-		);
+		await handleChargeSuccess(c, ChargeEventSchema.parse(data), webhookEventId);
 	} else if (event === PaystackWebhookEvent.TransferSuccess) {
 		await handleTransferSuccess(c, data, webhookEventId);
 	} else if (event === PaystackWebhookEvent.TransferFailure) {
@@ -323,7 +316,7 @@ const handlePaystackWebhookEventImpl = async (
 	} else if (event === PaystackWebhookEvent.TransferReversed) {
 		await handleTransferReversed(c, data, webhookEventId);
 	} else if (event === PaystackWebhookEvent.BankTransferRejected) {
-		await handleTransferRejection(c, CorePayments.readTransferRejection(data));
+		await handleTransferRejection(c, ChargeEventSchema.parse(data));
 	}
 };
 
@@ -332,7 +325,7 @@ const handlePaystackWebhookEventImpl = async (
 
 export const handleChargeSuccess = async (
 	c: Context<AppEnv>,
-	charge: IncomingCharge,
+	charge: ChargeEvent,
 	webhookEventId?: string | null
 ) => {
 	if (charge.instrument === 'dedicated_account' && !charge.orderId) {
@@ -374,7 +367,7 @@ export const handleChargeSuccess = async (
 
 const handleTransferRejection = async (
 	c: Context<AppEnv>,
-	rejection: IncomingTransferRejection
+	rejection: ChargeEvent
 ) => {
 	// A dedicated-account rejection is not a checkout payment.
 	if (rejection.instrument === 'dedicated_account') {
@@ -525,7 +518,7 @@ export const verifyTransaction = async (
 	const { data, status } = await CorePayments.verifyTransaction(reference);
 
 	if (status === true && data.status === 'success') {
-		return await handleChargeSuccess(c, CorePayments.readIncomingCharge(data));
+		return await handleChargeSuccess(c, ChargeEventSchema.parse(data));
 	}
 };
 

@@ -8,7 +8,7 @@ import {
 	transitionOrderToPending
 } from './payments';
 import { NotificationType } from '../notifications';
-import type { IncomingCharge, StoredCardCharge } from '../payments';
+import type { ChargeEvent } from '../payments/validation';
 import {
 	LedgerReason,
 	OrderStatus,
@@ -344,17 +344,18 @@ const pricedOrder = (status: OrderStatus = OrderStatus.PaymentPending) => ({
 	pushTokens: [{ token: 'ExponentPushToken[shopper]', type: 'Shopper' }]
 });
 
-const incoming = (overrides: Partial<IncomingCharge> = {}): IncomingCharge => ({
+const incoming = (overrides: Partial<ChargeEvent> = {}): ChargeEvent => ({
 	orderId: 'order-1',
 	amount: EXPECTED_CHARGE,
 	currency: 'NGN',
 	reference: 'ref_transfer',
+	reason: null,
 	instrument: 'transfer',
 	card: null,
 	...overrides
 });
 
-const storedCard: StoredCardCharge = {
+const storedCard: NonNullable<ChargeEvent['card']> = {
 	email: 'ada@example.com',
 	signature: 'SIG_card',
 	authorizationCode: 'AUTH_card',

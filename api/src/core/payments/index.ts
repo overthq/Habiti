@@ -10,14 +10,6 @@ import {
 
 import * as Paystack from './paystack';
 
-export { readIncomingCharge, readTransferRejection } from './incoming';
-export type {
-	ChargeInstrument,
-	IncomingCharge,
-	IncomingTransferRejection,
-	StoredCardCharge
-} from './incoming';
-
 export const chargeAuthorization = async (
 	options: ChargeAuthorizationOptions
 ) => {
