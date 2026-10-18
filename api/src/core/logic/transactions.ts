@@ -12,6 +12,7 @@ import { TransactionStatus } from '../../generated/prisma/client';
 import { LogicError, LogicErrorCode } from './errors';
 import { assertStoreScope } from './permissions';
 import { runSerializable } from '../../utils/prisma';
+import { paystackErrorCode, redactSensitive } from '../../utils/redact';
 
 export const getStoreTransactions = async (
 	c: Context<AppEnv>,
@@ -157,16 +158,20 @@ export const createPayoutTransaction = async (
 			message?: string;
 		};
 
-		const context = {
+		const responseData = axiosError.response?.data;
+		const paystackCode = paystackErrorCode(responseData);
+
+		const context = redactSensitive({
 			storeId,
 			transactionId: payout.id,
 			amount,
 			recipient: recipientRef,
 			paystackStatus: axiosError.response?.status,
-			paystackResponse: axiosError.response?.data,
+			paystackResponse: responseData,
+			...(paystackCode ? { paystackCode } : {}),
 			errorCode: axiosError.code,
 			errorMessage: axiosError.message
-		};
+		});
 
 		c.var.logger.error({ ...context }, 'payout.payAccount_failed');
 

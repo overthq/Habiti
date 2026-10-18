@@ -19,6 +19,36 @@ import { env } from '../config/env';
  * second. Easy to typo (it's the inverse of `console.log`), so most callers
  * stick to the explicit `({ ...fields }, 'event_name')` form.
  */
+
+/**
+ * `*` matches one path segment, and an array index counts as a segment. It
+ * is not a recursive wildcard. Depths 1–4 cover the Paystack bodies we log,
+ * including `responseData.data.details.account_number` and
+ * `responseData.data[0].account_number`. A fifth segment is not redacted
+ * here. `redactSensitive` walks the whole value before the log call. Sentry
+ * `extra` never goes through this list.
+ */
+const nestedRedactPaths = (key: string, depth: number) =>
+	Array.from({ length: depth }, (_, index) => `${'*.'.repeat(index + 1)}${key}`);
+
+export const REDACT_PATHS = [
+	'req.headers.authorization',
+	'req.headers.cookie',
+	'req.headers["x-paystack-signature"]',
+	'headers.authorization',
+	'headers.cookie',
+	'*.password',
+	'*.passwordHash',
+	'*.refreshToken',
+	'*.accessToken',
+	'*.code',
+	...nestedRedactPaths('authorizationCode', 4),
+	...nestedRedactPaths('authorization_code', 4),
+	...nestedRedactPaths('account_number', 4),
+	...nestedRedactPaths('accountNumber', 4),
+	...nestedRedactPaths('otp', 4)
+];
+
 export const rootLogger: PinoLogger = pino({
 	level: env.LOG_LEVEL,
 	base: {
@@ -27,19 +57,7 @@ export const rootLogger: PinoLogger = pino({
 		environment: env.NODE_ENV ?? 'development'
 	},
 	redact: {
-		paths: [
-			'req.headers.authorization',
-			'req.headers.cookie',
-			'req.headers["x-paystack-signature"]',
-			'headers.authorization',
-			'headers.cookie',
-			'*.password',
-			'*.passwordHash',
-			'*.refreshToken',
-			'*.accessToken',
-			'*.code',
-			'*.authorizationCode'
-		],
+		paths: REDACT_PATHS,
 		censor: '[REDACTED]'
 	},
 	timestamp: pino.stdTimeFunctions.isoTime,

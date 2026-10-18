@@ -4,6 +4,7 @@ import * as Sentry from '@sentry/bun';
 import { env } from '../config/env';
 import { rootLogger } from '../services/logger';
 import { instrument } from '../utils/instrument';
+import { paystackErrorCode, redactSensitive } from '../utils/redact';
 
 const API_URL = 'https://api.paystack.co';
 
@@ -15,28 +16,39 @@ const client = axios.create({
 	}
 });
 
-const REDACTED_KEYS = new Set([
-	'authorization_code',
-	'authorizationCode',
-	'otp'
-]);
+/**
+ * One redacted record goes to both sinks. Sentry extra does not pass through
+ * Pino, so redacting only the logger argument would leave the raw body on the
+ * issue.
+ */
+export const reportPaystackFailure = (
+	operation: string,
+	payload: unknown,
+	error: unknown
+) => {
+	const axiosError = error as AxiosError;
+	const responseData = axiosError.response?.data;
+	const paystackCode = paystackErrorCode(responseData);
 
-const redact = (value: unknown): unknown => {
-	if (Array.isArray(value)) {
-		return value.map(redact);
-	}
+	const logEntry = redactSensitive({
+		operation,
+		request: payload,
+		status: axiosError.response?.status,
+		statusText: axiosError.response?.statusText,
+		responseData,
+		...(paystackCode ? { paystackCode } : {}),
+		code: axiosError.code,
+		message: axiosError.message
+	});
 
-	if (value && typeof value === 'object') {
-		const out: Record<string, unknown> = {};
+	rootLogger.error(logEntry, 'paystack.failed');
 
-		for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
-			out[k] = REDACTED_KEYS.has(k) ? '[redacted]' : redact(v);
-		}
+	Sentry.captureException(error, {
+		tags: { integration: 'paystack', operation },
+		extra: logEntry
+	});
 
-		return out;
-	}
-
-	return value;
+	return logEntry;
 };
 
 const withLogging = async <T>(
@@ -52,24 +64,7 @@ const withLogging = async <T>(
 				rootLogger.debug({ operation }, 'paystack.ok');
 				return result;
 			} catch (error) {
-				const axiosError = error as AxiosError;
-
-				const logEntry = {
-					operation,
-					request: redact(payload),
-					status: axiosError.response?.status,
-					statusText: axiosError.response?.statusText,
-					responseData: axiosError.response?.data,
-					code: axiosError.code,
-					message: axiosError.message
-				};
-
-				rootLogger.error(logEntry, 'paystack.failed');
-
-				Sentry.captureException(error, {
-					tags: { integration: 'paystack', operation },
-					extra: logEntry
-				});
+				reportPaystackFailure(operation, payload, error);
 
 				throw error;
 			}
