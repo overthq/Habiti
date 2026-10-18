@@ -12,6 +12,15 @@ import { LogicError } from '../core/logic/errors';
  * `prismaIntegration` records Prisma spans. `httpIntegration` covers
  * outbound HTTP. No OpenTelemetry SDK or OTLP exporter is registered.
  *
+ * `pinoIntegration` subscribes to Pino's `pino_asJson` tracing channel
+ * (Pino >= 9.10). It is not a Pino transport, so production logging stays
+ * on the sync stdout destination. With `SENTRY_DSN` unset this module
+ * does not call `Sentry.init`, and nothing subscribes to that channel.
+ * `trace` and `debug` are not forwarded. Pino drops anything below
+ * `LOG_LEVEL` before the channel runs. `error.levels` stays at the
+ * integration default (`[]`), so a Pino error is a Sentry log and not an
+ * extra Sentry issue.
+ *
  * `middleware/logs.ts` copies the active Sentry span's trace id onto the
  * request log when a span exists. `beforeSend` still drops `LogicError`
  * and HTTP status < 500, matching `errorHandler`.
@@ -26,6 +35,9 @@ if (env.SENTRY_DSN) {
 			Sentry.httpIntegration(),
 			Sentry.prismaIntegration({
 				prismaInstrumentation: new PrismaInstrumentation()
+			}),
+			Sentry.pinoIntegration({
+				log: { levels: ['info', 'warn', 'error', 'fatal'] }
 			})
 		],
 		enableLogs: true,

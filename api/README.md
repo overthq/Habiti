@@ -16,11 +16,13 @@ bun dev:api
 
 `bun dev:api` (with `NODE_ENV` unset) prints pretty, single-line logs. `NODE_ENV=production` prints JSON to stdout.
 
+When `SENTRY_DSN` is set, Pino lines at `info`, `warn`, `error`, and `fatal` are also sent to Sentry Logs. `trace` and `debug` are not. Pino applies `LOG_LEVEL` first, so a debug line emitted while `LOG_LEVEL=info` never reaches Sentry. Scripts do not initialize Sentry, so their lines stay on stdout.
+
 Grep the stream by event name (`request_finished`, `db.slow_query`, and so on). Each response sets `x-request-id`; that value is `requestId` on every line for the request. After auth resolves, every later line carries the ids known for that request: `userId` when the access token is valid, and `storeId` when the token has a store claim or an optional-auth request with no token sends `x-market-store-id`. Lines from before auth, and requests that never authenticate, do not carry those ids. `request_finished` still includes `userId` and `storeId` when the request ended with them set, and includes `route` (the route template, same value as the HTTP metrics).
 
 ## Tracing
 
-Sentry is the trace backend. When `SENTRY_DSN` is set, `@sentry/bun` records a span for each `Bun.serve` request, Prisma spans through `prismaIntegration`, and outbound HTTP spans through `httpIntegration`. Nothing registers an OpenTelemetry SDK or reads `OTEL_EXPORTER_OTLP_ENDPOINT`. `OTEL_SERVICE_NAME` is only the `service` field on log lines (default `habiti-api`).
+Sentry is the trace backend. When `SENTRY_DSN` is set, `@sentry/bun` records a span for each `Bun.serve` request, Prisma spans through `prismaIntegration`, and outbound HTTP spans through `httpIntegration`. The same init registers `pinoIntegration`, which forwards Pino logs by subscribing to Pino's tracing channel. It is not a Pino transport, so production logging stays on sync stdout. Structured fields on the line (`requestId`, `traceId`, `userId`, `storeId`, and the rest of the JSON) are sent as Sentry log attributes. A log emitted while a Sentry span is active carries that span's trace id on the Sentry log (`trace_id`), so the log lines up with the trace. Nothing registers an OpenTelemetry SDK or reads `OTEL_EXPORTER_OTLP_ENDPOINT`. `OTEL_SERVICE_NAME` is only the `service` field on log lines (default `habiti-api`).
 
 `traceId` on a request log is the active Sentry span's trace id when that span exists, and the response `traceparent` uses the same id. That is the id on the Sentry trace. Sentry continues an inbound `sentry-trace` / `baggage` pair. It does not continue an inbound W3C `traceparent`, so a caller-supplied `traceparent` is not the Sentry trace id while a Sentry span is active.
 
