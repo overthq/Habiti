@@ -1,10 +1,46 @@
 import { jwt } from 'hono/jwt';
 import { createMiddleware } from 'hono/factory';
 import { HTTPException } from 'hono/http-exception';
+import type { Context } from 'hono';
 
 import { env } from '../config/env';
 import { isSessionDenied } from '../core/data/sessions';
 import type { AppEnv } from '../types/hono';
+
+// logsMiddleware binds request ids before auth runs. Once auth knows a user
+// or store id, swap in one child that adds just those. Skip an id already
+// on the logger so a second pass does not duplicate keys. No id means the
+// pre-auth logger stays in place.
+const bindRequestLogger = (c: Context<AppEnv>) => {
+	const logger = c.var.logger;
+
+	if (!logger) return;
+
+	const userId = c.var.auth?.id;
+	const storeId = c.var.storeId;
+	const current = logger.bindings();
+	const bindings: Record<string, string> = {};
+
+	if (
+		typeof userId === 'string' &&
+		userId.length > 0 &&
+		current.userId !== userId
+	) {
+		bindings.userId = userId;
+	}
+
+	if (
+		typeof storeId === 'string' &&
+		storeId.length > 0 &&
+		current.storeId !== storeId
+	) {
+		bindings.storeId = storeId;
+	}
+
+	if (Object.keys(bindings).length === 0) return;
+
+	c.set('logger', logger.child(bindings));
+};
 
 type AuthOptions = {
 	required?: boolean;
@@ -24,6 +60,7 @@ export const auth = (options: AuthOptions = {}) => {
 				throw new HTTPException(401, { message: 'Authentication required' });
 			}
 			c.set('storeId', c.req.header('x-market-store-id'));
+			bindRequestLogger(c);
 			return next();
 		}
 
@@ -52,6 +89,8 @@ export const auth = (options: AuthOptions = {}) => {
 			c.set('auth', payload);
 			c.set('storeId', payload.storeId);
 			c.set('isAdmin', payload.role === 'admin');
+
+			bindRequestLogger(c);
 
 			return next();
 		} catch (error) {

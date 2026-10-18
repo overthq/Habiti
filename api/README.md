@@ -12,6 +12,12 @@ bun start-redis # Only necessary if Redis isn't running in the background.
 bun dev:api
 ```
 
+## Reading logs
+
+`bun dev:api` (with `NODE_ENV` unset) prints pretty, single-line logs. `NODE_ENV=production` prints JSON to stdout.
+
+Grep the stream by event name (`request_finished`, `db.slow_query`, and so on). Each response sets `x-request-id`; that value is `requestId` on every line for the request. After auth resolves, every later line carries the ids known for that request: `userId` when the access token is valid, and `storeId` when the token has a store claim or an optional-auth request with no token sends `x-market-store-id`. Lines from before auth, and requests that never authenticate, do not carry those ids. `request_finished` still includes `userId` and `storeId` when the request ended with them set, and includes `route` (the route template, same value as the HTTP metrics).
+
 ## Tracing
 
 Sentry is the trace backend. When `SENTRY_DSN` is set, `@sentry/bun` records a span for each `Bun.serve` request, Prisma spans through `prismaIntegration`, and outbound HTTP spans through `httpIntegration`. Nothing registers an OpenTelemetry SDK or reads `OTEL_EXPORTER_OTLP_ENDPOINT`. `OTEL_SERVICE_NAME` is only the `service` field on log lines (default `habiti-api`).

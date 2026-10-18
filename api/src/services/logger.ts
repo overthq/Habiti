@@ -4,8 +4,16 @@ import { env } from '../config/env';
 
 /**
  * Centralised pino logger. Prefer `c.var.logger` (set by `logsMiddleware`)
- * over `rootLogger` whenever a request context is in scope — the per-request
- * child logger carries `requestId` / `traceId` / `userId` / `storeId`.
+ * over `rootLogger` whenever a request context is in scope.
+ *
+ * `logsMiddleware` binds `requestId`, `traceId`, `spanId`, `method`, and
+ * `path` before auth runs. The auth middleware then replaces that logger
+ * with one child that also binds `userId` and `storeId` when each is known.
+ * `userId` is the access-token id. `storeId` is the token's store claim, or
+ * the `x-market-store-id` header on an optional-auth request with no token.
+ * Public routes, webhooks, and failed auth keep the pre-auth child.
+ * `request_finished` still records whichever of the two the request ended
+ * with.
  *
  * Pino's call shape is `logger.info(fields, msg)` — object first, message
  * second. Easy to typo (it's the inverse of `console.log`), so most callers
