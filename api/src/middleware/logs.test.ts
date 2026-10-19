@@ -11,6 +11,8 @@ import {
 
 import type { AppEnv } from '../types/hono';
 import { tracer } from '../services/tracer';
+import { authedRequest, createTestApp, signAccessToken } from '../test/helpers';
+import { authenticate, optionalAuth } from './auth';
 import logsMiddleware from './logs';
 
 const TRACEPARENT_RE = /^00-([0-9a-f]{32})-([0-9a-f]{16})-0[01]$/;
@@ -82,5 +84,50 @@ describe('logsMiddleware with a tracer provider', () => {
 		expect(server.attributes['http.response.status_code']).toBe(200);
 		expect(child.parentSpanContext?.spanId).toBe(spanId!);
 		expect(child.spanContext().traceId).toBe(inboundTraceId);
+	});
+});
+
+describe('request logger after auth', () => {
+	const { app } = createTestApp();
+	app.get('/probe/required', authenticate, c =>
+		c.json(c.var.logger.bindings())
+	);
+	app.get('/probe/optional', optionalAuth, c =>
+		c.json(c.var.logger.bindings())
+	);
+
+	test('binds userId and the token store claim', async () => {
+		const token = await signAccessToken({
+			userId: 'user-1',
+			storeId: 'store-1'
+		});
+		const res = await app.request(
+			authedRequest('/probe/required', token, {
+				headers: { 'x-request-id': 'req-1', 'x-market-store-id': 'other' }
+			})
+		);
+
+		expect(await res.json()).toMatchObject({
+			requestId: 'req-1',
+			userId: 'user-1',
+			storeId: 'store-1'
+		});
+	});
+
+	test('binds storeId from the header for a guest on optional auth', async () => {
+		const res = await app.request('/probe/optional', {
+			headers: { 'x-market-store-id': 'store-guest' }
+		});
+		const bindings = await res.json();
+
+		expect(bindings.storeId).toBe('store-guest');
+		expect(bindings.userId).toBeUndefined();
+	});
+
+	test('binds nothing for a guest without a store', async () => {
+		const bindings = await (await app.request('/probe/optional')).json();
+
+		expect(bindings.userId).toBeUndefined();
+		expect(bindings.storeId).toBeUndefined();
 	});
 });
