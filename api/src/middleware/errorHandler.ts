@@ -1,8 +1,8 @@
 import type { Context, ErrorHandler } from 'hono';
-import * as Sentry from '@sentry/bun';
 import { HTTPException } from 'hono/http-exception';
 
 import { LogicError, logicErrorToApiException } from '../core/logic/errors';
+import { captureException } from '../services/errorReporting';
 import { AppEnv } from '../types/hono';
 import { rootLogger } from '../services/logger';
 import { metrics, MetricNames } from '../services/metrics';
@@ -45,23 +45,23 @@ export const errorHandler: ErrorHandler = (err, c) => {
 		status: 500
 	});
 
-	Sentry.captureException(err, scope => {
-		scope.setContext('request', {
-			method: c.req.method,
-			path: c.req.path,
-			requestId: ctx.var?.requestId ?? null,
-			traceId: ctx.var?.traceId ?? null
-		});
+	const auth = ctx.var?.auth;
+	const user = auth?.id
+		? auth.email
+			? { id: auth.id, email: auth.email }
+			: { id: auth.id }
+		: undefined;
 
-		const auth = ctx.var?.auth;
-
-		if (auth?.id) {
-			scope.setUser(
-				auth.email ? { id: auth.id, email: auth.email } : { id: auth.id }
-			);
-		}
-
-		return scope;
+	captureException(err, {
+		contexts: {
+			request: {
+				method: c.req.method,
+				path: c.req.path,
+				requestId: ctx.var?.requestId ?? null,
+				traceId: ctx.var?.traceId ?? null
+			}
+		},
+		...(user ? { user } : {})
 	});
 
 	logger.error({ err }, 'unexpected_error');

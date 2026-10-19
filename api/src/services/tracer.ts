@@ -1,10 +1,16 @@
+import {
+	SpanStatusCode,
+	trace,
+	type Attributes
+} from '@opentelemetry/api';
+
+import { env } from '../config/env';
+
 /**
  * Call-site hook for `order.create`, Paystack webhooks, and similar work.
- * It runs `fn` and does not emit a span.
- *
- * Sentry is the trace backend (`config/sentry.ts`): when `SENTRY_DSN` is
- * set, `@sentry/bun` records `Bun.serve` HTTP spans and Prisma spans.
- * Outbound duration and error counts stay in `utils/instrument.ts`.
+ * Spans go through the OpenTelemetry API. `config/telemetry.ts` registers
+ * the provider (Sentry or OTLP). With no provider the API no-ops and `fn`
+ * still runs.
  */
 export interface Tracer {
 	startSpan<T>(
@@ -14,8 +20,48 @@ export interface Tracer {
 	): Promise<T>;
 }
 
+const attributesOf = (
+	attributes?: Record<string, string | number | boolean | undefined>
+): Attributes => {
+	const clean: Attributes = {};
+
+	if (!attributes) return clean;
+
+	for (const [key, value] of Object.entries(attributes)) {
+		if (value !== undefined) clean[key] = value;
+	}
+
+	return clean;
+};
+
+const describe = (err: unknown) =>
+	err instanceof Error ? err.message : String(err);
+
 export const tracer: Tracer = {
-	async startSpan(_name, fn) {
-		return fn();
+	async startSpan(name, fn, attributes) {
+		const otel = trace.getTracer(env.OTEL_SERVICE_NAME);
+
+		return otel.startActiveSpan(
+			name,
+			{ attributes: attributesOf(attributes) },
+			async span => {
+				try {
+					const result = await fn();
+					span.setStatus({ code: SpanStatusCode.OK });
+					return result;
+				} catch (err) {
+					if (err instanceof Error) span.recordException(err);
+					else span.recordException(String(err));
+
+					span.setStatus({
+						code: SpanStatusCode.ERROR,
+						message: describe(err)
+					});
+					throw err;
+				} finally {
+					span.end();
+				}
+			}
+		);
 	}
 };

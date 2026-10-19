@@ -1,7 +1,7 @@
 import { createMiddleware } from 'hono/factory';
 import { routePath } from 'hono/route';
 import { randomUUID, randomBytes } from 'crypto';
-import * as Sentry from '@sentry/bun';
+import { isSpanContextValid, trace } from '@opentelemetry/api';
 
 import type { AppEnv } from '../types/hono';
 import { rootLogger } from '../services/logger';
@@ -30,12 +30,12 @@ export type ActiveTrace = {
 };
 
 /**
- * Prefer the active Sentry span so the log `traceId` and the response
- * `traceparent` match Sentry's trace. Sentry's Bun server integration
- * continues `sentry-trace` / `baggage`, not an inbound W3C `traceparent`,
- * and it does not start a span for `OPTIONS` / `HEAD` or for `app.fetch`
- * outside `Bun.serve`. With no usable span, keep the inbound header or
- * mint one.
+ * Prefer the active OpenTelemetry span so the log `traceId` and the response
+ * `traceparent` match that span. In Sentry trace mode the span is Sentry's:
+ * its Bun server integration registers the global provider and continues
+ * `sentry-trace` / `baggage`, not an inbound W3C `traceparent`, and it does
+ * not start a span for `OPTIONS` / `HEAD` or for `app.fetch` outside
+ * `Bun.serve`. With no usable span, keep the inbound header or mint one.
  */
 export const resolveRequestTrace = (
 	incoming: string | undefined,
@@ -66,17 +66,17 @@ export const resolveRequestTrace = (
 	};
 };
 
-const readActiveSentryTrace = (): ActiveTrace | undefined => {
-	const span = Sentry.getActiveSpan();
+const readActiveTrace = (): ActiveTrace | undefined => {
+	const span = trace.getActiveSpan();
 	if (!span) return undefined;
 
-	const context = span.spanContext();
-	if (!context?.traceId || !context.spanId) return undefined;
+	const spanContext = span.spanContext();
+	if (!isSpanContextValid(spanContext)) return undefined;
 
 	return {
-		traceId: context.traceId,
-		spanId: context.spanId,
-		sampled: (context.traceFlags & 1) === 1
+		traceId: spanContext.traceId,
+		spanId: spanContext.spanId,
+		sampled: (spanContext.traceFlags & 1) === 1
 	};
 };
 
@@ -84,7 +84,7 @@ const logsMiddleware = createMiddleware<AppEnv>(async (c, next) => {
 	const requestId = c.req.header('x-request-id') ?? randomUUID();
 	const { traceparent, traceId, spanId } = resolveRequestTrace(
 		c.req.header('traceparent'),
-		readActiveSentryTrace()
+		readActiveTrace()
 	);
 
 	const logger = rootLogger.child({

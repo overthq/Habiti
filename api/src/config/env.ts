@@ -40,10 +40,27 @@ const envSchema = z.object({
 		.default('250')
 		.transform(v => parseInt(v, 10)),
 	INTERNAL_TOKEN: z.string().optional(),
-	// Log `service` field (services/logger.ts). The name is unchanged so
-	// existing deploys keep working. There is no OpenTelemetry SDK and
-	// `OTEL_EXPORTER_OTLP_ENDPOINT` is not read.
-	OTEL_SERVICE_NAME: z.string().default('habiti-api')
+	// Resource `service.name` and the `service` field on log lines.
+	OTEL_SERVICE_NAME: z.string().default('habiti-api'),
+	// Base URL of an OTLP/HTTP collector. When set, traces export here
+	// (`/v1/traces` is appended) and Sentry does not register a tracer
+	// provider. See `config/telemetry.ts` for precedence.
+	OTEL_EXPORTER_OTLP_ENDPOINT: z
+		.string()
+		.optional()
+		.transform(value => {
+			const trimmed = value?.trim();
+			return trimmed ? trimmed : undefined;
+		}),
+	// Comma-separated `key=value` list. Values are percent-encoded, matching
+	// the OpenTelemetry spec (`Authorization=Bearer%20token`).
+	OTEL_EXPORTER_OTLP_HEADERS: z
+		.string()
+		.optional()
+		.transform(value => {
+			const trimmed = value?.trim();
+			return trimmed ? trimmed : undefined;
+		})
 });
 
 export const env = envSchema.parse(Bun.env);

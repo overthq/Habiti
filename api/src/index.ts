@@ -1,6 +1,4 @@
-import './config/sentry';
-
-import * as Sentry from '@sentry/bun';
+import { shutdownTelemetry } from './config/telemetry';
 
 import { createApp } from './app';
 import { createLifecycle } from './lifecycle';
@@ -76,9 +74,9 @@ const main = async () => {
 	});
 
 	lifecycle.onShutdown({
-		name: 'sentry',
+		name: 'telemetry',
 		stage: 'connections',
-		run: () => Sentry.close(2_000)
+		run: () => shutdownTelemetry()
 	});
 
 	lifecycle.install();

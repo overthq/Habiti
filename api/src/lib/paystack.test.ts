@@ -1,6 +1,6 @@
 import { describe, expect, spyOn, test } from 'bun:test';
-import * as Sentry from '@sentry/bun';
 
+import * as errorReporting from '../services/errorReporting';
 import { rootLogger } from '../services/logger';
 import { REDACTED } from '../utils/redact';
 import { reportPaystackFailure } from './paystack';
@@ -16,10 +16,12 @@ describe('reportPaystackFailure', () => {
 				return undefined as never;
 			}
 		);
-		const captureSpy = spyOn(Sentry, 'captureException').mockImplementation(
+		const captureSpy = spyOn(
+			errorReporting,
+			'captureException'
+		).mockImplementation(
 			(_error: unknown, hint?: unknown) => {
 				captured.push(hint);
-				return 'event';
 			}
 		);
 

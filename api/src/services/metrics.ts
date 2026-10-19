@@ -3,8 +3,8 @@
  * exposition. Bounded memory: histograms keep at most `HISTOGRAM_RING_SIZE`
  * recent observations per tag-set.
  *
- * These stay in-process. Sentry is the trace backend; this registry is not
- * an OpenTelemetry meter and nothing exports it over OTLP.
+ * These stay in-process. Traces are the telemetry bootstrap's job; this
+ * registry is not an OpenTelemetry meter and nothing exports it over OTLP.
  */
 
 export type Tags = Record<string, string | number>;

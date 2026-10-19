@@ -1,3 +1,5 @@
+import { context, ROOT_CONTEXT, trace, TraceFlags } from '@opentelemetry/api';
+import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-hooks';
 import { describe, expect, test } from 'bun:test';
 import type { MiddlewareHandler } from 'hono';
 import pino from 'pino';
@@ -10,12 +12,15 @@ import { authenticate, optionalAuth } from './auth';
 import { errorHandler } from './errorHandler';
 import { resolveRequestTrace } from './logs';
 
+const contextManager = new AsyncLocalStorageContextManager().enable();
+context.setGlobalContextManager(contextManager);
+
 const TRACEPARENT_RE = /^[0-9a-f]{2}-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$/i;
 
 const incoming = `00-${'ab'.repeat(16)}-${'cd'.repeat(8)}-01`;
 
 describe('resolveRequestTrace', () => {
-	test('uses the active Sentry span instead of an inbound traceparent', () => {
+	test('uses the active span instead of an inbound traceparent', () => {
 		const traceId = 'a'.repeat(32);
 		const spanId = 'b'.repeat(16);
 		const resolved = resolveRequestTrace(incoming, {
@@ -29,7 +34,7 @@ describe('resolveRequestTrace', () => {
 		expect(resolved.traceparent).toBe(`00-${traceId}-${spanId}-01`);
 	});
 
-	test('writes flags 00 when the Sentry span is not sampled', () => {
+	test('writes flags 00 when the active span is not sampled', () => {
 		const resolved = resolveRequestTrace(undefined, {
 			traceId: 'e'.repeat(32),
 			spanId: 'f'.repeat(16),
@@ -39,7 +44,7 @@ describe('resolveRequestTrace', () => {
 		expect(resolved.traceparent.endsWith('-00')).toBe(true);
 	});
 
-	test('echoes a valid inbound traceparent when no Sentry span is active', () => {
+	test('echoes a valid inbound traceparent when no span is active', () => {
 		const resolved = resolveRequestTrace(incoming, undefined);
 
 		expect(resolved.traceparent).toBe(incoming);
@@ -57,7 +62,7 @@ describe('resolveRequestTrace', () => {
 		expect(invalid.traceparent).not.toBe('not-a-trace');
 	});
 
-	test('ignores a Sentry span whose ids are not W3C hex', () => {
+	test('ignores an active span whose ids are not W3C hex', () => {
 		const resolved = resolveRequestTrace(incoming, {
 			traceId: 'nope',
 			spanId: 'also-nope',
@@ -69,7 +74,7 @@ describe('resolveRequestTrace', () => {
 });
 
 describe('logsMiddleware traceparent', () => {
-	test('echoes an inbound traceparent when Sentry has no active span', async () => {
+	test('echoes an inbound traceparent when no span is active', async () => {
 		const { app } = createTestApp();
 		const res = await app.request('/health/live', {
 			headers: { traceparent: incoming }
@@ -78,6 +83,26 @@ describe('logsMiddleware traceparent', () => {
 		expect(res.status).toBe(200);
 		expect(res.headers.get('traceparent')).toBe(incoming);
 		expect(res.headers.get('x-request-id')).toBeTruthy();
+	});
+
+	test('reads traceId from the active OpenTelemetry span', async () => {
+		const traceId = '1'.repeat(32);
+		const spanId = '2'.repeat(16);
+		const span = trace.wrapSpanContext({
+			traceId,
+			spanId,
+			traceFlags: TraceFlags.SAMPLED,
+			isRemote: false
+		});
+		const { app } = createTestApp();
+		const res = await context.with(trace.setSpan(ROOT_CONTEXT, span), () =>
+			app.request('/health/live', {
+				headers: { traceparent: incoming }
+			})
+		);
+
+		expect(res.status).toBe(200);
+		expect(res.headers.get('traceparent')).toBe(`00-${traceId}-${spanId}-01`);
 	});
 
 	test('mints a traceparent when the request has none', async () => {

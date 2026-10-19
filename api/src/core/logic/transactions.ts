@@ -1,7 +1,7 @@
 import type { Context } from 'hono';
-import * as Sentry from '@sentry/bun';
 
 import * as PaymentLogic from './payments';
+import { captureException } from '../../services/errorReporting';
 import * as PayoutAccountLogic from './payoutAccounts';
 import * as TransactionData from '../data/transactions';
 import * as StoreData from '../data/stores';
@@ -175,7 +175,7 @@ export const createPayoutTransaction = async (
 
 		c.var.logger.error({ ...context }, 'payout.payAccount_failed');
 
-		Sentry.captureException(error, {
+		captureException(error, {
 			tags: { feature: 'payout', storeId },
 			extra: context
 		});
@@ -190,7 +190,7 @@ export const createPayoutTransaction = async (
 				'payout.reversal_failed'
 			);
 
-			Sentry.captureException(reversalError, {
+			captureException(reversalError, {
 				tags: { feature: 'payout', storeId, phase: 'reversal' },
 				extra: context
 			});

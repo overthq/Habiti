@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
-import * as Sentry from '@sentry/bun';
 
 import { env } from '../config/env';
+import * as errorReporting from '../services/errorReporting';
 import { rootLogger } from '../services/logger';
 import { instrument } from '../utils/instrument';
 import { paystackErrorCode, redactSensitive } from '../utils/redact';
@@ -43,7 +43,7 @@ export const reportPaystackFailure = (
 
 	rootLogger.error(logEntry, 'paystack.failed');
 
-	Sentry.captureException(error, {
+	errorReporting.captureException(error, {
 		tags: { integration: 'paystack', operation },
 		extra: logEntry
 	});

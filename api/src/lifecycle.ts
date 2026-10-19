@@ -1,6 +1,6 @@
-import * as Sentry from '@sentry/bun';
-
 import type { Logger } from './services/logger';
+import { captureException as reportException } from './services/errorReporting';
+import { shutdownTelemetry } from './config/telemetry';
 
 /**
  * Process lifecycle: graceful shutdown + the process-level safety nets.
@@ -16,7 +16,7 @@ import type { Logger } from './services/logger';
  *   drain        wait for in-flight requests to finish. This is the step
  *                that makes the above wait real.
  *   workers      flush background work (notifications queue, analytics).
- *   connections  close persistent connections (Prisma, Redis, Sentry).
+ *   connections  close persistent connections (Prisma, Redis, telemetry).
  *
  * `exit` and `captureException` are injected so the whole sequence can be
  * driven in a test without taking the process down with it.
@@ -60,11 +60,8 @@ export const createLifecycle = ({
 	hookTimeoutMs = DEFAULT_HOOK_TIMEOUT_MS,
 	exit = code => process.exit(code),
 	captureException = (err, context) =>
-		Sentry.captureException(err, scope => {
-			if (context) scope.setExtras(context);
-			return scope;
-		}),
-	flushErrors = () => Sentry.close(2_000)
+		reportException(err, context ? { extra: context } : undefined),
+	flushErrors = () => shutdownTelemetry()
 }: LifecycleOptions) => {
 	const hooks: ShutdownHook[] = [];
 
