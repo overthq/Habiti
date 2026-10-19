@@ -21,9 +21,6 @@ const runProbe = (
 	for (const [key, value] of Object.entries({
 		...process.env,
 		...requiredEnv,
-		OTEL_EXPORTER_OTLP_ENDPOINT: undefined,
-		OTEL_EXPORTER_OTLP_HEADERS: undefined,
-		SENTRY_TRACES_SAMPLE_RATE: undefined,
 		...overrides
 	})) {
 		if (typeof value === 'string') env[key] = value;
@@ -51,7 +48,7 @@ const runProbe = (
 
 const unsetScript = `
 import { getClient } from '@sentry/bun';
-import './src/config/telemetry.ts';
+import './src/config/sentry.ts';
 import { rootLogger } from './src/services/logger.ts';
 
 rootLogger.debug({ requestId: 'req-stdout' }, 'stdout_debug');
@@ -63,7 +60,7 @@ console.error('PROBE ' + JSON.stringify({ initialized: Boolean(getClient()) }));
 `;
 
 const forwardScript = `
-import './src/config/telemetry.ts';
+import './src/config/sentry.ts';
 import * as Sentry from '@sentry/bun';
 import { rootLogger } from './src/services/logger.ts';
 

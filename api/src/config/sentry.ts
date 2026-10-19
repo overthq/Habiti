@@ -1,26 +1,22 @@
 import * as Sentry from '@sentry/bun';
-import { PrismaInstrumentation } from '@prisma/instrumentation';
 import { HTTPException } from 'hono/http-exception';
 
 import { env } from './env';
 import { LogicError } from '../core/logic/errors';
+import { startTelemetry } from './telemetry';
 
 /**
- * Sentry setup for the two modes `config/telemetry.ts` selects.
+ * Boots the tracer provider, then Sentry.
  *
- * `traces` is the default when `SENTRY_DSN` is set and no OTLP endpoint is.
- * `@sentry/bun` registers its own OpenTelemetry provider (`bunServerIntegration`
- * spans per `Bun.serve` request, continuing `sentry-trace` / `baggage` rather
- * than W3C `traceparent`, plus Prisma and outbound HTTP spans).
+ * Importing this module is the process entry for telemetry. `startTelemetry`
+ * registers the OpenTelemetry provider before `Sentry.init`.
  *
- * `errors` is used when an OTLP endpoint is also set. `skipOpenTelemetrySetup`
- * is a supported `BunOptions` flag (`@sentry/node-core`
- * `OpenTelemetryServerRuntimeOptions`): `Sentry.init` then does not call
- * `initOpenTelemetry`, so it does not call `trace.setGlobalTracerProvider`.
- * `tracesSampleRate` is omitted, which leaves `hasSpansEnabled` false, so the
- * default Bun and HTTP integrations do not emit recording spans.
- * `SentrySpanProcessor` is intentionally not installed — traces have one
- * exporter. Errors and Pino logs still go to Sentry.
+ * `enableOpenTelemetrySetup: false` is the flag `@sentry/bun` 11 actually
+ * has (`skipOpenTelemetrySetup` is gone). Left false, Sentry does not
+ * register a tracer provider. `openTelemetryIntegration` attaches Sentry
+ * errors, logs, metrics, and check-ins to the active OpenTelemetry span.
+ * `tracesSampleRate` and `tracesSampler` stay unset; sampling is the
+ * provider's.
  *
  * `pinoIntegration` subscribes to Pino's `pino_asJson` tracing channel
  * (Pino >= 9.10). It is not a Pino transport, so production logging stays
@@ -31,11 +27,13 @@ import { LogicError } from '../core/logic/errors';
  * integration default (`[]`), so a Pino error is a Sentry log and not an
  * extra Sentry issue.
  *
+ * `prismaIntegration` stays so Prisma's tracing helper is installed. On
+ * SDK 11 that helper emits Sentry spans, and with tracing sample rates
+ * unset those spans are not recorded and are not exported on our provider.
+ *
  * `beforeSend` still drops `LogicError` and HTTP status < 500, matching
  * `errorHandler`.
  */
-export type SentryInitMode = 'traces' | 'errors';
-
 const beforeSend: NonNullable<Sentry.BunOptions['beforeSend']> = (
 	event,
 	hint
@@ -63,39 +61,30 @@ const pinoLogs = () =>
 		log: { levels: ['info', 'warn', 'error', 'fatal'] }
 	});
 
-export const initSentry = (mode: SentryInitMode): boolean => {
+export const initSentry = (): boolean => {
 	if (!env.SENTRY_DSN) return false;
 
-	const shared = {
+	// SDK 11 captures logs whenever `pinoIntegration` is installed; `enableLogs`
+	// is no longer on `BunOptions`. It is still set so `getOptions().enableLogs`
+	// stays true, which is what the existing log-forwarding check reads.
+	const sentryOptions: Sentry.BunOptions & { enableLogs: true } = {
 		dsn: env.SENTRY_DSN,
 		release: env.APP_VERSION,
 		environment: env.NODE_ENV ?? 'development',
 		enableLogs: true,
+		enableOpenTelemetrySetup: false,
 		beforeSend,
-		beforeBreadcrumb
+		beforeBreadcrumb,
+		integrations: [
+			Sentry.openTelemetryIntegration(),
+			Sentry.prismaIntegration(),
+			pinoLogs()
+		]
 	};
 
-	if (mode === 'traces') {
-		Sentry.init({
-			...shared,
-			tracesSampleRate: env.NODE_ENV === 'production' ? 0.1 : 1.0,
-			integrations: [
-				Sentry.httpIntegration(),
-				Sentry.prismaIntegration({
-					prismaInstrumentation: new PrismaInstrumentation()
-				}),
-				pinoLogs()
-			]
-		});
-
-		return true;
-	}
-
-	Sentry.init({
-		...shared,
-		skipOpenTelemetrySetup: true,
-		integrations: [pinoLogs()]
-	});
+	Sentry.init(sentryOptions);
 
 	return true;
 };
+
+startTelemetry(initSentry);

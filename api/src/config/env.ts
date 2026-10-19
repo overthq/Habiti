@@ -43,8 +43,9 @@ const envSchema = z.object({
 	// Resource `service.name` and the `service` field on log lines.
 	OTEL_SERVICE_NAME: z.string().default('habiti-api'),
 	// Base URL of an OTLP/HTTP collector. When set, traces export here
-	// (`/v1/traces` is appended) and Sentry does not register a tracer
-	// provider. See `config/telemetry.ts` for precedence.
+	// (`/v1/traces` is appended) and not to Sentry, even if `SENTRY_DSN`
+	// is also set. The provider itself is always registered. See
+	// `config/telemetry.ts`.
 	OTEL_EXPORTER_OTLP_ENDPOINT: z
 		.string()
 		.optional()

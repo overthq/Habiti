@@ -31,11 +31,8 @@ export type ActiveTrace = {
 
 /**
  * Prefer the active OpenTelemetry span so the log `traceId` and the response
- * `traceparent` match that span. In Sentry trace mode the span is Sentry's:
- * its Bun server integration registers the global provider and continues
- * `sentry-trace` / `baggage`, not an inbound W3C `traceparent`, and it does
- * not start a span for `OPTIONS` / `HEAD` or for `app.fetch` outside
- * `Bun.serve`. With no usable span, keep the inbound header or mint one.
+ * `traceparent` match that span. With no usable span, keep the inbound
+ * `traceparent` or mint one.
  */
 export const resolveRequestTrace = (
 	incoming: string | undefined,

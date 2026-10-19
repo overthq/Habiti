@@ -1,3 +1,4 @@
+import './config/sentry';
 import { shutdownTelemetry } from './config/telemetry';
 
 import { createApp } from './app';

@@ -5,45 +5,37 @@ import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import {
 	BasicTracerProvider,
-	BatchSpanProcessor
+	BatchSpanProcessor,
+	ParentBasedSampler,
+	TraceIdRatioBasedSampler
 } from '@opentelemetry/sdk-trace-base';
 import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 import * as Sentry from '@sentry/bun';
 
 import { env } from './env';
-import { initSentry } from './sentry';
 
 /**
- * The only module that registers a trace provider.
+ * The only module that registers a tracer provider. `config/sentry.ts` calls
+ * `startTelemetry` before `Sentry.init`.
  *
- * Precedence: `OTEL_EXPORTER_OTLP_ENDPOINT` wins, even when `SENTRY_DSN` is
- * also set. Traces then export once, over OTLP/HTTP, and Sentry is started
- * in errors/logs mode (`skipOpenTelemetrySetup`, no `tracesSampleRate`) so
- * it does not register a second provider. With only a DSN, Sentry keeps
- * today's tracing setup, including `tracesSampleRate` and `pinoIntegration`.
- * With neither, nothing is registered and the OpenTelemetry API no-ops.
+ * One `BasicTracerProvider` is always registered. Sampling is
+ * `ParentBasedSampler` around `TraceIdRatioBasedSampler`: 0.1 in production,
+ * 1 otherwise. `Sentry.init` does not set `tracesSampleRate` or
+ * `tracesSampler`.
  *
- * OTLP mode does not auto-instrument `Bun.serve`. Request logs still prefer
- * an active span and otherwise echo or mint `traceparent`. Logs stay on
- * stdout for a collector to scrape; there is no OTLP log exporter.
- * `pinoIntegration` remains the Sentry-mode log adapter only.
+ * Exporter precedence, one destination:
+ * - `OTEL_EXPORTER_OTLP_ENDPOINT` → OTLP/HTTP traces, even when `SENTRY_DSN`
+ *   is also set. Sentry then receives errors and logs only.
+ * - only `SENTRY_DSN` → the same OTLP/HTTP exporter pointed at
+ *   `Sentry.getOtlpTracesEndpoint()`. `@sentry/bun` 11 exports that helper;
+ *   there is no second provider and no `SentrySpanProcessor`.
+ * - neither → the provider stays registered with no exporter. Spans record
+ *   locally and are dropped. Stdout logs are unchanged.
  */
-export type TraceProviderName = 'otlp' | 'sentry' | 'none';
-
-export const selectTraceProvider = (input: {
-	otlpEndpoint?: string;
-	sentryDsn?: string;
-}): TraceProviderName => {
-	if (input.otlpEndpoint) return 'otlp';
-	if (input.sentryDsn) return 'sentry';
-	return 'none';
-};
-
-export type TelemetryState = {
-	traceProvider: TraceProviderName;
-	sentryEnabled: boolean;
-	otlpEndpoint?: string;
-};
+let provider: BasicTracerProvider | undefined;
+let sentryEnabled = false;
+let shuttingDown: Promise<void> | undefined;
+let started = false;
 
 const tracesUrl = (endpoint: string): string => {
 	let parsed: URL;
@@ -65,29 +57,46 @@ const tracesUrl = (endpoint: string): string => {
 	return parsed.toString();
 };
 
-let otlpProvider: BasicTracerProvider | undefined;
-let sentryEnabled = false;
-let shuttingDown: Promise<void> | undefined;
+const sampleRate = (): number => (env.NODE_ENV === 'production' ? 0.1 : 1);
 
-const state: TelemetryState = {
-	traceProvider: 'none',
-	sentryEnabled: false
+const otlpProcessor = (endpoint: string): BatchSpanProcessor => {
+	const headers = parseKeyPairsIntoRecord(env.OTEL_EXPORTER_OTLP_HEADERS);
+
+	return new BatchSpanProcessor(
+		new OTLPTraceExporter({
+			url: tracesUrl(endpoint),
+			...(Object.keys(headers).length > 0 ? { headers } : {})
+		})
+	);
 };
 
-export const getTelemetryState = (): TelemetryState => ({ ...state });
+const sentryProcessor = (dsn: string): BatchSpanProcessor | undefined => {
+	const endpoint = Sentry.getOtlpTracesEndpoint(dsn);
+	if (!endpoint) return undefined;
 
-const registerOtlp = (endpoint: string) => {
-	const headers = parseKeyPairsIntoRecord(env.OTEL_EXPORTER_OTLP_HEADERS);
-	const exporter = new OTLPTraceExporter({
-		url: tracesUrl(endpoint),
-		...(Object.keys(headers).length > 0 ? { headers } : {})
-	});
+	return new BatchSpanProcessor(new OTLPTraceExporter(endpoint));
+};
 
-	const provider = new BasicTracerProvider({
+export const startTelemetry = (initSentry: () => boolean): void => {
+	if (started) return;
+	started = true;
+
+	const endpoint = env.OTEL_EXPORTER_OTLP_ENDPOINT;
+	const dsn = env.SENTRY_DSN;
+	const exporter = endpoint
+		? otlpProcessor(endpoint)
+		: dsn
+			? sentryProcessor(dsn)
+			: undefined;
+
+	provider = new BasicTracerProvider({
+		sampler: new ParentBasedSampler({
+			root: new TraceIdRatioBasedSampler(sampleRate())
+		}),
 		resource: resourceFromAttributes({
 			[ATTR_SERVICE_NAME]: env.OTEL_SERVICE_NAME
 		}),
-		spanProcessors: [new BatchSpanProcessor(exporter)]
+		...(exporter ? { spanProcessors: [exporter] } : {})
 	});
 
 	const contextManager = new AsyncLocalStorageContextManager().enable();
@@ -104,51 +113,26 @@ const registerOtlp = (endpoint: string) => {
 		throw new Error('OpenTelemetry tracer provider is already registered');
 	}
 
-	otlpProvider = provider;
+	sentryEnabled = initSentry();
 };
 
-const bootstrap = () => {
-	const endpoint = env.OTEL_EXPORTER_OTLP_ENDPOINT;
-	const dsn = env.SENTRY_DSN;
-	const traceProvider = selectTraceProvider({
-		...(endpoint ? { otlpEndpoint: endpoint } : {}),
-		...(dsn ? { sentryDsn: dsn } : {})
-	});
-
-	state.traceProvider = traceProvider;
-
-	if (traceProvider === 'otlp' && endpoint) {
-		registerOtlp(endpoint);
-		state.otlpEndpoint = endpoint;
-		sentryEnabled = initSentry('errors');
-		state.sentryEnabled = sentryEnabled;
-		return;
-	}
-
-	if (traceProvider === 'sentry') {
-		sentryEnabled = initSentry('traces');
-		state.sentryEnabled = sentryEnabled;
-	}
-};
-
-bootstrap();
-
-/** Flush the OTLP provider, when one was registered, and close Sentry. */
+/** Flush the provider and close Sentry. */
 export const shutdownTelemetry = (): Promise<void> => {
 	if (shuttingDown) return shuttingDown;
 
 	shuttingDown = (async () => {
 		const tasks: Promise<unknown>[] = [];
 
-		if (otlpProvider) {
-			tasks.push(otlpProvider.shutdown());
-			otlpProvider = undefined;
+		const active = provider;
+		provider = undefined;
+
+		if (active) {
+			tasks.push(active.forceFlush().then(() => active.shutdown()));
 		}
 
 		if (sentryEnabled) {
 			tasks.push(Sentry.close(2_000));
 			sentryEnabled = false;
-			state.sentryEnabled = false;
 		}
 
 		await Promise.all(tasks);
