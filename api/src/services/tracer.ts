@@ -6,12 +6,6 @@ import {
 
 import { env } from '../config/env';
 
-/**
- * Call-site hook for `order.create`, Paystack webhooks, and similar work.
- * Spans go through the OpenTelemetry API. `config/telemetry.ts` registers
- * the provider (Sentry or OTLP). With no provider the API no-ops and `fn`
- * still runs.
- */
 export interface Tracer {
 	startSpan<T>(
 		name: string,

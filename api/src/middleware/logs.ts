@@ -29,11 +29,6 @@ export type ActiveTrace = {
 	sampled: boolean;
 };
 
-/**
- * Prefer the active OpenTelemetry span so the log `traceId` and the response
- * `traceparent` match that span. With no usable span, keep the inbound
- * `traceparent` or mint one.
- */
 export const resolveRequestTrace = (
 	incoming: string | undefined,
 	active: ActiveTrace | undefined

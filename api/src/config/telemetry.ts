@@ -14,24 +14,6 @@ import * as Sentry from '@sentry/bun';
 
 import { env } from './env';
 
-/**
- * The only module that registers a tracer provider. `config/sentry.ts` calls
- * `startTelemetry` before `Sentry.init`.
- *
- * One `BasicTracerProvider` is always registered. Sampling is
- * `ParentBasedSampler` around `TraceIdRatioBasedSampler`: 0.1 in production,
- * 1 otherwise. `Sentry.init` does not set `tracesSampleRate` or
- * `tracesSampler`.
- *
- * Exporter precedence, one destination:
- * - `OTEL_EXPORTER_OTLP_ENDPOINT` → OTLP/HTTP traces, even when `SENTRY_DSN`
- *   is also set. Sentry then receives errors and logs only.
- * - only `SENTRY_DSN` → the same OTLP/HTTP exporter pointed at
- *   `Sentry.getOtlpTracesEndpoint()`. `@sentry/bun` 11 exports that helper;
- *   there is no second provider and no `SentrySpanProcessor`.
- * - neither → the provider stays registered with no exporter. Spans record
- *   locally and are dropped. Stdout logs are unchanged.
- */
 let provider: BasicTracerProvider | undefined;
 let sentryEnabled = false;
 let shuttingDown: Promise<void> | undefined;
@@ -116,7 +98,6 @@ export const startTelemetry = (initSentry: () => boolean): void => {
 	sentryEnabled = initSentry();
 };
 
-/** Flush the provider and close Sentry. */
 export const shutdownTelemetry = (): Promise<void> => {
 	if (shuttingDown) return shuttingDown;
 

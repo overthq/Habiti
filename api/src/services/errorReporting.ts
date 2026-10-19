@@ -1,11 +1,5 @@
 import * as Sentry from '@sentry/bun';
 
-/**
- * Habiti's error-reporting port. Call sites pass context that is already
- * safe to store (Paystack extras are redacted before they get here).
- * Today this forwards to Sentry. With no `Sentry.init`, `captureException`
- * returns without sending; the caller has already logged the failure.
- */
 export type ErrorReportUser = {
 	id: string;
 	email?: string;
