@@ -80,7 +80,7 @@ const EditAddress: React.FC<AppStackScreenProps<'Modal.EditAddress'>> = ({
 				<Spacer y={16} />
 				<Button
 					text='Save Address'
-					onPress={methods.handleSubmit(onSubmit)}
+					onPress={() => methods.handleSubmit(onSubmit)()}
 					loading={updateDeliveryAddress.isPending}
 				/>
 			</FormProvider>

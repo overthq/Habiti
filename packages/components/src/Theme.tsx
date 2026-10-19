@@ -23,7 +23,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
 	const parsed = React.useMemo(() => {
 		if (theme === 'auto') {
-			return autoTheme !== 'unspecified' ? autoTheme : 'light';
+			return autoTheme ?? 'light';
 		}
 
 		return theme;

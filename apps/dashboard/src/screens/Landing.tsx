@@ -72,7 +72,7 @@ const Landing: React.FC<AppStackScreenProps<'Landing'>> = ({ navigation }) => {
 						<Spacer y={16} />
 						<Button
 							text='Continue'
-							onPress={methods.handleSubmit(onSubmit)}
+							onPress={() => methods.handleSubmit(onSubmit)()}
 							loading={authenticateMutation.isPending}
 							disabled={!methods.formState.isValid}
 						/>

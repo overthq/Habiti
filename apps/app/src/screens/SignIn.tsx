@@ -59,14 +59,14 @@ const SignIn: React.FC<AuthStackScreenProps<'Auth.Main'>> = ({
 				autoCorrect={false}
 				autoCapitalize='none'
 				returnKeyType='go'
-				onSubmitEditing={handleSubmit(onSubmit)}
+				onSubmitEditing={() => handleSubmit(onSubmit)()}
 			/>
 
 			<Spacer y={16} />
 
 			<Button
 				text='Continue'
-				onPress={handleSubmit(onSubmit)}
+				onPress={() => handleSubmit(onSubmit)()}
 				loading={authenticateMutation.isPending}
 				disabled={!formState.isValid}
 			/>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, TextButton, Typography, useTheme } from '@habiti/components';
-import { StyleSheet, TextInput } from 'react-native';
+import { StyleSheet, TextInput, type TextInputInstance } from 'react-native';
 import Animated, {
 	FadeInRight,
 	FadeInUp,
@@ -25,7 +25,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 }) => {
 	const isFirstRender = useFirstRender();
 
-	const inputRef = React.useRef<TextInput>(null);
+	const inputRef = React.useRef<TextInputInstance>(null);
 	const { name, theme } = useTheme();
 
 	const expandSearch = React.useCallback(() => {

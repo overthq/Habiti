@@ -72,7 +72,7 @@ const Register: React.FC<AppStackScreenProps<'Register'>> = ({
 				<Spacer y={16} />
 				<Button
 					text='Register'
-					onPress={methods.handleSubmit(onSubmit)}
+					onPress={() => methods.handleSubmit(onSubmit)()}
 					loading={registerMutation.isPending}
 					disabled={!methods.formState.isValid}
 				/>

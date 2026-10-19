@@ -60,8 +60,12 @@ const Typography: React.FC<TypographyProps> = props => {
 };
 
 // H/T: Bluesky social-app
-export const applyFontStyles = (style: TextStyle = {}) => {
-	if (USE_DEFAULT_FONT) return style;
+export const applyFontStyles = (input: TextStyle = {}) => {
+	if (USE_DEFAULT_FONT) return input;
+
+	const style: { -readonly [K in keyof TextStyle]: TextStyle[K] } = {
+		...input
+	};
 
 	if (Platform.OS === 'android') {
 		style.fontFamily =
@@ -74,7 +78,10 @@ export const applyFontStyles = (style: TextStyle = {}) => {
 				900: 'Inter-Bold'
 			}[String(style.fontWeight || '400')] || 'Inter-Regular';
 
-		style.fontVariant = ['no-contextual', ...(style.fontVariant ?? [])];
+		style.fontVariant =
+			typeof style.fontVariant === 'string'
+				? `no-contextual ${style.fontVariant}`
+				: ['no-contextual', ...(style.fontVariant ?? [])];
 
 		if (style.fontStyle === 'italic') {
 			if (style.fontFamily === 'Inter-Regular') {

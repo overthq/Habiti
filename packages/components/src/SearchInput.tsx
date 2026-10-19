@@ -1,12 +1,12 @@
 import React from 'react';
-import { TextInput, StyleSheet } from 'react-native';
+import { TextInput, StyleSheet, type TextInputInstance } from 'react-native';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 
 import { Icon } from './Icon';
 import { useTheme } from './Theme';
 
 interface SearchInputProps {
-	inputRef: React.RefObject<TextInput>;
+	inputRef: React.RefObject<TextInputInstance>;
 	setFocused(s: boolean): void;
 	searchTerm: string;
 	setSearchTerm(value: string): void;

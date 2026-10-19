@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, StyleSheet, Pressable, TextInput } from 'react-native';
+import {
+	View,
+	StyleSheet,
+	Pressable,
+	TextInput,
+	type TextInputInstance
+} from 'react-native';
 import {
 	BottomModal,
 	Icon,
@@ -58,7 +64,7 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({
 		navigate('Modal.StoreInfo', { storeId: store.id });
 	}, [navigate, store.id]);
 
-	const inputRef = React.useRef<TextInput>(null);
+	const inputRef = React.useRef<TextInputInstance>(null);
 
 	const expandSearch = React.useCallback(() => {
 		setSearchOpen(true);

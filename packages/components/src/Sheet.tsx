@@ -7,6 +7,7 @@ import {
 	ScrollViewProps,
 	TextInput,
 	TextInputProps,
+	type TextInputInstance,
 	View,
 	ViewProps
 } from 'react-native';
@@ -50,11 +51,12 @@ export function SheetFlatList<T>(props: FlatListProps<T>) {
 const TextInputComponent = (Platform.OS === 'ios'
 	? TextInput
 	: BottomSheetTextInput) as unknown as React.ForwardRefExoticComponent<
-	TextInputProps & React.RefAttributes<TextInput>
+	TextInputProps & React.RefAttributes<TextInputInstance>
 >;
 
-export const SheetTextInput = React.forwardRef<TextInput, TextInputProps>(
-	(props, ref) => <TextInputComponent ref={ref} {...props} />
-);
+export const SheetTextInput = React.forwardRef<
+	TextInputInstance,
+	TextInputProps
+>((props, ref) => <TextInputComponent ref={ref} {...props} />);
 
 SheetTextInput.displayName = 'SheetTextInput';
