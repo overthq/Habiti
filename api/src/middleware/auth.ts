@@ -24,40 +24,46 @@ export const auth = (options: AuthOptions = {}) => {
 				throw new HTTPException(401, { message: 'Authentication required' });
 			}
 			c.set('storeId', c.req.header('x-market-store-id'));
-			return next();
-		}
+		} else {
+			try {
+				await jwtMiddleware(c, async () => {});
+				const payload = c.get('jwtPayload');
 
-		try {
-			await jwtMiddleware(c, async () => {});
-			const payload = c.get('jwtPayload');
+				// Ensure only access tokens are accepted.
+				if (payload.typ !== 'access') {
+					throw new HTTPException(401, { message: 'Invalid or expired token' });
+				}
 
-			// Ensure only access tokens are accepted.
-			if (payload.typ !== 'access') {
+				if (adminOnly && payload.role !== 'admin') {
+					throw new HTTPException(403, { message: 'Forbidden' });
+				}
+
+				// Check if session is still valid
+				if (payload.sessionId) {
+					const denied = await isSessionDenied(c.var.redis, payload.sessionId);
+
+					if (denied) {
+						throw new HTTPException(401, { message: 'Session revoked' });
+					}
+				}
+
+				c.set('auth', payload);
+				c.set('storeId', payload.storeId);
+				c.set('isAdmin', payload.role === 'admin');
+			} catch (error) {
+				if (error instanceof HTTPException) throw error;
 				throw new HTTPException(401, { message: 'Invalid or expired token' });
 			}
-
-			if (adminOnly && payload.role !== 'admin') {
-				throw new HTTPException(403, { message: 'Forbidden' });
-			}
-
-			// Check if session is still valid
-			if (payload.sessionId) {
-				const denied = await isSessionDenied(c.var.redis, payload.sessionId);
-
-				if (denied) {
-					throw new HTTPException(401, { message: 'Session revoked' });
-				}
-			}
-
-			c.set('auth', payload);
-			c.set('storeId', payload.storeId);
-			c.set('isAdmin', payload.role === 'admin');
-
-			return next();
-		} catch (error) {
-			if (error instanceof HTTPException) throw error;
-			throw new HTTPException(401, { message: 'Invalid or expired token' });
 		}
+
+		// logsMiddleware creates the request logger before auth runs, so add
+		// the ids resolved here to every line logged after this point.
+		const { auth, storeId } = c.var;
+		if (auth || storeId) {
+			c.set('logger', c.var.logger.child({ userId: auth?.id, storeId }));
+		}
+
+		return next();
 	});
 };
 
