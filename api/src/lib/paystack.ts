@@ -18,7 +18,21 @@ const client = axios.create({
 const REDACTED_KEYS = new Set([
 	'authorization_code',
 	'authorizationCode',
-	'otp'
+	'access_code',
+	'authorization_url',
+	'otp',
+	'account_number',
+	'accountNumber',
+	'sender_bank_account_number',
+	'receiver_bank_account_number',
+	'account_name',
+	'accountName',
+	'name',
+	'sender_name',
+	'first_name',
+	'last_name',
+	'email',
+	'phone'
 ]);
 
 const redact = (value: unknown): unknown => {
@@ -30,7 +44,7 @@ const redact = (value: unknown): unknown => {
 		const out: Record<string, unknown> = {};
 
 		for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
-			out[k] = REDACTED_KEYS.has(k) ? '[redacted]' : redact(v);
+			out[k] = REDACTED_KEYS.has(k) ? '[REDACTED]' : redact(v);
 		}
 
 		return out;
@@ -59,7 +73,7 @@ const withLogging = async <T>(
 					request: redact(payload),
 					status: axiosError.response?.status,
 					statusText: axiosError.response?.statusText,
-					responseData: axiosError.response?.data,
+					responseData: redact(axiosError.response?.data),
 					code: axiosError.code,
 					message: axiosError.message
 				};
