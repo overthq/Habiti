@@ -2,7 +2,6 @@ import React from 'react';
 import {
 	AppState,
 	Pressable,
-	TextInput,
 	StyleSheet,
 	type TextInputInstance
 } from 'react-native';
