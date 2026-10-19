@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, Pressable, StyleSheet, TextInput } from 'react-native';
+import {
+	View,
+	Pressable,
+	StyleSheet,
+	TextInput,
+	type TextInputInstance
+} from 'react-native';
 import Animated, {
 	FadeInUp,
 	FadeOutUp,
@@ -35,7 +41,7 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 }) => {
 	const { name, theme } = useTheme();
 	const [focused, setFocused] = React.useState(false);
-	const inputRef = React.useRef<TextInput>(null);
+	const inputRef = React.useRef<TextInputInstance>(null);
 	const isFirstRender = React.useRef(true);
 
 	const searchOpen = focused || (search?.value.length ?? 0) > 0;

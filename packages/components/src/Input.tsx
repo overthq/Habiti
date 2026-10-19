@@ -1,12 +1,20 @@
 import React from 'react';
-import { View, TextInput, TextInputProps, StyleSheet } from 'react-native';
+import {
+	View,
+	TextInput,
+	TextInputProps,
+	StyleSheet,
+	type TextInputInstance
+} from 'react-native';
 
 import { useTheme } from './Theme';
 import Typography, { applyFontStyles } from './Typography';
 
 export interface BaseInputProps extends TextInputProps {
-	ref?: React.Ref<TextInput>;
-	as?: React.ComponentType<TextInputProps & React.RefAttributes<TextInput>>;
+	ref?: React.Ref<TextInputInstance>;
+	as?: React.ComponentType<
+		TextInputProps & React.RefAttributes<TextInputInstance>
+	>;
 	number?: boolean;
 }
 

@@ -1,5 +1,12 @@
 import React from 'react';
-import { AppState, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import {
+	AppState,
+	Pressable,
+	StyleSheet,
+	TextInput,
+	View,
+	type TextInputInstance
+} from 'react-native';
 import { Typography, useTheme } from '@habiti/components';
 import Animated, {
 	useAnimatedStyle,
@@ -25,7 +32,7 @@ const CodeInput: React.FC<CodeInputProps> = ({
 	autoFocus
 }) => {
 	const { theme } = useTheme();
-	const inputRef = React.useRef<TextInput>(null);
+	const inputRef = React.useRef<TextInputInstance>(null);
 	const [focused, setFocused] = React.useState(false);
 
 	React.useEffect(() => {

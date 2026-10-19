@@ -1,5 +1,10 @@
 import React from 'react';
-import { AppState, Pressable, TextInput, StyleSheet } from 'react-native';
+import {
+	AppState,
+	Pressable,
+	StyleSheet,
+	type TextInputInstance
+} from 'react-native';
 import {
 	Button,
 	FormInput,
@@ -33,7 +38,7 @@ const Verify = () => {
 	const { params } = useRoute<RouteProp<AuthStackParamList, 'Auth.Verify'>>();
 	const verifyCodeMutation = useVerifyCodeMutation();
 
-	const inputRef = React.useRef<TextInput>(null);
+	const inputRef = React.useRef<TextInputInstance>(null);
 
 	const methods = useForm<VerifyFormValues>({
 		resolver: zodResolver(verifySchema),
@@ -93,7 +98,7 @@ const Verify = () => {
 			<Spacer y={32} />
 			<Button
 				text='Verify'
-				onPress={methods.handleSubmit(onSubmit)}
+				onPress={() => methods.handleSubmit(onSubmit)()}
 				loading={verifyCodeMutation.isPending}
 				disabled={!methods.formState.isValid}
 			/>
