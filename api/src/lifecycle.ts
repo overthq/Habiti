@@ -16,7 +16,7 @@ import type { Logger } from './services/logger';
  *   drain        wait for in-flight requests to finish. This is the step
  *                that makes the above wait real.
  *   workers      flush background work (notifications queue, analytics).
- *   connections  close persistent connections (Prisma, Redis, Sentry).
+ *   connections  close persistent connections (Prisma, Redis, telemetry, Sentry).
  *
  * `exit` and `captureException` are injected so the whole sequence can be
  * driven in a test without taking the process down with it.

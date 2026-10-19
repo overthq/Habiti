@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/bun';
-import { PrismaInstrumentation } from '@prisma/instrumentation';
 import { HTTPException } from 'hono/http-exception';
 
 import { env } from './env';
@@ -10,14 +9,7 @@ if (env.SENTRY_DSN) {
 		dsn: env.SENTRY_DSN,
 		release: env.APP_VERSION,
 		environment: env.NODE_ENV ?? 'development',
-		tracesSampleRate: env.NODE_ENV === 'production' ? 0.1 : 1.0,
-		integrations: [
-			Sentry.httpIntegration(),
-			Sentry.prismaIntegration({
-				prismaInstrumentation: new PrismaInstrumentation()
-			})
-		],
-		enableLogs: true,
+		integrations: [Sentry.openTelemetryIntegration()],
 		beforeSend(event, hint) {
 			const err = hint.originalException;
 
