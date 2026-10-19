@@ -35,8 +35,7 @@ const fakeContext = (payoutRequests: any[]) => {
 				$transaction: async (fn: any) => fn(tx)
 			},
 			tracer: {
-				startSpan: async (_name: string, fn: any) => fn({}),
-				raw: {} as any
+				startSpan: async (_name: string, fn: any) => fn()
 			}
 		}
 	} as any;
@@ -285,7 +284,7 @@ const fakePayoutContext = async () => {
 				info: mock(() => {})
 			},
 			services: { notifications: { queueNotification } },
-			tracer: { startSpan: async (_name: string, fn: any) => fn({}) }
+			tracer: { startSpan: async (_name: string, fn: any) => fn() }
 		}
 	} as any;
 
