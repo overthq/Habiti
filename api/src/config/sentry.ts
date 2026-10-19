@@ -9,7 +9,12 @@ if (env.SENTRY_DSN) {
 		dsn: env.SENTRY_DSN,
 		release: env.APP_VERSION,
 		environment: env.NODE_ENV ?? 'development',
-		integrations: [Sentry.openTelemetryIntegration()],
+		integrations: [
+			Sentry.openTelemetryIntegration(),
+			Sentry.pinoIntegration({
+				log: { levels: ['info', 'warn', 'error', 'fatal'] }
+			})
+		],
 		beforeSend(event, hint) {
 			const err = hint.originalException;
 
