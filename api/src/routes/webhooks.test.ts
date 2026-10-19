@@ -80,7 +80,17 @@ const failingEvent = (id: number) => ({
 	data: {
 		id,
 		customer: { email: 'ada@example.com' },
-		authorization: { card_type: 'visa' },
+		authorization: {
+			authorization_code: 'AUTH_card',
+			signature: 'SIG_card',
+			bin: '408408',
+			last4: '4081',
+			exp_month: '12',
+			exp_year: '2030',
+			card_type: 'visa',
+			bank: 'Test Bank',
+			country_code: 'NG'
+		},
 		metadata: null
 	}
 });

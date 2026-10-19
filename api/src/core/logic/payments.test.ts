@@ -2,9 +2,12 @@ import { describe, expect, test, mock } from 'bun:test';
 
 import {
 	approvePayment,
+	handleChargeSuccess,
 	handlePaystackWebhookEvent,
 	transitionOrderToPending
 } from './payments';
+import { NotificationType } from '../notifications';
+import type { ChargeEvent } from '../payments/validation';
 import {
 	LedgerReason,
 	OrderStatus,
@@ -122,7 +125,13 @@ describe('approvePayment', () => {
  * still matches the `where` clause.
  */
 
-const fakeOrderContext = (order: { total: number; status: OrderStatus }) => {
+const fakeOrderContext = (order: {
+	total: number;
+	status: OrderStatus;
+	transactionFee?: number;
+	serviceFee?: number;
+	pushTokens?: { token: string; type: string }[];
+}) => {
 	const state = { status: order.status };
 
 	const queueNotification = mock((_payload: any) => {});
@@ -141,8 +150,10 @@ const fakeOrderContext = (order: { total: number; status: OrderStatus }) => {
 			findUnique: mock(async () => ({
 				id: 'order-1',
 				storeId: 'store-1',
+				userId: 'user-1',
 				total: order.total,
-				serviceFee: 0,
+				transactionFee: order.transactionFee ?? 0,
+				serviceFee: order.serviceFee ?? 0,
 				status: state.status,
 				user: { name: 'Ada' }
 			})),
@@ -158,14 +169,22 @@ const fakeOrderContext = (order: { total: number; status: OrderStatus }) => {
 				managerId: 'user-1',
 				storeId: 'store-1'
 			}))
+		},
+		userPushToken: {
+			findMany: mock(async () => order.pushTokens ?? [])
 		}
 	});
 
 	const c = {
 		var: {
 			prisma: client,
-			logger: { warn: mock(() => {}), error: mock(() => {}) },
-			services: { notifications: { queueNotification } }
+			logger: {
+				warn: mock(() => {}),
+				error: mock(() => {}),
+				info: mock(() => {})
+			},
+			services: { notifications: { queueNotification } },
+			tracer: { startSpan: async (_name: string, fn: any) => fn() }
 		}
 	} as any;
 
@@ -175,6 +194,13 @@ const fakeOrderContext = (order: { total: number; status: OrderStatus }) => {
 	return { c, queueNotification, tables, payments };
 };
 
+const charge = (amount: number): ChargeEvent => ({
+	amount,
+	orderId: 'order-1',
+	reason: undefined,
+	card: undefined
+});
+
 describe('transitionOrderToPending', () => {
 	test('transitions the order once and notifies the store', async () => {
 		const { c, queueNotification, tables, payments } = fakeOrderContext({
@@ -182,7 +208,7 @@ describe('transitionOrderToPending', () => {
 			status: OrderStatus.PaymentPending
 		});
 
-		await transitionOrderToPending(c, 'order-1');
+		await transitionOrderToPending(c, 'order-1', charge(150_000));
 
 		expect(payments()).toHaveLength(1);
 		expect(tables.stores.get('store-1')!.unrealizedRevenue).toBe(150_000n);
@@ -199,9 +225,9 @@ describe('transitionOrderToPending', () => {
 			status: OrderStatus.PaymentPending
 		});
 
-		await transitionOrderToPending(c, 'order-1');
-		await transitionOrderToPending(c, 'order-1');
-		await transitionOrderToPending(c, 'order-1');
+		await transitionOrderToPending(c, 'order-1', charge(150_000));
+		await transitionOrderToPending(c, 'order-1', charge(150_000));
+		await transitionOrderToPending(c, 'order-1', charge(150_000));
 
 		expect(payments()).toHaveLength(1);
 		expect(tables.stores.get('store-1')!.unrealizedRevenue).toBe(150_000n);
@@ -214,7 +240,7 @@ describe('transitionOrderToPending', () => {
 			status: OrderStatus.Cancelled
 		});
 
-		await transitionOrderToPending(c, 'order-1');
+		await transitionOrderToPending(c, 'order-1', charge(150_000));
 
 		expect(payments()).toHaveLength(0);
 		expect(queueNotification).not.toHaveBeenCalled();
@@ -226,7 +252,7 @@ describe('transitionOrderToPending', () => {
 			status: OrderStatus.Pending
 		});
 
-		await transitionOrderToPending(c, 'order-1');
+		await transitionOrderToPending(c, 'order-1', charge(150_000));
 
 		expect(payments()).toHaveLength(1);
 		expect(tables.stores.get('store-1')!.unrealizedRevenue).toBe(150_000n);
@@ -244,9 +270,9 @@ describe('transitionOrderToPending', () => {
 			throw new Error('serialization failure');
 		});
 
-		await expect(transitionOrderToPending(c, 'order-1')).rejects.toThrow(
-			'serialization failure'
-		);
+		await expect(
+			transitionOrderToPending(c, 'order-1', charge(150_000))
+		).rejects.toThrow('serialization failure');
 
 		expect(payments()).toHaveLength(0);
 	});
@@ -307,5 +333,69 @@ describe('transfer.success', () => {
 			data: { amount: 40_000, transactionId: transaction.id }
 		});
 		expect(transaction.id).not.toBe(payout.id);
+	});
+});
+
+describe('charge.success', () => {
+	const order = {
+		total: 150_000,
+		transactionFee: 2_250,
+		serviceFee: 10_000,
+		status: OrderStatus.PaymentPending
+	};
+
+	test('pays the order when the charge covers the total and fees', async () => {
+		const { c, queueNotification, payments } = fakeOrderContext(order);
+
+		await handlePaystackWebhookEvent(c, 'charge.success', {
+			amount: 162_250,
+			currency: 'NGN',
+			reference: 'ref_transfer',
+			metadata: JSON.stringify({ orderId: 'order-1' }),
+			authorization: { card_type: 'transfer' }
+		});
+
+		expect(payments()).toHaveLength(2);
+		expect(queueNotification).toHaveBeenCalledTimes(1);
+	});
+
+	test('leaves the order unpaid when the amount does not match', async () => {
+		const { c, queueNotification, payments } = fakeOrderContext(order);
+
+		await handleChargeSuccess(c, charge(150_000));
+
+		expect(payments()).toHaveLength(0);
+		expect(c.var.prisma.order.update).not.toHaveBeenCalled();
+		expect(queueNotification).not.toHaveBeenCalled();
+		expect(c.var.logger.error).toHaveBeenCalledWith(
+			expect.objectContaining({ amount: 150_000, expectedAmount: 162_250 }),
+			'payment.charge_amount_mismatch'
+		);
+	});
+});
+
+describe('bank.transfer.rejected', () => {
+	test('notifies the shopper and leaves the order unpaid', async () => {
+		const { c, queueNotification, payments } = fakeOrderContext({
+			total: 150_000,
+			status: OrderStatus.PaymentPending,
+			pushTokens: [{ token: 'ExponentPushToken[shopper]', type: 'Shopper' }]
+		});
+
+		await handlePaystackWebhookEvent(c, 'bank.transfer.rejected', {
+			amount: 100,
+			reference: 'ref_rejected',
+			gateway_response: 'Incorrect amount',
+			metadata: { orderId: 'order-1' },
+			authorization: { card_type: 'transfer' }
+		});
+
+		expect(payments()).toHaveLength(0);
+		expect(queueNotification).toHaveBeenCalledWith(
+			expect.objectContaining({
+				type: NotificationType.PaymentRejected,
+				recipientTokens: ['ExponentPushToken[shopper]']
+			})
+		);
 	});
 });
