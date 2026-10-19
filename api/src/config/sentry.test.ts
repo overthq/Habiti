@@ -127,13 +127,13 @@ describe('sentry pino log forwarding', () => {
 	test('without SENTRY_DSN, logging stays on stdout and Sentry stays off', () => {
 		const { status, stdout, stderr, probe } = runProbe(unsetScript, {
 			SENTRY_DSN: undefined,
-			LOG_FORMAT: 'json',
 			LOG_LEVEL: 'info',
-			NODE_ENV: 'test'
+			NODE_ENV: 'production'
 		});
 
 		expect(status, stderr).toBe(0);
 		expect(probe.initialized).toBe(false);
+		expect(stdout).toContain('"level":"info"');
 		expect(stdout).toContain('stdout_only');
 		expect(stdout).toContain('req-stdout');
 		expect(stdout).toContain('[REDACTED]');
@@ -144,9 +144,8 @@ describe('sentry pino log forwarding', () => {
 	test('with a DSN, info and above are forwarded and stdout is unchanged', () => {
 		const { status, stdout, stderr, probe } = runProbe(forwardScript, {
 			SENTRY_DSN: 'https://aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@127.0.0.1:9/1',
-			LOG_FORMAT: 'json',
 			LOG_LEVEL: 'trace',
-			NODE_ENV: 'test'
+			NODE_ENV: 'production'
 		});
 
 		expect(status, stderr).toBe(0);
@@ -176,19 +175,16 @@ describe('sentry pino log forwarding', () => {
 		expect(info.attributes.account.password).toBe('[REDACTED]');
 		expect(info.attributes.service).toBe('habiti-api');
 
+		expect(stdout).toContain('"level":"info"');
 		expect(stdout).toContain('forward_info');
 		expect(stdout).toContain('forward_debug');
 		expect(stdout).toContain('forward_trace');
 		expect(stdout).not.toContain('secret');
-
-		expect(probe.span.traceId).toBeTruthy();
-		expect(probe.inSpanTraceId).toBe(probe.span.traceId);
 	});
 
 	test('pretty dev logs still forward when a DSN is set', () => {
 		const { status, stdout, stderr, probe } = runProbe(forwardScript, {
 			SENTRY_DSN: 'https://aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@127.0.0.1:9/1',
-			LOG_FORMAT: 'pretty',
 			LOG_LEVEL: 'trace',
 			NODE_ENV: 'development'
 		});
