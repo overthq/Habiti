@@ -23,182 +23,70 @@ export type TransferSuccessPayload = z.infer<typeof TransferSuccessSchema>;
 export type TransferFailurePayload = z.infer<typeof TransferFailureSchema>;
 export type TransferReversedPayload = z.infer<typeof TransferReversedSchema>;
 
-export const CardAuthorizationSchema = z.object({
+const CardAuthorizationSchema = z.object({
 	authorization_code: z.string(),
-	card_type: z.string(),
-	last4: z.string(),
-	exp_month: z.string(),
-	exp_year: z.string(),
-	bin: z.string(),
-	bank: z.string(),
-	channel: z.string(),
 	signature: z.string(),
-	reusable: z.boolean(),
-	country_code: z.string(),
-	account_name: z.string().nullable()
-});
-
-export const TransferAuthorizationSchema = z.object({
-	authorization_code: z.string(),
 	bin: z.string(),
 	last4: z.string(),
 	exp_month: z.string(),
 	exp_year: z.string(),
-	card_type: z.literal('transfer'),
+	card_type: z.string(),
 	bank: z.string(),
-	country_code: z.string(),
-	brand: z.string(),
-	reusable: z.boolean(),
-	sender_bank: z.string(),
-	sender_bank_account_number: z.string(),
-	sender_country: z.string(),
-	sender_name: z.string(),
-	narration: z.string(),
-	receiver_bank_account_number: z.string(),
-	receiver_bank: z.string()
+	country_code: z.string()
 });
 
-export const CardChargeMetadataSchema = z.union([
-	z.object({
-		userId: z.string().optional().nullable(),
-		orderId: z.string().optional().nullable()
-	}),
-	z.string()
-]);
-
-export const CardChargeSuccessSchema = z.object({
-	id: eventIdSchema,
-	customer: z.object({ email: z.string() }), // I don't know if this is actually supplied.
-	authorization: CardAuthorizationSchema,
-	metadata: CardChargeMetadataSchema.nullable()
-});
-
-export const TransferChargeSuccessSchema = z.object({
-	id: eventIdSchema,
-	authorization: TransferAuthorizationSchema,
-	metadata: CardChargeMetadataSchema
-});
-
-export type CardChargeSuccessPayload = z.infer<typeof CardChargeSuccessSchema>;
-export type TransferChargeSuccessPayload = z.infer<
-	typeof TransferChargeSuccessSchema
->;
-
-export type ChargeSuccessPayload =
-	| CardChargeSuccessPayload
-	| TransferChargeSuccessPayload;
-
-export const isTransferCharge = (
-	data: ChargeSuccessPayload
-): data is TransferChargeSuccessPayload => {
-	return data.authorization.card_type === 'transfer';
-};
-
-const jsonText = z.string().transform((value, ctx) => {
-	try {
-		return JSON.parse(value) as unknown;
-	} catch {
-		ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Invalid JSON' });
-		return z.NEVER;
-	}
-});
-
-const orderMetadata = z.object({
-	orderId: z.string().trim().min(1).optional()
-});
-
-/** Object, a JSON string, or a JSON string of that string. Anything else is dropped. */
-const metadataSchema = z
-	.union([
-		orderMetadata,
-		jsonText.pipe(orderMetadata),
-		jsonText.pipe(jsonText).pipe(orderMetadata)
-	])
-	.nullable()
-	.catch(null);
-
-const presentString = z.string().trim().min(1).nullable().catch(null);
-
-const amountSchema = z
-	.union([
-		z.number().int().nonnegative(),
-		z.string().regex(/^\d+$/).transform(Number)
-	])
-	.nullable()
-	.catch(null);
-
-const customerSchema = z
-	.object({ email: z.string().optional() })
-	.nullable()
-	.catch(null);
-
-const authorizationSchema = z
+// Covers `charge.success` and `bank.transfer.rejected`. Paystack echoes the
+// metadata we send as an object or a JSON string, and sometimes sends `""`
+// or `0` instead.
+export const ChargeEventSchema = z
 	.object({
-		authorization_code: z.string().optional(),
-		bin: z.string().optional(),
-		last4: z.string().optional(),
-		exp_month: z.string().optional(),
-		exp_year: z.string().optional(),
-		card_type: z.string().optional(),
-		bank: z.string().optional(),
-		channel: presentString.optional(),
-		signature: z.string().optional(),
-		country_code: z.string().optional()
+		amount: z.number().int().optional(),
+		currency: z.string().optional(),
+		reference: z.string().optional(),
+		gateway_response: z.string().nullish(),
+		metadata: z.unknown(),
+		customer: z.object({ email: z.string() }).nullish(),
+		authorization: z.object({ card_type: z.string() }).passthrough().nullish()
 	})
-	.nullable()
-	.catch(null);
+	.transform(
+		({ metadata, customer, authorization, gateway_response, ...charge }) => {
+			let parsed = metadata;
+			if (typeof parsed === 'string') {
+				try {
+					parsed = JSON.parse(parsed);
+				} catch {
+					parsed = undefined;
+				}
+			}
+			const orderId = (parsed as { orderId?: unknown } | null | undefined)
+				?.orderId;
 
-export const ChargeEventSchema = z.preprocess(
-	value =>
-		value && typeof value === 'object' && !Array.isArray(value) ? value : {},
-	z
-		.object({
-			amount: amountSchema.optional(),
-			currency: presentString.optional(),
-			reference: presentString.optional(),
-			channel: presentString.optional(),
-			gateway_response: presentString.optional(),
-			message: presentString.optional(),
-			reason: presentString.optional(),
-			metadata: metadataSchema.optional(),
-			customer: customerSchema.optional(),
-			authorization: authorizationSchema.optional()
-		})
-		.transform(data => {
-			const channel = data.authorization?.channel ?? data.channel ?? null;
-			const cardType = data.authorization?.card_type;
-			const instrument =
-				channel === 'dedicated_nuban'
-					? 'dedicated_account'
-					: cardType === 'transfer' || channel === 'bank_transfer'
-						? 'transfer'
-						: 'card';
-			const authorization = data.authorization;
+			const card =
+				authorization?.card_type !== 'transfer'
+					? CardAuthorizationSchema.safeParse(authorization).data
+					: undefined;
 
 			return {
-				orderId: data.metadata?.orderId ?? null,
-				amount: data.amount ?? null,
-				currency: data.currency ?? null,
-				reference: data.reference ?? null,
-				reason: data.gateway_response ?? data.message ?? data.reason ?? null,
-				instrument,
+				...charge,
+				orderId: typeof orderId === 'string' && orderId ? orderId : undefined,
+				reason: gateway_response ?? undefined,
 				card:
-					instrument === 'card'
+					card && customer
 						? {
-								email: data.customer?.email ?? '',
-								signature: authorization?.signature ?? '',
-								authorizationCode: authorization?.authorization_code ?? '',
-								bin: authorization?.bin ?? '',
-								last4: authorization?.last4 ?? '',
-								expMonth: authorization?.exp_month ?? '',
-								expYear: authorization?.exp_year ?? '',
-								bank: authorization?.bank ?? '',
-								cardType: cardType ?? '',
-								countryCode: authorization?.country_code ?? ''
+								email: customer.email,
+								signature: card.signature,
+								authorizationCode: card.authorization_code,
+								bin: card.bin,
+								last4: card.last4,
+								expMonth: card.exp_month,
+								expYear: card.exp_year,
+								bank: card.bank,
+								cardType: card.card_type,
+								countryCode: card.country_code
 							}
-						: null
+						: undefined
 			};
-		})
-);
+		}
+	);
 
 export type ChargeEvent = z.infer<typeof ChargeEventSchema>;

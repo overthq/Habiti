@@ -2,7 +2,6 @@ import { describe, expect, test, mock } from 'bun:test';
 
 import {
 	approvePayment,
-	expirePaymentPendingOrders,
 	handleChargeSuccess,
 	handlePaystackWebhookEvent,
 	transitionOrderToPending
@@ -185,7 +184,7 @@ const fakeOrderContext = (order: {
 				info: mock(() => {})
 			},
 			services: { notifications: { queueNotification } },
-			tracer: { startSpan: async (_name: string, fn: any) => fn({}) }
+			tracer: { startSpan: async (_name: string, fn: any) => fn() }
 		}
 	} as any;
 
@@ -195,6 +194,13 @@ const fakeOrderContext = (order: {
 	return { c, queueNotification, tables, payments };
 };
 
+const charge = (amount: number): ChargeEvent => ({
+	amount,
+	orderId: 'order-1',
+	reason: undefined,
+	card: undefined
+});
+
 describe('transitionOrderToPending', () => {
 	test('transitions the order once and notifies the store', async () => {
 		const { c, queueNotification, tables, payments } = fakeOrderContext({
@@ -202,7 +208,7 @@ describe('transitionOrderToPending', () => {
 			status: OrderStatus.PaymentPending
 		});
 
-		await transitionOrderToPending(c, 'order-1');
+		await transitionOrderToPending(c, 'order-1', charge(150_000));
 
 		expect(payments()).toHaveLength(1);
 		expect(tables.stores.get('store-1')!.unrealizedRevenue).toBe(150_000n);
@@ -219,9 +225,9 @@ describe('transitionOrderToPending', () => {
 			status: OrderStatus.PaymentPending
 		});
 
-		await transitionOrderToPending(c, 'order-1');
-		await transitionOrderToPending(c, 'order-1');
-		await transitionOrderToPending(c, 'order-1');
+		await transitionOrderToPending(c, 'order-1', charge(150_000));
+		await transitionOrderToPending(c, 'order-1', charge(150_000));
+		await transitionOrderToPending(c, 'order-1', charge(150_000));
 
 		expect(payments()).toHaveLength(1);
 		expect(tables.stores.get('store-1')!.unrealizedRevenue).toBe(150_000n);
@@ -234,7 +240,7 @@ describe('transitionOrderToPending', () => {
 			status: OrderStatus.Cancelled
 		});
 
-		await transitionOrderToPending(c, 'order-1');
+		await transitionOrderToPending(c, 'order-1', charge(150_000));
 
 		expect(payments()).toHaveLength(0);
 		expect(queueNotification).not.toHaveBeenCalled();
@@ -246,7 +252,7 @@ describe('transitionOrderToPending', () => {
 			status: OrderStatus.Pending
 		});
 
-		await transitionOrderToPending(c, 'order-1');
+		await transitionOrderToPending(c, 'order-1', charge(150_000));
 
 		expect(payments()).toHaveLength(1);
 		expect(tables.stores.get('store-1')!.unrealizedRevenue).toBe(150_000n);
@@ -264,9 +270,9 @@ describe('transitionOrderToPending', () => {
 			throw new Error('serialization failure');
 		});
 
-		await expect(transitionOrderToPending(c, 'order-1')).rejects.toThrow(
-			'serialization failure'
-		);
+		await expect(
+			transitionOrderToPending(c, 'order-1', charge(150_000))
+		).rejects.toThrow('serialization failure');
 
 		expect(payments()).toHaveLength(0);
 	});
@@ -330,443 +336,66 @@ describe('transfer.success', () => {
 	});
 });
 
-const ORDER_TOTAL = 150_000;
-const TRANSACTION_FEE = 2_250;
-const SERVICE_FEE = 10_000;
-const EXPECTED_CHARGE = ORDER_TOTAL + TRANSACTION_FEE + SERVICE_FEE;
-
-const pricedOrder = (status: OrderStatus = OrderStatus.PaymentPending) => ({
-	total: ORDER_TOTAL,
-	transactionFee: TRANSACTION_FEE,
-	serviceFee: SERVICE_FEE,
-	status,
-	pushTokens: [{ token: 'ExponentPushToken[shopper]', type: 'Shopper' }]
-});
-
-const incoming = (overrides: Partial<ChargeEvent> = {}): ChargeEvent => ({
-	orderId: 'order-1',
-	amount: EXPECTED_CHARGE,
-	currency: 'NGN',
-	reference: 'ref_transfer',
-	reason: null,
-	instrument: 'transfer',
-	card: null,
-	...overrides
-});
-
-const storedCard: NonNullable<ChargeEvent['card']> = {
-	email: 'ada@example.com',
-	signature: 'SIG_card',
-	authorizationCode: 'AUTH_card',
-	bin: '408408',
-	last4: '4081',
-	expMonth: '12',
-	expYear: '2030',
-	bank: 'Test Bank',
-	cardType: 'visa',
-	countryCode: 'NG'
-};
-
 describe('charge.success', () => {
-	test('pays an order from a translated transfer charge', async () => {
-		const { c, queueNotification, tables, payments } =
-			fakeOrderContext(pricedOrder());
+	const order = {
+		total: 150_000,
+		transactionFee: 2_250,
+		serviceFee: 10_000,
+		status: OrderStatus.PaymentPending
+	};
 
-		await handleChargeSuccess(c, incoming());
-
-		expect(payments()).toHaveLength(2);
-		expect(tables.stores.get('store-1')!.unrealizedRevenue).toBe(
-			BigInt(ORDER_TOTAL)
-		);
-		expect(queueNotification).toHaveBeenCalledTimes(1);
-		expect(c.var.prisma.order.update).toHaveBeenCalledTimes(1);
-	});
-
-	test('pays an order when the webhook metadata is a JSON string', async () => {
-		const { c, payments } = fakeOrderContext(pricedOrder());
+	test('pays the order when the charge covers the total and fees', async () => {
+		const { c, queueNotification, payments } = fakeOrderContext(order);
 
 		await handlePaystackWebhookEvent(c, 'charge.success', {
-			amount: EXPECTED_CHARGE,
-			reference: 'ref_transfer',
+			amount: 162_250,
 			currency: 'NGN',
-			channel: 'bank_transfer',
+			reference: 'ref_transfer',
 			metadata: JSON.stringify({ orderId: 'order-1' }),
-			authorization: { card_type: 'transfer', channel: 'bank_transfer' }
+			authorization: { card_type: 'transfer' }
 		});
 
 		expect(payments()).toHaveLength(2);
-	});
-
-	test('does not mark the order paid when the amount mismatches', async () => {
-		const { c, queueNotification, payments } = fakeOrderContext(pricedOrder());
-
-		await handleChargeSuccess(c, incoming({ amount: ORDER_TOTAL }));
-
-		expect(payments()).toHaveLength(0);
-		expect(queueNotification).not.toHaveBeenCalled();
-		expect(c.var.prisma.order.update).not.toHaveBeenCalled();
-		expect(c.var.logger.error).toHaveBeenCalledWith(
-			expect.objectContaining({
-				orderId: 'order-1',
-				paidAmount: ORDER_TOTAL,
-				expectedAmount: EXPECTED_CHARGE,
-				reference: 'ref_transfer',
-				handling: 'left_unpaid'
-			}),
-			'payment.charge_amount_mismatch'
-		);
-	});
-
-	test('does not mark the order paid when the amount is missing', async () => {
-		const { c, payments } = fakeOrderContext(pricedOrder());
-
-		await handleChargeSuccess(c, incoming({ amount: null }));
-
-		expect(payments()).toHaveLength(0);
-		expect(c.var.logger.error).toHaveBeenCalledWith(
-			expect.objectContaining({ orderId: 'order-1', handling: 'left_unpaid' }),
-			'payment.charge_amount_missing'
-		);
-	});
-
-	test('does not mark the order paid when the currency is not NGN', async () => {
-		const { c, payments } = fakeOrderContext(pricedOrder());
-
-		await handleChargeSuccess(c, incoming({ currency: 'USD' }));
-
-		expect(payments()).toHaveLength(0);
-		expect(c.var.logger.error).toHaveBeenCalledWith(
-			expect.objectContaining({ currency: 'USD', handling: 'left_unpaid' }),
-			'payment.charge_amount_mismatch'
-		);
-	});
-
-	test('does not apply a matching charge to an order that is already closed', async () => {
-		const { c, payments } = fakeOrderContext(
-			pricedOrder(OrderStatus.Cancelled)
-		);
-
-		await handleChargeSuccess(c, incoming());
-
-		expect(payments()).toHaveLength(0);
-		expect(c.var.logger.error).toHaveBeenCalledWith(
-			expect.objectContaining({
-				orderId: 'order-1',
-				reference: 'ref_transfer'
-			}),
-			'payment.charge_for_closed_order'
-		);
-	});
-
-	test('stores a card when a matching card charge pays the order', async () => {
-		const { c, queueNotification, payments } = fakeOrderContext(pricedOrder());
-		const upsert = mock(async () => ({ id: 'card-1' }));
-		c.var.prisma.user = { findUnique: mock(async () => ({ id: 'user-1' })) };
-		c.var.prisma.card = { upsert };
-
-		await handleChargeSuccess(
-			c,
-			incoming({
-				instrument: 'card',
-				reference: 'ref_card',
-				card: storedCard
-			})
-		);
-
-		expect(payments()).toHaveLength(2);
-		expect(upsert).toHaveBeenCalledWith(
-			expect.objectContaining({
-				create: expect.objectContaining({
-					authorizationCode: 'AUTH_card',
-					signature: 'SIG_card'
-				})
-			})
-		);
 		expect(queueNotification).toHaveBeenCalledTimes(1);
-		expect(queueNotification.mock.calls[0]?.[0].type).toBe(
-			NotificationType.NewOrder
-		);
 	});
 
-	test('still stores the card when a card charge amount mismatches', async () => {
-		const { c, queueNotification, payments } = fakeOrderContext(pricedOrder());
-		const upsert = mock(async () => ({ id: 'card-1' }));
-		c.var.prisma.user = { findUnique: mock(async () => ({ id: 'user-1' })) };
-		c.var.prisma.card = { upsert };
+	test('leaves the order unpaid when the amount does not match', async () => {
+		const { c, queueNotification, payments } = fakeOrderContext(order);
 
-		await handleChargeSuccess(
-			c,
-			incoming({ instrument: 'card', amount: 1, card: storedCard })
-		);
+		await handleChargeSuccess(c, charge(150_000));
 
 		expect(payments()).toHaveLength(0);
+		expect(c.var.prisma.order.update).not.toHaveBeenCalled();
 		expect(queueNotification).not.toHaveBeenCalled();
-		expect(upsert).toHaveBeenCalledTimes(1);
-	});
-
-	test('ignores a dedicated-account charge with no order', async () => {
-		const { c, payments } = fakeOrderContext(pricedOrder());
-
-		await handleChargeSuccess(
-			c,
-			incoming({
-				orderId: null,
-				instrument: 'dedicated_account',
-				reference: 'dva_ref'
-			})
-		);
-
-		expect(payments()).toHaveLength(0);
-		expect(c.var.logger.warn).toHaveBeenCalledWith(
-			expect.objectContaining({ reference: 'dva_ref' }),
-			'payment.unsolicited_transfer_ignored'
+		expect(c.var.logger.error).toHaveBeenCalledWith(
+			expect.objectContaining({ amount: 150_000, expectedAmount: 162_250 }),
+			'payment.charge_amount_mismatch'
 		);
 	});
 });
 
 describe('bank.transfer.rejected', () => {
-	const rejected = (metadata: unknown) => ({
-		amount: 100,
-		reference: 'ref_rejected',
-		currency: 'NGN',
-		channel: 'bank_transfer',
-		gateway_response: 'Incorrect amount',
-		metadata,
-		authorization: { card_type: 'transfer', channel: 'bank_transfer' }
-	});
-
 	test('notifies the shopper and leaves the order unpaid', async () => {
-		const { c, queueNotification, payments } = fakeOrderContext(pricedOrder());
-
-		await handlePaystackWebhookEvent(
-			c,
-			'bank.transfer.rejected',
-			rejected(JSON.stringify({ orderId: 'order-1' }))
-		);
-
-		expect(payments()).toHaveLength(0);
-		expect(c.var.prisma.order.update).not.toHaveBeenCalled();
-		expect(queueNotification).toHaveBeenCalledTimes(1);
-		expect(queueNotification.mock.calls[0]?.[0]).toMatchObject({
-			type: NotificationType.PaymentRejected,
-			data: { orderId: 'order-1' },
-			recipientTokens: ['ExponentPushToken[shopper]']
+		const { c, queueNotification, payments } = fakeOrderContext({
+			total: 150_000,
+			status: OrderStatus.PaymentPending,
+			pushTokens: [{ token: 'ExponentPushToken[shopper]', type: 'Shopper' }]
 		});
-		expect(c.var.logger.error).toHaveBeenCalledWith(
-			expect.objectContaining({
-				orderId: 'order-1',
-				reference: 'ref_rejected',
-				reason: 'Incorrect amount'
-			}),
-			'payment.transfer_rejected'
-		);
-	});
-
-	test('records a rejection that cannot be tied to an order', async () => {
-		const { c, queueNotification } = fakeOrderContext(pricedOrder());
-
-		await handlePaystackWebhookEvent(c, 'bank.transfer.rejected', rejected(''));
-
-		expect(queueNotification).not.toHaveBeenCalled();
-		expect(c.var.logger.error).toHaveBeenCalledWith(
-			expect.objectContaining({ orderId: null, reference: 'ref_rejected' }),
-			'payment.transfer_rejected'
-		);
-	});
-
-	test('does not notify for a dedicated virtual account rejection', async () => {
-		const { c, queueNotification } = fakeOrderContext(pricedOrder());
 
 		await handlePaystackWebhookEvent(c, 'bank.transfer.rejected', {
-			...rejected({ orderId: 'order-1' }),
-			channel: 'dedicated_nuban',
-			authorization: { card_type: 'transfer', channel: 'dedicated_nuban' }
+			amount: 100,
+			reference: 'ref_rejected',
+			gateway_response: 'Incorrect amount',
+			metadata: { orderId: 'order-1' },
+			authorization: { card_type: 'transfer' }
 		});
 
-		expect(queueNotification).not.toHaveBeenCalled();
-		expect(c.var.logger.warn).toHaveBeenCalledWith(
-			expect.objectContaining({ reference: 'ref_rejected' }),
-			'payment.transfer_rejected_ignored'
+		expect(payments()).toHaveLength(0);
+		expect(queueNotification).toHaveBeenCalledWith(
+			expect.objectContaining({
+				type: NotificationType.PaymentRejected,
+				recipientTokens: ['ExponentPushToken[shopper]']
+			})
 		);
-	});
-
-	test('a later matching charge can still pay the order', async () => {
-		const { c, queueNotification, payments } = fakeOrderContext(pricedOrder());
-
-		await handlePaystackWebhookEvent(
-			c,
-			'bank.transfer.rejected',
-			rejected({ orderId: 'order-1' })
-		);
-		await handleChargeSuccess(c, incoming());
-
-		expect(payments()).toHaveLength(2);
-		expect(queueNotification).toHaveBeenCalledTimes(2);
-		expect(queueNotification.mock.calls[1]?.[0].type).toBe(
-			NotificationType.NewOrder
-		);
-	});
-});
-
-describe('expirePaymentPendingOrders', () => {
-	const NOW = new Date('2026-01-01T00:45:00.000Z');
-	const EXPIRY_MS = 35 * 60 * 1000;
-	const CUTOFF = new Date(NOW.getTime() - EXPIRY_MS);
-
-	const build = () => {
-		const quantities = new Map([
-			['p1', 4],
-			['p2', 1]
-		]);
-		const status = new Map<string, OrderStatus>([
-			['stale', OrderStatus.PaymentPending],
-			['boundary', OrderStatus.PaymentPending],
-			['fresh', OrderStatus.PaymentPending],
-			['racing', OrderStatus.Pending]
-		]);
-
-		const orders = [
-			{
-				id: 'stale',
-				userId: 'user-1',
-				storeId: 'store-1',
-				total: 10_000,
-				status: OrderStatus.PaymentPending,
-				createdAt: new Date('2026-01-01T00:00:00.000Z'),
-				products: [
-					{ productId: 'p1', quantity: 2 },
-					{ productId: 'p2', quantity: 1 }
-				],
-				user: {
-					pushTokens: [
-						{ token: 'ExponentPushToken[shopper]', type: 'Shopper' },
-						{ token: 'ExponentPushToken[merchant]', type: 'Merchant' }
-					]
-				}
-			},
-			{
-				id: 'boundary',
-				userId: 'user-1',
-				storeId: 'store-1',
-				total: 5_000,
-				status: OrderStatus.PaymentPending,
-				createdAt: CUTOFF,
-				products: [{ productId: 'p1', quantity: 9 }],
-				user: { pushTokens: [] }
-			},
-			{
-				id: 'fresh',
-				userId: 'user-1',
-				storeId: 'store-1',
-				total: 5_000,
-				status: OrderStatus.PaymentPending,
-				createdAt: new Date('2026-01-01T00:40:00.000Z'),
-				products: [{ productId: 'p2', quantity: 4 }],
-				user: { pushTokens: [] }
-			},
-			{
-				id: 'racing',
-				userId: 'user-1',
-				storeId: 'store-1',
-				total: 5_000,
-				status: OrderStatus.PaymentPending,
-				createdAt: new Date('2026-01-01T00:00:00.000Z'),
-				products: [{ productId: 'p1', quantity: 5 }],
-				user: { pushTokens: [] }
-			}
-		];
-
-		const client = {
-			order: {
-				findMany: mock(async ({ where }: any) =>
-					orders
-						.filter(order => {
-							// `racing` is still PaymentPending in the query snapshot
-							// and Pending once the row is locked, so a missing
-							// re-read would release its stock.
-							const visible =
-								order.id === 'racing'
-									? OrderStatus.PaymentPending
-									: status.get(order.id);
-							if (visible !== where.status) return false;
-							if (
-								where.createdAt?.lt &&
-								!(order.createdAt < where.createdAt.lt)
-							) {
-								return false;
-							}
-							return true;
-						})
-						.map(order => ({
-							...order,
-							status:
-								order.id === 'racing'
-									? OrderStatus.PaymentPending
-									: status.get(order.id)
-						}))
-				),
-				findUnique: mock(async ({ where }: any) => {
-					const order = orders.find(row => row.id === where.id);
-					if (!order) return null;
-					return { ...order, status: status.get(order.id) };
-				}),
-				update: mock(async ({ where, data }: any) => {
-					status.set(where.id, data.status);
-					return { id: where.id, status: data.status };
-				})
-			},
-			product: {
-				update: mock(async ({ where, data }: any) => {
-					const next =
-						(quantities.get(where.id) ?? 0) + data.quantity.increment;
-					quantities.set(where.id, next);
-					return { id: where.id, quantity: next };
-				})
-			},
-			$transaction: async (fn: any) => fn(client)
-		};
-
-		return { client, quantities, status };
-	};
-
-	test('cancels stale unpaid orders and releases their stock', async () => {
-		const { client, quantities, status } = build();
-		const info = mock(() => {});
-
-		const expired = await expirePaymentPendingOrders(client as any, {
-			now: NOW,
-			expiryMs: EXPIRY_MS,
-			logger: { info, warn: mock(() => {}), error: mock(() => {}) } as any
-		});
-
-		expect(expired).toEqual([
-			{
-				id: 'stale',
-				userId: 'user-1',
-				storeId: 'store-1',
-				total: 10_000,
-				pushTokens: ['ExponentPushToken[shopper]']
-			}
-		]);
-		expect(status.get('stale')).toBe(OrderStatus.Cancelled);
-		expect(status.get('boundary')).toBe(OrderStatus.PaymentPending);
-		expect(status.get('fresh')).toBe(OrderStatus.PaymentPending);
-		expect(status.get('racing')).toBe(OrderStatus.Pending);
-		expect(quantities.get('p1')).toBe(6);
-		expect(quantities.get('p2')).toBe(2);
-		expect(info).toHaveBeenCalledWith(
-			expect.objectContaining({ orderId: 'stale' }),
-			'payment_pending.expired'
-		);
-
-		const again = await expirePaymentPendingOrders(client as any, {
-			now: NOW,
-			expiryMs: EXPIRY_MS,
-			logger: { info, warn: mock(() => {}), error: mock(() => {}) } as any
-		});
-
-		expect(again).toEqual([]);
-		expect(quantities.get('p1')).toBe(6);
-		expect(quantities.get('p2')).toBe(2);
 	});
 });

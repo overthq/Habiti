@@ -75,9 +75,7 @@ export default class NotificationsService {
 			}
 		}));
 
-		// Callers in the request path ignore the promise: a Redis outage must
-		// not fail the request. Scripts that exit immediately should await it
-		// so the push lands before the process ends.
+		// Request handlers don't await this, so a Redis outage can't fail them.
 		return this.push(messages);
 	}
 
