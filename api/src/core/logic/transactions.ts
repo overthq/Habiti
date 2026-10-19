@@ -152,7 +152,7 @@ export const createPayoutTransaction = async (
 		});
 	} catch (error) {
 		const axiosError = error as {
-			response?: { status?: number; data?: unknown };
+			response?: { status?: number };
 			code?: string;
 			message?: string;
 		};
@@ -163,7 +163,6 @@ export const createPayoutTransaction = async (
 			amount,
 			recipient: recipientRef,
 			paystackStatus: axiosError.response?.status,
-			paystackResponse: axiosError.response?.data,
 			errorCode: axiosError.code,
 			errorMessage: axiosError.message
 		};

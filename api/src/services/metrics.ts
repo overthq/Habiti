@@ -2,10 +2,6 @@
  * In-process metrics registry. Counters + histograms with a Prometheus text
  * exposition. Bounded memory: histograms keep at most `HISTOGRAM_RING_SIZE`
  * recent observations per tag-set.
- *
- * This is intentionally not the OTel `metrics` API — that surface is still
- * shifting, and we want a simple, scrapable store today. When we wire OTel
- * exporters we'll dual-write or move callers to OTel `Meter` directly.
  */
 
 export type Tags = Record<string, string | number>;
