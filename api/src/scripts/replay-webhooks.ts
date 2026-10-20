@@ -9,7 +9,7 @@ import {
 import { handlePaystackWebhookEvent } from '../core/logic/payments';
 import { rootLogger } from '../services/logger';
 import { tracer } from '../services/tracer';
-import services from '../services';
+import { getServices } from '../dependencies';
 
 /**
  * Reprocesses webhook deliveries that were received but never completed.
@@ -68,7 +68,7 @@ async function replayWebhooks() {
 		// The handlers reach for a Hono context, but only for prisma, the
 		// logger, the tracer and the notification service.
 		const c = {
-			var: { prisma, logger: rootLogger, tracer, services }
+			var: { prisma, logger: rootLogger, tracer, services: getServices() }
 		} as never;
 
 		try {

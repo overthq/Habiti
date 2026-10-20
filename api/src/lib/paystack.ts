@@ -1,9 +1,9 @@
 import axios, { AxiosError } from 'axios';
 import * as Sentry from '@sentry/bun';
 
-import { env } from '../../config/env';
-import { rootLogger } from '../../services/logger';
-import { instrument } from '../../utils/instrument';
+import { env } from '../config/env';
+import { rootLogger } from '../services/logger';
+import { instrument } from '../utils/instrument';
 
 const API_URL = 'https://api.paystack.co';
 
@@ -18,7 +18,21 @@ const client = axios.create({
 const REDACTED_KEYS = new Set([
 	'authorization_code',
 	'authorizationCode',
-	'otp'
+	'access_code',
+	'authorization_url',
+	'otp',
+	'account_number',
+	'accountNumber',
+	'sender_bank_account_number',
+	'receiver_bank_account_number',
+	'account_name',
+	'accountName',
+	'name',
+	'sender_name',
+	'first_name',
+	'last_name',
+	'email',
+	'phone'
 ]);
 
 const redact = (value: unknown): unknown => {
@@ -30,7 +44,7 @@ const redact = (value: unknown): unknown => {
 		const out: Record<string, unknown> = {};
 
 		for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
-			out[k] = REDACTED_KEYS.has(k) ? '[redacted]' : redact(v);
+			out[k] = REDACTED_KEYS.has(k) ? '[REDACTED]' : redact(v);
 		}
 
 		return out;
@@ -59,7 +73,7 @@ const withLogging = async <T>(
 					request: redact(payload),
 					status: axiosError.response?.status,
 					statusText: axiosError.response?.statusText,
-					responseData: axiosError.response?.data,
+					responseData: redact(axiosError.response?.data),
 					code: axiosError.code,
 					message: axiosError.message
 				};
@@ -172,6 +186,7 @@ export interface VerifyTransactionResponse {
 		id: number;
 		status: string;
 		reference: string;
+		amount: number;
 		channel: string;
 		currency: string;
 		metadata: { orderId?: string } | string | null;
@@ -203,52 +218,6 @@ export const verifyTransaction = async (reference: string) => {
 	});
 };
 
-// {
-//   status: true,
-//   message: 'Transfer retrieved',
-//   data: {
-//     amount: 200000,
-//     createdAt: '2025-07-29T08:12:37.000Z',
-//     currency: 'NGN',
-//     domain: 'test',
-//     failures: null,
-//     id: 857012583,
-//     integration: 720234,
-//     reason: 'Payout',
-//     reference: '93c8e1ef-3ab6-4eab-acd9-804a2096ada1',
-//     source: 'balance',
-//     source_details: null,
-//     status: 'abandoned',
-//     titan_code: null,
-//     transfer_code: 'TRF_v2yinnxx82pkqdwt',
-//     request: 1063383178,
-//     transferred_at: null,
-//     updatedAt: '2025-07-29T09:13:51.000Z',
-//     recipient: {
-//       active: true,
-//       createdAt: '2025-07-29T01:07:28.000Z',
-//       currency: 'NGN',
-//       description: null,
-//       domain: 'test',
-//       email: null,
-//       id: 108397942,
-//       integration: 720234,
-//       metadata: null,
-//       name: 'Korede Fashokun',
-//       recipient_code: 'RCP_jc74mmlips477s4',
-//       type: 'nuban',
-//       updatedAt: '2025-07-29T01:07:28.000Z',
-//       is_deleted: false,
-//       isDeleted: false,
-//       details: [Object]
-//     },
-//     session: { provider: null, id: null },
-//     fee_charged: 0,
-//     fees_breakdown: null,
-//     gateway_response: null
-//   }
-// }
-
 export interface VerifyTransferResponse {
 	status: boolean;
 	message: string;
@@ -267,30 +236,6 @@ export const verifyTransfer = async (reference: string) => {
 		return response.data;
 	});
 };
-
-// {
-//   "status": true,
-//   "message": "Transfer has been queued",
-//   "data": {
-//     "domain": "test",
-//     "amount": 1000000,
-//     "currency": "NGN",
-//     "reference": "n7ll9pzl6b",
-//     "source": "balance",
-//     "source_details": null,
-//     "reason": "E go better for you",
-//     "status": "success",
-//     "failures": null,
-//     "transfer_code": "TRF_zuirlnr9qblgfko",
-//     "titan_code": null,
-//     "transferred_at": null,
-//     "id": 529410,
-//     "integration": 123460,
-//     "recipient": 225204,
-//     "createdAt": "2018-08-02T10:02:55.000Z",
-//     "updatedAt": "2018-08-02T10:12:05.000Z"
-//   }
-// }
 
 interface FinalizeTransferOptions {
 	transferCode: string;

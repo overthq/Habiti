@@ -70,7 +70,7 @@ const Verify = ({ navigation }: AppStackScreenProps<'Verify'>) => {
 				<Spacer y={16} />
 				<Button
 					text='Verify'
-					onPress={methods.handleSubmit(onSubmit)}
+					onPress={() => methods.handleSubmit(onSubmit)()}
 					loading={verifyCodeMutation.isPending}
 					disabled={!methods.formState.isValid}
 				/>

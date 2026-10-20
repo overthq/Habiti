@@ -4,7 +4,8 @@ import {
 	AccountKind,
 	LedgerReason,
 	OrderStatus,
-	PayoutStatus
+	PayoutStatus,
+	PushTokenType
 } from '../../generated/prisma/client';
 import { env } from '../../config/env';
 
@@ -26,12 +27,11 @@ import { NotificationType } from '../notifications';
 import * as CorePayments from '../payments';
 
 import {
-	CardChargeSuccessPayload,
-	ChargeSuccessPayload,
-	isTransferCharge,
+	ChargeEventSchema,
 	TransferFailurePayload,
 	TransferReversedPayload,
-	TransferSuccessPayload
+	TransferSuccessPayload,
+	type ChargeEvent
 } from '../payments/validation';
 import type {
 	ChargeAuthorizationOptions,
@@ -82,33 +82,42 @@ export const approvePayment = async (
 
 // --- Card charge processing ---
 
-export const processCardCharge = async (
-	c: Context<AppEnv>,
-	data: CardChargeSuccessPayload
-) => {
-	const card = await CardData.storeCard(c.var.prisma, {
-		email: data.customer.email,
-		signature: data.authorization.signature,
-		authorizationCode: data.authorization.authorization_code,
-		bin: data.authorization.bin,
-		last4: data.authorization.last4,
-		expMonth: data.authorization.exp_month,
-		expYear: data.authorization.exp_year,
-		bank: data.authorization.bank,
-		cardType: data.authorization.card_type,
-		countryCode: data.authorization.country_code
-	});
-
-	return card;
-};
-
 // --- Order transitions ---
 
 export const transitionOrderToPending = async (
 	c: Context<AppEnv>,
 	orderId: string,
+	charge: ChargeEvent,
 	webhookEventId?: string | null
 ) => {
+	const unpaid = await OrderData.getOrderById(c.var.prisma, orderId);
+
+	if (!unpaid) {
+		c.var.logger.warn({ orderId }, 'order_not_found_for_charge');
+		return;
+	}
+
+	const expectedAmount =
+		unpaid.total + unpaid.transactionFee + unpaid.serviceFee;
+
+	if (
+		charge.amount !== expectedAmount ||
+		(charge.currency && charge.currency !== 'NGN')
+	) {
+		// Leave the order unpaid. Reconcile from this log and the stored webhook.
+		c.var.logger.error(
+			{
+				orderId,
+				expectedAmount,
+				amount: charge.amount,
+				currency: charge.currency,
+				reference: charge.reference
+			},
+			'payment.charge_amount_mismatch'
+		);
+		return;
+	}
+
 	const order = await runSerializable(c.var.prisma, async tx => {
 		const order = await OrderData.getOrderById(tx, orderId);
 
@@ -151,8 +160,13 @@ export const transitionOrderToPending = async (
 		return order;
 	});
 
-	if (!order) {
-		c.var.logger.warn({ orderId }, 'order_not_found_for_charge');
+	if (!order) return;
+
+	if (order.status === OrderStatus.Cancelled) {
+		c.var.logger.error(
+			{ orderId: order.id, reference: charge.reference },
+			'payment.charge_for_cancelled_order'
+		);
 		return;
 	}
 
@@ -187,14 +201,17 @@ enum PaystackWebhookEvent {
 	ChargeSuccess = 'charge.success',
 	TransferSuccess = 'transfer.success',
 	TransferFailure = 'transfer.failure',
-	TransferReversed = 'transfer.reversed'
+	TransferReversed = 'transfer.reversed',
+	// A shopper's checkout transfer, not a merchant payout.
+	BankTransferRejected = 'bank.transfer.rejected'
 }
 
 const PAYSTACK_SUPPORTED_WEBHOOK_EVENTS = [
 	PaystackWebhookEvent.ChargeSuccess,
 	PaystackWebhookEvent.TransferSuccess,
 	PaystackWebhookEvent.TransferFailure,
-	PaystackWebhookEvent.TransferReversed
+	PaystackWebhookEvent.TransferReversed,
+	PaystackWebhookEvent.BankTransferRejected
 ];
 
 export const handlePaystackWebhookEvent = async (
@@ -225,13 +242,15 @@ const handlePaystackWebhookEventImpl = async (
 	}
 
 	if (event === PaystackWebhookEvent.ChargeSuccess) {
-		await handleChargeSuccess(c, data, webhookEventId);
+		await handleChargeSuccess(c, ChargeEventSchema.parse(data), webhookEventId);
 	} else if (event === PaystackWebhookEvent.TransferSuccess) {
 		await handleTransferSuccess(c, data, webhookEventId);
 	} else if (event === PaystackWebhookEvent.TransferFailure) {
 		await handleTransferFailure(c, data, webhookEventId);
 	} else if (event === PaystackWebhookEvent.TransferReversed) {
 		await handleTransferReversed(c, data, webhookEventId);
+	} else if (event === PaystackWebhookEvent.BankTransferRejected) {
+		await handleTransferRejection(c, ChargeEventSchema.parse(data));
 	}
 };
 
@@ -240,26 +259,58 @@ const handlePaystackWebhookEventImpl = async (
 
 export const handleChargeSuccess = async (
 	c: Context<AppEnv>,
-	data: ChargeSuccessPayload,
+	charge: ChargeEvent,
 	webhookEventId?: string | null
 ) => {
-	if (typeof data.metadata === 'object' && data.metadata?.orderId) {
-		await transitionOrderToPending(c, data.metadata.orderId, webhookEventId);
+	if (charge.orderId) {
+		await transitionOrderToPending(c, charge.orderId, charge, webhookEventId);
 	} else {
 		c.var.logger.warn(
-			{ cardType: data.authorization.card_type },
+			{ reference: charge.reference },
 			'charge.success_without_order'
 		);
 	}
 
-	if (isTransferCharge(data)) {
-		// TODO: Implement DVAs and regular transfer payments here
-		return true;
+	if (charge.card) {
+		await CardData.storeCard(c.var.prisma, charge.card);
 	}
 
-	await processCardCharge(c, data);
-
 	return true;
+};
+
+const handleTransferRejection = async (
+	c: Context<AppEnv>,
+	rejection: ChargeEvent
+) => {
+	c.var.logger.warn(
+		{
+			orderId: rejection.orderId,
+			reference: rejection.reference,
+			amount: rejection.amount,
+			reason: rejection.reason
+		},
+		'payment.transfer_rejected'
+	);
+
+	if (!rejection.orderId) return;
+
+	const order = await OrderData.getOrderById(c.var.prisma, rejection.orderId);
+
+	// Paystack refunds the transfer and checkout can still take the right
+	// amount, so leave the order for a later charge or the expiry script.
+	if (order?.status !== OrderStatus.PaymentPending) return;
+
+	const tokens = await c.var.prisma.userPushToken.findMany({
+		where: { userId: order.userId, type: PushTokenType.Shopper }
+	});
+
+	if (tokens.length > 0) {
+		c.var.services.notifications.queueNotification({
+			type: NotificationType.PaymentRejected,
+			data: { orderId: order.id },
+			recipientTokens: tokens.map(token => token.token)
+		});
+	}
 };
 
 const handleTransferSuccess = async (
@@ -348,7 +399,7 @@ export const verifyTransaction = async (
 	const { data, status } = await CorePayments.verifyTransaction(reference);
 
 	if (status === true && data.status === 'success') {
-		return await handleChargeSuccess(c, data);
+		return await handleChargeSuccess(c, ChargeEventSchema.parse(data));
 	}
 };
 

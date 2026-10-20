@@ -34,6 +34,14 @@ export const rootLogger: PinoLogger = pino({
 		],
 		censor: '[REDACTED]'
 	},
+	serializers: {
+		// Axios errors carry the Paystack bearer token in `config.headers`.
+		err: err => {
+			const { config, request, response, ...rest } =
+				pino.stdSerializers.err(err);
+			return rest;
+		}
+	},
 	timestamp: pino.stdTimeFunctions.isoTime,
 	formatters: {
 		level: label => ({ level: label })

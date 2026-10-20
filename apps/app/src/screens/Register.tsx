@@ -65,7 +65,7 @@ const Register = () => {
 					disabled={!methods.formState.isValid}
 					loading={registerMutation.isPending}
 					text='Create account'
-					onPress={methods.handleSubmit(onSubmit)}
+					onPress={() => methods.handleSubmit(onSubmit)()}
 				/>
 			</FormProvider>
 		</Screen>

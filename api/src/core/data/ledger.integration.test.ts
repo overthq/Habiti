@@ -30,6 +30,14 @@ const STORE_ID = `store-${SUFFIX}`;
 const USER_ID = `user-${SUFFIX}`;
 const orderId = (n: number) => `order-${SUFFIX}-${n}`;
 
+// The charge must cover the order total plus its 1_000 service fee.
+const charge = (total: number) => ({
+	amount: total + 1_000,
+	orderId: undefined,
+	reason: undefined,
+	card: undefined
+});
+
 const c = {
 	var: {
 		prisma,
@@ -157,8 +165,8 @@ suite('ledger against postgres', () => {
 	});
 
 	test('a payment moves the order to Pending and is unrealized revenue', async () => {
-		await transitionOrderToPending(c, orderId(1));
-		await transitionOrderToPending(c, orderId(2));
+		await transitionOrderToPending(c, orderId(1), charge(100_000));
+		await transitionOrderToPending(c, orderId(2), charge(25_000));
 
 		const order = await prisma.order.findUniqueOrThrow({
 			where: { id: orderId(1) }
@@ -176,7 +184,7 @@ suite('ledger against postgres', () => {
 			where: { orderId: orderId(1) }
 		});
 
-		await transitionOrderToPending(c, orderId(1));
+		await transitionOrderToPending(c, orderId(1), charge(100_000));
 
 		expect(
 			await prisma.ledgerTransaction.count({ where: { orderId: orderId(1) } })
@@ -236,7 +244,7 @@ suite('ledger against postgres', () => {
 	});
 
 	test('replaying the charge records the missing payment, and the order can complete', async () => {
-		await transitionOrderToPending(c, orderId(3));
+		await transitionOrderToPending(c, orderId(3), charge(10_000));
 
 		const order = await prisma.order.findUniqueOrThrow({
 			where: { id: orderId(3) }

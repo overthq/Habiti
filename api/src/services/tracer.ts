@@ -1,40 +1,22 @@
-import {
-	trace,
-	SpanStatusCode,
-	type Tracer as OTelTracer,
-	type Span,
-	type Attributes
-} from '@opentelemetry/api';
+import { trace, SpanStatusCode, type Attributes } from '@opentelemetry/api';
 
 import { env } from '../config/env';
 
-/**
- * OTel-shaped tracer. We import `@opentelemetry/api` only — without an SDK
- * registered, every call returns a no-op span. The shape is correct so that
- * registering an OTel SDK later (OTLP exporter, Sentry tracing, etc.) makes
- * every existing `tracer.startSpan(...)` call emit real spans without any
- * code changes in callers.
- */
 export interface Tracer {
-	/** Wrap an async function in a span — auto-captures errors and timing. */
 	startSpan<T>(
 		name: string,
-		fn: (span: Span) => Promise<T>,
+		fn: () => Promise<T>,
 		attributes?: Attributes
 	): Promise<T>;
-	/** Escape hatch to the underlying OTel tracer for advanced use. */
-	raw: OTelTracer;
 }
 
-const buildTracer = (name: string): Tracer => {
-	const otel = trace.getTracer(name);
+const otel = trace.getTracer(env.OTEL_SERVICE_NAME);
 
-	return {
-		raw: otel,
-		async startSpan(spanName, fn, attributes) {
-			const span = otel.startSpan(spanName, attributes ? { attributes } : {});
+export const tracer: Tracer = {
+	startSpan(name, fn, attributes = {}) {
+		return otel.startActiveSpan(name, { attributes }, async span => {
 			try {
-				const result = await fn(span);
+				const result = await fn();
 				span.setStatus({ code: SpanStatusCode.OK });
 				return result;
 			} catch (err) {
@@ -47,8 +29,6 @@ const buildTracer = (name: string): Tracer => {
 			} finally {
 				span.end();
 			}
-		}
-	};
+		});
+	}
 };
-
-export const tracer: Tracer = buildTracer(env.OTEL_SERVICE_NAME);

@@ -100,7 +100,7 @@ const AddAddress: React.FC<AppStackScreenProps<'Modal.AddAddress'>> = ({
 			/>
 			<Button
 				text='Add Address'
-				onPress={handleSubmit(onSubmit)}
+				onPress={() => handleSubmit(onSubmit)()}
 				style={styles.button}
 				loading={addDeliveryAddress.isPending}
 			/>

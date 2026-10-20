@@ -1,3 +1,4 @@
+import { shutdownTelemetry } from './config/telemetry';
 import './config/sentry';
 
 import * as Sentry from '@sentry/bun';
@@ -73,6 +74,12 @@ const main = async () => {
 		name: 'redis',
 		stage: 'connections',
 		run: () => redisClient.close()
+	});
+
+	lifecycle.onShutdown({
+		name: 'telemetry',
+		stage: 'connections',
+		run: () => shutdownTelemetry()
 	});
 
 	lifecycle.onShutdown({
