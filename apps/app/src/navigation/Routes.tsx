@@ -1,13 +1,13 @@
 import React from 'react';
-import { Icon, IconType, themes, useTheme } from '@habiti/components';
-import {
-	LinkingOptions,
-	NavigationContainer,
-	RouteProp
-} from '@react-navigation/native';
+import { themes, useTheme } from '@habiti/components';
+import { LinkingOptions, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Linking } from 'react-native';
+import {
+	createNativeBottomTabNavigator,
+	createNativeBottomTabScreen,
+	type NativeBottomTabIcon
+} from '@react-navigation/bottom-tabs/unstable';
+import { Linking, Platform } from 'react-native';
 import * as ExpoNotifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
 import * as Updates from 'expo-updates';
@@ -119,8 +119,6 @@ const linking: LinkingOptions<AppStackParamList> = {
 };
 
 const AppStack = createNativeStackNavigator<AppStackParamList, 'AppStack'>();
-
-const MainTab = createBottomTabNavigator<MainTabParamList, 'MainTab'>();
 
 const ProfileNavigator = createNativeStackNavigator<
 	ProfileStackParamList,
@@ -246,47 +244,74 @@ const ProfileStack = () => {
 	);
 };
 
-const tabIcons: Record<keyof MainTabParamList, IconType> = {
-	'Main.Home': 'home',
-	'Main.Carts': 'shopping-basket',
-	'Main.Profile': 'user-round'
-};
+type TabIcon =
+	| NativeBottomTabIcon
+	| ((props: { focused: boolean }) => NativeBottomTabIcon);
 
-const tabLabels: Record<keyof MainTabParamList, string> = {
-	'Main.Home': 'Home',
-	'Main.Carts': 'Carts',
-	'Main.Profile': 'Profile'
-};
+const tabIcons: Record<keyof MainTabParamList, TabIcon> = Platform.select<
+	Record<keyof MainTabParamList, TabIcon>
+>({
+	ios: {
+		'Main.Home': ({ focused }) => ({
+			type: 'sfSymbol',
+			name: focused ? 'house.fill' : 'house'
+		}),
+		'Main.Carts': ({ focused }) => ({
+			type: 'sfSymbol',
+			name: focused ? 'basket.fill' : 'basket'
+		}),
+		'Main.Profile': ({ focused }) => ({
+			type: 'sfSymbol',
+			name: focused ? 'person.fill' : 'person'
+		})
+	},
+	default: {
+		'Main.Home': {
+			type: 'image',
+			source: require('../../assets/tabs/home.png')
+		},
+		'Main.Carts': {
+			type: 'image',
+			source: require('../../assets/tabs/shopping-basket.png')
+		},
+		'Main.Profile': {
+			type: 'image',
+			source: require('../../assets/tabs/user-round.png')
+		}
+	}
+});
 
-const tabScreenOptions =
-	(themeName: 'light' | 'dark') =>
-	({ route }: { route: RouteProp<MainTabParamList> }) => ({
-		headerShown: false,
-		title: tabLabels[route.name],
-		tabBarActiveTintColor: themes[themeName].text.primary,
-		tabBarInactiveTintColor: themes[themeName].text.tertiary,
-		tabBarShowLabel: false,
-		tabBarIcon: ({ color }: { color: string }) => (
-			<Icon name={tabIcons[route.name]} color={color} size={28} />
-		),
-		tabBarStyle: { paddingTop: 8 }
-	});
+const MainTabs = createNativeBottomTabNavigator<MainTabParamList, 'MainTab'>({
+	id: 'MainTab',
+	initialRouteName: 'Main.Home',
+	screenOptions: ({ theme }) => {
+		const { text } = themes[theme.dark ? 'dark' : 'light'];
 
-const MainTabs = () => {
-	const { name } = useTheme();
+		return {
+			headerShown: false,
+			tabBarActiveTintColor: text.primary,
+			tabBarInactiveTintColor: text.tertiary,
+			tabBarLabelVisibilityMode:
+				Platform.OS === 'android' ? 'labeled' : 'unlabeled'
+		};
+	},
+	screens: {
+		'Main.Home': createNativeBottomTabScreen({
+			screen: HomeStack,
+			options: { title: 'Home', tabBarIcon: tabIcons['Main.Home'] }
+		}),
+		'Main.Carts': createNativeBottomTabScreen({
+			screen: Carts,
+			options: { title: 'Carts', tabBarIcon: tabIcons['Main.Carts'] }
+		}),
+		'Main.Profile': createNativeBottomTabScreen({
+			screen: ProfileStack,
+			options: { title: 'Profile', tabBarIcon: tabIcons['Main.Profile'] }
+		})
+	}
+});
 
-	return (
-		<MainTab.Navigator
-			id='MainTab'
-			initialRouteName='Main.Home'
-			screenOptions={tabScreenOptions(name)}
-		>
-			<MainTab.Screen name='Main.Home' component={HomeStack} />
-			<MainTab.Screen name='Main.Carts' component={Carts} />
-			<MainTab.Screen name='Main.Profile' component={ProfileStack} />
-		</MainTab.Navigator>
-	);
-};
+const MainTabNavigator = MainTabs.getComponent();
 
 const Routes: React.FC = () => {
 	const { isUpdatePending } = Updates.useUpdates();
@@ -307,7 +332,7 @@ const Routes: React.FC = () => {
 					id='AppStack'
 					screenOptions={{ headerShown: false }}
 				>
-					<AppStack.Screen name='App.Main' component={MainTabs} />
+					<AppStack.Screen name='App.Main' component={MainTabNavigator} />
 					<AppStack.Group
 						screenOptions={({ navigation }) => ({
 							headerShown: true,
