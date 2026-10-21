@@ -32,7 +32,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	name: getAppName(),
 	slug: 'habiti',
 	owner: 'overthq',
-	version: '1.0.0',
+	version: '1.0.2',
 	scheme: 'habiti',
 	orientation: 'portrait',
 	icon: './assets/icon.png',
