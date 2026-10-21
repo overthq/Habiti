@@ -266,6 +266,7 @@ const OrdersList = () => {
 			<FlashList
 				ref={listRef}
 				keyExtractor={i => i.id}
+				showsVerticalScrollIndicator={false}
 				data={orders}
 				renderItem={renderOrder}
 				maintainVisibleContentPosition={{ disabled: true }}
