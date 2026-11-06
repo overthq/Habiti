@@ -49,6 +49,7 @@ const Order = () => {
 
 	return (
 		<ScrollableScreen
+			nativeInsets
 			refreshControl={
 				<Refresher refreshing={isRefreshing} onRefresh={onRefresh} />
 			}

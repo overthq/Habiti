@@ -101,7 +101,6 @@ const Addresses: React.FC<StoreStackScreenProps<'Addresses'>> = ({
 				refreshControl={
 					<Refresher refreshing={isRefreshing} onRefresh={onRefresh} />
 				}
-				showsVerticalScrollIndicator
 			>
 				{data?.addresses.map(address => (
 					<AddressListItem

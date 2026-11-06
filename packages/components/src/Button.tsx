@@ -28,8 +28,7 @@ const usePressAnimation = (disabled?: boolean | null) => {
 		() => ({
 			opacity: disabled
 				? 0.4
-				: withTiming(pressed.value ? 0.85 : 1, PRESS_TIMING),
-			transform: [{ scale: withTiming(pressed.value ? 0.97 : 1, PRESS_TIMING) }]
+				: withTiming(pressed.value ? 0.9 : 1, PRESS_TIMING)
 		}),
 		[disabled]
 	);

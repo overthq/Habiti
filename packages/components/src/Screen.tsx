@@ -71,6 +71,7 @@ export const ScrollableScreen: React.FC<ScrollableScreenProps> = ({
 				bottomOffset={bottomOffset + toolbarHeight}
 				extraKeyboardSpace={extraKeyboardSpace + toolbarHeight}
 				disableScrollOnKeyboardHide
+				showsVerticalScrollIndicator={false}
 				{...(avoidTabBar && {
 					automaticallyAdjustsScrollIndicatorInsets: false,
 					scrollIndicatorInsets: { bottom: tabBarHeight }
