@@ -28,7 +28,7 @@ const AppleSignInButton: React.FC = () => {
 
 	return (
 		<Button
-			variant='secondary'
+			variant='primary'
 			text={`${APPLE_LOGO}${EN_SPACE}Sign in with Apple`}
 			loading={appleSignInMutation.isPending}
 			onPress={() => appleSignInMutation.mutate()}

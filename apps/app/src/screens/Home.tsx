@@ -58,37 +58,38 @@ const HomeMain = ({ searchOpen }: HomeMainProps) => {
 	}
 
 	return (
-		<ScrollableScreen
-			style={{ display: searchOpen ? 'none' : 'flex' }}
-			contentContainerStyle={{
-				flexGrow: 1,
-				gap: 32,
-				paddingTop: 16,
-				paddingBottom: 32,
-				backgroundColor: theme.screen.background
-			}}
-			refreshControl={
-				<RefreshControl
-					refreshing={refreshing}
-					onRefresh={refresh}
-					tintColor={theme.text.secondary}
-				/>
-			}
-		>
-			{data ? <FollowedStores followed={data.followed} /> : null}
+		<View style={{ flex: 1, display: searchOpen ? 'none' : 'flex' }}>
+			<ScrollableScreen
+				contentContainerStyle={{
+					flexGrow: 1,
+					gap: 32,
+					paddingTop: 16,
+					paddingBottom: 32,
+					backgroundColor: theme.screen.background
+				}}
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={refresh}
+						tintColor={theme.text.secondary}
+					/>
+				}
+			>
+				{data ? <FollowedStores followed={data.followed} /> : null}
 
-			<RecentlyViewed />
+				<RecentlyViewed />
 
-			{data ? <RecentOrders orders={data.orders} /> : null}
+				{data ? <RecentOrders orders={data.orders} /> : null}
 
-			{highlights.data ? (
-				<TrendingStores stores={highlights.data.trendingStores} />
-			) : null}
+				{highlights.data ? (
+					<TrendingStores stores={highlights.data.trendingStores} />
+				) : null}
 
-			{highlights.data ? (
-				<FeaturedProducts products={highlights.data.featuredProducts} />
-			) : null}
-		</ScrollableScreen>
+				{highlights.data ? (
+					<FeaturedProducts products={highlights.data.featuredProducts} />
+				) : null}
+			</ScrollableScreen>
+		</View>
 	);
 };
 
