@@ -1,4 +1,3 @@
-import fromUnixTime from 'date-fns/fromUnixTime';
 import format from 'date-fns/format';
 
 export const relativeTimestamp = (timestamp: string) => {
