@@ -26,7 +26,7 @@ import { useManagedStoresQuery } from '../data/queries';
 import { useSwitchStoreMutation } from '../data/mutations';
 import { Store } from '../data/types';
 import type { AppStackScreenProps } from '../navigation/types';
-import { STORE_CREATION_ENABLED } from '../utils/constants';
+import { STORE_CREATION_ENABLED } from '../lib/features';
 
 const StoreSelect: React.FC<AppStackScreenProps<'StoreSelect'>> = ({
 	navigation

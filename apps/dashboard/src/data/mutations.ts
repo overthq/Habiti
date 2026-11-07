@@ -36,7 +36,7 @@ import {
 } from './requests';
 import { requestPushPermission } from '../utils/notifications';
 import { activateStore, performLogout } from '../lib/auth';
-import { ACCOUNT_CREATION_ENABLED } from '../utils/constants';
+import { ACCOUNT_CREATION_ENABLED } from '../lib/features';
 import env from '../lib/env';
 import {
 	CreatePayoutBody,

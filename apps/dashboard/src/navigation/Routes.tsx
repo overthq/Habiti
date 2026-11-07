@@ -58,7 +58,7 @@ import useStore from '../state';
 import {
 	ACCOUNT_CREATION_ENABLED,
 	STORE_CREATION_ENABLED
-} from '../utils/constants';
+} from '../lib/features';
 
 import {
 	AppStackParamList,
