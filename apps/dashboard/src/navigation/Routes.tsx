@@ -515,23 +515,18 @@ const Routes: React.FC = () => {
 			linking={linking}
 		>
 			<StatusBar style={theme.statusBar} />
-			{/* No initialRouteName: the navigator only reads it on first mount, so
-			    a stale value would be reused after logging in again. When the
-			    screen list changes, it falls back to the first screen instead. */}
-			<AppStack.Navigator id='AppStack' screenOptions={{ headerShown: false }}>
+			<AppStack.Navigator
+				key={accessToken ? 'authenticated' : 'unauthenticated'}
+				id='AppStack'
+				initialRouteName={
+					accessToken ? (activeStore ? 'Main' : 'StoreSelect') : 'Landing'
+				}
+				screenOptions={{ headerShown: false }}
+			>
 				{accessToken ? (
 					<>
-						{activeStore ? (
-							<>
-								<AppStack.Screen name='Main' component={MainTabNavigator} />
-								<AppStack.Screen name='StoreSelect' component={StoreSelect} />
-							</>
-						) : (
-							<>
-								<AppStack.Screen name='StoreSelect' component={StoreSelect} />
-								<AppStack.Screen name='Main' component={MainTabNavigator} />
-							</>
-						)}
+						<AppStack.Screen name='StoreSelect' component={StoreSelect} />
+						<AppStack.Screen name='Main' component={MainTabNavigator} />
 						<AppStack.Group
 							screenOptions={({ navigation }) => ({
 								presentation: 'modal',
