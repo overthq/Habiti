@@ -21,8 +21,9 @@ import {
 } from '@habiti/components';
 
 import useStore from '../state';
+import { navigationRef } from '../navigation/utils';
 import { useManagedStoresQuery } from '../data/queries';
-import { switchStore } from '../data/requests';
+import { useSwitchStoreMutation } from '../data/mutations';
 import { Store } from '../data/types';
 import type { AppStackScreenProps } from '../navigation/types';
 import { STORE_CREATION_ENABLED } from '../utils/constants';
@@ -101,13 +102,8 @@ const StoreSelectList: React.FC<StoreSelectListProps> = ({
 	stores,
 	onAddStore
 }) => {
-	const { setPreference, activeStore, logIn } = useStore(
-		useShallow(state => ({
-			setPreference: state.setPreference,
-			activeStore: state.activeStore,
-			logIn: state.logIn
-		}))
-	);
+	const activeStore = useStore(useShallow(state => state.activeStore));
+	const switchStoreMutation = useSwitchStoreMutation();
 	const { width } = useWindowDimensions();
 
 	// Size the cells so that three columns exactly fill the screen's content
@@ -117,16 +113,14 @@ const StoreSelectList: React.FC<StoreSelectListProps> = ({
 	);
 
 	const handleStoreSelect = React.useCallback(
-		(storeId: string) => async () => {
-			try {
-				const { accessToken } = await switchStore(storeId);
-				logIn(accessToken);
-				setPreference({ activeStore: storeId });
-			} catch {
-				// TODO: Handle error (show toast, etc.)
-			}
+		(storeId: string) => () => {
+			switchStoreMutation.mutate(storeId, {
+				onSuccess: () => {
+					navigationRef.reset({ index: 0, routes: [{ name: 'Main' }] });
+				}
+			});
 		},
-		[logIn, setPreference]
+		[switchStoreMutation]
 	);
 
 	return (

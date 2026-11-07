@@ -16,13 +16,22 @@ const CreateStore: React.FC<AppStackScreenProps<'Modal.CreateStore'>> = ({
 }) => {
 	const createStoreMutation = useCreateStoreMutation();
 	const methods = useForm<CreateStoreFormValues>();
+	const [idempotencyKey] = React.useState(
+		() => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`
+	);
 
 	const onSubmit = React.useCallback(
-		async (values: CreateStoreFormValues) => {
-			await createStoreMutation.mutateAsync(values);
-			navigation.goBack();
+		(values: CreateStoreFormValues) => {
+			createStoreMutation.mutate(
+				{ body: values, idempotencyKey },
+				{
+					onSuccess: () => {
+						navigation.reset({ index: 0, routes: [{ name: 'Main' }] });
+					}
+				}
+			);
 		},
-		[createStoreMutation, navigation]
+		[createStoreMutation, idempotencyKey, navigation]
 	);
 
 	useHeaderSubmit({

@@ -43,6 +43,7 @@ export enum LogicErrorCode {
 	OutstandingCredit = 'OutstandingCredit',
 	NoAccountDetails = 'NoAccountDetails',
 	StoreContextRequired = 'StoreContextRequired',
+	StoreCreationInProgress = 'StoreCreationInProgress',
 
 	OrderInvalidStatusTransition = 'OrderInvalidStatusTransition',
 	OrderNotPayable = 'OrderNotPayable',
@@ -124,6 +125,10 @@ export const logicErrorToApiException = (
 			});
 		case LogicErrorCode.NotFollowing:
 			return new HTTPException(409, { message: 'Not following this store' });
+		case LogicErrorCode.StoreCreationInProgress:
+			return new HTTPException(409, {
+				message: 'This store is already being created'
+			});
 		case LogicErrorCode.CannotRemoveLastManager:
 			return new HTTPException(400, {
 				message: 'Cannot remove the last manager from store'

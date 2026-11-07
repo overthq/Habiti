@@ -364,7 +364,7 @@ export const useCreateProductCategoryMutation = () => {
 	});
 };
 
-export const useCreateStoreMutation = () => {
+const useActivateStore = () => {
 	const queryClient = useQueryClient();
 	const { logIn, setPreference } = useStore(
 		useShallow(state => ({
@@ -373,15 +373,56 @@ export const useCreateStoreMutation = () => {
 		}))
 	);
 
+	return (storeId: string, accessToken: string) => {
+		logIn(accessToken);
+		setPreference({ activeStore: storeId });
+		queryClient.invalidateQueries({ queryKey: ['stores'] });
+	};
+};
+
+export const useSwitchStoreMutation = () => {
+	const activateStore = useActivateStore();
+
 	return useMutation({
-		mutationFn: (body: CreateStoreBody) => createStore(body),
-		onSuccess: async ({ store }) => {
-			const { accessToken } = await switchStore(store.id);
-			logIn(accessToken);
-			setPreference({ activeStore: store.id });
-			queryClient.invalidateQueries({
-				queryKey: ['stores']
-			});
+		mutationFn: (storeId: string) => switchStore(storeId),
+		onSuccess: ({ accessToken }, storeId) => {
+			activateStore(storeId, accessToken);
+		},
+		onError: () => {
+			Alert.alert(
+				'Unable to switch store',
+				'An error occurred while trying to open this store'
+			);
+		}
+	});
+};
+
+interface CreateStoreArgs {
+	body: CreateStoreBody;
+	idempotencyKey: string;
+}
+
+export const useCreateStoreMutation = () => {
+	const activateStore = useActivateStore();
+
+	return useMutation({
+		mutationFn: async ({ body, idempotencyKey }: CreateStoreArgs) => {
+			const { store, accessToken } = await createStore(body, idempotencyKey);
+
+			// Older API deployments don't return a token from store creation.
+			return {
+				store,
+				accessToken: accessToken ?? (await switchStore(store.id)).accessToken
+			};
+		},
+		onSuccess: ({ store, accessToken }) => {
+			activateStore(store.id, accessToken);
+		},
+		onError: () => {
+			Alert.alert(
+				'Unable to create store',
+				'An error occurred while trying to create your store'
+			);
 		}
 	});
 };

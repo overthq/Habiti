@@ -9,7 +9,7 @@ import { env } from '../../config/env';
 import { LogicError, LogicErrorCode } from './errors';
 import { runSerializable } from '../../utils/prisma';
 import { timingSafeEqualString } from '../../utils/timingSafe';
-import type { AppEnv } from '../../types/hono';
+import type { AppEnv, AuthPayload } from '../../types/hono';
 
 const sha256 = (input: string) =>
 	crypto.createHash('sha256').update(input).digest('hex');
@@ -99,6 +99,18 @@ export const generateAccessToken = async ({
 
 	return jwt.sign(claims, env.JWT_SECRET, { expiresIn: '10m' });
 };
+
+export const generateStoreAccessToken = (auth: AuthPayload, storeId: string) =>
+	generateAccessToken({
+		owner: {
+			id: auth.id,
+			name: auth.name,
+			email: auth.email,
+			isAnonymous: auth.anonymous
+		},
+		sessionId: auth.sessionId,
+		storeId
+	});
 
 interface SessionMetadata {
 	userAgent?: string | undefined;

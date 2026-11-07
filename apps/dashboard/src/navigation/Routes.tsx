@@ -1,6 +1,7 @@
 import React from 'react';
 import { themes, useTheme } from '@habiti/components';
 import {
+	getStateFromPath,
 	LinkingOptions,
 	NavigationContainer,
 	PathConfigMap
@@ -122,6 +123,10 @@ const linking: LinkingOptions<AppStackParamList> = {
 		screens: {
 			Main: { screens: mainScreens }
 		}
+	},
+	getStateFromPath(path, options) {
+		if (!useStore.getState().activeStore) return undefined;
+		return getStateFromPath(path, options);
 	},
 	async getInitialURL() {
 		const url = await Linking.getInitialURL();
@@ -496,6 +501,12 @@ const Routes: React.FC = () => {
 			activeStore: state.activeStore
 		}))
 	);
+	const hasHydrated = React.useSyncExternalStore(
+		useStore.persist.onFinishHydration,
+		useStore.persist.hasHydrated
+	);
+
+	if (!hasHydrated) return null;
 
 	return (
 		<NavigationContainer
@@ -504,19 +515,22 @@ const Routes: React.FC = () => {
 			linking={linking}
 		>
 			<StatusBar style={theme.statusBar} />
-			<AppStack.Navigator
-				id='AppStack'
-				initialRouteName={
-					accessToken ? (!activeStore ? 'StoreSelect' : 'Main') : 'Landing'
-				}
-				screenOptions={{ headerShown: false }}
-			>
+			{/* No initialRouteName: the navigator only reads it on first mount, so
+			    a stale value would be reused after logging in again. When the
+			    screen list changes, it falls back to the first screen instead. */}
+			<AppStack.Navigator id='AppStack' screenOptions={{ headerShown: false }}>
 				{accessToken ? (
 					<>
 						{activeStore ? (
-							<AppStack.Screen name='Main' component={MainTabNavigator} />
+							<>
+								<AppStack.Screen name='Main' component={MainTabNavigator} />
+								<AppStack.Screen name='StoreSelect' component={StoreSelect} />
+							</>
 						) : (
-							<AppStack.Screen name='StoreSelect' component={StoreSelect} />
+							<>
+								<AppStack.Screen name='StoreSelect' component={StoreSelect} />
+								<AppStack.Screen name='Main' component={MainTabNavigator} />
+							</>
 						)}
 						<AppStack.Group
 							screenOptions={({ navigation }) => ({

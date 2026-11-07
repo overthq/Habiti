@@ -13,7 +13,7 @@ import {
 import { useShallow } from 'zustand/react/shallow';
 
 import { useManagedStoresQuery } from '../data/queries';
-import { switchStore } from '../data/requests';
+import { useSwitchStoreMutation } from '../data/mutations';
 import useStore from '../state';
 import { navigationRef } from '../navigation/utils';
 import { STORE_CREATION_ENABLED } from '../utils/constants';
@@ -23,28 +23,17 @@ const StoreSelectModal = () => {
 	const { data } = useManagedStoresQuery();
 	const { theme } = useTheme();
 	const { closeSheet } = useSheet();
-	const { setPreference, logIn, activeStore } = useStore(
-		useShallow(state => ({
-			setPreference: state.setPreference,
-			logIn: state.logIn,
-			activeStore: state.activeStore
-		}))
-	);
+	const activeStore = useStore(useShallow(state => state.activeStore));
+	const switchStoreMutation = useSwitchStoreMutation();
+
 	const handleCreateStore = () => {
 		closeSheet();
 
 		navigationRef.navigate('Modal.CreateStore');
 	};
 
-	const handleSelectStore = (storeId: string) => async () => {
-		try {
-			const { accessToken } = await switchStore(storeId);
-			logIn(accessToken);
-			setPreference({ activeStore: storeId });
-			closeSheet();
-		} catch {
-			// TODO: Handle error (show toast, etc.)
-		}
+	const handleSelectStore = (storeId: string) => () => {
+		switchStoreMutation.mutate(storeId, { onSuccess: closeSheet });
 	};
 
 	return (
