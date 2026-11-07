@@ -22,74 +22,18 @@ interface CreateStoreInput {
 	instagram?: string | undefined;
 }
 
-const IDEMPOTENCY_TTL_SEC = 24 * 60 * 60;
-
 export const createStore = async (
 	c: Context<AppEnv>,
-	input: CreateStoreInput,
-	idempotencyKey?: string
+	input: CreateStoreInput
 ) => {
 	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const replayKey = idempotencyKey
-		? `idempotency:stores:${c.var.auth.id}:${idempotencyKey}`
-		: null;
-
-	if (replayKey) {
-		const claimed = await c.var.redis.send('SET', [
-			replayKey,
-			'pending',
-			'NX',
-			'EX',
-			String(IDEMPOTENCY_TTL_SEC)
-		]);
-
-		if (claimed !== 'OK') {
-			const existingStoreId = await c.var.redis.get(replayKey);
-
-			if (!existingStoreId || existingStoreId === 'pending') {
-				throw new LogicError(LogicErrorCode.StoreCreationInProgress);
-			}
-
-			const existing = await StoreData.getStoreByIdWithManagers(
-				c.var.prisma,
-				existingStoreId
-			);
-
-			if (!existing) {
-				throw new LogicError(LogicErrorCode.StoreNotFound);
-			}
-
-			if (!existing.managers.some(m => m.managerId === c.var.auth?.id)) {
-				throw new LogicError(LogicErrorCode.CannotManageStore);
-			}
-
-			return existing;
-		}
-	}
-
-	let store: Awaited<ReturnType<typeof StoreData.createStore>>;
-
-	try {
-		store = await StoreData.createStore(c.var.prisma, {
-			...(input as StripUndefined<CreateStoreInput>),
-			userId: c.var.auth.id
-		});
-	} catch (error) {
-		if (replayKey) await c.var.redis.del(replayKey);
-		throw error;
-	}
-
-	if (replayKey) {
-		await c.var.redis.send('SET', [
-			replayKey,
-			store.id,
-			'EX',
-			String(IDEMPOTENCY_TTL_SEC)
-		]);
-	}
+	const store = await StoreData.createStore(c.var.prisma, {
+		...(input as StripUndefined<CreateStoreInput>),
+		userId: c.var.auth.id
+	});
 
 	c.var.services.analytics.track({
 		event: 'store_created',

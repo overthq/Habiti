@@ -27,13 +27,7 @@ stores.post(
 	zValidator('json', Schemas.createStoreBodySchema, zodHook),
 	async c => {
 		const body = c.req.valid('json');
-		const idempotencyKey = c.req.header('Idempotency-Key');
-
-		if (idempotencyKey !== undefined && idempotencyKey.length > 128) {
-			throw new HTTPException(400, { message: 'Invalid Idempotency-Key' });
-		}
-
-		const store = await StoreLogic.createStore(c, body, idempotencyKey);
+		const store = await StoreLogic.createStore(c, body);
 		const accessToken = await AuthLogic.generateStoreAccessToken(
 			c.var.auth!,
 			store.id

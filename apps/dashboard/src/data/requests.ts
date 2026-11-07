@@ -147,14 +147,10 @@ export const getStoreBalance = async () => {
 	return response.data;
 };
 
-export const createStore = async (
-	body: CreateStoreBody,
-	idempotencyKey: string
-) => {
+export const createStore = async (body: CreateStoreBody) => {
 	const response = await api.post<{ store: Store; accessToken?: string }>(
 		'/stores',
-		body,
-		{ headers: { 'Idempotency-Key': idempotencyKey } }
+		body
 	);
 	return response.data;
 };
