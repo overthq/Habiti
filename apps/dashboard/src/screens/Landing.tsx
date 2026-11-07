@@ -20,7 +20,7 @@ import AppleSignInButton, {
 } from '../components/AppleSignInButton';
 import { useAuthenticateMutation } from '../data/mutations';
 import type { AppStackScreenProps } from '../navigation/types';
-import { ACCOUNT_CREATION_ENABLED } from '../utils/constants';
+import { ACCOUNT_CREATION_ENABLED } from '../lib/features';
 
 const landingSchema = z.object({
 	email: z.string().email('Invalid email address')

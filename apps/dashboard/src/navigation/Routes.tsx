@@ -1,6 +1,7 @@
 import React from 'react';
 import { themes, useTheme } from '@habiti/components';
 import {
+	getStateFromPath,
 	LinkingOptions,
 	NavigationContainer,
 	PathConfigMap
@@ -57,7 +58,7 @@ import useStore from '../state';
 import {
 	ACCOUNT_CREATION_ENABLED,
 	STORE_CREATION_ENABLED
-} from '../utils/constants';
+} from '../lib/features';
 
 import {
 	AppStackParamList,
@@ -71,7 +72,7 @@ import {
 } from '../navigation/types';
 import { Linking, Platform } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
-import { navigationRef } from './utils';
+import { navigationRef } from '../lib/navigation';
 import { createSheetScreens } from './Sheets';
 
 const USE_CUSTOM_HEADER = Platform.OS === 'android';
@@ -122,6 +123,10 @@ const linking: LinkingOptions<AppStackParamList> = {
 		screens: {
 			Main: { screens: mainScreens }
 		}
+	},
+	getStateFromPath(path, options) {
+		if (!useStore.getState().activeStore) return undefined;
+		return getStateFromPath(path, options);
 	},
 	async getInitialURL() {
 		const url = await Linking.getInitialURL();
@@ -496,6 +501,12 @@ const Routes: React.FC = () => {
 			activeStore: state.activeStore
 		}))
 	);
+	const hasHydrated = React.useSyncExternalStore(
+		useStore.persist.onFinishHydration,
+		useStore.persist.hasHydrated
+	);
+
+	if (!hasHydrated) return null;
 
 	return (
 		<NavigationContainer
@@ -505,19 +516,17 @@ const Routes: React.FC = () => {
 		>
 			<StatusBar style={theme.statusBar} />
 			<AppStack.Navigator
+				key={accessToken ? 'authenticated' : 'unauthenticated'}
 				id='AppStack'
 				initialRouteName={
-					accessToken ? (!activeStore ? 'StoreSelect' : 'Main') : 'Landing'
+					accessToken ? (activeStore ? 'Main' : 'StoreSelect') : 'Landing'
 				}
 				screenOptions={{ headerShown: false }}
 			>
 				{accessToken ? (
 					<>
-						{activeStore ? (
-							<AppStack.Screen name='Main' component={MainTabNavigator} />
-						) : (
-							<AppStack.Screen name='StoreSelect' component={StoreSelect} />
-						)}
+						<AppStack.Screen name='StoreSelect' component={StoreSelect} />
+						<AppStack.Screen name='Main' component={MainTabNavigator} />
 						<AppStack.Group
 							screenOptions={({ navigation }) => ({
 								presentation: 'modal',

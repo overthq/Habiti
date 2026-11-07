@@ -6,7 +6,7 @@ import {
 	resolveRequest,
 	useSheetStore
 } from '../state/sheet';
-import { navigationRef } from './utils';
+import { navigationRef } from '../lib/navigation';
 
 export type SheetName =
 	| 'productMenu'

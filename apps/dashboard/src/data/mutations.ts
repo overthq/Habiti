@@ -35,9 +35,9 @@ import {
 	savePushToken
 } from './requests';
 import { requestPushPermission } from '../utils/notifications';
-import { performLogout } from '../utils/refreshManager';
-import { ACCOUNT_CREATION_ENABLED } from '../utils/constants';
-import env from '../../env';
+import { activateStore, performLogout } from '../lib/auth';
+import { ACCOUNT_CREATION_ENABLED } from '../lib/features';
+import env from '../lib/env';
 import {
 	CreatePayoutBody,
 	CreatePayoutAccountBody,
@@ -364,24 +364,40 @@ export const useCreateProductCategoryMutation = () => {
 	});
 };
 
-export const useCreateStoreMutation = () => {
-	const queryClient = useQueryClient();
-	const { logIn, setPreference } = useStore(
-		useShallow(state => ({
-			logIn: state.logIn,
-			setPreference: state.setPreference
-		}))
-	);
-
+export const useSwitchStoreMutation = () => {
 	return useMutation({
-		mutationFn: (body: CreateStoreBody) => createStore(body),
-		onSuccess: async ({ store }) => {
-			const { accessToken } = await switchStore(store.id);
-			logIn(accessToken);
-			setPreference({ activeStore: store.id });
-			queryClient.invalidateQueries({
-				queryKey: ['stores']
-			});
+		mutationFn: (storeId: string) => switchStore(storeId),
+		onSuccess: ({ accessToken }, storeId) => {
+			activateStore(storeId, accessToken);
+		},
+		onError: () => {
+			Alert.alert(
+				'Unable to switch store',
+				'An error occurred while trying to open this store'
+			);
+		}
+	});
+};
+
+export const useCreateStoreMutation = () => {
+	return useMutation({
+		mutationFn: async (body: CreateStoreBody) => {
+			const { store, accessToken } = await createStore(body);
+
+			// Older API deployments don't return a token from store creation.
+			return {
+				store,
+				accessToken: accessToken ?? (await switchStore(store.id)).accessToken
+			};
+		},
+		onSuccess: ({ store, accessToken }) => {
+			activateStore(store.id, accessToken);
+		},
+		onError: () => {
+			Alert.alert(
+				'Unable to create store',
+				'An error occurred while trying to create your store'
+			);
 		}
 	});
 };

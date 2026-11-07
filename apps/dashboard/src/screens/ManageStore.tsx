@@ -1,9 +1,9 @@
-import React from 'react';
 import { Alert } from 'react-native';
 import { Button, Screen, Spacer, Typography } from '@habiti/components';
 
 import useStore from '../state';
 import { useDeleteStoreMutation } from '../data/mutations';
+import { navigationRef } from '../lib/navigation';
 
 const ManageStore = () => {
 	const deleteStoreMutation = useDeleteStoreMutation();
@@ -15,6 +15,7 @@ const ManageStore = () => {
 		try {
 			await deleteStoreMutation.mutateAsync(activeStore);
 			setPreference({ activeStore: null });
+			navigationRef.reset({ index: 0, routes: [{ name: 'StoreSelect' }] });
 		} catch (error) {
 			Alert.alert('Error', 'Failed to delete store');
 		}

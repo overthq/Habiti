@@ -1,7 +1,8 @@
 import * as SecureStore from 'expo-secure-store';
 
-import env from '../../env';
+import env from './env';
 import useStore from '../state';
+import { queryClient } from './queryClient';
 
 interface RefreshTokenResponse {
 	accessToken: string;
@@ -80,4 +81,12 @@ export const refreshAuthTokens = async () => {
 	}
 
 	return inflightRefresh;
+};
+
+export const activateStore = (storeId: string, accessToken: string) => {
+	const { logIn, setPreference } = useStore.getState();
+
+	logIn(accessToken);
+	setPreference({ activeStore: storeId });
+	queryClient.invalidateQueries({ queryKey: ['stores'] });
 };

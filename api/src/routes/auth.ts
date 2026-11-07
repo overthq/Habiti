@@ -321,16 +321,10 @@ auth.post(
 			throw new HTTPException(403, { message: 'Not a manager of this store' });
 		}
 
-		const accessToken = await AuthLogic.generateAccessToken({
-			owner: {
-				id: c.var.auth.id,
-				name: c.var.auth.name,
-				email: c.var.auth.email,
-				isAnonymous: c.var.auth.anonymous
-			},
-			sessionId: c.var.auth.sessionId,
+		const accessToken = await AuthLogic.generateStoreAccessToken(
+			c.var.auth,
 			storeId
-		});
+		);
 
 		return c.json({ accessToken });
 	}

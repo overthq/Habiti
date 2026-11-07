@@ -1,7 +1,7 @@
 import axios from 'axios';
-import env from '../../env';
+import env from '../lib/env';
 import useStore from '../state';
-import { refreshAuthTokens } from '../utils/refreshManager';
+import { refreshAuthTokens } from '../lib/auth';
 import {
 	computeRetryDelayMs,
 	extractRetryAfterSec,
@@ -148,7 +148,10 @@ export const getStoreBalance = async () => {
 };
 
 export const createStore = async (body: CreateStoreBody) => {
-	const response = await api.post<{ store: Store }>('/stores', body);
+	const response = await api.post<{ store: Store; accessToken?: string }>(
+		'/stores',
+		body
+	);
 	return response.data;
 };
 

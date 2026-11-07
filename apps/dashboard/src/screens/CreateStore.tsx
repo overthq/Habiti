@@ -18,9 +18,12 @@ const CreateStore: React.FC<AppStackScreenProps<'Modal.CreateStore'>> = ({
 	const methods = useForm<CreateStoreFormValues>();
 
 	const onSubmit = React.useCallback(
-		async (values: CreateStoreFormValues) => {
-			await createStoreMutation.mutateAsync(values);
-			navigation.goBack();
+		(values: CreateStoreFormValues) => {
+			createStoreMutation.mutate(values, {
+				onSuccess: () => {
+					navigation.reset({ index: 0, routes: [{ name: 'Main' }] });
+				}
+			});
 		},
 		[createStoreMutation, navigation]
 	);

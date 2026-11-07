@@ -1,5 +1,5 @@
 import { Linking, Platform, Share } from 'react-native';
-import env from '../../env';
+import env from '../lib/env';
 
 export const getFrontendUrl = (route: string) => {
 	return `${env.webFrontendUrl}${route.startsWith('/') ? route : `/${route}`}`;

@@ -5,20 +5,35 @@ import { HTTPException } from 'hono/http-exception';
 import type { AppEnv } from '../types/hono';
 import { zodHook } from '../utils/validation';
 import { authenticate, optionalAuth } from '../middleware/auth';
+import { rateLimit } from '../middleware/rateLimit';
 import { parseNestedQuery, productFiltersSchema } from '../utils/queries';
+import * as AuthLogic from '../core/logic/auth';
 import * as StoreLogic from '../core/logic/stores';
 import * as Schemas from '../core/validations/rest';
 
 const stores = new Hono<AppEnv>();
 
+const storeCreationLimiter = rateLimit({
+	prefix: 'stores:create',
+	windowSec: 60 * 60,
+	limit: 5,
+	keyGenerator: c => `user:${c.var.auth?.id}`
+});
+
 stores.post(
 	'/',
 	authenticate,
+	storeCreationLimiter,
 	zValidator('json', Schemas.createStoreBodySchema, zodHook),
 	async c => {
 		const body = c.req.valid('json');
 		const store = await StoreLogic.createStore(c, body);
-		return c.json({ store }, 201);
+		const accessToken = await AuthLogic.generateStoreAccessToken(
+			c.var.auth!,
+			store.id
+		);
+
+		return c.json({ store, accessToken }, 201);
 	}
 );
 
