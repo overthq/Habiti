@@ -10,7 +10,9 @@ export const globalSearch = async (c: Context<AppEnv>, query: string) => {
 		c.var.prisma.product.findMany({
 			where: {
 				name: { contains: query, mode: 'insensitive' },
-				status: { not: ProductStatus.Archived },
+				status: c.var.isAdmin
+					? { not: ProductStatus.Archived }
+					: ProductStatus.Active,
 				...(includeUnlisted ? {} : { store: { unlisted: false } })
 			},
 			include: {

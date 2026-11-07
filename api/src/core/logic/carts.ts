@@ -1,5 +1,6 @@
 import type { Context } from 'hono';
 
+import { ProductStatus } from '../../generated/prisma/client';
 import * as CartData from '../data/carts';
 import type { AppEnv } from '../../types/hono';
 import { LogicError, LogicErrorCode } from './errors';
@@ -70,6 +71,23 @@ export const addProductToCart = async (
 
 	if (quantity <= 0) {
 		throw new LogicError(LogicErrorCode.InvalidQuantity);
+	}
+
+	const product = await c.var.prisma.product.findUnique({
+		where: { id: productId },
+		select: { storeId: true, status: true }
+	});
+
+	if (!product) {
+		throw new LogicError(LogicErrorCode.ProductNotFound);
+	}
+
+	if (product.storeId !== storeId) {
+		throw new LogicError(LogicErrorCode.ProductStoreMismatch);
+	}
+
+	if (product.status !== ProductStatus.Active) {
+		throw new LogicError(LogicErrorCode.ProductUnavailable);
 	}
 
 	const cartProduct = await CartData.addProductToCart(c.var.prisma, {

@@ -2,6 +2,7 @@ import type { Context } from 'hono';
 
 import {
 	OrderStatus,
+	ProductStatus,
 	UserPushToken,
 	Cart,
 	CartProduct,
@@ -198,6 +199,10 @@ const validateCart = (
 	}
 
 	for (const { product, quantity } of cart.products) {
+		if (product.status !== ProductStatus.Active) {
+			throw new LogicError(LogicErrorCode.ProductUnavailable);
+		}
+
 		if (product.quantity < quantity) {
 			throw new LogicError(LogicErrorCode.InsufficientStock);
 		}
@@ -240,6 +245,10 @@ const updateOrderStatusImpl = async (
 
 		if (!currentOrder) {
 			throw new LogicError(LogicErrorCode.OrderNotFound);
+		}
+
+		if (!c.var.isAdmin && currentOrder.storeId !== c.var.storeId) {
+			throw new LogicError(LogicErrorCode.Forbidden);
 		}
 
 		validateStatusTransition(currentOrder.status, status);
@@ -324,36 +333,88 @@ export const confirmPickup = async (c: Context<AppEnv>, orderId: string) => {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const currentOrder = await OrderData.getOrderByIdWithStore(
-		c.var.prisma,
-		orderId
-	);
+	const userId = c.var.auth.id;
 
-	if (!currentOrder) {
-		throw new LogicError(LogicErrorCode.OrderNotFound);
-	}
+	// Read inside the transaction so a merchant cancelling at the same moment
+	// can't leave the order both refunded and paid out.
+	const updatedOrder = await runSerializable(c.var.prisma, async tx => {
+		const currentOrder = await OrderData.getOrderByIdWithStore(tx, orderId);
 
-	if (currentOrder.userId !== c.var.auth.id) {
-		throw new LogicError(LogicErrorCode.Forbidden);
-	}
+		if (!currentOrder) {
+			throw new LogicError(LogicErrorCode.OrderNotFound);
+		}
 
-	validateStatusTransition(currentOrder.status, OrderStatus.Completed);
+		if (currentOrder.userId !== userId) {
+			throw new LogicError(LogicErrorCode.Forbidden);
+		}
 
-	const updatedOrder = await runSerializable(c.var.prisma, tx =>
-		OrderData.updateOrderStatus(tx, currentOrder, OrderStatus.Completed)
-	);
+		validateStatusTransition(currentOrder.status, OrderStatus.Completed);
+
+		return OrderData.updateOrderStatus(tx, currentOrder, OrderStatus.Completed);
+	});
 
 	updateOrderHooks(c, {
 		customerName: c.var.auth.name,
 		pushToken: updatedOrder.user.pushTokens[0] ?? undefined,
 		orderId: updatedOrder.id,
-		userId: c.var.auth.id,
-		storeId: currentOrder.storeId,
+		userId,
+		storeId: updatedOrder.storeId,
 		amount: updatedOrder.total,
 		status: OrderStatus.Completed
 	});
 
 	return updatedOrder;
+};
+
+// A shopper may only cancel an order they haven't paid for yet. Once paid,
+// cancelling means a refund, which is the store's call.
+export const cancelUnpaidOrder = async (
+	c: Context<AppEnv>,
+	orderId: string
+) => {
+	if (!c.var.auth?.id) {
+		throw new LogicError(LogicErrorCode.NotAuthenticated);
+	}
+
+	const userId = c.var.auth.id;
+
+	const cancelledOrder = await runSerializable(c.var.prisma, async tx => {
+		const currentOrder = await OrderData.getOrderByIdWithProducts(tx, orderId);
+
+		if (!currentOrder) {
+			throw new LogicError(LogicErrorCode.OrderNotFound);
+		}
+
+		if (currentOrder.userId !== userId) {
+			throw new LogicError(LogicErrorCode.Forbidden);
+		}
+
+		if (currentOrder.status !== OrderStatus.PaymentPending) {
+			throw new LogicError(LogicErrorCode.OrderInvalidStatusTransition);
+		}
+
+		await OrderData.restoreProductQuantities(tx, {
+			products: currentOrder.products.map(p => ({
+				productId: p.productId,
+				quantity: p.quantity
+			}))
+		});
+
+		return OrderData.updateOrderStatus(tx, currentOrder, OrderStatus.Cancelled);
+	});
+
+	c.var.services.analytics.track({
+		event: 'order_status_updated',
+		distinctId: userId,
+		properties: {
+			orderId: cancelledOrder.id,
+			amount: cancelledOrder.total,
+			status: OrderStatus.Cancelled
+		},
+		groups: { store: cancelledOrder.storeId }
+	});
+
+	return cancelledOrder;
 };
 
 export const getOrders = async (c: Context<AppEnv>, filters?: OrderFilters) => {

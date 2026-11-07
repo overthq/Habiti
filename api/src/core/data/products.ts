@@ -221,7 +221,7 @@ export const getRelatedProducts = async (
 		where: {
 			id: { not: productId },
 			storeId: product.storeId,
-			status: { not: ProductStatus.Archived },
+			status: ProductStatus.Active,
 			categories: {
 				some: { categoryId: { in: product.categories.map(c => c.categoryId) } }
 			}
@@ -237,7 +237,7 @@ export const getRelatedProducts = async (
 			where: {
 				id: { not: productId },
 				storeId: product.storeId,
-				status: { not: ProductStatus.Archived }
+				status: ProductStatus.Active
 			},
 			include: {
 				images: true
