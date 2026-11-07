@@ -21,7 +21,7 @@ import {
 } from '@habiti/components';
 
 import useStore from '../state';
-import { navigationRef } from '../navigation/utils';
+import { navigationRef } from '../lib/navigation';
 import { useManagedStoresQuery } from '../data/queries';
 import { useSwitchStoreMutation } from '../data/mutations';
 import { Store } from '../data/types';

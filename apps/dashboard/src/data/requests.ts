@@ -1,7 +1,7 @@
 import axios from 'axios';
-import env from '../../env';
+import env from '../lib/env';
 import useStore from '../state';
-import { refreshAuthTokens } from '../utils/refreshManager';
+import { refreshAuthTokens } from '../lib/auth';
 import {
 	computeRetryDelayMs,
 	extractRetryAfterSec,

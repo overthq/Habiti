@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { refreshAuthTokens } from '../utils/refreshManager';
+import { refreshAuthTokens } from '../lib/auth';
 import {
 	getCurrentUser,
 	getCurrentStore,

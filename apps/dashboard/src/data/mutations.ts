@@ -35,9 +35,9 @@ import {
 	savePushToken
 } from './requests';
 import { requestPushPermission } from '../utils/notifications';
-import { performLogout } from '../utils/refreshManager';
+import { activateStore, performLogout } from '../lib/auth';
 import { ACCOUNT_CREATION_ENABLED } from '../utils/constants';
-import env from '../../env';
+import env from '../lib/env';
 import {
 	CreatePayoutBody,
 	CreatePayoutAccountBody,
@@ -364,25 +364,7 @@ export const useCreateProductCategoryMutation = () => {
 	});
 };
 
-const useActivateStore = () => {
-	const queryClient = useQueryClient();
-	const { logIn, setPreference } = useStore(
-		useShallow(state => ({
-			logIn: state.logIn,
-			setPreference: state.setPreference
-		}))
-	);
-
-	return (storeId: string, accessToken: string) => {
-		logIn(accessToken);
-		setPreference({ activeStore: storeId });
-		queryClient.invalidateQueries({ queryKey: ['stores'] });
-	};
-};
-
 export const useSwitchStoreMutation = () => {
-	const activateStore = useActivateStore();
-
 	return useMutation({
 		mutationFn: (storeId: string) => switchStore(storeId),
 		onSuccess: ({ accessToken }, storeId) => {
@@ -403,8 +385,6 @@ interface CreateStoreArgs {
 }
 
 export const useCreateStoreMutation = () => {
-	const activateStore = useActivateStore();
-
 	return useMutation({
 		mutationFn: async ({ body, idempotencyKey }: CreateStoreArgs) => {
 			const { store, accessToken } = await createStore(body, idempotencyKey);

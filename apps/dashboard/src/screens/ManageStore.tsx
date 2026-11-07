@@ -3,7 +3,7 @@ import { Button, Screen, Spacer, Typography } from '@habiti/components';
 
 import useStore from '../state';
 import { useDeleteStoreMutation } from '../data/mutations';
-import { navigationRef } from '../navigation/utils';
+import { navigationRef } from '../lib/navigation';
 
 const ManageStore = () => {
 	const deleteStoreMutation = useDeleteStoreMutation();

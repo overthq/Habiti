@@ -72,7 +72,7 @@ import {
 } from '../navigation/types';
 import { Linking, Platform } from 'react-native';
 import CustomHeader from '../components/CustomHeader';
-import { navigationRef } from './utils';
+import { navigationRef } from '../lib/navigation';
 import { createSheetScreens } from './Sheets';
 
 const USE_CUSTOM_HEADER = Platform.OS === 'android';
