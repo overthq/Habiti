@@ -15,7 +15,7 @@ import { View, StyleSheet, RefreshControl } from 'react-native';
 import { formatNaira } from '@habiti/common';
 
 import { useOrderQuery } from '../data/queries';
-import { useUpdateOrderMutation } from '../data/mutations';
+import { useCancelOrderMutation } from '../data/mutations';
 import {
 	Order as OrderType,
 	OrderProduct as OrderProductType,
@@ -139,17 +139,14 @@ const PaymentPendingWarning: React.FC<PaymentPendingWarningProps> = ({
 }) => {
 	const { theme } = useTheme();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const updateOrderMutation = useUpdateOrderMutation();
+	const cancelOrderMutation = useCancelOrderMutation();
 
 	const handleMakePayment = () => {
 		navigate('Modal.AddCard', { orderId });
 	};
 
 	const handleCancelOrder = () => {
-		updateOrderMutation.mutate({
-			orderId,
-			body: { status: OrderStatus.Cancelled }
-		});
+		cancelOrderMutation.mutate(orderId);
 	};
 
 	return (
@@ -180,6 +177,7 @@ const PaymentPendingWarning: React.FC<PaymentPendingWarningProps> = ({
 					variant='destructive'
 					size='small'
 					onPress={handleCancelOrder}
+					loading={cancelOrderMutation.isPending}
 				/>
 			</View>
 		</View>
