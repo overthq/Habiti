@@ -16,6 +16,7 @@ export interface Store {
 	followedByUser: boolean;
 	categories: StoreProductCategory[];
 	unlisted: boolean;
+	whatsapp?: string;
 	addresses?: Address[];
 }
 
@@ -238,6 +239,7 @@ export interface CreateStoreBody {
 	website?: string;
 	twitter?: string;
 	instagram?: string;
+	whatsapp?: string;
 }
 
 export interface VerifyCodeBody {

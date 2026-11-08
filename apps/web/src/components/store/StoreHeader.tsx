@@ -1,7 +1,9 @@
 import React from 'react';
+import { MessageCircleIcon } from 'lucide-react';
 import type { Store, GetStoreResponse } from '@/data/types';
 import FollowButton from './FollowButton';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 interface StoreHeaderProps {
 	store: Store;
@@ -35,10 +37,26 @@ const StoreHeader: React.FC<StoreHeaderProps> = ({ store, viewerContext }) => {
 					</div>
 				</div>
 
-				<FollowButton
-					storeId={store.id}
-					isFollowing={viewerContext?.isFollowing}
-				/>
+				<div className='flex items-center gap-2'>
+					{store.whatsapp && (
+						<Button variant='outline' asChild>
+							<a
+								href={`https://wa.me/${store.whatsapp}?text=${encodeURIComponent(
+									`Hi ${store.name}, I found your store on Habiti.`
+								)}`}
+								target='_blank'
+								rel='noreferrer noopener'
+							>
+								<MessageCircleIcon />
+								WhatsApp
+							</a>
+						</Button>
+					)}
+					<FollowButton
+						storeId={store.id}
+						isFollowing={viewerContext?.isFollowing}
+					/>
+				</div>
 			</div>
 		</div>
 	);

@@ -18,6 +18,7 @@ export interface Store {
 	website?: string;
 	twitter?: string;
 	instagram?: string;
+	whatsapp?: string;
 	unlisted: boolean;
 	realizedRevenue: number;
 	unrealizedRevenue: number;

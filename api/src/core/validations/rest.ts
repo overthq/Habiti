@@ -115,12 +115,32 @@ export type CreateReviewBody = z.infer<typeof createReviewBodySchema>;
 
 // ─── Stores (Public) ────────────────────────────────────────────────────────
 
+// Accepts the common ways Nigerian numbers are written (0801..., +234 801...)
+// and stores them as 2348012345678, the format wa.me links expect. An empty
+// string clears the number.
+const whatsappNumberSchema = z.string().transform((value, ctx) => {
+	const digits = value.replace(/[\s\-()+]/g, '');
+	if (digits === '') return null;
+
+	const local = digits.replace(/^(234|0)/, '');
+	if (!/^[789][01]\d{8}$/.test(local)) {
+		ctx.addIssue({
+			code: z.ZodIssueCode.custom,
+			message: 'Enter a valid Nigerian mobile number'
+		});
+		return z.NEVER;
+	}
+
+	return `234${local}`;
+});
+
 export const createStoreBodySchema = z.object({
 	name: z.string().min(1),
 	description: z.string(),
 	website: z.string().optional(),
 	twitter: z.string().optional(),
-	instagram: z.string().optional()
+	instagram: z.string().optional(),
+	whatsapp: whatsappNumberSchema.optional()
 });
 
 export type CreateStoreBody = z.infer<typeof createStoreBodySchema>;
@@ -133,6 +153,7 @@ export const updateStoreBodySchema = z.object({
 	website: z.string().optional(),
 	twitter: z.string().optional(),
 	instagram: z.string().optional(),
+	whatsapp: whatsappNumberSchema.optional(),
 	unlisted: z.boolean().optional(),
 	imageUrl: z.string().optional(),
 	imagePublicId: z.string().optional()
@@ -338,6 +359,7 @@ export const adminUpdateStoreBodySchema = z.object({
 	website: z.string().optional(),
 	twitter: z.string().optional(),
 	instagram: z.string().optional(),
+	whatsapp: whatsappNumberSchema.optional(),
 	unlisted: z.boolean().optional(),
 	imageUrl: z.string().optional(),
 	imagePublicId: z.string().optional()

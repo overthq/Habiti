@@ -5,7 +5,7 @@ import {
 	Avatar,
 	FormInput,
 	PillButton,
-	Screen,
+	ScrollableScreen,
 	Spacer,
 	Typography
 } from '@habiti/components';
@@ -34,6 +34,7 @@ interface EditStoreFormData {
 	website: string;
 	twitter: string;
 	instagram: string;
+	whatsapp: string;
 	imageUrl: string;
 	imagePublicId: string;
 }
@@ -55,6 +56,7 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 			website: store.website ?? '',
 			twitter: store.twitter ?? '',
 			instagram: store.instagram ?? '',
+			whatsapp: store.whatsapp ? `+${store.whatsapp}` : '',
 			imageUrl: '',
 			imagePublicId: ''
 		}
@@ -118,7 +120,7 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 	}, [setOptions, formMethods, onSubmit, updateStoreMutation.isPending]);
 
 	return (
-		<Screen>
+		<ScrollableScreen withToolbar>
 			<Spacer y={16} />
 			<View style={styles.avatarSection}>
 				<Avatar uri={imagePreview} size={96} fallbackText={store.name} />
@@ -158,6 +160,22 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 			<Spacer y={8} />
 
 			<FormInput
+				name='whatsapp'
+				label='WhatsApp number'
+				placeholder='0801 234 5678'
+				keyboardType='phone-pad'
+				control={formMethods.control}
+			/>
+
+			<Spacer y={4} />
+
+			<Typography size='small' variant='secondary'>
+				Visible to shoppers, so they can message you on WhatsApp.
+			</Typography>
+
+			<Spacer y={8} />
+
+			<FormInput
 				name='description'
 				label='Description'
 				style={{ height: 80 }}
@@ -165,7 +183,7 @@ const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {
 				textArea
 				control={formMethods.control}
 			/>
-		</Screen>
+		</ScrollableScreen>
 	);
 };
 
