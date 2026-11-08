@@ -11,14 +11,38 @@ interface RefreshTokenResponse {
 
 let inflightRefresh: Promise<RefreshTokenResponse> | null = null;
 
+export const endSession = async () => {
+	await SecureStore.deleteItemAsync('refreshToken');
+	useStore.getState().logOut();
+	// The auth query is kept so App doesn't refetch it and loop back here.
+	queryClient.removeQueries({
+		predicate: query => query.queryKey[0] !== 'auth'
+	});
+};
+
+const waitForHydration = () => {
+	if (useStore.persist.hasHydrated()) return Promise.resolve();
+
+	return new Promise<void>(resolve => {
+		const unsubscribe = useStore.persist.onFinishHydration(() => {
+			unsubscribe();
+			resolve();
+		});
+	});
+};
+
 const performRefresh = async (): Promise<RefreshTokenResponse> => {
 	const storedRefreshToken = await SecureStore.getItemAsync('refreshToken');
 
 	if (!storedRefreshToken) {
-		useStore.getState().logOut();
+		await endSession();
 		throw new Error('No refresh token available');
 	}
 
+	// The refreshed token is scoped to the active store, so make sure it has
+	// been loaded from storage before reading it.
+	await waitForHydration();
+	useStore.setState({ signedIn: true });
 	const { activeStore } = useStore.getState();
 
 	const response = await fetch(`${env.apiUrl}/auth/refresh`, {
@@ -32,18 +56,25 @@ const performRefresh = async (): Promise<RefreshTokenResponse> => {
 		})
 	});
 
-	const data = (await response.json()) as Partial<RefreshTokenResponse> & {
-		message?: string;
-	};
-
-	if (!response.ok) {
-		useStore.getState().logOut();
-		await SecureStore.deleteItemAsync('refreshToken');
-		throw new Error(data?.message ?? 'Refresh failed');
+	// Only a 401 means the session is gone. Anything else (rate limits, server
+	// errors, and network failures, which throw from fetch above) is temporary,
+	// so the session is kept and the next request tries again.
+	if (response.status === 401) {
+		await endSession();
+		throw new Error('Session expired');
 	}
 
-	if (!data.accessToken || !data.refreshToken) {
-		useStore.getState().logOut();
+	const data = (await response.json().catch(() => null)) as
+		| (Partial<RefreshTokenResponse> & {
+				message?: string;
+		  })
+		| null;
+
+	if (!response.ok) {
+		throw new Error(data?.message ?? `Refresh failed (${response.status})`);
+	}
+
+	if (!data?.accessToken || !data.refreshToken) {
 		throw new Error('Invalid refresh response');
 	}
 
@@ -58,7 +89,6 @@ const performRefresh = async (): Promise<RefreshTokenResponse> => {
 
 export const performLogout = async (): Promise<void> => {
 	const storedRefreshToken = await SecureStore.getItemAsync('refreshToken');
-	await SecureStore.deleteItemAsync('refreshToken');
 
 	if (storedRefreshToken) {
 		try {
@@ -70,7 +100,7 @@ export const performLogout = async (): Promise<void> => {
 		} catch {}
 	}
 
-	useStore.getState().logOut();
+	await endSession();
 };
 
 export const refreshAuthTokens = async () => {

@@ -1,5 +1,6 @@
 export interface AuthSlice {
 	accessToken: string | null;
+	signedIn: boolean;
 	logIn: (accessToken: string) => void;
 	logOut: () => void;
 }

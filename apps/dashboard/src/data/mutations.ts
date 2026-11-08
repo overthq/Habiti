@@ -35,7 +35,7 @@ import {
 	savePushToken
 } from './requests';
 import { requestPushPermission } from '../utils/notifications';
-import { activateStore, performLogout } from '../lib/auth';
+import { activateStore, endSession, performLogout } from '../lib/auth';
 import { ACCOUNT_CREATION_ENABLED } from '../lib/features';
 import env from '../lib/env';
 import {
@@ -548,26 +548,12 @@ export const useDeleteAddressMutation = (addressId: string) => {
 };
 
 export const useLogoutMutation = () => {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: performLogout,
-		onSettled: () => {
-			queryClient.removeQueries({
-				predicate: query => query.queryKey[0] !== 'auth'
-			});
-		}
-	});
+	return useMutation({ mutationFn: performLogout });
 };
 
 export const useDeleteAccountMutation = () => {
-	const logOut = useStore(useShallow(state => state.logOut));
-
 	return useMutation({
 		mutationFn: () => deleteAccount(),
-		onSuccess: async () => {
-			await SecureStore.deleteItemAsync('refreshToken');
-			logOut();
-		}
+		onSuccess: endSession
 	});
 };

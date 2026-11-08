@@ -495,9 +495,9 @@ const Routes: React.FC = () => {
 	}, [isUpdatePending]);
 
 	const { theme } = useTheme();
-	const { accessToken, activeStore } = useStore(
+	const { signedIn, activeStore } = useStore(
 		useShallow(state => ({
-			accessToken: state.accessToken,
+			signedIn: state.signedIn,
 			activeStore: state.activeStore
 		}))
 	);
@@ -516,14 +516,14 @@ const Routes: React.FC = () => {
 		>
 			<StatusBar style={theme.statusBar} />
 			<AppStack.Navigator
-				key={accessToken ? 'authenticated' : 'unauthenticated'}
+				key={signedIn ? 'authenticated' : 'unauthenticated'}
 				id='AppStack'
 				initialRouteName={
-					accessToken ? (activeStore ? 'Main' : 'StoreSelect') : 'Landing'
+					signedIn ? (activeStore ? 'Main' : 'StoreSelect') : 'Landing'
 				}
 				screenOptions={{ headerShown: false }}
 			>
-				{accessToken ? (
+				{signedIn ? (
 					<>
 						<AppStack.Screen name='StoreSelect' component={StoreSelect} />
 						<AppStack.Screen name='Main' component={MainTabNavigator} />
