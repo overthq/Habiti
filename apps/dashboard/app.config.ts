@@ -33,7 +33,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
 	slug: 'habiti-dashboard',
 	scheme: 'habiti-dashboard',
 	owner: 'overthq',
-	version: '1.0.2',
+	version: '1.0.3',
 	orientation: 'portrait',
 	icon: './assets/icon.png',
 	updates: {
