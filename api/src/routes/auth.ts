@@ -177,79 +177,18 @@ auth.post(
 	optionalAuth,
 	zValidator('json', Schemas.appleSignInBodySchema, zodHook),
 	async c => {
-		const { identityToken, fullName, createIfMissing } = c.req.valid('json');
+		const { identityToken, fullName, createIfMissing, nonce } =
+			c.req.valid('json');
 
-		const identity = await AppleLogic.verifyAppleIdentityToken(identityToken);
+		const identity = await AppleLogic.verifyAppleIdentityToken(
+			identityToken,
+			nonce
+		);
 		const user = await UserLogic.signInWithApple(c, {
 			identity,
 			name: fullName,
 			createIfMissing
 		});
-
-		const refreshResult = await AuthLogic.generateRefreshToken(
-			c,
-			user.id,
-			undefined,
-			sessionMetadata(c)
-		);
-
-		const accessToken = await AuthLogic.generateAccessToken({
-			owner: user,
-			sessionId: refreshResult.sessionId
-		});
-
-		setRefreshCookie(c, refreshResult.token);
-
-		return c.json({
-			accessToken,
-			refreshToken: refreshResult.token,
-			userId: user.id
-		});
-	}
-);
-
-auth.post(
-	'/apple-callback',
-	ipLimiter,
-	zValidator('json', Schemas.appleCallbackBodySchema, zodHook),
-	async c => {
-		if (
-			!env.APPLE_CLIENT_ID ||
-			!env.APPLE_CLIENT_SECRET ||
-			!env.APPLE_REDIRECT_URI
-		) {
-			throw new Error('Apple credentials not specified');
-		}
-
-		const body = c.req.valid('json');
-
-		const response = await fetch('https://appleid.apple.com/auth/token', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			},
-			body: new URLSearchParams({
-				client_id: env.APPLE_CLIENT_ID,
-				client_secret: env.APPLE_CLIENT_SECRET,
-				code: body.code,
-				grant_type: 'authorization_code',
-				redirect_uri: env.APPLE_REDIRECT_URI
-			})
-		});
-
-		if (!response.ok) {
-			throw new HTTPException(400, { message: 'Apple sign-in failed' });
-		}
-
-		const data = (await response.json()) as { id_token?: unknown };
-
-		if (typeof data.id_token !== 'string') {
-			throw new HTTPException(400, { message: 'Invalid Apple ID token' });
-		}
-
-		// Verified (signature, iss, aud, exp) — not just decoded.
-		const identity = await AppleLogic.verifyAppleIdentityToken(data.id_token);
-		const user = await UserLogic.signInWithApple(c, { identity });
 
 		const refreshResult = await AuthLogic.generateRefreshToken(
 			c,

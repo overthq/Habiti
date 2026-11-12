@@ -14,6 +14,7 @@ import {
 	updateCartProductQuantity,
 	updateCurrentUser,
 	verifyCode,
+	appleSignIn,
 	deleteCurrentUser,
 	completeOrderPayment,
 	confirmPickup,
@@ -23,6 +24,7 @@ import {
 
 import type {
 	AddToCartBody,
+	AppleSignInBody,
 	AuthenticateBody,
 	CreateOrderBody,
 	CreateStoreBody,
@@ -124,6 +126,27 @@ export const useVerifyCodeMutation = () => {
 			// The guest's anonymous data was merged into the account
 			// server-side; refetch everything under the new identity.
 			await queryClient.invalidateQueries();
+		}
+	});
+};
+
+export const useAppleSignInMutation = () => {
+	const queryClient = useQueryClient();
+	const { logIn, toggleAuthModal } = useAuthStore();
+
+	return useMutation({
+		mutationFn: (input: AppleSignInBody) => appleSignIn(input),
+		onSuccess: async ({ accessToken }) => {
+			logIn({ accessToken });
+			toggleAuthModal();
+			await queryClient.invalidateQueries();
+		},
+		onError: (error: unknown) => {
+			const message =
+				error instanceof AxiosError
+					? (error.response?.data?.message ?? error.message)
+					: 'Sign in with Apple failed';
+			toast.error(message);
 		}
 	});
 };

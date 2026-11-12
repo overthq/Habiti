@@ -28,17 +28,11 @@ export const verifyCodeBodySchema = z.object({
 
 export type VerifyCodeBody = z.infer<typeof verifyCodeBodySchema>;
 
-export const appleCallbackBodySchema = z.object({
-	code: z.string()
-});
-
-export type AppleCallbackBody = z.infer<typeof appleCallbackBodySchema>;
-
 export const appleSignInBodySchema = z.object({
 	identityToken: z.string(),
 	fullName: z.string().optional(),
-	// false = sign-in only (no account creation); used by the dashboard app.
-	createIfMissing: z.boolean().optional()
+	createIfMissing: z.boolean().optional(),
+	nonce: z.string().min(16).max(256).optional()
 });
 
 export type AppleSignInBody = z.infer<typeof appleSignInBodySchema>;
