@@ -3,6 +3,7 @@ import type {
 	AddDeliveryAddressBody,
 	UpdateDeliveryAddressBody,
 	AddToCartBody,
+	AppleSignInBody,
 	RegisterBody,
 	Cart,
 	Order,
@@ -37,12 +38,10 @@ import {
 	shouldAutoRetry,
 	sleep
 } from './rateLimit';
-
-const API_URL =
-	(import.meta as any).env?.VITE_API_URL || 'http://localhost:4000';
+import env from '@/lib/env';
 
 const api = axios.create({
-	baseURL: API_URL,
+	baseURL: env.apiUrl,
 	withCredentials: true
 });
 
@@ -125,6 +124,11 @@ export const verifyCode = async (input: VerifyCodeBody) => {
 		'/auth/verify-code',
 		input
 	);
+	return response.data;
+};
+
+export const appleSignIn = async (input: AppleSignInBody) => {
+	const response = await api.post<VerifyCodeResponse>('/auth/apple', input);
 	return response.data;
 };
 
@@ -376,7 +380,7 @@ export const refreshToken = async () => {
 
 	inflightRefresh = axios
 		.post<RefreshTokenResponse>(
-			`${API_URL}/auth/refresh`,
+			`${env.apiUrl}/auth/refresh`,
 			{},
 			{ withCredentials: true }
 		)
@@ -403,7 +407,7 @@ export const refreshToken = async () => {
 
 export const startGuestSession = async (): Promise<RefreshTokenResponse> => {
 	const response = await axios.post<RefreshTokenResponse>(
-		`${API_URL}/auth/anonymous`,
+		`${env.apiUrl}/auth/anonymous`,
 		{},
 		{ withCredentials: true }
 	);

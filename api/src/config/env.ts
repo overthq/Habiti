@@ -12,8 +12,6 @@ const envSchema = z.object({
 	CLOUDINARY_API_SECRET: z.string(),
 	SENTRY_DSN: z.string().optional(),
 	APPLE_CLIENT_ID: z.string().optional(),
-	APPLE_CLIENT_SECRET: z.string().optional(),
-	APPLE_REDIRECT_URI: z.string().optional(),
 	APPLE_BUNDLE_IDS: z
 		.string()
 		.default(

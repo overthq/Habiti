@@ -1,4 +1,5 @@
-import { createRemoteJWKSet, jwtVerify } from 'jose';
+import { createHash } from 'crypto';
+import { createRemoteJWKSet, jwtVerify, type JWTVerifyGetKey } from 'jose';
 
 import { env } from '../../config/env';
 import { LogicError, LogicErrorCode } from './errors';
@@ -20,18 +21,24 @@ const expectedAudiences = (): string[] => {
 		.map(id => id.trim())
 		.filter(Boolean);
 
-	// The web flow's Services ID is a valid audience too, so tokens from the
-	// web callback can be verified with the same helper.
+	// The web's Services ID is a valid audience too.
 	return env.APPLE_CLIENT_ID ? [...bundleIds, env.APPLE_CLIENT_ID] : bundleIds;
 };
 
+/**
+ * `nonce` is the raw value the client generated; Apple embeds its SHA-256
+ * hash in the token. Web tokens must carry one so an intercepted token can't
+ * be replayed. Native apps don't send one yet, so it stays optional for them.
+ */
 export const verifyAppleIdentityToken = async (
-	identityToken: string
+	identityToken: string,
+	nonce?: string,
+	keys: JWTVerifyGetKey = appleJwks
 ): Promise<AppleIdentity> => {
 	let payload: Record<string, unknown>;
 
 	try {
-		({ payload } = await jwtVerify(identityToken, appleJwks, {
+		({ payload } = await jwtVerify(identityToken, keys, {
 			issuer: APPLE_ISSUER,
 			audience: expectedAudiences()
 		}));
@@ -41,6 +48,22 @@ export const verifyAppleIdentityToken = async (
 
 	if (typeof payload.sub !== 'string' || payload.sub.length === 0) {
 		throw new LogicError(LogicErrorCode.InvalidToken, 'Invalid Apple token');
+	}
+
+	const isWebToken =
+		!!env.APPLE_CLIENT_ID &&
+		(payload.aud === env.APPLE_CLIENT_ID ||
+			(Array.isArray(payload.aud) &&
+				payload.aud.includes(env.APPLE_CLIENT_ID)));
+
+	if (nonce !== undefined || isWebToken) {
+		const expected = nonce
+			? createHash('sha256').update(nonce).digest('hex')
+			: null;
+
+		if (!expected || payload.nonce !== expected) {
+			throw new LogicError(LogicErrorCode.InvalidToken, 'Invalid Apple token');
+		}
 	}
 
 	const email =
