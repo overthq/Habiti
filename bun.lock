@@ -338,6 +338,14 @@
         "react-native-worklets": "0.13.0",
       },
     },
+    "packages/data": {
+      "name": "@habiti/data",
+      "version": "0.0.1",
+      "peerDependencies": {
+        "@tanstack/react-query": "^5.75.0",
+        "axios": "^1.13.2",
+      },
+    },
   },
   "overrides": {
     "@types/react": "~19.3.0",
@@ -695,6 +703,8 @@
     "@habiti/components": ["@habiti/components@workspace:packages/components"],
 
     "@habiti/dashboard": ["@habiti/dashboard@workspace:apps/dashboard"],
+
+    "@habiti/data": ["@habiti/data@workspace:packages/data"],
 
     "@habiti/web": ["@habiti/web@workspace:apps/web"],
 
