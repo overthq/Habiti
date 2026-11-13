@@ -379,10 +379,15 @@ export const useSwitchStoreMutation = () => {
 	});
 };
 
+interface CreateStoreArgs {
+	body: CreateStoreBody;
+	idempotencyKey: string;
+}
+
 export const useCreateStoreMutation = () => {
 	return useMutation({
-		mutationFn: async (body: CreateStoreBody) => {
-			const { store, accessToken } = await createStore(body);
+		mutationFn: async ({ body, idempotencyKey }: CreateStoreArgs) => {
+			const { store, accessToken } = await createStore(body, idempotencyKey);
 
 			// Older API deployments don't return a token from store creation.
 			return {
