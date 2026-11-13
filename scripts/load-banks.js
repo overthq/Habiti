@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const writeBanksToDisk = banks => {
 	fs.writeFileSync(
-		'./dashboard/src/utils/banks.ts',
+		require('path').join(__dirname, '../packages/common/src/banks.ts'),
 		`export const BANKS = ${JSON.stringify(banks)}`
 	);
 };

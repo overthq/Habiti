@@ -23,7 +23,8 @@ import {
 	getUser,
 	getUserSessions,
 	getUserStores,
-	getOverview
+	getOverview,
+	getStorePayoutAccounts
 } from './requests';
 
 export const useOrdersQuery = (params?: OrderFilters) => {
@@ -105,6 +106,14 @@ export const useStoreManagersQuery = (id: string, params?: StoreFilters) => {
 		queryFn: () => getStoreManagers(id, params),
 		enabled: !!id,
 		placeholderData: keepPreviousData
+	});
+};
+
+export const useStorePayoutAccountsQuery = (storeId: string) => {
+	return useQuery({
+		queryKey: ['stores', storeId, 'payout-accounts'],
+		queryFn: () => getStorePayoutAccounts(storeId),
+		enabled: !!storeId
 	});
 };
 

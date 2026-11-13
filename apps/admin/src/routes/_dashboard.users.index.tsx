@@ -120,6 +120,12 @@ function Users() {
 	const { filters, setFilter, clearFilters, hasActiveFilters } =
 		useTableFilters({ defaults: defaultFilters });
 
+	// The URL hands booleans back as strings when the default is undefined.
+	const suspended =
+		filters.suspended === undefined
+			? undefined
+			: String(filters.suspended) === 'true';
+
 	const { accountType, ...queryFilters } = filters;
 	const showRegistered = accountType !== 'guest';
 	const showGuests = accountType !== undefined;
@@ -254,7 +260,7 @@ function Users() {
 									<DropdownMenuPortal>
 										<DropdownMenuSubContent>
 											<DropdownMenuCheckboxItem
-												checked={filters.suspended === false}
+												checked={suspended === false}
 												onCheckedChange={checked => {
 													if (checked) {
 														setFilter('suspended', false);
@@ -266,7 +272,7 @@ function Users() {
 												Active
 											</DropdownMenuCheckboxItem>
 											<DropdownMenuCheckboxItem
-												checked={filters.suspended === true}
+												checked={suspended === true}
 												onCheckedChange={checked => {
 													if (checked) {
 														setFilter('suspended', true);

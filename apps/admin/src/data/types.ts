@@ -314,3 +314,35 @@ export interface BulkProductStatusBody {
 export interface BulkActionResponse {
 	count: number;
 }
+
+export interface PayoutAccount {
+	id: string;
+	accountNumber: string;
+	accountName: string | null;
+	bankCode: string;
+	bankName: string | null;
+	label: string | null;
+	isDefault: boolean;
+	createdAt: string;
+}
+
+export interface GetPayoutAccountsResponse {
+	payoutAccounts: PayoutAccount[];
+}
+
+export interface AddPayoutAccountBody {
+	bankAccountNumber: string;
+	bankCode: string;
+	label?: string;
+	replaceExisting?: boolean;
+}
+
+export interface VerifyBankAccountBody {
+	bankAccountNumber: string;
+	bankCode: string;
+}
+
+export interface VerifyBankAccountResponse {
+	accountNumber: string;
+	accountName: string;
+}

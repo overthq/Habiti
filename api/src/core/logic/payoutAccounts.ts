@@ -40,18 +40,22 @@ export const toPayoutAccountView = (
 	createdAt: account.createdAt
 });
 
-export const listPayoutAccounts = async (c: Context<AppEnv>) => {
-	const { storeId } = assertStoreScope(c);
+export const listPayoutAccounts = async (
+	c: Context<AppEnv>,
+	storeId?: string
+) => {
+	const scope = assertStoreScope(c, storeId);
 
 	const accounts = await PayoutAccountData.listPayoutAccounts(
 		c.var.prisma,
-		storeId
+		scope.storeId
 	);
 
 	return accounts.map(toPayoutAccountView);
 };
 
 interface AddPayoutAccountInput {
+	storeId?: string | undefined;
 	accountNumber: string;
 	bankCode: string;
 	label?: string | undefined;
@@ -65,7 +69,7 @@ export const addPayoutAccount = async (
 	c: Context<AppEnv>,
 	input: AddPayoutAccountInput
 ) => {
-	const { storeId } = assertStoreScope(c);
+	const scope = assertStoreScope(c, input.storeId);
 
 	const resolved = await resolveAccountNumber({
 		accountNumber: input.accountNumber,
@@ -81,7 +85,7 @@ export const addPayoutAccount = async (
 
 	const existing = await PayoutAccountData.findPayoutAccountByDetails(
 		c.var.prisma,
-		storeId,
+		scope.storeId,
 		{ provider: PAYSTACK_PROVIDER, bankCode: input.bankCode, accountNumber }
 	);
 
@@ -91,7 +95,7 @@ export const addPayoutAccount = async (
 
 	const activeCount = await PayoutAccountData.countActivePayoutAccounts(
 		c.var.prisma,
-		storeId
+		scope.storeId
 	);
 
 	let replacing = false;
@@ -104,7 +108,7 @@ export const addPayoutAccount = async (
 		// Ensure there are no pending payouts.
 		const inFlight = await PayoutAccountData.countProcessingPayoutsForStore(
 			c.var.prisma,
-			storeId
+			scope.storeId
 		);
 
 		if (inFlight > 0) {
@@ -130,12 +134,12 @@ export const addPayoutAccount = async (
 		// Detaching inside the same transaction as the insert means a store is
 		// never briefly left with no payout destination.
 		if (replacing) {
-			await PayoutAccountData.deactivateActivePayoutAccounts(tx, storeId);
+			await PayoutAccountData.deactivateActivePayoutAccounts(tx, scope.storeId);
 		}
 
 		const remaining = await PayoutAccountData.countActivePayoutAccounts(
 			tx,
-			storeId
+			scope.storeId
 		);
 
 		const isDefault = remaining === 0;
@@ -150,7 +154,7 @@ export const addPayoutAccount = async (
 		}
 
 		return PayoutAccountData.createPayoutAccount(tx, {
-			storeId,
+			storeId: scope.storeId,
 			provider: PAYSTACK_PROVIDER,
 			accountNumber: details.account_number,
 			bankCode: details.bank_code,
@@ -166,13 +170,14 @@ export const addPayoutAccount = async (
 		event: 'payout_account_added',
 		distinctId: c.var.auth!.id,
 		properties: {
-			storeId,
+			storeId: scope.storeId,
 			payoutAccountId: account.id,
 			bankCode: account.bankCode,
 			reactivated: !!existing,
-			replacedExisting: replacing
+			replacedExisting: replacing,
+			actor: c.var.isAdmin ? 'admin' : 'manager'
 		},
-		groups: { store: storeId }
+		groups: { store: scope.storeId }
 	});
 
 	return toPayoutAccountView(account);
@@ -180,13 +185,14 @@ export const addPayoutAccount = async (
 
 export const setDefaultPayoutAccount = async (
 	c: Context<AppEnv>,
-	payoutAccountId: string
+	payoutAccountId: string,
+	storeId?: string
 ) => {
-	const { storeId } = assertStoreScope(c);
+	const scope = assertStoreScope(c, storeId);
 
 	const account = await PayoutAccountData.getPayoutAccountById(
 		c.var.prisma,
-		storeId,
+		scope.storeId,
 		payoutAccountId
 	);
 
@@ -197,7 +203,7 @@ export const setDefaultPayoutAccount = async (
 	if (account.isDefault) return toPayoutAccountView(account);
 
 	const updated = await runSerializable(c.var.prisma, tx =>
-		PayoutAccountData.setDefaultPayoutAccount(tx, storeId, account.id)
+		PayoutAccountData.setDefaultPayoutAccount(tx, scope.storeId, account.id)
 	);
 
 	return toPayoutAccountView(updated);
@@ -205,13 +211,14 @@ export const setDefaultPayoutAccount = async (
 
 export const removePayoutAccount = async (
 	c: Context<AppEnv>,
-	payoutAccountId: string
+	payoutAccountId: string,
+	storeId?: string
 ) => {
-	const { storeId } = assertStoreScope(c);
+	const scope = assertStoreScope(c, storeId);
 
 	const account = await PayoutAccountData.getPayoutAccountById(
 		c.var.prisma,
-		storeId,
+		scope.storeId,
 		payoutAccountId
 	);
 
@@ -234,12 +241,16 @@ export const removePayoutAccount = async (
 		if (account.isDefault) {
 			const next = await PayoutAccountData.getNextDefaultCandidate(
 				tx,
-				storeId,
+				scope.storeId,
 				account.id
 			);
 
 			if (next) {
-				await PayoutAccountData.setDefaultPayoutAccount(tx, storeId, next.id);
+				await PayoutAccountData.setDefaultPayoutAccount(
+					tx,
+					scope.storeId,
+					next.id
+				);
 			}
 		}
 	});
@@ -247,8 +258,12 @@ export const removePayoutAccount = async (
 	c.var.services.analytics.track({
 		event: 'payout_account_removed',
 		distinctId: c.var.auth!.id,
-		properties: { storeId, payoutAccountId: account.id },
-		groups: { store: storeId }
+		properties: {
+			storeId: scope.storeId,
+			payoutAccountId: account.id,
+			actor: c.var.isAdmin ? 'admin' : 'manager'
+		},
+		groups: { store: scope.storeId }
 	});
 
 	return { id: account.id };

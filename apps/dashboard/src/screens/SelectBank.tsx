@@ -3,7 +3,7 @@ import { FlatList, View, StyleSheet, type ListRenderItem } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Input, Row, Typography, useTheme } from '@habiti/components';
 
-import { BANKS } from '../utils/banks';
+import { BANKS } from '@habiti/common';
 import { PayoutAccountStackScreenProps } from '../navigation/types';
 
 interface BankRowProps {

@@ -213,6 +213,71 @@ describe('GET /admin/stores', () => {
 	});
 });
 
+describe('/admin/stores/:id/payout-accounts', () => {
+	const accountRow = {
+		id: 'account-1',
+		storeId: 'store-1',
+		accountNumber: '0123456789',
+		accountName: 'Ada Obi',
+		bankCode: '058',
+		bankName: 'Guaranty Trust Bank',
+		recipientRef: 'RCP_1',
+		label: null,
+		isDefault: true,
+		status: 'Active',
+		createdAt: new Date()
+	};
+
+	test('lists the active accounts of the store in the path', async () => {
+		const findMany = mock(async () => [accountRow]);
+		const { app } = createTestApp({
+			prisma: createFakePrisma({ storePayoutAccount: { findMany } })
+		});
+
+		const res = await app.fetch(
+			authedRequest(
+				'/admin/stores/store-1/payout-accounts',
+				await signAccessToken({ role: AccessTokenRole.Admin })
+			)
+		);
+
+		expect(res.status).toBe(200);
+
+		const body = await res.json();
+		expect(body.payoutAccounts).toHaveLength(1);
+		// The provider's recipient code is internal and never leaves the API.
+		expect(body.payoutAccounts[0].recipientRef).toBeUndefined();
+		expect((findMany.mock.calls[0] as any[])[0].where).toMatchObject({
+			storeId: 'store-1',
+			status: 'Active'
+		});
+	});
+
+	test('is closed to non-admin tokens', async () => {
+		const findMany = mock(async () => [accountRow]);
+		const { app } = createTestApp({
+			prisma: createFakePrisma({ storePayoutAccount: { findMany } })
+		});
+
+		const res = await app.fetch(
+			authedRequest(
+				'/admin/stores/store-1/payout-accounts',
+				await signAccessToken({ storeId: 'store-1' }),
+				{
+					method: 'POST',
+					body: JSON.stringify({
+						bankAccountNumber: '0123456789',
+						bankCode: '058'
+					})
+				}
+			)
+		);
+
+		expect(res.status).toBe(403);
+		expect(findMany).not.toHaveBeenCalled();
+	});
+});
+
 describe('bulk routes are not shadowed by the :id routes', () => {
 	const adminToken = () => signAccessToken({ role: AccessTokenRole.Admin });
 
