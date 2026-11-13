@@ -9,10 +9,11 @@ export const createAuthSlice: StateCreator<
 	AuthSlice
 > = set => ({
 	accessToken: null,
+	signedIn: false,
 	logIn: accessToken => {
-		set({ accessToken });
+		set({ accessToken, signedIn: true });
 	},
 	logOut: () => {
-		set({ accessToken: null, activeStore: null });
+		set({ accessToken: null, signedIn: false, activeStore: null });
 	}
 });

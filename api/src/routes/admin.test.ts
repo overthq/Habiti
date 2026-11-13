@@ -148,6 +148,136 @@ describe('DELETE /admin/stores/:id', () => {
  * before `/bulk` swallows it — the param handler then runs with `id: 'bulk'`.
  * Both resources have a DELETE on each path, so both need pinning.
  */
+describe('GET /admin/users', () => {
+	const adminToken = () => signAccessToken({ role: AccessTokenRole.Admin });
+
+	const listUsers = async (query: string) => {
+		const findMany = mock(async () => []);
+		const { app } = createTestApp({
+			prisma: createFakePrisma({ user: { findMany } })
+		});
+
+		const res = await app.fetch(
+			authedRequest(`/admin/users${query}`, await adminToken())
+		);
+		expect(res.status).toBe(200);
+
+		return (findMany.mock.calls[0] as any[])[0].where;
+	};
+
+	test('filters by isAnonymous', async () => {
+		expect(await listUsers('?isAnonymous=false')).toEqual({
+			isAnonymous: false
+		});
+		expect(await listUsers('?isAnonymous=true')).toEqual({
+			isAnonymous: true
+		});
+	});
+
+	test('does not filter on isAnonymous when omitted', async () => {
+		expect(await listUsers('')).toEqual({});
+	});
+});
+
+describe('GET /admin/stores', () => {
+	const adminToken = () => signAccessToken({ role: AccessTokenRole.Admin });
+
+	const listStores = async (query: string) => {
+		const findMany = mock(async () => []);
+		const { app } = createTestApp({
+			prisma: createFakePrisma({ store: { findMany } })
+		});
+
+		const res = await app.fetch(
+			authedRequest(`/admin/stores${query}`, await adminToken())
+		);
+		expect(res.status).toBe(200);
+
+		return (findMany.mock.calls[0] as any[])[0].where;
+	};
+
+	test('filters by unlisted', async () => {
+		expect(await listStores('?unlisted=false')).toEqual({ unlisted: false });
+		expect(await listStores('?unlisted=true')).toEqual({ unlisted: true });
+	});
+
+	test('combines unlisted with search', async () => {
+		expect(await listStores('?unlisted=false&search=shoe')).toEqual({
+			name: { contains: 'shoe', mode: 'insensitive' },
+			unlisted: false
+		});
+	});
+
+	test('does not filter on unlisted when omitted', async () => {
+		expect(await listStores('')).toEqual({});
+	});
+});
+
+describe('/admin/stores/:id/payout-accounts', () => {
+	const accountRow = {
+		id: 'account-1',
+		storeId: 'store-1',
+		accountNumber: '0123456789',
+		accountName: 'Ada Obi',
+		bankCode: '058',
+		bankName: 'Guaranty Trust Bank',
+		recipientRef: 'RCP_1',
+		label: null,
+		isDefault: true,
+		status: 'Active',
+		createdAt: new Date()
+	};
+
+	test('lists the active accounts of the store in the path', async () => {
+		const findMany = mock(async () => [accountRow]);
+		const { app } = createTestApp({
+			prisma: createFakePrisma({ storePayoutAccount: { findMany } })
+		});
+
+		const res = await app.fetch(
+			authedRequest(
+				'/admin/stores/store-1/payout-accounts',
+				await signAccessToken({ role: AccessTokenRole.Admin })
+			)
+		);
+
+		expect(res.status).toBe(200);
+
+		const body = await res.json();
+		expect(body.payoutAccounts).toHaveLength(1);
+		// The provider's recipient code is internal and never leaves the API.
+		expect(body.payoutAccounts[0].recipientRef).toBeUndefined();
+		expect((findMany.mock.calls[0] as any[])[0].where).toMatchObject({
+			storeId: 'store-1',
+			status: 'Active'
+		});
+	});
+
+	test('is closed to non-admin tokens', async () => {
+		const findMany = mock(async () => [accountRow]);
+		const { app } = createTestApp({
+			prisma: createFakePrisma({ storePayoutAccount: { findMany } })
+		});
+
+		const res = await app.fetch(
+			authedRequest(
+				'/admin/stores/store-1/payout-accounts',
+				await signAccessToken({ storeId: 'store-1' }),
+				{
+					method: 'POST',
+					body: JSON.stringify({
+						bankAccountNumber: '0123456789',
+						bankCode: '058'
+					})
+				}
+			)
+		);
+
+		expect(res.status).toBe(403);
+		expect(findMany).not.toHaveBeenCalled();
+	});
+});
+
 describe('bulk routes are not shadowed by the :id routes', () => {
 	const adminToken = () => signAccessToken({ role: AccessTokenRole.Admin });
 

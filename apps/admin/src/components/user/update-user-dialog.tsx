@@ -44,7 +44,7 @@ const UpdateUserDialog = ({
 		resolver: zodResolver(updateUserFormSchema),
 		defaultValues: {
 			name: user.name,
-			email: user.email
+			email: user.email ?? ''
 		}
 	});
 
