@@ -18,6 +18,7 @@ interface CreateStoreParams {
 	website?: string;
 	twitter?: string;
 	instagram?: string;
+	whatsapp?: string | null;
 }
 
 export const createStore = async (
@@ -43,6 +44,7 @@ interface UpdateStoreParams {
 	website?: string;
 	twitter?: string;
 	instagram?: string;
+	whatsapp?: string | null;
 	unlisted?: boolean;
 	imageUrl?: string;
 	imagePublicId?: string;

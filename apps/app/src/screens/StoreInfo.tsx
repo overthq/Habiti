@@ -20,7 +20,7 @@ import {
 } from '@habiti/components';
 import { useStoreQuery } from '../data/queries';
 import type { AppStackScreenProps } from '../navigation/types';
-import { getFrontendUrl } from '../utils/links';
+import { getFrontendUrl, getLink } from '../utils/links';
 
 const StoreInfo: React.FC<AppStackScreenProps<'Modal.StoreInfo'>> = ({
 	navigation,
@@ -43,6 +43,17 @@ const StoreInfo: React.FC<AppStackScreenProps<'Modal.StoreInfo'>> = ({
 
 	const handleViewOnWeb = () => {
 		Linking.openURL(webUrl);
+	};
+
+	const handleWhatsapp = () => {
+		if (!store.whatsapp) return;
+		Linking.openURL(
+			getLink(
+				'whatsapp',
+				store.whatsapp,
+				`Hi ${store.name}, I found your store on Habiti.`
+			)
+		);
 	};
 
 	const handleShare = () => {
@@ -130,6 +141,16 @@ const StoreInfo: React.FC<AppStackScreenProps<'Modal.StoreInfo'>> = ({
 			<Spacer y={24} />
 
 			<View style={{ marginHorizontal: -16 }}>
+				{store.whatsapp ? (
+					<>
+						<InfoRow
+							title='Chat on WhatsApp'
+							icon='arrow-up-right'
+							onPress={handleWhatsapp}
+						/>
+						<Separator inset />
+					</>
+				) : null}
 				<InfoRow
 					title='View on the web'
 					icon='arrow-up-right'

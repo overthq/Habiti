@@ -41,6 +41,7 @@ model Store {
   website           String?
   twitter           String?  @db.VarChar(15)
   instagram         String?  @db.VarChar(30)
+  whatsapp          String?  @db.VarChar(15)
   unrealizedRevenue BigInt   @default(0)
   realizedRevenue   BigInt   @default(0)
   paidOut           BigInt   @default(0)

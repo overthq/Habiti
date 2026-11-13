@@ -12,14 +12,16 @@ export const openLink = async (link?: string | null) => {
 	}
 };
 
-export type LinkType = 'twitter' | 'instagram';
+export type LinkType = 'twitter' | 'instagram' | 'whatsapp';
 
-export const getLink = (type: LinkType, value: string) => {
+export const getLink = (type: LinkType, value: string, message?: string) => {
 	switch (type) {
 		case 'twitter':
 			return `https://twitter.com/${value}`;
 		case 'instagram':
 			return `https://instagram.com/${value}`;
+		case 'whatsapp':
+			return `https://wa.me/${value}${message ? `?text=${encodeURIComponent(message)}` : ''}`;
 	}
 };
 

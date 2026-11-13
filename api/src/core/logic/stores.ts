@@ -20,6 +20,7 @@ interface CreateStoreInput {
 	website?: string | undefined;
 	twitter?: string | undefined;
 	instagram?: string | undefined;
+	whatsapp?: string | null | undefined;
 }
 
 export const createStore = async (
@@ -43,7 +44,8 @@ export const createStore = async (
 			storeName: store.name,
 			hasDescription: !!store.description,
 			hasWebsite: !!store.website,
-			hasSocialMedia: !!(store.twitter || store.instagram)
+			hasSocialMedia: !!(store.twitter || store.instagram),
+			hasWhatsapp: !!store.whatsapp
 		},
 		groups: { store: store.id }
 	});
@@ -81,6 +83,7 @@ interface UpdateStoreInput {
 	website?: string | undefined;
 	twitter?: string | undefined;
 	instagram?: string | undefined;
+	whatsapp?: string | null | undefined;
 	unlisted?: boolean | undefined;
 	imageUrl?: string | undefined;
 	imagePublicId?: string | undefined;

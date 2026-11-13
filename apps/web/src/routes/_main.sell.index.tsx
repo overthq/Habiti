@@ -22,6 +22,7 @@ interface CreateStoreFormValues {
 	website: string;
 	twitter: string;
 	instagram: string;
+	whatsapp: string;
 }
 
 const trimOptional = (value: string) => {
@@ -38,7 +39,8 @@ const CreateStoreForm: React.FC<{ onSuccess: (store: Store) => void }> = ({
 			description: '',
 			website: '',
 			twitter: '',
-			instagram: ''
+			instagram: '',
+			whatsapp: ''
 		}
 	});
 
@@ -50,7 +52,8 @@ const CreateStoreForm: React.FC<{ onSuccess: (store: Store) => void }> = ({
 			description: values.description.trim(),
 			website: trimOptional(values.website),
 			twitter: trimOptional(values.twitter),
-			instagram: trimOptional(values.instagram)
+			instagram: trimOptional(values.instagram),
+			whatsapp: trimOptional(values.whatsapp)
 		};
 
 		createStoreMutation.mutate(body);
@@ -145,6 +148,27 @@ const CreateStoreForm: React.FC<{ onSuccess: (store: Store) => void }> = ({
 							id={field.name}
 							placeholder='@yourstore'
 							autoComplete='off'
+						/>
+						{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+					</Field>
+				)}
+			/>
+
+			<Controller
+				name='whatsapp'
+				control={form.control}
+				render={({ field, fieldState }) => (
+					<Field data-invalid={fieldState.invalid}>
+						<FieldLabel htmlFor={field.name}>
+							WhatsApp number (optional)
+						</FieldLabel>
+						<Input
+							{...field}
+							id={field.name}
+							type='tel'
+							inputMode='tel'
+							placeholder='0801 234 5678'
+							autoComplete='tel'
 						/>
 						{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
 					</Field>

@@ -13,6 +13,7 @@ export interface Store {
 	imageId?: string;
 	image?: Image;
 	unlisted?: boolean;
+	whatsapp?: string;
 	products: Product[];
 	followedByUser: boolean;
 	categories: StoreProductCategory[];
