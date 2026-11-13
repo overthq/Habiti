@@ -51,6 +51,7 @@ export enum LogicErrorCode {
 	ProductStoreMismatch = 'ProductStoreMismatch',
 	ProductInvalidRating = 'ProductInvalidRating',
 	ProductStoreNotFound = 'ProductStoreNotFound',
+	ProductUnavailable = 'ProductUnavailable',
 
 	PayoutInsufficientFunds = 'PayoutInsufficientFunds',
 	PayoutFailed = 'PayoutFailed',
@@ -171,6 +172,10 @@ export const logicErrorToApiException = (
 			});
 		case LogicErrorCode.ProductStoreNotFound:
 			return new HTTPException(404, { message: 'Store not found' });
+		case LogicErrorCode.ProductUnavailable:
+			return new HTTPException(409, {
+				message: 'One or more products are no longer available'
+			});
 		case LogicErrorCode.ProductInsufficientStock:
 			return new HTTPException(409, {
 				message: 'Insufficient stock for one or more products'

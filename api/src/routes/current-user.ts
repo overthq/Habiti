@@ -152,6 +152,13 @@ currentUser.post('/orders/:id/confirm-pickup', async c => {
 	return c.json({ order });
 });
 
+currentUser.post('/orders/:id/cancel', async c => {
+	const id = c.req.param('id');
+
+	const order = await OrderLogic.cancelUnpaidOrder(c, id);
+	return c.json({ order });
+});
+
 currentUser.post(
 	'/cards/authorize',
 	zValidator('json', Schemas.authorizeCardBodySchema, zodHook),

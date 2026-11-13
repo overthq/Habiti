@@ -25,13 +25,12 @@ import {
 	updateCartProductQuantity,
 	updateCurrentUser,
 	updateDeliveryAddress,
-	updateOrder
+	cancelOrder
 } from './requests';
 import type {
 	SavePushTokenBody,
 	DeletePushTokenBody,
-	UpdateDeliveryAddressArgs,
-	UpdateOrderBody
+	UpdateDeliveryAddressArgs
 } from './types';
 
 export const useSignUpMutation = () => {
@@ -175,16 +174,10 @@ export const useDeleteCardMutation = () => {
 	});
 };
 
-export const useUpdateOrderMutation = () => {
+export const useCancelOrderMutation = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: ({
-			orderId,
-			body
-		}: {
-			orderId: string;
-			body: UpdateOrderBody;
-		}) => updateOrder(orderId, body),
+		mutationFn: (orderId: string) => cancelOrder(orderId),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['orders'] });
 		}

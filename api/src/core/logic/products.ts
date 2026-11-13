@@ -130,6 +130,14 @@ export const getProductById = async (c: Context<AppEnv>, productId: string) => {
 		throw new LogicError(LogicErrorCode.ProductNotFound);
 	}
 
+	if (
+		product.status === ProductStatus.Draft &&
+		!c.var.isAdmin &&
+		product.storeId !== c.var.storeId
+	) {
+		throw new LogicError(LogicErrorCode.ProductNotFound);
+	}
+
 	const productViewerContext = c.var.auth?.id
 		? await ProductData.getProductViewerContext(
 				c.var.prisma,

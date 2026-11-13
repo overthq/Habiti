@@ -23,15 +23,26 @@ async function completeStalePickups() {
 		`Found ${staleOrders.length} stale ReadyForPickup orders (older than ${PICKUP_CONFIRMATION_WINDOW_DAYS} days)`
 	);
 
-	for (const order of staleOrders) {
-		await runSerializable(prisma, tx =>
-			updateOrderStatus(tx, order, OrderStatus.Completed)
-		);
+	let completed = 0;
 
+	for (const order of staleOrders) {
+		// The order may have been cancelled or confirmed since the query above.
+		// Re-check in the same transaction so its money only moves once.
+		const didComplete = await runSerializable(prisma, async tx => {
+			const current = await tx.order.findUnique({ where: { id: order.id } });
+			if (current?.status !== OrderStatus.ReadyForPickup) return false;
+
+			await updateOrderStatus(tx, current, OrderStatus.Completed);
+			return true;
+		});
+
+		if (!didComplete) continue;
+
+		completed++;
 		console.log(`Completed order ${order.id} (store: ${order.storeId})`);
 	}
 
-	console.log('Done.');
+	console.log(`Done. Completed ${completed} of ${staleOrders.length} orders.`);
 }
 
 completeStalePickups()

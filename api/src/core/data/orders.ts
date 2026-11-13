@@ -248,7 +248,7 @@ export const getOrderById = async (
 };
 
 export const getOrderByIdWithStore = async (
-	prisma: PrismaClient,
+	prisma: PrismaClient | TransactionClient,
 	orderId: string
 ) => {
 	const order = await prisma.order.findUnique({

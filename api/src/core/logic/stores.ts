@@ -1,5 +1,6 @@
 import type { Context } from 'hono';
 
+import { ProductStatus } from '../../generated/prisma/client';
 import type { AppEnv } from '../../types/hono';
 import type { StripUndefined } from '../../utils/objects';
 
@@ -131,7 +132,13 @@ export const updateStore = async (
 };
 
 export const getStoreById = async (c: Context<AppEnv>, storeId: string) => {
-	const store = await StoreData.getStoreByIdWithProducts(c.var.prisma, storeId);
+	const store = await StoreData.getStoreByIdWithProducts(
+		c.var.prisma,
+		storeId,
+		canSeeHiddenProducts(c, storeId)
+			? undefined
+			: { status: ProductStatus.Active }
+	);
 
 	if (!store) {
 		throw new LogicError(LogicErrorCode.StoreNotFound);
@@ -515,8 +522,18 @@ export const getStoreProducts = async (
 	storeId: string,
 	filters?: ProductFilters
 ) => {
-	return StoreData.getStoreProducts(c.var.prisma, storeId, filters);
+	return StoreData.getStoreProducts(
+		c.var.prisma,
+		storeId,
+		canSeeHiddenProducts(c, storeId)
+			? filters
+			: { ...filters, status: ProductStatus.Active }
+	);
 };
+
+// Draft products are only shown to the store that owns them and to admins.
+const canSeeHiddenProducts = (c: Context<AppEnv>, storeId: string) =>
+	c.var.isAdmin || c.var.storeId === storeId;
 
 export const getStoreOrders = async (
 	c: Context<AppEnv>,

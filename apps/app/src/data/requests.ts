@@ -26,7 +26,6 @@ import type {
 	DeletePushTokenBody,
 	CardAuthorizationResponse,
 	DeliveryAddress,
-	UpdateOrderBody,
 	LandingHighlightsResponse
 } from './types';
 import useStore from '../state';
@@ -349,8 +348,10 @@ export const deleteAccount = async () => {
 
 // Orders (additional)
 
-export const updateOrder = async (orderId: string, body: UpdateOrderBody) => {
-	const response = await api.put<{ order: Order }>(`/orders/${orderId}`, body);
+export const cancelOrder = async (orderId: string) => {
+	const response = await api.post<{ order: Order }>(
+		`/users/current/orders/${orderId}/cancel`
+	);
 	return response.data;
 };
 

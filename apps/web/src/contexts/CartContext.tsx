@@ -79,7 +79,8 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 	}, [
 		updateCartProductQuantityMutation.isPending,
 		createOrderMutation.isPending,
-		anyCartProductIsOverQuantity
+		anyCartProductIsOverQuantity,
+		pendingUpdatesRef.current.size
 	]);
 
 	const processBatchedUpdates = React.useCallback(() => {

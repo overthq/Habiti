@@ -292,10 +292,6 @@ export interface CardAuthorizationResponse {
 	reference: string;
 }
 
-export interface UpdateOrderBody {
-	status: OrderStatus;
-}
-
 export interface SavePushTokenBody {
 	token: string;
 	type: PushTokenType;
