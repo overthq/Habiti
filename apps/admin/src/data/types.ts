@@ -1,7 +1,8 @@
 export interface User {
 	id: string;
 	name: string;
-	email: string;
+	email: string | null;
+	isAnonymous: boolean;
 	suspended: boolean;
 	createdAt: string;
 	updatedAt: string;
@@ -16,6 +17,7 @@ export interface UpdateUserBody {
 export interface UserFilters {
 	search?: string;
 	suspended?: boolean;
+	isAnonymous?: boolean;
 	orderBy?: Partial<
 		Record<'name' | 'email' | 'createdAt' | 'updatedAt', 'asc' | 'desc'>
 	>;
@@ -175,6 +177,7 @@ export interface GetStoresResponse {
 
 export interface StoreFilters {
 	search?: string;
+	unlisted?: boolean;
 	filter?: Record<string, string | number>;
 	orderBy?: Record<string, 'asc' | 'desc'>;
 }
@@ -310,4 +313,36 @@ export interface BulkProductStatusBody {
 
 export interface BulkActionResponse {
 	count: number;
+}
+
+export interface PayoutAccount {
+	id: string;
+	accountNumber: string;
+	accountName: string | null;
+	bankCode: string;
+	bankName: string | null;
+	label: string | null;
+	isDefault: boolean;
+	createdAt: string;
+}
+
+export interface GetPayoutAccountsResponse {
+	payoutAccounts: PayoutAccount[];
+}
+
+export interface AddPayoutAccountBody {
+	bankAccountNumber: string;
+	bankCode: string;
+	label?: string;
+	replaceExisting?: boolean;
+}
+
+export interface VerifyBankAccountBody {
+	bankAccountNumber: string;
+	bankCode: string;
+}
+
+export interface VerifyBankAccountResponse {
+	accountNumber: string;
+	accountName: string;
 }

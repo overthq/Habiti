@@ -10,6 +10,7 @@ import StoreManagers from '@/components/stores/store-managers';
 import StoreProducts from '@/components/stores/store-products';
 import StoreOrders from '@/components/stores/store-orders';
 import StoreTransactions from '@/components/stores/store-transactions';
+import StorePayoutAccounts from '@/components/stores/store-payout-accounts';
 import StoreActionsDropdown from '@/components/store/store-actions-dropdown';
 
 export const Route = createFileRoute('/_dashboard/stores/$id')({
@@ -61,6 +62,7 @@ const StoreMain = ({ store }: StoreMainProps) => {
 					<TabsTrigger value='orders'>Orders</TabsTrigger>
 					<TabsTrigger value='transactions'>Transactions</TabsTrigger>
 					<TabsTrigger value='managers'>Managers</TabsTrigger>
+					<TabsTrigger value='payout-accounts'>Payout accounts</TabsTrigger>
 				</TabsList>
 				<TabsContent value='products'>
 					<StoreProducts storeId={store.id} />
@@ -73,6 +75,9 @@ const StoreMain = ({ store }: StoreMainProps) => {
 				</TabsContent>
 				<TabsContent value='managers'>
 					<StoreManagers storeId={store.id} />
+				</TabsContent>
+				<TabsContent value='payout-accounts'>
+					<StorePayoutAccounts storeId={store.id} />
 				</TabsContent>
 			</Tabs>
 		</div>

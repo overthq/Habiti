@@ -33,8 +33,12 @@ mock.module('../payments', () => ({
 	createTransferRecipient
 }));
 
-const { addPayoutAccount, MAX_PAYOUT_ACCOUNTS_PER_STORE } =
-	await import('./payoutAccounts');
+const {
+	addPayoutAccount,
+	removePayoutAccount,
+	setDefaultPayoutAccount,
+	MAX_PAYOUT_ACCOUNTS_PER_STORE
+} = await import('./payoutAccounts');
 const { LogicErrorCode } = await import('./errors');
 
 interface AccountRow {
@@ -305,6 +309,62 @@ describe('addPayoutAccount', () => {
 		// A stale recipient may have been deactivated provider-side, so the
 		// reactivated row takes the fresh code.
 		expect(accounts[0]?.recipientRef).toBe('RCP_new');
+	});
+});
+
+describe('acting on a store from the admin tool', () => {
+	const asAdmin = (c: any) => {
+		c.var.isAdmin = true;
+		c.var.storeId = undefined;
+		return c;
+	};
+
+	test('an admin attaches an account to the store they name', async () => {
+		const { c, accounts } = fakeContext([]);
+
+		await addPayoutAccount(asAdmin(c), { ...input, storeId: 'store-2' });
+
+		expect(accounts[0]?.storeId).toBe('store-2');
+		expect(accounts[0]?.isDefault).toBe(true);
+	});
+
+	test('an admin must name a store', async () => {
+		const { c, accounts } = fakeContext([]);
+
+		await expectLogicError(
+			() => addPayoutAccount(asAdmin(c), input),
+			LogicErrorCode.StoreContextRequired
+		);
+
+		expect(accounts).toHaveLength(0);
+	});
+
+	test('a manager cannot reach another store by naming it', async () => {
+		const { c, accounts } = fakeContext([]);
+
+		await expectLogicError(
+			() => addPayoutAccount(c, { ...input, storeId: 'store-2' }),
+			LogicErrorCode.Forbidden
+		);
+		await expectLogicError(
+			() => removePayoutAccount(c, 'account-existing', 'store-2'),
+			LogicErrorCode.Forbidden
+		);
+		await expectLogicError(
+			() => setDefaultPayoutAccount(c, 'account-existing', 'store-2'),
+			LogicErrorCode.Forbidden
+		);
+
+		expect(accounts).toHaveLength(0);
+		expect(resolveAccountNumber).not.toHaveBeenCalled();
+	});
+
+	test('an admin removes an account from the store they name', async () => {
+		const { c, accounts } = fakeContext([activeAccount()]);
+
+		await removePayoutAccount(asAdmin(c), 'account-existing', 'store-1');
+
+		expect(accounts[0]?.status).toBe('Inactive');
 	});
 });
 

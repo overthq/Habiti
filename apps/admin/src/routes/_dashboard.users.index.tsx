@@ -67,18 +67,22 @@ const columns: ColumnDef<User>[] = [
 			<DataTableColumnHeader column={column} title='Name' />
 		),
 		cell: ({ row }) => (
-			<Button variant='link' asChild className='px-0 w-fit'>
-				<Link to='/users/$id' params={{ id: row.original.id }}>
-					{row.original.name}
-				</Link>
-			</Button>
+			<div className='flex items-center gap-2'>
+				<Button variant='link' asChild className='px-0 w-fit'>
+					<Link to='/users/$id' params={{ id: row.original.id }}>
+						{row.original.name}
+					</Link>
+				</Button>
+				{row.original.isAnonymous && <StatusPill tone='gray' label='Guest' />}
+			</div>
 		)
 	},
 	{
 		accessorKey: 'email',
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title='Email' />
-		)
+		),
+		cell: ({ row }) => row.original.email ?? '—'
 	},
 	{
 		accessorKey: 'suspended',
@@ -100,9 +104,15 @@ const columns: ColumnDef<User>[] = [
 	}
 ];
 
-const defaultFilters: UserFilters = {
+// Guests are hidden unless the URL opts in: no `accountType` means registered only.
+type UsersPageFilters = Omit<UserFilters, 'isAnonymous'> & {
+	accountType?: 'guest' | 'all';
+};
+
+const defaultFilters: UsersPageFilters = {
 	search: undefined,
 	suspended: undefined,
+	accountType: undefined,
 	orderBy: undefined
 };
 
@@ -110,7 +120,28 @@ function Users() {
 	const { filters, setFilter, clearFilters, hasActiveFilters } =
 		useTableFilters({ defaults: defaultFilters });
 
-	const { data, isLoading } = useUsersQuery(filters);
+	// The URL hands booleans back as strings when the default is undefined.
+	const suspended =
+		filters.suspended === undefined
+			? undefined
+			: String(filters.suspended) === 'true';
+
+	const { accountType, ...queryFilters } = filters;
+	const showRegistered = accountType !== 'guest';
+	const showGuests = accountType !== undefined;
+
+	const { data, isLoading } = useUsersQuery({
+		...queryFilters,
+		isAnonymous: accountType === 'all' ? undefined : accountType === 'guest'
+	});
+
+	const setAccountTypes = (registered: boolean, guests: boolean) => {
+		if (!registered && !guests) return;
+		setFilter(
+			'accountType',
+			registered && guests ? 'all' : guests ? 'guest' : undefined
+		);
+	};
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
 	const bulkUpdateMutation = useBulkUpdateUsersMutation();
@@ -229,7 +260,7 @@ function Users() {
 									<DropdownMenuPortal>
 										<DropdownMenuSubContent>
 											<DropdownMenuCheckboxItem
-												checked={filters.suspended === false}
+												checked={suspended === false}
 												onCheckedChange={checked => {
 													if (checked) {
 														setFilter('suspended', false);
@@ -241,7 +272,7 @@ function Users() {
 												Active
 											</DropdownMenuCheckboxItem>
 											<DropdownMenuCheckboxItem
-												checked={filters.suspended === true}
+												checked={suspended === true}
 												onCheckedChange={checked => {
 													if (checked) {
 														setFilter('suspended', true);
@@ -251,6 +282,29 @@ function Users() {
 												}}
 											>
 												Suspended
+											</DropdownMenuCheckboxItem>
+										</DropdownMenuSubContent>
+									</DropdownMenuPortal>
+								</DropdownMenuSub>
+								<DropdownMenuSub>
+									<DropdownMenuSubTrigger>Account type</DropdownMenuSubTrigger>
+									<DropdownMenuPortal>
+										<DropdownMenuSubContent>
+											<DropdownMenuCheckboxItem
+												checked={showRegistered}
+												onCheckedChange={checked =>
+													setAccountTypes(checked, showGuests)
+												}
+											>
+												Registered
+											</DropdownMenuCheckboxItem>
+											<DropdownMenuCheckboxItem
+												checked={showGuests}
+												onCheckedChange={checked =>
+													setAccountTypes(showRegistered, checked)
+												}
+											>
+												Guest
 											</DropdownMenuCheckboxItem>
 										</DropdownMenuSubContent>
 									</DropdownMenuPortal>

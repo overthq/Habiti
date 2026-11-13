@@ -29,6 +29,11 @@ import {
 	type GetStoreResponse,
 	type GetStoresResponse,
 	type StoreFilters,
+	type PayoutAccount,
+	type GetPayoutAccountsResponse,
+	type AddPayoutAccountBody,
+	type VerifyBankAccountBody,
+	type VerifyBankAccountResponse,
 	type GetOverviewResponse,
 	type UpdateTransactionBody,
 	type UpdateTransactionResponse,
@@ -153,6 +158,48 @@ export const getStoreManagers = (id: string, params?: StoreFilters) => {
 	return api.get<GetStoreManagersResponse>(
 		`/admin/stores/${id}/managers`,
 		params
+	);
+};
+
+export const getStorePayoutAccounts = (storeId: string) => {
+	return api.get<GetPayoutAccountsResponse>(
+		`/admin/stores/${storeId}/payout-accounts`
+	);
+};
+
+export const addStorePayoutAccount = (
+	storeId: string,
+	body: AddPayoutAccountBody
+) => {
+	return api.post<{ payoutAccount: PayoutAccount }>(
+		`/admin/stores/${storeId}/payout-accounts`,
+		body
+	);
+};
+
+export const setDefaultStorePayoutAccount = (
+	storeId: string,
+	accountId: string
+) => {
+	return api.post<{ payoutAccount: PayoutAccount }>(
+		`/admin/stores/${storeId}/payout-accounts/${accountId}/default`,
+		{}
+	);
+};
+
+export const removeStorePayoutAccount = (
+	storeId: string,
+	accountId: string
+) => {
+	return api.delete<{ id: string }>(
+		`/admin/stores/${storeId}/payout-accounts/${accountId}`
+	);
+};
+
+export const verifyBankAccount = (body: VerifyBankAccountBody) => {
+	return api.post<VerifyBankAccountResponse>(
+		'/admin/verify-bank-account',
+		body
 	);
 };
 

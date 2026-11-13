@@ -462,6 +462,10 @@ export const userFiltersSchema = z.object({
 		.union([z.boolean(), z.enum(['true', 'false'])])
 		.transform(val => (typeof val === 'string' ? val === 'true' : val))
 		.optional(),
+	isAnonymous: z
+		.union([z.boolean(), z.enum(['true', 'false'])])
+		.transform(val => (typeof val === 'string' ? val === 'true' : val))
+		.optional(),
 	orderBy: z
 		.object({
 			name: z.enum(['asc', 'desc']).optional(),

@@ -30,6 +30,10 @@ export const userFiltersToPrismaClause = (filters?: UserFilters) => {
 		where.suspended = filters.suspended;
 	}
 
+	if (filters?.isAnonymous !== undefined) {
+		where.isAnonymous = filters.isAnonymous;
+	}
+
 	if (filters?.orderBy) {
 		orderBy = filters.orderBy;
 	}

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { type ColumnDef, type RowSelectionState } from '@tanstack/react-table';
+import { ListFilter } from 'lucide-react';
 
 import { type Store, type StoreFilters } from '@/data/types';
 import { useStoresQuery } from '@/data/queries';
@@ -12,6 +13,18 @@ import {
 import { DataTable } from '@/components/ui/data-table';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import {
+	DropdownMenu,
+	DropdownMenuCheckboxItem,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuPortal,
+	DropdownMenuSeparator,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
+	DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
 import StatusPill from '@/components/status-pill';
 import { BulkActionsToolbar } from '@/components/bulk-actions-toolbar';
 import { ConfirmDialog } from '@/components/confirm-dialog';
@@ -73,11 +86,19 @@ const columns: ColumnDef<Store>[] = [
 ];
 
 const defaultFilters: StoreFilters = {
-	search: undefined
+	search: undefined,
+	unlisted: undefined
 };
 
 function Stores() {
-	const { filters, setFilter } = useTableFilters({ defaults: defaultFilters });
+	const { filters, setFilter, clearFilters, hasActiveFilters } =
+		useTableFilters({ defaults: defaultFilters });
+
+	// The URL hands booleans back as strings when the default is undefined.
+	const unlisted =
+		filters.unlisted === undefined
+			? undefined
+			: String(filters.unlisted) === 'true';
 
 	const { data, isLoading } = useStoresQuery(filters);
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -166,6 +187,50 @@ function Stores() {
 				searchValue={filters.search ?? ''}
 				onSearchChange={value => setFilter('search', value || undefined)}
 				searchPlaceholder='Filter by name...'
+				filterButtons={
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant='outline' size='sm'>
+								<ListFilter />
+								Filters
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align='start' className='w-56'>
+							<DropdownMenuSub>
+								<DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
+								<DropdownMenuPortal>
+									<DropdownMenuSubContent>
+										<DropdownMenuCheckboxItem
+											checked={unlisted === false}
+											onCheckedChange={checked =>
+												setFilter('unlisted', checked ? false : undefined)
+											}
+										>
+											Listed
+										</DropdownMenuCheckboxItem>
+										<DropdownMenuCheckboxItem
+											checked={unlisted === true}
+											onCheckedChange={checked =>
+												setFilter('unlisted', checked ? true : undefined)
+											}
+										>
+											Unlisted
+										</DropdownMenuCheckboxItem>
+									</DropdownMenuSubContent>
+								</DropdownMenuPortal>
+							</DropdownMenuSub>
+
+							{hasActiveFilters && (
+								<>
+									<DropdownMenuSeparator />
+									<DropdownMenuItem onClick={clearFilters}>
+										Clear Filters
+									</DropdownMenuItem>
+								</>
+							)}
+						</DropdownMenuContent>
+					</DropdownMenu>
+				}
 			/>
 		</div>
 	);

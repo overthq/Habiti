@@ -23,6 +23,9 @@ import * as ProductLogic from '../core/logic/products';
 import * as UserLogic from '../core/logic/users';
 import * as OrderLogic from '../core/logic/orders';
 import * as TransactionLogic from '../core/logic/transactions';
+import * as PayoutAccountLogic from '../core/logic/payoutAccounts';
+import { LogicError, LogicErrorCode } from '../core/logic/errors';
+import { resolveAccountNumber } from '../core/payments';
 import * as Schemas from '../core/validations/rest';
 
 const admin = new Hono<AppEnv>();
@@ -244,17 +247,17 @@ admin.get('/stores', async c => {
 	});
 
 	const search = c.req.query('search');
+	const unlisted = c.req.query('unlisted');
 
 	const stores = await StoreLogic.getStores(c, {
 		...query,
-		...(search
-			? {
-					where: {
-						...query.where,
-						name: { contains: search, mode: 'insensitive' }
-					}
-				}
-			: {})
+		where: {
+			...query.where,
+			...(search ? { name: { contains: search, mode: 'insensitive' } } : {}),
+			...(unlisted === 'true' || unlisted === 'false'
+				? { unlisted: unlisted === 'true' }
+				: {})
+		}
 	});
 
 	return c.json({ stores });
@@ -340,6 +343,82 @@ admin.delete('/stores/:id', async c => {
 	await StoreLogic.adminDeleteStore(c, c.req.param('id'));
 	return c.json({ message: 'Store deleted' });
 });
+
+const adminPayoutAccountLimiter = rateLimit({
+	prefix: 'admin:payout-accounts',
+	windowSec: 60,
+	limit: 10,
+	keyGenerator: c => c.var.auth?.id ?? 'anon'
+});
+
+admin.get('/stores/:id/payout-accounts', async c => {
+	const payoutAccounts = await PayoutAccountLogic.listPayoutAccounts(
+		c,
+		c.req.param('id')
+	);
+	return c.json({ payoutAccounts });
+});
+
+admin.post(
+	'/stores/:id/payout-accounts',
+	adminPayoutAccountLimiter,
+	zValidator('json', Schemas.createPayoutAccountBodySchema, zodHook),
+	async c => {
+		const { bankAccountNumber, bankCode, label, replaceExisting } =
+			c.req.valid('json');
+
+		const payoutAccount = await PayoutAccountLogic.addPayoutAccount(c, {
+			storeId: c.req.param('id'),
+			accountNumber: bankAccountNumber,
+			bankCode,
+			label,
+			replaceExisting
+		});
+
+		return c.json({ payoutAccount }, 201);
+	}
+);
+
+admin.post('/stores/:id/payout-accounts/:accountId/default', async c => {
+	const payoutAccount = await PayoutAccountLogic.setDefaultPayoutAccount(
+		c,
+		c.req.param('accountId'),
+		c.req.param('id')
+	);
+	return c.json({ payoutAccount });
+});
+
+admin.delete('/stores/:id/payout-accounts/:accountId', async c => {
+	const removed = await PayoutAccountLogic.removePayoutAccount(
+		c,
+		c.req.param('accountId'),
+		c.req.param('id')
+	);
+	return c.json(removed);
+});
+
+admin.post(
+	'/verify-bank-account',
+	adminPayoutAccountLimiter,
+	zValidator('json', Schemas.verifyBankAccountBodySchema, zodHook),
+	async c => {
+		const { bankAccountNumber, bankCode } = c.req.valid('json');
+
+		const resolved = await resolveAccountNumber({
+			accountNumber: bankAccountNumber,
+			bankCode
+		}).catch(() => null);
+
+		if (!resolved?.status || !resolved.data?.account_number) {
+			throw new LogicError(LogicErrorCode.BankAccountVerificationFailed);
+		}
+
+		return c.json({
+			accountNumber: resolved.data.account_number,
+			accountName: resolved.data.account_name
+		});
+	}
+);
 
 admin.get('/products', async c => {
 	const filters = productFiltersSchema.parse(parseNestedQuery(c.req.query()));

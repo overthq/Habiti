@@ -1,4 +1,4 @@
-import { BANKS } from './banks';
+import { BANKS } from '@habiti/common';
 
 export const BANKS_BY_CODE = BANKS.reduce(
 	(acc, next) => {

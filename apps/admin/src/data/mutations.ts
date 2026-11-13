@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { isAxiosError } from 'axios';
 
 import {
 	type LoginBody,
@@ -10,6 +11,8 @@ import {
 	type UpdateStoreBody,
 	type UpdateUserBody,
 	type UpdateTransactionBody,
+	type AddPayoutAccountBody,
+	type VerifyBankAccountBody,
 	OrderStatus,
 	ProductStatus
 } from './types';
@@ -26,6 +29,10 @@ import {
 	deleteStore,
 	updateUser,
 	updateTransaction,
+	addStorePayoutAccount,
+	setDefaultStorePayoutAccount,
+	removeStorePayoutAccount,
+	verifyBankAccount,
 	bulkUpdateUsers,
 	bulkDeleteUsers,
 	bulkUpdateOrders,
@@ -389,6 +396,76 @@ export const useBulkDeleteStoresMutation = () => {
 		},
 		onError: () => {
 			toast.error('Failed to delete stores');
+		}
+	});
+};
+
+// The payout-account endpoints explain refusals (in-flight payout, failed
+// verification) in the response message, which is worth showing as-is.
+const apiErrorMessage = (error: unknown, fallback: string) =>
+	(isAxiosError<{ message?: string }>(error) &&
+		error.response?.data?.message) ||
+	fallback;
+
+export const useVerifyBankAccountMutation = () => {
+	return useMutation({
+		mutationFn: (body: VerifyBankAccountBody) => verifyBankAccount(body),
+		onError: error => {
+			toast.error(apiErrorMessage(error, 'Failed to verify bank account'));
+		}
+	});
+};
+
+export const useAddStorePayoutAccountMutation = (storeId: string) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (body: AddPayoutAccountBody) =>
+			addStorePayoutAccount(storeId, body),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['stores', storeId, 'payout-accounts']
+			});
+			toast.success('Bank account linked');
+		},
+		onError: error => {
+			toast.error(apiErrorMessage(error, 'Failed to link bank account'));
+		}
+	});
+};
+
+export const useSetDefaultStorePayoutAccountMutation = (storeId: string) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (accountId: string) =>
+			setDefaultStorePayoutAccount(storeId, accountId),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['stores', storeId, 'payout-accounts']
+			});
+			toast.success('Default payout account updated');
+		},
+		onError: error => {
+			toast.error(apiErrorMessage(error, 'Failed to update default account'));
+		}
+	});
+};
+
+export const useRemoveStorePayoutAccountMutation = (storeId: string) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (accountId: string) =>
+			removeStorePayoutAccount(storeId, accountId),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['stores', storeId, 'payout-accounts']
+			});
+			toast.success('Payout account removed');
+		},
+		onError: error => {
+			toast.error(apiErrorMessage(error, 'Failed to remove payout account'));
 		}
 	});
 };
