@@ -244,17 +244,17 @@ admin.get('/stores', async c => {
 	});
 
 	const search = c.req.query('search');
+	const unlisted = c.req.query('unlisted');
 
 	const stores = await StoreLogic.getStores(c, {
 		...query,
-		...(search
-			? {
-					where: {
-						...query.where,
-						name: { contains: search, mode: 'insensitive' }
-					}
-				}
-			: {})
+		where: {
+			...query.where,
+			...(search ? { name: { contains: search, mode: 'insensitive' } } : {}),
+			...(unlisted === 'true' || unlisted === 'false'
+				? { unlisted: unlisted === 'true' }
+				: {})
+		}
 	});
 
 	return c.json({ stores });

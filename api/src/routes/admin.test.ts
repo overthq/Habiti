@@ -148,6 +148,71 @@ describe('DELETE /admin/stores/:id', () => {
  * before `/bulk` swallows it — the param handler then runs with `id: 'bulk'`.
  * Both resources have a DELETE on each path, so both need pinning.
  */
+describe('GET /admin/users', () => {
+	const adminToken = () => signAccessToken({ role: AccessTokenRole.Admin });
+
+	const listUsers = async (query: string) => {
+		const findMany = mock(async () => []);
+		const { app } = createTestApp({
+			prisma: createFakePrisma({ user: { findMany } })
+		});
+
+		const res = await app.fetch(
+			authedRequest(`/admin/users${query}`, await adminToken())
+		);
+		expect(res.status).toBe(200);
+
+		return (findMany.mock.calls[0] as any[])[0].where;
+	};
+
+	test('filters by isAnonymous', async () => {
+		expect(await listUsers('?isAnonymous=false')).toEqual({
+			isAnonymous: false
+		});
+		expect(await listUsers('?isAnonymous=true')).toEqual({
+			isAnonymous: true
+		});
+	});
+
+	test('does not filter on isAnonymous when omitted', async () => {
+		expect(await listUsers('')).toEqual({});
+	});
+});
+
+describe('GET /admin/stores', () => {
+	const adminToken = () => signAccessToken({ role: AccessTokenRole.Admin });
+
+	const listStores = async (query: string) => {
+		const findMany = mock(async () => []);
+		const { app } = createTestApp({
+			prisma: createFakePrisma({ store: { findMany } })
+		});
+
+		const res = await app.fetch(
+			authedRequest(`/admin/stores${query}`, await adminToken())
+		);
+		expect(res.status).toBe(200);
+
+		return (findMany.mock.calls[0] as any[])[0].where;
+	};
+
+	test('filters by unlisted', async () => {
+		expect(await listStores('?unlisted=false')).toEqual({ unlisted: false });
+		expect(await listStores('?unlisted=true')).toEqual({ unlisted: true });
+	});
+
+	test('combines unlisted with search', async () => {
+		expect(await listStores('?unlisted=false&search=shoe')).toEqual({
+			name: { contains: 'shoe', mode: 'insensitive' },
+			unlisted: false
+		});
+	});
+
+	test('does not filter on unlisted when omitted', async () => {
+		expect(await listStores('')).toEqual({});
+	});
+});
+
 describe('bulk routes are not shadowed by the :id routes', () => {
 	const adminToken = () => signAccessToken({ role: AccessTokenRole.Admin });
 

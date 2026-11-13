@@ -1,7 +1,8 @@
 export interface User {
 	id: string;
 	name: string;
-	email: string;
+	email: string | null;
+	isAnonymous: boolean;
 	suspended: boolean;
 	createdAt: string;
 	updatedAt: string;
@@ -16,6 +17,7 @@ export interface UpdateUserBody {
 export interface UserFilters {
 	search?: string;
 	suspended?: boolean;
+	isAnonymous?: boolean;
 	orderBy?: Partial<
 		Record<'name' | 'email' | 'createdAt' | 'updatedAt', 'asc' | 'desc'>
 	>;
@@ -175,6 +177,7 @@ export interface GetStoresResponse {
 
 export interface StoreFilters {
 	search?: string;
+	unlisted?: boolean;
 	filter?: Record<string, string | number>;
 	orderBy?: Record<string, 'asc' | 'desc'>;
 }
