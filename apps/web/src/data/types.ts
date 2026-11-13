@@ -276,6 +276,12 @@ export interface LandingHighlightsResponse {
 	featuredProducts: Product[];
 }
 
+export interface AppleSignInBody {
+	identityToken: string;
+	nonce: string;
+	fullName?: string;
+}
+
 export interface VerifyCodeResponse {
 	accessToken: string;
 	refreshToken: string;

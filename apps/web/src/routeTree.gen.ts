@@ -9,29 +9,29 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as MarketingRouteImport } from './routes/_marketing'
 import { Route as MainRouteImport } from './routes/_main'
+import { Route as MarketingRouteImport } from './routes/_marketing'
 import { Route as MainIndexRouteImport } from './routes/_main.index'
-import { Route as MarketingSupportRouteImport } from './routes/_marketing.support'
-import { Route as MarketingPrivacyPolicyRouteImport } from './routes/_marketing.privacy-policy'
-import { Route as MarketingAcceptableUseRouteImport } from './routes/_marketing.acceptable-use'
-import { Route as MarketingAboutRouteImport } from './routes/_marketing.about'
 import { Route as MainCartRouteImport } from './routes/_main.cart'
-import { Route as MainSellIndexRouteImport } from './routes/_main.sell.index'
-import { Route as MainProfileIndexRouteImport } from './routes/_main.profile.index'
-import { Route as MainOrdersIndexRouteImport } from './routes/_main.orders.index'
-import { Route as MainStoreIdRouteImport } from './routes/_main.store.$id'
-import { Route as MainProfileSettingsRouteImport } from './routes/_main.profile.settings'
-import { Route as MainProductIdRouteImport } from './routes/_main.product.$id'
-import { Route as MainOrdersIdRouteImport } from './routes/_main.orders.$id'
+import { Route as MarketingAboutRouteImport } from './routes/_marketing.about'
+import { Route as MarketingAcceptableUseRouteImport } from './routes/_marketing.acceptable-use'
+import { Route as MarketingPrivacyPolicyRouteImport } from './routes/_marketing.privacy-policy'
+import { Route as MarketingSupportRouteImport } from './routes/_marketing.support'
 import { Route as MainCartsIdRouteImport } from './routes/_main.carts.$id'
+import { Route as MainOrdersIndexRouteImport } from './routes/_main.orders.index'
+import { Route as MainOrdersIdRouteImport } from './routes/_main.orders.$id'
+import { Route as MainProductIdRouteImport } from './routes/_main.product.$id'
+import { Route as MainProfileIndexRouteImport } from './routes/_main.profile.index'
+import { Route as MainProfileSettingsRouteImport } from './routes/_main.profile.settings'
+import { Route as MainSellIndexRouteImport } from './routes/_main.sell.index'
+import { Route as MainStoreIdRouteImport } from './routes/_main.store.$id'
 
-const MarketingRoute = MarketingRouteImport.update({
-  id: '/_marketing',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const MainRoute = MainRouteImport.update({
   id: '/_main',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketingRoute = MarketingRouteImport.update({
+  id: '/_marketing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MainIndexRoute = MainIndexRouteImport.update({
@@ -39,14 +39,14 @@ const MainIndexRoute = MainIndexRouteImport.update({
   path: '/',
   getParentRoute: () => MainRoute,
 } as any)
-const MarketingSupportRoute = MarketingSupportRouteImport.update({
-  id: '/support',
-  path: '/support',
-  getParentRoute: () => MarketingRoute,
+const MainCartRoute = MainCartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => MainRoute,
 } as any)
-const MarketingPrivacyPolicyRoute = MarketingPrivacyPolicyRouteImport.update({
-  id: '/privacy-policy',
-  path: '/privacy-policy',
+const MarketingAboutRoute = MarketingAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => MarketingRoute,
 } as any)
 const MarketingAcceptableUseRoute = MarketingAcceptableUseRouteImport.update({
@@ -54,24 +54,19 @@ const MarketingAcceptableUseRoute = MarketingAcceptableUseRouteImport.update({
   path: '/acceptable-use',
   getParentRoute: () => MarketingRoute,
 } as any)
-const MarketingAboutRoute = MarketingAboutRouteImport.update({
-  id: '/about',
-  path: '/about',
+const MarketingPrivacyPolicyRoute = MarketingPrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
   getParentRoute: () => MarketingRoute,
 } as any)
-const MainCartRoute = MainCartRouteImport.update({
-  id: '/cart',
-  path: '/cart',
-  getParentRoute: () => MainRoute,
+const MarketingSupportRoute = MarketingSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => MarketingRoute,
 } as any)
-const MainSellIndexRoute = MainSellIndexRouteImport.update({
-  id: '/sell/',
-  path: '/sell/',
-  getParentRoute: () => MainRoute,
-} as any)
-const MainProfileIndexRoute = MainProfileIndexRouteImport.update({
-  id: '/profile/',
-  path: '/profile/',
+const MainCartsIdRoute = MainCartsIdRouteImport.update({
+  id: '/carts/$id',
+  path: '/carts/$id',
   getParentRoute: () => MainRoute,
 } as any)
 const MainOrdersIndexRoute = MainOrdersIndexRouteImport.update({
@@ -79,14 +74,9 @@ const MainOrdersIndexRoute = MainOrdersIndexRouteImport.update({
   path: '/orders/',
   getParentRoute: () => MainRoute,
 } as any)
-const MainStoreIdRoute = MainStoreIdRouteImport.update({
-  id: '/store/$id',
-  path: '/store/$id',
-  getParentRoute: () => MainRoute,
-} as any)
-const MainProfileSettingsRoute = MainProfileSettingsRouteImport.update({
-  id: '/profile/settings',
-  path: '/profile/settings',
+const MainOrdersIdRoute = MainOrdersIdRouteImport.update({
+  id: '/orders/$id',
+  path: '/orders/$id',
   getParentRoute: () => MainRoute,
 } as any)
 const MainProductIdRoute = MainProductIdRouteImport.update({
@@ -94,14 +84,24 @@ const MainProductIdRoute = MainProductIdRouteImport.update({
   path: '/product/$id',
   getParentRoute: () => MainRoute,
 } as any)
-const MainOrdersIdRoute = MainOrdersIdRouteImport.update({
-  id: '/orders/$id',
-  path: '/orders/$id',
+const MainProfileIndexRoute = MainProfileIndexRouteImport.update({
+  id: '/profile/',
+  path: '/profile/',
   getParentRoute: () => MainRoute,
 } as any)
-const MainCartsIdRoute = MainCartsIdRouteImport.update({
-  id: '/carts/$id',
-  path: '/carts/$id',
+const MainProfileSettingsRoute = MainProfileSettingsRouteImport.update({
+  id: '/profile/settings',
+  path: '/profile/settings',
+  getParentRoute: () => MainRoute,
+} as any)
+const MainSellIndexRoute = MainSellIndexRouteImport.update({
+  id: '/sell/',
+  path: '/sell/',
+  getParentRoute: () => MainRoute,
+} as any)
+const MainStoreIdRoute = MainStoreIdRouteImport.update({
+  id: '/store/$id',
+  path: '/store/$id',
   getParentRoute: () => MainRoute,
 } as any)
 
@@ -216,18 +216,18 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_marketing': {
-      id: '/_marketing'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof MarketingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_main': {
       id: '/_main'
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof MainRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_marketing': {
+      id: '/_marketing'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof MarketingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_main/': {
@@ -237,18 +237,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainIndexRouteImport
       parentRoute: typeof MainRoute
     }
-    '/_marketing/support': {
-      id: '/_marketing/support'
-      path: '/support'
-      fullPath: '/support'
-      preLoaderRoute: typeof MarketingSupportRouteImport
-      parentRoute: typeof MarketingRoute
+    '/_main/cart': {
+      id: '/_main/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof MainCartRouteImport
+      parentRoute: typeof MainRoute
     }
-    '/_marketing/privacy-policy': {
-      id: '/_marketing/privacy-policy'
-      path: '/privacy-policy'
-      fullPath: '/privacy-policy'
-      preLoaderRoute: typeof MarketingPrivacyPolicyRouteImport
+    '/_marketing/about': {
+      id: '/_marketing/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof MarketingAboutRouteImport
       parentRoute: typeof MarketingRoute
     }
     '/_marketing/acceptable-use': {
@@ -258,32 +258,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketingAcceptableUseRouteImport
       parentRoute: typeof MarketingRoute
     }
-    '/_marketing/about': {
-      id: '/_marketing/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof MarketingAboutRouteImport
+    '/_marketing/privacy-policy': {
+      id: '/_marketing/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof MarketingPrivacyPolicyRouteImport
       parentRoute: typeof MarketingRoute
     }
-    '/_main/cart': {
-      id: '/_main/cart'
-      path: '/cart'
-      fullPath: '/cart'
-      preLoaderRoute: typeof MainCartRouteImport
-      parentRoute: typeof MainRoute
+    '/_marketing/support': {
+      id: '/_marketing/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof MarketingSupportRouteImport
+      parentRoute: typeof MarketingRoute
     }
-    '/_main/sell/': {
-      id: '/_main/sell/'
-      path: '/sell'
-      fullPath: '/sell/'
-      preLoaderRoute: typeof MainSellIndexRouteImport
-      parentRoute: typeof MainRoute
-    }
-    '/_main/profile/': {
-      id: '/_main/profile/'
-      path: '/profile'
-      fullPath: '/profile/'
-      preLoaderRoute: typeof MainProfileIndexRouteImport
+    '/_main/carts/$id': {
+      id: '/_main/carts/$id'
+      path: '/carts/$id'
+      fullPath: '/carts/$id'
+      preLoaderRoute: typeof MainCartsIdRouteImport
       parentRoute: typeof MainRoute
     }
     '/_main/orders/': {
@@ -293,18 +286,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainOrdersIndexRouteImport
       parentRoute: typeof MainRoute
     }
-    '/_main/store/$id': {
-      id: '/_main/store/$id'
-      path: '/store/$id'
-      fullPath: '/store/$id'
-      preLoaderRoute: typeof MainStoreIdRouteImport
-      parentRoute: typeof MainRoute
-    }
-    '/_main/profile/settings': {
-      id: '/_main/profile/settings'
-      path: '/profile/settings'
-      fullPath: '/profile/settings'
-      preLoaderRoute: typeof MainProfileSettingsRouteImport
+    '/_main/orders/$id': {
+      id: '/_main/orders/$id'
+      path: '/orders/$id'
+      fullPath: '/orders/$id'
+      preLoaderRoute: typeof MainOrdersIdRouteImport
       parentRoute: typeof MainRoute
     }
     '/_main/product/$id': {
@@ -314,18 +300,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainProductIdRouteImport
       parentRoute: typeof MainRoute
     }
-    '/_main/orders/$id': {
-      id: '/_main/orders/$id'
-      path: '/orders/$id'
-      fullPath: '/orders/$id'
-      preLoaderRoute: typeof MainOrdersIdRouteImport
+    '/_main/profile/': {
+      id: '/_main/profile/'
+      path: '/profile'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof MainProfileIndexRouteImport
       parentRoute: typeof MainRoute
     }
-    '/_main/carts/$id': {
-      id: '/_main/carts/$id'
-      path: '/carts/$id'
-      fullPath: '/carts/$id'
-      preLoaderRoute: typeof MainCartsIdRouteImport
+    '/_main/profile/settings': {
+      id: '/_main/profile/settings'
+      path: '/profile/settings'
+      fullPath: '/profile/settings'
+      preLoaderRoute: typeof MainProfileSettingsRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/_main/sell/': {
+      id: '/_main/sell/'
+      path: '/sell'
+      fullPath: '/sell/'
+      preLoaderRoute: typeof MainSellIndexRouteImport
+      parentRoute: typeof MainRoute
+    }
+    '/_main/store/$id': {
+      id: '/_main/store/$id'
+      path: '/store/$id'
+      fullPath: '/store/$id'
+      preLoaderRoute: typeof MainStoreIdRouteImport
       parentRoute: typeof MainRoute
     }
   }
