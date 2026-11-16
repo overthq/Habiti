@@ -56,6 +56,8 @@ const ProductImages: React.FC<
 	const handlePickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ['images'],
+			preferredAssetRepresentationMode:
+				ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Current,
 			allowsEditing: true,
 			aspect: [1, 1],
 			quality: 0.8
