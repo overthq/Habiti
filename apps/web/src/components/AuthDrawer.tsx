@@ -274,6 +274,7 @@ const LoginForm = () => {
 							aria-invalid={fieldState.invalid}
 							placeholder='jane@example.com'
 							autoComplete='email'
+							autoFocus
 						/>
 						{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
 					</Field>
@@ -328,6 +329,7 @@ const SignupForm = () => {
 							aria-invalid={fieldState.invalid}
 							placeholder='Jane Doe'
 							autoComplete='name'
+							autoFocus
 						/>
 						{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
 					</Field>

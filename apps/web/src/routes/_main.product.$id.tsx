@@ -16,6 +16,7 @@ import {
 } from '@/state/recently-viewed-store';
 import Product from '@/components/store/Product';
 import QuantityControl from '@/components/QuantityControl';
+import Rail from '@/components/Rail';
 import { getProduct } from '@/data/requests';
 import { smartAppBannerMeta } from '@/utils/smart-app-banner';
 
@@ -363,7 +364,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ productId }) => {
 				Related products
 			</h2>
 
-			<div className='flex gap-4 -mx-4 px-4 overflow-x-auto'>
+			<Rail label='Related products' bleed>
 				{data.products.map(product => (
 					<Product
 						key={product.id}
@@ -373,7 +374,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ productId }) => {
 						imagePath={product.images[0]?.path}
 					/>
 				))}
-			</div>
+			</Rail>
 		</div>
 	);
 };
