@@ -42,6 +42,7 @@ import EnterAccountNumber from '../screens/EnterAccountNumber';
 import ConfirmPayoutAccount from '../screens/ConfirmPayoutAccount';
 import Appearance from '../screens/Appearance';
 import ManageAccount from '../screens/ManageAccount';
+import EditProfile from '../screens/EditProfile';
 import Categories from '../screens/Categories';
 import EditStore from '../screens/EditStore';
 import Managers from '../screens/Managers';
@@ -406,6 +407,14 @@ const ProfileStackNavigator = () => (
 				options={{
 					headerBackButtonDisplayMode: 'minimal',
 					headerTitle: 'Manage Account'
+				}}
+			/>
+			<ProfileStack.Screen
+				name='EditProfile'
+				component={EditProfile}
+				options={{
+					headerBackButtonDisplayMode: 'minimal',
+					headerTitle: 'Edit Profile'
 				}}
 			/>
 		</ProfileStack.Group>

@@ -41,7 +41,7 @@ const Profile = ({ navigation }: ProfileStackScreenProps<'ProfileHome'>) => {
 
 			{user && (
 				<Pressable
-					onPress={() => navigation.navigate('ManageAccount')}
+					onPress={() => navigation.navigate('EditProfile')}
 					style={[styles.userCard, { backgroundColor: theme.input.background }]}
 				>
 					<Avatar size={56} fallbackText={user.name} />
@@ -50,7 +50,7 @@ const Profile = ({ navigation }: ProfileStackScreenProps<'ProfileHome'>) => {
 							{user.name}
 						</Typography>
 						<Typography variant='secondary' style={{ fontSize: 15 }}>
-							Manage account
+							Edit profile
 						</Typography>
 					</View>
 					<Icon name='chevron-right' color={theme.text.secondary} size={20} />
@@ -58,6 +58,10 @@ const Profile = ({ navigation }: ProfileStackScreenProps<'ProfileHome'>) => {
 			)}
 
 			<View>
+				<StoreMenuRow
+					title='Manage Account'
+					onPress={() => navigation.navigate('ManageAccount')}
+				/>
 				<StoreMenuRow
 					title='Appearance'
 					onPress={() => navigation.navigate('Appearance')}

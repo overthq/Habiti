@@ -235,7 +235,7 @@ export const deleteCart = async (
 };
 
 export const calculatePaystackFee = (subTotal: number) => {
-	return Math.min(200000, 0.015 * subTotal + 10000);
+	return Math.min(200000, 0.015 * subTotal + (subTotal >= 250000 ? 10000 : 0));
 };
 
 export const calculateHabitiFee = () => 100_00;

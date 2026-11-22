@@ -32,7 +32,6 @@ const FollowButton: React.FC<FollowButtonProps> = ({
 			variant='outline'
 			disabled={isFollowing === undefined}
 			onClick={handleClick}
-			size='sm'
 			className={cn(
 				isFollowing &&
 					'bg-transparent *:[svg]:fill-red-500 *:[svg]:stroke-red-500'
