@@ -1,11 +1,12 @@
 import { api } from './client';
 import type {
-	AddToCartBody,
 	Address,
 	AddressBody,
+	AddToCartBody,
 	AdminCreateProductBody,
 	AdminCreateStoreBody,
 	AdminLoginBody,
+	AdminOrder,
 	AdminOverview,
 	AdminUpdateUserBody,
 	AppleSignInBody,
@@ -13,7 +14,7 @@ import type {
 	Card,
 	CardAuthorization,
 	CartProduct,
-	Cart,
+	CategorizedProduct,
 	CategoryBody,
 	CreateOrderBody,
 	CreateOrderResponse,
@@ -25,9 +26,12 @@ import type {
 	GetProductResponse,
 	GetStoreResponse,
 	LandingHighlightsResponse,
+	ListedProduct,
 	LoginBody,
 	LogoutBody,
+	ManagedStore,
 	Order,
+	OrderDetail,
 	OrderFilters,
 	OrderStatus,
 	PayoutAccount,
@@ -35,6 +39,8 @@ import type {
 	ProductFilters,
 	ProductReview,
 	ProductStatus,
+	ProductWithImages,
+	PushTokenType,
 	RefreshSessionBody,
 	RegisterBody,
 	SavePushTokenBody,
@@ -46,9 +52,13 @@ import type {
 	StoreCustomer,
 	StoreFilters,
 	StoreFollower,
-	StoreManager,
+	StoreManagerWithUser,
+	StoreOrder,
 	StoreProductCategory,
+	StoreTransaction,
+	StoreWithImage,
 	Transaction,
+	TransactionDetail,
 	TransactionFilters,
 	UpdateCurrentUserBody,
 	UpdateOrderBody,
@@ -58,12 +68,14 @@ import type {
 	UpdateTransactionBody,
 	UploadedImage,
 	User,
+	UserCart,
 	UserFilters,
+	UserOrder,
 	UserPushToken,
-	PushTokenType,
 	VerifyBankAccountBody,
 	VerifyBankAccountResponse,
 	VerifyCodeBody,
+	WatchlistItem,
 	WatchlistProduct
 } from './types';
 
@@ -128,7 +140,7 @@ export const getStoreProducts = async (
 	storeId: string,
 	filters?: ProductFilters
 ) => {
-	const { data } = await api.get<{ products: Product[] }>(
+	const { data } = await api.get<{ products: ProductWithImages[] }>(
 		`/stores/${storeId}/products`,
 		{ params: filters }
 	);
@@ -167,7 +179,7 @@ export const getProduct = async (productId: string) => {
 };
 
 export const getRelatedProducts = async (productId: string) => {
-	const { data } = await api.get<{ products: Product[] }>(
+	const { data } = await api.get<{ products: ProductWithImages[] }>(
 		`/products/${productId}/related`
 	);
 	return data;
@@ -224,10 +236,10 @@ export const removeFromCart = async (cartId: string, productId: string) => {
 };
 
 export const globalSearch = async (query: string) => {
-	const { data } = await api.get<{ products: Product[]; stores: Store[] }>(
-		'/search',
-		{ params: { query } }
-	);
+	const { data } = await api.get<{
+		products: ProductWithImages[];
+		stores: StoreWithImage[];
+	}>('/search', { params: { query } });
 	return data;
 };
 
@@ -266,26 +278,28 @@ export const deleteCurrentUser = async () => {
 };
 
 export const getUserFollowedStores = async () => {
-	const { data } = await api.get<{ stores: Store[] }>(
+	const { data } = await api.get<{ stores: StoreWithImage[] }>(
 		'/users/current/followed-stores'
 	);
 	return data;
 };
 
 export const getUserManagedStores = async () => {
-	const { data } = await api.get<{ stores: StoreManager[] }>(
+	const { data } = await api.get<{ stores: StoreWithImage[] }>(
 		'/users/current/managed-stores'
 	);
 	return data;
 };
 
 export const getUserOrders = async () => {
-	const { data } = await api.get<{ orders: Order[] }>('/users/current/orders');
+	const { data } = await api.get<{ orders: UserOrder[] }>(
+		'/users/current/orders'
+	);
 	return data;
 };
 
 export const getUserOrder = async (orderId: string) => {
-	const { data } = await api.get<{ order: Order }>(
+	const { data } = await api.get<{ order: OrderDetail }>(
 		`/users/current/orders/${orderId}`
 	);
 	return data;
@@ -307,7 +321,7 @@ export const confirmUserOrderPickup = async (orderId: string) => {
 };
 
 export const getUserCarts = async () => {
-	const { data } = await api.get<{ carts: Cart[] }>('/users/current/carts');
+	const { data } = await api.get<{ carts: UserCart[] }>('/users/current/carts');
 	return data;
 };
 
@@ -360,7 +374,7 @@ export const deleteUserDeliveryAddress = async (addressId: string) => {
 };
 
 export const getUserWatchlist = async () => {
-	const { data } = await api.get<{ watchlist: WatchlistProduct[] }>(
+	const { data } = await api.get<{ watchlist: WatchlistItem[] }>(
 		'/users/current/watchlist'
 	);
 	return data;
@@ -420,14 +434,14 @@ export const getCurrentStoreBalance = async () => {
 };
 
 export const getCurrentStoreOverview = async () => {
-	const { data } = await api.get<{ lowStockProducts: Product[] }>(
+	const { data } = await api.get<{ lowStockProducts: CategorizedProduct[] }>(
 		'/stores/current/overview'
 	);
 	return data;
 };
 
 export const getCurrentStoreManagers = async () => {
-	const { data } = await api.get<{ managers: StoreManager[] }>(
+	const { data } = await api.get<{ managers: StoreManagerWithUser[] }>(
 		'/stores/current/managers'
 	);
 	return data;
@@ -441,7 +455,7 @@ export const getCurrentStoreCustomer = async (userId: string) => {
 };
 
 export const getCurrentStoreProducts = async (filters?: ProductFilters) => {
-	const { data } = await api.get<{ products: Product[] }>(
+	const { data } = await api.get<{ products: ProductWithImages[] }>(
 		'/stores/current/products',
 		{ params: filters }
 	);
@@ -497,7 +511,7 @@ export const getCurrentStoreProductReviews = async (productId: string) => {
 };
 
 export const getCurrentStoreOrders = async (filters?: OrderFilters) => {
-	const { data } = await api.get<{ orders: Order[] }>(
+	const { data } = await api.get<{ orders: StoreOrder[] }>(
 		'/stores/current/orders',
 		{ params: filters }
 	);
@@ -505,7 +519,7 @@ export const getCurrentStoreOrders = async (filters?: OrderFilters) => {
 };
 
 export const getCurrentStoreOrder = async (orderId: string) => {
-	const { data } = await api.get<{ order: Order }>(
+	const { data } = await api.get<{ order: OrderDetail }>(
 		`/stores/current/orders/${orderId}`
 	);
 	return data;
@@ -585,7 +599,7 @@ export const deleteCurrentStoreAddress = async (addressId: string) => {
 export const getCurrentStoreTransactions = async (
 	filters?: TransactionFilters
 ) => {
-	const { data } = await api.get<{ transactions: Transaction[] }>(
+	const { data } = await api.get<{ transactions: StoreTransaction[] }>(
 		'/stores/current/transactions',
 		{ params: filters }
 	);
@@ -593,7 +607,7 @@ export const getCurrentStoreTransactions = async (
 };
 
 export const getCurrentStoreTransaction = async (transactionId: string) => {
-	const { data } = await api.get<{ transaction: Transaction }>(
+	const { data } = await api.get<{ transaction: TransactionDetail }>(
 		`/stores/current/transactions/${transactionId}`
 	);
 	return data;
@@ -679,14 +693,16 @@ export const getAdminOverview = async () => {
 };
 
 export const getAdminOrders = async (filters?: OrderFilters) => {
-	const { data } = await api.get<{ orders: Order[] }>('/admin/orders', {
+	const { data } = await api.get<{ orders: AdminOrder[] }>('/admin/orders', {
 		params: filters
 	});
 	return data;
 };
 
 export const getAdminOrder = async (orderId: string) => {
-	const { data } = await api.get<{ order: Order }>(`/admin/orders/${orderId}`);
+	const { data } = await api.get<{ order: OrderDetail }>(
+		`/admin/orders/${orderId}`
+	);
 	return data;
 };
 
@@ -702,9 +718,12 @@ export const updateAdminOrder = async (
 };
 
 export const getAdminProducts = async (filters?: ProductFilters) => {
-	const { data } = await api.get<{ products: Product[] }>('/admin/products', {
-		params: filters
-	});
+	const { data } = await api.get<{ products: ListedProduct[] }>(
+		'/admin/products',
+		{
+			params: filters
+		}
+	);
 	return data;
 };
 
@@ -776,7 +795,7 @@ export const getAdminUserSessions = async (userId: string) => {
 };
 
 export const getAdminUserStores = async (userId: string) => {
-	const { data } = await api.get<{ stores: StoreManager[] }>(
+	const { data } = await api.get<{ stores: ManagedStore[] }>(
 		`/admin/users/${userId}/stores`
 	);
 	return data;
@@ -818,7 +837,7 @@ export const getAdminStoreProducts = async (
 	storeId: string,
 	filters?: ProductFilters
 ) => {
-	const { data } = await api.get<{ products: Product[] }>(
+	const { data } = await api.get<{ products: ProductWithImages[] }>(
 		`/admin/stores/${storeId}/products`,
 		{ params: filters }
 	);
@@ -829,7 +848,7 @@ export const getAdminStoreOrders = async (
 	storeId: string,
 	filters?: OrderFilters
 ) => {
-	const { data } = await api.get<{ orders: Order[] }>(
+	const { data } = await api.get<{ orders: StoreOrder[] }>(
 		`/admin/stores/${storeId}/orders`,
 		{ params: filters }
 	);
@@ -840,7 +859,7 @@ export const getAdminStoreTransactions = async (
 	storeId: string,
 	filters?: TransactionFilters
 ) => {
-	const { data } = await api.get<{ transactions: Transaction[] }>(
+	const { data } = await api.get<{ transactions: StoreTransaction[] }>(
 		`/admin/stores/${storeId}/transactions`,
 		{ params: filters }
 	);
@@ -848,7 +867,7 @@ export const getAdminStoreTransactions = async (
 };
 
 export const getAdminStoreManagers = async (storeId: string) => {
-	const { data } = await api.get<{ managers: StoreManager[] }>(
+	const { data } = await api.get<{ managers: StoreManagerWithUser[] }>(
 		`/admin/stores/${storeId}/managers`
 	);
 	return data;

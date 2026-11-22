@@ -15,7 +15,7 @@ import Refresher from '../components/Refresher';
 import useRefresh from '../hooks/useRefresh';
 import { useCategoriesQuery } from '../data/queries';
 import type { StoreStackScreenProps } from '../navigation/types';
-import { StoreProductCategory } from '../data/types';
+import { StoreProductCategory } from '@habiti/data';
 
 interface CategoriesListItemProps {
 	category: StoreProductCategory;
@@ -68,7 +68,7 @@ const Categories: React.FC<StoreStackScreenProps<'Categories'>> = ({
 		navigation.navigate('Modal.EditCategory', {
 			categoryId: category.id,
 			name: category.name,
-			description: category.description
+			description: category.description ?? ''
 		});
 	};
 

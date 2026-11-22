@@ -13,14 +13,14 @@ import { formatNaira } from '@habiti/common';
 import { relativeTimestamp } from '../../utils/date';
 import { plural } from '../../utils/strings';
 
-import type { Order } from '../../data/types';
+import type { UserOrder } from '@habiti/data';
 import type {
 	HomeStackParamList,
 	MainTabParamList
 } from '../../navigation/types';
 
 interface RecentOrdersProps {
-	orders: Order[];
+	orders: UserOrder[];
 }
 
 const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
@@ -63,7 +63,7 @@ const RecentOrders: React.FC<RecentOrdersProps> = ({ orders }) => {
 };
 
 interface RecentOrderProps {
-	order: Order;
+	order: UserOrder;
 	onPress(): void;
 }
 

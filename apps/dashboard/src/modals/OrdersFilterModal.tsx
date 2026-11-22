@@ -9,7 +9,7 @@ import {
 } from '@habiti/components';
 
 import AccordionRow from '../components/AccordionRow';
-import { OrderStatus } from '../data/types';
+import { OrderStatus } from '@habiti/data';
 import { useOrdersFilterStore } from '../state/filters';
 
 type FilterAccordionKey = 'sort-by' | 'status';

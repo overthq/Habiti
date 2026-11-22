@@ -9,7 +9,7 @@ import { ListFilter, MoreVertical } from 'lucide-react';
 
 import { useOrdersQuery } from '@/data/queries';
 import { useBulkUpdateOrdersMutation } from '@/data/mutations';
-import { type Order, type OrderFilters, OrderStatus } from '@/data/types';
+import { type AdminOrder, type OrderFilters, OrderStatus } from '@habiti/data';
 import { formatNaira } from '@/utils/format';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/ui/data-table';
@@ -37,7 +37,7 @@ export const Route = createFileRoute('/_dashboard/orders/')({
 	component: OrdersPage
 });
 
-const columns: ColumnDef<Order>[] = [
+const columns: ColumnDef<AdminOrder>[] = [
 	{
 		id: 'select',
 		header: ({ table }) => (

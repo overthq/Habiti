@@ -4,7 +4,11 @@ import {
 	useAddToCartMutation,
 	useUpdateCartProductMutation
 } from '../data/mutations';
-import type { Product, ProductViewerContext } from '../data/types';
+import type {
+	ProductDetail,
+	ProductViewerContext,
+	ProductWithImages
+} from '@habiti/data';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { AppStackParamList } from '../navigation/types';
 import { View } from 'react-native';
@@ -14,8 +18,8 @@ import {
 } from '../state/recentlyViewed';
 
 interface ProductContextType {
-	product: Product;
-	relatedProducts: Product[];
+	product: ProductDetail;
+	relatedProducts: ProductWithImages[];
 	cartCommitFetching: boolean;
 	onCartCommit: () => void;
 	cartCommitDisabled: boolean;
@@ -30,9 +34,9 @@ const ProductContext = React.createContext<ProductContextType | null>(null);
 
 interface ProductProviderProps {
 	children: React.ReactNode;
-	product: Product;
-	relatedProducts: Product[];
-	viewerContext?: ProductViewerContext;
+	product: ProductDetail;
+	relatedProducts: ProductWithImages[];
+	viewerContext?: ProductViewerContext | null;
 }
 
 // FIXME: I'm aware that this is in need of a major refactor,
@@ -41,7 +45,7 @@ interface ProductProviderProps {
 // client-side adapters is easier this way).
 
 const getRecentProductPayload = (
-	product: Product
+	product: ProductDetail
 ): Omit<RecentlyViewedProduct, 'viewedAt'> => ({
 	id: product.id,
 	name: product.name,

@@ -25,11 +25,7 @@ import {
 	AppStackParamList,
 	ProductStackScreenProps
 } from '../navigation/types';
-import {
-	Image as ImageType,
-	ProductCategory,
-	Product as ProductType
-} from '../data/types';
+import { Image as ImageType, ProductDetail } from '@habiti/data';
 
 const Product: React.FC<ProductStackScreenProps<'Product.Main'>> = ({
 	navigation,
@@ -82,7 +78,7 @@ const Product: React.FC<ProductStackScreenProps<'Product.Main'>> = ({
 };
 
 interface ProductDetailsProps {
-	product: ProductType;
+	product: ProductDetail;
 }
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
@@ -143,7 +139,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
 };
 
 interface EditButtonsProps {
-	product: ProductType;
+	product: ProductDetail;
 }
 
 const EditButtons: React.FC<EditButtonsProps> = ({ product }) => {
@@ -276,7 +272,7 @@ const ProductMedia: React.FC<ProductMediaProps> = ({ images, productId }) => {
 };
 
 interface ProductCategoriesProps {
-	categories: ProductCategory[];
+	categories: ProductDetail['categories'];
 	productId: string;
 }
 
@@ -336,7 +332,7 @@ const ProductCategories: React.FC<ProductCategoriesProps> = ({
 
 interface ProductMenuProps {
 	productId: string;
-	product: ProductType;
+	product: ProductDetail;
 }
 
 const ProductMenu: React.FC<ProductMenuProps> = ({ productId, product }) => {

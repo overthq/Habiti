@@ -20,7 +20,7 @@ import {
 	usePayoutAccountsQuery,
 	useTransactionsQuery
 } from '../data/queries';
-import { Transaction, TransactionStatus, TransactionType } from '../data/types';
+import { Transaction, TransactionStatus, TransactionType } from '@habiti/data';
 import {
 	AppStackParamList,
 	type StoreStackParamList

@@ -1,4 +1,4 @@
-import { OrderStatus } from '@/data/types';
+import { OrderStatus } from '@habiti/data';
 
 const statusMap = {
 	[OrderStatus.Pending]: {

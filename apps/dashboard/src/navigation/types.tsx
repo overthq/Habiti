@@ -5,7 +5,7 @@ import type {
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { NativeBottomTabScreenProps } from '@react-navigation/bottom-tabs/unstable';
 
-import { Image, ProductCategory } from '../data/types';
+import { Image, ProductCategory } from '@habiti/data';
 
 export type AppStackParamList = {
 	Main: NavigatorScreenParams<MainTabParamList>;

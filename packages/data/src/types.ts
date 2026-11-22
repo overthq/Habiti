@@ -1,7 +1,7 @@
 // Models mirror api/prisma/schema.prisma as serialized to JSON: DateTime and
-// BigInt become string and number, and nullable columns are `| null`.
-// Relations are optional because which ones are present depends on the
-// endpoint's Prisma include.
+// BigInt become string and number, and nullable columns are `| null`. Models
+// hold columns only; relations are added per endpoint (see "With relations"),
+// matching the Prisma include behind each route.
 
 // ─── Enums ──────────────────────────────────────────────────────────────────
 
@@ -48,7 +48,6 @@ export interface User {
 	suspended: boolean;
 	createdAt: string;
 	updatedAt: string;
-	cards?: Card[];
 }
 
 export interface Store {
@@ -67,11 +66,6 @@ export interface Store {
 	unlisted: boolean;
 	createdAt: string;
 	updatedAt: string;
-	image?: Image | null;
-	products?: Product[];
-	categories?: StoreProductCategory[];
-	addresses?: Address[];
-	_count?: { followers: number };
 }
 
 export interface Image {
@@ -94,10 +88,6 @@ export interface Product {
 	status: ProductStatus;
 	createdAt: string;
 	updatedAt: string;
-	store?: Store;
-	images?: Image[];
-	categories?: ProductCategory[];
-	reviews?: ProductReview[];
 }
 
 export interface Order {
@@ -111,9 +101,6 @@ export interface Order {
 	total: number;
 	createdAt: string;
 	updatedAt: string;
-	user?: User;
-	store?: Store;
-	products?: OrderProduct[];
 }
 
 export interface OrderProduct {
@@ -121,7 +108,6 @@ export interface OrderProduct {
 	productId: string;
 	unitPrice: number;
 	quantity: number;
-	product?: Product;
 }
 
 export interface Cart {
@@ -130,23 +116,17 @@ export interface Cart {
 	storeId: string;
 	createdAt: string;
 	updatedAt: string;
-	user?: User | null;
-	store?: Store;
-	products?: CartProduct[];
 }
 
 export interface CartProduct {
 	cartId: string;
 	productId: string;
 	quantity: number;
-	cart?: Cart;
-	product?: Product;
 }
 
 export interface WatchlistProduct {
 	userId: string;
 	productId: string;
-	product?: Product;
 }
 
 export interface StoreManager {
@@ -154,8 +134,6 @@ export interface StoreManager {
 	managerId: string;
 	createdAt: string;
 	updatedAt: string;
-	store?: Store;
-	manager?: User;
 }
 
 export interface StoreFollower {
@@ -186,7 +164,6 @@ export interface StoreProductCategory {
 	description: string | null;
 	createdAt: string;
 	updatedAt: string;
-	products?: ProductCategory[];
 }
 
 export interface ProductCategory {
@@ -194,8 +171,6 @@ export interface ProductCategory {
 	categoryId: string;
 	createdAt: string;
 	updatedAt: string;
-	product?: Product;
-	category?: StoreProductCategory;
 }
 
 export interface ProductReview {
@@ -206,7 +181,6 @@ export interface ProductReview {
 	rating: number;
 	createdAt: string;
 	updatedAt: string;
-	user?: User;
 }
 
 // Used for both user delivery addresses and store pickup addresses.
@@ -247,8 +221,6 @@ export interface Transaction {
 	balanceAfter: number;
 	createdAt: string;
 	updatedAt: string;
-	order?: Order | null;
-	store?: Store;
 }
 
 export interface PayoutAccount {
@@ -285,6 +257,68 @@ export interface UploadedImage {
 	publicId: string;
 }
 
+// ─── With relations ─────────────────────────────────────────────────────────
+
+export type StoreWithImage = Store & { image: Image | null };
+
+export type ProductWithImages = Product & { images: Image[] };
+
+export type CategorizedProduct = ProductWithImages & {
+	categories: (ProductCategory & { category: StoreProductCategory })[];
+};
+
+export type StoreDetail = StoreWithImage & {
+	products: ProductWithImages[];
+	categories: StoreProductCategory[];
+	_count: { followers: number };
+};
+
+export type ProductDetail = CategorizedProduct & {
+	store: StoreWithImage;
+	reviews: (ProductReview & { user: User })[];
+};
+
+export type ListedProduct = CategorizedProduct & { store: Store };
+
+export type FeaturedProduct = ProductWithImages & { store: StoreWithImage };
+
+export type WatchlistItem = WatchlistProduct & {
+	product: ProductWithImages & { store: Store };
+};
+
+export type CartItem = CartProduct & { product: ProductWithImages };
+
+export type UserCart = Cart & { products: CartItem[]; store: StoreWithImage };
+
+export type CartDetail = Cart & {
+	products: CartItem[];
+	store: StoreWithImage & { addresses: Address[] };
+	user: (User & { cards: Card[] }) | null;
+	total: number;
+	fees: { transaction: number; service: number; total: number };
+};
+
+export type OrderItem = OrderProduct & { product: ProductWithImages };
+
+export type UserOrder = Order & {
+	store: StoreWithImage & { addresses: Address[] };
+	products: OrderItem[];
+};
+
+export type OrderDetail = UserOrder & { user: User };
+
+export type StoreOrder = Order & { user: User };
+
+export type AdminOrder = Order & { store: Store; user: User };
+
+export type StoreManagerWithUser = StoreManager & { manager: User };
+
+export type ManagedStore = StoreManager & { store: StoreWithImage };
+
+export type StoreTransaction = Transaction & { order: Order | null };
+
+export type TransactionDetail = StoreTransaction & { store: Store };
+
 // ─── Responses ──────────────────────────────────────────────────────────────
 
 export interface SessionTokens {
@@ -302,20 +336,21 @@ export interface StoreViewerContext {
 }
 
 export interface GetStoreResponse {
-	store: Store;
+	store: StoreDetail;
 	viewerContext: StoreViewerContext | null;
 }
 
+export interface ProductViewerContext {
+	cartProduct: CartProduct | null;
+}
+
 export interface GetProductResponse {
-	product: Product;
-	viewerContext: { cartProduct: CartProduct | null } | null;
+	product: ProductDetail;
+	viewerContext: ProductViewerContext | null;
 }
 
 export interface GetCartResponse {
-	cart: Cart & {
-		total: number;
-		fees: { transaction: number; service: number; total: number };
-	};
+	cart: CartDetail;
 	viewerContext: { cards: Card[] } | null;
 }
 
@@ -331,15 +366,15 @@ export interface CreateOrderResponse {
 }
 
 export interface LandingHighlightsResponse {
-	trendingStores: Store[];
-	featuredProducts: Product[];
+	trendingStores: StoreWithImage[];
+	featuredProducts: FeaturedProduct[];
 }
 
 export interface StoreCustomer {
 	id: string;
 	name: string;
 	email: string | null;
-	orders: Order[];
+	orders: (Order & { products: OrderItem[] })[];
 }
 
 export interface VerifyBankAccountResponse {

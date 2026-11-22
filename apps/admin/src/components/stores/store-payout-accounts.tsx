@@ -28,7 +28,7 @@ import {
 import {
 	type PayoutAccount,
 	type VerifyBankAccountResponse
-} from '@/data/types';
+} from '@habiti/data';
 
 const describeAccount = (account: PayoutAccount) =>
 	`${account.bankName ?? account.bankCode} ••••${account.accountNumber.slice(-4)}`;

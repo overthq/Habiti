@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { OrderStatus } from '../data/types';
+import { OrderStatus } from '@habiti/data';
 
 export interface OrdersFilters {
 	status?: OrderStatus;

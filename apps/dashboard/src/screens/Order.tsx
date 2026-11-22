@@ -29,12 +29,7 @@ import {
 	ORDER_STATUS_COLOR_VARIANTS
 } from '../utils/orderStatus';
 import { OrdersStackParamList } from '../navigation/types';
-import {
-	Order as OrderType,
-	OrderProduct as OrderProductType,
-	OrderStatus,
-	User
-} from '../data/types';
+import { OrderDetail, OrderItem, OrderStatus, User } from '@habiti/data';
 
 const Order = () => {
 	const {
@@ -66,7 +61,7 @@ const Order = () => {
 };
 
 interface OrderOverviewProps {
-	order: OrderType;
+	order: OrderDetail;
 }
 
 const OrderOverview: React.FC<OrderOverviewProps> = ({ order }) => {
@@ -169,7 +164,7 @@ const CustomerDetails: React.FC<CustomerDetailProps> = ({ user }) => {
 };
 
 interface OrderProductsProps {
-	products: OrderProductType[];
+	products: OrderItem[];
 }
 
 const OrderProducts: React.FC<OrderProductsProps> = ({ products }) => {
@@ -214,7 +209,7 @@ const productsStyles = StyleSheet.create({
 });
 
 interface OrderProductProps {
-	orderProduct: OrderProductType;
+	orderProduct: OrderItem;
 	onPress(): void;
 }
 
@@ -264,7 +259,7 @@ const productStyles = StyleSheet.create({
 });
 
 interface PaymentInfoProps {
-	order: OrderType;
+	order: OrderDetail;
 }
 
 // This should show the payment details for the order.

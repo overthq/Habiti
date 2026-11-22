@@ -12,35 +12,19 @@ import { useStoreProductsQuery } from '../../data/queries';
 import useDebounced from '../../hooks/useDebounced';
 import useRefresh from '../../hooks/useRefresh';
 
-import type { Product, Store, StoreViewerContext } from '../../data/types';
+import type {
+	ProductWithImages,
+	StoreDetail,
+	StoreViewerContext
+} from '@habiti/data';
 import type { AppStackParamList } from '../../navigation/types';
 
 interface StoreProductsProps {
-	store: Store;
+	store: StoreDetail;
 	viewerContext: StoreViewerContext | null;
 	activeCategory?: string;
 	searchTerm?: string;
 }
-
-const buildFilter = ({
-	searchTerm,
-	activeCategory
-}: {
-	searchTerm?: string;
-	activeCategory?: string;
-}) => {
-	const filters = new URLSearchParams();
-
-	if (searchTerm) {
-		filters.set('search', searchTerm);
-	}
-
-	if (activeCategory) {
-		filters.set('categoryId', activeCategory);
-	}
-
-	return filters;
-};
 
 const StoreProducts: React.FC<StoreProductsProps> = ({
 	store,
@@ -49,17 +33,16 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 	searchTerm
 }) => {
 	const debouncedSearchTerm = useDebounced(searchTerm, 300);
-	const filter = buildFilter({
-		searchTerm: debouncedSearchTerm,
-		activeCategory
-	});
 
-	const { data, isLoading, refetch } = useStoreProductsQuery(store.id, filter);
+	const { data, isLoading, refetch } = useStoreProductsQuery(store.id, {
+		search: debouncedSearchTerm || undefined,
+		categoryId: activeCategory || undefined
+	});
 	const { refreshing, refresh } = useRefresh({ refetch });
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
 	const { theme } = useTheme();
 	const { bottom } = useSafeAreaInsets();
-	const listRef = React.useRef<FlashListRef<Product>>(null);
+	const listRef = React.useRef<FlashListRef<ProductWithImages>>(null);
 
 	const products = data?.products;
 
@@ -119,7 +102,7 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 };
 
 interface StoreListItemProps {
-	item: Product;
+	item: ProductWithImages;
 	onPress(): void;
 	side: 'left' | 'right';
 }

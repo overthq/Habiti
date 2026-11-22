@@ -2,7 +2,7 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { Link } from '@tanstack/react-router';
 
 import { useUserStoresQuery } from '@/data/queries';
-import { type StoreManager, type User } from '@/data/types';
+import { type ManagedStore, type User } from '@habiti/data';
 import { DataTable } from '../ui/data-table';
 import { Button } from '../ui/button';
 import StatusPill from '../status-pill';
@@ -11,7 +11,7 @@ interface UserStoresProps {
 	user: User;
 }
 
-const columns: ColumnDef<StoreManager>[] = [
+const columns: ColumnDef<ManagedStore>[] = [
 	{
 		header: 'Name',
 		accessorKey: 'store.name',

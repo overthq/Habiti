@@ -37,7 +37,7 @@ const AddProduct: React.FC<AppStackScreenProps<'Modal.AddProduct'>> = ({
 
 	const onSubmit = React.useCallback(
 		async (values: z.infer<typeof addProductSchema>) => {
-			const { error } = await createProductMutation.mutateAsync({
+			await createProductMutation.mutateAsync({
 				name: values.name,
 				description: values.description,
 				unitPrice: Number(values.unitPrice) * 100,

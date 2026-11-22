@@ -3,7 +3,7 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { type ColumnDef, type RowSelectionState } from '@tanstack/react-table';
 import { ListFilter } from 'lucide-react';
 
-import { type Store, type StoreFilters } from '@/data/types';
+import { type Store, type StoreFilters } from '@habiti/data';
 import { useStoresQuery } from '@/data/queries';
 import { useTableFilters } from '@/hooks/use-table-filters';
 import {

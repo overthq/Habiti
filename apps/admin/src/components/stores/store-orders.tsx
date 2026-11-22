@@ -1,13 +1,13 @@
 import { DataTable } from '../ui/data-table';
 import { useStoreOrdersQuery } from '@/data/queries';
 import { type ColumnDef } from '@tanstack/react-table';
-import { type Order } from '@/data/types';
+import { type StoreOrder } from '@habiti/data';
 import { formatNaira } from '@/utils/format';
 import OrderStatusPill from '../order-status-pill';
 import { Button } from '../ui/button';
 import { Link } from '@tanstack/react-router';
 
-const columns: ColumnDef<Order>[] = [
+const columns: ColumnDef<StoreOrder>[] = [
 	{
 		id: 'name',
 		header: 'Customer',

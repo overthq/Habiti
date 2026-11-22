@@ -1,4 +1,4 @@
-import { OrderStatus } from '../data/types';
+import { OrderStatus } from '@habiti/data';
 
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
 	[OrderStatus.Pending]: 'Pending',

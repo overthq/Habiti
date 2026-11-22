@@ -18,7 +18,7 @@ import {
 } from '../data/mutations';
 
 import type { ProfileStackScreenProps } from '../navigation/types';
-import type { User } from '../data/types';
+import type { User } from '@habiti/data';
 
 const ManageAccount: React.FC<ProfileStackScreenProps<'ManageAccount'>> = ({
 	navigation

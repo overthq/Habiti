@@ -19,7 +19,7 @@ const CardIconMap = {
 import type { ProfileStackScreenProps } from '../navigation/types';
 import { useCardsQuery } from '../data/queries';
 import { useDeleteCardMutation } from '../data/mutations';
-import { Card } from '../data/types';
+import { Card } from '@habiti/data';
 import useStore from '../state';
 
 const PaymentMethods: React.FC<

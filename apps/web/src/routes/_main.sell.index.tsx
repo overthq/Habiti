@@ -8,7 +8,7 @@ import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useCreateStoreMutation } from '@/data/mutations';
-import type { CreateStoreBody, Store } from '@/data/types';
+import type { CreateStoreBody, Store } from '@habiti/data';
 import { useAuthStore } from '@/state/auth-store';
 import { useViewer } from '@/hooks/use-viewer';
 

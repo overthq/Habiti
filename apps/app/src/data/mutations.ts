@@ -1,55 +1,25 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-
 import {
-	AuthenticateBody,
-	RegisterBody,
-	AddToCartBody,
-	CreateOrderBody
-} from './types';
-import useStore from '../state';
-import {
-	addDeliveryAddress,
 	addToCart,
-	addToWatchlist,
-	authenticate,
-	createOrder,
-	deleteAccount,
-	deleteCard,
-	deleteDeliveryAddress,
-	deletePushToken,
+	addToUserWatchlist,
+	addUserDeliveryAddress,
+	createUserOrder,
+	deleteCurrentUser,
+	deleteUserCard,
+	deleteUserDeliveryAddress,
+	deleteUserPushToken,
 	followStore,
-	register,
 	removeFromCart,
-	savePushToken,
+	saveUserPushToken,
 	unfollowStore,
 	updateCartProductQuantity,
 	updateCurrentUser,
-	updateDeliveryAddress,
-	updateOrder
-} from './requests';
-import type {
-	SavePushTokenBody,
-	DeletePushTokenBody,
-	UpdateDeliveryAddressArgs,
-	UpdateOrderBody
-} from './types';
-
-export const useSignUpMutation = () => {
-	return useMutation({
-		mutationFn: (args: RegisterBody) => register(args)
-	});
-};
-
-export const useLogInMutation = () => {
-	const { logIn } = useStore();
-
-	return useMutation({
-		mutationFn: (args: AuthenticateBody) => authenticate(args),
-		onSuccess(data) {
-			logIn(data.token);
-		}
-	});
-};
+	updateUserDeliveryAddress,
+	type AddToCartBody,
+	type AddressBody,
+	type CreateOrderBody,
+	type SavePushTokenBody
+} from '@habiti/data';
 
 export const useAddToCartMutation = () => {
 	const queryClient = useQueryClient();
@@ -83,8 +53,13 @@ export const useRemoveFromCartMutation = () => {
 export const useUpdateCartProductMutation = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: ({ productId, body }: { productId: string; body: any }) =>
-			updateCartProductQuantity({ productId, ...body }),
+		mutationFn: ({
+			productId,
+			body
+		}: {
+			productId: string;
+			body: { cartId: string; quantity: number };
+		}) => updateCartProductQuantity(body.cartId, productId, body.quantity),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['cart'] });
 			queryClient.invalidateQueries({ queryKey: ['stores'] });
@@ -95,7 +70,7 @@ export const useUpdateCartProductMutation = () => {
 export const useCreateOrderMutation = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (body: CreateOrderBody) => createOrder(body),
+		mutationFn: (body: CreateOrderBody) => createUserOrder(body),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['orders'] });
 			queryClient.invalidateQueries({ queryKey: ['cart'] });
@@ -137,7 +112,7 @@ export const useUpdateCurrentUserMutation = () => {
 export const useAddDeliveryAddressMutation = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: addDeliveryAddress,
+		mutationFn: addUserDeliveryAddress,
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['deliveryAddresses'] });
 		}
@@ -147,8 +122,8 @@ export const useAddDeliveryAddressMutation = () => {
 export const useUpdateDeliveryAddressMutation = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (args: UpdateDeliveryAddressArgs) =>
-			updateDeliveryAddress(args.addressId, args.body),
+		mutationFn: (args: { addressId: string; body: AddressBody }) =>
+			updateUserDeliveryAddress(args.addressId, args.body),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['deliveryAddresses'] });
 		}
@@ -158,7 +133,7 @@ export const useUpdateDeliveryAddressMutation = () => {
 export const useDeleteDeliveryAddressMutation = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (id: string) => deleteDeliveryAddress(id),
+		mutationFn: (id: string) => deleteUserDeliveryAddress(id),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['deliveryAddresses'] });
 		}
@@ -168,39 +143,23 @@ export const useDeleteDeliveryAddressMutation = () => {
 export const useDeleteCardMutation = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (cardId: string) => deleteCard(cardId),
+		mutationFn: (cardId: string) => deleteUserCard(cardId),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['cards'] });
 		}
 	});
 };
 
-export const useUpdateOrderMutation = () => {
-	const queryClient = useQueryClient();
-	return useMutation({
-		mutationFn: ({
-			orderId,
-			body
-		}: {
-			orderId: string;
-			body: UpdateOrderBody;
-		}) => updateOrder(orderId, body),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['orders'] });
-		}
-	});
-};
-
 export const useDeleteAccountMutation = () => {
 	return useMutation({
-		mutationFn: () => deleteAccount()
+		mutationFn: () => deleteCurrentUser()
 	});
 };
 
 export const useAddToWatchlistMutation = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (productId: string) => addToWatchlist(productId),
+		mutationFn: (productId: string) => addToUserWatchlist(productId),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['watchlist'] });
 			queryClient.invalidateQueries({ queryKey: ['home'] });
@@ -211,7 +170,7 @@ export const useAddToWatchlistMutation = () => {
 export const useSavePushTokenMutation = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (body: SavePushTokenBody) => savePushToken(body),
+		mutationFn: (body: SavePushTokenBody) => saveUserPushToken(body),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['pushTokens'] });
 		}
@@ -221,7 +180,8 @@ export const useSavePushTokenMutation = () => {
 export const useDeletePushTokenMutation = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (body: DeletePushTokenBody) => deletePushToken(body),
+		mutationFn: (body: SavePushTokenBody) =>
+			deleteUserPushToken(body.token, body.type),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['pushTokens'] });
 		}

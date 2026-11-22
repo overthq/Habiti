@@ -1,5 +1,5 @@
 import React from 'react';
-import type { StoreProductCategory } from '@/data/types';
+import type { StoreProductCategory } from '@habiti/data';
 import { cn } from '@/lib/utils';
 
 interface StoreCategoriesProps {

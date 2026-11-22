@@ -7,7 +7,7 @@ import {
 	DialogTitle
 } from '@/components/ui/dialog';
 import { Button } from '../ui/button';
-import { type User } from '@/data/types';
+import { type User } from '@habiti/data';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';

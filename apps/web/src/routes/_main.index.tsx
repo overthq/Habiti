@@ -5,18 +5,18 @@ import { formatNaira } from '@/utils/currency';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLandingHighlightsQuery, useOrdersQuery } from '@/data/queries';
 import {
-	type Order,
 	OrderStatus,
-	type Product as ProductType,
-	type Store
-} from '@/data/types';
+	type FeaturedProduct,
+	type StoreWithImage,
+	type UserOrder
+} from '@habiti/data';
 import {
 	useRecentlyViewedStore,
 	type RecentlyViewedProduct
 } from '@/state/recently-viewed-store';
 import { useViewer } from '@/hooks/use-viewer';
 import Product from '@/components/store/Product';
-import { getLandingHighlights } from '@/data/requests';
+import { getLandingHighlights } from '@habiti/data';
 import { smartAppBannerMeta } from '@/utils/smart-app-banner';
 
 export const Route = createFileRoute('/_main/')({
@@ -81,7 +81,7 @@ const ReadyForPickupSection: React.FC = () => {
 };
 
 interface PickupOrderCardProps {
-	order: Order;
+	order: UserOrder;
 }
 
 const PickupOrderCard: React.FC<PickupOrderCardProps> = ({ order }) => {
@@ -131,7 +131,7 @@ const Section: React.FC<React.PropsWithChildren<SectionProps>> = ({
 };
 
 interface TrendingStoresSectionProps {
-	stores: Store[];
+	stores: StoreWithImage[];
 	isLoading: boolean;
 }
 
@@ -157,7 +157,7 @@ const TrendingStoresSection: React.FC<TrendingStoresSectionProps> = ({
 };
 
 interface StoreCardProps {
-	store: Store;
+	store: StoreWithImage;
 }
 
 const StoreCard: React.FC<StoreCardProps> = ({ store }) => {
@@ -209,7 +209,7 @@ const TrendingStoresSkeleton = () => (
 );
 
 interface FeaturedProductsSectionProps {
-	products: ProductType[];
+	products: FeaturedProduct[];
 	isLoading: boolean;
 }
 

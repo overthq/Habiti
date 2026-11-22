@@ -6,7 +6,7 @@ import {
 	type Transaction,
 	TransactionStatus,
 	TransactionType
-} from '@/data/types';
+} from '@habiti/data';
 import { formatNaira } from '@/utils/format';
 import {
 	DropdownMenu,

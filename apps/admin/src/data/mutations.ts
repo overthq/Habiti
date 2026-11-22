@@ -3,52 +3,49 @@ import { toast } from 'sonner';
 import { isAxiosError } from 'axios';
 
 import {
-	type LoginBody,
-	type UpdateOrderBody,
-	type CreateProductBody,
-	type UpdateProductBody,
-	type CreateStoreBody,
-	type UpdateStoreBody,
-	type UpdateUserBody,
-	type UpdateTransactionBody,
-	type AddPayoutAccountBody,
-	type VerifyBankAccountBody,
+	bulkDeleteAdminOrders,
+	bulkDeleteAdminProducts,
+	bulkDeleteAdminStores,
+	bulkDeleteAdminUsers,
+	bulkUpdateAdminOrders,
+	bulkUpdateAdminProducts,
+	bulkUpdateAdminStores,
+	bulkUpdateAdminUsers,
+	createAdminProduct,
+	createAdminStore,
+	createAdminStorePayoutAccount,
+	deleteAdminProduct,
+	deleteAdminStore,
+	deleteAdminStorePayoutAccount,
+	loginAdmin,
+	logoutAdmin,
 	OrderStatus,
-	ProductStatus
-} from './types';
-import {
-	login,
-	logout,
-	updateOrder,
-	cancelOrder,
-	createProduct,
-	updateProduct,
-	deleteProduct,
-	createStore,
-	updateStore,
-	deleteStore,
-	updateUser,
-	updateTransaction,
-	addStorePayoutAccount,
-	setDefaultStorePayoutAccount,
-	removeStorePayoutAccount,
-	verifyBankAccount,
-	bulkUpdateUsers,
-	bulkDeleteUsers,
-	bulkUpdateOrders,
-	bulkDeleteOrders,
-	bulkUpdateProducts,
-	bulkDeleteProducts,
-	bulkUpdateStores,
-	bulkDeleteStores
-} from './requests';
+	ProductStatus,
+	setDefaultAdminStorePayoutAccount,
+	updateAdminOrder,
+	updateAdminProduct,
+	updateAdminStore,
+	updateAdminTransaction,
+	updateAdminUser,
+	verifyAdminBankAccount,
+	type AdminCreateProductBody,
+	type AdminCreateStoreBody,
+	type AdminLoginBody,
+	type AdminUpdateUserBody,
+	type CreatePayoutAccountBody,
+	type UpdateOrderBody,
+	type UpdateProductBody,
+	type UpdateStoreBody,
+	type UpdateTransactionBody,
+	type VerifyBankAccountBody
+} from '@habiti/data';
 import { useNavigate } from '@tanstack/react-router';
 
 export const useLoginMutation = () => {
 	const navigate = useNavigate();
 
 	return useMutation({
-		mutationFn: (body: LoginBody) => login(body),
+		mutationFn: (body: AdminLoginBody) => loginAdmin(body),
 		onSuccess: data => {
 			localStorage.setItem('accessToken', data.accessToken);
 			toast.success('Successfully logged in');
@@ -65,7 +62,7 @@ export const useLogoutMutation = () => {
 
 	return useMutation({
 		mutationFn: async () => {
-			await logout();
+			await logoutAdmin();
 			localStorage.removeItem('accessToken');
 		},
 		onSuccess: () => {
@@ -85,7 +82,7 @@ export const useUpdateOrderMutation = (id: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (body: UpdateOrderBody) => updateOrder(id, body),
+		mutationFn: (body: UpdateOrderBody) => updateAdminOrder(id, body),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['orders', id] });
 			toast.success('Order updated successfully');
@@ -100,7 +97,7 @@ export const useCancelOrderMutation = (id: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: () => cancelOrder(id),
+		mutationFn: () => updateAdminOrder(id, { status: OrderStatus.Cancelled }),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['orders', id] });
 			toast.success('Order cancelled successfully');
@@ -115,7 +112,7 @@ export const useCreateProductMutation = (storeId?: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (body: CreateProductBody) => createProduct(body),
+		mutationFn: (body: AdminCreateProductBody) => createAdminProduct(body),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['products'], exact: true });
 			if (storeId) {
@@ -136,7 +133,7 @@ export const useUpdateProductMutation = (id: string) => {
 
 	return useMutation({
 		mutationFn: (body: UpdateProductBody) => {
-			return updateProduct(id, body);
+			return updateAdminProduct(id, body);
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['products', id] });
@@ -153,7 +150,7 @@ export const useDeleteProductMutation = (id: string) => {
 	const navigate = useNavigate();
 
 	return useMutation({
-		mutationFn: () => deleteProduct(id),
+		mutationFn: () => deleteAdminProduct(id),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['products'], exact: true });
 			navigate({ to: '/products' });
@@ -169,7 +166,7 @@ export const useCreateStoreMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (body: CreateStoreBody) => createStore(body),
+		mutationFn: (body: AdminCreateStoreBody) => createAdminStore(body),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['stores'], exact: true });
 			toast.success('Store created successfully');
@@ -184,7 +181,7 @@ export const useUpdateStoreMutation = (id: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (body: UpdateStoreBody) => updateStore(id, body),
+		mutationFn: (body: UpdateStoreBody) => updateAdminStore(id, body),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['stores', id] });
 			toast.success('Store updated successfully');
@@ -199,7 +196,7 @@ export const useDeleteStoreMutation = (id: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: () => deleteStore(id),
+		mutationFn: () => deleteAdminStore(id),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['stores'], exact: true });
 			toast.success('Store deleted successfully');
@@ -214,7 +211,7 @@ export const useUpdateUserMutation = (id: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (body: UpdateUserBody) => updateUser(id, body),
+		mutationFn: (body: AdminUpdateUserBody) => updateAdminUser(id, body),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['users', id] });
 			toast.success('User updated successfully');
@@ -229,7 +226,8 @@ export const useUpdateTransactionMutation = (id: string, storeId?: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (body: UpdateTransactionBody) => updateTransaction(id, body),
+		mutationFn: (body: UpdateTransactionBody) =>
+			updateAdminTransaction(id, body),
 		onSuccess: () => {
 			if (storeId) {
 				queryClient.invalidateQueries({
@@ -257,7 +255,7 @@ export const useBulkUpdateUsersMutation = () => {
 			ids: string[];
 			field: 'suspended';
 			value: boolean;
-		}) => bulkUpdateUsers(ids, field, value),
+		}) => bulkUpdateAdminUsers(ids, { field, value }),
 		onSuccess: data => {
 			queryClient.invalidateQueries({ queryKey: ['users'] });
 			toast.success(`${data.count} user(s) updated successfully`);
@@ -272,7 +270,7 @@ export const useBulkDeleteUsersMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (ids: string[]) => bulkDeleteUsers(ids),
+		mutationFn: (ids: string[]) => bulkDeleteAdminUsers(ids),
 		onSuccess: data => {
 			queryClient.invalidateQueries({ queryKey: ['users'] });
 			toast.success(`${data.count} user(s) deleted successfully`);
@@ -295,8 +293,8 @@ export const useBulkUpdateOrdersMutation = () => {
 		}: {
 			ids: string[];
 			field: 'status';
-			value: OrderStatus;
-		}) => bulkUpdateOrders(ids, field, value),
+			value: Exclude<OrderStatus, OrderStatus.ReadyForPickup>;
+		}) => bulkUpdateAdminOrders(ids, { field, value }),
 		onSuccess: data => {
 			queryClient.invalidateQueries({ queryKey: ['orders'] });
 			toast.success(`${data.count} order(s) updated successfully`);
@@ -311,7 +309,7 @@ export const useBulkDeleteOrdersMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (ids: string[]) => bulkDeleteOrders(ids),
+		mutationFn: (ids: string[]) => bulkDeleteAdminOrders(ids),
 		onSuccess: data => {
 			queryClient.invalidateQueries({ queryKey: ['orders'] });
 			toast.success(`${data.count} order(s) deleted successfully`);
@@ -334,8 +332,8 @@ export const useBulkUpdateProductsMutation = () => {
 		}: {
 			ids: string[];
 			field: 'status';
-			value: ProductStatus;
-		}) => bulkUpdateProducts(ids, field, value),
+			value: Exclude<ProductStatus, ProductStatus.Archived>;
+		}) => bulkUpdateAdminProducts(ids, { field, value }),
 		onSuccess: data => {
 			queryClient.invalidateQueries({ queryKey: ['products'] });
 			toast.success(`${data.count} product(s) updated successfully`);
@@ -350,7 +348,7 @@ export const useBulkDeleteProductsMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (ids: string[]) => bulkDeleteProducts(ids),
+		mutationFn: (ids: string[]) => bulkDeleteAdminProducts(ids),
 		onSuccess: data => {
 			queryClient.invalidateQueries({ queryKey: ['products'] });
 			toast.success(`${data.count} product(s) deleted successfully`);
@@ -374,7 +372,7 @@ export const useBulkUpdateStoresMutation = () => {
 			ids: string[];
 			field: 'unlisted';
 			value: boolean;
-		}) => bulkUpdateStores(ids, field, value),
+		}) => bulkUpdateAdminStores(ids, { field, value }),
 		onSuccess: data => {
 			queryClient.invalidateQueries({ queryKey: ['stores'] });
 			toast.success(`${data.count} store(s) updated successfully`);
@@ -389,7 +387,7 @@ export const useBulkDeleteStoresMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (ids: string[]) => bulkDeleteStores(ids),
+		mutationFn: (ids: string[]) => bulkDeleteAdminStores(ids),
 		onSuccess: data => {
 			queryClient.invalidateQueries({ queryKey: ['stores'] });
 			toast.success(`${data.count} store(s) deleted successfully`);
@@ -409,7 +407,7 @@ const apiErrorMessage = (error: unknown, fallback: string) =>
 
 export const useVerifyBankAccountMutation = () => {
 	return useMutation({
-		mutationFn: (body: VerifyBankAccountBody) => verifyBankAccount(body),
+		mutationFn: (body: VerifyBankAccountBody) => verifyAdminBankAccount(body),
 		onError: error => {
 			toast.error(apiErrorMessage(error, 'Failed to verify bank account'));
 		}
@@ -420,8 +418,8 @@ export const useAddStorePayoutAccountMutation = (storeId: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (body: AddPayoutAccountBody) =>
-			addStorePayoutAccount(storeId, body),
+		mutationFn: (body: CreatePayoutAccountBody) =>
+			createAdminStorePayoutAccount(storeId, body),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: ['stores', storeId, 'payout-accounts']
@@ -439,7 +437,7 @@ export const useSetDefaultStorePayoutAccountMutation = (storeId: string) => {
 
 	return useMutation({
 		mutationFn: (accountId: string) =>
-			setDefaultStorePayoutAccount(storeId, accountId),
+			setDefaultAdminStorePayoutAccount(storeId, accountId),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: ['stores', storeId, 'payout-accounts']
@@ -457,7 +455,7 @@ export const useRemoveStorePayoutAccountMutation = (storeId: string) => {
 
 	return useMutation({
 		mutationFn: (accountId: string) =>
-			removeStorePayoutAccount(storeId, accountId),
+			deleteAdminStorePayoutAccount(storeId, accountId),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: ['stores', storeId, 'payout-accounts']

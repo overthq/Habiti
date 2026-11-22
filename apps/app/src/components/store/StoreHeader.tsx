@@ -32,12 +32,12 @@ import {
 	useFollowStoreMutation,
 	useUnfollowStoreMutation
 } from '../../data/mutations';
-import type { Store } from '../../data/types';
+import type { StoreDetail } from '@habiti/data';
 import type { AppStackParamList } from '../../navigation/types';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 interface StoreHeaderProps {
-	store: Store;
+	store: StoreDetail;
 	followed: boolean;
 	activeCategory?: string;
 	setActiveCategory: (category: string | undefined) => void;

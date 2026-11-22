@@ -1,7 +1,7 @@
 import React from 'react';
 import Product from './Product';
 import { useStoreProductsQuery } from '@/data/queries';
-import type { StoreProductCategory } from '@/data/types';
+import type { StoreProductCategory } from '@habiti/data';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useStoreFilters } from '@/hooks/use-store-filters';
 import StoreProductFilters from './StoreProductFilters';
@@ -23,10 +23,10 @@ const StoreProducts: React.FC<StoreProductsProps> = ({
 		setSortBy,
 		setCategoryId,
 		setInStock,
-		queryParams
+		filters
 	} = useStoreFilters();
 
-	const { data, isLoading } = useStoreProductsQuery(storeId, queryParams);
+	const { data, isLoading } = useStoreProductsQuery(storeId, filters);
 
 	return (
 		<div className='mt-4 space-y-5'>

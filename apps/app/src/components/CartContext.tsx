@@ -14,7 +14,7 @@ import {
 	useCreateOrderMutation,
 	useUpdateCartProductMutation
 } from '../data/mutations';
-import type { Cart, CartProduct } from '../data/types';
+import type { Card, CartDetail, CartItem } from '@habiti/data';
 import useStore from '../state';
 import { AppStackParamList } from '../navigation/types';
 import { useIsGuest, useOpenAuthModal } from '../hooks/useAuth';
@@ -22,8 +22,8 @@ import useRefresh from '../hooks/useRefresh';
 import useDebounce from '../hooks/useDebounce';
 
 interface CartContextType {
-	cart: Cart;
-	products: CartProduct[];
+	cart: CartDetail;
+	products: CartItem[];
 	disabled: boolean;
 	handleSubmit: () => Promise<void>;
 	refreshing: boolean;
@@ -39,8 +39,8 @@ const CartContext = React.createContext<CartContextType | null>(null);
 
 interface CartProviderProps {
 	children: React.ReactNode;
-	cart: Cart;
-	cards: import('../data/types').Card[];
+	cart: CartDetail;
+	cards: Card[];
 	refreshing: boolean;
 	refresh: () => void;
 }
@@ -209,7 +209,7 @@ const CartProvider: React.FC<CartProviderProps> = ({
 
 type AddAction = {
 	type: 'add';
-	product: CartProduct;
+	product: CartItem;
 };
 
 type RemoveAction = {
@@ -225,14 +225,14 @@ type UpdateAction = {
 
 type ResetAction = {
 	type: 'reset';
-	products: CartProduct[];
+	products: CartItem[];
 };
 
 type Action = AddAction | RemoveAction | UpdateAction | ResetAction;
 
-const useCartReducer = (initialState: CartProduct[]) => {
+const useCartReducer = (initialState: CartItem[]) => {
 	const [state, dispatch] = React.useReducer(
-		(state: CartProduct[], action: Action) => {
+		(state: CartItem[], action: Action) => {
 			switch (action.type) {
 				case 'add':
 					return [...state, action.product];

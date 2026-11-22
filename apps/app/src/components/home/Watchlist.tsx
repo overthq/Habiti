@@ -9,15 +9,12 @@ import {
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
-import type {
-	WatchlistProduct as WatchlistProductType,
-	Product
-} from '../../data/types';
+import type { WatchlistItem } from '@habiti/data';
 import { AppStackParamList } from '../../navigation/types';
 import { formatNaira } from '@habiti/common';
 
 interface WatchlistProps {
-	watchlist: WatchlistProductType[];
+	watchlist: WatchlistItem[];
 }
 
 const Watchlist: React.FC<WatchlistProps> = ({ watchlist }) => {
@@ -54,7 +51,7 @@ const Watchlist: React.FC<WatchlistProps> = ({ watchlist }) => {
 
 interface WatchlistProductProps {
 	onPress(): void;
-	product: Product;
+	product: WatchlistItem['product'];
 }
 
 const WatchlistProduct: React.FC<WatchlistProductProps> = ({

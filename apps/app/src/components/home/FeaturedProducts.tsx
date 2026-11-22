@@ -9,7 +9,7 @@ import {
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { formatNaira } from '@habiti/common';
 
-import type { FeaturedProduct } from '../../data/types';
+import type { FeaturedProduct } from '@habiti/data';
 import type { AppStackParamList } from '../../navigation/types';
 
 interface FeaturedProductsProps {

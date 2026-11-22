@@ -1,6 +1,6 @@
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import { useCartsQuery } from '@/data/queries';
-import type { Cart } from '@/data/types';
+import type { UserCart } from '@habiti/data';
 
 const CartSheet = () => {
 	return (
@@ -21,10 +21,9 @@ const CartSheetContent = () => {
 
 	return (
 		<div>
-			{data.carts.map((cart: Cart) => (
+			{data.carts.map((cart: UserCart) => (
 				<div key={cart.id}>
 					<h2>{cart.store.name}</h2>
-					<p>{cart.total}</p>
 				</div>
 			))}
 		</div>

@@ -8,15 +8,15 @@ import { useCartQuery } from '@/data/queries';
 
 import { usePreferenceStore } from '@/state/preference-store';
 import useDebounce from '@/hooks/use-debounce';
-import type { Card, Cart, CartProduct, CartViewerContext } from '@/data/types';
+import type { Card, CartDetail, CartItem, GetCartResponse } from '@habiti/data';
 import { useParams } from '@tanstack/react-router';
 import { useAuthStore } from '@/state/auth-store';
 import { useViewer } from '@/hooks/use-viewer';
 
 interface CartContextType {
-	cart: Cart;
+	cart: CartDetail;
 	cards: Card[];
-	products: CartProduct[];
+	products: CartItem[];
 	disabled: boolean;
 	handleSubmit: () => Promise<void>;
 	selectedCard: string | null;
@@ -31,8 +31,8 @@ const CartContext = React.createContext<CartContextType | null>(null);
 
 interface CartProviderProps {
 	children: React.ReactNode;
-	cart: Cart;
-	viewerContext: CartViewerContext | null;
+	cart: CartDetail;
+	viewerContext: GetCartResponse['viewerContext'];
 	isAuthenticated: boolean;
 }
 
@@ -160,7 +160,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({
 
 type AddAction = {
 	type: 'add';
-	product: CartProduct;
+	product: CartItem;
 };
 
 type RemoveAction = {
@@ -176,14 +176,14 @@ type UpdateAction = {
 
 type ResetAction = {
 	type: 'reset';
-	products: CartProduct[];
+	products: CartItem[];
 };
 
 type Action = AddAction | RemoveAction | UpdateAction | ResetAction;
 
-const useCartReducer = (initialState: CartProduct[]) => {
+const useCartReducer = (initialState: CartItem[]) => {
 	const [state, dispatch] = React.useReducer(
-		(state: CartProduct[], action: Action) => {
+		(state: CartItem[], action: Action) => {
 			switch (action.type) {
 				case 'add':
 					return [...state, action.product];

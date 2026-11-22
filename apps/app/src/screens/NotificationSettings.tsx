@@ -9,7 +9,7 @@ import {
 	useSavePushTokenMutation,
 	useDeletePushTokenMutation
 } from '../data/mutations';
-import { PushTokenType, UserPushToken } from '../data/types';
+import { PushTokenType, UserPushToken } from '@habiti/data';
 import { useMutation } from '@tanstack/react-query';
 import { requestPushPermission } from '../utils/notifications';
 

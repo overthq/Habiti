@@ -4,7 +4,6 @@
 	"main": "src/index.ts",
 	"license": "GPL-3.0-or-later",
 	"peerDependencies": {
-		"@tanstack/react-query": "^5.75.0",
 		"axios": "^1.13.2"
 	}
 }

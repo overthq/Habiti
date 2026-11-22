@@ -3,7 +3,7 @@ import React from 'react';
 import { useCartsQuery } from '@/data/queries';
 import { useUpdateCartProductQuantityMutation } from '@/data/mutations';
 import { Button } from '@/components/ui/button';
-import type { Cart, CartProduct } from '@/data/types';
+import type { CartItem, UserCart } from '@habiti/data';
 import { formatNaira } from '@/utils/currency';
 import { cn } from '@/lib/utils';
 import useDebounce from '@/hooks/use-debounce';
@@ -16,8 +16,8 @@ export const Route = createFileRoute('/_main/cart')({
 });
 
 interface CartProductItemProps {
-	cart: Cart;
-	cartProduct: CartProduct;
+	cart: UserCart;
+	cartProduct: CartItem;
 	localQuantity: number;
 	onQuantityChange: (productId: string, quantity: number) => void;
 }
@@ -70,7 +70,7 @@ const CartProductItem: React.FC<CartProductItemProps> = ({
 };
 
 interface CartItemProps {
-	cart: Cart;
+	cart: UserCart;
 }
 
 const CartItem: React.FC<CartItemProps> = ({ cart: initialCart }) => {

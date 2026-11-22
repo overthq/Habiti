@@ -14,7 +14,7 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { parseTimestamp } from '../utils/date';
 import { useStoreBalanceQuery, useTransactionsQuery } from '../data/queries';
-import { Transaction, TransactionStatus, TransactionType } from '../data/types';
+import { Transaction, TransactionStatus, TransactionType } from '@habiti/data';
 import type {
 	AppStackParamList,
 	StoreStackParamList

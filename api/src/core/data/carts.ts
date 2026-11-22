@@ -49,7 +49,7 @@ export const getCartsByUserId = async (
 		where: { userId },
 		include: {
 			products: { include: { product: { include: { images: true } } } },
-			store: true
+			store: { include: { image: true } }
 		},
 		...query
 	});

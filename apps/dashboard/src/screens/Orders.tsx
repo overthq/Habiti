@@ -24,7 +24,7 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { FlashList, FlashListRef, ListRenderItem } from '@shopify/flash-list';
 
 import { useOrdersQuery } from '../data/queries';
-import { Order, OrderFilters, OrderStatus } from '../data/types';
+import { OrderStatus, type OrderFilters, type StoreOrder } from '@habiti/data';
 import { OrdersFilters, useOrdersFilterStore } from '../state/filters';
 import { useSheet } from '../navigation/useSheet';
 import useRefresh from '../hooks/useRefresh';
@@ -46,7 +46,7 @@ const Orders: React.FC = () => {
 };
 
 interface OrdersContextType {
-	orders: Order[];
+	orders: StoreOrder[];
 	isLoading: boolean;
 	refreshing: boolean;
 	refresh: () => void;
@@ -223,7 +223,7 @@ const OrdersList = () => {
 	const { orders, isLoading, refreshing, refresh } = useOrdersContext();
 	const { filters } = useOrdersFilterStore();
 	const { theme } = useTheme();
-	const listRef = React.useRef<FlashListRef<Order>>(null);
+	const listRef = React.useRef<FlashListRef<StoreOrder>>(null);
 	const [tabBarHeight, setTabBarHeight] = React.useState(0);
 
 	// Changing any filter rebuilds the list from a different slice of the
@@ -241,7 +241,7 @@ const OrdersList = () => {
 		[navigate]
 	);
 
-	const renderOrder: ListRenderItem<Order> = React.useCallback(
+	const renderOrder: ListRenderItem<StoreOrder> = React.useCallback(
 		({ item }) => {
 			return (
 				<OrdersListItem onPress={handleOrderPress(item.id)} order={item} />
@@ -300,7 +300,7 @@ const OrdersList = () => {
 };
 
 interface OrdersListItemProps {
-	order: Order;
+	order: StoreOrder;
 	onPress(): void;
 }
 

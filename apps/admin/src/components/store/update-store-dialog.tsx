@@ -20,7 +20,7 @@ import {
 } from '../ui/form';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
-import { type Store } from '@/data/types';
+import { type Store } from '@habiti/data';
 
 interface UpdateStoreDialogProps {
 	store: Store;
@@ -42,7 +42,7 @@ const UpdateStoreDialog = ({
 		resolver: zodResolver(updateStoreFormSchema),
 		defaultValues: {
 			name: store.name,
-			description: store.description
+			description: store.description ?? undefined
 		}
 	});
 	const updateStoreMutation = useUpdateStoreMutation(store.id);

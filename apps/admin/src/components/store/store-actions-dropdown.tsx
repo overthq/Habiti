@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import { useUpdateStoreMutation } from '@/data/mutations';
-import { type Store } from '@/data/types';
+import { type Store } from '@habiti/data';
 import UpdateStoreDialog from './update-store-dialog';
 
 interface StoreActionsDropdownProps {

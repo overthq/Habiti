@@ -23,7 +23,7 @@ import {
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import { useUpdateOrderMutation } from '@/data/mutations';
 import { useOrderQuery } from '@/data/queries';
-import { OrderStatus } from '@/data/types';
+import { OrderStatus } from '@habiti/data';
 import { formatNaira } from '@/utils/format';
 import OrderStatusPill from '@/components/order-status-pill';
 import InlineMeta from '@/components/ui/inline-meta';

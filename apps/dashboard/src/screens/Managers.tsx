@@ -6,7 +6,7 @@ import Refresher from '../components/Refresher';
 import useRefresh from '../hooks/useRefresh';
 import { useStoreManagersQuery } from '../data/queries';
 import type { StoreStackScreenProps } from '../navigation/types';
-import type { User } from '../data/types';
+import type { User } from '@habiti/data';
 
 const Managers: React.FC<StoreStackScreenProps<'Managers'>> = ({
 	navigation
@@ -34,7 +34,7 @@ const Managers: React.FC<StoreStackScreenProps<'Managers'>> = ({
 				<Refresher refreshing={isRefreshing} onRefresh={onRefresh} />
 			}
 		>
-			{data.managers.map(manager => (
+			{data.managers.map(({ manager }) => (
 				<ManagerRow key={manager.id} manager={manager} you={false} />
 			))}
 		</ScrollableScreen>
