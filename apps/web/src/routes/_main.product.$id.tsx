@@ -8,7 +8,7 @@ import {
 	useAddToCartMutation,
 	useUpdateCartProductQuantityMutation
 } from '@/data/mutations';
-import type { GetProductResponse, Product as ProductType } from '@/data/types';
+import type { GetProductResponse, ProductDetail } from '@habiti/data';
 import { cn } from '@/lib/utils';
 import {
 	type RecentlyViewedProduct,
@@ -17,7 +17,7 @@ import {
 import Product from '@/components/store/Product';
 import QuantityControl from '@/components/QuantityControl';
 import Rail from '@/components/Rail';
-import { getProduct } from '@/data/requests';
+import { getProduct } from '@habiti/data';
 import { smartAppBannerMeta } from '@/utils/smart-app-banner';
 
 export const Route = createFileRoute('/_main/product/$id')({
@@ -226,7 +226,7 @@ const ProductButtons = () => {
 };
 
 interface ProductContextType {
-	product: ProductType;
+	product: ProductDetail;
 	cartCommitFetching: boolean;
 	onCartCommit: (buyNow?: boolean) => void;
 	cartCommitDisabled: boolean;
@@ -243,7 +243,7 @@ interface ProductContextProviderProps
 	extends React.PropsWithChildren, GetProductResponse {}
 
 const getRecentProductPayload = (
-	product: ProductType
+	product: ProductDetail
 ): Omit<RecentlyViewedProduct, 'viewedAt'> => ({
 	id: product.id,
 	name: product.name,

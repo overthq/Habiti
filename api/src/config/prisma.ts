@@ -1,4 +1,8 @@
-import { PrismaClient } from '../generated/prisma/client';
+import {
+	PrismaClient as GeneratedPrismaClient,
+	type Prisma
+} from '../generated/prisma/client';
+import type { ITXClientDenyList } from '@prisma/client/runtime/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 
 import { env } from './env';
@@ -9,8 +13,19 @@ const adapter = new PrismaPg({
 	connectionString: env.DATABASE_URL
 });
 
-const prismaClient = new PrismaClient({
+// Secrets are left out of every query result, so they can't leak through a
+// response. Code that needs one opts back in with `omit: { field: false }`.
+// Declared separately because inline, Prisma loses the omit types once more
+// than one model is listed.
+const omit = {
+	user: { passwordHash: true },
+	admin: { passwordHash: true },
+	card: { authorizationCode: true, signature: true }
+} satisfies Prisma.GlobalOmitConfig;
+
+const prismaClient = new GeneratedPrismaClient({
 	adapter,
+	omit,
 	log: [
 		{ emit: 'event', level: 'query' },
 		{ emit: 'event', level: 'warn' },
@@ -46,5 +61,8 @@ prismaClient.$on('warn', e => {
 prismaClient.$on('error', e => {
 	rootLogger.error({ target: e.target, message: e.message }, 'db.error');
 });
+
+export type PrismaClient = typeof prismaClient;
+export type TransactionClient = Omit<PrismaClient, ITXClientDenyList>;
 
 export default prismaClient;

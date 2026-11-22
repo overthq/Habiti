@@ -1,5 +1,5 @@
-import { PrismaClient, Prisma } from '../generated/prisma/client';
-import type { TransactionClient } from '../generated/prisma/internal/prismaNamespace';
+import { Prisma } from '../generated/prisma/client';
+import type { PrismaClient, TransactionClient } from '../config/prisma';
 
 const SERIALIZATION_FAILURE_CODES = new Set(['P2034', '40001', '40P01']);
 

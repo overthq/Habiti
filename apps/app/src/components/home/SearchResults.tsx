@@ -19,7 +19,7 @@ import type {
 	AppStackParamList,
 	HomeStackParamList
 } from '../../navigation/types';
-import type { Product, Store } from '../../data/types';
+import type { ProductWithImages, StoreWithImage } from '@habiti/data';
 
 const StoresView = () => {
 	const { navigate } = useNavigation<NavigationProp<HomeStackParamList>>();
@@ -126,7 +126,7 @@ const SearchResultsMain: React.FC<SearchResultsMainProps> = ({
 };
 
 interface ProductResultRowProps {
-	product: Product;
+	product: ProductWithImages;
 	onPress(): void;
 }
 
@@ -146,7 +146,7 @@ const ProductResultRow: React.FC<ProductResultRowProps> = ({
 };
 
 interface StoreResultRowProps {
-	store: Store;
+	store: StoreWithImage;
 	onPress(): void;
 }
 

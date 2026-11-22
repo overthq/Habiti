@@ -14,9 +14,9 @@ import * as ImagePicker from 'expo-image-picker';
 import { HeaderButton } from '@react-navigation/elements';
 
 import { useCurrentStoreQuery } from '../data/queries';
-import { uploadImage } from '../data/requests';
+import { uploadImage } from '../utils/images';
 import { useUpdateCurrentStoreMutation } from '../data/mutations';
-import { Store } from '../data/types';
+import type { StoreDetail } from '@habiti/data';
 
 const EditStore = () => {
 	const { isFetching, data } = useCurrentStoreQuery();
@@ -40,7 +40,7 @@ interface EditStoreFormData {
 }
 
 interface EditStoreMainProps {
-	store: Store;
+	store: StoreDetail;
 }
 
 const EditStoreMain: React.FC<EditStoreMainProps> = ({ store }) => {

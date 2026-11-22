@@ -8,7 +8,7 @@ import {
 	useConfirmPickupMutation
 } from '@/data/mutations';
 import { useViewer } from '@/hooks/use-viewer';
-import { OrderStatus } from '@/data/types';
+import { OrderStatus } from '@habiti/data';
 
 import { formatNaira } from '@/utils/currency';
 import { formatDate } from '@/utils/date';

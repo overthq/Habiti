@@ -1,25 +1,27 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { refreshAuthTokens } from '../lib/auth';
 import {
-	getCurrentUser,
 	getCurrentStore,
-	getStoreBalance,
-	getPayoutAccounts,
-	getProducts,
-	getProduct,
-	getProductReviews,
-	getManagedStores,
-	getOrders,
-	getOrder,
-	getCategories,
-	getStoreManagers,
-	getStoreOverview,
-	getCustomer,
-	getAddresses,
-	getTransactions,
-	getTransaction
-} from './requests';
-import { OrderFilters, ProductFilters, TransactionFilters } from './types';
+	getCurrentStoreAddresses,
+	getCurrentStoreBalance,
+	getCurrentStoreCategories,
+	getCurrentStoreCustomer,
+	getCurrentStoreManagers,
+	getCurrentStoreOrder,
+	getCurrentStoreOrders,
+	getCurrentStoreOverview,
+	getCurrentStorePayoutAccounts,
+	getCurrentStoreProduct,
+	getCurrentStoreProductReviews,
+	getCurrentStoreProducts,
+	getCurrentStoreTransaction,
+	getCurrentStoreTransactions,
+	getCurrentUser,
+	getUserManagedStores,
+	type OrderFilters,
+	type ProductFilters,
+	type TransactionFilters
+} from '@habiti/data';
 
 export const useAuthRefreshQuery = () => {
 	return useQuery({
@@ -46,28 +48,28 @@ export const useCurrentStoreQuery = () => {
 export const useStoreBalanceQuery = () => {
 	return useQuery({
 		queryKey: ['stores', 'current', 'balance'],
-		queryFn: getStoreBalance
+		queryFn: getCurrentStoreBalance
 	});
 };
 
 export const usePayoutAccountsQuery = () => {
 	return useQuery({
 		queryKey: ['stores', 'current', 'payout-accounts'],
-		queryFn: getPayoutAccounts
+		queryFn: getCurrentStorePayoutAccounts
 	});
 };
 
 export const useStoreManagersQuery = () => {
 	return useQuery({
 		queryKey: ['stores', 'current', 'managers'],
-		queryFn: getStoreManagers
+		queryFn: getCurrentStoreManagers
 	});
 };
 
 export const useProductsQuery = (filters?: ProductFilters) => {
 	return useQuery({
 		queryKey: ['stores', 'current', 'products', filters],
-		queryFn: () => getProducts(filters),
+		queryFn: () => getCurrentStoreProducts(filters),
 		placeholderData: keepPreviousData
 	});
 };
@@ -75,7 +77,7 @@ export const useProductsQuery = (filters?: ProductFilters) => {
 export const useProductQuery = (productId: string) => {
 	return useQuery({
 		queryKey: ['stores', 'current', 'products', productId],
-		queryFn: () => getProduct(productId),
+		queryFn: () => getCurrentStoreProduct(productId),
 		enabled: !!productId
 	});
 };
@@ -83,7 +85,7 @@ export const useProductQuery = (productId: string) => {
 export const useProductReviewsQuery = (productId: string) => {
 	return useQuery({
 		queryKey: ['stores', 'current', 'products', productId, 'reviews'],
-		queryFn: () => getProductReviews(productId),
+		queryFn: () => getCurrentStoreProductReviews(productId),
 		enabled: !!productId
 	});
 };
@@ -91,14 +93,14 @@ export const useProductReviewsQuery = (productId: string) => {
 export const useCategoriesQuery = () => {
 	return useQuery({
 		queryKey: ['stores', 'current', 'categories'],
-		queryFn: () => getCategories()
+		queryFn: () => getCurrentStoreCategories()
 	});
 };
 
 export const useOrdersQuery = (filters?: OrderFilters) => {
 	return useQuery({
 		queryKey: ['stores', 'current', 'orders', filters],
-		queryFn: () => getOrders(filters),
+		queryFn: () => getCurrentStoreOrders(filters),
 		placeholderData: keepPreviousData
 	});
 };
@@ -106,7 +108,7 @@ export const useOrdersQuery = (filters?: OrderFilters) => {
 export const useOrderQuery = (orderId: string) => {
 	return useQuery({
 		queryKey: ['stores', 'current', 'orders', orderId],
-		queryFn: () => getOrder(orderId),
+		queryFn: () => getCurrentStoreOrder(orderId),
 		enabled: !!orderId
 	});
 };
@@ -114,21 +116,21 @@ export const useOrderQuery = (orderId: string) => {
 export const useManagedStoresQuery = () => {
 	return useQuery({
 		queryKey: ['stores', 'managed'],
-		queryFn: () => getManagedStores()
+		queryFn: () => getUserManagedStores()
 	});
 };
 
 export const useOverviewQuery = () => {
 	return useQuery({
 		queryKey: ['stores', 'current', 'overview'],
-		queryFn: getStoreOverview
+		queryFn: getCurrentStoreOverview
 	});
 };
 
 export const useCustomerInfoQuery = (userId: string) => {
 	return useQuery({
 		queryKey: ['stores', 'current', 'customers', userId],
-		queryFn: () => getCustomer(userId),
+		queryFn: () => getCurrentStoreCustomer(userId),
 		enabled: !!userId
 	});
 };
@@ -136,14 +138,14 @@ export const useCustomerInfoQuery = (userId: string) => {
 export const useAddressesQuery = () => {
 	return useQuery({
 		queryKey: ['stores', 'current', 'addresses'],
-		queryFn: () => getAddresses()
+		queryFn: () => getCurrentStoreAddresses()
 	});
 };
 
 export const useTransactionsQuery = (filters?: TransactionFilters) => {
 	return useQuery({
 		queryKey: ['stores', 'current', 'transactions', filters],
-		queryFn: () => getTransactions(filters),
+		queryFn: () => getCurrentStoreTransactions(filters),
 		placeholderData: keepPreviousData
 	});
 };
@@ -151,7 +153,7 @@ export const useTransactionsQuery = (filters?: TransactionFilters) => {
 export const useTransactionQuery = (transactionId: string) => {
 	return useQuery({
 		queryKey: ['stores', 'current', 'transactions', transactionId],
-		queryFn: () => getTransaction(transactionId),
+		queryFn: () => getCurrentStoreTransaction(transactionId),
 		enabled: !!transactionId
 	});
 };

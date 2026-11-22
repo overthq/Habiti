@@ -10,8 +10,8 @@ import {
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { ConfirmDialog } from '@/components/confirm-dialog';
-import { useUpdateUserMutation } from '@/data/mutations';
-import { type User } from '@/data/types';
+import { useBulkUpdateUsersMutation } from '@/data/mutations';
+import { type User } from '@habiti/data';
 import UpdateUserDialog from './update-user-dialog';
 
 interface UserActionsDropdownProps {
@@ -20,10 +20,14 @@ interface UserActionsDropdownProps {
 
 const UserActionsDropdown = ({ user }: UserActionsDropdownProps) => {
 	const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
-	const updateUserMutation = useUpdateUserMutation(user.id);
+	const bulkUpdateUsersMutation = useBulkUpdateUsersMutation();
 
 	const handleToggleSuspended = () => {
-		updateUserMutation.mutate({ suspended: !user.suspended });
+		bulkUpdateUsersMutation.mutate({
+			ids: [user.id],
+			field: 'suspended',
+			value: !user.suspended
+		});
 	};
 
 	const handleCopyId = () => {
@@ -59,7 +63,7 @@ const UserActionsDropdown = ({ user }: UserActionsDropdownProps) => {
 						}
 						confirmLabel={user.suspended ? 'Unsuspend' : 'Suspend'}
 						variant={user.suspended ? 'default' : 'destructive'}
-						isLoading={updateUserMutation.isPending}
+						isLoading={bulkUpdateUsersMutation.isPending}
 						onConfirm={handleToggleSuspended}
 						trigger={
 							<DropdownMenuItem onSelect={e => e.preventDefault()}>

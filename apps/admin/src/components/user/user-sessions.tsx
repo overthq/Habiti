@@ -1,5 +1,5 @@
 import { useUserSessionsQuery } from '@/data/queries';
-import { type Session, type User } from '@/data/types';
+import { type Session, type User } from '@habiti/data';
 import { DataTable } from '../ui/data-table';
 import { type ColumnDef } from '@tanstack/react-table';
 import StatusPill from '../status-pill';

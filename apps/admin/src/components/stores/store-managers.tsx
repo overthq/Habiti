@@ -4,10 +4,10 @@ import { Link } from '@tanstack/react-router';
 import { DataTable } from '../ui/data-table';
 import { useStoreManagersQuery } from '@/data/queries';
 
-import { type StoreManager } from '@/data/types';
+import { type StoreManagerWithUser } from '@habiti/data';
 import { Button } from '../ui/button';
 
-const columns: ColumnDef<StoreManager>[] = [
+const columns: ColumnDef<StoreManagerWithUser>[] = [
 	{
 		header: 'Name',
 		accessorKey: 'manager.name',

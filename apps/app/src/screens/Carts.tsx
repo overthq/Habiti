@@ -16,7 +16,7 @@ import useRefresh from '../hooks/useRefresh';
 
 import { plural } from '../utils/strings';
 
-import type { Cart } from '../data/types';
+import type { UserCart } from '@habiti/data';
 import type { MainTabScreenProps } from '../navigation/types';
 
 const Carts: React.FC<MainTabScreenProps<'Main.Carts'>> = ({ navigation }) => {
@@ -64,7 +64,7 @@ const Carts: React.FC<MainTabScreenProps<'Main.Carts'>> = ({ navigation }) => {
 };
 
 interface CartListItemProps {
-	cart: Cart;
+	cart: UserCart;
 	onPress(): void;
 }
 

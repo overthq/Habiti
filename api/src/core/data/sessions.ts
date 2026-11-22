@@ -1,6 +1,5 @@
 import type { RedisClient } from 'bun';
-
-import { PrismaClient } from '../../generated/prisma/client';
+import type { PrismaClient } from '../../config/prisma';
 
 interface CreateSessionInput {
 	userId: string;

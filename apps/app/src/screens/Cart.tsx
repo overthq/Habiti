@@ -18,15 +18,10 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 import CartProvider, { useCart } from '../components/CartContext';
 import type { AppStackParamList } from '../navigation/types';
-import type {
-	Cart as CartType,
-	CartProduct as CartProductType,
-	Card,
-	Store
-} from '../data/types';
+import type { Card, CartDetail, CartItem } from '@habiti/data';
 
 interface StoreInfoProps {
-	store: Store;
+	store: CartDetail['store'];
 }
 
 const StoreInfo: React.FC<StoreInfoProps> = ({ store }) => {
@@ -40,7 +35,7 @@ const StoreInfo: React.FC<StoreInfoProps> = ({ store }) => {
 };
 
 interface CartProductQuantityProps {
-	cartProduct: CartProductType;
+	cartProduct: CartItem;
 	quantity: number;
 	maxQuantity: number;
 }
@@ -85,7 +80,7 @@ const CartProductQuantity: React.FC<CartProductQuantityProps> = ({
 };
 
 interface CartProductProps {
-	cartProduct: CartProductType;
+	cartProduct: CartItem;
 	onPress(): void;
 }
 
@@ -131,7 +126,7 @@ const CartProduct: React.FC<CartProductProps> = ({ cartProduct, onPress }) => {
 };
 
 interface CartSummaryProps {
-	products: CartProductType[];
+	products: CartItem[];
 }
 
 const CartSummary: React.FC<CartSummaryProps> = () => {
@@ -235,7 +230,7 @@ const CartTotalRow: React.FC<CartTotalRowProps> = ({ title, value, total }) => {
 };
 
 interface CartTotalProps {
-	cart: CartType;
+	cart: CartDetail;
 }
 
 const CartTotal: React.FC<CartTotalProps> = ({ cart }) => {
@@ -296,7 +291,7 @@ const Cart: React.FC = () => {
 			<Spacer y={16} />
 
 			<SelectCard
-				cards={cart.user.cards}
+				cards={cart.user?.cards ?? []}
 				selectedCard={selectedCard}
 				onCardSelect={setSelectedCard}
 			/>

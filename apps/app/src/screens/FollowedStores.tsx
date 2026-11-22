@@ -11,7 +11,7 @@ import {
 
 import { useUnfollowStoreMutation } from '../data/mutations';
 import { useStoresFollowedQuery } from '../data/queries';
-import type { Store } from '../data/types';
+import type { StoreWithImage } from '@habiti/data';
 import type { HomeStackScreenProps } from '../navigation/types';
 import useRefresh from '../hooks/useRefresh';
 
@@ -59,7 +59,7 @@ const FollowedStores: React.FC<HomeStackScreenProps<'Home.FollowedStores'>> = ({
 };
 
 interface FollowedStoreItemProps {
-	store: Store;
+	store: StoreWithImage;
 	onPress(): void;
 }
 

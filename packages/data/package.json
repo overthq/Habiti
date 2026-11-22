@@ -1,0 +1,9 @@
+{
+	"name": "@habiti/data",
+	"version": "0.0.1",
+	"main": "src/index.ts",
+	"license": "GPL-3.0-or-later",
+	"peerDependencies": {
+		"axios": "^1.13.2"
+	}
+}

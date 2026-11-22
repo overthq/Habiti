@@ -1,20 +1,22 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import {
-	getCarts,
-	getStore,
 	getCart,
-	getOrders,
 	getCurrentUser,
-	getOrder,
-	getProduct,
-	getFollowedStores,
-	getCards,
-	getRelatedProducts,
-	getStoreProducts,
-	globalSearch,
 	getLandingHighlights,
-	ensureSession
-} from './requests';
+	getProduct,
+	getRelatedProducts,
+	getStore,
+	getStoreProducts,
+	getUserCards,
+	getUserCarts,
+	getUserFollowedStores,
+	getUserOrder,
+	getUserOrders,
+	globalSearch,
+	type ProductFilters
+} from '@habiti/data';
+
+import { ensureSession } from './session';
 
 type QueryEnabledOptions = {
 	enabled?: boolean;
@@ -32,7 +34,7 @@ export const useCartsQuery = (options: QueryEnabledOptions = {}) => {
 
 	return useQuery({
 		queryKey: ['carts'],
-		queryFn: () => getCarts(),
+		queryFn: () => getUserCarts(),
 		enabled: isEnabled
 	});
 };
@@ -55,7 +57,7 @@ export const useOrdersQuery = (options: QueryEnabledOptions = {}) => {
 
 	return useQuery({
 		queryKey: ['orders'],
-		queryFn: () => getOrders(),
+		queryFn: () => getUserOrders(),
 		enabled: isEnabled
 	});
 };
@@ -78,7 +80,7 @@ export const useOrderQuery = (
 
 	return useQuery({
 		queryKey: ['orders', orderId],
-		queryFn: () => getOrder(orderId),
+		queryFn: () => getUserOrder(orderId),
 		enabled: Boolean(orderId) && isEnabled
 	});
 };
@@ -95,7 +97,7 @@ export const useFollowedStoresQuery = (options: QueryEnabledOptions = {}) => {
 
 	return useQuery({
 		queryKey: ['followed-stores'],
-		queryFn: () => getFollowedStores(),
+		queryFn: () => getUserFollowedStores(),
 		enabled: isEnabled
 	});
 };
@@ -105,7 +107,7 @@ export const useCardsQuery = (options: QueryEnabledOptions = {}) => {
 
 	return useQuery({
 		queryKey: ['cards'],
-		queryFn: () => getCards(),
+		queryFn: () => getUserCards(),
 		enabled: isEnabled
 	});
 };
@@ -128,13 +130,11 @@ export const useRelatedProductsQuery = (productId: string) => {
 
 export const useStoreProductsQuery = (
 	storeId: string,
-	queryParams: URLSearchParams
+	filters: ProductFilters
 ) => {
-	const queryString = queryParams.toString();
-
 	return useQuery({
-		queryKey: ['stores', storeId, 'products', queryString],
-		queryFn: () => getStoreProducts(storeId, queryParams),
+		queryKey: ['stores', storeId, 'products', filters],
+		queryFn: () => getStoreProducts(storeId, filters),
 		placeholderData: keepPreviousData
 	});
 };

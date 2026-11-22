@@ -1,15 +1,11 @@
-import {
-	OrderStatus,
-	Prisma,
-	PrismaClient
-} from '../../generated/prisma/client';
-import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
+import { OrderStatus, Prisma } from '../../generated/prisma/client';
 import {
 	productFiltersToPrismaClause,
 	ProductFilters,
 	OrderFilters,
 	orderFiltersToPrismaClause
 } from '../../utils/queries';
+import type { PrismaClient, TransactionClient } from '../../config/prisma';
 
 interface CreateStoreParams {
 	userId?: string;

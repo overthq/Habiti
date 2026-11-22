@@ -29,7 +29,7 @@ import {
 import { useLogoutMutation } from '../data/mutations';
 import useRefresh from '../hooks/useRefresh';
 import { getFrontendUrl } from '../utils/share';
-import type { Store as StoreType, Address } from '../data/types';
+import type { Address, StoreDetail } from '@habiti/data';
 import type {
 	AppStackParamList,
 	StoreStackParamList,
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
 });
 
 interface StoreHeaderProps {
-	store: StoreType;
+	store: StoreDetail;
 	onSwitchStore: () => void;
 	onOpenWebPage: () => void;
 }
@@ -287,7 +287,7 @@ const onboardingRequirementsConfig = ({
 	addresses,
 	hasPayoutAccount
 }: {
-	store: StoreType;
+	store: StoreDetail;
 	addresses: Address[];
 	hasPayoutAccount: boolean;
 }) =>
@@ -325,7 +325,7 @@ const getOnboardingCompletionCount = (
 };
 
 interface OnboardingChecklistProps {
-	store: StoreType;
+	store: StoreDetail;
 	addresses: Address[];
 	hasPayoutAccount: boolean;
 }

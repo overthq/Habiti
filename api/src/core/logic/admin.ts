@@ -19,7 +19,8 @@ export const adminLogin = async (
 	input: AdminLoginInput
 ) => {
 	const admin = await c.var.prisma.admin.findUnique({
-		where: { email: input.email }
+		where: { email: input.email },
+		omit: { passwordHash: false }
 	});
 
 	if (!admin) {

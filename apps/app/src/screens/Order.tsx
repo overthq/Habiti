@@ -15,13 +15,7 @@ import { View, StyleSheet, RefreshControl } from 'react-native';
 import { formatNaira } from '@habiti/common';
 
 import { useOrderQuery } from '../data/queries';
-import { useUpdateOrderMutation } from '../data/mutations';
-import {
-	Order as OrderType,
-	OrderProduct as OrderProductType,
-	OrderStatus,
-	Store
-} from '../data/types';
+import { OrderDetail, OrderItem, OrderStatus } from '@habiti/data';
 import {
 	AppStackParamList,
 	HomeStackParamList,
@@ -34,7 +28,7 @@ import { plural } from '../utils/strings';
 // What actions should users be able to carry out on their orders on this screen?
 
 interface StoreMetaProps {
-	store: Store;
+	store: OrderDetail['store'];
 }
 
 const StoreMeta: React.FC<StoreMetaProps> = ({ store }) => {
@@ -73,7 +67,7 @@ const StoreMeta: React.FC<StoreMetaProps> = ({ store }) => {
 };
 
 interface OrderProductProps {
-	orderProduct: OrderProductType;
+	orderProduct: OrderItem;
 	onPress(): void;
 }
 
@@ -109,7 +103,7 @@ const OrderProduct: React.FC<OrderProductProps> = ({
 };
 
 interface OrderMetaProps {
-	order: OrderType;
+	order: OrderDetail;
 }
 
 const OrderMeta: React.FC<OrderMetaProps> = ({ order }) => {
@@ -139,17 +133,9 @@ const PaymentPendingWarning: React.FC<PaymentPendingWarningProps> = ({
 }) => {
 	const { theme } = useTheme();
 	const { navigate } = useNavigation<NavigationProp<AppStackParamList>>();
-	const updateOrderMutation = useUpdateOrderMutation();
 
 	const handleMakePayment = () => {
 		navigate('Modal.AddCard', { orderId });
-	};
-
-	const handleCancelOrder = () => {
-		updateOrderMutation.mutate({
-			orderId,
-			body: { status: OrderStatus.Cancelled }
-		});
 	};
 
 	return (
@@ -166,22 +152,12 @@ const PaymentPendingWarning: React.FC<PaymentPendingWarningProps> = ({
 				your order.
 			</Typography>
 			<Spacer y={12} />
-			<View style={{ flexDirection: 'row', gap: 8 }}>
-				<Button
-					style={{ flex: 1 }}
-					text='Make Payment'
-					variant='primary'
-					size='small'
-					onPress={handleMakePayment}
-				/>
-				<Button
-					style={{ flex: 1 }}
-					text='Cancel Order'
-					variant='destructive'
-					size='small'
-					onPress={handleCancelOrder}
-				/>
-			</View>
+			<Button
+				text='Make Payment'
+				variant='primary'
+				size='small'
+				onPress={handleMakePayment}
+			/>
 		</View>
 	);
 };

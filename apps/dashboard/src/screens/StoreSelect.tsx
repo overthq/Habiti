@@ -24,7 +24,7 @@ import useStore from '../state';
 import { navigationRef } from '../lib/navigation';
 import { useManagedStoresQuery } from '../data/queries';
 import { useSwitchStoreMutation } from '../data/mutations';
-import { Store } from '../data/types';
+import type { StoreWithImage } from '@habiti/data';
 import type { AppStackScreenProps } from '../navigation/types';
 import { STORE_CREATION_ENABLED } from '../lib/features';
 
@@ -94,7 +94,7 @@ const StoreSelect: React.FC<AppStackScreenProps<'StoreSelect'>> = ({
 };
 
 interface StoreSelectListProps {
-	stores: Store[];
+	stores: StoreWithImage[];
 	onAddStore?: () => void;
 }
 
@@ -147,7 +147,7 @@ const SCREEN_PADDING = 16;
 interface StoreSelectItemProps {
 	size: number;
 	selected: boolean;
-	store: Store;
+	store: StoreWithImage;
 	onPress(): void;
 }
 

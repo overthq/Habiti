@@ -3,11 +3,11 @@ import { View, Pressable, StyleSheet, FlatList } from 'react-native';
 import { Avatar, SectionHeader, Spacer, Typography } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 
-import type { TrendingStore } from '../../data/types';
+import type { StoreWithImage } from '@habiti/data';
 import type { HomeStackParamList } from '../../navigation/types';
 
 interface TrendingStoresProps {
-	stores: TrendingStore[];
+	stores: StoreWithImage[];
 }
 
 const TrendingStores: React.FC<TrendingStoresProps> = ({ stores }) => {
@@ -47,7 +47,7 @@ const TrendingStores: React.FC<TrendingStoresProps> = ({ stores }) => {
 };
 
 interface TrendingStoresItemProps {
-	store: TrendingStore;
+	store: StoreWithImage;
 	onPress(): void;
 }
 

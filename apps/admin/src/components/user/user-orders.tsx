@@ -1,5 +1,5 @@
 import { useOrdersQuery } from '@/data/queries';
-import { type Order, type User } from '@/data/types';
+import { type Order, type User } from '@habiti/data';
 import { DataTable } from '../ui/data-table';
 import { type ColumnDef } from '@tanstack/react-table';
 import { formatNaira } from '@/utils/format';

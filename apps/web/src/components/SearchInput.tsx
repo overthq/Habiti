@@ -38,7 +38,7 @@ const SearchInput = () => {
 			data?.stores?.map(store => ({
 				id: store.id,
 				title: store.name,
-				description: store.description,
+				description: store.description ?? undefined,
 				type: 'store' as const,
 				image: store.image?.path || null
 			})) ?? [];

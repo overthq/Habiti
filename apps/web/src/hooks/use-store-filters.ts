@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from '@tanstack/react-router';
 import { useCallback, useMemo } from 'react';
+import type { ProductFilters } from '@habiti/data';
 
 export type StoreProductsSortOption =
 	| 'default'
@@ -14,7 +15,7 @@ interface UseStoreFiltersReturn {
 	setSortBy: (value: StoreProductsSortOption) => void;
 	setCategoryId: (value: string | null) => void;
 	setInStock: (value: boolean) => void;
-	queryParams: URLSearchParams;
+	filters: ProductFilters;
 }
 
 export function useStoreFilters(): UseStoreFiltersReturn {
@@ -77,30 +78,20 @@ export function useStoreFilters(): UseStoreFiltersReturn {
 		[updateParams]
 	);
 
-	const queryParams = useMemo(() => {
-		const params = new URLSearchParams();
+	const filters = useMemo<ProductFilters>(() => {
+		const sortMap: Partial<
+			Record<StoreProductsSortOption, ProductFilters['orderBy']>
+		> = {
+			'newest-to-oldest': { createdAt: 'desc' },
+			'highest-to-lowest-price': { unitPrice: 'desc' },
+			'lowest-to-highest-price': { unitPrice: 'asc' }
+		};
 
-		const sortMap: Partial<Record<StoreProductsSortOption, [string, string]>> =
-			{
-				'newest-to-oldest': ['orderBy[createdAt]', 'desc'],
-				'highest-to-lowest-price': ['orderBy[unitPrice]', 'desc'],
-				'lowest-to-highest-price': ['orderBy[unitPrice]', 'asc']
-			};
-
-		const sortValue = sortMap[sortBy];
-		if (sortValue) {
-			params.set(sortValue[0], sortValue[1]);
-		}
-
-		if (categoryId) {
-			params.set('categoryId', categoryId);
-		}
-
-		if (inStock) {
-			params.set('inStock', 'true');
-		}
-
-		return params;
+		return {
+			orderBy: sortMap[sortBy],
+			categoryId: categoryId ?? undefined,
+			inStock: inStock || undefined
+		};
 	}, [sortBy, categoryId, inStock]);
 
 	return {
@@ -110,6 +101,6 @@ export function useStoreFilters(): UseStoreFiltersReturn {
 		setSortBy,
 		setCategoryId,
 		setInStock,
-		queryParams
+		filters
 	};
 }

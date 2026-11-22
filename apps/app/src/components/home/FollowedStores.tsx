@@ -3,11 +3,11 @@ import { View, Pressable, StyleSheet, FlatList } from 'react-native';
 import { Avatar, SectionHeader, Spacer, Typography } from '@habiti/components';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 
-import type { Store } from '../../data/types';
+import type { StoreWithImage } from '@habiti/data';
 import type { HomeStackParamList } from '../../navigation/types';
 
 interface FollowedStoresProps {
-	followed: Store[];
+	followed: StoreWithImage[];
 }
 
 const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
@@ -55,7 +55,7 @@ const FollowedStores: React.FC<FollowedStoresProps> = ({ followed }) => {
 };
 
 interface FollowedStoresItemProps {
-	store: Store;
+	store: StoreWithImage;
 	onPress(): void;
 }
 

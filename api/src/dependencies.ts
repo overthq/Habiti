@@ -5,8 +5,8 @@ import redisClient from './config/redis';
 import Services from './services';
 import { tracer } from './services/tracer';
 
-import type { PrismaClient } from './generated/prisma/client';
 import type { Tracer } from './services/tracer';
+import type { PrismaClient } from './config/prisma';
 
 export type AppDependencies = {
 	prisma: PrismaClient;

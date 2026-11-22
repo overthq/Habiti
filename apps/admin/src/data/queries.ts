@@ -1,36 +1,33 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-
 import {
+	getAdminOrder,
+	getAdminOrders,
+	getAdminOverview,
+	getAdminProduct,
+	getAdminProductReviews,
+	getAdminProducts,
+	getAdminStore,
+	getAdminStoreManagers,
+	getAdminStoreOrders,
+	getAdminStorePayoutAccounts,
+	getAdminStoreProducts,
+	getAdminStores,
+	getAdminStoreTransactions,
+	getAdminUser,
+	getAdminUsers,
+	getAdminUserSessions,
+	getAdminUserStores,
 	type OrderFilters,
 	type ProductFilters,
 	type StoreFilters,
-	type UserFilters,
-	type TransactionFilters
-} from './types';
-import {
-	getOrders,
-	getOrder,
-	getProducts,
-	getProduct,
-	getProductReviews,
-	getStores,
-	getStore,
-	getStoreProducts,
-	getStoreOrders,
-	getStoreManagers,
-	getStoreTransactions,
-	getUsers,
-	getUser,
-	getUserSessions,
-	getUserStores,
-	getOverview,
-	getStorePayoutAccounts
-} from './requests';
+	type TransactionFilters,
+	type UserFilters
+} from '@habiti/data';
 
 export const useOrdersQuery = (params?: OrderFilters) => {
 	return useQuery({
 		queryKey: ['orders', params],
-		queryFn: () => getOrders(params),
+		queryFn: () => getAdminOrders(params),
 		placeholderData: keepPreviousData
 	});
 };
@@ -38,7 +35,7 @@ export const useOrdersQuery = (params?: OrderFilters) => {
 export const useOrderQuery = (id: string) => {
 	return useQuery({
 		queryKey: ['orders', id],
-		queryFn: () => getOrder(id),
+		queryFn: () => getAdminOrder(id),
 		enabled: !!id
 	});
 };
@@ -46,7 +43,7 @@ export const useOrderQuery = (id: string) => {
 export const useProductsQuery = (params?: ProductFilters) => {
 	return useQuery({
 		queryKey: ['products', params],
-		queryFn: () => getProducts(params),
+		queryFn: () => getAdminProducts(params),
 		placeholderData: keepPreviousData
 	});
 };
@@ -54,7 +51,7 @@ export const useProductsQuery = (params?: ProductFilters) => {
 export const useProductQuery = (id: string) => {
 	return useQuery({
 		queryKey: ['products', id],
-		queryFn: () => getProduct(id),
+		queryFn: () => getAdminProduct(id),
 		enabled: !!id
 	});
 };
@@ -62,7 +59,7 @@ export const useProductQuery = (id: string) => {
 export const useProductReviewsQuery = (id: string) => {
 	return useQuery({
 		queryKey: ['products', id, 'reviews'],
-		queryFn: () => getProductReviews(id),
+		queryFn: () => getAdminProductReviews(id),
 		enabled: !!id
 	});
 };
@@ -70,7 +67,7 @@ export const useProductReviewsQuery = (id: string) => {
 export const useStoresQuery = (params?: StoreFilters) => {
 	return useQuery({
 		queryKey: ['stores', params],
-		queryFn: () => getStores(params),
+		queryFn: () => getAdminStores(params),
 		placeholderData: keepPreviousData
 	});
 };
@@ -78,32 +75,32 @@ export const useStoresQuery = (params?: StoreFilters) => {
 export const useStoreQuery = (id: string) => {
 	return useQuery({
 		queryKey: ['stores', id],
-		queryFn: () => getStore(id),
+		queryFn: () => getAdminStore(id),
 		enabled: !!id
 	});
 };
 
-export const useStoreProductsQuery = (id: string, params?: StoreFilters) => {
+export const useStoreProductsQuery = (id: string, params?: ProductFilters) => {
 	return useQuery({
 		queryKey: ['stores', id, 'products', params],
-		queryFn: () => getStoreProducts(id, params),
+		queryFn: () => getAdminStoreProducts(id, params),
 		enabled: !!id
 	});
 };
 
-export const useStoreOrdersQuery = (id: string, params?: StoreFilters) => {
+export const useStoreOrdersQuery = (id: string, params?: OrderFilters) => {
 	return useQuery({
 		queryKey: ['stores', id, 'orders', params],
-		queryFn: () => getStoreOrders(id, params),
+		queryFn: () => getAdminStoreOrders(id, params),
 		enabled: !!id,
 		placeholderData: keepPreviousData
 	});
 };
 
-export const useStoreManagersQuery = (id: string, params?: StoreFilters) => {
+export const useStoreManagersQuery = (id: string) => {
 	return useQuery({
-		queryKey: ['stores', id, 'managers', params],
-		queryFn: () => getStoreManagers(id, params),
+		queryKey: ['stores', id, 'managers'],
+		queryFn: () => getAdminStoreManagers(id),
 		enabled: !!id,
 		placeholderData: keepPreviousData
 	});
@@ -112,7 +109,7 @@ export const useStoreManagersQuery = (id: string, params?: StoreFilters) => {
 export const useStorePayoutAccountsQuery = (storeId: string) => {
 	return useQuery({
 		queryKey: ['stores', storeId, 'payout-accounts'],
-		queryFn: () => getStorePayoutAccounts(storeId),
+		queryFn: () => getAdminStorePayoutAccounts(storeId),
 		enabled: !!storeId
 	});
 };
@@ -120,7 +117,7 @@ export const useStorePayoutAccountsQuery = (storeId: string) => {
 export const useUsersQuery = (params?: UserFilters) => {
 	return useQuery({
 		queryKey: ['users', params],
-		queryFn: () => getUsers(params),
+		queryFn: () => getAdminUsers(params),
 		placeholderData: keepPreviousData
 	});
 };
@@ -128,7 +125,7 @@ export const useUsersQuery = (params?: UserFilters) => {
 export const useUserQuery = (id: string) => {
 	return useQuery({
 		queryKey: ['users', id],
-		queryFn: () => getUser(id),
+		queryFn: () => getAdminUser(id),
 		enabled: !!id
 	});
 };
@@ -136,7 +133,7 @@ export const useUserQuery = (id: string) => {
 export const useUserSessionsQuery = (userId: string) => {
 	return useQuery({
 		queryKey: ['users', userId, 'sessions'],
-		queryFn: () => getUserSessions(userId),
+		queryFn: () => getAdminUserSessions(userId),
 		enabled: !!userId
 	});
 };
@@ -144,7 +141,7 @@ export const useUserSessionsQuery = (userId: string) => {
 export const useUserStoresQuery = (userId: string) => {
 	return useQuery({
 		queryKey: ['users', userId, 'stores'],
-		queryFn: () => getUserStores(userId),
+		queryFn: () => getAdminUserStores(userId),
 		enabled: !!userId
 	});
 };
@@ -152,7 +149,7 @@ export const useUserStoresQuery = (userId: string) => {
 export const useOverviewQuery = () => {
 	return useQuery({
 		queryKey: ['overview'],
-		queryFn: () => getOverview()
+		queryFn: () => getAdminOverview()
 	});
 };
 
@@ -162,7 +159,7 @@ export const useStoreTransactionsQuery = (
 ) => {
 	return useQuery({
 		queryKey: ['stores', id, 'transactions', params],
-		queryFn: () => getStoreTransactions(id, params),
+		queryFn: () => getAdminStoreTransactions(id, params),
 		enabled: !!id,
 		placeholderData: keepPreviousData
 	});

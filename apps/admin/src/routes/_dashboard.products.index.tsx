@@ -31,7 +31,11 @@ import {
 	useBulkDeleteProductsMutation,
 	useBulkUpdateProductsMutation
 } from '@/data/mutations';
-import { type Product, type ProductFilters, ProductStatus } from '@/data/types';
+import {
+	type ListedProduct,
+	type ProductFilters,
+	ProductStatus
+} from '@habiti/data';
 import { formatNaira } from '@/utils/format';
 import { useTableFilters } from '@/hooks/use-table-filters';
 
@@ -39,7 +43,7 @@ export const Route = createFileRoute('/_dashboard/products/')({
 	component: ProductsPage
 });
 
-const columns: ColumnDef<Product>[] = [
+const columns: ColumnDef<ListedProduct>[] = [
 	{
 		id: 'select',
 		header: ({ table }) => (

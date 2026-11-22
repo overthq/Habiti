@@ -13,7 +13,7 @@ import { useCustomerInfoQuery } from '../data/queries';
 import { parseTimestamp } from '../utils/date';
 import { plural } from '../utils/strings';
 import type { OrdersStackScreenProps } from '../navigation/types';
-import type { Order } from '../data/types';
+import type { StoreCustomer } from '@habiti/data';
 
 const CustomerInfo: React.FC<OrdersStackScreenProps<'CustomerInfo'>> = ({
 	navigation,
@@ -50,7 +50,7 @@ const CustomerInfo: React.FC<OrdersStackScreenProps<'CustomerInfo'>> = ({
 };
 
 interface OrderDetailProps {
-	order: Order;
+	order: StoreCustomer['orders'][number];
 	onPress(): void;
 }
 

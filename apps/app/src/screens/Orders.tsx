@@ -16,7 +16,7 @@ import useRefresh from '../hooks/useRefresh';
 import { plural } from '../utils/strings';
 import { relativeTimestamp } from '../utils/date';
 
-import type { Order } from '../data/types';
+import type { UserOrder } from '@habiti/data';
 import type { HomeStackScreenProps } from '../navigation/types';
 
 const Orders: React.FC<HomeStackScreenProps<'Home.Orders'>> = ({
@@ -58,7 +58,7 @@ const Orders: React.FC<HomeStackScreenProps<'Home.Orders'>> = ({
 };
 
 interface OrdersListItemProps {
-	order: Order;
+	order: UserOrder;
 	onPress(): void;
 }
 

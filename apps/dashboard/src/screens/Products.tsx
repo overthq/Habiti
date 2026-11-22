@@ -24,7 +24,7 @@ import useRefresh from '../hooks/useRefresh';
 import { useProductsQuery } from '../data/queries';
 import { useProductsFilterStore, ProductsFilters } from '../state/filters';
 import { useSheet } from '../navigation/useSheet';
-import { Product, ProductFilters } from '../data/types';
+import type { ProductFilters, ProductWithImages } from '@habiti/data';
 import type {
 	ProductsStackParamList,
 	ProductsStackScreenProps
@@ -51,7 +51,7 @@ const Products = ({ navigation }: ProductsStackScreenProps<'ProductsList'>) => {
 };
 
 interface ProductsContextType {
-	products: Product[];
+	products: ProductWithImages[];
 	isLoading: boolean;
 	refreshing: boolean;
 	refresh: () => void;
@@ -184,7 +184,7 @@ const ProductList: React.FC = () => {
 	const { products, search, refreshing, refresh } = useProductsContext();
 	const [editMode, setEditMode] = React.useState(false);
 	const [selectedProducts, setSelectedProducts] = React.useState<string[]>([]);
-	const listRef = React.useRef<FlashListRef<Product>>(null);
+	const listRef = React.useRef<FlashListRef<ProductWithImages>>(null);
 	const [tabBarHeight, setTabBarHeight] = React.useState(0);
 	const categoryId = useProductsFilterStore(state => state.filters.categoryId);
 	const sortBy = useProductsFilterStore(state => state.filters.sortBy);
@@ -218,7 +218,7 @@ const ProductList: React.FC = () => {
 		setSelectedProducts([]);
 	}, []);
 
-	const renderProduct: ListRenderItem<Product> = React.useCallback(
+	const renderProduct: ListRenderItem<ProductWithImages> = React.useCallback(
 		({ item }) => {
 			return (
 				<ProductsListItem
@@ -281,7 +281,7 @@ const listStyles = StyleSheet.create({
 });
 
 interface ProductsListItemProps {
-	product: Product;
+	product: ProductWithImages;
 	onPress(): void;
 	onLongPress?(): void;
 }

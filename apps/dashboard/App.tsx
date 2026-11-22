@@ -8,6 +8,7 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useShallow } from 'zustand/react/shallow';
+import { configureApi } from '@habiti/data';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { SheetHost } from './src/navigation/Sheets';
@@ -15,8 +16,19 @@ import Routes from './src/navigation/Routes';
 import useStore from './src/state';
 import { useAuthRefreshQuery } from './src/data/queries';
 import { queryClient } from './src/lib/queryClient';
+import { refreshAuthTokens } from './src/lib/auth';
+import env from './src/lib/env';
 
 Sentry.init({ dsn: process.env.EXPO_PUBLIC_SENTRY_DSN });
+
+// refreshAuthTokens ends the session itself when the refresh token is rejected.
+configureApi({
+	baseURL: env.apiUrl,
+	getAccessToken: () => useStore.getState().accessToken,
+	refreshAccessToken: async () => {
+		await refreshAuthTokens();
+	}
+});
 
 useStore.subscribe((state, prevState) => {
 	if (state.activeStore && state.activeStore !== prevState.activeStore) {

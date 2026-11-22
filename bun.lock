@@ -18,6 +18,7 @@
       "dependencies": {
         "@cloudflare/vite-plugin": "^1.26.0",
         "@habiti/common": "workspace:*",
+        "@habiti/data": "workspace:*",
         "@hookform/resolvers": "^5.2.2",
         "@paystack/inline-js": "^2.22.8",
         "@radix-ui/react-accordion": "^1.2.11",
@@ -110,6 +111,7 @@
         "@gorhom/bottom-sheet": "^5.2.14",
         "@habiti/common": "workspace:*",
         "@habiti/components": "workspace:*",
+        "@habiti/data": "workspace:*",
         "@hookform/resolvers": "^5.0.1",
         "@react-native-async-storage/async-storage": "2.2.0",
         "@react-native-masked-view/masked-view": "0.3.2",
@@ -174,6 +176,7 @@
         "@gorhom/bottom-sheet": "^5.2.14",
         "@habiti/common": "workspace:*",
         "@habiti/components": "workspace:*",
+        "@habiti/data": "workspace:*",
         "@hookform/resolvers": "^5.0.1",
         "@react-native-async-storage/async-storage": "2.2.0",
         "@react-native-masked-view/masked-view": "0.3.2",
@@ -231,6 +234,7 @@
       "version": "0.1.0",
       "dependencies": {
         "@cloudflare/vite-plugin": "^1.26.0",
+        "@habiti/data": "workspace:*",
         "@hookform/resolvers": "^5.2.2",
         "@paystack/inline-js": "^2.22.8",
         "@radix-ui/react-accordion": "^1.2.11",
@@ -336,6 +340,13 @@
         "react-native-screens": "~4.30.1",
         "react-native-svg": "15.16.0",
         "react-native-worklets": "0.13.0",
+      },
+    },
+    "packages/data": {
+      "name": "@habiti/data",
+      "version": "0.0.1",
+      "peerDependencies": {
+        "axios": "^1.13.2",
       },
     },
   },
@@ -695,6 +706,8 @@
     "@habiti/components": ["@habiti/components@workspace:packages/components"],
 
     "@habiti/dashboard": ["@habiti/dashboard@workspace:apps/dashboard"],
+
+    "@habiti/data": ["@habiti/data@workspace:packages/data"],
 
     "@habiti/web": ["@habiti/web@workspace:apps/web"],
 

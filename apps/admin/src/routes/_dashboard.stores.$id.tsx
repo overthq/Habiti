@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 
 import { useStoreQuery } from '@/data/queries';
-import { type Store as StoreType } from '@/data/types';
+import { type Store as StoreType } from '@habiti/data';
 import { Badge } from '@/components/ui/badge';
 import CopyableText from '@/components/ui/copy';
 import InlineMeta from '@/components/ui/inline-meta';

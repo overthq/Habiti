@@ -13,10 +13,10 @@ import { HeaderButton } from '@react-navigation/elements';
 import useRefresh from '../hooks/useRefresh';
 import { useDeliveryAddressesQuery } from '../data/queries';
 import type { ProfileStackScreenProps } from '../navigation/types';
-import { DeliveryAddress } from '../data/types';
+import { Address } from '@habiti/data';
 
 interface AddressListItemProps {
-	address: DeliveryAddress;
+	address: Address;
 	onPress: () => void;
 }
 
@@ -65,16 +65,16 @@ const Addresses: React.FC<ProfileStackScreenProps<'Profile.Addresses'>> = ({
 		});
 	}, [handleAddAddress, navigation]);
 
-	const handleAddressPress = (address: DeliveryAddress) => () => {
+	const handleAddressPress = (address: Address) => () => {
 		navigation.navigate('Modal.EditAddress', {
 			addressId: address.id,
 			name: address.name,
 			line1: address.line1,
-			line2: address.line2,
+			line2: address.line2 ?? undefined,
 			city: address.city,
 			state: address.state,
 			country: address.country,
-			postcode: address.postcode
+			postcode: address.postcode ?? undefined
 		});
 	};
 

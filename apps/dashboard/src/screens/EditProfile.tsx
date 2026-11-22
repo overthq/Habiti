@@ -8,7 +8,7 @@ import { useCurrentUserQuery } from '../data/queries';
 import { useEditProfileMutation } from '../data/mutations';
 
 import type { ProfileStackScreenProps } from '../navigation/types';
-import type { User } from '../data/types';
+import type { User } from '@habiti/data';
 
 const EditProfile: React.FC<ProfileStackScreenProps<'EditProfile'>> = ({
 	navigation

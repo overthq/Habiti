@@ -1,8 +1,8 @@
-import type { PrismaClient } from '../generated/prisma/client';
 import type { RedisClient } from 'bun';
 import type Services from '../services';
 import type { Logger } from '../services/logger';
 import type { Tracer } from '../services/tracer';
+import type { PrismaClient } from '../config/prisma';
 
 export type AuthPayload = {
 	id: string;

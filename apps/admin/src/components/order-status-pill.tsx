@@ -1,4 +1,4 @@
-import { OrderStatus } from '@/data/types';
+import { OrderStatus } from '@habiti/data';
 import { getStatus } from '@/utils/status';
 import StatusPill, { type StatusTone } from './status-pill';
 

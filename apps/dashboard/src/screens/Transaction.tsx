@@ -7,7 +7,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 
 import { parseTimestamp } from '../utils/date';
 import { useTransactionQuery } from '../data/queries';
-import { TransactionType } from '../data/types';
+import { TransactionType } from '@habiti/data';
 import type { StoreStackParamList } from '../navigation/types';
 
 const CREDIT_TYPES: TransactionType[] = [

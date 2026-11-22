@@ -1,16 +1,16 @@
 import React from 'react';
 import { MessageCircleIcon } from 'lucide-react';
-import type { Store, GetStoreResponse } from '@/data/types';
+import type { GetStoreResponse, StoreDetail } from '@habiti/data';
 import FollowButton from './FollowButton';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
 interface StoreHeaderProps {
-	store: Store;
+	store: StoreDetail;
 	viewerContext: GetStoreResponse['viewerContext'];
 }
 
-const StoreAvatar = ({ store }: { store: Store }) => {
+const StoreAvatar = ({ store }: { store: StoreDetail }) => {
 	return (
 		<div className='rounded-full size-16 overflow-hidden bg-muted flex justify-center items-center'>
 			{store.image ? (

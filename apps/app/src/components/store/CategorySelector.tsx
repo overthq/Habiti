@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { Spacer, Typography, useTheme } from '@habiti/components';
 
-import type { StoreProductCategory } from '../../data/types';
+import type { StoreProductCategory } from '@habiti/data';
 
 interface CategorySelectorProps {
 	categories: StoreProductCategory[];

@@ -1,7 +1,7 @@
 import { DataTable } from '../ui/data-table';
 import { useStoreProductsQuery } from '@/data/queries';
 import { type ColumnDef } from '@tanstack/react-table';
-import { type Product } from '@/data/types';
+import { type Product } from '@habiti/data';
 import { formatNaira } from '@/utils/format';
 import { Link } from '@tanstack/react-router';
 import { Button } from '../ui/button';

@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 
-import { type Product } from '@/data/types';
+import { type Product } from '@habiti/data';
 import {
 	ChevronRightIcon,
 	CopyIcon,

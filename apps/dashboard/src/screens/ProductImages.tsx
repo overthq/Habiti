@@ -6,7 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 import type { AppStackScreenProps } from '../navigation/types';
 import { useUpdateProductMutation } from '../data/mutations';
-import { uploadImage } from '../data/requests';
+import { uploadImage } from '../utils/images';
 import useHeaderSubmit from '../hooks/useHeaderSubmit';
 import FAB from '../components/FAB';
 

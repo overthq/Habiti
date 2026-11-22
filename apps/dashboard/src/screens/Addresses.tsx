@@ -14,7 +14,7 @@ import Refresher from '../components/Refresher';
 import useRefresh from '../hooks/useRefresh';
 import { useAddressesQuery } from '../data/queries';
 import type { StoreStackScreenProps } from '../navigation/types';
-import { Address } from '../data/types';
+import { Address } from '@habiti/data';
 
 interface AddressListItemProps {
 	address: Address;
@@ -70,11 +70,11 @@ const Addresses: React.FC<StoreStackScreenProps<'Addresses'>> = ({
 			addressId: address.id,
 			name: address.name,
 			line1: address.line1,
-			line2: address.line2,
+			line2: address.line2 ?? undefined,
 			city: address.city,
 			state: address.state,
 			country: address.country,
-			postcode: address.postcode
+			postcode: address.postcode ?? undefined
 		});
 	};
 

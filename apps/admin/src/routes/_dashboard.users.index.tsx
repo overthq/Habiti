@@ -31,7 +31,7 @@ import {
 	useBulkUpdateUsersMutation,
 	useBulkDeleteUsersMutation
 } from '@/data/mutations';
-import { type User, type UserFilters } from '@/data/types';
+import { type User, type UserFilters } from '@habiti/data';
 import { useTableFilters } from '@/hooks/use-table-filters';
 
 export const Route = createFileRoute('/_dashboard/users/')({

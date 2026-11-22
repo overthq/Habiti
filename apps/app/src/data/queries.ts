@@ -1,24 +1,25 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 import {
-	getCards,
+	authorizeUserCard,
 	getCart,
-	getCarts,
 	getCurrentUser,
-	getDeliveryAddresses,
-	getFollowedStores,
-	getOrder,
-	getOrders,
+	getLandingHighlights,
 	getProduct,
 	getRelatedProducts,
 	getStore,
 	getStoreProducts,
-	getWatchlist,
-	getCardAuthorization,
-	getPushTokens,
-	getLandingHighlights,
-	globalSearch
-} from './requests';
+	getUserCards,
+	getUserCarts,
+	getUserDeliveryAddresses,
+	getUserFollowedStores,
+	getUserOrder,
+	getUserOrders,
+	getUserPushTokens,
+	getUserWatchlist,
+	globalSearch,
+	type ProductFilters
+} from '@habiti/data';
 import { ensureSession } from '../utils/refreshManager';
 
 export const useCurrentUserQuery = () => {
@@ -31,7 +32,7 @@ export const useCurrentUserQuery = () => {
 export const useOrdersQuery = (filter?: any, orderBy?: any) => {
 	return useQuery({
 		queryKey: ['orders', filter, orderBy],
-		queryFn: () => getOrders(),
+		queryFn: () => getUserOrders(),
 		placeholderData: keepPreviousData
 	});
 };
@@ -39,7 +40,7 @@ export const useOrdersQuery = (filter?: any, orderBy?: any) => {
 export const useOrderQuery = (orderId: string) => {
 	return useQuery({
 		queryKey: ['orders', orderId],
-		queryFn: () => getOrder(orderId),
+		queryFn: () => getUserOrder(orderId),
 		enabled: !!orderId
 	});
 };
@@ -70,11 +71,11 @@ export const useStoreQuery = (storeId: string) => {
 
 export const useStoreProductsQuery = (
 	storeId: string,
-	params: URLSearchParams
+	filters: ProductFilters
 ) => {
 	return useQuery({
-		queryKey: ['stores', storeId, 'products', params.toString()],
-		queryFn: () => getStoreProducts(storeId, params),
+		queryKey: ['stores', storeId, 'products', filters],
+		queryFn: () => getStoreProducts(storeId, filters),
 		enabled: !!storeId,
 		placeholderData: keepPreviousData
 	});
@@ -83,14 +84,14 @@ export const useStoreProductsQuery = (
 export const useCardsQuery = () => {
 	return useQuery({
 		queryKey: ['cards'],
-		queryFn: () => getCards()
+		queryFn: () => getUserCards()
 	});
 };
 
 export const useCartsQuery = () => {
 	return useQuery({
 		queryKey: ['carts'],
-		queryFn: () => getCarts(),
+		queryFn: () => getUserCarts(),
 		placeholderData: keepPreviousData
 	});
 };
@@ -106,7 +107,7 @@ export const useCartQuery = (cartId: string) => {
 export const useStoresFollowedQuery = () => {
 	return useQuery({
 		queryKey: ['storesFollowed'],
-		queryFn: () => getFollowedStores()
+		queryFn: () => getUserFollowedStores()
 	});
 };
 
@@ -122,28 +123,28 @@ export const useSearchQuery = (searchTerm: string) => {
 export const useDeliveryAddressesQuery = () => {
 	return useQuery({
 		queryKey: ['deliveryAddresses'],
-		queryFn: () => getDeliveryAddresses()
+		queryFn: () => getUserDeliveryAddresses()
 	});
 };
 
 export const useWatchlistQuery = () => {
 	return useQuery({
 		queryKey: ['watchlist'],
-		queryFn: () => getWatchlist()
+		queryFn: () => getUserWatchlist()
 	});
 };
 
 export const usePushTokensQuery = () => {
 	return useQuery({
 		queryKey: ['pushTokens'],
-		queryFn: () => getPushTokens()
+		queryFn: () => getUserPushTokens()
 	});
 };
 
-export const useCardAuthorizationQuery = (orderId?: string) => {
+export const useCardAuthorizationQuery = (orderId: string) => {
 	return useQuery({
 		queryKey: ['cardAuthorization', orderId],
-		queryFn: () => getCardAuthorization(orderId)
+		queryFn: () => authorizeUserCard(orderId)
 	});
 };
 
@@ -152,9 +153,9 @@ export const useHomeQuery = () => {
 		queryKey: ['home'],
 		queryFn: async () => {
 			const [ordersData, followedData, watchlistData] = await Promise.all([
-				getOrders(),
-				getFollowedStores(),
-				getWatchlist()
+				getUserOrders(),
+				getUserFollowedStores(),
+				getUserWatchlist()
 			]);
 			return {
 				orders: ordersData.orders,

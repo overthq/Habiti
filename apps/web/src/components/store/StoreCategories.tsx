@@ -8,7 +8,7 @@ import {
 	DropdownMenuRadioItem,
 	DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import type { StoreProductCategory } from '@/data/types';
+import type { StoreProductCategory } from '@habiti/data';
 import { cn } from '@/lib/utils';
 
 interface StoreCategoriesProps {

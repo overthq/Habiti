@@ -5,35 +5,31 @@ import { toast } from 'sonner';
 
 import {
 	addToCart,
-	followStore,
-	unfollowStore,
-	authenticate,
-	register,
-	createOrderWithPayment,
+	appleSignIn,
+	confirmUserOrderPickup,
 	createStore,
+	deleteCurrentUser,
+	deleteUserCard,
+	followStore,
+	login,
+	register,
+	unfollowStore,
 	updateCartProductQuantity,
 	updateCurrentUser,
 	verifyCode,
-	appleSignIn,
-	deleteCurrentUser,
-	completeOrderPayment,
-	confirmPickup,
-	deleteCard,
-	performLogout
-} from './requests';
+	type AddToCartBody,
+	type AppleSignInBody,
+	type CreateOrderBody,
+	type CreateStoreBody,
+	type LoginBody,
+	type RegisterBody,
+	type Store,
+	type UpdateCurrentUserBody,
+	type VerifyCodeBody
+} from '@habiti/data';
 
-import type {
-	AddToCartBody,
-	AppleSignInBody,
-	AuthenticateBody,
-	CreateOrderBody,
-	CreateStoreBody,
-	RegisterBody,
-	Store,
-	UpdateCartProductQuantityBody,
-	UpdateCurrentUserBody,
-	VerifyCodeBody
-} from './types';
+import { completeOrderPayment, createOrderWithPayment } from '@/lib/payments';
+import { performLogout } from './session';
 import { useAuthStore } from '@/state/auth-store';
 
 export const useAddToCartMutation = () => {
@@ -60,8 +56,16 @@ export const useUpdateCartProductQuantityMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (body: UpdateCartProductQuantityBody) => {
-			return updateCartProductQuantity(body);
+		mutationFn: (body: {
+			cartId: string;
+			productId: string;
+			quantity: number;
+		}) => {
+			return updateCartProductQuantity(
+				body.cartId,
+				body.productId,
+				body.quantity
+			);
 		},
 		onSuccess: data => {
 			queryClient.invalidateQueries({
@@ -109,7 +113,7 @@ export const useRegisterMutation = () => {
 
 export const useAuthenticateMutation = () => {
 	return useMutation({
-		mutationFn: (input: AuthenticateBody) => authenticate(input),
+		mutationFn: (input: LoginBody) => login(input),
 		onSuccess: () => {}
 	});
 };
@@ -222,7 +226,7 @@ export const useConfirmPickupMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (orderId: string) => confirmPickup(orderId),
+		mutationFn: (orderId: string) => confirmUserOrderPickup(orderId),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['orders'] });
 			toast.success('Pickup confirmed');
@@ -261,7 +265,7 @@ export const useCreateStoreMutation = (
 
 export const useDeleteCardMutation = () => {
 	return useMutation({
-		mutationFn: (cardId: string) => deleteCard(cardId),
+		mutationFn: (cardId: string) => deleteUserCard(cardId),
 		onSuccess: () => {},
 		onError: () => {
 			toast.error('Failed to initiate payment');

@@ -11,49 +11,46 @@ import * as SecureStore from 'expo-secure-store';
 import useStore from '../state';
 import { AppStackParamList } from '../navigation/types';
 import {
-	updateCurrentStore,
-	deleteProduct,
-	createProduct,
-	deleteStore,
-	updateProduct,
-	createPayout,
-	createPayoutAccount,
-	deletePayoutAccount,
+	createCurrentStoreAddress,
+	createCurrentStoreCategory,
+	createCurrentStorePayout,
+	createCurrentStorePayoutAccount,
+	createCurrentStoreProduct,
 	createStore,
+	deleteCurrentStoreAddress,
+	deleteCurrentStoreCategory,
+	deleteCurrentStorePayoutAccount,
+	deleteCurrentStoreProduct,
+	deleteCurrentUser,
+	deleteStore,
+	PushTokenType,
+	saveUserPushToken,
 	switchStore,
-	createProductCategory,
-	updateOrder,
-	deleteProductCategory,
-	updateProductCategory,
-	updateProductCategories,
-	verifyBankAccount,
-	createAddress,
-	updateAddress,
-	deleteAddress,
-	deleteAccount,
+	updateCurrentStore,
+	updateCurrentStoreAddress,
+	updateCurrentStoreCategory,
+	updateCurrentStoreOrder,
+	updateCurrentStoreProduct,
+	updateCurrentStoreProductCategories,
 	updateCurrentUser,
-	savePushToken
-} from './requests';
+	verifyCurrentStoreBankAccount,
+	type AddressBody,
+	type CategoryBody,
+	type CreatePayoutAccountBody,
+	type CreatePayoutBody,
+	type CreateProductBody,
+	type CreateStoreBody,
+	type UpdateCurrentUserBody,
+	type UpdateOrderBody,
+	type UpdateProductBody,
+	type UpdateProductCategoriesBody,
+	type UpdateStoreBody,
+	type VerifyBankAccountBody
+} from '@habiti/data';
 import { requestPushPermission } from '../utils/notifications';
 import { activateStore, endSession, performLogout } from '../lib/auth';
 import { ACCOUNT_CREATION_ENABLED } from '../lib/features';
 import env from '../lib/env';
-import {
-	CreatePayoutBody,
-	CreatePayoutAccountBody,
-	CreateProductBody,
-	CreateProductCategoryBody,
-	CreateStoreBody,
-	CreateAddressBody,
-	UpdateCurrentStoreBody,
-	UpdateCurrentUserBody,
-	UpdateOrderArgs,
-	UpdateProductArgs,
-	UpdateProductCategoriesArgs,
-	UpdateProductCategoryArgs,
-	UpdateAddressArgs,
-	VerifyBankAccountBody
-} from './types';
 import { Alert } from 'react-native';
 
 interface RegisterArgs {
@@ -179,7 +176,10 @@ export const useVerifyCodeMutation = () => {
 			requestPushPermission()
 				.then(pushToken => {
 					if (pushToken) {
-						savePushToken({ token: pushToken, type: 'Merchant' });
+						saveUserPushToken({
+							token: pushToken,
+							type: PushTokenType.Merchant
+						});
 					}
 				})
 				.catch(err => console.warn('Push token registration failed:', err));
@@ -239,7 +239,10 @@ export const useAppleSignInMutation = () => {
 			requestPushPermission()
 				.then(pushToken => {
 					if (pushToken) {
-						savePushToken({ token: pushToken, type: 'Merchant' });
+						saveUserPushToken({
+							token: pushToken,
+							type: PushTokenType.Merchant
+						});
 					}
 				})
 				.catch(err => console.warn('Push token registration failed:', err));
@@ -270,7 +273,7 @@ export const useUpdateCurrentStoreMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (body: UpdateCurrentStoreBody) => updateCurrentStore(body),
+		mutationFn: (body: UpdateStoreBody) => updateCurrentStore(body),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['stores', 'current'] });
 		}
@@ -294,8 +297,8 @@ export const useUpdateProductMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (args: UpdateProductArgs) => {
-			return updateProduct(args.productId, args.body);
+		mutationFn: (args: { productId: string; body: UpdateProductBody }) => {
+			return updateCurrentStoreProduct(args.productId, args.body);
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({
@@ -309,7 +312,7 @@ export const useCreateProductMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (input: CreateProductBody) => createProduct(input),
+		mutationFn: (input: CreateProductBody) => createCurrentStoreProduct(input),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: ['stores', 'current', 'products']
@@ -322,8 +325,8 @@ export const useUpdateOrderMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (args: UpdateOrderArgs) => {
-			return updateOrder(args.orderId, args.body);
+		mutationFn: (args: { orderId: string; body: UpdateOrderBody }) => {
+			return updateCurrentStoreOrder(args.orderId, args.body);
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({
@@ -340,7 +343,7 @@ export const useDeleteProductMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (productId: string) => deleteProduct(productId),
+		mutationFn: (productId: string) => deleteCurrentStoreProduct(productId),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: ['stores', 'current', 'products']
@@ -353,8 +356,8 @@ export const useCreateProductCategoryMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (body: CreateProductCategoryBody) => {
-			return createProductCategory(body);
+		mutationFn: (body: CategoryBody) => {
+			return createCurrentStoreCategory(body);
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({
@@ -419,8 +422,8 @@ export const useUpdateProductCategoryMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (args: UpdateProductCategoryArgs) => {
-			return updateProductCategory(args.categoryId, args.body);
+		mutationFn: (args: { categoryId: string; body: CategoryBody }) => {
+			return updateCurrentStoreCategory(args.categoryId, args.body);
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({
@@ -434,7 +437,7 @@ export const useDeleteProductCategoryMutation = (categoryId: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: () => deleteProductCategory(categoryId),
+		mutationFn: () => deleteCurrentStoreCategory(categoryId),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: ['stores', 'current', 'categories']
@@ -447,8 +450,11 @@ export const useUpdateProductCategoriesMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (args: UpdateProductCategoriesArgs) => {
-			return updateProductCategories(args.productId, args.body);
+		mutationFn: (args: {
+			productId: string;
+			body: UpdateProductCategoriesBody;
+		}) => {
+			return updateCurrentStoreProductCategories(args.productId, args.body);
 		},
 		onSuccess: ({ product }) => {
 			queryClient.invalidateQueries({
@@ -462,7 +468,7 @@ export const useCreatePayoutMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (body: CreatePayoutBody) => createPayout(body),
+		mutationFn: (body: CreatePayoutBody) => createCurrentStorePayout(body),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: ['stores', 'current', 'transactions']
@@ -476,7 +482,8 @@ export const useCreatePayoutMutation = () => {
 
 export const useVerifyBankAccountMutation = () => {
 	return useMutation({
-		mutationFn: (body: VerifyBankAccountBody) => verifyBankAccount(body)
+		mutationFn: (body: VerifyBankAccountBody) =>
+			verifyCurrentStoreBankAccount(body)
 	});
 };
 
@@ -491,7 +498,8 @@ export const useCreatePayoutAccountMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (body: CreatePayoutAccountBody) => createPayoutAccount(body),
+		mutationFn: (body: CreatePayoutAccountBody) =>
+			createCurrentStorePayoutAccount(body),
 		onSuccess: () => invalidatePayoutAccounts(queryClient)
 	});
 };
@@ -501,7 +509,7 @@ export const useDeletePayoutAccountMutation = () => {
 
 	return useMutation({
 		mutationFn: (payoutAccountId: string) =>
-			deletePayoutAccount(payoutAccountId),
+			deleteCurrentStorePayoutAccount(payoutAccountId),
 		onSuccess: () => invalidatePayoutAccounts(queryClient)
 	});
 };
@@ -510,7 +518,7 @@ export const useCreateAddressMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (body: CreateAddressBody) => createAddress(body),
+		mutationFn: (body: AddressBody) => createCurrentStoreAddress(body),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: ['stores', 'current', 'addresses']
@@ -523,8 +531,8 @@ export const useUpdateAddressMutation = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (args: UpdateAddressArgs) => {
-			return updateAddress(args.addressId, args.body);
+		mutationFn: (args: { addressId: string; body: AddressBody }) => {
+			return updateCurrentStoreAddress(args.addressId, args.body);
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({
@@ -538,7 +546,7 @@ export const useDeleteAddressMutation = (addressId: string) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: () => deleteAddress(addressId),
+		mutationFn: () => deleteCurrentStoreAddress(addressId),
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: ['stores', 'current', 'addresses']
@@ -553,7 +561,7 @@ export const useLogoutMutation = () => {
 
 export const useDeleteAccountMutation = () => {
 	return useMutation({
-		mutationFn: () => deleteAccount(),
+		mutationFn: () => deleteCurrentUser(),
 		onSuccess: endSession
 	});
 };

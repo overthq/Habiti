@@ -14,6 +14,7 @@
 	"dependencies": {
 		"@gorhom/bottom-sheet": "^5.2.14",
 		"@habiti/common": "workspace:*",
+		"@habiti/data": "workspace:*",
 		"@habiti/components": "workspace:*",
 		"@hookform/resolvers": "^5.0.1",
 		"@react-native-async-storage/async-storage": "2.2.0",

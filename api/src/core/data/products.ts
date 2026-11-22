@@ -1,12 +1,9 @@
-import {
-	ProductStatus,
-	PrismaClient,
-	Prisma
-} from '../../generated/prisma/client';
+import { ProductStatus, Prisma } from '../../generated/prisma/client';
 import {
 	productFiltersToPrismaClause,
 	ProductFilters
 } from '../../utils/queries';
+import type { PrismaClient } from '../../config/prisma';
 
 interface CreateProductParams {
 	name: string;
@@ -94,7 +91,7 @@ export const getProductById = async (
 	const product = await prisma.product.findUnique({
 		where: { id: productId },
 		include: {
-			store: true,
+			store: { include: { image: true } },
 			images: true,
 			categories: { include: { category: true } },
 			reviews: {
