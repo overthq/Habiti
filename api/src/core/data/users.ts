@@ -1,12 +1,8 @@
-import {
-	AccountKind,
-	LedgerReason,
-	PrismaClient
-} from '../../generated/prisma/client';
-import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
+import { AccountKind, LedgerReason } from '../../generated/prisma/client';
 import { UserFilters, userFiltersToPrismaClause } from '../../utils/queries';
 import { runSerializable } from '../../utils/prisma';
 import { getCustomerCredit, moveMoney } from './ledger';
+import type { PrismaClient, TransactionClient } from '../../config/prisma';
 
 export interface CreateUserParams {
 	name: string;

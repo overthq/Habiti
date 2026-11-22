@@ -2,11 +2,10 @@ import {
 	AccountKind,
 	EntryDirection,
 	LedgerReason,
-	PrismaClient,
 	TransactionStatus,
 	TransactionType
 } from '../../generated/prisma/client';
-import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
+import type { PrismaClient, TransactionClient } from '../../config/prisma';
 
 type Account =
 	| { kind: 'PlatformCash' | 'PlatformFeeRevenue' }

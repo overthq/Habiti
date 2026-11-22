@@ -1,9 +1,7 @@
 import { createHash } from 'crypto';
 
-import {
-	PrismaClient,
-	WebhookEventStatus
-} from '../../generated/prisma/client';
+import { WebhookEventStatus } from '../../generated/prisma/client';
+import type { PrismaClient } from '../../config/prisma';
 
 export const PAYSTACK_WEBHOOK_PROVIDER = 'paystack';
 

@@ -2,13 +2,12 @@ import {
 	AccountKind,
 	LedgerReason,
 	Prisma,
-	OrderStatus,
-	PrismaClient
+	OrderStatus
 } from '../../generated/prisma/client';
 import { OrderFilters, orderFiltersToPrismaClause } from '../../utils/queries';
 import { LogicError, LogicErrorCode } from '../logic/errors';
-import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
 import { moveMoney } from './ledger';
+import type { PrismaClient, TransactionClient } from '../../config/prisma';
 
 export const getOrderData = (
 	products: Prisma.CartProductGetPayload<{

@@ -1,5 +1,5 @@
-import { Prisma, PrismaClient, Cart } from '../../generated/prisma/client';
-import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
+import { Prisma, Cart } from '../../generated/prisma/client';
+import type { PrismaClient, TransactionClient } from '../../config/prisma';
 
 interface UpdateCartQuantityParams {
 	cartId: string;

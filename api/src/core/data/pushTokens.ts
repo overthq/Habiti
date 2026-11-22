@@ -1,4 +1,5 @@
-import { PrismaClient, PushTokenType } from '../../generated/prisma/client';
+import { PushTokenType } from '../../generated/prisma/client';
+import type { PrismaClient } from '../../config/prisma';
 
 export const getStorePushTokens = async (
 	prisma: PrismaClient,

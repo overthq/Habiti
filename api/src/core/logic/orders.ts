@@ -135,7 +135,8 @@ const createOrderImpl = async (c: Context<AppEnv>, input: CreateOrderInput) => {
 
 	if (cardId) {
 		const card = await c.var.prisma.card.findUnique({
-			where: { id: cardId }
+			where: { id: cardId },
+			omit: { authorizationCode: false }
 		});
 
 		if (!card) {

@@ -1,9 +1,8 @@
 import {
 	PayoutAccountStatus,
-	PayoutStatus,
-	PrismaClient
+	PayoutStatus
 } from '../../generated/prisma/client';
-import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
+import type { PrismaClient, TransactionClient } from '../../config/prisma';
 
 /**
  * Storage for store payout destinations.

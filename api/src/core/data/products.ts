@@ -1,12 +1,9 @@
-import {
-	ProductStatus,
-	PrismaClient,
-	Prisma
-} from '../../generated/prisma/client';
+import { ProductStatus, Prisma } from '../../generated/prisma/client';
 import {
 	productFiltersToPrismaClause,
 	ProductFilters
 } from '../../utils/queries';
+import type { PrismaClient } from '../../config/prisma';
 
 interface CreateProductParams {
 	name: string;

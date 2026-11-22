@@ -8,8 +8,8 @@ import * as AuthLogic from '../core/logic/auth';
 import { tracer } from '../services/tracer';
 
 import type { RedisClient } from 'bun';
-import type { PrismaClient } from '../generated/prisma/client';
 import type Services from '../services';
+import type { PrismaClient } from '../config/prisma';
 
 export type FakeRedis = RedisClient & {
 	store: Map<string, string>;

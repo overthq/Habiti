@@ -4,13 +4,12 @@ import {
 	AccountKind,
 	LedgerReason,
 	PayoutStatus,
-	PrismaClient,
 	TransactionStatus,
 	TransactionType
 } from '../../generated/prisma/client';
-import type { TransactionClient } from '../../generated/prisma/internal/prismaNamespace';
 import { runSerializable } from '../../utils/prisma';
 import { moveMoney } from './ledger';
+import type { PrismaClient, TransactionClient } from '../../config/prisma';
 
 export const computeAvailableBalance = (params: {
 	realizedRevenue: number;
