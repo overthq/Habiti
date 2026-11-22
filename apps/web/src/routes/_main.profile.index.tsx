@@ -3,6 +3,7 @@ import React from 'react';
 import { ArrowRight, Settings } from 'lucide-react';
 import { formatNaira } from '@/utils/currency';
 import { formatDate } from '@/utils/date';
+import Rail from '@/components/Rail';
 import SignInPrompt from '@/components/SignInPrompt';
 import {
 	useCurrentUserQuery,
@@ -122,7 +123,7 @@ function ProfilePage() {
 							))}
 						</div>
 					) : followedStoresData?.stores.length ? (
-						<div className='flex gap-5 overflow-x-auto pb-1'>
+						<Rail label='Followed stores' className='gap-5 pb-1'>
 							{followedStoresData.stores.map(store => (
 								<Link
 									key={store.id}
@@ -145,7 +146,7 @@ function ProfilePage() {
 									</p>
 								</Link>
 							))}
-						</div>
+						</Rail>
 					) : (
 						<p className='text-sm text-muted-foreground'>
 							You haven't followed any stores yet.

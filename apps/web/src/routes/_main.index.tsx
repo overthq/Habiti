@@ -16,6 +16,7 @@ import {
 } from '@/state/recently-viewed-store';
 import { useViewer } from '@/hooks/use-viewer';
 import Product from '@/components/store/Product';
+import Rail from '@/components/Rail';
 import { getLandingHighlights } from '@/data/requests';
 import { smartAppBannerMeta } from '@/utils/smart-app-banner';
 
@@ -144,11 +145,11 @@ const TrendingStoresSection: React.FC<TrendingStoresSectionProps> = ({
 			{isLoading ? (
 				<TrendingStoresSkeleton />
 			) : stores.length ? (
-				<div className='flex gap-4 overflow-x-auto'>
+				<Rail label='Trending stores' bleed>
 					{stores.map(store => (
 						<StoreCard key={store.id} store={store} />
 					))}
-				</div>
+				</Rail>
 			) : (
 				<EmptyState message='No stores to show yet. Check back shortly!' />
 			)}
@@ -222,7 +223,7 @@ const FeaturedProductsSection: React.FC<FeaturedProductsSectionProps> = ({
 			{isLoading ? (
 				<FeaturedProductsSkeleton />
 			) : products.length ? (
-				<div className='flex gap-4 -mx-4 px-4 overflow-x-auto'>
+				<Rail label='Featured products' bleed>
 					{products.map(product => (
 						<Product
 							key={product.id}
@@ -232,7 +233,7 @@ const FeaturedProductsSection: React.FC<FeaturedProductsSectionProps> = ({
 							imagePath={product.images[0]?.path}
 						/>
 					))}
-				</div>
+				</Rail>
 			) : (
 				<EmptyState message='No product highlights yet. Try searching for something specific.' />
 			)}
@@ -265,7 +266,7 @@ const RecentlyViewedSection: React.FC<RecentlyViewedSectionProps> = ({
 	return (
 		<Section title='Recently viewed'>
 			{products.length ? (
-				<div className='flex gap-4 -mx-4 px-4 overflow-x-auto'>
+				<Rail label='Recently viewed' bleed>
 					{products.map(product => (
 						<Product
 							key={product.id}
@@ -275,7 +276,7 @@ const RecentlyViewedSection: React.FC<RecentlyViewedSectionProps> = ({
 							imagePath={product.image ?? undefined}
 						/>
 					))}
-				</div>
+				</Rail>
 			) : (
 				<EmptyState message='You have not viewed any products yet. Explore featured picks to get started.' />
 			)}
