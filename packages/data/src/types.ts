@@ -266,7 +266,7 @@ export type CategorizedProduct = ProductWithImages & {
 export type StoreDetail = StoreWithImage & {
 	products: ProductWithImages[];
 	categories: StoreProductCategory[];
-	_count: { followers: number };
+	followerCount: number;
 };
 
 export type ProductDetail = CategorizedProduct & {

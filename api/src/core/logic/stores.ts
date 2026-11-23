@@ -137,15 +137,18 @@ export const updateStore = async (
 };
 
 export const getStoreById = async (c: Context<AppEnv>, storeId: string) => {
-	const store = await StoreData.getStoreByIdWithProducts(
+	const storeWithCount = await StoreData.getStoreByIdWithProducts(
 		c.var.prisma,
 		storeId,
 		c.var.isAdmin
 	);
 
-	if (!store) {
+	if (!storeWithCount) {
 		throw new LogicError(LogicErrorCode.StoreNotFound);
 	}
+
+	const { _count, ...rest } = storeWithCount;
+	const store = { ...rest, followerCount: _count.followers };
 
 	const storeViewerContext = c.var.auth?.id
 		? await StoreData.getStoreViewerContext(
