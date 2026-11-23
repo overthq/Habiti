@@ -95,7 +95,7 @@ export const getProductById = async (
 			images: true,
 			categories: { include: { category: true } },
 			reviews: {
-				include: { user: true }
+				include: { user: { select: { id: true, name: true } } }
 			}
 		}
 	});
@@ -303,7 +303,7 @@ export const updateProductCategories = async (
 			categories: { include: { category: true } },
 			images: true,
 			store: true,
-			reviews: { include: { user: true } }
+			reviews: { include: { user: { select: { id: true, name: true } } } }
 		}
 	});
 

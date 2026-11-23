@@ -375,7 +375,10 @@ export const signInWithApple = async (
 	// otherwise an attacker-controlled Apple ID with someone else's email
 	// could take over their account.
 	if (!user && identity.email && identity.emailVerified) {
-		const byEmail = await UserData.getUserByEmail(c.var.prisma, identity.email);
+		const byEmail = await c.var.prisma.user.findUnique({
+			where: { email: identity.email },
+			omit: { appleId: false }
+		});
 
 		if (byEmail) {
 			if (byEmail.appleId && byEmail.appleId !== identity.appleId) {
