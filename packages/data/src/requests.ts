@@ -30,7 +30,6 @@ import type {
 	LoginBody,
 	LogoutBody,
 	ManagedStore,
-	Order,
 	OrderDetail,
 	OrderFilters,
 	OrderStatus,
@@ -53,6 +52,7 @@ import type {
 	StoreFilters,
 	StoreFollower,
 	StoreManagerWithUser,
+	AdminStoreManager,
 	StoreOrder,
 	StoreProductCategory,
 	StoreTransaction,
@@ -68,6 +68,7 @@ import type {
 	UpdateTransactionBody,
 	UploadedImage,
 	User,
+	CurrentUser,
 	UserCart,
 	UserFilters,
 	UserOrder,
@@ -86,7 +87,10 @@ import type {
 // ─── Auth ───────────────────────────────────────────────────────────────────
 
 export const register = async (body: RegisterBody) => {
-	const { data } = await api.post<{ user: User }>('/auth/register', body);
+	const { data } = await api.post<{ user: CurrentUser }>(
+		'/auth/register',
+		body
+	);
 	return data;
 };
 
@@ -264,12 +268,12 @@ export const uploadImages = async (formData: FormData) => {
 // ─── Current user ───────────────────────────────────────────────────────────
 
 export const getCurrentUser = async () => {
-	const { data } = await api.get<{ user: User }>('/users/current');
+	const { data } = await api.get<{ user: CurrentUser }>('/users/current');
 	return data;
 };
 
 export const updateCurrentUser = async (body: UpdateCurrentUserBody) => {
-	const { data } = await api.put<{ user: User }>('/users/current', body);
+	const { data } = await api.put<{ user: CurrentUser }>('/users/current', body);
 	return data;
 };
 
@@ -314,7 +318,7 @@ export const createUserOrder = async (body: CreateOrderBody) => {
 };
 
 export const confirmUserOrderPickup = async (orderId: string) => {
-	const { data } = await api.post<{ order: Order }>(
+	const { data } = await api.post<{ order: OrderDetail }>(
 		`/users/current/orders/${orderId}/confirm-pickup`
 	);
 	return data;
@@ -529,7 +533,7 @@ export const updateCurrentStoreOrder = async (
 	orderId: string,
 	body: UpdateOrderBody
 ) => {
-	const { data } = await api.put<{ order: Order }>(
+	const { data } = await api.put<{ order: OrderDetail }>(
 		`/stores/current/orders/${orderId}`,
 		body
 	);
@@ -710,7 +714,7 @@ export const updateAdminOrder = async (
 	orderId: string,
 	body: UpdateOrderBody
 ) => {
-	const { data } = await api.put<{ order: Order }>(
+	const { data } = await api.put<{ order: OrderDetail }>(
 		`/admin/orders/${orderId}`,
 		body
 	);
@@ -867,7 +871,7 @@ export const getAdminStoreTransactions = async (
 };
 
 export const getAdminStoreManagers = async (storeId: string) => {
-	const { data } = await api.get<{ managers: StoreManagerWithUser[] }>(
+	const { data } = await api.get<{ managers: AdminStoreManager[] }>(
 		`/admin/stores/${storeId}/managers`
 	);
 	return data;

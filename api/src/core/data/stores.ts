@@ -6,6 +6,7 @@ import {
 	orderFiltersToPrismaClause
 } from '../../utils/queries';
 import type { PrismaClient, TransactionClient } from '../../config/prisma';
+import * as Shapes from './shapes';
 
 interface CreateStoreParams {
 	userId?: string;
@@ -19,7 +20,8 @@ interface CreateStoreParams {
 
 export const createStore = async (
 	prisma: PrismaClient,
-	params: CreateStoreParams
+	params: CreateStoreParams,
+	admin: boolean
 ) => {
 	const { userId, ...rest } = params;
 
@@ -28,7 +30,7 @@ export const createStore = async (
 			...rest,
 			...(userId ? { managers: { create: { managerId: userId } } } : {})
 		},
-		include: { managers: true }
+		select: admin ? Shapes.adminStore : Shapes.store
 	});
 
 	return store;
@@ -49,7 +51,8 @@ interface UpdateStoreParams {
 export const updateStore = async (
 	prisma: PrismaClient,
 	storeId: string,
-	params: UpdateStoreParams
+	params: UpdateStoreParams,
+	admin: boolean
 ) => {
 	const { imageUrl, imagePublicId, ...rest } = params;
 
@@ -67,14 +70,17 @@ export const updateStore = async (
 	const store = await prisma.store.update({
 		where: { id: storeId },
 		data,
-		include: { image: true }
+		select: admin ? Shapes.adminStore : Shapes.store
 	});
 
 	return store;
 };
 
 export const getStores = async (prisma: PrismaClient, query: any) => {
-	const stores = await prisma.store.findMany({ ...query });
+	const stores = await prisma.store.findMany({
+		...query,
+		select: Shapes.adminStore
+	});
 
 	return stores;
 };
@@ -134,17 +140,18 @@ export const lockStoreBalance = async (
 export const getStoreByIdWithProducts = async (
 	prisma: PrismaClient,
 	storeId: string,
+	admin: boolean,
 	filters?: ProductFilters
 ) => {
 	const store = await prisma.store.findUnique({
 		where: { id: storeId },
-		include: {
-			image: true,
+		select: {
+			...(admin ? Shapes.adminStore : Shapes.store),
 			products: {
-				include: { images: true },
+				select: admin ? Shapes.adminProduct : Shapes.product,
 				...productFiltersToPrismaClause(filters)
 			},
-			categories: true,
+			categories: { select: Shapes.category },
 			_count: { select: { followers: true } }
 		}
 	});
@@ -155,12 +162,13 @@ export const getStoreByIdWithProducts = async (
 export const getStoreProducts = async (
 	prisma: PrismaClient,
 	storeId: string,
+	admin: boolean,
 	filters?: ProductFilters
 ) => {
 	const products = await prisma.store
 		.findUnique({ where: { id: storeId } })
 		.products({
-			include: { images: true },
+			select: admin ? Shapes.adminProduct : Shapes.product,
 			...productFiltersToPrismaClause(filters)
 		});
 
@@ -170,11 +178,15 @@ export const getStoreProducts = async (
 export const getStoreManagers = async (
 	prisma: PrismaClient,
 	storeId: string,
-	query: any
+	query: any,
+	admin: boolean
 ) => {
 	const storeManagers = await prisma.storeManager.findMany({
 		where: { storeId, ...query },
-		include: { manager: true }
+		select: {
+			...Shapes.storeManager,
+			manager: { select: admin ? Shapes.adminUser : Shapes.publicUser }
+		}
 	});
 
 	return storeManagers;
@@ -186,7 +198,7 @@ export const getStoresByManagerId = async (
 ) => {
 	const storeManagers = await prisma.storeManager.findMany({
 		where: { managerId: userId },
-		include: { store: { include: { image: true } } }
+		select: { ...Shapes.storeManager, store: { select: Shapes.adminStore } }
 	});
 
 	return storeManagers;
@@ -199,6 +211,7 @@ interface GetStoreOrdersOptions {
 export const getStoreOrders = async (
 	prisma: PrismaClient,
 	storeId: string,
+	admin: boolean,
 	filters?: OrderFilters,
 	options?: GetStoreOrdersOptions
 ) => {
@@ -213,7 +226,10 @@ export const getStoreOrders = async (
 			...where
 		},
 		orderBy: orderBy ?? { createdAt: 'desc' },
-		include: { user: true }
+		select: {
+			...Shapes.order,
+			user: { select: admin ? Shapes.adminUser : Shapes.publicUser }
+		}
 	});
 
 	return storeOrders;
@@ -305,7 +321,7 @@ export const getStoresByUserId = async (
 ) => {
 	const stores = await prisma.store.findMany({
 		where: { managers: { some: { managerId: userId } } },
-		include: { image: true }
+		select: Shapes.store
 	});
 
 	return stores;
@@ -317,9 +333,7 @@ export const getFollowedStores = async (
 ) => {
 	const followedStores = await prisma.storeFollower.findMany({
 		where: { followerId: userId },
-		include: {
-			store: { include: { image: true } }
-		}
+		select: { store: { select: Shapes.store } }
 	});
 
 	return followedStores.map(f => f.store);
@@ -336,7 +350,7 @@ export const getStoreViewerContext = async (
 
 	const cart = await prisma.cart.findUnique({
 		where: { userId_storeId: { storeId, userId } },
-		include: { products: true }
+		select: { ...Shapes.cart, products: { select: Shapes.cartProduct } }
 	});
 
 	return {
@@ -357,7 +371,7 @@ export const getTrendingStores = async (
 
 	const stores = await prisma.store.findMany({
 		where: { unlisted: false },
-		include: { image: true },
+		select: Shapes.store,
 		orderBy: [{ orderCount: 'desc' }, { createdAt: 'desc' }],
 		take
 	});
@@ -373,17 +387,15 @@ export const getStoreCustomer = async (
 	const user = await prisma.user.findUnique({
 		where: { id: userId },
 		select: {
-			id: true,
-			name: true,
-			email: true,
+			...Shapes.publicUser,
 			orders: {
 				where: { storeId },
-				include: {
+				select: {
+					...Shapes.order,
 					products: {
-						include: {
-							product: {
-								include: { images: true }
-							}
+						select: {
+							...Shapes.orderProduct,
+							product: { select: Shapes.product }
 						}
 					}
 				},

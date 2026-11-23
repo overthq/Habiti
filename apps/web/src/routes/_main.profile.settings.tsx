@@ -21,7 +21,7 @@ import {
 	useUpdateCurrentUserMutation
 } from '@/data/mutations';
 import { useCardsQuery, useCurrentUserQuery } from '@/data/queries';
-import type { User } from '@habiti/data';
+import type { CurrentUser } from '@habiti/data';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusIcon, Trash2Icon } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
@@ -38,7 +38,7 @@ const profileFormSchema = z.object({
 });
 
 interface AccountTabProps {
-	user: User;
+	user: CurrentUser;
 }
 
 const AccountTab: React.FC<AccountTabProps> = ({ user }) => {

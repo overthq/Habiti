@@ -1,4 +1,5 @@
 import type { PrismaClient } from '../../config/prisma';
+import * as Shapes from './shapes';
 
 interface StoreCardData {
 	email: string;
@@ -49,7 +50,8 @@ export const getCardsByUserId = async (
 ) => {
 	const cards = await prisma.card.findMany({
 		where: { userId },
-		orderBy: { createdAt: 'desc' }
+		orderBy: { createdAt: 'desc' },
+		select: Shapes.card
 	});
 
 	return cards;

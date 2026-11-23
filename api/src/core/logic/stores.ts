@@ -31,10 +31,14 @@ export const createStore = async (
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const store = await StoreData.createStore(c.var.prisma, {
-		...(input as StripUndefined<CreateStoreInput>),
-		userId: c.var.auth.id
-	});
+	const store = await StoreData.createStore(
+		c.var.prisma,
+		{
+			...(input as StripUndefined<CreateStoreInput>),
+			userId: c.var.auth.id
+		},
+		c.var.isAdmin
+	);
 
 	c.var.services.analytics.track({
 		event: 'store_created',
@@ -72,7 +76,8 @@ export const adminCreateStore = async (
 
 	return StoreData.createStore(
 		c.var.prisma,
-		input as StripUndefined<AdminCreateStoreInput>
+		input as StripUndefined<AdminCreateStoreInput>,
+		true
 	);
 };
 
@@ -113,7 +118,8 @@ export const updateStore = async (
 	const store = await StoreData.updateStore(
 		c.var.prisma,
 		storeId,
-		updateData as StripUndefined<typeof updateData>
+		updateData as StripUndefined<typeof updateData>,
+		c.var.isAdmin
 	);
 
 	c.var.services.analytics.track({
@@ -131,7 +137,11 @@ export const updateStore = async (
 };
 
 export const getStoreById = async (c: Context<AppEnv>, storeId: string) => {
-	const store = await StoreData.getStoreByIdWithProducts(c.var.prisma, storeId);
+	const store = await StoreData.getStoreByIdWithProducts(
+		c.var.prisma,
+		storeId,
+		c.var.isAdmin
+	);
 
 	if (!store) {
 		throw new LogicError(LogicErrorCode.StoreNotFound);
@@ -500,7 +510,12 @@ export const getStoreManagers = async (
 	storeId: string,
 	query: any
 ) => {
-	return StoreData.getStoreManagers(c.var.prisma, storeId, query);
+	return StoreData.getStoreManagers(
+		c.var.prisma,
+		storeId,
+		query,
+		c.var.isAdmin
+	);
 };
 
 export const getStoresByManagerId = async (
@@ -515,7 +530,12 @@ export const getStoreProducts = async (
 	storeId: string,
 	filters?: ProductFilters
 ) => {
-	return StoreData.getStoreProducts(c.var.prisma, storeId, filters);
+	return StoreData.getStoreProducts(
+		c.var.prisma,
+		storeId,
+		c.var.isAdmin,
+		filters
+	);
 };
 
 export const getStoreOrders = async (
@@ -524,7 +544,13 @@ export const getStoreOrders = async (
 	filters?: OrderFilters,
 	options?: { excludePaymentPending?: boolean }
 ) => {
-	return StoreData.getStoreOrders(c.var.prisma, storeId, filters, options);
+	return StoreData.getStoreOrders(
+		c.var.prisma,
+		storeId,
+		c.var.isAdmin,
+		filters,
+		options
+	);
 };
 
 export const getStoreCustomer = async (

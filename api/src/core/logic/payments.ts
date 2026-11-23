@@ -90,7 +90,7 @@ export const transitionOrderToPending = async (
 	charge: ChargeEvent,
 	webhookEventId?: string | null
 ) => {
-	const unpaid = await OrderData.getOrderById(c.var.prisma, orderId);
+	const unpaid = await OrderData.getOrderById(c.var.prisma, orderId, false);
 
 	if (!unpaid) {
 		c.var.logger.warn({ orderId }, 'order_not_found_for_charge');
@@ -119,7 +119,7 @@ export const transitionOrderToPending = async (
 	}
 
 	const order = await runSerializable(c.var.prisma, async tx => {
-		const order = await OrderData.getOrderById(tx, orderId);
+		const order = await OrderData.getOrderById(tx, orderId, false);
 
 		if (!order || order.status === OrderStatus.Cancelled) return order;
 
@@ -294,7 +294,11 @@ const handleTransferRejection = async (
 
 	if (!rejection.orderId) return;
 
-	const order = await OrderData.getOrderById(c.var.prisma, rejection.orderId);
+	const order = await OrderData.getOrderById(
+		c.var.prisma,
+		rejection.orderId,
+		false
+	);
 
 	// Paystack refunds the transfer and checkout can still take the right
 	// amount, so leave the order for a later charge or the expiry script.

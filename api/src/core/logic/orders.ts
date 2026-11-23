@@ -267,7 +267,7 @@ const updateOrderStatusImpl = async (
 		status
 	});
 
-	return updatedOrder;
+	return OrderData.getOrderById(c.var.prisma, updatedOrder.id, c.var.isAdmin);
 };
 
 const VALID_ORDER_STATUS_TRANSITIONS_MAP: Record<OrderStatus, OrderStatus[]> = {
@@ -295,7 +295,11 @@ export const getOrderById = async (c: Context<AppEnv>, orderId: string) => {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const order = await OrderData.getOrderById(c.var.prisma, orderId);
+	const order = await OrderData.getOrderById(
+		c.var.prisma,
+		orderId,
+		c.var.isAdmin
+	);
 
 	if (!order) {
 		throw new LogicError(LogicErrorCode.OrderNotFound);
@@ -354,7 +358,7 @@ export const confirmPickup = async (c: Context<AppEnv>, orderId: string) => {
 		status: OrderStatus.Completed
 	});
 
-	return updatedOrder;
+	return OrderData.getOrderById(c.var.prisma, updatedOrder.id, c.var.isAdmin);
 };
 
 export const getOrders = async (c: Context<AppEnv>, filters?: OrderFilters) => {
