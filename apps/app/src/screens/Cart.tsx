@@ -260,6 +260,7 @@ const Cart: React.FC = () => {
 
 	const {
 		cart,
+		cards,
 		disabled,
 		handleSubmit,
 		refreshing,
@@ -291,7 +292,7 @@ const Cart: React.FC = () => {
 			<Spacer y={16} />
 
 			<SelectCard
-				cards={cart.user?.cards ?? []}
+				cards={cards}
 				selectedCard={selectedCard}
 				onCardSelect={setSelectedCard}
 			/>

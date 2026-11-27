@@ -6,7 +6,7 @@ import Refresher from '../components/Refresher';
 import useRefresh from '../hooks/useRefresh';
 import { useStoreManagersQuery } from '../data/queries';
 import type { StoreStackScreenProps } from '../navigation/types';
-import type { User } from '@habiti/data';
+import type { PublicUser } from '@habiti/data';
 
 const Managers: React.FC<StoreStackScreenProps<'Managers'>> = ({
 	navigation
@@ -42,7 +42,7 @@ const Managers: React.FC<StoreStackScreenProps<'Managers'>> = ({
 };
 
 interface ManagerRowProps {
-	manager: User;
+	manager: PublicUser;
 	you: boolean;
 }
 

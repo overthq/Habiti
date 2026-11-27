@@ -12,6 +12,7 @@ import * as CardLogic from '../core/logic/cards';
 import * as OrderLogic from '../core/logic/orders';
 import * as AddressLogic from '../core/logic/addresses';
 import * as Schemas from '../core/validations/rest';
+import * as Shapes from '../core/data/shapes';
 
 const currentUser = new Hono<AppEnv>();
 
@@ -180,9 +181,11 @@ currentUser.get('/watchlist', async c => {
 	const user = await c.var.prisma.user
 		.findUnique({ where: { id: c.var.auth!.id } })
 		.watchlist({
-			include: {
+			select: {
+				userId: true,
+				productId: true,
 				product: {
-					include: { store: true, images: true }
+					select: { ...Shapes.product, store: { select: Shapes.store } }
 				}
 			}
 		});

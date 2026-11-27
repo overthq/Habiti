@@ -1,6 +1,7 @@
 import type { Context } from 'hono';
 
 import * as CartData from '../data/carts';
+import * as Shapes from '../data/shapes';
 import type { AppEnv } from '../../types/hono';
 import { LogicError, LogicErrorCode } from './errors';
 
@@ -28,7 +29,8 @@ export const getCartById = async (c: Context<AppEnv>, cartId: string) => {
 	const cartViewerContext = c.var.auth?.id
 		? {
 				cards: await c.var.prisma.card.findMany({
-					where: { userId: c.var.auth.id }
+					where: { userId: c.var.auth.id },
+					select: Shapes.card
 				})
 			}
 		: null;

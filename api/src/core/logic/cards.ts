@@ -115,7 +115,11 @@ export const authorizeCard = async (
 	let amount = 5000;
 
 	if (input.orderId) {
-		const order = await OrderData.getOrderById(c.var.prisma, input.orderId);
+		const order = await OrderData.getOrderById(
+			c.var.prisma,
+			input.orderId,
+			false
+		);
 
 		if (!order) {
 			throw new LogicError(LogicErrorCode.OrderNotFound);

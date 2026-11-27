@@ -29,7 +29,7 @@ import {
 	ORDER_STATUS_COLOR_VARIANTS
 } from '../utils/orderStatus';
 import { OrdersStackParamList } from '../navigation/types';
-import { OrderDetail, OrderItem, OrderStatus, User } from '@habiti/data';
+import { OrderDetail, OrderItem, OrderStatus, PublicUser } from '@habiti/data';
 
 const Order = () => {
 	const {
@@ -142,7 +142,7 @@ const bannerStyles = StyleSheet.create({
 });
 
 interface CustomerDetailProps {
-	user: User;
+	user: PublicUser;
 }
 
 const CustomerDetails: React.FC<CustomerDetailProps> = ({ user }) => {

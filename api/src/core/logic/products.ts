@@ -36,10 +36,14 @@ export const createProduct = async (
 		throw new LogicError(LogicErrorCode.ProductStoreMismatch);
 	}
 
-	const product = await ProductData.createProduct(c.var.prisma, {
-		...productData,
-		storeId
-	});
+	const product = await ProductData.createProduct(
+		c.var.prisma,
+		{
+			...productData,
+			storeId
+		},
+		c.var.isAdmin
+	);
 
 	c.var.services.analytics.track({
 		event: 'product_created',
@@ -80,7 +84,8 @@ export const updateProduct = async (
 
 	const existingProduct = await ProductData.getProductById(
 		c.var.prisma,
-		productId
+		productId,
+		c.var.isAdmin
 	);
 
 	if (!existingProduct) {
@@ -102,7 +107,8 @@ export const updateProduct = async (
 	const product = await ProductData.updateProduct(
 		c.var.prisma,
 		productId,
-		updateData as StripUndefined<typeof updateData>
+		updateData as StripUndefined<typeof updateData>,
+		c.var.isAdmin
 	);
 
 	c.var.services.analytics.track({
@@ -120,7 +126,11 @@ export const updateProduct = async (
 };
 
 export const getProductById = async (c: Context<AppEnv>, productId: string) => {
-	const product = await ProductData.getProductById(c.var.prisma, productId);
+	const product = await ProductData.getProductById(
+		c.var.prisma,
+		productId,
+		c.var.isAdmin
+	);
 
 	if (!product) {
 		throw new LogicError(LogicErrorCode.ProductNotFound);
@@ -158,7 +168,11 @@ export const getProductReviews = async (
 	c: Context<AppEnv>,
 	productId: string
 ) => {
-	const product = await ProductData.getProductById(c.var.prisma, productId);
+	const product = await ProductData.getProductById(
+		c.var.prisma,
+		productId,
+		c.var.isAdmin
+	);
 
 	if (!product) {
 		throw new LogicError(LogicErrorCode.ProductNotFound);
@@ -188,7 +202,11 @@ export const archiveProduct = async (
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
 
-	const product = await ProductData.getProductById(c.var.prisma, productId);
+	const product = await ProductData.getProductById(
+		c.var.prisma,
+		productId,
+		c.var.isAdmin
+	);
 
 	if (!product) {
 		throw new LogicError(LogicErrorCode.ProductNotFound);
@@ -231,7 +249,11 @@ export const createProductReview = async (
 		throw new LogicError(LogicErrorCode.ProductInvalidRating);
 	}
 
-	const product = await ProductData.getProductById(c.var.prisma, productId);
+	const product = await ProductData.getProductById(
+		c.var.prisma,
+		productId,
+		c.var.isAdmin
+	);
 
 	if (!product) {
 		throw new LogicError(LogicErrorCode.ProductNotFound);
@@ -279,7 +301,11 @@ export const addToWatchlist = async (
 ) => {
 	const { productId } = input;
 
-	const product = await ProductData.getProductById(c.var.prisma, productId);
+	const product = await ProductData.getProductById(
+		c.var.prisma,
+		productId,
+		c.var.isAdmin
+	);
 
 	if (!product) {
 		throw new LogicError(LogicErrorCode.ProductNotFound);
@@ -318,7 +344,11 @@ export const removeFromWatchlist = async (
 ) => {
 	const { productId } = input;
 
-	const product = await ProductData.getProductById(c.var.prisma, productId);
+	const product = await ProductData.getProductById(
+		c.var.prisma,
+		productId,
+		c.var.isAdmin
+	);
 
 	if (!product) {
 		throw new LogicError(LogicErrorCode.ProductNotFound);
@@ -347,7 +377,11 @@ export const getRelatedProducts = async (
 	c: Context<AppEnv>,
 	productId: string
 ) => {
-	const product = await ProductData.getProductById(c.var.prisma, productId);
+	const product = await ProductData.getProductById(
+		c.var.prisma,
+		productId,
+		c.var.isAdmin
+	);
 
 	if (!product) {
 		throw new LogicError(LogicErrorCode.ProductNotFound);
@@ -368,7 +402,11 @@ export const createProductOption = async (
 ) => {
 	const { productId, name, description } = input;
 
-	const product = await ProductData.getProductById(c.var.prisma, productId);
+	const product = await ProductData.getProductById(
+		c.var.prisma,
+		productId,
+		c.var.isAdmin
+	);
 
 	if (!c.var.auth?.id) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
@@ -420,7 +458,8 @@ export const updateProductCategories = async (
 
 	const existingProduct = await ProductData.getProductById(
 		c.var.prisma,
-		productId
+		productId,
+		c.var.isAdmin
 	);
 
 	if (!existingProduct) {
@@ -431,11 +470,15 @@ export const updateProductCategories = async (
 		throw new LogicError(LogicErrorCode.ProductStoreMismatch);
 	}
 
-	const product = await ProductData.updateProductCategories(c.var.prisma, {
-		productId,
-		addCategoryIds,
-		removeCategoryIds
-	});
+	const product = await ProductData.updateProductCategories(
+		c.var.prisma,
+		{
+			productId,
+			addCategoryIds,
+			removeCategoryIds
+		},
+		c.var.isAdmin
+	);
 
 	c.var.services.analytics.track({
 		event: 'product_categories_updated',

@@ -23,6 +23,7 @@ import useDebounce from '../hooks/useDebounce';
 
 interface CartContextType {
 	cart: CartDetail;
+	cards: Card[];
 	products: CartItem[];
 	disabled: boolean;
 	handleSubmit: () => Promise<void>;
@@ -190,6 +191,7 @@ const CartProvider: React.FC<CartProviderProps> = ({
 		<CartContext.Provider
 			value={{
 				cart,
+				cards,
 				products: state,
 				disabled,
 				handleSubmit,

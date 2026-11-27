@@ -58,9 +58,9 @@ describe('POST /auth/anonymous', () => {
 
 		expect(body.userId).toBe(USER_ID);
 
-		expect(user.create).toHaveBeenCalledWith({
-			data: { name: 'Guest', isAnonymous: true }
-		});
+		expect(user.create).toHaveBeenCalledWith(
+			expect.objectContaining({ data: { name: 'Guest', isAnonymous: true } })
+		);
 		expect(session.create).toHaveBeenCalledTimes(1);
 	});
 

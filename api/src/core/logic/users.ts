@@ -15,6 +15,7 @@ import * as OrderData from '../data/orders';
 import * as CartData from '../data/carts';
 import * as CardData from '../data/cards';
 import * as SessionData from '../data/sessions';
+import * as Shapes from '../data/shapes';
 
 import { cacheVerificationCode } from './auth';
 import { registerBodySchema } from '../validations/rest';
@@ -106,7 +107,7 @@ export const getCurrentUser = (c: Context<AppEnv>) => {
 	if (!c.var.auth) {
 		throw new LogicError(LogicErrorCode.NotAuthenticated);
 	}
-	return UserData.getUserById(c.var.prisma, c.var.auth.id);
+	return UserData.getUserById(c.var.prisma, c.var.auth.id, Shapes.currentUser);
 };
 
 interface UpdateUserInput {
@@ -128,7 +129,8 @@ export const updateUser = async (
 	return UserData.updateUser(
 		c.var.prisma,
 		userId,
-		rest as StripUndefined<typeof rest>
+		rest as StripUndefined<typeof rest>,
+		c.var.isAdmin ? Shapes.adminUser : Shapes.currentUser
 	);
 };
 
@@ -253,7 +255,7 @@ export const getManagedStores = (c: Context<AppEnv>) => {
 };
 
 export const getUserById = (c: Context<AppEnv>, userId: string) => {
-	return UserData.getUserById(c.var.prisma, userId);
+	return UserData.getUserById(c.var.prisma, userId, Shapes.adminUser);
 };
 
 export const getOrders = (
@@ -339,7 +341,11 @@ export const getAnonymousCaller = async (c: Context<AppEnv>) => {
 		return null;
 	}
 
-	const caller = await UserData.getUserById(c.var.prisma, c.var.auth.id);
+	const caller = await UserData.getUserById(
+		c.var.prisma,
+		c.var.auth.id,
+		Shapes.currentUser
+	);
 	return caller?.isAnonymous ? caller : null;
 };
 
@@ -368,7 +374,8 @@ export const signInWithApple = async (
 	const anonymousCaller = await getAnonymousCaller(c);
 
 	let user = await c.var.prisma.user.findUnique({
-		where: { appleId: identity.appleId }
+		where: { appleId: identity.appleId },
+		select: Shapes.currentUser
 	});
 
 	// Only link by email when Apple attests the address is verified —
@@ -388,9 +395,12 @@ export const signInWithApple = async (
 				);
 			}
 
-			user = await UserData.updateUser(c.var.prisma, byEmail.id, {
-				appleId: identity.appleId
-			});
+			user = await UserData.updateUser(
+				c.var.prisma,
+				byEmail.id,
+				{ appleId: identity.appleId },
+				Shapes.currentUser
+			);
 		}
 	}
 
@@ -413,12 +423,17 @@ export const signInWithApple = async (
 	const resolvedName = name?.trim() || '';
 
 	if (anonymousCaller) {
-		return UserData.updateUser(c.var.prisma, anonymousCaller.id, {
-			appleId: identity.appleId,
-			...(email ? { email } : {}),
-			...(resolvedName ? { name: resolvedName } : {}),
-			isAnonymous: false
-		});
+		return UserData.updateUser(
+			c.var.prisma,
+			anonymousCaller.id,
+			{
+				appleId: identity.appleId,
+				...(email ? { email } : {}),
+				...(resolvedName ? { name: resolvedName } : {}),
+				isAnonymous: false
+			},
+			Shapes.currentUser
+		);
 	}
 
 	return UserData.createUser(c.var.prisma, {

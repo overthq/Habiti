@@ -4,6 +4,7 @@ import {
 	ProductFilters
 } from '../../utils/queries';
 import type { PrismaClient } from '../../config/prisma';
+import * as Shapes from './shapes';
 
 interface CreateProductParams {
 	name: string;
@@ -21,7 +22,8 @@ interface CreateProductParams {
 
 export const createProduct = async (
 	prisma: PrismaClient,
-	params: CreateProductParams
+	params: CreateProductParams,
+	admin: boolean
 ) => {
 	const { images, ...rest } = params;
 
@@ -40,7 +42,8 @@ export const createProduct = async (
 			...args,
 			quantity: params.quantity ?? 0,
 			status: params.status ?? ProductStatus.Active
-		}
+		},
+		select: admin ? Shapes.adminProduct : Shapes.product
 	});
 
 	return product;
@@ -62,7 +65,8 @@ interface UpdateProductParams {
 export const updateProduct = async (
 	prisma: PrismaClient,
 	productId: string,
-	params: UpdateProductParams
+	params: UpdateProductParams,
+	admin: boolean
 ) => {
 	const { images, ...rest } = params;
 
@@ -78,7 +82,8 @@ export const updateProduct = async (
 
 	const product = await prisma.product.update({
 		where: { id: productId },
-		data: args
+		data: args,
+		select: admin ? Shapes.adminProduct : Shapes.product
 	});
 
 	return product;
@@ -86,17 +91,16 @@ export const updateProduct = async (
 
 export const getProductById = async (
 	prisma: PrismaClient,
-	productId: string
+	productId: string,
+	admin: boolean
 ) => {
 	const product = await prisma.product.findUnique({
 		where: { id: productId },
-		include: {
-			store: { include: { image: true } },
-			images: true,
-			categories: { include: { category: true } },
-			reviews: {
-				include: { user: { select: { id: true, name: true } } }
-			}
+		select: {
+			...(admin ? Shapes.adminProduct : Shapes.product),
+			store: { select: admin ? Shapes.adminStore : Shapes.store },
+			categories: { select: Shapes.productCategory },
+			reviews: { select: Shapes.review }
 		}
 	});
 
@@ -108,7 +112,8 @@ export const getProductReviews = async (
 	productId: string
 ) => {
 	const reviews = await prisma.productReview.findMany({
-		where: { productId }
+		where: { productId },
+		select: Shapes.review
 	});
 
 	return reviews;
@@ -124,9 +129,9 @@ export const getProductsByStoreId = async (
 			storeId,
 			...(includeArchived ? {} : { status: { not: ProductStatus.Archived } })
 		},
-		include: {
-			images: true,
-			categories: { include: { category: true } }
+		select: {
+			...Shapes.product,
+			categories: { select: Shapes.productCategory }
 		},
 		orderBy: { createdAt: 'desc' }
 	});
@@ -161,7 +166,8 @@ export const createProductReview = async (
 	params: CreateProductReviewParams
 ) => {
 	const review = await prisma.productReview.create({
-		data: params
+		data: params,
+		select: Shapes.review
 	});
 
 	return review;
@@ -203,11 +209,7 @@ export const getRelatedProducts = async (
 ) => {
 	const product = await prisma.product.findUnique({
 		where: { id: productId },
-		include: {
-			store: true,
-			images: true,
-			categories: { include: { category: true } }
-		}
+		select: { storeId: true, categories: { select: { categoryId: true } } }
 	});
 
 	if (!product) {
@@ -223,9 +225,7 @@ export const getRelatedProducts = async (
 				some: { categoryId: { in: product.categories.map(c => c.categoryId) } }
 			}
 		},
-		include: {
-			images: true
-		},
+		select: Shapes.product,
 		take: 5
 	});
 
@@ -236,9 +236,7 @@ export const getRelatedProducts = async (
 				storeId: product.storeId,
 				status: { not: ProductStatus.Archived }
 			},
-			include: {
-				images: true
-			},
+			select: Shapes.product,
 			take: 5
 		});
 	}
@@ -275,7 +273,8 @@ interface UpdateProductCategoriesParams {
 
 export const updateProductCategories = async (
 	prisma: PrismaClient,
-	params: UpdateProductCategoriesParams
+	params: UpdateProductCategoriesParams,
+	admin: boolean
 ) => {
 	const { productId, addCategoryIds, removeCategoryIds } = params;
 
@@ -299,11 +298,9 @@ export const updateProductCategories = async (
 				}
 			}
 		},
-		include: {
-			categories: { include: { category: true } },
-			images: true,
-			store: true,
-			reviews: { include: { user: { select: { id: true, name: true } } } }
+		select: {
+			...(admin ? Shapes.adminProduct : Shapes.product),
+			categories: { select: Shapes.productCategory }
 		}
 	});
 
@@ -325,14 +322,7 @@ export const getFeaturedProducts = async (
 			status: ProductStatus.Active,
 			store: { unlisted: false }
 		},
-		include: {
-			images: true,
-			store: {
-				include: {
-					image: true
-				}
-			}
-		},
+		select: { ...Shapes.product, store: { select: Shapes.store } },
 		orderBy: [{ watchlists: { _count: 'desc' } }, { createdAt: 'desc' }],
 		take
 	});
@@ -396,7 +386,8 @@ export const getStoreProductCategories = async (
 ) => {
 	const categories = await prisma.storeProductCategory.findMany({
 		where: { storeId },
-		orderBy: { createdAt: 'desc' }
+		orderBy: { createdAt: 'desc' },
+		select: Shapes.category
 	});
 
 	return categories;
@@ -408,7 +399,8 @@ export const getProductViewerContext = async (
 	productId: string
 ) => {
 	const cartProduct = await prisma.cartProduct.findFirst({
-		where: { cart: { userId }, productId }
+		where: { cart: { userId }, productId },
+		select: Shapes.cartProduct
 	});
 
 	return { cartProduct };
@@ -423,10 +415,10 @@ export const getProducts = async (
 	const products = await prisma.product.findMany({
 		where,
 		orderBy: orderBy ?? { createdAt: 'desc' },
-		include: {
-			store: true,
-			images: true,
-			categories: { include: { category: true } }
+		select: {
+			...Shapes.adminProduct,
+			store: { select: Shapes.adminStore },
+			categories: { select: Shapes.productCategory }
 		}
 	});
 

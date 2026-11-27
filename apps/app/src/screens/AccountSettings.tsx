@@ -18,7 +18,7 @@ import {
 } from '../data/mutations';
 
 import type { ProfileStackScreenProps } from '../navigation/types';
-import type { User } from '@habiti/data';
+import type { CurrentUser } from '@habiti/data';
 
 const AccountSettings: React.FC<
 	ProfileStackScreenProps<'Profile.AccountSettings'>
@@ -34,7 +34,7 @@ const AccountSettings: React.FC<
 
 interface AccountSettingsMainProps {
 	navigation: ProfileStackScreenProps<'Profile.AccountSettings'>['navigation'];
-	currentUser: User;
+	currentUser: CurrentUser;
 }
 
 interface AccountSettingsFormValues {

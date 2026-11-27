@@ -3,6 +3,8 @@ import { UserFilters, userFiltersToPrismaClause } from '../../utils/queries';
 import { runSerializable } from '../../utils/prisma';
 import { getCustomerCredit, moveMoney } from './ledger';
 import type { PrismaClient, TransactionClient } from '../../config/prisma';
+import type { Prisma } from '../../generated/prisma/client';
+import * as Shapes from './shapes';
 
 export interface CreateUserParams {
 	name: string;
@@ -17,7 +19,8 @@ export const createUser = async (
 	params: CreateUserParams
 ) => {
 	const user = await prisma.user.create({
-		data: params
+		data: params,
+		select: Shapes.currentUser
 	});
 
 	return user;
@@ -32,22 +35,29 @@ interface UpdateUserParams {
 	suspended?: boolean;
 }
 
-export const updateUser = async (
+export const updateUser = async <S extends Prisma.UserSelect>(
 	prisma: PrismaClient,
 	userId: string,
-	params: UpdateUserParams
+	params: UpdateUserParams,
+	select: S
 ) => {
 	const user = await prisma.user.update({
 		where: { id: userId },
-		data: params
+		data: params,
+		select
 	});
 
 	return user;
 };
 
-export const getUserById = async (prisma: PrismaClient, userId: string) => {
+export const getUserById = async <S extends Prisma.UserSelect>(
+	prisma: PrismaClient,
+	userId: string,
+	select: S
+) => {
 	const user = await prisma.user.findUnique({
-		where: { id: userId }
+		where: { id: userId },
+		select
 	});
 
 	return user;
@@ -229,7 +239,7 @@ export const getManagedStores = async (
 ) => {
 	const managedStores = await prisma.storeManager.findMany({
 		where: { managerId: userId },
-		include: { store: { include: { image: true } } }
+		select: { store: { select: Shapes.store } }
 	});
 
 	return managedStores.map(({ store }) => store);
@@ -240,6 +250,7 @@ export const getUsers = async (prisma: PrismaClient, filters?: UserFilters) => {
 
 	return prisma.user.findMany({
 		where,
-		orderBy: orderBy ?? { createdAt: 'desc' }
+		orderBy: orderBy ?? { createdAt: 'desc' },
+		select: Shapes.adminUser
 	});
 };

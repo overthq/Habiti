@@ -1,5 +1,6 @@
 import { Prisma, Cart } from '../../generated/prisma/client';
 import type { PrismaClient, TransactionClient } from '../../config/prisma';
+import * as Shapes from './shapes';
 
 interface UpdateCartQuantityParams {
 	cartId: string;
@@ -19,13 +20,18 @@ interface UpdateCartQuantityParams {
 export const getCartById = async (prisma: PrismaClient, cartId: string) => {
 	const cart = await prisma.cart.findUnique({
 		where: { id: cartId },
-		include: {
+		select: {
+			...Shapes.cart,
 			products: {
-				include: { product: { include: { images: true } } },
+				select: { ...Shapes.cartProduct, product: { select: Shapes.product } },
 				orderBy: { product: { name: 'asc' } }
 			},
-			store: { include: { image: true, addresses: { take: 1 } } },
-			user: { include: { cards: true } }
+			store: {
+				select: {
+					...Shapes.store,
+					addresses: { select: Shapes.address, take: 1 }
+				}
+			}
 		}
 	});
 
@@ -46,12 +52,15 @@ export const getCartsByUserId = async (
 	query?: Prisma.CartFindManyArgs
 ) => {
 	const carts = await prisma.cart.findMany({
-		include: {
-			products: { include: { product: { include: { images: true } } } },
-			store: { include: { image: true } }
-		},
 		...query,
-		where: { ...query?.where, userId }
+		where: { ...query?.where, userId },
+		select: {
+			...Shapes.cart,
+			products: {
+				select: { ...Shapes.cartProduct, product: { select: Shapes.product } }
+			},
+			store: { select: Shapes.store }
+		}
 	});
 
 	return carts;

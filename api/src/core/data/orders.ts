@@ -8,6 +8,7 @@ import { OrderFilters, orderFiltersToPrismaClause } from '../../utils/queries';
 import { LogicError, LogicErrorCode } from '../logic/errors';
 import { moveMoney } from './ledger';
 import type { PrismaClient, TransactionClient } from '../../config/prisma';
+import * as Shapes from './shapes';
 
 export const getOrderData = (
 	products: Prisma.CartProductGetPayload<{
@@ -76,9 +77,7 @@ export const createOrderWithProducts = async (
 			serviceFee: params.serviceFee,
 			status: params.status
 		},
-		include: {
-			user: { include: { pushTokens: true } }
-		}
+		select: Shapes.order
 	});
 
 	return order;
@@ -226,20 +225,24 @@ export const updateOrderStatus = async (
 
 export const getOrderById = async (
 	prisma: PrismaClient | TransactionClient,
-	orderId: string
+	orderId: string,
+	admin: boolean
 ) => {
 	const order = await prisma.order.findUnique({
 		where: { id: orderId },
-		include: {
+		select: {
+			...Shapes.order,
 			store: {
-				include: { image: true, addresses: { take: 1 } }
+				select: {
+					...(admin ? Shapes.adminStore : Shapes.store),
+					addresses: { select: Shapes.address, take: 1 }
+				}
 			},
-			user: true,
+			user: { select: admin ? Shapes.adminUser : Shapes.publicUser },
 			products: {
-				include: {
-					product: {
-						include: { images: true }
-					}
+				select: {
+					...Shapes.orderProduct,
+					product: { select: admin ? Shapes.adminProduct : Shapes.product }
 				}
 			}
 		}
@@ -281,17 +284,24 @@ export const getOrdersByUserId = async (
 	query: Prisma.OrderFindManyArgs
 ) => {
 	const orders = await prisma.order.findMany({
-		include: {
-			store: { include: { image: true, addresses: { take: 1 } } },
-			products: {
-				include: {
-					product: { include: { images: true } }
-				}
-			}
-		},
 		orderBy: { createdAt: 'desc' },
 		...query,
-		where: { ...query.where, userId }
+		where: { ...query.where, userId },
+		select: {
+			...Shapes.order,
+			store: {
+				select: {
+					...Shapes.store,
+					addresses: { select: Shapes.address, take: 1 }
+				}
+			},
+			products: {
+				select: {
+					...Shapes.orderProduct,
+					product: { select: Shapes.product }
+				}
+			}
+		}
 	});
 
 	return orders;
@@ -306,7 +316,11 @@ export const getOrders = async (
 	const orders = await prisma.order.findMany({
 		where,
 		orderBy: orderBy ?? { createdAt: 'desc' },
-		include: { store: true, user: true }
+		select: {
+			...Shapes.order,
+			store: { select: Shapes.adminStore },
+			user: { select: Shapes.adminUser }
+		}
 	});
 
 	return orders;

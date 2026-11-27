@@ -23,6 +23,7 @@ import * as TransactionLogic from '../core/logic/transactions';
 import * as PayoutAccountLogic from '../core/logic/payoutAccounts';
 import * as AddressLogic from '../core/logic/addresses';
 import * as Schemas from '../core/validations/rest';
+import * as Shapes from '../core/data/shapes';
 
 const currentStore = new Hono<AppEnv>();
 
@@ -80,7 +81,10 @@ currentStore.get('/overview', async c => {
 			quantity: { lt: 5 },
 			status: { not: ProductStatus.Archived }
 		},
-		include: { images: true, categories: { include: { category: true } } }
+		select: {
+			...Shapes.product,
+			categories: { select: Shapes.productCategory }
+		}
 	});
 
 	return c.json({ lowStockProducts });

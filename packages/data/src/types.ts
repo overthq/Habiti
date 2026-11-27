@@ -50,6 +50,12 @@ export interface User {
 	updatedAt: string;
 }
 
+// What shoppers and store managers see of other users.
+export type PublicUser = Pick<User, 'id' | 'name'>;
+
+// The signed-in user's own account.
+export type CurrentUser = Omit<User, 'suspended'>;
+
 export interface Store {
 	id: string;
 	name: string;
@@ -65,12 +71,7 @@ export interface Store {
 
 export interface Image {
 	id: string;
-	storeId: string | null;
-	productId: string | null;
 	path: string;
-	publicId: string;
-	createdAt: string;
-	updatedAt: string;
 }
 
 export interface Product {
@@ -270,7 +271,7 @@ export type StoreDetail = StoreWithImage & {
 
 export type ProductDetail = CategorizedProduct & {
 	store: StoreWithImage;
-	reviews: (ProductReview & { user: Pick<User, 'id' | 'name'> })[];
+	reviews: (ProductReview & { user: PublicUser })[];
 };
 
 export type ListedProduct = CategorizedProduct & { store: Store };
@@ -288,7 +289,6 @@ export type UserCart = Cart & { products: CartItem[]; store: StoreWithImage };
 export type CartDetail = Cart & {
 	products: CartItem[];
 	store: StoreWithImage & { addresses: Address[] };
-	user: (User & { cards: Card[] }) | null;
 	total: number;
 	fees: { transaction: number; service: number; total: number };
 };
@@ -300,13 +300,15 @@ export type UserOrder = Order & {
 	products: OrderItem[];
 };
 
-export type OrderDetail = UserOrder & { user: User };
+export type OrderDetail = UserOrder & { user: PublicUser };
 
-export type StoreOrder = Order & { user: User };
+export type StoreOrder = Order & { user: PublicUser };
 
 export type AdminOrder = Order & { store: Store; user: User };
 
-export type StoreManagerWithUser = StoreManager & { manager: User };
+export type StoreManagerWithUser = StoreManager & { manager: PublicUser };
+
+export type AdminStoreManager = StoreManager & { manager: User };
 
 export type ManagedStore = StoreManager & { store: StoreWithImage };
 
@@ -368,7 +370,6 @@ export interface LandingHighlightsResponse {
 export interface StoreCustomer {
 	id: string;
 	name: string;
-	email: string | null;
 	orders: (Order & { products: OrderItem[] })[];
 }
 

@@ -29,23 +29,21 @@ const ProductImages: React.FC<
 
 	const handleSaveImages = React.useCallback(async () => {
 		try {
-			const existingImages =
-				images?.map(i => ({ path: i.path, publicId: i.publicId })) ?? [];
-			const newImages = uploadedImages.map(u => ({
-				path: u.url,
-				publicId: u.publicId
-			}));
-
 			await updateProductMutation.mutateAsync({
 				productId,
-				body: { images: [...existingImages, ...newImages] }
+				body: {
+					images: uploadedImages.map(u => ({
+						path: u.url,
+						publicId: u.publicId
+					}))
+				}
 			});
 
 			navigation.goBack();
 		} catch (error) {
 			console.log({ error });
 		}
-	}, [updateProductMutation, navigation, uploadedImages, productId, images]);
+	}, [updateProductMutation, navigation, uploadedImages, productId]);
 
 	useHeaderSubmit({
 		onSubmit: handleSaveImages,

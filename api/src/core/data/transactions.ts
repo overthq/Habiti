@@ -10,6 +10,7 @@ import {
 import { runSerializable } from '../../utils/prisma';
 import { moveMoney } from './ledger';
 import type { PrismaClient, TransactionClient } from '../../config/prisma';
+import * as Shapes from './shapes';
 
 export const computeAvailableBalance = (params: {
 	realizedRevenue: number;
@@ -53,7 +54,7 @@ export const getTransactionsByStoreId = async (
 		orderBy: { createdAt: 'desc' },
 		take: filters?.limit ?? 50,
 		skip: filters?.offset ?? 0,
-		include: { order: true }
+		select: Shapes.transaction
 	});
 };
 
@@ -63,7 +64,7 @@ export const getTransactionById = async (
 ) =>
 	prisma.transaction.findUnique({
 		where: { id: transactionId },
-		include: { order: true, store: true }
+		select: { ...Shapes.transaction, store: { select: Shapes.store } }
 	});
 
 export const getPayoutById = async (prisma: PrismaClient, payoutId: string) =>
