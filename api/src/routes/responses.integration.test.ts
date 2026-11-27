@@ -20,14 +20,15 @@ const PRODUCT_ID = `product-${SUFFIX}`;
 const ORDER_ID = `order-${SUFFIX}`;
 const CART_ID = `cart-${SUFFIX}`;
 
-const SECRETS = [
+const NEVER_SENT = [
 	'passwordHash',
 	'appleId',
 	'authorizationCode',
 	'signature',
 	'bin',
 	'recipientRef',
-	'pushTokens'
+	'pushTokens',
+	'_count'
 ];
 
 const ADMIN_ONLY = [
@@ -199,7 +200,7 @@ suite('response shapes', () => {
 	])('public GET %s', async path => {
 		const body = await get(path);
 
-		expect(findKeys(body, [...SECRETS, ...ADMIN_ONLY, 'email'])).toEqual([]);
+		expect(findKeys(body, [...NEVER_SENT, ...ADMIN_ONLY, 'email'])).toEqual([]);
 	});
 
 	test.each([
@@ -215,7 +216,7 @@ suite('response shapes', () => {
 	])('shopper GET %s', async path => {
 		const body = await get(path, await shopperToken());
 
-		expect(findKeys(body, [...SECRETS, ...ADMIN_ONLY])).toEqual([]);
+		expect(findKeys(body, [...NEVER_SENT, ...ADMIN_ONLY])).toEqual([]);
 	});
 
 	test.each([
@@ -233,7 +234,7 @@ suite('response shapes', () => {
 		const body = await get(path, await managerToken());
 
 		// Managers only ever see a customer's (or co-manager's) name.
-		expect(findKeys(body, [...SECRETS, ...ADMIN_ONLY, 'email'])).toEqual([]);
+		expect(findKeys(body, [...NEVER_SENT, ...ADMIN_ONLY, 'email'])).toEqual([]);
 	});
 
 	test.each([
@@ -252,7 +253,7 @@ suite('response shapes', () => {
 	])('admin GET %s', async path => {
 		const body = await get(path, await adminToken());
 
-		expect(findKeys(body, SECRETS)).toEqual([]);
+		expect(findKeys(body, NEVER_SENT)).toEqual([]);
 	});
 
 	test('reviews only carry the reviewer id and name', async () => {
@@ -280,6 +281,7 @@ suite('response shapes', () => {
 		);
 
 		expect(store).toMatchObject({
+			followerCount: 1,
 			realizedRevenue: 500_000,
 			orderCount: 12,
 			image: { publicId: 'store-public-id' }
