@@ -58,11 +58,6 @@ export interface Store {
 	twitter: string | null;
 	instagram: string | null;
 	whatsapp: string | null;
-	unrealizedRevenue: number;
-	realizedRevenue: number;
-	paidOut: number;
-	pendingPayouts: number;
-	orderCount: number;
 	unlisted: boolean;
 	createdAt: string;
 	updatedAt: string;
@@ -275,7 +270,7 @@ export type StoreDetail = StoreWithImage & {
 
 export type ProductDetail = CategorizedProduct & {
 	store: StoreWithImage;
-	reviews: (ProductReview & { user: User })[];
+	reviews: (ProductReview & { user: Pick<User, 'id' | 'name'> })[];
 };
 
 export type ListedProduct = CategorizedProduct & { store: Store };

@@ -13,12 +13,17 @@ const adapter = new PrismaPg({
 	connectionString: env.DATABASE_URL
 });
 
-// Secrets are left out of every query result, so they can't leak through a
-// response. Code that needs one opts back in with `omit: { field: false }`.
 // Declared separately because inline, Prisma loses the omit types once more
 // than one model is listed.
 const omit = {
-	user: { passwordHash: true },
+	user: { passwordHash: true, appleId: true },
+	store: {
+		unrealizedRevenue: true,
+		realizedRevenue: true,
+		paidOut: true,
+		pendingPayouts: true,
+		orderCount: true
+	},
 	admin: { passwordHash: true },
 	card: { authorizationCode: true, signature: true }
 } satisfies Prisma.GlobalOmitConfig;

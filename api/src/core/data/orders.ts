@@ -43,7 +43,8 @@ export const incrementStoreOrderCount = async (
 		where: { id: storeId },
 		data: {
 			orderCount: { increment: 1 }
-		}
+		},
+		select: { orderCount: true }
 	});
 
 	return store;
@@ -148,7 +149,8 @@ export const createOrder = async (
 	const order = await prisma.$transaction(async p => {
 		const store = await p.store.update({
 			where: { id: params.storeId },
-			data: { orderCount: { increment: 1 } }
+			data: { orderCount: { increment: 1 } },
+			select: { orderCount: true }
 		});
 
 		return p.order.create({
@@ -279,7 +281,6 @@ export const getOrdersByUserId = async (
 	query: Prisma.OrderFindManyArgs
 ) => {
 	const orders = await prisma.order.findMany({
-		where: { userId },
 		include: {
 			store: { include: { image: true, addresses: { take: 1 } } },
 			products: {
@@ -289,7 +290,8 @@ export const getOrdersByUserId = async (
 			}
 		},
 		orderBy: { createdAt: 'desc' },
-		...query
+		...query,
+		where: { ...query.where, userId }
 	});
 
 	return orders;

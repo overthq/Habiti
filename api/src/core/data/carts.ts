@@ -46,12 +46,12 @@ export const getCartsByUserId = async (
 	query?: Prisma.CartFindManyArgs
 ) => {
 	const carts = await prisma.cart.findMany({
-		where: { userId },
 		include: {
 			products: { include: { product: { include: { images: true } } } },
 			store: { include: { image: true } }
 		},
-		...query
+		...query,
+		where: { ...query?.where, userId }
 	});
 
 	return carts;
