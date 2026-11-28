@@ -1,0 +1,36 @@
+# scenario: merchant
+appId: app.habiti.dashboard.dev
+---
+- runFlow:
+    file: ../subflows/sign-in.yaml
+    env:
+      EMAIL: ${MERCHANT_EMAIL}
+
+- tapOn: Profile
+- tapOn: .*Edit profile
+- tapOn: Name
+- eraseText: 30
+- inputText: Bisi Merchant
+- tapOn: Save
+- extendedWaitUntil:
+    visible: .*Bisi Merchant.*
+    timeout: 10000
+
+# Log out, and stay logged out after a relaunch
+- tapOn: Profile
+- tapOn: Log out
+- runFlow:
+    when:
+      visible: Cancel
+    commands:
+      - tapOn:
+          text: Log out
+          index: 1
+- extendedWaitUntil:
+    visible: Email address
+    timeout: 10000
+- stopApp
+- openLink: ${DEV_CLIENT_LINK}
+- extendedWaitUntil:
+    visible: Email address
+    timeout: 60000

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Screen, Checkbox, Typography, Spacer } from '@habiti/components';
-import { View, StyleSheet } from 'react-native';
+import { Pressable, View, StyleSheet } from 'react-native';
 
 import FAB from '../components/FAB';
 
@@ -79,13 +79,20 @@ const ProductCategories: React.FC<
 
 			<View>
 				{data?.categories.map(({ id, name }) => (
-					<View key={id} style={styles.row}>
+					<Pressable
+						key={id}
+						style={styles.row}
+						onPress={() => handleSelectCategory(id)}
+						accessibilityRole='checkbox'
+						accessibilityLabel={name}
+						accessibilityState={{ checked: selectedCategories.includes(id) }}
+					>
 						<Typography>{name}</Typography>
 						<Checkbox
 							active={selectedCategories.includes(id)}
 							onPress={() => handleSelectCategory(id)}
 						/>
-					</View>
+					</Pressable>
 				))}
 			</View>
 

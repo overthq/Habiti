@@ -1,0 +1,4 @@
+appId: app.habiti.dashboard.dev
+---
+- runFlow: verify.yaml
+- tapOn: ${STORE_NAME}

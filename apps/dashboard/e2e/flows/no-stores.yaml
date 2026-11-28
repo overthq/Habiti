@@ -1,0 +1,23 @@
+# scenario: shopperWithCart
+# Store creation is off in the dashboard (STORE_CREATION_ENABLED), so someone
+# without a store is told so. They create stores on the web.
+appId: app.habiti.dashboard.dev
+---
+- runFlow: ../subflows/launch.yaml
+- tapOn: Email address
+- inputText: ${SHOPPER_EMAIL}
+- tapOn: Continue
+- extendedWaitUntil:
+    visible: A verification code was sent to your inbox.
+    timeout: 10000
+- runScript:
+    file: ../subflows/verification-code.js
+    env:
+      EMAIL: ${SHOPPER_EMAIL}
+      CODES_URL: ${CODES_URL}
+- inputText: ${output.code}
+- tapOn: Verify
+- extendedWaitUntil:
+    visible: No stores
+    timeout: 15000
+- assertVisible: You do not have access to any stores.

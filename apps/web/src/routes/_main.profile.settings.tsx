@@ -71,9 +71,10 @@ const AccountTab: React.FC<AccountTabProps> = ({ user }) => {
 					control={form.control}
 					render={({ field, fieldState }) => (
 						<Field data-invalid={fieldState.invalid}>
-							<FieldLabel>Name</FieldLabel>
+							<FieldLabel htmlFor='name'>Name</FieldLabel>
 							<Input
 								{...field}
+								id='name'
 								aria-invalid={fieldState.invalid}
 								autoComplete='off'
 							/>
@@ -165,6 +166,7 @@ const PaymentsTab = () => {
 						onClick={() => handleDeleteCard(card.id)}
 						variant='outline'
 						size='icon'
+						aria-label={`Remove card ending ${card.last4}`}
 					>
 						<Trash2Icon />
 					</Button>

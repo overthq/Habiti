@@ -7,18 +7,29 @@ import { useTheme } from './Theme';
 interface CheckBoxProps {
 	active?: boolean;
 	onPress: (value: boolean) => void;
+	accessibilityLabel?: string;
+	testID?: string;
 }
 
 const CHECKBOX_SIZE = 20;
 const CHECKBOX_BORDER_WIDTH = 2;
 const CHECKBOX_RADIUS = 4;
 
-const Checkbox: React.FC<CheckBoxProps> = ({ active, onPress }) => {
+const Checkbox: React.FC<CheckBoxProps> = ({
+	active,
+	onPress,
+	accessibilityLabel,
+	testID
+}) => {
 	const { theme } = useTheme();
 
 	return (
 		<Pressable
 			onPress={() => onPress(!active)}
+			accessibilityRole='checkbox'
+			accessibilityState={{ checked: !!active }}
+			accessibilityLabel={accessibilityLabel}
+			testID={testID}
 			style={[
 				styles.square,
 				{

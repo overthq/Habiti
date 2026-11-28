@@ -7,7 +7,8 @@
 		"#/*": "./src/*"
 	},
 	"scripts": {
-		"dev": "dotenv -e .env.local -- sh -c \"export PATH=$(echo \\\"$PATH\\\" | sed -E 's|/private/tmp/bun-node-[^:]+:||g'); NODE_OPTIONS='--import ./instrument.server.mjs' node ./node_modules/vite/bin/vite.js dev --port 3000\"",
+		"dev": "dotenv -e .env.local -- sh -c \"export PATH=$(echo \\\"$PATH\\\" | sed -E 's|/private/tmp/bun-node-[^:]+:||g'); NODE_OPTIONS='--import ./instrument.server.mjs' node ./node_modules/vite/bin/vite.js dev --port 3001\"",
+		"dev:e2e": "dotenv -e ../../.env.e2e -- sh -c \"export PATH=$(echo \\\"$PATH\\\" | sed -E 's|/private/tmp/bun-node-[^:]+:||g'); NODE_OPTIONS='--import ./instrument.server.mjs' node ./node_modules/vite/bin/vite.js dev --port \\$E2E_ADMIN_PORT --strictPort\"",
 		"build": "vite build",
 		"preview": "vite preview",
 		"deploy": "npm run build && wrangler deploy",

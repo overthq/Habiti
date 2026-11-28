@@ -16,6 +16,8 @@ import landingRoutes from './landing';
 import webhookRoutes from './webhooks';
 import healthRoutes from './health';
 import metricsRoutes from './metrics';
+import fileRoutes from './files';
+import { usesLocalUploads } from '../utils/upload';
 
 const app = new Hono<AppEnv>();
 
@@ -33,5 +35,9 @@ app.route('/landing', landingRoutes);
 app.route('/webhooks', webhookRoutes);
 app.route('/', healthRoutes);
 app.route('/', metricsRoutes);
+
+if (usesLocalUploads) {
+	app.route('/files', fileRoutes);
+}
 
 export default app;

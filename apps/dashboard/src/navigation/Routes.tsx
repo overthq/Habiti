@@ -265,7 +265,8 @@ const ProductsStackNavigator = () => (
 		<ProductsStack.Screen
 			name='ProductsList'
 			component={Products}
-			options={{ headerShown: false }}
+			// Hidden, but names the back button on screens above it.
+			options={{ headerShown: false, title: 'Products' }}
 		/>
 		<ProductsStack.Screen
 			name='Product'
@@ -280,7 +281,7 @@ const OrdersStackNavigator = () => (
 		<OrdersStack.Screen
 			name='OrdersList'
 			component={Orders}
-			options={{ headerShown: false }}
+			options={{ headerShown: false, title: 'Orders' }}
 		/>
 
 		<OrdersStack.Group
@@ -314,7 +315,7 @@ const StoreStackNavigator = () => {
 			<StoreStack.Screen
 				name='StoreHome'
 				component={Store}
-				options={{ headerShown: false }}
+				options={{ headerShown: false, title: 'Store' }}
 			/>
 
 			<StoreStack.Group
@@ -390,7 +391,7 @@ const ProfileStackNavigator = () => (
 		<ProfileStack.Screen
 			name='ProfileHome'
 			component={Profile}
-			options={{ headerShown: false }}
+			options={{ headerShown: false, title: 'Profile' }}
 		/>
 
 		<ProfileStack.Group

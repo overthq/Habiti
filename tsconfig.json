@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"noEmit": true,
+		"skipLibCheck": true,
+		"target": "esnext",
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"types": ["bun"]
+	},
+	"include": ["scripts", "e2e"]
+}

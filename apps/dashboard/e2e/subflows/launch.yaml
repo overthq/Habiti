@@ -1,0 +1,9 @@
+appId: app.habiti.dashboard.dev
+---
+- clearKeychain
+- launchApp:
+    clearState: true
+- openLink: ${DEV_CLIENT_LINK}
+- extendedWaitUntil:
+    visible: Email address
+    timeout: 60000

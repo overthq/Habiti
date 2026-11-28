@@ -2,5 +2,6 @@
 	"compilerOptions": {
 		"strict": true
 	},
-	"extends": "expo/tsconfig.base"
+	"extends": "expo/tsconfig.base",
+	"exclude": ["node_modules", "ios", "android", "e2e"]
 }

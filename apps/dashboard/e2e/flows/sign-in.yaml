@@ -1,0 +1,10 @@
+# scenario: merchant
+appId: app.habiti.dashboard.dev
+---
+- runFlow:
+    file: ../subflows/sign-in.yaml
+    env:
+      EMAIL: ${MERCHANT_EMAIL}
+- extendedWaitUntil:
+    visible: There are currently no orders.*
+    timeout: 15000

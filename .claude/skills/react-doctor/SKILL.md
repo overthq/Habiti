@@ -8,6 +8,8 @@ version: "1.1.0"
 
 Scans React codebases for security, performance, correctness, and architecture issues. Outputs a 0–100 health score.
 
+Run it from the folder of each app you changed: `apps/app`, `apps/dashboard`, `apps/web` or `apps/admin`.
+
 ## After making React code changes:
 
 Run `npx react-doctor@latest --verbose --diff` and check the score did not regress.
@@ -34,7 +36,7 @@ Pair it with the matching per-rule prompts at `https://www.react.doctor/prompts/
 
 ## Configuring or explaining rules
 
-When the user wants to understand a rule, disagrees with one, or wants to disable / tune which rules run (not fix code), use the `doctor-explain` skill (alias `/doctor-config`). Start with `npx react-doctor@latest rules explain <rule>`, then apply the narrowest control via `npx react-doctor@latest rules disable|set|category|ignore-tag …`, which edits your `doctor.config.*` (or `package.json#reactDoctor`).
+When the user wants to understand a rule, disagrees with one, or wants to disable / tune which rules run (not fix code), start with `npx react-doctor@latest rules explain <rule>`, then apply the narrowest control via `npx react-doctor@latest rules disable|set|category|ignore-tag …`, which edits your `doctor.config.*` (or `package.json#reactDoctor`).
 
 ## Command
 

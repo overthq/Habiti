@@ -32,3 +32,82 @@ jobs:
           bun run --cwd apps/dashboard tsc
           bun run --cwd api prisma generate
           bun run --cwd api tsc
+          bunx tsc -p tsconfig.json
+          bunx tsc -p apps/dashboard/e2e/tsconfig.json
+
+  api:
+    name: API tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7
+        ports: ['6379:6379']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Install dependencies
+        run: |
+          bun install
+          cd api && bun install
+      - name: Prepare the database
+        working-directory: api
+        run: |
+          echo 'DATABASE_URL=postgresql://postgres:postgres@localhost:5432/habiti_e2e?schema=public' > ../.env.e2e.local
+          bunx --bun prisma generate
+          bun run db:reset:e2e
+      - name: Run tests
+        working-directory: api
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/habiti_e2e?schema=public
+          REDIS_URL: redis://localhost:6379/1
+          JWT_SECRET: ci-jwt-secret
+          PAYSTACK_SECRET_KEY: sk_test_ci
+        run: bun test src
+
+  web-e2e:
+    name: Web e2e (Playwright)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7
+        ports: ['6379:6379']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: |
+          bun install
+          cd api && bun install
+      - name: Prepare the API
+        working-directory: api
+        run: |
+          echo 'DATABASE_URL=postgresql://postgres:postgres@localhost:5432/habiti_e2e?schema=public' > ../.env.e2e.local
+          bunx --bun prisma generate
+      - name: Install Chromium
+        working-directory: apps/web
+        run: bunx playwright install --with-deps chromium
+      - name: Run Playwright
+        run: bun run e2e:web
+        env:
+          CI: true
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: web-e2e-artifacts
+          path: .e2e-artifacts/web
+          retention-days: 7

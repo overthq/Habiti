@@ -100,6 +100,14 @@ export const useUnfollowStoreMutation = () => {
 	});
 };
 
+const toastApiError = (fallback: string) => (error: unknown) => {
+	toast.error(
+		error instanceof AxiosError
+			? (error.response?.data?.message ?? error.message)
+			: fallback
+	);
+};
+
 export const useRegisterMutation = () => {
 	const queryClient = useQueryClient();
 
@@ -107,14 +115,15 @@ export const useRegisterMutation = () => {
 		mutationFn: (input: RegisterBody) => register(input),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['user'] });
-		}
+		},
+		onError: toastApiError('Could not create your account')
 	});
 };
 
 export const useAuthenticateMutation = () => {
 	return useMutation({
 		mutationFn: (input: LoginBody) => login(input),
-		onSuccess: () => {}
+		onError: toastApiError('Could not send a login code')
 	});
 };
 
@@ -128,9 +137,14 @@ export const useVerifyCodeMutation = () => {
 			logIn({ accessToken });
 			toggleAuthModal();
 			// The guest's anonymous data was merged into the account
-			// server-side; refetch everything under the new identity.
-			await queryClient.invalidateQueries();
-		}
+			// server-side; refetch everything under the new identity. The
+			// session itself is already fresh, and refetching it would rotate
+			// the refresh cookie for nothing.
+			await queryClient.invalidateQueries({
+				predicate: query => query.queryKey[0] !== 'auth'
+			});
+		},
+		onError: toastApiError('Could not verify your code')
 	});
 };
 
@@ -143,15 +157,11 @@ export const useAppleSignInMutation = () => {
 		onSuccess: async ({ accessToken }) => {
 			logIn({ accessToken });
 			toggleAuthModal();
-			await queryClient.invalidateQueries();
+			await queryClient.invalidateQueries({
+				predicate: query => query.queryKey[0] !== 'auth'
+			});
 		},
-		onError: (error: unknown) => {
-			const message =
-				error instanceof AxiosError
-					? (error.response?.data?.message ?? error.message)
-					: 'Sign in with Apple failed';
-			toast.error(message);
-		}
+		onError: toastApiError('Sign in with Apple failed')
 	});
 };
 
@@ -160,11 +170,12 @@ export const useLogoutMutation = () => {
 
 	return useMutation({
 		mutationFn: performLogout,
-		onSettled: () => {
-			queryClient.removeQueries({
+		onSettled: () =>
+			// Reset rather than remove, so mounted queries (like the current user
+			// in the nav) refetch under the new guest session.
+			queryClient.resetQueries({
 				predicate: query => query.queryKey[0] !== 'auth'
-			});
-		}
+			})
 	});
 };
 
@@ -188,19 +199,27 @@ export const useUpdateCurrentUserMutation = () => {
 	return useMutation({
 		mutationFn: (body: UpdateCurrentUserBody) => updateCurrentUser(body),
 		onSuccess: () => {
-			toast.success('Order created successfully');
+			toast.success('Profile updated');
 		},
 		onError: () => {
-			toast.error('Failed to create order');
+			toast.error('Failed to update profile');
 		}
 	});
 };
 
 export const useDeleteCurrentUserMutation = () => {
+	const navigate = useNavigate();
+	const queryClient = useQueryClient();
+
 	return useMutation({
 		mutationFn: () => deleteCurrentUser(),
-		onSuccess: () => {
-			toast.success('User deleted successfully');
+		onSuccess: async () => {
+			await performLogout();
+			await queryClient.resetQueries({
+				predicate: query => query.queryKey[0] !== 'auth'
+			});
+			navigate({ to: '/' });
+			toast.success('Your account has been deleted');
 		},
 		onError: () => {
 			toast.error('Failed to delete user');
@@ -264,11 +283,16 @@ export const useCreateStoreMutation = (
 };
 
 export const useDeleteCardMutation = () => {
+	const queryClient = useQueryClient();
+
 	return useMutation({
 		mutationFn: (cardId: string) => deleteUserCard(cardId),
-		onSuccess: () => {},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['cards'] });
+			toast.success('Card removed');
+		},
 		onError: () => {
-			toast.error('Failed to initiate payment');
+			toast.error('Failed to remove card');
 		}
 	});
 };

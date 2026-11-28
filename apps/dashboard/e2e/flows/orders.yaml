@@ -1,0 +1,41 @@
+# scenario: storeWithOrders
+appId: app.habiti.dashboard.dev
+---
+- runFlow:
+    file: ../subflows/sign-in.yaml
+    env:
+      EMAIL: ${MERCHANT_EMAIL}
+- extendedWaitUntil:
+    visible: ${SHOPPER_NAME}, Pending.*
+    timeout: 10000
+- assertVisible: ${SHOPPER_NAME}, Ready for Pickup.*
+- assertVisible: ${SHOPPER_NAME}, Completed.*
+
+- tapOn: ${SHOPPER_NAME}, Pending.*
+- assertVisible: ${PRODUCTS_0_NAME}.*
+- tapOn: Mark as ready for pickup
+- tapOn: Confirm
+- extendedWaitUntil:
+    visible: Awaiting Customer Pickup
+    timeout: 10000
+
+- tapOn:
+    text: Orders
+    index: 0
+- tapOn: Ready for pickup
+- extendedWaitUntil:
+    notVisible: ${SHOPPER_NAME}, Pending.*
+    timeout: 10000
+- assertVisible:
+    text: ${SHOPPER_NAME}, Ready for Pickup.*
+    index: 1
+- assertNotVisible: ${SHOPPER_NAME}, Completed.*
+
+- tapOn:
+    text: ${SHOPPER_NAME}, Ready for Pickup.*
+    index: 0
+- tapOn: View order history
+- extendedWaitUntil:
+    visible: Customer Information
+    timeout: 10000
+- assertVisible: ${SHOPPER_NAME}

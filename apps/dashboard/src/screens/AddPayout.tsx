@@ -179,6 +179,9 @@ const PayoutNumpad: React.FC<PayoutNumpadProps> = ({
 					style={numpadStyles.back}
 					onPress={onDelete}
 					onLongPress={onClear}
+					accessibilityRole='button'
+					accessibilityLabel='Delete'
+					accessibilityHint='Hold to clear'
 				>
 					<Icon size={24} name='delete' />
 				</Pressable>
@@ -212,7 +215,11 @@ interface NumpadButtonProps {
 
 const NumpadButton: React.FC<NumpadButtonProps> = ({ value, onPress }) => {
 	return (
-		<Pressable style={numpadButtonStyles.container} onPress={onPress}>
+		<Pressable
+			style={numpadButtonStyles.container}
+			onPress={onPress}
+			accessibilityRole='button'
+		>
 			<Typography
 				size='xxxlarge'
 				weight='medium'

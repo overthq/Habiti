@@ -5,7 +5,10 @@
 	"main": "index.ts",
 	"license": "GPL-3.0-or-later",
 	"scripts": {
-		"start": "expo start",
+		"start": "expo start --port 8082",
+		"start:e2e": "dotenv -e ../../.env.e2e -- sh -c 'expo start --port $E2E_METRO_PORT'",
+		"e2e": "bun e2e/run.ts",
+		"e2e:build": "APP_VARIANT=development SENTRY_DISABLE_AUTO_UPLOAD=true expo run:ios --no-bundler",
 		"android": "expo start --android",
 		"ios": "expo start --ios",
 		"web": "expo start --web",
@@ -65,6 +68,7 @@
 		"@types/react": "~19.3.0",
 		"@types/react-dom": "~19.3.0",
 		"babel-preset-expo": "~58.0.0",
+		"dotenv-cli": "^11.0.0",
 		"typescript": "~6.0.3"
 	}
 }

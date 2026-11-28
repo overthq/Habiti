@@ -7,9 +7,16 @@
 	"license": "GPL-3.0-or-later",
 	"private": true,
 	"scripts": {
+		"setup": "bun scripts/setup.ts",
+		"stack": "bun scripts/stack.ts",
+		"e2e": "bun run e2e:web && bun run e2e:dashboard && bun run e2e:journey",
+		"e2e:web": "bun run --cwd apps/web e2e",
+		"e2e:dashboard": "bun run --cwd apps/dashboard e2e",
+		"e2e:journey": "bun e2e/order-journey.ts",
 		"start:app": "bun run --cwd apps/app start",
 		"start:dashboard": "bun run --cwd apps/dashboard start",
 		"start:redis": "redis-server --daemonize yes",
+		"db:reset": "bun run --cwd api db:reset",
 		"dev:api": "bun run --cwd api dev",
 		"dev:web": "bun run --cwd apps/web dev",
 		"dev:admin": "bun run --cwd apps/admin dev",
@@ -30,6 +37,7 @@
 		"solid-js": "^1.9.17"
 	},
 	"devDependencies": {
+		"@types/bun": "^1.2.22",
 		"@types/node": "^20",
 		"husky": "^9.1.7",
 		"lint-staged": "^15.5.1",

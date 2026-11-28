@@ -33,6 +33,7 @@ const QuantityControl: React.FC<QuantityControlProps> = ({
 			<button
 				onClick={decrement}
 				disabled={decrementDisabled}
+				aria-label={showDeleteIcon ? 'Remove' : 'Decrease quantity'}
 				className='bg-transparent disabled:opacity-50 cursor-pointer'
 			>
 				{showDeleteIcon ? (
@@ -42,7 +43,11 @@ const QuantityControl: React.FC<QuantityControlProps> = ({
 				)}
 			</button>
 			<p className='text-sm w-[50px] text-center'>{quantity}</p>
-			<button onClick={increment} className='bg-transparent cursor-pointer'>
+			<button
+				onClick={increment}
+				aria-label='Increase quantity'
+				className='bg-transparent cursor-pointer'
+			>
 				<Plus className='size-4' />
 			</button>
 		</div>

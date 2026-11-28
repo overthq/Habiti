@@ -7,7 +7,9 @@ const env = {
 	appleClientId: import.meta.env?.VITE_APPLE_CLIENT_ID as string | undefined,
 	appleRedirectUri: import.meta.env?.VITE_APPLE_REDIRECT_URI as
 		| string
-		| undefined
+		| undefined,
+	paystackHostedCheckout:
+		import.meta.env?.VITE_PAYSTACK_HOSTED_CHECKOUT === 'true'
 };
 
 export default env;

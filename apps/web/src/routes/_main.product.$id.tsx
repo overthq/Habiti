@@ -18,14 +18,17 @@ import Product from '@/components/store/Product';
 import QuantityControl from '@/components/QuantityControl';
 import Rail from '@/components/Rail';
 import { getProduct } from '@habiti/data';
+import { notFoundOn404 } from '@/lib/utils';
 import { smartAppBannerMeta } from '@/utils/smart-app-banner';
 
 export const Route = createFileRoute('/_main/product/$id')({
 	loader: ({ context, params }) =>
-		context.queryClient.ensureQueryData({
-			queryKey: ['products', params.id],
-			queryFn: () => getProduct(params.id)
-		}),
+		context.queryClient
+			.ensureQueryData({
+				queryKey: ['products', params.id],
+				queryFn: () => getProduct(params.id)
+			})
+			.catch(notFoundOn404),
 	head: ({ params, loaderData }) => {
 		const banner = smartAppBannerMeta(`/product/${params.id}`);
 		const product = loaderData?.product;

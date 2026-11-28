@@ -17,9 +17,8 @@ import * as CardData from '../data/cards';
 import * as SessionData from '../data/sessions';
 import * as Shapes from '../data/shapes';
 
-import { cacheVerificationCode } from './auth';
+import { cacheVerificationCode, getFixedVerificationCode } from './auth';
 import { registerBodySchema } from '../validations/rest';
-import { env } from '../../config/env';
 import type { AppleIdentity } from './apple';
 
 import { EmailType } from '../../services/email';
@@ -55,10 +54,7 @@ export const register = async (c: Context<AppEnv>, args: unknown) => {
 
 	const code = await cacheVerificationCode(c, data.email);
 
-	const isTestAccount =
-		env.TEST_ACCOUNT_EMAIL && data.email === env.TEST_ACCOUNT_EMAIL;
-
-	if (!isTestAccount) {
+	if (!getFixedVerificationCode(data.email)) {
 		c.var.services.email.sendMail({
 			emailType: EmailType.NewAccount,
 			email: data.email,
@@ -85,10 +81,7 @@ export const login = async (c: Context<AppEnv>, input: LoginInput) => {
 
 	const code = await cacheVerificationCode(c, input.email);
 
-	const isTestAccount =
-		env.TEST_ACCOUNT_EMAIL && input.email === env.TEST_ACCOUNT_EMAIL;
-
-	if (!isTestAccount) {
+	if (!getFixedVerificationCode(input.email)) {
 		c.var.services.email.sendMail({
 			emailType: EmailType.NewAccount,
 			email: input.email,

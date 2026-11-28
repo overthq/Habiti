@@ -11,3 +11,10 @@ google-services.json
 .react-router
 .cursor
 dist
+
+apps/*/ios
+apps/*/android
+
+.e2e-artifacts
+
+.env*.local
