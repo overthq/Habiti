@@ -57,6 +57,7 @@ const ProductInventoryModal = () => {
 
 				<BaseInput
 					as={SheetTextInput}
+					accessibilityLabel='Quantity in stock'
 					autoFocus
 					number
 					value={quantity.toString()}

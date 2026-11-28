@@ -1,0 +1,72 @@
+# scenario: storeWithProducts
+appId: app.habiti.dashboard.dev
+---
+- runFlow:
+    file: ../subflows/sign-in.yaml
+    env:
+      EMAIL: ${MERCHANT_EMAIL}
+- tapOn: Products
+- assertVisible: .*${PRODUCTS_0_NAME}.*
+- assertVisible: .*${PRODUCTS_1_NAME}.*
+
+- tapOn: New Product
+- tapOn: Name
+- inputText: Kente Scarf
+- tapOn: Description.*
+- inputText: Handwoven in Bonwire.
+- tapOn: Price
+- inputText: '12500'
+- tapOn: Quantity
+- inputText: '7'
+- tapOn: Save
+- extendedWaitUntil:
+    visible: .*Kente Scarf.*
+    timeout: 10000
+
+- tapOn: Kente Scarf.*
+- tapOn: Update
+- tapOn: Price in naira
+- eraseText: 10
+- inputText: '15000'
+- tapOn: Save
+- extendedWaitUntil:
+    visible: ₦15,000.00
+    timeout: 5000
+
+- tapOn: Add category
+- tapOn: ${CATEGORY_NAME}
+- tapOn: Save
+- extendedWaitUntil:
+    visible: ${CATEGORY_NAME}
+    timeout: 5000
+- assertNotVisible: No categories
+
+# Add an image from the photo library. The picker runs out of process, so
+# its grid is not in the view hierarchy: the newest photo is the first cell.
+- addMedia:
+    - ../assets/product.png
+- waitForAnimationToEnd
+- tapOn:
+    text: Add image
+    retryTapIfNoChange: true
+- tapOn: Add new image
+- extendedWaitUntil:
+    visible: Albums
+    timeout: 10000
+- waitForAnimationToEnd
+- tapOn:
+    point: 16%,22%
+    retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible: Choose
+    timeout: 10000
+- tapOn: Choose
+- extendedWaitUntil:
+    visible:
+      text: Save
+      enabled: true
+    timeout: 15000
+- tapOn: Save
+- extendedWaitUntil:
+    notVisible: No images
+    timeout: 10000

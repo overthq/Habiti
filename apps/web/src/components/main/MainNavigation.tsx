@@ -34,7 +34,7 @@ const ProfileDropdown = () => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant='ghost'>
+				<Button variant='ghost' aria-label='Account'>
 					<CircleUserIcon className='size-5' />
 				</Button>
 			</DropdownMenuTrigger>
@@ -74,6 +74,7 @@ const MainNavigation = () => {
 					<Link
 						className='text-muted-foreground hover:text-foreground transition-colors duration-200'
 						to='/'
+						aria-label='Home'
 					>
 						<Logo width={20} height={20} />
 					</Link>
@@ -81,7 +82,7 @@ const MainNavigation = () => {
 
 				<div className='flex items-center gap-3 md:hidden'>
 					<Button asChild variant='ghost' size='icon'>
-						<Link to='/cart'>
+						<Link to='/cart' aria-label='Cart'>
 							<span className='relative inline-flex'>
 								<ShoppingCartIcon className='size-5' />
 								{showCartBadge ? (
@@ -109,7 +110,7 @@ const MainNavigation = () => {
 
 			<div className='hidden md:flex flex-1 justify-end items-center gap-3'>
 				<Button asChild variant='ghost' size='icon'>
-					<Link to='/cart'>
+					<Link to='/cart' aria-label='Cart'>
 						<span className='relative inline-flex'>
 							<ShoppingCartIcon className='size-5' />
 							{showCartBadge ? (

@@ -229,16 +229,22 @@ export const verifyBankAccountBodySchema = z.object({
 
 export type VerifyBankAccountBody = z.infer<typeof verifyBankAccountBodySchema>;
 
+// The description is optional, and the dashboard sends an empty field as "".
+const categoryDescription = z
+	.string()
+	.optional()
+	.transform(value => value || undefined);
+
 export const createCategoryBodySchema = z.object({
 	name: z.string().min(1),
-	description: z.string().min(1)
+	description: categoryDescription
 });
 
 export type CreateCategoryBody = z.infer<typeof createCategoryBodySchema>;
 
 export const updateCategoryBodySchema = z.object({
 	name: z.string().min(1),
-	description: z.string().min(1)
+	description: categoryDescription
 });
 export type UpdateCategoryBody = z.infer<typeof updateCategoryBodySchema>;
 

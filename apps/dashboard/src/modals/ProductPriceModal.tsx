@@ -50,6 +50,7 @@ const ProductPriceModal = () => {
 
 				<BaseInput
 					as={SheetTextInput}
+					accessibilityLabel='Price in naira'
 					autoFocus
 					number
 					style={styles.input}

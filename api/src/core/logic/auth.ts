@@ -22,16 +22,19 @@ export const hashPassword = async (password: string) => {
 	return argon2.hash(password);
 };
 
+export const getFixedVerificationCode = (email: string) => {
+	if (env.TEST_ACCOUNT_EMAIL && email === env.TEST_ACCOUNT_EMAIL) {
+		return env.TEST_ACCOUNT_OTP ?? null;
+	}
+
+	return null;
+};
+
 export const cacheVerificationCode = async (
 	c: Context<AppEnv>,
 	email: string
 ): Promise<string> => {
-	const isTestAccount =
-		env.TEST_ACCOUNT_EMAIL && email === env.TEST_ACCOUNT_EMAIL;
-	const code =
-		isTestAccount && env.TEST_ACCOUNT_OTP
-			? env.TEST_ACCOUNT_OTP
-			: generateCode();
+	const code = getFixedVerificationCode(email) ?? generateCode();
 
 	const key = getEmailCacheKey(email);
 
@@ -582,6 +585,6 @@ const generateCode = () => {
 		.join('');
 };
 
-const getEmailCacheKey = (email: string) => {
+export const getEmailCacheKey = (email: string) => {
 	return `email-${email}`;
 };

@@ -19,6 +19,10 @@ const useDebounce = <F extends (...args: any[]) => any>(
 		return debounce(func, delay);
 	}, [delay]);
 
+	// Run a pending call instead of dropping it when the component goes away,
+	// e.g. a cart quantity change followed straight away by "Checkout".
+	React.useEffect(() => () => debouncedCallback.flush(), [debouncedCallback]);
+
 	return debouncedCallback;
 };
 

@@ -1,0 +1,64 @@
+name: Dashboard e2e
+
+# Maestro on an iOS simulator. macOS runners are slow and costly, so this runs
+# nightly and on demand rather than on every push.
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  maestro:
+    name: Dashboard e2e (Maestro)
+    runs-on: macos-15
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Load the e2e ports
+        run: grep '^E2E_' .env.e2e >> "$GITHUB_ENV"
+
+      - name: Start Postgres and Redis
+        run: |
+          brew install postgresql@17 redis
+          brew services start postgresql@17
+          brew services start redis
+          for i in $(seq 1 30); do pg_isready -h localhost && break; sleep 1; done
+          echo "DATABASE_URL=postgresql://$(whoami)@localhost:5432/habiti_e2e?schema=public" > .env.e2e.local
+
+      - name: Install dependencies
+        run: |
+          bun install
+          cd api && bun install && bunx --bun prisma generate
+          curl -fsSL https://get.maestro.mobile.dev | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+      - name: Build the dev client
+        working-directory: apps/dashboard
+        run: |
+          xcrun simctl boot "iPhone 16 Pro" || true
+          bun run e2e:build -- -d "iPhone 16 Pro"
+
+      - name: Start the e2e stack
+        run: |
+          (cd api && bun run dev:e2e > /tmp/api.log 2>&1 &)
+          (cd api && bun run fake-paystack:e2e > /tmp/paystack.log 2>&1 &)
+          (cd apps/dashboard && CI=1 bun run start:e2e > /tmp/metro.log 2>&1 &)
+          for url in http://localhost:$E2E_API_PORT/health/live http://localhost:$E2E_PAYSTACK_PORT/health http://localhost:$E2E_METRO_PORT/status; do
+            for i in $(seq 1 120); do curl -sf "$url" > /dev/null && break; sleep 1; done
+          done
+
+      - name: Run Maestro
+        run: bun run e2e:dashboard
+
+      - name: Collect logs
+        if: failure()
+        run: cp /tmp/api.log /tmp/paystack.log /tmp/metro.log .e2e-artifacts/ || true
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: dashboard-e2e-artifacts
+          path: .e2e-artifacts
+          retention-days: 7

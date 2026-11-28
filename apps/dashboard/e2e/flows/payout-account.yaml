@@ -1,0 +1,30 @@
+# scenario: merchant
+appId: app.habiti.dashboard.dev
+---
+- runFlow:
+    file: ../subflows/sign-in.yaml
+    env:
+      EMAIL: ${MERCHANT_EMAIL}
+- tapOn: Store
+- tapOn: Payout Account
+- tapOn: Add payout account
+
+# The fake Paystack resolves any 10-digit number except 0000000000
+- tapOn: Search banks
+- inputText: Zenith
+- tapOn: Zenith Bank
+- inputText: '1234567890'
+- tapOn: Continue
+- extendedWaitUntil:
+    visible: Confirm Details
+    timeout: 10000
+- assertVisible: E2E TEST ACCOUNT
+# Text matching ignores case, so "Confirm details" also matches the title.
+- tapOn:
+    text: Confirm details
+    below: Bank
+- extendedWaitUntil:
+    visible: Replace account
+    timeout: 10000
+- assertVisible: Zenith Bank
+- assertVisible: '1234567890'

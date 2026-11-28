@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { StyleSheet } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 import { FormInput, ScrollableScreen, Spacer } from '@habiti/components';
 
 import { useCreateProductCategoryMutation } from '../data/mutations';
@@ -26,9 +26,12 @@ const AddCategory: React.FC<AppStackScreenProps<'Modal.AddCategory'>> = ({
 
 	const onSubmit = React.useCallback(
 		async (values: AddCategoryValues) => {
-			await createProductCategoryMutation.mutateAsync(values);
-
-			navigation.goBack();
+			try {
+				await createProductCategoryMutation.mutateAsync(values);
+				navigation.goBack();
+			} catch {
+				Alert.alert('Could not add category', 'Check the name and try again.');
+			}
 		},
 		[createProductCategoryMutation, navigation]
 	);

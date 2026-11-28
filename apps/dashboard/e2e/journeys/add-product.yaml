@@ -1,0 +1,19 @@
+# Order journey, step 1 (see e2e/order-journey.ts): the merchant lists a product.
+appId: app.habiti.dashboard.dev
+---
+- runFlow:
+    file: ../subflows/sign-in.yaml
+- tapOn: Products
+- tapOn: New Product
+- tapOn: Name
+- inputText: ${PRODUCT_NAME}
+- tapOn: Description.*
+- inputText: Made for the order journey.
+- tapOn: Price
+- inputText: '4500'
+- tapOn: Quantity
+- inputText: '3'
+- tapOn: Save
+- extendedWaitUntil:
+    visible: ${PRODUCT_NAME}.*
+    timeout: 10000

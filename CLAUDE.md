@@ -29,28 +29,38 @@ Habiti is an open-source mobile-first e-commerce platform for small-to-medium re
   - Prisma (with Postgres)
   - Redis
 
-## Common Development Commands
+## Running the apps
 
 ```bash
-# Setup
-bun i && bun i --cwd api # Install all dependencies
-bun start:redis          # Start Redis (required for API)
-
-# Development
-bun dev:api              # Backend dev server
-bun start:app            # Consumer app dev server
-bun start:dashboard      # Dashboard dev server
-bun dev:web              # Consumer web dev server
-bun dev:admin            # Admin panel dev server
+bun setup            # Fresh checkout: deps, env files, databases, Playwright browser
+bun stack            # Everything, in a Rex session called "Habiti", one tab per service
+                     # Rerun to restart what is down; --only api,web or --no-mobile for a subset
+bun stack --e2e      # The e2e stack ("Habiti E2E"), configured by the root .env.e2e
+bun stack status     # What is up, on which port
+bun stack logs api   # A service's output; pipe it to grep
+bun stack down       # Close the session and everything in it
 ```
 
-### Database Operations
+Ports in dev: API 4000, fake Paystack 4010, web 3000, admin 3001, Metro 8081 (app) and 8082 (dashboard). The single-service scripts (`bun dev:api`, `bun dev:web`, ...) still work for a terminal per service.
+
+- Postgres and Redis run natively on localhost (Postgres.app or Homebrew). There is no Docker.
+- Without Cloudinary keys, uploads are written to `api/.uploads` and served from `/files`. With `PAYSTACK_BASE_URL` pointed at the fake Paystack (`api/src/test/fake-paystack.ts`), payments, bank lookups and payouts work offline, webhooks included.
+- Signing in: read the code with `bun stack logs api | grep devOtp` (add `--e2e` for the e2e stack). Test runners read it from Redis with `bun run --cwd api e2e otp <email>`.
+- `bun run db:reset` wipes and reseeds the dev database. `bun setup` never wipes it.
+- Run Prisma's CLI as `bunx --bun prisma ...` (e.g. `cd api && bunx --bun prisma migrate dev` for a schema change): under Node 22.9 it fails with `ERR_REQUIRE_ESM`.
+
+## Testing
+
+Most coverage is end-to-end: Playwright drives the consumer web app (`apps/web/e2e`) and Maestro drives the dashboard (`apps/dashboard/e2e`), against the e2e stack. Unit tests stay for logic with many edge cases that are slow to reach through a UI (ledger, payments, permissions, auth).
 
 ```bash
-cd api && npx prisma generate   # Generate Prisma client
-cd api && npx prisma db push    # Push schema changes
-cd api && npx prisma migrate dev  # Create new migration
+bun e2e:web          # Playwright; starts the e2e stack itself if it is not running
+bun e2e:dashboard    # Maestro; needs `bun stack --e2e` and the dev client on a simulator
+bun e2e:journey      # One order across the dashboard and web
+cd api && bun test src
 ```
+
+Tests build their state through `scenarios` in `api/src/test/factories.ts` and then act and assert only through the UI. Before writing, running or debugging an e2e test, or driving a running app to check a change, use the `e2e` skill.
 
 ## Architecture Overview
 
@@ -65,7 +75,8 @@ cd api && npx prisma migrate dev  # Create new migration
 ├── packages/
 │   ├── components/        # Shared React Native UI components
 │   └── common/            # Shared utilities (currency formatting)
-├── scripts/               # Repo-level maintenance scripts (bank list, screenshots)
+├── scripts/               # Repo-level scripts (setup, Rex stack, bank list, screenshots)
+├── e2e/                   # Cross-app journeys (dashboard + web)
 └── api/                   # REST API with Hono, Prisma, PostgreSQL, Redis
 ```
 
@@ -160,6 +171,6 @@ api/
 
 - Modularity: Avoid tangling separate concerns too tightly. This however, is not a recommendation of extreme OOP (particularly inheritance). Make features composable and independently testable.
 - Files over folders: Avoid creating new files for everything. Scope related functions in the same file, especially when they are not imported elsewhere. For example, screen files should contain everything that is needed to render the screen, except components that are reused elsewhere.
-- Comments: Avoid plastering comments everywhere and on everything. Only use comments when behaviour is potentially unclear or tricky. If unsure, do not write a comment.
+- Comments: names and structure carry the meaning. A comment records only what the code cannot show: a workaround for an external bug, a constraint imposed from outside, or why the obvious approach fails. Keep each one to a line or two. Usage and how-to text belongs in `--help` output, CLAUDE.md or a skill, never in a file header. Before reporting work as done, reread every comment in your diff and delete each one that a careful reader could reconstruct from the code.
 - Justify the existence of a function: Don't just write helpers or utils for small issues.
 - Keep functions large, until there is a reason to break it up. It is easier to read logic functions when all the moving parts are in plain sight.

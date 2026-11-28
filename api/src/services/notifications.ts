@@ -7,6 +7,7 @@ import {
 	getNotificationUrl
 } from '../core/notifications';
 import { rootLogger } from './logger';
+import { env } from '../config/env';
 
 /**
  * Push-notifications queue backed by a Redis list. Survives process
@@ -99,7 +100,10 @@ export default class NotificationsService {
 	private async push(messages: WireMessage[]): Promise<void> {
 		if (messages.length === 0) return;
 		try {
-			const args = [QUEUE_KEY, ...messages.map(m => JSON.stringify(m))];
+			const args = [
+				env.PUSH_OUTBOX_KEY ?? QUEUE_KEY,
+				...messages.map(m => JSON.stringify(m))
+			];
 			// Bun's typed `lpush` is single-value; use the raw `send` form
 			// so we can push the whole batch in one round-trip.
 			await this.redis.send('LPUSH', args);

@@ -160,6 +160,9 @@ const StoreSelectItem: React.FC<StoreSelectItemProps> = ({
 	return (
 		<Pressable
 			onPress={onPress}
+			accessibilityRole='button'
+			accessibilityLabel={store.name}
+			accessibilityState={{ selected }}
 			style={({ pressed }) => [
 				styles.item,
 				{ width: size },
@@ -198,6 +201,8 @@ const CreateStoreButton: React.FC<CreateStoreButtonProps> = ({
 	return (
 		<Pressable
 			onPress={onPress}
+			accessibilityRole='button'
+			accessibilityLabel='New store'
 			style={({ pressed }) => [
 				styles.item,
 				{ width: size },

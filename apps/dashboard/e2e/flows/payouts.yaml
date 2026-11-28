@@ -1,0 +1,33 @@
+# scenario: storeWithBalance
+appId: app.habiti.dashboard.dev
+---
+- runFlow:
+    file: ../subflows/sign-in.yaml
+    env:
+      EMAIL: ${MERCHANT_EMAIL}
+- tapOn: Store
+- assertVisible: ₦100,000.00
+
+- tapOn: Request payout
+- tapOn: '2'
+- tapOn: '5'
+- tapOn: '0'
+- tapOn: '0'
+- tapOn: '0'
+- assertVisible: ₦25,000.00
+- tapOn:
+    text: Add Payout
+    index: 1
+- tapOn: Confirm
+- extendedWaitUntil:
+    visible: ₦25,000.00 payout pending
+    timeout: 10000
+- assertVisible: ₦75,000.00
+
+# The fake Paystack settles the transfer by webhook
+- tapOn: Manage
+- tapOn: Payout requested.*
+- extendedWaitUntil:
+    visible: Success
+    timeout: 10000
+- assertVisible: -₦25,000.00

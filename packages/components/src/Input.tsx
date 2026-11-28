@@ -54,6 +54,8 @@ const Input: React.FC<InputProps> = ({ label, textArea, style, ...props }) => {
 		<View>
 			{label && (
 				<Typography
+					accessibilityElementsHidden
+					importantForAccessibility='no-hide-descendants'
 					size='small'
 					weight='medium'
 					style={[styles.label, { color: theme.input.label }]}
@@ -62,6 +64,7 @@ const Input: React.FC<InputProps> = ({ label, textArea, style, ...props }) => {
 				</Typography>
 			)}
 			<BaseInput
+				accessibilityLabel={label}
 				{...props}
 				multiline={textArea}
 				style={[

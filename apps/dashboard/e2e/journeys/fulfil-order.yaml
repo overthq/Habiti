@@ -1,0 +1,15 @@
+# Order journey, step 3: the merchant gets the paid order ready for pickup.
+appId: app.habiti.dashboard.dev
+---
+- runFlow:
+    file: ../subflows/sign-in.yaml
+- extendedWaitUntil:
+    visible: ${SHOPPER_NAME}, Pending.*
+    timeout: 15000
+- tapOn: ${SHOPPER_NAME}, Pending.*
+- assertVisible: ${PRODUCT_NAME}.*
+- tapOn: Mark as ready for pickup
+- tapOn: Confirm
+- extendedWaitUntil:
+    visible: Awaiting Customer Pickup
+    timeout: 10000

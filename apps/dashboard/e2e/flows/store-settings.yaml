@@ -1,0 +1,38 @@
+# scenario: storeWithProducts
+appId: app.habiti.dashboard.dev
+---
+- runFlow:
+    file: ../subflows/sign-in.yaml
+    env:
+      EMAIL: ${MERCHANT_EMAIL}
+
+- tapOn: Store
+- tapOn: Categories
+- assertVisible: ${CATEGORY_NAME}
+- tapOn: Add Category
+- tapOn: Category name
+- inputText: Sandals
+- tapOn: Save
+- extendedWaitUntil:
+    visible: Sandals
+    timeout: 10000
+
+- tapOn: Store
+- tapOn: Addresses
+- assertVisible: Main shop, Lekki, Lagos
+- tapOn: Add Address
+- tapOn: Address name
+- inputText: Ikeja pickup
+- tapOn: Address line 1
+- inputText: 5 Allen Avenue
+- tapOn: City
+- inputText: Ikeja
+- tapOn: State
+- inputText: Lagos
+# Country sits under the keyboard; the toolbar's Next moves to it
+- tapOn: Next
+- inputText: Nigeria
+- tapOn: Save
+- extendedWaitUntil:
+    visible: Ikeja pickup, Ikeja, Lagos
+    timeout: 10000

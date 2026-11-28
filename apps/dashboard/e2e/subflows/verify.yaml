@@ -1,0 +1,19 @@
+appId: app.habiti.dashboard.dev
+---
+- runFlow: launch.yaml
+- tapOn: Email address
+- inputText: ${EMAIL}
+- tapOn: Continue
+- extendedWaitUntil:
+    visible: A verification code was sent to your inbox.
+    timeout: 10000
+- runScript:
+    file: verification-code.js
+    env:
+      EMAIL: ${EMAIL}
+      CODES_URL: ${CODES_URL}
+- inputText: ${output.code}
+- tapOn: Verify
+- extendedWaitUntil:
+    visible: Select store
+    timeout: 15000

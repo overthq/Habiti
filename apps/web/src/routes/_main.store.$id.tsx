@@ -4,14 +4,17 @@ import { Suspense } from 'react';
 import { StoreHeader, StoreProducts } from '@/components/store';
 import { useStoreQuery } from '@/data/queries';
 import { getStore } from '@habiti/data';
+import { notFoundOn404 } from '@/lib/utils';
 import { smartAppBannerMeta } from '@/utils/smart-app-banner';
 
 export const Route = createFileRoute('/_main/store/$id')({
 	loader: ({ context, params }) =>
-		context.queryClient.ensureQueryData({
-			queryKey: ['stores', params.id],
-			queryFn: () => getStore(params.id)
-		}),
+		context.queryClient
+			.ensureQueryData({
+				queryKey: ['stores', params.id],
+				queryFn: () => getStore(params.id)
+			})
+			.catch(notFoundOn404),
 	head: ({ params, loaderData }) => {
 		const banner = smartAppBannerMeta(`/store/${params.id}`);
 		const store = loaderData?.store;

@@ -30,7 +30,10 @@ const CartProductItem: React.FC<CartProductItemProps> = ({
 	const isOverQuantity = localQuantity > cartProduct.product.quantity;
 
 	return (
-		<div className='flex items-center gap-2.5 p-2 not-last:border-b'>
+		<li
+			aria-label={cartProduct.product.name}
+			className='flex items-center gap-2.5 p-2 not-last:border-b'
+		>
 			<div className='size-13 bg-muted rounded flex items-center justify-center overflow-hidden'>
 				{cartProduct.product.images[0] && (
 					<img
@@ -65,7 +68,7 @@ const CartProductItem: React.FC<CartProductItemProps> = ({
 				}
 				allowDelete
 			/>
-		</div>
+		</li>
 	);
 };
 
@@ -139,7 +142,10 @@ const CartItem: React.FC<CartItemProps> = ({ cart: initialCart }) => {
 	}
 
 	return (
-		<div className='border rounded-lg overflow-hidden'>
+		<section
+			aria-label={initialCart.store.name}
+			className='border rounded-lg overflow-hidden'
+		>
 			<div className='flex items-center gap-3 p-4 bg-muted/50 border-b'>
 				<Link
 					to='/store/$id'
@@ -177,7 +183,7 @@ const CartItem: React.FC<CartItemProps> = ({ cart: initialCart }) => {
 				</Button>
 			</div>
 
-			<div>
+			<ul>
 				{visibleProducts.map(cartProduct => (
 					<CartProductItem
 						key={`${cartProduct.cartId}-${cartProduct.productId}`}
@@ -189,13 +195,13 @@ const CartItem: React.FC<CartItemProps> = ({ cart: initialCart }) => {
 						onQuantityChange={handleQuantityChange}
 					/>
 				))}
-			</div>
+			</ul>
 
 			<div className='p-4 bg-muted/30 border-t flex justify-between items-center'>
 				<p className='text-muted-foreground'>Subtotal</p>
 				<p className='font-medium text-lg'>{formatNaira(localSubtotal)}</p>
 			</div>
-		</div>
+		</section>
 	);
 };
 

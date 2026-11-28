@@ -11,6 +11,7 @@ import { routePath } from 'hono/route';
 
 import type { AppEnv } from '../types/hono';
 import { metrics, MetricNames } from '../services/metrics';
+import { env } from '../config/env';
 
 interface BunRedisStore<
 	E extends Env = Env,
@@ -83,6 +84,8 @@ const defaultKeyGenerator = (c: Context<AppEnv>): string => {
 };
 
 export const rateLimit = (opts: RateLimitOpts): MiddlewareHandler<AppEnv> => {
+	if (env.RATE_LIMIT_DISABLED) return (_, next) => next();
+
 	const store = createBunRedisStore<AppEnv>(opts.prefix);
 	const limiter = rateLimiter<AppEnv>({
 		windowMs: opts.windowSec * 1000,

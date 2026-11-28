@@ -1,7 +1,11 @@
 import type cloudinary from 'cloudinary';
+import { randomUUID } from 'crypto';
+import { mkdir } from 'fs/promises';
+import path from 'path';
 import { Readable } from 'stream';
 
 import { getCloudinary } from '../config/cloudinary';
+import { env } from '../config/env';
 import { instrument } from './instrument';
 
 export type AllowedMime =
@@ -147,3 +151,34 @@ export const sniffImageMime = (buf: Buffer): AllowedMime | null => {
 
 // const uploadResult = await uploadStream(newStream);
 // return { ...uploadResult, blurhash };
+
+export const usesLocalUploads = !env.CLOUDINARY_CLOUD_NAME;
+export const LOCAL_UPLOADS_DIR = path.resolve(
+	import.meta.dir,
+	'../../.uploads'
+);
+
+const EXTENSION_BY_MIME: Record<AllowedMime, string> = {
+	'image/jpeg': 'jpg',
+	'image/png': 'png',
+	'image/webp': 'webp',
+	'image/gif': 'gif'
+};
+
+export const storeImage = async (
+	buffer: Buffer,
+	mime: AllowedMime
+): Promise<{ url: string; publicId: string }> => {
+	if (!usesLocalUploads) {
+		const result = await uploadBase64(buffer, mime);
+		return { url: result.secure_url, publicId: result.public_id };
+	}
+
+	const publicId = `${randomUUID()}.${EXTENSION_BY_MIME[mime]}`;
+	await mkdir(LOCAL_UPLOADS_DIR, { recursive: true });
+	await Bun.write(path.join(LOCAL_UPLOADS_DIR, publicId), buffer);
+
+	const origin = env.PUBLIC_URL ?? `http://localhost:${env.PORT}`;
+
+	return { url: `${origin}/files/${publicId}`, publicId };
+};

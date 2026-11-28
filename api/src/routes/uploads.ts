@@ -11,7 +11,7 @@ import {
 	MAX_FILES_PER_REQUEST,
 	MAX_REQUEST_BODY,
 	sniffImageMime,
-	uploadBase64
+	storeImage
 } from '../utils/upload';
 
 import type { AppEnv } from '../types/hono';
@@ -89,14 +89,9 @@ uploads.post(
 			})
 		);
 
-		const uploads = await Promise.all(
-			buffers.map(({ buffer, mime }) => uploadBase64(buffer, mime))
+		const images = await Promise.all(
+			buffers.map(({ buffer, mime }) => storeImage(buffer, mime))
 		);
-
-		const images = uploads.map(result => ({
-			url: result.secure_url,
-			publicId: result.public_id
-		}));
 
 		return c.json({ images });
 	}

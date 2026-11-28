@@ -28,12 +28,19 @@ const startGuestSession = async () => {
  * user to authenticate just to browse — auth is only prompted in-context
  * (viewing orders, placing an order).
  */
-export const ensureSession = async () => {
-	try {
-		return await refreshToken();
-	} catch {
-		return startGuestSession();
-	}
+let inflightSession: Promise<string> | null = null;
+
+export const ensureSession = () => {
+	// The session query and the 401 interceptor both land here on page load.
+	// Refresh tokens rotate, so a second concurrent refresh fails and would
+	// drop the user into a guest session.
+	inflightSession ??= refreshToken()
+		.catch(() => startGuestSession())
+		.finally(() => {
+			inflightSession = null;
+		});
+
+	return inflightSession;
 };
 
 /**
